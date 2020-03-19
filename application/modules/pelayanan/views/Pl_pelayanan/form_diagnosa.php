@@ -1,3 +1,34 @@
+<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+
+<script type="text/javascript">
+  
+  $('#pl_diagnosa').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getICD10",
+              data: 'keyword=' + query,            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                result($.map(response, function (item) {
+                      return item;
+                  }));
+                
+              }
+          });
+      },
+      afterSelect: function (item) {
+        // do what is needed with item
+        var label_item=item.split(':')[1];
+        var val_item=item.split(':')[0];
+        console.log(val_item);
+        $('#pl_diagnosa').val(label_item);
+        $('#pl_diagnosa_hidden').val(val_item);
+      }
+
+  });
+
+</script>
 <p><b><i class="fa fa-edit"></i> ASSESMENT PASIEN </b></p>
 <div class="form-group">
 <label class="control-label col-sm-2" for="">Tinggi Badan (cm)</label>
@@ -45,14 +76,14 @@
 
 <div class="form-group">
     <label class="control-label col-sm-2" for="">Pemeriksaan</label>
-    <div class="col-sm-8">
+    <div class="col-sm-10">
         <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$riwayat->pemeriksaan:''?></textarea>
     </div>
 </div>
 
 <div class="form-group" style="margin-top: 6px">
     <label class="control-label col-sm-2" for="">Anjuran Dokter</label>
-    <div class="col-sm-8">
+    <div class="col-sm-10">
       <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$riwayat->pengobatan:''?></textarea>
     </div>
 </div>

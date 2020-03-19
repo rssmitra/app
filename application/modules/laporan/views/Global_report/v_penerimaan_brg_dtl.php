@@ -23,7 +23,7 @@
       <center><h4><?php echo $title?> <br><?php echo $jenis ?></h4></center>
       <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
 
-      <table border="1">
+      <table width="100%">
         <thead>
           <tr>
             <th rowspan="2">NO</th>

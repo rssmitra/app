@@ -261,31 +261,7 @@ $(document).ready(function(){
       backToDefaultForm();
     });
 
-    $('#pl_diagnosa').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "templates/references/getICD10",
-                data: 'keyword=' + query,            
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                  result($.map(response, function (item) {
-                        return item;
-                    }));
-                  
-                }
-            });
-        },
-        afterSelect: function (item) {
-          // do what is needed with item
-          var label_item=item.split(':')[1];
-          var val_item=item.split(':')[0];
-          console.log(val_item);
-          $('#pl_diagnosa').val(label_item);
-          $('#pl_diagnosa_hidden').val(val_item);
-        }
-
-    });
+    
 
     /*onchange form module when click tabs*/   
 
@@ -529,8 +505,10 @@ function getDataAntrianPasien(){
         $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
         $.each(data, function (i, o) {   
             var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
-            var style = (o.tgl_keluar_poli == null)?'':'style="background-color: #92e892; color: black"';
-            $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + '</option>').appendTo($('#no_mr_selected'));  
+            var penjamin = (o.kode_perusahaan==120)? '('+o.nama_perusahaan+')' : '' ;
+            var style = (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #92e892; color: black"';
+
+            $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + ' '+penjamin+' </option>').appendTo($('#no_mr_selected'));  
         });   
     });
 
@@ -832,7 +810,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
                 <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
               </div>
               <div class="pull-right">
-                <label style="float: left; margin-top: 3px; padding-right: 15px; font-size: 14px" class="blink_me"><i class="fa fa-user bigger-120 green"></i> Antrian Pasien </label>
+                <label style="float: left; margin-top: 3px; padding-right: 15px; font-size: 14px" class="blink_me"><i class="fa fa-user bigger-120 green"></i> </label>
                 <div style="float: right; min-width: 350px">
                   <select class="form-control" name="no_mr_selected" id="no_mr_selected" style="font-weight: bold">
                     <option value="">-Silahkan Pilih-</option>
