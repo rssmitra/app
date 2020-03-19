@@ -1,0 +1,304 @@
+/*
+SIPEPP
+Author : Suhainda Librado
+Start : 8 Januari 2015
+*/
+
+/* =================== 
+Atribut Background
+==================== */
+
+* {
+  margin: 0;
+  padding: 0;
+	outline: none;
+}
+body {
+  background: #fff;
+  font-family: 'Open Sans';
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Open Sans';
+}
+button {
+	text-decoration: none;
+}
+.color-red {
+	color: #f02e3d;
+}
+/* =================== 
+Header
+==================== */
+#header {
+  background: url('../images/bg.jpg') no-repeat;
+  background-size: cover;
+  /*background-attachment: fixed;*/
+  background-position: center;
+  width: 100%;
+  height: auto;
+  padding: 30px 0;
+  text-align: center;
+  color: #FFFFFF;
+  font-family: 'Open Sans';
+  /*opacity: 0.4;*/
+  
+  /* For IE8 and earlier */
+}
+
+
+#header .logo img {
+  width: 110px;
+  height: auto;
+  margin-bottom: 20px;  
+
+}
+#header .header-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 20px;
+}
+#header hr.header-garis {
+  width: 50px;
+  height: 1px;
+  margin: auto;
+}
+#header .header-title-2 {
+  font-size: 36px;
+font-weight: 700;
+color: #FFEF4D;
+text-shadow: 5px 0px 3px #000;
+}
+#header p.header-text{
+  font-size: 14px;
+  font-weight: 400;
+
+}
+
+#header p.header-text-gold{
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFEF4D;
+text-shadow: 2px 2px 1px #000;
+}
+
+
+#header .header-menu {
+  font-size: 14px;
+  margin: 20px 0 10px 0;
+}
+#header button.button-merah {
+  background: #f02e3d;
+  width: 140px;
+  height: 38px;
+  border: none;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  text-transform: uppercase;
+  text-align: center;
+  transition:All 1s ease;
+  -webkit-transition:All 1s ease;
+  -moz-transition:All 1s ease;
+  -o-transition:All 1s ease;
+}
+#header button.button-merah:hover {
+  background: #fa4c5a;
+}
+#header button.button-biru {
+  background: #2e77f0;
+  width: 140px;
+  height: 38px;
+  border: none;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  text-transform: uppercase;
+  text-align: center;
+  transition:All 1s ease;
+  -webkit-transition:All 1s ease;
+  -moz-transition:All 1s ease;
+  -o-transition:All 1s ease;
+}
+#header button.button-biru:hover {
+  background: #5293ff;
+}
+#header .header-text-margin {
+  margin: 0 20px;
+}
+/* =================== 
+End Header
+==================== */
+/* =================== 
+Menu
+==================== */
+#menu {
+  background: #f9f9f9;
+  width: 100%;
+  height: auto;
+  padding: 30px 0;
+  text-align: center;
+}
+#menu i {
+  color: #f02e3d;
+  font-size: 48px;
+}
+#menu .menu-line {
+  border-bottom: 1px solid #f02e3d;
+  width: 30px;
+  height: 1px;
+  margin: 10px auto 20px auto;
+}
+#menu .menu-button {
+	margin: 30px 0 0 0;
+        padding-bottom: 20px;
+}
+#menu a.button-merah {
+  background: none;
+  width: auto;
+  height: 38px;
+  color: #f02e3d;
+  font-size: 14px;
+  font-weight: 400;
+  border: 2px solid #f02e3d;
+  padding: 0 10px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  text-align: center;
+  transition:All 1s ease;
+  -webkit-transition:All 1s ease;
+  -moz-transition:All 1s ease;
+  -o-transition:All 1s ease;
+	background: none;
+	padding: 10px 15px;
+	text-decoration: none;
+}
+#menu a.button-merah:hover {
+  background: #f02e3d;
+	color: #FFF;
+}
+#menu button.button-option {
+	background: #f02e3d;
+	width: auto;
+  height: 38px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+	padding: 0 15px;
+	border: none;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  text-align: center;
+  transition:All 1s ease;
+  -webkit-transition:All 1s ease;
+  -moz-transition:All 1s ease;
+  -o-transition:All 1s ease;
+	margin: 0 5px;
+}
+#menu button.button-option:hover{
+	background: #ea0e1f;
+}
+#menu button.button-option i {
+	color: #FFF;
+	font-size: 14px;
+}
+#menu .menu-bawah {
+	margin-top: 40px;
+}
+/* =================== 
+End Menu
+==================== */
+/* =================== 
+Table & Graph
+==================== */
+.table-and-graph {
+	padding: 40px 0;
+	border-bottom: 1px solid #eee;
+}
+.table-and-graph .garis-title {
+  border-bottom: 1px solid #f02e3d;
+  width: 60px;
+  height: 1px;
+  margin: 10px 0 20px 0;
+}
+.table-and-graph button.button-go-app {
+	background: #f02e3d;
+	width: auto;
+  height: 38px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+	padding: 0 15px;
+	border: none;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  text-align: center;
+  transition:All 1s ease;
+  -webkit-transition:All 1s ease;
+  -moz-transition:All 1s ease;
+  -o-transition:All 1s ease;
+	margin-top: 30px;
+}
+.table-and-graph button.button-go-app:hover {
+	background: #ea0e1f;
+}
+.table-and-graph .table-data {
+	width:100%; 
+}
+.table-and-graph .table-data th{ 
+	background:#f02e3d ; 
+	color:#FFF;  
+	padding:7px 10px; 
+	border-bottom:solid 1px #d2d1cb; 
+	font-size:14px;
+}
+.table-and-graph .table-data td{ 
+	background:#fbfcfc;  
+	border-bottom:solid 1px #e0e0e0; 
+	padding:8px 10px; 
+	font-size:12px; 
+	color:#666; 
+	height:auto; 
+}
+.table-and-graph .table-data tr td{
+	transition:All .8s ease;
+  -webkit-transition:All .8s ease;
+  -moz-transition:All .8s ease;
+  -o-transition:All .8s ease;
+}
+.table-and-graph .table-data tr:nth-child(odd) td{ 
+	background:#f8f8f8; 
+}
+.table-and-graph .table-data tr:hover td{ 
+	background:#ffdfdf;
+	border-bottom:solid 1px #ffdfdf;
+}
+.table-and-graph .table-data td a{
+	color:#f02e3d ; 
+	text-decoration:none; 
+}
+.table-and-graph .table-data td a:hover{
+	color:#d31423 ; 
+	text-decoration:underline;
+}
+
+/* =================== 
+End Table & Graph
+==================== */
+/* =================== 
+footer
+==================== */
+footer {
+	background: #f02e3d;
+	width: 100%;
+	height: auto;
+	text-align: center;
+	color: #FFF;
+	font-size: 14px;
+	padding: 20px 0;
+}
+/* =================== 
+END Footer
+==================== */

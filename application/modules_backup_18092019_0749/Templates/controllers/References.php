@@ -1,0 +1,1140 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class References extends MX_Controller {
+
+	public function __construct()
+	{
+		parent::__construct();
+	}
+	/*here function used for this application*/
+
+	public function getNamaKaryawan()
+    {
+        
+        $result = $this->db->where("kode_dokter IS NULL AND nama_pegawai LIKE '%".$_POST['keyword']."%' ")
+                          ->order_by('nama_pegawai', 'ASC')
+                          ->get('mt_karyawan')->result();
+        $arrResult = [];
+        foreach ($result as $key => $value) {
+            $arrResult[] = $value->no_induk.' : '.$value->nama_pegawai;
+        }
+        echo json_encode($arrResult);
+        
+        
+    }
+
+	public function getKlinikById($kd_bagian='')
+	{
+		$query = "select c.kode_bagian ,c.nama_bagian
+					from tr_jadwal_dokter a
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_kode_spesialis=".$kd_bagian."
+					group by c.kode_bagian,c.nama_bagian";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getDokterById($kd_dokter='')
+	{
+		$query = "select a.jd_kode_dokter as kode_dokter,b.nama_pegawai
+					from tr_jadwal_dokter a
+					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_kode_dokter=".$kd_dokter."
+					group by a.jd_kode_dokter,b.nama_pegawai";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getDokterBySpesialis($kd_bagian='')
+	{
+		$query = "select a.jd_kode_dokter as kode_dokter,b.nama_pegawai
+					from tr_jadwal_dokter a
+					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_kode_spesialis=".$kd_bagian."
+					group by a.jd_kode_dokter,b.nama_pegawai";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getDokterSpesialis($kd_bagian='')
+	{
+		$query = "select a.kode_dokter as kode_dokter,a.nama_pegawai
+					from mt_dokter_v a where a.kd_bagian=".$kd_bagian." and a.nama_pegawai != ' '
+					group by a.kode_dokter,a.nama_pegawai";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getKlinikFromJadwal($day='')
+	{
+		$query = "select a.jd_kode_spesialis as kode_bagian,c.nama_bagian
+					from tr_jadwal_dokter a
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_hari='".$day."' and a.status_loket='on' or kode_bagian = '012801'
+					group by  a.jd_kode_spesialis,c.nama_bagian";
+		$exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getDokterBySpesialisFromJadwal($kd_bagian='', $day='')
+	{
+		$query = "select a.jd_id,a.jd_kode_dokter as kode_dokter,b.nama_pegawai
+					from tr_jadwal_dokter a
+					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_kode_spesialis=".$kd_bagian." and a.jd_hari='".$day."' and a.status_loket='on'
+					group by a.jd_id, a.jd_kode_dokter,b.nama_pegawai";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getJadwalPraktek($kode_dokter, $kode_spesialis)
+	{	
+		$query = "select a.jd_id, a.jd_kode_dokter,b.nama_pegawai as nama_dokter, a.jd_kode_spesialis, 
+					c.nama_bagian as spesialis,a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai, a.jd_keterangan, a.jd_kuota
+					from tr_jadwal_dokter a
+					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_kode_spesialis=".$kode_spesialis." and a.jd_kode_dokter=".$kode_dokter."";
+
+        $query = $this->db->query($query)->result();
+        $jadwal = [];
+        $html = '';
+		$array_color_day = array('green','red','purple','blue','black','orange','grey');
+    	shuffle($array_color_day);
+
+    	$html .= '<p><strong><i class="fa fa-list"></i> JADWAL PRAKTEK DOKTER</strong></p>';
+        foreach ($query as $key => $value) {
+        	$time = $this->tanggal->formatTime($value->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($value->jd_jam_selesai);
+        	$jadwal[] = array('day' => $value->jd_hari , 'time' => $time);
+        	$html .= '<a href="#"  onclick="detailJadwalPraktek('.$value->jd_id.')"><div class="infobox infobox-'.array_shift($array_color_day).' infobox-small infobox-dark">
+						    <div class="infobox-data">
+						        <div class="infobox-content">'.$value->jd_hari.'</div>
+						        <div class="infobox-content">'.$time.'</div>
+						    </div>
+						</div></a>';
+        }
+        $html .= '<br><small>* Silahkan pilih jadwal dokter praktek </small>';
+		echo json_encode(array('html' => $html));
+
+	}
+
+	public function getDetailJadwalPraktek($jd_id)
+	{
+		$query = "select a.*, a.jd_kode_dokter as kode_dokter,b.nama_pegawai
+					from tr_jadwal_dokter a
+					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_id=".$jd_id."";
+        $exc = $this->db->query($query)->row();
+        /*cek ketersediaan kuota*/
+        /*$quota = $this->cek_kuota($exc->jd_kode_dokter);*/
+        $quota_dokter = $exc->jd_kuota;
+        /*$sisa_kuota = $quota_dokter - $quota;*/
+
+        $time = $this->tanggal->formatTime($exc->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($exc->jd_jam_selesai);
+        $html = '';
+        $html .= '<p style="margin-top:5px"><strong><i class="fa fa-chevron-circle-right"></i> RESUME YANG DIPILIH</strong></p>';
+        $html .= '<table class="table table-bordered table-hover" id="resume_jadwal_dokter">
+
+                      <thead>
+
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Nama Dokter</th>
+
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Jam Praktek</th>
+
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Keterangan</th>
+
+                      </thead>
+
+                      <tbody>
+
+                        <td>'.ucwords($exc->nama_pegawai).'</td>
+                        <td>'.$exc->jd_hari.'<br>'.$time.'</td>
+                        <td>Kuota '.$quota_dokter.'<br>'.$exc->jd_keterangan.'</td>
+
+                      </tbody>
+
+                    </table>';
+
+        /*$html .= '<address>
+					<strong>'.ucwords($exc->nama_pegawai).'</strong><br>
+					Hari <b>'.$exc->jd_hari.'</b><br>
+					Jam Praktek <b>'.$time.'</b><br>
+					Kuota Pasien <b>'.$quota_dokter.'</b>
+				</address>';*/
+
+        echo json_encode(array('html' => $html, 'day' => $exc->jd_hari, 'time' => $time, 'id' => $exc->jd_id, 'time_start' => $this->tanggal->formatTime($exc->jd_jam_mulai) ));
+	}
+
+	function cek_kuota($kode_dokter, $tgl_pesan){
+		return $this->db->get_where('tc_pesanan', array('tgl_pesanan' => $tgl_pesan, 'kode_dokter' => $kode_dokter) )->num_rows();
+	}
+
+	function CheckSelectedDate(){
+		/*get data from post*/
+		$date = $_POST['date'];
+		$kode_spesialis = $_POST['kode_spesialis'];
+		$kode_dokter = $_POST['kode_dokter'];
+		$jd_id = $_POST['jadwal_id'];
+
+		/*get day from date*/
+		$day = $this->tanggal->getHariFromDate($date);
+		/*change to sql date*/
+		$sqlDate = $this->tanggal->sqlDateFormStrip($date);
+		/*check current date*/
+		$selected_date = strtotime($sqlDate);
+		/*get status date*/
+		$status = ($selected_date < time() ) ? 'expired' : 'success' ;
+
+		/*get master jadwal*/
+		$jadwal = $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
+		$kuota_dr = $jadwal->jd_kuota;
+		/*get kuota dokter*/
+		$substr_kode_spesialis = substr($kode_spesialis, 1);
+		/*get data from averin*/
+		$row_data_averin = $this->db->get_where('tc_pesanan', array('tgl_pesanan' => $date, 'no_poli' => $substr_kode_spesialis, 'kode_dokter' => $kode_dokter) )->num_rows();
+		$row_data_registrasi = $this->db->get_where('tc_registrasi', array('tgl_jam_masuk' => $date, 'kode_bagian_masuk' => $substr_kode_spesialis, 'kode_dokter' => $kode_dokter) )->num_rows();
+		/*get data from reg online*/
+		$regon = $this->db->get_where('regon_booking', array('regon_booking_tanggal_perjanjian' => $date, 'regon_booking_klinik' => $kode_spesialis, 'regon_booking_kode_dokter' => $kode_dokter) )->num_rows();
+		/*terisi*/
+		$terisi = $row_data_averin + $row_data_registrasi + $regon;
+		/*sisa kuota*/
+		$kuota = $kuota_dr - $terisi;
+
+
+		echo json_encode(array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota) );
+	}
+
+	public function getProvince()
+	{
+        
+		$result = $this->getProvinceByKeyword($_POST['keyword']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->id.' : '.$value->name;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getProvinceByKeyword($key='')
+	{
+        $query = $this->db->where("name LIKE '%".$key."%' ")
+        				  ->order_by('name', 'ASC')
+                          ->get('provinces');
+		
+        return $query->result();
+	}
+
+	public function getDistricts()
+	{
+        
+		$result = $this->getDistrictsByKeyword($_POST['keyword']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->id.' : '.$value->name;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getDistrictsByKeyword($key='',$regency='')
+	{
+        $query = $this->db->where("name LIKE '%".$key."%' ")
+        				  ->order_by('name', 'ASC')
+                          ->get('districts');
+		
+        return $query->result();
+	}
+
+	public function getVillage()
+	{
+        
+		$result = $this->getVillageByKeyword($_POST['keyword'],$_POST['district']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->id.' : '.$value->name;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getVillageByKeyword($key='',$district='')
+	{
+        $query = $this->db->where("name LIKE '%".$key."%' ")->where("district_id", $district)
+        				  ->order_by('name', 'ASC')
+                          ->get('villages_new');
+		
+        return $query->result();
+	}
+
+	public function getKelompokNasabah()
+	{
+        
+		$result = $this->db->where("nama_kelompok LIKE '%".$_POST['keyword']."%' ")
+        				  ->order_by('nama_kelompok', 'ASC')
+                          ->get('mt_nasabah')->result();
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_kelompok.' : '.$value->nama_kelompok;
+		}
+		echo json_encode($arrResult);
+		
+	}
+
+
+	public function getPerusahaan()
+	{
+        
+		$result = $this->getPerusahaanByKeyword($_POST['keyword']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_perusahaan.' : '.$value->nama_perusahaan;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+	
+	public function getPerusahaanByKeyword($key='')
+	{
+        $query = $this->db->where("nama_perusahaan LIKE '%".$key."%' ")
+        				  ->order_by('nama_perusahaan', 'ASC')
+                          ->get('mt_perusahaan');
+		
+        return $query->result();
+	}
+
+	public function getAllDokter()
+	{
+        
+		$result = $this->getAllDokterByKeyword($_POST['keyword']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_dokter.' : '.$value->nama_pegawai;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+	
+	public function getAllDokterByKeyword($key='')
+	{
+        $query = $this->db->where("nama_pegawai LIKE '%".$key."%' ")->where("kode_dokter is not NULL")
+        				  ->order_by('nama_pegawai', 'ASC')
+                          ->get('mt_karyawan');
+		
+        return $query->result();
+	}
+
+	public function getRefBrg()
+	{
+		$table = ($_POST['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+		$join = ($_POST['flag']=='non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+		$this->db->from($table);
+		
+		 $this->db->like($_POST['search_by'], $_POST['keyword']);
+		$this->db->where('is_active', 1);
+		$this->db->limit(10);
+		$result = $this->db->get()->result();
+		$data = array(
+			'value' => $result,
+			'flag' => $_POST['flag'],
+			'search_by' => $_POST['search_by'],
+			'keyword' => $_POST['keyword'],
+		);
+		$html = $this->load->view('templates/temp_view_selected_brg', $data, true);
+
+		echo json_encode(array('html' => $html));
+		
+		
+	}
+
+	public function getItem()
+	{
+        
+		$result = $this->getItemByKeyword($_POST['keyword']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getItemByKeyword($key='')
+	{
+        // $query = $this->db->where("nama_brg LIKE '%".$key."%' ")->where("is_active", "1")
+        // 				  ->order_by('nama_brg', 'ASC')
+        //                   ->get('mt_barang_nm');
+
+		$query = "select a.kode_brg,b.nama_brg from mt_depo_stok_nm a
+					left join mt_barang_nm b on a.kode_brg=b.kode_brg
+					where b.nama_brg LIKE '%".$key."%' and b.is_active=1";
+		$exc = $this->db->query($query);
+		return $exc->result();
+	}
+
+	public function getItemBarang()
+	{
+		$table = ($_POST['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+		$join = ($_POST['flag']=='non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+
+		$this->db->from($table.' as a');
+		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg' , 'left');
+		$this->db->like('a.kode_brg', $_POST['keyword']);
+		$this->db->or_like('a.nama_brg', $_POST['keyword']);
+		$this->db->where('a.is_active', 1);
+		$result = $this->db->get()->result();
+
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;
+		}
+		echo json_encode($arrResult);
+	}
+
+	/*END*/
+
+	public function getDataItem($kode='')
+	{
+        $query = $this->db->where(array('kode_brg' => $kode))->get('mt_barang_nm');		
+        echo json_encode($query->result());
+	}
+
+	public function get_jabatan_by_bag_unit_id($id='')
+	{
+        $query = $this->db->where(array('bag_unit_id' => $id))->get('mst_jabatan');		
+        echo json_encode($query->result());
+	}
+
+	public function getRegencyByProvince($provinceId='')
+	{
+        $query = $this->db->where('province_id', $provinceId)
+        				  ->order_by('name', 'ASC')
+                          ->get('regencies');
+		
+        echo json_encode($query->result());
+	}
+
+	public function getDistrictByRegency($regency_id='')
+	{
+        $query = $this->db->where('regency_id', $regency_id)
+        				  ->order_by('name', 'ASC')
+                          ->get('districts');
+		
+        echo json_encode($query->result());
+	}
+
+	public function getVillagesByDistrict($district_id='')
+	{
+        $query = $this->db->where('district_id', $district_id)
+        				  ->order_by('name', 'ASC')
+                          ->get('villages');
+		
+        echo json_encode($query->result());
+	}
+
+	public function getVillagesById($id='')
+	{
+        $query = $this->db->where('id', $id)
+        				  ->order_by('name', 'ASC')
+                          ->get('villages_new');
+		
+        echo json_encode($query->result());
+	}
+
+	public function getDistrictsById($id='')
+	{
+		$query = "select  b.id as province_id, b.name as province_name,c.id as regency_id,c.name as regency_name
+				from districts a
+				left join provinces b on b.id=a.province_id
+				left join regencies c on c.id=a.regency_id
+				where a.id=".$id." ";
+		$exc = $this->db->query($query);
+		echo json_encode($exc->row());
+	}
+
+	public function getMenuByModulId($modul_id='')
+	{
+        $query = $this->db->where('modul_id', $modul_id)->where('parent', 0)->where('is_active', 'Y')
+        				  ->order_by('name', 'ASC')
+                          ->get('tmp_mst_menu');
+		
+        echo json_encode($query->result());
+	}
+
+	public function getKlasByRuangan($kd_bagian='')
+	{
+		$query = "select  a.kode_klas, c.nama_bagian,b.nama_klas
+					from mt_ruangan a
+					left join mt_klas b on b.kode_klas=a.kode_klas
+					left join mt_bagian c on c.kode_bagian=a.kode_bagian
+					where a.kode_bagian=".$kd_bagian."
+					group by a.kode_klas, c.nama_bagian,b.nama_klas";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getKlasByRuanganTarif($kd_bagian='',$kode_tarif='')
+	{
+		$query = "select  a.kode_klas, c.nama_bagian,b.nama_klas
+					from mt_ruangan a
+					left join mt_klas b on b.kode_klas=a.kode_klas
+					left join mt_bagian c on c.kode_bagian=a.kode_bagian
+					left join mt_master_tarif_detail d on d.kode_klas=a.kode_klas
+					where a.kode_bagian=".$kd_bagian." and d.kode_tarif=".$kode_tarif."
+					group by a.kode_klas, c.nama_bagian,b.nama_klas";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getRuanganByKlas($kode_klas)
+	{
+		$query = "select  a.kode_bagian, a.kode_klas, c.nama_bagian, b.nama_klas
+					from mt_ruangan a
+					left join mt_klas b on b.kode_klas=a.kode_klas
+					left join mt_bagian c on c.kode_bagian=a.kode_bagian
+					left join mt_master_tarif_detail d on d.kode_klas=a.kode_klas
+					where a.kode_klas=".$kode_klas."
+					group by a.kode_bagian, a.kode_klas, c.nama_bagian,b.nama_klas";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getRuanganByTarif($kode_tarif='')
+	{
+		$query = "select  a.kode_bagian, a.nama_bagian
+					from mt_bagian a
+					left join mt_ruangan b on b.kode_bagian=a.kode_bagian
+					left join mt_master_tarif_detail c on c.kode_klas=b.kode_klas
+					where  c.kode_tarif=".$kode_tarif." group by a.kode_bagian, a.nama_bagian ";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getBedByKlas($kd_bagian='',$klas='')
+	{
+		$query = "select  a.kode_ruangan, a.no_bed, a.status, a.no_kamar
+					from mt_ruangan a
+					where a.kode_bagian=".$kd_bagian." and a.kode_klas=".$klas." and a.status is NULL";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getBedByKlasWithView($kd_bagian='',$klas='')
+	{
+		$query = "select  a.kode_ruangan, a.no_bed, a.status, a.no_kamar
+					from mt_ruangan a
+					where a.kode_bagian=".$kd_bagian." and a.kode_klas=".$klas." and a.flag_cad=0 order by a.no_kamar, a.no_bed ASC";
+        $exc = $this->db->query($query)->result();
+        $room = [];
+        foreach ($exc as $key => $value) {
+        	$room[$value->no_kamar][] = array(
+					        				'kode_ruangan' => $value->kode_ruangan,
+					        				'no_bed' => $value->no_bed,
+					        				'status' => $value->status,
+					        				'no_kamar' => $value->no_kamar,
+					        				'reserved_by' => $this->get_data_pasien_ri_existing($value->kode_ruangan),
+					        			);
+        }
+
+        //echo '<pre>';print_r($room);die;
+        /*show view*/
+        $html = '';
+
+        foreach ($room as $key => $value) {
+        	$html .= '<div class="col-sm-12">
+						<h3 class="header smaller lighter green">
+							<i class="ace-icon fa fa-circle-o"></i>
+							Kamar '.(int)$key.'
+						</h3>';
+				foreach($value as $row) :
+
+					$reserve = '';
+					if(count($row['reserved_by']) > 0){
+
+						if($row['reserved_by'][0]->nama_pasien) {
+							$data_reserve = $row['reserved_by'][0];
+							$img_color = 'bed_red.png';
+							$reserve .= $data_reserve->nama_pasien.' ('.$data_reserve->no_mr.')<br>';
+							$reserve .= 'Tanggal Masuk   : '.$this->tanggal->formatDate($data_reserve->tgl_masuk).'<br>';
+							$reserve .= 'dr Pengirim : '.$data_reserve->dr_pengirim.'<br>';
+							$is_available = '<a href="#"><label class="label label-danger">Sudah Terisi</label></a>';
+						}else{
+							$img_color = 'bed_green.png';
+							$is_available = '<a href="#" style="cursor:pointer" class="btn btn-xs btn-success" onclick="select_bed_from_modal_bed('."'".$row['kode_ruangan']."'".","."'".$row['no_bed']."'".","."'".$row['no_kamar']."'".')">Available</a>';
+							$reserve .= 'Nama Pasien :<br>';
+							$reserve .= 'Tanggal masuk : <br>';
+							$reserve .= 'Dokter pengirim : <br>';
+						}
+						
+					}else{
+						$img_color = 'bed_green.png';
+						$is_available = '<a href="#" style="cursor:pointer" class="btn btn-xs btn-success" onclick="select_bed_from_modal_bed('."'".$row['kode_ruangan']."'".","."'".$row['no_bed']."'".')">Available</a>';
+						$reserve .= 'Nama Pasien :<br>';
+						$reserve .= 'Tanggal masuk : <br>';
+						$reserve .= 'Dokter pengirim : <br>';
+					}
+
+		        $html .= '<div class="col-md-4">';
+		        	$html .= '<div class="col-md-3">
+								<div class="center">
+									<img src="'.base_url().'assets/images/bed/'.$img_color.'" style="width:80px">
+								</div>
+							  </div>
+							  <div class="col-md-8" style="font-size:11px;padding-left:15px;margin-bottom:20px">
+							  	<b>BED '.(int)$row['no_bed'].'</b></br> 
+			        			'.$reserve.'
+			        			'.$is_available.'
+							  </div>';
+		        $html .= '</div>';
+		        endforeach;
+			$html .= '</div>';
+        }
+
+        /*$html .= '<table border="1" style="margin-left: 20px">';
+	        $html .= '<tr>';
+	        	$html .= '<td>';
+	        	$html .= '<img src="'.base_url().'assets/images/bed/bed_red.png" style="width:80px"><br>';
+	        	$html .= 'Bed 1<br>';
+	        	$html .= 'Bed 1<br>';
+	        	$html .= 'Nama<br>';
+	        	$html .= 'Tanggal masuk<br>';
+	        	$html .= '</td>';
+	        $html .= '</tr>';
+        $html .= '</table>';*/
+        
+
+
+
+        //echo '<pre>';print_r($html);die;
+
+        echo json_encode(array('html' => $html));
+	}
+
+	public function get_data_pasien_ri_existing($kode_ruangan){
+
+		$this->db->select('d.no_mr,d.nama_pasien,c.no_registrasi,b.no_kunjungan, a.dr_pengirim, a.tgl_masuk');
+		$this->db->from('ri_tc_rawatinap a');
+		$this->db->join('tc_kunjungan b', 'a.no_kunjungan=b.no_kunjungan','left');
+		$this->db->join('tc_registrasi c', 'b.no_registrasi=c.no_registrasi','left');
+		$this->db->join('mt_master_pasien d', 'd.no_mr=c.no_mr','left');
+		$this->db->where('a.tgl_keluar IS NULL');
+		$this->db->where('a.kode_ruangan='."'".$kode_ruangan."'".'');
+		$this->db->order_by('a.kode_ri DESC');
+		return $this->db->get()->result();
+		
+
+	}
+
+	public function getDeposit($kd_bagian='',$klas='')
+	{
+		$query = "select  a.deposit, a.harga_r, a.harga_bpjs
+					from mt_master_tarif_ruangan a
+					where a.kode_bagian=".$kd_bagian." and a.kode_klas=".$klas."";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getKuotaDokter($kode_dokter='',$kode_spesialis='', $tanggal='')
+	{
+		$day = $this->tanggal->getHari(date('D'));
+		$date = ($tanggal=='')?date('Y-m-d'):$tanggal;
+
+		/*existing*/
+		$log_kuota = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis) )->num_rows();
+
+        /*kuota dokter*/
+        $kuota_dokter = $this->db->get_where('tr_jadwal_dokter', array('jd_hari' => $day, 'jd_kode_dokter' => $kode_dokter, 'jd_kode_spesialis' => $kode_spesialis) )->row(); 
+
+		$id = $kuota_dokter->jd_id; 
+		$sisa = $kuota_dokter->jd_kuota - $log_kuota;
+				
+		$message = ($sisa==0)?'<label class="label label-danger"><i class="fa fa-times-circle"></i> Maaf, Kuota sudah penuh !</label>':'<label class="label label-success"><i class="fa fa-check"></i> Kuota Terpenuhi</label>';
+
+        echo json_encode(array('sisa_kuota' => $sisa, 'jd_id' => $id, 'message' => $message));
+	}
+
+	public function getTindakanByBagian($kd_bagian='')
+	{
+		$query = "select  a.kode_tarif, a.nama_tarif
+					from mt_master_tarif a
+					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+					where  a.tingkatan=5 and a.kode_bagian=".$kd_bagian." and b.kode_klas=16 and a.jenis_tindakan =14 order by a.nama_tarif";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getTindakanBedah()
+	{
+        
+		$result = $this->getTindakanBedahByKeyword($_POST['keyword']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getTindakanBedahByKeyword($key='')
+	{
+        // $query = $this->db->where("name LIKE '%".$key."%' ")
+        // 				  ->order_by('name', 'ASC')
+        //                   ->get('provinces');
+		
+		$query =  $this->db->query("SELECT nama_tarif , kode_tarif  FROM mt_master_tarif WHERE kode_bagian IN ('030901') AND tingkatan = 5 AND UPPER(nama_tarif) LIKE '%".trim($key)."%'  ORDER BY kode_tarif");
+
+        return $query->result();
+	}
+
+	public function getBayiRS()
+	{
+		$query = "select  id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir
+					from ri_bayi_lahir
+					where (flag_lahir = 0 or flag_lahir is null) and nama_bayi <> '' and YEAR(tgl_jam_lahir)= ".date('Y')." ";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getBayiRSbyID($id)
+	{
+		$query = "select *
+					from ri_bayi_lahir
+					where id_bayi=".$id."";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->row());
+	}
+
+	public function getDataIbu($id='')
+	{
+		$data = $this->db->get_where('ri_bayi_lahir',array('id_bayi' => $id))->row();
+		
+		$query = "select *
+					from mt_master_pasien
+					where no_mr = '".$data->mr_ibu."'";
+		$exc = $this->db->query($query);
+        echo json_encode($exc->row());
+	}
+
+	// public function getPaketMCU()
+	// {	
+	// 	$query = "	select  a.kode_tarif, a.nama_tarif
+	// 				from mt_master_tarif a
+	// 				left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+	// 				where  a.tingkatan=5 and a.kode_bagian='010901' and a.jenis_tindakan=14 group by a.kode_tarif, a.nama_tarif";
+	// 	$exc = $this->db->query($query);
+  //       echo json_encode($exc->result());
+	// }
+
+	public function getICD10()
+	{
+        $query = "select  icd_10, nama_icd from mt_master_icd10 where  nama_icd LIKE '%".$_POST['keyword']."%' or icd_10 LIKE '%".$_POST['keyword']."%' group by icd_10, nama_icd";
+		
+		$result = $this->db->query($query)->result();
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->icd_10.' : '.$value->nama_icd;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getPaketMCU()
+	{
+        
+		$result = $this->getPaketMCUByKeyword($_POST['keyword']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getPaketMCUByKeyword($key='',$district='')
+	{
+		$query = "select  a.kode_tarif, a.nama_tarif
+							from mt_master_tarif a
+							left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+							where  a.tingkatan=5 and a.kode_bagian='010901' and a.jenis_tindakan=14 and a.nama_tarif LIKE '%".$key."%' group by a.kode_tarif, a.nama_tarif";
+		
+		$exc = $this->db->query($query);
+        return $exc->result();
+	}
+
+	public function getDokterByBagian_($kd_bagian='')
+	{
+		$query = "select  a.kode_dokter, a.nama_pegawai
+					from mt_dokter_v a
+					where a.kd_bagian=".$kd_bagian."  and a.nama_pegawai is not NULL and a.nama_pegawai <> ''";
+        $exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
+	public function getDokterByBagian()
+	{
+        
+		$result = $this->getDokterByBagianByKeyword($_POST['keyword'], $_POST['bag']);
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_dokter.' : '.$value->nama_pegawai;
+		}
+		echo json_encode($arrResult);
+		
+	}
+
+	public function getBagian()
+	{
+        $query = "select a.kode_bagian, a.nama_bagian
+					from mt_bagian a
+					where a.nama_bagian LIKE '%".$_POST['keyword']."%' order by nama_bagian asc";
+		$result = $this->db->query($query)->result();
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_bagian.' : '.$value->nama_bagian;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getDokterByBagianByKeyword($key='',$bag='')
+	{
+		$query = "select  a.kode_dokter, a.nama_pegawai
+	 				from mt_dokter_v a
+	 				where a.kd_bagian=".$bag." and a.nama_pegawai LIKE '%".$key."%' and a.nama_pegawai is not NULL and a.nama_pegawai <> ''";
+		
+		$exc = $this->db->query($query);
+        return $exc->result();
+	}
+
+	public function getRegenciesPob()
+	{
+        
+		$reg = $this->getRegenciesPobByKeyword($_POST['keyword']);
+		$prov = $this->getProvPobByKeyword($_POST['keyword']);
+		$result = array_merge($reg, $prov);
+		
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->name;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getRegenciesPobByKeyword($key='')
+	{
+        $query = $this->db->where("name LIKE '%".$key."%' ")
+        				  ->order_by('name', 'ASC')
+                          ->get('regencies');
+		
+        return $query->result();
+	}
+
+	public function getProvPobByKeyword($key='')
+	{
+        $query = $this->db->where("name LIKE '%".$key."%' ")
+        				  ->order_by('name', 'ASC')
+                          ->get('provinces');
+		
+        return $query->result();
+	}
+
+	public function getTindakanByBagianAutoComplete()
+	{
+		$where_str = ($_POST['kode_perusahaan']==120) ? 'and nama_tarif like '."'%BPJS%'".'' : 'and nama_tarif not like '."'%BPJS%'".'' ;
+
+        $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif
+					from mt_master_tarif a
+					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+					where  a.tingkatan=5 and (a.kode_bagian=".$_POST['kode_bag']." or a.kode_bagian=0) and nama_tarif like '%".$_POST['keyword']."%' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old order by a.is_old asc,a.nama_tarif asc";
+					//echo $query;exit;
+        $exc = $this->db->query($query)->result();
+
+		$arrResult = [];
+		foreach ($exc as $key => $value) {
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.')';
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getTindakanFisioByBagianAutoComplete()
+	{
+		$where_str = ($_POST['kode_perusahaan']==120) ? 'and nama_tarif like '."'%BPJS%'".'' : 'and nama_tarif not like '."'%BPJS%'".'' ;
+
+        $query = "select a.kode_tarif, a.kode_tindakan, a.nama_tarif, b.kode_master_tarif_detail,b.kode_tarif,b.kode_klas,b.bill_rs, b.bill_dr1, b.bill_dr2, b.bill_dr3, b.kamar_tindakan, b.bhp, b.alat_rs, b.pendapatan_rs, b.revisi_ke, b.total, b.revisi_ke
+					from mt_master_tarif a
+					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+					where  a.tingkatan=5 and (a.kode_bagian=".$_POST['kode_bag']." or a.kode_bagian=0) and nama_tarif like '%".$_POST['keyword']."%' and b.kode_klas=".$_POST['kode_klas']." 
+					group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, b.kode_master_tarif_detail,b.kode_tarif,b.kode_klas,b.bill_rs, b.bill_dr1, b.bill_dr2, b.bill_dr3, b.kamar_tindakan, b.bhp, b.alat_rs, b.pendapatan_rs, b.revisi_ke, b.total, b.revisi_ke
+					having b.revisi_ke = (SELECT MAX(t2.revisi_ke) FROM mt_master_tarif_detail t2 WHERE a.kode_tarif=t2.kode_tarif AND b.kode_klas=t2.kode_klas ) 
+					order by a.is_old asc,a.nama_tarif asc, b.revisi_ke desc";
+					//echo $query;exit;
+        $exc = $this->db->query($query)->result();
+
+		$arrResult = [];
+		foreach ($exc as $key => $value) {
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.') (IDR '.number_format($value->total).')';
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getTindakanRIByBagianAutoComplete()
+	{
+        $where_str = ($_POST['kode_perusahaan']==120) ? ($_POST['kode_klas']==1 || $_POST['kode_klas']==2)?'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ':'and nama_tarif like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' : 'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' ;
+
+        $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif
+					from mt_master_tarif a
+					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+					where  a.tingkatan=5 and a.kode_bagian like '03%' and (kode_bagian <> '030501') AND (kode_bagian <> '030901') and a.kode_bagian='030001' and a.nama_tarif like '%".$_POST['keyword']."%' and a.is_active!= 'N' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif order by a.nama_tarif ";
+		$exc = $this->db->query($query)->result();
+		
+		$arrResult = [];
+		foreach ($exc as $key => $value) {
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.')';
+		}
+		echo json_encode($arrResult);
+		
+		
+		
+	}
+
+	public function getBarangAutoComplete()
+	{
+		
+        $query = "select a.* , b.* from mt_depo_stok as a, mt_barang as b where a.kode_brg=b.kode_brg AND (b.nama_brg LIKE '%". 
+				$_POST['keyword']. "%') and a.kode_bagian='".$_POST['kode_bagian']."' order by b.nama_brg ASC";
+					
+        $exc = $this->db->query($query)->result();
+
+		$arrResult = [];
+		foreach ($exc as $key => $value) {
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg.' ';
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getDetailTarif()
+	{
+		$this->load->library('tarif');
+		$tarifAktif = $this->tarif->getTarifAktif($_GET['kode'], $_GET['klas']);
+		$exc = $tarifAktif->result();
+		
+
+    	$html = '';
+    	$html .= '<p><b> '.$exc[0]->kode_tarif.' - '.$exc[0]->nama_tarif.' ('.$exc[0]->nama_klas.') </b></p>';
+    	$html .= '<input type="hidden" name="kode_tarif" value="'.$exc[0]->kode_tarif.'">';
+    	$html .= '<input type="hidden" name="jenis_tindakan" value="'.$exc[0]->jenis_tindakan.'">';
+    	$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_tarif.'">';
+    	//$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
+    	//$html .= '<input type="hidden" name="kode_klas" value="'.$_GET['klas'].'">';
+    	$html .= '<input type="hidden" name="kode_master_tarif_detail" value="'.$exc[0]->kode_master_tarif_detail.'">';
+    	$html .= '<table class="table table-bordered">';
+    	$html .= '<thead>';
+    	$html .= '<tr>';
+    	$html .= '<th>&nbsp;</th>';
+    	$html .= '<th>Bill dr1</th>';
+    	$html .= '<th>Bill dr2</th>';
+    	$html .= '<th>Bill dr3</th>';
+    	$html .= '<th>Kamar Tindakan</th>';
+    	$html .= '<th>BHP</th>';
+    	$html .= '<th>Alat RS</th>';
+    	$html .= '<th>Pendapatan RS</th>';
+    	$html .= '<th>Total Tarif</th>';
+    	$html .= '<th>Revisi ke-</th>';
+    	$html .= '</tr>';
+    	$html .= '</thead>';
+    	foreach ($exc as $key => $value) {
+    		if(in_array($key, array(0,1) )) :
+	    		$checked = ($key==0)?'checked':'';
+	    		/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
+	    		$html .= '<tr>';
+		    	$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
+		    	/*$html .= '<td align="center">'.$sign.'</td>';*/
+		    	$html .= '<td align="right">'.number_format($value->bill_dr1).'</td>';
+		    	$html .= '<td align="right">'.number_format($value->bill_dr2).'</td>';
+		    	$html .= '<td align="right">'.number_format($value->bill_dr3).'</td>';
+		    	$html .= '<td align="right">'.number_format($value->kamar_tindakan).'</td>';
+		    	$html .= '<td align="right">'.number_format($value->bhp).'</td>';
+		    	$html .= '<td align="right">'.number_format($value->alat_rs).'</td>';
+		    	$html .= '<td align="right">'.number_format($value->pendapatan_rs).'</td>';
+		    	$html .= '<td align="right">'.number_format($value->total).'</td>';
+		    	$html .= '<td align="center">'.$value->revisi_ke.'</td>';
+		    	if($key==0){
+			    	$html .= '<input type="hidden" name="total" value="'.round($value->total).'">';
+			    	$html .= '<input type="hidden" name="bill_dr1" value="'.round($value->bill_dr1).'">';
+			    	$html .= '<input type="hidden" name="bill_dr2" value="'.round($value->bill_dr2).'">';
+			    	$html .= '<input type="hidden" name="bill_dr3" value="'.round($value->bill_dr3).'">';
+			    	$html .= '<input type="hidden" name="kamar_tindakan" value="'.round($value->kamar_tindakan).'">';
+			    	$html .= '<input type="hidden" name="bill_rs" value="'.round($value->bill_rs).'">';
+			    	$html .= '<input type="hidden" name="bhp" value="'.round($value->bhp).'">';
+			    	$html .= '<input type="hidden" name="pendapatan_rs" value="'.round($value->pendapatan_rs).'">';
+			    	$html .= '<input type="hidden" name="alat_rs" value="'.round($value->alat_rs).'">';
+		    	}
+
+		    	$html .= '</tr>';
+	    	endif;
+    	}
+    	$html .= '</table>';
+
+    	echo json_encode( array('html' => $html, 'data' => $exc) );
+        
+	}
+
+	public function tindakanLainnya()
+	{
+
+    	$html = '';
+    	$html .= '<input type="hidden" id="tindakan_lainnya" name="tindakan_lainnya" value="'.$_GET['tindakan_lainnya'].'">';
+    	// $html .= '<input type="hidden" name="jenis_tindakan" value="">';
+    	// $html .= '<input type="hidden" name="nama_tindakan" value="">';
+    	//$html .= '<input type="hidden" name="kode_bagian" value="">';
+    	//$html .= '<input type="hidden" name="kode_klas" value="">';
+    	//$html .= '<input type="hidden" name="kode_master_tarif_detail" value="'.$exc[0]->kode_master_tarif_detail.'">';
+    	$html .= '<table class="table table-bordered">';
+    	$html .= '<thead>';
+		$html .= '<tr>';
+		$html .= '<th>Nama Tindakan</th>';
+		$html .= '<th>Bill RS</th>';
+    	$html .= '<th>Bill dr1</th>';
+    	$html .= '<th>Bill dr2</th>';
+    	$html .= '</tr>';
+    	$html .= '</thead>';
+    		/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
+    		$html .= '<tr>';
+			/*$html .= '<td align="center">'.$sign.'</td>';*/
+			$html .= '<td><input type="text" name="nama_tindakan" value=""></td>';
+			$html .= '<td><input type="text" name="bill_rs" value=""></td>';
+	    	$html .= '<td><input type="text" name="bill_dr1" value=""></td>';
+	    	$html .= '<td><input type="text" name="bill_dr2" value=""></td>';    	
+	    	$html .= '</tr>';
+    	
+    	$html .= '</table>';
+
+    	echo json_encode( array('status' => 200, 'html' => $html) );
+        
+	}
+
+	public function getObatByBagianAutoComplete()
+	{
+		$this->db->from('mt_depo_stok a, mt_barang b');
+		$this->db->where('a.kode_brg=b.kode_brg');
+
+		/*Anggrek, Seruni, Flamboyan, dll*/
+		if($_POST['bag'] == '030601' || $_POST['bag'] == '030201' || $_POST['bag'] == '030301' || $_POST['bag'] == '030701' ){
+			$this->db->where('a.kode_bagian', '030201');
+		/*Dahlia, Teratai, Melati*/
+		}else if($_POST['bag'] == '030401' || $_POST['bag'] == '030801' || $_POST['bag'] == '031401' || $_POST['bag'] == '031301'){
+			$this->db->where('a.kode_bagian', '030401');
+		/*wijayakusuma*/
+		}else if($_POST['bag'] == '030101'){
+			$this->db->where('a.kode_bagian', '030101');
+		/*ICU*/
+		}else if($_POST['bag'] == '031001'){
+			$this->db->where('a.kode_bagian', '031001');	
+
+		/*VK*/
+		}else if($_POST['bag'] == '030501' || $_POST['bag'] == '013201'){
+			$this->db->where('a.kode_bagian', '030501');
+
+		/*OK / Kamar Bedah*/
+		}else if($_POST['bag'] == '030901'){
+			$this->db->where_in('a.kode_bagian', array('030901','012801'));
+
+		}else{
+			$this->db->where('a.kode_bagian', $_POST['bag']);
+		}
+
+        $this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
+        $exc = $this->db->get()->result();
+
+		$arrResult = [];
+		foreach ($exc as $key => $value) {
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getDetailObat()
+	{
+		$this->load->library('tarif');
+
+        $this->db->select('a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis');
+        $this->db->from('tc_kartu_stok a, mt_barang b, mt_rekap_stok c');
+        $this->db->where('a.kode_brg=b.kode_brg');
+        $this->db->where('b.kode_brg=c.kode_brg');
+        $this->db->where('a.kode_bagian', $_GET['bag']);
+        $this->db->where('a.kode_brg', $_GET['kode']);
+        $this->db->order_by('a.tgl_input', 'DESC');
+        $this->db->limit(1);
+
+        $exc = $this->db->get()->result();
+
+    	$html = '';
+    	$html .= '<input type="hidden" name="kode_brg" value="'.$exc[0]->kode_brg.'">';
+		$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_brg.'">';
+		$html .= '<input type="hidden" name="pl_satuan_kecil" value="'.$exc[0]->satuan_kecil.'">';
+		$html .= '<input type="hidden" name="pl_harga_beli" value="'.(int)$exc[0]->harga_beli.'">';
+		$html .= '<input type="hidden" name="pl_sisa_stok" value="'.(int)$exc[0]->stok_akhir.'">';
+
+
+		if($_GET['type_layan']=='Ranap'){
+			$html .= '<input type="hidden" name="kode_bagian_depo" value="'.$exc[0]->kode_bagian.'">';
+		}else{
+			$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
+		}
+    	$html .= '<table class="table table-bordered">';
+    	$html .= '<thead>';
+    	$html .= '<tr>';
+    	$html .= '<th>Kode</th>';
+    	$html .= '<th>Nama Obat</th>';
+    	$html .= '<th>Jenis</th>';
+    	$html .= '<th>Sat. Kecil/Besar</th>';
+    	$html .= '<th>Sisa Stok</th>';
+    	$html .= '<th>Harga Satuan</th>';
+    	$html .= '</tr>';
+    	$html .= '</thead>';
+    	//foreach ($exc as $key => $value) {
+    		$flag_medis = ($exc[0]->flag_medis==1) ? 'Alkes' : 'Obat' ;
+    		$html .= '<tr>';
+	    	$html .= '<td>'.$exc[0]->kode_brg.' </td>';
+	    	$html .= '<td>'.$exc[0]->nama_brg.'</td>';
+	    	$html .= '<td>'.$flag_medis.'</td>';
+	    	$html .= '<td align="center">'.$exc[0]->satuan_kecil.'/'.$exc[0]->satuan_besar.'</td>';
+	    	$html .= '<td align="center">'.$exc[0]->stok_akhir.'</td>';
+    		/*get total tarif barang*/
+    		$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
+
+	    	$html .= '<td align="right">'.number_format($harga_satuan).' <input type="hidden" name="pl_harga_satuan" value="'.$harga_satuan.'"> </td>';
+	    	$html .= '</tr>';
+    	//}
+    	$html .= '</table>';
+
+    	echo json_encode( array('html' => $html, 'sisa_stok' => $exc[0]->stok_akhir) );
+        
+	}
+
+}
