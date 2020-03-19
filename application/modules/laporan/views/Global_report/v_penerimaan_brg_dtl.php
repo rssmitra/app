@@ -23,7 +23,7 @@
       <center><h4><?php echo $title?> <br><?php echo $jenis ?></h4></center>
       <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
 
-      <table class="table">
+      <table border="1">
         <thead>
           <tr>
             <th rowspan="2">NO</th>
@@ -32,7 +32,7 @@
             <th rowspan="2">No Surat Jalan</th>
             <th rowspan="2">Kode Barang</th>
             <th rowspan="2">Nama Barang</th>
-            <th colspan="2">Supplier</th>
+            <th rowspan="2">Supplier</th>
             <th colspan="2">Jumlah Besar</th>
             <th rowspan="2">Satuan Besar</th>
             <th rowspan="2">Rasio</th>
@@ -72,10 +72,10 @@
                   echo '<td>'.$jumlah_kirim.'</td>';
                   echo '<td>'.$row_data->satuan_besar.'</td>';
                   echo '<td>'.$content.'</td>';
-                  echo '<td>'.$row_data->harga_satuan.'</td>';
-                  echo '<td>'.$row_data->harga_satuan_netto.'</td>';
-                  echo '<td>'.$row_data->jumlah_harga.'</td>';
-                  echo '<td>'.$row_data->jumlah_harga_netto.'</td>';
+                  echo '<td>'.number_format($row_data->harga_satuan).'</td>';
+                  echo '<td>'.number_format($row_data->harga_satuan_netto).'</td>';
+                  echo '<td>'.number_format($row_data->jumlah_harga).'</td>';
+                  echo '<td>'.number_format($row_data->jumlah_harga_netto).'</td>';
               ?>
             </tr>
           <?php 

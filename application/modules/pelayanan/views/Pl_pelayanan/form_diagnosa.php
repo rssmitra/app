@@ -2,25 +2,25 @@
 <div class="form-group">
 <label class="control-label col-sm-2" for="">Tinggi Badan (cm)</label>
     <div class="col-sm-1">
-       <input type="text" class="form-control" name="pl_tb" value="">
+       <input type="text" class="form-control" name="pl_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
     </div>
     <label class="control-label col-sm-2" for="">Berat Badan (Kg)</label>
     <div class="col-sm-1">
-       <input type="text" class="form-control" name="pl_bb" value="">
+       <input type="text" class="form-control" name="pl_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
     </div>
     <label class="control-label col-sm-2" for="">Tekanan Darah</label>
     <div class="col-sm-1">
-       <input type="text" class="form-control" name="pl_td" value="">
+       <input type="text" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
     </div>
 </div>
 <div class="form-group">
     <label class="control-label col-sm-2" for="">Suhu Tubuh</label>
     <div class="col-sm-1">
-       <input type="text" class="form-control" name="pl_suhu" value="">
+       <input type="text" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
     </div>
     <label class="control-label col-sm-1" for="">Nadi</label>
     <div class="col-sm-1">
-       <input type="text" class="form-control" name="pl_nadi" value="">
+       <input type="text" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
     </div>
 </div>
 

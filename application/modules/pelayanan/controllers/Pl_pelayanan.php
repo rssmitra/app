@@ -60,8 +60,8 @@ class Pl_pelayanan extends MX_Controller {
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan->get_by_id($id);
-        /*echo '<pre>';print_r($data['value']);die;*/
         $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+        // echo '<pre>';print_r($data['riwayat']);die;
         //$data['transaksi'] = $this->Pl_pelayanan->get_transaksi_pasien_by_id($no_kunjungan);
         /*variable*/
          /*type*/
