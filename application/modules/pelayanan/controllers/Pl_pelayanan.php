@@ -938,11 +938,11 @@ class Pl_pelayanan extends MX_Controller {
                     'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
                     'kategori_tindakan' => 3,
                     'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
-                    'tinggi_badan' => $this->form_validation->post('pl_tb'),
-                    'tekanan_darah' => $this->form_validation->post('pl_td'),
-                    'berat_badan' => $this->form_validation->post('pl_bb'),
-                    'suhu' => $this->form_validation->post('pl_suhu'),
-                    'nadi' => $this->form_validation->post('pl_nadi'),
+                    'tinggi_badan' => $this->input->post('pl_tb'),
+                    'tekanan_darah' => $this->input->post('pl_td'),
+                    'berat_badan' => $this->input->post('pl_bb'),
+                    'suhu' => $this->input->post('pl_suhu'),
+                    'nadi' => $this->input->post('pl_nadi'),
                 );
 
                 if($this->input->post('kode_riwayat')==0){

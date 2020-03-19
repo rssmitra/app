@@ -32,9 +32,14 @@
             <th rowspan="2">No Surat Jalan</th>
             <th rowspan="2">Kode Barang</th>
             <th rowspan="2">Nama Barang</th>
+            <th colspan="2">Supplier</th>
             <th colspan="2">Jumlah Besar</th>
             <th rowspan="2">Satuan Besar</th>
             <th rowspan="2">Rasio</th>
+            <th rowspan="2">Harga Satuan</th>
+            <th rowspan="2">Harga Satuan Netto</th>
+            <th rowspan="2">Jumlah Harga Satuan</th>
+            <th rowspan="2">Jumlah Harga Satuan Netto</th>
           </tr>
           <tr>
           <th>Pesan</th>
@@ -62,10 +67,15 @@
                   echo '<td>'.$no_faktur.'</td>';
                   echo '<td>'.$kode_penerimaan.'</td>';
                   echo '<td>'.$row_data->nama_brg.'</td>';
+                  echo '<td>'.$row_data->namasupplier.'</td>';
                   echo '<td>'.$jumlah_pesan.'</td>';
                   echo '<td>'.$jumlah_kirim.'</td>';
                   echo '<td>'.$row_data->satuan_besar.'</td>';
                   echo '<td>'.$content.'</td>';
+                  echo '<td>'.$row_data->harga_satuan.'</td>';
+                  echo '<td>'.$row_data->harga_satuan_netto.'</td>';
+                  echo '<td>'.$row_data->jumlah_harga.'</td>';
+                  echo '<td>'.$row_data->jumlah_harga_netto.'</td>';
               ?>
             </tr>
           <?php 

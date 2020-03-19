@@ -195,28 +195,40 @@ class Global_report_model extends CI_Model {
 	public function pengadaan_mod_10(){
 		$t_penerimaan = ($_POST['jenis']=='Non Medis')?'tc_penerimaan_barang_nm':'tc_penerimaan_barang';
 		$t_penerimaan_dtl = ($_POST['jenis']=='Non Medis')?'tc_penerimaan_barang_nm_detail':'tc_penerimaan_barang_detail';
+		$t_po = ($_POST['jenis']=='Non Medis')?'tc_po_nm':'tc_po';
+		$t_po_d = ($_POST['jenis']=='Non Medis')?'tc_po_nm_det':'tc_po_nm';
 		$m_barang = ($_POST['jenis']=='Non Medis')?'mt_barang_nm':'mt_barang';
 		
 		if($_POST['frekuensi']=='harian'){
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.content as contentt, 
+			f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount FROM '.$t_penerimaan.' a JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
+				JOIN '.$t_po.' e ON e.no_po=a.no_po
+				JOIN '.$t_po_d.' f ON f.id_tc_po=e.id_tc_po
 				WHERE a.tgl_penerimaan='."'".$_POST['tgl']."'".' 
-				GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
+				GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount ORDER BY a.tgl_penerimaan desc';
 		}
 		elseif($_POST['frekuensi']=='bulanan'){
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.content as contentt, 
+			f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount FROM '.$t_penerimaan.' a 
 				JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier 
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
-				WHERE MONTH(a.tgl_penerimaan)='."'".$_POST['from_month']."'".' AND YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
+				JOIN '.$t_po.' e ON e.no_po=a.no_po
+				JOIN '.$t_po_d.' f ON f.id_tc_po=e.id_tc_po
+				WHERE MONTH(a.tgl_penerimaan)='."'".$_POST['from_month']."'".' AND YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, 
+			f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount ORDER BY a.tgl_penerimaan desc';
 		}
 		else{
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.content as contentt, 
+			f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount FROM '.$t_penerimaan.' a 
 				JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier 
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
-				WHERE YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
+				JOIN '.$t_po.' e ON e.no_po=a.no_po
+				JOIN '.$t_po_d.' f ON f.id_tc_po=e.id_tc_po
+				WHERE YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount ORDER BY a.tgl_penerimaan desc';
 		}
 
 		return $query;
