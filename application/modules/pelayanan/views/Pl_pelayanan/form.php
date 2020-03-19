@@ -506,7 +506,7 @@ function getDataAntrianPasien(){
         $.each(data, function (i, o) {   
             var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
             var penjamin = (o.kode_perusahaan==120)? '('+o.nama_perusahaan+')' : '' ;
-            var style = (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #92e892; color: black"';
+            var style = (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #f998878c; color: black"';
 
             $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + ' '+penjamin+' </option>').appendTo($('#no_mr_selected'));  
         });   
@@ -608,7 +608,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
   }
   select option, select.form-control option {
       padding: 3px 4px 5px;
-      font-weight: bold;
+      /* font-weight: bold; */
   }
 
   .blink_me {
@@ -802,7 +802,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
               
               <!-- end action form  -->
               
-              <div class="pull-left" style="margin-bottom:1%">
+              <div class="pull-left" style="margin-bottom:1%; width: 100%">
                 <?php if(empty($value->tgl_keluar_poli)) :?>
                 <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
                 <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
@@ -810,14 +810,19 @@ function rollback(no_registrasi, no_kunjungan, flag){
                 <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
               </div>
               <div class="pull-right">
-                <label style="float: left; margin-top: 3px; padding-right: 15px; font-size: 14px" class="blink_me"><i class="fa fa-user bigger-120 green"></i> </label>
-                <div style="float: right; min-width: 350px">
-                  <select class="form-control" name="no_mr_selected" id="no_mr_selected" style="font-weight: bold">
-                    <option value="">-Silahkan Pilih-</option>
-                  </select>
-                </div>
+                  <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">Pasien Selesai</label>
+                  <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important">Pasien Umum</label>
               </div>
               <br>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="" ><i class="fa fa-user bigger-120 green"></i> Antrian Pasien</label>
+                <div class="col-sm-7">
+                  <select class="form-control" name="no_mr_selected" id="no_mr_selected" style="font-weight: bold">
+                      <option value="">-Silahkan Pilih-</option>
+                    </select>
+                </div>
+              </div>
+
               <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
               <table class="table table-bordered">
                 <tr style="background-color:#f4ae11">

@@ -1108,11 +1108,18 @@ class References extends MX_Controller {
 	public function tindakanLainnya()
 	{
 
+		$default_kode_tindakan = ($_GET['tindakan_lainnya']=='tindakan_luar') ? 10 : 8 ;
     	$html = '<p><b><i class="fa fa-edit"></i> TINDAKAN LAINNYA </b></p>';
-    	$html .= '<input type="hidden" id="tindakan_lainnya" name="tindakan_lainnya" value="'.$_GET['tindakan_lainnya'].'">';
+		$html .= '<input type="hidden" id="tindakan_lainnya" name="tindakan_lainnya" value="'.$_GET['tindakan_lainnya'].'">';
+		$html .= '<div class="form-group">
+						<label class="control-label col-sm-2" for="">Jenis Tindakan</label>
+						<div class="col-sm-4">
+						'.$this->master->custom_selection($params = array('table' => 'mt_jenis_tindakan', 'id' => 'kode_jenis_tindakan', 'name' => 'jenis_tindakan', 'where' => array()), $default_kode_tindakan , 'kode_jenis_tindakan', 'kode_jenis_tindakan', 'form-control', '', '').'
+						</div>
+					</div>';
     	$html .= '<div class="form-group">
 					    <label class="control-label col-sm-2" for="">Nama Tindakan</label>
-					    <div class="col-sm-4">
+					    <div class="col-sm-6">
 					       <input type="text"class="form-control" name="nama_tindakan" value="">
 					    </div>
 				  </div>';

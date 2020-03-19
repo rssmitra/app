@@ -1168,6 +1168,7 @@ class Pl_pelayanan extends MX_Controller {
         /*print_r($_POST);die;*/
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');      
+        $this->form_validation->set_rules('kode_jenis_tindakan', 'Jenis Tindakan', 'trim|required');      
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -1205,7 +1206,7 @@ class Pl_pelayanan extends MX_Controller {
 
             /*detail tindakan*/
             $dataexc['kode_trans_pelayanan'] = $kode_trans_pelayanan;
-            $dataexc['jenis_tindakan'] = 10;
+            $dataexc['jenis_tindakan'] = $_POST['kode_jenis_tindakan'];
             $dataexc['nama_tindakan'] = ucwords($this->regex->_genRegex($this->input->post('nama_tindakan'),'RGXQSL'));
             $dataexc["bill_rs"] = (isset($_POST['bill_rs']))?(int)$_POST['bill_rs']:0;
             $dataexc["bill_dr1"] = (isset($_POST['bill_dr1']))?(int)$_POST['bill_dr1']:NULL;

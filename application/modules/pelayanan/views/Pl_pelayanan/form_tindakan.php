@@ -624,7 +624,7 @@ function tambah_file()
 
   counterIdfile = counterfile + 1;
 
-  document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\" class='clonning_form'><div class='form-group'><label class='control-label col-sm-2'>&nbsp;</label><div class='col-sm-3'><input type='text' class='form-control' onclick='getDokterAutoComplete("+counterfile+")' id='InputKeyDokterBagian"+counterfile+"' name='pl_nama_dokter[]' placeholder='Masukan Keyword Nama Dokter'><input type='hidden' class='form-control' id='pl_kode_dokter_hidden"+counterfile+"' name='pl_kode_dokter_hidden[]' ></div><div class='col-md-1' style='margin-left: -2%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value=' x ' class='btn btn-xs btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\"></div>";
+  document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\" class='clonning_form'><div class='form-group'><label class='control-label col-sm-2'>&nbsp;</label><div class='col-sm-4'><input type='text' class='form-control' onclick='getDokterAutoComplete("+counterfile+")' id='InputKeyDokterBagian"+counterfile+"' name='pl_nama_dokter[]' placeholder='Masukan Keyword Nama Dokter'><input type='hidden' class='form-control' id='pl_kode_dokter_hidden"+counterfile+"' name='pl_kode_dokter_hidden[]' ></div><div class='col-md-1' style='margin-left: -2%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value=' x ' class='btn btn-xs btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\"></div>";
 
   counterfile++;
 
@@ -673,7 +673,7 @@ function tambah_file()
         <?php endif ?>
 
         <div class="form-group">
-          <label class="control-label col-sm-2">Jenis Tarif Tindakan</label>
+          <label class="control-label col-sm-2">Jenis Tarif</label>
           <div class="col-md-8">
             <div class="radio">
                   <label>
@@ -698,30 +698,30 @@ function tambah_file()
               <?php } ?>
                 <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
             </div>
-            <label class="control-label col-sm-1" for="">Keterangan</label>
-            <div class="col-sm-3">
+            <label class="control-label col-sm-1" for="">Jumlah</label>
+            <div class="col-sm-1">
+               <input type="number" min="1" class="form-control" id="pl_jumlah" name="pl_jumlah" value="1">
+            </div>
+            <div class="col-sm-2" style="margin-left: -2.5%">
+               <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_tindakan')), '' , 'satuan_tindakan', 'satuan_tindakan', 'form-control', '', '') ?>
+            </div>
+            
+        </div>
+
+        <div class="form-group">
+        <label class="control-label col-sm-2" for="">Keterangan</label>
+            <div class="col-sm-8">
                <input type="text" class="form-control" id="pl_keterangan_tindakan" name="pl_keterangan_tindakan">
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Jumlah</label>
-            <div class="col-sm-1">
-               <input type="number" min="1" class="form-control" id="pl_jumlah" name="pl_jumlah" value="1">
-            </div>
-            <label class="control-label col-sm-1" for="">Satuan</label>
-            <div class="col-sm-2">
-               <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_tindakan')), '' , 'satuan_tindakan', 'satuan_tindakan', 'form-control', '', '') ?>
-            </div>
-        </div>
-
-        <div class="col-sm-12" id="formDetailTarif" style="display:none; background-color: #edf3f4; padding: 10px">
+        <div class="col-sm-12" id="formDetailTarif" style="display:none; background-color:rgba(195, 220, 119, 0.56); margin-bottom: 3px; padding: 5px">
            <div id="detailTarifHtml"></div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Dokter</label>
-            <div class="col-sm-3">
+            <div class="col-sm-4">
                <input type="text" class="form-control" id="InputKeyDokterBagian1" onclick="getDokterAutoComplete(1)" name="pl_nama_dokter[]" placeholder="Masukan Keyword Nama Dokter">
                <input type="hidden" class="form-control" id="pl_kode_dokter_hidden1" name="pl_kode_dokter_hidden[]" >
             </div>
