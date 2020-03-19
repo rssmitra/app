@@ -23,7 +23,9 @@ jQuery(function($) {
 $(document).ready(function() {
   /*define first load*/
   $('#InputKeyDokterBagian1').val( $('#dokter_pemeriksa').val() );
-  
+  var kode_perusahaan_pasien = ($('#kode_perusahaan_val').val() == 120)?$('#kode_perusahaan_val').val():0;
+  $("input[name=jenis_tarif][value=" + kode_perusahaan_pasien + "]").prop('checked', true);
+
   if( $('#kode_bagian_val').val()=='020101'){
     $('#pl_kode_dokter_hidden1').val( $('#kode_dokter_igd').val() );
   }else if( $('#kode_bagian_val').val()=='050101'){
