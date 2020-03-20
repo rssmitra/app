@@ -14,7 +14,7 @@
 <head>
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
   <div class="row">
@@ -23,7 +23,7 @@
       <center><h4><?php echo $title?></h4></center>
       <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
 
-      <table class="table">
+      <table class="greyGridTable">
         <thead>
           <tr>
             <th rowspan="2">NO</th>
@@ -61,8 +61,8 @@
         <tbody>
           <?php $no = 0; 
           foreach($result['data'] as $row_data){
-           $saldoawal=$row_data->stok_awal * $row_data->harga_beli;
-           $saldopenerimaan=$row_data->pemasukan * $row_data->harga_beli;
+           // $saldoawal=$row_data->stok_awal * $row_data->harga_beli;
+           $saldopenerimaan=$row_data->jumlah_kirim * $row_data->harga_beli;
 
             $no++; 
             ?>
@@ -72,10 +72,10 @@
                echo '<td>'.$row_data->kode_brg.'</td>';
                   echo '<td>'.$row_data->nama_brg.'</td>';
                   echo '<td>'.number_format($row_data->harga_beli).'</td>';
+                   echo '<td>'.number_format($row_data->harga_jual).'</td>';
                   echo '<td> </td>';
-                  echo '<td>'.number_format($row_data->stok_awal).'</td>';
-                  echo '<td>'.number_format($saldoawal).'</td>';
-                  echo '<td>'.$row_data->pemasukan.'</td>';
+                  echo '<td> </td>';
+                  echo '<td>'.$row_data->jumlah_kirim.'</td>';
                   echo '<td>'.number_format($saldopenerimaan).'</td>';
               ?>
             </tr>

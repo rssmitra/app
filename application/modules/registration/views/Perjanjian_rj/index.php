@@ -59,7 +59,7 @@ $( ".form-control" )
 
         }        
 
-    }); 
+}); 
 
 
 function showModalDaftarPerjanjian(booking_id, no_mr)
@@ -118,12 +118,10 @@ function cetak_surat_kontrol(ID) {
               <option value="nama">Nama Pasien</option>
             </select>
           </div>
-
-          <label class="control-label col-md-1" style="margin-left:-3.7%">Keyword</label>
+          <label class="control-label col-md-1">Keyword</label>
           <div class="col-md-2">
             <input type="text" class="form-control" name="keyword">
           </div>
-
       </div>
 
       <div class="form-group">

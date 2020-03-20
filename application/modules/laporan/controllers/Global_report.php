@@ -33,6 +33,67 @@ class Global_report extends MX_Controller {
         $this->load->view('Global_report/index', $data);
     }
 
+    public function akunting() { 
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'flag' => 'akunting_mod_'.$_GET['mod'].''
+        );
+
+        /*load view index*/
+        $data['html'] = $this->load->view('Global_report/akunting_keu/akunting_mod_'.$_GET['mod'].'', $data, true);
+        $this->load->view('Global_report/form', $data);
+    }
+
+    public function show_data(){
+
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'result' => $query_data,
+        );
+
+        if($_POST['submit']=='format_so'){
+            $this->load->view('Global_report/'.$_POST['submit'].'', $data);
+        }elseif($_POST['submit']=='input_so'){
+            $this->load->view('Global_report/'.$_POST['submit'].'', $data);
+        }else{
+            $this->load->view('Global_report/view_data', $data);
+        }
+
+        
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function lappembelian() { 
         /*define variable data*/
         $data = array(
@@ -89,18 +150,6 @@ class Global_report extends MX_Controller {
         $this->load->view('Global_report/farmasi_mod_'.$_GET['mod'].'', $data);
     }
 
-    public function akunting() { 
-        /*define variable data*/
-        $data = array(
-            'title' => $this->title,
-            'breadcrumbs' => $this->breadcrumbs->show(),
-            'flag' => 'akunting_mod_'.$_GET['mod'].''
-        );
-
-        /*load view index*/
-        $this->load->view('Global_report/akunting_mod_'.$_GET['mod'].'', $data);
-    }
-
     public function so() { 
         /*define variable data*/
         $data = array(
@@ -146,26 +195,7 @@ class Global_report extends MX_Controller {
         /*load view index*/
         $this->load->view('Global_report/rl_mod_'.$_GET['mod'].'', $data);
     }
-    public function show_data(){
-
-        $query_data = $this->Global_report->get_data();
-
-        $data = array(
-            'flag' => $_POST['flag'],
-            'title' => $_POST['title'],
-            'result' => $query_data,
-        );
-
-        if($_POST['submit']=='format_so'){
-            $this->load->view('Global_report/'.$_POST['submit'].'', $data);
-        }elseif($_POST['submit']=='input_so'){
-            $this->load->view('Global_report/'.$_POST['submit'].'', $data);
-        }else{
-            $this->load->view('Global_report/view_data', $data);
-        }
-
-        
-    }
+    
 
     public function show_data_penerimaan(){
 
@@ -301,6 +331,7 @@ class Global_report extends MX_Controller {
     public function show_data_if(){
 
         $query_data = $this->Global_report->get_data();
+        $viewpjl = $this->Global_report->view_pjl_bbs();
 
         $data = array(
             'flag' => $_POST['flag'],
@@ -308,7 +339,7 @@ class Global_report extends MX_Controller {
             'result' => $query_data,
         );
 
-        
+        // echo '<pre>';print_r($viewpjl);
             $this->load->view('Global_report/v_if', $data);
                 
     }

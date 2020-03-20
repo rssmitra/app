@@ -25,7 +25,8 @@ $(document).ready(function(){
     "ordering": false,
     "searching": false,
     "bPaginate": true,
-    "bInfo": false,
+    "bInfo": true,
+    "pageLength": 25,
     "ajax": {
         "url": url,
         "type": "POST"
@@ -53,6 +54,7 @@ $(document).ready(function(){
   $('#btn_reset_data').click(function (e) {
         e.preventDefault();
         $('#form_search')[0].reset();
+        reset_data();
     });
 
   $('#inputDokter').typeahead({
@@ -106,10 +108,29 @@ $('select[name="bagian_asal"]').change(function () {
 
 }); 
 
+$( ".form-control" )  
+  .keypress(function(event) {  
+    var keycode =(event.keyCode?event.keyCode:event.which);  
+    if(keycode ==13){    
+      event.preventDefault();     
+      if($(this).valid()){  
+        $('#btn_search_data').click();  
+      }    
+      return false;   
+    }  
+}); 
+
 function find_data_reload(result){
 
   oTable.ajax.url('registration/Riwayat_kunjungan_poli/get_data?'+result.data).load();
   $("html, body").animate({ scrollTop: "400px" });
+
+}
+
+function reset_data(){
+
+oTable.ajax.url('registration/Riwayat_kunjungan_poli/get_data').load();
+$("html, body").animate({ scrollTop: "400px" });
 
 }
 
@@ -191,6 +212,20 @@ function rollback(no_registrasi, no_kunjungan){
       <br>
 
       <div class="form-group">
+          <label class="control-label col-md-2">Pencarian berdasarkan</label>
+          <div class="col-md-2">
+            <select name="search_by">
+              <option value="tc_kunjungan.no_mr">No MR</option>
+              <option value="mt_master_pasien.nama_pasien">Nama Pasien</option>
+            </select>
+          </div>
+          <label class="control-label col-md-1">Keyword</label>
+          <div class="col-md-2">
+            <input type="text" class="form-control" name="keyword">
+          </div>
+      </div>
+
+      <div class="form-group">
         <label class="control-label col-md-2">Bulan</label>
           <div class="col-md-2">
             <?php echo $this->master->get_bulan('' , 'bulan', 'bulan', 'form-control', '','') ?>
@@ -240,7 +275,7 @@ function rollback(no_registrasi, no_kunjungan){
             </div>
           </div>
 
-          <label class="control-label col-md-1">s/d Tanggal</label>
+          <label class="control-label col-md-1">s/d</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>

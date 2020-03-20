@@ -23,6 +23,34 @@ class Global_report_model extends CI_Model {
 
 	}
 
+	// ================= AKUNTING DAN KEUANGAN =================== //
+	public function akunting_mod_1(){
+		// jenis
+		$where = ($_POST['seri_kuitansi'] != '') ? 'AND seri_kuitansi = '."'".$_POST['seri_kuitansi']."'".' ' : '';
+		$query = "select no_kuitansi, seri_kuitansi, CAST(tgl_jam as DATE)as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as INT) as tunai, CAST(debet as INT) as debet, CAST(kredit as INT) as kredit, CAST(nk_perusahaan as INT) as piutang, CAST(bill as INT)as billing, nama_pegawai  
+		from tc_trans_kasir 
+		left join mt_karyawan on mt_karyawan.no_induk=tc_trans_kasir.no_induk
+		where CAST(tgl_jam as DATE) = '".$_POST['tgl_transaksi']."' ".$where." order by tgl_jam DESC";
+		return $query;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	public function kunjungan_mod_2(){
 
 		$query = 'SELECT a.tgl_jam_masuk, a.no_mr, a.no_registrasi, c.nama_pasien, e.nama_bagian, b.nama_pegawai, d.nama_perusahaan, a.no_sep 
@@ -473,23 +501,7 @@ class Global_report_model extends CI_Model {
 
 	}
 
-	public function akunting_mod_1(){
-		$query = "select kode_tc_trans_kasir, tgl_transaksi, nama_pasien_layan, tc_trans_pelayanan.kode_bagian, mt_bagian.nama_bagian,
-			mt_jenis_tindakan.kode_jenis_tindakan, 
-			mt_jenis_tindakan.jenis_tindakan, nama_tindakan, CAST(SUM(bill_rs+bill_dr1+bill_dr2) as INT )
-			from tc_trans_pelayanan 
-			left join mt_jenis_tindakan on mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan
-			left join mt_bagian on mt_bagian.kode_bagian=tc_trans_pelayanan.kode_bagian
-			where no_registrasi in (
-				select no_registrasi from tc_registrasi where YEAR(tgl_jam_masuk)=2019 AND MONTH(tgl_jam_masuk)=5 AND kode_perusahaan=120
-			)
-
-			group by kode_tc_trans_kasir, nama_pasien_layan, tgl_transaksi, tc_trans_pelayanan.kode_bagian, nama_bagian, 
-			mt_jenis_tindakan.kode_jenis_tindakan, mt_jenis_tindakan.jenis_tindakan, nama_tindakan
-			having SUM(bill_rs+bill_dr1+bill_dr2) > 0
-			order by mt_jenis_tindakan.jenis_tindakan ASC";
-		return $query;
-	}
+	
 
 	public function akunting_mod_2(){
 		$query = "select tc_registrasi.no_registrasi, seri_kuitansi, tc_registrasi.no_mr, nama_pasien, 
@@ -513,20 +525,32 @@ class Global_report_model extends CI_Model {
 		return $query;
 	}
 
+	// public function akunting_mod_4(){
+	// 	$query = "SELECT b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_awal, kartu_stok.pemasukan, kartu_stok.pengeluaran, kartu_stok.stok_akhir, b.satuan_kecil, 
+	// 		c.harga_beli, kartu_stok.tgl_input, kartu_stok.keterangan, c.stok_minimum, b.satuan_besar, 
+	// 		b.is_active, b.path_image 
+	// 		FROM mt_depo_stok as a LEFT JOIN mt_barang b ON b.kode_brg=a.kode_brg 
+	// 		LEFT JOIN mt_rekap_stok c ON c.kode_brg=b.kode_brg 
+	// 		LEFT JOIN ( SELECT * FROM tc_kartu_stok_v WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok 
+	// 		WHERE MONTH(tgl_input)= ".$_POST['from_month']." and YEAR(tgl_input) = ".$_POST['year']." AND tgl_input is not null GROUP BY kode_brg) 
+	// 		AND kode_bagian='".$_POST['kode_bagian']."' ) AS kartu_stok ON kartu_stok.kode_brg=a.kode_brg WHERE a.kode_bagian = '".$_POST['kode_bagian']."' 
+	// 		AND nama_brg is not null AND kartu_stok.tgl_input is not null 
+	// 		GROUP BY b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_awal, kartu_stok.pemasukan, kartu_stok.pengeluaran,
+	// 		kartu_stok.stok_akhir, b.satuan_kecil, 
+	// 		c.harga_beli, kartu_stok.tgl_input, kartu_stok.keterangan, c.stok_minimum, 
+	// 		b.satuan_besar, b.is_active, b.path_image ORDER BY b.kode_brg DESC";
+			
+	// 	return $query;
+	// }
 	public function akunting_mod_4(){
-		$query = "SELECT b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_awal, kartu_stok.pemasukan, kartu_stok.pengeluaran, kartu_stok.stok_akhir, b.satuan_kecil, 
-			c.harga_beli, kartu_stok.tgl_input, kartu_stok.keterangan, c.stok_minimum, b.satuan_besar, 
-			b.is_active, b.path_image 
-			FROM mt_depo_stok as a LEFT JOIN mt_barang b ON b.kode_brg=a.kode_brg 
-			LEFT JOIN mt_rekap_stok c ON c.kode_brg=b.kode_brg 
-			LEFT JOIN ( SELECT * FROM tc_kartu_stok_v WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok 
-			WHERE MONTH(tgl_input)= ".$_POST['from_month']." and YEAR(tgl_input) = ".$_POST['year']." AND tgl_input is not null GROUP BY kode_brg) 
-			AND kode_bagian='".$_POST['kode_bagian']."' ) AS kartu_stok ON kartu_stok.kode_brg=a.kode_brg WHERE a.kode_bagian = '".$_POST['kode_bagian']."' 
-			AND nama_brg is not null AND kartu_stok.tgl_input is not null 
-			GROUP BY b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_awal, kartu_stok.pemasukan, kartu_stok.pengeluaran,
-			kartu_stok.stok_akhir, b.satuan_kecil, 
-			c.harga_beli, kartu_stok.tgl_input, kartu_stok.keterangan, c.stok_minimum, 
-			b.satuan_besar, b.is_active, b.path_image ORDER BY b.kode_brg DESC";
+		$query = "SELECT c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual  
+			FROM tc_penerimaan_barang as a 
+			LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
+			LEFT JOIN mt_barang c ON b.kode_brg=c.kode_brg 
+			LEFT JOIN mt_rekap_stok d ON d.kode_brg=b.kode_brg 
+			LEFT JOIN fr_tc_far_detail e ON e.kode_brg=b.kode_brg
+			WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
+			GROUP BY c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual ";
 			
 		return $query;
 	}
@@ -928,6 +952,14 @@ class Global_report_model extends CI_Model {
 			left join mt_pabrik d on c.id_pabrik=d.id_pabrik WHERE b.flag_prod_obat<>1 and YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' group by b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik ORDER BY c.nama_brg';
 		}
 		// return $query;
+		return $this->db->query($query)->result();
+	}
+
+	public function view_pjl_bbs(){
+		$query = 'select kode_perusahaan, kode_brg, SUM(jumlah_tebus) AS jml from v_tc_far_reg
+  		where MONTH(tgl_trans)= '."'".$_POST['from_month']."'".' and YEAR(tgl_trans) = '."'".$_POST['year']."'".'
+  		group by kode_perusahaan, kode_brg';
+			
 		return $this->db->query($query)->result();
 	}
 

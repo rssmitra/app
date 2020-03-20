@@ -262,6 +262,13 @@
           </li>
 
           <?php } }?>
+          <li>
+              <a href="<?php echo base_url().'laporan/Global_report'?>" target="_blank">
+                  <i class="menu-icon fa fa-archive"></i>
+                  <span class="menu-text"> Laporan Umum </span>
+              </a>
+              <b class="arrow"></b>
+          </li>
 
           <li>
               <a href="<?php echo base_url().'login/logout'?>">

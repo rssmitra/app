@@ -7,7 +7,7 @@ class Riwayat_kunjungan_poli_model extends CI_Model {
 	var $column = array('tc_kunjungan.no_kunjungan','tc_kunjungan.no_mr');
 	var $select = 'tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, pl_tc_poli.id_pl_tc_poli,pl_tc_poli.no_antrian, pl_tc_poli.status_batal, pl_tc_poli.status_periksa, pl_tc_poli.kode_gcu, tc_kunjungan.tgl_keluar';
 
-	var $order = array('pl_tc_poli.no_antrian' => 'ASC');
+	var $order = array('pl_tc_poli.tgl_jam_poli' => 'DESC');
 
 	public function __construct()
 	{
@@ -26,6 +26,10 @@ class Riwayat_kunjungan_poli_model extends CI_Model {
 		
 		/*default*/
 		if( $_GET ) {
+
+			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
+				$this->db->like(''.$_GET['search_by'].'', $_GET['keyword']);
+			}
 
 			if (isset($_GET['bulan']) AND $_GET['bulan'] != 0) {
 	            $this->db->where('MONTH(tgl_masuk)='.$_GET['bulan'].'');	
