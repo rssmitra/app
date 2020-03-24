@@ -38,11 +38,16 @@ $(document).ready(function() {
           // $('#page-area-content').load('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real');
           $('#page-area-content').load('adm_pasien/loket_kasir/Adm_kasir?flag=<?php echo $flag?>&pelayanan=<?php echo $tipe?>');
           
-          if(jsonResponse.kode_perusahaan == 120){
-            window.open(jsonResponse.redirect, '_blank');
-          }else{
-            PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real','Cetak',900,650);
+          if (jsonResponse.billing_um > 0) {
+            PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=null','Cetak',1200,750);
           }
+
+          if(jsonResponse.kode_perusahaan == 120){
+            PopupCenter(jsonResponse.redirect,'SEP',1000,700);
+            // window.open(jsonResponse.redirect, '_blank');
+          }
+
+          
 
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});
@@ -124,7 +129,7 @@ function pembayaran_um(){
 }
 
 function cetak_kuitansi(){
-    PopupCenter('billing/Billing/print_kuitansi?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val()+'','Cetak Kuitansi', 900, 350);
+    PopupCenter('billing/Billing/print_kuitansi?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val()+'','Cetak Kuitansi', 900, 550);
 }
 
 </script>
@@ -133,27 +138,49 @@ function cetak_kuitansi(){
 
     <?php echo isset($header)?$header:''?>
 
-    <div class="pull-right no-padding" style="padding-top: 5px !important">
+    <div class="center no-padding">
     
         <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" > <i class="fa fa-refresh"></i> Reload Billing </a>
 
         <a href="#" class="btn btn-xs btn-primary" onclick="rollback_kasir(<?php echo $no_registrasi?>)" > <i class="fa fa-undo"></i> Rollback</a>
 
-        <?php
-            echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?no_registrasi=".$no_registrasi."'".','."'Cetak'".',900,650);" class="btn btn-xs btn-yellow"> <i class="fa fa-print"></i> Billing Sementara</a>';
-        ?>
-
-        <?php
-            echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$no_registrasi."'".','."'Cetak'".',900,650);" class="btn btn-xs btn-yellow"> <i class="fa fa-print"></i> Billing</a>';
-        ?>
-
-        <?php
-            echo '<a href="#" onclick="cetak_kuitansi();" class="btn btn-xs btn-inverse"> <i class="fa fa-print"></i> Cetak Kuitansi</a>';
-        ?>
-        
         <a href="#" class="btn btn-xs btn-danger" onclick="pembayaran_um()"> <i class="fa fa-credit-card"></i> Pembayaran DP / Bertahap  </a>
+
         <a href="#" class="btn btn-xs btn-success" onclick="payment()"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
 
+        <div class="btn-group">
+            <button class="btn btn-xs btn-yellow"><i class="fa fa-print"></i> Cetak Billing</button>
+
+            <button data-toggle="dropdown" class="btn btn-xs btn-yellow dropdown-toggle" aria-expanded="false">
+                <i class="ace-icon fa fa-angle-down icon-only"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-yellow">
+                <li>
+                    <?php
+                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?no_registrasi=".$no_registrasi."'".','."'Cetak'".',1200,750);">Billing Sementara</a>';
+                    ?>
+                </li>
+
+                <li>
+                    <?php
+                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$no_registrasi."&status_nk=0'".','."'Cetak'".',1200,750);"> Billing Pasien</a>';
+                    ?>
+                </li>
+
+                <li>
+                    <?php
+                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$no_registrasi."&status_nk=1'".','."'Cetak'".',1200,750);"> Billing NK</a>';
+                    ?>
+                </li>
+                <li>
+                    <?php
+                        echo '<a href="#" onclick="cetak_kuitansi();"> Kuitansi</a>';
+                    ?>
+                </li>
+            </ul>
+        </div>
+        
     </div>
 
     <div class="row">

@@ -74,38 +74,38 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-                <?php echo $title?>
+                				<?php echo $title?>
 							</h1>
 						</div><!-- /.page-header -->
 
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-                <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
-
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>NO</th>
-                      <?php 
-                        foreach($result['fields'] as $field){
-                          echo '<th>'.strtoupper($field->name).'</th>';
-                      }?>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php $no = 0; foreach($result['data'] as $row_data) : $no++; ?>
-                      <tr>
-                        <td align="center"><?php echo $no;?></td>
-                        <?php 
-                        foreach($result['fields'] as $row_field){
-                            $field_name = $row_field->name;
-                            echo '<td>'.strtoupper($row_data->$field_name).'</td>';
-                        }?>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
+								<b>Parameter :</b> <i><?php echo print_r($_POST);?></i><br>
+								Total data <?php echo number_format(count($result['data']))?>
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+										<th>NO</th>
+										<?php 
+											foreach($result['fields'] as $field){
+											echo '<th>'.strtoupper($field->name).'</th>';
+										}?>
+										</tr>
+									</thead>
+									<tbody>
+										<?php $no = 0; foreach($result['data'] as $row_data) : $no++; ?>
+										<tr>
+											<td align="center"><?php echo $no;?></td>
+											<?php 
+											foreach($result['fields'] as $row_field){
+												$field_name = $row_field->name;
+												echo '<td>'.strtoupper($row_data->$field_name).'</td>';
+											}?>
+										</tr>
+										<?php endforeach; ?>
+									</tbody>
+								</table>
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->

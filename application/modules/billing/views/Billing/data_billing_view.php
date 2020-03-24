@@ -3,6 +3,7 @@
 $(document).ready(function() {
 
     var total_all = sumClass('total_per_unit');
+    $('#total_payment').val(total_all);
     $('#total_billing_all').html( '<span style="font-size: 25px; font-weight: bold">'+formatMoney(total_all)+'</span>' );
     $('#total_payment_all').val( total_all );
     if( $('#kode_perusahaan_val').val() == 0 ) {
@@ -10,7 +11,6 @@ $(document).ready(function() {
     }else{
         $('input[name=checklist_nk]').prop("checked", true);
     }
-
 
 });
 

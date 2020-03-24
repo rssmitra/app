@@ -1176,12 +1176,19 @@ class Billing_model extends CI_Model {
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left');
 		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
 		$this->db->where('tc_trans_pelayanan.no_registrasi', $no_registrasi);
-		$this->db->where('nama_tindakan IS NOT NULL');
-		//$this->db->where('tc_trans_pelayanan.kode_tc_trans_kasir IN (SELECT kode_tc_trans_kasir FROM tc_trans_kasir WHERE no_registrasi='.$no_registrasi.' and nk_perusahaan > 0)');
+        $this->db->where('nama_tindakan IS NOT NULL');
+
+        if(isset($_GET['status_nk']) AND $_GET['status_nk'] == 1){
+            $this->db->where('status_nk', 1);
+        }elseif (isset($_GET['status_nk']) AND $_GET['status_nk'] == 0) {
+            $this->db->where('(status_nk is null or status_nk = 0)');
+        }
+
 		$this->db->order_by('tc_trans_pelayanan.tgl_transaksi', 'ASC');
-		$this->db->order_by('tc_trans_pelayanan.jenis_tindakan', 'ASC');
-        //print_r($this->db->last_query());die;
-		return $this->db->get()->result();
+        $this->db->order_by('tc_trans_pelayanan.jenis_tindakan', 'ASC');
+        $query = $this->db->get()->result();
+        // print_r($this->db->last_query());die;
+		return $query;
     }
     
     public function getTitleNameBilling($field){
@@ -1393,23 +1400,30 @@ class Billing_model extends CI_Model {
     public function rollback_kasir(){
 
         /*delete tc trans kasir*/
-        $this->db->where(' kode_tc_trans_kasir IN 
-                            (select kode_tc_trans_kasir from tc_trans_pelayanan where no_registrasi in ('.$_POST['no_reg'].')
-                            ) ')->delete('tc_trans_kasir');
+        // $this->db->where(' kode_tc_trans_kasir IN 
+        //                     (select kode_tc_trans_kasir from tc_trans_pelayanan where no_registrasi in ('.$_POST['no_reg'].')
+        //                     ) ')->delete('tc_trans_kasir');
+        
+       
+
+        /*delete detail akuntig*/
+        $this->db->where(' id_ak_tc_transaksi IN 
+                            (select id_ak_tc_transaksi from ak_tc_transaksi where kode_tc_trans_kasir in 
+                                (select kode_tc_trans_kasir from tc_trans_kasir where no_registrasi in ('.$_POST['no_reg'].')
+                                )
+                            ) ')->delete('ak_tc_transaksi_det');
 
         /*delete akunting*/
         $this->db->where(' id_ak_tc_transaksi IN 
                             (select id_ak_tc_transaksi from ak_tc_transaksi where kode_tc_trans_kasir in 
-                                (select kode_tc_trans_kasir from tc_trans_pelayanan where no_registrasi in 
+                                (select kode_tc_trans_kasir from tc_trans_kasir where no_registrasi in 
                                     ('.$_POST['no_reg'].')
                                 )
                             ) ')->delete('ak_tc_transaksi');
-        /*delete detail akuntig*/
-        $this->db->where(' id_ak_tc_transaksi IN 
-                            (select id_ak_tc_transaksi from ak_tc_transaksi where kode_tc_trans_kasir in 
-                                (select kode_tc_trans_kasir from tc_trans_pelayanan where no_registrasi in ('.$_POST['no_reg'].')
-                                )
-                            ) ')->delete('ak_tc_transaksi_det');
+
+        // delete tc_trans_kasir
+        $this->db->where(' no_registrasi', $_POST['no_reg'])->delete('tc_trans_kasir');
+
         /*update trans pelayanan*/
         $this->db->update('tc_trans_pelayanan', array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL), array('no_registrasi' => $_POST['no_reg']) );
 

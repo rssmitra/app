@@ -6,7 +6,7 @@ class Csm_billing_pasien_model extends CI_Model {
     
     var $table = 'tc_registrasi';
     var $column = array('tc_registrasi.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_bagian_masuk', 'tc_registrasi.kode_bagian_keluar');
-    var $select = 'tc_registrasi.*, mt_master_pasien.nama_pasien, mt_master_pasien.jen_kelamin as jk, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai';
+    var $select = 'tc_registrasi.*, mt_master_pasien.nama_pasien, mt_master_pasien.jen_kelamin as jk, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan';
     var $order = array('tc_registrasi.tgl_jam_masuk' => 'DESC', 'tc_registrasi.no_esp' => 'ASC');
     var $fields = array('bill_kamar_perawatan', 'bill_kamar_icu', 'bill_tindakan_inap', 'bill_tindakan_oksigen', 'bill_tindakan_bedah', 'bill_tindakan_vk', 'bill_obat',
         'bill_ambulance', 'bill_dokter', 'bill_apotik', 'bill_lain_lain', 'bill_adm', 'bill_ugd', 'bill_rad', 'bill_lab', 'bill_fisio', 'bill_klinik', 'bill_pemakaian_alat', 'bill_tindakan_hd','bill_tindakan_luar_rs');
@@ -25,6 +25,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr='.$this->table.'.no_mr', 'left');
         $this->db->join('mt_bagian', 'mt_bagian.kode_bagian='.$this->table.'.kode_bagian_masuk', 'left');
         $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter='.$this->table.'.kode_dokter', 'left');
+        $this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan='.$this->table.'.kode_perusahaan', 'left');
 
         if(isset($_GET['num']) AND $_GET['num']!=''){
             //$this->db->or_where("mt_master_pasien.nama_pasien LIKE '%".$_GET['num']."%' ");
@@ -106,7 +107,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $this->db->where('no_registrasi', $no_registrasi);
         $this->db->where('nama_tindakan IS NOT NULL');
         $this->db->where('tc_trans_pelayanan.kode_tc_trans_kasir IN (SELECT kode_tc_trans_kasir FROM tc_trans_kasir WHERE no_registrasi='.$no_registrasi.')');
-        //$this->db->where('tc_trans_pelayanan.status_nk', 1);
+        $this->db->where('tc_trans_pelayanan.status_nk', 1);
         $this->db->order_by('tc_trans_pelayanan.jenis_tindakan', 'ASC');
         //print_r($this->db->last_query());die;
         return $this->db->get()->result();
@@ -221,116 +222,119 @@ class Csm_billing_pasien_model extends CI_Model {
         /*$str_kode_bag = substr((string)$sirs_data->reg_data->kode_bagian_masuk, 0,2);
         $str_type = ($str_kode_bag=='01')?'RJ':'RI';*/
         /*data registrasi*/
-            $data_registrasi = array(
-                'no_registrasi' => $sirs_data->reg_data->no_registrasi,
-                'csm_rp_no_sep' => $sirs_data->reg_data->no_sep,
-                'csm_rp_no_mr' => $sirs_data->reg_data->no_mr,
-                'csm_rp_nama_pasien' => $sirs_data->reg_data->nama_pasien,
-                'csm_rp_tgl_masuk' => $sirs_data->reg_data->tgl_jam_masuk,
-                'csm_rp_tgl_keluar' => $sirs_data->reg_data->tgl_jam_keluar,
-                'csm_rp_kode_dokter' => $sirs_data->reg_data->kode_dokter,
-                'csm_rp_nama_dokter' => $sirs_data->reg_data->nama_pegawai,
-                'csm_rp_kode_bagian' => $sirs_data->reg_data->kode_bagian_masuk,
-                'csm_rp_bagian' => $sirs_data->reg_data->nama_bagian,
-                'csm_rp_tipe' => $str_type,
-                'csm_rp_status' => 0,
-                'created_date' => date('Y-m-d H:i:s'),
-                'created_by' => $this->session->userdata('user')->fullname,
-            );
-           $this->db->insert('csm_reg_pasien', $data_registrasi);
+        $data_registrasi = array(
+            'no_registrasi' => $sirs_data->reg_data->no_registrasi,
+            'csm_rp_no_sep' => $sirs_data->reg_data->no_sep,
+            'csm_rp_no_mr' => $sirs_data->reg_data->no_mr,
+            'csm_rp_nama_pasien' => $sirs_data->reg_data->nama_pasien,
+            'csm_rp_tgl_masuk' => $sirs_data->reg_data->tgl_jam_masuk,
+            'csm_rp_tgl_keluar' => (!empty($sirs_data->reg_data->tgl_jam_keluar))?$sirs_data->reg_data->tgl_jam_keluar:$sirs_data->reg_data->tgl_jam_masuk,
+            'csm_rp_kode_dokter' => $sirs_data->reg_data->kode_dokter,
+            'csm_rp_nama_dokter' => $sirs_data->reg_data->nama_pegawai,
+            'csm_rp_kode_bagian' => $sirs_data->reg_data->kode_bagian_masuk,
+            'csm_rp_bagian' => $sirs_data->reg_data->nama_bagian,
+            'csm_rp_tipe' => $str_type,
+            'csm_rp_status' => 0,
+            'created_date' => date('Y-m-d H:i:s'),
+            'created_by' => $this->session->userdata('user')->fullname,
+        );
 
-            if( count($sirs_data->trans_data) > 0 ) :
+        if( $this->checkExistingData($no_registrasi) > 0 ){
+            $this->db->update('csm_reg_pasien', $data_registrasi, array('no_registrasi' => $no_registrasi));
+        }else{
+            $this->db->insert('csm_reg_pasien', $data_registrasi);
+        }
+
+        if( count($sirs_data->trans_data) > 0 ) :
+            /*delete first*/
+            $this->db->delete('csm_billing_pasien', array('no_registrasi' => $no_registrasi));
+            foreach ($sirs_data->trans_data as $key_trans_data => $val_trans_data) {
+                //if($val_trans_data->status_nk == 1){
+                    /*data billing*/
+                    $subtotal = (double)$val_trans_data->bill_rs + (double)$val_trans_data->bill_dr1 + (double)$val_trans_data->bill_dr2 + (double)$val_trans_data->lain_lain;
+                    $data_billing[] = array(
+                        'no_registrasi' => $no_registrasi,
+                        'csm_bp_jenis_tindakan' => $val_trans_data->jenis_tindakan,
+                        'csm_bp_nama_jenis_tindakan' => $val_trans_data->nama_jenis_tindakan,
+                        'csm_bp_nama_tindakan' => $val_trans_data->nama_tindakan,
+                        'csm_bp_subtotal' => $subtotal,
+                        'csm_bp_kode_bagian' => $val_trans_data->kode_bagian,
+                        'csm_bp_kode_dokter' => $val_trans_data->kode_dokter1,
+                        //'csm_bp_nama_dokter' => $val_trans_data->kode_dokter1,
+                        'csm_bp_kode_trans_pelayanan' => $val_trans_data->kode_trans_pelayanan,
+                        'csm_bp_bill_rs' => $val_trans_data->bill_rs,
+                        'csm_bp_bill_dr1' => $val_trans_data->bill_dr1,
+                        'csm_bp_bill_dr2' => $val_trans_data->bill_dr2,
+                        'csm_bp_bill_lain_lain' => $val_trans_data->lain_lain,
+                        'csm_bp_revisi' => 0,
+                        );
+
+                    /*resume billing*/
+                    if( $str_type=='RJ' ){
+                        $resume_billing[] = $this->resumeBillingRJ($val_trans_data->jenis_tindakan, $val_trans_data->kode_bagian, $subtotal);                    
+                    }else{
+                        $resume_billing[] = $this->resumeBillingRI($val_trans_data);
+                    }
+                    //}
+            }
+            
+            /*then insert*/
+            $this->db->insert_batch('csm_billing_pasien', $data_billing);
+            if( $str_type=='RJ' ){
                 /*delete first*/
-                $this->db->delete('csm_billing_pasien', array('no_registrasi' => $no_registrasi));
-                foreach ($sirs_data->trans_data as $key_trans_data => $val_trans_data) {
-                    //if($val_trans_data->status_nk == 1){
-                        /*data billing*/
-                        $subtotal = (double)$val_trans_data->bill_rs + (double)$val_trans_data->bill_dr1 + (double)$val_trans_data->bill_dr2 + (double)$val_trans_data->lain_lain;
-                        $data_billing[] = array(
-                            'no_registrasi' => $no_registrasi,
-                            'csm_bp_jenis_tindakan' => $val_trans_data->jenis_tindakan,
-                            'csm_bp_nama_jenis_tindakan' => $val_trans_data->nama_jenis_tindakan,
-                            'csm_bp_nama_tindakan' => $val_trans_data->nama_tindakan,
-                            'csm_bp_subtotal' => $subtotal,
-                            'csm_bp_kode_bagian' => $val_trans_data->kode_bagian,
-                            'csm_bp_kode_dokter' => $val_trans_data->kode_dokter1,
-                            //'csm_bp_nama_dokter' => $val_trans_data->kode_dokter1,
-                            'csm_bp_kode_trans_pelayanan' => $val_trans_data->kode_trans_pelayanan,
-                            'csm_bp_bill_rs' => $val_trans_data->bill_rs,
-                            'csm_bp_bill_dr1' => $val_trans_data->bill_dr1,
-                            'csm_bp_bill_dr2' => $val_trans_data->bill_dr2,
-                            'csm_bp_bill_lain_lain' => $val_trans_data->lain_lain,
-                            'csm_bp_revisi' => 0,
-                            );
-
-                        /*resume billing*/
-                        if( $str_type=='RJ' ){
-                            $resume_billing[] = $this->resumeBillingRJ($val_trans_data->jenis_tindakan, $val_trans_data->kode_bagian, $subtotal);                    
-                        }else{
-                            $resume_billing[] = $this->resumeBillingRI($val_trans_data);
-                        }
-                        //}
+                $this->db->delete('csm_resume_billing_pasien', array('no_registrasi' => $no_registrasi));
+                /*split resume billing*/
+                $split_billing = $this->splitResumeBilling($resume_billing);
+                /*resume billing pasien*/
+                $data_resume_billing = array(
+                    'no_registrasi' => $no_registrasi,
+                    'csm_brp_bill_dr' => $split_billing['bill_dr'],
+                    'csm_brp_bill_adm' => $split_billing['bill_adm_rs'],
+                    'csm_brp_bill_far' => $split_billing['bill_farm'],
+                    'csm_brp_bill_pm' => $split_billing['bill_pm'],
+                    'csm_brp_bill_tindakan' => $split_billing['bill_tindakan'],
+                    'csm_brp_bill_bpako' => $split_billing['bill_bpako'],
+                    );
+                
+                /*then insert*/
+                $this->db->insert('csm_resume_billing_pasien', $data_resume_billing);
+            }else{
+                    /*delete first*/
+                $this->db->delete('csm_resume_billing_pasien_ri', array('no_registrasi' => $no_registrasi));
+                /*split resume billing ri*/
+                $split_billing = $this->splitResumeBillingRI($resume_billing);
+                foreach ($split_billing as $ksb => $vsb) {
+                    $arr_sp[] = array(
+                        'no_registrasi' => $no_registrasi,
+                        'csm_rbp_ri_title' => $vsb['title'],
+                        'csm_rbp_ri_total' => $vsb['subtotal'],
+                        'csm_rbp_ri_field' => $vsb['field'],
+                        'created_date' => date('Y-m-d H:i:s'),
+                        'created_by' => $this->session->userdata('user')->fullname,
+                        );
                 }
                 
                 /*then insert*/
-                $this->db->insert_batch('csm_billing_pasien', $data_billing);
-                if( $str_type=='RJ' ){
-                    /*delete first*/
-                    $this->db->delete('csm_resume_billing_pasien', array('no_registrasi' => $no_registrasi));
-                    /*split resume billing*/
-                    $split_billing = $this->splitResumeBilling($resume_billing);
-                    /*resume billing pasien*/
-                    $data_resume_billing = array(
-                        'no_registrasi' => $no_registrasi,
-                        'csm_brp_bill_dr' => $split_billing['bill_dr'],
-                        'csm_brp_bill_adm' => $split_billing['bill_adm_rs'],
-                        'csm_brp_bill_far' => $split_billing['bill_farm'],
-                        'csm_brp_bill_pm' => $split_billing['bill_pm'],
-                        'csm_brp_bill_tindakan' => $split_billing['bill_tindakan'],
-                        'csm_brp_bill_bpako' => $split_billing['bill_bpako'],
-                        );
-                    
-                    /*then insert*/
-                    $this->db->insert('csm_resume_billing_pasien', $data_resume_billing);
-                }else{
-                     /*delete first*/
-                    $this->db->delete('csm_resume_billing_pasien_ri', array('no_registrasi' => $no_registrasi));
-                    /*split resume billing ri*/
-                    $split_billing = $this->splitResumeBillingRI($resume_billing);
-                    foreach ($split_billing as $ksb => $vsb) {
-                        $arr_sp[] = array(
-                            'no_registrasi' => $no_registrasi,
-                            'csm_rbp_ri_title' => $vsb['title'],
-                            'csm_rbp_ri_total' => $vsb['subtotal'],
-                            'csm_rbp_ri_field' => $vsb['field'],
-                            'created_date' => date('Y-m-d H:i:s'),
-                            'created_by' => $this->session->userdata('user')->fullname,
-                            );
-                    }
-                   
-                    /*then insert*/
-                    $this->db->insert_batch('csm_resume_billing_pasien_ri', $arr_sp);
-                    //echo '<pre>';print_r($arr_sp);die;
+                $this->db->insert_batch('csm_resume_billing_pasien_ri', $arr_sp);
+                //echo '<pre>';print_r($arr_sp);die;
 
-                }
-            endif;
-
-
-            
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                return json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
             }
-            else
-            {
-                $this->db->trans_commit();
-                return json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
-            }
+        endif;
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            return json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            return json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
         }
 
-        public function resumeBillingRJ($jenis_tindakan, $kode_bagian, $subtotal){
+    }
+
+    public function resumeBillingRJ($jenis_tindakan, $kode_bagian, $subtotal){
         /*dokter*/
         if (in_array($jenis_tindakan, array(12))) {
             $bill_dr = $subtotal;
@@ -462,7 +466,6 @@ class Csm_billing_pasien_model extends CI_Model {
             }
         }
         
-
         /*ambulance*/
         if ( in_array($data->jenis_tindakan, array(6)) ) {
             $bill['bill_ambulance'] = $subtotal;
@@ -1030,7 +1033,6 @@ class Csm_billing_pasien_model extends CI_Model {
         return $html;
     }
 
-
     function SumObjectValue($object, $fields){
         //print_r($object);die;
         $sum = 0;
@@ -1125,39 +1127,40 @@ class Csm_billing_pasien_model extends CI_Model {
         /*get data*/
         $data = $this->getDetailData($no_registrasi);
         $decode_data = json_decode($data);
+
+        // dokume penunjang medis
+        $grouping_doc = $this->groupingDocumentPM($decode_data->group);
+        
         /*document billing*/
-        //if ( $tipe == 'RI') {
-            # code...
-            $grouping_doc = $this->groupingDocumentPM($decode_data->group);
-            foreach ($decode_data->kasir_data as $key_kasir_data => $val_kasir_data) {
-                /*filenam BILL-{no_mr}{no_reg}{kode_tc_trans_kasir}*/
-                $filename[] ='BILL'.$tipe.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$val_kasir_data->kode_tc_trans_kasir.'';
+        foreach ($decode_data->kasir_data as $key_kasir_data => $val_kasir_data) {
+            /*filenam BILL-{no_mr}{no_reg}{kode_tc_trans_kasir}*/
+            $filename[] ='BILL'.$tipe.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$val_kasir_data->kode_tc_trans_kasir.'';
+            /*merge rincian biaya keseluruhan pasien rawat inap*/
+            //$this->export->getContentPDF($no_registrasi, $tipe,'','F');
+        }
 
-                /*merge rincian biaya keseluruhan pasien rawat inap*/
-                //$this->export->getContentPDF($no_registrasi, $tipe,'','F');
+        $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$val_kasir_data->kode_tc_trans_kasir.'';
+
+        foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
+            $explode_key = explode('-',$key_group);
+            $offset_kode_penunjang = $explode_key[0];
+            $offset_kode_bagian = $explode_key[1];
+            $offset_nama_pm = $explode_key[2];
+            /*convert arr tindakan to string*/
+            $convert_to_string_tindakan = implode(' / ', $grouping_doc['grouping_tindakan'][$offset_kode_penunjang]);
+
+            if($offset_kode_bagian == '050101'){
+                $flag = 'LAB';
+            }elseif ($offset_kode_bagian == '050201') {
+                $flag = 'RAD';
+            }elseif ($offset_kode_bagian == '050301') {
+                $flag = 'FSO';
+            }else{
+                $flag = 0;
             }
-
-            foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
-                $explode_key = explode('-',$key_group);
-                $offset_kode_penunjang = $explode_key[0];
-                $offset_kode_bagian = $explode_key[1];
-                $offset_nama_pm = $explode_key[2];
-                /*convert arr tindakan to string*/
-                $convert_to_string_tindakan = implode(' / ', $grouping_doc['grouping_tindakan'][$offset_kode_penunjang]);
-
-                if($offset_kode_bagian == '050101'){
-                    $flag = 'LAB';
-                }elseif ($offset_kode_bagian == '050201') {
-                    $flag = 'RAD';
-                }elseif ($offset_kode_bagian == '050301') {
-                    $flag = 'FSO';
-                }else{
-                    $flag = 0;
-                }
-                /*filename ex: {flag}{no_mr}{no_registrasi}{kode_penunjang}*/
-                $filename[] = $flag.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$offset_kode_penunjang.'';
-            }
-        //}
+            /*filename ex: {flag}{no_mr}{no_registrasi}{kode_penunjang}*/
+            $filename[] = $flag.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$offset_kode_penunjang.'';
+        }
 
         return $filename;
 
@@ -1170,6 +1173,7 @@ class Csm_billing_pasien_model extends CI_Model {
     public function cekIfExist($no_registrasi){
         return $this->db->get_where('csm_reg_pasien', array('no_registrasi'=>$no_registrasi,'is_submitted' => 'Y'));
     }
+    
     public function checkIfDokExist($no_registrasi, $file_name){
         $qry = $this->db->get_where('csm_dokumen_export', array('no_registrasi'=>$no_registrasi,'csm_dex_nama_dok' => $file_name));
         return ($qry->num_rows() > 0) ? TRUE : FALSE;
@@ -1202,6 +1206,25 @@ class Csm_billing_pasien_model extends CI_Model {
             );
         $this->db->update('tc_registrasi', $data, array('no_registrasi' => $key));
         return true;
+    }
+
+    public function saveEmr($filename, $reg_data){
+        $data_emr = array(
+            'filename' => $filename, 
+            'no_registrasi' => $reg_data->no_registrasi, 
+            'no_mr' => $reg_data->csm_rp_no_mr,
+            'nama_bagian' => $reg_data->csm_rp_bagian,
+            'nama_dokter' => $reg_data->csm_rp_nama_dokter,
+            'tgl_kunjungan' => $reg_data->csm_rp_tgl_masuk,
+            'created_date' => date('Y-m-d H:i:s'),
+            'created_by' => $this->session->userdata('user')->fullname,
+        );
+        // check file exist
+        if( $this->db->get_where('th_file_emr_pasien', array('no_registrasi' => $reg_data->no_registrasi) )->num_rows() > 0 ){
+            $this->db->update('th_file_emr_pasien', $data_emr, array('no_registrasi' => $reg_data->no_registrasi) );
+        }else{
+            $this->db->insert('th_file_emr_pasien', $data_emr );
+        }
     }
 
 }

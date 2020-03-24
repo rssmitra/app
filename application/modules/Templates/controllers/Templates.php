@@ -286,6 +286,42 @@ class Templates extends MX_Controller {
                    
                   </table>';
         return $html;
+    }
+    
+    public function setGlobalProfileRekamMedis($data, $flag='', $pm=''){
+		$html = '';
+        $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
+                <tr>
+                    <td width="100px">No. RM</td>
+                    <td width="180px">: '.$data->reg_data->no_mr.'</td>
+                    <td width="100px">Poli/Klinik</td>
+                    <td width="350px">: '.ucwords($data->reg_data->nama_bagian).'</td>
+                </tr>
+                <tr>
+                    <td width="100px" align="left">Nama Pasien</td>
+                    <td width="180px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
+                    <td width="100px">Dokter</td>
+                    <td width="350px">: '.$data->reg_data->nama_pegawai.'</td>
+                </tr>
+                <tr>
+                    <td width="100px">Umur</td>
+                    <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
+                    <td width="100px">Tanggal Periksa</td>
+                    <td align="left" width="350px">: '.$this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk).'</td>
+                    
+                </tr>
+
+                <tr>
+                    <td width="100px">Jenis Kelamin</td>
+                    <td width="180px">: '.$data->reg_data->jk.'</td>
+                    <td width="100px">Penjamin</td>
+                    <td width="250px">: '.$data->reg_data->nama_perusahaan.'</td>
+                </tr>                    
+            </table>';
+            
+        $html .= '<hr>';
+
+        return $html;
 	}
 
     public function setGlobalProfilePasienTemplateRI($data, $flag='', $pm=''){
@@ -385,6 +421,68 @@ class Templates extends MX_Controller {
         return $html;
     }
 
+    public function TemplateResumeMedis($no_registrasi, $tipe, $data){
+        /*html data untuk tampilan*/
+        // get riwayat pasien
+        $riwayat_pasien = $this->db->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
+
+        $html = '';
+        $html .= '<table align="left" cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px; margin-left: -10px">';
+        $html .= '<tr>';
+            $html .= '<td align="center" colspan="2"><h2>RESUME MEDIS PASIEN</h2></td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td colspan="2"><b><h3>Pernyataan Pasien</h3></b><br>Dengan ini saya selaku pasien, memberikan ijin kepada dokter untuk memberikan keterangan mengenai penyakit saya, guna kepentingan pengajuan klaim saya.</td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td colspan="2"><b><h3>Pernyataan Dokter</h3></b><br>Saya, dokter yang merawat, dengan ini menyatakan bahwa keterangan tersebut dibawah ini lengkap dan benar.</td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td width="100%">
+                        <b>1. Anamnesa<br></b>
+                        <span style="padding-left: 20px">
+                            '.$riwayat_pasien->anamnesa.'
+                        </span>
+                      </td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td width="100%">
+                        <b>2. Diagnosa Penyakit<br></b>
+                        <span style="padding-left: 20px">
+                            Diagnosa awal, '.$riwayat_pasien->diagnosa_awal.'<br>
+                            Diagnosa akhir, '.$riwayat_pasien->diagnosa_akhir.'
+                        </span>
+                      </td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td width="100%">
+                        <b>3. Tindakan yang dilakukan<br></b>
+                        <span style="padding-left: 20px">
+                            '.$riwayat_pasien->pemeriksaan.'
+                        </span>
+                      </td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td width="100%">
+                        <b>4. Anjuran Dokter<br></b>
+                        <span style="padding-left: 20px">
+                            '.$riwayat_pasien->pengobatan.'
+                        </span>
+                      </td>';
+        $html .= '</tr>';
+
+        $html .= '</table>';
+
+
+        return $html;
+    }
+    
     public function TemplateRincianRI($noreg, $tipe, $field){
         $title_name = $this->Billing->getTitleNameBilling($field);
         $rincian_detail_billing = $this->Billing->getDetailData($noreg, $tipe, $field);
@@ -574,6 +672,7 @@ class Templates extends MX_Controller {
        
         return $getData;
     }
+
     public function TemplateBillingRI( $no_registrasi, $tipe, $data, $rb='' ){
         $csm_bp = new Billing_model;
         /*html data untuk tampilan*/
@@ -1077,6 +1176,26 @@ class Templates extends MX_Controller {
         $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
                         <td align="right" width="300px">
+                        <br><br>
+                        Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
+                        Rumah Sakit Setia Mitra
+                        <br/><br/><br/><br/> 
+                        <br/> 
+                        ( _____________________ )<br>
+                        Generated by SIRS Setia Mitra ('.date('d/M/Y').')
+                        
+                        </td>   
+                    </tr>
+                </table>';
+        return $html;
+    }
+
+    public function setGlobalFooterRm($data){
+        $html = '';
+        $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
+                    <tr> 
+                        <td width="50%"></td>
+                        <td align="right" width="50%">
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                         Rumah Sakit Setia Mitra

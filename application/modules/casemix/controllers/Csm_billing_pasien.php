@@ -313,6 +313,12 @@ class Csm_billing_pasien extends MX_Controller {
         $html = '';
 
         switch ($flag) {
+            case 'RESUME':
+                $html .= $temp->setGlobalHeaderTemplate();
+                $html .= $temp->setGlobalProfileRekamMedis($data);
+                $html .= $temp->setGlobalContentBilling($temp->TemplateResumeMedis($no_registrasi, $flag, $data));
+                $html .= $temp->setGlobalFooterRm($data);
+                break;
             case 'RJ':
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplate($data);
@@ -388,6 +394,13 @@ class Csm_billing_pasien extends MX_Controller {
         $action = ($act_code=='')?'I':$act_code;
         /*filename and title*/
         $filename = $flag.'-'.$reg_data->csm_rp_no_mr.$reg_data->no_registrasi.$pm;
+        // create directory
+        $filename_mr = 'uploaded/rekam_medis/'.$reg_data->csm_rp_no_mr;
+        if (file_exists($filename_mr)) {
+            //echo "The file $filename_mr exists";
+        } else {
+            mkdir($filename_mr, 0777, true);
+        }
         
         $tanggal = new Tanggal();
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8');
@@ -447,6 +460,15 @@ EOD;
         /*save to folder*/
         $pdf->Output('uploaded/casemix/'.$filename.'.pdf', ''.$action.''); 
 
+        if( in_array($flag, array('RESUME','LAB','RAD') )){
+            // update file emr pasien
+            $filename_emr = $flag.'-'.$reg_data->csm_rp_no_mr.'-'.$reg_data->no_registrasi;
+            $this->Csm_billing_pasien->saveEmr($filename_emr, $reg_data);
+            
+            // create directory no_mr
+            $pdf->Output('uploaded/rekam_medis/'.$reg_data->csm_rp_no_mr.'/'.$filename_emr.'.pdf', ''.$action.''); 
+            
+        }
         /*show pdf*/
         //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'I'); 
         /*download*/
@@ -490,7 +512,7 @@ EOD;
         }
 
         rtrim($fields_string,'&');
-        $url = base_url().'ApiMerge/index.php?action=download&noreg='.$no_registrasi.'&'.$fields_string;
+        $url = base_url().'ApiMerge/index.php?action=download&no_mr='.$reg_data->csm_rp_no_mr.'&noreg='.$no_registrasi.'&'.$fields_string;
         header("Location:".$url);
     }
 

@@ -38,7 +38,7 @@
             <td colspan="2"><b>KUNJUNGAN TERAKHIR</b></td>
           </tr>
           <tr>
-            <td>Kunjungan Terakhir</td>
+            <td>Tanggal</td>
             <td>: <?php echo $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk)?></td>
           </tr>
           <tr>
@@ -75,3 +75,4 @@
 
   </div><!-- /.col -->
 </div>
+<hr>

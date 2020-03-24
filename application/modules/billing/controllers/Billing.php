@@ -441,13 +441,11 @@ class Billing extends MX_Controller {
         // kode shift
         $dataTranskasir["kode_shift"] = $_POST['shift'];
         $dataTranskasir["kode_loket"] = $_POST['loket'];
-        // kode loket
-        // print_r($dataTranskasir);die;
+        // insert tc trans kasir
         $this->db->insert('tc_trans_kasir', $dataTranskasir);
 
         // update status NK checked
         $str_to_array_nk = explode(',', $_POST['array_data_nk_checked']);
-        // print_r($str_to_array_nk);die;
         foreach ($str_to_array_nk as $key_nk => $kode_trans_pelayanan_nk) {
             $this->db->update('tc_trans_pelayanan', array('status_nk' => 1, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $kode_trans_pelayanan_nk));
             $this->db->trans_commit();
@@ -489,7 +487,12 @@ class Billing extends MX_Controller {
             $return_costing = $this->costing_billing($seri_kuitansi_dt['seri_kuitansi']);
             $return['redirect'] = $return_costing['redirect'];
         }
+
+        $preview_billing_nk = $this->db->where_in('kode_trans_pelayanan', $str_to_array_nk)->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'status_nk' => 1))->result();
+        $preview_billing_um = $this->db->where_not_in('kode_trans_pelayanan', $str_to_array_nk)->where('(status_nk IS NULL or status_nk = 0) ')->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi']))->result();
+        // print_r($preview_billing_um);die;
         
+
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
@@ -502,6 +505,8 @@ class Billing extends MX_Controller {
             $return['status'] = 200;
             $return['message'] = 'Proses Berhasil Dilakukan';
             $return['kode_perusahaan'] = $_POST['kode_perusahaan_val'];
+            $return['billing_nk'] = count($preview_billing_nk);
+            $return['billing_um'] = count($preview_billing_um);
             echo json_encode($return);
         }
         
@@ -567,14 +572,17 @@ class Billing extends MX_Controller {
         $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
         //echo '<pre>';print_r($sirs_data);die;
         /*cek apakah data sudah pernah diinsert ke database atau blm*/
-        if( $this->Csm_billing_pasien->checkExistingData($no_registrasi) ){
-            /*no action if data exist, continue to view data*/
-        }else{
-        /*jika data belum ada atau belum pernah diinsert, maka insert ke table*/
-            /*insert data untuk pertama kali*/
-            if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
+        // if( $this->Csm_billing_pasien->checkExistingData($no_registrasi) ){
+        //     /*no action if data exist, continue to view data*/
+        // }else{
+        // /*jika data belum ada atau belum pernah diinsert, maka insert ke table*/
+        //     /*insert data untuk pertama kali*/
+        //     if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
+        //     $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
+        // }
+
+        if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
             $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
-        }
 
         if( $this->input->post('no_sep_val') ){
             /*csm_reg_pasien*/
@@ -625,7 +633,6 @@ class Billing extends MX_Controller {
             endif;
             /*insert database*/
         }
-        
         
         return array('redirect' => 'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'', 'created_by' => $doc_save['created_by'], 'created_date' => $this->tanggal->formatDateTime($doc_save['created_date']));
 

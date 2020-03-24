@@ -112,6 +112,7 @@
     get_total_billing();
     oTable.ajax.reload();
   }
+  
   $('#btn_reset_data').click(function (e) {
       e.preventDefault();
       oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?flag='+$('#flag').val()+'&pelayanan='+$('#pelayanan').val()).load();
@@ -182,13 +183,14 @@
         <div class="col-md-2">
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
-            <option value="no_mr" selected>No MR</option>
-            <option value="nama_pasien">Nama Pasien</option>
+            <option value="a.no_mr" selected>No MR</option>
+            <option value="c.nama_pasien">Nama Pasien</option>
+            <option value="b.no_sep">No SEP</option>
           </select>
         </div>
         <label class="control-label col-md-1">Keyword</label>
         <div class="col-sm-6">
-          <input type="text" class="col-xs-10 col-sm-3" name="keyword" id="keyword">
+          <input type="text" class="col-xs-10 col-sm-4" name="keyword" id="keyword">
           <span class="help-inline col-xs-12 col-sm-7">
             <label class="middle">
               <input class="ace" type="checkbox" id="add_search_by_date" name="is_with_date" value="1">
@@ -209,7 +211,7 @@
             </div>
           </div>
 
-          <label class="control-label col-md-1">s/d Tanggal</label>
+          <label class="control-label col-md-1">s/d</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>

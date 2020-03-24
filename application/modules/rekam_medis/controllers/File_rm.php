@@ -28,8 +28,10 @@ class File_rm extends MX_Controller {
         /*define variable data*/
         $data = array(
             'title' => $this->title,
-            'breadcrumbs' => $this->breadcrumbs->show()
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'file_emr' => $this->db->get_where('th_file_emr_pasien', array('no_mr' => $no_mr))->result(),
         );
+        // print_r($data);die;
         /*load view index*/
         $this->load->view('File_rm/index', $data);
     }

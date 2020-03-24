@@ -34,6 +34,38 @@ class Global_report_model extends CI_Model {
 		return $query;
 	}
 
+	public function akunting_mod_2(){
+		$query = "select tc_registrasi.no_registrasi, seri_kuitansi, tc_registrasi.no_mr, nama_pasien, 
+					nama_bagian, no_sep, tgl_jam_masuk, CAST(billing.total as int) as total
+					from tc_registrasi
+					left join mt_bagian on mt_bagian.kode_bagian=tc_registrasi.kode_bagian_masuk
+					left join mt_master_pasien on mt_master_pasien.no_mr=tc_registrasi.no_mr
+					left join (
+						select no_registrasi, SUM(bill)as total, seri_kuitansi from tc_trans_kasir where no_registrasi in (
+						select no_registrasi from tc_registrasi
+						where YEAR(tgl_jam_masuk) = ".$_POST['year']."
+						and MONTH(tgl_jam_keluar) between ".$_POST['from_month']." and ".$_POST['to_month']."
+						and tgl_jam_keluar is not null
+						and tc_registrasi.kode_perusahaan=120 and status_batal is null
+						)
+						group by no_registrasi, seri_kuitansi
+					) as billing on billing.no_registrasi=tc_registrasi.no_registrasi
+					where tgl_jam_keluar is not null
+					and tc_registrasi.kode_perusahaan=120 and status_batal is null and seri_kuitansi='".$_POST['keterangan']."'
+					ORDER BY nama_bagian,tgl_jam_masuk ASC";
+		return $query;
+	}
+
+
+
+
+
+
+
+
+
+	
+
 
 
 
@@ -503,27 +535,7 @@ class Global_report_model extends CI_Model {
 
 	
 
-	public function akunting_mod_2(){
-		$query = "select tc_registrasi.no_registrasi, seri_kuitansi, tc_registrasi.no_mr, nama_pasien, 
-					nama_bagian, no_sep, tgl_jam_masuk, CAST(billing.total as int) as total
-					from tc_registrasi
-					left join mt_bagian on mt_bagian.kode_bagian=tc_registrasi.kode_bagian_masuk
-					left join mt_master_pasien on mt_master_pasien.no_mr=tc_registrasi.no_mr
-					left join (
-						select no_registrasi, SUM(bill)as total, seri_kuitansi from tc_trans_kasir where no_registrasi in (
-						select no_registrasi from tc_registrasi
-						where YEAR(tgl_jam_masuk) = ".$_POST['year']."
-						and MONTH(tgl_jam_keluar) between ".$_POST['from_month']." and ".$_POST['to_month']."
-						and tgl_jam_keluar is not null
-						and tc_registrasi.kode_perusahaan=120 and status_batal is null
-						)
-						group by no_registrasi, seri_kuitansi
-					) as billing on billing.no_registrasi=tc_registrasi.no_registrasi
-					where tgl_jam_keluar is not null
-					and tc_registrasi.kode_perusahaan=120 and status_batal is null and seri_kuitansi='".$_POST['keterangan']."'
-					ORDER BY nama_bagian,tgl_jam_masuk ASC";
-		return $query;
-	}
+	
 
 	// public function akunting_mod_4(){
 	// 	$query = "SELECT b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_awal, kartu_stok.pemasukan, kartu_stok.pengeluaran, kartu_stok.stok_akhir, b.satuan_kecil, 

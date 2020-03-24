@@ -133,13 +133,14 @@
 									</div>
 									<div class="panel-collapse collapse" id="collapseAkunting" aria-expanded="false" style="height: 0px;">
 										<div class="panel-body">
-										<ol>
-										<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=1'?>">Laporan Setoran Kasir Harian</a></li>
-										<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=2'?>">Transaksi Pasien BPJS</a></li>
-										<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Laporan BMHP (Barang Medis Habis Pakai)</a></li>
-										<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=4'?>">Laporan IF (Unit Farmasi)</a></li>
-										<li><a href="<?php echo base_url().'laporan/Global_report/lainnyabillingdokter?mod=1'?>">Daftar Billing Dokter yang belum dibayarkan Per-periode</a></li>
-										</ol>
+											<ol>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=1'?>">Setoran Harian Kasir</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=2'?>">Transaksi Pasien BPJS</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Resume Laporan Kasir</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Laporan BMHP (Barang Medis Habis Pakai)</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=4'?>">Laporan IF (Unit Farmasi)</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/lainnyabillingdokter?mod=1'?>">Daftar Billing Dokter yang belum dibayarkan Per-periode</a></li>
+											</ol>
 										</div>
 									</div>
 									</div>
