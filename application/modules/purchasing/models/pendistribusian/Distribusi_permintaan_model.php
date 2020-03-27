@@ -6,7 +6,7 @@ class Distribusi_permintaan_model extends CI_Model {
 	var $table_nm = 'tc_permintaan_inst_nm';
 	var $table = 'tc_permintaan_inst';
 	var $column = array('a.nomor_permintaan', 'b.nama_bagian');
-	var $select = 'a.id_tc_permintaan_inst, a.nomor_permintaan, a.tgl_permintaan, a.kode_bagian_minta, a.kode_bagian_kirim, a.status_batal, a.tgl_input, a.id_dd_user, a.nomor_pengiriman, a.tgl_pengiriman, a.yg_serah, a.yg_terima, a.tgl_input_terima, a.id_dd_user_terima, a.keterangan_kirim, a.status_selesai, c.username, a.jenis_permintaan, a.catatan';
+	var $select = 'a.id_tc_permintaan_inst, a.nomor_permintaan, a.tgl_permintaan, a.kode_bagian_minta, a.kode_bagian_kirim, a.status_batal, a.tgl_input, a.id_dd_user, a.nomor_pengiriman, a.tgl_pengiriman, a.yg_serah, a.yg_terima, a.tgl_input_terima, a.id_dd_user_terima, a.keterangan_kirim, a.status_selesai, c.username, a.jenis_permintaan';
 	var $order = array('a.id_tc_permintaan_inst' => 'DESC');
 
 	public function __construct()
@@ -18,6 +18,7 @@ class Distribusi_permintaan_model extends CI_Model {
 	private function _main_query(){
 		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
 		$this->db->select($this->select);
+		$this->db->select('CAST(a.catatan as NVARCHAR(1000)) as catatan');
 		$this->db->select('b.nama_bagian as bagian_minta');
 		$this->db->from(''.$table.' a');
 		$this->db->join('mt_bagian b','b.kode_bagian=a.kode_bagian_minta', 'left');
@@ -39,6 +40,10 @@ class Distribusi_permintaan_model extends CI_Model {
 		if( ( isset( $_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' )  ){
 			$this->db->where('kode_bagian_minta', $_GET['kode_bagian']);
 		}
+
+		$this->db->group_by('CAST(a.catatan as NVARCHAR(1000))');
+		$this->db->group_by('b.nama_bagian');
+		$this->db->group_by($this->select);
 
 		$i = 0;
 	
@@ -131,7 +136,7 @@ class Distribusi_permintaan_model extends CI_Model {
 		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
 		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
-		$this->db->select('a.*, c.nama_brg, f.harga_beli, c.content as rasio, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.nama_bagian');
+		$this->db->select('a.id_tc_permintaan_inst_det, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, f.harga_beli, c.content as rasio, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.nama_bagian');
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
 		$this->db->join($table.' e', 'e.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'left');
@@ -139,8 +144,11 @@ class Distribusi_permintaan_model extends CI_Model {
 		$this->db->join($join_3.' f', 'f.kode_brg=a.kode_brg', 'left');
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('a.id_tc_permintaan_inst IN ('.$id.')');
+		$this->db->group_by('a.id_tc_permintaan_inst_det, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, f.harga_beli, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian');
 		$this->db->order_by('c.nama_brg ASC');
-		return $this->db->get()->result();
+		$query = $this->db->get()->result();
+		// print_r($this->db->last_query());
+		return $query;
 	}
 
 	public function get_brg_retur($flag, $id){
