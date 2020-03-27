@@ -14,6 +14,16 @@ jQuery(function($) {
   });
 });
 
+$( ".form_search" )    
+    .keypress(function(event) {  
+      var keycode =(event.keyCode?event.keyCode:event.which);  
+      if(keycode ==13){   
+        event.preventDefault();  
+        $('#btn_search_data').click();  
+        return false;  
+      }  
+});
+
 
 $('#btn_update_session_poli').click(function (e) {  
 

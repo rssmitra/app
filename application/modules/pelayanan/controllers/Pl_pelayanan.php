@@ -1001,6 +1001,87 @@ class Pl_pelayanan extends MX_Controller {
 
     }
 
+    public function processSaveDiagnosa(){
+
+        // print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );        
+        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
+        $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa', 'trim|required');        
+        $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
+        $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
+        $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
+        $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
+        $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');             
+        // form assesment
+        $this->form_validation->set_rules('pl_tb', 'Tinggi Badan', 'trim');        
+        $this->form_validation->set_rules('pl_bb', 'Berat Badan', 'trim');        
+        $this->form_validation->set_rules('pl_td', 'Tekanan Darah', 'trim');        
+        $this->form_validation->set_rules('pl_suhu', 'Suhu', 'trim');        
+        $this->form_validation->set_rules('pl_nadi', 'Nadi', 'trim');        
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $no_kunjungan = $this->form_validation->set_value('no_kunjungan');
+            $no_registrasi = $this->form_validation->set_value('no_registrasi');
+
+            /*insert log diagnosa pasien th_riwayat pasien*/
+            $riwayat_diagnosa = array(
+                'no_registrasi' => $this->form_validation->set_value('no_registrasi'),
+                'no_kunjungan' => $no_kunjungan,
+                'no_mr' => $this->form_validation->set_value('noMrHidden'),
+                'nama_pasien' => $this->input->post('nama_pasien_layan'),
+                'diagnosa_awal' => $this->form_validation->set_value('pl_diagnosa'),
+                'anamnesa' => $this->form_validation->set_value('pl_anamnesa'),
+                'pengobatan' => $this->form_validation->set_value('pl_pengobatan'),
+                'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
+                'pemeriksaan' => $this->form_validation->set_value('pl_pemeriksaan'),
+                'tgl_periksa' => date('Y-m-d H:i:s'),
+                'kode_bagian' => $this->form_validation->set_value('kode_bagian_asal'),
+                'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
+                'kategori_tindakan' => 3,
+                'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
+                'tinggi_badan' => (float)$this->input->post('pl_tb'),
+                'tekanan_darah' => (float)$this->input->post('pl_td'),
+                'berat_badan' => (float)$this->input->post('pl_bb'),
+                'suhu' => (float)$this->input->post('pl_suhu'),
+                'nadi' => (float)$this->input->post('pl_nadi'),
+            );
+
+            if($this->input->post('kode_riwayat')==0){
+                $this->Pl_pelayanan->save('th_riwayat_pasien', $riwayat_diagnosa);
+            }else{
+                $this->Pl_pelayanan->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
+            }
+
+            
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+
+        
+        }
+
+    }
+
     public function saveSessionPoli(){
 
         //print_r($_POST);die;

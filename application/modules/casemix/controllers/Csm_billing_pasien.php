@@ -458,15 +458,15 @@ EOD;
         $pdf->writeHTML($result, true, false, true, false, '');
 
         /*save to folder*/
-        $pdf->Output('uploaded/casemix/'.$filename.'.pdf', ''.$action.''); 
+        $pdf->Output('uploaded/casemix/log/'.$filename.'.pdf', ''.$action.''); 
 
         if( in_array($flag, array('RESUME','LAB','RAD') )){
             // update file emr pasien
-            $filename_emr = $flag.'-'.$reg_data->csm_rp_no_mr.'-'.$reg_data->no_registrasi;
-            $this->Csm_billing_pasien->saveEmr($filename_emr, $reg_data);
+            $file_name_merge_emr = 'EMR-'.$reg_data->no_registrasi.'-'.date('Ymd');
+            $this->Csm_billing_pasien->saveEmr($file_name_merge_emr, $reg_data);
             
             // create directory no_mr
-            $pdf->Output('uploaded/rekam_medis/'.$reg_data->csm_rp_no_mr.'/'.$filename_emr.'.pdf', ''.$action.''); 
+            $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.''); 
             
         }
         /*show pdf*/

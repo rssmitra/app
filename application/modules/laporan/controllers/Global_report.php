@@ -64,7 +64,30 @@ class Global_report extends MX_Controller {
             $this->load->view('Global_report/view_data', $data);
         }
 
-        
+    }
+
+    public function show_data_if(){
+
+        $query_data = $this->Global_report->get_data();
+        $pjl_bpjs = $this->Global_report->penjualan_obat_bpjs();
+        // get data penjualan bpjs
+        foreach ($pjl_bpjs as $k_pjl_bpjs => $v_pjl_bpjs) {
+            if($v_pjl_bpjs['kode_perusahaan']==120){
+                $get_dt_pjl_bpjs[] = $v_pjl_bpjs;
+            }
+        }
+        // echo '<pre>'; print_r($get_dt_pjl_bpjs);die;
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'result' => $query_data,
+            'dt_pjl_bpjs' => $get_dt_pjl_bpjs,
+        );
+
+        // echo '<pre>';print_r($viewpjl);
+            $this->load->view('Global_report/akunting_keu/v_if', $data);
+                
     }
     
 
@@ -328,21 +351,7 @@ class Global_report extends MX_Controller {
                 
     }
 
-    public function show_data_if(){
-
-        $query_data = $this->Global_report->get_data();
-        $viewpjl = $this->Global_report->view_pjl_bbs();
-
-        $data = array(
-            'flag' => $_POST['flag'],
-            'title' => $_POST['title'],
-            'result' => $query_data,
-        );
-
-        // echo '<pre>';print_r($viewpjl);
-            $this->load->view('Global_report/v_if', $data);
-                
-    }
+    
     public function show_data_stok(){
 
         $query_data = $this->Global_report->get_data();

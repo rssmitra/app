@@ -56,6 +56,43 @@ class Global_report_model extends CI_Model {
 		return $query;
 	}
 
+	// public function akunting_mod_4(){
+	// 	$query = "SELECT c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual  
+	// 		FROM tc_penerimaan_barang as a 
+	// 		LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
+	// 		LEFT JOIN mt_barang c ON b.kode_brg=c.kode_brg 
+	// 		LEFT JOIN mt_rekap_stok d ON d.kode_brg=b.kode_brg 
+	// 		LEFT JOIN fr_tc_far_detail e ON e.kode_brg=b.kode_brg
+	// 		WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
+	// 		GROUP BY c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual ";
+			
+	// 	return $query;
+	// }
+
+	public function akunting_mod_4(){
+		$query = "SELECT a.kode_brg, b.nama_brg, a.harga_beli
+			FROM mt_rekap_stok as a 
+			INNER JOIN mt_barang b on b.kode_brg=a.kode_brg WHERE (a.kode_brg IS NOT NULL)";
+			
+		return $query;
+	}
+
+	public function penjualan_obat_bpjs(){
+		
+		$query = 'select kode_brg, kode_perusahaan, SUM(jumlah_tebus) as jumlah_tebus, AVG(harga_beli) as harga_beli, AVG(harga_jual) as harga_jual 
+		from fr_hisbebasluar_v where MONTH(tgl_trans)= '."'".$_POST['from_month']."'".' and YEAR(tgl_trans) = '."'".$_POST['year']."'".' group by kode_brg, kode_perusahaan';
+			
+		return $this->db->query($query)->result_array();
+	}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -554,18 +591,7 @@ class Global_report_model extends CI_Model {
 			
 	// 	return $query;
 	// }
-	public function akunting_mod_4(){
-		$query = "SELECT c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual  
-			FROM tc_penerimaan_barang as a 
-			LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
-			LEFT JOIN mt_barang c ON b.kode_brg=c.kode_brg 
-			LEFT JOIN mt_rekap_stok d ON d.kode_brg=b.kode_brg 
-			LEFT JOIN fr_tc_far_detail e ON e.kode_brg=b.kode_brg
-			WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
-			GROUP BY c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual ";
-			
-		return $query;
-	}
+	
 
 	public function so_mod_1(){
 
@@ -967,12 +993,6 @@ class Global_report_model extends CI_Model {
 		return $this->db->query($query)->result();
 	}
 
-	public function view_pjl_bbs(){
-		$query = 'select kode_perusahaan, kode_brg, SUM(jumlah_tebus) AS jml from v_tc_far_reg
-  		where MONTH(tgl_trans)= '."'".$_POST['from_month']."'".' and YEAR(tgl_trans) = '."'".$_POST['year']."'".'
-  		group by kode_perusahaan, kode_brg';
-			
-		return $this->db->query($query)->result();
-	}
+	
 
 }

@@ -229,6 +229,12 @@ $(document).ready(function(){
       // backToDefaultForm();
     });
 
+    $('#tabs_diagnosa').click(function (e) {    
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosa');
+      // backToDefaultForm();
+    });
+
     $('#tabs_pesan_resep').click(function (e) {  
       e.preventDefault();  
       $('#form_pelayanan').attr('action', 'farmasi/Farmasi_pesan_resep/process');

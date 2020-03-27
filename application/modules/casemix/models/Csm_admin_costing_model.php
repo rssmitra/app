@@ -22,7 +22,8 @@ class Csm_admin_costing_model extends CI_Model {
     }
 
 	private function _main_query(){
-		
+        
+        $year = date('Y') - 1;
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr='.$this->table.'.no_mr', 'left');
@@ -33,14 +34,17 @@ class Csm_admin_costing_model extends CI_Model {
         if(isset($_GET['num']) AND $_GET['num']!=''){
             $explode = explode('-', $_GET['num']);
             $this->db->where_in($this->table.'.'.$_GET['search_by'], $explode);
+            $this->db->where('YEAR(tgl_jam_masuk) > '.$year.'');
+        }else{
+            $this->db->where('YEAR(tgl_jam_masuk) = '.date('Y').'');
+            $this->db->where('MONTH(tgl_jam_masuk) = '.date('m').'');
         }
 
         if (isset($_GET['frmdt']) AND $_GET['frmdt'] != '' || isset($_GET['todt']) AND $_GET['todt'] != '') {
-            //$this->db->where("tc_registrasi.tgl_jam_masuk BETWEEN '".$_GET['frmdt']."' AND '".$_GET['todt']."' " );
             $this->db->where("tc_registrasi.tgl_jam_masuk >= '".$this->tanggal->selisih($_GET['frmdt'],'-1')."'" );
             $this->db->where("tc_registrasi.tgl_jam_masuk <= '".$this->tanggal->selisih($_GET['todt'],'+1')."'" );
         }
-
+        
         $this->db->where('YEAR(tgl_jam_masuk)>2018');
 
 	}

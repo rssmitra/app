@@ -2,7 +2,6 @@
 
 /*check directory is exist*/
 $filename = '../uploaded/casemix/merge-'.$_GET['month'].'-'.$_GET['year'];
-//echo '<pre>';print_r($_GET);die;
 if (file_exists($filename)) {
     //echo "The file $filename exists";
 } else {
@@ -11,30 +10,37 @@ if (file_exists($filename)) {
     mkdir($filename.'/RJ', 0777, true);
 }
 
+$filename_mr = '../uploaded/rekam_medis/'.$_GET['no_mr'];
+if (file_exists($filename_mr)) {
+    //echo "The file $filename exists";
+} else {
+    mkdir($filename_mr, 0777, true);
+}
+
+// echo '<pre>';print_r($_GET);die;
+
 include 'PDFMerger-master/PDFMerger.php';
 
 $pdf = new PDFMerger; // or use $pdf = new \PDFMerger; for Laravel
 
+$file_name_merge_emr = 'EMR-'.$_GET['noreg'].'-'.date('Ymd');
+
 foreach ($_GET as $key => $value) {
-	if ( !in_array($key, array('action','noreg','sep','tipe','month','year'))) {
-		# code...
-		$pdf->addPDF('../uploaded/casemix/'.$_GET[$key].'', 'all');	
-		//$getData[] = $_GET[$key];
+	if ( !in_array($key, array('action','noreg','sep','tipe','month','year','no_mr'))) {
+		// untuk file casemix
+		$pdf->addPDF('../uploaded/casemix/log/'.$_GET[$key].'', 'all');		
+		// $getData[] = $_GET[$key];
 	}
 }
-//echo '<pre>';print_r($getData);die;
-//$pdf->merge('file', 'libraries/merge_files/samplepdfs/TEMP.pdf'); // generate the file
+
 if($_GET['action']=='download'){
-	//$pdf->merge('file', 'rssm/sirs-v2/uploaded/casemix/fixed_document/'.$_GET['sep'].'.pdf'); 
-	$pdf->merge('file', 'rssm/sirs'.str_replace('..','',$filename).'/'.$_GET['tipe'].'/'.$_GET['sep'].'.pdf'); 
+	// casemix
+	$pdf->merge('file', 'sirs-dev/app'.str_replace('..','',$filename).'/'.$_GET['tipe'].'/'.$_GET['sep'].'.pdf'); 
+	// emr
+	$pdf->merge('file', 'sirs-dev/app'.str_replace('..','',$filename_mr).'/'.$file_name_merge_emr.'.pdf');
 }else{
-	$pdf->merge($_GET['action'], ''.$_GET['sep'].'.pdf'); // force download
+	$pdf->merge($_GET['action'], ''.$_GET['sep'].'.pdf'); 
 }
-$pdf->merge('browser', ''.$_GET['sep'].'.pdf'); // force download
-
-
-
-
-// REPLACE 'file' WITH 'browser', 'download', 'string', or 'file' for output options
+$pdf->merge('browser', ''.$_GET['sep'].'.pdf');
 
 ?>

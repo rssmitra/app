@@ -39,7 +39,7 @@
             <th width="304" colspan="3">Distribusi & ALokasi Unit</th>
             <th width="304" colspan="2">Saldo Akhir</th>
           </tr>
-            <tr>
+          <tr>
             <th width="304">Quantity</th>
             <th width="304">Jumlah</th>
             <th width="304">Quantity</th>
@@ -61,32 +61,36 @@
         <tbody>
           <?php $no = 0; 
           foreach($result['data'] as $row_data){
-           // $saldoawal=$row_data->stok_awal * $row_data->harga_beli;
-           $saldopenerimaan=$row_data->jumlah_kirim * $row_data->harga_beli;
-
+            // $saldopenerimaan=$row_data->jumlah_kirim * $row_data->harga_beli;
             $no++; 
+            // data bpjs search arrray
+            $key_bpjs = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $dt_pjl_bpjs);
+            if($row_data->kode_brg == $dt_pjl_bpjs[$key_bpjs]['kode_brg']){
+              $qty = isset($dt_pjl_bpjs[$key_bpjs])?$dt_pjl_bpjs[$key_bpjs]['jumlah_tebus']:0;
+            }else{
+              $qty = 0;
+            }
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
               <?php 
-               echo '<td>'.$row_data->kode_brg.'</td>';
-                  echo '<td>'.$row_data->nama_brg.'</td>';
-                  echo '<td>'.number_format($row_data->harga_beli).'</td>';
-                   echo '<td>'.number_format($row_data->harga_jual).'</td>';
-                  echo '<td> </td>';
-                  echo '<td> </td>';
-                  echo '<td>'.$row_data->jumlah_kirim.'</td>';
-                  echo '<td>'.number_format($saldopenerimaan).'</td>';
+                echo '<td>'.$row_data->kode_brg.'</td>';
+                echo '<td>'.$row_data->nama_brg.'</td>';
+                echo '<td>'.number_format($row_data->harga_beli).'</td>';
+                echo '<td></td>';
+                echo '<td></td>';
+                echo '<td></td>';
+                echo '<td></td>';
+                echo '<td></td>';
+                echo '<td>'.$qty.'</td>';
               ?>
             </tr>
-          <?php 
-        // endforeach; 
-      }?>
+          <?php } ?>
         </tbody>
       </table>
 
-    </div><!-- /.col -->
-  </div><!-- /.row -->
+    </div>
+  </div>
 </body>
 </html>
 

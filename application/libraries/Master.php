@@ -731,6 +731,17 @@ final Class Master {
 		return array('seri_kuitansi' => $seri_kuitansi, 'no_kuitansi' => $no_seri);
 	}
 
+	function searcharray($value, $key, $array) {
+		$k=0;
+		foreach ($array as $k => $val) {
+			if ($val[$key] == $value) {
+				return $k;
+			}
+		}
+		return $k;
+	 }
+
+
 }
 
 ?> 

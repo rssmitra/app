@@ -20,6 +20,7 @@ class Csm_billing_pasien_model extends CI_Model {
 
     private function _main_query(){
         
+        $year = date('Y') - 1;
         $this->db->select($this->select);
         $this->db->from($this->table);
         $this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr='.$this->table.'.no_mr', 'left');
@@ -31,9 +32,13 @@ class Csm_billing_pasien_model extends CI_Model {
             //$this->db->or_where("mt_master_pasien.nama_pasien LIKE '%".$_GET['num']."%' ");
             $this->db->or_where('no_sep', $_GET['num']);
             $this->db->or_where(''.$this->table.'.no_mr', $_GET['num']);
+            $this->db->where('YEAR(tgl_jam_masuk) > '.$year.'');
+        }else{
+            $this->db->where('YEAR(tgl_jam_masuk) = '.date('Y').'');
+            $this->db->where('MONTH(tgl_jam_masuk) = '.date('m').'');
         }
         
-        $this->db->where('YEAR(tgl_jam_masuk)>2015');
+        
         //$this->db->where('MONTH(tgl_jam_masuk) > 3');
         //$this->db->where(''.$this->table.'.kode_perusahaan', 120);
 

@@ -87,3 +87,10 @@
       <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$riwayat->pengobatan:''?></textarea>
     </div>
 </div>
+
+<div class="form-group" style="padding-top: 10px">
+    <label class="control-label col-sm-2" for="">&nbsp;</label>
+    <div class="col-sm-4" style="margin-left:6px">
+       <button type="submit" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> Simpan Data </button>
+    </div>
+</div>

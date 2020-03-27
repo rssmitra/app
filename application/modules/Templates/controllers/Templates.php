@@ -23,6 +23,9 @@ class Templates extends MX_Controller {
 		$this->load->model('templates_model', 'templates_model');
         $this->load->model('billing/Billing_model', 'Billing');
         $this->load->model('pelayanan/Pl_pelayanan_pm_model', 'Pl_pelayanan_pm');
+
+        // load module
+        $this->load->module('registration/Reg_pasien.php');
     }
 
 
@@ -422,11 +425,32 @@ class Templates extends MX_Controller {
     }
 
     public function TemplateResumeMedis($no_registrasi, $tipe, $data){
-        /*html data untuk tampilan*/
+        /*html data untuk tampilan*/    
+        $this->load->model('registration/Reg_pasien_model','Reg_pasien');
         // get riwayat pasien
         $riwayat_pasien = $this->db->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
 
-        $html = '';
+        $data = [
+            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi),
+            'no_registrasi' => $no_registrasi,
+        ];
+
+        $userDob = $data['result']['registrasi']->tgl_lhr;
+ 
+        //Create a DateTime object using the user's date of birth.
+        $dob = new DateTime($userDob);
+     
+        //We need to compare the user's date of birth with today's date.
+        $now = new DateTime();
+
+        //Calculate the time difference between the two dates.
+        $difference = $now->diff($dob);
+
+        //Get the difference in years, as we are looking for the user's age.
+        $umur = $difference->format('%y');
+
+        $data['umur'] = $umur;
+
         $html .= '<table align="left" cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px; margin-left: -10px">';
         $html .= '<tr>';
             $html .= '<td align="center" colspan="2"><h2>RESUME MEDIS PASIEN</h2></td>';
@@ -442,38 +466,37 @@ class Templates extends MX_Controller {
 
         $html .= '<tr>';
             $html .= '<td width="100%">
-                        <b>1. Anamnesa<br></b>
-                        <span style="padding-left: 20px">
-                            '.$riwayat_pasien->anamnesa.'
-                        </span>
+                        <ol>
+                            <li><b>Anamnesa</b><br>'.$riwayat_pasien->anamnesa.'</li>
+                            <li><b>Diagnosa Penyakit</b>
+                                <br>Diagnosa awal, '.$riwayat_pasien->diagnosa_awal.'
+                                <br>Diagnosa akhir, '.$riwayat_pasien->diagnosa_akhir.'
+                            </li>
+                            <li><b>Tindakan yang dilakukan</b><br>'.$riwayat_pasien->pemeriksaan.'</li>
+                            <li><b>Anjuran Dokter</b><br>'.$riwayat_pasien->pengobatan.'</li>
+                        </ol>
                       </td>';
         $html .= '</tr>';
-
         $html .= '<tr>';
-            $html .= '<td width="100%">
-                        <b>2. Diagnosa Penyakit<br></b>
-                        <span style="padding-left: 20px">
-                            Diagnosa awal, '.$riwayat_pasien->diagnosa_awal.'<br>
-                            Diagnosa akhir, '.$riwayat_pasien->diagnosa_akhir.'
-                        </span>
-                      </td>';
+            $html .= '<td colspan="2">Obat yang diberikan kepada pasien</td>';
         $html .= '</tr>';
-
         $html .= '<tr>';
-            $html .= '<td width="100%">
-                        <b>3. Tindakan yang dilakukan<br></b>
-                        <span style="padding-left: 20px">
-                            '.$riwayat_pasien->pemeriksaan.'
-                        </span>
-                      </td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-            $html .= '<td width="100%">
-                        <b>4. Anjuran Dokter<br></b>
-                        <span style="padding-left: 20px">
-                            '.$riwayat_pasien->pengobatan.'
-                        </span>
+            $html .= '<td colspan="2">
+                        <table class="table table-striped" cellpadding="2" cellspacing="2" border="0" width="60%" style="font-size:36px; margin-left: -10px">
+                            <tr>
+                                <th width="30px">No</th>
+                                <th>Nama Obat</th>
+                                <th>Jumlah</th>
+                                <th>Satuan</th>
+                            </tr>
+                            <tr><th coslpan="4" align="center"><hr></th></tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
                       </td>';
         $html .= '</tr>';
 
