@@ -127,7 +127,18 @@ class Attachment_model extends CI_Model {
 		$this->db->where('web_attachment.wa_id', $id);
 		return $this->db->delete('web_attachment');
 
-		
+	}
+
+	public function delete_attachment_csm_by_id($id)
+	{
+		$get_data = $this->db->get_where('csm_dokumen_export', array('csm_dex_id'=>$id))->row();
+		//print_r($get_data->fullpath);die;
+		if (file_exists($get_data->csm_dex_fullpath)) {
+			unlink($get_data->csm_dex_fullpath);
+		}
+		$this->db->where('csm_dokumen_export.csm_dex_id', $id);
+		return $this->db->delete('csm_dokumen_export');
+
 	}
 
 	

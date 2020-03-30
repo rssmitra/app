@@ -102,7 +102,7 @@ class Csm_billing_pasien_model extends CI_Model {
     }
 
     /*get data transaksi*/
-    public function getTransData($no_registrasi){
+    public function getTransData($no_registrasi, $status_nk=''){
         $this->db->select('tc_trans_pelayanan.*,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_klas.nama_klas');
         $this->db->from('tc_trans_pelayanan');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
@@ -112,7 +112,9 @@ class Csm_billing_pasien_model extends CI_Model {
         $this->db->where('no_registrasi', $no_registrasi);
         $this->db->where('nama_tindakan IS NOT NULL');
         $this->db->where('tc_trans_pelayanan.kode_tc_trans_kasir IN (SELECT kode_tc_trans_kasir FROM tc_trans_kasir WHERE no_registrasi='.$no_registrasi.')');
-        $this->db->where('tc_trans_pelayanan.status_nk', 1);
+        // if($status_nk == ''){
+        //     $this->db->where('tc_trans_pelayanan.status_nk', 1);
+        // }
         $this->db->order_by('tc_trans_pelayanan.jenis_tindakan', 'ASC');
         //print_r($this->db->last_query());die;
         return $this->db->get()->result();
@@ -199,13 +201,13 @@ class Csm_billing_pasien_model extends CI_Model {
     }
 
     /*get detail data*/
-    public function getDetailData($no_registrasi){
+    public function getDetailData($no_registrasi, $status_nk=''){
         /*get data registrasi*/
         $reg_data = $this->get_by_id($no_registrasi);
         /*get kasir data*/
         $kasir_data = $this->getKasirData($no_registrasi);
         /*get data trans pelayanan by no registrasi*/
-        $trans_data = $this->getTransData($no_registrasi);
+        $trans_data = $this->getTransData($no_registrasi, $status_nk);
         //echo '<pre>';print_r($this->db->last_query());die;
         $group = array();
         foreach ($trans_data as $value) {
@@ -223,12 +225,12 @@ class Csm_billing_pasien_model extends CI_Model {
         $kode_bag = ($sirs_data->reg_data->kode_bagian_keluar!=null)?$sirs_data->reg_data->kode_bagian_keluar:$sirs_data->reg_data->kode_bagian_masuk;
         /*get tipe RI/RJ*/
         $str_type = $this->getTipeRegistrasi($kode_bag);
-
         /*$str_kode_bag = substr((string)$sirs_data->reg_data->kode_bagian_masuk, 0,2);
         $str_type = ($str_kode_bag=='01')?'RJ':'RI';*/
         /*data registrasi*/
         $data_registrasi = array(
             'no_registrasi' => $sirs_data->reg_data->no_registrasi,
+            'kode_perusahaan' => $sirs_data->reg_data->kode_perusahaan,
             'csm_rp_no_sep' => $sirs_data->reg_data->no_sep,
             'csm_rp_no_mr' => $sirs_data->reg_data->no_mr,
             'csm_rp_nama_pasien' => $sirs_data->reg_data->nama_pasien,
@@ -265,6 +267,7 @@ class Csm_billing_pasien_model extends CI_Model {
                         'csm_bp_subtotal' => $subtotal,
                         'csm_bp_kode_bagian' => $val_trans_data->kode_bagian,
                         'csm_bp_kode_dokter' => $val_trans_data->kode_dokter1,
+                        'status_nk' => $val_trans_data->status_nk,
                         //'csm_bp_nama_dokter' => $val_trans_data->kode_dokter1,
                         'csm_bp_kode_trans_pelayanan' => $val_trans_data->kode_trans_pelayanan,
                         'csm_bp_bill_rs' => $val_trans_data->bill_rs,
@@ -1144,7 +1147,7 @@ class Csm_billing_pasien_model extends CI_Model {
             //$this->export->getContentPDF($no_registrasi, $tipe,'','F');
         }
 
-        $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$val_kasir_data->kode_tc_trans_kasir.'';
+        $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
 
         foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
             $explode_key = explode('-',$key_group);
@@ -1172,7 +1175,7 @@ class Csm_billing_pasien_model extends CI_Model {
     }
 
     public function getDocumentPDF($no_registrasi){
-        return $this->db->join('csm_reg_pasien','csm_reg_pasien.no_registrasi=csm_dokumen_export.no_registrasi','left')->get_where('csm_dokumen_export', array('csm_dokumen_export.no_registrasi'=>$no_registrasi))->result();
+        return $this->db->join('csm_reg_pasien','csm_reg_pasien.no_registrasi=csm_dokumen_export.no_registrasi','left')->order_by('csm_dex_id', 'ASC')->get_where('csm_dokumen_export', array('csm_dokumen_export.no_registrasi'=>$no_registrasi))->result();
     }
 
     public function cekIfExist($no_registrasi){

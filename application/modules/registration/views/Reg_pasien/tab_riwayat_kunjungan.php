@@ -2,46 +2,6 @@
 
   $(document).ready(function(){
 
-    $('#form_edit_penjamin').ajaxForm({      
-
-      beforeSend: function() {        
-
-        achtungShowLoader();          
-
-      },      
-
-      uploadProgress: function(event, position, total, percentComplete) {        
-
-      },      
-
-      complete: function(xhr) {             
-
-        var data=xhr.responseText;        
-
-        var jsonResponse = JSON.parse(data);        
-
-        if(jsonResponse.status === 200){          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-          $('#modalEditPenjamin').modal('hide');
-          console.log(jsonResponse);
-          /*show action after success submit form*/
-          $("#tabs_detail_pasien").load("registration/reg_pasien/riwayat_kunjungan/"+jsonResponse.no_mr);
-
-
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
-
-        achtungHideLoader();        
-
-      }      
-
-    }); 
-
     var no_mr = '<?php echo $no_mr?>';
     var kode_bagian = '<?php echo (isset($kode_bagian))?$kode_bagian:''?>';
     var no_reg = '<?php echo (isset($no_reg))?$no_reg:''?>';
@@ -177,14 +137,9 @@
 
       </div>
 
-      <div class="modal-body">
-
-      <form class="form-horizontal" method="post" id="form_edit_penjamin" action="registration/Reg_pasien/process_edit_transaksi_penjamin_pasien" enctype="multipart/form-data" autocomplete="off">                                    
+      <div class="modal-body">         
         
         <div id="form_edit_penjamin_modal"></div>
-
-
-      </form>
 
       </div>
 

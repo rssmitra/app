@@ -36,7 +36,7 @@ $(document).ready(function() {
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
           // $('#page-area-content').load('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real');
-          $('#page-area-content').load('adm_pasien/loket_kasir/Adm_kasir?flag=<?php echo $flag?>&pelayanan=<?php echo $tipe?>');
+          load_billing_data();
           
           if (jsonResponse.billing_um > 0) {
             PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=null','Cetak',1200,750);
@@ -110,9 +110,11 @@ function payment(){
     var total = billing.reduce(getSum, 0);
 
     console.log(billing);
+
     $('#total_payment').val(total);
     $('#array_data_nk_checked').val(kode_trans_pelayanan_nk);
     $('#array_data_checked').val(kode_trans_pelayanan);
+    $('#array_data_billing').val(billing);
     $('#total_nk').val(total_nk);
 
     $('#billing_data').html(loading);

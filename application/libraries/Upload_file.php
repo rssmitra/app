@@ -122,7 +122,7 @@ final Class upload_file {
 
         $html = '<h3><b><i class="fa fa-file"></i> Attachment Files</b></h3> <br>';
         $html .= '<table id="attc_table_id" class="table table-striped table-bordered">';
-        $html .= '<tr style="background-color:#ec2028; color:white">';
+        $html .= '<tr style="background-color:darkcyan; color:white">';
             $html .= '<th width="30px" class="center">No</th>';
             $html .= '<th width="100px">Title</th>';
             $html .= '<th width="100px">Owner</th>';
@@ -213,6 +213,7 @@ final Class upload_file {
                         'csm_dex_nama_dok' => $nama_file_unik,
                         'csm_dex_jenis_dok' => $type_file,
                         'csm_dex_fullpath' => $params['path'].$nama_file_unik,
+                        'is_adjusment' => 'Y',
                     );
                     $doc_save['created_date'] = date('Y-m-d H:i:s');
                     $doc_save['created_by'] = $CI->session->userdata('user')->fullname;
@@ -228,6 +229,50 @@ final Class upload_file {
             }
 
             return $getData;
+    }
+
+    function CsmgetUploadedFile($no_registrasi){
+
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+
+        $html = '';
+        $db->where('no_registrasi', $no_registrasi);
+        $files = $db->get('csm_dokumen_export')->result();
+
+        $html .= '<table id="attc_table_id" class="table table-striped table-bordered">';
+        $html .= '<tr style="background-color:darkcyan; color:white">';
+            $html .= '<th width="30px" class="center">No</th>';
+            $html .= '<th width="100px">File Name</th>';
+            $html .= '<th width="100px">Created Date</th>';
+            $html .= '<th width="60px" class="center">Download</th>';
+            $html .= '<th width="60px" class="center">Delete</th>';
+        $html .= '</tr>';
+        $no=1;
+        if(count($files) > 0){
+            foreach ($files as $key => $row_list) {
+                # code...
+                $html .= '<tr id="tr_id_'.$row_list->csm_dex_id.'">';
+                    $html .= '<td align="center">'.$no.'</td>';
+                    $html .= '<td align="left">'.$row_list->csm_dex_nama_dok.'</td>';
+                    $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
+                    $html .= '<td align="center"><a href="Templates/Attachment/download_attachment?fname='.$row_list->csm_dex_fullpath.'" style="color:red">Download</a></td>';
+                    $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
+                $html .= '</tr>';
+            $no++;
+            }
+        }else{
+            $html .=  '<tr><td colspan="9">- File not found -</td></tr>';
+        }
+        
+        $html .= '</table>';
+
+
+
+
+
+        return $html;
+
     }
 
     function doUploadMultiple($params)

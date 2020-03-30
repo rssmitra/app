@@ -1456,6 +1456,9 @@ class Billing_model extends CI_Model {
     }
 
     public function groupingTransaksiByDate($array){
+        $groupDate = array();
+        $groupBag = array();
+        $getData = array();
         // loop data
         foreach($array as $key=>$row){
             // group by date

@@ -120,13 +120,13 @@ class Csm_billing_pasien extends MX_Controller {
                 $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $exc_qry = $this->db->insert('csm_reg_pasien', $dataexc);
                 $newId = $this->db->insert_id();
-                $this->logs->save('csm_reg_pasien', $newId, 'insert new record', json_encode($dataexc));
+                $this->logs->save('csm_reg_pasien', $newId, 'insert new record', json_encode($dataexc), 'no_registrasi');
             }else{
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $exc_qry = $this->db->update('csm_reg_pasien', $dataexc, array('no_registrasi' => $no_registrasi));
                 $newId = $no_registrasi;
-                $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc));
+                $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc), 'no_registrasi');
             }
             $this->db->update('csm_reg_pasien', array('is_submitted' => 'Y') , array('no_registrasi' => $no_registrasi));
             /*update to sirs*/
@@ -173,35 +173,14 @@ class Csm_billing_pasien extends MX_Controller {
             
             /*insert dokumen adjusment*/
             if(isset($_FILES['pf_file'])){
-                
                 $this->upload_file->CsmdoUploadMultiple(array(
                     'name' => 'pf_file',
-                    'path' => 'uploaded/casemix/',
+                    'path' => 'uploaded/casemix/log/',
                     'ref_id' => $no_registrasi,
                     'ref_table' => 'csm_dokumen_export',
                     'flag' => 'dokumen_export',
                 ));
             }
-
-
-            /*jika ada item tindakan yang 0 maka sama dengan dihapus*/
-            foreach ($_POST['subtotal_tindakan_per_item'] as $key_item => $val_item) {
-                if($val_item==0){
-                    /*hapus transaksi pada his*/
-                    $this->db->delete('Csm_billing_pasien', array('csm_bp_id' => $key_item) );
-                }else{
-                    $this->db->update('Csm_billing_pasien', array('csm_bp_subtotal' => $val_item, 'csm_bp_revisi' => 1), array('csm_bp_id' => $key_item) );
-                }
-            }
-            /*update resume pasien*/
-            $resume_data = array(
-                'csm_brp_bill_dr' => $_POST['csm_brp_bill_dr'],
-                'csm_brp_bill_adm' => $_POST['csm_brp_bill_adm'],
-                'csm_brp_bill_far' => $_POST['csm_brp_bill_far'],
-                'csm_brp_bill_pm' => $_POST['csm_brp_bill_pm'],
-                'csm_brp_bill_tindakan' => $_POST['csm_brp_bill_tindakan'],
-            );
-            $this->db->update('csm_resume_billing_pasien', $resume_data, array('no_registrasi' => $_POST['no_registrasi_hidden']) );
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -481,7 +460,7 @@ EOD;
 
         $reg_data = $this->Csm_billing_pasien->getRegDataLocal($no_registrasi);
         $doc_pdf = $this->Csm_billing_pasien->getDocumentPDF($no_registrasi);
-        //echo '<pre>';print_r($doc_pdf);die;
+        // echo '<pre>';print_r($doc_pdf);die;
         /*save merged file*/
         $month_saved = date("M",strtotime($reg_data->csm_rp_tgl_masuk));
         $year_saved = date("Y",strtotime($reg_data->csm_rp_tgl_masuk));
@@ -491,7 +470,7 @@ EOD;
             'no_sep' => $reg_data->csm_rp_no_sep,
             'csm_dk_filename' => $reg_data->csm_rp_no_sep.'.pdf',
             'csm_dk_fullpath' => 'uploaded/casemix/merge-'.$month_saved.'-'.$year_saved.'/'.$tipe.'/'.$reg_data->csm_rp_no_sep.'.pdf',
-            'csm_dk_total_klaim' => $this->Csm_billing_pasien->getTotalBilling($no_registrasi, $tipe),
+            'csm_dk_total_klaim' => (int)$this->Csm_billing_pasien->getTotalBilling($no_registrasi, $tipe),
             'csm_dk_tipe' => $tipe,
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')
@@ -502,7 +481,6 @@ EOD;
         }else{
             $this->db->insert('csm_dokumen_klaim', $datasaved);
         }
-
 
         $fields_string = "";
         foreach($doc_pdf as $key=>$value) {

@@ -184,5 +184,22 @@ class Adm_kasir_model extends CI_Model {
         return $result;
     }
 
+    public function get_jurnal_akunting($no_registrasi){
+    	$query = "select a.*, b.acc_nama, c.acc_nama as acc_ref, c.acc_no as acc_no_ref, d.tgl_transaksi from ak_tc_transaksi_det a
+    				inner join ak_tc_transaksi d on d.id_ak_tc_transaksi=a.id_ak_tc_transaksi
+					inner join mt_account b on b.acc_no=a.acc_no
+					inner join mt_account c on c.acc_no=b.acc_ref
+					where a.id_ak_tc_transaksi 
+					in( select id_ak_tc_transaksi from ak_tc_transaksi where kode_tc_trans_kasir 
+					in(select kode_tc_trans_kasir from tc_trans_pelayanan where no_registrasi=".$no_registrasi.")) order by a.acc_no ASC";
+		$exc = $this->db->query($query)->result();
+		$getData = array();
+		foreach( $exc as $row_exc ){
+			$getData[$row_exc->acc_ref][] = $row_exc;
+		}
+
+		return array('result' => $exc, 'data' => $getData);
+    }
+
 
 }

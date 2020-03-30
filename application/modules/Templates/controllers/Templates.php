@@ -244,6 +244,47 @@ class Templates extends MX_Controller {
             );
             
         }
+
+        // modul casemix
+        if ($_GET['mod']==34) {
+
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=341&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+            );
+            $data[1] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=343&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+            $data[2] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-2',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=344&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+            $data[3] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-3',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=345&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+            $data[4] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=342&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+            );
+            
+        }
         
         echo json_encode($data);
     }
@@ -397,16 +438,18 @@ class Templates extends MX_Controller {
             $html .= '</tr>';
             $no++; 
             foreach ($val as $value_data) {
-                $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
-                $html .= '<tr>';
-                $html .= '<td>'.$value_data->nama_tindakan.'</td>';
-                $html .= '<td align="right">Rp. '.number_format($subtotal).',-</td>';
-                $html .= '</tr>';
-                /*total*/
-                $sum_subtotal[] = $subtotal;
-                $sum_subtotal_peritems[$k][] = $subtotal;
-                /*resume billing*/
-                $resume_billing[] = $this->Billing->resumeBillingRJ($value_data->jenis_tindakan, $value_data->kode_bagian, $subtotal);
+                if( $value_data->status_nk == 1){
+                    $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
+                    $html .= '<tr>';
+                    $html .= '<td>'.$value_data->nama_tindakan.'</td>';
+                    $html .= '<td align="right">Rp. '.number_format($subtotal).',-</td>';
+                    $html .= '</tr>';
+                    /*total*/
+                    $sum_subtotal[] = $subtotal;
+                    $sum_subtotal_peritems[$k][] = $subtotal;
+                    /*resume billing*/
+                    $resume_billing[] = $this->Billing->resumeBillingRJ($value_data->jenis_tindakan, $value_data->kode_bagian, $subtotal);
+                }
             }     
             $html .= '<tr>';
             $html .= '<td align="right"><b>Subtotal</b></td>';
@@ -429,13 +472,9 @@ class Templates extends MX_Controller {
         $this->load->model('registration/Reg_pasien_model','Reg_pasien');
         // get riwayat pasien
         $riwayat_pasien = $this->db->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
+        $result = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
 
-        $data = [
-            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi),
-            'no_registrasi' => $no_registrasi,
-        ];
-
-        $userDob = $data['result']['registrasi']->tgl_lhr;
+        $userDob = $result['registrasi']->tgl_lhr;
  
         //Create a DateTime object using the user's date of birth.
         $dob = new DateTime($userDob);
@@ -448,9 +487,7 @@ class Templates extends MX_Controller {
 
         //Get the difference in years, as we are looking for the user's age.
         $umur = $difference->format('%y');
-
-        $data['umur'] = $umur;
-
+        $html = '';
         $html .= '<table align="left" cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px; margin-left: -10px">';
         $html .= '<tr>';
             $html .= '<td align="center" colspan="2"><h2>RESUME MEDIS PASIEN</h2></td>';
@@ -472,31 +509,63 @@ class Templates extends MX_Controller {
                                 <br>Diagnosa awal, '.$riwayat_pasien->diagnosa_awal.'
                                 <br>Diagnosa akhir, '.$riwayat_pasien->diagnosa_akhir.'
                             </li>
-                            <li><b>Tindakan yang dilakukan</b><br>'.$riwayat_pasien->pemeriksaan.'</li>
+                            <li><b>Pemeriksaan yang dilakukan</b><br>'.$riwayat_pasien->pemeriksaan.'</li>
                             <li><b>Anjuran Dokter</b><br>'.$riwayat_pasien->pengobatan.'</li>
                         </ol>
                       </td>';
         $html .= '</tr>';
-        $html .= '<tr>';
-            $html .= '<td colspan="2">Obat yang diberikan kepada pasien</td>';
-        $html .= '</tr>';
+
         $html .= '<tr>';
             $html .= '<td colspan="2">
-                        <table class="table table-striped" cellpadding="2" cellspacing="2" border="0" width="60%" style="font-size:36px; margin-left: -10px">
+                        <b><h3>Tindakan kepada Pasien</h3></b>
+                        Berikut adalah tindakan yang dilakukan oleh dokter kepada pasien sebagai dasar tagihan kepada pasien.<br>
+                        <table class="table table-striped" cellpadding="2" cellspacing="2" style="font-size:36px;">
                             <tr>
-                                <th width="30px">No</th>
-                                <th>Nama Obat</th>
-                                <th>Jumlah</th>
-                                <th>Satuan</th>
-                            </tr>
-                            <tr><th coslpan="4" align="center"><hr></th></tr>
+                                <th align="center" width="30px" style="border-collapse: collapse; border-bottom: 1px solid black;">No</th>
+                                <th style="border-collapse: collapse; border-bottom: 1px solid black;">Deskripsi</th>
+                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="120px">Jenis Tindakan</th>
+                            </tr>';
+                            $no_tindakan = 0;
+                            foreach($result['tindakan'] as $row_tindakan) : 
+                                if(in_array($row_tindakan->kode_jenis_tindakan, array(3,10,12) )) :
+                                    $no_tindakan++;
+                                    $html .= '
+                                    <tr>
+                                        <td align="center">'.$no_tindakan.'</td>
+                                        <td>'.$row_tindakan->nama_tindakan.'</td>
+                                        <td>'.$row_tindakan->jenis_tindakan.'</td>
+                                    </tr>';
+                                endif;
+                            endforeach;
+                        $html .= '</table>
+                      </td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td colspan="2">
+                        <b><h3>Obat yang diberikan</h3></b>
+                        Berikut adalah obat yang diberikan kepada pasien sebagai resep dokter.<br>
+                        <table class="table table-striped" cellpadding="2" cellspacing="2"  width="100%" style="font-size:36px;">
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
+                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="30px">No</th>
+                                <th style="border-collapse: collapse; border-bottom: 1px solid black;">Nama Obat</th>
+                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="100px">Jumlah</th>
+                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="100px">Keterangan</th>
+                            </tr>';
+                            $no_obt = 0;
+                            foreach($result['tindakan'] as $row_obt) : 
+                                if(in_array($row_obt->kode_jenis_tindakan, array(11) )) :
+                                    $no_obt++;
+                                    $html .= '
+                                    <tr>
+                                        <td align="center">'.$no_obt.'</td>
+                                        <td>'.$row_obt->nama_tindakan.'</td>
+                                        <td align="center">'.$row_obt->jumlah_tebus.'</td>
+                                        <td>'.$row_obt->jenis_tindakan.'</td>
+                                    </tr>';
+                                endif;
+                            endforeach;
+                        $html .= '</table>
                       </td>';
         $html .= '</tr>';
 

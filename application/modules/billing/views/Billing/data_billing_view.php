@@ -104,7 +104,9 @@ function checkedNk(kode) {
                                         <th class="center" width="100px">Subtotal (Rp.)</th>
                                     </tr>
 
-                                <?php foreach( $row_s as $value_data ) : ?>
+                                <?php 
+                                    $sum_array[$key.''.$key_s] = array();
+                                    foreach( $row_s as $value_data ) : ?>
                                     
                                     <?php 
                                         $subtotal = $this->Billing->get_total_tagihan($value_data);
@@ -212,13 +214,16 @@ function checkedNk(kode) {
                                     </td>
                                 </tr>
                                 <?php 
-                                    $sum_array[$key.''.$key_s][] = $subtotal;
+                                    if($value_data->kode_tc_trans_kasir == NULL){
+                                        $sum_array[$key.''.$key_s][] = $subtotal;
+                                    }
+                                    $sum_array_total[$key.''.$key_s][] = $subtotal;
                                     endforeach; 
                                 ?>
                                 <tr style="font-weight: bold; font-size: 13px">
                                     <td colspan="7" align="right">Total</td>
                                     <td align="right">
-                                        <?php echo number_format(array_sum($sum_array[$key.''.$key_s]))?>,-
+                                        <?php echo number_format(array_sum($sum_array_total[$key.''.$key_s]))?>,-
                                         <input type="hidden" class="total_per_unit" value="<?php echo array_sum($sum_array[$key.''.$key_s])?>">
                                     </td>
                                 </tr>

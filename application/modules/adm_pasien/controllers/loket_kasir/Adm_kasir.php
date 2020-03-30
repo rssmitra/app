@@ -18,6 +18,8 @@ class Adm_kasir extends MX_Controller {
         /*load model*/
         $this->load->model('adm_pasien/loket_kasir/Adm_kasir_model', 'Adm_kasir');
         $this->load->model('adm_pasien/Adm_pasien_model', 'Adm_pasien');
+        $this->load->model('billing/Billing_model', 'Billing');
+        $this->load->model('casemix/Csm_billing_pasien_model', 'Csm_billing_pasien');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -71,8 +73,10 @@ class Adm_kasir extends MX_Controller {
                     // sum total
                     $total = $this->master->sumArrayByKey($row_list, 'total');
                     $arr_total[] = $total;
+                    $row[] = '<div class="center"></div>';
+                    $row[] = $row_list[0]['no_registrasi'];
                     $row[] = '<div class="center">'.$no.'</div>';
-                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan'].""."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
+                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
                     if($_GET['flag']=='bpjs'){
                         $row[] = $row_list[0]['no_sep'];
                     }
@@ -95,8 +99,10 @@ class Adm_kasir extends MX_Controller {
                     // sum total
                     $total = $this->master->sumArrayByKey($row_list, 'total');
                     $arr_total[] = $total;
+                    $row[] = '<div class="center"></div>';
+                    $row[] = $row_list[0]['no_registrasi'];
                     $row[] = '<div class="center">'.$no.'</div>';
-                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan'].""."'".')">'.$row_list[0]['no_registrasi'].'</div>';
+                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
                     if($_GET['flag']=='bpjs'){
                         $row[] = $row_list[0]['no_sep'];
                     }
@@ -151,6 +157,19 @@ class Adm_kasir extends MX_Controller {
         );
 
         echo json_encode($result);
+    }
+
+    public function getDetailTransaksi($no_registrasi){
+        $result = json_decode($this->Billing->getDetailData($no_registrasi));
+        $akunting = $this->Adm_kasir->get_jurnal_akunting($no_registrasi);
+        $data = array(
+            'result' => $result,
+            'transaksi' => $akunting['data'],
+            'jurnal' => $akunting['data'],
+        );
+        // echo '<pre>';print_r($akunting);die;
+        $html = $this->load->view('loket_kasir/Adm_kasir/detail_transaksi_view', $data, true);
+        echo json_encode(array('html' => $html));
     }
 
 }

@@ -12,13 +12,13 @@
     </div><!-- /.page-header -->
 
     <div class="row">
-      <div class="col-md-5" style="background: azure;min-height: 80px">
-        <table width="100%" style="font-size:12px">
+      <div class="col-md-4" style="background: white;min-height: 80px">
+        <table width="100%" style="font-size:12px; ">
           <tr>
             <td colspan="2"><b>DATA PASIEN</b></td>
           </tr>
           <tr>
-            <td width="150px">No MR (Medical Record)</td>
+            <td width="120px">No MR</td>
             <td>: <?php echo $data->reg_data->no_mr?></td>
           </tr>
           <tr>
@@ -32,7 +32,7 @@
         </table>
       </div>
 
-      <div class="col-md-4" >
+      <div class="col-md-4" style="background: white;min-height: 80px">
         <table>
           <tr>
             <td colspan="2"><b>KUNJUNGAN TERAKHIR</b></td>
@@ -42,7 +42,7 @@
             <td>: <?php echo $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk)?></td>
           </tr>
           <tr>
-            <td>Poli/Klinik</td>
+            <td width="100px">Poli/Klinik</td>
             <td>: <?php echo ucwords($data->reg_data->bagian_masuk_field)?></td>
           </tr>
           <tr>
@@ -52,7 +52,7 @@
         </table>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-4" style="background: white;min-height: 80px">
         <b>PERUSAHAAN PENJAMIN</b><br>
         <span><?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'UMUM'?></span>
       </div>
@@ -68,6 +68,7 @@
     <input type="hidden" id="no_sep_val" value="<?php echo isset($data->reg_data->no_sep)?$data->reg_data->no_sep:''?>" name="no_sep_val">
     <input type="hidden" name="array_data_checked" id="array_data_checked">
     <input type="hidden" name="array_data_nk_checked" id="array_data_nk_checked">
+    <input type="hidden" name="array_data_billing" id="array_data_billing">
     <input type="hidden" name="total_nk" id="total_nk">
     <input type="hidden" name="total_uang_muka" id="total_uang_muka" value="0">
     <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val">

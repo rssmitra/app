@@ -46,46 +46,37 @@ class Csm_dokumen_klaim extends MX_Controller {
     public function get_data()
     {
         /*get data from model*/
-        if(isset($_GET['search'])){
-            $list = $this->Csm_dokumen_klaim->get_datatables();
-            $data = array();
-            $no = $_POST['start'];
-            foreach ($list as $row_list) {
-                $no++;
-                $row = array();
-                $row[] = '<div class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
-                                <span class="lbl"></span>
-                            </label>
-                          </div>';
-                $row[] = '<div class="left"><a href="'.base_url().$row_list->csm_dk_fullpath.'" target="_blank">'.$row_list->csm_rp_no_sep.'</a></div>';
-                $row[] = $row_list->no_registrasi;
-                $row[] = $row_list->csm_rp_no_mr;
-                $row[] = strtoupper($row_list->csm_rp_nama_pasien);
-                $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
-                $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
+        $list = $this->Csm_dokumen_klaim->get_datatables();
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">
+                        <label class="pos-rel">
+                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
+                            <span class="lbl"></span>
+                        </label>
+                      </div>';
+            $row[] = '<div class="left"><a href="'.base_url().$row_list->csm_dk_fullpath.'" target="_blank">'.$row_list->csm_rp_no_sep.'</a></div>';
+            $row[] = $row_list->no_registrasi;
+            $row[] = $row_list->csm_rp_no_mr;
+            $row[] = strtoupper($row_list->csm_rp_nama_pasien);
+            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
+            $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
 
-                $row[] = '<div class="center">'.$row_list->csm_dk_tipe.'</div>';
-                $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
-                $row[] = $this->tanggal->formatDate($row_list->created_date).'<br>by : '.$row_list->created_by;
-                $data[] = $row;
-            }
-            $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Csm_dokumen_klaim->count_all(),
-                        "recordsFiltered" => $this->Csm_dokumen_klaim->count_filtered(),
-                        "data" => $data,
-                );
-        }else{
-            $data = array();
-            $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => 0,
-                        "recordsFiltered" => 0,
-                        "data" => $data,
-                );
+            $row[] = '<div class="center">'.$row_list->csm_dk_tipe.'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
+            $row[] = $this->tanggal->formatDate($row_list->created_date).'<br>by : '.$row_list->created_by;
+            $data[] = $row;
         }
+        $output = array(
+                    "draw" => $_POST['draw'],
+                    "recordsTotal" => $this->Csm_dokumen_klaim->count_all(),
+                    "recordsFiltered" => $this->Csm_dokumen_klaim->count_filtered(),
+                    "data" => $data,
+            );
+        
         
         //output to json format
         echo json_encode($output);

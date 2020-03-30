@@ -153,112 +153,11 @@ class Attachment extends MX_Controller {
         
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function process()
-    {
-        
-        /*print_r($_FILES);die;*/
-
-        $this->load->library('form_validation');
-        $val = $this->form_validation;
-        $val->set_rules('ws_name', 'Product Name', 'trim|required');
-        $val->set_rules('ws_date', 'Date', 'trim|required');
-        $val->set_rules('content', 'Content', 'trim');
-
-        $val->set_message('required', "Silahkan isi field \"%s\"");
-
-        if ($val->run() == FALSE)
-        {
-            $val->set_error_delimiters('<div style="color:white">', '</div>');
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            $this->db->trans_begin();
-            $id = ($this->input->post('id'))?$this->input->post('id'):0;
-
-            $dataexc = array(
-                'ws_name' => $val->set_value('ws_name'),
-                'ws_date' => $val->set_value('ws_date'),
-                'ws_description' => $val->set_value('content'),
-                'is_active' => $this->input->post('is_active'),
-            );
-
-            if($_FILES['images']['name'] != ''){
-                /*hapus dulu file yang lama*/
-                if( $id != 0 ){
-                    $attachment = $this->attachment_model->get_by_id($id);
-                    if (file_exists('uploaded/files/'.$attachment->ws_images.'')) {
-                        unlink('uploaded/files/'.$attachment->ws_images.'');
-                    }
-                }
-
-                $dataexc['ws_images'] = $this->upload_file->doUpload('images', 'uploaded/files/');
-            }
-
-            if($id==0){
-                $dataexc['created_date'] = date('Y-m-d H:i:s');
-                $dataexc['created_by'] = $this->session->userdata('user')->fullname;
-                $this->db->insert('web_attachment', $dataexc);
-                $last_id = $this->db->insert_id();
-            }else{
-                $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                $dataexc['updated_by'] = $this->session->userdata('user')->fullname;
-                $this->db->update('web_attachment', $dataexc, array('id' => $id));
-                $last_id = $id;
-            }
-
-            /*excecute upload*/
-            if($last_id){
-                $params['id'] = $last_id;
-                $this->upload_file->doUploadMultiple(array(
-                    'id' => $last_id,
-                    'table' => 'web_attachment',
-                    'name' => 'pf_file',
-                    'path' => 'uploaded/files/',
-                ));
-            }
-            
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
-            }
-
-        }
-    }
-
-    public function delete()
+    public function delete_attachment_csm()
     {
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
-        $toArray = explode(',',$id);
         if($id!=null){
-            if($this->attachment_model->delete_by_id($toArray)){
+            if($this->attachment_model->delete_attachment_csm_by_id($id)){
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
             }else{
                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
@@ -268,29 +167,7 @@ class Attachment extends MX_Controller {
         }
         
     }
-
-    public function delete_content_image()
-    {
-        $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
-        if($id!=null){
-            if( $id != 0 ){
-                $attachment = $this->attachment_model->get_by_id($id);
-                if (file_exists('uploaded/files/'.$attachment->ws_images.'')) {
-                    unlink('uploaded/files/'.$attachment->ws_images.'');
-                    echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
-                }else{
-                    echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
-                }
-            }
-        }else{
-            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
-        }
-        
-    }
-
-    
-
-    
+  
 
 }
 

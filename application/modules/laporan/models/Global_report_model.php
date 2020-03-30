@@ -57,13 +57,13 @@ class Global_report_model extends CI_Model {
 	}
 
 	// public function akunting_mod_4(){
-	// 	$query = "SELECT c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual  
+	// 	$query = "SELECT d.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual  
 	// 		FROM tc_penerimaan_barang as a 
 	// 		LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
 	// 		LEFT JOIN mt_barang c ON b.kode_brg=c.kode_brg 
 	// 		LEFT JOIN mt_rekap_stok d ON d.kode_brg=b.kode_brg 
 	// 		LEFT JOIN fr_tc_far_detail e ON e.kode_brg=b.kode_brg
-	// 		WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
+	// 		WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null AND d.kode_brg IS NOT NULL
 	// 		GROUP BY c.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual ";
 			
 	// 	return $query;
@@ -72,7 +72,8 @@ class Global_report_model extends CI_Model {
 	public function akunting_mod_4(){
 		$query = "SELECT a.kode_brg, b.nama_brg, a.harga_beli
 			FROM mt_rekap_stok as a 
-			INNER JOIN mt_barang b on b.kode_brg=a.kode_brg WHERE (a.kode_brg IS NOT NULL)";
+			INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
+			WHERE (a.kode_brg IS NOT NULL)";
 			
 		return $query;
 	}
@@ -85,7 +86,16 @@ class Global_report_model extends CI_Model {
 		return $this->db->query($query)->result_array();
 	}
 
-
+	public function penerimaan_penjualan(){
+		$query = "SELECT b.kode_brg, SUM(b.jumlah_kirim) as jumlah_kirim, AVG(b.harga) as harga
+			FROM tc_penerimaan_barang as a 
+			LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
+			LEFT JOIN fr_tc_far_detail e ON e.kode_brg=b.kode_brg
+			WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
+			GROUP BY b.kode_brg";
+			
+		return $this->db->query($query)->result_array();
+	}
 
 
 

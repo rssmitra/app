@@ -184,7 +184,7 @@ counterfile++;
                     <input name="csm_rp_no_sep" id="csm_rp_no_sep" value="<?php echo $reg->csm_rp_no_sep?>" class="form-control" type="text">
                   </div>
                   <label class="control-label col-md-1">No.Reg</label>
-                  <div class="col-md-1">
+                  <div class="col-md-2">
                     <input name="no_registrasi" id="no_registrasi" value="<?php echo $reg->no_registrasi?>" class="form-control" type="text">
                   </div>
                 </div>
@@ -194,7 +194,7 @@ counterfile++;
                     <input name="csm_rp_nama_pasien" id="csm_rp_nama_pasien" value="<?php echo $reg->csm_rp_nama_pasien?>" placeholder="" class="form-control" type="text" >
                   </div>
                   <label class="control-label col-md-1">No.MR</label>
-                  <div class="col-md-1">
+                  <div class="col-md-2">
                     <input name="csm_rp_no_mr" id="csm_rp_no_mr" value="<?php echo $reg->csm_rp_no_mr?>" class="form-control" type="text">
                   </div>
                 </div>

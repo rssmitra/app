@@ -433,8 +433,8 @@ class Billing extends MX_Controller {
             $dataTranskasir["nk_perusahaan"] = 0;
         }
 
-        $potongan_diskon = ($_POST['total_payment_all'] * ($_POST['jumlah_diskon']/100));
-        $sisa_bill = $_POST['total_payment_all'] - $potongan_diskon - $potongan_nk;
+        $potongan_diskon = ($_POST['total_payment'] * ($_POST['jumlah_diskon']/100));
+        $sisa_bill = $_POST['total_payment'] - $potongan_diskon;
         $dataTranskasir["potongan"] = $potongan_diskon;
         $dataTranskasir["bill"] = $sisa_bill;
 
@@ -486,12 +486,17 @@ class Billing extends MX_Controller {
         if( $_POST['kode_perusahaan_val'] == 120 ){
             $return_costing = $this->costing_billing($seri_kuitansi_dt['seri_kuitansi']);
             $return['redirect'] = $return_costing['redirect'];
+        }else{
+            $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($_POST['no_registrasi'], true));
+            $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $_POST['no_registrasi']);
         }
 
         $preview_billing_nk = $this->db->where_in('kode_trans_pelayanan', $str_to_array_nk)->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'status_nk' => 1))->result();
         $preview_billing_um = $this->db->where_not_in('kode_trans_pelayanan', $str_to_array_nk)->where('(status_nk IS NULL or status_nk = 0) ')->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi']))->result();
         // print_r($preview_billing_um);die;
         
+        // update tgl keluar registrasi
+        $this->db->update('tc_registrasi', array('tgl_jam_keluar' => date('Y-m-d H:i:s')), array('no_registrasi' => $_POST['no_registrasi']) );
 
         if ($this->db->trans_status() === FALSE)
         {
@@ -570,16 +575,6 @@ class Billing extends MX_Controller {
 
         /*get data trans pelayanan by no registrasi from sirs*/
         $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        //echo '<pre>';print_r($sirs_data);die;
-        /*cek apakah data sudah pernah diinsert ke database atau blm*/
-        // if( $this->Csm_billing_pasien->checkExistingData($no_registrasi) ){
-        //     /*no action if data exist, continue to view data*/
-        // }else{
-        // /*jika data belum ada atau belum pernah diinsert, maka insert ke table*/
-        //     /*insert data untuk pertama kali*/
-        //     if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
-        //     $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
-        // }
 
         if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
             $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
@@ -598,7 +593,7 @@ class Billing extends MX_Controller {
             
         }
         
-        $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
+        $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
         /*created document name*/
         $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
         // print_r($createDocument);die;

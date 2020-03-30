@@ -277,7 +277,6 @@ final Class Graph_master {
 			$subtitle = 'Pendapatan RS Berdasarkan Perusahaan Penjamin Tahun '.date('Y').'';
 		}
 		
-
 		// modul purchasing table chart
 		if($params['prefix']==203){
 			$query = "SELECT month(a.tgl_jam) as bulan, SUM(a.bill) AS total_format_money 
@@ -291,7 +290,75 @@ final Class Graph_master {
 			$data = $db->query($query)->result_array();
 		}
 
+
+		// MODUL CASEMIX
+		// modul purchasing line chart
+		if($params['prefix']==341){
+			$query = "SELECT MONTH(tgl_transaksi_kasir) AS bulan, COUNT(csm_dokumen_klaim.no_registrasi) AS total FROM csm_dokumen_klaim INNER JOIN csm_reg_pasien ON csm_reg_pasien.no_registrasi=csm_dokumen_klaim.no_registrasi WHERE YEAR(tgl_transaksi_kasir)=".date('Y')." AND kode_perusahaan=120 GROUP BY MONTH(tgl_transaksi_kasir)";	
+			$fields = array('Total_Dokumen_Klaim'=>'total');
+			$title = '<span style="font-size:13.5px">Total Dokumen Pengajuan Klaim BPJS '.date('Y').'</span>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+
+		}
+
+		// modul purchasing pie chart
+		if($params['prefix']==342){
+			$query = "SELECT TOP 5 a.nama_perusahaan as nama_perusahaan, SUM(b.bill) AS total 
+						FROM tc_trans_kasir b
+						left join mt_perusahaan a on a.kode_perusahaan=b.kode_perusahaan
+						WHERE YEAR(b.tgl_jam) = ".date('Y')." and month(b.tgl_jam)=".date('m')."
+						GROUP BY a.nama_perusahaan ORDER BY SUM(b.bill) DESC";	
+			$data_qry = $CI->db->query($query)->result_array();
+			$getData = [];
+			foreach ($data_qry as $key => $value) {
+				$data[] = array( 'name' => (!empty($value['nama_perusahaan']))?$value['nama_perusahaan']:'UMUM', 'total' => $value['total'] );
+			}
+
+			$fields = array('name' => 'total');
+			$title = '<span style="font-size:13.5px">5 Perusahaan Penjamin Pasien Terbesar</span>';
+			$subtitle = 'Persentase Pendapatan RS Berdasarkan Perusahaan Penjamin Pasien Tahun '.date('Y').'';
+		}
 		
+		// modul purchasing table chart
+		if($params['prefix']==343){
+			$query = "SELECT month(a.tgl_transaksi_kasir) as bulan, SUM(a.csm_dk_total_klaim) AS total_format_money 
+						FROM csm_dokumen_klaim a
+						WHERE YEAR(a.tgl_transaksi_kasir) = ".date('Y')."
+						GROUP BY month(a.tgl_transaksi_kasir) ORDER BY month(a.tgl_transaksi_kasir) ASC";	
+			$fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
+			$title = '<span style="font-size:13.5px">Total Pengajuan Klaim s/d Bulan '.$CI->tanggal->getBulan(date('m')).' '.date('Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+
+		if($params['prefix']==344){
+			$query = "SELECT month(a.tgl_transaksi_kasir) as bulan, COUNT(a.no_registrasi) AS total_format_money 
+						FROM csm_dokumen_klaim a
+						WHERE YEAR(a.tgl_transaksi_kasir) = ".date('Y')."
+						GROUP BY month(a.tgl_transaksi_kasir) ORDER BY month(a.tgl_transaksi_kasir) ASC";	
+			$fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
+			$title = '<span style="font-size:13.5px">Total Dokumen Klaim  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' '.date('Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+
+		if($params['prefix']==345){
+			$query = "SELECT created_by as petugas, COUNT(a.no_registrasi) AS total_format_money 
+						FROM csm_dokumen_klaim a
+						WHERE YEAR(a.tgl_transaksi_kasir) = ".date('Y')." AND MONTH(a.tgl_transaksi_kasir) = ".date('m')."
+						GROUP BY created_by ORDER BY created_by ASC";	
+			$fields = array('Nama_Petugas' => 'petugas', 'Total' => 'total_format_money');
+			$title = '<span style="font-size:13.5px">Total Costing Bulan '.$CI->tanggal->getBulan(date('m')).' '.date('Y').'</span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+
+
 		/*find and set type chart*/
 		$chart = $this->chartTypeData($params['TypeChart'], $fields, $params, $data);
 		$chart_data = array(

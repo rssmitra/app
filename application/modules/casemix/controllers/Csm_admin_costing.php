@@ -43,87 +43,92 @@ class Csm_admin_costing extends MX_Controller {
         $list = $this->Csm_admin_costing->get_datatables();
         $data = array();
         $no = $_POST['start'];
-        foreach ($list as $row_list) {
-            $kode_bag = ($row_list->kode_bagian_keluar!=null)?$row_list->kode_bagian_keluar:$row_list->kode_bagian_masuk;
-            /*get tipe RI/RJ*/
-            $str_type = $this->Csm_billing_pasien->getTipeRegistrasi($kode_bag);
-            $det_data = $this->Csm_billing_pasien->getDetailData($row_list->no_registrasi);
-            $decode_data = json_decode($det_data);
-            $no++;
-            $row = array();
-            $link = 'casemix/Csm_admin_costing';
+        if( isset($_GET['num']) AND $_GET['num'] != "" ){
+            foreach ($list as $row_list) {
+                $kode_bag = ($row_list->kode_bagian_keluar!=null)?$row_list->kode_bagian_keluar:$row_list->kode_bagian_masuk;
+                /*get tipe RI/RJ*/
+                $str_type = $this->Csm_billing_pasien->getTipeRegistrasi($kode_bag);
+                $det_data = $this->Csm_billing_pasien->getDetailData($row_list->no_registrasi);
+                $decode_data = json_decode($det_data);
+                $no++;
+                $row = array();
+                $link = 'casemix/Csm_admin_costing';
 
-            $status_reg = $this->Csm_admin_costing->cekIfExist($row_list->no_registrasi);
-            $reg_data = $status_reg->row();
-
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                        </div>';
-            $row[] = $row_list->no_registrasi;
-            $row[] = $str_type;
-            $row[] = '';
-            $row[] = '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$row_list->no_registrasi.''."/".$str_type."'".')">'.$row_list->no_registrasi.'</a>';
-            if ( $status_reg->num_rows() > 0 ) {
+                $status_reg = $this->Csm_admin_costing->cekIfExist($row_list->no_registrasi);
                 $reg_data = $status_reg->row();
-                $row[] = '<div class="center"><input type="hidden" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="'.$reg_data->csm_rp_no_sep.'"> '.$reg_data->csm_rp_no_sep.'  </div>';
-            }else{
-                if( $row_list->no_sep == NULL || $row_list->no_sep == '' ){
-                    $row[] = '<div class="center"><input type="text" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="0112R034"></div>';
+
+                $row[] = '<div class="center">
+                            <label class="pos-rel">
+                                <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
+                                <span class="lbl"></span>
+                            </label>
+                            </div>';
+                $row[] = $row_list->no_registrasi;
+                $row[] = $str_type;
+                $row[] = '';
+                $row[] = '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$row_list->no_registrasi.''."/".$str_type."'".')">'.$row_list->no_registrasi.'</a>';
+                if ( $status_reg->num_rows() > 0 ) {
+                    $reg_data = $status_reg->row();
+                    $row[] = '<div class="center"><input type="hidden" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="'.$reg_data->csm_rp_no_sep.'"> '.$reg_data->csm_rp_no_sep.'  </div>';
                 }else{
-                    $row[] = '<div class="center">'.$row_list->no_sep.' <input type="hidden" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="'.$row_list->no_sep.'"> </div>';
+                    if( $row_list->no_sep == NULL || $row_list->no_sep == '' ){
+                        $row[] = '<div class="center"><input type="text" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="0112R034"></div>';
+                    }else{
+                        $row[] = '<div class="center">'.$row_list->no_sep.' <input type="hidden" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="'.$row_list->no_sep.'"> </div>';
+                    }
                 }
-            }
 
-            
-            $row[] = $row_list->no_mr;
-            $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->tgl_jam_masuk).'<br><i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->tgl_jam_keluar);
+                
+                $row[] = $row_list->no_mr;
+                $row[] = strtoupper($row_list->nama_pasien);
+                $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->tgl_jam_masuk).'<br><i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->tgl_jam_keluar);
 
-            /*if($row_list->kode_bagian_keluar!=NULL){
-                $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_keluar_field.')</b></span>';
-            }else{
-                $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_masuk_field.')</b></span>';
-            }
-            */
-            if ($str_type=='RI') {
-                $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_keluar_field.')</b></span>';
-            }else{
-                $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_masuk_field.')</b></span>';
-            }
-            
-            $row[] = '<div class="center"><input type="hidden" id="type_'.$row_list->no_registrasi.'" class="form-control" name="form_type['.$row_list->no_registrasi.']" value="'.$str_type.'">'.$str_type.'</div>';
-            
-            if( count($decode_data->group) > 0 ){
-                $row[] = ($status_reg->num_rows() > 0)?'<div class="center" ><i class="fa fa-check bigger-200 green"></i><br><span style="font-size:10px">By : '.$reg_data->updated_by.'<br>'.$this->tanggal->formatDateTime($reg_data->updated_date).'</span></div>':'<div class="center" id="status_'.$row_list->no_registrasi.'""></div>';
-            }else{
-                $row[] = '<div class="center" style="color:red;font-size:11px">Pasien Belum Disubmit Kasir</div>';
-            }
-
-            if($row_list->kode_perusahaan==120){
+                /*if($row_list->kode_bagian_keluar!=NULL){
+                    $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_keluar_field.')</b></span>';
+                }else{
+                    $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_masuk_field.')</b></span>';
+                }
+                */
+                if ($str_type=='RI') {
+                    $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_keluar_field.')</b></span>';
+                }else{
+                    $row[] = $row_list->nama_pegawai.'<br><span style="font-size:11px"><b>('.$row_list->bagian_masuk_field.')</b></span>';
+                }
+                
+                $row[] = '<div class="center"><input type="hidden" id="type_'.$row_list->no_registrasi.'" class="form-control" name="form_type['.$row_list->no_registrasi.']" value="'.$str_type.'">'.$str_type.'</div>';
+                
                 if( count($decode_data->group) > 0 ){
-                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="submit('.$row_list->no_registrasi.')"><i class="fa fa-arrow-to-bottom bigger-50"></i> Submit</a></div>';
+                    $row[] = ($status_reg->num_rows() > 0)?'<div class="center" ><i class="fa fa-check bigger-200 green"></i><br><span style="font-size:10px">By : '.$reg_data->updated_by.'<br>'.$this->tanggal->formatDateTime($reg_data->updated_date).'</span></div>':'<div class="center" id="status_'.$row_list->no_registrasi.'""></div>';
                 }else{
                     $row[] = '<div class="center" style="color:red;font-size:11px">Pasien Belum Disubmit Kasir</div>';
                 }
-                    
-            }else{
-                $row[] = '<div class="center" style="color:red;font-size:11px">Silahkan Ubah Data Penjamin Pasien</div>';
-            }
 
-            /*if ( $status_reg->num_rows() > 0 ) {
-                $row[] = '<div class="center" id="merge_'.$row_list->no_registrasi.'""><a href="'.base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$row_list->no_registrasi.'/'.$str_type.'" target="_blank" class="btn btn-xs btn-danger"><i class="ace-icon fa fa-pdf-file bigger-50"></i>Merge</a></div>';
-            }else{
-                $row[] = '<div class="center" style="color:red" id="merge_'.$row_list->no_registrasi.'"">Waiting..</div>';
-            }*/
-                    
-            $data[] = $row;
+                if($row_list->kode_perusahaan==120){
+                    if( count($decode_data->group) > 0 ){
+                        $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="submit('.$row_list->no_registrasi.')"><i class="fa fa-arrow-to-bottom bigger-50"></i> Submit</a></div>';
+                    }else{
+                        $row[] = '<div class="center" style="color:red;font-size:11px">Pasien Belum Disubmit Kasir</div>';
+                    }
+                        
+                }else{
+                    $row[] = '<div class="center" style="color:red;font-size:11px">Silahkan Ubah Data Penjamin Pasien</div>';
+                }
+
+                /*if ( $status_reg->num_rows() > 0 ) {
+                    $row[] = '<div class="center" id="merge_'.$row_list->no_registrasi.'""><a href="'.base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$row_list->no_registrasi.'/'.$str_type.'" target="_blank" class="btn btn-xs btn-danger"><i class="ace-icon fa fa-pdf-file bigger-50"></i>Merge</a></div>';
+                }else{
+                    $row[] = '<div class="center" style="color:red" id="merge_'.$row_list->no_registrasi.'"">Waiting..</div>';
+                }*/
+                        
+                $data[] = $row;
+            }
+            $recordsTotal = $this->Csm_admin_costing->count_all();
+            $recordsFiltered = $this->Csm_admin_costing->count_filtered();
+        }else{
+            $data = array();
+            $recordsTotal = 0;
+            $recordsFiltered = 0;
         }
-        $recordsTotal = $this->Csm_admin_costing->count_all();
-        $recordsFiltered = $this->Csm_admin_costing->count_filtered();
-        
         $output = array(
                         "draw" => $_POST['draw'],
                         "recordsTotal" => $recordsTotal,

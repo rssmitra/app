@@ -50,7 +50,7 @@ class Csm_resume_billing extends MX_Controller {
                                 <span class="lbl"></span>
                             </label>
                           </div>';
-                $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/csm_billing_pasien/editBilling/'.$row_list->no_registrasi.''."/RJ'".')">'.$row_list->csm_rp_no_sep.'</a></div>';
+                $row[] = '<div class="left"><a href="#">'.$row_list->csm_rp_no_sep.'</a></div>';
                 $row[] = $row_list->csm_rp_no_mr;
                 $row[] = strtoupper($row_list->csm_rp_nama_pasien);
                 $row[] = $this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);

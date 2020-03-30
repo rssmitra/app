@@ -1,5 +1,54 @@
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 
+<script type="text/javascript">
+
+  $(document).ready(function(){
+
+    $('#form_edit_penjamin').ajaxForm({      
+
+      beforeSend: function() {        
+
+        achtungShowLoader();          
+
+      },      
+
+      uploadProgress: function(event, position, total, percentComplete) {        
+
+      },      
+
+      complete: function(xhr) {             
+
+        var data=xhr.responseText;        
+
+        var jsonResponse = JSON.parse(data);        
+
+        if(jsonResponse.status === 200){          
+
+          $.achtung({message: jsonResponse.message, timeout:5});          
+
+          $('#modalEditPenjamin').modal('hide');
+          console.log(jsonResponse);
+          /*show action after success submit form*/
+          $("#tabs_detail_pasien").load("registration/reg_pasien/riwayat_kunjungan/"+jsonResponse.no_mr);
+
+        }else{          
+
+          $.achtung({message: jsonResponse.message, timeout:5});          
+
+        }        
+
+        achtungHideLoader();        
+
+      }      
+
+    }); 
+
+
+  });
+
+
+</script>
+
 <script>
 
   $(document).ready(function(){
@@ -75,6 +124,8 @@
 
 <div class="row">
 
+<form class="form-horizontal" method="post" id="form_edit_penjamin" action="registration/Reg_pasien/process_edit_transaksi_penjamin_pasien" enctype="multipart/form-data" autocomplete="off">
+
   <div class="col-sm-12 widget-container-col ui-sortable">
     <div class="widget-box transparent ui-sortable-handle">
       <div class="widget-header">
@@ -121,13 +172,11 @@
           <?php if( count($result['tindakan']) > 0) :?>
             <div class="alert alert-danger">
               <strong>Perhatian !</strong><br>
-              <!-- Mengubah penjamin pasien, akan mengakibatkan perubahan pada tarif pelayanan pasien selanjutnya, dan untuk transaksi sebelumnya tidak dapat dihapus atau diganti menjadi tarif yang baru sesuai dengan penjamin yang diubah. -->
-              <p style="text-align:justify">Mengubah Penjamin Pasien hanya dapat dilakukan jika pasien tersebut belum memiliki transaksi. Jika pasien sudah memiliki transaksi, maka harus di daftarkan ulang dan menghapus data registrasi sebelumnya.</p>
+              <p style="text-align:justify">Mengubah penjamin pasien, akan mengakibatkan perubahan pada tarif pelayanan pasien selanjutnya.</p>
             </div>
           <?php endif;?>
         </div>
 
-        <?php if( count($result['tindakan']) == 0) :?>
         <div class="col-md-12">
           <p><b><i class="fa fa-user"></i> PENJAMIN PASIEN(*) </b></p>
 
@@ -136,58 +185,41 @@
           <input class="form-control" name="no_registrasi_hidden_edit_penjamin" type="hidden" value="<?php echo $result['registrasi']->no_registrasi?>" />
 
           <div class="form-group">
-
             <label class="control-label col-md-2">Nasabah</label>
-
             <div class="col-md-4">
-
                 <input id="InputKeyNasabahEditPenjamin" class="form-control" name="kelompok_nasabah" type="text" placeholder="Masukan keyword minimal 3 karakter" />
-
                 <input type="hidden" name="kode_kelompok_hidden_edit_penjamin" value="" id="kode_kelompok_hidden_edit_penjamin">
-
             </div>
-
           </div>
 
           <div class="form-group" id="field_perusahaan" style="display:none;">
-
             <label class="control-label col-md-2">Nama Perusahaan</label>
-
               <div class="col-md-4">
-
                   <input id="InputKeyPenjaminEdit" class="form-control" name="penjamin" type="text" placeholder="Masukan keyword minimal 3 karakter" />
-
                   <input type="hidden" name="kode_perusahaan_hidden_edit_penjamin" value="" id="kode_perusahaan_hidden_edit_penjamin">
-
               </div>
-
           </div>
 
           <div class="form-group" id="form_sep_edit_penjamin" style="display:none">
-
-            <label class="control-label col-md-2">Nomor SEP</label>            
-
-             <div class="col-md-4">            
-
+            <label class="control-label col-md-2">Nomor SEP</label>   
+             <div class="col-md-4">     
                <div class="input-group">
-
                  <input name="noSepEditPenjamin" id="noSepEditPenjamin" class="form-control" type="text" placeholder="Masukan No SEP">
-
                </div>
-
              </div>   
-
           </div>
 
-          <button type="submit" name="submit" class="btn btn-xs btn-primary">
+          <div class="form-group">
+            <label class="col-md-2">&nbsp;</label>   
+            <div class="col-md-4">  
+              <button type="submit" name="submit" class="btn btn-xs btn-primary">
+                <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+                Submit
+              </button>
+            </div>
+          </div>
 
-            <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-
-            Submit
-
-          </button>
         </div>
-        <?php endif;?>
 
         <div class="col-md-12">
           <br><br>
@@ -285,11 +317,11 @@
                     <?php foreach($result['tindakan'] as $row_t) : if($row_t->no_kunjungan==$no_kunjungan) :?>
                       <tr>
                         <td><?php echo $row_t->kode_trans_pelayanan?></td>
-                        <td><?php echo $this->tanggal->formatDateTime($row_t->tgl_transaksi)?></td>
+                        <td><?php echo $this->tanggal->formatDate($row_t->tgl_transaksi)?></td>
                         <td><?php echo $row_t->nama_pegawai?></td>
                         <td><?php echo $row_t->nama_tindakan?></td>
                         <td><?php echo $row_t->jenis_tindakan?></td>
-                        <td><?php echo ($row_t->nama_perusahaan)?$row_t->nama_perusahaan:'Umum'?></td>
+                        <td><?php echo isset($row_t->nama_perusahaan)?$row_t->nama_perusahaan:'Umum'?></td>
                         <td align="center"><?php echo ($row_t->kode_tc_trans_kasir>0)?'<label class="label label-success">Lunas</label>':'<label class="label label-danger">Belum Dibayar</label>'?></td>
                       </tr>
                     <?php endif; endforeach;?>
@@ -310,7 +342,7 @@
     </div>
   </div>
 
-  
+  </form>
   
 </div>
 

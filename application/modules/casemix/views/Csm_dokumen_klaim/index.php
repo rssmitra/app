@@ -69,7 +69,7 @@
             </div>
           </div>
 
-          <label class="control-label col-md-1">s/d Tanggal</label>
+          <label class="control-label col-md-1">s/d</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="to_tgl_reg" id="to_tgl_reg" type="text" data-date-format="yyyy-mm-dd" value=""/>

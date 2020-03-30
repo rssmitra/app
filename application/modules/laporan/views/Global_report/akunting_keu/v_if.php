@@ -67,9 +67,20 @@
             $key_bpjs = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $dt_pjl_bpjs);
             if($row_data->kode_brg == $dt_pjl_bpjs[$key_bpjs]['kode_brg']){
               $qty = isset($dt_pjl_bpjs[$key_bpjs])?$dt_pjl_bpjs[$key_bpjs]['jumlah_tebus']:0;
+              $hbpjs = isset($dt_pjl_bpjs[$key_bpjs])?$dt_pjl_bpjs[$key_bpjs]['harga_jual']:0;
             }else{
               $qty = 0;
+              $hbpjs = 0;
             }
+            //penerimaan
+            $key_penerimaan = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $v_penerimaan);
+            if($row_data->kode_brg == $v_penerimaan[$key_penerimaan]['kode_brg']){
+              $qty_p = isset($v_penerimaan[$key_penerimaan])?$v_penerimaan[$key_penerimaan]['jumlah_kirim']:0;
+            }else{
+              $qty_p = 0;
+            }
+            $saldopenerimaan=$qty_p * $row_data->harga_beli;
+            $j_bpjs=$qty * $hbpjs;
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -77,12 +88,13 @@
                 echo '<td>'.$row_data->kode_brg.'</td>';
                 echo '<td>'.$row_data->nama_brg.'</td>';
                 echo '<td>'.number_format($row_data->harga_beli).'</td>';
+                echo '<td>'.number_format($row_data->harga_jual).'</td>';
                 echo '<td></td>';
                 echo '<td></td>';
-                echo '<td></td>';
-                echo '<td></td>';
-                echo '<td></td>';
+                echo '<td>'.$qty_p.'</td>';
+                echo '<td>'.number_format($saldopenerimaan).'</td>';
                 echo '<td>'.$qty.'</td>';
+                echo '<td>'.number_format($j_bpjs).'</td>';
               ?>
             </tr>
           <?php } ?>

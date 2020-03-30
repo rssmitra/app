@@ -90,7 +90,7 @@ function get_resume_billing(){
     // sisa yang tidak di NK kan
     var sisa_nk = parseInt($('#total_payment').val()) - parseInt($('#total_nk').val());
     if( sisa_nk > 0 ){
-      $('<tr><td>'+$('#nama_pasien_val').val()+'</td><td align="right"><span style="font-size: 14px; font-weight: bold; color: red" class="blink_me">'+formatMoney(sisa_nk)+'</span></td></tr>').appendTo($('#table_pembayar'));
+      $('<tr><td>'+$('#nama_pasien_val').val()+'</td><td align="right"><span style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">'+formatMoney(sisa_nk)+'</span></td></tr>').appendTo($('#table_pembayar'));
     }
     
     // total uang muka atau yang sudah dibayar
@@ -142,7 +142,12 @@ function sum_total_pembayaran(){
   $('#uang_kembali_text').text( formatMoney(uang_kembali) );
   // sisa belum dibayar
   var sisa_blm_bayar = parseInt(total) - parseInt(sum_class);
-  $('#sisa_blm_dibayar').text( formatMoney(sisa_blm_bayar) );
+  if (parseInt(sisa_blm_bayar) > 0) {
+    var blm_dibayarkan = sisa_blm_bayar;
+  }else{
+    var blm_dibayarkan = 0;
+  }
+  $('#sisa_blm_dibayar').text( formatMoney(blm_dibayarkan) );
 
 }
 
@@ -193,13 +198,15 @@ function sum_total_pembayaran(){
             <b><?php echo $result->reg_data->nama_pasien?></b>
           </div>
         </div>
-
+        <!-- jika pasien BPJS  -->
+        <?php if($result->reg_data->kode_perusahaan == 120) :?>
         <div class="form-group" id="form_sep_pasien">
           <label class="control-label col-md-4">Nomor SEP</label>
           <div class="col-md-8">
             <input type="text" class="form-control" name="no_sep_pasien" id="no_sep_pasien">
           </div>
         </div>
+        <?php endif; ?>
 
         <div class="form-group" id="metode_pembayaran_form">
           <label class="control-label col-md-4">Metode Pembayaran</label>
@@ -224,17 +231,13 @@ function sum_total_pembayaran(){
         <div id="div_tunai">
           <hr class="separator">
           <p><b>PEMBAYARAN TUNAI</b></p>
-          <div class="form-group">
-            <label class="control-label col-md-4">Jumlah Pembayaran</label>
-            <div class="col-md-8">
-              <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="text">
-            </div>
-          </div>
 
           <div class="form-group">
             <label class="control-label col-md-4">Uang Yang Dibayarkan</label>
             <div class="col-md-8">
-              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" value="0" class="uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
+              <!-- hidden total yang harus dibayarkan -->
+              <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hidden">
+              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" value="" class="uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
             </div>
           </div>
         </div>
@@ -358,9 +361,11 @@ function sum_total_pembayaran(){
   </div><!-- /.col -->
 
   <div class="col-xs-6">
+
     <div id="resume_billing"></div>
-    <div class="col-xs-12">
-      <table width="100%" >
+
+    <div class="col-xs-12 no-padding">
+      <table width="100%" style="padding: 5px">
         <tr>
           <td width="75%">Uang Muka (UM) / Sudah dibayar</td>
           <td width="25%" align="right">Rp. <span id="jml_um">0</span></td>
@@ -394,7 +399,7 @@ function sum_total_pembayaran(){
         </tr>
         <tr>
           <td><b>Sisa yang belum dibayar</b></td>
-          <td align="right" style="font-size: 14px; font-weight: bold; color: red" class="blink_me">Rp. <span id="sisa_blm_dibayar">0</span></td>
+          <td align="right" style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">Rp. <span id="sisa_blm_dibayar">0</span></td>
         </tr>
 
       </table>

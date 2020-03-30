@@ -23,22 +23,68 @@
    
     oTable = $('#dt_pasien_kasir').DataTable({ 
           
-      "processing": true, //Feature control the processing indicator.
-      "serverSide": true, //Feature control DataTables' server-side processing mode.
-      "ordering": false,
-      "searching": false,
-      "bLengthChange": true,
-      "pageLength": 25,
-      "bInfo": false,
-      "paging": false,
-      // Load data for the table's content from an Ajax source
-      "ajax": {
-          "url": $('#dt_pasien_kasir').attr('base-url')+'?flag='+$('#flag').val()+'&pelayanan='+$('#pelayanan').val(),
-          "data": {flag:$('#flag').val(), date:$('#date').val(), month:$('#month').val(), year:$('#year').val()},
-          "type": "POST"
-      },
-
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "ordering": false,
+        "searching": false,
+        "bLengthChange": true,
+        "pageLength": 25,
+        "bInfo": false,
+        "paging": false,
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": $('#dt_pasien_kasir').attr('base-url')+'?flag='+$('#flag').val()+'&pelayanan='+$('#pelayanan').val(),
+            "data": {flag:$('#flag').val(), date:$('#date').val(), month:$('#month').val(), year:$('#year').val()},
+            "type": "POST"
+        },
+        "columnDefs": [
+        { 
+          "targets": [ 0 ], 
+          "orderable": false,
+        },
+        {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
+        { "visible": false, "targets": [1] },
+      ],
     });
+
+    $('#dt_pasien_kasir tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = oTable.row( tr );
+            var data = oTable.row( $(this).parents('tr') ).data();
+            var no_registrasi = data[ 1 ];
+            
+
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                /*data*/
+               
+                $.getJSON("adm_pasien/loket_kasir/Adm_kasir/getDetailTransaksi/" + no_registrasi, '', function (data) {
+                    response_data = data;
+                     // Open this row
+                    row.child( format( response_data ) ).show();
+                    tr.addClass('shown');
+                });
+               
+            }
+    } );
+
+    $('#dt_pasien_kasir tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            //achtungShowLoader();
+            $(this).removeClass('selected');
+            //achtungHideLoader();
+        }
+        else {
+            //achtungShowLoader();
+            oTable.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            //achtungHideLoader();
+        }
+    } );
 
 
     $("#merge_registrasi").click(function(event){
@@ -62,6 +108,10 @@
             
           }
       });
+    }
+
+    function format ( data ) {
+        return data.html;
     }
 
   })
@@ -99,7 +149,9 @@
           find_data_reload(data);
         }
       });
-   });
+  });
+
+  
 
   function find_data_reload(result){
       get_total_billing();
@@ -298,7 +350,9 @@
         <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_kasir/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
-              <th></th>
+              <th width="50px"></th>
+              <th class="center"></th>
+              <th width="50px" class="center">No</th>
               <th>No. Reg</th>
               <?php echo ($flag=='bpjs') ? '<th>No SEP</th>' : '' ; ?>
               <th>No. MR</th>

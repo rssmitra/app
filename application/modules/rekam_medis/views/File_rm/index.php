@@ -8,14 +8,14 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $key_emr?>" style="color: #4e4b4b;">
                     <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
                     &nbsp;<?php echo $row_emr->no_registrasi.'. '.ucwords($row_emr->nama_bagian).' - '.$row_emr->nama_dokter.'. Tanggal '.$this->tanggal->formatDatedmY($row_emr->tgl_kunjungan); ?>
                 </a>
             </h4>
         </div>
 
-        <div class="panel-collapse collapse <?php echo ($key_emr==0)?'in':'collapsed'?>" id="collapseOne">
+        <div class="panel-collapse collapse <?php echo ($key_emr==0)?'in':'collapsed'?>" id="collapse<?php echo $key_emr?>">
             <div class="panel-body">
             <iframe src="<?php echo base_url().'uploaded/rekam_medis/'.$row_emr->no_mr.'/'.$row_emr->filename.'.pdf'?>" frameborder="0" width="100%" style="height: 900px !important"></iframe>
             </div>

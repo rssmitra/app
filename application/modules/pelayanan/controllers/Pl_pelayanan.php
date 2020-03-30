@@ -1136,10 +1136,17 @@ class Pl_pelayanan extends MX_Controller {
         $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
         $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
 
-        /*pl_tc_poli*/
-        $poli_data = array('status_batal' => 1, 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
-        $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );
-        $this->logs->save('pl_tc_poli', $_POST['no_kunjungan'], 'update pl_tc_poli Modul Pelayanan', json_encode($poli_data),'no_kunjungan');
+        // igd batal
+        if($_POST['kode_bag']=='020101'){
+            $gd_dt = array('status_batal' => 1, 'tgl_keluar' => date('Y-m-d H:i:s') );
+            $this->db->update('gd_tc_gawat_darurat', $gd_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
+            $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($gd_dt),'no_kunjungan');
+        }else{
+            /*pl_tc_poli*/
+            $poli_data = array('status_batal' => 1, 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
+            $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );
+            $this->logs->save('pl_tc_poli', $_POST['no_kunjungan'], 'update pl_tc_poli Modul Pelayanan', json_encode($poli_data),'no_kunjungan');
+        }
 
         if ($this->db->trans_status() === FALSE)
         {

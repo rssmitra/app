@@ -185,7 +185,7 @@ class Migration extends MX_Controller {
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $exc_qry = $this->db->update('csm_reg_pasien', $dataexc, array('no_registrasi' => $no_registrasi));
                 $newId = $no_registrasi;
-                $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc));
+                $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc), 'no_registrasi');
             }
             
             $type = $this->input->post('form_type');
