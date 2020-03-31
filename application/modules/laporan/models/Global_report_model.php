@@ -70,10 +70,11 @@ class Global_report_model extends CI_Model {
 	// }
 
 	public function akunting_mod_4(){
-		$query = "SELECT a.kode_brg, b.nama_brg, a.harga_beli
-			FROM mt_rekap_stok as a 
-			INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
-			WHERE (a.kode_brg IS NOT NULL)";
+		$query = "SELECT a.kode_brg, b.nama_brg, AVG(a.harga_beli) as harga_beli, AVG(c.harga_jual) as hargajual 
+		FROM mt_rekap_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
+		inner JOIN fr_tc_far_detail c ON c.kode_brg=a.kode_brg 
+		WHERE (a.kode_brg IS NOT NULL)
+		group by a.kode_brg, b.nama_brg";
 			
 		return $query;
 	}
@@ -90,7 +91,6 @@ class Global_report_model extends CI_Model {
 		$query = "SELECT b.kode_brg, SUM(b.jumlah_kirim) as jumlah_kirim, AVG(b.harga) as harga
 			FROM tc_penerimaan_barang as a 
 			LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
-			LEFT JOIN fr_tc_far_detail e ON e.kode_brg=b.kode_brg
 			WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
 			GROUP BY b.kode_brg";
 			
@@ -676,29 +676,29 @@ class Global_report_model extends CI_Model {
 		}
 		else{
 			$query = " select a.id_tc_stok_opname
-      ,a.tgl_stok_opname
-      ,a.kode_bagian
-	  ,b.nama_bagian
-      ,a.kode_brg
-      ,c.nama_brg
-      ,a.stok_sebelum
-      ,a.stok_sekarang
-      ,a.agenda_so_id
-      ,a.set_status_aktif
-	  ,a.harga_pembelian_terakhir
-      ,a.nama_petugas
-	  ,d.nama_golongan
-	  ,c.satuan_besar
-	  ,c.satuan_kecil
-	  ,c.content
-	  FROM [rls_rssm_sirs].[dbo].[tc_stok_opname] a 
-  			left join [rls_rssm_sirs].[dbo].[mt_bagian] b on a.kode_bagian=b.kode_bagian 
-			left join mt_barang c ON c.kode_brg=a.kode_brg
-			left join mt_golongan d ON d.kode_golongan=c.kode_golongan
-			WHERE a.agenda_so_id='5' AND a.kode_bagian='060201' 
-			and a.set_status_aktif='1' 
-			order by d.nama_golongan, c.nama_brg ASC";
-		}
+		      ,a.tgl_stok_opname
+		      ,a.kode_bagian
+			  ,b.nama_bagian
+		      ,a.kode_brg
+		      ,c.nama_brg
+		      ,a.stok_sebelum
+		      ,a.stok_sekarang
+		      ,a.agenda_so_id
+		      ,a.set_status_aktif
+			  ,a.harga_pembelian_terakhir
+		      ,a.nama_petugas
+			  ,d.nama_golongan
+			  ,c.satuan_besar
+			  ,c.satuan_kecil
+			  ,c.content
+			  FROM [rls_rssm_sirs].[dbo].[tc_stok_opname] a 
+		  			left join [rls_rssm_sirs].[dbo].[mt_bagian] b on a.kode_bagian=b.kode_bagian 
+					left join mt_barang c ON c.kode_brg=a.kode_brg
+					left join mt_golongan d ON d.kode_golongan=c.kode_golongan
+					WHERE a.agenda_so_id=".$_POST['agenda_so']." AND a.kode_bagian='060201' 
+					and a.set_status_aktif=".$_POST['status']."
+					order by d.nama_golongan, c.nama_brg ASC";
+				}
 			return $query;
 		
 	}

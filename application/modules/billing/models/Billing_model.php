@@ -598,7 +598,8 @@ class Billing_model extends CI_Model {
         }
         
 
-        $html = '<div class="col-md-12 no-padding">';
+        $html = '<div class="row">';
+        $html .= '<div class="col-md-12">';
 
         $html .= '<b><h3>Rawat Inap</h3></b>';
         $html .= '<table class="table" style="background-color: white">';
@@ -747,6 +748,7 @@ class Billing_model extends CI_Model {
 
         endif;
 
+        $html .= '</div>';
         $html .= '</div>';
 
         return $html;

@@ -18,6 +18,8 @@ class Adm_lhk extends MX_Controller {
         /*load model*/
         $this->load->model('adm_pasien/loket_kasir/Adm_lhk_model', 'Adm_lhk');
         $this->load->model('adm_pasien/Adm_pasien_model', 'Adm_pasien');
+        $this->load->model('billing/Billing_model', 'Billing');
+        $this->load->model('casemix/Csm_billing_pasien_model', 'Csm_billing_pasien');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -32,7 +34,6 @@ class Adm_lhk extends MX_Controller {
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
             'flag' => $_GET['flag'],
-            'pelayanan' => $_GET['pelayanan'],
         );
         /*show datatables*/
         $data['dataTables'] = $this->load->view('loket_kasir/Adm_lhk/temp_trans_pasien', $data, true);
@@ -59,62 +60,26 @@ class Adm_lhk extends MX_Controller {
         $list = $this->Adm_lhk->get_datatables();
         // print_r($list);die;
         $data = array();
-        $arr_total = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            
-            if( $_GET['pelayanan'] == 'RI' ){
-                if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) == '03'){
-                    $no++;
-                    $row = array();
-                    // sum total
-                    $total = $this->master->sumArrayByKey($row_list, 'total');
-                    $arr_total[] = $total;
-                    $row[] = '<div class="center">'.$no.'</div>';
-                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan'].""."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
-                    if($_GET['flag']=='bpjs'){
-                        $row[] = $row_list[0]['no_sep'];
-                    }
-                    $row[] = $row_list[0]['no_mr'];
-                    $row[] = $row_list[0]['nama_pasien'];
-                    $row[] = ucwords($row_list[0]['nama_bagian']);
-                    $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
-                    $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);
-                    if( $total > 0 ){
-                        $row[] = '<div class="pull-right"><a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a></div>';
-                    }else{
-                        $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
-                    }
-                    $data[] = $row;
-                }
-            }else{
-                if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) != '03'){
-                    $no++;
-                    $row = array();
-                    // sum total
-                    $total = $this->master->sumArrayByKey($row_list, 'total');
-                    $arr_total[] = $total;
-                    $row[] = '<div class="center">'.$no.'</div>';
-                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan'].""."'".')">'.$row_list[0]['no_registrasi'].'</div>';
-                    if($_GET['flag']=='bpjs'){
-                        $row[] = $row_list[0]['no_sep'];
-                    }
-                    $row[] = $row_list[0]['no_mr'];
-                    $row[] = $row_list[0]['nama_pasien'];
-                    $row[] = ucwords($row_list[0]['nama_bagian']);
-                    $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
-                    $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);
-                    if( $total > 0 ){
-                        $row[] = '<div class="pull-right">
-                                    <a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a>
-                                    <input type="hidden" class="total_billing_class" value="'.$total.'">
-                                  </div>';
-                    }else{
-                        $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
-                    }
-                    $data[] = $row;
-                }
-            }
+            $no++;
+            $row = array();
+            $row[] = '<div class="center"></div>';
+            $row[] = $row_list->kode_tc_trans_kasir;
+            $row[] = $row_list->no_registrasi;
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
+            $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
+            $row[] = $row_list->nama_pasien;
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
+            $row[] = '<small style="font-size: 10px !important">'.ucfirst($row_list->nama_pegawai).'</small>';
+            $data[] = $row;
               
         }
         
@@ -123,33 +88,45 @@ class Adm_lhk extends MX_Controller {
                         "recordsTotal" => $this->Adm_lhk->count_all(),
                         "recordsFiltered" => $this->Adm_lhk->count_filtered(),
                         "data" => $data,
-                        "total_billing" => array_sum($arr_total),
                 );
         //output to json format
         echo json_encode($output);
     }
 
-    public function get_total_billing()
+    public function get_resume_kasir()
     {
         /*get data from model*/
-        $list = $this->Adm_lhk->get_total_billing(); 
-        
-        $arr_submit = array();
-        $arr_non_submit = array();
-        foreach($list as $val){
-            foreach($val as $row){
-                $arr_submit[] = ( $row['kode_tc_trans_kasir'] != NULL ) ? $row['total_billing'] : 0;
-                $arr_non_submit[] = ( $row['kode_tc_trans_kasir'] == NULL ) ? $row['total_billing'] : 0;
-            }
+        $list = $this->Adm_lhk->get_resume_kasir(); 
+        echo json_encode($list);
+    }
+
+    public function getDetailTransaksi($kode_tc_trans_kasir, $no_registrasi){
+        if($no_registrasi != 0){
+            $result = json_decode($this->Billing->getDetailData($no_registrasi));
+        }else{
+            $result = array();
         }
-        // echo '<pre>'; print_r($arr_submit);die;
-
-        $result = array(
-            'total_submit' => array_sum($arr_submit),
-            'total_non_submit' => array_sum($arr_non_submit),
+        $akunting = $this->Adm_lhk->get_jurnal_akunting($kode_tc_trans_kasir);
+        $data = array(
+            'result' => $result,
+            'transaksi' => $akunting['data'],
+            'jurnal' => $akunting['data'],
         );
+        // echo '<pre>';print_r($akunting);die;
+        $html = $this->load->view('loket_kasir/Adm_lhk/detail_transaksi_view', $data, true);
+        echo json_encode(array('html' => $html));
+    }
 
-        echo json_encode($result);
+    public function export_excel(){
+        $list = $this->Adm_lhk->get_data(); 
+        $data = array(
+            'title'     => 'Perjanjian Rawat Jalan',
+            'fields'    => $list->field_data(),
+            'data'      => $list->result(),
+        );
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('loket_kasir/Adm_lhk/excel_view', $data);
+
     }
 
 }

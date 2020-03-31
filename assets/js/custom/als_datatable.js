@@ -42,22 +42,22 @@ $(document).ready(function() {
           console.log(searchIDs);
     });
 
-    $('#btn_search_data').click(function (e) {
-          e.preventDefault();
-          $.ajax({
-          url: base_url+'/find_data',
-          type: "post",
-          data: $('#form_search').serialize(),
-          dataType: "json",
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          success: function(data) {
-            achtungHideLoader();
-            find_data_reload(data,base_url);
-          }
-        });
-    });
+    // $('#btn_search_data').click(function (e) {
+    //       e.preventDefault();
+    //       $.ajax({
+    //       url: base_url+'/find_data',
+    //       type: "post",
+    //       data: $('#form_search').serialize(),
+    //       dataType: "json",
+    //       beforeSend: function() {
+    //         achtungShowLoader();  
+    //       },
+    //       success: function(data) {
+    //         achtungHideLoader();
+    //         find_data_reload(data,base_url);
+    //       }
+    //     });
+    // });
 
     $('#btn_export_excel').click(function (e) {
         e.preventDefault();
@@ -73,7 +73,7 @@ $(document).ready(function() {
           achtungHideLoader();
           export_excel(data);
         }
-      });
+    });
          
   });
 

@@ -373,13 +373,6 @@ class Csm_billing_pasien extends MX_Controller {
         $action = ($act_code=='')?'I':$act_code;
         /*filename and title*/
         $filename = $flag.'-'.$reg_data->csm_rp_no_mr.$reg_data->no_registrasi.$pm;
-        // create directory
-        $filename_mr = 'uploaded/rekam_medis/'.$reg_data->csm_rp_no_mr;
-        if (file_exists($filename_mr)) {
-            //echo "The file $filename_mr exists";
-        } else {
-            mkdir($filename_mr, 0777, true);
-        }
         
         $tanggal = new Tanggal();
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8');

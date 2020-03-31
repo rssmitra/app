@@ -262,6 +262,26 @@ class Billing extends MX_Controller {
 
     }
 
+    public function viewDetailBillingKasirRI($no_registrasi, $tipe){
+        
+        /*get detail data billing*/
+        $result = json_decode($this->Billing->getDetailData($no_registrasi));
+        $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
+
+        $data = array(
+            'title' => 'Billing Pasien',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'no_registrasi' => $no_registrasi,
+            'tipe' => $tipe,
+            'flag' => isset($_GET['flag'])?$_GET['flag']:'',
+            'data' => $result,
+            'kunjungan' => $grouping,
+        );
+
+        $this->load->view('Billing/temp_trans_kasir_ri', $data, false);
+
+    }
+
     public function load_billing_view($no_registrasi, $tipe){
         /*get detail data billing*/
         $result = json_decode($this->Billing->getDetailData($no_registrasi));

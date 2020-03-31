@@ -294,12 +294,18 @@ final Class Graph_master {
 		// MODUL CASEMIX
 		// modul purchasing line chart
 		if($params['prefix']==341){
-			$query = "SELECT MONTH(tgl_transaksi_kasir) AS bulan, COUNT(csm_dokumen_klaim.no_registrasi) AS total FROM csm_dokumen_klaim INNER JOIN csm_reg_pasien ON csm_reg_pasien.no_registrasi=csm_dokumen_klaim.no_registrasi WHERE YEAR(tgl_transaksi_kasir)=".date('Y')." AND kode_perusahaan=120 GROUP BY MONTH(tgl_transaksi_kasir)";	
-			$fields = array('Total_Dokumen_Klaim'=>'total');
 			$title = '<span style="font-size:13.5px">Total Dokumen Pengajuan Klaim BPJS '.date('Y').'</span>';
 			$subtitle = 'Source: RSSM - SIRS';
-			/*excecute query*/
-			$data = $db->query($query)->result_array();
+
+			// data 1
+			$query = "SELECT MONTH(tgl_transaksi_kasir) AS bulan, COUNT(csm_dokumen_klaim.no_registrasi) AS total FROM csm_dokumen_klaim INNER JOIN csm_reg_pasien ON csm_reg_pasien.no_registrasi=csm_dokumen_klaim.no_registrasi WHERE YEAR(tgl_transaksi_kasir)=".date('Y')." AND kode_perusahaan=120 GROUP BY MONTH(tgl_transaksi_kasir)";	
+			$fields[0] = array('Total_Dokumen_Klaim'=>'total');
+			$data[0] = $db->query($query)->result_array();
+
+			// data2
+			$query2 = "SELECT MONTH(tgl_jam_masuk) AS bulan, COUNT(no_registrasi) AS total FROM tc_registrasi WHERE YEAR(tgl_jam_masuk)=".date('Y')." AND kode_perusahaan=120 GROUP BY MONTH(tgl_jam_masuk)";	
+			$fields[1] = array('Total_Pasien_BPJS'=>'total');
+			$data[1] = $db->query($query2)->result_array();
 
 		}
 
@@ -390,6 +396,9 @@ final Class Graph_master {
     		case 'line':
     			if ($params['style']==1) {
     				return $this->LineStyleOneData($fields, $params, $data);
+				}
+				if ($params['style']==2) {
+    				return $this->LineStyleTwoData($fields, $params, $data);
     			}
     			break;
     		case 'table':
@@ -486,8 +495,65 @@ final Class Graph_master {
 			
 		}
 
-		
 		foreach ($getData as $k => $r) {
+			$series[] = array('name' => $k, 'data' => $r );
+		}
+		
+		$chart_data = array(
+			'xAxis' 	=> array('categories' => $categories),
+			'series' 	=> $series,
+		);
+		return $chart_data;
+	}
+	
+	public function LineStyleTwoData($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	// echo '<pre>';print_r($fields);
+    	
+        $getData[0] = array();
+		foreach($data[0] as $key=>$row){
+			foreach ($fields[0] as $kf => $vf) {
+				$getData[0][$kf][$row['bulan']-1] = round($row['total'], 2);
+			}
+		}
+
+		$getData[1] = array();
+		foreach($data[1] as $key=>$row){
+			foreach ($fields[1] as $kf => $vf) {
+				$getData[1][$kf][$row['bulan']-1] = round($row['total'], 2);
+			}
+		}
+		// echo '<pre>';print_r($data);
+		
+
+		for ($i=0; $i < 12; $i++) { 
+			foreach ($fields[0] as $kf2 => $vf2) {
+				if(!isset($getData[0][$kf2][$i])){
+					$getData[0][$kf2][$i] = 0;
+				}
+				ksort($getData[0][$kf2]);
+			}
+			$categories[] = $CI->tanggal->getBulan($i+1);
+			
+		}
+
+		for ($i=0; $i < 12; $i++) { 
+			foreach ($fields[1] as $kf2 => $vf2) {
+				if(!isset($getData[1][$kf2][$i])){
+					$getData[1][$kf2][$i] = 0;
+				}
+				ksort($getData[1][$kf2]);
+			}
+			$categories[] = $CI->tanggal->getBulan($i+1);
+			
+		}
+
+		foreach ($getData[0] as $k => $r) {
+			$series[] = array('name' => $k, 'data' => $r );
+		}
+
+		foreach ($getData[1] as $k => $r) {
 			$series[] = array('name' => $k, 'data' => $r );
 		}
 		

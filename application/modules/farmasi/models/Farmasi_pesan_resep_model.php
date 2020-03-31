@@ -7,7 +7,7 @@ class Farmasi_pesan_resep_model extends CI_Model {
 	var $column = array('fr_tc_pesan_resep.kode_pesan_resep','fr_tc_pesan_resep.tgl_pesan');
 	var $select = 'fr_tc_pesan_resep.*, mt_karyawan.nama_pegawai, mt_bagian.nama_bagian';
 
-	var $order = array('status_tebus' => 'ASC', 'fr_tc_pesan_resep.kode_pesan_resep' => 'DESC');
+	var $order = array('fr_tc_pesan_resep.kode_pesan_resep' => 'DESC');
 
 	public function __construct()
 	{

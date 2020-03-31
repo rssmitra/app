@@ -30,6 +30,7 @@
              <th width="100">Nama kategori</th>
             <th width="100">Kode Barang</th>
             <th width="176">Nama Barang</th>
+            <th width="100" align="center">Content</th>
             <th width="100" align="center">Stok Sebelum</th>
             <th width="100" align="center">Stok Hasil So</th>
             <th width="100" align="center">Harga</th>
@@ -52,6 +53,7 @@
                echo '<td>'.$row_data->nama_golongan.'</td>';
                   echo '<td>'.$row_data->kode_brg.'</td>';
                   echo '<td>'.$row_data->nama_brg.'</td>';
+                  echo '<td>'.$row_data->content.'</td>';
                   echo '<td>'.$row_data->stok_sebelum.'</td>';
                   echo '<td>'.$row_data->stok_sekarang.'</td>';
                   echo '<td>'.number_format($row_data->harga_pembelian_terakhir).'</td>';

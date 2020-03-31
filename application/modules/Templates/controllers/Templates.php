@@ -253,7 +253,7 @@ class Templates extends MX_Controller {
                 'nameid' => 'graph-line-1',
                 'style' => 'line',
                 'col_size' => 12,
-                'url' => 'templates/Templates/graph?prefix=341&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=341&TypeChart=line&style=2&mod='.$_GET['mod'].'',
             );
             $data[1] = array(
                 'mod' => $_GET['mod'],

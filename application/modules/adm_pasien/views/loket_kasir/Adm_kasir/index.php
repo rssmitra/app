@@ -38,13 +38,13 @@
             "type": "POST"
         },
         "columnDefs": [
-        { 
-          "targets": [ 0 ], 
-          "orderable": false,
-        },
-        {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
-        { "visible": false, "targets": [1] },
-      ],
+          { 
+            "targets": [ 0 ], 
+            "orderable": false,
+          },
+          {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
+          { "visible": false, "targets": [1] },
+        ],
     });
 
     $('#dt_pasien_kasir tbody').on('click', 'td.details-control', function () {
@@ -334,7 +334,7 @@
 
       <div class="form-group">
         <label class="control-label col-md-1">&nbsp;</label>
-        <div class="col-md-2" style="margin-left:6px">
+        <div class="col-md-6" style="margin-left:6px">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Cari

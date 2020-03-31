@@ -21,7 +21,7 @@
 
     get_total_billing();
    
-    oTable = $('#dt_pasien_kasir').DataTable({ 
+    oTable = $('#dt_harian_kasir').DataTable({ 
           
       "processing": true, //Feature control the processing indicator.
       "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -33,17 +33,64 @@
       "paging": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": $('#dt_pasien_kasir').attr('base-url')+'?flag='+$('#flag').val()+'&pelayanan='+$('#pelayanan').val(),
-          "data": {flag:$('#flag').val(), date:$('#date').val(), month:$('#month').val(), year:$('#year').val()},
+          "url": $('#dt_harian_kasir').attr('base-url')+'?flag='+$('#flag').val()+'',
           "type": "POST"
       },
+      "columnDefs": [
+        { 
+          "targets": [ 0 ], 
+          "orderable": false,
+        },
+        {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
+        { "visible": false, "targets": [1] },
+        { "visible": false, "targets": [2] },
+      ],
 
     });
 
+    $('#dt_harian_kasir tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = oTable.row( tr );
+            var data = oTable.row( $(this).parents('tr') ).data();
+            var kode_tc_trans_kasir = data[ 1 ];
+            var no_registrasi = data[ 2 ];
+            
+
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                /*data*/
+               
+                $.getJSON("adm_pasien/loket_kasir/Adm_lhk/getDetailTransaksi/" + kode_tc_trans_kasir + "/" + no_registrasi, '', function (data) {
+                    response_data = data;
+                     // Open this row
+                    row.child( format( response_data ) ).show();
+                    tr.addClass('shown');
+                });
+               
+            }
+    } );
+
+    $('#dt_harian_kasir tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            //achtungShowLoader();
+            $(this).removeClass('selected');
+            //achtungHideLoader();
+        }
+        else {
+            //achtungShowLoader();
+            oTable.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            //achtungHideLoader();
+        }
+    } );
 
     $("#merge_registrasi").click(function(event){
           event.preventDefault();
-          var searchIDs = $("#dt_pasien_kasir input:checkbox:checked").map(function(){
+          var searchIDs = $("#dt_harian_kasir input:checkbox:checked").map(function(){
             return $(this).val();
           }).toArray();
           merge_registrasi(''+searchIDs+'')
@@ -62,6 +109,10 @@
             
           }
       });
+    }
+
+    function format ( data ) {
+        return data.html;
     }
 
   })
@@ -99,11 +150,34 @@
           find_data_reload(data);
         }
       });
-   });
+  });
+
+  $('#btn_export_excel').click(function (e) {
+      e.preventDefault();
+      $.ajax({
+      url: $('#form_search').attr('action'),
+      type: "post",
+      data: $('#form_search').serialize(),
+      dataType: "json",
+      beforeSend: function() {
+        achtungShowLoader();  
+      },
+      success: function(data) {
+        achtungHideLoader();
+        export_excel(data);
+      }
+    })
+  });
+
+  function export_excel(result){
+
+    window.open('adm_pasien/loket_kasir/Adm_lhk/export_excel?'+result.data+'','_blank'); 
+
+  }
 
   function find_data_reload(result){
       get_total_billing();
-      oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?'+result.data).load();
+      oTable.ajax.url($('#dt_harian_kasir').attr('base-url')+'?'+result.data).load();
       $("html, body").animate({ scrollTop: "400px" });
 
   }
@@ -112,9 +186,10 @@
     get_total_billing();
     oTable.ajax.reload();
   }
+
   $('#btn_reset_data').click(function (e) {
       e.preventDefault();
-      oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?flag='+$('#flag').val()+'&pelayanan='+$('#pelayanan').val()).load();
+      oTable.ajax.url($('#dt_harian_kasir').attr('base-url')+'?flag='+$('#flag').val()).load();
       $("html, body").animate({ scrollDown: "400px" });
       $('#form_search')[0].reset();
   });
@@ -128,11 +203,14 @@
         dataType: "json",
         success: function(response) {
           console.log(response.data);
-          $.getJSON("adm_pasien/loket_kasir/Adm_kasir/get_total_billing?"+response.data, '', function (data) {
+          $.getJSON("adm_pasien/loket_kasir/Adm_lhk/get_resume_kasir?"+response.data, '', function (data) {
              // code here
-              $('#total_submit').text( formatMoney(data.total_submit) );
-              var total_blm_disubmit = sumClass('total_billing_class');
-              $('#total_non_submit').text( formatMoney(total_blm_disubmit) );
+              $('#label_tunai').text( formatMoney(parseInt(data.tunai)) );
+              $('#label_debet').text( formatMoney(parseInt(data.debet)) );
+              $('#label_kredit').text( formatMoney(parseInt(data.kredit)) );
+              $('#label_nk_perusahaan').text( formatMoney(parseInt(data.nk_perusahaan)) );
+              $('#label_nk_karyawan').text( formatMoney(parseInt(data.nk_karyawan)) );
+              $('#label_total_billing').text( formatMoney(parseInt(data.bill)) );
           });
         }
       });
@@ -157,79 +235,104 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
-     
-      <div class="form-group" id="form_tanggal" >
-        <label class="control-label col-md-1">Tanggal</label>
-          <div class="col-md-2">
-            <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar bigger-110"></i>
-              </span>
-            </div>
-          </div>
-
-          <label class="control-label col-md-1">s/d Tanggal</label>
-          <div class="col-md-2">
-            <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar bigger-110"></i>
-              </span>
-            </div>
-          </div>
-          <label class="control-label col-md-1">Shift</label>
-          <div class="col-md-1">
-            <select name="shift" id="shift" class="form-control">
-              <option value="1">Pagi</option>
-              <option value="2">Siang</option>
-              <option value="3">Malam</option>
-            </select>
-          </div>
-          <label class="control-label col-md-1">Loket</label>
-          <div class="col-md-1">
-            <select name="loket" id="loket" class="form-control">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
+    <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+      <div class="col-xs-12">
+        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #89f56ed1">
+          <span style="font-size: 12px">Tunai</span>
+          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_tunai">0</span>,-</h3>
         </div>
+
+        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #9ff988d1">
+          <span style="font-size: 12px">Debet</span>
+          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_debet">0</span>,-</h3>
+        </div>
+
+        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #b4f3a4d1">
+          <span style="font-size: 12px">Kredit</span>
+          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_kredit">0</span>,-</h3>
+        </div>
+
+        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d0f7c6d1">
+          <span style="font-size: 12px">Piutang Perusahaan</span>
+          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_nk_perusahaan">0</span>,-</h3>
+        </div>
+
+        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #e3f5dfc7">
+          <span style="font-size: 12px">Piutang Karyawan</span>
+          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_nk_karyawan">0</span>,-</h3>
+        </div>
+
+        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #e3f5df66">
+          <span style="font-size: 12px">Total Billing</span>
+          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_total_billing">0</span>,-</h3>
+        </div>
+
       </div>
-  
+    </div>
 
-      <div class="form-group">
-        <label class="control-label col-md-1">&nbsp;</label>
-        <div class="col-md-6" style="margin-left:16px">
-          <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
-            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-            Tampilkan
-          </a>
-          <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
-            <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-            Reload
-          </a>
+    <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
+        <!-- hidden form -->
+        <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Tanggal Transaksi</label>
+            <div class="col-md-2">
+              <div class="input-group">
+                <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                <span class="input-group-addon">
+                  <i class="fa fa-calendar bigger-110"></i>
+                </span>
+              </div>
+            </div>
         </div>
-      </div>   
 
-      <div id="showDataTables" style="display: none">
-        <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_kasir/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">
+        <div class="form-group">
+            <label class="control-label col-md-2">Perusahaan Penjamin</label>
+            <div class="col-md-4">
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array()), '' , 'penjamin', 'penjamin', 'form-control', '', '') ?>
+            </div>
+        </div>
+
+        <div class="form-group" >
+            <label class="col-md-2">&nbsp;</label>
+            <div class="col-md-6">
+              <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                Tampilkan
+              </a>
+              <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
+                <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+                Reload
+              </a>
+
+              <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+                <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+                Export Excel
+              </a>
+            </div>
+        </div>
+
+        <table id="dt_harian_kasir" base-url="adm_pasien/loket_kasir/Adm_lhk/get_data" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
-              <th></th>
-              <th>No. Reg</th>
-              <?php echo ($flag=='bpjs') ? '<th>No SEP</th>' : '' ; ?>
-              <th>No. MR</th>
-              <th>Nama Pasien</th>
-              <th>Poli/Klinik Asal</th>
-              <th>Penjamin</th>
-              <th width="150px">Tanggal Masuk</th>
-              <th width="100px">Total Billing</th>
+              <th width="50px"></th>
+              <th width="50px"></th>
+              <th class="center"></th>
+              <th>No</th>
+              <th width="100px">No. Kuitansi</th>
+              <th>Tanggal</th>
+              <th>Pasien</th>
+              <th>Tunai</th>
+              <th>Debet</th>
+              <th>Kredit</th>
+              <th>Potongan</th>
+              <th>Piutang Perusahaan</th>
+              <th>Piutang Karyawan</th>
+              <th>Total</th>
+              <th>Petugas</th>
             </tr>
           </thead>
         </table>
-      </div>   
 
     </form>
   </div><!-- /.col -->
