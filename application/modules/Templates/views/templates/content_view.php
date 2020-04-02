@@ -45,10 +45,34 @@
     <![endif]-->
   </head>
 
+  <style>
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #8cc229; 
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b30000; 
+  }
+  </style>
+
   
   <body class="no-skin">
     <!-- #section:basics/navbar.layout -->
-    <div id="navbar" class="navbar navbar-default" style="background-color: white">
+    <div id="navbar" class="navbar navbar-default navbar-fixed-top" style="background-color: white">
       <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
       </script>
@@ -179,7 +203,7 @@
           </div>
 
       <!-- #section:basics/sidebar -->
-      <div id="sidebar" class="sidebar responsive">
+      <div id="sidebar" class="sidebar responsive sidebar-fixed">
         <script type="text/javascript">
           try{ace.settings.check('sidebar' , 'fixed')}catch(e){}
         </script>
@@ -297,7 +321,8 @@
           <!-- /section:basics/content.breadcrumbs -->
           <div class="page-content">
             <!-- #section:settings.box -->
-            <div class="ace-settings-container" id="ace-settings-container">
+
+            <!-- <div class="ace-settings-container" id="ace-settings-container" style="position: fixed">
               <div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
                 <i class="ace-icon fa fa-cog bigger-130"></i>
               </div>
@@ -317,11 +342,9 @@
                   </div>
 
                 </div>
-
-
-              </div><!-- /.ace-settings-box -->
-            </div>
-
+              </div>
+            </div> -->
+            
             <!-- /section:settings.box -->
                 <!-- PAGE CONTENT BEGINS -->
                 <div id="page-area-content">

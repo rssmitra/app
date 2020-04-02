@@ -101,6 +101,8 @@ switch($jenis){
               <td width="239" colspan="1" rowspan="1" align="center"><b>Nama Obat</b></td>
               <td width="86" rowspan="1" align="center"><b>Kode</b></td>
               <td width="134" colspan="1" rowspan="1" align="center"><b>Satuan</b></td>
+              <td width="86" rowspan="1" align="center"><b>Content</b></td>
+              <td width="165" rowspan="1" align="center"><b>Jumlah Satuan Besar</b></td>
               <td width="165" colspan="1" rowspan="1" align="center"><b>Harga Sat Kecil</b></td>
               <td width="99" colspan="1" rowspan="1" align="center"><b>Qty</b></td>
               <td width="166" colspan="1" rowspan="1" align="center"><b>Jumlah</b></td>
@@ -118,13 +120,15 @@ switch($jenis){
                
                 $nama_brg = $row_data->nama_brg;
                 $kode_brg = $row_data->kode_brg;
+                //$kode_brg = $row_data->kode_brg;
+                //$kode_brg = $row_data->kode_brg;
                 $satuan_kecil = $row_data->satuan_kecil;
                 $satuan_besar = $row_data->satuan_besar;
                 $nama_pabrik = $row_data->nama_pabrik;
                 $jml_harga = $row_data->jumlah;
                 $jml_besar = $row_data->jml;
                 $content = $row_data->content;
-                $jml_kcl = $jml_besar/$content;
+                $jml_kcl = $jml_besar*$content;
                 if($jml_besar<>'' && $jml_harga<>''){
                   $harga_beli = $jml_harga/$jml_besar;
                   $harga_sat_kcl = $harga_beli/$content;
@@ -138,6 +142,8 @@ switch($jenis){
               <td align="left" width="">&nbsp;<?php echo $nama_brg?>&nbsp;</td>
               <td align="left" width="">&nbsp;<?php echo $kode_brg?>&nbsp;</td>
               <td align="left" width=""><?php echo $satuan_kecil?>&nbsp;</td>
+              <td align="left" width="">&nbsp;<?php echo $content?>&nbsp;</td>
+              <td align="left" width="">&nbsp;<?php echo $jml_besar?>&nbsp;</td>
               <td align="right" width=""><?php echo number_format($harga_sat_kcl)?></td>
               <td align="right" width=""><?php echo number_format($jml_kcl)?></td>
               <td align="right" width=""><?php echo number_format($jml_harga)?></td>

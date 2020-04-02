@@ -33,10 +33,11 @@ class Csm_billing_pasien_model extends CI_Model {
             $this->db->or_where('no_sep', $_GET['num']);
             $this->db->or_where(''.$this->table.'.no_mr', $_GET['num']);
             $this->db->where('YEAR(tgl_jam_masuk) > '.$year.'');
-        }else{
-            $this->db->where('YEAR(tgl_jam_masuk) = '.date('Y').'');
-            $this->db->where('MONTH(tgl_jam_masuk) = '.date('m').'');
         }
+        // else{
+        //     $this->db->where('YEAR(tgl_jam_masuk) = '.date('Y').'');
+        //     $this->db->where('MONTH(tgl_jam_masuk) = '.date('m').'');
+        // }
         
         
         //$this->db->where('MONTH(tgl_jam_masuk) > 3');
@@ -204,11 +205,12 @@ class Csm_billing_pasien_model extends CI_Model {
     public function getDetailData($no_registrasi, $status_nk=''){
         /*get data registrasi*/
         $reg_data = $this->get_by_id($no_registrasi);
+        // echo '<pre>';print_r($this->db->last_query());die;
         /*get kasir data*/
         $kasir_data = $this->getKasirData($no_registrasi);
         /*get data trans pelayanan by no registrasi*/
         $trans_data = $this->getTransData($no_registrasi, $status_nk);
-        //echo '<pre>';print_r($this->db->last_query());die;
+        
         $group = array();
         foreach ($trans_data as $value) {
             $group[$value->nama_jenis_tindakan][] = $value;
@@ -221,7 +223,7 @@ class Csm_billing_pasien_model extends CI_Model {
     public function insertDataFirstTime($sirs_data, $no_registrasi){
         /*transaction begin*/
         $this->db->trans_begin();
-        //print_r($sirs_data);die;
+        // print_r($sirs_data);die;
         $kode_bag = ($sirs_data->reg_data->kode_bagian_keluar!=null)?$sirs_data->reg_data->kode_bagian_keluar:$sirs_data->reg_data->kode_bagian_masuk;
         /*get tipe RI/RJ*/
         $str_type = $this->getTipeRegistrasi($kode_bag);

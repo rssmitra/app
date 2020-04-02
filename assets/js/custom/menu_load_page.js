@@ -1,4 +1,4 @@
-var loading = "<center><img src='"+window.location.origin+"/rssm/sirs/assets/images/loading.gif' style='width:150px;padding-top:200px;cursor:auto;z-index:15;'/></center>";
+var loading = "<center><img src='"+window.location.origin+"/sirs/app/assets/images/loading.gif' style='width:150px;padding-top:200px;cursor:auto;z-index:15;'/></center>";
 
 $('#message_notification').click(function() {
   $('#message_notification span').remove();
@@ -84,12 +84,12 @@ function getMenuTabsHtml(link, tabs_id)
 
 }
 
-function delete_attachment(myid){
+function delete_attachment_csm(myid){
     if(confirm('Are you sure?')){
       $('#tr_id_'+myid+'').hide();
       
       $.ajax({
-          url: 'Templates/Attachment/delete_attachment',
+          url: 'Templates/Attachment/delete_attachment_csm',
           type: "post",
           data: {ID:myid},
           dataType: "json",
@@ -116,6 +116,41 @@ function delete_attachment(myid){
     }else{
       return false;
     }
+
+}
+
+function delete_attachment(myid){
+  if(confirm('Are you sure?')){
+    $('#tr_id_'+myid+'').hide();
+    
+    $.ajax({
+        url: 'Templates/Attachment/delete_attachment',
+        type: "post",
+        data: {ID:myid},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            $('#attc_table_id tbody tr #'+myid+'').hide();
+            reload_table();
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
 
 }
 

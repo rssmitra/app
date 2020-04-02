@@ -31,8 +31,6 @@ class Pl_pelayanan_model extends CI_Model {
 		$this->db->join('mt_perusahaan','tc_registrasi.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
 		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
 
-
-		
 	}
 
 	private function _get_datatables_query()

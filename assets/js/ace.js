@@ -2883,6 +2883,13 @@ jQuery(function($) {
 	$('#ace-settings-box').toggleClass('open');
  })
 
+ $('#ace-settings-btn-rj').on(ace.click_event, function(e){
+	e.preventDefault();
+
+	$(this).toggleClass('open');
+	$('#ace-settings-box-rj').toggleClass('open');
+ })
+
  $('#ace-settings-navbar').on('click', function(){
 	ace.settings.navbar_fixed(null, this.checked);//@ ace-extra.js
 	//$(window).triggerHandler('resize.navbar');

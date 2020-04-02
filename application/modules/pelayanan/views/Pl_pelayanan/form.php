@@ -628,6 +628,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
   }
 
 </style>
+
 <div class="row">
 
     <div class="page-header">    
@@ -888,6 +889,35 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
                 <div class="tab-content">                  
 
+                <div class="ace-settings-container" id="ace-settings-container-rj">
+                  <div class="btn btn-app btn-xs btn-primary ace-settings-btn" id="ace-settings-btn-rj">
+                    <i class="ace-icon fa fa-file bigger-130"></i>
+                  </div>
+
+                  <div class="ace-settings-box clearfix" id="ace-settings-box-rj">
+
+                    <div class="pull-left">
+                        <b>Pengkajian Medis Rawat Jalan</b><hr>
+                        <?php for($i=1; $i<15; $i++) :?>
+                          <address>
+                              <strong>27/03/2020 14.05</strong>
+                              <br>
+                              dr. Mira Fauziah, Sp. JP<br>
+                              Klinik Spesialis Jantung dan Pembuluh Darah
+                              <br>
+                              Anamnesis : <br>
+                              Pemeriksaan : <br>
+                              Diagnosis : <br>
+                              Terapi/Tindakan : <br>
+                              <br>
+                          </address>
+                        <?php endfor;?>
+                    </div>
+
+
+                  </div><!-- /.ace-settings-box -->
+                </div>
+                
                   <div id="tabs_form_pelayanan">
 
                     <div class="alert alert-block alert-success">
@@ -960,5 +990,6 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
 </div>
 
-
+<!-- ace scripts -->
+<script src="<?php echo base_url()?>assets/js/ace/ace.settings.js"></script>
 

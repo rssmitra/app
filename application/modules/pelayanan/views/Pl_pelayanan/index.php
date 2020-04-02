@@ -14,7 +14,7 @@ jQuery(function($) {
   });
 });
 
-$( ".form_search" )    
+$( ".form-control" )    
     .keypress(function(event) {  
       var keycode =(event.keyCode?event.keyCode:event.which);  
       if(keycode ==13){   
