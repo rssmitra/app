@@ -49,7 +49,6 @@ class Reg_igd extends MX_Controller {
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->
         get_menu_by_class(get_class($this))->name : 'Title';
     
-    
     }
 
     public function process(){

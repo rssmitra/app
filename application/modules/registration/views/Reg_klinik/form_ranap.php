@@ -172,7 +172,7 @@
     $('#inputDokterMerawat').typeahead({
         source: function (query, result) {
                 $.ajax({
-                    url: "templates/references/getDokterByBagian",
+                    url: "templates/references/getDokterByKeyword",
                     data: 'keyword=' + query + '&bag=' + $('#ri_ruangan').val(),         
                     dataType: "json",
                     type: "POST",

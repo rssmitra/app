@@ -390,29 +390,6 @@ class Reg_klinik extends MX_Controller {
 
     }
 
-    /*public function print_tracer()
-    {
-        # code...
-       
-        $detail_data = $this->Reg_pasien->get_detail_resume_medis($_POST['no_registrasi']);
-            
-        $data_tracer = [
-            'no_mr' => $_POST['no_mr'],
-            'result' => $detail_data,
-        ];
-
-        if($this->input->post('is_new')!='Yes'){
-
-            if( $this->print_direct->printer_php($data_tracer) ){
-                
-            }else{
-                $this->db->update('tc_registrasi', array('print_tracer' => 'N'), array('no_registrasi' => $_POST['no_registrasi'] ) );
-            }
-        }      
-
-        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr']));
-    }*/
-
     public function print_tracer()
     {
         # code...

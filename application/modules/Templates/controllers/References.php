@@ -88,6 +88,7 @@ class References extends MX_Controller {
         echo json_encode($exc->result());
 	}
 
+	
 	public function getDokterSpesialis($kd_bagian='')
 	{
 		$query = "select a.kode_dokter as kode_dokter,a.nama_pegawai
@@ -827,6 +828,19 @@ class References extends MX_Controller {
 		echo json_encode($arrResult);
 		
 	}
+
+	public function getDokterByKeyword()
+	{
+		$query = "select a.kode_dokter, a.nama_pegawai
+	 				from mt_dokter_v a
+	 				where status=0 AND a.nama_pegawai LIKE '%".$_POST['keyword']."%' and a.nama_pegawai is not NULL and a.nama_pegawai <> '' GROUP BY a.kode_dokter, a.nama_pegawai";
+        $result = $this->db->query($query)->result();
+        foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_dokter.' : '.$value->nama_pegawai;
+		}
+		echo json_encode($arrResult);
+	}
+
 
 	public function getSupplier()
 	{
