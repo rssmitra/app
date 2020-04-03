@@ -44,31 +44,6 @@
     <script src="<?php echo base_url()?>assets/js/respond.js"></script>
     <![endif]-->
   </head>
-
-  <style>
-  /* width */
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
-    border-radius: 10px;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #8cc229; 
-    border-radius: 10px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #b30000; 
-  }
-  </style>
-
   
   <body class="no-skin">
     <!-- #section:basics/navbar.layout -->

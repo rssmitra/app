@@ -74,18 +74,13 @@ window.onload = generateBarcode;
     </tr>
 
     <tr>
-      <td>Jadwal Praktek</td>
-      <td colspan="3"> : Senin, 17.00 s/d 18.00</td>
-    </tr>
-
-    <tr>
       <td>Penjamin</td>
       <td colspan="3"> : <?php echo $result['registrasi']->nama_perusahaan?> </td>
     </tr>
 
     <tr>
       <td>Petugas</td>
-      <td colspan="3"> : <?php echo $result['petugas']?> </td>
+      <td colspan="3"> : <?php echo isset($result['petugas']->fullname)?$result['petugas']->fullname:'-'?> </td>
     </tr>
 
     <tr>

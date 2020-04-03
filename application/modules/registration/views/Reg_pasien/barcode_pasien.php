@@ -49,13 +49,14 @@ window.onload = generateBarcode;
 <?php if($count != '') : for($i=0;$i<$count;$i++) : ?>
 <tr>
   <td align="left" width="250px">
-    <b><?php $str = array('TN.', 'Tn.', 'NY.', 'Ny.', 'AN.', 'An.','NN.','Nn.'); echo str_replace($str, '' ,$pasien->nama_pasien) ?> <?php echo $pasien->title?></b> <br>
-    <?php echo $this->tanggal->formatDateShort($pasien->tgl_lhr)?> (<?php echo $pasien->jen_kelamin?>)
+    <b><?php $str = array('TN.', 'Tn.', 'NY.', 'Ny.', 'AN.', 'An.','NN.','Nn.','By.'); echo str_replace($str, '' ,$pasien->nama_pasien) ?> <?php echo $pasien->title?> (<?php echo $pasien->jen_kelamin?>) </b> <br>
+    BOD. <?php echo $this->tanggal->formatDateShort($pasien->tgl_lhr)?>   
+    (<?php echo $this->tanggal->AgeWithYearMonth($pasien->tgl_lhr)?>)
   </td>
 </tr>
 <tr>
-  <td align="right">
-    <div style="margin-left: 40px" id="barcodeTarget<?php echo $i?>" class="barcodeTarget"></div>
+  <td align="left">
+    <div id="barcodeTarget<?php echo $i?>" class="barcodeTarget"></div>
   </td>
 </tr>
 <?php endfor; endif; ?>

@@ -82,7 +82,7 @@ class Tracer extends MX_Controller {
             $row = array();
             $row[] = '<div class="center">
                         <a href="'.base_url().'registration/Reg_pasien/tracer/'.$row_list->no_registrasi.'/'.$row_list->no_mr.'" class="btn btn-xs btn-success" target="_blank" onclick="return popUnder(this);" alt="Cetak Tracer"><i class="fa fa-print"></i></a>
-                        <a href="'.base_url().'registration/Reg_pasien/label_nama_pasien/'.$row_list->no_mr.'/8" class="btn btn-xs btn-primary" target="_blank" onclick="return popUnder(this);" alt="Cetak Barcode"><i class="fa fa-barcode"></i></a>
+                        <a href="'.base_url().'registration/Reg_pasien/barcode_pasien/'.$row_list->no_mr.'/1" class="btn btn-xs btn-primary" target="_blank" onclick="return popUnder(this);" alt="Cetak Barcode"><i class="fa fa-barcode"></i></a>
                      </div>';
             $row[] = '<div class="center">'.$row_list->no_registrasi.'</div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';

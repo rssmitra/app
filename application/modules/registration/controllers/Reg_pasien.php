@@ -400,7 +400,7 @@ class Reg_pasien extends MX_Controller {
             'no_mr' => $no_mr,
             'result' => $detail_data,
         ];
-        //echo '<pre>'; print_r($data);die;
+        // echo '<pre>'; print_r($data);die;
         if( $this->print_escpos->print_direct($data) ) {
              $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
         }

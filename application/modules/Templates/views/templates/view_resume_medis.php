@@ -20,14 +20,14 @@
             </address>
           </div>
         </div>
-        <div class="col-md-6" align="right">
+        <!-- <div class="col-md-6" align="right">
           <div class="widget-main padding-6 no-padding-left no-padding-right">
             <a href="#" class="btn btn-xs btn-primary">Pulangkan</a>
             <a href="#" class="btn btn-xs btn-success">Kembalikan</a>
             <a href="#" class="btn btn-xs btn-danger">Hapus</a>
             <a href="#" class="btn btn-xs btn-inverse">Cetak Resume Medis</a>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
