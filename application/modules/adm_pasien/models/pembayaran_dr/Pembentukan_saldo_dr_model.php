@@ -130,6 +130,7 @@ class Pembentukan_saldo_dr_model extends CI_Model {
 
 		$this->db->where("CAST(b.tgl_jam_masuk as DATE) = '".date('Y-m-d')."' ");
 		$this->db->where('(b.status_batal is null or status_batal=0)');
+		$this->db->where("(a.kode_bagian = '".$_GET['kode_bagian']."' or b.kode_bagian_masuk='".$_GET['kode_bagian']."') ");
 
 		$query = $this->db->get()->row();
         return $query;

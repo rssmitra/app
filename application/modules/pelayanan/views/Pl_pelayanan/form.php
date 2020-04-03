@@ -412,7 +412,7 @@ function getDataAntrianPasien(){
 
 function getTotalBilling(){
 
-  $.getJSON("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_total_billing_dr_current_day?kode_dokter="+$('#kode_dokter_poli').val()+"", '', function (data) {  
+  $.getJSON("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_total_billing_dr_current_day?kode_dokter="+$('#kode_dokter_poli').val()+"&kode_bagian="+$('#kode_bagian_val').val()+"", '', function (data) {  
     $('#total_bill_dr_current').text(formatMoney(data.total_billing));
   });
 
