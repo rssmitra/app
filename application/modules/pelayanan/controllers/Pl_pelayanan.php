@@ -43,10 +43,10 @@ class Pl_pelayanan extends MX_Controller {
             $data['nama_bagian'] = $this->session->userdata('nama_bagian');
             $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
             // get antrian pasien
-            $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien();
-            $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
-            $this->form($next_pasien->id_pl_tc_poli, $next_pasien->no_kunjungan);
-            // $this->load->view('Pl_pelayanan/index', $data);
+            // $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien();
+            // $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
+            // $this->form($next_pasien->id_pl_tc_poli, $next_pasien->no_kunjungan);
+            $this->load->view('Pl_pelayanan/index', $data);
         }else{
             if( isset($_GET['bag']) AND $_GET['bag'] != '' ){
                 $data['kode_bagian'] = $_GET['bag'];
