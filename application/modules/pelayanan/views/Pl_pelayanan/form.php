@@ -113,73 +113,7 @@ $(document).ready(function(){
         });
         return false;
       });
-
-    /*submit form*/
-    // $('#form_pelayanan').ajaxForm({      
-
-    //   beforeSend: function() {        
-
-    //       if( $('#form_pelayanan').attr('action')=='pelayanan/Pl_pelayanan/processPelayananSelesai' ){
-    //         achtungShowFadeIn();                      
-    //       }
-
-    //       $('#konten').val($('#editor_konten').html());
-          
-
-    //   },      
-
-    //   uploadProgress: function(event, position, total, percentComplete) {        
-
-    //   },      
-
-    //   complete: function(xhr) {             
-
-    //     var data=xhr.responseText;        
-
-    //     var jsonResponse = JSON.parse(data);        
-
-    //     if(jsonResponse.status === 200){          
-
-    //       $.achtung({message: jsonResponse.message, timeout:5});     
-
-    //       $('#table-pesan-resep').DataTable().ajax.reload(null, false);
-
-    //       $('#jumlah_r').val('')
-
-    //       $("#modalEditPesan").modal('hide');  
-
-    //       if(jsonResponse.type_pelayanan == 'Penunjang Medis' )
-    //       {
-
-    //         getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+jsonResponse.no_mr+'/'+$('#kode_bagian_val').val()+'', 'tabs_riwayat_kunjungan');
-
-    //       }
-
-    //       if(jsonResponse.type_pelayanan == 'Pasien Selesai' )
-    //       {
-    //         // back after process
-    //         if( jsonResponse.next_id_pl_tc_poli != '' ){
-    //           getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
-    //         }else{
-    //           getMenu('pelayanan/Pl_pelayanan');
-    //         }
-            
-
-    //       }
-          
-    //     }else{          
-
-    //       $.achtung({message: jsonResponse.message, timeout:5});  
-    //        //focus tabs diagnosa
-    //        getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
-
-    //     }        
-
-    //     achtungHideLoader();        
-
-    //   }      
-
-    // });     
+ 
     
     /*on keypress or press enter = search pasien*/
     $( "#form_cari_pasien" )    
@@ -203,7 +137,31 @@ $(document).ready(function(){
         }        
 
     });
-     
+    
+    $('#btn_update_session_poli').click(function (e) {  
+      if(confirm('Are you sure?')){
+        $.ajax({
+            url: "pelayanan/Pl_pelayanan/destroy_session_kode_bagian",
+            data: { kode: $('#sess_kode_bagian').val()},            
+            dataType: "json",
+            type: "POST",
+            complete: function (xhr) {
+              var data=xhr.responseText;  
+              var jsonResponse = JSON.parse(data);  
+              if(jsonResponse.status === 200){  
+                $.achtung({message: jsonResponse.message, timeout:5}); 
+                getMenu('pelayanan/Pl_pelayanan');
+              }else{          
+                $.achtung({message: jsonResponse.message, timeout:5});  
+              } 
+              achtungHideLoader();
+            }
+        });
+      }else{
+        return false;
+      }
+    });
+
     $('#btn_search_pasien').click(function (e) {      
 
       e.preventDefault();  
@@ -277,7 +235,6 @@ $(document).ready(function(){
       e.preventDefault();  
       var element = $(this).find('option:selected'); 
       var params_id = element.attr("data-id");
-      console.log(params_id);
       getMenu('pelayanan/Pl_pelayanan/form/'+params_id+'?no_mr='+$(this).val()+'');
     });
 
@@ -316,54 +273,6 @@ function find_pasien_by_keyword(keyword){
             alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
 
           }
-
-          /*if count data = 1*/
-          // if( data.count == 1 )     {
-
-          //   var obj = data.result[0];
-
-          //   var pending_data_pasien = data.pending; 
-          //   var umur_pasien = hitung_usia(obj.tgl_lhr);
-          //   console.log(pending_data_pasien);
-          //   console.log(hitung_usia(obj.tgl_lhr));
-
-          //   $('#no_mr').text(obj.no_mr);
-          //   $('#noMrHidden').val(obj.no_mr);
-          //   $('#no_ktp').text(obj.no_ktp);
-          //   $('#nama_pasien').text(obj.nama_pasien);
-          //   $('#nama_pasien_hidden').val(obj.nama_pasien);
-          //   $('#jk').text(obj.jen_kelamin);
-          //   $('#umur').text(umur_pasien+' Tahun');          
-          //   $('#umur_saat_pelayanan_hidden').val(umur_pasien);
-          //   $('#alamat').text(obj.almt_ttp_pasien);
-          //   $('#noKartuBpjs').val(obj.no_kartu_bpjs);
-
-          //   penjamin = (obj.nama_perusahaan==null)?'-':obj.nama_perusahaan;
-          //   kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
-          //   $('#kode_perusahaan').text(kelompok+' '+obj.nama_perusahaan);
-
-
-
-          //   if( obj.url_foto_pasien ){
-
-          //     $('#avatar').attr('src', '<?php echo base_url()?>uploaded/images/photo/'+obj.url_foto_pasien+'');
-
-          //   }else{
-
-          //     if( obj.jen_kelamin == 'L' ){
-
-          //       $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
-
-          //     }else{
-
-          //       $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/girl.jpg');
-
-          //     }
-
-          //   }
-
-          //   /*default show tabs*/
-          //   $("#tabs_form_pelayanan").load('pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag='+$('#kode_bagian_val').val()+'');
 
           // }      
           if( data.count == 1 )     {
@@ -449,56 +358,8 @@ function find_pasien_by_keyword(keyword){
 
             $('#total_kunjungan').text(obj.total_kunjungan);
 
-            /*for tabs riwayat*/
-            // $('#tabs_riwayat_kunjungan_id').attr('data-id', obj.no_mr);
-            // $('#tabs_riwayat_transaksi_id').attr('data-id', obj.no_mr);
-            // $('#tabs_riwayat_perjanjian_id').attr('data-id', obj.no_mr);
-            // $('#tabs_riwayat_booking_online_id').attr('data-id', obj.no_mr);
-
             $("#myTab li").removeClass("active");
-            // $("#tabs_detail_pasien").html("<div class='alert alert-block alert-success center'><p><strong><i class='ace-icon fa fa-glass bigger-150'></i><br>Selamat Datang!</strong><br>Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !</p></div>");
-
-            // if(data.count_pending > 0){
-
-            //   /*show pending data pasien*/
-              
-            //   // $('#div_penangguhan_pasien').show('fast');
-
-            //   $('#div_load_after_selected_pasien').hide('fast');
-
-            //   $('#div_riwayat_pasien').show('fast');
-
-            //   $('#result_penangguhan_pasien tbody').remove();
-
-            //   $.each(pending_data_pasien, function (x, y) {                  
-
-            //       dt = new Date(y.tgl_masuk);
-                  
-            //       formatDt = formatDate(dt);
-                  
-            //       if(y.total_ditangguhkan > 0){
-            //         status = 'Total Ditangguhkan '+y.total_ditangguhkan+'';
-            //       }else{
-            //         status = '<label class="label label-danger">Belum dipulangkan</label>';
-            //       }
-            //       $('<tr><td>'+y.no_kunjungan+'</td><td>'+y.no_registrasi+'</td><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td>'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
-
-            //   }); 
-
-
-            // }else{
-
-            //   $('#div_penangguhan_pasien').hide('fast');
-
-            //   $('#result_penangguhan_pasien tbody').remove();
-
-            //   /*show detail form */
-
-            //   $('#div_load_after_selected_pasien').show('fast');
-
-            //   $('#div_riwayat_pasien').show('fast');
-
-            // }
+            
 
           }      
 
@@ -516,17 +377,44 @@ function get_riwayat_medis(no_mr){
 
 function getDataAntrianPasien(){
 
+  getTotalBilling();
   $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
         $('#no_mr_selected option').remove();         
         $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
+        var arr = [];
+        var arr_cancel = [];
         $.each(data, function (i, o) {   
             var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
             var penjamin = (o.kode_perusahaan==120)? '('+o.nama_perusahaan+')' : '' ;
-            var style = (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #f998878c; color: black"';
-
+            var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #f998878c; color: black"';
             $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + ' '+penjamin+' </option>').appendTo($('#no_mr_selected'));  
+            // sudah dilayani
+            if (o.tgl_keluar_poli != null) {
+                arr.push(o);
+            }
+            // batal
+            if (o.status_batal == 1) {
+              arr_cancel.push(o);
+            }
         });   
+        // total antrian
+        var total_antrian = data.length;
+        $('#total_antrian').text(total_antrian);
+        // dilayani
+        $('#sudah_dilayani').text(arr.length);
+        // batal
+        $('#pasien_batal').text(arr_cancel.length);
+
+        console.log(arr_cancel.length);
     });
+
+}
+
+function getTotalBilling(){
+
+  $.getJSON("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_total_billing_dr_current_day?kode_dokter="+$('#kode_dokter_poli').val()+"", '', function (data) {  
+    $('#total_bill_dr_current').text(formatMoney(data.total_billing));
+  });
 
 }
 
@@ -648,7 +536,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
   }
 
   .ace-settings-box.open{
-    max-width: 350px !important;
+    width: 350px !important;
   }
   /* Track */
   #ace-settings-container-rj::-webkit-scrollbar-track {
@@ -666,6 +554,11 @@ function rollback(no_registrasi, no_kunjungan, flag){
   #ace-settings-container-rj::-webkit-scrollbar-thumb:hover {
     background: #b30000; 
   }
+
+  .user-info{
+    max-width: 200px !important;
+  }
+  
 
 </style>
 
@@ -686,25 +579,67 @@ function rollback(no_registrasi, no_kunjungan, flag){
 </div> 
 
 <div class="row">
+  <div class="page-header">  
+      <ul class="nav ace-nav">
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
+            <span class="user-info">
+              <b><?php echo isset($nama_dokter)?''.$nama_dokter.'':''?></b>
+              <small><?php echo ucwords($nama_bagian); ?></small></span>
+          </a>
+        </li>
 
-    <div class="page-header">    
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
+            <span class="user-info">
+              <b><span style="font-size: 14px;" id="total_antrian"></span></b>
+              <small>Total Pasien</small></span>
+          </a>
+        </li>
 
-      <h1>      
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
+            <span class="user-info">
+              <b><span style="font-size: 14px;" id="sudah_dilayani"></span> </b>
+              <small>Telah Dilayani</small></span>
+          </a>
+        </li>
 
-        <?php echo $title?>        
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
+            <span class="user-info">
+              <b><span style="font-size: 14px;" id="pasien_batal"></span></b>
+              <small>Pasien Batal</small></span>
+          </a>
+        </li>
 
-        <small>        
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
+            <span class="user-info">
+              <b><span style="font-size: 14px;" id="total_bill_dr_current"></span></b>
+              <small>Total Billing</small></span>
+          </a>
+        </li>
 
-          <i class="ace-icon fa fa-angle-double-right"></i>          
 
-          <?php echo isset($breadcrumbs)?$breadcrumbs:''?>          
+        <li style="color: black">
+          <a href="#" style="background-color: red !important; color: white" id="btn_update_session_poli">
+            Tutup Session Poli
+            <i class="ace-icon fa fa-sign-out"></i>
+          </a>
+        </li>
+            <!-- #section:basics/navbar.user_menu -->
+            
 
-        </small>        
-
-      </h1>      
-
-    </div>  
-    
+            <!-- /section:basics/navbar.user_menu -->
+          </ul>
+    <!-- <span style="font-size: 12px !important"> 
+      <?php echo isset($nama_dokter)?''.strtoupper($nama_dokter).'':''?><br>
+        <small style="margin-top: -10px !important">   
+          <?php echo ucwords($nama_bagian); ?>
+        </small> 
+    </span>   -->
+  </div>  
 <div>   
 
   <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
@@ -890,7 +825,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
               <td rowspan="2" width="100px" class="center" style="background-color: darkturquoise;">
               <span style="font-size: 11px">No. Antrian </span> <br> <span style="font-size: 30px; font-weight: bold"><?php echo isset($value->no_antrian)?$value->no_antrian:0?></span>
               </td>
-              <th>Kode Kunjungan</th>
+              <th>Kode</th>
               <th>No Reg</th>
               <th>Tanggal Daftar</th>
               <th>Dokter</th>

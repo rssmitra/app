@@ -119,4 +119,20 @@ class Pembentukan_saldo_dr_model extends CI_Model {
         return $query;
 	}
 
+	public function get_total_billing_dr_current_day(){
+		$this->db->select('CAST(SUM(bill_dr1 + bill_dr2) AS INT) as total_billing');
+		$this->db->from('tc_trans_pelayanan a');
+		$this->db->join('tc_registrasi b','b.no_registrasi=a.no_registrasi','inner');
+
+		if( isset($_GET['kode_dokter']) AND $_GET['kode_dokter'] ){
+			$this->db->where("(kode_dokter1=".$_GET['kode_dokter']." OR kode_dokter2=".$_GET['kode_dokter'].")");
+		}
+
+		$this->db->where("CAST(b.tgl_jam_masuk as DATE) = '".date('Y-m-d')."' ");
+		$this->db->where('(b.status_batal is null or status_batal=0)');
+
+		$query = $this->db->get()->row();
+        return $query;
+	}
+
 }

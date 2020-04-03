@@ -42,7 +42,11 @@ class Pl_pelayanan extends MX_Controller {
             $data['kode_bagian'] = $this->session->userdata('kode_bagian');
             $data['nama_bagian'] = $this->session->userdata('nama_bagian');
             $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
-            $this->load->view('Pl_pelayanan/index', $data);
+            // get antrian pasien
+            $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien();
+            $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
+            $this->form($next_pasien->id_pl_tc_poli, $next_pasien->no_kunjungan);
+            // $this->load->view('Pl_pelayanan/index', $data);
         }else{
             if( isset($_GET['bag']) AND $_GET['bag'] != '' ){
                 $data['kode_bagian'] = $_GET['bag'];
@@ -61,6 +65,10 @@ class Pl_pelayanan extends MX_Controller {
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan->get_by_id($id);
         $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+        $data['kode_bagian'] = $this->session->userdata('kode_bagian');
+        $data['nama_bagian'] = $this->session->userdata('nama_bagian');
+        $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
+
         // echo '<pre>';print_r($data['riwayat']);die;
         //$data['transaksi'] = $this->Pl_pelayanan->get_transaksi_pasien_by_id($no_kunjungan);
         /*variable*/
@@ -749,7 +757,6 @@ class Pl_pelayanan extends MX_Controller {
         $this->Pl_pelayanan->update('tc_trans_pelayanan', $dataexc, array('kode_trans_pelayanan' => $this->input->post('kode_trans_pelayanan')));
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
     }
-
 
     public function process_add_obat(){
 

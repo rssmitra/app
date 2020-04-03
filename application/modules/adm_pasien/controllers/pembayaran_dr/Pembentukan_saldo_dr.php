@@ -84,6 +84,13 @@ class Pembentukan_saldo_dr extends MX_Controller {
         echo json_encode($list);
     }
 
+    public function get_total_billing_dr_current_day()
+    {
+        /*get data from model*/
+        $list = $this->Pembentukan_saldo_dr->get_total_billing_dr_current_day(); 
+        echo json_encode($list);
+    }
+
     public function getDetailTransaksi($no_registrasi){
         $result = json_decode($this->Billing->getDetailData($no_registrasi));
         $akunting = $this->Pembentukan_saldo_dr->get_jurnal_akunting($no_registrasi);
