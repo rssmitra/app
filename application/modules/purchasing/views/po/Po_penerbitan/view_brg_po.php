@@ -202,6 +202,7 @@
             <?php
               // harga dasar
               $harga_dasar = ($flag=='medis')?round($row_dt[0]->harga_po_terakhir / 1.1): round($row_dt[0]->harga_po_terakhir);
+              // $harga_dasar = ($flag=='medis')?round($row_dt[0]->harga_po_terakhir): round($row_dt[0]->harga_po_terakhir);
               
               $jumlah_harga_dasar_satuan_besar = round($harga_dasar * $row_dt[0]->rasio);
               $history = $history_po[$row_dt[0]->kode_brg][0];

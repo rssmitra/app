@@ -5,7 +5,7 @@ class Input_perjanjian_model extends CI_Model {
 
 	var $table = 'tc_pesanan';
 	var $column = array('tc_pesanan.nama','mt_bagian.nama_bagian','mt_karyawan.nama_pegawai','mt_perusahaan.nama_perusahaan');
-	var $select = 'tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.no_telp, tc_pesanan.no_hp, mt_master_pasien.tlp_almt_ttp, mt_master_pasien.no_hp as no_hp_pasien';
+	var $select = 'tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.no_telp, tc_pesanan.no_hp, mt_master_pasien.tlp_almt_ttp, mt_master_pasien.no_hp as no_hp_pasien, mt_master_tarif.nama_tarif';
 
 	var $order = array('tc_pesanan.id_tc_pesanan' => 'DESC');
 
@@ -22,13 +22,17 @@ class Input_perjanjian_model extends CI_Model {
 		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter','left');
 		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr','left');
 		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan','left');
-		$this->db->where('tc_pesanan.no_mr IS NULL');
+		$this->db->join('mt_master_tarif', 'mt_master_tarif.kode_tarif=tc_pesanan.kode_tarif','left');
+		if( isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ){
+			$this->db->where('tc_pesanan.no_poli', $_GET['kode_bagian']);
+		}else{
+			$this->db->where('tc_pesanan.no_mr IS NULL');
+		}
 		$this->db->where('DAY(input_tgl)='.date('d').'');	
 		$this->db->where('MONTH(input_tgl)='.date('m').'');	
 		$this->db->where('YEAR(input_tgl)='.date('Y').'');
 
         /*end parameter*/
-
 
 	}
 
@@ -101,11 +105,10 @@ class Input_perjanjian_model extends CI_Model {
 	
 	}
 
-	public function delete($id)
-	
+	public function delete_by_id($id)
 	{
-		return $this->db->delete($this->table, array('id_tc_pesanan' => $id) );
+		$this->db->where_in(''.$this->table.'.id_tc_pesanan', $id);
+		return $this->db->delete($this->table);
 	}
-
 
 }

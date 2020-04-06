@@ -715,7 +715,7 @@ class Reg_pasien extends MX_Controller {
 
     public function process_perjanjian()
     {
-         /*print_r($_POST);die;*/
+         
          $this->load->library('form_validation');
          $val = $this->form_validation;
  
@@ -757,6 +757,7 @@ class Reg_pasien extends MX_Controller {
              $date = date_create($this->input->post('tanggal_kunjungan').' '.$this->input->post('time_start') );
              $jam_pesanan = date_format($date, 'Y-m-d H:i:s');
          }else{
+             $val->set_rules('perjanjian_tindakan_pm', 'Nama Tindakan', 'trim');
              $val->set_rules('tanggal_perjanjian_pm', 'Tanggal Perjanjian', 'trim|required');
              $val->set_rules('pm_tujuan', 'Penunjang Medis', 'trim|required');
              $jam_pesanan = $tgl;
@@ -820,9 +821,13 @@ class Reg_pasien extends MX_Controller {
              if($_POST['jenis_instalasi']=='BD'){
                  $dataexc['flag']='bedah';
                  $dataexc['diagnosa']=$this->regex->_genRegex($val->set_value('diagnosa_perjanjian_bedah'), 'RGXQSL');
-                 $dataexc['kode_tarif']=$this->regex->_genRegex($val->set_value('perjanjian_tindakan_bedah'), 'RGXQSL');
+                 $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_bedah'), 'RGXQSL');
              }
- 
+             
+             if($_POST['jenis_instalasi']=='PM'){
+                $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_pm'), 'RGXQSL');
+             }
+            //  print_r($dataexc);die;
              if($id==0){
                  /*save post data*/
                  $newId = $this->Perjanjian->save($dataexc);

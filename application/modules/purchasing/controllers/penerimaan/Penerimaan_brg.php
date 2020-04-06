@@ -295,7 +295,8 @@ class Penerimaan_brg extends MX_Controller {
                     // insert rekap stok
                     $rekap_stok = array(
                         'harga_beli' => $harga['harga_satuan_kecil_netto'], 
-                        'harga_persediaan' => $harga['harga_satuan_persediaan'], 
+                        'harga_beli_supplier' => $harga['hna'], 
+                        'harga_persediaan' => $harga['harga_satuan_kecil_netto'] * $kartu_stok['stok_akhir'], 
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );

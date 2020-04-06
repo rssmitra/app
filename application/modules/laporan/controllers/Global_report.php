@@ -71,10 +71,23 @@ class Global_report extends MX_Controller {
         $query_data = $this->Global_report->get_data();
         $p_penerimaan = $this->Global_report->penerimaan_penjualan();
         $pjl_bpjs = $this->Global_report->penjualan_obat_bpjs();
+        $pjl_umum = $this->Global_report->penjualan_obat_umum();
+        $pjl_internal = $this->Global_report->penjualan_obat_internal();
         // get data penjualan bpjs
         foreach ($pjl_bpjs as $k_pjl_bpjs => $v_pjl_bpjs) {
             if($v_pjl_bpjs['kode_perusahaan']==120){
                 $get_dt_pjl_bpjs[] = $v_pjl_bpjs;
+            }
+        }
+        // get data penjualan umum
+        foreach ($pjl_umum as $k_pjl_umum => $v_pjl_umum) {
+            if($v_pjl_umum['kode_perusahaan'] ==0){
+                $get_dt_pjl_umum[] = $v_pjl_umum;
+            }
+        }
+        foreach ($pjl_internal as $k_pjl_internal => $v_pjl_internal) {
+            if($v_pjl_internal['kode_perusahaan'] == 'NULL'){
+                $get_dt_pjl_internal[] = $v_pjl_internal;
             }
         }
        
@@ -86,6 +99,8 @@ class Global_report extends MX_Controller {
             'result' => $query_data,
             'v_penerimaan' => $p_penerimaan,
             'dt_pjl_bpjs' => $get_dt_pjl_bpjs,
+            'dt_pjl_umum' => $get_dt_pjl_umum,
+            'dt_pjl_internal' => $get_dt_pjl_internal,
         );
 
         // echo '<pre>';print_r($viewpjl);

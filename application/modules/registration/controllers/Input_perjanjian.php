@@ -118,7 +118,11 @@ class Input_perjanjian extends MX_Controller {
                 $row[] = '<a href="#">'.strtoupper($row_list->nama).'</>';
                 $row[] = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
                 $row[] = '<div class="left">'.$row_list->nama_bagian.'</div>';
-                $row[] = '<div class="left">'.$row_list->nama_pegawai.'</div>';
+                if(isset($_GET['kode_bagian']) AND in_array($_GET['kode_bagian'], array('050201') )) {
+                    $row[] = '<div class="left">'.$row_list->nama_tarif.'</div>';
+                }else{
+                    $row[] = '<div class="left">'.$row_list->nama_pegawai.'</div>';
+                }
                 if( isset($_GET['flag']) AND $_GET['flag']=='HD' ){
                     $row[] = $row_list->selected_day;
                 }else{
@@ -150,13 +154,22 @@ class Input_perjanjian extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function delete(){
+    public function delete()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        $toArray = explode(',',$id);
+        if($id!=null){
+            if($this->Input_perjanjian->delete_by_id($toArray)){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
         
-        $id_tc_pesanan = $_POST['ID'];
-        $this->Input_perjanjian->delete($id_tc_pesanan);
-        echo json_encode( array('status'=>200, 'message'=>'Proses hapus data berhasil dilakukan') );
-
     }
+
 
 }
 

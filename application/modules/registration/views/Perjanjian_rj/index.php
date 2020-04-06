@@ -186,7 +186,7 @@ function cetak_surat_kontrol(ID) {
       </div>
 
     </div>
-
+    <div class="clearfix"></div>
     <hr class="separator">
     <!-- div.dataTables_borderWrap -->
     <div style="margin-top:-27px">

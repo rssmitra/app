@@ -86,6 +86,20 @@ class Global_report_model extends CI_Model {
 			
 		return $this->db->query($query)->result_array();
 	}
+	public function penjualan_obat_umum(){
+		
+		$query = 'select kode_brg, kode_perusahaan, kode_kelompok, SUM(jumlah_tebus) as jumlah_tebus, AVG(harga_beli) as harga_beli, AVG(harga_jual) as harga_jual 
+		from fr_hisbebasluar_v where MONTH(tgl_trans)= '."'".$_POST['from_month']."'".' and YEAR(tgl_trans) = '."'".$_POST['year']."'".' group by kode_brg, kode_perusahaan, kode_kelompok';
+			
+		return $this->db->query($query)->result_array();
+	}
+	public function penjualan_obat_internal(){
+		
+		$query = 'select kode_brg, kode_perusahaan, kode_kelompok, SUM(jumlah_tebus) as jumlah_tebus, AVG(harga_beli) as harga_beli, AVG(harga_jual) as harga_jual 
+		from fr_hisbebasluar_v where MONTH(tgl_trans)= '."'".$_POST['from_month']."'".' and YEAR(tgl_trans) = '."'".$_POST['year']."'".' AND kode_kelompok NOT IN(1,2,3,5,6) group by kode_brg, kode_perusahaan, kode_kelompok';
+			
+		return $this->db->query($query)->result_array();
+	}
 
 	public function penerimaan_penjualan(){
 		$query = "SELECT b.kode_brg, SUM(b.jumlah_kirim) as jumlah_kirim, AVG(b.harga) as harga

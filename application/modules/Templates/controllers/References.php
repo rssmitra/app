@@ -51,6 +51,21 @@ class References extends MX_Controller {
         }
         echo json_encode($arrResult);
         
+	}
+	
+	public function getPasien()
+    {
+		$result = $this->db->where('(no_induk is null or no_induk = '."''".') ')
+							->where("nama_pasien LIKE '%".$_POST['keyword']."%' ")
+                          	->order_by('nama_pasien', 'ASC')
+                          	->limit(25)
+                          	->get('mt_master_pasien')->result();
+        $arrResult = [];
+        foreach ($result as $key => $value) {
+            $arrResult[] = $value->no_mr.' : '.$value->nama_pasien;
+        }
+        echo json_encode($arrResult);
+        
     }
 
 	public function getKlinikById($kd_bagian='')
@@ -872,7 +887,6 @@ class References extends MX_Controller {
 			$arrResult[] = $value->kode_bagian.' : '.$value->nama_bagian;
 		}
 		echo json_encode($arrResult);
-		
 		
 	}
 

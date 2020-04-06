@@ -57,14 +57,10 @@ jQuery(function($) {
         $('#view_last_message').html(message);
         $("html, body").animate({ scrollTop: "700px" }, "slow");  
 
-
     }, 'json');
 
-    
-  
   });
  
-
 });
 
 $(document).ready(function(){
@@ -98,7 +94,7 @@ $(document).ready(function(){
             PopupCenter(jsonResponse.redirect, 'SURAT KONTROL PASIEN', 850, 500);
             //window.open(jsonResponse.redirect, '_blank');
             $("#modalDaftarPerjanjian").modal('hide');
-            //$('#page-area-content').load(jsonResponse.redirect);
+            $('#page-area-content').load('registration/Input_perjanjian?kode_bagian=<?php echo isset($_GET['kode_bagian'])?$_GET['kode_bagian']:''?>');
 
           },1800);
 
@@ -165,7 +161,33 @@ $(document).ready(function(){
         }else if (field == 'Umum') {
           $('#showFormPerusahaan').hide('fast');
         }
-      });
+    });
+
+    $('#nama_pasien').typeahead({
+        source: function (query, result) {
+            $.ajax({
+                url: "templates/References/getPasien",
+                data: 'keyword=' + query,            
+                dataType: "json",
+                type: "POST",
+                success: function (response) {
+                  result($.map(response, function (item) {
+                      return item;
+                  }));
+                }
+            });
+        },
+        afterSelect: function (item) {
+          // do what is needed with item
+          var label_item=item.split(':')[1];
+          var val_item=item.split(':')[0];
+          console.log(val_item);
+          $('#nama_pasien').val(label_item);
+          $('#no_mr').val(val_item);
+          $('#is_no_mr').val('N');
+        }
+
+    });
 
 
 
@@ -220,13 +242,14 @@ function formatDate(date) {
         <input type="hidden" name="time_start" id="time_start">
         <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
         <input type="hidden" name="is_no_mr" id="is_no_mr" value="Y">
+        <input type="hidden" name="no_mr" id="no_mr" value="">
 
         <p><b>DATA PASIEN</b></p>
         <div class="form-group">
             <label class="control-label col-sm-2">Nama Pasien</label>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <input type="text" name="nama_pasien" id="nama_pasien" class="form-control" style="width:75%;display:inline; margin-left: 10px" value="<?php echo isset($value)?$value->nama_pasien:''?>" <?php echo ($flag=='read')?'readonly':''?>>
-              <span style="display:inline;float:left;width:15%;">
+              <span style="display:inline;float:left;width:18%;">
                 <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'gelar_nama')), isset($value)?$value->title:'Tn.'  , 'gelar_nama', 'gelar_nama', 'form-control', '', '') ?> 
               </span>
             </div>
@@ -267,20 +290,14 @@ function formatDate(date) {
         </div>
 
         <div class="form-group" id="showFormPerusahaan" style="display:none">
-
             <label class="control-label col-sm-2">Perusahaan</label>
-
             <div class="col-sm-6">
-
                 <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
                 <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
-
             </div>
-
         </div>
 
         <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
-
           <div class="form-group">
               <label class="control-label col-sm-2">Instalasi</label>
               <div class="col-md-3">
@@ -291,7 +308,6 @@ function formatDate(date) {
                   <option value="BD">Bedah</option>
                 </select>
               </div>
-            
           </div>
 
           <div id="change_modul_view_perjanjian"> </div>

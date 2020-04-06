@@ -30,7 +30,7 @@ class Po_revisi_model extends CI_Model {
 		$this->_main_query();
 
 		if( ( isset( $_GET['keyword']) AND $_GET['keyword'] != '' )  ){
-			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'kode_permohonan' ){
+			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'no_po' ){
 				$this->db->like( $_GET['search_by'], $_GET['keyword'] );
 			}
 		}

@@ -35,7 +35,7 @@
             <th width="304" colspan="2">Penerimaan/Pembelian</th>
             <th width="304" colspan="2">Penjualan ke Pasien BPJS</th>
             <th width="304" colspan="2">Penjualan Umum</th>
-            <th width="304" colspan="3">Penggunaan Internal</th>
+            <th width="304" colspan="2">Penggunaan Internal</th>
             <th width="304" colspan="3">Distribusi & ALokasi Unit</th>
             <th width="304" colspan="2">Saldo Akhir</th>
           </tr>
@@ -51,7 +51,6 @@
             <th width="304">Unit</th>
             <th width="304">Quantity</th>
             <th width="304">Jumlah</th>
-            <th width="304">Unit</th>
             <th width="304">Quantity</th>
             <th width="304">Jumlah</th>
             <th width="304">Quantity</th>
@@ -83,6 +82,29 @@
             }
             $saldopenerimaan=$qty_p * $row_data->harga_beli;
             $j_bpjs=$qty * $hbpjs;
+            
+            //umum
+            $key_umum = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $dt_pjl_umum);
+            if($row_data->kode_brg == $dt_pjl_umum[$key_umum]['kode_brg']){
+              $qty_u = isset($dt_pjl_umum[$key_umum])?$dt_pjl_umum[$key_umum]['jumlah_tebus']:0;
+              $humum = isset($dt_pjl_umum[$key_umum])?$dt_pjl_umum[$key_umum]['harga_jual']:0;
+            }else{
+              $qty_u = 0;
+              $humum = 0;
+            }
+            $j_umum=$qty_u * $humum;
+
+            //internal
+            $key_internal = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $dt_pjl_internal);
+            if($row_data->kode_brg == $dt_pjl_internal[$key_internal]['kode_brg']){
+              $qty_i = isset($dt_pjl_internal[$key_internal])?$dt_pjl_internal[$key_internal]['jumlah_tebus']:0;
+              $hinternal = isset($dt_pjl_internal[$key_internal])?$dt_pjl_internal[$key_internal]['harga_jual']:0;
+            }else{
+              $qty_i = 0;
+              $hinternal = 0;
+            }
+            $j_internal=$qty_i * $hinternal;
+
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -97,6 +119,10 @@
                 echo '<td>'.number_format($saldopenerimaan).'</td>';
                 echo '<td>'.$qty.'</td>';
                 echo '<td>'.number_format($j_bpjs).'</td>';
+                echo '<td>'.$qty_u.'</td>';
+                echo '<td>'.number_format($j_umum).'</td>';
+                echo '<td>'.$qty_i.'</td>';
+                echo '<td>'.number_format($j_internal).'</td>';
               ?>
             </tr>
           <?php } ?>

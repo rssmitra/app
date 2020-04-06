@@ -20,6 +20,16 @@ jQuery(function($) {
 
 });
 
+$('select[name="pm_tujuan"]').change(function () {      
+
+    if ($(this).val() == '050201') {    
+        $('#div_tindakan_radiologi').show();
+    } else {     
+        $('#div_tindakan_radiologi').hide();
+    }        
+
+});
+
 function preventDefault(e) {
   e = e || window.event;
   if (e.preventDefault)
@@ -27,31 +37,54 @@ function preventDefault(e) {
   e.returnValue = false;  
 }
 
-    $('#inputKeyTindakanBedah').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "templates/References/getTindakanBedah",
-                data: 'keyword=' + query,            
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                result($.map(response, function (item) {
-                        return item;
-                    }));
-                
-                }
-            });
-        },
-        afterSelect: function (item) {
-            // do what is needed with item
-            var label_item=item.split(':')[1];
-            var val_item=item.split(':')[0];
-            console.log(val_item);
-            $('#perjanjian_tindakan_bedah').val(val_item);
-            $('#inputKeyTindakanBedah').val(label_item);
-        }
+$('#inputKeyTindakanBedah').typeahead({
+    source: function (query, result) {
+        $.ajax({
+            url: "templates/References/getTindakanBedah",
+            data: 'keyword=' + query,            
+            dataType: "json",
+            type: "POST",
+            success: function (response) {
+            result($.map(response, function (item) {
+                    return item;
+                }));
+            
+            }
+        });
+    },
+    afterSelect: function (item) {
+        // do what is needed with item
+        var label_item=item.split(':')[1];
+        var val_item=item.split(':')[0];
+        console.log(val_item);
+        $('#perjanjian_tindakan_bedah').val(val_item);
+        $('#inputKeyTindakanBedah').val(label_item);
+    }
 
-    });
+});
+
+$('#InputKeyTindakan').typeahead({
+    source: function (query, result) {
+        $.ajax({
+            url: "templates/references/getTindakanByBagianAutoComplete",
+            data: { keyword:query, kode_klas: 16, kode_bag : $('#pm_tujuan').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val() },            
+            dataType: "json",
+            type: "POST",
+            success: function (response) {
+                result($.map(response, function (item) {
+                    return item;
+                }));
+            }
+        });
+    },
+    afterSelect: function (item) {
+        // do what is needed with item
+        var val_item=item.split(':')[0];
+        console.log(val_item);
+        $('#perjanjian_tindakan_pm').val(val_item);
+    }
+
+});
 
 
 </script>
@@ -59,35 +92,30 @@ function preventDefault(e) {
 <p><b><i class="fa fa-edit"></i> PERJANJIAN PENUNJANG MEDIS </b></p>
 
 <div class="form-group">
-
-    <label class="control-label col-sm-2">Tanggal Perjanjian</label>
-  
-    <div class="col-md-3">
-        
+    <label class="control-label col-sm-2">Tanggal Perjanjian</label>  
+    <div class="col-md-2">
         <div class="input-group">
-            
             <input name="tanggal_perjanjian_pm" id="tanggal_perjanjian_pm" value="" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text">
             <span class="input-group-addon">
-            
             <i class="ace-icon fa fa-calendar"></i>
-            
             </span>
         </div>
-    
     </div>
-
 </div>
 
 <div class="form-group">
+    <label class="control-label col-sm-2" for="Province">*Penunjang Medis</label>
+    <div class="col-sm-3">
+        <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1, 'validasi' => '0500')), '' , 'pm_tujuan', 'pm_tujuan', 'form-control', '', '') ?>
+    </div>
+</div>
 
-      <label class="control-label col-sm-2" for="Province">*Penunjang Medis</label>
-
-      <div class="col-sm-3">
-
-          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1, 'validasi' => '0500')), '' , 'pm_tujuan', 'pm_tujuan', 'form-control', '', '') ?>
-
-      </div>
-
+<div class="form-group" id="div_tindakan_radiologi" style="display: none">
+    <label class="control-label col-sm-2" for="">Nama Tindakan</label>
+    <div class="col-sm-6">
+        <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
+        <input type="hiddenxx" class="form-control" id="perjanjian_tindakan_pm" name="perjanjian_tindakan_pm" >
+    </div>
 </div>
 
 

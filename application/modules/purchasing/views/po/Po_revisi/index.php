@@ -48,7 +48,7 @@
           complete: function(xhr) {     
             var data=xhr.responseText;
             var jsonResponse = JSON.parse(data);
-            getMenuTabs('purchasing/po/Po_revisi/create_po/'+$('#flag_string').val()+'?'+jsonResponse.params+'', 'tabs_form_po');
+            getMenuTabs('purchasing/po/Po_revisi/create_po/'+$('#flag').val()+'?'+jsonResponse.params+'', 'tabs_form_po');
             achtungHideLoader();
           }
 
@@ -67,7 +67,7 @@ function rollback(myid){
     $.ajax({
         url: 'purchasing/po/Po_revisi/rollback',
         type: "post",
-        data: {ID:myid, flag: $('#flag_string').val()},
+        data: {ID:myid, flag: $('#flag').val()},
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -127,7 +127,7 @@ $('select[name="search_by"]').change(function () {
     <form class="form-horizontal" method="post" id="form_search" action="purchasing/po/Po_revisi/find_data?flag=<?php echo $flag?>">
 
       <!-- hidden form -->
-      <input type="hidden" name="flag_string" id="flag_string" value="<?php echo $flag?>">
+      <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
 
       <div class="form-group">
 
@@ -135,7 +135,7 @@ $('select[name="search_by"]').change(function () {
           <div class="col-md-2">
             <select name="search_by" id="search_by" class="form-control">
               <option value="">-Silahkan Pilih-</option>
-              <option value="kode_permohonan" selected>Kode Permintaan</option>
+              <option value="no_po" selected>Nomor PO</option>
               <option value="month">Bulan</option>
             </select>
           </div>
