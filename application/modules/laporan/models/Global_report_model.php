@@ -385,7 +385,7 @@ class Global_report_model extends CI_Model {
 					  left join mt_supplier e ON e.kodesupplier=a.kodesupplier
 					  where a.kodesupplier=43 AND MONTH(a.tgl_po) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".'
 						AND YEAR(a.tgl_po)='."'".$_POST['year']."'".'
-					  order by c.nama_brg ASC';
+					  order by a.no_po, c.nama_brg ASC';
 
 		return $query;
 

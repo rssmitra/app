@@ -493,8 +493,10 @@ function cetak_slip() {
 }
 
 function perjanjian_pasien_pm(){
-
-  show_modal('registration/Input_perjanjian_pm/form?no_kunjungan='+$('#no_kunjungan').val()+'&no_mr='+$('#noMrHidden').val()+'&nama_pasien='+$('#nama_pasien_hidden').val().replace(' ','_')+'', 'PERJANJIAN PASIEN RADIOLOGI');
+  $.getJSON("registration/reg_klinik/search_pasien?keyword=" + $('#noMrHidden').val(), '', function (data) { 
+    show_modal('registration/Input_perjanjian_pm/form?no_kunjungan='+$('#no_kunjungan').val()+'&no_mr='+$('#noMrHidden').val()+'', 'PERJANJIAN PASIEN RADIOLOGI');
+  }
+  
 
 }
 </script>
@@ -531,11 +533,8 @@ function perjanjian_pasien_pm(){
 
     <div style="margin-top:-10px">   
 
-      <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
-        
+      <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >     
           <br>
-
-          
           <!-- hidden form -->
           <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>" id="no_kunjungan">
           <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
