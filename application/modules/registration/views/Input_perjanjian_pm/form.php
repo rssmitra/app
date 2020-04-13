@@ -67,6 +67,7 @@ $(document).ready(function(){
 
 
     $('#nama_pasien').focus();    
+    $('#change_modul_view_perjanjian').load('registration/Reg_pasien/show_modul/PM');
 
     $('#form_booking').ajaxForm({      
 
@@ -91,13 +92,11 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});          
 
           setTimeout(function(){
-            PopupCenter(jsonResponse.redirect, 'SURAT KONTROL PASIEN', 850, 500);
-            //window.open(jsonResponse.redirect, '_blank');
-            $("#modalDaftarPerjanjian").modal('hide');
-            $('#page-area-content').load('registration/Input_perjanjian?kode_bagian=<?php echo isset($_GET['kode_bagian'])?$_GET['kode_bagian']:''?>');
-
+            // PopupCenter(jsonResponse.redirect, 'SURAT KONTROL PASIEN', 850, 500);
+            // $('#page-area-content').load('registration/Input_perjanjian_pm');
+            $("#globalModalView").modal('hide');
+            reload_table();
           },1800);
-
 
         }else{          
 
@@ -189,9 +188,7 @@ $(document).ready(function(){
 
     });
 
-
-
-
+    
 
 })
 
@@ -205,8 +202,6 @@ function formatDate(date) {
   var strTime = hours + ':' + minutes + ' ' + ampm;
   return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
 }
-
-
 
 </script>
 
@@ -240,34 +235,28 @@ function formatDate(date) {
         <input type="hidden" name="selected_day" id="selected_day">
         <input type="hidden" name="selected_time" id="selected_time">
         <input type="hidden" name="time_start" id="time_start">
-        <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
-        <input type="hidden" name="is_no_mr" id="is_no_mr" value="Y">
-        <input type="hidden" name="no_mr" id="no_mr" value="">
+        <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($value->id_tc_pesanan)?$value->id_tc_pesanan:''?>">
+        <input type="hiddenxx" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($no_kunjungan)?$no_kunjungan: $value->referensi_no_kunjungan?>">
+        <input type="hiddenxx" name="is_no_mr" id="is_no_mr" value="N">
+        <input type="hiddenxx" name="no_mr" id="no_mr" value="<?php echo isset($_GET['no_mr'])?$_GET['no_mr']:$value->no_mr?>">
 
         <p><b>DATA PASIEN</b></p>
         <div class="form-group">
             <label class="control-label col-sm-2">Nama Pasien</label>
             <div class="col-md-6">
-              <input type="text" name="nama_pasien" id="nama_pasien" class="form-control" style="width:75%;display:inline; margin-left: 10px" value="<?php echo isset($value)?$value->nama:''?>" <?php echo ($flag=='read')?'readonly':''?>>
+              <input type="text" name="nama_pasien" id="nama_pasien" class="form-control" style="width:75%;display:inline; margin-left: 10px" value="<?php echo isset($_GET['nama_pasien'])?str_replace('_',' ', $_GET['nama_pasien']) : $value->nama?>" >
               <span style="display:inline;float:left;width:18%;">
                 <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'gelar_nama')), isset($value->title)?$value->title:'Tn.'  , 'gelar_nama', 'gelar_nama', 'form-control', '', '') ?> 
               </span>
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2">Alamat</label>
-            <div class="col-md-3">
-              <textarea name="alamat" class="form-control" style="height:50px !important" <?php echo ($flag=='read')?'readonly':''?>><?php echo isset($value)?$value->almt_ttp_pasien:''?></textarea>
-            </div>
-        </div>
-
         <div class="form-group" style="margin-top: 3px">
             <label class="control-label col-sm-2">Telp Rumah</label>
             <div class="col-md-2">
-              <input type="text" name="no_telp" id="no_telp" class="form-control" value="<?php echo isset($value)?($value->no_telp!=0 || $value->no_telp!='' )?$value->no_telp:'':'' ?>" <?php echo ($flag=='read')?'readonly':''?> >
+              <input type="text" name="no_telp" id="no_telp" class="form-control" value="<?php echo isset($value)?($value->no_telp!=0 || $value->no_telp!='' )?$value->no_telp:'':'' ?>"  >
             </div>
-            <label class="control-label col-sm-2">HP</label>
+            <label class="control-label col-sm-1">No HP</label>
             <div class="col-md-2">
               <input type="text" name="no_hp" id="no_hp" class="form-control" value="<?php echo isset($value->no_hp)?$value->no_hp:''; ?>" >
             </div>
@@ -297,63 +286,21 @@ function formatDate(date) {
             </div>
         </div>
 
-        <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
-          <div class="form-group">
-              <label class="control-label col-sm-2">Instalasi</label>
-              <div class="col-md-3">
-                <select name="jenis_instalasi" id="jenis_instalasi" class="form-control">
-                  <option>-Silahkan Pilih-</option>
-                  <option value="RJ">Rawat Jalan</option>
-                  <option value="PM">Penunjang Medis</option>
-                  <option value="BD">Bedah</option>
-                </select>
-              </div>
-          </div>
+        
+        <div class="clearfix"></div>
+        <p><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
+        <div class="form-group">
+            <label class="control-label col-sm-2">Instalasi</label>
+            <div class="col-md-3">
+              <select name="jenis_instalasi" id="jenis_instalasi" class="form-control">
+                <option>-Silahkan Pilih-</option>
+                <option value="PM" selected>Penunjang Medis</option>
+              </select>
+            </div>
+        </div>
 
-          <div id="change_modul_view_perjanjian"> </div>
+        <div id="change_modul_view_perjanjian"> </div>
             
-          <!-- end change modul view -->
-
-          <div id="tgl_kunjungan_form" style="display:none">
-          
-            <p><b><i class="fa fa-calendar"></i> TANGGAL KUNJUNGAN </b></p>
-
-            <div class="form-group">
-              
-              <label class="control-label col-sm-2">Tanggal Kunjungan</label>
-              
-              <div class="col-md-4">
-                
-                <div class="input-group">
-                    
-                    <input name="tanggal_kunjungan" id="tgl_kunjungan" value="" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text">
-                    <span class="input-group-addon">
-                      <i class="ace-icon fa fa-calendar"></i>
-                    </span>
-                  </div>
-
-                  <small id="view_msg_kuota" style="margin-top:1px"></small>
-
-              
-              </div>
-
-            </div>
-
-            <div class="form-group">
-              
-              <label class="control-label col-sm-2">Keterangan</label>
-              
-              <div class="col-md-5">
-                
-                <textarea class="form-control" name="keterangan" style="height:50px !important"></textarea>
-
-            </div>
-
-          </div>
-
-          <div id="view_last_message" style="margin-top:5px"></div>
-          
-
       </form>
 
       </div>

@@ -137,7 +137,7 @@ final Class Authuser {
 
             case 'C7':
                 # code...
-                $Query_String  = explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] );
+                $Query_String  = isset($_SERVER['REQUEST_URI']) ? explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] ) : '' ;
                 $param_string = isset($Query_String[0])?$Query_String[0]:'';
                 $btn = '<a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'".$link.'/form?'.$param_string.''."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i>Create New</a>';
                 break;

@@ -27,7 +27,7 @@ class Inv_stok_gdg_model extends CI_Model {
 		$this->db->join('mt_rekap_stok'.$is_nm.' c','c.kode_brg=b.kode_brg','left');
 		$this->db->join('( SELECT * FROM '.$t_kartu_stok.' WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM '.$t_kartu_stok.' WHERE tgl_input <= '."'".$date."'".' AND tgl_input is not null AND kode_bagian='."'".$params_kode_bagian."'".' GROUP BY kode_brg) AND kode_bagian='."'".$params_kode_bagian."'".' ) AS kartu_stok', 'kartu_stok.kode_brg=a.kode_brg','left');
 
-		$this->db->where('a.kode_bagian', $params_kode_bagian);
+		$this->db->where('kartu_stok.kode_bagian', $params_kode_bagian);
 		// $this->db->where('b.nama_brg is not null');
 		// $this->db->where('kartu_stok.tgl_input is not null');
 		$this->db->group_by($this->select);
@@ -101,8 +101,9 @@ class Inv_stok_gdg_model extends CI_Model {
 	public function get_mutasi_stok($kode_brg, $kode_bagian)
 	{
 		$this->_main_query(date('Y-m-d'), $kode_bagian);
-		$this->db->where('a.kode_brg', $kode_brg);
+		$this->db->where('kartu_stok.kode_brg', $kode_brg);
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query->row();
 		
 	}

@@ -71,7 +71,7 @@ window.onload = generateBarcode;
 </tr>
 
 <tr>
-<td>Tanggal Kembali</td><td>: <?php echo $value->tgl_kembali?></td><td style="padding-left:80px">Penjamin</td><td>: <?php echo $value->nama_perusahaan?></td>
+<td>Tanggal Kembali</td><td>: <?php echo $this->tanggal->formatDate($value->tgl_kembali)?></td><td style="padding-left:80px">Penjamin</td><td>: <?php echo $value->nama_perusahaan?></td>
 </tr>
 
 <tr>

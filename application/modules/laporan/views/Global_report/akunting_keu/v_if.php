@@ -36,7 +36,7 @@
             <th width="304" colspan="2">Penjualan ke Pasien BPJS</th>
             <th width="304" colspan="2">Penjualan Umum</th>
             <th width="304" colspan="2">Penggunaan Internal</th>
-            <th width="304" colspan="3">Distribusi & ALokasi Unit</th>
+            <th width="304" colspan="2">Distribusi & ALokasi Unit</th>
             <th width="304" colspan="2">Saldo Akhir</th>
           </tr>
           <tr>
@@ -48,7 +48,6 @@
             <th width="304">Jumlah</th>
             <th width="304">Quantity</th>
             <th width="304">Jumlah</th>
-            <th width="304">Unit</th>
             <th width="304">Quantity</th>
             <th width="304">Jumlah</th>
             <th width="304">Quantity</th>
@@ -105,6 +104,17 @@
             }
             $j_internal=$qty_i * $hinternal;
 
+             //distribusi
+            $key_distribusiU = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $dt_distribusiU);
+            if($row_data->kode_brg == $dt_distribusiU[$key_distribusiU]['kode_brg']){
+              $qty_d = isset($dt_distribusiU[$key_distribusiU])?$dt_distribusiU[$key_distribusiU]['jumlah_permintaan']:0;
+              $hdistribusiU = isset($dt_distribusiU[$key_distribusiU])?$dt_distribusiU[$key_distribusiU]['harga_beli']:0;
+            }else{
+              $qty_d = 0;
+              $hdistribusiU = 0;
+            }
+            $j_distribusiU=$qty_d * $hdistribusiU;
+
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -123,6 +133,8 @@
                 echo '<td>'.number_format($j_umum).'</td>';
                 echo '<td>'.$qty_i.'</td>';
                 echo '<td>'.number_format($j_internal).'</td>';
+                echo '<td>'.$qty_d.'</td>';
+                echo '<td>'.number_format($j_distribusiU).'</td>';
               ?>
             </tr>
           <?php } ?>

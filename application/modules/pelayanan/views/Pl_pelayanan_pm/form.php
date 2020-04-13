@@ -492,6 +492,11 @@ function cetak_slip() {
 
 }
 
+function perjanjian_pasien_pm(){
+
+  show_modal('registration/Input_perjanjian_pm/form?no_kunjungan='+$('#no_kunjungan').val()+'&no_mr='+$('#noMrHidden').val()+'&nama_pasien='+$('#nama_pasien_hidden').val().replace(' ','_')+'', 'PERJANJIAN PASIEN RADIOLOGI');
+
+}
 </script>
 
 <style type="text/css">
@@ -532,7 +537,7 @@ function cetak_slip() {
 
           
           <!-- hidden form -->
-          <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
+          <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>" id="no_kunjungan">
           <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
           <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
           <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>">
@@ -543,7 +548,7 @@ function cetak_slip() {
           <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>"  id="kode_klas_val">
           <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
           <input type="hidden" name="kode_penunjang" id="kode_penunjang" value="<?php echo ($id)?$id:''?>">
-          <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
+          <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
           <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:($value->kode_bagian_tujuan=='050101')?'Arief Indra Sanjaya,dr. Sp PK':'';?>" id="dokter_pemeriksa">
           <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:0?>">
@@ -594,6 +599,8 @@ function cetak_slip() {
 
           <!-- end action form  -->
             <div class="pull-right" style="margin-bottom:3px">
+            <a href="#" onclick="perjanjian_pasien_pm()" class="btn btn-xs btn-purple"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian Pasien </span></a>
+
               <?php if($value->status_daftar==0) :?>
                 <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_selesai" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pasien Selesai</a>
             <?php else: 
@@ -717,51 +724,6 @@ function cetak_slip() {
 
 </div><!-- /.row -->
 
-<div id="GlobalModal" class="modal fade" tabindex="-1">
-
-  <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:70%">
-
-    <div class="modal-content">
-
-      <div class="modal-header">
-
-        <div class="table-header">
-
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-
-            <span class="white">&times;</span>
-
-          </button>
-
-          <span id="result_text_riwayat_medis">PERJANJIAN PASIEN</span>
-
-        </div>
-
-      </div>
-
-      <div class="modal-body">
-
-        <div id="form_modal"></div>
-
-      </div>
-
-      <!-- <div class="modal-footer no-margin-top">
-
-        <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
-
-          <i class="ace-icon fa fa-times"></i>
-
-          Close
-
-        </button>
-
-      </div> -->
-
-    </div><!-- /.modal-content -->
-
-  </div><!-- /.modal-dialog -->
-
-</div>
 
 
 

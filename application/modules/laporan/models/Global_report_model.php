@@ -110,7 +110,18 @@ class Global_report_model extends CI_Model {
 			
 		return $this->db->query($query)->result_array();
 	}
-
+	public function distribusi_unit(){
+		$query = "SELECT a.kode_brg, SUM(jumlah_permintaan) as jumlah_permintaan, SUM(jumlah_penerimaan) as jumlah_penerimaan, f.harga_beli
+				  FROM tc_permintaan_inst_det a
+				  LEFT JOIN mt_barang c ON c.kode_brg=a.kode_brg 
+				  LEFT JOIN tc_permintaan_inst e ON e.id_tc_permintaan_inst=a.id_tc_permintaan_inst 
+				  LEFT JOIN mt_bagian g ON g.kode_bagian=e.kode_bagian_minta 
+				  LEFT JOIN mt_rekap_stok f ON f.kode_brg=a.kode_brg 
+				  WHERE MONTH(e.tgl_permintaan)= ".$_POST['from_month']." and YEAR(e.tgl_permintaan) = ".$_POST['year']." AND e.tgl_permintaan is not null
+				  GROUP BY a.kode_brg, f.harga_beli";
+			
+		return $this->db->query($query)->result_array();
+	}
 
 
 
@@ -348,6 +359,33 @@ class Global_report_model extends CI_Model {
 				JOIN '.$t_po_d.' f ON f.id_tc_po=e.id_tc_po
 				WHERE YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount ORDER BY a.tgl_penerimaan desc';
 		}
+
+		return $query;
+
+	}
+
+	public function pengadaan_mod_11(){
+		$t_po = ($_POST['keterangan']=='nmmedis')?'tc_po_nm':'tc_po';
+		$t_po_d = ($_POST['keterangan']=='nmmedis')?'tc_po_nm_det':'tc_po_det';
+		$m_barang = ($_POST['keterangan']=='nmmedis')?'mt_barang_nm':'mt_barang';
+		$join = ($_POST['keterangan']=='nmmedis')?'mt_rekap_stok_nm':'mt_rekap_stok';
+		
+		$query = 'SELECT b.id_tc_po_det, b.id_tc_po, b.id_tc_permohonan_det, 
+					b.id_tc_permohonan, b.kode_brg, b.jumlah_besar, 
+					b.jumlah_besar_acc, b.content, b.harga_satuan as harga_satuan, 
+					b.harga_satuan_netto as harga_satuan_netto, 
+					b.jumlah_harga_netto as jumlah_harga_netto,b.jumlah_harga as jumlah_harga, 
+					b.discount, b.discount_rp as discount_rp, c.nama_brg, c.satuan_besar, a.no_po, a.tgl_po, 
+					a.ppn as ppn, a.total_sbl_ppn as total_sbl_ppn, a.total_stl_ppn as total_stl_ppn, a.discount_harga as total_diskon, 
+					a.term_of_pay, a.diajukan_oleh, a.tgl_kirim as estimasi_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, a.no_urut_periodik
+					 FROM '.$t_po.' a 
+					  left join '.$t_po_d.' b ON b.id_tc_po=a.id_tc_po 
+					  left JOIN '.$m_barang.' c ON c.kode_brg=b.kode_brg
+					  left join '.$join.' d ON d.kode_brg=b.kode_brg
+					  left join mt_supplier e ON e.kodesupplier=a.kodesupplier
+					  where a.kodesupplier=43 AND MONTH(a.tgl_po) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".'
+						AND YEAR(a.tgl_po)='."'".$_POST['year']."'".'
+					  order by c.nama_brg ASC';
 
 		return $query;
 

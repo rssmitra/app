@@ -89,6 +89,8 @@ class Inv_stok_gdg extends MX_Controller {
         $data['title'] = 'Mutasi Stok Gudang '.$title;
         $data['flag'] = "read";
         $data['flag_string'] = $_GET['flag'];
+        $data['kode_brg'] = $kode_brg;
+        $data['kode_bagian'] = $kode_bagian;
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
         $this->load->view('stok/Inv_stok_gdg/form_mutasi', $data);

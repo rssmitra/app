@@ -145,7 +145,7 @@ function cetak_kartu_stok(){
             </div>
 
             <div class="row">
-              <table id="dynamic-table" base-url="inventory/stok/Inv_stok_gdg/get_data_mutasi?kode_brg=<?php echo $value->kode_brg?>&kode_bagian=<?php echo $unit->kode_bagian?>&flag=<?php echo $flag_string; ?>" class="table table-striped table-bordered table-hover" style="width: 100%">
+              <table id="dynamic-table" base-url="inventory/stok/Inv_stok_gdg/get_data_mutasi?kode_brg=<?php echo $kode_brg?>&kode_bagian=<?php echo $kode_bagian?>&flag=<?php echo $flag_string; ?>" class="table table-striped table-bordered table-hover" style="width: 100%">
                 <thead>
                   <tr style="background-color: #87b87f">
                     <th width="30px">No</th>

@@ -28,18 +28,16 @@ class Input_perjanjian_model extends CI_Model {
 		}else{
 			$this->db->where('tc_pesanan.no_mr IS NULL');
 		}
-		$this->db->where('DAY(input_tgl)='.date('d').'');	
-		$this->db->where('MONTH(input_tgl)='.date('m').'');	
-		$this->db->where('YEAR(input_tgl)='.date('Y').'');
-
-        /*end parameter*/
-
 	}
 
 	private function _get_datatables_query()
 	{
 		
 		$this->_main_query();
+		
+		$this->db->where('DAY(input_tgl)='.date('d').'');	
+		$this->db->where('MONTH(input_tgl)='.date('m').'');	
+		$this->db->where('YEAR(input_tgl)='.date('Y').'');
 
 		$i = 0;
 	
@@ -83,6 +81,21 @@ class Input_perjanjian_model extends CI_Model {
 	{
 		$this->_main_query();
 		return $this->db->count_all_results();
+	}
+
+	public function get_by_id($id)
+	{
+		$this->db->select('*');
+		$this->_main_query();
+		if(is_array($id)){
+			$this->db->where_in(''.$this->table.'.id_tc_pesanan',$id);
+			$query = $this->db->get();
+			return $query->result();
+		}else{
+			$this->db->where(''.$this->table.'.id_tc_pesanan',$id);
+			$query = $this->db->get();
+			return $query->row();
+		}		
 	}
 
 	public function save($data)

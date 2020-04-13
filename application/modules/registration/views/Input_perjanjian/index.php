@@ -41,25 +41,25 @@ $('select[name="klinik"]').change(function () {
 
 $( ".form-control" )    
 
-      .keypress(function(event) {        
+    .keypress(function(event) {        
 
-        var keycode =(event.keyCode?event.keyCode:event.which);         
+      var keycode =(event.keyCode?event.keyCode:event.which);         
 
-        if(keycode ==13){          
+      if(keycode ==13){          
 
-          event.preventDefault();          
+        event.preventDefault();          
 
-          if($(this).valid()){            
+        if($(this).valid()){            
 
-            $('#btn_search_data').focus();            
+          $('#btn_search_data').focus();            
 
-          }          
+        }          
 
-          return false;                 
+        return false;                 
 
-        }        
+      }        
 
-    }); 
+}); 
 
 
 function showModalDaftarPerjanjian(booking_id, no_mr)
@@ -86,7 +86,7 @@ function cetak_surat_kontrol(ID) {
         PopupCenter(url, title, width, height);
       }
 
-    }
+}
 
 
 </script>
@@ -103,7 +103,7 @@ function cetak_surat_kontrol(ID) {
       </h1>
     </div><!-- /.page-header -->
     <div class="clearfix" style="margin-bottom:-5px">
-      <?php echo $this->authuser->show_button('registration/Input_perjanjian','C','',7)?>
+      <?php echo $this->authuser->show_button('registration/Input_perjanjian','C','',1)?>
       <?php echo $this->authuser->show_button('registration/Input_perjanjian','D','',5)?>
     </div>
     <hr class="separator">

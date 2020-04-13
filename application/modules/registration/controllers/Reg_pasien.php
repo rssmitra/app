@@ -758,7 +758,12 @@ class Reg_pasien extends MX_Controller {
              $jam_pesanan = date_format($date, 'Y-m-d H:i:s');
          }else{
              $val->set_rules('perjanjian_tindakan_pm', 'Nama Tindakan', 'trim');
-             $val->set_rules('tanggal_perjanjian_pm', 'Tanggal Perjanjian', 'trim|required');
+             if($_POST['pm_tujuan']=='050201'){
+                 $val->set_rules('bulan_kunjungan', 'Bulan', 'trim|required');
+             }else{
+                 $val->set_rules('tanggal_perjanjian_pm', 'Tanggal Perjanjian', 'trim|required');
+             }
+             $val->set_rules('dokter_rajal', 'Dokter', 'trim|required');
              $val->set_rules('pm_tujuan', 'Penunjang Medis', 'trim|required');
              $jam_pesanan = $tgl;
          }
@@ -792,24 +797,26 @@ class Reg_pasien extends MX_Controller {
              $kode_perjanjian = $kode_faskes.date('my').$null.$unique_code_max;
  
              $dataexc = array(
-                 'tgl_pesanan' => $tgl,
                  'nama' => $this->regex->_genRegex($this->input->post('nama_pasien'), 'RGXQSL'),
                  'keterangan' => $this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
                  'alamat' => $this->regex->_genRegex($this->input->post('alamat'), 'RGXQSL'),
                  'no_poli' => $bag,
                  'kode_dokter' => $this->regex->_genRegex($val->set_value('dokter_rajal'), 'RGXQSL'),
                  'penjamin' => $this->regex->_genRegex($this->input->post('jenis_penjamin'), 'RGXQSL'),
-                 'jam_pesanan' => $jam_pesanan,
                  'no_induk' => $this->session->userdata('user')->user_id,
                  'input_tgl' => date('Y-m-d h:i:s'),
                  'kode_perjanjian' => $kode_perjanjian,
                  'unique_code_counter' =>  $unique_code_max,
+                 'no_telp' => $this->input->post('no_telp'),
+                 'no_hp' => $this->input->post('no_hp'),
              );
 
+             if($dataexc['no_poli'] != '50201'){
+                $dataexc['tgl_pesanan'] = $tgl;
+                $dataexc['jam_pesanan'] = $jam_pesanan;
+             }
+
             if(isset($_POST['is_no_mr']) AND $_POST['is_no_mr']=='Y'){
-                // take no action
-                $dataexc['no_telp'] = $this->input->post('no_telp');
-                $dataexc['no_hp'] = $this->input->post('no_hp');
             }else{
                 $dataexc['no_mr'] = $this->regex->_genRegex($val->set_value('no_mr'), 'RGXQSL');
             }
@@ -826,6 +833,8 @@ class Reg_pasien extends MX_Controller {
              
              if($_POST['jenis_instalasi']=='PM'){
                 $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_pm'), 'RGXQSL');
+                $dataexc['bulan_kunjungan'] = $this->regex->_genRegex($this->input->post('bulan_kunjungan'), 'RGXQSL');
+                $dataexc['referensi_no_kunjungan'] = $this->input->post('no_kunjungan');
              }
             //  print_r($dataexc);die;
              if($id==0){
