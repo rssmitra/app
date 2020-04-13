@@ -190,5 +190,32 @@ class Po_revisi_model extends CI_Model {
 		return true;
 	}
 
+	public function get_detail_brg_po_multiple($flag, $id){
+
+		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
+		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
+
+		$this->db->from(''.$table.'_det');
+		$this->db->join($table, ''.$table.'.id_tc_po='.$table.'_det.id_tc_po', 'left');
+		$this->db->join($mt_barang, ''.$mt_barang.'.kode_brg='.$table.'_det.kode_brg', 'left');
+		$this->db->join('mt_supplier', 'mt_supplier.kodesupplier='.$table.'.kodesupplier', 'left');
+		$this->db->order_by(''.$table.'.tgl_po', 'DESC');
+		$this->db->where_in(''.$table.'_det.id_tc_po', $id);
+		$result = $this->db->get()->result();
+		$getData = [];
+		foreach($result as $row){
+			$getData[$row->id_tc_po][] = array(
+				'id_tc_po' => $row->id_tc_po,
+				'no_po' => $row->no_po,
+				'namasupplier' => $row->namasupplier,
+				'tgl_po' => $row->tgl_po,
+				'barang' => $row,
+			);
+		}
+		// echo '<pre>';print_r($getData);die;
+		return $getData;
+		
+	}
+
 
 }

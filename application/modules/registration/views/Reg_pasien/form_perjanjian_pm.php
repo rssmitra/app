@@ -1,3 +1,4 @@
+<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script type="text/javascript">
 
 jQuery(function($) {  

@@ -1,67 +1,7 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 
-<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
-
 <script>
-
-jQuery(function($) {  
-
-  
-  $("#tgl_kunjungan").datepicker({
-
-    autoclose: true,    
-
-    todayHighlight: true,
-
-    onSelect: function(dateText) {
-      $(this).change();
-    }
-  
-  }).on("change", function() {
-    
-    var str_selected_date = this.value;
-    var selected_date = str_selected_date.split("/").join("-");
-    var spesialis = $('#klinik_rajal').val();
-    var dokter = $('#dokter_rajal').val();
-    var jd_id = $('#jd_id').val();
-    /*check selected date */
-
-    $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id} , function(data) {
-        // Do something with the request
-        if(data.status=='expired'){
-           var message = '<div class="alert alert-danger"><strong>Expired Date !</strong><br>Tanggal yang anda pilih sudah lewat atau sedang berjalan.</div>';
-           $('#view_msg_kuota').hide('fast');
-        }else{
-          if(data.day!=$('#selected_day').val() ){
-                var message = '<div class="alert alert-danger"><strong>Tidak Sesuai !</strong><br>Tanggal Kunjungan tidak sesuai dengan jadwal Praktek Dokter yang anda pilih !</div>';
-                $('#view_msg_kuota').hide('fast');
-          }else{
-            var message = '<div class="alert alert-block alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><strong><i class="ace-icon fa fa-check"></i> Selesai ! </strong>Apakah anda akan melanjutkan ke proses berikutnya ?</p><p><button type="submit" id="btnSave" class="btn btn-sm btn-success">Lanjutkan</button><a href="#" onclick="getMenu('+"'"+'booking/regon_booking'+"'"+')" class="btn btn-sm btn-danger">Batalkan</a></p></div>';
-
-            if(data.sisa > 0 ){
-              var msg_kuota = '*Kuota tersedia pada tanggal ini, '+data.sisa+' pasien';
-            }else{
-              var msg_kuota = '<span style="color:red"> *Kuota penuh, silahkan cari tanggal lain!</span>';
-            }
-
-            $('#view_msg_kuota').show('fast');
-            $('#view_msg_kuota').html(msg_kuota);
-
-          }
-
-        }
-
-        $('#view_last_message').show('fast');
-        $('#view_last_message').html(message);
-        $("html, body").animate({ scrollTop: "700px" }, "slow");  
-
-    }, 'json');
-
-  });
- 
-});
 
 $(document).ready(function(){
 
@@ -236,15 +176,15 @@ function formatDate(date) {
         <input type="hidden" name="selected_time" id="selected_time">
         <input type="hidden" name="time_start" id="time_start">
         <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($value->id_tc_pesanan)?$value->id_tc_pesanan:''?>">
-        <input type="hiddenxx" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($no_kunjungan)?$no_kunjungan: $value->referensi_no_kunjungan?>">
-        <input type="hiddenxx" name="is_no_mr" id="is_no_mr" value="N">
-        <input type="hiddenxx" name="no_mr" id="no_mr" value="<?php echo isset($_GET['no_mr'])?$_GET['no_mr']:$value->no_mr?>">
+        <input type="hidden" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($no_kunjungan)?$no_kunjungan: $value->referensi_no_kunjungan?>">
+        <input type="hidden" name="is_no_mr" id="is_no_mr" value="N">
+        <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($_GET['no_mr'])?$_GET['no_mr']:$value->no_mr?>">
 
         <p><b>DATA PASIEN</b></p>
         <div class="form-group">
             <label class="control-label col-sm-2">Nama Pasien</label>
             <div class="col-md-6">
-              <input type="text" name="nama_pasien" id="nama_pasien" class="form-control" style="width:75%;display:inline; margin-left: 10px" value="<?php echo isset($_GET['nama_pasien'])?str_replace('_',' ', $_GET['nama_pasien']) : $value->nama?>" >
+              <input type="text" name="nama_pasien" id="nama_pasien" class="form-control" style="width:75%;display:inline; margin-left: 10px" value="<?php echo isset($pasien->nama_pasien)?$pasien->nama_pasien:''?>" >
               <span style="display:inline;float:left;width:18%;">
                 <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'gelar_nama')), isset($value->title)?$value->title:'Tn.'  , 'gelar_nama', 'gelar_nama', 'form-control', '', '') ?> 
               </span>

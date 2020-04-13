@@ -190,8 +190,13 @@ $('select[name="search_by"]').change(function () {
 
       </div>
       
-      <hr class="separator">
+      <div class="clearfix">
+          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Print Selected</a>
+      </div>
 
+      
+      <hr class="separator">
+      
       <div style="margin-top:-25px">
 
       <table id="dynamic-table" base-url="purchasing/po/Po_revisi" data-id="flag=<?php echo $flag?>" url-detail="purchasing/po/Po_revisi/get_detail" class="table table-bordered table-hover">

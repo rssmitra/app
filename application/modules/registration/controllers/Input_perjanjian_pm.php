@@ -52,7 +52,7 @@ class Input_perjanjian_pm extends MX_Controller {
         }
 
         $data['no_mr'] = isset($_GET['no_mr']) ? $_GET['no_mr'] : null;
-
+        $data['pasien'] = $this->db->get_where('mt_master_pasien', array('no_mr' => $_GET['no_mr']))->row();
         /*breadcrumbs for view*/
         
         $data['breadcrumbs'] = $this->breadcrumbs->show();

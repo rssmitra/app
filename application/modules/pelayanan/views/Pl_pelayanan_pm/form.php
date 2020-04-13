@@ -1,5 +1,3 @@
-<!-- <script src="<?php //echo base_url().'assets/js/custom/als_datatable.js'?>"></script> -->
-
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
@@ -494,8 +492,10 @@ function cetak_slip() {
 
 function perjanjian_pasien_pm(){
   $.getJSON("registration/reg_klinik/search_pasien?keyword=" + $('#noMrHidden').val(), '', function (data) { 
+    var obj = data.result[0];
+    $('#nama_pasien').val(obj.nama_pasien);    
     show_modal('registration/Input_perjanjian_pm/form?no_kunjungan='+$('#no_kunjungan').val()+'&no_mr='+$('#noMrHidden').val()+'', 'PERJANJIAN PASIEN RADIOLOGI');
-  }
+  })
   
 
 }

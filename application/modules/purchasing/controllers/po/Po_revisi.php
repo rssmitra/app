@@ -219,6 +219,32 @@ class Po_revisi extends MX_Controller {
         }
     }
 
+    public function print_multiple()
+    {   
+        $toArray['id'] = explode(',', $_POST['ID']);
+        $toArray['flag'] = str_replace('flag=','',$_POST['flag']);
+        //print_r($toArray);die;
+        $output = array( "queryString" => http_build_query($toArray) . "\n" );
+        echo json_encode( $output );
+    }
+
+    public function print_multiple_preview(){
+
+        $result = $this->Po_revisi->get_detail_brg_po_multiple($_GET['flag'], $_GET['id']);
+
+        $table = ($_GET['flag']=='non_medis')?'tc_permohonan_nm':'tc_permohonan';
+        $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
+        $subtitle = str_replace('_',' ',$_GET['flag']);
+        $data = array(
+            'permohonan' => $result,
+            'flag' => $_GET['flag'],
+            'title' => $title,
+            'subtitle' => $subtitle,
+            );
+        // echo '<pre>'; print_r($data);
+        $this->load->view('po/Po_revisi/print_preview_multiple', $data);
+    }
+
 }
 
 
