@@ -175,14 +175,14 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" for="">Rumah Sakit</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" name="rs" id="rs" value="Rumah Sakit Setia Mitra">
+                    <input type="text" class="form-control" name="rs" id="rs" value="<?php echo COMP_FULL; ?>">
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-sm-2" for="">Alamat</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" name="alamat_rs" id="alamat_rs" value="Jl. RS. Fatmawati No. 80 - 82">
+                    <input type="text" class="form-control" name="alamat_rs" id="alamat_rs" value="<?php echo COMP_ADDRESS_SORT; ?>">
                 </div>
             </div>
 

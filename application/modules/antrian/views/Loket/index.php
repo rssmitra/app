@@ -198,7 +198,7 @@
 
       <div class="table-header" style="text-align:center">
 
-        <h1 style="margin:0 !important">Rumah Sakit Setia Mitra</h1>
+        <h1 style="margin:0 !important"><?php echo COMP_LONG; ?></h1>
       
 
       </div>
@@ -363,7 +363,7 @@ event.preventDefault();
                 <center>\
                 <table align="center" border="0" width="100%">\
                 <tr>\
-                  <td colspan="2" align="center"><span style="font-size:150% !important">RS. SETIA MITRA</span><br><small style="font-size:9px !important">Jl.RS Fatmawati No. 80-82, Jakarta Selatan<br>Telp : 021-7656000</small><hr></td>\
+                  <td colspan="2" align="center"><span style="font-size:150% !important"><?php echo strtoupper(COMP_LONG); ?></span><br><small style="font-size:9px !important"><?php echo COMP_ADDRESS?></small><hr></td>\
                 </tr>\
                 <tr>\
                   <td align="center" colspan="2"><span style="font-size:11px;margin-top:0">PENDAFTARAN PASIEN '+text_title+'</span><br><span style="font-size:300%;"> '+type_antrian+' '+n+' <small style="font-size:10px !important;margin-top:0"><br>Nomor Antrian</small><br><span style="font-size:20% !important;margin-top:0"><br>'+klinik.toUpperCase()+'<br>'+dokter+'<br>'+current_date+', '+jam_praktek+'</span> </td>\

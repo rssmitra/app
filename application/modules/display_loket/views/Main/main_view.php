@@ -167,7 +167,7 @@
         <div class="navbar-default">
         <h3>JADWAL PRAKTEK DOKTER</h3>
         <p style="font-size:14px; margin-top:-5px">
-          Rumah Sakit Setia Mitra <br>
+          <?php echo COMP_LONG; ?> <br>
           <?php echo date('D, d-M-Y')?>
         </p>
         </div>

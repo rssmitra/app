@@ -36,8 +36,8 @@ window.onload = generateBarcode;
 <table border="0" width="50%">
     <tr>
       <td align="left" colspan="4">
-        <!-- <img src="<?php echo base_url()?>assets/images/logo.png" style="width:50px;float:left"> -->
-        <div style="float:left;margin-left:10px;margin-top:10px;font-size:15px !important"><b>RS SETIA MITRA</b><br><small style="font-size:10px !important">Jl. RS. Fatmawati No. 80 - 82 Jakarta Selatan</small></div>
+        <!-- <img src="<?php echo base_url().COMP_ICON; ?>" style="width:50px;float:left"> -->
+        <div style="float:left;margin-left:10px;margin-top:10px;font-size:15px !important"><b><?php echo strtoupper(COMP_LONG); ?></b><br><small style="font-size:10px !important"><?php echo COMP_ADDRESS_SORT; ?></small></div>
 
       </td>
     </tr>

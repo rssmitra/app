@@ -50,8 +50,8 @@
   
   <table width="100%" border="0">
     <tr>
-      <td width="70px"><img src="<?php echo base_url().'assets/images/logo.png'?>" alt="" width="60px"></td>
-      <td valign="bottom" width="320px"><b><span style="font-size: 18px">Rumah Sakit Setia Mitra</span></b><br>Jl. RS Fatmawati No.80-82, RT.3/RW.10, Cilandak Barat, Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12430</td>
+      <td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td>
+      <td valign="bottom" width="320px"><b><span style="font-size: 18px"><?php echo COMP_LONG; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
       <td align="right"></td>
     </tr>
   </table>

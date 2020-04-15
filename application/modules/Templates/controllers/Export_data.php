@@ -76,7 +76,7 @@ class Export_data extends MX_Controller {
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         
-        $pdf->SetAuthor('Rumah Sakit Setia Mitra');
+        $pdf->SetAuthor(COMP_FULL);
         $pdf->SetTitle(''.$filename.'');
 
     // remove default header/footer
@@ -169,7 +169,7 @@ EOD;
         $pdf = new TCPDF($paper_type, PDF_UNIT, array(470,280), true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         
-        $pdf->SetAuthor('Rumah Sakit Setia Mitra');
+        $pdf->SetAuthor(COMP_FULL);
         $pdf->SetTitle('Content');
 
     // remove default header/footer
@@ -250,7 +250,7 @@ EOD;
         
         $tanggal = new Tanggal();
         $pdf = new TCPDF('L','mm',array(30,220));
-        $pdf->SetAuthor('Rumah Sakit Setia Mitra');
+        $pdf->SetAuthor(COMP_FULL);
         $pdf->SetTitle('Gelang Pasien');
 
     // remove default header/footer

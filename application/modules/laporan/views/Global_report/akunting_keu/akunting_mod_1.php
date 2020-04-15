@@ -27,7 +27,7 @@
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data" target="blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
-          <input type="hidden" name="title" value="Laporan Transaksi Kasir Averin">
+          <input type="hidden" name="title" value="Laporan Transaksi Kasir">
 
           <div class="form-group">
           <label class="control-label col-md-2">Jenis Transaksi (RI/RJ)</label>

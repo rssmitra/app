@@ -69,7 +69,7 @@ window.onload = generateBarcode;
   <img src="<?php echo base_url()?>assets/images/logo-bpjs.png" style="width:200px">
   </td>
   <td style="padding-left:30px">
-  <b>SURAT ELEGIBILITAS PESERTA<br>RS SETIA MITRA</b>
+  <b>SURAT ELEGIBILITAS PESERTA<br><?php echo strtoupper(COMP_LONG); ?></b>
   </td>
   </tr>
   </table>

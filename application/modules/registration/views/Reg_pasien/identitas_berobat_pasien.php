@@ -40,12 +40,12 @@ window.onload = generateBarcode;
 <!-- <table border="0" width="550px">
 <tr>
   <td width="80px">
-    <img src="<?php echo base_url()?>assets/images/logo.png" style="width:70px">
+    <img src="<?php echo base_url().COMP_ICON; ?>" style="width:70px">
   </td>
   <td style="padding-left:10px">
-    <b style="font-size:16px">RS SETIA MITRA</b><br>
-    Jl. RS. Fatmawati No. 80 - 82<br>
-    Telp: (021) 7656000  (HUNTING)  FAX.(021) 7656875
+    <b style="font-size:16px"><?php echo strtoupper(COMP_LONG); ?></b><br>
+    <?php echo COMP_ADDRESS_SORT?><br>
+    Telp: <?php echo COMP_TELP?>  (HUNTING)  FAX.<?php echo COMP_FAX?>
   </td>
 </tr>
 </table> -->

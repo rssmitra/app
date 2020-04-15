@@ -377,7 +377,7 @@ class Ws_index extends MX_Controller {
                     't_sep' => array(
                         'noKartu' => $val->set_value('noKartuHidden'),
                         'tglSep' => $this->tanggal->sqlDateForm($val->set_value('tglSEP')),
-                        'ppkPelayanan' => '0112R034', // kode faskes rs setia mitra
+                        'ppkPelayanan' => '0112R034', // kode faskes
                         'jnsPelayanan' => $val->set_value('jnsPelayanan'),
                         'klsRawat' => ($val->set_value('jnsPelayanan')==1)?$val->set_value('kelasRawat'):"3",
                         'noMR' => $val->set_value('noMR'),

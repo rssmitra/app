@@ -3,16 +3,16 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
-    <title>RSSM - Login v.2.0</title>
+    <title><?php echo COMP_SORT; ?> - Login v.2.0</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="apple-touch-icon" href="<?php echo base_url()?>assets/login/pages/ico/60.png">
     <link rel="apple-touch-icon" sizes="76x76" href="<?php echo base_url()?>assets/login/pages/ico/76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="<?php echo base_url()?>assets/login/pages/ico/120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="<?php echo base_url()?>assets/login/pages/ico/152.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <meta name="RSSM - SIRS" content="yes">
-    <meta name="Rumah Sakit Setia Mitra" content="yes">
-    <meta name="SIRS" content="default">
+    <meta name="<?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?>" content="yes">
+    <meta name="<?php echo COMP_FULL; ?>" content="yes">
+    <meta name="<?php echo APPS_NAME_SORT?>" content="default">
     <meta content="" name="description" />
     <meta content="" name="author" />
     <link href="<?php echo base_url()?>assets/login/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" />
@@ -59,8 +59,8 @@
       <!-- START Login Right Container-->
       <div class="login-container bg-white">
         <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-50 m-t-30 sm-p-l-15 sm-p-r-15 sm-p-t-40">
-          <h2>RSSM - SIRS v.2.0</h2>
-          <small style="padding-top:-30px !important; font-size: 14px">Sistem Informasi Rumah Sakit Versi 2.0</small>
+          <h2><?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?> v.2.0</h2>
+          <small style="padding-top:-30px !important; font-size: 14px"><?php echo APPS_NAME_LONG; ?> Versi 2.0</small>
           <p class="p-t-35">LOGIN FORM</p>
           <!-- START Login Form -->
           <form id="form-login" class="p-t-15" method="POST" role="form" action="<?php echo base_url().'login/process'?>" autocomplete="off">
@@ -99,7 +99,7 @@
             <div class="m-b-30 p-r-80 sm-m-t-20 sm-p-r-15 sm-p-b-20 clearfix">
               <div class="col-sm-12 no-padding m-t-12">
                 <p style="text-align: justify; padding-left: 10px !important">
-                  Copyright <?php echo date('Y')?> @ IT Department RS Setia Mitra
+                  Copyright <?php echo date('Y')?> @ IT Department <?php echo COMP_LONG; ?>
                 </p>
               </div>
             </div>

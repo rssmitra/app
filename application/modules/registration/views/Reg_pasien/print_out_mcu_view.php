@@ -68,10 +68,10 @@ window.onload = generateBarcode;
 <table border="0">
 <tr>
   <td>
-  <img src="../../assets/images/logo_rssm_default.png" style="width:70px">
+  <img src="<?php echo base_url().COMP_ICON; ?>" style="width:70px">
   </td>
   <td style="padding-left:30px;">
-  <b>FORM CHECKLIST MCU<br>RS SETIA MITRA</b>
+  <b>FORM CHECKLIST MCU<br><?php echo strtoupper(COMP_LONG); ?></b>
   </td>
   <!-- <td align="right"><div class="stamp"><h1> Advanced Type 1 </h1></div></td> -->
 </tr>

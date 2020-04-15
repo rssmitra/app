@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- <link rel="stylesheet" href="http://10.10.10.5:88/rssm/sirs/assets/css/bootstrap.css"> -->
-  <link rel="stylesheet" href="http://10.10.10.5:88/rssm/sirs/assets/css/font-awesome.css">
-  <link rel="stylesheet" href="http://10.10.10.5:88/rssm/sirs/assets/css/print.css" type="text/css" media="print">
-  <!-- <link rel="stylesheet" href="http://10.10.10.5:88/rssm/sirs/assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style"> -->
+  <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css"> -->
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css">
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/print.css" type="text/css" media="print">
+  <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style"> -->
   <style type="text/css">
       body{
         /* width: 500px; */

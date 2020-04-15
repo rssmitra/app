@@ -101,7 +101,7 @@
       </div>
    
       <div>
-        <img alt="" src="assets/images/logo.png" width="240" style="margin-left:100px;margin-top:30px;">
+        <img alt="" src="<?php echo base_url().COMP_ICON?>" width="240" style="margin-left:100px;margin-top:30px;">
       </div>
    
    </div>  

@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>SIRS - Laporan</title>
+		<title><?php echo APPS_NAME_SORT; ?> - Laporan</title>
 
 		<meta name="description" content="top menu &amp; navigation" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -61,7 +61,7 @@
 					<a href="#" class="navbar-brand">
 						<small>
 							<i class="fa fa-leaf"></i>
-							RS SETIA MITRA
+							<?php echo strtoupper(COMP_LONG); ?>
 						</small>
 					</a>
 
@@ -104,7 +104,7 @@
 						<!-- /section:settings.box -->
 						<div class="page-header">
 							<h1>
-								Modul Laporan SIRS
+								Modul Laporan <?php echo APPS_NAME_SORT?>
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
 									pencarian laporan umum seluruh unit
@@ -283,8 +283,8 @@
 					<!-- #section:basics/footer -->
 					<div class="footer-content">
 						<span class="bigger-120">
-							<span class="blue bolder">SIRS</span>
-							- RS Setia Mitra &copy; 2019
+							<span class="blue bolder"><?php echo APPS_NAME_SORT; ?></span>
+							- <?php echo COMP_LONG; ?> &copy; 2019
 						</span>
 					</div>
 

@@ -62,19 +62,19 @@ th, td {
 				</tr>
 				<tr class="contentTable">
 					<td class="border-rbl">3&nbsp;</td>
-					<td class="border-b">Nama Rumah Sakit (Huruf Kapital)&nbsp;</td>
+					<td class="border-b">Nama <?php echo COMP_FLAG; ?> (Huruf Kapital)&nbsp;</td>
 					<td class="border-b">:&nbsp;</td>
 					<td class="border-rb"><?php echo strtoupper($result->nama_perusahaan) ?>&nbsp;</td>
 				</tr>
 				<tr class="contentTable">
 					<td class="border-rbl">4&nbsp;</td>
-					<td class="border-b">Jenis Rumah Sakit&nbsp;</td>
+					<td class="border-b">Jenis <?php echo COMP_FLAG; ?>&nbsp;</td>
 					<td class="border-b">:&nbsp;</td>
 					<td class="border-rb"><?php echo $result->jenis_rumah_sakit ?>&nbsp;</td>
 				</tr>
 				<tr class="contentTable">
 					<td class="border-rbl">5&nbsp;</td>
-					<td class="border-b">Kelas Rumah Sakit&nbsp;</td>
+					<td class="border-b">Kelas <?php echo COMP_FLAG; ?>&nbsp;</td>
 					<td class="border-b">:&nbsp;</td>
 					<td class="border-rb"><?php echo $result->kelas_rumah_sakit ?>&nbsp;</td>
 				</tr>
@@ -140,7 +140,7 @@ th, td {
 				</tr>
 				<tr class="contentTable">
 					<td class="border-rbl">9&nbsp;</td>
-					<td class="border-b">Luas Rumah Sakit &nbsp;</td>
+					<td class="border-b">Luas <?php echo COMP_FLAG; ?> &nbsp;</td>
 					<td class="border-b">:&nbsp;</td>
 					<td class="border-rb">&nbsp;</td>
 				</tr>

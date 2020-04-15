@@ -23,11 +23,11 @@
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report/laporanrl'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>01 - Rl1 ( Data Dasar Rumah Sakit )</h4>
+        <h4>01 - Rl1 ( Data Dasar <?php echo COMP_FLAG?> )</h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_rl1" target="_blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="rl_mod_1">
-          <input type="hidden" name="title" value="01 - Rl1 ( Data Dasar Rumah Sakit )">
+          <input type="hidden" name="title" value="01 - Rl1 ( Data Dasar <?php echo COMP_FLAG?> )">
           <div class="col-md-10" style="margin-left: 5px">
               <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
                 Cetak
@@ -41,11 +41,11 @@
        <div class="col-md-12">
         <br>
         <br>
-        <h4>02 - Rl1.2 ( Indikator Pelayan Rumah Sakit )</h4>
+        <h4>02 - Rl1.2 ( Indikator Pelayan <?php echo COMP_FLAG?> )</h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_rl12" target="sakit">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="rl_mod_12">
-          <input type="hidden" name="title" value="02 - Rl1.2 ( Indikator Pelayan Rumah Sakit )">
+          <input type="hidden" name="title" value="02 - Rl1.2 ( Indikator Pelayan <?php echo COMP_FLAG?> )">
 
            <div class="form-group">
              <label class="control-label col-md-1">Tahun</label>

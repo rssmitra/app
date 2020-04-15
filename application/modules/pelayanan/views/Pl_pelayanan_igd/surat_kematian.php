@@ -38,12 +38,12 @@
           <td>&nbsp;:&nbsp; <?php echo $value->nama_bagian ?></td>
         </tr>
         <tr>
-          <td>Rumah Sakit</td>
-          <td>&nbsp;:&nbsp; Rumah Sakit Setia Mitra </td>
+          <td><?php echo COMP_FLAG; ?></td>
+          <td>&nbsp;:&nbsp; <?php echo COMP_FULL; ?> </td>
         </tr>
         <tr>
           <td>Alamat</td>
-          <td>&nbsp;:&nbsp; Jl. RS. Fatmawati No. 80 - 82</td>
+          <td>&nbsp; &nbsp; <?php echo COMP_ADDRESS_SORT; ?></td>
         </tr>
         <tr>
           <td>Nama Pasien</td>

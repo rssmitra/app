@@ -34,7 +34,7 @@ class Mailer_2 extends PHPMailer{
      //Password to use for SMTP authentication
      $mail->Password = "RssM12312312!";
      //Set who the message is to be sent from
-     $mail->setFrom('cs@rssetiamitra.co.id','Rumah Sakit Setia Mitra');
+     $mail->setFrom('cs@rssetiamitra.co.id', COMP_FULL);
      //Set an alternative reply-to address
      $mail->addReplyTo(''.$params.'');
      //Set who the message is to be sent to

@@ -271,7 +271,7 @@ counterfile++;
                 <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
                 Submit
               </button>
-              <a href="http://localhost:88/rssm/sirs-v2/casemix/Csm_billing_pasien/mergePDFFiles/<?php echo isset($reg->no_registrasi)?$reg->no_registrasi:''?>/RI" target="_blank"  class="btn btn-sm btn-danger">
+              <a href="http://localhost:88/ehos/sirs-v2/casemix/Csm_billing_pasien/mergePDFFiles/<?php echo isset($reg->no_registrasi)?$reg->no_registrasi:''?>/RI" target="_blank"  class="btn btn-sm btn-danger">
                 <i class="ace-icon fa fa-pdf-file icon-on-right bigger-110"></i>
                 Merge PDF Files
               </a>

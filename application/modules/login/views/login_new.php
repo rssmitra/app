@@ -4,7 +4,7 @@
 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>RSSM - RS Setia Mitra</title>
+    <title><?php echo COMP_SORT; ?> - <?php echo COMP_LONG; ?></title>
 		
 
 		<!-- Bootstrap -->
@@ -50,14 +50,14 @@
 				<nav class="top-contacts">
 					<ul class="list-unstyled" >
 						<li style="color:#333"><i style="color:#333" class="fa fa-clock-o"></i>Buka setiap hari 24 Jam </li>
-						<li><a href="" style="color:#333"><i style="color:#333" class="fa fa-phone"></i>Hotline : (021) 765 6000</a></li>
+						<li><a href="" style="color:#333"><i style="color:#333" class="fa fa-phone"></i>Hotline : <?php echo COMP_TELP?></a></li>
 					</ul>
 				</nav>
 				<div class="navigation-wrapper clearfix">
                     <div class="row" style="height:105px;">
-                        <img src="<?php echo base_url()?>assets/images/logo.png" alt="rssm" style="margin:15px 10px 0 0;float:left" class="img-responsive" width="100">
-                        <h1 style="margin:20px 0 0 20px;color:#333;text-align:left;">RS. Setia Mitra</h1>
-                        <p style="font-family: Helvetica;margin-top:-10px"><b>Jl. RS. Fatmawati No. 80-82 Telp. (021) 765 6000</b></p>
+                        <img src="<?php echo base_url().COMP_ICON?>" alt="<?php echo COMP_SORT?>" style="margin:15px 10px 0 0;float:left" class="img-responsive" width="100">
+                        <h1 style="margin:20px 0 0 20px;color:#333;text-align:left;"><?php echo COMP_LONG?></h1>
+                        <p style="font-family: Helvetica;margin-top:-10px"><b><?php echo COMP_ADDRESS?></b></p>
                     </div> <!-- end .logo -->
 				</div> <!-- end .navigation-wrapper -->
 			</div> <!-- end .container -->

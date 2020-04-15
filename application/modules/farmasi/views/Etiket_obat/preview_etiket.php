@@ -72,7 +72,7 @@ table{
     <tr>
       <td><img src="<?php echo base_url().'assets/images/logo-black.png'?>" alt="" style="width: 50px"></td>
       <td align="center">INSTALASI FARMASI<br>
-          RS. SETIA MITRA</td>
+          <?php echo strtoupper(COMP_LONG); ?></td>
       <td><img src="<?php echo base_url().'assets/images/qrcode.png'?>" alt="" style="width: 40px"></td>
     </tr>
   </table> 

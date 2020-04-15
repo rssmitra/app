@@ -10,8 +10,8 @@
   <table border="0" width="100%">
     <tr>
       <td align="center">
-        <img src="<?php echo base_url()?>assets/images/logo.png" style="width:50px;float:left">
-        <div style="float:left;margin-left:10px;margin-top:5px"><b>BUKTI REGISTRASI ONLINE<br>RS SETIA MITRA</b></div>
+        <img src="<?php echo base_url().COMP_ICON; ?>" style="width:50px;float:left">
+        <div style="float:left;margin-left:10px;margin-top:5px"><b>BUKTI REGISTRASI ONLINE<br><?php echo strtoupper(COMP_LONG); ?></b></div>
       </td>
     </tr>
 

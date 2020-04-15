@@ -306,9 +306,9 @@ class Reg_loket extends MX_Controller {
 
             /*send notification by sms*/
             $config_sms = array(
-                'from' => 'RSSM',
+                'from' => COMP_SORT,
                 'data' => $data_sms,
-                'message' => '(no-reply) RSSM : Mohon maaf, jadwal praktek '.$nama_dokter_ref->nama_pegawai.' hari ini ' .$ket.'',
+                'message' => '(no-reply) '.COMP_SORT.' : Mohon maaf, jadwal praktek '.$nama_dokter_ref->nama_pegawai.' hari ini ' .$ket.'',
             );
             //print_r($config_sms);die;
             /*execution sending sms*/

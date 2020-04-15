@@ -197,7 +197,7 @@ function view_sep(no_sep){
         <table border="0">
             <tr>
                 <td><img src="<?php echo base_url()?>assets/images/logo-bpjs.png" style="width:200px"></td>
-                <td style="padding-left:30px"><b>SURAT ELEGIBILITAS PESERTA<br>RS SETIA MITRA</b></td>
+                <td style="padding-left:30px"><b>SURAT ELEGIBILITAS PESERTA<br><?php echo strtoupper(COMP_LONG); ?></b></td>
             </tr>
         </table>
         </br>

@@ -331,7 +331,7 @@ class Riwayat_penerimaan_brg extends MX_Controller {
                             'status_kirim' => 1,
                             'kondisi' => 'Baik',
                             'kirim_via' => 'Kurir',
-                            'di_kirim_ke' => 'Gudang RSSM',
+                            'di_kirim_ke' => 'Gudang '.COMP_SORT,
                             'petugas' => $this->session->userdata('user')->fullname,
                             'tgl_kirim' => date('Y-m-d H:i:s'),
                             'updated_date' => date('Y-m-d H:i:s'),

@@ -26,10 +26,10 @@ $printer = new Printer($connector);
 $printer -> setJustification(Printer::JUSTIFY_CENTER);
 
 $printer -> setTextSize(2, 2);
-$printer -> text("RS. Setia Mitra\n");
+$printer -> text(COMP_LONG);
 
 $printer -> setTextSize(1, 1);
-$printer -> text("Jl. Fatmawati\n");
+$printer -> text( COMP_ADDRESS_SORT );
 
 
 

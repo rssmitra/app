@@ -290,7 +290,7 @@
         $sess = $CI->load->library('session');
         $qry = "SELECT tmp_mst_modul.modul_id,tmp_mst_modul.name,tmp_mst_modul.title,tmp_mst_modul.description,tmp_mst_modul.icon,tmp_mst_modul.is_new_tab,tmp_mst_modul.link_on_new_tab,tmp_mst_modul.group_modul_id FROM tmp_role_has_menu
                 LEFT JOIN tmp_mst_menu ON tmp_mst_menu.menu_id=tmp_role_has_menu.menu_id
-                LEFT JOIN tmp_mst_modul ON tmp_mst_modul.modul_id=tmp_mst_menu.modul_id WHERE role_id IN (SELECT role_id FROM tmp_user_has_role WHERE user_id=".$user_id.") AND tmp_mst_modul.group_modul_id=".$group_modul_id." GROUP by tmp_mst_modul.modul_id,tmp_mst_modul.name,tmp_mst_modul.title,tmp_mst_modul.description,tmp_mst_modul.icon,tmp_mst_modul.is_new_tab,tmp_mst_modul.group_modul_id,tmp_mst_modul.link_on_new_tab";
+                LEFT JOIN tmp_mst_modul ON tmp_mst_modul.modul_id=tmp_mst_menu.modul_id WHERE role_id IN (SELECT role_id FROM tmp_user_has_role WHERE user_id=".$user_id.") AND tmp_mst_modul.group_modul_id=".$group_modul_id." AND tmp_mst_modul.is_active='Y' GROUP by tmp_mst_modul.modul_id,tmp_mst_modul.name,tmp_mst_modul.title,tmp_mst_modul.description,tmp_mst_modul.icon,tmp_mst_modul.is_new_tab,tmp_mst_modul.group_modul_id,tmp_mst_modul.link_on_new_tab";
         return $db->query($qry)->result();
     }
 

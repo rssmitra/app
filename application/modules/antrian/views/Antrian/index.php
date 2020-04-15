@@ -4,7 +4,7 @@
 
 	<meta charset="utf-8">
 
-	<title>RS Setia Mitra</title>
+	<title><?php echo COMP_LONG?></title>
 <!--
 Comila Template
 http://www.templatemo.com/tm-490-comila
@@ -179,9 +179,9 @@ http://www.templatemo.com/tm-490-comila
 <br>
 
 	<div class="col-xs-6">
-		<img alt="" src="assets/images/RSSM-logo-terakhir3D copy.gif" width="60" style="margin:5px 20px;float:left">
-			<h3 id="id_header" style="margin:0;text-align:left;font-size:30px;color:#333">RS. Setia Mitra</h3>
-			<p style="font-family: Helvetica;margin:0;text-align:left"><b>Jl. RS. Fatmawati No. 80-82 Telp. (021) 765 6000</b></p>
+		<img alt="" src="<?php echo COMP_ICON?>" width="60" style="margin:5px 20px;float:left">
+			<h3 id="id_header" style="margin:0;text-align:left;font-size:30px;color:#333"><?php echo COMP_LONG?></h3>
+			<p style="font-family: Helvetica;margin:0;text-align:left"><b><?php echo COMP_ADDRESS?></b></p>
 	</div>
 
 	<div class="col-xs-6" id="myButtonType" style="left:16%">
@@ -213,7 +213,7 @@ http://www.templatemo.com/tm-490-comila
 							<?php echo $row_modul->nama_pegawai?><br>
 							<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_modul->jd_jam_selesai)?><br>
 							<?php if($type!='online'){ ?> <b>Sisa Kuota : <?php echo $row_modul->kuota.'</b>'; }?><br>
-							<?php echo $row_modul->jd_keterangan?> <?php echo $row_modul->keterangan?> 
+							<?php echo isset($row_modul->jd_keterangan)?$row_modul->jd_keterangan:''?> <?php echo isset($row_modul->keterangan)?$row_modul->keterangan:''?> 
 						</p>
 						</div> 
 							
@@ -1055,7 +1055,7 @@ http://www.templatemo.com/tm-490-comila
                 <center>\
                 <table align="center" border="0" width="100%">\
                 <tr>\
-                  <td colspan="2" align="center"><span style="font-size:150% !important">RS. SETIA MITRA</span><br><small style="font-size:9px !important">Jl.RS Fatmawati No. 80-82, Jakarta Selatan<br>Telp : 021-7656000</small><hr></td>\
+                  <td colspan="2" align="center"><span style="font-size:150% !important">'.COMP_LONG.'</span><br><small style="font-size:9px !important">'.COMP_ADDRESS.'</small><hr></td>\
                 </tr>\
                 <tr>\
                   <td align="center" colspan="2"><span style="font-size:11px;margin-top:0">PENDAFTARAN PASIEN '+text_title+'</span><br><span style="font-size:300%;"> '+type_antrian+' '+n+' <small style="font-size:10px !important;margin-top:0"><br>Nomor Antrian</small><br><span style="font-size:20% !important;margin-top:0"><br>'+klinik.toUpperCase()+'<br>'+dokter+'<br>'+current_date+', '+jam_praktek+'</span> </td>\

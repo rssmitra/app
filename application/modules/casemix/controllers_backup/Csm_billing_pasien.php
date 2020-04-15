@@ -398,7 +398,7 @@ class Csm_billing_pasien extends MX_Controller {
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         
-        $pdf->SetAuthor('Rumah Sakit Setia Mitra');
+        $pdf->SetAuthor(COMP_LONG);
         $pdf->SetTitle(''.$filename.'');
 
     // remove default header/footer

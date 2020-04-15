@@ -205,7 +205,7 @@ final Class Api {
 
     function base_api_ws(){
 
-        return 'http://10.10.10.4:88/rssm/sirs/';
+        return WS_URL;
 
     }
 

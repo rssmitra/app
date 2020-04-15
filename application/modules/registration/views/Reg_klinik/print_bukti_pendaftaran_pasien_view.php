@@ -39,11 +39,11 @@
 <table border="0">
 <tr>
   <td width="70px">
-  <img src="../../assets/images/logo_rssm_default.png" style="width:70px">
+  <img src="<?php echo base_url().COMP_ICON; ?>" style="width:70px">
   </td>
   <td style="padding-left:10px;">
-  <b>FORM BUKTI PENDAFTARAN PASIEN<br>RS SETIA MITRA</b><br>
-  <small style="font-size:9px"><?php echo ALAMAT_RS?></small>
+  <b>FORM BUKTI PENDAFTARAN PASIEN<br><?php echo strtoupper(COMP_LONG); ?></b><br>
+  <small style="font-size:9px"><?php echo COMP_ADDRESS?></small>
   </td>
   <!-- <td align="right"><div class="stamp"><h1> Advanced Type 1 </h1></div></td> -->
 </tr>

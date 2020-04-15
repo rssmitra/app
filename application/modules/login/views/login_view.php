@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>RSSM - Form Login</title>
+    <title><?php echo COMP_SORT; ?> - Form Login</title>
 
     <meta name="description" content="User login page" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -18,7 +18,7 @@
     <!-- ace styles -->
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" />
     <!-- Favicon -->
-    <link rel="shortcut icon" href="<?php echo base_url()?>assets/images/logo.png">
+    <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
     
   </head>
   <style type="text/css">
@@ -51,9 +51,8 @@
                     
                     <div class="widget-main">
                       <div class="center">
-                        <!-- <img src="<?php echo PATH_IMG_DEFAULT.$profile_form->app_logo?>" width="80px"> -->
-                        <h4 class="dark" id="id-text">Sistem Informasi Rumah Sakit<br><small></small></h4>
-                        <h4 class="dark" id="company-text">RSSM - SIRS</h4>
+                        <h4 class="dark" id="id-text"><?php echo APPS_NAME_LONG; ?><br><small></small></h4>
+                        <h4 class="dark" id="company-text"><?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?></h4>
                       </div>
                       <!-- <center></center> -->
                       <h4 class="header blue lighter bigger">

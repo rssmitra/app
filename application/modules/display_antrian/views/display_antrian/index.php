@@ -3,10 +3,9 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-
     <meta name="description" content="top menu &amp; navigation" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
+    <title>Display Loket Poli/Klinik</title>
     <script src='<?php echo base_url()?>/assets/js/jquery.js'></script>
     <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
@@ -179,9 +178,9 @@
     <div class="col-lg-8" style="margin-left:-12px;margin-top: 10px">
 
       <div class="row" style="height:100px;background-image: linear-gradient(to right, #009900,  #006600);color:white">
-        <img alt="" src="assets/images/RSSM-logo-terakhir3D copy.gif" width="100px" style="margin:10px 20px;float:left">
-        <h1 style="margin:0; font-size: 59px">RS. Setia Mitra</h1>
-        <p style="font-family: Helvetica;margin:0; font-size:18px"><b>Jl. RS. Fatmawati No. 80-82 Telp. (021) 765 6000</b></p>
+        <img alt="" src="<?php echo COMP_ICON?>" width="100px" style="margin:10px 20px;float:left">
+        <h1 style="margin:0; font-size: 45px"><?php echo COMP_LONG?></h1>
+        <p style="font-family: Helvetica;margin:0; font-size:18px"><b><?php echo COMP_ADDRESS?></b></p>
 
         <!-- <span style="" class="stamp is-nope-2">Dalam Percobaan</span> -->
       </div>
@@ -318,7 +317,7 @@
 <div class="footer" style="margin-bottom: 5px">
   
     <div style="width:90%;float:left;">
-      <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:3px;">RS Setia Mitra | Jl. RS. Fatmawati No. 80-82 Telp. (021) 765 6000, Website: rssetiamitra.co.id, Email: info@rssetiamitra.co.id | Kami Peduli Kesehatan Anda </marquee>
+      <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:3px;"><?php echo COMP_ADDRESS?> | <?php echo COMP_MOTTO?> </marquee>
     </div>
     <div style="width:10%;float:left;margin-top: 5px">
       <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>

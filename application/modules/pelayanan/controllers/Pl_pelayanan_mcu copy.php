@@ -1028,15 +1028,13 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         
-        $pdf->SetAuthor('Rumah Sakit Setia Mitra');
+        $pdf->SetAuthor(COMP_FULL);
         $pdf->SetTitle(''.$filename.'');
 
         $PDF_HEADER_LOGO = "logo_rssm_default.png";//any image file. check correct path.
         $PDF_HEADER_LOGO_WIDTH = "20";
-        $PDF_HEADER_TITLE = "RS Setia Mitra";
-        $PDF_HEADER_STRING = "Jl. RS. Fatmawati No. 80 - 82,\n"
-        . "Jakarta Selatan\n"
-        . "Telp: (021) 7656000 (Hunting) Fax: (021) 7656875";
+        $PDF_HEADER_TITLE = COMP_LONG;
+        $PDF_HEADER_STRING = COMP_ADDRESS;
         $PDF_FONT_NAME_MAIN = "helvetica";
         $PDF_FONT_SIZE_MAIN="8";
 

@@ -27,7 +27,7 @@
          <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_rl31" target="sakit">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="rl_mod_12">
-          <input type="hidden" name="title" value="02 - Rl1.2 ( Indikator Pelayan Rumah Sakit )">
+          <input type="hidden" name="title" value="02 - Rl1.2 ( Indikator Pelayan <?php echo COMP_FLAG; ?> )">
 
            <div class="form-group">
              <label class="control-label col-md-1">Tahun</label>
@@ -56,7 +56,7 @@
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_rl32" target="sakit">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="rl_mod_12">
-          <input type="hidden" name="title" value="02 - Rl1.2 ( Indikator Pelayan Rumah Sakit )">
+          <input type="hidden" name="title" value="02 - Rl1.2 ( Indikator Pelayan <?php echo COMP_FLAG; ?> )">
 
            <div class="form-group">
              <label class="control-label col-md-1">Tahun</label>

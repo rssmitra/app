@@ -66,7 +66,7 @@ $(document).ready(function(){
 
             <p><b>PENANDATANGAN</b></p>
             <div class="form-group">
-              <label class="control-label col-md-2">Kepala Rumah Sakit</label>
+              <label class="control-label col-md-2">Kepala <?php echo COMP_FLAG; ?></label>
               <div class="col-md-3">
                 <input type="hidden" name="auto_id[ttd_ka_rs]" value="<?php echo $this->master->get_ttd_data('ttd_ka_rs','auto_id');?>">
                 <input name="value[ttd_ka_rs]" id="ttd_ka_rs" value="<?php echo $this->master->get_ttd_data('ttd_ka_rs','value'); ?>" class="form-control" type="text">

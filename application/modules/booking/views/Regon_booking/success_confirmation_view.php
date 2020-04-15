@@ -36,8 +36,8 @@ window.onload = generateBarcode;
 <table border="0" width="50%">
 <tr>
   <td width="70%">
-    <img src="<?php echo base_url()?>assets/images/logo.png" style="width:50px;float:left">
-    <div style="float:left;margin:10px 10px 10px 10px"><b>BUKTI REGISTRASI ONLINE<br>RS SETIA MITRA</b></div>
+    <img src="<?php echo base_url().COMP_ICON; ?>" style="width:50px;float:left">
+    <div style="float:left;margin:10px 10px 10px 10px"><b>BUKTI REGISTRASI ONLINE<br><?php echo strtoupper(COMP_LONG); ?></b></div>
   </td>
   <td align="right" width="30%">
     <div id="barcodeTarget" class="barcodeTarget"></div>

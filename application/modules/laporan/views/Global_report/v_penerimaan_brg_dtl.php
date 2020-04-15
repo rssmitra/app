@@ -30,7 +30,7 @@
           <a href="#" class="navbar-brand">
             <small>
               <i class="fa fa-leaf"></i>
-              RS SETIA MITRA
+              <?php echo strtoupper(COMP_LONG); ?>
             </small>
           </a>
 
@@ -155,8 +155,8 @@
           <!-- #section:basics/footer -->
           <div class="footer-content">
             <span class="bigger-120">
-              <span class="blue bolder">SIRS</span>
-              - RS Setia Mitra &copy; 2019
+              <span class="blue bolder"><?php echo APPS_NAME_SORT; ?></span>
+              - <?php echo COMP_LONG; ?> &copy; 2019
             </span>
           </div>
 

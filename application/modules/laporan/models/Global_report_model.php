@@ -158,13 +158,13 @@ class Global_report_model extends CI_Model {
 	public function kunjungan_mod_2(){
 
 		$query = 'SELECT a.tgl_jam_masuk, a.no_mr, a.no_registrasi, c.nama_pasien, e.nama_bagian, b.nama_pegawai, d.nama_perusahaan, a.no_sep 
-					FROM [rls_rssm_sirs].[dbo].[tc_registrasi] a 
-					left join [rls_rssm_sirs].[dbo].[mt_karyawan] b ON a.kode_dokter=b.kode_dokter 
-					left join [rls_rssm_sirs].[dbo].[mt_master_pasien] c ON a.no_mr=c.no_mr 
-					left join [rls_rssm_sirs].[dbo].[mt_perusahaan] d ON a.kode_perusahaan=d.kode_perusahaan 
-					left join [rls_rssm_sirs].[dbo].[mt_bagian] e ON a.kode_bagian_masuk=e.kode_bagian 
+					FROM [tc_registrasi] a 
+					left join [mt_karyawan] b ON a.kode_dokter=b.kode_dokter 
+					left join [mt_master_pasien] c ON a.no_mr=c.no_mr 
+					left join [mt_perusahaan] d ON a.kode_perusahaan=d.kode_perusahaan 
+					left join [mt_bagian] e ON a.kode_bagian_masuk=e.kode_bagian 
 					where a.tgl_jam_masuk >='."'".$_POST['tgl']."'".' 
-					AND no_registrasi IN (SELECT no_registrasi  FROM [rls_rssm_sirs].[dbo].[tc_kunjungan] where tgl_masuk >='."'".$_POST['tgl']."'".' group by no_registrasi) 
+					AND no_registrasi IN (SELECT no_registrasi  FROM [tc_kunjungan] where tgl_masuk >='."'".$_POST['tgl']."'".' group by no_registrasi) 
 					and a.status_batal is NULL
 					order by b.nama_pegawai,a.no_mr ASC';
 
@@ -175,10 +175,10 @@ class Global_report_model extends CI_Model {
 
 		$query = 'SELECT a.no_registrasi,a.no_mr,c.nama_pasien,c.no_hp,d.nama_perusahaan,
 					a.tgl_jam_masuk,e.nama_bagian, b.nama_pegawai, a.no_sep 
-					FROM [rls_rssm_sirs].[dbo].[tc_registrasi] a left join [rls_rssm_sirs].[dbo].[mt_karyawan] b ON a.kode_dokter=b.kode_dokter 
-					left join [rls_rssm_sirs].[dbo].[mt_master_pasien] c ON a.no_mr=c.no_mr 
-					left join [rls_rssm_sirs].[dbo].[mt_perusahaan] d ON a.kode_perusahaan=d.kode_perusahaan 
-					left join [rls_rssm_sirs].[dbo].[mt_bagian] e ON a.kode_bagian_masuk=e.kode_bagian  
+					FROM [tc_registrasi] a left join [mt_karyawan] b ON a.kode_dokter=b.kode_dokter 
+					left join [mt_master_pasien] c ON a.no_mr=c.no_mr 
+					left join [mt_perusahaan] d ON a.kode_perusahaan=d.kode_perusahaan 
+					left join [mt_bagian] e ON a.kode_bagian_masuk=e.kode_bagian  
 					where convert(varchar,a.tgl_jam_masuk,23) between '."'".$_POST['from_tgl']."'".' and '."'".$_POST['to_tgl']."'".'
 					order by a.no_registrasi DESC';
 
@@ -208,7 +208,7 @@ class Global_report_model extends CI_Model {
 	public function pengadaan_mod_2(){
 			// $t_stok = ( $_POST['status'] == '1' ) ? 'tc_kartu_stok' : 'tc_kartu_stok_nm' ;
 			if($_POST['status'] == '1' ){
-			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pengeluaran) AS jml_pengeluaran, c.harga_beli FROM [rls_rssm_sirs].[dbo].[tc_kartu_stok] a 
+			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pengeluaran) AS jml_pengeluaran, c.harga_beli FROM [tc_kartu_stok] a 
 					 left join mt_barang c ON c.kode_brg=a.kode_brg
   					  left join mt_bagian d ON d.kode_bagian=a.kode_bagian
   					  left join mt_golongan e ON e.kode_golongan=c.kode_golongan
@@ -217,7 +217,7 @@ class Global_report_model extends CI_Model {
 					  		GROUP BY a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, c.harga_beli';
 				}
 			else{
-			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pengeluaran) AS jml_pengeluaran, c.harga_beli FROM [rls_rssm_sirs].[dbo].[tc_kartu_stok_nm] a 
+			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pengeluaran) AS jml_pengeluaran, c.harga_beli FROM [tc_kartu_stok_nm] a 
 					  left join mt_barang_nm c ON c.kode_brg=a.kode_brg
   					  left join mt_bagian d ON d.kode_bagian=a.kode_bagian
   					  left join mt_golongan_nm e ON e.kode_golongan=c.kode_golongan
@@ -226,7 +226,7 @@ class Global_report_model extends CI_Model {
 								GROUP BY a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, c.harga_beli';	
 			}
 					// $query = 'SELECT a.nomor_permintaan, a.tgl_permintaan, a.tgl_pengiriman, a.kode_bagian_minta, d.nama_bagian, e.nama_golongan, b.kode_brg, c.nama_brg, b.jumlah_permintaan, b.jumlah_penerimaan, c.harga_beli
-			  //     	  FROM [rls_rssm_sirs].[dbo].[tc_permintaan_inst_nm] a
+			  //     	  FROM [tc_permintaan_inst_nm] a
 					//   left join tc_permintaan_inst_nm_det b ON a.id_tc_permintaan_inst=b.id_tc_permintaan_inst
 					//   left join mt_barang_nm c ON c.kode_brg=b.kode_brg
   			// 		  left join mt_bagian d ON d.kode_bagian=a.kode_bagian_minta
@@ -242,13 +242,13 @@ class Global_report_model extends CI_Model {
 	public function pengadaan_mod_3(){
 			if($_POST['status']=='1'){
 					$query = 'SELECT nama_bagian, sum(hargabeli) as hargabeli
-			      	  FROM [rls_rssm_sirs].[dbo].[view_rekap_stok] 
+			      	  FROM [view_rekap_stok] 
 			      	  where MONTH(tgl_input) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_input)='."'".$_POST['year']."'".' 
 					GROUP BY nama_bagian';
 				}
 				else{
 					$query = 'SELECT nama_bagian, sum(hargabeli) as hargabeli
-			      	  FROM [rls_rssm_sirs].[dbo].[view_rekap_stok_nm] 
+			      	  FROM [view_rekap_stok_nm] 
 			      	  where MONTH(tgl_input) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_input)='."'".$_POST['year']."'".' 
 					GROUP BY nama_bagian';
 				}
@@ -743,8 +743,8 @@ class Global_report_model extends CI_Model {
 			  ,c.satuan_besar
 			  ,c.satuan_kecil
 			  ,c.content
-			  FROM [rls_rssm_sirs].[dbo].[tc_stok_opname] a 
-		  			left join [rls_rssm_sirs].[dbo].[mt_bagian] b on a.kode_bagian=b.kode_bagian 
+			  FROM [tc_stok_opname] a 
+		  			left join [mt_bagian] b on a.kode_bagian=b.kode_bagian 
 					left join mt_barang c ON c.kode_brg=a.kode_brg
 					left join mt_golongan d ON d.kode_golongan=c.kode_golongan
 					WHERE a.agenda_so_id=".$_POST['agenda_so']." AND a.kode_bagian='060201' 
@@ -794,8 +794,8 @@ class Global_report_model extends CI_Model {
 					  ,c.satuan_besar
 					  ,c.satuan_kecil
 					  ,c.content
-					  FROM [rls_rssm_sirs].[dbo].[tc_stok_opname] a 
-				  			left join [rls_rssm_sirs].[dbo].[mt_bagian] b on a.kode_bagian=b.kode_bagian 
+					  FROM [tc_stok_opname] a 
+				  			left join [mt_bagian] b on a.kode_bagian=b.kode_bagian 
 							left join mt_barang c ON c.kode_brg=a.kode_brg
 							left join mt_golongan d ON d.kode_golongan=c.kode_golongan
 							WHERE a.agenda_so_id=".$_POST['agenda_so']." AND a.kode_bagian=".$_POST['bagian']." 
@@ -818,8 +818,8 @@ class Global_report_model extends CI_Model {
 					  ,c.satuan_besar
 					  ,c.satuan_kecil
 					  ,c.content
-					  FROM [rls_rssm_sirs].[dbo].[tc_stok_opname] a 
-				  			left join [rls_rssm_sirs].[dbo].[mt_bagian] b on a.kode_bagian=b.kode_bagian 
+					  FROM [tc_stok_opname] a 
+				  			left join [mt_bagian] b on a.kode_bagian=b.kode_bagian 
 							left join mt_barang c ON c.kode_brg=a.kode_brg
 							left join mt_golongan d ON d.kode_golongan=c.kode_golongan
 							WHERE a.agenda_so_id=".$_POST['agenda_so']." AND a.kode_bagian=".$_POST['bagian']." 
@@ -856,7 +856,7 @@ class Global_report_model extends CI_Model {
 	public function totalpengadaan_mod_3(){
 
 					$query = 'SELECT sum(hargabeli) as total
-			      	  FROM [rls_rssm_sirs].[dbo].[view_permintaan_inst_nm] 
+			      	  FROM [view_permintaan_inst_nm] 
 			      	  where MONTH(tgl_pengiriman) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_pengiriman)='."'".$_POST['year']."'".' ';
 
 		return $query;
@@ -865,14 +865,14 @@ class Global_report_model extends CI_Model {
 
 	public function rl_mod_1(){
 
-		$query = 'SELECT * FROM [rls_rssm_sirs].[dbo].[dd_konfigurasi]';
+		$query = 'SELECT * FROM [dd_konfigurasi]';
 
 		return $query;
 
 	}
 	public function v_rl_mod_1(){
 
-		$query = 'SELECT * FROM [rls_rssm_sirs].[dbo].[dd_konfigurasi]';
+		$query = 'SELECT * FROM [dd_konfigurasi]';
 
 		return $this->db->query($query)->result();
 

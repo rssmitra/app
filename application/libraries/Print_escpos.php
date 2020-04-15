@@ -40,11 +40,11 @@ class Print_escpos{
         $printer -> setJustification(Printer::JUSTIFY_CENTER);
 
         $printer -> setTextSize(2, 2);
-        $printer -> text("RS. Setia Mitra\n");
+        $printer -> text(COMP_LONG);
 
         $printer -> setTextSize(1, 1);
-        $printer -> text("Jl. RS. Fatmawati No. 80-82\n");
-        $printer -> text("Jakarta Selatan\n");
+        $printer -> text(COMP_ADDRESS_SORT);
+        // $printer -> text("Jakarta Selatan\n");
 
         //$printer -> setTextSize(3, 3);
         $printer -> setEmphasis(true);
@@ -143,11 +143,11 @@ class Print_escpos{
         // header
         $font = printer_create_font("Arial", 50, 20, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "RS. Setia Mitra",170,0);
+        printer_draw_text($p, COMP_LONG ,170,0);
 
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Jl. RS. Fatmawati No. 80-8, Jakarta Selatan", 110, 40);
+        printer_draw_text($p, COMP_ADDRESS_SORT, 110, 40);
         $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
         printer_select_pen($p, $pen);
         printer_draw_line($p, 30, 70, 610, 70);
@@ -227,7 +227,7 @@ class Print_escpos{
 
         $font = printer_create_font("Arial", 35, 13, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "RS. SETIA MITRA", 165, 30);
+        printer_draw_text($p, strtoupper(COMP_LONG), 165, 30);
 
         // line
         $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");

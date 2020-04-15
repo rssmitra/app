@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
-    <title>RSSM - RS Setia Mitra</title>
+    <title><?php echo COMP_SORT; ?> - <?php echo COMP_LONG?></title>
 
     <meta name="description" content="User login page" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -44,13 +44,13 @@
           <div class="col-sm-10 col-sm-offset-1">
             <div class="login-container">
               <div class="center" style="padding-top:1%">
-                <img src="<?php echo base_url().'assets/images/logo.png'?>" style="width:120px">
+                <img src="<?php echo base_url().COMP_ICON; ?>" style="width:120px">
                 <h1>
                   <i class="ace-icon fa fa-leaf green"></i>
                   <span class="red">Registrasi</span>
                   <span class="dark" id="id-text2">Online</span>
                 </h1>
-                <h4 class="blue" id="id-company-text">&copy; Rumah Sakit Setia Mitra</h4>
+                <h4 class="blue" id="id-company-text">&copy; <?php echo COMP_FULL; ?></h4>
               </div>
 
               <div class="space-6"></div>

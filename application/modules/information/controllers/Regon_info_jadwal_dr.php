@@ -225,9 +225,9 @@ class Regon_info_jadwal_dr extends MX_Controller {
                     /*send notification by sms*/
                 
                     $config_sms = array(
-                        'from' => 'RSSM',
+                        'from' => COMP_SORT,
                         'data' => $data_sms,
-                        'message' => '(no-reply) RSSM : Mohon maaf, jadwal praktek '.$nama_dokter->nama_pegawai.' setiap hari ' .$jd_hari[$key].' sudah ditiadakan, silahkan hubungi bagian informasi',
+                        'message' => '(no-reply) '.COMP_SORT.' : Mohon maaf, jadwal praktek '.$nama_dokter->nama_pegawai.' setiap hari ' .$jd_hari[$key].' sudah ditiadakan, silahkan hubungi bagian informasi',
                     );
 
                     $send_sms = $this->api->adsmedia_send_sms_blast($config_sms);

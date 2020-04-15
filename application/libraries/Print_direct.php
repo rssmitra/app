@@ -114,11 +114,11 @@ final Class Print_direct {
 
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "RS. Setia Mitra",120,0);
+        printer_draw_text($p, COMP_LONG ,120,0);
         
         $font = printer_create_font("Arial", $text_h, $text_w, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Jl. RS. Fatmawati No. 80-8, Jakarta Selatan", 50, 26);
+        printer_draw_text($p, COMP_ADDRESS_SORT, 50, 26);
         $font = printer_create_font("Arial", 35, 15, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
         printer_draw_text($p, "TRACER",130,40);
@@ -251,11 +251,11 @@ final Class Print_direct {
 
         $font = printer_create_font("Arial", 50, 20, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "RS. Setia Mitra",170,0);
+        printer_draw_text($p, COMP_LONG ,170,0);
 
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Jl. RS. Fatmawati No. 80-8, Jakarta Selatan", 110, 40);
+        printer_draw_text($p, COMP_ADDRESS_SORT, 110, 40);
         $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
         printer_select_pen($p, $pen);
         printer_draw_line($p, 30, 70, 610, 70);

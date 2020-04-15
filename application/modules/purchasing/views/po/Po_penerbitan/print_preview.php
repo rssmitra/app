@@ -64,8 +64,8 @@ th, td {
 
   <table width="100%" border="0">
     <tr>
-      <td width="70px"><img src="<?php echo base_url().'assets/images/logo.png'?>" alt="" width="60px"></td>
-      <td valign="bottom" width="320px"><b><span style="font-size: 18px">Rumah Sakit Setia Mitra</span></b><br>Jl. RS Fatmawati No.80-82, RT.3/RW.10, Cilandak Barat, Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12430</td>
+      <td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td>
+      <td valign="bottom" width="320px"><b><span style="font-size: 18px"><?php echo COMP_FULL; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
       <td align="right"><div id="barcodeTarget" class="barcodeTarget"></div></td>
     </tr>
   </table>
@@ -103,7 +103,7 @@ th, td {
 
   <br>
   <center><span style="font-size: 16px"><strong>ORDER PEMBELIAN</strong></span></center><br>
-  <span>Agar dikirimkan barang-barang terlampir dibawah ini ke Gudang Rumah Sakit Setia Mitra :</span>
+  <span>Agar dikirimkan barang-barang terlampir dibawah ini ke Gudang <?php echo COMP_SORT; ?> :</span>
   <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
     <thead>
         <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
@@ -187,7 +187,7 @@ th, td {
       </td>
       <td style="text-align: center; width: 40%">&nbsp;</td>
       <td style="text-align: center; width: 30%">
-        <span style="font-size: 14px"><b>RS. Setia Mitra</b></span>
+        <span style="font-size: 14px"><b><?php echo COMP_LONG; ?></b></span>
         <br>
         <br>
         <br>

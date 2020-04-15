@@ -379,7 +379,7 @@ class Csm_billing_pasien extends MX_Controller {
         // print_r($flag);die;
         $pdf->SetCreator(PDF_CREATOR);
         
-        $pdf->SetAuthor('Rumah Sakit Setia Mitra');
+        $pdf->SetAuthor(COMP_LONG);
         $pdf->SetTitle(''.$filename.'');
 
     // remove default header/footer

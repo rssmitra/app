@@ -418,7 +418,7 @@ class Billing_model extends CI_Model {
             $html .= '</tr>';
             $html .= '<tr>';
                 $html .= '<td> <i class="fa fa-times-circle red"></i> Permasalahan</td>';
-                $html .= '<td>Kasir belum melakukan submit pada aplikasi SIRS Averin</td>';
+                $html .= '<td>Kasir belum melakukan submit pada aplikasi '.APPS_NAME_SORT.'</td>';
                 $html .= '<td>Nota Kredit pasien tidak tercata disistem, karena masih ada kendala pada aplikasi</td>';
                 $html .= '<td>Pasien terdaftar bukan sebagai pasien BPJS karena kesalahan input pada petugas registrasi</td>';
             $html .= '</tr>';
@@ -426,7 +426,7 @@ class Billing_model extends CI_Model {
                 $html .= '<td><i class="fa fa-check-circle green"></i> Solusi</td>';
                 $html .= '<td> Kasir harus melakukan submit terlebih dahulu sebelum melanjutkan ke proses Submit dan Merge PDF Files</td>';
                 $html .= '<td>Silahkan klik tombol disamping untuk mengupdate Status NK</td>';
-                $html .= '<td>Pasien harus diubah data penjaminnya pada aplikasi SIRS Averin atau Klik Button disamping</td>';
+                $html .= '<td>Pasien harus diubah data penjaminnya pada aplikasi '.APPS_NAME_SORT.' atau Klik Button disamping</td>';
             $html .= '</tr>';
             $html .= '</table>';
             $html .= '</div>';
@@ -557,7 +557,7 @@ class Billing_model extends CI_Model {
             $html .= '</tr>';
             $html .= '<tr>';
                 $html .= '<td> <i class="fa fa-times-circle red"></i> Permasalahan</td>';
-                $html .= '<td>Kasir belum melakukan submit pada aplikasi SIRS Averin</td>';
+                $html .= '<td>Kasir belum melakukan submit pada aplikasi '.APPS_NAME_SORT.'</td>';
                 $html .= '<td>Nota Kredit pasien tidak tercata disistem, karena masih ada kendala pada aplikasi</td>';
                 $html .= '<td>Pasien terdaftar bukan sebagai pasien BPJS karena kesalahan input pada petugas registrasi</td>';
             $html .= '</tr>';
@@ -565,7 +565,7 @@ class Billing_model extends CI_Model {
                 $html .= '<td><i class="fa fa-check-circle green"></i> Solusi</td>';
                 $html .= '<td> Kasir harus melakukan submit terlebih dahulu sebelum melanjutkan ke proses Submit dan Merge PDF Files</td>';
                 $html .= '<td>Silahkan klik tombol disamping untuk mengupdate Status NK</td>';
-                $html .= '<td>Pasien harus diubah data penjaminnya pada aplikasi SIRS Averin atau Klik Button disamping</td>';
+                $html .= '<td>Pasien harus diubah data penjaminnya pada aplikasi '.APPS_NAME_SORT.' atau Klik Button disamping</td>';
             $html .= '</tr>';
             $html .= '</table>';
             $html .= '</div>';
@@ -1251,13 +1251,13 @@ class Billing_model extends CI_Model {
     			$title_name = 'Pemakaian Alat';
     			break;
             case 'bill_tindakan_luar_rs':
-                $title_name = 'Tindakan Luar RS';
+                $title_name = 'Tindakan Luar';
                 break;
             case 'bill_bpako':
                 $title_name = 'BPAKO';
                 break;
             case 'bill_sarana_rs':
-                $title_name = 'Sarana Rumah Sakit';
+                $title_name = 'Sarana '.COMP_FLAG.'';
                 break;
     		default:
     		$title_name = '';

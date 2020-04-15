@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-editable.css" />
 
-    <link rel="shortcut icon" href="<?php echo base_url().'assets/images/logo.png'?>">
+    <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
   </head>
 
   <body class="no-skin">

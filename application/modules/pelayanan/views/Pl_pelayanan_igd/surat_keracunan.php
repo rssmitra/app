@@ -52,16 +52,16 @@
           <td>&nbsp;:&nbsp; <?php echo $value->no_mr ?></td>
         </tr>
         <tr>
-          <td class="title" >Rumah Sakit</td>
-          <td>&nbsp;:&nbsp; Rumah Sakit Setia Mitra </td>
+          <td class="title" ><?php echo COMP_FLAG?></td>
+          <td>&nbsp;:&nbsp; <?php echo COMP_FULL; ?> </td>
           <td class="title">Telp.</td>
-          <td>&nbsp;:&nbsp;(021) 7656000</td>
+          <td>&nbsp;:&nbsp;<?php echo COMP_TELP?></td>
         </tr>
         <tr>
           <td class="title">Alamat</td>
-          <td>&nbsp;:&nbsp; Jl. RS. Fatmawati No. 80 - 82</td>
+          <td>&nbsp; &nbsp; <?php echo COMP_ADDRESS_SORT; ?></td>
           <td class="title">Fax</td>
-          <td>&nbsp;:&nbsp;(021) 7656875</td>
+          <td>&nbsp;:&nbsp;<?php echo COMP_FAX?></td>
         </tr>
       </table>
 

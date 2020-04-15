@@ -23,7 +23,7 @@
     <!-- ace styles -->
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" />
-    <link rel="shortcut icon" href="<?php echo base_url().'assets/images/logo.png'?>">
+    <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
     <!--[if lte IE 9]>
       <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-part2.css" class="ace-main-stylesheet" />
     <![endif]-->
@@ -368,7 +368,7 @@
 
     <div id="proses-loading">
         <div class="loading-content">
-            <img width="125px" src="<?php echo base_url('assets/images/logo.png') ?>" alt="Logo RSSM">
+            <img width="125px" src="<?php echo base_url('assets/images/logo.png') ?>" alt="Logo <?php echo COMP_SORT; ?>">
             <br>
             <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
             <br>

@@ -20,12 +20,12 @@
 
       <div class="col-md-12">
 
-        <center><h4>LAPORAN UMUM SELURUH MODUL SIRS</h4></center>
+        <center><h4>LAPORAN UMUM SELURUH MODUL <?php echo APPS_NAME_SORT?></h4></center>
 
         <!-- laporan akunting -->
         <b>AKUNTING</b>
         <ol>
-          <li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=1'?>" target="_blank">Laporan Transaksi Pada Averin</a></li>
+          <li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=1'?>" target="_blank">Laporan Transaksi Pada</a></li>
           <li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=2'?>" target="_blank">Transaksi Pasien BPJS</a></li>
           <li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>" target="_blank">Laporan BMHP (Barang Medis Habis Pakai)</a></li>
           <li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=4'?>" target="_blank">Laporan IF (Unit Farmasi)</a></li>
