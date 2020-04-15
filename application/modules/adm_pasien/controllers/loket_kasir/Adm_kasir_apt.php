@@ -70,7 +70,7 @@ class Adm_kasir_apt extends MX_Controller {
                 $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
             }
 
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary"><i class="fa fa-money"></i> Bayar</a></div>';
+            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list->no_registrasi."/RJ?flag=umum'".')"><i class="fa fa-money"></i> Bayar</a></div>';
 
             $data[] = $row;
               

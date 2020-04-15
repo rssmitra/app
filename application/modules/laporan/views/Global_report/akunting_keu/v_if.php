@@ -73,7 +73,7 @@
             //penerimaan
             $key_penerimaan = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $v_penerimaan);
             if($row_data->kode_brg == $v_penerimaan[$key_penerimaan]['kode_brg']){
-              $qty_p = isset($v_penerimaan[$key_penerimaan])?$v_penerimaan[$key_penerimaan]['jumlah_kirim']:0;
+              $qty_p = isset($v_penerimaan[$key_penerimaan])?$v_penerimaan[$key_penerimaan]['jumlah_kirim'] * $v_penerimaan[$key_penerimaan]['content']:0;
               // $hjual = isset($v_penerimaan[$key_penerimaan])?$v_penerimaan[$key_penerimaan]['hargajual']:0;
             }else{
               $qty_p = 0;

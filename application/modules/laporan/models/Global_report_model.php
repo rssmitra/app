@@ -74,7 +74,7 @@ class Global_report_model extends CI_Model {
 		FROM mt_rekap_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
 		inner JOIN fr_tc_far_detail c ON c.kode_brg=a.kode_brg 
 		WHERE (a.kode_brg IS NOT NULL)
-		group by a.kode_brg, b.nama_brg";
+		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC";
 			
 		return $query;
 	}
@@ -102,11 +102,11 @@ class Global_report_model extends CI_Model {
 	}
 
 	public function penerimaan_penjualan(){
-		$query = "SELECT b.kode_brg, SUM(b.jumlah_kirim) as jumlah_kirim, AVG(b.harga) as harga
+		$query = "SELECT b.kode_brg, b.content, SUM(b.jumlah_kirim) as jumlah_kirim, AVG(b.harga) as harga
 			FROM tc_penerimaan_barang as a 
 			LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
 			WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
-			GROUP BY b.kode_brg";
+			GROUP BY b.kode_brg, b.content";
 			
 		return $this->db->query($query)->result_array();
 	}
