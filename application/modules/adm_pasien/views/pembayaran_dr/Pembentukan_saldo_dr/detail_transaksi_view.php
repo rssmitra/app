@@ -1,3 +1,51 @@
+<b>DETAIL KUNJUNGAN</b>
+<table class="table table-bordered" style="width:100% !important">
+  <thead>
+    <tr>
+      <th class="center">No</th>
+      <th>No Kunjungan</th>
+      <th>Tgl Kunjungan</th>
+      <th width="200px">Nama Tindakan</th>
+      <th>Unit/Bagian</th>
+      <th>Penjamin</th>
+      <th>Dokter 1</th>
+      <th>Dokter 2</th>
+      <th>Status</th>
+      <th>Total Billing</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php 
+      $arr_total = array(); 
+      $no_order = 0;
+      foreach($detail as $row_detail_dt) :
+        $no_order++;
+    ?>
+      <tr>
+        <td align="center"><?php echo $no_order?></td>
+        <td><?php echo $row_detail_dt->no_kunjungan?></td>
+        <td><?php echo $this->tanggal->formatDateTime($row_detail_dt->tgl_jam)?></td>
+        <td><?php echo $row_detail_dt->nama_tindakan?></td>
+        <td><?php echo $row_detail_dt->nama_bagian?></td>
+        <td><?php echo $row_detail_dt->nama_perusahaan?></td>
+        <td><?php echo '<b>'.number_format($row_detail_dt->bill_dr1).'</b><br><small>'.$row_detail_dt->dokter1.'</small>'?></td>
+        <td ><?php echo ($row_detail_dt->dokter2 != 0)?$row_detail_dt->dokter2.'<br>'.number_format($row_detail_dt->bill_dr2) : '-'?></td>
+        <td><?php echo $row_detail_dt->status_paid?></td>
+        <td align="right"><?php $total = $row_detail_dt->bill_dr1 + $row_detail_dt->bill_dr2;  echo number_format($total); ?></td>
+      </tr>
+    <?php 
+      $arr_total[] = $total; 
+      endforeach;
+    ?>
+    <tr>
+      <td colspan="9" align="right"><b>TOTAL</b></td>
+      <td align="right"><b><?php echo number_format(array_sum($arr_total))?>,-</b></td>
+    </tr>
+  </tbody>
+  
+</table>
+
+<br>
 <b>TRANSAKSI KASIR</b>
 <table class="table table-bordered" style="width:80% !important">
   <thead>
@@ -42,49 +90,6 @@
   </tbody>
   
 </table>
-<br>
-<?php
-  $resume_billing = array();
-  foreach ($result->group as $k => $val) {
-      foreach ($val as $value_data) {
-          $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
-          /*total*/
-          $sum_subtotal[] = $subtotal;
-          /*resume billing*/
-          $resume_billing[] = $this->Csm_billing_pasien->resumeBillingRJ($value_data->jenis_tindakan, $value_data->kode_bagian, $subtotal);
-      }        
-  }
-?>
-<b>RESUME BILLING</b>
-<table class="table table-striped" style="width:80% !important">
-  <thead>
-    <tr>
-        <th class="right">Dokter</th>
-        <th class="right">Administrasi</th>
-        <th class="right">Obat/Farmasi</th>
-        <th class="right">Penunjang Medis</th>
-        <th class="right">Tindakan</th>
-        <th class="right">BPAKO</th>
-        <th class="right">Total</th>
-    </tr>
-  </thead>
-  <?php 
-    $split_billing = $this->Csm_billing_pasien->splitResumeBilling($resume_billing);
-    $total_billing = (double)$split_billing['bill_dr'] + (double)$split_billing['bill_adm_rs'] + (double)$split_billing['bill_farm'] + (double)$split_billing['bill_pm'] + (double)$split_billing['bill_tindakan']+ (double)$split_billing['bill_bpako']
-  ?>
-  <tbody>
-    <tr>
-        <td align="left">Rp. <?php echo number_format($split_billing['bill_dr'])?>,-</td>
-        <td align="left">Rp. <?php echo number_format($split_billing['bill_adm_rs'])?>,-</td>
-        <td align="left">Rp. <?php echo number_format($split_billing['bill_farm'])?>,-</td>
-        <td align="left">Rp. <?php echo number_format($split_billing['bill_pm'])?>,-</td>
-        <td align="left">Rp. <?php echo number_format($split_billing['bill_tindakan'])?>,-</td>
-        <td align="left">Rp. <?php echo number_format($split_billing['bill_bpako'])?>,-</td>
-        <td align="left"><b>Rp. <?php echo number_format($total_billing)?>,-</b></td>
-    </tr> 
-  </tbody>
-
-</table> 
 <br>
 <b>PENCATATAN JURNAL AKUNTING</b>
 

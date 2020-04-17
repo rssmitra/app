@@ -844,7 +844,7 @@ class Reg_pasien extends MX_Controller {
                 // $this->logs->save('log', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_pesanan');
                  /*save log kuota dokter*/
                 if( !isset($_POST['is_no_mr']) AND $_POST['is_no_mr'] != 'Y' ){
-                    $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['kode_dokter'], 'kode_spesialis' => $dataexc['no_poli'], 'tanggal' => $dataexc['tgl_pesanan'], 'keterangan' => $dataexc['keterangan'] ));
+                    $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['kode_dokter'], 'kode_spesialis' => $dataexc['no_poli'], 'tanggal' => $dataexc['tgl_pesanan'], 'keterangan' => $dataexc['keterangan'], 'flag' => 'perjanjian' ));
                 }
              }else{
                  /*update record*/

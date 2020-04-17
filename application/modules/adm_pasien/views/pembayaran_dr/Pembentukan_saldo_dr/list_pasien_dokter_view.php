@@ -28,28 +28,28 @@
         "searching": false,
         "bLengthChange": true,
         "pageLength": 25,
-        "bInfo": false,
-        "paging": false,
+        "bInfo": true,
+        "paging": true,
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": $('#dt_pasien_kasir').attr('base-url')+'?kode_dokter=&from_tgl='+$('#from_tgl').val()+'&to_tgl='+$('#to_tgl').val()+'',
+            "url": $('#dt_pasien_kasir').attr('base-url'),
             "type": "POST"
         },
-        // "columnDefs": [
-        //   { 
-        //     "targets": [ 0 ], 
-        //     "orderable": false,
-        //   },
-        //   {"aTargets" : [1], "mData" : 1, "sClass":  "details-control"}, 
-        //   { "visible": false, "targets": [2] },
-        // ],
+        "columnDefs": [
+          { 
+            "targets": [ 0 ], 
+            "orderable": false,
+          },
+          {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
+          { "visible": false, "targets": [1] },
+        ],
     });
 
     $('#dt_pasien_kasir tbody').on('click', 'td.details-control', function () {
             var tr = $(this).closest('tr');
             var row = oTable.row( tr );
             var data = oTable.row( $(this).parents('tr') ).data();
-            var kode_dokter = data[ 1 ];
+            var no_registrasi = data[ 1 ];
             
 
             if ( row.child.isShown() ) {
@@ -60,7 +60,7 @@
             else {
                 /*data*/
                
-                $.getJSON($('#dt_pasien_kasir').attr('url-detail')+ "?kode_dokter="+kode_dokter+"&from_tgl="+$('#from_tgl').val()+"&to_tgl="+$('#to_tgl').val()+"", '', function (data) {
+                $.getJSON("adm_pasien/loket_kasir/Adm_kasir/getDetailTransaksi/" + no_registrasi, '', function (data) {
                     response_data = data;
                      // Open this row
                     row.child( format( response_data ) ).show();
@@ -93,32 +93,17 @@
 
   $('#btn_reset_data').click(function (e) {
       e.preventDefault();
-      get_total_billing();
-      oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?kode_dokter=&from_tgl='+$('#from_tgl').val()+'&to_tgl='+$('#to_tgl').val()).load();
+      oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?flag='+$('#flag').val()+'&pelayanan='+$('#pelayanan').val()).load();
       $("html, body").animate({ scrollDown: "400px" });
       $('#form_search')[0].reset();
   });
   
-  function checkAll(elm) {
-
-    if($(elm).prop("checked") == true){
-      $('.ace').each(function(){
-          $(this).prop("checked", true);
-      });
-    }else{
-      $('.ace').prop("checked", false);
-    }
-
-  }
-
-  function get_detail_pasien(kode_dokter){
-      getMenu("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/getDetailTransaksiDokter?kode_dokter="+kode_dokter+"&from_tgl="+$('#from_tgl').val()+"&to_tgl="+$('#to_tgl').val()+"");
-  }
 
   function find_data_reload(result){
       get_total_billing();
       oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?'+result.data).load();
       $("html, body").animate({ scrollTop: "400px" });
+
   }
 
   function reload_table(){
@@ -138,7 +123,7 @@
           console.log(response.data);
           $.getJSON("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_total_billing?"+response.data, '', function (data) {
              // code here
-              $('#label_total_billing_dr').text( formatMoney(parseInt(data.total)) );
+              $('#label_total_billing_dr').text( formatMoney(parseInt(data.total_billing)) );
           });
         }
       });
@@ -216,24 +201,20 @@
           </div>
       </div>
       
+
       <div id="showDataTables">
-        <table id="dt_pasien_kasir" base-url="adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_data" url-detail="adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/getDetailTransaksi" class="table table-bordered table-hover">
+        <table id="dt_pasien_kasir" base-url="adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
-            <th width="50px">
-              <div class="center">
-                <label class="pos-rel">
-                    <input type="checkbox" class="ace" name="" onClick="checkAll(this);" value="0"/>
-                    <span class="lbl"></span>
-                </label>
-              </div>
-            </th>
-            <!-- <th width="50px"></th>
-            <th class="center"></th> -->
+            <th width="50px"></th>
+            <th class="center"></th>
             <th width="50px" class="center">No</th>
-            <th width="60px">Kode</th>
-            <th>Nama Dokter</th>
-            <th>Total Billing</th>
+            <th>Kode</th>
+            <th>Tanggal</th>
+            <th>No. MR</th>
+            <th>Nama Pasien</th>
+            <th width="250px">Tindakan</th>
+            <th width="100px">Total Billing</th>
           </tr>
           </thead>
         </table>

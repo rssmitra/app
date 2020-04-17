@@ -79,6 +79,16 @@ class Global_report_model extends CI_Model {
 		return $query;
 	}
 
+
+	public function get_saldo(){
+		$month=$_POST['from_month'] - 1;
+		$query = 'select kode_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, kode_brg
+		from tc_kartu_stok where id_kartu IN 
+					(SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where MONTH(tgl_input)= '."'".$month."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' group by kode_brg)';
+			
+		return $this->db->query($query)->result_array();
+	}
+
 	public function penjualan_obat_bpjs(){
 		
 		$query = 'select kode_brg, kode_perusahaan, SUM(jumlah_tebus) as jumlah_tebus, AVG(harga_beli) as harga_beli, AVG(harga_jual) as harga_jual 

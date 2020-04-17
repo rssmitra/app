@@ -18,6 +18,7 @@ class Pembentukan_saldo_dr extends MX_Controller {
         /*load model*/
         $this->load->model('adm_pasien/pembayaran_dr/Pembentukan_saldo_dr_model', 'Pembentukan_saldo_dr');
         $this->load->model('adm_pasien/Adm_pasien_model', 'Adm_pasien');
+        $this->load->model('adm_pasien/loket_kasir/Adm_kasir_model', 'Adm_kasir');
         $this->load->model('billing/Billing_model', 'Billing');
         $this->load->model('casemix/Csm_billing_pasien_model', 'Csm_billing_pasien');
         /*enable profiler*/
@@ -48,21 +49,25 @@ class Pembentukan_saldo_dr extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pembentukan_saldo_dr->get_datatables();
-        // print_r($list);die;
+        // print_r($list->result());die;
         $no = $_POST['start'];
         $data = array();
-        foreach ($list as $row_list) {
+        foreach ($list->result() as $row_list) {
             $row = array();
             $no++;
-            $row[] = '<div class="center"></div>';
-            $row[] = $row_list->no_registrasi;
+            $row[] = '<div class="center">
+                        <label class="pos-rel">
+                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->kode_dokter.'"/>
+                            <span class="lbl"></span>
+                        </label>
+                     </div>';
+            // $row[] = '<div class="center"></div>';
+            // $row[] = $row_list->kode_dokter;
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list->no_registrasi."'".')">'.$row_list->kode_trans_pelayanan.'</div>';
-            $row[] = $this->tanggal->formatDate($row_list->tgl_transaksi);
-            $row[] = $row_list->no_mr;
-            $row[] = $row_list->nama_pasien_layan;
-            $row[] = $row_list->nama_tindakan;
-            $row[] = '<div style="text-align: right">'.number_format($row_list->total_billing).'</div>';
+            $row[] = $row_list->kode_dokter;
+            $row[] = '<a href="#" onclick="get_detail_pasien('.$row_list->kode_dokter.')">'.$row_list->nama_dokter.'</div>';
+            $total_bill = $row_list->bill_dr1 + $row_list->bill_dr2;
+            $row[] = '<div style="text-align: right">'.number_format($total_bill).'</div>';
             $data[] = $row;
                  
         }
@@ -81,7 +86,7 @@ class Pembentukan_saldo_dr extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pembentukan_saldo_dr->get_total_billing(); 
-        echo json_encode($list);
+        echo json_encode( array('total' => $list) );
     }
 
     public function get_total_billing_dr_current_day()
@@ -92,16 +97,32 @@ class Pembentukan_saldo_dr extends MX_Controller {
     }
 
     public function getDetailTransaksi($no_registrasi){
+        $detail = $this->Pembentukan_saldo_dr->get_detail_kunjungan($no_registrasi);
         $result = json_decode($this->Billing->getDetailData($no_registrasi));
-        $akunting = $this->Pembentukan_saldo_dr->get_jurnal_akunting($no_registrasi);
+        $akunting = $this->Adm_kasir->get_jurnal_akunting($no_registrasi);
         $data = array(
+            'detail' => $detail->result(),
             'result' => $result,
             'transaksi' => $akunting['data'],
             'jurnal' => $akunting['data'],
         );
-        // echo '<pre>';print_r($akunting);die;
+        // echo '<pre>';print_r($detail->result());die;
         $html = $this->load->view('pembayaran_dr/Pembentukan_saldo_dr/detail_transaksi_view', $data, true);
         echo json_encode(array('html' => $html));
+    }
+
+    public function getDetailTransaksiDokter(){
+        $detail = $this->Pembentukan_saldo_dr->get_detail_pasien($_GET['kode_dokter'], $_GET['from_tgl'], $_GET['to_tgl']);
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'profil_dokter' => $this->db->get_where('mt_dokter_v', array('kode_dokter' => $_GET['kode_dokter']) )->row(),
+            'detail' => $detail->result(),
+            'from_tgl' => $_GET['from_tgl'],
+            'to_tgl' => $_GET['to_tgl'],
+        );
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('pembayaran_dr/Pembentukan_saldo_dr/form_detail_pasien_dokter', $data);
     }
 
 }

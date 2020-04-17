@@ -114,22 +114,14 @@ $('select[name="reg_klinik_rajal"]').change(function () {
 
 <?php if(isset($id_tc_pesanan) && $id_tc_pesanan == '') :?>
 <div class="form-group">
-
     <label class="control-label col-sm-3">Sisa Kuota Dokter</label>
-
     <div class="col-sm-3">
-
         <input type="text" name="sisa_kuota" id="sisa_kuota" readonly> 
-
     </div>
-
-    <div class="col-sm-3" style="margin-left:-50px; margin-top:3px">
-
-        <div id="message_for_kuota"></div>
-
-    </div>
-
 </div>
+
+<div id="message_for_kuota"></div>
+
 <?php endif;?>
 
 <?php if(isset($no_reg) && $no_reg != '') :?>

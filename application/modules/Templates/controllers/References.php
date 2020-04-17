@@ -721,17 +721,31 @@ class References extends MX_Controller {
 		$date = ($tanggal=='')?date('Y-m-d'):$tanggal;
 
 		/*existing*/
-		$log_kuota = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis) )->num_rows();
+		$log_kuota_perjanjian = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis, 'flag' => 'perjanjian') )->num_rows();
+
+		$log_kuota_current = $this->db->get_where('tc_registrasi', array('CAST(tgl_jam_masuk as DATE) = ' => $date, 'kode_dokter' => $kode_dokter, 'kode_bagian_masuk' => $kode_spesialis) )->num_rows();
+
+		$log_kuota_mjkn = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis, 'flag' => 'mobile_jkn') )->num_rows();
 
         /*kuota dokter*/
         $kuota_dokter = $this->db->get_where('tr_jadwal_dokter', array('jd_hari' => $day, 'jd_kode_dokter' => $kode_dokter, 'jd_kode_spesialis' => $kode_spesialis) )->row(); 
 
 		$id = $kuota_dokter->jd_id; 
-		$sisa = $kuota_dokter->jd_kuota - $log_kuota;
-				
+		$kuota_dr = $kuota_dokter->jd_kuota;
+
+		$sisa = $kuota_dokter->jd_kuota - ($log_kuota_perjanjian + $log_kuota_current + $log_kuota_mjkn);
+		$data = array(
+			'kuota' => $kuota_dr,
+			'perjanjian_rj' => $log_kuota_perjanjian,
+			'perjanjian_mjkn' => $log_kuota_mjkn,
+			'terdaftar' => $log_kuota_current,
+			'sisa_kuota' => $sisa,
+		);
+		$html = $this->load->view('templates/view_log_kuota_dr', $data, true);
+
 		$message = ($sisa==0)?'<label class="label label-danger"><i class="fa fa-times-circle"></i> Maaf, Kuota sudah penuh !</label>':'<label class="label label-success"><i class="fa fa-check"></i> Kuota Terpenuhi</label>';
 
-        echo json_encode(array('sisa_kuota' => $sisa, 'jd_id' => $id, 'message' => $message));
+        echo json_encode(array('sisa_kuota' => $sisa, 'jd_id' => $id, 'message' => $html));
 	}
 
 	public function getTindakanByBagian($kd_bagian='')

@@ -69,11 +69,17 @@ class Global_report extends MX_Controller {
     public function show_data_if(){
 
         $query_data = $this->Global_report->get_data();
+        $g_saldo = $this->Global_report->get_saldo();
         $p_penerimaan = $this->Global_report->penerimaan_penjualan();
         $pjl_bpjs = $this->Global_report->penjualan_obat_bpjs();
         $pjl_umum = $this->Global_report->penjualan_obat_umum();
         $pjl_internal = $this->Global_report->penjualan_obat_internal();
         $distribusiU = $this->Global_report->distribusi_unit();
+        // get saldo
+        foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
+                $get_dt_g_saldo[] = $v_g_saldo;
+            
+        }
         // get data penjualan bpjs
         foreach ($pjl_bpjs as $k_pjl_bpjs => $v_pjl_bpjs) {
             if($v_pjl_bpjs['kode_perusahaan']==120){
@@ -104,6 +110,7 @@ class Global_report extends MX_Controller {
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
             'result' => $query_data,
+            'v_saldo' => $g_saldo,
             'v_penerimaan' => $p_penerimaan,
             'dt_pjl_bpjs' => $get_dt_pjl_bpjs,
             'dt_pjl_umum' => $get_dt_pjl_umum,

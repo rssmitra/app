@@ -22,8 +22,9 @@ class Save_log_billing_dr extends MX_Controller {
         $qry_dt = "SELECT kode_trans_pelayanan, kode_tc_trans_kasir, tgl_jam, tgl_transaksi, no_registrasi, no_mr, nama_pasien_layan, 
             nama_tindakan, kode_dokter1, kode_dokter2, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2
             FROM view_log_billing_dokter
-            WHERE nama_pasien_layan not like '%percobaan%' AND YEAR(tgl_jam)=".date('Y')." AND MONTH(tgl_jam)=".date('m')." AND DAY(tgl_jam)=".date('d')." ";
+            WHERE nama_pasien_layan not like '%percobaan%' AND YEAR(tgl_jam) >= 2019 and send_log_bill_dr IS NULL";
         $exc_qry =  $this->db->query($qry_dt)->result();
+        // echo '<pre>'; print_r($exc_qry); die;
         $getData = array();
         $log = array();
         foreach ($exc_qry as $key => $value) {
@@ -45,7 +46,6 @@ class Save_log_billing_dr extends MX_Controller {
             $log[] = $value;
         }
         $this->db->insert_batch('log_billing_dr', $getData);
-
 
         $file = "application/logs/".date('Y_m_d_H_i_s').".log";
         $fp = fopen ($file,'w');

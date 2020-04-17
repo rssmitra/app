@@ -62,6 +62,15 @@
             // $saldopenerimaan=$row_data->jumlah_kirim * $row_data->harga_beli;
             $no++; 
             // data bpjs search arrray
+            $key_saldo = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $v_saldo);
+            if($row_data->kode_brg == $v_saldo[$key_saldo]['kode_brg']){
+              $qtys = isset($v_saldo[$key_saldo])?$v_saldo[$key_saldo]['stok_akhir']:0;
+              // $saldoa = isset($v_saldo[$key_saldo])?$v_saldo[$key_saldo]['harga_jual']:0;
+            }else{
+              $qtys = 0;
+              // $saldoa = 0;
+            }
+
             $key_bpjs = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $dt_pjl_bpjs);
             if($row_data->kode_brg == $dt_pjl_bpjs[$key_bpjs]['kode_brg']){
               $qty = isset($dt_pjl_bpjs[$key_bpjs])?$dt_pjl_bpjs[$key_bpjs]['jumlah_tebus']:0;
@@ -115,6 +124,10 @@
             }
             $j_distribusiU=$qty_d * $hdistribusiU;
 
+            $saldoawal=$qtys * $row_data->hargajual;
+            $saldo_akhir= $qtys + $qty_p - $qty - $qty_u - $qty_i - $qty_d;
+            $saldoakhir=$saldo_akhir * $row_data->hargajual;
+
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -123,8 +136,8 @@
                 echo '<td>'.$row_data->nama_brg.'</td>';
                 echo '<td>'.number_format($row_data->harga_beli).'</td>';
                 echo '<td>'.number_format($row_data->hargajual).'</td>';
-                echo '<td></td>';
-                echo '<td></td>';
+                echo '<td>'.$qtys.'</td>';
+                echo '<td>'.number_format($saldoawal).'</td>';
                 echo '<td>'.$qty_p.'</td>';
                 echo '<td>'.number_format($saldopenerimaan).'</td>';
                 echo '<td>'.$qty.'</td>';
@@ -135,6 +148,8 @@
                 echo '<td>'.number_format($j_internal).'</td>';
                 echo '<td>'.$qty_d.'</td>';
                 echo '<td>'.number_format($j_distribusiU).'</td>';
+                echo '<td>'.$saldo_akhir.'</td>';
+                echo '<td>'.number_format($saldoakhir).'</td>';
               ?>
             </tr>
           <?php } ?>

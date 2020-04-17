@@ -321,6 +321,9 @@ class Reg_klinik extends MX_Controller {
             /*save logs*/
             $this->logs->save('pl_tc_poli', $datapoli['kode_poli'], 'insert new record on '.$this->title.' module', json_encode($datapoli),'kode_poli');
             
+            // log kuota dokter
+            $this->logs->save_log_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => $datapoli['tgl_jam_poli'], 'keterangan' => null, 'flag' => 'on_the_spot' ));
+
             /*parameter untuk print tracer*/
             $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
             $data_tracer = [

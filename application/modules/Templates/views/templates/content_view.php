@@ -845,6 +845,18 @@
         return sum;
       }
 
+      function checkAll(elm) {
+
+        if($(elm).prop("checked") == true){
+          $('.ace').each(function(){
+              $(this).prop("checked", true);
+          });
+        }else{
+          $('.ace').prop("checked", false);
+        }
+
+      }
+
       function submitUpdateTransaksi(kode_trans_pelayanan){
 
         preventDefault();
