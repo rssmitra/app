@@ -18,6 +18,7 @@ define('PATH_IMG_DEFAULT', 'uploaded/images/');
 define('PATH_PHOTO_PROFILE_DEFAULT', 'uploaded/images/photo/');
 define('PATH_IMG_THUMB', 'uploaded/images/thumb/');
 define('PATH_IMG_RESIZED', 'uploaded/images/resized/');
+define('PATH_HASIL_VERIF_BPJS', 'uploaded/casemix/hasil_verif/');
 
 define('WS_URL', 'http://10.10.10.4:88/rssm/ws_rssm/');
 define('ICON_UNCHECKBOX', 'assets/img/uncheck.png');

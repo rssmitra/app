@@ -416,7 +416,7 @@
 
     <div id="globalModalView" class="modal fade" tabindex="-1">
 
-      <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:70%">
+      <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:90%">
 
         <div class="modal-content">
 

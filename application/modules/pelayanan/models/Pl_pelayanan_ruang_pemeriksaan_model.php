@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Input_perjanjian_pm_model extends CI_Model {
+class Pl_pelayanan_ruang_pemeriksaan_model extends CI_Model {
 
 	var $table = 'tc_pesanan';
 	var $column = array('tc_pesanan.nama','mt_bagian.nama_bagian','mt_karyawan.nama_pegawai','mt_perusahaan.nama_perusahaan');
-	var $select = 'tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.no_telp, tc_pesanan.no_hp, mt_master_pasien.tlp_almt_ttp, mt_master_pasien.no_hp as no_hp_pasien, mt_master_tarif.nama_tarif, bulan_kunjungan, status_konfirmasi_kedatangan, tc_pesanan.keterangan, referensi_no_kunjungan';
+	var $select = 'tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.no_telp, tc_pesanan.no_hp, mt_master_pasien.tlp_almt_ttp, mt_master_pasien.no_hp as no_hp_pasien, mt_master_tarif.nama_tarif, bulan_kunjungan, status_konfirmasi_kedatangan, tc_pesanan.keterangan, referensi_no_kunjungan, tc_pesanan.kode_perusahaan';
 	var $order = array('tc_pesanan.id_tc_pesanan' => 'ASC');
 
 	public function __construct()
@@ -24,7 +24,8 @@ class Input_perjanjian_pm_model extends CI_Model {
 		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan','left');
 		$this->db->join('mt_master_tarif', 'mt_master_tarif.kode_tarif=tc_pesanan.kode_tarif','left');
 		$this->db->where('tc_pesanan.tgl_masuk IS NULL');
-		$this->db->where('tc_pesanan.no_poli','50201');
+		$this->db->where('CAST(tc_pesanan.tgl_pesanan as DATE) = ', date('Y-m-d'));
+		$this->db->where('tc_pesanan.no_poli', $_GET['bag']);
         /*end parameter*/
 
 	}
@@ -148,6 +149,41 @@ class Input_perjanjian_pm_model extends CI_Model {
 	{
 		$this->db->where_in(''.$this->table.'.id_tc_pesanan', $id);
 		return $this->db->delete($this->table);
+	}
+
+
+	function get_data_antrian_pasien()
+	{
+		$this->_main_query();
+		// $this->db->where('tgl_keluar_poli IS NULL');
+		if( in_array($_GET['bag'], array('050201') ) ) {
+			$this->db->where('tc_pesanan.no_poli='."'".$_GET['bag']."'".'');
+		}else{
+			$this->db->where('tc_pesanan.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
+			$this->db->where('tc_pesanan.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+		}
+
+		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+			$this->db->where("convert(varchar,tc_pesanan.tgl_pesanan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
+        }else{
+        	$this->db->where('CAST(tgl_pesanan as DATE) = ', date('Y-m-d'));
+		}
+        $this->db->order_by('input_tgl','ASC');
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	function get_next_antrian_pasien()
+	{
+		$this->_main_query();
+		$this->db->where('tgl_masuk IS NULL');
+		$this->db->where('(tc_pesanan.status_batal is null or tc_pesanan.status_batal = 0)');
+		$this->db->where('tc_pesanan.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
+		$this->db->where('tc_pesanan.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+		$this->db->where(array('YEAR(tc_pesanan.tgl_pesanan)' => date('Y'), 'MONTH(tc_pesanan.tgl_pesanan)' => date('m'), 'DAY(tc_pesanan.tgl_pesanan)' => date('d') ) );
+        $this->db->order_by('no_antrian','ASC');
+		$query = $this->db->get();
+		return $query->row();
 	}
 
 

@@ -76,7 +76,7 @@ class Input_perjanjian_pm extends MX_Controller {
         $data['ids'] = implode(',', $_GET['ID']);
         $data['value'] = $this->Input_perjanjian_pm->get_by_id($_GET['ID']);
         /*load form view*/
-        // echo '<pre>'; print_r($data);die;
+        // echo '<pre>'; print_r($_GET['ID']);die;
 
         $this->load->view('Input_perjanjian_pm/form_konfirmasi', $data);
     
@@ -121,7 +121,7 @@ class Input_perjanjian_pm extends MX_Controller {
                 $row[] = $this->tanggal->getBulan($row_list->bulan_kunjungan);
                 $row[] = $row_list->no_telp."/".$row_list->no_hp;
                 $row[] = $row_list->keterangan;
-                $row[] = ($row_list->status_konfirmasi_kedatangan == NULL) ? '<div class="center"><i class="fa fa-times-circle bigger-120 red"></i></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
+                $row[] = ($row_list->status_konfirmasi_kedatangan == NULL) ? '<div class="center"><i class="fa fa-times-circle bigger-120 red"></i></div>' : $this->tanggal->formatDate($row_list->tgl_pesanan);
 
 
                 $data[] = $row;
@@ -137,6 +137,44 @@ class Input_perjanjian_pm extends MX_Controller {
             echo json_encode($output);
         }
         
+    }
+
+    public function process_konfirmasi_kedatangan()
+    {
+        // print_r($_POST);die;
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+        $val->set_rules('tgl_kunjungan', 'Tanggal Kunjungan', 'trim|required');
+ 
+         $val->set_message('required', "Silahkan isi field \"%s\"");
+ 
+         if ($val->run() == FALSE)
+         {
+             $val->set_error_delimiters('<div style="color:white">', '</div>');
+             echo json_encode(array('status' => 301, 'message' => validation_errors()));
+         }
+         else
+         {                       
+ 
+             $this->db->trans_begin();
+
+             // update status konfirmasi kedatangan
+             $arrr_ids = explode(',', $_POST['arrr_ids']);
+
+             $this->db->where_in('id_tc_pesanan', $arrr_ids)->update('tc_pesanan', array('status_konfirmasi_kedatangan' => 1, 'tgl_pesanan' => $val->set_value('tgl_kunjungan')) );
+
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+             }
+ 
+         }
     }
 
     public function find_data()

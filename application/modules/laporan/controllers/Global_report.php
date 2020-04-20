@@ -382,7 +382,7 @@ class Global_report extends MX_Controller {
 
         // echo '<pre>';print_r($query_data);
         
-            $this->load->view('Global_report/v_bmhp', $data);
+            $this->load->view('Global_report/akunting_keu/v_bmhp', $data);
                 
     }
 

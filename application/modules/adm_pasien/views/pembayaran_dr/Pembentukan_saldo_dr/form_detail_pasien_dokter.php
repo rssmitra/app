@@ -17,7 +17,7 @@ jQuery(function($) {
 
 $(document).ready(function(){
   
-    $('#form_permintaan').ajaxForm({
+    $('#form_pembentukan_saldo_dr').ajaxForm({
       beforeSend: function() {
         achtungShowLoader();  
       },
@@ -139,8 +139,9 @@ function search_selected_brg(flag, search_by, keyword){
     <!-- PAGE CONTENT BEGINS -->
       <div class="widget-body">
         <div class="widget-main no-padding">
-          <form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/permintaan/Req_pembelian/process')?>" enctype="multipart/form-data" >
+          <form class="form-horizontal" method="post" id="form_pembentukan_saldo_dr" action="<?php echo site_url('purchasing/permintaan/Req_pembelian/process')?>" enctype="multipart/form-data" >
             <b>PEMBAYARAN JASA DOKTER</b>
+            <?php if($type == 'form_view') :?>
             <div class="form-group">
               <label class="control-label col-md-2">Kode Pembayaran</label>
               <div class="col-md-2">
@@ -163,7 +164,7 @@ function search_selected_brg(flag, search_by, keyword){
               </div>
               <label class="control-label col-md-2">Total Tagihan</label>
               <div class="col-md-2">
-                <input name="id" id="id" value="<?php echo array_sum($arr_total_bill)?>"  class="form-control" type="text" style="text-align: right">
+                <input name="id" id="id" value="<?php echo number_format(array_sum($arr_total_bill))?>"  class="form-control" type="text" style="text-align: right" readonly>
               </div>
             </div>
 
@@ -174,7 +175,7 @@ function search_selected_brg(flag, search_by, keyword){
                 </textarea>
               </div>
             </div>
-            
+            <?php endif; ?>
             <table class="table table-bordered" style="width:100% !important; margin-top: 10px">
               <thead>
                 <tr style="background-color: #87b87f;">
@@ -233,17 +234,18 @@ function search_selected_brg(flag, search_by, keyword){
               
             </table>
 
-            
-          <div class="form-actions center">
-            <a onclick="getMenu('adm_pasien/pembayaran_dr/Pembentukan_saldo_dr')" href="#" class="btn btn-sm btn-success">
-              <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
-              Kembali ke daftar
-            </a>
-            <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info">
-              <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-              Submit
-            </button>
-          </div>
+            <?php if($type == 'form_view') :?>
+              <div class="form-actions center">
+                <a onclick="getMenu('adm_pasien/pembayaran_dr/Pembentukan_saldo_dr')" href="#" class="btn btn-sm btn-success">
+                  <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
+                  Kembali ke daftar
+                </a>
+                <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info">
+                  <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+                  Submit
+                </button>
+              </div>
+            <?php endif; ?>
         </form>
       </div>
       </div>

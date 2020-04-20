@@ -707,9 +707,23 @@ final Class Master {
 	public function sumArrayByKey($myArray, $key){
 		
 		$result = array_sum(array_column($myArray,$key));
-
 		return $result;
+	}
 
+	public function sumArrayByColumn($array, $column) {
+		$sum = array();
+	   	foreach ($array as $key => $val) {
+	   		if( $val[key($column[0])] == $column[0][key($column[0])] 
+	   				AND $val[key($column[1])] ==  $column[1][key($column[1])] 
+	   				AND $val[key($column[2])] ==  $column[2][key($column[2])]
+	   		  )
+	   		{
+	   			$sum[] = $val['bill_rs'] + $val['bill_dr1'] + $val['bill_dr2'] + $val['lain_lain'];
+	   			$getData[] = $val;
+	   		}
+	   	}
+		// echo '<pre>';print_r(array_sum($sum));die;
+	   	return array_sum($sum);
 	}
 
 	public function no_seri_kuitansi($no_registrasi){

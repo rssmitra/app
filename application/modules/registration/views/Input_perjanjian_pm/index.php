@@ -170,7 +170,7 @@ function cetak_surat_kontrol(ID) {
 
     </div>
     <div class="clearfix"></div>
-    <a href="#" onclick="getMenu('registration/Input_perjanjian_pm/form')" class="btn btn-xs btn-primary"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian Pasien </span></a>
+    <!-- <a href="#" onclick="getMenu('registration/Input_perjanjian_pm/form')" class="btn btn-xs btn-primary"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian Pasien </span></a> -->
     <a href="#" id="button_konfirmasi" class="btn btn-xs btn-success"><i class="menu-icon fa fa-bullhorn"></i><span class="menu-text"> Konfirmasi Kunjungan</span></a>
     <a href="#" id="button_delete" class="btn btn-xs btn-danger"><i class="menu-icon fa fa-trash"></i><span class="menu-text"> Hapus yang dipilih</span></a>
 

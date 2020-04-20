@@ -411,46 +411,14 @@ class Csm_billing_pasien_model extends CI_Model {
         /*fields billing*/
         $fields = $this->fields;
 
-        /*kamar perawatan / ruangan / ICU*/
-        if (in_array($data->jenis_tindakan, array(1))) {
-            if (strpos($data->nama_tindakan, 'Ruangan') !== false) {
-                if (strpos($data->nama_tindakan, 'Ruangan ICU') !== false) {
-                    $bill['bill_kamar_icu'] = $subtotal;
-                    $kode_trans_pelayanan['bill_kamar_icu'] = $data->kode_trans_pelayanan;
-                }else{
-                    $bill['bill_kamar_perawatan'] = $subtotal;
-                    $kode_trans_pelayanan['bill_kamar_perawatan'] = $data->kode_trans_pelayanan;
-                }
-            }
-        }
-        /*tindakan inap*/
-        if ( in_array($data->jenis_tindakan, array(3)) ) {
-            if( $str_type=='03'){
-                if(!in_array($data->kode_bagian, array('030501','030901'))){
-                    $bill['bill_tindakan_inap'] = $subtotal;
-                    $kode_trans_pelayanan['bill_tindakan_inap'] = $data->kode_trans_pelayanan;
-                }
-            }elseif( $str_type == '01'){
-                if(strpos($data->nama_tindakan, 'Hemodialis') !== false){
-                    $bill['bill_tindakan_hd'] = $subtotal;
-                    $kode_trans_pelayanan['bill_tindakan_hd'] = $data->kode_trans_pelayanan;
-                }else{
-                    $bill['bill_klinik'] = $subtotal;
-                    $kode_trans_pelayanan['bill_klinik'] = $data->kode_trans_pelayanan;
-                }
-                
+        /*biaya apotik / obat farmasi*/
+        if ( in_array($data->jenis_tindakan, array(11)) ) {
+            if( !in_array($data->kode_bagian, array('030901','030501','020101','050101','050201','050301') ) ){
+                $bill['bill_apotik'] = $subtotal;
+                $kode_trans_pelayanan['bill_apotik'] = $data->kode_trans_pelayanan;
             }
         }
 
-        /*tindakan oksigen*/
-        if ( in_array($data->jenis_tindakan, array(7)) ) {
-            if( $str_type=='03' ){
-                if(!in_array($data->kode_bagian, array('030501','030901'))){
-                    $bill['bill_tindakan_oksigen'] = $subtotal;
-                    $kode_trans_pelayanan['bill_tindakan_oksigen'] = $data->kode_trans_pelayanan;
-                }
-            }
-        }
         /*tindakan bedah*/
         if ( in_array($data->kode_bagian, array('030901')) ) {
             $bill['bill_tindakan_bedah'] = $subtotal;
@@ -461,64 +429,6 @@ class Csm_billing_pasien_model extends CI_Model {
         if ( in_array($data->kode_bagian, array('030501')) ) {
             $bill['bill_tindakan_vk'] = $subtotal;
             $kode_trans_pelayanan['bill_tindakan_vk'] = $data->kode_trans_pelayanan;
-        }
-
-        /*obat/alkes*/
-        if ( !in_array($data->kode_bagian, array('030901')) ) {
-            if ( in_array($data->jenis_tindakan, array(9)) ) {
-                if( $str_type=='03' ){
-                    $bill['bill_obat'] = $subtotal;
-                    $kode_trans_pelayanan['bill_obat'] = $data->kode_trans_pelayanan;
-                }else{
-                    $bill['bill_ugd'] = $subtotal;
-                    $kode_trans_pelayanan['bill_ugd'] = $data->kode_trans_pelayanan;
-                }
-            }
-        }
-        
-        /*ambulance*/
-        if ( in_array($data->jenis_tindakan, array(6)) ) {
-            $bill['bill_ambulance'] = $subtotal;
-            $kode_trans_pelayanan['bill_ambulance'] = $data->kode_trans_pelayanan;
-        }
-
-        /*jasa dokter/bidan*/
-        if ( in_array($data->jenis_tindakan, array(4,12)) ) {
-            if( $str_type=='03' ){
-                $bill['bill_dokter'] = $subtotal;
-                $kode_trans_pelayanan['bill_dokter'] = $data->kode_trans_pelayanan;
-            }
-        }
-        /*biaya apotik*/
-        if ( in_array($data->jenis_tindakan, array(11)) ) {
-            if( in_array($str_type, array('06','03') ) ){
-                $bill['bill_apotik'] = $subtotal;
-                $kode_trans_pelayanan['bill_apotik'] = $data->kode_trans_pelayanan;
-            }
-        }
-
-        /*biaya lain-lain*/
-        if ( in_array($data->jenis_tindakan, array(8)) ) {
-            $bill['bill_lain_lain'] = $subtotal;
-            $kode_trans_pelayanan['bill_lain_lain'] = $data->kode_trans_pelayanan;
-        }
-
-        /*biaya tindakan luar rs*/
-        if ( in_array($data->jenis_tindakan, array(10)) ) {
-            $bill['bill_tindakan_luar_rs'] = $subtotal;
-            $kode_trans_pelayanan['bill_tindakan_luar_rs'] = $data->kode_trans_pelayanan;
-        }
-
-        /*biaya pemakaian alat*/
-        if ( in_array($data->jenis_tindakan, array(5)) ) {
-            $bill['bill_pemakaian_alat'] = $subtotal;
-            $kode_trans_pelayanan['bill_pemakaian_alat'] = $data->kode_trans_pelayanan;
-        }
-
-        /*biaya administrasi*/
-        if ( in_array($data->jenis_tindakan, array(2)) ) {
-            $bill['bill_adm'] = $subtotal;
-            $kode_trans_pelayanan['bill_adm'] = $data->kode_trans_pelayanan;
         }
 
         /*biaya ugd*/
@@ -544,6 +454,106 @@ class Csm_billing_pasien_model extends CI_Model {
             $kode_trans_pelayanan['bill_fisio'] = $data->kode_trans_pelayanan;
         }
 
+
+        /*biaya lain-lain*/
+        if ( in_array($data->jenis_tindakan, array(8)) ) {
+            if( !in_array($data->kode_bagian, array('030901','030501','020101','050101','050201','050301') ) ){
+                $bill['bill_lain_lain'] = $subtotal;
+                $kode_trans_pelayanan['bill_lain_lain'] = $data->kode_trans_pelayanan;
+            }
+        }
+
+        /*biaya tindakan luar rs*/
+        if ( in_array($data->jenis_tindakan, array(10)) ) {
+            if( !in_array($data->kode_bagian, array('030901','030501','020101','050101','050201','050301') ) ){
+                $bill['bill_tindakan_luar_rs'] = $subtotal;
+                $kode_trans_pelayanan['bill_tindakan_luar_rs'] = $data->kode_trans_pelayanan;
+            }
+        }
+
+        /*biaya pemakaian alat*/
+        if ( in_array($data->jenis_tindakan, array(5)) ) {
+            if( !in_array($data->kode_bagian, array('030901','030501','020101','050101','050201','050301') ) ){
+                $bill['bill_pemakaian_alat'] = $subtotal;
+                $kode_trans_pelayanan['bill_pemakaian_alat'] = $data->kode_trans_pelayanan;
+            }
+        }
+
+        /*biaya administrasi*/
+        if ( in_array($data->jenis_tindakan, array(2)) ) {
+            if( !in_array($data->kode_bagian, array('030901','030501','020101','050101','050201','050301') ) ){
+                $bill['bill_adm'] = $subtotal;
+                $kode_trans_pelayanan['bill_adm'] = $data->kode_trans_pelayanan;
+            }
+        }
+
+        /*kamar perawatan / ruangan / ICU*/
+        if (in_array($data->jenis_tindakan, array(1))) {
+            if (strpos($data->nama_tindakan, 'Ruangan') !== false) {
+                if (strpos($data->nama_tindakan, 'Ruangan ICU') !== false) {
+                    $bill['bill_kamar_icu'] = $subtotal;
+                    $kode_trans_pelayanan['bill_kamar_icu'] = $data->kode_trans_pelayanan;
+                }else{
+                    $bill['bill_kamar_perawatan'] = $subtotal;
+                    $kode_trans_pelayanan['bill_kamar_perawatan'] = $data->kode_trans_pelayanan;
+                }
+            }
+        }
+
+        /*tindakan inap, hd, klinik*/
+        if ( in_array($data->jenis_tindakan, array(3, 13)) ) {
+            if( $str_type=='03'){
+                if(!in_array($data->kode_bagian, array('030501','030901','020101'))){
+                    $bill['bill_tindakan_inap'] = $subtotal;
+                    $kode_trans_pelayanan['bill_tindakan_inap'] = $data->kode_trans_pelayanan;
+                }
+            }elseif( $str_type == '01'){
+                if(strpos($data->nama_tindakan, 'Hemodialis') !== false){
+                    $bill['bill_tindakan_hd'] = $subtotal;
+                    $kode_trans_pelayanan['bill_tindakan_hd'] = $data->kode_trans_pelayanan;
+                }else{
+                    $bill['bill_klinik'] = $subtotal;
+                    $kode_trans_pelayanan['bill_klinik'] = $data->kode_trans_pelayanan;
+                }
+                
+            }
+        }
+
+        /*tindakan oksigen*/
+        if ( in_array($data->jenis_tindakan, array(7)) ) {
+            if(!in_array($data->kode_bagian, array('030501','030901','020101'))){
+                $bill['bill_tindakan_oksigen'] = $subtotal;
+                $kode_trans_pelayanan['bill_tindakan_oksigen'] = $data->kode_trans_pelayanan;
+            }
+        }
+
+        /*obat/alkes*/
+        if ( in_array($data->jenis_tindakan, array(9)) ) {
+            if ( !in_array($data->kode_bagian, array('030501','030901','020101')) ) {
+                if( in_array($str_type, array('03','01')) ){
+                    $bill['bill_obat'] = $subtotal;
+                    $kode_trans_pelayanan['bill_obat'] = $data->kode_trans_pelayanan;
+                }
+            }
+            
+        }
+
+        /*ambulance*/
+        if ( in_array($data->jenis_tindakan, array(6)) ) {
+            if ( !in_array($data->kode_bagian, array('030501','030901','020101')) ) {
+                $bill['bill_ambulance'] = $subtotal;
+                $kode_trans_pelayanan['bill_ambulance'] = $data->kode_trans_pelayanan;
+            }
+            
+        }
+
+        /*jasa dokter/bidan*/
+        if ( in_array($data->jenis_tindakan, array(4,12)) ) {
+            if ( !in_array($data->kode_bagian, array('030501','030901','020101')) ) {
+                $bill['bill_dokter'] = $subtotal;
+                $kode_trans_pelayanan['bill_dokter'] = $data->kode_trans_pelayanan;
+            }
+        }
 
         /*return bill data by fields billing*/
         foreach ($fields as $key => $value) {
@@ -632,7 +642,7 @@ class Csm_billing_pasien_model extends CI_Model {
                 $title_name = 'Fisioterapi';
                 break;
             case 'bill_klinik':
-                $title_name = 'Poliklinik';
+                $title_name = 'Poliklinik Spesialis';
                 break;
             case 'bill_pemakaian_alat':
                 $title_name = 'Pemakaian Alat';

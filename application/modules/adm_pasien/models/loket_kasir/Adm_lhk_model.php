@@ -119,6 +119,7 @@ class Adm_lhk_model extends CI_Model {
 		if ( isset($_GET['kode_perusahaan']) AND $_GET['kode_perusahaan'] != '' ) {
 			$this->db->where('kode_perusahaan', $_GET['kode_perusahaan']);
 		}
+		
 		$query = $this->db->get()->row();
         return $query;
 	}

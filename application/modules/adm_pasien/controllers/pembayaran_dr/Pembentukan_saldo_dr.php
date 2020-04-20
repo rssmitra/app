@@ -120,6 +120,7 @@ class Pembentukan_saldo_dr extends MX_Controller {
             'detail' => $detail->result(),
             'from_tgl' => $_GET['from_tgl'],
             'to_tgl' => $_GET['to_tgl'],
+            'type' => isset($_GET['type'])?$_GET['type']:'form_view',
         );
         // echo '<pre>';print_r($data);die;
         $this->load->view('pembayaran_dr/Pembentukan_saldo_dr/form_detail_pasien_dokter', $data);

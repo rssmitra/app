@@ -69,6 +69,7 @@ class Loket extends MX_Controller {
             'tanggal' => date('Y-m-d'),
             'kode_dokter' => $dataexc['ant_kode_dokter'],
             'kode_spesialis' => $dataexc['ant_kode_spesialis'], 
+            'flag' => 'mesin_antrian', 
         );
         
         /*save antrian */

@@ -91,37 +91,27 @@ $('select[name="reg_klinik_rajal"]').change(function () {
 
 <div class="form-group">
     <label class="control-label col-sm-3">*Klinik</label>
-    <div class="col-sm-8">
-
+    <div class="col-sm-9">
         <?php echo $this->master->get_change($params = array('table' => 'tr_jadwal_dokter', 'id' => 'jd_kode_spesialis', 'name' => 'jd_kode_spesialis', 'where' => array()), '' , 'reg_klinik_rajal', 'reg_klinik_rajal', 'form-control', '', '') ?>
     </div>
 </div>
 <div class="form-group">
     <label class="control-label col-sm-3">*Dokter</label>
-    <div class="col-sm-8" id="dokter_by_klinik">
+    <div class="col-sm-9" id="dokter_by_klinik">
         <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'reg_dokter_rajal', 'reg_dokter_rajal', 'form-control', '', '') ?>
         <input name="jd_id" id="jd_id" class="form-control" type="hidden">
     </div>
 
     <div class="col-sm-8" id="dokter_dinamis_klinik" style="display:none;">
-
         <input id="inputDokter" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-
         <input type="hidden" name="" id="reg_dokter_rajal_dinamis" class="form-control">
-        
     </div>
 </div>
 
 <?php if(isset($id_tc_pesanan) && $id_tc_pesanan == '') :?>
-<div class="form-group">
-    <label class="control-label col-sm-3">Sisa Kuota Dokter</label>
-    <div class="col-sm-3">
-        <input type="text" name="sisa_kuota" id="sisa_kuota" readonly> 
-    </div>
-</div>
-
+<!-- hidden kuota dr -->
+<input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
 <div id="message_for_kuota"></div>
-
 <?php endif;?>
 
 <?php if(isset($no_reg) && $no_reg != '') :?>

@@ -20,7 +20,7 @@ class Save_log_billing_dr extends MX_Controller {
         }
 
         $qry_dt = "SELECT kode_trans_pelayanan, kode_tc_trans_kasir, tgl_jam, tgl_transaksi, no_registrasi, no_mr, nama_pasien_layan, 
-            nama_tindakan, kode_dokter1, kode_dokter2, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2
+            nama_tindakan, kode_dokter1, kode_dokter2, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, kode_perusahaan, kode_bagian, no_kunjungan
             FROM view_log_billing_dokter
             WHERE nama_pasien_layan not like '%percobaan%' AND YEAR(tgl_jam) >= 2019 and send_log_bill_dr IS NULL";
         $exc_qry =  $this->db->query($qry_dt)->result();
@@ -41,6 +41,9 @@ class Save_log_billing_dr extends MX_Controller {
                 'kode_dokter2' => $value->kode_dokter2,
                 'bill_dr1' => $value->bill_dr1,
                 'bill_dr2' => $value->bill_dr2,
+                'no_kunjungan' => $value->no_kunjungan,
+                'kode_perusahaan' => $value->kode_bagian,
+                'kode_bagian' => $value->kode_perusahaan,
                 );
             $this->db->update('tc_trans_pelayanan', array('send_log_bill_dr' => 1), array('kode_trans_pelayanan' => $value->kode_trans_pelayanan) );
             $log[] = $value;

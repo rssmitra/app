@@ -614,7 +614,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
         </li>
 
         <li class="light-blue" style="background-color: lightgrey !important;color: black">
-          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black" onclick="show_modal('adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/getDetailTransaksiDokter?kode_dokter=265&from_tgl=2020-04-17&to_tgl=2020-04-17&type=view_only','TAGIHAN DOKTER')">
             <span class="user-info">
               <b><span style="font-size: 14px;" id="total_bill_dr_current"></span></b>
               <small>Total Billing</small></span>

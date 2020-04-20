@@ -6,66 +6,22 @@
 
 <script>
 
-jQuery(function($) {  
+jQuery(function($) {
 
-  
-  $(".date-picker").datepicker({
-
-    autoclose: true,    
-
-    todayHighlight: true,
-
-    onSelect: function(dateText) {
-      $(this).change();
-    }
-  
-  }).on("change", function() {
-    
-    var str_selected_date = this.value;
-    var selected_date = str_selected_date.split("/").join("-");
-    var spesialis = $('#klinik_rajal').val();
-    var dokter = $('#dokter_rajal').val();
-    var jd_id = $('#jd_id').val();
-    /*check selected date */
-
-    $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id} , function(data) {
-        // Do something with the request
-        if(data.status=='expired'){
-           var message = '<div class="alert alert-danger"><strong>Expired Date !</strong><br>Tanggal yang anda pilih sudah lewat atau sedang berjalan.</div>';
-           $('#view_msg_kuota').hide('fast');
-        }else{
-          if(data.day!=$('#selected_day').val() ){
-                var message = '<div class="alert alert-danger"><strong>Tidak Sesuai !</strong><br>Tanggal Kunjungan tidak sesuai dengan jadwal Praktek Dokter yang anda pilih !</div>';
-                $('#view_msg_kuota').hide('fast');
-          }else{
-            var message = '<div class="alert alert-block alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><strong><i class="ace-icon fa fa-check"></i> Selesai ! </strong>Apakah anda akan melanjutkan ke proses berikutnya ?</p><p><button type="submit" id="btnSave" class="btn btn-sm btn-success">Lanjutkan</button><a href="#" onclick="getMenu('+"'"+'booking/regon_booking'+"'"+')" class="btn btn-sm btn-danger">Batalkan</a></p></div>';
-
-            if(data.sisa > 0 ){
-              var msg_kuota = '*Kuota tersedia pada tanggal ini, '+data.sisa+' pasien';
-            }else{
-              var msg_kuota = '<span style="color:red"> *Kuota penuh, silahkan cari tanggal lain!</span>';
-            }
-
-            $('#view_msg_kuota').show('fast');
-            $('#view_msg_kuota').html(msg_kuota);
-
-          }
-
-        }
-
-        $('#view_last_message').show('fast');
-        $('#view_last_message').html(message);
-        $("html, body").animate({ scrollTop: "700px" }, "slow");  
-
-    }, 'json');
-
+  $('.date-picker').datepicker({
+    autoclose: true,
+    todayHighlight: true
+  })
+  //show datepicker when clicking on the icon
+  .next().on(ace.click_event, function(){
+    $(this).prev().focus();
   });
- 
 });
+
 
 $(document).ready(function(){
 
-    $('#form_booking').ajaxForm({      
+    $('#form_konfirmasi').ajaxForm({      
 
       beforeSend: function() {        
 
@@ -124,16 +80,16 @@ $(document).ready(function(){
       </h1>
     </div><!-- /.page-header -->
       
-    <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
+    <form class="form-horizontal" method="post" id="form_konfirmasi" action="<?php echo site_url('registration/Input_perjanjian_pm/process_konfirmasi_kedatangan')?>" enctype="multipart/form-data" autocomplete="off">   
 
       <!-- hidden form  -->
-      <input type="hidden" name="arrr_ids" id="arr_ids" value="<?php echo $ids?>">
+      <input type="hiddenxx" name="arrr_ids" id="arr_ids" value="<?php echo $ids?>">
       
       <div class="form-group" id="tanggal_perjanjian" >
           <label class="control-label col-sm-2">Tanggal Kunjungan</label>  
           <div class="col-md-2">
               <div class="input-group">
-                  <input name="tanggal_perjanjian_pm" id="tanggal_perjanjian_pm" value="" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text">
+                  <input name="tgl_kunjungan" id="tgl_kunjungan" value="" placeholder="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text">
                   <span class="input-group-addon">
                   <i class="ace-icon fa fa-calendar"></i>
                   </span>

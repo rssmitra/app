@@ -55,6 +55,14 @@ class Global_report_model extends CI_Model {
 					ORDER BY nama_bagian,tgl_jam_masuk ASC";
 		return $query;
 	}
+	public function akunting_mod_3(){
+		$query = "SELECT a.kode_brg, b.nama_brg
+		FROM  mt_depo_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
+		WHERE kode_bagian= ".$_POST['bagian']." AND a.kode_brg IS NOT NULL
+		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC";
+			
+		return $query;
+	}
 
 	// public function akunting_mod_4(){
 	// 	$query = "SELECT d.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual  
