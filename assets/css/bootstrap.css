@@ -2068,10 +2068,10 @@ th {
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  padding: 5px;
-  line-height: 1.42857143;
+  padding: 4px;
+  line-height: 1.3;
   /*vertical-align: top;*/
-  border-top: 1px solid #dddddd;
+  border: 1px solid #dddddd;
 }
 .table > thead > tr > th {
   vertical-align: bottom;

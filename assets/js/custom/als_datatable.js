@@ -4,9 +4,10 @@ var base_url = $('#dynamic-table').attr('base-url');
 $(document).ready(function() {
   /*static datatables*/
     $('#static-table').DataTable({
-      "scrollY":        "500px",
-      "scrollCollapse": true,
-      "paging":         false
+      // "scrollY": "500px",
+      "scrollX": true
+      // "scrollCollapse": true,
+      // "paging":         false
     });
   //initiate dataTables plugin
     oTable = $('#dynamic-table').DataTable({ 

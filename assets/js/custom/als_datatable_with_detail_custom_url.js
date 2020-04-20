@@ -86,7 +86,7 @@ $(document).ready(function() {
           print_data(''+searchIDs+'');
           console.log(searchIDs);
     });
-
+    
     $('#btn_search_data').click(function (e) {
           e.preventDefault();
           $.ajax({
