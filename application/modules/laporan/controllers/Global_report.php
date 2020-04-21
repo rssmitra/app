@@ -372,15 +372,54 @@ class Global_report extends MX_Controller {
     public function show_data_bmhp(){
 
         $query_data = $this->Global_report->get_data();
+        $g_saldo = $this->Global_report->get_saldo_bmhp();
+        $p_penerimaan = $this->Global_report->penerimaan_penjualan_bmhp();
+        $pjl_bpjs = $this->Global_report->penjualan_obat_bpjs_bmhp();
+        $pjl_umum = $this->Global_report->penjualan_obat_umum_bmhp();
+        $pjl_internal = $this->Global_report->penjualan_obat_internal_bmhp();
+        // get saldo
+        foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
+                $get_dt_g_saldo[] = $v_g_saldo;
+            
+        }
+        // get data penjualan bpjs
+        foreach ($pjl_bpjs as $k_pjl_bpjs => $v_pjl_bpjs) {
+            if($v_pjl_bpjs['kode_perusahaan']==120){
+                $get_dt_pjl_bpjs[] = $v_pjl_bpjs;
+            }
+        }
+        // // get data penjualan umum
+        foreach ($pjl_umum as $k_pjl_umum => $v_pjl_umum) {
+            if($v_pjl_umum['kode_perusahaan'] ==0){
+                $get_dt_pjl_umum[] = $v_pjl_umum;
+            }
+        }
+        foreach ($pjl_internal as $k_pjl_internal => $v_pjl_internal) {
+            if($v_pjl_internal['kode_perusahaan'] == 'NULL'){
+                $get_dt_pjl_internal[] = $v_pjl_internal;
+            }
+        }
+
+        // foreach ($distribusiU as $k_distribusiU => $v_distribusiU) {
+        //     // if($v_distribusiU['kode_perusahaan'] == 'NULL'){
+        //         $get_dt_distribusiU[] = $v_distribusiU;
+        //     // }
+        // }
 
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
             'bagian' => $_POST['bagian'],
             'result' => $query_data,
+            'v_saldo' => $g_saldo,
+            'v_penerimaan' => $p_penerimaan,
+            'dt_pjl_bpjs' => $get_dt_pjl_bpjs,
+            'dt_pjl_umum' => $get_dt_pjl_umum,
+            'dt_pjl_internal' => $get_dt_pjl_internal,
+            // 'dt_distribusiU' => $get_dt_distribusiU,
         );
 
-        // echo '<pre>';print_r($query_data);
+        // echo '<pre>';print_r($g_saldo);
         
             $this->load->view('Global_report/akunting_keu/v_bmhp', $data);
                 
