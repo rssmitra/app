@@ -596,44 +596,46 @@ function perjanjian_pasien_pm(){
           <!-- form pelayanan -->
           <div class="col-md-10">
 
-          <!-- end action form  -->
-            <div class="pull-right" style="margin-bottom:3px">
-            <a href="#" onclick="perjanjian_pasien_pm()" class="btn btn-xs btn-purple"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian Pasien </span></a>
+            <!-- end action form  -->
+            <div class="pull-right" style="margin-bottom:3px; width: 100%">
+
+              <a href="#" onclick="perjanjian_pasien_pm()" class="btn btn-xs btn-purple"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian Pasien </span></a>
 
               <?php if($value->status_daftar==0) :?>
-                <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_selesai" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pasien Selesai</a>
-            <?php else: 
-              switch ($status) {
-                case 'belum_ditindak':
-                  $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.' ';
-                  break;
+                  <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_selesai" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pasien Selesai</a>
+              <?php else: 
+                switch ($status) {
+                  case 'belum_ditindak':
+                    $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.' ';
+                    break;
 
-                case 'belum_diperiksa':
-                  $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.'&step=to_pemeriksaan';
-                  break;
+                  case 'belum_diperiksa':
+                    $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.'&step=to_pemeriksaan';
+                    break;
 
-                case 'belum_bayar':
-                  $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.'&step=to_pemeriksaan';
-                  break;
-                
-                case 'belum_isi_hasil':
-                  $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.'&step=to_isihasil';
-                  break;
+                  case 'belum_bayar':
+                    $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.'&step=to_pemeriksaan';
+                    break;
+                  
+                  case 'belum_isi_hasil':
+                    $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.'&step=to_isihasil';
+                    break;
 
-                default:
-                  $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.' ';
-                  break;
-              }
+                  default:
+                    $step = 'pelayanan/Pl_pelayanan_pm?type_tujuan='.$value->kode_bagian_tujuan.' ';
+                    break;
+                }
 
-              ?>
-              <a href="#" class="btn btn-xs btn-success" onclick="getMenu('<?php echo $step ?>')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>
-              <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-danger" onclick="rollback(<?php echo $id ?>)"><i class="fa fa-times-circle"></i> Rollback</a><?php endif ?>
-            <?php endif;?>
-              <div id="after_pasien_selesai" style="display:none"> 
-                <a href="#" class="btn btn-xs btn-success" onclick="getMenu('pelayanan/Pl_pelayanan_pm?type_tujuan=<?php echo $value->kode_bagian_tujuan?>&step=to_pemeriksaan')"><i class="fa fa-angle-double-left"></i> Daftar Periksa</a>
+                ?>
+                <a href="#" class="btn btn-xs btn-success" onclick="getMenu('<?php echo $step ?>')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>
+                <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-danger" onclick="rollback(<?php echo $id ?>)"><i class="fa fa-times-circle"></i> Rollback</a><?php endif ?>
+              <?php endif;?>
+
+              <a id="after_pasien_selesai" style="display:none" href="#" class="btn btn-xs btn-success" onclick="getMenu('pelayanan/Pl_pelayanan_pm?type_tujuan=<?php echo $value->kode_bagian_tujuan?>&step=to_pemeriksaan')"><i class="fa fa-angle-double-left"></i> Daftar Periksa</a>
                 <a href="#" class="btn btn-xs btn-info" onclick="cetak_slip()" ><i class="fa fa-money"></i> Charge Slip</a>
-              </div>
+
             </div>
+            <br>
             <!-- informasi pendaftaran pasien -->
             <table class="table table-bordered">
               <tr style="background-color:#f4ae11">
@@ -664,41 +666,35 @@ function perjanjian_pasien_pm(){
             <div class="tabbable">  
 
               <ul class="nav nav-tabs" id="myTab">
-
                 <?php if($status=='belum_ditindak'): ?>
-
                   <li>
                     <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=PM&cito=<?php echo isset($value)?$value->status_cito:''?>&kode_bag=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" data-url="pelayanan/Pl_pelayanan_pm/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                       <i class="green ace-icon fa fa-history bigger-120"></i>
                       TINDAKAN
                     </a>
                   </li>
-
                 <?php endif ?>
 
                 <?php if($status=='belum_isi_hasil'): ?>
-
                   <li>
                     <a data-toggle="tab" data-id="<?php echo $id?>?mr=<?php echo isset($value)?$value->no_mr:0; echo ($value->flag_mcu==1)?'&is_mcu=2':'' ?>" data-url="pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo $value->no_kunjungan?>/<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" id="tabs_isi_hasil" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                       <i class="red ace-icon fa fa-file bigger-120"></i>
                       ISI HASIL
                     </a>
                   </li>
-
                 <?php endif ?>
 
-                <li>
-                  <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/<?php echo $type_asal ?>" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-                    <i class="orange ace-icon fa fa-money bigger-120"></i>
-                    BILLING PASIEN
-                  </a>
-                </li>
+                  <li>
+                    <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/<?php echo $type_asal ?>" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
+                      <i class="orange ace-icon fa fa-money bigger-120"></i>
+                      BILLING PASIEN
+                    </a>
+                  </li>
 
               </ul>
 
               <div class="tab-content">
 
-                
                 <div id="tabs_form_pelayanan">
                   <div class="alert alert-block alert-success">
                       <p>
@@ -710,7 +706,6 @@ function perjanjian_pasien_pm(){
                       </p>
                     </div>
                 </div>
-               
                 
               </div>
 

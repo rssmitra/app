@@ -400,11 +400,6 @@ class Global_report extends MX_Controller {
             }
         }
 
-        // foreach ($distribusiU as $k_distribusiU => $v_distribusiU) {
-        //     // if($v_distribusiU['kode_perusahaan'] == 'NULL'){
-        //         $get_dt_distribusiU[] = $v_distribusiU;
-        //     // }
-        // }
 
         $data = array(
             'flag' => $_POST['flag'],
@@ -416,10 +411,9 @@ class Global_report extends MX_Controller {
             'dt_pjl_bpjs' => $get_dt_pjl_bpjs,
             'dt_pjl_umum' => $get_dt_pjl_umum,
             'dt_pjl_internal' => $get_dt_pjl_internal,
-            // 'dt_distribusiU' => $get_dt_distribusiU,
         );
 
-        // echo '<pre>';print_r($g_saldo);
+        echo '<pre>';print_r($dt_pjl_bpjs);
         
             $this->load->view('Global_report/akunting_keu/v_bmhp', $data);
                 

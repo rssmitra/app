@@ -35,28 +35,24 @@ class Input_perjanjian_pm_model extends CI_Model {
 		$this->_main_query();
 
 		if(isset($_GET['no_mr']) AND $_GET['no_mr']!=0 ){
-			if($_GET['no_mr']!='' or $_GET['no_mr']!=0){
-				$this->db->where('tc_pesanan.no_mr', $_GET['no_mr']);
-			}
+			
 		}
 
 		if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
-			$this->db->like('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
-		}
-
-		if(isset($_GET['dokter']) AND $_GET['dokter']!=0 ){
-			if($_GET['dokter']!='' or $_GET['dokter']!=0){
-				$this->db->where('tc_pesanan.kode_dokter', $_GET['dokter']);
+			if($_GET['no_mr']!='' or $_GET['no_mr']!=0){
+				$this->db->where('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
+			}else{
+				$this->db->like('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
+			
 		}
 
-		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['from_tgl']."'" );
-            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) <= '".$_GET['to_tgl']."'" );
-        }
+		if(isset($_GET['dokter']) AND $_GET['dokter'] != '' ){
+			$this->db->where('tc_pesanan.kode_dokter', $_GET['dokter']);
+		}
 
-        if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {
-            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) = '".$this->tanggal->sqlDateForm($_GET['tanggal'])."'" );
+        if (isset($_GET['bulan']) AND $_GET['bulan'] != '' ) {
+            $this->db->where("bulan_kunjungan = '".$_GET['bulan']."'" );
 		}
 		else{
         	$this->db->where('MONTH(input_tgl) >= '.date('m').'');	
@@ -146,6 +142,7 @@ class Input_perjanjian_pm_model extends CI_Model {
 
 	public function delete_by_id($id)
 	{
+		$get_data = $this->get_by_id($id);
 		$this->db->where_in(''.$this->table.'.id_tc_pesanan', $id);
 		return $this->db->delete($this->table);
 	}

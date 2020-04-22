@@ -292,7 +292,7 @@ class Reg_pasien extends MX_Controller {
                             <ul class="dropdown-menu dropdown-inverse">
                                 '.$html.'
                                 <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.')">Cetak Surat Kontrol</a></li>
-								<li><a href="#">Hapus</a></li>
+								<li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
                             </ul>
                         </div></div>';
                 $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.''.$label_code;

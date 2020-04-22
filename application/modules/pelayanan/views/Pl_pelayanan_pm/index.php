@@ -80,6 +80,7 @@ $(document).ready(function(){
     "ordering": false,
     "searching": false,
     "bPaginate": true,
+    "pageLength": 25,
     "bInfo": false,
     // Load data for the table's content from an Ajax source
     "ajax": {

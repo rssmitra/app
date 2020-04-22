@@ -142,14 +142,9 @@ function cetak_surat_kontrol(ID) {
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2">Bulan</label>
+        <label class="control-label col-md-2">Bulan Kunjungan</label>
           <div class="col-md-2">
-            <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar bigger-110"></i>
-              </span>
-            </div>
+            <?php echo $this->master->get_bulan('' , 'bulan', 'bulan', 'form-control', '','') ?>
           </div>
           <div class="col-md-5 no-padding">
             &nbsp;

@@ -5,8 +5,9 @@ $(document).ready(function(){
     current_day = $('#current_day').val();
 
     $.getJSON("<?php echo site_url('Templates/References/getKlinikFromJadwal') ?>/" +current_day, '', function (data) {              
+        $('#reg_klinik_rajal option').remove();  
+        $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
         $.each(data, function (i, o) {                  
-
             $('<option value="' + o.kode_bagian + '">' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal'));                    
             
         });      

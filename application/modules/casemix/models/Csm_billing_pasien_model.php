@@ -304,6 +304,7 @@ class Csm_billing_pasien_model extends CI_Model {
                     'csm_brp_bill_pm' => $split_billing['bill_pm'],
                     'csm_brp_bill_tindakan' => $split_billing['bill_tindakan'],
                     'csm_brp_bill_bpako' => $split_billing['bill_bpako'],
+                    'csm_brp_bill_lain' => $split_billing['bill_lain'],
                     );
                 
                 /*then insert*/
@@ -345,58 +346,52 @@ class Csm_billing_pasien_model extends CI_Model {
     }
 
     public function resumeBillingRJ($jenis_tindakan, $kode_bagian, $subtotal){
-        /*dokter*/
-        if (in_array($jenis_tindakan, array(12))) {
-            $bill_dr = $subtotal;
-        }else{
-            $bill_dr = 0;
+
+        $str_bag = substr((string)$kode_bagian, 0,2);
+
+        /*penunjang medis*/
+        if($str_bag == '05'){
+            $bill_pm = $subtotal;
         }
-        /*obat farmasi*/
-        if (in_array($jenis_tindakan, array(11))) {
-            $bill_farm = $subtotal;
-        }else{
-            $bill_farm = 0;
+
+        // lainnya
+        if (in_array($jenis_tindakan, array(1,5,7,8,10,14,15))) {
+            $bill_lain = $subtotal;
         }
+
+        // tindakan
+        if (in_array($jenis_tindakan, array(3))) {
+            $bill_tindakan = $subtotal;
+        }
+
         /*adm dan sarana rs*/
         if (in_array($jenis_tindakan, array(2,13))) {
             $bill_adm_rs = $subtotal;
-        }else{
-            $bill_adm_rs = 0;
+        }
+
+        /*dokter*/
+        if (in_array($jenis_tindakan, array(12,4))) {
+            $bill_dr = $subtotal;
+        }
+
+        /*obat farmasi*/
+        if (in_array($jenis_tindakan, array(11))) {
+            $bill_farm = $subtotal;
         }
 
         /*BPAKO*/
         if (in_array($jenis_tindakan, array(9))) {
             $bill_bpako = $subtotal;
-        }else{
-            $bill_bpako = 0;
-        }
-
-        /*penunjang medis*/
-        $str_pm = substr((string)$kode_bagian, 0,2);
-        if($str_pm == '05'){
-            if (in_array($jenis_tindakan, array(3))) {
-                $bill_pm = $subtotal;
-            }else{
-                $bill_pm = 0;
-            }
-            $bill_tindakan = 0;
-        }else{
-            $bill_pm = 0;
-            /*tindakan*/
-            if (in_array($jenis_tindakan, array(3,10))) {
-                $bill_tindakan = $subtotal;
-            }else{
-                $bill_tindakan = 0;
-            }
         }
 
         $data = array(
-            'bill_dr' => $bill_dr,
-            'bill_farm' => $bill_farm,
-            'bill_adm_rs' => $bill_adm_rs,
-            'bill_pm' => $bill_pm,
-            'bill_tindakan' => $bill_tindakan,
-            'bill_bpako' => $bill_bpako,
+            'bill_dr' => isset( $bill_dr ) ? $bill_dr : 0,
+            'bill_farm' => isset( $bill_farm ) ? $bill_farm : 0,
+            'bill_adm_rs' => isset( $bill_adm_rs ) ? $bill_adm_rs : 0,
+            'bill_pm' => isset( $bill_pm ) ? $bill_pm : 0,
+            'bill_tindakan' => isset( $bill_tindakan ) ? $bill_tindakan : 0,
+            'bill_bpako' => isset( $bill_bpako ) ? $bill_bpako : 0,
+            'bill_lain' => isset( $bill_lain ) ? $bill_lain : 0,
             );
 
         return $data;
@@ -669,6 +664,7 @@ class Csm_billing_pasien_model extends CI_Model {
             $bill_pm[] = $value['bill_pm'];
             $bill_tindakan[] = $value['bill_tindakan'];
             $bill_bpako[] = $value['bill_bpako'];
+            $bill_lain[] = $value['bill_lain'];
         }
         $data = array(
             'bill_dr' => array_sum($bill_dr),
@@ -677,6 +673,7 @@ class Csm_billing_pasien_model extends CI_Model {
             'bill_pm' => array_sum($bill_pm),
             'bill_tindakan' => array_sum($bill_tindakan),
             'bill_bpako' => array_sum($bill_bpako),
+            'bill_lain' => array_sum($bill_lain),
             );
 
         return $data;
@@ -735,6 +732,7 @@ class Csm_billing_pasien_model extends CI_Model {
             $html .= '<th align="right">Penunjang Medis</th>';
             $html .= '<th align="right">Tindakan</th>';
             $html .= '<th align="right">BPAKO</th>';
+            $html .= '<th align="right">Lainnya</th>';
         $html .= '</tr>';
          /*split resume billing*/
         $split_billing = $this->splitResumeBilling($resume_billing);
@@ -745,10 +743,11 @@ class Csm_billing_pasien_model extends CI_Model {
             $html .= '<td align="right">Rp. '.number_format($split_billing['bill_pm']).',-</td>';
             $html .= '<td align="right">Rp. '.number_format($split_billing['bill_tindakan']).',-</td>';
             $html .= '<td align="right">Rp. '.number_format($split_billing['bill_bpako']).',-</td>';
+            $html .= '<td align="right">Rp. '.number_format($split_billing['bill_lain']).',-</td>';
         $html .= '</tr>'; 
         $html .= '<tr>';
             $html .= '<td align="right" colspan="5"><b>Total</b></td>';
-            $total_billing = (double)$split_billing['bill_dr'] + (double)$split_billing['bill_adm_rs'] + (double)$split_billing['bill_farm'] + (double)$split_billing['bill_pm'] + (double)$split_billing['bill_tindakan']+ (double)$split_billing['bill_bpako']; 
+            $total_billing = (double)$split_billing['bill_dr'] + (double)$split_billing['bill_adm_rs'] + (double)$split_billing['bill_farm'] + (double)$split_billing['bill_pm'] + (double)$split_billing['bill_tindakan'] + (double)$split_billing['bill_bpako'] + (double)$split_billing['bill_lain']; 
             $html .= '<td align="right"><b>Rp. '.number_format($total_billing).',-</b></td>';
         $html .= '</tr>';
         $html .= '</table>'; 

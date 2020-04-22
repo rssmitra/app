@@ -130,7 +130,7 @@ class References extends MX_Controller {
 					from tr_jadwal_dokter a
 					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
-					where a.jd_kode_spesialis='".$kd_bagian."' and a.jd_hari='".$day."' 
+					where a.jd_kode_spesialis='".$kd_bagian."' and a.jd_hari='".$day."' and a.status_loket = 'on'
 					group by a.jd_id, a.jd_kode_dokter,b.nama_pegawai";
 		$exc = $this->db->query($query); 
         echo json_encode($exc->result());

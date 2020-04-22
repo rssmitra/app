@@ -54,6 +54,40 @@
 
   }
 
+  function delete_perjanjian(id_tc_pesanan)
+  {  
+
+    if(confirm('Are you sure?')){
+      $.ajax({
+          url: 'registration/Input_perjanjian/delete',
+          type: "post",
+          data: {ID:id_tc_pesanan},
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          uploadProgress: function(event, position, total, percentComplete) {
+          },
+          complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+              $.achtung({message: jsonResponse.message, timeout:5});
+              table_riwayat.ajax.reload();
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5});
+            }
+            achtungHideLoader();
+          }
+
+        });
+
+    }else{
+      return false;
+    }
+      
+  }
+
 </script>
 
 <form class="form-horizontal" method="post" id="form_search" action="registration/Perjanjian_rj/find_data">

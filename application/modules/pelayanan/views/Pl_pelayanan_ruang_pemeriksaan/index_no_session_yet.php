@@ -13,7 +13,7 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-          getMenu('pelayanan/Pl_pelayanan');
+          getMenu('pelayanan/Pl_pelayanan_ruang_pemeriksaan');
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});
         }
@@ -58,7 +58,7 @@ $(document).ready(function(){
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_save_session" action="pelayanan/Pl_pelayanan/saveSessionPoli">
+    <form class="form-horizontal" method="post" id="form_save_session" action="pelayanan/Pl_pelayanan_ruang_pemeriksaan/saveSessionPoli">
 
     <input name="current_day" id="current_day" class="form-control" type="hidden" value="<?php echo $this->tanggal->gethari(date('D'))?>">
 

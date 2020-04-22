@@ -18,7 +18,7 @@
       <td><?php echo $row_dt->nama_pasien?></td>
       <td><?php echo $this->tanggal->formatDateTime($row_dt->tgl_jam_poli)?></td>
       <td><?php echo $row_dt->nama_perusahaan?></td>
-      <td align="center"><?php echo $row_dt->no_antrian?></td>
+      <td align="center"><?php echo $no?></td>
       <?php 
         if($row_dt->status_batal==1){
           $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';

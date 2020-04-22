@@ -35,7 +35,7 @@ $('select[name="pm_tujuan"]').change(function () {
 
 });
 
-$('#InputKeyTindakan').typeahead({
+$('#InputKeyTindakanPm').typeahead({
     source: function (query, result) {
         $.ajax({
             url: "templates/references/getTindakanByBagianAutoComplete",
@@ -117,7 +117,7 @@ $('select[name="pm_tujuan"]').change(function () {
 <div class="form-group" id="div_tindakan_radiologi">
     <label class="control-label col-sm-2" for="">Nama Tindakan</label>
     <div class="col-sm-6">
-        <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
+        <input type="text" class="form-control" id="InputKeyTindakanPm" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
         <input type="hidden" class="form-control" id="perjanjian_tindakan_pm" name="perjanjian_tindakan_pm" >
     </div>
 </div>

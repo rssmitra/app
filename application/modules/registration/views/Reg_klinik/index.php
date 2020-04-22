@@ -453,8 +453,7 @@ $(document).ready(function(){
             //   $('#InputKeyPenjamin').val('');
             // }  
           }
-      });
-
+    });
 
     /*btn print*/
     $('#btn_barcode_pasien').click(function (e) {   
@@ -640,7 +639,6 @@ function showModalFormSep()
 }
 
 function showModalEditPasien()
-
 {  
 
   noMr = $('#noMrHidden').val();
@@ -974,8 +972,6 @@ function find_pasien_by_keyword(keyword){
 
 }
 
-
-
 </script>
 
 <style type="text/css">
@@ -1047,10 +1043,10 @@ function find_pasien_by_keyword(keyword){
               <li class="hover">
                 <a data-toggle="tab" data-id="0" data-url="registration/reg_pasien/riwayat_perjanjian" id="tabs_riwayat_perjanjian_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> Riwayat Perjanjian </span></a><b class="arrow"></b>
               </li>
-              <li class="hover">
-                <a href="#" onclick="showModalEditPasien()"><i class="menu-icon fa fa-exclamation-circle"></i><span class="menu-text"> Antrian Poli/klinik </span></a><b class="arrow"></b>
-              </li>
-            </ul><!-- /.nav-list -->
+              <!-- <li class="hover">
+                <a href="#" onclick="show_antrian_poli()"><i class="menu-icon fa fa-exclamation-circle"></i><span class="menu-text"> Antrian Poli/klinik </span></a><b class="arrow"></b>
+              </li> -->
+            </ul>
           </div>
         </div>
       </div>

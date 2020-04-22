@@ -63,7 +63,6 @@ class Input_perjanjian extends MX_Controller {
         $data['title'] = $this->title;
         // echo '<pre>'; print_r($data);die;
         /*load form view*/
-        
         $this->load->view('Input_perjanjian/form', $data);
     
     }
@@ -152,6 +151,21 @@ class Input_perjanjian extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function delete()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        $toArray = explode(',',$id);
+        if($id!=null){
+            if($this->Input_perjanjian->delete_by_id($toArray)){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
     
 
 
