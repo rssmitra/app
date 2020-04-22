@@ -71,7 +71,7 @@ class Loket extends MX_Controller {
             'kode_spesialis' => $dataexc['ant_kode_spesialis'], 
             'flag' => 'mesin_antrian', 
         );
-        
+        // print_r($datakuota);die;
         /*save antrian */
         $this->loket->save('tr_antrian',$dataexc);
 

@@ -137,7 +137,17 @@ function checkedNk(kode) {
                                             if($value_data->kode_tc_trans_kasir==NULL){
 
                                                 if( $row_s[0]->tgl_keluar == NULL ){
-                                                    echo '<i class="fa fa-times-circle red bigger-120"></i>';
+
+                                                    if($value_data->kode_perusahaan != 120){
+                                                        echo '<label>
+                                                                <input name="selected_bill" id="selected_bill_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" checked type="checkbox" class="checked_'.$row_s[0]->kode_bagian.' ace" onclick="checkOne('.$value_data->kode_trans_pelayanan.')">
+                                                                <span class="lbl"></span>
+                                                            </label>';
+                                                    }else{
+                                                        echo '<i class="fa fa-times-circle red bigger-120"></i>';
+                                                    }
+                                                    
+                                                    
                                                 }else{
                                                         
                                                     echo '<label>

@@ -206,7 +206,7 @@ http://www.templatemo.com/tm-490-comila
 				<?php foreach($klinik as $row_modul) : ?>
 					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:170px;">
 					<!-- small box -->
-					<button onclick="add(<?php echo $row_modul->jd_kode_dokter ?>,'<?php echo $row_modul->nama_pegawai?>','<?php echo $row_modul->jd_kode_spesialis ?>','<?php echo $row_modul->nama_bagian?>','<?php echo $row_modul->jd_hari ?>','<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai) ?>','<?php echo $row_modul->jd_jam_selesai ?>',<?php echo $row_modul->kuota ?>)" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+					<button onclick="add_antrian_poli(<?php echo $row_modul->jd_kode_dokter ?>,'<?php echo $row_modul->nama_pegawai?>','<?php echo $row_modul->jd_kode_spesialis ?>','<?php echo $row_modul->nama_bagian?>','<?php echo $row_modul->jd_hari ?>','<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai) ?>','<?php echo $row_modul->jd_jam_selesai ?>',<?php echo $row_modul->kuota ?>)" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
 						<div class="inner" style="margin-top:-10px">
 						<h3 style="font-size:14px;color:black;"><b><?php echo ucwords($row_modul->nama_bagian)?></b></h3>
 						<p style="font-size:12px;color:black;">
@@ -935,144 +935,144 @@ http://www.templatemo.com/tm-490-comila
 
 <script>
    
-   function add(dokter,nama_dokter,spesialis,nama_spesialis,hari,jam_mulai,jam_selesai,kuota) {
-    /* console.log(dokter);
-     console.log(spesialis); */
-    var dataString = $('#tipe_antrian').val(); 
-    if((kuota>0) || (dataString=='online')){
-      
-      data = [];
-      data[0] = dataString;
-      data[1] = dokter;
-      data[2] = nama_dokter;
-      data[3] = spesialis;
-      data[4] = nama_spesialis;
-      data[5] = hari;
-      data[6] = jam_mulai;
-      data[7] = jam_selesai;
-      console.log(data)
-          $.ajax({
-            url:"<?php echo base_url(); ?>antrian/loket/process",
-            data:{data:data}, 
-            dataType: "json", 
-            type:"POST",       
-            success:function (data) {
-              //console.log(data)
-             
-              no = pad(data['no'], 3);
+	function add_antrian_poli(dokter,nama_dokter,spesialis,nama_spesialis,hari,jam_mulai,jam_selesai,kuota) {
+		/* console.log(dokter);
+		console.log(spesialis); */
+		var dataString = $('#tipe_antrian').val(); 
+		if((kuota>0) || (dataString=='online')){
+		
+		data = [];
+		data[0] = dataString;
+		data[1] = dokter;
+		data[2] = nama_dokter;
+		data[3] = spesialis;
+		data[4] = nama_spesialis;
+		data[5] = hari;
+		data[6] = jam_mulai;
+		data[7] = jam_selesai;
+		console.log(data)
+			$.ajax({
+				url:"<?php echo base_url(); ?>antrian/loket/process",
+				data:{data:data}, 
+				dataType: "json", 
+				type:"POST",       
+				success:function (data) {
+				//console.log(data)
+				
+				no = pad(data['no'], 3);
 
-              $('#klinik_modal').text(data['klinik']);
-              $('#dokter_modal').text(data['dokter']);
-              $('#no_modal').text(no);
+				$('#klinik_modal').text(data['klinik']);
+				$('#dokter_modal').text(data['dokter']);
+				$('#no_modal').text(no);
 
-			  //$("#modalAntrian").modal();
-			  
-			  //window.location.href = "<?php echo base_url(); ?>antrian";
+				//$("#modalAntrian").modal();
+				
+				//window.location.href = "<?php echo base_url(); ?>antrian";
 
-            //   openWin(no,data['klinik'],data['dokter'],data['type'],data['jam_praktek']);
-              //setTimeout(function () { window.location.href = "<?php echo base_url(); ?>antrian"; }, 2000);
-            }
-      });
-      event.preventDefault();
-    }else{
-      $("#modalAntrianPenuh").modal();  
+				//   openWin(no,data['klinik'],data['dokter'],data['type'],data['jam_praktek']);
+				//setTimeout(function () { window.location.href = "<?php echo base_url(); ?>antrian"; }, 2000);
+				}
+		});
+		event.preventDefault();
+		}else{
+		$("#modalAntrianPenuh").modal();  
 
-      //setTimeout(function () { window.location.href = "<?php echo base_url(); ?>antrian"; }, 2000);
-    }
-     
-  }
+		//setTimeout(function () { window.location.href = "<?php echo base_url(); ?>antrian"; }, 2000);
+		}
+		
+	}
 
-  function add_other() {
-    /* console.log(dokter);
-     console.log(spesialis); */
-    var dataString = $('#tipe_antrian').val(); 
-    $.ajax({
-	      url:"<?php echo base_url(); ?>antrian/loket/process_other",
-	      data:{type: dataString}, 
-	      dataType: "json", 
-	      type:"POST",       
-	      success:function (data) {
-	        //console.log(data)
-	       
-	        no = pad(data['no'], 3);
+	function add_other() {
+		/* console.log(dokter);
+		console.log(spesialis); */
+		var dataString = $('#tipe_antrian').val(); 
+		$.ajax({
+			url:"<?php echo base_url(); ?>antrian/loket/process_other",
+			data:{type: dataString}, 
+			dataType: "json", 
+			type:"POST",       
+			success:function (data) {
+				//console.log(data)
+			
+				no = pad(data['no'], 3);
 
-	        $('#klinik_modal').text(data['klinik']);
-	        $('#dokter_modal').text(data['dokter']);
-	        $('#no_modal').text(no);
+				$('#klinik_modal').text(data['klinik']);
+				$('#dokter_modal').text(data['dokter']);
+				$('#no_modal').text(no);
 
-      	}
-	});
+			}
+		});
 
-	event.preventDefault();
-     
-  }
+		event.preventDefault();
+		
+	}
 
-   function pad (str, max) {
+   	function pad (str, max) {
       str = str.toString();
       return str.length < max ? pad("0" + str, max) : str;
     }
 
     function openWin(n,klinik,dokter,type,jam_praktek) {
 		date = new Date;
-        year = date.getFullYear();
-        month = date.getMonth();
-        months = new Array('Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'Desember');
-        short_months = new Array('Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des');
-        d = date.getDate();
-        day = date.getDay();
-        days = new Array('Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu');
-        h = date.getHours();
-        if(h<10)
-        {
-                h = "0"+h;
-        }
-        m = date.getMinutes();
-        if(m<10)
-        {
-                m = "0"+m;
-        }
-        s = date.getSeconds();
-        if(s<10)
-        {
-                s = "0"+s;
-        }
-        result = ''+days[day]+', '+d+' '+months[month]+' '+year+', '+h+':'+m+':'+s;
-        current_date = ''+days[day]+', '+d+'/'+short_months[month]+'/'+year;
-       
+		year = date.getFullYear();
+		month = date.getMonth();
+		months = new Array('Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'Desember');
+		short_months = new Array('Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des');
+		d = date.getDate();
+		day = date.getDay();
+		days = new Array('Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu');
+		h = date.getHours();
+		if(h<10)
+		{
+				h = "0"+h;
+		}
+		m = date.getMinutes();
+		if(m<10)
+		{
+				m = "0"+m;
+		}
+		s = date.getSeconds();
+		if(s<10)
+		{
+				s = "0"+s;
+		}
+		result = ''+days[day]+', '+d+' '+months[month]+' '+year+', '+h+':'+m+':'+s;
+		current_date = ''+days[day]+', '+d+'/'+short_months[month]+'/'+year;
 	
-        myWindow = window.open("", "myWindow", "width=2,height=1");
+	
+		myWindow = window.open("", "myWindow", "width=2,height=1");
 
-        if(type=='bpjs'){
-          var type_antrian = 'A';
-          var text_title = 'BPJS';
-        }else{
-          var type_antrian = 'B';
-          var text_title = 'UMUM';
-        }
+		if(type=='bpjs'){
+		var type_antrian = 'A';
+		var text_title = 'BPJS';
+		}else{
+		var type_antrian = 'B';
+		var text_title = 'UMUM';
+		}
 
-        var html = 
-              '<div style="font-family: calibri" class="center">\
-                <center>\
-                <table align="center" border="0" width="100%">\
-                <tr>\
-                  <td colspan="2" align="center"><span style="font-size:150% !important">'.COMP_LONG.'</span><br><small style="font-size:9px !important">'.COMP_ADDRESS.'</small><hr></td>\
-                </tr>\
-                <tr>\
-                  <td align="center" colspan="2"><span style="font-size:11px;margin-top:0">PENDAFTARAN PASIEN '+text_title+'</span><br><span style="font-size:300%;"> '+type_antrian+' '+n+' <small style="font-size:10px !important;margin-top:0"><br>Nomor Antrian</small><br><span style="font-size:20% !important;margin-top:0"><br>'+klinik.toUpperCase()+'<br>'+dokter+'<br>'+current_date+', '+jam_praktek+'</span> </td>\
-                </tr>\
-                </table>\
-                <table align="center" width="100%">\
-                <tr style="font-size:11px;">\
-                  <td><br><br></td>\
-                </tr>\
-               ';
+		var html = 
+			'<div style="font-family: calibri" class="center">\
+				<center>\
+				<table align="center" border="0" width="100%">\
+				<tr>\
+				<td colspan="2" align="center"><span style="font-size:150% !important"><?php echo COMP_LONG; ?></span><br><small style="font-size:9px !important"><?php echo COMP_ADDRESS; ?></small><hr></td>\
+				</tr>\
+				<tr>\
+				<td align="center" colspan="2"><span style="font-size:11px;margin-top:0">PENDAFTARAN PASIEN '+text_title+'</span><br><span style="font-size:300%;"> '+type_antrian+' '+n+' <small style="font-size:10px !important;margin-top:0"><br>Nomor Antrian</small><br><span style="font-size:20% !important;margin-top:0"><br>'+klinik.toUpperCase()+'<br>'+dokter+'<br>'+current_date+', '+jam_praktek+'</span> </td>\
+				</tr>\
+				</table>\
+				<table align="center" width="100%">\
+				<tr style="font-size:11px;">\
+				<td><br><br></td>\
+				</tr>\
+			';
 
-        myWindow.document.write(html);
+		myWindow.document.write(html);
 
-        
-        myWindow.print();
-        myWindow.close();
-      }
+		
+		myWindow.print();
+		myWindow.close();
+    }
 
 
   </script>

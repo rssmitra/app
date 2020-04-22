@@ -8,7 +8,7 @@
 
   .body_print, table, p{
   font-family: calibri;
-  font-size: 12px;
+  font-size: 14px;
   background-color: white;
   }
   .table-utama{
@@ -16,7 +16,7 @@
   border-collapse: collapse;
   }
   th, td {
-  padding: 2px;
+  padding: 0px;
   text-align: left;
   }
   @media print{ #barPrint{
@@ -58,47 +58,41 @@
   <hr>      
   <div class="row">
   <div class="col-xs-12">
-    <table border="0" width="100%">
+    <table width="100%" style="font-size:14px">
       <tr>
-        <td width="50%">
-          <table width="100%" style="font-size:12px">
-            <tr>
-              <td colspan="2"><b>DATA PASIEN</b></td>
-            </tr>
-            <tr>
-              <td width="30%">No MR</td>
-              <td>: <?php echo $data->reg_data->no_mr?></td>
-            </tr>
-            <tr>
-              <td>Nama Pasien</td>
-              <td>: <?php echo $data->reg_data->nama_pasien?></td>
-            </tr>
-            <!-- <tr>
-              <td>TTL</td>
-              <td>: <?php echo $data->reg_data->tempat_lahir?>, <?php echo $this->tanggal->formatDate($data->reg_data->tgl_lhr)?></td>
-            </tr>
-            <tr>
-              <td>Umur Pasien</td>
-              <td>: <?php echo $data->reg_data->umur?> Tahun</td>
-            </tr> -->
-            <tr>
-              <td>Tanggal</td>
-              <td>: <?php echo $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk)?></td>
-            </tr>
-            <tr>
-              <td>Poli/Klinik</td>
-              <td>: <?php echo ucwords($data->reg_data->bagian_masuk_field)?></td>
-            </tr>
-            <tr>
-              <td>Dokter</td>
-              <td>: <?php echo $data->reg_data->nama_pegawai?></td>
-            </tr>
-            <tr>
-              <td>Penjamin</td>
-              <td>: <?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'Umum'?> <?php echo ($data->reg_data->kode_perusahaan==120) ? '( '.$data->reg_data->no_sep.' )' :'';?></td>
-            </tr>
-          </table>
-        </td>
+        <td colspan="2"><b>DATA PASIEN</b></td>
+      </tr>
+      <tr>
+        <td width="30%">No MR</td>
+        <td>: <?php echo $data->reg_data->no_mr?></td>
+      </tr>
+      <tr>
+        <td>Nama Pasien</td>
+        <td>: <?php echo $data->reg_data->nama_pasien?></td>
+      </tr>
+      <!-- <tr>
+        <td>TTL</td>
+        <td>: <?php echo $data->reg_data->tempat_lahir?>, <?php echo $this->tanggal->formatDate($data->reg_data->tgl_lhr)?></td>
+      </tr>
+      <tr>
+        <td>Umur Pasien</td>
+        <td>: <?php echo $data->reg_data->umur?> Tahun</td>
+      </tr> -->
+      <tr>
+        <td>Tanggal</td>
+        <td>: <?php echo $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk)?></td>
+      </tr>
+      <tr>
+        <td>Poli/Klinik</td>
+        <td>: <?php echo ucwords($data->reg_data->bagian_masuk_field)?></td>
+      </tr>
+      <tr>
+        <td>Dokter</td>
+        <td>: <?php echo $data->reg_data->nama_pegawai?></td>
+      </tr>
+      <tr>
+        <td>Penjamin</td>
+        <td>: <?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'Umum'?> <?php echo ($data->reg_data->kode_perusahaan==120) ? '( '.$data->reg_data->no_sep.' )' :'';?></td>
       </tr>
     </table>
     
@@ -131,9 +125,9 @@
                       <div class="widget-body">
                           <div class="widget-main no-padding">
                               <?php echo '<span style="font-size: 14px; font-weight: bold">'.ucwords($key_s).'</span>';?> ( <?php echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> s/d <?php echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> )
-                              <table class="table-2 table-striped table-bordered" width="100%" style="color: black">
+                              <table class="" width="100%" style="color: black">
                                   <tr style="background-color: lightgrey;">
-                                      <th> Deskripsi Item</th>
+                                      <th> Uraian </th>
                                       <th style="text-align:right" width="100px">Subtotal (Rp.)</th>
                                   </tr>
 
@@ -153,7 +147,7 @@
                                   
                                   <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
                                       <td>
-                                          <?php echo $value_data->kode_trans_pelayanan.' - '.$value_data->nama_tindakan;?>
+                                          <?php echo $value_data->nama_tindakan;?>
                                       </td>
                                       <td style="text-align: right">
                                           <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>
@@ -170,7 +164,7 @@
                                   ?>
                                   <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
                                       <td>
-                                          <?php echo $value_data->kode_trans_pelayanan.' - '.$value_data->nama_tindakan;?>
+                                          <?php echo $value_data->nama_tindakan;?>
                                       </td>
                                       <td style="text-align: right">
                                           <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>

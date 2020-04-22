@@ -881,7 +881,7 @@ class Ws_index extends MX_Controller {
 
         /*get data from model*/
         $list = $this->Ws_index->get_datatables_ruangan_rs();
-        echo '<pre>'; print_r($list); die;
+        // echo '<pre>'; print_r($list); die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -905,7 +905,7 @@ class Ws_index extends MX_Controller {
 
             $row[] = ($row_list->status=='ISI')?'<div class="center"><label class="label label-success"><i class="fa fa-check"></i></label></div>':'<div class="center"><label class="label label-danger"><i class="fa fa-times-circle"></i></label></div>';
 
-            $row[] = $pasien[0]->no_mr.' - '.$pasien[0]->nama_pasien;
+            $row[] = '';
             $row[] = strtoupper($row_list->keterangan);
             $row[] = '<div class="center">'.$row_list->gender.'</div>';
             $data[] = $row;
