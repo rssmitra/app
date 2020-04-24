@@ -443,7 +443,7 @@ class Billing extends MX_Controller {
             $dataTranskasir["nk_karyawan"] = 0;
         }
 
-        if( $_POST['kode_kelompok_val'] != 1 ){
+        if( !in_array($_POST['kode_kelompok_val'], array(1,4,7,8,11,12,13,14,15,16)) ){
             $dataTranskasir["nk_perusahaan"] = $_POST['total_nk'];
             $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
             $dataTranskasir["pembayar"] = $_POST['perusahaan_penjamin'];

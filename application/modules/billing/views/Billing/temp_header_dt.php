@@ -73,6 +73,7 @@
     <input type="hidden" name="total_uang_muka" id="total_uang_muka" value="0">
     <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val">
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
+    <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
 
   </div><!-- /.col -->
 </div>

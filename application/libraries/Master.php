@@ -731,7 +731,7 @@ final Class Master {
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
 
-		$kode_bagian_keluar = $db->where('kode_bagian in (SELECT kode_bagian_keluar FROM tc_registrasi WHERE no_registrasi='.$no_registrasi.') ')->get('mt_bagian')->row();
+		$kode_bagian_keluar = $db->where('(kode_bagian in (SELECT kode_bagian_keluar FROM tc_registrasi WHERE no_registrasi='.$no_registrasi.') or kode_bagian in (SELECT kode_bagian_masuk FROM tc_registrasi WHERE no_registrasi='.$no_registrasi.'))')->get('mt_bagian')->row();
 		// print_r($db->last_query());die;
 
 		if (((int)$kode_bagian_keluar->validasi == 300)){

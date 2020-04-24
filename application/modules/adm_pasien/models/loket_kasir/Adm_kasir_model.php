@@ -27,18 +27,20 @@ class Adm_kasir_model extends CI_Model {
 
 		if ( isset($_GET['search_by']) ) {
 			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
-				$this->db->where(''.$_GET['search_by'], $_GET['keyword']);		
-			}
-			
-			if( isset($_GET['is_with_date']) AND $_GET['is_with_date'] == 1 ){
-				$this->db->where("convert(varchar,b.tgl_jam_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
-			}			
-		}else{
-			$this->db->where('a.kode_tc_trans_kasir IS NULL');
-			$this->db->where("YEAR(tgl_jam_masuk)", date('Y'));
-			$this->db->where("MONTH(tgl_jam_masuk)", date('m'));
-			$this->db->where("DAY(tgl_jam_masuk)", date('d'));
+				if($_GET['search_by'] == 'c.nama_pasien'){
+					$this->db->like($_GET['search_by'], $_GET['keyword']);		
+				}else{
+					$this->db->where($_GET['search_by'], $_GET['keyword']);		
+				}
+			}		
 		}
+
+		if( isset($_GET['is_with_date']) AND $_GET['is_with_date'] == 1 ){
+			$this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+		}else{
+			// $this->db->where('a.kode_tc_trans_kasir IS NULL');
+			$this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
+		}	
 
 		if( $_GET['pelayanan']=='RJ' ){
 			if($_GET['flag']=='bpjs'){
@@ -134,9 +136,7 @@ class Adm_kasir_model extends CI_Model {
 						'total_billing' => $total,
 					);
 				}
-				
 			}
- 
 		}
 
 		return $getData;

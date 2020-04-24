@@ -124,10 +124,11 @@ class Billing_model extends CI_Model {
     
     public function get_by_reg($id)
 	{
-		$this->db->select('tc_registrasi.no_mr,tc_registrasi.no_registrasi,tc_registrasi.kode_perusahaan,tc_registrasi.kode_dokter,tc_registrasi.tgl_jam_masuk,tc_registrasi.tgl_jam_keluar,tc_registrasi.kode_bagian_masuk,tc_registrasi.kode_bagian_keluar,tc_registrasi.no_sep,tc_registrasi.umur, mt_master_pasien.nama_pasien, mt_master_pasien.jen_kelamin as jk, mt_master_pasien.tgl_lhr, mt_master_pasien.almt_ttp_pasien, mt_master_pasien.tempat_lahir, bagian_masuk.nama_bagian as bagian_masuk_field, bagian_keluar.nama_bagian as bagian_keluar_field, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, mt_master_pasien.title');
+		$this->db->select('tc_registrasi.no_mr,tc_registrasi.no_registrasi,tc_registrasi.kode_perusahaan,tc_registrasi.kode_dokter,tc_registrasi.tgl_jam_masuk,tc_registrasi.tgl_jam_keluar,tc_registrasi.kode_bagian_masuk,tc_registrasi.kode_bagian_keluar,tc_registrasi.no_sep,tc_registrasi.umur, mt_master_pasien.nama_pasien, mt_master_pasien.jen_kelamin as jk, mt_master_pasien.tgl_lhr, mt_master_pasien.almt_ttp_pasien, mt_master_pasien.tempat_lahir, bagian_masuk.nama_bagian as bagian_masuk_field, bagian_keluar.nama_bagian as bagian_keluar_field, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, mt_master_pasien.title, mt_nasabah.nama_kelompok, tc_registrasi.kode_kelompok');
 		$this->db->from('tc_registrasi');
         $this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_registrasi.no_mr', 'left');
 		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan', 'left');
+		$this->db->join('mt_nasabah', 'mt_nasabah.kode_kelompok=tc_registrasi.kode_kelompok', 'left');
         $this->db->join('mt_bagian as bagian_masuk', 'bagian_masuk.kode_bagian=tc_registrasi.kode_bagian_masuk', 'left');
 		$this->db->join('mt_bagian as bagian_keluar', 'bagian_keluar.kode_bagian=tc_registrasi.kode_bagian_keluar', 'left');
 		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_registrasi.kode_dokter', 'left');

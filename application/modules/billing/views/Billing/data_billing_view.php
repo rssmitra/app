@@ -6,11 +6,11 @@ $(document).ready(function() {
     $('#total_payment').val(total_all);
     $('#total_billing_all').html( '<span style="font-size: 25px; font-weight: bold">'+formatMoney(total_all)+'</span>' );
     $('#total_payment_all').val( total_all );
-    if( $('#kode_perusahaan_val').val() == 0 ) {
-        $('input[name=checklist_nk]').attr("disabled", true);
-    }else{
-        $('input[name=checklist_nk]').prop("checked", true);
-    }
+    // if( $('#kode_perusahaan_val').val() == 0 ) {
+    //     $('input[name=checklist_nk]').attr("disabled", true);
+    // }else{
+    //     $('input[name=checklist_nk]').prop("checked", true);
+    // }
 
 });
 
@@ -182,6 +182,7 @@ function checkedNk(kode) {
                                         <?php echo $penjamin?>
                                     </td> -->
                                     <td align="center">
+
                                         <?php
                                             if($value_data->kode_tc_trans_kasir==NULL){
 
@@ -193,7 +194,6 @@ function checkedNk(kode) {
                                                             <input name="checklist_nk" id="selected_nk_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" type="checkbox" class="checklist_nk_'.$row_s[0]->kode_bagian.' ace" '.$cheked.' onclick="checkedNk('.$value_data->kode_trans_pelayanan.')">
                                                             <span class="lbl"></span>
                                                         </label>';
-                                                    
                                                 }
                                                 
                                             }else{

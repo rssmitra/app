@@ -37,7 +37,7 @@ $(document).ready(function() {
           $.achtung({message: jsonResponse.message, timeout:5});
           // $('#page-area-content').load('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real');
           load_billing_data();
-          
+        //   $('#total_payment').val(jsonResponse.count_um);
           if (jsonResponse.billing_um > 0) {
             PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=null','Cetak',1200,750);
           }
@@ -151,7 +151,7 @@ function cetak_kuitansi(){
         <a href="#" class="btn btn-xs btn-success" onclick="payment()"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
 
         <div class="btn-group">
-            <button class="btn btn-xs btn-yellow"><i class="fa fa-print"></i> Cetak Billing</button>
+            <button type="button" class="btn btn-xs btn-yellow"><i class="fa fa-print"></i> Cetak Billing</button>
 
             <button data-toggle="dropdown" class="btn btn-xs btn-yellow dropdown-toggle" aria-expanded="false">
                 <i class="ace-icon fa fa-angle-down icon-only"></i>
@@ -177,7 +177,7 @@ function cetak_kuitansi(){
                 </li>
                 <li>
                     <?php
-                        echo '<a href="#" onclick="cetak_kuitansi();"> Kuitansi</a>';
+                        echo '<a href="#" onclick="cetak_kuitansi();" data-id="0" id="btn-cetak-kuitansi"> Kuitansi</a>';
                     ?>
                 </li>
             </ul>
