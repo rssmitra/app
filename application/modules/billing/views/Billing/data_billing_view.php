@@ -186,15 +186,11 @@ function checkedNk(kode) {
                                         <?php
                                             if($value_data->kode_tc_trans_kasir==NULL){
 
-                                                if( $row_s[0]->tgl_keluar == NULL ){
-                                                    echo '<i class="fa fa-times-circle red bigger-120"></i>';
-                                                }else{
-                                                    $cheked = ( $value_data->kode_perusahaan == 120 ) ? 'checked' : ( $value_data->status_nk ==  1 ) ? 'checked' : '';
+                                                $cheked = ( $value_data->kode_perusahaan == 120 ) ? 'checked' : ( $value_data->status_nk ==  1 ) ? 'checked' : '';
                                                     echo '<label>
                                                             <input name="checklist_nk" id="selected_nk_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" type="checkbox" class="checklist_nk_'.$row_s[0]->kode_bagian.' ace" '.$cheked.' onclick="checkedNk('.$value_data->kode_trans_pelayanan.')">
                                                             <span class="lbl"></span>
                                                         </label>';
-                                                }
                                                 
                                             }else{
                                                 $label_nk = ( $value_data->status_nk ==  1 ) ? '<i class="fa fa-check green bigger-120"></i>' : '';
