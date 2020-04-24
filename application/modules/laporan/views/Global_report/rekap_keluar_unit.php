@@ -14,7 +14,7 @@
 <head>
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
   <div class="row">
@@ -22,10 +22,10 @@
       <?php
       // foreach($result['data'] as $r_data);?>
       <center><h4><?php echo $title?></h4></center>
-      <b>Status :</b> <b><i><?php echo isset($status=='1'):'Medis'?($status):'Non Medis';?></i></b>
+      <b>Status :</b> <b><i><?php echo $status;?></i></b>
       <br>
       <br>
-      <table class="table">
+      <table class="greyGridTable">
         <thead>
           <tr>
             <th>NO</th>
@@ -43,7 +43,7 @@
             <tr>
               <td align="center"><?php echo $no;?></td>
               <?php 
-                  echo '<td>'.$row_data->nama_bagian.'</td>';
+                  echo '<td align="left">'.$row_data->nama_bagian.'</td>';
                   echo '<td>'.number_format($row_data->hargabeli).'</td>';
               ?>
             </tr>

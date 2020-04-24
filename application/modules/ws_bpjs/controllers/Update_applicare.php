@@ -65,14 +65,14 @@ class Update_applicare extends MX_Controller {
         // echo '<pre>';print_r($post_data);die;
         echo json_encode(array('response' => $response));
 
-        $file = "application/logs/".date('Y_m_d_H_i_s').".log";
-        $fp = fopen ($file,'w');
+        // $file = "application/logs/".date('Y_m_d_H_i_s').".log";
+        // $fp = fopen ($file,'w');
 
-        $data_general = 'Jumlah Record = '.count($data).', Eksekusi = '.count($response).'';
-        $data_log = var_export($log, true);
+        // $data_general = 'Jumlah Record = '.count($data).', Eksekusi = '.count($response).'';
+        // $data_log = var_export($log, true);
 
-        fwrite($fp,  $data_general."\n".$data_log);
-        fclose($fp);
+        // fwrite($fp,  $data_general."\n".$data_log);
+        // fclose($fp);
 
     }
 

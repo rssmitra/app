@@ -14,7 +14,7 @@
 <head>
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
   <div class="row">
@@ -25,7 +25,7 @@
       <b>Nama Bagian :</b> <b><i><?php echo isset ($r_data->nama_bagian)?($r_data->nama_bagian):'-';?></i></b>
       <br>
       <br>
-      <table class="table">
+      <table class="greyGridTable">
         <thead>
           <tr>
             <th>NO</th>

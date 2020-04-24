@@ -114,26 +114,26 @@ class Entry_resep_ri_rj extends MX_Controller {
         
         $data = $this->Entry_resep_ri_rj->get_detail_by_kode_brg($kode_brg);
         $resep = $this->Entry_resep_ri_rj->get_detail_by_kode_tr_resep($id);
-        //print_r($data);die;
+        // echo'<pre>';print_r($data);die;
         
         $html = '';
         if(count($data) > 0){
             $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.strtoupper($data->nama_brg).'</h4></b></div><br>';
-            $html .= '<table class="table table-striped">';
+            $html .= '<table class="table table-striped" style="width: 70%">';
             $html .= '<tr>';
-                $html .= '<th>Jenis</th>';
                 $html .= '<th>Pabrikan</th>';
+                $html .= '<th>Jenis Obat</th>';
                 $html .= '<th>Satuan Besar/Kecil</th>';
                 $html .= '<th>Rasio</th>';
-                $html .= '<th>Aturan Pakai</th>';
+                $html .= '<th>Signa</th>';
                 $html .= '<th>Catatan</th>';
             $html .= '</tr>'; 
                 $html .= '<tr>';
-                    $html .= '<td>'.$data->nama_jenis.'</td>';
                     $html .= '<td>'.$data->nama_pabrik.'</td>';
+                    $html .= '<td>'.$data->nama_jenis.'</td>';
                     $html .= '<td>'.$data->satuan_besar.' / '.$data->satuan_kecil.'</td>';
                     $html .= '<td>1 : '.$data->content.'</td>';
-                    $html .= '<td>'.$resep->aturan_pakai.'</td>';
+                    $html .= '<td>'.$resep->dosis_obat.' x '.$resep->dosis_per_hari.' '.$resep->satuan_obat.' ('.$resep->anjuran_pakai.') </td>';
                     $html .= '<td>'.ucfirst($resep->catatan_lainnya).'</td>';
                 $html .= '</tr>';
 

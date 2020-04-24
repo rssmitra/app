@@ -35,14 +35,15 @@ $(document).ready(function(){
       },
       uploadProgress: function(event, position, total, percentComplete) {
       },
-      complete: function(xhr) {     
+      complete: function(xhr) {    
         var data=xhr.responseText;
         var jsonResponse = JSON.parse(data);
-
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-          get_barang_po();
+          // get_barang_po();
           $('#globalModalView').modal('hide');
+          $('#form_input_terima_'+jsonResponse.kode_brg).val( jsonResponse.jml_diterima );
+          $('#td_input_batch_'+jsonResponse.kode_brg).html('<a href="#" onclick="show_modal_input_batch('+"'"+jsonResponse.kode_brg+"'"+', '+jsonResponse.id_tc_po_det+')">'+jsonResponse.no_batch+'</a>');
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});
         }

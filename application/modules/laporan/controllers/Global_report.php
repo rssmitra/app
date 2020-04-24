@@ -413,7 +413,7 @@ class Global_report extends MX_Controller {
             'dt_pjl_internal' => $get_dt_pjl_internal,
         );
 
-        echo '<pre>';print_r($dt_pjl_bpjs);
+        // echo '<pre>';print_r($dt_pjl_bpjs);
         
             $this->load->view('Global_report/akunting_keu/v_bmhp', $data);
                 

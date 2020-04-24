@@ -14,8 +14,7 @@
 <head>
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
   <!-- #section:basics/navbar.layout -->
@@ -79,7 +78,7 @@
   <div class="row">
     <div class="col-xs-12">
         <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>?>
-      <table width="100%">
+      <table class="greyGridTable">
         <thead>
           <tr>
             <th rowspan="2">NO</th>

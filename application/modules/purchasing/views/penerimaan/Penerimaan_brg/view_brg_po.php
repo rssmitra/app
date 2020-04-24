@@ -38,7 +38,7 @@
   }
 
   function show_modal_input_batch(kode_brg, id_tc_po_det){
-    show_modal('purchasing/penerimaan/Penerimaan_brg/form_input_batch?kode_brg='+kode_brg+'&id_penerimaan='+$('#id').val()+'&id_tc_po_det='+id_tc_po_det+'&flag='+$('#flag_string').val()+'', 'INPUT BATCH');
+    show_modal_medium('purchasing/penerimaan/Penerimaan_brg/form_input_batch?kode_brg='+kode_brg+'&id_penerimaan='+$('#id').val()+'&id_tc_po_det='+id_tc_po_det+'&flag='+$('#flag_string').val()+'', 'INPUT BATCH');
   }
 </script>
 <div class="row">
@@ -139,16 +139,13 @@
             </td>
 
             <!-- btn input batch -->
-            
-            <?php if(empty($row_dt[0]->no_batch)) : ?>
-              <td class="center" style="border: 1px #d8d5d5  solid">
-                <button type="button" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)" class="btn btn-xs btn-danger" id="btn_input_batch_<?php echo $row_dt[0]->kode_brg?>" disabled>Input Batch</button>
-              </td>
-            <?php else: ?>
-              <td class="center" style="border: 1px #d8d5d5  solid; font-size: 12px">
-                <a href="#" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)"><?php echo $row_dt[0]->no_batch?></a>
-              </td>
-            <?php endif; ?>
+            <td class="center" style="border: 1px #d8d5d5  solid" id="td_input_batch_<?php echo $row_dt[0]->kode_brg?>">
+              <?php if(empty($row_dt[0]->no_batch)) : ?>
+                  <button type="button" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)" class="btn btn-xs btn-danger" id="btn_input_batch_<?php echo $row_dt[0]->kode_brg?>" disabled>Input Batch</button>
+              <?php else: ?>
+                  <a href="#" onclick="show_modal_input_batch('<?php echo $row_dt[0]->kode_brg?>', <?php echo $row_dt[0]->id_tc_po_det?>)"><?php echo $row_dt[0]->no_batch?></a>
+              <?php endif; ?>
+            </td>
             
           </tr>
           

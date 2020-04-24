@@ -72,9 +72,17 @@ class Process_entry_resep extends MX_Controller {
                 'nama_pasien' => $this->regex->_genRegex($_POST['nama_pasien'], 'RGXQSL'),
                 'flag_trans' => $this->regex->_genRegex($_POST['flag_trans'], 'RGXAZ'),
             );
-            // print_r($data_farmasi);die;
+            
             /*data detail farmasi*/
-            $biaya_tebus = $_POST['pl_harga_satuan'] * $_POST['jumlah_pesan'];
+            if( $_POST['urgensi'] == 'biasa' ){
+                $biaya_tebus = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan_bpjs'] * $_POST['jumlah_tebus'] : $_POST['pl_harga_satuan'] * $_POST['jumlah_tebus'];
+
+                $harga_jual = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan_bpjs'] : $_POST['pl_harga_satuan'];
+            }else{
+                $biaya_tebus = $_POST['pl_harga_satuan_cito'] * $_POST['jumlah_tebus'];
+                $harga_jual = $_POST['pl_harga_satuan_cito'];
+            }
+            
 
             $data_farmasi_detail = array(
                 'jumlah_pesan' => $this->regex->_genRegex($_POST['jumlah_pesan'], 'RGXINT'),
@@ -82,7 +90,7 @@ class Process_entry_resep extends MX_Controller {
                 'sisa' => $this->regex->_genRegex(0, 'RGXINT'),
                 'kode_brg' => $this->regex->_genRegex($_POST['kode_brg'], 'RGXQSL'),
                 'harga_beli' => $this->regex->_genRegex($_POST['pl_harga_beli'], 'RGXINT'),
-                'harga_jual' => $this->regex->_genRegex($_POST['pl_harga_satuan'], 'RGXINT'),
+                'harga_jual' => $this->regex->_genRegex($harga_jual, 'RGXINT'),
                 'harga_r' => $this->regex->_genRegex($_POST['harga_r'], 'RGXINT'),
                 'biaya_tebus' => $this->regex->_genRegex($biaya_tebus, 'RGXINT'),
                 'tgl_input' => date('Y-m-d H:i:s'),
@@ -143,6 +151,67 @@ class Process_entry_resep extends MX_Controller {
 
             $this->Process_entry_resep->save_log_detail($data_farmasi_detail, $data_farmasi_detail['kd_tr_resep']);
             
+            // check existing data
+            $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('relation_id' => $data_farmasi_detail['kd_tr_resep']) );
+           
+            
+            // insert etiket obat
+            $data_etiket = array(
+                'dosis_obat' => isset($_POST['dosis_start'])?$this->regex->_genRegex($_POST['dosis_start'], 'RGXQSL'):0,
+                'dosis_per_hari' => isset($_POST['dosis_end'])?$this->regex->_genRegex($_POST['dosis_end'], 'RGXQSL'):0,
+                'aturan_pakai' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
+                'catatan_lainnya' => isset($_POST['catatan'])?$this->regex->_genRegex($_POST['catatan'], 'RGXQSL'):0,
+                'relation_id' => isset($data_farmasi_detail['kd_tr_resep'])?$this->regex->_genRegex($data_farmasi_detail['kd_tr_resep'], 'RGXINT'):0,
+                'satuan_obat' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
+                'anjuran_pakai' => isset($_POST['anjuran_pakai'])?$this->regex->_genRegex($_POST['anjuran_pakai'], 'RGXQSL'):0,
+                'jumlah_obat' => isset($_POST['jumlah_obat'])?$this->regex->_genRegex($_POST['jumlah_obat'], 'RGXQSL'):0,
+            );
+           
+            
+            if( $dt_existing->num_rows() > 0 ){
+                /*update existing*/
+                $data_etiket['updated_date'] = date('Y-m-d H:i:s');
+                $data_etiket['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                $this->db->update('fr_tc_far_detail_log', $data_etiket, array('relation_id' => $data_farmasi_detail['kd_tr_resep'], 'kode_trans_far' => $kode_trans_far) );
+                // print_r($this->db->last_query());die;
+                /*save log*/
+                $this->logs->save('fr_tc_far_detail_log', $data_farmasi_detail['kd_tr_resep'], 'update record on entry resep module', json_encode($data_etiket),'relation_id');
+            
+            }else{
+                $dt_existing_obat = $this->db->get_where('fr_hisbebasluar_v', array('kd_tr_resep' => $_POST['kd_tr_resep']) )->row();
+                // print_r($dt_existing_obat);die;
+                /*sub total*/
+                $sub_total = ceil($dt_existing_obat->jumlah_tebus * $dt_existing_obat->harga_jual);
+                /*total biaya*/
+                $total_biaya = ($sub_total + $dt_existing_obat->jumlah_pesan);
+                
+                $data_etiket['relation_id'] = $dt_existing_obat->kd_tr_resep;
+                $data_etiket['kode_trans_far'] = $dt_existing_obat->kode_trans_far;
+                $data_etiket['kode_pesan_resep'] = $dt_existing_obat->kode_pesan_resep;
+                $data_etiket['tgl_input'] = ($dt_existing_obat->tgl_input)?$dt_existing_obat->tgl_input:$dt_existing_obat->tgl_trans;
+                $data_etiket['kode_brg'] = $dt_existing_obat->kode_brg;
+                $data_etiket['nama_brg'] = $dt_existing_obat->nama_brg;
+                $data_etiket['satuan_kecil'] = $dt_existing_obat->satuan_kecil;
+                $data_etiket['jumlah_pesan'] = $dt_existing_obat->jumlah_pesan;
+                $data_etiket['jumlah_tebus'] = $dt_existing_obat->jumlah_tebus;
+                $data_etiket['harga_jual_satuan'] = $dt_existing_obat->harga_jual;
+                $data_etiket['sub_total'] = $sub_total;
+                $data_etiket['total'] = $total_biaya;
+                $data_etiket['jasa_r'] = $dt_existing_obat->harga_r;
+                $data_etiket['total'] = $dt_existing_obat->harga_beli;
+                $data_etiket['urgensi'] = 'biasa';
+                $data_etiket['flag_resep'] = ( $dt_existing_obat->id_tc_far_racikan == 0 )?'biasa':'racikan';
+
+                $data_etiket['created_date'] = date('Y-m-d H:i:s');
+                $data_etiket['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                print_r($data_etiket);die;
+
+                $this->db->insert( 'fr_tc_far_detail_log', $data_etiket );
+                /*save log*/
+                $this->logs->save('fr_tc_far_detail_log', $data_farmasi_detail['kd_tr_resep'], 'insert new record on entry resep module', json_encode($data_etiket),'relation_id');
+
+            }
+
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();

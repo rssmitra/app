@@ -162,7 +162,7 @@ class Penerimaan_brg extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
+        print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
 
@@ -441,7 +441,7 @@ class Penerimaan_brg extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId, 'kode_brg' => $dataexc['kode_brg']));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId, 'kode_brg' => $dataexc['kode_brg'], 'jml_diterima' => $val->set_value('jml_diterima'), 'no_batch' => $val->set_value('no_batch'), 'id_tc_po_det' => $_POST['id_tc_po_det']));
             }
         }
     }

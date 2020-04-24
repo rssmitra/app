@@ -83,7 +83,7 @@ class Adm_kasir extends MX_Controller {
                     $row[] = $row_list[0]['no_mr'];
                     $row[] = $row_list[0]['nama_pasien'];
                     $row[] = ucwords($row_list[0]['nama_bagian']);
-                    $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
+                    $row[] = $row_list[0]['nama_perusahaan'];
                     $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);
                     if( $total > 0 ){
                         $row[] = '<div class="pull-right"><a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a></div>';

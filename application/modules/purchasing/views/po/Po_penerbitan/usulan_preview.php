@@ -39,7 +39,7 @@ window.onload = generateBarcode;
 
 body, table, p{
   font-family: calibri;
-  font-size: 12px;
+  font-size: 14px;
   background-color: white;
 }
 .table-utama{

@@ -1,7 +1,7 @@
 <style>
 table, p{
   font-family: calibri;
-  font-size: 12px;
+  font-size: 14px;
 }
 .table-utama{
   border: 1px solid black;

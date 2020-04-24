@@ -252,6 +252,12 @@ class Ws_index_model extends CI_Model {
 		return $this->getData($service_name);
 	}
 
+	function searchMemberByNIK($nik, $tgl_periksa){
+		$service_name = "Peserta/nik/".$nik."/tglSEP/".$tgl_periksa."";
+		// print_r($service_name);die;
+		return $this->getData($service_name);
+	}
+
 	/*rujukan*/
 	function searchRujukan(){
 

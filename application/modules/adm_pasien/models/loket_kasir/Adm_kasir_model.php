@@ -5,7 +5,7 @@ class Adm_kasir_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep';
+	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok';
 	var $order = array('a.no_registrasi' => 'DESC');
 
 	public function __construct()
@@ -23,6 +23,7 @@ class Adm_kasir_model extends CI_Model {
 		$this->db->join('mt_master_pasien c','c.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian d','d.kode_bagian=b.kode_bagian_masuk','left');
 		$this->db->join('mt_perusahaan e','e.kode_perusahaan=b.kode_perusahaan','left');
+		$this->db->join('mt_nasabah f','f.kode_kelompok=b.kode_kelompok','left');
 
 		if ( isset($_GET['search_by']) ) {
 			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
@@ -108,10 +109,9 @@ class Adm_kasir_model extends CI_Model {
 						'kode_bagian_masuk' => $value->kode_bagian_masuk,
 						'nama_pasien' => $value->nama_pasien,
 						'nama_bagian' => $value->nama_bagian,
-						'nama_perusahaan' => $value->nama_perusahaan,
+						'nama_perusahaan' => ($value->nama_perusahaan != NULL) ? $value->nama_perusahaan : $value->nama_kelompok,
 						'total' => $status_lunas,
 						'total_billing' => $total,
-						'nama_perusahaan' => $value->nama_perusahaan,
 					);
 				}
 			}else{
@@ -129,16 +129,14 @@ class Adm_kasir_model extends CI_Model {
 						'kode_bagian_masuk' => $value->kode_bagian_masuk,
 						'nama_pasien' => $value->nama_pasien,
 						'nama_bagian' => $value->nama_bagian,
-						'nama_perusahaan' => $value->nama_perusahaan,
+						'nama_perusahaan' => ($value->nama_perusahaan != NULL) ? $value->nama_perusahaan : $value->nama_kelompok,
 						'total' => $status_lunas,
 						'total_billing' => $total,
-						'nama_perusahaan' => $value->nama_perusahaan,
 					);
 				}
 				
 			}
-
-            
+ 
 		}
 
 		return $getData;

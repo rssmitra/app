@@ -33,12 +33,7 @@
           <input type="hidden" name="title" value="Laporan IF (Unit farmasi)">
 
         
-          <div class="form-group">
-            <label class="control-label col-md-2">Kode Bagian</label>
-              <div class="col-md-2">
-                <input class="form-control date-picker" name="kode_bagian" id="kode_bagian" type="text" value="060101" readonly/>
-              </div>
-          </div>
+         
           <div class="form-group">
               <label class="control-label col-md-2">Bulan </label>
               

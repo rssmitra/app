@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Entry_resep_ri_rj_model extends CI_Model {
 
 	var $table = 'fr_listpesanan_v';
-	var $column = array('kode_pesan_resep','nama_pegawai', 'nama_lokasi', 'nama_bagian', 'nama_pasien', 'no_mr');
+	var $column = array('nama_pasien', 'no_mr');
 	var $select = 'fr_listpesanan_v.kode_bagian, fr_listpesanan_v.kode_bagian_asal, tgl_pesan, status_tebus, jumlah_r, lokasi_tebus, keterangan, fr_listpesanan_v.no_registrasi, fr_listpesanan_v.no_kunjungan, fr_listpesanan_v.kode_perusahaan, kode_klas, fr_listpesanan_v.kode_kelompok, nama_pegawai, nama_lokasi, nama_bagian, fr_listpesanan_v.kode_dokter, fr_listpesanan_v.kode_pesan_resep, fr_listpesanan_v.no_mr, fr_listpesanan_v.nama_pasien, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok';
 
 	var $order = array('tgl_pesan' => 'DESC', 'kode_pesan_resep' => 'DESC');
@@ -68,15 +68,19 @@ class Entry_resep_ri_rj_model extends CI_Model {
         }
 
 		$i = 0;
-	
+		$col_str = '';
 		foreach ($this->column as $item) 
 		{
 			if($_POST['search']['value'])
-				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
+				$col_str .= ($i===0) ? $item." LIKE '%".$_POST['search']['value']."%' " : "OR ".$item." LIKE '%".$_POST['search']['value']."%'";
 			$column[$i] = $item;
 			$i++;
 		}
-		
+
+		if( $col_str != ''){
+			$this->db->where('('.$col_str.')');
+		}
+
 		if(isset($_POST['order']))
 		{
 			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
@@ -94,7 +98,7 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

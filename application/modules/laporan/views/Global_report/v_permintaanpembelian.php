@@ -14,7 +14,7 @@
 <head>
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
   <div class="row">
@@ -35,7 +35,7 @@
       <b>Status :</b> <b><i><?php echo $status=="0" ? "ACC" : ($status=="1" ? "Tidak ACC" : "Semua")?></i></b>
       <br>
       <br>
-      <table class="table" border="1">
+       <table class="greyGridTable">
         <thead>
           <tr>
             <th width="55" rowspan="2" colspan="1">NO</th>

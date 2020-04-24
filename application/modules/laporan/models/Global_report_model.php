@@ -55,16 +55,7 @@ class Global_report_model extends CI_Model {
 					ORDER BY nama_bagian,tgl_jam_masuk ASC";
 		return $query;
 	}
-	public function akunting_mod_3(){
-		$query = "SELECT a.kode_brg, b.nama_brg, AVG(c.harga_beli) as harga_beli, AVG(d.harga_jual) as hargajual
-		FROM  mt_depo_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
-		LEFT JOIN mt_rekap_stok c on a.kode_brg=c.kode_brg
-		inner JOIN fr_tc_far_detail d ON d.kode_brg=a.kode_brg 
-		WHERE a.kode_bagian= ".$_POST['bagian']." AND a.kode_brg IS NOT NULL
-		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC";
-			
-		return $query;
-	}
+	
 
 	// public function akunting_mod_4(){
 	// 	$query = "SELECT d.kode_brg, c.nama_brg, b.jumlah_kirim, b.harga, d.harga_beli, e.harga_jual  
@@ -79,7 +70,16 @@ class Global_report_model extends CI_Model {
 	// 	return $query;
 	// }
 
-	
+	public function akunting_mod_4(){
+		$month=$_POST['from_month'] - 1;
+		$query = 'SELECT a.kode_brg, b.nama_brg, AVG(a.harga_beli) as harga_beli, AVG(c.harga_jual) as hargajual 
+		FROM mt_rekap_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
+		inner JOIN fr_tc_far_detail c ON c.kode_brg=a.kode_brg 
+		WHERE a.kode_bagian_gudang IN (060101,060201) 
+		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC';
+			
+		return $query;
+	}
 
 
 	public function get_saldo(){
@@ -137,16 +137,19 @@ class Global_report_model extends CI_Model {
 
 
 
-	public function akunting_mod_4(){
-		$month=$_POST['from_month'] - 1;
-		$query = 'SELECT a.kode_brg, b.nama_brg, AVG(a.harga_beli) as harga_beli, AVG(c.harga_jual) as hargajual 
-		FROM mt_rekap_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
-		inner JOIN fr_tc_far_detail c ON c.kode_brg=a.kode_brg 
-		WHERE a.kode_bagian = '."'".$_POST['bagian']."'".' AND MONTH(tgl_input)= '."'".$month."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' AND a.kode_brg IS NOT NULL 
-		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC';
+
+
+	public function akunting_mod_3(){
+		$query = "SELECT a.kode_brg, b.nama_brg, AVG(c.harga_beli) as harga_beli, AVG(d.harga_jual) as hargajual
+		FROM  mt_depo_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
+		LEFT JOIN mt_rekap_stok c on a.kode_brg=c.kode_brg
+		inner JOIN fr_tc_far_detail d ON d.kode_brg=a.kode_brg 
+		WHERE a.kode_bagian= ".$_POST['bagian']." AND a.kode_brg IS NOT NULL
+		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC";
 			
 		return $query;
 	}
+	
 
 	public function get_saldo_bmhp(){
 		$month=$_POST['from_month'] - 1;
@@ -295,7 +298,7 @@ class Global_report_model extends CI_Model {
 
 	}
 	public function pengadaan_mod_3(){
-			if($_POST['status']=='1'){
+			if($_POST['status']=='Medis'){
 					$query = 'SELECT nama_bagian, sum(hargabeli) as hargabeli
 			      	  FROM [view_rekap_stok] 
 			      	  where MONTH(tgl_input) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_input)='."'".$_POST['year']."'".' 

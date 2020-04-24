@@ -12,9 +12,10 @@
 
 <html>
 <head>
+ 
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
   <div class="row">
@@ -23,7 +24,7 @@
       <center><h4><?php echo $title?> <br><?php echo $jenis ?></h4></center>
       <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
 
-      <table class="table">
+      <table class="greyGridTable">
         <thead>
           <tr>
             <th>NO</th>

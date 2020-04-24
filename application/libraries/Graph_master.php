@@ -219,7 +219,7 @@ final Class Graph_master {
 		if($params['prefix']==323){
 			$query = "SELECT month(a.tgl_po) as bulan, CAST(SUM(a.total_stl_ppn) AS INT) AS total_format_money 
 						FROM tc_po a
-						WHERE YEAR(a.tgl_po) = ".date('Y')."
+						WHERE YEAR(a.tgl_po) = ".date('Y')." AND status_kirim is not null
 						GROUP BY month(a.tgl_po) ORDER BY month(a.tgl_po) ASC";	
 			$fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
 			$title = '<span style="font-size:13.5px">Total Pembelian Barang Medis Berdasarkan PO Tahun '.date('Y').' </span></small>';

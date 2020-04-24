@@ -81,7 +81,7 @@ $('select[name="pelayanan"]').change(function () {
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
         <h4>Laporan Keluar Barang ke Unit</h4>
-        <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_k_unit">
+        <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_k_unit" target="_blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
           <input type="hidden" name="title" value="Laporan Keluar Barang ke Unit">

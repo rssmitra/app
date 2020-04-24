@@ -30,6 +30,8 @@ $(document).ready(function(){
 
     sum_total_biaya_farmasi();
 
+    var kode_trans_far = $('#kode_trans_far').val();
+
     table = $('#temp_data_pesan').DataTable( {
         "processing": true, 
         "serverSide": true,
@@ -38,7 +40,7 @@ $(document).ready(function(){
         "searching": false,
         "bSort": false,
         "ajax": {
-            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+$('#kode_trans_far').val()+"&flag=biasa",
+            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa",
             "type": "POST"
         },
         "columnDefs": [
@@ -245,11 +247,72 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
+            $('#dosis_start').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#dosis_start" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#dosis_end').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#dosis_end" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#satuan_obat').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#satuan_obat" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#anjuran_pakai').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#anjuran_pakai" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#catatan').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#catatan" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
             $('#btn_submit').click();
           }
           return false;       
         }
     });
+
 
 
 })
@@ -335,8 +398,9 @@ function reset_form(){
 }
 
 function reload_table(){
-  table.ajax.reload();
-  table_racikan.ajax.reload();
+  var kode_trans_far = $('#kode_trans_far').val();
+  table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa").load();
+  table_racikan.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=racikan&tipe_layanan=<?php echo $tipe_layanan?>").load();
   sum_total_biaya_farmasi();
 }
 
@@ -419,6 +483,10 @@ function sum_total_biaya_farmasi(){
 
   })
 
+}
+
+function duplicate_input(id_input, duplicate_to){
+  $('#'+duplicate_to).val( parseInt( $('#'+id_input).val() ) );
 }
 
 
@@ -504,7 +572,7 @@ function sum_total_biaya_farmasi(){
         <!-- form utama -->
         <div class="col-sm-7" style="margin-top: 10px">
           <!-- Data Obat -->
-          <p><b>DATA OBAT</b></p>
+          <p><b>FORM OBAT</b></p>
           <div class="form-group">
             <label class="control-label col-sm-2">Kode</label>
             <div class="col-md-2">
@@ -513,6 +581,7 @@ function sum_total_biaya_farmasi(){
           </div>
           <!-- tanggal -->
           <div class="form-group">
+
             <label class="control-label col-sm-2">Tanggal</label>
             <div class="col-md-3">
               <div class="input-group">
@@ -525,7 +594,7 @@ function sum_total_biaya_farmasi(){
                 </div>
             </div>
 
-            <label class="control-label col-sm-2">Jenis</label>
+            <label class="control-label col-sm-1">Jenis</label>
             <div class="col-md-5">
               <div class="radio">
                   <label>
@@ -548,32 +617,59 @@ function sum_total_biaya_farmasi(){
               <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
             </div>
           </div>
+
           <!-- jumlah pesan -->
           <div class="form-group">
             <label class="control-label col-sm-2">Jml Pesan</label>
             <div class="col-md-2">
-                <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" />
+                <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')"/>
             </div>
             <label class="control-label col-sm-2">Jml Tebus</label>
             <div class="col-md-2">
                 <input class="form-control" name="jumlah_tebus" id="jumlah_tebus" type="text" style="text-align:center" />
             </div>
-            <label class="control-label col-sm-2">Jasa R</label>
+            <label class="control-label col-sm-1">Jasa R</label>
             <div class="col-md-2">
                 <input class="form-control" name="harga_r" id="harga_r" type="text" value="500" readonly />
             </div>
-
-            <div id="stok_warning"></div>
-
-            <div class="col-md-4" style="margin-left:-14px;">
-              <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary">
-                  <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
-                  Tambahkan Obat
-              </button>
-            </div>
-
+            <!-- <div id="stok_warning"></div> -->
           </div>
 
+          <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
+
+          <div class="form-group">
+              <label class="control-label col-sm-1">Signa</label>
+              <div class="col-md-3">
+                  <input style="width: 50px" name="dosis_start" id="dosis_start" type="text" style="text-align:center" />
+                  <span style="padding: 5px">  &nbsp;X </span>
+                  <input style="width: 50px" name="dosis_end" id="dosis_end" type="text" style="text-align:center" />
+              </div>
+              <div class="col-md-2 no-padding" style="margin-left: -4.7%">
+                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', 'form-control', '', '');?>
+              </div>
+              <div class="col-md-3" style="margin-left: -1%">
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', 'form-control', '', '');?>
+              </div>
+              <label class="control-label col-sm-1">Catatan</label>
+              <div class="col-md-1">
+                  <input class="form-control" name="catatan" id="catatan" type="text" style="width: 450px"/>
+              </div>
+          </div>
+
+          <!-- <div class="form-group">
+              <label class="control-label col-sm-2">Catatan</label>
+              <div class="col-md-8">
+                  <input class="form-control" name="catatan" id="catatan" type="text"/>
+              </div>
+          </div> -->
+
+          <div class="col-md-4" style="margin-left:-14px;">
+            <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary">
+                <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
+                Tambahkan Obat
+            </button>
+          </div>
+          
         </div>
 
         <!-- detail selected obat -->
@@ -596,11 +692,11 @@ function sum_total_biaya_farmasi(){
                 <th width="150px">Tgl Input</th>
                 <th>Kode</th>
                 <th>Deskripsi Item</th>
-                <th>Jumlah</th>
-                <th>Harga Satuan</th>
-                <th>Sub Total</th>
-                <th>Jasa R</th>
-                <th>Total (Rp.)</th>
+                <th width="100px">Jumlah</th>
+                <th width="100px">Harga Satuan</th>
+                <th width="100px">Sub Total</th>
+                <th width="100px">Jasa R</th>
+                <th width="100px">Total (Rp.)</th>
               </tr>
             </thead>
             <tbody>

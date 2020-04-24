@@ -3,6 +3,7 @@
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 </head>
 <body>
   <div class="row">
@@ -21,7 +22,7 @@
       <div class="col-md-12">
 
         <!-- content -->
-        <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
+        <a href="<?php echo base_url().'laporan/Global_report'?>"  class="btn btn-xs btn-default"> <i class="fa fa-arrow-left"></i> Kembali ke Menu Utama</a>
         <br>
         <h4>Laporan Stok Akhir Barang Non Medis Berdasarkan Tanggal Terakhir Stok</h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_stok" target="blank">

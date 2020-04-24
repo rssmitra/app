@@ -234,7 +234,6 @@ class References extends MX_Controller {
 		$selected_date = strtotime($sqlDate);
 		/*get status date*/
 		$status = ($selected_date < time() ) ? 'expired' : 'success' ;
-
 		/*get master jadwal*/
 		$jadwal = $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
 		$kuota_dr = $jadwal->jd_kuota;
@@ -1329,7 +1328,7 @@ class References extends MX_Controller {
     		$flag_medis = ($exc[0]->flag_medis==1) ? 'Alkes' : 'Obat' ;
 			$html .= '<tr style="background-color: #31ecdb30">';
 			$link_image = ( $exc[0]->path_image != NULL ) ? PATH_IMG_MST_BRG.$exc[0]->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
-	    	$html .= '<td width="100px" rowspan="5" valign="top"><img src="'.$link_image.'" width="100px"> </td>';
+	    	$html .= '<td width="100px" rowspan="5" valign="middle"><img src="'.$link_image.'" width="100%"> </td>';
 			$html .= '</tr>';
 			
 			$html .= '<tr style="background-color: #31ecdb30">';
@@ -1337,24 +1336,25 @@ class References extends MX_Controller {
 			$html .= '</tr>';
 			
 			$html .= '<tr style="background-color: #31ecdb30">';
-			$html .= '<td align="left" valign="top">Stok Gudang : <br>'.$exc[0]->stok_akhir.' ('.$exc[0]->satuan_kecil.')</td>';
+			$html .= '<td align="left" valign="top">Stok Gudang : '.$exc[0]->stok_akhir.' ('.$exc[0]->satuan_kecil.')</td>';
 			
 			// stok cito
 			$stok_cito = isset($cito->stok_akhir)?$cito->stok_akhir:0;
 			$harga_satuan_cito = isset($cito->stok_akhir)?$this->tarif->_hitungBPAKOCurrent( $cito->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 ):0;
 
-			$html .= '<td align="left" valign="top">Stok Cito : <br>'.$stok_cito.' ('.$exc[0]->satuan_kecil.')</td>';
+			$html .= '<td align="left" valign="top">Stok Cito : '.$stok_cito.' ('.$exc[0]->satuan_kecil.')</td>';
 			$html .= '</tr>';
 			
 			$html .= '<tr style="background-color: #31ecdb30">';
     		/*get total tarif barang*/
     		$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
-			$html .= '<td valign="top" align="left"><span style="color:green">Harga Umum :</span> <br>'.number_format($harga_satuan).' <input type="hidden" name="pl_harga_satuan" value="'.$harga_satuan.'"> </td>';
+			$html .= '<td valign="top" align="left"><span>Harga Umum : </span> '.number_format($harga_satuan).',- <input type="hidden" name="pl_harga_satuan" value="'.$harga_satuan.'"> </td>';
 			
-			
+			$html .= '<td valign="top" align="left"><span>Harga Cito :</span> '.number_format($harga_satuan_cito).',- <input type="hidden" name="pl_harga_satuan_cito" value="'.$harga_satuan_cito.'"> </td>';
 
-			$html .= '<td valign="top" align="left"><span style="color:red">Harga Cito :</span> <br>'.number_format($harga_satuan_cito).' <input type="hidden" name="pl_harga_satuan_cito" value="'.$harga_satuan_cito.'"> </td>';
-
+	    	$html .= '</tr>';
+			$html .= '<tr style="background-color: #31ecdb30">';
+				$html .= '<td valign="top" align="left" colspan="2"><span>Harga BPJS :</span> '.number_format($exc[0]->harga_beli).',- <input type="hidden" name="pl_harga_satuan_bpjs" value="'.(int)$exc[0]->harga_beli.'"> </td>';
 	    	$html .= '</tr>';
     	//}
     	$html .= '</table>';
