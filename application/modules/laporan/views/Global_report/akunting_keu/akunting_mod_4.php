@@ -26,7 +26,7 @@
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>Laporan IF (Unit farmasi)</h4>
+        <h4>Laporan IF (Unit farmasi) Perbulan</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_if" target="blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
@@ -42,6 +42,49 @@
               </div>
               <label class="control-label col-md-1">Tahun</label>
               <div class="col-md-1">
+                <?php echo $this->master->get_tahun('','year','year','form-control','','');?>
+              </div>
+
+          </div>
+          <div class="form-group">
+            <label class="control-label col-md-2 ">&nbsp;</label>
+            <div class="col-md-10" style="margin-left: 5px">
+              <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
+                Proses Pencarian
+              </button>
+              <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
+                Export Excel
+              </button>
+            </div>
+          </div>
+
+        </form>
+        <!-- end content -->
+        
+     </div>
+
+    </div><!-- /.col -->
+
+
+    <div class="col-xs-12">
+
+      <div class="page-header">
+       
+      </div><!-- /.page-header -->
+
+      <div class="col-md-12">
+        <br>
+        <h4>Laporan IF (Unit farmasi) Perbulan</h4>
+        <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_if_b" target="blank">
+        <!-- hidden form -->
+          <input type="hidden" name="flag" value="<?php echo $flag?>">
+          <input type="hidden" name="title" value="Laporan IF (Unit farmasi)">
+
+        
+         
+          <div class="form-group">
+              <label class="control-label col-md-2">Tahun</label>
+              <div class="col-md-2">
                 <?php echo $this->master->get_tahun('','year','year','form-control','','');?>
               </div>
 
