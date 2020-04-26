@@ -186,10 +186,11 @@ $('select[name="search_by"]').change(function () {
               <th>Nomor Permintaan</th>
               <th>Tanggal</th>
               <th>Bagian/Unit</th>
-              <th>User Input</th>
+              <th>Petugas</th>
+              <th>Penerima</th>
               <th>Jenis Permintaan</th>
-              <th width="100px">Status</th>
-              <th width="150px">Keterangan</th>
+              <th>Status</th>
+              <th>Keterangan</th>
             </tr>
           </thead>
           <tbody>

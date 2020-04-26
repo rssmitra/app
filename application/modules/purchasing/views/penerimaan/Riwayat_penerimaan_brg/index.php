@@ -194,7 +194,7 @@ $('#inputSupplier').typeahead({
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2">Tanggal Permintaan</label>
+        <label class="control-label col-md-2">Tanggal Penerimaan</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>

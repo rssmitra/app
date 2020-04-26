@@ -465,8 +465,8 @@ class Riwayat_penerimaan_brg extends MX_Controller {
     {
         $flag = $_GET['flag'];
         
-        $result = $this->Riwayat_penerimaan_brg->get_detail_table($flag, $id);
-        // echo '<pre>';print_r($result);
+        $result = $this->Riwayat_penerimaan_brg->get_penerimaan_brg($flag, $id);
+        // echo '<pre>';print_r($this->db->last_query());
         $data = array(
             'po_data' => $result,
             'flag' => $flag,
@@ -481,7 +481,7 @@ class Riwayat_penerimaan_brg extends MX_Controller {
 
         $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
         $result = $this->Riwayat_penerimaan_brg->get_penerimaan_brg($_GET['flag'], $_GET['ID']);
-        // echo '<pre>'; print_r($this->db->last_query());die;
+        
         $getData = array();
         foreach($result as $row_dt){
             $getData[$row_dt->kode_brg][] = $row_dt;
@@ -500,6 +500,7 @@ class Riwayat_penerimaan_brg extends MX_Controller {
 
         $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
         $result = $this->Riwayat_penerimaan_brg->get_penerimaan_brg($_GET['flag'], $_GET['ID']);
+        // echo '<pre>'; print_r($this->db->last_query());die;
         
         $getData = array();
         foreach($result as $row_dt){

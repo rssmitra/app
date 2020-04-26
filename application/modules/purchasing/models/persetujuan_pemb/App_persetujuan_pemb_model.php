@@ -30,7 +30,8 @@ class App_persetujuan_pemb_model extends CI_Model {
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
 		$this->db->join('(SELECT id_tc_permohonan, COUNT(id_tc_permohonan_det) as total_brg FROM '.$table.'_det GROUP BY id_tc_permohonan ) as t_total', 't_total.id_tc_permohonan=a.id_tc_permohonan', 'left');
 		$this->db->where('status_kirim', 1);
-		$this->db->where('no_acc IS NULL AND tgl_acc IS NULL');
+		$this->db->where('(status_batal IS NULL or status_batal=0)');
+		$this->db->where('(no_acc IS NULL AND tgl_acc IS NULL)');
 		$this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
 		$this->db->where('t_total.total_brg > 0');
 

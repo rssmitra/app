@@ -187,57 +187,6 @@ class App_persetujuan_pemb extends MX_Controller {
         echo json_encode($output);
     }
 
-    // public function get_data()
-    // {
-    //     /*get data from model*/
-    //     $list = $this->App_persetujuan_pemb->get_datatables();
-        
-    //     $data = array();
-    //     $no = $_POST['start'];
-    //     foreach ($list as $row_list) {
-    //         $no++;
-    //         $row = array();
-    //         $row[] = '<div class="center">
-    //                     <label class="pos-rel">
-    //                         <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->id_tc_permohonan.'"/>
-    //                         <span class="lbl"></span>
-    //                     </label>
-    //                   </div>';
-    //         $row[] = '';
-    //         $row[] = $row_list->id_tc_permohonan;
-    //         $row[] = '<div class="center">'.$row_list->id_tc_permohonan.'</div>';
-    //         $row[] = $row_list->kode_permohonan;
-    //         $row[] = $this->tanggal->formatDate($row_list->tgl_permohonan);
-    //         $row[] = '<div class="center">'.ucwords($row_list->username).'</div>';
-    //         $row[] = '<div class="left">'.$row_list->no_acc.'</div>';
-    //         $row[] = $this->tanggal->formatDate($row_list->tgl_acc);
-
-    //         if ($row_list->status_batal=="0") {
-    //             $status = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
-    //             $text = 'Disetujui';
-    //         } elseif ($row_list->status_batal=="1") {
-    //             $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
-    //             $text = 'Tidak disetujui';
-    //         } else {
-    //             $status = '<div class="center"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
-    //             $text = 'Menunggu Persetujuan';
-    //         }
-
-    //         $row[] = '<div class="center">'.$status.'</div>';
-    //         $row[] = $text.' '.ucfirst($row_list->user_acc_name);
-                   
-    //         $data[] = $row;
-    //     }
-
-    //     $output = array(
-    //                     "draw" => $_POST['draw'],
-    //                     "recordsTotal" => $this->App_persetujuan_pemb->count_all(),
-    //                     "recordsFiltered" => $this->App_persetujuan_pemb->count_filtered(),
-    //                     "data" => $data,
-    //             );
-    //     //output to json format
-    //     echo json_encode($output);
-    // }
     
     public function prosess_approval()
     {
@@ -276,6 +225,7 @@ class App_persetujuan_pemb extends MX_Controller {
                 $dataexc['tgl_pemeriksa'] = date('Y-m-d H:i:s');
                 $dataexc['catatan_pemeriksa'] = $this->input->post('catatan');
                 $dataexc['pemeriksa'] = $this->input->post('approval_by');
+                $dataexc['status_batal'] = ( $this->input->post('flag_approval') == 'Y' ) ? "0" : "1";
             }else{
                 $dataexc['tgl_acc'] = date('Y-m-d H:i:s');
                 $dataexc['no_acc'] = $max_num_acc.$format;

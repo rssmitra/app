@@ -544,11 +544,11 @@
     <!-- end highchat modules -->
     
     <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
-    <!-- jquery number -->
-    <script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
+    
     
     <script type="text/javascript">
       
+
       function changeTotalBiaya(field, id){
         //alert(field); return false;
         /*harga * diskon*/

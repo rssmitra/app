@@ -6,7 +6,7 @@ class Distribusi_permintaan_model extends CI_Model {
 	var $table_nm = 'tc_permintaan_inst_nm';
 	var $table = 'tc_permintaan_inst';
 	var $column = array('a.nomor_permintaan', 'b.nama_bagian');
-	var $select = 'a.id_tc_permintaan_inst, a.nomor_permintaan, a.tgl_permintaan, a.kode_bagian_minta, a.kode_bagian_kirim, a.status_batal, a.tgl_input, a.id_dd_user, a.nomor_pengiriman, a.tgl_pengiriman, a.yg_serah, a.yg_terima, a.tgl_input_terima, a.id_dd_user_terima, a.keterangan_kirim, a.status_selesai, c.username, a.jenis_permintaan';
+	var $select = 'a.id_tc_permintaan_inst, a.nomor_permintaan, a.tgl_permintaan, a.kode_bagian_minta, a.kode_bagian_kirim, a.status_batal, a.tgl_input, a.nomor_pengiriman, a.tgl_pengiriman, a.yg_serah, a.yg_terima, a.tgl_input_terima, a.id_dd_user_terima, a.keterangan_kirim, a.status_selesai, a.jenis_permintaan';
 	var $order = array('a.id_tc_permintaan_inst' => 'DESC');
 
 	public function __construct()
@@ -22,7 +22,6 @@ class Distribusi_permintaan_model extends CI_Model {
 		$this->db->select('b.nama_bagian as bagian_minta');
 		$this->db->from(''.$table.' a');
 		$this->db->join('mt_bagian b','b.kode_bagian=a.kode_bagian_minta', 'left');
-		$this->db->join('dd_user c','c.id_dd_user=a.id_dd_user', 'left');
 		
 	}
 

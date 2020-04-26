@@ -39,9 +39,9 @@
     <form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/persetujuan_pemb/App_persetujuan_pemb/process')?>" enctype="multipart/form-data" >
 
     <!-- PAGE rasio BEGINS -->
-      <span style="font-size:14px; font-weight:bold">(<?php echo isset($dt_detail_brg[0]->nomor_permintaan) ? 'PERMINTAAN NOMOR '.$dt_detail_brg[0]->nomor_permintaan : 'Tidak ada barang'; ?>)</span>
+      <span style="font-size:12px; font-weight:bold"><?php echo isset($dt_detail_brg[0]->nomor_permintaan) ? 'Log distribusi barang ': 'Tidak ada barang'; ?></span>
       <table class="table table-bordered" style="font-size:11px;" width="100%">
-        <tr style="background-color: #d2d2d2">
+        <tr>
           <th class="center" width="30px">No</th>
           <th style="width: 100px">Kode Barang</th>
           <th>Nama Barang</th>
@@ -50,7 +50,7 @@
           <th class="center" style="width: 100px">Konversi<br>Satuan Besar</th>
           <th class="center" style="width: 100px">Harga Beli<br>PO Terakhir</th>
           <th class="center" style="width: 100px">Total<br>Biaya</th>
-          <th class="left" style="width: 50px">&nbsp;</th>
+          <!-- <th class="left" style="width: 50px">&nbsp;</th> -->
         </tr>
         <?php 
           $no=0; 
@@ -71,7 +71,7 @@
             <td class="center"><?php echo number_format($konversi, 2).' '.$row_dt->satuan_besar?></td>
             <td align="right"><?php echo number_format($row_dt->harga_beli).',-'?></td>
             <td align="right"><span style="color:<?php echo $color; ?>"><?php echo number_format($total_biaya).',-'?></span></td>
-            <td class="center"><a href="#" class="btn btn-xs btn-white btn-danger"><i class="fa fa-trash"></i></a></td>
+            <!-- <td class="center"><a href="#" class="btn btn-xs btn-white btn-danger"><i class="fa fa-trash"></i></a></td> -->
           </tr>
         <?php endforeach;?>
         <tr>

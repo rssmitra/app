@@ -229,8 +229,8 @@ function rollback(myid){
             <th width="40px" class="center"></th>
             <th width="40px"></th>
             <th width="50px">ID</th>
-            <th>Kode Permohonan</th>
-            <th>Tanggal Permohonan</th>
+            <th>Kode Permintaan</th>
+            <th>Tanggal Permintaan</th>
             <th>Petugas</th>
             <th>No Persetujuan</th>
             <th>Tanggal Persetujuan</th>

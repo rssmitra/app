@@ -119,7 +119,8 @@ class Distribusi_permintaan extends MX_Controller {
             $row[] = $row_list->nomor_permintaan;
             $row[] = $this->tanggal->formatDate($row_list->tgl_permintaan);
             $row[] = '<div class="left">'.ucwords($row_list->bagian_minta).'</div>';
-            $row[] = '<div class="left">'.ucfirst($row_list->username).'</div>';
+            $row[] = '<div class="left">'.ucfirst($row_list->yg_serah).'</div>';
+            $row[] = '<div class="left">'.ucfirst($row_list->yg_terima).'</div>';
             $jenis_permintaan = ($row_list->jenis_permintaan==0)?'Rutin':'Cito';
             $row[] = '<div class="center">'.ucfirst($jenis_permintaan).'</div>';
             $style_status = ($row_list->status_selesai == 4) ? '<span style="color: green">Selesai</span>' :'<span style="color: red">Dalam Proses</span>';

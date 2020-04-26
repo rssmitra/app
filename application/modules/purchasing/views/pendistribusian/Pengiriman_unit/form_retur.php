@@ -344,7 +344,7 @@ th, td {
                           <div class="col-md-9">
                             <select name="jenis_retur" id="jenis_retur" class="form-control">
                               <option value="penerimaan_brg">Penerimaan Barang</option>
-                              <option value="pengiriman_brg_unit">Pengiriman Barang Unit</option>
+                              <!-- <option value="pengiriman_brg_unit">Pengiriman Barang Unit</option> -->
                               <option value="lainnya" selected>Lainnya</option>
                             </select>
                           </div>  

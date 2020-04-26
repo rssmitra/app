@@ -165,7 +165,6 @@ $('#inputSupplier').typeahead({
               <option value="no_po" selected>Nomor PO</option>
               <option value="supplier">Nama Supplier</option>
               <option value="month">Bulan</option>
-              <option value="tgl_po">Tanggal PO</option>
             </select>
           </div>
 
@@ -186,7 +185,7 @@ $('#inputSupplier').typeahead({
 
           <div id="div_keyword">
             <label class="control-label col-md-1">Keyword</label>
-            <div class="col-md-2" style="margin-left: -15px">
+            <div class="col-md-3" style="margin-left: -15px">
               <input type="text" class="form-control" name="keyword" id="keyword_form">
             </div>
           </div>
@@ -194,7 +193,7 @@ $('#inputSupplier').typeahead({
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2">Tanggal Permintaan</label>
+        <label class="control-label col-md-2">Tanggal PO</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
@@ -204,7 +203,7 @@ $('#inputSupplier').typeahead({
             </div>
           </div>
 
-          <label class="control-label col-md-1">s/d</label>
+          <label class="control-label col-md-1">s/d Tgl</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
@@ -213,22 +212,18 @@ $('#inputSupplier').typeahead({
               </span>
             </div>
           </div>
+          <div class="col-md-4" style="margin-left: -1.8%">
+            <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+              Search
+            </a>
+            <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
+              <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+              Reset
+            </a>
+          </div>
       </div>
-      
-      <div class="form-group">
-        <label class="control-label col-md-2">&nbsp;</label>
-        <div class="col-md-4" style="margin-left: 6px">
-          <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
-            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-            Search
-          </a>
-          <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
-            <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-            Reset
-          </a>
-        </div>
-      </div>
-      
+
       <hr class="separator">
 
       <div style="margin-top:-25px">
@@ -249,7 +244,7 @@ $('#inputSupplier').typeahead({
             <th width="40px"></th>
             <th width="50px">ID</th>
             <th>Nomor PO</th>
-            <th>Tanggal</th>
+            <th>Tanggal PO</th>
             <th>Nama Supplier</th>
             <th>Diajukan</th>
             <th>Disetujui</th>

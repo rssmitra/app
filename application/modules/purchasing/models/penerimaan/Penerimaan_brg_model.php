@@ -24,8 +24,8 @@ class Penerimaan_brg_model extends CI_Model {
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user b','b.id_dd_user=a.user_id', 'left');
 		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
-
-		// $this->db->where('a.status_kirim IS NULL');
+		$this->db->where('a.status_selesai IS NULL');
+		
 		// $this->db->where('id_tc_po IN (
 		// 	SELECT z.id_tc_po
 		// 		FROM '.$t_penerimaan.'_detail x
@@ -145,7 +145,7 @@ class Penerimaan_brg_model extends CI_Model {
 		$t_po = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$t_rekap_stok = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
-		$this->db->select('y.kode_penerimaan, z.no_po, a.id_tc_po, a.id_tc_po_det, a.kode_brg, a.content, c.nama_brg, c.satuan_besar, c.satuan_kecil, jumlah_besar, SUM(b.jumlah_kirim) as jumlah_kirim, CAST(a.harga_satuan_netto as INT) as harga_satuan_netto, CAST(a.jumlah_harga_netto as INT) as total_harga_netto, CAST(a.harga_satuan as INT) as harga_satuan, CAST(a.jumlah_harga as INT) as total_harga, batch_log.jml_diterima, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.ppn, a.jumlah_besar_acc');
+		$this->db->select('z.no_po, a.id_tc_po, a.id_tc_po_det, a.kode_brg, a.content, c.nama_brg, c.satuan_besar, c.satuan_kecil, jumlah_besar, SUM(b.jumlah_kirim) as jumlah_kirim, CAST(a.harga_satuan_netto as INT) as harga_satuan_netto, CAST(a.jumlah_harga_netto as INT) as total_harga_netto, CAST(a.harga_satuan as INT) as harga_satuan, CAST(a.jumlah_harga as INT) as total_harga, batch_log.jml_diterima, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.ppn, a.jumlah_besar_acc');
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($table.' z', 'z.id_tc_po=a.id_tc_po', 'left');
 		$this->db->join($t_penerimaan.'_detail b', 'b.id_tc_po_det=a.id_tc_po_det', 'left');
@@ -154,7 +154,7 @@ class Penerimaan_brg_model extends CI_Model {
 		$this->db->join('(SELECT * FROM tc_penerimaan_brg_batch_log WHERE reff_table='."'".$t_penerimaan."'".') as batch_log','batch_log.id_tc_po_det=a.id_tc_po_det','left');
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('a.id_tc_po IN ('.$id.')');
-		$this->db->group_by('y.kode_penerimaan, z.no_po, a.id_tc_po, a.id_tc_po_det, a.kode_brg, a.content, c.nama_brg, jumlah_besar, c.satuan_besar, c.satuan_kecil, CAST(a.harga_satuan_netto as INT), CAST(a.jumlah_harga_netto as INT), CAST(a.harga_satuan as INT), CAST(a.jumlah_harga as INT), batch_log.jml_diterima, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.ppn, a.jumlah_besar_acc');
+		$this->db->group_by('z.no_po, a.id_tc_po, a.id_tc_po_det, a.kode_brg, a.content, c.nama_brg, jumlah_besar, c.satuan_besar, c.satuan_kecil, CAST(a.harga_satuan_netto as INT), CAST(a.jumlah_harga_netto as INT), CAST(a.harga_satuan as INT), CAST(a.jumlah_harga as INT), batch_log.jml_diterima, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.ppn, a.jumlah_besar_acc');
 		$this->db->order_by('c.nama_brg ASC');
 		return $this->db->get()->result();
 	}
@@ -171,12 +171,13 @@ class Penerimaan_brg_model extends CI_Model {
 	}
 
 	function get_sisa_penerimaan($table, $join, $id_tc_po){
-		$query = "select COUNT(a.id_tc_po_det) as total
-		from ".$table." a
-		join ".$join." b on b.id_tc_po_det=a.id_tc_po_det
-		where a.id_tc_po=".$id_tc_po." AND a.status_batal IS NULL AND a.status_close IS NULL GROUP BY a.id_tc_po_det, a.jumlah_besar HAVING a.jumlah_besar > SUM(b.jumlah_kirim)
-		";
-		return $this->db->query($query)->row();
+		$query = "select * from ".$table." a
+				where id_tc_po_det in (
+					select id_tc_po_det from ".$join." 
+					group by jumlah_pesan, id_tc_po_det
+					having SUM(jumlah_kirim) < jumlah_pesan
+				) AND a.id_tc_po=".$id_tc_po." AND a.status_batal IS NULL AND a.status_close IS NULL";
+		return $this->db->query($query)->num_rows();
 	}
 
 	public function get_penerimaan_brg($flag, $id){

@@ -213,7 +213,6 @@ class Penerimaan_brg extends MX_Controller {
                 $dataexc = array(
                     'no_po' => $this->regex->_genRegex( $val->set_value('no_po'), 'RGXQSL'),
                     'id_tc_po' => $this->regex->_genRegex( $val->set_value('id_tc_po'), 'RGXQSL'),
-                    'kode_penerimaan' => $this->regex->_genRegex( $this->master->format_nomor_penerimaan_brg($_POST['flag']), 'RGXQSL'),
                     'tgl_penerimaan' => $this->regex->_genRegex( $val->set_value('tgl_penerimaan').' '.date('H:i:s'), 'RGXQSL'),
                     'kodesupplier' => $this->regex->_genRegex( $val->set_value('supplier_id_hidden'), 'RGXQSL'),
                     'petugas' => $this->regex->_genRegex( $val->set_value('petugas'), 'RGXQSL'),
@@ -221,12 +220,13 @@ class Penerimaan_brg extends MX_Controller {
                     'no_faktur' => $this->regex->_genRegex( $val->set_value('no_faktur'), 'RGXQSL'),
                     'dikirim' => $this->regex->_genRegex( $val->set_value('dikirim'), 'RGXQSL'),
                 );
-                // print_r($dataexc);die;
+                
                 
                 if($id==0){
                     if( $_POST['flag'] == 'non_medis' ){
                         $dataexc['id_penerimaan'] = $this->master->get_max_number($table, 'id_penerimaan' );
                     }
+                    $dataexc['kode_penerimaan'] = $this->regex->_genRegex( $_POST['kode_penerimaan'], 'RGXQSL');
                     $dataexc['created_date'] = date('Y-m-d H:i:s');
                     $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                     $last_id = $this->Penerimaan_brg->save($table, $dataexc);
@@ -237,7 +237,7 @@ class Penerimaan_brg extends MX_Controller {
                     // $dataexc['id_penerimaan'] = $id;
                     $dataexc['updated_date'] = date('Y-m-d H:i:s');
                     $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                    /*print_r($dataexc);die;*/
+                    // print_r($dataexc);die;
                     /*update record*/
                     $this->Penerimaan_brg->update($table, array('id_penerimaan' => $id), $dataexc);
                     $newId = $id;
@@ -288,6 +288,8 @@ class Penerimaan_brg extends MX_Controller {
                     $dataexc["persediaan"] = $harga['harga_persediaan'];
                     $dataexc["dpp"] = $harga['dpp'];
                     $dataexc["ppn"] = $harga['harga_total_ppn'];
+                    $dataexc["updated_date"] = date('Y-m-d H:i:s');
+                    $dataexc["updated_by"] = $this->session->userdata('user')->fullname;
                     // insert to table
                     $exc = $this->Penerimaan_brg->save($table.'_detail', $dataexc);
                     // ============= end insert penerimaan barang
@@ -321,9 +323,10 @@ class Penerimaan_brg extends MX_Controller {
                     // update tc_po status kirim jika jumlah pesan dan jumlah kirim sudah sesuai
                     $po_dt = $this->Penerimaan_brg->get_sisa_penerimaan($tc_po.'_det', $table.'_detail', $_POST['id_tc_po']);
                     
-                    if ( !isset($po_dt->total) || count($po_dt->total) == 0) {
+                    if ( $po_dt == 0 ) {
                         $update_po = array(
                             'status_kirim' => 1,
+                            'status_selesai' => 1,
                             'kondisi' => 'Baik',
                             'kirim_via' => 'Kurir',
                             'di_kirim_ke' => 'Gudang '.COMP_SORT,
@@ -341,6 +344,7 @@ class Penerimaan_brg extends MX_Controller {
                     }
                     
                     $this->db->trans_commit();
+                
                 }
                 // echo '<pre>'; print_r($_POST);die;
                 
@@ -463,7 +467,10 @@ class Penerimaan_brg extends MX_Controller {
         $flag = $_GET['flag'];
         
         $result = $this->Penerimaan_brg->get_detail_table($flag, $id);
-        // echo '<pre>';print_r($result);
+        foreach ($result as $key => $value) {
+            $getData[$value->kode_brg][] = $value; 
+        }
+        // echo '<pre>';print_r($getData);die;
         $data = array(
             'po_data' => $result,
             'flag' => $flag,

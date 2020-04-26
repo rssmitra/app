@@ -1595,13 +1595,14 @@ class References extends MX_Controller {
 
 		if( $_GET['retur'] == 'penerimaan_brg' ){
 			// cek penerimaan barang
-			$this->db->select('a.kode_penerimaan as kode, tgl_penerimaan as tgl, a.jumlah_kirim_decimal as qty, a.content');
+			$this->db->select('a.kode_detail_penerimaan_barang, a.kode_penerimaan as kode, tgl_penerimaan as tgl, a.jumlah_kirim_decimal as qty, a.content, b.satuan_besar');
 			$this->db->from($tc_penerimaan.'_detail as a');
 			$this->db->join($tc_penerimaan.' as z', 'a.id_penerimaan=z.id_penerimaan' , 'left');
+			$this->db->join($table.' as b', 'b.kode_brg=a.kode_brg' , 'left');
 			$this->db->where('a.kode_brg', $_GET['kode_brg']);
 			$this->db->where('a.jumlah_kirim > 0');
-			$this->db->limit(5);
-			$this->db->group_by('a.kode_penerimaan, a.id_penerimaan, tgl_penerimaan, a.jumlah_kirim_decimal, a.content');
+			$this->db->limit(3);
+			$this->db->group_by('a.kode_detail_penerimaan_barang, a.kode_penerimaan, a.id_penerimaan, tgl_penerimaan, a.jumlah_kirim_decimal, a.content, b.satuan_besar');
 			$this->db->order_by('z.tgl_penerimaan', 'DESC');
 			$result = $this->db->get()->result();
 			$html .= '<strong style="color: blue">DATA PENERIMAAN BARANG</strong><br>';
@@ -1622,9 +1623,9 @@ class References extends MX_Controller {
 				$html .= '<td>'.$no.'</td>';
 				$html .= '<td>'.$row_ress->kode.'</td>';
 				$html .= '<td>'.$this->tanggal->formatDate($row_ress->tgl).'</td>';
-				$html .= '<td class="center">'.$row_ress->qty.'</td>';
+				$html .= '<td class="center">'.$row_ress->qty.' '.$row_ress->satuan_besar.'</td>';
 				$html .= '<td class="center">'.$row_ress->content.'</td>';
-				$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item('."'".$row_ress->kode."'".', '.$jml_retur.')"><i class="fa fa-sign-out"></i></a></td>';
+				$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item('."'".$row_ress->kode_detail_penerimaan_barang."'".', '.$jml_retur.')"><i class="fa fa-sign-out"></i></a></td>';
 				$html .= '</tr>';
 			}
 			$html .= '</table>';

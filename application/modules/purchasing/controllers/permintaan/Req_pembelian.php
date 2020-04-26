@@ -96,32 +96,30 @@ class Req_pembelian extends MX_Controller {
             $no++;
             $row = array();
             $flag = ($_GET['flag']=='medis')?'m':'nm';
-           
-
-            if( $row_list->tgl_acc == NULL ){
-
-                if ( $row_list->status_kirim == NULL ) {
-                    $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
-                    $text = '<a href="#" target="_blank" class="btn btn-xs btn-white btn-warning" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
-                }else{
-                    if($row_list->tgl_pemeriksa == NULL){
-                        $status = '<div class="left"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
-                        $text = 'Menunggu Persetujuan<br>'.$this->master->get_ttd_data('verifikator_'.$flag.'_1','value');
-                    }
-        
-                    if($row_list->tgl_pemeriksa != NULL AND $row_list->tgl_penyetuju == NULL){
-                        $status = '<div class="left"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
-                        $text = 'Menunggu Persetujuan<br>'.$this->master->get_ttd_data('verifikator_'.$flag.'_2','value');
-                    }
-                }
-                
-            }else{
-
-                if ( $row_list->status_batal == "1" ) {
+            
+            if ( $row_list->status_batal == "1" ) {
                     $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
                     $text = 'Tidak disetujui';
-                }else{
+            }else{
 
+                if( $row_list->tgl_acc == NULL ){
+
+                    if ( $row_list->status_kirim == NULL ) {
+                        $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
+                        $text = '<a href="#" target="_blank" class="btn btn-xs btn-white btn-warning" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                    }else{
+                        if($row_list->tgl_pemeriksa == NULL){
+                            $status = '<div class="left"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
+                            $text = 'Menunggu Persetujuan<br>'.$this->master->get_ttd_data('verifikator_'.$flag.'_1','value');
+                        }
+            
+                        if($row_list->tgl_pemeriksa != NULL AND $row_list->tgl_penyetuju == NULL){
+                            $status = '<div class="left"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
+                            $text = 'Menunggu Persetujuan<br>'.$this->master->get_ttd_data('verifikator_'.$flag.'_2','value');
+                        }
+                    }
+                    
+                }else{
                     if ( $row_list->status_kirim == NULL ) {
                         $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
                         $text = 'Persetujuan';
@@ -129,10 +127,12 @@ class Req_pembelian extends MX_Controller {
                         $status = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
                         $text = 'Disetujui';
                     }
-                    
                 }
-
+                
             }
+
+
+            
 
             $row[] = '<div class="center">
                         <label class="pos-rel">
@@ -268,7 +268,7 @@ class Req_pembelian extends MX_Controller {
                 $table = ($_POST['flag']=='medis')?'tc_permohonan':'tc_permohonan_nm';
                 $dataexc = array(
                     'kode_permohonan' => $this->regex->_genRegex($this->master->format_kode_permohonan($_GET['flag']),'RGXQSL'),
-                    'tgl_permohonan' => $this->regex->_genRegex($val->set_value('tgl_permohonan'),'RGXQSL'),
+                    'tgl_permohonan' => $this->regex->_genRegex($val->set_value('tgl_permohonan').' '.date('H:i:s'),'RGXQSL'),
                     'flag_jenis' => $this->regex->_genRegex($val->set_value('flag_jenis'),'RGXQSL'),
                     'keterangan_permohonan' => $this->regex->_genRegex($val->set_value('ket_acc'),'RGXQSL'),
                 );
@@ -329,7 +329,7 @@ class Req_pembelian extends MX_Controller {
         if($id!=null){
             $table = ($_GET['flag']=='non_medis')?'tc_permohonan_nm':'tc_permohonan';
             if( $this->Req_pembelian->update($table, array('id_tc_permohonan' => $id), array('status_kirim' => 1 ) ) ){
-                $this->logs->save($table, $id, 'delete record', '', 'id_tc_permohonan');
+                $this->logs->save($table, $id, 'proses persetujuan', '', 'id_tc_permohonan');
                 echo json_encode(array('status' => 200, 'message' => 'Proses Persetujuan Berhasil Dikirim'));
 
             }else{

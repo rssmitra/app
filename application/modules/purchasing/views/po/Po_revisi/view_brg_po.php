@@ -1,4 +1,12 @@
+<!-- jquery number -->
+<script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
 <script type="text/javascript">
+
+  $(function(){
+          
+    $('.format_number').number( true, 2 );
+    
+  });
 
   function checkAll(elm) {
 
@@ -22,19 +30,19 @@
            
     if($('#checkbox_brg_'+kode_brg+'').prop("checked") == true){
       $('#tr_'+kode_brg+' input[type=text]').attr('disabled', false);
-      $('#form_input_harga_satuan_'+kode_brg+'').val( formatMoney($('#hidden_form_input_harga_satuan_'+kode_brg+'').val()) );
+      $('#form_input_harga_satuan_'+kode_brg+'').val( $('#hidden_form_input_harga_satuan_'+kode_brg+'').val() );
       var total = parseFloat($('#hidden_form_input_harga_satuan_'+kode_brg+'').val()).toFixed(2) * parseFloat($('#form_jml_permohonan_'+kode_brg+'').val()).toFixed(2);
-      var format_total = formatMoney(total);
+      var format_total = total;
             
       inputDisc(kode_brg);
       inputPpn(kode_brg);
 
     }else{
         $('#tr_'+kode_brg+' input[type=text]').attr('disabled', true);
-        $('#form_input_total_'+kode_brg+'').val(formatMoney(0));
-        $('#total_dpp').val(formatMoney(0));
-        $('#total_ppn').val(formatMoney(0));
-        $('#total_nett').val(formatMoney(0));
+        $('#form_input_total_'+kode_brg+'').val(0);
+        $('#total_dpp').val(0);
+        $('#total_ppn').val(0);
+        $('#total_nett').val(0);
 
         $('#potongan_diskon_'+kode_brg+'').val(0);
         $('#nominal_diskon_'+kode_brg+'').val(0);
@@ -125,21 +133,21 @@
     // jumlah sub total
     // var harga_nett = (parseFloat(nominal_diskon) + parseFloat(nominal_ppn));
     $('#nominal_total_'+kode_brg+'').val( nominal_diskon );
-    $('#form_input_total_'+kode_brg+'').val( formatMoney(nominal_diskon) );
+    $('#form_input_total_'+kode_brg+'').val( nominal_diskon );
 
     var dpp = sumClass('diskon');
-    $('#total_dpp').val( formatMoney(dpp) );
+    $('#total_dpp').val( dpp );
     $('#total_dpp_val').val( dpp );
 
     var ppn = sumClass('ppn');
-    $('#total_ppn').val( formatMoney(ppn) );
+    $('#total_ppn').val( ppn );
     $('#total_ppn_val').val( ppn );
 
     var potongan_diskon = sumClass('potongan_diskon');
     $('#total_potongan_diskon_val').val( potongan_diskon );
 
     var total_nett = parseFloat(dpp) + parseFloat(ppn);
-    $('#total_nett').val( formatMoney(total_nett.toFixed(2)) );
+    $('#total_nett').val( total_nett.toFixed(2) );
     $('#total_nett_val').val( total_nett.toFixed(2) );
 
 
@@ -216,7 +224,7 @@
               // $jumlah_harga_dasar_satuan_besar = round($harga_dasar * $row_dt[0]->rasio);
             ?>
             <td class="center">
-                <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="form-control" value="<?php echo number_format($row_dt[0]->harga_satuan, 2)?>" onkeypress="format_currency('form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>')" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled>
+                <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="format_number form-control" value="<?php echo $row_dt[0]->harga_satuan?>" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled>
                 <!-- perhitungan harga satuan dasar -->
                 
                 <input type="hidden" name="harga_satuan_val[<?php echo $row_dt[0]->kode_brg?>]" id="hidden_form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $row_dt[0]->harga_satuan?>">
@@ -238,7 +246,7 @@
             
             <!-- total -->
             <td class="center">
-              <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:right" value="<?php echo number_format(0, 2)?>" readonly disabled>
+              <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control" style="height:45px;text-align:right" value="0" readonly disabled>
               <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
             </td>
           </tr>
@@ -247,14 +255,14 @@
         <tr style="font-size:12px; font-weight:bold">
           <td align="right" colspan="10">DPP</td>
           <td align="right">
-              <input type="text" class="form-control" name="total_dpp" id="total_dpp" style="height:45px;text-align:right" value="" readonly>
+              <input type="text" class="format_number form-control" name="total_dpp" id="total_dpp" style="height:45px;text-align:right" value="" readonly>
               <input type="hidden" class="form-control" name="total_dpp_val" id="total_dpp_val" style="height:45px;text-align:right" value="" readonly>
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
           <td align="right" colspan="10">PPN</td>
           <td align="right">
-              <input type="text" class="form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="" readonly>
+              <input type="text" class="format_number form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="" readonly>
               <input type="hidden" class="form-control" name="total_ppn_val" id="total_ppn_val" style="height:45px;text-align:right" value="" readonly>
           </td>
         </tr>
@@ -263,7 +271,7 @@
           <td align="right">
               <!-- hidden potongan diskon -->
               <input type="hidden" class="form-control" name="total_potongan_diskon_val" id="total_potongan_diskon_val" style="height:45px;text-align:right" value="" readonly>
-              <input type="text" class="form-control" name="total_nett" id="total_nett" style="height:45px;text-align:right" value="" readonly>
+              <input type="text" class="format_number form-control" name="total_nett" id="total_nett" style="height:45px;text-align:right" value="" readonly>
               <input type="hidden" class="form-control" name="total_nett_val" id="total_nett_val" style="height:45px;text-align:right" value="" readonly>
           </td>
         </tr>

@@ -47,12 +47,12 @@ class Req_selected_detail_brg extends MX_Controller {
             $row[] = '<div class="center" style="color:'.$color.'; font-weight: bold">'.$row_list->jml_sat_kcl.' '.$row_list->satuan_kecil.'</div>';
             $row[] = '<div class="center">
                         <input type="hidden" id="stok_akhir_'.$row_list->kode_brg.'" value="'.$row_list->jml_sat_kcl.'">
-                        <input type="number" style="width:70px; height:40px !important; text-align:center;font-size:14px;font-weight:bold" id="input_'.$row_list->kode_brg.'" onkeyup="sum_ttl_permintaan('."'".$row_list->kode_brg."'".', '."'".$row_list->satuan_kecil."'".')">
+                        <input type="text" class="format_number" style="width:70px; height:40px !important; text-align:center;font-size:14px;font-weight:bold" id="input_'.$row_list->kode_brg.'" onkeyup="sum_ttl_permintaan('."'".$row_list->kode_brg."'".', '."'".$row_list->satuan_kecil."'".')">
                         <select name="satuan" id="select_satuan_'.$row_list->kode_brg.'" style="height: 40px !important">
                             <option value="'.$row_list->satuan_besar.'" selected>'.$row_list->satuan_besar.'</option>
                         </select>
                       </div>';
-            $row[] = '<div class="center"><input type="number" style="width:70px; height:40px !important; text-align:center;font-size:14px;font-weight:bold" id="input_rasio_'.$row_list->kode_brg.'" value="'.$row_list->content.'" onkeyup="sum_ttl_permintaan('."'".$row_list->kode_brg."'".', '."'".$row_list->satuan_kecil."'".')"></div>';
+            $row[] = '<div class="center"><input type="number" class="format_number" style="width:70px; height:40px !important; text-align:center;font-size:14px;font-weight:bold" id="input_rasio_'.$row_list->kode_brg.'" value="'.$row_list->content.'" onkeyup="sum_ttl_permintaan('."'".$row_list->kode_brg."'".', '."'".$row_list->satuan_kecil."'".')"></div>';
             
             $row[] = '<div class="center" id="konversi_'.$row_list->kode_brg.'"></div>';
             $row[] = '<div class="center"><textarea name="keterangan_'.$row_list->kode_brg.'" id="keterangan_'.$row_list->kode_brg.'" style="height: 50px !important"></textarea></div>';

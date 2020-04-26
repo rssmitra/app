@@ -362,6 +362,7 @@ class Pengiriman_unit extends MX_Controller {
             $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $val->set_value('dari_unit_hidden') ) );
             
             $kode_bagian_gudang = ($_POST['flag']=='medis')?'060201':'070101';
+            $tc_po = ($_POST['flag']=='medis')?'tc_po':'tc_po_nm';
             $nama_gudang = ($_POST['flag']=='medis')?'Medis':'Non Medis';
             
 
@@ -388,24 +389,29 @@ class Pengiriman_unit extends MX_Controller {
             
             // get data from cart
             $cart_data = $this->Pengiriman_unit->get_cart_data($_POST['flag_form']);
-            // print_r($cart_data);die;
+            
             foreach( $cart_data as $row_brg ){
 
                 // retur penerimaan barang
                 if( !empty($row_brg->reff_kode) || $row_brg->reff_kode != NULL ){
                     // select penerimaan
                     $tc_penerimaan = ($_POST['flag']=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
-                    $dt_penerimaan = $this->db->get_where($tc_penerimaan.'_detail', array('kode_penerimaan' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg ) )->row();
+                    $dt_penerimaan = $this->db->get_where($tc_penerimaan.'_detail', array('kode_detail_penerimaan_barang' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg ) )->row();
+                    // convert to satuan besar
+                    $jml_convert = $row_brg->qty / $dt_penerimaan->content;
                     if(!empty($dt_penerimaan)){
-                        $jml_retur = $dt_penerimaan->jumlah_kirim - $row_brg->qty;
-                        $jml_retur_decimal = $dt_penerimaan->jumlah_kirim_decimal - $row_brg->qty;
+                        $jml_retur = $dt_penerimaan->jumlah_kirim - $jml_convert;
+                        $jml_retur_decimal = $dt_penerimaan->jumlah_kirim_decimal - $jml_convert;
+                        // print_r($jml_convert);die;
                         // update data penerimaan
-                        $this->db->update($tc_penerimaan.'_detail', array('jumlah_kirim' => $jml_retur, 'jumlah_kirim_decimal' => $jml_retur_decimal), array('kode_penerimaan' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg) );
+                        $this->db->update($tc_penerimaan.'_detail', array('jumlah_kirim' => $jml_retur, 'jumlah_kirim_decimal' => $jml_retur_decimal, 'keterangan' => 'Retur barang '.$jml_convert.'' ), array('kode_detail_penerimaan_barang' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg) );
                         // kurang stok gudang
                         $konversi = $row_brg->qty;
                         $this->stok_barang->stock_process($row_brg->kode_brg, $konversi, $kode_bagian_gudang, 21 ," ".$nama_gudang." Nomor ".$row_brg->reff_kode." ", 'reduce');
                     }
-                    $catatan = 'Retur penerimaan nomor '. $row_brg->reff_kode.'';
+                    $catatan = 'Retur penerimaan kode '. $row_brg->reff_kode.'';
+                    // update status selesai po
+                    $this->db->where('id_tc_po IN (SELECT id_tc_po FROM '.$tc_po.'_det WHERE id_tc_po_det = '.$dt_penerimaan->id_tc_po_det.')')->update($tc_po, array('status_selesai' => NULL));
 
                 }else{
 
@@ -433,8 +439,6 @@ class Pengiriman_unit extends MX_Controller {
                 /*save logs*/
                 $this->logs->save('tc_retur_unit_det', $id_tc_retur_unit_det, 'insert new record on '.$this->title.' module', json_encode($dt_detail),'id_tc_retur_unit_det');
                 
-                
-
                 $this->db->trans_commit();
 
             }

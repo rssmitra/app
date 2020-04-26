@@ -35,7 +35,7 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-
+          
           if (jsonResponse.action=='header') {
             $('#section_form_penerimaan_barang').hide();
             $('#section_table_penerimaan_brg').show();

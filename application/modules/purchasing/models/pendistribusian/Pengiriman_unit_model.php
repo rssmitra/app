@@ -188,7 +188,7 @@ class Pengiriman_unit_model extends CI_Model {
 	}
 
 	public function get_cart_data($flag_form){
-		$this->db->select('kode_brg, nama_brg, SUM(qty) as qty, satuan, cast(harga as int) as harga, flag, nama_bagian, qtyBefore, reff_kode');
+		$this->db->select('kode_brg, nama_brg, SUM(qty) as qty, satuan, cast(harga as int) as harga, flag, nama_bagian, qtyBefore, reff_kode, satuan');
 		$this->db->from('tc_permintaan_inst_cart_log');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_permintaan_inst_cart_log.kode_bagian');
 		$this->db->where('user_id_session', $this->session->userdata('user')->user_id);

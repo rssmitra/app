@@ -21,12 +21,14 @@ class Po_penerbitan_model extends CI_Model {
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user','dd_user.id_dd_user=a.user_id', 'left');
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
-		$this->db->join(''.$table.'_det d','d.id_tc_permohonan=a.id_tc_permohonan', 'inner');
+		// $this->db->join(''.$table.'_det d','d.id_tc_permohonan=a.id_tc_permohonan', 'inner');
 
 		$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 31');
-		$this->db->where('(d.status_po=0 or d.status_po IS NULL)');
+		// $this->db->where('(d.status_po = 0 or d.status_po IS NULL)');
 		$this->db->where('a.no_acc is not null');
 		$this->db->where('a.status_batal', 0);
+		$this->db->where('a.flag_proses != 3');
+		// $this->db->where('id_tc_permohonan in (select id_tc_permohonan from tc_permohonan_det where (status_po =0 or status_po IS NULL) group by id_tc_permohonan)');
 
 		// if($_GET['flag']=='medis'){
 		// 	$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE())<31');
@@ -60,7 +62,6 @@ class Po_penerbitan_model extends CI_Model {
 			// }
 		}
 
-		
 		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal');
 	}
 
@@ -204,6 +205,16 @@ class Po_penerbitan_model extends CI_Model {
 		// update detail permohonan untuk jumlah acc
 		$this->db->where('status_po IS NULL')->where('id_tc_permohonan', $id)->update($tc_permohonan.'_det', array('jumlah_besar_acc' => NULL, 'jml_besar_acc' => NULL, 'jml_acc_pemeriksa' => NULL, 'jml_acc_penyetuju' => NULL, 'status_po' => NULL) );
 
+		return true;
+	}
+
+	function update_flag_proses($arr_id, $table_permohonan){
+		$flag_process = $this->db->select('id_tc_permohonan')->where_in('id_tc_permohonan', $arr_id)->where('(status_po = 0 or status_po IS NULL)')->group_by('id_tc_permohonan')->get($table_permohonan.'_det')->result_array();
+
+		foreach ($arr_id as $key => $value) {
+			if( !in_array($value, $flag_process) )
+				$this->db->where('id_tc_permohonan', $value)->update($table_permohonan, array('flag_proses' => 3) );
+		}
 		return true;
 	}
 
