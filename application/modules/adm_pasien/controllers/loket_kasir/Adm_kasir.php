@@ -66,33 +66,7 @@ class Adm_kasir extends MX_Controller {
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             
-            if( $_GET['pelayanan'] == 'RI' ){
-                if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) == '03'){
-                    $no++;
-                    $row = array();
-                    // sum total
-                    $total = $this->master->sumArrayByKey($row_list, 'total');
-                    $arr_total[] = $total;
-                    $row[] = '<div class="center"></div>';
-                    $row[] = $row_list[0]['no_registrasi'];
-                    $row[] = '<div class="center">'.$no.'</div>';
-                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
-                    if($_GET['flag']=='bpjs'){
-                        $row[] = $row_list[0]['no_sep'];
-                    }
-                    $row[] = $row_list[0]['no_mr'];
-                    $row[] = $row_list[0]['nama_pasien'];
-                    $row[] = ucwords($row_list[0]['nama_bagian']);
-                    $row[] = $row_list[0]['nama_perusahaan'];
-                    $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);
-                    if( $total > 0 ){
-                        $row[] = '<div class="pull-right"><a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a></div>';
-                    }else{
-                        $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
-                    }
-                    $data[] = $row;
-                }
-            }else{
+            if( $_GET['pelayanan'] != 'RI' ){
                 if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) != '03'){
                     $no++;
                     $row = array();

@@ -5,8 +5,8 @@ class Penerimaan_brg_model extends CI_Model {
 
 	var $table_nm = 'tc_po_nm';
 	var $table = 'tc_po';
-	var $column = array('c.namasupplier','a.no_po','b.username');
-	var $select = 'a.id_tc_po, a.no_po, a.tgl_po, a.ppn, a.total_sbl_ppn, a.total_stl_ppn, a.discount_harga, a.term_of_pay, b.username, a.diajukan_oleh, a.disetujui_oleh, c.namasupplier';
+	var $column = array('c.namasupplier','a.no_po','a.diajukan_oleh');
+	var $select = 'a.id_tc_po, a.no_po, a.tgl_po, a.ppn, a.total_sbl_ppn, a.total_stl_ppn, a.discount_harga, a.term_of_pay, a.diajukan_oleh, a.disetujui_oleh, c.namasupplier';
 	var $order = array('a.id_tc_po' => 'DESC');
 
 	public function __construct()
@@ -22,9 +22,8 @@ class Penerimaan_brg_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->from(''.$table.' a');
-		$this->db->join('dd_user b','b.id_dd_user=a.user_id', 'left');
 		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
-		$this->db->where('a.status_selesai IS NOT NULL');
+		$this->db->where('(a.status_selesai IS NULL or a.status_selesai=0)');
 		
 		// $this->db->where('id_tc_po IN (
 		// 	SELECT z.id_tc_po
