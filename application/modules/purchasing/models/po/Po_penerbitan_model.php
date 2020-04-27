@@ -21,14 +21,13 @@ class Po_penerbitan_model extends CI_Model {
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user','dd_user.id_dd_user=a.user_id', 'left');
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
-		$this->db->join(''.$table.'_det d','d.id_tc_permohonan=a.id_tc_permohonan', 'inner');
+		// $this->db->join(''.$table.'_det d','d.id_tc_permohonan=a.id_tc_permohonan', 'inner');
 
 		$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 31');
-		$this->db->where('(d.status_po = 0 or d.status_po IS NULL)');
+		// $this->db->where('(d.status_po = 0 or d.status_po IS NULL)');
 		$this->db->where('a.no_acc is not null');
 		$this->db->where('a.status_batal', 0);
-		
-		// $this->db->where('a.flag_proses != 3');
+		$this->db->where('a.flag_proses != 3');
 		// $this->db->where('id_tc_permohonan in (select id_tc_permohonan from tc_permohonan_det where (status_po =0 or status_po IS NULL) group by id_tc_permohonan)');
 
 		// if($_GET['flag']=='medis'){
@@ -171,7 +170,7 @@ class Po_penerbitan_model extends CI_Model {
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('a.id_tc_permohonan IN ('.$id.')');
 		$this->db->where('a.jml_acc_penyetuju > 0');
-		$this->db->where('(a.status_po IS NULL or a.status_po = 0)');
+		// $this->db->where('(a.status_po IS NULL or a.status_po = 0)');
 		$this->db->order_by('c.nama_brg ASC');
 		$query = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
@@ -209,12 +208,23 @@ class Po_penerbitan_model extends CI_Model {
 		return true;
 	}
 
-	function update_flag_proses($arr_id, $table_permohonan){
-		$flag_process = $this->db->select('id_tc_permohonan')->where_in('id_tc_permohonan', $arr_id)->where('(status_po = 0 or status_po IS NULL)')->group_by('id_tc_permohonan')->get($table_permohonan.'_det')->result_array();
+	function update_flag_proses($arr_id, $flag){
 
-		foreach ($arr_id as $key => $value) {
-			if( !in_array($value, $flag_process) )
-				$this->db->where('id_tc_permohonan', $value)->update($table_permohonan, array('flag_proses' => 3) );
+		$tc_permohonan = ($flag=='medis')?'tc_permohonan':'tc_permohonan_nm';
+		$tc_po = ($flag=='medis')?'tc_po':'tc_po_nm';
+		$arr_to_string = implode(',', $arr_id);
+
+		$query = "select a.id_tc_permohonan, count(a.kode_brg)as total_permohonan, count(id_tc_po_det) as total_po
+		from ".$tc_permohonan."_det a
+		full outer join ".$tc_po."_det b on b.id_tc_permohonan_det=a.id_tc_permohonan_det
+		where a.id_tc_permohonan in (".$arr_to_string.");
+		group by a.id_tc_permohonan 
+		order by id_tc_permohonan DESC";
+		$exc_query = $this->db->query($query)->result();
+
+		foreach ($exc_query as $key => $value) {
+			if( $value->total_po >= $value->total_permohonan )
+				$this->db->where('id_tc_permohonan', $value->id_tc_permohonan)->update($table_permohonan, array('flag_proses' => 3) );
 		}
 		return true;
 	}

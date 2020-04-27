@@ -45,8 +45,8 @@
           <th class="center" width="">No</th>
           <th>Kode Barang</th>
           <th>Nama Barang</th>
-          <th class="center">Jumlah<br>Permohonan</th>
-          <th class="center">Jumlah Brg<br>yang di ACC</th>
+          <th class="center">Jumlah Permohonan</th>
+          <th class="center">Jumlah Brg yang di ACC</th>
           <th class="center">Satuan Besar</th>
           <th class="center">Rasio</th>
         </tr>

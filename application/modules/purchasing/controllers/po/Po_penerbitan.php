@@ -266,7 +266,7 @@ class Po_penerbitan extends MX_Controller {
             $this->db->where_in('id_tc_permohonan_det', $id_tc_permohonan_det)->update($table_permohonan.'_det', array('status_po' => 1) );
             
             // update flag process
-            $this->Po_penerbitan->update_flag_proses($id_tc_permohonan, $table_permohonan);
+            $this->Po_penerbitan->update_flag_proses($id_tc_permohonan, $_POST['flag']);
             
 
             // print_r($id_tc_permohonan);die;
