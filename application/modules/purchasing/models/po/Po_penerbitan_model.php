@@ -217,7 +217,7 @@ class Po_penerbitan_model extends CI_Model {
 		$query = "select a.id_tc_permohonan, count(a.kode_brg)as total_permohonan, count(id_tc_po_det) as total_po
 		from ".$tc_permohonan."_det a
 		full outer join ".$tc_po."_det b on b.id_tc_permohonan_det=a.id_tc_permohonan_det
-		where a.id_tc_permohonan in (".$arr_to_string.");
+		where a.id_tc_permohonan in (".$arr_to_string.")
 		group by a.id_tc_permohonan 
 		order by id_tc_permohonan DESC";
 		$exc_query = $this->db->query($query)->result();
