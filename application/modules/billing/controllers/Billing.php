@@ -372,9 +372,10 @@ class Billing extends MX_Controller {
             'tipe' => $tipe,
             'flag_bill' => isset($_GET['flag_bill'])?$_GET['flag_bill']:'temporary',
             'data' => $result,
+            'kasir_data' => $result->kasir_data,
             'kunjungan' => $grouping,
         );
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($result->kasir_data);die;
         $data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
         $this->load->view('Billing/cetakBilling_sem_rssm', $data, false);
 
@@ -407,7 +408,7 @@ class Billing extends MX_Controller {
         $this->load->library('accounting');
 
         $this->db->trans_begin();
-        // print_r($_POST);die;
+        
         // get no seri kuitansi
         $seri_kuitansi_dt = $this->master->no_seri_kuitansi($_POST['no_registrasi']);
         // insert tc_trans_kasir
@@ -416,6 +417,12 @@ class Billing extends MX_Controller {
         $dataTranskasir["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
         $dataTranskasir["no_induk"] = $this->session->userdata('user')->user_id; 
         $dataTranskasir["tgl_jam"] = date("Y-m-d H:i:s");
+
+        $change = ( $_POST['uang_dibayarkan_tunai'] > $_POST['jumlah_bayar_tunai'] ) ? $_POST['uang_dibayarkan_tunai'] - $_POST['jumlah_bayar_tunai'] : 0;
+
+        $dataTranskasir["cash"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
+        $dataTranskasir["change"] = $change;
+
         $dataTranskasir["tunai"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
         // debet
         $dataTranskasir["debet"] = isset($_POST['jumlah_bayar_debet']) ? (float)$_POST['jumlah_bayar_debet'] : (float)0;
@@ -456,7 +463,10 @@ class Billing extends MX_Controller {
         $potongan_diskon = ($_POST['total_payment'] * ($_POST['jumlah_diskon']/100));
         $sisa_bill = $_POST['total_payment'] - $potongan_diskon;
         $dataTranskasir["potongan"] = $potongan_diskon;
+        $dataTranskasir["discount"] = ($_POST['jumlah_diskon'])?$_POST['jumlah_diskon']:0;
         $dataTranskasir["bill"] = $sisa_bill;
+
+        // print_r($dataTranskasir);die;
 
         // kode shift
         $dataTranskasir["kode_shift"] = $_POST['shift'];

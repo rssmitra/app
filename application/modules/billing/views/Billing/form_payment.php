@@ -1,8 +1,16 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+<!-- jquery number -->
+<script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
+<script type="text/javascript">
 
-<script>
+$(function(){
+        
+  $('.format_number').number( true, 2 );
+  
+});
+
 $(document).ready(function(){
     
     // if( $('#count_kasir').val() > 0 ) {
@@ -96,7 +104,7 @@ function get_resume_billing(){
     // total uang muka atau yang sudah dibayar
     var total_um_dibayar = parseInt($('#total_uang_muka').val()) + parseInt($('#total_paid').val());
     $('#jumlah_nk').val( formatMoney($('#total_nk').val()) );
-    $('#jumlah_bayar_tunai').val( formatMoney( sisa_nk) );
+    $('#jumlah_bayar_tunai').val( sisa_nk );
     $('.jumlah_bayar').text( formatMoney( sisa_nk) );
     $('#jml_dibayarkan').text( formatMoney( sisa_nk ) );
     $('#jml_um').text( formatMoney( total_um_dibayar ) );
@@ -237,7 +245,7 @@ function sum_total_pembayaran(){
             <div class="col-md-8">
               <!-- hidden total yang harus dibayarkan -->
               <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hidden">
-              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" value="" class="uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
+              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" value="" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
             </div>
           </div>
         </div>
@@ -248,7 +256,7 @@ function sum_total_pembayaran(){
           <div class="form-group">
             <label class="control-label col-md-4">Jumlah Pembayaran</label>
             <div class="col-md-8">
-            <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
+            <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
             </div>
           </div>
 
@@ -281,7 +289,7 @@ function sum_total_pembayaran(){
           <div class="form-group">
             <label class="control-label col-md-4">Jumlah Pembayaran</label>
             <div class="col-md-8">
-            <input name="jumlah_bayar_kredit" id="jumlah_bayar_kredit" value="" class="uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
+            <input name="jumlah_bayar_kredit" id="jumlah_bayar_kredit" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
             </div>
           </div>
 

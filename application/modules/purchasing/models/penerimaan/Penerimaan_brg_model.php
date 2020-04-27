@@ -24,7 +24,7 @@ class Penerimaan_brg_model extends CI_Model {
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user b','b.id_dd_user=a.user_id', 'left');
 		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
-		$this->db->where('a.status_selesai IS NULL');
+		$this->db->where('a.status_selesai IS NOT NULL');
 		
 		// $this->db->where('id_tc_po IN (
 		// 	SELECT z.id_tc_po
