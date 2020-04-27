@@ -224,7 +224,7 @@ class Po_penerbitan_model extends CI_Model {
 
 		foreach ($exc_query as $key => $value) {
 			if( $value->total_po >= $value->total_permohonan )
-				$this->db->where('id_tc_permohonan', $value->id_tc_permohonan)->update($table_permohonan, array('flag_proses' => 3) );
+				$this->db->where('id_tc_permohonan', $value->id_tc_permohonan)->update($tc_permohonan, array('flag_proses' => 3) );
 		}
 		return true;
 	}
