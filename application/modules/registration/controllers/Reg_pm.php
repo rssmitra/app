@@ -146,6 +146,10 @@ class Reg_pm extends MX_Controller {
             }
             else
             {
+                $this->db->trans_commit();
+
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHidden'], 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'Penunjang Medis', 'no_sep' => $no_sep));
+
                 if(!$this->input->post('no_registrasi_rujuk') && $this->input->post('pm_tujuan') == '050301'){
                     $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
                     
@@ -155,13 +159,14 @@ class Reg_pm extends MX_Controller {
                     ];
         
                     if($this->input->post('is_new')!='Yes'){
-                        if( $this->print_escpos->print_direct($data_tracer) ) {
+                        $tracer = $this->print_escpos->print_direct($data_tracer);
+                        if( $tracer == 1 ) {
                             $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
-                       }
+                        }
+                        
                     } 
                 }
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHidden'], 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'Penunjang Medis', 'no_sep' => $no_sep));
+                
             }
             
         }
