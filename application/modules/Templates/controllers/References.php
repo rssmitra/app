@@ -696,10 +696,9 @@ class References extends MX_Controller {
 		$this->db->join('tc_kunjungan b', 'a.no_kunjungan=b.no_kunjungan','left');
 		$this->db->join('tc_registrasi c', 'b.no_registrasi=c.no_registrasi','left');
 		$this->db->join('mt_master_pasien d', 'd.no_mr=c.no_mr','left');
-		$this->db->where('a.tgl_keluar IS NULL');
+		// $this->db->where('a.tgl_keluar IS NULL');
 		$this->db->where('a.kode_ruangan='."'".$kode_ruangan."'".'');
 		$this->db->order_by('a.kode_ri DESC');
-		// print_r($this->db->last_query());
 		return $this->db->get()->result();
 
 	}

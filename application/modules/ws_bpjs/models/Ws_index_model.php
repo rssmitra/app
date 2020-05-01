@@ -481,6 +481,7 @@ class Ws_index_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
@@ -565,10 +566,17 @@ class Ws_index_model extends CI_Model {
 	}
 
 	private function _main_query_ruangan_rs(){
-		$this->db->select('a.kode_ruangan, a.kode_bagian, b.nama_bagian, c.kode_klas_bpjs, c.nama_klas_bpjs, c.kode_klas, c.nama_klas, a.no_kamar, a.no_bed, a.status, a.keterangan, a.gender');
+		$this->db->select('a.kode_ruangan, a.kode_bagian, b.nama_bagian, c.kode_klas_bpjs, c.nama_klas_bpjs, c.kode_klas, c.nama_klas, a.no_kamar, a.no_bed, a.status, a.keterangan, a.gender, e.nama_pasien, e.no_mr, ri.tgl_masuk, f.nama_pegawai as dokter, g.deposit, g.harga_r, g.harga_bpjs');
 		$this->db->from('mt_ruangan a');
 		$this->db->join('mt_bagian b','b.kode_bagian=a.kode_bagian','left');
 		$this->db->join('mt_klas c','c.kode_klas=a.kode_klas','left');
+		$this->db->join('(select * from ri_tc_rawatinap where (ri_tc_rawatinap.status_pulang=0 or ri_tc_rawatinap.status_pulang IS NULL) and ri_tc_rawatinap.bag_pas != '."'031001'".' AND DATEDIFF(day,ri_tc_rawatinap.tgl_masuk,GETDATE()) < 60 ) as ri','ri.kode_ruangan=a.kode_ruangan','left');
+		$this->db->join('tc_kunjungan d','d.no_kunjungan=ri.no_kunjungan','left');
+		$this->db->join('mt_master_pasien e','e.no_mr=d.no_mr','left');
+		$this->db->join('mt_karyawan f','f.kode_dokter=ri.dr_merawat','left');
+		$this->db->join('mt_master_tarif_ruangan g','(g.kode_bagian=a.kode_bagian AND g.kode_klas=a.kode_klas)','left');
+		$this->db->group_by('a.kode_ruangan, a.kode_bagian, b.nama_bagian, c.kode_klas_bpjs, c.nama_klas_bpjs, c.kode_klas, c.nama_klas, a.no_kamar, a.no_bed, a.status, a.keterangan, a.gender, e.nama_pasien, e.no_mr, ri.tgl_masuk, f.nama_pegawai, g.deposit, g.harga_r, g.harga_bpjs');
+		$this->db->where('a.flag_cad', 0);
 	}
 
 	function count_filtered_ruangan_rs()

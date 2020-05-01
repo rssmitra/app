@@ -19,7 +19,7 @@ window.onload = generateBarcode;
       color: "#000000",
       barWidth: 2,
       barHeight: 35,
-      moduleSize: 20,
+      moduleSize: 10,
       fontSize: 12,
       posX: 20,
       posY: 20,
@@ -35,6 +35,7 @@ window.onload = generateBarcode;
 <style type="text/css">
     .barcodeTarget{
       font-weight: bold;
+      letter-spacing: 5px;
     }
     @media print
     {

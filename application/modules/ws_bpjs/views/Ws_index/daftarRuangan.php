@@ -14,9 +14,17 @@
       </h1>
     </div><!-- /.page-header -->
 
-    <div class="clearfix" style="margin-bottom:-5px">
+    <center>
+      <h4>INFORMASI DAFTAR RUANGAN RAWAT INAP<br>
+        <small style="font-size:12px">
+          (Data yang ditampilkan dibawah ini adalah data pasien rawat inap yang masih dalam perawatan)
+        </small>
+      </h4>
+    </center>
+
+    <!-- <div class="clearfix" style="margin-bottom:-5px">
       <button type="button" onclick="getMenu('ws_bpjs/ws_index?modWs=tambahRuangan')" class="btn btn-sm btn-primary" data-toggle="button">Tambah Ruangan</button>
-    </div>
+    </div> -->
     <hr class="separator">
     <!-- div.table-responsive -->
 
@@ -26,12 +34,11 @@
         <thead>
           <tr>  
             <th width="30px" class="center"></th>
-            <th width="80px">Kode</th>
             <th>Nama Ruangan</th>
-            <th>Kelas</th>
-            <th>No Kamar</th>
-            <th>No Bed</th>
-            <th>Status</th>
+            <th>Kamar / Bed</th>
+            <th>Uang Deposit</th>
+            <th>Harga /Mlm</th>
+            <th>Harga BPJS /Mlm</th>
             <th>Nama Pasien</th>
             <th>Keterangan</th>
             <th>Gender</th>
@@ -56,7 +63,8 @@
           "serverSide": true, //Feature control DataTables' server-side processing mode.
           "scrollX": false,
           "ordering": false,
-          "paging":         false,
+          "paging": false,
+          "bInfo": false,
           // Load data for the table's content from an Ajax source
           "ajax": {
               "url": base_url,

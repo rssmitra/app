@@ -888,26 +888,19 @@ class Ws_index extends MX_Controller {
             $no++;
             $row = array();
             /*get pasien by kode ruangan*/
-            $pasien = Modules::run('Templates/References/get_data_pasien_ri_existing', $row_list->kode_ruangan);
-
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->kode_ruangan.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                      </div>';
-           
-            $row[] = '<div class="center">'.$row_list->kode_ruangan.'</div>';
-            $row[] = $row_list->nama_bagian;
-            $row[] = $row_list->nama_klas;
-            $row[] = '<div class="center">'.$row_list->no_kamar.'</div>';
-            $row[] = '<div class="center">'.$row_list->no_bed.'</div>';
-
-            $row[] = ($row_list->status=='ISI')?'<div class="center"><label class="label label-success"><i class="fa fa-check"></i></label></div>':'<div class="center"><label class="label label-danger"><i class="fa fa-times-circle"></i></label></div>';
-
-            $row[] = '';
-            $row[] = strtoupper($row_list->keterangan);
-            $row[] = '<div class="center">'.$row_list->gender.'</div>';
+            // $pasien = Modules::run('Templates/References/get_data_pasien_ri_existing', $row_list->kode_ruangan);
+            // print_r($pasien);die;
+            $row[] = ($row_list->status=='ISI')?'<div class="center">
+                        <img src="'.base_url().'assets/images/bed/bed_green.png" width="70px"><br><b>'.$row_list->kode_ruangan.'</b></div>':'<div class="center"><img src="'.base_url().'assets/images/bed/bed_red.png" width="70px"><br><b>'.$row_list->kode_ruangan.'</b></div>';
+            $row[] = '<span style="font-weight: bold">'.$row_list->nama_bagian.'</span><br>'.$row_list->nama_klas.'';
+            $row[] = '<div class="center">'.$row_list->no_kamar.' / '.$row_list->no_bed.'</div>';
+            $row[] = '<div style="text-align: right">'.number_format($row_list->deposit).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format($row_list->harga_r).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format($row_list->harga_bpjs).'</div>';
+            $row[] = '<div><b>'.$row_list->no_mr.'</b><br>'.$row_list->nama_pasien.'<br>'.$row_list->dokter.'</div>';
+            $row[] = $row_list->keterangan;
+            $gender = ($row_list->gender == 2)?'P':($row_list->gender == 1)?'L':'L & P';
+            $row[] = '<div class="center">'.$gender.'</div>';
             $data[] = $row;
         }
 
