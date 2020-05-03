@@ -40,7 +40,7 @@ $(document).ready(function(){
         "searching": false,
         "bSort": false,
         "ajax": {
-            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa",
+            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan=<?php echo $tipe_layanan?>",
             "type": "POST"
         },
         "columnDefs": [
@@ -71,12 +71,22 @@ $(document).ready(function(){
             }
             else {
                 /*data*/
-                $.getJSON("farmasi/Entry_resep_ri_rj/getDetail/" + kode_brg +'/'+ ID, '', function (data) {
-                    response_data = data;
-                    // Open this row
-                    row.child( format_html( response_data ) ).show();
-                    tr.addClass('shown');
-                });
+                if( flag == 'racikan' ){
+                  $.getJSON("farmasi/Entry_resep_racikan/getDetail/" + ID, '', function (data) {
+                      response_data = data;
+                      // Open this row
+                      row.child( format_html( response_data ) ).show();
+                      tr.addClass('shown');
+                  });
+                }else{
+                  $.getJSON("farmasi/Entry_resep_ri_rj/getDetail/" + kode_brg +'/'+ ID, '', function (data) {
+                      response_data = data;
+                      // Open this row
+                      row.child( format_html( response_data ) ).show();
+                      tr.addClass('shown');
+                  });
+                }
+                
                                 
             }
     } );
@@ -247,6 +257,18 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
+            $('#jml_23').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#jml_23" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
             $('#dosis_start').focus();
           }
           return false;       
@@ -353,15 +375,18 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       $('#inputKeyObat').val(kode_brg+' : '+obj.nama_brg);
       $('#jumlah_pesan').val(obj.jumlah_pesan);
       $('#jumlah_tebus').val(obj.jumlah_tebus);
+      $('#jml_23').val(obj.jumlah_obat_23);
       $('#harga_r').val(obj.jasa_r);
 
       /*radio*/
       $("input[name=urgensi][value="+obj.urgensi+"]").prop('checked', true);
 
-      $('#aturan_pakai').val(obj.aturan_pakai_format);
-      $('#bentuk_resep').val(obj.bentuk_resep);
-      $('#anjuran_pakai').val(obj.anjuran_pakai);
+      $('#dosis_start').val(obj.dosis_obat);
+      $('#dosis_end').val(obj.dosis_per_hari);
       $('#catatan').val(obj.catatan_lainnya);
+      $('#satuan_obat').val(obj.aturan_pakai);
+      $('#anjuran_pakai').val(obj.anjuran_pakai);
+
       $('#kd_tr_resep').val(obj.relation_id);
 
   })
@@ -386,14 +411,17 @@ function reset_form(){
   /*radio*/
   $("input[name=urgensi][value=biasa]").prop('checked', true);
 
-  $('#aturan_pakai').val('');
-  $('#bentuk_resep').val('');
+  $('#dosis_start').val('');
+  $('#dosis_end').val('');
+  $('#catatan').val('Minum secara rutin dan dihabiskan.');
+  $('#satuan_obat').val('');
   $('#anjuran_pakai').val('');
-  $('#catatan').val('');
+
+
 
    /*show detail tarif html*/
-    $('#div_detail_obat').hide('fast');
-    $('#detailObatHtml').html('');
+  // $('#div_detail_obat').hide('fast');
+  $('#detailObatHtml').html('<img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%">');
 
 }
 
@@ -534,6 +562,8 @@ function duplicate_input(id_input, duplicate_to){
       <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
       <input type="hidden" name="kode_ri" id="kode_ri" class="form-control" value="<?php echo isset($value->kode_ri)?$value->kode_ri:0?>" >
 
+      <input class="form-control" name="harga_r" id="harga_r" type="hidden" value="500" readonly />
+
 
       <div class="row">
 
@@ -547,6 +577,7 @@ function duplicate_input(id_input, duplicate_to){
               <td> <?php echo isset($value)?ucwords($value->nama_kelompok):''?> <?php echo isset($value)?ucwords($value->nama_perusahaan):''?> </td>
               <td> <?php echo isset($value)?ucwords($value->nama_bagian):''?> </td>
               <td> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+              <td> <div style="font-size: 18px" id="td_total_biaya_farmasi"> <b>Rp.0,-</b>  </div></td>
             </tr>
           </table>
         </div>
@@ -554,129 +585,164 @@ function duplicate_input(id_input, duplicate_to){
         <!-- top botton -->
         <div class="col-sm-12" style="margin-left:-5px; margin-top: 10px">
           <div class="pull-left">
-            <button type="button" id="btn_racikan" class="btn btn-purple btn-sm" onclick="show_modal('<?php echo base_url().'farmasi/Entry_resep_racikan/form/'.$value->kode_pesan_resep.'?kelompok='.$value->kode_kelompok.'&tipe_layanan='.$tipe_layanan.''?>', 'RESEP RACIKAN')">
-              <span class="ace-icon fa fa-plus-square icon-on-right bigger-110"></span>
-              Resep Racikan
-            </button>
-
-            <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai()">
-                  <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
-                  Resep Selesai
-            </button>
+            
           </div>
           <div class="pull-right">
-          <div style="font-size: 18px" id="td_total_biaya_farmasi"> <b>Rp.0,-</b>  </div>
+          
           </div>
         </div>
         
         <!-- form utama -->
-        <div class="col-sm-7" style="margin-top: 10px">
-          <!-- Data Obat -->
-          <p><b>FORM OBAT</b></p>
-          <div class="form-group">
-            <label class="control-label col-sm-2">Kode</label>
-            <div class="col-md-2">
-              <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
-            </div> 
-          </div>
-          <!-- tanggal -->
-          <div class="form-group">
+        <div class="col-sm-7">
 
-            <label class="control-label col-sm-2">Tanggal</label>
-            <div class="col-md-3">
-              <div class="input-group">
-                  <input name="tgl_resep" id="tgl_resep" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
-                  <span class="input-group-addon">
-                    
-                    <i class="ace-icon fa fa-calendar"></i>
-                  
-                  </span>
+          <div class="widget-box">
+            <div class="widget-header">
+                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep Farmasi</span>
+              <div class="widget-toolbar">
+                <button type="button" id="btn_racikan" class="btn btn-purple btn-xs" onclick="show_modal('<?php echo base_url().'farmasi/Entry_resep_racikan/form/'.$value->kode_pesan_resep.'?kelompok='.$value->kode_kelompok.'&tipe_layanan='.$tipe_layanan.''?>', 'RESEP RACIKAN FARMASI')">
+                  <span class="ace-icon fa fa-plus-square icon-on-right bigger-110"></span>
+                  Resep Racikan
+                </button>
+
+                <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai()">
+                      <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
+                      Resep Selesai
+                </button>
+              </div>
+            </div>
+            <div class="widget-body" style="padding:5px">
+              <!-- Data Obat -->
+              <p><b>FORM OBAT</b></p>
+              <div class="form-group">
+                <label class="control-label col-sm-2">Kode</label>
+                <div class="col-md-2">
+                  <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
+                </div> 
+                <label class="control-label col-sm-2">Jenis Resep</label>
+                <div class="col-md-3">
+                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_resep')), 'res_non_k' , 'jenis_resep', 'jenis_resep', isset($trans_farmasi->kode_trans_far)?'readonly':'' , '', 'style="width: 150px"');?>
+                  </div>
+              </div>
+              <!-- tanggal -->
+              <div class="form-group">
+
+                <label class="control-label col-sm-2">Tanggal</label>
+                <div class="col-md-3">
+                  <div class="input-group">
+                      <input name="tgl_resep" id="tgl_resep" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
+                      <span class="input-group-addon">
+                        
+                        <i class="ace-icon fa fa-calendar"></i>
+                      
+                      </span>
+                    </div>
                 </div>
+
+                <label class="control-label col-sm-1">Jenis</label>
+                <div class="col-md-5">
+                  <div class="radio">
+                      <label>
+                        <input name="urgensi" type="radio" class="ace" value="cito" />
+                        <span class="lbl"> Cito</span>
+                      </label>
+
+                      <label>
+                        <input name="urgensi" type="radio" class="ace" value="biasa" checked/>
+                        <span class="lbl"> Biasa</span>
+                      </label>
+                  </div>
+                </div> 
+
+              </div>
+              <!-- cari obat -->
+              <div class="form-group">
+                <label class="control-label col-sm-2">Cari Obat</label>            
+                <div class="col-md-8">            
+                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
+                </div>
+              </div>
+
+              <!-- jumlah pesan -->
+              <div class="form-group">
+                <label class="control-label col-sm-2">Jml Pesan</label>
+                <div class="col-md-2">
+                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')"/>
+                </div>
+                <label class="control-label col-sm-1">Tebus</label>
+                <div class="col-md-2">
+                    <input class="form-control" name="jumlah_tebus" id="jumlah_tebus" type="text" style="text-align:center" />
+                </div>
+                <label class="control-label col-sm-3">Jumlah u/ 23 (hari) </label>
+                <div class="col-md-2">
+                    <input class="form-control" name="jml_23" id="jml_23" type="text" value="<?php echo ($value->kode_perusahaan==120)?23:0?>" style="text-align:center"/>
+                </div>
+                
+              </div>
+
+              <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
+
+              <div class="form-group">
+                  <label class="control-label col-sm-2">Signa</label>
+                  <div class="col-md-2">
+                    <input name="dosis_start" id="dosis_start" type="text" style="width: 50px; text-align: center"/>
+                  </div>
+                  <div class="col-md-1 no-padding" style="margin-top:4px; margin-left: -3%">
+                    <i class="fa fa-times bigger-150"></i>
+                  </div>
+                  <div class="col-md-2 no-padding" style="margin-left: -6%">
+                      <input name="dosis_end" id="dosis_end" type="text" style="width: 50px; text-align: center"/>
+                  </div>
+                  <div class="col-md-2 no-padding" style="margin-left: -6.5%">
+                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', '', '', 'style="width:130px"');?>
+                  </div>
+                  <div class="col-md-2" style="margin-left:4.5%">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', '', '', '');?>
+                  </div>
+
+              </div>
+
+              <div class="form-group">
+                  <label class="control-label col-sm-2">Catatan</label>
+                  <div class="col-md-1">
+                      <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                  <label class="col-sm-2">&nbsp;</label>
+                  <div class="col-md-4" style="margin-left: 4px">
+                    <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary">
+                        <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
+                        Tambahkan Obat
+                    </button>
+                  </div>
+              </div>
+
+
             </div>
-
-            <label class="control-label col-sm-1">Jenis</label>
-            <div class="col-md-5">
-              <div class="radio">
-                  <label>
-                    <input name="urgensi" type="radio" class="ace" value="cito" />
-                    <span class="lbl"> Cito</span>
-                  </label>
-
-                  <label>
-                    <input name="urgensi" type="radio" class="ace" value="biasa" checked/>
-                    <span class="lbl"> Biasa</span>
-                  </label>
-              </div>
-            </div> 
-
-          </div>
-          <!-- cari obat -->
-          <div class="form-group">
-            <label class="control-label col-sm-2">Cari Obat</label>            
-            <div class="col-md-10">            
-              <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
-            </div>
-          </div>
-
-          <!-- jumlah pesan -->
-          <div class="form-group">
-            <label class="control-label col-sm-2">Jml Pesan</label>
-            <div class="col-md-2">
-                <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')"/>
-            </div>
-            <label class="control-label col-sm-2">Jml Tebus</label>
-            <div class="col-md-2">
-                <input class="form-control" name="jumlah_tebus" id="jumlah_tebus" type="text" style="text-align:center" />
-            </div>
-            <label class="control-label col-sm-1">Jasa R</label>
-            <div class="col-md-2">
-                <input class="form-control" name="harga_r" id="harga_r" type="text" value="500" readonly />
-            </div>
-            <!-- <div id="stok_warning"></div> -->
-          </div>
-
-          <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
-
-          <div class="form-group">
-              <label class="control-label col-sm-1">Signa</label>
-              <div class="col-md-3">
-                  <input style="width: 50px" name="dosis_start" id="dosis_start" type="text" style="text-align:center" />
-                  <span style="padding: 5px">  &nbsp;X </span>
-                  <input style="width: 50px" name="dosis_end" id="dosis_end" type="text" style="text-align:center" />
-              </div>
-              <div class="col-md-2 no-padding" style="margin-left: -4.7%">
-                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', 'form-control', '', '');?>
-              </div>
-              <div class="col-md-3" style="margin-left: -1%">
-                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', 'form-control', '', '');?>
-              </div>
-              <label class="control-label col-sm-1">Catatan</label>
-              <div class="col-md-1">
-                  <input class="form-control" name="catatan" id="catatan" type="text" style="width: 450px"/>
-              </div>
-          </div>
-
-          <!-- <div class="form-group">
-              <label class="control-label col-sm-2">Catatan</label>
-              <div class="col-md-8">
-                  <input class="form-control" name="catatan" id="catatan" type="text"/>
-              </div>
-          </div> -->
-
-          <div class="col-md-4" style="margin-left:-14px;">
-            <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary">
-                <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
-                Tambahkan Obat
-            </button>
           </div>
           
         </div>
 
         <!-- detail selected obat -->
-        <div class="col-sm-5" style="display:none" id="div_detail_obat">
-            <p><b>DATA STOK OBAT</b></p>
-            <div id="warning_stok_obat"></div>
-            <div id="detailObatHtml"></div>
+        <div class="col-sm-5 no-padding">
+          <div class="widget-box">
+            <div class="widget-header">
+                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Stok Barang/Obat Farmasi</span>
+              <div class="widget-toolbar">
+
+              </div>
+            </div>
+            <div class="widget-body" style="padding:5px; min-height: 277px !important">
+              <div id="div_detail_obat">
+                <div id="warning_stok_obat"></div>
+                <div id="detailObatHtml" class="center">
+                <img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%">
+                </div>
+              </div>
+            </div>
+          </div>
+            
         </div>
         
         <!-- datatable detail obat -->
@@ -702,8 +768,8 @@ function duplicate_input(id_input, duplicate_to){
             <tbody>
             </tbody>
           </table>
-          <hr>
-          
+
+          <!-- <hr>
           <b>RESEP RACIKAN</b>
           <table id="temp_data_obat_racikan" class="table table-bordered table-hover">
             <thead>
@@ -725,7 +791,7 @@ function duplicate_input(id_input, duplicate_to){
             </thead>
             <tbody>
             </tbody>
-          </table>
+          </table> -->
 
         </div>
         

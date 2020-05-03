@@ -384,7 +384,7 @@
 
           <div class="modal-header">
 
-            <div class="table-header">
+            <!-- <div class="table-header"> -->
 
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 
@@ -394,7 +394,7 @@
 
               <span id="result_text_create_sep">SUKSES</span>
 
-            </div>
+            <!-- </div> -->
 
           </div>
 
@@ -422,7 +422,7 @@
 
           <div class="modal-header">
 
-            <div class="table-header">
+            <!-- <div class="table-header"> -->
 
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 
@@ -430,9 +430,9 @@
 
               </button>
 
-              <span id="text_title">TITLE</span>
+              <span id="text_title" style="font-size: 14px; color: white">TITLE</span>
 
-            </div>
+            <!-- </div> -->
 
           </div>
 
@@ -456,7 +456,7 @@
 
           <div class="modal-header">
 
-            <div class="table-header">
+            <!-- <div class="table-header"> -->
 
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 
@@ -466,7 +466,7 @@
 
               <span id="text_title_medium">TITLE</span>
 
-            </div>
+            <!-- </div> -->
 
           </div>
 

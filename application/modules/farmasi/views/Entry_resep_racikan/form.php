@@ -495,7 +495,7 @@ function btn_update_racikan(){
           <!-- pilih racikan -->
           <div class="form-group">
             <label class="control-label col-sm-2">Pilih Racikan</label>
-            <div class="col-md-6">
+            <div class="col-md-4">
                   <?php echo $this->master->custom_selection($params = array('table' => 'tc_far_racikan', 'id' => 'id_tc_far_racikan', 'name' => 'nama_racikan', 'where' => array('kode_pesan_resep' => $kode_pesan_resep)), isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
             </div>
           </div> 
@@ -545,8 +545,8 @@ function btn_update_racikan(){
 
               <div class="form-group">
                 <label class="control-label col-sm-2">Nama Racikan</label>
-                <div class="col-md-5">
-                    <input type="text" class="form-control" name="nama_racikan" id="nama_racikan">  
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="nama_racikan" id="nama_racikan" value="Racikan Kode. <?php echo $kode_pesan_resep; ?>">  
                 </div>
               </div>
 
@@ -560,19 +560,19 @@ function btn_update_racikan(){
                       <option value="ML">Ml</option>
                     </select> 
                 </div>
-                <label class="control-label col-sm-2">Jumlah</label>
-                <div class="col-md-2">
+                <label class="control-label col-sm-1">Jumlah</label>
+                <div class="col-md-1">
                     <input type="text" class="form-control" name="jml_racikan" id="jml_racikan" >  
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="control-label col-sm-2">Jasa Prod</label>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <input type="text" class="form-control" name="jasa_prod_racikan" id="jasa_prod_racikan" value="2000">  
                 </div>
                 <label class="control-label col-sm-1">Jasa R</label>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <input type="text" class="form-control" name="jasa_r_racikan" id="jasa_r_racikan" value="500">  
                 </div>
               </div>

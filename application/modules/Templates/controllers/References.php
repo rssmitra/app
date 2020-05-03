@@ -615,7 +615,7 @@ class References extends MX_Controller {
 					        			);
         }
 
-        //echo '<pre>';print_r($room);die;
+        // echo '<pre>';print_r($room);die;
         /*show view*/
         $html = '';
 
@@ -630,13 +630,15 @@ class References extends MX_Controller {
 					$reserve = '';
 					if(count($row['reserved_by']) > 0){
 
-						if($row['reserved_by'][0]->nama_pasien) {
-							$data_reserve = $row['reserved_by'][0];
-							$img_color = 'bed_red.png';
-							$reserve .= $data_reserve->nama_pasien.' ('.$data_reserve->no_mr.')<br>';
-							$reserve .= 'Tanggal Masuk   : '.$this->tanggal->formatDate($data_reserve->tgl_masuk).'<br>';
-							$reserve .= 'dr Pengirim : '.$data_reserve->dr_pengirim.'<br>';
-							$is_available = '<a href="#"><label class="label label-danger">Sudah Terisi</label></a>';
+						if( $row['reserved_by'][0]->tgl_keluar == NULL ){
+							if($row['reserved_by'][0]->nama_pasien) {
+								$data_reserve = $row['reserved_by'][0];
+								$img_color = 'bed_red.png';
+								$reserve .= $data_reserve->nama_pasien.' ('.$data_reserve->no_mr.')<br>';
+								$reserve .= 'Tanggal Masuk   : '.$this->tanggal->formatDate($data_reserve->tgl_masuk).'<br>';
+								$reserve .= 'dr Pengirim : '.$data_reserve->dr_pengirim.'<br>';
+								$is_available = '<a href="#"><label class="label label-danger">Sudah Terisi</label></a>';
+							}
 						}else{
 							$img_color = 'bed_green.png';
 							$is_available = '<a href="#" style="cursor:pointer" class="btn btn-xs btn-success" onclick="select_bed_from_modal_bed('."'".$row['kode_ruangan']."'".","."'".$row['no_bed']."'".","."'".$row['no_kamar']."'".')">Available</a>';
@@ -644,6 +646,7 @@ class References extends MX_Controller {
 							$reserve .= 'Tanggal masuk : <br>';
 							$reserve .= 'Dokter pengirim : <br>';
 						}
+						
 						
 					}else{
 						$img_color = 'bed_green.png';
@@ -691,7 +694,7 @@ class References extends MX_Controller {
 
 	public function get_data_pasien_ri_existing($kode_ruangan){
 
-		$this->db->select('d.no_mr,d.nama_pasien,c.no_registrasi,b.no_kunjungan, a.dr_pengirim, a.tgl_masuk');
+		$this->db->select('d.no_mr,d.nama_pasien,c.no_registrasi,b.no_kunjungan, a.dr_pengirim, a.tgl_masuk, a.tgl_keluar');
 		$this->db->from('ri_tc_rawatinap a');
 		$this->db->join('tc_kunjungan b', 'a.no_kunjungan=b.no_kunjungan','left');
 		$this->db->join('tc_registrasi c', 'b.no_registrasi=c.no_registrasi','left');

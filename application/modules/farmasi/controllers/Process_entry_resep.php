@@ -95,6 +95,7 @@ class Process_entry_resep extends MX_Controller {
                 'biaya_tebus' => $this->regex->_genRegex($biaya_tebus, 'RGXINT'),
                 'tgl_input' => date('Y-m-d H:i:s'),
                 'urgensi' => $this->regex->_genRegex($_POST['urgensi'], 'RGXQSL'),
+                'jumlah_obat_23' => $this->regex->_genRegex($_POST['jml_23'], 'RGXINT'),
             );
 
             
@@ -165,6 +166,8 @@ class Process_entry_resep extends MX_Controller {
                 'satuan_obat' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
                 'anjuran_pakai' => isset($_POST['anjuran_pakai'])?$this->regex->_genRegex($_POST['anjuran_pakai'], 'RGXQSL'):0,
                 'jumlah_obat' => isset($_POST['jumlah_obat'])?$this->regex->_genRegex($_POST['jumlah_obat'], 'RGXQSL'):0,
+                'jumlah_obat_23' => isset($_POST['jml_23'])?$this->regex->_genRegex($_POST['jml_23'], 'RGXQSL'):0,
+                'urgensi' => $this->regex->_genRegex($_POST['urgensi'], 'RGXQSL'),
             );
            
             
@@ -199,12 +202,12 @@ class Process_entry_resep extends MX_Controller {
                 $data_etiket['total'] = $total_biaya;
                 $data_etiket['jasa_r'] = $dt_existing_obat->harga_r;
                 $data_etiket['total'] = $dt_existing_obat->harga_beli;
-                $data_etiket['urgensi'] = 'biasa';
+                $data_etiket['urgensi'] = $this->regex->_genRegex($_POST['urgensi'], 'RGXQSL');
                 $data_etiket['flag_resep'] = ( $dt_existing_obat->id_tc_far_racikan == 0 )?'biasa':'racikan';
 
                 $data_etiket['created_date'] = date('Y-m-d H:i:s');
                 $data_etiket['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                print_r($data_etiket);die;
+                // print_r($data_etiket);die;
 
                 $this->db->insert( 'fr_tc_far_detail_log', $data_etiket );
                 /*save log*/
@@ -248,14 +251,14 @@ class Process_entry_resep extends MX_Controller {
     {
         $ID = ($this->input->post('ID'))?$this->input->post('ID'):0;
 
-        // print_r($_POST);die;
+        
         // select transaksi farmasi
         $this->db->from('fr_tc_far a, fr_tc_far_detail b');
         $this->db->join('mt_barang c', 'c.kode_brg=b.kode_brg','left');
         $this->db->where('a.kode_trans_far =  b.kode_trans_far');
         $this->db->where('a.kode_trans_far', $ID);
         $trans_dt = $this->db->get()->result();
-        
+        print_r($trans_dt);die;
         /*execution begin*/
         $this->db->trans_begin();
 

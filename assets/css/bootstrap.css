@@ -3484,7 +3484,7 @@ tbody.collapse.in {
   display: table;
   border-collapse: separate;
   margin-left: 0px;
-  min-width: 137px;
+  min-width: 145px;
 }
 .input-group[class*="col-"] {
   float: none;
@@ -5521,13 +5521,13 @@ button.close {
   filter: alpha(opacity=50);
 }
 .modal-header {
-  background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%);
-  padding: 7px;
+  background-image:linear-gradient(to bottom, #307ECC  90%, #ddb909 20%);
+  padding: 11px;
   border-bottom: 1px solid #e5e5e5;
   min-height: 16.42857143px;
 }
 .modal-header .close {
-  margin-top: -2px;
+  margin-top: -7px;
 }
 .modal-title {
   margin: 0;
