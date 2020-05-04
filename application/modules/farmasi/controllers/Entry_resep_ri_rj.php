@@ -121,16 +121,16 @@ class Entry_resep_ri_rj extends MX_Controller {
             $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.strtoupper($data->nama_brg).'</h4></b></div><br>';
             $html .= '<table class="table table-striped" style="width: 70%">';
             $html .= '<tr>';
-                $html .= '<th>Pabrikan</th>';
-                $html .= '<th>Jenis Obat</th>';
+                // $html .= '<th>Pabrikan</th>';
+                // $html .= '<th>Jenis Obat</th>';
                 $html .= '<th>Satuan Besar/Kecil</th>';
                 $html .= '<th>Rasio</th>';
                 $html .= '<th>Signa</th>';
                 $html .= '<th>Catatan</th>';
             $html .= '</tr>'; 
                 $html .= '<tr>';
-                    $html .= '<td>'.$data->nama_pabrik.'</td>';
-                    $html .= '<td>'.$data->nama_jenis.'</td>';
+                    // $html .= '<td>'.$data->nama_pabrik.'</td>';
+                    // $html .= '<td>'.$data->nama_jenis.'</td>';
                     $html .= '<td>'.$data->satuan_besar.' / '.$data->satuan_kecil.'</td>';
                     $html .= '<td>1 : '.$data->content.'</td>';
                     $html .= '<td>'.$resep->dosis_obat.' x '.$resep->dosis_per_hari.' '.$resep->satuan_obat.' ('.$resep->anjuran_pakai.') </td>';
@@ -165,6 +165,7 @@ class Entry_resep_ri_rj extends MX_Controller {
                             <ul class="dropdown-menu dropdown-inverse">
                                 <li><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">Entry Resep</a></li>
                                 <li><a href="#">Kirim ke Gudang</a></li>
+                                <li><a href="#" onclick="rollback('.$row_list->kode_pesan_resep.')">Rollback</a></li>
                             </ul>
                         </div></div>';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">'.$row_list->kode_pesan_resep.'</a></div>';
@@ -173,6 +174,8 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->nama_pegawai;
             $row[] = ucwords($row_list->nama_bagian);
+            $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
+            $row[] = '<div class="center">'.$status_tebus.'</div>';
             $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
             $row[] = $row_list->nama_lokasi;
             
@@ -202,6 +205,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = '';
             $row[] = $row_list->relation_id;
             $row[] = $row_list->flag_resep;
+            
             if($row_list->flag_resep=='racikan'){
                 $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_pesan_resep."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."'".', '."'RESEP RACIKAN'".')"';
                 $btn_selesai_racikan = '<li><a href="#" onclick="process_selesai('.$row_list->relation_id.')">Resep Selesai</a></li>';
@@ -209,25 +213,21 @@ class Entry_resep_ri_rj extends MX_Controller {
                 $onclick = 'onclick="edit_obat_resep('."'".$row_list->kode_brg."','".$row_list->relation_id."'".')"';
                 $btn_selesai_racikan = '';
             }
-            /*$row[] = '<div class="center"><div class="btn-group">
-                            <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                                <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-inverse">
-                            '.$btn_selesai_racikan.'
-                                <li><a href="#" '.$onclick.' >Edit</a></li>
-                                <li><a href="#" onclick="delete_resep('.$row_list->relation_id.', '."'".$row_list->flag_resep."'".')">Hapus</a></li>
-                            </ul>
-                        </div></div>';*/
-                        $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" '.$onclick.'><i class="fa fa-edit"></i></a> <a href="#" class="btn btn-xs btn-danger" onclick="delete_resep('.$row_list->relation_id.', '."'".$row_list->flag_resep."'".')"><i class="fa fa-trash"></i></a> </div>';
-                        $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
+            
+            if($row_list->status_tebus != 1){
+                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" '.$onclick.'><i class="fa fa-edit"></i></a> <a href="#" class="btn btn-xs btn-danger" onclick="delete_resep('.$row_list->relation_id.', '."'".$row_list->flag_resep."'".')"><i class="fa fa-trash"></i></a> </div>';
+            }else{
+                $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
+            }
+
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
             $row[] = $row_list->kode_brg;
             $row[] = strtoupper($row_list->nama_brg);
-            $row[] = '<div class="center">'.$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->harga_jual_satuan).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->sub_total).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->jasa_r).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->total).'</div>';
+            $row[] = '<div class="center">'.(int)$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->harga_jual_satuan, 2).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->sub_total, 2).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->jasa_r, 2).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->total, 2).'</div>';
             $status_input = ($row_list->status_input==NULL)?'<label class="label label-warning">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
             $row[] = '<div align="center">'.$status_input.'</div>';
             

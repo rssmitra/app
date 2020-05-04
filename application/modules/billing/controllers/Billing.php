@@ -487,11 +487,13 @@ class Billing extends MX_Controller {
             $data_trans = $this->db->get_where('tc_trans_pelayanan', array('kode_trans_pelayanan' => $kode_trans_pelayanan))->row();
             $dataTransKasirBagian["kode_tc_trans_kasir"] = $dataTranskasir["kode_tc_trans_kasir"];
             $dataTransKasirBagian["kode_bagian"] = $data_trans->kode_bagian;
-            
             $this->db->insert('tc_trans_kasir_bagian', $dataTransKasirBagian);
-
             // update status, kode_tc_trans_kasir tc_trans_pelayanan per item
             $this->db->update('tc_trans_pelayanan', array('status_selesai' => 3, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $kode_trans_pelayanan));
+            // update status bayar farmasi
+            if($data_trans->kode_trans_far != null || $data_trans->kode_trans_far != 0){
+                $this->db->update('fr_tc_far', array('status_bayar' => 1), array('kode_trans_pelayanan' => $kode_trans_pelayanan)  );
+            }
             $this->db->trans_commit();
         }
         

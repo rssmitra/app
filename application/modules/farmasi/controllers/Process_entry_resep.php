@@ -83,21 +83,21 @@ class Process_entry_resep extends MX_Controller {
                 $harga_jual = $_POST['pl_harga_satuan_cito'];
             }
             
-
+            $sisa = $_POST['jumlah_pesan'] - $_POST['jumlah_tebus'];
             $data_farmasi_detail = array(
-                'jumlah_pesan' => $this->regex->_genRegex($_POST['jumlah_pesan'], 'RGXINT'),
-                'jumlah_tebus' => $this->regex->_genRegex($_POST['jumlah_tebus'], 'RGXINT'),
-                'sisa' => $this->regex->_genRegex(0, 'RGXINT'),
+                'jumlah_pesan' => $_POST['jumlah_pesan'],
+                'jumlah_tebus' => $_POST['jumlah_tebus'],
+                'sisa' => $sisa,
                 'kode_brg' => $this->regex->_genRegex($_POST['kode_brg'], 'RGXQSL'),
-                'harga_beli' => $this->regex->_genRegex($_POST['pl_harga_beli'], 'RGXINT'),
-                'harga_jual' => $this->regex->_genRegex($harga_jual, 'RGXINT'),
-                'harga_r' => $this->regex->_genRegex($_POST['harga_r'], 'RGXINT'),
-                'biaya_tebus' => $this->regex->_genRegex($biaya_tebus, 'RGXINT'),
+                'harga_beli' => $_POST['pl_harga_beli'],
+                'harga_jual' => $harga_jual,
+                'harga_r' => 500,
+                'biaya_tebus' => $biaya_tebus,
                 'tgl_input' => date('Y-m-d H:i:s'),
                 'urgensi' => $this->regex->_genRegex($_POST['urgensi'], 'RGXQSL'),
                 'jumlah_obat_23' => $this->regex->_genRegex($_POST['jml_23'], 'RGXINT'),
             );
-
+            // print_r($data_farmasi_detail);die;
             
             /*cek terlebih dahulu data fr_tc_far*/
             /*jika sudah ada data sebelumnya maka langsung insert ke detail*/
@@ -160,12 +160,12 @@ class Process_entry_resep extends MX_Controller {
             $data_etiket = array(
                 'dosis_obat' => isset($_POST['dosis_start'])?$this->regex->_genRegex($_POST['dosis_start'], 'RGXQSL'):0,
                 'dosis_per_hari' => isset($_POST['dosis_end'])?$this->regex->_genRegex($_POST['dosis_end'], 'RGXQSL'):0,
-                'aturan_pakai' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
+                // 'aturan_pakai' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
                 'catatan_lainnya' => isset($_POST['catatan'])?$this->regex->_genRegex($_POST['catatan'], 'RGXQSL'):0,
                 'relation_id' => isset($data_farmasi_detail['kd_tr_resep'])?$this->regex->_genRegex($data_farmasi_detail['kd_tr_resep'], 'RGXINT'):0,
                 'satuan_obat' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
                 'anjuran_pakai' => isset($_POST['anjuran_pakai'])?$this->regex->_genRegex($_POST['anjuran_pakai'], 'RGXQSL'):0,
-                'jumlah_obat' => isset($_POST['jumlah_obat'])?$this->regex->_genRegex($_POST['jumlah_obat'], 'RGXQSL'):0,
+                // 'jumlah_obat' => isset($_POST['jumlah_obat'])?$this->regex->_genRegex($_POST['jumlah_obat'], 'RGXQSL'):0,
                 'jumlah_obat_23' => isset($_POST['jml_23'])?$this->regex->_genRegex($_POST['jml_23'], 'RGXQSL'):0,
                 'urgensi' => $this->regex->_genRegex($_POST['urgensi'], 'RGXQSL'),
             );
@@ -247,22 +247,36 @@ class Process_entry_resep extends MX_Controller {
         
     }
 
+    public function rollback()
+    {
+        $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
+        
+        if($this->Process_entry_resep->rollback($id)){
+            echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Berhasil Dilakukan'));
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Gagal Dilakukan'));
+        }
+        
+    }
+
     public function process_selesai_resep()
     {
         $ID = ($this->input->post('ID'))?$this->input->post('ID'):0;
-
-        
+        $kode_bagian = '060101'; // kode bagian farmasi
         // select transaksi farmasi
-        $this->db->from('fr_tc_far a, fr_tc_far_detail b');
-        $this->db->join('mt_barang c', 'c.kode_brg=b.kode_brg','left');
-        $this->db->where('a.kode_trans_far =  b.kode_trans_far');
+        $this->db->from('fr_tc_far_detail_log a');
+        $this->db->join('fr_tc_far b','a.kode_trans_far=b.kode_trans_far','left');
         $this->db->where('a.kode_trans_far', $ID);
         $trans_dt = $this->db->get()->result();
-        print_r($trans_dt);die;
+        // print_r($trans_dt);die;
         /*execution begin*/
         $this->db->trans_begin();
 
         if( count($trans_dt) > 0 ){
+            // delete first tc_trans_pelayanan
+            $this->db->where('kode_trans_far', $ID);
+            $this->db->delete('tc_trans_pelayanan');
+            
             foreach($trans_dt as $row_dt){
                 // update sisa tebus fr_tc_far_detail
                 $sisa_tebus = $row_dt->jumlah_pesan - $row_dt->jumlah_tebus;
@@ -270,31 +284,33 @@ class Process_entry_resep extends MX_Controller {
                 // $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1), array('kd_tr_resep' => $row_dt->kd_tr_resep) );
                     
                 // create mutasi untuk obat racikan
-                if( $row_dt->id_tc_far_racikan != 0 ){
+                if( $row_dt->flag_resep != 0 ){
                     // cari data obat racikan 
-                    $dt_racikan = $this->db->join('tc_far_racikan a','a.id_tc_far_racikan=b.id_tc_far_racikan','left')->get_where('tc_far_racikan_detail b', array('b.id_tc_far_racikan' => $row_dt->id_tc_far_racikan) )->result();
+                    $dt_racikan = $this->Entry_resep_racikan->get_detail_by_id($row_dt->relation_id);
+                    // $dt_racikan = $this->db->join('tc_far_racikan a','a.id_tc_far_racikan=b.id_tc_far_racikan','left')->get_where('tc_far_racikan_detail b', array('b.id_tc_far_racikan' => $row_dt->relation_id) )->result();
+                    // print_r($this->db->last_query());die;
                     // lopping data racikan 
                     foreach ( $dt_racikan as $val_dt ) {
-                        $this->stok_barang->stock_process($val_dt->kode_brg, $val_dt->jumlah, $row_dt->kode_bagian, 14, " Nama Racikan : ".$val_dt->nama_racikan." - Nomor Resep : ".$row_dt->kode_pesan_resep."", 'reduce');
+                        $this->stok_barang->stock_process($val_dt->kode_brg, (int)$val_dt->jumlah, $kode_bagian, 14, " Nama Racikan : ".$val_dt->nama_racikan." - Nomor Resep : ".$row_dt->kode_pesan_resep."", 'reduce');
                                             
                     }
                     // update status input fr_tc_far_racikan
                     $this->db->update('tc_far_racikan', array('status_input' => 1), array('id_tc_far_racikan' => $row_dt->id_tc_far_racikan ) );
     
                     // define untuk obat racikan
-                    $kode_brg = $dt_racikan[0]->id_tc_far_racikan;
+                    $kode_brg = $row_dt->id_tc_far_racikan;
                     $nama_barang_tindakan = $dt_racikan[0]->nama_racikan;
-                    $total_harga = $dt_racikan[0]->harga_jual + $dt_racikan[0]->jasa_r;
+                    $total_harga = $dt_racikan[0]->harga_jual + $dt_racikan[0]->jasa_r + $dt_racikan[0]->jasa_produksi;
     
                 }
                 // create mutasi obat biasa atau non racikan
                 else{
                     // kurangi stok depo, update kartu stok dan rekap stok
-                    $this->stok_barang->stock_process($row_dt->kode_brg, $row_dt->jumlah_tebus, $row_dt->kode_bagian, 14, " No Resep : ".$row_dt->kode_pesan_resep."", 'reduce');
+                    $this->stok_barang->stock_process($row_dt->kode_brg, (int)$row_dt->jumlah_tebus, $kode_bagian, 14, " No Resep : ".$row_dt->kode_pesan_resep."", 'reduce');
                     // define untuk obat biasa atau non racikan
                     $kode_brg = $row_dt->kode_brg;
                     $nama_barang_tindakan = $row_dt->nama_brg;
-                    $total_harga = $row_dt->biaya_tebus + $row_dt->harga_r;
+                    $total_harga = $row_dt->total + $row_dt->jasa_r + $row_dt->jasa_produksi;
                     
                 }
     
@@ -320,7 +336,7 @@ class Process_entry_resep extends MX_Controller {
                     "kode_bagian" => $row_dt->kode_bagian,
                     "kode_bagian_asal" => $row_dt->kode_bagian_asal,
                     "kode_profit" => $row_dt->kode_profit,
-                    "kd_tr_resep" => $row_dt->kd_tr_resep,
+                    "kd_tr_resep" => $row_dt->relation_id,
                     "no_kunjungan" => (in_array($row_dt->kode_profit, array(1000 , 2000) )) ?$row_dt->no_kunjungan : 0,
                     "status_selesai" => 2,
                     "status_nk" => (in_array($_POST['kode_kelompok'], array(10 , 3) )) ? 1 : 0,
@@ -337,6 +353,10 @@ class Process_entry_resep extends MX_Controller {
             // update status transaksi
             $this->db->where('kode_trans_far', $ID);
             $this->db->update('fr_tc_far', array('status_transaksi' => 1) );
+
+            // update fr_tc_far_detail_log
+            $this->db->where('kode_trans_far', $ID);
+            $this->db->update('fr_tc_far_detail_log', array('status_tebus' => 1) );
     
             /*log transaksi*/
             $this->db->update('fr_tc_pesan_resep', array('status_tebus' => 1), array('kode_pesan_resep' => $_POST['kode_pesan_resep']) );   

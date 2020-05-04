@@ -373,8 +373,8 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       console.log(obj.kode_brg);
       /*show value form*/
       $('#inputKeyObat').val(kode_brg+' : '+obj.nama_brg);
-      $('#jumlah_pesan').val(obj.jumlah_pesan);
-      $('#jumlah_tebus').val(obj.jumlah_tebus);
+      $('#jumlah_pesan').val(parseInt(obj.jumlah_pesan));
+      $('#jumlah_tebus').val(parseInt(obj.jumlah_tebus));
       $('#jml_23').val(obj.jumlah_obat_23);
       $('#harga_r').val(obj.jasa_r);
 
@@ -427,8 +427,8 @@ function reset_form(){
 
 function reload_table(){
   var kode_trans_far = $('#kode_trans_far').val();
-  table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa").load();
-  table_racikan.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=racikan&tipe_layanan=<?php echo $tipe_layanan?>").load();
+  table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan=<?php echo $tipe_layanan?>").load();
+  // table_racikan.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=racikan&tipe_layanan=<?php echo $tipe_layanan?>").load();
   sum_total_biaya_farmasi();
 }
 
@@ -517,6 +517,40 @@ function duplicate_input(id_input, duplicate_to){
   $('#'+duplicate_to).val( parseInt( $('#'+id_input).val() ) );
 }
 
+function rollback_resep_farmasi(id){
+  preventDefault();
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: 'farmasi/process_entry_resep/rollback',
+        type: "post",
+        data: { ID : id },
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            // show poup cetak resep
+            $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form/'+$('#no_resep').val()+'?mr='+$('#no_mr').val()+'&tipe_layanan='+$('#flag_trans').val()+'');
+
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+}
+
 
 </script>
 
@@ -537,7 +571,7 @@ function duplicate_input(id_input, duplicate_to){
     <div class="page-header">  
       <h1>
         <?php echo $title?>        
-        <small><i class="ace-icon fa fa-angle-double-right"></i><?php echo isset($breadcrumbs)?$breadcrumbs:''?></small>        
+        <small><i class="ace-icon fa fa-angle-double-right"></i> <?php echo isset($breadcrumbs)?$breadcrumbs:''?></small>        
       </h1>
     </div>  
         
@@ -546,7 +580,7 @@ function duplicate_input(id_input, duplicate_to){
       <!-- form_hidden -->
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
       <input type="hidden" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
-      <input type="hidden" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
+      <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
       <input type="hidden" name="nama_pasien" value="<?php echo isset($value)?$value->nama_pasien:''?>">
       <input type="hidden" name="kode_dokter" value="<?php echo isset($value)?$value->kode_dokter:''?>">
       <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value)?$value->nama_pegawai:''?>">
@@ -556,7 +590,7 @@ function duplicate_input(id_input, duplicate_to){
       <input type="hidden" name="flag_trans" id="flag_trans" value="<?php echo $tipe_layanan?>">
       <input type="hidden" name="flag_resep" value="biasa">
       <input type="hidden" name="no_kunjungan" id="no_kunjungan" class="form-control" value="<?php echo isset($value)?ucwords($value->no_kunjungan):''?>" >
-      <input type="hidden" name="no_resep" id="no_resep" class="form-control" value="<?php echo isset($value)?ucwords($value->kode_pesan_resep):''?>" >
+      <input type="hidden" name="no_resep" id="no_resep" class="form-control" value="<?php echo isset($value)?$value->kode_pesan_resep:''?>" >
       <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="<?php echo isset($value)?$value->kode_kelompok:''?>" >
       <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" >
       <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
@@ -599,6 +633,7 @@ function duplicate_input(id_input, duplicate_to){
             <div class="widget-header">
                 <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep Farmasi</span>
               <div class="widget-toolbar">
+                <?php if($value->status_tebus != 1) :?>
                 <button type="button" id="btn_racikan" class="btn btn-purple btn-xs" onclick="show_modal('<?php echo base_url().'farmasi/Entry_resep_racikan/form/'.$value->kode_pesan_resep.'?kelompok='.$value->kode_kelompok.'&tipe_layanan='.$tipe_layanan.''?>', 'RESEP RACIKAN FARMASI')">
                   <span class="ace-icon fa fa-plus-square icon-on-right bigger-110"></span>
                   Resep Racikan
@@ -608,9 +643,17 @@ function duplicate_input(id_input, duplicate_to){
                       <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
                       Resep Selesai
                 </button>
+                <?php else: ?>
+                  <!-- <button type="button" id="btn_rollback" onclick="rollback_resep_farmasi(<?php echo $value->kode_pesan_resep?>)" class="btn btn-danger btn-xs" name="rollback" value="rollback">
+                      <span class="ace-icon fa fa-refresh icon-on-right bigger-110"></span>
+                      Rollback
+                  </button> -->
+                  <span class="ace-icon fa fa-check-circle icon-on-right bigger-150 green"></span>
+                <?php endif; ?>
+
               </div>
             </div>
-            <div class="widget-body" style="padding:5px">
+            <div class="widget-body" style="padding:5px; min-height: 278px !important" >
               <!-- Data Obat -->
               <p><b>FORM OBAT</b></p>
               <div class="form-group">
@@ -707,7 +750,7 @@ function duplicate_input(id_input, duplicate_to){
                       <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
                   </div>
               </div>
-
+              <?php if($value->status_tebus != 1) :?>
               <div class="form-group">
                   <label class="col-sm-2">&nbsp;</label>
                   <div class="col-md-4" style="margin-left: 4px">
@@ -717,6 +760,7 @@ function duplicate_input(id_input, duplicate_to){
                     </button>
                   </div>
               </div>
+              <?php endif; ?>
 
 
             </div>

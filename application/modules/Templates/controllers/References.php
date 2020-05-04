@@ -118,7 +118,7 @@ class References extends MX_Controller {
 		$query = "select a.jd_kode_spesialis as kode_bagian,c.nama_bagian
 					from tr_jadwal_dokter a
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
-					where a.jd_hari='".$day."' and a.status_loket='on' or kode_bagian = '012801'
+					where a.jd_hari='".$day."' and a.status_loket='on' or (kode_bagian = '012801' or kode_bagian='012901')
 					group by  a.jd_kode_spesialis,c.nama_bagian";
 		$exc = $this->db->query($query);
         echo json_encode($exc->result());
@@ -1350,13 +1350,13 @@ class References extends MX_Controller {
 			$html .= '<tr style="background-color: #31ecdb30">';
     		/*get total tarif barang*/
     		$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
-			$html .= '<td valign="top" align="left"><span>Harga Umum : </span> '.number_format($harga_satuan).',- <input type="hidden" name="pl_harga_satuan" value="'.$harga_satuan.'"> </td>';
+			$html .= '<td valign="top" align="left"><span>Harga Umum : </span> '.number_format($harga_satuan).',- <input type="hidden" name="pl_harga_satuan" value="'.(float)$harga_satuan.'"> </td>';
 			
 			$html .= '<td valign="top" align="left"><span>Harga Cito :</span> '.number_format($harga_satuan_cito).',- <input type="hidden" name="pl_harga_satuan_cito" value="'.$harga_satuan_cito.'"> </td>';
 
 	    	$html .= '</tr>';
 			$html .= '<tr style="background-color: #31ecdb30">';
-				$html .= '<td valign="top" align="left" colspan="2"><span>Harga BPJS :</span> '.number_format($exc[0]->harga_beli).',- <input type="hidden" name="pl_harga_satuan_bpjs" value="'.(int)$exc[0]->harga_beli.'"> </td>';
+				$html .= '<td valign="top" align="left" colspan="2"><span>Harga BPJS :</span> '.number_format($exc[0]->harga_beli,2).',- <input type="hidden" name="pl_harga_satuan_bpjs" value="'.(float)$exc[0]->harga_beli.'"> </td>';
 	    	$html .= '</tr>';
     	//}
     	$html .= '</table>';

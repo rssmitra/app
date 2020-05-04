@@ -32,6 +32,42 @@ function popUnder(node) {
     return false;
 }
 
+
+function rollback(id){
+  preventDefault();
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: 'farmasi/process_entry_resep/rollback',
+        type: "post",
+        data: { ID : id },
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            // show poup cetak resep
+            reload_table();
+
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+  
+}
+
 </script>
 
 <div class="row">
@@ -137,6 +173,7 @@ function popUnder(node) {
               <th>Nama Pasien</th>
               <th>Nama Dokter</th>
               <th>Asal Pasien</th>
+              <th width="90px">Status</th>
               <th width="90px">Jumlah (R)</th>
               <th>Lokasi Tebus</th>
             </tr>

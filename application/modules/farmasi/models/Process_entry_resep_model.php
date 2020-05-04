@@ -81,9 +81,11 @@ class Process_entry_resep_model extends CI_Model {
          /*data detail farmasi*/
 
         /*sub total*/
-        $sub_total = ceil($params['jumlah_tebus'] * $params['harga_jual']);
+        $sub_total = (float)$params['jumlah_tebus'] * (float)$params['harga_jual'];
+        $sisa = $params['jumlah_pesan'] - $params['jumlah_tebus'];
         /*total biaya*/
-        $total_biaya = ($sub_total + $params['harga_r']);
+        $jasa_produksi = isset($params['jasa_produksi']) ? $params['jasa_produksi'] : 0 ;
+        $total_biaya = ($sub_total + $params['harga_r'] + $jasa_produksi);
         $data_farmasi_detail = array(
             'kode_trans_far' => $this->regex->_genRegex($params['kode_trans_far'], 'RGXINT'),
             'kode_pesan_resep' => $this->regex->_genRegex($params['kode_pesan_resep'], 'RGXINT'),
@@ -91,16 +93,33 @@ class Process_entry_resep_model extends CI_Model {
             'kode_brg' => $this->regex->_genRegex($params['kode_brg'], 'RGXQSL'),
             'nama_brg' => $this->regex->_genRegex($params['nama_brg'], 'RGXQSL'),
             'satuan_kecil' => $this->regex->_genRegex($params['satuan_kecil'], 'RGXQSL'),
-            'jumlah_pesan' => $this->regex->_genRegex($params['jumlah_pesan'], 'RGXINT'),
-            'jumlah_tebus' => $this->regex->_genRegex($params['jumlah_tebus'], 'RGXINT'),
-            'sisa' => $this->regex->_genRegex(0, 'RGXINT'),
-            'harga_jual_satuan' => $this->regex->_genRegex($params['harga_jual'], 'RGXINT'),
-            'sub_total' => $this->regex->_genRegex($sub_total, 'RGXINT'),
-            'jasa_r' => $this->regex->_genRegex($params['harga_r'], 'RGXINT'),
-            'total' => $this->regex->_genRegex($total_biaya, 'RGXINT'),
+            'jumlah_pesan' => $params['jumlah_pesan'],
+            'jumlah_tebus' => $params['jumlah_tebus'],
+            'sisa' => $sisa,
+            'harga_jual_satuan' => $params['harga_jual'],
+            'sub_total' => $sub_total,
+            'jasa_r' => $params['harga_r'],
+            'total' => $total_biaya,
             'flag_resep' => $this->regex->_genRegex($params['flag_resep'], 'RGXQSL'),
             'relation_id' => $this->regex->_genRegex($relation_id, 'RGXQSL'),
+
         );
+
+        // jasa produksi
+        isset($params['jasa_produksi']) ? 
+        	$data_farmasi_detail['jasa_produksi'] = $this->regex->_genRegex($params['jasa_produksi'], 'RGXINT'):'';
+
+        // signa
+        isset($params['dosis_obat']) ? 
+        	$data_farmasi_detail['dosis_obat'] = $this->regex->_genRegex($params['dosis_obat'], 'RGXQSL'):'';
+        isset($params['dosis_per_hari']) ? 
+        	$data_farmasi_detail['dosis_per_hari'] = $this->regex->_genRegex($params['dosis_per_hari'], 'RGXQSL'):'';
+        isset($params['satuan_obat']) ? 
+        	$data_farmasi_detail['satuan_obat'] = $this->regex->_genRegex($params['satuan_obat'], 'RGXQSL'):'';
+        isset($params['anjuran_pakai']) ? 
+        	$data_farmasi_detail['anjuran_pakai'] = $this->regex->_genRegex($params['anjuran_pakai'], 'RGXQSL'):'';
+        isset($params['catatan_lainnya']) ? 
+        	$data_farmasi_detail['catatan_lainnya'] = $this->regex->_genRegex($params['catatan_lainnya'], 'RGXQSL'):'';
 
         //print_r($data_farmasi_detail);die;
         /*cek terlebih dahulu data fr_tc_far*/
@@ -129,5 +148,16 @@ class Process_entry_resep_model extends CI_Model {
 
     }
 
+    public function rollback($kode_pesan_resep){
 
+        // update status transaksi
+        $this->db->where('kode_pesan_resep', $kode_pesan_resep);
+        $this->db->update('fr_tc_far', array('status_transaksi' => null) );
+
+        /*log transaksi*/
+        $this->db->update('fr_tc_pesan_resep', array('status_tebus' => null), array('kode_pesan_resep' => $kode_pesan_resep) );  
+
+        return true;
+
+    }
 }

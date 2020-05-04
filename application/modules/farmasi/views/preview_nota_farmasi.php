@@ -110,7 +110,7 @@ th, td {
           <td style="border: 1px solid black; border-collapse: collapse">Nama Obat/Alkes</td>
           <td style="text-align:center; width: 50px; border: 1px solid black; border-collapse: collapse">Jumlah</td>
           <td style="text-align:center; width: 50px; border: 1px solid black; border-collapse: collapse">Satuan</td>
-          <td style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Harga Satuan</td>
+          <td style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Subtotal</td>
         </tr>
     </thead>
     <tbody>
@@ -118,20 +118,22 @@ th, td {
           $no=0; 
           foreach($resep as $key_dt=>$row_dt) : $no++; 
             $arr_total[] = $row_dt->harga_jual;
+            $desc = ($row_dt->nama_brg != null) ? $row_dt->nama_brg : $row_dt->nama_racikan;
+            $satuan = ($row_dt->satuan_kecil != null) ? $row_dt->satuan_kecil : $row_dt->satuan_brg;
         ?>
             <tr>
               <td style="text-align:center; border-collapse: collapse"><?php echo $no?></td>
               <td style="border-collapse: collapse"><?php echo $row_dt->kode_brg?></td>
-              <td style="border-collapse: collapse"><?php echo $row_dt->nama_brg?></td>
-              <td style="text-align:center; border-collapse: collapse"><?php echo $row_dt->jumlah_pesan?></td>
-              <td style="text-align:center; border-collapse: collapse"><?php echo $row_dt->satuan_kecil?></td>
-              <td style="text-align:right; border-collapse: collapse"><?php echo $row_dt->harga_jual?></td>
+              <td style="border-collapse: collapse"><?php echo $desc?></td>
+              <td style="text-align:center; border-collapse: collapse"><?php echo (int)$row_dt->jumlah_pesan?></td>
+              <td style="text-align:center; border-collapse: collapse"><?php echo $satuan?></td>
+              <td style="text-align:right; border-collapse: collapse"><?php echo number_format($row_dt->harga_jual, 2)?></td>
             </tr>
 
             <?php endforeach;?>
             <tr>
               <td colspan="5" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
-              <td style="text-align:right; border-top: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_total))?></td>
+              <td style="text-align:right; border-top: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_total), 2)?></td>
             </tr>
             <tr>
             <td colspan="6" style="text-align:left; border-top: 1px solid black; border-collapse: collapse">

@@ -60,11 +60,11 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-            $this->db->where("fr_listpesanan_v.tgl_pesan >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
-            $this->db->where("fr_listpesanan_v.tgl_pesan <= '".$this->tanggal->selisih($_GET['to_tgl'],'+1')."'" );
+            $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) >= '".$_GET['from_tgl']."'" );
+            $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) <= '".$_GET['to_tgl']."'" );
         }else{
-        	$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate())<=12');
-        	//$this->db->where('MONTH(tgl_pesan)='.date('m').' AND YEAR(tgl_pesan)='.date('Y').'');
+			$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 12');
+			$this->db->where('(status_tebus is null or status_tebus = 0)');
         }
 
 		$i = 0;
@@ -189,6 +189,7 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		
 		$this->_main_query_detail();
 		$this->db->where('fr_tc_far_detail_log.kode_trans_far', $_GET['relationId']);
+		$this->db->order_by('id_fr_tc_far_detail_log','DESC');
 		// $this->db->where('fr_tc_far_detail_log.flag_resep', $_GET['flag']);
 
 	}

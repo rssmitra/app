@@ -121,54 +121,24 @@ class Retur_obat extends MX_Controller {
             // check existing data
             $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('relation_id' => $_POST['kd_tr_resep']) );
            
-
             $data_farmasi = array(
                 'jumlah_retur' => isset($_POST['jumlah_retur'])?$this->regex->_genRegex($_POST['jumlah_retur'], 'RGXINT'):0,
+                'updated_date' => date('Y-m-d H:i:s'),
+                'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
             );
+            //  fr_tc_far_detail_log
+            $this->db->update('fr_tc_far_detail_log', $data_farmasi, array('relation_id' => $_POST['kd_tr_resep'], 'kode_trans_far' => $_POST['kode_trans_far']) );
+            /*save log*/
+            $this->logs->save('fr_tc_far_detail_log', $_POST['kd_tr_resep'], 'update record on entry resep module', json_encode($data_farmasi),'relation_id');
+
+            //  fr_tc_far_detail
+            $harga_retur = $dt_existing->harga_jual_satuan * $_POST['jumlah_retur'];
+            $data_farmasi['harga_r_retur'] = $harga_retur;
+            $data_farmasi['status_retur'] = 1;
+            $this->db->update('fr_tc_far_detail', $data_farmasi, array('kd_tr_resep' => $_POST['kd_tr_resep'], 'kode_trans_far' => $_POST['kode_trans_far']) );
+            /*save log*/
+            $this->logs->save('fr_tc_far_detail', $_POST['kd_tr_resep'], 'update record on entry resep module', json_encode($data_farmasi),'kd_tr_resep');
             
-            if( $dt_existing->num_rows() > 0 ){
-                /*update existing*/
-                $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
-                $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                $this->db->update('fr_tc_far_detail_log', $data_farmasi, array('relation_id' => $_POST['kd_tr_resep'], 'kode_trans_far' => $_POST['kode_trans_far']) );
-                /*save log*/
-                $this->logs->save('fr_tc_far_detail_log', $_POST['kd_tr_resep'], 'update record on entry resep module', json_encode($data_farmasi),'relation_id');
-            
-            }else{
-                $dt_existing_obat = $this->db->get_where('fr_hisbebasluar_v', array('kd_tr_resep' => $_POST['kd_tr_resep']) )->row();
-                // print_r($dt_existing_obat);die;
-                /*sub total*/
-                $sub_total = ceil($dt_existing_obat->jumlah_pesan * $dt_existing_obat->harga_jual);
-                /*total biaya*/
-                $total_biaya = ($sub_total + $dt_existing_obat->jumlah_pesan);
-                
-                $data_farmasi['relation_id'] = $dt_existing_obat->kd_tr_resep;
-                $data_farmasi['kode_trans_far'] = $dt_existing_obat->kode_trans_far;
-                $data_farmasi['kode_pesan_resep'] = $dt_existing_obat->kode_pesan_resep;
-                $data_farmasi['tgl_input'] = ($dt_existing_obat->tgl_input)?$dt_existing_obat->tgl_input:$dt_existing_obat->tgl_trans;
-                $data_farmasi['kode_brg'] = $dt_existing_obat->kode_brg;
-                $data_farmasi['nama_brg'] = $dt_existing_obat->nama_brg;
-                $data_farmasi['satuan_kecil'] = $dt_existing_obat->satuan_kecil;
-                $data_farmasi['jumlah_pesan'] = $dt_existing_obat->jumlah_pesan;
-                $data_farmasi['jumlah_tebus'] = $dt_existing_obat->jumlah_tebus;
-                $data_farmasi['harga_jual_satuan'] = $dt_existing_obat->harga_jual;
-                $data_farmasi['sub_total'] = $sub_total;
-                $data_farmasi['total'] = $total_biaya;
-                $data_farmasi['jasa_r'] = $dt_existing_obat->harga_r;
-                $data_farmasi['total'] = $dt_existing_obat->harga_beli;
-                $data_farmasi['urgensi'] = 'biasa';
-                $data_farmasi['flag_resep'] = ( $dt_existing_obat->id_tc_far_racikan == 0 )?'biasa':'racikan';
-
-                $data_farmasi['created_date'] = date('Y-m-d H:i:s');
-                $data_farmasi['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                // print_r($data_farmasi);die;
-
-                $this->db->insert( 'fr_tc_far_detail_log', $data_farmasi );
-                /*save log*/
-                $this->logs->save('fr_tc_far_detail_log', $_POST['kd_tr_resep'], 'insert new record on entry resep module', json_encode($data_farmasi),'relation_id');
-
-            }
-
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
