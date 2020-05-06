@@ -21,6 +21,7 @@ class Retur_obat extends MX_Controller {
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
+        $this->load->library('stok_barang');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -71,17 +72,22 @@ class Retur_obat extends MX_Controller {
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Retur_obat/form/".$row_list->kode_trans_far."'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
             $row[] = $row_list->nama_pelayanan;
-            $row[] = '<div class="center">
-                        <a href="#" onclick="getMenu('."'farmasi/Retur_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
+            if($row_list->kode_tc_trans_kasir == null) {
+                $row[] = '<div class="center">
+                        <a href="#" onclick="getMenu('."'farmasi/Retur_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-danger" title="etiket">
                           Retur Obat
                         </a>
                       </div>';
+            }else{
+                $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-check-circle"></i> Lunas</label></div>';
+            }
+            
             
             $data[] = $row;
         }
@@ -102,7 +108,7 @@ class Retur_obat extends MX_Controller {
         $this->load->library('form_validation');
         // form validation
 
-        $this->form_validation->set_rules('retur_obat', 'Jumlah Retur', 'trim|required');
+        $this->form_validation->set_rules('jumlah_retur', 'Jumlah Retur', 'trim|required');
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -119,7 +125,7 @@ class Retur_obat extends MX_Controller {
             $this->db->trans_begin();
             
             // check existing data
-            $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('relation_id' => $_POST['kd_tr_resep']) );
+            $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('relation_id' => $_POST['kd_tr_resep']) )->row();
            
             $data_farmasi = array(
                 'jumlah_retur' => isset($_POST['jumlah_retur'])?$this->regex->_genRegex($_POST['jumlah_retur'], 'RGXINT'):0,
@@ -138,6 +144,22 @@ class Retur_obat extends MX_Controller {
             $this->db->update('fr_tc_far_detail', $data_farmasi, array('kd_tr_resep' => $_POST['kd_tr_resep'], 'kode_trans_far' => $_POST['kode_trans_far']) );
             /*save log*/
             $this->logs->save('fr_tc_far_detail', $_POST['kd_tr_resep'], 'update record on entry resep module', json_encode($data_farmasi),'kd_tr_resep');
+            
+            if($dt_existing->flag_resep != 'racikan'){
+                // retur stok ke farmasi
+                $this->stok_barang->stock_process($_POST['kode_brg'], $_POST['jumlah_retur'], '060101', 8 ," Kode. ".$_POST['kode_trans_far']." ", 'restore');
+                
+            }else{
+                // get detail racikan
+                $dt_racikan = $this->db->get_where('tc_far_racikan_detail', array('id_tc_far_racikan' => $_POST['kode_brg']) )->result();
+                foreach ($dt_racikan as $key => $value) {
+                    // retur stok ke farmasi
+                    $this->stok_barang->stock_process($value->kode_brg, $value['jumlah'], '060101', 8 ," (Retur) Kode Transaksi : ".$_POST['kode_trans_far']." ", 'restore');
+                }
+            }
+
+            // hapus tc_trans_pelayanan by kd_tr_resep
+            $this->db->where('kd_tr_resep', $_POST['kd_tr_resep'])->delete('tc_trans_pelayanan');
             
             if ($this->db->trans_status() === FALSE)
             {

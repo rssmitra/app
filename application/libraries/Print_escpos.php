@@ -547,6 +547,8 @@ class Print_escpos{
         printer_end_doc($p);
 
         printer_close($p);
+
+        return true;
        
     }
 

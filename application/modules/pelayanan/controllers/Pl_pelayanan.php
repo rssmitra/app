@@ -885,7 +885,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
-        $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');        
+        $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim');        
         $this->form_validation->set_rules('cara_keluar', 'Cara Keluar Pasien', 'trim|required');        
         $this->form_validation->set_rules('pasca_pulang', 'Pasca Pulang', 'trim|required');        
         // form assesment
@@ -941,7 +941,7 @@ class Pl_pelayanan extends MX_Controller {
                     'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
                     'pemeriksaan' => $this->form_validation->set_value('pl_pemeriksaan'),
                     'tgl_periksa' => date('Y-m-d H:i:s'),
-                    'kode_bagian' => $this->form_validation->set_value('kode_bagian_asal'),
+                    'kode_bagian' => ($this->form_validation->set_value('kode_bagian_asal'))?$this->form_validation->set_value('kode_bagian_asal'):$_GET['bag'],
                     'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
                     'kategori_tindakan' => 3,
                     'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),

@@ -3,11 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Retur_obat_model extends CI_Model {
 
-	var $table = 'fr_hisbebasluar_v';
-	var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
-	var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans';
+	var $table = 'fr_tc_far';
+	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_kunjungan', 'fr_tc_far.no_mr');
+	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, nama_pelayanan, tc_trans_pelayanan.kode_tc_trans_kasir ';
 
-	var $order = array('tgl_trans' => 'DESC', 'kode_trans_far' => 'DESC');
+	var $order = array('tgl_trans' => 'DESC');
 
 	public function __construct()
 	{
@@ -18,6 +18,8 @@ class Retur_obat_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->from($this->table);
+		$this->db->join('(SELECT kode_tc_trans_kasir, kode_trans_far FROM tc_trans_pelayanan GROUP BY kode_tc_trans_kasir,kode_trans_far) as tc_trans_pelayanan','tc_trans_pelayanan.kode_trans_far=fr_tc_far.kode_trans_far','left');
+		$this->db->join('fr_mt_profit_margin','fr_mt_profit_margin.kode_profit=fr_tc_far.kode_profit','left');
 		$this->db->where('status_transaksi', 1);
 		$this->db->group_by($this->select);
 
@@ -29,16 +31,16 @@ class Retur_obat_model extends CI_Model {
 		$this->_main_query();
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
-			$this->db->like('fr_hisbebasluar_v.'.$_GET['search_by'].'', $_GET['keyword']);
+			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 		}
 
 		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){
-			$this->db->where('fr_hisbebasluar_v.kode_bagian_asal', $_GET['bagian']);
+			$this->db->where('fr_tc_far.kode_bagian_asal', $_GET['bagian']);
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-            $this->db->where("fr_hisbebasluar_v.tgl_trans >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
-            $this->db->where("fr_hisbebasluar_v.tgl_trans <= '".$this->tanggal->selisih($_GET['to_tgl'],'+1')."'" );
+            $this->db->where("fr_tc_far.tgl_trans >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
+            $this->db->where("fr_tc_far.tgl_trans <= '".$this->tanggal->selisih($_GET['to_tgl'],'+1')."'" );
         }else{
         	$this->db->where('DATEDIFF(Hour, tgl_trans, getdate())<=12');
         }
@@ -145,13 +147,10 @@ class Retur_obat_model extends CI_Model {
 	}
 
 	public function get_detail_resep_data($kode_trans_far){
-		$this->db->select('a.kd_tr_resep, a.kode_trans_far, a.jumlah_pesan, a.kode_brg, (a.harga_jual + a.harga_r) as harga_jual, b.dosis_obat, b.dosis_per_hari, b.anjuran_pakai, b.catatan_lainnya, b.satuan_obat, c.nama_brg, d.nama_racikan, b.jumlah_obat, b.id_fr_tc_far_detail_log, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, c.satuan_kecil, e.created_by, a.jumlah_tebus');
-		$this->db->from('fr_tc_far_detail a');
-		$this->db->join('fr_tc_far_detail_log b','b.relation_id=a.kd_tr_resep','left');
-		$this->db->join('mt_barang c','c.kode_brg=a.kode_brg','left');
-		$this->db->join('tc_far_racikan d','d.id_tc_far_racikan=a.id_tc_far_racikan','left');
-		$this->db->join('fr_tc_far e', 'e.kode_trans_far=a.kode_trans_far','left');
-		$this->db->where('a.kode_trans_far', $kode_trans_far);
+		$this->db->select('b.relation_id as kd_tr_resep, b.kode_trans_far, b.jumlah_pesan, b.kode_brg, b.total as harga_jual, b.harga_jual_satuan, b.dosis_obat, b.dosis_per_hari, b.anjuran_pakai, b.catatan_lainnya, b.satuan_obat, b.nama_brg, b.jumlah_obat, b.id_fr_tc_far_detail_log, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, b.satuan_kecil, e.created_by, b.jumlah_tebus, b.jumlah_retur, b.tgl_retur, b.retur_by');
+		$this->db->from('fr_tc_far_detail_log b');
+		$this->db->join('fr_tc_far e', 'e.kode_trans_far=b.kode_trans_far','left');
+		$this->db->where('b.kode_trans_far', $kode_trans_far);
 		return $this->db->get();
 	}
 

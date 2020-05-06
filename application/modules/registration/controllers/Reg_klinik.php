@@ -379,7 +379,7 @@ class Reg_klinik extends MX_Controller {
 
                 if($this->input->post('is_new')!='Yes'){
                     $tracer = $this->print_escpos->print_direct($data_tracer);
-                    if( $tracer==1 ) {
+                    if( $tracer == 1 ) {
                          $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
                     }
                 }

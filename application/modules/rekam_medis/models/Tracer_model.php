@@ -42,8 +42,9 @@ class Tracer_model extends CI_Model {
 			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 				$this->db->where("convert(varchar,tc_registrasi.tgl_jam_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");	
 				
-	        }else{
-				$this->db->where('CONVERT(VARCHAR(11),tc_kunjungan.tgl_masuk,102) >= CONVERT(VARCHAR(11),getdate(),102) ');
+			}
+			else{
+				$this->db->where(' YEAR(tgl_masuk) ', date('Y'));
 			}
 
 	        if (isset($_GET['bagian']) AND $_GET['bagian'] != '') {

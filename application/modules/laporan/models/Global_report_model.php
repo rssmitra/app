@@ -517,6 +517,23 @@ class Global_report_model extends CI_Model {
 		return $query;
 
 	}
+	public function farmasi_mod_10(){
+		$query = 'SELECT a.id_tc_permintaan_inst_det, jumlah_permintaan, 
+				jumlah_penerimaan, a.kode_brg, c.nama_brg, f.harga_beli, c.content as rasio, 
+				c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, 
+				e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.kode_bagian, g.nama_bagian
+				 FROM tc_permintaan_inst_det a LEFT JOIN mt_barang c ON c.kode_brg=a.kode_brg
+				  LEFT JOIN tc_permintaan_inst e ON e.id_tc_permintaan_inst=a.id_tc_permintaan_inst 
+				  LEFT JOIN mt_bagian g ON g.kode_bagian=e.kode_bagian_minta 
+				  LEFT JOIN mt_rekap_stok f ON f.kode_brg=a.kode_brg 
+				  WHERE g.kode_bagian='."'".$_POST['bagian']."'".' and tgl_permintaan BETWEEN '."'".$_POST['tgl1']."'".'  and '."'".$_POST['tgl2']."'".' AND jumlah_penerimaan > 0 GROUP BY a.id_tc_permintaan_inst_det,
+				   jumlah_permintaan, jumlah_penerimaan, a.kode_brg, 
+				   c.nama_brg, f.harga_beli, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, 
+					e.tgl_permintaan, f.jml_sat_kcl, g.kode_bagian, g.nama_bagian ORDER BY e.tgl_permintaan ASC';
+
+		return $query;
+
+	}
 
 	public function farmasi_mod_4(){
 

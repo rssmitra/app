@@ -48,6 +48,7 @@ $(document).ready(function(){
         "bProcessing": false,
         "animate": true,
         "searching":false,
+        "pageLength":25,
         // Load data for the table's content from an Ajax source
         "ajax": {
             "url": base_url+"/get_data",
@@ -100,6 +101,16 @@ $(document).ready(function(){
     $('#btn_reset_data').click(function (e) {
             e.preventDefault();
             reset_table();
+    });
+
+    $( ".form-control" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          $('#btn_search_data').click();
+          return false;       
+        }
     });
 
     interval = setInterval( function () {
