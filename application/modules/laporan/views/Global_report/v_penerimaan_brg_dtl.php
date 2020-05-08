@@ -84,10 +84,11 @@
             <th rowspan="2">NO</th>
             <th rowspan="2">Kode Penerimaan</th>
             <th rowspan="2">Tgl Penerimaan</th>
-            <th rowspan="2">No Surat Jalan</th>
             <th rowspan="2">Kode Barang</th>
             <th rowspan="2">Nama Barang</th>
             <th rowspan="2">Supplier</th>
+            <th rowspan="2">No PO</th>
+            <th rowspan="2">No Faktur</th>
      
            <th colspan="2">Jumlah Besar</th>
             <th rowspan="2">Satuan Besar</th>
@@ -122,10 +123,11 @@
               <?php 
                echo '<td>'.$kode_penerimaan.'</td>';
                   echo '<td>'.$tgl_penerimaan.'</td>';
-                  echo '<td>'.$no_faktur.'</td>';
-                  echo '<td>'.$kode_penerimaan.'</td>';
+                  echo '<td>'.$kode_brg.'</td>';
                   echo '<td>'.$row_data->nama_brg.'</td>';
                   echo '<td>'.$row_data->namasupplier.'</td>';
+                  echo '<td>'.$row_data->no_po.'</td>';
+                  echo '<td>'.$no_faktur.'</td>';
                   echo '<td>'.$jumlah_pesan.'</td>';
                   echo '<td>'.$jumlah_kirim.'</td>';
                   echo '<td>'.$row_data->satuan_besar.'</td>';
