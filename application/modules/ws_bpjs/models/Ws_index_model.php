@@ -570,7 +570,7 @@ class Ws_index_model extends CI_Model {
 		$this->db->from('mt_ruangan a');
 		$this->db->join('mt_bagian b','b.kode_bagian=a.kode_bagian','left');
 		$this->db->join('mt_klas c','c.kode_klas=a.kode_klas','left');
-		$this->db->join('(select * from ri_tc_rawatinap where (ri_tc_rawatinap.status_pulang=0 or ri_tc_rawatinap.status_pulang IS NULL) and ri_tc_rawatinap.bag_pas != '."'031001'".' AND DATEDIFF(day,ri_tc_rawatinap.tgl_masuk,GETDATE()) < 60 ) as ri','ri.kode_ruangan=a.kode_ruangan','left');
+		$this->db->join('(select * from ri_tc_rawatinap where (ri_tc_rawatinap.status_pulang=0 or ri_tc_rawatinap.status_pulang IS NULL) AND DATEDIFF(day,ri_tc_rawatinap.tgl_masuk,GETDATE()) < 60 ) as ri','ri.kode_ruangan=a.kode_ruangan','left');
 		$this->db->join('tc_kunjungan d','d.no_kunjungan=ri.no_kunjungan','left');
 		$this->db->join('mt_master_pasien e','e.no_mr=d.no_mr','left');
 		$this->db->join('mt_karyawan f','f.kode_dokter=ri.dr_merawat','left');

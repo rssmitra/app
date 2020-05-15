@@ -61,7 +61,7 @@
                   echo '<td>'.$row_data->satuan_besar.'</td>';
                   echo '<td>'.$row_data->content.'</td>';
                   echo '<td>'.$row_data->stok_akhir.'</td>';
-                  echo '<td>'.$hasill.'</td>';
+                  echo '<td>'.number_format($hasill).'</td>';
                   echo '<td>'.$row_data->satuan_kecil.'</td>';
                   echo '<td>'.$row_data->nama_golongan.'</td>';
                   echo '<td>'.$row_data->nama_kategori.'</td>';
