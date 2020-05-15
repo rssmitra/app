@@ -232,6 +232,93 @@ class Global_report extends MX_Controller {
         /*load view index*/
         $this->load->view('Global_report/lappembelian_1_mod_'.$_GET['mod'].'', $data);
     }
+    public function lapkinerja() { 
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show()
+        );
+
+        /*load view index*/
+        $data['html'] = $this->load->view('Global_report/lapkinerja', $data, true);
+        $this->load->view('Global_report/form', $data);
+        // $this->load->view('Global_report/lapkinerja', $data);
+    }
+
+    public function showdatakinerja(){
+
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'tgl1' => $_POST['tgl1'],
+            'tgl2' => $_POST['tgl2'],
+            'jeniskelamin' => $_POST['jeniskelamin'],
+            'result' => $query_data,
+        );
+        // echo '<pre>';print_r($query_data);
+         $this->load->view('Global_report/v_kinerja', $data);
+        
+        
+    }
+    public function lapkunjungan() { 
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show()
+        );
+
+        /*load view index*/
+        $data['html'] = $this->load->view('Global_report/lapkunjungan', $data, true);
+        $this->load->view('Global_report/form', $data);
+    }
+
+    public function showdatakunjungan(){
+
+        // $query_data = $this->Global_report->get_data();
+        $sql_ugd = $this->Global_report->vsql_ugd();
+        $sql_spesialis = $this->Global_report->vsql_spesialis();
+        $sql_luar = $this->Global_report->vsql_luar();
+        $sql_inap = $this->Global_report->vsql_inap();
+         // get saldo
+        // foreach ($sql_ugd as $k_sql_ugd => $v_sql_ugd) {
+        //         $get_v_sql_ugd[] = $v_sql_ugd;
+            
+        // }
+        //   // get saldo
+        // foreach ($sql_spesialis as $k_sql_spesialis => $v_sql_spesialis) {
+        //         $get_v_sql_spesialis[] = $v_sql_spesialis;
+            
+        // }
+        //   // get saldo
+        // foreach ($sql_luar as $k_sql_luar => $v_sql_luar) {
+        //         $get_v_sql_luar[] = $v_sql_luar;
+            
+        // }
+        //   // get saldo
+        // foreach ($sql_inap as $k_sql_inap => $v_sql_inap) {
+        //         $get_v_sql_inap[] = $v_sql_inap;
+            
+        // }
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'penunjang' => $_POST['penunjang'],
+            'bulan' => $_POST['from_month'],
+            'tahun' => $_POST['year'],
+            // 'result' => $query_data,
+            'dt_sql_ugd' => $sql_ugd,
+            'dt_sql_spesialis' => $sql_spesialis,
+            'dt_sql_luar' => $sql_luar,
+            'dt_sql_inap' => $sql_inap,
+        );
+         // echo '<pre>';print_r($dt_sql_spesialis);
+         $this->load->view('Global_report/v_kunjungan', $data);
+        
+        
+    }
     public function laporanrl() { 
         /*define variable data*/
         $data = array(

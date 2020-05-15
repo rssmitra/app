@@ -398,7 +398,7 @@
 
           </div>
 
-          <div class="modal-body">
+          <div class="modal-body" style="min-height: 400px !important">
 
             <div class="alert alert-succcess">
               BERHASIL
@@ -436,7 +436,7 @@
 
           </div>
 
-          <div class="modal-body">
+          <div class="modal-body" style="min-height: 400px !important">
 
             <div id="global_modal_content_detail"></div>
 
@@ -470,7 +470,7 @@
 
           </div>
 
-          <div class="modal-body">
+          <div class="modal-body" style="min-height: 400px !important">
 
             <div id="global_modal_content_detail_medium" style="background-color: white"></div>
 

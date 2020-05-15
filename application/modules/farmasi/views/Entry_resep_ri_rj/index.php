@@ -83,7 +83,6 @@ function rollback(id){
       </h1>
     </div><!-- /.page-header -->
 
-
     <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan/find_data" autocomplete="off">
       <input type="hidden" name="kode_profit" id="kode_profit" value="2000">
       <div class="row">
@@ -162,25 +161,27 @@ function rollback(id){
 
       <hr class="separator">
       <!-- div.dataTables_borderWrap -->
-      <div style="margin-top:-27px">
-        <table id="dynamic-table" base-url="farmasi/entry_resep_ri_rj/get_data?flag=<?php echo $flag?>" class="table table-bordered table-hover">
-          <thead>
-            <tr>  
-              <th class="center"></th>
-              <th>Kode</th>
-              <th>Tgl Pesan</th>
-              <th>No Mr</th>
-              <th>Nama Pasien</th>
-              <th>Nama Dokter</th>
-              <th>Asal Pasien</th>
-              <th width="90px">Status</th>
-              <th width="90px">Jumlah (R)</th>
-              <th>Lokasi Tebus</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+      <div class="row">
+        <div class="col-md-12 no-padding">
+          <table id="dynamic-table" base-url="farmasi/entry_resep_ri_rj/get_data?flag=<?php echo $flag?>" class="table table-bordered table-hover">
+            <thead>
+              <tr>  
+                <th class="center"></th>
+                <th>Kode</th>
+                <th>Tgl Pesan</th>
+                <th>No Mr</th>
+                <th>Nama Pasien</th>
+                <th>Nama Dokter</th>
+                <th>Asal Pasien</th>
+                <th width="90px">Status</th>
+                <th width="90px">Jumlah (R)</th>
+                <th>Lokasi Tebus</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </form>

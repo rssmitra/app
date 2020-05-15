@@ -122,7 +122,7 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		if($_GET['tipe_layanan']=='RJ'){
 			$this->db->select('kode_poli');
 			$this->db->join('pl_tc_poli','pl_tc_poli.no_kunjungan=fr_listpesanan_v.no_kunjungan','left');
-		}else{
+		}else if($_GET['tipe_layanan']=='RI'){
 			$this->db->select('kode_ri');
 			$this->db->join('ri_tc_rawatinap','ri_tc_rawatinap.no_kunjungan=fr_listpesanan_v.no_kunjungan','left');
 		}

@@ -255,6 +255,13 @@ function get_kode_eticket(myid){
                     ?>
                   </tbody>
                 </table>
+                <p>Keterangan :</p>
+
+                <ol>
+                      <li> Untuk obat racikan jika ingin di retur, maka harus di retur semuanya atau tidak bisa di retur sebagian.</li>
+                      <li> Barang yang sudah di retur tidak dapat dikembalikan lagi</li>
+                </ol>
+                
               </div>
             </div>
 

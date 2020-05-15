@@ -40,7 +40,7 @@ $(document).ready(function(){
         "searching": false,
         "bSort": false,
         "ajax": {
-            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa",
+            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan="+$('#jenis_resep').val()+"",
             "type": "POST"
         },
         "columnDefs": [
@@ -71,13 +71,22 @@ $(document).ready(function(){
             }
             else {
                 /*data*/
-                $.getJSON("farmasi/Entry_resep_ri_rj/getDetail/" + kode_brg +'/'+ ID, '', function (data) {
-                    response_data = data;
-                    // Open this row
-                    row.child( format_html( response_data ) ).show();
-                    tr.addClass('shown');
-                });
-                                
+                if( flag == 'racikan' ){
+                  $.getJSON("farmasi/Entry_resep_racikan/getDetail/" + ID, '', function (data) {
+                      response_data = data;
+                      // Open this row
+                      row.child( format_html( response_data ) ).show();
+                      tr.addClass('shown');
+                  });
+                }else{
+                  $.getJSON("farmasi/Entry_resep_ri_rj/getDetail/" + kode_brg +'/'+ ID, '', function (data) {
+                      response_data = data;
+                      // Open this row
+                      row.child( format_html( response_data ) ).show();
+                      tr.addClass('shown');
+                  });
+                }
+                                                
             }
     } );
 
@@ -90,69 +99,6 @@ $(document).ready(function(){
         else {
             //achtungShowLoader();
             table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            //achtungHideLoader();
-        }
-    } );
-
-    table_racikan = $('#temp_data_obat_racikan').DataTable( {
-        "processing": true, 
-        "serverSide": true,
-        "bInfo": false,
-        "bPaginate": false,
-        "searching": false,
-        "bSort": false,
-        "ajax": {
-            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=racikan&tipe_layanan=",
-            "type": "POST"
-        },
-        "columnDefs": [
-            { 
-                "targets": [ 0 ], //last column
-                "orderable": false, //set not orderable
-            },
-            {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
-            { "visible": true, "targets": [ 0 ] },
-            { "visible": false, "targets": [ 1 ] },
-            { "visible": false, "targets": [ 2 ] },
-        ],
-    }); 
-
-    $('#temp_data_obat_racikan tbody').on('click', 'td.details-control', function () {
-            var tr = $(this).closest('tr');
-            var row = table_racikan.row( tr );
-            var data = table_racikan.row( $(this).parents('tr') ).data();
-            var ID = data[ 1 ];
-            var flag = data[ 2 ];
-            var kode_brg = data[ 5 ];
-                      
-
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            }
-            else {
-                /*data*/
-                $.getJSON("farmasi/Entry_resep_racikan/getDetail/" + ID, '', function (data) {
-                    response_data = data;
-                    // Open this row
-                    row.child( format_html( response_data ) ).show();
-                    tr.addClass('shown');
-                });
-                                
-            }
-    } );
-
-    $('#temp_data_obat_racikan tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('selected') ) {
-            //achtungShowLoader();
-            $(this).removeClass('selected');
-            //achtungHideLoader();
-        }
-        else {
-            //achtungShowLoader();
-            table_racikan.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
             //achtungHideLoader();
         }
@@ -234,12 +180,72 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            $('#btn_submit').click();
+            $('#dosis_start').focus();
+          }
+          return false;       
+        }
+    });
+   
+    $( "#dosis_start" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#dosis_end').focus();
           }
           return false;       
         }
     });
 
+    $( "#dosis_end" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#satuan_obat').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#satuan_obat" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#anjuran_pakai').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#anjuran_pakai" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#catatan').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#catatan" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#btn_submit').click();
+          }
+          return false;       
+        }
+    });
+    
 })
 
 function getDetailObatByKodeBrg(kode_brg,kode_bag){
@@ -319,8 +325,7 @@ function reset_form(){
 
 function reload_table(){
   var kode_trans_far = $('#kode_trans_far').val();
-  table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa").load();
-  table_racikan.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=racikan").load();
+  table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan=<?php echo $tipe_layanan?>").load();
   sum_total_biaya_farmasi();
 }
 
@@ -402,6 +407,11 @@ function sum_total_biaya_farmasi(){
 
 }
 
+$('#btn_racikan').click(function () {  
+  var kode_kelompok = $('#kode_kelompok').val();
+  show_modal('farmasi/Entry_resep_racikan/form?kelompok='+kode_kelompok+'&tipe_layanan='+$('#jenis_resep').val()+'', 'RESEP RACIKAN');
+})
+
 $('select[name="jenis_resep"]').change(function () {      
   
   // reset form with class
@@ -470,7 +480,9 @@ $('select[name="jenis_resep"]').change(function () {
       <input type="hidden" name="kode_bagian_asal" value="060101">
       <input type="hidden" name="no_resep" id="no_resep" class="form-control" value="0" >
       <input type="hidden"  name="flag_resep" value="biasa">
-      
+      <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="0" >
+      <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="0" >
+
       <input type="hidden" class="default_value" name="flag_trans" id="flag_trans" value="">
       <input type="hidden" class="default_value" name="no_mr" id="no_mr" value="">
       <input type="hidden" class="default_value" name="nama_pasien" id="nama_pasien" value="">
@@ -518,7 +530,7 @@ $('select[name="jenis_resep"]').change(function () {
 
         <div class="col-xs-12 no-padding">
           <div class="pull-left">
-            <button type="button" id="btn_racikan" class="btn btn-purple btn-xs" onclick="show_modal('<?php echo base_url().'farmasi/Entry_resep_racikan/form'?>', 'RESEP RACIKAN')">
+            <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
                   <span class="ace-icon fa fa-plus-square icon-on-right bigger-110"></span>
                   Resep Racikan
             </button>
@@ -536,13 +548,13 @@ $('select[name="jenis_resep"]').change(function () {
         <div class="col-xs-7 no-padding" style="margin-top: 10px">
           <p><b>PENCARIAN OBAT</b></p>
           <div class="form-group">
-            <label class="control-label col-sm-3">Kode</label>
+            <label class="control-label col-sm-2">Kode</label>
             <div class="col-md-2">
               <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" readonly>
             </div> 
           </div>
           <div class="form-group">
-            <label class="control-label col-sm-3">Jenis</label>
+            <label class="control-label col-sm-2">Jenis</label>
             <div class="col-md-9">
               <div class="radio">
                   <label>
@@ -560,22 +572,53 @@ $('select[name="jenis_resep"]').change(function () {
 
           <!-- cari data pasien -->
           <div class="form-group">
-            <label class="control-label col-sm-3">Cari Obat</label>            
+            <label class="control-label col-sm-2">Cari Obat</label>            
             <div class="col-md-8">            
               <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
             </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-sm-3">Jumlah Pesan</label>
+            <label class="control-label col-sm-2">Jml Pesan</label>
             <div class="col-md-2">
-                <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" />
+                <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center"/>
             </div>
+          </div>
 
-            <label class="control-label col-sm-2">Jasa R</label>
-            <div class="col-md-2">
-                <input class="form-control" name="harga_r" id="harga_r" type="text" value="500" readonly />
-            </div>
+          <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
+
+          <div class="form-group">
+              <label class="control-label col-sm-2">Signa</label>
+              <div class="col-md-10">
+
+                <span class="input-icon">
+                  <input name="dosis_start" id="dosis_start" type="text" style="width: 50px;"/>
+                </span>
+
+                <span class="input-icon" style="padding-left: 4px">
+                  <i class="fa fa-times bigger-150"></i>
+                </span>
+
+                <span class="input-icon">
+                  <input name="dosis_end" id="dosis_end" type="text" style="width: 50px;"/>
+                </span>
+
+                <span class="input-icon">
+                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', '', '', 'style="margin-left: -2px"');?>
+                </span>
+
+                <span class="input-icon">
+                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', '', '', 'style="margin-left: -2px"');?>
+                </span>
+
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label class="control-label col-sm-2">Catatan</label>
+              <div class="col-md-1">
+                  <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
+              </div>
           </div>
 
           <div class="form-group" style="margin-left: 8px">
@@ -621,7 +664,7 @@ $('select[name="jenis_resep"]').change(function () {
               <tbody>
               </tbody>
             </table>
-            <hr>
+            <!-- <hr>
             <div><b>RESEP RACIKAN</b></div>
             <table id="temp_data_obat_racikan" class="table table-bordered table-hover">
               <thead>
@@ -643,7 +686,7 @@ $('select[name="jenis_resep"]').change(function () {
               </thead>
               <tbody>
               </tbody>
-            </table>
+            </table> -->
 
         </div>
 

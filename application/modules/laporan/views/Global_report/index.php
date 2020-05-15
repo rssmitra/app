@@ -255,6 +255,27 @@
 										<h4 class="panel-title">
 										<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRekamMedis" aria-expanded="true">
 											<i class="bigger-110 ace-icon fa fa-angle-down" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+											&nbsp;PENUNJANG MEDIS
+										</a>
+										</h4>
+									</div>
+
+									<div class="panel-collapse collapse" id="collapseRekamMedis" aria-expanded="true" style="">
+										<div class="panel-body">
+										<ol>
+											<li><a href="<?php echo base_url().'laporan/Global_report/lapkinerja'?>">Laporan Kinerja</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/lapkunjungan'?>">Laporan Kunjungan</a></li>
+										</ol>
+										</div>
+									</div>
+									</div>
+
+									<!-- MODUL STOK OPNAME -->
+									<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">
+										<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRekamMedis" aria-expanded="true">
+											<i class="bigger-110 ace-icon fa fa-angle-down" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
 											&nbsp;REKAM MEDIS PASIEN
 										</a>
 										</h4>

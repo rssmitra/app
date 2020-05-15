@@ -153,11 +153,70 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
+            $('#jumlah_obat_23_r').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#jumlah_obat_23_r" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#dosis_start_r').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#dosis_start_r" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#dosis_end_r').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#dosis_end_r" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#anjuran_pakai_r').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#anjuran_pakai_r" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#catatan_r').focus();
+          }
+          return false;       
+        }
+    });
+
+    $( "#catatan_r" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
             $('#btn_submit_racikan').click();
           }
           return false;       
         }
-
     });
 
     $( "#jumlah_pesan_racikan" )
@@ -166,17 +225,26 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            var id_tc_far_racikan = $('#id_tc_far_racikan').val();
-            if( id_tc_far_racikan == 0 ){
-              $('#btn_submit_obat').click();
-            }else{
-              $('#btn_submit_obat').click();              
-            }
+            $('#jumlah_obat_23_rd').focus();
           }
           return false;       
         }
 
     });
+
+    $( "#jumlah_obat_23_rd" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          if($(this).valid()){
+            $('#btn_submit_obat').click();
+          }
+          return false;       
+        }
+
+    });
+
 
 })
 
@@ -236,9 +304,15 @@ function show_selected_item_racikan(id_tc_far_racikan){
           $('#id_tc_far_racikan').val(data.relation_id);
           $('#kode_r').text(data.kode_brg);
           $('#nama_r').text(data.nama_brg.toUpperCase());
-          $('#jml_r').text(data.jumlah_tebus+' '+data.satuan_kecil);
+          $('#jml_r').text(parseInt(data.jumlah_tebus)+' '+data.satuan_kecil);
           $('#signa_r').text(data.dosis_obat+' x '+data.dosis_per_hari+' '+data.anjuran_pakai);
           $('#catatan_r').text(data.catatan_aturan_pakai);
+          $('#jml_prb_r').text(data.jumlah_obat_23+' '+data.satuan_kecil);
+          var label_ditangguhkan = '';
+          if( data.prb_ditangguhkan == 1 ){
+            var label_ditangguhkan = 'Ya';
+          }
+          $('#penangguhan_r').text(label_ditangguhkan);
           $('#petugas_r').text('admin');
 
           // signa
@@ -439,10 +513,15 @@ function btn_update_racikan(){
         $('#id_tc_far_racikan').val(id_tc_far_racikan);
         $('#nama_racikan').val(data.nama_brg);
         $('#jml_racikan').val(parseInt(data.jumlah_tebus));
+        $('#jumlah_obat_23_r').val(parseInt(data.jumlah_obat_23));
         $('#satuan_racikan').val(data.satuan_kecil);
         $('#jasa_r_racikan').val(parseInt(data.jasa_r));
         $('#jasa_prod_racikan').val(parseInt(data.jasa_produksi));
-
+        if(data.prb_ditangguhkan == 1){
+          $('input[name=prb_ditangguhkan_r][type=checkbox]').prop('checked',true);
+        }else{
+          $('input[name=prb_ditangguhkan_r][type=checkbox]').prop('checked',false);
+        }
         // signa
         $('#dosis_start_r').val(data.dosis_obat);
         $('#dosis_end_r').val(data.dosis_per_hari);
@@ -482,7 +561,7 @@ function btn_update_racikan(){
       <form class="form-horizontal" method="post" id="form_entry_resep_racikan" enctype="multipart/form-data" autocomplete="off" action="farmasi/entry_resep_racikan/process">      
         
         <input type="hidden" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
-        <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo $kode_pesan_resep; ?>">
+        <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo isset($value->kode_pesan_resep)?$value->kode_pesan_resep:''; ?>">
         <input type="hidden" id="kode_trans_far" name="kode_trans_far" value="<?php echo $kode_trans_far; ?>">
         <input type="hidden" id="tipe_layanan" name="tipe_layanan" value="<?php echo $tipe_layanan; ?>">
 
@@ -508,19 +587,20 @@ function btn_update_racikan(){
           <div class="form-group">
             <label class="control-label col-sm-2">Pilih Racikan</label>
             <div class="col-md-4">
-              <?php echo $this->master->custom_selection($params = array('table' => 'fr_tc_far_detail_log', 'id' => 'relation_id', 'name' => 'nama_brg', 'where' => array('kode_pesan_resep' => $kode_pesan_resep, 'flag_resep' => 'racikan')), isset($value[0]->relation_id)?$value[0]->relation_id:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
+              <?php echo $this->master->custom_selection($params = array('table' => 'fr_tc_far_detail_log', 'id' => 'relation_id', 'name' => 'nama_brg', 'where' => array('kode_trans_far' => $kode_trans_far, 'flag_resep' => 'racikan')), isset($value[0]->relation_id)?$value[0]->relation_id:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
             </div>
           </div> 
 
           <!-- header racikan -->
           <div class="form-group" id="result_data_racikan_div" style="display: none">
-            <label class="col-sm-2">&nbsp;</label>
-            <div class="col-md-6">
+            <div class="col-md-8">
               <table class="table" width="50%" style="margin-left:8px !important">
                 <tr style="background-color:#d0e8ec; color:black">
                   <th>Kode</th>
                   <th>Nama Racikan</th>
                   <th>Jumlah</th>
+                  <th>Jumlah PRB</th>
+                  <th>Ditangguhkan</th>
                   <th>Signa</th>
                   <th>Petugas</th>
                   <th width="80px" align="center"></th>
@@ -528,7 +608,9 @@ function btn_update_racikan(){
                 <tr>
                   <td id="kode_r">-</td>
                   <td id="nama_r">-</td>
-                  <td id="jml_r">-</td>
+                  <td id="jml_r" class="center">-</td>
+                  <td id="jml_prb_r" class="center">-</td>
+                  <td id="penangguhan_r" class="center">-</td>
                   <td id="signa_r">-</td>
                   <td id="petugas_rx"><?php echo $this->session->userdata('user')->fullname?></td>
                   <td align="center">
@@ -555,58 +637,68 @@ function btn_update_racikan(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Nama Racikan</label>
                 <div class="col-md-3">
-                    <input type="text" class="form-control" name="nama_racikan" id="nama_racikan" value="Racikan Kode. <?php echo $kode_pesan_resep; ?>">  
+                    <input type="text" class="form-control" name="nama_racikan" id="nama_racikan" value="Racikan Kode. <?php echo $kode_trans_far; ?>">  
+                </div>
+                <label class="control-label col-sm-1">Jasa R</label>
+                <div class="col-md-1">
+                    <input type="text" class="form-control" name="jasa_r_racikan" id="jasa_r_racikan" value="500">   
+                </div>
+                <label class="control-label col-sm-1">Jasa Prod</label>
+                <div class="col-md-1">
+                    <input type="text" class="form-control" name="jasa_prod_racikan" id="jasa_prod_racikan" value="2000">
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="control-label col-sm-2">Jumlah Obat</label>
                 <div class="col-md-1">
-                    <input type="text" class="form-control" name="jml_racikan" id="jml_racikan" style="text-align: center">  
+                  <input type="text" class="form-control" name="jml_racikan" id="jml_racikan" style="text-align: center;">  
                 </div>
-                <div class="col-md-2" style="margin-left: -1.8%">
-                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'Bks' , 'satuan_racikan', 'satuan_racikan', '', '', 'style="width:130px"');?>
-                </div>
-                <label class="control-label col-sm-1" style="margin-left: -2.3%">Jasa R</label>
+                <label class="control-label col-sm-1">Resep PRB</label>
                 <div class="col-md-1">
-                    <input type="text" class="form-control" name="jasa_r_racikan" id="jasa_r_racikan" value="500">   
+                  <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;">  
                 </div>
-                <label class="control-label col-sm-1">Jasa Prod</label>
-                <div class="col-md-1">
-                    <input type="text" class="form-control" name="jasa_prod_racikan" id="jasa_prod_racikan" value="2000"> 
-                    
+                <div class="col-md-6">
+                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                    <input type="checkbox" class="ace" name="prb_ditangguhkan_r" value="1">
+                    <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
+                  </label>
                 </div>
-
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2">Satuan Racikan</label>
+                <div class="col-md-2">
+                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'Bks' , 'satuan_racikan', 'satuan_racikan', 'form-control', '', '');?>
+                </div>
               </div>
 
               <div class="form-group">
-                
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-sm-2">Signa</label>
-                  <div class="col-md-2">
+                <label class="control-label col-sm-2">Signa</label>
+                <div class="col-md-4">
+                  <span class="inline">
                     <input name="dosis_start_r" id="dosis_start_r" type="text" style="width: 50px; text-align: center"/>
-                  </div>
-                  <div class="col-md-1 no-padding" style="margin-top:4px; margin-left: -9%">
+                  </span>
+                  <span class="inline" style="padding-left: 4px;">
                     <i class="fa fa-times bigger-150"></i>
-                  </div>
-                  <div class="col-md-2 no-padding" style="margin-left: -8%">
-                      <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
-                  </div>
-                  <!-- <div class="col-md-2 no-padding" style="margin-left: -10.5%">
-                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat_r', 'satuan_obat_r', '', '', 'style="width:130px"');?>
-                  </div> -->
-                  <div class="col-md-2" style="margin-left:-11.5%">
-                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai_r', 'anjuran_pakai_r', '', '', '');?>
-                  </div>
-
+                  </span>
+                  <span class="inline">
+                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
+                  </span>
+                </div>
               </div>
 
               <div class="form-group">
-                  <label class="control-label col-sm-2">Catatan</label>
-                  <div class="col-md-1">
-                      <input class="form-control" name="catatan_r" id="catatan_r" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
-                  </div>
+                <label class="control-label col-sm-2">Penggunaan</label>
+                <div class="col-md-2">
+                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai_r', 'anjuran_pakai_r', 'form-control', '', '');?>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="control-label col-sm-2">Catatan</label>
+                <div class="col-md-1">
+                    <input class="form-control" name="catatan_r" id="catatan_r" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
+                </div>
               </div>
 
               <div class="form-group">
@@ -630,7 +722,7 @@ function btn_update_racikan(){
           <!-- form obat -->
           <div class="col-sm-12 no-padding" id="data_obat_div" style="display: none" >
             
-            <div class="col-sm-6 no-padding">
+            <div class="col-sm-8 no-padding">
               <!-- Data Obat -->
               <p><b>KOMPOSISI OBAT RACIKAN</b></p>
 
@@ -638,7 +730,7 @@ function btn_update_racikan(){
               <input type="hidden" name="id_tc_far_racikan_detail" id="id_tc_far_racikan_detail" value="0">
 
               <div class="form-group">
-                <label class="control-label col-sm-3">Jenis</label>
+                <label class="control-label col-sm-2">Jenis</label>
                 <div class="col-md-5">
                   <div class="radio">
                       <label>
@@ -657,7 +749,7 @@ function btn_update_racikan(){
 
               <!-- cari obat -->
               <div class="form-group">
-                <label class="control-label col-sm-3">Cari Obat</label>  
+                <label class="control-label col-sm-2">Cari Obat</label>  
                 <div class="col-md-8">   
                 <input type="text" name="obat" id="inputKeyObatRacikan" class="form-control" placeholder="Masukan Keyword Obat" value=""> 
                 </div>
@@ -665,11 +757,25 @@ function btn_update_racikan(){
 
               <!-- jumlah -->
               <div class="form-group">
-                <label class="control-label col-sm-3">Jumlah</label>
-                <div class="col-md-3">
-                    <input class="form-control" name="jumlah_pesan_racikan" id="jumlah_pesan_racikan" type="text" style="text-align:center" />
+                <label class="control-label col-sm-2">Jumlah Obat</label>
+                <div class="col-md-2">
+                  <input type="text" class="form-control" name="jumlah_pesan_racikan" id="jumlah_pesan_racikan" style="text-align: center;">  
                 </div>
-                <div class="col-md-3" style="margin-left: -13px">
+                <label class="control-label col-sm-2">Resep PRB</label>
+                <div class="col-md-2">
+                  <input type="text" class="form-control" name="jumlah_obat_23_rd" id="jumlah_obat_23_rd" style="text-align: center;">  
+                </div>
+                <div class="col-md-4">
+                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                    <input type="checkbox" class="ace" name="prb_ditangguhkan_rd" value="1">
+                    <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
+                  </label>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="col-sm-2">&nbsp;</label>
+                <div class="col-md-3" style="margin-left: 6px">
                     <button type="submit" id="btn_submit_obat"  value="detail" name="submit" class="btn btn-xs btn-primary">
                     <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
                     Tambahkan Obat
@@ -679,7 +785,7 @@ function btn_update_racikan(){
 
             </div>
             
-            <div class="col-sm-6 no-padding" style="display:none" id="div_detail_obat_racikan">
+            <div class="col-sm-4 no-padding" style="display:none" id="div_detail_obat_racikan">
               <p><b>KETERANGAN STOK DAN OBAT</b></p>
               <div id="warning_stok_obat_racikan"></div>
               <div id="detailObatHtmlRacikan"></div>

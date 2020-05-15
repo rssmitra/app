@@ -19,6 +19,7 @@ class Entry_resep_racikan extends MX_Controller {
         /*load model*/
         $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
         $this->load->model('Entry_resep_ri_rj_model', 'Entry_resep_ri_rj');
+        $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Process_entry_resep_model', 'Process_entry_resep');
         /*enable profiler*/
         $this->output->enable_profiler(false);
@@ -34,20 +35,17 @@ class Entry_resep_racikan extends MX_Controller {
         $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Entry_resep_racikan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
 
-        $data['kode_pesan_resep'] = $id;
-        $data['value_header'] = $this->Entry_resep_ri_rj->get_by_id($id);
+        $data['kode_trans_far'] = $id;
+        $data['value_header'] = $this->Etiket_obat->get_by_id($id);
 
-        $data['value'] = $this->db->get_where('fr_tc_far_detail_log', array('kode_pesan_resep' => $id, 'flag_resep' => 'racikan'))->result();
+        $data['value'] = $this->db->get_where('fr_tc_far_detail_log', array('kode_trans_far' => $id, 'flag_resep' => 'racikan'))->result();
         $data['kode_kelompok'] = $_GET['kelompok'];
-        $data['kode_pesan_resep'] = $id;
         /*get fr_tc_far*/
-        $tc_far = $this->db->get_where('fr_tc_far', array('kode_pesan_resep' => $id) );
-        $data['kode_trans_far'] = ($tc_far->num_rows() > 0) ? $tc_far->row()->kode_trans_far : 0 ;
         // echo '<pre>';print_r($data);die;
 
         /*initialize flag for form*/
         $data['tipe_layanan'] = $_GET['tipe_layanan'];
-        $data['str_tipe_layanan'] = ($_GET['tipe_layanan']=='RJ')?'Rajal':'Ranap';
+        $data['str_tipe_layanan'] = ($_GET['tipe_layanan']=='RI')?'Ranap':'Rajal';
         
         /*title header*/
         $data['title'] = $this->title;
@@ -60,18 +58,17 @@ class Entry_resep_racikan extends MX_Controller {
     public function getDetail($id){
         
         $data = $this->Entry_resep_racikan->get_detail_by_id($id);
-
-        // print_r($data);die;
         
         $html = '';
         if(count($data) > 0){
             $html .= '<div style="border-bottom:1px solid #333;"><b><h4>'.strtoupper($data[0]->nama_racikan).' ('.$data[0]->id_tc_far_racikan.') <span style="font-size:14px"><i class="ace-icon fa fa-angle-double-right"></i> '.$data[0]->dosis_obat.' x '.$data[0]->dosis_per_hari.' '.$data[0]->satuan_racikan.' '.$data[0]->anjuran_pakai.'</span></h4></b></div><br>';
 
-            $html .= '<table class="table table-striped">';
+            $html .= '<table class="table table-striped" style="width: 75%">';
             $html .= '<tr>';
                 $html .= '<th>Kode</th>';
                 $html .= '<th>Nama Obat</th>';
                 $html .= '<th class="center">Jumlah</th>';
+                $html .= '<th class="center">Jumlah PRB / ditangguhkan</th>';
                 $html .= '<th>Satuan</th>';
                 $html .= '<th>Harga Satuan</th>';
                 $html .= '<th class="center">Total</th>';
@@ -79,10 +76,12 @@ class Entry_resep_racikan extends MX_Controller {
             $total=0;
             $total_jumlah=0;
             foreach ($data as $value_data) {
+                $penangguhan = ($value_data->prb_ditangguhkan == 1)?'Y':'N';
                 $html .= '<tr>';
                     $html .= '<td>'.$value_data->kode_brg.'</td>';
                     $html .= '<td>'.$value_data->nama_brg.'</td>';
                     $html .= '<td align="center">'.number_format($value_data->jumlah).'</td>';
+                    $html .= '<td align="center">'.number_format($value_data->jumlah_obat_23).'/'.$penangguhan.'</td>';
                     $html .= '<td>'.$value_data->satuan.'</td>';
                     $html .= '<td align="right">'.number_format($value_data->harga_jual).'</td>';
                     $html .= '<td align="right">'.number_format($value_data->jumlah_total).'</td>';
@@ -95,15 +94,15 @@ class Entry_resep_racikan extends MX_Controller {
             $jasa_r = $data[0]->jasa_r + $data[0]->jasa_produksi;
             $total = $harga_total + $jasa_r;
             $html .= '<tr>';
-                $html .= '<td colspan="5" align="right">Sub Total</td>';
+                $html .= '<td colspan="6" align="right">Sub Total</td>';
                 $html .= '<td align="right">'.number_format($harga_total).'</td>';
             $html .= '</tr>'; 
             $html .= '<tr>';
-                $html .= '<td colspan="5" align="right">Jasa R + Jasa Produksi</td>';
+                $html .= '<td colspan="6" align="right">Jasa R + Jasa Produksi</td>';
                 $html .= '<td align="right">'.number_format($jasa_r).'</td>';
             $html .= '</tr>'; 
             $html .= '<tr>';
-                $html .= '<td colspan="5" align="right"><b>Total Harga</b></td>';
+                $html .= '<td colspan="6" align="right"><b>Total Harga</b></td>';
                 $html .= '<td align="right"><b>'.number_format($total).'</b></td>';
             $html .= '</tr>'; 
             
@@ -200,12 +199,14 @@ class Entry_resep_racikan extends MX_Controller {
                     $data_racikan = array(
                         'nama_racikan' => $this->regex->_genRegex(strtoupper($this->form_validation->set_value('nama_racikan')), 'RGXQSL'),
                         'jml_content' => $this->form_validation->set_value('jml_racikan'),
+                        'jumlah_obat_23' => $_POST['jumlah_obat_23_r'],
+                        'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan_r'])?$_POST['prb_ditangguhkan_r']:0,
                         'satuan_kecil' => $this->regex->_genRegex($this->form_validation->set_value('satuan_racikan'), 'RGXQSL'),
                         'jasa_r' => $_POST['jasa_r_racikan'],
                         'jasa_produksi' => $_POST['jasa_prod_racikan'],
                         'tgl_input' => date('Y-m-d H:i:s'),
                         'user_id' => $this->session->userdata('user')->user_id,
-                        'kode_pesan_resep' => $this->regex->_genRegex($_POST['kode_pesan_resep'], 'RGXINT'),
+                        'kode_pesan_resep' => isset($_POST['kode_pesan_resep'])?$_POST['kode_pesan_resep']:0,
                     );
                     
                     // jika belum ada transaksi
@@ -289,7 +290,9 @@ class Entry_resep_racikan extends MX_Controller {
                         'harga_beli' => $_POST['pl_harga_beli'],
                         'jumlah_total' => $biaya_tebus,
                         'harga_jual' => $harga_jual,
-                        );
+                        'jumlah_obat_23' => $_POST['jumlah_obat_23_rd'],
+                        'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan_rd'])?$_POST['prb_ditangguhkan_rd']:0,
+                    );
                     // print_r($obat_detail);die;
                     if($_POST['id_tc_far_racikan_detail']==0){
                         $obat_detail['created_date'] = date('Y-m-d H:i:s');
@@ -351,6 +354,8 @@ class Entry_resep_racikan extends MX_Controller {
                     'urgensi' =>'biasa',
                     'flag_resep' => 'racikan',
                     'relation_id' => $id_tc_far_racikan,
+                    'jumlah_obat_23' => $_POST['jumlah_obat_23_r'],
+                    'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan_r'])?$_POST['prb_ditangguhkan_r']:0,
                     'dosis_obat' => isset($_POST['dosis_start_r'])?$this->regex->_genRegex($_POST['dosis_start_r'], 'RGXQSL'):0,
                     'dosis_per_hari' => isset($_POST['dosis_end_r'])?$this->regex->_genRegex($_POST['dosis_end_r'], 'RGXQSL'):0,
                     'satuan_obat' => $result_racikan->satuan_kecil,

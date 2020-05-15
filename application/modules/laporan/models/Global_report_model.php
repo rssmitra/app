@@ -444,34 +444,27 @@ class Global_report_model extends CI_Model {
 		$m_barang = ($_POST['jenis']=='Non Medis')?'mt_barang_nm':'mt_barang';
 		
 		if($_POST['frekuensi']=='harian'){
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount FROM '.$t_penerimaan.' a JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
-				JOIN '.$t_po.' e ON e.no_po=a.no_po
-				JOIN '.$t_po_d.' f ON f.id_tc_po=e.id_tc_po
 				WHERE a.tgl_penerimaan='."'".$_POST['tgl']."'".' 
-				GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount ORDER BY a.tgl_penerimaan desc';
+				GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
 		}
 		elseif($_POST['frekuensi']=='bulanan'){
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount FROM '.$t_penerimaan.' a 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a 
 				JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier 
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
-				JOIN '.$t_po.' e ON e.no_po=a.no_po
-				JOIN '.$t_po_d.' f ON f.id_tc_po=e.id_tc_po
-				WHERE MONTH(a.tgl_penerimaan)='."'".$_POST['from_month']."'".' AND YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, 
-			f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount ORDER BY a.tgl_penerimaan desc';
+				WHERE MONTH(a.tgl_penerimaan)='."'".$_POST['from_month']."'".' AND YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
 		}
 		else{
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount FROM '.$t_penerimaan.' a 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a 
 				JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier 
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
-				JOIN '.$t_po.' e ON e.no_po=a.no_po
-				JOIN '.$t_po_d.' f ON f.id_tc_po=e.id_tc_po
-				WHERE YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content, f.jumlah_besar, f.harga_satuan, f.harga_satuan_netto, f.jumlah_harga, f.jumlah_harga_netto, f.discount ORDER BY a.tgl_penerimaan desc';
+				WHERE YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
 		}
-
+			// echo '<pre>';print_r($query);
 		return $query;
 
 	}
@@ -1181,6 +1174,44 @@ class Global_report_model extends CI_Model {
 			left join mt_pabrik d on c.id_pabrik=d.id_pabrik WHERE b.flag_prod_obat<>1 and YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' group by b.kode_brg,c.nama_brg,c.satuan_kecil,c.content,c.satuan_besar,d.nama_pabrik ORDER BY c.nama_brg';
 		}
 		// return $query;
+		return $this->db->query($query)->result();
+	}
+
+	public function vsql_ugd(){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			
+		
+		return $this->db->query($query)->result();
+	}
+	public function vsql_spesialis(){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
+						tc_registrasi c  
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			
+		return $this->db->query($query)->result();
+	}
+	public function vsql_luar(){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'baru'";
+			
+		return $this->db->query($query)->result();
+	}
+	public function vsql_inap(){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+		
 		return $this->db->query($query)->result();
 	}
 

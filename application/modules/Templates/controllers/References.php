@@ -66,6 +66,13 @@ class References extends MX_Controller {
         }
         echo json_encode($arrResult);
         
+	}
+	
+	public function getPasienByMr($no_mr)
+    {
+		$result = $this->db->where("no_mr", $no_mr)->get('mt_master_pasien')->row();
+        echo json_encode($result);
+        
     }
 
 	public function getKlinikById($kd_bagian='')
@@ -1094,7 +1101,7 @@ class References extends MX_Controller {
 		$this->load->library('tarif');
 		$tarifAktif = $this->tarif->getTarifAktif($_GET['kode'], $_GET['klas']);
 		$exc = $tarifAktif->result();
-
+		
     	$html = '';
     	$html .= '';
     	$html .= '<p style="padding: 8px 0px 0px"><b>';

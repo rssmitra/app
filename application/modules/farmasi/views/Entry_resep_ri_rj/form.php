@@ -1,9 +1,7 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
-
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
-
+<link rel="stylesheet" href="assets/css/daterangepicker.min.css" />
 <script>
 
 jQuery(function($) {  
@@ -192,6 +190,9 @@ $(document).ready(function(){
 
           $.achtung({message: jsonResponse.message, timeout:5});             
 
+          /*renew form*/
+          reset_form();
+
           // kode trans far
           $('#kode_trans_far').val(jsonResponse.kode_trans_far);
 
@@ -199,9 +200,7 @@ $(document).ready(function(){
           reload_table();
           /*sum total biaya farmasi*/
           sum_total_biaya_farmasi();
-          /*renew form*/
-          reset_form();
-
+          
         }else{          
 
           $.achtung({message: jsonResponse.message, timeout:5});          
@@ -335,8 +334,6 @@ $(document).ready(function(){
         }
     });
 
-
-
 })
 
 function getDetailObatByKodeBrg(kode_brg,kode_bag){
@@ -372,6 +369,7 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       var obj = response.resep_data;
       console.log(obj.kode_brg);
       /*show value form*/
+      $('#kode_trans_far').val(obj.kode_trans_far);
       $('#inputKeyObat').val(kode_brg+' : '+obj.nama_brg);
       $('#jumlah_pesan').val(parseInt(obj.jumlah_pesan));
       $('#jumlah_tebus').val(parseInt(obj.jumlah_tebus));
@@ -381,10 +379,16 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       /*radio*/
       $("input[name=urgensi][value="+obj.urgensi+"]").prop('checked', true);
 
+      if(obj.prb_ditangguhkan == 1){
+        $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
+      }else{
+        $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
+      }
+      
       $('#dosis_start').val(obj.dosis_obat);
       $('#dosis_end').val(obj.dosis_per_hari);
       $('#catatan').val(obj.catatan_lainnya);
-      $('#satuan_obat').val(obj.aturan_pakai);
+      $('#satuan_obat').val(obj.satuan_obat);
       $('#anjuran_pakai').val(obj.anjuran_pakai);
 
       $('#kd_tr_resep').val(obj.relation_id);
@@ -417,13 +421,15 @@ function reset_form(){
   $('#satuan_obat').val('');
   $('#anjuran_pakai').val('');
 
-
-
    /*show detail tarif html*/
   // $('#div_detail_obat').hide('fast');
   $('#detailObatHtml').html('<img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%">');
 
 }
+
+$('#btn_racikan').click(function () {  
+  show_modal('farmasi/Entry_resep_racikan/form?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'', 'RESEP RACIKAN');
+})
 
 function reload_table(){
   var kode_trans_far = $('#kode_trans_far').val();
@@ -570,7 +576,7 @@ function rollback_resep_farmasi(id){
     <!-- breadcrumbs -->
     <div class="page-header">  
       <h1>
-        <?php echo $title?>        
+      <?php echo isset($value)?ucwords($value->no_mr):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
         <small><i class="ace-icon fa fa-angle-double-right"></i> <?php echo isset($breadcrumbs)?$breadcrumbs:''?></small>        
       </h1>
     </div>  
@@ -595,7 +601,6 @@ function rollback_resep_farmasi(id){
       <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" >
       <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
       <input type="hidden" name="kode_ri" id="kode_ri" class="form-control" value="<?php echo isset($value->kode_ri)?$value->kode_ri:0?>" >
-
       <input class="form-control" name="harga_r" id="harga_r" type="hidden" value="500" readonly />
 
 
@@ -603,7 +608,6 @@ function rollback_resep_farmasi(id){
 
         <!-- keterangan pasien -->
         <div class="col-sm-12">
-          <h4><?php echo isset($value)?ucwords($value->no_mr):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?></h4>
           <table class="table">
             <tr style="background-color: #edf3f4">
               <td> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> </td>
@@ -616,16 +620,6 @@ function rollback_resep_farmasi(id){
           </table>
         </div>
         
-        <!-- top botton -->
-        <div class="col-sm-12" style="margin-left:-5px; margin-top: 10px">
-          <div class="pull-left">
-            
-          </div>
-          <div class="pull-right">
-          
-          </div>
-        </div>
-        
         <!-- form utama -->
         <div class="col-sm-7">
 
@@ -634,7 +628,7 @@ function rollback_resep_farmasi(id){
                 <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep Farmasi</span>
               <div class="widget-toolbar">
                 <?php if($value->status_tebus != 1) :?>
-                <button type="button" id="btn_racikan" class="btn btn-purple btn-xs" onclick="show_modal('<?php echo base_url().'farmasi/Entry_resep_racikan/form/'.$value->kode_pesan_resep.'?kelompok='.$value->kode_kelompok.'&tipe_layanan='.$tipe_layanan.''?>', 'RESEP RACIKAN FARMASI')">
+                <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
                   <span class="ace-icon fa fa-plus-square icon-on-right bigger-110"></span>
                   Resep Racikan
                 </button>
@@ -661,27 +655,19 @@ function rollback_resep_farmasi(id){
                 <div class="col-md-2">
                   <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
                 </div> 
-                <label class="control-label col-sm-2">Jenis Resep</label>
-                <div class="col-md-3">
-                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_resep')), 'res_non_k' , 'jenis_resep', 'jenis_resep', isset($trans_farmasi->kode_trans_far)?'readonly':'' , '', 'style="width: 150px"');?>
-                  </div>
-              </div>
-              <!-- tanggal -->
-              <div class="form-group">
-
                 <label class="control-label col-sm-2">Tanggal</label>
                 <div class="col-md-3">
                   <div class="input-group">
                       <input name="tgl_resep" id="tgl_resep" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
                       <span class="input-group-addon">
-                        
                         <i class="ace-icon fa fa-calendar"></i>
-                      
                       </span>
                     </div>
                 </div>
-
-                <label class="control-label col-sm-1">Jenis</label>
+              </div>
+              <!-- tanggal -->
+              <div class="form-group">
+                <label class="control-label col-sm-2">Jenis</label>
                 <div class="col-md-5">
                   <div class="radio">
                       <label>
@@ -715,33 +701,49 @@ function rollback_resep_farmasi(id){
                 <div class="col-md-2">
                     <input class="form-control" name="jumlah_tebus" id="jumlah_tebus" type="text" style="text-align:center" />
                 </div>
-                <label class="control-label col-sm-3">Jumlah u/ 23 (hari) </label>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-sm-2">Resep PRB</label>
                 <div class="col-md-2">
                     <input class="form-control" name="jml_23" id="jml_23" type="text" value="<?php echo ($value->kode_perusahaan==120)?23:0?>" style="text-align:center"/>
+               
                 </div>
-                
+                <div class="col-md-6">
+                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                    <input type="checkbox" class="ace" name="prb_ditangguhkan" id="prb_ditangguhkan" value="1">
+                    <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
+                  </label>
+                </div>
               </div>
 
               <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
 
               <div class="form-group">
                   <label class="control-label col-sm-2">Signa</label>
-                  <div class="col-md-2">
-                    <input name="dosis_start" id="dosis_start" type="text" style="width: 50px; text-align: center"/>
-                  </div>
-                  <div class="col-md-1 no-padding" style="margin-top:4px; margin-left: -3%">
-                    <i class="fa fa-times bigger-150"></i>
-                  </div>
-                  <div class="col-md-2 no-padding" style="margin-left: -6%">
-                      <input name="dosis_end" id="dosis_end" type="text" style="width: 50px; text-align: center"/>
-                  </div>
-                  <div class="col-md-2 no-padding" style="margin-left: -6.5%">
-                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', '', '', 'style="width:130px"');?>
-                  </div>
-                  <div class="col-md-2" style="margin-left:4.5%">
-                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', '', '', '');?>
-                  </div>
+                  <div class="col-md-10">
 
+                    <span class="input-icon">
+                      <input name="dosis_start" id="dosis_start" type="text" style="width: 50px;"/>
+                    </span>
+
+                    <span class="input-icon" style="padding-left: 4px">
+                      <i class="fa fa-times bigger-150"></i>
+                    </span>
+
+                    <span class="input-icon">
+                      <input name="dosis_end" id="dosis_end" type="text" style="width: 50px;"/>
+                    </span>
+
+                    <span class="input-icon">
+                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', '', '', 'style="margin-left: -2px"');?>
+                    </span>
+
+                    <span class="input-icon">
+                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', '', '', 'style="margin-left: -2px"');?>
+                    </span>
+
+                  </div>
               </div>
 
               <div class="form-group">
@@ -777,7 +779,7 @@ function rollback_resep_farmasi(id){
 
               </div>
             </div>
-            <div class="widget-body" style="padding:5px; min-height: 277px !important">
+            <div class="widget-body" style="padding:5px; min-height: 304px !important">
               <div id="div_detail_obat">
                 <div id="warning_stok_obat"></div>
                 <div id="detailObatHtml" class="center">

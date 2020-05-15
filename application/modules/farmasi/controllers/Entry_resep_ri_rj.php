@@ -92,6 +92,7 @@ class Entry_resep_ri_rj extends MX_Controller {
 
     public function form_resep_karyawan()
     {
+        
         $this->load->view('Entry_resep_ri_rj/form_resep_karyawan');
     }
 
@@ -119,10 +120,11 @@ class Entry_resep_ri_rj extends MX_Controller {
         $html = '';
         if(count($data) > 0){
             $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.strtoupper($data->nama_brg).'</h4></b></div><br>';
-            $html .= '<table class="table table-striped" style="width: 70%">';
+            $html .= '<table class="table table-striped" style="width: 75%">';
             $html .= '<tr>';
                 // $html .= '<th>Pabrikan</th>';
                 // $html .= '<th>Jenis Obat</th>';
+                $html .= '<th>Jumlah PRB/ ditangguhkan</th>';
                 $html .= '<th>Satuan Besar/Kecil</th>';
                 $html .= '<th>Rasio</th>';
                 $html .= '<th>Signa</th>';
@@ -131,6 +133,8 @@ class Entry_resep_ri_rj extends MX_Controller {
                 $html .= '<tr>';
                     // $html .= '<td>'.$data->nama_pabrik.'</td>';
                     // $html .= '<td>'.$data->nama_jenis.'</td>';
+                    $penangguhan = ($resep->prb_ditangguhkan == 1)?'Y':'N';
+                    $html .= '<td align="center">'.$resep->jumlah_obat_23.'/'.$penangguhan.'</td>';
                     $html .= '<td>'.$data->satuan_besar.' / '.$data->satuan_kecil.'</td>';
                     $html .= '<td>1 : '.$data->content.'</td>';
                     $html .= '<td>'.$resep->dosis_obat.' x '.$resep->dosis_per_hari.' '.$resep->satuan_obat.' ('.$resep->anjuran_pakai.') </td>';

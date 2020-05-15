@@ -5,7 +5,8 @@ class Process_entry_resep_model extends CI_Model {
 
 	public function __construct()
 	{
-		parent::__construct();
+        parent::__construct();
+        $this->kode_farmasi = '060101';
 	}
 
 
@@ -105,10 +106,17 @@ class Process_entry_resep_model extends CI_Model {
 
         );
 
+        // jumlah obat 23/resep prb
+        isset($params['jumlah_obat_23']) ? 
+            $data_farmasi_detail['jumlah_obat_23'] = $this->regex->_genRegex($params['jumlah_obat_23'], 'RGXINT'):'';
+        
+        // apakah jumlah obat 23/resep prb ditangguhkan
+        isset($params['prb_ditangguhkan']) ? 
+        $data_farmasi_detail['prb_ditangguhkan'] = $this->regex->_genRegex($params['prb_ditangguhkan'], 'RGXINT'):'';
+            
         // jasa produksi
         isset($params['jasa_produksi']) ? 
         	$data_farmasi_detail['jasa_produksi'] = $this->regex->_genRegex($params['jasa_produksi'], 'RGXINT'):'';
-
         // signa
         isset($params['dosis_obat']) ? 
         	$data_farmasi_detail['dosis_obat'] = $this->regex->_genRegex($params['dosis_obat'], 'RGXQSL'):'';
@@ -150,13 +158,41 @@ class Process_entry_resep_model extends CI_Model {
 
     public function rollback($kode_pesan_resep){
 
+        // data resep
+        $dt = $this->db->get_where('fr_tc_far', array('kode_pesan_resep' => $kode_pesan_resep) )->row();
         // update status transaksi
         $this->db->where('kode_pesan_resep', $kode_pesan_resep);
         $this->db->update('fr_tc_far', array('status_transaksi' => null) );
 
-        /*log transaksi*/
-        $this->db->update('fr_tc_pesan_resep', array('status_tebus' => null), array('kode_pesan_resep' => $kode_pesan_resep) );  
+        /*log pesan resep*/
+        $this->db->update('fr_tc_pesan_resep', array('status_tebus' => null), array('kode_pesan_resep' => $kode_pesan_resep) );
+        
+        // delete transaksi
+        $this->db->where('kode_trans_far', $dt->kode_trans_far);
+        $this->db->delete('tc_trans_pelayanan');
 
+        /*log trasaksi detail*/
+        $this->db->update('fr_tc_far_detail_log', array('status_tebus' => null), array('kode_trans_far' => $dt->kode_trans_far) );
+
+        $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('kode_trans_far' => $dt->kode_trans_far) )->result();
+
+        // retur barang
+        foreach ($dt_existing as $key => $value) {
+            # code...
+            if($value->flag_resep != 'racikan'){
+                $sisa_di_retur = $value->jumlah_tebus - $value->jumlah_retur;
+                // retur stok ke farmasi
+                $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore');                
+            }else{
+                // get detail racikan
+                $dt_racikan = $this->db->get_where('tc_far_racikan_detail', array('id_tc_far_racikan' => $value->kode_brg) )->result();
+                foreach ($dt_racikan as $key_dt => $row_dt) {
+                    // retur stok ke farmasi
+                    $this->stok_barang->stock_process($row_dt->kode_brg, (int)$row_dt->jumlah, $this->kode_farmasi, 8 ," (Rollback) Racikan Kode : ".$row_dt->id_tc_far_racikan." ", 'restore');
+                }
+            }
+        }
+        
         return true;
 
     }

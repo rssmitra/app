@@ -48,13 +48,13 @@ class Pl_pelayanan_bedah extends MX_Controller {
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_bedah->get_by_id($id);
         $data['val_ri'] = $this->Pl_pelayanan_ri->get_by_id($data['value']->kode_ri);
+        // echo '<pre>';print_r($data);die;
         $data['no_mr'] = $data['value']->no_mr;
         $data['id'] = $id;
-        $data['kode_klas'] = $data['value']->kode_klas;
+        $data['kode_klas'] = $data['val_ri']->kelas_pas;
         $data['kode_profit'] = 2000;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['kode_bagian'] = '030901';
-        // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/

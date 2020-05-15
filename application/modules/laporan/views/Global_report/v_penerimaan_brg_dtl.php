@@ -107,6 +107,13 @@
         <tbody>
           <?php $no = 0; 
           foreach($result['data'] as $row_data){
+            $t_po = ($_POST['jenis']=='Non Medis')?'tc_po_nm':'tc_po';
+            $t_po_d = ($_POST['jenis']=='Non Medis')?'tc_po_nm_det':'tc_po_det';
+
+            $po=$this->db->query('select b.jumlah_besar, b.harga_satuan, b.harga_satuan_netto, b.jumlah_harga, b.jumlah_harga_netto, b.discount  from '.$t_po.' a JOIN '.$t_po_d.' b ON b.id_tc_po=a.id_tc_po  WHERE a.no_po='."'".$row_data->no_po."'".'
+              AND b.kode_brg='."'".$row_data->kode_brg."'".'');
+            $poo= $po->row_array();
+           
             $kode_penerimaan = $row_data->kode_penerimaan;
             $tgl_penerimaan = $row_data->tgl_penerimaan;
             $no_faktur = $row_data->no_faktur;
@@ -115,8 +122,8 @@
             $jumlah_pesan = $row_data->jumlah_pesan;
             $jumlah_kirim = $row_data->jumlah_kirim;
             $content = $row_data->content;
-            $hpa = $row_data->harga_satuan_netto/$content;
-            $no++; 
+            $hpa = $poo['harga_satuan_netto']/$content;
+            $no++;             
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -132,11 +139,11 @@
                   echo '<td>'.$jumlah_kirim.'</td>';
                   echo '<td>'.$row_data->satuan_besar.'</td>';
                   echo '<td>'.$content.'</td>';
-                  echo '<td>'.number_format($row_data->harga_satuan).'</td>';
-                  echo '<td>'.number_format($row_data->harga_satuan_netto).'</td>';
+                  echo '<td>'.number_format($poo['harga_satuan']).'</td>';
+                  echo '<td>'.number_format($poo['harga_satuan_netto']).'</td>';
                   echo '<td>'.number_format($hpa).'</td>';
-                  echo '<td>'.number_format($row_data->jumlah_harga).'</td>';
-                  echo '<td>'.number_format($row_data->jumlah_harga_netto).'</td>';
+                  echo '<td>'.number_format($poo['jumlah_harga']).'</td>';
+                  echo '<td>'.number_format($poo['jumlah_harga_netto']).'</td>';
               ?>
             </tr>
           <?php 

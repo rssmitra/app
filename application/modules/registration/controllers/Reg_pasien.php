@@ -87,7 +87,6 @@ class Reg_pasien extends MX_Controller {
 
         /*return search pasien*/
         $data = array();
-
         $output = array();
 
         $column = array('tc_kunjungan.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_perusahaan','tc_kunjungan.tgl_masuk','mt_dokter_v.nama_pegawai','mt_bagian.nama_bagian','tc_kunjungan.tgl_keluar','tc_kunjungan.kode_bagian_tujuan','mt_perusahaan.nama_perusahaan','tc_kunjungan.no_kunjungan', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.no_mr');
@@ -138,6 +137,7 @@ class Reg_pasien extends MX_Controller {
                         <ul class="dropdown-menu dropdown-inverse">
                             <li><a href="#" onclick="delete_registrasi('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Hapus</a></li>
                             <li><a href="#" onclick="ubah_penjamin_pasien('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Ubah Penjamin Pasien</a></li>
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_edit_dokter/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".' ,'."'UBAH DOKTER PEMERIKSA'".')">Ubah Dokter Pemeriksa</a></li>
                             '.$btn_view_hasil_pm.'
                             '.$btn_print_out_checklist_mcu.'
                             <li><a href="#" onclick="PopupCenter('."'registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama=".$row_list->nama_pasien."&no_mr=".$row_list->no_mr."&no_reg=".$row_list->no_registrasi."&poli=".$row_list->nama_bagian."&dokter=".$row_list->nama_pegawai."&nasabah=".$penjamin."'".', '."'FORM BUKTI PENDAFTARAN PASIEN'".', 950, 550)">Cetak Bukti Pendaftaran</a></li>
@@ -462,6 +462,22 @@ class Reg_pasien extends MX_Controller {
         /*load form view*/
         
         $this->load->view('Reg_pasien/form_modal_edit_penjamin', $data);
+
+    }
+
+    public function form_modal_edit_dokter($no_registrasi, $no_kunjungan){
+        
+        $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+
+        $data = [
+            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi),
+            'no_registrasi' => $no_registrasi,
+            'no_kunjungan' => $no_kunjungan,
+        ];
+        
+        /*load form view*/
+        
+        $this->load->view('Reg_pasien/form_modal_edit_dokter', $data);
 
     }
 
@@ -887,7 +903,7 @@ class Reg_pasien extends MX_Controller {
 
     }
 
-     public function process_edit_transaksi_penjamin_pasien()
+    public function process_edit_transaksi_penjamin_pasien()
     {
         /*print_r($_POST);die;*/
         $this->load->library('form_validation');
@@ -938,6 +954,56 @@ class Reg_pasien extends MX_Controller {
             {
                 $this->db->trans_commit();
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr_hidden_edit_penjamin'] ));
+            }
+
+        }
+    }
+
+    public function process_edit_dokter_pemeriksa()
+    {
+        /*print_r($_POST);die;*/
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+
+        $val->set_rules('no_kunjungan_hidden_edit_dokter', 'No Kunjungan', 'trim|required');
+        $val->set_rules('no_registrasi_hidden_edit_dokter', 'No Registrasi', 'trim|required');
+        $val->set_rules('kode_edit_dokter_hidden', 'Dokter Pemeriksa', 'trim|required');
+        
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+
+            $this->db->trans_begin();
+            
+            /*process*/
+            $dataexc = array(
+                'kode_dokter' => isset($_POST['kode_edit_dokter_hidden'])?$this->regex->_genRegex($val->set_value('kode_edit_dokter_hidden'),'RGXINT'):NULL,
+            );
+
+            // update tc_registrasi
+            $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter') ) );
+
+            // update tc_kunjungan
+            $this->db->update('tc_kunjungan', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter'), 'no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
+
+            // update ri_tc_rawatinap
+            $this->db->update('ri_tc_rawatinap', array('dr_merawat' => $val->set_value('kode_edit_dokter_hidden') ) , array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr_hidden_edit_dokter'] ));
             }
 
         }

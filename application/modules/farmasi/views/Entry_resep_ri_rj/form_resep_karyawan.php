@@ -28,6 +28,11 @@
               reload_table();
           })
 
+          $.getJSON("templates/references/getPasienByMr/"+val_item, '' , function (response) {
+              $('#kode_perusahaan').val(response.kode_perusahaan);
+              $('#kode_kelompok').val(response.kode_kelompok);
+          })
+
         }
 });
 </script>

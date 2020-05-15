@@ -6,7 +6,7 @@ class Inv_mutasi_model extends CI_Model {
 	var $table = 'tc_kartu_stok';
 	var $column = array('keterangan');
 	var $select = 'tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, kode_brg';
-	var $order = array('tc_kartu_stok.tgl_input' => 'DESC');
+	var $order = array('tc_kartu_stok.id_kartu' => 'DESC');
 
 	public function __construct()
 	{

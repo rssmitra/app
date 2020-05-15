@@ -270,7 +270,7 @@ final class Tarif extends AvObjects {
 
         $db->order_by('mt_master_tarif_detail.revisi_ke, mt_master_tarif_detail.kode_master_tarif_detail','DESC');
         $result = $db->get();
-        //print_r($db->last_query());die;
+        // print_r($db->last_query());die;
         return $result;
 
     }
