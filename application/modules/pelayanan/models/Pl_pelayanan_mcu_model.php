@@ -146,12 +146,23 @@ class Pl_pelayanan_mcu_model extends CI_Model {
 
 	}
 
+	// public function get_dokter_by_bagian($kd_bagian='')
+	// {
+	// 	$query = "select a.kode_dokter as kode_dokter,a.nama_pegawai
+	// 				from mt_dokter_v a where a.kd_bagian=".$kd_bagian." and a.nama_pegawai != ' '
+	// 				group by a.kode_dokter,a.nama_pegawai";
+ //        $exc = $this->db->query($query);
+	// 	// print_r($this->db->last_query());die;
+ //        return $exc->result();
+		
+	// }
 	public function get_dokter_by_bagian($kd_bagian='')
 	{
 		$query = "select a.kode_dokter as kode_dokter,a.nama_pegawai
 					from mt_dokter_v a where a.kd_bagian=".$kd_bagian." and a.nama_pegawai != ' '
 					group by a.kode_dokter,a.nama_pegawai";
         $exc = $this->db->query($query);
+		// print_r($this->db->last_query());die;
         return $exc->result();
 		
 	}
