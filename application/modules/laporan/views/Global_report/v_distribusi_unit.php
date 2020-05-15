@@ -67,6 +67,7 @@
               // $nama_brg=$row_data->nama_brg;
               $harga_jumlah=$harga_beli * $row_data->jumlah_penerimaan;
              $nama_penerima=$row_data->nama_bagian;
+             $arr_total[] = $harga_jumlah;
                 $no++; 
             ?>
             
@@ -77,14 +78,17 @@
               <td align="center"><?php echo $kode_brg;?>&nbsp;</td>
               <td align="left"><?php echo $row_data->nama_brg;?>&nbsp;</td>
               <td align="left"><?php echo $satuan_kecil;?>&nbsp;</td>
-              <td align="right"><?php echo number_format($harga_beli, 2); ?>&nbsp;</td>
+              <td align="right"><?php echo number_format($harga_beli); ?>&nbsp;</td>
               <td align="right"><?php echo number_format($jumlah_penerimaan);?>&nbsp;</td>
-              <td align="right"><?php echo number_format($harga_jumlah, 2);?>&nbsp;</td>
+              <td align="right"><?php echo number_format($harga_jumlah);?>&nbsp;</td>
             </tr>
           <?php 
         // endforeach; 
       }?>
-            
+          <tr>
+            <td colspan="8" align="right">TOTAL</td>
+            <td align="right"><?php echo number_format(array_sum($arr_total)) ?></td>
+          </tr>
            
           </tbody>
         </table>
