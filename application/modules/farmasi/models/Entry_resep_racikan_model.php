@@ -177,6 +177,8 @@ class Entry_resep_racikan_model extends CI_Model {
                 'biaya_tebus' => $this->regex->_genRegex($params['biaya_tebus'], 'RGXINT'),
                 'tgl_input' => date('Y-m-d H:i:s'),
                 'urgensi' => $this->regex->_genRegex($params['urgensi'], 'RGXQSL'),
+                'jumlah_obat_23' => $params['jumlah_obat_23'],
+                'prb_ditangguhkan' => $params['prb_ditangguhkan'],
             );
 
             //print_r($data_farmasi_detail);die;

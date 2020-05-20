@@ -104,7 +104,7 @@ class Retur_obat extends MX_Controller {
 
     public function process()
     {
-        print_r($_POST);die;
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         // form validation
 
@@ -159,7 +159,7 @@ class Retur_obat extends MX_Controller {
             }
 
             // hapus tc_trans_pelayanan by kd_tr_resep
-            $this->db->where('kd_tr_resep', $_POST['kd_tr_resep'])->delete('tc_trans_pelayanan');
+            // $this->db->where('kd_tr_resep', $_POST['kd_tr_resep'])->delete('tc_trans_pelayanan');
             
             if ($this->db->trans_status() === FALSE)
             {

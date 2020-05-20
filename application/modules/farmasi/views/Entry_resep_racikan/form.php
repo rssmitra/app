@@ -307,11 +307,11 @@ function show_selected_item_racikan(id_tc_far_racikan){
           $('#jml_r').text(parseInt(data.jumlah_tebus)+' '+data.satuan_kecil);
           $('#signa_r').text(data.dosis_obat+' x '+data.dosis_per_hari+' '+data.anjuran_pakai);
           $('#catatan_r').text(data.catatan_aturan_pakai);
-          $('#jml_prb_r').text(data.jumlah_obat_23+' '+data.satuan_kecil);
-          var label_ditangguhkan = '';
+          var label_ditangguhkan = 'N';
           if( data.prb_ditangguhkan == 1 ){
             var label_ditangguhkan = 'Ya';
           }
+          $('#jml_prb_r').text(data.jumlah_obat_23+' '+data.satuan_kecil +' / '+label_ditangguhkan);
           $('#penangguhan_r').text(label_ditangguhkan);
           $('#petugas_r').text('admin');
 
@@ -599,8 +599,9 @@ function btn_update_racikan(){
                   <th>Kode</th>
                   <th>Nama Racikan</th>
                   <th>Jumlah</th>
-                  <th>Jumlah PRB</th>
-                  <th>Ditangguhkan</th>
+                  <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
+                  <th>Jumlah PRB / Ditangguhkan</th>
+                  <?php endif; ?>
                   <th>Signa</th>
                   <th>Petugas</th>
                   <th width="80px" align="center"></th>
@@ -609,8 +610,9 @@ function btn_update_racikan(){
                   <td id="kode_r">-</td>
                   <td id="nama_r">-</td>
                   <td id="jml_r" class="center">-</td>
+                  <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
                   <td id="jml_prb_r" class="center">-</td>
-                  <td id="penangguhan_r" class="center">-</td>
+                  <?php endif; ?>
                   <td id="signa_r">-</td>
                   <td id="petugas_rx"><?php echo $this->session->userdata('user')->fullname?></td>
                   <td align="center">
@@ -654,16 +656,18 @@ function btn_update_racikan(){
                 <div class="col-md-1">
                   <input type="text" class="form-control" name="jml_racikan" id="jml_racikan" style="text-align: center;">  
                 </div>
-                <label class="control-label col-sm-1">Resep PRB</label>
-                <div class="col-md-1">
-                  <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;">  
-                </div>
-                <div class="col-md-6">
-                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
-                    <input type="checkbox" class="ace" name="prb_ditangguhkan_r" value="1">
-                    <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
-                  </label>
-                </div>
+                <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
+                  <label class="control-label col-sm-1">Resep PRB</label>
+                  <div class="col-md-1">
+                    <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;">  
+                  </div>
+                  <div class="col-md-6">
+                    <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                      <input type="checkbox" class="ace" name="prb_ditangguhkan_r" value="1">
+                      <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
+                    </label>
+                  </div>
+                <?php endif; ?>
               </div>
               <div class="form-group">
                 <label class="control-label col-sm-2">Satuan Racikan</label>
@@ -761,6 +765,7 @@ function btn_update_racikan(){
                 <div class="col-md-2">
                   <input type="text" class="form-control" name="jumlah_pesan_racikan" id="jumlah_pesan_racikan" style="text-align: center;">  
                 </div>
+                <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
                 <label class="control-label col-sm-2">Resep PRB</label>
                 <div class="col-md-2">
                   <input type="text" class="form-control" name="jumlah_obat_23_rd" id="jumlah_obat_23_rd" style="text-align: center;">  
@@ -771,6 +776,7 @@ function btn_update_racikan(){
                     <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
                   </label>
                 </div>
+                <?php endif; ?>
               </div>
               
               <div class="form-group">

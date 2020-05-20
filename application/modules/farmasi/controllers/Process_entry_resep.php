@@ -18,6 +18,7 @@ class Process_entry_resep extends MX_Controller {
         /*load model*/
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Process_entry_resep_model', 'Process_entry_resep');
+        $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
         $this->load->library('Stok_barang');
         $this->load->helper('security');
         /*enable profiler*/
@@ -284,7 +285,7 @@ class Process_entry_resep extends MX_Controller {
                 // update sisa tebus fr_tc_far_detail
                 $sisa_tebus = $row_dt->jumlah_pesan - $row_dt->jumlah_tebus;
                 
-                $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1), array('kd_tr_resep' => $row_dt->relation_id) );
+                $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1, 'status_input' => 1), array('kd_tr_resep' => $row_dt->relation_id) );
                     
                 // create mutasi untuk obat racikan
                 if( $row_dt->flag_resep == 'racikan' ){
@@ -292,18 +293,17 @@ class Process_entry_resep extends MX_Controller {
                     $dt_racikan = $this->Entry_resep_racikan->get_detail_by_id($row_dt->relation_id);
                     // print_r($this->db->last_query());die;
                     // lopping data racikan 
-                    if( $row_dt->prb_ditangguhkan != 1){
-                        foreach ( $dt_racikan as $val_dt ) {
-                            $this->stok_barang->stock_process($val_dt->kode_brg, (int)$val_dt->jumlah, $kode_bagian, 14, " Nama Racikan : ".$val_dt->nama_racikan." - Nomor Resep : ".$row_dt->kode_pesan_resep."", 'reduce');
-                        }
+                    foreach ( $dt_racikan as $val_dt ) {
+                        $total_prb = ( $val_dt->prb_ditangguhkan == 0) ? $val_dt->jumlah + $val_dt->jumlah_obat_23 : $val_dt->jumlah;
+                        $this->stok_barang->stock_process($val_dt->kode_brg, (int)$total_prb, $kode_bagian, 14, " Nama Racikan : ".$val_dt->nama_racikan." - No. Racikan : ".$row_dt->kode_brg."", 'reduce');
                     }
                     // update status input fr_tc_far_racikan
-                    $this->db->update('tc_far_racikan', array('status_input' => 1), array('id_tc_far_racikan' => $row_dt->id_tc_far_racikan ) );
+                    $this->db->update('tc_far_racikan', array('status_input' => 1), array('id_tc_far_racikan' => $row_dt->relation_id ) );
     
                     // define untuk obat racikan
-                    $kode_brg = $row_dt->id_tc_far_racikan;
-                    $nama_barang_tindakan = $dt_racikan[0]->nama_racikan;
-                    $total_harga = $dt_racikan[0]->harga_jual + $dt_racikan[0]->jasa_r + $dt_racikan[0]->jasa_produksi;
+                    $kode_brg = $row_dt->kode_brg;
+                    $nama_barang_tindakan = $row_dt->nama_brg;
+                    $total_harga = $row_dt->total;
     
                 }
                 // create mutasi obat biasa atau non racikan
@@ -313,7 +313,7 @@ class Process_entry_resep extends MX_Controller {
                     $jml_mutasi_brg = ( $row_dt->prb_ditangguhkan != 1 ) ? (int)$row_dt->jumlah_tebus + (int)$row_dt->jumlah_obat_23 : (int)$row_dt->jumlah_tebus;
                     
                     // kurangi stok depo, update kartu stok dan rekap stok
-                    $this->stok_barang->stock_process($row_dt->kode_brg, $jml_mutasi_brg, $kode_bagian, 14, " No Resep : ".$row_dt->kode_pesan_resep."", 'reduce');
+                    $this->stok_barang->stock_process($row_dt->kode_brg, $jml_mutasi_brg, $kode_bagian, 14, " No Transaksi : ".$row_dt->kode_trans_far."", 'reduce');
 
                     // define untuk obat biasa atau non racikan
                     $kode_brg = $row_dt->kode_brg;
@@ -395,12 +395,16 @@ class Process_entry_resep extends MX_Controller {
     }
 
     function nota_farmasi($kode_trans_far){
-        $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far);
-
+        $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
+        foreach($resep_log as $row){
+            $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
+            $row['racikan'][] = $racikan;
+            $getData[] = $row;
+        }
         $data = array(
-            'resep' => $resep_log->result(),
+            'resep' => $getData,
         );
-        // echo '<pre>'; print_r($resep_log->result());
+        // echo '<pre>'; print_r($data);
         $this->load->view('farmasi/preview_nota_farmasi', $data);
 
     }

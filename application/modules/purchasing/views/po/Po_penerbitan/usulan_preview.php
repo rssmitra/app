@@ -140,32 +140,44 @@ th, td {
 
   <table border="0" style="width: 100% !important; text-align: center">
     <tr>
-      <td style="text-align: center; width: 30%">
-        <b>Disahkan Oleh</b>
+      <td colspan="2" style="text-align: center; width: 100%; font-weight: bold" >Mengetahui, </td>
+    </tr>
+    <tr>
+      <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
-        <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
+        <?php echo ($flag=='non_medis') ? $this->master->get_ttd('verifikator_nm_2') : $this->master->get_ttd('verifikator_m_2') ;?>
       </td>
-
-      <td style="text-align: center; width: 40%">
-        <br>
-        <b>Disetujui Oleh</b>
+      <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
         <?php echo $this->master->get_ttd('ttd_ka_rs');?>
       </td>
+    </tr>
 
-      <td style="text-align: center; width: 30%">
-        <b>Diketahui Oleh</b>
+    <tr>
+      <td colspan="2" style="text-align: center; width: 100%; font-weight: bold" >Mengesahkan, </td>
+    </tr>
+
+    <tr>
+      
+      <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
-        <?php echo ($flag=='non_medis') ? $this->master->get_ttd('verifikator_nm_2') : $this->master->get_ttd('verifikator_m_2') ;?>
+        <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
+      </td>
+      <td style="text-align: center; width: 50%">
+        <br>
+        <br>
+        <br>
+        <br>
+        <?php echo $this->master->get_ttd('ttd_dir_keu_rssm') ;?>
       </td>
     </tr>
 </table>

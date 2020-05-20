@@ -62,7 +62,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 			if(isset($_GET['status_ranap']) AND $_GET['status_ranap']!=''){
 
 				if($_GET['status_ranap']=='sudah pulang' ){
-					$this->db->where("ri_tc_rawatinap.status_pulang=1 and ri_tc_rawatinap.tgl_keluar > '".$date."' ");
+					$this->db->where("ri_tc_rawatinap.status_pulang=1 and ri_tc_rawatinap.tgl_keluar < '".$date."' ");
 				}
 		
 				if($_GET['status_ranap']=='masih dirawat'  ){

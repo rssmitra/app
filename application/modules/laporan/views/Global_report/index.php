@@ -253,14 +253,14 @@
 									<div class="panel panel-default">
 									<div class="panel-heading">
 										<h4 class="panel-title">
-										<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRekamMedis" aria-expanded="true">
+										<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapsePenunjangMedis" aria-expanded="true">
 											<i class="bigger-110 ace-icon fa fa-angle-down" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
 											&nbsp;PENUNJANG MEDIS
 										</a>
 										</h4>
 									</div>
 
-									<div class="panel-collapse collapse" id="collapseRekamMedis" aria-expanded="true" style="">
+									<div class="panel-collapse collapse" id="collapsePenunjangMedis" aria-expanded="true" style="">
 										<div class="panel-body">
 										<ol>
 											<li><a href="<?php echo base_url().'laporan/Global_report/lapkinerja'?>">Laporan Kinerja</a></li>
@@ -290,8 +290,6 @@
 									</div>
 									</div>
 									
-
-
 								</div>
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->

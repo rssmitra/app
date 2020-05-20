@@ -211,7 +211,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = $row_list->flag_resep;
             
             if($row_list->flag_resep=='racikan'){
-                $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_pesan_resep."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."'".', '."'RESEP RACIKAN'".')"';
+                $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_trans_far."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."'".', '."'RESEP RACIKAN'".')"';
                 $btn_selesai_racikan = '<li><a href="#" onclick="process_selesai('.$row_list->relation_id.')">Resep Selesai</a></li>';
             }else{
                 $onclick = 'onclick="edit_obat_resep('."'".$row_list->kode_brg."','".$row_list->relation_id."'".')"';
@@ -259,7 +259,7 @@ class Entry_resep_ri_rj extends MX_Controller {
 
     public function cek_resep_karyawan_today(){
 
-        $trans_far = $this->db->where("convert(varchar,tgl_trans,23) = '".date('Y-m-d')."' ")->get_where('fr_tc_far', array('no_mr' => $_GET['no_mr']) );
+        $trans_far = $this->db->where("YEAR(tgl_trans) = '".date('Y')."' AND MONTH(tgl_trans) = '".date('m')."' AND status_transaksi IS NULL")->order_by('kode_trans_far', 'DESC')->get_where('fr_tc_far', array('no_mr' => $_GET['no_mr']) );
         $return = ( $trans_far->num_rows() > 0 ) ? $trans_far->row() : array('kode_trans_far' => 0) ;
         echo json_encode($return);
     }

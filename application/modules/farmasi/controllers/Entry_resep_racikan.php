@@ -199,7 +199,7 @@ class Entry_resep_racikan extends MX_Controller {
                     $data_racikan = array(
                         'nama_racikan' => $this->regex->_genRegex(strtoupper($this->form_validation->set_value('nama_racikan')), 'RGXQSL'),
                         'jml_content' => $this->form_validation->set_value('jml_racikan'),
-                        'jumlah_obat_23' => $_POST['jumlah_obat_23_r'],
+                        'jumlah_obat_23' => isset($_POST['jumlah_obat_23_r'])?$_POST['jumlah_obat_23_r']:0,
                         'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan_r'])?$_POST['prb_ditangguhkan_r']:0,
                         'satuan_kecil' => $this->regex->_genRegex($this->form_validation->set_value('satuan_racikan'), 'RGXQSL'),
                         'jasa_r' => $_POST['jasa_r_racikan'],
@@ -290,7 +290,7 @@ class Entry_resep_racikan extends MX_Controller {
                         'harga_beli' => $_POST['pl_harga_beli'],
                         'jumlah_total' => $biaya_tebus,
                         'harga_jual' => $harga_jual,
-                        'jumlah_obat_23' => $_POST['jumlah_obat_23_rd'],
+                        'jumlah_obat_23' => isset($_POST['jumlah_obat_23_rd'])?$_POST['jumlah_obat_23_rd']:0,
                         'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan_rd'])?$_POST['prb_ditangguhkan_rd']:0,
                     );
                     // print_r($obat_detail);die;
@@ -330,9 +330,11 @@ class Entry_resep_racikan extends MX_Controller {
                     'harga_r' => $result_racikan->jasa_r + $result_racikan->jasa_produksi,
                     'biaya_tebus' => $result_racikan->sub_total,
                     'tgl_input' => date('Y-m-d H:i:s'),
-                    'urgensi' => '',
+                    'urgensi' => isset($_POST['urgensi'])?$_POST['urgensi']:0,
                     'kode_trans_far' => $result_racikan->kode_trans_far,
                     'id_tc_far_racikan' => $result_racikan->id_tc_far_racikan,
+                    'jumlah_obat_23' => isset($_POST['jml_23'])?$_POST['jml_23']:0,
+                    'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan'])?$_POST['prb_ditangguhkan']:0,
                 );
 
                 $this->Entry_resep_racikan->save_fr_tc_far($post_data); 
@@ -354,7 +356,7 @@ class Entry_resep_racikan extends MX_Controller {
                     'urgensi' =>'biasa',
                     'flag_resep' => 'racikan',
                     'relation_id' => $id_tc_far_racikan,
-                    'jumlah_obat_23' => $_POST['jumlah_obat_23_r'],
+                    'jumlah_obat_23' => isset($_POST['jumlah_obat_23_r'])?$_POST['jumlah_obat_23_r']:0,
                     'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan_r'])?$_POST['prb_ditangguhkan_r']:0,
                     'dosis_obat' => isset($_POST['dosis_start_r'])?$this->regex->_genRegex($_POST['dosis_start_r'], 'RGXQSL'):0,
                     'dosis_per_hari' => isset($_POST['dosis_end_r'])?$this->regex->_genRegex($_POST['dosis_end_r'], 'RGXQSL'):0,

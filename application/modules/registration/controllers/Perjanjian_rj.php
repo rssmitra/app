@@ -78,6 +78,7 @@ class Perjanjian_rj extends MX_Controller {
                             <ul class="dropdown-menu dropdown-inverse">
                                 '.$html.'
                                 <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.')">Cetak Surat Kontrol</a></li>
+                                <li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus Perjanjian</a></li>
                             </ul>
                         </div></div>';
                 if( !isset($_GET['no_mr']) ){

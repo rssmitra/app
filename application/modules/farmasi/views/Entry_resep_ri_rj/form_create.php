@@ -282,8 +282,8 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       console.log(obj.kode_brg);
       /*show value form*/
       $('#inputKeyObat').val(kode_brg+' : '+obj.nama_brg);
-      $('#jumlah_pesan').val(obj.jumlah_pesan);
-      $('#jumlah_tebus').val(obj.jumlah_tebus);
+      $('#jumlah_pesan').val(parseInt(obj.jumlah_pesan));
+      $('#jumlah_tebus').val(parseInt(obj.jumlah_tebus));
       $('#harga_r').val(obj.jasa_r);
 
       /*radio*/
@@ -363,13 +363,13 @@ function delete_resep(myid, flag){
   
 }
 
-function resep_farmasi_selesai(myid){
+function resep_farmasi_selesai(){
   preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
         url: 'farmasi/process_entry_resep/process_selesai_resep',
         type: "post",
-        data: {ID:myid},
+        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val() },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -381,7 +381,10 @@ function resep_farmasi_selesai(myid){
           var jsonResponse = JSON.parse(data);
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
-            getMenu('farmasi/Entry_resep_ri_rj?flag='+$('#flag_trans').val()+'');
+            // show poup cetak resep
+            PopupCenter('farmasi/Process_entry_resep/nota_farmasi/'+jsonResponse.kode_trans_far+'','Nota Farmasi', 530, 550);
+            $('#page-area-content').load('farmasi/Entry_resep_ri_rj?flag=RJ');
+
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
@@ -409,7 +412,7 @@ function sum_total_biaya_farmasi(){
 
 $('#btn_racikan').click(function () {  
   var kode_kelompok = $('#kode_kelompok').val();
-  show_modal('farmasi/Entry_resep_racikan/form?kelompok='+kode_kelompok+'&tipe_layanan='+$('#jenis_resep').val()+'', 'RESEP RACIKAN');
+  show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+kode_kelompok+'&tipe_layanan='+$('#jenis_resep').val()+'', 'RESEP RACIKAN');
 })
 
 $('select[name="jenis_resep"]').change(function () {      
@@ -482,7 +485,6 @@ $('select[name="jenis_resep"]').change(function () {
       <input type="hidden"  name="flag_resep" value="biasa">
       <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="0" >
       <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="0" >
-
       <input type="hidden" class="default_value" name="flag_trans" id="flag_trans" value="">
       <input type="hidden" class="default_value" name="no_mr" id="no_mr" value="">
       <input type="hidden" class="default_value" name="nama_pasien" id="nama_pasien" value="">
@@ -535,7 +537,7 @@ $('select[name="jenis_resep"]').change(function () {
                   Resep Racikan
             </button>
 
-            <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" onclick="show_modal('<?php echo base_url().'farmasi/Entry_resep_racikan/form'?>', 'RESEP RACIKAN')">
+            <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai()">
                   <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
                   Resep Selesai
             </button>

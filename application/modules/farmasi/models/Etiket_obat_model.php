@@ -5,7 +5,7 @@ class Etiket_obat_model extends CI_Model {
 
 	var $table = 'fr_hisbebasluar_v';
 	var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
-	var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans';
+	var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, id_tc_far_racikan';
 
 	var $order = array('tgl_trans' => 'DESC', 'kode_trans_far' => 'DESC');
 
@@ -145,7 +145,7 @@ class Etiket_obat_model extends CI_Model {
 	}
 
 	public function get_detail_resep_data($kode_trans_far){
-		$this->db->select('b.relation_id, b.kode_trans_far, b.jumlah_tebus as jumlah_pesan, b.kode_brg, b.total as harga_jual, b.dosis_obat, b.dosis_per_hari, b.anjuran_pakai, b.catatan_lainnya, b.satuan_obat, b.nama_brg, b.id_fr_tc_far_detail_log, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, b.satuan_kecil, e.created_by, e.no_resep, f.nama_bagian, b.satuan_kecil as satuan_brg');
+		$this->db->select('b.relation_id, b.kode_trans_far, b.jumlah_tebus as jumlah_pesan, b.kode_brg, b.total as harga_jual, b.dosis_obat, b.dosis_per_hari, b.anjuran_pakai, b.catatan_lainnya, b.satuan_obat, b.nama_brg, b.id_fr_tc_far_detail_log, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, b.satuan_kecil, e.created_by, e.no_resep, f.nama_bagian, b.satuan_kecil as satuan_brg, flag_resep, b.jasa_r, b.jasa_produksi');
 		$this->db->from('fr_tc_far_detail_log b');
 		$this->db->join('fr_tc_far e','e.kode_trans_far=b.kode_trans_far','left');
 		$this->db->join('mt_bagian f','f.kode_bagian=e.kode_bagian_asal','left');

@@ -25,6 +25,11 @@
           // cek existing
           $.getJSON("<?php echo site_url('farmasi/Entry_resep_ri_rj/cek_resep_karyawan_today') ?>?no_mr="+val_item, '' , function (response) {
               $('#kode_trans_far').val(response.kode_trans_far);
+              if(response.kode_trans_far) {
+                $('#show_find_result_from_inputKeyKaryawan').html('*) Terdapat transaksi yang belum diproses pada tanggal '+response.tgl_trans+'');
+              }else{
+                $('#show_find_result_from_inputKeyKaryawan').html('Tidak ada data ditemukan');
+              }
               reload_table();
           })
 
@@ -44,4 +49,5 @@
     <input type="text" class="form-control" name="" id="inputKeyKaryawan" placeholder="Masukan keyword">
   </div>
 </div>
+<div id="show_find_result_from_inputKeyKaryawan" style="color: red; font-size:10px"></div>
 <hr>
