@@ -155,6 +155,7 @@ class Penerimaan_brg_model extends CI_Model {
 		$this->db->where('a.id_tc_po IN ('.$id.')');
 		$this->db->group_by('z.no_po, a.id_tc_po, a.id_tc_po_det, a.kode_brg, a.content, c.nama_brg, jumlah_besar, c.satuan_besar, c.satuan_kecil, CAST(a.harga_satuan_netto as INT), CAST(a.jumlah_harga_netto as INT), CAST(a.harga_satuan as INT), CAST(a.jumlah_harga as INT), batch_log.jml_diterima, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.ppn, a.jumlah_besar_acc');
 		$this->db->order_by('c.nama_brg ASC');
+		// echo '<pre>';print_r($this->db->last_query());die;
 		return $this->db->get()->result();
 	}
 
