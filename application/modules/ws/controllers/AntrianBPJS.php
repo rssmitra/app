@@ -64,7 +64,14 @@ class AntrianBPJS extends MX_Controller {
             echo json_encode($response);
             
         } catch ( Exception $err) {
-            echo 'Caught exception: ',  $err->getMessage(), "\n";
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => 'Username dan Password yagn anda masukan salah!',
+                    )
+            );
+            echo json_encode($response);
+            // 'Caught exception: ',  $err->getMessage(), "\n";
         } 
 
     }
@@ -86,16 +93,103 @@ class AntrianBPJS extends MX_Controller {
 
     }
 
-    public function getNoAntrean() {
+    public function getNoAntrian() {
         
         $content = file_get_contents("php://input");
         $post = json_decode($content);
 
+        // check jenis referensi
+        if( !in_array($post->jenisreferensi, array(1,2)) ){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => 'Jenis Referensi Salah!',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+        // check jenis request
+        if( !in_array($post->jenisrequest, array(1,2)) ){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => 'Jenis Request Salah!',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+        // check tgl kunjungan 
+        if($post->tanggalperiksa < date('Y-m-d')){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => 'Tanggal Kunjungan Expired!',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        // search member by nik
         $result = $this->Ws_index->searchMemberByNIK($post->nik, $post->tanggalperiksa);
+        // print_r($result);die;
+        if($result->metaData->code != 200){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => $result->metaData->message,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        // search member by nomor kartu
+        $result = $this->Ws_index->searchMemberByNomorKartu($post->nomorkartu, $post->tanggalperiksa);
+        // print_r($result);die;
+        if($result->metaData->code != 200){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => $result->metaData->message,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
         
+        // cek nomor rujukan
+        $rujukan = $this->Ws_index->searchRujukanRsByNomorRujukan($post->nomorreferensi);
+        // print_r($rujukan);die;
+        if($rujukan->metaData->code != 200){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => $rujukan->metaData->message,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        // validasi tgl rujukan 90 hari
+        $rujukan_dt = $rujukan->response;
+        $max_date_rujukan = $this->tanggal->selisih($rujukan_dt->rujukan->tglKunjungan, '+90');
+        if( $post->tanggalperiksa > $max_date_rujukan ){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => 'Nomor Rujukan Expired !',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+
         // get kode internal poli
         $kode_poli = $this->getKodeInternalPoli($post->kodepoli);
-        
         // get hari
         $timestamp = strtotime($post->tanggalperiksa);
         $day = date('D', $timestamp);
@@ -103,7 +197,7 @@ class AntrianBPJS extends MX_Controller {
 
         /*getDokter*/
         $config = [
-            'link' => base_url().'Templates/References/getDokterBySpesialisFromJadwal/'.$kode_poli->kode_bagian.'/'.$hari.'',
+            'link' => base_url().'Templates/References/getDokterBySpesialisFromJadwalDefault/'.$kode_poli->kode_bagian.'/'.$hari.'',
             'data' => array(),
         ];
 
@@ -181,7 +275,7 @@ class AntrianBPJS extends MX_Controller {
         date_add($date, date_interval_create_from_date_string('-2 hours'));
         $waktu_datang = date_format($date, 'Y-m-d H:i:s');
 
-        // insert table
+        // insert table regon booking
         
         // response
         $response = array(
@@ -203,11 +297,23 @@ class AntrianBPJS extends MX_Controller {
 
     }
 
-    public function getRekapAntrean() {
+    public function getRekapAntrian() {
         
         $content = file_get_contents("php://input");
         $post = json_decode($content);
-       
+        
+        // check tgl kunjungan 
+        if( $this->tanggal->validateDate($post->tanggalperiksa) == false ){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => 'Tanggal Periksa Salah!',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+
         // get kode internal poli
         $kode_poli = $this->getKodeInternalPoli($post->kodepoli);
         // jumlah terlayani
@@ -216,16 +322,16 @@ class AntrianBPJS extends MX_Controller {
         $dt_booking = $this->db->get_where('regon_booking', array('CAST(regon_booking_tanggal_perjanjian as DATE) = ' => $post->tanggalperiksa, 'regon_booking_klinik' => $kode_poli->kode_bagian) );
         // response
         $response = array(
+            'metaData' => array(
+                'code' => 200,
+                'message' => 'Sukses',
+                ),
             'response' => array(
                 'namapoli' => $kode_poli->nama_bagian,
                 'totalantrean' => $dt_booking->num_rows(),
                 'jumlahterlayani' => $register->num_rows(),
                 'lastupdate' => strtotime('Y-m-d H:i:s'),
                 'lastupdatetanggal' => date('Y-m-d H:i:s')
-                ),
-            'metaData' => array(
-                'code' => 200,
-                'message' => 'Sukses',
                 ),
         );
 
@@ -236,8 +342,19 @@ class AntrianBPJS extends MX_Controller {
        
         $content = file_get_contents("php://input");
         $post = json_decode($content);
+        if( $post->tanggalakhir < $post->tanggalawal ){
+            $response = array(
+                'metaData' => array(
+                    'code' => 300,
+                    'message' => 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal!',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
         $this->_queryJadwalOperasi($post->tanggalawal, $post->tanggalakhir);
-        $this->db->where('tc_pesanan.flag IS NOT NULL');
+        $this->db->where('tc_pesanan.flag', 'bedah');
+        $this->db->order_by('tc_pesanan.jam_pesanan', 'DESC');
         $result = $this->db->get()->result();
         $getList = array();
         foreach($result as $row){
@@ -254,13 +371,14 @@ class AntrianBPJS extends MX_Controller {
         }
         // response
         $response = array(
-            'response' => array(
-                'list' => $getList
-            ),
             'metaData' => array(
                 'code' => 200,
                 'message' => 'Sukses',
                 ),
+            'response' => array(
+                'list' => $getList
+            ),
+            
         );
         
         echo json_encode($response);
@@ -272,8 +390,10 @@ class AntrianBPJS extends MX_Controller {
         $post = json_decode($content);
         
         $this->_queryJadwalOperasi();
+        $this->db->where('tc_pesanan.flag', 'bedah');
         $this->db->where('tc_pesanan.tgl_masuk IS NULL');
         $this->db->where('tc_pesanan.nopesertabpjs', $post->nopeserta);
+        $this->db->order_by('tc_pesanan.jam_pesanan', 'DESC');
         $result = $this->db->get()->result();
         
         $getList = array();
