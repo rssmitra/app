@@ -140,10 +140,8 @@ th, td {
 
   <table border="0" style="width: 100% !important; text-align: center">
     <tr>
-      <td colspan="2" style="text-align: center; width: 100%; font-weight: bold" >Mengetahui, </td>
-    </tr>
-    <tr>
       <td style="text-align: center; width: 50%">
+        <span style="text-align: center; width: 100%; font-weight: bold" >Mengetahui, </span>
         <br>
         <br>
         <br>
@@ -151,6 +149,7 @@ th, td {
         <?php echo ($flag=='non_medis') ? $this->master->get_ttd('verifikator_nm_2') : $this->master->get_ttd('verifikator_m_2') ;?>
       </td>
       <td style="text-align: center; width: 50%">
+      <span style="text-align: center; width: 100%; font-weight: bold" >Menyetujui, </span>
         <br>
         <br>
         <br>
