@@ -258,6 +258,12 @@ class Ws_index_model extends CI_Model {
 		return $this->getData($service_name);
 	}
 
+	function searchMemberByNomorKartu($no_kartu, $tgl_periksa){
+		$service_name = "Peserta/nokartu/".$no_kartu."/tglSEP/".$tgl_periksa."";
+		// print_r($service_name);die;
+		return $this->getData($service_name);
+	}
+
 	/*rujukan*/
 	function searchRujukan(){
 
@@ -283,6 +289,15 @@ class Ws_index_model extends CI_Model {
 				
 		return $this->getData($service_name);
 	}
+
+	function searchRujukanRsByNomorRujukan($no_rujukan){
+
+		/*rs*/
+		$service_name = "Rujukan/".$no_rujukan;
+				
+		return $this->getData($service_name);
+	}
+	
 
 	function insertRujukan($request){
 		$service_name = "Rujukan/insert";

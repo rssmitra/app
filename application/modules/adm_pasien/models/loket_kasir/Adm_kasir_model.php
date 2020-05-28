@@ -42,14 +42,14 @@ class Adm_kasir_model extends CI_Model {
 			$this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
 		}	
 
-		if( $_GET['pelayanan']=='RJ' ){
-			if($_GET['flag']=='bpjs'){
-				$this->db->where('b.kode_perusahaan', 120);
-			}
-			if($_GET['flag']=='umum'){
-				$this->db->where('b.kode_perusahaan != 120');
-			}
-		}
+		// if( $_GET['pelayanan']=='RJ' ){
+		// 	if($_GET['flag']=='bpjs'){
+		// 		$this->db->where('b.kode_perusahaan', 120);
+		// 	}
+		// 	if($_GET['flag']=='umum'){
+		// 		$this->db->where('b.kode_perusahaan != 120');
+		// 	}
+		// }
 		
 	}
 
