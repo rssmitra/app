@@ -3,9 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Poliklinik_model extends CI_Model {
 
-	var $table = 'mt_master_tarif';
-	var $column = array('kode_tarif','kode_tindakan','nama_tarif','kode_bagian','bill_dr1','bill_dr2','bill_rs','bhp','pendapatan_rs');
-	var $select = 'poliklinik.*';
+	var $table = 'admin_mt_tarif_view';
+	var $column = array('kode_tarif','nama_tarif','jenis_tindakan','bill_rs','bill_dr1','bill_dr2','total','kode_bagian','nama_bagian','status','bhp','pendapatan_rs');
+	var $select = '*';
 
 	var $order = array('kode_tarif' => 'ASC');
 

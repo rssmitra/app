@@ -713,43 +713,17 @@ class Global_report_model extends CI_Model {
 	public function farmasi_mod_9(){
 		$txt_tanggal_ajax1=$_POST['tgl1']." 00:00:00";
 		$txt_tanggal_ajax2=$_POST['tgl2']." 23:59:59";
-		// switch($_POST['kode_profit']){
 		
-		// case "666":
-		// 	$nama_nasabah="Karyawan RS";
-		// 	$sql_plus= " and kode_profit=4000 and no_mr>0";
-		// break;
-		// case "4000":
-		// 	$nama_nasabah="Pembelian Bebas";
-		// 	$sql_plus= 'and kode_profit='."'".$_POST['kode_profit']."'".' and no_mr=0' ;
-		// break;
-		// case "3000":
-		// 	$nama_nasabah="Resep Luar";
-		// 	$sql_plus= 'and kode_profit='."'".$_POST['kode_profit']."'".' and no_mr=0' ;
-		// break;
-		// case "2000":
-		// 	$nama_nasabah="Rawat Jalan";
-		// 	$sql_plus= 'and kode_profit='."'".$_POST['kode_profit']."'".' and no_mr=0' ;
-		// break;
-		// case "1000":
-		// 	$nama_nasabah="Rawat Inap";
-		// 	$sql_plus= 'and kode_profit='."'".$_POST['kode_profit']."'".' and no_mr=0' ;
-		// break;
-		// }
+			$query = 'select a.kode_brg, a.nama_brg, a.satuan_kecil, SUM(b.jumlah_tebus) as jml_tebus,SUM(b.jumlah_retur) as jml_retur,
+			(SUM(b.jumlah_tebus)-SUM(b.jumlah_retur)) as net_qty,SUM(b.net_rp) as net_rp from mt_barang a right join (SELECT kode_brg, nama_brg, satuan_kecil,harga_jual , SUM(jumlah_tebus) AS jumlah_tebus, SUM(jumlah_retur) 
+			AS jumlah_retur,SUM(harga_r) AS harga_r, SUM(harga_r_retur) AS harga_r_retur,
+			((SUM(jumlah_tebus)-SUM(jumlah_retur))*harga_jual) as net_rp FROM fr_hisbebasluar_v where nama_brg is not null 
+			and tgl_trans between '."'".$txt_tanggal_ajax1."'".' and '."'".$txt_tanggal_ajax2."'".' 
+			and status_transaksi=1 GROUP BY kode_brg, nama_brg, satuan_kecil,harga_jual) b
+			on a.kode_brg=b.kode_brg group by a.kode_brg, a.nama_brg, a.satuan_kecil order by a.nama_brg';
+		 // echo '<pre>';print_r($query);
 
-		// switch($_POST['obat_alkses']){
-		// 	case "obat":
-		// 		$nama_jenis= "OBAT";
-		// 		$sql_plus.= " and SUBSTRING(kode_brg,1,1)='D'";
-		// 	break;
-		// 	case "alkes":
-		// 		$nama_jenis= "ALKES";
-		// 		$sql_plus.= " and SUBSTRING(kode_brg,1,1)='E'";
-		// 	break;
-			
-		// }
-			$query = 'SELECT kode_brg, SUM(jumlah_tebus) AS jumlah_tebus, SUM(jumlah_retur) AS jumlah_retur, nama_brg, harga_jual, SUM(harga_r) AS harga_r, SUM(harga_r_retur) AS harga_r_retur, satuan_kecil FROM fr_hisbebasluar_v where nama_brg is not null and tgl_trans between '."'".$txt_tanggal_ajax1."'".' and '."'".$txt_tanggal_ajax2."'".' and status_transaksi=1 and kode_profit='."'".$_POST['kode_profit']."'".' and SUBSTRING(kode_brg,1,1)='."'".$_POST['obat_alkes']."'".' GROUP BY kode_brg, nama_brg, satuan_kecil,harga_jual ORDER BY nama_brg asc';
-		
+
 		return $query;
 
 	}

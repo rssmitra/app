@@ -428,7 +428,7 @@ function reset_form(){
 }
 
 $('#btn_racikan').click(function () {  
-  show_modal('farmasi/Entry_resep_racikan/form?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'', 'RESEP RACIKAN');
+  show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'', 'RESEP RACIKAN');
 })
 
 function reload_table(){

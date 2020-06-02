@@ -105,38 +105,39 @@
           foreach ($result['data'] as $row_data){
             $no ++;
                
-               $no++;
-                //$tgl_trans = $tampil["tgl_trans"];
-                $kode_brg       = $row_data->kode_brg;
-                $nama_brg       = $row_data->nama_brg;
-                $jumlah_tebus     = $row_data->jml_tebus;
-                $jumlah_retur     = $row_data->jml_retur;
-                $net_qty      = $row_data->net_qty;
-                // $harga_jual     = $row_data->harga_jual;
-                $net_rp         = $row_data->net_rp;
-                if($net_rp==0) {
-                    $harga_rata = 0;
-                } else {
-                    $harga_rata = $net_rp/$net_qty;
-                }
+                // $tgl_trans = $row_data->tgl_trans;
+                $kode_brg = $row_data->kode_brg;
+                $nama_brg = $row_data->nama_brg;
+                $jumlah_tebus = $row_data->jml_tebus;
+                $jumlah_retur = $row_data->jml_retur;
+                $harga_jual = $row_data->harga_jual;
+                // $harga_beli = $row_data->harga_beli;
+                $harga_r = $row_data->harga_r;
+                $harga_r_retur = $row_data->harga_r_retur;
+                $satuan_kecil = $row_data->satuan_kecil;
+                $jumlah_akhir = $jumlah_tebus - $jumlah_retur;
 
-                /*//$harga_jual_akhir = $harga_jual * $jumlah_akhir;
+            if($jumlah_akhir>0)
+            {
+                $harga_jual_akhir = $harga_jual * $jumlah_akhir;
                 $harga_r_akhir = $harga_r - $harga_r_retur;
-                //$harga_rata2=($harga_jual*$jumlah_akhir)/$jumlah_akhir;*/
-                $tot_jumlah_akhir  = $tot_jumlah_akhir + $net_qty;
-                $tot_harga_akhir  = $tot_harga_akhir + $net_rp;
-                ?>
+                $harga_akhir = $harga_jual_akhir;
+                $tot_jumlah_akhir =$tot_jumlah_akhir + $jumlah_akhir;
+                $tot_harga_akhir = $tot_harga_akhir + $harga_akhir;
+            ?>
             <tr class="contentTable">
               <td align="right" width="25"><?php echo   $no  ?>.</td>
               <td align="left" width="">&nbsp;<?php echo $kode_brg?>&nbsp;</td>
               <td align="left" width="">&nbsp;<?php echo $nama_brg?>&nbsp;</td>
-              <td align="left" width=""><?php echo $row_data->satuan_kecil?>&nbsp;</td>
-              <td align="right" width=""><?php echo number_format($net_qty)?></td>
-              <td align="right" width=""><?php echo number_format($harga_rata)?></td>
-              <td align="right" width=""><?php echo number_format($net_rp)?></td>
+              <td align="left" width=""><?php echo $satuan_kecil?>&nbsp;</td>
+              <td align="right" width=""><?php echo number_format($jumlah_akhir)?></td>
+              <td align="right" width=""><?php echo number_format($harga_jual)?></td>
+              <td align="right" width=""><?php echo number_format($harga_akhir)?></td>
             </tr>
             <?php
-            }
+            }//end if
+                // $i++;
+              }
             ?>
             <tr class="headTable">
               <td align="right" width="25">&nbsp;</td>

@@ -56,7 +56,7 @@ class AntrianBPJS extends MX_Controller {
                 'response' => array(
                     'token' => $token
                     ),
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 200,
                     'message' => 'Sukses',
                     )
@@ -65,7 +65,7 @@ class AntrianBPJS extends MX_Controller {
             
         } catch ( Exception $err) {
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Username dan Password yagn anda masukan salah!',
                     )
@@ -101,7 +101,7 @@ class AntrianBPJS extends MX_Controller {
         // check jenis referensi
         if( !in_array($post->jenisreferensi, array(1,2)) ){
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Jenis Referensi Salah!',
                     ),
@@ -112,7 +112,7 @@ class AntrianBPJS extends MX_Controller {
         // check jenis request
         if( !in_array($post->jenisrequest, array(1,2)) ){
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Jenis Request Salah!',
                     ),
@@ -123,7 +123,7 @@ class AntrianBPJS extends MX_Controller {
         // check tgl kunjungan 
         if($post->tanggalperiksa < date('Y-m-d')){
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Tanggal Kunjungan Expired!',
                     ),
@@ -133,60 +133,57 @@ class AntrianBPJS extends MX_Controller {
         }
 
         // search member by nik
-        $result = $this->Ws_index->searchMemberByNIK($post->nik, $post->tanggalperiksa);
-        // print_r($result);die;
-        if($result->metaData->code != 200){
-            $response = array(
-                'metaData' => array(
-                    'code' => 300,
-                    'message' => $result->metaData->message,
-                    ),
-            );
-            echo json_encode($response);
-            exit;
-        }
+        // $result = $this->Ws_index->searchMemberByNIK($post->nik, $post->tanggalperiksa);
+        // if($result->metaData->code != 200){
+        //     $response = array(
+        //         'metadata' => array(
+        //             'code' => 300,
+        //             'message' => $result->metaData->message,
+        //             ),
+        //     );
+        //     echo json_encode($response);
+        //     exit;
+        // }
 
         // search member by nomor kartu
-        $result = $this->Ws_index->searchMemberByNomorKartu($post->nomorkartu, $post->tanggalperiksa);
-        // print_r($result);die;
-        if($result->metaData->code != 200){
-            $response = array(
-                'metaData' => array(
-                    'code' => 300,
-                    'message' => $result->metaData->message,
-                    ),
-            );
-            echo json_encode($response);
-            exit;
-        }
+        // $result = $this->Ws_index->searchMemberByNomorKartu($post->nomorkartu, $post->tanggalperiksa);
+        // if($result->metaData->code != 200){
+        //     $response = array(
+        //         'metadata' => array(
+        //             'code' => 300,
+        //             'message' => $result->metaData->message,
+        //             ),
+        //     );
+        //     echo json_encode($response);
+        //     exit;
+        // }
         
         // cek nomor rujukan
-        $rujukan = $this->Ws_index->searchRujukanRsByNomorRujukan($post->nomorreferensi);
-        // print_r($rujukan);die;
-        if($rujukan->metaData->code != 200){
-            $response = array(
-                'metaData' => array(
-                    'code' => 300,
-                    'message' => $rujukan->metaData->message,
-                    ),
-            );
-            echo json_encode($response);
-            exit;
-        }
+        // $rujukan = $this->Ws_index->searchRujukanRsByNomorRujukan($post->nomorreferensi);
+        // if($rujukan->metaData->code != 200){
+        //     $response = array(
+        //         'metadata' => array(
+        //             'code' => 300,
+        //             'message' => $rujukan->metaData->message,
+        //             ),
+        //     );
+        //     echo json_encode($response);
+        //     exit;
+        // }
 
         // validasi tgl rujukan 90 hari
-        $rujukan_dt = $rujukan->response;
-        $max_date_rujukan = $this->tanggal->selisih($rujukan_dt->rujukan->tglKunjungan, '+90');
-        if( $post->tanggalperiksa > $max_date_rujukan ){
-            $response = array(
-                'metaData' => array(
-                    'code' => 300,
-                    'message' => 'Nomor Rujukan Expired !',
-                    ),
-            );
-            echo json_encode($response);
-            exit;
-        }
+        // $rujukan_dt = $rujukan->response;
+        // $max_date_rujukan = $this->tanggal->selisih($rujukan_dt->rujukan->tglKunjungan, '+90');
+        // if( $post->tanggalperiksa > $max_date_rujukan ){
+        //     $response = array(
+        //         'metadata' => array(
+        //             'code' => 300,
+        //             'message' => 'Nomor Rujukan Expired !',
+        //             ),
+        //     );
+        //     echo json_encode($response);
+        //     exit;
+        // }
 
         // get kode internal poli
         $kode_poli = $this->getKodeInternalPoli($post->kodepoli);
@@ -205,7 +202,7 @@ class AntrianBPJS extends MX_Controller {
         
         if ( count($response_dokter) == 0 ) {
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Tidak ada jadwal praktek',
                     ),
@@ -222,7 +219,7 @@ class AntrianBPJS extends MX_Controller {
                 $getJadwal[] = array('jadwal_dokter' => $val_dokter, 'dt_jadwal' => $jadwal->row());
             }
         }
-        
+        // print_r($getJadwal);die;
         if( count( $getJadwal ) > 0 ){
             // cek kuota
             foreach( $getJadwal as $dt_jadwal ){
@@ -241,7 +238,7 @@ class AntrianBPJS extends MX_Controller {
 
                 if ( $response_kuota->sisa <= 0 ) {
                     $response = array(
-                        'metaData' => array(
+                        'metadata' => array(
                             'code' => 300,
                             'message' => 'Kuota Penuh',
                             ),
@@ -255,7 +252,7 @@ class AntrianBPJS extends MX_Controller {
             
         }else{
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Tidak ada jadwal praktek',
                     ),
@@ -264,6 +261,8 @@ class AntrianBPJS extends MX_Controller {
             exit;
         }
         
+        // print_r($getKuota);die;
+
         // get nomor antrian
         $dt_booking = $this->db->get_where('regon_booking', array('regon_booking_tanggal_perjanjian' => $post->tanggalperiksa, 'regon_booking_klinik' => $kode_poli->kode_bagian, 'regon_booking_kode_dokter' => $getKuota[0]['jadwal_dokter']->kode_dokter) );
         $no_antrian = $dt_booking->num_rows() + 1;
@@ -271,10 +270,12 @@ class AntrianBPJS extends MX_Controller {
         $kode_booking = $this->create_kode_booking($post->nomorkartu, $post->tanggalperiksa);
 
         /*hitung estimasi waktu kedatangan pasien */
-        $date = date_create($post->tanggalperiksa.' '.date('H:i:s') );
+        $jam_mulai_praktek = $this->tanggal->formatFullTime($getKuota[0]['jadwal_dokter']->jd_jam_mulai);
+
+        $date = date_create($post->tanggalperiksa.' '.$jam_mulai_praktek );
         date_add($date, date_interval_create_from_date_string('-2 hours'));
         $waktu_datang = date_format($date, 'Y-m-d H:i:s');
-
+        $milisecond = strtotime($waktu_datang) * 1000;
         // insert table regon booking
         
         // response
@@ -283,11 +284,11 @@ class AntrianBPJS extends MX_Controller {
                 'nomorantrean' => $no_antrian,
                 'kodebooking' => strtoupper($kode_booking),
                 'jenisantrean' => 2,
-                'estimasidilayani' => strtotime($waktu_datang),
+                'estimasidilayani' => $milisecond,
                 'namapoli' => ucwords($kode_poli->nama_bagian),
                 'namadokter' => $getKuota[0]['jadwal_dokter']->nama_pegawai
                 ),
-            'metaData' => array(
+            'metadata' => array(
                 'code' => 200,
                 'message' => 'Sukses',
                 ),
@@ -305,7 +306,7 @@ class AntrianBPJS extends MX_Controller {
         // check tgl kunjungan 
         if( $this->tanggal->validateDate($post->tanggalperiksa) == false ){
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Tanggal Periksa Salah!',
                     ),
@@ -322,7 +323,7 @@ class AntrianBPJS extends MX_Controller {
         $dt_booking = $this->db->get_where('regon_booking', array('CAST(regon_booking_tanggal_perjanjian as DATE) = ' => $post->tanggalperiksa, 'regon_booking_klinik' => $kode_poli->kode_bagian) );
         // response
         $response = array(
-            'metaData' => array(
+            'metadata' => array(
                 'code' => 200,
                 'message' => 'Sukses',
                 ),
@@ -344,7 +345,7 @@ class AntrianBPJS extends MX_Controller {
         $post = json_decode($content);
         if( $post->tanggalakhir < $post->tanggalawal ){
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
                     'message' => 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal!',
                     ),
@@ -371,7 +372,7 @@ class AntrianBPJS extends MX_Controller {
         }
         // response
         $response = array(
-            'metaData' => array(
+            'metadata' => array(
                 'code' => 200,
                 'message' => 'Sukses',
                 ),
@@ -413,7 +414,7 @@ class AntrianBPJS extends MX_Controller {
             'response' => array(
                 'list' => $getList
             ),
-            'metaData' => array(
+            'metadata' => array(
                 'code' => 200,
                 'message' => $message,
                 ),
@@ -435,9 +436,9 @@ class AntrianBPJS extends MX_Controller {
         $kode_poli = $this->db->get_where('mt_bagian', array('kode_poli_bpjs' => $kodepoli) )->row();
         if( empty($kode_poli) ){
             $response = array(
-                'metaData' => array(
+                'metadata' => array(
                     'code' => 300,
-                    'message' => 'Kode Poli belum terdaftar di rs',
+                    'message' => 'Kode Poli/Klinik belum terdaftar di RS. Setia Mitra',
                     ),
             );
             echo json_encode($response);
@@ -448,8 +449,6 @@ class AntrianBPJS extends MX_Controller {
         
     }
 
-    
-    
 }
 
 /* End of file empty_module.php */

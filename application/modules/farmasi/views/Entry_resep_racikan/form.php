@@ -78,7 +78,7 @@ $(document).ready(function(){
           /*reload select racikan*/
           reload_item_racikan( jsonResponse.data.id_tc_far_racikan );
           show_selected_item_racikan(jsonResponse.data.id_tc_far_racikan);
-          $('#kode_trans_far').val(jsonResponse.data.kode_trans_far);
+          $('#kode_trans_far').val(jsonResponse.kode_trans_far);
           $('#inputKeyObatRacikan').focus();
 
         }else{          
@@ -560,10 +560,10 @@ function btn_update_racikan(){
     <div style="margin-top:0px">   
       <form class="form-horizontal" method="post" id="form_entry_resep_racikan" enctype="multipart/form-data" autocomplete="off" action="farmasi/entry_resep_racikan/process">      
         
-        <input type="hidden" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
-        <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo isset($value->kode_pesan_resep)?$value->kode_pesan_resep:''; ?>">
-        <input type="hidden" id="kode_trans_far" name="kode_trans_far" value="<?php echo $kode_trans_far; ?>">
-        <input type="hidden" id="tipe_layanan" name="tipe_layanan" value="<?php echo $tipe_layanan; ?>">
+      <input type="hidden" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
+      <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo isset($value->kode_pesan_resep)?$value->kode_pesan_resep:''; ?>">
+      <input type="hidden" id="kode_trans_far" name="kode_trans_far" value="<?php echo $kode_trans_far; ?>">
+      <input type="hidden" id="tipe_layanan" name="tipe_layanan" value="<?php echo $tipe_layanan; ?>">
 
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
       <input type="hidden" name="no_registrasi" value="<?php echo isset($value_header)?$value_header->no_registrasi:''?>">
