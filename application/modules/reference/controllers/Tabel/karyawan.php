@@ -152,6 +152,7 @@ class karyawan extends MX_Controller {
                 'kode_bagian' => $this->input->post('kodebagian'),
                 'kode_Jabatan' => $this->input->post('kodejabatan'),
                 'no_mr' => $this->input->post('no_mr'),
+                'flag_tenaga_medis' => $this->input->post('flag_tenaga_medis'),
                 'status' => $this->input->post('status'),
             );
             if($id==0){

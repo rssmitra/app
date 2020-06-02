@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Karyawan_model extends CI_Model {
 
 	var $table = 'karyawan_v';
-	var $column = array('no_induk','nama_pegawai','nama_bagian','nama_jabatan','nama_group','Expr1');
+	var $column = array('no_induk','nama_pegawai','nama_bagian','nama_jabatan','nama_group','Expr1','flag_tenaga_medis');
 	var $select = '*';
 
 	var $order = array('no_induk' => 'ASC');

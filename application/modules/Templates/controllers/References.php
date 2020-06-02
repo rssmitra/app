@@ -1037,7 +1037,8 @@ class References extends MX_Controller {
         // 				  ->order_by('name', 'ASC')
         //                   ->get('provinces');
 		
-		$where_str = 'and a.referensi in (select kode_tarif from mt_master_tarif where kode_bagian='."'030901'".' and referensi='.$_POST['jenis_bedah'].')'
+		$where_str = 'and a.referensi in (select kode_tarif from mt_master_tarif where kode_bagian='."'030901'".')'
+		// $where_str = 'and a.referensi in (select kode_tarif from mt_master_tarif where kode_bagian='."'030901'".' and referensi='.$_POST['jenis_bedah'].')'
 		;
         $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi
 					from mt_master_tarif a

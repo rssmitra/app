@@ -3,10 +3,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Export_data extends MX_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-		/*load model*/
+    public function __construct()
+    {
+        parent::__construct();
+        /*load model*/
         $this->load->model('Export_data_model', 'export_data_model');
         /*load module*/
         $this->load->module('casemix/Csm_billing_pasien');
@@ -14,10 +14,10 @@ class Export_data extends MX_Controller {
         $this->load->module('casemix/Csm_resume_billing_ri');
         $this->load->module('casemix/Csm_dokumen_klaim');
         $this->load->model('registration/Reg_pm_model');
-	}
+    }
 
-	public function export()
-	{
+    public function export()
+    {
     $type               = $this->input->get('type');
     $flag               = $this->input->get('flag');
     $no_registrasi      = $this->input->get('noreg');
@@ -28,20 +28,21 @@ class Export_data extends MX_Controller {
     $no_kunjungan       = (isset($_GET['no_kunjungan']))?$this->input->get('no_kunjungan'):'';
     $flag_mcu           = (isset($_GET['flag_mcu']))?$this->input->get('flag_mcu'):'';
     // print_r($no_registrasi);die;
-		switch ($type) {
-			case 'pdf':
-				$this->getContentPDF($no_registrasi, $flag, $pm, $act_code,$bagian,$no_kunjungan,$flag_mcu );
-				break;
 
-			case 'word':
-				$this->exportWord();
-				break;
-			
-			default:
-				# code...
-				break;
-		}
-	}
+        switch ($type) {
+            case 'pdf':
+                $this->getContentPDF($no_registrasi, $flag, $pm, $act_code,$bagian,$no_kunjungan,$flag_mcu );
+                break;
+
+            case 'word':
+                $this->exportWord();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
 
     public function getContentPDF($no_registrasi, $flag, $pm, $act_code='',$bagian,$no_kunjungan,$flag_mcu ){
 
@@ -62,7 +63,7 @@ class Export_data extends MX_Controller {
 
     }
 
-	public function exportPdf($data, $flag, $pm, $act_code='') { 
+    public function exportPdf($data, $flag, $pm, $act_code='') { 
         
         $this->load->library('pdf');
         
@@ -116,7 +117,7 @@ class Export_data extends MX_Controller {
         $pdf->SetMargins(10, 10, 10, 10); 
         /* $pdf->Cell(150,42,'',1);*/
         $html = <<<EOD
-		<link rel="stylesheet" href="'.file_get_contents(_BASE_PATH_.'/assets/css/bootstrap.css)'" />
+        <link rel="stylesheet" href="'.file_get_contents(_BASE_PATH_.'/assets/css/bootstrap.css)'" />
 EOD;
         $html .= $data->html;
         $result = $html;
@@ -226,7 +227,7 @@ EOD;
     }
 
 
-	public function exportExcelContent($html_content){
+    public function exportExcelContent($html_content){
 
         $random = rand(1,9999);
         header("Content-type: application/vnd.ms-excel");

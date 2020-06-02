@@ -86,8 +86,32 @@ $('select[name="pelayanan"]').change(function () {
           <input type="hidden" name="flag" value="<?php echo $flag?>">
           <input type="hidden" name="title" value="Laporan Penjualan Obat Per Kategori">
 
-          
-          
+                                           
+        
+        <!--    <div class="form-group">
+            <label class="control-label col-md-1">Obat / Alkes</label>
+              <div class="col-md-2">
+               <select name="obat_alkes" class="form-control">
+                 <option value="A"> ALL </option>
+                 <option value="D"> Obat </option>
+                 <option value="E"> Alkes </option>
+               </select>
+              </div>
+              
+          </div> -->
+         <!--   <div class="form-group">
+            <label class="control-label col-md-1">Kategori</label>
+              <div class="col-md-2">
+               <select name="kode_profit" class="form-control">
+                 <option value="1111"> ALL </option>
+                 <option value="2000"> Rawat Jalan </option>
+                 <option value="3000"> Resep Luar </option>
+                 <option value="4000"> Pembelian Bebas </option>
+                 <option value="666"> Karyawan RS </option>
+               </select>
+              </div>
+              
+          </div> -->
 
            <div class="form-group">
             <label class="control-label col-md-1">Tanggal</label>

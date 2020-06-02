@@ -2,25 +2,25 @@
 
 class Templates extends MX_Controller {
 
-	/**
-	 *
-	 * This is the Modular Template controller. Pass a data object here and it loads the data into view templates.
-	 * This controller is called from the templates.php library.
-	 *
-	 * It can also be loaded as a module using:
-	 * $this->load->module('templates');
-	 * making the method and its functions available:
-	 * $this->templates->index($data);
-	 * *note: requires index function explicitly
-	 *
-	 * It can also be run as a module using:
-	 * echo Modules::run('templates', $data);
-	 * *note: requires data['body'] be defined.
- 	 */
+    /**
+     *
+     * This is the Modular Template controller. Pass a data object here and it loads the data into view templates.
+     * This controller is called from the templates.php library.
+     *
+     * It can also be loaded as a module using:
+     * $this->load->module('templates');
+     * making the method and its functions available:
+     * $this->templates->index($data);
+     * *note: requires index function explicitly
+     *
+     * It can also be run as a module using:
+     * echo Modules::run('templates', $data);
+     * *note: requires data['body'] be defined.
+     */
 
-	function __construct() {
+    function __construct() {
         parent::__construct();
-		$this->load->model('templates_model', 'templates_model');
+        $this->load->model('templates_model', 'templates_model');
         $this->load->model('billing/Billing_model', 'Billing');
         $this->load->model('pelayanan/Pl_pelayanan_pm_model', 'Pl_pelayanan_pm');
 
@@ -29,67 +29,67 @@ class Templates extends MX_Controller {
     }
 
 
-	public function index($data, $template_name = null)
-	{
+    public function index($data, $template_name = null)
+    {
         $this->load->library('master');
         $this->load->library('lib_menus');
         //echo '<pre>';print_r($this->session->all_userdata());die;
-		/*
-		|
-		| If $data['body'] is null then we will get the content from the
-		| module's default view file, which is <module_name>_view.php
-		| within the application/modules/<module_name>/views directory
-		|
-		*/
+        /*
+        |
+        | If $data['body'] is null then we will get the content from the
+        | module's default view file, which is <module_name>_view.php
+        | within the application/modules/<module_name>/views directory
+        |
+        */
 
-		if ( ! array_key_exists('body', $data) )
-		{		
+        if ( ! array_key_exists('body', $data) )
+        {       
       // We get the name of the class that called this method so we
       // can get its view file.
-			$caller = debug_backtrace();
-			$caller_module = $caller[1]['class'];
+            $caller = debug_backtrace();
+            $caller_module = $caller[1]['class'];
 
-			// Get the default view file for the module and return as a string.
-    	$data['body'] = $this->load->view(ucfirst($caller_module).'/'.strtolower($caller_module).'_view', $data, TRUE);
-		}
-		
-		if ( ! isset($template_name) )
-		{
+            // Get the default view file for the module and return as a string.
+        $data['body'] = $this->load->view(ucfirst($caller_module).'/'.strtolower($caller_module).'_view', $data, TRUE);
+        }
+        
+        if ( ! isset($template_name) )
+        {
       // If there is no template name parameter passed, we just use the default.
-			$template_name = 'default';
-		}
-		
-	    // With the $data['body'] we now can load the template views.
-	    // Note that currently there is no value included to specify any
-	    // header or footer file other than default.
+            $template_name = 'default';
+        }
+        
+        // With the $data['body'] we now can load the template views.
+        // Note that currently there is no value included to specify any
+        // header or footer file other than default.
 
-	    /*get menu by session role user*/
-		
-		$data['menu'] = $this->lib_menus->get_menus($this->session->userdata('user')->user_id, $_GET['mod']);
-		$data['shortcut'] = $this->lib_menus->get_menus_shortcut($this->session->userdata('user')->user_id, $_GET['mod']);
-		$data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
-		$data['module'] = $this->db->get_where('tmp_mst_modul', array('modul_id' => $_GET['mod']))->row();
+        /*get menu by session role user*/
+        
+        $data['menu'] = $this->lib_menus->get_menus($this->session->userdata('user')->user_id, $_GET['mod']);
+        $data['shortcut'] = $this->lib_menus->get_menus_shortcut($this->session->userdata('user')->user_id, $_GET['mod']);
+        $data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
+        $data['module'] = $this->db->get_where('tmp_mst_modul', array('modul_id' => $_GET['mod']))->row();
 
-		//echo '<pre>';print_r($data);die;
+        //echo '<pre>';print_r($data);die;
 
-		/*here specially for mod 9 or module booking will suggest profile form for the first use*/
-		if($_GET['mod']==9){
-			/*check existing profile*/
-			$profile = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id) )->num_rows();
-			if($profile > 0){
-				$this->load->view('templates/content_view', $data);
-			}else{
-				$this->load->view('templates/form_profile_view', $data);
-			}
-		}else{
-			$this->load->view('templates/content_view', $data);
-		}
-		
+        /*here specially for mod 9 or module booking will suggest profile form for the first use*/
+        if($_GET['mod']==9){
+            /*check existing profile*/
+            $profile = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id) )->num_rows();
+            if($profile > 0){
+                $this->load->view('templates/content_view', $data);
+            }else{
+                $this->load->view('templates/form_profile_view', $data);
+            }
+        }else{
+            $this->load->view('templates/content_view', $data);
+        }
+        
 
-	}
+    }
 
-	public function getGraphModule(){
-    	
+    public function getGraphModule(){
+        
         if ($_GET['mod']==1) {
 
             $data[0] = array(
@@ -114,31 +114,31 @@ class Templates extends MX_Controller {
             'url' => 'templates/Templates/graph?prefix=3&TypeChart=table&style=1&mod='.$_GET['mod'].'',
             );
 
-		}
-		
-		if ( in_array($_GET['mod'], array(11,22) ) ) {
-			$data[0] = array(
-				'mod' => $_GET['mod'],
-				'nameid' => 'graph-line-1',
-				'style' => 'line',
-				'col_size' => 12,
-				'url' => 'templates/Templates/graph?prefix=111&TypeChart=line&style=1&mod='.$_GET['mod'].'',
-				);
-			$data[1] = array(
-				'mod' => $_GET['mod'],
-				'nameid' => 'graph-pie-1',
-				'style' => 'pie',
-				'col_size' => 6,
-				'url' => 'templates/Templates/graph?prefix=112&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
-				);
-			$data[2] = array(
-				'mod' => $_GET['mod'],
-				'nameid' => 'graph-table-1',
-				'style' => 'table',
-				'col_size' => 6,
-				'url' => 'templates/Templates/graph?prefix=113&TypeChart=table&style=1&mod='.$_GET['mod'].'',
-				);
-		}
+        }
+        
+        if ( in_array($_GET['mod'], array(11,22) ) ) {
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=111&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[1] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 6,
+                'url' => 'templates/Templates/graph?prefix=112&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[2] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 6,
+                'url' => 'templates/Templates/graph?prefix=113&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                );
+        }
 
         if ( in_array($_GET['mod'], array(5) ) ) {
             $data[0] = array(
@@ -216,7 +216,7 @@ class Templates extends MX_Controller {
                 'url' => 'templates/Templates/graph?prefix=322&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
             );
             
-		}
+        }
 
         // modul adm pasien
         if ($_GET['mod']==20) {
@@ -291,41 +291,41 @@ class Templates extends MX_Controller {
 
     public function graph(){
         echo json_encode($this->graph_master->get_graph($_GET['mod'],$_GET), JSON_NUMERIC_CHECK);
-	}
-	
-	public function setGlobalHeaderTemplate(){
-		$html = '';
-		$html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
+    }
+    
+    public function setGlobalHeaderTemplate(){
+        $html = '';
+        $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                     <tr><td align ="left" colspan="2"><b>'.COMP_LONG.'</b>&nbsp;</td></tr>
                     <tr><td align ="left" colspan="2">'.COMP_ADDRESS_SORT.'</td></tr>
                     <tr><td align ="left" colspan="2">Telp:&nbsp;'.COMP_TELP.'&nbsp;(Hunting)&nbsp;Fax:&nbsp;'.COMP_FAX.'&nbsp;</td></tr>
                     <tr><td align ="left" colspan="2">&nbsp;</td></tr>
                   </table>';
         return $html;
-	}
+    }
 
-	public function setGlobalProfilePasienTemplate($data, $flag='', $pm=''){
-		$html = '';
-		$html .= '<table class="table table-striped" width="100%" cellpadding="0" cellspacing="0" border="0">
-		 			 
+    public function setGlobalProfilePasienTemplate($data, $flag='', $pm=''){
+        $html = '';
+        $html .= '<table class="table table-striped" width="100%" cellpadding="0" cellspacing="0" border="0">
+                     
                     <tr>
-	                    <td colspan="2" align="center" width="300px"><b>RINCIAN BIAYA PASIEN</b><br></td>
+                        <td colspan="2" align="center" width="300px"><b>RINCIAN BIAYA PASIEN</b><br></td>
                     </tr> 
                     <tr>
-                    	<td width="100px">Tanggal</td>
-                    	<td align="left" width="200px">: '.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'</td>
+                        <td width="100px">Tanggal</td>
+                        <td align="left" width="200px">: '.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'</td>
                     </tr>
                     <tr>
-                    	<td width="100px">No. RM</td>
-                    	<td width="200px">: '.$data->reg_data->no_mr.'</td>
+                        <td width="100px">No. RM</td>
+                        <td width="200px">: '.$data->reg_data->no_mr.'</td>
                     </tr>
                     <tr>
-                    	<td width="100px" align="left">Nama Pasien</td>
-                    	<td width="200px">: '.$data->reg_data->nama_pasien.'</td>
+                        <td width="100px" align="left">Nama Pasien</td>
+                        <td width="200px">: '.$data->reg_data->nama_pasien.'</td>
                     </tr>
                     <tr>
-	                    <td width="100px">Nama Dokter</td>
-	                    <td width="200px">: '.$data->reg_data->nama_pegawai.'</td>
+                        <td width="100px">Nama Dokter</td>
+                        <td width="200px">: '.$data->reg_data->nama_pegawai.'</td>
                     </tr> 
                    
                   </table>';
@@ -333,7 +333,7 @@ class Templates extends MX_Controller {
     }
     
     public function setGlobalProfileRekamMedis($data, $flag='', $pm=''){
-		$html = '';
+        $html = '';
         $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                 <tr>
                     <td width="100px">No. RM</td>
@@ -366,7 +366,7 @@ class Templates extends MX_Controller {
         $html .= '<hr>';
 
         return $html;
-	}
+    }
 
     public function setGlobalProfilePasienTemplateRI($data, $flag='', $pm=''){
         $html = '';
@@ -410,9 +410,9 @@ class Templates extends MX_Controller {
         return $html;
     }
 
-	public function setGlobalContentBilling($html){
+    public function setGlobalContentBilling($html){
         return $html;
-	}
+    }
 
     public function TemplateBillingRJ($no_registrasi, $tipe, $data){
         /*html data untuk tampilan*/

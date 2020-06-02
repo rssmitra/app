@@ -96,6 +96,34 @@ $(document).ready(function(){
                 </div>
                 
                 <div class="form-group">
+                  <label class="control-label col-md-2">Tenaga Medis?</label>
+                  <div class="col-md-6">
+                    <div class="radio">
+                          <label>
+                            <input name="flag_tenaga_medis" type="radio" class="ace" value="0" <?php echo isset($value) ? ($value->flag_tenaga_medis == '0') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Non Kesehatan</span>
+                          </label>
+                          <label>
+                            <input name="flag_tenaga_medis" type="radio" class="ace" value="1" <?php echo isset($value) ? ($value->flag_tenaga_medis == '1') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl">Perawat</span>
+                          </label>
+                          <label>
+                            <input name="flag_tenaga_medis" type="radio" class="ace" value="2" <?php echo isset($value) ? ($value->flag_tenaga_medis == '2') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl">Bidan</span>
+                          </label>
+                          <label>
+                            <input name="flag_tenaga_medis" type="radio" class="ace" value="3" <?php echo isset($value) ? ($value->flag_tenaga_medis == '3') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl">Farmasi</span>
+                          </label>
+                          <label>
+                            <input name="flag_tenaga_medis" type="radio" class="ace" value="4" <?php echo isset($value) ? ($value->flag_tenaga_medis == '4') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl">Tenaga Kesehatan Lainnya</span>
+                          </label>
+                    </div>
+                  </div>
+                </div>
+
+                 <div class="form-group">
                   <label class="control-label col-md-2">Status?</label>
                   <div class="col-md-2">
                     <div class="radio">

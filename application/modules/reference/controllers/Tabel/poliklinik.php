@@ -88,6 +88,8 @@ class poliklinik extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->poliklinik->get_datatables();
+        print_r($list);die;
+
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -113,9 +115,15 @@ class poliklinik extends MX_Controller {
                             </ul>
                         </div>
                     </div></div>'; 
-            $row[] = $row_list->id;
-            $row[] = strtoupper($row_list->name);
-            $row[] = ($row_list->is_active == 'Y') ? '<div class="center"><span class="label label-sm label-success">Active</span></div>' : '<div class="center"><span class="label label-sm label-danger">Not active</span></div>';
+            $row[] = $row_list->kode_tarif;
+            $row[] = $row_list->kode_tindakan;
+            $row[] = strtoupper($row_list->nama_tarif);
+            $row[] = strtoupper($row_list->nama_bagian);
+            $row[] = number_format($row_list->bill_dr1);
+            $row[] = number_format($row_list->bill_dr2);
+            $row[] = number_format($row_list->rs);
+            $row[] = number_format($row_list->bhp);
+            $row[] = number_format($row_list->total);
             $row[] = $this->logs->show_logs_record_datatable($row_list);
                    
             $data[] = $row;

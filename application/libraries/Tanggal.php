@@ -165,6 +165,23 @@ final class Tanggal {
         return $tanggal;
     }
 
+    public  function formatFullTime($input) {
+        if (empty($input)) {
+            $tanggal = "-"; 
+        } else {
+            sscanf($input, '%d:%d:%d', $h, $i, $s);
+            
+            $h = tanggal::normalDigit($h);
+            $i = tanggal::normalDigit($i);
+            $s = tanggal::normalDigit($s);
+            
+            //$tanggal = $h.":".$i."";
+            $tanggal = "$h:$i:$s";
+        }
+
+        return $tanggal;
+    }
+
     public  function formatDateTimeToTime($input) {
         //print_r($input);die;
         if (empty($input)) {

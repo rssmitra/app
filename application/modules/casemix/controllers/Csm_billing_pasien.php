@@ -308,15 +308,15 @@ class Csm_billing_pasien extends MX_Controller {
             case 'RAD':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
                 $html .= $temp->setGlobalHeaderTemplate();
-                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag);
-                $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm));
+                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
+                $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
                 $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
                 break;
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
                 $html .= $temp->setGlobalHeaderTemplate();
-                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag);
-                $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm));
+                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
+                $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
                 $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
                 break;
             

@@ -192,6 +192,7 @@ class Entry_resep_racikan extends MX_Controller {
             /*execution*/
             $this->db->trans_begin();
 
+            $kode_trans_far = ( $_POST['kode_trans_far'] == 0 )?$this->master->get_max_number('fr_tc_far', 'kode_trans_far') : $_POST['kode_trans_far'] ;
                 /*entry tc_far_racikan*/
 
                 if($_POST['submit'] == 'header'){
@@ -209,8 +210,8 @@ class Entry_resep_racikan extends MX_Controller {
                         'kode_pesan_resep' => isset($_POST['kode_pesan_resep'])?$_POST['kode_pesan_resep']:0,
                     );
                     
-                    // jika belum ada transaksi
-                    if( $_POST['kode_trans_far'] == 0 ){
+                    // jika belum ada transaksi maka insert terlebih dahulu fr_tc_far
+                    if( $kode_trans_far == 0 ){
 
                         $data_farmasi = array(
                             'kode_pesan_resep' => isset($_POST['no_resep'])?$this->regex->_genRegex($_POST['no_resep'], 'RGXINT'):0,
@@ -227,7 +228,6 @@ class Entry_resep_racikan extends MX_Controller {
                             'nama_pasien' => $this->regex->_genRegex(substr($_POST['nama_pasien'], 1,20), 'RGXQSL'),
                             'flag_trans' => $this->regex->_genRegex($_POST['flag_trans'], 'RGXAZ'),
                         );
-                        $kode_trans_far = $this->master->get_max_number('fr_tc_far', 'kode_trans_far', array('kode_bagian' => $_POST['kode_bagian'] ));
                         /*update existing*/
                         $data_farmasi['kode_trans_far'] = $kode_trans_far;
                         $data_farmasi['created_date'] = date('Y-m-d H:i:s');
@@ -242,6 +242,7 @@ class Entry_resep_racikan extends MX_Controller {
                         $data_racikan['kode_trans_far'] = $_POST['kode_trans_far'];
                     }
 
+                    // jika blm ada data sebelumnya maka insert
                     if($_POST['id_tc_far_racikan']==0){
                         $data_racikan['created_date'] = date('Y-m-d H:i:s');
                         $data_racikan['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
@@ -251,6 +252,7 @@ class Entry_resep_racikan extends MX_Controller {
                          /*save log*/
                         $this->logs->save('tc_far_racikan', $new_id_tc_far_racikan, 'insert new record on entry resep racikan module', json_encode($data_racikan),'id_tc_far_racikan');                        
 
+                   
                     }else{
                         $data_racikan['updated_date'] = date('Y-m-d H:i:s');
                         $data_racikan['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
@@ -268,6 +270,7 @@ class Entry_resep_racikan extends MX_Controller {
 
                 if($_POST['submit'] == 'detail'){
 
+                    $kode_trans_far = isset($kode_trans_far)?$kode_trans_far:$_POST['kode_trans_far'];
                     if( $_POST['urgensi_r'] == 'biasa' ){
                         $biaya_tebus = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan_bpjs'] * $_POST['jumlah_pesan_racikan'] : $_POST['pl_harga_satuan'] * $_POST['jumlah_pesan_racikan'];
 
@@ -331,7 +334,7 @@ class Entry_resep_racikan extends MX_Controller {
                     'biaya_tebus' => $result_racikan->sub_total,
                     'tgl_input' => date('Y-m-d H:i:s'),
                     'urgensi' => isset($_POST['urgensi'])?$_POST['urgensi']:0,
-                    'kode_trans_far' => $result_racikan->kode_trans_far,
+                    'kode_trans_far' => $kode_trans_far,
                     'id_tc_far_racikan' => $result_racikan->id_tc_far_racikan,
                     'jumlah_obat_23' => isset($_POST['jml_23'])?$_POST['jml_23']:0,
                     'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan'])?$_POST['prb_ditangguhkan']:0,
@@ -377,7 +380,7 @@ class Entry_resep_racikan extends MX_Controller {
             {
                 $this->db->trans_commit();
                 $val_data_racikan = $this->db->get_where('tc_far_racikan', array('id_tc_far_racikan' => $id_tc_far_racikan) )->row();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'data' => $val_data_racikan, 'id_tc_far_racikan' => $id_tc_far_racikan ));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'data' => $val_data_racikan, 'id_tc_far_racikan' => $id_tc_far_racikan, 'kode_trans_far' => $kode_trans_far ));
             }
         
         }
