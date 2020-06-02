@@ -27,7 +27,7 @@ class Export_data extends MX_Controller {
     $bagian             = $this->input->get('kode_pm');
     $no_kunjungan       = (isset($_GET['no_kunjungan']))?$this->input->get('no_kunjungan'):'';
     $flag_mcu           = (isset($_GET['flag_mcu']))?$this->input->get('flag_mcu'):'';
-    //print_r($no_registrasi);die;
+    // print_r($no_registrasi);die;
 		switch ($type) {
 			case 'pdf':
 				$this->getContentPDF($no_registrasi, $flag, $pm, $act_code,$bagian,$no_kunjungan,$flag_mcu );
@@ -52,7 +52,7 @@ class Export_data extends MX_Controller {
       /*get content data*/
       //$data = $csm_bp->getBillingLocal($no_registrasi, $flag); 
       $data = $reg_pm->get_hasil_pm($no_registrasi, $no_kunjungan, $bagian, $flag_mcu);
-    //   echo"<pre>";print_r($data);die;
+      // echo"<pre>";print_r($pm);die;
       /*get content html*/
       $html = json_decode($csm_bp->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, $flag_mcu));
 

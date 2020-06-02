@@ -208,6 +208,8 @@ class Csm_billing_pasien_model extends CI_Model {
         // echo '<pre>';print_r($this->db->last_query());die;
         /*get kasir data*/
         $kasir_data = $this->getKasirData($no_registrasi);
+        // echo '<pre>';print_r($kasir_data);die;
+        
         /*get data trans pelayanan by no registrasi*/
         $trans_data = $this->getTransData($no_registrasi, $status_nk);
         

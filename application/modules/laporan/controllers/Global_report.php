@@ -497,7 +497,7 @@ class Global_report extends MX_Controller {
                 
     }
 
-    public function show_data_obat_kategori(){
+   public function show_data_obat_kategori(){
 
         $query_data = $this->Global_report->get_data();
         
@@ -505,8 +505,8 @@ class Global_report extends MX_Controller {
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
             'result' => $query_data,
-            'obat_alkes' => $_POST['obat_alkes'],
-            'kode_profit' => $_POST['kode_profit'],
+            // 'obat_alkes' => $_POST['obat_alkes'],
+            // 'kode_profit' => $_POST['kode_profit'],
             'tgl1' => $_POST['tgl1'],
             'tgl2' => $_POST['tgl2'],
         );

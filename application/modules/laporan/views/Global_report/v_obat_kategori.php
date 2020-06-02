@@ -18,33 +18,39 @@
 </head>
 <body>
   <?php
-switch($_POST['obat_alkes']){
-     case "D":
-       $nama_jenis= "OBAT";
-     break;
-     case "E":
-       $nama_jenis= "ALKES";
-     break;
-   }
+// switch($_POST['obat_alkes']){
+//      case "A":
+//        $nama_jenis= "ALL";
+//      break;
+//      case "D":
+//        $nama_jenis= "OBAT";
+//      break;
+//      case "E":
+//        $nama_jenis= "ALKES";
+//      break;
+//    }
 
-   switch($_POST['kode_profit']){
+//    switch($_POST['kode_profit']){
     
-    case "666":
-     $nama_nasabah="Karyawan RS";
-    break;
-    case "4000":
-     $nama_nasabah="Pembelian Bebas";
-    break;
-    case "3000":
-     $nama_nasabah="Resep Luar";
-    break;
-    case "2000":
-     $nama_nasabah="Rawat Jalan";
-    break;
-    case "1000":
-     $nama_nasabah="Rawat Inap";
-    break;
-    }
+//     case "1111":
+//      $nama_nasabah="ALL";
+//     break;
+//      case "666":
+//      $nama_nasabah="Karyawan RS";
+//     break;
+//     case "4000":
+//      $nama_nasabah="Pembelian Bebas";
+//     break;
+//     case "3000":
+//      $nama_nasabah="Resep Luar";
+//     break;
+//     case "2000":
+//      $nama_nasabah="Rawat Jalan";
+//     break;
+//     case "1000":
+//      $nama_nasabah="Rawat Inap";
+//     break;
+//     }
   ?>
   <div class="row">
     <div class="col-xs-12">
@@ -57,18 +63,18 @@ switch($_POST['obat_alkes']){
               </td>
             </tr>
             <tr class="mainTitle">
-              <td colspan="3">Laporan Pemesanan Resep </td>
+              <td colspan="3">Laporan Penjualan Obat/Alkes  </td>
             </tr>
-            <tr class="subTitle">
+           <!--  <tr class="subTitle">
               <td width="15%">OBAT/ALKES </td>
               <td>:</td>
-              <td><?php echo $nama_jenis ?></td>
+              <td><?php //echo $nama_jenis ?></td>
             </tr>
             <tr class="subTitle">
               <td width="15%">KATEGORI </td>
               <td>:</td>
-              <td><?php echo $nama_nasabah?></td>
-            </tr>
+              <td><?php //echo $nama_nasabah?></td>
+            </tr> -->
             <tr class="subTitle">
               <td width="15%">PERIODE </td>
               <td>:</td>
@@ -99,39 +105,38 @@ switch($_POST['obat_alkes']){
           foreach ($result['data'] as $row_data){
             $no ++;
                
-                // $tgl_trans = $row_data->tgl_trans;
-                $kode_brg = $row_data->kode_brg;
-                $nama_brg = $row_data->nama_brg;
-                $jumlah_tebus = $row_data->jumlah_tebus;
-                $jumlah_retur = $row_data->jumlah_retur;
-                $harga_jual = $row_data->harga_jual;
-                // $harga_beli = $row_data->harga_beli;
-                $harga_r = $row_data->harga_r;
-                $harga_r_retur = $row_data->harga_r_retur;
-                $satuan_kecil = $row_data->satuan_kecil;
-                $jumlah_akhir = $jumlah_tebus - $jumlah_retur;
+               $no++;
+                //$tgl_trans = $tampil["tgl_trans"];
+                $kode_brg       = $row_data->kode_brg;
+                $nama_brg       = $row_data->nama_brg;
+                $jumlah_tebus     = $row_data->jml_tebus;
+                $jumlah_retur     = $row_data->jml_retur;
+                $net_qty      = $row_data->net_qty;
+                // $harga_jual     = $row_data->harga_jual;
+                $net_rp         = $row_data->net_rp;
+                if($net_rp==0) {
+                    $harga_rata = 0;
+                } else {
+                    $harga_rata = $net_rp/$net_qty;
+                }
 
-            if($jumlah_akhir>0)
-            {
-                $harga_jual_akhir = $harga_jual * $jumlah_akhir;
+                /*//$harga_jual_akhir = $harga_jual * $jumlah_akhir;
                 $harga_r_akhir = $harga_r - $harga_r_retur;
-                $harga_akhir = $harga_jual_akhir;
-                $tot_jumlah_akhir =$tot_jumlah_akhir + $jumlah_akhir;
-                $tot_harga_akhir = $tot_harga_akhir + $harga_akhir;
-            ?>
+                //$harga_rata2=($harga_jual*$jumlah_akhir)/$jumlah_akhir;*/
+                $tot_jumlah_akhir  = $tot_jumlah_akhir + $net_qty;
+                $tot_harga_akhir  = $tot_harga_akhir + $net_rp;
+                ?>
             <tr class="contentTable">
               <td align="right" width="25"><?php echo   $no  ?>.</td>
               <td align="left" width="">&nbsp;<?php echo $kode_brg?>&nbsp;</td>
               <td align="left" width="">&nbsp;<?php echo $nama_brg?>&nbsp;</td>
-              <td align="left" width=""><?php echo $satuan_kecil?>&nbsp;</td>
-              <td align="right" width=""><?php echo number_format($jumlah_akhir)?></td>
-              <td align="right" width=""><?php echo number_format($harga_jual)?></td>
-              <td align="right" width=""><?php echo number_format($harga_akhir)?></td>
+              <td align="left" width=""><?php echo $row_data->satuan_kecil?>&nbsp;</td>
+              <td align="right" width=""><?php echo number_format($net_qty)?></td>
+              <td align="right" width=""><?php echo number_format($harga_rata)?></td>
+              <td align="right" width=""><?php echo number_format($net_rp)?></td>
             </tr>
             <?php
-            }//end if
-                // $i++;
-              }
+            }
             ?>
             <tr class="headTable">
               <td align="right" width="25">&nbsp;</td>

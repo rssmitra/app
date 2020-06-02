@@ -80,37 +80,13 @@ $('select[name="pelayanan"]').change(function () {
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>Laporan Penjualan Obat Per Kategori</h4>
+        <h4>Laporan Penjualan Obat Alkes</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_obat_kategori">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
           <input type="hidden" name="title" value="Laporan Penjualan Obat Per Kategori">
 
-                                           
-        
-           <div class="form-group">
-            <label class="control-label col-md-1">Obat / Alkes</label>
-              <div class="col-md-2">
-               <select name="obat_alkes" class="form-control">
-                 <option value="D"> Obat </option>
-                 <option value="E"> Alkes </option>
-               </select>
-              </div>
-              
-          </div>
-           <div class="form-group">
-            <label class="control-label col-md-1">Kategori</label>
-              <div class="col-md-2">
-               <select name="kode_profit" class="form-control">
-                 <option value="1000"> Rawat Inap </option>
-                 <option value="2000"> Rawat Jalan </option>
-                 <option value="3000"> Resep Luar </option>
-                 <option value="4000"> Pembelian Bebas </option>
-                 <option value="666"> Karyawan RS </option>
-               </select>
-              </div>
-              
-          </div>
+          
           
 
            <div class="form-group">

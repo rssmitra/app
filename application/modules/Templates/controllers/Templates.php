@@ -850,7 +850,7 @@ class Templates extends MX_Controller {
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
-        echo '<pre>';print_r($pm_data);die;
+        // echo '<pre>';print_r($pm_data);die;
         $html = '';
         if($tipe=='RAD'){
             // $html .= '<br><table class="table table-striped table-bordered" cellpadding="2" cellspacing="2" border="0">

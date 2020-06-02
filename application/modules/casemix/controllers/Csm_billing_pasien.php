@@ -282,22 +282,16 @@ class Csm_billing_pasien extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function getHtmlData($params, $no_registrasi, $flag, $pm, $rb=''){
+    public function getHtmlData($params, $no_registrasi, $flag, $pm, $rb='',$no_kunjungan='',$flag_mcu=''){
 
+        // echo '<pre>'; print_r($params);die;
         $temp = new Templates;
         /*header html*/
         /*get detail data billing*/
         $data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        
         $html = '';
 
-        switch ($flag) {
-            case 'RESUME':
-                $html .= $temp->setGlobalHeaderTemplate();
-                $html .= $temp->setGlobalProfileRekamMedis($data);
-                $html .= $temp->setGlobalContentBilling($temp->TemplateResumeMedis($no_registrasi, $flag, $data));
-                $html .= $temp->setGlobalFooterRm($data);
-                break;
+       switch ($flag) {
             case 'RJ':
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplate($data);
@@ -312,14 +306,16 @@ class Csm_billing_pasien extends MX_Controller {
 
                 break;
             case 'RAD':
+                $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
                 $html .= $temp->setGlobalHeaderTemplate();
-                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm);
+                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm));
                 $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
                 break;
             case 'LAB':
+                $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
                 $html .= $temp->setGlobalHeaderTemplate();
-                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm);
+                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm));
                 $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
                 break;
