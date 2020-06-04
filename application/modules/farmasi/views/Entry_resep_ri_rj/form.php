@@ -385,8 +385,8 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
         $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
       }
       
-      $('#dosis_start').val(obj.dosis_obat);
-      $('#dosis_end').val(obj.dosis_per_hari);
+      $('#dosis_start').val(obj.dosis_per_hari);
+      $('#dosis_end').val(obj.dosis_obat);
       $('#catatan').val(obj.catatan_lainnya);
       $('#satuan_obat').val(obj.satuan_obat);
       $('#anjuran_pakai').val(obj.anjuran_pakai);

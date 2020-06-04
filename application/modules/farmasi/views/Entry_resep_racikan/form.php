@@ -305,7 +305,7 @@ function show_selected_item_racikan(id_tc_far_racikan){
           $('#kode_r').text(data.kode_brg);
           $('#nama_r').text(data.nama_brg.toUpperCase());
           $('#jml_r').text(parseInt(data.jumlah_tebus)+' '+data.satuan_kecil);
-          $('#signa_r').text(data.dosis_obat+' x '+data.dosis_per_hari+' '+data.anjuran_pakai);
+          $('#signa_r').text(data.dosis_per_hari+' x '+data.dosis_obat+' '+data.anjuran_pakai);
           $('#catatan_r').text(data.catatan_aturan_pakai);
           var label_ditangguhkan = 'N';
           if( data.prb_ditangguhkan == 1 ){
@@ -316,8 +316,8 @@ function show_selected_item_racikan(id_tc_far_racikan){
           $('#petugas_r').text('admin');
 
           // signa
-          $('#dosis_start').val(data.dosis_obat);
-          $('#dosis_end').val(data.dosis_per_hari);
+          $('#dosis_start').val(data.dosis_per_hari);
+          $('#dosis_end').val(data.dosis_obat);
           $('#catatan').val(data.catatan_lainnya);
           $('#satuan_obat_r').val(data.aturan_pakai);
           $('#anjuran_pakai').val(data.anjuran_pakai);
@@ -680,14 +680,15 @@ function btn_update_racikan(){
                 <label class="control-label col-sm-2">Signa</label>
                 <div class="col-md-4">
                   <span class="inline">
-                    <input name="dosis_start_r" id="dosis_start_r" type="text" style="width: 50px; text-align: center"/>
+                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
                   </span>
                   <span class="inline" style="padding-left: 4px;">
                     <i class="fa fa-times bigger-150"></i>
                   </span>
                   <span class="inline">
-                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
+                    <input name="dosis_start_r" id="dosis_start_r" type="text" style="width: 50px; text-align: center"/>
                   </span>
+                  
                 </div>
               </div>
 

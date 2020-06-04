@@ -268,9 +268,9 @@ class AntrianBPJS extends MX_Controller {
         $no_antrian = $dt_booking->num_rows() + 1;
         // get kode booking
         $kode_booking = $this->create_kode_booking($post->nomorkartu, $post->tanggalperiksa);
-
+        // print_r($getKuota);die;
         /*hitung estimasi waktu kedatangan pasien */
-        $jam_mulai_praktek = $this->tanggal->formatFullTime($getKuota[0]['jadwal_dokter']->jd_jam_mulai);
+        $jam_mulai_praktek = $this->tanggal->formatFullTime($getKuota[0]['dt_jadwal']->jd_jam_mulai);
 
         $date = date_create($post->tanggalperiksa.' '.$jam_mulai_praktek );
         date_add($date, date_interval_create_from_date_string('-2 hours'));
@@ -361,7 +361,7 @@ class AntrianBPJS extends MX_Controller {
         foreach($result as $row){
             $getList[] = array(
                     'kodebooking' => $row->id_tc_pesanan,
-                    'tanggaloperasi' => $this->tanggal->formatDate($row->jam_pesanan),
+                    'tanggaloperasi' => $this->tanggal->sqlDateTimeToDate($row->jam_pesanan),
                     'jenistindakan' => $row->nama_tarif,
                     'kodepoli' => $row->kode_poli_bpjs,
                     'namapoli' => $row->nama_bagian,

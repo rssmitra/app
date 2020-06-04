@@ -134,7 +134,9 @@ function popUnder(node) {
               <th>Nama Pasien</th>
               <th>Nama Dokter</th>
               <th>Pelayanan</th>
-              <th>&nbsp;</th>
+              <th class="center">Nota<br>Farmasi</th>
+              <th class="center" style="min-width: 70px">Copy<br>Resep</th>
+              <th class="center">Etiket</th>
             </tr>
           </thead>
           <tbody>

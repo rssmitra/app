@@ -249,6 +249,22 @@ final class Tanggal {
 
         return $tanggal;
     }
+
+    public  function sqlDateTimeToDate($input) {
+        if (empty($input)) {
+            $tanggal = "-";
+        } else {
+            sscanf($input, '%d/%d/%d %d:%d:%d', $m, $d, $y, $h, $i, $s);
+            
+            $h = tanggal::normalDigit($h);
+            $i = tanggal::normalDigit($i);
+            $s = tanggal::normalDigit($s);
+            
+            $tanggal = $y . "-" . $m . "-" . $d;
+        }
+
+        return $tanggal;
+    }
     
     public  function tgl_indo($tgl) {
         $tanggal = substr($tgl, 8, 2);

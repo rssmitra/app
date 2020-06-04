@@ -137,7 +137,7 @@ class Entry_resep_ri_rj extends MX_Controller {
                     $html .= '<td align="center">'.$resep->jumlah_obat_23.'/'.$penangguhan.'</td>';
                     $html .= '<td>'.$data->satuan_besar.' / '.$data->satuan_kecil.'</td>';
                     $html .= '<td>1 : '.$data->content.'</td>';
-                    $html .= '<td>'.$resep->dosis_obat.' x '.$resep->dosis_per_hari.' '.$resep->satuan_obat.' ('.$resep->anjuran_pakai.') </td>';
+                    $html .= '<td>'.$resep->dosis_per_hari.' x '.$resep->dosis_obat.' '.$resep->satuan_obat.' ('.$resep->anjuran_pakai.') </td>';
                     $html .= '<td>'.ucfirst($resep->catatan_lainnya).'</td>';
                 $html .= '</tr>';
 

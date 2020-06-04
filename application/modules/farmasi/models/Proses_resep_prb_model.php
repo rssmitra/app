@@ -1,15 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Etiket_obat_model extends CI_Model {
+class Proses_resep_prb_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
-	var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
+	var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
 	var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep';
-
-	// var $table = 'fr_tc_far';
-	// var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
-	// var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, id_tc_far_racikan';
 
 	var $order = array('tgl_trans' => 'DESC', 'kode_trans_far' => 'DESC');
 
@@ -21,13 +17,12 @@ class Etiket_obat_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
-		$this->db->select('CAST(copy_resep_text AS nvarchar(max)) as copy_resep_text');
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
-		$this->db->where('status_transaksi', 1);
+		$this->db->where('kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log where jumlah_obat_23 > 0 group by kode_trans_far)');
+		$this->db->where('tc_registrasi.kode_perusahaan', 120);
 		$this->db->group_by($this->select);
-		$this->db->group_by('CAST(copy_resep_text AS nvarchar(max))');
 
 	}
 
@@ -37,7 +32,11 @@ class Etiket_obat_model extends CI_Model {
 		$this->_main_query();
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
-			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
+			if($_GET['search_by'] == 'no_sep'){
+				$this->db->where('tc_registrasi.'.$_GET['search_by'].'', $_GET['keyword']);
+			}else{
+				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
+			}
 		}
 
 		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){
@@ -153,7 +152,7 @@ class Etiket_obat_model extends CI_Model {
 	}
 
 	public function get_detail_resep_data($kode_trans_far){
-		$this->db->select('b.*, jumlah_pesan, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, e.created_by, e.no_resep, f.nama_bagian, flag_resep, b.harga_jual_satuan as harga_jual');
+		$this->db->select('b.*, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, e.created_by, e.no_resep, f.nama_bagian, flag_resep');
 		$this->db->from('fr_tc_far_detail_log b');
 		$this->db->join('fr_tc_far e','e.kode_trans_far=b.kode_trans_far','left');
 		$this->db->join('mt_bagian f','f.kode_bagian=e.kode_bagian_asal','left');

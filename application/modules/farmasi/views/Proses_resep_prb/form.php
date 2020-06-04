@@ -46,7 +46,7 @@ function saveRow(kode_brg){
   };
 
   $.ajax({
-      url: "farmasi/Verifikasi_resep_prb/process",
+      url: "farmasi/Proses_resep_prb/process",
       data: data,            
       dataType: "json",
       type: "POST",
@@ -98,13 +98,13 @@ $("#btn_cetak_etiket").click(function(event){
 $("#btn_copy_resep").click(function(event){
       event.preventDefault();
       var kode = $('#kode_trans_far').val();
-      getMenu('farmasi/Verifikasi_resep_prb/form_copy_resep/'+kode+'');
+      getMenu('farmasi/Proses_resep_prb/form_copy_resep/'+kode+'');
 });
 
 function get_kode_eticket(myid){
 
   $.ajax({
-        url: 'farmasi/Verifikasi_resep_prb/get_kode_eticket',
+        url: 'farmasi/Proses_resep_prb/get_kode_eticket',
         type: "post",
         data: {ID:myid},
         dataType: "json",
@@ -116,7 +116,7 @@ function get_kode_eticket(myid){
         complete: function(xhr) {     
           var data=xhr.responseText;
           var jsonResponse = JSON.parse(data);
-          PopupCenter('farmasi/Verifikasi_resep_prb/preview_etiket?'+jsonResponse.params+'', 'Etiket Obat' , 600 , 600);
+          PopupCenter('farmasi/Proses_resep_prb/preview_etiket?'+jsonResponse.params+'', 'Etiket Obat' , 600 , 600);
           achtungHideLoader();
         }
 
@@ -145,7 +145,7 @@ function get_kode_eticket(myid){
 
       <!-- <div class="col-sm-12">
         <div class="pull-right">
-          <button type="button" onclick="getMenu('farmasi/Verifikasi_resep_prb')" class="btn btn-default btn-xs">
+          <button type="button" onclick="getMenu('farmasi/Proses_resep_prb')" class="btn btn-default btn-xs">
             <span class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></span>
             Kembali ke Halaman Utama
           </button>

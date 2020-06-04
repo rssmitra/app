@@ -118,7 +118,6 @@ class Input_pasien_baru extends MX_Controller {
             $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'registration/Input_pasien_baru/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
             /*get value by id*/
             $data['value'] = $this->Input_pasien_baru->get_by_mr($noMr);
-            /*initialize flag for form*/
             $data['flag'] = "update";
         }else{
             /*breadcrumbs for create or add row*/

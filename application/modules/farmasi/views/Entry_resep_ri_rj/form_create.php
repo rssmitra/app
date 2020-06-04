@@ -180,7 +180,7 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            $('#dosis_start').focus();
+            $('#dosis_end').focus();
           }
           return false;       
         }
@@ -192,7 +192,7 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            $('#dosis_end').focus();
+            $('#satuan_obat').focus();
           }
           return false;       
         }
@@ -204,7 +204,7 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            $('#satuan_obat').focus();
+            $('#dosis_start').focus();
           }
           return false;       
         }
@@ -594,7 +594,7 @@ $('select[name="jenis_resep"]').change(function () {
               <div class="col-md-10">
 
                 <span class="input-icon">
-                  <input name="dosis_start" id="dosis_start" type="text" style="width: 50px;"/>
+                  <input name="dosis_end" id="dosis_end" type="text" style="width: 50px;"/>
                 </span>
 
                 <span class="input-icon" style="padding-left: 4px">
@@ -602,7 +602,7 @@ $('select[name="jenis_resep"]').change(function () {
                 </span>
 
                 <span class="input-icon">
-                  <input name="dosis_end" id="dosis_end" type="text" style="width: 50px;"/>
+                  <input name="dosis_start" id="dosis_start" type="text" style="width: 50px;"/>
                 </span>
 
                 <span class="input-icon">

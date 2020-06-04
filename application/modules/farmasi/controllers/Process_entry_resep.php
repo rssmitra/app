@@ -161,8 +161,8 @@ class Process_entry_resep extends MX_Controller {
             
             // insert etiket obat
             $data_etiket = array(
-                'dosis_obat' => isset($_POST['dosis_start'])?$this->regex->_genRegex($_POST['dosis_start'], 'RGXQSL'):0,
-                'dosis_per_hari' => isset($_POST['dosis_end'])?$this->regex->_genRegex($_POST['dosis_end'], 'RGXQSL'):0,
+                'dosis_per_hari' => isset($_POST['dosis_start'])?$this->regex->_genRegex($_POST['dosis_start'], 'RGXQSL'):0,
+                'dosis_obat' => isset($_POST['dosis_end'])?$this->regex->_genRegex($_POST['dosis_end'], 'RGXQSL'):0,
                 // 'aturan_pakai' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
                 'catatan_lainnya' => isset($_POST['catatan'])?$this->regex->_genRegex($_POST['catatan'], 'RGXQSL'):0,
                 'relation_id' => isset($data_farmasi_detail['kd_tr_resep'])?$this->regex->_genRegex($data_farmasi_detail['kd_tr_resep'], 'RGXINT'):0,

@@ -1,3 +1,14 @@
+<style>
+  .monotype_style{
+    font-family : Monotype Corsiva, Times, Serif !important;
+    font-size: 14px; 
+    padding-right: 10px
+  }
+  .wysiwyg-editor{
+    max-height: 500px !important;
+    height: 500px !important;
+  }
+</style>
 <div class="row">
 
   <div class="col-xs-12">
@@ -14,25 +25,50 @@
       
       <!-- hidden form -->
       <input type="hidden" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($value)?ucwords($value->kode_trans_far):''?>">
+
       <div class="row">
-
-        <div class="col-sm-12">
-
-          <div class="col-xs-6">
-            <h4><?php echo isset($value)?ucwords($value->kode_trans_far):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?> (<?php echo isset($value)?ucwords($value->no_resep):''?>) </h4>
-          </div>
+        <div class="col-md-6">
+          <table>
+            <tr style="">
+              <td width="100px">No. SEP</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->no_sep ?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">No. MR</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->no_mr?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">Nama Pasien</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->nama_pasien?></td>
+            </tr>
+          </table>
         </div>
 
+        <div class="col-md-6">
+          <table>
+          
+            <tr style="">
+              <td width="100px">Tanggal</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $this->tanggal->formatDateTime($value->tgl_trans) ?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">Dokter</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->dokter_pengirim?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">Poli Asal</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $detail_obat[0]['nama_bagian']?></td>
+            </tr>
+          </table>
+        </div>
       </div>
-
       <hr>
-
       <div class="row">
         <div class="col-md-12">
 
           <p><b>COPY RESEP FARMASI</b></p>
 
-          <form class="form-horizontal" method="post" id="form_entry_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/process_entry_resep/process">      
+          <form class="inline" method="post" id="form_entry_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/process_entry_resep/process">      
       
               <!-- default form -->
               <div class="row">
@@ -40,21 +76,68 @@
                 <div class="col-sm-12 no-padding">
 
                   <div class="form-group">
-                    <label class="control-label col-md-2">Tulis Resep</label>
-                    <div class="col-md-10">
-                      <div class="wysiwyg-editor" id="editor"><?php 
+                    <div class="col-md-8">
+                      <span>Silahkan tulis resep dibawah ini :</span>
+                      <div class="wysiwyg-editor" id="editor" style="padding-left: 5px">
+                        <?php 
                           foreach($detail_obat as $row){
-                            echo $row->nama_brg.'<br>';
-                            echo '&nbsp;&nbsp;&nbsp;'.$row->dosis_obat.' x '.$row->dosis_per_hari.' (hari) &nbsp; '.$row->jumlah_obat.'&nbsp;&nbsp;'.$row->satuan_obat.'  ('.$row->anjuran_pakai.')';
-                            echo '<br>';
+                            if($row['flag_resep'] == 'biasa'){
+                              $config = array(
+                                'dd' => $row['dosis_per_hari'],
+                                'qty' => $row['dosis_obat'],
+                                'unit' => $row['satuan_obat'],
+                                'use' => $row['anjuran_pakai'],
+                              );
+                              $format_signa = $this->master->formatSigna($config);
+                              echo '<span class="monotype_style">R/</span><br>';
+                              echo '<div style="padding-left: 15px">';
+                              echo $row['nama_brg'].' &nbsp;&nbsp; No. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).'<br>';
+                              echo '<i>'.$format_signa.'</i>';
+                              // echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row['dosis_per_hari'].' x '.$row['dosis_obat'].'&nbsp; '.$row['satuan_obat'].'  ('.$row['anjuran_pakai'].')<br>';
+                              echo ' ____________ det / nedet<br><br>';
+                              echo '</div>';
+                            }else{
+                              echo '<span class="monotype_style">R/</span><br>';
+                              echo '<div style="padding-left: 15px">';
+                              echo '<table>';
+                              foreach ($row['racikan'][0] as $key => $value) {
+                                echo '<tr>';  
+                                echo '<td width="70%">'.$value->nama_brg.'</td>';  
+                                echo '<td width="30%" style="padding-left: 10px">'.$value->jumlah.' '.strtolower($value->satuan).'</td>';  
+                                echo '</tr>';  
+                              }
+                              echo '</table>';
+                              $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($row['satuan_obat'])) );
+                              echo '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).' da in '.$unit_code.'</i> <br>';
+                              $config = array(
+                                'dd' => $row['dosis_per_hari'],
+                                'qty' => $row['dosis_obat'],
+                                'unit' => $row['satuan_obat'],
+                                'use' => $row['anjuran_pakai'],
+                              );
+                              // format signa racikan
+
+                              $format_signa = $this->master->formatSigna($config);
+                              // echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row['dosis_per_hari'].' x '.$row['dosis_obat'].'&nbsp; '.$row['satuan_obat'].'  ('.$row['anjuran_pakai'].')<br>';
+                              echo '<i>'.$format_signa.'</i>';
+                              echo ' ____________ det / nedet<br><br>';
+                              echo '</div>';
+                            }
+                            
                           }
-                        ?></div>
+                        ?>
+                      </div>
                       <textarea spellcheck="false" id="content" name="content" style="display:none"></textarea>
+                    </div>
+                    <div class="col-md-4">
+                      <address style="padding-top: 10px">
+                        Keterangan : <br>
+                        <?php echo $this->master->get_string_data('label', 'global_parameter', array('flag' => 'desc_signa'))?>
+                      </address>
                     </div>
                   </div>
 
-                  <div class="form-group" style="margin-top: 10px">
-                    <label class="col-md-2">&nbsp;</label>
+                  <div class="form-group" style="margin-top: 18px">
                     <div class="col-md-10">
                       <button type="submit" class="btn btn-primary btn-xs">
                           <span class="ace-icon fa fa-print icon-on-right bigger-110"></span>

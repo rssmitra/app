@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Etiket_obat extends MX_Controller {
+class Proses_resep_prb extends MX_Controller {
 
     /*function constructor*/
     function __construct() 
@@ -11,7 +11,7 @@ class Etiket_obat extends MX_Controller {
 
         parent::__construct();
         /*breadcrumb default*/
-        $this->breadcrumbs->push('Index', 'farmasi/Etiket_obat');
+        $this->breadcrumbs->push('Index', 'farmasi/Proses_resep_prb');
         /*session redirect login if not login*/
         if($this->session->userdata('logged')!=TRUE){
             echo 'Session Expired !'; exit;
@@ -19,6 +19,7 @@ class Etiket_obat extends MX_Controller {
         /*load model*/
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
+        $this->load->model('Proses_resep_prb_model', 'Proses_resep_prb');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -37,55 +38,38 @@ class Etiket_obat extends MX_Controller {
             'breadcrumbs' => $this->breadcrumbs->show(),
         );
         /*load view index*/
-        $this->load->view('Etiket_obat/index', $data);
+        $this->load->view('Proses_resep_prb/index', $data);
     }
 
     public function form($id='')
     {
         /*if id is not null then will show form edit*/
         /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Etiket_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Proses_resep_prb/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
-        $data['value'] = $this->Etiket_obat->get_by_id($id);
-        $data['detail_obat'] = $this->Etiket_obat->get_detail_resep_data($id)->result();
-        // echo '<pre>';print_r($data);die;
-        /*title header*/
-        $data['title'] = $this->title;
-        /*show breadcrumbs*/
-        $data['breadcrumbs'] = $this->breadcrumbs->show();
-        /*load form view*/
-        $this->load->view('Etiket_obat/form', $data);
-    }
-
-    public function form_copy_resep($id='')
-    {
-        /*if id is not null then will show form edit*/
-        /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Etiket_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
-        /*get value by id*/
-        $data['value'] = $this->Etiket_obat->get_by_id($id);
+        $data['value'] = $this->Proses_resep_prb->get_by_id($id);
+        // detail obat
         $resep_log = $this->Etiket_obat->get_detail_resep_data($id)->result_array();
         foreach($resep_log as $row){
             $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
             $row['racikan'][] = $racikan;
             $getData[] = $row;
         }
-
-        $data['detail_obat'] = $getData;
+        $data['resep'] = $getData;
+        
         // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Etiket_obat/form_copy_resep', $data);
+        $this->load->view('Proses_resep_prb/form', $data);
     }
-
 
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Etiket_obat->get_datatables();
+        $list = $this->Proses_resep_prb->get_datatables();
         if(isset($_GET['search']) AND $_GET['search']==TRUE){
             $this->find_data(); exit;
         }
@@ -98,52 +82,26 @@ class Etiket_obat extends MX_Controller {
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Proses_resep_prb/form/".$row_list->kode_trans_far."'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $row[] = '<div class="left">'.$row_list->no_sep.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
             $row[] = $row_list->nama_pelayanan;
             $row[] = '<div class="center">
-                        <a href="#" onclick="PopupCenter('."'farmasi/Process_entry_resep/nota_farmasi/".$row_list->kode_trans_far."'".','."'Cetak'".',530,550);" class="btn btn-xs btn-purple" title="print_nota_farmasi"><i class="fa fa-print dark"></i></a>
-                      </div>';
-            $copy_edit = ($row_list->copy_resep_text != null) ? '<a href="#" onclick="PopupCenter('."'farmasi/Etiket_obat/preview_copy_resep/".$row_list->kode_trans_far."'".','."'Cetak copy resep'".',900,600);" class="btn btn-xs btn-default" title="print_copy_resep">
-                            <i class="fa fa-print dark"></i>
-                        </a>' : '';
-            
-            $row[] = '<div class="center">
-                        '.$copy_edit.'
-                        <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form_copy_resep/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-success" title="create_copy_resep">
-                            <i class="fa fa-copy dark"></i>
+                        <a href="#" onclick="getMenu('."'farmasi/Proses_resep_prb/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
+                          <i class="fa fa-check-square-o"></i> Porses Resep
                         </a>
                       </div>';
-            $row[] = '<div class="center">
-                        <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
-                          <i class="fa fa-ticket dark"></i>
-                        </a>
-                      </div>';
-
-            // $row[] = '<div class="center">
-
-            //             '.anchor_popup('farmasi/Etiket_obat/print_tracer_obat/'.$row_list->kode_trans_far.'', '<i class="fa fa-send dark"></i>', $atts).'
-
-            //             <a href="#" onclick="PopupCenter('."'farmasi/Process_entry_resep/nota_farmasi/".$row_list->kode_trans_far."'".','."'Cetak'".',530,550);" class="btn btn-xs btn-purple" title="Nota Farmasi"><i class="fa fa-print dark"></i></a>
-
-            //             <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form_copy_resep/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-success" title="copy_resep">
-            //                 <i class="fa fa-copy dark"></i>
-            //             </a>
-            //             <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
-            //               <i class="fa fa-ticket dark"></i>
-            //             </a>
-            //           </div>';
             
             $data[] = $row;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Etiket_obat->count_all(),
-                        "recordsFiltered" => $this->Etiket_obat->count_filtered(),
+                        "recordsTotal" => $this->Proses_resep_prb->count_all(),
+                        "recordsFiltered" => $this->Proses_resep_prb->count_filtered(),
                         "data" => $data,
         );
         //output to json format
@@ -152,15 +110,13 @@ class Etiket_obat extends MX_Controller {
 
     public function process()
     {
-        
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         // form validation
 
-        $this->form_validation->set_rules('dosis_start', 'Dosis', 'trim|required');
-        $this->form_validation->set_rules('dosis_end', 'Dosis /hari', 'trim|required');
         $this->form_validation->set_rules('jumlah_obat', 'Jumlah', 'trim|required');
         $this->form_validation->set_rules('satuan_obat', 'Satuan Obat', 'trim|required');
-        $this->form_validation->set_rules('anjuran_pakai', 'Anjuran Pakai', 'trim|required');
+        $this->form_validation->set_rules('harga_satuan', 'Harga Satuan', 'trim|required');
         $this->form_validation->set_rules('catatan', 'Catatan', 'trim');
 
         // set message error
@@ -252,95 +208,11 @@ class Etiket_obat extends MX_Controller {
 
     }
 
-    public function process_copy_resep()
-    {
-        
-        $this->load->library('form_validation');
-        // form validation
-
-        $this->form_validation->set_rules('content', 'Tulis Resep', 'trim|required');
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();
-            
-             /*update existing*/
-             $data_farmasi['copy_resep_text'] = $_POST['content'];
-             $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
-             $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-             $this->db->update('fr_tc_far', $data_farmasi, array('kode_trans_far' => $_POST['kode_trans_far']) );
-             /*save log*/
-             $this->logs->save('fr_tc_far', $_POST['kode_trans_far'], 'update record on entry resep module', json_encode($data_farmasi),'kode_trans_far');
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_trans_far' => $_POST['kode_trans_far']));
-            }
-        
-        }
-
-    }
-
     public function find_data()
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
     }
-
-    public function get_kode_eticket(){
-        /*string to array*/
-        // $arr_id = explode(',', $_POST['ID']);
-        $url_qry = http_build_query($_POST['ID']);
-        echo json_encode(array('params' => $url_qry));
-    }
-
-    public function preview_etiket(){
-        
-        // get etiket data from query string
-        $resep_log = $this->Etiket_obat->get_etiket_data();
-        // echo '<pre>';print_r($resep_log->result());die;
-        $data = array();
-        $data['result'] = $resep_log->result();
-        $this->load->view('farmasi/Etiket_obat/preview_etiket', $data);
-
-    }
-
-    public function preview_copy_resep($kode_trans_far){
-        
-        // get etiket data from query string
-        $resep_log = $this->db->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_far.no_mr','left')->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left')->get_where('fr_tc_far', array('kode_trans_far' => $kode_trans_far) )->row();
-        // echo '<pre>';print_r($resep_log);die;
-        $data = array();
-        $data['result'] = $resep_log;
-        $this->load->view('farmasi/Etiket_obat/preview_copy_resep', $data);
-
-    }
-
-    public function print_tracer_obat($kode_trans_far)
-    {   
-        $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far);
-        // echo '<pre>';print_r($resep_log->result());die;
-        $this->print_escpos->print_resep_gudang($resep_log->result());
-        $data = array();
-        $data['result'] = $resep_log->result();
-        $this->load->view('farmasi/Etiket_obat/preview_tracer_obat', $data);
-    }
-
 
 }
 

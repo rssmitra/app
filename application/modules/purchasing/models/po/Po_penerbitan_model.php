@@ -23,7 +23,7 @@ class Po_penerbitan_model extends CI_Model {
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
 		// $this->db->join(''.$table.'_det d','d.id_tc_permohonan=a.id_tc_permohonan', 'inner');
 
-		$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 31');
+		$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
 		// $this->db->where('(d.status_po = 0 or d.status_po IS NULL)');
 		$this->db->where('a.no_acc is not null');
 		$this->db->where('a.status_batal', 0);

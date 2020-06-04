@@ -114,11 +114,9 @@ class Verifikasi_resep_prb extends MX_Controller {
         $this->load->library('form_validation');
         // form validation
 
-        $this->form_validation->set_rules('dosis_start', 'Dosis', 'trim|required');
-        $this->form_validation->set_rules('dosis_end', 'Dosis /hari', 'trim|required');
         $this->form_validation->set_rules('jumlah_obat', 'Jumlah', 'trim|required');
         $this->form_validation->set_rules('satuan_obat', 'Satuan Obat', 'trim|required');
-        $this->form_validation->set_rules('anjuran_pakai', 'Anjuran Pakai', 'trim|required');
+        $this->form_validation->set_rules('harga_satuan', 'Harga Satuan', 'trim|required');
         $this->form_validation->set_rules('catatan', 'Catatan', 'trim');
 
         // set message error
