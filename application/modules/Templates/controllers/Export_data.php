@@ -28,6 +28,7 @@ class Export_data extends MX_Controller {
     $no_kunjungan       = (isset($_GET['no_kunjungan']))?$this->input->get('no_kunjungan'):'';
     $flag_mcu           = (isset($_GET['flag_mcu']))?$this->input->get('flag_mcu'):'';
     // print_r($no_registrasi);die;
+
         switch ($type) {
             case 'pdf':
                 $this->getContentPDF($no_registrasi, $flag, $pm, $act_code,$bagian,$no_kunjungan,$flag_mcu );

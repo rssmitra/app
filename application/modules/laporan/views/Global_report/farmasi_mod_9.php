@@ -112,7 +112,6 @@ $('select[name="pelayanan"]').change(function () {
               </div>
               
           </div> -->
-          
 
            <div class="form-group">
             <label class="control-label col-md-1">Tanggal</label>
