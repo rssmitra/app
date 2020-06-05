@@ -19,7 +19,7 @@ class Pl_pelayanan_model extends CI_Model {
 		/*insert tc_registrasi*/
 		$this->db->insert($table, $data);
 		
-		return $this->db->insert_id();;
+		return $this->db->insert_id();
 	}
 
 	private function _main_query(){

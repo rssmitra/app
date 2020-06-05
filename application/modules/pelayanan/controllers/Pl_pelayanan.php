@@ -301,7 +301,7 @@ class Pl_pelayanan extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pl_pelayanan->get_datatables_tindakan();
-        //print_r($this->db->last_query());die;
+        // print_r($this->db->last_query());die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -344,7 +344,7 @@ class Pl_pelayanan extends MX_Controller {
             $bill_rs = (isset($row_list->pendapatan_rs))?$row_list->pendapatan_rs:$row_list->bill_rs;
             $row[] = '<div align="right">'.number_format($bill_rs).',-</div>';*/
 
-            $bill_total = ($row_list->bill_rs) + ($row_list->bill_dr1) + ($row_list->bill_dr2) + ($row_list->bill_dr3);
+            $bill_total = ($row_list->bill_rs) + ($row_list->bill_dr1) + ($row_list->bill_dr2) + ($row_list->bill_dr3) + ($row_list->alat_rs);
             
             $row[] = '<div align="right">'.number_format($bill_total).',-</div>';
             $row[] = $row_list->nama_pegawai;
@@ -741,7 +741,7 @@ class Pl_pelayanan extends MX_Controller {
 
             $data = $this->db->get_where('tc_trans_pelayanan',array('kode_trans_pelayanan' => $this->input->post('kode_trans_pelayanan')))->row();
 
-            $bill_rs = $pendapatan_rs+$bhp+$data->kamar_tindakan+$data->alat_rs;
+            $bill_rs = $pendapatan_rs + $bhp + $data->kamar_tindakan + $data->alat_rs;
 
             $dataexc = array(
                 'bill_rs' => $bill_rs,

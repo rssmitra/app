@@ -25,6 +25,7 @@ class Etiket_obat_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
+		$this->db->where('kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log group by kode_trans_far)');
 		$this->db->where('status_transaksi', 1);
 		$this->db->group_by($this->select);
 		$this->db->group_by('CAST(copy_resep_text AS nvarchar(max))');
@@ -165,9 +166,10 @@ class Etiket_obat_model extends CI_Model {
 
 	public function get_etiket_data(){
 		$data = ($_GET)?$_GET:$_POST;
-		$this->db->select('b.kode_brg, b.nama_brg, dosis_obat, aturan_pakai, satuan_obat, jumlah_obat, catatan_lainnya, anjuran_pakai, dosis_per_hari, a.nama_pasien, a.no_mr, a.tgl_trans');
+		$this->db->select('b.kode_brg, b.nama_brg, dosis_obat, aturan_pakai, satuan_obat, jumlah_obat, catatan_lainnya, anjuran_pakai, dosis_per_hari, a.nama_pasien, a.no_mr, a.tgl_trans, c.tgl_lhr, a.kode_trans_far');
 		$this->db->from('fr_tc_far_detail_log b');
 		$this->db->join('fr_tc_far a', 'a.kode_trans_far=b.kode_trans_far','left');
+		$this->db->join('mt_master_pasien c','c.no_mr=a.no_mr','left');
 		$this->db->where_in('relation_id', $data);
 		return $this->db->get();
 	}

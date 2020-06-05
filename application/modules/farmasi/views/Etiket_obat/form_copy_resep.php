@@ -132,7 +132,9 @@
                     <div class="col-md-4">
                       <address style="padding-top: 10px">
                         Keterangan : <br>
-                        <?php echo $this->master->get_string_data('label', 'global_parameter', array('flag' => 'desc_signa'))?>
+                        <?php 
+                          echo $this->master->get_string_data('CAST(desc_text as NVARCHAR(max)) as desc_text', 'global_parameter', array('flag' => 'desc_signa'));
+                        ?>
                       </address>
                     </div>
                   </div>

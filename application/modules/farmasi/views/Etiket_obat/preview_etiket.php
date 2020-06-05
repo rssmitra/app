@@ -37,7 +37,7 @@ window.onload = generateBarcode;
   width: 265px;
   height: 210px;
   /* border: 1px solid grey; */
-  font-weight: bold;
+  /*font-weight: bold;*/
   font-size: 14px;
   font-family: Arial Narrow;
   color: black;
@@ -46,13 +46,17 @@ window.onload = generateBarcode;
 }
 
 table{
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 
 @media print{ #barPrint{
 		display:none;
 	}
 }
+.monotype_style{
+    font-family : Monotype Corsiva, Times, Serif !important;
+    font-size: 14px; 
+  }
 </style>
 <!-- <div id="barPrint" style="float: right">
   <button class="tular" onClick="window.close()">Tutup</button>
@@ -66,31 +70,50 @@ table{
 
   foreach( $result as $rows ) : 
 ?>
-<center>
-<div class="body" style="page-break-after: always;">
+<center style="margin-bottom: 5px">
+<div class="body" style="page-break-after: always; border: 1px solid grey; padding: 5px">
   <table border=0 width="100%" style="border-bottom: 1px solid">
     <tr>
       <td><img src="<?php echo base_url().'assets/images/logo-black.png'?>" alt="" style="width: 50px"></td>
-      <td align="center">INSTALASI FARMASI<br>
-          <?php echo strtoupper(COMP_LONG); ?></td>
-      <td><img src="<?php echo base_url().'assets/images/qrcode.png'?>" alt="" style="width: 40px"></td>
+      <td align="left">
+        <span style="font-size: 10px">INSTALASI FARMASI</span><br>
+        <span style="font-size: 12px"><?php echo strtoupper(COMP_LONG); ?></span><br>
+        <span style="font-size: 9px"><?php echo COMP_ADDRESS_SORT; ?></span><br>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center" style="margin-top: -5px">
+        
+      </td>
     </tr>
   </table> 
-  <p style="margin-top: 1px">
-    No. Mr : <?php echo $rows->no_mr; ?> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Tgl : <?php echo $this->tanggal->tgl_indo($rows->tgl_trans); ?><br>
-    Nama Pasien : <?php echo $rows->nama_pasien; ?><br>
-    Tgl Lahir : 23/11/2019 &nbsp; &nbsp; Umur : 30 Th
-    <hr style="margin-top: -10px">
-  </p>
-  <p style="margin-top: -12px">
-    <?php echo $rows->nama_brg;?><br>
-    Aturan Minum : <?php echo $rows->dosis_obat; ?> x <?php echo $rows->dosis_per_hari; ?> (hari) &nbsp;  &nbsp; &nbsp; <?php echo $rows->jumlah_obat; ?> <?php echo $rows->satuan_obat; ?> <br>
-    [<?php echo $rows->anjuran_pakai; ?>]<br>
-    Keterangan : <?php echo $rows->catatan_lainnya; ?>
-    <!-- <center style="margin-top:-12px">
-      Antibiotik
-      <div id="barcodeTarget<?php echo $rows->kode_brg?>" class="barcodeTarget" ></div>
-    </center> -->
+  <center>
+    <span style="font-size: 11px">Apoteker : Zora Almira, S.Farm., Apt</span><br>
+        <span style="font-size: 10px">4/B.19/31.74.06.1001.025.S.2.b.d/3/-1.779.3/e/1019
+  </center>
+  <div style="width: 100%; font-size: 12px"> 
+    <div style="width: 40%; float:left">
+      No. <?php echo $rows->kode_trans_far; ?>
+    </div>
+    <div style="width: 60%; float: right; text-align: right">
+    Tgl. <?php echo $this->tanggal->formatDatedmY($rows->tgl_trans); ?>
+    </div>
+  </div>
+  
+  <p style="padding-top: 0px">
+    <center>
+    <?php echo ucwords(strtolower($rows->nama_brg));?><br>
+    <span style="font-weight: bold; font-size: 16px">Sehari <?php echo $rows->dosis_per_hari; ?> x <?php echo $rows->dosis_obat; ?> <?php echo $rows->satuan_obat; ?></span>
+      <br><?php echo $rows->anjuran_pakai; ?> <br>
+    </center>
+    <span style="font-size: 10px">* <?php echo $rows->catatan_lainnya; ?></span>
+    <hr>
+    <div style="width: 100%; font-size: 12px !important"> 
+      <span>Nama</span> : <?php echo ucwords(strtolower($rows->nama_pasien)); ?><br>
+      <span style="padding-right: 12px">ED</span> :  
+      <!-- <span >TL/ Umur</span> :  <?php echo $this->tanggal->formatDatedmY($rows->tgl_lhr); ?>  (<?php echo $this->tanggal->AgeWithYearMonthDay($rows->tgl_lhr)?>) -->
+      <center class="monotype_style">Semoga lekas sembuh</center>
+    </div>
   </p>
 </div>
 </center>

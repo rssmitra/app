@@ -254,12 +254,8 @@ final class Tanggal {
         if (empty($input)) {
             $tanggal = "-";
         } else {
-            sscanf($input, '%d/%d/%d %d:%d:%d', $m, $d, $y, $h, $i, $s);
-            
-            $h = tanggal::normalDigit($h);
-            $i = tanggal::normalDigit($i);
-            $s = tanggal::normalDigit($s);
-            
+            sscanf($input, '%d-%d-%d %d:%d:%d', $y, $m, $d, $h, $i, $s);
+                        
             $tanggal = $y . "-" . $m . "-" . $d;
         }
 

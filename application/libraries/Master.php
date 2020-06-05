@@ -464,7 +464,7 @@ final Class Master {
 		$db->where($where);
 		$result = $db->get()->row();
 
-		return $result->$select;		
+		return isset($result->$select)?$result->$select:'-No data-';		
     }
 
     function get_qr_code($data) {

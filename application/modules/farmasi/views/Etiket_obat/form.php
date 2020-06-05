@@ -32,7 +32,7 @@ function saveRow(kode_brg){
     satuan_obat : $("#row_kd_brg_"+kode_brg+" select[name=satuan_obat_"+kode_brg+"]").val(),
     anjuran_pakai : $("#row_kd_brg_"+kode_brg+" select[name=anjuran_pakai_"+kode_brg+"]").val(),
     catatan : $("#row_kd_brg_"+kode_brg+" input[name=catatan_"+kode_brg+"]").val(),
-    kd_tr_resep : $("#row_kd_brg_"+kode_brg+" input[name=kd_tr_resep_"+kode_brg+"]").val(),
+    relation_id : $("#row_kd_brg_"+kode_brg+" input[name=relation_id_"+kode_brg+"]").val(),
     kode_brg : $("#row_kd_brg_"+kode_brg+" input[name=kode_brg_"+kode_brg+"]").val(),
     kode_trans_far : $("#kode_trans_far").val(),
   };
@@ -134,15 +134,53 @@ function get_kode_eticket(myid){
       
       <!-- hidden form -->
       <input type="hidden" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($value)?ucwords($value->kode_trans_far):''?>">
+
+      <div class="row">
+        <div class="col-md-6">
+          <table>
+            <tr style="">
+              <td width="100px">No. SEP</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->no_sep ?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">No. MR</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->no_mr?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">Nama Pasien</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->nama_pasien?></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="col-md-6">
+          <table>
+          
+            <tr style="">
+              <td width="100px">Tanggal</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $this->tanggal->formatDateTime($value->tgl_trans) ?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">Dokter</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->dokter_pengirim?></td>
+            </tr>
+            <tr style="">
+              <td width="100px">Poli Asal</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo isset($detail_obat[0]->nama_bagian)?$detail_obat[0]->nama_bagian:''?></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <hr>
+
       <div class="row">
 
-        <div class="col-sm-12">
-
-          <div class="col-xs-6">
-            <h4><?php echo isset($value)?ucwords($value->kode_trans_far):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?> (<?php echo isset($value)?ucwords($value->no_resep):''?>) </h4>
+          <div class="col-sm-6">
+            <h4><?php echo isset($value)?ucwords($value->kode_trans_far):''?> - (<?php echo isset($value)?ucwords($value->no_resep):''?>) </h4>
           </div>
+
           <div class="pull-right">
-          <button type="button" onclick="getMenu('farmasi/Etiket_obat')" class="btn btn-default btn-xs">
+            <button type="button" onclick="getMenu('farmasi/Etiket_obat')" class="btn btn-default btn-xs">
               <span class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></span>
               Kembali ke Halaman Utama
             </button>
@@ -158,8 +196,6 @@ function get_kode_eticket(myid){
             </button>
           </div>
 
-        </div>
-
       </div>
 
       <hr>
@@ -167,7 +203,6 @@ function get_kode_eticket(myid){
       <div class="row">
         <div class="col-md-12">
 
-          <p><b>RESEP OBAT FARMASI</b></p>
           <table id="resep_obat_etiket" class="table table-bordered table-hover">
             <thead>
               <tr>  
@@ -180,10 +215,9 @@ function get_kode_eticket(myid){
                 <th class="center" width="50px">No</th>
                 <th>Kode</th>
                 <th>Nama Obat</th>
-                <th width="150px">Dosis /hari</th>
-                <th>Jumlah</th>
+                <th width="150px">Aturan Pakai</th>
                 <th>Satuan</th>
-                <th>Aturan Pakai</th>
+                <th>Penggunaan</th>
                 <th>Catatan</th>
                 <th></th>
               </tr>
@@ -191,16 +225,17 @@ function get_kode_eticket(myid){
             <tbody>
               <?php 
                 $no = 0;
+                if(count($detail_obat) > 0) :
                 foreach($detail_obat as $row) { $no++;
                   $readonly = (empty($row->id_fr_tc_far_detail_log))?'':'readonly';
                   echo '<tr id="row_kd_brg_'.$row->kode_brg.'">';
                   echo '<td>';
                     echo '<label class="pos-rel">
-                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->kd_tr_resep.'" id="checkbox_id_'.$row->kd_tr_resep.'" />
+                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->relation_id.'" id="checkbox_id_'.$row->relation_id.'" />
                               <span class="lbl"></span>
                           </label>';
                     // hidden form
-                    echo '<input type="hidden" name="kd_tr_resep_'.$row->kode_brg.'" value="'.$row->kd_tr_resep.'" >';
+                    echo '<input type="hidden" name="relation_id_'.$row->kode_brg.'" value="'.$row->relation_id.'" >';
                     echo '<input type="hidden" name="kode_brg_'.$row->kode_brg.'" value="'.$row->kode_brg.'" >';
 
                   echo '</td>';
@@ -210,12 +245,12 @@ function get_kode_eticket(myid){
                   echo '<td>'.$nama_obat.'</td>';
                   // dosis form
                   echo '<td align="center">';
-                    echo '<input style="width:50px;height:45px;text-align:center" type="text" name="dosis_start_'.$row->kode_brg.'" value="'.$row->dosis_obat.'" '.$readonly.'> &nbsp; x &nbsp; <input style="width:50px;height:45px;text-align:center" type="text" name="dosis_end_'.$row->kode_brg.'" value="'.$row->dosis_per_hari.'" '.$readonly.'>';
+                    echo '<input style="width:50px;height:45px;text-align:center" type="text" name="dosis_start_'.$row->kode_brg.'" value="'.$row->dosis_per_hari.'" '.$readonly.'> &nbsp; x &nbsp; <input style="width:50px;height:45px;text-align:center" type="text" name="dosis_end_'.$row->kode_brg.'" value="'.$row->dosis_obat.'" '.$readonly.'>';
                   echo '</td>';
                   // jumlah
-                  echo '<td align="center">';
-                    echo '<input style="width:50px;height:45px;text-align:center" type="text" name="jumlah_'.$row->kode_brg.'" value="'.$row->jumlah_obat.'" '.$readonly.'>';
-                  echo '</td>';
+                  // echo '<td align="center">';
+                  //   echo '<input style="width:50px;height:45px;text-align:center" type="text" name="jumlah_'.$row->kode_brg.'" value="'.$row->jumlah_obat.'" '.$readonly.'>';
+                  // echo '</td>';
                   // satuan
                   echo '<td align="center">';
                     echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), ($row->satuan_obat)?$row->satuan_obat:'TAB' , 'satuan_obat_'.$row->kode_brg.'', 'satuan_obat_'.$row->kode_brg.'', 'form-control', '', ''.$readonly.'');
@@ -240,10 +275,15 @@ function get_kode_eticket(myid){
 
                   echo '</tr>';
                 }
+                else:
+                  echo '<tr>';
+                  echo '<td colspan="9"><div class="alert alert-warning"><strong>Tidak ada data ditemukan !</strong> Anda harus menggunakan aplikasi terbaru ketika melakukan entry resep.</div></td>';
+                  echo '</tr>';
+                endif;
               ?>
             </tbody>
           </table>
-
+          * Silahkan ceklis etiket yang akan dicetak.
         </div>
       </div>
 

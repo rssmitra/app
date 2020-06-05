@@ -401,7 +401,7 @@ class AntrianBPJS extends MX_Controller {
         foreach($result as $row){
             $getList[] = array(
                     'kodebooking' => $row->id_tc_pesanan,
-                    'tanggaloperasi' => $this->tanggal->formatDate($row->jam_pesanan),
+                    'tanggaloperasi' => $this->tanggal->sqlDateTimeToDate($row->jam_pesanan),
                     'jenistindakan' => $row->nama_tarif,
                     'kodepoli' => $row->kode_poli_bpjs,
                     'namapoli' => $row->nama_bagian,
