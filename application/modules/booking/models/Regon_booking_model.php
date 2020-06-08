@@ -183,32 +183,32 @@ class Regon_booking_model extends CI_Model {
                     </tr>
                     <tr>
                       <td width="100px">Kode Booking</td>
-                      <td>: <b>'.$data->regon_booking_kode.'</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tanggal, '.$this->tanggal->formatDateTime($data->created_date).'</td>
+                      <td> <b>'.$data->regon_booking_kode.'</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tanggal, '.$this->tanggal->formatDateTime($data->created_date).'</td>
                     </tr>
 
                     <tr>
-                      <td>No. MR</td><td>: '.$data->regon_booking_no_mr.'</td>
+                      <td>No. MR</td><td> '.$data->regon_booking_no_mr.'</td>
                     </tr>
 
                     <tr>
-                      <td>Nama Pasien</td><td>: '.$pasien->nama_pasien.'</td>
+                      <td>Nama Pasien</td><td> '.$pasien->nama_pasien.'</td>
                     </tr>
 
                     <tr>
                       <td>Poli Tujuan</td>
-                      <td>: '.ucwords($transaksi->klinik->nama_bagian).'</td>
+                      <td> '.ucwords($transaksi->klinik->nama_bagian).'</td>
                     </tr>
 
                     <tr>
-                      <td>Nama Dokter</td><td>: '.$transaksi->dokter->nama_pegawai.'</td>
+                      <td>Nama Dokter</td><td> '.$transaksi->dokter->nama_pegawai.'</td>
                     </tr>
 
                     <tr>
-                      <td>Jam Praktek</td><td>: '.$tgl_booking.'</td>
+                      <td>Jam Praktek</td><td> '.$tgl_booking.'</td>
                     </tr>
 
                     <tr>
-                      <td>Status</td><td>:<b> '.$txt_message.'</b></td>
+                      <td>Status</td><td><b> '.$txt_message.'</b></td>
                     </tr>
 
                     </table><br>';

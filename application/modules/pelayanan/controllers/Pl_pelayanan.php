@@ -344,7 +344,7 @@ class Pl_pelayanan extends MX_Controller {
             $bill_rs = (isset($row_list->pendapatan_rs))?$row_list->pendapatan_rs:$row_list->bill_rs;
             $row[] = '<div align="right">'.number_format($bill_rs).',-</div>';*/
 
-            $bill_total = ($row_list->bill_rs) + ($row_list->bill_dr1) + ($row_list->bill_dr2) + ($row_list->bill_dr3) + ($row_list->alat_rs);
+            $bill_total = ($row_list->bill_rs) + ($row_list->bill_dr1) + ($row_list->bill_dr2) + ($row_list->bill_dr3);
             
             $row[] = '<div align="right">'.number_format($bill_total).',-</div>';
             $row[] = $row_list->nama_pegawai;

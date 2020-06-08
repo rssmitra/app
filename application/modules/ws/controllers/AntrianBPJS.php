@@ -16,6 +16,7 @@ class AntrianBPJS extends MX_Controller {
         parent::__construct();
         // load model
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+        $this->load->model('booking/Regon_booking_model', 'Regon_booking');
         // load module
         $this->load->module('templates/References');
 
@@ -133,57 +134,59 @@ class AntrianBPJS extends MX_Controller {
         }
 
         // search member by nik
-        // $result = $this->Ws_index->searchMemberByNIK($post->nik, $post->tanggalperiksa);
-        // if($result->metaData->code != 200){
-        //     $response = array(
-        //         'metadata' => array(
-        //             'code' => 300,
-        //             'message' => $result->metaData->message,
-        //             ),
-        //     );
-        //     echo json_encode($response);
-        //     exit;
-        // }
+        $result = $this->Ws_index->searchMemberByNIK($post->nik, $post->tanggalperiksa);
+        if($result->metaData->code != 200){
+            $response = array(
+                'metadata' => array(
+                    'code' => 300,
+                    'message' => $result->metaData->message,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
 
         // search member by nomor kartu
-        // $result = $this->Ws_index->searchMemberByNomorKartu($post->nomorkartu, $post->tanggalperiksa);
-        // if($result->metaData->code != 200){
-        //     $response = array(
-        //         'metadata' => array(
-        //             'code' => 300,
-        //             'message' => $result->metaData->message,
-        //             ),
-        //     );
-        //     echo json_encode($response);
-        //     exit;
-        // }
+        $result = $this->Ws_index->searchMemberByNomorKartu($post->nomorkartu, $post->tanggalperiksa);
         
+        if($result->metaData->code != 200){
+            $response = array(
+                'metadata' => array(
+                    'code' => 300,
+                    'message' => $result->metaData->message,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
+        $peserta_dt = $result->response->peserta;
+        // print_r($peserta_dt);die;
         // cek nomor rujukan
-        // $rujukan = $this->Ws_index->searchRujukanRsByNomorRujukan($post->nomorreferensi);
-        // if($rujukan->metaData->code != 200){
-        //     $response = array(
-        //         'metadata' => array(
-        //             'code' => 300,
-        //             'message' => $rujukan->metaData->message,
-        //             ),
-        //     );
-        //     echo json_encode($response);
-        //     exit;
-        // }
+        $rujukan = $this->Ws_index->searchRujukanRsByNomorRujukan($post->nomorreferensi);
+        if($rujukan->metaData->code != 200){
+            $response = array(
+                'metadata' => array(
+                    'code' => 300,
+                    'message' => $rujukan->metaData->message,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
 
         // validasi tgl rujukan 90 hari
-        // $rujukan_dt = $rujukan->response;
-        // $max_date_rujukan = $this->tanggal->selisih($rujukan_dt->rujukan->tglKunjungan, '+90');
-        // if( $post->tanggalperiksa > $max_date_rujukan ){
-        //     $response = array(
-        //         'metadata' => array(
-        //             'code' => 300,
-        //             'message' => 'Nomor Rujukan Expired !',
-        //             ),
-        //     );
-        //     echo json_encode($response);
-        //     exit;
-        // }
+        $rujukan_dt = $rujukan->response;
+        $max_date_rujukan = $this->tanggal->selisih($rujukan_dt->rujukan->tglKunjungan, '+90');
+        if( $post->tanggalperiksa > $max_date_rujukan ){
+            $response = array(
+                'metadata' => array(
+                    'code' => 300,
+                    'message' => 'Nomor Rujukan Expired !',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
 
         // get kode internal poli
         $kode_poli = $this->getKodeInternalPoli($post->kodepoli);
@@ -268,15 +271,54 @@ class AntrianBPJS extends MX_Controller {
         $no_antrian = $dt_booking->num_rows() + 1;
         // get kode booking
         $kode_booking = $this->create_kode_booking($post->nomorkartu, $post->tanggalperiksa);
-        // print_r($getKuota);die;
+        
         /*hitung estimasi waktu kedatangan pasien */
         $jam_mulai_praktek = $this->tanggal->formatFullTime($getKuota[0]['dt_jadwal']->jd_jam_mulai);
-
+        $jam_selesai_praktek = $this->tanggal->formatFullTime($getKuota[0]['dt_jadwal']->jd_jam_selesai);
         $date = date_create($post->tanggalperiksa.' '.$jam_mulai_praktek );
         date_add($date, date_interval_create_from_date_string('-2 hours'));
         $waktu_datang = date_format($date, 'Y-m-d H:i:s');
         $milisecond = strtotime($waktu_datang) * 1000;
         // insert table regon booking
+        $databooking = array(
+            'regon_booking_nama_pasien' => isset($peserta_dt->nama)?$peserta_dt->nama:$post->nomorkartu,
+            'regon_booking_kode' => $kode_booking,
+            'regon_booking_tanggal_perjanjian' => $post->tanggalperiksa,
+            'regon_booking_no_mr' => isset($peserta_dt->mr->noMR)?$peserta_dt->mr->noMR:'',
+            'regon_booking_instalasi' => 'RJ',
+            'regon_booking_klinik' => $kode_poli->kode_bagian,
+            'regon_booking_kode_dokter' => $getKuota[0]['jadwal_dokter']->kode_dokter,
+            'regon_booking_hari' => $hari,
+            'regon_booking_jam' => $jam_mulai_praktek.' s/d '.$jam_selesai_praktek,
+            'regon_booking_waktu_datang' => $waktu_datang,
+            'regon_booking_keterangan' => 'Antrian Online Mobile JKN',
+            'regon_booking_jenis_penjamin' => 'Jaminan Perusahaan',
+            'regon_booking_penjamin' => 120,
+            'regon_booking_status' => 0,
+            'regon_booking_urutan' => 0,
+            'regon_via' => 'mjkn',
+            'jd_id' => $getKuota[0]['jadwal_dokter']->jd_id,
+        );
+
+        $detail_pasien = $this->db->get_where('mt_master_pasien', array('no_mr' => $databooking['regon_booking_no_mr']))->row();
+        // print_r($detail_pasien);die;
+        if($detail_pasien){
+            $databooking['log_detail_pasien'] = json_encode( array('nama_pasien' => $detail_pasien->nama_pasien, 'tgl_lahir' => $this->tanggal->formatDate($detail_pasien->tgl_lhr), 'alamat' => $detail_pasien->almt_ttp_pasien, 'telp' => $detail_pasien->tlp_almt_ttp, 'jk' => $detail_pasien->jen_kelamin ) );
+        }
+        
+        $log_transaksi = array(
+            'klinik' => $this->master->get_custom_data('mt_bagian', array('nama_bagian','kode_bagian'), array('kode_bagian' => $kode_poli->kode_bagian ) , 'row'),
+            'dokter' => $this->master->get_custom_data('mt_karyawan', array('nama_pegawai', 'kode_dokter'), array('kode_dokter' => $getKuota[0]['jadwal_dokter']->kode_dokter ) , 'row'),
+            'penjamin' => $this->master->get_custom_data('mt_perusahaan', array('nama_perusahaan'), array('kode_perusahaan' => 120 ) , 'row'),
+            );
+
+        $databooking['log_transaksi'] = json_encode($log_transaksi);
+        $databooking['created_date'] = date('Y-m-d H:i:s');
+        $databooking['created_by'] = json_encode(array('user_id' => 0, 'fullname' => 'mjkn' ));
+        /*save post data*/
+        $this->Regon_booking->save($databooking);
+
+        print_r($databooking);die;
         // $this->insert_booking();
         // response
         $response = array(
@@ -296,60 +338,6 @@ class AntrianBPJS extends MX_Controller {
         
         echo json_encode($response);
 
-    }
-
-    public function insert_booking(){
-        
-        $urutan = $this->input->post('last_counter') + 1;
-
-        /*hitung waktu buka loket*/
-        $date = date_create($val->set_value('tanggal_kunjungan').' '.$this->input->post('time_start') );
-        date_add($date, date_interval_create_from_date_string('-2 hours'));
-        $waktu_datang = date_format($date, 'Y-m-d H:i:s');
-
-        $dataexc = array(
-            'regon_booking_tanggal_perjanjian' => $this->regex->_genRegex($this->tanggal->sqlDateForm($val->set_value('tanggal_kunjungan')), 'RGXQSL'),
-            'regon_booking_no_mr' => $this->regex->_genRegex($val->set_value('no_mr'), 'RGXQSL'),
-            'regon_booking_instalasi' => $this->regex->_genRegex($val->set_value('jenis_instalasi'), 'RGXQSL'),
-            'regon_booking_klinik' => $this->regex->_genRegex($val->set_value('klinik_rajal'), 'RGXQSL'),
-            'regon_booking_kode_dokter' => $this->regex->_genRegex($val->set_value('dokter_rajal'), 'RGXQSL'),
-            'regon_booking_hari' => $this->regex->_genRegex($val->set_value('selected_day'), 'RGXQSL'),
-            'regon_booking_jam' => $this->regex->_genRegex($val->set_value('selected_time'), 'RGXQSL'),
-            'regon_booking_waktu_datang' => $waktu_datang,
-            'regon_booking_keterangan' => $this->regex->_genRegex($val->set_value('keterangan'), 'RGXQSL'),
-            'regon_booking_jenis_penjamin' => $this->regex->_genRegex($val->set_value('jenis_penjamin'), 'RGXQSL'),
-            'regon_booking_penjamin' => $this->regex->_genRegex($val->set_value('kode_perusahaan'), 'RGXINT'),
-            'regon_booking_status' => '0',
-            'regon_booking_urutan' => $this->regex->_genRegex($urutan, 'RGXINT'),
-            'regon_via' => 'onsite',
-            'jd_id' => $this->regex->_genRegex($val->set_value('jd_id'), 'RGXINT'),
-        );
-
-        /*detail mr*/
-        $detail_pasien = $this->Reg_pasien->get_by_mr($val->set_value('no_mr'));
-        $dataexc['log_detail_pasien'] = json_encode( array('nama_pasien' => $detail_pasien->nama_pasien, 'tgl_lahir' => $this->tanggal->formatDate($detail_pasien->tgl_lhr), 'alamat' => $detail_pasien->almt_ttp_pasien, 'telp' => $detail_pasien->tlp_almt_ttp, 'jk' => $detail_pasien->jen_kelamin ) );
-
-        $log_transaksi = array(
-            'klinik' => $this->master->get_custom_data('mt_bagian', array('nama_bagian','kode_bagian'), array('kode_bagian' => $val->set_value('klinik_rajal') ) , 'row'),
-            'dokter' => $this->master->get_custom_data('mt_karyawan', array('nama_pegawai', 'kode_dokter'), array('kode_dokter' => $val->set_value('dokter_rajal') ) , 'row'),
-            'penjamin' => $this->master->get_custom_data('mt_perusahaan', array('nama_perusahaan'), array('kode_perusahaan' => $val->set_value('kode_perusahaan') ) , 'row'),
-            );
-
-        $dataexc['log_transaksi'] = json_encode($log_transaksi);
-
-        /*create kode booking*/
-        $kode_booking = $this->create_kode_booking();
-        $dataexc['regon_booking_kode'] = $this->regex->_genRegex(strtoupper($kode_booking), 'RGXQSL');
-        $dataexc['created_date'] = date('Y-m-d H:i:s');
-        $dataexc['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-        /*save post data*/
-        $newId = $this->Regon_booking->save($dataexc);
-        /*save logs*/
-        $this->logs->save('regon_booking', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'regon_booking_id');
-        /*save log kuota dokter*/
-        $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['regon_booking_kode_dokter'], 'kode_spesialis' => $dataexc['regon_booking_klinik'], 'tanggal' => $dataexc['regon_booking_tanggal_perjanjian'] ));
-                
-            
     }
 
     public function getRekapAntrian() {
@@ -481,7 +469,7 @@ class AntrianBPJS extends MX_Controller {
         $string = $nokartu.$tgl_periksa.'abcdefghijklmnpqrstuvwxyz';
         $clean_string = str_replace(array('1','i','0','o','/','-'),'',$string);
         $s = substr(str_shuffle(str_repeat($clean_string, 6)), 0, 6);
-        return strtoupper($s).'MJKN';
+        return strtoupper($s);
 
     }
 

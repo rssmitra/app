@@ -193,7 +193,7 @@
           $bill_dr1 = $val->bill_dr1;
           $bill_dr2 = $val->bill_dr2;
           $alat_rs=$val->alat_rs;
-          $biaya=$bill_rs+$bill_dr1+$bill_dr2=$alat_rs;
+          $biaya=$bill_rs+$bill_dr1+$bill_dr2;
           $tot_biaya=$tot_biaya+$biaya;?>
           <tr>
             <td class="center"><?php echo $no ?>.</td>

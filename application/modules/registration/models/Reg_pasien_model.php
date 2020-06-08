@@ -36,7 +36,9 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('villages_new','villages_new.id=mt_master_pasien.id_dc_kelurahan','left');
 		
 		/*check level user*/
-		$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
+		if(isset($this->session->userdata('user')->user_id)){
+			$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
+		}
 	
 	}
 
