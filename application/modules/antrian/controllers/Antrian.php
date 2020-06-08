@@ -43,10 +43,10 @@ class Antrian extends MX_Controller {
 
         $jam_praktek = explode(" s/d ",$booking->regon_booking_jam);
               
-        $jam_ = date("H:i",strtotime($jam_praktek[0]));
+        $jam_ = date("H:i",strtotime($jam_praktek[1]));
         $jam_now = date('H:i');
 
-        //print_r($jam_);echo "<br>";print_r($jam_now);die;
+        // print_r($jam_);echo "<br>";print_r($jam_now);die;
 
         if(isset($booking)){
             if($booking->regon_booking_tanggal_perjanjian==date('Y-m-d')){

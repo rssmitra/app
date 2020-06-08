@@ -61,7 +61,7 @@ class Entry_resep_racikan extends MX_Controller {
         
         $html = '';
         if(count($data) > 0){
-            $html .= '<div style="border-bottom:1px solid #333;"><b><h4>'.strtoupper($data[0]->nama_racikan).' ('.$data[0]->id_tc_far_racikan.') <span style="font-size:14px"><i class="ace-icon fa fa-angle-double-right"></i> '.$data[0]->dosis_obat.' x '.$data[0]->dosis_per_hari.' '.$data[0]->satuan_racikan.' '.$data[0]->anjuran_pakai.'</span></h4></b></div><br>';
+            $html .= '<div style="border-bottom:1px solid #333;"><b><h4>'.strtoupper($data[0]->nama_racikan).' ('.$data[0]->id_tc_far_racikan.') <span style="font-size:14px"><i class="ace-icon fa fa-angle-double-right"></i> '.$data[0]->dosis_per_hari.' x '.$data[0]->dosis_obat.' '.$data[0]->satuan_racikan.' '.$data[0]->anjuran_pakai.'</span></h4></b></div><br>';
 
             $html .= '<table class="table table-striped" style="width: 75%">';
             $html .= '<tr>';

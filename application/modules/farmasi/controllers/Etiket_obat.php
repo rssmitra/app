@@ -150,6 +150,82 @@ class Etiket_obat extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function riwayat_resep()
+    {
+        /*get data from model*/
+        $list = $this->Etiket_obat->get_datatables();
+        if(isset($_GET['search']) AND $_GET['search']==TRUE){
+            $this->find_data(); exit;
+        }
+        $data = array();
+        $no = $_POST['start'];
+        $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
+            );
+
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center"><a href="#" onclick="sohw('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
+            $row[] = strtoupper($row_list->nama_pasien);
+            $row[] = $row_list->dokter_pengirim;
+            $row[] = $row_list->nama_pelayanan;
+            if($row_list->kode_tc_trans_kasir == null) {
+                $row[] = '<div class="center">
+                        <label class="label label-warning">
+                          <i class=" fa fa-flask"></i> Dalam proses..
+                        </label>
+                      </div>';
+            }else{
+                $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-check-circle"></i> Lunas</label></div>';
+            }
+            $row[] = '<div class="center">
+                        <a href="#" onclick="PopupCenter('."'farmasi/Process_entry_resep/nota_farmasi/".$row_list->kode_trans_far."'".','."'Cetak'".',530,550);" class="btn btn-xs btn-purple" title="print_nota_farmasi"><i class="fa fa-print dark"></i></a>
+                      </div>';
+            $copy_edit = ($row_list->copy_resep_text != null) ? '<a href="#" onclick="PopupCenter('."'farmasi/Etiket_obat/preview_copy_resep/".$row_list->kode_trans_far."'".','."'Cetak copy resep'".',900,600);" class="btn btn-xs btn-default" title="print_copy_resep">
+                            <i class="fa fa-print dark"></i>
+                        </a>' : '';
+            
+            $row[] = '<div class="center">
+                        '.$copy_edit.'
+                        <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form_copy_resep/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-success" title="create_copy_resep">
+                            <i class="fa fa-copy dark"></i>
+                        </a>
+                      </div>';
+            $row[] = '<div class="center">
+                        <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
+                          <i class="fa fa-ticket dark"></i>
+                        </a>
+                      </div>';
+
+            // $row[] = '<div class="center">
+
+            //             '.anchor_popup('farmasi/Etiket_obat/print_tracer_obat/'.$row_list->kode_trans_far.'', '<i class="fa fa-send dark"></i>', $atts).'
+
+            //             <a href="#" onclick="PopupCenter('."'farmasi/Process_entry_resep/nota_farmasi/".$row_list->kode_trans_far."'".','."'Cetak'".',530,550);" class="btn btn-xs btn-purple" title="Nota Farmasi"><i class="fa fa-print dark"></i></a>
+
+            //             <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form_copy_resep/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-success" title="copy_resep">
+            //                 <i class="fa fa-copy dark"></i>
+            //             </a>
+            //             <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
+            //               <i class="fa fa-ticket dark"></i>
+            //             </a>
+            //           </div>';
+            
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Etiket_obat->count_all(),
+                        "recordsFiltered" => $this->Etiket_obat->count_filtered(),
+                        "data" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
+    }
+
     public function process()
     {
         

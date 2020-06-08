@@ -53,6 +53,14 @@ class Penerimaan_resep extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+            $row[] = '<div class="center"><div class="btn-group">
+            <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-inverse">
+            <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->kode_pesan_resep.')">Kembalikan</a></li>
+            </ul>
+            </div></div>';
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $row_list->kode_trans_far;
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
@@ -84,52 +92,22 @@ class Penerimaan_resep extends MX_Controller {
         echo json_encode($output);
     }
 
-
-    public function process()
+    public function terima_resep()
     {
-        
-        $this->load->library('form_validation');
-        // form validation
-
-        $this->form_validation->set_rules('content', 'Tulis Resep', 'trim|required');
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();
-            
-             /*update existing*/
-             $data_farmasi['copy_resep_text'] = $_POST['content'];
-             $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
-             $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-             $this->db->update('fr_tc_far', $data_farmasi, array('kode_trans_far' => $_POST['kode_trans_far']) );
-             /*save log*/
-             $this->logs->save('fr_tc_far', $_POST['kode_trans_far'], 'update record on entry resep module', json_encode($data_farmasi),'kode_trans_far');
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
+        if($id!=null){
+            if(  $this->db->update('fr_tc_far', array('status_terima' => 1) , array('kode_trans_far' => $id ) ) ){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Penerimaan Resep Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Penerimaan Resep Gagal Dilakukan'));
             }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_trans_far' => $_POST['kode_trans_far']));
-            }
-        
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
         }
-
+        
     }
 
-    public function terima_resep()
+    public function rollback()
     {
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
         if($id!=null){

@@ -39,6 +39,19 @@ class Entry_resep_ri_rj extends MX_Controller {
         /*load view index*/
         $this->load->view('Entry_resep_ri_rj/index', $data);
     }
+    
+    public function riwayat_resep() 
+    { 
+        /*define variable data*/
+        $data = array(
+            'title' => ($_GET['type']=='rl') ? 'Resep Luar' : ($_GET['type']=='rk') ? 'Resep Karyawan' : 'Pembelian Bebas' ,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'flag' => $_GET['type'],
+            'profit' => $_GET['profit']
+        );
+        /*load view index*/
+        $this->load->view('Entry_resep_ri_rj/riwayat_resep_index', $data);
+    }
 
     public function form($id='')
     {
@@ -73,7 +86,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data['tipe_layanan'] = $_GET['tipe_layanan'];
         $data['str_tipe_layanan'] = ($_GET['tipe_layanan']=='RJ')?'Rajal':'Ranap';
         /*title header*/
-        $data['title'] = $this->title;
+        $data['title'] = 'Resep Farmasi';
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/

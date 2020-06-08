@@ -542,6 +542,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->order_by('pm_pemeriksaanpasien_v.kode_trans_pelayanan','ASC');
 		$query = $this->db->get();
 		return $query->result();
+		// echo '<pre>';print_r($query);die;
 		
 	}
 

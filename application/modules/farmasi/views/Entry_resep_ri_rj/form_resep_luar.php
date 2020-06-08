@@ -53,6 +53,9 @@
           }
   });
 
+  function set_to_default_name(from_id, to_id){
+    $('#'+to_id).val($('#'+from_id).val());
+  }
 </script>
 
 <p><b>RESEP LUAR</b></p>
@@ -60,7 +63,7 @@
 <div class="form-group">
   <label class="control-label col-sm-2">Nama Pasien / (a.n)</label>
   <div class="col-md-3">
-    <input type="text" class="form-control" name="nama_pasien_keyword" id="inputKeyNamaPasien">
+    <input type="text" class="form-control" name="nama_pasien_keyword" id="inputKeyNamaPasien" onchange="set_to_default_name('inputKeyNamaPasien', 'nama_pasien')">
   </div>
   <label class="control-label col-sm-1">No.Telp/ HP</label>
   <div class="col-md-2">

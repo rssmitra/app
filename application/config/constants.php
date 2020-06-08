@@ -35,7 +35,7 @@ define('COMP_SORT', 'RSSM');
 define('COMP_LONG', 'RS. Setia Mitra');
 define('COMP_FULL', 'Rumah Sakit Setia Mitra');
 define('COMP_MOTTO', 'Kami Peduli Kesehatan Anda');
-define('COMP_ADDRESS', 'Jl. RS. Fatmawati Raya No.80-82, RW.10, Cilandak Bar., Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12430');
+define('COMP_ADDRESS', 'Jl. RS. Fatmawati Raya No.80-82, RW.10, Cilandak Bar., Kec. Cilandak, Kota Jakarta Selatan, DKI Jakarta 12430');
 define('COMP_ADDRESS_SORT', 'Jl. RS. Fatmawati Raya No.80-82, Jakarta Selatan');
 define('COMP_TELP', '(021) 7656000');
 define('COMP_FAX', '(021) 7656875');

@@ -770,7 +770,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             if(isset($value->dokter_2))$data['dokter_2'] = $value->dokter_2;
             if(isset($value->bagian_asal))$data['bagian_asal'] = $value->bagian_asal;
         }
- 
+ // echo '<pre>';print_r($data['value']);die;
         $this->load->view('Pl_pelayanan_pm/charge_slip', $data);
 
     }

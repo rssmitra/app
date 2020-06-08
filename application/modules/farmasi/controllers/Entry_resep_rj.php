@@ -86,15 +86,15 @@ class Entry_resep_rj extends MX_Controller {
                                 <span class="lbl"></span>
                             </label>
                           </div>';
-                $row[] = '<div class="center"><div class="btn-group">
-                            <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                                <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-inverse">
-                                <li><a href="#">Edit</a></li>
-                                <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->kode_pesan_resep.')">Hapus</a></li>
-                            </ul>
-                        </div></div>';
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">
+                            <li><a href="#">Edit</a></li>
+                            <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->kode_pesan_resep.')">Hapus</a></li>
+                        </ul>
+                    </div></div>';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."'".')">'.$row_list->kode_pesan_resep.'</a></div>';
             $row[] = $row_list->tgl_pesan;
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';

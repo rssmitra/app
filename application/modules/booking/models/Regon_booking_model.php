@@ -156,64 +156,59 @@ class Regon_booking_model extends CI_Model {
 
         $current_date = date('Y-m-d');
         if($current_date > $data->regon_booking_tanggal_perjanjian){
-            $message = '<span style="margin-right:120px" class="stamp is-nope-2">Expired Date</span>';
+            $message = '<span style="" class="stamp is-nope-2">Expired Date</span>';
+            $txt_message = '<span class="red">Expired Date</span>';
             $tgl_booking = '<span style="color:red">'.$this->tanggal->formatDate($data->regon_booking_tanggal_perjanjian).' '.$data->regon_booking_jam.'</span>';
 
         }elseif ($current_date == $data->regon_booking_tanggal_perjanjian) {
-            $message = '<span style="margin-right:120px" class="stamp is-approved">Available Today</span>';
+            $message = '<span style="" class="stamp is-approved">Available Today</span>';
+            $txt_message = '<span class="green">Available Today</span>';
             $tgl_booking = '<span style="color:green">'.$this->tanggal->formatDate($data->regon_booking_tanggal_perjanjian).' '.$data->regon_booking_jam.'</span>';
 
         }else{
-            $message = '<span style="margin-right:120px" class="stamp is-nope-2">Not This Time</span>';
+            $message = '<span style="" class="stamp is-nope-2">Not This Time</span>';
+            $txt_message = '<span class="yellow">Not this time!</span>';
             $tgl_booking = '<span style="color:red">'.$this->tanggal->formatDate($data->regon_booking_tanggal_perjanjian).' '.$data->regon_booking_jam.'</span>';
         }
 
         /*hidden form*/
         $html .= '<input type="hidden" name="regon_booking_id" id="regon_booking_id" value="'.$data->regon_booking_id.'">';
-        $html .= '<table border="0" width="100%">
+        $html .= '<table border="0" width="100%" class="table" style="background-color: #f0f0f09e;
+        ">
                     <tr>
-                        <td rowspan="9" align="center" width="100px"><img class="center" src="'.base_url().'assets/barcode.php?s=qrh&d='.$qr_code.'"></td>
+                        <td rowspan="8" align="center" valign="top" width="100px"><img class="center" src="'.base_url().'assets/barcode.php?s=qrh&d='.$qr_code.'"><br>
+                        <button type="button" class="btn btn-xs btn-danger" onclick="registerNow('."'".$data->regon_booking_no_mr."'".')"> <i class="ace-icon fa fa-angle-double-down"></i> Daftarkan Sekarang </button> <br>
+                        <button type="button" class="btn btn-xs btn-primary" onclick="showModalDaftarReschedule('.$data->regon_booking_id.')"> <i class="fa fa-calendar"></i> Reschedule </button><br>
+                        </td>
                     </tr>
                     <tr>
-                      <td>Kode Booking</td><td colspan="3">: <b>'.$data->regon_booking_kode.'</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tanggal, '.$this->tanggal->formatDateTime($data->created_date).'</td>
+                      <td width="100px">Kode Booking</td>
+                      <td>: <b>'.$data->regon_booking_kode.'</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Tanggal, '.$this->tanggal->formatDateTime($data->created_date).'</td>
                     </tr>
 
                     <tr>
-                      <td>Nama Pasien</td><td>: '.$pasien->nama_pasien.'</td>
                       <td>No. MR</td><td>: '.$data->regon_booking_no_mr.'</td>
                     </tr>
 
                     <tr>
-                      <td>Tgl Lahir</td><td>:  '.$pasien->tgl_lahir.' &nbsp;&nbsp;&nbsp;&nbsp; Kelamin : '.$pasien->jk.'</td>
-                      <td>Penjamin</td><td>: '.$penjamin.'</td>
+                      <td>Nama Pasien</td><td>: '.$pasien->nama_pasien.'</td>
                     </tr>
 
                     <tr>
-                      <td>No Telepon</td><td>: '.$pasien->telp.'</td>
-                      <td colspan="2" rowspan="2" align="left"><br><button type="button" class="btn btn-xs btn-danger" onclick="registerNow('."'".$data->regon_booking_no_mr."'".')"> <i class="ace-icon fa fa-angle-double-down"></i> Daftarkan Sekarang </button> <button type="button" class="btn btn-xs btn-primary" onclick="showModalDaftarReschedule('.$data->regon_booking_id.')"> <i class="fa fa-calendar"></i> Reschedule </button>
-
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>Poli Tujuan</td><td>: '.ucwords($transaksi->klinik->nama_bagian).'</td>
+                      <td>Poli Tujuan</td>
+                      <td>: '.ucwords($transaksi->klinik->nama_bagian).'</td>
                     </tr>
 
                     <tr>
                       <td>Nama Dokter</td><td>: '.$transaksi->dokter->nama_pegawai.'</td>
-                      <td colspan="2" rowspan="3" align="right"> '.$message.' </td>
                     </tr>
 
                     <tr>
-                      <td>Tanggal Perjanjian</td><td>: '.$tgl_booking.'</td>
+                      <td>Jam Praktek</td><td>: '.$tgl_booking.'</td>
                     </tr>
 
                     <tr>
-                      <td>Catatan</td><td>: </td>
-                    </tr>
-
-                    <tr>
-                        <td></td>
+                      <td>Status</td><td>:<b> '.$txt_message.'</b></td>
                     </tr>
 
                     </table><br>';

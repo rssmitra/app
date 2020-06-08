@@ -427,23 +427,30 @@ $('select[name="jenis_resep"]').change(function () {
     // default value
     $('#kode_profit').val(2000);
     $('#flag_trans').val( $(this).val().toUpperCase() );
-    $('#div_pencarian_obat').hide('fast');
+    // $('#div_pencarian_obat').hide('fast');
+    $('#div_table_riwayat_resep').hide('fast');
+    
   }  
 
   if( $(this).val() == 'rl' || $(this).val() == 'pb' ){
-    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar');  
+    // $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar');  
     // default value
     $('#flag_trans').val( $(this).val().toUpperCase() );
-    $('#kode_profit').val(3000);
-    $('#div_pencarian_obat').show('fast');
+    kode_profit = ( $(this).val() == 'rl') ? 3000 : 4000 ;
+    $('#kode_profit').val(kode_profit);
+    // $('#div_pencarian_obat').show('fast');
+    $('#div_table_riwayat_resep').show('fast');
+    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
   }  
 
   if( $(this).val() == 'rk' ){
-    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan');  
+    // $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan');  
     // default value
     $('#kode_profit').val(4000);
     $('#flag_trans').val( $(this).val().toUpperCase() );
-    $('#div_pencarian_obat').show('fast');
+    // $('#div_pencarian_obat').show('fast');
+    $('#div_table_riwayat_resep').show('fast');
+    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
   }  
 
 });
@@ -468,7 +475,7 @@ $('select[name="jenis_resep"]').change(function () {
     <div class="page-header">  
       <h1>
         <?php echo $title?>        
-        <small><i class="ace-icon fa fa-angle-double-right"></i><?php echo isset($breadcrumbs)?$breadcrumbs:''?></small>        
+        <small> <i class="ace-icon fa fa-angle-double-right"></i> <?php echo isset($breadcrumbs)?$breadcrumbs:''?></small>        
       </h1>
     </div>  
     
@@ -525,10 +532,12 @@ $('select[name="jenis_resep"]').change(function () {
           <div id="form_by_jenis_resep"></div>
         </div>
 
+        <div id="div_table_riwayat_resep"></div>
+
       </div>
 
       <!-- form pencarian obat -->
-      <div class="row" id="div_pencarian_obat" style="display:none">
+      <div class="row" id="div_pencarian_obat" style="display:block">
 
         <div class="col-xs-12 no-padding">
           <div class="pull-left">

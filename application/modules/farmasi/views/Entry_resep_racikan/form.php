@@ -523,8 +523,8 @@ function btn_update_racikan(){
           $('input[name=prb_ditangguhkan_r][type=checkbox]').prop('checked',false);
         }
         // signa
-        $('#dosis_start_r').val(data.dosis_obat);
-        $('#dosis_end_r').val(data.dosis_per_hari);
+        $('#dosis_start_r').val(data.dosis_per_hari);
+        $('#dosis_end_r').val(data.dosis_obat);
         $('#catatan_r').val(data.catatan_lainnya);
         $('#satuan_obat_r').val(data.aturan_pakai);
         $('#anjuran_pakai_r').val(data.anjuran_pakai);
@@ -680,13 +680,13 @@ function btn_update_racikan(){
                 <label class="control-label col-sm-2">Signa</label>
                 <div class="col-md-4">
                   <span class="inline">
-                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
+                    <input name="dosis_start_r" id="dosis_start_r" type="text" style="width: 50px; text-align: center"/>
                   </span>
                   <span class="inline" style="padding-left: 4px;">
                     <i class="fa fa-times bigger-150"></i>
                   </span>
                   <span class="inline">
-                    <input name="dosis_start_r" id="dosis_start_r" type="text" style="width: 50px; text-align: center"/>
+                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
                   </span>
                   
                 </div>

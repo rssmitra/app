@@ -277,7 +277,7 @@ class AntrianBPJS extends MX_Controller {
         $waktu_datang = date_format($date, 'Y-m-d H:i:s');
         $milisecond = strtotime($waktu_datang) * 1000;
         // insert table regon booking
-        
+        // $this->insert_booking();
         // response
         $response = array(
             'response' => array(
@@ -296,6 +296,60 @@ class AntrianBPJS extends MX_Controller {
         
         echo json_encode($response);
 
+    }
+
+    public function insert_booking(){
+        
+        $urutan = $this->input->post('last_counter') + 1;
+
+        /*hitung waktu buka loket*/
+        $date = date_create($val->set_value('tanggal_kunjungan').' '.$this->input->post('time_start') );
+        date_add($date, date_interval_create_from_date_string('-2 hours'));
+        $waktu_datang = date_format($date, 'Y-m-d H:i:s');
+
+        $dataexc = array(
+            'regon_booking_tanggal_perjanjian' => $this->regex->_genRegex($this->tanggal->sqlDateForm($val->set_value('tanggal_kunjungan')), 'RGXQSL'),
+            'regon_booking_no_mr' => $this->regex->_genRegex($val->set_value('no_mr'), 'RGXQSL'),
+            'regon_booking_instalasi' => $this->regex->_genRegex($val->set_value('jenis_instalasi'), 'RGXQSL'),
+            'regon_booking_klinik' => $this->regex->_genRegex($val->set_value('klinik_rajal'), 'RGXQSL'),
+            'regon_booking_kode_dokter' => $this->regex->_genRegex($val->set_value('dokter_rajal'), 'RGXQSL'),
+            'regon_booking_hari' => $this->regex->_genRegex($val->set_value('selected_day'), 'RGXQSL'),
+            'regon_booking_jam' => $this->regex->_genRegex($val->set_value('selected_time'), 'RGXQSL'),
+            'regon_booking_waktu_datang' => $waktu_datang,
+            'regon_booking_keterangan' => $this->regex->_genRegex($val->set_value('keterangan'), 'RGXQSL'),
+            'regon_booking_jenis_penjamin' => $this->regex->_genRegex($val->set_value('jenis_penjamin'), 'RGXQSL'),
+            'regon_booking_penjamin' => $this->regex->_genRegex($val->set_value('kode_perusahaan'), 'RGXINT'),
+            'regon_booking_status' => '0',
+            'regon_booking_urutan' => $this->regex->_genRegex($urutan, 'RGXINT'),
+            'regon_via' => 'onsite',
+            'jd_id' => $this->regex->_genRegex($val->set_value('jd_id'), 'RGXINT'),
+        );
+
+        /*detail mr*/
+        $detail_pasien = $this->Reg_pasien->get_by_mr($val->set_value('no_mr'));
+        $dataexc['log_detail_pasien'] = json_encode( array('nama_pasien' => $detail_pasien->nama_pasien, 'tgl_lahir' => $this->tanggal->formatDate($detail_pasien->tgl_lhr), 'alamat' => $detail_pasien->almt_ttp_pasien, 'telp' => $detail_pasien->tlp_almt_ttp, 'jk' => $detail_pasien->jen_kelamin ) );
+
+        $log_transaksi = array(
+            'klinik' => $this->master->get_custom_data('mt_bagian', array('nama_bagian','kode_bagian'), array('kode_bagian' => $val->set_value('klinik_rajal') ) , 'row'),
+            'dokter' => $this->master->get_custom_data('mt_karyawan', array('nama_pegawai', 'kode_dokter'), array('kode_dokter' => $val->set_value('dokter_rajal') ) , 'row'),
+            'penjamin' => $this->master->get_custom_data('mt_perusahaan', array('nama_perusahaan'), array('kode_perusahaan' => $val->set_value('kode_perusahaan') ) , 'row'),
+            );
+
+        $dataexc['log_transaksi'] = json_encode($log_transaksi);
+
+        /*create kode booking*/
+        $kode_booking = $this->create_kode_booking();
+        $dataexc['regon_booking_kode'] = $this->regex->_genRegex(strtoupper($kode_booking), 'RGXQSL');
+        $dataexc['created_date'] = date('Y-m-d H:i:s');
+        $dataexc['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+        /*save post data*/
+        $newId = $this->Regon_booking->save($dataexc);
+        /*save logs*/
+        $this->logs->save('regon_booking', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'regon_booking_id');
+        /*save log kuota dokter*/
+        $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['regon_booking_kode_dokter'], 'kode_spesialis' => $dataexc['regon_booking_klinik'], 'tanggal' => $dataexc['regon_booking_tanggal_perjanjian'] ));
+                
+            
     }
 
     public function getRekapAntrian() {

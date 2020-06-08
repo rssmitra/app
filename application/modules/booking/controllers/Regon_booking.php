@@ -245,6 +245,7 @@ class Regon_booking extends MX_Controller {
         {                       
 
             $this->db->trans_begin();
+            
             $id = ($this->input->post('regon_booking_id'))?$this->regex->_genRegex($this->input->post('regon_booking_id'),'RGXINT'):0;
 
             $urutan = $this->input->post('last_counter') + 1;

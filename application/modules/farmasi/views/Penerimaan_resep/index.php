@@ -153,6 +153,7 @@ function terima_resep(kode_trans_far){
         <table id="dynamic-table" base-url="farmasi/Penerimaan_resep/get_data?flag=All" class="table table-bordered table-hover">
           <thead>
             <tr>  
+              <th>&nbsp;</th>
               <th class="center">No</th>
               <th>Kode</th>
               <th>Tgl Pesan</th>

@@ -337,6 +337,7 @@ $(document).ready(function(){
 
             /*put data in form*/
             $('#noMrHidden').val(obj_data.regon_booking_no_mr);
+            find_pasien_by_keyword(obj_data.regon_booking_no_mr);
             $('#nama_pasien_hidden').val(data.nama_pasien);
 
             find_data_booking(obj_data.regon_booking_kode);
@@ -1154,7 +1155,7 @@ function find_pasien_by_keyword(keyword){
 
                           <input name="tipe_registrasi" type="radio" class="ace" value="online" <?php echo isset($value) ? ($value->is_active == 'online') ? 'checked="checked"' : '' : ''; ?> />
 
-                          <span class="lbl"> Via Online / Dengan Perjanjian</span>
+                          <span class="lbl"> Via Online / Mobile JKN</span>
 
                         </label>
 
@@ -1252,7 +1253,7 @@ function find_pasien_by_keyword(keyword){
 
                   <br>
 
-                  <div class="form-group" id="booking_result_view_div" style="margin-top:20px"></div>
+                  <div class="form-group" id="booking_result_view_div"></div>
 
                 </div>
 

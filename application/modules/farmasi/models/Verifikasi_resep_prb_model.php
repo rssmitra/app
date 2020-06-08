@@ -44,10 +44,9 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-            $this->db->where("fr_tc_far.tgl_trans >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
-            $this->db->where("fr_tc_far.tgl_trans <= '".$this->tanggal->selisih($_GET['to_tgl'],'+1')."'" );
+            $this->db->where("CAST(fr_tc_far.tgl_trans as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
         }else{
-        	$this->db->where('DATEDIFF(Hour, tgl_trans, getdate())<=12');
+        	$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=90');
         }
 
 		$i = 0;
