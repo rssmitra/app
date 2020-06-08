@@ -561,7 +561,7 @@ class Reg_pasien_model extends CI_Model {
 		
 	}
 
-	function get_detail_resume_medis($no_registrasi)
+	function get_detail_resume_medis($no_registrasi, $no_kunjungan='')
 	
 	{
 		/*data registrasi*/
@@ -573,9 +573,12 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_bagian as tujuan_poli','tujuan_poli.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
 		$this->db->join('mt_bagian as asal_poli','asal_poli.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
-		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_registrasi.kode_dokter','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
 		$this->db->join('th_riwayat_pasien','th_riwayat_pasien.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->where('tc_kunjungan.no_registrasi', $no_registrasi);
+		if($no_kunjungan != ''){
+			$this->db->where('tc_kunjungan.no_kunjungan', $no_kunjungan);
+		}
 		$this->db->order_by('tc_kunjungan.tgl_masuk', 'DESC');
 		$registrasi = $this->db->get()->result();
 

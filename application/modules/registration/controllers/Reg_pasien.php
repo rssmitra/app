@@ -467,10 +467,8 @@ class Reg_pasien extends MX_Controller {
 
     public function form_modal_edit_dokter($no_registrasi, $no_kunjungan){
         
-        $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
-
         $data = [
-            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi),
+            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan),
             'no_registrasi' => $no_registrasi,
             'no_kunjungan' => $no_kunjungan,
         ];
@@ -987,7 +985,7 @@ class Reg_pasien extends MX_Controller {
             );
 
             // update tc_registrasi
-            $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter') ) );
+            // $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter') ) );
 
             // update tc_kunjungan
             $this->db->update('tc_kunjungan', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter'), 'no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );

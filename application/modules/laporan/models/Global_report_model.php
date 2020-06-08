@@ -1152,40 +1152,237 @@ class Global_report_model extends CI_Model {
 	}
 
 	public function vsql_ugd(){
+		if($_POST['penunjang']=='Lab'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
 				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
 				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
+			}
+			else if($_POST['penunjang']=='Rad'){
+			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}
+			else{
+				$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
 			
+			}
 		
 		return $this->db->query($query)->result();
 	}
+	public function vsql_ugdthn(){
+		if($_POST['penunjang']=='Lab'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and  b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}
+			else if($_POST['penunjang']=='Rad'){
+			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and  b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}
+			else{
+				$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and  b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			
+			}
+		
+		return $this->db->query($query)->result();
+	}
+
 	public function vsql_spesialis(){
+		if($_POST['penunjang']=='Lab'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
 						tc_registrasi c  
 				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
 				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
-			
+			}
+		elseif($_POST['penunjang']=='Rad'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
+						tc_registrasi c  
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}
+		else{
+			$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
+						tc_registrasi c  
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}	
 		return $this->db->query($query)->result();
 	}
+	public function vsql_spesialisthn(){
+		if($_POST['penunjang']=='Lab'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
+						tc_registrasi c  
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}
+		elseif($_POST['penunjang']=='Rad'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
+						tc_registrasi c  
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}
+		else{
+			$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
+						tc_registrasi c  
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+			}	
+		return $this->db->query($query)->result();
+	}
+
 	public function vsql_luar(){
+		if($_POST['penunjang']=='Lab'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
 				where YEAR(b.tgl_masuk)=".$_POST['year']." 
 				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'baru'";
-			
+		}
+		else if($_POST['penunjang']=='Rad'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'baru'";
+		}
+		else{
+			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'baru'";
+		}
 		return $this->db->query($query)->result();
 	}
+
+	public function vsql_luarthn(){
+		if($_POST['penunjang']=='Lab'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'baru'";
+		}
+		else if($_POST['penunjang']=='Rad'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'baru'";
+		}
+		else{
+			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'baru'";
+		}
+		return $this->db->query($query)->result();
+	}
+
+
 	public function vsql_inap(){
+		if($_POST['penunjang']=='Lab'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
 				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
 				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
+		}
+		else if($_POST['penunjang']=='Rad'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+		}
+		else{
+			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
 		
+		}
+		return $this->db->query($query)->result();
+	}
+
+	public function vsql_inapthn(){
+		if($_POST['penunjang']=='Lab'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+		}
+		else if($_POST['penunjang']=='Rad'){
+		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+		}
+		else{
+			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
+						tc_registrasi c  
+				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
+				and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				and c.stat_pasien = 'lama'";
+		
+		}
+		return $this->db->query($query)->result();
+	}
+
+	public function lapkinerja(){
+		if($_POST['penunjang']=='Lab'){
+		
+			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050101' and month(tgl_transaksi)=".$_POST['from_month']." and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+		}
+		else if($_POST['penunjang']=='Rad'){
+		$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050201' and month(tgl_transaksi)=".$_POST['from_month']." and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+		}
+		else{
+			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050301' and month(tgl_transaksi)=".$_POST['from_month']." and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+		
+		}
+		return $this->db->query($query)->result();
+	}
+
+	public function lapkinerjathn(){
+		if($_POST['penunjang']=='Lab'){
+		
+			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050101' and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+		}
+		else if($_POST['penunjang']=='Rad'){
+		$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050201' and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+		}
+		else{
+			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050301' and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+		
+		}
 		return $this->db->query($query)->result();
 	}
 

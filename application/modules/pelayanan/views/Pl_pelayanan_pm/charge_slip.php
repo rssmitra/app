@@ -179,7 +179,7 @@
 
   <div class="tindakan">
 
-    <table id="table_tindakan"">
+    <table id="table_tindakan">
       <thead style="border-bottom:1px bold black">
         <th width="5%" valign="top">No.</th>
         <th width="65%">Nama Pemeriksaan</th>

@@ -247,18 +247,34 @@ class Global_report extends MX_Controller {
 
     public function showdatakinerja(){
 
-        $query_data = $this->Global_report->get_data();
+        $query_data = $this->Global_report->lapkinerja();
 
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
-            'tgl1' => $_POST['tgl1'],
-            'tgl2' => $_POST['tgl2'],
-            'jeniskelamin' => $_POST['jeniskelamin'],
+            'bulan' => $_POST['from_month'],
+            'tahun' => $_POST['year'],
+            'penunjang' => $_POST['penunjang'],
             'result' => $query_data,
         );
         // echo '<pre>';print_r($query_data);
-         $this->load->view('Global_report/v_kinerja', $data);
+         $this->load->view('Global_report/v_kinerja_pm', $data);
+        
+        
+    }
+     public function showdatakinerjathn(){
+
+        $query_data = $this->Global_report->lapkinerjathn();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'tahun' => $_POST['year'],
+            'penunjang' => $_POST['penunjang'],
+            'result' => $query_data,
+        );
+        // echo '<pre>';print_r($query_data);
+         $this->load->view('Global_report/v_kinerja_pm_thn', $data);
         
         
     }
@@ -285,18 +301,18 @@ class Global_report extends MX_Controller {
         // foreach ($sql_ugd as $k_sql_ugd => $v_sql_ugd) {
         //         $get_v_sql_ugd[] = $v_sql_ugd;
             
-        // }
-        //   // get saldo
+        // // }
+        // //   // get saldo
         // foreach ($sql_spesialis as $k_sql_spesialis => $v_sql_spesialis) {
         //         $get_v_sql_spesialis[] = $v_sql_spesialis;
             
         // }
-        //   // get saldo
+        // //   // get saldo
         // foreach ($sql_luar as $k_sql_luar => $v_sql_luar) {
         //         $get_v_sql_luar[] = $v_sql_luar;
             
         // }
-        //   // get saldo
+        // //   // get saldo
         // foreach ($sql_inap as $k_sql_inap => $v_sql_inap) {
         //         $get_v_sql_inap[] = $v_sql_inap;
             
@@ -309,13 +325,39 @@ class Global_report extends MX_Controller {
             'bulan' => $_POST['from_month'],
             'tahun' => $_POST['year'],
             // 'result' => $query_data,
-            'dt_sql_ugd' => $sql_ugd,
-            'dt_sql_spesialis' => $sql_spesialis,
-            'dt_sql_luar' => $sql_luar,
-            'dt_sql_inap' => $sql_inap,
+            'dt_sql_ugd' => $sql_ugd[0],
+            'dt_sql_spesialis' => $sql_spesialis[0],
+            'dt_sql_luar' => $sql_luar[0],
+            'dt_sql_inap' => $sql_inap[0],
         );
-         // echo '<pre>';print_r($dt_sql_spesialis);
+         // echo '<pre>';print_r($sql_ugd);die;;
          $this->load->view('Global_report/v_kunjungan', $data);
+        
+        
+    }
+
+    public function showdatakunjunganthn(){
+
+        // $query_data = $this->Global_report->get_data();
+        $sql_ugd = $this->Global_report->vsql_ugdthn();
+        $sql_spesialis = $this->Global_report->vsql_spesialisthn();
+        $sql_luar = $this->Global_report->vsql_luarthn();
+        $sql_inap = $this->Global_report->vsql_inapthn();
+      
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'penunjang' => $_POST['penunjang'],
+            'tahun' => $_POST['year'],
+            // 'result' => $query_data,
+            'dt_sql_ugd' => $sql_ugd[0],
+            'dt_sql_spesialis' => $sql_spesialis[0],
+            'dt_sql_luar' => $sql_luar[0],
+            'dt_sql_inap' => $sql_inap[0],
+        );
+         // echo '<pre>';print_r($sql_ugd);die;;
+         $this->load->view('Global_report/v_kunjungan_thn', $data);
         
         
     }

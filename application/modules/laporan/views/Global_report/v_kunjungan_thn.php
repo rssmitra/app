@@ -7,44 +7,7 @@
     header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
     header("Cache-Control: private",false);
   }
- switch($bulan){
-     case "1":
-       $nmbln= "JANUARI";
-     break;
-      case "2":
-       $nmbln= "FEBRUARI";
-     break;
-      case "3":
-       $nmbln= "MARET";
-     break;
-      case "4":
-       $nmbln= "APRIL";
-     break;
-      case "5":
-       $nmbln= "MEI";
-     break;
-      case "6":
-       $nmbln= "JUNI";
-     break;
-      case "7":
-       $nmbln= "JULI";
-     break;
-      case "8":
-       $nmbln= "AGUSTUS";
-     break;
-      case "9":
-       $nmbln= "SEPTEMBER";
-     break;
-      case "10":
-       $nmbln= "OKTOBER";
-     break;
-      case "11":
-       $nmbln= "NOVEMBER";
-     break;
-      case "12":
-       $nmbln= "DESEMBER";
-     break;
-   }
+ 
    switch($penunjang){
      case "Lab":
        $np= "LABORATORIUM";
@@ -82,10 +45,7 @@
         <td width="15%"><b>TAHUN</td>
         <td>: <?php echo $tahun; ?>&nbsp;</td>
       </tr>
-      <tr class="mainTitleLeft">
-        <td width="15%"><b>BULAN</td>
-        <td>: <?php echo $nmbln; ?>&nbsp;</td>
-      </tr>
+      
     </tbody>
   </table>
        <table class="table" border="0">
