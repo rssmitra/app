@@ -20,7 +20,7 @@ class AntrianBPJS extends MX_Controller {
         // load module
         $this->load->module('templates/References');
 
-        // default authentication
+        // default username and password
         $this->username = '4dm1nR55m';
         $this->password = 'P@s5W0rdR55m';
         
@@ -289,7 +289,7 @@ class AntrianBPJS extends MX_Controller {
             'regon_booking_klinik' => $kode_poli->kode_bagian,
             'regon_booking_kode_dokter' => $getKuota[0]['jadwal_dokter']->kode_dokter,
             'regon_booking_hari' => $hari,
-            'regon_booking_jam' => $jam_mulai_praktek.' s/d '.$jam_selesai_praktek,
+            'regon_booking_jam' => $this->tanggal->formatTime($jam_mulai_praktek).' s/d '.$this->tanggal->formatTime($jam_selesai_praktek),
             'regon_booking_waktu_datang' => $waktu_datang,
             'regon_booking_keterangan' => 'Antrian Online Mobile JKN',
             'regon_booking_jenis_penjamin' => 'Jaminan Perusahaan',
@@ -318,7 +318,7 @@ class AntrianBPJS extends MX_Controller {
         /*save post data*/
         $this->Regon_booking->save($databooking);
 
-        print_r($databooking);die;
+        // print_r($databooking);die;
         // $this->insert_booking();
         // response
         $response = array(
