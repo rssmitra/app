@@ -373,8 +373,8 @@ class AntrianBPJS extends MX_Controller {
                 'namapoli' => $kode_poli->nama_bagian,
                 'totalantrean' => $dt_booking->num_rows(),
                 'jumlahterlayani' => $register->num_rows(),
-                'lastupdate' => strtotime('Y-m-d H:i:s'),
-                'lastupdatetanggal' => date('Y-m-d H:i:s')
+                // 'lastupdate' => strtotime('Y-m-d H:i:s'),
+                'lastupdate' => date('Y-m-d H:i:s')
                 ),
         );
 
