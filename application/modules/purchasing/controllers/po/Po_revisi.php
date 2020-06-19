@@ -114,6 +114,7 @@ class Po_revisi extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->id_tc_po.'</div>';
             $row[] = $row_list->no_po;
             $row[] = $this->tanggal->formatDate($row_list->tgl_po);
+            $row[] = '<div class="left">'.$row_list->jenis_po.'</div>';
             $row[] = '<div class="left">'.$row_list->namasupplier.'</div>';
             $row[] = '<div class="left">'.$row_list->diajukan_oleh.'</div>';
             $row[] = '<div class="left">'.$row_list->disetujui_oleh.'</div>';

@@ -217,6 +217,7 @@ $('select[name="search_by"]').change(function () {
             <th width="50px">ID</th>
             <th>Nomor PO</th>
             <th>Tanggal</th>
+            <th>Jenis PO</th>
             <th>Nama Supplier</th>
             <th>Diajukan</th>
             <th>Disetujui</th>

@@ -277,11 +277,15 @@ function proses_persetujuan(id){
                     </div>
 
                     <label class="control-label col-md-2">Jenis Permintaan</label>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                       <div class="radio">
                         <label>
                           <input name="flag_jenis" type="radio" class="ace" value="2" <?php echo isset($value) ? ($value->flag_jenis == '2') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
                           <span class="lbl"> Rutin</span>
+                        </label>
+                        <label>
+                          <input name="flag_jenis" type="radio" class="ace" value="3" <?php echo isset($value) ? ($value->flag_jenis == '3') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                          <span class="lbl"> Non Rutin</span>
                         </label>
                         <label>
                           <input name="flag_jenis" type="radio" class="ace" value="1" <?php echo isset($value) ? ($value->flag_jenis == '1') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>

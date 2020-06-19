@@ -84,7 +84,7 @@ th, td {
           </tr>
           <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
             <td><b>Jenis Permintaan</b></td>
-            <td style="background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid #FFF; border-collapse: collapse">Rutin</td>
+            <td style="background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid #FFF; border-collapse: collapse"><?php echo ($po->jenis_po!='')?$po->jenis_po:'Rutin'?></td>
           </tr>
           <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
             <td><b>Total</b></td>

@@ -157,6 +157,7 @@
               <th>Kode Permintaan</th>
               <th>Tanggal</th>
               <th>Petugas</th>
+              <th>Jenis</th>
               <th>Persetujuan</th>
               <th>Total Barang</th>
               <th>Status</th>

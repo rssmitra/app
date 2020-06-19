@@ -230,6 +230,26 @@ $("#btnTakeOutBrg").click(function(event){
               </div>
             </div>
 
+            <div class="form-group">
+              <label class="control-label col-md-2">Jenis PO</label>
+                <div class="col-md-4">
+                  <div class="radio">
+                    <label>
+                      <input name="jenis_po" type="radio" class="ace" value="Rutin" <?php echo isset($value) ? ($value->jenis_po == '2') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                      <span class="lbl"> Rutin</span>
+                    </label>
+                    <label>
+                      <input name="jenis_po" type="radio" class="ace" value="Non Rutin" <?php echo isset($value) ? ($value->jenis_po == '3') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                      <span class="lbl"> Non Rutin</span>
+                    </label>
+                    <label>
+                      <input name="jenis_po" type="radio" class="ace" value="Cito" <?php echo isset($value) ? ($value->jenis_po == '1') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                      <span class="lbl"> Cito</span>
+                    </label>
+                  </div>
+                </div>
+            </div>
+            
             <p><b>PILIH SUPPLIER</b></p>
             <div class="form-group">
                 <label class="control-label col-md-2">Supplier</label>

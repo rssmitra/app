@@ -6,7 +6,7 @@ class Po_revisi_model extends CI_Model {
 	var $table_nm = 'tc_po_nm';
 	var $table = 'tc_po';
 	var $column = array('a.no_po','c.namasupplier');
-	var $select = 'a.id_tc_po, a.no_po, a.tgl_po, a.ppn, a.total_sbl_ppn, a.total_stl_ppn, a.discount_harga, a.term_of_pay, b.username, a.diajukan_oleh, a.disetujui_oleh, c.namasupplier';
+	var $select = 'a.id_tc_po, a.no_po, a.tgl_po, a.ppn, a.total_sbl_ppn, a.total_stl_ppn, a.discount_harga, a.term_of_pay, b.username, a.diajukan_oleh, a.disetujui_oleh, c.namasupplier, a.jenis_po';
 	var $order = array('a.id_tc_po' => 'DESC');
 
 	public function __construct()

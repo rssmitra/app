@@ -23,6 +23,7 @@ class Req_pembelian_model extends CI_Model {
 		$this->db->select('CASE
 								WHEN flag_jenis = 1 THEN '."'Cito'".'
 								WHEN flag_jenis = 2 THEN '."'Rutin'".'
+								WHEN flag_jenis = 3 THEN '."'Non Rutin'".'
 								ELSE '."'Rutin'".'
 							END as jenis_permohonan_name');
 		$this->db->from(''.$table.' a');

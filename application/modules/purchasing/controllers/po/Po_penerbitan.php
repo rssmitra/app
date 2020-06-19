@@ -57,7 +57,8 @@ class Po_penerbitan extends MX_Controller {
             /*breadcrumbs for edit*/
             $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Po_penerbitan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
             /*get value by id*/
-            $data['value'] = $this->Po_penerbitan->get_by_id($id); //echo '<pre>'; print_r($data);die;
+            $data['value'] = $this->Po_penerbitan->get_by_id($id); 
+            // echo '<pre>'; print_r($data);die;
             /*initialize flag for form*/
             $data['flag'] = "update";
         }else{
@@ -138,6 +139,7 @@ class Po_penerbitan extends MX_Controller {
                 'disetujui_oleh' => $this->regex->_genRegex($val->set_value('disetujui_oleh'),'RGXQSL'),
                 'tgl_kirim' => $this->regex->_genRegex($val->set_value('tgl_kirim'),'RGXQSL'),
                 'krs' => $this->regex->_genRegex($val->set_value('krs'),'RGXQSL'),
+                'jenis_po' => $this->regex->_genRegex($_POST['jenis_po'],'RGXQSL'),
             );
             
             if($id==0){
@@ -309,6 +311,7 @@ class Po_penerbitan extends MX_Controller {
             $log = json_decode($row_list->created_by);
             $petugas = isset($log->fullname)?$log->fullname:$row_list->username;
             $row[] = '<div class="center">'.ucwords($petugas).'</div>';
+            $row[] = '<div class="center">'.$row_list->jenis_permohonan_name.'</div>';
             $row[] = '<div class="left">'.$row_list->no_acc.'</div>';
             $row[] = $this->tanggal->formatDate($row_list->tgl_acc);
 
@@ -383,9 +386,9 @@ class Po_penerbitan extends MX_Controller {
                 $getData[$row->kode_brg][] = $row;
             }
         }
-        // echo '<pre>';print_r($getData);die;
         $data['dt_detail_brg'] = $getData;
         $data['history_po'] = $history_po;
+        // echo '<pre>';print_r($data);die;
         $data['view_brg_po'] = $this->load->view('po/Po_penerbitan/view_brg_po', $data, true);
 
         $this->load->view('po/Po_penerbitan/form', $data, false);

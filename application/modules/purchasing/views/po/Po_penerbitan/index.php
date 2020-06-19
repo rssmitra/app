@@ -232,6 +232,7 @@ function rollback(myid){
             <th>Kode Permintaan</th>
             <th>Tanggal Permintaan</th>
             <th>Petugas</th>
+            <th>Jenis</th>
             <th>No Persetujuan</th>
             <th>Tanggal Persetujuan</th>
             <th>Status</th>

@@ -84,7 +84,7 @@ th, td {
           </tr>
           <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
             <td><b>Jenis Permintaan</b></td>
-            <td style="background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid #FFF; border-collapse: collapse">Rutin</td>
+            <td style="background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid #FFF; border-collapse: collapse"><?php echo ($po->jenis_po!='')?$po->jenis_po:'Rutin'?></td>
           </tr>
           
         </table>
@@ -161,9 +161,8 @@ th, td {
     <tr>
       <td colspan="2" style="text-align: center; width: 100%; font-weight: bold" >Mengesahkan, </td>
     </tr>
-
-    <tr>
-      
+    <?php if($po->jenis_po == 'Non Rutin') {?>
+    <tr>      
       <td style="text-align: center; width: 50%">
         <br>
         <br>
@@ -179,6 +178,18 @@ th, td {
         <?php echo $this->master->get_ttd('ttd_dir_keu_rssm') ;?>
       </td>
     </tr>
+    <?php }else{ ?>
+    <tr>      
+      <td style="text-align: center; width: 100%" colspan="2">
+        <br>
+        <br>
+        <br>
+        <br>
+        <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
+      </td>
+    </tr>
+    <?php }?>
+
 </table>
 
 </body>

@@ -6,7 +6,7 @@ class Po_penerbitan_model extends CI_Model {
 	var $table_nm = 'tc_permohonan_nm';
 	var $table = 'tc_permohonan';
 	var $column = array('a.kode_permohonan');
-	var $select = 'a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username as user_acc_name, a.status_batal';
+	var $select = 'a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username as user_acc_name, a.status_batal, flag_jenis';
 	var $order = array('a.id_tc_permohonan' => 'DESC');
 
 	public function __construct()
@@ -18,6 +18,12 @@ class Po_penerbitan_model extends CI_Model {
 	private function _main_query(){
 		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
 		$this->db->select($this->select);
+		$this->db->select('CASE
+								WHEN flag_jenis = 1 THEN '."'Cito'".'
+								WHEN flag_jenis = 2 THEN '."'Rutin'".'
+								WHEN flag_jenis = 3 THEN '."'Non Rutin'".'
+								ELSE '."'Rutin'".'
+							END as jenis_permohonan_name');
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user','dd_user.id_dd_user=a.user_id', 'left');
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
@@ -62,7 +68,7 @@ class Po_penerbitan_model extends CI_Model {
 			// }
 		}
 
-		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal');
+		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, flag_jenis');
 	}
 
 	private function _get_datatables_query()
@@ -183,8 +189,9 @@ class Po_penerbitan_model extends CI_Model {
 		$table = ($flag=='non_medis')?'tc_po_nm_det':'tc_po_det';
 		$join_po = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$join = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
+		$tc_permohonan = ($flag=='non_medis')?'tc_permohonan_nm':'tc_permohonan';
 
-		$this->db->select('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan as harga_satuan, a.harga_satuan_netto as harga_satuan_netto, a.jumlah_harga_netto as jumlah_harga_netto,a.jumlah_harga as jumlah_harga, a.discount, a.discount_rp as discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn as ppn, b.total_sbl_ppn as total_sbl_ppn, b.total_stl_ppn as total_stl_ppn, b.discount_harga as total_diskon, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim as estimasi_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik');
+		$this->db->select('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan as harga_satuan, a.harga_satuan_netto as harga_satuan_netto, a.jumlah_harga_netto as jumlah_harga_netto,a.jumlah_harga as jumlah_harga, a.discount, a.discount_rp as discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn as ppn, b.total_sbl_ppn as total_sbl_ppn, b.total_stl_ppn as total_stl_ppn, b.discount_harga as total_diskon, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim as estimasi_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik, b.jenis_po');
 		$this->db->from(''.$table.' a');
 		$this->db->join($join_po.' b', 'b.id_tc_po=a.id_tc_po', 'left');
 		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
