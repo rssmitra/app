@@ -58,20 +58,20 @@
     <table id="dynamic-table" base-url="information/regon_info_jadwal_dr" class="table-custom">
       <thead>
       <tr>  
-        <th width="30px" class="center" rowspan="2"></th>
-        <th rowspan="2" width="180px">Action</th>
-        <th rowspan="2">Nama Dokter</th>
-        <th rowspan="2">Spesialis</th>
-        <th colspan="7" class="center">Hari/Jam Praktek</th>
+        <th style="color: white !important" width="30px" class="center" rowspan="2"></th>
+        <th style="color: white !important" rowspan="2" width="180px">Action</th>
+        <th style="color: white !important" rowspan="2">Nama Dokter</th>
+        <th style="color: white !important" rowspan="2">Spesialis</th>
+        <th style="color: white !important" colspan="7" class="center">Hari/Jam Praktek</th>
       </tr>
-      <tr>
-        <th class="center" width="65px">Senin</th>
-        <th class="center" width="65px">Selasa</th>
-        <th class="center" width="65px">Rabu</th>
-        <th class="center" width="65px">Kamis</th>
-        <th class="center" width="65px">Jumat</th>
-        <th class="center" width="65px">Sabtu</th>
-        <th class="center" width="65px">Minggu</th>        
+      <tr style="color: white !important">
+        <th style="color: white !important" class="center" width="65px">Senin</th>
+        <th style="color: white !important" class="center" width="65px">Selasa</th>
+        <th style="color: white !important" class="center" width="65px">Rabu</th>
+        <th style="color: white !important" class="center" width="65px">Kamis</th>
+        <th style="color: white !important" class="center" width="65px">Jumat</th>
+        <th style="color: white !important" class="center" width="65px">Sabtu</th>
+        <th style="color: white !important" class="center" width="65px">Minggu</th>        
       </tr>
     </thead>
     <tbody>

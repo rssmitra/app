@@ -41,12 +41,18 @@
         }
 });
 </script>
-<p><b>RESEP KARYAWAN</b></p>
+<h3 class="row header smaller lighter orange">
+  <span class="col-sm-8">
+    <i class="ace-icon fa fa-bell"></i>
+    RESEP KARYAWAN
+  </span><!-- /.col -->
+</h3>
+
 
 <div class="form-group">
   <label class="control-label col-sm-2">Nama Karyawan</label>
   <div class="col-md-4">
-    <input type="text" class="form-control" name="" id="inputKeyKaryawan" placeholder="Masukan keyword">
+    <input type="text" class="form-control" name="" id="inputKeyKaryawan" placeholder="Masukan keyword" value="<?php echo isset($value->nama_pasien)?$value->nama_pasien:''?>">
   </div>
 </div>
 <div id="show_find_result_from_inputKeyKaryawan" style="color: red; font-size:10px"></div>

@@ -24,7 +24,7 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?
   </tr>
   <tr style="border: 1px solid black; border-collapse: collapse">
     <td width="100px">Nama Pasien</td>
-    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_pasien']?></td>
+    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['nama_pasien'])?></td>
   </tr>
   <tr style="border: 1px solid black; border-collapse: collapse">
     <td width="100px">No. MR</td>
@@ -32,7 +32,7 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?
   </tr>
   <tr style="border: 1px solid black; border-collapse: collapse">
     <td width="100px">Dokter</td>
-    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['dokter_pengirim']?></td>
+    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['dokter_pengirim'])?></td>
   </tr>
   <tr style="border: 1px solid black; border-collapse: collapse">
     <td width="100px">Asal</td>
@@ -53,14 +53,14 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?
       <?php 
         $no=0; 
         foreach($resep as $key_dt=>$row_dt) : $no++; 
-          $arr_total[] = ceil($row_dt['harga_jual']);
+          $arr_total[] = ceil($row_dt['total']);
           $desc = ($row_dt['flag_resep'] == 'racikan') ? 'Jasa Racik Farmasi' : $row_dt['nama_brg'];
           $satuan = ($row_dt['satuan_kecil'] != null) ? $row_dt['satuan_kecil'] : $row_dt['satuan_brg'];
-          $harga_jual = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] + $row_dt['jasa_produksi'] : $row_dt['harga_jual'];
+          $harga_jual = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] + $row_dt['jasa_produksi'] : $row_dt['total'];
       ?>
 
         <tr>
-          <td style="text-align:center; border-collapse: collapse"><?php echo $no?></td>
+          <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
           <td style="border-collapse: collapse"><?php echo $desc?></td>
           <td style="text-align:center; border-collapse: collapse"><?php echo (int)$row_dt['jumlah_pesan']?></td>
           <td style="text-align:left; border-collapse: collapse"><?php echo $satuan?></td>
@@ -74,7 +74,7 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?
                         <td style="border-collapse: collapse"> - '.$value->nama_brg.'</td>
                         <td style="text-align:center; border-collapse: collapse">'.$value->jumlah.'</td>
                         <td style="text-align:left; border-collapse: collapse">'.$value->satuan.'</td>
-                        <td style="text-align:right; border-collapse: collapse">'.number_format($value->harga_jual).'</td>
+                        <td style="text-align:right; border-collapse: collapse">'.number_format($value->jumlah_total).'</td>
                       </tr>';
             }
           endif; 

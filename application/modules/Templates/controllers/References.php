@@ -12,13 +12,13 @@ class References extends MX_Controller {
 	public function getNamaPasien()
     {
         
-        $result = $this->db->select('nama_pasien')->where("nama_pasien LIKE '%".$_POST['keyword']."%' ")
-                          ->group_by('nama_pasien')
+        $result = $this->db->select('no_mr, nama_pasien')->where("nama_pasien LIKE '%".$_POST['keyword']."%' ")
+                          ->group_by('no_mr,nama_pasien')
                           ->order_by('nama_pasien', 'ASC')
                           ->get('mt_master_pasien')->result();
         $arrResult = [];
         foreach ($result as $key => $value) {
-            $arrResult[] = $value->nama_pasien;
+            $arrResult[] =  $value->no_mr.' : '.$value->nama_pasien;
         }
         echo json_encode($arrResult);
         

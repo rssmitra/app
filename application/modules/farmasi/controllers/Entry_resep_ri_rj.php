@@ -18,6 +18,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Entry_resep_ri_rj_model', 'Entry_resep_ri_rj');
+        $this->load->model('Etiket_obat_model', 'Etiket_obat');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -43,8 +44,19 @@ class Entry_resep_ri_rj extends MX_Controller {
     public function riwayat_resep() 
     { 
         /*define variable data*/
+        if( $_GET['type'] == 'rl' ){
+            $name = 'Resep Luar';
+        }
+
+        if( $_GET['type'] == 'rk' ){
+            $name = 'Resep Karyawan';
+        }
+
+        if( $_GET['type'] == 'pb' ){
+            $name = 'Pembelian Bebas';
+        }
         $data = array(
-            'title' => ($_GET['type']=='rl') ? 'Resep Luar' : ($_GET['type']=='rk') ? 'Resep Karyawan' : 'Pembelian Bebas' ,
+            'title' => $name ,
             'breadcrumbs' => $this->breadcrumbs->show(),
             'flag' => $_GET['type'],
             'profit' => $_GET['profit']
@@ -93,20 +105,33 @@ class Entry_resep_ri_rj extends MX_Controller {
         $this->load->view('Entry_resep_ri_rj/form_create', $data);
     }
 
+    public function form_default_entry($kode_trans_far='')
+    {
+        /*if id is not null then will show form edit*/
+        $data = array();
+        $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
+        // print_r($data);die;
+        $this->load->view('Entry_resep_ri_rj/form_default_entry', $data);
+    }
+
     public function form_resep_rj()
     {
         $this->load->view('Entry_resep_ri_rj/form_resep_rj');
     }
     
-    public function form_resep_luar()
+    public function form_resep_luar($kode_trans_far='')
     {
-        $this->load->view('Entry_resep_ri_rj/form_resep_luar');
+        $data = array();
+        $data['title_form'] = ($_GET['type']=='rl') ? 'Resep Luar' : 'Pembelian Bebas';
+        $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
+        $this->load->view('Entry_resep_ri_rj/form_resep_luar', $data);
     }
 
-    public function form_resep_karyawan()
+    public function form_resep_karyawan($kode_trans_far='')
     {
-        
-        $this->load->view('Entry_resep_ri_rj/form_resep_karyawan');
+        $data = array();
+        $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
+        $this->load->view('Entry_resep_ri_rj/form_resep_karyawan', $data);
     }
 
 

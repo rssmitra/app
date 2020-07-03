@@ -18,6 +18,7 @@ class Lap_hasil_so extends MX_Controller {
         /*load model*/
         $this->load->model('inventory/so/Lap_hasil_so_model', 'Lap_hasil_so');
         $this->load->model('inventory/so/Dt_bag_so_model', 'Dt_bag_so');
+        $this->load->model('inventory/so/Dt_bag_so_rs_model', 'Dt_bag_so_rs');
         $this->load->model('inventory/so/Dt_hasil_so_model', 'Dt_hasil_so');
         /*enable profiler*/
         $this->output->enable_profiler(false);
@@ -85,6 +86,17 @@ class Lap_hasil_so extends MX_Controller {
         $this->load->view('so/Lap_hasil_so/form_data_bag_so', $data);
     }
 
+    public function view_data_bag_so_rs($agenda_so_id, $flag)
+    {
+        $data = array();
+        /*define data variabel*/
+        $data['title'] = $this->title.' '.ucfirst($flag);
+        $data['flag'] = $flag;
+        $data['agenda_so_id'] = $agenda_so_id;
+        /*load form view*/
+        $this->load->view('so/Lap_hasil_so/form_data_bag_so_rs', $data);
+    }
+
     public function view_data_hasil_so($agenda_so_id, $kode_bagian, $flag)
     {
         $data = array();
@@ -131,6 +143,41 @@ class Lap_hasil_so extends MX_Controller {
         echo json_encode($result);
     }
 
+    public function total_aset_barang_rs()
+    {
+        /*get data from model*/
+        $list = $this->Dt_bag_so_rs->get_all_data(); 
+        
+        $arr_harga_exp = array();
+        $arr_harga = array();
+        foreach($list as $row){
+            
+            if( $row->harga_pembelian_terakhir != 0 AND $row->stok_sekarang != 0 ){
+                $arr_harga[] = round($row->harga_pembelian_terakhir * $row->stok_sekarang);
+
+            }
+        }
+
+        $result = array(
+            'total_aset_barang_rs' => array_sum($arr_harga),
+        );
+
+        echo json_encode($result);
+    }
+
+    public function log_barang(){
+        $data = array();
+        /*define data variabel*/
+        $mt_barang = ($_GET['flag']=='medis')?'mt_barang':'mt_barang_nm';
+        $tc_stok_opname = ($_GET['flag']=='medis')?'tc_stok_opname':'tc_stok_opname_nm';
+        $data['title'] = $this->master->get_string_data('nama_brg', $mt_barang, array('kode_brg' => $_GET['kode_brg']));
+        $data['kode_brg'] = $_GET['kode_brg'];
+        $data['log_barang'] = $this->Lap_hasil_so->get_log_barang($_GET['agenda_so_id'], $_GET['kode_brg'], $_GET['flag']); 
+        $data['agenda_so_id'] = $_GET['agenda_so_id'];
+        $data['flag'] = $_GET['flag'];
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('so/Lap_hasil_so/log_brg', $data);
+    }
 
     public function excel()
     {
@@ -145,6 +192,19 @@ class Lap_hasil_so extends MX_Controller {
         $data['flag'] = $_GET['flag'];
         /*load form view*/
         $this->load->view('so/Lap_hasil_so/hasil_excel_so', $data);
+    }
+
+    public function excel_rs()
+    {
+        $data = array();
+        /*define data variabel*/
+        $data['title'] = 'Hasil Stok Opname Rumah Sakit';
+        $data['value'] = $this->Lap_hasil_so->get_by_id($_GET['agenda_so_id']);
+        $data['result_content'] = $this->Dt_bag_so_rs->get_all_data();
+        $data['agenda_so_id'] = $_GET['agenda_so_id'];
+        $data['flag'] = $_GET['flag'];
+        /*load form view*/
+        $this->load->view('so/Lap_hasil_so/hasil_excel_so_rs', $data);
     }
 
     public function get_data()
@@ -220,6 +280,39 @@ class Lap_hasil_so extends MX_Controller {
                         "draw" => $_POST['draw'],
                         "recordsTotal" => $this->Dt_bag_so->count_all(),
                         "recordsFiltered" => $this->Dt_bag_so->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function get_data_bag_so_rs()
+    {
+        /*get data from model*/
+        $list = $this->Dt_bag_so_rs->get_datatables();
+        $list_dt = $this->Dt_bag_so_rs->_main_query_all_dt();
+        $data = array();
+        $no = $_POST['start'];
+
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center"><a href="#" onclick="get_rincian_log('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'</a></div>';
+            $row[] = '<div class="left">'.$row_list->nama_brg.'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->stok_sebelum).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->stok_sekarang).'</div>';
+            $total = $row_list->stok_sekarang * $row_list->harga_pembelian_terakhir;
+            $row[] = '<div align="right">'.number_format($row_list->harga_pembelian_terakhir).'</div>';
+            $row[] = '<div align="right">'.number_format($total).'</div>';
+                   
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Dt_bag_so_rs->count_all(),
+                        "recordsFiltered" => $this->Dt_bag_so_rs->count_filtered(),
                         "data" => $data,
                 );
         //output to json format

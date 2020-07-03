@@ -24,89 +24,7 @@ jQuery(function($) {
 
   });  
 
-});
-
-var kode_trans_far = $('#kode_trans_far').val();
-
-$(document).ready(function(){
-    
-    sum_total_biaya_farmasi();
-
-    table = $('#temp_data_pesan').DataTable( {
-        "processing": true, 
-        "serverSide": true,
-        "bInfo": false,
-        "bPaginate": false,
-        "searching": false,
-        "bSort": false,
-        "ajax": {
-            "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan="+$('#jenis_resep').val()+"",
-            "type": "POST"
-        },
-        "columnDefs": [
-            { 
-                "targets": [ 0 ], //last column
-                "orderable": false, //set not orderable
-            },
-            {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
-            { "visible": true, "targets": [ 0 ] },
-            { "visible": false, "targets": [ 1 ] },
-            { "visible": false, "targets": [ 2 ] },
-        ],
-    }); 
-
-    $('#temp_data_pesan tbody').on('click', 'td.details-control', function () {
-            var tr = $(this).closest('tr');
-            var row = table.row( tr );
-            var data = table.row( $(this).parents('tr') ).data();
-            var ID = data[ 1 ];
-            var flag = data[ 2 ];
-            var kode_brg = data[ 5 ];
-                      
-
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            }
-            else {
-                /*data*/
-                if( flag == 'racikan' ){
-                  $.getJSON("farmasi/Entry_resep_racikan/getDetail/" + ID, '', function (data) {
-                      response_data = data;
-                      // Open this row
-                      row.child( format_html( response_data ) ).show();
-                      tr.addClass('shown');
-                  });
-                }else{
-                  $.getJSON("farmasi/Entry_resep_ri_rj/getDetail/" + kode_brg +'/'+ ID, '', function (data) {
-                      response_data = data;
-                      // Open this row
-                      row.child( format_html( response_data ) ).show();
-                      tr.addClass('shown');
-                  });
-                }
-                                                
-            }
-    } );
-
-    $('#temp_data_pesan tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('selected') ) {
-            //achtungShowLoader();
-            $(this).removeClass('selected');
-            //achtungHideLoader();
-        }
-        else {
-            //achtungShowLoader();
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            //achtungHideLoader();
-        }
-    } );
-
-    $('#inputKeyObat').focus();    
-
-    $('#form_entry_resep').ajaxForm({      
+  $('#form_entry_resep').ajaxForm({      
 
       beforeSend: function() {        
 
@@ -147,106 +65,50 @@ $(document).ready(function(){
         
       }      
 
-    });     
-    
-    $('#inputKeyObat').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "templates/references/getObatByBagianAutoComplete",
-                data: { keyword:query, bag: '060101'},            
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                  result($.map(response, function (item) {
-                      return item;
-                  }));
-                }
-            });
-        },
-        afterSelect: function (item) {
-          // do what is needed with item
-          var val_item=item.split(':')[0];
-          console.log(val_item);
+    }); 
 
-          var detailObat = getDetailObatByKodeBrg(val_item,'060101');
-          $('#jumlah_pesan').focus();
+});
 
-        }
-    });
+var kode_trans_far = $('#kode_trans_far').val();
 
-    $( "#jumlah_pesan" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
-            $('#dosis_end').focus();
-          }
-          return false;       
-        }
-    });
-   
-    $( "#dosis_start" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
-            $('#satuan_obat').focus();
-          }
-          return false;       
-        }
-    });
 
-    $( "#dosis_end" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
-            $('#dosis_start').focus();
-          }
-          return false;       
-        }
-    });
+function reset_form(){
 
-    $( "#satuan_obat" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
-            $('#anjuran_pakai').focus();
-          }
-          return false;       
-        }
-    });
+  $('#inputKeyObat').focus();
+  // $('#form_entry_resep')[0].reset();
+  $('#kd_tr_resep').val('0');
 
-    $( "#anjuran_pakai" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
-            $('#catatan').focus();
-          }
-          return false;       
-        }
-    });
+  $('#inputKeyObat').val('');
+  $('#jumlah_pesan').val('');
+  $('#jumlah_tebus').val('');
+  $('#harga_r').val(500);
 
-    $( "#catatan" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
-            $('#btn_submit').click();
-          }
-          return false;       
-        }
-    });
-    
-})
+  /*radio*/
+  $("input[name=urgensi][value=biasa]").prop('checked', true);
+
+  /*show detail tarif html*/
+  $('#div_detail_obat').hide('fast');
+  $('#detailObatHtml').html('');
+
+}
+
+function reload_table(){
+  var kode_trans_far = $('#kode_trans_far').val();
+  table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan="+$('#flag_trans').val()+"").load();
+  sum_total_biaya_farmasi();
+}
+
+function sum_total_biaya_farmasi(){
+
+  var kode_trans_far = $('#kode_trans_far').val();
+  $.getJSON("<?php echo site_url('farmasi/process_entry_resep/get_total_biaya_farmasi') ?>/"+kode_trans_far, '' , function (response) {
+
+      $('#td_total_biaya_farmasi').html('<b>Rp. '+formatMoney(response.total)+',-</b>');
+
+  })
+
+}
+
 
 function getDetailObatByKodeBrg(kode_brg,kode_bag){
 
@@ -299,77 +161,116 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
 
 }
 
-function format_html ( data ) {
-  return data.html;
-}
+function create_new_resep(){
+    preventDefault();
+    $('#form_by_jenis_resep').show();
+    $('#div_pencarian_obat').show();
+    $('#div_table_riwayat_resep').hide();
+    $('#kode_trans_far').val('');
 
-function reset_form(){
+    if( $('#jenis_resep').val() == 'rk' ){
+      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan');  
+    }
 
-  $('#inputKeyObat').focus();
-  // $('#form_entry_resep')[0].reset();
-  $('#kd_tr_resep').val('0');
+    if( $('#jenis_resep').val() == 'rl' || $('#jenis_resep').val() == 'pb' ){
+      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar?type='+$('#jenis_resep').val()+''); 
+    }
 
-  $('#inputKeyObat').val('');
-  $('#jumlah_pesan').val('');
-  $('#jumlah_tebus').val('');
-  $('#harga_r').val(500);
-
-  /*radio*/
-  $("input[name=urgensi][value=biasa]").prop('checked', true);
-
-  /*show detail tarif html*/
-  $('#div_detail_obat').hide('fast');
-  $('#detailObatHtml').html('');
+    // load form 
+    $('#div_default_form_entry').show();
+    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry');  
 
 }
+function update_data(kode_trans_far){
 
-function reload_table(){
-  var kode_trans_far = $('#kode_trans_far').val();
-  table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan=<?php echo $tipe_layanan?>").load();
-  sum_total_biaya_farmasi();
-}
-
-function delete_resep(myid, flag){
   preventDefault();
-  if(confirm('Are you sure?')){
-    $.ajax({
-        url: 'farmasi/process_entry_resep/delete',
-        type: "post",
-        data: {ID:myid, flag:flag},
-        dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-        },
-        complete: function(xhr) {     
-          var data=xhr.responseText;
-          var jsonResponse = JSON.parse(data);
-          if(jsonResponse.status === 200){
-            $.achtung({message: jsonResponse.message, timeout:5});
-            reload_table();
-            reset_form();
-          }else{
-            $.achtung({message: jsonResponse.message, timeout:5});
-          }
-          achtungHideLoader();
-        }
-
-      });
-
-  }else{
-    return false;
-  }
+  $('#form_by_jenis_resep').show();
+  $('#div_pencarian_obat').show();
+  $('#div_table_riwayat_resep').hide();
+  $('#kode_trans_far').val(kode_trans_far);
   
+  // get data fr tc far
+  $.getJSON("farmasi/Etiket_obat/get_detail_by_kode_trans_far/"+kode_trans_far+"", '' , function (response) {
+    console.log(response);
+    var obj = response.value;
+    $('#nama_pasien').val(obj.nama_pasien);
+    $('#dokter_pengirim').val(obj.dokter_pengirim);
+
+  })
+
+  if( $('#jenis_resep').val() == 'rk' ){
+    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan/'+kode_trans_far+'');  
+  }
+
+  if( $('#jenis_resep').val() == 'rl' || $('#jenis_resep').val() == 'pb' ){
+    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar/'+kode_trans_far+'?type='+$('#jenis_resep').val()+''); 
+  }
+
+  // load form 
+  $('#div_default_form_entry').show();
+  $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry/'+kode_trans_far);  
+
 }
 
-function resep_farmasi_selesai(){
+function show_history(){
+  $('#div_default_form_entry').hide();
+  $('select[name="jenis_resep"]').change();
+}
+
+$('select[name="jenis_resep"]').change(function () {      
+  
+  // reset form with class
+  $('.default_value').val('');
+  $('#kode_trans_far').val('0');
+  // reload_table();
+  
+  if( $(this).val() == 'rj' ){
+    // default value
+    $('#form_by_jenis_resep').show('fast');
+    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_rj');  
+    $('#kode_profit').val(2000);
+    $('#button_action').hide();
+    $('#flag_trans').val( $(this).val().toUpperCase() );
+    $('#div_pencarian_obat').hide();
+    $('#div_default_form_entry').hide();
+    $('#div_table_riwayat_resep').hide('fast');
+    
+  }  
+
+  if( $(this).val() == 'rl' || $(this).val() == 'pb' ){
+    // default value
+    $('#form_by_jenis_resep').hide();
+    $('#flag_trans').val( $(this).val().toUpperCase() );
+    kode_profit = ( $(this).val() == 'rl') ? 3000 : 4000 ;
+    $('#kode_profit').val(kode_profit);
+    $('#div_default_form_entry').hide();
+    $('#button_action').show();
+    $('#div_pencarian_obat').hide();
+    $('#div_table_riwayat_resep').show('fast');
+    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
+  }  
+
+  if( $(this).val() == 'rk' ){
+    // default value
+    $('#form_by_jenis_resep').hide();
+    $('#kode_profit').val(4000);
+    $('#flag_trans').val( $(this).val().toUpperCase() );
+    $('#div_default_form_entry').hide();
+    $('#button_action').show();
+    $('#div_pencarian_obat').hide();
+    $('#div_table_riwayat_resep').show('fast');
+    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
+  }  
+
+});
+
+function rollback(id){
   preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
-        url: 'farmasi/process_entry_resep/process_selesai_resep',
+        url: 'farmasi/process_entry_resep/rollback_by_kode_trans_far',
         type: "post",
-        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val() },
+        data: { ID : id },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -382,8 +283,7 @@ function resep_farmasi_selesai(){
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
             // show poup cetak resep
-            PopupCenter('farmasi/Process_entry_resep/nota_farmasi/'+jsonResponse.kode_trans_far+'','Nota Farmasi', 530, 550);
-            $('#page-area-content').load('farmasi/Entry_resep_ri_rj?flag=RJ');
+            reload_table();
 
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
@@ -398,63 +298,6 @@ function resep_farmasi_selesai(){
   }
   
 }
-
-function sum_total_biaya_farmasi(){
-
-  var kode_trans_far = $('#kode_trans_far').val();
-  $.getJSON("<?php echo site_url('farmasi/process_entry_resep/get_total_biaya_farmasi') ?>/"+kode_trans_far, '' , function (response) {
-
-      $('#td_total_biaya_farmasi').html('<b>Rp. '+formatMoney(response.total)+',-</b>');
-
-  })
-
-}
-
-$('#btn_racikan').click(function () {  
-  var kode_kelompok = $('#kode_kelompok').val();
-  show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+kode_kelompok+'&tipe_layanan='+$('#jenis_resep').val()+'', 'RESEP RACIKAN');
-})
-
-$('select[name="jenis_resep"]').change(function () {      
-  
-  // reset form with class
-  $('.default_value').val('');
-  $('#kode_trans_far').val('0');
-  reload_table();
-
-  if( $(this).val() == 'rj' ){
-    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_rj');  
-    // default value
-    $('#kode_profit').val(2000);
-    $('#flag_trans').val( $(this).val().toUpperCase() );
-    // $('#div_pencarian_obat').hide('fast');
-    $('#div_table_riwayat_resep').hide('fast');
-    
-  }  
-
-  if( $(this).val() == 'rl' || $(this).val() == 'pb' ){
-    // $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar');  
-    // default value
-    $('#flag_trans').val( $(this).val().toUpperCase() );
-    kode_profit = ( $(this).val() == 'rl') ? 3000 : 4000 ;
-    $('#kode_profit').val(kode_profit);
-    // $('#div_pencarian_obat').show('fast');
-    $('#div_table_riwayat_resep').show('fast');
-    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
-  }  
-
-  if( $(this).val() == 'rk' ){
-    // $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan');  
-    // default value
-    $('#kode_profit').val(4000);
-    $('#flag_trans').val( $(this).val().toUpperCase() );
-    // $('#div_pencarian_obat').show('fast');
-    $('#div_table_riwayat_resep').show('fast');
-    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
-  }  
-
-});
-
 
 </script>
 
@@ -498,210 +341,58 @@ $('select[name="jenis_resep"]').change(function () {
       <input type="hidden" class="default_value" name="kode_dokter" id="kode_dokter" value="0">
       <input type="hidden" class="default_value" name="dokter_pengirim" id="dokter_pengirim" value="0">
       <input type="hidden" class="default_value" name="kode_profit" id="kode_profit" value="">
+      <input type="hidden" class="default_value" name="kode_trans_far" id="kode_trans_far" value="" readonly>
 
       <!-- default form -->
       <div class="row">
         
-        <div class="col-sm-12 no-padding">
-          <div class="form-group">
-            <label class="control-label col-sm-2">Jenis Resep</label>
-            <div class="col-md-2">
-              <select name="jenis_resep" id="jenis_resep" class=form-control>
-                <option value="">-Silahkan Pilih-</option>
-                <option value="rj">Pasien Rawat Jalan</option>
-                <option value="rl">Resep Luar</option>
-                <option value="pb">Pembelian Bebas</option>
-                <option value="rk">Resep Karyawan</option>
-              </select>
-            </div>
+        
 
-            <label class="control-label col-sm-1">Tanggal</label>
-            <div class="col-md-2">
-              <div class="input-group">
-                  <input name="tgl_resep" id="tgl_resep" class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>">
-                  <span class="input-group-addon">
-                    <i class="ace-icon fa fa-calendar"></i>
-                  </span>
+        <div class="col-sm-12">
+          <div class="widget-header widget-header-small">
+            <div class="form-group">
+              <label class="col-sm-2" style="margin-top: 5px; color: black; font-weight: 700">Jenis Resep</label>
+              <div class="col-sm-2" style="margin-top: 1px">
+                <select name="jenis_resep" id="jenis_resep" class="form-control">
+                  <option value="">-Silahkan Pilih-</option>
+                  <option value="rj">Pasien Rawat Jalan</option>
+                  <option value="rl">Resep Luar</option>
+                  <option value="pb">Pembelian Bebas</option>
+                  <option value="rk">Resep Karyawan</option>
+                </select>
+              </div>
+
+              <label class="col-sm-1" style="margin-top: 5px; color: black; font-weight: 700">Tanggal</label>
+              <div class="col-sm-2" style="margin-top: 1px">
+                <div class="input-group">
+                    <input name="tgl_resep" id="tgl_resep" class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>">
+                    <span class="input-group-addon">
+                      <i class="ace-icon fa fa-calendar"></i>
+                    </span>
+                  </div>
+              </div>
+              <div class="col-sm-5" id="button_action" style="display:none">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-xs btn-primary" onclick="create_new_resep()"><i class="fa fa-plus"></i> Buat Resep</button>
+                    <button type="button" class="btn btn-xs btn-success" onclick="show_history()"><i class="fa fa-history"></i> Tampilkan Riwayat</button>
                 </div>
+                
+              </div>
             </div>
-
 
           </div>
-          <hr class="separator">
+
           <!-- onchange form jenis resep -->
           <div id="form_by_jenis_resep"></div>
+
         </div>
 
-        <div id="div_table_riwayat_resep"></div>
+        <div id="div_table_riwayat_resep" ></div>
 
       </div>
 
       <!-- form pencarian obat -->
-      <div class="row" id="div_pencarian_obat" style="display:block">
-
-        <div class="col-xs-12 no-padding">
-          <div class="pull-left">
-            <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
-                  <span class="ace-icon fa fa-plus-square icon-on-right bigger-110"></span>
-                  Resep Racikan
-            </button>
-
-            <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai()">
-                  <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
-                  Resep Selesai
-            </button>
-          </div>
-          <div class="pull-right">
-            <div style="font-size: 18px" id="td_total_biaya_farmasi"></div>
-          </div>
-        </div>
-
-        <div class="col-xs-7 no-padding" style="margin-top: 10px">
-          <p><b>PENCARIAN OBAT</b></p>
-          <div class="form-group">
-            <label class="control-label col-sm-2">Kode</label>
-            <div class="col-md-2">
-              <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" readonly>
-            </div> 
-          </div>
-          <div class="form-group">
-            <label class="control-label col-sm-2">Jenis</label>
-            <div class="col-md-9">
-              <div class="radio">
-                  <label>
-                    <input name="urgensi" type="radio" class="ace" value="cito" />
-                    <span class="lbl"> Cito</span>
-                  </label>
-
-                  <label>
-                    <input name="urgensi" type="radio" class="ace" value="biasa" checked/>
-                    <span class="lbl"> Biasa</span>
-                  </label>
-              </div>
-            </div> 
-          </div>
-
-          <!-- cari data pasien -->
-          <div class="form-group">
-            <label class="control-label col-sm-2">Cari Obat</label>            
-            <div class="col-md-8">            
-              <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-sm-2">Jml Pesan</label>
-            <div class="col-md-2">
-                <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center"/>
-            </div>
-          </div>
-
-          <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
-
-          <div class="form-group">
-              <label class="control-label col-sm-2">Signa</label>
-              <div class="col-md-10">
-
-                <span class="input-icon">
-                  <input name="dosis_end" id="dosis_end" type="text" style="width: 50px;"/>
-                </span>
-
-                <span class="input-icon" style="padding-left: 4px">
-                  <i class="fa fa-times bigger-150"></i>
-                </span>
-
-                <span class="input-icon">
-                  <input name="dosis_start" id="dosis_start" type="text" style="width: 50px;"/>
-                </span>
-
-                <span class="input-icon">
-                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', '', '', 'style="margin-left: -2px"');?>
-                </span>
-
-                <span class="input-icon">
-                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', '', '', 'style="margin-left: -2px"');?>
-                </span>
-
-              </div>
-          </div>
-
-          <div class="form-group">
-              <label class="control-label col-sm-2">Catatan</label>
-              <div class="col-md-1">
-                  <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
-              </div>
-          </div>
-
-          <div class="form-group" style="margin-left: 8px">
-            <label class="col-sm-2">&nbsp;</label>
-            <div class="col-md-8" >
-              <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary">
-                <i class="ace-icon fa fa-plus-circle icon-on-right bigger-110"></i>
-                Tambahkan
-              </button>
-              <button type="button" id="btn_reset" onclick="reset_form()" name="submit" class="btn btn-xs btn-danger">
-                <i class="ace-icon fa fa-times-circle icon-on-right bigger-110"></i>
-                Batalkan
-              </button>
-            </div>
-          </div> 
-        </div>
-        
-        <div class="col-xs-5 no-padding" id="div_detail_obat" style="display:none">
-          <p><b>KETERANGAN STOK DAN OBAT</b></p>
-          <div id="warning_stok_obat"></div>
-          <div id="detailObatHtml"></div>
-        </div>
-
-        <div class="col-xs-12 no-padding" style="margin-top: 10px">
-
-            <table id="temp_data_pesan" class="table table-bordered table-hover">
-              <thead>
-                <tr>  
-                  <th class="center" width="50px"></th>
-                  <th class="center"></th>
-                  <th class="center"></th>
-                  <th class="center" width="100px"></th>
-                  <th width="150px">Tgl Input</th>
-                  <th>Kode</th>
-                  <th>Deskripsi Item</th>
-                  <th>Jumlah</th>
-                  <th>Harga Satuan</th>
-                  <th>Sub Total</th>
-                  <th>Jasa R</th>
-                  <th>Total (Rp.)</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-            <!-- <hr>
-            <div><b>RESEP RACIKAN</b></div>
-            <table id="temp_data_obat_racikan" class="table table-bordered table-hover">
-              <thead>
-                <tr>  
-                  <th class="center" width="50px"></th>
-                  <th class="center"></th>
-                  <th class="center"></th>
-                  <th class="center"></th>
-                  <th>Tgl Input</th>
-                  <th>Kode</th>
-                  <th>Deskripsi Item</th>
-                  <th>Jumlah</th>
-                  <th>Harga Satuan</th>
-                  <th>Sub Total</th>
-                  <th>Jasa R</th>
-                  <th>Total (Rp.)</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table> -->
-
-        </div>
-
-      </div>
+      <div class="row" id="div_default_form_entry" style="display:none;"></div>
         
 
     </form>

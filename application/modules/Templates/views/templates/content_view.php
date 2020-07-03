@@ -223,8 +223,8 @@
 
           <li class="hover">
               <a href="<?php echo base_url().'main'?>">
-                  <i class="menu-icon fa fa-dashboard"></i>
-                  <span class="menu-text"> Home </span>
+                  <i class="menu-icon fa fa-arrow-left"></i>
+                  <span class="menu-text"> Menu Utama </span>
               </a>
               <b class="arrow"></b>
           </li>

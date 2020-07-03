@@ -96,4 +96,15 @@ class Lap_hasil_so_model extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
+	public function get_log_barang($agenda_so_id, $kode_brg, $flag){
+		$mt_barang = ($flag=='medis')?'mt_barang':'mt_barang_nm';
+        $tc_stok_opname = ($flag=='medis')?'tc_stok_opname':'tc_stok_opname_nm';
+		$query = $this->db->select($mt_barang.'.nama_brg, '.$tc_stok_opname.'.*, mt_bagian.nama_bagian, content')
+						  ->join($mt_barang, $mt_barang.'.kode_brg='.$tc_stok_opname.'.kode_brg', 'left')
+						  ->join('mt_bagian', 'mt_bagian.kode_bagian='.$tc_stok_opname.'.kode_bagian', 'left')
+						  ->get_where($tc_stok_opname, array('agenda_so_id' => $agenda_so_id, $tc_stok_opname.'.kode_brg' => $kode_brg) )->result();
+		return $query;
+	}
+		
+
 }

@@ -104,7 +104,12 @@ function submitPesanResep(no_kunjungan){
 
 </script>
 
-<p><b>RESEP RAWAT JALAN</b></p>
+<h3 class="row header smaller lighter orange">
+  <span class="col-sm-8">
+    <i class="ace-icon fa fa-bell"></i>
+    RESEP RAWAT JALAN
+  </span><!-- /.col -->
+</h3>
 
 <div class="form-group">
   <label class="control-label col-sm-2">Tanggal Pelayanan</label>

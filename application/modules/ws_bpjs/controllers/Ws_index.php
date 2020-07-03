@@ -59,6 +59,19 @@ class Ws_index extends MX_Controller {
 
     }
 
+    public function updateNoPesertaPerjanjianOperasi(){
+        $query = $this->db->query("select a.*,b.no_ktp from tc_pesanan a
+                            left join mt_master_pasien b on b.no_mr=a.no_mr
+                            where flag='bedah' and a.kode_perusahaan=120 and b.no_ktp is not null and b.no_ktp != '-' and b.no_ktp != ''")->result();
+
+        foreach($query as $row){
+
+            $result = $this->Ws_index->searchMemberByNIK($row->no_ktp, $row->tgl_pesanan);
+            print_r($result);die;
+        }
+        print_r($result);die;
+    }
+
     public function searchMember()
     {
        

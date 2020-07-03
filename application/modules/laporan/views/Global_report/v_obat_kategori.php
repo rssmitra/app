@@ -128,9 +128,9 @@
                 ?>
             <tr class="contentTable">
               <td align="right" width="25"><?php echo   $no  ?>.</td>
-              <td align="left" width="">&nbsp;<?php echo $kode_brg?>&nbsp;</td>
-              <td align="left" width="">&nbsp;<?php echo $nama_brg?>&nbsp;</td>
-              <td align="left" width=""><?php echo $row_data->satuan_kecil?>&nbsp;</td>
+              <td align="left" width=""><?php echo trim($kode_brg)?></td>
+              <td align="left" width=""><?php echo $nama_brg?></td>
+              <td align="left" width=""><?php echo $row_data->satuan_kecil?></td>
               <td align="right" width=""><?php echo number_format($net_qty)?></td>
               <td align="right" width=""><?php echo number_format($harga_rata)?></td>
               <td align="right" width=""><?php echo number_format($net_rp)?></td>

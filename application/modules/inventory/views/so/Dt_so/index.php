@@ -1,4 +1,18 @@
+<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script>
+jQuery(function($) {
+
+  $('.date-picker').datepicker({
+    autoclose: true,
+    todayHighlight: true
+  })
+  //show datepicker when clicking on the icon
+  .next().on(ace.click_event, function(){
+    $(this).prev().focus();
+  });
+});
+
 $('select[name="bagian"]').change(function () {  
     
     if ( $(this).val() != '070101' ) {     
@@ -53,6 +67,18 @@ $('select[name="kode_golongan"]').change(function () {
       <input type="hidden" name="flag" value="so_mod_1">
       <input type="hidden" name="title" value="Daftar Barang Yang Akan di Stok Opname">
       <input type="hidden" name="flag_string" id="flag_string" value="non_medis">
+
+      <div class="form-group">
+        <label class="control-label col-md-2">Tanggal Terakhir Stok</label>
+        <div class="col-md-2">
+          <div class="input-group">
+            <input class="form-control date-picker" name="tgl_stok" id="tgl_stok" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+            <span class="input-group-addon">
+              <i class="fa fa-calendar bigger-110"></i>
+            </span>
+          </div>
+        </div>
+      </div>
 
       <div class="form-group">
         <label class="control-label col-md-2">Bagian Unit</label>
@@ -111,11 +137,18 @@ $('select[name="kode_golongan"]').change(function () {
           <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
             Export Excel
           </button>
-          <button type="submit" name="submit" value="format_so" class="btn btn-xs btn-primary">
-            Format Form Stok Opname
-          </button>
         </div>
       </div>
+      <br>
+      <p><b>DOWNLOAD FORMAT FORM STOK OPNAME</b></p>
+      <hr>
+      <button type="submit" name="submit" value="format_so" class="btn btn-xs btn-primary">
+        Download Format 1
+      </button>
+
+      <button type="submit" name="submit" value="format_so_2" class="btn btn-xs btn-danger">
+        Download Format 2
+      </button>
 
     </form>
 

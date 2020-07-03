@@ -81,6 +81,13 @@ class Etiket_obat extends MX_Controller {
         $this->load->view('Etiket_obat/form_copy_resep', $data);
     }
 
+    public function get_detail_by_kode_trans_far($kode_trans_far){
+        $data = array(
+            'value' => $this->Etiket_obat->get_by_id($kode_trans_far),
+        );
+        echo json_encode($data);
+
+    }
 
     public function get_data()
     {
@@ -159,22 +166,31 @@ class Etiket_obat extends MX_Controller {
         }
         $data = array();
         $no = $_POST['start'];
-        $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
+        $atts = array('class' => 'btn btn-xs btn-warning','width' => 900,'height' => 500,'scrollbars' => 'no','status' => 'no','resizable' => 'no','screenx' => 1000,'screeny' => 80,'window_name' => '_blank'
             );
 
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">
+                            <li><a href="#" onclick="update_data('.$row_list->kode_trans_far.')">Update Data</a></li>
+                            <li><a href="#" onclick="rollback('.$row_list->kode_trans_far.')">Rollback</a></li>
+                        </ul>
+                    </div></div>';
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="center"><a href="#" onclick="sohw('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="update_data('.$row_list->kode_trans_far.')">'.$row_list->kode_trans_far.'</a></div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
-            $row[] = $row_list->nama_pelayanan;
+            $row[] = ($row_list->flag_trans=='RK') ? 'Resep karyawan' : $row_list->nama_pelayanan;
             if($row_list->kode_tc_trans_kasir == null) {
                 $row[] = '<div class="center">
                         <label class="label label-warning">
-                          <i class=" fa fa-flask"></i> Dalam proses..
+                          <i class=" fa fa-flask"></i> Belum bayar
                         </label>
                       </div>';
             }else{

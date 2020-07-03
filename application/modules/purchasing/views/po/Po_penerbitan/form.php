@@ -178,7 +178,7 @@ function search_selected_brg(flag, search_by, keyword){
             <div class="form-group">
               <label class="control-label col-md-2">Diajukan Oleh</label>
               <div class="col-md-3">
-                <input name="diajukan_oleh" id="diajukan_oleh" value="<?php echo ( $flag == 'non_medis' ) ? $this->master->get_ttd_data('verifikator_nm_1', 'label') : $this->master->get_ttd_data('ttd_kasubag_pengadaan', 'label') ; ?>" class="form-control" type="text">
+                <input name="diajukan_oleh" id="diajukan_oleh" value="<?php echo $this->session->userdata('user')->fullname ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Disetujui Oleh</label>
               <div class="col-md-3">

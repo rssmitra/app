@@ -22,6 +22,7 @@
             console.log(val_item);
             $('#no_mr').val(val_item);
             $('#nama_pasien').val(label_item);
+            $('#inputKeyNamaPasien').val(label_item);
             $('#inputKeyObat').focus();
 
           }
@@ -48,6 +49,7 @@
             console.log(val_item);
             $('#kode_dokter').val(val_item);
             $('#dokter_pengirim').val(label_item);
+            $('#inputKeyDokterPengirim').val(label_item);
             $('#inputKeyObat').focus();
 
           }
@@ -58,30 +60,39 @@
   }
 </script>
 
-<p><b>RESEP LUAR</b></p>
-
+<h3 class="row header smaller lighter orange">
+  <span class="col-sm-8">
+    <i class="ace-icon fa fa-bell"></i>
+    <?php echo strtoupper($title_form)?>
+  </span><!-- /.col -->
+</h3>
+   
 <div class="form-group">
-  <label class="control-label col-sm-2">Nama Pasien / (a.n)</label>
+  <label class="control-label col-sm-1">Pasien (a.n)</label>
   <div class="col-md-3">
-    <input type="text" class="form-control" name="nama_pasien_keyword" id="inputKeyNamaPasien" onchange="set_to_default_name('inputKeyNamaPasien', 'nama_pasien')">
+    <input type="text" class="form-control" name="nama_pasien_keyword" id="inputKeyNamaPasien" value="<?php echo isset($value->nama_pasien)?$value->nama_pasien:''?>" onchange="set_to_default_name('inputKeyNamaPasien', 'nama_pasien')">
   </div>
   <label class="control-label col-sm-1">No.Telp/ HP</label>
   <div class="col-md-2">
-    <input type="text" class="form-control" name="no_telp">
+    <input type="text" class="form-control" name="no_telp" id="no_telp_pasien" value="<?php echo isset($value->telpon_pasien)?$value->telpon_pasien:''?>">
   </div>
 </div>
 <div class="form-group">
-  <label class="control-label col-sm-2">Alamat</label>
+  <label class="control-label col-sm-1">Alamat</label>
   <div class="col-md-3">
-    <textarea name="alamat_pasien" id="" style="height: 50px !important; margin-bottom: 3px" class="form-control"></textarea>
+    <textarea name="alamat_pasien" id="alamat_pasien" style="height: 50px !important; margin-bottom: 3px" class="form-control"><?php echo isset($value->alamat_pasien)?$value->alamat_pasien:''?></textarea>
   </div>
 </div>
 
 <div class="form-group">
-  <label class="control-label col-sm-2">Dokter Pengirim</label>
+  <label class="control-label col-sm-1">Dokter</label>
   <div class="col-md-3">
-    <input type="text" class="form-control" id="inputKeyDokterPengirim" name="dokter_pengirim_keyword">
+    <input type="text" class="form-control" id="inputKeyDokterPengirim" name="dokter_pengirim_keyword" value="<?php echo isset($value->dokter_pengirim)?$value->dokter_pengirim:''?>" onchange="set_to_default_name('inputKeyDokterPengirim', 'dokter_pengirim')">
   </div>
+  <button type="submit" id="btn_simpan_header" class="btn btn-primary btn-xs" name="submit" value="header">
+        <span class="ace-icon fa fa-save icon-on-right bigger-110"></span>
+        Simpan
+  </button>
 </div>
 
 <hr>

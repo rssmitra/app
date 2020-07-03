@@ -405,8 +405,8 @@ class AntrianBPJS extends MX_Controller {
                     'kodebooking' => $row->id_tc_pesanan,
                     'tanggaloperasi' => $this->tanggal->sqlDateTimeToDate($row->jam_pesanan),
                     'jenistindakan' => $row->nama_tarif,
-                    'kodepoli' => $row->kode_poli_bpjs,
-                    'namapoli' => $row->nama_bagian,
+                    'kodepoli' => 'BED',
+                    'namapoli' => 'Kamar Bedah',
                     'terlaksana' => ($row->tgl_masuk == NULL) ? 0 : 1,
                     'nopeserta' => $row->nopesertabpjs,
                     'lastupdate' => strtotime(date('Y-m-d H:i:s'))
@@ -445,8 +445,8 @@ class AntrianBPJS extends MX_Controller {
                     'kodebooking' => $row->id_tc_pesanan,
                     'tanggaloperasi' => $this->tanggal->sqlDateTimeToDate($row->jam_pesanan),
                     'jenistindakan' => $row->nama_tarif,
-                    'kodepoli' => $row->kode_poli_bpjs,
-                    'namapoli' => $row->nama_bagian,
+                    'kodepoli' => 'BED',
+                    'namapoli' => 'Kamar Bedah',
                     'terlaksana' => ($row->tgl_masuk == NULL) ? 0 : 1,
             );
         }

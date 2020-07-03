@@ -166,7 +166,7 @@ class Regon_info_jadwal_dr extends MX_Controller {
     public function process()
     {
 
-        //echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($_POST);die;
 
         $this->load->library('form_validation');
         $val = $this->form_validation;

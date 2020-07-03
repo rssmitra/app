@@ -97,14 +97,28 @@ $(document).ready(function(){
                 <li>
                   <a data-toggle="tab" id="tabs_medis" href="#" data-id="<?php echo $value->agenda_so_id?>/medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')">
                     <i class="green ace-icon fa fa-history bigger-120"></i>
-                    MEDIS
+                    Hasil Stok Opname Unit (Medis)
                   </a>
                 </li>
 
                 <li>
                   <a data-toggle="tab" data-id="<?php echo $value->agenda_so_id?>/non_medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so" id="tabs_non_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')" >
                     <i class="red ace-icon fa fa-list bigger-120"></i>
-                    NON MEDIS
+                    Hasil Stok Opname Unit (Non Medis)
+                  </a>
+                </li>
+
+                <li>
+                  <a data-toggle="tab" id="tabs_medis" href="#" data-id="<?php echo $value->agenda_so_id?>/medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so_rs" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')">
+                    <i class="green ace-icon fa fa-history bigger-120"></i>
+                    Stok Opname RS (Medis)
+                  </a>
+                </li>
+
+                <li>
+                  <a data-toggle="tab" data-id="<?php echo $value->agenda_so_id?>/non_medis" data-url="inventory/so/Lap_hasil_so/view_data_bag_so_rs" id="tabs_non_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_so')" >
+                    <i class="red ace-icon fa fa-list bigger-120"></i>
+                    Stok Opname RS (Non Medis)
                   </a>
                 </li>
 

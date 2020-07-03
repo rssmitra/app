@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Inv_stok_depo_model extends CI_Model {
 
 	var $table = 'mt_depo_stok';
-	var $column = array('b.kode_brg','b.nama_brg', 'kartu_stok.keterangan');
+	var $column = array('b.nama_brg');
 	var $select = 'b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_akhir, b.satuan_kecil,  kartu_stok.tgl_input, kartu_stok.keterangan,  b.satuan_besar, b.is_active, b.path_image, a.stok_minimum, c.harga_beli';
 	var $order = array('kartu_stok.tgl_input' => 'DESC');
 
@@ -21,7 +21,7 @@ class Inv_stok_depo_model extends CI_Model {
 		$this->db->from($this->table.' as a');
 		$this->db->join('mt_barang b','b.kode_brg=a.kode_brg','left');
 		$this->db->join('mt_rekap_stok c','c.kode_brg=b.kode_brg','left');
-		$this->db->join('( SELECT * FROM tc_kartu_stok_v WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE tgl_input <= '."'".$params_tgl."'".' GROUP BY kode_brg) AND kode_bagian='."'".$params_kode_bagian."'".' ) AS kartu_stok', 'kartu_stok.kode_brg=a.kode_brg','left');
+		$this->db->join('( SELECT * FROM tc_kartu_stok_v WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE CAST(tgl_input as DATE) <= '."'".$params_tgl."'".' AND kode_bagian='."'".$params_kode_bagian."'".' GROUP BY kode_brg) ) AS kartu_stok', 'kartu_stok.kode_brg=a.kode_brg','left');
 		$this->db->where('a.kode_bagian', $params_kode_bagian);
 		$this->db->where('nama_brg is not null');
 		// $this->db->where('kartu_stok.tgl_input is not null');
