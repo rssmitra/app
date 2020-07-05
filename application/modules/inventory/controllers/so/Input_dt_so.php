@@ -173,12 +173,15 @@ class Input_dt_so extends MX_Controller {
             $this->Input_dt_so->update_status_brg('mt_barang_nm', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg']) );
             // $this->Input_dt_so->save_dt_so_nm();
 
-            $this->Input_dt_so->update_status_brg('tc_stok_opname_nm', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id']) );
+            $this->Input_dt_so->update_status_brg('tc_stok_opname_nm', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
         }else{
-            $this->Input_dt_so->update_status_brg('mt_barang', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg']) );
-            // $this->Input_dt_so->save_dt_so();
-
-            $this->Input_dt_so->update_status_brg('tc_stok_opname', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id']) );
+            if($_POST['kode_bagian']=='060201'){
+                $this->Input_dt_so->update_status_brg('mt_barang', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg']) );
+            }else{
+                $this->Input_dt_so->update_status_brg('mt_depo_stok', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
+            }
+            $this->Input_dt_so->update_status_brg('tc_stok_opname', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
+            
         }
 
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
