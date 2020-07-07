@@ -278,6 +278,15 @@ $('select[name="kode_sub_gol"]').change(function () {
 
 
                 <?php endif; ?>
+                
+                <div class="form-group">
+                  <label class="control-label col-md-2">Rak Penyimpanan</label>
+                  <div class="col-md-2">
+                      <?php 
+                        $flag_data = ( $flag_string == 'medis' ) ? 'rak_medis' : 'rak_non_medis' ;
+                        echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => $flag_data, 'is_active' => 'Y')), isset($value->rak)?$value->rak:'' , 'rak', 'rak', 'form-control', '', '') ?>
+                  </div>
+                </div>
 
                 <div class="form-group">
                   <label class="control-label col-md-2">Image</label>

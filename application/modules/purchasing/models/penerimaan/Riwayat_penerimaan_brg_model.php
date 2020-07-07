@@ -174,7 +174,7 @@ class Riwayat_penerimaan_brg_model extends CI_Model {
 		$this->db->join('(SELECT * FROM tc_penerimaan_brg_batch_log WHERE reff_table='."'".$t_penerimaan."'".') as batch_log','batch_log.id_tc_po_det=a.id_tc_po_det','left');
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('b.id_penerimaan IN ('.$id.')');
-		$this->db->order_by('c.nama_brg ASC');
+		$this->db->order_by('b.kode_detail_penerimaan_barang ASC');
 		$query = $this->db->get()->result();
 		// echo $this->db->last_query();
 		return $query;

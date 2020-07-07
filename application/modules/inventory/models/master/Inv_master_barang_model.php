@@ -9,7 +9,7 @@ class Inv_master_barang_model extends CI_Model {
 		$this->load->database();
 		$this->table = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
 		$this->column = array('table_brg.nama_brg','table_brg.kode_brg','nama_kategori','nama_golongan','nama_sub_golongan');
-		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi';
+		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi, rak';
 		$this->order = array('table_brg.created_date' => 'DESC', 'table_brg.updated_date' => 'DESC');
 
 	}

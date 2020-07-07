@@ -193,10 +193,13 @@
             $no++; 
 
         ?>
-          <tr id="tr_<?php echo $row_dt[0]->kode_brg?>">
+          <tr id="tr_<?php echo $row_dt[0]->kode_brg?>" <?php ( empty($row_dt[0]->kode_detail_penerimaan_barang) ) ? '' : 'style="background-color: #8c8c8c1f"' ; ?> >
             <!-- checkbox -->
             <td class="center">
-              <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" class="form-control" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]">
+              <?php if( empty($row_dt[0]->kode_detail_penerimaan_barang) ) : ?>
+                <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" class="form-control" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]">
+              <?php else: echo '<i class="fa fa-check-circle green bigger-120"></i>'; endif; ?>
+              
               <!-- hidden -->
               <input type="hidden" name="id_tc_permohonan[<?php echo $row_dt[0]->kode_brg?>]" id="id_tc_permohonan" value="<?php echo $row_dt[0]->id_tc_permohonan?>">
             </td>

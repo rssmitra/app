@@ -122,7 +122,7 @@ class Inv_master_barang extends MX_Controller {
             $link_image = ( $row_list->path_image != NULL ) ? PATH_IMG_MST_BRG.$row_list->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
             $row[] = '<div class="center"><a href="'.base_url().$link_image.'" target="_blank"><img src="'.base_url().$link_image.'" width="100px"></a></div>';
             $row[] = 'Kategori : '.ucfirst($row_list->nama_kategori).'<br><b>'.$row_list->kode_brg.'</b><br>'.$row_list->nama_brg;
-            $row[] = ucfirst($txt_gol);
+            $row[] = ucfirst($txt_gol).'<br><span style="color: green">Rak : '.$row_list->rak.'</span>';
             $row[] = '<div class="center">'.strtoupper($row_list->satuan_besar).'/'.strtoupper($row_list->satuan_kecil).'</div>';
             $row[] = '<div class="center">'.$row_list->content.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_beli).'</div>';
@@ -171,6 +171,7 @@ class Inv_master_barang extends MX_Controller {
         $val->set_rules('satuan_kecil','Satuan Kecil', 'trim|required');
         $val->set_rules('is_active','Status Aktif', 'trim|required');
         $val->set_rules('spesifikasi','Spesifikasi', 'trim|required');
+        $val->set_rules('rak','rak', 'trim|required');
         $val->set_rules('id_pabrik','Pabrikan', 'trim');
 
         if( $_POST['flag'] == 'medis' ){
@@ -206,6 +207,7 @@ class Inv_master_barang extends MX_Controller {
                 'kode_sub_golongan' => $this->regex->_genRegex( $val->set_value('kode_sub_gol'), 'RGXQSL' ),
                 'content' => $this->regex->_genRegex( $val->set_value('content'), 'RGXQSL' ),
                 'spesifikasi' => $this->regex->_genRegex( $val->set_value('spesifikasi'), 'RGXQSL' ),
+                'rak' => $this->regex->_genRegex( $val->set_value('rak'), 'RGXQSL' ),
                 'is_active' => $this->regex->_genRegex( $val->set_value('is_active'), 'RGXQSL' ),
             );
             

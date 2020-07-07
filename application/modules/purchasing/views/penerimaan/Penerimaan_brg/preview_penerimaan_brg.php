@@ -46,24 +46,30 @@
           <td rowspan="2" style="border: 1px solid black; border-collapse: collapse">Kode & Nama Barang</td>
           <td rowspan="2" style="text-align:center; width: 50px; border: 1px solid black; border-collapse: collapse">Rasio</td>
           <td rowspan="2" style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Satuan</td>
-          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>Pesan</td>
-          <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Harga Satuan</td>
+          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah Pesan</td>
+          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah Kirim Sebelumnya</td>
+          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah Kirim Sekarang</td>
+          <!-- <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Harga Satuan</td>
           <td colspan="2" style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Diskon</td>
-          <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Total Harga</td>
+          <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Total Harga</td> -->
         </tr>
-        <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
+        <!-- <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
           <td style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">%</td>
           <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Rp</td>
-        </tr>
+        </tr> -->
     </thead>
     <tbody>
         <?php 
           $no=0; 
+          $total_diterima = [];
           foreach($penerimaan_data as $key_dt=>$row_dt) : $no++; 
           if(count($row_dt) > 0){
-            foreach($row_dt as $row_sub_data){
+            foreach($row_dt as $key_row=>$row_sub_data){
               $jumlah_pesan[$key_dt][] = $row_sub_data->jumlah_kirim_decimal;
               $jumlah_harga_netto[$key_dt][] = $row_sub_data->harga_satuan;
+              if($key_row != 0){
+                $total_diterima[] = $row_sub_data->jumlah_kirim_decimal;
+              }
             }
           }else{
             $jumlah_pesan[$key_dt][] = $row_dt[0]->jumlah_kirim_decimal;
@@ -79,32 +85,34 @@
           <td style="border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->kode_brg.' - '.$row_dt[0]->nama_brg?></td>
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->content?></td>
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->satuan_besar?></td>
+          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->jumlah_pesan_decimal?></td>
+          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($total_diterima))?></td>
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->jumlah_kirim_decimal?></td>
-          <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
+          <!-- <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->discount; ?></td>
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->discount_harga).',-'; ?></td>
-          <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($total_harga).',-';?></td>
+          <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($total_harga).',-';?></td> -->
         </tr>
         <?php endforeach;?>
 
-        <tr>
-          <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">DPP </td>
+        <!-- <tr>
+          <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">DPP </td>
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($penerimaan->total_sbl_ppn)?></td>
         </tr>
         <tr>
-          <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">PPN </td>
+          <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">PPN </td>
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($penerimaan->ppn)?></td>
         </tr>
 
         <tr>
-          <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
+          <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($penerimaan->total_stl_ppn)?></td>
         </tr>
         <tr>
-          <td colspan="9" style="text-align:right; border: 1px solid black; border-collapse: collapse">Terbilang : 
+          <td colspan="10" style="text-align:right; border: 1px solid black; border-collapse: collapse">Terbilang : 
           <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($penerimaan->total_stl_ppn))?> Rupiah"</i></b>
           </td>
-        </tr>
+        </tr> -->
     </tbody>
   </table>
   <center>
