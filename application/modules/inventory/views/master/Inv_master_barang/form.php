@@ -217,7 +217,7 @@ $('select[name="kode_sub_gol"]').change(function () {
                   <div class="col-md-2">
                       <?php 
                         $t_satuan_kecil = ( $flag_string == 'medis' ) ? 'mt_barang' : 'mt_barang_nm' ;
-                        echo $this->master->custom_selection_with_same_field($params = array('table' => $t_satuan_kecil, 'id' => 'satuan_kecil', 'name' => 'satuan_kecil', 'where' => array()), isset($value->satuan_kecil)?$value->satuan_kecil:'' , 'satuan_kecil', 'satuan_kecil', 'form-control', '',  ($flag=='read')?'readonly':'') ?>
+                        echo $this->master->custom_selection_with_same_field($params = array('table' => $t_satuan_kecil, 'id' => 'satuan_kecil', 'name' => 'satuan_kecil', 'where' => array()), isset($value->satuan_kecil)?strtoupper($value->satuan_kecil):'' , 'satuan_kecil', 'satuan_kecil', 'form-control', '',  ($flag=='read')?'readonly':'') ?>
                   </div>
                 </div>
 

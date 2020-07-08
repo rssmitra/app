@@ -523,8 +523,9 @@ final Class Master {
 		$html .= '<b><i>Query Result :</i></b><br>';
 		$html .= '<table>';
    		foreach ($fields as $key => $value) {
+			$val_data = isset($data->$value)?$data->$value:'-';
 			$html .= '<tr>';    
-			$html .= '<td width="150px">'.ucfirst($value).'</td><td style="text-align: justify"> '.$data->$value.'</td>';    
+			$html .= '<td width="150px">'.ucfirst($value).'</td><td style="text-align: justify"> '.$val_data.'</td>';    
 			$html .= '</tr>'; 
             // $html .= $value->name.' : '.$row_data[$value->name].' | '; 
 		}

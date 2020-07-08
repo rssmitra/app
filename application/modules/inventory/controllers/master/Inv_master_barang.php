@@ -148,6 +148,7 @@ class Inv_master_barang extends MX_Controller {
     {   
         $table = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
         $fields = $this->master->list_fields( $table );
+        // print_r($fields);die;
         $data = $this->Inv_master_barang->get_by_id($id);
         $html = $this->master->show_detail_row_table( $fields, $data );      
 
@@ -171,7 +172,7 @@ class Inv_master_barang extends MX_Controller {
         $val->set_rules('satuan_kecil','Satuan Kecil', 'trim|required');
         $val->set_rules('is_active','Status Aktif', 'trim|required');
         $val->set_rules('spesifikasi','Spesifikasi', 'trim|required');
-        $val->set_rules('rak','rak', 'trim|required');
+        $val->set_rules('rak','rak', 'trim');
         $val->set_rules('id_pabrik','Pabrikan', 'trim');
 
         if( $_POST['flag'] == 'medis' ){
