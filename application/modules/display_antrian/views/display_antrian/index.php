@@ -21,64 +21,36 @@
 
     <script>
       $(document).ready( function(){
-        $.getJSON("<?php echo site_url('display_antrian/process') ?>", '', function (data) {              
-            console.log(data)
-            $('#auto1 h1').remove();
-            $('#auto2 h1').remove();
-            $('#auto3 h1').remove();
-            $('#auto4 h1').remove();
-            $.each(data, function (i, o) {    
-               //console.log(data);
-              if(o!=0){
-                if(o.ant_no!=undefined){
-                  no =  pad(o.ant_no, 3);
-                }else{
-                  no = '-';
-                }
-                no =  pad(o.ant_no, 3);
-                type = (o.ant_type=='bpjs')?'A':'B';
-                
-                $('<h1 style="margin:0;font-size:88px;font-weight:bold;text-align:center">'+type+' '+no+'</h1>').appendTo($('#auto'+i+''));                    
-              }
 
-            });
-           
-        });
-
-        refresh();  
-
-      });
-      
-      function refresh()
-      {
-        setTimeout( function() {
-          
+        setInterval( function () {
+        
           $.getJSON("<?php echo site_url('display_antrian/process') ?>", '', function (data) {              
             console.log(data)
             $('#auto1 h1').remove();
             $('#auto2 h1').remove();
             $('#auto3 h1').remove();
             $('#auto4 h1').remove();
+
             $.each(data, function (i, o) {    
-              console.log(o.ant_no)
-              if(o!=null){
-                if(o.ant_no!=undefined){
-                  no =  pad(o.ant_no, 3);
-                }else{
-                  no = '-';
+               //console.log(data);
+              if(o!=0){
+                no =  pad(o.ant_no, 3);
+                type = (o.ant_type=='bpjs')?'A':(o.ant_type=='umum')?'B':'C';
+
+                if( o.ant_no != 0 ){
+                  $('<h1 style="margin:0;font-size:88px;font-weight:bold;text-align:center">'+type+' '+no+'</h1>').appendTo($('#auto'+i+''));
                 }
-                type = (o.ant_type=='bpjs')?'A':'B';
-              
-                $('<h1 style="margin:0;font-size:88px;font-weight:bold;text-align:center">'+type+' '+no+'</h1>').appendTo($('#auto'+i+''));                    
+                       
               }
-              
+
             });
-           
+
           });
 
-          refresh();
-        }, 2000);
-      }
+        }, 2000 );
+      
+      });
+      
       
       function pad (str, max) {
         str = str.toString();
@@ -169,7 +141,7 @@
 
 </head>
 
-<body onload="onload();" style="background-color:#333">
+<body style="background-color:#333">
  
 <div class="page-content" >
 
@@ -347,11 +319,11 @@
    captionText.innerHTML = element.alt;
  }
 
- setInterval("my_function();",3000); 
+//  setInterval("my_function();",3000); 
 
-	function my_function(){
-		$('#refresh').load(location.href + ' #time');
-	}
+// 	function my_function(){
+// 		$('#refresh').load(location.href + ' #time');
+// 	}
  
    
  </script>

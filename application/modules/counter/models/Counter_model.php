@@ -117,7 +117,8 @@ class Counter_model extends CI_Model {
 
 	function txt_tipe_loket($tipe){
 
-		return ($tipe == 'bpjs')?'A':'B';
+
+		return ($tipe == 'bpjs') ? 'A' : ($tipe == 'umum') ? 'B' : 'C' ;
 
 	}
 
@@ -156,7 +157,11 @@ class Counter_model extends CI_Model {
 		$count_non_bpjs = $this->db->get_where('tr_antrian', array('ant_type' => 'umum', 'ant_status' => 1) )->num_rows();
 		$sisa_non_bpjs = (int)$non_bpjs - (int)$count_non_bpjs;
 
-		return array('bpjs' => $bpjs, 'sisa_bpjs' => $sisa_bpjs, 'non_bpjs' => $non_bpjs, 'sisa_non_bpjs' => $sisa_non_bpjs);
+		$online = $this->db->get_where('tr_antrian', array('ant_type' => 'online') )->num_rows();
+		$count_online = $this->db->get_where('tr_antrian', array('ant_type' => 'online', 'ant_status' => 1) )->num_rows();
+		$sisa_online = (int)$online - (int)$count_online;
+
+		return array('bpjs' => $bpjs, 'sisa_bpjs' => $sisa_bpjs, 'non_bpjs' => $non_bpjs, 'sisa_non_bpjs' => $sisa_non_bpjs, 'online' => $online, 'sisa_online' => $sisa_online);
 
 	}
 

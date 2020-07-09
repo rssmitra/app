@@ -173,7 +173,7 @@ class Loket extends MX_Controller {
             $info = $this->Counter->get_counter_total_tipe_loket();
 
 
-            echo json_encode(array('success' => 1, 'loket' => $_POST['loket'], 'tipe_loket' => $_POST['tipe'] , 'counter' => $no, 'tipe' => $tipe_antrian, 'total_bpjs' => $info['bpjs'], 'sisa_bpjs' => $info['sisa_bpjs'], 'total_non_bpjs' => $info['non_bpjs'], 'sisa_non_bpjs' => $info['sisa_non_bpjs']));
+            echo json_encode(array('success' => 1, 'loket' => $_POST['loket'], 'tipe_loket' => $_POST['tipe'] , 'counter' => $no, 'tipe' => $tipe_antrian, 'total_bpjs' => $info['bpjs'], 'sisa_bpjs' => $info['sisa_bpjs'], 'total_non_bpjs' => $info['non_bpjs'], 'sisa_non_bpjs' => $info['sisa_non_bpjs'], 'total_online' => $info['online'], 'sisa_online' => $info['sisa_online']));
         }else{
             echo json_encode(array('success' => 0, 'message' => 'Silahkan pilih loket dan tipe loket'));
         }

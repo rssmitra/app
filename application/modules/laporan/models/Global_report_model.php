@@ -826,7 +826,6 @@ class Global_report_model extends CI_Model {
 			left join mt_barang_nm c ON c.kode_brg=a.kode_brg
 			left join mt_golongan_nm d ON d.kode_golongan=c.kode_golongan
 			WHERE a.agenda_so_id=".$_POST['agenda_so']." AND a.kode_bagian=".$_POST['bagian']." 
-			and a.set_status_aktif=".$_POST['status']." 
 			order by d.nama_golongan, c.nama_brg ASC";
 		}
 		else{
@@ -850,8 +849,8 @@ class Global_report_model extends CI_Model {
 		  			left join [mt_bagian] b on a.kode_bagian=b.kode_bagian 
 					left join mt_barang c ON c.kode_brg=a.kode_brg
 					left join mt_golongan d ON d.kode_golongan=c.kode_golongan
-					WHERE a.agenda_so_id=".$_POST['agenda_so']." AND a.kode_bagian='060201' 
-					and a.set_status_aktif=".$_POST['status']."
+					WHERE a.agenda_so_id=".$_POST['agenda_so']." AND a.kode_bagian=".$_POST['bagian']."
+
 					order by d.nama_golongan, c.nama_brg ASC";
 				}
 			return $query;

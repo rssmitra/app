@@ -242,7 +242,7 @@ class Reg_klinik extends MX_Controller {
 
     public function process(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
         $this->form_validation->set_rules('reg_klinik_rajal', 'Poli/Klinik', 'trim|required');
@@ -322,7 +322,7 @@ class Reg_klinik extends MX_Controller {
             $this->logs->save('pl_tc_poli', $datapoli['kode_poli'], 'insert new record on '.$this->title.' module', json_encode($datapoli),'kode_poli');
             
             // log kuota dokter
-            $this->logs->save_log_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => $datapoli['tgl_jam_poli'], 'keterangan' => null, 'flag' => 'on_the_spot' ));
+            // $this->logs->save_log_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => $datapoli['tgl_jam_poli'], 'keterangan' => null, 'flag' => 'on_the_spot' ));
 
             /*parameter untuk print tracer*/
             $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
@@ -347,15 +347,26 @@ class Reg_klinik extends MX_Controller {
                 }else{
                     $this->db->update('tc_pesanan', array('tgl_masuk' => date('Y-m-d H:i:s') ), array('id_tc_pesanan' => $this->input->post('id_tc_pesanan') ) );
                 }
-                
+                // update kuota dokter used
+                $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'keterangan' => null, 'flag' => 'perjanjian', 'status' => NULL ), 1);
 
             }
 
             /*jika terdapat kode_booking maka update tgl_masuk pada table regon_booking*/
-            if( $this->input->post('kode_booking') ){
+            if( $this->input->post('kode_booking') AND  $this->input->post('tipe_registrasi') == 'online'){
                 $this->db->update('regon_booking', array('regon_booking_tgl_registrasi_ulang' => date('Y-m-d H:i:s'), 'regon_booking_status' => 1, 'updated_date' => date('Y-m-d H:i:s'), 'updated_by' => $this->session->userdata('user')->fullname ), array('regon_booking_kode' => $this->input->post('kode_booking') ) );
+
+                
+                // update kuota dokter used
+                $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'flag' => 'mobile_jkn', 'status' => NULL ), 1);
+
             }
 
+            // jika tidak terdapat perjanjian dan mobile
+            if( $this->input->post('tipe_registrasi') == 'onsite' ){
+                // update kuota dokter used
+                $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'flag' => 'mesin_antrian', 'status' => NULL ), 1);
+            }
             /*jika dari pasien rujukan*/
             if( $this->input->post('kode_rujukan_hidden') ){
                 $this->db->update('rg_tc_rujukan', array('status' => 1, 'rujukan_tujuan' => $this->regex->_genRegex($this->form_validation->set_value('reg_klinik_rajal'),'RGXQSL')), array('kode_rujukan' => $this->input->post('kode_rujukan_hidden') ) );

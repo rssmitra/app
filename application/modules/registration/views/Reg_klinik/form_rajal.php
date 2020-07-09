@@ -112,7 +112,14 @@ $('select[name="reg_klinik_rajal"]').change(function () {
 <?php if(isset($id_tc_pesanan) && $id_tc_pesanan == '') :?>
 <!-- hidden kuota dr -->
 <input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
-<div id="message_for_kuota"></div>
+<div class="form-group">
+    <label class="col-sm-3"></label>
+    <div class="col-sm-9">
+        <div id="message_for_kuota" style="margin-left: 7px"></div>
+    </div>
+</div>
+
+
 <?php endif;?>
 
 <?php if(isset($no_reg) && $no_reg != '') :?>

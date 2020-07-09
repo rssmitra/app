@@ -317,6 +317,9 @@ class AntrianBPJS extends MX_Controller {
         $databooking['created_by'] = json_encode(array('user_id' => 0, 'fullname' => 'mjkn' ));
         /*save post data*/
         $this->Regon_booking->save($databooking);
+        
+        // log kuota dokter
+        $this->logs->save_log_kuota(array('kode_dokter' => $databooking['regon_booking_kode_dokter'], 'kode_spesialis' => $databooking['regon_booking_klinik'], 'tanggal' => $databooking['regon_booking_tanggal_perjanjian'], 'keterangan' => $databooking['regon_booking_keterangan'], 'flag' => 'mobile_jkn' ));
 
         // print_r($databooking);die;
         // $this->insert_booking();

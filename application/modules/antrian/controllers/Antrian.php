@@ -50,9 +50,9 @@ class Antrian extends MX_Controller {
 
         if(isset($booking)){
             if($booking->regon_booking_tanggal_perjanjian==date('Y-m-d')){
-                if($jam_now <= $jam_){
+                // if($jam_now <= $jam_){
 
-                    $query="select * from tr_antrian where ant_type = 'umum' or ant_type ='online'";
+                    $query="select * from tr_antrian where ant_type ='online'";
                     $no_ = $this->db->query($query)->num_rows();
                     $no = $no_ + 1;
 
@@ -60,21 +60,20 @@ class Antrian extends MX_Controller {
                         'ant_kode_spesialis' => $booking->regon_booking_kode_dokter,
                         'ant_kode_dokter' => $booking->regon_booking_klinik,
                         'ant_status' => 0,
-                        'ant_type' => 'umum',
+                        'ant_type' => 'online',
                         'ant_date' => date('Y-m-d H:i:s'),
                         'ant_no' => $no,
                         'ant_panggil' => 0,
                         'log' => json_encode(array('dokter' => $booking->nama_pegawai,'klinik' => $booking->nama_bagian, 'jam_praktek' => $jam_praktek[0])),
                     );
-
                     $this->loket->save('tr_antrian',$dataexc);
 
                     echo json_encode(array('status' => 200, 'message' => 'Berhasil'));
 
                     $this->print_direct->printer_antrian_php($dataexc);
-                } else {
-                    echo json_encode(array('status' => 301, 'message' => 'Maaf, Loket hanya tersedia sesuai jadwal waktu kedatangan di aplikasi anda'));
-                }
+                // } else {
+                //     echo json_encode(array('status' => 301, 'message' => 'Maaf, Loket hanya tersedia sesuai jadwal waktu kedatangan di aplikasi anda'));
+                // }
             }else{
                 echo json_encode(array('status' => 301, 'message' => 'Perjanjian anda tidak terdaftar di hari ini, silahkan ambil antrian reguler jika ingin registrasi'));
             }

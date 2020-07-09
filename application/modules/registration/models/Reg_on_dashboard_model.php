@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Reg_on_dashboard_model extends CI_Model {
 
 	var $table = 'regon_booking';
-	var $column = array('regon_booking.regon_booking_kode','regon_booking.regon_booking_tanggal_perjanjian','regon_booking.regon_booking_no_mr','regon_booking.regon_booking_instalasi','regon_booking.regon_booking_hari','regon_booking.regon_booking_jenis_penjamin');
+	var $column = array('regon_booking.regon_booking_kode','regon_booking.regon_booking_tanggal_perjanjian','regon_booking.regon_booking_no_mr','regon_booking.regon_booking_instalasi','regon_booking.regon_booking_hari','regon_booking.regon_booking_jenis_penjamin', 'regon_booking.regon_booking_nama_pasien');
 	var $select = 'regon_booking.*';
 
 	var $order = array('regon_booking.regon_booking_id' => 'DESC');
@@ -72,6 +72,7 @@ class Reg_on_dashboard_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

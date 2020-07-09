@@ -1572,6 +1572,7 @@ function find_pasien_by_keyword(keyword){
                                 <option value="#">-Pilih-</option>
                                 <option value="bpjs" >BPJS</option>
                                 <option value="umum">Non BPJS</option>
+                                <option value="online">Online</option>
                               </select>
                             </div>
                         </div>
@@ -1580,7 +1581,7 @@ function find_pasien_by_keyword(keyword){
                             <div class="col-sm-6">
                               <select name="select_loket" id="select_loket" class="form-control">
                                 <option value="#">-Pilih-</option>
-                                <?php for($i=1;$i<11;$i++) :?>
+                                <?php for($i=1;$i<5;$i++) :?>
                                 <option value="<?php echo $i?>"> <?php echo $i?> </option>
                                 <?php endfor;?>
                               </select>
@@ -1649,6 +1650,17 @@ function find_pasien_by_keyword(keyword){
                               </div>
                               <div width="500%" style="float:right; margin-right:5px">
                               Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_non_bpjs"> 0 </h2>
+                              </div>
+                            </div>
+                            <br>
+                            <hr>
+                            <div width="100%">
+                              <b style="font-size:16px">ONLINE MOBILE</b><br>
+                              <div width="500%" style="float:left;margin-left:5px">
+                              Total Antrian <h2 style="margin-top:5px" id="total_online"> 0 </h2>
+                              </div>
+                              <div width="500%" style="float:right; margin-right:5px">
+                              Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_online"> 0 </h2>
                               </div>
                             </div>
                           </center>

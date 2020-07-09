@@ -124,14 +124,14 @@ class Pl_pelayanan_pm extends MX_Controller {
         $umur_tahun = $difference->format('%y');
         $umur_bulan = $difference->format('%m') + 12 * $difference->format('%y');
         $umur_hari = $difference->d;
-        //echo $umur_tahun.'-'.$umur_bulan.'-'.$umur_hari.'-'.$umur_jam;die;
+        // echo $umur_tahun.'-'.$umur_bulan.'-'.$umur_hari;die;
 
-        $mktime_tahun=31622400 * $umur_tahun;
-        $mktime_bulan=2678400 * $umur_bulan;
-        $mktime_hari=86400 * $umur_hari;
-        $mktime_jam=0;
+        $mktime_tahun = 31622400 * $umur_tahun;
+        $mktime_bulan = 2678400 * $umur_bulan;
+        $mktime_hari = 86400 * $umur_hari;
+        $mktime_jam = 0;
 
-        $mktimenya=$mktime_tahun + $mktime_bulan + $mktime_hari + $mktime_jam;
+        $mktimenya = $mktime_tahun + $mktime_bulan + $mktime_hari + $mktime_jam;
         
         /*get value by id*/
         $data['mktime'] = $mktimenya;
@@ -176,7 +176,6 @@ class Pl_pelayanan_pm extends MX_Controller {
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
 
-        
         $this->load->view('Pl_pelayanan_pm/'.$view.'', $data);
         
     }

@@ -123,6 +123,19 @@ final Class Logs {
         return true;
     }
 
+    public function update_status_kuota($where, $value) {
+        
+      $CI =& get_instance();         
+      $CI->load->database('default', TRUE); 
+      /*save logs*/
+      // select top 1
+      $dt = $CI->db->order_by('id', 'ASC')->get_where('log_kuota_dokter', $where)->row();
+      // print_r($CI->db->last_query());die;
+      $CI->db->update('log_kuota_dokter', array('status' => $value), array('id' => $dt->id));
+      $log_id = $dt->id;
+      return true;
+  }
+
 
 
 }

@@ -49,7 +49,7 @@
           <?php endif; ?>
 
           <?php if($_POST['flag_string'] == 'medis') : ?>
-            <th class="center">LAYANAN</th>
+            <th class="center">GOLONGAN</th>
             <th class="center">JENIS</th>
           <?php endif; ?>
             
@@ -82,7 +82,7 @@
               <?php if($_POST['flag_string'] == 'medis') : ?>
 
                  <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
-                  <?php echo $row_data->nama_layanan;?>
+                  <?php echo $row_data->nama_golongan;?>
                <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
                 <?php echo $row_data->nama_jenis;?>
                               

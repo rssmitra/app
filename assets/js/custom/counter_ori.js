@@ -33,6 +33,7 @@
   
     var type = $('#select_tipe').val();
 
+
     e.preventDefault();  
       
       var post = { loket: loket, tipe: type, curr_num: $('#counter_number_value').val() };
@@ -842,33 +843,7 @@
             'assets/suara/'+voice_loket+''   // 19
             
           ]);
-      }
-      else if(type=='online'){  
-          new Mp3Queue(container, [
-            'assets/suara/ding.mp3',    // 0
-            'assets/suara/nomor-urut.wav',  // 1
-            'assets/suara/c.mp3',     
-            'assets/suara/satu.wav',    // 3
-            'assets/suara/dua.wav',   // 4
-            'assets/suara/tiga.wav',    // 5
-            'assets/suara/empat.wav',   // 6
-            'assets/suara/lima.wav',    // 7
-            'assets/suara/enam.wav',    // 8
-            'assets/suara/tujuh.wav',   // 9
-            'assets/suara/delapan.wav', // 10
-            'assets/suara/sembilan.wav',  // 11
-            'assets/suara/sepuluh.wav', // 12
-            'assets/suara/sebelas.wav', // 13
-            'assets/suara/belas.wav',   // 14
-            'assets/suara/puluh.wav',   // 15
-            'assets/suara/ratus.wav',   // 16
-            'assets/suara/seratus.wav', // 17
-            'assets/suara/loket.wav',   // 18
-            'assets/suara/'+voice_loket+''   // 19
-            
-          ]);
-      }
-      else {
+      }else {
         new Mp3Queue(container, [
             'assets/suara/ding.mp3',    // 0
             'assets/suara/nomor-urut.wav',  // 1
@@ -892,7 +867,7 @@
             'assets/suara/'+voice_loket+''   // 19
 
             ]);
-      }
+          }
 
     })();
   }

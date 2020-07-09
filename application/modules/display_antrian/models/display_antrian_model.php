@@ -131,14 +131,13 @@ class Display_antrian_model extends CI_Model {
 	public function get_antrian_by_loket($loket)
 	{
 		# code...
-		$cek = $this->db->query('select ant_no,ant_type from tr_antrian where ant_aktif=1 and ant_loket='.$loket.' order by  ant_id desc')->row();
-		//print_r($cek);
+		$cek = $this->db->query('select TOP 1 ant_no,ant_type from tr_antrian where ant_aktif=1 and ant_loket='.$loket.' order by  ant_id desc')->row();
+		// print_r($cek);
 		if(isset($cek)){
-			return $cek;
+			return array('ant_no' => $cek->ant_no, 'ant_type' => $cek->ant_type);
 		} else {
 			$no_antrian = $this->db->query('select TOP 1 ant_no,ant_type from tr_antrian where ant_aktif=2 and ant_loket='.$loket.' order by ant_no desc')->row();
-			//$exc = $this->db->query($no_antrian);
-        	return $no_antrian;
+        	return array('ant_no' => isset($no_antrian->ant_no)?$no_antrian->ant_no:0, 'ant_type' => isset($no_antrian->ant_type)?$no_antrian->ant_type:0);
 		}
 		
 	}

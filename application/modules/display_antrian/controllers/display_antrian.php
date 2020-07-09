@@ -25,7 +25,9 @@ class Display_antrian extends MX_Controller {
 
        for ($i=1; $i <= 4; $i++) { 
            # code...
-           $nomor_loket[$i] = $this->display_antrian->get_antrian_by_loket($i);
+           $data = $this->display_antrian->get_antrian_by_loket($i);
+        //    print_r($data);die;
+           $nomor_loket[$i] = $data;
        }
 
        //print_r($nomor_loket);die;

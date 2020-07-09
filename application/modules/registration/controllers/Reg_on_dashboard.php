@@ -65,7 +65,7 @@ class Reg_on_dashboard extends MX_Controller {
                         </ul>
                     </div></div>';
             $row[] = '<div class="center">'.$row_list->regon_booking_kode.'</div>';
-            $row[] = '<a href="#">'.strtoupper($pasien->nama_pasien).'</>';
+            $row[] = '<a href="#">'.strtoupper($row_list->regon_booking_nama_pasien).'</>';
             $row[] = $this->tanggal->formatDate($row_list->regon_booking_tanggal_perjanjian);
             $row[] = ucwords($transaksi->klinik->nama_bagian);
             $row[] = $transaksi->dokter->nama_pegawai;

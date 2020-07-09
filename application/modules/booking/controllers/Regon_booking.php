@@ -296,7 +296,7 @@ class Regon_booking extends MX_Controller {
                 /*save logs*/
                 $this->logs->save('regon_booking', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'regon_booking_id');
                 /*save log kuota dokter*/
-                $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['regon_booking_kode_dokter'], 'kode_spesialis' => $dataexc['regon_booking_klinik'], 'tanggal' => $dataexc['regon_booking_tanggal_perjanjian'] ));
+                $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['regon_booking_kode_dokter'], 'kode_spesialis' => $dataexc['regon_booking_klinik'], 'tanggal' => $dataexc['regon_booking_tanggal_perjanjian'], 'flag' => 'booking_online' ));
                 
             }else{
                 $kode_booking = $this->input->post('kode_booking');
