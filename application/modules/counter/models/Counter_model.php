@@ -117,8 +117,22 @@ class Counter_model extends CI_Model {
 
 	function txt_tipe_loket($tipe){
 
+		switch ($tipe) {
+			case 'bpjs':
+				$txt_tipe = 'A';
+				break;
+			case 'umum':
+				$txt_tipe = 'B';
+				break;
+			case 'umum':
+				$txt_tipe = 'C';
+				break;
+			default:
+				$txt_tipe = 'A';
+				break;
+		}
 
-		return ($tipe == 'bpjs') ? 'A' : ($tipe == 'umum') ? 'B' : 'C' ;
+		return $txt_tipe;
 
 	}
 
