@@ -249,7 +249,7 @@ class Regon_booking_model extends CI_Model {
         // <button type="button" class="btn btn-xs btn-primary" onclick="showModalDaftarReschedule('.$data->regon_booking_id.')"> <i class="fa fa-calendar"></i> Reschedule </button><br>
 
         
-            $html_btn_action = ($data->regon_booking_status != 1) ?'<button type="button" class="btn btn-xs btn-danger" onclick="registerNow('."'".$data->regon_booking_kode."'".')"> <i class="ace-icon fa fa-angle-double-down"></i> Daftarkan Sekarang </button> <br>
+            $html_btn_action = ($data->regon_booking_status != 1) ?'<button type="button" class="btn btn-xs btn-danger" onclick="registerNow('."'".$data->regon_booking_no_mr."'".')"> <i class="ace-icon fa fa-angle-double-down"></i> Daftarkan Sekarang </button> <br>
             <button type="button" class="btn btn-xs btn-primary" onclick="showModalDaftarReschedule('.$data->regon_booking_id.')"> <i class="fa fa-calendar"></i> Reschedule </button><br>':'';
         
         $html .= '<table border="0" width="100%" class="table" style="background-color: #f0f0f09e;

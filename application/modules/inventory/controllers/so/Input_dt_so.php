@@ -81,8 +81,8 @@ class Input_dt_so extends MX_Controller {
             $row[] = '<div class="center">'.$satuan.'</div>';
             $row[] = '<div class="center">'.$row_list->jml_sat_kcl.'</div>';
             $row[] = '<div class="center"><input type="text" name="stok_kartu" id="row_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
-            $status_brg_aktif = ($row_list->status_aktif==1)?'checked':'';
             $value_brg_aktif = ($row_list->status_aktif==1)?0:1;
+            $status_brg_aktif = ($value_brg_aktif==1)?'':'checked';
             $row[] = '<div class="center">
                         <label>
                             <input name="status_brg_aktif" id="stat_on_off_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" onclick="setStatusAktifBrg('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')" class="ace ace-switch ace-switch-3" type="checkbox" '.$status_brg_aktif.' value="'.$value_brg_aktif.'">

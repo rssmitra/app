@@ -187,7 +187,38 @@ class Global_report extends MX_Controller {
     }
     
 
+    public function show_data_stok_m(){
 
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'tgl' => $_POST['tgl'],
+            'result' => $query_data,
+        );
+
+        // echo '<pre>';print_r($query_data);
+        
+           $this->load->view('Global_report/akunting_keu/v_stok_m', $data);
+                
+    }
+     public function show_data_stok_nm(){
+
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'tgl' => $_POST['tgl'],
+            'result' => $query_data,
+        );
+
+        // echo '<pre>';print_r($query_data);
+        
+           $this->load->view('Global_report/akunting_keu/v_stok_nm', $data);
+                
+    }
 
 
 
@@ -646,6 +677,7 @@ class Global_report extends MX_Controller {
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
+            'status' => $_POST['status'],
             'result' => $query_data,
         );
 
@@ -984,6 +1016,8 @@ class Global_report extends MX_Controller {
         $this->load->view('Global_report/v_ol_tahunan', $data);
                 
     }
+
+    
 
 }
 

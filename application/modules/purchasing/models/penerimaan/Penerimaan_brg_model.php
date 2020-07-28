@@ -171,12 +171,13 @@ class Penerimaan_brg_model extends CI_Model {
 	}
 
 	function get_sisa_penerimaan($table, $join, $id_tc_po){
-		$query = "select * from ".$table." a
-				where id_tc_po_det in (
-					select id_tc_po_det from ".$join." 
-					group by jumlah_pesan, id_tc_po_det
-					having SUM(jumlah_kirim) < jumlah_pesan
-				) AND a.id_tc_po=".$id_tc_po." AND a.status_batal IS NULL AND a.status_close IS NULL";
+		$query = "select a.id_tc_po_det, id_tc_po, a.kode_brg, a.jumlah_pesan, SUM(a.jumlah_kirim)as jml_kirim
+		from ".$table." a
+		left join ".$join." b on b.id_tc_po_det=a.id_tc_po_det
+		where b.id_tc_po=".$id_tc_po."
+		GROUP BY a.id_tc_po_det, id_tc_po, a.kode_brg, a.jumlah_pesan
+		HAVING SUM(jumlah_kirim) < jumlah_pesan";
+		
 		return $this->db->query($query)->num_rows();
 	}
 

@@ -38,7 +38,7 @@
               
           </div>
 
-           <div class="form-group">
+          <!--  <div class="form-group">
             <label class="control-label col-md-1">Status</label>
               <div class="col-md-1">
                <select name="status" class="form-control">
@@ -47,7 +47,7 @@
                </select>
               </div>
               
-          </div>
+          </div> -->
           <div class="form-group">
             <label class="control-label col-md-1">Bagian Unit</label>
               <div class="col-md-4">

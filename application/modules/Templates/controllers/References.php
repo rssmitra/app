@@ -742,9 +742,14 @@ class References extends MX_Controller {
 		/*existing*/
 		// $log_kuota_perjanjian = $this->db->get_where('tc_pesanan', array('CAST(jam_pesanan as DATE) = ' => date('Y-m-d'), 'kode_dokter' => $kode_dokter, 'no_poli' => $kode_spesialis, 'tgl_masuk' => NULL) )->num_rows();
 		
-		// perjanjian
-		$log_kuota_perjanjian = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis, 'flag' => 'perjanjian') )->num_rows();
-		$sisa_kuota_perjanjian = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis, 'flag' => 'perjanjian', 'status' => 1) )->num_rows();
+		// perjanjian	
+		// $log_kuota_perjanjian = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis, 'flag' => 'perjanjian') )->num_rows();
+		// $sisa_kuota_perjanjian = $this->db->get_where('log_kuota_dokter', array('tanggal' => $date, 'kode_dokter' => $kode_dokter, 'kode_spesialis' => $kode_spesialis, 'flag' => 'perjanjian', 'status' => 1) )->num_rows();
+
+		$log_kuota_perjanjian = $this->db->where('CAST(tgl_pesanan as DATE) = '."'".$date."'".'')->get_where('tc_pesanan', array('kode_dokter' => $kode_dokter, 'no_poli' => $kode_spesialis) )->num_rows();
+
+		$sisa_kuota_perjanjian = $this->db->where('CAST(tgl_pesanan as DATE) = '."'".$date."'".'')->where('CAST(tgl_masuk as DATE) IS NOT NULL')->get_where('tc_pesanan', array('kode_dokter' => $kode_dokter, 'no_poli' => $kode_spesialis) )->num_rows();;
+
 		$sisa_perjanjian = $log_kuota_perjanjian - $sisa_kuota_perjanjian;
 
 		// terdaftar
