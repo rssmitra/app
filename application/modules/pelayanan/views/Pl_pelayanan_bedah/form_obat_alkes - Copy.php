@@ -84,7 +84,7 @@ $(document).ready(function() {
           }else if(bag == '030101'){
             bag = '030101';
           }else if(bag == '031001'){
-            bag = '031001'; 
+            bag = '031001';	
           }else if(bag == '030501' || bag == '013201'){
             bag = '030501';
           }else if(bag == '030901'){
@@ -152,6 +152,7 @@ function delete_transaksi(myid){
         },
         uploadProgress: function(event, position, total, percentComplete) {
         },
+        reset_table();
         complete: function(xhr) {     
           var data=xhr.responseText;
           var jsonResponse = JSON.parse(data);
