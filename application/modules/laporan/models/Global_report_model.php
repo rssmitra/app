@@ -81,6 +81,84 @@ class Global_report_model extends CI_Model {
 		return $query;
 	}
 
+	public function akunting_mod_5(){
+
+		$t_kartu_stok = ($_POST['bagian'] == 'non_medis') ? 'tc_kartu_stok_nm' : 'tc_kartu_stok' ;
+		$tgl_stok = isset($_POST['tgl_stok'])?$_POST['tgl_stok']:date('Y-m-d');
+		// // Gudang Non Medis
+		// if($_POST['bagian']=='070101'){
+
+		// 	$this->db->select('mt_depo_stok_nm_v.kode_brg, mt_depo_stok_nm_v.nama_brg, mt_depo_stok_nm_v.satuan_besar, mt_depo_stok_nm_v.satuan_kecil, mt_depo_stok_nm_v.nama_golongan, mt_depo_stok_nm_v.nama_sub_golongan, mt_bagian.nama_bagian, mt_depo_stok_nm_v.is_active, kartu_stok.stok_akhir');
+		// 	$this->db->from('mt_depo_stok_nm_v');
+		// 	$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_depo_stok_nm_v.kode_bagian','left');
+		// 	$this->db->join('( SELECT * FROM tc_kartu_stok_nm WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm WHERE tgl_input <= '."'".$tgl_stok."'".' AND tgl_input is not null GROUP BY kode_brg) AND kode_bagian='."'".$_POST['bagian']."'".' ) AS kartu_stok', 'kartu_stok.kode_brg=mt_depo_stok_nm_v.kode_brg','left');
+
+		// 	$this->db->where('mt_depo_stok_nm_v.kode_bagian', $_POST['bagian']);
+		// 	$this->db->where('nama_brg LIKE '."'%'".'');
+
+		// 	if( isset($_POST['kode_golongan']) AND $_POST['kode_golongan'] != '' ){
+		// 		$this->db->where('kode_golongan', $_POST['kode_golongan']);
+		// 	}
+
+		// 	if( isset($_POST['kode_sub_gol']) AND $_POST['kode_sub_gol'] != '' ){
+		// 		$this->db->where('kode_sub_golongan', $_POST['kode_sub_gol']);
+		// 	}
+
+		// 	// $this->db->where('is_active', 1);
+		// 	$this->db->group_by( 'mt_depo_stok_nm_v.kode_brg, mt_depo_stok_nm_v.nama_brg, mt_depo_stok_nm_v.satuan_besar, mt_depo_stok_nm_v.satuan_kecil, mt_depo_stok_nm_v.nama_golongan, mt_depo_stok_nm_v.nama_sub_golongan, mt_bagian.nama_bagian, mt_depo_stok_nm_v.is_active, kartu_stok.stok_akhir' );
+		// 	$this->db->order_by( 'nama_brg','ASC' );
+		// 	$this->db->order_by( 'nama_sub_golongan','ASC' );
+		// 	$this->db->order_by( 'nama_golongan','ASC' );
+		// 	$query = $this->db->get();
+		// 	// print_r($this->db->last_query());die;
+
+		// // Gudang Medis
+		// }else{
+			
+			$this->db->select('mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan as nama_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, AVG(mt_rekap_stok.harga_beli) as harga_beli, AVG(harga_jual) as hargajual, is_active');
+			$this->db->from('mt_depo_stok_v');
+			$this->db->join('mt_rekap_stok', 'mt_rekap_stok.kode_brg=mt_depo_stok_v.kode_brg','left');
+			$this->db->join('fr_tc_far_detail', 'fr_tc_far_detail.kode_brg=mt_depo_stok_v.kode_brg','left');
+			$this->db->join('mt_golongan', 'mt_golongan.kode_golongan=mt_depo_stok_v.kode_golongan','left');
+			$this->db->join('mt_sub_golongan', 'mt_sub_golongan.kode_sub_gol=mt_depo_stok_v.kode_sub_golongan','left');
+			$this->db->join('( SELECT * FROM tc_kartu_stok WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE tgl_input <= '."'".$tgl_stok."'".' AND tgl_input is not null GROUP BY kode_brg) ) AS kartu_stok', 'kartu_stok.kode_brg=mt_depo_stok_v.kode_brg','left');
+
+			
+			// $this->db->where('status_aktif', 1);
+			$this->db->group_by( 'mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, mt_rekap_stok.harga_beli, harga_jual, is_active' );
+			$this->db->order_by( 'nama_bagian','ASC' );
+			$this->db->order_by( 'nama_brg','ASC' );
+			$query = $this->db->get();
+			// print_r($this->db->last_query());die;
+		// }
+
+		return $this->db->last_query();
+	}
+
+	public function akunting_mod_6(){
+
+		$tgl_stok = isset($_POST['tgl_stok'])?$_POST['tgl_stok']:date('Y-m-d');
+		
+			
+			$this->db->select('mt_depo_stok_nm_v.kode_brg, mt_depo_stok_nm_v.nama_brg, mt_depo_stok_nm_v.satuan_besar, mt_depo_stok_nm_v.satuan_kecil, mt_depo_stok_nm_v.nama_golongan, mt_depo_stok_nm_v.nama_sub_golongan, mt_bagian.nama_bagian, kartu_stok.stok_akhir, AVG(mt_rekap_stok_nm.harga_beli) as harga_beli, AVG(harga_jual) as hargajual, is_active');
+			$this->db->from('mt_depo_stok_nm_v');
+			$this->db->join('mt_rekap_stok_nm', 'mt_rekap_stok_nm.kode_brg=mt_depo_stok_nm_v.kode_brg','left');
+			$this->db->join('fr_tc_far_detail', 'fr_tc_far_detail.kode_brg=mt_depo_stok_nm_v.kode_brg','left');
+			$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_depo_stok_nm_v.kode_bagian','left');
+			$this->db->join('( SELECT * FROM tc_kartu_stok_nm WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm WHERE tgl_input <= '."'".$tgl_stok."'".' AND tgl_input is not null GROUP BY kode_brg)) AS kartu_stok', 'kartu_stok.kode_brg=mt_depo_stok_nm_v.kode_brg','left');
+
+			
+
+			// $this->db->where('is_active', 1);
+			$this->db->group_by( 'mt_depo_stok_nm_v.kode_brg, mt_depo_stok_nm_v.nama_brg, mt_depo_stok_nm_v.satuan_besar, mt_depo_stok_nm_v.satuan_kecil, mt_depo_stok_nm_v.nama_golongan, mt_depo_stok_nm_v.nama_sub_golongan, mt_bagian.nama_bagian, kartu_stok.stok_akhir , mt_rekap_stok_nm.harga_beli, fr_tc_far_detail.harga_jual, is_active');
+			$this->db->order_by( 'nama_bagian','ASC' );
+			$this->db->order_by( 'nama_brg','ASC' );
+			$query = $this->db->get();
+			// print_r($this->db->last_query());die;
+		// }
+
+		return $this->db->last_query();
+	}
 
 	public function get_saldo(){
 		$month=$_POST['from_month'] - 1;
@@ -406,8 +484,30 @@ class Global_report_model extends CI_Model {
 
 	}
 
-	public function pengadaan_mod_8(){
+	// public function pengadaan_mod_8(){
 
+	// 	$query = 'SELECT tc_kartu_stok_nm_vv.kode_brg, tc_kartu_stok_nm_vv.nama_brg, tc_kartu_stok_nm_vv.harga_beli, tc_kartu_stok_nm_vv.harga_update, 
+	// 						satuan_besar, content, stok_akhir, satuan_kecil, 
+	// 						nama_golongan, nama_kategori , nama_sub_golongan, tgl_input 
+	// 				FROM tc_kartu_stok_nm_vv 
+					
+	// 				WHERE id_kartu IN 
+	// 				(SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm GROUP BY kode_brg) 
+	// 				AND tgl_input <= '."'".$_POST['tgl']."'".'
+	// 				ORDER BY nama_kategori, nama_golongan, nama_sub_golongan ASC';
+public function pengadaan_mod_8(){
+		if($_POST['status']==1){
+			$query = 'SELECT tc_kartu_stok_vv.kode_brg, tc_kartu_stok_vv.nama_brg, tc_kartu_stok_vv.harga_beli, tc_kartu_stok_vv.harga_update, 
+									satuan_besar, content, stok_akhir, satuan_kecil, 
+									nama_golongan, nama_kategori , nama_sub_golongan, tgl_input 
+							FROM tc_kartu_stok_vv 
+							
+							WHERE id_kartu IN 
+							(SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok GROUP BY kode_brg) 
+							AND tgl_input <= '."'".$_POST['tgl']."'".'
+							ORDER BY nama_kategori, nama_golongan, nama_sub_golongan ASC';
+		}
+		else{
 		$query = 'SELECT tc_kartu_stok_nm_vv.kode_brg, tc_kartu_stok_nm_vv.nama_brg, tc_kartu_stok_nm_vv.harga_beli, tc_kartu_stok_nm_vv.harga_update, 
 							satuan_besar, content, stok_akhir, satuan_kecil, 
 							nama_golongan, nama_kategori , nama_sub_golongan, tgl_input 
@@ -417,7 +517,7 @@ class Global_report_model extends CI_Model {
 					(SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm GROUP BY kode_brg) 
 					AND tgl_input <= '."'".$_POST['tgl']."'".'
 					ORDER BY nama_kategori, nama_golongan, nama_sub_golongan ASC';
-
+				}
 		return $query;
 
 	}

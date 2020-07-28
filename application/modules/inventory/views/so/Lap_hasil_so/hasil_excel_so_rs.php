@@ -48,14 +48,14 @@
               <td align="center" style="width:50px !important; overflow-wrap: break-word;"><?php echo $no;?></td>
               <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $row_data->kode_brg;?></td>
               <td style="width:200px !important; overflow-wrap: break-word;"><?php echo $row_data->nama_brg;?></td>
-              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo number_format($row_data->stok_sebelum);?></td>
-              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo number_format($row_data->stok_sekarang);?></td>
-              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo number_format($row_data->harga_pembelian_terakhir);?></td>
-              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo number_format($total);?></td>
+              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $row_data->stok_sebelum;?></td>
+              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $row_data->stok_sekarang;?></td>
+              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $row_data->harga_pembelian_terakhir;?></td>
+              <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $total?></td>
             </tr>
           <?php endforeach; ?>
           <tr><td style="width:100px !important; overflow-wrap: break-word;" colspan="6" align="right">JUMLAH  </td>
-             <td style="width:100px !important; overflow-wrap: break-word;"><?php echo number_format(array_sum($arr_total));?></td>
+             <td style="width:100px !important; overflow-wrap: break-word;"><?php echo array_sum($arr_total);?></td>
         </tbody>
       </table>
 

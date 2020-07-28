@@ -23,12 +23,19 @@
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>Laporan Stok Akhir Barang Non Medis Berdasarkan Master Barang</h4>
+        <h4>Laporan Stok Akhir Barang Medis / Non Medis Berdasarkan Master Barang</h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_stokb" target="blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
           <input type="hidden" name="title" value="Laporan Stok Akhir Barang Non Medis Berdasarkan Master Barang">
-
+          <div class="form-group">
+            <label class="control-label col-md-1">Status</label>
+              <div class="col-md-1">
+               <select name="status" class="form-control">
+                 <option value="1"> Medis </option>
+                 <option value="0"> Non Medis </option>
+               </select>
+              </div>
           <div class="form-group">
             <label class="control-label col-md-2">Tanggal Terakhir Stok</label>
               <div class="col-md-2">

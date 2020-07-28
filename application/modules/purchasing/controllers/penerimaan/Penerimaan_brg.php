@@ -323,6 +323,7 @@ class Penerimaan_brg extends MX_Controller {
                     // update tc_po status kirim jika jumlah pesan dan jumlah kirim sudah sesuai
                     $po_dt = $this->Penerimaan_brg->get_sisa_penerimaan($tc_po.'_det', $table.'_detail', $_POST['id_tc_po']);
                     
+
                     if ( $po_dt == 0 ) {
                         $update_po = array(
                             'status_kirim' => 1,
@@ -335,7 +336,6 @@ class Penerimaan_brg extends MX_Controller {
                             'updated_date' => date('Y-m-d H:i:s'),
                             'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                         );
-                        
                         // print_r($update_po);die;
                         $this->db->update($tc_po, $update_po, array('id_tc_po' => $_POST['id_tc_po']) );
                         // save log id barang

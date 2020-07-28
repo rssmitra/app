@@ -91,9 +91,10 @@ $(document).ready(function() {
 function updateRow(kode_brg, kode_bag, agenda_so_id){
   
   var val_id = $('#row_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
+  var is_active = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   $.ajax({
       url: "inventory/so/Input_dt_so/process_input_so",
-      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so :val_id },
+      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so :val_id, status_aktif: is_active },
       dataType: "json",
       type: "POST",
       complete: function (xhr) {

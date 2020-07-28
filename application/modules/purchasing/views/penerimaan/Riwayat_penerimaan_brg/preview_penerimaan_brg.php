@@ -137,7 +137,8 @@ th, td {
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->content?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->satuan_besar?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->jumlah_pesan)?></td>
-              <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($jumlah_kirim))?></td>
+              <!-- <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($jumlah_kirim))?></td> -->
+              <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($val_row->jumlah_kirim)?></td>
               <!-- <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_net).',-'; ?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->disc; ?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->discount_rp).',-'; ?></td>

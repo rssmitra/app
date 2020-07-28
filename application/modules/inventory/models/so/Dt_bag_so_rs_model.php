@@ -66,6 +66,7 @@ class Dt_bag_so_rs_model extends CI_Model {
 	{
 		$this->_main_query();
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

@@ -35,16 +35,18 @@
             <th width="100" align="center">Stok Hasil So</th>
             <th width="100" align="center">Harga</th>
             <th width="100" align="center">Total Hasil So</th>
-            <th width="100" align="center">Status Barang</th>
+            <!-- <th width="100" align="center">Status Barang</th> -->
             <th width="100" align="center">Petugas</th>
           </tr>
         </thead>
         <tbody>
           <?php $no = 0; 
+          $jmtotal=0;
           foreach($result['data'] as $row_data){
             $harga_pembelian_terakhir  = ($row_data->harga_pembelian_terakhir==0) ? 0 : $row_data->harga_pembelian_terakhir / $row_data->content ;
             $total = ($row_data->stok_sekarang == 0) ? 0 : ($row_data->stok_sekarang * $row_data->harga_pembelian_terakhir);
             $totalr = ($row_data->stok_sekarang == 0)? 0 : ($row_data->stok_sekarang * $harga_pembelian_terakhir);
+            $jmtotal=$jmtotal+$totalr;
             $no++; 
             ?>
             <tr>
@@ -58,13 +60,15 @@
                   echo '<td>'.$row_data->stok_sekarang.'</td>';
                   echo '<td>'.number_format($row_data->harga_pembelian_terakhir).'</td>';
                   echo '<td>'.number_format($totalr).'</td>';
-                  echo '<td>'.$row_data->set_status_aktif.'</td>';
+                  // echo '<td>'.$row_data->set_status_aktif.'</td>';
                   echo '<td>'.$row_data->nama_petugas.'</td>';
               ?>
             </tr>
           <?php 
         // endforeach; 
       }?>
+      <tr><td colspan="8" align="right">TOTAL</td>
+          <td><?php echo number_format($jmtotal);?></td>
         </tbody>
       </table>
 

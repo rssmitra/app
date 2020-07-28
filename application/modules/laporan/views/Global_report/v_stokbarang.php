@@ -43,6 +43,7 @@
         </thead>
         <tbody>
           <?php $no = 0; 
+          $ttlhasil=0;
           foreach($result['data'] as $row_data){
             if($row_data->harga_update==0 || $row_data->harga_update==''){
               $harga_beli = $row_data->harga_beli;
@@ -54,8 +55,9 @@
             $stokakhir    = $row_data->stok_akhir;
             $harga        = ($harga_beli==0) ? 0 : $harga_beli;
             $hasil        = ($harga==0) ? 0 : $harga;
-            $hasill        = $hasil * $stokakhir;
-
+            $hasill        = $harga * $stokakhir;
+            
+            $ttlhasil=$ttlhasil+$hasill;
             $no++; 
             ?>
             <tr>
@@ -78,6 +80,7 @@
           <?php 
         // endforeach; 
       }?>
+      <tr><td colspan="7"><td><?php echo number_format($ttlhasil);?></td></tr>
         </tbody>
       </table>
 

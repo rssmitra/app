@@ -140,6 +140,8 @@
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Laporan BMHP (Barang Medis Habis Pakai)</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=4'?>">Laporan IF (Unit Farmasi)</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/lainnyabillingdokter?mod=1'?>">Daftar Billing Dokter yang belum dibayarkan Per-periode</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Stok Barang Medis Per-periode</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=6'?>">Stok Barang Non Medis Per-periode</a></li>
 											</ol>
 										</div>
 									</div>
