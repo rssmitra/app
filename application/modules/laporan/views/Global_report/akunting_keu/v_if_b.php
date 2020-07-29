@@ -58,6 +58,20 @@
         </thead>
         <tbody>
           <?php $no = 0; 
+          $jqtys=0;
+          $jsaldoawal=0;
+          $jqtysp=0;
+          $jsaldop=0;
+          $jqtyb=0;
+          $jsaldob=0;
+          $jqtysu=0;
+          $jsaldou=0;
+          $jqtysi=0;
+          $jsaldoi=0;
+          $jqtysd=0;
+          $jsaldod=0;
+          $jqtysakhr=0;
+          $jsaldoakhr=0;
           foreach($result['data'] as $row_data){
             // $saldopenerimaan=$row_data->jumlah_kirim * $row_data->harga_beli;
             $no++; 
@@ -70,7 +84,7 @@
               $qtys = 0;
               // $saldoa = 0;
             }
-
+             
             $key_bpjs = $this->master->searchArray($row_data->kode_brg, 'kode_brg', $dt_pjl_bpjs);
             if($row_data->kode_brg == $dt_pjl_bpjs[$key_bpjs]['kode_brg']){
               $qty = isset($dt_pjl_bpjs[$key_bpjs])?$dt_pjl_bpjs[$key_bpjs]['jumlah_tebus']:0;
@@ -128,6 +142,20 @@
             $saldo_akhir= $qtys + $qty_p - $qty - $qty_u - $qty_i - $qty_d;
             $saldoakhir=$saldo_akhir * $row_data->hargajual;
 
+            $jqtys= $jqtys+$qtys;
+            $jsaldoawal=$jsaldoawal + $saldoawal;
+            $jqtysp=$jqtysp + $qty_p;
+            $jsaldop=$jsaldop + $saldopenerimaan;
+            $jqtyb=$jqtyb + $qty;
+            $jsaldob=$jsaldob + $j_bpjs;
+            $jqtysu=$jqtysu + $qty_u;
+            $jsaldou=$jsaldou + $j_umum;
+            $jqtysi=$jqtysi + $qty_i ;
+            $jsaldoi=$jsaldoi + $j_internal;
+            $jqtysd=$jqtysd + $qty_d;
+            $jsaldod=$jsaldod + $j_distribusiU;
+            $jqtysakhr=$jqtysakhr + $saldo_akhir;
+            $jsaldoakhr=$jsaldoakhr + $saldoakhir;
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -153,6 +181,23 @@
               ?>
             </tr>
           <?php } ?>
+          <tr>
+            <td colspan="5" align="right">Total : </td>
+            <td><?php echo number_format($jqtys);?></td>
+            <td><?php echo number_format($jsaldoawal);?></td>
+            <td><?php echo number_format($jqtysp);?></td>
+            <td><?php echo number_format($jsaldop);?></td>
+            <td><?php echo number_format($jqtyb);?></td>
+            <td><?php echo number_format($jsaldob);?></td>
+            <td><?php echo number_format($jqtysu);?></td>
+            <td><?php echo number_format($jsaldou);?></td>
+            <td><?php echo number_format($jqtysi);?></td>
+            <td><?php echo number_format($jsaldoi);?></td>
+            <td><?php echo number_format($jqtysd);?></td>
+            <td><?php echo number_format($jsaldod);?></td>
+            <td><?php echo number_format($jqtysakhr);?></td>
+            <td><?php echo number_format($jsaldoakhr);?></td>
+
         </tbody>
       </table>
 
