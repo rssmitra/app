@@ -1337,7 +1337,7 @@ class References extends MX_Controller {
 
 		// stok cito
 		$this->db->from('tc_kartu_stokcito a');
-		$this->db->join('fr_pengadaan_cito b','a.kode_brg=b.kode_brg','left');
+		$this->db->join('(select top 1 * from fr_pengadaan_cito where kode_brg='."'".$_GET['kode']."'".' order by id_fr_pengadaan_cito DESC) b','a.kode_brg=b.kode_brg','left');
 		$this->db->where('a.kode_brg', $_GET['kode']);
 		$this->db->where('a.kode_bagian', '060101');
 		$this->db->order_by('id_kartucito', 'DESC');
@@ -1388,13 +1388,12 @@ class References extends MX_Controller {
 
 			$html .= '<td align="left" valign="top">Stok Cito : '.$stok_cito.' ('.$exc[0]->satuan_kecil.')</td>';
 			$html .= '</tr>';
-			
 			$html .= '<tr style="background-color: #31ecdb30">';
     		/*get total tarif barang*/
     		$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
 			$html .= '<td valign="top" align="left"><span>Harga Umum : </span> '.number_format($harga_satuan).',- <input type="hidden" name="pl_harga_satuan" value="'.(float)$harga_satuan.'"> </td>';
 			
-			$html .= '<td valign="top" align="left"><span>Harga Cito :</span> '.number_format($harga_satuan_cito).',- <input type="hidden" name="pl_harga_satuan_cito" value="'.$harga_satuan_cito.'"> </td>';
+			$html .= '<td valign="top" align="left"><span>Harga Cito :</span> '.number_format($cito->harga_jual).',- <input type="hidden" name="pl_harga_satuan_cito" value="'.$cito->harga_jual.'"> </td>';
 
 	    	$html .= '</tr>';
 			$html .= '<tr style="background-color: #31ecdb30">';
