@@ -246,6 +246,7 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=1'?>">Daftar Kunjungan Pasien Berdasarkan Usia dan Tahun Kunjungan</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=2'?>">Daftar Kunjungan Pasien Per-hari</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=3'?>">Daftar Registrasi Pasien Per-hari</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=4'?>">Daftar Pasien MCU</a></li>
 										</ol>
 										</div>
 									</div>

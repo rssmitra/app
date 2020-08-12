@@ -43,13 +43,14 @@
         </thead>
         <tbody>
           <?php $no = 0; 
+          $totalhasil=0;
           foreach($result['data'] as $row_data){
             $content      = $row_data->content;
             $stokakhir    = $row_data->stok_akhir;
             $harga        = ($row_data->harga_satuan_po==0) ? 0 : $row_data->harga_satuan_po;
             $hasil        = ($harga==0) ? 0 : $harga / $content;
             $hasill        = $hasil * $stokakhir;
-
+            $totalhasil   = $hasill + $totalhasil;
             $no++; 
             ?>
             <tr>
@@ -72,6 +73,8 @@
           <?php 
         // endforeach; 
       }?>
+      <tr><td align="right" colspan="7">Total</td>
+      <td align="center"><?php echo number_format($totalhasil);?> </td></tr>
         </tbody>
       </table>
 

@@ -1018,7 +1018,23 @@ class Global_report extends MX_Controller {
     }
 
     
+ public function v_mcu(){
 
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'from_tanggal' => $_POST['from_tgl'],
+            'to_tanggal' => $_POST['to_tgl'],
+            'result' => $query_data,
+        );
+
+        
+            $this->load->view('Global_report/v_mcu', $data);
+       
+        
+    }
 }
 
 /* End of file example.php */
