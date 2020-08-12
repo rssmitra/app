@@ -181,8 +181,16 @@
             <span style="margin-top: -0px; padding-left: 10px"> Pelunasan Administrasi</span>
           </td>
         </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>
+            <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
+            <span style="margin-top: -0px; padding-left: 10px"> Biaya APD RJ (Rp. 25,000)</span>
+          </td>
+        </tr>
       </table>
     </td>
+    
   </tr>
 
 </table>

@@ -36,7 +36,8 @@ class Reg_klinik extends MX_Controller {
         $this->load->library('Daftar_pasien');
         $this->load->library('Form_validation');
         $this->load->library('Print_direct');
-        $this->load->library('Print_escpos');        
+        $this->load->library('Print_escpos');  
+        $this->load->library('tarif');      
         
         /*enable profiler*/
         
@@ -323,6 +324,27 @@ class Reg_klinik extends MX_Controller {
             
             // log kuota dokter
             // $this->logs->save_log_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => $datapoli['tgl_jam_poli'], 'keterangan' => null, 'flag' => 'on_the_spot' ));
+
+            // save biaya APD
+            $datatarif = array(
+                /*form hidden input default*/
+                'no_kunjungan' => $this->regex->_genRegex($no_kunjungan,'RGXINT'),
+                'no_registrasi' => $this->regex->_genRegex($no_registrasi,'RGXINT'),
+                'kode_kelompok' => $this->regex->_genRegex($kode_kelompok,'RGXINT'),
+                'kode_perusahaan' => $this->regex->_genRegex($kode_perusahaan,'RGXINT'),
+                'no_mr' => $this->regex->_genRegex($no_mr,'RGXQSL'),
+                'nama_pasien_layan' => $this->regex->_genRegex($_POST['nama_pasien_hidden'],'RGXQSL'),
+                'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
+                /*end form hidden input default*/
+                'kode_bagian' => $this->regex->_genRegex($this->input->post('reg_klinik_rajal'),'RGXQSL'),
+                'kode_klas' => $this->regex->_genRegex($this->input->post('klas'),'RGXINT'),
+                'tgl_transaksi' =>  date('Y-m-d H:i:s'),                
+                'jumlah' => 1,   
+            );
+
+            if($_POST['jenis_pendaftaran'] == 1){
+                $this->tarif->insert_tarif_APD($datatarif, 8);
+            }
 
             /*parameter untuk print tracer*/
             $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
