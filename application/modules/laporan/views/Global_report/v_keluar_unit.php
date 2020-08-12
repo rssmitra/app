@@ -28,7 +28,7 @@
       <table class="greyGridTable">
         <thead>
           <tr>
-            <th>NO</th>
+            <th width="10">NO</th>
            <th width="120">Kategori Barang</th>
            <th width="120">Kode Barang</th>
             <th width="176">Nama Barang</th>
@@ -39,10 +39,12 @@
         </thead>
         <tbody>
           <?php $no = 0; 
+          $total =0;
           foreach($result['data'] as $row_data){
-            $jmlp         = $row_data->jml_pengeluaran;
+            $jmlp         = $row_data->jml_pemasukan;
             $harga        = $row_data->harga_beli;
             $ttl          = $jmlp*$harga;
+            $total=$total + $ttl;
             $no++; 
             ?>
             <tr>
@@ -52,7 +54,7 @@
                   echo '<td>'.$row_data->nama_golongan.' </td>';
                   echo '<td>'.$row_data->kode_brg.' </td>';
                   echo '<td>'.$row_data->nama_brg.' </td>';
-                  echo '<td>'.$row_data->jml_pengeluaran.'</td>';
+                  echo '<td>'.$row_data->jml_pemasukan.'</td>';
                   echo '<td>'.number_format($harga).'</td>';
                   echo '<td>'.number_format($ttl).'</td>';
               ?>
@@ -60,6 +62,8 @@
           <?php 
         // endforeach; 
       }?>
+       <tr><td align="right" colspan="6">Total</td>
+      <td align="center"><?php echo number_format($total);?></td></tr>
         </tbody>
       </table>
 

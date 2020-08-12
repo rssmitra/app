@@ -80,7 +80,8 @@
           <?php 
         // endforeach; 
       }?>
-      <tr><td colspan="7"><td><?php echo number_format($ttlhasil);?></td></tr>
+      <tr><td align="right" colspan="7">Total</td>
+      <td align="center"><?php echo number_format($ttlhasil);?></td></tr>
         </tbody>
       </table>
 

@@ -342,10 +342,16 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag){
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
       $('#btn_submit').attr('disabled', true);
-      $('#warning_stok_obat').html('<span style="color:red"><b><i>Stok sudah habis !</i></b></span>');
+      $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
+    $('#detailPembelianObatHtml').html('');
     }else{
       $('#btn_submit').attr('disabled', false);
       $('#warning_stok_obat').html('');
+      // cek data obat bpjs yang sudah pernah di beli sebelumnya
+      $.getJSON("<?php echo site_url('templates/references/getDataPembelianObat') ?>?kode="+kode_brg+"&kode_perusahaan=<?php echo isset($value)?$value->kode_perusahaan:0?>&bag="+kode_bag+"&type=html&type_layan=Rajal&no_mr="+$('#no_mr').val()+"", '' , function (response) {
+        // show warning
+        $('#detailPembelianObatHtml').html(response.html);
+      })
     }
     /*show detail tarif html*/
     $('#div_detail_obat').show('fast');
@@ -557,6 +563,10 @@ function rollback_resep_farmasi(id){
   }
 }
 
+function changeUrgensi(){
+  alert($("input[type='radio'][name='urgensi']:checked").val());
+}
+
 
 </script>
 
@@ -671,12 +681,12 @@ function rollback_resep_farmasi(id){
                 <div class="col-md-5">
                   <div class="radio">
                       <label>
-                        <input name="urgensi" type="radio" class="ace" value="cito" />
+                        <input name="urgensi" type="radio" class="ace" value="cito" onclick="changeUrgensi()" />
                         <span class="lbl"> Cito</span>
                       </label>
 
                       <label>
-                        <input name="urgensi" type="radio" class="ace" value="biasa" checked/>
+                        <input name="urgensi" type="radio" class="ace" value="biasa" onclick="changeUrgensi()" checked/>
                         <span class="lbl"> Biasa</span>
                       </label>
                   </div>
@@ -785,6 +795,7 @@ function rollback_resep_farmasi(id){
                 <div id="detailObatHtml" class="center">
                 <img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%">
                 </div>
+                <div id="detailPembelianObatHtml"></div>
               </div>
             </div>
           </div>

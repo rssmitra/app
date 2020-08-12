@@ -26,25 +26,38 @@
         <thead>
           <tr>
             <th>NO</th>
-            <th width="100">Nama Unit/Bagian</th>
+            <th width="100">Kode Barang</th>
+            <th width="100">Nama Barang</th>
+            <th width="100">Qty Keluar</th>
+            <th width="100">Harga Beli (Rp. )</th>  
             <th width="100">Total Harga Beli (Rp. )</th>    
           </tr>
         </thead>
         <tbody>
           <?php $no = 0; 
+          $total=0;
           foreach($result['data'] as $row_data){
+            $hargabeli=$row_data->jml_pemasukan * $row_data->harga_beli;
+            $total=$total+$hargabeli;
             $no++; 
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
               <?php 
-                  echo '<td>'.$row_data->nama_bagian.'</td>';
-                  echo '<td>'.number_format($row_data->hargabeli).'</td>';
+                  echo '<td>'.$row_data->kode_brg.'</td>';
+                  echo '<td>'.$row_data->nama_brg.'</td>';
+                  echo '<td>'.$row_data->jml_pemasukan.'</td>';
+                  echo '<td>'.number_format($row_data->harga_beli).'</td>';
+                  echo '<td>'.number_format($hargabeli).'</td>';
               ?>
             </tr>
           <?php 
         // endforeach; 
       }?>
+      <tr>
+        <td colspan="5" align="right">TOTAL</td>
+      <?php echo '<td>'.number_format($total).'</td>';?>
+</tr>
     </table>
 
     </div><!-- /.col -->

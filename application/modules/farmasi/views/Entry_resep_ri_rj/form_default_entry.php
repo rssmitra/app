@@ -209,14 +209,16 @@ $(document).ready(function(){
 function getDetailObatByKodeBrg(kode_brg,kode_bag){
 
   $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok="+$('#kode_kelompok').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal", '' , function (response) {
+
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
       $('#btn_add_obat').hide('fast');
-      $('#warning_stok_obat').html('<span style="color:red"><b><i>Stok sudah habis !</i></b></span>');
+      $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i>Stok sudah habis !</i></b></div>');
     }else{
       $('#btn_add_obat').show('fast');
       $('#warning_stok_obat').html('');
     }
+
     /*show detail tarif html*/
     $('#div_detail_obat').show('fast');
     $('#detailObatHtml').html(response.html);
@@ -364,6 +366,7 @@ $('#btn_racikan').click(function () {
   var kode_kelompok = $('#kode_kelompok').val();
   show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+kode_kelompok+'&tipe_layanan='+$('#jenis_resep').val()+'', 'RESEP RACIKAN');
 })
+
 
 $('select[name="jenis_resep"]').change(function () {      
   

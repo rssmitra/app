@@ -60,7 +60,7 @@ function cetak_kartu_stok(){
       <div class="form-group">
         <label class="col-md-2">Stok Akhir</label>
         <div class="col-md-2">: 
-          <?php echo isset($value)?$value->jml_sat_kcl.' '.$value->satuan_kecil:''?>
+          <?php echo isset($value)?$value->stok_akhir.' '.$value->satuan_kecil:''?>
         </div>
       </div>
       <div class="form-group">

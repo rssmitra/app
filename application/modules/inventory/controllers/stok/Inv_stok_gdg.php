@@ -118,7 +118,7 @@ class Inv_stok_gdg extends MX_Controller {
             // labeling stok minimum
             $label_color = ( $row_list->stok_minimum > $row_list->stok_akhir || $row_list->stok_akhir == 0 ) ? 'style="background-color: #d15b476b; height: 25px"' : '' ;
             $row[] = '<div class="center">'.$row_list->stok_minimum.'</div>';
-            $row[] = '<div class="center" '.$label_color.'><span style="font-size: 17px">'.number_format($row_list->jml_sat_kcl).'</span></div>';
+            $row[] = '<div class="center" '.$label_color.'><span style="font-size: 17px">'.number_format($row_list->stok_akhir).'</span></div>';
             $row[] = '<div class="left">'.strtoupper($row_list->satuan_kecil).'/'.strtoupper($row_list->satuan_besar).'</div>';
             $row[] = '<div style="text-align: right">'.number_format($row_list->harga_beli).'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);

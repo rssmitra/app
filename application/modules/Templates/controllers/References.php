@@ -1343,66 +1343,112 @@ class References extends MX_Controller {
 		$this->db->order_by('id_kartucito', 'DESC');
 		$cito = $this->db->get()->row();
 		// print_r($this->db->last_query());die;
-    	$html = '';
-    	$html .= '<input type="hidden" name="kode_brg" value="'.$exc[0]->kode_brg.'">';
-		$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_brg.'">';
-		$html .= '<input type="hidden" name="pl_satuan_kecil" value="'.$exc[0]->satuan_kecil.'">';
-		$html .= '<input type="hidden" name="pl_harga_beli" value="'.(int)$exc[0]->harga_beli.'">';
-		$html .= '<input type="hidden" name="pl_sisa_stok" value="'.(int)$exc[0]->stok_akhir.'">';
 
-		if($_GET['type_layan']=='Ranap'){
-			$html .= '<input type="hidden" name="kode_bagian_depo" value="'.$exc[0]->kode_bagian.'">';
+		$html = '';
+		if(count($exc) > 0){
+			$html .= '<input type="hidden" name="kode_brg" value="'.$exc[0]->kode_brg.'">';
+			$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_brg.'">';
+			$html .= '<input type="hidden" name="pl_satuan_kecil" value="'.$exc[0]->satuan_kecil.'">';
+			$html .= '<input type="hidden" name="pl_harga_beli" value="'.(int)$exc[0]->harga_beli.'">';
+			$html .= '<input type="hidden" name="pl_sisa_stok" value="'.(int)$exc[0]->stok_akhir.'">';
+
+			if($_GET['type_layan']=='Ranap'){
+				$html .= '<input type="hidden" name="kode_bagian_depo" value="'.$exc[0]->kode_bagian.'">';
+			}else{
+				$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
+			}
+
+			$html .= '<table class="table" style="font-size: 10px !important">';
+				
+				$flag_medis = ($exc[0]->flag_medis==1) ? 'Alkes' : 'Obat' ;
+				$html .= '<tr>';
+				$link_image = ( $exc[0]->path_image != NULL ) ? PATH_IMG_MST_BRG.$exc[0]->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
+				$html .= '<td width="100px" rowspan="7" valign="middle"><img src="'.$link_image.'" width="100%"><br> 
+				<small>Sisa Stok : </small> <br><span style="font-size: 14px; font-weight: bold; color: green"> '.$exc[0]->stok_akhir.' ('.$exc[0]->satuan_kecil.')</span>
+				</td>';
+				$html .= '</tr>';
+				
+				$html .= '<tr>';
+				$html .= '<td valign="top" colspan="2" align="left"><b>'.$exc[0]->kode_brg.'</b><br> '.$flag_medis.' - '.$exc[0]->nama_brg.' ('.$exc[0]->satuan_kecil.')</td>';
+				
+				// stok cito
+				$stok_cito = isset($cito->stok_akhir)?$cito->stok_akhir:0;
+				$harga_satuan_cito = isset($cito->harga_jual)?$cito->harga_jual:0;
+				$html .= '</tr>';
+				$html .= '<tr>';
+					$html .= '<td align="left" valign="top" style="width: 100px">Stok Cito</td>'; 
+					$html .= '<td align="left" valign="top">'.$stok_cito.' ('.$exc[0]->satuan_kecil.')</td>'; 
+				$html .= '</tr>';
+
+				// harga cito
+				$html .= '<tr>';
+				$html .= '<td valign="top" align="left">Harga Cito</td>';
+				$html .= '<td valign="top" align="left">Rp. '.number_format($harga_satuan_cito, 2).',- <input type="hidden" name="pl_harga_satuan_cito" value="'.$harga_satuan_cito.'"> </td>';
+				$html .= '</tr>';
+				
+				/*harga umum*/
+				$html .= '<tr>';
+				$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
+					$html .= '<td valign="top" align="left">Harga Umum </td>';
+					$html .= '<td valign="top" align="left">Rp. '.number_format($harga_satuan, 2).',- <input type="hidden" name="pl_harga_satuan" value="'.(float)$harga_satuan.'"> </td>';
+				$html .= '</tr>';
+			
+
+				$html .= '<tr>';
+					$html .= '<td valign="top" align="left">Harga BPJS</td>';
+					$html .= '<td valign="top" align="left">Rp. '.number_format($exc[0]->harga_beli,2).',- <input type="hidden" name="pl_harga_satuan_bpjs" value="'.(float)$exc[0]->harga_beli.'"> </td>';
+				$html .= '</tr>';
+			
+			$html .= '</table>';	
 		}else{
-			$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
+			$html .= '<div class="alert alert-danger" style="text-align: left !important"><b><i class="fa fa-exclamation-triangle"></i> Barang Expired !</b> Silahkan lakukan update barang.</div> ';
 		}
 
-    	$html .= '<table class="table table-bordered">';
-    	// $html .= '<thead>';
-    	// $html .= '<tr>';
-    	// $html .= '<th>Kode</th>';
-    	// $html .= '<th>Nama Obat</th>';
-    	// $html .= '<th>Jenis</th>';
-    	// $html .= '<th>Satuan Kecil</th>';
-    	// $html .= '<th>Satuan Besar</th>';
-    	// $html .= '<th>Sisa Stok</th>';
-    	// $html .= '<th>Harga Satuan</th>';
-    	// $html .= '</tr>';
-    	// $html .= '</thead>';
-    	//foreach ($exc as $key => $value) {
-    		$flag_medis = ($exc[0]->flag_medis==1) ? 'Alkes' : 'Obat' ;
-			$html .= '<tr style="background-color: #31ecdb30">';
-			$link_image = ( $exc[0]->path_image != NULL ) ? PATH_IMG_MST_BRG.$exc[0]->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
-	    	$html .= '<td width="100px" rowspan="5" valign="middle"><img src="'.$link_image.'" width="100%"> </td>';
-			$html .= '</tr>';
-			
-			$html .= '<tr style="background-color: #31ecdb30">';
-	    	$html .= '<td valign="top" colspan="2"><b>'.$exc[0]->kode_brg.'</b><br> '.$flag_medis.' - '.$exc[0]->nama_brg.' ('.$exc[0]->satuan_kecil.')</td>';
-			$html .= '</tr>';
-			
-			$html .= '<tr style="background-color: #31ecdb30">';
-			$html .= '<td align="left" valign="top">Stok Gudang : '.$exc[0]->stok_akhir.' ('.$exc[0]->satuan_kecil.')</td>';
-			
-			// stok cito
-			$stok_cito = isset($cito->stok_akhir)?$cito->stok_akhir:0;
-			$harga_satuan_cito = isset($cito->stok_akhir)?$this->tarif->_hitungBPAKOCurrent( $cito->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 ):0;
+    	echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0) );
+        
+	}
 
-			$html .= '<td align="left" valign="top">Stok Cito : '.$stok_cito.' ('.$exc[0]->satuan_kecil.')</td>';
-			$html .= '</tr>';
-			$html .= '<tr style="background-color: #31ecdb30">';
-    		/*get total tarif barang*/
-    		$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
-			$html .= '<td valign="top" align="left"><span>Harga Umum : </span> '.number_format($harga_satuan).',- <input type="hidden" name="pl_harga_satuan" value="'.(float)$harga_satuan.'"> </td>';
-			
-			$html .= '<td valign="top" align="left"><span>Harga Cito :</span> '.number_format($cito->harga_jual).',- <input type="hidden" name="pl_harga_satuan_cito" value="'.$cito->harga_jual.'"> </td>';
+	public function getDataPembelianObat()
+	{
+		$html = '';
+		if($_GET['kode_perusahaan']==120){
+			$qry = 'select top 5 b.kode_trans_far, b.no_resep, d.kode_perusahaan, b.tgl_trans,c.nama_brg, a.jumlah_tebus, a.jumlah_obat_23  from fr_tc_far_detail a 
+			left join fr_tc_far b on b.kode_trans_far=a.kode_trans_far
+			left join mt_barang c on c.kode_brg=a.kode_brg
+			left join tc_registrasi d on d.no_registrasi=b.no_registrasi
+			where a.kode_brg='."'".$_GET['kode']."'".' and b.no_mr='."'".$_GET['no_mr']."'". ' and b.status_transaksi=1 and d.kode_perusahaan=120 
+			order by b.kode_trans_far DESC';
+			$exc_qry = $this->db->query($qry)->result();
+			$html .= '<b><span style="font-size: 11px">Riwayat Transaksi Sebelumnya</span></b>';
+			$html .= '<table class="table table-hover" style="font-size: 10px !important">';
+				$html .= '<thead>';
+					$html .= '<tr>';
+					$html .= '<td>Kode<br>Transaksi</td>';
+					$html .= '<td>No. Resep</td>';
+					$html .= '<td>Tanggal</td>';
+					$html .= '<td>Nama Barang</td>';
+					$html .= '<td>Jumlah<br>Tebus</td>';
+					$html .= '<td>Jumlah<br>Ditangguhkan</td>';
+					$html .= '</tr>';
+				$html .= '</thead>';
+				$html .= '<tbody>';
+				foreach ($exc_qry as $key => $value) {
+					$html .= '<tr>';
+						$html .= '<td>'.$value->kode_trans_far.'</td>';
+						$html .= '<td>'.$value->no_resep.'</td>';
+						$html .= '<td>'.$value->tgl_trans.'</td>';
+						$html .= '<td>'.$value->nama_brg.'</td>';
+						$html .= '<td>'.$value->jumlah_tebus.'</td>';
+						$html .= '<td>'.$value->jumlah_obat_23.'</td>';
+					$html .= '</tr>';
+				}
+				$html .= '</tbody>';
 
-	    	$html .= '</tr>';
-			$html .= '<tr style="background-color: #31ecdb30">';
-				$html .= '<td valign="top" align="left" colspan="2"><span>Harga BPJS :</span> '.number_format($exc[0]->harga_beli,2).',- <input type="hidden" name="pl_harga_satuan_bpjs" value="'.(float)$exc[0]->harga_beli.'"> </td>';
-	    	$html .= '</tr>';
-    	//}
-    	$html .= '</table>';
+			$html .= '</table>';
+		}
+		// print_r($this->db->last_query());die;
 
-    	echo json_encode( array('html' => $html, 'sisa_stok' => $exc[0]->stok_akhir, 'satuan_kecil' => $exc[0]->satuan_kecil) );
+    	echo json_encode( array( 'html' => $html ) );
         
 	}
 

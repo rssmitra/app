@@ -269,6 +269,7 @@ final class Tarif extends AvObjects {
         $db->having('mt_master_tarif_detail.revisi_ke = (SELECT MAX(t2.revisi_ke) FROM mt_master_tarif_detail t2 WHERE mt_master_tarif_detail.kode_master_tarif_detail=t2.kode_master_tarif_detail) ');
 
         $db->order_by('mt_master_tarif_detail.revisi_ke, mt_master_tarif_detail.kode_master_tarif_detail','DESC');
+        $db->limit(1);
         $result = $db->get();
         // print_r($db->last_query());die;
         return $result;
@@ -366,6 +367,39 @@ final class Tarif extends AvObjects {
 
         $mergeData = array_merge($tarif_data, $data);
         
+        $db->insert('tc_trans_pelayanan', $mergeData);
+        return true;
+    }
+
+    public function insert_tarif_APD($data, $jenis_tindakan){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+
+        /*get tarif*/
+        
+        $db->select('a.*, b.nama_tarif');
+        $db->from('mt_master_tarif_detail a, mt_master_tarif b');
+        $db->where('a.kode_tarif=b.kode_tarif');
+        $db->where('a.kode_tarif=10101073');
+        $db->order_by('a.revisi_ke', 'DESC');
+        $db->limit(1);
+        $row_data = $db->get()->row();
+        // print_r($db->last_query());die;
+        /*data for execute*/
+        $kode_trans_pelayanan = $CI->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
+        $tarif_data = array();
+        $tarif_data['kode_trans_pelayanan'] = $kode_trans_pelayanan;
+        $tarif_data['kode_tarif'] = ($row_data->kode_tarif)?$row_data->kode_tarif:'';
+        $tarif_data['jenis_tindakan'] = $jenis_tindakan;
+        $tarif_data['nama_tindakan'] = ($row_data->nama_tarif)?$row_data->nama_tarif:'';
+        $tarif_data['kode_master_tarif_detail'] = ($row_data->kode_master_tarif_detail)?$row_data->kode_master_tarif_detail:'';
+        $tarif_data['bill_rs'] = ($row_data->bill_rs)?$row_data->bill_rs:'';
+        $tarif_data['bill_dr1'] = ($row_data->bill_dr1)?$row_data->bill_dr1:'';
+        $tarif_data['pendapatan_rs'] = ($row_data->pendapatan_rs)?$row_data->pendapatan_rs:'';
+        $tarif_data['status_selesai'] = 2;
+
+        $mergeData = array_merge($tarif_data, $data);
+        // print_r($mergeData);die;
         $db->insert('tc_trans_pelayanan', $mergeData);
         return true;
     }

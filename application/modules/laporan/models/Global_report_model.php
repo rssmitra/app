@@ -375,6 +375,22 @@ class Global_report_model extends CI_Model {
 		return $query;
 
 	}
+
+	public function kunjungan_mod_4(){
+		$kd='010901';
+
+		$query = 'SELECT tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, pl_tc_poli.id_pl_tc_poli,pl_tc_poli.no_antrian, pl_tc_poli.status_batal, pl_tc_poli.status_periksa, pl_tc_poli.kode_gcu, tc_kunjungan.tgl_keluar
+					FROM [tc_kunjungan] left join mt_master_pasien ON mt_master_pasien.no_mr=tc_kunjungan.no_mr
+		left join mt_karyawan ON mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter
+		left join mt_bagian as asal ON asal.kode_bagian=tc_kunjungan.kode_bagian_asal
+		left join mt_bagian as tujuan ON tujuan.kode_bagian=tc_kunjungan.kode_bagian_tujuan
+		left join pl_tc_poli ON pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan
+					where tc_kunjungan.kode_bagian_tujuan='."'".$kd."'".' and convert(varchar,tc_kunjungan.tgl_masuk,23) between '."'".$_POST['from_tgl']."'".' and '."'".$_POST['to_tgl']."'".'
+					order by tc_kunjungan.no_kunjungan ASC ';
+					// echo '<pre>';print_r($query);
+		return $query;
+
+	}
 	public function pengadaan_mod_1(){
 
 		$query = 'SELECT tc_kartu_stok_nm_v.kode_brg, tc_kartu_stok_nm_v.nama_brg, harga_barang.harga_satuan_po, 
@@ -388,17 +404,17 @@ class Global_report_model extends CI_Model {
 								GROUP BY c.kode_brg, d.nama_brg, d.satuan_besar
 							  ) AS harga_barang ON harga_barang.kode_brg=tc_kartu_stok_nm_v.kode_brg
 					WHERE id_kartu IN 
-					(SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm GROUP BY kode_brg) 
-					AND tgl_input <= '."'".$_POST['tgl']."'".'
+					(SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm WHERE kode_bagian='."'070101'".' GROUP BY kode_brg) 
+					AND tgl_input <= '."'".$_POST['tgl']."'".' AND kode_bagian='."'070101'".'
 					ORDER BY nama_kategori, nama_golongan, nama_sub_golongan ASC';
-
+		// echo $query;
 		return $query;
 
 	}
 	public function pengadaan_mod_2(){
 			// $t_stok = ( $_POST['status'] == '1' ) ? 'tc_kartu_stok' : 'tc_kartu_stok_nm' ;
 			if($_POST['status'] == '1' ){
-			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pengeluaran) AS jml_pengeluaran, c.harga_beli FROM [tc_kartu_stok] a 
+			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pemasukan) AS jml_pemasukan, c.harga_beli FROM [tc_kartu_stok] a 
 					 left join mt_barang c ON c.kode_brg=a.kode_brg
   					  left join mt_bagian d ON d.kode_bagian=a.kode_bagian
   					  left join mt_golongan e ON e.kode_golongan=c.kode_golongan
@@ -407,7 +423,7 @@ class Global_report_model extends CI_Model {
 					  		GROUP BY a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, c.harga_beli';
 				}
 			else{
-			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pengeluaran) AS jml_pengeluaran, c.harga_beli FROM [tc_kartu_stok_nm] a 
+			$query = 'SELECT a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, SUM(a.pemasukan) AS jml_pemasukan, c.harga_beli FROM [tc_kartu_stok_nm] a 
 					  left join mt_barang_nm c ON c.kode_brg=a.kode_brg
   					  left join mt_bagian d ON d.kode_bagian=a.kode_bagian
   					  left join mt_golongan_nm e ON e.kode_golongan=c.kode_golongan
@@ -495,6 +511,30 @@ class Global_report_model extends CI_Model {
 	// 				(SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm GROUP BY kode_brg) 
 	// 				AND tgl_input <= '."'".$_POST['tgl']."'".'
 	// 				ORDER BY nama_kategori, nama_golongan, nama_sub_golongan ASC';
+
+	public function pengadaan_mod_7(){
+			// $t_stok = ( $_POST['status'] == '1' ) ? 'tc_kartu_stok' : 'tc_kartu_stok_nm' ;
+			if($_POST['status'] == '1' ){
+			$query = 'SELECT a.kode_brg, c.nama_brg, SUM(a.pemasukan) AS jml_pemasukan, c.harga_beli FROM [tc_kartu_stok] a 
+					 left join mt_barang c ON c.kode_brg=a.kode_brg
+  					  left join mt_bagian d ON d.kode_bagian=a.kode_bagian
+  					  left join mt_golongan e ON e.kode_golongan=c.kode_golongan
+					  where MONTH(a.tgl_input) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(a.tgl_input)='."'".$_POST['year']."'".' 
+					  		GROUP BY a.kode_bagian, d.nama_bagian, e.nama_golongan, a.kode_brg, c.nama_brg, c.harga_beli';
+				}
+			else{
+			$query = 'SELECT a.kode_brg, c.nama_brg, SUM(a.pemasukan) AS jml_pemasukan, c.harga_beli FROM [tc_kartu_stok_nm] a 
+					  left join mt_barang_nm c ON c.kode_brg=a.kode_brg
+  					  left join mt_bagian d ON d.kode_bagian=a.kode_bagian
+  					  left join mt_golongan_nm e ON e.kode_golongan=c.kode_golongan
+					  where  MONTH(a.tgl_input) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(a.tgl_input)='."'".$_POST['year']."'".' 
+								GROUP BY a.kode_brg, c.nama_brg, c.harga_beli';	
+			}
+				
+
+		return $query;
+
+	}
 public function pengadaan_mod_8(){
 		if($_POST['status']==1){
 			$query = 'SELECT tc_kartu_stok_vv.kode_brg, tc_kartu_stok_vv.nama_brg, tc_kartu_stok_vv.harga_beli, tc_kartu_stok_vv.harga_update, 
