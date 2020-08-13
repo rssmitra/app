@@ -79,11 +79,11 @@ class Adm_kasir_ri_model extends CI_Model {
 			$this->db->where("ri_tc_rawatinap.tgl_masuk > '".$date2."' ");
 		} 
 
-		if((isset($_GET['is_icu']) AND $_GET['is_icu']=='Y')){
-			$this->db->where("ri_tc_rawatinap.bag_pas = '031001' ");
-		}else if((isset($_GET['is_icu']) AND $_GET['is_icu']=='N')){
-			$this->db->where("ri_tc_rawatinap.bag_pas != '031001' ");
-		}
+		// if((isset($_GET['is_icu']) AND $_GET['is_icu']=='Y')){
+		// 	$this->db->where("ri_tc_rawatinap.bag_pas = '031001' ");
+		// }else if((isset($_GET['is_icu']) AND $_GET['is_icu']=='N')){
+		// 	$this->db->where("ri_tc_rawatinap.bag_pas != '031001' ");
+		// }
         /*end parameter*/
 		/*check level user*/
 		//$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
