@@ -342,7 +342,7 @@ class Reg_klinik extends MX_Controller {
                 'jumlah' => 1,   
             );
 
-            if($_POST['jenis_pendaftaran'] == 1){
+            if( in_array($_POST['jenis_pendaftaran'], array(1,4)) ){
                 $this->tarif->insert_tarif_APD($datatarif, 8);
             }
 
