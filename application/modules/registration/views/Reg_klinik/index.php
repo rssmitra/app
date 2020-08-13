@@ -90,13 +90,10 @@ $(document).ready(function(){
             PopupCenter('registration/Reg_mcu/print_checklist_mcu?kode_tarif='+jsonResponse.kode_tarif_mcu+'&nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'', 'FORM CHEKLIST MCU', 850, 500);
           }
 
-          if( $('select[name="jenis_pendaftaran"]').val() == 1){
+          // 
+          if( $('select[name="jenis_pendaftaran"]').val() == 1 || $('select[name="jenis_pendaftaran"]').val() == 4){
             PopupCenter('registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'&poli='+jsonResponse.poli+'&dokter='+jsonResponse.dokter+'&nasabah='+jsonResponse.nasabah+'', 'FORM BUKTI PENDAFTARAN PASIEN', 950, 550);
           }
-
-          /*else{
-             PopupCenter('registration/Reg_mcu/print_checklist_mcu?kode_tarif='+jsonResponse.kode_tarif_mcu+'&nama='+jsonResponse.nama+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_reg+'', 'FORM CHEKLIST MCU', 850, 500);
-          }*/
 
 
           /*show action after success submit form*/
