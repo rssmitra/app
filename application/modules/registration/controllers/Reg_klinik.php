@@ -121,6 +121,8 @@ class Reg_klinik extends MX_Controller {
     public function print_bukti_pendaftaran_pasien(){
         
         $data = array();
+        $data['registrasi'] = $this->db->get_where('tc_registrasi', array('no_registrasi' => $_GET['no_reg']))->row();
+        // echo '<pre>'; print_r($data);die;
         $this->load->view('Reg_klinik/print_bukti_pendaftaran_pasien_view', $data);
 
     }

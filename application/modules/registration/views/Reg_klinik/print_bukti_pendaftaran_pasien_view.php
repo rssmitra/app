@@ -50,23 +50,46 @@
 </table>
 <hr>
 <span style="font-family: arial; font-size: 14px"><b>Data Pasien</b></span>
-<table border="0">
-<tr>
-  <td width="150px">No. MR</td><td>: <?php echo $_GET['no_mr']?></td>
-</tr>
-<tr>
-  <td width="150px">Nama Pasien</td><td>: <?php echo $_GET['nama']?></td>
-</tr>
-<tr>
-  <td width="150px">Poli Tujuan</td><td>: <?php echo ucwords($_GET['poli'])?></td>
-</tr>
-<tr>
-  <td width="150px">Dokter</td><td>: <?php echo $_GET['dokter']?></td>
-</tr>
-<tr>
-  <td width="150px">Nasabah</td><td>: <?php echo $_GET['nasabah']?></td>
-</tr>
+<table width="100%">
+  <tr>
+    <td width="50%">
+      <table border="0">
+        <tr>
+          <td width="150px">No. MR</td><td>: <?php echo $_GET['no_mr']?></td>
+        </tr>
+        <tr>
+          <td width="150px">Nama Pasien</td><td>: <?php echo $_GET['nama']?></td>
+        </tr>
+        <tr>
+          <td width="150px">Poli Tujuan</td><td>: <?php echo ucwords($_GET['poli'])?></td>
+        </tr>
+        <tr>
+          <td width="150px">Dokter</td><td>: <?php echo $_GET['dokter']?></td>
+        </tr>
+        <tr>
+          <td width="150px">Nasabah</td><td>: <?php echo $_GET['nasabah']?></td>
+        </tr>
+      </table>
+    </td>
+
+    <?php if(in_array($registrasi->kode_bagian_masuk, array('013101','050301') )) :?>
+    <td width="50%" valign="top" align="right">
+      <table border="0" width="100%" style="border: 1px solid black; border-collapse: collapse;">
+        <tr style="border: 1px solid black; border-collapse: collapse;">
+          <td colspan="7" style="border: 1px solid black; border-collapse: collapse;">Kunjungan Ke-</td>
+        </tr>
+        <tr style="border: 1px solid black; border-collapse: collapse;">
+          <?php for($i=1;$i<8;$i++) :?>
+            <td valign="top" style="border: 1px solid black; border-collapse: collapse;height: 50px"><?php echo $i;?></td>
+          <?php endfor;?>
+        </tr>
+      </table>
+    </td>
+    <?php endif;?>
+
+  </tr>
 </table>
+
 <br>
 <span style="font-family: arial; font-size: 14px"><b>Checklist Pelayanan Pasien</b></span>
 <br>
@@ -184,8 +207,13 @@
         <tr>
           <td>&nbsp;</td>
           <td>
-            <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
-            <span style="margin-top: -0px; padding-left: 10px"> Biaya APD RJ (Rp. 25,000)</span>
+            <?php if(!in_array($registrasi->kode_bagian_masuk, array('013101','050301') )) :?>
+              <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
+              <span style="margin-top: -0px; padding-left: 10px"> Biaya APD <?php echo ucwords($_GET['poli'])?> (Rp. 25,000)</span>
+            <?php else: ?>
+              <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
+              <span style="margin-top: -0px; padding-left: 10px"> Biaya APD <?php echo ucwords($_GET['poli'])?> </span>
+            <?php endif; ?>
           </td>
         </tr>
       </table>

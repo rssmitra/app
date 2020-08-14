@@ -320,9 +320,11 @@ class Global_report_model extends CI_Model {
 
 	public function penjualan_obat_internal_bmhp(){
 		
-		$query = 'select kode_barang, kode_perusahaan, kode_kelompok, SUM(jumlah) as jumlah, AVG(bill_rs) as bill_rs
-		from tc_trans_pelayanan where kode_bagian = '."'".$_POST['bagian']."'".' AND kode_kelompok NOT IN(1,2,3,5,6) AND MONTH(tgl_transaksi)= '."'".$_POST['from_month']."'".' and YEAR(tgl_transaksi) = '."'".$_POST['year']."'".' group by kode_barang, kode_perusahaan, kode_kelompok';
-			
+		// $query = 'select kode_barang, kode_perusahaan, kode_kelompok, SUM(jumlah) as jumlah, AVG(bill_rs) as bill_rs
+		// from tc_trans_pelayanan where kode_bagian = '."'".$_POST['bagian']."'".' AND kode_kelompok NOT IN(1,2,3,5,6) AND MONTH(tgl_transaksi)= '."'".$_POST['from_month']."'".' and YEAR(tgl_transaksi) = '."'".$_POST['year']."'".' group by kode_barang, kode_perusahaan, kode_kelompok';
+			$query = 'select kode_brg, kode_bagian, pengeluaran
+		from tc_kartu_stok where kode_bagian = '."'".$_POST['bagian']."'".' AND jenis_transaksi=7 and MONTH(tgl_input)= '."'".$_POST['from_month']."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' group by kode_brg, kode_bagian, pengeluaran';
+
 		return $this->db->query($query)->result_array();
 	}
 
