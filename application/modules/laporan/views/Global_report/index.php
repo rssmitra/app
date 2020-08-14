@@ -202,6 +202,7 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=9'?>">Laporan Penjualan Obat Per Kategori</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/lappembelian'?>">Laporan Pembelian Obat (Operational Level)</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=10'?>">Laporan Distribusi Unit</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=11'?>">Laporan Unit</a></li>
 										</ol>
 										</div>
 									</div>

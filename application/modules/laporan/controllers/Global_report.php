@@ -536,6 +536,22 @@ class Global_report extends MX_Controller {
         $this->load->view('Global_report/v_distribusi_unit', $data);
                 
     }
+
+    public function show_data_farmasi_mod_11(){
+
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'result' => $query_data,
+            'tgl1' => $_POST['tgl1'],
+            'tgl2' => $_POST['tgl2'],
+        );
+        // echo '<pre>';print_r($query_data);
+        $this->load->view('Global_report/v_laporan_if', $data);
+                
+    }
     public function show_data_cito(){
 
         $query_data = $this->Global_report->get_data();
