@@ -36,6 +36,8 @@
             <th width="304" colspan="2">Penjualan Umum</th>
             <th width="304" colspan="2">Penggunaan Internal</th>
             <th width="304" colspan="2">Saldo Akhir</th>
+            <th rowspan="2" width="105">Qty<br/></th>
+            <th rowspan="2" width="105">Keterangan<br/></th>
           </tr>
           <tr>
             <th width="304">Quantity</th>
@@ -101,6 +103,14 @@
             $arr_qty_saldo_akhir[] = $qty_saldo_akhir;
             $arr_rp_saldo_akhir[] = $rp_saldo_akhir;
 
+            $jmlpenerimaan=$jmlpenerimaan+$saldopenerimaan;
+            $jmlpenjualanbpjs=$jmlpenjualanbpjs+$j_bpjs;
+            $jmlpenjualanumum=$jmlpenjualanumum+$j_umum;
+            $penjualanintrnal=$penjualanintrnal+$j_internal;
+            $jmldistribusi=$jmldistribusi+$j_distribusiU;
+
+            $jmlakhir=$jmlakhir+$saldo_akhir;
+            $jmlsaldoakhir=$jmlsaldoakhir+$saldoakhir;
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
