@@ -17,7 +17,7 @@ class Global_report_model extends CI_Model {
 			'fields' 	=> $execute->field_data(),
 			'data' 		=> $execute->result(),
 		);
-		//echo '<pre>'; print_r($this->db->last_query());die;
+		// echo '<pre>'; print_r($this->db->last_query());die;
 		/*return data*/
 		return $result;
 
@@ -193,8 +193,8 @@ class Global_report_model extends CI_Model {
 
 	public function penerimaan_penjualan(){
 		$query = "SELECT b.kode_brg, b.content, SUM(b.jumlah_kirim) as jumlah_kirim, AVG(b.harga) as harga
-			FROM tc_penerimaan_barang as a 
-			LEFT JOIN tc_penerimaan_barang_detail b ON a.kode_penerimaan=b.kode_penerimaan
+			FROM tc_penerimaan_barang_detail as b 
+			LEFT JOIN tc_penerimaan_barang a ON a.kode_penerimaan=b.kode_penerimaan
 			WHERE MONTH(a.tgl_penerimaan)= ".$_POST['from_month']." and YEAR(a.tgl_penerimaan) = ".$_POST['year']." AND a.tgl_penerimaan is not null 
 			GROUP BY b.kode_brg, b.content";
 			
@@ -207,7 +207,7 @@ class Global_report_model extends CI_Model {
 				  LEFT JOIN tc_permintaan_inst e ON e.id_tc_permintaan_inst=a.id_tc_permintaan_inst 
 				  LEFT JOIN mt_bagian g ON g.kode_bagian=e.kode_bagian_minta 
 				  LEFT JOIN mt_rekap_stok f ON f.kode_brg=a.kode_brg 
-				  WHERE MONTH(e.tgl_permintaan)= ".$_POST['from_month']." and YEAR(e.tgl_permintaan) = ".$_POST['year']." AND e.tgl_permintaan is not null
+				  WHERE MONTH(e.tgl_permintaan)= ".$_POST['from_month']." and YEAR(e.tgl_permintaan) = ".$_POST['year']." AND e.tgl_permintaan is not null and status_selesai in (4,5)
 				  GROUP BY a.kode_brg, f.harga_beli";
 			
 		return $this->db->query($query)->result_array();
@@ -272,10 +272,9 @@ class Global_report_model extends CI_Model {
 
 
 	public function akunting_mod_3(){
-		$query = "SELECT a.kode_brg, b.nama_brg, AVG(c.harga_beli) as harga_beli, AVG(d.harga_jual) as hargajual
+		$query = "SELECT a.kode_brg, b.nama_brg, CAST(AVG(c.harga_beli) as INT) as harga_beli
 		FROM  mt_depo_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
 		LEFT JOIN mt_rekap_stok c on a.kode_brg=c.kode_brg
-		inner JOIN fr_tc_far_detail d ON d.kode_brg=a.kode_brg 
 		WHERE a.kode_bagian= ".$_POST['bagian']." AND a.kode_brg IS NOT NULL
 		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC";
 			
@@ -283,48 +282,69 @@ class Global_report_model extends CI_Model {
 	}
 	
 
-	public function get_saldo_bmhp(){
-		$month=$_POST['from_month'] - 1;
-		$query = 'select kode_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, kode_brg
-		from tc_kartu_stok where id_kartu IN 
-					(SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where kode_bagian =  '."'".$_POST['bagian']."'".' AND  MONTH(tgl_input)= '."'".$month."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' group by kode_brg)';
-			
+	public function get_saldo_awal(){
+		$month = $_POST['from_month'] - 1;
+		$query = 'select tc_kartu_stok.kode_brg, nama_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu
+		from tc_kartu_stok left join mt_barang on mt_barang.kode_brg=tc_kartu_stok.kode_brg where id_kartu IN 
+					(SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where kode_bagian =  '."'".$_POST['bagian']."'".' AND  MONTH(tgl_input)= '."'".$month."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' AND nama_brg is not null group by tc_kartu_stok.kode_brg)';
+		// echo $query;
 		return $this->db->query($query)->result_array();
 	}
 
-	public function penerimaan_penjualan_bmhp(){
+	public function permintaan_brg_medis_unit(){
 		$query = "SELECT b.kode_brg, SUM(b.jumlah_penerimaan) as jumlah_penerimaan
 			FROM tc_permintaan_inst as a 
 			LEFT JOIN tc_permintaan_inst_det b ON a.id_tc_permintaan_inst=b.id_tc_permintaan_inst
 			WHERE a.kode_bagian_minta = ".$_POST['bagian']." AND MONTH(a.tgl_input_terima)= ".$_POST['from_month']." and YEAR(a.tgl_input_terima) = ".$_POST['year']." AND a.tgl_input_terima is not null 
 			GROUP BY b.kode_brg";
-			
+		// echo $query;
 		return $this->db->query($query)->result_array();
 	}
 
-	public function penjualan_obat_bpjs_bmhp(){
+	public function penjualan_obat(){
 		
-		$query = 'select kode_barang, kode_perusahaan, SUM(jumlah) as jumlah, AVG(bill_rs) as bill_rs
-		from tc_trans_pelayanan where kode_bagian = '."'".$_POST['bagian']."'".' AND MONTH(tgl_transaksi)= '."'".$_POST['from_month']."'".' and YEAR(tgl_transaksi) = '."'".$_POST['year']."'".' group by kode_barang, kode_perusahaan';
-			
+		$query = 'select CAST(tgl_transaksi as DATE) as tgl_transaksi,a.kode_tc_trans_kasir, a.kode_perusahaan, a.kode_trans_far,
+		(CASE
+			WHEN b.nama_brg IS NULL THEN a.kode_barang
+			ELSE b.kode_brg
+		END) as kode_brg,
+		(CASE
+			WHEN b.nama_brg IS NULL THEN a.nama_tindakan
+			ELSE b.nama_brg
+		END) as nama_brg, 
+		(CASE
+			WHEN b.nama_brg IS NULL THEN CAST(a.jumlah as INT)
+			ELSE b.jumlah
+		END) as jumlah,
+		(CASE
+			WHEN b.nama_brg IS NULL THEN CAST(ISNULL(bill_rs / NULLIF(a.jumlah,0),0) as INT)
+			ELSE CAST(b.harga_jual as INT)
+		END) as harga_satuan,
+		(CASE
+			WHEN b.nama_brg IS NULL THEN CAST(bill_rs as INT)
+			ELSE CAST(b.jumlah_total as INT)
+		END) as jumlah_total
+		from tc_trans_pelayanan a
+		full outer join tc_far_racikan_detail b on CAST(b.id_tc_far_racikan as VARCHAR)=a.kode_barang
+		where (jenis_tindakan in (9,11) ) and YEAR(tgl_transaksi)='.$_POST['year'].' AND MONTH(tgl_transaksi)='.$_POST['from_month'].' and (a.kode_bagian='."'".$_POST['bagian']."'".' or a.kode_bagian_asal='."'".$_POST['bagian']."'".') AND bill_rs > 0
+		order by a.tgl_transaksi, a.nama_tindakan, b.nama_brg ASC';
+		// echo $query;
 		return $this->db->query($query)->result_array();
 	}
 
 	public function penjualan_obat_umum_bmhp(){
 		
 		$query = 'select kode_barang, kode_perusahaan, SUM(jumlah) as jumlah, AVG(bill_rs) as bill_rs
-		from tc_trans_pelayanan where kode_bagian = '."'".$_POST['bagian']."'".' AND MONTH(tgl_transaksi)= '."'".$_POST['from_month']."'".' and YEAR(tgl_transaksi) = '."'".$_POST['year']."'".' group by kode_barang, kode_perusahaan';
+		from tc_trans_pelayanan where kode_bagian = '."'".$_POST['bagian']."'".' AND MONTH(tgl_transaksi)= '."'".$_POST['from_month']."'".' and YEAR(tgl_transaksi) = '."'".$_POST['year']."'".' and jenis_tindakan=9 group by kode_barang, kode_perusahaan';
 			
 		return $this->db->query($query)->result_array();
 	}
 
 	public function penjualan_obat_internal_bmhp(){
 		
-		// $query = 'select kode_barang, kode_perusahaan, kode_kelompok, SUM(jumlah) as jumlah, AVG(bill_rs) as bill_rs
-		// from tc_trans_pelayanan where kode_bagian = '."'".$_POST['bagian']."'".' AND kode_kelompok NOT IN(1,2,3,5,6) AND MONTH(tgl_transaksi)= '."'".$_POST['from_month']."'".' and YEAR(tgl_transaksi) = '."'".$_POST['year']."'".' group by kode_barang, kode_perusahaan, kode_kelompok';
-			$query = 'select kode_brg, kode_bagian, pengeluaran
-		from tc_kartu_stok where kode_bagian = '."'".$_POST['bagian']."'".' AND jenis_transaksi=7 and MONTH(tgl_input)= '."'".$_POST['from_month']."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' group by kode_brg, kode_bagian, pengeluaran';
-
+		$query = 'select kode_brg, kode_bagian, SUM(pengeluaran) as jumlah
+		from tc_kartu_stok where kode_bagian = '."'".$_POST['bagian']."'".' AND jenis_transaksi in (6,7) and MONTH(tgl_input)= '."'".$_POST['from_month']."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' group by kode_brg, kode_bagian';
+		// echo $query;
 		return $this->db->query($query)->result_array();
 	}
 
@@ -455,10 +475,12 @@ class Global_report_model extends CI_Model {
 					GROUP BY nama_bagian';
 				}
 				else{
-					$query = 'SELECT nama_bagian, sum(hargabeli) as hargabeli
-			      	  FROM [view_rekap_stok_nm] 
-			      	  where MONTH(tgl_input) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_input)='."'".$_POST['year']."'".' 
-					GROUP BY nama_bagian';
+					// $query = 'SELECT nama_bagian, sum(hargabeli) as hargabeli
+			  //     	  FROM [view_rekap_stok_nm] 
+			  //     	  where MONTH(tgl_input) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_input)='."'".$_POST['year']."'".' 
+					// GROUP BY nama_bagian';
+			$query = ' SELECT nama_bagian,SUM(hargabeli) as hargabeli FROM v_rekap_unit 
+				where MONTH(tgl_pengiriman) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_pengiriman)='."'".$_POST['year']."'".' group by nama_bagian';
 				}
 
 		return $query;
@@ -669,6 +691,28 @@ public function pengadaan_mod_8(){
 		return $query;
 
 	}
+
+	public function farmasi_mod_11(){
+		if($_POST['status']==1){
+			$query = 'SELECT a.kode_brg, b.nama_brg, a.pengeluaran 
+				 FROM tc_kartu_stok a LEFT JOIN mt_barang b ON b.kode_brg=a.kode_brg
+				  WHERE a.kode_bagian='."'".$_POST['bagian']."'".' and month(a.tgl_input)='."'".$_POST['from_month']."'".'  and
+				  year(a.tgl_input)='."'".$_POST['year']."'".' and a.jenis_transaksi=7 GROUP BY a.kode_brg, b.nama_brg';
+			} else {
+			$query = 'SELECT a.kode_brg, c.nama_brg, b.SUM(jumlah_permintaan) AS jumlah 
+				 FROM tc_permintaan_inst_nm a
+				 LEFT JOIN tc_permintaan_inst_nm_det b ON a.id_tc_permintaan_inst=b.id_tc_permintaan_inst
+				 LEFT JOIN mt_barang c ON c.kode_brg=b.kode_brg
+				  WHERE a.kode_bagian_minta='."'".$_POST['bagian']."'".' and month(a.tgl_input)='."'".$_POST['from_month']."'".'  and
+				  year(a.tgl_input)='."'".$_POST['year']."'".' and a.status_selesai IN (4,5) GROUP BY a.kode_brg, b.nama_brg';
+
+		}
+		
+		
+		return $query;
+
+	}
+
 
 	public function farmasi_mod_4(){
 

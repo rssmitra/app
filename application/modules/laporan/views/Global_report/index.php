@@ -137,7 +137,7 @@
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=1'?>">Setoran Harian Kasir</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=2'?>">Transaksi Pasien BPJS</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Resume Laporan Kasir</a></li>
-												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Laporan BMHP (Barang Medis Habis Pakai)</a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Laporan Penerimaan dan Pemakaian Obat  <i class="fa fa-bookmark green"></i> </a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=4'?>">Laporan IF (Unit Farmasi)</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/lainnyabillingdokter?mod=1'?>">Daftar Billing Dokter yang belum dibayarkan Per-periode</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Stok Barang Medis Per-periode</a></li>
@@ -202,7 +202,7 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=9'?>">Laporan Penjualan Obat Per Kategori</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/lappembelian'?>">Laporan Pembelian Obat (Operational Level)</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=10'?>">Laporan Distribusi Unit</a></li>
-											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=11'?>">Laporan Unit</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=11'?>">Laporan Pemakaian Unit</a></li>
 										</ol>
 										</div>
 									</div>

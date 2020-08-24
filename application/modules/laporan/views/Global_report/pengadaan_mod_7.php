@@ -40,7 +40,7 @@
               
           </div> 
           <div class="form-group">
-              <label class="control-label col-md-2">Dari Tanggal </label>
+              <label class="control-label col-md-2">Dari Bulan </label>
               
               <div class="col-md-1">
                 <?php echo $this->master->get_bulan('','from_month','from_month','form-control','','');?>

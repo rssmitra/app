@@ -38,6 +38,8 @@
             <th width="304" colspan="2">Penggunaan Internal</th>
             <th width="304" colspan="2">Distribusi & ALokasi Unit</th>
             <th width="304" colspan="2">Saldo Akhir</th>
+            <th rowspan="2" width="105">Qty<br/></th>
+            <th rowspan="2" width="105">Keterangan<br/></th>
           </tr>
           <tr>
             <th width="304">Quantity</th>
@@ -200,7 +202,17 @@
 
         </tbody>
       </table>
-
+      <table border="0" width="100%">
+  <tr>
+  <td colspan="2" valign="bottom" style="padding-top:25px" align="right"> Jakarta, ..........................</td>
+    <tr><td valign="bottom" style="padding-top:25px" align="right">
+    <b>Mengetahui<br><br><br><br><br><br>_________________________
+  </td>
+  <td valign="bottom" style="padding-top:25px" align="right">
+    <b>Petugas<br><br><br><br><br><br>_________________________
+  </td>
+</tr>
+</table>
     </div>
   </div>
 </body>

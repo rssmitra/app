@@ -14,7 +14,7 @@
 <head>
   <title>Laporan Umum</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
   <div class="row">
@@ -23,42 +23,34 @@
       <center><h4><?php echo $title?></h4></center>
       <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
 
-      <table class="table">
+      <table class="greyGridTable">
         <thead>
           <tr>
             <th>NO</th>
-             <th width="100">Nama kategori</th>
-            <th width="100">Kode Barang</th>
-            <th width="176">Nama Barang</th>
-            <th width="100" align="center">Stok </th>
-            <th width="100" align="center">Harga</th>
-            <th width="100" align="center">Total Harga</th>
-            <th width="100" align="center">Status Barang</th>
+            <th width="105">Kode Barang<br/></th>
+            <th width="95">Nama Barang</th>
+            <th width="304">Qty</th>
           </tr>
         </thead>
         <tbody>
           <?php $no = 0; 
+          $ttlhasil=0;
           foreach($result['data'] as $row_data){
-            $harga_pembelian_terakhir  = ($row_data->harga_pembelian_terakhir==0) ? 0 : $row_data->harga_pembelian_terakhir / $row_data->content ;
-            $total = ($row_data->stok_sebelum == 0) ? 0 : ($row_data->stok_sebelum * $row_data->harga_pembelian_terakhir);
-            $totalr = ($row_data->stok_sebelum == 0)? 0 : ($row_data->stok_sebelum * $harga_pembelian_terakhir);
             $no++; 
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
               <?php 
-               echo '<td>'.$row_data->nama_golongan.'</td>';
                   echo '<td>'.$row_data->kode_brg.'</td>';
                   echo '<td>'.$row_data->nama_brg.'</td>';
-                  echo '<td>'.$row_data->stok_sebelum.'</td>';
-                  echo '<td>'.number_format($row_data->harga_pembelian_terakhir).'</td>';
-                  echo '<td>'.number_format($totalr).'</td>';
-                  echo '<td>'.$row_data->set_status_aktif.'</td>';
+                  echo '<td>'.number_format($row_data->pengeluaran).'</td>';
               ?>
             </tr>
           <?php 
         // endforeach; 
       }?>
+      <tr><td align="right" colspan="7">Total</td>
+      <td align="center"><?php echo number_format($ttlhasil);?></td></tr>
         </tbody>
       </table>
 <table border="0" width="100%">

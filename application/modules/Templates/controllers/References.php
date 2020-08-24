@@ -1568,6 +1568,27 @@ class References extends MX_Controller {
 		echo json_encode($arrResult);
 	}
 
+	public function getItemBarangByUnit()
+	{
+		// print_r($_POST);die;
+		$table = ($_POST['flag']=='non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
+		$join = ($_POST['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+
+		$this->db->from($table.' as a');
+		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg' , 'left');
+		$this->db->like('b.kode_brg', $_POST['keyword']);
+		$this->db->or_like('b.nama_brg', $_POST['keyword']);
+		$this->db->where('a.is_active', 1);
+		$this->db->where('a.kode_bagian', $_POST['unit']);
+		$result = $this->db->get()->result();
+
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;
+		}
+		echo json_encode($arrResult);
+	}
+
 	public function getItemBarangRetur()
 	{
 		// define table
@@ -1733,6 +1754,36 @@ class References extends MX_Controller {
 		$this->db->from($table.' as a');
 		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg' , 'left');
 		$this->db->where('a.kode_brg', $_GET['kode_brg']);
+		$result = $this->db->get()->row();
+		$html = '';
+		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;
+		$warning_stok = ($result->jml_sat_kcl <= 0) ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '' ;
+		$link_image = ( $result->path_image != NULL ) ? PATH_IMG_MST_BRG.$result->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
+		$html .= '<div class="widget-box">
+                    <div class="widget-body" style="background: #edf3f4;">
+                      <div class="widget-main">
+                          <b><span style="font-size: 13px">'.$result->kode_brg.' - '.$result->nama_brg.'</span></b><br>
+                          Sisa stok '.$stok_akhir.' '.$result->satuan_kecil.' | Harga satuan '.number_format($result->harga_beli).',- '.$warning_stok.'
+                      </div>
+                    </div>
+				  </div>
+				  <div>
+					<label class="label label-xs label-primary">Image </label> <br>
+					<div class="center"><img src="'.base_url().$link_image.'" width="50%" style="   border: 1px solid darkgrey;padding: 3px;"></div>
+				  </div>';
+
+		echo json_encode( array('data' => $result, 'html' => $html ) );
+	}
+
+	public function getItemBarangDetailByUnit()
+	{
+		$table = ($_GET['flag']=='non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
+		$join = ($_GET['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+
+		$this->db->from($table.' as a');
+		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg' , 'left');
+		$this->db->where('a.kode_brg', $_GET['kode_brg']);
+		$this->db->where('a.kode_bagian', $_GET['from_unit']);
 		$result = $this->db->get()->row();
 		$html = '';
 		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;

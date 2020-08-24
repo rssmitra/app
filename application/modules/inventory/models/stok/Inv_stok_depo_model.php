@@ -21,7 +21,7 @@ class Inv_stok_depo_model extends CI_Model {
 		$this->db->from($this->table.' as a');
 		$this->db->join('mt_barang b','b.kode_brg=a.kode_brg','left');
 		$this->db->join('mt_rekap_stok c','c.kode_brg=b.kode_brg','left');
-		$this->db->join('( SELECT * FROM tc_kartu_stok_v WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE CAST(tgl_input as DATE) <= '."'".$params_tgl."'".' AND kode_bagian='."'".$params_kode_bagian."'".' GROUP BY kode_brg) ) AS kartu_stok', 'kartu_stok.kode_brg=a.kode_brg','left');
+		$this->db->join('( SELECT * FROM tc_kartu_stok WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE CAST(tgl_input as DATE) <= '."'".$params_tgl."'".' AND kode_bagian='."'".$params_kode_bagian."'".' GROUP BY kode_brg) ) AS kartu_stok', 'kartu_stok.kode_brg=a.kode_brg','left');
 		$this->db->where('a.kode_bagian', $params_kode_bagian);
 		$this->db->where('nama_brg is not null');
 		// $this->db->where('kartu_stok.tgl_input is not null');

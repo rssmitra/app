@@ -624,32 +624,37 @@ class Global_report extends MX_Controller {
     public function show_data_bmhp(){
 
         $query_data = $this->Global_report->get_data();
-        $g_saldo = $this->Global_report->get_saldo_bmhp();
-        $p_penerimaan = $this->Global_report->penerimaan_penjualan_bmhp();
-        $pjl_bpjs = $this->Global_report->penjualan_obat_bpjs_bmhp();
-        $pjl_umum = $this->Global_report->penjualan_obat_umum_bmhp();
-        $pjl_internal = $this->Global_report->penjualan_obat_internal_bmhp();
+        $g_saldo = $this->Global_report->get_saldo_awal();
+        $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
+        $penjualan = $this->Global_report->penjualan_obat();
+        $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
         // get saldo
         foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
-                $get_dt_g_saldo[] = $v_g_saldo;
+            $get_dt_g_saldo[trim($v_g_saldo['kode_brg'])] = (int)$v_g_saldo['stok_akhir'];
             
         }
+        // penerimaan barang unit
+        foreach ($penerimaan_brg_unit as $k_penerimaan_brg => $v_penerimaan_brg) {
+            $dt_penerimaan_brg[trim($v_penerimaan_brg['kode_brg'])] = (int)$v_penerimaan_brg['jumlah_penerimaan'];
+        }
+
         // get data penjualan bpjs
-        foreach ($pjl_bpjs as $k_pjl_bpjs => $v_pjl_bpjs) {
-            if($v_pjl_bpjs['kode_perusahaan']==120){
-                $get_dt_pjl_bpjs[] = $v_pjl_bpjs;
+        foreach ($penjualan as $k_pjl_bpjs => $v_pjl_bpjs) {
+            if($v_pjl_bpjs['kode_perusahaan'] ==  120){
+                $dt_penjualan_bpjs[trim($v_pjl_bpjs['kode_brg'])] = array('jumlah' => (int)$v_pjl_bpjs['jumlah'], 'total' => (int)$v_pjl_bpjs['jumlah_total']);
             }
         }
-        // // get data penjualan umum
-        foreach ($pjl_umum as $k_pjl_umum => $v_pjl_umum) {
-            if($v_pjl_umum['kode_perusahaan'] ==0){
-                $get_dt_pjl_umum[] = $v_pjl_umum;
+
+        // data penjualan umum
+        foreach ($penjualan as $k_pjl_umum => $v_pjl_umum) {
+            if($v_pjl_umum['kode_perusahaan'] != 120){
+                $dt_penjualan_umum[trim($v_pjl_umum['kode_brg'])] = array('jumlah' => (int)$v_pjl_umum['jumlah'], 'total' => (int)$v_pjl_umum['jumlah_total']);
             }
         }
-        foreach ($pjl_internal as $k_pjl_internal => $v_pjl_internal) {
-            if($v_pjl_internal['kode_perusahaan'] == 'NULL'){
-                $get_dt_pjl_internal[] = $v_pjl_internal;
-            }
+
+        // bmhp
+        foreach ($bmhp as $k_bmhp => $v_bmhp) {
+                $dt_bmhp[trim($v_bmhp['kode_brg'])] = (int)$v_bmhp['jumlah'];
         }
 
 
@@ -658,16 +663,16 @@ class Global_report extends MX_Controller {
             'title' => $_POST['title'],
             'bagian' => $_POST['bagian'],
             'result' => $query_data,
-            'v_saldo' => $g_saldo,
-            'v_penerimaan' => $p_penerimaan,
-            'dt_pjl_bpjs' => $get_dt_pjl_bpjs,
-            'dt_pjl_umum' => $get_dt_pjl_umum,
-            'dt_pjl_internal' => $get_dt_pjl_internal,
+            'v_saldo' => $get_dt_g_saldo,
+            'v_penerimaan' => $dt_penerimaan_brg,
+            'v_penjualan_bpjs' => $dt_penjualan_bpjs,
+            'v_penjualan_umum' => $dt_penjualan_umum,
+            'v_bmhp' => $dt_bmhp,
         );
 
-        // echo '<pre>';print_r($dt_pjl_bpjs);
+        // echo '<pre>';print_r($data['v_bmhp']);die;
         
-            $this->load->view('Global_report/akunting_keu/v_bmhp', $data);
+        $this->load->view('Global_report/akunting_keu/v_bmhp', $data);
                 
     }
 
@@ -1050,6 +1055,25 @@ class Global_report extends MX_Controller {
             $this->load->view('Global_report/v_mcu', $data);
        
         
+    }
+
+    public function show_data_pemakaian_unit(){
+
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'status' => $_POST['status'],
+            'bagian' => $_POST['bagian'],
+            'bulan' => $_POST['to_month'],
+            'tahun' => $_POST['year'],
+            'result' => $query_data,
+        );
+
+        
+            $this->load->view('Global_report/v_pemakaian_unit', $data);
+                
     }
 }
 
