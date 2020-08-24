@@ -1578,10 +1578,10 @@ class References extends MX_Controller {
 		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg' , 'left');
 		$this->db->like('b.kode_brg', $_POST['keyword']);
 		$this->db->or_like('b.nama_brg', $_POST['keyword']);
-		$this->db->where('a.is_active', 1);
+		// $this->db->where('a.is_active', 1);
 		$this->db->where('a.kode_bagian', $_POST['unit']);
 		$result = $this->db->get()->result();
-
+		// print_r($this->db->last_query());die;
 		$arrResult = [];
 		foreach ($result as $key => $value) {
 			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;

@@ -36,8 +36,6 @@
             <th width="304" colspan="2">Penjualan Umum</th>
             <th width="304" colspan="2">Penggunaan Internal</th>
             <th width="304" colspan="2">Saldo Akhir</th>
-            <th rowspan="2" width="105">Qty<br/></th>
-            <th rowspan="2" width="105">Keterangan<br/></th>
           </tr>
           <tr>
             <th width="304">Quantity</th>
