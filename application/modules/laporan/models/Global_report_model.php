@@ -282,21 +282,12 @@ class Global_report_model extends CI_Model {
 	}
 	
 
-<<<<<<< HEAD
 	public function get_saldo_awal(){
 		$month = $_POST['from_month'] - 1;
 		$query = 'select tc_kartu_stok.kode_brg, nama_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu
 		from tc_kartu_stok left join mt_barang on mt_barang.kode_brg=tc_kartu_stok.kode_brg where id_kartu IN 
 					(SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where kode_bagian =  '."'".$_POST['bagian']."'".' AND  MONTH(tgl_input)= '."'".$month."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' AND nama_brg is not null group by tc_kartu_stok.kode_brg)';
-		// echo $query;
-=======
-	public function get_saldo_bmhp(){
-		$month = $_POST['from_month'] - 1;
-		$query = 'select kode_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, kode_brg
-		from tc_kartu_stok where id_kartu IN 
-					(SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where kode_bagian =  '."'".$_POST['bagian']."'".' AND  MONTH(tgl_input)= '."'".$month."'".' and YEAR(tgl_input) = '."'".$_POST['year']."'".' group by kode_brg)';
-			
->>>>>>> 5ef35f5d7da85fda42b529fe8aa49584fea8aa2a
+		
 		return $this->db->query($query)->result_array();
 	}
 
@@ -312,7 +303,6 @@ class Global_report_model extends CI_Model {
 
 	public function penjualan_obat(){
 		
-<<<<<<< HEAD
 		$query = 'select CAST(tgl_transaksi as DATE) as tgl_transaksi,a.kode_tc_trans_kasir, a.kode_perusahaan, a.kode_trans_far,
 		(CASE
 			WHEN b.nama_brg IS NULL THEN a.kode_barang
@@ -339,11 +329,7 @@ class Global_report_model extends CI_Model {
 		where (jenis_tindakan in (9,11) ) and YEAR(tgl_transaksi)='.$_POST['year'].' AND MONTH(tgl_transaksi)='.$_POST['from_month'].' and (a.kode_bagian='."'".$_POST['bagian']."'".' or a.kode_bagian_asal='."'".$_POST['bagian']."'".') AND bill_rs > 0
 		order by a.tgl_transaksi, a.nama_tindakan, b.nama_brg ASC';
 		// echo $query;
-=======
-		$query = 'select kode_barang, kode_perusahaan, SUM(jumlah) as jumlah, AVG(bill_rs) as bill_rs
-		from tc_trans_pelayanan where kode_bagian = '."'".$_POST['bagian']."'".' AND MONTH(tgl_transaksi)= '."'".$_POST['from_month']."'".' and YEAR(tgl_transaksi) = '."'".$_POST['year']."'".' and jenis_tindakan=9 group by kode_barang, kode_perusahaan';
-			
->>>>>>> 5ef35f5d7da85fda42b529fe8aa49584fea8aa2a
+
 		return $this->db->query($query)->result_array();
 	}
 
