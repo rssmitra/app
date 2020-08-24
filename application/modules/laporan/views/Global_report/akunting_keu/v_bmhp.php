@@ -20,7 +20,7 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <center><h4><?php echo $title?></h4></center>
+      <center><h4>Laporan Penerimaan dan Pemakaian Obat </h4></center>
       <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
 
       <table class="greyGridTable">
@@ -37,6 +37,8 @@
             <th width="304" colspan="2">Penjualan Umum</th>
             <th width="304" colspan="2">Penggunaan Internal</th>
             <th width="304" colspan="2">Saldo Akhir</th>
+            <th rowspan="2" width="105">Qty<br/></th>
+            <th rowspan="2" width="105">Keterangan<br/></th>
           </tr>
           <tr>
             <th width="304">Quantity</th>
@@ -55,6 +57,13 @@
         </thead>
         <tbody>
           <?php $no = 0; 
+          $jmlpenerimaan=0;
+            $jmlpenjualanbpjs=0;
+            $jmlpenjualanumum=0;
+            $penjualanintrnal=0;
+            $jmldistribusi=0;
+            $jmlakhir=0;
+            $jmlsaldoakhir=0;
           foreach($result['data'] as $row_data){
             // $saldopenerimaan=$row_data->jumlah_kirim * $row_data->harga_beli;
             $no++; 
@@ -114,6 +123,14 @@
             $saldo_akhir= $qtys + $qty_p - $qty - $qty_u - $qty_i;
             $saldoakhir=$saldo_akhir * $row_data->hargajual;
 
+            $jmlpenerimaan=$jmlpenerimaan+$saldopenerimaan;
+            $jmlpenjualanbpjs=$jmlpenjualanbpjs+$j_bpjs;
+            $jmlpenjualanumum=$jmlpenjualanumum+$j_umum;
+            $penjualanintrnal=$penjualanintrnal+$j_internal;
+            $jmldistribusi=$jmldistribusi+$j_distribusiU;
+
+            $jmlakhir=$jmlakhir+$saldo_akhir;
+            $jmlsaldoakhir=$jmlsaldoakhir+$saldoakhir;
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -137,9 +154,30 @@
               ?>
             </tr>
           <?php } ?>
+           <tr><td colspan="8"><b>TOTAL </b></td>
+          <td><?php echo number_format($jmlpenerimaan);?></td> 
+          <td></td>
+          <td><?php echo number_format($jmlpenjualanbpjs);?></td> 
+          <td></td>
+          <td><?php echo number_format($jmlpenjualanumum);?></td> 
+          <td></td>
+          <td><?php echo number_format($penjualanintrnal);?></td> 
+          <td></td>
+          <td><?php echo number_format($jmlsaldoakhir);?></td> 
         </tbody>
       </table>
-
+      <br>
+<table border="0" width="100%">
+  <tr>
+  <td colspan="2" valign="bottom" style="padding-top:25px" align="right"> Jakarta, ..........................</td>
+    <tr><td valign="bottom" style="padding-top:25px" align="right">
+    <b>Mengetahui<br><br><br><br><br><br>_________________________
+  </td>
+  <td valign="bottom" style="padding-top:25px" align="right">
+    <b>Petugas<br><br><br><br><br><br>_________________________
+  </td>
+</tr>
+</table>
     </div>
   </div>
 </body>

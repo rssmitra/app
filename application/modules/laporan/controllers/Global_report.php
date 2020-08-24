@@ -1051,6 +1051,25 @@ class Global_report extends MX_Controller {
        
         
     }
+
+    public function show_data_pemakaian_unit(){
+
+        $query_data = $this->Global_report->get_data();
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'status' => $_POST['status'],
+            'bagian' => $_POST['bagian'],
+            'bulan' => $_POST['to_month'],
+            'tahun' => $_POST['year'],
+            'result' => $query_data,
+        );
+
+        
+            $this->load->view('Global_report/v_pemakaian_unit', $data);
+                
+    }
 }
 
 /* End of file example.php */

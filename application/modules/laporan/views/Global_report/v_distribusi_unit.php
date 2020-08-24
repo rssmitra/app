@@ -92,7 +92,17 @@
            
           </tbody>
         </table>
-
+<table border="0" width="100%">
+  <tr>
+  <td colspan="2" valign="bottom" style="padding-top:25px" align="right"> Jakarta, ..........................</td>
+    <tr><td valign="bottom" style="padding-top:25px" align="right">
+    <b>Mengetahui<br><br><br><br><br><br>_________________________
+  </td>
+  <td valign="bottom" style="padding-top:25px" align="right">
+    <b>Petugas<br><br><br><br><br><br>_________________________
+  </td>
+</tr>
+</table>
     </div><!-- /.col -->
   </div><!-- /.row -->
 </body>
