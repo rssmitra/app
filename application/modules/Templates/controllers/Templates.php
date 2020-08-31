@@ -450,10 +450,11 @@ class Templates extends MX_Controller {
                     /*resume billing*/
                     $resume_billing[] = $this->Billing->resumeBillingRJ($value_data->jenis_tindakan, $value_data->kode_bagian, $subtotal);
                 }
-            }     
+            }    
+            $arr_subtotal_peritems = isset($sum_subtotal_peritems[$k])?$sum_subtotal_peritems[$k]:[]; 
             $html .= '<tr>';
             $html .= '<td align="right"><b>Subtotal</b></td>';
-            $html .= '<td align="right"><b>Rp. '.number_format(array_sum($sum_subtotal_peritems[$k])).',-</b></td>';
+            $html .= '<td align="right"><b>Rp. '.number_format(array_sum($arr_subtotal_peritems)).',-</b></td>';
             $html .= '</tr>';
 
         }
@@ -488,17 +489,15 @@ class Templates extends MX_Controller {
         //Get the difference in years, as we are looking for the user's age.
         $umur = $difference->format('%y');
         $html = '';
-        $html .= '<table align="left" cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px; margin-left: -10px">';
+        $html .= '<center><h2>RESUME MEDIS PASIEN</h2></center>';
+        $html .= '<table align="left" cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px;">';
+
         $html .= '<tr>';
-            $html .= '<td align="center" colspan="2"><h2>RESUME MEDIS PASIEN</h2></td>';
+            $html .= '<td colspan="2"><b>Pernyataan Pasien</b><br>Dengan ini saya selaku pasien, memberikan ijin kepada dokter untuk memberikan keterangan mengenai penyakit saya, guna kepentingan pengajuan klaim saya.</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
-            $html .= '<td colspan="2"><b><h3>Pernyataan Pasien</h3></b><br>Dengan ini saya selaku pasien, memberikan ijin kepada dokter untuk memberikan keterangan mengenai penyakit saya, guna kepentingan pengajuan klaim saya.</td>';
-        $html .= '</tr>';
-
-        $html .= '<tr>';
-            $html .= '<td colspan="2"><b><h3>Pernyataan Dokter</h3></b><br>Saya, dokter yang merawat, dengan ini menyatakan bahwa keterangan tersebut dibawah ini lengkap dan benar.</td>';
+            $html .= '<td colspan="2"><b>Pernyataan Dokter</b><br>Saya, dokter yang merawat, dengan ini menyatakan bahwa keterangan tersebut dibawah ini lengkap dan benar.</td>';
         $html .= '</tr>';
 
         $html .= '<tr>';
@@ -517,7 +516,7 @@ class Templates extends MX_Controller {
 
         $html .= '<tr>';
             $html .= '<td colspan="2">
-                        <b><h3>Tindakan kepada Pasien</h3></b>
+                        <b>Tindakan kepada Pasien</b><br>
                         Berikut adalah tindakan yang dilakukan oleh dokter kepada pasien sebagai dasar tagihan kepada pasien.<br>
                         <table class="table table-striped" cellpadding="2" cellspacing="2" style="font-size:36px;">
                             <tr>
@@ -543,7 +542,7 @@ class Templates extends MX_Controller {
 
         $html .= '<tr>';
             $html .= '<td colspan="2">
-                        <b><h3>Obat yang diberikan</h3></b>
+                        <b>Obat yang diberikan</b><br>
                         Berikut adalah obat yang diberikan kepada pasien sebagai resep dokter.<br>
                         <table class="table table-striped" cellpadding="2" cellspacing="2"  width="100%" style="font-size:36px;">
                             <tr>

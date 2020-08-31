@@ -75,10 +75,12 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
+	// 'hostname' => '10.10.10.4',
+	// 'database' => 'dev_rssm_sirs',
 	'hostname' => '10.10.10.5',
+	'database' => 'rls_rssm_sirs',
 	'username' => 'sa',
 	'password' => '4v3r1n-averin',
-	'database' => 'rls_rssm_sirs',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

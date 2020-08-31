@@ -804,7 +804,7 @@ class Pl_pelayanan extends MX_Controller {
                 'kode_profit' => $this->regex->_genRegex(2000,'RGXINT'),
                 /*end form hidden after select obat*/
                 'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
-                'tgl_transaksi' => date('Y-m-d'),                
+                'tgl_transaksi' => date('Y-m-d H:i:s'),                
                 'jumlah' => $this->input->post('pl_jumlah_obat'),
                 'harga_satuan' => $this->regex->_genRegex($this->input->post('pl_harga_satuan'),'RGXINT'),
                 

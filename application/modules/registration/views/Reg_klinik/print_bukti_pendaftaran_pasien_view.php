@@ -61,6 +61,9 @@
           <td width="150px">Nama Pasien</td><td>: <?php echo $_GET['nama']?></td>
         </tr>
         <tr>
+          <td width="150px">Tanggal Registrasi</td><td>: <?php echo $this->tanggal->formatDateTime($registrasi->tgl_jam_masuk)?></td>
+        </tr>
+        <tr>
           <td width="150px">Poli Tujuan</td><td>: <?php echo ucwords($_GET['poli'])?></td>
         </tr>
         <tr>

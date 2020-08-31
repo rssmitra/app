@@ -230,12 +230,7 @@ counterfile++;
                 <input name="csm_rp_bagian" id="csm_rp_bagian" value="<?php echo $reg->csm_rp_bagian?>" class="form-control" type="text" disabled>
               </div>
             </div>
-            <div class="form-group">
-              <label class="control-label col-md-2">&nbsp;</label>
-              <div class="col-md-6">
-                <h3>Dokumen Tambahan</h3>
-              </div>
-            </div>
+            <b><h4>DOKUMEN KLAIM TAMBAHAN</h4></b>
             <div class="form-group">
               <label class="control-label col-md-2">Nama Dokumen</label>
               <div class="col-md-2">
@@ -251,6 +246,9 @@ counterfile++;
             </div>
             <div id="input_file<?php echo $j;?>"></div>
 
+            <b><h4>DOKUMEN UPLOAD</h4></b>
+            <?php echo $attachment; ?>
+            
             <!-- hidden form -->
             <input name="no_registrasi_hidden" id="no_registrasi_hidden" value="<?php echo $reg->no_registrasi?>" class="form-control" type="hidden">
             <input name="form_type" id="form_type" value="RI" class="form-control" type="hidden">
@@ -263,7 +261,7 @@ counterfile++;
             <br>
             
             <div class="center">
-              <button onclick="getMenu('casemix/Csm_admin_costing')" class="btn btn-sm btn-success">
+              <button onclick="getMenu('casemix/Csm_verifikasi_costing')" class="btn btn-sm btn-success">
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                 Kembali ke daftar
               </button>

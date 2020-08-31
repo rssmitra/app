@@ -492,7 +492,7 @@ class Billing extends MX_Controller {
             $this->db->update('tc_trans_pelayanan', array('status_selesai' => 3, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $kode_trans_pelayanan));
             // update status bayar farmasi
             if($data_trans->kode_trans_far != null || $data_trans->kode_trans_far != 0){
-                $this->db->update('fr_tc_far', array('status_bayar' => 1), array('kode_trans_pelayanan' => $kode_trans_pelayanan)  );
+                $this->db->update('fr_tc_far', array('status_bayar' => 1), array('kode_trans_far' => $data_trans->kode_trans_far)  );
             }
             $this->db->trans_commit();
         }

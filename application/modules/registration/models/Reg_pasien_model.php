@@ -585,6 +585,9 @@ class Reg_pasien_model extends CI_Model {
 		/*data transaksi*/
 		$transaksi = $this->db->select('kode_trans_pelayanan, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('no_registrasi' => $no_registrasi) )->result();
 
+		// data pembayaran kasir
+		$trans_kasir = $this->db->get_where('tc_trans_kasir', array('no_registrasi' => $no_registrasi))->result();
+
 		$antrian_poli = $this->db->query("select no_antrian from pl_tc_poli where no_kunjungan in (select no_kunjungan from tc_kunjungan where no_registrasi = ".$no_registrasi.")")->row();
 
 		$this->db->select('tmp_user.fullname');
@@ -600,6 +603,7 @@ class Reg_pasien_model extends CI_Model {
 			'tindakan' =>  $transaksi,
 			'no_antrian' => $antrian_poli,
 			'petugas' => $petugas,
+			'trans_kasir' => $trans_kasir,
 			);
 		return $data;
 		
