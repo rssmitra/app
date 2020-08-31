@@ -70,7 +70,7 @@
           <td width="150px">Dokter</td><td>: <?php echo $_GET['dokter']?></td>
         </tr>
         <tr>
-          <td width="150px">Nasabah</td><td>: <?php echo $_GET['nasabah']?></td>
+          <td width="150px">Nasabah</td><td>: <?php echo ($_GET['nasabah'] == 'null')?'Umum':$_GET['nasabah'];?></td>
         </tr>
       </table>
     </td>

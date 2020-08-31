@@ -40,6 +40,8 @@ class Reg_igd extends MX_Controller {
         $this->load->library('Print_direct');
 
         $this->load->library('Print_escpos');
+
+        $this->load->library('tarif'); 
             
         /*enable profiler*/
         
@@ -53,6 +55,7 @@ class Reg_igd extends MX_Controller {
 
     public function process(){
 
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
         //$this->form_validation->set_rules('klinik_rajal', 'Poli/Klinik', 'trim|required');
@@ -127,9 +130,30 @@ class Reg_igd extends MX_Controller {
             );
 
         
-             /*save gawat darurat*/
-             $this->Reg_klinik->save('gd_tc_gawat_darurat', $data_gd_tc_gawat_darurat);
- 
+            /*save gawat darurat*/
+            $this->Reg_klinik->save('gd_tc_gawat_darurat', $data_gd_tc_gawat_darurat);
+            
+            // save biaya APD
+            $datatarif = array(
+                /*form hidden input default*/
+                'no_kunjungan' => $this->regex->_genRegex($no_kunjungan,'RGXINT'),
+                'no_registrasi' => $this->regex->_genRegex($no_registrasi,'RGXINT'),
+                'kode_kelompok' => $this->regex->_genRegex($kode_kelompok,'RGXINT'),
+                'kode_perusahaan' => $this->regex->_genRegex($kode_perusahaan,'RGXINT'),
+                'no_mr' => $this->regex->_genRegex($no_mr,'RGXQSL'),
+                'nama_pasien_layan' => $this->regex->_genRegex($_POST['nama_pasien_hidden'],'RGXQSL'),
+                'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
+                /*end form hidden input default*/
+                'kode_bagian' => $this->regex->_genRegex($this->input->post('reg_klinik_rajal'),'RGXQSL'),
+                'kode_klas' => $this->regex->_genRegex($this->input->post('klas'),'RGXINT'),
+                'tgl_transaksi' =>  date('Y-m-d H:i:s'),                
+                'jumlah' => 1,   
+            );
+            
+            if( in_array($_POST['jenis_pendaftaran'], array(1,4)) ){
+                $this->tarif->insert_tarif_APD($datatarif, 8);
+            }
+
              /*save logs*/
              $this->logs->save('gd_tc_gawat_darurat', $data_gd_tc_gawat_darurat['kode_gd'], 'insert new record on Pendaftaran IGD module', json_encode($data_gd_tc_gawat_darurat),'kode_gd');
 
@@ -154,7 +178,9 @@ class Reg_igd extends MX_Controller {
                          $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
                     }
                 }
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new')));
+                $dt = $this->Reg_klinik->get_by_id($no_registrasi);
+
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'Rawat Jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien));
             }
 
         
