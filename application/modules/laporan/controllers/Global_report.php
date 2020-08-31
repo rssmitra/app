@@ -656,7 +656,7 @@ class Global_report extends MX_Controller {
         foreach ($bmhp as $k_bmhp => $v_bmhp) {
                 $dt_bmhp[trim($v_bmhp['kode_brg'])] = (int)$v_bmhp['jumlah'];
         }
-
+        // echo '<pre>';print_r($bmhp);die;
 
         $data = array(
             'flag' => $_POST['flag'],
@@ -670,7 +670,7 @@ class Global_report extends MX_Controller {
             'v_bmhp' => $dt_bmhp,
         );
 
-        // echo '<pre>';print_r($data['v_bmhp']);die;
+        // echo '<pre>';print_r($data['result']);die;
         
         $this->load->view('Global_report/akunting_keu/v_bmhp', $data);
                 

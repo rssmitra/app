@@ -64,33 +64,33 @@
             $jmlsaldoakhir=0;
           foreach($result['data'] as $row_data){
             $no++; 
-
+            $kode_brg = trim($row_data->kode_brg);
             // Saldo Awal
-            $qty_saldo_awal = isset($v_saldo[$row_data->kode_brg]) ? ($v_saldo[$row_data->kode_brg] > 0) ? $v_saldo[$row_data->kode_brg] : 0 : 0 ;
+            $qty_saldo_awal = isset($v_saldo[$kode_brg]) ? ($v_saldo[$kode_brg] > 0) ? $v_saldo[$kode_brg] : 0 : 0 ;
             $rp_saldo_awal = $qty_saldo_awal * $row_data->harga_beli;
             $arr_qty_saldo_awal[] = $qty_saldo_awal;
             $arr_rp_saldo_awal[] = $rp_saldo_awal;
 
             // penerimaan
-            $qty_penerimaan = isset($v_penerimaan[$row_data->kode_brg])?$v_penerimaan[$row_data->kode_brg]:0;
+            $qty_penerimaan = isset($v_penerimaan[$kode_brg])?$v_penerimaan[$kode_brg]:0;
             $rp_penerimaan = $qty_penerimaan * $row_data->harga_beli;
             $arr_qty_penerimaan[] = $qty_penerimaan;
             $arr_rp_penerimaan[] = $rp_penerimaan;
 
             // penjualan bpjs
-            $qty_penjualan_bpjs = isset($v_penjualan_bpjs[$row_data->kode_brg]['jumlah'])?$v_penjualan_bpjs[$row_data->kode_brg]['jumlah']:0;
-            $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$row_data->kode_brg]['total'])?$v_penjualan_bpjs[$row_data->kode_brg]['total']:0;
+            $qty_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['jumlah'])?$v_penjualan_bpjs[$kode_brg]['jumlah']:0;
+            $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['total'])?$v_penjualan_bpjs[$kode_brg]['total']:0;
             $arr_qty_penjualan_bpjs[] = $qty_penjualan_bpjs;
             $arr_rp_penjualan_bpjs[] = $rp_penjualan_bpjs;
 
             // penjualan umum
-            $qty_penjualan = isset($v_penjualan_umum[$row_data->kode_brg]['jumlah'])?$v_penjualan_umum[$row_data->kode_brg]['jumlah']:0;
-            $rp_penjualan = isset($v_penjualan_umum[$row_data->kode_brg]['total'])?$v_penjualan_umum[$row_data->kode_brg]['total']:0;
+            $qty_penjualan = isset($v_penjualan_umum[$kode_brg]['jumlah'])?$v_penjualan_umum[$kode_brg]['jumlah']:0;
+            $rp_penjualan = isset($v_penjualan_umum[$kode_brg]['total'])?$v_penjualan_umum[$kode_brg]['total']:0;
             $arr_qty_penjualan[] = $qty_penjualan;
             $arr_rp_penjualan[] = $rp_penjualan;
 
             // bmhp
-            $qty_bmhp = isset($v_bmhp[$row_data->kode_brg])?$v_bmhp[$row_data->kode_brg]:0;
+            $qty_bmhp = isset($v_bmhp[$kode_brg])?$v_bmhp[$kode_brg]:0;
             $rp_bmhp = $qty_bmhp * $row_data->harga_beli;
             $arr_qty_bmhp[] = $qty_bmhp;
             $arr_rp_bmhp[] = $rp_bmhp;
@@ -113,7 +113,7 @@
             <tr>
               <td align="center"><?php echo $no;?></td>
               <?php 
-                echo '<td>'.$row_data->kode_brg.'</td>';
+                echo '<td>'.$kode_brg.'</td>';
                 echo '<td>'.$row_data->nama_brg.'</td>';
                 echo '<td>'.$row_data->harga_beli.'</td>';
                 // saldo awal
