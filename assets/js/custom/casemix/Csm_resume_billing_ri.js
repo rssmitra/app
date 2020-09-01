@@ -50,7 +50,7 @@ $(document).ready(function() {
             else {
                 /*data*/
                
-                $.getJSON("casemix/Csm_resume_billing_ri/getDetail/" + no_registrasi + "/" + tipe, '', function (data) {
+                $.getJSON("billing/Billing/getDetail/" + no_registrasi + "/" + tipe, '', function (data) {
                     response_data = data;
                      // Open this row
                     row.child( format( response_data ) ).show();
@@ -346,11 +346,12 @@ function reload_table(){
   
 function getBillingDetail(noreg, type, field){
   preventDefault();
-  $.getJSON("casemix/Csm_resume_billing_ri/getRincianBilling/" + noreg + "/" + type + "/" +field, '', function (data) {
+  $.getJSON("billing/Billing/getRincianBilling/" + noreg + "/" + type + "/" +field, '', function (data) {
       response_data = data;
       html = '';
       html += '<div class="center"><p><b>RINCIAN BIAYA '+field+'</b></p></div>';
-      $('#'+noreg).html(response_data.html);
+      //alert(response_data.html); return false;
+      $('#detail_item_billing_'+noreg+'').html(data.html);
   });
  
 }

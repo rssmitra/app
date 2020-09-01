@@ -124,11 +124,7 @@ class Csm_verifikasi_costing extends MX_Controller {
 
     public function find_data()
     {   
-        $output = array(
-                        "recordsTotal" => $this->Csm_verifikasi_costing->count_all(),
-                        /*"recordsFiltered" => $this->Csm_verifikasi_costing->count_filtered(),*/
-                        "data" => $_POST,
-                );
+        $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
     }
 

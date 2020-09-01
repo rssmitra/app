@@ -23,7 +23,7 @@ class Adm_kasir_ri_model extends CI_Model {
 	}
 
 	private function _main_query(){
-		$date = date('Y-m-d H:i:s', strtotime('-3 days', strtotime(date('Y-m-d H:i:s'))));
+		$date = date('Y-m-d H:i:s', strtotime('-120 days', strtotime(date('Y-m-d H:i:s'))));
 		$date2 = date('Y-m-d H:i:s', strtotime('-30 days', strtotime(date('Y-m-d H:i:s'))));
 		$this->db->select($this->select);
 		$this->db->from($this->table);
@@ -59,13 +59,13 @@ class Adm_kasir_ri_model extends CI_Model {
 				$this->db->where("convert(varchar,ri_tc_rawatinap.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 			}
 
-			if(isset($_GET['status_ranap']) AND $_GET['status_ranap']!=''){
+			if(isset($_GET['status_ranap']) AND $_GET['status_ranap'] != ''){
 
-				if($_GET['status_ranap']=='sudah pulang' ){
+				if($_GET['status_ranap']=='sudah pulang'){
 					$this->db->where("ri_tc_rawatinap.status_pulang=1 and ri_tc_rawatinap.tgl_keluar > '".$date."' ");
 				}
 		
-				if($_GET['status_ranap']=='masih dirawat'  ){
+				if($_GET['status_ranap']=='masih dirawat'){
 					$this->db->where('(ri_tc_rawatinap.status_pulang=0 or ri_tc_rawatinap.status_pulang IS NULL)');
 					//$this->db->where(array('YEAR(ri_tc_rawatinap.tgl_masuk)' => date('Y'), 'MONTH(ri_tc_rawatinap.tgl_masuk)' => date('m')));
 					$this->db->where("ri_tc_rawatinap.tgl_masuk > '".$date2."' ");

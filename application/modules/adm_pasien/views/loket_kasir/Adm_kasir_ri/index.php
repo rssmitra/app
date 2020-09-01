@@ -34,6 +34,7 @@ $(document).ready(function(){
     "searching": false,
     "bPaginate": true,
     "bInfo": false,
+    "pageLength" : 50,
     // Load data for the table's content from an Ajax source
      "ajax": {
         "url": "adm_pasien/loket_kasir/Adm_kasir_ri/get_data?search_by="+$("#search_by").val()+"&keyword="+$("#keyword_form").val()+"&is_icu="+$("#is_icu").val()+"",

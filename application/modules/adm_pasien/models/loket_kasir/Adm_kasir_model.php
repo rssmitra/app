@@ -35,7 +35,7 @@ class Adm_kasir_model extends CI_Model {
 			}		
 		}
 
-		if( isset($_GET['is_with_date']) AND $_GET['is_with_date'] == 1 ){
+		if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
 			$this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
 			// $this->db->where('a.kode_tc_trans_kasir IS NULL');

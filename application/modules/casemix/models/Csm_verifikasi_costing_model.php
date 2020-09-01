@@ -23,16 +23,20 @@ class Csm_verifikasi_costing_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('csm_reg_pasien', 'csm_reg_pasien.no_registrasi='.$this->table.'.no_registrasi', 'INNER');
 
+		if( isset($_GET['search_by_field']) AND $_GET['search_by_field'] != 'month_year' ){
+			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+				$this->db->where("CAST(".$_GET['search_by_field']." as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
+			}else{
+				$this->db->where(" MONTH(csm_dokumen_klaim.created_date) > ".$curr_month." " );
+			}
+		}
+		
 		if( isset($_GET['field']) AND $_GET['field']=='month_year'){
 			if (isset($_GET['month']) AND $_GET['month'] != '' ) {
 				$this->db->where("MONTH(csm_reg_pasien.csm_rp_tgl_masuk) = '".$_GET['month']."' " );
 			}
 			if (isset($_GET['year']) AND $_GET['year'] != '' ) {
 				$this->db->where("YEAR(csm_reg_pasien.csm_rp_tgl_masuk) = '".$_GET['year']."' " );
-			}
-		}else{
-			if (isset($_GET['frmdt']) AND $_GET['frmdt'] != '' || isset($_GET['todt']) AND $_GET['todt'] != '') {
-				$this->db->where("csm_dokumen_klaim.".$_GET['field']." BETWEEN '".$this->tanggal->selisih($_GET['frmdt'], '+0')."' AND '".$this->tanggal->selisih($_GET['todt'], '+0')."' " );
 			}
 		}
 		
@@ -41,7 +45,8 @@ class Csm_verifikasi_costing_model extends CI_Model {
 				$this->db->where("csm_dk_tipe = '".$_GET['tipe']."' " );
 			}
 		}
-		$this->db->where(" MONTH(csm_reg_pasien.csm_rp_tgl_masuk) > ".$curr_month." " );
+
+		
 
 		
 	}
@@ -79,7 +84,7 @@ class Csm_verifikasi_costing_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

@@ -19,11 +19,11 @@ jQuery(function($) {
       $('#month_year_field').show('fast');
       $('#tanggal_field').hide('fast');
     }else{
-      if (field=='created_date') {
-        $('#text_label').html('Tanggal Input/Costing');
-      }else {
-        $('#text_label').html('Tanggal Transaksi');
-      }
+      // if (field=='created_date') {
+      //   $('#text_label').html('Pilih Tanggal');
+      // }else {
+      //   $('#text_label').html('Tanggal Transaksi');
+      // }
       $('#month_year_field').hide('fast');
       $('#tanggal_field').show('fast');
     }
@@ -46,38 +46,43 @@ jQuery(function($) {
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_search">
+    <form class="form-horizontal" method="post" id="form_search" action="casemix/Csm_verifikasi_costing/find_data">
 
     <div class="col-md-12">
       <center><h4>VERIFIKASI COSTING<br><small style="font-size:12px">(Silahkan lakukan pencarian data berdasarkan parameter dibawah ini)</small></h4></center>
       <br>
       <div class="form-group">
         <label class="control-label col-md-2">Pencarian Berdasarkan</label>
-          <div class="col-md-6">
+          <div class="col-md-10">
             <div class="radio">
               <label>
-                <input name="search_by_field" type="radio" class="ace" value="created_date" checked>
+                <input name="search_by_field" type="radio" class="ace" value="csm_dokumen_klaim.created_date" checked>
                 <span class="lbl"> Waktu Input/Costing</span>
               </label>
 
               <label>
-                <input name="search_by_field" type="radio" class="ace" value="tgl_transaksi_kasir">
-                <span class="lbl"> Tanggal Transaksi</span>
+                <input name="search_by_field" type="radio" class="ace" value="csm_dokumen_klaim.tgl_transaksi_kasir">
+                <span class="lbl"> Tanggal Transaksi Kasir</span>
               </label>
 
               <label>
+                <input name="search_by_field" type="radio" class="ace" value="csm_reg_pasien.csm_rp_tgl_masuk">
+                <span class="lbl"> Tanggal Kunjungan</span>
+              </label>
+
+              <!-- <label>
                 <input name="search_by_field" type="radio" class="ace" value="month_year">
                 <span class="lbl"> Bulan dan Tahun Transaksi</span>
-              </label>
+              </label> -->
             </div>
 
           </div>
       </div>
       <div class="form-group" id="tanggal_field">
-        <label class="control-label col-md-2" id="text_label">Tanggal Input/Costing</label>
+        <label class="control-label col-md-2" id="text_label">Pilih Tanggal</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl_reg" id="from_tgl_reg" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -87,7 +92,7 @@ jQuery(function($) {
           <label class="control-label col-md-1">s/d Tgl</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl_reg" id="to_tgl_reg" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>

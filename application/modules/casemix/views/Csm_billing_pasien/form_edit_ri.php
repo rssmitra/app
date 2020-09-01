@@ -230,12 +230,7 @@ counterfile++;
                 <input name="csm_rp_bagian" id="csm_rp_bagian" value="<?php echo $reg->csm_rp_bagian?>" class="form-control" type="text" disabled>
               </div>
             </div>
-            <div class="form-group">
-              <label class="control-label col-md-2">&nbsp;</label>
-              <div class="col-md-6">
-                <h3>Dokumen Tambahan</h3>
-              </div>
-            </div>
+            <h3>Dokumen Tambahan</h3>
             <div class="form-group">
               <label class="control-label col-md-2">Nama Dokumen</label>
               <div class="col-md-2">
@@ -263,7 +258,7 @@ counterfile++;
             <br>
             
             <div class="center">
-              <button onclick="getMenu('casemix/Csm_billing_pasien')" class="btn btn-sm btn-success">
+              <button onclick="getMenu('casemix/Csm_resume_billing_ri')" class="btn btn-sm btn-success">
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                 Kembali ke daftar
               </button>
