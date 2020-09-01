@@ -358,8 +358,8 @@ class Templates extends MX_Controller {
                 <tr>
                     <td width="100px">Jenis Kelamin</td>
                     <td width="180px">: '.$data->reg_data->jk.'</td>
-                    <td width="100px">Penjamin</td>
-                    <td width="250px">: '.$data->reg_data->nama_perusahaan.'</td>
+                    <td width="100px">No SEP</td>
+                    <td width="250px">: '.$data->reg_data->no_sep.'</td>
                 </tr>                    
             </table>';
             
@@ -514,59 +514,59 @@ class Templates extends MX_Controller {
                       </td>';
         $html .= '</tr>';
 
-        $html .= '<tr>';
-            $html .= '<td colspan="2">
-                        <b>Tindakan kepada Pasien</b><br>
-                        Berikut adalah tindakan yang dilakukan oleh dokter kepada pasien sebagai dasar tagihan kepada pasien.<br>
-                        <table class="table table-striped" cellpadding="2" cellspacing="2" style="font-size:36px;">
-                            <tr>
-                                <th align="center" width="30px" style="border-collapse: collapse; border-bottom: 1px solid black;">No</th>
-                                <th style="border-collapse: collapse; border-bottom: 1px solid black;">Deskripsi</th>
-                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="120px">Jenis Tindakan</th>
-                            </tr>';
-                            $no_tindakan = 0;
-                            foreach($result['tindakan'] as $row_tindakan) : 
-                                if(in_array($row_tindakan->kode_jenis_tindakan, array(3,10,12) )) :
-                                    $no_tindakan++;
-                                    $html .= '
-                                    <tr>
-                                        <td align="center">'.$no_tindakan.'</td>
-                                        <td>'.$row_tindakan->nama_tindakan.'</td>
-                                        <td>'.$row_tindakan->jenis_tindakan.'</td>
-                                    </tr>';
-                                endif;
-                            endforeach;
-                        $html .= '</table>
-                      </td>';
-        $html .= '</tr>';
+        // $html .= '<tr>';
+        //     $html .= '<td colspan="2">
+        //                 <b>Tindakan kepada Pasien</b><br>
+        //                 Berikut adalah tindakan yang dilakukan oleh dokter kepada pasien sebagai dasar tagihan kepada pasien.<br>
+        //                 <table class="table table-striped" cellpadding="2" cellspacing="2" style="font-size:36px;">
+        //                     <tr>
+        //                         <th align="center" width="30px" style="border-collapse: collapse; border-bottom: 1px solid black;">No</th>
+        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;">Deskripsi</th>
+        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="120px">Jenis Tindakan</th>
+        //                     </tr>';
+        //                     $no_tindakan = 0;
+        //                     foreach($result['tindakan'] as $row_tindakan) : 
+        //                         if(in_array($row_tindakan->kode_jenis_tindakan, array(3,10,12) )) :
+        //                             $no_tindakan++;
+        //                             $html .= '
+        //                             <tr>
+        //                                 <td align="center">'.$no_tindakan.'</td>
+        //                                 <td>'.$row_tindakan->nama_tindakan.'</td>
+        //                                 <td>'.$row_tindakan->jenis_tindakan.'</td>
+        //                             </tr>';
+        //                         endif;
+        //                     endforeach;
+        //                 $html .= '</table>
+        //               </td>';
+        // $html .= '</tr>';
 
-        $html .= '<tr>';
-            $html .= '<td colspan="2">
-                        <b>Obat yang diberikan</b><br>
-                        Berikut adalah obat yang diberikan kepada pasien sebagai resep dokter.<br>
-                        <table class="table table-striped" cellpadding="2" cellspacing="2"  width="100%" style="font-size:36px;">
-                            <tr>
-                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="30px">No</th>
-                                <th style="border-collapse: collapse; border-bottom: 1px solid black;">Nama Obat</th>
-                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="100px">Jumlah</th>
-                                <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="100px">Keterangan</th>
-                            </tr>';
-                            $no_obt = 0;
-                            foreach($result['tindakan'] as $row_obt) : 
-                                if(in_array($row_obt->kode_jenis_tindakan, array(11) )) :
-                                    $no_obt++;
-                                    $html .= '
-                                    <tr>
-                                        <td align="center">'.$no_obt.'</td>
-                                        <td>'.$row_obt->nama_tindakan.'</td>
-                                        <td align="center">'.$row_obt->jumlah_tebus.'</td>
-                                        <td>'.$row_obt->jenis_tindakan.'</td>
-                                    </tr>';
-                                endif;
-                            endforeach;
-                        $html .= '</table>
-                      </td>';
-        $html .= '</tr>';
+        // $html .= '<tr>';
+        //     $html .= '<td colspan="2">
+        //                 <b>Obat yang diberikan</b><br>
+        //                 Berikut adalah obat yang diberikan kepada pasien sebagai resep dokter.<br>
+        //                 <table class="table table-striped" cellpadding="2" cellspacing="2"  width="100%" style="font-size:36px;">
+        //                     <tr>
+        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="30px">No</th>
+        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;">Nama Obat</th>
+        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="100px">Jumlah</th>
+        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="100px">Keterangan</th>
+        //                     </tr>';
+        //                     $no_obt = 0;
+        //                     foreach($result['tindakan'] as $row_obt) : 
+        //                         if(in_array($row_obt->kode_jenis_tindakan, array(11) )) :
+        //                             $no_obt++;
+        //                             $html .= '
+        //                             <tr>
+        //                                 <td align="center">'.$no_obt.'</td>
+        //                                 <td>'.$row_obt->nama_tindakan.'</td>
+        //                                 <td align="center">'.$row_obt->jumlah_tebus.'</td>
+        //                                 <td>'.$row_obt->jenis_tindakan.'</td>
+        //                             </tr>';
+        //                         endif;
+        //                     endforeach;
+        //                 $html .= '</table>
+        //               </td>';
+        // $html .= '</tr>';
 
         $html .= '</table>';
 
@@ -1293,7 +1293,7 @@ class Templates extends MX_Controller {
                         <br/><br/><br/><br/> 
                         <br/> 
                         ( _____________________ )<br>
-                        Generated by '.APPS_NAME_SORT.' ('.date('d/M/Y').')
+                        '.$data->reg_data->nama_pegawai.'
                         
                         </td>   
                     </tr>
