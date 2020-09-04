@@ -249,7 +249,7 @@ counterfile++;
             <div class="form-group">
               <label class="control-label col-md-2">Poli/Klinik</label>
               <div class="col-md-4">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), isset($reg->csm_rp_kode_bagian)?$reg->csm_rp_kode_bagian:'' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'status_aktif' => 1)), isset($reg->csm_rp_kode_bagian)?$reg->csm_rp_kode_bagian:'' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
                 <input name="csm_rp_bagian" id="csm_rp_bagian" value="<?php echo $reg->csm_rp_bagian?>" class="form-control" type="hidden">
               </div>
             </div>

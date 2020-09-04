@@ -21,12 +21,12 @@
     <div class="col-xs-12">
 
       <center><h4>Laporan Stok Awal, Penerimaan, Pemakaian Obat </h4></center>
-      <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
+      <!-- <b>Parameter :</b> <i><?php echo print_r($_POST);?></i> -->
 
-      <table class="table">
+      <table class="table table-bordered">
         <thead>
           <tr style="text-align: center">
-            <th rowspan="2">NO</th>
+            <th rowspan="2">No</th>
             <th rowspan="2" width="105">Kode Barang<br/></th>
             <th rowspan="2" width="95">Nama Barang</th>
             <th rowspan="2" width="304">HPP Satuan</th>
@@ -36,6 +36,8 @@
             <th width="304" colspan="2">Penjualan Umum</th>
             <th width="304" colspan="2">Penggunaan Internal</th>
             <th width="304" colspan="2">Saldo Akhir</th>
+            <th width="304" rowspan="2">Quantity</th>
+            <th width="304" rowspan="2">Keterangan</th>
           </tr>
           <tr>
             <th width="304">Quantity</th>
@@ -101,14 +103,14 @@
             $arr_qty_saldo_akhir[] = $qty_saldo_akhir;
             $arr_rp_saldo_akhir[] = $rp_saldo_akhir;
 
-            $jmlpenerimaan=$jmlpenerimaan+$saldopenerimaan;
-            $jmlpenjualanbpjs=$jmlpenjualanbpjs+$j_bpjs;
-            $jmlpenjualanumum=$jmlpenjualanumum+$j_umum;
-            $penjualanintrnal=$penjualanintrnal+$j_internal;
-            $jmldistribusi=$jmldistribusi+$j_distribusiU;
+            // $jmlpenerimaan = $jmlpenerimaan + $saldopenerimaan;
+            // $jmlpenjualanbpjs=$jmlpenjualanbpjs+$j_bpjs;
+            // $jmlpenjualanumum=$jmlpenjualanumum+$j_umum;
+            // $penjualanintrnal=$penjualanintrnal+$j_internal;
+            // $jmldistribusi=$jmldistribusi+$j_distribusiU;
 
-            $jmlakhir=$jmlakhir+$saldo_akhir;
-            $jmlsaldoakhir=$jmlsaldoakhir+$saldoakhir;
+            // $jmlakhir=$jmlakhir+$saldo_akhir;
+            // $jmlsaldoakhir=$jmlsaldoakhir+$saldoakhir;
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -117,23 +119,26 @@
                 echo '<td>'.$row_data->nama_brg.'</td>';
                 echo '<td>'.$row_data->harga_beli.'</td>';
                 // saldo awal
-                echo '<td>'.$qty_saldo_awal.'</td>';
-                echo '<td>'.$rp_saldo_awal.'</td>';
+                echo '<td align="center">'.$qty_saldo_awal.'</td>';
+                echo '<td align="right">'.$rp_saldo_awal.'</td>';
                 // penerimaan
-                echo '<td>'.$qty_penerimaan.'</td>';
-                echo '<td>'.$rp_penerimaan.'</td>';
+                echo '<td align="center">'.$qty_penerimaan.'</td>';
+                echo '<td align="right">'.$rp_penerimaan.'</td>';
                 // penjualan bpjs
-                echo '<td>'.$qty_penjualan_bpjs.'</td>';
-                echo '<td>'.$rp_penjualan_bpjs.'</td>';
+                echo '<td align="center">'.$qty_penjualan_bpjs.'</td>';
+                echo '<td align="right">'.$rp_penjualan_bpjs.'</td>';
                 // penjualan umum
-                echo '<td>'.$qty_penjualan.'</td>';
-                echo '<td>'.$rp_penjualan.'</td>';
+                echo '<td align="center">'.$qty_penjualan.'</td>';
+                echo '<td align="right">'.$rp_penjualan.'</td>';
                 // bmhp
-                echo '<td>'.$qty_bmhp.'</td>';
-                echo '<td>'.$rp_bmhp.'</td>';
+                echo '<td align="center">'.$qty_bmhp.'</td>';
+                echo '<td align="right">'.$rp_bmhp.'</td>';
 
-                echo '<td>'.$qty_saldo_akhir.'</td>';
-                echo '<td>'.$rp_saldo_akhir.'</td>';
+                echo '<td align="center">'.$qty_saldo_akhir.'</td>';
+                echo '<td align="right">'.$rp_saldo_akhir.'</td>';
+
+                echo '<td></td>';
+                echo '<td></td>';
               ?>
             </tr>
           <?php } ?>
@@ -155,17 +160,17 @@
         </tbody>
       </table>
       <br>
-<table border="0" width="100%">
-  <tr>
-  <td colspan="2" valign="bottom" style="padding-top:25px" align="right"> Jakarta, ..........................</td>
-    <tr><td valign="bottom" style="padding-top:25px" align="right">
-    <b>Mengetahui<br><br><br><br><br><br>_________________________
-  </td>
-  <td valign="bottom" style="padding-top:25px" align="right">
-    <b>Petugas<br><br><br><br><br><br>_________________________
-  </td>
-</tr>
-</table>
+      <!-- <table border="0" width="100%">
+        <tr>
+        <td colspan="2" valign="bottom" style="padding-top:25px" align="right"> Jakarta, ..........................</td>
+          <tr><td valign="bottom" style="padding-top:25px" align="right">
+          <b>Mengetahui<br><br><br><br><br><br>_________________________
+        </td>
+        <td valign="bottom" style="padding-top:25px" align="right">
+          <b>Petugas<br><br><br><br><br><br>_________________________
+        </td>
+      </tr>
+      </table> -->
     </div>
   </div>
 </body>

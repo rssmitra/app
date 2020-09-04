@@ -27,39 +27,39 @@
           <tr>
             <th>NO</th>
             <th width="100">Kode Barang</th>
-            <th width="100">Nama Barang</th>
-            <th width="100">Qty Keluar</th>
-            <th width="100">Harga Beli (Rp. )</th>  
-            <th width="100">Total Harga Beli (Rp. )</th>    
+            <th>Nama Barang</th>
+            <th width="150px">Qty Keluar</th>
+            <th width="150px">Harga Beli (Rp. )</th>  
+            <th width="150px">Total Harga Beli (Rp. )</th>    
           </tr>
         </thead>
         <tbody>
           <?php $no = 0; 
           $total=0;
           foreach($result['data'] as $row_data){
-            $hargabeli=$row_data->jml_pemasukan * $row_data->harga_beli;
+            $hargabeli=$row_data->total * $row_data->harga_beli;
             $total=$total+$hargabeli;
             $no++; 
             ?>
-            <tr>
-              <td align="center"><?php echo $no;?></td>
-              <?php 
-                  echo '<td>'.$row_data->kode_brg.'</td>';
-                  echo '<td>'.$row_data->nama_brg.'</td>';
-                  echo '<td>'.$row_data->jml_pemasukan.'</td>';
-                  echo '<td>'.number_format($row_data->harga_beli).'</td>';
-                  echo '<td>'.number_format($hargabeli).'</td>';
-              ?>
-            </tr>
-          <?php 
-        // endforeach; 
-      }?>
-      <tr>
-        <td colspan="5" align="right">TOTAL</td>
-      <?php echo '<td>'.number_format($total).'</td>';?>
-</tr>
-    </table>
-<table border="0" width="100%">
+              <tr>
+                <td align="center"><?php echo $no;?></td>
+                <?php 
+                    echo '<td>'.$row_data->kode_brg.'</td>';
+                    echo '<td>'.$row_data->nama_brg.'</td>';
+                    echo '<td align="center">'.$row_data->total.'</td>';
+                    echo '<td align="right">'.$row_data->harga_beli.'</td>';
+                    echo '<td align="right">'.$hargabeli.'</td>';
+                ?>
+              </tr>
+            <?php 
+          }?>
+          <tr>
+            <td colspan="5" align="right">TOTAL</td>
+          <?php echo '<td align="right">'.$total.'</td>';?>
+          </tr>
+        </tbody>
+      </table>
+<!-- <table border="0" width="100%">
   <tr>
   <td colspan="2" valign="bottom" style="padding-top:25px" align="right"> Jakarta, ..........................</td>
     <tr><td valign="bottom" style="padding-top:25px" align="right">
@@ -69,7 +69,7 @@
     <b>Petugas<br><br><br><br><br><br>_________________________
   </td>
 </tr>
-</table>
+</table> -->
     </div><!-- /.col -->
   </div><!-- /.row -->
 </body>

@@ -80,11 +80,11 @@ $('select[name="pelayanan"]').change(function () {
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>Laporan Keluar Barang ke Unit</h4>
+        <h4>Laporan Distribusi Barang Unit</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_k_unit" target="_blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
-          <input type="hidden" name="title" value="Laporan Keluar Barang ke Unit">
+          <input type="hidden" name="title" value="Laporan Distribusi Barang Unit">
 
          <!--  <div class="form-group">
             <label class="control-label col-md-2">Status</label>

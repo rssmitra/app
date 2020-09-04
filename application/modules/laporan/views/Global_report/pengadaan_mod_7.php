@@ -23,11 +23,11 @@
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>Laporan Rekap Keluar Barang ke Unit</h4>
+        <h4>Rekap Barang Keluar Berdasarkan Item Barang</h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_rekap_unit_barang" target="blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
-          <input type="hidden" name="title" value="Laporan Rekap Keluar Barang ke Unit Per-Barang">
+          <input type="hidden" name="title" value="Rekap Barang Keluar Berdasarkan Item Barang">
          
            <div class="form-group">
             <label class="control-label col-md-2">Status</label>

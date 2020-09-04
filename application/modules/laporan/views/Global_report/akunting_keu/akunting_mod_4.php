@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
   <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 
 </head>
 <body>
@@ -74,7 +74,7 @@
 
       <div class="col-md-12">
         <br>
-        <h4>Laporan IF (Unit farmasi) Perbulan</h4>
+        <h4>Laporan IF (Unit farmasi) Pertahun</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_if_b" target="blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">

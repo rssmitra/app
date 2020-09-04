@@ -165,9 +165,9 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=8'?>">Laporan Stok Akhir Barang Non Medis Berdasarkan Master Barang</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=3'?>">Laporan Penerimaan Barang</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=10'?>">Laporan Penerimaan Barang Detail</a></li>
-											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=2'?>">Laporan Keluar Barang ke Unit Per-periode</a></li>
-											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=3'?>">Laporan Rekap Keluar Barang ke Unit Per-periode</a></li>
-											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=7'?>">Laporan Rekap Keluar Barang ke Unit Per-Barang</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=2'?>">Laporan Distribusi Barang Unit</a> <i class="fa fa-bookmark green"></i> </li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=3'?>">Rekap Biaya Distribusi Barang Per Unit</a> <i class="fa fa-bookmark green"></i> </li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=7'?>">Rekap Barang Keluar Berdasarkan Item Barang <i class="fa fa-bookmark green"></i> </a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=4'?>" target=_blank>Laporan Permintaan Pembelian </a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=5'?>">Laporan PO </a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=6'?>">Laporan Pembelian </a></li>
