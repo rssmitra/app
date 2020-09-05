@@ -23,11 +23,11 @@
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>Laporan Distribusi Unit Obat & Alkes Berdasarkan Tahun</h4>
+        <h4>Laporan Mutasi Distribusi Barang Unit </h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_farmasi_mod_10" target="blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
-          <input type="hidden" name="title" value="Laporan Distribusi Unit Obat & Alkes Berdasarkan Tahun">
+          <input type="hidden" name="title" value="Laporan Mutasi Distribusi Barang Unit">
 
           <div class="form-group">
             <label class="control-label col-md-2">Tanggal</label>
@@ -47,9 +47,7 @@
           </div>
           <div class="form-group">
             <label class="control-label col-md-2 ">&nbsp;</label>
-            <div class="col-md-10" style="margin-left: 5px">
-             
-             <div class="col-md-10" style="margin-left: 5px">
+             <div class="col-md-10">
               <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
                 Proses Pencarian
               </button>

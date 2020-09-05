@@ -282,7 +282,7 @@ class Global_report_model extends CI_Model {
 			
 		return $this->db->query($query)->result_array();
 	}
-	
+
 	public function get_saldo_awal(){
 		$month = $_POST['from_month'] - 1;
 		$query = 'select tc_kartu_stok.kode_brg, nama_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu
@@ -653,7 +653,7 @@ public function pengadaan_mod_8(){
 	}
 	public function farmasi_mod_10(){
 		$query = 'SELECT a.id_tc_permintaan_inst_det, jumlah_permintaan, 
-				jumlah_penerimaan, a.kode_brg, c.nama_brg, f.harga_beli, c.content as rasio, 
+				jumlah_penerimaan, a.kode_brg, c.nama_brg, CAST(f.harga_beli as INT) as harga_beli, c.content as rasio, 
 				c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, 
 				e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.kode_bagian, g.nama_bagian
 				 FROM tc_permintaan_inst_det a LEFT JOIN mt_barang c ON c.kode_brg=a.kode_brg

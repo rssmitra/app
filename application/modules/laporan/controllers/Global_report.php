@@ -134,7 +134,6 @@ class Global_report extends MX_Controller {
         $distribusiU = $this->Global_report->distribusi_unit();
 
 
-
         // get saldo
         foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
                 $get_dt_g_saldo[] = $v_g_saldo;

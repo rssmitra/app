@@ -144,7 +144,7 @@ class Reg_igd extends MX_Controller {
                 'nama_pasien_layan' => $this->regex->_genRegex($_POST['nama_pasien_hidden'],'RGXQSL'),
                 'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
                 /*end form hidden input default*/
-                'kode_bagian' => $this->regex->_genRegex($this->input->post('reg_klinik_rajal'),'RGXQSL'),
+                'kode_bagian' => $this->regex->_genRegex('020101','RGXQSL'),
                 'kode_klas' => $this->regex->_genRegex($this->input->post('klas'),'RGXINT'),
                 'tgl_transaksi' =>  date('Y-m-d H:i:s'),                
                 'jumlah' => 1,   
