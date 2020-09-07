@@ -106,6 +106,7 @@ function get_resume_billing(){
     $('#jumlah_nk').val( formatMoney($('#total_nk').val()) );
     $('#jumlah_bayar_tunai').val( sisa_nk );
     $('.jumlah_bayar').text( formatMoney( sisa_nk) );
+    $('#uang_dibayarkan').text( formatMoney( sisa_nk ) );
     $('#jml_dibayarkan').text( formatMoney( sisa_nk ) );
     $('#jml_um').text( formatMoney( total_um_dibayar ) );
 
@@ -156,6 +157,7 @@ function sum_total_pembayaran(){
     var blm_dibayarkan = 0;
   }
   $('#sisa_blm_dibayar').text( formatMoney(blm_dibayarkan) );
+  $('#uang_dibayarkan').val( formatMoney(blm_dibayarkan) )
 
 }
 

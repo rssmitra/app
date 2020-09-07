@@ -19,6 +19,7 @@
 
   $(document).ready(function(){
 
+    $('#keyword').focus();
     get_total_billing();
    
     oTable = $('#dt_pasien_kasir').DataTable({ 
@@ -235,9 +236,9 @@
         <div class="col-md-2">
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
-            <option value="a.no_mr" selected>No MR</option>
+            <option value="a.no_mr">No MR</option>
             <option value="c.nama_pasien">Nama Pasien</option>
-            <option value="b.no_sep">Nomor SEP</option>
+            <option value="b.no_sep" selected>Nomor SEP</option>
             <option value="b.no_registrasi">No Registrasi</option>
           </select>
         </div>
@@ -249,7 +250,7 @@
         <label class="control-label col-md-1">Tanggal </label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -257,7 +258,7 @@
           </div>
           <div class="col-md-2" style="margin-left: -2%">
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
