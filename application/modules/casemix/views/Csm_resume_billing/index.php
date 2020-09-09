@@ -29,7 +29,7 @@
 
               <label>
                 <input name="search_by_field" type="radio" class="ace" value="csm_rp_tgl_keluar">
-                <span class="lbl"> Tanggal Transaksi</span>
+                <span class="lbl"> Tanggal Kunjungan</span>
               </label>
             </div>
 
@@ -85,16 +85,17 @@
         <thead>
           <tr>  
             <th width="30px" class="center"></th>
-            <th width="100px">No. SEP</th>
-            <th width="60px">No. MR</th>
+            <th width="30px">No. SEP</th>
+            <th width="40px">No. MR</th>
             <th width="150px">Nama Pasien</th>
-            <th width="100px">Tanggal<br>Transaksi</th>
-            <th width="90px" class="center">Dokter</th>
-            <th width="90px" class="center">Adm</th>
-            <th width="90px" class="center">Obat/<br>Farmasi</th>
-            <th width="90px" class="center">Penunjang Medis</th>
-            <th width="90px" class="center">Tindakan</th>
-            <th width="90px" class="center">Total</th>
+            <th width="60px" class="center">Tanggal</th>
+            <th width="180px">Diagnosa</th>
+            <th width="60px" class="center">Dokter</th>
+            <th width="60px" class="center">Adm</th>
+            <th width="60px" class="center">Farmasi</th>
+            <th width="60px" class="center">Penunjang</th>
+            <th width="60px" class="center">Tindakan</th>
+            <th width="60px" class="center">Total</th>
           </tr>
         </thead>
         <tbody>

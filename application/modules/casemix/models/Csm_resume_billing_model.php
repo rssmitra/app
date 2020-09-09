@@ -6,7 +6,7 @@ class Csm_resume_billing_model extends CI_Model {
 
 	var $table = 'csm_resume_billing_pasien';
 	var $column = array('csm_resume_billing_pasien.no_registrasi','csm_reg_pasien.csm_rp_no_sep','csm_reg_pasien.csm_rp_no_mr','csm_reg_pasien.csm_rp_nama_pasien');
-	var $select = 'csm_resume_billing_pasien.*, csm_reg_pasien.*';
+	var $select = 'csm_brp_bill_dr, csm_brp_bill_adm, csm_brp_bill_pm, csm_brp_bill_tindakan, csm_resume_billing_pasien.no_registrasi,csm_brp_bill_far, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_pasien, diagnosa_akhir';
 	var $order = array('csm_reg_pasien.csm_rp_no_sep' => 'ASC', 'csm_reg_pasien.csm_rp_tgl_keluar' => 'ASC');
 	
 
@@ -18,15 +18,21 @@ class Csm_resume_billing_model extends CI_Model {
 
 	private function _main_query(){
 		
+		$month = date('m') - 3;
+
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('csm_reg_pasien', 'csm_reg_pasien.no_registrasi='.$this->table.'.no_registrasi', 'left');
+		$this->db->join('th_riwayat_pasien', 'th_riwayat_pasien.no_registrasi=csm_reg_pasien.no_registrasi', 'left');
 		$this->db->where("csm_reg_pasien.csm_rp_no_sep != '' ");
 		if (isset($_GET['frmdt']) AND $_GET['frmdt'] != '' || isset($_GET['todt']) AND $_GET['todt'] != '') {
-			$this->db->where("csm_reg_pasien.".$_GET['field']." BETWEEN '".$this->tanggal->selisih($_GET['frmdt'], '+0')."' AND '".$this->tanggal->selisih($_GET['todt'], '+0')."' " );
+			$this->db->where("CAST(csm_reg_pasien.".$_GET['field']." as DATE) BETWEEN '".$_GET['frmdt']."' AND '".$_GET['todt']."' " );
+		}else{
+			$this->db->where("MONTH(csm_reg_pasien.csm_rp_tgl_keluar) > ".$month."");
 		}
+
 		$this->db->where('csm_reg_pasien.csm_rp_tipe', 'RJ');
-		
+		$this->db->group_by($this->select);
 
 	}
 
