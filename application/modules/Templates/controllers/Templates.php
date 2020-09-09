@@ -755,7 +755,7 @@ class Templates extends MX_Controller {
                 if(in_array($value_data->kode_trans_pelayanan, $array_search)){
                     $no++;
                     $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
-                    $getData[] = array('tanggal' => $this->tanggal->formatDate($value_data->tgl_transaksi), 'tindakan' => $value_data->nama_tindakan, 'dokter' => $value_data->nama_dokter, 'subtotal' => $subtotal);
+                    $getData[] = array('tanggal' => $this->tanggal->formatDatedmY($value_data->tgl_transaksi), 'tindakan' => $value_data->nama_tindakan, 'dokter' => $value_data->nama_dokter, 'subtotal' => $subtotal);
                 }
             }        
         }
@@ -770,10 +770,12 @@ class Templates extends MX_Controller {
         $dataRI = $this->Billing->getDataRI($no_registrasi);
         
         $no=1;
+        // echo '<pre>';print_r($data->group);die;
         foreach ($data->group as $k => $val) {
             foreach ($val as $value_data) {
                 $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
                 $resume_billing[] = $this->Billing->resumeBillingRI($value_data);
+                // echo '<pre>';print_r($resume_billing);die;
             }        
         }
         /*split resume billing*/
@@ -781,7 +783,7 @@ class Templates extends MX_Controller {
 
         $html = '';
         if( $rb == '') :
-
+        
         /*html data untuk tampilan*/
         $html .= '<div align="center"><b>RINCIAN BIAYA KESELURUHAN PASIEN RAWAT INAP</b></div>';
         $html .= '<table class="table table-striped" border="0">';
@@ -791,7 +793,7 @@ class Templates extends MX_Controller {
             $html .= '<th width="78%"><b>URAIAN</b></th>';
             $html .= '<th width="15%" align="center"><b>SUBTOTAL (Rp.)</b></th>';
         $html .= '</tr>'; 
-        //echo '<pre>';print_r($split_billing);die;
+        // echo '<pre>';print_r($split_billing);die;
         foreach ($split_billing as $k => $val) {
             /*total*/
             if((int)$val['subtotal'] > 0){
@@ -803,7 +805,7 @@ class Templates extends MX_Controller {
                 $no++;
                 /*rincian biaya*/
                 $rincian_billing_ri =  $this->TemplateRincianRIData($no_registrasi, $tipe, $val['field']);
-                //echo '<pre>';print_r($rincian);die;
+                // echo '<pre>';print_r($rincian_billing_ri);die;
                 foreach ($rincian_billing_ri as $key_rincian_billing_ri => $value_rincian_billing_ri) {
                     $html .= '<tr>';
                     $html .= '<td width="7%" align="center"></td>';

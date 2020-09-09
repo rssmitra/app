@@ -644,7 +644,7 @@ class Billing_model extends CI_Model {
             $html .= '<tr>';
             $html .= '<td width="30px">'.$no.'</td>';
             $html .= '<td width="50px">'.$val_kasir_data->seri_kuitansi.'-'.$val_kasir_data->kode_tc_trans_kasir.'</td>';
-            $html .= '<td><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=RI&noreg='.$no_registrasi.'" target="_blank" >Rincian Biaya Keseluruhan Pasien Rawat Inap </a></td>';
+            $html .= '<td><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=RI&noreg='.$no_registrasi.'&no_kunjungan='.$dataRI->no_kunjungan.'" target="_blank" >Rincian Biaya Keseluruhan Pasien Rawat Inap </a></td>';
             $html .= '<td>Billing Kasir</td>';
             $html .= '</tr>';
             $no++;
@@ -653,6 +653,7 @@ class Billing_model extends CI_Model {
         /*Hasil penunjang medis*/
         /*grouping document pm*/
         $grouping_doc = $this->groupingDocumentPM($data->group);
+        // print_r($grouping_doc);die;
         foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
             $explode_key = explode('-',$key_group);
             $offset_kode_penunjang = $explode_key[0];
@@ -672,7 +673,7 @@ class Billing_model extends CI_Model {
 
             $html .= '<tr>';
             $html .= '<td>'.$cont_no.'</td>';
-            $html .= '<td width="50px"><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag='.$flag.'&noreg='.$no_registrasi.'&pm='.$offset_kode_penunjang.'&kode_pm='.$offset_kode_bagian.'" target="blank" >'.$offset_kode_penunjang.'</a></td>';
+            $html .= '<td width="50px"><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag='.$flag.'&noreg='.$no_registrasi.'&pm='.$offset_kode_penunjang.'&kode_pm='.$offset_kode_bagian.'&no_kunjungan='.$val_group[0]['no_kunjungan'].'" target="blank" >'.$offset_kode_penunjang.'</a></td>';
             $html .= '<td>'.$offset_nama_pm.' ( '.$convert_to_string_tindakan.' ) </td>';
             $html .= '<td>Hasil Penunjang Medis</td>';
             $html .= '</tr>';
@@ -847,7 +848,7 @@ class Billing_model extends CI_Model {
 	}
 	
 	public function resumeBillingRI($data){
-        //echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data);die;
         /*subtotal*/
         $subtotal = $this->Billing->get_total_tagihan($data);
         /*kode str tarif*/
@@ -1145,7 +1146,7 @@ class Billing_model extends CI_Model {
                     if ($str_pm_resume=='05') {
                         /*get tindakan by kode penunjang*/
                         $grouping_tindakan[$vvval_pm->kode_penunjang][] = $vvval_pm->nama_tindakan; 
-                        $grouping[$vvval_pm->kode_penunjang.'-'.$vvval_pm->kode_bagian.'-'.$vvval_pm->nama_bagian][] = array('kode_bagian' => $vvval_pm->kode_bagian,'kode_penunjang' => $vvval_pm->kode_penunjang, 'pm_name' => $vvval_pm->nama_bagian);
+                        $grouping[$vvval_pm->kode_penunjang.'-'.$vvval_pm->kode_bagian.'-'.$vvval_pm->nama_bagian][] = array('kode_bagian' => $vvval_pm->kode_bagian,'kode_penunjang' => $vvval_pm->kode_penunjang, 'pm_name' => $vvval_pm->nama_bagian, 'no_kunjungan' => $vvval_pm->no_kunjungan);
                     }
                 }
             }
@@ -1382,17 +1383,31 @@ class Billing_model extends CI_Model {
 
     public function get_total_tagihan($obj){
 
-        $total =  (double)$obj->bill_rs_int + (double)$obj->bill_dr1_int + (double)$obj->bill_dr2_int + (double)$obj->bill_dr3_int + (double)$obj->lain_lain;
+        $total =  (int)$obj->bill_rs + (int)$obj->bill_dr1 + (int)$obj->bill_dr2 + (int)$obj->bill_dr3 + (int)$obj->lain_lain;
         return $total;
 
     }
     public function get_total_tagihanall($obj){
 
-        $total =  (double)$obj->bill_rs_int + (double)$obj->bill_dr1_int + (double)$obj->bill_dr2_int + + (double)$obj->bill_dr3_int + (double)$obj->lain_lain;
+        $total =  (int)$obj->bill_rs + (int)$obj->bill_dr1 + (int)$obj->bill_dr2 + + (int)$obj->bill_dr3 + (int)$obj->lain_lain;
         //$subtotal = $subtotal + $total;
         return $total;
 
     }
+
+    // public function get_total_tagihan($obj){
+
+    //     $total =  (double)$obj->bill_rs_int + (double)$obj->bill_dr1_int + (double)$obj->bill_dr2_int + (double)$obj->bill_dr3_int + (double)$obj->lain_lain;
+    //     return $total;
+
+    // }
+    // public function get_total_tagihanall($obj){
+
+    //     $total =  (double)$obj->bill_rs_int + (double)$obj->bill_dr1_int + (double)$obj->bill_dr2_int + + (double)$obj->bill_dr3_int + (double)$obj->lain_lain;
+    //     //$subtotal = $subtotal + $total;
+    //     return $total;
+
+    // }
 
     public function cek_tipe_pasien($no_registrasi){
 

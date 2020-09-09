@@ -117,7 +117,7 @@ class Csm_billing_pasien_model extends CI_Model {
         //     $this->db->where('tc_trans_pelayanan.status_nk', 1);
         // }
         $this->db->order_by('tc_trans_pelayanan.jenis_tindakan', 'ASC');
-        //print_r($this->db->last_query());die;
+        
         return $this->db->get()->result();
     }
 
@@ -223,6 +223,7 @@ class Csm_billing_pasien_model extends CI_Model {
     }
 
     public function insertDataFirstTime($sirs_data, $no_registrasi){
+        // print_r($sirs_data);die;
         /*transaction begin*/
         $this->db->trans_begin();
         // print_r($sirs_data);die;
@@ -354,16 +355,16 @@ class Csm_billing_pasien_model extends CI_Model {
         /*penunjang medis*/
         if($str_bag == '05'){
             $bill_pm = $subtotal;
+        }else{
+            // tindakan
+            if (in_array($jenis_tindakan, array(3))) {
+                $bill_tindakan = $subtotal;
+            }
         }
 
         // lainnya
         if (in_array($jenis_tindakan, array(1,5,7,8,10,14,15))) {
             $bill_lain = $subtotal;
-        }
-
-        // tindakan
-        if (in_array($jenis_tindakan, array(3))) {
-            $bill_tindakan = $subtotal;
         }
 
         /*adm dan sarana rs*/

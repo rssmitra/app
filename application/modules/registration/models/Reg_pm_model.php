@@ -221,7 +221,7 @@ class Reg_pm_model extends CI_Model {
 		$data_1 = $this->db->query($query_1)->result();
 		$data = $this->db->query($query)->result();
 
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 
 		foreach ($data as $key => $value) {
 			$get_data[$value->kode_trans_pelayanan][] = $value;
@@ -233,7 +233,7 @@ class Reg_pm_model extends CI_Model {
 				'detail' => ($flag_mcu=='')?$get_data[$value_2->kode_trans_pelayanan]:$get_data[$value_2->kode_trans_pelayanan_paket_mcu],
 			);
 		}
-		//echo '<pre>';print_r($getDataAll);die;
+		// echo '<pre>';print_r($getDataAll);die;
 		$html = '';
 		$html .= '<table width="100%">';
 		$html .= '<tr>';

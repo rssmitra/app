@@ -52,15 +52,15 @@ class Export_data extends MX_Controller {
       $reg_pm = new Reg_pm_model;
       /*get content data*/
       //$data = $csm_bp->getBillingLocal($no_registrasi, $flag); 
-      $data = $reg_pm->get_hasil_pm($no_registrasi, $no_kunjungan, $bagian, $flag_mcu);
-      // echo"<pre>";print_r($pm);die;
+    //   $data = $reg_pm->get_hasil_pm($no_registrasi, $no_kunjungan, $bagian, $flag_mcu);
+    $data = '' ;
+    //   echo"<pre>";print_r($data);die;
       /*get content html*/
       $html = json_decode($csm_bp->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, $flag_mcu));
 
        /*generate pdf*/
       $this->exportPdf($html, $flag, $pm, $act_code); 
       
-
     }
 
     public function exportPdf($data, $flag, $pm, $act_code='') { 

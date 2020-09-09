@@ -256,7 +256,7 @@ final Class upload_file {
                     $html .= '<td align="center">'.$no.'</td>';
                     $html .= '<td align="left">'.$row_list->csm_dex_nama_dok.'</td>';
                     $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
-                    $html .= '<td align="center"><a href="Templates/Attachment/download_attachment?fname='.$row_list->csm_dex_fullpath.'" style="color:red">Download</a></td>';
+                    $html .= '<td align="center"><a href="'.base_url().$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
                 $html .= '</tr>';
             $no++;
