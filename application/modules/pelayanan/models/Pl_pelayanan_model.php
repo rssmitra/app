@@ -179,13 +179,16 @@ class Pl_pelayanan_model extends CI_Model {
 	private function _get_datatables_query_tindakan()
 	{
 		$column = array('tc_trans_pelayanan.no_kunjungan', 'tc_trans_pelayanan.kode_bagian', 'tc_trans_pelayanan.nama_tindakan', 'mt_karyawan.nama_pegawai', 'tc_trans_pelayanan.tgl_transaksi', 'tc_trans_pelayanan.bill_rs', 'tc_trans_pelayanan.bill_dr1', 'tc_trans_pelayanan.bill_dr2');
-		$select = 'tc_trans_pelayanan.kode_tc_trans_kasir,tc_trans_pelayanan.no_kunjungan, tc_trans_pelayanan.kode_bagian, tc_trans_pelayanan.nama_tindakan, mt_karyawan.nama_pegawai, dokter2.nama_pegawai as dokter_2, dokter3.nama_pegawai as dokter_3, tc_trans_pelayanan.tgl_transaksi, tc_trans_pelayanan.bill_rs, tc_trans_pelayanan.bhp, tc_trans_pelayanan.pendapatan_rs, tc_trans_pelayanan.alat_rs, tc_trans_pelayanan.bill_dr1, tc_trans_pelayanan.bill_dr2, tc_trans_pelayanan.bill_dr3, tc_trans_pelayanan.harga_satuan, tc_trans_pelayanan.kode_trans_pelayanan, tc_trans_pelayanan.jumlah, tc_trans_pelayanan.satuan_tindakan, tc_trans_pelayanan.tindakan_luar, mt_barang.satuan_kecil, mt_barang.satuan_besar';
+		$select = 'tc_trans_pelayanan.kode_tc_trans_kasir,tc_trans_pelayanan.no_kunjungan, tc_trans_pelayanan.kode_bagian, tc_trans_pelayanan.nama_tindakan, mt_karyawan.nama_pegawai, tc_trans_pelayanan.tgl_transaksi, tc_trans_pelayanan.bill_rs, tc_trans_pelayanan.bhp, tc_trans_pelayanan.pendapatan_rs, tc_trans_pelayanan.alat_rs, tc_trans_pelayanan.bill_dr1, tc_trans_pelayanan.bill_dr2, tc_trans_pelayanan.bill_dr3, tc_trans_pelayanan.harga_satuan, tc_trans_pelayanan.kode_trans_pelayanan, tc_trans_pelayanan.jumlah, tc_trans_pelayanan.satuan_tindakan, tc_trans_pelayanan.tindakan_luar, mt_barang.satuan_kecil, mt_barang.satuan_besar';
 
-		$this->db->select($select);
 		$this->_main_query_tindakan();
+		$this->db->select($select);
+		$this->db->select('dokter2.nama_pegawai as dokter_2, dokter3.nama_pegawai as dokter_3');
 		$this->db->join('mt_barang', 'mt_barang.kode_brg=tc_trans_pelayanan.kode_barang','left');
 		$this->db->where( array('tc_trans_pelayanan.no_kunjungan' => $_GET['kode'], 'flag_perawat' => 1) );
-		
+		$this->db->group_by('dokter2.nama_pegawai, dokter3.nama_pegawai');
+		$this->db->group_by($select);
+
 		if( $_GET['bagian'] == '030901' ){
 			$this->db->where('(id_pesan_bedah='.$_GET['id_pesan_bedah'].' or tc_trans_pelayanan.kode_bagian='."'".$_GET['bagian']."'".')');
 		}else{

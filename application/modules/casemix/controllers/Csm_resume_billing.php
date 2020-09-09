@@ -50,10 +50,11 @@ class Csm_resume_billing extends MX_Controller {
                                 <span class="lbl"></span>
                             </label>
                           </div>';
-                $row[] = '<div class="left"><a href="#">'.$row_list->csm_rp_no_sep.'</a></div>';
+                $row[] = '<div class="left">'.$row_list->csm_rp_no_sep.'</div>';
                 $row[] = $row_list->csm_rp_no_mr;
                 $row[] = strtoupper($row_list->csm_rp_nama_pasien);
-                $row[] = $this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
+                $row[] = '<div class="center">'.$this->tanggal->formatDatedmY($row_list->csm_rp_tgl_keluar).'</div>';
+                $row[] = ucwords(strtolower($row_list->diagnosa_akhir));
                 $row[] = '<div align="right">'.number_format($row_list->csm_brp_bill_dr).'</div>';
                 $row[] = '<div align="right">'.number_format($row_list->csm_brp_bill_adm).'</div>';
                 $row[] = '<div align="right">'.number_format($row_list->csm_brp_bill_far).'</div>';
