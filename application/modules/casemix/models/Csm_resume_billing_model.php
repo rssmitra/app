@@ -32,6 +32,7 @@ class Csm_resume_billing_model extends CI_Model {
 		}
 
 		$this->db->where('csm_reg_pasien.csm_rp_tipe', 'RJ');
+		$this->db->where('csm_reg_pasien.is_submitted', 'Y');
 		$this->db->group_by($this->select);
 
 	}

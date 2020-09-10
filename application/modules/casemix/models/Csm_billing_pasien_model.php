@@ -228,6 +228,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $this->db->trans_begin();
         // print_r($sirs_data);die;
         $kode_bag = ($sirs_data->reg_data->kode_bagian_keluar!=null)?$sirs_data->reg_data->kode_bagian_keluar:$sirs_data->reg_data->kode_bagian_masuk;
+        $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $kode_bag) );
         /*get tipe RI/RJ*/
         $str_type = $this->getTipeRegistrasi($kode_bag);
         /*$str_kode_bag = substr((string)$sirs_data->reg_data->kode_bagian_masuk, 0,2);
@@ -243,13 +244,16 @@ class Csm_billing_pasien_model extends CI_Model {
             'csm_rp_tgl_keluar' => (!empty($sirs_data->reg_data->tgl_jam_keluar))?$sirs_data->reg_data->tgl_jam_keluar:$sirs_data->reg_data->tgl_jam_masuk,
             'csm_rp_kode_dokter' => $sirs_data->reg_data->kode_dokter,
             'csm_rp_nama_dokter' => $sirs_data->reg_data->nama_pegawai,
-            'csm_rp_kode_bagian' => $sirs_data->reg_data->kode_bagian_masuk,
-            'csm_rp_bagian' => $sirs_data->reg_data->nama_bagian,
+            'csm_rp_kode_bagian' => $kode_bag,
+            'csm_rp_bagian' => $nama_bagian,
             'csm_rp_tipe' => $str_type,
             'csm_rp_status' => 0,
+            'is_submitted' => 'Y',
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $this->session->userdata('user')->fullname,
         );
+        
+        // print_r($data_registrasi);die;
 
         if( $this->checkExistingData($no_registrasi) > 0 ){
             $this->db->update('csm_reg_pasien', $data_registrasi, array('no_registrasi' => $no_registrasi));

@@ -65,7 +65,7 @@ class Csm_dokumen_klaim extends MX_Controller {
             $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
             $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
 
-            $row[] = '<div class="center">'.$row_list->csm_dk_tipe.'</div>';
+            $row[] = '<div class="center">'.$row_list->csm_rp_tipe.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
             $row[] = $this->tanggal->formatDate($row_list->created_date).'<br>by : '.$row_list->created_by;
             $data[] = $row;
@@ -124,14 +124,14 @@ class Csm_dokumen_klaim extends MX_Controller {
                         <td>'.$value->csm_rp_no_mr.'</td>
                         <td width="150px">'.$value->csm_rp_nama_pasien.'</td>
                         <td width="150px">'.$value->tgl_transaksi_kasir.'</td>
-                        <td width="70px" align="center">'.$value->csm_dk_tipe.'</td>
+                        <td width="70px" align="center">'.$value->csm_rp_tipe.'</td>
                         <td width="70px" align="right">'.number_format($value->csm_dk_total_klaim).'</td>
                       </tr>';
                       $arr_subtotal[] = $value->csm_dk_total_klaim;
-                      $tot_pasien_ri[] = ($value->csm_dk_tipe=='RI')?1:0;
-                      $tot_pasien_rj[] = ($value->csm_dk_tipe=='RJ')?1:0;
-                      $tot_pasien_ri_bill[] = ($value->csm_dk_tipe=='RI')?$value->csm_dk_total_klaim:0;
-                      $tot_pasien_rj_bill[] = ($value->csm_dk_tipe=='RJ')?$value->csm_dk_total_klaim:0;
+                      $tot_pasien_ri[] = ($value->csm_rp_tipe=='RI')?1:0;
+                      $tot_pasien_rj[] = ($value->csm_rp_tipe=='RJ')?1:0;
+                      $tot_pasien_ri_bill[] = ($value->csm_rp_tipe=='RI')?$value->csm_dk_total_klaim:0;
+                      $tot_pasien_rj_bill[] = ($value->csm_rp_tipe=='RJ')?$value->csm_dk_total_klaim:0;
         }
         $html .= '<tr>  
                         <td colspan="6" align="center"></td>

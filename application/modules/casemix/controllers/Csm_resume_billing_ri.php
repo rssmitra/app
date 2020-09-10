@@ -60,7 +60,8 @@ class Csm_resume_billing_ri extends MX_Controller {
                 $row[] = $row_list->no_registrasi;
                 $row[] = $str_type;
                 $row[] = '';
-                $row[] = '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$row_list->no_registrasi.''."/".$str_type."'".')">'.$row_list->csm_rp_no_sep.'</a>';
+                // $row[] = '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$row_list->no_registrasi.''."/".$str_type."'".')">'.$row_list->csm_rp_no_sep.'</a>';
+                $row[] = $row_list->csm_rp_no_sep;
                 $row[] = $row_list->csm_rp_no_mr;
                 $row[] = strtoupper($row_list->csm_rp_nama_pasien);
                 $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);

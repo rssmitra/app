@@ -455,6 +455,7 @@ EOD;
         /*get doc*/
 
         $reg_data = $this->Csm_billing_pasien->getRegDataLocal($no_registrasi);
+        // echo '<pre>';print_r($reg_data);die;
         $doc_pdf = $this->Csm_billing_pasien->getDocumentPDF($no_registrasi);
         // echo '<pre>';print_r($doc_pdf);die;
         /*save merged file*/
@@ -471,12 +472,15 @@ EOD;
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')
             );
-        /*check if exist*/
-        if( $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep))->num_rows() > 0){
-            $this->db->update('csm_dokumen_klaim', $datasaved, array('no_sep' => $reg_data->csm_rp_no_sep));
-        }else{
-            $this->db->insert('csm_dokumen_klaim', $datasaved);
-        }
+            /*check if exist*/
+            $dt = $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep, 'no_registrasi' => $no_registrasi))->row();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            if( !empty($dt) ){
+                $this->db->update('csm_dokumen_klaim', $datasaved, array('no_sep' => $reg_data->csm_rp_no_sep));
+            }else{
+                $this->db->insert('csm_dokumen_klaim', $datasaved);
+            }
 
         $fields_string = "";
         foreach($doc_pdf as $key=>$value) {

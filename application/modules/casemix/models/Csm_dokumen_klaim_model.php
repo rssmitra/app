@@ -38,7 +38,7 @@ class Csm_dokumen_klaim_model extends CI_Model {
 		
 		if (isset($_GET['tipe']) AND $_GET['tipe'] != '' ) {
 			if( $_GET['tipe']!='all' ){
-				$this->db->where("csm_dk_tipe = '".$_GET['tipe']."' " );
+				$this->db->where("csm_rp_tipe = '".$_GET['tipe']."' " );
 			}
 		}
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );

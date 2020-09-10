@@ -6,10 +6,9 @@ class Csm_resume_billing_ri_model extends CI_Model {
 
 	var $table = 'csm_reg_pasien';
 	var $column = array('csm_reg_pasien.no_registrasi');
-	var $select = 'csm_reg_pasien.*, csm_reg_pasien.*';
+	var $select = 'csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.no_registrasi, csm_rp_kode_bagian, csm_rp_tgl_masuk, csm_rp_nama_dokter' ;
 	var $order = array('csm_reg_pasien.csm_rp_no_sep' => 'ASC', 'csm_reg_pasien.csm_rp_tgl_keluar' => 'ASC');
 	
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -25,6 +24,8 @@ class Csm_resume_billing_ri_model extends CI_Model {
 			$this->db->where($this->table.".".$_GET['field']." BETWEEN '".$_GET['frmdt']."' AND '".$_GET['todt']."' " );
 		}
 		$this->db->where('csm_reg_pasien.csm_rp_tipe', 'RI');
+		$this->db->where('csm_reg_pasien.is_submitted', 'Y');
+		$this->db->group_by($this->select);
 
 	}
 
@@ -60,7 +61,7 @@ class Csm_resume_billing_ri_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

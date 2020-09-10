@@ -105,7 +105,7 @@ class Csm_verifikasi_costing extends MX_Controller {
             $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
             $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
 
-            $row[] = '<div class="center">'.$row_list->csm_dk_tipe.'</div>';
+            $row[] = '<div class="center">'.$row_list->csm_rp_tipe.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
             $row[] = $this->tanggal->formatDate($row_list->created_date).'<br>by : '.$row_list->created_by;
             $data[] = $row;

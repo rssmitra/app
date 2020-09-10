@@ -31,7 +31,7 @@ class Pl_pelayanan_bedah_model extends CI_Model {
 		$this->db->join('mt_klas', 'ok_riwayat_pasien_bedah_v.kode_klas=mt_klas.kode_klas', 'left');
 		$this->db->join('mt_master_tarif_detail', 'ok_riwayat_pasien_bedah_v.kode_master_tarif_detail=mt_master_tarif_detail.kode_master_tarif_detail', 'left');
 		$this->db->join('mt_master_tarif', 'mt_master_tarif_detail.kode_tarif=mt_master_tarif.kode_tarif', 'left');
-		
+		$this->db->group_by($this->select);
 		/*if isset parameter*/
 		
         /*end parameter*/

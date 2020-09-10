@@ -727,15 +727,27 @@ final Class Master {
 	   	return array_sum($sum);
 	}
 
+	public function get_tgl_keluar($no_registrasi){
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		$get_dt = $db->order_by('tgl_keluar', 'DESC')->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi) )->row();
+		$tanggal = ( !empty($get_dt->tgl_keluar) ) ? $get_dt->tgl_keluar : $get_dt->tgl_masuk;
+		return $tanggal;
+	}
+
 	public function no_seri_kuitansi($no_registrasi){
 
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
 
+		// cek rawat inap
+		$query = "select * from ri_tc_rawatinap where no_kunjungan in (select no_kunjungan from tc_kunjungan where no_registrasi=".$no_registrasi." and substring(kode_bagian_tujuan, 1, 2) = '03')";
+		$dt_ri = $db->query($query)->num_rows();
+
 		$kode_bagian_keluar = $db->where('(kode_bagian in (SELECT kode_bagian_keluar FROM tc_registrasi WHERE no_registrasi='.$no_registrasi.') or kode_bagian in (SELECT kode_bagian_masuk FROM tc_registrasi WHERE no_registrasi='.$no_registrasi.'))')->get('mt_bagian')->row();
 		// print_r($db->last_query());die;
 
-		if (((int)$kode_bagian_keluar->validasi == 300)){
+		if ($dt_ri > 0){
 			$seri_kuitansi = 'RI';	
 		} else {
 			$seri_kuitansi = 'RJ';	

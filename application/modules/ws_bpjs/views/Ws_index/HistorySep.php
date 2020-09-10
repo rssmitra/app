@@ -23,7 +23,7 @@
 
     <!-- div.dataTables_borderWrap -->
     <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="ws_bpjs/Ws_index/get_data_history_sep" class="table table-bordered table-hover">
+      <table id="dynamic-table" base-url="ws_bpjs/Ws_index/get_data_history_sep?flag=" class="table table-bordered table-hover">
         <thead>
           <tr>  
             <th width="30px" class="center"></th>

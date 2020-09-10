@@ -88,7 +88,7 @@
             <th width="50px">&nbsp;</th>
             <th width="50px">&nbsp;</th>
             <th></th>
-            <th>No. SEP</th>
+            <th width="100px">No. SEP</th>
             <th>No. MR</th>
             <th width="200px">Nama Pasien</th>
             <th width="120px">Tanggal Masuk</th>

@@ -325,6 +325,9 @@ class Billing extends MX_Controller {
 
     public function rollback_kasir(){
         $exc = $this->Billing->rollback_kasir( $_POST['no_reg'] );
+        // delete casemix data if exist
+        $this->db->update('csm_reg_pasien', array('is_submitted' => 'N'), array('no_registrasi' => $_POST['no_reg']) );
+
         echo json_encode( array('status' => 200) );
     }
 
@@ -413,7 +416,7 @@ class Billing extends MX_Controller {
         
         // get no seri kuitansi
         $seri_kuitansi_dt = $this->master->no_seri_kuitansi($_POST['no_registrasi']);
-        
+        // print_r($seri_kuitansi_dt);die;
         // insert tc_trans_kasir
         $dataTranskasir["kode_tc_trans_kasir"] = $this->master->get_max_number('tc_trans_kasir','kode_tc_trans_kasir');
         $dataTranskasir["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
@@ -516,6 +519,11 @@ class Billing extends MX_Controller {
         // jurnal accounting
         $this->create_jurnal($dataTranskasir, $dataAkunting, $new_id_ak_tc_transaksi);
 
+        // update tgl keluar registrasi
+        $tgl_keluar_pasien = $this->master->get_tgl_keluar($_POST['no_registrasi']);
+
+        $this->db->update('tc_registrasi', array('tgl_jam_keluar' => $tgl_keluar_pasien), array('no_registrasi' => $_POST['no_registrasi']) );
+        
         $return = array();
         // costing billing untuk bpjs
         if( $_POST['kode_perusahaan_val'] == 120 ){
@@ -530,9 +538,6 @@ class Billing extends MX_Controller {
         $preview_billing_um = $this->db->where_not_in('kode_trans_pelayanan', $str_to_array_nk)->where('(status_nk IS NULL or status_nk = 0) ')->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi']))->result();
         // print_r($preview_billing_um);die;
         
-        // update tgl keluar registrasi
-        $this->db->update('tc_registrasi', array('tgl_jam_keluar' => date('Y-m-d H:i:s')), array('no_registrasi' => $_POST['no_registrasi']) );
-
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
@@ -554,17 +559,19 @@ class Billing extends MX_Controller {
 
     public function costing_billing($type)
     {
-
+        // print_r($type);die;
         $this->db->trans_begin();
         $no_registrasi = ($this->input->post('no_registrasi'))?$this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'):0;
 
         /*get data trans pelayanan by no registrasi from sirs*/
         $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
-            $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
+        // insert or update data
+        $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
+
+        // if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
+        //     $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
         
         if( $this->input->post('no_sep_val') ){
-            /*csm_reg_pasien*/
             $dataexc = array(
                 'csm_rp_no_sep' => $this->regex->_genRegex(strtoupper($this->input->post('no_sep_val')), 'RGXQSL'),
                 'is_submitted' => $this->regex->_genRegex('Y', 'RGXAZ'),

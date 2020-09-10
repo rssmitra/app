@@ -73,7 +73,7 @@ $(document).ready(function() {
 function find_data_reload(result, base_url){
   
     var data = result.data;    
-    oTable.ajax.url(base_url+'?'+data).load();
+    oTable.ajax.url(base_url+'&'+data).load();
     $("html, body").animate({ scrollTop: "400px" });
 
 }

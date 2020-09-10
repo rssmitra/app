@@ -9,6 +9,7 @@ $(document).ready(function() {
       "scrollY": false,*/
       "ordering": false,
       "bPaginate": true,
+      "pageLength" : 50,
       "info": true,
       // Load data for the table's content from an Ajax source
       "ajax": {

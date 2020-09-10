@@ -195,6 +195,7 @@ class Billing_model extends CI_Model {
 
         return $result;
     }
+
     public function getDetailDataa($no_registrasi,$no_mr){
         $kasir_data = $this->getKasirDataa($no_registrasi,$no_mr);
         /*get data trans pelayanan by no registrasi*/
@@ -1035,30 +1036,31 @@ class Billing_model extends CI_Model {
     }
     
     public function resumeBillingRJ($jenis_tindakan, $kode_bagian, $subtotal){
+
+        // define
+        $bill_dr = 0;
+        $bill_farm = 0;
+        $bill_adm_rs = 0;
+        $bill_pm = 0;
+        $bill_tindakan = 0;
+        $bill_bpako = 0;
+        
         /*dokter*/
         if (in_array($jenis_tindakan, array(12))) {
             $bill_dr = $subtotal;
-        }else{
-            $bill_dr = 0;
         }
         /*bpako*/
         if (in_array($jenis_tindakan, array(9))) {
             $bill_bpako = $subtotal;
-        }else{
-            $bill_bpako = 0;
         }
         /*obat farmasi*/
         if (in_array($jenis_tindakan, array(11))) {
             $bill_farm = $subtotal;
-        }else{
-            $bill_farm = 0;
         }
 
         /*adm dan sarana rs*/
         if (in_array($jenis_tindakan, array(2,13))) {
             $bill_adm_rs = $subtotal;
-        }else{
-            $bill_adm_rs = 0;
         }
 
         /*penunjang medis*/
@@ -1066,8 +1068,6 @@ class Billing_model extends CI_Model {
         if($str_pm == '05'){
             if (in_array($jenis_tindakan, array(3))) {
                 $bill_pm = $subtotal;
-            }else{
-                $bill_pm = 0;
             }
             $bill_tindakan = 0;
         }else{
@@ -1075,8 +1075,6 @@ class Billing_model extends CI_Model {
             /*tindakan*/
             if (in_array($jenis_tindakan, array(3))) {
                 $bill_tindakan = $subtotal;
-            }else{
-                $bill_tindakan = 0;
             }
         }
 
@@ -1421,9 +1419,7 @@ class Billing_model extends CI_Model {
         // $this->db->where(' kode_tc_trans_kasir IN 
         //                     (select kode_tc_trans_kasir from tc_trans_pelayanan where no_registrasi in ('.$_POST['no_reg'].')
         //                     ) ')->delete('tc_trans_kasir');
-        
        
-
         /*delete detail akuntig*/
         $this->db->where(' id_ak_tc_transaksi IN 
                             (select id_ak_tc_transaksi from ak_tc_transaksi where kode_tc_trans_kasir in 

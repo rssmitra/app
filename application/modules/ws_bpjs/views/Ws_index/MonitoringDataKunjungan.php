@@ -149,7 +149,7 @@ function view_sep(no_sep){
     <p>&nbsp;</p>
     <hr class="separator">
     <div style="margin-top:-30px" id="table-data">
-      <table id="dynamic-table" base-url="ws_bpjs/Ws_index/get_data_kunjungan" class="table table-bordered table-hover">
+      <table id="dynamic-table" base-url="ws_bpjs/Ws_index/get_data_kunjungan?flag=" class="table table-bordered table-hover">
         <thead>
           <tr>  
             <th width="130px" class="center"></th>

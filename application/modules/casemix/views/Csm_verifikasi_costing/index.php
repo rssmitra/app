@@ -157,7 +157,7 @@ jQuery(function($) {
     <hr class="separator">
 
     <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="casemix/Csm_verifikasi_costing/get_data" class="table table-bordered table-hover">
+      <table id="dynamic-table" base-url="casemix/Csm_verifikasi_costing/get_data?flag=" class="table table-bordered table-hover">
         <thead>
           <tr>  
             <th width="30px" class="center"></th>
