@@ -6,7 +6,7 @@ class Csm_billing_pasien_model extends CI_Model {
     
     var $table = 'tc_registrasi';
     var $column = array('tc_registrasi.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_bagian_masuk', 'tc_registrasi.kode_bagian_keluar');
-    var $select = 'tc_registrasi.*, mt_master_pasien.nama_pasien, mt_master_pasien.jen_kelamin as jk, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan';
+    var $select = 'tc_registrasi.*, mt_master_pasien.nama_pasien, mt_master_pasien.jen_kelamin as jk, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, th_riwayat_pasien.diagnosa_akhir, kode_icd_diagnosa, kode_riwayat';
     var $order = array('tc_registrasi.tgl_jam_masuk' => 'DESC', 'tc_registrasi.no_esp' => 'ASC');
     var $fields = array('bill_kamar_perawatan', 'bill_kamar_icu', 'bill_tindakan_inap', 'bill_tindakan_oksigen', 'bill_tindakan_bedah', 'bill_tindakan_vk', 'bill_obat',
         'bill_ambulance', 'bill_dokter', 'bill_apotik', 'bill_lain_lain', 'bill_adm', 'bill_ugd', 'bill_rad', 'bill_lab', 'bill_fisio', 'bill_klinik', 'bill_pemakaian_alat', 'bill_tindakan_hd','bill_tindakan_luar_rs');
@@ -27,6 +27,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $this->db->join('mt_bagian', 'mt_bagian.kode_bagian='.$this->table.'.kode_bagian_masuk', 'left');
         $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter='.$this->table.'.kode_dokter', 'left');
         $this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan='.$this->table.'.kode_perusahaan', 'left');
+        $this->db->join('th_riwayat_pasien', 'th_riwayat_pasien.no_registrasi='.$this->table.'.no_registrasi', 'left');
 
         if(isset($_GET['num']) AND $_GET['num']!=''){
             //$this->db->or_where("mt_master_pasien.nama_pasien LIKE '%".$_GET['num']."%' ");
@@ -234,6 +235,7 @@ class Csm_billing_pasien_model extends CI_Model {
         /*$str_kode_bag = substr((string)$sirs_data->reg_data->kode_bagian_masuk, 0,2);
         $str_type = ($str_kode_bag=='01')?'RJ':'RI';*/
         /*data registrasi*/
+        
         $data_registrasi = array(
             'no_registrasi' => $sirs_data->reg_data->no_registrasi,
             'kode_perusahaan' => $sirs_data->reg_data->kode_perusahaan,

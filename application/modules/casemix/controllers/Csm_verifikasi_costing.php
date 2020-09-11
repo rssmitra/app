@@ -63,7 +63,7 @@ class Csm_verifikasi_costing extends MX_Controller {
 
         }
 
-       //echo '<pre>';print_r($dataBilling);die;
+    //    echo '<pre>';print_r($data);die;
         /*no action if data exist, continue to view data*/
         $dataBilling = $this->Csm_billing_pasien->getBillingDataLocal($no_registrasi, $tipe);
         $data['reg'] = (count($dataBilling['reg_data']) > 0) ? $dataBilling['reg_data'] : [] ;
@@ -98,10 +98,11 @@ class Csm_verifikasi_costing extends MX_Controller {
                             <span class="lbl"></span>
                         </label>
                       </div>';
-            $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/Csm_verifikasi_costing/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')">'.$row_list->csm_rp_no_sep.'</a></div>';
-            $row[] = $row_list->no_registrasi;
+            $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/Csm_verifikasi_costing/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')">'.$row_list->no_registrasi.'</a></div>';
+            $row[] = $row_list->csm_rp_no_sep;
             $row[] = $row_list->csm_rp_no_mr;
             $row[] = strtoupper($row_list->csm_rp_nama_pasien);
+            $row[] = strtoupper($row_list->csm_rp_bagian);
             $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
             $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
 

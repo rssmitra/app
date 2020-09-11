@@ -1,5 +1,36 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+
+<script type="text/javascript">
+  
+  $('#diagnosa_akhir').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getICD10",
+              data: 'keyword=' + query,            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                result($.map(response, function (item) {
+                      return item;
+                  }));
+                
+              }
+          });
+      },
+      afterSelect: function (item) {
+        // do what is needed with item
+        var label_item=item.split(':')[1];
+        var val_item=item.split(':')[0];
+        console.log(val_item);
+        $('#diagnosa_akhir').val(label_item);
+        $('#diagnosa_akhir_hidden').val(val_item);
+      }
+
+  });
+
+</script>
 <script>
 function preventDefault(e) {
   e = e || window.event;
@@ -260,6 +291,15 @@ counterfile++;
                 <?php echo $this->master->get_change($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), isset($reg->csm_rp_kode_dokter)?$reg->csm_rp_kode_dokter:'' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
                 <input name="csm_rp_nama_dokter" id="csm_rp_nama_dokter" value="<?php echo $reg->csm_rp_nama_dokter?>" placeholder="" class="form-control" type="hidden" >
               </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2" for="">Diagnosa <span style="color:red">(*)</span></label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="diagnosa_akhir" id="diagnosa_akhir" placeholder="Masukan keyword ICD 10" value="<?php echo isset($value->diagnosa_akhir)?$value->diagnosa_akhir:''?>">
+                  <input type="hidden" class="form-control" name="diagnosa_akhir_hidden" id="diagnosa_akhir_hidden" value="<?php echo isset($value->kode_icd_diagnosa)?$value->kode_icd_diagnosa:''?>">
+                  <input type="hidden" class="form-control" name="kode_riwayat_hidden" id="kode_riwayat_hidden" value="<?php echo isset($value->kode_riwayat)?$value->kode_riwayat:''?>">
+                </div>
             </div>
 
             <hr>

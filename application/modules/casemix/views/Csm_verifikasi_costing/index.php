@@ -161,10 +161,11 @@ jQuery(function($) {
         <thead>
           <tr>  
             <th width="30px" class="center"></th>
+            <th width="70px">No. Reg</th>
             <th width="80px">No. SEP</th>
-            <th width="80px">No. Reg</th>
-            <th>No. MR</th>
+            <th width="70px">No. MR</th>
             <th>Nama Pasien</th>
+            <th>Poli/Klinik</th>
             <th width="130px">Tanggal Masuk</th>
             <th width="130px">Tanggal Keluar</th>
             <th width="80px" class="center">Tipe (RI/RJ)</th>
