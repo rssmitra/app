@@ -135,7 +135,7 @@ class Csm_billing_pasien extends MX_Controller {
             $riwayat_diagnosa['kode_icd_diagnosa'] = $_POST['diagnosa_akhir_hidden'];
             $riwayat_diagnosa['diagnosa_akhir'] = $_POST['diagnosa_akhir'];
 
-            if(isset($_POST['kode_riwayat_hidden'])){
+            if(isset($_POST['kode_riwayat_hidden']) AND !empty($_POST['kode_riwayat_hidden']) ){
                 $this->db->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $_POST['kode_riwayat_hidden']) );
             }else{
                 $riwayat_diagnosa['no_registrasi'] = $no_registrasi;
@@ -160,36 +160,36 @@ class Csm_billing_pasien extends MX_Controller {
             $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
             //echo '<pre>';print_r($createDocument);die;
             
-            foreach ($createDocument as $k_cd => $v_cd) {
-                # code...
-                $explode = explode('-', $v_cd);
-                /*explode result*/
-                $named = str_replace('BILL','',$explode[0]);
-                $no_mr = $explode[1];
-                $exp_no_registrasi = $explode[2];
-                $unique_code = $explode[3];
+            // foreach ($createDocument as $k_cd => $v_cd) {
+            //     # code...
+            //     $explode = explode('-', $v_cd);
+            //     /*explode result*/
+            //     $named = str_replace('BILL','',$explode[0]);
+            //     $no_mr = $explode[1];
+            //     $exp_no_registrasi = $explode[2];
+            //     $unique_code = $explode[3];
 
-                /*create and save download file pdf*/
-                if( $this->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
-                /*save document to database*/
-                /*csm_reg_pasien*/
-                $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+            //     /*create and save download file pdf*/
+            //     if( $this->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
+            //     /*save document to database*/
+            //     /*csm_reg_pasien*/
+            //     $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
                 
-                $doc_save = array(
-                    'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
-                    'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
-                    'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
-                    'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/'.$filename.'', 'RGXQSL'),
-                );
-                $doc_save['created_date'] = date('Y-m-d H:i:s');
-                $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                /*check if exist*/
-                if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
-                    $this->db->insert('csm_dokumen_export', $doc_save);
-                }
-                endif;
-                /*insert database*/
-            }
+            //     $doc_save = array(
+            //         'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+            //         'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+            //         'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+            //         'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/'.$filename.'', 'RGXQSL'),
+            //     );
+            //     $doc_save['created_date'] = date('Y-m-d H:i:s');
+            //     $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+            //     /*check if exist*/
+            //     if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+            //         $this->db->insert('csm_dokumen_export', $doc_save);
+            //     }
+            //     endif;
+            //     /*insert database*/
+            // }
             
             /*insert dokumen adjusment*/
             if(isset($_FILES['pf_file'])){
