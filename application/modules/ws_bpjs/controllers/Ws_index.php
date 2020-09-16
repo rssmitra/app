@@ -1025,6 +1025,18 @@ class Ws_index extends MX_Controller {
     function getSignatureHeader(){
         echo json_encode($this->Ws_index->getSignatureHeader());
     }
+
+    public function getKetersedianBedRs(){
+
+        $result = $this->Ws_index->getBedData();
+        // echo '<pre>'; print_r($result);die;
+        echo json_encode(array('response' => $result));
+
+    }
+
+    function countCategoryBed($kode_bagian, $kode_klas){
+        return $count = $this->Ws_index->countCategoryBed($kode_bagian, $kode_klas);
+    }
 }
 
 

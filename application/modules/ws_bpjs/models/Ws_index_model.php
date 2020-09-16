@@ -506,7 +506,7 @@ class Ws_index_model extends CI_Model {
 		$this->_main_query_ruangan_rs();
 
 		$i = 0;
-		$reff_column = array('a.kode_ruangan', 'a.kode_bagian' , 'b.nama_bagian', 'c.kode_klas_bpjs','c.nama_klas_bpjs','c.kode_klas' , 'c.nama_klas', 'a.no_kamar', 'a.no_bed', 'a.status', 'a.keterangan', 'a.gender');
+		$reff_column = array('a.kode_ruangan', 'a.kode_bagian' , 'b.nama_bagian', 'c.kode_klas_bpjs','c.nama_klas_bpjs','c.kode_klas' , 'c.nama_klas', 'a.no_kamar', 'a.no_bed', 'a.status', 'a.keterangan', 'a.gender', '');
 
 		$reff_order = array('nama_bagian' => 'ASC');
 
@@ -581,7 +581,7 @@ class Ws_index_model extends CI_Model {
 	}
 
 	private function _main_query_ruangan_rs(){
-		$this->db->select('a.kode_ruangan, a.kode_bagian, b.nama_bagian, c.kode_klas_bpjs, c.nama_klas_bpjs, c.kode_klas, c.nama_klas, a.no_kamar, a.no_bed, a.status, a.keterangan, a.gender, e.nama_pasien, e.no_mr, ri.tgl_masuk, f.nama_pegawai as dokter, g.deposit, g.harga_r, g.harga_bpjs');
+		$this->db->select('a.kode_ruangan, a.kode_bagian, b.nama_bagian, c.kode_klas_bpjs, c.nama_klas_bpjs, c.kode_klas, c.nama_klas, a.no_kamar, a.no_bed, a.status, a.keterangan, a.gender, e.nama_pasien, e.no_mr, ri.tgl_masuk, f.nama_pegawai as dokter, g.deposit, g.harga_r, g.harga_bpjs, c.kode_klas_dinkes');
 		$this->db->from('mt_ruangan a');
 		$this->db->join('mt_bagian b','b.kode_bagian=a.kode_bagian','left');
 		$this->db->join('mt_klas c','c.kode_klas=a.kode_klas','left');
@@ -590,7 +590,7 @@ class Ws_index_model extends CI_Model {
 		$this->db->join('mt_master_pasien e','e.no_mr=d.no_mr','left');
 		$this->db->join('mt_karyawan f','f.kode_dokter=ri.dr_merawat','left');
 		$this->db->join('mt_master_tarif_ruangan g','(g.kode_bagian=a.kode_bagian AND g.kode_klas=a.kode_klas)','left');
-		$this->db->group_by('a.kode_ruangan, a.kode_bagian, b.nama_bagian, c.kode_klas_bpjs, c.nama_klas_bpjs, c.kode_klas, c.nama_klas, a.no_kamar, a.no_bed, a.status, a.keterangan, a.gender, e.nama_pasien, e.no_mr, ri.tgl_masuk, f.nama_pegawai, g.deposit, g.harga_r, g.harga_bpjs');
+		$this->db->group_by('a.kode_ruangan, a.kode_bagian, b.nama_bagian, c.kode_klas_bpjs, c.nama_klas_bpjs, c.kode_klas, c.nama_klas, a.no_kamar, a.no_bed, a.status, a.keterangan, a.gender, e.nama_pasien, e.no_mr, ri.tgl_masuk, f.nama_pegawai, g.deposit, g.harga_r, g.harga_bpjs, c.kode_klas_dinkes');
 		$this->db->where('a.flag_cad', 0);
 	}
 
@@ -607,8 +607,158 @@ class Ws_index_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
+	function getBedData(){
+		$this->_main_query_ruangan_rs();
+		$this->db->where('a.flag_cad', 0);
+		// $this->db->where("(a.status !='ISI' OR a.status IS NULL)");
+		$query = $this->db->get()->result();
+		$kapasitas = array();
+		$kapasitas_kosong = array();
+		$kapasitas_by_gender = array();
+		$kapasitas_kosong_by_gender = array();
+		$kapasitas_icu = array();
+		foreach($query as $row){
+
+			if( $row->kode_klas_dinkes != '' ){
+				$kapasitas[$row->kode_klas_dinkes][] = count($row);
+				if($row->status == NULL){
+					$kapasitas_kosong[$row->kode_klas_dinkes] = array();
+					$kapasitas_kosong[$row->kode_klas_dinkes][] = count($row);
+				}
+			}
+
+			if( $row->kode_klas_dinkes != '' ){
+				if(in_array($row->gender, array(1,2,3) )){
+					$kapasitas_by_gender[$row->kode_klas_dinkes] = array();
+					$kapasitas_by_gender[$row->kode_klas_dinkes][$row->gender] = array();
+					$kapasitas_by_gender[$row->kode_klas_dinkes][$row->gender][] = count($row);
+					if($row->status == NULL){
+						$kapasitas_kosong_by_gender[$row->kode_klas_dinkes][$row->gender] = array();
+						$kapasitas_kosong_by_gender[$row->kode_klas_dinkes][$row->gender][] = count($row);
+					}
+				}
+			}
+
+			if(in_array($row->kode_klas, array(10,11) )){
+				$kapasitas_icu[$row->kode_klas][] = count($row);
+				if($row->status == NULL){
+					$kapasitas_kosong_icu[$row->kode_klas] = array();
+					$kapasitas_kosong_icu[$row->kode_klas][] = count($row);
+				}
+			}
+			
+		}
+		// echo '<pre>'; print_r($kapasitas);die;
+
+		$fields = array(
+			// kapasitas bed
+			"kapasitas_vip" => count($kapasitas['vip']),
+			"kapasitas_kelas_1" => count($kapasitas['kelas_1']),
+			"kapasitas_kelas_2" => count($kapasitas['kelas_2']),
+			"kapasitas_kelas_3" => count($kapasitas['kelas_3']),
+			"kapasitas_kelas_1_l" => count($kapasitas_by_gender['kelas_1'][1]),
+			"kapasitas_kelas_2_l" => count($kapasitas_by_gender['kelas_2'][1]),
+			"kapasitas_kelas_3_l" => count($kapasitas_by_gender['kelas_3'][1]),
+			"kapasitas_kelas_1_p" => count($kapasitas_by_gender['kelas_1'][2]),
+			"kapasitas_kelas_2_p" => count($kapasitas_by_gender['kelas_2'][2]),
+			"kapasitas_kelas_3_p" => count($kapasitas_by_gender['kelas_3'][2]),
+			"kapasitas_hcu" => count($kapasitas_icu[11]),
+			"kapasitas_iccu" => count($kapasitas_icu[10]),
+			"kapasitas_icu_negatif_ventilator" => 0,
+			"kapasitas_icu_negatif_tanpa_ventilator" => 0,
+			"kapasitas_icu_tanpa_negatif_ventilator" => 0,
+			"kapasitas_icu_tanpa_negatif_tanpa_ventilator" => 0,
+			"kapasitas_icu_covid_negatif_ventilator" => 0,
+			"kapasitas_icu_covid_negatif_tanpa_ventilator" => 0,
+			"kapasitas_icu_covid_tanpa_negatif_ventilator" => 0,
+			"kapasitas_icu_covid_tanpa_negatif_tanpa_ventilator" => 0,
+			"kapasitas_isolasi_negatif" => 0,
+			"kapasitas_isolasi_tanpa_negatif" => 0,
+			"kapasitas_nicu_covid" => 0,
+			"kapasitas_perina_covid" => 0,
+			"kapasitas_picu_covid" => 0,
+			"kapasitas_ok_covid" => 0,
+			"kapasitas_hd_covid" => 0,
+			"kosong_vip" => 0,
+			"kosong_kelas_1" => count($kapasitas_kosong['kelas_1']),
+			"kosong_kelas_2" => count($kapasitas_kosong['kelas_2']),
+			"kosong_kelas_3" => count($kapasitas_kosong['kelas_3']),
+			"kosong_kelas_1_l" => count($kapasitas_kosong_by_gender['kelas_1'][1]),
+			"kosong_kelas_2_l" => count($kapasitas_kosong_by_gender['kelas_2'][1]),
+			"kosong_kelas_3_l" => count($kapasitas_kosong_by_gender['kelas_3'][1]),
+			"kosong_kelas_1_p" => count($kapasitas_kosong_by_gender['kelas_1'][2]),
+			"kosong_kelas_2_p" => count($kapasitas_kosong_by_gender['kelas_2'][2]),
+			"kosong_kelas_3_p" => count($kapasitas_kosong_by_gender['kelas_3'][3]),
+			"kosong_hcu" => count($kapasitas_kosong_icu[11]),
+			"kosong_iccu" => count($kapasitas_kosong_icu[10]),
+			"kosong_icu_negatif_ventilator" => 0,
+			"kosong_icu_negatif_tanpa_ventilator" => 0,
+			"kosong_icu_tanpa_negatif_ventilator" => 0,
+			"kosong_icu_tanpa_negatif_tanpa_ventilator" => 0,
+			"kosong_icu_covid_negatif_ventilator" => 0,
+			"kosong_icu_covid_negatif_tanpa_ventilator" => 0,
+			"kosong_icu_covid_tanpa_negatif_ventilator" => 0,
+			"kosong_icu_covid_tanpa_negatif_tanpa_ventilator" => 0,
+			"kosong_isolasi_negatif" => 0,
+			"kosong_isolasi_tanpa_negatif" => 0,
+			"kosong_nicu_covid" => 0,
+			"kosong_perina_covid" => 0,
+			"kosong_picu_covid" => 0,
+			"kosong_ok_covid" => 0,
+			"kosong_hd_covid" => 0,
+			"updated_time" => date('Y-m-d H:i:s'),
+
+		);
+		
+		// echo '<pre>'; print_r($fields);die;
+		// $encode_data = json_encode($fields);
+		$this->postDataBed($fields);
 
 
+		return $fields;
+	}
+
+	public function postDataBed($fields){
+		header('Content-Type: application/json;'); 
+
+		$url = "http://eis.dinkes.jakarta.go.id/api-bed/bed";
+
+		$header = array();
+		$header[] = 'Api-Bed-User: 3171450';
+		$header[] = 'Api-Bed-Key: $2y$10$nAboXj5XrMiW5wif9\/86PeFJmgHnOrqMGuJsviNtXpV323XX.uVyi';
+		$header[] = 'Accept: application/json;';
+
+		$post_fields = http_build_query($fields);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+		//execute post
+		$result = curl_exec($ch);
+
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if($httpCode == 404) {
+			//echo "URL Not Found<br />";
+			echo $result;
+		}
+		elseif($httpCode == 500) {
+			//echo "Internal Server Error<br />";
+			echo $result;
+		}
+		elseif($httpCode == 200) {
+			echo $result;
+		}
+		else {
+			//echo "Unknown Error<br />";
+			echo $result;
+		}
+		//close connection
+		curl_close($ch);
+	}
 
 
 }

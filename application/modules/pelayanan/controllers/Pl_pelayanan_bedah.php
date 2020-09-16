@@ -51,7 +51,7 @@ class Pl_pelayanan_bedah extends MX_Controller {
         // echo '<pre>';print_r($data);die;
         $data['no_mr'] = $data['value']->no_mr;
         $data['id'] = $id;
-        $data['kode_klas'] = $data['val_ri']->kelas_pas;
+        $data['kode_klas'] = ($data['val_ri']->kelas_titipan != '')?$data['val_ri']->kelas_titipan: $data['val_ri']->kelas_pas;
         $data['kode_profit'] = 2000;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['kode_bagian'] = '030901';
