@@ -50,7 +50,7 @@
             }
           }else{
             echo '<tr>';
-            echo '<td style="color: red"><b>Data tidak ditemukan</b></td>';
+            echo '<td style="color: red">Tidak ada data pasien <b><i>"'.$_GET['keyword'].'"</i></b> pada bulan ini</td>';
             echo '</tr>';
           }
         ?>

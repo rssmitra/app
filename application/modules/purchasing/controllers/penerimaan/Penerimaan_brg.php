@@ -272,7 +272,7 @@ class Penerimaan_brg extends MX_Controller {
                     );
                     // eksekusi rumus untuk mencari harga
                     $harga = $this->master->rumus_harga($config);
-
+                    // print_r($harga);die;
                     $dataexc["kode_brg"] = $rows;
                     $dataexc["id_penerimaan"] = $_POST['id'];
                     $dataexc["kode_penerimaan"] = $_POST['kode_penerimaan'];
@@ -296,9 +296,9 @@ class Penerimaan_brg extends MX_Controller {
                                         
                     // insert rekap stok
                     $rekap_stok = array(
-                        'harga_beli' => $harga['harga_satuan_kecil_netto'], 
-                        'harga_beli_supplier' => $harga['hna'], 
-                        'harga_persediaan' => $harga['harga_satuan_kecil_netto'] * $kartu_stok['stok_akhir'], 
+                        'harga_beli' => $harga['harga_jual'], 
+                        'harga_beli_supplier' => $harga['harga_satuan_kecil'], 
+                        'harga_persediaan' => $harga['harga_satuan_kecil'] * $kartu_stok['stok_akhir'], 
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );
@@ -311,7 +311,7 @@ class Penerimaan_brg extends MX_Controller {
                     // ============= update mt_barang (rasio, harga, satuan)
                     $data_brg = array(
                         'content' => $_POST['rasio'][$rows],
-                        'harga_beli' => $harga['harga_satuan_kecil_netto'],
+                        'harga_beli' => $harga['harga_jual'],
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );

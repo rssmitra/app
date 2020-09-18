@@ -161,5 +161,16 @@ class Inv_master_barang_model extends CI_Model {
         return true;
 	}
 
+	public function get_history_po($kode_brg){
+		$tc_po = ($_GET['flag']=='medis')?'tc_po':'tc_po_nm';
+		$this->db->select('a.*, b.no_po, b.tgl_po, c.namasupplier, b.tgl_kirim, b.petugas, c.alamat, c.telpon1');
+		$this->db->from($tc_po.'_det a');
+		$this->db->join($tc_po.' b', 'a.id_tc_po=b.id_tc_po','left');
+		$this->db->join('mt_supplier c', 'c.kodesupplier=b.kodesupplier','left');
+		$this->db->where('kode_brg', $kode_brg);
+		$this->db->order_by('a.id_tc_po_det', 'DESC');
+		return $this->db->get();
+	}
+
 
 }

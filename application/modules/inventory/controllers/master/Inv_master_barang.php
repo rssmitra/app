@@ -69,11 +69,13 @@ class Inv_master_barang extends MX_Controller {
         $this->breadcrumbs->push('View '.strtolower($this->title).'', 'Inv_master_barang/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*define data variabel*/
         $data['value'] = $this->Inv_master_barang->get_by_id($id);
+        $data['history_po'] = $this->Inv_master_barang->get_history_po($id);
         $data['title'] = $this->title;
         $data['flag'] = "read";
+        $data['flag_string'] = $_GET['flag'];
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('master/Inv_master_barang/form', $data);
+        $this->load->view('master/Inv_master_barang/form_show', $data);
     }
 
     public function get_data()

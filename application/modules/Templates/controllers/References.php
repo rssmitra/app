@@ -1532,9 +1532,13 @@ class References extends MX_Controller {
 			$this->db->where("convert(varchar,a.tgl_masuk,23) = '".$_GET['tgl_pelayanan']."'");
 		}else{
 			$this->db->where('MONTH(a.tgl_masuk)', date('m') );
+			$this->db->where('YEAR(a.tgl_masuk)', date('Y') );
 		}
 
+		$this->db->order_by('a.tgl_masuk', 'DESC');
+		$this->db->limit(5);
 		$result = $this->db->get()->result();
+		// echo $this->db->last_query();die;
 		$data['result'] = $result;
 		$view = $this->load->view('Templates/templates/search_result_pasien', $data, true);
 

@@ -149,6 +149,21 @@ final class Tanggal {
         return $tanggal;
     }
 
+    public  function formatDateTimeFormDmy($input) {
+        if (empty($input)) {
+            $tanggal = "-";
+        } else {
+            sscanf($input, '%d-%d-%d %d:%d:%d', $y, $m, $d, $h, $i, $s);
+            $h = tanggal::normalDigit($h);
+            $i = tanggal::normalDigit($i);
+            $s = tanggal::normalDigit($s);
+            
+            $tanggal = $d . "/" . $m . "/" . $y. " ".$h.":".$i.":".$s."";
+        }
+
+        return $tanggal;
+    }
+
     public  function formatTime($input) {
         if (empty($input)) {
             $tanggal = "-"; 

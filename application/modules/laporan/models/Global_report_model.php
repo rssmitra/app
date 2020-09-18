@@ -585,21 +585,21 @@ public function pengadaan_mod_8(){
 		$m_barang = ($_POST['jenis']=='Non Medis')?'mt_barang_nm':'mt_barang';
 		
 		if($_POST['frekuensi']=='harian'){
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, CAST(b.content AS int) AS content FROM '.$t_penerimaan.' a JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
 				WHERE a.tgl_penerimaan='."'".$_POST['tgl']."'".' 
 				GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
 		}
 		elseif($_POST['frekuensi']=='bulanan'){
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, CAST(b.content AS int) AS content FROM '.$t_penerimaan.' a 
 				JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier 
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg
 				WHERE MONTH(a.tgl_penerimaan)='."'".$_POST['from_month']."'".' AND YEAR(a.tgl_penerimaan)='."'".$_POST['year']."'".' GROUP BY a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content ORDER BY a.tgl_penerimaan desc';
 		}
 		else{
-			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, b.content FROM '.$t_penerimaan.' a 
+			$query = 'SELECT a.kode_penerimaan, a.no_po, a.tgl_penerimaan, c.namasupplier, a.no_faktur, b.kode_brg, d.nama_brg, b.jumlah_pesan, b.jumlah_kirim, d.satuan_besar, CAST(b.content AS int) AS content FROM '.$t_penerimaan.' a 
 				JOIN '.$t_penerimaan_dtl.' b ON b.kode_penerimaan=a.kode_penerimaan 
 				JOIN mt_supplier c ON c.kodesupplier=a.kodesupplier 
 				JOIN '.$m_barang.' d ON b.kode_brg=d.kode_brg

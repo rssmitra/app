@@ -360,7 +360,9 @@ class Csm_billing_pasien_model extends CI_Model {
 
         /*penunjang medis*/
         if($str_bag == '05'){
-            $bill_pm = $subtotal;
+            if (in_array($jenis_tindakan, array(3))) {
+                $bill_pm = $subtotal;
+            }
         }else{
             // tindakan
             if (in_array($jenis_tindakan, array(3))) {

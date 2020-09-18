@@ -681,7 +681,11 @@ final Class Master {
 
 		// harga satuan kecil / dibagi rasio
 		$harga_satuan_kecil = $params['hna'] / $params['rasio']; 
-        $harga_satuan_kecil_netto = $harga_satuan_netto / $params['rasio']; 
+		$harga_satuan_kecil_netto = $harga_satuan_netto / $params['rasio']; 
+		
+		// harga jual satuan 
+		$harga_jual_ppn = $harga_satuan_kecil * ($params['ppn'] / 100);
+		$harga_jual = $harga_satuan_kecil + $harga_jual_ppn;
 
 		$result = array(
 			'hna' => $params['hna'],
@@ -699,6 +703,8 @@ final Class Master {
 			'total_harga_netto' => $total_harga_netto,
 			'harga_persediaan' => $harga_persediaan,
 			'harga_satuan_persediaan' => $harga_satuan_persediaan,
+			'harga_jual_ppn' => $harga_jual_ppn,
+			'harga_jual' => $harga_jual,
 		);
 
 		return $result;

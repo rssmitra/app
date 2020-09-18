@@ -228,7 +228,7 @@ final class Tarif extends AvObjects {
             $db->where('kode_profit', $kode_profit);
         }
         $profit = $db->get()->row();
-
+        // print_r($profit);die;
         if($profit->$select_profit != ''){
             $nilai_profit = $profit->$select_profit;
         }else{
@@ -242,7 +242,9 @@ final class Tarif extends AvObjects {
         }
 
         $kenaikan_profit = ($nilai_profit * 0.01) + 1;
-
+        // print_r($harga_beli);
+        // print_r($kenaikan_profit);
+        // print_r($jumlah);die;
         return ceil($harga_beli * $kenaikan_profit * $jumlah);
 
     }

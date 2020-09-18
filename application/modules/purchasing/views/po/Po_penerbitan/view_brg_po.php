@@ -217,11 +217,10 @@ $(function(){
               $discount = isset($history->discount)?$history->discount:0;
             ?>
             <td class="center">
-                <!-- <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="format_number form-control" value="<?php echo number_format(0, 2)?>" onkeypress="format_currency('form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>')" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled> -->
                 <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="format_number form-control" value="0" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled>
                 <!-- perhitungan harga satuan dasar -->
                 
-                <input type="hidden" name="harga_satuan_val[<?php echo $row_dt[0]->kode_brg?>]" id="hidden_form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $jumlah_harga_dasar_satuan_besar?>">
+                <input type="hidden" name="harga_satuan_val[<?php echo $row_dt[0]->kode_brg?>]" id="hidden_form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $history->harga_satuan; ?>">
             </td>
 
             <!-- diskon -->
