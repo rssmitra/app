@@ -1,3 +1,53 @@
+<script>
+$(document).ready(function(){
+    
+    table = $('#riwayat-pesan-resep').DataTable( {
+        "processing": true, 
+        "serverSide": true,
+        "bInfo": true,
+        "bPaginate": true,
+        "searching": true,
+        "bSort": false,
+        "ajax": {
+            "url": "farmasi/Etiket_obat/riwayat_resep?flag=<?php echo $flag?>&profit=<?php echo $profit?>",
+            "type": "POST"
+        },
+    }); 
+    
+    $('#btn_search_data').click(function (e) {
+        var url_search = $('#form_search').attr('action');
+        e.preventDefault();
+        $.ajax({
+        url: url_search,
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        success: function(data) {
+          console.log(data.data);
+          find_data_reload(data);
+        }
+      });
+    });
+
+    $( "#keyword" )
+      .keypress(function(event) {
+        var keycode =(event.keyCode?event.keyCode:event.which); 
+        if(keycode ==13){
+          event.preventDefault();
+          $('#btn_search_data').click();
+          return false;       
+        }
+    });
+
+    function find_data_reload(result){
+
+        table.ajax.url('farmasi/Etiket_obat/riwayat_resep?flag=<?php echo $flag?>&profit=<?php echo $profit?>&'+result.data).load();
+        $("html, body").animate({ scrollTop: "400px" });
+
+    }
+
+})
+</script>
 <form class="form-horizontal" method="post" id="form_search" action="templates/References/find_data" autocomplete="off">
 
       <div class="col-md-12">
@@ -34,24 +84,23 @@
             </div>
         </div>
       </div>
+
       <div class="clearfix"></div>
       <!-- div.dataTables_borderWrap -->
       <div class="col-md-12">
         <div>
-          <table id="dynamic-table" base-url="farmasi/Etiket_obat/riwayat_resep?flag=<?php echo $flag?>&profit=<?php echo $profit?>" class="table table-bordered table-hover">
+          <table id="riwayat-pesan-resep" base-url="" class="table table-bordered table-hover">
             <thead>
               <tr>  
-                <th>&nbsp;</th>
-                <th class="center" style="min-width:30px">No</th>
+                <th class="center">No</th>
                 <th>Kode</th>
                 <th>Tgl Pesan</th>
+                <th>No Mr</th>
                 <th>Nama Pasien</th>
                 <th>Nama Dokter</th>
                 <th>Pelayanan</th>
-                <th style="width:60px">Status</th>
-                <th class="center" style="width:50px">Nota<br>Farmasi</th>
-                <th class="center" style="min-width: 70px">Copy<br>Resep</th>
-                <th class="center" style="width:50px">Etiket</th>
+                <th>Status</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -61,9 +110,7 @@
       </div>
 
     </form>
-
-<script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
-
+    
 
 
 

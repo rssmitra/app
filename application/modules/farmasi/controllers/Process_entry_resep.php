@@ -19,10 +19,13 @@ class Process_entry_resep extends MX_Controller {
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Process_entry_resep_model', 'Process_entry_resep');
         $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
+        $this->load->model('Retur_obat_model', 'Retur_obat');
         $this->load->library('Stok_barang');
         $this->load->helper('security');
         /*enable profiler*/
         $this->output->enable_profiler(false);
+         /*profile class*/
+        $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
     }
 
@@ -111,12 +114,12 @@ class Process_entry_resep extends MX_Controller {
                 $isset_jml_tebus = isset($_POST['jumlah_tebus'])?$_POST['jumlah_tebus']:$_POST['jumlah_pesan'];
                 /*data detail farmasi*/
                 if( $_POST['urgensi'] == 'biasa' ){
-                    $biaya_tebus = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan_bpjs'] * $isset_jml_tebus : $_POST['pl_harga_satuan'] * $isset_jml_tebus;
+                    $biaya_tebus = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan'] * $isset_jml_tebus : $_POST['pl_harga_satuan'] * $isset_jml_tebus;
 
-                    $harga_jual = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan_bpjs'] : $_POST['pl_harga_satuan'];
+                    $harga_jual = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan'] : $_POST['pl_harga_satuan'];
                 }else{
-                    $biaya_tebus = $_POST['pl_harga_satuan_cito'] * $isset_jml_tebus;
-                    $harga_jual = $_POST['pl_harga_satuan_cito'];
+                    $biaya_tebus = $_POST['pl_harga_satuan'] * $isset_jml_tebus;
+                    $harga_jual = $_POST['pl_harga_satuan'];
                 }
                 
                 $sisa = $_POST['jumlah_pesan'] - $isset_jml_tebus;
@@ -290,27 +293,25 @@ class Process_entry_resep extends MX_Controller {
         $ID = ($this->input->post('ID'))?$this->input->post('ID'):0;
         $kode_bagian = '060101'; // kode bagian farmasi
         // select transaksi farmasi
-        $this->db->from('fr_tc_far_detail_log a');
-        $this->db->join('fr_tc_far b','a.kode_trans_far=b.kode_trans_far','left');
-        $this->db->where('a.kode_trans_far', $ID);
-        $trans_dt = $this->db->get()->result();
+        // $this->db->from('fr_tc_far_detail c');
+        // $this->db->join('fr_tc_far_detail_log a','a.relation_id=c.kd_tr_resep','left');
+        // $this->db->join('fr_tc_far b','c.kode_trans_far=b.kode_trans_far','left');
+        // $this->db->where('c.kode_trans_far', $ID);
+        $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
         // print_r($trans_dt);die;
         /*execution begin*/
         $this->db->trans_begin();
 
         if( count($trans_dt) > 0 ){
-            // delete first tc_trans_pelayanan
-            // $this->db->where('kode_trans_far', $ID);
-            // $this->db->delete('tc_trans_pelayanan');
             
             foreach($trans_dt as $row_dt){
                 // update sisa tebus fr_tc_far_detail
                 $sisa_tebus = $row_dt->jumlah_pesan - $row_dt->jumlah_tebus;
                 
-                $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1, 'status_input' => 1), array('kd_tr_resep' => $row_dt->relation_id) );
+                $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1, 'status_input' => 1), array('kd_tr_resep' => $row_dt->kd_tr_resep) );
                     
                 // create mutasi untuk obat racikan
-                if( $row_dt->flag_resep == 'racikan' ){
+                if( $row_dt->id_tc_far_racikan != 0 ){
                     // cari data obat racikan 
                     $dt_racikan = $this->Entry_resep_racikan->get_detail_by_id($row_dt->relation_id);
                     // print_r($this->db->last_query());die;
@@ -320,7 +321,7 @@ class Process_entry_resep extends MX_Controller {
                         $this->stok_barang->stock_process($val_dt->kode_brg, (int)$total_prb, $kode_bagian, 14, " Nama Racikan : ".$val_dt->nama_racikan." - No. Racikan : ".$row_dt->kode_brg."", 'reduce');
                     }
                     // update status input fr_tc_far_racikan
-                    $this->db->update('tc_far_racikan', array('status_input' => 1), array('id_tc_far_racikan' => $row_dt->relation_id ) );
+                    $this->db->update('tc_far_racikan', array('status_input' => 1), array('id_tc_far_racikan' => $row_dt->id_tc_far_racikan ) );
     
                     // define untuk obat racikan
                     $kode_brg = $row_dt->kode_brg;
@@ -340,12 +341,12 @@ class Process_entry_resep extends MX_Controller {
                     // define untuk obat biasa atau non racikan
                     $kode_brg = $row_dt->kode_brg;
                     $nama_barang_tindakan = $row_dt->nama_brg;
-                    $total_harga = $row_dt->total + $row_dt->jasa_r + $row_dt->jasa_produksi;
+                    $total_harga = $row_dt->total + $row_dt->jasa_r;
                 }
     
                 // insert table tc_trans_pelayanan
                 $kode_trans_pelayanan = $this->master->get_max_number("tc_trans_pelayanan","kode_trans_pelayanan");
-    
+                
                 $dataexc = array(
                     "kode_trans_pelayanan" => $kode_trans_pelayanan,
                     "no_registrasi" => $row_dt->no_registrasi,
@@ -389,12 +390,12 @@ class Process_entry_resep extends MX_Controller {
     
             /*log transaksi*/
             $this->db->update('fr_tc_pesan_resep', array('status_tebus' => 1), array('kode_pesan_resep' => $_POST['kode_pesan_resep']) );   
+
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada obat ditemukan dalam resep'));
             exit;
         }
-                    
-        
+                            
         if ($this->db->trans_status() === FALSE)
         {
             $this->db->trans_rollback();
@@ -426,8 +427,31 @@ class Process_entry_resep extends MX_Controller {
         $data = array(
             'resep' => $getData,
         );
-        // echo '<pre>'; print_r($data);
+        // echo '<pre>'; print_r($data);die;
         $this->load->view('farmasi/preview_nota_farmasi', $data);
+
+    }
+
+    function preview_entry($kode_trans_far){
+
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Preview Transaksi Farmasi', 'Entry_resep_ri_rj/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$kode_trans_far);
+
+        $data = array(
+            'title' => 'Preview Transaksi' ,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'flag' => $_GET['flag']
+        );
+        $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
+        foreach($resep_log as $row){
+            $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
+            $row['racikan'][] = $racikan;
+            $getData[] = $row;
+        }
+        $data['resep'] = $getData;
+
+        // echo '<pre>'; print_r($data);die;
+        $this->load->view('farmasi/preview_entry', $data);
 
     }
 

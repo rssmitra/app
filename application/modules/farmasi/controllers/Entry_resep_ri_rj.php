@@ -19,6 +19,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         /*load model*/
         $this->load->model('Entry_resep_ri_rj_model', 'Entry_resep_ri_rj');
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
+        $this->load->model('Retur_obat_model', 'Retur_obat');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -55,6 +56,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         if( $_GET['type'] == 'pb' ){
             $name = 'Pembelian Bebas';
         }
+        
         $data = array(
             'title' => $name ,
             'breadcrumbs' => $this->breadcrumbs->show(),
@@ -95,8 +97,8 @@ class Entry_resep_ri_rj extends MX_Controller {
         $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Entry_resep_ri_rj/'.strtolower(get_class($this)).'/'.__FUNCTION__);
         
         /*initialize flag for form*/
-        $data['tipe_layanan'] = $_GET['tipe_layanan'];
-        $data['str_tipe_layanan'] = ($_GET['tipe_layanan']=='RJ')?'Rajal':'Ranap';
+        $data['tipe_layanan'] = strtolower($_GET['jenis_resep']);
+        $data['str_tipe_layanan'] = ($_GET['jenis_resep']=='RJ')?'Rajal':'Ranap';
         /*title header*/
         $data['title'] = 'Resep Farmasi';
         /*show breadcrumbs*/
@@ -109,8 +111,11 @@ class Entry_resep_ri_rj extends MX_Controller {
     {
         /*if id is not null then will show form edit*/
         $data = array();
-        $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
-        // print_r($data);die;
+        $result = $this->Retur_obat->get_by_id($kode_trans_far);
+        $flag = (!empty($result)) ? preg_replace('/[^A-Za-z\?!]/', '', $result->no_resep) : $_GET['jenis_resep'];
+        $data['flag'] = $flag;
+        $data['value'] = $result;
+        // echo '<pre>';print_r($data);die;
         $this->load->view('Entry_resep_ri_rj/form_default_entry', $data);
     }
 
@@ -122,8 +127,9 @@ class Entry_resep_ri_rj extends MX_Controller {
     public function form_resep_luar($kode_trans_far='')
     {
         $data = array();
-        $data['title_form'] = ($_GET['type']=='rl') ? 'Resep Luar' : 'Pembelian Bebas';
-        $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
+        $data['title_form'] = ($_GET['jenis_resep']=='rl') ? 'Resep Luar' : 'Pembelian Bebas';
+        $data['value'] = $this->Retur_obat->get_by_id($kode_trans_far);
+        // echo '<pre>'; print_r($data);die;
         $this->load->view('Entry_resep_ri_rj/form_resep_luar', $data);
     }
 
@@ -153,7 +159,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         
         $data = $this->Entry_resep_ri_rj->get_detail_by_kode_brg($kode_brg);
         $resep = $this->Entry_resep_ri_rj->get_detail_by_kode_tr_resep($id);
-        // echo'<pre>';print_r($data);die;
+        // echo'<pre>';print_r($resep);die;
         
         $html = '';
         if(count($data) > 0){
@@ -242,13 +248,14 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            $no++;
+            
             $row = array();
             $row[] = '';
+            
             $row[] = $row_list->relation_id;
             $row[] = $row_list->flag_resep;
             
-            if($row_list->flag_resep=='racikan'){
+            if( $row_list->id_tc_far_racikan != 0 ){
                 $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_trans_far."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."'".', '."'RESEP RACIKAN'".')"';
                 $btn_selesai_racikan = '<li><a href="#" onclick="process_selesai('.$row_list->relation_id.')">Resep Selesai</a></li>';
             }else{
@@ -264,9 +271,10 @@ class Entry_resep_ri_rj extends MX_Controller {
 
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
             $row[] = $row_list->kode_brg;
-            $row[] = strtoupper($row_list->nama_brg);
+            $nama_brg = ($row_list->nama_brg != '')?$row_list->nama_brg:'Obat Racikan -'.$no;
+            $row[] = strtoupper($nama_brg);
             $row[] = '<div class="center">'.(int)$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->harga_jual_satuan, 2).'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->harga_jual, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->sub_total, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->jasa_r, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->total, 2).'</div>';
@@ -274,6 +282,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = '<div align="center">'.$status_input.'</div>';
             
             $data[] = $row;
+            $no++;
         }
 
         $output = array(

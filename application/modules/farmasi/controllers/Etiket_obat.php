@@ -17,6 +17,7 @@ class Etiket_obat extends MX_Controller {
             echo 'Session Expired !'; exit;
         }
         /*load model*/
+        $this->load->model('Retur_obat_model', 'Retur_obat');
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
         // load library
@@ -46,8 +47,16 @@ class Etiket_obat extends MX_Controller {
         /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Etiket_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
-        $data['value'] = $this->Etiket_obat->get_by_id($id);
-        $data['detail_obat'] = $this->Etiket_obat->get_detail_resep_data($id)->result();
+        $data['value'] = $this->Retur_obat->get_by_id($id);
+        $resep_log = $this->Etiket_obat->get_detail_resep_data($id)->result_array();
+        foreach($resep_log as $row){
+            $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
+            $row['racikan'][] = $racikan;
+            $getData[] = $row;
+        }
+
+        $data['detail_obat'] = $getData;
+        $data['flag'] = $_GET['flag'];
         // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
@@ -63,7 +72,7 @@ class Etiket_obat extends MX_Controller {
         /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Etiket_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
-        $data['value'] = $this->Etiket_obat->get_by_id($id);
+        $data['value'] = $this->Retur_obat->get_by_id($id);
         $resep_log = $this->Etiket_obat->get_detail_resep_data($id)->result_array();
         foreach($resep_log as $row){
             $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
@@ -72,6 +81,7 @@ class Etiket_obat extends MX_Controller {
         }
 
         $data['detail_obat'] = $getData;
+        $data['flag'] = $_GET['flag'];
         // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
@@ -83,7 +93,7 @@ class Etiket_obat extends MX_Controller {
 
     public function get_detail_by_kode_trans_far($kode_trans_far){
         $data = array(
-            'value' => $this->Etiket_obat->get_by_id($kode_trans_far),
+            'value' => $this->Retur_obat->get_by_id($kode_trans_far),
         );
         echo json_encode($data);
 
@@ -160,7 +170,7 @@ class Etiket_obat extends MX_Controller {
     public function riwayat_resep()
     {
         /*get data from model*/
-        $list = $this->Etiket_obat->get_datatables();
+        $list = $this->Retur_obat->get_datatables();
         if(isset($_GET['search']) AND $_GET['search']==TRUE){
             $this->find_data(); exit;
         }
@@ -171,71 +181,39 @@ class Etiket_obat extends MX_Controller {
 
         foreach ($list as $row_list) {
             $no++;
+            // $flag = $this->regex->_genRegex($row_list->no_resep, 'RQXAZ');
+            $flag = preg_replace('/[^A-Za-z\?!]/', '', $row_list->no_resep);
+
             $row = array();
-            $row[] = '<div class="center"><div class="btn-group">
-                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-inverse">
-                            <li><a href="#" onclick="update_data('.$row_list->kode_trans_far.')">Update Data</a></li>
-                            <li><a href="#" onclick="rollback('.$row_list->kode_trans_far.')">Rollback</a></li>
-                        </ul>
-                    </div></div>';
             $row[] = '<div class="center">'.$no.'</div>';
+            
             $row[] = '<div class="center"><a href="#" onclick="update_data('.$row_list->kode_trans_far.')">'.$row_list->kode_trans_far.'</a></div>';
+
+            // $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
+            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
-            $row[] = ($row_list->flag_trans=='RK') ? 'Resep karyawan' : $row_list->nama_pelayanan;
+            $row[] = $row_list->nama_pelayanan;
             if($row_list->kode_tc_trans_kasir == null) {
-                $row[] = '<div class="center">
-                        <label class="label label-warning">
-                          <i class=" fa fa-flask"></i> Belum bayar
-                        </label>
-                      </div>';
+                if ($row_list->status_transaksi ==  1) {
+                    $label_status = '<label class="label label-xs label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                }else{
+                    $label_status = '<label class="label label-xs label-warning">Belum diproses</label>';
+                }
+                $row[] = '<div class="center">'.$label_status.'</div>';
             }else{
-                $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-check-circle"></i> Lunas</label></div>';
+                $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-money"></i> Lunas</label></div>';
             }
-            $row[] = '<div class="center">
-                        <a href="#" onclick="PopupCenter('."'farmasi/Process_entry_resep/nota_farmasi/".$row_list->kode_trans_far."'".','."'Cetak'".',530,550);" class="btn btn-xs btn-purple" title="print_nota_farmasi"><i class="fa fa-print dark"></i></a>
-                      </div>';
-            $copy_edit = ($row_list->copy_resep_text != null) ? '<a href="#" onclick="PopupCenter('."'farmasi/Etiket_obat/preview_copy_resep/".$row_list->kode_trans_far."'".','."'Cetak copy resep'".',900,600);" class="btn btn-xs btn-default" title="print_copy_resep">
-                            <i class="fa fa-print dark"></i>
-                        </a>' : '';
-            
-            $row[] = '<div class="center">
-                        '.$copy_edit.'
-                        <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form_copy_resep/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-success" title="create_copy_resep">
-                            <i class="fa fa-copy dark"></i>
-                        </a>
-                      </div>';
-            $row[] = '<div class="center">
-                        <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
-                          <i class="fa fa-ticket dark"></i>
-                        </a>
-                      </div>';
-
-            // $row[] = '<div class="center">
-
-            //             '.anchor_popup('farmasi/Etiket_obat/print_tracer_obat/'.$row_list->kode_trans_far.'', '<i class="fa fa-send dark"></i>', $atts).'
-
-            //             <a href="#" onclick="PopupCenter('."'farmasi/Process_entry_resep/nota_farmasi/".$row_list->kode_trans_far."'".','."'Cetak'".',530,550);" class="btn btn-xs btn-purple" title="Nota Farmasi"><i class="fa fa-print dark"></i></a>
-
-            //             <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form_copy_resep/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-success" title="copy_resep">
-            //                 <i class="fa fa-copy dark"></i>
-            //             </a>
-            //             <a href="#" onclick="getMenu('."'farmasi/Etiket_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
-            //               <i class="fa fa-ticket dark"></i>
-            //             </a>
-            //           </div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."'".')" class="btn btn-xs btn-danger"> Preview</a></div>';
             
             $data[] = $row;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Etiket_obat->count_all(),
-                        "recordsFiltered" => $this->Etiket_obat->count_filtered(),
+                        "recordsTotal" => $this->Retur_obat->count_all(),
+                        "recordsFiltered" => $this->Retur_obat->count_filtered(),
                         "data" => $data,
         );
         //output to json format
@@ -250,7 +228,6 @@ class Etiket_obat extends MX_Controller {
 
         $this->form_validation->set_rules('dosis_start', 'Dosis', 'trim|required');
         $this->form_validation->set_rules('dosis_end', 'Dosis /hari', 'trim|required');
-        $this->form_validation->set_rules('jumlah_obat', 'Jumlah', 'trim|required');
         $this->form_validation->set_rules('satuan_obat', 'Satuan Obat', 'trim|required');
         $this->form_validation->set_rules('anjuran_pakai', 'Anjuran Pakai', 'trim|required');
         $this->form_validation->set_rules('catatan', 'Catatan', 'trim');
@@ -270,18 +247,17 @@ class Etiket_obat extends MX_Controller {
             $this->db->trans_begin();
             
             // check existing data
-            $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('relation_id' => $_POST['kd_tr_resep']) );
+            $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('relation_id' => $_POST['relation_id']) );
            
 
             $data_farmasi = array(
-                'dosis_obat' => isset($_POST['dosis_start'])?$this->regex->_genRegex($_POST['dosis_start'], 'RGXQSL'):0,
-                'dosis_per_hari' => isset($_POST['dosis_end'])?$this->regex->_genRegex($_POST['dosis_end'], 'RGXQSL'):0,
+                'dosis_per_hari' => isset($_POST['dosis_end'])?$this->regex->_genRegex($_POST['dosis_start'], 'RGXQSL'):0,
+                'dosis_obat' => isset($_POST['dosis_start'])?$this->regex->_genRegex($_POST['dosis_end'], 'RGXQSL'):0,
+                'satuan_obat' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
                 'aturan_pakai' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
                 'catatan_lainnya' => isset($_POST['catatan'])?$this->regex->_genRegex($_POST['catatan'], 'RGXQSL'):0,
-                'relation_id' => isset($_POST['kd_tr_resep'])?$this->regex->_genRegex($_POST['kd_tr_resep'], 'RGXINT'):0,
-                'satuan_obat' => isset($_POST['satuan_obat'])?$this->regex->_genRegex($_POST['satuan_obat'], 'RGXQSL'):0,
+                'relation_id' => isset($_POST['relation_id'])?$this->regex->_genRegex($_POST['relation_id'], 'RGXINT'):0,
                 'anjuran_pakai' => isset($_POST['anjuran_pakai'])?$this->regex->_genRegex($_POST['anjuran_pakai'], 'RGXQSL'):0,
-                'jumlah_obat' => isset($_POST['jumlah_obat'])?$this->regex->_genRegex($_POST['jumlah_obat'], 'RGXQSL'):0,
             );
             
             // print_r($_POST);die;
@@ -290,12 +266,12 @@ class Etiket_obat extends MX_Controller {
                 /*update existing*/
                 $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
                 $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                $this->db->update('fr_tc_far_detail_log', $data_farmasi, array('relation_id' => $_POST['kd_tr_resep'], 'kode_trans_far' => $_POST['kode_trans_far']) );
+                $this->db->update('fr_tc_far_detail_log', $data_farmasi, array('relation_id' => $_POST['relation_id'], 'kode_trans_far' => $_POST['kode_trans_far']) );
                 /*save log*/
-                $this->logs->save('fr_tc_far_detail_log', $_POST['kd_tr_resep'], 'update record on entry resep module', json_encode($data_farmasi),'relation_id');
+                $this->logs->save('fr_tc_far_detail_log', $_POST['relation_id'], 'update record on entry resep module', json_encode($data_farmasi),'relation_id');
             
             }else{
-                $dt_existing_obat = $this->db->get_where('fr_hisbebasluar_v', array('kd_tr_resep' => $_POST['kd_tr_resep']) )->row();
+                $dt_existing_obat = $this->db->get_where('fr_hisbebasluar_v', array('kd_tr_resep' => $_POST['relation_id']) )->row();
                 // print_r($dt_existing_obat);die;
                 /*sub total*/
                 $sub_total = ceil($dt_existing_obat->jumlah_pesan * $dt_existing_obat->harga_jual);
@@ -325,7 +301,7 @@ class Etiket_obat extends MX_Controller {
 
                 $this->db->insert( 'fr_tc_far_detail_log', $data_farmasi );
                 /*save log*/
-                $this->logs->save('fr_tc_far_detail_log', $_POST['kd_tr_resep'], 'insert new record on entry resep module', json_encode($data_farmasi),'relation_id');
+                $this->logs->save('fr_tc_far_detail_log', $_POST['relation_id'], 'insert new record on entry resep module', json_encode($data_farmasi),'relation_id');
 
             }
 

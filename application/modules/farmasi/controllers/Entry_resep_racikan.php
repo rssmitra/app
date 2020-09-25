@@ -272,12 +272,12 @@ class Entry_resep_racikan extends MX_Controller {
 
                     $kode_trans_far = isset($kode_trans_far)?$kode_trans_far:$_POST['kode_trans_far'];
                     if( $_POST['urgensi_r'] == 'biasa' ){
-                        $biaya_tebus = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan_bpjs'] * $_POST['jumlah_pesan_racikan'] : $_POST['pl_harga_satuan'] * $_POST['jumlah_pesan_racikan'];
+                        $biaya_tebus = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan'] * $_POST['jumlah_pesan_racikan'] : $_POST['pl_harga_satuan'] * $_POST['jumlah_pesan_racikan'];
 
-                        $harga_jual = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan_bpjs'] : $_POST['pl_harga_satuan'];
+                        $harga_jual = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan'] : $_POST['pl_harga_satuan'];
                     }else{
-                        $biaya_tebus = $_POST['pl_harga_satuan_cito'] * $_POST['jumlah_pesan_racikan'];
-                        $harga_jual = $_POST['pl_harga_satuan_cito'];
+                        $biaya_tebus = $_POST['pl_harga_satuan'] * $_POST['jumlah_pesan_racikan'];
+                        $harga_jual = $_POST['pl_harga_satuan'];
                     }
                     
                     /*entry detail obat*/
@@ -339,7 +339,7 @@ class Entry_resep_racikan extends MX_Controller {
                     'jumlah_obat_23' => isset($_POST['jml_23'])?$_POST['jml_23']:0,
                     'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan'])?$_POST['prb_ditangguhkan']:0,
                 );
-
+                // echo '<pre>';print_r($post_data);die;
                 $this->Entry_resep_racikan->save_fr_tc_far($post_data); 
 
                 /*save log*/

@@ -153,10 +153,21 @@ class Entry_resep_racikan_model extends CI_Model {
             'sub_total' => $sub_total,
             'updated_date' => date('Y-m-d H:i:s'),
             'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
-            );
+        );
 		// print_r($update_header);die;
         $this->db->update('tc_far_racikan', $update_header, array('id_tc_far_racikan' => $id_tc_far_racikan) );
 		
+		$update_far_detail = array(
+            'harga_beli' => $harga_beli,
+            'harga_jual' => $harga_jual_satuan,
+            'biaya_tebus' => $sub_total,
+            'updated_date' => date('Y-m-d H:i:s'),
+            'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
+            );
+
+		// update fr tc far detail
+		$this->db->update('fr_tc_far_detail', $update_far_detail, array('id_tc_far_racikan' => $id_tc_far_racikan) );
+
         return $this->db->get_where('tc_far_racikan', array('id_tc_far_racikan' => $id_tc_far_racikan))->row();
 
 	}
@@ -171,8 +182,8 @@ class Entry_resep_racikan_model extends CI_Model {
                 'jumlah_tebus' => $this->regex->_genRegex($params['jumlah_tebus'], 'RGXINT'),
                 'sisa' => $this->regex->_genRegex(0, 'RGXINT'),
                 'kode_brg' => $this->regex->_genRegex($params['kode_brg'], 'RGXQSL'),
-                'harga_beli' => $this->regex->_genRegex($params['harga_beli'], 'RGXINT'),
-                'harga_jual' => $this->regex->_genRegex($params['harga_jual'], 'RGXINT'),
+                'harga_beli' => $this->regex->_genRegex($params['harga_beli'], 'RGXQSL'),
+                'harga_jual' => $this->regex->_genRegex($params['harga_jual'], 'RGXQSL'),
                 'harga_r' => $this->regex->_genRegex($params['harga_r'], 'RGXINT'),
                 'biaya_tebus' => $this->regex->_genRegex($params['biaya_tebus'], 'RGXINT'),
                 'tgl_input' => date('Y-m-d H:i:s'),

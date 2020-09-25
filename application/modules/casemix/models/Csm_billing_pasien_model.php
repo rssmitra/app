@@ -1158,7 +1158,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $data = $this->getDetailData($no_registrasi);
         $decode_data = json_decode($data);
 
-        // dokume penunjang medis
+        // dokumen penunjang medis
         $grouping_doc = $this->groupingDocumentPM($decode_data->group);
         
         /*document billing*/

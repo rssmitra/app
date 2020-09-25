@@ -5,7 +5,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
-	var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep';
+	var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, verifikasi_prb';
 
 	var $order = array('tgl_trans' => 'DESC', 'kode_trans_far' => 'DESC');
 
@@ -22,6 +22,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
 		$this->db->where('kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log where jumlah_obat_23 > 0 group by kode_trans_far)');
 		$this->db->where('tc_registrasi.kode_perusahaan', 120);
+		// $this->db->where('fr_tc_far.verifikasi_prb IS NULL');
 		$this->db->group_by($this->select);
 
 	}
@@ -128,47 +129,28 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
 	}
 
-	public function save_pm($table, $data)
-	{
-		/*insert tc_registrasi*/
-		$this->db->insert($table, $data);
-		
-		return $this->db->insert_id();;
+	public function get_header_data($kode_trans_far){
+		$this->db->from('fr_tc_far a');
+		$this->db->join('tc_registrasi b', 'b.no_registrasi=a.no_registrasi', 'left');
+		$this->db->join('th_riwayat_pasien e', 'e.no_registrasi=a.no_registrasi', 'left');
+		$this->db->join('mt_master_pasien c', 'c.no_mr=a.no_mr', 'left');
+		$this->db->join('mt_bagian d', 'd.kode_bagian=a.kode_bagian_asal', 'left');
+		$this->db->where('a.kode_trans_far', $kode_trans_far);
+		return $this->db->get()->row();
 	}
-
-	public function get_detail_by_kode_brg($kode_brg)
-	{
-		return $this->db->join('mt_jenis_obat','mt_jenis_obat.kode_jenis=mt_barang.kode_jenis','left')
-						->join('mt_pabrik','mt_pabrik.id_pabrik=mt_barang.id_pabrik','left')
-						->get_where('mt_barang', array('kode_brg' => $kode_brg))->row();		
-	}
-
-	public function get_detail_by_kode_tr_resep($id)
-	{
-		$this->db->from('fr_tc_far_detail_log a');	
-		$this->db->where('relation_id', $id);	
-		return $this->db->get()->row();	
-	}
-
-	public function get_detail_resep_data($kode_trans_far){
-		$this->db->select('b.*, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, e.created_by, e.no_resep, f.nama_bagian, flag_resep');
-		$this->db->from('fr_tc_far_detail_log b');
-		$this->db->join('fr_tc_far e','e.kode_trans_far=b.kode_trans_far','left');
-		$this->db->join('mt_bagian f','f.kode_bagian=e.kode_bagian_asal','left');
-		$this->db->where('b.kode_trans_far', $kode_trans_far);
-		$this->db->order_by('b.id_fr_tc_far_detail_log', 'DESC');
-		return $this->db->get();
-		// print_r($this->db->last_query());die;
-	}
-
-	public function get_etiket_data(){
-		$data = ($_GET)?$_GET:$_POST;
-		$this->db->select('b.kode_brg, b.nama_brg, dosis_obat, aturan_pakai, satuan_obat, jumlah_obat, catatan_lainnya, anjuran_pakai, dosis_per_hari, a.nama_pasien, a.no_mr, a.tgl_trans');
-		$this->db->from('fr_tc_far_detail_log b');
-		$this->db->join('fr_tc_far a', 'a.kode_trans_far=b.kode_trans_far','left');
-		$this->db->where_in('relation_id', $data);
-		return $this->db->get();
-	}
-
 	
+	public function get_detail($kode_trans_far)
+	{
+		return $this->db->join('fr_tc_far', 'fr_tc_far.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far', 'left')->get_where('fr_tc_far_detail_log_prb', array('fr_tc_far_detail_log_prb.kode_trans_far' => $kode_trans_far))->result();		
+	}
+
+	public function checkIfDokExist($kode_trans_far, $file_name){
+        $qry = $this->db->get_where('fr_tc_far_dokumen_klaim_prb', array('kode_trans_far'=>$kode_trans_far,'dok_prb_file_name' => $file_name));
+        return ($qry->num_rows() > 0) ? TRUE : FALSE;
+    }
+
+    public function getDocumentPDF($kode_trans_far){
+        return $this->db->join('fr_tc_far b','b.kode_trans_far=a.kode_trans_far','left')->order_by('dok_prb_id', 'ASC')->get_where('fr_tc_far_dokumen_klaim_prb a', array('a.kode_trans_far'=>$kode_trans_far))->result();
+    }
+
 }

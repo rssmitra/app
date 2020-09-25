@@ -115,7 +115,7 @@ function submitPesanResep(no_kunjungan){
   <label class="control-label col-sm-2">Tanggal Pelayanan</label>
   <div class="col-md-2">
     <div class="input-group">
-        <input name="tgl_pelayanan" id="tgl_pelayanan" class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd"  value="<?php echo date('Y-m-d')?>">
+        <input name="tgl_pelayanan" id="tgl_pelayanan" class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd"  value="">
         <span class="input-group-addon">
           <i class="ace-icon fa fa-calendar"></i>
         </span>
@@ -138,7 +138,7 @@ function submitPesanResep(no_kunjungan){
     <input type="text" class="form-control" name="keyword_pasien" id="keyword_pasien">
   </div>
   <div class="col-md-4" style="margin-left: -15px">
-    <a href="#" id="btn_search_pasien" onclick="search_pasien_by_keyword()" class="btn btn-xs btn-default"><i class="fa fa-search"></i> Cari !</a>
+    <a href="#" id="btn_search_pasien" onclick="search_pasien_by_keyword()" class="btn btn-xs btn-default"><i class="fa fa-search"></i> Cari Pasien</a>
   </div>
 
 </div>

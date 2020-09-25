@@ -69,6 +69,11 @@ jQuery(function($) {
 
 });
 
+$(document).ready(function(){
+  $('select[name="jenis_resep"]').val( $('#tipe_layanan').val() );
+  change_jenis_resep( $('#tipe_layanan').val() );
+})
+
 var kode_trans_far = $('#kode_trans_far').val();
 
 
@@ -169,16 +174,16 @@ function create_new_resep(){
     $('#kode_trans_far').val('');
 
     if( $('#jenis_resep').val() == 'rk' ){
-      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan');  
+      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan?jenis_resep='+$('#jenis_resep').val()+'');  
     }
 
     if( $('#jenis_resep').val() == 'rl' || $('#jenis_resep').val() == 'pb' ){
-      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar?type='+$('#jenis_resep').val()+''); 
+      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar?jenis_resep='+$('#jenis_resep').val()+''); 
     }
 
     // load form 
     $('#div_default_form_entry').show();
-    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry');  
+    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry?jenis_resep='+$('#jenis_resep').val()+'');  
 
 }
 function update_data(kode_trans_far){
@@ -199,70 +204,73 @@ function update_data(kode_trans_far){
   })
 
   if( $('#jenis_resep').val() == 'rk' ){
-    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan/'+kode_trans_far+'');  
+    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan/'+kode_trans_far+'?jenis_resep='+$('#jenis_resep').val()+'');  
   }
 
   if( $('#jenis_resep').val() == 'rl' || $('#jenis_resep').val() == 'pb' ){
-    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar/'+kode_trans_far+'?type='+$('#jenis_resep').val()+''); 
+    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar/'+kode_trans_far+'?jenis_resep='+$('#jenis_resep').val()+''); 
   }
 
   // load form 
   $('#div_default_form_entry').show();
-  $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry/'+kode_trans_far);  
+  $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry/'+kode_trans_far+'?jenis_resep='+$('#jenis_resep').val()+'');  
 
 }
 
 function show_history(){
-  $('#div_default_form_entry').hide();
+  $('#div_default_form_entry').html('');
   $('select[name="jenis_resep"]').change();
 }
 
-$('select[name="jenis_resep"]').change(function () {      
-  
+$('select[name="jenis_resep"]').change(function(){
+  getMenu('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+$(this).val()+'');
+})
+
+function change_jenis_resep(value){
   // reset form with class
   $('.default_value').val('');
   $('#kode_trans_far').val('0');
   // reload_table();
   
-  if( $(this).val() == 'rj' ){
+  if( value == 'rj' ){
     // default value
     $('#form_by_jenis_resep').show('fast');
     $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_rj');  
     $('#kode_profit').val(2000);
     $('#button_action').hide();
-    $('#flag_trans').val( $(this).val().toUpperCase() );
+    $('#flag_trans').val( value.toUpperCase() );
     $('#div_pencarian_obat').hide();
     $('#div_default_form_entry').hide();
     $('#div_table_riwayat_resep').hide('fast');
     
   }  
 
-  if( $(this).val() == 'rl' || $(this).val() == 'pb' ){
+  if( value == 'rl' || value == 'pb' ){
     // default value
     $('#form_by_jenis_resep').hide();
-    $('#flag_trans').val( $(this).val().toUpperCase() );
-    kode_profit = ( $(this).val() == 'rl') ? 3000 : 4000 ;
+    $('#flag_trans').val( value.toUpperCase() );
+    kode_profit = ( value == 'rl') ? 3000 : 4000 ;
     $('#kode_profit').val(kode_profit);
     $('#div_default_form_entry').hide();
     $('#button_action').show();
     $('#div_pencarian_obat').hide();
     $('#div_table_riwayat_resep').show('fast');
-    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
+    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
   }  
 
-  if( $(this).val() == 'rk' ){
+  if( value == 'rk' ){
     // default value
     $('#form_by_jenis_resep').hide();
     $('#kode_profit').val(4000);
-    $('#flag_trans').val( $(this).val().toUpperCase() );
+    $('#flag_trans').val( value.toUpperCase() );
     $('#div_default_form_entry').hide();
     $('#button_action').show();
     $('#div_pencarian_obat').hide();
     $('#div_table_riwayat_resep').show('fast');
-    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
+    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
   }  
 
-});
+}
 
 function rollback(id){
   preventDefault();
@@ -326,6 +334,7 @@ function rollback(id){
     <form class="form-horizontal" method="post" id="form_entry_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/process_entry_resep/process">      
       
       <!-- form_hidden -->
+      <input type="hidden" name="tipe_layanan" id="tipe_layanan" value="<?php echo $_GET['jenis_resep']?>">
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
       <input type="hidden" name="no_registrasi" value="0">
       <input type="hidden" name="no_kunjungan" id="no_kunjungan" class="form-control" value="0" >
@@ -355,10 +364,10 @@ function rollback(id){
               <div class="col-sm-2" style="margin-top: 1px">
                 <select name="jenis_resep" id="jenis_resep" class="form-control">
                   <option value="">-Silahkan Pilih-</option>
-                  <option value="rj">Pasien Rawat Jalan</option>
-                  <option value="rl">Resep Luar</option>
-                  <option value="pb">Pembelian Bebas</option>
-                  <option value="rk">Resep Karyawan</option>
+                  <option value="rj" onclick="change_jenis_resep('rj')">Pasien Rawat Jalan</option>
+                  <option value="rl" onclick="change_jenis_resep('rl')">Resep Luar</option>
+                  <option value="pb" onclick="change_jenis_resep('pb')">Pembelian Bebas</option>
+                  <option value="rk" onclick="change_jenis_resep('rk')">Resep Karyawan</option>
                 </select>
               </div>
 

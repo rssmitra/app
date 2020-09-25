@@ -1358,9 +1358,10 @@ class References extends MX_Controller {
 				$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
 			}
 
-			$html .= '<table class="table" style="font-size: 10px !important">';
+			$html .= '<table class="table" style="font-size: 12px !important">';
 				
 				$flag_medis = ($exc[0]->flag_medis==1) ? 'Alkes' : 'Obat' ;
+				
 				$html .= '<tr>';
 				$link_image = ( $exc[0]->path_image != NULL ) ? PATH_IMG_MST_BRG.$exc[0]->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
 				$html .= '<td width="100px" rowspan="7" valign="middle"><img src="'.$link_image.'" width="100%"><br> 
@@ -1375,28 +1376,53 @@ class References extends MX_Controller {
 				$stok_cito = isset($cito->stok_akhir)?$cito->stok_akhir:0;
 				$harga_satuan_cito = isset($cito->harga_jual)?$cito->harga_jual:0;
 				$html .= '</tr>';
-				$html .= '<tr>';
-					$html .= '<td align="left" valign="top" style="width: 100px">Stok Cito</td>'; 
-					$html .= '<td align="left" valign="top">'.$stok_cito.' ('.$exc[0]->satuan_kecil.')</td>'; 
-				$html .= '</tr>';
+				// $html .= '<tr>';
+				// 	$html .= '<td align="left" valign="top" style="width: 100px">Stok Cito</td>'; 
+				// 	$html .= '<td align="left" valign="top"></td>'; 
+				// $html .= '</tr>';
 
 				// harga cito
 				$html .= '<tr>';
-				$html .= '<td valign="top" align="left">Harga Cito</td>';
-				$html .= '<td valign="top" align="left">Rp. '.number_format($harga_satuan_cito, 2).',- <input type="hidden" name="pl_harga_satuan_cito" value="'.$harga_satuan_cito.'"> </td>';
+				$html .= '<td valign="middle" align="left">
+							<div class="radio">
+								<label>
+								<input type="radio" name="pl_harga_satuan" class="ace" value="'.$harga_satuan_cito.'"> 
+								<span class="lbl" style="font-size: 12px !important"> Harga Cito</span>
+								</label>
+							</div>
+							</td>';
+				$html .= '<td valign="middle" align="left">
+							Rp. '.number_format($harga_satuan_cito, 2).',-  &nbsp;&nbsp;&nbsp;&nbsp; Sisa stok cito '.$stok_cito.' ('.$exc[0]->satuan_kecil.')
+						  </td>';
 				$html .= '</tr>';
 				
 				/*harga umum*/
 				$html .= '<tr>';
 				$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
-					$html .= '<td valign="top" align="left">Harga Umum </td>';
-					$html .= '<td valign="top" align="left">Rp. '.number_format($harga_satuan, 2).',- <input type="hidden" name="pl_harga_satuan" value="'.(float)$harga_satuan.'"> </td>';
+				$default_selected_umum = ($_GET['kode_perusahaan'] != 120) ? 'checked' : '';
+					$html .= '<td valign="middle" align="left">
+								<div class="radio">
+									<label>
+									<input type="radio" name="pl_harga_satuan" value="'.(float)$harga_satuan.'" class="ace" '.$default_selected_umum.'> 
+									<span class="lbl" style="font-size: 12px !important"> Harga Umum</span>
+									</label>
+								</div>
+							 </td>';
+					$html .= '<td valign="middle" align="left">Rp. '.number_format($harga_satuan, 2).',- </td>';
 				$html .= '</tr>';
 			
-
+				// harga bpjs
+				$default_selected_bpjs = ($_GET['kode_perusahaan'] == 120) ? 'checked' : '';
 				$html .= '<tr>';
-					$html .= '<td valign="top" align="left">Harga BPJS</td>';
-					$html .= '<td valign="top" align="left">Rp. '.number_format($exc[0]->harga_beli,2).',- <input type="hidden" name="pl_harga_satuan_bpjs" value="'.(float)$exc[0]->harga_beli.'"> </td>';
+					$html .= '<td valign="middle" align="left">
+								<div class="radio">
+									<label>
+									<input type="radio" name="pl_harga_satuan" value="'.(float)$exc[0]->harga_beli.'" class="ace" '.$default_selected_bpjs.'> 
+									<span class="lbl" style="font-size: 12px !important"> Harga BPJS</span>
+									</label>
+								</div>
+							  </td>';
+					$html .= '<td valign="middle" align="left">Rp. '.number_format($exc[0]->harga_beli,2).',-  </td>';
 				$html .= '</tr>';
 			
 			$html .= '</table>';	
@@ -1404,7 +1430,7 @@ class References extends MX_Controller {
 			$html .= '<div class="alert alert-danger" style="text-align: left !important"><b><i class="fa fa-exclamation-triangle"></i> Barang Expired !</b> Silahkan lakukan update barang.</div> ';
 		}
 
-    	echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0) );
+    	echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0, 'data' => $exc[0], 'harga_beli' => $exc[0]->harga_beli, 'harga_satuan_umum' => $harga_satuan) );
         
 	}
 

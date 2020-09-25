@@ -27,6 +27,7 @@ class Login extends MX_Controller {
 
     public function process(){
 
+        // print_r($_POST);;die;
         /*post username*/
         $username = $this->regex->_genRegex($this->input->post('username'), 'RGXQSL');
         /*hash password bcrypt*/

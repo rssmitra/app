@@ -68,11 +68,17 @@ class Retur_obat extends MX_Controller {
         $no = $_POST['start'];
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
             );
+        
         foreach ($list as $row_list) {
             $no++;
+            // $flag = $this->regex->_genRegex($row_list->no_resep, 'RQXAZ');
+            $flag = preg_replace('/[^A-Za-z\?!]/', '', $row_list->no_resep);
+
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."'".')">'.$row_list->kode_trans_far.'</a></div>';
+
+            // $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
@@ -80,14 +86,11 @@ class Retur_obat extends MX_Controller {
             $row[] = $row_list->nama_pelayanan;
             if($row_list->kode_tc_trans_kasir == null) {
                 $row[] = '<div class="center">
-                        <a href="#" onclick="getMenu('."'farmasi/Retur_obat/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-danger" title="etiket">
-                          Retur Obat
-                        </a>
-                      </div>';
+                            <label class="label lebel-xs label-success"> <i class="fa fa-check-circle"></i> Selesai</label>
+                          </div>';
             }else{
-                $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-check-circle"></i> Lunas</label></div>';
+                $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-money"></i> Lunas</label></div>';
             }
-            
             
             $data[] = $row;
         }

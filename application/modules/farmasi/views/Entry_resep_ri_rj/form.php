@@ -338,7 +338,7 @@ $(document).ready(function(){
 
 function getDetailObatByKodeBrg(kode_brg,kode_bag){
 
-  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($value)?$value->kode_kelompok:0?>&bag="+kode_bag+"&type=html&type_layan=Rajal", '' , function (response) {
+  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($value)?$value->kode_kelompok:0?>&kode_perusahaan="+$('#kode_perusahaan').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal", '' , function (response) {
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
       $('#btn_submit').attr('disabled', true);
@@ -497,8 +497,9 @@ function resep_farmasi_selesai(){
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
             // show poup cetak resep
-            PopupCenter('farmasi/Process_entry_resep/nota_farmasi/'+jsonResponse.kode_trans_far+'','Nota Farmasi', 530, 550);
-            $('#page-area-content').load('farmasi/Entry_resep_ri_rj?flag=RJ');
+            // PopupCenter('farmasi/Process_entry_resep/nota_farmasi/'+jsonResponse.kode_trans_far+'','Nota Farmasi', 530, 550);
+            $('#page-area-content').load('farmasi/Process_entry_resep/preview_entry/'+jsonResponse.kode_trans_far+'?flag=RJ');
+            // $('#page-area-content').load('farmasi/Entry_resep_ri_rj?flag=RJ');
 
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
@@ -648,11 +649,11 @@ function changeUrgensi(){
                       Resep Selesai
                 </button>
                 <?php else: ?>
-                  <!-- <button type="button" id="btn_rollback" onclick="rollback_resep_farmasi(<?php echo $value->kode_pesan_resep?>)" class="btn btn-danger btn-xs" name="rollback" value="rollback">
+                  <button type="button" id="btn_rollback" onclick="rollback_resep_farmasi(<?php echo $value->kode_pesan_resep?>)" class="btn btn-danger btn-xs" name="rollback" value="rollback">
                       <span class="ace-icon fa fa-refresh icon-on-right bigger-110"></span>
                       Rollback
-                  </button> -->
-                  <span class="ace-icon fa fa-check-circle icon-on-right bigger-150 green"></span>
+                  </button>
+                  <!-- <span class="ace-icon fa fa-check-circle icon-on-right bigger-150 green"></span> -->
                 <?php endif; ?>
 
               </div>

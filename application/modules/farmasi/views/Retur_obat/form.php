@@ -217,13 +217,14 @@ function get_kode_eticket(myid){
                       $no = 0;
                       foreach($detail_obat as $row) { 
                         $sisa = $row->jumlah_tebus - $row->jumlah_retur;
-
+                        // echo '<pre>';print_r($row);die;
+                        $nama_brg = ($row->id_tc_far_racikan == 0)?$row->nama_brg:'Racikan';
                         if( $sisa > 0 ){
                           $no++;
                           $readonly = (empty($row->id_fr_tc_far_detail_log))?'':'readonly';
                           echo '<tr id="row_kd_brg_'.$row->kode_brg.'">';
                           echo '<td align="center">'.$no.'</td>';
-                          echo '<td><b>'.$row->kode_brg.'</b><br>'.$row->nama_brg.'<br>@ '.number_format($row->harga_jual_satuan, 2).',-'.'</td>';
+                          echo '<td><b>'.$row->kode_brg.'</b><br>'.$nama_brg.'<br>@ '.number_format($row->harga_jual, 2).',-'.'</td>';
                           // jumlah
                           echo '<td align="center">';
                             echo '<input style="width:80px;height:45px;text-align:center" type="hidden" name="jumlah_'.$row->kode_brg.'" value="'.$row->jumlah_tebus.'" '.$readonly.'>';
@@ -232,7 +233,7 @@ function get_kode_eticket(myid){
 
                           // harga satuan
                           // echo '<td align="right">';
-                          //   echo number_format($row->harga_jual_satuan, 2).',-';
+                          //   echo number_format($row->harga_jual, 2).',-';
                           // echo '</td>';
 
                           // retur
@@ -293,19 +294,19 @@ function get_kode_eticket(myid){
                       $no = 0;
                       foreach($detail_obat as $row) { $no++;
                         $sisa = $row->jumlah_tebus - $row->jumlah_retur;
-
+                        
                         if( $sisa <= 0 ){
                           
                           echo '<tr>';
                           echo '<td align="center">'.$no.'</td>';
-                          echo '<td>'.$row->kode_brg.'<br>'.$row->nama_brg.' @ '.number_format($row->harga_jual_satuan, 2).',-'.'/ '.$row->satuan_kecil.'</td>';
+                          echo '<td>'.$row->kode_brg.'<br>'.$nama_brg.' @ '.number_format($row->harga_jual, 2).',-'.'/ '.$row->satuan_kecil.'</td>';
                           // jumlah tebus
                           echo '<td align="center">';echo number_format($row->jumlah_tebus).' '.$row->satuan_kecil; '</td>';
                           // jummlah retur
                           echo '<td align="center">';echo number_format($row->jumlah_retur).' '.$row->satuan_kecil; '</td>';
                           // harga satuan
                           echo '<td align="right">';
-                            $harga_retur = $row->jumlah_retur * $row->harga_jual_satuan;
+                            $harga_retur = $row->jumlah_retur * $row->harga_jual;
                             echo number_format($harga_retur, 2).',-';
                           echo '</td>';
                           echo '<td align="left">'.$this->tanggal->formatDateTime($row->tgl_retur).'<br>'.$row->retur_by.'</td>';

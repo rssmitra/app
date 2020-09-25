@@ -59,37 +59,6 @@ br {
     margin-bottom: 10px;
 }
 </style>
-<!-- <center>
-<div class="body" style="page-break-after: always;">
-  <table border=0 width="100%" style="border-bottom: 1px solid">
-    <tr>
-      <td><img src="<?php echo base_url().'assets/images/logo-black.png'?>" alt="" style="width: 50px"></td>
-      <td align="left">
-        <span style="font-size: 10px">INSTALASI FARMASI</span><br>
-        <span style="font-size: 12px"><?php echo strtoupper(COMP_LONG); ?></span><br>
-        <span style="font-size: 9px"><?php echo COMP_ADDRESS_SORT; ?></span><br>
-      </td>
-      <td><img src="<?php echo base_url().'assets/images/qrcode.png'?>" alt="" style="width: 40px"></td>
-    </tr>
-  </table> 
-  <center><h3>SALINAN RESEP</h3></center> -->
-
-  <!-- <table style="font-size: 11px !important;">
-    <tr>
-      <td>No.</td>
-      <td>: <?php echo $result->kode_trans_far; ?></td>
-      <td>Tgl.</td>
-      <td>: <?php echo $this->tanggal->formatDatedmY($result->tgl_trans); ?></td>
-    </tr>
-    <tr>
-      <td>Dari Dokter</td>
-      <td colspan="3">: <?php echo $result->dokter_pengirim; ?></td>
-    </tr>
-    <tr>
-      <td>Poli/Klinik</td>
-      <td colspan="2">: <?php echo $result->nama_bagian; ?></td> -->
-    </tr>
-  </table>
   
   <div style="width: 390px; padding-top:143px">
     <div style="padding-left:70px;padding-bottom:7px" class="monotype_style">

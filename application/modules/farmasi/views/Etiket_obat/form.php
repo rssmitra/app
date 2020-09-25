@@ -87,12 +87,6 @@ $("#btn_cetak_etiket").click(function(event){
       console.log(searchIDs);
 });
 
-$("#btn_copy_resep").click(function(event){
-      event.preventDefault();
-      var kode = $('#kode_trans_far').val();
-      getMenu('farmasi/Etiket_obat/form_copy_resep/'+kode+'');
-});
-
 function get_kode_eticket(myid){
 
   $.ajax({
@@ -135,25 +129,29 @@ function get_kode_eticket(myid){
       <!-- hidden form -->
       <input type="hidden" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($value)?ucwords($value->kode_trans_far):''?>">
 
+      <left><span style="font-size: 12px;"><strong><u>TRANSAKSI FARMASI</u></strong><br>
+      No. <?php echo $value->kode_trans_far; ?> - <?php echo $value->no_resep; ?>
+      </span></left>
+
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <table>
             <tr style="">
               <td width="100px">No. SEP</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->no_sep ?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo isset($value->no_sep)?$value->no_sep:'' ?></td>
             </tr>
             <tr style="">
               <td width="100px">No. MR</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->no_mr?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo isset($value->no_mr) ? $value->no_mr : ''?></td>
             </tr>
             <tr style="">
               <td width="100px">Nama Pasien</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->nama_pasien?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo isset($value->nama_pasien) ? $value->nama_pasien : ''?></td>
             </tr>
           </table>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
           <table>
           
             <tr style="">
@@ -162,11 +160,11 @@ function get_kode_eticket(myid){
             </tr>
             <tr style="">
               <td width="100px">Dokter</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $value->dokter_pengirim?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo isset($value->dokter_pengirim) ? $value->dokter_pengirim : ''?></td>
             </tr>
             <tr style="">
               <td width="100px">Poli Asal</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo isset($detail_obat[0]->nama_bagian)?$detail_obat[0]->nama_bagian:''?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $detail_obat[0]['nama_bagian']?></td>
             </tr>
           </table>
         </div>
@@ -180,19 +178,23 @@ function get_kode_eticket(myid){
           </div>
 
           <div class="pull-right">
-            <button type="button" onclick="getMenu('farmasi/Etiket_obat')" class="btn btn-default btn-xs">
-              <span class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></span>
-              Kembali ke Halaman Utama
+
+            <button type="button" onclick="getMenu('farmasi/Process_entry_resep/preview_entry/<?php echo $value->kode_trans_far; ?>?flag=<?php echo $flag; ?>');" class="btn btn-xs btn-default" title="Kembali ke Resep Rawat Jalan">
+                <i class="fa fa-arrow-left dark"></i> Kembali sebelumnya
             </button>
 
-            <button type="button" id="btn_copy_resep" class="btn btn-purple btn-xs">
-              <span class="ace-icon fa fa-copy icon-on-right bigger-110"></span>
-              Copy Resep
+            <button onclick="getMenu('farmasi/Etiket_obat/form_copy_resep/<?php echo $value->kode_trans_far; ?>?flag=<?php echo $flag; ?>')" class="btn btn-success btn-xs">
+                <span class="ace-icon fa fa-print dark icon-on-right bigger-110"></span>
+                Copy Resep
+            </button>
+
+            <button type="button" onclick="PopupCenter('farmasi/Process_entry_resep/nota_farmasi/<?php echo $value->kode_trans_far; ?>?flag=<?php echo $flag; ?>')" class="btn btn-xs btn-warning" title="create_copy_resep">
+                <i class="fa fa-print dark"></i> Nota Farmasi
             </button>
 
             <button type="button" id="btn_cetak_etiket" class="btn btn-primary btn-xs">
-                  <span class="ace-icon fa fa-print icon-on-right bigger-110"></span>
-                  Cetak Etiket
+                  <span class="ace-icon fa fa-print dark icon-on-right bigger-110"></span>
+                  Print Etiket Obat
             </button>
           </div>
 
@@ -227,50 +229,58 @@ function get_kode_eticket(myid){
                 $no = 0;
                 if(count($detail_obat) > 0) :
                 foreach($detail_obat as $row) { $no++;
-                  $readonly = (empty($row->id_fr_tc_far_detail_log))?'':'readonly';
-                  echo '<tr id="row_kd_brg_'.$row->kode_brg.'">';
+
+                  $count_racikan = (count($row['racikan'][0]) > 0) ? $row['racikan'][0] : array();
+                  $nama_obat = (count($count_racikan) > 0) ? $count_racikan[0]->nama_racikan : $row['nama_brg'];
+                  $dosis_per_hari = (count($count_racikan) > 0) ? $count_racikan[0]->dosis_per_hari : $row['dosis_per_hari'];
+                  $dosis_obat = (count($count_racikan) > 0) ? $count_racikan[0]->dosis_obat : $row['dosis_obat'];
+                  $satuan_obat = (count($count_racikan) > 0) ? $count_racikan[0]->satuan_racikan : $row['satuan_obat'];
+                  $anjuran_pakai = (count($count_racikan) > 0) ? $count_racikan[0]->anjuran_pakai : $row['anjuran_pakai'];
+                  $catatan_lainnya = (count($count_racikan) > 0) ? $count_racikan[0]->catatan_lainnya : $row['catatan_lainnya'];
+
+                  $readonly = (empty($row['kd_tr_resep']))?'':'readonly';
+                  echo '<tr id="row_kd_brg_'.$row['kode_brg'].'">';
                   echo '<td>';
                     echo '<label class="pos-rel">
-                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->relation_id.'" id="checkbox_id_'.$row->relation_id.'" />
+                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row['relation_id'].'" id="checkbox_id_'.$row['relation_id'].'" />
                               <span class="lbl"></span>
                           </label>';
                     // hidden form
-                    echo '<input type="hidden" name="relation_id_'.$row->kode_brg.'" value="'.$row->relation_id.'" >';
-                    echo '<input type="hidden" name="kode_brg_'.$row->kode_brg.'" value="'.$row->kode_brg.'" >';
+                    echo '<input type="hidden" name="relation_id_'.$row['kode_brg'].'" value="'.$row['relation_id'].'" >';
+                    echo '<input type="hidden" name="kode_brg_'.$row['kode_brg'].'" value="'.$row['kode_brg'].'" >';
 
                   echo '</td>';
                   echo '<td align="center">'.$no.'</td>';
-                  echo '<td>'.$row->kode_brg.'</td>';
-                  $nama_obat = ($row->nama_brg)?$row->nama_brg:$row->nama_racikan;
+                  echo '<td>'.$row['kode_brg'].'</td>';
                   echo '<td>'.$nama_obat.'</td>';
                   // dosis form
                   echo '<td align="center">';
-                    echo '<input style="width:50px;height:45px;text-align:center" type="text" name="dosis_start_'.$row->kode_brg.'" value="'.$row->dosis_per_hari.'" '.$readonly.'> &nbsp; x &nbsp; <input style="width:50px;height:45px;text-align:center" type="text" name="dosis_end_'.$row->kode_brg.'" value="'.$row->dosis_obat.'" '.$readonly.'>';
+                    echo '<input style="width:50px;height:45px;text-align:center" type="text" name="dosis_start_'.$row['kode_brg'].'" value="'.$dosis_per_hari.'" '.$readonly.'> &nbsp; x &nbsp; <input style="width:50px;height:45px;text-align:center" type="text" name="dosis_end_'.$row['kode_brg'].'" value="'.$dosis_obat.'" '.$readonly.'>';
                   echo '</td>';
                   // jumlah
                   // echo '<td align="center">';
-                  //   echo '<input style="width:50px;height:45px;text-align:center" type="text" name="jumlah_'.$row->kode_brg.'" value="'.$row->jumlah_obat.'" '.$readonly.'>';
+                  //   echo '<input style="width:50px;height:45px;text-align:center" type="text" name="jumlah_'.$row['kode_brg'].'" value="'.$row['jumlah_obat'].'" '.$readonly.'>';
                   // echo '</td>';
                   // satuan
                   echo '<td align="center">';
-                    echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), ($row->satuan_obat)?$row->satuan_obat:'TAB' , 'satuan_obat_'.$row->kode_brg.'', 'satuan_obat_'.$row->kode_brg.'', 'form-control', '', ''.$readonly.'');
+                    echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), ($satuan_obat)?$satuan_obat:'TAB' , 'satuan_obat_'.$row['kode_brg'].'', 'satuan_obat_'.$row['kode_brg'].'', 'form-control', '', ''.$readonly.'');
                   echo '</td>';
 
                   // penggunaan
                   echo '<td align="center">';
-                    echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), ($row->anjuran_pakai)?$row->anjuran_pakai:'Sesudah Makan' , 'anjuran_pakai_'.$row->kode_brg.'', 'anjuran_pakai_'.$row->kode_brg.'', 'form-control', '', ''.$readonly.'');
+                    echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), ($anjuran_pakai)?$anjuran_pakai:'Sesudah Makan' , 'anjuran_pakai_'.$row['kode_brg'].'', 'anjuran_pakai_'.$row['kode_brg'].'', 'form-control', '', ''.$readonly.'');
                   echo '</td>';
                   // catatan
                   echo '<td align="center">';
-                    echo '<input type="text" style="width: 100%" name="catatan_'.$row->kode_brg.'" '.$readonly.' value="'.$row->catatan_lainnya.'">' ;
+                    echo '<input type="text" style="width: 100%" name="catatan_'.$row['kode_brg'].'" '.$readonly.' value="'.$catatan_lainnya.'">' ;
                   echo '</td>';
                   // aksi
                   echo '<td align="center">';
                     
-                  $hidden = (empty($row->id_fr_tc_far_detail_log)) ? '' : 'style="display: none"' ;
-                    echo '<a href="#" class="btn btn-xs btn-primary" id="btn_submit_'.$row->kode_brg.'" onclick="saveRow('."'".$row->kode_brg."'".')" '.$hidden.'><i class="fa fa-check-circle"></i></a> '; 
+                  $hidden = (empty($row['kd_tr_resep'])) ? '' : 'style="display: none"' ;
+                    echo '<a href="#" class="btn btn-xs btn-primary" id="btn_submit_'.$row['kode_brg'].'" onclick="saveRow('."'".$row['kode_brg']."'".')" '.$hidden.'><i class="fa fa-check-circle"></i></a> '; 
                     
-                    echo '<a href="#" onclick="click_edit('."'".$row->kode_brg."'".')" id="btn_edit_'.$row->kode_brg.'" class="btn btn-xs btn-warning"><i class="fa fa-pencil dark"></i></a>';
+                    echo '<a href="#" onclick="click_edit('."'".$row['kode_brg']."'".')" id="btn_edit_'.$row['kode_brg'].'" class="btn btn-xs btn-warning"><i class="fa fa-pencil dark"></i></a>';
                   echo '</td>';
 
                   echo '</tr>';

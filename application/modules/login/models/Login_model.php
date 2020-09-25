@@ -34,7 +34,7 @@ class Login_model extends CI_Model {
                                   FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') as role")
                           ->join('tmp_user_profile','tmp_user_profile.user_id=tmp_user.user_id','left')
                           ->get_where('tmp_user', array('username' => $usr, 'tmp_user.is_active' => 'Y'))->row();
-                          //print_r($this->db->last_query());die;
+                        //   print_r($this->db->last_query());die;
         if($query){
             return $query;
         }else{

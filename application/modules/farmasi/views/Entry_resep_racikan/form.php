@@ -95,14 +95,15 @@ $(document).ready(function(){
 
     $('select[name="select_racikan"]').change(function () {      
 
-        if( $(this).val() != '' || $(this).val() != '0' || $(this).val() != '#' ){
 
-          show_selected_item_racikan($(this).val());
-          $('#id_tc_far_racikan').val($(this).val());
+        if( $(this).val() == 0 ){
+          
+          renew_form();
 
         }else{
 
-          renew_form();
+          show_selected_item_racikan($(this).val());
+          $('#id_tc_far_racikan').val($(this).val());
 
         }
          
@@ -251,7 +252,7 @@ $(document).ready(function(){
 function getDetailObatByKodeBrgRacikan(kode_brg,kode_bag){
 
   var type_layan = $('#tipe_layanan').val();
-  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($kode_kelompok)?$kode_kelompok:0?>&bag="+kode_bag+"&type=html&type_layan="+type_layan+"", '' , function (response) {
+  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($kode_kelompok)?$kode_kelompok:0?>&kode_perusahaan=<?php echo isset($value_header)?$value_header->kode_perusahaan:0?>&bag="+kode_bag+"&type=html&type_layan="+type_layan+"", '' , function (response) {
     if(response.sisa_stok <= 0){
       $('#btn_add_obat_racikan').hide('fast');
       $('#btn_submit_obat').attr('disabled', true);
@@ -417,6 +418,7 @@ function delete_item_obat_racikan(id_tc_far_racikan_detail, id_tc_far_racikan){
             $.achtung({message: jsonResponse.message, timeout:5});
             reload_table_racikan();
             reload_table();
+            sum_total_biaya_farmasi();
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
@@ -567,11 +569,11 @@ function btn_update_racikan(){
 
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
       <input type="hidden" name="no_registrasi" value="<?php echo isset($value_header)?$value_header->no_registrasi:''?>">
-      <input type="hidden" name="kode_perusahaan" value="<?php echo isset($value_header)?$value_header->kode_perusahaan:''?>">
+      <input type="hidden" name="kode_perusahaan" value="<?php echo isset($value_header)?$value_header->kode_perusahaan:''?>" id="kode_perusahaan">
       <input type="hidden" name="no_mr" value="<?php echo isset($value_header)?$value_header->no_mr:''?>">
       <input type="hidden" name="nama_pasien" value="<?php echo isset($value_header)?$value_header->nama_pasien:''?>">
       <input type="hidden" name="kode_dokter" value="<?php echo isset($value_header)?$value_header->kode_dokter:''?>">
-      <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value_header)?$value_header->nama_pegawai:''?>">
+      <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value_header)?$value_header->dokter_pengirim:''?>">
       <input type="hidden" name="kode_profit" value="<?php echo ($tipe_layanan=='RJ')?2000:1000;?>">
       <input type="hidden" name="kode_bagian" value="<?php echo isset($value_header)?$value_header->kode_bagian:''?>" id="kode_bagian">
       <input type="hidden" name="kode_bagian_asal" value="<?php echo isset($value_header)?$value_header->kode_bagian_asal:''?>">
@@ -588,6 +590,9 @@ function btn_update_racikan(){
             <label class="control-label col-sm-2">Pilih Racikan</label>
             <div class="col-md-4">
               <?php echo $this->master->custom_selection($params = array('table' => 'fr_tc_far_detail_log', 'id' => 'relation_id', 'name' => 'nama_brg', 'where' => array('kode_trans_far' => $kode_trans_far, 'flag_resep' => 'racikan')), isset($value[0]->relation_id)?$value[0]->relation_id:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
+            </div>
+            <div class="col-md-1">
+              <a href="#" onclick="renew_form()" class="btn btn-xs btn-primary"><i class="fa fa-plus-circle dark"></i> Buat Racikan Baru</a>
             </div>
           </div> 
 
@@ -659,7 +664,7 @@ function btn_update_racikan(){
                 <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
                   <label class="control-label col-sm-1">Resep PRB</label>
                   <div class="col-md-1">
-                    <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;">  
+                    <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;" value="0">  
                   </div>
                   <div class="col-md-6">
                     <label class="inline" style="margin-top: 4px;margin-left: -12px;">
@@ -769,7 +774,7 @@ function btn_update_racikan(){
                 <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
                 <label class="control-label col-sm-2">Resep PRB</label>
                 <div class="col-md-2">
-                  <input type="text" class="form-control" name="jumlah_obat_23_rd" id="jumlah_obat_23_rd" style="text-align: center;">  
+                  <input type="text" class="form-control" name="jumlah_obat_23_rd" id="jumlah_obat_23_rd" style="text-align: center;" value="0">  
                 </div>
                 <div class="col-md-4">
                   <label class="inline" style="margin-top: 4px;margin-left: -12px;">

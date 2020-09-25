@@ -59,6 +59,10 @@ function popUnder(node) {
 
     <form class="form-horizontal" method="post" id="form_search" action="templates/References/find_data" autocomplete="off">
 
+      <center>
+        <h4>Riwayat Transaksi Farmasi <br> <small>Data yang ditampilkan adalah data transaksi 30 hari terakhir.</small></h4>
+      </center>
+
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
@@ -75,13 +79,11 @@ function popUnder(node) {
               <div class="col-md-2">
                 <input type="text" class="form-control" name="keyword" id="keyword">
               </div>
-          </div>
 
-          <div class="form-group">
-            <label class="control-label col-md-2">Tanggal</label>
+              <label class="control-label col-md-1">Tanggal</label>
               <div class="col-md-2">
                 <div class="input-group">
-                  <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                  <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
                   <span class="input-group-addon">
                     <i class="fa fa-calendar bigger-110"></i>
                   </span>
@@ -89,14 +91,15 @@ function popUnder(node) {
               </div>
 
               <label class="control-label col-md-1">s/d</label>
-              <div class="col-md-2" style="margin-lef:-10px">
+              <div class="col-md-2" style="margin-left:-10px">
                 <div class="input-group">
-                  <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                  <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
                   <span class="input-group-addon">
                     <i class="fa fa-calendar bigger-110"></i>
                   </span>
                 </div>
               </div>
+
           </div>
 
           <div class="form-group">
@@ -104,11 +107,7 @@ function popUnder(node) {
             <div class="col-md-4">
                 <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0300','0500')) ), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
             </div>
-          </div>
-          
-          <div class="form-group">
-            <label class="control-label col-md-2 ">&nbsp;</label>
-            <div class="col-md-10" style="margin-left: 5px">
+            <div class="col-md-6" style="margin-left: -1.3%">
               <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Search
@@ -119,7 +118,7 @@ function popUnder(node) {
               </a>
             </div>
           </div>
-
+          
         </div>
       </div>
       
@@ -137,7 +136,7 @@ function popUnder(node) {
               <th>Nama Pasien</th>
               <th>Nama Dokter</th>
               <th>Pelayanan</th>
-              <th>&nbsp;</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>

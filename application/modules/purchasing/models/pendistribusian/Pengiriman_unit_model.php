@@ -155,7 +155,8 @@ class Pengiriman_unit_model extends CI_Model {
 		$this->db->select($select);
 		$this->db->select('CAST(c.path_image as NVARCHAR(255)) as path_image');
 		$this->db->select('CAST(c.spesifikasi as NVARCHAR(1000)) as spesifikasi');
-		$this->db->select('CAST(d.harga_beli as INT ) as harga_beli');
+		$this->db->select('CAST(d.harga_beli as INT ) as harga_jual');
+		$this->db->select('(CAST(b.harga as INT)/b.content) as harga_beli');
 		$this->db->from($t_penerimaan.'_detail b');
 		$this->db->join($t_penerimaan.' y', 'y.id_penerimaan=b.id_penerimaan', 'left');
 		$this->db->join($t_barang.' c', 'c.kode_brg=b.kode_brg', 'left');
@@ -163,7 +164,7 @@ class Pengiriman_unit_model extends CI_Model {
 		$this->db->join('(SELECT * FROM tc_penerimaan_brg_batch_log WHERE reff_table='."'".$t_penerimaan."'".') as batch_log','batch_log.id_tc_po_det=b.id_tc_po_det','left');
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('b.id_penerimaan IN ('.$id.')');
-		$this->db->group_by($select.',CAST(c.path_image as NVARCHAR(255)),CAST(c.spesifikasi as NVARCHAR(1000)), CAST(d.harga_beli as INT)');
+		$this->db->group_by($select.',CAST(c.path_image as NVARCHAR(255)),CAST(c.spesifikasi as NVARCHAR(1000)), CAST(d.harga_beli as INT), b.harga, b.content');
 		$this->db->order_by('c.nama_brg ASC');
 		return $this->db->get()->result();
 	}

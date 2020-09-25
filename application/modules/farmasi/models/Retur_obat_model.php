@@ -5,7 +5,7 @@ class Retur_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_kunjungan', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, nama_pelayanan, tc_trans_pelayanan.kode_tc_trans_kasir ';
+	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, nama_pelayanan, tc_trans_pelayanan.kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi';
 
 	var $order = array('tgl_trans' => 'DESC');
 
@@ -29,7 +29,6 @@ class Retur_obat_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 		}
@@ -38,11 +37,15 @@ class Retur_obat_model extends CI_Model {
 			$this->db->where('fr_tc_far.kode_bagian_asal', $_GET['bagian']);
 		}
 
+		if( isset($_GET['profit']) AND $_GET['profit'] != 0 ){
+			$this->db->where('fr_tc_far.kode_profit', $_GET['profit']);
+		}
+
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
             $this->db->where("fr_tc_far.tgl_trans >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
             $this->db->where("fr_tc_far.tgl_trans <= '".$this->tanggal->selisih($_GET['to_tgl'],'+1')."'" );
         }else{
-        	$this->db->where('DATEDIFF(Hour, tgl_trans, getdate())<=12');
+        	$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
         }
 
 		$i = 0;
@@ -99,6 +102,7 @@ class Retur_obat_model extends CI_Model {
 		}else{
 			$this->db->where(''.$this->table.'.kode_trans_far',$id);
 			$query = $this->db->get();
+			// print_r($this->db->last_query());die;
 			return $query->row();
 		}
 		
@@ -147,10 +151,20 @@ class Retur_obat_model extends CI_Model {
 	}
 
 	public function get_detail_resep_data($kode_trans_far){
-		$this->db->select('b.relation_id as kd_tr_resep, b.kode_trans_far, b.jumlah_pesan, b.kode_brg, b.total as harga_jual, b.harga_jual_satuan, b.dosis_obat, b.dosis_per_hari, b.anjuran_pakai, b.catatan_lainnya, b.satuan_obat, b.nama_brg, b.jumlah_obat, b.id_fr_tc_far_detail_log, e.nama_pasien, e.dokter_pengirim, e.tgl_trans, e.no_mr, b.satuan_kecil, e.created_by, b.jumlah_tebus, b.jumlah_retur, b.tgl_retur, b.retur_by');
-		$this->db->from('fr_tc_far_detail_log b');
-		$this->db->join('fr_tc_far e', 'e.kode_trans_far=b.kode_trans_far','left');
-		$this->db->where('b.kode_trans_far', $kode_trans_far);
+		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN c.nama_brg ELSE b.nama_brg END as nama_brg", false);
+		$this->db->select("CASE WHEN b.harga_jual_satuan IS NULL THEN a.harga_jual ELSE b.harga_jual_satuan END as harga_jual", false);
+		$this->db->select("CASE WHEN b.sub_total IS NULL THEN a.biaya_tebus ELSE b.sub_total END as sub_total", false);
+		$this->db->select("CASE WHEN b.total IS NULL THEN (a.harga_jual + a.harga_r) ELSE b.total END as total", false);
+		$this->db->select("CASE WHEN b.jasa_r IS NULL THEN a.harga_r ELSE (b.jasa_r + b.jasa_produksi) END as jasa_r", false);
+		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN a.kd_tr_resep ELSE a.id_tc_far_racikan END as relation_id", false);
+		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN 'biasa' ELSE 'racikan' END as flag_resep", false);
+		$this->db->select('a.kd_tr_resep, a.kode_trans_far, a.kode_brg, a.id_tc_far_racikan, 
+		a.jumlah_tebus, a.jumlah_pesan, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, b.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, b.jumlah_retur, tgl_retur, d.no_registrasi, d.no_mr, d.nama_pasien, d.kode_bagian_asal, d.kode_bagian, d.kode_profit, no_kunjungan, d.flag_trans');
+		$this->db->from('fr_tc_far_detail a');
+		$this->db->join('fr_tc_far_detail_log b','(a.kode_brg=b.kode_brg AND a.kode_trans_far=b.kode_trans_far)','left');
+		$this->db->join('fr_tc_far d','d.kode_trans_far=a.kode_trans_far','left');
+		$this->db->join('mt_barang c','c.kode_brg=a.kode_brg','left');
+		$this->db->where('a.kode_trans_far', $kode_trans_far);
 		return $this->db->get();
 	}
 

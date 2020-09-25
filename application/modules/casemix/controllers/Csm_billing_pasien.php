@@ -405,28 +405,28 @@ class Csm_billing_pasien extends MX_Controller {
         $pdf->SetAuthor(COMP_LONG);
         $pdf->SetTitle(''.$filename.'');
 
-    // remove default header/footer
+        // remove default header/footer
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
 
-    // set default monospaced font
+        // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-    // set margins
+        // set margins
         $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT,PDF_MARGIN_BOTTOM);
 
-    // set auto page breaks
+        // set auto page breaks
         $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
 
-    // set image scale factor
+        // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
     
-    // auto page break //
+        // auto page break //
         $pdf->SetAutoPageBreak(TRUE, 30);
 
-        //set page orientation
+            //set page orientation
         
-    // set some language-dependent strings (optional)
+        // set some language-dependent strings (optional)
         if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
             require_once(dirname(__FILE__).'/lang/eng.php');
             $pdf->setLanguageArray($l);
