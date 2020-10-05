@@ -99,7 +99,7 @@ final Class Authuser {
             /*style for create*/
             case 'C':
                 # code...
-                $btn = '<button class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/form'."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50 blue"></i>Create New</button>';
+                $btn = '<button type="button" class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/form'."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50 blue"></i>Create New</button>';
                 break;
 
             case 'C1':
@@ -109,16 +109,16 @@ final Class Authuser {
 
             case 'C11':
                 # code...
-                $btn = '<button class="btn btn-xs btn-primary" onclick="getMenuTabs('."'".$link.'/form?pgd_id='.$id.''."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i>Create New</button>';
+                $btn = '<button type="button" class="btn btn-xs btn-primary" onclick="getMenuTabs('."'".$link.'/form?pgd_id='.$id.''."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i>Create New</button>';
                 break;
 
             case 'C2':
                 # code...
-                $btn = '<button class="btn btn-xs btn-primary" onclick="getMenu('."'".$link.'/form'."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-primary" onclick="getMenu('."'".$link.'/form'."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i></button>';
                 break;
             case 'C3':
                 # code...
-                $btn = '<button class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/form'."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50 blue"></i></button>';
+                $btn = '<button type="button" class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/form'."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50 blue"></i></button>';
                 break;
 
             case 'C4':
@@ -144,7 +144,7 @@ final Class Authuser {
 
             case 'CC1':
                 # code...
-                $btn = '<button class="btn btn-xs btn-primary" onclick="getMenu('."'".$link.''."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-primary" onclick="getMenu('."'".$link.''."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i></button>';
                 break;
 
             default:
@@ -168,24 +168,24 @@ final Class Authuser {
             /*style button for read action*/
             case 'R':
                 # code...
-                $btn = '<button class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50 blue"></i>View</button>';
+                $btn = '<button type="button" class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50 blue"></i>View</button>';
                 break;
 
             case 'R1':
                 # code...
-                $btn = '<button class="btn btn-xs btn-info" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i>View</button>';
+                $btn = '<button type="button" class="btn btn-xs btn-info" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i>View</button>';
                 break;
             case 'R2':
                 # code...
-                $btn = '<button class="btn btn-xs btn-info" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-info" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i></button>';
                 break;
             case 'R21':
                 # code...
-                $btn = '<button class="btn btn-xs btn-info" onclick="getMenuTabs('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-info" onclick="getMenuTabs('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i></button>';
                 break;
             case 'R3':
                 # code...
-                $btn = '<button class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50 blue"></i></button>';
+                $btn = '<button type="button" class="btn btn-white btn-xs btn-info btn-bold" onclick="getMenu('."'".$link.'/show/'.$id.''."'".')"><i class="ace-icon fa fa-eye bigger-50 blue"></i></button>';
                 break;
 
             case 'R4':
@@ -211,7 +211,7 @@ final Class Authuser {
 
             case 'RC1':
                 # code...
-                $btn = '<button class="btn btn-xs btn-info" onclick="getMenu('."'".$link.'/show?id='.$id.'&flag='.$flag.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-info" onclick="getMenu('."'".$link.'/show?id='.$id.'&flag='.$flag.''."'".')"><i class="ace-icon fa fa-eye bigger-50"></i></button>';
                 break;
 
             default:
@@ -234,24 +234,24 @@ final Class Authuser {
             /*style button for read action*/
             case 'U':
                 # code...
-                $btn = '<button class="btn btn-white btn-xs btn-success btn-bold" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50 blue"></i>Edit</button>';
+                $btn = '<button type="button" class="btn btn-white btn-xs btn-success btn-bold" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50 blue"></i>Edit</button>';
                 break;
 
             case 'U1':
                 # code...
-                $btn = '<button class="btn btn-xs btn-success" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50"></i>Edit</button>';
+                $btn = '<button type="button" class="btn btn-xs btn-success" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50"></i>Edit</button>';
                 break;
             case 'U2':
                 # code...
-                $btn = '<button class="btn btn-xs btn-success" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-edit bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-success" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-edit bigger-50"></i></button>';
                 break;
             case 'U21':
                 # code...
-                $btn = '<button class="btn btn-xs btn-success" onclick="getMenuTabs('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-success" onclick="getMenuTabs('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50"></i></button>';
                 break;
             case 'U3':
                 # code...
-                $btn = '<button class="btn btn-white btn-xs btn-success btn-bold" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50 blue"></i></button>';
+                $btn = '<button type="button" class="btn btn-white btn-xs btn-success btn-bold" onclick="getMenu('."'".$link.'/form/'.$id.''."'".')"><i class="ace-icon fa fa-pencil bigger-50 blue"></i></button>';
                 break;
 
              case 'U4':
@@ -277,7 +277,7 @@ final Class Authuser {
 
             case 'UC1':
                 # code...
-                $btn = '<button class="btn btn-xs btn-success" onclick="getMenu('."'".$link.'/form?id='.$id.'&flag='.$flag."'".')"><i class="ace-icon fa fa-edit bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-success" onclick="getMenu('."'".$link.'/form?id='.$id.'&flag='.$flag."'".')"><i class="ace-icon fa fa-edit bigger-50"></i></button>';
                 break;
 
             default:
@@ -309,7 +309,7 @@ final Class Authuser {
                 break;
             case 'D2':
                 # code...
-                $btn = '<button class="btn btn-xs btn-danger" onclick="delete_data('."'".$id."'".')"><i class="ace-icon fa fa-times bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-danger" onclick="delete_data('."'".$id."'".')"><i class="ace-icon fa fa-times bigger-50"></i></button>';
                 break;
 
             case 'D3':
@@ -339,12 +339,12 @@ final Class Authuser {
 
             case 'DC1':
                 # code...
-                $btn = '<button class="btn btn-xs btn-danger" onclick="delete_data('."'".$id."'".')"><i class="ace-icon fa fa-times bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-danger" onclick="delete_data('."'".$id."'".')"><i class="ace-icon fa fa-times bigger-50"></i></button>';
                 break;
 
             case 'D7':
                 # code...
-                $btn = '<button class="btn btn-xs btn-danger" onclick="delete_data_without_paging('."'".$id."'".')"><i class="ace-icon fa fa-times bigger-50"></i></button>';
+                $btn = '<button type="button" class="btn btn-xs btn-danger" onclick="delete_data_without_paging('."'".$id."'".')"><i class="ace-icon fa fa-times bigger-50"></i></button>';
                 break;
 
             case 'D8':

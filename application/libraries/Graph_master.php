@@ -309,7 +309,7 @@ final Class Graph_master {
 
 		}
 
-		// modul purchasing pie chart
+		// modul casemix pie chart
 		if($params['prefix']==342){
 			$query = "SELECT TOP 5 a.nama_perusahaan as nama_perusahaan, SUM(b.bill) AS total 
 						FROM tc_trans_kasir b
@@ -327,7 +327,7 @@ final Class Graph_master {
 			$subtitle = 'Persentase Pendapatan RS Berdasarkan Perusahaan Penjamin Pasien Tahun '.date('Y').'';
 		}
 		
-		// modul purchasing table chart
+		// modul casemix table chart
 		if($params['prefix']==343){
 			$query = "SELECT month(a.tgl_transaksi_kasir) as bulan, SUM(a.csm_dk_total_klaim) AS total_format_money 
 						FROM csm_dokumen_klaim a
@@ -364,6 +364,90 @@ final Class Graph_master {
 			$data = $db->query($query)->result_array();
 		}
 
+		// modul farmasi
+		// line chart
+		if($params['prefix']==241){
+			$title = '<span style="font-size:13.5px">Grafik Resep Farmasi Berdasarkan Jenisnya tahun '.date('Y').'</span>';
+			$subtitle = 'Source: RSSM - SIRS';
+
+			// RJ
+			$query = "SELECT MONTH(tgl_trans) AS bulan, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE YEAR(tgl_trans)=".date('Y')." AND kode_profit=2000 GROUP BY MONTH(tgl_trans)";	
+			$fields[0] = array('Total_Resep_RJ'=>'total');
+			$data[0] = $db->query($query)->result_array();
+
+			// RI
+			$query2 = "SELECT MONTH(tgl_trans) AS bulan, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE YEAR(tgl_trans)=".date('Y')." AND kode_profit=1000 GROUP BY MONTH(tgl_trans)";	
+			$fields[1] = array('Total_Resep_RI'=>'total');
+			$data[1] = $db->query($query2)->result_array();
+
+			// Bebas
+			$query3 = "SELECT MONTH(tgl_trans) AS bulan, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE YEAR(tgl_trans)=".date('Y')." AND kode_profit=4000 GROUP BY MONTH(tgl_trans)";	
+			$fields[2] = array('Total_Resep_Bebas'=>'total');
+			$data[2] = $db->query($query3)->result_array();
+
+			// Luar
+			$query4 = "SELECT MONTH(tgl_trans) AS bulan, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE YEAR(tgl_trans)=".date('Y')." AND kode_profit=3000 GROUP BY MONTH(tgl_trans)";	
+			$fields[3] = array('Total_Resep_Luar'=>'total');
+			$data[3] = $db->query($query4)->result_array();
+
+
+		}
+		// table
+		if($params['prefix']==243){
+			$query = "SELECT TOP 10 c.nama_brg, COUNT(a.kode_brg) AS total_format_money 
+						FROM fr_tc_far_detail a
+						LEFT JOIN mt_barang c ON c.kode_brg=a.kode_brg
+						LEFT JOIN fr_tc_far b ON b.kode_trans_far=a.kode_trans_far
+						WHERE YEAR(b.tgl_trans) = ".date('Y')."
+						GROUP BY c.nama_brg, a.kode_brg ORDER BY COUNT(a.kode_brg) DESC";	
+			$fields = array('Nama_Obat' => 'nama_brg', 'Total' => 'total_format_money');
+			$title = '<span style="font-size:13.5px">10 Jenis Obat terbanyak berdasarkan resep biasa <br>Tahun '.date('Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+		// pie
+		if($params['prefix']==242){
+			$query = "SELECT a.nama_pelayanan as jenis_resep, COUNT(b.kode_trans_far) AS total 
+						FROM fr_tc_far b
+						left join fr_mt_profit_margin a on a.kode_profit=b.kode_profit
+						WHERE YEAR(b.tgl_trans) = ".date('Y')." and month(b.tgl_trans)=".date('m')."
+						GROUP BY a.kode_profit, a.nama_pelayanan ORDER BY COUNT(b.kode_trans_far) DESC";	
+			$data_qry = $CI->db->query($query)->result_array();
+			$getData = [];
+			foreach ($data_qry as $key => $value) {
+				$data[] = array( 'name' => $value['jenis_resep'], 'total' => $value['total'] );
+			}
+
+			$fields = array('name' => 'total');
+			$title = '<span style="font-size:13.5px">Persentase Resep Farmasi Berdasarkan Jenis Resep Tahun '.date('Y').'</span>';
+			$subtitle = 'Source : RSSM - SIRS';
+		}
+		// table
+		if($params['prefix']==244){
+			$query = "select MONTH(tgl_transaksi)as bulan, (SUM(bill_rs) + SUM(lain_lain)) as total_format_money
+						from tc_trans_pelayanan
+						where kode_trans_far is not null and YEAR(tgl_transaksi)=".date('Y')." and status_selesai=3
+						GROUP BY MONTH(tgl_transaksi)";	
+			$fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
+			$title = '<span style="font-size:13.5px">Total Pendapatan Farmasi  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' <br> Tahun '.date('Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+		// table
+		if($params['prefix']==245){
+			$query = "SELECT TOP 10 c.nama_bagian, COUNT(b.kode_trans_far) AS total_format_money 
+						FROM fr_tc_far b
+						LEFT JOIN mt_bagian c ON c.kode_bagian=b.kode_bagian_asal
+						WHERE YEAR(b.tgl_trans) = ".date('Y')."
+						GROUP BY c.nama_bagian ORDER BY COUNT(b.kode_trans_far) DESC";	
+			$fields = array('Unit' => 'nama_bagian', 'Total' => 'total_format_money');
+			$title = '<span style="font-size:13.5px">10 Unit/Poli Terbanyak Membuat Resep <br>Tahun '.date('Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
 
 		/*find and set type chart*/
 		$chart = $this->chartTypeData($params['TypeChart'], $fields, $params, $data);
@@ -399,6 +483,9 @@ final Class Graph_master {
 				}
 				if ($params['style']==2) {
     				return $this->LineStyleTwoData($fields, $params, $data);
+				}
+				if ($params['style']==4) {
+    				return $this->LineStyleFourData($fields, $params, $data);
     			}
     			break;
     		case 'table':
@@ -554,6 +641,107 @@ final Class Graph_master {
 		}
 
 		foreach ($getData[1] as $k => $r) {
+			$series[] = array('name' => $k, 'data' => $r );
+		}
+		
+		$chart_data = array(
+			'xAxis' 	=> array('categories' => $categories),
+			'series' 	=> $series,
+		);
+		return $chart_data;
+	}
+	
+	public function LineStyleFourData($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	// echo '<pre>';print_r($fields);
+    	
+        $getData[0] = array();
+		foreach($data[0] as $key=>$row){
+			foreach ($fields[0] as $kf => $vf) {
+				$getData[0][$kf][$row['bulan']-1] = round($row['total'], 2);
+			}
+		}
+
+		$getData[1] = array();
+		foreach($data[1] as $key=>$row){
+			foreach ($fields[1] as $kf => $vf) {
+				$getData[1][$kf][$row['bulan']-1] = round($row['total'], 2);
+			}
+		}
+
+		$getData[2] = array();
+		foreach($data[2] as $key=>$row){
+			foreach ($fields[2] as $kf => $vf) {
+				$getData[2][$kf][$row['bulan']-1] = round($row['total'], 2);
+			}
+		}
+
+		$getData[3] = array();
+		foreach($data[3] as $key=>$row){
+			foreach ($fields[3] as $kf => $vf) {
+				$getData[3][$kf][$row['bulan']-1] = round($row['total'], 2);
+			}
+		}
+		// echo '<pre>';print_r($data);
+		
+
+		for ($i=0; $i < 12; $i++) { 
+			foreach ($fields[0] as $kf2 => $vf2) {
+				if(!isset($getData[0][$kf2][$i])){
+					$getData[0][$kf2][$i] = 0;
+				}
+				ksort($getData[0][$kf2]);
+			}
+			$categories[] = $CI->tanggal->getBulan($i+1);
+			
+		}
+
+		for ($i=0; $i < 12; $i++) { 
+			foreach ($fields[1] as $kf2 => $vf2) {
+				if(!isset($getData[1][$kf2][$i])){
+					$getData[1][$kf2][$i] = 0;
+				}
+				ksort($getData[1][$kf2]);
+			}
+			$categories[] = $CI->tanggal->getBulan($i+1);
+			
+		}
+
+		for ($i=0; $i < 12; $i++) { 
+			foreach ($fields[2] as $kf2 => $vf2) {
+				if(!isset($getData[2][$kf2][$i])){
+					$getData[2][$kf2][$i] = 0;
+				}
+				ksort($getData[2][$kf2]);
+			}
+			$categories[] = $CI->tanggal->getBulan($i+1);
+			
+		}
+
+		for ($i=0; $i < 12; $i++) { 
+			foreach ($fields[3] as $kf2 => $vf2) {
+				if(!isset($getData[3][$kf2][$i])){
+					$getData[3][$kf2][$i] = 0;
+				}
+				ksort($getData[3][$kf2]);
+			}
+			$categories[] = $CI->tanggal->getBulan($i+1);
+			
+		}
+
+		foreach ($getData[0] as $k => $r) {
+			$series[] = array('name' => $k, 'data' => $r );
+		}
+
+		foreach ($getData[1] as $k => $r) {
+			$series[] = array('name' => $k, 'data' => $r );
+		}
+
+		foreach ($getData[2] as $k => $r) {
+			$series[] = array('name' => $k, 'data' => $r );
+		}
+		foreach ($getData[3] as $k => $r) {
 			$series[] = array('name' => $k, 'data' => $r );
 		}
 		

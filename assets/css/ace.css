@@ -14348,7 +14348,7 @@ ul.attachment-list > li {
 .dataTables_wrapper .row:first-child {
   padding-top: 3px;
   padding-bottom: 0px;
-  background-color: #EFF3F8;
+  background-color: #ffffff;
 }
 .dataTables_wrapper .row:first-child + .dataTable {
   border-top: 1px solid #dddddd;
@@ -14358,7 +14358,7 @@ ul.attachment-list > li {
   border-bottom: 0px solid #e0e0e0;
   padding-top: 12px;
   padding-bottom: 12px;
-  background-color: #c7cccb80;
+  background-color: #fff;
 }
 .dataTables_wrapper .dataTables_scroll + .row {
   border-top: 1px solid #e0e0e0;

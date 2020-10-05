@@ -138,7 +138,7 @@ $(function () {
               valueSuffix: ''
           },
           legend: {
-              layout: 'vertical',
+              layout: 'horizontal',
               align: 'center',
               verticalAlign: 'bottom',
               borderWidth: 0

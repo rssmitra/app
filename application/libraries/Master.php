@@ -164,7 +164,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>
-			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="0" '.$selected.'> - Silahkan pilih - </option>';
 				$field_id = ($custom['id']==$custom['name']) ? 'ID' : $custom['id'] ;
 				foreach($data as $row){
 					$sel = trim($nid) == trim($row[$field_id])?'selected':'';
@@ -777,7 +777,8 @@ final Class Master {
 	function formatRomawi($angka){
 		$hsl = "";
 		if( $angka < 1 || $angka > 3999 ){
-			$hsl = "Batas Angka 1 s/d 3999";
+			// $hsl = "Batas Angka 1 s/d 3999";
+			$hsl = 0;
 		}else{
 			 while($angka>=1000){
 				 $hsl .= "M";
@@ -863,15 +864,15 @@ final Class Master {
 			case '1':
 				$dd = 'sdd';
 				break;
-				case '2':
-					$dd = 'bdd';
-					break;
-					case '3':
-						$dd = 'tdd';
-						break;
-						case '4':
-							$dd = 'qdd';
-							break;
+			case '2':
+				$dd = 'bdd';
+				break;
+			case '3':
+				$dd = 'tdd';
+				break;
+			case '4':
+				$dd = 'qdd';
+				break;
 			
 			default:
 				$dd = 'dd';
@@ -886,12 +887,12 @@ final Class Master {
 			case 'sesudah makan':
 				$use = 'p.c';
 				break;
-				case 'sebelum makan':
-					$use = 'a.c';
-					break;
-					case 'bersamaan':
-						$use = 'd.c';
-						break;
+			case 'sebelum makan':
+				$use = 'a.c';
+				break;
+			case 'bersamaan':
+				$use = 'd.c';
+				break;
 			
 			default:
 				$use = 'p.c';

@@ -814,7 +814,7 @@ public function pengadaan_mod_8(){
 						select * from tc_kartu_stok
 						WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu 
 											FROM tc_kartu_stok 
-											WHERE tgl_input <= '."'".$_POST['tgl']."'".' AND kode_bagian='."'".$_POST['kode_bagian']."'".'
+											WHERE CAST(tgl_input as DATE) <= '."'".$_POST['tgl']."'".' AND kode_bagian='."'".$_POST['kode_bagian']."'".'
 											GROUP BY kode_brg) 
 						and kode_bagian='."'".$_POST['kode_bagian']."'".'
 					)as kartu_stok on kartu_stok.kode_brg=a.kode_brg

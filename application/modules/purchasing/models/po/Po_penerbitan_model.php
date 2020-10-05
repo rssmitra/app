@@ -200,7 +200,7 @@ class Po_penerbitan_model extends CI_Model {
 
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('a.id_tc_po IN ('.$id.')');
-		$this->db->order_by('c.nama_brg ASC');
+		$this->db->order_by('a.id_tc_po_det DESC');
 		return $this->db->get()->result();
 	}
 

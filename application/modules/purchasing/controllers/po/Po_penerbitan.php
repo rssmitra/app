@@ -415,7 +415,7 @@ class Po_penerbitan extends MX_Controller {
             'flag' => $_GET['flag'],
             'title' => $title,
             );
-        // echo '<pre>'; print_r($data);die;
+        // echo '<pre>'; print_r($getData);die;
         $this->load->view('po/Po_penerbitan/print_preview', $data);
     }
 
