@@ -1,6 +1,6 @@
 <style>
 body{
-  font-size: 11px;
+  /*font-size: 11px;*/
   font-family: arial;
   border-spacing: 5em;
 }
