@@ -17,13 +17,13 @@ $('.delete_attachment').click(function(e){  // ... or however you attach to that
 
 function getMenu(link)
 {
-    $('#page-area-content').html(loading);
-
+  
     $.ajax({
         url : link,
         type: "POST",
         beforeSend: function() {
             //achtungShowLoader();
+            $('#page-area-content').html(loading);
           },
         error: function(xhr)
         { 

@@ -36,18 +36,19 @@ class Tracer_model extends CI_Model {
 		if( $_GET ) {
 			
 			if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
-				$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+				if( $_GET['search_by'] == 'no_mr' ){
+					$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+				}else{
+					$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+				}
 			}
 
 			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-				$this->db->where("convert(varchar,tc_registrasi.tgl_jam_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");	
+				$this->db->where("CAST(tc_registrasi.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");	
 				
 			}
-			else{
-				$this->db->where(' YEAR(tgl_masuk) ', date('Y'));
-			}
 
-	        if (isset($_GET['bagian']) AND $_GET['bagian'] != '') {
+	        if (isset($_GET['bagian']) AND $_GET['bagian'] != 0) {
 	            $this->db->where('tc_registrasi.kode_bagian_masuk', $_GET['bagian']);	
 	        }
 
@@ -96,6 +97,7 @@ class Tracer_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

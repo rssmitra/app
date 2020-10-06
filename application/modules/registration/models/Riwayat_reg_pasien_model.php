@@ -47,7 +47,7 @@ class Riwayat_reg_pasien_model extends CI_Model {
 	            $this->db->where('YEAR(tgl_jam_masuk)='.$_GET['tahun'].'');	
 	        }
 
-	        if (isset($_GET['bagian']) AND $_GET['bagian'] != '') {
+	        if (isset($_GET['bagian']) AND $_GET['bagian'] != 0) {
 	            $this->db->where('tc_registrasi.kode_bagian_masuk', $_GET['bagian']);	
 	        }
 
@@ -100,7 +100,7 @@ class Riwayat_reg_pasien_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
