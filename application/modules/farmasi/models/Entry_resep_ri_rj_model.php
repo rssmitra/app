@@ -190,7 +190,7 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN 'biasa' ELSE 'racikan' END as flag_resep", false);
 		$this->db->select("CASE WHEN b.status_input IS NULL THEN a.status_input ELSE b.status_input END as status_input", false);
 		$this->db->select('a.kd_tr_resep, a.kode_trans_far, a.kode_brg, a.id_tc_far_racikan, 
-		a.jumlah_tebus, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, a.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat');
+		a.jumlah_tebus, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, a.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, a.resep_ditangguhkan, a.jumlah_tebus, a.jumlah_pesan');
 		$this->db->from('fr_tc_far_detail a');
 		$this->db->join('fr_tc_far_detail_log b','(a.kd_tr_resep=b.relation_id)','left');
 		$this->db->join('mt_barang c','c.kode_brg=a.kode_brg','left');

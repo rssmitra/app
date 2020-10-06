@@ -13,7 +13,7 @@ body{
   </tr>
 </table>
 <hr>
-<center><span style="font-size: 12px;"><strong><u>NOTA FARMASI</u></strong><br>
+<center><span><strong><u>NOTA FARMASI</u></strong><br>
 No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?>
 </span></center>
 

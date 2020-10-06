@@ -139,6 +139,7 @@ class Process_entry_resep extends MX_Controller {
                     'urgensi' => $this->regex->_genRegex($_POST['urgensi'], 'RGXQSL'),
                     'jumlah_obat_23' => isset($_POST['jml_23'])?$_POST['jml_23']:0,
                     'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan'])?$_POST['prb_ditangguhkan']:0,
+                    'resep_ditangguhkan' => isset($_POST['resep_ditangguhkan'])?$_POST['resep_ditangguhkan']:0,
                 );
                 // print_r($data_farmasi_detail);die;
                 

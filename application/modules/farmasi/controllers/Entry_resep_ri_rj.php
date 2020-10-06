@@ -168,7 +168,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             $html .= '<tr>';
                 // $html .= '<th>Pabrikan</th>';
                 // $html .= '<th>Jenis Obat</th>';
-                $html .= '<th>Jumlah PRB/ ditangguhkan</th>';
+                $html .= '<th>Jml Obat Kronis/ ditangguhkan</th>';
                 $html .= '<th>Satuan Besar/Kecil</th>';
                 $html .= '<th>Rasio</th>';
                 $html .= '<th>Signa</th>';
@@ -274,6 +274,8 @@ class Entry_resep_ri_rj extends MX_Controller {
             $nama_brg = ($row_list->nama_brg != '')?$row_list->nama_brg:'Obat Racikan -'.$no;
             $row[] = strtoupper($nama_brg);
             $row[] = '<div class="center">'.(int)$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
+            $status_resep_ditangguhkan = ($row_list->resep_ditangguhkan == 0) ? 'N' : 'Y' ;
+            $row[] = '<div class="center">'.$status_resep_ditangguhkan.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_jual, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->sub_total, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->jasa_r, 2).'</div>';

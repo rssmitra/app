@@ -244,23 +244,23 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            $('#jumlah_tebus').focus();
-          }
-          return false;       
-        }
-    });
-
-    $( "#jumlah_tebus" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
             $('#jml_23').focus();
           }
           return false;       
         }
     });
+
+    // $( "#jumlah_tebus" )
+    //   .keypress(function(event) {
+    //     var keycode =(event.keyCode?event.keyCode:event.which); 
+    //     if(keycode ==13){
+    //       event.preventDefault();
+    //       if($(this).valid()){
+    //         $('#jml_23').focus();
+    //       }
+    //       return false;       
+    //     }
+    // });
 
     $( "#jml_23" )
       .keypress(function(event) {
@@ -389,6 +389,12 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
         $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
       }else{
         $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
+      }
+
+      if(obj.resep_ditangguhkan == 1){
+        $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
+      }else{
+        $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
       }
       
       $('#dosis_start').val(obj.dosis_per_hari);
@@ -620,7 +626,7 @@ function changeUrgensi(){
         <!-- keterangan pasien -->
         <div class="col-sm-12">
           <table class="table">
-            <tr style="background-color: #edf3f4">
+            <tr style="background-color: #edf3f4; font-weight: bold">
               <td> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> </td>
               <td> <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?> </td>
               <td> <?php echo isset($value)?ucwords($value->nama_kelompok):''?> <?php echo isset($value)?ucwords($value->nama_perusahaan):''?> </td>
@@ -704,18 +710,24 @@ function changeUrgensi(){
 
               <!-- jumlah pesan -->
               <div class="form-group">
-                <label class="control-label col-sm-2">Jml Pesan</label>
+                <label class="control-label col-sm-2">Jml Pesan/Tebus</label>
                 <div class="col-md-2">
                     <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')"/>
                 </div>
-                <label class="control-label col-sm-1">Tebus</label>
+                <div class="col-md-6">
+                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                    <input type="checkbox" class="ace" name="resep_ditangguhkan" id="resep_ditangguhkan" value="1">
+                    <span class="lbl"> Ditangguhkan</span>
+                  </label>
+                </div>
+                <!-- <label class="control-label col-sm-1">Tebus</label>
                 <div class="col-md-2">
                     <input class="form-control" name="jumlah_tebus" id="jumlah_tebus" type="text" style="text-align:center" />
-                </div>
+                </div> -->
               </div>
 
               <div class="form-group">
-                <label class="control-label col-sm-2">Resep PRB</label>
+                <label class="control-label col-sm-2">Resep Kronis</label>
                 <div class="col-md-2">
                     <input class="form-control" name="jml_23" id="jml_23" type="text" value="<?php echo ($value->kode_perusahaan==120)?23:0?>" style="text-align:center"/>
                
@@ -723,7 +735,7 @@ function changeUrgensi(){
                 <div class="col-md-6">
                   <label class="inline" style="margin-top: 4px;margin-left: -12px;">
                     <input type="checkbox" class="ace" name="prb_ditangguhkan" id="prb_ditangguhkan" value="1">
-                    <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
+                    <span class="lbl"> Ditangguhkan</span>
                   </label>
                 </div>
               </div>
@@ -817,6 +829,7 @@ function changeUrgensi(){
                 <th>Kode</th>
                 <th>Deskripsi Item</th>
                 <th width="100px">Jumlah</th>
+                <th width="100px">Ditangguhkan</th>
                 <th width="100px">Harga Satuan</th>
                 <th width="100px">Sub Total</th>
                 <th width="100px">Jasa R</th>

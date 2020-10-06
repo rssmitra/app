@@ -1307,7 +1307,8 @@ class References extends MX_Controller {
 		// echo $this->db->last_query();
 		$arrResult = [];
 		foreach ($exc as $key => $value) {
-			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;
+			$harga_jual = $value->harga_beli + $value->margin;
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg.' : '.$value->jml_sat_kcl.' '.strtolower($value->satuan_kecil).' @'.number_format($value->harga_beli).' ';
 		}
 		echo json_encode($arrResult);
 		
@@ -1445,8 +1446,8 @@ class References extends MX_Controller {
 			where a.kode_brg='."'".$_GET['kode']."'".' and b.no_mr='."'".$_GET['no_mr']."'". ' and b.status_transaksi=1 and d.kode_perusahaan=120 
 			order by b.kode_trans_far DESC';
 			$exc_qry = $this->db->query($qry)->result();
-			$html .= '<b><span style="font-size: 11px">Riwayat Transaksi Sebelumnya</span></b>';
-			$html .= '<table class="table table-hover" style="font-size: 10px !important">';
+			$html .= '<b><span>Riwayat Transaksi Sebelumnya</span></b>';
+			$html .= '<table class="table table-hover">';
 				$html .= '<thead>';
 					$html .= '<tr>';
 					$html .= '<td>Kode<br>Transaksi</td>';
