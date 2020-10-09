@@ -80,7 +80,7 @@ table{
 
   <!-- nama obat dan dosis penggunaan -->
   <div style="text-align: center; padding-top: 10px">
-  <?php echo ucwords(strtolower($rows->nama_brg));?><br>
+  <?php echo strtoupper(strtolower($rows->nama_brg));?><br>
     <span>Sehari <?php echo $rows->dosis_per_hari; ?> x <?php echo $rows->dosis_obat; ?> <?php echo $rows->satuan_obat; ?>
     <?php echo $rows->anjuran_pakai; ?> </span>
   </div>

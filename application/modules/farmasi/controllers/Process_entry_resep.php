@@ -334,10 +334,13 @@ class Process_entry_resep extends MX_Controller {
                 else{
 
                     // jika ditangguhkan maka yang dipotong stok hanya jumlah tebus
-                    $jml_mutasi_brg = ( $row_dt->prb_ditangguhkan != 1 ) ? (int)$row_dt->jumlah_tebus + (int)$row_dt->jumlah_obat_23 : (int)$row_dt->jumlah_tebus;
-                    
+                    $jml_kronis = ( $row_dt->prb_ditangguhkan != 1 ) ? (int)$row_dt->jumlah_obat_23 : 0 ;
+                    $jml_tebus = ( $row_dt->resep_ditangguhkan != 1 ) ? (int)$row_dt->jumlah_tebus : 0 ;
+                    $jml_mutasi_brg = $jml_kronis + $jml_tebus;
                     // kurangi stok depo, update kartu stok dan rekap stok
-                    $this->stok_barang->stock_process($row_dt->kode_brg, $jml_mutasi_brg, $kode_bagian, 14, " No Transaksi : ".$row_dt->kode_trans_far."", 'reduce');
+                    if( $jml_mutasi_brg > 0 ){
+                        $this->stok_barang->stock_process($row_dt->kode_brg, $jml_mutasi_brg, $kode_bagian, 14, " No Transaksi : ".$row_dt->kode_trans_far."", 'reduce');
+                    }
 
                     // define untuk obat biasa atau non racikan
                     $kode_brg = $row_dt->kode_brg;

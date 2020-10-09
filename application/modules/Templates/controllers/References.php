@@ -1443,27 +1443,28 @@ class References extends MX_Controller {
 			left join fr_tc_far b on b.kode_trans_far=a.kode_trans_far
 			left join mt_barang c on c.kode_brg=a.kode_brg
 			left join tc_registrasi d on d.no_registrasi=b.no_registrasi
-			where a.kode_brg='."'".$_GET['kode']."'".' and b.no_mr='."'".$_GET['no_mr']."'". ' and b.status_transaksi=1 and d.kode_perusahaan=120 
+			where a.kode_brg='."'".$_GET['kode']."'".' and b.no_mr='."'".$_GET['no_mr']."'". ' and b.status_transaksi=1 and d.kode_perusahaan=120 and DATEDIFF(day,b.tgl_trans,GETDATE()) < 31
 			order by b.kode_trans_far DESC';
 			$exc_qry = $this->db->query($qry)->result();
-			$html .= '<b><span>Riwayat Transaksi Sebelumnya</span></b>';
+			echo $this->db->last_query();die;
+			$html .= '<b><span>Riwayat Resep 1 bulan terakhir</span></b>';
 			$html .= '<table class="table table-hover">';
 				$html .= '<thead>';
 					$html .= '<tr>';
-					$html .= '<td>Kode<br>Transaksi</td>';
-					$html .= '<td>No. Resep</td>';
-					$html .= '<td>Tanggal</td>';
-					$html .= '<td>Nama Barang</td>';
-					$html .= '<td>Jumlah<br>Tebus</td>';
-					$html .= '<td>Jumlah<br>Ditangguhkan</td>';
+					$html .= '<th>Kode</th>';
+					$html .= '<th>No. Resep</th>';
+					$html .= '<th>Tanggal</th>';
+					$html .= '<th>Nama Barang</th>';
+					$html .= '<th>Jumlah</th>';
+					$html .= '<th>Ditangguhkan</th>';
 					$html .= '</tr>';
 				$html .= '</thead>';
 				$html .= '<tbody>';
 				foreach ($exc_qry as $key => $value) {
-					$html .= '<tr>';
+					$html .= '<tr style="background: #ff000038">';
 						$html .= '<td>'.$value->kode_trans_far.'</td>';
-						$html .= '<td>'.$value->no_resep.'</td>';
-						$html .= '<td>'.$value->tgl_trans.'</td>';
+						$html .= '<td>'.strtoupper($value->no_resep).'</td>';
+						$html .= '<td>'.$this->tanggal->formatDateTimeFormDmy($value->tgl_trans).'</td>';
 						$html .= '<td>'.$value->nama_brg.'</td>';
 						$html .= '<td>'.$value->jumlah_tebus.'</td>';
 						$html .= '<td>'.$value->jumlah_obat_23.'</td>';

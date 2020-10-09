@@ -21,7 +21,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
 		$this->db->where('kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log where jumlah_obat_23 > 0 group by kode_trans_far)');
-		$this->db->where('tc_registrasi.kode_perusahaan', 120);
+		// $this->db->where('tc_registrasi.kode_perusahaan', 120);
 		// $this->db->where('fr_tc_far.verifikasi_prb IS NULL');
 		$this->db->group_by($this->select);
 

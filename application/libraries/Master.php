@@ -164,7 +164,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>
-			<option value="0" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="" '.$selected.'> - Silahkan pilih - </option>';
 				$field_id = ($custom['id']==$custom['name']) ? 'ID' : $custom['id'] ;
 				foreach($data as $row){
 					$sel = trim($nid) == trim($row[$field_id])?'selected':'';

@@ -225,7 +225,8 @@ function hitungSubTotalBarang(kode_brg){
             <th width="70px">Kode</th>
             <th>Nama Obat</th>
             <th width="250px">Signa</th>
-            <th width="50px">Jumlah</th>
+            <th width="50px">Jml Obat Biasa</th>
+            <th width="50px">Jml Obat Kronis</th>
             <th width="100px">Harga Satuan</th>
             <th width="100px">Subtotal</th>
             <!-- <th>Catatan</th> -->
@@ -260,12 +261,19 @@ function hitungSubTotalBarang(kode_brg){
                   echo 'Sehari '.$row['dosis_per_hari'].' x '.$row['dosis_obat'].' '.ucfirst(strtolower($row['satuan_obat'])).' ('.ucwords($row['anjuran_pakai']).')';
                 echo '</td>';
 
-                // jumlah
+                // jumlah obat biasa
+                echo '<td align="center" style="width: 100px">';
+                $txt_color = ($row['resep_ditangguhkan'] == 1) ? 'red' : 'blue' ;
+                echo '<span style="color: '.$txt_color.'; font-weight: bold">'.number_format($row['jumlah_tebus']).' '.$row['satuan_kecil'].'</span>';
+
+                echo '<input style="width:100px;height:25px;text-align:center" type="hidden" name="hidden_jumlah_obt_biasa'.$row['kode_brg'].'" id="hidden_jumlah_obt_biasa'.$row['kode_brg'].'"  value="'.$row['jumlah_tebus'].'" '.$readonly.'>';
+                echo '</td>';
+
+                // jumlah kronis
                 echo '<td align="center">';
-                echo '<input style="width:50px;height:25px;text-align:center"  class="format_number form-control" type="text" name="jumlah_'.$row['kode_brg'].'" id="jumlah_'.$row['kode_brg'].'" value="'.$row['jumlah_obat_23'].'" '.$readonly.' onkeypres="pressEnter('."'".$row['kode_brg']."'".')" onchange="inputJumlah('."'".$row['kode_brg']."'".')">';
+                echo '<input style="width:100px;height:25px;text-align:center"  class="format_number form-control" type="text" name="jumlah_'.$row['kode_brg'].'" id="jumlah_'.$row['kode_brg'].'" value="'.$row['jumlah_obat_23'].'" '.$readonly.' onkeypres="pressEnter('."'".$row['kode_brg']."'".')" onchange="inputJumlah('."'".$row['kode_brg']."'".')">';
 
-                echo '<input style="width:50px;height:25px;text-align:center" type="hidden" name="hidden_jumlah_'.$row['kode_brg'].'" id="hidden_jumlah_'.$row['kode_brg'].'"  value="'.$row['jumlah_obat_23'].'" '.$readonly.'>';
-
+                echo '<input style="width:100px;height:25px;text-align:center" type="hidden" name="hidden_jumlah_'.$row['kode_brg'].'" id="hidden_jumlah_'.$row['kode_brg'].'"  value="'.$row['jumlah_obat_23'].'" '.$readonly.'>';
                 echo '</td>';
 
                 // harga satuan

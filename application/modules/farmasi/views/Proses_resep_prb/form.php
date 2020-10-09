@@ -172,7 +172,7 @@ function saveRow(kode_brg){
 
       </div>
       
-      <p><b>PENGAMBILAN RESEP PRB</b></p>
+      <p><b>PENGAMBILAN RESEP KRONIS</b></p>
       <table id="verifikasi-resep-obat" class="table table-bordered table-hover">
         <thead>
           <tr>  
@@ -185,7 +185,8 @@ function saveRow(kode_brg){
             <th class="center" width="30px">No</th>
             <th width="70px">Kode</th>
             <th>Nama Obat</th>
-            <th width="100px">Jml Obat</th>
+            <th width="110px">Jml Obat Biasa</th>
+            <th width="110px">Jml Obat Kronis</th>
             <th width="100px">Sisa Obat</th>
             <th width="100px">Jml Diambil</th>
             <!-- <th width="100px">Harga Satuan</th>
@@ -199,7 +200,9 @@ function saveRow(kode_brg){
             $no = 0;
             foreach($resep as $row) { $no++;
               $readonly = (empty($row->id_fr_tc_far_detail_log_prb))?'':'readonly';
-              $sisa = $row->jumlah - $row->log_jml_mutasi;
+              $jml_tebus = ($row->resep_ditangguhkan == 1) ? $row->jumlah_tebus : 0 ;
+              $txt_color = ($row->resep_ditangguhkan == 1) ? 'red' : 'blue' ;
+              $sisa = ($row->jumlah + $jml_tebus) - $row->log_jml_mutasi;
               echo '<tr id="row_kd_brg_'.$row->id_fr_tc_far_detail_log_prb.'">';
                 echo '<td>';
                   echo '<label class="pos-rel">
@@ -213,6 +216,13 @@ function saveRow(kode_brg){
                 echo '<td align="center">'.$no.'</td>';
                 echo '<td>'.$row->kode_brg.'</td>';
                 echo '<td>'.$row->nama_brg.'</td>';
+
+                // jumlah obat biasa
+                echo '<td align="center">';
+                  
+                  echo '<span style="color: '.$txt_color.'; font-weight: bold">'.number_format($jml_tebus).'</span>';
+                  echo '<input style="width:80px;height:25px;text-align:center"  class="format_number form-control" type="hidden" name="jumlah_tebus_biasa_'.$row->id_fr_tc_far_detail_log_prb.'" id="jumlah_tebus_biasa_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$jml_tebus.'" '.$readonly.'>';
+                echo '</td>';
 
                 // jumlah
                 echo '<td align="center">';

@@ -334,13 +334,26 @@ $(document).ready(function(){
         }
     });
 
+    $('#resep_ditangguhkan').click(function() {
+      if($('#sisa_stok').val() <= 0){
+        if (!$(this).is(':checked')) {
+          $('#btn_submit').attr('disabled', true);
+        }else{
+          $('#btn_submit').attr('disabled', false);
+        }
+      }
+      
+    });
+
+
 })
 
 function getDetailObatByKodeBrg(kode_brg,kode_bag){
 
   $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($value)?$value->kode_kelompok:0?>&kode_perusahaan="+$('#kode_perusahaan').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal", '' , function (response) {
+    $('#sisa_stok').val(response.sisa_stok);
     if(response.sisa_stok <= 0){
-      $('#inputKeyObat').focus();
+      $('#jumlah_pesan').focus();
       $('#btn_submit').attr('disabled', true);
       $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
     $('#detailPembelianObatHtml').html('');
@@ -393,8 +406,10 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
 
       if(obj.resep_ditangguhkan == 1){
         $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
+        $('#btn_submit').attr('disabled', false);
       }else{
         $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
+        $('#btn_submit').attr('disabled', true);
       }
       
       $('#dosis_start').val(obj.dosis_per_hari);
@@ -601,6 +616,8 @@ function changeUrgensi(){
     <form class="form-horizontal" method="post" id="form_entry_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/process_entry_resep/process">      
       
       <!-- form_hidden -->
+
+      <input type="hidden" name="sisa_stok_hidden" id="sisa_stok" value="0">
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
       <input type="hidden" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
       <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">

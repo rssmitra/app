@@ -6,13 +6,13 @@ body{
 }
 </style>
 <body>
-<table width="100%" border="0">
+<!-- <table width="100%" border="0">
   <tr>
     <td width="60px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td>
     <td valign="bottom" width="320px"><b><span style="font-size: 18px"><?php echo COMP_LONG; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
   </tr>
 </table>
-<hr>
+<hr> -->
 <center><span><strong><u>NOTA FARMASI</u></strong><br>
 No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?>
 </span></center>

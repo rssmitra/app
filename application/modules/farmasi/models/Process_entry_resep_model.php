@@ -113,6 +113,10 @@ class Process_entry_resep_model extends CI_Model {
         // apakah jumlah obat 23/resep prb ditangguhkan
         isset($params['prb_ditangguhkan']) ? 
         $data_farmasi_detail['prb_ditangguhkan'] = $this->regex->_genRegex($params['prb_ditangguhkan'], 'RGXINT'):'';
+
+        // apakah jumlah obat 7/resep prb ditangguhkan
+        isset($params['resep_ditangguhkan']) ? 
+        $data_farmasi_detail['resep_ditangguhkan'] = $this->regex->_genRegex($params['resep_ditangguhkan'], 'RGXINT'):'';
             
         // jasa produksi
         isset($params['jasa_produksi']) ? 
@@ -203,6 +207,7 @@ class Process_entry_resep_model extends CI_Model {
     public function rollback_by_kode_trans_far($kode_trans_far){
 
         $dt_trans = $this->db->get_where('fr_tc_far', array('kode_trans_far' => $kode_trans_far) )->row();
+        
         if(!empty($dt_trans)){
             /*untuk rawat jalan update log pesan resep*/
             $this->db->update('fr_tc_pesan_resep', array('status_tebus' => null), array('kode_pesan_resep' => $dt_trans->kode_pesan_resep) );   
@@ -222,12 +227,14 @@ class Process_entry_resep_model extends CI_Model {
             $this->db->update('fr_tc_far_detail_log', array('status_tebus' => null), array('kode_trans_far' => $dt_trans->kode_trans_far) );
 
             $dt_existing = $this->db->get_where('fr_tc_far_detail', array('kode_trans_far' => $dt_trans->kode_trans_far) )->result();
-
+            
             // retur barang
             foreach ($dt_existing as $key => $value) {
                 # code...
-                if($value->id_tc_far_racikan != 0){
-                    $sisa_di_retur = $value->jumlah_tebus;
+                if($value->id_tc_far_racikan == 0){
+                    $jml_kronis = ( $value->prb_ditangguhkan != 1 ) ? (int)$value->jumlah_obat_23 : 0 ;
+                    $jml_tebus = ( $value->resep_ditangguhkan != 1 ) ? (int)$value->jumlah_tebus : 0 ;
+                    $sisa_di_retur = $jml_kronis + $jml_tebus;
                     // retur stok ke farmasi
                     $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore');                
                 }else{
