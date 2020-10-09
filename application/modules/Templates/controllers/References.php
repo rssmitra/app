@@ -1308,7 +1308,8 @@ class References extends MX_Controller {
 		$arrResult = [];
 		foreach ($exc as $key => $value) {
 			$harga_jual = $value->harga_beli + $value->margin;
-			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg.' : '.$value->jml_sat_kcl.' '.strtolower($value->satuan_kecil).' @'.number_format($value->harga_beli).' ';
+			$txt_color = ($value->jml_sat_kcl > 0)?'blue':'red';
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg.' : <span style="color: '.$txt_color.'; font-weight: bold">'.$value->jml_sat_kcl.'</span> '.strtolower($value->satuan_kecil).' @'.number_format($value->harga_beli).' ';
 		}
 		echo json_encode($arrResult);
 		
@@ -1446,7 +1447,7 @@ class References extends MX_Controller {
 			where a.kode_brg='."'".$_GET['kode']."'".' and b.no_mr='."'".$_GET['no_mr']."'". ' and b.status_transaksi=1 and d.kode_perusahaan=120 and DATEDIFF(day,b.tgl_trans,GETDATE()) < 31
 			order by b.kode_trans_far DESC';
 			$exc_qry = $this->db->query($qry)->result();
-			echo $this->db->last_query();die;
+			// echo $this->db->last_query();die;
 			$html .= '<b><span>Riwayat Resep 1 bulan terakhir</span></b>';
 			$html .= '<table class="table table-hover">';
 				$html .= '<thead>';

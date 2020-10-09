@@ -444,7 +444,8 @@ class Process_entry_resep extends MX_Controller {
         $data = array(
             'title' => 'Preview Transaksi' ,
             'breadcrumbs' => $this->breadcrumbs->show(),
-            'flag' => $_GET['flag']
+            'flag' => $_GET['flag'],
+            'status_lunas' => isset($_GET['status_lunas']) ? $_GET['status_lunas'] : 0,
         );
         $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
         foreach($resep_log as $row){

@@ -214,6 +214,7 @@ $(document).ready(function(){
     });     
 
     $('#inputKeyObat').typeahead({
+
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/getObatByBagianAutoComplete",
@@ -230,13 +231,50 @@ $(document).ready(function(){
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
-
+          $('#inputKeyObat').val(label_item);
           var detailObat = getDetailObatByKodeBrg(val_item,'060101');
           $('#jumlah_pesan').focus();
 
-        }
+        },
+
     });
+
+    // $('#inputKeyObat').typeahead(
+    //   {
+    //     minLength: 3,
+    //     hint: true,
+    //     highlight: true
+    //   },
+    //   {
+    //     limit: 20,
+    //     source: function (query, result) {
+    //         $.ajax({
+    //             url: "templates/references/getObatByBagianAutoComplete",
+    //             data: { keyword:query, bag: '060101'},            
+    //             dataType: "json",
+    //             type: "POST",
+    //             success: function (response) {
+    //               result($.map(response, function (item) {
+    //                   return item;
+    //               }));
+    //             }
+    //         });
+    //     },
+    //     afterSelect: function (item) {
+    //       // do what is needed with item
+    //       var val_item=item.split(':')[0];
+    //       console.log(val_item);
+
+    //       var detailObat = getDetailObatByKodeBrg(val_item,'060101');
+    //       $('#jumlah_pesan').focus();
+
+    //     }
+    //   }
+
+    // );
+
 
     $( "#jumlah_pesan" )
       .keypress(function(event) {

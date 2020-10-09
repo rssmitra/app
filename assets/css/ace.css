@@ -20068,3 +20068,9 @@ td.details-control {
   padding: 0.5rem;
 } 
 
+.typeahead {
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: azure;
+}
+

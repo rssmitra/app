@@ -63,10 +63,11 @@ class Entry_resep_ri_rj_model extends CI_Model {
             $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) >= '".$_GET['from_tgl']."'" );
             $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) <= '".$_GET['to_tgl']."'" );
         }else{
-			$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 24');
-			// $this->db->where('CAST(tgl_pesan as DATE) = ', date('Y-m-d'));
-			$this->db->where('(status_tebus is null or status_tebus = 0)');
+			$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 24');			
         }
+
+        // default for this modul
+        $this->db->where('(status_tebus is null or status_tebus = 0)');
 
 		$i = 0;
 		$col_str = '';

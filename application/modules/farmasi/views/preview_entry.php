@@ -133,9 +133,14 @@
     <button onclick="getMenu('farmasi/Etiket_obat/form/<?php echo $resep[0]['kode_trans_far']?>?flag=<?php echo $flag; ?>')" class="btn btn-xs btn-primary" title="etiket">
       <i class="fa fa-ticket dark"></i> Etiket Obat
     </button>
+    <?php if($status_lunas == 0) : ?>
     <button onclick="rollback_by_kode_trans_far(<?php echo $resep[0]['kode_trans_far']?>, '<?php echo strtolower($flag); ?>')" class="btn btn-xs btn-danger" title="rollback">
       <i class="fa fa-undo dark"></i> Rollback Resep
     </button>
+  <?php else:
+          echo '<span style="margin-left:-13%;position:absolute;transform: rotate(-25deg) !important; margin-top: -15%" class="stamp is-approved">Lunas</span>';
+        endif;
+  ?>
 
   </div>
 
