@@ -11,7 +11,7 @@
     </div> 
 
     <center><span style="font-size: 12px;"><strong><u>TRANSAKSI FARMASI</u></strong><br>
-    No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?>
+    No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['no_resep'])?>
     </span></center>
 
     <table>
@@ -61,11 +61,11 @@
             <tr>
               <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
               <td style="border-collapse: collapse"><?php echo $desc?></td>
-              <td style="text-align:center; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? '' : (int)$row_dt['jumlah_tebus'];?></td>
+              <td style="text-align:center; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? '' : $row_dt['jumlah_tebus'];?></td>
               <td style="text-align: center; border-collapse: collapse"><?php echo $satuan?></td>
-              <td style="text-align:right; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? 0 : number_format((int)$row_dt['harga_jual']);?></td>
-              <td style="text-align:right; border-collapse: collapse"><?php echo number_format((int)$row_dt['jasa_r'])?></td>
-              <td style="text-align:right; border-collapse: collapse"><?php echo number_format((int)$subtotal)?></td>
+              <td style="text-align:right; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? 0 : number_format($row_dt['harga_jual']);?></td>
+              <td style="text-align:right; border-collapse: collapse"><?php echo number_format($row_dt['jasa_r'])?></td>
+              <td style="text-align:right; border-collapse: collapse"><?php echo number_format($subtotal)?></td>
             </tr>
             <?php 
               if($row_dt['flag_resep'] == 'racikan') :

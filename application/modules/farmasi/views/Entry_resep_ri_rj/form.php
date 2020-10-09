@@ -505,7 +505,7 @@ function resep_farmasi_selesai(){
     $.ajax({
         url: 'farmasi/process_entry_resep/process_selesai_resep',
         type: "post",
-        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val() },
+        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val() },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -624,7 +624,7 @@ function changeUrgensi(){
       <input type="hidden" name="nama_pasien" value="<?php echo isset($value)?$value->nama_pasien:''?>">
       <input type="hidden" name="kode_dokter" value="<?php echo isset($value)?$value->kode_dokter:''?>">
       <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value)?$value->nama_pegawai:''?>">
-      <input type="hidden" name="kode_profit" value="<?php echo ($tipe_layanan=='RJ')?2000:1000;?>">
+      <input type="hidden" name="kode_profit" id="kode_profit" value="<?php echo ($tipe_layanan=='RJ')?2000:1000;?>">
       <input type="hidden" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian">
       <input type="hidden" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
       <input type="hidden" name="flag_trans" id="flag_trans" value="<?php echo $tipe_layanan?>">

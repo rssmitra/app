@@ -299,7 +299,7 @@ class Process_entry_resep extends MX_Controller {
         // $this->db->join('fr_tc_far b','c.kode_trans_far=b.kode_trans_far','left');
         // $this->db->where('c.kode_trans_far', $ID);
         $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
-        // print_r($trans_dt);die;
+        // print_r($_POST);die;
         /*execution begin*/
         $this->db->trans_begin();
 
@@ -369,9 +369,9 @@ class Process_entry_resep extends MX_Controller {
                     "kode_trans_far" => $row_dt->kode_trans_far,
                     "kode_bagian" => $row_dt->kode_bagian,
                     "kode_bagian_asal" => $row_dt->kode_bagian_asal,
-                    "kode_profit" => $row_dt->kode_profit,
+                    "kode_profit" => $_POST['kode_profit'],
                     "kd_tr_resep" => $row_dt->relation_id,
-                    "no_kunjungan" => (in_array($row_dt->kode_profit, array(1000 , 2000) )) ?$row_dt->no_kunjungan : 0,
+                    "no_kunjungan" => (in_array($_POST['kode_profit'], array(1000 , 2000) )) ?$row_dt->no_kunjungan : 0,
                     "status_selesai" => 2,
                     "status_nk" => (in_array($_POST['kode_kelompok'], array(10 , 3) )) ? 1 : 0,
                     "status_karyawan" => ( $row_dt->flag_trans == 'RK' ) ? 1 : 0,
@@ -386,7 +386,7 @@ class Process_entry_resep extends MX_Controller {
     
             // update status transaksi
             $this->db->where('kode_trans_far', $ID);
-            $this->db->update('fr_tc_far', array('status_transaksi' => 1) );
+            $this->db->update('fr_tc_far', array('status_transaksi' => 1, 'kode_profit' => $_POST['kode_profit']) );
 
             // update fr_tc_far_detail_log
             $this->db->where('kode_trans_far', $ID);

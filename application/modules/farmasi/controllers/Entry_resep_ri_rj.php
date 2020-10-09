@@ -73,6 +73,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Entry_resep_ri_rj/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
+        $tipe_layanan = strtoupper($_GET['tipe_layanan']);
         $data['kode_pesan_resep'] = $id;
         $data['value'] = $this->Entry_resep_ri_rj->get_by_id($id);
         $data['trans_farmasi'] = $this->db->get_where('fr_tc_far', array('kode_pesan_resep' => $id) )->row();
@@ -80,8 +81,8 @@ class Entry_resep_ri_rj extends MX_Controller {
         /*no mr default*/
         $data['no_mr'] = $_GET['mr'];
         /*initialize flag for form*/
-        $data['tipe_layanan'] = $_GET['tipe_layanan'];
-        $data['str_tipe_layanan'] = ($_GET['tipe_layanan']=='RJ')?'Rajal':'Ranap';
+        $data['tipe_layanan'] = $tipe_layanan;
+        $data['str_tipe_layanan'] = ($tipe_layanan=='RJ')?'Rajal':'Ranap';
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/

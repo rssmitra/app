@@ -14,7 +14,7 @@ body{
 </table>
 <hr> -->
 <center><span><strong><u>NOTA FARMASI</u></strong><br>
-No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo $resep[0]['no_resep']?>
+No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['no_resep'])?>
 </span></center>
 
 <table>
