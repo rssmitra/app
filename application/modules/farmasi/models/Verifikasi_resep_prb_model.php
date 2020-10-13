@@ -4,10 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Verifikasi_resep_prb_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
-	var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
-	var $select = 'kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, verifikasi_prb';
+	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
+	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, verifikasi_prb';
 
-	var $order = array('tgl_trans' => 'DESC', 'kode_trans_far' => 'DESC');
+	var $order = array('tgl_trans' => 'DESC', 'fr_tc_far.kode_trans_far' => 'DESC');
 
 	public function __construct()
 	{
@@ -20,9 +20,11 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
-		$this->db->where('kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log where jumlah_obat_23 > 0 group by kode_trans_far)');
-		// $this->db->where('tc_registrasi.kode_perusahaan', 120);
+		$this->db->join('(select COUNT(jumlah_obat_23) as jumlah_obat_23, kode_trans_far from fr_tc_far_detail where jumlah_obat_23 > 0 group by kode_trans_far) as detail','detail.kode_trans_far = fr_tc_far.kode_trans_far','left');
+		$this->db->where('fr_tc_far.kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log where jumlah_obat_23 > 0 group by kode_trans_far)');
+		$this->db->where('tc_registrasi.kode_perusahaan', 120);
 		// $this->db->where('fr_tc_far.verifikasi_prb IS NULL');
+		// $this->db->where('detail.jumlah_obat_23 > 0');
 		$this->db->group_by($this->select);
 
 	}
@@ -38,10 +40,6 @@ class Verifikasi_resep_prb_model extends CI_Model {
 			}else{
 				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
-		}
-
-		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){
-			$this->db->where('fr_tc_far.kode_bagian_asal', $_GET['bagian']);
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {

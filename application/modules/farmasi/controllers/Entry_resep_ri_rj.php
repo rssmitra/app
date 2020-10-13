@@ -207,26 +207,29 @@ class Entry_resep_ri_rj extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+            // <li><a href="#">Kirim ke Gudang</a></li>
+            // <li><a href="#" onclick="rollback('.$row_list->kode_pesan_resep.')">Rollback</a></li>
+
                 $row[] = '<div class="center"><div class="btn-group">
                             <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                                 <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-inverse">
-                                <li><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">Entry Resep</a></li>
-                                <li><a href="#">Kirim ke Gudang</a></li>
-                                <li><a href="#" onclick="rollback('.$row_list->kode_pesan_resep.')">Rollback</a></li>
+                                <li><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">Entry Resep</a></li>                                
                             </ul>
                         </div></div>';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">'.$row_list->kode_pesan_resep.'</a></div>';
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_pesan);
+            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->nama_pegawai;
             $row[] = ucwords($row_list->nama_bagian);
+            $penjamin = (!empty($row_list->nama_perusahaan))?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = ucwords($penjamin);
             $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
             $row[] = '<div class="center">'.$status_tebus.'</div>';
-            $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
-            $row[] = $row_list->nama_lokasi;
+            // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
+            // $row[] = $row_list->nama_lokasi;
             
             $data[] = $row;
         }
@@ -249,7 +252,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            
+            $no++;
             $row = array();
             $row[] = '';
             
@@ -270,6 +273,7 @@ class Entry_resep_ri_rj extends MX_Controller {
                 $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
             }
 
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
             $row[] = $row_list->kode_brg;
             $nama_brg = ($row_list->nama_brg != '')?$row_list->nama_brg:'Obat Racikan -'.$no;
@@ -285,7 +289,6 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = '<div align="center">'.$status_input.'</div>';
             
             $data[] = $row;
-            $no++;
         }
 
         $output = array(

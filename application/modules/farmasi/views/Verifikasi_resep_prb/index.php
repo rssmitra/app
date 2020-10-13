@@ -78,7 +78,7 @@ function popUnder(node) {
       <label class="control-label col-md-2">Tanggal</label>
         <div class="col-md-2">
           <div class="input-group">
-            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
             <span class="input-group-addon">
               <i class="fa fa-calendar bigger-110"></i>
             </span>
@@ -88,7 +88,7 @@ function popUnder(node) {
         <label class="control-label col-md-1">s/d</label>
         <div class="col-md-2" style="margin-lef:-10px">
           <div class="input-group">
-            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
             <span class="input-group-addon">
               <i class="fa fa-calendar bigger-110"></i>
             </span>

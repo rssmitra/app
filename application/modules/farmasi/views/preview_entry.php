@@ -1,14 +1,17 @@
 <div class="row">
 
-  <div class="col-xs-12">
-
-    <!-- breadcrumbs -->
-    <div class="page-header">  
+  <div class="page-header">  
       <h1>
         <?php echo $title?>        
         <small> <i class="ace-icon fa fa-angle-double-right"></i> <?php echo isset($breadcrumbs)?$breadcrumbs:''?></small>        
       </h1>
     </div> 
+
+  <?php if(count($resep) > 0) : ?>
+  <div class="col-xs-12">
+
+    <!-- breadcrumbs -->
+    
 
     <center><span style="font-size: 12px;"><strong><u>TRANSAKSI FARMASI</u></strong><br>
     No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['no_resep'])?>
@@ -33,6 +36,10 @@
       </tr>
       <tr>
         <td width="100px">Unit/Bagian</td>
+        <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_bagian']?></td>
+      </tr>
+      <tr>
+        <td width="100px">Penjamin</td>
         <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_bagian']?></td>
       </tr>
     </table>
@@ -137,13 +144,15 @@
     <button onclick="rollback_by_kode_trans_far(<?php echo $resep[0]['kode_trans_far']?>, '<?php echo strtolower($flag); ?>')" class="btn btn-xs btn-danger" title="rollback">
       <i class="fa fa-undo dark"></i> Rollback Resep
     </button>
-  <?php else:
-          echo '<span style="margin-left:-13%;position:absolute;transform: rotate(-25deg) !important; margin-top: -15%" class="stamp is-approved">Lunas</span>';
-        endif;
-  ?>
+    <?php else:
+            echo '<span style="margin-left:-13%;position:absolute;transform: rotate(-25deg) !important; margin-top: -15%" class="stamp is-approved">Lunas</span>';
+          endif;
+    ?>
 
   </div>
-
+  <?php else: ?>
+    - Tidak ada data ditemukan, periksa nomor transaksi yang lain. -
+  <?php endif; ?>
 </div>
 
 <script type="text/javascript">

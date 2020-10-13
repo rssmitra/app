@@ -203,7 +203,7 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		
 		$this->_main_query_detail();
 		$this->db->where('a.kode_trans_far', $_GET['relationId']);
-		$this->db->order_by('id_fr_tc_far_detail_log','DESC');
+		$this->db->order_by('a.kd_tr_resep','ASC');
 		// $this->db->where('fr_tc_far_detail_log.flag_resep', $_GET['flag']);
 
 	}

@@ -1302,7 +1302,8 @@ class References extends MX_Controller {
 			$this->db->where('a.kode_bagian', $_POST['bag']);
 		}
 
-        $this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
+		$this->db->where('b.nama_brg like '."'".$_POST['keyword']."%'".'');
+		$this->db->order_by('b.nama_brg', 'ASC');
         $exc = $this->db->get()->result();
 		// echo $this->db->last_query();
 		$arrResult = [];
@@ -1401,12 +1402,12 @@ class References extends MX_Controller {
 				/*harga umum*/
 				$html .= '<tr>';
 				$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
-				$default_selected_umum = ($_GET['kode_perusahaan'] != 120) ? 'checked' : '';
+				$default_selected_umum = 'checked';
 					$html .= '<td valign="middle" align="left">
 								<div class="radio">
 									<label>
 									<input type="radio" name="pl_harga_satuan" value="'.(float)$harga_satuan.'" class="ace" '.$default_selected_umum.'> 
-									<span class="lbl" style="font-size: 12px !important"> Harga Umum</span>
+									<span class="lbl" style="font-size: 12px !important"> Harga Jual</span>
 									</label>
 								</div>
 							 </td>';
@@ -1414,18 +1415,18 @@ class References extends MX_Controller {
 				$html .= '</tr>';
 			
 				// harga bpjs
-				$default_selected_bpjs = ($_GET['kode_perusahaan'] == 120) ? 'checked' : '';
-				$html .= '<tr>';
-					$html .= '<td valign="middle" align="left">
-								<div class="radio">
-									<label>
-									<input type="radio" name="pl_harga_satuan" value="'.(float)$exc[0]->harga_beli.'" class="ace" '.$default_selected_bpjs.'> 
-									<span class="lbl" style="font-size: 12px !important"> Harga BPJS</span>
-									</label>
-								</div>
-							  </td>';
-					$html .= '<td valign="middle" align="left">Rp. '.number_format($exc[0]->harga_beli,2).',-  </td>';
-				$html .= '</tr>';
+				$default_selected_bpjs = '';
+				// $html .= '<tr>';
+				// 	$html .= '<td valign="middle" align="left">
+				// 				<div class="radio">
+				// 					<label>
+				// 					<input type="radio" name="pl_harga_satuan" value="'.(float)$exc[0]->harga_beli.'" class="ace" '.$default_selected_bpjs.'> 
+				// 					<span class="lbl" style="font-size: 12px !important"> Harga BPJS</span>
+				// 					</label>
+				// 				</div>
+				// 			  </td>';
+				// 	$html .= '<td valign="middle" align="left">Rp. '.number_format($exc[0]->harga_beli,2).',-  </td>';
+				// $html .= '</tr>';
 			
 			$html .= '</table>';	
 		}else{

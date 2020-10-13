@@ -448,6 +448,7 @@ class Process_entry_resep extends MX_Controller {
             'status_lunas' => isset($_GET['status_lunas']) ? $_GET['status_lunas'] : 0,
         );
         $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
+        $getData = array();
         foreach($resep_log as $row){
             $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
             $row['racikan'][] = $racikan;

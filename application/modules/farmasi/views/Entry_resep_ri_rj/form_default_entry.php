@@ -124,8 +124,9 @@ $(document).ready(function(){
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
-
+          $('#inputKeyObat').val(label_item);
           var detailObat = getDetailObatByKodeBrg(val_item,'060101');
           $('#jumlah_pesan').focus();
 

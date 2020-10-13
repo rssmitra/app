@@ -73,6 +73,8 @@ $(document).ready(function() {
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
+          $('#inputKeyObat').val(label_item);
           console.log(val_item);
           $('#pl_kode_brg_hidden').val(val_item);
           $('#pl_jumlah_obat').focus();

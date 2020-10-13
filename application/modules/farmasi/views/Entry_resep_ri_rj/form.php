@@ -59,7 +59,7 @@ $(document).ready(function(){
             var data = table.row( $(this).parents('tr') ).data();
             var ID = data[ 1 ];
             var flag = data[ 2 ];
-            var kode_brg = data[ 5 ];
+            var kode_brg = data[ 6 ];
                       
 
             if ( row.child.isShown() ) {
@@ -240,41 +240,6 @@ $(document).ready(function(){
         },
 
     });
-
-    // $('#inputKeyObat').typeahead(
-    //   {
-    //     minLength: 3,
-    //     hint: true,
-    //     highlight: true
-    //   },
-    //   {
-    //     limit: 20,
-    //     source: function (query, result) {
-    //         $.ajax({
-    //             url: "templates/references/getObatByBagianAutoComplete",
-    //             data: { keyword:query, bag: '060101'},            
-    //             dataType: "json",
-    //             type: "POST",
-    //             success: function (response) {
-    //               result($.map(response, function (item) {
-    //                   return item;
-    //               }));
-    //             }
-    //         });
-    //     },
-    //     afterSelect: function (item) {
-    //       // do what is needed with item
-    //       var val_item=item.split(':')[0];
-    //       console.log(val_item);
-
-    //       var detailObat = getDetailObatByKodeBrg(val_item,'060101');
-    //       $('#jumlah_pesan').focus();
-
-    //     }
-    //   }
-
-    // );
-
 
     $( "#jumlah_pesan" )
       .keypress(function(event) {
@@ -765,7 +730,7 @@ function changeUrgensi(){
 
               <!-- jumlah pesan -->
               <div class="form-group">
-                <label class="control-label col-sm-2">Jml Pesan/Tebus</label>
+                <label class="control-label col-sm-2">Jml Tebus</label>
                 <div class="col-md-2">
                     <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')"/>
                 </div>
@@ -784,7 +749,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Resep Kronis</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jml_23" id="jml_23" type="text" value="<?php echo ($value->kode_perusahaan==120)?23:0?>" style="text-align:center"/>
+                    <input class="form-control" name="jml_23" id="jml_23" type="text" value="0" style="text-align:center" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
                
                 </div>
                 <div class="col-md-6">
@@ -880,6 +845,7 @@ function changeUrgensi(){
                 <th class="center"></th>
                 <th class="center"></th>
                 <th class="center" width="100px"></th>
+                <th width="30px">No</th>
                 <th width="150px">Tgl Input</th>
                 <th>Kode</th>
                 <th>Deskripsi Item</th>

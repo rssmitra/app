@@ -57,7 +57,6 @@ class Retur_obat_model extends CI_Model {
 			$column[$i] = $item;
 			$i++;
 		}
-		
 		if(isset($_POST['order']))
 		{
 			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);

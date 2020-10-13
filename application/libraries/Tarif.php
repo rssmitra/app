@@ -242,10 +242,13 @@ final class Tarif extends AvObjects {
         }
 
         $kenaikan_profit = ($nilai_profit * 0.01) + 1;
+        $total_harga_jual = ceil($harga_beli * $kenaikan_profit * $jumlah);
+        // print_r($total_harga_jual);
         // print_r($harga_beli);
         // print_r($kenaikan_profit);
+        // print_r($nilai_profit);
         // print_r($jumlah);die;
-        return ceil($harga_beli * $kenaikan_profit * $jumlah);
+        return $total_harga_jual;
 
     }
 
