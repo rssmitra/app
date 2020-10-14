@@ -294,7 +294,7 @@
       <div class="main-content">
         <div class="main-content-inner">
           <!-- /section:basics/content.breadcrumbs -->
-          <div class="page-content">
+          <div class="page-content" style="min-height: 700px !important">
             <!-- #section:settings.box -->
 
             <!-- <div class="ace-settings-container" id="ace-settings-container" style="position: fixed">

@@ -36,12 +36,12 @@
       </tr>
       <tr>
         <td width="100px">Unit/Bagian</td>
-        <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_bagian']?></td>
+        <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['nama_bagian'])?></td>
       </tr>
-      <tr>
+      <!-- <tr>
         <td width="100px">Penjamin</td>
-        <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_bagian']?></td>
-      </tr>
+        <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_perusahaan']?></td>
+      </tr> -->
     </table>
 
     <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">

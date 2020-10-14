@@ -724,7 +724,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Cari Obat</label>            
                 <div class="col-md-8">            
-                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
+                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
                 </div>
               </div>
 

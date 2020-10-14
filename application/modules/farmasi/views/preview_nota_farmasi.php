@@ -13,6 +13,7 @@ body{
   </tr>
 </table>
 <hr> -->
+
 <center><span><strong><u>NOTA FARMASI</u></strong><br>
 No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['no_resep'])?>
 </span></center>
@@ -112,4 +113,20 @@ Catatan : Obat yang sudah dibeli tidak bisa dikembalikan
   </tr>
   
 </table>
+
+<div id="options">
+<button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer" onclick="printpage()" style="cursor: pointer"/>Print Nota Farmasi</button>
+</div>
+
+<script>
+  function printpage() {
+      //Get the print button and put it into a variable
+      var printButton = document.getElementById("printpagebutton");
+      //Set the print button visibility to 'hidden' 
+      printButton.style.visibility = 'hidden';
+      //Print the page content
+      window.print()
+      printButton.style.visibility = 'visible';
+  }
+</script>
 </body>
