@@ -1555,6 +1555,10 @@ public function pengadaan_mod_8(){
 		return $this->db->query($query)->result();
 	}
 
-	
+	public function show_data_bmhp_rekap(){
+		$query = "SELECT kode_bagian, nama_bagian FROM  mt_bagian WHERE pelayanan=1 ORDER BY kode_bagian ASC";
+			
+		return $this->db->query($query)->result();
+	}
 
 }

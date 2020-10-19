@@ -123,6 +123,25 @@ class Global_report extends MX_Controller {
                 
     }
 
+    public function show_data_bmhp_rekap(){
+
+        $query_data = $this->Global_report->show_data_bmhp_rekap();
+        
+        // echo '<pre>';print_r($query_data);die;
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'result' => $query_data,
+        );
+
+        
+        // echo '<pre>';print_r($data['result']);die;
+        
+        $this->load->view('Global_report/akunting_keu/v_bagian', $data);
+                
+    }
+
     public function show_data_if(){
 
         $query_data = $this->Global_report->get_data();
