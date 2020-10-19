@@ -428,11 +428,13 @@ class Process_entry_resep extends MX_Controller {
             $row['racikan'][] = $racikan;
             $getData[] = $row;
         }
+        $tipe = isset($_GET['tipe'])?$_GET['tipe']:'biasa';
         $data = array(
             'resep' => $getData,
+            'tipe_resep' => $tipe,
         );
-        // echo '<pre>'; print_r($data);die;
-        $this->load->view('farmasi/preview_nota_farmasi', $data);
+        $view_name = ($tipe == 'resep_kronis')?'preview_nota_farmasi_rk':'preview_nota_farmasi'; 
+        $this->load->view('farmasi/'.$view_name.'', $data);
 
     }
 
@@ -448,15 +450,21 @@ class Process_entry_resep extends MX_Controller {
             'status_lunas' => isset($_GET['status_lunas']) ? $_GET['status_lunas'] : 0,
         );
         $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
+        
         $getData = array();
+        $getDataResepKronis = array();
         foreach($resep_log as $row){
             $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
             $row['racikan'][] = $racikan;
             $getData[] = $row;
+            if($row['prb_ditangguhkan'] == 0 AND $row['jumlah_obat_23'] > 0){
+                $getDataResepKronis[] = $row;
+            }
         }
         $data['resep'] = $getData;
-
+        $data['resep_kronis'] = $getDataResepKronis;
         // echo '<pre>'; print_r($data);die;
+        
         $this->load->view('farmasi/preview_entry', $data);
 
     }

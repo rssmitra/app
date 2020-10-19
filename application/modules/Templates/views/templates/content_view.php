@@ -222,7 +222,7 @@
         <ul class="nav nav-list">
 
           <li class="hover">
-              <a href="<?php echo base_url().'main'?>">
+              <a href="#" onclick="getMenu('main/Main/modul_view')">
                   <i class="menu-icon fa fa-arrow-left"></i>
                   <span class="menu-text"> Menu Utama </span>
               </a>

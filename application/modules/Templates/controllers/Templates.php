@@ -85,7 +85,64 @@ class Templates extends MX_Controller {
             $this->load->view('templates/content_view', $data);
         }
         
+    }
 
+    public function modul_view($data, $template_name = null)
+    {
+        $this->load->library('master');
+        $this->load->library('lib_menus');
+        //echo '<pre>';print_r($this->session->all_userdata());die;
+        /*
+        |
+        | If $data['body'] is null then we will get the content from the
+        | module's default view file, which is <module_name>_view.php
+        | within the application/modules/<module_name>/views directory
+        |
+        */
+
+        if ( ! array_key_exists('body', $data) )
+        {       
+      // We get the name of the class that called this method so we
+      // can get its view file.
+            $caller = debug_backtrace();
+            $caller_module = $caller[1]['class'];
+
+            // Get the default view file for the module and return as a string.
+        $data['body'] = $this->load->view(ucfirst($caller_module).'/'.strtolower($caller_module).'_view', $data, TRUE);
+        }
+        
+        if ( ! isset($template_name) )
+        {
+      // If there is no template name parameter passed, we just use the default.
+            $template_name = 'default';
+        }
+        
+        // With the $data['body'] we now can load the template views.
+        // Note that currently there is no value included to specify any
+        // header or footer file other than default.
+
+        /*get menu by session role user*/
+        
+        $data['menu'] = $this->lib_menus->get_menus($this->session->userdata('user')->user_id, $_GET['mod']);
+        $data['shortcut'] = $this->lib_menus->get_menus_shortcut($this->session->userdata('user')->user_id, $_GET['mod']);
+        $data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
+        $data['module'] = $this->db->get_where('tmp_mst_modul', array('modul_id' => $_GET['mod']))->row();
+
+        //echo '<pre>';print_r($data);die;
+
+        /*here specially for mod 9 or module booking will suggest profile form for the first use*/
+        if($_GET['mod']==9){
+            /*check existing profile*/
+            $profile = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id) )->num_rows();
+            if($profile > 0){
+                $this->load->view('templates/content_view', $data);
+            }else{
+                $this->load->view('templates/form_profile_view', $data);
+            }
+        }else{
+            $this->load->view('templates/content_view', $data);
+        }
+        
     }
 
     public function getGraphModule(){

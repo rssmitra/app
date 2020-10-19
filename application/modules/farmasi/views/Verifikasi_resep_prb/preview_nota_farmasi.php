@@ -17,7 +17,7 @@
   </table>
   <hr>
   <div style="width: 100%; text-align: center"><span ><strong><u>TRANSAKSI FARMASI</u></strong><br>
-    No. PRB-<?php echo $value->kode_trans_far?> - <?php echo $value->no_resep?>
+    No. RSK-<?php echo $value->kode_trans_far?> - <?php echo $value->no_resep?>
     </span>
   </div>
   <br>

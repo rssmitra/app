@@ -108,11 +108,11 @@ class Retur_obat extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
+        
         $this->load->library('form_validation');
         // form validation
 
-        $this->form_validation->set_rules('jumlah_retur', 'Jumlah Retur', 'trim|required');
+        $this->form_validation->set_rules('kode_trans_far', 'Kode Transaksi', 'trim|required');
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -128,43 +128,90 @@ class Retur_obat extends MX_Controller {
             /*execution*/
             $this->db->trans_begin();
             
-            // check existing data
-            $dt_existing = $this->db->get_where('fr_tc_far_detail_log', array('relation_id' => $_POST['kd_tr_resep']) )->row();
-           
-            $data_farmasi = array(
-                'jumlah_retur' => isset($_POST['jumlah_retur'])?$this->regex->_genRegex($_POST['jumlah_retur'], 'RGXINT'):0,
-                'updated_date' => date('Y-m-d H:i:s'),
-                'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
-            );
-            //  fr_tc_far_detail_log
-            $this->db->update('fr_tc_far_detail_log', $data_farmasi, array('relation_id' => $_POST['kd_tr_resep'], 'kode_trans_far' => $_POST['kode_trans_far']) );
-            /*save log*/
-            $this->logs->save('fr_tc_far_detail_log', $_POST['kd_tr_resep'], 'update record on entry resep module', json_encode($data_farmasi),'relation_id');
+            foreach ($_POST['retur'] as $key => $value) {
+                # code...
+                $dt_existing = $this->db->get_where('fr_tc_far_detail', array('kd_tr_resep' => $_POST['kd_tr_resep'][$key]) )->row();
+                // print_r($dt_existing);die;
+                if($value > 0){
+                    $jumlah_his_retur = $dt_existing->jumlah_retur + $value;
+                    $sisa = $dt_existing->jumlah_tebus - $value;
+                    $harga_satuan = $dt_existing->harga_jual;                    
+                    $subtotal_stl_retur = $harga_satuan * $sisa;
+                    $data_farmasi_detail = array(
+                        'jumlah_pesan' => $sisa,
+                        'jumlah_tebus' => $sisa,
+                        'jumlah_retur' => $jumlah_his_retur,
+                        'sub_total' => $subtotal_stl_retur,
+                        'total' => ($sisa > 0) ? $subtotal_stl_retur + $dt_existing->harga_r : 0,
+                        'tgl_retur' => date('Y-m-d H:i:s'),
+                        'retur_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'),
+                        'updated_date' => date('Y-m-d H:i:s'),
+                        'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
+                    );
+                    // print_r($data_farmasi_detail);die;
+                    //  fr_tc_far_detail_log
+                    $this->db->update('fr_tc_far_detail_log', $data_farmasi_detail, array('relation_id' => $_POST['kd_tr_resep'][$key], 'kode_trans_far' => $_POST['kode_trans_far']) );
+                    /*save log*/
+                    $this->logs->save('fr_tc_far_detail_log', $_POST['kd_tr_resep'][$key], 'update record on entry resep module', json_encode($data_farmasi_detail), 'relation_id');
 
-            //  fr_tc_far_detail
-            $harga_retur = $dt_existing->harga_jual_satuan * $_POST['jumlah_retur'];
-            $data_farmasi['harga_r_retur'] = $harga_retur;
-            $data_farmasi['status_retur'] = 1;
-            $this->db->update('fr_tc_far_detail', $data_farmasi, array('kd_tr_resep' => $_POST['kd_tr_resep'], 'kode_trans_far' => $_POST['kode_trans_far']) );
-            /*save log*/
-            $this->logs->save('fr_tc_far_detail', $_POST['kd_tr_resep'], 'update record on entry resep module', json_encode($data_farmasi),'kd_tr_resep');
-            
-            if($dt_existing->flag_resep != 'racikan'){
-                // retur stok ke farmasi
-                $this->stok_barang->stock_process($_POST['kode_brg'], $_POST['jumlah_retur'], '060101', 8 ," Kode. ".$_POST['kode_trans_far']." ", 'restore');
-                
-            }else{
-                // get detail racikan
-                $dt_racikan = $this->db->get_where('tc_far_racikan_detail', array('id_tc_far_racikan' => $_POST['kode_brg']) )->result();
-                foreach ($dt_racikan as $key => $value) {
-                    // retur stok ke farmasi
-                    $this->stok_barang->stock_process($value->kode_brg, $value['jumlah'], '060101', 8 ," (Retur) Kode Transaksi : ".$_POST['kode_trans_far']." ", 'restore');
+                    //  fr_tc_far_detail
+                    $harga_retur = $harga_satuan * $jumlah_his_retur;
+                    $data_farmasi = array();
+                    $data_farmasi['jumlah_pesan'] = $sisa;
+                    $data_farmasi['jumlah_tebus'] = $sisa;
+                    $data_farmasi['jumlah_retur'] = $jumlah_his_retur;
+                    $data_farmasi['harga_r_retur'] = $harga_retur;
+                    $data_farmasi['biaya_tebus'] = ($sisa > 0) ? $subtotal_stl_retur + $dt_existing->harga_r : 0;
+                    $data_farmasi['status_retur'] = 1;
+                    // print_r($data_farmasi);die;
+                    $this->db->update('fr_tc_far_detail', $data_farmasi, array('kd_tr_resep' => $_POST['kd_tr_resep'][$key], 'kode_trans_far' => $_POST['kode_trans_far']) );
+                    /*save log*/
+                    $this->logs->save('fr_tc_far_detail', $_POST['kd_tr_resep'][$key], 'update record on entry resep module', json_encode($data_farmasi),'kd_tr_resep');
+                    
+                    if($dt_existing->id_tc_far_racikan == 0){
+                        // retur stok ke farmasi
+                        $this->stok_barang->stock_process($key, $value, '060101', 8 ," (Retur) Kode. ".$_POST['kode_trans_far']." ", 'restore');
+                        $jumlah_di_retur = $value;
+                        
+                    }
+                    // else{
+                    //     // get detail racikan
+                    //     $dt_racikan = $this->db->get_where('tc_far_racikan_detail', array('id_tc_far_racikan' => $key) )->result();
+                    //     foreach ($dt_racikan as $key_racikan => $value_racikan) {
+                    //         // retur stok ke farmasi
+                    //         $this->stok_barang->stock_process($value_racikan->kode_brg, $value_racikan->jumlah, '060101', 8 ," (Retur Obat Racikan) Kode Transaksi : ".$_POST['kode_trans_far']." ", 'restore');
+                    //     }
+                    // }
+
+                    // insert history retur
+                    $kdhis = $this->master->get_max_number("fr_tc_far_his","kd_his");
+                    $no_retur = $this->master->get_max_number("fr_tc_far_his","no_retur");
+                    $data_his_retur["kd_his"] = $kdhis;
+                    $data_his_retur["kd_tr_resep"] = $_POST['kd_tr_resep'][$key];
+                    $data_his_retur["tgl_his_retur"] = date("Y-m-d H:i:s");
+                    $data_his_retur["jumlah_retur_his"] = $value;
+                    $data_his_retur["biaya_retur_his"] = $harga_retur;
+                    $data_his_retur["no_retur"] = $no_retur;
+                    $this->db->insert("fr_tc_far_his", $data_his_retur);
+
+                    // update tc_trans_pelayanan by kd_tr_resep
+                    if( $sisa > 0 ){
+                        $bill_rs = ($sisa > 0) ? $harga_satuan * $sisa : 0;
+                        $data_trans_pelayanan = array(
+                            'jumlah' => $sisa,
+                            'bill_rs' => $bill_rs,
+                        );
+                        // print_r($data_trans_pelayanan);die;
+                        $this->db->where('kd_tr_resep', $_POST['kd_tr_resep'][$key])->update('tc_trans_pelayanan', $data_trans_pelayanan);
+                    }else{
+                        $this->db->where('kd_tr_resep', $_POST['kd_tr_resep'][$key])->delete('tc_trans_pelayanan');
+                    }
+
+                    $this->db->trans_commit();
+                    
                 }
             }
-
-            // hapus tc_trans_pelayanan by kd_tr_resep
-            // $this->db->where('kd_tr_resep', $_POST['kd_tr_resep'])->delete('tc_trans_pelayanan');
-            
+                        
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();

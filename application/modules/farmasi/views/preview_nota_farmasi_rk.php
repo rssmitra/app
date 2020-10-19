@@ -4,6 +4,32 @@ body{
   font-family: arial;
   border-spacing: 5em;
 }
+
+ .stamp {
+  transform: rotate(12deg);
+  color: #555;
+  font-size: 3rem;
+  font-weight: 700;
+  border: 0.25rem solid #555;
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  text-transform: uppercase;
+  border-radius: 1rem;
+  font-family: 'Courier';
+  -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+  -webkit-mask-size: 944px 604px;
+  mix-blend-mode: multiply;
+}
+
+.is-draft {
+  color: #C4C4C4;
+  border: 0.5rem double #C4C4C4;
+  transform: rotate(-5deg);
+  font-size: 2rem;
+  font-family: "Open sans", Helvetica, Arial, sans-serif;
+  border-radius: 0;
+  padding: 0.5rem;
+}
 </style>
 <body>
 <!-- <table width="100%" border="0">
@@ -15,7 +41,7 @@ body{
 <hr> -->
 
 <center><span><strong><u>NOTA FARMASI</u></strong><br>
-No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['no_resep'])?>
+No. RSK-<?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['no_resep'])?>
 </span></center>
 
 <table>
@@ -53,7 +79,9 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['
   </thead>
       <?php 
         $no=0; 
-        foreach($resep as $key_dt=>$row_dt) : $no++; 
+        foreach($resep as $key_dt=>$row_dt) : 
+          if($row_dt['prb_ditangguhkan'] == 0) :
+          $no++; 
           $harga_jual = $row_dt['harga_jual'];
           $jumlah_obat = ($tipe_resep == 'resep_kronis') ? $row_dt['jumlah_obat_23'] : $row_dt['jumlah_tebus'];
           $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : (($harga_jual * $jumlah_obat) + $row_dt['jasa_r']); 
@@ -87,7 +115,7 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['
           endif; 
         ?>
 
-      <?php endforeach;?>
+      <?php endif; endforeach;?>
 
         <tr>
           <td colspan="4" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
@@ -117,6 +145,8 @@ Catatan : Obat yang sudah dibeli tidak bisa dikembalikan
   </tr>
   
 </table>
+
+<span style="margin-left:12%;position:absolute;transform: rotate(-25deg) !important; margin-top: -22%" class="stamp is-draft">Resep Kronis</span>
 
 <div id="options">
 <button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer" onclick="printpage()" style="cursor: pointer"/>Print Nota Farmasi</button>

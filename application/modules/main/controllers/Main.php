@@ -41,6 +41,28 @@ class Main extends MX_Controller {
         
     }
 
+    public function modul_view() {
+        $this->load->library('lib_menus');
+        $this->output->enable_profiler(false);
+        /*breadcrumb*/
+        $this->breadcrumbs->push('Welcome', 'main/'.strtolower(get_class($this)));
+         $data = array(
+            'title' => 'Home',
+            'subtitle' => 'Welcome Amin',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'app' => $this->db->get_where('tmp_profile_app', array('id' => 1))->row(),
+            'user' => $this->Tmp_user->get_by_id($this->session->userdata('user')->user_id),
+            'profile_user' => $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id))->row(),
+            'modul' => $this->lib_menus->get_modules_by_user_id($this->session->userdata('user')->user_id),
+            
+        );
+
+        //echo '<pre>';print_r($data);die;
+
+        $this->load->view('Main/modul_view', $data);
+        
+    }
+
 }
 
 /* End of file empty_module.php */
