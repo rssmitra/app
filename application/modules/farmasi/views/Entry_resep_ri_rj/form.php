@@ -592,7 +592,6 @@ function changeUrgensi(){
   alert($("input[type='radio'][name='urgensi']:checked").val());
 }
 
-
 </script>
 
 <style type="text/css">
@@ -642,7 +641,6 @@ function changeUrgensi(){
 
 
       <div class="row">
-
         <!-- keterangan pasien -->
         <div class="col-sm-12">
           <table class="table">
@@ -724,7 +722,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Cari Obat</label>            
                 <div class="col-md-8">            
-                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
+                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
                 </div>
               </div>
 

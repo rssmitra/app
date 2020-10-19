@@ -35,9 +35,9 @@ foreach ($_GET as $key => $value) {
 
 if($_GET['action']=='download'){
 	// casemix
-	$pdf->merge('file', 'sirs-dev/app'.str_replace('..','',$filename).'/'.$_GET['tipe'].'/'.$_GET['sep'].'.pdf'); 
+	$pdf->merge('file', 'sirs/app'.str_replace('..','',$filename).'/'.$_GET['tipe'].'/'.$_GET['sep'].'.pdf'); 
 	// emr
-	$pdf->merge('file', 'sirs-dev/app'.str_replace('..','',$filename_mr).'/'.$file_name_merge_emr.'.pdf');
+	$pdf->merge('file', 'sirs/app'.str_replace('..','',$filename_mr).'/'.$file_name_merge_emr.'.pdf');
 }else{
 	$pdf->merge($_GET['action'], ''.$_GET['sep'].'.pdf'); 
 }

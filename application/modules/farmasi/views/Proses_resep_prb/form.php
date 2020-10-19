@@ -203,16 +203,21 @@ function saveRow(kode_brg){
               $jml_tebus = ($row->resep_ditangguhkan == 1) ? $row->jumlah_tebus : 0 ;
               $txt_color = ($row->resep_ditangguhkan == 1) ? 'red' : 'blue' ;
               $sisa = ($row->jumlah + $jml_tebus) - $row->log_jml_mutasi;
-              echo '<tr id="row_kd_brg_'.$row->id_fr_tc_far_detail_log_prb.'">';
-                echo '<td>';
-                  echo '<label class="pos-rel">
-                            <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" id="checkbox_id_'.$row->id_fr_tc_far_detail_log_prb.'" />
-                            <span class="lbl"></span>
-                        </label>';
-                  // hidden form
-                  echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
-                  echo '<input type="hidden" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
-                echo '</td>';
+              echo '<tr id="row_kd_brg_'.$row->id_fr_tc_far_detail_log_prb.'" >';
+                if( $row->prb_ditangguhkan == 0 ){
+                  echo '<td align="center">-</td>';
+                }else{
+                  echo '<td>';
+                    echo '<label class="pos-rel">
+                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" id="checkbox_id_'.$row->id_fr_tc_far_detail_log_prb.'" />
+                              <span class="lbl"></span>
+                          </label>';
+                    // hidden form
+                    echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
+                    echo '<input type="hidden" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
+                  echo '</td>';
+                }
+
                 echo '<td align="center">'.$no.'</td>';
                 echo '<td>'.$row->kode_brg.'</td>';
                 echo '<td>'.$row->nama_brg.'</td>';
@@ -234,14 +239,17 @@ function saveRow(kode_brg){
 
                 // jumlah tebus
                 echo '<td align="center">';
-                  echo number_format($sisa);
-                  
+                  echo ( $row->prb_ditangguhkan == 0 ) ? '<span style="color: green; font-weight: bold">Lunas</span>' : number_format($sisa);
                 echo '</td>';
 
                 // jumlah mutasi
-                echo '<td align="center">';
+                if( $row->prb_ditangguhkan == 0 ){
+                  echo '<td align="center">-</td>';
+                }else{
+                  echo '<td align="center">';
                   echo '<input style="width:80px;height:25px;text-align:center"  class="format_number form-control" type="text" name="jumlah_'.$row->id_fr_tc_far_detail_log_prb.'" id="jumlah_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$sisa.'" '.$readonly.' onkeypres="pressEnter('.$row->id_fr_tc_far_detail_log_prb.')" onchange="saveRow('.$row->id_fr_tc_far_detail_log_prb.')">';
-                echo '</td>';
+                  echo '</td>';
+                }
 
                 // catatan
                 // echo '<td align="center">';
@@ -252,9 +260,13 @@ function saveRow(kode_brg){
                 echo '<td align="center">';
                   
                 $hidden = (empty($row->id_fr_tc_far_detail_log_prb)) ? '' : 'style="display: none"' ;
-                  echo '<a href="#" class="btn btn-xs btn-primary" id="btn_submit_'.$row->id_fr_tc_far_detail_log_prb.'" onclick="saveRow('."'".$row->id_fr_tc_far_detail_log_prb."'".')" '.$hidden.'><i class="fa fa-check-circle"></i></a> '; 
+                  if( $row->prb_ditangguhkan == 0 ){
+                    echo '-';
+                  }else{
+                    echo '<a href="#" class="btn btn-xs btn-primary" id="btn_submit_'.$row->id_fr_tc_far_detail_log_prb.'" onclick="saveRow('."'".$row->id_fr_tc_far_detail_log_prb."'".')" '.$hidden.'><i class="fa fa-check-circle"></i></a> '; 
                   
-                  echo '<a href="#" onclick="click_edit('."'".$row->id_fr_tc_far_detail_log_prb."'".')" id="btn_edit_'.$row->id_fr_tc_far_detail_log_prb.'" class="btn btn-xs btn-warning"><i class="fa fa-pencil dark"></i></a>';
+                    echo '<a href="#" onclick="click_edit('."'".$row->id_fr_tc_far_detail_log_prb."'".')" id="btn_edit_'.$row->id_fr_tc_far_detail_log_prb.'" class="btn btn-xs btn-warning"><i class="fa fa-pencil dark"></i></a>';
+                  }
                 echo '</td>';
 
                 echo '</tr>';

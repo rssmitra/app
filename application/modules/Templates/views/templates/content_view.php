@@ -222,7 +222,7 @@
         <ul class="nav nav-list">
 
           <li class="hover">
-              <a href="<?php echo base_url().'main'?>">
+              <a href="#" onclick="getMenu('main/Main/modul_view')">
                   <i class="menu-icon fa fa-arrow-left"></i>
                   <span class="menu-text"> Menu Utama </span>
               </a>
@@ -294,7 +294,7 @@
       <div class="main-content">
         <div class="main-content-inner">
           <!-- /section:basics/content.breadcrumbs -->
-          <div class="page-content">
+          <div class="page-content" style="min-height: 700px !important">
             <!-- #section:settings.box -->
 
             <!-- <div class="ace-settings-container" id="ace-settings-container" style="position: fixed">

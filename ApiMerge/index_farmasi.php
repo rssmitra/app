@@ -25,7 +25,7 @@
 		if (file_exists($path)) {
 			unlink($path);
 		}
-		$pdf->merge('file', 'sirs-dev/app'.$path); 
+		$pdf->merge('file', 'sirs/app'.$path); 
 	}else{
 		$pdf->merge($_GET['action'], ''.$_GET['sep'].'.pdf'); 
 	}

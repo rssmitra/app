@@ -59,7 +59,10 @@ br {
     margin-bottom: 10px;
 }
 </style>
-  
+<div id="options">
+<button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer" onclick="printpage()" style="cursor: pointer">Print Copy Resep</button>
+</div>
+
   <div style="width: 390px; padding-top:143px">
     <div style="padding-left:70px;padding-bottom:7px" class="monotype_style">
       <?php echo ucwords(strtolower($result->nama_pasien)); ?>
@@ -96,3 +99,14 @@ br {
 </div>
 </center>
 
+<script>
+  function printpage() {
+      //Get the print button and put it into a variable
+      var printButton = document.getElementById("printpagebutton");
+      //Set the print button visibility to 'hidden' 
+      printButton.style.visibility = 'hidden';
+      //Print the page content
+      window.print()
+      printButton.style.visibility = 'visible';
+  }
+</script>

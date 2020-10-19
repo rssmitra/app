@@ -57,6 +57,7 @@ class Retur_obat_model extends CI_Model {
 			$column[$i] = $item;
 			$i++;
 		}
+		
 		if(isset($_POST['order']))
 		{
 			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
@@ -174,6 +175,18 @@ class Retur_obat_model extends CI_Model {
 		$this->db->join('fr_tc_far a', 'a.kode_trans_far=b.kode_trans_far','left');
 		$this->db->where_in('relation_id', $data);
 		return $this->db->get();
+	}
+
+	public function get_history_retur($kode_trans_far){
+		$this->db->from('fr_tc_far_his a');
+		$this->db->join('fr_tc_far_detail_log b','b.relation_id=a.kd_tr_resep','left');
+		$this->db->where('kd_tr_resep IN (select kd_tr_resep from fr_tc_far_detail where kode_trans_far = '.$kode_trans_far.')');
+		$data = $this->db->get()->result();
+		$getData = [];
+		foreach ($data as $key => $value) {
+			$getData[$value->no_retur][] = $value;
+		}
+		return $getData;
 	}
 
 	

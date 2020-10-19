@@ -63,7 +63,11 @@ class Entry_resep_ri_rj_model extends CI_Model {
             $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) >= '".$_GET['from_tgl']."'" );
             $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) <= '".$_GET['to_tgl']."'" );
         }else{
-			$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 24');			
+        	if( $_GET['flag']=='RJ' ){
+				$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 24');			
+        	}else{
+				$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 72');			
+        	}
         }
 
         // default for this modul
@@ -186,12 +190,11 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		$this->db->select("CASE WHEN b.harga_jual_satuan IS NULL THEN a.harga_jual ELSE b.harga_jual_satuan END as harga_jual", false);
 		$this->db->select("CASE WHEN b.sub_total IS NULL THEN a.biaya_tebus ELSE b.sub_total END as sub_total", false);
 		$this->db->select("CASE WHEN b.total IS NULL THEN (a.biaya_tebus + a.harga_r) ELSE b.total END as total", false);
-		$this->db->select("CASE WHEN b.jasa_r IS NULL THEN a.harga_r ELSE (b.jasa_r + b.jasa_produksi) END as jasa_r", false);
+		// $this->db->select("CASE WHEN b.jasa_r IS NULL THEN a.harga_r ELSE (b.jasa_r + b.jasa_produksi) END as jasa_r", false);
 		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN a.kd_tr_resep ELSE a.id_tc_far_racikan END as relation_id", false);
 		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN 'biasa' ELSE 'racikan' END as flag_resep", false);
 		$this->db->select("CASE WHEN b.status_input IS NULL THEN a.status_input ELSE b.status_input END as status_input", false);
-		$this->db->select('a.kd_tr_resep, a.kode_trans_far, a.kode_brg, a.id_tc_far_racikan, 
-		a.jumlah_tebus, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, a.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, a.resep_ditangguhkan, a.jumlah_tebus, a.jumlah_pesan');
+		$this->db->select('a.kd_tr_resep, a.kode_trans_far, a.kode_brg, a.id_tc_far_racikan, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, a.tgl_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, a.resep_ditangguhkan, a.jumlah_tebus, a.jumlah_pesan, b.jasa_r');
 		$this->db->from('fr_tc_far_detail a');
 		$this->db->join('fr_tc_far_detail_log b','(a.kd_tr_resep=b.relation_id)','left');
 		$this->db->join('mt_barang c','c.kode_brg=a.kode_brg','left');

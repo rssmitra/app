@@ -128,7 +128,7 @@ class Proses_resep_prb extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
+        print_r($_POST);die;
         $this->load->library('form_validation');
         // form validation
 

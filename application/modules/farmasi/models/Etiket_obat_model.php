@@ -168,7 +168,7 @@ class Etiket_obat_model extends CI_Model {
 		$this->db->join('mt_barang c','c.kode_brg=a.kode_brg','left');
 		$this->db->join('fr_tc_far e','e.kode_trans_far=a.kode_trans_far','left');
 		$this->db->join('mt_bagian f','f.kode_bagian=e.kode_bagian_asal','left');
-		$this->db->order_by('a.kd_tr_resep', 'DESC');
+		$this->db->order_by('a.kd_tr_resep', 'ASC');
 		$this->db->where('a.kode_trans_far', $kode_trans_far);
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
