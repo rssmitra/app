@@ -96,7 +96,7 @@ $(document).ready(function(){
     $('select[name="select_racikan"]').change(function () {      
 
 
-        if( $(this).val() == 0 ){
+        if( $(this).val() == '' ){
           
           renew_form();
 
@@ -155,23 +155,23 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            $('#jumlah_obat_23_r').focus();
-          }
-          return false;       
-        }
-    });
-
-    $( "#jumlah_obat_23_r" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
             $('#dosis_start_r').focus();
           }
           return false;       
         }
     });
+
+    // $( "#jumlah_obat_23_r" )
+    //   .keypress(function(event) {
+    //     var keycode =(event.keyCode?event.keyCode:event.which); 
+    //     if(keycode ==13){
+    //       event.preventDefault();
+    //       if($(this).valid()){
+    //         $('#dosis_start_r').focus();
+    //       }
+    //       return false;       
+    //     }
+    // });
 
     $( "#dosis_start_r" )
       .keypress(function(event) {
@@ -227,7 +227,7 @@ $(document).ready(function(){
         if(keycode ==13){
           event.preventDefault();
           if($(this).valid()){
-            $('#jumlah_obat_23_rd').focus();
+            $('#btn_submit_obat').click();
           }
           return false;       
         }
@@ -355,6 +355,8 @@ function renew_form(){
   $('#btn_update_header_racikan').hide('fast');
   $('#btn_submit_racikan').show('fast');
 
+  table_detail_racikan.ajax.url("farmasi/Entry_resep_racikan/get_data?id=").load();
+  
   return false;
 
 }
@@ -370,9 +372,9 @@ function reset_search_obat(){
 
 function reload_item_racikan(id_tc_far_racikan){
 
-  var kode_pesan_resep = $('#kode_pesan_resep').val();
-
-  $.getJSON("<?php echo site_url('farmasi/Entry_resep_racikan/get_item_racikan') ?>/" + kode_pesan_resep, '', function (data) {              
+  var kode_trans_far = $('#kode_trans_far').val();
+  console.log(id_tc_far_racikan);
+  $.getJSON("<?php echo site_url('farmasi/Entry_resep_racikan/get_item_racikan') ?>/" + kode_trans_far, '', function (data) {              
 
       $('#select_racikan option').remove();                
 
@@ -380,7 +382,7 @@ function reload_item_racikan(id_tc_far_racikan){
 
       $.each(data, function (i, o) {    
 
-          if(o.id_tc_far_racikan===id_tc_far_racikan){
+          if(o.id_tc_far_racikan == id_tc_far_racikan){
             var selected = "selected";
           }else{
             var selected = "";
@@ -453,7 +455,7 @@ function delete_racikan(myid, flag){
           var jsonResponse = JSON.parse(data);
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
-            $('#id_tc_far_racikan').val(' ');
+            $('#id_tc_far_racikan').val('');
           /*renew form*/
           renew_form();
           reload_table_racikan();
@@ -563,7 +565,8 @@ function btn_update_racikan(){
     <div style="margin-top:0px">   
       <form class="form-horizontal" method="post" id="form_entry_resep_racikan" enctype="multipart/form-data" autocomplete="off" action="farmasi/entry_resep_racikan/process">      
         
-      <input type="hidden" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
+      <input type="hiddenxx" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
+
       <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo isset($value->kode_pesan_resep)?$value->kode_pesan_resep:''; ?>">
       <input type="hidden" id="kode_trans_far" name="kode_trans_far" value="<?php echo $kode_trans_far; ?>">
       <input type="hidden" id="tipe_layanan" name="tipe_layanan" value="<?php echo $tipe_layanan; ?>">
@@ -605,9 +608,9 @@ function btn_update_racikan(){
                   <th>Kode</th>
                   <th>Nama Racikan</th>
                   <th>Jumlah</th>
-                  <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
+                  <!-- <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
                   <th>Jumlah PRB / Ditangguhkan</th>
-                  <?php endif; ?>
+                  <?php endif; ?> -->
                   <th>Signa</th>
                   <th>Petugas</th>
                   <th width="80px" align="center"></th>
@@ -616,9 +619,9 @@ function btn_update_racikan(){
                   <td id="kode_r">-</td>
                   <td id="nama_r">-</td>
                   <td id="jml_r" class="center">-</td>
-                  <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
+                  <!-- <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
                   <td id="jml_prb_r" class="center">-</td>
-                  <?php endif; ?>
+                  <?php endif; ?> -->
                   <td id="signa_r">-</td>
                   <td id="petugas_rx"><?php echo $this->session->userdata('user')->fullname?></td>
                   <td align="center">
@@ -662,19 +665,28 @@ function btn_update_racikan(){
                 <div class="col-md-1">
                   <input type="text" class="form-control" name="jml_racikan" id="jml_racikan" style="text-align: center;">  
                 </div>
-                <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
-                  <label class="control-label col-sm-1">Resep PRB</label>
+                <!-- <div class="col-md-6">
+                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                    <input type="checkbox" class="ace" name="resep_ditangguhkan_r" value="1">
+                    <span class="lbl"> Ditangguhkan </span>
+                  </label>
+                </div> -->
+              </div>
+
+              <!-- <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
+              <div class="form-group">
+                  <label class="control-label col-sm-2">Resep PRB</label>
                   <div class="col-md-1">
-                    <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;" value="0">  
+                    <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;" value="">  
                   </div>
                   <div class="col-md-6">
                     <label class="inline" style="margin-top: 4px;margin-left: -12px;">
                       <input type="checkbox" class="ace" name="prb_ditangguhkan_r" value="1">
-                      <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
+                      <span class="lbl"> Ditangguhkan </span>
                     </label>
                   </div>
-                <?php endif; ?>
               </div>
+              <?php endif; ?> -->
               <div class="form-group">
                 <label class="control-label col-sm-2">Satuan Racikan</label>
                 <div class="col-md-2">
@@ -708,7 +720,7 @@ function btn_update_racikan(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Catatan</label>
                 <div class="col-md-1">
-                    <input class="form-control" name="catatan_r" id="catatan_r" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
+                    <input class="form-control" name="catatan_r" id="catatan_r" type="text" style="width: 400px" value=""/>
                 </div>
               </div>
 
@@ -772,10 +784,10 @@ function btn_update_racikan(){
                 <div class="col-md-2">
                   <input type="text" class="form-control" name="jumlah_pesan_racikan" id="jumlah_pesan_racikan" style="text-align: center;">  
                 </div>
-                <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
+                <!-- <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
                 <label class="control-label col-sm-2">Resep PRB</label>
                 <div class="col-md-2">
-                  <input type="text" class="form-control" name="jumlah_obat_23_rd" id="jumlah_obat_23_rd" style="text-align: center;" value="0">  
+                  <input type="text" class="form-control" name="jumlah_obat_23_rd" id="jumlah_obat_23_rd" style="text-align: center;" value="">  
                 </div>
                 <div class="col-md-4">
                   <label class="inline" style="margin-top: 4px;margin-left: -12px;">
@@ -783,7 +795,7 @@ function btn_update_racikan(){
                     <span class="lbl"> Ditangguhkan (Jika tidak ada stok)</span>
                   </label>
                 </div>
-                <?php endif; ?>
+                <?php endif; ?> -->
               </div>
               
               <div class="form-group">

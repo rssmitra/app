@@ -217,6 +217,7 @@ function get_kode_eticket(myid){
                 <th class="center" width="50px">No</th>
                 <th>Kode</th>
                 <th>Nama Obat</th>
+                <th>Jml Obat</th>
                 <th width="150px">Aturan Pakai</th>
                 <th>Satuan</th>
                 <th>Penggunaan</th>
@@ -232,6 +233,9 @@ function get_kode_eticket(myid){
 
                   $count_racikan = (count($row['racikan'][0]) > 0) ? $row['racikan'][0] : array();
                   $nama_obat = (count($count_racikan) > 0) ? $count_racikan[0]->nama_racikan : $row['nama_brg'];
+                  
+                  $jml_obat = ( $row['jumlah_tebus'] ) ? ($row['prb_ditangguhkan'] == 0) ? $row['jumlah_tebus'] + $row['jumlah_obat_23'] : $row['jumlah_tebus'] : $row['jumlah_tebus'];
+
                   $dosis_per_hari = (count($count_racikan) > 0) ? $count_racikan[0]->dosis_per_hari : $row['dosis_per_hari'];
                   $dosis_obat = (count($count_racikan) > 0) ? $count_racikan[0]->dosis_obat : $row['dosis_obat'];
                   $satuan_obat = (count($count_racikan) > 0) ? $count_racikan[0]->satuan_racikan : $row['satuan_obat'];
@@ -239,6 +243,7 @@ function get_kode_eticket(myid){
                   $catatan_lainnya = (count($count_racikan) > 0) ? $count_racikan[0]->catatan_lainnya : $row['catatan_lainnya'];
 
                   $readonly = (empty($row['kd_tr_resep']))?'':'readonly';
+                  if( $jml_obat > 0 ) :
                   echo '<tr id="row_kd_brg_'.$row['kode_brg'].'">';
                   echo '<td>';
                     echo '<label class="pos-rel">
@@ -253,6 +258,7 @@ function get_kode_eticket(myid){
                   echo '<td align="center">'.$no.'</td>';
                   echo '<td>'.$row['kode_brg'].'</td>';
                   echo '<td>'.$nama_obat.'</td>';
+                  echo '<td align="center">'.$jml_obat.' '.$row['satuan_kecil'].'</td>';
                   // dosis form
                   echo '<td align="center">';
                     echo '<input style="width:50px;height:45px;text-align:center" type="text" name="dosis_start_'.$row['kode_brg'].'" value="'.$dosis_per_hari.'" '.$readonly.'> &nbsp; x &nbsp; <input style="width:50px;height:45px;text-align:center" type="text" name="dosis_end_'.$row['kode_brg'].'" value="'.$dosis_obat.'" '.$readonly.'>';
@@ -284,6 +290,8 @@ function get_kode_eticket(myid){
                   echo '</td>';
 
                   echo '</tr>';
+
+                  endif;
                 }
                 else:
                   echo '<tr>';

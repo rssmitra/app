@@ -177,7 +177,7 @@ class Etiket_obat_model extends CI_Model {
 
 	public function get_etiket_data(){
 		$data = ($_GET)?$_GET:$_POST;
-		$this->db->select('b.kode_brg, b.nama_brg, dosis_obat, aturan_pakai, satuan_obat, jumlah_tebus, catatan_lainnya, anjuran_pakai, dosis_per_hari, a.nama_pasien, a.no_mr, a.tgl_trans, c.tgl_lhr, a.kode_trans_far, satuan_kecil');
+		$this->db->select('b.kode_brg, b.nama_brg, dosis_obat, aturan_pakai, satuan_obat, jumlah_tebus, catatan_lainnya, anjuran_pakai, dosis_per_hari, a.nama_pasien, a.no_mr, a.tgl_trans, c.tgl_lhr, a.kode_trans_far, satuan_kecil, b.jumlah_obat_23, b.prb_ditangguhkan');
 		$this->db->from('fr_tc_far_detail_log b');
 		$this->db->join('fr_tc_far a', 'a.kode_trans_far=b.kode_trans_far','left');
 		$this->db->join('mt_master_pasien c','c.no_mr=a.no_mr','left');

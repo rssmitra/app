@@ -73,7 +73,10 @@ table{
   <!-- profil and data transaksi pasien -->
   <div style="width: 100%; font-size: 14px !important; border-bottom:1px solid black"> 
     <span>Nama Pasien</span> : <?php echo ucwords(strtolower($rows->nama_pasien)); ?><br>
-    <span>Jml Obat</span> :  <?php echo (int)$rows->jumlah_tebus; ?> <?php echo ucwords(strtolower($rows->satuan_kecil)); ?>
+    <?php
+       $jml_obat = ( $rows->jumlah_tebus ) ? ($rows->prb_ditangguhkan == 0) ? $rows->jumlah_tebus + $rows->jumlah_obat_23 : $rows->jumlah_tebus : $rows->jumlah_tebus;
+    ?>
+    <span>Jml Obat</span> :  <?php echo (int)$jml_obat; ?> <?php echo ucwords(strtolower($rows->satuan_kecil)); ?>
     <span style="padding-left: 100px">Ed</span> :  <br>
   </div>
 

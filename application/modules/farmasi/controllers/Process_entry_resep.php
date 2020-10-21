@@ -457,7 +457,7 @@ class Process_entry_resep extends MX_Controller {
             $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
             $row['racikan'][] = $racikan;
             $getData[] = $row;
-            if($row['prb_ditangguhkan'] == 0 AND $row['jumlah_obat_23'] > 0){
+            if($row['jumlah_obat_23'] > 0){
                 $getDataResepKronis[] = $row;
             }
         }

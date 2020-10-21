@@ -7,8 +7,9 @@
       </h1>
     </div> 
 
-  <?php if(count($resep) > 0) : ?>
   <div class="col-xs-12">
+
+    <?php if(count($resep) > 0) : ?>
 
     <!-- breadcrumbs -->
     <div class="col-xs-<?php echo (count($resep_kronis) > 0) ? 6 : 12 ?>">
@@ -56,6 +57,7 @@
                 <td style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">No</td>
                 <td style="border-bottom: 1px solid black; border-collapse: collapse">Nama Obat</td>
                 <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Jumlah Tebus</td>
+                <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Ditangguhkan</td>
                 <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Satuan</td>
                 <?php if (count($resep_kronis) == 0) : ?>
                 <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Harga Satuan</td>
@@ -66,17 +68,22 @@
           </thead>
               <?php 
                 $no=0; 
-                foreach($resep as $key_dt=>$row_dt) : $no++; 
+                foreach($resep as $key_dt=>$row_dt) : 
+                  if( $row_dt['jumlah_tebus'] > 0 ) :
+                  $no++; 
                   $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : ($row_dt['harga_jual'] * $row_dt['jumlah_tebus']) + $row_dt['jasa_r']; 
                   $arr_total[] = $subtotal;
                   $desc = ($row_dt['flag_resep'] == 'racikan') ? 'Jasa Racikan Obat' : $row_dt['nama_brg'];
                   $satuan = ($row_dt['satuan_kecil'] != null) ? $row_dt['satuan_kecil'] : $row_dt['satuan_brg'];
+                  $penangguhan_resep = ($row_dt['resep_ditangguhkan'] == 1) ? 'Ya' : '-';
+                  $color_penangguhan_resep = ($row_dt['resep_ditangguhkan'] == 1) ? 'red' : 'blue';
               ?>
 
                 <tr>
                   <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
                   <td style="border-collapse: collapse"><?php echo $desc?></td>
-                  <td style="text-align:center; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? '' : $row_dt['jumlah_tebus'];?></td>
+                  <td style="text-align:center; border-collapse: collapse; color: <?php echo $color_penangguhan_resep; ?>; font-weight: bold"><?php echo ($row_dt['flag_resep'] == 'racikan') ? '' : $row_dt['jumlah_tebus'];?></td>
+                  <td style="text-align:center; border-collapse: collapse;"><?php echo $penangguhan_resep;?></td>
                   <td style="text-align: center; border-collapse: collapse"><?php echo $satuan?></td>
                   <?php if (count($resep_kronis) == 0) : ?>
                   <td style="text-align:right; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? 0 : number_format($row_dt['harga_jual']);?></td>
@@ -89,10 +96,12 @@
                     foreach ($row_dt['racikan'][0] as $key => $value) {
                       $arr_total[] = ($value->harga_jual * $value->jumlah);
                       $subtotal_racikan = ($value->harga_jual * $value->jumlah);
+                      $penangguhan_resep = ($value->resep_ditangguhkan == 1) ? 'Ya' : '-';
                       echo '<tr>
                             <td style="text-align:center; border-collapse: collapse">&nbsp;</td>
                             <td style="border-collapse: collapse"> - '.$value->nama_brg.'</td>
                             <td style="text-align: center; border-collapse: collapse">'.$value->jumlah.'</td>
+                            <td style="text-align: center; border-collapse: collapse">'.$penangguhan_resep.'</td>
                             <td style="text-align: center; border-collapse: collapse">'.$value->satuan.'</td>';
                       if(count($resep_kronis) == 0 ) :
                       echo '
@@ -105,14 +114,14 @@
                   endif; 
                 ?>
 
-              <?php endforeach;?>
+                <?php endif; endforeach;?>
 
                 <tr>
-                  <td colspan="<?php echo (count($resep_kronis) > 0) ? 4 : 6 ?>" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
+                  <td colspan="<?php echo (count($resep_kronis) > 0) ? 5 : 7 ?>" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
                   <td style="text-align:right; border-top: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_total))?></td>
                 </tr>
                 <tr>
-                  <td colspan="<?php echo (count($resep_kronis) > 0) ? 5 : 7 ?>" style="text-align:left; border-top: 1px solid black; border-collapse: collapse">
+                  <td colspan="<?php echo (count($resep_kronis) > 0) ? 6 : 8 ?>" style="text-align:left; border-top: 1px solid black; border-collapse: collapse">
                   <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_total)))?> Rupiah"</i></b>
                   </td>
                 </tr>
@@ -134,6 +143,11 @@
           
         </table>
     </div>
+    
+    <?php else:
+            echo '<span style="margin-left:-43%;position:absolute;transform: rotate(0deg) !important; margin-top: -16%" class="stamp is-approved">Lunas</span>';
+          endif;
+    ?>
 
     <?php if(count($resep_kronis) > 0) :?>
     <div class="col-xs-6">
@@ -181,25 +195,28 @@
                 <td style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">No</td>
                 <td style="border-bottom: 1px solid black; border-collapse: collapse">Nama Obat</td>
                 <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Jumlah Tebus</td>
+                <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Ditangguhkan</td>
                 <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Satuan</td>
-                <!-- <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Harga Satuan</td>
-                <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Jasa R</td> -->
                 <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Subtotal</td>
               </tr>
           </thead>
               <?php 
                 $no=0; 
-                foreach($resep_kronis as $key_dtk=>$row_dtkr) : $no++; 
+                foreach($resep_kronis as $key_dtk=>$row_dtkr) : $no++;
+                  if( $row_dtkr['jumlah_obat_23'] > 0 ) : 
                   $subtotalkr = ($row_dtkr['flag_resep'] == 'racikan') ? $row_dtkr['jasa_r'] : ($row_dtkr['harga_jual'] * $row_dtkr['jumlah_obat_23']) + $row_dtkr['jasa_r']; 
                   $arr_totalkr[] = $subtotalkr;
                   $desc = ($row_dtkr['flag_resep'] == 'racikan') ? 'Jasa Racikan Obat' : $row_dtkr['nama_brg'];
                   $satuan = ($row_dtkr['satuan_kecil'] != null) ? $row_dtkr['satuan_kecil'] : $row_dtkr['satuan_brg'];
+                  $penangguhan_kronis = ($row_dtkr['prb_ditangguhkan'] == 1) ? 'Ya' : '-';
+                  $color_penangguhan_kronis = ($row_dtkr['prb_ditangguhkan'] == 1) ? 'red' : 'blue';
               ?>
 
                 <tr>
                   <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
                   <td style="border-collapse: collapse"><?php echo $desc?></td>
-                  <td style="text-align:center; border-collapse: collapse"><?php echo ($row_dtkr['flag_resep'] == 'racikan') ? '' : $row_dtkr['jumlah_obat_23'];?></td>
+                  <td style="text-align:center; border-collapse: collapse; color: <?php echo $color_penangguhan_kronis?>; font-weight: bold"><?php echo ($row_dtkr['flag_resep'] == 'racikan') ? '' : $row_dtkr['jumlah_obat_23'];?></td>
+                  <td style="text-align:center; border-collapse: collapse;"><?php echo $penangguhan_kronis;?></td>
                   <td style="text-align: center; border-collapse: collapse"><?php echo $satuan?></td>
                   <!-- <td style="text-align:right; border-collapse: collapse"><?php echo ($row_dtkr['flag_resep'] == 'racikan') ? 0 : number_format($row_dtkr['harga_jual']);?></td>
                   <td style="text-align:right; border-collapse: collapse"><?php echo number_format($row_dtkr['jasa_r'])?></td> -->
@@ -221,14 +238,14 @@
                   endif; 
                 ?>
 
-              <?php endforeach;?>
+                <?php endif; endforeach;?>
 
                 <tr>
-                  <td colspan="4" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
+                  <td colspan="5" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
                   <td style="text-align:right; border-top: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_totalkr))?></td>
                 </tr>
                 <tr>
-                  <td colspan="5" style="text-align:left; border-top: 1px solid black; border-collapse: collapse">
+                  <td colspan="6" style="text-align:left; border-top: 1px solid black; border-collapse: collapse">
                   <b><i>"<?php $terbilangkr = new Kuitansi(); echo ucwords($terbilangkr->terbilang(array_sum($arr_totalkr)))?> Rupiah"</i></b>
                   </td>
                 </tr>
@@ -248,7 +265,7 @@
             </td>
           </tr>
         </table>
-        <span style="margin-left:12%;position:absolute;transform: rotate(-25deg) !important; margin-top: -38%" class="stamp is-approved">Resep Kronis</span>
+        <span style="margin-left:45%;position:absolute;transform: rotate(0deg) !important; margin-top: -31%" class="stamp is-approved">Resep Kronis</span>
     </div>
     <?php endif; ?>
     
@@ -278,16 +295,10 @@
       </div>
     </div>
     
-    
-    <?php else:
-            echo '<span style="margin-left:-13%;position:absolute;transform: rotate(-25deg) !important; margin-top: -15%" class="stamp is-approved">Lunas</span>';
-          endif;
-    ?>
-
   </div>
-  <?php else: ?>
+  <!-- <?php else: ?>
     - Tidak ada data ditemukan, periksa nomor transaksi yang lain. -
-  <?php endif; ?>
+  <?php endif; ?> -->
 </div>
 
 <script type="text/javascript">

@@ -345,7 +345,16 @@ $(document).ready(function(){
           $('#btn_submit').attr('disabled', false);
         }
       }
-      
+    });
+
+    $('#prb_ditangguhkan').click(function() {
+      if($('#sisa_stok').val() <= 0){
+        if (!$(this).is(':checked')) {
+          $('#btn_submit').attr('disabled', true);
+        }else{
+          $('#btn_submit').attr('disabled', false);
+        }
+      }
     });
 
 
@@ -403,8 +412,10 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
 
       if(obj.prb_ditangguhkan == 1){
         $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
+        $('#btn_submit').attr('disabled', false);
       }else{
         $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
+        $('#btn_submit').attr('disabled', true);
       }
 
       if(obj.resep_ditangguhkan == 1){
@@ -747,7 +758,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Resep Kronis</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jml_23" id="jml_23" type="text" value="0" style="text-align:center" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
+                    <input class="form-control" name="jml_23" id="jml_23" type="text" value="" style="text-align:center" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
                
                 </div>
                 <div class="col-md-6">
@@ -790,7 +801,7 @@ function changeUrgensi(){
               <div class="form-group">
                   <label class="control-label col-sm-2">Catatan</label>
                   <div class="col-md-1">
-                      <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
+                      <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value=""/>
                   </div>
               </div>
               <?php if($value->status_tebus != 1) :?>

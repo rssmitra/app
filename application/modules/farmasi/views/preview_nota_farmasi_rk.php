@@ -8,7 +8,7 @@ body{
  .stamp {
   transform: rotate(12deg);
   color: #555;
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: 700;
   border: 0.25rem solid #555;
   display: inline-block;
@@ -25,7 +25,7 @@ body{
   color: #C4C4C4;
   border: 0.5rem double #C4C4C4;
   transform: rotate(-5deg);
-  font-size: 2rem;
+  font-size: 1rem;
   font-family: "Open sans", Helvetica, Arial, sans-serif;
   border-radius: 0;
   padding: 0.5rem;
@@ -43,7 +43,7 @@ body{
 <center><span><strong><u>NOTA FARMASI</u></strong><br>
 No. RSK-<?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['no_resep'])?>
 </span></center>
-
+<span style="position: absolute; margin-left:63%;transform: rotate(0deg) !important;" class="stamp is-draft">Resep Kronis</span>
 <table>
   <tr style="border: 1px solid black; border-collapse: collapse">
     <td width="100px">Tanggal</td>
@@ -79,8 +79,9 @@ No. RSK-<?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[
   </thead>
       <?php 
         $no=0; 
+        $arr_total = [];
         foreach($resep as $key_dt=>$row_dt) : 
-          if($row_dt['prb_ditangguhkan'] == 0) :
+          if($row_dt['jumlah_obat_23'] > 0) :
           $no++; 
           $harga_jual = $row_dt['harga_jual'];
           $jumlah_obat = ($tipe_resep == 'resep_kronis') ? $row_dt['jumlah_obat_23'] : $row_dt['jumlah_tebus'];
@@ -99,6 +100,7 @@ No. RSK-<?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[
           <td style="text-align:right; border-collapse: collapse"><?php echo number_format($subtotal)?></td>
         </tr>
         <?php 
+          
           if($row_dt['flag_resep'] == 'racikan') :
             foreach ($row_dt['racikan'][0] as $key => $value) {
               $jumlah_obat_23 = ($tipe_resep == 'resep_kronis') ? $value->jumlah_obat_23 : $value->jumlah ;
@@ -138,15 +140,13 @@ Catatan : Obat yang sudah dibeli tidak bisa dikembalikan
       <span style="font-size: 14px"><b>Petugas</b></span>
       <br>
       <br>
-      <br>
-      <br>
       <?php $decode = json_decode($resep[0]['created_by']); echo isset($decode->fullname)?$decode->fullname:$this->session->userdata('user')->fullname;?>
     </td>
   </tr>
   
 </table>
 
-<span style="margin-left:12%;position:absolute;transform: rotate(-25deg) !important; margin-top: -22%" class="stamp is-draft">Resep Kronis</span>
+
 
 <div id="options">
 <button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer" onclick="printpage()" style="cursor: pointer"/>Print Nota Farmasi</button>

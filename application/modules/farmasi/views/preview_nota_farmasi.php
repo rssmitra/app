@@ -54,6 +54,7 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['
       <?php 
         $no=0; 
         foreach($resep as $key_dt=>$row_dt) : $no++; 
+          if( $row_dt['jumlah_tebus'] > 0 ) :
           $harga_jual = $row_dt['harga_jual'];
           $jumlah_obat = ($tipe_resep == 'resep_kronis') ? $row_dt['jumlah_obat_23'] : $row_dt['jumlah_tebus'];
           $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : (($harga_jual * $jumlah_obat) + $row_dt['jasa_r']); 
@@ -87,7 +88,7 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['
           endif; 
         ?>
 
-      <?php endforeach;?>
+        <?php endif; endforeach;?>
 
         <tr>
           <td colspan="4" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
