@@ -24,9 +24,7 @@ table{
     font-size: 14px; 
   }
 </style>
-<div id="options">
-<button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer" onclick="printpage()" style="cursor: pointer">Print Etiket</button>
-</div>
+
 <?php 
   if(count($result) == 0 )
   { 
@@ -97,6 +95,9 @@ table{
 </center>
 <?php endforeach;?>
 
+<div id="options">
+<button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer" onclick="printpage()" style="cursor: pointer">Print Etiket</button>
+</div>
 
 
 <script>
