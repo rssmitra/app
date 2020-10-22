@@ -95,7 +95,7 @@ table{
 </center>
 <?php endforeach;?>
 
-<div id="options">
+<!-- <div id="options">
 <button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer" onclick="printpage()" style="cursor: pointer">Print Etiket</button>
 </div>
 
@@ -104,10 +104,12 @@ table{
   function printpage() {
       //Get the print button and put it into a variable
       var printButton = document.getElementById("options");
+      $('#option').remove()
       //Set the print button visibility to 'hidden' 
-      printButton.style.visibility = 'hidden';
+      printButton.remove = true;
       //Print the page content
       window.print()
+      ('#option').remove()
       printButton.style.visibility = 'visible';
   }
-</script>
+</script> -->
