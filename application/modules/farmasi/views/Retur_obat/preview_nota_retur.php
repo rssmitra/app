@@ -1,15 +1,18 @@
 <style>
 body{
-  /*font-size: 11px;*/
+  font-size: 12px;
   font-family: arial;
   border-spacing: 5em;
 }
 
- .stamp {
-  transform: rotate(12deg);
-  color: #555;
-  font-size: 2rem;
-  font-weight: 700;
+table{
+font-size: 12px;
+}
+.stamp {
+transform: rotate(12deg);
+color: #555;
+font-size: 2rem;
+font-weight: 700;
   border: 0.25rem solid #555;
   display: inline-block;
   padding: 0.25rem 1rem;

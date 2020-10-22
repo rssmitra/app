@@ -1,8 +1,11 @@
 <style>
 body{
-  /*font-size: 11px;*/
+  font-size: 12px;
   font-family: arial;
   border-spacing: 5em;
+}
+table{
+  font-size: 12px;
 }
 </style>
 <body>
