@@ -198,13 +198,13 @@ class Resep_ri extends MX_Controller {
     public function getDetail($id){
         
         $data = $this->Farmasi_pesan_resep->get_detail_by_id($id);
-
-        // echo '<pre>';print_r($data);die;
         
         $html = '';
         $html_btn = '';
         if(count($data) > 0){
             $his_retur = $this->Retur_obat->get_history_retur($data[0]->kode_trans_far);
+            // echo '<pre>';print_r($his_retur);die;
+
             $html .= '<br>';
             if($data[0]->kode_tc_trans_kasir==null){
                 if($data[0]->status_transaksi == 1){
@@ -238,22 +238,24 @@ class Resep_ri extends MX_Controller {
             $total_jumlah=0;
             $html .= '<tbody>';
             foreach ($data as $value_data) {
-                $html .= '<tr>';
-                    $html .= '<td align="left">'.$this->tanggal->formatDateTime($value_data->tgl_trans).'</td>';
-                    $html .= '<td>'.$value_data->nama_brg.'</td>';
-                    $status_trans = ($value_data->kode_tc_trans_kasir==null)?'<label class="label label-yellow">Belum bayar</label>':'<label class="label label-primary">Lunas</label>';
-                    $html .= '<td align="center">'.$status_trans.'</td>';
-                    $html .= '<td class="center">'.number_format($value_data->jumlah_tebus).'</td>';
-                    $html .= '<td class="center">'.number_format($value_data->jumlah_retur).'</td>';
-                    $html .= '<td class="center"><input type="text" name="retur['.$value_data->kode_brg.']" value="" class=" form-control" style="width: 70px; text-align: center"></td>';
-                    $harga = ($value_data->jumlah_tebus > 0) ? $value_data->biaya_tebus + $value_data->harga_r : 0;
-                    $html .= '<input type="hidden" name="jml_tebus['.$value_data->kode_brg.']" class="form-control" value="'.$value_data->jumlah_tebus.'">';
-                    $html .= '<input type="hidden" name="harga_jual['.$value_data->kode_brg.']" class="form-control" value="'.$harga.'">';
-                    $html .= '<input type="hidden" name="kd_tr_resep['.$value_data->kode_brg.']" class="form-control" value="'.$value_data->kd_tr_resep.'">';
-                    $html .= '<td align="right">'.number_format($harga).'</td>';
-                $html .= '</tr>';
-                $total_jumlah += $value_data->jumlah_tebus;
-                $total += $harga;
+                if( $value_data->jumlah_tebus > 0 ) :
+                    $html .= '<tr>';
+                        $html .= '<td align="left">'.$this->tanggal->formatDateTime($value_data->tgl_trans).'</td>';
+                        $html .= '<td>'.$value_data->nama_brg.'</td>';
+                        $status_trans = ($value_data->kode_tc_trans_kasir==null)?'<label class="label label-yellow">Belum bayar</label>':'<label class="label label-primary">Lunas</label>';
+                        $html .= '<td align="center">'.$status_trans.'</td>';
+                        $html .= '<td class="center">'.number_format($value_data->jumlah_tebus).'</td>';
+                        $html .= '<td class="center">'.number_format($value_data->jumlah_retur).'</td>';
+                        $html .= '<td class="center"><input type="text" name="retur['.$value_data->kd_tr_resep.']" class="form-control" style="width: 70px; text-align: center"></td>';
+                        $harga = ($value_data->jumlah_tebus > 0) ? $value_data->biaya_tebus + $value_data->harga_r : 0;
+                        $html .= '<input type="hidden" name="jml_tebus['.$value_data->kd_tr_resep.']" class="form-control" value="'.$value_data->jumlah_tebus.'">';
+                        $html .= '<input type="hidden" name="harga_jual['.$value_data->kd_tr_resep.']" class="form-control" value="'.$harga.'">';
+                        $html .= '<input type="hidden" name="kode_brg['.$value_data->kd_tr_resep.']" class="form-control" value="'.$value_data->kode_brg.'">';
+                        $html .= '<td align="right">'.number_format($harga).'</td>';
+                    $html .= '</tr>';
+                    $total_jumlah += $value_data->jumlah_tebus;
+                    $total += $harga;
+                endif;
             }
             $html .= '</tbody>';
             $html .= '<tr>';
@@ -268,10 +270,11 @@ class Resep_ri extends MX_Controller {
                 $html .= '<br><b>RIWAYAT RETUR OBAT</b><br><br>';
                 foreach ($his_retur as $khr => $vhr) {
                     $html .= 'No. Retur : '.$khr.' &nbsp;&nbsp;&nbsp; Tgl. '.$this->tanggal->formatDateTimeFormDmy($vhr[0]->tgl_his_retur).'';
+                    $html .= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="PopupCenter('."'farmasi/Retur_obat/nota_retur/".$khr."'".')"><i class="fa fa-print dark bigger-150"></i> </a>';
                     $html .= '<table class="table" style="width: 50%">';
                     $html .= '<thead>';
                     $html .= '<tr>';
-                    $html .= '<th>No</th><th>Nama Obat</th><th>Jumlah Retur</th><th>Subtotal</th>';
+                    $html .= '<th class="center">No</th><th>Nama Obat</th><th width="100px">Jumlah Retur</th><th class="center">Subtotal</th><th class="center">Undo</th>';
                     $html .= '</tr>';
                     $html .= '</thead>';
                     $no = 1;
@@ -282,6 +285,7 @@ class Resep_ri extends MX_Controller {
                         $html .= '<td>'.$v_sub_dt->nama_brg.'</td>';
                         $html .= '<td align="center">'.$v_sub_dt->jumlah_retur_his.'</td>';
                         $html .= '<td align="right">'.number_format($v_sub_dt->biaya_retur_his).'</td>';
+                        $html .= '<td align="center"><a href="#" onclick="undo_retur('.$v_sub_dt->kd_his.', '.$v_sub_dt->kd_tr_resep.', '.$value_data->kode_trans_far.')" class="btn btn-xs btn-danger"><i class="fa fa-undo"></i></a></td>';
                         $html .= '</tr>';
                         $no++;
                     }

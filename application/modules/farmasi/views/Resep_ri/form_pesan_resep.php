@@ -200,6 +200,30 @@ function proses_retur_obat(kode_trans_far){
     }
 }
 
+function undo_retur(kd_his, kd_tr_resep, kode_trans_far){
+    var answer = confirm('Proses Retur?');
+    preventDefault();
+    if (answer){
+        console.log('yes'); 
+        $.ajax({
+            url: 'farmasi/Retur_obat/process_undo',
+            type: "post",
+            data: {kd_his : kd_his, kd_tr_resep : kd_tr_resep, kode_trans_far : kode_trans_far},
+            dataType: "json",
+            beforeSend: function() {
+                achtungShowLoader();  
+            },
+            success: function(data) {
+                achtungHideLoader();
+                console.log(data) 
+                $('#table-pesan-resep').DataTable().ajax.reload(null, false);
+            }
+        });
+    }else{
+        console.log('cancel');      
+    }
+}
+
 function rollback_transaksi(kode_trans_far, kode_pesan_resep){
     preventDefault();
     if(confirm('Are you sure?')){

@@ -360,9 +360,9 @@ $(document).ready(function(){
 
 })
 
-function getDetailObatByKodeBrg(kode_brg,kode_bag){
+function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
 
-  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($value)?$value->kode_kelompok:0?>&kode_perusahaan="+$('#kode_perusahaan').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal", '' , function (response) {
+  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($value)?$value->kode_kelompok:0?>&kode_perusahaan="+$('#kode_perusahaan').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal&urgensi="+$().val()+"", '' , function (response) {
     $('#sisa_stok').val(response.sisa_stok);
     if(response.sisa_stok <= 0){
       $('#jumlah_pesan').focus();
@@ -381,6 +381,9 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag){
     /*show detail tarif html*/
     $('#div_detail_obat').show('fast');
     $('#detailObatHtml').html(response.html);
+    if( is_edit == 1 ){
+      $('#btn_submit').attr('disabled', false);
+    }
 
     return response;
 
@@ -393,10 +396,10 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
   preventDefault();
 
   var kode_bag = $('#kode_bagian').val();
-
+  // show detail barang
+  getDetailObatByKodeBrg(kode_brg, kode_bag, 1);
   $.getJSON("<?php echo site_url('farmasi/Entry_resep_ri_rj/getDetail') ?>/"+kode_brg+"/"+kode_tr_resep, '' , function (response) {
 
-      getDetailObatByKodeBrg(kode_brg, kode_bag);
       var obj = response.resep_data;
       console.log(obj.kode_brg);
       /*show value form*/
@@ -431,11 +434,10 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       $('#catatan').val(obj.catatan_lainnya);
       $('#satuan_obat').val(obj.satuan_obat);
       $('#anjuran_pakai').val(obj.anjuran_pakai);
-
       $('#kd_tr_resep').val(obj.relation_id);
 
   })
-
+  
 }
 
 function format_html ( data ) {
@@ -458,18 +460,18 @@ function reset_form(){
 
   $('#dosis_start').val('');
   $('#dosis_end').val('');
-  $('#catatan').val('Minum secara rutin dan dihabiskan.');
+  $('#catatan').val('');
   $('#satuan_obat').val('');
   $('#anjuran_pakai').val('');
 
    /*show detail tarif html*/
   // $('#div_detail_obat').hide('fast');
   $('#detailObatHtml').html('<img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%">');
-
+  $('#detailPembelianObatHtml').html('');
 }
 
 $('#btn_racikan').click(function () {  
-  show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'', 'RESEP RACIKAN');
+  show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'&kode_pesan_resep='+$('#no_resep').val()+'', 'RESEP RACIKAN');
 })
 
 function reload_table(){
@@ -600,7 +602,7 @@ function rollback_resep_farmasi(id){
 }
 
 function changeUrgensi(){
-  alert($("input[type='radio'][name='urgensi']:checked").val());
+  // alert($("input[type='radio'][name='urgensi']:checked").val());
 }
 
 </script>

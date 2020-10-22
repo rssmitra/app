@@ -78,6 +78,7 @@ $(document).ready(function(){
           /*reload select racikan*/
           reload_item_racikan( jsonResponse.data.id_tc_far_racikan );
           show_selected_item_racikan(jsonResponse.data.id_tc_far_racikan);
+          $('#kode_trans_far_racikan').val(jsonResponse.kode_trans_far);
           $('#kode_trans_far').val(jsonResponse.kode_trans_far);
           $('#inputKeyObatRacikan').focus();
 
@@ -110,30 +111,28 @@ $(document).ready(function(){
     }); 
 
     $('#inputKeyObatRacikan').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "templates/references/getObatByBagianAutoComplete",
-                data: { keyword:query, bag: '060101', urgensi: $('input[name="urgensi"]:checked').val() },            
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                  result($.map(response, function (item) {
-                      return item;
-                  }));
-                }
-            });
-        },
-        afterSelect: function (item) {
-          // do what is needed with item
-          var val_item=item.split(':')[0];
-          var label_item=item.split(':')[1];
-          console.log(val_item);
-          $('#inputKeyObatRacikan').val(label_item);
-          var detailObat = getDetailObatByKodeBrgRacikan(val_item,'060101');
-          $('#jumlah_pesan_racikan').focus();
-
-        }
-
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getObatByBagianAutoComplete",
+              data: { keyword:query, bag: '060101', urgensi: $('input[name="urgensi"]:checked').val() },            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                result($.map(response, function (item) {
+                    return item;
+                }));
+              }
+          });
+      },
+      afterSelect: function (item) {
+        // do what is needed with item
+        var val_item=item.split(':')[0];
+        var label_item=item.split(':')[1];
+        console.log(val_item);
+        $('#inputKeyObatRacikan').val(label_item);
+        var detailObat = getDetailObatByKodeBrgRacikan(val_item,'060101');
+        $('#jumlah_pesan_racikan').focus();
+      }
     });
 
     $( "#nama_racikan" )
@@ -318,8 +317,8 @@ function show_selected_item_racikan(id_tc_far_racikan){
           $('#petugas_r').text('admin');
 
           // signa
-          $('#dosis_start').val(data.dosis_per_hari);
-          $('#dosis_end').val(data.dosis_obat);
+          $('#dosis_start_r').val(data.dosis_per_hari);
+          $('#dosis_end_r').val(data.dosis_obat);
           $('#catatan').val(data.catatan_lainnya);
           $('#satuan_obat_r').val(data.aturan_pakai);
           $('#anjuran_pakai').val(data.anjuran_pakai);
@@ -373,6 +372,7 @@ function reset_search_obat(){
 function reload_item_racikan(id_tc_far_racikan){
 
   var kode_trans_far = $('#kode_trans_far').val();
+  $('#id_tc_far_racikan').val(id_tc_far_racikan);
   console.log(id_tc_far_racikan);
   $.getJSON("<?php echo site_url('farmasi/Entry_resep_racikan/get_item_racikan') ?>/" + kode_trans_far, '', function (data) {              
 
@@ -528,7 +528,7 @@ function btn_update_racikan(){
           $('input[name=prb_ditangguhkan_r][type=checkbox]').prop('checked',false);
         }
         // signa
-        $('#dosis_start_r').val(data.dosis_per_hari);
+        $('#_r_r').val(data.dosis_per_hari);
         $('#dosis_end_r').val(data.dosis_obat);
         $('#catatan_r').val(data.catatan_lainnya);
         $('#satuan_obat_r').val(data.aturan_pakai);
@@ -565,10 +565,10 @@ function btn_update_racikan(){
     <div style="margin-top:0px">   
       <form class="form-horizontal" method="post" id="form_entry_resep_racikan" enctype="multipart/form-data" autocomplete="off" action="farmasi/entry_resep_racikan/process">      
         
-      <input type="hiddenxx" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
+      <input type="hidden" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
 
-      <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo isset($value->kode_pesan_resep)?$value->kode_pesan_resep:''; ?>">
-      <input type="hidden" id="kode_trans_far" name="kode_trans_far" value="<?php echo $kode_trans_far; ?>">
+      <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo isset($kode_pesan_resep)?$kode_pesan_resep:''; ?>">
+      <input type="hidden" id="kode_trans_far_racikan" name="kode_trans_far_racikan" value="<?php echo $kode_trans_far; ?>">
       <input type="hidden" id="tipe_layanan" name="tipe_layanan" value="<?php echo $tipe_layanan; ?>">
 
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
@@ -577,7 +577,7 @@ function btn_update_racikan(){
       <input type="hidden" name="no_mr" value="<?php echo isset($value_header)?$value_header->no_mr:''?>">
       <input type="hidden" name="nama_pasien" value="<?php echo isset($value_header)?$value_header->nama_pasien:''?>">
       <input type="hidden" name="kode_dokter" value="<?php echo isset($value_header)?$value_header->kode_dokter:''?>">
-      <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value_header)?$value_header->dokter_pengirim:''?>">
+      <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value_header)?$value_header->nama_pegawai:''?>">
       <input type="hidden" name="kode_profit" value="<?php echo ($tipe_layanan=='RJ')?2000:1000;?>">
       <input type="hidden" name="kode_bagian" value="<?php echo isset($value_header)?$value_header->kode_bagian:''?>" id="kode_bagian">
       <input type="hidden" name="kode_bagian_asal" value="<?php echo isset($value_header)?$value_header->kode_bagian_asal:''?>">
@@ -593,7 +593,7 @@ function btn_update_racikan(){
           <div class="form-group">
             <label class="control-label col-sm-2">Pilih Racikan</label>
             <div class="col-md-4">
-              <?php echo $this->master->custom_selection($params = array('table' => 'fr_tc_far_detail_log', 'id' => 'relation_id', 'name' => 'nama_brg', 'where' => array('kode_trans_far' => $kode_trans_far, 'flag_resep' => 'racikan')), isset($value[0]->relation_id)?$value[0]->relation_id:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
+              <?php echo $this->master->custom_selection($params = array('table' => 'fr_tc_far_detail_log', 'id' => 'relation_id', 'name' => 'nama_brg', 'where' => array('kode_trans_far' => $kode_trans_far, 'flag_resep' => 'racikan')), isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
             </div>
             <div class="col-md-1">
               <a href="#" onclick="renew_form()" class="btn btn-xs btn-primary"><i class="fa fa-plus-circle dark"></i> Buat Racikan Baru</a>

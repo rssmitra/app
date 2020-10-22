@@ -10,8 +10,6 @@
   <div class="col-xs-12">
 
     <?php if(count($resep) > 0) : ?>
-
-    <!-- breadcrumbs -->
     <div class="col-xs-<?php echo (count($resep_kronis) > 0) ? 6 : 12 ?>">
         <center>
           <span style="font-size: 12px;"><strong><u>TRANSAKSI FARMASI</u></strong><br>
@@ -45,10 +43,7 @@
             <td width="100px">Unit/Bagian</td>
             <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['nama_bagian'])?></td>
           </tr>
-          <!-- <tr>
-            <td width="100px">Penjamin</td>
-            <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_perusahaan']?></td>
-          </tr> -->
+          
         </table>
 
         <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
@@ -143,11 +138,7 @@
           
         </table>
     </div>
-    
-    <?php else:
-            echo '<span style="margin-left:-43%;position:absolute;transform: rotate(0deg) !important; margin-top: -16%" class="stamp is-approved">Lunas</span>';
-          endif;
-    ?>
+    <?php endif; ?>
 
     <?php if(count($resep_kronis) > 0) :?>
     <div class="col-xs-6">
@@ -268,8 +259,8 @@
         <span style="margin-left:45%;position:absolute;transform: rotate(0deg) !important; margin-top: -31%" class="stamp is-approved">Resep Kronis</span>
     </div>
     <?php endif; ?>
-    
-    <div class="row" >
+    <!-- button action -->
+    <div class="col-xs-12" >
         <div class="col-xs-12 center" style="margin-top: 10px">
         <!-- input hidden -->
         <input type="hidden" name="no_resep" id="no_resep" value="<?php echo $resep[0]['kode_pesan_resep']?>">
@@ -292,17 +283,69 @@
         <button onclick="rollback_by_kode_trans_far(<?php echo $resep[0]['kode_trans_far']?>, '<?php echo strtolower($flag); ?>')" class="btn btn-xs btn-danger" title="rollback">
           <i class="fa fa-undo dark"></i> Rollback Resep
         </button>
+        <?php endif; ?>
       </div>
     </div>
-    
+    <hr>
   </div>
-  <!-- <?php else: ?>
-    - Tidak ada data ditemukan, periksa nomor transaksi yang lain. -
-  <?php endif; ?> -->
+  
+  <div class="col-xs-12" style="margin-top: 20px">
+      <!-- history resep pasien -->
+      <p class="center">
+        <span style="font-size: 14px; font-weight: bold">RIWAYAT PESAN RESEP FARMASI </span> <br>Data yang ditampikan dibawah ini adalah data pemesanan resep 3 bulan terakhir</p>
+      <table id="riwayat_pesan_resep_pasien" base-url="farmasi/Retur_obat/get_data?flag=All&no_mr=<?php echo $resep[0]['no_mr']?>" class="table table-bordered table-hover">
+        <thead>
+          <tr>  
+            <th class="center">No</th>
+            <th>Kode</th>
+            <th>Tgl Pesan</th>
+            <th>No Mr</th>
+            <th>Nama Pasien</th>
+            <th>Nama Dokter</th>
+            <th>Pelayanan</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+  </div>
+
 </div>
 
 <script type="text/javascript">
   
+  $(document).ready(function(){
+
+    table = $('#riwayat_pesan_resep_pasien').DataTable( {
+        "processing": true, 
+        "serverSide": true,
+        "bInfo": false,
+        "bPaginate": false,
+        "searching": false,
+        "bSort": false,
+        "ajax": {
+            "url": $('#riwayat_pesan_resep_pasien').attr('base-url'),
+            "type": "POST"
+        }
+    }); 
+
+    $('#riwayat_pesan_resep_pasien tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            //achtungShowLoader();
+            $(this).removeClass('selected');
+            //achtungHideLoader();
+        }
+        else {
+            //achtungShowLoader();
+            table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            //achtungHideLoader();
+        }
+    } );
+
+  })
+
   function rollback_by_kode_trans_far(id, flag){
     preventDefault();
     if(confirm('Are you sure?')){
@@ -345,4 +388,3 @@
   }
 
 </script>
-

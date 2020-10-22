@@ -1390,6 +1390,7 @@ class References extends MX_Controller {
 							<div class="radio">
 								<label>
 								<input type="radio" name="pl_harga_satuan" class="ace" value="'.$harga_satuan_cito.'"> 
+								<input type="hidden" name="pl_harga_cito" class="ace" value="'.$harga_satuan_cito.'"> 
 								<span class="lbl" style="font-size: 12px !important"> Harga Cito</span>
 								</label>
 							</div>
@@ -1407,6 +1408,7 @@ class References extends MX_Controller {
 								<div class="radio">
 									<label>
 									<input type="radio" name="pl_harga_satuan" value="'.(float)$harga_satuan.'" class="ace" '.$default_selected_umum.'> 
+									<input type="hidden" name="pl_harga_umum" value="'.(float)$harga_satuan.'" class="ace" > 
 									<span class="lbl" style="font-size: 12px !important"> Harga Jual</span>
 									</label>
 								</div>

@@ -260,7 +260,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = $row_list->flag_resep;
             
             if( $row_list->id_tc_far_racikan != 0 ){
-                $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_trans_far."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."'".', '."'RESEP RACIKAN'".')"';
+                $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_trans_far."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."&kode_pesan_resep=".$row_list->kode_pesan_resep."'".', '."'RESEP RACIKAN'".')"';
                 $btn_selesai_racikan = '<li><a href="#" onclick="process_selesai('.$row_list->relation_id.')">Resep Selesai</a></li>';
             }else{
                 $onclick = 'onclick="edit_obat_resep('."'".$row_list->kode_brg."','".$row_list->relation_id."'".')"';

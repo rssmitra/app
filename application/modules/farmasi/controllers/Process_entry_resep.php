@@ -115,11 +115,10 @@ class Process_entry_resep extends MX_Controller {
                 /*data detail farmasi*/
                 if( $_POST['urgensi'] == 'biasa' ){
                     $biaya_tebus = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan'] * $isset_jml_tebus : $_POST['pl_harga_satuan'] * $isset_jml_tebus;
-
                     $harga_jual = ($_POST['kode_perusahaan'] == 120) ? $_POST['pl_harga_satuan'] : $_POST['pl_harga_satuan'];
                 }else{
-                    $biaya_tebus = $_POST['pl_harga_satuan'] * $isset_jml_tebus;
-                    $harga_jual = $_POST['pl_harga_satuan'];
+                    $biaya_tebus = $_POST['pl_harga_cito'] * $isset_jml_tebus;
+                    $harga_jual = $_POST['pl_harga_cito'];
                 }
                 
                 $sisa = $_POST['jumlah_pesan'] - $isset_jml_tebus;
@@ -463,6 +462,7 @@ class Process_entry_resep extends MX_Controller {
         }
         $data['resep'] = $getData;
         $data['resep_kronis'] = $getDataResepKronis;
+        
         // echo '<pre>'; print_r($data);die;
         
         $this->load->view('farmasi/preview_entry', $data);

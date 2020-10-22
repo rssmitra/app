@@ -194,23 +194,23 @@ class Entry_resep_racikan_model extends CI_Model {
                 'prb_ditangguhkan' => $params['prb_ditangguhkan'],
             );
 
-            //print_r($data_farmasi_detail);die;
+        //print_r($data_farmasi_detail);die;
 
-            if( empty($fr_tc_far_dt->kd_tr_resep) ){
-                $data_farmasi_detail['kd_tr_resep'] = $this->master->get_max_number('fr_tc_far_detail', 'kd_tr_resep');
-                $data_farmasi_detail['kode_trans_far'] = $params['kode_trans_far'];
-                $data_farmasi_detail['created_date'] = date('Y-m-d H:i:s');
-                $data_farmasi_detail['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                /*insert new data detail*/
-                $this->db->insert('fr_tc_far_detail', $data_farmasi_detail);
-            }else{
-                $data_farmasi_detail['kd_tr_resep'] = $fr_tc_far_dt->kd_tr_resep;
-                $data_farmasi_detail['kode_trans_far'] = $params['kode_trans_far'];
-                $data_farmasi_detail['updated_date'] = date('Y-m-d H:i:s');
-                $data_farmasi_detail['updated_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                /*insert new data detail*/
-                $this->db->update('fr_tc_far_detail', $data_farmasi_detail, array('kd_tr_resep' => $fr_tc_far_dt->kd_tr_resep) );
-            }
+        if( empty($fr_tc_far_dt->kd_tr_resep) ){
+            $data_farmasi_detail['kd_tr_resep'] = $this->master->get_max_number('fr_tc_far_detail', 'kd_tr_resep');
+            $data_farmasi_detail['kode_trans_far'] = $params['kode_trans_far'];
+            $data_farmasi_detail['created_date'] = date('Y-m-d H:i:s');
+            $data_farmasi_detail['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+            /*insert new data detail*/
+            $this->db->insert('fr_tc_far_detail', $data_farmasi_detail);
+        }else{
+            $data_farmasi_detail['kd_tr_resep'] = $fr_tc_far_dt->kd_tr_resep;
+            $data_farmasi_detail['kode_trans_far'] = $params['kode_trans_far'];
+            $data_farmasi_detail['updated_date'] = date('Y-m-d H:i:s');
+            $data_farmasi_detail['updated_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+            /*insert new data detail*/
+            $this->db->update('fr_tc_far_detail', $data_farmasi_detail, array('kd_tr_resep' => $fr_tc_far_dt->kd_tr_resep) );
+        }
 
 	}
 

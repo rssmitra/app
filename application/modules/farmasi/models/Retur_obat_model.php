@@ -45,8 +45,16 @@ class Retur_obat_model extends CI_Model {
             $this->db->where("fr_tc_far.tgl_trans >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
             $this->db->where("fr_tc_far.tgl_trans <= '".$this->tanggal->selisih($_GET['to_tgl'],'+1')."'" );
         }else{
-        	$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
+			if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
+				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=90');
+			}else{
+				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
+			}
         }
+
+		if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
+			$this->db->where('fr_tc_far.no_mr', $_GET['no_mr']);
+		}
 
 		$i = 0;
 	
@@ -187,6 +195,16 @@ class Retur_obat_model extends CI_Model {
 			$getData[$value->no_retur][] = $value;
 		}
 		return $getData;
+	}
+
+	public function get_history_retur_by_no_retur($no_retur){
+		$this->db->from('fr_tc_far_his a');
+		$this->db->join('fr_tc_far c','c.kode_trans_far=a.kode_trans_far','left');
+		$this->db->join('mt_bagian d','d.kode_bagian=c.kode_bagian_asal','left');
+		$this->db->join('fr_tc_far_detail_log b','b.relation_id=a.kd_tr_resep','left');
+		$this->db->where('no_retur', $no_retur);
+		$data = $this->db->get()->result();
+		return $data;
 	}
 
 	
