@@ -565,10 +565,10 @@ function btn_update_racikan(){
     <div style="margin-top:0px">   
       <form class="form-horizontal" method="post" id="form_entry_resep_racikan" enctype="multipart/form-data" autocomplete="off" action="farmasi/entry_resep_racikan/process">      
         
-      <input type="hidden" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
+      
 
       <input type="hidden" id="kode_pesan_resep" name="kode_pesan_resep" value="<?php echo isset($kode_pesan_resep)?$kode_pesan_resep:''; ?>">
-      <input type="hidden" id="kode_trans_far_racikan" name="kode_trans_far_racikan" value="<?php echo $kode_trans_far; ?>">
+      
       <input type="hidden" id="tipe_layanan" name="tipe_layanan" value="<?php echo $tipe_layanan; ?>">
 
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
@@ -588,6 +588,17 @@ function btn_update_racikan(){
 
 
         <div class="col-sm-12 no-padding">
+
+          <div class="form-group">
+            <label class="control-label col-sm-2">ID Racikan</label>
+            <div class="col-md-4">
+              <input type="text" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
+            </div>
+            <label class="control-label col-sm-2">Kode Transaksi</label>
+            <div class="col-md-4">
+              <input type="text" id="kode_trans_far_racikan" name="kode_trans_far_racikan" value="<?php echo $kode_trans_far; ?>" class="form-control">
+            </div>
+          </div> 
 
           <!-- pilih racikan -->
           <div class="form-group">

@@ -1434,7 +1434,7 @@ class References extends MX_Controller {
 		}else{
 			$html .= '<div class="alert alert-danger" style="text-align: left !important"><b><i class="fa fa-exclamation-triangle"></i> Barang Expired !</b> Silahkan lakukan update barang.</div> ';
 		}
-
+		
     	echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0, 'data' => $exc[0], 'harga_beli' => $exc[0]->harga_beli, 'harga_satuan_umum' => $harga_satuan) );
         
 	}

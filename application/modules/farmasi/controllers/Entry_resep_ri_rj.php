@@ -287,7 +287,6 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = '<div align="right">'.number_format($row_list->total, 2).'</div>';
             $status_input = ($row_list->status_input==NULL)?'<label class="label label-warning">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
             $row[] = '<div align="center">'.$status_input.'</div>';
-            
             $data[] = $row;
         }
 

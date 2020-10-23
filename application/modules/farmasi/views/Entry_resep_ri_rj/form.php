@@ -447,16 +447,19 @@ function format_html ( data ) {
 function reset_form(){
 
   $('#inputKeyObat').focus();
-  $('#form_entry_resep')[0].reset();
+  // $('#form_entry_resep')[0].reset();
   $('#kd_tr_resep').val('0');
 
   $('#inputKeyObat').val('');
   $('#jumlah_pesan').val('');
   $('#jumlah_tebus').val('');
+  $('#jml_23').val('');
   $('#harga_r').val(500);
 
   /*radio*/
   $("input[name=urgensi][value=biasa]").prop('checked', true);
+  $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
+  $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
 
   $('#dosis_start').val('');
   $('#dosis_end').val('');
@@ -651,7 +654,7 @@ function changeUrgensi(){
       <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
       <input type="hidden" name="kode_ri" id="kode_ri" class="form-control" value="<?php echo isset($value->kode_ri)?$value->kode_ri:0?>" >
       <input class="form-control" name="harga_r" id="harga_r" type="hidden" value="500" readonly />
-
+      
 
       <div class="row">
         <!-- keterangan pasien -->
@@ -701,7 +704,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Kode</label>
                 <div class="col-md-2">
-                  <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
+                <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
                 </div> 
                 <label class="control-label col-sm-2">Tanggal</label>
                 <div class="col-md-3">
