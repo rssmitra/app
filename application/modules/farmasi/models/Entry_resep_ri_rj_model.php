@@ -233,6 +233,15 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
+	public function get_trans_farmasi($id){
+		$query = "select * 
+		from (select a.*, (select count(kd_tr_resep) from fr_tc_far_detail b where b.kode_trans_far=a.kode_trans_far) as total from fr_tc_far a
+		where a.kode_pesan_resep=".$id.") as table_custom
+		where total > 0";
+		$exc = $this->db->query($query)->row();
+		return $exc;
+	}
+
 
 
 }

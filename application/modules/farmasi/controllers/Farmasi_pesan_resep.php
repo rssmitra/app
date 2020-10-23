@@ -206,7 +206,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         
         $data = $this->Farmasi_pesan_resep->get_detail_by_id($id);
 
-        //print_r($data);die;
+        // print_r($this->db->last_query());die;
         
         $html = '';
         if(count($data) > 0){
@@ -231,7 +231,7 @@ class Farmasi_pesan_resep extends MX_Controller {
                     $html .= '<td>'.$status_trans.'</td>';
                     $html .= '<td class="center">'.number_format($value_data->jumlah_tebus).'</td>';
                     $harga = $value_data->biaya_tebus + $value_data->harga_r;
-                    $html .= '<td class="center">'.number_format($harga).'</td>';
+                    $html .= '<td align="right">'.number_format($harga).'</td>';
                 $html .= '</tr>';
                 $total_jumlah += $value_data->jumlah_tebus;
                 $total += $harga;
@@ -239,7 +239,7 @@ class Farmasi_pesan_resep extends MX_Controller {
             $html .= '<tr>';
                 $html .= '<td colspan="3" style="text-align:center">Grand Total</td>';
                 $html .= '<td class="center">'.number_format($total_jumlah).'</td>';
-                $html .= '<td class="center">'.number_format($total).'</td>';
+                $html .= '<td align="right">'.number_format($total).'</td>';
             $html .= '</tr>'; 
             $html .= '</table>'; 
         }else{

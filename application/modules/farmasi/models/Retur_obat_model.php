@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Retur_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
-	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_kunjungan', 'fr_tc_far.no_mr');
+	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
 	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, nama_pelayanan, tc_trans_pelayanan.kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi';
 
 	var $order = array('tgl_trans' => 'DESC');
@@ -20,7 +20,7 @@ class Retur_obat_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('(SELECT kode_tc_trans_kasir, kode_trans_far FROM tc_trans_pelayanan GROUP BY kode_tc_trans_kasir,kode_trans_far) as tc_trans_pelayanan','tc_trans_pelayanan.kode_trans_far=fr_tc_far.kode_trans_far','left');
 		$this->db->join('fr_mt_profit_margin','fr_mt_profit_margin.kode_profit=fr_tc_far.kode_profit','left');
-		$this->db->where('status_transaksi', 1);
+		// $this->db->where('status_transaksi', 1);
 		$this->db->group_by($this->select);
 
 	}

@@ -158,9 +158,9 @@ class Farmasi_pesan_resep_model extends CI_Model {
 	{
 		# code...
 		$this->db->select('a.kode_trans_far,a.no_resep,a.kode_pesan_resep,a.tgl_trans,a.status_transaksi,d.nama_brg,c.jumlah_tebus,c.biaya_tebus,c.harga_r,b.kode_tc_trans_kasir, c.kode_brg, c.kd_tr_resep, c.jumlah_retur');
-		$this->db->from('fr_tc_far a');
+		$this->db->from('fr_tc_far_detail c');
+		$this->db->join('fr_tc_far a','a.kode_trans_far=c.kode_trans_far','left');
 		$this->db->join('tc_trans_pelayanan b','a.kode_trans_far=b.kode_trans_far','left');
-		$this->db->join('fr_tc_far_detail c','a.kode_trans_far=c.kode_trans_far','left');
 		$this->db->join('mt_barang d','c.kode_brg=d.kode_brg','left');
 		$this->db->where('a.kode_pesan_resep', $id);
 		$this->db->group_by('a.kode_trans_far,a.no_resep,a.kode_pesan_resep,a.tgl_trans,a.status_transaksi,d.nama_brg,c.jumlah_tebus,c.biaya_tebus,c.harga_r,b.kode_tc_trans_kasir, c.kode_brg, c.kd_tr_resep, c.jumlah_retur');

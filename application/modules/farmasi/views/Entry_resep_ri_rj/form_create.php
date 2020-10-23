@@ -170,7 +170,7 @@ function create_new_resep(){
     preventDefault();
     $('#form_by_jenis_resep').show();
     $('#div_pencarian_obat').show();
-    $('#div_table_riwayat_resep').hide();
+    $('#div_default_form_entry').hide();
     $('#kode_trans_far').val('');
 
     if( $('#jenis_resep').val() == 'rk' ){
@@ -187,11 +187,10 @@ function create_new_resep(){
 
 }
 function update_data(kode_trans_far){
-
+  
   preventDefault();
   $('#form_by_jenis_resep').show();
   $('#div_pencarian_obat').show();
-  $('#div_table_riwayat_resep').hide();
   $('#kode_trans_far').val(kode_trans_far);
   
   // get data fr tc far
@@ -218,18 +217,28 @@ function update_data(kode_trans_far){
 }
 
 function show_history(){
-  $('#div_default_form_entry').html('');
-  $('select[name="jenis_resep"]').change();
+  $('#form_by_jenis_resep').hide('fast');
+  $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$('#tipe_layanan').val()+'&profit='+$('#kode_profit').val()+'');
 }
 
 $('select[name="jenis_resep"]').change(function(){
-  getMenu('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+$(this).val()+'');
+  var value = $(this).val();
+  change_jenis_resep(value);
+  // $('#tipe_layanan').val( value );
+  // $('#form_by_jenis_resep').hide('fast');
+  // if( value == 'rj'){
+  //   getMenu('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+$(this).val()+'');
+  // }else{
+  //   $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+$(this).val()+'&profit='+$('#kode_profit').val()+'');
+  // }
+
 })
 
 function change_jenis_resep(value){
   // reset form with class
   $('.default_value').val('');
   $('#kode_trans_far').val('0');
+  $('#tipe_layanan').val( value );
   // reload_table();
   
   if( value == 'rj' ){
@@ -240,8 +249,8 @@ function change_jenis_resep(value){
     $('#button_action').hide();
     $('#flag_trans').val( value.toUpperCase() );
     $('#div_pencarian_obat').hide();
-    $('#div_default_form_entry').hide();
-    $('#div_table_riwayat_resep').hide('fast');
+    // $('#div_default_form_entry').hide();
+    $('#div_default_form_entry').hide('fast');
     
   }  
 
@@ -251,11 +260,11 @@ function change_jenis_resep(value){
     $('#flag_trans').val( value.toUpperCase() );
     kode_profit = ( value == 'rl') ? 3000 : 4000 ;
     $('#kode_profit').val(kode_profit);
-    $('#div_default_form_entry').hide();
+    // $('#div_default_form_entry').hide();
     $('#button_action').show();
     $('#div_pencarian_obat').hide();
-    $('#div_table_riwayat_resep').show('fast');
-    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
+    // $('#div_default_form_entry').show('fast');
+    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
   }  
 
   if( value == 'rk' ){
@@ -263,11 +272,11 @@ function change_jenis_resep(value){
     $('#form_by_jenis_resep').hide();
     $('#kode_profit').val(4000);
     $('#flag_trans').val( value.toUpperCase() );
-    $('#div_default_form_entry').hide();
+    // $('#div_default_form_entry').hide();
     $('#button_action').show();
     $('#div_pencarian_obat').hide();
-    $('#div_table_riwayat_resep').show('fast');
-    $('#div_table_riwayat_resep').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
+    // $('#div_default_form_entry').show('fast');
+    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
   }  
 
 }
@@ -350,14 +359,13 @@ function rollback(id){
       <input type="hidden" class="default_value" name="kode_dokter" id="kode_dokter" value="0">
       <input type="hidden" class="default_value" name="dokter_pengirim" id="dokter_pengirim" value="0">
       <input type="hidden" class="default_value" name="kode_profit" id="kode_profit" value="">
-      <input type="hidden" class="default_value" name="kode_trans_far" id="kode_trans_far" value="" readonly>
+      <input type="hidden" class="default_value" name="kode_trans_far" id="kode_trans_far" value="0" readonly>
 
       <!-- default form -->
       <div class="row">
         
-        
-
         <div class="col-sm-12">
+
           <div class="widget-header widget-header-small">
             <div class="form-group">
               <label class="col-sm-2" style="margin-top: 5px; color: black; font-weight: 700">Jenis Resep</label>
@@ -380,7 +388,7 @@ function rollback(id){
                     </span>
                   </div>
               </div>
-              <div class="col-sm-5" id="button_action" style="display:none">
+              <div class="col-sm-5" id="button_action">
                 <div class="pull-right">
                     <button type="button" class="btn btn-xs btn-primary" onclick="create_new_resep()"><i class="fa fa-plus"></i> Buat Resep</button>
                     <button type="button" class="btn btn-xs btn-success" onclick="show_history()"><i class="fa fa-history"></i> Tampilkan Riwayat</button>
@@ -388,7 +396,6 @@ function rollback(id){
                 
               </div>
             </div>
-
           </div>
 
           <!-- onchange form jenis resep -->
@@ -396,13 +403,9 @@ function rollback(id){
 
         </div>
 
-        <div id="div_table_riwayat_resep" ></div>
+        <div id="div_default_form_entry" ></div>
 
       </div>
-
-      <!-- form pencarian obat -->
-      <div class="row" id="div_default_form_entry" style="display:none;"></div>
-        
 
     </form>
 

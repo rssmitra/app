@@ -205,7 +205,7 @@ class Etiket_obat extends MX_Controller {
             }else{
                 $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-money"></i> Lunas</label></div>';
             }
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."'".')" class="btn btn-xs btn-danger"> Preview</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."'".')" class="btn btn-xs btn-info"> <i class="fa fa-eye dark"></i> View</a></div>';
             
             $data[] = $row;
         }

@@ -76,7 +76,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         $tipe_layanan = strtoupper($_GET['tipe_layanan']);
         $data['kode_pesan_resep'] = $id;
         $data['value'] = $this->Entry_resep_ri_rj->get_by_id($id);
-        $data['trans_farmasi'] = $this->db->get_where('fr_tc_far', array('kode_pesan_resep' => $id) )->row();
+        $data['trans_farmasi'] = $this->Entry_resep_ri_rj->get_trans_farmasi($id);
         // echo '<pre>';print_r($data);die;
         /*no mr default*/
         $data['no_mr'] = $_GET['mr'];

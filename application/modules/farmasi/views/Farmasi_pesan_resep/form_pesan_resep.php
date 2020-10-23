@@ -44,7 +44,7 @@ $(document).ready(function() {
                 $.getJSON("farmasi/Farmasi_pesan_resep/getDetail/" + kode_pesan_resep, '', function (data) {
                     response_data = data;
                     // Open this row
-                    row.child( format( response_data ) ).show();
+                    row.child( format_html( response_data ) ).show();
                     tr.addClass('shown');
                 });
                 
@@ -90,7 +90,7 @@ $(document).ready(function() {
     
 });
 
-function format ( data ) {
+function format_html ( data ) {
   return data.html;
 }
 

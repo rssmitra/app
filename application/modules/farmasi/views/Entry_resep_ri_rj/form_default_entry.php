@@ -263,30 +263,6 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
 
 }
 
-function update_data(kode_trans_far){
-
-  preventDefault();
-  $('#form_by_jenis_resep').show();
-  $('#div_pencarian_obat').show();
-  $('#div_table_riwayat_resep').hide();
-  
-  if( $('#jenis_resep').val() == 'rk' ){
-    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan?jenis_resep='+$('#jenis_resep').val()+'');  
-  }
-
-  if( $('#jenis_resep').val() == 'rl' || $('#jenis_resep').val() == 'pb' ){
-    $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar/'+kode_trans_far+'?jenis_resep='+$('#jenis_resep').val()+''); 
-  }
-
-  if( $('#jenis_resep').val() == 'rj' ){
-    // load form 
-    $('#div_default_form_entry').show();
-    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry/'+kode_trans_far+'?jenis_resep='+$('#jenis_resep').val()+'');
-  }
-   
-
-}
-
 function reload_table(){
   var kode_trans_far = $('#kode_trans_far').val();
   table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan="+$('#flag_trans').val()+"").load();
@@ -338,7 +314,7 @@ function resep_farmasi_selesai(){
     $.ajax({
         url: 'farmasi/process_entry_resep/process_selesai_resep',
         type: "post",
-        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val() },
+        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val() },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -449,7 +425,8 @@ $('select[name="jenis_resep"]').change(function () {
 </script>
 <div class="col-xs-12">
   <div class="pull-left">
-    <b>PENCARIAN OBAT</b>
+    <b>PENCARIAN OBAT</b><br>
+    <small>Silahkan masukan obat pada form dibawah ini.</small>
   </div>
   <div class="pull-right">
     Total Biaya, <div style="font-size: 18px" id="td_total_biaya_farmasi"></div>
@@ -490,7 +467,9 @@ $('select[name="jenis_resep"]').change(function () {
     </div>
   </div>
 
-  <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
+  <p style="padding-top: 10px">
+    <b>FORM SIGNA</b><br><small>Masukan signa untuk etiket obat.</small>
+  </p>
 
   <div class="form-group">
       <label class="control-label col-sm-2">Signa</label>
@@ -522,7 +501,7 @@ $('select[name="jenis_resep"]').change(function () {
   <div class="form-group">
       <label class="control-label col-sm-2">Catatan</label>
       <div class="col-md-1">
-          <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value="Minum secara rutin dan dihabiskan."/>
+          <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value=""/>
       </div>
   </div>
 
@@ -572,14 +551,16 @@ $('select[name="jenis_resep"]').change(function () {
         <th class="center"></th>
         <th class="center"></th>
         <th class="center" width="100px"></th>
+        <th width="30px">No</th>
         <th width="150px">Tgl Input</th>
-        <th>Kode</th>
+        <th width="50px">Kode</th>
         <th>Deskripsi Item</th>
-        <th>Jumlah</th>
-        <th>Harga Satuan</th>
-        <th>Sub Total</th>
-        <th>Jasa R</th>
-        <th>Total (Rp.)</th>
+        <th width="100px">Jumlah</th>
+        <th width="100px">Ditangguhkan</th>
+        <th width="100px">Harga Satuan</th>
+        <th width="100px">Sub Total</th>
+        <th width="100px">Jasa R</th>
+        <th width="100px">Total (Rp.)</th>
       </tr>
     </thead>
     <tbody>

@@ -23,7 +23,15 @@
             $('#no_mr').val(val_item);
             $('#nama_pasien').val(label_item);
             $('#inputKeyNamaPasien').val(label_item);
-            $('#inputKeyObat').focus();
+            $('#inputKeyDokterPengirim').focus();
+            // get detail pasien by no mr
+            $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword="+val_item, '' , function (response) {
+              if( response.count == 1 )     {
+                var obj = response.result[0];
+                $('#no_telp_pasien').val(obj.tlp_almt_ttp);
+                $('#alamat_pasien').val(obj.almt_ttp_pasien);
+              }
+            })
 
           }
   });
@@ -60,18 +68,18 @@
   }
 </script>
 
-<h3 class="row header smaller lighter orange">
-  <span class="col-sm-8">
-    <i class="ace-icon fa fa-bell"></i>
-    <?php echo strtoupper($title_form)?>
-  </span><!-- /.col -->
-</h3>
-   
+<p class="center" style="margin-top: 10px">
+  <span style="font-size: 16px; font-weight: bold"><?php echo strtoupper($title_form)?></span><br>
+  <span>Silahkan lakukan pencarian data pasien terlebih dahulu</span>
+</p>
+
+<div>
+  <label for="form-field-8"><b>Pasien (a.n) :</b></label>
+  <input type="text" class="form-control" name="nama_pasien_keyword" id="inputKeyNamaPasien" value="<?php echo isset($value->nama_pasien)?$value->nama_pasien:''?>" onchange="set_to_default_name('inputKeyNamaPasien', 'nama_pasien')">
+  <small id="">Silahkan lakukan pencarian data pasien jika sudah pernah berobat sebelumnya.</small>
+</div>
+<br>
 <div class="form-group">
-  <label class="control-label col-sm-1">Pasien (a.n)</label>
-  <div class="col-md-3">
-    <input type="text" class="form-control" name="nama_pasien_keyword" id="inputKeyNamaPasien" value="<?php echo isset($value->nama_pasien)?$value->nama_pasien:''?>" onchange="set_to_default_name('inputKeyNamaPasien', 'nama_pasien')">
-  </div>
   <label class="control-label col-sm-1">No.Telp/ HP</label>
   <div class="col-md-2">
     <input type="text" class="form-control" name="no_telp" id="no_telp_pasien" value="<?php echo isset($value->telpon_pasien)?$value->telpon_pasien:''?>">
