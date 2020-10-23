@@ -128,8 +128,10 @@ class Harga_jual_obat extends MX_Controller {
             $row[] = '<div class="center">'.strtoupper($row_list->satuan_besar).'/'.strtoupper($row_list->satuan_kecil).'</div>';
             $row[] = '<div class="center">'.$row_list->content.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_beli).'</div>';
+            $harga_jual = $row_list->harga_beli + ($row_list->harga_beli * (33.3/100));
+            $row[] = '<div align="right">'.number_format($harga_jual).'</div>';
             
-            $row[] = '<div>'.$row_list->spesifikasi.'<br>'.$this->logs->show_logs_record_datatable($row_list).'</div>';
+            // $row[] = '<div>'.$row_list->spesifikasi.'<br>'.$this->logs->show_logs_record_datatable($row_list).'</div>';
             $status_aktif = ($row_list->is_active == 1) ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
                    

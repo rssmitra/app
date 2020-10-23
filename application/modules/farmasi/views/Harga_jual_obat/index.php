@@ -172,9 +172,9 @@
         <div class="clearfix" style="margin-bottom:-5px">
           <?php echo $this->authuser->show_button('farmasi/Harga_jual_obat?flag='.$flag_string.'','C','',7)?>
           <?php echo $this->authuser->show_button('farmasi/Harga_jual_obat?flag='.$flag_string.'','D','',5)?>
-          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Label Barcode</a>
+          <!-- <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Label Barcode</a>
 
-          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple_kartu_stok"><i class="fa fa-print"></i> Label Kartu Stok</a>
+          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple_kartu_stok"><i class="fa fa-print"></i> Label Kartu Stok</a> -->
 
         </div>
 
@@ -202,7 +202,8 @@
                 <th>Satuan<br>Besar/Kecil</th>
                 <th>Rasio</th>
                 <th>Harga Beli</th>
-                <th width="180px">Spesifikasi</th>
+                <th>Harga Jual</th>
+                <!-- <th width="180px">Spesifikasi</th> -->
                 <th>Status</th>
               </tr>
             </thead>
