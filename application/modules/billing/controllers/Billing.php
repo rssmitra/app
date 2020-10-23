@@ -183,7 +183,7 @@ class Billing extends MX_Controller {
         //     if( $data->group && $data->kasir_data && $data->trans_data )
         //     $this->Billing->insertDataFirstTime($data, $no_registrasi);
             // }
-        //print_r($data);die;
+        // echo '<pre>';print_r($data);die;
 
         if($tipe=='RJ'){
             $html = $this->Billing->getDetailBillingRJ($no_registrasi, $tipe, $data);

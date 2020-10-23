@@ -358,7 +358,7 @@ class Process_entry_resep extends MX_Controller {
                     "kode_kelompok" => $_POST['kode_kelompok'],
                     "kode_perusahaan" => $_POST['kode_perusahaan'],
                     "tgl_transaksi" => date('Y-m-d H:i:s'),
-                    "jenis_tindakan" => '',
+                    "jenis_tindakan" => 11,
                     "nama_tindakan" => $nama_barang_tindakan ,
                     "bill_rs" => $total_harga,
                     // "kode_ri" => isset($_POST['kode_ri'])?$_POST['kode_ri']:0,

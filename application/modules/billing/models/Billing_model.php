@@ -186,7 +186,7 @@ class Billing_model extends CI_Model {
         $kasir_data = $this->getKasirData($no_registrasi);
         /*get data trans pelayanan by no registrasi*/
         $trans_data = $this->getTransData($no_registrasi);
-        //echo '<pre>';print_r($this->db->last_query());die;
+        // echo '<pre>';print_r($this->db->last_query());die;
         $group = array();
         foreach ($trans_data as $value) {
             $group[$value->nama_jenis_tindakan][] = $value;
@@ -1186,8 +1186,7 @@ class Billing_model extends CI_Model {
             $this->db->where('(status_nk is null or status_nk = 0)');
         }
 
-		$this->db->order_by('tc_trans_pelayanan.tgl_transaksi', 'ASC');
-        $this->db->order_by('tc_trans_pelayanan.jenis_tindakan', 'ASC');
+		$this->db->order_by('tc_trans_pelayanan.kode_trans_pelayanan', 'ASC');
         $query = $this->db->get()->result();
         // print_r($this->db->last_query());die;
 		return $query;
