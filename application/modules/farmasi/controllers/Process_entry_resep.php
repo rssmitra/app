@@ -97,11 +97,12 @@ class Process_entry_resep extends MX_Controller {
                 $this->logs->save('fr_tc_far', $_POST['kode_trans_far'], 'update record on entry resep module', json_encode($data_farmasi),'kode_pesan_resep');
             
             }else{
-                $kode_trans_far = $this->master->get_max_number('fr_tc_far', 'kode_trans_far', array('kode_bagian' => $_POST['kode_bagian'] ));
+                $kode_trans_far = $this->master->get_max_number('fr_tc_far', 'kode_trans_far', array());
                 /*update existing*/
                 $data_farmasi['kode_trans_far'] = $kode_trans_far;
                 $data_farmasi['created_date'] = date('Y-m-d H:i:s');
                 $data_farmasi['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                // echo '<pre>';print_r($data_farmasi);die;
                 $this->db->insert( 'fr_tc_far', $data_farmasi );
                 /*save log*/
                 $this->logs->save('fr_tc_far', $_POST['kode_trans_far'], 'insert new record on entry resep module', json_encode($data_farmasi),'kode_pesan_resep');

@@ -72,6 +72,22 @@ class Produksi_obat extends MX_Controller {
         $this->load->view('Produksi_obat/form', $data);
     }
 
+    public function get_detail($id){
+        $flag = $_GET['flag'];
+        
+        $data = array(
+            'title' => 'Preview Transaksi' ,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'flag' => $_GET['flag']
+        );
+        $data['value'] = $this->Produksi_obat->get_by_id($id);
+        $komposisi_obat_dt = $this->Produksi_obat->get_komposisi_obat($id);
+        $data['komposisi'] = $komposisi_obat_dt;
+        // echo '<pre>';print_r($data);die;
+        $temp_view = $this->load->view('farmasi/Produksi_obat/detail_table_view', $data, true);
+        echo json_encode( array('html' => $temp_view) );
+    }
+
     public function get_data()
     {
         /*get data from model*/
@@ -87,13 +103,18 @@ class Produksi_obat extends MX_Controller {
                             <span class="lbl"></span>
                         </label>
                       </div>';
-            $row[] = '<div class="center">
-                        '.$this->authuser->show_button('farmasi/Produksi_obat','R',$row_list->id_tc_prod_obat,2).'
-                        '.$this->authuser->show_button('farmasi/Produksi_obat','U',$row_list->id_tc_prod_obat,2).'
-                        '.$this->authuser->show_button('farmasi/Produksi_obat','D',$row_list->id_tc_prod_obat,2).'
-                      </div>'; 
-            $row[] = '<div class="center">'.$row_list->id_tc_prod_obat.'</div>';
-            // $row[] = '<div class="left">'.$row_list->kode_pengadaan.'</div>';
+            $row[] = '';
+            $row[] = $row_list->id_tc_prod_obat;
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">
+                            <li>'.$this->authuser->show_button('farmasi/Produksi_obat','R',$row_list->id_tc_prod_obat,67).'</li>
+                            <li>'.$this->authuser->show_button('farmasi/Produksi_obat','U',$row_list->id_tc_prod_obat,67).'</li>
+                            <li>'.$this->authuser->show_button('farmasi/Produksi_obat','D',$row_list->id_tc_prod_obat,6).'</li>
+                        </ul>
+                      </div></div>';
             $row[] = strtoupper($row_list->nama_brg);
             $row[] = strtoupper($row_list->satuan_prod);
             $row[] = '<div class="center">'.$row_list->rasio.'</div>';
@@ -120,6 +141,7 @@ class Produksi_obat extends MX_Controller {
     {
         /*get data from model*/
         $data = array();
+        $arr_subtotal = array();
         if (isset($_GET['id_tc_prod_obat']) and $_GET['id_tc_prod_obat'] != 0) {
             $list = $this->Produksi_obat->get_datatables_komposisi_obat();
             $no = $_POST['start'];
@@ -155,10 +177,10 @@ class Produksi_obat extends MX_Controller {
 
     public function process()
     {
-       
+        echo '<pre>'; print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('code', 'Code', 'trim|required');
+        $val->set_rules('kode_brg_hidden_detail', 'Kode Barang', 'trim|required', array('required' => 'Silahkan pilih obat'));
         $val->set_rules('name', 'Function Name', 'trim|required');
         $val->set_rules('description', 'Description', 'trim|required');
 

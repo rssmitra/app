@@ -79,28 +79,32 @@
   <small id="">Silahkan lakukan pencarian data pasien jika sudah pernah berobat sebelumnya.</small>
 </div>
 <br>
-<div class="form-group">
-  <label class="control-label col-sm-1">No.Telp/ HP</label>
-  <div class="col-md-2">
-    <input type="text" class="form-control" name="no_telp" id="no_telp_pasien" value="<?php echo isset($value->telpon_pasien)?$value->telpon_pasien:''?>">
-  </div>
-</div>
-<div class="form-group">
-  <label class="control-label col-sm-1">Alamat</label>
-  <div class="col-md-3">
-    <textarea name="alamat_pasien" id="alamat_pasien" style="height: 50px !important; margin-bottom: 3px" class="form-control"><?php echo isset($value->alamat_pasien)?$value->alamat_pasien:''?></textarea>
-  </div>
-</div>
 
-<div class="form-group">
-  <label class="control-label col-sm-1">Dokter</label>
-  <div class="col-md-3">
-    <input type="text" class="form-control" id="inputKeyDokterPengirim" name="dokter_pengirim_keyword" value="<?php echo isset($value->dokter_pengirim)?$value->dokter_pengirim:''?>" onchange="set_to_default_name('inputKeyDokterPengirim', 'dokter_pengirim')">
+<div class="col-xs-7 no-padding">
+  <div class="form-group">
+    <label class="control-label col-sm-2">No.Telp/ HP</label>
+    <div class="col-md-4">
+      <input type="text" class="form-control" name="no_telp" id="no_telp_pasien" value="<?php echo isset($value->telpon_pasien)?$value->telpon_pasien:''?>">
+    </div>
   </div>
-  <button type="submit" id="btn_simpan_header" class="btn btn-primary btn-xs" name="submit" value="header">
-        <span class="ace-icon fa fa-save icon-on-right bigger-110"></span>
-        Simpan
-  </button>
+  <div class="form-group">
+    <label class="control-label col-sm-2">Alamat</label>
+    <div class="col-md-6">
+      <textarea name="alamat_pasien" id="alamat_pasien" style="height: 50px !important; margin-bottom: 3px" class="form-control"><?php echo isset($value->alamat_pasien)?$value->alamat_pasien:''?></textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label col-sm-2">Dokter</label>
+    <div class="col-md-6">
+      <input type="text" class="form-control" id="inputKeyDokterPengirim" name="dokter_pengirim_keyword" value="<?php echo isset($value->dokter_pengirim)?$value->dokter_pengirim:''?>" onchange="set_to_default_name('inputKeyDokterPengirim', 'dokter_pengirim')">
+    </div>
+    <button type="submit" id="btn_simpan_header" class="btn btn-primary btn-xs" name="submit" value="header">
+          <span class="ace-icon fa fa-save icon-on-right bigger-110"></span>
+          Simpan
+    </button>
+  </div>
+
 </div>
 
 <hr>

@@ -14,7 +14,7 @@ class Process_entry_resep_model extends CI_Model {
 	{
 		
 		/*get max total resep by day*/
-		$this->db->where('YEAR(tgl_trans)='.date('Y').' AND MONTH(tgl_trans)='.date('m').' AND DAY(tgl_trans)='.date('d').' AND status_transaksi=1 AND kode_profit='.$kode_profit.'');
+		$this->db->where('YEAR(tgl_trans)='.date('Y').' AND MONTH(tgl_trans)='.date('m').' AND DAY(tgl_trans)='.date('d').' AND kode_profit='.$kode_profit.'');
 		$max = $this->db->get('fr_tc_far')->num_rows();
 		/*plus 1*/
 		$max_row = $max + 1;

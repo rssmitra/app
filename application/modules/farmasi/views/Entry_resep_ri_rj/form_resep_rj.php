@@ -115,7 +115,7 @@ function submitPesanResep(no_kunjungan){
   <label class="control-label col-sm-2">Tanggal Pelayanan</label>
   <div class="col-md-2">
     <div class="input-group">
-        <input name="tgl_pelayanan" id="tgl_pelayanan" class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd"  value="">
+        <input name="tgl_pelayanan" id="tgl_pelayanan" class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd"  value="<?php echo date('Y-m-d')?>">
         <span class="input-group-addon">
           <i class="ace-icon fa fa-calendar"></i>
         </span>

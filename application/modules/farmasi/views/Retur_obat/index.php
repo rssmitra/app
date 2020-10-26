@@ -131,6 +131,7 @@ function popUnder(node) {
             <tr>  
               <th class="center">No</th>
               <th>Kode</th>
+              <th>No Resep</th>
               <th>Tgl Pesan</th>
               <th>No Mr</th>
               <th>Nama Pasien</th>

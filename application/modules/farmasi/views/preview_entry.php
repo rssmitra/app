@@ -276,11 +276,12 @@
         <input type="hidden" name="no_resep" id="no_resep" value="<?php echo isset( $resep[0]['kode_pesan_resep'])? $resep[0]['kode_pesan_resep']:0?>">
         <input type="hidden" name="no_mr" id="no_mr" value="<?php echo $no_mr?>">
 
-        <button onclick="getMenu('farmasi/Entry_resep_ri_rj?flag=RJ');" class="btn btn-xs btn-default" title="Kembali ke Resep Rawat Jalan">
+        <!-- <button onclick="getMenu('farmasi/Entry_resep_ri_rj?flag=RJ');" class="btn btn-xs btn-default" title="Kembali ke Resep Rawat Jalan">
             <i class="fa fa-arrow-left dark"></i> Kembali ke Resep Rawat Jalan
-        </button>
+        </button> -->
+
         <button onclick="getMenu('farmasi/Retur_obat');" class="btn btn-xs btn-purple" title="Lihat Riwayat Resep">
-            <i class="fa fa-history dark"></i> Lihat Riwayat Resep
+            <i class="fa fa-history dark"></i> Riwayat Resep
         </button>
         
         <button onclick="getMenu('farmasi/Etiket_obat/form_copy_resep/<?php echo $kode_trans_far; ?>?flag=<?php echo $flag; ?>')" class="btn btn-xs btn-success" title="Copy Resep">
@@ -380,7 +381,7 @@
                 $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form/'+$('#no_resep').val()+'?mr='+$('#no_mr').val()+'&tipe_layanan='+flag+'');
               }
 
-              if(flag == 'rl' || flag == 'pb'){
+              if(flag == 'rl' || flag == 'pb' || flag == 'rk'){
                 $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+flag+'');
               }
               

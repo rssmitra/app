@@ -21,7 +21,7 @@ class Etiket_obat_model extends CI_Model {
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
 		$this->db->join('(SELECT kode_tc_trans_kasir, kode_trans_far FROM tc_trans_pelayanan where (kode_tc_trans_kasir is not null and kode_trans_far is not null) GROUP BY kode_tc_trans_kasir,kode_trans_far) as tc_trans_pelayanan','tc_trans_pelayanan.kode_trans_far=fr_tc_far.kode_trans_far','left');
-		$this->db->where('status_transaksi', 1);
+		
 		$this->db->group_by($this->select);
 		$this->db->group_by('CAST(copy_resep_text AS nvarchar(max))');
 
@@ -32,6 +32,8 @@ class Etiket_obat_model extends CI_Model {
 		
 		$this->_main_query();
 
+		$this->db->where('status_transaksi', 1);
+		
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 		}

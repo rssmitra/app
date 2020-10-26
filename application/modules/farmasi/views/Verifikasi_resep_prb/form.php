@@ -119,6 +119,7 @@ function hitungSubTotalBarang(kode_brg){
   var total = sumClass('sub_total');
 
   $('#total_biaya').text( formatMoney(parseInt(total)) );
+  $('#total_biaya_hidden').val( parseInt(total) );
 
 }
 
@@ -140,8 +141,11 @@ function hitungSubTotalBarang(kode_brg){
     <form class="form-horizontal" method="post" id="form_verifikasi_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/Verifikasi_resep_prb/process">      
       
       <!-- hidden form -->
+      <input type="hidden" name="no_registrasi" id="no_registrasi" value="<?php echo isset($value)?ucwords($value->no_registrasi):''?>">
       <input type="hidden" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($value)?ucwords($value->kode_trans_far):''?>">
       <input type="hidden" name="no_sep" id="no_sep" value="<?php echo isset($value)?ucwords($value->no_sep):''?>">
+      <input type="hidden" name="no_mr_val" id="no_mr_val" value="<?php echo isset($value)?ucwords($value->no_mr):''?>">
+      <input type="hidden" name="nama_pasien_val" id="nama_pasien_val" value="<?php echo isset($value)?ucwords($value->nama_pasien):''?>">
       
       <div class="row">
         <div class="col-md-4">
@@ -236,18 +240,19 @@ function hitungSubTotalBarang(kode_brg){
         <tbody>
           <?php 
             $no = 0;
-            foreach($detail_obat as $row) { $no++;
+            foreach($detail_obat as $row) { 
               $readonly = (empty($row['kd_tr_resep']))?'':'readonly';
               if( $row['jumlah_obat_23'] > 0 ) :
+                $no++;
                 if($row['flag_resep'] == 'biasa') :
                   echo '<tr id="row_kd_brg_'.$row['kode_brg'].'">';
                   echo '<td>';
                     echo '<label class="pos-rel">
-                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="b-'.$row['kd_tr_resep'].'" id="checkbox_id_'.$row['kd_tr_resep'].'" />
+                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="b-'.$row['kode_brg'].'" id="checkbox_id_'.$row['kd_tr_resep'].'" />
                               <span class="lbl"></span>
                           </label>';
                     // hidden form
-                    echo '<input type="hidden" name="kd_tr_resep[]" value="'.$row['kd_tr_resep'].'" >';
+                    echo '<input type="hidden" name="kd_tr_resep_'.$row['kode_brg'].'" value="'.$row['kd_tr_resep'].'" >';
                     echo '<input type="hidden" name="kode_brg[]" value="'.$row['kode_brg'].'" >';
 
                   echo '</td>';
@@ -310,87 +315,67 @@ function hitungSubTotalBarang(kode_brg){
                   echo '</td>';
 
                   echo '</tr>';
-                else:
-                  foreach ($row['racikan'][0] as $key => $row_dt_racikan) {
-                    echo '<tr id="row_kd_brg_'.$row_dt_racikan->kode_brg.'">';
-                    echo '<td>';
-                      echo '<label class="pos-rel">
-                                <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="r-'.$row_dt_racikan->id_tc_far_racikan_detail.'" id="checkbox_id_'.$row_dt_racikan->id_tc_far_racikan_detail.'" />
-                                <span class="lbl"></span>
-                            </label>';
-                      // hidden form
-                      echo '<input type="hidden" name="kd_tr_resep[]" value="'.$row_dt_racikan->id_tc_far_racikan_detail.'" >';
-                      echo '<input type="hidden" name="kode_brg[]" value="'.$row_dt_racikan->kode_brg.'" >';
+                // else:
+                //   foreach ($row['racikan'][0] as $key => $row_dt_racikan) {
+                //     echo '<tr id="row_kd_brg_'.$row_dt_racikan->kode_brg.'">';
+                //     echo '<td>';
+                //       echo '<label class="pos-rel">
+                //                 <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="r-'.$row_dt_racikan->kode_brg.'" id="checkbox_id_'.$row_dt_racikan->id_tc_far_racikan_detail.'" />
+                //                 <span class="lbl"></span>
+                //             </label>';
+                //       // hidden form
+                //       echo '<input type="hidden" name="id_tc_far_racikan_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->id_tc_far_racikan_detail.'" >';
+                //       echo '<input type="hidden" name="kd_tr_resep_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->id_tc_far_racikan_detail.'" >';
+                //       echo '<input type="hidden" name="kode_brg[]" value="'.$row_dt_racikan->kode_brg.'" >';
 
-                    echo '</td>';
-                    echo '<td align="center">'.$no.'</td>';
-                    echo '<td>'.$row_dt_racikan->kode_brg.'</td>';
-                    echo '<td>'.$row_dt_racikan->nama_brg.'</td>';
+                //     echo '</td>';
+                //     echo '<td align="center">'.$no.'</td>';
+                //     echo '<td>'.$row_dt_racikan->kode_brg.'</td>';
+                //     echo '<td>'.$row_dt_racikan->nama_brg.'</td>';
 
-                    // Signa
-                    echo '<td align="left">';
-                      echo 'Sehari '.$row_dt_racikan->dosis_per_hari.' x '.$row_dt_racikan->dosis_obat.' '.ucfirst(strtolower($row_dt_racikan->satuan)).' ('.ucwords($row_dt_racikan->anjuran_pakai).')';
-                    echo '</td>';
+                //     // Signa
+                //     echo '<td align="left">';
+                //       echo 'Sehari '.$row_dt_racikan->dosis_per_hari.' x '.$row_dt_racikan->dosis_obat.' '.ucfirst(strtolower($row_dt_racikan->satuan)).' ('.ucwords($row_dt_racikan->anjuran_pakai).')';
+                //     echo '</td>';
 
-                    // jumlah
-                  echo '<td align="center">';
-                  echo '<input style="width:50px;height:25px;text-align:center"  class="format_number form-control" type="text" name="jumlah_'.$row_dt_racikan->kode_brg.'" id="jumlah_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->jumlah_obat_23.'" '.$readonly.' onkeypres="pressEnter('."'".$row_dt_racikan->kode_brg."'".')" onchange="inputJumlah('."'".$row_dt_racikan->kode_brg."'".')">';
+                //     // jumlah
+                //     echo '<td align="center">';
+                //     echo '<input style="width:50px;height:25px;text-align:center"  class="format_number form-control" type="text" name="jumlah_'.$row_dt_racikan->kode_brg.'" id="jumlah_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->jumlah_obat_23.'" '.$readonly.' onkeypres="pressEnter('."'".$row_dt_racikan->kode_brg."'".')" onchange="inputJumlah('."'".$row_dt_racikan->kode_brg."'".')">';
 
-                  echo '<input style="width:50px;height:25px;text-align:center" type="hidden" name="hidden_jumlah_'.$row_dt_racikan->kode_brg.'" id="hidden_jumlah_'.$row_dt_racikan->kode_brg.'"  value="'.$row_dt_racikan->jumlah_obat_23.'" '.$readonly.'>';
+                //     echo '<input style="width:50px;height:25px;text-align:center" type="hidden" name="hidden_jumlah_'.$row_dt_racikan->kode_brg.'" id="hidden_jumlah_'.$row_dt_racikan->kode_brg.'"  value="'.$row_dt_racikan->jumlah_obat_23.'" '.$readonly.'>';
 
-                  echo '</td>';
+                //     echo '</td>';
 
-                  // harga satuan
-                  echo '<td align="right">';
-                    // echo number_format($row_dt_racikan->harga_beli_master);
-                    echo '<input style="width:100px;height:25px;text-align:right" type="text" id="harga_satuan_'.$row_dt_racikan->kode_brg.'" class="format_number form-control" name="harga_jual_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->harga_beli_master.'" '.$readonly.' onkeypres="pressEnter('."'".$row_dt_racikan->kode_brg."'".')" onchange="inputHargaSatuan('."'".$row_dt_racikan->kode_brg."'".')">';
+                //     // harga satuan
+                //     echo '<td align="right">';
+                //       // echo number_format($row_dt_racikan->harga_beli_master);
+                //       echo '<input style="width:100px;height:25px;text-align:right" type="text" id="harga_satuan_'.$row_dt_racikan->kode_brg.'" class="format_number form-control" name="harga_jual_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->harga_beli_master.'" '.$readonly.' onkeypres="pressEnter('."'".$row_dt_racikan->kode_brg."'".')" onchange="inputHargaSatuan('."'".$row_dt_racikan->kode_brg."'".')">';
 
-                    echo '<input style="width:100px;height:25px;text-align:right" type="hidden" id="hidden_harga_satuan_'.$row_dt_racikan->kode_brg.'" name="hidden_harga_satuan_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->harga_beli_master.'" '.$readonly.'>';
+                //       echo '<input style="width:100px;height:25px;text-align:right" type="hidden" id="hidden_harga_satuan_'.$row_dt_racikan->kode_brg.'" name="hidden_harga_satuan_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->harga_beli_master.'" '.$readonly.'>';
 
-                  echo '</td>';
+                //     echo '</td>';
 
-                  // sub total
-                  echo '<td align="right">';
-                    $subtotal = $row_dt_racikan->harga_beli_master * $row_dt_racikan->jumlah_obat_23;
-                    $arr_subtotal[] = $subtotal;
-                    // echo number_format($subtotal);
-                    echo '<input type="text" name="sub_total_'.$row_dt_racikan->kode_brg.'" id="sub_total_'.$row_dt_racikan->kode_brg.'" class="format_number form-control" style="height:45px;text-align:right" value="'.$subtotal.'" readonly>';
+                //     // sub total
+                //     echo '<td align="right">';
+                //       $subtotal = $row_dt_racikan->harga_beli_master * $row_dt_racikan->jumlah_obat_23;
+                //       $arr_subtotal[] = $subtotal;
+                //       // echo number_format($subtotal);
+                //       echo '<input type="text" name="sub_total_'.$row_dt_racikan->kode_brg.'" id="sub_total_'.$row_dt_racikan->kode_brg.'" class="format_number form-control" style="height:45px;text-align:right" value="'.$subtotal.'" readonly>';
 
-                    echo '<input type="hidden" name="hidden_sub_total_'.$row_dt_racikan->kode_brg.'" id="hidden_sub_total_'.$row_dt_racikan->kode_brg.'" class="form-control sub_total" style="height:45px;text-align:right" value="'.$subtotal.'" readonly>';
-                  echo '</td>';
+                //       echo '<input type="hidden" name="hidden_sub_total_'.$row_dt_racikan->kode_brg.'" id="hidden_sub_total_'.$row_dt_racikan->kode_brg.'" class="form-control sub_total" style="height:45px;text-align:right" value="'.$subtotal.'" readonly>';
+                //     echo '</td>';
 
-                    // // jumlah
-                    // echo '<td align="center">';
-                    //   echo '<input style="width:50px;height:25px;text-align:center" type="text" name="jumlah_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->jumlah_obat_23.'" '.$readonly.'>';
-                    // echo '</td>';
-
-                    //   // harga satuan
-                    // echo '<td align="right">';
-                    // // echo number_format($row_dt_racikan->harga_beli_master);
-                    // echo '<input style="width:100px;height:25px;text-align:right" type="text" name="harga_jual_'.$row_dt_racikan->kode_brg.'" value="'.$row_dt_racikan->harga_beli_master.'" '.$readonly.'>';
-                    // echo '</td>';
-                    
-                    // // sub total
-                    // echo '<td align="right">';
-                    //   $subtotal = $row_dt_racikan->harga_beli_master * $row_dt_racikan->jumlah_obat_23;
-                    //   echo number_format($subtotal);
-                    // echo '</td>';
-                    
-                    // // catatan
-                    // echo '<td align="center">';
-                    //   echo '<input type="text" style="width: 100%" name="catatan_'.$row_dt_racikan->kode_brg.'" '.$readonly.' value="'.$row_dt_racikan->catatan_lainnya.'">' ;
-                    // echo '</td>';
-                    // aksi
-                    echo '<td align="center">';
+                //     // aksi
+                //     echo '<td align="center">';
                       
-                    $hidden = (empty($row_dt_racikan->id_tc_far_racikan_detail)) ? '' : 'style="display: none"' ;
-                      echo '<a href="#" class="btn btn-xs btn-primary" id="btn_submit_'.$row_dt_racikan->kode_brg.'" onclick="saveRow('."'".$row_dt_racikan->kode_brg."'".')" '.$hidden.'><i class="fa fa-check-circle"></i></a> '; 
+                //     $hidden = (empty($row_dt_racikan->id_tc_far_racikan_detail)) ? '' : 'style="display: none"' ;
+                //       echo '<a href="#" class="btn btn-xs btn-primary" id="btn_submit_'.$row_dt_racikan->kode_brg.'" onclick="saveRow('."'".$row_dt_racikan->kode_brg."'".')" '.$hidden.'><i class="fa fa-check-circle"></i></a> '; 
                       
-                      echo '<a href="#" onclick="click_edit('."'".$row_dt_racikan->kode_brg."'".')" id="btn_edit_'.$row_dt_racikan->kode_brg.'" class="btn btn-xs btn-warning"><i class="fa fa-pencil dark"></i></a>';
-                    echo '</td>';
+                //       echo '<a href="#" onclick="click_edit('."'".$row_dt_racikan->kode_brg."'".')" id="btn_edit_'.$row_dt_racikan->kode_brg.'" class="btn btn-xs btn-warning"><i class="fa fa-pencil dark"></i></a>';
+                //     echo '</td>';
 
-                    echo '</tr>';
-                  }
+                //     echo '</tr>';
+                //   }
                 endif;
               endif; 
               
@@ -399,7 +384,8 @@ function hitungSubTotalBarang(kode_brg){
         </tbody>
       </table>
       <div class="pull-right">
-            <h4>Total Biaya, <span id="total_biaya"><?php echo number_format(array_sum($arr_subtotal))?></span> </h4>
+        <h4>Total Biaya, <span id="total_biaya"><?php echo number_format(array_sum($arr_subtotal))?></span> </h4>
+        <input type="text" id="total_biaya_hidden" name="uang_dibayarkan_tunai" value="<?php echo array_sum($arr_subtotal)?>">
       </div>
 
     </form>

@@ -53,10 +53,11 @@ class Proses_resep_prb extends MX_Controller {
         $data['value'] = $this->Etiket_obat->get_by_id($id);
         $detail_log = $this->Proses_resep_prb->get_detail($id);
         $data['resep'] = $detail_log;
-        
+         $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($id);
         // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
+        $data['flag'] = strtolower($_GET['flag']);
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
@@ -79,6 +80,7 @@ class Proses_resep_prb extends MX_Controller {
         $month = date("M",strtotime($data['value']->tgl_trans));
         $year = date("Y",strtotime($data['value']->tgl_trans));
         $data['path_dok_klaim'] = PATH_DOK_KLAIM_FARMASI.'merge-'.$month.'-'.$year.'/'.$data['value']->no_sep.'.pdf';
+        $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($id);
         // echo '<pre>';print_r($data);
         $temp_view = $this->load->view('farmasi/Proses_resep_prb/detail_table_view', $data, true);
         echo json_encode( array('html' => $temp_view) );
@@ -128,7 +130,7 @@ class Proses_resep_prb extends MX_Controller {
 
     public function process()
     {
-        print_r($_POST);die;
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         // form validation
 
@@ -149,6 +151,9 @@ class Proses_resep_prb extends MX_Controller {
             $this->db->trans_begin();
             $kode_bagian = '060101';
             $arr_log_jml_mutasi = [];
+            $count_log_mutasi_obat = $this->db->select('kode_trans_far, kode_log_mutasi_obat')->group_by('kode_trans_far, kode_log_mutasi_obat')->get_where('fr_tc_log_mutasi_obat', array('kode_trans_far' => $_POST['kode_trans_far']) )->num_rows();
+            $max_num = $count_log_mutasi_obat + 1;
+            $kode_log_mutasi_obat = $_POST['kode_trans_far'].'-0'.$max_num;
             foreach ($_POST['id_fr_tc_far_detail_log_prb'] as $key => $value) {
                 $log_jml_mutasi = $_POST['jumlah_'.$value.''] + $_POST['log_jml_mutasi_'.$value.''];
                 $sisa_mutasi = $_POST['jumlah_tebus_'.$value.''] - $log_jml_mutasi;
@@ -166,11 +171,25 @@ class Proses_resep_prb extends MX_Controller {
                 // kurangi stok depo, update kartu stok dan rekap stok
                 $this->stok_barang->stock_process($_POST['kode_brg_'.$value.''], $_POST['jumlah_'.$value.''], $kode_bagian, 14, " Resep PRB No Transaksi : ".$_POST['kode_trans_far']."", 'reduce');
 
+                // save log mutasi obat
+                $log_mutasi[] = array(
+                    'id_fr_tc_far_detail_log_prb' => $value,
+                    'kode_trans_far' => $_POST['kode_trans_far'],
+                    'kode_log_mutasi_obat' => $kode_log_mutasi_obat,
+                    'jumlah_mutasi_obat' => $_POST['jumlah_'.$value.''],
+                    'created_date' => date('Y-m-d H:i:s'),
+                    'created_by' => $this->session->userdata('user')->fullname,
+                );
+
             }
 
+            // insert batch
+            $this->db->insert_batch('fr_tc_log_mutasi_obat', $log_mutasi);
+            // update status proses mutasi
             if (count($arr_log_jml_mutasi) == 0) {
-                $this->db->update('fr_tc_far', array('proses_mutasi_prb' => 1), array('kode_trans_far' => $_POST['kode_trans_far']) );
+                $this->db->update('fr_tc_far', array('proses_mutasi_prb' => $max_num), array('kode_trans_far' => $_POST['kode_trans_far']) );
             }
+
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -180,7 +199,7 @@ class Proses_resep_prb extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_log_mutasi_obat' => $kode_log_mutasi_obat));
             }
         
         }
@@ -204,11 +223,23 @@ class Proses_resep_prb extends MX_Controller {
             'flag' => $_GET['flag']
         );
         $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
-        $detail_log = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
-        $data['resep'] = $detail_log;
+        $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($kode_trans_far);
 
         // echo '<pre>'; print_r($data);die;
         $this->load->view('farmasi/Proses_resep_prb/preview_mutasi', $data);
+
+    }
+
+    function nota_farmasi($kode_trans_far){
+        $data = array(
+            'title' => 'Preview Transaksi' ,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'flag' => $_GET['flag']
+        );
+        $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
+        $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($kode_trans_far);
+        // echo '<pre>'; print_r($data);die;
+        $this->load->view('farmasi/Proses_resep_prb/preview_nota_farmasi', $data);
 
     }
 

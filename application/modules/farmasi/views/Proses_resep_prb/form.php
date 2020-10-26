@@ -62,7 +62,7 @@ function submit_form(arrDataChecklist){
     complete: function(xhr) {     
       var data=xhr.responseText;
       var jsonResponse = JSON.parse(data);
-      $('#page-area-content').load('farmasi/Proses_resep_prb/preview_mutasi/'+$('#kode_trans_far').val()+'?flag=RJ');
+      $('#page-area-content').load('farmasi/Proses_resep_prb/preview_mutasi/'+$('#kode_trans_far').val()+'?flag=RJ&kode_log_mutasi='+jsonResponse.kode_log_mutasi_obat+'');
       achtungHideLoader();
     }
 
@@ -159,7 +159,7 @@ function saveRow(kode_brg){
                 <i class="fa fa-arrow-left dark"></i> Kembali sebelumnya
             </button>
 
-            <button type="button" onclick="PopupCenter('farmasi/Verifikasi_resep_prb/nota_farmasi/<?php echo $value->kode_trans_far?>?flag=RJ')" class="btn btn-xs btn-success" title="Nota Farmasi">
+            <button type="button" onclick="PopupCenter('farmasi/Verifikasi_resep_prb/nota_farmasi/<?php echo $value->kode_trans_far?>?flag=<?php echo $flag?>')" class="btn btn-xs btn-success" title="Nota Farmasi">
                 <i class="fa fa-print dark"></i> Nota Farmasi
             </button>
 
@@ -187,6 +187,7 @@ function saveRow(kode_brg){
             <th>Nama Obat</th>
             <th width="110px">Jml Obat Biasa</th>
             <th width="110px">Jml Obat Kronis</th>
+            <th width="110px">Ttl Hutang</th>
             <th width="100px">Sisa Obat</th>
             <th width="100px">Jml Diambil</th>
             <!-- <th width="100px">Harga Satuan</th>
@@ -201,8 +202,11 @@ function saveRow(kode_brg){
             foreach($resep as $row) { $no++;
               $readonly = (empty($row->id_fr_tc_far_detail_log_prb))?'':'readonly';
               $jml_tebus = ($row->resep_ditangguhkan == 1) ? $row->jumlah_tebus : 0 ;
+              $jml_23 = ($row->prb_ditangguhkan == 1) ? $row->jumlah : 0 ;
               $txt_color = ($row->resep_ditangguhkan == 1) ? 'red' : 'blue' ;
+              $txt_color_prb = ($row->prb_ditangguhkan == 1) ? 'red' : 'blue' ;
               $sisa = ($row->jumlah + $jml_tebus) - $row->log_jml_mutasi;
+              $total_hutang = $jml_tebus + $jml_23;
               echo '<tr id="row_kd_brg_'.$row->id_fr_tc_far_detail_log_prb.'" >';
                 if( $row->prb_ditangguhkan == 0 ){
                   echo '<td align="center">-</td>';
@@ -231,10 +235,15 @@ function saveRow(kode_brg){
 
                 // jumlah
                 echo '<td align="center">';
-                  echo number_format($row->jumlah);
+                  echo '<span style="color: '.$txt_color_prb.'; font-weight: bold">'.number_format($row->jumlah).'</span>';
                   echo '<input style="width:80px;height:25px;text-align:center"  class="format_number form-control" type="hidden" name="jumlah_tebus_'.$row->id_fr_tc_far_detail_log_prb.'" id="jumlah_tebus_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->jumlah.'" '.$readonly.'>';
                   // last mutasi total
                   echo '<input type="hidden" name="log_jml_mutasi_'.$row->id_fr_tc_far_detail_log_prb.'" id="log_jml_mutasi_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->log_jml_mutasi.'">';
+                echo '</td>';
+
+                // total hutang
+                echo '<td align="center">';
+                  echo ( $total_hutang == 0 ) ? '<span style="color: green; font-weight: bold">Lunas</span>' : '<span style="color: red; font-weight: bold">'.number_format($total_hutang).'</span>';
                 echo '</td>';
 
                 // jumlah tebus
@@ -276,6 +285,37 @@ function saveRow(kode_brg){
           ?>
         </tbody>
       </table>
+      <br>
+      <div class="col-md-12">
+      <left>
+        <span style="font-size: 12px;"><strong><u>LOG PENGAMBILAN OBAT</u></strong><br>
+        </span>
+        <br>
+      </left>
+      <?php 
+        foreach($log_mutasi as $key_log_mutasi=>$val_log_mutasi) :
+          $dt_header = $log_mutasi[$key_log_mutasi][0];
+          echo 'PBLOG - '.$key_log_mutasi.' | '.$this->tanggal->formatDateTimeFormDmy($dt_header->created_date).' | '.$dt_header->created_by.' | <a href="#" onclick="PopupCenter('."'farmasi/Proses_resep_prb/nota_farmasi/".$value->kode_trans_far."?flag=".$flag."&kode_log_mutasi=".$key_log_mutasi."'".')"><i class="fa fa-print dark bigger-150"></i></a>';
+          
+      ?>
+      <table class="table-utama" style="width: 50% !important;margin-top: 10px; margin-bottom: 10px">
+            <?php 
+              $no=0; 
+              foreach ($val_log_mutasi as $key_vlm => $val_vlm) : $no++; 
+            ?>
+
+              <tr>
+                <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
+                <td style="border-collapse: collapse"><?php echo $val_vlm->nama_brg?></td>
+                <td style="text-align:center; border-collapse: collapse"><?php echo number_format($val_vlm->jumlah_mutasi_obat);?></td>
+                <td style="text-align: center; border-collapse: collapse"><?php echo $val_vlm->satuan_kecil; ?></td>
+              </tr>
+
+            <?php endforeach;?>
+
+      </table>
+      <?php endforeach;?>
+    </div>
 
     </form>
 

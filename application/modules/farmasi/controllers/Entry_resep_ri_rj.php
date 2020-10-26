@@ -210,7 +210,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             // <li><a href="#">Kirim ke Gudang</a></li>
             // <li><a href="#" onclick="rollback('.$row_list->kode_pesan_resep.')">Rollback</a></li>
 
-                $row[] = '<div class="center"><div class="btn-group">
+            $row[] = '<div class="center"><div class="btn-group">
                             <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                                 <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                             </button>

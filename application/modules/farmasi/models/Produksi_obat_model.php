@@ -76,7 +76,9 @@ class Produksi_obat_model extends CI_Model {
 	{
 		
 		$this->db->from('tc_prod_obat_det');
-		$this->db->where('id_tc_prod_obat', $_GET['id_tc_prod_obat']);
+		if(isset($_GET['id_tc_prod_obat']) AND $_GET['id_tc_prod_obat'] != ''){
+			$this->db->where('id_tc_prod_obat', $_GET['id_tc_prod_obat']);
+		}
 		$this->db->order_by('id_tc_prod_obat_det', 'DESC');
 	}
 	
@@ -138,5 +140,11 @@ class Produksi_obat_model extends CI_Model {
 		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
 	}
 
+	public function get_komposisi_obat($id){
+		$this->_get_datatables_query_komposisi_obat();
+		$this->db->where('id_tc_prod_obat', $id);
+		$query = $this->db->get()->result();
+		return $query;
+	}
 
 }

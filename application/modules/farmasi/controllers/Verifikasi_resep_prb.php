@@ -156,22 +156,29 @@ class Verifikasi_resep_prb extends MX_Controller {
             $this->db->trans_begin();
             
             // selected id
-            foreach( $_POST['kode_brg'] as $key => $row ){
+            foreach( $_POST['selected_id'] as $key => $row ){
+                $explode_row_dt = explode('-', $row);
+                $kode_brg = $explode_row_dt[1];
+                
                 // data master barang
-                $dt_brg = $this->db->get_where('mt_barang', array('kode_brg' => $row) )->row();
+                $dt_brg = $this->db->get_where('mt_barang', array('kode_brg' => $kode_brg) )->row();
                 // data existing
-                $dt_existing = $this->db->get_where('fr_tc_far_detail_log_prb', array('kode_brg' => $row, 'kode_trans_far' => $_POST['kode_trans_far']) )->row();
+                $dt_existing = $this->db->get_where('fr_tc_far_detail_log_prb', array('kode_brg' => $kode_brg, 'kode_trans_far' => $_POST['kode_trans_far'], 'kd_tr_resep' => $_POST['kd_tr_resep_'.$kode_brg.'']) )->row();
+                // print_r($dt_existing);die;
+                $id_tc_far_racikan = isset($_POST['id_tc_far_racikan_'.$kode_brg.''])?$this->regex->_genRegex($_POST['id_tc_far_racikan_'.$kode_brg.''], 'RQXINT'):0;
 
                 $data_farmasi = array(
+                    'id_tc_far_racikan' => $id_tc_far_racikan,
+                    'kd_tr_resep' => isset($_POST['kd_tr_resep_'.$kode_brg.''])?$this->regex->_genRegex($_POST['kd_tr_resep_'.$kode_brg.''], 'RQXINT'):0,
                     'no_sep' => isset($_POST['no_sep'])?$this->regex->_genRegex($_POST['no_sep'], 'RQXINT'):0,
                     'kode_trans_far' => isset($_POST['kode_trans_far'])?$this->regex->_genRegex($_POST['kode_trans_far'], 'RQXINT'):0,
                     'tgl_input' => date('Y-m-d H:i:s'),
-                    'kode_brg' => isset($row)?$this->regex->_genRegex($row, 'RGXQSL'):0,
+                    'kode_brg' => isset($kode_brg)?$this->regex->_genRegex($kode_brg, 'RGXQSL'):0,
                     'nama_brg' => $dt_brg->nama_brg,
                     'satuan_kecil' => $dt_brg->satuan_kecil,
-                    'jumlah' =>  isset($_POST['jumlah_'.$row.''])?$this->regex->_genRegex($_POST['jumlah_'.$row.''], 'RQXINT'):0,
-                    'harga_satuan' =>  isset($_POST['harga_jual_'.$row.''])?$this->regex->_genRegex($_POST['harga_jual_'.$row.''], 'RQXINT'):0,
-                    'sub_total' =>  isset($_POST['sub_total_'.$row.''])?$this->regex->_genRegex($_POST['sub_total_'.$row.''], 'RQXINT'):0,
+                    'jumlah' =>  isset($_POST['jumlah_'.$kode_brg.''])?$this->regex->_genRegex($_POST['jumlah_'.$kode_brg.''], 'RQXINT'):0,
+                    'harga_satuan' =>  isset($_POST['harga_jual_'.$kode_brg.''])?$this->regex->_genRegex($_POST['harga_jual_'.$kode_brg.''], 'RQXINT'):0,
+                    'sub_total' =>  isset($_POST['sub_total_'.$kode_brg.''])?$this->regex->_genRegex($_POST['sub_total_'.$kode_brg.''], 'RQXINT'):0,
                 );
 
                 if( count($dt_existing) > 0 ){
@@ -200,8 +207,14 @@ class Verifikasi_resep_prb extends MX_Controller {
             
             // update fr_tc_far
             $this->db->update('fr_tc_far', array('verifikasi_prb' => 1), array('kode_trans_far' => $_POST['kode_trans_far']) );
+
+            // submit billing kasir
+            $this->process_billling();
+
             // set dokumen
             $this->merge_dokumen_klaim($_POST['kode_trans_far']);
+
+
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -217,6 +230,156 @@ class Verifikasi_resep_prb extends MX_Controller {
         }
 
     }
+
+    public function process_billling(){
+        
+        // print_r($_POST);die;
+
+        $this->load->library('accounting');
+
+        $this->db->trans_begin();
+        
+        // get no seri kuitansi
+        $seri_kuitansi_dt = $this->master->no_seri_kuitansi($_POST['no_registrasi']);
+        // print_r($seri_kuitansi_dt);die;
+        // insert tc_trans_kasir
+        $dataTranskasir["kode_tc_trans_kasir"] = $this->master->get_max_number('tc_trans_kasir','kode_tc_trans_kasir');
+        $dataTranskasir["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
+        $dataTranskasir["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
+        $dataTranskasir["no_induk"] = $this->session->userdata('user')->user_id; 
+        $dataTranskasir["tgl_jam"] = date("Y-m-d H:i:s");
+
+        // $change = ( $_POST['uang_dibayarkan_tunai'] > $_POST['jumlah_bayar_tunai'] ) ? $_POST['uang_dibayarkan_tunai'] - $_POST['jumlah_bayar_tunai'] : 0;
+
+        $dataTranskasir["cash"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
+        $dataTranskasir["change"] = 0;
+
+        $dataTranskasir["tunai"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
+        // debet
+        $dataTranskasir["debet"] = 0;
+        $dataTranskasir["no_debet"] = 0;
+        $dataTranskasir["no_batch_dc"] = 0;
+        $dataTranskasir["kd_bank_dc"] = 0;
+        // kredit
+        $dataTranskasir["kredit"] = 0;
+        $dataTranskasir["no_kredit"] = 0;
+        $dataTranskasir["no_batch_cc"] = 0;
+        $dataTranskasir["kd_bank_cc"] = 0;
+        
+        $dataTranskasir["no_mr"] = $_POST['no_mr_val'];
+        $dataTranskasir["nama_pasien"] = $_POST['nama_pasien_val'];
+        $dataTranskasir["no_registrasi"] = $_POST['no_registrasi'];
+        $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
+        $dataTranskasir["keterangan"] = 'Pembayaran Administrasi Pasien Resep Kronis';
+
+        $dataTranskasir["nk_perusahaan"] = $_POST['uang_dibayarkan_tunai'];
+        $dataTranskasir["kode_perusahaan"] = 120;
+        $dataTranskasir["pembayar"] = 'BPJS Kesehatan';
+        $dataTranskasir["potongan"] = 0;
+        $dataTranskasir["discount"] = 0;
+        $dataTranskasir["bill"] = $_POST['uang_dibayarkan_tunai'];
+
+        // print_r($dataTranskasir);die;
+
+        // kode shift
+        $dataTranskasir["kode_shift"] = 1;
+        $dataTranskasir["kode_loket"] = 9;
+        // insert tc trans kasir
+        $this->db->insert('tc_trans_kasir', $dataTranskasir);
+
+        // insert table tc_trans_pelayanan
+        foreach ($_POST['selected_id'] as $key_selected => $val_selected) {
+
+            $kode_trans_pelayanan = $this->master->get_max_number("tc_trans_pelayanan","kode_trans_pelayanan");
+            $dataexc = array(
+                "kode_trans_pelayanan" => $kode_trans_pelayanan,
+                "no_registrasi" => $_POST['no_registrasi'],
+                "no_mr" => $_POST['no_mr_val'],
+                "nama_pasien_layan" => $_POST['nama_pasien_val'],
+                "kode_kelompok" => $_POST['kode_kelompok'],
+                "kode_perusahaan" => 120,
+                "tgl_transaksi" => date('Y-m-d H:i:s'),
+                "jenis_tindakan" => 11,
+                "nama_tindakan" => $nama_barang_tindakan ,
+                "bill_rs" => $total_harga,
+                // "kode_ri" => isset($_POST['kode_ri'])?$_POST['kode_ri']:0,
+                // "kode_poli" => isset($_POST['kode_poli'])?$_POST['kode_poli']:0,
+                "jumlah" => $row_dt->jumlah_tebus,
+                "kode_barang" => (string)$kode_brg,
+                "kode_trans_far" => $row_dt->kode_trans_far,
+                "kode_bagian" => $row_dt->kode_bagian,
+                "kode_bagian_asal" => $row_dt->kode_bagian_asal,
+                "kode_profit" => $_POST['kode_profit'],
+                "kd_tr_resep" => $row_dt->relation_id,
+                "no_kunjungan" => (in_array($_POST['kode_profit'], array(1000 , 2000) )) ?$row_dt->no_kunjungan : 0,
+                "status_selesai" => 2,
+                "status_nk" => (in_array($_POST['kode_kelompok'], array(10 , 3) )) ? 1 : 0,
+                "status_karyawan" => ( $row_dt->flag_trans == 'RK' ) ? 1 : 0,
+            );
+
+            // print_r($dataexc);die;
+            $this->db->insert('tc_trans_pelayanan', $dataexc);
+        }
+        
+
+        
+        foreach ($str_to_array_nk as $key_nk => $kode_trans_pelayanan_nk) {
+            $this->db->update('tc_trans_pelayanan', array('status_nk' => 1, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $kode_trans_pelayanan_nk));
+            $this->db->trans_commit();
+        }
+
+        // insert trans bagian
+        $str_to_array = explode(',', $_POST['array_data_checked']);
+        foreach ($str_to_array as $key => $kode_trans_pelayanan) {
+            $data_trans = $this->db->get_where('tc_trans_pelayanan', array('kode_trans_pelayanan' => $kode_trans_pelayanan))->row();
+            $dataTransKasirBagian["kode_tc_trans_kasir"] = $dataTranskasir["kode_tc_trans_kasir"];
+            $dataTransKasirBagian["kode_bagian"] = $data_trans->kode_bagian;
+            $this->db->insert('tc_trans_kasir_bagian', $dataTransKasirBagian);
+            // update status, kode_tc_trans_kasir tc_trans_pelayanan per item
+            $this->db->update('tc_trans_pelayanan', array('status_selesai' => 3, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $kode_trans_pelayanan));
+            // update status bayar farmasi
+            if($data_trans->kode_trans_far != null || $data_trans->kode_trans_far != 0){
+                $this->db->update('fr_tc_far', array('status_bayar' => 1), array('kode_trans_far' => $data_trans->kode_trans_far)  );
+            }
+            $this->db->trans_commit();
+        }
+        
+        // untuk masuk ke akunting
+        $dataAkunting["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
+        $dataAkunting["no_bukti"] = $seri_kuitansi_dt['seri_kuitansi'].  $seri_kuitansi_dt['no_kuitansi'];
+        $dataAkunting["tgl_transaksi"] = date("Y-m-d H:i:s");
+        $dataAkunting["uraian_transaksi"] = 'Pendapatan Farmasi BPJS '.$seri_kuitansi_dt['seri_kuitansi'].' '.$_POST['no_mr_val'].' - '.$_POST['nama_pasien_val'];
+        $dataAkunting["total_nominal"] = $_POST['total_payment_all'];
+        $dataAkunting["nama_pasien"] = $_POST['nama_pasien_val'];
+        $dataAkunting["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
+        $dataAkunting["no_mr"] = $_POST['no_mr_val'];
+        $dataAkunting["kode_tc_trans_kasir"] = $dataTranskasir["kode_tc_trans_kasir"];
+        $this->db->insert('ak_tc_transaksi', $dataAkunting);
+        $new_id_ak_tc_transaksi = $this->db->insert_id();
+        
+        // jurnal accounting
+        $this->create_jurnal($dataTranskasir, $dataAkunting, $new_id_ak_tc_transaksi);
+
+        // update tgl keluar registrasi
+        $tgl_keluar_pasien = $this->master->get_tgl_keluar($_POST['no_registrasi']);
+
+        $this->db->update('tc_registrasi', array('tgl_jam_keluar' => $tgl_keluar_pasien), array('no_registrasi' => $_POST['no_registrasi']) );
+        
+        
+        
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakaukan'));
+        }
+        
+    }
+
 
     public function find_data()
     {   

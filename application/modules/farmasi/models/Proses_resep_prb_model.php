@@ -144,5 +144,20 @@ class Proses_resep_prb_model extends CI_Model {
 		return $this->db->join('fr_tc_far_detail_log','(fr_tc_far_detail_log.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far AND fr_tc_far_detail_log.kode_brg=fr_tc_far_detail_log_prb.kode_brg)','left')->join('fr_tc_far', 'fr_tc_far.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far', 'left')->get_where('fr_tc_far_detail_log_prb', array('fr_tc_far_detail_log_prb.kode_trans_far' => $kode_trans_far))->result();		
 	}
 
+	public function get_log_mutasi($kode_trans_far){
+		$this->db->select('fr_tc_log_mutasi_obat.*, fr_tc_far_detail_log_prb.nama_brg, satuan_kecil, harga_satuan');
+		$this->db->join('fr_tc_far_detail_log_prb','fr_tc_far_detail_log_prb.id_fr_tc_far_detail_log_prb=fr_tc_log_mutasi_obat.id_fr_tc_far_detail_log_prb','left');
+		$this->db->order_by('kode_log_mutasi_obat','ASC');
+		if(isset($_GET['kode_log_mutasi']) AND $_GET['kode_log_mutasi'] != ''){
+			$this->db->where('kode_log_mutasi_obat', $_GET['kode_log_mutasi']);
+		}
+		$query = $this->db->get_where('fr_tc_log_mutasi_obat', array('fr_tc_log_mutasi_obat.kode_trans_far' => $kode_trans_far))->result();
+		$getData = [];
+		foreach ($query as $key => $value) {
+			$getData[$value->kode_log_mutasi_obat][] = $value;
+		}
+		return $getData;
+	}
+
 
 }

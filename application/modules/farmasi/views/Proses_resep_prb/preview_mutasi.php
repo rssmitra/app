@@ -10,7 +10,7 @@
       </h1>
     </div> 
 
-    <center><span style="font-size: 12px;"><strong><u>LOG PENGAMBILAN OBAT</u></strong><br>
+    <center><span style="font-size: 12px;"><strong><u>PENGAMBILAN OBAT</u></strong><br>
     No. PBLOG-<?php echo $value->kode_trans_far?> - <?php echo $value->no_resep?>
     </span></center>
 
@@ -37,48 +37,61 @@
       </tr>
     </table>
 
-    <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
+    <table style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
       <thead>
           <tr style="background-color: #e4e7e8;color: #0a0a0a;border-bottom: 1px solid black; border-collapse: collapse">
-            <td style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">No</td>
-            <td style="border-bottom: 1px solid black; border-collapse: collapse">Nama Obat</td>
-            <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Jumlah Tebus</td>
-            <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Satuan</td>
-            <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Total Mutasi</td>
-            <td style="text-align:center; width: 100px; border-bottom: 1px solid black; border-collapse: collapse">Sisa Obat</td>
+            <td style="text-align:center; width: 5%; border-bottom: 1px solid black; border-collapse: collapse">No</td>
+            <td style="border-bottom: 1px solid black; width: 60%; border-collapse: collapse">Nama Obat</td>
+            <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Jumlah</td>
+            <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Satuan</td>
+            <td style="text-align:center; width: 15%; border-bottom: 1px solid black; border-collapse: collapse">Subtotal</td>
           </tr>
       </thead>
           <?php 
             $no=0; 
-            foreach($resep as $key_dt=>$row_dt) : $no++; 
-            $sisa = $row_dt->jumlah - $row_dt->log_jml_mutasi;
+            foreach($log_mutasi as $key_dt=>$row_dt) : 
+            $dt_header = $log_mutasi[$key_dt][0]; 
+              foreach ($row_dt as $key_rd => $value_rd) :
+                 $no++;  
+            $sub_total = $value_rd->harga_satuan * $value_rd->jumlah_mutasi_obat;
+            $arr_total[] = $sub_total;
           ?>
 
             <tr>
-              <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
-              <td style="border-collapse: collapse"><?php echo $row_dt->nama_brg?></td>
-              <td style="text-align:center; border-collapse: collapse"><?php echo number_format($row_dt->jumlah);?></td>
-              <td style="text-align: center; border-collapse: collapse"><?php echo $row_dt->satuan_kecil; ?></td>
-              <td style="text-align:center; border-collapse: collapse"><?php echo number_format($row_dt->log_jml_mutasi);?></td>
-              <td style="text-align:center; border-collapse: collapse"><?php echo number_format((int)$sisa)?></td>
+              <td style="text-align:center; width: 5%; border-collapse: collapse"><?php echo $no?>.</td>
+              <td style="border-collapse: collapse; width: 60%; "><?php echo $value_rd->nama_brg;?></td>
+              <td style="text-align:center; width: 10%; border-collapse: collapse"><?php echo number_format($value_rd->jumlah_mutasi_obat);?></td>
+              <td style="text-align:left; width: 10%; border-collapse: collapse"><?php echo $value_rd->satuan_kecil?></td>
+              <td style="text-align:right; width: 15%; border-collapse: collapse"><?php echo number_format($sub_total)?></td>
+            </tr>
+            
+          <?php endforeach; endforeach;?>
+
+            <tr>
+              <td colspan="4" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
+              <td style="text-align:right; border-top: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_total))?></td>
+            </tr>
+            <tr>
+              <td colspan="5" style="text-align:left; border-top: 1px solid black; border-collapse: collapse">
+              <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_total)))?> Rupiah"</i></b>
+              </td>
             </tr>
 
-          <?php endforeach;?>
-
     </table>
+    <p style="font-size: 12px; font-style: italic">Kode Log : <?php echo $dt_header->kode_log_mutasi_obat?></p>
 
-    Catatan : Khusus resep PRB
+    Catatan : Khusus Resep Obat Kronis
     <table style="width: 100% !important; text-align: center">
       <tr>
         <td style="text-align: left; width: 30%">&nbsp;</td>
         <td style="text-align: center; width: 40%">&nbsp;</td>
-        <td style="text-align: center; width: 30%">
-          <span style="font-size: 14px"><b>Petugas</b></span><br>
-          <?php echo isset($resep[0]->log_user_mutasi)?$resep[0]->log_user_mutasi:'-';?>
-          <br>
-          <?php echo isset($resep[0]->log_tgl_mutasi)?$this->tanggal->formatDateTime($resep[0]->log_tgl_mutasi):'-';?>
+         <td style="text-align: center; width: 30%">
+            <span style="font-size: 14px"><b>Petugas</b></span><br>
+            <?php echo isset($dt_header->created_by)?$dt_header->created_by:'-';?>
+            <br>
+            <?php echo isset($dt_header->created_date)?$this->tanggal->formatDateTime($dt_header->created_date):'-';?>
 
-        </td>
+          </td>
       </tr>
       
     </table>
@@ -90,7 +103,7 @@
     <button onclick="getMenu('farmasi/Proses_resep_prb');" class="btn btn-xs btn-purple" title="Lihat Riwayat Resep">
         <i class="fa fa-history dark"></i> Riwayat Resep PRB
     </button>
-    <button onclick="PopupCenter('farmasi/Verifikasi_resep_prb/nota_farmasi/<?php echo $value->kode_trans_far?>?flag=RJ')" class="btn btn-xs btn-success" title="Nota Farmasi">
+    <button onclick="PopupCenter('farmasi/Proses_resep_prb/nota_farmasi/<?php echo $value->kode_trans_far?>?flag=<?php echo $flag; ?>&kode_log_mutasi=<?php echo $dt_header->kode_log_mutasi_obat?>')" class="btn btn-xs btn-success" title="Nota Farmasi">
         <i class="fa fa-print dark"></i> Nota Farmasi
     </button>
 

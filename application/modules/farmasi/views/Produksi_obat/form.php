@@ -130,7 +130,7 @@ $(document).ready(function(){
           var label_item=item.split(':')[1];
           console.log(val_item);
           $('#inputKeyObat').val(label_item);
-          $('#kode_brg_hidden').val(val_item);
+          $('#kode_brg_hidden_detail').val(val_item);
           var detailObat = getDetailObatByKodeBrg(val_item, '060101');
           $('#jumlah_kcl').focus();
 
@@ -170,108 +170,124 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag){
       <div class="widget-body">
         <div class="widget-main no-padding">
           <form class="form-horizontal" method="post" id="form_Produksi_obat" action="<?php echo site_url('farmasi/Produksi_obat/process')?>" enctype="multipart/form-data" autocomplete="off">
-            <br>
             <!-- hidden form -->
             <input type="hidden" name="id_tc_prod_obat" id="id_tc_prod_obat" value="<?php echo isset($value)?$value->id_tc_prod_obat:0?>">
 
-            <p style="font-weight: bold">KOMPOSISI OBAT</p>
+            <p style="font-weight: bold">KOMPOSISI OBAT PRODUKSI</p>
+            <div class="col-xs-7 no-padding">
 
-            <div class="form-group">
-              <label class="control-label col-md-2">Nama Obat</label>
-              <div class="col-md-4">
-                <input name="name" id="inputKeyObat" value="" placeholder="" class="form-control" type="text" >
-                <input type="hidden" name="kode_brg_hidden" id="kode_brg_hidden" value="<?php echo isset($value)?$value->kode_brg:''?>">
-              </div>
-              <label class="control-label col-md-1">Jumlah</label>
-              <div class="col-md-2">
-                <input name="name" id="inputKeyObat" value="" placeholder="" class="form-control" type="text" >
-              </div>
-              <div class="col-md-1" style="margin-left: -2%">
-                <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-success">
-                  <i class="ace-icon fa fa-plus dark icon-on-right bigger-110"></i>
-                  Tambah Komposisi
-                </button>
-              </div>
-            </div>
-
-            <table id="list-produksi-obat-table" class="table-utama" style="width: 85% !important;margin-top: -1%">
-              <thead>
-                <tr style="background-color: #e4e7e8;color: #0a0a0a;border-bottom: 1px solid black; border-collapse: collapse">  
-                  <th width="30px" class="center">No</th>
-                  <th style="text-align:left; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">Nama Obat</th>
-                  <th style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">Satuan</th>
-                  <th style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">Jumlah</th>
-                  <th style="text-align:right; width: 50px; border-bottom: 1px solid black; border-collapse: collapse" >Harga Satuan</th>
-                  <th style="text-align:right; width: 50px; border-bottom: 1px solid black; border-collapse: collapse" >Sub Total</th>
-                  <th width="30px" class="center"></th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="5" align="right"><b>Total Harga</b></td>
-                  <td align="right"><span id="subtotal">0</span></td>
-                </tr>
-              </tfoot>
-            </table>
-
-            <p style="font-weight: bold">PRODUKSI OBAT FARMASI</p>
-            <div class="form-group">
-              <label class="control-label col-md-2">Nama Obat Produksi</label>
-              <div class="col-md-4">
-                <input name="name" id="inputKeyObat" value="<?php echo isset($value)?$value->nama_brg:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
-                <input type="hidden" name="kode_brg_hidden" id="kode_brg_hidden" value="<?php echo isset($value)?$value->kode_brg:''?>">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">Jumlah Produksi</label>
-              <div class="col-md-1">
-                <input name="jumlah_prod" id="jumlah_prod" value="<?php echo isset($value)?$value->jumlah_prod:''?>" placeholder="" class="format_number form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+              <div class="col-xs-6 no-padding">
+                <label for="form-field-8">Nama Obat : </label>
+                <input name="name" id="inputKeyObat" value="" placeholder="Masukan Keyword" class="form-control" type="text" >
+                <input type="hidden" name="kode_brg_hidden_detail" id="kode_brg_hidden_detail" value="<?php echo isset($value)?$value->kode_brg:''?>">
               </div>
 
-              <label class="control-label col-md-1">Rasio</label>
-              <div class="col-md-1">
-                <input name="rasio" id="rasio" value="<?php echo isset($value)?$value->rasio:''?>" placeholder="" class="format_number form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+              <div class="col-xs-4">
+                <label for="form-field-8">Jumlah Obat : </label>
+                <div class="input-group">
+                <input name="jumlah_kcl" id="jumlah_kcl" value="" placeholder="" class="form-control" type="text" style="text-align:center;">
+                  <span class="input-group-btn">
+                    <button class="btn btn-sm btn-default" type="submit" id="btnSave" name="submit" value="detail">
+                      <i class="ace-icon fa fa-shopping-cart bigger-110"></i>
+                      Add !
+                    </button>
+                  </span>
+                </div>
+                
               </div>
 
-              <label class="control-label col-md-2">Jasa Produksi (%)</label>
-              <div class="col-md-2">
-                <input name="jasa_prod" id="jasa_prod" value="<?php echo isset($value)?$value->jasa_prod:''?>" placeholder="" class="format_number form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+              <div class="col-xs-12 no-padding">
+              <table id="list-produksi-obat-table" class="table-utama" style="width: 90% !important;margin-top: -1%">
+                <thead>
+                  <tr style="background-color: #e4e7e8;color: #0a0a0a;border-bottom: 1px solid black; border-collapse: collapse">  
+                    <th width="30px" class="center">No</th>
+                    <th style="text-align:left; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">Nama Obat</th>
+                    <th style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">Satuan</th>
+                    <th style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">Jumlah</th>
+                    <th style="text-align:right; width: 50px; border-bottom: 1px solid black; border-collapse: collapse" >Harga Satuan</th>
+                    <th style="text-align:right; width: 50px; border-bottom: 1px solid black; border-collapse: collapse" >Sub Total</th>
+                    <th width="30px" class="center"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5" align="right"><b>Total Harga</b></td>
+                    <td align="right"><span id="subtotal">0</span></td>
+                  </tr>
+                </tfoot>
+              </table>
               </div>
 
-            </div>
+              <div class="col-xs-12 no-padding">
+                <p style="font-weight: bold">PRODUKSI OBAT FARMASI</p>
+                <div class="form-group">
+                  <label class="control-label col-md-2">Nama Produksi</label>
+                  <div class="col-md-6">
+                    <input name="name" id="inputKeyObat" value="<?php echo isset($value)?$value->nama_brg:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+                    <input type="hidden" name="kode_brg_hidden" id="kode_brg_hidden" value="<?php echo isset($value)?$value->kode_brg:''?>">
+                  </div>
+                </div>
 
-            <div class="form-group">
-                <label class="control-label col-md-2">Tgl Produksi</label>
-                <div class="col-md-2">
-                    <div class="input-group">
-                      <input name="tgl_resep" id="tgl_resep" placeholder="" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo isset($value)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_prod):''?>">
-                      <span class="input-group-addon">
-                        <i class="ace-icon fa fa-calendar"></i>
-                      </span>
+                <div class="form-group">
+                  <label class="control-label col-md-2">Jumlah Produksi</label>
+                  <div class="col-md-2">
+                    <input name="jumlah_prod" id="jumlah_prod" value="<?php echo isset($value)?$value->jumlah_prod:''?>" placeholder="" class="format_number form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> style="text-align: center">
+                  </div>
+
+                  <label class="control-label col-md-1">Rasio</label>
+                  <div class="col-md-2">
+                    <input name="rasio" id="rasio" value="<?php echo isset($value)?$value->rasio:''?>" placeholder="" class="format_number form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> style="text-align: center">
+                  </div>
+
+                  <label class="control-label col-md-2">Jasa Produksi (%)</label>
+                  <div class="col-md-2">
+                    <input name="jasa_prod" id="jasa_prod" value="<?php echo isset($value)?$value->jasa_prod:''?>" placeholder="" class="format_number form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> style="text-align: right">
+                  </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">Tgl Produksi</label>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                          <input name="tgl_resep" id="tgl_resep" placeholder="" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo isset($value)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_prod):''?>">
+                          <span class="input-group-addon">
+                            <i class="ace-icon fa fa-calendar"></i>
+                          </span>
+                        </div>
+                    </div>
+                    <label class="control-label col-md-2">Tgl Expired</label>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                          <input name="tgl_resep" id="tgl_resep" data-date-format="yyyy-mm-dd" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo isset($value)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_expired):''?>">
+                          <span class="input-group-addon">
+                            <i class="ace-icon fa fa-calendar"></i>
+                          </span>
+                        </div>
                     </div>
                 </div>
-                <label class="control-label col-md-1">Tgl Expired</label>
-                <div class="col-md-2">
-                    <div class="input-group">
-                      <input name="tgl_resep" id="tgl_resep" data-date-format="yyyy-mm-dd" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo isset($value)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_expired):''?>">
-                      <span class="input-group-addon">
-                        <i class="ace-icon fa fa-calendar"></i>
-                      </span>
-                    </div>
+
+                <div class="form-group">
+                  <label class="col-md-2">&nbsp;</label>
+                  <div class="col-md-1">
+                    <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info">
+                      <i class="ace-icon fa fa-check-circle dark icon-on-right bigger-110"></i>
+                      Submit
+                    </button>
+                  </div>
                 </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-2">&nbsp;</label>
-              <div class="col-md-1">
-                <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info">
-                  <i class="ace-icon fa fa-check-circle dark icon-on-right bigger-110"></i>
-                  Submit
-                </button>
               </div>
+
             </div>
+
+            <div class="col-xs-5">
+              <div id="detailObatHtml"></div>
+            </div>
+            
+
+            
 
             <!-- <br>
             <p style="font-weight: bold">KETERANGAN HARGA</p>

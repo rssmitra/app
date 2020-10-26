@@ -189,7 +189,7 @@ class Etiket_obat extends MX_Controller {
             
             $row[] = '<div class="center"><a href="#" onclick="update_data('.$row_list->kode_trans_far.')">'.$row_list->kode_trans_far.'</a></div>';
 
-            // $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
+            $row[] = '<div class="center">'.$row_list->no_resep.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
