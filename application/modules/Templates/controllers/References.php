@@ -1322,7 +1322,7 @@ class References extends MX_Controller {
 		$this->load->library('tarif');
 
 		// stok umum
-        $this->db->select('a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image');
+        $this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content');
         $this->db->from('tc_kartu_stok a, mt_barang b, mt_rekap_stok c');
         $this->db->where('a.kode_brg=b.kode_brg');
 		$this->db->where('b.kode_brg=c.kode_brg');
@@ -1349,6 +1349,7 @@ class References extends MX_Controller {
 
 		$html = '';
 		if(count($exc) > 0){
+			$html .= '<input type="hidden" name="id_obat" value="'.$exc[0]->id_obat.'">';
 			$html .= '<input type="hidden" name="kode_brg" value="'.$exc[0]->kode_brg.'">';
 			$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_brg.'">';
 			$html .= '<input type="hidden" name="pl_satuan_kecil" value="'.$exc[0]->satuan_kecil.'">';
@@ -1551,6 +1552,7 @@ class References extends MX_Controller {
 		$this->db->join('mt_master_pasien c ', 'c.no_mr=b.no_mr' ,'left');
 		$this->db->join('mt_bagian d ', 'd.kode_bagian=a.kode_bagian_tujuan' ,'left');
 		$this->db->join('(select no_kunjungan, kode_pesan_resep, COUNT(kode_pesan_resep) as jml_pesan from fr_listpesanan_v group by no_kunjungan, kode_pesan_resep) as total_pesan', 'total_pesan.no_kunjungan=a.no_kunjungan' ,'left');
+		$this->db->where('SUBSTRING(kode_bagian_tujuan,1,2) = '."'01'".'');
 
 		if( isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			if($_GET['search_by']=='c.nama_pasien'){
@@ -1561,7 +1563,7 @@ class References extends MX_Controller {
 		}
 
 		if( isset($_GET['tgl_pelayanan']) AND $_GET['tgl_pelayanan'] != '' ){
-			$this->db->where("convert(varchar,a.tgl_masuk,23) = '".$_GET['tgl_pelayanan']."'");
+			$this->db->where("CAST(a.tgl_masuk as DATE) = '".$_GET['tgl_pelayanan']."'");
 		}else{
 			$this->db->where('MONTH(a.tgl_masuk)', date('m') );
 			$this->db->where('YEAR(a.tgl_masuk)', date('Y') );

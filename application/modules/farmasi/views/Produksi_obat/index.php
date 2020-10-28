@@ -34,7 +34,7 @@
           <th>Tgl Expired</th>
           <th>Jumlah</th>
           <th>Total Harga Prod</th>
-          <th>Harga Satuan (+ppn)</th>
+          <th>Harga Satuan</th>
         </tr>
       </thead>
       <tbody>

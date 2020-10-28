@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Produksi_obat_model extends CI_Model {
 
 	var $table = 'tc_prod_obat';
-	var $column = array('tc_prod_obat.kode_brg');
+	var $column = array('tc_prod_obat.nama_brg_prod');
 	var $select = ' tc_prod_obat.id_tc_prod_obat, tc_prod_obat.nama_brg_prod, tc_prod_obat.satuan_prod, tc_prod_obat.kode_brg_prod, tc_prod_obat.id_obat_prod, tc_prod_obat.jasa_r, tc_prod_obat.jasa_prod, tc_prod_obat.jumlah_prod, tc_prod_obat.flag_proses, tc_prod_obat.harga_prod, tc_prod_obat.tgl_prod, tc_prod_obat.tgl_expired, tc_prod_obat.input_id, tc_prod_obat.input_tgl,rasio,harga_satuan, mt_barang.nama_brg';
 
 	var $order = array('tc_prod_obat.id_tc_prod_obat' => 'DESC');
@@ -19,7 +19,7 @@ class Produksi_obat_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('mt_barang', 'mt_barang.kode_brg=tc_prod_obat.kode_brg_prod' , 'left');
-		$this->db->where('kode_brg_prod IS NOT NULL');
+		$this->db->where('nama_brg_prod IS NOT NULL');
 
 	}
 
@@ -138,6 +138,12 @@ class Produksi_obat_model extends CI_Model {
 		$get_data = $this->get_by_id($id);
 		$this->db->where_in(''.$this->table.'.id_tc_prod_obat', $id);
 		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
+	}
+
+	public function delete_item_komposisi($id)
+	{
+		$this->db->where('tc_prod_obat_det.id_tc_prod_obat_det', $id);
+		return $this->db->delete('tc_prod_obat_det');
 	}
 
 	public function get_komposisi_obat($id){

@@ -12,7 +12,7 @@
       body{
         /* width: 500px; */
         margin:0px 0px 0px 0px;
-        /*font: 12px/normal tahoma;*/
+        font: 12px/normal tahoma;
       }
       .navbar{
         width:100%;
@@ -115,16 +115,13 @@
   </style>
 
 </head>
-<body>
+<body class="page">
 
-   <!-- <div class="navbar"> -->
+  <div class="navbar">
+    <button class="btn btn-danger" onClick="window.close()"><i class="fa fa-times-circle"></i></button>
+    <button class="btn btn-primary" onClick="window.print()"><i class="fa fa-print"></i></button>
+  </div>
 
-   <div class="navbar">
-			<button class="btn btn-danger" onClick="window.close()"><i class="fa fa-times-circle"></i></button>
-			<button class="btn btn-primary" onClick="window.print()"><i class="fa fa-print"></i></button>
-		</div>
-
-	<!-- </div> -->
 
   <div class="center">
       <h3>NOTA <?php echo strtoupper($value[0]->bagian) ?></h3><br>
