@@ -1552,7 +1552,8 @@ class References extends MX_Controller {
 		$this->db->join('mt_master_pasien c ', 'c.no_mr=b.no_mr' ,'left');
 		$this->db->join('mt_bagian d ', 'd.kode_bagian=a.kode_bagian_tujuan' ,'left');
 		$this->db->join('(select no_kunjungan, kode_pesan_resep, COUNT(kode_pesan_resep) as jml_pesan from fr_listpesanan_v group by no_kunjungan, kode_pesan_resep) as total_pesan', 'total_pesan.no_kunjungan=a.no_kunjungan' ,'left');
-		$this->db->where('SUBSTRING(kode_bagian_tujuan,1,2) = '."'01'".'');
+		$arr_kode_bagian = array('01','02');
+		$this->db->where_in('SUBSTRING(kode_bagian_tujuan,1,2)', $arr_kode_bagian);
 
 		if( isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			if($_GET['search_by']=='c.nama_pasien'){
