@@ -284,14 +284,14 @@ class Produksi_obat extends MX_Controller {
 
                 $this->db->where(array('kode_brg' => $_POST['kode_brg_prod'], 'kode_bagian_gudang' => $_POST['kode_bagian_gudang']))->update('mt_rekap_stok', $rekap_stok );
                 // tambahkan ke stok gudang
-                $this->stok_barang->stock_process($_POST['kode_brg_prod'], $_POST['jumlah_prod'], $_POST['kode_bagian_gudang'], 12 ,"", 'restore');
+                $this->stok_barang->stock_process($_POST['kode_brg_prod'], $_POST['jumlah_prod'], $_POST['kode_bagian_gudang'], 12 ,"(Produksi Obat)", 'restore');
                 
                 // komposisi item dipotong stok nya
                 $getItemObat = $this->db->get_where('tc_prod_obat_det', array('id_tc_prod_obat' => $newIdProdObat) )->result();
                 foreach ($getItemObat as $k => $v) {
-                    // print_r($v->kode_brg);die;
-                    $this->stok_barang->stock_process($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"", 'reduce');
-                    // $this->db->trans_commit();
+                    // $this->stok_barang->stock_process($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"", 'reduce');
+                    $this->stok_barang->stock_process($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"(Bahan Produksi)", 'reduce');
+
                 }
 
             }

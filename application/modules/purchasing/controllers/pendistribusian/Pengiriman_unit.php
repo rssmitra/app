@@ -282,6 +282,7 @@ class Pengiriman_unit extends MX_Controller {
                 $dt_detail['created_date'] = date('Y-m-d H:i:s');
                 $dt_detail['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 $id_permintaan_inst_det = $this->Pengiriman_unit->save($table.'_det', $dt_detail);
+
                 /*save logs*/
                 $this->logs->save($table.'_det', $id_permintaan_inst_det, 'insert new record on '.$this->title.' module', json_encode($dt_detail),'id_tc_permintaan_inst_det');
                 
@@ -290,7 +291,6 @@ class Pengiriman_unit extends MX_Controller {
 
                 // tambah stok depo
                 $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
-
                 
                 // update header permintaan_inst
                 $dt_upd_permintaan = array(
