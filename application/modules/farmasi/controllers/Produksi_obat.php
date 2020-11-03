@@ -69,11 +69,13 @@ class Produksi_obat extends MX_Controller {
         $this->breadcrumbs->push('View '.strtolower($this->title).'', 'Produksi_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*define data variabel*/
         $data['value'] = $this->Produksi_obat->get_by_id($id);
+        $komposisi_obat_dt = $this->Produksi_obat->get_komposisi_obat($id);
+        $data['komposisi'] = $komposisi_obat_dt;
         $data['title'] = $this->title;
         $data['flag'] = "read";
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Produksi_obat/form', $data);
+        $this->load->view('Produksi_obat/form_view', $data);
     }
 
     public function get_detail($id){
@@ -109,17 +111,25 @@ class Produksi_obat extends MX_Controller {
                       </div>';
             $row[] = '';
             $row[] = $row_list->id_tc_prod_obat;
+
+            $btn_delete = ($row_list->flag_proses == 0) ? '<li>'.$this->authuser->show_button('farmasi/Produksi_obat','D',$row_list->id_tc_prod_obat,6).'</li>':'';
+            $btn_rollback = ($row_list->flag_proses == 1) ? '<li><a href="#" onclick="rollback_produksi('.$row_list->id_tc_prod_obat.')">Rollback Produksi</a></li>':'';
             $row[] = '<div class="center"><div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
-                            <li>'.$this->authuser->show_button('farmasi/Produksi_obat','R',$row_list->id_tc_prod_obat,67).'</li>
-                            <li>'.$this->authuser->show_button('farmasi/Produksi_obat','U',$row_list->id_tc_prod_obat,67).'</li>
-                            <li>'.$this->authuser->show_button('farmasi/Produksi_obat','D',$row_list->id_tc_prod_obat,6).'</li>
+                            '.$btn_delete.'
+                            '.$btn_rollback.'
+                           
+                            
                         </ul>
                       </div></div>';
-            $row[] = '<a href="#" onclick="getMenu('."'farmasi/Produksi_obat/form/".$row_list->id_tc_prod_obat."?flag=All'".')">'.strtoupper($row_list->nama_brg_prod).'</a>';
+            if($row_list->flag_proses == 0){
+                $row[] = '<a href="#" onclick="getMenu('."'farmasi/Produksi_obat/form/".$row_list->id_tc_prod_obat."?flag=All'".')">'.strtoupper($row_list->nama_brg_prod).'</a>';
+            }else{
+                $row[] = '<a href="#" onclick="getMenu('."'farmasi/Produksi_obat/show/".$row_list->id_tc_prod_obat."?flag=All'".')">'.strtoupper($row_list->nama_brg_prod).'</a>';
+            }
             $row[] = strtoupper($row_list->satuan_prod);
             $row[] = '<div class="center">'.$row_list->rasio.'</div>';
             $row[] = $this->tanggal->formatDateDmy($row_list->tgl_prod);
@@ -127,6 +137,8 @@ class Produksi_obat extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->jumlah_prod.'</div>';
             $row[] = '<div style="text-align: right">'.number_format($row_list->harga_prod).'</div>';
             $row[] = '<div style="text-align: right">'.number_format($row_list->harga_satuan).'</div>';
+            $status = ($row_list->flag_proses == 1) ? '<label class="label label-success" style="margin-bottom: 0px !important"><i class="fa fa-check-circle"></i> Selesai</label>':'<label class="label label-yellow" style="margin-bottom: 0px !important"><i class="fa fa-flask"></i> Dalam proses</label>';
+            $row[] = '<div class="center">'.$status.'</div>';
 
             $data[] = $row;
         }
@@ -284,21 +296,27 @@ class Produksi_obat extends MX_Controller {
 
                 $this->db->where(array('kode_brg' => $_POST['kode_brg_prod'], 'kode_bagian_gudang' => $_POST['kode_bagian_gudang']))->update('mt_rekap_stok', $rekap_stok );
                 // tambahkan ke stok gudang
-                $this->stok_barang->stock_process($_POST['kode_brg_prod'], $_POST['jumlah_prod'], $_POST['kode_bagian_gudang'], 12 ,"(Produksi Obat)", 'restore');
-                
+                $this->stok_barang->stock_process_produksi_obat($_POST['kode_brg_prod'], $_POST['jumlah_prod'], $_POST['kode_bagian_gudang'], 12 ,"(Produksi Obat)", 'restore');
+                // update rekap stok
+                $this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $_POST['jumlah_prod']), array('kode_brg' => $_POST['kode_brg_prod'], 'kode_bagian_gudang' => $_POST['kode_bagian_gudang'] ) );
+
                 // komposisi item dipotong stok nya
                 $getItemObat = $this->db->get_where('tc_prod_obat_det', array('id_tc_prod_obat' => $newIdProdObat) )->result();
                 foreach ($getItemObat as $k => $v) {
-                    // $this->stok_barang->stock_process($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"", 'reduce');
-                    $this->stok_barang->stock_process($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"(Bahan Produksi)", 'reduce');
-
+                    // kurang stok bahan komposisi
+                    $this->stok_barang->stock_process_produksi_obat($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"(Bahan Produksi)", 'reduce');
+                    // update rekap stok
+                    $this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $v->jumlah_obat), array('kode_brg' => $v->kode_brg, 'kode_bagian_gudang' => $_POST['kode_bagian_gudang'] ) );
+                    $this->db->trans_commit();
                 }
 
             }
 
             if($_POST['submit'] =='detail'){
                 if($id_tc_prod_obat==0){
-                    $data_temp_produksi['nama_brg_prod'] = 'Temporary';
+                    $data_temp_produksi['nama_brg_prod'] = 'Temporary - '.date('Y-m-d H:i:s');
+                    $data_temp_produksi['input_id'] = $this->session->userdata('user')->user_id;
+                    $data_temp_produksi['input_tgl'] = date('Y-m-d H:i:s');
                     $data_temp_produksi['created_date'] = date('Y-m-d H:i:s');
                     $data_temp_produksi['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                     /*save post data*/
@@ -350,6 +368,19 @@ class Produksi_obat extends MX_Controller {
             }
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
+
+    public function rollback_produksi()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        
+        if($this->Produksi_obat->rollback_produksi($id)){
+            $this->logs->save('tc_prod_obat', $id, 'rollback record', '', 'id_tc_prod_obat');
+            echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Berhasil Dilakukan'));
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Gagal Dilakukan'));
         }
         
     }

@@ -1,8 +1,9 @@
 <div class="row" style="padding-left: 20px">
     <left><span style="font-size: 12px;"><strong><u>PRODUKSI OBAT</u></strong><br>
     No. PROD -<?php echo $value->id_obat_prod; ?> - <?php echo $value->nama_brg_prod; ?>
-    </span></left>
-  <table class="table-utama" style="width: 60% !important;margin-top: 10px; margin-bottom: 10px">
+    </span></left><br><br>
+    Bahan baku produksi :
+  <table class="table-utama" style="width: 60% !important;margin-top: 0px; margin-bottom: 10px">
       <thead>
           <tr style="background-color: #c7cccb;color: #0a0a0a;border-bottom: 1px solid black; border-collapse: collapse; font-weight: bold">
             <td style="text-align:center; width: 30px; border-bottom: 1px solid black; border-collapse: collapse">No</td>
@@ -15,6 +16,7 @@
       </thead>
         <?php 
           $no=0; 
+          $arr_total = [];
           foreach($komposisi as $key_dt=>$row_dt) : $no++; 
           $subtotal = $row_dt->harga_beli * $row_dt->jumlah_obat;
           $arr_total[] = $subtotal;

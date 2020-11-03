@@ -252,6 +252,49 @@ final class Tarif extends AvObjects {
 
     }
 
+    public function _hitungBPAKOCurrentCustom($harga_beli, $kode_kelompok, $flag_kjs, $kode_brg, $kode_profit, $jumlah=1) {
+
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+
+        /*kategori obat/alkes*/
+        $kategori=substr($kode_brg,0,1);
+        $select_profit = ($kategori=='D')?'profit_obat':'profit_alkes';
+        /*get nilai profit*/
+        $db->select($select_profit);
+        $db->from('fr_mt_profit_margin');
+        $db->where('tingkat', 1);
+        
+        if( ($kode_kelompok==10) && ($flag_kjs==10) ){
+            $db->where('kode_profit', '10007');            
+        }else{
+            $db->where('kode_profit', $kode_profit);
+        }
+        $profit = $db->get()->row();
+        // print_r($profit);die;
+        if($profit->$select_profit != ''){
+            $nilai_profit = $profit->$select_profit;
+        }else{
+            $get_idp = $db->select('id_profit')->get_where('mt_rekap_stok', array('kode_brg' => $kode_brg) )->row();
+            if($get_idp->id_profit != ''){
+                $get_profit = $db->get_where('fr_mt_profit_margin', array('id_profit' => $get_idp->id_profit) )->row();
+                $nilai_profit = $get_profit->$select_profit;
+            }else{
+                $nilai_profit = 0;
+            }
+        }
+
+        $kenaikan_profit = ($nilai_profit * 0.01) + 1;
+        $total_harga_jual = ceil($harga_beli * $kenaikan_profit * $jumlah);
+        // print_r($total_harga_jual);
+        // print_r($harga_beli);
+        // print_r($kenaikan_profit);
+        // print_r($nilai_profit);
+        // print_r($jumlah);die;
+        return $total_harga_jual;
+
+    }
+
     function getTarifAktif($kode_tarif, $kode_klas){
 
         $CI =&get_instance();

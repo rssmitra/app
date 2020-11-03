@@ -177,6 +177,22 @@ $(document).ready(function(){
         }
     });
 
+    $( "#next_process" )
+      .click(function(event) {
+        $('#form_produksi_obat_header').show('fast');
+        $('#add_btn').hide();
+        $('#btn_udpate_data_bahan_baku').show();
+        $(this).hide();
+    });
+
+    $( "#btn_udpate_data_bahan_baku" )
+      .click(function(event) {
+        $('#form_produksi_obat_header').hide('fast');
+        $('#add_btn').show();
+        $('#next_process').show();
+        $(this).hide();
+    });
+
 })
 
 function getDetailObatByKodeBrg(kode_brg,kode_bag){
@@ -279,7 +295,7 @@ function hitung_harga_satuan(){
                 <label for="form-field-8">Jumlah Obat : </label>
                 <div class="input-group">
                 <input name="jumlah_kcl" id="jumlah_kcl" value="" placeholder="" class="form-control" type="text" style="text-align:center;">
-                  <span class="input-group-btn">
+                  <span class="input-group-btn" id="add_btn">
                     <button class="btn btn-sm btn-default" type="submit" id="btnSave" name="submit" value="detail">
                       <i class="ace-icon fa fa-shopping-cart bigger-110"></i>
                       Add !
@@ -312,14 +328,22 @@ function hitung_harga_satuan(){
                   </tfoot>
                 </table>
                 <div class="pull-right">
-                  <button type="submit" id="next_process" name="submit" value="next_to_prod" class="btn btn-sm btn-info">
+                  
+                  
+                  <button type="button" id="next_process" name="submit" value="next_to_prod" class="btn btn-sm btn-info">
                     Komposisi Selesai
                     <i class="ace-icon fa fa-arrow-circle-right icon-on-right bigger-110"></i>
                   </button>
+
+                  <button type="button" id="btn_udpate_data_bahan_baku" class="btn btn-sm btn-success" style="display:none">
+                    Update Bahan Baku
+                    <i class="ace-icon fa fa-pencil icon-on-right bigger-110"></i>
+                  </button>
+
                 </div>
               </div>
 
-              <div class="col-xs-12 no-padding" >
+              <div class="col-xs-12 no-padding" id="form_produksi_obat_header" style="display: none">
                 <p style="font-weight: bold">PRODUKSI OBAT FARMASI</p>
                 <div>
                   <div class="col-xs-12 no-padding">
@@ -361,14 +385,12 @@ function hitung_harga_satuan(){
                     </div>
 
                   </div>
-
-                  
-
+                 
                   <div class="form-group">
                       <label class="control-label col-md-3">Tgl Produksi</label>
                       <div class="col-md-3">
                           <div class="input-group">
-                            <input name="tgl_prod" id="tgl_prod" placeholder="" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo isset($value)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_prod):''?>">
+                            <input name="tgl_prod" id="tgl_prod" placeholder="" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo isset($value->tgl_prod)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_prod):date('Y-m-d')?>">
                             <span class="input-group-addon">
                               <i class="ace-icon fa fa-calendar"></i>
                             </span>
@@ -377,7 +399,7 @@ function hitung_harga_satuan(){
                       <label class="control-label col-md-3">Tgl Expired</label>
                       <div class="col-md-3">
                           <div class="input-group">
-                            <input name="tgl_expired" id="tgl_expired" data-date-format="yyyy-mm-dd" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo isset($value)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_expired):''?>">
+                            <input name="tgl_expired" id="tgl_expired" data-date-format="yyyy-mm-dd" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo isset($value->tgl_expired)?$this->tanggal->formatDateTimeToSqlDate($value->tgl_expired): date('Y-m-d', strtotime('+1 year', strtotime(date('Y-m-d')))) ?>">
                             <span class="input-group-addon">
                               <i class="ace-icon fa fa-calendar"></i>
                             </span>
@@ -386,7 +408,11 @@ function hitung_harga_satuan(){
                   </div>
                   
                   <div class="form-actions center">
-                    <button type="submit" id="next_process" name="submit" value="finish" class="btn btn-sm btn-info">
+                      <button type="button" onclick="getMenu('farmasi/Produksi_obat')" class="btn btn-sm btn-default">
+                        <i class="ace-icon fa fa-arrow-circle-left icon-on-right bigger-110"></i>
+                        Kembali ke sebelumnya
+                      </button>
+                      <button type="submit" id="finish" name="submit" value="finish" class="btn btn-sm btn-info">
                         Produksi Selesai
                         <i class="ace-icon fa fa-arrow-circle-right icon-on-right bigger-110"></i>
                       </button>

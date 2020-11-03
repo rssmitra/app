@@ -14,7 +14,7 @@ final Class Stok_barang{
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
         $CI->load->library('master');
-
+        
         $t_kartu_stok = ($kodeBagian=='070101') ? 'tc_kartu_stok_nm' : 'tc_kartu_stok' ;
         $t_depo_stok = ($kodeBagian=='070101') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
         $mt_rekap_stok = ($kodeBagian=='070101') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
@@ -24,6 +24,7 @@ final Class Stok_barang{
         if( $jumlah > 0 ) {
             /*get last kartu stok*/
             $kartu_stok = $db->order_by('id_kartu', 'DESC')->get_where($t_kartu_stok, array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian) )->row();
+            
             /*jumlah setelah ditambah dengan stok sebelumnya*/
             $stok_akhir_mutasi = isset($kartu_stok->stok_akhir)?$kartu_stok->stok_akhir:0;
             if($flag=='restore'){
@@ -31,6 +32,7 @@ final Class Stok_barang{
             }else{
                 $last_stok = $stok_akhir_mutasi - $jumlah;
             }
+            
             /*get max id kartu stok*/
             $id_kartu = $CI->master->get_max_number($t_kartu_stok, 'id_kartu');
             $dataexc["id_kartu"] = $id_kartu;
@@ -40,7 +42,7 @@ final Class Stok_barang{
             $dataexc["pengeluaran"] = ($flag=='reduce')?$jumlah:0;
             $dataexc["stok_akhir"] = $last_stok;
             $dataexc["jenis_transaksi"] = $jenisKartuStok;
-
+            
             if ($jenisKartuStok==15){
                 /*untuk jenis kartu cito*/
                 $depo_cito = $db->get_where('fr_depo_cito', array('kode_brg' => $kodeBrg) )->row();
@@ -53,15 +55,18 @@ final Class Stok_barang{
             $dataexc["keterangan"] = $ket_jenis_kartu->nama_jenis. ' ' .$keterangan;
             $dataexc["petugas"] = $CI->session->userdata('user')->user_id;
             $dataexc["tgl_input"]= date('Y-m-d H:i:s');
+            // print_r($dataexc);die;
             $db->insert($t_kartu_stok, $dataexc);
-
+            
             /*update mt_depo_stok*/
             $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian ) );
 
-            $db->update($mt_rekap_stok ,array('jml_sat_kcl' => $last_stok ), array('kode_brg' => $kodeBrg, 'kode_bagian_gudang' => $kodeBagian ) );
-           
+            $db->update($mt_rekap_stok ,array('jml_sat_kcl' => $last_stok), array('kode_brg' => $kodeBrg, 'kode_bagian_gudang' => $kodeBagian ) );
+            // print_r($db->last_query());die;
+                        
         }
 
+        // print_r($dataexc);die;
         return $dataexc;
 
     }
@@ -133,8 +138,7 @@ final Class Stok_barang{
                         $db->query('SET IDENTITY_INSERT '.$t_depo_stok.' ON');
                     }
                     $db->insert($t_depo_stok, $dt_depo);
-                }
-                
+                }                
                 
             }
             
@@ -144,6 +148,67 @@ final Class Stok_barang{
 
     }
 
+    function stock_process_produksi_obat($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag) {
+
+        // restore => untuk mengembalikan stok ke jumlah sebelumnya
+        // reduce => untuk mengurangi stok sesuai dengan jumlah yang dikirim
+
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        $CI->load->library('master');
+        
+        $t_kartu_stok = ($kodeBagian=='070101') ? 'tc_kartu_stok_nm' : 'tc_kartu_stok' ;
+        $t_depo_stok = ($kodeBagian=='070101') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
+        $mt_rekap_stok = ($kodeBagian=='070101') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+
+        $dataexc=array();
+        
+        if( $jumlah > 0 ) {
+            /*get last kartu stok*/
+            $kartu_stok = $db->order_by('id_kartu', 'DESC')->get_where($t_kartu_stok, array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian) )->row();
+            
+            /*jumlah setelah ditambah dengan stok sebelumnya*/
+            $stok_akhir_mutasi = isset($kartu_stok->stok_akhir)?$kartu_stok->stok_akhir:0;
+            if($flag=='restore'){
+                $last_stok = $stok_akhir_mutasi + $jumlah;
+            }else{
+                $last_stok = $stok_akhir_mutasi - $jumlah;
+            }
+            
+            /*get max id kartu stok*/
+            $id_kartu = $CI->master->get_max_number($t_kartu_stok, 'id_kartu');
+            $dataexc["id_kartu"] = $id_kartu;
+            $dataexc["kode_brg"] = $kodeBrg;
+            $dataexc["stok_awal"] = $stok_akhir_mutasi;
+            $dataexc["pemasukan"] = ($flag=='restore')?$jumlah:0;
+            $dataexc["pengeluaran"] = ($flag=='reduce')?$jumlah:0;
+            $dataexc["stok_akhir"] = $last_stok;
+            $dataexc["jenis_transaksi"] = $jenisKartuStok;
+            
+            if ($jenisKartuStok==15){
+                /*untuk jenis kartu cito*/
+                $depo_cito = $db->get_where('fr_depo_cito', array('kode_brg' => $kodeBrg) )->row();
+                $dataexc["harga_beli"] = $depo_cito->harga_beli;
+                $dataexc["harga_jual"] = $depo_cito->harga_jual;
+            }
+            
+            $dataexc["kode_bagian"] = $kodeBagian;
+            $ket_jenis_kartu = $db->get_where('mt_jenis_kartu_stok', array('jenis_transaksi' => $jenisKartuStok) )->row();
+            $dataexc["keterangan"] = $ket_jenis_kartu->nama_jenis. ' ' .$keterangan;
+            $dataexc["petugas"] = $CI->session->userdata('user')->user_id;
+            $dataexc["tgl_input"]= date('Y-m-d H:i:s');
+            // print_r($dataexc);die;
+            $db->insert($t_kartu_stok, $dataexc);
+            
+            /*update mt_depo_stok*/
+            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian ) );
+                        
+        }
+
+        // print_r($dataexc);die;
+        return $dataexc;
+
+    }
 
 }
 

@@ -20,6 +20,7 @@ class Produksi_obat_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('mt_barang', 'mt_barang.kode_brg=tc_prod_obat.kode_brg_prod' , 'left');
 		$this->db->where('nama_brg_prod IS NOT NULL');
+		$this->db->where('tc_prod_obat.created_date IS NOT NULL');
 
 	}
 
@@ -135,9 +136,8 @@ class Produksi_obat_model extends CI_Model {
 
 	public function delete_by_id($id)
 	{
-		$get_data = $this->get_by_id($id);
 		$this->db->where_in(''.$this->table.'.id_tc_prod_obat', $id);
-		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
+		return $this->db->delete($this->table);
 	}
 
 	public function delete_item_komposisi($id)
@@ -151,6 +151,38 @@ class Produksi_obat_model extends CI_Model {
 		$this->db->where('id_tc_prod_obat', $id);
 		$query = $this->db->get()->result();
 		return $query;
+	}
+	
+	public function rollback_produksi($id){
+		
+		$get_dt = $this->get_by_id($id);
+
+		// udpate obat produksi
+		$data_produksi['flag_proses'] = 0;
+		$data_produksi['updated_date'] = date('Y-m-d H:i:s');
+		$data_produksi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+		/*update record*/
+		$this->update(array('id_tc_prod_obat' => $id), $data_produksi);
+		/*save logs*/
+		$this->logs->save('tc_prod_obat', $id, 'update record on produksi obat module', json_encode($data_produksi),'id_tc_prod_obat');
+
+		// kurangkan stok gudang
+		$this->stok_barang->stock_process_produksi_obat($get_dt->kode_brg_prod, $get_dt->jumlah_prod, '060201', 22 , "No. ".$id."(Produksi Obat)", 'reduce');
+		// update rekap stok
+		$this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $get_dt->jumlah_prod), array('kode_brg' => $get_dt->kode_brg_prod, 'kode_bagian_gudang' => '060201' ) );
+
+		// komposisi item ditambah stok nya
+		$getItemObat = $this->db->get_where('tc_prod_obat_det', array('id_tc_prod_obat' => $id) )->result();
+		foreach ($getItemObat as $k => $v) {
+			// kurang stok bahan komposisi
+			$this->stok_barang->stock_process_produksi_obat($v->kode_brg, $v->jumlah_obat, '060201', 22 ,"No. ".$id." (Bahan Produksi)", 'restore');
+			// update rekap stok
+			$this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $v->jumlah_obat), array('kode_brg' => $v->kode_brg, 'kode_bagian_gudang' => '060201' ) );
+			$this->db->trans_commit();
+		}
+
+		return true;
+
 	}
 
 }
