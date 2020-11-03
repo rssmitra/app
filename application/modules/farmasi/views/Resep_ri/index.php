@@ -34,6 +34,7 @@ $(document).ready(function(){
     "searching": false,
     "bPaginate": true,
     "bInfo": false,
+    "pageLength": 25,
     // Load data for the table's content from an Ajax source
     /*"ajax": {
         "url": "farmasi/Resep_ri/get_data?search_by="+$("#search_by").val()+"&keyword="+$("#keyword_form").val()+"&from_tgl="+$("#from_tgl").val()+"&to_tgl="+$("#to_tgl").val()+"",
