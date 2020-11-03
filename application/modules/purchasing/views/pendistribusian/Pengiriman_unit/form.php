@@ -153,7 +153,7 @@ function hide_this_div( div ){
                   Kembali ke daftar
               </a>
 
-              <form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/pendistribusian/Distribusi_permintaan/process')?>" enctype="multipart/form-data" style="margin-top: -10px">
+              <form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/pendistribusian/Distribusi_permintaan/process')?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
                 <br>
                 <!-- input form hidden -->
                 <input type="hidden" name="flag" id="flag_string" value="<?php echo $string?>">
