@@ -329,7 +329,7 @@ th, td {
       <div class="widget-body">
         <div class="widget-main no-padding">
 
-          <form class="form-horizontal">
+          <form class="form-horizontal" autocomplete="off">
 
               <div class="row">
 
