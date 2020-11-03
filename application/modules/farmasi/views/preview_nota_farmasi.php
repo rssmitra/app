@@ -7,6 +7,13 @@ body{
 table{
   font-size: 12px;
 }
+
+@media print {
+  #printpagebutton {
+    display: none;
+  }
+}
+
 </style>
 <body>
 <!-- <table width="100%" border="0">

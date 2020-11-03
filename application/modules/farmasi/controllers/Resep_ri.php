@@ -176,12 +176,14 @@ class Resep_ri extends MX_Controller {
             $row[] = '<div class="left">'.$this->tanggal->formatDateTime($row_list->tgl_pesan).'</div>';
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->kode_pesan_resep;
+            $row[] = $row_list->kode_trans_far;
             $row[] = $row_list->nama_pegawai;
             $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
             $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
+            $label_retur = ($row_list->total_retur > 0) ? '<a href="#" onclick="show_modal_medium_return_json('."'farmasi/Retur_obat/show_retur_data/".$row_list->kode_pesan_resep."?no_mr=".$row_list->no_mr."'".', '."'HISTORY RETUR FARMASI'".')" ><span class="label label-yellow label-badge">'.$row_list->total_retur.'</span></a>' : '-' ;
+            $row[] = '<div class="center">'.$label_retur.'</div>';
             $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
             $row[] = '<div class="center">'.$status_tebus.'</div>';
-           
             $data[] = $row;
         }
 

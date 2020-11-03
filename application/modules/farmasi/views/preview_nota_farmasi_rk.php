@@ -33,6 +33,8 @@ table{
   border-radius: 0;
   padding: 0.5rem;
 }
+
+
 </style>
 <body>
 <!-- <table width="100%" border="0">

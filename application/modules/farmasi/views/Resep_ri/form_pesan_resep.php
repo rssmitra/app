@@ -313,13 +313,15 @@ function rollback_transaksi(kode_trans_far, kode_pesan_resep){
             <tr>  
                 <th width="40px"></th>
                 <th width="80px"></th>
-                <th>Tgl / Jam Pesan</th>
+                <th width="150px">Tgl / Jam Pesan</th>
                 <th>Bagian</th>
-                <th>No Pesan</th>
+                <th width="100px">No Pesan</th>
+                <th width="100px">No Transaksi</th>
                 <th>Nama Dokter</th>
-                <th>Lokasi Tebus</th>
-                <th>Jumlah R</th>
-                <th>Status</th>          
+                <th width="100px">Lokasi Tebus</th>
+                <th width="80px">Jumlah R</th>
+                <th width="100px">Jml Retur</th>
+                <th width="100px">Status</th>          
             </tr>
         </thead>
         <tbody>

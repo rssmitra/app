@@ -688,13 +688,17 @@ function changeUrgensi(){
                       <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
                       Resep Selesai
                 </button>
-                <?php else: ?>
+                <?php 
+                  else: 
+                    if($trans_farmasi->kode_tc_trans_kasir == '') :
+                ?>
+                  
                   <button type="button" id="btn_rollback" onclick="rollback_resep_farmasi(<?php echo $value->kode_pesan_resep?>)" class="btn btn-danger btn-xs" name="rollback" value="rollback">
                       <span class="ace-icon fa fa-refresh icon-on-right bigger-110"></span>
                       Rollback
                   </button>
                   <!-- <span class="ace-icon fa fa-check-circle icon-on-right bigger-150 green"></span> -->
-                <?php endif; ?>
+                    <?php else: echo '<span style="color: green;font-weight: bold;font-size: 26px;border: 1px solid;border-style: dashed; vertical-align: middle; padding: 2px 10px">Lunas'; endif; endif; ?>
 
               </div>
             </div>

@@ -18,6 +18,7 @@ class Retur_obat extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Retur_obat_model', 'Retur_obat');
+        $this->load->model('Farmasi_pesan_resep_model', 'Farmasi_pesan_resep');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -405,6 +406,50 @@ class Retur_obat extends MX_Controller {
         $this->load->view('farmasi/Retur_obat/preview_tracer_obat', $data);
     }
 
+    public function show_retur_data($id){
+        
+        $data = $this->Farmasi_pesan_resep->get_detail_by_id($id);
+        
+        $html = '';
+        $html_btn = '';
+        if(count($data) > 0){
+            $his_retur = $this->Retur_obat->get_history_retur($data[0]->kode_trans_far);
+            
+            if(count($his_retur) > 0){
+                $html .= '<p class="center">
+                            <span style="font-size: 16px; font-weight: bold">RETUR OBAT FARMASI</span><br>
+                            <span>Riwayat Retur Obat Farmasi dengan Kode Transaksi '.$data[0]->kode_trans_far.'</span>
+                          </p>';
+                foreach ($his_retur as $khr => $vhr) {
+                    $html .= 'No. Retur : '.$khr.' &nbsp;&nbsp;&nbsp; Tgl. '.$this->tanggal->formatDateTimeFormDmy($vhr[0]->tgl_his_retur).'';
+                    $html .= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="PopupCenter('."'farmasi/Retur_obat/nota_retur/".$khr."'".')"><i class="fa fa-print dark bigger-150"></i> </a>';
+                    $html .= '<table class="table" style="width: 100%">';
+                    $html .= '<thead>';
+                    $html .= '<tr>';
+                    $html .= '<th class="center">No</th><th>Nama Obat</th><th width="100px">Jumlah Retur</th><th class="center">Subtotal</th><th class="center">Undo</th>';
+                    $html .= '</tr>';
+                    $html .= '</thead>';
+                    $no = 1;
+                    foreach ($vhr as $k_sub_dt => $v_sub_dt) {
+                        # code...
+                        $html .= '<tr>';
+                        $html .= '<td align="center">'.$no.'</td>';
+                        $html .= '<td>'.$v_sub_dt->nama_brg.'</td>';
+                        $html .= '<td align="center">'.$v_sub_dt->jumlah_retur_his.'</td>';
+                        $html .= '<td align="right">'.number_format($v_sub_dt->biaya_retur_his).'</td>';
+                        $html .= '<td align="center"><a href="#" onclick="undo_retur('.$v_sub_dt->kd_his.', '.$v_sub_dt->kd_tr_resep.', '.$data[0]->kode_trans_far.')" class="btn btn-xs btn-danger"><i class="fa fa-undo"></i></a></td>';
+                        $html .= '</tr>';
+                        $no++;
+                    }
+                    $html .= '</table>';
+                }
+            }
+        }else{
+            $html .= '<div style="border-bottom:1px solid #333;"><b>Belum diproses</b></div><br>';
+        }
+        
+        echo json_encode(array('html' => $html));
+    }
 
 }
 

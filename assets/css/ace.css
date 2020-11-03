@@ -20074,3 +20074,8 @@ td.details-control {
     background-color: azure;
 }
 
+@media print {
+  #printpagebutton {
+    display: none;
+  }
+}
