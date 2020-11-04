@@ -103,7 +103,7 @@ class Entry_resep_racikan_model extends CI_Model {
 	public function get_detail_by_id($id)
 	{
 		$this->_main_query();
-		$this->db->select('mt_barang.harga_beli as harga_beli_master');
+		$this->db->select('mt_barang.harga_beli as harga_beli_master, tc_far_racikan.jml_content');
 		$this->db->where_in('tc_far_racikan.id_tc_far_racikan',$id);
 		$query = $this->db->get();
 		return $query->result();

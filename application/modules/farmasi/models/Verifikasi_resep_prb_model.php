@@ -142,6 +142,72 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		return $this->db->join('fr_tc_far', 'fr_tc_far.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far', 'left')->get_where('fr_tc_far_detail_log_prb', array('fr_tc_far_detail_log_prb.kode_trans_far' => $kode_trans_far))->result();		
 	}
 
+	public function insert_verify($kode_trans_far)
+	{
+		// get data resep
+		$resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
+        foreach($resep_log as $row){
+            $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
+            $row['racikan'][] = $racikan;
+            $getData[] = $row;
+        }
+
+		// echo '<pre>';print_r($getData);die;
+
+		foreach( $getData as $key => $row ){
+
+			if($row['jumlah_obat_23'] > 0){
+
+                $kode_brg = $row['kode_brg'];
+                
+                // data master barang
+                $dt_brg = $this->db->get_where('mt_barang', array('kode_brg' => $kode_brg) )->row();
+                // data existing
+                $dt_existing = $this->db->get_where('fr_tc_far_detail_log_prb', array('kode_brg' => $kode_brg, 'kode_trans_far' => $row['kode_trans_far'], 'kd_tr_resep' => $row['kd_tr_resep']) )->row();
+                // print_r($dt_existing);die;
+                $id_tc_far_racikan = isset($row['id_tc_far_racikan'])?$this->regex->_genRegex($row['id_tc_far_racikan'], 'RQXINT'):0;
+
+                $sub_total = $row['harga_beli_master'] * $row['jumlah_obat_23'];
+                $data_farmasi = array(
+                    'id_tc_far_racikan' => $id_tc_far_racikan,
+                    'kd_tr_resep' => isset($row['kd_tr_resep'])?$this->regex->_genRegex($row['kd_tr_resep'], 'RQXINT'):0,
+                    'no_sep' => isset($_POST['no_sep'])?$this->regex->_genRegex($_POST['no_sep'], 'RQXINT'):0,
+                    'kode_trans_far' => isset($row['kode_trans_far'])?$this->regex->_genRegex($row['kode_trans_far'], 'RQXINT'):0,
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'kode_brg' => isset($kode_brg)?$this->regex->_genRegex($kode_brg, 'RGXQSL'):0,
+                    'nama_brg' => $dt_brg->nama_brg,
+                    'satuan_kecil' => $dt_brg->satuan_kecil,
+                    'jumlah' =>  isset($row['jumlah_obat_23'])?$this->regex->_genRegex($row['jumlah_obat_23'], 'RQXINT'):0,
+                    'harga_satuan' =>  isset($row['harga_beli_master'])?$this->regex->_genRegex($row['harga_beli_master'], 'RQXINT'):0,
+                    'sub_total' =>  isset($sub_total)?$this->regex->_genRegex($sub_total, 'RQXINT'):0,
+                );
+
+                if( count($dt_existing) > 0 ){
+                    /*update existing*/
+                    $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
+                    $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                    $this->db->update('fr_tc_far_detail_log_prb', $data_farmasi, array('id_fr_tc_far_detail_log_prb' => $dt_existing->id_fr_tc_far_detail_log_prb) );
+                    /*save log*/
+                    $this->logs->save('fr_tc_far_detail_log_prb', $dt_existing->id_fr_tc_far_detail_log_prb, 'update record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
+                
+                }else{    
+                    $data_farmasi['created_date'] = date('Y-m-d H:i:s');
+                    $data_farmasi['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                    // print_r($data_farmasi);die;
+    
+                    $this->db->insert( 'fr_tc_far_detail_log_prb', $data_farmasi );
+                    $newId = $this->db->insert_id();
+                    /*save log*/
+                    $this->logs->save('fr_tc_far_detail_log_prb', $newId, 'insert new record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
+    
+                }
+			} 
+                
+        }
+
+		return true;		
+	}
+
 	public function checkIfDokExist($kode_trans_far, $file_name){
         $qry = $this->db->get_where('fr_tc_far_dokumen_klaim_prb', array('kode_trans_far'=>$kode_trans_far,'dok_prb_file_name' => $file_name));
         return ($qry->num_rows() > 0) ? TRUE : FALSE;

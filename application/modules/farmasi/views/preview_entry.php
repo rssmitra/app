@@ -73,14 +73,15 @@
                     $satuan = ($row_dt['satuan_kecil'] != null) ? $row_dt['satuan_kecil'] : $row_dt['satuan_brg'];
                     $penangguhan_resep = ($row_dt['resep_ditangguhkan'] == 1) ? 'Ya' : '-';
                     $color_penangguhan_resep = ($row_dt['resep_ditangguhkan'] == 1) ? 'red' : 'blue';
+                    $racikan = isset($row_dt['racikan'][0])?$row_dt['racikan'][0]:[];
                 ?>
 
                   <tr>
                     <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
                     <td style="border-collapse: collapse"><?php echo $desc?></td>
-                    <td style="text-align:center; border-collapse: collapse; color: <?php echo $color_penangguhan_resep; ?>; font-weight: bold"><?php echo ($row_dt['flag_resep'] == 'racikan') ? '' : $row_dt['jumlah_tebus'];?></td>
+                    <td style="text-align:center; border-collapse: collapse; color: <?php echo $color_penangguhan_resep; ?>; font-weight: bold"><?php echo ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->jml_content : $row_dt['jumlah_tebus'];?></td>
                     <td style="text-align:center; border-collapse: collapse;"><?php echo $penangguhan_resep;?></td>
-                    <td style="text-align: center; border-collapse: collapse"><?php echo $satuan?></td>
+                    <td style="text-align: center; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->satuan_racikan : $satuan;?></td>
                     <?php if (count($resep_kronis) == 0) : ?>
                     <td style="text-align:right; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? 0 : number_format($row_dt['harga_jual']);?></td>
                     <td style="text-align:right; border-collapse: collapse"><?php echo number_format($row_dt['jasa_r'])?></td>

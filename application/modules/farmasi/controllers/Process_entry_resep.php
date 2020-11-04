@@ -433,6 +433,7 @@ class Process_entry_resep extends MX_Controller {
             'resep' => $getData,
             'tipe_resep' => $tipe,
         );
+        // echo '<pre>'; print_r($data);die;
         $view_name = ($tipe == 'resep_kronis')?'preview_nota_farmasi_rk':'preview_nota_farmasi'; 
         $this->load->view('farmasi/'.$view_name.'', $data);
 

@@ -385,7 +385,7 @@ function hitungSubTotalBarang(kode_brg){
       </table>
       <div class="pull-right">
         <h4>Total Biaya, <span id="total_biaya"><?php echo number_format(array_sum($arr_subtotal))?></span> </h4>
-        <input type="text" id="total_biaya_hidden" name="uang_dibayarkan_tunai" value="<?php echo array_sum($arr_subtotal)?>">
+        <input type="hidden" id="total_biaya_hidden" name="uang_dibayarkan_tunai" value="<?php echo array_sum($arr_subtotal)?>">
       </div>
 
     </form>

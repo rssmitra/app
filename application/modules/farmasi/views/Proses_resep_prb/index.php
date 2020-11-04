@@ -61,8 +61,8 @@ function popUnder(node) {
         <label class="control-label col-md-2">Pencarian berdasarkan</label>
         <div class="col-md-2">
           <select name="search_by" class="form-control">
-            <option value="no_sep" selected>Nomor SEP</option>
-            <option value="kode_trans_far">Kode Transaksi</option>
+            <option value="no_sep" >Nomor SEP</option>
+            <option value="kode_trans_far" selected>Kode Transaksi</option>
             <option value="no_mr">No MR</option>
             <option value="nama_pasien">Nama Pasien</option>
           </select>
@@ -78,7 +78,7 @@ function popUnder(node) {
       <label class="control-label col-md-2">Tanggal</label>
         <div class="col-md-2">
           <div class="input-group">
-            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
             <span class="input-group-addon">
               <i class="fa fa-calendar bigger-110"></i>
             </span>
@@ -88,7 +88,7 @@ function popUnder(node) {
         <label class="control-label col-md-1">s/d</label>
         <div class="col-md-2" style="margin-lef:-10px">
           <div class="input-group">
-            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
             <span class="input-group-addon">
               <i class="fa fa-calendar bigger-110"></i>
             </span>

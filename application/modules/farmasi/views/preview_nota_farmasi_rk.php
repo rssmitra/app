@@ -94,14 +94,15 @@ No. RSK-<?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[
           $arr_total[] = $subtotal;
           $desc = ($row_dt['flag_resep'] == 'racikan') ? 'Jasa Racikan Obat' : $row_dt['nama_brg'];
           $satuan = ($row_dt['satuan_kecil'] != null) ? $row_dt['satuan_kecil'] : $row_dt['satuan_brg'];
+          $racikan = isset($row_dt['racikan'][0])?$row_dt['racikan'][0]:[];
       ?>
 
         <tr>
           <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
           <td style="border-collapse: collapse"><?php echo $desc?></td>
           <td style="text-align:center; border-collapse: collapse">
-          <?php echo ($row_dt['flag_resep'] == 'racikan') ? '' : number_format($jumlah_obat);?></td>
-          <td style="text-align:left; border-collapse: collapse"><?php echo $satuan?></td>
+          <?php echo ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->jml_content : number_format($jumlah_obat);?></td>
+          <td style="text-align:left; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->satuan_racikan : $satuan;?> </td>
           <td style="text-align:right; border-collapse: collapse"><?php echo number_format($subtotal)?></td>
         </tr>
         <?php 
