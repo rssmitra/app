@@ -241,7 +241,7 @@ class Process_entry_resep_model extends CI_Model {
                     $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore');                
                 }else{
                     // get detail racikan
-                    $dt_racikan = $this->db->join('tc_far_racikan', 'tc_far_racikan.id_tc_far_racikan=tc_far_racikan_detail.id_tc_far_racikan', 'left')->get_where('tc_far_racikan_detail', array('id_tc_far_racikan' => $value->id_tc_far_racikan, 'status_input' => null) )->result();
+                    $dt_racikan = $this->db->join('tc_far_racikan', 'tc_far_racikan.id_tc_far_racikan=tc_far_racikan_detail.id_tc_far_racikan', 'left')->get_where('tc_far_racikan_detail', array('tc_far_racikan.id_tc_far_racikan' => $value->id_tc_far_racikan, 'status_input' => null) )->result();
                     // update status
                     $this->db->update('tc_far_racikan', array('status_input' => null), array('id_tc_far_racikan' => $value->id_tc_far_racikan) );
                     foreach ($dt_racikan as $key_dt => $row_dt) {

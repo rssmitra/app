@@ -41,7 +41,7 @@ class Entry_resep_racikan extends MX_Controller {
 
         $data['value'] = $this->db->get_where('fr_tc_far_detail_log', array('kode_trans_far' => $id, 'flag_resep' => 'racikan'))->result();
         $data['kode_kelompok'] = $_GET['kelompok'];
-        $data['kode_pesan_resep'] = $_GET['kode_pesan_resep'];
+        $data['kode_pesan_resep'] = isset($_GET['kode_pesan_resep'])?$_GET['kode_pesan_resep']:'';
         /*get fr_tc_far*/
         // echo '<pre>';print_r($data);die;
 

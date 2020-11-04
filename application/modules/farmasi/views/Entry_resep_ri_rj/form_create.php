@@ -166,26 +166,7 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
 
 }
 
-function create_new_resep(){
-    preventDefault();
-    $('#form_by_jenis_resep').show();
-    $('#div_pencarian_obat').show();
-    $('#div_default_form_entry').hide();
-    $('#kode_trans_far').val('');
 
-    if( $('#jenis_resep').val() == 'rk' ){
-      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan?jenis_resep='+$('#jenis_resep').val()+'');  
-    }
-
-    if( $('#jenis_resep').val() == 'rl' || $('#jenis_resep').val() == 'pb' ){
-      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar?jenis_resep='+$('#jenis_resep').val()+''); 
-    }
-
-    // load form 
-    $('#div_default_form_entry').show();
-    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry?jenis_resep='+$('#jenis_resep').val()+'');  
-
-}
 function update_data(kode_trans_far){
   
   preventDefault();
@@ -224,6 +205,7 @@ function show_history(){
 $('select[name="jenis_resep"]').change(function(){
   var value = $(this).val();
   change_jenis_resep(value);
+  create_new_resep();
   // $('#tipe_layanan').val( value );
   // $('#form_by_jenis_resep').hide('fast');
   // if( value == 'rj'){
@@ -256,28 +238,49 @@ function change_jenis_resep(value){
 
   if( value == 'rl' || value == 'pb' ){
     // default value
-    $('#form_by_jenis_resep').hide();
+    // $('#form_by_jenis_resep').hide();
     $('#flag_trans').val( value.toUpperCase() );
     kode_profit = ( value == 'rl') ? 3000 : 4000 ;
     $('#kode_profit').val(kode_profit);
     // $('#div_default_form_entry').hide();
     $('#button_action').show();
-    $('#div_pencarian_obat').hide();
+    // $('#div_pencarian_obat').hide();
     // $('#div_default_form_entry').show('fast');
-    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
+    // $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
   }  
 
   if( value == 'rk' ){
     // default value
-    $('#form_by_jenis_resep').hide();
+    // $('#form_by_jenis_resep').hide();
     $('#kode_profit').val(4000);
     $('#flag_trans').val( value.toUpperCase() );
     // $('#div_default_form_entry').hide();
     $('#button_action').show();
-    $('#div_pencarian_obat').hide();
+    // $('#div_pencarian_obat').hide();
     // $('#div_default_form_entry').show('fast');
-    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
+    // $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
   }  
+
+}
+
+function create_new_resep(){
+    preventDefault();
+    $('#form_by_jenis_resep').show();
+    $('#div_pencarian_obat').show();
+    $('#div_default_form_entry').hide();
+    $('#kode_trans_far').val('');
+
+    if( $('#jenis_resep').val() == 'rk' ){
+      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan?jenis_resep='+$('#jenis_resep').val()+'');  
+    }
+
+    if( $('#jenis_resep').val() == 'rl' || $('#jenis_resep').val() == 'pb' ){
+      $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_luar?jenis_resep='+$('#jenis_resep').val()+''); 
+    }
+
+    // load form 
+    $('#div_default_form_entry').show();
+    $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/form_default_entry?jenis_resep='+$('#jenis_resep').val()+'');  
 
 }
 

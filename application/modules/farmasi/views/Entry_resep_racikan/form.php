@@ -252,7 +252,7 @@ $(document).ready(function(){
 function getDetailObatByKodeBrgRacikan(kode_brg,kode_bag){
 
   var type_layan = $('#tipe_layanan').val();
-  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($kode_kelompok)?$kode_kelompok:0?>&kode_perusahaan=<?php echo isset($value_header)?$value_header->kode_perusahaan:0?>&bag="+kode_bag+"&type=html&type_layan="+type_layan+"", '' , function (response) {
+  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($kode_kelompok)?$kode_kelompok:0?>&kode_perusahaan=<?php echo isset($value_header->kode_perusahaan)?$value_header->kode_perusahaan:0?>&bag="+kode_bag+"&type=html&type_layan="+type_layan+"", '' , function (response) {
     if(response.sisa_stok <= 0){
       $('#btn_add_obat_racikan').hide('fast');
       $('#btn_submit_obat').attr('disabled', true);
@@ -572,15 +572,15 @@ function btn_update_racikan(){
       <input type="hidden" id="tipe_layanan" name="tipe_layanan" value="<?php echo $tipe_layanan; ?>">
 
       <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
-      <input type="hidden" name="no_registrasi" value="<?php echo isset($value_header)?$value_header->no_registrasi:''?>">
-      <input type="hidden" name="kode_perusahaan" value="<?php echo isset($value_header)?$value_header->kode_perusahaan:''?>" id="kode_perusahaan">
-      <input type="hidden" name="no_mr" value="<?php echo isset($value_header)?$value_header->no_mr:''?>">
-      <input type="hidden" name="nama_pasien" value="<?php echo isset($value_header)?$value_header->nama_pasien:''?>">
-      <input type="hidden" name="kode_dokter" value="<?php echo isset($value_header)?$value_header->kode_dokter:''?>">
-      <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value_header)?$value_header->nama_pegawai:''?>">
+      <input type="hidden" name="no_registrasi" value="<?php echo isset($value_header->no_registrasi)?$value_header->no_registrasi:''?>">
+      <input type="hidden" name="kode_perusahaan" value="<?php echo isset($value_header->kode_perusahaan)?$value_header->kode_perusahaan:''?>" id="kode_perusahaan">
+      <input type="hidden" name="no_mr" value="<?php echo isset($value_header->no_mr)?$value_header->no_mr:''?>">
+      <input type="hidden" name="nama_pasien" value="<?php echo isset($value_header->nama_pasien)?$value_header->nama_pasien:''?>">
+      <input type="hidden" name="kode_dokter" value="<?php echo isset($value_header->kode_dokter)?$value_header->kode_dokter:''?>">
+      <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value_header->nama_pegawai)?$value_header->nama_pegawai:''?>">
       <input type="hidden" name="kode_profit" value="<?php echo ($tipe_layanan=='RJ')?2000:1000;?>">
-      <input type="hidden" name="kode_bagian" value="<?php echo isset($value_header)?$value_header->kode_bagian:''?>" id="kode_bagian">
-      <input type="hidden" name="kode_bagian_asal" value="<?php echo isset($value_header)?$value_header->kode_bagian_asal:''?>">
+      <input type="hidden" name="kode_bagian" value="<?php echo isset($value_header->kode_bagian)?$value_header->kode_bagian:''?>" id="kode_bagian">
+      <input type="hidden" name="kode_bagian_asal" value="<?php echo isset($value_header->kode_bagian_asal)?$value_header->kode_bagian_asal:''?>">
       <input type="hidden" name="flag_trans" id="flag_trans" value="<?php echo $tipe_layanan?>">
       <input type="hidden" name="flag_resep" value="biasa">
       <input type="hidden" name="no_kunjungan" id="no_kunjungan" class="form-control" value="<?php echo isset($value_header)?ucwords($value_header->no_kunjungan):''?>" >
