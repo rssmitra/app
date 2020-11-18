@@ -178,6 +178,7 @@ function update_data(kode_trans_far){
   $.getJSON("farmasi/Etiket_obat/get_detail_by_kode_trans_far/"+kode_trans_far+"", '' , function (response) {
     console.log(response);
     var obj = response.value;
+    $('#no_mr').val(obj.no_mr);
     $('#nama_pasien').val(obj.nama_pasien);
     $('#dokter_pengirim').val(obj.dokter_pengirim);
 
@@ -219,7 +220,6 @@ $('select[name="jenis_resep"]').change(function(){
 function change_jenis_resep(value){
   // reset form with class
   $('.default_value').val('');
-  $('#kode_trans_far').val('0');
   $('#tipe_layanan').val( value );
   // reload_table();
   
@@ -256,6 +256,7 @@ function change_jenis_resep(value){
     $('#flag_trans').val( value.toUpperCase() );
     // $('#div_default_form_entry').hide();
     $('#button_action').show();
+    
     // $('#div_pencarian_obat').hide();
     // $('#div_default_form_entry').show('fast');
     // $('#div_default_form_entry').load('farmasi/Entry_resep_ri_rj/riwayat_resep?type='+value+'&profit='+$('#kode_profit').val()+'');
@@ -268,7 +269,7 @@ function create_new_resep(){
     $('#form_by_jenis_resep').show();
     $('#div_pencarian_obat').show();
     $('#div_default_form_entry').hide();
-    $('#kode_trans_far').val('');
+    $('#kode_trans_far').val('0');
 
     if( $('#jenis_resep').val() == 'rk' ){
       $('#form_by_jenis_resep').load('farmasi/Entry_resep_ri_rj/form_resep_karyawan?jenis_resep='+$('#jenis_resep').val()+'');  
@@ -357,12 +358,12 @@ function rollback(id){
       <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="0" >
       <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="0" >
       <input type="hidden" class="default_value" name="flag_trans" id="flag_trans" value="">
-      <input type="hidden" class="default_value" name="no_mr" id="no_mr" value="">
+      <input type="hidden" class="default_value" name="no_mr" id="no_mr" value="<?php echo isset($_GET['mr'])?$_GET['mr']:''?>">
       <input type="hidden" class="default_value" name="nama_pasien" id="nama_pasien" value="">
       <input type="hidden" class="default_value" name="kode_dokter" id="kode_dokter" value="0">
       <input type="hidden" class="default_value" name="dokter_pengirim" id="dokter_pengirim" value="0">
       <input type="hidden" class="default_value" name="kode_profit" id="kode_profit" value="">
-      <input type="hidden" class="default_value" name="kode_trans_far" id="kode_trans_far" value="0" readonly>
+      <input type="hidden" class="default_value" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($kode_trans_far)?$kode_trans_far:0?>" readonly>
 
       <!-- default form -->
       <div class="row">
@@ -405,7 +406,14 @@ function rollback(id){
           <div id="form_by_jenis_resep"></div>
 
         </div>
-
+        <?php  if(isset($_GET['rollback']) AND isset($_GET['kode_trans_far']) ) : ?>
+          <script>
+            $(document).ready(function(){
+              $('#no_mr').val(<?php echo $_GET['mr']?>);
+              update_data(<?php echo $_GET['kode_trans_far']?>);
+            })
+          </script>
+        <?php endif; ?>
         <div id="div_default_form_entry" ></div>
 
       </div>

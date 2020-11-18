@@ -527,7 +527,7 @@ function resep_farmasi_selesai(){
         data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val() },
         dataType: "json",
         beforeSend: function() {
-          achtungShowLoader();  
+          // achtungShowLoader();  
         },
         uploadProgress: function(event, position, total, percentComplete) {
         },
@@ -535,7 +535,7 @@ function resep_farmasi_selesai(){
           var data=xhr.responseText;
           var jsonResponse = JSON.parse(data);
           if(jsonResponse.status === 200){
-            $.achtung({message: jsonResponse.message, timeout:5});
+            // $.achtung({message: jsonResponse.message, timeout:5});
             // show poup cetak resep
             // PopupCenter('farmasi/Process_entry_resep/nota_farmasi/'+jsonResponse.kode_trans_far+'','Nota Farmasi', 530, 550);
             $('#page-area-content').load('farmasi/Process_entry_resep/preview_entry/'+jsonResponse.kode_trans_far+'?flag=RJ');
@@ -544,7 +544,7 @@ function resep_farmasi_selesai(){
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
-          achtungHideLoader();
+          // achtungHideLoader();
         }
 
       });

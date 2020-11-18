@@ -99,11 +99,13 @@ class Entry_resep_ri_rj extends MX_Controller {
         
         /*initialize flag for form*/
         $data['tipe_layanan'] = strtolower($_GET['jenis_resep']);
-        $data['str_tipe_layanan'] = ($_GET['jenis_resep']=='RJ')?'Rajal':'Ranap';
+        $data['str_tipe _layanan'] = ($_GET['jenis_resep']=='RJ')?'Rajal':'Ranap';
+        $data['kode_trans_far'] = isset($_GET['kode_trans_far'])?$_GET['kode_trans_far']:'';
         /*title header*/
         $data['title'] = 'Resep Farmasi';
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // print_r($data);
         /*load form view*/
         $this->load->view('Entry_resep_ri_rj/form_create', $data);
     }

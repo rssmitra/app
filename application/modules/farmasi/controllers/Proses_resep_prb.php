@@ -70,6 +70,32 @@ class Proses_resep_prb extends MX_Controller {
         $this->load->view('Proses_resep_prb/form', $data);
     }
 
+    public function form_show($id='')
+    {
+        /*if id is not null then will show form edit*/
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Form  '.strtolower($this->title).'', 'Proses_resep_prb/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        // cek apakah sudah diverifikasi
+        $verify = $this->Verifikasi_resep_prb->get_detail($id);
+        if(count($verify) == 0){
+            $this->Verifikasi_resep_prb->insert_verify($id);
+        }
+        // echo '<pre>';print_r($verify);die;
+        /*get value by id*/
+        $data['value'] = $this->Etiket_obat->get_by_id($id);
+        $detail_log = $this->Proses_resep_prb->get_detail($id);
+        $data['resep'] = $detail_log;
+        $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($id);
+        // echo '<pre>';print_r($data);die;
+        /*title header*/
+        $data['title'] = 'Copy Lunas';
+        $data['flag'] = strtolower($_GET['flag']);
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Proses_resep_prb/form_show', $data);
+    }
+
     public function get_detail($id){
         $flag = $_GET['flag'];
         

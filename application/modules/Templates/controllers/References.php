@@ -1471,8 +1471,8 @@ class References extends MX_Controller {
 						$html .= '<td>'.strtoupper($value->no_resep).'</td>';
 						$html .= '<td>'.$this->tanggal->formatDateTimeFormDmy($value->tgl_trans).'</td>';
 						$html .= '<td>'.$value->nama_brg.'</td>';
-						$html .= '<td>'.$value->jumlah_tebus.'</td>';
-						$html .= '<td>'.$value->jumlah_obat_23.'</td>';
+						$html .= '<td class="center">'.$value->jumlah_tebus.'</td>';
+						$html .= '<td class="center"><a href="#" onclick="show_modal('."'farmasi/Proses_resep_prb/form_show/".$value->kode_trans_far."?flag=RJ'".', '."'COPY RESEP'".')">'.$value->jumlah_obat_23.'</td>';
 					$html .= '</tr>';
 				}
 				$html .= '</tbody>';

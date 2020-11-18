@@ -5,7 +5,7 @@ class Retur_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, nama_pelayanan, tc_trans_pelayanan.kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi';
+	var $select = 'no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, nama_pelayanan, tc_trans_pelayanan.kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi';
 
 	var $order = array('tgl_trans' => 'DESC');
 
@@ -45,12 +45,6 @@ class Retur_obat_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
             $this->db->where("fr_tc_far.tgl_trans >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
             $this->db->where("fr_tc_far.tgl_trans <= '".$this->tanggal->selisih($_GET['to_tgl'],'+1')."'" );
-        }else{
-			if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
-				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=90');
-			}else{
-				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
-			}
         }
 
 		if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
@@ -59,6 +53,16 @@ class Retur_obat_model extends CI_Model {
 
 		if( isset($_GET['flag']) AND $_GET['flag'] != 'All' ){
 			$this->db->like('fr_tc_far.no_resep', $_GET['flag']);
+		}
+
+		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
+			if (in_array($_GET['search_by'], array('no_mr', 'nama_pasien') )) {
+				// no action
+			}else{
+				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
+			}
+		}else{
+			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
 		}
 
 		$i = 0;

@@ -262,6 +262,28 @@ class Billing extends MX_Controller {
 
     }
 
+    public function viewDetailBillingKasirByUnit($no_registrasi, $tipe){
+        
+        /*get detail data billing*/
+        $result = json_decode($this->Billing->getDetailData($no_registrasi));
+        $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
+
+        $data = array(
+            'title' => 'Billing Pasien',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'no_registrasi' => $no_registrasi,
+            'tipe' => $tipe,
+            'flag' => isset($_GET['flag'])?$_GET['flag']:'',
+            'data' => $result,
+            'kunjungan' => $grouping,
+        );
+        // echo '<pre>';print_r($data);die;
+        $data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
+
+        $this->load->view('Billing/temp_trans_kasir_by_unit', $data, false);
+
+    }
+
     public function viewDetailBillingKasirRI($no_registrasi, $tipe){
         
         /*get detail data billing*/
@@ -299,6 +321,8 @@ class Billing extends MX_Controller {
         $this->load->view('Billing/data_billing_view', $data, false);
 
     }
+
+
     public function getBillingByPenjamin($no_registrasi, $tipe){
         
         /*get detail data billing*/
@@ -327,7 +351,6 @@ class Billing extends MX_Controller {
         $exc = $this->Billing->rollback_kasir( $_POST['no_reg'] );
         // delete casemix data if exist
         $this->db->update('csm_reg_pasien', array('is_submitted' => 'N'), array('no_registrasi' => $_POST['no_reg']) );
-
         echo json_encode( array('status' => 200) );
     }
 
@@ -378,7 +401,7 @@ class Billing extends MX_Controller {
             'kasir_data' => $result->kasir_data,
             'kunjungan' => $grouping,
         );
-        // echo '<pre>';print_r($result->kasir_data);die;
+        // echo '<pre>';print_r($data);die;
         $data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
         $this->load->view('Billing/cetakBilling_sem_rssm', $data, false);
 

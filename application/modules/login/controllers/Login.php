@@ -27,7 +27,7 @@ class Login extends MX_Controller {
 
     public function process(){
 
-        // print_r($_POST);;die;
+        
         /*post username*/
         $username = $this->regex->_genRegex($this->input->post('username'), 'RGXQSL');
         /*hash password bcrypt*/
@@ -55,6 +55,7 @@ class Login extends MX_Controller {
 
             /*check username and password exist*/
             $result = $this->login_model->check_account($username,$password);
+            // print_r($result);die;
             if($result){
                 /*clear token existing or before*/
                 $this->login_model->clear_token($result->user_id);
