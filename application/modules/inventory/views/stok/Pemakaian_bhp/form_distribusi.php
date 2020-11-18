@@ -290,7 +290,7 @@ th, td {
                         <label class="control-label col-md-3">Bagian/Unit</label>
                         <div class="col-md-7">
                           <?php 
-                            echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1, 'pelayanan' => 1, 'group_bag' => 'Detail')), '' , 'from_unit', 'from_unit', 'form-control', '', '') ?>
+                            echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1, 'group_bag' => 'Detail')), '' , 'from_unit', 'from_unit', 'form-control', '', '') ?>
                         </div>
                       </div>
                       

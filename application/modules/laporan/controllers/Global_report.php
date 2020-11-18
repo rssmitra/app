@@ -70,11 +70,13 @@ class Global_report extends MX_Controller {
 
     public function show_data_bmhp(){
 
+        // echo '<pre>';print_r($_POST);die;
         $query_data = $this->Global_report->get_data();
         $g_saldo = $this->Global_report->get_saldo_awal();
         $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
         $penjualan = $this->Global_report->penjualan_obat();
         $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
+        // echo '<pre>';print_r($g_saldo);die;
         // get saldo
         foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
             $get_dt_g_saldo[trim($v_g_saldo['kode_brg'])] = (int)$v_g_saldo['stok_akhir'];
@@ -106,15 +108,16 @@ class Global_report extends MX_Controller {
         // echo '<pre>';print_r($bmhp);die;
 
         $data = array(
-            'flag' => $_POST['flag'],
-            'title' => $_POST['title'],
-            'bagian' => $_POST['bagian'],
+            'flag' => isset($_POST['flag'])?$_POST['flag']:$_GET['flag'],
+            'title' => isset($_POST['title'])?$_POST['title']:'',
+            'bagian' => isset($_POST['bagian'])?$_POST['bagian']:$_GET['kode_bagian'],
             'result' => $query_data,
-            'v_saldo' => $get_dt_g_saldo,
-            'v_penerimaan' => $dt_penerimaan_brg,
-            'v_penjualan_bpjs' => $dt_penjualan_bpjs,
-            'v_penjualan_umum' => $dt_penjualan_umum,
-            'v_bmhp' => $dt_bmhp,
+            'month' => isset($_POST['from_month'])?$_POST['from_month']:$_GET['month'],
+            'v_saldo' => isset($get_dt_g_saldo)?$get_dt_g_saldo:[],
+            'v_penerimaan' => isset($dt_penerimaan_brg)?$dt_penerimaan_brg:[],
+            'v_penjualan_bpjs' => isset($dt_penjualan_bpjs)?$dt_penjualan_bpjs:[],
+            'v_penjualan_umum' => isset($dt_penjualan_umum)?$dt_penjualan_umum:[],
+            'v_bmhp' => isset($dt_bmhp)?$dt_bmhp:[],
         );
 
         // echo '<pre>';print_r($data['result']);die;
@@ -125,18 +128,29 @@ class Global_report extends MX_Controller {
 
     public function show_data_bmhp_rekap(){
 
-        $query_data = $this->Global_report->show_data_bmhp_rekap();
-        
-        // echo '<pre>';print_r($query_data);die;
+        $query_data = $this->Global_report->get_data();
+        $g_saldo = $this->Global_report->get_saldo_akhir();
+        // get harga beli
+        foreach ($query_data['data'] as $k_result => $v_result) {
+            $get_dt_result[trim($v_result->kode_brg)] = $v_result->harga_beli;
+        }
+        // echo '<pre>';print_r($get_dt_result);die;
+
+        foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
+            $get_dt_g_saldo[trim($v_g_saldo['nama_bagian'])][] = array('kode_brg' => trim($v_g_saldo['kode_brg']), 'nama_brg' => $v_g_saldo['nama_brg'], 'stok_akhir' => $v_g_saldo['stok_akhir'], 'kode_bagian' => $v_g_saldo['kode_bagian']);
+        }
 
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
-            'result' => $query_data,
+            'month' => $_POST['from_month'],
+            'year' => $_POST['year'],
+            'harga_beli' => $get_dt_result,
+            'v_saldo' => $get_dt_g_saldo,
         );
 
         
-        // echo '<pre>';print_r($data['result']);die;
+        // echo '<pre>';print_r($data);die;
         
         $this->load->view('Global_report/akunting_keu/v_bagian', $data);
                 

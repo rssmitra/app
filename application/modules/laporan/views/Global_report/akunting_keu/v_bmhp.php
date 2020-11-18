@@ -1,6 +1,6 @@
 <?php 
-
-  if($_POST['submit']=='excel') {
+  $submit = isset($_POST['submit'])?$_POST['submit']:$_GET['submit'];
+  if($submit=='excel') {
     header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
     header("Content-Disposition: attachment; filename=".$flag.'_'.date('Ymd').".xls");  //File name extension was wrong
     header("Expires: 0");
@@ -20,8 +20,9 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <center><h4>Laporan Stok Awal, Penerimaan, Pemakaian Obat </h4></center>
-      <!-- <b>Parameter :</b> <i><?php echo print_r($_POST);?></i> -->
+      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir <br>Bulan <?php echo $this->tanggal->getBulan($month)?> Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center>
+
+      <br>
 
       <table class="table table-bordered">
         <thead>
@@ -30,7 +31,7 @@
             <th rowspan="2" width="105">Kode Barang<br/></th>
             <th rowspan="2" width="95">Nama Barang</th>
             <th rowspan="2" width="304">HPP Satuan</th>
-            <th width="304" colspan="2">Saldo Awal</th>
+            <th width="304" colspan="2">Saldo Awal <?php echo $this->tanggal->getBulan($month)?></th>
             <th width="304" colspan="2">Penerimaan/Pembelian</th>
             <th width="304" colspan="2">Penjualan BPJS</th>
             <th width="304" colspan="2">Penjualan Umum</th>
@@ -141,7 +142,9 @@
                 echo '<td></td>';
               ?>
             </tr>
-          <?php } ?>
+          <?php } 
+          // echo '<pre>'; print_r($arr_rp_saldo_awal);die;
+          ?>
             <tr>
               <td colspan="4"><b>TOTAL </b></td>
               <td></td>

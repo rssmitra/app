@@ -26,7 +26,7 @@
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>Laporan Penerimaan dan Pemakaian Obat </h4>
+        <h4>Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_bmhp" target="_blank">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
@@ -36,7 +36,7 @@
          <div class="form-group">
             <label class="control-label col-md-1">Bagian</label>
               <div class="col-md-5">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1)), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1)), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
               </div>
           </div>
 
@@ -67,10 +67,10 @@
         </form>
         <!-- end content -->
          <br>
-        <h4>Rekap Penerimaan dan Pemakaian Obat </h4>
+        <h4>Rekapitulasi Saldo Akhir Obat per Unit</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_bmhp_rekap" target="_blank">
         <!-- hidden form -->
-          <input type="hidden" name="flag" value="<?php echo $flag?>">
+          <input type="hidden" name="flag" value="akunting_mod_3a">
           <input type="hidden" name="title" value="Rekap Penerimaan dan Pemakaian Obat">
 
         
