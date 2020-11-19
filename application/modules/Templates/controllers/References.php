@@ -1322,10 +1322,11 @@ class References extends MX_Controller {
 		$this->load->library('tarif');
 
 		// stok umum
-        $this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content');
+        $this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content, d.kode_profit');
         $this->db->from('tc_kartu_stok a, mt_barang b, mt_rekap_stok c');
         $this->db->where('a.kode_brg=b.kode_brg');
 		$this->db->where('b.kode_brg=c.kode_brg');
+		$this->db->join('fr_mt_profit_margin d','d.id_profit=c.id_profit', 'left');
 
 		if( in_array($_GET['bag'], array('030901','012801')) ){
 			$this->db->where('a.kode_bagian', '030901');
@@ -1403,7 +1404,7 @@ class References extends MX_Controller {
 				
 				/*harga umum*/
 				$html .= '<tr>';
-				$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, 2000 );
+				$harga_satuan = $this->tarif->_hitungBPAKOCurrent( $exc[0]->harga_beli, $_GET['kode_kelompok'], $exc[0]->flag_kjs, $exc[0]->kode_brg, $exc[0]->kode_profit );
 				$default_selected_umum = 'checked';
 					$html .= '<td valign="middle" align="left">
 								<div class="radio">
