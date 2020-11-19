@@ -175,9 +175,9 @@ class Produksi_obat_model extends CI_Model {
 		$getItemObat = $this->db->get_where('tc_prod_obat_det', array('id_tc_prod_obat' => $id) )->result();
 		foreach ($getItemObat as $k => $v) {
 			// kurang stok bahan komposisi
-			$this->stok_barang->stock_process_produksi_obat($v->kode_brg, $v->jumlah_obat, '060201', 22 ,"No. ".$id." (Bahan Produksi)", 'restore');
+			$stok_akhir = $this->stok_barang->stock_process_produksi_obat($v->kode_brg, $v->jumlah_obat, '060201', 22 ,"No. ".$id." (Bahan Produksi)", 'restore');
 			// update rekap stok
-			$this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $v->jumlah_obat), array('kode_brg' => $v->kode_brg, 'kode_bagian_gudang' => '060201' ) );
+			$this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $stok_akhir['stok_akhir']), array('kode_brg' => $v->kode_brg, 'kode_bagian_gudang' => '060201' ) );
 			$this->db->trans_commit();
 		}
 
