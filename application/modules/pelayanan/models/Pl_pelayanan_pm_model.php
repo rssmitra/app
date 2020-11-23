@@ -207,7 +207,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
@@ -395,9 +395,10 @@ class Pl_pelayanan_pm_model extends CI_Model {
 	function get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya='')
 	{
 		$column = array('pm_isihasil_v.nama_tindakan');
-		$select = 'pm_isihasil_v.*,pm_standarhasil_detail_v.*,c.kode_tarif as referensi,kode_dokter1,d.nama_pegawai as dokter1,kode_dokter2,e.nama_pegawai as dokter2';
+		$select = 'pm_isihasil_v.*, pm_standarhasil_detail_v.*, c.kode_tarif as referensi, pm_isihasil_v.kode_dokter1, d.nama_pegawai as dokter1, pm_isihasil_v.kode_dokter2, e.nama_pegawai as dokter2';
 
 		$this->db->select($select);
+		$this->db->select('(select top 1 hasil from pm_tc_hasilpenunjang where (kode_trans_pelayanan=pm_isihasil_v.kode_trans_pelayanan AND kode_mt_hasilpm=pm_isihasil_v.kode_mt_hasilpm) order by kode_tc_hasilpenunjang DESC ) as hasil');
 		$this->_main_query_hasil_pm($kode_penunjang,$kode_bag_tujuan);
 		if($kode_bag_tujuan=='050101'){
 			$this->db->where("mktime_umur_mulai <= '".$mktimenya."' " );
@@ -407,7 +408,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->order_by('pm_isihasil_v.urutan','ASC');
 
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
@@ -426,7 +427,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->order_by('pm_mt_standarhasil.urutan', 'ASC');
 		
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

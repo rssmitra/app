@@ -679,6 +679,30 @@ final class Tanggal {
 
     }
 
+    function AgeWithYearMonthDayByStrip($tgl_lahir) {
+        
+        $formatDate = $this->formatDateForm($tgl_lahir);
+        $hours_in_day   = 24;
+        $minutes_in_hour= 60;
+        $seconds_in_mins= 60;
+
+        $birth_date     = new DateTime($formatDate);
+        $current_date   = new DateTime();
+
+        $diff           = $birth_date->diff($current_date);
+
+        $mth = ($diff->y * 12) + $diff->m;
+
+        $years     = $diff->y . "-" . $diff->m . "-";
+        $months    = ($diff->y * 12) + $diff->m . " months " . $diff->d . " day(s)";
+        $days      = $diff->days;
+
+        $age = $diff->y . "-" . $diff->m . "-" . $diff->d . "-";
+
+        return $age;
+
+    }
+
     function AgeWithYearMonth($tgl_lahir) {
         
         $formatDate = $this->formatDateForm($tgl_lahir);

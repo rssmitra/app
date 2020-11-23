@@ -852,7 +852,7 @@ public function pengadaan_mod_8(){
 	public function farmasi_mod_2(){
 
 		$query = 'select b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_akhir, b.satuan_kecil, 
-					cast(c.harga_beli as int)as harga_beli, kartu_stok.tgl_input, kartu_stok.keterangan from mt_depo_stok a
+					cast(c.harga_beli as int)as harga_beli, (kartu_stok.stok_akhir * cast(c.harga_beli as int)) as total, kartu_stok.tgl_input, kartu_stok.keterangan from mt_depo_stok a
 					left join mt_barang b on b.kode_brg=a.kode_brg
 					left join mt_rekap_stok c on c.id_obat=b.id_obat
 					left join (
@@ -863,9 +863,9 @@ public function pengadaan_mod_8(){
 											GROUP BY kode_brg) 
 						and kode_bagian='."'".$_POST['kode_bagian']."'".'
 					)as kartu_stok on kartu_stok.kode_brg=a.kode_brg
-					where a.kode_bagian='."'".$_POST['kode_bagian']."'".' 
-					order by kartu_stok.tgl_input DESC';
-
+					where a.kode_bagian='."'".$_POST['kode_bagian']."'".' and b.kode_brg is not null
+					order by b.nama_brg ASC';
+		// echo $query;
 		return $query;
 
 	}

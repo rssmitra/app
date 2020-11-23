@@ -4,14 +4,14 @@
  * --------------------
  */
 .small-box {
-  border-radius: 2px;
+  border-radius: 20px;
   position: relative;
   display: block;
   margin-bottom: 20px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 .small-box > .inner {
-  padding: 10px;
+  padding: 16px;
 }
 .small-box > .small-box-footer {
   position: relative;
@@ -21,8 +21,9 @@
   color: rgba(255, 255, 255, 0.8);
   display: block;
   z-index: 10;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgb(0 0 0 / 26%);
   text-decoration: none;
+  border-radius: 11px
 }
 .small-box > .small-box-footer:hover {
   color: #fff;

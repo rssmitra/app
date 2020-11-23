@@ -385,6 +385,52 @@ class Templates extends MX_Controller {
             
             
         }
+
+        // modul laboratorium
+        if ($_GET['mod']==26) {
+
+            $data[1] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=261&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+            );
+
+            $data[2] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=262&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+            );
+
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=263&TypeChart=table&style=261&mod='.$_GET['mod'].'',
+            );
+
+            $data[3] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-2',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=264&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+
+            // $data[4] = array(
+            //     'mod' => $_GET['mod'],
+            //     'nameid' => 'graph-table-3',
+            //     'style' => 'table',
+            //     'col_size' => 4,
+            //     'url' => 'templates/Templates/graph?prefix=265&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            // );
+            
+            
+        }
         
         echo json_encode($data);
     }
@@ -948,6 +994,7 @@ class Templates extends MX_Controller {
     }
 
     public function TemplateHasilPMOri($no_registrasi, $tipe, $data, $pm, $flag_mcu='',$data_pm=''){
+        $this->load->helper('typography');
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
@@ -1136,11 +1183,10 @@ class Templates extends MX_Controller {
                 }
 
             }
-            
-            
+                        
             $html .= '</table><br><br><hr>';
-            $html .= '<br><br><b><p style="font-size:38px">Catatan : </p></b><br><br>
-                '.trim($data_pm->catatan_hasil).'
+            $html .= '<b><span style="font-size:38px">Catatan : </span></b><br>
+                '.$data_pm->catatan_hasil.'
             <br><div style="border-bottom:0.6px dotted black"></div>';
         }
         
@@ -1309,13 +1355,13 @@ class Templates extends MX_Controller {
             
             
             $html .= '</table><br><br><hr>';
-            $html .= '<br><br><b><p style="font-size:38px">Catatan : </p></b><br><br>
-                '.trim($data_pm->catatan_hasil).'
+            $html .= '<b><span style="font-size:38px; padding-top: 10px">Catatan : </span></b>
+                <p style="text-align: justify">'.trim($data_pm->catatan_hasil).'</p>
             <br><div style="border-bottom:0.6px dotted black"></div>';
         }
         
-        //echo '<pre>';
-        //print_r($html);die;
+        // echo '<pre>';
+        // echo $data_pm->catatan_hasil;die;
 
         return $html;
     }
@@ -1457,6 +1503,8 @@ class Templates extends MX_Controller {
                         </tr>                    
                     </table>';
         }else{
+            $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
+
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
                             <td width="150px">No. Penunjang</td>
@@ -1479,14 +1527,14 @@ class Templates extends MX_Controller {
 
                         <tr>
                             <td width="150px">Tanggal Pemeriksaan</td>
-                            <td width="250px">: '.$this->tanggal->formatDateTime($data_pm->tgl_periksa).'</td>
+                            <td width="250px">: '.$tgl_pemeriksaan.'</td>
                             <td width="100px">Jenis Kelamin</td>
                             <td width="250px">: '.$jk.'</td>
                         </tr>    
                         
                         <tr>
                         <td width="150px">Ruangan / Kelas</td>
-                        <td width="250px">: '.$data_pm->nama_bagian.' / '.$data_pm->nama_klas.'</td>
+                        <td width="250px">: '.ucwords($data_pm->nama_bagian).' / '.$data_pm->nama_klas.'</td>
                       
                         </tr>    
                     </table>';

@@ -24,6 +24,13 @@
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" />
     <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
+    <style type="text/css">
+      .highcharts-data-labels span {
+          width: 100px !important; 
+          word-break: break-word !important;
+          white-space: normal !important;
+        }
+    </style>
     <!--[if lte IE 9]>
       <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-part2.css" class="ace-main-stylesheet" />
     <![endif]-->
@@ -225,6 +232,14 @@
               <a href="#" onclick="getMenu('main/Main/modul_view')">
                   <i class="menu-icon fa fa-arrow-left"></i>
                   <span class="menu-text"> Menu Utama </span>
+              </a>
+              <b class="arrow"></b>
+          </li>
+
+          <li class="hover">
+              <a href="<?php echo base_url().'dashboard?mod='.$_GET['mod'].''?>">
+                  <i class="menu-icon fa fa-dashboard"></i>
+                  <span class="menu-text"> Dashboard </span>
               </a>
               <b class="arrow"></b>
           </li>

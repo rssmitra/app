@@ -47,19 +47,20 @@ class Export_data extends MX_Controller {
     public function getContentPDF($no_registrasi, $flag, $pm, $act_code='',$bagian,$no_kunjungan,$flag_mcu ){
 
         
-      /*load class*/
-      $csm_bp = new Csm_billing_pasien;
-      $reg_pm = new Reg_pm_model;
-      /*get content data*/
-      //$data = $csm_bp->getBillingLocal($no_registrasi, $flag); 
-    //   $data = $reg_pm->get_hasil_pm($no_registrasi, $no_kunjungan, $bagian, $flag_mcu);
-    $data = '' ;
-    //   echo"<pre>";print_r($data);die;
-      /*get content html*/
-      $html = json_decode($csm_bp->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, $flag_mcu));
+        /*load class*/
+        $csm_bp = new Csm_billing_pasien;
+        $reg_pm = new Reg_pm_model;
+        /*get content data*/
+        //$data = $csm_bp->getBillingLocal($no_registrasi, $flag); 
+        //   $data = $reg_pm->get_hasil_pm($no_registrasi, $no_kunjungan, $bagian, $flag_mcu);
+        $data = '' ;
+        /*get content html*/
+        $html = json_decode($csm_bp->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, $flag_mcu));
+        
+        // echo '<pre>';print_r($html);die;
 
-       /*generate pdf*/
-      $this->exportPdf($html, $flag, $pm, $act_code); 
+        /*generate pdf*/
+        $this->exportPdf($html, $flag, $pm, $act_code); 
       
     }
 
@@ -67,8 +68,8 @@ class Export_data extends MX_Controller {
         
         $this->load->library('pdf');
         
-        //print_r($data);die;
         $reg_data = $data->data->reg_data;
+        // echo '<pre>';print_r($reg_data);die;
         /*default*/
         $action = ($act_code=='')?'I':$act_code;
         /*filename and title*/

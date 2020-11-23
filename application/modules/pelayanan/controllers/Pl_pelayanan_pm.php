@@ -119,16 +119,18 @@ class Pl_pelayanan_pm extends MX_Controller {
 
         //Calculate the time difference between the two dates.
         $difference = $now->diff($dob);
+        $split_tgl_lhr = $this->tanggal->AgeWithYearMonthDayByStrip($data['pasien']->tgl_lhr);
+        sscanf($split_tgl_lhr, '%d-%d-%d', $y, $m, $d);
 
         //Get the difference in years, as we are looking for the user's age.
-        $umur_tahun = $difference->format('%y');
-        $umur_bulan = $difference->format('%m') + 12 * $difference->format('%y');
-        $umur_hari = $difference->d;
+        // $umur_tahun = $difference->format('%y');
+        // $umur_bulan = $difference->format('%m') + 12 * $difference->format('%y');
+        // $umur_hari = $difference->d;
         // echo $umur_tahun.'-'.$umur_bulan.'-'.$umur_hari;die;
 
-        $mktime_tahun = 31622400 * $umur_tahun;
-        $mktime_bulan = 2678400 * $umur_bulan;
-        $mktime_hari = 86400 * $umur_hari;
+        $mktime_tahun = 31622400 * $y;
+        $mktime_bulan = 2678400 * $m;
+        $mktime_hari = 86400 * $d;
         $mktime_jam = 0;
 
         $mktimenya = $mktime_tahun + $mktime_bulan + $mktime_hari + $mktime_jam;
@@ -137,8 +139,8 @@ class Pl_pelayanan_pm extends MX_Controller {
         $data['mktime'] = $mktimenya;
         // $list =  (isset($_GET['is_edit']) AND $_GET['is_edit']!='')?$this->Pl_pelayanan_pm->get_data_hasil_pasien_pm($kode_penunjang,$kode_bag_tujuan):$this->Pl_pelayanan_pm->get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya);
         if((!isset($_GET['is_mcu'])) AND (isset($_GET['is_edit']) AND $_GET['is_edit']!='')){
+            // echo 'hello i m here'; die;
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm($kode_penunjang,$kode_bag_tujuan);
-            //echo 'hello i m here'; die;
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==1)){
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm_mcu($kode_penunjang,$kode_bag_tujuan);
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==2)){
@@ -214,7 +216,11 @@ class Pl_pelayanan_pm extends MX_Controller {
             }else if($row_list->status_daftar==1){
                 
                 if($bag==5){
-                    $status_pasien = ($row_list->status_selesai!=3)?'belum_bayar':'belum_diperiksa';
+                    if($row_list->kode_perusahaan == 120){
+                        $status_pasien = 'belum_diperiksa';
+                    }else{
+                        $status_pasien = ($row_list->status_selesai!=3)?'belum_bayar':'belum_diperiksa';
+                    }
                     $rollback_btn = ($row_list->status_selesai!=3)?'<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>':'';
                 }else if($bag==1 && $row_list->kode_bagian_asal !='010901' && $row_list->kode_bagian_asal != '012701' && $row_list->kode_kelompok != 3){
                     $status_pasien = ($row_list->status_selesai!=3)?'belum_bayar':'belum_diperiksa';
@@ -410,18 +416,18 @@ class Pl_pelayanan_pm extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();    
-
+            $txt_nl2br = nl2br($_POST['catatan_hasil'], '<br>');
             /*Update pm_tc_penunjang */
             $pm_tc_penunjang = array(
                 'tgl_isihasil' => date('Y-m-d H:i:s'),
                 'petugas_isihasil' => $this->session->userdata('user')->user_id,
                 'status_isihasil' => 1,
-                'catatan_hasil' => isset($_POST['catatan_hasil'])?$this->input->post('catatan_hasil'):''
+                'catatan_hasil' => $txt_nl2br
             );
-
             $this->Pl_pelayanan_pm->update('pm_tc_penunjang',$pm_tc_penunjang, array('kode_penunjang' => $this->input->post('kode_penunjang')));
 
             /*insert pm_tc_hasilpenunjang*/
+            
             foreach($_POST['kode_mt_hasilpm'] as $key=>$row_dt){
 
                 $kode_mt_hasilpm = $row_dt;
@@ -436,8 +442,6 @@ class Pl_pelayanan_pm extends MX_Controller {
                     'keterangan' => $keterangan,
                 );
 
-                //print_r($_POST['kode_tc_hasilpenunjang'][$kode_mt_hasilpm]);die;
-
                 if($kode_trans_pelayanan!=''){
                     $cek_mcu = $this->db->get_where('tc_trans_pelayanan_paket_mcu',array('kode_trans_pelayanan_paket_mcu' => $kode_trans_pelayanan))->row();
                     if(isset($cek_mcu) AND $cek_mcu->kode_bagian_asal=='010901'){
@@ -445,14 +449,15 @@ class Pl_pelayanan_pm extends MX_Controller {
                     }
                 }
 
-                if(isset($_POST['kode_tc_hasilpenunjang'][$kode_mt_hasilpm]) AND $_POST['kode_tc_hasilpenunjang'][$kode_mt_hasilpm]!=0){
-                    $this->Pl_pelayanan_pm->update('pm_tc_hasilpenunjang', $dataexc, array('kode_tc_hasilpenunjang' => $_POST['kode_tc_hasilpenunjang'][$kode_mt_hasilpm] ) );
-                    $this->db->trans_commit();
+                // cek hasil apakah sudah pernah diinput
+                $dt_ex = $this->db->get_where('pm_tc_hasilpenunjang', array('kode_trans_pelayanan' => $_POST['kode_trans_pelayanan'][$kode_mt_hasilpm], 'kode_mt_hasilpm' => $kode_mt_hasilpm) );
 
+               if($dt_ex->num_rows() > 0){
+                    $this->Pl_pelayanan_pm->update('pm_tc_hasilpenunjang', $dataexc, array('kode_tc_hasilpenunjang' => $dt_ex->row()->kode_tc_hasilpenunjang ) );
+                    $this->db->trans_commit();
                 }else{
                     $dataexc["kode_tc_hasilpenunjang"] = $kode_tc_hasilpenunjang; 
                     $dataexc["kode_trans_pelayanan"] = $kode_trans_pelayanan; 
-                    // echo '<pre>';print_r($dataexc);die;
                     $this->Pl_pelayanan_pm->save('pm_tc_hasilpenunjang', $dataexc);
                     $this->db->trans_commit();
                 }
@@ -754,8 +759,8 @@ class Pl_pelayanan_pm extends MX_Controller {
         
     }
 
-    public function slip(){
-        
+    public function slip()
+    {   
         $kode_penunjang = $_GET['kode_penunjang'];
         $flag = isset($_GET['flag'])?$_GET['flag']:'';
         
@@ -769,7 +774,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             if(isset($value->dokter_2))$data['dokter_2'] = $value->dokter_2;
             if(isset($value->bagian_asal))$data['bagian_asal'] = $value->bagian_asal;
         }
- // echo '<pre>';print_r($data['value']);die;
+ 
         $this->load->view('Pl_pelayanan_pm/charge_slip', $data);
 
     }

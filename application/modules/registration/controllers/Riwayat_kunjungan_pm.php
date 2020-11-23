@@ -56,16 +56,7 @@ class Riwayat_kunjungan_pm extends MX_Controller {
             $row = array();
             $flag_mcu = ($row_list->flag_mcu==1)?'&flag_mcu=1':'';
             $flag_mcu_edit = ($row_list->flag_mcu==1)?'&is_mcu=1':'';
-            if(isset($_GET['bagian_tujuan']) and $_GET['bagian_tujuan']=='050101'){
-                $cetak = ($row_list->status_isihasil==1)?'<li><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=LAB&noreg='.$row_list->no_registrasi.'&pm='.$row_list->kode_penunjang.'&kode_pm=050101&no_kunjungan='.$row_list->no_kunjungan.' '.$flag_mcu.'" target="blank"  >Cetak Hasil</a></li>':'';
-                $edit_hasil = ($row_list->status_isihasil==1)?'<li><a href="#" onclick="show_modal('."'pelayanan/Pl_pelayanan_pm/form_isi_hasil/".$row_list->no_kunjungan."/".$_GET['bagian_tujuan']."/".$row_list->kode_penunjang."?mr=".$row_list->no_mr."&is_edit=Y".$flag_mcu_edit." '".', '."'".$row_list->nama_pasien."(".$row_list->no_mr.")'".')">Edit Hasil</a></li>':'';
-            }else if(isset($_GET['bagian_tujuan']) and $_GET['bagian_tujuan']=='050201'){
-                $cetak = ($row_list->status_isihasil==1)?'<li><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=RAD&noreg='.$row_list->no_registrasi.'&pm='.$row_list->kode_penunjang.'&kode_pm=050201&no_kunjungan='.$row_list->no_kunjungan.' '.$flag_mcu.'" target="blank"  >Cetak Hasil</a></li>':'';
-                $edit_hasil = ($row_list->status_isihasil==1)?'<li><a href="#" onclick="show_modal('."'pelayanan/Pl_pelayanan_pm/form_isi_hasil/".$row_list->no_kunjungan."/".$_GET['bagian_tujuan']."/".$row_list->kode_penunjang."?mr=".$row_list->no_mr."&is_edit=Y".$flag_mcu_edit." '".', '."'".$row_list->nama_pasien."(".$row_list->no_mr.")'".')">Edit Hasil</a></li>':'';
-            }else{
-                $cetak = '';
-                $edit_hasil = '';
-            }
+            
 
             $trans_kasir = $this->Riwayat_kunjungan_pm->cek_transaksi_kasir($row_list->no_registrasi, $row_list->no_kunjungan);
             if( $_GET['bagian_tujuan']=='050301'){
@@ -84,6 +75,17 @@ class Riwayat_kunjungan_pm extends MX_Controller {
                 $status_pasien = 'belum_isi_hasil';
             }
 
+            if(isset($_GET['bagian_tujuan']) and $_GET['bagian_tujuan']=='050101'){
+                $cetak = ($row_list->status_isihasil==1)?'<li><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=LAB&noreg='.$row_list->no_registrasi.'&pm='.$row_list->kode_penunjang.'&kode_pm=050101&no_kunjungan='.$row_list->no_kunjungan.' '.$flag_mcu.'" target="blank"  >Cetak Hasil</a></li>':'';
+                $edit_hasil = ($row_list->status_isihasil==1)?'<li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_pm/form/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$status_pasien."'".')">Edit Hasil</a></li>':'';
+            }else if(isset($_GET['bagian_tujuan']) and $_GET['bagian_tujuan']=='050201'){
+                $cetak = ($row_list->status_isihasil==1)?'<li><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=RAD&noreg='.$row_list->no_registrasi.'&pm='.$row_list->kode_penunjang.'&kode_pm=050201&no_kunjungan='.$row_list->no_kunjungan.' '.$flag_mcu.'" target="blank"  >Cetak Hasil</a></li>':'';
+                $edit_hasil = ($row_list->status_isihasil==1)?'<li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_pm/form/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$status_pasien."'".')">Edit Hasil</a></li>':'';
+            }else{
+                $cetak = '';
+                $edit_hasil = '';
+            }
+            
             $charge_slip = '<li><a href="#" onclick="cetak_slip('.$row_list->kode_penunjang.')">Cetak Slip</a></li>';
             
             $row[] = '<div class="center">

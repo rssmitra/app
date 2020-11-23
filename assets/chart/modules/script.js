@@ -94,7 +94,13 @@ $(function () {
                   cursor: 'pointer',
                   depth: 35,
                   dataLabels: {
+                      style: {
+                          width: '300'
+                      },
                       enabled: true,
+                      color: '#000000',
+                      maxStaggerLines:1,                    
+                      connectorColor: '#000000',
                       format: '{point.name}'
                   }
               }

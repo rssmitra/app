@@ -11969,7 +11969,7 @@ td .lbl:only-child {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.14);
 }
 .infobox .infobox-content {
-  color: #555;
+  color: #5555559e;
   max-width: 140px;
 }
 .infobox .infobox-content:first-child {
@@ -20079,3 +20079,4 @@ td.details-control {
     display: none;
   }
 }
+

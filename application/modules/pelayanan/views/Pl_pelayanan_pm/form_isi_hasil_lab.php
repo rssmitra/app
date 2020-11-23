@@ -85,7 +85,7 @@ function prosesIsiHasilEdit() {
 <div class="row">
 
   <?php if(isset($is_edit) AND $is_edit=='Y'): ?>   
-  <form class="form-horizontal" method="post" id="form_isi_hasil" action="#" enctype="multipart/form-data" autocomplete="off" >      
+  <!-- <form class="form-horizontal" method="post" id="form_isi_hasil" action="#" enctype="multipart/form-data" autocomplete="off" >       -->
   <input type="hidden" name="kode_penunjang" id="kode_penunjang" value="<?php echo ($id)?$id:''?>">
   <?php endif ?>
 
@@ -169,17 +169,16 @@ function prosesIsiHasilEdit() {
           ?>
         </tbody>
       </table>
-
+            
       <div class="form-group">
                       
         <label class="control-label col-sm-2">Catatan</label>
         
-        <div class="col-md-3">
+        <div class="col-md-10">
           
-          <textarea name="catatan_hasil" id="catatan_hasil" cols="50" style="height:100px !important;"><?php echo isset($catatan_hasil)?$catatan_hasil:'';?></textarea>
+          <textarea class="form-control" name="catatan_hasil" id="catatan_hasil" cols="50" style="height:150px !important;"><?php echo isset($catatan_hasil)?strip_tags($catatan_hasil):'';?></textarea>
         
         </div>
-      
       
       </div>
 
@@ -188,14 +187,14 @@ function prosesIsiHasilEdit() {
       <?php endif ?>
 
       <div class="form-group">
-          <div class="col-sm-8">
+          <div class="col-sm-12 center" style="padding-top: 10px">
               <?php if(isset($is_edit) AND $is_edit=='Y'): ?>
-                <a href="#" class="btn btn-xs btn-primary" onclick="prosesIsiHasilEdit()" ><i class="fa fa-save"></i> Submit</a>
+                <a href="#" class="btn btn-xs btn-primary" onclick="prosesIsiHasilEdit()" ><i class="fa fa-save"></i> Submit Hasil Pemeriksaan  </a>
               <?php elseif((!isset($is_edit))): if( !isset($is_mcu) OR (isset($is_mcu) AND $is_mcu!=1)){?>
-                <button type="submit" href="#" id="btn_submit_isihasil" class="btn btn-xs btn-primary"><i class="fa fa-save"></i> Submit</button>
+                <button type="submit" href="#" id="btn_submit_isihasil" class="btn btn-xs btn-primary"><i class="fa fa-save"></i> Submit Hasil Pemeriksaan </button>
                 <?php } endif ?>
               <span id="cetak_isi_hasil" style="display:none">
-                <a href="<?php $flag_mcu = isset($is_mcu)?'&flag_mcu=1':''; echo base_url() ?>Templates/Export_data/export?type=pdf&flag=LAB&noreg=<?php echo isset($no_registrasi)?$no_registrasi:''?>&pm=<?php echo ($id)?$id:''?>&kode_pm=050101&no_kunjungan=<?php echo ($no_kunjungan)?$no_kunjungan:''?><?php echo $flag_mcu ?>" target="blank" class="btn btn-xs btn-info" >Cetak Hasil</a>
+                <a href="<?php $flag_mcu = isset($is_mcu)?'&flag_mcu=1':''; echo base_url() ?>Templates/Export_data/export?type=pdf&flag=LAB&noreg=<?php echo isset($no_registrasi)?$no_registrasi:''?>&pm=<?php echo ($id)?$id:''?>&kode_pm=050101&no_kunjungan=<?php echo ($no_kunjungan)?$no_kunjungan:''?><?php echo $flag_mcu ?>" target="blank" class="btn btn-xs btn-info" > <i class="fa fa-print bigger-120 dark"></i> Cetak Hasil Pemeriksaan Laboratorium</a>
               </span>
           </div>
       </div>
@@ -205,11 +204,8 @@ function prosesIsiHasilEdit() {
     </div>
 
   </div>
-    
 
-     
 </div>
-
 
 
 

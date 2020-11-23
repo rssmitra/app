@@ -35,51 +35,65 @@ $(document).ready(function(){
     $('#form_cari_pasien').focus();    
 
     /*submit form*/
-    $('#form_pelayanan').ajaxForm({      
+    $('#form_pelayanan').on('submit', function(){
+      
+      var formData = new FormData($('#form_pelayanan')[0]);
+        
+      url = $('#form_pelayanan').attr('action');
 
-      beforeSend: function() {        
+          // ajax adding data to database
+            $.ajax({
+              url : url,
+              type: "POST",
+              data: formData,
+              dataType: "JSON",
+              contentType: false,
+              processData: false,
+              
+              beforeSend: function() {
+                achtungShowLoader();  
+              },
+              uploadProgress: function(event, position, total, percentComplete) {
+              },
+              complete: function(xhr) {     
+                var data=xhr.responseText;        
 
-        achtungShowLoader();          
+                var jsonResponse = JSON.parse(data);        
 
-      },      
+                if(jsonResponse.status === 200){          
 
-      uploadProgress: function(event, position, total, percentComplete) {        
+                  $.achtung({message: jsonResponse.message, timeout:5});     
 
-      },      
+                  if(jsonResponse.type_pelayanan!='isi_hasil'){
 
-      complete: function(xhr) {             
+                    $("#page-area-content").load("pelayanan/Pl_pelayanan_pm?type_tujuan=<?php echo isset($value)?$value->kode_bagian_tujuan:0 ?>");
+                  
+                  }else{
+                  
+                    $('.hasil_pm').attr('readonly', true);
+                    $('.keterangan_pm').attr('readonly', true);
+                    $('#cetak_isi_hasil').show('fast');
+                    $('#btn_submit_isihasil').hide('fast');
+                  }
+                  
+                }else{          
 
-        var data=xhr.responseText;        
+                  $.achtung({message: jsonResponse.message, timeout:5});          
 
-        var jsonResponse = JSON.parse(data);        
+                }        
 
-        if(jsonResponse.status === 200){          
+                achtungHideLoader(); 
+              }
+          });
 
-          $.achtung({message: jsonResponse.message, timeout:5});     
+      //but for now we will show it inside a modal box
 
-          if(jsonResponse.type_pelayanan!='isi_hasil'){
+      /*$('#modal-wysiwyg-editor').modal('show');
+      $('#wysiwyg-editor-value').css({'width':'99%', 'height':'200px'}).val($('#editor').html());*/
+      
+      return false;
+    });
 
-            $("#page-area-content").load("pelayanan/Pl_pelayanan_pm?type_tujuan=<?php echo isset($value)?$value->kode_bagian_tujuan:0 ?>");
-          
-          }else{
-           
-            $('.hasil_pm').attr('readonly', true);
-            $('.keterangan_pm').attr('readonly', true);
-            $('#cetak_isi_hasil').show('fast');
-            $('#btn_submit_isihasil').hide('fast');
-          }
-          
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
-
-        achtungHideLoader();        
-
-      }      
-
-    });     
     
     /*on keypress or press enter = search pasien*/
     $( "#form_cari_pasien" )    
@@ -554,7 +568,7 @@ function perjanjian_pasien_pm(){
           <input type="hidden" class="form-control" name="flag_mcu" id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
           
           <!-- profile Pasien -->
-          <div class="col-md-2">
+          <div class="col-md-2 no-padding">
             <div class="box box-primary" id='box_identity'>
                 <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
@@ -679,7 +693,7 @@ function perjanjian_pasien_pm(){
                   <li>
                     <a data-toggle="tab" data-id="<?php echo $id?>?mr=<?php echo isset($value)?$value->no_mr:0; echo ($value->flag_mcu==1)?'&is_mcu=2':'' ?>" data-url="pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo $value->no_kunjungan?>/<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" id="tabs_isi_hasil" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                       <i class="red ace-icon fa fa-file bigger-120"></i>
-                      ISI HASIL
+                      ISI HASIL PEMERIKSAAN LAB
                     </a>
                   </li>
                 <?php endif ?>

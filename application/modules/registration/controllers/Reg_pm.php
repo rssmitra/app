@@ -128,7 +128,7 @@ class Reg_pm extends MX_Controller {
                 'no_kunjungan' => $no_kunjungan,
                 'no_antrian' => $no_antrian,
                 'kode_klas' => $klas,
-                'petugas_input' => '',
+                'petugas_input' => $this->session->userdata('user')->user_id,
             );
 
             /*save penunjang medis*/

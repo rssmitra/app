@@ -304,11 +304,11 @@ class Csm_billing_pasien extends MX_Controller {
 
     public function getHtmlData($params, $no_registrasi, $flag, $pm, $rb='',$no_kunjungan='',$flag_mcu=''){
 
-        // echo '<pre>'; print_r($flag);die;
         $temp = new Templates;
         /*header html*/
         /*get detail data billing*/
         $data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
+        // echo '<pre>'; print_r($data);die;
         $html = '';
 
        switch ($flag) {
@@ -339,6 +339,7 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
+                // echo '<pre>'; print_r($data_pm);die;
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
@@ -350,7 +351,7 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
         }
         
-        return json_encode( array('html' => $html, 'data' => $params) );
+        return json_encode( array('html' => $html, 'data' => $data) );
     }
 
     public function getRincianBilling($noreg, $tipe, $field){
