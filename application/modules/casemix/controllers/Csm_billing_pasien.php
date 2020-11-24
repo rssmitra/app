@@ -380,7 +380,7 @@ class Csm_billing_pasien extends MX_Controller {
       /*get content html*/
       $html = json_decode( $this->getHtmlData($data, $no_registrasi, $flag, $pm) );
       // if($flag=='RESUME') {
-      //   print_r($html);die;
+        // print_r($html);die;
       // }
       /*generate pdf*/
       $this->exportPdf($html, $flag, $pm, $act_code); 
@@ -396,11 +396,11 @@ class Csm_billing_pasien extends MX_Controller {
         /*default*/
         $action = ($act_code=='')?'I':$act_code;
         /*filename and title*/
-        $filename = $flag.'-'.$reg_data->csm_rp_no_mr.$reg_data->no_registrasi.$pm;
+        $filename = $flag.'-'.$reg_data->no_mr.$reg_data->no_registrasi.$pm;
+        // print_r($reg_data);die;
         
         $tanggal = new Tanggal();
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8');
-        // print_r($flag);die;
         $pdf->SetCreator(PDF_CREATOR);
         
         $pdf->SetAuthor(COMP_LONG);
