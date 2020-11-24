@@ -37,7 +37,9 @@ class Tracer_model extends CI_Model {
 			
 			if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
 				if( $_GET['search_by'] == 'no_mr' ){
-					$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					if($_GET['keyword'] != ''){
+						$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					}
 				}else{
 					$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 				}
