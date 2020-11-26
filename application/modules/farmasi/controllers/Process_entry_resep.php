@@ -308,7 +308,7 @@ class Process_entry_resep extends MX_Controller {
             foreach($trans_dt as $row_dt){
                 // update sisa tebus fr_tc_far_detail
                 $sisa_tebus = $row_dt->jumlah_pesan - $row_dt->jumlah_tebus;
-                
+                // print_r($row_dt);die;
                 $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1, 'status_input' => 1), array('kd_tr_resep' => $row_dt->kd_tr_resep) );
                     
                 // create mutasi untuk obat racikan

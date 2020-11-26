@@ -336,7 +336,7 @@ class Inv_master_barang extends MX_Controller {
                 $this->logs->save($mt_depo_stok, $last_kode_depo_stok, 'insert new record on '.$this->title.' module', json_encode($arr_dt_depo),'kode_depo_stok');
 
             }else{
-                $arr_dt_depo['kode_depo_stok'] = $this->regex->_genRegex($this->master->get_max_number('mt_depo_stok_nm', 'kode_depo_stok'),'RGXINT');
+                $arr_dt_depo['kode_depo_stok'] = $this->regex->_genRegex($this->master->get_max_number($mt_depo_stok, 'kode_depo_stok'),'RGXINT');
                 $arr_dt_depo['created_date'] = date('Y-m-d H:i:s');
                 $arr_dt_depo['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 
