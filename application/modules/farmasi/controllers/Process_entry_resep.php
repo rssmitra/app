@@ -85,7 +85,7 @@ class Process_entry_resep extends MX_Controller {
             /*jika sudah ada data sebelumnya maka langsung insert ke detail*/
             $cek_existing = ( $_POST['kode_trans_far'] == 0 ) ? false : $this->Process_entry_resep->cek_existing_data('fr_tc_far', array('kode_trans_far' => $_POST['kode_trans_far']) );
 
-            // print_r($cek_existing);die;
+            // print_r($data_farmasi);die;
             if( $cek_existing != false ){
                 /*update existing*/
                 $kode_trans_far = $cek_existing->kode_trans_far;
@@ -355,7 +355,7 @@ class Process_entry_resep extends MX_Controller {
                     "kode_trans_pelayanan" => $kode_trans_pelayanan,
                     "no_registrasi" => $row_dt->no_registrasi,
                     "no_mr" => $row_dt->no_mr,
-                    "nama_pasien_layan" => $row_dt->nama_pasien,
+                    "nama_pasien_layan" => $_POST['nama_pasien'],
                     "kode_kelompok" => $_POST['kode_kelompok'],
                     "kode_perusahaan" => $_POST['kode_perusahaan'],
                     "tgl_transaksi" => date('Y-m-d H:i:s'),
@@ -386,7 +386,7 @@ class Process_entry_resep extends MX_Controller {
     
             // update status transaksi
             $this->db->where('kode_trans_far', $ID);
-            $this->db->update('fr_tc_far', array('status_transaksi' => 1, 'kode_profit' => $_POST['kode_profit']) );
+            $this->db->update('fr_tc_far', array('status_transaksi' => 1, 'kode_profit' => $_POST['kode_profit'], 'nama_pasien' => $_POST['nama_pasien']) );
 
             // update fr_tc_far_detail_log
             $this->db->where('kode_trans_far', $ID);
