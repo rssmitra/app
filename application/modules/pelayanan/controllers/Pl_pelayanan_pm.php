@@ -100,6 +100,32 @@ class Pl_pelayanan_pm extends MX_Controller {
         $this->load->view('Pl_pelayanan/form_tindakan', $data);
     }
 
+    public function diagnosa($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_pm->get_by_id($id);
+        // echo '<pre>'; print_r($this->db->last_query());die;
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+        /*mr*/
+        $kode_klas = 16;
+        $data['type'] = $_GET['type'];
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_penunjang'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->kode_bagian_tujuan)? $data['value']->kode_bagian_tujuan:0;
+        $data['status_pulang'] = ($data['value']->status_daftar>=1)?1:0;
+        $data['kode_klas'] = $kode_klas;
+        // echo '<pre>'; print_r($data);die;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_pm/form_diagnosa', $data);
+    }
+
     public function form_isi_hasil($no_kunjungan, $kode_bag_tujuan, $kode_penunjang='')
     {
          /*breadcrumbs for edit*/
@@ -390,6 +416,8 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*load form view*/
         $this->load->view('Pl_pelayanan_pm/form_end_visit', $data);
     }
+
+    
 
     public function find_data()
     {   

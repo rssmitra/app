@@ -58,6 +58,7 @@ class Reg_pm extends MX_Controller {
 
     public function process(){
 
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Dokter', 'trim|required', array('required' => 'No MR Pasien tidak ditemukan') );
         $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Perusahaan', 'trim');
@@ -102,7 +103,7 @@ class Reg_pm extends MX_Controller {
             $kode_dokter = $this->regex->_genRegex(0,'RGXINT');
             $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
-            $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
+            $no_sep = $this->regex->_genRegex($_POST['noSep'],'RGXQSL');
 
 
             if( !$this->input->post('no_registrasi_rujuk') && empty($this->input->post('no_registrasi_rujuk')) ){

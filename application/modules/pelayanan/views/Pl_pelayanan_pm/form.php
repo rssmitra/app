@@ -163,6 +163,12 @@ $(document).ready(function(){
 
     });
 
+    $('#tabs_diagnosa').click(function (e) {    
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosa');
+      // backToDefaultForm();
+    });
+
     $('#tabs_isi_hasil').click(function (e) {     
       
       e.preventDefault();  
@@ -688,6 +694,13 @@ function perjanjian_pasien_pm(){
                     </a>
                   </li>
                 <?php endif ?>
+
+                <li>
+                    <a data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" data-url="pelayanan/Pl_pelayanan_pm/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                    <i class="red ace-icon fa fa-stethoscope bigger-120"></i>
+                    DIAGNOSA
+                  </a>
+                </li>
 
                 <?php if($status=='belum_isi_hasil'): ?>
                   <li>

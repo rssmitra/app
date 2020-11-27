@@ -317,7 +317,7 @@ class Billing extends MX_Controller {
             'data' => $result,
             'kunjungan' => $grouping,
         );
-        // echo '<pre>'; print_r($data);die;
+        // echo '<pre>'; print_r($result->trans_data);die;
         $this->load->view('Billing/data_billing_view', $data, false);
 
     }

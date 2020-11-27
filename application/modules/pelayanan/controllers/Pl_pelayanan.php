@@ -131,11 +131,11 @@ class Pl_pelayanan extends MX_Controller {
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan->get_by_id($id); 
-        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
         // echo '<pre>'; print_r($this->db->last_query());die;
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
         /*mr*/
         /*type*/
-        if($data['value']->flag_ri==1){
+        if(isset($data['value']->flag_ri) AND $data['value']->flag_ri==1){
             $kode_klas = $data['value']->kelas_ri;
         }else{
             $kode_klas = 16;
