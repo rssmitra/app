@@ -47,6 +47,12 @@
             <?php 
               echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060101' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
           </div>
+
+          <label class="control-label col-md-2">Pabrikan</label>
+          <div class="col-md-3">
+            <?php 
+              echo $this->master->custom_selection($params = array('table' => 'mt_pabrik', 'id' => 'id_pabrik', 'name' => 'nama_pabrik', 'where' => array()), '' , 'id_pabrik', 'id_pabrik', 'form-control', '', '') ?>
+          </div>
         </div>
 
         <div class="form-group">

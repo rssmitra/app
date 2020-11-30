@@ -35,6 +35,9 @@ class Inv_stok_depo_model extends CI_Model {
 		$params_kode_bagian = isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '060101' ;
 
 		$this->_main_query($params_tgl, $params_kode_bagian);
+		if (isset($_GET['id_pabrik']) AND $_GET['id_pabrik'] != '' ) {
+			$this->db->where('b.id_pabrik', $_GET['id_pabrik']);				
+		}
 		
 
 		$i = 0;
