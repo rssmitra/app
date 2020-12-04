@@ -304,9 +304,9 @@ class Produksi_obat extends MX_Controller {
                 $getItemObat = $this->db->get_where('tc_prod_obat_det', array('id_tc_prod_obat' => $newIdProdObat) )->result();
                 foreach ($getItemObat as $k => $v) {
                     // kurang stok bahan komposisi
-                    $this->stok_barang->stock_process_produksi_obat($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"(Bahan Produksi)", 'reduce');
+                    $response_mutasi = $this->stok_barang->stock_process_produksi_obat($v->kode_brg, $v->jumlah_obat, $_POST['kode_bagian_gudang'], 18 ,"(Bahan Produksi)", 'reduce');
                     // update rekap stok
-                    $this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $v->jumlah_obat), array('kode_brg' => $v->kode_brg, 'kode_bagian_gudang' => $_POST['kode_bagian_gudang'] ) );
+                    $this->db->update('mt_rekap_stok' ,array('jml_sat_kcl' => $response_mutasi['stok_akhir']), array('kode_brg' => $v->kode_brg, 'kode_bagian_gudang' => $_POST['kode_bagian_gudang'] ) );
                     $this->db->trans_commit();
                 }
 

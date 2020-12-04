@@ -59,17 +59,17 @@ class Perjanjian_rj_model extends CI_Model {
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-            $this->db->where("tc_pesanan.tgl_pesanan >= '".$this->tanggal->selisih($_GET['from_tgl'],'-0')."'" );
-            $this->db->where("tc_pesanan.tgl_pesanan <= '".$this->tanggal->selisih($_GET['to_tgl'],'+0')."'" );
-        }
-
-        if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {
-            $this->db->where("tc_pesanan.tgl_pesanan = '".$this->tanggal->sqlDateForm($_GET['tanggal'])."'" );
+            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['from_tgl']."'" );
+            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['to_tgl']."'" );
 		}
 		else{
-        	$this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
-			$this->db->where('YEAR(tgl_pesanan)='.date('Y').'');
-        }
+			$this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
+			$this->db->where('YEAR(tgl_pesanan) >='.date('Y').'');
+		}
+
+        if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {
+            $this->db->where("tc_pesanan.tgl_pesanan = '".$_GET['tanggal']."'" );
+		}
         /*end parameter*/
 
 
