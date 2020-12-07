@@ -7,7 +7,7 @@ class Perjanjian_rj_model extends CI_Model {
 	var $column = array('tc_pesanan.nama','mt_bagian.nama_bagian','mt_karyawan.nama_pegawai','mt_perusahaan.nama_perusahaan');
 	var $select = 'tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.no_telp, tc_pesanan.no_hp, mt_master_pasien.tlp_almt_ttp, mt_master_pasien.no_hp as no_hp_pasien';
 
-	var $order = array('tc_pesanan.id_tc_pesanan' => 'DESC');
+	var $order = array('tc_pesanan.tgl_pesanan' => 'ASC', 'tc_pesanan.id_tc_pesanan' => 'DESC');
 
 	public function __construct()
 	{
@@ -60,7 +60,7 @@ class Perjanjian_rj_model extends CI_Model {
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
             $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['from_tgl']."'" );
-            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['to_tgl']."'" );
+            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) <= '".$_GET['to_tgl']."'" );
 		}
 		else{
 			$this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
@@ -68,7 +68,7 @@ class Perjanjian_rj_model extends CI_Model {
 		}
 
         if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {
-            $this->db->where("tc_pesanan.tgl_pesanan = '".$_GET['tanggal']."'" );
+            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) = '".$_GET['tanggal']."'" );
 		}
         /*end parameter*/
 
