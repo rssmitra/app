@@ -57,7 +57,7 @@
               <?php 
                echo '<td>'.$row_data->kode_brg.'</td>';
                   echo '<td>'.$row_data->nama_brg.'</td>';
-                  echo '<td>'.$harga_satuan_besar.'</td>';
+                  echo '<td>'.$harga_satuan_kecil.'</td>';
                   echo '<td>'.$row_data->satuan_besar.' / '.$row_data->satuan_kecil.'</td>';
                   echo '<td>'.$row_data->content.'</td>';
                   echo '<td>'.$row_data->stok_akhir.'</td>';
