@@ -27,10 +27,10 @@
         <thead>
           <tr>
             <th>NO</th>
-            <th width="105">Kode Barang<br/></th>
-            <th width="150">Nama Barang</th>
-            <th width="304">Harga Satuan Kecil</th>
-            <th width="100">Satuan</th>
+            <th width="90">Kode Barang<br/></th>
+            <th width="250">Nama Barang</th>
+            <th width="150">Harga Satuan Kecil</th>
+            <th width="150">Satuan</th>
             <th width="100">Rasio</th>
             <th width="100">Stok Akhir</th>
             <th width="150">Total Persediaan</th>
@@ -65,7 +65,7 @@
                   echo '<td>'.$row_data->nama_golongan.'</td>';
                   echo '<td>'.$row_data->nama_kategori.'</td>';
                   echo '<td>'.$row_data->nama_sub_golongan.'</td>';
-                  echo '<td>'.$row_data->tgl_input.'</td>';
+                  echo '<td>'.$this->tanggal->formatDateTimeFormDmy($row_data->tgl_input).'</td>';
               ?>
             </tr>
           <?php 
