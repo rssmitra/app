@@ -789,6 +789,7 @@ class Global_report extends MX_Controller {
             $this->load->view('Global_report/v_stok', $data);
                 
     }
+    
     public function show_data_stokb(){
 
         $query_data = $this->Global_report->get_data();

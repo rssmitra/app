@@ -472,6 +472,7 @@ class Global_report_model extends CI_Model {
 								WHERE c.kode_brg=d.kode_brg AND c.kode_brg in (select a.kode_brg from mt_barang_nm a) 
 								GROUP BY c.kode_brg, d.nama_brg, d.satuan_besar
 							  ) AS harga_barang ON harga_barang.kode_brg=tc_kartu_stok_nm_v.kode_brg
+					
 					WHERE id_kartu IN 
 					(SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok_nm WHERE kode_bagian='."'070101'".' GROUP BY kode_brg) 
 					AND tgl_input <= '."'".$_POST['tgl']."'".' AND kode_bagian='."'070101'".'

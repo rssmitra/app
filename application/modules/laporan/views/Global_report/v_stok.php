@@ -23,34 +23,33 @@
       <center><h4><?php echo $title?></h4></center>
       <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
 
-      <table class="greyGridTable">
+      <table class="table">
         <thead>
           <tr>
             <th>NO</th>
             <th width="105">Kode Barang<br/></th>
-            <th width="95">Nama Barang</th>
-            <th width="304">Harga Satuan PO</th>
-            <th width="184">Satuan Besar</th>
-            <th width="176">Content</th>
-            <th width="231">Stok Akhir</th>
-            <th width="176">Harga Hasil</th>
-            <th width="72">Satuan Kecil</th>            
-            <th width="78">Nama Golongan</th>            
-            <th width="78">Nama Kategori</th>            
-            <th width="78">Nama Sub Golongan</th>           
-            <th width="78">Tgl Input</th>   
+            <th width="150">Nama Barang</th>
+            <th width="304">Harga Satuan Kecil</th>
+            <th width="100">Satuan</th>
+            <th width="100">Rasio</th>
+            <th width="100">Stok Akhir</th>
+            <th width="150">Total Persediaan</th>
+            <th width="150">Nama Golongan</th>            
+            <th width="150">Nama Kategori</th>            
+            <th width="150">Nama Sub Golongan</th>           
+            <th width="150">Tgl Input</th>   
           </tr>
         </thead>
         <tbody>
           <?php $no = 0; 
           $totalhasil=0;
           foreach($result['data'] as $row_data){
-            $content      = $row_data->content;
-            $stokakhir    = $row_data->stok_akhir;
-            $harga        = ($row_data->harga_satuan_po==0) ? 0 : $row_data->harga_satuan_po;
-            $hasil        = ($harga==0) ? 0 : $harga / $content;
-            $hasill        = $hasil * $stokakhir;
-            $totalhasil   = $hasill + $totalhasil;
+            $content = $row_data->content;
+            $stokakhir = $row_data->stok_akhir;
+            $harga_satuan_besar = ($row_data->harga_satuan_po == 0 ) ? 0 : $row_data->harga_satuan_po;
+            $harga_satuan_kecil = ($harga_satuan_besar == 0) ? 0 : $harga_satuan_besar / $content;
+            $total_persediaan = ($harga_satuan_kecil == 0) ? 0 : $harga_satuan_kecil * $stokakhir;
+            $arr_total_persediaan[]   = round($total_persediaan);
             $no++; 
             ?>
             <tr>
@@ -58,12 +57,11 @@
               <?php 
                echo '<td>'.$row_data->kode_brg.'</td>';
                   echo '<td>'.$row_data->nama_brg.'</td>';
-                  echo '<td>'.$row_data->harga_satuan_po.'</td>';
-                  echo '<td>'.$row_data->satuan_besar.'</td>';
+                  echo '<td>'.$harga_satuan_besar.'</td>';
+                  echo '<td>'.$row_data->satuan_besar.' / '.$row_data->satuan_kecil.'</td>';
                   echo '<td>'.$row_data->content.'</td>';
                   echo '<td>'.$row_data->stok_akhir.'</td>';
-                  echo '<td>'.number_format($hasill).'</td>';
-                  echo '<td>'.$row_data->satuan_kecil.'</td>';
+                  echo '<td>'.round($total_persediaan).'</td>';
                   echo '<td>'.$row_data->nama_golongan.'</td>';
                   echo '<td>'.$row_data->nama_kategori.'</td>';
                   echo '<td>'.$row_data->nama_sub_golongan.'</td>';
@@ -74,7 +72,7 @@
         // endforeach; 
       }?>
       <tr><td align="right" colspan="7">Total</td>
-      <td align="center"><?php echo number_format($totalhasil);?> </td></tr>
+      <td align="center"><?php echo array_sum($arr_total_persediaan);?> </td></tr>
         </tbody>
       </table>
 <table border="0" width="100%">
