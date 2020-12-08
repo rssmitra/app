@@ -183,7 +183,7 @@ class Inv_master_barang extends MX_Controller {
             $val->set_rules('kode_layanan', '','trim');
             $val->set_rules('jenis_obat', '','trim');
             $val->set_rules('obat_khusus', '','trim');
-            $val->set_rules('kode_pabrik','Pabrikan', 'trim');
+            // $val->set_rules('kode_pabrik','Pabrikan', 'trim');
         }
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -222,7 +222,7 @@ class Inv_master_barang extends MX_Controller {
                 $dataexc['flag_medis'] = $this->regex->_genRegex( $flag_medis, 'RGXQSL' );
                 $dataexc['jenis_obat'] = $this->regex->_genRegex( $val->set_value('jenis_obat'), 'RGXQSL' );
                 $dataexc['obat_khusus'] = $this->regex->_genRegex( $val->set_value('obat_khusus'), 'RGXQSL' );
-                $dataexc['kode_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
+                $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
             }else{
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
             }
@@ -241,6 +241,8 @@ class Inv_master_barang extends MX_Controller {
                 $path_url =  PATH_IMG_MST_BRG.'/'.$_POST['flag'].'/';
                 $dataexc['path_image'] = $_POST['flag'].'/'.$this->upload_file->doUpload('path_image', $path_url);
             }
+
+            // print_r($dataexc);die;
 
             if( $id == '0' ){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');

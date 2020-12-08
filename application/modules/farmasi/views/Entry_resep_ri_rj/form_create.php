@@ -358,8 +358,8 @@ function rollback(id){
       <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="0" >
       <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="0" >
       <input type="hidden" class="default_value" name="flag_trans" id="flag_trans" value="">
-      <input type="hiddenxx" class="default_value" name="no_mr" id="no_mr" value="<?php echo isset($_GET['mr'])?$_GET['mr']:''?>">
-      <input type="hiddenxx" class="default_value" name="nama_pasien" id="nama_pasien" value="">
+      <input type="hidden" class="default_value" name="no_mr" id="no_mr" value="<?php echo isset($_GET['mr'])?$_GET['mr']:''?>">
+      <input type="hidden" class="default_value" name="nama_pasien" id="nama_pasien" value="">
       <input type="hidden" class="default_value" name="kode_dokter" id="kode_dokter" value="0">
       <input type="hidden" class="default_value" name="dokter_pengirim" id="dokter_pengirim" value="0">
       <input type="hidden" class="default_value" name="kode_profit" id="kode_profit" value="">

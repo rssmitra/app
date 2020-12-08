@@ -198,7 +198,7 @@ $('select[name="kode_sub_gol"]').change(function () {
                   <div class="col-md-3">
                       <?php 
                         $t_pabrik = ( $flag_string == 'medis' ) ? 'mt_pabrik' : 'mt_pabrik_nm' ;
-                        echo $this->master->custom_selection($params = array('table' => $t_pabrik, 'id' => 'id_pabrik', 'name' => 'nama_pabrik', 'where' => array()), isset($value->kode_pabrik)?$value->kode_pabrik:'' , 'id_pabrik', 'id_pabrik', 'form-control', '', '') ?>
+                        echo $this->master->custom_selection($params = array('table' => $t_pabrik, 'id' => 'id_pabrik', 'name' => 'nama_pabrik', 'where' => array()), isset($value->id_pabrik)?$value->id_pabrik:'' , 'id_pabrik', 'id_pabrik', 'form-control', '', '') ?>
                   </div>
                 </div>
 
