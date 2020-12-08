@@ -212,7 +212,7 @@
           <td>
             <?php if(!in_array($registrasi->kode_bagian_masuk, array('013101','050301') )) :?>
               <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
-              <span style="margin-top: -0px; padding-left: 10px"> Biaya APD <?php echo ucwords($_GET['poli'])?> (Rp. 25,000)</span>
+              <span style="margin-top: -0px; padding-left: 10px"> Biaya APD <?php echo ucwords($_GET['poli'])?> (Rp. 100,000)</span>
             <?php else: ?>
               <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
               <span style="margin-top: -0px; padding-left: 10px"> Biaya APD <?php echo ucwords($_GET['poli'])?> </span>

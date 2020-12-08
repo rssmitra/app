@@ -137,7 +137,7 @@
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=1'?>">Setoran Harian Kasir</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=2'?>">Transaksi Pasien BPJS</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Resume Laporan Kasir</a></li>
-												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir  <i class="fa fa-star orange bigger-150"></i> </a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir  <i class="fa fa-star orange bigger-120"></i> </a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=4'?>">Laporan IF (Unit Farmasi)</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/lainnyabillingdokter?mod=1'?>">Daftar Billing Dokter yang belum dibayarkan Per-periode</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Stok Barang Medis Per-periode</a></li>
@@ -161,7 +161,7 @@
 									<div class="panel-collapse collapse" id="collapsePurchasing" aria-expanded="false" style="height: 0px;">
 										<div class="panel-body">
 										<ol>
-											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=1'?>">Laporan Stok Akhir Barang Non Medis Berdasarkan Tanggal Terakhir Stok</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=1'?>">Laporan Stok Akhir Barang Non Medis Berdasarkan Tanggal Terakhir Stok <i class="fa fa-star orange bigger-120"></i> </a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=8'?>">Laporan Stok Akhir Barang Non Medis Berdasarkan Master Barang</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=3'?>">Laporan Penerimaan Barang</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=10'?>">Laporan Penerimaan Barang Detail</a></li>
