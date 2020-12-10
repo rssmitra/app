@@ -179,6 +179,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         // echo '<pre>';print_r($this->db->last_query());die;
         if($kode_bag_tujuan=='050201'){
             $data['bpako'] = $this->Pl_pelayanan_pm->get_bpako($kode_penunjang);
+            // echo '<pre>';print_r($data);die;
             $view = 'form_isi_hasil_rad';
         }else if($kode_bag_tujuan=='050101'){
             $view = 'form_isi_hasil_lab';

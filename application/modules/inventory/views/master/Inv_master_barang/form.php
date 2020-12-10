@@ -310,6 +310,39 @@ $('select[name="kode_sub_gol"]').change(function () {
                   </div>
                 </div>
                 
+                <?php if( $flag_string == 'medis' ) : ?>
+                <div class="form-group">
+                  <label class="control-label col-md-2">Obat Kronis?</label>
+                  <div class="col-md-2">
+                    <div class="radio">
+                          <label>
+                            <input name="is_kronis" type="radio" class="ace" value="Y" <?php echo isset($value) ? ($value->is_kronis == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Ya</span>
+                          </label>
+                          <label>
+                            <input name="is_kronis" type="radio" class="ace" value="N" <?php echo isset($value) ? ($value->is_kronis == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl">Tidak</span>
+                          </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2">Obat PRB?</label>
+                  <div class="col-md-2">
+                    <div class="radio">
+                          <label>
+                            <input name="is_prb" type="radio" class="ace" value="Y" <?php echo isset($value) ? ($value->is_prb == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Ya</span>
+                          </label>
+                          <label>
+                            <input name="is_prb" type="radio" class="ace" value="N" <?php echo isset($value) ? ($value->is_prb == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl">Tidak</span>
+                          </label>
+                    </div>
+                  </div>
+                </div>
+                <?php endif; ?>
                 <div class="form-group">
                   <label class="control-label col-md-2">Is active?</label>
                   <div class="col-md-2">

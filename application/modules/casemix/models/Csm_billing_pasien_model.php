@@ -1129,7 +1129,8 @@ class Csm_billing_pasien_model extends CI_Model {
     }
 
     public function groupingDocumentPM($array_data){
-            
+        
+        // echo '<pre>';print_r($array_data);die;
         $grouping_tindakan = array();
         $grouping = array();
         foreach ( $array_data as $k_pm=>$value ) {
@@ -1144,9 +1145,28 @@ class Csm_billing_pasien_model extends CI_Model {
                     }
                 }
             }
+
+            if(in_array($k_pm, array('Konsultasi'))){
+                foreach ($value as $kval_pm => $vvval_pm) {
+                    /*grouping document pm*/
+                    $str_pm_resume = substr((string)$vvval_pm->kode_bagian, 0,2);
+                    if ($str_pm_resume=='05') {
+                        $mixedStr = strtolower($vvval_pm->nama_tindakan);
+                        $searchStr= "usg";
+
+                        if(strpos($mixedStr, $searchStr)) {
+                            $grouping_tindakan[$vvval_pm->kode_penunjang][] = $vvval_pm->nama_tindakan; 
+                            $grouping[$vvval_pm->kode_penunjang.'-'.$vvval_pm->kode_bagian.'-'.$vvval_pm->nama_bagian][] = array('kode_bagian' => $vvval_pm->kode_bagian,'kode_penunjang' => $vvval_pm->kode_penunjang, 'pm_name' => $vvval_pm->nama_bagian);
+                        }
+                        
+                    }
+                }
+            }
+
         }
+
         $data = array('grouping_tindakan' => $grouping_tindakan, 'grouping_dokumen' => $grouping);
-        //echo '<pre>';print_r($grouping_tindakan);die;
+        // echo '<pre>';print_r($grouping_tindakan);die;
         return $data;
 
     }
@@ -1157,9 +1177,9 @@ class Csm_billing_pasien_model extends CI_Model {
         /*get data*/
         $data = $this->getDetailData($no_registrasi);
         $decode_data = json_decode($data);
-
         // dokumen penunjang medis
         $grouping_doc = $this->groupingDocumentPM($decode_data->group);
+        // echo '<pre>';print_r($decode_data);die;
         
         /*document billing*/
         foreach ($decode_data->kasir_data as $key_kasir_data => $val_kasir_data) {

@@ -183,7 +183,8 @@ class Inv_master_barang extends MX_Controller {
             $val->set_rules('kode_layanan', '','trim');
             $val->set_rules('jenis_obat', '','trim');
             $val->set_rules('obat_khusus', '','trim');
-            // $val->set_rules('kode_pabrik','Pabrikan', 'trim');
+            $val->set_rules('is_kronis', '','trim');
+            $val->set_rules('is_prb', '','trim');
         }
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -223,6 +224,8 @@ class Inv_master_barang extends MX_Controller {
                 $dataexc['jenis_obat'] = $this->regex->_genRegex( $val->set_value('jenis_obat'), 'RGXQSL' );
                 $dataexc['obat_khusus'] = $this->regex->_genRegex( $val->set_value('obat_khusus'), 'RGXQSL' );
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
+                $dataexc['is_kronis'] = $this->regex->_genRegex( $val->set_value('is_kronis'), 'RGXQSL' );
+                $dataexc['is_prb'] = $this->regex->_genRegex( $val->set_value('is_prb'), 'RGXQSL' );
             }else{
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
             }
