@@ -273,7 +273,8 @@ class Produksi_obat extends MX_Controller {
 
                 // udpate harga obat, cari yang paling besar harga satuannya
                 $harga_satuan_master = $_POST['pl_harga_satuan'];
-                $harga_beli_master = ($harga_satuan_master > $_POST['harga_satuan_prod']) ? $harga_satuan_master : $_POST['harga_satuan_prod'];
+                // $harga_beli_master = ($harga_satuan_master > $_POST['harga_satuan_prod']) ? $harga_satuan_master : $_POST['harga_satuan_prod'];
+                $harga_beli_master = $_POST['harga_satuan_prod'];
                 // update master barang
                 $data_brg = array(
                     'harga_beli' => $harga_beli_master,
