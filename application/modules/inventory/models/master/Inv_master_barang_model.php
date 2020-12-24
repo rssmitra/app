@@ -58,6 +58,19 @@ class Inv_master_barang_model extends CI_Model {
 			$this->db->where('table_brg.kode_sub_golongan', $_GET['kode_sub_gol']);
 		}
 
+		if( ( $_GET['flag'] == 'medis' )  ){
+			if( ( isset( $_GET['rak']) AND $_GET['rak'] != '' )  ){
+				if( $_GET['rak'] != 0 ){
+					$this->db->where('table_brg.rak', $_GET['rak']);
+				}
+			}
+			if( ( isset( $_GET['rak']) AND $_GET['rak'] != '' )  ){
+				if( $_GET['rak'] == 0 ){
+					$this->db->where('table_brg.rak IS NULL');
+				}
+			}
+		}
+
 		if( ( isset( $_GET['is_active']) AND $_GET['is_active'] != '' )  ){
 			$this->db->where('table_brg.is_active', $_GET['is_active']);
 		}

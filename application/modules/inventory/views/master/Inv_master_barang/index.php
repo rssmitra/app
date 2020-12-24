@@ -147,7 +147,16 @@
                 echo $this->master->custom_selection($params = array('table' => $table_sub_gol, 'id' => 'kode_sub_gol', 'name' => 'nama_sub_golongan', 'where' => array()), '' , 'kode_sub_gol', 'kode_sub_gol', 'form-control', '', '') ?>
           </div>
         </div>
-       
+        <?php if( $flag_string == 'medis' ) : ?>
+          <div class="form-group">
+            <label class="control-label col-md-2">Rak/Lemari</label>
+            <div class="col-md-3">
+                <?php 
+                  $flag_label = ( $flag_string == 'medis' ) ? 'rak_medis' : 'rak_non_medis' ;
+                  echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => $flag_label)), '' , 'rak', 'rak', 'form-control', '', '') ?>
+            </div>
+          </div>
+        <?php endif; ?>
         <div class="form-group">
           <label class="control-label col-md-2">Status Aktif</label>
             <div class="col-md-2">

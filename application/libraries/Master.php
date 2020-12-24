@@ -133,7 +133,7 @@ final Class Master {
 			$db->group_by( array($custom['id'], $custom['name']) );
 		}
 		
-		$db->order_by($custom['name'], 'ASC');
+		$db->order_by($custom['id'], 'ASC');
 
 		if(isset($custom['where_in'])){
 			$db->where_in($custom['where_in']['col'],$custom['where_in']['val']);

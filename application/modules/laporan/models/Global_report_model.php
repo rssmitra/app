@@ -983,6 +983,7 @@ public function pengadaan_mod_8(){
 				$this->db->where('kode_sub_golongan', $_POST['kode_sub_gol']);
 			}
 
+			
 			// $this->db->where('is_active', 1);
 			$this->db->group_by( 'mt_depo_stok_nm_v.kode_brg, mt_depo_stok_nm_v.nama_brg, mt_depo_stok_nm_v.satuan_besar, mt_depo_stok_nm_v.satuan_kecil, mt_depo_stok_nm_v.nama_golongan, mt_depo_stok_nm_v.nama_sub_golongan, mt_bagian.nama_bagian, mt_depo_stok_nm_v.is_active, kartu_stok.stok_akhir' );
 			$this->db->order_by( 'nama_brg','ASC' );
@@ -994,7 +995,7 @@ public function pengadaan_mod_8(){
 		// Gudang Medis
 		}else{
 			
-			$this->db->select('mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan as nama_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, is_active');
+			$this->db->select('mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan as nama_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, is_active, rak');
 			$this->db->from('mt_depo_stok_v');
 			$this->db->join('mt_golongan', 'mt_golongan.kode_golongan=mt_depo_stok_v.kode_golongan','left');
 			$this->db->join('mt_sub_golongan', 'mt_sub_golongan.kode_sub_gol=mt_depo_stok_v.kode_sub_golongan','left');
@@ -1015,8 +1016,12 @@ public function pengadaan_mod_8(){
 				$this->db->where('kode_jenis', $_POST['jenis_obat']);
 			}
 
+			if( isset($_POST['rak']) AND $_POST['rak'] != '' ){
+				$this->db->where('rak', $_POST['rak']);
+			}
+
 			// $this->db->where('status_aktif', 1);
-			$this->db->group_by( 'mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, is_active' );
+			$this->db->group_by( 'mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, is_active, rak' );
 			$this->db->order_by( 'nama_brg','ASC' );
 			$this->db->order_by( 'nama_jenis','ASC' );
 			$this->db->order_by( 'nama_layanan','ASC' );

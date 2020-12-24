@@ -20,22 +20,24 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <center><h4>FORM STOK OPNAME <?php echo ($result['data'][0]->nama_bagian)?strtoupper($result['data'][0]->nama_bagian):'GUDANG NON MEDIS'?></h4></center>
-
-      <div style="width:200px">
-        Tanggal Stok Opname : <br>
-        Nama Petugas :
-      </div>
-     
-<?php if($_POST['flag_string'] == 'non_medis') : ?>
-      <span style="font-size: 16px; font-weight: bold">Golongan : <?php echo ($result['data'][0]->nama_golongan)?strtoupper($result['data'][0]->nama_golongan):'-'?> </span>
+      <center><h4>Form Stok Opname</h4></center>
+      <br>
+      <?php if($_POST['flag_string'] == 'non_medis') : ?>
+      <span><?php echo ($result['data'][0]->nama_golongan)?'Golongan <b>'.strtoupper($result['data'][0]->nama_golongan.'</b>'):' '?> </span>
       <?php endif; ?>
 
       <?php if($_POST['flag_string'] == 'medis') : ?>
-      <span style="font-size: 16px; font-weight: bold">Kategori  : 
-      <?php echo ($result['data'][0]->nama_kategori)?strtoupper($result['data'][0]->nama_kategori):'-'?>  </span>
+      <span>
+        <?php echo ($_POST['kode_kategori'] != '')?'Kategori  <b>'.strtoupper($result['data'][0]->nama_kategori).'</b> | ':' '?> 
+      <?php echo ($result['data'][0]->rak)?'Nama Rak/Lemari  <b>'.strtoupper($result['data'][0]->rak).'</b>':' '; ?>
+      </span>
       <?php endif; ?>
-
+      
+      <div style="width:200px">
+        Unit/Bagian <b><?php echo ($result['data'][0]->nama_bagian)?strtoupper($result['data'][0]->nama_bagian):'GUDANG NON MEDIS'?></b>
+        Tanggal SO _________________, Nama Petugas ________________________, <br>
+      </div>
+      <br><br>
       <!-- table for data barang non medis -->
       <table class="table" border="1" style="font-size:14px !important">
         <thead>
@@ -50,7 +52,7 @@
 
           <?php if($_POST['flag_string'] == 'medis') : ?>
             <th class="center">GOLONGAN</th>
-            <th class="center">JENIS</th>
+            <!-- <th class="center">JENIS</th> -->
           <?php endif; ?>
             
             <th class="center">SATUAN KCL</th>
@@ -80,12 +82,12 @@
               <?php endif; ?>
 
               <?php if($_POST['flag_string'] == 'medis') : ?>
-
-                 <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
+                <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
                   <?php echo $row_data->nama_golongan;?>
-               <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
-                <?php echo $row_data->nama_jenis;?>
-                              
+                </td>
+                <!-- <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
+                  <?php echo $row_data->nama_jenis;?>
+                </td>        -->
               <?php endif; ?>
 
               <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle"><?php echo $satuan;?></td>

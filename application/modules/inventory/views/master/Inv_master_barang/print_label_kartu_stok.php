@@ -11,17 +11,13 @@
 
 <center>
 
-<table border="0">
-  <?php foreach( $barang as $key=>$rows ) : ?>
-    <tr>
-      <td align="left" style="width:265px; height:112px">
-        <b><span style="font-size: 16px"><?php echo $rows->kode_brg; ?></span></b> <br>
-        <span style="font-size: 16px"><?php echo ucwords(strtolower($rows->nama_brg)).' <br>('.$rows->content.' '.$rows->satuan_kecil.'/'.$rows->satuan_besar.')'?></span><br>
-        - <?php echo $rows->nama_kategori?>
-      </td>
-    </tr>
-  <?php endforeach; ?>
-</table>
+<?php foreach( $barang as $key=>$rows ) : ?>
+  <div align="left" style="width:265px; height:112px;">
+    <b><span style="font-size: 16px"><?php echo $rows->kode_brg; ?></span></b> <br>
+    <span style="font-size: 14px"><?php echo ucwords(strtolower($rows->nama_brg)).' <br>('.$rows->content.' '.$rows->satuan_kecil.'/'.$rows->satuan_besar.')'?></span><br>
+    <?php echo $rows->nama_kategori?>
+  </div>
+<?php endforeach; ?>
 
 </center>
 

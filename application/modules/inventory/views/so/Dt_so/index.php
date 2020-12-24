@@ -104,6 +104,15 @@ $('select[name="kode_golongan"]').change(function () {
       </div>
       
       <div id="section_medis" style="display: none">
+        
+          <div class="form-group">
+            <label class="control-label col-md-2">Rak/Lemari</label>
+            <div class="col-md-3">
+                <?php 
+                  echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'rak_medis')), '' , 'rak', 'rak', 'form-control', '', '') ?>
+            </div>
+          </div>
+          
 
         <div class="form-group">
           <label class="control-label col-md-2">Kategori</label>
