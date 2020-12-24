@@ -60,12 +60,11 @@ class Inv_master_barang_model extends CI_Model {
 
 		if( ( $_GET['flag'] == 'medis' )  ){
 			if( ( isset( $_GET['rak']) AND $_GET['rak'] != '' )  ){
-				if( $_GET['rak'] != 0 ){
+				if( $_GET['rak'] != '0' ){
 					$this->db->where('table_brg.rak', $_GET['rak']);
 				}
-			}
-			if( ( isset( $_GET['rak']) AND $_GET['rak'] != '' )  ){
-				if( $_GET['rak'] == 0 ){
+
+				if( $_GET['rak'] == '0' ){
 					$this->db->where('table_brg.rak IS NULL');
 				}
 			}
