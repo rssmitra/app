@@ -17,6 +17,7 @@ $(document).ready(function() {
       "serverSide": true, //Feature control DataTables' server-side processing mode.
       "ordering": false,
       "pageLength": 25,
+      "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
       // Load data for the table's content from an Ajax source
       "ajax": {
           "url": base_url+'/get_data?'+params,

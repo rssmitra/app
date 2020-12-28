@@ -1363,7 +1363,7 @@ class Billing_model extends CI_Model {
         if( $exc && isset($exc->nama_pegawai) || $exc->nama_pegawai!=''){
             return $exc->nama_pegawai;
         }else{
-            return 'Administrator';
+            return $this->session->userdata('user')->fullname ;
         }
 
     }

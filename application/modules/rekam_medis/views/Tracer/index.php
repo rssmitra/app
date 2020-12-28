@@ -243,7 +243,6 @@ function popUnder(node) {
           <div class="col-md-2">
             <input type="text" class="form-control" name="keyword">
           </div>
-
       </div>
 
       <div class="form-group">
