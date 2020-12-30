@@ -96,8 +96,8 @@ class Input_dt_so_model extends CI_Model {
 		$this->db->where('mt_depo_stok_nm_v.kode_bagian', $_GET['bag']);
 		$this->db->where('nama_brg LIKE '."'%'".' ');
 		
-		$this->db->order_by( 'nama_sub_golongan','ASC' );
 		$this->db->order_by( 'nama_brg','ASC' );
+		$this->db->order_by( 'nama_sub_golongan','ASC' );
 		
 		$this->db->group_by('is_active, nama_sub_golongan');
 		$this->db->group_by($this->select_nm);
@@ -174,6 +174,7 @@ class Input_dt_so_model extends CI_Model {
 		$fld['kode_brg'] = $_POST['kode_brg'];
 		$fld['stok_sebelum'] = $last_stok->jml_sat_kcl;
 		$fld['stok_sekarang'] = $_POST['input_stok_so'];
+		$fld['set_status_aktif'] = $_POST['status_aktif'];
 		$fld['nama_petugas'] = $this->session->userdata('session_input_so')['nama_pegawai'];
 		$fld['harga_pembelian_terakhir'] = ($harga_terakhir->harga)?$harga_terakhir->harga:$dt_brg->harga_beli;
 
@@ -230,6 +231,7 @@ class Input_dt_so_model extends CI_Model {
 		$fld['stok_exp'] = ($_POST['exp_stok'])?$_POST['exp_stok']:0;
 		$fld['nama_petugas'] = $this->session->userdata('session_input_so')['nama_pegawai'];
 		$fld['harga_pembelian_terakhir'] = $harga_terakhir->harga;
+		$fld['set_status_aktif'] = $_POST['status_aktif'];
 		// print_r($fld);die;
 		/*cek dulu sudah ada atau blm sebelumnya*/
 		$cek_existing = $this->cek_input_stok_before('tc_stok_opname', array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian'], 'agenda_so_id' => $_POST['agenda_so_id']) );

@@ -155,6 +155,8 @@ class Lap_hasil_so extends MX_Controller {
         
         $arr_harga_exp = array();
         $arr_harga = array();
+        $arr_harga_not_active = array();
+        
         foreach($list as $row){
             
             if( $row->set_status_aktif == 1 || $row->set_status_aktif != 0 ){
