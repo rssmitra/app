@@ -60,6 +60,8 @@ function reset_table(kode_bag){
 function get_total_aset_barang_rs(){
   $.getJSON("inventory/so/Lap_hasil_so/total_aset_barang_rs?agenda_so_id=<?php echo $agenda_so_id?>&flag=<?php echo $flag?>", '', function (data) {
      $('#total_aset_barang_rs').text( formatMoney(data.total_aset_barang_rs) );
+     $('#total_aset_barang_rs_not_active').text( formatMoney(data.total_aset_barang_rs_not_active) );
+     $('#total_exp_barang_rs').text( formatMoney(data.total_exp_barang_rs) );
   });
 }
 
@@ -89,6 +91,16 @@ function get_rincian_log(kode_brg){
       <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #91ff00">
         <span style="font-size: 14px">Total Aset Barang RS</span>
         <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs"></span>,-</h3>
+      </div> 
+
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: gold">
+        <span style="font-size: 14px">Total Barang Tidak Aktif</span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs_not_active"></span>,-</h3>
+      </div> 
+
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #ff0000a3">
+        <span style="font-size: 14px">Total Barang RS Expired</span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_exp_barang_rs"></span>,-</h3>
       </div>      
 
     </div>

@@ -73,7 +73,6 @@ class Dt_bag_so_model extends CI_Model {
 	}
 
 	public function _main_query_all_dt(){
-		$this->db->select();
 		$table = ($_GET['flag']=='medis') ? $this->table : $this->table_nm;
 		$this->db->from($table);
 		$this->db->where('agenda_so_id', $_GET['agenda_so_id']);

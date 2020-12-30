@@ -96,6 +96,7 @@ class Create_agenda_so extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->agenda_so_id.'</div>';
             $row[] = ucwords($row_list->agenda_so_name);
             $row[] = $this->tanggal->formatDate($row_list->agenda_so_date).' - '.$row_list->agenda_so_time;
+            $row[] = $this->tanggal->formatDate($row_list->agenda_so_cut_off_stock);
             $row[] = $row_list->agenda_so_spv;
             $row[] = $row_list->agenda_so_desc;
             $row[] = ($row_list->is_active == 'Y') ? '<div class="center"><span class="label label-sm label-success">Active</span></div>' : '<div class="center"><span class="label label-sm label-danger">Not active</span></div>';
@@ -121,6 +122,7 @@ class Create_agenda_so extends MX_Controller {
         $val = $this->form_validation;
         $val->set_rules('agenda_so_name', 'Nama Agenda', 'trim|required');
         $val->set_rules('agenda_so_date', 'Tanggal', 'trim|required');
+        $val->set_rules('agenda_so_cut_off_stock', 'Cut Off Stock', 'trim|required');
         $val->set_rules('agenda_so_time', 'Waktu/Jam', 'trim|required');
         $val->set_rules('agenda_so_spv', 'Penananggung Jawab', 'trim|required|xss_clean');
         $val->set_rules('agenda_so_desc', 'Keterangan', 'trim|xss_clean');
@@ -142,6 +144,7 @@ class Create_agenda_so extends MX_Controller {
             $dataexc = array(
                 'agenda_so_name' => $this->regex->_genRegex($val->set_value('agenda_so_name'),'RGXQSL'),
                 'agenda_so_date' => $this->regex->_genRegex($val->set_value('agenda_so_date'),'RGXQSL'),
+                'agenda_so_cut_off_stock' => $this->regex->_genRegex($val->set_value('agenda_so_cut_off_stock'),'RGXQSL'),
                 'agenda_so_time' => $this->regex->_genRegex($val->set_value('agenda_so_time'),'RGXQSL'),
                 'agenda_so_spv' => $this->regex->_genRegex($val->set_value('agenda_so_spv'),'RGXQSL'),
                 'agenda_so_desc' => $this->regex->_genRegex($val->set_value('agenda_so_desc'),'RGXQSL'),

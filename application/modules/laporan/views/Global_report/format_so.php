@@ -12,7 +12,7 @@
 
 <html>
 <head>
-  <title>Format Stok Opname</title>
+  <title>Format Stok Opname RS. Setia Mitra</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 </head>
@@ -20,7 +20,7 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <center><h4>Form Stok Opname</h4></center>
+      <center><h4>Form Stok Opname RS. Setia Mitra</h4></center>
       <br>
       <?php if($_POST['flag_string'] == 'non_medis') : ?>
       <span><?php echo ($result['data'][0]->nama_golongan)?'Golongan <b>'.strtoupper($result['data'][0]->nama_golongan.'</b>'):' '?> </span>
@@ -29,7 +29,7 @@
       <?php if($_POST['flag_string'] == 'medis') : ?>
       <span>
         <?php echo ($_POST['kode_kategori'] != '')?'Kategori  <b>'.strtoupper($result['data'][0]->nama_kategori).'</b> | ':' '?> 
-      <?php echo ($result['data'][0]->rak)?'Nama Rak/Lemari  <b>'.strtoupper($result['data'][0]->rak).'</b>':' '; ?>
+      <?php echo ($_POST['rak'] != '')?'Nama Rak/Lemari  <b>'.strtoupper($result['data'][0]->rak).'</b>':' '; ?>
       </span>
       <?php endif; ?>
       
@@ -51,8 +51,8 @@
           <?php endif; ?>
 
           <?php if($_POST['flag_string'] == 'medis') : ?>
-            <th class="center">GOLONGAN</th>
-            <!-- <th class="center">JENIS</th> -->
+            <!-- <th class="center">GOLONGAN</th> -->
+            <th class="center">JENIS</th>
           <?php endif; ?>
             
             <th class="center">SATUAN KCL</th>
@@ -60,6 +60,7 @@
             <th class="center">STOK AKHIR</th>
             <th class="center">STOK KARTU</th>
             <th class="center">STOK FISIK</th>
+            <th class="center">JML EXP</th>
             <th class="center">KETERANGAN</th>
           </tr>
         </thead>
@@ -82,17 +83,18 @@
               <?php endif; ?>
 
               <?php if($_POST['flag_string'] == 'medis') : ?>
-                <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
-                  <?php echo $row_data->nama_golongan;?>
-                </td>
                 <!-- <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
+                  <?php echo $row_data->nama_golongan;?>
+                </td> -->
+                <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
                   <?php echo $row_data->nama_jenis;?>
-                </td>        -->
+                </td>       
               <?php endif; ?>
 
               <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle"><?php echo $satuan;?></td>
               <td align="center" style="width:100px !important; overflow-wrap: break-word;vertical-align: middle"><?php echo ($row_data->is_active == 1)?'AKTIF':'NON AKTIF' ;?></td>
               <td align="center" style="width:100px !important; overflow-wrap: break-word;vertical-align: middle"><?php echo $row_data->stok_akhir;?></td>
+              <td style="width:100px !important; overflow-wrap: break-word;"></td>
               <td style="width:100px !important; overflow-wrap: break-word;"></td>
               <td style="width:100px !important; overflow-wrap: break-word;"></td>
               <td style="width:150px !important; overflow-wrap: break-word;"></td>

@@ -6,7 +6,7 @@ class Dt_bag_so_rs_model extends CI_Model {
 	var $table = 'tc_stok_opname';
 	var $table_nm = 'tc_stok_opname_nm';
 	var $column = array('nama_brg');
-	var $select = 'nama_brg, SUM(stok_sebelum) as stok_sebelum, SUM(stok_sekarang) as stok_sekarang, (AVG(harga_pembelian_terakhir) / content) as harga_pembelian_terakhir';
+	var $select = 'nama_brg, SUM(stok_sebelum) as stok_sebelum, SUM(stok_sekarang) as stok_sekarang, SUM(stok_exp) as stok_exp, (AVG(harga_pembelian_terakhir) / content) as harga_pembelian_terakhir';
 	var $order = array('nama_brg' => 'ASC');
 
 	public function __construct()
@@ -55,6 +55,7 @@ class Dt_bag_so_rs_model extends CI_Model {
 	function get_datatables()
 	{
 		$this->_get_datatables_query();
+		$this->db->where('(set_status_aktif = 1 or set_status_aktif is null)');
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
@@ -64,7 +65,9 @@ class Dt_bag_so_rs_model extends CI_Model {
 
 	function get_all_data()
 	{
+		$this->db->select('set_status_aktif');
 		$this->_main_query();
+		$this->db->group_by('set_status_aktif');
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();
@@ -84,7 +87,6 @@ class Dt_bag_so_rs_model extends CI_Model {
 	}
 
 	public function _main_query_all_dt(){
-		$this->db->select();
 		$table = ($_GET['flag']=='medis') ? $this->table : $this->table_nm;
 		$this->db->from($table);
 		$this->db->where('agenda_so_id', $_GET['agenda_so_id']);

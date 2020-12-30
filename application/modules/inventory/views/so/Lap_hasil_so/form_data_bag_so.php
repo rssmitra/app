@@ -81,9 +81,10 @@ function reset_table(kode_bag){
           <th style="background-color: black; color: white" width="30px" class="center"></th>
           <th style="background-color: black; color: white" width="100px">Kode Bagian</th>
           <th style="background-color: black; color: white">Nama Bagian</th>
-          <th style="background-color: black; color: white" style="width:30px">Barang Aktif</th>
-          <th style="background-color: black; color: white" style="width:30px">Barang Tidak Aktif</th>
-          <th style="background-color: black; color: white" style="width:30px">Total Barang</th>
+          <th style="background-color: black; color: white" style="width:30px" class="center">Barang Aktif</th>
+          <th style="background-color: black; color: white" style="width:30px" class="center">Barang Tidak Aktif</th>
+          <th style="background-color: black; color: white" style="width:30px" class="center">Barang Expired</th>
+          <th style="background-color: black; color: white" style="width:30px" class="center">Total Barang<br>(Aktif + Tidak Aktif)</th>
           
         </tr>
       </thead>

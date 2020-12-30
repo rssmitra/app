@@ -28,9 +28,10 @@
           <th width="130px">&nbsp;</th>
           <th width="50px">ID</th>
           <th>Nama Kegiatan</th>
-          <th>Tanggal</th>
+          <th>Tanggal Pelaksanaan</th>
+          <th><i>Cut off stokc</i></th>
           <th>Penanggung Jawab</th>
-          <th>Keterangan</th>
+          <th width="300px">Keterangan</th>
           <th>Status</th>
           <th width="100px">Last Update</th>
           

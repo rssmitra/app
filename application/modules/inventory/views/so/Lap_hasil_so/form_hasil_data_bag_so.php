@@ -61,6 +61,7 @@ function get_total_rp_so(){
   $.getJSON("inventory/so/Lap_hasil_so/get_total_rp_hasil_so?agenda_so_id=<?php echo $agenda_so_id?>&kode_bagian=<?php echo $kode_bagian?>&flag=<?php echo $flag?>", '', function (data) {
      $('#total_hasil_so_aktif').text( formatMoney(data.total_rp_aktif) );
      $('#total_hasil_so_not_aktif').text( formatMoney(data.total_rp_not_aktif) );
+     $('#total_hasil_so_exp').text( formatMoney(data.total_rp_exp) );
   });
 }
 
@@ -91,6 +92,11 @@ function get_total_rp_so(){
       <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: gold">
         <span style="font-size: 14px">Barang Tidak Aktif </span>
         <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_hasil_so_not_aktif"></span>,-</h3>
+      </div>
+
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #ff0000a3">
+        <span style="font-size: 14px">Barang Expired </span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_hasil_so_exp"></span>,-</h3>
       </div>
       
 

@@ -86,6 +86,17 @@ $(document).ready(function(){
                   </div>
                 </div>
                 <div class="form-group">
+                  <label class="control-label col-md-2"><i>Cut off stock</i></label>
+                  <div class="col-md-2">
+                    <div class="input-group">
+                      <input class="form-control date-picker" name="agenda_so_cut_off_stock" id="agenda_so_cut_off_stock" type="text" data-date-format="yyyy-mm-dd" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value)?$value->agenda_so_date:''?>"/>
+                      <span class="input-group-addon">
+                        <i class="fa fa-calendar bigger-110"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
                   <label class="control-label col-md-2">Penanggung Jawab</label>
                   <div class="col-md-3">
                     <input name="agenda_so_spv" id="agenda_so_spv" value="<?php echo isset($value)?$value->agenda_so_spv:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >

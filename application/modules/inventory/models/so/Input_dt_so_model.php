@@ -5,12 +5,12 @@ class Input_dt_so_model extends CI_Model {
 
 	var $table = 'mt_depo_stok_v';
 	var $column = array('mt_depo_stok_v.nama_brg');
-	var $select = 'kode_depo_stok, mt_depo_stok_v.kode_brg, nama_brg, mt_depo_stok_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, mt_golongan.nama_golongan,mt_sub_golongan.nama_sub_golongan, nama_jenis, nama_layanan, nama_petugas, tgl_stok_opname';
+	var $select = 'kode_depo_stok, mt_depo_stok_v.kode_brg, nama_brg, mt_depo_stok_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, mt_golongan.nama_golongan,mt_sub_golongan.nama_sub_golongan, nama_jenis, nama_layanan, nama_petugas, tgl_stok_opname, stok_exp, stok_sekarang, stok_sebelum';
 
 	/*non medis*/
 	var $table_nm = 'mt_depo_stok_nm_v';
 	var $column_nm = array('mt_depo_stok_nm_v.nama_brg');
-	var $select_nm = 'kode_depo_stok,mt_depo_stok_nm_v.kode_brg, nama_brg, mt_depo_stok_nm_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, nama_petugas, tgl_stok_opname';
+	var $select_nm = 'kode_depo_stok,mt_depo_stok_nm_v.kode_brg, nama_brg, mt_depo_stok_nm_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, nama_petugas, tgl_stok_opname, stok_exp, stok_sekarang, stok_sebelum';
 
 	public function __construct()
 	{
@@ -20,7 +20,7 @@ class Input_dt_so_model extends CI_Model {
 
 	private function _main_query(){
 
-		$this->db->select('is_active as status_aktif');
+		$this->db->select('mt_depo_stok_v.is_active as status_aktif');
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('mt_golongan', 'mt_golongan.kode_golongan=mt_depo_stok_v.kode_golongan');
@@ -88,7 +88,7 @@ class Input_dt_so_model extends CI_Model {
 
 	private function _main_query_nm(){
 
-		$this->db->select('is_active as status_aktif, nama_sub_golongan as nama_golongan');
+		$this->db->select('mt_depo_stok_nm_v.is_active as status_aktif, nama_sub_golongan as nama_golongan');
 		$this->db->select($this->select_nm);
 		$this->db->from($this->table_nm);
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_depo_stok_nm_v.kode_bagian');
@@ -224,8 +224,10 @@ class Input_dt_so_model extends CI_Model {
 		$fld['tgl_stok_opname'] = date('Y-m-d H:i:s'); // $tgl_stok_opname;
 		$fld['kode_bagian'] = $_POST['kode_bagian'];
 		$fld['kode_brg'] = $_POST['kode_brg'];
-		$fld['stok_sebelum'] = $last_stok->jml_sat_kcl;
-		$fld['stok_sekarang'] = $_POST['input_stok_so'];
+		if(!empty($_POST['input_stok_so'])){
+			$fld['stok_sekarang'] = $_POST['input_stok_so'];
+		}
+		$fld['stok_exp'] = ($_POST['exp_stok'])?$_POST['exp_stok']:0;
 		$fld['nama_petugas'] = $this->session->userdata('session_input_so')['nama_pegawai'];
 		$fld['harga_pembelian_terakhir'] = $harga_terakhir->harga;
 		// print_r($fld);die;
@@ -238,24 +240,27 @@ class Input_dt_so_model extends CI_Model {
 			$last_id_tc_so = $cek_existing->row()->id_tc_stok_opname;
 		}else{
 			/*then insert*/
+			$fld['stok_sebelum'] = $last_stok->jml_sat_kcl;
 			$this->db->insert("tc_stok_opname", $fld);
 			$last_id_tc_so = $this->db->insert_id();
 		}
 
-		$config = array(
-			'id_tc_stok_opname' => $last_id_tc_so,
-			'agenda_so_id' => $_POST['agenda_so_id'],
-			'last_stok' => $last_stok->jml_sat_kcl,
-			'new_stok' => $_POST['input_stok_so'],
-			'kode_bagian' => $_POST['kode_bagian'],
-			'kode_brg' => $_POST['kode_brg'],
-			'table_depo_flag' => 'mt_depo_stok',
-			'table_kartu_flag' => 'tc_kartu_stok',
-			'petugas' => $this->session->userdata('session_input_so')['nama_pegawai'],
-		);
-		/*catat kartu stok*/
-		$this->inventory_lib->save_mutasi_stok($config);
-
+		if(!empty($_POST['input_stok_so'])){
+			$config = array(
+				'id_tc_stok_opname' => $last_id_tc_so,
+				'agenda_so_id' => $_POST['agenda_so_id'],
+				'last_stok' => $last_stok->jml_sat_kcl,
+				'new_stok' => $_POST['input_stok_so'],
+				'kode_bagian' => $_POST['kode_bagian'],
+				'kode_brg' => $_POST['kode_brg'],
+				'table_depo_flag' => 'mt_depo_stok',
+				'table_kartu_flag' => 'tc_kartu_stok',
+				'petugas' => $this->session->userdata('session_input_so')['nama_pegawai'],
+			);
+			/*catat kartu stok*/
+			$this->inventory_lib->save_mutasi_stok($config);
+		}
+		
 		return true;
 
 	}

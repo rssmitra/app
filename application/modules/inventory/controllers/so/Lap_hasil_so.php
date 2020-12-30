@@ -116,19 +116,23 @@ class Lap_hasil_so extends MX_Controller {
         
         $arr_harga_exp = array();
         $arr_harga = array();
+        $arr_harga_brg_exp = array();
         foreach($list as $row){
             
             if( $row->harga_pembelian_terakhir != 0 AND $row->stok_sekarang != 0 ){
                 // barang tidak aktif
                 
                 // barang aktif
-                if( $row->set_status_aktif == 1 ){
+                if( $row->set_status_aktif == 1 || $row->set_status_aktif != 0 ){
                     $harga_pembelian_terakhir = $row->harga_pembelian_terakhir / $row->content ;
                     $arr_harga[] = round($harga_pembelian_terakhir * $row->stok_sekarang);
                 }
                 else{
                     $harga_pembelian_terakhir = $row->harga_pembelian_terakhir / $row->content ;
                     $arr_harga_exp[] = round($harga_pembelian_terakhir * $row->stok_sekarang);
+                }
+                if( $row->stok_exp > 0 ){
+                    $arr_harga_brg_exp[] = round($harga_pembelian_terakhir * $row->stok_exp);
                 }
 
             }
@@ -138,6 +142,7 @@ class Lap_hasil_so extends MX_Controller {
         $result = array(
             'total_rp_aktif' => array_sum($arr_harga),
             'total_rp_not_aktif' => array_sum($arr_harga_exp),
+            'total_rp_exp' => array_sum($arr_harga_brg_exp),
         );
 
         echo json_encode($result);
@@ -152,14 +157,27 @@ class Lap_hasil_so extends MX_Controller {
         $arr_harga = array();
         foreach($list as $row){
             
-            if( $row->harga_pembelian_terakhir != 0 AND $row->stok_sekarang != 0 ){
-                $arr_harga[] = round($row->harga_pembelian_terakhir * $row->stok_sekarang);
-
+            if( $row->set_status_aktif == 1 || $row->set_status_aktif != 0 ){
+                if( $row->harga_pembelian_terakhir > 0 AND $row->stok_sekarang > 0 ){
+                    $arr_harga[] = round($row->harga_pembelian_terakhir * $row->stok_sekarang);
+                }
             }
+            else{
+                if( $row->harga_pembelian_terakhir > 0 AND $row->stok_sekarang > 0 ){
+                    $arr_harga_not_active[] = round($row->harga_pembelian_terakhir * $row->stok_sekarang);
+                }
+            }
+
+            if( $row->stok_exp > 0 ){
+                $arr_harga_exp[] = round($row->harga_pembelian_terakhir * $row->stok_exp);
+            }
+
         }
 
         $result = array(
             'total_aset_barang_rs' => array_sum($arr_harga),
+            'total_aset_barang_rs_not_active' => array_sum($arr_harga_not_active),
+            'total_exp_barang_rs' => array_sum($arr_harga_exp),
         );
 
         echo json_encode($result);
@@ -248,29 +266,38 @@ class Lap_hasil_so extends MX_Controller {
         /*get data from model*/
         $list = $this->Dt_bag_so->get_datatables();
         $list_dt = $this->Dt_bag_so->_main_query_all_dt();
+        // echo '<pre>';print_r($list_dt);die;
         $data = array();
         $no = $_POST['start'];
 
         foreach ($list_dt as $row_dt) {
+            
+            if( $row_dt->set_status_aktif == 1 || $row_dt->set_status_aktif != 0 ){
+                $arr_aktif[$row_dt->kode_bagian][] = true;
+            }
             if( $row_dt->set_status_aktif == 0 ){
                 $arr_not_aktif[$row_dt->kode_bagian][] = true;
             }
-            if( $row_dt->set_status_aktif == 1 ){
-                $arr_aktif[$row_dt->kode_bagian][] = true;
+
+            if( $row_dt->stok_exp > 0 ){
+                $arr_exp[$row_dt->kode_bagian][] = true;
             }
         }
+        // echo '<pre>';print_r($arr_not_aktif);die;
 
         foreach ($list as $row_list) {
             $no++;
             $row = array();
             $count_aktif = isset($arr_aktif[$row_list->kode_bagian]) ? count($arr_aktif[$row_list->kode_bagian]) : 0;
             $count_not_aktif = isset($arr_not_aktif[$row_list->kode_bagian])?count($arr_not_aktif[$row_list->kode_bagian]): 0;
+            $count_exp = isset($arr_exp[$row_list->kode_bagian])?count($arr_exp[$row_list->kode_bagian]): 0;
             $total = $count_aktif + $count_not_aktif;
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_bagian.'</div>';
             $row[] = '<a href="#" onclick="getMenuTabs('."'inventory/so/Lap_hasil_so/view_data_hasil_so/".$_GET['agenda_so_id']."/".$row_list->kode_bagian."/".$_GET['flag']."'".', '."'tabs_so'".')">'.ucwords($row_list->nama_bagian).'</a>';
             $row[] = '<div class="center">'.$count_aktif.'</div>';
             $row[] = '<div class="center">'.$count_not_aktif.'</div>';
+            $row[] = '<div class="center">'.$count_exp.'</div>';
             $row[] = '<div class="center">'.$total.'</div>';
                    
             $data[] = $row;
@@ -326,7 +353,7 @@ class Lap_hasil_so extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            $harga_pembelian_terakhir=$row_list->harga_pembelian_terakhir / $row_list->content ;
+            $harga_pembelian_terakhir = $row_list->harga_pembelian_terakhir / $row_list->content ;
             $total=$row_list->stok_sekarang * $row_list->harga_pembelian_terakhir;
             $totalr=$row_list->stok_sekarang * $harga_pembelian_terakhir;
             $no++;

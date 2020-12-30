@@ -48,9 +48,10 @@
             foreach($result_content as $row_data) : $no++; 
             $satuan = ($row_data->satuan_kecil==$row_data->satuan_besar) ? $row_data->satuan_kecil : $row_data->satuan_kecil.'/ '.$row_data->satuan_besar;
             $content = $row_data->content;
-            $hreal = ( $row_data->harga_pembelian_terakhir != 0 ) ? round($row_data->harga_pembelian_terakhir / $content) : 0;
+            $hreal = ( $row_data->harga_pembelian_terakhir != 0 ) ? ($row_data->harga_pembelian_terakhir / $content) : 0;
             $total = $hreal  * $row_data->stok_sekarang;
             $totalhasil= $totalhasil + $total;
+            $status = ($row_data->set_status_aktif == 0)?'Tidak Aktif':'Aktif';
           ?>
             <tr>
               <td align="center" style="width:50px !important; overflow-wrap: break-word;"><?php echo $no;?></td>
@@ -59,21 +60,21 @@
               <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $row_data->stok_sebelum;?></td>
               <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $row_data->stok_sekarang;?></td>
               <td align="center" style="width:120px !important; overflow-wrap: break-word;"><?php echo $satuan;?></td>
-              <td style="width:200px !important; overflow-wrap: break-word;"><?php echo $hreal;?>
+              <td style="width:200px !important; overflow-wrap: break-word;"><?php echo (int)$hreal;?>
                 
               </td>
 
-              <td style="width:200px !important; overflow-wrap: break-word;"><?php echo$total;?>
+              <td style="width:200px !important; overflow-wrap: break-word;"><?php echo (int)$total;?>
                 
               </td>
-              <td style="width:200px !important; overflow-wrap: break-word;"><?php echo $row_data->set_status_aktif;?></td>
+              <td style="width:200px !important; overflow-wrap: break-word;"><?php echo $status;?></td>
               <td style="width:200px !important; overflow-wrap: break-word;"><?php echo $row_data->nama_petugas;?></td>
               <td style="width:200px !important; overflow-wrap: break-word;"><?php echo $this->tanggal->formatDateTime($row_data->tgl_stok_opname);?></td>
               
             </tr>
           <?php endforeach; ?>
-          <tr><td style="width:100px !important; overflow-wrap: break-word;" colspan="9" align="right">JUMLAH  </td>
-             <td style="width:100px !important; overflow-wrap: break-word;"><?php echo $totalhasil;?></td>
+          <tr><td style="width:100px !important; overflow-wrap: break-word;" colspan="7" align="right">JUMLAH  </td>
+             <td style="width:100px !important; overflow-wrap: break-word;"><?php echo (int)$totalhasil;?></td>
              <td></td>
              <td></td>
              <td></td>

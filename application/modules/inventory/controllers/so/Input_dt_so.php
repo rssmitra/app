@@ -78,9 +78,14 @@ class Input_dt_so extends MX_Controller {
             $row[] = $row_list->kode_brg;
             $row[] = ucwords($row_list->nama_brg);
             $satuan = ($row_list->satuan_kecil==$row_list->satuan_besar)?$row_list->satuan_kecil:$row_list->satuan_kecil.'/'.$row_list->satuan_besar;
+            $cutt_off_stock = ($row_list->stok_sebelum)?$row_list->stok_sebelum:$row_list->jml_sat_kcl;
             $row[] = '<div class="center">'.$satuan.'</div>';
-            $row[] = '<div class="center">'.$row_list->jml_sat_kcl.'</div>';
-            $row[] = '<div class="center"><input type="text" name="stok_kartu" id="row_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
+            $row[] = '<div class="center" style="color: blue; font-size: 14px; font-weight: bold">'.$cutt_off_stock.'</div>';
+            $row[] = '<div class="center" style="color: green; font-size: 14px; font-weight: bold">'.$row_list->jml_sat_kcl.'</div>';
+            $row[] = '<div class="center"><input type="text" name="stok_kartu" id="row_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center" value="'.$row_list->stok_sekarang.'" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
+
+            $row[] = '<div class="center"><input type="text" name="stok_exo" id="row_exp_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center" value="'.$row_list->stok_exp.'" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
+
             $value_brg_aktif = ($row_list->status_aktif==1)?0:1;
             $status_brg_aktif = ($value_brg_aktif==1)?'':'checked';
             $row[] = '<div class="center">
@@ -171,15 +176,13 @@ class Input_dt_so extends MX_Controller {
         /*proses input so*/
         if($_POST['kode_bagian']=='070101'){
             $this->Input_dt_so->update_status_brg('mt_barang_nm', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg']) );
-            // $this->Input_dt_so->save_dt_so_nm();
-
             $this->Input_dt_so->update_status_brg('tc_stok_opname_nm', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
         }else{
             if($_POST['kode_bagian']=='060201'){
                 $this->Input_dt_so->update_status_brg('mt_barang', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg']) );
-            }else{
-                $this->Input_dt_so->update_status_brg('mt_depo_stok', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
             }
+            $this->Input_dt_so->update_status_brg('mt_depo_stok', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
+
             $this->Input_dt_so->update_status_brg('tc_stok_opname', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
             
         }
