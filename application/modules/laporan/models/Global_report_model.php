@@ -1002,7 +1002,7 @@ public function pengadaan_mod_8(){
 						ELSE jenis_golongan +' ."'/'". '+nama_golongan 
 						END AS jenis_golongan_concat, stok_akhir, is_active, rak, tgl_input ';
 			$qry .= 'FROM view_depo_stok_so ';
-			$qry .= 'WHERE kode_bagian = '."'".$_POST['bagian']."'".' AND "tgl_input" <= '."'".$tgl_stok."'".' AND "tgl_input" is not null ';
+			$qry .= 'WHERE kode_bagian = '."'".$_POST['bagian']."'".' AND CAST("tgl_input" as DATE) <= '."'".$tgl_stok."'".' AND "tgl_input" is not null ';
 			
 
 			if( isset($_POST['kode_kategori']) AND $_POST['kode_kategori'] != '' ){
@@ -1023,7 +1023,7 @@ public function pengadaan_mod_8(){
 
 			$qry .= 'ORDER BY "nama_brg" ASC, "nama_jenis" ASC, "nama_layanan" ASC';
 			$query = $this->db->query($qry);
-			print_r($this->db->last_query());die;
+			// print_r($this->db->last_query());die;
 		}
 
 		return $this->db->last_query();

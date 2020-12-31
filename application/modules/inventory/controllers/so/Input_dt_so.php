@@ -174,16 +174,17 @@ class Input_dt_so extends MX_Controller {
     public function set_status_brg()
     {
         /*proses input so*/
+        $value = ($_POST['value'] == 1)?0:1;
         if($_POST['kode_bagian']=='070101'){
-            $this->Input_dt_so->update_status_brg('mt_barang_nm', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg']) );
-            $this->Input_dt_so->update_status_brg('tc_stok_opname_nm', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
+            $this->Input_dt_so->update_status_brg('mt_barang_nm', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );
+            $this->Input_dt_so->update_status_brg('tc_stok_opname_nm', array('set_status_aktif' => $value), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
         }else{
             if($_POST['kode_bagian']=='060201'){
-                $this->Input_dt_so->update_status_brg('mt_barang', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg']) );
+                $this->Input_dt_so->update_status_brg('mt_barang', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );
             }
-            $this->Input_dt_so->update_status_brg('mt_depo_stok', array('is_active' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
+            $this->Input_dt_so->update_status_brg('mt_depo_stok', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
 
-            $this->Input_dt_so->update_status_brg('tc_stok_opname', array('set_status_aktif' => $_POST['value']), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
+            $this->Input_dt_so->update_status_brg('tc_stok_opname', array('set_status_aktif' => $value), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
             
         }
 
