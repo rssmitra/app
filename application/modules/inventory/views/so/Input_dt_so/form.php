@@ -117,7 +117,8 @@ function updateRow(kode_brg, kode_bag, agenda_so_id){
 function reset_table(kode_bag){
     preventDefault();
     var golongan = ( $('#kode_bagian').val() == '070101' ) ? $('#kode_golongan').val() : $('#kode_kategori').val() ;
-    oTable.ajax.url('inventory/so/Input_dt_so/get_data?bag='+kode_bag+'&gol='+golongan+'').load();
+    var rak = ( $('#kode_bagian').val() == '070101' ) ? $('#rak_nm').val() : $('#rak_m').val() ;
+    oTable.ajax.url('inventory/so/Input_dt_so/get_data?bag='+kode_bag+'&gol='+golongan+'&rak='+rak+'').load();
 }
 
 
@@ -146,7 +147,8 @@ function setStatusAktifBrg(kode_brg, kode_bag, agenda_so_id){
 function find_data_reload(){
   preventDefault();
   var golongan = ( $('#kode_bagian').val() == '070101' ) ? $('#kode_golongan').val() : $('#kode_kategori').val() ;
-  oTable.ajax.url($('#dt-input-so-bag').attr('base-url')+'&gol='+golongan ).load();
+  var rak = ( $('#kode_bagian').val() == '070101' ) ? $('#rak_nm').val() : $('#rak_m').val() ;
+  oTable.ajax.url($('#dt-input-so-bag').attr('base-url')+'&gol='+golongan+'&rak='+rak+'' ).load();
 
 }
 
@@ -229,6 +231,11 @@ function find_data_reload(){
               <?php 
                 echo $this->master->custom_selection($params = array('table' => 'mt_golongan_nm', 'id' => 'kode_golongan', 'name' => 'nama_golongan', 'where' => array()), '' , 'kode_golongan', 'kode_golongan', 'form-control', '', '') ?>
           </div>
+          <label class="control-label col-md-2">Rak/Lemari</label>
+          <div class="col-md-3">
+              <?php 
+                echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'rak_non_medis')), '' , 'rak_nm', 'rak_nm', 'form-control', '', '') ?>
+          </div>
         </div>
       </div>
       
@@ -240,8 +247,12 @@ function find_data_reload(){
               <?php 
                 echo $this->master->custom_selection($params = array('table' => 'mt_kategori', 'id' => 'kode_kategori', 'name' => 'nama_kategori', 'where' => array()), '' , 'kode_kategori', 'kode_kategori', 'form-control', '', '') ?>
           </div>
+          <label class="control-label col-md-2">Rak/Lemari</label>
+          <div class="col-md-3">
+              <?php 
+                echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'rak_medis')), '' , 'rak_m', 'rak_m', 'form-control', '', '') ?>
+          </div>
         </div>
-
         
       </div>
       

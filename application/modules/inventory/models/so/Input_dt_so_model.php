@@ -41,6 +41,10 @@ class Input_dt_so_model extends CI_Model {
 			$this->db->where('kode_kategori', $_GET['gol']);
 		}
 
+		if( isset($_GET['rak']) AND $_GET['rak'] != '' ){
+			$this->db->where('rak', $_GET['rak']);
+		}
+
 		$this->db->group_by('is_active');
 		$this->db->group_by($this->select);
 
@@ -110,6 +114,10 @@ class Input_dt_so_model extends CI_Model {
 
 		if( isset($_GET['gol']) AND $_GET['gol'] != '' ){
 			$this->db->where('kode_golongan', $_GET['gol']);
+		}
+
+		if( isset($_GET['rak']) AND $_GET['rak'] != '' ){
+			$this->db->where('rak', $_GET['rak']);
 		}
 
 		$i = 0;
