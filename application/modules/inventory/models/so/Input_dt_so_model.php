@@ -182,6 +182,7 @@ class Input_dt_so_model extends CI_Model {
 		$fld['kode_brg'] = $_POST['kode_brg'];
 		$fld['stok_sebelum'] = $last_stok->jml_sat_kcl;
 		$fld['stok_sekarang'] = $_POST['input_stok_so'];
+		$fld['stok_exp'] = ($_POST['exp_stok'])?$_POST['exp_stok']:0;
 		$fld['set_status_aktif'] = $_POST['status_aktif'];
 		$fld['nama_petugas'] = $this->session->userdata('session_input_so')['nama_pegawai'];
 		$fld['harga_pembelian_terakhir'] = ($harga_terakhir->harga)?$harga_terakhir->harga:$dt_brg->harga_beli;

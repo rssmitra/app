@@ -90,6 +90,7 @@ $(document).ready(function() {
 
 function updateRow(kode_brg, kode_bag, agenda_so_id){
   
+  preventDefault();
   var val_id = $('#row_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   var val_exp_id = $('#row_exp_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   var is_active = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
@@ -124,9 +125,10 @@ function reset_table(kode_bag){
 
 function setStatusAktifBrg(kode_brg, kode_bag, agenda_so_id){
   var val_id = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
+  var val_exp_id = $('#row_exp_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   $.ajax({
       url: "inventory/so/Input_dt_so/set_status_brg",
-      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, value :val_id },
+      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so:0, exp_stok: 0, value :val_id, status_aktif: val_id },
       dataType: "json",
       type: "POST",
       complete: function (xhr) {
