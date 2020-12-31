@@ -86,8 +86,8 @@
                 <!-- <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
                   <?php echo $row_data->nama_golongan;?>
                 </td> -->
-                <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
-                  <?php echo $row_data->nama_jenis;?>
+                <td align="left" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle">
+                  <?php echo $row_data->jenis_golongan_concat;?>
                 </td>       
               <?php endif; ?>
 

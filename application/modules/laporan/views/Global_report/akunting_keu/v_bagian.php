@@ -42,7 +42,7 @@
           <tr style="text-align: center">
             <th width="50">No</th>
             <th width="105">Nama Bagian</th>
-            <th width="304">Saldo Akhir</th>
+            <!-- <th width="304">Saldo Akhir</th> -->
           </tr>
          
         </thead>
@@ -58,7 +58,7 @@
               <td align="center"><?php echo $no;?></td>
               <?php 
                 echo '<td><a href="'.base_url().'laporan/Global_report/show_data_bmhp?kode_bagian='.$v_bag[0]['kode_bagian'].'&month='.$month.'&year='.$year.'&flag=akunting_mod_3&submit=form" target="_blank">'.ucwords($k_bag).'</td>';
-                echo '<td>'.$saldo_bagian.'</td>';
+                // echo '<td>'.$saldo_bagian.'</td>';
               ?>
             </tr>
           <?php 

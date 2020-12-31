@@ -225,7 +225,7 @@ class Input_dt_so_model extends CI_Model {
 		$fld['tgl_stok_opname'] = date('Y-m-d H:i:s'); // $tgl_stok_opname;
 		$fld['kode_bagian'] = $_POST['kode_bagian'];
 		$fld['kode_brg'] = $_POST['kode_brg'];
-		if(!empty($_POST['input_stok_so'])){
+		if( $_POST['input_stok_so'] >= 0 ){
 			$fld['stok_sekarang'] = $_POST['input_stok_so'];
 		}
 		$fld['stok_exp'] = ($_POST['exp_stok'])?$_POST['exp_stok']:0;
@@ -247,7 +247,7 @@ class Input_dt_so_model extends CI_Model {
 			$last_id_tc_so = $this->db->insert_id();
 		}
 
-		if(!empty($_POST['input_stok_so'])){
+		if( $_POST['input_stok_so'] >= 0 ){
 			$config = array(
 				'id_tc_stok_opname' => $last_id_tc_so,
 				'agenda_so_id' => $_POST['agenda_so_id'],

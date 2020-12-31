@@ -277,7 +277,7 @@ class Global_report_model extends CI_Model {
 
 	public function akunting_mod_3a(){
 		$query = "SELECT a.kode_brg, b.nama_brg, CAST(AVG(c.harga_beli) as INT) as harga_beli
-		FROM  mt_depo_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
+		FROM  mt_depo_stok as a LEFT JOIN mt_barang b on b.kode_brg=a.kode_brg 
 		LEFT JOIN mt_rekap_stok c on a.kode_brg=c.kode_brg
 		WHERE a.kode_brg IS NOT NULL
 		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC";
@@ -321,6 +321,7 @@ class Global_report_model extends CI_Model {
 		$this->db->where('nama_brg is not null');
 		$this->db->where('stok_akhir > 0');
 		$this->db->where('mt_bagian.status_aktif', 1);
+		$this->db->order_by('mt_bagian.nama_bagian', 'ASC');
 		return $this->db->get()->result_array();
 	}
 
@@ -995,38 +996,34 @@ public function pengadaan_mod_8(){
 		// Gudang Medis
 		}else{
 			
-			$this->db->select('mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan as nama_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, is_active, rak');
-			$this->db->from('mt_depo_stok_v');
-			$this->db->join('mt_golongan', 'mt_golongan.kode_golongan=mt_depo_stok_v.kode_golongan','left');
-			$this->db->join('mt_sub_golongan', 'mt_sub_golongan.kode_sub_gol=mt_depo_stok_v.kode_sub_golongan','left');
-			$this->db->join('( SELECT * FROM tc_kartu_stok WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE tgl_input <= '."'".$tgl_stok."'".' AND tgl_input is not null GROUP BY kode_brg) AND kode_bagian='."'".$_POST['bagian']."'".' ) AS kartu_stok', 'kartu_stok.kode_brg=mt_depo_stok_v.kode_brg','left');
-
-			$this->db->where('mt_depo_stok_v.kode_bagian', $_POST['bagian']);
-			$this->db->where('nama_brg LIKE '."'%'".'');
+			$qry = 'SELECT kode_brg, nama_brg, satuan_besar, satuan_kecil, jenis_golongan, nama_golongan, nama_kategori, nama_bagian, ';
+			$qry .= 'CASE 
+							WHEN jenis_golongan = nama_golongan THEN jenis_golongan
+						ELSE jenis_golongan +' ."'/'". '+nama_golongan 
+						END AS jenis_golongan_concat, stok_akhir, is_active, rak, tgl_input ';
+			$qry .= 'FROM view_depo_stok_so ';
+			$qry .= 'WHERE kode_bagian = '."'".$_POST['bagian']."'".' AND "tgl_input" <= '."'".$tgl_stok."'".' AND "tgl_input" is not null ';
 			
+
 			if( isset($_POST['kode_kategori']) AND $_POST['kode_kategori'] != '' ){
-				$this->db->where('kode_kategori', $_POST['kode_kategori']);
+				$qry .= 'AND kode_kategori = '."'".$_POST['kode_kategori']."'".' ';
 			}
 
 			if( isset($_POST['kode_layanan']) AND $_POST['kode_layanan'] != '' ){
-				$this->db->where('kode_layanan', $_POST['kode_layanan']);
+				$qry .= 'AND kode_layanan = '."'".$_POST['kode_layanan']."'".' ';
 			}
 
 			if( isset($_POST['jenis_obat']) AND $_POST['jenis_obat'] != '' ){
-				$this->db->where('kode_jenis', $_POST['jenis_obat']);
+				$qry .= 'AND jenis_obat = '."'".$_POST['jenis_obat']."'".' ';
 			}
 
 			if( isset($_POST['rak']) AND $_POST['rak'] != '' ){
-				$this->db->where('rak', $_POST['rak']);
+				$qry .= 'AND rak = '."'".$_POST['rak']."'".' ';
 			}
 
-			// $this->db->where('status_aktif', 1);
-			$this->db->group_by( 'mt_depo_stok_v.kode_brg, nama_brg, satuan_besar, satuan_kecil, nama_sub_golongan, nama_bagian, nama_kategori, nama_layanan, nama_jenis, kartu_stok.stok_akhir, is_active, rak' );
-			$this->db->order_by( 'nama_brg','ASC' );
-			$this->db->order_by( 'nama_jenis','ASC' );
-			$this->db->order_by( 'nama_layanan','ASC' );
-			$query = $this->db->get();
-			// print_r($this->db->last_query());die;
+			$qry .= 'ORDER BY "nama_brg" ASC, "nama_jenis" ASC, "nama_layanan" ASC';
+			$query = $this->db->query($qry);
+			print_r($this->db->last_query());die;
 		}
 
 		return $this->db->last_query();

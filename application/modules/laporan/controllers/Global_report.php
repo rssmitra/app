@@ -130,6 +130,7 @@ class Global_report extends MX_Controller {
 
         $query_data = $this->Global_report->get_data();
         $g_saldo = $this->Global_report->get_saldo_akhir();
+        // print_r($this->db->last_query());die;
         // get harga beli
         foreach ($query_data['data'] as $k_result => $v_result) {
             $get_dt_result[trim($v_result->kode_brg)] = $v_result->harga_beli;
