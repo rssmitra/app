@@ -310,12 +310,17 @@ class Penerimaan_brg extends MX_Controller {
 
                     // ============= update mt_barang (rasio, harga, satuan)
                     $data_brg = array(
+                        'is_active' => 1,
                         'content' => $_POST['rasio'][$rows],
                         'harga_beli' => $harga['harga_jual'],
                         'updated_date' => date('Y-m-d H:i:s'),
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );
                     $this->db->update($mt_barang, $data_brg, array('kode_brg' => $rows) );
+
+                    // update status aktif depo stok
+                    $this->db->update($mt_depo_stok, array('is_active' => 1), array('kode_brg' => $rows, 'kode_bagian' => $_POST['kode_bagian']) );
+
                     // save log id barang
                     $this->logs->save($mt_barang, $rows, 'update data on '.$this->title.' module', json_encode($data_brg),'kode_brg');
                     // ============= update mt_barang (rasio, harga, satuan)
@@ -323,7 +328,6 @@ class Penerimaan_brg extends MX_Controller {
                     // update tc_po status kirim jika jumlah pesan dan jumlah kirim sudah sesuai
                     $po_dt = $this->Penerimaan_brg->get_sisa_penerimaan($tc_po.'_det', $table.'_detail', $_POST['id_tc_po']);
                     
-
                     if ( $po_dt == 0 ) {
                         $update_po = array(
                             'status_kirim' => 1,

@@ -243,6 +243,7 @@ class Pengiriman_unit extends MX_Controller {
             $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $val->set_value('kode_bagian_minta') ) );
             
             $table = ($_POST['flag']=='medis')?'tc_permintaan_inst':'tc_permintaan_inst_nm';
+            $mt_depo_stok = ($_POST['flag']=='medis')?'mt_depo_stok':'mt_depo_stok_nm';
             $kode_bagian = ($_POST['flag']=='medis')?'060201':'070101';
 
             $dataexc = array(
@@ -292,6 +293,9 @@ class Pengiriman_unit extends MX_Controller {
                 // tambah stok depo
                 $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
                 
+                // update status aktif depo unit
+                $this->db->update($mt_depo_stok, array('is_active' => 1), array('kode_brg' => $row_brg->kode_brg, 'kode_bagian' => $kode_bagian) );
+
                 // update header permintaan_inst
                 $dt_upd_permintaan = array(
                     'kode_bagian_kirim' => $kode_bagian,
