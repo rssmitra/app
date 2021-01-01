@@ -159,19 +159,21 @@ class Lap_hasil_so extends MX_Controller {
         
         foreach($list as $row){
             
+            $hpa = $row->harga_pembelian_terakhir / $row->content;
+
             if( $row->set_status_aktif == 1 || $row->set_status_aktif != 0 ){
-                if( $row->harga_pembelian_terakhir > 0 AND $row->stok_sekarang > 0 ){
-                    $arr_harga[] = round($row->harga_pembelian_terakhir * $row->stok_sekarang);
+                if( $hpa > 0 AND $row->stok_sekarang > 0 ){
+                    $arr_harga[] = round($hpa * $row->stok_sekarang);
                 }
             }
             else{
-                if( $row->harga_pembelian_terakhir > 0 AND $row->stok_sekarang > 0 ){
-                    $arr_harga_not_active[] = round($row->harga_pembelian_terakhir * $row->stok_sekarang);
+                if( $hpa > 0 AND $row->stok_sekarang > 0 ){
+                    $arr_harga_not_active[] = round($hpa * $row->stok_sekarang);
                 }
             }
 
             if( $row->stok_exp > 0 ){
-                $arr_harga_exp[] = round($row->harga_pembelian_terakhir * $row->stok_exp);
+                $arr_harga_exp[] = round($hpa * $row->stok_exp);
             }
 
         }
@@ -331,8 +333,11 @@ class Lap_hasil_so extends MX_Controller {
             $row[] = '<div class="left">'.$row_list->nama_brg.'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sebelum).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sekarang).'</div>';
-            $total = $row_list->stok_sekarang * $row_list->harga_pembelian_terakhir;
-            $row[] = '<div align="right">'.number_format($row_list->harga_pembelian_terakhir).'</div>';
+            $harga = isset($row_list->harga_pembelian_terakhir)?$row_list->harga_pembelian_terakhir:0;
+            $content = isset($row_list->content)?$row_list->content:0;
+            $hpa = $harga / $content;
+            $total = $row_list->stok_sekarang * $hpa;
+            $row[] = '<div align="right">'.number_format($hpa).'</div>';
             $row[] = '<div align="right">'.number_format($total).'</div>';
                    
             $data[] = $row;
@@ -355,15 +360,16 @@ class Lap_hasil_so extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            $harga_pembelian_terakhir = $row_list->harga_pembelian_terakhir / $row_list->content ;
-            $total=$row_list->stok_sekarang * $row_list->harga_pembelian_terakhir;
-            $totalr=$row_list->stok_sekarang * $harga_pembelian_terakhir;
+            $hpa = ( !empty($row_list->harga_pembelian_terakhir) ) ? $row_list->harga_pembelian_terakhir : 0 ;
+            $harga_pembelian_terakhir = ( $hpa > 0) ? ($hpa / $row_list->content) : 0;
+            $total = $row_list->stok_sekarang * $hpa;
+            $totalr = $row_list->stok_sekarang * $harga_pembelian_terakhir;
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_brg.'</div>';
             $row[] = $row_list->nama_brg;
-            // $row[] = '<div align="right">'.number_format($row_list->harga_pembelian_terakhir).'</div>';
+            // $row[] = '<div align="right">'.number_format($hpa).'</div>';
             $row[] = '<div align="right">'.number_format($harga_pembelian_terakhir).'</div>';
             $row[] = '<div class="center">'.$row_list->satuan_kecil.'</div>';
             // $row[] = '<div class="center">'.$row_list->content.'</div>';
