@@ -61,9 +61,10 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 				$this->db->where('kode_bagian_tujuan', $_GET['bagian_tujuan']);	
 				
 				if( (!isset($_GET['bulan'])) OR (!isset($_GET['tahun'])) OR ( (!isset($_GET['from_tgl'])) AND (!isset($_GET['to_tgl'])) )){
-					$this->db->where('DAY(tgl_masuk)='.date('d').'');	
-					$this->db->where('MONTH(tgl_masuk)='.date('m').'');	
-					$this->db->where('YEAR(tgl_masuk)='.date('Y').'');
+					$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 30');	
+					// $this->db->where('DAY(tgl_masuk)='.date('d').'');	
+					// $this->db->where('MONTH(tgl_masuk)='.date('m').'');	
+					// $this->db->where('YEAR(tgl_masuk)='.date('Y').'');
 				}
 
 				if( (isset($_GET['bulan']) AND $_GET['bulan'] == 0) AND (isset($_GET['tahun']) AND $_GET['tahun']== 0) AND ( (isset($_GET['from_tgl']) AND $_GET['from_tgl']=='') AND (isset($_GET['to_tgl']) AND $_GET['to_tgl']=='') )){
@@ -78,9 +79,11 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 				$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 	        }
 		}else{
-			$this->db->where('DAY(tgl_masuk)='.date('d').'');	
-			$this->db->where('MONTH(tgl_masuk)='.date('m').'');	
-			$this->db->where('YEAR(tgl_masuk)='.date('Y').'');
+			$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 30');	
+
+			// $this->db->where('DAY(tgl_masuk)='.date('d').'');	
+			// $this->db->where('MONTH(tgl_masuk)='.date('m').'');	
+			// $this->db->where('YEAR(tgl_masuk)='.date('Y').'');
 		}
 
 		$this->db->where("(pm_tc_penunjang.status_daftar is not null or pm_tc_penunjang.status_daftar != 0 )");
@@ -121,7 +124,7 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

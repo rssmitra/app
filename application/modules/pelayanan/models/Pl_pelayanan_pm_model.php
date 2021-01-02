@@ -26,6 +26,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 	private function _main_query(){
 		$date = date('Y-m-d H:i:s', strtotime('-1 days', strtotime(date('Y-m-d H:i:s'))));
 		$date_2 = date('Y-m-d H:i:s', strtotime('-31 days', strtotime(date('Y-m-d H:i:s'))));
+
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
@@ -61,8 +62,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 							$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 						}			
 					}else{
-						//$this->db->where("(tgl_masuk>cast((CAST(CONVERT(datetime,getdate()) as bigint)-1) as datetime))");
-						$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y'), 'MONTH(tc_kunjungan.tgl_masuk)' => date('m'), 'DAY(tc_kunjungan.tgl_masuk)' => date('d')));
+						$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
 					}
 
 				}
@@ -80,8 +80,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 							if($_GET['search_by']=='nama_pasien'  ){
 								$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 							}
-			
-							$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y')));
+							$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
 						}
 			
 						if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
@@ -105,8 +104,6 @@ class Pl_pelayanan_pm_model extends CI_Model {
 							if($_GET['search_by']=='nama_pasien'  ){
 								$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 							}
-			
-							//$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y'), 'MONTH(tc_kunjungan.tgl_masuk)' => date('m')));
 						}
 			
 						if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
@@ -120,22 +117,6 @@ class Pl_pelayanan_pm_model extends CI_Model {
 				}
 				
 			}
-
-			// if(isset($_GET['search_by']) AND $_GET['keyword'] != ''){
-			// 	if($_GET['search_by']=='no_mr' ){
-			// 		$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
-			// 	}
-		
-			// 	if($_GET['search_by']=='nama_pasien'  ){
-			// 		$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
-			// 	}
-
-			// 	$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y'), 'MONTH(tc_kunjungan.tgl_masuk)' => date('m')));
-			// }
-
-			// if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			// 	$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-			// }
 								
 		}else{
 
@@ -149,21 +130,17 @@ class Pl_pelayanan_pm_model extends CI_Model {
 						$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 					}
 	
-					$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y')));
+					$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
 				}
 	
 				if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 					$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 				}			
 			}else{
-				//$this->db->where("tc_kunjungan.tgl_masuk > '".$date_2."'");
-				//$this->db->where("(tgl_masuk>cast((CAST(CONVERT(datetime,getdate()) as bigint)-1) as datetime))");
-				$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y'), 'MONTH(tc_kunjungan.tgl_masuk)' => date('m'), 'DAY(tc_kunjungan.tgl_masuk)' => date('d')));
+				$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
 			}
 
-			//if($_GET['sess_kode_bagian']!='050301'){
 				$this->db->where("(pm_tc_penunjang.status_daftar is null or pm_tc_penunjang.status_daftar = 0 )");
-			//}
 			
 		}
 
