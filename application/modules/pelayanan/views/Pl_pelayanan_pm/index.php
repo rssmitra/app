@@ -80,8 +80,9 @@ $(document).ready(function(){
     "ordering": false,
     "searching": false,
     "bPaginate": true,
-    "pageLength": 25,
-    "bInfo": false,
+    "pageLength": 50,
+    "bLengthChange": false,
+    "bInfo": true,
     // Load data for the table's content from an Ajax source
     "ajax": {
         "url": "pelayanan/Pl_pelayanan_pm/get_data?sess_kode_bagian="+$("#sess_kode_bagian").val()+"&search_by="+$("#search_by").val()+"&keyword="+$("#keyword_form").val()+"&from_tgl="+$("#from_tgl").val()+"&to_tgl="+$("#to_tgl").val()+"",
@@ -306,10 +307,18 @@ $(document).ready(function(){
             find_data_reload(data,'pelayanan/Pl_pelayanan_pm?type_tujuan='+$("#sess_kode_bagian").val()+'');
           }
         });
-        
-        
       });
 
+      $( "#keyword_form" ).keypress(function(event) {        
+       var keycode =(event.keyCode?event.keyCode:event.which);         
+       if(keycode ==13){          
+         event.preventDefault();          
+         if($(this).valid()){            
+           $('#btn_search_data').focus();            
+         }          
+         return false;                 
+       }        
+   }); 
 })
 
 function format ( data ) {
@@ -455,10 +464,10 @@ function cetak_slip(kode_penunjang) {
 
     <div class="col-md-12">
 
-      <center><h4>FORM PENCARIAN DATA PASIEN <?php echo strtoupper($nama_bag) ?></h4></center>
+      <center><h4>DATA PASIEN <?php echo strtoupper($nama_bag) ?><br><small>Data yang ditampilkan adalah data pasien 2 bulan ke terakhir.</small></h4></center>
       <br>
 
-      <div class="f1-steps">
+      <div class="f1-steps" style="margin-top:0px !important">
         <div class="f1-progress">
           <div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="3" style="width: 16.66%;"></div>
         </div>
@@ -493,11 +502,7 @@ function cetak_slip(kode_penunjang) {
           <div class="col-md-2">
             <input type="text" class="form-control" name="keyword" id="keyword_form">
           </div>
-
-      </div>
-
-      <div class="form-group">
-          <label class="control-label col-md-2">Tanggal Registrasi</label>
+          <label class="control-label col-md-1">Tanggal</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
@@ -506,9 +511,7 @@ function cetak_slip(kode_penunjang) {
               </span>
             </div>
           </div>
-
-          <label class="control-label col-md-1">s/d Tanggal</label>
-          <div class="col-md-2">
+          <div class="col-md-2" style="margin-left: -2%">
             <div class="input-group">
               <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
@@ -516,36 +519,13 @@ function cetak_slip(kode_penunjang) {
               </span>
             </div>
           </div>
-      </div>
-
-      <!-- <div class="form-group">
-          <label class="control-label col-md-2">Status</label>
-          <div class="col-md-4">
-              <select name="status_pasien" id="status_pasien">
-                <option value="" selected>- Silahkan Pilih -</option>
-                <option value="belum ditindak">Belum ditindak</option>
-                <option value="belum bayar">Belum bayar</option>
-                <option value="belum periksa">Belum periksa</option>
-              </select>
-          </div>
-      </div> -->
-
-      <div class="form-group">
-        <label class="control-label col-md-2 ">&nbsp;</label>
-        <div class="col-md-10" style="margin-left:6px">
+          <div class="col-md-1" style="margin-left:-1%">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
-            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-            Search
+            Tampilkan data
+            <i class="ace-icon fa fa-arrow-right icon-on-right bigger-110"></i>
           </a>
-          <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
-            <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-            Reset
-          </a>
-          <!-- <a href="#" id="btn_batalkan_kunjungan" class="btn btn-xs btn-danger">
-            <i class="ace-icon fa fa-times-circle icon-on-right bigger-110"></i>
-            Rollback
-          </a> -->
         </div>
+          
       </div>
 
     </div>

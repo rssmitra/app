@@ -62,7 +62,8 @@ class Po_penerbitan_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_permohonan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			$this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
+			// $this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
+			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
 			// if( $_GET['flag'] == 'medis' ){
 			// 	$this->db->where('MONTH(a.tgl_permohonan)='.date('m').'');
 			// }

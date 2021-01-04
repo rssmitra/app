@@ -62,7 +62,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 							$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 						}			
 					}else{
-						$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
+						$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 60');	
 					}
 
 				}
@@ -80,14 +80,14 @@ class Pl_pelayanan_pm_model extends CI_Model {
 							if($_GET['search_by']=='nama_pasien'  ){
 								$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 							}
-							$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
+							$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 60');	
 						}
 			
 						if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 							$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 						}			
 					}else{
-						//$this->db->where("tc_kunjungan.tgl_masuk > '".$date_2."'");
+						$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 60');	
 					}
 				}
 
@@ -110,9 +110,10 @@ class Pl_pelayanan_pm_model extends CI_Model {
 							$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 						}			
 					}else{
-						if($_GET['sess_kode_bagian']=='050201'){
-							$this->db->where("tc_kunjungan.tgl_masuk > '".$date_2."'");
-						}
+						// if($_GET['sess_kode_bagian']=='050201'){
+						// 	$this->db->where("tc_kunjungan.tgl_masuk > '".$date_2."'");
+						// }
+						$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 60');	
 					}
 				}
 				
@@ -130,14 +131,14 @@ class Pl_pelayanan_pm_model extends CI_Model {
 						$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 					}
 	
-					$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
+					$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 60');	
 				}
 	
 				if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 					$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 				}			
 			}else{
-				$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 90');	
+				$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 60');	
 			}
 
 				$this->db->where("(pm_tc_penunjang.status_daftar is null or pm_tc_penunjang.status_daftar = 0 )");

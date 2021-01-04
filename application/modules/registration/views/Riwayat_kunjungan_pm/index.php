@@ -28,7 +28,9 @@ $(document).ready(function(){
     "ordering": false,
     "searching": false,
     "bPaginate": true,
-    "bInfo": false,
+    "pageLength": 50,
+    "bLengthChange": false,
+    "bInfo": true,
     "ajax": {
         "url": url,
         "type": "POST"
