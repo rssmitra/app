@@ -49,10 +49,11 @@ class Req_riwayat_permintaan_pemb_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_permohonan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			$this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
-			if( $_GET['flag'] == 'medis' ){
-				$this->db->where('MONTH(a.tgl_permohonan)='.date('m').'');
-			}
+			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
+			// $this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
+			// if( $_GET['flag'] == 'medis' ){
+			// 	$this->db->where('MONTH(a.tgl_permohonan)='.date('m').'');
+			// }
 		}
 
 		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, t_total.total_brg, a.flag_jenis');

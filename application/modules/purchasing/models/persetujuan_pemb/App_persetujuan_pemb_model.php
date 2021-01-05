@@ -32,7 +32,6 @@ class App_persetujuan_pemb_model extends CI_Model {
 		$this->db->where('status_kirim', 1);
 		$this->db->where('(status_batal IS NULL or status_batal=0)');
 		$this->db->where('(no_acc IS NULL AND tgl_acc IS NULL)');
-		$this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
 		$this->db->where('t_total.total_brg > 0');
 
 		if( ( isset( $_GET['keyword']) AND $_GET['keyword'] != '' )  ){
@@ -54,13 +53,13 @@ class App_persetujuan_pemb_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_permohonan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			$this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
+			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
 		}
 
-		if( $_GET['flag'] == 'medis' ){
-			$curr_month = date('m') - 2;
-			$this->db->where('MONTH(a.tgl_permohonan) >= '.$curr_month.'');
-		}
+		// if( $_GET['flag'] == 'medis' ){
+		// 	$curr_month = date('m') - 2;
+		// 	$this->db->where('MONTH(a.tgl_permohonan) >= '.$curr_month.'');
+		// }
 
 		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, t_total.total_brg, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju');
 	}
