@@ -52,8 +52,7 @@ class Penerimaan_brg_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_po,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			// $this->db->where('MONTH(a.tgl_po) >= '.$backmonth.'');
-			$this->db->where('YEAR(a.tgl_po)', date('Y'));
+			$this->db->where('DATEDIFF(day,a.tgl_po,GETDATE()) < 120');
 		}
 
 	}
