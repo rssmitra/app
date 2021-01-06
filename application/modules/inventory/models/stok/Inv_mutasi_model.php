@@ -23,7 +23,7 @@ class Inv_mutasi_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,tc_kartu_stok.tgl_input,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 		}else{
-			$this->db->where('YEAR(tgl_input)', date('Y'));
+			$this->db->where('DATEDIFF(day,tgl_input,GETDATE()) < 120');
 		}
 		
 	}
