@@ -1363,7 +1363,9 @@ class Billing_model extends CI_Model {
         if( $exc && isset($exc->nama_pegawai) || $exc->nama_pegawai!=''){
             return $exc->nama_pegawai;
         }else{
-            return $this->session->userdata('user')->fullname ;
+            // cek dari pendaftaran
+            $reg = $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_registrasi.kode_dokter', 'left')->get_where('tc_registrasi', array('no_registrasi' => $exc->no_registrasi) );
+            return $reg->nama_pegawai;
         }
 
     }
