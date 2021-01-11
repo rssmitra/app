@@ -26,7 +26,7 @@
   </table> 
   <hr>
   <br>
-  <p style="float: right; font-weight: bold;">SALINAN RESEP</p><br>
+  <p style="align: center; font-weight: bold;">SALINAN RESEP</p>
   <table style="width: 100%">
     <tr>
       <td width="20%">No.</td>
@@ -45,7 +45,57 @@
   </table>
     
   <div style="min-height: 500px !important; vertical-align: top">
-    <?php echo $result->copy_resep_text; ?>
+    <?php 
+      foreach($detail_obat as $row){
+        if($row['flag_resep'] == 'biasa'){
+          $config = array(
+            'dd' => $row['dosis_per_hari'],
+            'qty' => $row['dosis_obat'],
+            'unit' => $row['satuan_obat'],
+            'use' => $row['anjuran_pakai'],
+          );
+          $format_signa = $this->master->formatSigna($config);
+          echo '<span>R/</span><br>';
+          echo '<div style="padding-left: 15px">';
+          echo $row['nama_brg'].' &nbsp;&nbsp; No. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).'<br>';
+          echo '<i>'.$format_signa.'</i>';
+          // echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row['dosis_per_hari'].' x '.$row['dosis_obat'].'&nbsp; '.$row['satuan_obat'].'  ('.$row['anjuran_pakai'].')<br>';
+          echo ' ____________ det / nedet<br>';
+          echo '</div>';
+        }else{
+          echo '<span>R/</span><br>';
+          echo '<div style="padding-left: 15px">';
+          echo '<table>';
+          $first_dt = $row['racikan'][0];
+          foreach ($row['racikan'][0] as $key => $value) {
+
+            echo '<tr>';  
+            echo '<td width="70%">'.$value->nama_brg.'</td>';  
+            echo '<td width="30%" style="padding-left: 10px">'.$value->jumlah.' '.strtolower($value->satuan).'</td>';  
+            echo '</tr>';  
+          }
+          echo '</table>';
+          $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($first_dt[0]->satuan_racikan)) );
+          echo '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).' da in '.$unit_code.'</i> <br>';
+
+          $config_racikan = array(
+            'dd' => $first_dt[0]->dosis_per_hari,
+            'qty' => $first_dt[0]->dosis_obat,
+            'unit' => $first_dt[0]->satuan_racikan,
+            'use' => $first_dt[0]->anjuran_pakai,
+          );
+          // format signa racikan
+
+          $format_signa_racikan = $this->master->formatSigna($config_racikan);
+          // echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row['dosis_per_hari'].' x '.$row['dosis_obat'].'&nbsp; '.$row['satuan_obat'].'  ('.$row['anjuran_pakai'].')<br>';
+          echo '<i>'.$format_signa_racikan.'</i>';
+          echo ' ____________ det / nedet<br><br>';
+          echo '</div>';
+        }
+        
+      }
+    ?>
+    
   </div>
 
   <table>

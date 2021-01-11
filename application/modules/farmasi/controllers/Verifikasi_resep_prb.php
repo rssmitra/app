@@ -61,7 +61,6 @@ class Verifikasi_resep_prb extends MX_Controller {
         }
         $data['detail_obat'] = $getData;
         
-        // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -209,12 +208,10 @@ class Verifikasi_resep_prb extends MX_Controller {
             $this->db->update('fr_tc_far', array('verifikasi_prb' => 1), array('kode_trans_far' => $_POST['kode_trans_far']) );
 
             // submit billing kasir
-            $this->process_billling();
+            // $this->process_billling();
 
             // set dokumen
             $this->merge_dokumen_klaim($_POST['kode_trans_far']);
-
-
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -269,7 +266,6 @@ class Verifikasi_resep_prb extends MX_Controller {
         $dataTranskasir["no_mr"] = $_POST['no_mr_val'];
         $dataTranskasir["nama_pasien"] = $_POST['nama_pasien_val'];
         $dataTranskasir["no_registrasi"] = $_POST['no_registrasi'];
-        $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
         $dataTranskasir["keterangan"] = 'Pembayaran Administrasi Pasien Resep Kronis';
 
         $dataTranskasir["nk_perusahaan"] = $_POST['uang_dibayarkan_tunai'];
@@ -289,58 +285,50 @@ class Verifikasi_resep_prb extends MX_Controller {
 
         // insert table tc_trans_pelayanan
         foreach ($_POST['selected_id'] as $key_selected => $val_selected) {
-
+            $explode_row_dt = explode('-', $val_selected);
+            $kode_brg = $explode_row_dt[1];
+            // data master barang
+            $dt_brg = $this->db->get_where('mt_barang', array('kode_brg' => $kode_brg) )->row();
             $kode_trans_pelayanan = $this->master->get_max_number("tc_trans_pelayanan","kode_trans_pelayanan");
             $dataexc = array(
                 "kode_trans_pelayanan" => $kode_trans_pelayanan,
                 "no_registrasi" => $_POST['no_registrasi'],
                 "no_mr" => $_POST['no_mr_val'],
                 "nama_pasien_layan" => $_POST['nama_pasien_val'],
-                "kode_kelompok" => $_POST['kode_kelompok'],
+                "kode_kelompok" => 3,
                 "kode_perusahaan" => 120,
                 "tgl_transaksi" => date('Y-m-d H:i:s'),
                 "jenis_tindakan" => 11,
-                "nama_tindakan" => $nama_barang_tindakan ,
-                "bill_rs" => $total_harga,
-                // "kode_ri" => isset($_POST['kode_ri'])?$_POST['kode_ri']:0,
-                // "kode_poli" => isset($_POST['kode_poli'])?$_POST['kode_poli']:0,
-                "jumlah" => $row_dt->jumlah_tebus,
+                "nama_tindakan" => $_POST['nama_brg_'.$kode_brg.''] ,
+                "bill_rs" => $_POST['sub_total_'.$kode_brg.''],
+                "jumlah" => $_POST['jumlah_'.$kode_brg.''],
                 "kode_barang" => (string)$kode_brg,
-                "kode_trans_far" => $row_dt->kode_trans_far,
-                "kode_bagian" => $row_dt->kode_bagian,
-                "kode_bagian_asal" => $row_dt->kode_bagian_asal,
-                "kode_profit" => $_POST['kode_profit'],
-                "kd_tr_resep" => $row_dt->relation_id,
-                "no_kunjungan" => (in_array($_POST['kode_profit'], array(1000 , 2000) )) ?$row_dt->no_kunjungan : 0,
+                "kode_trans_far" => $_POST['kode_trans_far'],
+                "kode_bagian" => $_POST['kode_bagian'],
+                "kode_bagian_asal" => $_POST['kode_bagian_asal'],
+                "kode_profit" => 2000, //untuk profit rawat jalan
+                "kd_tr_resep" => $_POST['kd_tr_resep_'.$kode_brg.''],
+                "no_kunjungan" => $_POST['no_kunjungan'],
                 "status_selesai" => 2,
-                "status_nk" => (in_array($_POST['kode_kelompok'], array(10 , 3) )) ? 1 : 0,
-                "status_karyawan" => ( $row_dt->flag_trans == 'RK' ) ? 1 : 0,
+                "status_nk" => 1,
+                "status_karyawan" => 0,
             );
 
             // print_r($dataexc);die;
             $this->db->insert('tc_trans_pelayanan', $dataexc);
+            $arr_kode_trans_pelayanan[] = $kode_trans_pelayanan;
         }
         
-
-        
-        foreach ($str_to_array_nk as $key_nk => $kode_trans_pelayanan_nk) {
-            $this->db->update('tc_trans_pelayanan', array('status_nk' => 1, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $kode_trans_pelayanan_nk));
-            $this->db->trans_commit();
-        }
-
         // insert trans bagian
-        $str_to_array = explode(',', $_POST['array_data_checked']);
-        foreach ($str_to_array as $key => $kode_trans_pelayanan) {
-            $data_trans = $this->db->get_where('tc_trans_pelayanan', array('kode_trans_pelayanan' => $kode_trans_pelayanan))->row();
+        foreach ($arr_kode_trans_pelayanan as $key => $val_kode_tp) {
+            $data_trans = $this->db->get_where('tc_trans_pelayanan', array('kode_trans_pelayanan' => $val_kode_tp))->row();
             $dataTransKasirBagian["kode_tc_trans_kasir"] = $dataTranskasir["kode_tc_trans_kasir"];
             $dataTransKasirBagian["kode_bagian"] = $data_trans->kode_bagian;
             $this->db->insert('tc_trans_kasir_bagian', $dataTransKasirBagian);
             // update status, kode_tc_trans_kasir tc_trans_pelayanan per item
-            $this->db->update('tc_trans_pelayanan', array('status_selesai' => 3, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $kode_trans_pelayanan));
+            $this->db->update('tc_trans_pelayanan', array('status_selesai' => 3, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"]), array('kode_trans_pelayanan' => $val_kode_tp));
             // update status bayar farmasi
-            if($data_trans->kode_trans_far != null || $data_trans->kode_trans_far != 0){
-                $this->db->update('fr_tc_far', array('status_bayar' => 1), array('kode_trans_far' => $data_trans->kode_trans_far)  );
-            }
+            $this->db->update('fr_tc_far', array('status_bayar' => 1), array('kode_trans_far' => $_POST['kode_trans_far'])  );
             $this->db->trans_commit();
         }
         
@@ -349,7 +337,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         $dataAkunting["no_bukti"] = $seri_kuitansi_dt['seri_kuitansi'].  $seri_kuitansi_dt['no_kuitansi'];
         $dataAkunting["tgl_transaksi"] = date("Y-m-d H:i:s");
         $dataAkunting["uraian_transaksi"] = 'Pendapatan Farmasi BPJS '.$seri_kuitansi_dt['seri_kuitansi'].' '.$_POST['no_mr_val'].' - '.$_POST['nama_pasien_val'];
-        $dataAkunting["total_nominal"] = $_POST['total_payment_all'];
+        $dataAkunting["total_nominal"] = $_POST['uang_dibayarkan_tunai'];
         $dataAkunting["nama_pasien"] = $_POST['nama_pasien_val'];
         $dataAkunting["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
         $dataAkunting["no_mr"] = $_POST['no_mr_val'];
@@ -358,14 +346,9 @@ class Verifikasi_resep_prb extends MX_Controller {
         $new_id_ak_tc_transaksi = $this->db->insert_id();
         
         // jurnal accounting
-        $this->create_jurnal($dataTranskasir, $dataAkunting, $new_id_ak_tc_transaksi);
-
-        // update tgl keluar registrasi
-        $tgl_keluar_pasien = $this->master->get_tgl_keluar($_POST['no_registrasi']);
-
-        $this->db->update('tc_registrasi', array('tgl_jam_keluar' => $tgl_keluar_pasien), array('no_registrasi' => $_POST['no_registrasi']) );
-        
-        
+        $this->load->module('billing/Billing');
+        $billing = new Billing;
+        $billing->create_jurnal($dataTranskasir, $dataAkunting, $new_id_ak_tc_transaksi);
         
         if ($this->db->trans_status() === FALSE)
         {
@@ -379,7 +362,6 @@ class Verifikasi_resep_prb extends MX_Controller {
         }
         
     }
-
 
     public function find_data()
     {   
@@ -498,6 +480,14 @@ class Verifikasi_resep_prb extends MX_Controller {
                 $resep_log = $this->db->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_far.no_mr','left')->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left')->get_where('fr_tc_far', array('kode_trans_far' => $kode_trans_far) )->row();
                 $result = array();
                 $result['result'] = $resep_log;
+                $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
+                foreach($resep_log as $row){
+                    $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
+                    $row['racikan'][] = $racikan;
+                    $getData[] = $row;
+                }
+
+                $result['detail_obat'] = $getData;
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_copy_resep_w_header_n_footer', $result, true);
             break;
 

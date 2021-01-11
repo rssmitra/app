@@ -142,10 +142,13 @@ function hitungSubTotalBarang(kode_brg){
       
       <!-- hidden form -->
       <input type="hidden" name="no_registrasi" id="no_registrasi" value="<?php echo isset($value)?ucwords($value->no_registrasi):''?>">
+      <input type="hidden" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($value)?ucwords($value->no_kunjungan):''?>">
       <input type="hidden" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($value)?ucwords($value->kode_trans_far):''?>">
       <input type="hidden" name="no_sep" id="no_sep" value="<?php echo isset($value)?ucwords($value->no_sep):''?>">
       <input type="hidden" name="no_mr_val" id="no_mr_val" value="<?php echo isset($value)?ucwords($value->no_mr):''?>">
       <input type="hidden" name="nama_pasien_val" id="nama_pasien_val" value="<?php echo isset($value)?ucwords($value->nama_pasien):''?>">
+      <input type="hidden" name="kode_bagian" id="kode_bagian" value="<?php echo isset($value)?ucwords($value->kode_bagian):''?>">
+      <input type="hidden" name="kode_bagian_asal" id="kode_bagian_asal" value="<?php echo isset($value)?ucwords($value->kode_bagian_asal):''?>">
       
       <div class="row">
         <div class="col-md-4">
@@ -197,7 +200,7 @@ function hitungSubTotalBarang(kode_brg){
                 <i class="fa fa-arrow-left dark"></i> Kembali sebelumnya
             </button>
 
-            <button type="button" onclick="getMenu('farmasi/Etiket_obat/form_copy_resep/<?php echo $value->kode_trans_far; ?>?flag=<?php echo isset($value->flag_trans) ? $value->flag_trans : 'RJ'; ?>')" class="btn btn-success btn-xs">
+            <button type="button" onclick="getMenu('farmasi/Verifikasi_resep_prb/form_copy_resep/<?php echo $value->kode_trans_far; ?>?flag=<?php echo isset($value->flag_trans) ? $value->flag_trans : 'RJ'; ?>')" class="btn btn-success btn-xs">
                 <span class="ace-icon fa fa-print dark icon-on-right bigger-110"></span>
                 Copy Resep
             </button>
@@ -259,6 +262,7 @@ function hitungSubTotalBarang(kode_brg){
                   echo '<td align="center">'.$no.'</td>';
                   echo '<td>'.$row['kode_brg'].'</td>';
                   $nama_obat = ($row['nama_brg'])?$row['nama_brg']:$row['nama_racikan'];
+                  echo '<input type="hidden" name="nama_brg_'.$row['kode_brg'].'" value="'.$nama_obat.'" >';
                   echo '<td>'.$nama_obat.'</td>';
 
                   // Signa
