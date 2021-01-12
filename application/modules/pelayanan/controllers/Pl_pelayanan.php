@@ -536,7 +536,7 @@ class Pl_pelayanan extends MX_Controller {
                         </ol>
                       </p>';
         $html_tag .= '<center>';
-        $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> PROSES UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
+        // $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> PROSES UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
         $html_tag .= '</center>';
         $html_tag .= '</form>';
         $html_tag .= '</div>';
