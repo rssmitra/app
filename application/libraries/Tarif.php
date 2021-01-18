@@ -332,10 +332,8 @@ final class Tarif extends AvObjects {
         $dataexc = array();
         foreach ($arrayKodeDokter as $k => $v) {
             $countDr = $k + 1;
-            if($_POST['bill_dr'.$countDr.''] > 0){
-                $dataexc['bill_dr'.$countDr.''] = $CI->regex->_genRegex($_POST['bill_dr'.$countDr.''],'RGXINT');
-                $dataexc['kode_dokter'.$countDr.''] = $CI->regex->_genRegex($v,'RGXINT');
-            }
+            $dataexc['bill_dr'.$countDr.''] = $CI->regex->_genRegex($_POST['bill_dr'.$countDr.''],'RGXINT');
+            $dataexc['kode_dokter'.$countDr.''] = $CI->regex->_genRegex($v,'RGXINT');
         }
 
         return $dataexc;

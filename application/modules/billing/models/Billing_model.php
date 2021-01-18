@@ -1359,7 +1359,7 @@ class Billing_model extends CI_Model {
         $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1', 'left');
         $this->db->where('kode_penunjang', $kode_pm);
         $exc = $this->db->get()->row();
-        //print_r($this->db->last_query());die;
+        // print_r($this->db->last_query());die;
         if( $exc && isset($exc->nama_pegawai) || $exc->nama_pegawai!=''){
             return $exc->nama_pegawai;
         }else{
