@@ -113,9 +113,12 @@ $(document).ready(function(){
     });
 
     $('#qtyBarang').on("input", function() {
+      var stok = parseInt($('#stok_akhir_unit').val());
       var dInput = this.value;
+      var sisa_stok_unit = stok - dInput;
       console.log(dInput);
       $('#retur_qty_text').text( dInput );
+      $('#stok_akhir_unit_txt').text( sisa_stok_unit );
     });
 
 })
@@ -123,7 +126,7 @@ $(document).ready(function(){
 function getDetailBarang(kode_brg, jumlah){
   preventDefault();
   $('#div_detail_brg').show();
-  $.getJSON('Templates/References/getItemBarangDetailRetur?kode_brg=' + kode_brg + '&flag='+$("input[name='flag_gudang']:checked"). val()+'&qty='+parseInt(jumlah)+'&retur='+$('#jenis_retur').val()+'', '', function (response) {
+  $.getJSON('Templates/References/getItemBarangDetailRetur?kode_brg=' + kode_brg + '&flag='+$("input[name='flag_gudang']:checked"). val()+'&qty='+parseInt(jumlah)+'&retur='+$('#jenis_retur').val()+'&from_unit='+$('#dari_unit').val()+'', '', function (response) {
       // detail barang
       var dt_brg = response.data;
       $('#kode_brg_hidden').val(kode_brg);

@@ -1280,29 +1280,38 @@ class References extends MX_Controller {
 		/*Anggrek, Seruni, Flamboyan, dll*/
 		if($_POST['bag'] == '030601' || $_POST['bag'] == '030201' || $_POST['bag'] == '030301' || $_POST['bag'] == '030701' ){
 			$this->db->where('a.kode_bagian', '030201');
+			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
 		/*Dahlia, Teratai, Melati*/
 		}else if($_POST['bag'] == '030401' || $_POST['bag'] == '030801' || $_POST['bag'] == '031401' || $_POST['bag'] == '031301'){
 			$this->db->where('a.kode_bagian', '030401');
+			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
 		/*wijayakusuma*/
 		}else if($_POST['bag'] == '030101'){
 			$this->db->where('a.kode_bagian', '030101');
+			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
 		/*ICU*/
 		}else if($_POST['bag'] == '031001'){
 			$this->db->where('a.kode_bagian', '031001');	
+			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
 
 		/*VK*/
 		}else if($_POST['bag'] == '030501' || $_POST['bag'] == '013201'){
 			$this->db->where('a.kode_bagian', '030501');
+			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
 
 		/*OK / Kamar Bedah*/
 		}else if( in_array($_POST['bag'], array('030901','012801') )){
 			$this->db->where_in('a.kode_bagian', array('030901','012801'));
-
+			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
+		}else if( in_array($_POST['bag'], array('060101','060201') )){
+			$this->db->where('b.nama_brg like '."'".$_POST['keyword']."%'".'');
+			$this->db->where('a.kode_bagian', $_POST['bag']);
 		}else{
+			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
 			$this->db->where('a.kode_bagian', $_POST['bag']);
 		}
 
-		$this->db->where('b.nama_brg like '."'".$_POST['keyword']."%'".'');
+		
 		$this->db->order_by('b.nama_brg', 'ASC');
         $exc = $this->db->get()->result();
 		// echo $this->db->last_query();
@@ -1641,7 +1650,7 @@ class References extends MX_Controller {
 		$this->db->select('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$this->_queryGetReturBrg($_POST['jenis_retur'], $_POST['flag'], $_POST['unit']);
 		$this->db->join($mt_barang.' as b', 'b.kode_brg=a.kode_brg' , 'left');
-		$this->db->join($mt_rekap_stok.' as c', 'c.kode_brg=a.kode_brg' , 'left');
+		// $this->db->join($mt_rekap_stok.' as c', 'c.kode_brg=a.kode_brg' , 'left');
 		$this->db->where('(a.kode_brg LIKE '."'%".$_POST['keyword']."%'".' OR b.nama_brg LIKE '."'%".$_POST['keyword']."%'".')');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
@@ -1688,27 +1697,35 @@ class References extends MX_Controller {
 			$this->db->select('a.jml_sat_kcl as qty');
 			$this->db->from($mt_depo_stok.' as a');
 			$this->db->where('a.kode_bagian', $_POST['unit']);
-			$this->db->group_by('a.jml_sat_kcl, a.kode_depo_stok');
-			$this->db->order_by('a.kode_depo_stok', 'DESC');
+			$this->db->group_by('a.jml_sat_kcl');
+			$this->db->order_by('b.nama_brg', 'DESC');
 		}
 
 	}
 
 	public function getItemBarangDetailRetur()
 	{
+		$kode_bagian = ($_GET['flag']=='non_medis') ? '070101' : '060201' ;
 		$table = ($_GET['flag']=='non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
 		$join = ($_GET['flag']=='non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
 		$nama_gudang = ($_GET['flag']=='non_medis') ? 'Gudang Non Medis' : 'Gudang Medis' ;
 		$mt_barang = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
 		$mt_rekap_stok = ($_GET['flag'] == 'non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
 		$mt_depo_stok = ($_GET['flag'] == 'non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
-		$tc_penerimaan = ($_GET['flag'] == 'non_medis') ? 'tc_penerimaan_barang_nm' : 'tc_penerimaan_barang' ;
+		$tc_penerimaan = ($_GET['flag'] == 'non_medis') ? 'tc_penerimaan_barang_nm' : 
+		'tc_penerimaan_barang' ;
 		$tc_permintaan_inst = ($_GET['flag'] == 'non_medis') ? 'tc_permintaan_inst_nm' : 'tc_permintaan_inst' ;
 
 		$this->db->from($table.' as a');
-		$this->db->join($join.' as b', 'b.kode_brg=a.kode_brg' , 'left');
+		$this->db->join($mt_depo_stok.' as b', 'b.kode_brg=a.kode_brg' , 'left');
 		$this->db->where('a.kode_brg', $_GET['kode_brg']);
+		if($_GET['retur']=='lainnya'){
+			$this->db->where('b.kode_bagian', $_GET['from_unit']);
+		}else{
+			$this->db->where('b.kode_bagian', $kode_bagian);
+		}
 		$result = $this->db->get()->row();
+		// print_r($this->db->last_query());die;
 		$html = '';
 		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;
 		$warning_stok = ($result->jml_sat_kcl <= 0) ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '' ;
@@ -1719,10 +1736,11 @@ class References extends MX_Controller {
 							<div class="widget-main">
 								<b><span style="font-size: 13px">'.$result->kode_brg.' - '.$result->nama_brg.'</span></b><br>
 								<table width="100%">
+									<input type="hidden" id="stok_akhir_unit" value="'.$result->jml_sat_kcl.'">
 									<tr>
 										<td style="text-align: right">
 											<div class="alert alert-warning center" style="width: 150px; " id="div_retur_qty">
-												<strong style="font-size: 14px"><span id="retur_qty_text">'.$_GET['qty'].'</span> '.$result->satuan_kecil.'</strong><br>
+												<strong style="font-size: 14px"><span id="stok_akhir_unit_txt">'.$stok_akhir.'</span> '.$result->satuan_kecil.'</strong><br>
 												<span id="unit_name">Unit</span>
 											</div>
 										</td>
@@ -1731,7 +1749,7 @@ class References extends MX_Controller {
 										</td>
 										<td>
 											<div class="alert alert-success center" style="width: 150px; ">
-												<strong style="font-size: 14px">'.$stok_akhir.' '.$result->satuan_kecil.'</strong><br>
+												<strong style="font-size: 14px" id="retur_qty_text">'.$_GET['qty'].' '.$result->satuan_kecil.'</strong><br>
 												'.strtoupper($nama_gudang).'
 											</div>
 										</td>

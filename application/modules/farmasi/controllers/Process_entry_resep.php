@@ -291,6 +291,7 @@ class Process_entry_resep extends MX_Controller {
 
     public function process_selesai_resep()
     {
+        // print_r($_POST);die;
         $ID = ($this->input->post('ID'))?$this->input->post('ID'):0;
         $kode_bagian = '060101'; // kode bagian farmasi
         // select transaksi farmasi
@@ -386,7 +387,7 @@ class Process_entry_resep extends MX_Controller {
     
             // update status transaksi
             $this->db->where('kode_trans_far', $ID);
-            $this->db->update('fr_tc_far', array('status_transaksi' => 1, 'kode_profit' => $_POST['kode_profit'], 'nama_pasien' => $_POST['nama_pasien']) );
+            $this->db->update('fr_tc_far', array('status_transaksi' => 1, 'kode_profit' => $_POST['kode_profit'], 'nama_pasien' => $_POST['nama_pasien'], 'no_mr' => $_POST['no_mr']) );
 
             // update fr_tc_far_detail_log
             $this->db->where('kode_trans_far', $ID);

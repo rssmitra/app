@@ -1509,20 +1509,20 @@ class Templates extends MX_Controller {
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
-            // $no_mr = '00263432';
-            // $nama_pasien = 'Ossie Gumanti';
-            // $umur = '45';
-            // $jk_ = 'Pria';
-            //$tgl_daftar = '20 Jan 2021 - 11:15:02';
-            //$tgl_periksa = '20 Jan 2021 - 11:25:09';
+            $no_mr = '00263432';
+            $nama_pasien = 'Ossie Gumanti';
+            $umur = '45';
+            $jk_ = 'Pria';
+            $tgl_daftar = '01 Feb 2021 - 10:13:02';
+            $tgl_periksa = '01 Feb 2021 - 10:21:09';
 
             // form db
-            $no_mr = $data->reg_data->no_mr;
-            $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
-            $umur = $data->reg_data->umur;
-            $jk_ = $jk;
-            $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-            $tgl_periksa = $tgl_pemeriksaan;
+            // $no_mr = $data->reg_data->no_mr;
+            // $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
+            // $umur = $data->reg_data->umur;
+            // $jk_ = $jk;
+            // $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
+            // $tgl_periksa = $tgl_pemeriksaan;
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
