@@ -1187,6 +1187,7 @@ class Templates extends MX_Controller {
             $html .= '</table><br><br><hr>';
             $html .= '<b><span style="font-size:38px">Catatan : </span></b><br>
                 '.$data_pm->catatan_hasil.'
+                <br>
             <br><div style="border-bottom:0.6px dotted black"></div>';
         }
         
@@ -1387,14 +1388,11 @@ class Templates extends MX_Controller {
                 $img = '<img src="'.base_url().'assets/images/qrcode_ttd.png" width="100px">';
                 $html .= '<table border="0" cellspacing="0" cellpadding="0" style="font-size:36px">
                     <tr> 
-                        <td align="center" width="30%">
-                        <br><br>
-                        Penanggung Jawab<br>
-                        <br/><br/><br/> 
-                        <br/> 
-                        ( '.$this->Billing->getNamaDokter_($flag, $pm).' )
+                        <td align="left" width="60%" style="font-size: 32px">
+                        <br><br>                        
+                        Penanggung Jawab : <br>&nbsp;&nbsp;'.$this->Billing->getNamaDokter_($flag, $pm).'
                         </td>
-                        <td align="center" width="40%">&nbsp;</td>
+                        <td align="center" width="10%">&nbsp;</td>
                         <td align="center" width="30%">
                         <br><br>
                         Petugas Laboratorium<br>
