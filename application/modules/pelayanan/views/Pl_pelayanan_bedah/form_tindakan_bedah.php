@@ -1,3 +1,6 @@
+<script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
+
+
 <script type="text/javascript">
 
 jQuery(function($) {  
@@ -17,6 +20,8 @@ jQuery(function($) {
     $(this).prev().focus();    
 
   });  
+
+  $('.format_number').number( true, 2 );
 
 });
 

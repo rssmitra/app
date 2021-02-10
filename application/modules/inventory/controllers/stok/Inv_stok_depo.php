@@ -144,6 +144,7 @@ class Inv_stok_depo extends MX_Controller {
             $row[] = '<div class="center">'.number_format($row_list->pengeluaran).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_akhir).'</div>';
             $row[] = $row_list->keterangan;
+            $row[] = $row_list->fullname;
                    
             $data[] = $row;
         }

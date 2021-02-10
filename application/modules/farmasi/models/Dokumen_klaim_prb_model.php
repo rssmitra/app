@@ -5,7 +5,7 @@ class Dokumen_klaim_prb_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'no_kunjungan', 'no_mr');
-	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, verifikasi_prb, log_detail.total';
+	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, verifikasi_prb';
 
 	var $order = array('tgl_trans' => 'DESC', 'fr_tc_far.kode_trans_far' => 'DESC');
 
@@ -20,7 +20,7 @@ class Dokumen_klaim_prb_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
-		$this->db->join('(select kode_trans_far, SUM(sub_total) as total from fr_tc_far_detail_log_prb group by fr_tc_far_detail_log_prb.kode_trans_far) as log_detail','log_detail.kode_trans_far = fr_tc_far.kode_trans_far','left');
+		// $this->db->join('(select kode_trans_far, SUM(sub_total) as total from fr_tc_far_detail_log_prb group by fr_tc_far_detail_log_prb.kode_trans_far) as log_detail','log_detail.kode_trans_far = fr_tc_far.kode_trans_far','left');
 		$this->db->where('fr_tc_far.kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log_prb group by fr_tc_far_detail_log_prb.kode_trans_far)');
 		$this->db->where('fr_tc_far.verifikasi_prb', 1);
 		$this->db->group_by($this->select);

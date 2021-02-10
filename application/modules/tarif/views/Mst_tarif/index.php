@@ -36,7 +36,7 @@ $(document).ready(function(){
     "bInfo": false,
     "pageLength": 100,
      "ajax": {
-        "url": "tarif/Mst_tarif/get_data?search_by="+$("#search_by").val()+"&keyword="+$("#keyword_form").val()+"&is_icu="+$("#is_icu").val()+"",
+        "url": "tarif/Mst_tarif/get_data",
         "type": "POST"
     },
     "columnDefs": [
@@ -51,69 +51,57 @@ $(document).ready(function(){
   });
 
   $('#dynamic-table tbody').on('click', 'td.details-control', function () {
-            var tr = $(this).closest('tr');
-            var row = oTable.row( tr );
-            var data = oTable.row( $(this).parents('tr') ).data();
-            var kode_tarif = data[ 2 ];
-            
+        var tr = $(this).closest('tr');
+        var row = oTable.row( tr );
+        var data = oTable.row( $(this).parents('tr') ).data();
+        var kode_tarif = data[ 2 ];
+        
 
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            }
-            else {
-                /*data*/
-               
-                $.getJSON("tarif/Mst_tarif/getDetail/" + kode_tarif , '', function (data) {
-                    response_data = data;
-                     // Open this row
-                    row.child( format( response_data ) ).show();
-                    tr.addClass('shown');
-                });
-               
-            }
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            /*data*/
+            
+            $.getJSON("tarif/Mst_tarif/getDetail/" + kode_tarif , '', function (data) {
+                response_data = data;
+                  // Open this row
+                row.child( format( response_data ) ).show();
+                tr.addClass('shown');
+            });
+            
+        }
     } );
 
     
-      $('#btn_search_data').click(function (e) {
-          e.preventDefault();
-          $.ajax({
-          url: 'tarif/Mst_tarif/find_data',
-          type: "post",
-          data: $('#form_search').serialize(),
-          dataType: "json",
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          success: function(data) {
-            achtungHideLoader();
-            find_data_reload(data,'tarif/Mst_tarif');
-          }
-        });
+    $('#btn_search_data').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+        url: 'tarif/Mst_tarif/find_data',
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        success: function(data) {
+          achtungHideLoader();
+          find_data_reload(data,'tarif/Mst_tarif');
+        }
       });
+    });
 
-      $('#btn_reset_data').click(function (e) {
-          e.preventDefault();
-          find_data_reload();
-      });
+    $('#btn_reset_data').click(function (e) {
+        e.preventDefault();
+        find_data_reload();
+    });
 
 })
 
 function format ( data ) {
     return data.html;
-}
-
-function getBillingDetail(noreg, type, field){
-  preventDefault();
-  $.getJSON("billing/Billing/getRincianBilling/" + noreg + "/" + type + "/" +field, '', function (data) {
-      response_data = data;
-      html = '';
-      html += '<div class="center"><p><b>RINCIAN BIAYA '+field+'</b></p></div>';
-      //alert(response_data.html); return false;
-      $('#detail_item_billing_'+noreg+'').html(data.html);
-  });
- 
 }
 
 function find_data_reload(result=''){
@@ -122,30 +110,74 @@ function find_data_reload(result=''){
 
 }
 
-function rollback(no_registrasi, no_kunjungan){
+function reload_data(){
 
-  preventDefault();  
+  oTable.ajax.url('tarif/Mst_tarif/get_data').load();
 
-  achtungShowLoader();
+}
 
-  $.ajax({
-      url: "tarif/Mst_tarif/rollback",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('tarif/Mst_tarif');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
+function delete_data(myid){
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: 'tarif/Mst_tarif/delete',
+        type: "post",
+        data: {ID:myid},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            reload_table();
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
 
+      });
+
+  }else{
+    return false;
+  }
+  
+}
+
+function delete_tarif_klas(myid){
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: 'tarif/Mst_tarif/delete_tarif_klas',
+        type: "post",
+        data: {ID:myid},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            reload_table();
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+  
 }
 
 </script>
@@ -210,7 +242,6 @@ function rollback(no_registrasi, no_kunjungan){
       <hr class="separator">
       <div class="clearfix" style="margin-bottom:-5px">
         <?php echo $this->authuser->show_button('tarif/Mst_tarif','C','',1)?>
-        <?php echo $this->authuser->show_button('tarif/Mst_tarif','D','',5)?>
       </div>
       
       <hr class="separator">
@@ -226,7 +257,7 @@ function rollback(no_registrasi, no_kunjungan){
               <th>Jenis Tindakan</th>         
               <th>Unit/Bagian</th>         
               <th>Revisi ke-</th>         
-              <!-- <th>Active</th>          -->
+              <th>Action</th>         
             </tr>
           </thead>
           <tbody>

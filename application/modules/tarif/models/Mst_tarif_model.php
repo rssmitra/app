@@ -5,8 +5,8 @@ class Mst_tarif_model extends CI_Model {
 
 
 	var $table = 'mt_master_tarif';
-	var $column = array('pl_tc_poli.nama_tarif');
-	var $select = 'nama_tarif, kode_tarif, mt_jenis_tindakan.jenis_tindakan, nama_bagian, revisi_ke, mt_master_tarif.is_active';
+	var $column = array('nama_tarif');
+	var $select = 'nama_tarif, mt_master_tarif.kode_bagian, mt_master_tarif.kode_tarif, kode_jenis_tindakan, mt_jenis_tindakan.jenis_tindakan, nama_bagian, revisi_ke, mt_master_tarif.is_active';
 
 	var $order = array('nama_tarif' => 'ASC');
 
@@ -21,7 +21,7 @@ class Mst_tarif_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('mt_jenis_tindakan', 'mt_jenis_tindakan.kode_jenis_tindakan=mt_master_tarif.jenis_tindakan', 'left');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif.kode_bagian', 'left');
-		$this->db->where('kode_tarif IN (select kode_tarif from mt_master_tarif_detail group by kode_tarif)');
+		$this->db->join('(select kode_tarif from mt_master_tarif_detail group by kode_tarif) as trf_detail', 'trf_detail.kode_tarif=mt_master_tarif.kode_tarif', 'left');
 
 		if(isset($_GET['unit']) AND $_GET['unit'] != ''){
 			$this->db->where('mt_master_tarif.kode_bagian', $_GET['unit']);
@@ -32,17 +32,6 @@ class Mst_tarif_model extends CI_Model {
 				$this->db->like('mt_master_tarif.nama_tarif', $_GET['nama_tarif']);
 			}
 		}
-
-		// if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-		// 	$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-  //       }else{
-  //       	$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
-  //       }
-
-
-
-		/*check level user*/
-		$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
 
 	}
 
@@ -78,7 +67,7 @@ class Mst_tarif_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
@@ -99,37 +88,61 @@ class Mst_tarif_model extends CI_Model {
 	{
 		$this->_main_query();
 		if(is_array($id)){
-			$this->db->where_in(''.$this->table.'.id_pl_tc_poli',$id);
+			$this->db->where_in(''.$this->table.'.kode_tarif',$id);
 			$query = $this->db->get();
 			return $query->result();
 		}else{
-			$this->db->where(''.$this->table.'.id_pl_tc_poli',$id);
+			$this->db->where(''.$this->table.'.kode_tarif',$id);
 			$query = $this->db->get();
-			//print_r($this->db->last_query());die;
+			// print_r($this->db->last_query());die;
 			return $query->row();
 		}
 		
 	}
 
+	public function delete_by_id($id)
+	{
+		$this->db->where('mt_master_tarif_detail.kode_tarif', $id);
+		$this->db->delete('mt_master_tarif_detail');
+
+		$this->db->where_in(''.$this->table.'.kode_tarif', $id);
+		$this->db->delete($this->table);
+
+		return true;
+	}
+
+	public function delete_tarif_klas($id)
+	{
+		$this->db->where('mt_master_tarif_detail.kode_master_tarif_detail', $id);
+		return $this->db->delete('mt_master_tarif_detail');
+	}
+
+
 	public function get_detail_by_kode_tarif($kode_tarif)
 	{
-		$this->db->select('kode_master_tarif_detail, kode_tarif, mt_master_tarif_detail.kode_klas, nama_klas, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(kamar_tindakan as INT) as kamar_tindakan, CAST(biaya_lain as INT) as biaya_lain, CAST(obat as INT) as obat, CAST(alkes as INT) as alkes, CAST(alat_rs as INT) as alat_rs, CAST(adm as INT) as adm, CAST(bhp as INT) as bhp, CAST(pendapatan_rs as INT) as pendapatan_rs, CAST(total as INT) as total, is_active, revisi_ke');
+		$this->db->select('kode_master_tarif_detail, mt_master_tarif_detail.kode_tarif, nama_tarif, nama_bagian, mt_master_tarif_detail.kode_klas, jenis_tindakan, nama_klas, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(kamar_tindakan as INT) as kamar_tindakan, CAST(biaya_lain as INT) as biaya_lain, CAST(obat as INT) as obat, CAST(alkes as INT) as alkes, CAST(alat_rs as INT) as alat_rs, CAST(adm as INT) as adm, CAST(bhp as INT) as bhp, CAST(pendapatan_rs as INT) as pendapatan_rs, CAST(total as INT) as total, mt_master_tarif_detail.is_active, mt_master_tarif_detail.revisi_ke');
 		$this->db->from('mt_master_tarif_detail');
 		$this->db->join('mt_klas', 'mt_klas.kode_klas=mt_master_tarif_detail.kode_klas', 'left');
-		$this->db->where('kode_tarif', $kode_tarif);
+		$this->db->join('mt_master_tarif', 'mt_master_tarif.kode_tarif=mt_master_tarif_detail.kode_tarif', 'left');
+		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif.kode_bagian', 'left');
+		$this->db->where('mt_master_tarif_detail.kode_tarif', $kode_tarif);
 		$this->db->order_by('nama_klas', 'ASC');
 		$result = $this->db->get()->result();
 		foreach ($result as $key => $value) {
 			$getData[$value->nama_klas][] = $value;
 		}
+		if(count($result) > 0){
+			return array('nama_tarif' => $result[0]->nama_tarif, 'unit'=>$result[0]->nama_bagian, 'result' => $getData);
+		}else{
+			return [];
+		}
 
-		return $getData;
 		
 	}
 
 	public function get_detail_by_kode_tarif_detail($kode_master_tarif_detail)
 	{
-		$this->db->select('kode_master_tarif_detail, mt_master_tarif_detail.kode_tarif, nama_tarif, mt_master_tarif_detail.kode_klas, nama_klas, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(kamar_tindakan as INT) as kamar_tindakan, CAST(biaya_lain as INT) as biaya_lain, CAST(obat as INT) as obat, CAST(alkes as INT) as alkes, CAST(alat_rs as INT) as alat_rs, CAST(adm as INT) as adm, CAST(bhp as INT) as bhp, CAST(pendapatan_rs as INT) as pendapatan_rs, CAST(total as INT) as total, mt_master_tarif_detail.is_active, mt_master_tarif_detail.revisi_ke');
+		$this->db->select('kode_master_tarif_detail, mt_master_tarif_detail.kode_tarif, nama_tarif, mt_master_tarif_detail.kode_klas, kode_bagian, jenis_tindakan, nama_klas, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(kamar_tindakan as INT) as kamar_tindakan, CAST(biaya_lain as INT) as biaya_lain, CAST(obat as INT) as obat, CAST(alkes as INT) as alkes, CAST(alat_rs as INT) as alat_rs, CAST(adm as INT) as adm, CAST(bhp as INT) as bhp, CAST(pendapatan_rs as INT) as pendapatan_rs, CAST(total as INT) as total, mt_master_tarif_detail.is_active, mt_master_tarif_detail.revisi_ke');
 		$this->db->from('mt_master_tarif_detail');
 		$this->db->join('mt_klas', 'mt_klas.kode_klas=mt_master_tarif_detail.kode_klas', 'left');
 		$this->db->join('mt_master_tarif', 'mt_master_tarif.kode_tarif=mt_master_tarif_detail.kode_tarif', 'left');

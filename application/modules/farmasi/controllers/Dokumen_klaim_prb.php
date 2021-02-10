@@ -92,7 +92,7 @@ class Dokumen_klaim_prb extends MX_Controller {
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
             $row[] = $row_list->nama_pelayanan;
-            $row[] = '<div class="pull-right">'.number_format($row_list->total).'</div>';            
+            // $row[] = '<div class="pull-right">'.number_format($row_list->total).'</div>';            
             $data[] = $row;
         }
 

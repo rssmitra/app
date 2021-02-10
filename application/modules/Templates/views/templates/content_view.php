@@ -559,10 +559,12 @@
     <!-- end highchat modules -->
     
     <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
-    
+    <script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
+
     
     <script type="text/javascript">
       
+      $('.format_number').number( true, 2 );
 
       function changeTotalBiaya(field, id){
         //alert(field); return false;
@@ -572,8 +574,8 @@
 
         // if bill dr 
         if( field == 'bill_dr1' || field == 'bill_dr2' || field == 'bill_dr3'){
-          var result_bill_dr = (parseInt(harga_awal) * input_persen/100) * (87.5/100);
-          var result_pendapatan_rs = (parseInt(result_bill_dr) * input_persen/100) * (17.5/100);
+          var result_bill_dr = (parseInt(harga_awal) * input_persen/100) * (70/100);
+          var result_pendapatan_rs = (parseInt(result_bill_dr) * input_persen/100) * (30/100);
 
           // last price dookter
           var last_price = parseInt(result_bill_dr) + parseInt(harga_awal);
@@ -583,7 +585,7 @@
           console.log(harga_awal_pendapatan);
           console.log(last_price);
           console.log(pendapatan_rs);
-          $('#total_diskon_pendapatan_rs_2_'+id+'').val( pendapatan_rs );
+          $('#total_diskon_pendapatan_rs_'+id+'').val( pendapatan_rs );
           $('#pendapatan_rs_'+id+'').val( pendapatan_rs );
           format_pendapatan_rs = formatMoney(pendapatan_rs);
           $('#text_total_diskon_pendapatan_rs_'+id).text( format_pendapatan_rs );

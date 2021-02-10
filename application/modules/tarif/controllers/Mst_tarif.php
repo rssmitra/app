@@ -56,7 +56,8 @@ class Mst_tarif extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Mst_tarif/form', $data);
+        $view = ($data['flag'] == 'create')?'form':'form_update';
+        $this->load->view('Mst_tarif/'.$view.'', $data);
     }
     /*function for view data only*/
     public function edit_klas_tarif($kode_master_tarif_detail)
@@ -79,7 +80,7 @@ class Mst_tarif extends MX_Controller {
         
         $html = '';
         if(count($data) > 0){
-            $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>Tarif klas pasien : </h4></b></div><br>';
+            $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.$data['nama_tarif'].' </h4></b></div><br>';
             $html .= '<table class="table table-striped" style="width: 90%; margin-left: 38px !important">';
             $html .= '<tr>';
                 $html .= '<th>Nama Klas</th>';
@@ -98,7 +99,7 @@ class Mst_tarif extends MX_Controller {
                 $html .= '<th>Revisi Ke-</th>';
                 $html .= '<th>Action</th>';
             $html .= '</tr>'; 
-            foreach ($data as $key => $value) {
+            foreach ($data['result'] as $key => $value) {
                 $nama_klas = ($key != '0')?$key:'Tarif Global';
                 foreach ($value as $key2 => $val) {
                     # code...
@@ -118,8 +119,8 @@ class Mst_tarif extends MX_Controller {
                         $html .= '<td align="right">'.number_format($val->total).'</td>';
                         $html .= '<td align="center">'.$val->revisi_ke.'</td>';
                         $html .= '<td align="center">
-                                <a href="#" onclick="show_modal_medium('."'tarif/Mst_tarif/edit_klas_tarif/".$val->kode_master_tarif_detail."'".', '."'EDIT KLAS TARIF'".')"><span class="badge badge-success"><i class="fa fa-pencil"></i></span></a>
-                                <span class="badge badge-danger"><i class="fa fa-trash"></i></span>
+                                <a href="#" onclick="getMenu('."'tarif/Mst_tarif/edit_klas_tarif/".$val->kode_master_tarif_detail."'".')"><span class="badge badge-success"><i class="fa fa-pencil"></i></span></a>
+                                <a href="#" onclick="delete_tarif_klas('.$val->kode_master_tarif_detail.')"><span class="badge badge-danger"><i class="fa fa-trash"></i></span></a>
                         </td>';
                     $html .= '</tr>';
                 }
@@ -152,7 +153,10 @@ class Mst_tarif extends MX_Controller {
             $row[] = ucwords($row_list->jenis_tindakan);
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = '<div class="center">'.$row_list->revisi_ke.'</div>';
-            // $row[] = ($row_list->is_active == 'Y') ? '<div class="center"><span class="label label-sm label-success">Active</span></div>' : '<div class="center"><span class="label label-sm label-danger">Not active</span></div>';
+            $row[] = '<div class="center">
+                '.$this->authuser->show_button('tarif/Mst_tarif','U',$row_list->kode_tarif,2).'
+                '.$this->authuser->show_button('tarif/Mst_tarif','D',$row_list->kode_tarif,2).'
+                </div>';
 
             $data[] = $row;
         }
@@ -169,23 +173,27 @@ class Mst_tarif extends MX_Controller {
 
     public function process()
     {
-       
+        // echo print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('kode_bagian', 'Kode Bagian', 'trim|required');
-        $val->set_rules('kode_klas', 'Klas Tarif', 'trim|required');
-        $val->set_rules('kode_jenis_tindakan', 'Jenis Tindakan', 'trim|required');
-        $val->set_rules('bill_dr1', 'Bill Dr1', 'trim|required');
-        $val->set_rules('bill_dr2', 'Bill Dr2', 'trim|required');
-        $val->set_rules('bill_dr3', 'Bill Dr3', 'trim|required');
-        $val->set_rules('kamar_tindakan', 'Kamar Tindakan', 'trim|required');
-        $val->set_rules('bhp', 'BHP', 'trim|required');
-        $val->set_rules('obat', 'Obat', 'trim|required');
-        $val->set_rules('alat_rs', 'Alat RS', 'trim|required');
-        $val->set_rules('alkes', 'Alkes', 'trim|required');
-        $val->set_rules('adm', 'Administrasi', 'trim|required');
-        $val->set_rules('pendapatan_rs', 'Pendapatan RS', 'trim|required');
-        $val->set_rules('total', 'Total', 'trim|required');
+        $val->set_rules('nama_tarif', 'Nama Tarif', 'trim|required');
+        $val->set_rules('kode_bagian', 'Kode Bagian', 'trim');
+        $val->set_rules('kode_klas', 'Klas Tarif', 'trim');
+        $val->set_rules('jenis_tindakan', 'Jenis Tindakan', 'trim|required');
+
+        if($_POST['submit'] != 'update_tarif'){
+            $val->set_rules('bill_dr1', 'Bill Dr1', 'trim|required');
+            $val->set_rules('bill_dr2', 'Bill Dr2', 'trim|required');
+            $val->set_rules('bill_dr3', 'Bill Dr3', 'trim|required');
+            $val->set_rules('kamar_tindakan', 'Kamar Tindakan', 'trim|required');
+            $val->set_rules('bhp', 'BHP', 'trim|required');
+            $val->set_rules('obat', 'Obat', 'trim|required');
+            $val->set_rules('alat_rs', 'Alat RS', 'trim|required');
+            $val->set_rules('alkes', 'Alkes', 'trim|required');
+            $val->set_rules('adm', 'Administrasi', 'trim|required');
+            $val->set_rules('pendapatan_rs', 'Pendapatan RS', 'trim|required');
+            $val->set_rules('total', 'Total', 'trim|required');
+        }
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -198,38 +206,85 @@ class Mst_tarif extends MX_Controller {
         {                       
             $this->db->trans_begin();
             $id = ($this->input->post('id'))?$this->regex->_genRegex($this->input->post('id'),'RGXINT'):0;
-
+            
             $dataexc = array(
-                'kode_bagian' => $this->regex->_genRegex($val->set_value('kode_bagian'), 'RGXQSL'),
-                'kode_klas' => $this->regex->_genRegex($val->set_value('kode_klas'), 'RGXQSL'),
-                'kode_jenis_tindakan' => $this->regex->_genRegex($val->set_value('kode_jenis_tindakan'), 'RGXQSL'),
-                'bill_dr1' => $this->regex->_genRegex($val->set_value('bill_dr1'), 'RGXQSL'),
-                'bill_dr2' => $this->regex->_genRegex($val->set_value('bill_dr2'), 'RGXQSL'),
-                'bill_dr3' => $this->regex->_genRegex($val->set_value('bill_dr3'), 'RGXQSL'),
-                'kamar_tindakan' => $this->regex->_genRegex($val->set_value('kamar_tindakan'), 'RGXQSL'),
-                'bhp' => $this->regex->_genRegex($val->set_value('bhp'), 'RGXQSL'),
-                'obat' => $this->regex->_genRegex($val->set_value('obat'), 'RGXQSL'),
-                'alat_rs' => $this->regex->_genRegex($val->set_value('alat_rs'), 'RGXQSL'),
-                'alkes' => $this->regex->_genRegex($val->set_value('alkes'), 'RGXQSL'),
-                'adm' => $this->regex->_genRegex($val->set_value('adm'), 'RGXQSL'),
-                'pendapatan_rs' => $this->regex->_genRegex($val->set_value('pendapatan_rs'), 'RGXQSL'),
-                'total' => $this->regex->_genRegex($val->set_value('total'), 'RGXQSL'),
-                'is_active' => $this->input->post('is_active'),
-                'revisi_ke' => 1,
+                'nama_tarif' => $this->regex->_genRegex($val->set_value('nama_tarif'), 'RGXQSL'),
+                'kode_bagian' => $val->set_value('kode_bagian')?$val->set_value('kode_bagian'):'0',
+                'jenis_tindakan' => $this->regex->_genRegex($val->set_value('jenis_tindakan'), 'RGXQSL'),
+                'tingkatan' => 5,
+                'is_active' => 'Y',
             );
-            //print_r($dataexc);die;
+            // print_r($dataexc);die;
             if($id==0){
+                
+                // kode tarif
+                $kode_tarif = $this->generate_kode_tarif($val->set_value('kode_bagian'));
+                $dataexc['kode_tarif'] = $kode_tarif;
+
+                // kode tindakan
+                $new_kode_tindakan = substr($kode_tarif, 5);
+                $dataexc['kode_tindakan'] = 'NT'.$new_kode_tindakan;
+
+                $dataexc['revisi_ke'] = 1;
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
                 $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 /*save post data*/
-                $newId = $this->db->insert('mt_master_tarif');
+                $this->db->insert('mt_master_tarif', $dataexc);
+                $newId = $kode_tarif;
             }else{
+                // get existing
+                $exist = $this->db->get_where('mt_master_tarif', array('kode_tarif' => $id) )->row();
+                $dataexc['revisi_ke'] = $exist->revisi_ke + 1;
+
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 /*update record*/
-                $this->Mst_tarif->update(array('kode_tarif' => $id), $dataexc);
+                $this->db->update('mt_master_tarif', $dataexc, array('kode_tarif' => $id));
                 $newId = $id;
             }
+
+            if(in_array($_POST['submit'], array('create_tarif', 'update_rincian') )){
+                // insert detail tarif
+                $data_tarif = array(
+                    'kode_tarif' => $this->regex->_genRegex($newId, 'RGXQSL'),
+                    'kode_klas' => $this->regex->_genRegex($_POST['kode_klas'], 'RGXQSL'),
+                    'bill_dr1' => $this->regex->_genRegex($_POST['bill_dr1'], 'RGXQSL'),
+                    'bill_dr2' => $this->regex->_genRegex($_POST['bill_dr2'], 'RGXQSL'),
+                    'bill_dr3' => $this->regex->_genRegex($_POST['bill_dr3'], 'RGXQSL'),
+                    'kamar_tindakan' => $this->regex->_genRegex($_POST['kamar_tindakan'], 'RGXQSL'),
+                    'bhp' => $this->regex->_genRegex($_POST['bhp'], 'RGXQSL'),
+                    'obat' => $this->regex->_genRegex($_POST['obat'], 'RGXQSL'),
+                    'alat_rs' => $this->regex->_genRegex($_POST['alat_rs'], 'RGXQSL'),
+                    'alkes' => $this->regex->_genRegex($_POST['alkes'], 'RGXQSL'),
+                    'adm' => $this->regex->_genRegex($_POST['adm'], 'RGXQSL'),
+                    'pendapatan_rs' => $this->regex->_genRegex($_POST['pendapatan_rs'], 'RGXQSL'),
+                    'total' => $this->regex->_genRegex($_POST['total'], 'RGXQSL'),
+                    'is_active' => $this->input->post('is_active'),
+                );
+
+                // existing
+                $tarif_det_exist = $this->db->order_by('revisi_ke', 'DESC')->get_where('mt_master_tarif_detail', array('kode_tarif' => $newId, 'kode_klas' => $_POST['kode_klas']) )->row();
+
+                if(empty($tarif_det_exist)){
+                    $data_tarif['revisi_ke'] = 1;
+                    $data_tarif['created_date'] = date('Y-m-d H:i:s');
+                    $data_tarif['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                    /*save post data*/
+                    $this->db->insert('mt_master_tarif_detail', $data_tarif);
+                    $kode_master_tarif_detail = $this->db->insert_id();
+                }else{
+                    $data_tarif['revisi_ke'] = $tarif_det_exist->revisi_ke + 1;
+                    $data_tarif['updated_date'] = date('Y-m-d H:i:s');
+                    $data_tarif['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                    /*update record*/
+                    $this->db->update('mt_master_tarif_detail', $data_tarif, array('kode_master_tarif_detail' => $tarif_det_exist->kode_master_tarif_detail));
+                    $kode_master_tarif_detail = $tarif_det_exist->kode_master_tarif_detail;
+                }
+            }
+
+            $kd_trf = isset($newId)?$newId:'';
+            $kd_trf_dtl = isset($kode_master_tarif_detail)?$kode_master_tarif_detail:'';
+
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -238,7 +293,7 @@ class Mst_tarif extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_tarif' => $kd_trf, 'kode_master_tarif_detail' => $kd_trf_dtl));
             }
         }
     }
@@ -246,17 +301,25 @@ class Mst_tarif extends MX_Controller {
     public function delete()
     {
         $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
-        $toArray = explode(',',$id);
-        if($id!=null){
-            if($this->Mst_tarif->delete_by_id($toArray)){
-                $this->logs->save('tmp_mst_function', $id, 'delete record', '', 'kode_tarif');
-                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+        
+        if($this->Mst_tarif->delete_by_id($id)){
+            echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
 
-            }else{
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
-            }
         }else{
-            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+        }
+        
+    }
+
+    public function delete_tarif_klas()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        
+        if($this->Mst_tarif->delete_tarif_klas($id)){
+            echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
         }
         
     }
@@ -265,6 +328,17 @@ class Mst_tarif extends MX_Controller {
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
+    }
+
+    public function generate_kode_tarif($kode_bagian=''){
+        /*get max kode tarif by kode_bagian*/
+        if($kode_bagian == ''){
+            $max_kode = $this->db->query("select MAX(kode_tarif)as max_tarif from mt_master_tarif where kode_bagian='0'")->row();
+        }else{
+            $max_kode = $this->db->query("select MAX(kode_tarif)as max_tarif from mt_master_tarif where kode_bagian=".$kode_bagian."")->row();
+        }
+        $new_kode_plus_one = $max_kode->max_tarif + 1;
+        return $new_kode_plus_one;
     }
 
 }

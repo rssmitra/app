@@ -381,6 +381,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         );
         $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
         $detail_log = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
+        $data['attachment'] = $this->upload_file->CsmgetUploadedFile($kode_trans_far);
         $data['resep'] = $detail_log;
 
         // echo '<pre>'; print_r($data);die;
@@ -612,6 +613,55 @@ EOD;
         //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'D'); 
         
     }
+
+    public function process_upload()
+    {
+        // echo '<pre>';print_r($_FILES);die;
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+        $val->set_rules('restriksi', 'Restriksi', 'trim|required');
+        $val->set_rules('no_resep', 'No Resep', 'trim|required');
+        $val->set_rules('kode_trans_far', 'Kode Trans Far', 'trim|required');
+        $val->set_rules('no_mr', 'No MR', 'trim|required');
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+            
+            if($_POST['restriksi'] != ''){
+                $this->db->update('fr_tc_far', array('restriksi' => $_POST['restriksi']), array('kode_trans_far' => $_POST['kode_trans_far']) );
+            }
+
+            /*insert dokumen adjusment*/
+            if(isset($_FILES['pf_file'])){
+                $this->upload_file->PrbdoUploadMultiple(array(
+                    'name' => 'pf_file',
+                    'path' => 'uploaded/farmasi/log/',
+                    'ref_id' => $_POST['kode_trans_far'],
+                    'ref_table' => 'fr_tc_far_dokumen_klaim_prb',
+                    'flag' => 'dokumen_export',
+                ));
+            }
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+        }
+    }
+
     
 }
 

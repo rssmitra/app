@@ -17,9 +17,11 @@ class Inv_mutasi_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
+		$this->db->select('fullname');
 		$this->db->from($this->table);
 		$this->db->where('kode_bagian', $_GET['kode_bagian']);
 		$this->db->where('kode_brg', $_GET['kode_brg']);
+		$this->db->join('tmp_user', 'tmp_user.user_id=tc_kartu_stok.petugas', 'left' );
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,tc_kartu_stok.tgl_input,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 		}else{

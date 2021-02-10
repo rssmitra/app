@@ -152,6 +152,7 @@ function cetak_kartu_stok(){
                     <th>Keluar</th>
                     <th>Stok Akhir</th>
                     <th>Keterangan</th>
+                    <th>Petugas</th>
                   </tr>
                 </thead>
                 <tbody>

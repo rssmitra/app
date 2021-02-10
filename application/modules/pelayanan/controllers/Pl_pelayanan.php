@@ -310,11 +310,9 @@ class Pl_pelayanan extends MX_Controller {
 
             $row[] = '';
             if($row_list->kode_tc_trans_kasir==NULL){
+                $btn_edit = '<a href="#" class="btn btn-xs btn-success" onclick="edit_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-edit"></i></a>';
 
-                $row[] = '
-                        <a href="#" class="btn btn-xs btn-danger" onclick="delete_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-times-circle"></i></a>
-                        <a href="#" class="btn btn-xs btn-success" onclick="edit_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-edit"></i></a>
-                        ';
+                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="delete_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-times-circle"></i></a></div>';
             }else{
                 $row[] = '<div class="center"><i class="fa fa-check-circle green"></i></div>';
             }
@@ -494,24 +492,26 @@ class Pl_pelayanan extends MX_Controller {
                 }
 
                 // tag readonly
-                if( in_array($key, array('pendapatan_rs')) ){
+                if( in_array($key, array('pendapatan_rs', 'bhp', 'kamar_tindakan')) ){
                     $readonly = 'readonly';
+                    $text = 'hidden';
                 }else{
                     $readonly = '' ;
+                    $text = 'text' ;
                 }
                 $html_tag .= '<tr>';
                 $html_tag .= '<td align="center">'.$no.'</td>';
                 $html_tag .= '<td>'.str_replace('_',' ', strtoupper($key)) .' '.$dr.'</td>';
                 //$html_tag .= '<td align="right">Rp. '.number_format($data->$key).',-</td>';
                 $html_tag .= '<td align="right"><input type="text" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.'></td>';
-                $html_tag .= '<td align="right"><input type="text" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'></td>';
+                $html_tag .= '<td align="right"><input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'></td>';
                 $html_tag .= '<td align="right" id="text_total_diskon_'.$key.'_'.$id.'">Rp. '.number_format($data->$key).',-</td>';
                 $html_tag .= '</tr>';
                 $arr_sum[] = $data->$key;
 
                 /*hidden form*/
                 $html_tag .= '<input type="hidden" value="'.$key.'" name="fields_'.$id.'[]" id="'.$key.'_'.$id.'" >';
-                $html_tag .= '<input type="hidden" class="total_diskon_'.$id.'" value="'.(int)$data->$key.'" name="total_diskon_'.$key.'_'.$id.'" id="total_diskon_'.$key.'_'.$id.'" >';
+                $html_tag .= '<input type="hiddenxx" class="total_diskon_'.$id.'" value="'.(int)$data->$key.'" name="total_diskon_'.$key.'_'.$id.'" id="total_diskon_'.$key.'_'.$id.'" >';
                 $no++;
             }
 
@@ -531,12 +531,17 @@ class Pl_pelayanan extends MX_Controller {
         $html_tag .= '<p>
                         Keterangan :<br>
                         <ol>
-                            <li>Operasi dengan resiko besar, Jasa Dokter Spesialis Bedah dinaikkan sampai dengan 20% - 25% </li>
-                            <li>Operasi cito, besar biaya ditambah 25% dari tarif operasi yang direncanakan</li>
+                            <li>Operasi dengan resiko besar, Jasa Dokter Spesialis Bedah dinaikkan sampai dengan 20% - 25% 
+                            </li>
+                            <li>Operasi cito, besar biaya ditambah 25% dari tarif operasi yang direncanakan
+                            </li>
                         </ol>
+                        <div class="center">
+                            
+                        </div>
                       </p>';
         $html_tag .= '<center>';
-        // $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> PROSES UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
+        $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> PROSES UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
         $html_tag .= '</center>';
         $html_tag .= '</form>';
         $html_tag .= '</div>';
@@ -1227,7 +1232,7 @@ class Pl_pelayanan extends MX_Controller {
 
 
         $this->db->trans_begin();  
-        //+print_r($_POST);die;
+        print_r($_POST);die;
         $data = array();
         foreach ($_POST['fields_'.$_GET['kode'].''] as $field) {
             $data[$field] = $_POST['total_diskon_'.$field.'_'.$_GET['kode'].''];

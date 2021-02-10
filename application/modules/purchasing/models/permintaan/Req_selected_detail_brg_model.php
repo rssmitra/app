@@ -5,7 +5,7 @@ class Req_selected_detail_brg_model extends CI_Model {
 	var $table_nm = 'mt_barang_nm';
 	var $table = 'mt_barang';
 	var $column = array('kode_brg','nama_brg');
-	var $select = 'a.nama_brg, a.satuan_besar, a.satuan_kecil, b.jml_sat_kcl, a.content, a.kode_brg, b.stok_minimum, b.stok_maksimum, a.path_image, a.is_active, c.stok_akhir';
+	var $select = 'a.nama_brg, a.satuan_besar, a.satuan_kecil, b.jml_sat_kcl, a.content, a.kode_brg, b.stok_minimum, b.stok_maksimum, a.path_image, a.is_active, kartu_stok.stok_akhir';
 	var $order = array('a.nama_brg' => 'ASC');
 
 	public function __construct()
@@ -15,25 +15,29 @@ class Req_selected_detail_brg_model extends CI_Model {
 	}
 
 	private function _main_query(){
-		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
-		$join = ($_GET['flag']=='non_medis') ? 'tc_kartu_stok_nm_v' : 'tc_kartu_stok_v' ;
-		$join_2 = ($_GET['flag']=='non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+		$mt_barang = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
+		$mt_depo_stok = ($_GET['flag']=='non_medis') ? 'mt_depo_stok_nm' : 'mt_depo_stok' ;
+		$tc_kartu_stok = ($_GET['flag']=='non_medis') ? 'tc_kartu_stok_nm_v' : 'tc_kartu_stok_v' ;
+		$mt_rekap_stok = ($_GET['flag']=='non_medis') ? 'mt_rekap_stok_nm' : 'mt_rekap_stok' ;
+		$date = date('Y-m-d');
+		$kd_bagian = ($_GET['flag']=='non_medis')?'070101':'060201';
+
 		$this->db->select('b.harga_beli as harga_beli_terakhir');
 		$this->db->select($this->select);
-		$this->db->from($table.' a');
-		$this->db->join($join.' c' ,'c.kode_brg=a.kode_brg','left');
-		$this->db->join($join_2.' b' ,'b.kode_brg=a.kode_brg','left');
-
-		$kd_bagian = ($_GET['flag']=='non_medis')?'070101':'060201';
+		$this->db->from($mt_depo_stok.' d');
+		$this->db->join($mt_barang.' a' ,'d.kode_brg=a.kode_brg','left');
+		$this->db->join($mt_rekap_stok.' b' ,'b.kode_brg=d.kode_brg','left');
+		$this->db->join('( SELECT * FROM '.$tc_kartu_stok.' WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM '.$tc_kartu_stok.' WHERE tgl_input <= '."'".$date."'".' AND tgl_input is not null AND kode_bagian='."'".$kd_bagian."'".' GROUP BY kode_brg) AND kode_bagian='."'".$kd_bagian."'".' ) AS kartu_stok', 'kartu_stok.kode_brg=d.kode_brg','left');
+		
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['key']) AND $_GET['key'] != '' ){
 			$this->db->like($_GET['search_by'], $_GET['key']);
 		}
 
 		if( $_GET['flag'] == 'non_medis'){
-			$this->db->where( ' (c.kode_bagian = '."'".$kd_bagian."'".' OR c.kode_bagian IS NULL ) ' );
+			$this->db->where( ' (d.kode_bagian = '."'".$kd_bagian."'".' OR d.kode_bagian IS NULL ) ' );
 		}else{
-			$this->db->where('c.kode_bagian', $kd_bagian);
+			$this->db->where('d.kode_bagian', $kd_bagian);
 		}
 
 		$this->db->group_by('b.harga_beli');
