@@ -116,6 +116,7 @@ $(document).ready(function(){
  
     
     /*on keypress or press enter = search pasien*/
+    
     $( "#form_cari_pasien" )    
 
       .keypress(function(event) {        
@@ -377,7 +378,7 @@ function get_riwayat_medis(no_mr){
 
 function getDataAntrianPasien(){
 
-  getTotalBilling();
+  // getTotalBilling();
   $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
         $('#no_mr_selected option').remove();         
         $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
