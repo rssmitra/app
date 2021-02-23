@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Tmp_mst_menu_model extends CI_Model {
+class Kepeg_dt_pegawai_model extends CI_Model {
 
-	var $table = 'tmp_mst_menu';
-	var $column = array('tmp_mst_menu.name','tmp_mst_menu.class','tmp_mst_menu.link','tmp_mst_menu.level','tmp_mst_menu.counter','tmp_mst_menu.is_active','tmp_mst_menu.updated_date','tmp_mst_menu.created_date', 'tmp_mst_modul.name');
-	var $select = 'tmp_mst_menu.menu_id, tmp_mst_menu.name, tmp_mst_menu.class, tmp_mst_menu.link, tmp_mst_menu.level, tmp_mst_menu.parent, tmp_mst_menu.icon, tmp_mst_menu.set_shortcut, tmp_mst_menu.counter, tmp_mst_menu.is_active, tmp_mst_menu.is_deleted, tmp_mst_menu.created_date, tmp_mst_menu.created_by, tmp_mst_menu.updated_date, tmp_mst_menu.modul_id, tmp_mst_menu.description, tmp_mst_menu.updated_by, tmp_mst_modul.name as modul_name';
+	var $table = 'view_dt_pegawai';
+	var $column = array('view_dt_pegawai.ktp_nama_lengkap');
+	var $select = 'view_dt_pegawai.*';
 
-	var $order = array('tmp_mst_menu.menu_id' => 'DESC', 'tmp_mst_menu.updated_date' => 'DESC');
+	var $order = array('view_dt_pegawai.kepeg_id' => 'DESC', 'view_dt_pegawai.updated_date' => 'DESC');
 
 	public function __construct()
 	{
@@ -18,7 +18,6 @@ class Tmp_mst_menu_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		$this->db->join('tmp_mst_modul',$this->table.'.modul_id=tmp_mst_modul.modul_id','left');
 	}
 
 	private function _get_datatables_query()
@@ -73,11 +72,11 @@ class Tmp_mst_menu_model extends CI_Model {
 	{
 		$this->_main_query();
 		if(is_array($id)){
-			$this->db->where_in(''.$this->table.'.menu_id',$id);
+			$this->db->where_in(''.$this->table.'.kepeg_id',$id);
 			$query = $this->db->get();
 			return $query->result();
 		}else{
-			$this->db->where(''.$this->table.'.menu_id',$id);
+			$this->db->where(''.$this->table.'.kepeg_id',$id);
 			$query = $this->db->get();
 			return $query->row();
 		}
@@ -93,14 +92,13 @@ class Tmp_mst_menu_model extends CI_Model {
 	public function update($where, $data)
 	{
 		$this->db->update($this->table, $data, $where);
-		
 		return $this->db->affected_rows();
 	}
 
 	public function delete_by_id($id)
 	{
 		$get_data = $this->get_by_id($id);
-		$this->db->where_in(''.$this->table.'.menu_id', $id);
+		$this->db->where_in(''.$this->table.'.kepeg_id', $id);
 		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
 	}
 

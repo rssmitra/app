@@ -15,7 +15,7 @@ class Import_tarif_lab_from_prodia extends MX_Controller {
 
         /*first description*/
         echo nl2br("").PHP_EOL;
-        echo nl2br("Import Data Tarif 2018").PHP_EOL;
+        echo nl2br("Import perubahan tarif lab prodia").PHP_EOL;
         echo nl2br($file_name). PHP_EOL;
         echo nl2br("Waiting for execution..."). PHP_EOL;
 
@@ -58,13 +58,13 @@ class Import_tarif_lab_from_prodia extends MX_Controller {
                 $get_kode_tarif = $this->Import_tarif_lab_from_prodia_model->update_tarif('mt_master_tarif',$data);
                 
                 /*loop data klas for detail tarif*/
-                $this->execute_tarif_klas($klas, $row, $sheet, $get_kode_tarif);
+                $data_tarif[] = $this->execute_tarif_klas($klas, $row, $sheet, $get_kode_tarif);
 
             }
 
             $numrow++; // Tambah 1 setiap kali looping
         }
-
+        echo '<pre>';print_r($data_tarif);die;
 
     }
 
@@ -88,7 +88,7 @@ class Import_tarif_lab_from_prodia extends MX_Controller {
             $alkes = isset($dt_ex->alkes)?$dt_ex->alkes:0;
 
             /*from sheet*/
-            $bhp = isset($row[$this->find_column($sheet[3], (string)$val_klas.'/bhp')])?$row[$this->find_column($sheet[3], (string)$val_klas.'/bhp')]:0;
+            $bhp = isset($row[$this->find_column($sheet[3], (string)$val_klas.'/bhp')])?$row[$this->find_column($sheet[3], $val_klas.'/bhp')]:0;
 
             $alat_rs = isset($row[$this->find_column($sheet[3], $val_klas.'/alat_rs')])?$row[$this->find_column($sheet[3], $val_klas.'/alat_rs')]:0;
 
@@ -127,15 +127,14 @@ class Import_tarif_lab_from_prodia extends MX_Controller {
             ];
 
         }
-        echo '<pre>';print_r($detail_tarif);die;
+        // return $detail_tarif;
+        // echo '<pre>';print_r($detail_tarif);die;
         return $this->Import_tarif_lab_from_prodia_model->update_detail_tarif('mt_master_tarif_detail',$detail_tarif);
             
     }
 
     function find_column($array, $string) {
-        // echo '<pre>';print_r($array);
-        $key = array_search((string)$string, $array);
-        // print_r($key);die;
+        $key = array_search(trim($string), $array);
         return (string)$key;
     }
 

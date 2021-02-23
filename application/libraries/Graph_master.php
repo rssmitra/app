@@ -217,12 +217,32 @@ final Class Graph_master {
 
 		// modul purchasing table chart
 		if($params['prefix']==323){
-			$query = "SELECT month(a.tgl_po) as bulan, CAST(SUM(a.total_stl_ppn) AS INT) AS total_format_money 
-						FROM tc_po a
-						WHERE YEAR(a.tgl_po) = ".date('Y')." AND status_kirim is not null
-						GROUP BY month(a.tgl_po) ORDER BY month(a.tgl_po) ASC";	
+			$query = "select MONTH(b.tgl_penerimaan) as bulan, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
+						from tc_penerimaan_barang_detail a 
+						left join mt_barang c on c.kode_brg=a.kode_brg
+						left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
+						where YEAR(b.tgl_penerimaan)=".date('Y')." GROUP BY month(b.tgl_penerimaan) ORDER BY month(b.tgl_penerimaan) ASC";
+						
 			$fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
-			$title = '<span style="font-size:13.5px">Total Pembelian Barang Medis Berdasarkan PO Tahun '.date('Y').' </span></small>';
+			$title = '<span style="font-size:13.5px">Pembelian Barang Berdasarkan Penerimaan Tahun '.date('Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+
+		if($params['prefix']==324){
+			$query = "select e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
+						from tc_penerimaan_barang_detail a 
+						left join mt_barang c on c.kode_brg=a.kode_brg
+						left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
+						left join tc_po d on d.id_tc_po=b.id_tc_po
+						left join mt_supplier e on e.kodesupplier=d.kodesupplier
+						where YEAR(b.tgl_penerimaan)=".date('Y')." and MONTH(b.tgl_penerimaan)=".date('m')." 
+						GROUP BY e.kodesupplier, e.namasupplier
+						ORDER BY SUM((a.harga_net * a.jumlah_kirim_decimal)) DESC";
+						
+			$fields = array('Supplier' => 'supplier', 'Total' => 'total_format_money');
+			$title = '<span style="font-size:13.5px">Supplier RSSM Tahun '.date('Y').' Bulan '.$CI->tanggal->getBulan(date('m')).'</span></small>';
 			$subtitle = 'Source: RSSM - SIRS';
 			/*excecute query*/
 			$data = $db->query($query)->result_array();
@@ -230,12 +250,16 @@ final Class Graph_master {
 
 		// modul purchasing pie chart
 		if($params['prefix']==322){
-			$query = "SELECT TOP 10 a.namasupplier as supplier,COUNT(b.id_tc_po) AS total 
-						FROM tc_po b
-						left join mt_supplier a on a.kodesupplier=b.kodesupplier
-						WHERE YEAR(b.tgl_po) = ".date('Y')." and month(b.tgl_po)=".date('m')."
-						GROUP BY a.namasupplier
-						ORDER BY COUNT(b.id_tc_po) DESC";	
+			$query = "select top 20 e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total
+						from tc_penerimaan_barang_detail a 
+						left join mt_barang c on c.kode_brg=a.kode_brg
+						left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
+						left join tc_po d on d.id_tc_po=b.id_tc_po
+						left join mt_supplier e on e.kodesupplier=d.kodesupplier
+						where YEAR(b.tgl_penerimaan)=".date('Y')." and MONTH(b.tgl_penerimaan)=".date('m')." 
+						GROUP BY e.kodesupplier, e.namasupplier
+						ORDER BY SUM((a.harga_net * a.jumlah_kirim_decimal)) DESC";
+							
 			$data_qry = $CI->db->query($query)->result_array();
 			$getData = [];
 			foreach ($data_qry as $key => $value) {

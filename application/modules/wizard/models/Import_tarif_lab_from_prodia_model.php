@@ -20,11 +20,11 @@ class Import_tarif_lab_from_prodia_model extends CI_Model {
         /*loop first array*/
         foreach($data as $k=>$value){
             /*cek terlebih dahulu apakah sudah ada data nya atau tidak*/
-            $is_exist = $this->db->get_where($table, array('kode_tarif' => $value['kode_tarif'], 'kode_klas' => $value['kode_klas']) );
+            $is_exist = $this->db->order_by('revisi_ke', 'DESC')->get_where($table, array('kode_tarif' => $value['kode_tarif'], 'kode_klas' => $value['kode_klas']) );
 
             $revisi_ke = ( $is_exist->num_rows() > 0 ) ? $is_exist->row()->revisi_ke + 1 : 1 ;
             $array_merge = array_merge($value, array('revisi_ke' => $revisi_ke) );
-            //echo '<pre>';print_r($array_merge);die;
+            
             /*loop detail tarif*/
             if($this->db->insert($table, $array_merge)){
                 echo nl2br($value['kode_tarif'].' => '.$value['bill_rs'].' | '.$value['bill_dr1'].' | '.$value['bill_dr2'].' | '.$value['bhp'].' | '.$value['pendapatan_rs'].' row insert successfull').PHP_EOL.'<br>'; 
@@ -33,9 +33,13 @@ class Import_tarif_lab_from_prodia_model extends CI_Model {
             }
             
         }
-       
+        // echo '<pre>';print_r($array_merge);die;
         return true;
     }
+
+
+
+
 
     
     public function update_tarif($table, $data){

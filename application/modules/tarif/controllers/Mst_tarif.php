@@ -83,7 +83,7 @@ class Mst_tarif extends MX_Controller {
             $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.$data['nama_tarif'].' </h4></b></div><br>';
             $html .= '<table class="table table-striped" style="width: 90%; margin-left: 38px !important">';
             $html .= '<tr>';
-                $html .= '<th>Nama Klas</th>';
+                $html .= '<th>Nama Klas </th>';
                 $html .= '<th>Bill Dr1</th>';
                 $html .= '<th>Bill Dr2</th>';
                 $html .= '<th>Bill Dr3</th>';
@@ -96,15 +96,15 @@ class Mst_tarif extends MX_Controller {
                 $html .= '<th>Pendapatan RS</th>';
                 $html .= '<th>Biaya Lainnya</th>';
                 $html .= '<th>Total</th>';
-                $html .= '<th>Revisi Ke-</th>';
                 $html .= '<th>Action</th>';
             $html .= '</tr>'; 
             foreach ($data['result'] as $key => $value) {
                 $nama_klas = ($key != '0')?$key:'Tarif Global';
+                $html .='<tr><td colspan="13"><b><i class="fa fa-angle-double-down bigger-120"></i> '.strtoupper($nama_klas).'</b></td></tr>';
                 foreach ($value as $key2 => $val) {
                     # code...
                     $html .= '<tr>';
-                        $html .= '<td>'.$nama_klas.'</td>';
+                        $html .= '<td>Revisi ke- '.$val->revisi_ke.'</td>';
                         $html .= '<td align="right">'.number_format($val->bill_dr1).'</td>';
                         $html .= '<td align="right">'.number_format($val->bill_dr2).'</td>';
                         $html .= '<td align="right">'.number_format($val->bill_dr3).'</td>';
@@ -117,7 +117,6 @@ class Mst_tarif extends MX_Controller {
                         $html .= '<td align="right">'.number_format($val->pendapatan_rs).'</td>';
                         $html .= '<td align="right">'.number_format($val->biaya_lain).'</td>';
                         $html .= '<td align="right">'.number_format($val->total).'</td>';
-                        $html .= '<td align="center">'.$val->revisi_ke.'</td>';
                         $html .= '<td align="center">
                                 <a href="#" onclick="getMenu('."'tarif/Mst_tarif/edit_klas_tarif/".$val->kode_master_tarif_detail."'".')"><span class="badge badge-success"><i class="fa fa-pencil"></i></span></a>
                                 <a href="#" onclick="delete_tarif_klas('.$val->kode_master_tarif_detail.')"><span class="badge badge-danger"><i class="fa fa-trash"></i></span></a>

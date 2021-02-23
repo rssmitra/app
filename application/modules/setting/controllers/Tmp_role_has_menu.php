@@ -100,7 +100,8 @@ class Tmp_role_has_menu extends MX_Controller {
             $row[] = strtoupper($row_list->name);
             $row[] = $row_list->level_name;
             $row[] = $row_list->description;
-            $row[] = $this->Tmp_role_has_menu->get_role_menu_by_role_id($row_list->role_id);
+            // $row[] = $this->Tmp_role_has_menu->get_role_menu_by_role_id($row_list->role_id);
+            $row[] = 'C,R,U,D';
             $row[] = ($row_list->is_active == 'Y') ? '<div class="center"><span class="label label-sm label-success">Active</span></div>' : '<div class="center"><span class="label label-sm label-danger">Not active</span></div>';
             $row[] = $this->logs->show_logs_record_datatable($row_list);
                    
