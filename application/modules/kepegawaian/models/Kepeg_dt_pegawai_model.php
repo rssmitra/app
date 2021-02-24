@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Kepeg_dt_pegawai_model extends CI_Model {
 
 	var $table = 'view_dt_pegawai';
-	var $column = array('view_dt_pegawai.ktp_nama_lengkap');
+	var $column = array('view_dt_pegawai.nama_pegawai');
 	var $select = 'view_dt_pegawai.*';
 
 	var $order = array('view_dt_pegawai.kepeg_id' => 'DESC', 'view_dt_pegawai.updated_date' => 'DESC');
@@ -83,15 +83,15 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 		
 	}
 
-	public function save($data)
+	public function save($table, $data)
 	{
-		$this->db->insert($this->table, $data);
+		$this->db->insert($table, $data);
 		return $this->db->insert_id();
 	}
 
-	public function update($where, $data)
+	public function update($table, $where, $data)
 	{
-		$this->db->update($this->table, $data, $where);
+		$this->db->update($table, $data, $where);
 		return $this->db->affected_rows();
 	}
 

@@ -70,17 +70,28 @@
 
       <hr class="separator">
       <div style="margin-top:-27px">
-        <table id="dynamic-table" base-url="kepegawaian/Kepeg_dt_pegawai" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="kepegawaian/Kepeg_dt_pegawai" data-id="flag=" url-detail="kepegawaian/Kepeg_dt_pegawai/show_detail" class="table table-bordered table-hover">
           <thead>
             <tr>  
-              <th width="30px" class="center"></th>
-              <th width="120px">&nbsp;</th>
-              <th width="50px">ID</th>
-              <th>Data Pegawai</th>
-              <th>Alamat</th>
-              <th>Pangkat/Jabatan</th>
-              <th width="100px">Last Update</th>
-              
+              <th width="30px" class="center">
+                <div class="center">
+                  <label class="pos-rel">
+                      <input type="checkbox" class="ace" name="" onClick="checkAll(this);" value="0"/>
+                      <span class="lbl"></span>
+                  </label>
+                </div>
+              </th>
+              <th width="40px" class="center"></th>
+              <th width="40px" class="center"></th>
+              <th width="50px"></th>
+              <th width="50px">Foto</th>
+              <th width="150px">Nama Lengkap</th>
+              <th>Pendidikan/Jenis Pegawai</th>
+              <th>Unit/Bagian</th>
+              <th>Jabatan/Golongan</th>
+              <th>Status Karyawan</th>
+              <th>Status Aktif</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -93,7 +104,7 @@
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
+<script src="<?php echo base_url().'assets/js/custom/als_datatable_with_detail_custom_url.js'?>"></script>
 
 
 
