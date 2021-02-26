@@ -205,7 +205,7 @@ final Class Authuser {
             case 'R67':
                 # code...
                 $Query_String  = explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] );
-        $param_string = isset($Query_String[0])?$Query_String[0]:'';
+                $param_string = isset($Query_String[0])?$Query_String[0]:'';
                 $btn = '<a href="#" onclick="getMenu('."'".$link.'/show/'.$id.'?'.$param_string.''."'".')">Read</a>';
                 break;
 

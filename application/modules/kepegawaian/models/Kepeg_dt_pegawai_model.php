@@ -7,7 +7,7 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 	var $column = array('view_dt_pegawai.nama_pegawai');
 	var $select = 'view_dt_pegawai.*';
 
-	var $order = array('view_dt_pegawai.kepeg_id' => 'DESC', 'view_dt_pegawai.updated_date' => 'DESC');
+	var $order = array('view_dt_pegawai.updated_date' => 'DESC');
 
 	public function __construct()
 	{

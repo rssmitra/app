@@ -338,6 +338,50 @@ final Class upload_file {
 
     }
 
+    function FrgetUploadedFile($kode_trans_far){
+
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+
+        $html = '';
+        $db->where('kode_trans_far', $kode_trans_far);
+        $files = $db->get('fr_tc_far_dokumen_klaim_prb')->result();
+
+        $html .= '<table id="attc_table_id" class="table table-striped table-bordered">';
+        $html .= '<tr style="background-color:darkcyan; color:white">';
+            $html .= '<th width="30px" class="center">No</th>';
+            $html .= '<th width="100px">File Name</th>';
+            $html .= '<th width="100px">Created Date</th>';
+            $html .= '<th width="60px" class="center">Download</th>';
+            $html .= '<th width="60px" class="center">Delete</th>';
+        $html .= '</tr>';
+        $no=1;
+        if(count($files) > 0){
+            foreach ($files as $key => $row_list) {
+                # code...
+                $html .= '<tr id="tr_id_'.$row_list->dok_prb_id.'">';
+                    $html .= '<td align="center">'.$no.'</td>';
+                    $html .= '<td align="left">'.$row_list->dok_prb_file_name.'</td>';
+                    $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
+                    $html .= '<td align="center"><a href="'.base_url().$row_list->dok_prb_fullpath.'" style="color:red" target="_blank">View File</a></td>';
+                    $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_fr('.$row_list->dok_prb_id.')"><i class="fa fa-times-circle red"></i></a></td>';
+                $html .= '</tr>';
+            $no++;
+            }
+        }else{
+            $html .=  '<tr><td colspan="9">- File not found -</td></tr>';
+        }
+        
+        $html .= '</table>';
+
+
+
+
+
+        return $html;
+
+    }
+
     function doUploadMultiple($params)
     {
         $CI =&get_instance();

@@ -167,6 +167,21 @@ class Attachment extends MX_Controller {
         }
         
     }
+
+    public function delete_attachment_fr()
+    {
+        $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
+        if($id!=null){
+            if($this->attachment_model->delete_attachment_fr_by_id($id)){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
   
 
 }

@@ -1890,4 +1890,18 @@ class References extends MX_Controller {
 		echo json_encode( array('html' => $html) );
 	}
 
+	public function getPegawaiAktif()
+	{
+        $result = $this->db->where("nama_pegawai LIKE '%".$_POST['keyword']."%' ")
+        				  ->order_by('nama_pegawai', 'ASC')
+						  ->get('view_dt_pegawai')->result();
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kepeg_id.' : '.$value->nama_pegawai;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
 }

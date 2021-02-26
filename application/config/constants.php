@@ -16,10 +16,12 @@ define('TEMPLATE', 'ACE Admin Template');
 define('PATH_IMG_MST_BRG', 'uploaded/barang/');
 define('PATH_IMG_DEFAULT', 'uploaded/images/');
 define('PATH_PHOTO_PROFILE_DEFAULT', 'uploaded/images/photo/');
+define('PATH_PHOTO_PEGAWAI', 'uploaded/images/photo_karyawan/');
 define('PATH_IMG_THUMB', 'uploaded/images/thumb/');
 define('PATH_IMG_RESIZED', 'uploaded/images/resized/');
 define('PATH_HASIL_VERIF_BPJS', 'uploaded/casemix/hasil_verif/');
 define('PATH_DOK_KLAIM_FARMASI', 'uploaded/farmasi/');
+define('PATH_ASSETS_IMG', 'assets/img/');
 
 define('WS_URL', 'http://10.10.10.4:88/rssm/ws_rssm/');
 define('ICON_UNCHECKBOX', 'assets/img/uncheck.png');

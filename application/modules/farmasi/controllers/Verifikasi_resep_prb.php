@@ -381,7 +381,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         );
         $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
         $detail_log = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
-        $data['attachment'] = $this->upload_file->CsmgetUploadedFile($kode_trans_far);
+        $data['attachment'] = $this->upload_file->FrgetUploadedFile($kode_trans_far);
         $data['resep'] = $detail_log;
 
         // echo '<pre>'; print_r($data);die;
@@ -619,7 +619,7 @@ EOD;
         // echo '<pre>';print_r($_FILES);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('restriksi', 'Restriksi', 'trim|required');
+        $val->set_rules('restriksi', 'Restriksi', 'trim');
         $val->set_rules('no_resep', 'No Resep', 'trim|required');
         $val->set_rules('kode_trans_far', 'Kode Trans Far', 'trim|required');
         $val->set_rules('no_mr', 'No MR', 'trim|required');

@@ -141,5 +141,17 @@ class Attachment_model extends CI_Model {
 
 	}
 
+	public function delete_attachment_fr_by_id($id)
+	{
+		$get_data = $this->db->get_where('fr_tc_far_dokumen_klaim_prb', array('dok_prb_id'=>$id))->row();
+		//print_r($get_data->fullpath);die;
+		if (file_exists($get_data->dok_prb_fullpath)) {
+			unlink($get_data->dok_prb_fullpath);
+		}
+		$this->db->where('fr_tc_far_dokumen_klaim_prb.dok_prb_id', $id);
+		return $this->db->delete('fr_tc_far_dokumen_klaim_prb');
+
+	}
+
 	
 }

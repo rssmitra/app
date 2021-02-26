@@ -764,6 +764,73 @@ final Class Master {
 		return array('seri_kuitansi' => $seri_kuitansi, 'no_kuitansi' => $no_seri);
 	}
 
+	public function get_kode_cuti($kepeg_id){
+
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+
+		// get data pegawai
+		$dt_pegawai = $db->get_where('view_dt_pegawai', array('kepeg_id' => $kepeg_id) )->row();
+
+		$query = "SELECT b.kepeg_nip, COUNT(a.pengajuan_cuti_id) as total_cuti
+					FROM kepeg_pengajuan_cuti a
+					LEFT JOIN view_dt_pegawai b on b.kepeg_id=a.kepeg_id
+					WHERE a.kepeg_id = ".$kepeg_id."
+					GROUP BY b.kepeg_nip";
+		// exc query
+		$result = $db->query($query)->row();
+
+		// format kode cuti
+		$total_cuti = isset($result->total_cuti)?$result->total_cuti + 1 : 1;
+		$format = 'CT-'.$dt_pegawai->kepeg_nip.'-'.date('my').$total_cuti.'';
+		return $format;
+	}
+
+	public function get_kode_lembur($kepeg_id){
+
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+
+		// get data pegawai
+		$dt_pegawai = $db->get_where('view_dt_pegawai', array('kepeg_id' => $kepeg_id) )->row();
+
+		$query = "SELECT b.kepeg_nip, COUNT(a.pengajuan_lembur_id) as total_lembur
+					FROM kepeg_pengajuan_lembur a
+					LEFT JOIN view_dt_pegawai b on b.kepeg_id=a.kepeg_id
+					WHERE a.kepeg_id = ".$kepeg_id."
+					GROUP BY b.kepeg_nip";
+		// exc query
+		$result = $db->query($query)->row();
+
+		// format kode lembur
+		$total_lembur = isset($result->total_lembur)?$result->total_lembur + 1 : 1;
+		$format = 'LR-'.$dt_pegawai->kepeg_nip.'-'.date('my').$total_lembur.'';
+		return $format;
+	}
+
+	public function kepeg_acc_flow($kepeg_id, $pengajuan_cuti_id, $type){
+
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		// get data pegawai
+		$dt_pegawai = $db->get_where('view_dt_pegawai', array('kepeg_id' => $kepeg_id) )->row();
+
+		// get unit 
+		$unit_pegawai = $db->get_where('kepeg_mt_unit', array('kepeg_unit_id' => $dt_pegawai->kepeg_unit) )->row();		
+		// get spv 
+		$dt_atasan = $db->join("(SELECT * FROM kepeg_log_acc_pengajuan WHERE ref_id=".$pengajuan_cuti_id." AND type="."'".$type."'".") as log_acc", 'log_acc.acc_by_kepeg_id=view_dt_pegawai.kepeg_id','LEFT')->get_where('view_dt_pegawai', array('kepeg_unit' => $unit_pegawai->kepeg_unit_parent, 'kepeg_level' => ($unit_pegawai->kepeg_unit_level - 1)
+			) )->row();		
+
+		$getData = [];
+		if(!empty($dt_atasan))
+			$getData = $this->kepeg_acc_flow($dt_atasan->kepeg_id, $pengajuan_cuti_id, $type);
+		
+		if(!empty($dt_atasan))
+			$getData[] = array('kepeg_id' => $dt_atasan->kepeg_id, 'nama_pegawai' => $dt_atasan->nama_pegawai, 'unit' => $dt_atasan->nama_unit, 'level' => $dt_atasan->nama_level, 'acc_date' => $dt_atasan->acc_date);
+		return $getData;
+
+	}
+
 	function searcharray($value, $key, $array) {
 		$k=0;
 		foreach ($array as $k => $val) {

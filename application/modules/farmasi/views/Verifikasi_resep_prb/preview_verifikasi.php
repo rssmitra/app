@@ -172,13 +172,6 @@ function tambah_file()
       <input type="hidden" name="kode_trans_far" id="kode_trans_far" value="<?php echo $value->kode_trans_far?>">
       <input type="hidden" name="no_mr" id="no_mr" value="<?php echo $value->no_mr?>">
 
-      <!-- <button onclick="getMenu('farmasi/Verifikasi_resep_prb');" class="btn btn-xs btn-purple" title="Lihat Riwayat Resep">
-          <i class="fa fa-history dark"></i> Riwayat Resep PRB
-      </button>
-      <button onclick="PopupCenter('farmasi/Verifikasi_resep_prb/nota_farmasi/<?php echo $value->kode_trans_far?>?flag=RJ')" class="btn btn-xs btn-success" title="Nota Farmasi">
-          <i class="fa fa-print dark"></i> Nota Farmasi
-      </button> -->
-
       <div class="form-group" style="padding-top: 5px">
           <label class="col-md-2" for="">&nbsp;</label>
           <div class="col-sm-4" style="margin-left: 5px;">
@@ -186,7 +179,7 @@ function tambah_file()
               <i class="fa fa-file dark"></i> Merge PDF Files
             </a>
 
-            <button type="submit" onclick="submit_form()" class="btn btn-xs btn-success" title="Nota Farmasi">
+            <button type="submit" class="btn btn-xs btn-success" title="Nota Farmasi">
                 <i class="fa fa-print dark"></i> Proses Upload
             </button>
           </div>

@@ -127,19 +127,19 @@ class Kepeg_dt_pegawai extends MX_Controller {
                         </div>
                     </div>';
             
-            $link_image = ( $row_list->pas_foto != NULL ) ? PATH_PHOTO_PEGAWAI.$row_list->pas_foto : PATH_PHOTO_PEGAWAI.'no-image.jpg' ;
+            $link_image = ( $row_list->pas_foto != NULL ) ? PATH_PHOTO_PEGAWAI.$row_list->pas_foto : PATH_ASSETS_IMG.'avatar.png' ;
             $jk = ($row_list->jk == 'P')?'Perempuan':'Laki-laki';
             $status_kepegawaian = ($row_list->kepeg_status_kerja == '211')?'Karyawan Tetap':'Karyawan KKWT';
-            $row[] = '<div class="center"><a href="'.base_url().$link_image.'" target="_blank"><img src="'.base_url().$link_image.'" width="100px"></a><br> <b>'.$row_list->kepeg_nip.'</b></div>';
+            $row[] = '<div class="center"><a href="'.base_url().$link_image.'" target="_blank"><img src="'.base_url().$link_image.'" width="80px"></a><br> <b>'.$row_list->kepeg_nip.'</b></div>';
             $row[] = $row_list->kepeg_nik.'<br>'.$row_list->nama_pegawai.'<br>'.$jk;
-            $row[] = $row_list->pendidikan_terakhir.'<br>'.ucwords($row_list->kepeg_tenaga_medis);
+            $row[] = $row_list->pendidikan_terakhir.' ('.ucwords($row_list->kepeg_tenaga_medis).')';
             $row[] = $row_list->nama_unit;
-            $row[] = $row_list->nama_level.'<br>'.$row_list->kepeg_gol;
+            $row[] = $row_list->nama_level.'<br>Gol. '.$row_list->kepeg_gol.'<br>'.$row_list->nama_klas;
             $row[] = $status_kepegawaian.'<br>Aktif kerja : <br>'.$row_list->kepeg_tgl_aktif;
             $status_aktif = ($row_list->kepeg_status_aktif == 'Y') ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
             $row[] = '<div class="center">
-                        <a href="#" class="label label-xs label-success" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_jabatan/".$row_list->kepeg_id."'".')">Update Jabatan</a>
+                        <a href="#" style="width: 100% !important" class="label label-xs label-success" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_jabatan/".$row_list->kepeg_id."'".')"><i class="fa fa-pencil"></i> Update Kepegawaian</a>
             </div>';
                    
             $data[] = $row;
@@ -172,6 +172,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $val->set_rules('kepeg_tenaga_medis','kepeg_tenaga_medis', 'trim|required');
         $val->set_rules('kepeg_status_kerja','kepeg_status_kerja', 'trim|required');
         $val->set_rules('kepeg_tgl_aktif','kepeg_tgl_aktif', 'trim|required');
+        $val->set_rules('kepeg_tgl_selesai','kepeg_tgl_selesai', 'trim');
         $val->set_rules('kepeg_masa_kontrak','kepeg_masa_kontrak', 'trim');
         $val->set_rules('kepeg_status_aktif','kepeg_status_aktif', 'trim|required');
 
@@ -205,6 +206,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
                 'kepeg_tenaga_medis' => $this->regex->_genRegex($val->set_value('kepeg_tenaga_medis'), 'RGXQSL'),
                 'kepeg_status_kerja' => $this->regex->_genRegex($val->set_value('kepeg_status_kerja'), 'RGXQSL'),
                 'kepeg_tgl_aktif' => $this->regex->_genRegex($val->set_value('kepeg_tgl_aktif'), 'RGXQSL'),
+                'kepeg_tgl_selesai' => $this->regex->_genRegex($val->set_value('kepeg_tgl_selesai'), 'RGXQSL'),
                 'kepeg_masa_kontrak' => $this->regex->_genRegex($val->set_value('kepeg_masa_kontrak'), 'RGXQSL'),
                 'kepeg_status_aktif' => $this->regex->_genRegex($val->set_value('kepeg_status_aktif'), 'RGXQSL'),
             );

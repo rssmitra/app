@@ -82,7 +82,7 @@ $(document).ready(function(){
 
           <div class="form-group" id="status_kepegawaian">
             <label class="control-label col-md-2">Nama Pegawai</label>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <input type="text" name="nama_pegawai" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?>" class="form-control">
             </div>
           </div>
@@ -92,10 +92,7 @@ $(document).ready(function(){
             <div class="col-md-2">
               <input type="text" name="kepeg_no_telp" value="<?php echo isset($value->kepeg_no_telp)?$value->kepeg_no_telp:''?>" class="form-control">
             </div>
-          </div>
-
-          <div class="form-group" id="status_kepegawaian">
-            <label class="control-label col-md-2">Email</label>
+            <label class="control-label col-md-1">Email</label>
             <div class="col-md-2">
               <input type="text" name="kepeg_email" value="<?php echo isset($value->kepeg_email)?$value->kepeg_email:''?>" class="form-control">
             </div>
@@ -151,8 +148,8 @@ $(document).ready(function(){
                       <span class="lbl"> Tenaga Medis</span>
                     </label>
                     <label>
-                      <input name="kepeg_tenaga_medis" type="radio" class="ace" value="non medis" <?php echo isset($value) ? ($value->kepeg_tenaga_medis == 'non_medis') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
-                      <span class="lbl">Tenaga Non Medis</span>
+                      <input name="kepeg_tenaga_medis" type="radio" class="ace" value="non medis" <?php echo isset($value) ? ($value->kepeg_tenaga_medis == 'non medis') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                      <span class="lbl"> Tenaga Non Medis</span>
                     </label>
               </div>
             </div>
@@ -188,7 +185,7 @@ $(document).ready(function(){
             <label class="control-label col-md-2">Tanggal Berakhir Kerja</label>
             <div class="col-md-2">
               <div class="input-group">
-                  <input name="kepeg_masa_kontrak" id="kepeg_masa_kontrak" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_masa_kontrak):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
+                  <input name="kepeg_tgl_selesai" id="kepeg_tgl_selesai" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_selesai):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
                   <span class="input-group-addon">
                   <i class="ace-icon fa fa-calendar"></i>
                   </span>
