@@ -46,10 +46,19 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){
           reload_data();
+          // reset form
+          $('#unit_tugas').val('');
+          $('#dari_jam').val('');
+          $('#sd_jam').val('');
+          $('#deskripsi_pekerjaan').val('');
+          $('#tgl_lembur').val('');
+          $('#lembur_dtl_id').val('');
+          $('#tgl_lembur').val('');
+          $('#tgl_lembur').val('');
         }else{
-          // $.achtung({message: jsonResponse.message, timeout:5});
+          $.achtung({message: jsonResponse.message, timeout:5});
         }
-        // achtungHideLoader();
+        achtungHideLoader();
       }
     }); 
 
@@ -78,6 +87,7 @@ function reload_data(){
 }
 
 function delete_data(myid){
+  preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
         url: 'kepegawaian/Kepeg_pengajuan_lembur/delete_lembur',
@@ -109,6 +119,30 @@ function delete_data(myid){
   
 }
 
+function get_dt_update(myid){
+  preventDefault();
+  $.ajax({
+      url: 'kepegawaian/Kepeg_pengajuan_lembur/get_dt_by_id',
+      type: "post",
+      data: {ID:myid},
+      dataType: "json",
+      complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        $('#unit_tugas').val(jsonResponse.unit_tugas);
+        $('#dari_jam').val(jsonResponse.dari_jam);
+        $('#sd_jam').val(jsonResponse.sd_jam);
+        $('#deskripsi_pekerjaan').val(jsonResponse.deskripsi_pekerjaan);
+        $('#tgl_lembur').val(jsonResponse.tgl_lembur);
+        $('#lembur_dtl_id').val(jsonResponse.lembur_dtl_id);
+        $('#tgl_lembur').val(jsonResponse.tgl_lembur);
+        $('#tgl_lembur').val(jsonResponse.tgl_lembur);
+      }
+
+  });
+  
+}
+
 </script>
 
 <div class="page-header">
@@ -132,6 +166,7 @@ function delete_data(myid){
             <br>
 
             <input type="hidden" name="pengajuan_lembur_id" id="pengajuan_lembur_id" value="<?php echo isset($value) ? $value->pengajuan_lembur_id : '' ?>">
+            
             
             <p><b>DATA PENGAJUAN LEMBUR</b></p>
 
@@ -176,6 +211,7 @@ function delete_data(myid){
             <br>
             <p><b>RINCIAN LEMBUR</b></p>
 
+            <input type="hidden" name="lembur_dtl_id" id="lembur_dtl_id" value="">
             <div class="form-group">
               <label class="control-label col-md-2">Ditugaskan di Unit/Bagian</label>
               <div class="col-md-3">
@@ -219,7 +255,7 @@ function delete_data(myid){
             <div class="form-group" style="padding-bottom: 3px">
               <label class="control-label col-md-2">Deskripsi pekerjaan</label>
               <div class="col-md-8">
-              <textarea name="deskripsi_pekerjaan" class="form-control" style="height:50px !important"></textarea>
+              <textarea name="deskripsi_pekerjaan" id="deskripsi_pekerjaan" class="form-control" style="height:50px !important"></textarea>
               </div>
             </div>
 
@@ -230,13 +266,17 @@ function delete_data(myid){
                   <i class="ace-icon fa fa-plus-circle icon-on-right bigger-110"></i>
                   Tambahkan Lembur
                 </button>
+                <button type="button" id="btnReload" onclick="reload_table()" class="btn btn-sm btn-default">
+                  <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+                  Reload Tabel
+                </button>
               </div>
             </div>
             <br>
           </form>
           <table id="dynamic-table" base-url="kepegawaian/Kepeg_pengajuan_lembur" data-id="flag=" url-detail="kepegawaian/Kepeg_pengajuan_lembur/show_detail" class="table table-bordered table-hover">
               <thead>
-                <tr>  
+                <tr style="background-color: #edf3f4">  
                   <th>No</th>
                   <th>Unit/Bagian Tugas</th>
                   <th>Tanggal</th>
@@ -245,7 +285,7 @@ function delete_data(myid){
                   <th>Jml Jam Lembur</th>
                   <th>Deskripsi Pekerjaan</th>
                   <th width="100px">Status</th>
-                  <th width="150px">Action</th>
+                  <th width="100px">Action</th>
                 </tr>
               </thead>
               <tbody>

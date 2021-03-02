@@ -865,11 +865,11 @@
       function checkAll(elm) {
 
         if($(elm).prop("checked") == true){
-          $('.ace').each(function(){
-              $(this).prop("checked", true);
+          $('table .ace').each(function(){
+              $('table .ace').prop("checked", true);
           });
         }else{
-          $('.ace').prop("checked", false);
+          $('table .ace').prop("checked", false);
         }
 
       }

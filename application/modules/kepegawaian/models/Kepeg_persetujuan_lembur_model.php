@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Kepeg_pengajuan_lembur_model extends CI_Model {
+class Kepeg_persetujuan_lembur_model extends CI_Model {
 
 	var $table = 'kepeg_pengajuan_lembur';
 	var $column = array();

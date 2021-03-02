@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Kepeg_pengajuan_lembur_model extends CI_Model {
+class Kepeg_rekap_lembur_unit_model extends CI_Model {
 
 	var $table = 'kepeg_pengajuan_lembur';
 	var $column = array();
@@ -157,8 +157,9 @@ class Kepeg_pengajuan_lembur_model extends CI_Model {
 		return $dt_spv;
 	}
 
-	public function get_rincian_by_id($id)
+	public function get_rekap_lembur_pegawai($unit, $periode)
 	{
+
 		$this->db->where('kepeg_pengajuan_lembur_rincian.lembur_dtl_id', $id);
 		return $this->db->get('kepeg_pengajuan_lembur_rincian')->row();
 	}

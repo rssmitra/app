@@ -181,16 +181,16 @@ class Mst_tarif extends MX_Controller {
         $val->set_rules('jenis_tindakan', 'Jenis Tindakan', 'trim|required');
 
         if($_POST['submit'] != 'update_tarif'){
-            $val->set_rules('bill_dr1', 'Bill Dr1', 'trim|required');
-            $val->set_rules('bill_dr2', 'Bill Dr2', 'trim|required');
-            $val->set_rules('bill_dr3', 'Bill Dr3', 'trim|required');
-            $val->set_rules('kamar_tindakan', 'Kamar Tindakan', 'trim|required');
-            $val->set_rules('bhp', 'BHP', 'trim|required');
-            $val->set_rules('obat', 'Obat', 'trim|required');
-            $val->set_rules('alat_rs', 'Alat RS', 'trim|required');
-            $val->set_rules('alkes', 'Alkes', 'trim|required');
-            $val->set_rules('adm', 'Administrasi', 'trim|required');
-            $val->set_rules('pendapatan_rs', 'Pendapatan RS', 'trim|required');
+            $val->set_rules('bill_dr1', 'Bill Dr1', 'trim');
+            $val->set_rules('bill_dr2', 'Bill Dr2', 'trim');
+            $val->set_rules('bill_dr3', 'Bill Dr3', 'trim');
+            $val->set_rules('kamar_tindakan', 'Kamar Tindakan', 'trim');
+            $val->set_rules('bhp', 'BHP', 'trim');
+            $val->set_rules('obat', 'Obat', 'trim');
+            $val->set_rules('alat_rs', 'Alat RS', 'trim');
+            $val->set_rules('alkes', 'Alkes', 'trim');
+            $val->set_rules('adm', 'Administrasi', 'trim');
+            $val->set_rules('pendapatan_rs', 'Pendapatan RS', 'trim');
             $val->set_rules('total', 'Total', 'trim|required');
         }
         
@@ -247,17 +247,17 @@ class Mst_tarif extends MX_Controller {
                 $data_tarif = array(
                     'kode_tarif' => $this->regex->_genRegex($newId, 'RGXQSL'),
                     'kode_klas' => $this->regex->_genRegex($_POST['kode_klas'], 'RGXQSL'),
-                    'bill_dr1' => $this->regex->_genRegex($_POST['bill_dr1'], 'RGXQSL'),
-                    'bill_dr2' => $this->regex->_genRegex($_POST['bill_dr2'], 'RGXQSL'),
-                    'bill_dr3' => $this->regex->_genRegex($_POST['bill_dr3'], 'RGXQSL'),
-                    'kamar_tindakan' => $this->regex->_genRegex($_POST['kamar_tindakan'], 'RGXQSL'),
-                    'bhp' => $this->regex->_genRegex($_POST['bhp'], 'RGXQSL'),
-                    'obat' => $this->regex->_genRegex($_POST['obat'], 'RGXQSL'),
-                    'alat_rs' => $this->regex->_genRegex($_POST['alat_rs'], 'RGXQSL'),
-                    'alkes' => $this->regex->_genRegex($_POST['alkes'], 'RGXQSL'),
-                    'adm' => $this->regex->_genRegex($_POST['adm'], 'RGXQSL'),
-                    'pendapatan_rs' => $this->regex->_genRegex($_POST['pendapatan_rs'], 'RGXQSL'),
-                    'total' => $this->regex->_genRegex($_POST['total'], 'RGXQSL'),
+                    'bill_dr1' => $this->regex->_genRegex((int)$_POST['bill_dr1'], 'RGXQSL'),
+                    'bill_dr2' => $this->regex->_genRegex((int)$_POST['bill_dr2'], 'RGXQSL'),
+                    'bill_dr3' => $this->regex->_genRegex((int)$_POST['bill_dr3'], 'RGXQSL'),
+                    'kamar_tindakan' => $this->regex->_genRegex((int)$_POST['kamar_tindakan'], 'RGXQSL'),
+                    'bhp' => $this->regex->_genRegex((int)$_POST['bhp'], 'RGXQSL'),
+                    'obat' => $this->regex->_genRegex((int)$_POST['obat'], 'RGXQSL'),
+                    'alat_rs' => $this->regex->_genRegex((int)$_POST['alat_rs'], 'RGXQSL'),
+                    'alkes' => $this->regex->_genRegex((int)$_POST['alkes'], 'RGXQSL'),
+                    'adm' => $this->regex->_genRegex((int)$_POST['adm'], 'RGXQSL'),
+                    'pendapatan_rs' => $this->regex->_genRegex((int)$_POST['pendapatan_rs'], 'RGXQSL'),
+                    'total' => $this->regex->_genRegex((int)$_POST['total'], 'RGXQSL'),
                     'is_active' => $this->input->post('is_active'),
                 );
 

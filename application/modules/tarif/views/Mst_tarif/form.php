@@ -212,7 +212,7 @@ function changeTotal(){
             <label class="control-label col-sm-2" for="">Total</label>
             <div class="col-sm-2">
                 <span id="txt_total_tarif">-</span>
-                <input type="text" class="form-control" name="total" id="total" value="<?php echo isset($value->total)?$value->total:''?>">
+                <input type="hidden" class="form-control" name="total" id="total" value="<?php echo isset($value->total)?$value->total:''?>">
             </div>
         </div>
         <div class="form-actions center">

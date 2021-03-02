@@ -97,12 +97,12 @@ function changeTotal(){
         <br>
 
         <!-- hidden form -->
-        <input type="hiddenxx" value="<?php echo isset($value->kode_tarif)?$value->kode_tarif:''?>" name="id" id="id">
-        <input type="hiddenxx" value="<?php echo isset($value->kode_master_tarif_detail)?$value->kode_master_tarif_detail:''?>" name="kode_master_tarif_detail" id="kode_master_tarif_detail" id="kode_master_tarif_detail">
-        <input type="text" class="form-control" name="nama_tarif" value="<?php echo isset($value->nama_tarif)?$value->nama_tarif:''?>">
-        <input type="text" class="form-control" name="kode_bagian" value="<?php echo isset($value->kode_bagian)?$value->kode_bagian:''?>">
-        <input type="text" class="form-control" name="kode_klas" value="<?php echo isset($value->kode_klas)?$value->kode_klas:''?>">
-        <input type="text" class="form-control" name="jenis_tindakan" value="<?php echo isset($value->jenis_tindakan)?$value->jenis_tindakan:''?>">
+        <input type="hidden" value="<?php echo isset($value->kode_tarif)?$value->kode_tarif:''?>" name="id" id="id">
+        <input type="hidden" value="<?php echo isset($value->kode_master_tarif_detail)?$value->kode_master_tarif_detail:''?>" name="kode_master_tarif_detail" id="kode_master_tarif_detail" id="kode_master_tarif_detail">
+        <input type="hidden" class="form-control" name="nama_tarif" value="<?php echo isset($value->nama_tarif)?$value->nama_tarif:''?>">
+        <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value->kode_bagian)?$value->kode_bagian:''?>">
+        <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($value->kode_klas)?$value->kode_klas:''?>">
+        <input type="hidden" class="form-control" name="jenis_tindakan" value="<?php echo isset($value->jenis_tindakan)?$value->jenis_tindakan:''?>">
 
         <p style="font-weight: bold; padding-top: 10px">Rincian Tarif</p>
         <div class="form-group">

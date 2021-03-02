@@ -69,6 +69,7 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
         $data['title'] = $this->title;
         $data['flag'] = "read";
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // echo '<pre>';print_r($data);
         /*load form view*/
         $this->load->view('Kepeg_pengajuan_lembur/form_rincian_lembur', $data);
     }
@@ -94,6 +95,13 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
         $html = $this->master->show_detail_row_table( $fields, $data );      
 
         echo json_encode( array('html' => $html) );
+    }
+
+    public function get_dt_by_id()
+    {   
+        $id = $_POST['ID'];
+        $data = $this->Kepeg_pengajuan_lembur->get_rincian_by_id($id);    
+        echo json_encode( $data );
     }
 
     public function get_data()
@@ -171,10 +179,11 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
             $row[] = $this->tanggal->formatTime($row_list->sd_jam);
             $row[] = $row_list->jml_jam_lembur;
             $row[] = $row_list->deskripsi_pekerjaan;
-            $row[] = '';
+            $status = ($row_list->status_lembur == 'Y') ? '<i class="fa fa-check-circle bigger-120 green">Disetujui</span>' : '<i class="fa fa-times-circle bigger-120 red"></i>';
+            $row[] = '<div class="center">'.$status.'</div>';
             $row[] = '<div class="center">
-                        <a href="#" onclick="getMenu('."'kepegawaian/Kepeg_pengajuan_lembur/form_rincian_lembur/".$row_list->pengajuan_lembur_id."'".')"><i class="fa fa-edit bigger-130 green"></i></a> - 
-                        <a href="#" onclick="getMenu('."'kepegawaian/Kepeg_pengajuan_lembur/form_rincian_lembur/".$row_list->pengajuan_lembur_id."'".')"><i class="fa fa-times-circle bigger-130 red"></i></a>
+                        <a href="#" class="btn btn-xs btn-success" onclick="get_dt_update('.$row_list->lembur_dtl_id.')"><i class="fa fa-edit"></i></a> - 
+                        <a href="#" class="btn btn-xs btn-danger" onclick="delete_data('.$row_list->lembur_dtl_id.')"><i class="fa fa-times-circle "></i></a>
             </div>';
                    
             $data[] = $row;
@@ -292,7 +301,7 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
         else
         {                       
             $this->db->trans_begin();
-            $id = ($this->input->post('id'))?$this->regex->_genRegex($this->input->post('id'),'RGXINT'):0;
+            $id = ($this->input->post('lembur_dtl_id'))?$this->regex->_genRegex($this->input->post('lembur_dtl_id'),'RGXINT'):0;
 
             $dataexc = array(
                 'pengajuan_lembur_id' => $this->regex->_genRegex($val->set_value('pengajuan_lembur_id'), 'RGXQSL'),
@@ -326,7 +335,7 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 /*update record*/
-                $this->Kepeg_pengajuan_lembur->update('kepeg_pengajuan_lembur_rincian', array('pengajuan_lembur_id' => $id), $dataexc);
+                $this->Kepeg_pengajuan_lembur->update('kepeg_pengajuan_lembur_rincian', array('lembur_dtl_id' => $id), $dataexc);
                 $newId = $id;
             }
 
@@ -356,6 +365,19 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
             }
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
+
+    public function delete_lembur()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        
+        if($this->Kepeg_pengajuan_lembur->delete_lembur_by_id($id)){
+            echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
         }
         
     }

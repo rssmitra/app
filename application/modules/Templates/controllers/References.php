@@ -1904,4 +1904,18 @@ class References extends MX_Controller {
 		
 	}
 
+	public function getAccountCoa()
+	{
+        $result = $this->db->where("(acc_nama LIKE '%".$_POST['keyword']."%' OR acc_no LIKE '%".$_POST['keyword']."%' )")
+        				  ->order_by('acc_nama', 'ASC')
+						  ->get('mt_account')->result();
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->acc_no.' : '.$value->acc_nama;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
 }
