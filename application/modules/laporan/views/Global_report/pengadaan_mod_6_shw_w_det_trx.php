@@ -27,41 +27,40 @@
         <thead>
           <tr style="text-align: center">
             <th width="50">No</th>
+            <th width="105">Nama Barang</th>
             <th width="105">Tgl Diterima</th>
             <th width="105">No Faktur</th>
             <th width="105">Jumlah Kirim</th>
             <th width="105">Satuan Besar</th>
             <th width="105">Harga Satuan</th>
-            <th width="105">Diskon(%)</th>
             <th width="100">Total Pembelian</th>
           </tr>
          
         </thead>
         <tbody>
           <?php 
-            $no = 0; 
+            
             foreach ($result as $key => $value) {
               echo '<tr>';
               echo '<td colspan="8"><b>'.strtoupper($key).'</b></td>';
               echo '</tr>';
               $key_trim = trim($key);
+              $no = 0; 
               foreach ($value as $k => $v) {
                 $no++; 
                 // subtotal
                 $subtotal = $v->jml_kirim * $v->harga;
-                // diskon
-                $diskon = ($v->disc > 0) ? ($subtotal * $v->disc) : 0;
-                $total_pembelian = $subtotal - $diskon;
+                $total_pembelian = $subtotal ;
                 $total[$key_trim][] = $total_pembelian;
                 
                 echo '<tr>';
                   echo '<td align="center">'.$no.'</td>';
+                  echo '<td>'.$v->nama_brg.'</td>';
                   echo '<td>'.$this->tanggal->formatDatedmY($v->tgl_terima).'</td>';
                   echo '<td>'.$v->no_faktur.'</td>';
                   echo '<td align="center">'.$v->jml_kirim.'</td>';
                   echo '<td align="center">'.$v->satuan_besar.'</td>';
                   echo '<td align="right">'.number_format($v->harga).'</td>';
-                  echo '<td align="center">'.$v->disc.'</td>';
                   echo '<td align="right">'.number_format($total_pembelian).'</td>';
                 echo '</tr>';
               }

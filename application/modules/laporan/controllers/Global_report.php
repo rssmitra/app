@@ -165,6 +165,7 @@ class Global_report extends MX_Controller {
             'title' => $_POST['title'],
             'month' => $_POST['from_month'],
             'year' => $_POST['year'],
+            'jenis' => $_POST['jenis'],
             'result' => $query_data,
         );
 

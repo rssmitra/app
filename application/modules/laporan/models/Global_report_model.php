@@ -387,11 +387,16 @@ class Global_report_model extends CI_Model {
 	// ================= PENGADAAN DAN LOGISTIK =================== //
     public function pengadaan_mod_6(){
 
+        $tc_penerimaan_barang_detail = ($_POST['jenis'] == 'medis')?'tc_penerimaan_barang_detail':'tc_penerimaan_barang_nm_detail';
+        $mt_barang = ($_POST['jenis'] == 'medis')?'mt_barang':'mt_barang_nm';
+        $tc_penerimaan_barang = ($_POST['jenis'] == 'medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
+        $tc_po = ($_POST['jenis'] == 'medis')?'tc_po':'tc_po_nm';
+
 		$query = "select e.kodesupplier, e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
-						from tc_penerimaan_barang_detail a 
-						left join mt_barang c on c.kode_brg=a.kode_brg
-						left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
-						left join tc_po d on d.id_tc_po=b.id_tc_po
+						from ".$tc_penerimaan_barang_detail." a 
+						left join ".$mt_barang." c on c.kode_brg=a.kode_brg
+						left join ".$tc_penerimaan_barang." b on b.id_penerimaan=a.id_penerimaan
+						left join ".$tc_po." d on d.id_tc_po=b.id_tc_po
 						left join mt_supplier e on e.kodesupplier=d.kodesupplier
 						where YEAR(b.tgl_penerimaan)=".$_POST['year']." and MONTH(b.tgl_penerimaan)=".$_POST['from_month']." 
 						GROUP BY e.kodesupplier, e.namasupplier
@@ -403,12 +408,17 @@ class Global_report_model extends CI_Model {
     
     public function pengadaan_mod_6_detail_transaksi(){
 
+        $tc_penerimaan_barang_detail = ($_GET['jenis'] == 'medis')?'tc_penerimaan_barang_detail':'tc_penerimaan_barang_nm_detail';
+        $mt_barang = ($_GET['jenis'] == 'medis')?'mt_barang':'mt_barang_nm';
+        $tc_penerimaan_barang = ($_GET['jenis'] == 'medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
+        $tc_po = ($_GET['jenis'] == 'medis')?'tc_po':'tc_po_nm';
+
 		$query = "select e.kodesupplier,e.namasupplier as supplier, CAST(b.tgl_penerimaan as DATE) as tgl_terima, b.no_faktur, f.nama_brg, f.satuan_besar,
-        a.jumlah_kirim_decimal as jml_kirim, a.harga_net as harga, (a.jumlah_kirim_decimal * a.harga) as total_biaya, a.disc
-        from tc_penerimaan_barang_detail a left join mt_barang c on c.kode_brg=a.kode_brg 
-        LEFT JOIN mt_barang f on f.kode_brg=a.kode_brg
-        left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan 
-        left join tc_po d on d.id_tc_po=b.id_tc_po 
+        a.jumlah_kirim_decimal as jml_kirim, a.harga_net as harga, (a.jumlah_kirim_decimal * a.harga_net) as total_biaya, a.disc
+        from ".$tc_penerimaan_barang_detail." a left join mt_barang c on c.kode_brg=a.kode_brg 
+        left join ".$mt_barang." f on f.kode_brg=a.kode_brg
+        left join ".$tc_penerimaan_barang." b on b.id_penerimaan=a.id_penerimaan 
+        left join ".$tc_po." d on d.id_tc_po=b.id_tc_po 
         left join mt_supplier e on e.kodesupplier=d.kodesupplier 
         where YEAR(b.tgl_penerimaan)=".$_GET['year']." and MONTH(b.tgl_penerimaan)=".$_GET['month']." and e.kodesupplier=".$_GET['kode_supplier']."";
 		// echo $query; exit;
@@ -418,12 +428,17 @@ class Global_report_model extends CI_Model {
     
     public function pengadaan_mod_6_shw_w_d_trx(){
 
+        $tc_penerimaan_barang_detail = ($_GET['jenis'] == 'medis')?'tc_penerimaan_barang_detail':'tc_penerimaan_barang_nm_detail';
+        $mt_barang = ($_GET['jenis'] == 'medis')?'mt_barang':'mt_barang_nm';
+        $tc_penerimaan_barang = ($_GET['jenis'] == 'medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
+        $tc_po = ($_GET['jenis'] == 'medis')?'tc_po':'tc_po_nm';
+
 		$query = "select e.kodesupplier,e.namasupplier as supplier, CAST(b.tgl_penerimaan as DATE) as tgl_terima, b.no_faktur, f.nama_brg, f.satuan_besar,
-        a.jumlah_kirim_decimal as jml_kirim, a.harga_net as harga, (a.jumlah_kirim_decimal * a.harga) as total_biaya, a.disc
-        from tc_penerimaan_barang_detail a left join mt_barang c on c.kode_brg=a.kode_brg 
-        LEFT JOIN mt_barang f on f.kode_brg=a.kode_brg
-        left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan 
-        left join tc_po d on d.id_tc_po=b.id_tc_po 
+        a.jumlah_kirim_decimal as jml_kirim, a.harga_net as harga, (a.jumlah_kirim_decimal * a.harga_net) as total_biaya, a.disc
+        from ".$tc_penerimaan_barang_detail." a left join mt_barang c on c.kode_brg=a.kode_brg 
+        left join ".$mt_barang." f on f.kode_brg=a.kode_brg
+        left join ".$tc_penerimaan_barang." b on b.id_penerimaan=a.id_penerimaan 
+        left join ".$tc_po." d on d.id_tc_po=b.id_tc_po 
         left join mt_supplier e on e.kodesupplier=d.kodesupplier 
         where YEAR(b.tgl_penerimaan)=".$_GET['year']." and MONTH(b.tgl_penerimaan)=".$_GET['month']." ORDER BY DAY(b.tgl_penerimaan) ASC";
 		// echo $query; exit;

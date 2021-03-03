@@ -21,7 +21,7 @@
     <div class="col-xs-12">
 
       <center><span style="font-size: 14px; font-weight: bold">Rekap Pembelian Barang Berdasarkan Supplier<br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year; ?></center>
-      <a href="#" class="btn btn-xs btn-primary">Export Excel</a>  <a href="<?php echo base_url().'laporan/Global_report/pengadaan_mod_6_shw_w_det_trx?month='.$month.'&year='.$year.'&flag=pengadaan_mod_6_shw_w_d_trx&submit=form'?>" class="btn btn-xs btn-primary">Tampilkan Detail Transaksi</a>
+      <a href="#" class="btn btn-xs btn-primary">Export Excel</a>  <a href="<?php echo base_url().'laporan/Global_report/pengadaan_mod_6_shw_w_det_trx?month='.$month.'&year='.$year.'&flag=pengadaan_mod_6_shw_w_d_trx&submit=form&jenis='.$jenis.''?>" class="btn btn-xs btn-primary">Tampilkan Detail Transaksi</a>
       <br>
       <br>
       <table class="table table-bordered">
@@ -44,7 +44,7 @@
             <tr>
               <td align="center"><?php echo $no;?></td>
               <?php 
-                echo '<td><a target="_blank" href="'.base_url().'laporan/Global_report/show_rekap_supplier_detail_transaksi?kode_supplier='.$v->kodesupplier.'&month='.$month.'&year='.$year.'&flag=pengadaan_mod_6_detail_transaksi&submit=form">'.ucwords(strtolower($v->supplier)).'</td>';
+                echo '<td><a target="_blank" href="'.base_url().'laporan/Global_report/show_rekap_supplier_detail_transaksi?kode_supplier='.$v->kodesupplier.'&month='.$month.'&year='.$year.'&flag=pengadaan_mod_6_detail_transaksi&submit=form&jenis='.$jenis.'">'.ucwords(strtolower($v->supplier)).'</td>';
                 echo '<td align="right">'.number_format($v->total_format_money).'</td>';
               ?>
             </tr>
