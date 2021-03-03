@@ -157,6 +157,53 @@ class Global_report extends MX_Controller {
                 
     }
 
+    public function show_rekap_supplier(){
+
+        $query_data = $this->Global_report->get_data();
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'month' => $_POST['from_month'],
+            'year' => $_POST['year'],
+            'result' => $query_data,
+        );
+
+        $this->load->view('Global_report/pengadaan_mod_6_rekap_supplier', $data);
+                
+    }
+
+    public function show_rekap_supplier_detail_transaksi(){
+
+        $query_data = $this->Global_report->get_data();
+        $data = array(
+            'flag' => $_GET['flag'],
+            'month' => $_GET['month'],
+            'year' => $_GET['year'],
+            'result' => $query_data,
+        );
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Global_report/pengadaan_mod_6_rekap_supplier_detail', $data);
+                
+    }
+
+    public function pengadaan_mod_6_shw_w_det_trx(){
+
+        $query_data = $this->Global_report->get_data();
+        $getData = [];
+        foreach ($query_data['data'] as $key => $value) {
+            $getData[$value->supplier][] = $value; 
+        }
+        $data = array(
+            'flag' => $_GET['flag'],
+            'month' => $_GET['month'],
+            'year' => $_GET['year'],
+            'result' => $getData,
+        );
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Global_report/pengadaan_mod_6_shw_w_det_trx', $data);
+                
+    }
+
     public function show_data_if(){
 
         $query_data = $this->Global_report->get_data();
