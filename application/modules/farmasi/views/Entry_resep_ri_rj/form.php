@@ -713,7 +713,7 @@ function changeUrgensi(){
                 <label class="control-label col-sm-2">Tanggal</label>
                 <div class="col-md-3">
                   <div class="input-group">
-                      <input name="tgl_resep" id="tgl_resep" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
+                      <input name="tgl_trans" id="tgl_trans" data-date-format="yyyy-mm-dd" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" type="text" value="<?php echo isset($trans_farmasi->tgl_trans) ? $trans_farmasi->tgl_trans : date('Y-m-d H:i:s'); ?>">
                       <span class="input-group-addon">
                         <i class="ace-icon fa fa-calendar"></i>
                       </span>

@@ -68,7 +68,7 @@ class Process_entry_resep extends MX_Controller {
                 'no_resep' => $this->Process_entry_resep->format_no_resep($_POST['flag_trans'], $_POST['kode_profit']),
                 'kode_profit' => $this->regex->_genRegex($_POST['kode_profit'], 'RGXINT'),
                 'kode_bagian' => $this->regex->_genRegex($_POST['kode_bagian'], 'RGXQSL'),
-                'tgl_trans' => date('Y-m-d H:i:s'),
+                'tgl_trans' => $_POST['tgl_trans'],
                 'kode_bagian_asal' => $this->regex->_genRegex($_POST['kode_bagian_asal'], 'RGXQSL'),
                 'no_mr' => $this->regex->_genRegex($_POST['no_mr'], 'RGXQSL'),
                 'no_registrasi' => $this->regex->_genRegex($_POST['no_registrasi'], 'RGXINT'),

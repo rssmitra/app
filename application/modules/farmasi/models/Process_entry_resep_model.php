@@ -218,15 +218,15 @@ class Process_entry_resep_model extends CI_Model {
 
             // delete transaksi
             if( $dt_trans->kode_trans_far > 0 ){
-                $this->db->where('kode_trans_far', $dt_trans->kode_trans_far);
+                $this->db->where('kode_trans_far', $kode_trans_far);
                 $this->db->delete('tc_trans_pelayanan');
             }
             
 
             /*log trasaksi detail*/
-            $this->db->update('fr_tc_far_detail_log', array('status_tebus' => null), array('kode_trans_far' => $dt_trans->kode_trans_far) );
+            $this->db->update('fr_tc_far_detail_log', array('status_tebus' => null), array('kode_trans_far' => $kode_trans_far) );
 
-            $dt_existing = $this->db->get_where('fr_tc_far_detail', array('kode_trans_far' => $dt_trans->kode_trans_far, 'status_input' => 1) )->result();
+            $dt_existing = $this->db->get_where('fr_tc_far_detail', array('kode_trans_far' => $kode_trans_far, 'status_input' => 1) )->result();
             
             // retur barang
             foreach ($dt_existing as $key => $value) {

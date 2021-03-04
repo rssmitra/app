@@ -380,11 +380,11 @@
             if(jsonResponse.status === 200){
               $.achtung({message: jsonResponse.message, timeout:5});
               if(flag == 'rj' || flag == 'ri'){
-                $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form/'+$('#no_resep').val()+'?mr='+$('#no_mr').val()+'&tipe_layanan='+flag+'');
+                $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form/'+$('#no_resep').val()+'?mr='+$('#no_mr').val()+'&tipe_layanan='+flag+'&rollback=true');
               }
 
               if(flag == 'rl' || flag == 'pb' || flag == 'rk'){
-                $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+flag+'&rollback=true&kode_trans_far='+id+'&mr='+$('#no_mr').val()+'');
+                $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+flag+'&rollback=true&kode_trans_far='+id+'&mr='+$('#no_mr').val()+'&rollback=true');
               }
               
 
