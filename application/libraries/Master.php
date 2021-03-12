@@ -968,6 +968,24 @@ final Class Master {
 
 		return $use;
 	}
+
+	function getNewKodeAkun($lvl, $ref=''){
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		// get last kode akun
+        $max_kode_akun = $db->select_max('acc_no_rs')->where(array('level_coa' => $lvl, 'acc_ref' => $ref))->get('mt_account')->row();
+        // explode to array
+        $explode = explode('.', $max_kode_akun->acc_no_rs);
+        // change lvl to array key
+        $lvl_prev = $lvl - 1;
+        // get max num
+        $max_num = (int)$explode[$lvl_prev] + 1;
+        // get new kode coa 
+        foreach ($explode as $key => $value) {
+        	$new_num[] = ($key == $lvl_prev) ? '0'.$max_num : $value;
+        }
+        $new_kode_akun = implode('.', $new_num);
+	}
 }
 
 ?> 

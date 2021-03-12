@@ -13,22 +13,12 @@ final Class Print_direct {
         $file = tempnam($tmpdir, 'ctk');
         $handle = fopen($file, 'w');
 
-        /*$condensed = Chr(27) . Chr(33) . Chr(4);
-        $bold1 = Chr(27) . Chr(69);
-        $bold0 = Chr(27) . Chr(70);
-        $initialized = chr(27).chr(64);
-        $condensed1 = chr(15);
-        $condensed0 = chr(18);
-        $Data = $initialized;
-        $Data .= $condensed;*/
-
         print "<br/>";
         print "<img src=\"$image2\" width=\"16px\" height=\"15px\"\ align=\"absmiddle\"/>";
         print " ";
         echo  'Sorry! Could Not Connect To The Selected Printer';
         print "<br/>";
         
-
         fwrite($handle, $Data);
         fclose($handle);
         copy($file, "//10.10.10.12/EPSON L120 Series"); # Lakukan cetak
@@ -300,10 +290,8 @@ final Class Print_direct {
         
         /*printer_draw_text($p, "Catatan ",$var_magin_left, 300);*/
 
-
         printer_draw_text($p,  "Tanggal cetak: ".$currentdate,$var_magin_left, 400);
-
-                
+      
         printer_delete_font($font);
         printer_delete_pen($pen);
         printer_end_page($p);
