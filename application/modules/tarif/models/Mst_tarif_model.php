@@ -6,7 +6,7 @@ class Mst_tarif_model extends CI_Model {
 
 	var $table = 'mt_master_tarif';
 	var $column = array('nama_tarif');
-	var $select = 'nama_tarif, mt_master_tarif.kode_bagian, mt_master_tarif.kode_tarif, kode_jenis_tindakan, mt_jenis_tindakan.jenis_tindakan, nama_bagian, revisi_ke, mt_master_tarif.is_active';
+	var $select = 'nama_tarif, mt_master_tarif.kode_bagian, mt_master_tarif.kode_tarif, kode_jenis_tindakan, mt_jenis_tindakan.jenis_tindakan, nama_bagian, revisi_ke, mt_master_tarif.is_active, mt_master_tarif.kode_tarif';
 
 	var $order = array('nama_tarif' => 'ASC');
 

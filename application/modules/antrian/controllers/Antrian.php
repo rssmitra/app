@@ -34,6 +34,25 @@ class Antrian extends MX_Controller {
         $this->load->view('Antrian/index', $data);
     }
 
+    public function poli() {
+        
+        $data_loket = $this->loket->get_open_loket();
+
+        foreach ($data_loket as $key => $value) {
+            # code...
+            $kuota = $this->loket->get_sisa_kuota($value);
+            if($kuota<0)$kuota=0;
+            $data_loket[$key]->kuota = $kuota;
+        }
+
+        //print_r($_GET['type']);die;
+        $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
+        
+        $data['klinik'] = $data_loket;
+
+        $this->load->view('Antrian/index_poli', $data);
+    }
+
     public function process()
     {
         # code...

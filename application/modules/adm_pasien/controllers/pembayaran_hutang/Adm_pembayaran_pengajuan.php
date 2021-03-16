@@ -82,7 +82,7 @@ class Adm_pembayaran_pengajuan extends MX_Controller {
             $row = array();
             $arr_total[] = $row_list->total_harga;
             $row[] = '<div class="center"></div>';
-            $row[] = $row_list->kodesupplier;
+            $row[] = $row_list->id_tc_hutang_supplier_inv;
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $row_list->no_terima_faktur;
             $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->tgl_faktur).'</div>';
@@ -107,7 +107,7 @@ class Adm_pembayaran_pengajuan extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function get_hist_inv($id_tc_tagih)
+    public function get_log_data($id_tc_tagih)
     {
         /*get data from model*/
         $list = $this->Adm_pembayaran_pengajuan->get_invoice_detail($id_tc_tagih);

@@ -1,26 +1,8 @@
-<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
 
 <script>
 
 jQuery(function($) {  
-
-  $('.date-picker').datepicker({    
-
-    autoclose: true,    
-
-    todayHighlight: true    
-
-  })  
-
-  //show datepicker when clicking on the icon
-
-  .next().on(ace.click_event, function(){    
-
-    $(this).prev().focus();    
-
-  });  
 
   $('.format_number').number( true, 2 );
 
@@ -30,10 +12,10 @@ $(document).ready(function(){
 
 
     /*submit form*/
-    $('#form-tarif').ajaxForm({      
+    $('#form-rincian-tarif').ajaxForm({      
 
       beforeSend: function() {        
-            achtungShowFadeIn(); 
+            achtungShowLoader(); 
       },      
 
       uploadProgress: function(event, position, total, percentComplete) {        
@@ -48,9 +30,8 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){          
 
-          $('#id').val(jsonResponse.kode_tarif);
-
-          $.achtung({message: jsonResponse.message, timeout:5});     
+          $('#page-area-content').load('tarif/Mst_tarif');
+          $.achtung({message: jsonResponse.message, timeout:5});  
 
         }else{          
 
@@ -111,42 +92,24 @@ function changeTotal(){
 
     </div>  
 
-    <form class="form-horizontal" method="post" id="form-tarif" action="tarif/Mst_tarif/process" enctype="multipart/form-data" autocomplete="off" >      
+    <form class="form-horizontal" method="post" id="form-rincian-tarif" action="tarif/Mst_tarif/process" enctype="multipart/form-data" autocomplete="off" >      
       
         <br>
 
         <!-- hidden form -->
-        <input type="hidden" value="<?php echo isset($value->kode_tarif)?$value->kode_tarif:''?>" name="id" id="id">
-        <input type="hidden" value="<?php echo isset($value->kode_master_tarif_detail)?$value->kode_master_tarif_detail:''?>" name="kode_master_tarif_detail" id="kode_master_tarif_detail" id="kode_master_tarif_detail">
+        <input type="hidden" value="<?php echo isset($value->kode_tarif)?$value->kode_tarif:''?>" name="id" id="id">        
+        <input type="hidden" class="form-control" name="nama_tarif" value="<?php echo isset($value->nama_tarif)?$value->nama_tarif:''?>">
+        <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value->kode_bagian)?$value->kode_bagian:''?>">
+        <input type="hidden" class="form-control" name="jenis_tindakan" value="<?php echo isset($value->kode_jenis_tindakan)?$value->kode_jenis_tindakan:''?>">
 
-        <p style="font-weight: bold">DATA TARIF</p>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Nama Tarif</label>
-            <div class="col-sm-4">
-                <input type="text" class="form-control" name="nama_tarif" value="<?php echo isset($value->nama_tarif)?$value->nama_tarif:''?>">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Tarif Unit/Bagian</label>
-            <div class="col-sm-3">
-              <?php echo $this->master->custom_selection(array('table'=>'view_unit_tarif', 'where'=>array(), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($value->kode_bagian)?$value->kode_bagian:'','kode_bagian','kode_bagian','chosen-slect form-control','','');?>
-            </div>
-        </div>
-        
-        <p style="font-weight: bold; padding-top: 10px">Klas & Jenis Tarif</p>
+        <p style="font-weight: bold;">Klas & Jenis Tarif</p>
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Klas Tarif</label>
             <div class="col-sm-2">
-              <?php echo $this->master->custom_selection(array('table'=>'mt_klas', 'where'=>array(), 'id'=>'kode_klas', 'name' => 'nama_klas'),isset($value->kode_klas)?$value->kode_klas:'','kode_klas','kode_klas','chosen-slect form-control','','');?>
+              <?php echo $this->master->custom_selection(array('table'=>'mt_klas', 'where'=>array(), 'id'=>'kode_klas', 'name' => 'nama_klas'),'','kode_klas','kode_klas','chosen-slect form-control','','');?>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Jenis Tarif</label>
-            <div class="col-sm-2">
-              <?php echo $this->master->custom_selection(array('table'=>'mt_jenis_tindakan', 'where'=>array(), 'id'=>'kode_jenis_tindakan', 'name' => 'jenis_tindakan'),isset($value->jenis_tindakan)?$value->jenis_tindakan:'','jenis_tindakan','jenis_tindakan','chosen-slect form-control','','');?>
-            </div>
-        </div>
+        
         <p style="font-weight: bold; padding-top: 10px">Rincian Tarif</p>
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Bill dr 1</label>
@@ -221,7 +184,7 @@ function changeTotal(){
             <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
             Kembali ke daftar
           </a>
-          <button type="submit" id="btnSave" name="submit" value="create_tarif" class="btn btn-sm btn-info">
+          <button type="submit" id="btnSave" name="submit" value="add_klas_tarif" class="btn btn-sm btn-info">
             <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
             Submit
           </button>

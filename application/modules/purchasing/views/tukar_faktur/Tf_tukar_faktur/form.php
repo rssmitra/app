@@ -224,6 +224,8 @@ function hitungSubtotalTrx(){
                     $arr_total[] = $row_res->total;
                   ?>
                     <!-- hidden form -->
+                    <input type="hidden" name="kode_penerimaan[]" id="kode_penerimaan" value="<?php echo $row_res->kode_penerimaan; ?>">
+                    <input type="hidden" name="no_faktur[]" id="no_faktur" value="<?php echo $row_res->no_faktur; ?>">
                     <input type="hidden" name="id_penerimaan[]" id="id_penerimaan" value="<?php echo $row_res->id_penerimaan; ?>">
                     <input type="hidden" name="subtotal[]" id="total" value="<?php echo $row_res->total; ?>">
                     <tr>  

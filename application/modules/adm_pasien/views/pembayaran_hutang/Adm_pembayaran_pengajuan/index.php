@@ -19,7 +19,7 @@
 
   $(document).ready(function(){
 
-    oTable = $('#dt_table_perusahaan').DataTable({ 
+    oTable = $('#dynamic-table').DataTable({ 
           
       "processing": true, //Feature control the processing indicator.
       "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -31,7 +31,7 @@
       "paging": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": $('#dt_table_perusahaan').attr('base-url')+'?jenis_pelayanan='+$('input[name="jenis_pelayanan"]:checked').val()+'',
+          "url": $('#dynamic-table').attr('base-url'),
           "type": "POST"
       },
       "drawCallback": function (settings) { 
@@ -53,7 +53,7 @@
 
   })
 
-  $('#dt_table_perusahaan tbody').on('click', 'td.details-control', function () {
+  $('#dynamic-table tbody').on('click', 'td.details-control', function () {
       var tr = $(this).closest('tr');
       var row = oTable.row( tr );
       var data = oTable.row( $(this).parents('tr') ).data();
@@ -68,7 +68,7 @@
       else {
           /*data*/
           
-          $.getJSON($('#dt_table_perusahaan').attr('url-detail')+ "/" + kode_perusahaan, '', function (data) {
+          $.getJSON($('#dynamic-table').attr('url-detail')+ "/" + kode_perusahaan, '', function (data) {
               response_data = data;
                 // Open this row
               row.child( response_data.html ).show();
@@ -78,7 +78,7 @@
       }
     } );
 
-    $('#dt_table_perusahaan tbody').on( 'click', 'tr', function () {
+    $('#dynamic-table tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('selected') ) {
             //achtungShowLoader();
             $(this).removeClass('selected');
@@ -154,7 +154,7 @@
   }); 
   
   function find_data_reload(result){
-      oTable.ajax.url($('#dt_table_perusahaan').attr('base-url')+''+result.data).load();
+      oTable.ajax.url($('#dynamic-table').attr('base-url')+''+result.data).load();
       // $("html, body").animate({ scrollTop: "400px" });
 
   }
@@ -164,7 +164,7 @@
   }
   $('#btn_reset_data').click(function (e) {
       e.preventDefault();
-      oTable.ajax.url($('#dt_table_perusahaan').attr('base-url')+'?keyword='+$('#keyword').val()+'&from_tgl='+$('#from_tgl').val()+'&to_tgl='+$('#to_tgl').val()+'&jenis_pelayanan='+$('#jenis_pelayanan').val()+'').load();
+      oTable.ajax.url($('#dynamic-table').attr('base-url')+'?keyword='+$('#keyword').val()+'&from_tgl='+$('#from_tgl').val()+'&to_tgl='+$('#to_tgl').val()+'').load();
       // $("html, body").animate({ scrollDown: "400px" });
       $('#form_search')[0].reset();
   });
@@ -297,7 +297,7 @@
       <div class="clearfix"></div>
       <br>
       <div style="margin-top:-27px">
-        <table id="dt_table_perusahaan" base-url="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_data?<?php $qry_url = isset($_GET) ? http_build_query($_GET) . "\n" : ''; echo $qry_url?>" url-detail="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_hist_inv" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_data?<?php $qry_url = isset($_GET) ? http_build_query($_GET) . "\n" : ''; echo $qry_url?>" url-detail="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_hist_inv" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
               <th width="50px"></th>

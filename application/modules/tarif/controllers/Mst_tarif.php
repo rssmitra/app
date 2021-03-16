@@ -73,14 +73,27 @@ class Mst_tarif extends MX_Controller {
         $this->load->view('Mst_tarif/form_edit_klas_tarif', $data);
     }
 
+    public function add_klas_tarif($kode_tarif)
+    {
+        // define
+        $tarif = $this->Mst_tarif->get_by_id($kode_tarif);
+        /*breadcrumbs for view*/
+        /*define data variabel*/
+        $data['value'] = $tarif;
+        $data['title'] = $tarif->nama_tarif;
+        $data['flag'] = "read";
+        /*load form view*/
+        $this->load->view('Mst_tarif/form_add_klas_tarif', $data);
+    }
+
     public function getDetail($kode_tarif){
         
         $data = $this->Mst_tarif->get_detail_by_kode_tarif($kode_tarif);
-        // echo'<pre>';print_r($data);
         
         $html = '';
         if(count($data) > 0){
-            $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.$data['nama_tarif'].' </h4></b></div><br>';
+            $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.$data['nama_tarif'].'</h4></b></div><br>';
+            $html .= '<div style="padding-left: 39px; padding-bottom: 3px"><a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'tarif/Mst_tarif/add_klas_tarif/".$kode_tarif."'".')"><i class="fa fa-plus"></i> Tambah Klas Tarif</a></div>';
             $html .= '<table class="table table-striped" style="width: 90%; margin-left: 38px !important">';
             $html .= '<tr>';
                 $html .= '<th>Nama Klas </th>';
@@ -242,7 +255,7 @@ class Mst_tarif extends MX_Controller {
                 $newId = $id;
             }
 
-            if(in_array($_POST['submit'], array('create_tarif', 'update_rincian') )){
+            if(in_array($_POST['submit'], array('create_tarif', 'update_rincian', 'add_klas_tarif') )){
                 // insert detail tarif
                 $bill_rs = $_POST['kamar_tindakan'] + $_POST['bhp'] + $_POST['obat'] + $_POST['alat_rs'] + $_POST['alkes'] + $_POST['adm'] + $_POST['pendapatan_rs'];
                 $data_tarif = array(

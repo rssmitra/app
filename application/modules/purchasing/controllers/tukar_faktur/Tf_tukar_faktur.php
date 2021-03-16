@@ -134,8 +134,8 @@ class Tf_tukar_faktur extends MX_Controller {
         $val->set_rules('no_seri_pajak', 'Disetujui Oleh', 'trim|required');
         $val->set_rules('diskon', 'KARS', 'trim|required');
         $val->set_rules('ppn', 'SIK AA', 'trim|required');
-        $val->set_rules('biaya_materai', 'Syarat Pembayaran', 'trim|required');
-        $val->set_rules('keterangan', 'Syarat Pembayaran', 'trim|required');
+        $val->set_rules('biaya_materai', 'Biaya Materai', 'trim|required');
+        $val->set_rules('keterangan', 'Keterangan', 'trim');
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -185,6 +185,8 @@ class Tf_tukar_faktur extends MX_Controller {
                     "id_tc_hutang_supplier_inv" => $newId,
                     "id_penerimaan" => $row_checked,
                     "total_hutang" => $_POST['subtotal'][$key],
+                    "kode_penerimaan" => $_POST['kode_penerimaan'][$key],
+                    "no_faktur" => $_POST['no_faktur'][$key],
                 );
                 $arr_id[] = $row_checked;
             }
