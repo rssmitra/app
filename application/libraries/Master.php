@@ -30,7 +30,7 @@ final Class Master {
 		$field='';
 		$field.=$fieldset.'
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
-			<option value="0" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="0" '.$selected.'> - Tahun - </option>';
 
 				foreach($data as $row){
 					$sel = $nid==$row?'selected':'';
@@ -578,6 +578,21 @@ final Class Master {
 		$rand_unique = rand(999,3);
 		$max_number = $this->get_max_number_per_month($table, 'id_penerimaan', 'tgl_penerimaan');
 		return $format.'/'.date('my').'/'.$max.'/'.$rand_unique;
+
+	}
+
+	public function format_no_invoice( $jenis_pelayanan ){
+			
+		$max_num = $this->get_max_number('tc_tagih', 'id_tc_tagih');
+		return array('max_num' => $max_num, 'format' => $jenis_pelayanan.'-'.$max_num.'/INV-RSSM/'.date('m').'/'.date('Y'));
+
+	}
+
+	public function format_ttf( $jenis_pelayanan ){
+			
+		$max_num = $this->get_max_number('tc_hutang_supplier_inv', 'id_tc_hutang_supplier_inv');
+		$flag = ($jenis_pelayanan == 'medis')?'M':'NM';
+		return array('max_num' => $max_num, 'format' => 'TTF-'.$flag.$max_num.'/'.date('m').'/'.date('Y'));
 
 	}
 

@@ -32,11 +32,35 @@ class Adm_tagihan_perusahaan extends MX_Controller {
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
         );
-        /*show datatables*/
-        $data['dataTables'] = $this->load->view('penagihan/Adm_tagihan_perusahaan/temp_trans_pasien', $data, true);
         /*load view index*/
         $this->load->view('penagihan/Adm_tagihan_perusahaan/index', $data);
     }
+
+    public function form($id='')
+    {
+
+        $qry_url = http_build_query($_GET);
+        /*if id is not null then will show form edit*/
+            /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Create Invoice '.strtolower($this->title).'', 'Adm_tagihan_perusahaan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?'.$qry_url);
+        /*get value by id*/
+        $data['value'] = $this->Adm_tagihan_perusahaan->get_by_id($id); 
+        
+        /*initialize flag for form*/
+        $data['flag'] = "update";
+    
+        /*title header*/
+        $data['qry_url'] = $qry_url;
+        $data['no_invoice'] = $this->master->format_no_invoice($_GET['jenis_pelayanan']);
+        $data['detail_pasien'] = $this->Adm_tagihan_perusahaan->get_detail_pasien($id); 
+        $data['title'] = $this->title;
+        // echo '<pre>'; print_r($data);die;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('penagihan/Adm_tagihan_perusahaan/form', $data);
+    }
+
 
     public function find_data()
     {   
@@ -44,31 +68,26 @@ class Adm_tagihan_perusahaan extends MX_Controller {
         echo json_encode($output);
     }
     
-    public function merge_data_registrasi(){
-        $ex_arr = explode( ',' , $_POST['value']);
-        $kode = $this->Adm_pasien->get_first_registrasi($ex_arr);
-        $string = $this->Adm_pasien->merge_transaksi( $kode );
-        return true;
-    }
-    
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Adm_tagihan_perusahaan->get_datatables();
+        $list = ($_GET) ? $this->Adm_tagihan_perusahaan->get_datatables() : [] ;
+        // $qry_url = ($_GET) ? '?keyword='.$_GET['keyword'].'&from_tgl='.$_GET['from_tgl'].'&to_tgl='.$_GET['to_tgl'].'&jenis_pelayanan='.$_GET['jenis_pelayanan'].'' : '' ;
+        $qry_url = ($_GET) ? '?'.http_build_query($_GET) : '' ;
         // print_r($list);die;
         $data = array();
         $arr_total = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            $jumlah_tagihan = $row_list->jml_bill - $row_list->jml_tunai - $row_list->jml_debet - $row_list->jml_kredit;
+            $jumlah_tagihan = $row_list->jml_tghn;
             $no++;
             $row = array();
+            $row[] = '<div class="center"></div>';
+            $row[] = $row_list->kode_perusahaan;
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $row_list->nama_perusahaan;
             $row[] = '<div class="pull-right"><a href="#">'.number_format($jumlah_tagihan).',-</a></div>';
-            $row[] = '<div class="center">'.$row_list->disc.'</div>';
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary">Data Pasien</a></div>';
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary">Tagih</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'adm_pasien/penagihan/Adm_tagihan_perusahaan/form/".$row_list->kode_perusahaan.$qry_url."'".')" class="label label-xs label-primary">Buat Invoice</a></div>';
             $data[] = $row;
               
         }
@@ -84,27 +103,25 @@ class Adm_tagihan_perusahaan extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function get_total_billing()
+    public function get_hist_inv($kode_perusahaan)
     {
         /*get data from model*/
-        $list = $this->Adm_tagihan_perusahaan->get_total_billing(); 
-        
-        $arr_submit = array();
-        $arr_non_submit = array();
-        foreach($list as $val){
-            foreach($val as $row){
-                $arr_submit[] = ( $row['kode_tc_trans_kasir'] != NULL ) ? $row['total_billing'] : 0;
-                $arr_non_submit[] = ( $row['kode_tc_trans_kasir'] == NULL ) ? $row['total_billing'] : 0;
-            }
-        }
-        // echo '<pre>'; print_r($arr_submit);die;
+        $list = $this->Adm_tagihan_perusahaan->get_hist_inv($kode_perusahaan);
+        $data = array(
+            'kode_perusahaan' => $kode_perusahaan,
+            'result' => $list,
+        ); 
+        $html = $this->load->view('penagihan/Adm_tagihan_perusahaan/detail_table', $data, true);
 
-        $result = array(
-            'total_submit' => array_sum($arr_submit),
-            'total_non_submit' => array_sum($arr_non_submit),
-        );
+        echo json_encode(array('html' => $html, 'data' => $list));
+    }
 
-        echo json_encode($result);
+    public function get_invoice_detail($id_tagih)
+    {
+        /*get data from model*/
+        $list = $this->Adm_tagihan_perusahaan->get_invoice_detail($id_tagih);
+        $no_invoice = $list[0]->no_invoice_tagih;
+        echo json_encode(array('data' => $list, 'no_invoice' => $no_invoice));
     }
 
 }

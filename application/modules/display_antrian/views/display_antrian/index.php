@@ -319,11 +319,11 @@
    captionText.innerHTML = element.alt;
  }
 
-//  setInterval("my_function();",3000); 
+ setInterval("my_function();",3000); 
 
-// 	function my_function(){
-// 		$('#refresh').load(location.href + ' #time');
-// 	}
+	function my_function(){
+		$('#refresh').load(location.href + ' #time');
+	}
  
    
  </script>

@@ -20,9 +20,12 @@ class Riwayat_penerimaan_brg_model extends CI_Model {
 		$backmonth = date('m') - 3;
 
 		$this->db->select($this->select);
+		$this->db->select('SUM(dpp) as total');
 		$this->db->from(''.$table.' a');
 		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
 		$this->db->join('(SELECT id_penerimaan, count(kode_detail_penerimaan_barang)as jml_diterima FROM tc_penerimaan_barang_detail GROUP BY id_penerimaan) as total_brg','total_brg.id_penerimaan=a.id_penerimaan', 'left');
+		$this->db->join($table.'_detail d', 'd.id_penerimaan=a.id_penerimaan', 'left');
+		$this->db->group_by($this->select);
 
 		if( ( isset( $_GET['keyword']) AND $_GET['keyword'] != '' )  ){
 			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'no_po' ){

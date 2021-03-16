@@ -244,9 +244,11 @@ class Mst_tarif extends MX_Controller {
 
             if(in_array($_POST['submit'], array('create_tarif', 'update_rincian') )){
                 // insert detail tarif
+                $bill_rs = $_POST['kamar_tindakan'] + $_POST['bhp'] + $_POST['obat'] + $_POST['alat_rs'] + $_POST['alkes'] + $_POST['adm'] + $_POST['pendapatan_rs'];
                 $data_tarif = array(
                     'kode_tarif' => $this->regex->_genRegex($newId, 'RGXQSL'),
                     'kode_klas' => $this->regex->_genRegex($_POST['kode_klas'], 'RGXQSL'),
+                    'bill_rs' => $this->regex->_genRegex((int)$bill_rs, 'RGXQSL'),
                     'bill_dr1' => $this->regex->_genRegex((int)$_POST['bill_dr1'], 'RGXQSL'),
                     'bill_dr2' => $this->regex->_genRegex((int)$_POST['bill_dr2'], 'RGXQSL'),
                     'bill_dr3' => $this->regex->_genRegex((int)$_POST['bill_dr3'], 'RGXQSL'),

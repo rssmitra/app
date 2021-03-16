@@ -1918,4 +1918,28 @@ class References extends MX_Controller {
 		
 	}
 
+	public function getCoaLvl()
+	{
+		$this->db->from('mt_account');
+		$this->db->where('level_coa', $_GET['lvl']);
+		$this->db->where('acc_ref', $_GET['ref']);
+        $exc = $this->db->get();
+
+        // get last kode akun
+        $max_kode_akun = $this->db->select_max('acc_no_rs')->where(array('level_coa' => $_GET['lvl'], 'acc_ref' => $_GET['ref']))->get('mt_account')->row();
+        // explode to array
+        $explode = explode('.', $max_kode_akun->acc_no_rs);
+        // change lvl to array key
+        $lvl_prev = $_GET['lvl'] - 1;
+        // get max num
+        $max_num = (int)$explode[$lvl_prev] + 1;
+        // get new kode coa 
+        foreach ($explode as $key => $value) {
+        	$new_num[] = ($key == $lvl_prev) ? '0'.$max_num : $value;
+        }
+        $new_kode_akun = implode('.', $new_num);
+
+        echo json_encode(array('opt_coa' => $exc->result(), 'new_kode_akun' => $new_kode_akun));
+	}
+
 }

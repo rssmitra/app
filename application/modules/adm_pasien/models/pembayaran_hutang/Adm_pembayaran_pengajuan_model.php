@@ -1,12 +1,12 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Adm_tagihan_perusahaan_model extends CI_Model {
+class Adm_pembayaran_pengajuan_model extends CI_Model {
 
-	var $table = 'tc_trans_kasir';
-	var $column = array('b.nama_perusahaan');
-	var $select = 'b.nama_perusahaan, b.kode_perusahaan';
-	var $order = array('b.nama_perusahaan' => 'DESC');
+	var $table = 'tc_hutang_supplier_inv';
+	var $column = array('b.namasupuplier');
+	var $select = 'a.id_tc_hutang_supplier_inv, b.namasupplier, no_terima_faktur, tgl_faktur, tgl_rencana_bayar, a.kodesupplier';
+	var $order = array('tgl_faktur' => 'DESC');
 
 	public function __construct()
 	{
@@ -17,26 +17,25 @@ class Adm_tagihan_perusahaan_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
-		$this->db->select('SUM(nk_perusahaan) AS jml_tghn, SUM(tunai) AS jml_tunai,SUM(debet) AS jml_debet, SUM(kredit) AS jml_kredit,SUM(bill) AS jml_bill, CAST(b.disc as INT) as disc');
+		$this->db->select('SUM(CAST(a.total_harga as INT)) as total_harga');
 		$this->db->from($this->table.' a');
-		$this->db->join('mt_perusahaan b','b.kode_perusahaan=a.kode_perusahaan','left');
-		$this->db->where('(a.nk_perusahaan > 0 AND a.kd_inv_persh_tx IS NULL AND a.kode_perusahaan NOT IN (120, 221, 0, 299))');
-		$this->db->group_by('b.disc');
+		$this->db->join('mt_supplier b', 'b.kodesupplier=a.kodesupplier', 'left');
+
 		$this->db->group_by($this->select);
 
-		if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
-			$this->db->like('b.nama_perusahaan', $_GET['keyword']);		
+		if(isset($_GET['no_bukti']) AND $_GET['no_bukti'] != ''){
+			$this->db->like('a.no_bukti', $_GET['no_bukti']);		
 		}
 
 		if(isset($_GET['jenis_pelayanan']) AND $_GET['jenis_pelayanan'] != ''){
-			$this->db->where('a.seri_kuitansi', $_GET['jenis_pelayanan']);		
+			$this->db->where('a.id_tc_tagih IN (select kd_inv_persh_tx as id_tc_tagih from tc_trans_kasir where seri_kuitansi='."'".$_GET['jenis_pelayanan']."'".' group by kd_inv_persh_tx)');		
 		}
 		
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("convert(varchar,tgl_jam,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
+			$this->db->where("convert(varchar,tgl_faktur,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 		}else{
-			$this->db->where("YEAR(tgl_jam)", date('Y'));
-			$this->db->where("MONTH(tgl_jam)", date('m'));
+			// $this->db->where("MONTH(tgl_faktur)", date('m'));
+			// $this->db->where("YEAR(tgl_faktur)", date('Y'));
 		}
 		
 	}
@@ -128,14 +127,25 @@ class Adm_tagihan_perusahaan_model extends CI_Model {
 	}
 
 	public function get_invoice_detail($id_tagih){
-		$this->db->select('a.*, b.no_invoice_tagih, c.tgl_jam');
+		$this->db->select('a.*, CAST(a.jumlah_tagih as INT) as jumlah_tagih_int, CAST(a.penyesuaian as INT) as beban_pasien_int, b.no_invoice_tagih, c.tgl_jam, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1');
 		$this->db->from('tc_tagih_det a');
 		$this->db->join('tc_tagih b', 'b.id_tc_tagih=a.id_tc_tagih','left');
 		$this->db->join('tc_trans_kasir c', 'c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');
+		$this->db->join('mt_perusahaan d','d.kode_perusahaan=b.id_tertagih','left');
 		$this->db->where('a.id_tc_tagih', $id_tagih);
 		$this->db->order_by('kode_tc_trans_kasir', 'ASC');
 		$query = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
+		return $query;
+	}
+
+	public function get_billing_detail($kode_tc_trans_kasir){
+		$this->db->select('a.*, CAST((bill_rs + bill_dr1 + bill_dr2 + bill_dr3) as INT) as subtotal');
+		$this->db->from('tc_trans_pelayanan a');
+		$this->db->where('a.kode_tc_trans_kasir', $kode_tc_trans_kasir);
+		$this->db->order_by('tgl_transaksi', 'ASC');
+		$query = $this->db->get()->result();
+		print_r($this->db->last_query());die;
 		return $query;
 	}
 
