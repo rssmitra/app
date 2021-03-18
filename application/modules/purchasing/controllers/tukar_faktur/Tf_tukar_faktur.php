@@ -161,6 +161,7 @@ class Tf_tukar_faktur extends MX_Controller {
                 'tgl_faktur' => $this->regex->_genRegex($_POST['tgl_faktur'],'RGXQSL'),
                 'no_terima_faktur' => $this->regex->_genRegex($_POST['no_ttf'],'RGXQSL'),
                 'tgl_rencana_bayar' => $this->regex->_genRegex($_POST['tgl_rencana_bayar'],'RGXQSL'),
+                'flag' => $this->regex->_genRegex($_POST['flag'],'RGXQSL'),
             );
             
             if($id==0){

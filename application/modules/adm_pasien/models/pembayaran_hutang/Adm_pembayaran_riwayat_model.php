@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Adm_pembayaran_pengajuan_model extends CI_Model {
+class Adm_pembayaran_riwayat_model extends CI_Model {
 
 	var $table = 'tc_hutang_supplier_inv';
 	var $column = array('b.namasupuplier');
-	var $select = 'a.id_tc_hutang_supplier_inv, b.namasupplier, no_terima_faktur, tgl_faktur, tgl_rencana_bayar, a.kodesupplier, a.flag_bayar, a.biaya_materai';
+	var $select = 'a.id_tc_hutang_supplier_inv, b.namasupplier, no_terima_faktur, tgl_faktur, tgl_rencana_bayar, a.kodesupplier, a.flag_bayar, a.biaya_materai, a.no_kuitansi_pembayaran, a.tgl_pembayaran, a.penerima_pembayaran, b.alamat, b.telpon1';
 	var $order = array('tgl_faktur' => 'DESC');
 
 	public function __construct()

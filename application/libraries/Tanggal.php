@@ -289,6 +289,28 @@ final class Tanggal {
         return $tanggal;
     }
 
+    public function date_range($first, $last, $step = '+1 day', $output_format = 'd/m/Y' ) {
+
+        $dates = array();
+        $current = strtotime($first);
+        $last = strtotime($last);
+
+        while( $current <= $last ) {
+
+            $dates[] = date($output_format, $current);
+            $current = strtotime($step, $current);
+        }
+
+        // txt color
+        $txt_color = (count($dates) > 1) ? 'red' : '' ;
+        return array('count' => count($dates), 'list_date' => $dates, 'color' => $txt_color);
+    }
+
+     public function getRangeDay($from, $to){
+        $tanggal = date('Y-m-d', strtotime(''.$selisih.' days', strtotime( $date )));
+        return $tanggal;
+    }
+
     function validateDate($date, $format = 'Y-m-d')
     {
         // $d = DateTime::createFromFormat($format, $date);

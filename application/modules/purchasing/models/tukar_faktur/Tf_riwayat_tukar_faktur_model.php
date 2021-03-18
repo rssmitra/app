@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Adm_pembayaran_pengajuan_model extends CI_Model {
+class Tf_riwayat_tukar_faktur_model extends CI_Model {
 
 	var $table = 'tc_hutang_supplier_inv';
 	var $column = array('b.namasupuplier');
-	var $select = 'a.id_tc_hutang_supplier_inv, b.namasupplier, no_terima_faktur, tgl_faktur, tgl_rencana_bayar, a.kodesupplier, a.flag_bayar, a.biaya_materai';
+	var $select = 'a.id_tc_hutang_supplier_inv, b.namasupplier, no_terima_faktur, tgl_faktur, tgl_rencana_bayar, a.kodesupplier, a.flag_bayar, a.biaya_materai, a.created_by';
 	var $order = array('tgl_faktur' => 'DESC');
 
 	public function __construct()
@@ -23,17 +23,26 @@ class Adm_pembayaran_pengajuan_model extends CI_Model {
 
 		$this->db->group_by($this->select);
 
-		if(isset($_GET['no_bukti']) AND $_GET['no_bukti'] != ''){
-			$this->db->like('a.no_bukti', $_GET['no_bukti']);		
+		if(isset($_GET['checked_nama_perusahaan']) AND $_GET['checked_nama_perusahaan'] == 1){
+			if( ( isset( $_GET['nama_perusahaan']) AND $_GET['nama_perusahaan'] != '' )  ){
+				$this->db->like( 'b.namasupplier', trim($_GET['nama_perusahaan']) );
+			}
 		}
 
-		if(isset($_GET['jenis_pelayanan']) AND $_GET['jenis_pelayanan'] != ''){
-			$this->db->where('a.id_tc_tagih IN (select kd_inv_persh_tx as id_tc_tagih from tc_trans_kasir where seri_kuitansi='."'".$_GET['jenis_pelayanan']."'".' group by kd_inv_persh_tx)');		
+		if(isset($_GET['checked_no_ttf']) AND $_GET['checked_no_ttf'] == 1){
+			if( ( isset( $_GET['no_ttf']) AND $_GET['no_ttf'] != '' )  ){
+				$this->db->like( 'a.no_terima_faktur', trim($_GET['no_ttf']) );
+			}
 		}
+
+		if(isset($_GET['checked_from_tgl']) AND $_GET['checked_from_tgl'] == 1){
+			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+				$this->db->where("convert(varchar,tgl_faktur,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
+			}
+		}
+
 		
-		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("convert(varchar,tgl_faktur,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-		}
+		
 		
 	}
 
@@ -117,6 +126,7 @@ class Adm_pembayaran_pengajuan_model extends CI_Model {
 	public function get_log_data($id_tc_hutang_supplier_inv){
 		$this->db->from('tc_hutang_supplier_inv_det a');
 		$this->db->join('tc_hutang_supplier_inv b', 'b.id_tc_hutang_supplier_inv=a.id_tc_hutang_supplier_inv','left');
+		$this->db->join('mt_supplier c', 'c.kodesupplier=b.kodesupplier','left');
 		$this->db->where('a.id_tc_hutang_supplier_inv', $id_tc_hutang_supplier_inv);
 		$this->db->order_by('id_tc_hutang_supplier_inv_det', 'ASC');
 
@@ -139,15 +149,15 @@ class Adm_pembayaran_pengajuan_model extends CI_Model {
 		return $query;
 	}
 
-	public function get_billing_detail($kode_tc_trans_kasir){
-		$this->db->select('a.*, CAST((bill_rs + bill_dr1 + bill_dr2 + bill_dr3) as INT) as subtotal');
-		$this->db->from('tc_trans_pelayanan a');
-		$this->db->where('a.kode_tc_trans_kasir', $kode_tc_trans_kasir);
-		$this->db->order_by('tgl_transaksi', 'ASC');
-		$query = $this->db->get()->result();
-		print_r($this->db->last_query());die;
-		return $query;
-	}
+	// public function get_billing_detail($kode_tc_trans_kasir){
+	// 	$this->db->select('a.*, CAST((bill_rs + bill_dr1 + bill_dr2 + bill_dr3) as INT) as subtotal');
+	// 	$this->db->from('tc_trans_pelayanan a');
+	// 	$this->db->where('a.kode_tc_trans_kasir', $kode_tc_trans_kasir);
+	// 	$this->db->order_by('tgl_transaksi', 'ASC');
+	// 	$query = $this->db->get()->result();
+	// 	print_r($this->db->last_query());die;
+	// 	return $query;
+	// }
 
 	public function get_detail_pasien($kode_perusahaan){
 

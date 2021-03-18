@@ -182,14 +182,14 @@ $(document).ready(function(){
 
                 <!-- acc no ref -->
                 <input name="acc_ref" id="acc_ref" type="hidden" value="<?php echo isset($value)?$value->acc_ref:''?>">
-                <input name="level_coa" id="level_coa" type="hidden" value="<?php echo count($parent)?>">
+                <input name="level_coa" id="level_coa" type="hidden" value="<?php echo isset($parent) ? count($parent): 1; ?>">
 
                 <div class="form-group">
-                  <label class="control-label col-md-2">Kode Akun <span id="kode_akun_lvl_existing"> Level <?php echo count($parent)?></span></label>
+                  <label class="control-label col-md-2">Kode Akun <span id="kode_akun_lvl_existing"> Level <?php echo isset($parent) ? count($parent): 1; ?></span></label>
                   <div class="col-md-2">
                     <input name="acc_no_rs" id="acc_no_rs" value="<?php echo isset($value)?$value->acc_no_rs:''?>" placeholder="" class="form-control" type="text" readonly >
                   </div>
-                  <label class="control-label col-md-2">Nama Akun <span id="nama_akun_lvl_existing"> Level <?php echo count($parent)?></span></label>
+                  <label class="control-label col-md-2">Nama Akun <span id="nama_akun_lvl_existing"> Level <?php echo isset($parent) ? count($parent): 1; ?></span></label>
                   <div class="col-md-4">
                     <input name="acc_nama" id="acc_nama" value="<?php echo isset($value)?$value->acc_nama:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>

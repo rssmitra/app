@@ -31,7 +31,7 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           $('#page-area-content').load('purchasing/tukar_faktur/Tf_tukar_faktur/view_data?flag=<?php echo $flag?>');
           // popup cetak po
-          PopupCenter('purchasing/tukar_faktur/Tf_tukar_faktur/print_preview?ID='+jsonResponse.id+'&flag='+jsonResponse.flag+'','Cetak PO',900,650);
+          PopupCenter('purchasing/tukar_faktur/Tf_riwayat_tukar_faktur/preview_ttf?ID='+jsonResponse.id+'&flag='+jsonResponse.flag+'','BUKTI TANDA TERIMA FAKTUR',900,650);
 
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});

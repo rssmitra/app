@@ -42,17 +42,15 @@ class Adm_pembayaran_pengajuan extends MX_Controller {
         $qry_url = http_build_query($_GET);
         /*if id is not null then will show form edit*/
             /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Create Invoice '.strtolower($this->title).'', 'Adm_pembayaran_pengajuan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?'.$qry_url);
+        $this->breadcrumbs->push('Pembayaran Hutang Supplier '.strtolower($this->title).'', 'Adm_pembayaran_pengajuan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?'.$qry_url);
         /*get value by id*/
         $data['value'] = $this->Adm_pembayaran_pengajuan->get_by_id($id); 
-        
+        $data['detail_faktur'] = $this->Adm_pembayaran_pengajuan->get_log_data($id);
         /*initialize flag for form*/
         $data['flag'] = "update";
     
         /*title header*/
         $data['qry_url'] = $qry_url;
-        $data['no_invoice'] = $this->master->format_no_invoice($_GET['jenis_pelayanan']);
-        $data['detail_pasien'] = $this->Adm_pembayaran_pengajuan->get_detail_pasien($id); 
         $data['title'] = $this->title;
         // echo '<pre>'; print_r($data);die;
         /*show breadcrumbs*/
@@ -86,12 +84,17 @@ class Adm_pembayaran_pengajuan extends MX_Controller {
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $row_list->no_terima_faktur;
             $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->tgl_faktur).'</div>';
-            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->tgl_rencana_bayar).'</div>';
+            // get label keterlambatan
+            $txt_color = $this->tanggal->date_range( $row_list->tgl_rencana_bayar, date('Y-m-d'));
+            $icon = ($txt_color['count'] > 1) ? '('.$txt_color['count'].')' : '';
+            // print_r($txt_color);die;
+            $row[] = '<div class="center '.$txt_color['color'].'"><b>'.$this->tanggal->formatDateDmy($row_list->tgl_rencana_bayar).' '.$icon.'</b></div>';
             $row[] = $row_list->namasupplier;
             $row[] = '<div class="pull-right">'.number_format($row_list->total_harga).'</div>';
-            $row[] = '<div class="center">Belum bayar</div>';
-            $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/preview_invoice?ID=".$row_list->kodesupplier."&".$qry_url."'".','."'Preview Invoice'".',900,650);"><i class="fa fa-print green bigger-150"></i></a></div>';
+            $row[] = ($row_list->flag_bayar == 1) ? '<div class="center green"><b>Lunas</b></div>' : '<div class="center orange"><b>Dalam proses pengajuan</b></div>';
+            $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'purchasing/tukar_faktur/Tf_riwayat_tukar_faktur/preview_ttf?ID=".$row_list->id_tc_hutang_supplier_inv."'".','."'BUKTI TANDA TERIMA FAKTUR'".',900,650);"><i class="fa fa-print green bigger-150"></i></a></div>';
             $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/preview_kuitansi?nm=".$row_list->namasupplier."&inv=".$row_list->no_terima_faktur."&tgl=".$row_list->tgl_faktur."&jml=".$row_list->total_harga."'".','."'Preview Kuitansi'".',900,650);"><i class="fa fa-print blue bigger-150"></i></a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/form/".$row_list->id_tc_hutang_supplier_inv."'".');" class="label label-xs label-primary">Pembayaran</a></div>';
             $data[] = $row;
               
         }
@@ -107,13 +110,103 @@ class Adm_pembayaran_pengajuan extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function get_log_data($id_tc_tagih)
+    public function process()
+    {
+        // print_r($_POST);die;
+        
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+        
+        $val->set_rules('kodesupplier', 'Kode Supplier', 'trim|required');
+        $val->set_rules('tgl_faktur', 'Tanggal Faktur', 'trim|required');
+        $val->set_rules('tgl_rencana_bayar', 'Tanggal Jth Tempo', 'trim|required');
+        $val->set_rules('no_ttf', 'Nomor Tanda Terima Faktur', 'trim|required');
+        $val->set_rules('no_seri_pajak', 'Disetujui Oleh', 'trim|required');
+        $val->set_rules('diskon', 'KARS', 'trim|required');
+        $val->set_rules('ppn', 'SIK AA', 'trim|required');
+        $val->set_rules('biaya_materai', 'Biaya Materai', 'trim|required');
+        $val->set_rules('keterangan', 'Keterangan', 'trim');
+        
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+            $id = ($this->input->post('id'))?$this->regex->_genRegex($this->input->post('id'),'RGXINT'):0;
+
+            // data header po
+            $dataexc = array(
+                'total_harga' => $this->regex->_genRegex($_POST['total_harga'],'RGXINT'),
+                'total_sbl_ppn' => $this->regex->_genRegex($_POST['total_sbl_ppn'],'RGXINT'),
+                'total_ppn' => $this->regex->_genRegex($_POST['total_ppn'],'RGXINT'),
+                'diskon' => $this->regex->_genRegex($_POST['total_diskon'],'RGXINT'),
+                'no_seri_pajak' => $this->regex->_genRegex($_POST['no_seri_pajak'],'RGXQSL'),
+                'biaya_materai' => $this->regex->_genRegex($_POST['total_biaya_materai'],'RGXINT'),
+                'kodesupplier' => $this->regex->_genRegex($_POST['kodesupplier'],'RGXINT'),
+                'tgl_faktur' => $this->regex->_genRegex($_POST['tgl_faktur'],'RGXQSL'),
+                'no_terima_faktur' => $this->regex->_genRegex($_POST['no_ttf'],'RGXQSL'),
+                'tgl_rencana_bayar' => $this->regex->_genRegex($_POST['tgl_rencana_bayar'],'RGXQSL'),
+                'flag' => $this->regex->_genRegex($_POST['flag'],'RGXQSL'),
+            );
+            
+            if($id==0){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                $newId = $this->Tf_tukar_faktur->save('tc_hutang_supplier_inv', $dataexc);
+                /*save logs*/
+                $this->logs->save('tc_hutang_supplier_inv', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_hutang_supplier_inv');
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                /*print_r($dataexc);die;*/
+                /*update record*/
+                $this->Tf_tukar_faktur->update('tc_hutang_supplier_inv', array('id_tc_hutang_supplier_inv' => $id), $dataexc);
+                $newId = $id;
+                $this->logs->save('tc_hutang_supplier_inv', $newId, 'update record'.$this->title.' module', json_encode($dataexc), 'id_tc_hutang_supplier_inv');
+            }
+            
+            foreach( $_POST['id_penerimaan'] as $key=>$row_checked ){
+
+                $insertBatch[] = array(
+                    "id_tc_hutang_supplier_inv" => $newId,
+                    "id_penerimaan" => $row_checked,
+                    "total_hutang" => $_POST['subtotal'][$key],
+                    "kode_penerimaan" => $_POST['kode_penerimaan'][$key],
+                    "no_faktur" => $_POST['no_faktur'][$key],
+                );
+                $arr_id[] = $row_checked;
+            }
+            // insert batch
+            $this->db->insert_batch('tc_hutang_supplier_inv_det', $insertBatch);
+            // update status tukar faktur
+            $tc_penerimaan_brg = ($_POST['flag'] == 'medis') ? 'tc_penerimaan_barang' : 'tc_penerimaan_barang_nm' ;
+            $this->db->where_in('id_penerimaan', $arr_id)->update($tc_penerimaan_brg, array('status_tukar_faktur' => 1) );
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId));
+            }
+        }
+    }
+
+    public function get_log_data($id_tc_hutang_supplier_inv)
     {
         /*get data from model*/
-        $list = $this->Adm_pembayaran_pengajuan->get_invoice_detail($id_tc_tagih);
+        $list = $this->Adm_pembayaran_pengajuan->get_log_data($id_tc_hutang_supplier_inv);
         // echo '<pre>';print_r($list);die;
         $data = array(
-            'id_tc_tagih' => $id_tc_tagih,
+            'id_tc_hutang_supplier_inv' => $id_tc_hutang_supplier_inv,
             'result' => $list,
         ); 
         $html = $this->load->view('pembayaran_hutang/Adm_pembayaran_pengajuan/detail_table', $data, true);
@@ -130,35 +223,24 @@ class Adm_pembayaran_pengajuan extends MX_Controller {
         echo json_encode(array('data' => $list, 'no_invoice' => $no_invoice));
     }
 
-    public function get_billing_detail($kode_tc_trans_kasir)
+    public function get_penerimaan_detail($id_penerimaan)
     {
         /*get data from model*/
-        $list = $this->db->get_where('tc_trans_kasir', array('kode_tc_trans_kasir' => $kode_tc_trans_kasir) )->row();
-        // echo '<pre>';print_r($list);die;
-        $billing = json_decode($this->Billing->getDetailData($list->no_registrasi));
-
-        foreach ($billing->group as $k => $val) {
-            foreach ($val as $value_data) {
-                $subtotal = $this->Billing->get_total_tagihan($value_data);
-                $resume_billing[] = $this->Billing->resumeBillingRI($value_data);
-            }        
-        }
-        // split billing
-        $split_billing = $this->Billing->splitResumeBillingRI($resume_billing);
+        $list = $this->Adm_pembayaran_pengajuan->get_penerimaan_detail($id_penerimaan, $_GET['flag']);
         $no = 0;
-        foreach ($split_billing as $key => $value) {
-            $arr_subtotal[] = $value['subtotal'];
-            if($value['subtotal'] > 0) {
-                $no++;
-                $getData[] = array(
-                    'count_num' => $no,
-                    'title' => $value['title'],
-                    'subtotal' => $value['subtotal'],
-                );
-            }
-            
+        foreach ($list as $key => $value) {
+            $no++;
+            $arr_subtotal[] = $value->dpp;
+            $getData[] = array(
+                'count_num' => $no,
+                'nama_brg' => $value->nama_brg,
+                'jml_kirim' => $value->jumlah_kirim_decimal,
+                'satuan' => $value->satuan_besar,
+                'harga_satuan' => $value->harga_net,
+                'subtotal' => $value->dpp,
+            );
         }
-        echo json_encode(array('data' => $getData, 'no_registrasi' => $list->no_registrasi, 'total' => array_sum($arr_subtotal)));
+        echo json_encode(array('data' => $getData, 'kode_penerimaan' => $list[0]->kode_penerimaan, 'tgl_penerimaan' => $this->tanggal->formatDateDmy($list[0]->tgl_penerimaan), 'total' => array_sum($arr_subtotal)));
     }
 
     public function preview_invoice(){

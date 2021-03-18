@@ -29,7 +29,9 @@
           width: 100px !important; 
           word-break: break-word !important;
           white-space: normal !important;
-        }
+      }
+      
+
     </style>
     <!--[if lte IE 9]>
       <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-part2.css" class="ace-main-stylesheet" />

@@ -171,7 +171,7 @@
 
   function show_detail_penerimaan(id_tc_hutang_supplier_inv, id_penerimaan, flag){
     preventDefault();
-    $.getJSON("adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_penerimaan_detail/" + id_penerimaan+'?flag='+flag+'', '', function (response) {
+    $.getJSON("purchasing/tukar_faktur/Tf_riwayat_tukar_faktur/get_penerimaan_detail/" + id_penerimaan+'?flag='+flag+'', '', function (response) {
       $('#dt_detail_penerimaan_'+id_tc_hutang_supplier_inv+' tbody').remove();
       $('#txt_no_penerimaan_'+id_tc_hutang_supplier_inv+'').text(response.kode_penerimaan);
       $('#txt_tgl_penerimaan_'+id_tc_hutang_supplier_inv+'').text(response.tgl_penerimaan);
@@ -186,11 +186,6 @@
     });
   }
 
-  function preview_billing(id_tc_tagih){
-    preventDefault();
-    var no_registrasi = $('#txt_no_invoice_'+id_tc_tagih+'').text();
-    PopupCenter('billing/Billing/print_preview?no_registrasi='+no_registrasi+'&status_nk=1&flag_bill=true', 'Billing Pasien' , 900 , 650);
-  }
 
 </script>
 
@@ -208,7 +203,7 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/find_data" autocomplete="off">
+    <form class="form-horizontal" method="post" id="form_search" action="purchasing/tukar_faktur/Tf_riwayat_tukar_faktur/find_data" autocomplete="off">
       <p><b>FORM PENCARIAN</b></p>
       <div class="form-group" style="padding-bottom: 3px">
         <div class="control-label col-md-2">
@@ -287,7 +282,7 @@
       <div class="clearfix"></div>
       <br>
       <div style="margin-top:-27px">
-        <table id="dynamic-table" base-url="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_data?<?php $qry_url = isset($_GET) ? http_build_query($_GET) . "\n" : ''; echo $qry_url?>" url-detail="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_log_data" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="purchasing/tukar_faktur/Tf_riwayat_tukar_faktur/get_data?<?php $qry_url = isset($_GET) ? http_build_query($_GET) . "\n" : ''; echo $qry_url?>" url-detail="purchasing/tukar_faktur/Tf_riwayat_tukar_faktur/get_log_data" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
               <th width="50px"></th>
@@ -299,9 +294,8 @@
               <th>Nama Supplier</th>
               <th width="150px">Jumlah</th>
               <th>Status</th>
+              <th>Petugas</th>
               <th class="center">TTF</th>
-              <th class="center">KWI</th>
-              <th class="center">&nbsp;</th>
             </tr>
           </thead>
         </table>

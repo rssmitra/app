@@ -5,10 +5,6 @@
 	<meta charset="utf-8">
 
 	<title><?php echo COMP_LONG?></title>
-<!--
-Comila Template
-http://www.templatemo.com/tm-490-comila
--->
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="keywords" content="">
@@ -36,8 +32,6 @@ http://www.templatemo.com/tm-490-comila
 
 
   	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_/vegas.min.css" />
-
-	<!-- <link href='https://fonts.googleapis.com/css?family=Rajdhani:400,500,700' rel='stylesheet' type='text/css'> -->
 
 	<!-- keyboar on screen -->
 	<!-- keyboard widget css & script -->
@@ -95,16 +89,17 @@ http://www.templatemo.com/tm-490-comila
 		}
 
 		
-  </style>
+  	</style>
 
-  <style type="text/css">
-  	.active, .btn:hover {
-	  background-color: #666 !important;
-	  color: white;
-	}
-  </style>
-  <script>
-	 	setInterval("update_antrian();",15000); 
+	<style type="text/css">
+			.active, .btn:hover {
+				background-color: #666 !important;
+				color: white;
+			}
+	</style>
+
+	<script>
+		setInterval("update_antrian();",15000); 
 
 		function update_antrian() {
 
@@ -114,69 +109,69 @@ http://www.templatemo.com/tm-490-comila
 
 			$.post("antrian/Loket/reload_page", { loket:loket, tipe:type } ).done( function(data) {
 			
-			var obj = JSON.parse(data);
-			console.log(obj)
-			if(obj.success==1){
-				$('#message_loket').hide('fast');
-				$('#loket_hidden').val( obj.loket);
-				$('#label_loket').text( obj.loket);
+				var obj = JSON.parse(data);
+				console.log(obj)
+				if(obj.success==1){
+					$('#message_loket').hide('fast');
+					$('#loket_hidden').val( obj.loket);
+					$('#label_loket').text( obj.loket);
 
-				$('#tipe_hidden').val( obj.tipe);
-				$('#label_tipe').text( obj.tipe_loket.toUpperCase());
-				
-				format_no = pad(obj.counter, 3);
+					$('#tipe_hidden').val( obj.tipe);
+					$('#label_tipe').text( obj.tipe_loket.toUpperCase());
+					
+					format_no = pad(obj.counter, 3);
 
-				console.log(format_no)
+					console.log(format_no)
 
-				$('#counter_number').text( obj.tipe+''+format_no );
-				$('#counter_number_value').val( obj.counter );
-				/*info antrian*/
-				$('#from_num').text(obj.counter);
+					$('#counter_number').text( obj.tipe+''+format_no );
+					$('#counter_number_value').val( obj.counter );
+					/*info antrian*/
+					$('#from_num').text(obj.counter);
 
-				if(type=='bpjs'){
-				$('#to_num').text(obj.total_bpjs);
+					if(type=='bpjs'){
+					$('#to_num').text(obj.total_bpjs);
+					}else{
+					$('#to_num').text(obj.total_non_bpjs);
+					}
+
+					$('#total_bpjs').text(obj.total_bpjs);
+					$('#sisa_antrian_bpjs').text(obj.sisa_bpjs);
+
+					$('#total_non_bpjs').text(obj.total_non_bpjs);
+					$('#sisa_antrian_non_bpjs').text(obj.sisa_non_bpjs);
+
 				}else{
-				$('#to_num').text(obj.total_non_bpjs);
+					$('#message_loket').show('fast');
+					$('#message_loket').html('<span style="color:red"><i>'+obj.message+'</i></span>');          
 				}
-
-				$('#total_bpjs').text(obj.total_bpjs);
-				$('#sisa_antrian_bpjs').text(obj.sisa_bpjs);
-
-				$('#total_non_bpjs').text(obj.total_non_bpjs);
-				$('#sisa_antrian_non_bpjs').text(obj.sisa_non_bpjs);
-
-			}else{
-				$('#message_loket').show('fast');
-				$('#message_loket').html('<span style="color:red"><i>'+obj.message+'</i></span>');          
-			}
 			
 			});
 
 		}
 
-	// Add active class to the current button (highlight it)
-	var header = document.getElementById("myButtonType");
-	var btns = header.getElementsByClassName("btn");
-	for (var i = 0; i < btns.length; i++) {
-	  btns[i].addEventListener("click", function() {
-	  var current = document.getElementsByClassName("active");
-	  if (current.length > 0) { 
-	    current[0].className = current[0].className.replace(" active", "");
-	  }
-	  this.className += " active";
-	  });
-	}
-</script>
+		// Add active class to the current button (highlight it)
+		var header = document.getElementById("myButtonType");
+		var btns = header.getElementsByClassName("btn");
+		for (var i = 0; i < btns.length; i++) {
+		btns[i].addEventListener("click", function() {
+			var current = document.getElementsByClassName("active");
+			if (current.length > 0) { 
+				current[0].className = current[0].className.replace(" active", "");
+			}
+			this.className += " active";
+		});
+		}
+	</script>
 
 </head>
-<body>
+<body id="body-antrian">
 
 
 
 <!-- home section -->
 <section id="home">
 
-<br>
+	<br>
 
 	<div class="col-xs-6">
 		<img alt="" src="<?php echo COMP_ICON?>" width="60" style="margin:5px 20px;float:left">
@@ -244,8 +239,6 @@ http://www.templatemo.com/tm-490-comila
 		<div id="refresh"><h3 id="time" style="margin:0;color:#333;font-size:26px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H') ?><span class="blink_me">:</span><?php echo date('i') ?></h3></div>
 		<p style="margin:0;font-size:26px;color:#333;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
 	</div>
-
-	
 			
 </section>
 

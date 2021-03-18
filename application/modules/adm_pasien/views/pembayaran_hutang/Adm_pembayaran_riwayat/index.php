@@ -208,7 +208,7 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/find_data" autocomplete="off">
+    <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/find_data">
       <p><b>FORM PENCARIAN</b></p>
       <div class="form-group" style="padding-bottom: 3px">
         <div class="control-label col-md-2">
@@ -226,13 +226,13 @@
         <div class="control-label col-md-2">
           <div class="checkbox" style="margin-top: -5px">
             <label>
-              <input name="checked_no_ttf" id="checked_no_ttf" value="1" type="checkbox" class="ace" <?php echo isset($_GET['checked_no_ttf']) ? ($_GET['checked_no_ttf'] == 1) ? 'checked' : '' : '' ?>>
+              <input name="checked_no_po" id="checked_no_po" value="1" type="checkbox" class="ace" <?php echo isset($_GET['checked_no_po']) ? ($_GET['checked_no_po'] == 1) ? 'checked' : '' : '' ?>>
               <span class="lbl"> No Terima Faktur</span>
             </label>
           </div>
         </div>
         <div class="col-md-2" style="margin-left: -15px">
-            <input type="text" value="<?php echo isset($_GET['no_ttf']) ? $_GET['no_ttf'] : '' ?>" name="no_ttf" id="no_ttf" class="form-control">
+            <input type="text" value="<?php echo isset($_GET['no_po']) ? $_GET['no_po'] : '' ?>" name="no_po" id="no_po" class="form-control">
         </div>
       </div>
 
@@ -240,7 +240,7 @@
         <div class="control-label col-md-2">
           <div class="checkbox" style="margin-top: -5px">
             <label>
-              <input name="checked_from_tgl" id="checked_from_tgl" type="checkbox" class="ace" value="1" <?php echo isset($_GET['checked_from_tgl']) ? ($_GET['checked_from_tgl'] == 1) ? 'checked' : '' : '' ?>>
+              <input name="checked_nama_perusahaan" id="checked_nama_perusahaan" type="checkbox" class="ace" value="1" <?php echo isset($_GET['checked_nama_perusahaan']) ? ($_GET['checked_nama_perusahaan'] == 1) ? 'checked' : '' : '' ?>>
               <span class="lbl"> Tgl Tukar Faktur</span>
             </label>
           </div>
@@ -254,10 +254,17 @@
           </div>
         </div>
 
-        <label class="control-label col-md-1">s/d Tgl</label>
-        <div class="col-md-2">
+        <div class="control-label col-md-1">
+          <div class="checkbox" style="margin-top: -5px">
+            <label>
+              <input name="checked_no_po" id="checked_no_po" value="1" type="checkbox" class="ace" <?php echo isset($_GET['checked_no_po']) ? ($_GET['checked_no_po'] == 1) ? 'checked' : '' : '' ?>>
+              <span class="lbl"> s/d Tgl</span>
+            </label>
+          </div>
+        </div>
+        <div class="col-md-2" style="margin-left: -15px">
           <div class="input-group">
-            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($_GET['to_tgl'])?$_GET['to_tgl']:''; ?>"/>
+            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($_GET['from_tgl'])?$_GET['from_tgl']:''; ?>"/>
             <span class="input-group-addon">
               <i class="fa fa-calendar bigger-110"></i>
             </span>
@@ -287,21 +294,22 @@
       <div class="clearfix"></div>
       <br>
       <div style="margin-top:-27px">
-        <table id="dynamic-table" base-url="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_data?<?php $qry_url = isset($_GET) ? http_build_query($_GET) . "\n" : ''; echo $qry_url?>" url-detail="adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/get_log_data" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="adm_pasien/pembayaran_hutang/Adm_pembayaran_riwayat/get_data?<?php $qry_url = isset($_GET) ? http_build_query($_GET) . "\n" : ''; echo $qry_url?>" url-detail="adm_pasien/pembayaran_hutang/Adm_pembayaran_riwayat/get_log_data" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
               <th width="50px"></th>
               <th class="center"></th>
               <th width="50px" class="center">No</th> 
-              <th>No Tanda Terima Faktur</th>
-              <th>Tanggal</th>
-              <th>Jatuh Tempo</th>
+              <th>No Kuitansi</th>
+              <th>Tgl Pembayaran</th>
+              <th>No TTF</th>
               <th>Nama Supplier</th>
+              <th>Penerima</th>
               <th width="150px">Jumlah</th>
               <th>Status</th>
               <th class="center">TTF</th>
+              <th class="center">BP</th>
               <th class="center">KWI</th>
-              <th class="center">&nbsp;</th>
             </tr>
           </thead>
         </table>

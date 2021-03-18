@@ -34,7 +34,7 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           $('#page-area-content').load('purchasing/po/Po_revisi/view_data?flag=<?php echo $flag?>');
           // popup cetak po
-          PopupCenter('adm_pasien/pembayaran_hutang/Adm_pembayaran_riwayat/print_bp?ID='+jsonResponse.id+'&flag='+jsonResponse.flag+'','Cetak PO',900,650);
+          PopupCenter('purchasing/po/Po_penerbitan/print_preview?ID='+jsonResponse.id+'&flag='+jsonResponse.flag+'','Cetak PO',900,650);
 
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});
@@ -159,7 +159,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
 <div class="row">
   <div class="col-xs-7">
     <!-- PAGE CONTENT BEGINS -->
-      <form class="form-horizontal" method="post" id="form_create_invoice" action="<?php echo site_url('adm_pasien/pembayaran_hutang/Adm_pembayaran_pengajuan/process')?>" enctype="multipart/form-data" autocomplete="off">
+      <form class="form-horizontal" method="post" id="form_create_invoice" action="<?php echo site_url('purchasing/po/Po_penerbitan/process')?>" enctype="multipart/form-data" autocomplete="off">
     <div class="col-sm-12">
       <span style="font-size: 18px">
         <b><?php echo $value->namasupplier; ?></b>
