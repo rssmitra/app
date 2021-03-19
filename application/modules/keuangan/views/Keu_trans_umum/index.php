@@ -198,7 +198,7 @@
             </span>
           </div>
         </div>
-        <label class="control-label col-md-1" style="margin-left: 5.8%">s/d Tanggal</label>
+        <label class="control-label col-md-1" style="margin-left: 1%">s/d Tanggal</label>
         <div class="col-md-1">
           <div class="input-group">
             <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($_GET['to_tgl'])?$_GET['to_tgl']:''?>"/>
@@ -207,15 +207,7 @@
             </span>
           </div>
         </div>
-      </div>
-
-      <div class="form-group">
-          
-      </div>
-  
-      <div class="form-group">
-        <label class="col-md-2">&nbsp;</label>
-        <div class="col-md-6" style="margin-left:0.5%">
+        <div class="col-md-4" style="margin-left:0.5%">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Tampilkan
@@ -226,6 +218,7 @@
           </a>
         </div>
       </div>
+
       <hr class="separator">
       <div class="pull-left">
       <b>DATA TRANSAKSI UMUM KEUANGAN</b><br>

@@ -164,16 +164,14 @@
       <!-- hidden form -->
       <div class="row">
           <div class="col-xs-10">
-            <div class="form-group">
-              <label class="control-label col-md-2">Pilih Dokter</label>
-              <div class="col-md-6">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'kode_dokter', 'kode_dokter', 'form-control', '', '') ?>
-              </div>
-            </div>
-
+          
             <div class="form-group" id="form_tanggal" >
-              <label class="control-label col-md-2">Tgl Transaksi Kasir</label>
-                <div class="col-md-3">
+              <label class="control-label col-md-2">Cari Dokter</label>
+              <div class="col-md-2">
+                <input type="text" name="dokter" class="form-control" id="dokter" placeholder="Masukan Keyword">
+              </div>
+              <label class="control-label col-md-1">Periode</label>
+                <div class="col-md-2">
                   <div class="input-group">
                     <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
                     <span class="input-group-addon">
@@ -182,8 +180,8 @@
                   </div>
                 </div>
 
-                <label class="control-label col-md-1">s/d Tgl</label>
-                <div class="col-md-3">
+                <label class="control-label col-md-1" style="margin-left: 2%">s/d Tgl</label>
+                <div class="col-md-2">
                   <div class="input-group">
                     <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
                     <span class="input-group-addon">
@@ -191,21 +189,14 @@
                     </span>
                   </div>
                 </div>
+                <div class="col-md-2" style="margin-left: 0.5%">
+                  <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+                    <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                    Tampilkan Data
+                  </a>
+                </div>
             </div>
 
-            <div class="form-group">
-              <label class="control-label col-md-2">&nbsp;</label>
-              <div class="col-md-6" style="margin-left:6px">
-                <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
-                  <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-                  Cari
-                </a>
-                <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
-                  <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-                  Reload
-                </a>
-              </div>
-            </div>   
           </div>
 
           <div class="col-xs-2">
