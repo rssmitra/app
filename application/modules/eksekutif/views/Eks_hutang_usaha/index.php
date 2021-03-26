@@ -18,6 +18,7 @@
 
   $('#btn_search_data').click(function (e) {
       e.preventDefault();
+      achtungShowLoader();  
       $.getJSON('eksekutif/Eks_hutang_usaha/get_content_page', {mod: 'poli', from_tgl: $('#from_tgl').val(), to_tgl : $('#to_tgl').val() }, function(response_data) {
         html = '';
         $.each(response_data, function (i, o) {
@@ -37,6 +38,7 @@
 
           });
           $('#contentPage').html(html);
+          achtungHideLoader();  
       });
   });
 

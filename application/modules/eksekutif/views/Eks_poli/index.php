@@ -18,6 +18,7 @@
 
   $('#btn_search_data').click(function (e) {
       e.preventDefault();
+      achtungShowLoader();  
       $.getJSON('eksekutif/Eks_poli/get_content_page', {mod: 'poli', from_tgl: $('#from_tgl').val(), to_tgl : $('#to_tgl').val() }, function(response_data) {
         html = '';
         $.each(response_data, function (i, o) {
@@ -38,11 +39,21 @@
           });
           $('#contentPage').html(html);
       });
+      achtungHideLoader();
   });
 
   function show_detail(flag){
     preventDefault();
     $('#show_detail_by_click').load('eksekutif/Eks_poli/show_detail?flag='+flag+'&from_tgl='+$('#from_tgl').val()+'&to_tgl='+$('#to_tgl').val()+'');
+  }
+
+  function show_detail_unit(kode, flag){
+    preventDefault();
+    $('#show_detail_level_1').load('eksekutif/Eks_poli/show_detail_unit?kode='+kode+'&flag='+flag+'&from_tgl='+$('#from_tgl').val()+'&to_tgl='+$('#to_tgl').val()+'');
+  }
+  function show_detail_pasien(kode, flag){
+    preventDefault();
+    $('#show_detail_level_2').load('eksekutif/Eks_poli/show_detail_pasien?kode='+kode+'&flag='+flag+'&from_tgl='+$('#from_tgl').val()+'&to_tgl='+$('#to_tgl').val()+'');
   }
 
   function hide_detail(flag){

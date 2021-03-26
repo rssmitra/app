@@ -16,13 +16,13 @@ class Eks_piutang_model extends CI_Model {
 		if($params['prefix']==1){
 			$data = array();
 			// hutang
-			$prd_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('CAST(tgl_tagih as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ')->get('tc_tagih');
+			$prd_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('CAST(tgl_tagih as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ')->get('tc_tagih');
 
-			$day_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('CAST(tgl_tagih as DATE) = '."'".date('Y-m-d')."'".' ')->get('tc_tagih');
+			$day_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('CAST(tgl_tagih as DATE) = '."'".date('Y-m-d')."'".' ')->get('tc_tagih');
 
-			$mth_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('MONTH(tgl_tagih) = '."'".date('m')."'".' AND YEAR(tgl_tagih) = '.date('Y').' ')->get('tc_tagih');
+			$mth_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('MONTH(tgl_tagih) = '."'".date('m')."'".' AND YEAR(tgl_tagih) = '.date('Y').' ')->get('tc_tagih');
 
-			$yr_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' ')->get('tc_tagih');
+			$yr_piutang = $this->db->select('SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('YEAR(tgl_tagih) = '.date('Y').' ')->get('tc_tagih');
 
 			$data['piutang'] = array(
 				'periode' => $prd_piutang->row()->total,
@@ -38,7 +38,7 @@ class Eks_piutang_model extends CI_Model {
 
 		if($params['prefix']==2){
 	
-			$query = $this->db->select('MONTH(tgl_tagih) as bulan, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' ')->group_by('MONTH(tgl_tagih)')->get('tc_tagih');
+			$query = $this->db->select('MONTH(tgl_tagih) as bulan, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' ')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->group_by('MONTH(tgl_tagih)')->get('tc_tagih');
 			$fields = array('Total_Piutang'=>'total');
 			$title = '<span style="font-size:13.5px">Piutang Perusahaan Berdasarkan Tanggal Penagihan Invoice '.date('Y').' RS. Setia Mitra</span>';
 			$subtitle = 'Source: RSSM - SIRS';
@@ -67,11 +67,9 @@ class Eks_piutang_model extends CI_Model {
 		$data = array();
 
 		if($_GET['flag'] == 'periode'){
-			$kunjungan = $this->db->select('COUNT(id_tc_kunjungan) as total, SUBSTRING(kode_bagian_tujuan, 1,2) as kode_unit')->where('status_batal IS NULL')->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ')->group_by('SUBSTRING(kode_bagian_tujuan, 1,2)')->get('tc_kunjungan');
+			$piutang = $this->db->select('no_invoice_tagih, tgl_tagih, nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('CAST(tgl_tagih as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ')->group_by('no_invoice_tagih, tgl_tagih, nama_tertagih')->order_by('tgl_tagih')->get('tc_tagih');
 
-			$piutang = $this->db->select('no_invoice_tagih, tgl_tagih, nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('CAST(tgl_tagih as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ')->group_by('no_invoice_tagih, tgl_tagih, nama_tertagih')->order_by('tgl_tagih')->get('tc_tagih');
-
-			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('CAST(tgl_tagih as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
+			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('CAST(tgl_tagih as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
 
 			$title = 'PERIODE, '.$this->tanggal->formatDateDmy($_GET['from_tgl']).' s/d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).' ';
 		}
@@ -79,23 +77,23 @@ class Eks_piutang_model extends CI_Model {
 		if($_GET['flag'] == 'day'){
 			$piutang = $this->db->select('no_invoice_tagih, tgl_tagih, nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('CAST(tgl_tagih as DATE) = '.date('Y-m-d').' ')->group_by('no_invoice_tagih, tgl_tagih, nama_tertagih')->order_by('tgl_tagih')->get('tc_tagih');
 
-			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('CAST(tgl_tagih) = '.date('Y-mm-d').' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
+			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('CAST(tgl_tagih) = '.date('Y-mm-d').' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
 
 			$title = 'HARIAN, '.date('d/m/Y').'';
 		}
 
 		if($_GET['flag'] == 'month'){
-			$piutang = $this->db->select('no_invoice_tagih, tgl_tagih, nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' AND MONTH(tgl_tagih)='.date('m').' ')->group_by('no_invoice_tagih, tgl_tagih, nama_tertagih')->order_by('tgl_tagih')->get('tc_tagih');
+			$piutang = $this->db->select('no_invoice_tagih, tgl_tagih, nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('YEAR(tgl_tagih) = '.date('Y').' AND MONTH(tgl_tagih)='.date('m').' ')->group_by('no_invoice_tagih, tgl_tagih, nama_tertagih')->order_by('tgl_tagih')->get('tc_tagih');
 
-			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' AND MONTH(tgl_tagih)='.date('m').' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
+			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('YEAR(tgl_tagih) = '.date('Y').' AND MONTH(tgl_tagih)='.date('m').' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
 
 			$title = 'BULANAN, '.strtoupper($this->tanggal->getBulan(date('m'))).'';
 		}
 
 		if($_GET['flag'] == 'year'){
-			$piutang = $this->db->select('no_invoice_tagih, tgl_tagih, nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' ')->group_by('no_invoice_tagih, tgl_tagih, nama_tertagih')->order_by('tgl_tagih')->get('tc_tagih');
+			$piutang = $this->db->select('no_invoice_tagih, tgl_tagih, nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('YEAR(tgl_tagih) = '.date('Y').' ')->group_by('no_invoice_tagih, tgl_tagih, nama_tertagih')->order_by('tgl_tagih')->get('tc_tagih');
 
-			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
+			$resume_piutang = $this->db->select('nama_tertagih, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->where('YEAR(tgl_tagih) = '.date('Y').' ')->group_by('nama_tertagih')->order_by('nama_tertagih', 'ASC')->get('tc_tagih');
 
 			$title = 'TAHUNAN, '.date('Y').'';
 		}

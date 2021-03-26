@@ -98,6 +98,20 @@ class Eks_poli extends MX_Controller {
         $this->load->view('Eks_poli/ViewDetailData', $data);
     }
 
+    public function show_detail_unit(){
+        $data = array();
+        $data['value'] = $this->Eks_poli->get_detail_data_unit();
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Eks_poli/ViewDetailDataUnit', $data);
+    }
+
+    public function show_detail_pasien(){
+        $data = array();
+        $data['value'] = $this->Eks_poli->get_detail_data_pasien();
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Eks_poli/ViewDetailDataPasien', $data);
+    }
+
 
 }
 

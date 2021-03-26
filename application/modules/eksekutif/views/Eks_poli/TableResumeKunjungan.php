@@ -1,82 +1,106 @@
 
+<?php 
+  $count_periode = count($value['prd_dt']);
+  foreach ($value['prd_dt'] as $k1 => $v1) {
+    $ttl_periode[] = $v1->total;
+  }
+?>
+
 <div class="row">
+
   <div class="col-md-3">
     <span><b>PERIODE</b>, <?php echo $this->tanggal->formatDateDmy($_GET['from_tgl'])?> s/d <?php echo $this->tanggal->formatDateDmy($_GET['to_tgl'])?></span>
     <table class="table">
       <tr>
         <td align="left">
           Total Kunjungan<br>
-          <a href="#" onclick="show_detail('periode')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['kunjungan']['periode'])?></a>
+          <a href="#" onclick="show_detail('periode')" style="font-size: 18px; font-weight: bold"><?php echo number_format($count_periode)?></a>
         </td>
       </tr>
       <tr>
         <td align="right">
           Total Pendapatan<br>
-          <a href="#" onclick="show_detail('periode')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['pendapatan']['periode'])?></a>
+          <a href="#" onclick="show_detail('periode')" style="font-size: 18px; font-weight: bold"><?php echo number_format(array_sum($ttl_periode))?></a>
         </td>
       </tr>
     </table>
   </div>
 
+  <?php 
+    $count_day = count($value['dy_dt']);
+    foreach ($value['dy_dt'] as $k2 => $v2) {
+      $ttl_day[] = $v2->total;
+    }
+  ?>
+  
   <div class="col-md-3">
-    <span><b>HARIAN</b>,  <?php echo date('d/M/Y')?></span>
+    <span><b>HARIAN</b>, <?php echo $this->tanggal->formatDateDmy(date('Y-m-d'))?></span>
     <table class="table">
-      <tbody style="background-color: #ece6e6">
-    <tr>
+      <tr>
         <td align="left">
           Total Kunjungan<br>
-          <a href="#" onclick="show_detail('day')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['kunjungan']['day'])?></a>
+          <a href="#" onclick="show_detail('day')" style="font-size: 18px; font-weight: bold"><?php echo number_format($count_day)?></a>
         </td>
       </tr>
       <tr>
         <td align="right">
           Total Pendapatan<br>
-          <a href="#" onclick="show_detail('day')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['pendapatan']['day'])?></a>
+          <a href="#" onclick="show_detail('day')" style="font-size: 18px; font-weight: bold"><?php echo number_format(array_sum($ttl_day))?></a>
         </td>
       </tr>
-      </tbody>
     </table>
   </div>
 
+  <?php 
+    $count_mth = count($value['mth_dt']);
+    foreach ($value['mth_dt'] as $k3 => $v3) {
+      $ttl_mth[] = $v3->total;
+    }
+  ?>
+
   <div class="col-md-3">
-    <span><b>BULANAN, </b> <?php echo $this->tanggal->getBulan(date('m'))?></span>
+    <span><b>BULANAN</b>, <?php echo $this->tanggal->getBulan(date('m'))?></span>
     <table class="table">
-      <tbody style="background-color: #ece6e6">
-    <tr>
+      <tr>
         <td align="left">
           Total Kunjungan<br>
-          <a href="#" onclick="show_detail('month')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['kunjungan']['month'])?></a>
+          <a href="#" onclick="show_detail('month')" style="font-size: 18px; font-weight: bold"><?php echo number_format($count_mth)?></a>
         </td>
       </tr>
       <tr>
         <td align="right">
           Total Pendapatan<br>
-          <a href="#" onclick="show_detail('month')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['pendapatan']['month'])?></a>
+          <a href="#" onclick="show_detail('month')" style="font-size: 18px; font-weight: bold"><?php echo number_format(array_sum($ttl_mth))?></a>
         </td>
       </tr>
-      </tbody>
     </table>
   </div>
+
+  <?php 
+    $count_yr = count($value['yr_dt']);
+    foreach ($value['yr_dt'] as $k3 => $v3) {
+      $ttl_yr[] = $v3->total;
+    }
+  ?>
 
   <div class="col-md-3">
     <span><b>TAHUNAN</b>, <?php echo date('Y')?></span>
     <table class="table">
-      <tbody style="background-color: #ece6e6">
       <tr>
         <td align="left">
           Total Kunjungan<br>
-          <a href="#" onclick="show_detail('year')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['kunjungan']['year'])?></a>
+          <a href="#" onclick="show_detail('year')" style="font-size: 18px; font-weight: bold"><?php echo number_format($count_yr)?></a>
         </td>
       </tr>
       <tr>
         <td align="right">
           Total Pendapatan<br>
-          <a href="#" onclick="show_detail('year')" style="font-size: 18px; font-weight: bold"><?php echo number_format($value['pendapatan']['year'])?></a>
+          <a href="#" onclick="show_detail('year')" style="font-size: 18px; font-weight: bold"><?php echo number_format(array_sum($ttl_yr))?></a>
         </td>
       </tr>
-      </tbody>
     </table>
   </div>
+
 </div>
 
 

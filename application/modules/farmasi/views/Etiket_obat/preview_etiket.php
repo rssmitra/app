@@ -57,8 +57,8 @@ table{
         <span style="font-size: 11px"><?php echo COMP_ADDRESS_SORT; ?></span><br>
     </div>
     <div style="border-bottom: 1px solid; text-align: center">
-      <span>Apoteker : Zora Almira, S.Farm., Apt</span><br>
-      <span style="font-size: 12px">4/B.19/31.74.06.1001.025.S.2.b.d/3/-1.779.3/e/1019
+      <span>Apoteker : Sendi Permana, S.Farm., Apt</span><br>
+      <span style="font-size: 12px">2/B.19/31.74.06.1001.02.026.S.2.b.d/3/-1.779.3/e/2021
     </div>
   </div>
   
