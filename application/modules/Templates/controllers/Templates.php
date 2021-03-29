@@ -667,11 +667,11 @@ class Templates extends MX_Controller {
                       </td>';
         $html .= '</tr>';
 
-        $html .= '<tr>';
-            $html .= '<td width="100%">
-                        <img src="'.base_url().'uploaded/ttd/signature.png">
-                      </td>';
-        $html .= '</tr>';
+        // $html .= '<tr>';
+        //     $html .= '<td width="100%">
+        //                 <img src="'.base_url().'uploaded/ttd/signature.png">
+        //               </td>';
+        // $html .= '</tr>';
 
         // $html .= '<tr>';
         //     $html .= '<td colspan="2">

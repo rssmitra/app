@@ -314,7 +314,6 @@ final Class Graph_master {
 			$data = $db->query($query)->result_array();
 		}
 
-
 		// MODUL CASEMIX
 		// modul purchasing line chart
 		if($params['prefix']==341){
@@ -608,6 +607,20 @@ final Class Graph_master {
     			if ($params['style']==261) {
     				return $this->TableStyleCustom261($fields, $params, $data);
     			}
+
+    			// custom table resume kunjungan pasien
+    			if ($params['style']=='TableResumeKunjungan') {
+    				return $this->TableResumeKunjungan($fields, $params, $data);
+    			}
+
+    			if ($params['style']=='TableResumeHutang') {
+    				return $this->TableResumeHutang($fields, $params, $data);
+				}
+				
+				if ($params['style']=='TableResumePiutang') {
+    				return $this->TableResumePiutang($fields, $params, $data);
+    			}
+
     			break;
     		
     		default:
@@ -940,6 +953,78 @@ final Class Graph_master {
         }
         $html .= '</tr>';
         $html .= '</table>';
+        
+        $chart_data = array(
+			'xAxis' 	=> 0,
+			'series' 	=> $html,
+		);
+		return $chart_data;
+    }
+
+    public function TableResumeKunjungan($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	
+    	// echo '<pre>';print_r($fields);
+    	// echo '<pre>';print_r($params);
+    	
+
+    	// load view
+    	$result = array(
+    		'value' => $data,
+		);
+		// echo '<pre>';print_r($result);
+    	// die;
+    	$html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjungan', $result, true);
+        
+        
+        $chart_data = array(
+			'xAxis' 	=> 0,
+			'series' 	=> $html,
+		);
+		return $chart_data;
+    }
+
+     public function TableResumeHutang($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	
+    	// echo '<pre>';print_r($fields);
+    	// echo '<pre>';print_r($params);
+    	
+
+    	// load view
+    	$result = array(
+    		'value' => $data,
+		);
+		// echo '<pre>';print_r($result);
+  //   	die;
+    	$html = $CI->load->view('eksekutif/Eks_hutang_usaha/TableResumeHutang', $result, true);
+        
+        
+        $chart_data = array(
+			'xAxis' 	=> 0,
+			'series' 	=> $html,
+		);
+		return $chart_data;
+	}
+	
+	public function TableResumePiutang($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	
+    	// echo '<pre>';print_r($fields);
+    	// echo '<pre>';print_r($params);
+    	
+
+    	// load view
+    	$result = array(
+    		'value' => $data,
+		);
+		// echo '<pre>';print_r($result);
+    	// die;
+    	$html = $CI->load->view('eksekutif/Eks_piutang/TableResumePiutang', $result, true);
+        
         
         $chart_data = array(
 			'xAxis' 	=> 0,
