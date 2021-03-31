@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Dokter_model extends CI_Model {
 
 	var $table = 'mt_karyawan';
-	var $column = array('mt_karyawan.no_induk,mt_karyawan.urutan_karyawan,mt_karyawan.nama_pegawai');
-	var $select = 'mt_karyawan.no_induk,mt_karyawan.urutan_karyawan,mt_karyawan.nama_pegawai,mt_karyawan.kode_jabatan,mt_karyawan.kode_bagian,mt_karyawan.kode_dokter,mt_karyawan.kode_spesialisasi,mt_karyawan.status_dr,mt_karyawan.status,mt_karyawan.available,mt_karyawan.jatah_kelas,mt_karyawan.level_id,mt_karyawan.no_mr,mt_karyawan.flag_tenaga_medis,mt_karyawan.url_foto_karyawan,mt_karyawan.kode_perawat,mt_karyawan.id_mt_karyawan,mt_spesialisasi_dokter.nama_spesialisasi';
+	var $column = array('mt_karyawan.nama_pegawai');
+	var $select = 'mt_karyawan.no_induk,mt_karyawan.urutan_karyawan,mt_karyawan.nama_pegawai,mt_karyawan.kode_jabatan,mt_karyawan.kode_bagian,mt_karyawan.kode_dokter,mt_karyawan.kode_spesialisasi,mt_karyawan.status_dr,mt_karyawan.status,mt_karyawan.available,mt_karyawan.jatah_kelas,mt_karyawan.level_id,mt_karyawan.no_mr,mt_karyawan.flag_tenaga_medis,mt_karyawan.url_foto_karyawan,mt_karyawan.kode_perawat,mt_karyawan.id_mt_karyawan,mt_spesialisasi_dokter.nama_spesialisasi, no_sip, ttd, stamp';
 
 	//var $order = array('no_induk' => 'ASC');
 
@@ -82,11 +82,11 @@ class Dokter_model extends CI_Model {
 		$this->db->join('mt_spesialisasi_dokter', 'mt_spesialisasi_dokter.kode_spesialisasi=mt_karyawan.kode_spesialisasi','left');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_karyawan.kode_bagian','left');
 		if(is_array($id)){
-			$this->db->where_in(''.$this->table.'.no_induk',$id);
+			$this->db->where_in(''.$this->table.'.kode_dokter',$id);
 			$query = $this->db->get();
 			return $query->result();
 		}else{
-			$this->db->where(''.$this->table.'.no_induk',$id);
+			$this->db->where(''.$this->table.'.kode_dokter',$id);
 			$query = $this->db->get();
 			return $query->row();
 		}
@@ -95,20 +95,20 @@ class Dokter_model extends CI_Model {
 
 	public function save($table, $data)
 	{
-		$this->db->insert('mt_karyawan', $data);
+		$this->db->insert($table, $data);
 		return $this->db->insert_id();
 	}
 
 	public function update($table, $where, $data)
 	{
-		$this->db->update('mt_karyawan', $data, $where);
-		//$this->db->where('no_induk', $data);
+		$this->db->update($table, $data, $where);
+		//$this->db->where('kode_dokter', $data);
 		return $this->db->affected_rows();
 	}
 
 	public function delete_by_id($id)
 	{
-		$this->db->where_in('mt_karyawan.no_induk', $id);
+		$this->db->where_in('mt_karyawan.kode_dokter', $id);
 		return $this->db->delete('mt_karyawan');
 	}
 

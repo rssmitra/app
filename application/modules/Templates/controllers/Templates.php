@@ -667,11 +667,6 @@ class Templates extends MX_Controller {
                       </td>';
         $html .= '</tr>';
 
-        // $html .= '<tr>';
-        //     $html .= '<td width="100%">
-        //                 <img src="'.base_url().'uploaded/ttd/signature.png">
-        //               </td>';
-        // $html .= '</tr>';
 
         // $html .= '<tr>';
         //     $html .= '<td colspan="2">
@@ -1448,18 +1443,18 @@ class Templates extends MX_Controller {
 
     public function setGlobalFooterRm($data){
         $html = '';
+        $ttd = (file_exists('uploaded/ttd/'.$data->reg_data->ttd.'')) ? '<img src="'.base_url().'uploaded/ttd/'.$data->reg_data->ttd.'" width="250px" style="position: relative">' : '';
+        $stamp = ($data->reg_data->stamp) ? '<img src="'.base_url().'uploaded/ttd/'.$data->reg_data->stamp.'" width="700px" style="position: absolute !important">' : '<u>'.$data->reg_data->nama_pegawai.'</u><br>SIP. '.$data->reg_data->no_sip.'';
         $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
-                        <td width="50%"></td>
-                        <td align="right" width="50%">
+                        <td width="70%"></td>
+                        <td align="center" width="30%">
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                         '.COMP_FULL.'
-                        <br/><br/><br/><br/> 
-                        <br/> 
-                        ( _____________________ )<br>
-                        '.$data->reg_data->nama_pegawai.'
-                        
+                        <br>
+                        '.$ttd.'
+                        '.$stamp.'
                         </td>   
                     </tr>
                 </table>';

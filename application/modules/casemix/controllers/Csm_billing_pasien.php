@@ -380,9 +380,9 @@ class Csm_billing_pasien extends MX_Controller {
 
       /*get content html*/
       $html = json_decode( $this->getHtmlData($data, $no_registrasi, $flag, $pm) );
-      // if($flag=='RESUME') {
-        // print_r($html);die;
-      // }
+    //   if($flag=='RESUME') {
+    //     print_r($html);die;
+    //   }
       /*generate pdf*/
       $this->exportPdf($html, $flag, $pm, $act_code); 
       
