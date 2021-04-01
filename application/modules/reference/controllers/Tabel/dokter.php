@@ -180,8 +180,9 @@ class Dokter extends MX_Controller {
                 /*hapus dulu file yang lama*/
                 if( $id != 0 ){
                     $profile = $this->dokter->get_by_id($id);
-                    if ($profile->stamp != NULL || $profile->stamp != 0) {
-                        unlink(PATH_TTD_FILE.$profile->stamp.'');
+                    // if ($profile->stamp != NULL || $profile->stamp != 0) {
+                    if (file_exists(PATH_TTD_FILE.$profile->stamp)) {
+                        unlink(PATH_TTD_FILE.$profile->stamp);
                     }
                 }
                 $dataexc['stamp'] = $this->upload_file->doUpload('stamp', PATH_TTD_FILE);
