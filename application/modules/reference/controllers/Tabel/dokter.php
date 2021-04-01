@@ -169,7 +169,7 @@ class Dokter extends MX_Controller {
                 /*hapus dulu file yang lama*/
                 if( $id != 0 ){
                     $profile = $this->dokter->get_by_id($id);
-                    if ($profile->ttd != NULL) {
+                    if ($profile->ttd != NULL || $profile->ttd != 0) {
                         unlink(PATH_TTD_FILE.$profile->ttd.'');
                     }
                 }
@@ -180,7 +180,7 @@ class Dokter extends MX_Controller {
                 /*hapus dulu file yang lama*/
                 if( $id != 0 ){
                     $profile = $this->dokter->get_by_id($id);
-                    if ($profile->stamp != NULL) {
+                    if ($profile->stamp != NULL || $profile->stamp != 0) {
                         unlink(PATH_TTD_FILE.$profile->stamp.'');
                     }
                 }

@@ -1444,7 +1444,7 @@ class Templates extends MX_Controller {
     public function setGlobalFooterRm($data){
         $html = '';
         $ttd = (file_exists('uploaded/ttd/'.$data->reg_data->ttd.'')) ? '<img src="'.base_url().'uploaded/ttd/'.$data->reg_data->ttd.'" width="250px" style="position: relative">' : '';
-        $stamp = ($data->reg_data->stamp) ? '<img src="'.base_url().'uploaded/ttd/'.$data->reg_data->stamp.'" width="700px" style="position: absolute !important">' : '<u>'.$data->reg_data->nama_pegawai.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+        $stamp = (file_exists('uploaded/ttd/'.$data->reg_data->stamp)) ? '<img src="'.base_url().'uploaded/ttd/'.$data->reg_data->stamp.'" width="700px" style="position: absolute !important">' : '<u>'.$data->reg_data->nama_pegawai.'</u><br>SIP. '.$data->reg_data->no_sip.'';
         $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
                         <td width="70%"></td>
