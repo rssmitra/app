@@ -49,17 +49,25 @@
 
 </style>
 <body style="background-color:black">
-  <div style="padding-bottom: 100px">
+  
+      <!-- <center>
+        <div class="navbar-default">
+        <h3>JADWAL PRAKTEK DOKTER</h3>
+        <p style="font-size:14px; margin-top:-5px">
+          <?php echo COMP_LONG; ?> <br>
+          <?php echo date('D, d-M-Y')?>
+        </p>
+        </div>
+      </center> -->
       <table id="dynamic-table" base-url="main/Main"  class="container" width="100%">
-        <thead style="font-size:18px">
-          <tr>  
-            <th style="color: white; font-weight: bold; vertical-align: center">JADWAL PRAKTEK DOKTER HARI INI</th>
-          </tr>
-        </thead>
-        <tbody style="font-size:18px;font-family: arial;">
-        </tbody>
-      </table>
-  </div>
+      <thead style="font-size:18px">
+        <tr>  
+          <th style="color: white; font-weight: bold; vertical-align: center">JADWAL PRAKTEK DOKTER HARI INI</th>
+        </tr>
+      </thead>
+      <tbody style="font-size:18px;font-family: arial">
+      </tbody>
+    </table>
 
   <!--<script src="<?php //echo base_url().'assets/js/custom/als_datatable_no_style.js'?>"></script>-->
 
@@ -79,22 +87,22 @@
             header: true,
         },
                 
-        "ajax": 'main/get_data'
+        "ajax": '<?php echo base_url()?>display_loket/Main/get_data_tbl'
     } );
 
     
 
-    setInterval( function () {
+    // setInterval( function () {
         
-        table.ajax.reload( null, false ); // user paging is not reset on reload
+    //     table.ajax.reload( null, false ); // user paging is not reset on reload
         
-        $('#dynamic-table > tbody  > tr').each(function() {
-          $('html, body').animate({
-                scrollTop: $(this).offset().top
-            }, 'slow').delay(1500);        
-        });
+    //     $('#dynamic-table > tbody  > tr').each(function() {
+    //       $('html, body').animate({
+    //             scrollTop: $(this).offset().top
+    //         }, 800).delay(1500);        
+    //     });
 
-    }, 1800 );
+    // }, 1800 );
     
     //table.parent().scrollTop(9999);
 

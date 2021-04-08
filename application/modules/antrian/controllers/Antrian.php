@@ -9,7 +9,8 @@ class Antrian extends MX_Controller {
         parent::__construct();
  
         $this->load->model('antrian_model'); 
-        $this->load->model('loket_model','loket'); 
+        $this->load->model('loket_model','loket');
+        $this->load->model('display_loket/main_model','Main');  
 
         $this->load->library('Print_direct');
 
@@ -34,6 +35,37 @@ class Antrian extends MX_Controller {
         $this->load->view('Antrian/index', $data);
     }
 
+    public function pasien() {
+        
+        $data = [];
+        $this->load->view('Antrian/index_pasien', $data);
+    }
+
+    public function antrian_pendaftaran_pasien() {
+        
+        $data = [];
+        $data['list_jadwal'] = $this->Main->get_datatables_display();
+        $this->load->view('Antrian/pendaftaran_pasien', $data);
+    }
+
+    public function antrian_instalasi_farmasi() {
+        
+        $data = [];
+        $this->load->view('Antrian/instalasi_farmasi', $data);
+    }
+
+    // public function antrian_poli() {
+        
+    //     $data = [];
+    //     $this->load->view('Antrian/poli', $data);
+    // }
+
+    // public function antrian_poli() {
+        
+    //     $data = [];
+    //     $this->load->view('Antrian/antrian_poli', $data);
+    // }
+
     public function poli() {
         
         $data_loket = $this->loket->get_open_loket();
@@ -50,7 +82,7 @@ class Antrian extends MX_Controller {
         
         $data['klinik'] = $data_loket;
 
-        $this->load->view('Antrian/index_poli', $data);
+        $this->load->view('Antrian/poli', $data);
     }
 
     public function process()

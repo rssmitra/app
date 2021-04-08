@@ -17,6 +17,16 @@ class Display_antrian extends MX_Controller {
         $this->load->view('display_antrian/index');
     }
 
+    public function farmasi() {
+   
+        $this->load->view('display_antrian/index_farmasi');
+    }
+
+    public function poli() {
+   
+        $this->load->view('display_antrian/index_poli');
+    }
+
    public function process()
    {
        # code...
@@ -33,6 +43,17 @@ class Display_antrian extends MX_Controller {
        //print_r($nomor_loket);die;
 
        echo json_encode($nomor_loket);
+       //echo $nomor_loket;
+   }
+
+    public function reload_antrian_farmasi()
+   {
+       # code...
+       $data = $this->display_antrian->get_antrian_farmasi();
+
+       // print_r($data);die;
+
+       echo json_encode($data);
        //echo $nomor_loket;
    }
 

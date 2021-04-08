@@ -7,59 +7,32 @@
     <meta name="description" content="top menu &amp; navigation" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
-    <!-- css default for blank page -->
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-fonts.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <script src="<?php echo base_url()?>assets/js/ace-extra.js"></script>
 
     <script src="<?php echo base_url('assets/jquery/jquery-2.2.3.min.js')?>"></script>
     <script src="<?php echo base_url('assets/datatables/datatables/js/jquery.dataTables.min.js')?>"></script>
     <title>Display - Loket</title>
     <link rel="shortcut icon" href="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>">
 </head>
-<style type="text/css">
-/*  table th:nth-child(3), td:nth-child(3) {
-    display: none;
-  }
-  .fixed {
-    position: fixed;
-    z-index: 1030;
-    width: 100%;
-  } */
-
-  html, body{
-    overflow:hidden;
-  }
-
-  body {
- 
-  color: black;
-  background-color:white;
-  }
-
-  .container td, .container th {
-      /*padding-bottom: 2%;*/
-      padding-top: 1%;
-    /*padding:2%;  */
-  }
-
-
-</style>
 <body style="background-color:black">
-  <div style="padding-bottom: 100px">
-      <table id="dynamic-table" base-url="main/Main"  class="container" width="100%">
-        <thead style="font-size:18px">
-          <tr>  
-            <th style="color: white; font-weight: bold; vertical-align: center">JADWAL PRAKTEK DOKTER HARI INI</th>
-          </tr>
-        </thead>
-        <tbody style="font-size:18px;font-family: arial;">
-        </tbody>
-      </table>
-  </div>
+  
+      <center>
+      </center>
+      <table id="dynamic-tablexx" base-url="main/Main"  class="table" width="100%">
+      <thead style="font-size:18px">
+        <tr style="color: white">  
+          <th width="50px">NO</th>
+          <th>NAMA PASIEN</th>
+        </tr>
+      </thead>
+      <tbody style="font-size:18px;font-family: arial">
+        <?php for($i=0;$i>11;$i++) :?>
+        <tr style="color: white">  
+          <td width="50px" align="center"><?php echo $i; ?></td>
+          <td>Muhammad Amin Lubis</td>
+        </tr> 
+        <?php endfor; ?>
+      </tbody>
+    </table>
 
   <!--<script src="<?php //echo base_url().'assets/js/custom/als_datatable_no_style.js'?>"></script>-->
 
@@ -84,17 +57,17 @@
 
     
 
-    setInterval( function () {
+    // setInterval( function () {
         
-        table.ajax.reload( null, false ); // user paging is not reset on reload
+    //     table.ajax.reload( null, false ); // user paging is not reset on reload
         
-        $('#dynamic-table > tbody  > tr').each(function() {
-          $('html, body').animate({
-                scrollTop: $(this).offset().top
-            }, 'slow').delay(1500);        
-        });
+    //     $('#dynamic-table > tbody  > tr').each(function() {
+    //       $('html, body').animate({
+    //             scrollTop: $(this).offset().top
+    //         }, 800).delay(900);        
+    //     });
 
-    }, 1800 );
+    // }, 1800 );
     
     //table.parent().scrollTop(9999);
 

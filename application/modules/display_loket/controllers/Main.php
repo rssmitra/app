@@ -18,6 +18,18 @@ class Main extends MX_Controller {
         $this->load->view('Main/main_view', $data);
     }
 
+    public function antrian_pendaftaran_dt_tbl() {
+        $data = array();
+        $data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
+        $this->load->view('Main/antrian_pendaftaran_dt_tbl', $data);
+    }
+
+    public function poli() {
+        $data = array();
+        $data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
+        $this->load->view('Main/main_poli_view', $data);
+    }
+
     public function get_data()
     {
         /*get data from model*/
@@ -27,27 +39,39 @@ class Main extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-          
-            $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<p>'.strtoupper($row_list->nama_bagian).'</p>';
-            $row[] = $row_list->nama_pegawai;
-            $row[] = $this->tanggal->formatTime($row_list->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_list->jd_jam_selesai);
-            $row[] = '<div class="center">'.$row_list->jd_kuota.'</div>';
-            /*cek sisa kuota*/
             $sisa_kuota = $row_list->jd_kuota - $row_list->kuota_terpenuhi;
-            /*sisa kuota*/
-            /*$get_kuota = $this->Main->get_sisa_kuota($row_list); */
-            //print_r($get_kuota);die;
-
-            $row[] = '<div class="center">'.$sisa_kuota.'</div>';
-            //$row[] = $row_list->status_jadwal;
-            $row[] = ($row_list->status_jadwal == 'Loket dibuka') ? '<div class="center"><button style="background-color:#00d166;">Open</buton></div>' : '<div class="center"><button style="background-color:red;">Close</button></div>';
+            $clr_loket = ($row_list->status_jadwal == 'Loket dibuka') ? 'background: linear-gradient(357deg, #13d634, #9edc9a);color: white;' : 'background: linear-gradient(357deg, #ecd212, #dcd79a);color: white;';
             $status_jadwal = '';
             if(!in_array($row_list->status_jadwal, array('Loket dibuka','Loket ditutup') )){
                 $status_jadwal = $row_list->status_jadwal.'<br>';
             }
-            $row[] = '<p style="font-size:14px">'.strtoupper($status_jadwal).''.strtoupper($row_list->jd_keterangan).'<br>'.strtoupper($row_list->keterangan).'</p>';
-                   
+
+            $row[] = '<div style="'.$clr_loket.'">
+                        <table width="100%">
+                            <tr style="background-color: green">
+                                <td colspan="3" style="font-size: 3em; padding-left: 10px; font-weight: bold">'.strtoupper($row_list->nama_bagian).'</td>
+                            </tr>
+                            <tr style="background-color: white !important">
+                                <td rowspan="6" style="width: 100px; vertical-align: top">
+                                    <img src="'.base_url().'assets/img/avatar.png" style="width: 250px;" >
+                                </td>
+                            </tr>
+                            <tr style="color: black !important; font-weight: bold; line-height: 1.2">
+                                <td><span style="padding-left: 10px; font-size: 1.2em;">Nama Dokter</span><br><span style="padding-left: 10px; font-size: 2em">'.strtoupper($row_list->nama_pegawai).'</span></td>
+                            </tr>
+                            <tr style="color: black !important; font-weight: bold; line-height: 1.2">
+                                <td><span style="padding-left: 10px; font-size: 1.2em;">Jam Praktek</span><br><span style="padding-left: 10px; font-size: 2em">'.$this->tanggal->formatTime($row_list->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_list->jd_jam_selesai).'</span></td>
+                            </tr>
+                            <tr style="color: black !important; font-weight: bold; line-height: 1.2">
+                                <td><span style="padding-left: 10px; font-size: 1.2em;">Sisa Kuota</span><br><span style="padding-left: 10px; font-size: 2em">'.$sisa_kuota.'</span></td>
+                            </tr>
+                            <tr style="color: black !important; font-weight: bold; line-height: 1.2">
+                                <td><span style="padding-left: 10px; font-size: 1.2em;">Keterangan</span><br><span style="padding-left: 10px; font-size: 2em">'.strtoupper($status_jadwal).''.strtoupper($row_list->jd_keterangan).'<br>'.strtoupper($row_list->keterangan).'</span></td>
+                            </tr>
+                        </table>
+            </div>';
+            
+
             $data[] = $row;
         }
 

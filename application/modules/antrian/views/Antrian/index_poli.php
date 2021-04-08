@@ -158,22 +158,23 @@
 
 	<div class="row">
 		<div class="col-xs-12">
-			<center><h2><b>ANTRIAN POLI/KLINIK RAWAT JALAN</b><br>TANGGAL <?php echo $this->tanggal->formatDateDmy(date('Y-m-d'))?> <span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H') ?><span class="blink_me">:</span><?php echo date('i') ?></span></h2></center>
+			<center><h2 style="font-size: 48px !important"><b>ANTRIAN POLI/KLINIK RAWAT JALAN</b><br>TANGGAL <?php echo $this->tanggal->formatDateDmy(date('Y-m-d'))?> <span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H') ?><span class="blink_me">:</span><?php echo date('i') ?></span></h2></center>
 		</div>
 	</div>
 	<br>
 	<div class="row">
 		<div class="col-xs-12">
-			<?php for($i=1; $i<7; $i++) :?>
-			<div class="col-xs-4 center" style="padding-bottom: 20px">
+			<?php for($i=1; $i<10; $i++) :?>
+			<div class="col-xs-4 " style="padding-bottom: 20px">
 				<table class="table">
 					<tr style="background: lightblue">
-						<td colspan="2" style="height: 50%"><span style="font-weight: bold; font-size: 120%">KLINIK SPESIALIS JANTUNG DAN PEMBULUH DARAH</span></td>
+						<td colspan="2" style="height: 50%"><span style="font-weight: bold; font-size: 200%">KLINIK SPESIALIS JANTUNG DAN PEMBULUH DARAH</span></td>
 					</tr>
 					<tr>
 						<td style="height: 150px; width: 50%;background-color: darkseagreen">
+							<span style="">Sedang berlangsung</span><br>
+							
 							<b><span style="font-size: 250%">Muhammad Amin Lubis</span></b><br>
-							<span>Sedang berlangsung</span>
 						</td>
 						<td style="height: 150px; width: 50%; background-color: gold ">
 							<b><span style="font-size: 150%">Hengky Zulkarnain</span></b><br>

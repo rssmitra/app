@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="description" content="top menu &amp; navigation" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <title>Display Loket Poli/Klinik</title>
+    <title>Display Antrian Loket Pendaftaran</title>
     <script src='<?php echo base_url()?>/assets/js/jquery.js'></script>
     <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
@@ -38,7 +38,7 @@
                 type = (o.ant_type=='bpjs')?'A':(o.ant_type=='umum')?'B':'C';
 
                 if( o.ant_no != 0 ){
-                  $('<h1 style="margin:0;font-size:88px;font-weight:bold;text-align:center">'+type+' '+no+'</h1>').appendTo($('#auto'+i+''));
+                  $('<h1 style="margin:0;font-size:88px;font-weight:bold;text-align:center;text-shadow: 5px 3px 6px black;">'+type+' '+no+'</h1>').appendTo($('#auto'+i+''));
                 }
                        
               }
@@ -65,7 +65,7 @@
         bottom: 0;
         width: 100%;
         height:55px;
-        background-color: grey;
+        background-color: red;
         color: white;
         text-align: center;
       }
@@ -149,10 +149,10 @@
 
     <div class="col-lg-8" style="margin-left:-12px;margin-top: 10px">
 
-      <div class="row" style="height:100px;background-image: linear-gradient(to right, #009900,  #006600);color:white">
+      <div class="row" style="height:100px;background-image: linear-gradient(to right, #ffffff,  #006600);color:white">
         <img alt="" src="<?php echo COMP_ICON?>" width="100px" style="margin:10px 20px;float:left">
-        <h1 style="margin:0; font-size: 45px"><?php echo COMP_LONG?></h1>
-        <p style="font-family: Helvetica;margin:0; font-size:18px"><b><?php echo COMP_ADDRESS?></b></p>
+        <h1 style="margin:0; font-size: 45px;text-shadow: 3px 2px 5px black;"><?php echo COMP_LONG?></h1>
+        <p style="font-family: Helvetica;margin:0; font-size:18px;text-shadow: 2px 2px 3px black;"><b><?php echo COMP_ADDRESS?></b></p>
 
         <!-- <span style="" class="stamp is-nope-2">Dalam Percobaan</span> -->
       </div>
@@ -177,7 +177,7 @@
           <div class="inner">
 
             <div style="width:30%;float:left;border-right:2px solid white">
-              <h1 style="margin-top:15px;font-size:85px;text-align:center">1</h1>
+              <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">1</h1>
             </div>
 
             <div id="auto1" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
@@ -199,7 +199,7 @@
          <div class="inner">
 
            <div style="width:30%;float:left;border-right:2px solid white">
-             <h1 style="margin-top:15px;font-size:85px;text-align:center">2</h1>
+             <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">2</h1>
            </div>
 
            <div id="auto2" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
@@ -221,7 +221,7 @@
           <div class="inner">
 
             <div style="width:30%;float:left;border-right:2px solid white">
-              <h1 style="margin-top:15px;font-size:85px;text-align:center">3</h1>
+              <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">3</h1>
             </div>
 
             <div id="auto3" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
@@ -243,7 +243,7 @@
          <div class="inner">
 
            <div style="width:30%;float:left;border-right:2px solid white">
-             <h1 style="margin-top:15px;font-size:85px;text-align:center">4</h1>
+             <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">4</h1>
            </div>
 
            <div id="auto4" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
@@ -266,7 +266,7 @@
          <div class="inner">
 
            <div style="width:30%;float:left;border-right:2px solid white">
-             <h1 style="margin-top:15px;font-size:85px;text-align:center">5</h1>
+             <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">5</h1>
            </div>
 
            <div id="auto4" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
@@ -286,10 +286,10 @@
 
 
 
-<div class="footer" style="margin-bottom: 5px">
+<div class="footer" style="margin-bottom: 0px">
   
     <div style="width:90%;float:left;">
-      <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:3px;"><?php echo COMP_ADDRESS?> | <?php echo COMP_MOTTO?> </marquee>
+      <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:9px;"><?php echo strtoupper('Sayangi kesehatan anda..! Mohon jaga jarak anda, hindari kerumunan dan selalu gunakan masker selama berada di lingkungan Rumah Sakit untuk menekan penyebaran Virus Covid-19.')?> | <?php echo COMP_MOTTO?> </marquee>
     </div>
     <div style="width:10%;float:left;margin-top: 5px">
       <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
