@@ -141,35 +141,57 @@
 
 </head>
 
-<body style="background-color:#333">
+<body style="background-color:#333; padding-top : 5px; padding-left: 10px">
  
-<div class="page-content" >
+  <div class="page-content" >
 
-  <div class="col-xs-12" >
+    <div class="col-xs-12" >
 
-    <div class="col-lg-8" style="margin-left:-12px;margin-top: 10px">
+      <div class="col-lg-8" style="margin-left:-12px;margin-top: 10px">
 
-      <div class="row" style="height:100px;background-image: linear-gradient(to right, #ffffff,  #006600);color:white">
-        <img alt="" src="<?php echo COMP_ICON?>" width="100px" style="margin:10px 20px;float:left">
-        <h1 style="margin:0; font-size: 45px;text-shadow: 3px 2px 5px black;"><?php echo COMP_LONG?></h1>
-        <p style="font-family: Helvetica;margin:0; font-size:18px;text-shadow: 2px 2px 3px black;"><b><?php echo COMP_ADDRESS?></b></p>
+        <div class="row" style="height:100px;background-image: linear-gradient(to right, #ffffff,  #006600);color:white">
+          <img alt="" src="<?php echo COMP_ICON?>" width="100px" style="margin:10px 20px;float:left">
+          <h1 style="margin:0; font-size: 45px;text-shadow: 3px 2px 5px black;"><?php echo COMP_LONG?></h1>
+          <p style="font-family: Helvetica;margin:0; font-size:18px;text-shadow: 2px 2px 3px black;"><b><?php echo COMP_ADDRESS?></b></p>
 
-        <!-- <span style="" class="stamp is-nope-2">Dalam Percobaan</span> -->
+          <!-- <span style="" class="stamp is-nope-2">Dalam Percobaan</span> -->
+        </div>
+
+        <div class="row display-video">
+          <iframe src="<?php echo base_url()?>/display_loket/main" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+
       </div>
 
-      <div class="row display-video">
-        <iframe src="<?php echo base_url()?>/display_loket/main" width="100%" height="100%" frameborder="0"></iframe>
-      </div>
+      <div class="col-lg-4" style="margin-left:12px;padding-right:0">
+        <div class="row" >
 
-    </div>
+          
+        <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
+          
+          <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
+              <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
+              
+            </div>
+            
+            <div class="inner">
 
-    <div class="col-lg-4" style="margin-left:12px;padding-right:0">
-      <div class="row" >
+              <div style="width:30%;float:left;border-right:2px solid white">
+                <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">1</h1>
+              </div>
 
-        
-      <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
-         
-         <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
+              <div id="auto1" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
+                
+              </div>
+                      
+            </div>
+          
+          </div>
+
+
+          <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
+          
+          <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
             <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
             
           </div>
@@ -177,43 +199,43 @@
           <div class="inner">
 
             <div style="width:30%;float:left;border-right:2px solid white">
-              <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">1</h1>
+              <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">2</h1>
             </div>
 
-            <div id="auto1" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
+            <div id="auto2" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
               
             </div>
                     
           </div>
-         
+          
         </div>
 
 
         <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
-         
-         <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
-           <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
-           
-         </div>
-         
-         <div class="inner">
+          
+          <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
+              <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
+              
+            </div>
+            
+            <div class="inner">
 
-           <div style="width:30%;float:left;border-right:2px solid white">
-             <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">2</h1>
-           </div>
+              <div style="width:30%;float:left;border-right:2px solid white">
+                <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">3</h1>
+              </div>
 
-           <div id="auto2" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
-             
-           </div>
-                   
-         </div>
-        
-       </div>
+              <div id="auto3" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
+                
+              </div>
+                      
+            </div>
+          
+          </div>
 
 
-       <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
-         
-         <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
+          <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
+          
+          <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
             <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
             
           </div>
@@ -221,82 +243,60 @@
           <div class="inner">
 
             <div style="width:30%;float:left;border-right:2px solid white">
-              <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">3</h1>
+              <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">4</h1>
             </div>
 
-            <div id="auto3" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
+            <div id="auto4" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
               
             </div>
                     
           </div>
-         
+          
         </div>
 
+          
 
-        <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
-         
-         <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
-           <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
-           
-         </div>
-         
-         <div class="inner">
+        <!-- <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
+          
+          <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
+            <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
+            
+          </div>
+          
+          <div class="inner">
 
-           <div style="width:30%;float:left;border-right:2px solid white">
-             <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">4</h1>
-           </div>
+            <div style="width:30%;float:left;border-right:2px solid white">
+              <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">5</h1>
+            </div>
 
-           <div id="auto4" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
-             
-           </div>
-                   
-         </div>
-        
-       </div>
-
-        
-
-       <!-- <div class="small-box" style="height:auto;margin:10px;background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
-         
-         <div class="header" style="height:30px;background-color:grey;border-radius:15px 0 0 50px;">
-           <p style="font-size:20px;margin-left:9.5%;"><b>Loket</b></p>
-           
-         </div>
-         
-         <div class="inner">
-
-           <div style="width:30%;float:left;border-right:2px solid white">
-             <h1 style="margin-top:15px;font-size:85px;text-align:center;text-shadow: 5px 3px 6px black;">5</h1>
-           </div>
-
-           <div id="auto4" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
-             
-           </div>
-                   
-         </div>
-        
-       </div> -->
+            <div id="auto4" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:120px;">
+              
+            </div>
+                    
+          </div>
+          
+        </div> -->
 
 
+        </div>
       </div>
     </div>
+
   </div>
 
-</div>
 
 
+  <div class="footer" >
+    
+      <div style="width:90%;float:left;">
+        <marquee behavior="scroll" direction="left" style="color: white;font-size:30px;margin-top:5px;font-weight: bold"><?php echo strtoupper('Sayangi kesehatan anda..! Mohon jaga jarak anda, hindari kerumunan dan selalu gunakan masker selama berada di lingkungan Rumah Sakit untuk menekan penyebaran Virus Covid-19.')?> | <?php echo COMP_MOTTO?> </marquee>
+      </div>
+      <div style="width:10%;float:left;margin-top: 5px">
+        <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
+        <p style="margin:0;font-size:16px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
+      </div>
 
-<div class="footer" style="margin-bottom: 0px">
-  
-    <div style="width:90%;float:left;">
-      <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:9px;"><?php echo strtoupper('Sayangi kesehatan anda..! Mohon jaga jarak anda, hindari kerumunan dan selalu gunakan masker selama berada di lingkungan Rumah Sakit untuk menekan penyebaran Virus Covid-19.')?> | <?php echo COMP_MOTTO?> </marquee>
-    </div>
-    <div style="width:10%;float:left;margin-top: 5px">
-      <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
-      <p style="margin:0;font-size:16px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
-    </div>
-
-</div>
+  </div>
    
 
  <script type='text/javascript'>

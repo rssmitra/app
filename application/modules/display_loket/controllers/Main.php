@@ -57,16 +57,16 @@ class Main extends MX_Controller {
                                 </td>
                             </tr>
                             <tr style="color: black !important; font-weight: bold; line-height: 1.2">
-                                <td><span style="padding-left: 10px; font-size: 1.2em;">Nama Dokter</span><br><span style="padding-left: 10px; font-size: 2em">'.strtoupper($row_list->nama_pegawai).'</span></td>
+                                <td><span style="padding-left: 10px; font-size: 1.5em;">Nama Dokter</span><br><span style="padding-left: 10px; font-size: 2em">'.strtoupper($row_list->nama_pegawai).'</span></td>
                             </tr>
                             <tr style="color: black !important; font-weight: bold; line-height: 1.2">
-                                <td><span style="padding-left: 10px; font-size: 1.2em;">Jam Praktek</span><br><span style="padding-left: 10px; font-size: 2em">'.$this->tanggal->formatTime($row_list->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_list->jd_jam_selesai).'</span></td>
+                                <td><span style="padding-left: 10px; font-size: 1.5em;">Jam Praktek</span><br><span style="padding-left: 10px; font-size: 2em">'.$this->tanggal->formatTime($row_list->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_list->jd_jam_selesai).'</span></td>
                             </tr>
                             <tr style="color: black !important; font-weight: bold; line-height: 1.2">
-                                <td><span style="padding-left: 10px; font-size: 1.2em;">Sisa Kuota</span><br><span style="padding-left: 10px; font-size: 2em">'.$sisa_kuota.'</span></td>
+                                <td><span style="padding-left: 10px; font-size: 1.5em;">Sisa Kuota</span><br><span style="padding-left: 10px; font-size: 2em">'.$sisa_kuota.'</span></td>
                             </tr>
                             <tr style="color: black !important; font-weight: bold; line-height: 1.2">
-                                <td><span style="padding-left: 10px; font-size: 1.2em;">Keterangan</span><br><span style="padding-left: 10px; font-size: 2em">'.strtoupper($status_jadwal).''.strtoupper($row_list->jd_keterangan).'<br>'.strtoupper($row_list->keterangan).'</span></td>
+                                <td><span style="padding-left: 10px; font-size: 1.5em;">Keterangan</span><br><span style="padding-left: 10px; font-size: 2em">'.strtoupper($status_jadwal).''.strtoupper($row_list->jd_keterangan).'<br>'.strtoupper($row_list->keterangan).'</span></td>
                             </tr>
                         </table>
             </div>';
