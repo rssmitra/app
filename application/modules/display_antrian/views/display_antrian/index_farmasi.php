@@ -80,6 +80,25 @@
         color: white;
         text-align: center;
       }
+
+      .stamp {
+        position:absolute;
+        top:40%;
+        left: 24%;
+        transform: rotate(12deg);
+        color: red;
+        font-size: 7rem;
+        font-weight: 700;
+        border: 1rem solid red;
+        display: inline-block;
+        padding: 0.25rem 1rem;
+        text-transform: uppercase;
+        border-radius: 1rem;
+        /*font-family: 'Courier';*/
+        -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+        -webkit-mask-size: 944px 604px;
+        mix-blend-mode: hard-light;
+      }
     </style>
   </head>
 
@@ -127,6 +146,7 @@
             </script>
           </div>
           <div class="page-content-main" style="background-color: black !important">
+            
             <div class="no-padding" style="width:90%;float:left;">
               <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:3px;"> Bagi pasien yang belum terdaftar pada Display Antrian Instalasi Farmasi diharapkan untuk menunggu antrian diluar agar tidak terjadi kerumunuan di ruang tunggu apotik. | <?php echo COMP_MOTTO?> </marquee>
             </div>
@@ -137,6 +157,7 @@
             <div class="row no-padding">
               <div class="col-md-8 no-padding" style="padding-right: 5px !important">
                 <div class="col-xs-12 widget-container-col ui-sortable no-padding" style="padding-right: 20px" id="widget-container-col-1">
+                  <span style="" class="stamp is-nope-2">Dalam Percobaan</span>
                   <?php for($box=1;$box<6;$box++) :?>
                     <div class="alert alert-success" style="background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
                       <div class="text-no" style="width:15%;float:left;border-right:2px solid white; margin-right: 20px; text-align: center">

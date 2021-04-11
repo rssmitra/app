@@ -94,22 +94,22 @@
       }
 
       .stamp {
-      position:absolute;
-      top:40%;
-      transform: rotate(12deg);
-      color: red;
-      font-size: 6rem;
-      font-weight: 700;
-      border: 0.25rem solid red;
-      display: inline-block;
-      padding: 0.25rem 1rem;
-      text-transform: uppercase;
-      border-radius: 1rem;
-      /*font-family: 'Courier';*/
-      -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
-      -webkit-mask-size: 944px 604px;
-      mix-blend-mode: hard-light;
-    }
+        position:absolute;
+        top:40%;
+        transform: rotate(12deg);
+        color: red;
+        font-size: 6rem;
+        font-weight: 700;
+        border: 0.25rem solid red;
+        display: inline-block;
+        padding: 0.25rem 1rem;
+        text-transform: uppercase;
+        border-radius: 1rem;
+        /*font-family: 'Courier';*/
+        -webkit-mask-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png');
+        -webkit-mask-size: 944px 604px;
+        mix-blend-mode: hard-light;
+      }
 
     .is-nope {
       color: #D23;
