@@ -89,12 +89,12 @@
 									</a>
 								</li>
 
-								<li>
+								<!-- <li>
 									<a href="#" onclick="getMenu('poli')">
 										<i class="ace-icon fa fa-cog bigger-110 blue"></i>
 										Antrian Poli/Klinik
 									</a>
-								</li>
+								</li> -->
 							</ul>
 						</li>
 
@@ -227,65 +227,9 @@
       });
 
       $(document).ready(function(){
-  
-        $('#form_tmp_user').ajaxForm({
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          uploadProgress: function(event, position, total, percentComplete) {
-          },
-          complete: function(xhr) {     
-            var data=xhr.responseText;
-            var jsonResponse = JSON.parse(data);
-
-            if(jsonResponse.status === 200){
-              $.achtung({message: jsonResponse.message, timeout:3});
-              $('#message_success').show({
-                  speed: 'slow',
-                  timeout: 5000,
-              });
-            }else{
-              $.achtung({message: jsonResponse.message, timeout:5});
-            }
-            achtungHideLoader();
-          }
-        });
-
-        $('#form_update_profile').ajaxForm({
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          uploadProgress: function(event, position, total, percentComplete) {
-          },
-          complete: function(xhr) {     
-            var data=xhr.responseText;
-            var jsonResponse = JSON.parse(data);
-
-            if(jsonResponse.status === 200){
-              $.achtung({message: jsonResponse.message, timeout:3});
-              $('#message_success').show({
-                  speed: 'slow',
-                  timeout: 1000,
-              });
-            }else{
-              $.achtung({message: jsonResponse.message, timeout:5});
-            }
-            achtungHideLoader();
-          }
-        });
-
-
+  			$('#page-area-content').load('antrian_pendaftaran_pasien');
       })
 
-      function exc_my_account() {
-        $('#form_tmp_user').submit();
-        return false;
-      }
-
-      function exc_update_profile() {
-        $('#form_update_profile').submit();
-        return false;
-      }
 
       
     </script>

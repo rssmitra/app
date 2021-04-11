@@ -91,7 +91,6 @@
               <th class="center">No</th>
               <th>Kode</th>
               <th>Tgl Transaksi</th>
-              <th>No Mr</th>
               <th>Nama Pasien</th>
               <th>Pelayanan</th>
               <!-- <th>Status</th> -->

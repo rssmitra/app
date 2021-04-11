@@ -98,8 +98,8 @@ class Dokter extends MX_Controller {
             //$row[] = $row_list->nama_bagian;
             $row[] = $file_ttd;
             $row[] = $file_stamp;
-            $status_dr = ($row_list->status_dr == 1)? '<span class="label label-xs label-success"> Aktif </span>': '<span class="label label-xs label-danger"> Tidak Aktif </span>';
-            $row[] = '<div class="center">'.$status_dr.'</div>';
+            $status = ($row_list->status == 1)? '<span class="label label-xs label-success"> Tidak Aktif </span>': '<span class="label label-xs label-danger"> Aktif </span>';
+            $row[] = '<div class="center">'.$status.'</div>';
             $row[] = '<div class="center"><div class="hidden-sm hidden-xs action-buttons">
                         '.$this->authuser->show_button('reference/tabel/dokter','R',$row_list->kode_dokter,2).'
                         '.$this->authuser->show_button('reference/tabel/dokter','U',$row_list->kode_dokter,2).'
@@ -136,12 +136,13 @@ class Dokter extends MX_Controller {
         // print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('id', 'Kode Dokter', 'trim|required');
+        $val->set_rules('id', 'Kode Dokter', 'trim');
         $val->set_rules('nama_pegawai', 'Nama Pegawai', 'trim|required');
         $val->set_rules('no_sip', 'No SIP', 'trim|required');
         $val->set_rules('kode_spesialisasi', 'Spesialisasi', 'trim|required');
         $val->set_rules('no_mr', 'No MR', 'trim');
-        $val->set_rules('status', 'No MR', 'trim');
+        $val->set_rules('status', 'Status Kedinasan', 'trim');
+        $val->set_rules('status_dr', 'Tipe Dokter', 'trim');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -154,8 +155,7 @@ class Dokter extends MX_Controller {
         {                       
             $this->db->trans_begin();
             $id = ($this->input->post('id'))?$this->input->post('id'):0;
-            //printf($id);
-            //break;
+
             $dataexc = array(
                 'nama_pegawai' => $val->set_value('nama_pegawai'),
                 'no_sip' => $val->set_value('no_sip'),
@@ -188,13 +188,41 @@ class Dokter extends MX_Controller {
                 $dataexc['stamp'] = $this->upload_file->doUpload('stamp', PATH_TTD_FILE);
             }
 
+            if(isset($_FILES['foto']['name'])){
+                /*hapus dulu file yang lama*/
+                if( $id != 0 ){
+                    $profile = $this->dokter->get_by_id($id);
+                    // if ($profile->foto != NULL || $profile->foto != 0) {
+                    if (file_exists(PATH_PHOTO_PEGAWAI.$profile->url_foto_karyawan)) {
+                        unlink(PATH_PHOTO_PEGAWAI.$profile->url_foto_karyawan);
+                    }
+                }
+                $dataexc['url_foto_karyawan'] = $this->upload_file->doUpload('foto', PATH_PHOTO_PEGAWAI);
+            }
+
             if($id==0){
-               $this->dokter->save('mt_karyawan', $dataexc);
-                $newId = $this->db->insert_id();
+                // get no induk pegawai
+                $IDP = $this->master->createIDPegawai();
+                $dataexc['no_induk'] = $IDP['no_induk'];
+                $dataexc['urutan_karyawan'] = $IDP['no_urut'];
+                $dataexc['kode_dokter'] = $IDP['no_urut']; //no urut = kode dokter
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                
+                $this->dokter->save('mt_karyawan', $dataexc);
+                $newId = $IDP['no_urut'];
+
+                // insert new dokter bagian
+                $datadrbag['kd_bagian'] = $_POST['kodebagian'];
+                $datadrbag['kode_dokter'] = $newId;
+                $this->dokter->save('mt_dokter_bagian', $datadrbag);
                
             }else{
-                 /*update record*/
+                /*update record*/
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 $this->dokter->update('mt_karyawan', array('kode_dokter' => $id), $dataexc);
+                $newId = $id;
                 
             }
 

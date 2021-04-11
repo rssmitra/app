@@ -80,8 +80,7 @@ class Pemanggilan_pasien extends MX_Controller {
 
             // $row[] = '<div class="center">'.$row_list->no_resep.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = strtoupper($row_list->nama_pasien);
+            $row[] = '<div style="font-size: 16px; font-weight: bold">'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</div>';
             // $row[] = $row_list->dokter_pengirim;
             $row[] = $row_list->nama_pelayanan;
             // $row[] = ($row_list->status_terima == 1)?'Selesai':'Pending';

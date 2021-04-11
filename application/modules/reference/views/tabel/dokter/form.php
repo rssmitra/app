@@ -87,6 +87,26 @@ $(document).ready(function(){
                     <?php echo $this->master->custom_selection($params = array('table' => 'mt_spesialisasi_dokter', 'id' => 'kode_spesialisasi', 'name' => 'nama_spesialisasi', 'where' => array()), isset($value)?$value->kode_spesialisasi:'' , 'kode_spesialisasi', 'kode_spesialisasi', 'form-control', '', '') ?>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label class="control-label col-md-2">Tipe Dokter</label>
+                  <div class="col-md-8">
+                    <div class="radio">
+                          <label>
+                            <input name="status_dr" type="radio" class="ace" value="0" <?php echo isset($value) ? ($value->status_dr == '0') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Junior</span>
+                          </label>
+                          <label>
+                            <input name="status_dr" type="radio" class="ace" value="1" <?php echo isset($value) ? ($value->status_dr == '1') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl">Senior</span>
+                          </label>
+                          <label>
+                            <input name="status_dr" type="radio" class="ace" value="2" <?php echo isset($value) ? ($value->status_dr == '2') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl">Professor</span>
+                          </label>
+                    </div>
+                  </div>
+                </div>
+
                 <br>
                 <!-- tambahkan unit -->
                 <p><b>UNIT TUGAS</b></p>
@@ -95,10 +115,32 @@ $(document).ready(function(){
                   <div class="col-md-4">
                     <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), isset($value)?$value->kode_bagian:'' , 'kodebagian', 'kodebagian', 'form-control', '', '') ?>
                   </div>
-                </div>                
+                </div>  
+                 <!-- status kedinasan -->
+                <div class="form-group">
+                  <label class="control-label col-md-2">Status Kedinasan</label>
+                  <div class="col-md-8">
+                    <div class="radio">
+                          <label>
+                            <input name="status" type="radio" class="ace" value="1" <?php echo isset($value) ? ($value->status == '1') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Aktif</span>
+                          </label>
+                          <label>
+                            <input name="status" type="radio" class="ace" value="0" <?php echo isset($value) ? ($value->status == '0') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl">Tidak Aktif</span>
+                          </label>
+                    </div>
+                  </div>
+                </div>              
                 <br>
                 <!-- ttd dan stamp -->
                 <p><b>TANDA TANGAN DOKTER DAN STEMPEL</b></p>
+                <div class="form-group">
+                  <label class="control-label col-md-2">Foto Profil</label>
+                  <div class="col-md-3">
+                    <input name="foto" id="foto" value="" type="file" class="form-control">
+                  </div>
+                </div>
                 <div class="form-group">
                   <label class="control-label col-md-2">Signature</label>
                   <div class="col-md-3">
@@ -112,21 +154,7 @@ $(document).ready(function(){
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label class="control-label col-md-2">Status Aktif</label>
-                  <div class="col-md-2">
-                    <div class="radio">
-                          <label>
-                            <input name="status" type="radio" class="ace" value="1" <?php echo isset($value) ? ($value->status_dr == '1') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
-                            <span class="lbl"> Aktif</span>
-                          </label>
-                          <label>
-                            <input name="status" type="radio" class="ace" value="0" <?php echo isset($value) ? ($value->status_dr == '0') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
-                            <span class="lbl">Tidak Aktif</span>
-                          </label>
-                    </div>
-                  </div>
-                </div>
+               
                 <div class="form-actions center">
 
                   <a onclick="getMenu('reference/tabel/dokter')" href="#" class="btn btn-sm btn-success">

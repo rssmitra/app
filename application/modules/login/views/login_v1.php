@@ -31,6 +31,11 @@
         document.head.innerHTML += '<link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/login/pages/css/windows.chrome.fix.css" />'
     }
     </script>
+    <style type="text/css">
+      .pull-bottom {
+        position: relative !important; 
+      }
+    </style>
   </head>
   <body class="fixed-header   ">
     <!-- START PAGE-CONTAINER -->
@@ -59,8 +64,9 @@
       <!-- START Login Right Container-->
       <div class="login-container bg-white">
         <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-50 m-t-30 sm-p-l-15 sm-p-r-15 sm-p-t-40">
-          <h2><?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?> v.2.0</h2>
-          <small style="padding-top:-30px !important; font-size: 14px"><?php echo APPS_NAME_LONG; ?> Versi 2.0</small>
+          <!-- <h2><?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?> v.2.0</h2> -->
+          <h2>Smart Hospital System 4.0</h2>
+          <small style="padding-top:-30px !important; font-size: 14px">SHS-4.0 v.1.0 &copy;  RS Setia Mitra </small>
           <p class="p-t-35">LOGIN FORM</p>
           <!-- START Login Form -->
           <form id="form-login" class="p-t-15" method="POST" role="form" action="<?php echo base_url().'login/process'?>" autocomplete="off">
@@ -99,7 +105,7 @@
             <div class="m-b-30 p-r-80 sm-m-t-20 sm-p-r-15 sm-p-b-20 clearfix">
               <div class="col-sm-12 no-padding m-t-12">
                 <p style="text-align: justify; padding-left: 10px !important">
-                  Copyright <?php echo date('Y')?> @ IT Department <?php echo COMP_LONG; ?>
+                  Copyright 2018 - <?php echo date('Y')?> @ IT Department <?php echo COMP_LONG; ?>
                 </p>
               </div>
             </div>

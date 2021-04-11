@@ -1001,6 +1001,17 @@ final Class Master {
         }
         $new_kode_akun = implode('.', $new_num);
 	}
+
+	function createIDPegawai(){
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		$no_urut = $this->get_max_number('mt_karyawan','urutan_karyawan', '');
+		$rand = rand(1,99);
+		$no_induk = '0'.$rand.''.$no_urut.'';
+		return array('no_urut' => $no_urut, 'no_induk' => $no_induk);
+	}
+
+
 }
 
 ?> 

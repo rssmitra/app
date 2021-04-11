@@ -33,7 +33,7 @@
             $.each(data, function (i, o) {    
                console.log(data);
                if (i < 6) {
-                $('<span>'+o.nama_pasien.substr(0,20)+'</span>').appendTo($('#antrian-ke-'+i+''));
+                $('<span>'+o.nama_pasien.substr(0,15)+'</span>').appendTo($('#antrian-ke-'+i+''));
                }
 
                if (i > 5) {
@@ -139,10 +139,10 @@
                 <div class="col-xs-12 widget-container-col ui-sortable no-padding" style="padding-right: 20px" id="widget-container-col-1">
                   <?php for($box=1;$box<6;$box++) :?>
                     <div class="alert alert-success" style="background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
-                      <div class="text-no" style="width:20%;float:left;border-right:2px solid white; margin-right: 20px; text-align: center">
+                      <div class="text-no" style="width:15%;float:left;border-right:2px solid white; margin-right: 20px; text-align: center">
                         <span><?php echo $box?></span>
                       </div>
-                      <div class="nama-pasien-antrian" id="antrian-ke-<?php echo $box;?>"></div> 
+                      <div class="nama-pasien-antrian" id="antrian-ke-<?php echo $box;?>" style="width: 85%">&nbsp;</div> 
                     </div>
                   <?php endfor; ?>
                 </div>

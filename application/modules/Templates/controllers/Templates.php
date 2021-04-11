@@ -1518,14 +1518,16 @@ class Templates extends MX_Controller {
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
-            // $no_mr = '00232607';
-            // $nama_pasien = 'Azzahra Septika Putri';
-            // $umur = '20';
-            // $jk_ = 'Perempuan';
-            // $tgl_daftar = '22 Feb 2021 - 11:29:02';
-            // $tgl_periksa = '22 Feb 2021 - 11:31:09';
+            // $pm_ = 453059; 
+            // $no_mr = '00211762';
+            // $nama_pasien = 'Muhammad Amin Lubis';
+            // $umur = '30';
+            // $jk_ = 'Pria';
+            // $tgl_daftar = '4 April 2021 - 10:01:02';
+            // $tgl_periksa = '4 April 2021 - 10:32:12';
 
             // form db
+            $pm_ = $pm;
             $no_mr = $data->reg_data->no_mr;
             $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
             $umur = $data->reg_data->umur;
@@ -1537,7 +1539,7 @@ class Templates extends MX_Controller {
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
                             <td width="150px">No. Penunjang</td>
-                            <td width="250px">: '.$pm.'</td>
+                            <td width="250px">: '.$pm_.'</td>
                             <td width="100px">No. RM</td>
                             <td width="250px">: '.$no_mr.'</td>
                         </tr>

@@ -21,6 +21,7 @@ class Process_entry_resep extends MX_Controller {
         $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
         $this->load->model('Retur_obat_model', 'Retur_obat');
         $this->load->library('Stok_barang');
+        $this->load->library('Print_escpos'); 
         $this->load->helper('security');
         /*enable profiler*/
         $this->output->enable_profiler(false);
@@ -471,6 +472,26 @@ class Process_entry_resep extends MX_Controller {
         
         $this->load->view('farmasi/preview_entry', $data);
 
+    }
+
+    public function print_tracer_gudang($kode_trans_far)
+    {   
+        // $data = array();
+        $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
+        $getData = array();
+        $getDataResepKronis = array();
+        foreach($resep_log as $row){
+            $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
+            $row['racikan'][] = $racikan;
+            $getData[] = $row;
+            if($row['jumlah_obat_23'] > 0){
+                $getDataResepKronis[] = $row;
+            }
+        }
+        $data['resepAll'] = array_merge($getData, $getDataResepKronis);
+        $data['no_mr'] = isset($getData[0]['no_mr'])?$getData[0]['no_mr']:0;
+        // $this->load->view('farmasi/preview_tracer', $data);
+        $this->print_escpos->print_resep_gudang($data);
     }
 
 

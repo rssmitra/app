@@ -48,6 +48,11 @@ class Antrian extends MX_Controller {
         $this->load->view('Antrian/pendaftaran_pasien', $data);
     }
 
+     public function antrian_pendaftaran_pasien_dt() {
+        $data = $this->Main->get_datatables_display();
+        echo json_encode($data);
+    }
+
     public function antrian_instalasi_farmasi() {
         
         $data = [];

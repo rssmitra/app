@@ -18,7 +18,7 @@
             <?php for($i=1;$i<6;$i++) : ?>
               	<div class="alert alert-success" style="background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;font-weight: bold">
                 <div class="nama-pasien-antrian-small" id="antrian-ke-<?php echo $i;?>" style="text-align: left"></div>
-            	</div>
+            	</div> 
             <?php endfor; ?>
         	</div>
 

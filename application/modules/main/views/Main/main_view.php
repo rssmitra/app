@@ -40,9 +40,13 @@
         <div class="navbar-header pull-left">
           <!-- #section:basics/navbar.layout.brand -->
           <a href="#" class="navbar-brand">
-            <small>
+            <!-- <small>
               <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="150px" style="margin: -16px -7px -14px">&nbsp;
               <?php echo $app->app_name?>
+            </small> -->
+            <small style="color: black; font-weight: bold; font-size: 18px">
+            <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="150px" style="margin: -16px -7px -14px">
+              <!-- Smart Hospital System 4.0  -->
             </small>
           </a>
 
