@@ -410,6 +410,6 @@
 
   function print_tracer(kode_trans_far){
     preventDefault();
-    PopupCenter('farmasi/Process_entry_resep/print_tracer_gudang/'+kode_trans_far+'', 'TRACER GUDANG FARMASI', 500, 600);
+    PopupCenter('farmasi/Process_entry_resep/print_tracer_gudang_view/'+kode_trans_far+'', 'TRACER GUDANG FARMASI', 500, 600);
   }
 </script>
