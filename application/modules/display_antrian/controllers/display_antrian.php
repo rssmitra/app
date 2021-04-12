@@ -50,10 +50,10 @@ class Display_antrian extends MX_Controller {
    {
        # code...
        $data = $this->display_antrian->get_antrian_farmasi();
+       $total = count($data);
+       // echo '<pre>';print_r($data);die;
 
-       // print_r($data);die;
-
-       echo json_encode($data);
+       echo json_encode(array('total' => $total,'result' => $data));
        //echo $nomor_loket;
    }
 

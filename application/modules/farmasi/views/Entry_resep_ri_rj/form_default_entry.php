@@ -308,13 +308,13 @@ function delete_resep(myid, flag){
   
 }
 
-function resep_farmasi_selesai(){
+function resep_farmasi_selesai(type){
   preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
         url: 'farmasi/process_entry_resep/process_selesai_resep',
         type: "post",
-        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val(), 'nama_pasien' : $('#nama_pasien').val(), 'no_mr' : $('#no_mr').val() },
+        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val(), 'nama_pasien' : $('#nama_pasien').val(), 'no_mr' : $('#no_mr').val(), 'submit': type, 'is_rollback' : $('#is_rollback').val() },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -513,19 +513,31 @@ $('select[name="jenis_resep"]').change(function () {
             <i class="ace-icon fa fa-plus-circle icon-on-right bigger-110"></i>
             Tambahkan
           </button>
-          <button type="button" id="btn_reset" onclick="reset_form()" name="submit" class="btn btn-xs btn-danger">
+          <!-- <button type="button" id="btn_reset" onclick="reset_form()" name="submit" class="btn btn-xs btn-danger">
             <i class="ace-icon fa fa-times-circle icon-on-right bigger-110"></i>
             Batalkan
-          </button>
+          </button> -->
           <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
                 <span class="ace-icon fa fa-flask icon-on-right bigger-110"></span>
                 Resep Racikan
           </button>
 
-          <button type="button" id="btn_resep_selesai" class="btn btn-success btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai()">
+          <!-- <button type="button" id="btn_resep_selesai" class="btn btn-success btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai()">
                 <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
                 Resep Selesai
+          </button> -->
+
+          <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
+                <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
+                Resep Selesai <b style="color: black">(Ditunggu)</b>
           </button>
+
+          <button type="button" id="btn_resep_selesai_diantar" class="btn btn-success btn-xs" name="submit" value="resep_selesai_diantar" onclick="resep_farmasi_selesai('diantar')">
+                <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
+                Resep Selesai <b style="color: black">(Diantar)</b>
+          </button>
+
+
       <?php else : ?>
         <button type="button" id="btn_rollback" onclick="rollback_by_kode_trans_far(<?php echo isset($value->kode_trans_far) ?$value->kode_trans_far : ''?>, '<?php echo $flag?>')" class="btn btn-danger btn-xs" name="rollback" value="rollback">
             <span class="ace-icon fa fa-refresh icon-on-right bigger-110"></span>

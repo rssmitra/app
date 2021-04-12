@@ -292,7 +292,7 @@
           <i class="fa fa-undo dark"></i> Rollback Resep
         </button>
         <?php endif; ?>
-        <button onclick="getMenu('farmasi/Etiket_obat/form/<?php echo $kode_trans_far; ?>?flag=<?php echo $flag; ?>')" class="btn btn-xs btn-default" title="etiket">
+        <button onclick="print_tracer(<?php echo $kode_trans_far; ?>)" class="btn btn-xs btn-default" title="etiket">
           <i class="fa fa-print dark"></i> Kirim Tracer ke Gudang
         </button>
       </div>
@@ -408,4 +408,8 @@
 
   }
 
+  function print_tracer(kode_trans_far){
+    preventDefault();
+    PopupCenter('farmasi/Process_entry_resep/print_tracer_gudang/'+kode_trans_far+'', 'TRACER GUDANG FARMASI', 500, 600);
+  }
 </script>

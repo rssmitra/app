@@ -2,22 +2,22 @@
 
   <div class="col-xs-12">
 
-    <?php if(count($resep) > 0) : ?>
+    <?php if(count($resepAll) > 0) : ?>
 
-      <div class="col-xs-<?php echo (count($resep_kronis) > 0) ? 6 : 12 ?>">
+      <div class="col-xs-<?php echo (count($resepAll) > 0) ? 6 : 12 ?>">
           
           <table>
           <tr>
               <td width="100px">Kode</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $kode_trans_far; ?> - <?php echo strtoupper($resep[0]['no_resep'])?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resepAll[0]['kode_trans_far']; ?> - <?php echo strtoupper($resepAll[0]['no_resep'])?></td>
             </tr>
             <tr>
               <td width="100px">Tanggal</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $this->tanggal->formatDateTime($resep[0]['tgl_trans']) ?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $this->tanggal->formatDateTime($resepAll[0]['tgl_trans']) ?></td>
             </tr>
             <tr>
               <td width="100px">Nama Pasien</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['nama_pasien'])?> - <?php echo $no_mr?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resepAll[0]['nama_pasien'])?> - <?php echo $no_mr?></td>
             </tr>
             
           </table>
@@ -81,7 +81,7 @@
               <td style="text-align: center; width: 40%">&nbsp;</td>
               <td style="text-align: center; width: 30%">
                 <span style="font-size: 14px"><b>Petugas</b></span><br>
-                <?php $decode = json_decode($resep[0]['created_by']); echo isset($decode->fullname)?$decode->fullname:$this->session->userdata('user')->fullname;?>
+                <?php $decode = json_decode($resepAll[0]['created_by']); echo isset($decode->fullname)?$decode->fullname:$this->session->userdata('user')->fullname;?>
                 <br>
 
               </td>

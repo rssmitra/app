@@ -26,14 +26,15 @@
         setInterval( function () {
         
           $.getJSON("<?php echo site_url('display_antrian/reload_antrian_farmasi') ?>", '', function (data) {              
-            console.log(data)
+            console.log(data.result)
             $('.nama-pasien-antrian span').remove();
             $('.nama-pasien-antrian-small span').remove();
 
-            $.each(data, function (i, o) {    
-               console.log(data);
+            $.each(data.result, function (i, o) {    
+               console.log(o);
                if (i < 6) {
-                $('<span>'+o.nama_pasien.substr(0,15)+'</span>').appendTo($('#antrian-ke-'+i+''));
+                var blink_me = (i == 1) ? 'class="blink_me"' : '';
+                $('<span '+blink_me+'>'+o.nama_pasien.substr(0,15)+'</span>').appendTo($('#antrian-ke-'+i+''));
                }
 
                if (i > 5) {
@@ -42,6 +43,9 @@
 
             });
 
+            $('#total-antrian').text(data.total);
+
+            console.log(data.total);
           });
 
         }, 2000 );
@@ -57,6 +61,16 @@
     </script>
     <style type="text/css">
       
+      .blink_me {
+        animation: blinker 3s linear infinite;
+      }
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
+
       @font-face { font-family: MyriadPro; src: url('assets/fonts/MyriadPro-Bold.otf'); } 
 
       .custom-box-utama{
@@ -171,12 +185,30 @@
               </div>
               <div class="col-md-4 no-padding">
                 <div class="col-xs-12 widget-container-col ui-sortable no-padding" id="widget-container-col-1">
-                  <?php for($i=6;$i<12;$i++) :?>
+                  <?php for($i=6;$i<9;$i++) :?>
                     <div class="alert alert-success" style="background-image: linear-gradient(#bbf75a, #9be820d9); color: black !important; font-weight: bold">
                       <div class="nama-pasien-antrian-small" id="antrian-ke-<?php echo $i;?>" style="text-align: left"></div>
                     </div>
                   <?php endfor; ?>
                 </div>
+                <div class="col-md-12 no-padding" style="padding-left: 5px">
+                  <div class="alert alert-success center" style="background-image: linear-gradient(#bbf75a, #e86120d9); color: black !important; font-weight: bold">
+                      <span style="font-size: 1.5em; font-weight: bold">Total antrian dalam proses</span><br>
+                      <span style="font-size: 4em; font-weight: bold" id="total-antrian">0</span><br><span style="font-size: 2em; font-weight: bold" id="txt-pasien"> (Resep Obat) </span>
+                    </div>
+                </div>
+                <div class="col-md-12 no-padding" style="padding-left: 5px">
+                  <div class="alert alert-success center" style="background-image: linear-gradient(#bbf75a, #2082e8d9); color: black !important; font-weight: bold">
+                      <span style="font-size: 3em; font-weight: bold" class="blink_me">LAYANAN ANTAR OBAT KE RUMAH</span><br>
+                      <span style="font-size: 1.5em; font-weight: bold">"Jika Bosan Menunggu Lama, Kami Yang Antar Kerumah Anda"</span>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6 no-padding" style="padding-left: 5px">
+                  <div class="alert alert-success" style="background-image: linear-gradient(#bbf75a, #20d6e8d9); color: black !important; font-weight: bold">
+                      <span style="font-size: 1.5em; font-weight: bold">Sudah dilayani</span><br>
+                      <span style="font-size: 3em; font-weight: bold">153</span>
+                    </div>
+                </div> -->
               </div><!-- /.col -->
             </div><!-- /.row -->
           </div><!-- /.page-content -->

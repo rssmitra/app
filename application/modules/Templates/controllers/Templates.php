@@ -1519,12 +1519,12 @@ class Templates extends MX_Controller {
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
             // $pm_ = 453059; 
-            // $no_mr = '00211762';
-            // $nama_pasien = 'Muhammad Amin Lubis';
-            // $umur = '30';
-            // $jk_ = 'Pria';
-            // $tgl_daftar = '4 April 2021 - 10:01:02';
-            // $tgl_periksa = '4 April 2021 - 10:32:12';
+            // $no_mr = '00267197';
+            // $nama_pasien = 'Sahibatul Aslamiah Lubis';
+            // $umur = '27';
+            // $jk_ = 'Perempuan';
+            // $tgl_daftar = '9 April 2021 - 10:01:02';
+            // $tgl_periksa = '9 April 2021 - 10:32:12';
 
             // form db
             $pm_ = $pm;
@@ -1533,7 +1533,7 @@ class Templates extends MX_Controller {
             $umur = $data->reg_data->umur;
             $jk_ = $jk;
             $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-            $tgl_periksa = $tgl_pemeriksaan;
+            // $tgl_periksa = $tgl_pemeriksaan;
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">

@@ -518,13 +518,13 @@ function delete_resep(myid, flag){
   
 }
 
-function resep_farmasi_selesai(){
+function resep_farmasi_selesai(type){
   preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
         url: 'farmasi/process_entry_resep/process_selesai_resep',
         type: "post",
-        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val(), 'nama_pasien' : $('#nama_pasien').val(), 'no_mr' : $('#no_mr').val() },
+        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val(), 'nama_pasien' : $('#nama_pasien').val(), 'no_mr' : $('#no_mr').val(), 'submit' : type, 'is_rollback' : $('#is_rollback').val() },
         dataType: "json",
         beforeSend: function() {
           // achtungShowLoader();  
@@ -654,6 +654,7 @@ function changeUrgensi(){
       <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
       <input type="hidden" name="kode_ri" id="kode_ri" class="form-control" value="<?php echo isset($value->kode_ri)?$value->kode_ri:0?>" >
       <input class="form-control" name="harga_r" id="harga_r" type="hidden" value="500" readonly />
+      <input class="form-control" name="is_rollback" id="is_rollback" type="hidden" value="<?php echo isset($_GET['rollback']) ? 1 : 0 ; ?>" readonly />
       
 
       <div class="row">
@@ -676,7 +677,7 @@ function changeUrgensi(){
 
           <div class="widget-box">
             <div class="widget-header">
-                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep Farmasi</span>
+                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep</span>
               <div class="widget-toolbar">
                 <?php if($value->status_tebus != 1) :?>
                 <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
@@ -684,9 +685,14 @@ function changeUrgensi(){
                   Resep Racikan
                 </button>
 
-                <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai()">
+                <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
                       <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
-                      Resep Selesai
+                      Resep Selesai <b style="color: black">(Ditunggu)</b>
+                </button>
+
+                <button type="button" id="btn_resep_selesai_diantar" class="btn btn-success btn-xs" name="submit" value="resep_selesai_diantar" onclick="resep_farmasi_selesai('diantar')">
+                      <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
+                      Resep Selesai <b style="color: black">(Diantar)</b>
                 </button>
                 <?php 
                   else: 
