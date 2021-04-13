@@ -310,7 +310,7 @@ class Print_escpos{
 
     public function print_resep_gudang($params)
     {
-        echo '<pre>';print_r($params);
+        // echo '<pre>';print_r($params);
         # code...
         $CI =& get_instance();
         $dt_index = $params['resep'][0];

@@ -495,7 +495,7 @@ class Process_entry_resep extends MX_Controller {
         }
         $data['resep'] = $getData;
         $data['resep_kronis'] = $getDataResepKronis;
-        
+
         // foreach($resep_log as $row){
         //     $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
         //     $row['racikan'][] = $racikan;
@@ -523,7 +523,9 @@ class Process_entry_resep extends MX_Controller {
                 $getDataResepKronis[] = $row;
             }
         }
-        $data['resepAll'] = array_merge($getData, $getDataResepKronis);
+        $data['resep'] = $getData;
+        $data['resep_kronis'] = $getDataResepKronis;
+        
         $data['no_mr'] = isset($getData[0]['no_mr'])?$getData[0]['no_mr']:0;
         $this->print_escpos->print_resep_gudang($data);
         $this->load->view('farmasi/preview_tracer', $data);
