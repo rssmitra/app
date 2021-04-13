@@ -340,7 +340,7 @@ class Print_escpos{
         // end header
 
         // kode trans
-        $flag_resep_diantar = ($dt_index['resep_diantar'] == 'N') ? '(DITUNGGU)' : '(DIANTAR / DITINGGAL)'; 
+        $flag_resep_diantar = ($dt_index['resep_diantar'] != 'Y') ? '(DITUNGGU)' : '(DIANTAR / DITINGGAL)'; 
 
         $font = printer_create_font("Arial", 40, 15, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
