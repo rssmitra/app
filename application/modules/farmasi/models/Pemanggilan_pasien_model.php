@@ -20,9 +20,8 @@ class Pemanggilan_pasien_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_mt_profit_margin.kode_profit=fr_tc_far.kode_profit','left');
 		$this->db->where('status_terima NOT IN (1,2)');
-		$this->db->where('flag_trans', 'RJ');
+		$this->db->where('resep_diantar', 'N');
 		$this->db->where('CAST(tgl_trans as DATE) = '."'".date('Y-m-d')."'".'');
-		$this->db->group_by($this->select);
 
 	}
 
