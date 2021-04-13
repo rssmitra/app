@@ -310,10 +310,10 @@ class Print_escpos{
 
     public function print_resep_gudang($params)
     {
-        // echo '<pre>';print_r($params);
+        echo '<pre>';print_r($params);
         # code...
         $CI =& get_instance();
-        $dt_index = $params['resepAll'][0];
+        $dt_index = $params['resep'][0];
         $petugas = json_decode($dt_index['created_by']);
         $p = printer_open("\\\\10.10.10.206\EPSON TM-T88V(tracer obat)");
        
@@ -387,7 +387,7 @@ class Print_escpos{
 
         $linespace = 185;
         $no = 0;
-        foreach($params['resepAll'] as $row_dt){
+        foreach($params['resep'] as $row_dt){
             $no++;
             // no
             $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
@@ -406,9 +406,45 @@ class Print_escpos{
 
             $linespace += 30 ;
         }
+        $count_dt_above = count($params['resep']);
+        $linespace2 = $linespace + ($count_dt_above * 30);
+
+        // line
+        $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
+        printer_select_pen($p, $pen);
+        printer_draw_line($p, 10, $linespace2, 610, $linespace2);
+        
+        $linespace3 = $linespace2 + 30;
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "RESEP KRONIS", $var_margin_left, $linespace3);
+
+        $linespace4 = $linespace3 + 30;
+
+        $num = 0;
+        foreach($params['resep_kronis'] as $row_dtk){
+            $num++;
+            // no
+            $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+            printer_select_font($p, $font);
+            printer_draw_text($p, $num.".", 10, $linespace4);
+            // nama obat
+            $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+            printer_select_font($p, $font);
+            $txt_length = (strlen($row_dtk['nama_brg']) > 30) ? 'xxx' : '';
+            printer_draw_text($p, substr($row_dtk['nama_brg'], 0, 30)."".$txt_length, 30 , $linespace4);
+            // jumlah
+            $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+            printer_select_font($p, $font);
+            // printer_set_option($p, PRINTER_TEXT_ALIGN, PRINTER_TA_RIGHT);
+            printer_draw_text($p, "".$row_dtk['jumlah_obat_23']." ".strtolower($row_dtk['satuan_kecil'])."", 430 , $linespace4);
+
+            $linespace4 += 30 ;
+        }
 
         // keterangan
-        $ln_keterangan = $linespace + 5;
+        $ln_keterangan = $linespace4 + 5;
         // $font = printer_create_font("Arial", 30, 10, PRINTER_FW_BOLD, false, false, false, 0);
         // printer_select_font($p, $font);
         // printer_draw_text($p, "Keterangan : " , $var_margin_left, $ln_keterangan);
