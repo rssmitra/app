@@ -145,7 +145,7 @@ class Display_antrian_model extends CI_Model {
 	public function get_antrian_farmasi()
 	{
 		# code...
-		$query = "select * from fr_tc_far where CAST(tgl_trans as DATE) = '".date('Y-m-d')."' and status_terima not in(1,2) and resep_diantar='N' order by kode_trans_far ASC";
+		$query = "select * from fr_tc_far where CAST(tgl_trans as DATE) = '".date('Y-m-d')."' and status_terima not in(1,2) and resep_diantar != 'Y' order by kode_trans_far ASC";
 		// $query = "select * from fr_tc_far where CAST(tgl_trans as DATE) = '2021-04-12' and status_terima not in(1,2) and flag_trans='RJ' order by kode_trans_far ASC";
 		$result = $this->db->query($query);
 		$no=0;
