@@ -310,7 +310,7 @@ class Print_escpos{
 
     public function print_resep_gudang($params)
     {
-        // echo '<pre>';print_r($params);
+        // echo '<pre>';print_r($params); die;
         # code...
         $CI =& get_instance();
         $dt_index = $params['resep'][0];
@@ -340,9 +340,15 @@ class Print_escpos{
         // end header
 
         // kode trans
-        $font = printer_create_font("Arial", 45, 15, PRINTER_FW_BOLD, false, false, false, 0);
+        $flag_resep_diantar = ($dt_index['resep_diantar'] == 'N') ? '(DITUNGGU)' : '(DIANTAR / DITINGGAL)'; 
+
+        $font = printer_create_font("Arial", 40, 15, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, $dt_index['kode_trans_far']." - ".$dt_index['no_resep'] , 150, 0);
+        printer_draw_text($p, $dt_index['kode_trans_far']." - ".$dt_index['no_resep'] , 10, 0);
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, $flag_resep_diantar , 270, 10);
 
         // no mr
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
