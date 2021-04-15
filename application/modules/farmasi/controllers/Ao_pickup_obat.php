@@ -52,7 +52,7 @@ class Ao_pickup_obat extends MX_Controller {
             $row[] = '<div class="center">'.$status.'</div>';
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
-            $row[] = '<b>'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</b>';
+            $row[] = '<b>'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</b><br>'.$row_list->alamat.'&nbsp; '.$row_list->no_telp.'/'.$row_list->no_hp.'';
             $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->pickup_time);
             $row[] = $row_list->pickup_by;
             $row[] = '<div class="center">'.$row_list->jenis_resep.'</div>';
@@ -153,6 +153,11 @@ class Ao_pickup_obat extends MX_Controller {
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
         }
         
+    }
+
+    public function find_pasien(){
+        $pasien = $this->Ao_pickup_obat->find_pasien($_POST['kode']);
+        echo json_encode($pasien);
     }
 
 }

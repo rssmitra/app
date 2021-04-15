@@ -68,7 +68,7 @@ class Ao_receipt extends MX_Controller {
             $row[] = '<div class="center">'.$status.'</div>';
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
-            $row[] = '<b>'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</b>';
+            $row[] = '<b>'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</b><br>'.$row_list->alamat.'&nbsp; '.$row_list->no_telp.'/'.$row_list->no_hp.'';
             $row[] = $row_list->received_by;
             $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->received_time);
             $row[] = '<div class="pull-right">'.number_format($row_list->cost).'</div>';

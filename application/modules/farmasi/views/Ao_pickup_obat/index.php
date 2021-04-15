@@ -92,6 +92,28 @@ function add_pickup(){
   
 }
 
+function find_pasien(){
+  preventDefault();
+  $.ajax({
+    url: 'farmasi/Ao_pickup_obat/find_pasien',
+    type: "post",
+    data: { kode : $('#kode_trans_far').val() },
+    dataType: "json",
+    beforeSend: function() {
+      // achtungShowLoader();  
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+    },
+    complete: function(xhr) {     
+      var data=xhr.responseText;
+      var jsonResponse = JSON.parse(data);
+      $('#data-pasien').html('<b>Alamat : </b>'+jsonResponse.alamat+' <b>Telp/HP :</b> '+ jsonResponse.no_telp+'/'+jsonResponse.no_hp);
+    }
+
+  });
+  
+}
+
 function delete_data(myid){
   if(confirm('Are you sure?')){
     $.ajax({
@@ -161,11 +183,28 @@ function delete_data(myid){
           </div>
 
           <div class="form-group">
-              <label class="control-label col-md-2">Kode Transaksi</label>
-              <div class="col-md-2">
-                <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far">
+            <label class="control-label col-md-2">Kode Transaksi</label>
+            <div class="col-md-4">
+              <div class="input-group">
+                <input type="text" class="form-control search-query" name="kode_trans_far" id="kode_trans_far">
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default btn-sm" onclick="find_pasien()">
+                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                    Cari Pasien
+                  </button>
+                </span>
               </div>
-              <label class="control-label col-md-1">Tanggal</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2">&nbsp;</label>
+            <div class="col-md-10" style="margin-left: 6px;margin-top: 3px;margin-bottom: 7px">
+            <div id="data-pasien"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+              <label class="control-label col-md-2">Tanggal</label>
               <div class="col-md-2">
                 <div class="input-group">
                   <input class="form-control date-picker" name="pickup_time" id="pickup_time" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>" readonly/>

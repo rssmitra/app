@@ -5,7 +5,7 @@ class Ao_pickup_obat_model extends CI_Model {
 
 	var $table = 'fr_pickup_obat';
 	var $column = array('fr_pickup_obat.kode_trans_far', 'fr_pickup_obat.no_mr', 'fr_pickup_obat.nama_pasien');
-	var $select = 'pickup_id, fr_pickup_obat.kode_trans_far,fr_pickup_obat.no_mr,fr_pickup_obat.nama_pasien,fr_pickup_obat.pickup_time,fr_pickup_obat.pickup_by,fr_pickup_obat.received_time,fr_pickup_obat.received_by,fr_pickup_obat.distance, fr_pickup_obat.cost, fr_pickup_obat.note, fr_pickup_obat.jenis_resep';
+	var $select = 'pickup_id, fr_pickup_obat.kode_trans_far,fr_pickup_obat.no_mr,fr_pickup_obat.nama_pasien,fr_pickup_obat.pickup_time,fr_pickup_obat.pickup_by,fr_pickup_obat.received_time,fr_pickup_obat.received_by,fr_pickup_obat.distance, fr_pickup_obat.cost, fr_pickup_obat.note, fr_pickup_obat.jenis_resep, almt_ttp_pasien  as alamat, tlp_almt_ttp as no_telp, no_hp';
 
 	var $order = array('pickup_id' => 'DESC');
 
@@ -20,7 +20,8 @@ class Ao_pickup_obat_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=fr_pickup_obat.kode_trans_far','left');		
+		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=fr_pickup_obat.kode_trans_far','left');	
+		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=fr_tc_far.no_mr','left');	
 	}
 
 	private function _get_datatables_query()
@@ -110,6 +111,17 @@ class Ao_pickup_obat_model extends CI_Model {
 	{
 		$this->db->where_in(''.$this->table.'.pickup_id', $id);
 		return $this->db->delete($this->table);
+	}
+
+	public function find_pasien($kode_trans_far)
+	{
+		$this->db->from('fr_tc_far');
+		$this->db->select('almt_ttp_pasien  as alamat, tlp_almt_ttp as no_telp, no_hp');
+		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=fr_tc_far.no_mr','left');
+		$this->db->where('fr_tc_far.kode_trans_far', $kode_trans_far);
+		return $this->db->get()->row();
+
+
 	}
 
 }
