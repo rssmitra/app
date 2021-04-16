@@ -1533,7 +1533,7 @@ class Templates extends MX_Controller {
             $umur = $data->reg_data->umur;
             $jk_ = $jk;
             $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-            // $tgl_periksa = $tgl_pemeriksaan;
+            $tgl_periksa = $tgl_pemeriksaan;
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
