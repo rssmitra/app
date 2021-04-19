@@ -310,7 +310,8 @@ class Print_escpos{
 
     public function print_resep_gudang($params)
     {
-        // echo '<pre>';print_r($params); die;
+        echo '<pre>';print_r($params); 
+        // die;
         # code...
         $CI =& get_instance();
         $dt_index = $params['resep'][0];
@@ -340,7 +341,7 @@ class Print_escpos{
         // end header
 
         // kode trans
-        $flag_resep_diantar = ($dt_index['resep_diantar'] != 'Y') ? '(DITUNGGU)' : '(DIANTAR / DITINGGAL)'; 
+        $flag_resep_diantar = ($dt_index['resep_diantar'] == 'Y') ? '(DIANTAR / DITINGGAL)' : '(DITUNGGU)'; 
 
         $font = printer_create_font("Arial", 40, 15, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
@@ -395,6 +396,8 @@ class Print_escpos{
         $no = 0;
         foreach($params['resep'] as $row_dt){
             $no++;
+            $desc = ($row_dt['flag_resep'] == 'racikan') ? 'Racikan Obat' : $row_dt['nama_brg'];
+
             // no
             $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
             printer_select_font($p, $font);
@@ -402,16 +405,41 @@ class Print_escpos{
             // nama obat
             $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
             printer_select_font($p, $font);
-            $txt_length = (strlen($row_dt['nama_brg']) > 30) ? 'xxx' : '';
-            printer_draw_text($p, substr($row_dt['nama_brg'], 0, 30)."".$txt_length, 30 , $linespace);
+            $txt_length = (strlen($desc) > 30) ? 'xxx' : '';
+            printer_draw_text($p, substr($desc, 0, 30)."".$txt_length, 30 , $linespace);
             // jumlah
             $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
             printer_select_font($p, $font);
+            $racikan = $row_dt['racikan'][0];
+            $satuan = ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->satuan_racikan : $row_dt['satuan_kecil'];
             // printer_set_option($p, PRINTER_TEXT_ALIGN, PRINTER_TA_RIGHT);
-            printer_draw_text($p, "".$row_dt['jumlah_tebus']." ".strtolower($row_dt['satuan_kecil'])."", 430 , $linespace);
-
+            printer_draw_text($p, "".$row_dt['jumlah_tebus']." ".strtolower($satuan)."", 430 , $linespace);
             $linespace += 30 ;
+
+            if($row_dt['flag_resep'] == 'racikan') 
+                {
+                  foreach ($row_dt['racikan'][0] as $key => $value) {
+                    $arr_total[] = ($value->harga_jual * $value->jumlah);
+                    $subtotal_racikan = ($value->harga_jual * $value->jumlah);
+
+                    $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+                    printer_select_font($p, $font);
+                    $txt_length = (strlen($value->nama_brg) > 30) ? 'xxx' : '';
+                    printer_draw_text($p, '- '.substr($value->nama_brg, 0, 30)."".$txt_length, 30 , $linespace);
+                    // jumlah
+                    $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+                    printer_select_font($p, $font);
+                    // printer_set_option($p, PRINTER_TEXT_ALIGN, PRINTER_TA_RIGHT);
+                    printer_draw_text($p, "".$value->jumlah." ".strtolower($value->satuan)."", 430 , $linespace);
+                    $linespace += 30 ;
+                }
+            }
+
+            
+
+            
         }
+
         $count_dt_above = count($params['resep']);
         $linespace2 = $linespace + ($count_dt_above * 30);
 
@@ -432,6 +460,7 @@ class Print_escpos{
         foreach($params['resep_kronis'] as $row_dtk){
             $num++;
             // no
+            $desc_k = ($row_dtk['flag_resep'] == 'racikan') ? 'Racikan Obat' : $row_dtk['nama_brg'];
             $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
             printer_select_font($p, $font);
             printer_draw_text($p, $num.".", 10, $linespace4);
@@ -439,14 +468,35 @@ class Print_escpos{
             $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
             printer_select_font($p, $font);
             $txt_length = (strlen($row_dtk['nama_brg']) > 30) ? 'xxx' : '';
-            printer_draw_text($p, substr($row_dtk['nama_brg'], 0, 30)."".$txt_length, 30 , $linespace4);
+            printer_draw_text($p, substr($desc_k, 0, 30)."".$txt_length, 30 , $linespace4);
             // jumlah
             $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
             printer_select_font($p, $font);
+            $racikan_k = $row_dtk['racikan'][0];
+            $satuan_k = ($row_dtk['flag_resep'] == 'racikan') ? $racikan[0]->satuan_racikan : $row_dtk['satuan_kecil'];
+
             // printer_set_option($p, PRINTER_TEXT_ALIGN, PRINTER_TA_RIGHT);
-            printer_draw_text($p, "".$row_dtk['jumlah_obat_23']." ".strtolower($row_dtk['satuan_kecil'])."", 430 , $linespace4);
+            printer_draw_text($p, "".$row_dtk['jumlah_obat_23']." ".strtolower($satuan_k)."", 430 , $linespace4);
 
             $linespace4 += 30 ;
+
+            if($row_dtk['flag_resep'] == 'racikan') :
+              foreach ($row_dtk['racikan'][0] as $keyk => $valuekr) {
+                 // nama obat
+                $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+                printer_select_font($p, $font);
+                $txt_length = (strlen($valuekr->nama_brg) > 30) ? 'xxx' : '';
+                printer_draw_text($p, substr($valuekr->nama_brg, 0, 30)."".$txt_length, 30 , $linespace4);
+                // jumlah
+                $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+                printer_select_font($p, $font);
+                // printer_set_option($p, PRINTER_TEXT_ALIGN, PRINTER_TA_RIGHT);
+                printer_draw_text($p, "".$valuekr->jumlah." ".strtolower($valuekr->satuan)."", 430 , $linespace4);
+                $linespace4 += 30 ;
+              }
+            endif; 
+
+            
         }
 
         // keterangan
