@@ -1172,14 +1172,14 @@ class Billing_model extends CI_Model {
     
     public function getTransData($no_registrasi){
 		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar');
-		$this->db->from('tc_trans_pelayanan');
+		$this->db->from('tc_kunjungan');
+		$this->db->join('tc_trans_pelayanan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_trans_pelayanan.kode_perusahaan','left');
-		$this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_trans_pelayanan.kode_bagian','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left');
-		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
-		$this->db->where('tc_trans_pelayanan.no_registrasi', $no_registrasi);
-        $this->db->where('nama_tindakan IS NOT NULL');
+		$this->db->where('tc_kunjungan.no_registrasi', $no_registrasi);
+        // $this->db->where('nama_tindakan IS NOT NULL');
 
         if(isset($_GET['status_nk']) AND $_GET['status_nk'] == 1){
             $this->db->where('status_nk', 1);
@@ -1191,7 +1191,7 @@ class Billing_model extends CI_Model {
             $this->db->where('tc_trans_pelayanan.kode_bagian', $_GET['bagian']);
         }
 
-		$this->db->order_by('tc_trans_pelayanan.kode_trans_pelayanan', 'ASC');
+		$this->db->order_by('tc_kunjungan.tgl_masuk', 'ASC');
         $query = $this->db->get()->result();
         // print_r($this->db->last_query());die;
 		return $query;

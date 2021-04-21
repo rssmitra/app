@@ -613,6 +613,14 @@ final Class Graph_master {
     				return $this->TableResumeKunjungan($fields, $params, $data);
     			}
 
+    			if ($params['style']=='TableResumeKunjunganHarian') {
+    				return $this->TableResumeKunjunganHarian($fields, $params, $data);
+				}
+				
+				if ($params['style']=='TableResumeKunjunganPasien') {
+    				return $this->TableResumeKunjunganPasien($fields, $params, $data);
+    			}
+
     			if ($params['style']=='TableResumeHutang') {
     				return $this->TableResumeHutang($fields, $params, $data);
 				}
@@ -976,6 +984,54 @@ final Class Graph_master {
 		// echo '<pre>';print_r($result);
     	// die;
     	$html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjungan', $result, true);
+        
+        
+        $chart_data = array(
+			'xAxis' 	=> 0,
+			'series' 	=> $html,
+		);
+		return $chart_data;
+    }
+
+    public function TableResumeKunjunganHarian($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	
+    	// echo '<pre>';print_r($fields);
+    	// echo '<pre>';print_r($data);
+    	
+
+    	// load view
+    	$result = array(
+    		'value' => $data,
+		);
+		// echo '<pre>';print_r($result);
+  //   	die;
+    	$html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjunganHarian', $result, true);
+        
+        
+        $chart_data = array(
+			'xAxis' 	=> 0,
+			'series' 	=> $html,
+		);
+		return $chart_data;
+	}
+	
+	public function TableResumeKunjunganPasien($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	
+    	// echo '<pre>';print_r($fields);
+    	// echo '<pre>';print_r($data);
+    	
+
+    	// load view
+    	$result = array(
+    		'value' => $data,
+		);
+		// echo '<pre>';print_r($result);
+    	// die;
+    	$html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjunganPasien', $result, true);
         
         
         $chart_data = array(

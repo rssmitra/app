@@ -38,19 +38,42 @@ class Eks_poli extends MX_Controller {
 
     public function get_content_page(){
 
-        $data[0] = array(
-            'nameid' => 'tbl-resume-kunjungan',
-            'style' => 'table',
-            'col_size' => 12,
-            'url' => 'eksekutif/Eks_poli/data?prefix=1&TypeChart=table&style=TableResumeKunjungan&from_tgl='.$_GET['from_tgl'].'&to_tgl='.$_GET['to_tgl'].'',
+        $output = http_build_query($_GET) . "\n";
+        if(isset($_GET['tbl-resume-kunjungan'])){
+            $data[0] = array(
+                'nameid' => 'tbl-resume-kunjungan',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=1&TypeChart=table&style=TableResumeKunjungan&'.$output.'',
             );
+        }
+        
+        if(isset($_GET['graph-line-1'])){
+            $data[1] = array(
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=2&TypeChart=line&style=1&'.$output.'',
+            );
+        }
 
-        $data[1] = array(
-            'nameid' => 'graph-line-1',
-            'style' => 'line',
-            'col_size' => 12,
-            'url' => 'eksekutif/Eks_poli/data?prefix=2&TypeChart=line&style=1&from_tgl='.$_GET['from_tgl'].'&to_tgl='.$_GET['to_tgl'].'',
-        );
+        if(isset($_GET['tbl-resume-kunjungan-harian'])){
+            $data[2] = array(
+                'nameid' => 'tbl-resume-kunjungan-harian',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=4&TypeChart=table&style=TableResumeKunjunganHarian&'.$output.'',
+            );
+        }
+
+        if(isset($_GET['tbl-resume-kunjungan-pasien'])){
+            $data[3] = array(
+                'nameid' => 'tbl-resume-kunjungan-pasien',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=5&TypeChart=table&style=TableResumeKunjunganPasien&'.$output.'',
+            );
+        }
 
         // $data[2] = array(
         //     'mod' => $_GET['mod'],
@@ -60,21 +83,27 @@ class Eks_poli extends MX_Controller {
         //     'url' => 'eksekutif/Eks_poli/data?prefix=3&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
         // );
 
-        $data[3] = array(
-            'mod' => $_GET['mod'],
-            'nameid' => 'graph-pie-1',
-            'style' => 'pie',
-            'col_size' => 6,
-            'url' => 'templates/Templates/graph?prefix=112&TypeChart=pie&style=1&mod=11',
-            );
+        // if(isset($_GET['graph-pie-1'])){
+        //     $data[3] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-pie-1',
+        //         'style' => 'pie',
+        //         'col_size' => 6,
+        //         'url' => 'templates/Templates/graph?prefix=112&TypeChart=pie&style=1&mod=11',
+        //         );
+        // }
 
-        $data[4] = array(
-            'mod' => $_GET['mod'],
-            'nameid' => 'graph-table-1',
-            'style' => 'table',
-            'col_size' => 6,
-            'url' => 'templates/Templates/graph?prefix=113&TypeChart=table&style=1&mod=11',
-            );
+        // if(isset($_GET['graph-table-1'])){
+        //     $data[4] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-table-1',
+        //         'style' => 'table',
+        //         'col_size' => 6,
+        //         'url' => 'templates/Templates/graph?prefix=113&TypeChart=table&style=1&mod=11',
+        //         );
+        // }
+
+        
 
         // $data[2] = array(
         //     'mod' => $_GET['mod'],

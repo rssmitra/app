@@ -1,6 +1,7 @@
 
 <?php 
   $count_periode = count($value['prd_dt']);
+  $ttl_periode = [];
   foreach ($value['prd_dt'] as $k1 => $v1) {
     $ttl_periode[] = $v1->total;
   }
@@ -28,6 +29,7 @@
 
   <?php 
     $count_day = count($value['dy_dt']);
+    $ttl_day = [];
     foreach ($value['dy_dt'] as $k2 => $v2) {
       $ttl_day[] = $v2->total;
     }

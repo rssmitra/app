@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
-    <title><?php echo COMP_SORT; ?> - Login v.2.0</title>
+    <title>SHS 4.0 - Form Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="apple-touch-icon" href="<?php echo base_url()?>assets/login/pages/ico/60.png">
     <link rel="apple-touch-icon" sizes="76x76" href="<?php echo base_url()?>assets/login/pages/ico/76.png">
@@ -63,26 +63,30 @@
       <!-- END Login Background Pic Wrapper-->
       <!-- START Login Right Container-->
       <div class="login-container bg-white">
-        <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-50 m-t-30 sm-p-l-15 sm-p-r-15 sm-p-t-40">
-          <!-- <h2><?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?> v.2.0</h2> -->
-          <h2>Smart Hospital System 4.0</h2>
-          <small style="padding-top:-30px !important; font-size: 14px">SHS-4.0 v.1.0 &copy;  RS Setia Mitra </small>
-          <p class="p-t-35">LOGIN FORM</p>
+        <div class="p-l-50 p-r-50 p-t-50 sm-p-l-15 sm-p-r-15 sm-p-t-40">
+          <left>
+          <img src="<?php echo base_url()?>assets/img/stethoscope.png" width="60px">
+
+          <h2 style="line-height: 25px;">Smart Hospital System 4.0</h2>
+          <small style="padding-top:-30px !important; font-size: 14px">SHS-4.0 v.1.0 &copy;  RS Setia Mitra </small> 
+          
+          </left>
+          <p class="p-t-10"><b>LOGIN FORM</b></p>
           <!-- START Login Form -->
-          <form id="form-login" class="p-t-15" method="POST" role="form" action="<?php echo base_url().'login/process'?>" autocomplete="off">
+          <form id="form-login" class="p-t-0" method="POST" role="form" action="<?php echo base_url().'login/process'?>" autocomplete="off">
             <!-- START Form Control-->
             <div class="form-group form-group-default">
               <label><i class="fa fa-user"></i> Username</label>
               <div class="controls">
-                <input type="text" name="username" id="username" placeholder="Username" class="form-control" required>
+                <input type="text" name="username" id="username" placeholder="" class="form-control" required>
               </div>
             </div>
             <!-- END Form Control-->
             <!-- START Form Control-->
             <div class="form-group form-group-default">
-              <label><i class="fa fa-key"></i> Password</label>
+              <label><i class="fa fa-lock"></i> Password</label>
               <div class="controls">
-                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="" required>
               </div>
             </div>
             <!-- START Form Control-->
@@ -94,18 +98,19 @@
                 </div>
               </div>
               <div class="col-md-6 text-right">
-                <a href="#" class="text-info small">Need help?<br>Please call IT Support ext <b>181/141</b> </a>
+                <a href="#" class="text-info small">Butuh bantuan?<br>Silahkan hub IT Dept ext <b>181/141</b> </a>
               </div>
             </div>
             <!-- END Form Control-->
             <button class="btn btn-danger btn-cons m-t-10" type="button" id="button-login"> <i class="fa fa-check-circle"></i> Login </button>
           </form>
           <!--END Login Form-->
-          <div class="pull-bottom sm-pull-bottom">
-            <div class="m-b-30 p-r-80 sm-m-t-20 sm-p-r-15 sm-p-b-20 clearfix">
+          <hr>
+          <div class="pull-bottom sm-pull-bottom center">
+            <div class="clearfix">
               <div class="col-sm-12 no-padding m-t-12">
-                <p style="text-align: justify; padding-left: 10px !important">
-                  Copyright 2018 - <?php echo date('Y')?> @ IT Department <?php echo COMP_LONG; ?>
+                <p style="text-align: center; padding-left: 10px !important">
+                  Copyright 2018 - <?php echo date('Y')?> @ IT Department <br> <?php echo COMP_LONG; ?>
                 </p>
               </div>
             </div>
