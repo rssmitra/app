@@ -80,6 +80,7 @@
         <div class="clearfix" style="margin-bottom:-5px">
           <?php echo $this->authuser->show_button('inventory/stok/Inv_stok_depo','C','',1)?>
           <?php echo $this->authuser->show_button('inventory/stok/Inv_stok_depo','D','',5)?>
+          <a href="#" class="btn btn-xs btn-success" onclick="export_excel()" id="btn_export_excel"><i class="fa fa-file-excel-o"></i> Export Excel</a>
           <div class="pull-right tableTools-container"></div>
         </div>
         <hr class="separator">

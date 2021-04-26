@@ -71,6 +71,17 @@ class Inv_stok_depo_model extends CI_Model {
 		return $query->result();
 	}
 
+	function get_data($tgl, $params_kode_bagian)
+	{
+		$this->_main_query($tgl, $params_kode_bagian);
+		if (isset($_GET['id_pabrik']) AND $_GET['id_pabrik'] != '' ) {
+			$this->db->where('b.id_pabrik', $_GET['id_pabrik']);				
+		}
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
 	function count_filtered()
 	{
 		$this->_get_datatables_query();

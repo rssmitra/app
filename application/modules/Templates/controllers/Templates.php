@@ -1518,22 +1518,22 @@ class Templates extends MX_Controller {
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
-            // $pm_ = 453059; 
-            // $no_mr = '00267197';
-            // $nama_pasien = 'Sahibatul Aslamiah Lubis';
-            // $umur = '27';
-            // $jk_ = 'Perempuan';
-            // $tgl_daftar = '9 April 2021 - 10:01:02';
-            // $tgl_periksa = '9 April 2021 - 10:32:12';
+            $pm_ = 453061; 
+            $no_mr = '00267622';
+            $nama_pasien = 'Krisnap Simanullang';
+            $umur = '21';
+            $jk_ = 'Pria';
+            $tgl_daftar = '20 April 2021 - 10:25:13';
+            $tgl_periksa = '20 April 2021 - 10:32:32';
 
             // form db
-            $pm_ = $pm;
-            $no_mr = $data->reg_data->no_mr;
-            $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
-            $umur = $data->reg_data->umur;
-            $jk_ = $jk;
-            $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-            $tgl_periksa = $tgl_pemeriksaan;
+            // $pm_ = $pm;
+            // $no_mr = $data->reg_data->no_mr;
+            // $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
+            // $umur = $data->reg_data->umur;
+            // $jk_ = $jk;
+            // $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
+            // $tgl_periksa = $tgl_pemeriksaan;
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">

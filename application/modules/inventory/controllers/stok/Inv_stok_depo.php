@@ -234,6 +234,14 @@ class Inv_stok_depo extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function export_excel()
+    {   
+        $data = array();
+        $list = $this->Inv_stok_depo->get_data($_GET['tgl'], $_GET['kode_bagian']);
+        $data['data'] = $list;
+        $this->load->view('inventory/stok/Inv_stok_depo/export_excel', $data);
+    }
+
     public function print_label(){
 
         $result = $this->db->get_where('mt_barang', array('kode_brg' => $_GET['kode_brg']) )->result();

@@ -81,7 +81,7 @@ th, td {
       <td width="50%">
         <table>
           <tr style="padding: 1px !important; background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
-            <td style="padding: 1px !important" width="100px"><b>Nomor Penerimaan</b></td>
+            <td style="padding: 1px !important" width="100px"><b>No. Penerimaan</b></td>
             <td style="padding: 1px !important; background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid #FFF; border-collapse: collapse">: <?php echo $penerimaan->kode_penerimaan?></td>
           </tr>
           <tr style="padding: 1px !important; background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
@@ -109,26 +109,28 @@ th, td {
           <td rowspan="2" style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Satuan</td>
           <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>Pesan</td>
           <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>Terima</td>
-          <!-- <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Harga Satuan</td>
+          <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Harga Satuan</td>
           <td colspan="2" style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Diskon</td>
-          <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Total Harga</td> -->
+          <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Total Harga</td>
         </tr>
-        <!-- <tr style="background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
+        <tr style="background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
           <td style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">%</td>
           <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Rp</td>
-        </tr> -->
+        </tr>
     </thead>
     <tbody>
         <?php 
           $no=0; 
-          // print_r($penerimaan_data);die;
+          // echo '<pre>';print_r($penerimaan_data);die;
           foreach($penerimaan_data as $key_dt=>$row_dt) : $no++; 
             // sum jumlah kirim
             foreach($row_dt as $key_row=>$val_row){
               $jumlah_kirim[] = $val_row->jumlah_kirim;
             }
-            $discount_rp = $row_dt[0]->harga * ($row_dt[0]->disc/100);
-            $arr_dpp[] = $row_dt[0]->dpp;
+            $subttl = $row_dt[0]->harga * $row_dt[0]->jumlah_kirim;;
+            $discount_rp = $subttl * ($row_dt[0]->disc/100);
+            $subtotalrp = $subttl - $discount_rp;
+            $arr_dpp[] = $subtotalrp;
             $arr_ppn[] = $row_dt[0]->ppn;
         ?>
             <tr>
@@ -139,34 +141,34 @@ th, td {
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->jumlah_pesan)?></td>
               <!-- <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($jumlah_kirim))?></td> -->
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($val_row->jumlah_kirim)?></td>
-              <!-- <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_net).',-'; ?></td>
+              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga).',-'; ?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->disc; ?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->discount_rp).',-'; ?></td>
-              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->dpp).',-';?></td> -->
+              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($subtotalrp).',-';?></td>
             </tr>
             <?php 
               endforeach;
-              $total_akhir = array_sum($arr_dpp) - array_sum($arr_ppn);
+              $total_akhir = array_sum($arr_dpp) + array_sum($arr_ppn);
             ?>
 
             <!-- <tr>
               <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">DPP </td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_dpp))?></td>
-            </tr>
-            <tr>
+            </tr> -->
+            <!-- <tr>
               <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">PPN </td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_ppn))?></td>
-            </tr>
+            </tr> -->
 
             <tr>
               <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
-              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($total_akhir)?></td>
+              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_dpp))?></td>
             </tr>
             <tr>
               <td colspan="10" style="text-align:right; border: 1px solid black; border-collapse: collapse">Terbilang : 
-              <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($total_akhir))?> Rupiah"</i></b>
+              <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_dpp)))?> Rupiah"</i></b>
               </td>
-            </tr> -->
+            </tr>
 
     </tbody>
   </table>
@@ -191,5 +193,19 @@ th, td {
     </td>
   </tr>
 </table>
+<br>
+<table style="width: 100% !important; ">
+  <tr>
+    <td style="">
+      Catatan : <br>
+      <ol>
+          <li>Simpan Berita Acara Penerimaan Barang ini sebagai bukti sah untuk tukar faktur.</li>
+          <li>Total biaya pada Berita Acara Penerimaan Barang ini belum dikenakan pajak PPN 10%</li>
+      </ol>
+    </td>
+  </tr>
+</table>
+
+
 
 </body>
