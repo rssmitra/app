@@ -29,28 +29,36 @@
   });
 
 </script>
+
+<!-- hidden form -->
+<input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>">
+
 <p><b><i class="fa fa-edit"></i> ASSESMENT PASIEN </b></p>
 <div class="form-group">
-<label class="control-label col-sm-2" for="">Tinggi Badan (cm)</label>
-    <div class="col-sm-1">
+    <label class="control-label col-sm-3" for="">Tinggi Badan (cm)</label>
+    <div class="col-sm-2">
        <input type="text" class="form-control" name="pl_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
     </div>
-    <label class="control-label col-sm-2" for="">Berat Badan (Kg)</label>
-    <div class="col-sm-1">
+    <label class="control-label col-sm-3" for="">Berat Badan (Kg)</label>
+    <div class="col-sm-2">
        <input type="text" class="form-control" name="pl_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
     </div>
-    <label class="control-label col-sm-2" for="">Tekanan Darah</label>
-    <div class="col-sm-1">
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3" for="">Tekanan Darah</label>
+    <div class="col-sm-2">
        <input type="text" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
     </div>
-</div>
-<div class="form-group">
-    <label class="control-label col-sm-2" for="">Suhu Tubuh</label>
-    <div class="col-sm-1">
+    <label class="control-label col-sm-3" for="">Suhu Tubuh</label>
+    <div class="col-sm-2">
        <input type="text" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
     </div>
-    <label class="control-label col-sm-1" for="">Nadi</label>
-    <div class="col-sm-1">
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3" for="">Nadi</label>
+    <div class="col-sm-2">
        <input type="text" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
     </div>
 </div>
@@ -58,39 +66,31 @@
 <br>
 <p><b><i class="fa fa-edit"></i> DIAGNOSA DAN PEMERIKSAAN </b></p>
 
-<div class="form-group">
-    <label class="control-label col-sm-2" for="">Anamnesa</label>
-    <div class="col-sm-4">
-       <input type="text" class="form-control" name="pl_anamnesa" value="<?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?>">
-       <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
-    </div>
+<div>
+  <label for="form-field-8">Anamnesa : </label>
+  <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?></textarea>
+  <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
 
-<div class="form-group">
-    <label class="control-label col-sm-2" for="">Diagnosa <span style="color:red">(*)</span></label>
-    <div class="col-sm-10">
+
+<div style="margin-top: 6px">
+    <label for="form-field-8">Diagnosa (ICD10) <span style="color:red">* : </span></label>
       <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
       <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
-    </div>
 </div>
 
-<div class="form-group">
-    <label class="control-label col-sm-2" for="">Pemeriksaan</label>
-    <div class="col-sm-10">
-        <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$riwayat->pemeriksaan:''?></textarea>
-    </div>
+<div style="margin-top: 6px">
+    <label for="form-field-8">Pemeriksaan : </label>
+    <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$riwayat->pemeriksaan:''?></textarea>
 </div>
 
-<div class="form-group" style="margin-top: 6px">
-    <label class="control-label col-sm-2" for="">Anjuran Dokter</label>
-    <div class="col-sm-10">
+<div style="margin-top: 6px">
+    <label for="form-field-8">Anjuran Dokter : </label>
       <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$riwayat->pengobatan:''?></textarea>
-    </div>
 </div>
 
 <div class="form-group" style="padding-top: 10px">
-    <label class="control-label col-sm-2" for="">&nbsp;</label>
-    <div class="col-sm-4" style="margin-left:6px">
-       <button type="submit" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> Simpan Data </button>
+    <div class="col-sm-12">
+       <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> <?php echo ($this->session->userdata('flag_form_pelayanan')) ?  ($this->session->userdata('flag_form_pelayanan') == 'perawat') ? 'Simpan Data' : 'Simpan Data dan Lanjutkan ke Pasien Berikutnya' : 'Simpan Data'?> </button>
     </div>
 </div>

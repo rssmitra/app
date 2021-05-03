@@ -9,7 +9,7 @@ class Inv_master_barang_model extends CI_Model {
 		$this->load->database();
 		$this->table = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
 		$this->column = array('table_brg.nama_brg','table_brg.kode_brg','nama_kategori','nama_golongan','nama_sub_golongan');
-		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi, rak';
+		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi, rak, table_brg.is_prb, table_brg.is_kronis';
 		$this->order = array('table_brg.created_date' => 'DESC', 'table_brg.updated_date' => 'DESC');
 
 	}
@@ -56,6 +56,14 @@ class Inv_master_barang_model extends CI_Model {
 
 		if( ( isset( $_GET['kode_sub_gol']) AND $_GET['kode_sub_gol'] != '' )  ){
 			$this->db->where('table_brg.kode_sub_golongan', $_GET['kode_sub_gol']);
+		}
+
+		if( ( isset( $_GET['prb']) AND $_GET['prb'] != '' )  ){
+			$this->db->where('table_brg.is_prb', $_GET['prb']);
+		}
+
+		if( ( isset( $_GET['kronis']) AND $_GET['kronis'] != '' )  ){
+			$this->db->where('table_brg.is_kronis', $_GET['kronis']);
 		}
 
 		if( ( $_GET['flag'] == 'medis' )  ){

@@ -67,23 +67,26 @@ $(document).ready(function(){
         <center><h4>FORM POLI/KLINIK RAWAT JALAN<br><small style="font-size:12px">Silahkan pilih Poli/Klinik dibawah ini <br>Untuk menampilkan data pasien sesuai dengan Poli/Klinik yang dipilih </small></h4></center>
         <hr>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Silahkan pilih Poli/Klinik</label>
-            <div class="col-md-4">
-              <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
-            </div>
+        <div>
+            <label for="form-field-8">Silahkan pilih Poli/Klinik</label>
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
+        </div>
 
-            <label class="control-label col-md-1">Dokter</label>
-            <div class="col-md-4">
-              <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
-            </div>
+        <div style="padding-top: 8px">
+            <label for="form-field-8">Dokter</label>
+            <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
+        </div>
 
-            <div class="col-md-1" style="margin-left:-1%">
-            <button type="submit" id="btn_save_session" class="btn btn-xs btn-primary">
-              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-              Save Session
+        <div style="padding-top: 8px">
+            <button type="submit" name="submit" value="perawat" id="btn_save_session" class="btn btn-xs btn-primary">
+              <i class="ace-icon fa fa-user icon-on-right bigger-110"></i>
+              Simpan Session Sebagai Perawat
             </button>
-          </div>
+
+            <button type="submit" id="btn_save_session" name="submit" value="dokter" class="btn btn-xs btn-success">
+              <i class="ace-icon fa fa-stethoscope icon-on-right bigger-110"></i>
+              Simpan Session Sebagai Dokter
+            </button>
 
         </div>
 

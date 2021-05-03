@@ -48,11 +48,36 @@
               echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060101' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
           </div>
 
-          <label class="control-label col-md-2">Pabrikan</label>
+          <label class="control-label col-md-1">Pabrikan</label>
           <div class="col-md-3">
             <?php 
               echo $this->master->custom_selection($params = array('table' => 'mt_pabrik', 'id' => 'id_pabrik', 'name' => 'nama_pabrik', 'where' => array()), '' , 'id_pabrik', 'id_pabrik', 'form-control', '', '') ?>
           </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Layanan</label>
+            <div class="col-md-2">
+            <?php 
+                echo $this->master->custom_selection($params = array('table' => 'mt_layanan_obat', 'id' => 'kode_layanan', 'name' => 'nama_layanan', 'where' => array()), isset($value->kode_layanan)?$value->kode_layanan:'' , 'kode_layanan', 'kode_layanan', 'form-control', '', '') ?>
+            </div>
+            <label class="control-label col-md-1">PRB</label>
+            <div class="col-md-1">
+                <select name="prb" id="prb" class="form-control" >
+                  <option value="">- Semua -</option>
+                  <option value="Y">Ya</option>
+                  <option value="N">Tidak</option>
+                </select>
+            </div>
+
+            <label class="control-label col-md-1">Kronis</label>
+            <div class="col-md-1">
+                <select name="kronis" id="kronis" class="form-control">
+                  <option value="">- Semua -</option>
+                  <option value="Y">Ya</option>
+                  <option value="N">Tidak</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-group">

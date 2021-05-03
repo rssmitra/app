@@ -6,11 +6,11 @@
 <div class="form-group">
 
       <label class="control-label col-sm-3">*Asal Pasien</label>
-      <div class="col-sm-4">
+      <div class="col-sm-5">
           <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1, 'pelayanan' => 1)), isset($bagian_asal)?$bagian_asal:'' , 'asal_pasien_pm', 'asal_pasien_pm', 'form-control', '', '') ?>
       </div>
 
-      <div class="col-md-5">
+      <div class="col-md-4">
         <div class="checkbox">
           <label>
             <input name="is_pasien_luar" type="checkbox" class="ace" value="1">

@@ -124,6 +124,94 @@ class Adm_tagihan_perusahaan extends MX_Controller {
         echo json_encode(array('data' => $list, 'no_invoice' => $no_invoice));
     }
 
+    public function process()
+    {
+        print_r($_POST);die;
+        
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+        
+        $val->set_rules('no_invoice', 'No Invoice', 'trim|required');
+        $val->set_rules('tgl_tagihan', 'Tanggal Faktur', 'trim|required');
+        $val->set_rules('tgl_jatuh_tempo', 'Tanggal Jatuh Tempo', 'trim|required');
+        $val->set_rules('diskon', 'Diskon', 'trim|required');
+        
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+            $id = ($this->input->post('id'))?$this->regex->_genRegex($this->input->post('id'),'RGXINT'):0;
+
+            // data header tagihan
+            $dataexc = array(
+                'no_invoice_tagih' => $this->regex->_genRegex($_POST['total_harga'],'RGXINT'),
+                'jenis_tagih' => $this->regex->_genRegex($_POST['total_sbl_ppn'],'RGXINT'),
+                'tgl_tagih' => $this->regex->_genRegex($_POST['total_ppn'],'RGXINT'),
+                'jumlah_tagih' => $this->regex->_genRegex($_POST['total_diskon'],'RGXINT'),
+                'diskon' => $this->regex->_genRegex($_POST['no_seri_pajak'],'RGXQSL'),
+                'nama_tertagih' => $this->regex->_genRegex($_POST['total_biaya_materai'],'RGXINT'),
+                'id_tertagih' => $this->regex->_genRegex($_POST['kodesupplier'],'RGXINT'),
+                'tgl_jt_tempo' => $this->regex->_genRegex($_POST['tgl_faktur'],'RGXQSL'),
+            );
+            
+            if($id==0){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname);
+                $newId = $this->Adm_tagihan_perusahaan->save('tc_tagih', $dataexc);
+                /*save logs*/
+                $this->logs->save('tc_tagih', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_tagih');
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname);
+                /*print_r($dataexc);die;*/
+                /*update record*/
+                $this->Adm_tagihan_perusahaan->update('tc_tagih', array('id_tc_tagih' => $id), $dataexc);
+                $newId = $id;
+                $this->logs->save('tc_tagih', $newId, 'update record'.$this->title.' module', json_encode($dataexc), 'id_tc_tagih');
+            }
+
+            if(isset($_POST['is_checked'])){
+                $this->db->delete('tc_tagih_det', array('id_tc_tagih' => $newId) );
+                foreach ($_POST['is_checked'] as $key => $value) {
+                    $data_detail[] = array(
+                        'kode_tc_trans_kasir' => $value,
+                        'id_tc_tagih' => $newId,
+                        'tgl_kui' => $_POST['tgl_tagihan'],
+                        'no_mr' => $_POST['no_mr'][$value],
+                        'no_registrasi' => $_POST['no_registrasi'][$value],
+                        'nama_pasien' => $_POST['nama_pasien'][$value],
+                        'kode_perusahaan' => $_POST['kode_perusahaan'][$value],
+                        'jumlah_billing' => $_POST['jumlah_billing'][$value],
+                        'jumlah_dijamin' => $_POST['jumlah_ditagih'][$value],
+                        'jumlah_tagih' => $_POST['beban_pasien'][$value],
+                        'penyesuaian' => $_POST['jumlah_ditagih'][$value],
+                    );
+                }
+                $this->db->insert_batch('tc_tagih_det', $data_detail);
+            }
+            
+
+
+            
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId));
+            }
+        }
+    }
+
 }
 
 

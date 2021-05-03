@@ -130,6 +130,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
     var rp_disc = parseInt(jml_tagihan) * (parseInt(disc)/100);
     var total = jml_tagihan - Math.floor(rp_disc);
     $('#total_tagihan').text(formatMoney(total));
+    $('#total_tagihan_frm').val(total);
 
  }
 
@@ -154,10 +155,14 @@ function inputPenyesuaian(kode_tc_trans_kasir){
       <div class="widget-body">
         <div class="widget-main no-padding">
 
-          <form class="form-horizontal" method="post" id="form_create_invoice" action="<?php echo site_url('purchasing/po/Po_penerbitan/process')?>" enctype="multipart/form-data" autocomplete="off">
+          <form class="form-horizontal" method="post" id="form_create_invoice" action="<?php echo site_url('adm_pasien/penagihan/Adm_tagihan_perusahaan/process')?>" enctype="multipart/form-data" autocomplete="off">
             <br>
             <!-- input form hidden -->
-            
+            <input type="hidden" name="from_tgl" value="<?php echo $_GET['from_tgl']?>">
+            <input type="hidden" name="to_tgl" value="<?php echo $_GET['to_tgl']?>">
+            <input type="hidden" name="jenis_pelayanan" value="<?php echo $_GET['jenis_pelayanan']?>">
+            <input type="hidden" name="kode_perusahaan" value="<?php echo $value->kode_perusahaan?>">
+
             <div class="col-sm-10 col-sm-offset-1">
               <div class="widget-box transparent">
                 <div class="widget-header widget-header-large">
@@ -202,7 +207,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                             <label class="control-label col-md-2">Tgl Tagihan</label>
                             <div class="col-md-2">
                               <div class="input-group" style="width: 150px;">
-                                <input class="form-control date-picker" name="tgl_po" id="tgl_po" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                                <input class="form-control date-picker" name="tgl_tagihan" id="tgl_tagihan" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
                                 <span class="input-group-addon">
                                   <i class="fa fa-calendar bigger-110"></i>
                                 </span>
@@ -211,7 +216,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                             <label class="control-label col-md-2" style="margin-left: 4.5%">Tgl Jatuh Tempo</label>
                             <div class="col-md-2">
                               <div class="input-group" style="width: 150px;">
-                                <input class="form-control date-picker" name="tgl_kirim" id="tgl_kirim" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d', strtotime("+30 days"));?>"/>
+                                <input class="form-control date-picker" name="tgl_jatuh_tempo" id="tgl_jatuh_tempo" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d', strtotime("+30 days"));?>"/>
                                 <span class="input-group-addon">
                                   <i class="fa fa-calendar bigger-110"></i>
                                 </span>
@@ -233,7 +238,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
 
                     <div>
                       <table class="table">
-                          <tr>
+                          <tr style="background: linear-gradient(0deg, #134911bd, #8bc127bf)">
                             <th class="center"><input type="checkbox" onClick="checkAll(this);" style="cursor:pointer"></th>
                             <th>Tanggal</th>
                             <th>No MR</th>
@@ -247,19 +252,25 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                             foreach($detail_pasien as $row) : 
                               $arr_ttl[] = $row->nk_perusahaan_int;
                           ?>
-                            <tr id="tr_<?php echo $row->kode_tc_trans_kasir; ?>">
-                              <td align="center"><input type="checkbox" class="checkbox_trx" id="checkbox_trx_<?php echo $row->kode_tc_trans_kasir; ?>" class="form-control" value="<?php echo $row->kode_tc_trans_kasir; ?>" onClick="checkOne('<?php echo $row->kode_tc_trans_kasir; ?>');" style="cursor:pointer" name="is_checked[<?php echo $row->kode_tc_trans_kasir; ?>]"></td>
+                            <tr id="tr_<?php echo $row->kode_tc_trans_kasir; ?>" style="background: beige;">
+                              <td align="center"><input type="checkbox" class="checkbox_trx" id="checkbox_trx_<?php echo $row->kode_tc_trans_kasir; ?>" class="form-control" value="<?php echo $row->kode_tc_trans_kasir; ?>" onClick="checkOne('<?php echo $row->kode_tc_trans_kasir; ?>');" style="cursor:pointer" name="is_checked[<?php echo $row->kode_tc_trans_kasir; ?>]">
+                              <input type="hidden" name="no_mr[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->no_mr; ?>">
+                              <input type="hidden" name="no_registrasi[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->no_registrasi; ?>">
+                              <input type="hidden" name="kode_perusahaan[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->kode_perusahaan; ?>">
+                              <input type="hidden" name="nama_pasien[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->nama_pasien; ?>">
+                              <input type="hidden" name="jumlah_billing[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->bill_int; ?>">
+                              <input type="hidden" name="beban_pasien[<?php echo $row->kode_tc_trans_kasir; ?>]" id="beban_pasien_<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->beban_pasien; ?>">
+                              <input type="hidden" name="jumlah_ditagih[<?php echo $row->kode_tc_trans_kasir; ?>]" id="jumlah_ditagih_<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->nk_perusahaan_int; ?>">
+
+                              </td>
                               <td><?php echo $this->tanggal->formatDateDmy($row->tgl_jam)?></td>
                               <td><?php echo $row->no_mr; ?></td>
                               <td><?php echo $row->nama_pasien; ?></td>
                               <td align="right">
-                                <!-- hidden -->
-                                <input type="hidden" id="bill_<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->bill_int; ?>">
                                 <?php echo number_format($row->bill_int); ?>
                               </td>
                               <!-- beban biaya pasien -->
                               <td align="right">
-                                <input type="hidden" id="beban_pasien_<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->beban_pasien; ?>">
                                 <?php echo number_format($row->beban_pasien); ?>
                               </td>
                               <!-- input penyesuaian -->
@@ -285,11 +296,11 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                           <?php endforeach; ?>
                           <tr>
                             <td colspan="7" align="right">Subtotal</td>
-                            <td id="subtotal" align="right">0</td>
+                            <td id="subtotal" align="right" style="background: beige; height: 39px !important;">0</td>
                           </tr>
                           <tr>
                             <td colspan="7" align="right">Diskon</td>
-                            <td id="total_diskon" align="right">0</td>
+                            <td id="total_diskon" align="right" style="background: beige; height: 39px !important;">0</td>
                           </tr>
                       </table>
                     </div>
@@ -301,6 +312,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                         <h4 class="pull-right">
                           Total tagihan :
                           <span class="red" id="total_tagihan">0</span>
+                          <input type="hidden" name="total_tagihan" id="total_tagihan_frm" value="">
                         </h4>
                       </div>
                       <div class="col-sm-7 pull-left"> &nbsp; </div>

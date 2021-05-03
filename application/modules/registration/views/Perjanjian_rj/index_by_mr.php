@@ -53,10 +53,10 @@
 
     <form class="form-horizontal" method="post" id="form_search" action="registration/Perjanjian_rj/find_data">
       <!-- no mr -->
-      <input type="" name="no_mr_pasien_perjanjian" id="no_mr_pasien_perjanjian" value="<?php echo $no_mr?>">
+      <input type="hidden" name="no_mr_pasien_perjanjian" id="no_mr_pasien_perjanjian" value="<?php echo $no_mr?>">
       <div class="form-group">
                       
-        <label class="control-label col-sm-2">Jenis Perjanjian</label>
+        <label class="control-label col-sm-2">Pelayanan</label>
 
         <div class="col-md-6">
 

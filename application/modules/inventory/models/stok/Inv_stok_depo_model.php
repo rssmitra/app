@@ -5,7 +5,7 @@ class Inv_stok_depo_model extends CI_Model {
 
 	var $table = 'mt_depo_stok';
 	var $column = array('b.nama_brg');
-	var $select = 'b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_akhir, b.satuan_kecil,  kartu_stok.tgl_input, kartu_stok.keterangan,  b.satuan_besar, b.is_active, b.path_image, a.stok_minimum, c.harga_beli';
+	var $select = 'b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_akhir, b.satuan_kecil,  kartu_stok.tgl_input, kartu_stok.keterangan,  b.satuan_besar, b.is_active, b.path_image, a.stok_minimum, c.harga_beli, b.is_prb, b.is_kronis';
 	var $order = array('kartu_stok.tgl_input' => 'DESC');
 
 	public function __construct()
@@ -39,6 +39,17 @@ class Inv_stok_depo_model extends CI_Model {
 			$this->db->where('b.id_pabrik', $_GET['id_pabrik']);				
 		}
 		
+		if (isset($_GET['kode_layanan']) AND $_GET['kode_layanan'] != '' ) {
+			$this->db->where('b.kode_layanan', $_GET['kode_layanan']);				
+		}
+
+		if( ( isset( $_GET['prb']) AND $_GET['prb'] != '' )  ){
+			$this->db->where('b.is_prb', $_GET['prb']);
+		}
+
+		if( ( isset( $_GET['kronis']) AND $_GET['kronis'] != '' )  ){
+			$this->db->where('b.is_kronis', $_GET['kronis']);
+		}
 
 		$i = 0;
 	
@@ -76,6 +87,10 @@ class Inv_stok_depo_model extends CI_Model {
 		$this->_main_query($tgl, $params_kode_bagian);
 		if (isset($_GET['id_pabrik']) AND $_GET['id_pabrik'] != '' ) {
 			$this->db->where('b.id_pabrik', $_GET['id_pabrik']);				
+		}
+
+		if (isset($_GET['kode_layanan']) AND $_GET['kode_layanan'] != '' ) {
+			$this->db->where('b.kode_layanan', $_GET['kode_layanan']);				
 		}
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;

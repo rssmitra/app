@@ -103,7 +103,7 @@ class Pl_pelayanan_model extends CI_Model {
         }else{
         	$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
 		}
-        $this->db->order_by('no_antrian','ASC');
+        $this->db->order_by('tgl_keluar_poli, no_antrian','ASC');
 		$query = $this->db->get();
 		return $query->result();
 	}
@@ -111,6 +111,20 @@ class Pl_pelayanan_model extends CI_Model {
 	function get_next_antrian_pasien()
 	{
 		$this->_main_query();
+		$this->db->where('tgl_keluar_poli IS NULL');
+		$this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
+		$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
+		$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+		$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
+        $this->db->order_by('no_antrian','ASC');
+		$query = $this->db->get();
+		return $query->row();
+	}
+
+	function get_next_antrian_pasien_sess_dr()
+	{
+		$this->_main_query();
+		$this->db->where('status_periksa IS NULL');
 		$this->db->where('tgl_keluar_poli IS NULL');
 		$this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
 		$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');

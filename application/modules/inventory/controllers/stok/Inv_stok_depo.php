@@ -104,7 +104,10 @@ class Inv_stok_depo extends MX_Controller {
             $row[] = '<div class="center">'.$no.'</div>';
             $link_image = ( $row_list->path_image != NULL ) ? PATH_IMG_MST_BRG.$row_list->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
             $row[] = '<div class="center"><a href="'.base_url().$link_image.'" target="_blank"><img src="'.base_url().$link_image.'" width="100px"></a></div>';
-            $row[] = '<a href="#" onclick="click_detail('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'<br>'.strtoupper($row_list->nama_brg).'</a><br>Harga beli @ '.number_format($row_list->harga_beli).',-';
+            $is_prb = ($row_list->is_prb == 'Y') ? '<span style="background: gold; color: black; font-weight: bold; font-size: 10px">PRB</span>' : '' ;
+            $is_kronis = ($row_list->is_kronis == 'Y') ? '<span style="background: green; color: white; font-weight: bold; font-size: 10px">Kronis</span>' : '' ;
+
+            $row[] = '<a href="#" onclick="click_detail('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'<br>'.strtoupper($row_list->nama_brg).'</a><br>Harga beli @ '.number_format($row_list->harga_beli).',-<br>'.$is_prb.' '.$is_kronis;;
             $row[] = '<div class="center">'.strtoupper($row_list->content).'</div>';
             // labeling stok minimum
             $label_color = ( $row_list->stok_minimum > $row_list->stok_akhir || $row_list->stok_akhir == 0 ) ? 'style="background-color: #d15b476b; height: 25px"' : '' ;

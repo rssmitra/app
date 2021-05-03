@@ -693,8 +693,8 @@ function tambah_file()
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">Nama Tindakan</label>
-            <div class="col-sm-6">
+            <label class="control-label col-sm-2" for="">Tindakan</label>
+            <div class="col-sm-5">
               <?php if($type=='Ranap'){?>
                 <input type="text" class="form-control" id="InputKeyTindakan_ri" name="pl_nama_tindakan_ri" placeholder="Masukan Keyword Tindakan">
               <?php }else{ ?>
@@ -703,7 +703,7 @@ function tambah_file()
                 <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
             </div>
             <label class="control-label col-sm-1" for="">Jumlah</label>
-            <div class="col-sm-1">
+            <div class="col-sm-2">
                <input type="number" min="1" class="form-control" id="pl_jumlah" name="pl_jumlah" value="1">
             </div>
             <div class="col-sm-2" style="margin-left: -2.5%">

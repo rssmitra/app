@@ -149,6 +149,7 @@ class Adm_tagihan_perusahaan_model extends CI_Model {
 		$this->db->where('a.kode_perusahaan', $kode_perusahaan);		
 		$this->db->where('a.seri_kuitansi', $_GET['jenis_pelayanan']);		
 		$this->db->where("convert(varchar,tgl_jam,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");	
+		$this->db->order_by("a.tgl_jam", "ASC");	
 		$query = $this->db->get()->result();
 		return $query;
 	}

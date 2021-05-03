@@ -155,7 +155,27 @@
                   $flag_label = ( $flag_string == 'medis' ) ? 'rak_medis' : 'rak_non_medis' ;
                   echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => $flag_label)), '' , 'rak', 'rak', 'form-control', '', '') ?>
             </div>
+
+            <label class="control-label col-md-1">PRB</label>
+            <div class="col-md-1">
+                <select name="prb" id="prb" class="form-control" >
+                  <option value="">- Semua -</option>
+                  <option value="Y">Ya</option>
+                  <option value="N">Tidak</option>
+                </select>
+            </div>
+
+            <label class="control-label col-md-1">Kronis</label>
+            <div class="col-md-1">
+                <select name="kronis" id="kronis" class="form-control">
+                  <option value="">- Semua -</option>
+                  <option value="Y">Ya</option>
+                  <option value="N">Tidak</option>
+                </select>
+            </div>
           </div>
+
+
         <?php endif; ?>
         <div class="form-group">
           <label class="control-label col-md-2">Status Aktif</label>

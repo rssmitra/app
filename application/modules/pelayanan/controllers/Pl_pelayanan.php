@@ -36,7 +36,7 @@ class Pl_pelayanan extends MX_Controller {
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show()
         );
-
+        // echo '<pre>'; print_r($this->session->all_userdata());die;
         if( $this->session->userdata('kode_bagian') ){
             /*load view index*/
             $data['kode_bagian'] = $this->session->userdata('kode_bagian');
@@ -90,7 +90,11 @@ class Pl_pelayanan extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Pl_pelayanan/form', $data);
+        if($this->session->userdata('flag_form_pelayanan') == 'dokter'){
+            $this->load->view('Pl_pelayanan/form_dr', $data);
+        }else{
+            $this->load->view('Pl_pelayanan/form', $data);
+        }
     }
 
     public function tindakan($id='', $no_kunjungan='')
@@ -511,7 +515,7 @@ class Pl_pelayanan extends MX_Controller {
 
                 /*hidden form*/
                 $html_tag .= '<input type="hidden" value="'.$key.'" name="fields_'.$id.'[]" id="'.$key.'_'.$id.'" >';
-                $html_tag .= '<input type="hiddenxx" class="total_diskon_'.$id.'" value="'.(int)$data->$key.'" name="total_diskon_'.$key.'_'.$id.'" id="total_diskon_'.$key.'_'.$id.'" >';
+                $html_tag .= '<input type="hidden" class="total_diskon_'.$id.'" value="'.(int)$data->$key.'" name="total_diskon_'.$key.'_'.$id.'" id="total_diskon_'.$key.'_'.$id.'" >';
                 $no++;
             }
 
@@ -541,7 +545,7 @@ class Pl_pelayanan extends MX_Controller {
                         </div>
                       </p>';
         $html_tag .= '<center>';
-        $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> PROSES UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
+        $html_tag .= '<a href="#" class="btn btn-xs btn-primary" onclick="submitUpdateTransaksi('.$id.')"><i class="fa fa-angle-double-left"></i> UBAH BIAYA TRANSAKSI <i class="fa fa-angle-double-right"></i> </a>';
         $html_tag .= '</center>';
         $html_tag .= '</form>';
         $html_tag .= '</div>';
@@ -1017,10 +1021,12 @@ class Pl_pelayanan extends MX_Controller {
 
         // print_r($_POST);die;
         // form validation
-        $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );        
-        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
+        $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
+
+        $required = ($_POST['flag_form_pelayanan'] == 'dokter') ? 'required' : '';
+        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim|'.$required.'');        
         $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa', 'trim|required');        
-        $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
+        $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim|'.$required.'');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
@@ -1077,6 +1083,8 @@ class Pl_pelayanan extends MX_Controller {
                 $this->Pl_pelayanan->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
             }
 
+
+
             
             if ($this->db->trans_status() === FALSE)
             {
@@ -1086,7 +1094,18 @@ class Pl_pelayanan extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+                // jika session dokter
+                if($_POST['flag_form_pelayanan'] == 'dokter'){
+                    /*update pl_tc_poli*/
+                    $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
+                    $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );
+                    // search pasien berikutnya
+                    $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien_sess_dr();
+                    $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
+                    echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai', 'next_pasien' => isset($next_pasien->no_mr)?$next_pasien->no_mr:'', 'next_id_pl_tc_poli' => isset($next_pasien->id_pl_tc_poli)?$next_pasien->id_pl_tc_poli:'', 'next_no_kunjungan' => isset($next_pasien->no_kunjungan)?$next_pasien->no_kunjungan:''));
+                }else{
+                    echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan')); 
+                }
             }
 
         
@@ -1100,6 +1119,7 @@ class Pl_pelayanan extends MX_Controller {
         // form validation
         $this->form_validation->set_rules('poliklinik', 'Poli/Klinik', 'trim|required');      
         $this->form_validation->set_rules('select_dokter', 'Dokter', 'trim|required');      
+        $this->form_validation->set_rules('submit', 'Submit', 'trim|required');      
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -1115,6 +1135,7 @@ class Pl_pelayanan extends MX_Controller {
             $bagian = $this->db->get_where('mt_bagian', array('kode_bagian' => $this->form_validation->set_value('poliklinik')) )->row();
             $dokter = $this->db->get_where('mt_karyawan', array('kode_dokter' => $this->form_validation->set_value('select_dokter')) )->row();
 
+            $this->session->set_userdata('flag_form_pelayanan', $this->form_validation->set_value('submit'));
             $this->session->set_userdata('kode_bagian', $this->form_validation->set_value('poliklinik'));
             $this->session->set_userdata('nama_bagian', $bagian->nama_bagian );
             $this->session->set_userdata('sess_kode_dokter', $this->form_validation->set_value('select_dokter'));
@@ -1129,6 +1150,7 @@ class Pl_pelayanan extends MX_Controller {
     public function destroy_session_kode_bagian()
     {
         $this->session->unset_userdata('kode_bagian');
+        $this->session->unset_userdata('flag_form_pelayanan');
         echo json_encode(array('status' => 200, 'message' => 'Silahkan pilih Poli/Klinik kembali'));
 
         

@@ -101,7 +101,7 @@ $(document).ready(function(){
                 
               }else{          
 
-                $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});  
+                $.achtung({message: jsonResponse.message, timeout:5});  
                 //focus tabs diagnosa
                 getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
 
@@ -239,15 +239,8 @@ $(document).ready(function(){
       getMenu('pelayanan/Pl_pelayanan/form/'+params_id+'?no_mr='+$(this).val()+'');
     });
 
-
-
 })
 
-
-function click_selected_patient(id_pl_tc_poli, no_kunjungan, no_mr){
-  preventDefault();  
-  getMenu('pelayanan/Pl_pelayanan/form/'+id_pl_tc_poli+'/'+no_kunjungan+'?no_mr='+no_mr+'');
-}
 /*format date to m/d/Y*/
 function formatDate(date) {
   var hours = date.getHours();
@@ -379,7 +372,6 @@ function get_riwayat_medis(no_mr){
 
   $.getJSON("templates/References/get_riwayat_medis/" +no_mr, '', function (data) { 
       $('#cppt_data').html(data.html); 
-      $('#cppt_data_on_tabs').html(data.html); 
   });
 
 }
@@ -389,7 +381,6 @@ function getDataAntrianPasien(){
   // getTotalBilling();
   $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
         $('#no_mr_selected option').remove();         
-        $('#antrian_pasien_tbl tbody').remove();         
         $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
         var arr = [];
         var arr_cancel = [];
@@ -397,9 +388,7 @@ function getDataAntrianPasien(){
             var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
             var penjamin = (o.kode_perusahaan==120)? '('+o.nama_perusahaan+')' : '' ;
             var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #f998878c; color: black"';
-            $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + ' '+penjamin+' </option>').appendTo($('#no_mr_selected')); 
-
-            $('<tr '+style+'><td>'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br>'+penjamin+' </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
+            $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + ' '+penjamin+' </option>').appendTo($('#no_mr_selected'));  
             // sudah dilayani
             if (o.tgl_keluar_poli != null) {
                 arr.push(o);
@@ -574,7 +563,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
 </style>
 
-<!-- <div class="scrollbar ace-settings-container" id="ace-settings-container-rj" style="position: fixed">
+<div class="scrollbar ace-settings-container" id="ace-settings-container-rj" style="position: fixed">
   <div class="btn btn-app btn-xs btn-primary ace-settings-btn" id="ace-settings-btn-rj">
     <i class="ace-icon fa fa-file bigger-130"></i>
   </div>
@@ -587,8 +576,8 @@ function rollback(no_registrasi, no_kunjungan, flag){
     </div>
 
 
-  </div>
-</div>  -->
+  </div><!-- /.ace-settings-box -->
+</div> 
 
 <div class="row">
   <div class="page-header">  
@@ -640,12 +629,18 @@ function rollback(no_registrasi, no_kunjungan, flag){
             <i class="ace-icon fa fa-sign-out"></i>
           </a>
         </li>
-      </ul>
-    
+            <!-- #section:basics/navbar.user_menu -->
+            
+
+            <!-- /section:basics/navbar.user_menu -->
+          </ul>
+    <!-- <span style="font-size: 12px !important"> 
+      <?php echo isset($nama_dokter)?''.strtoupper($nama_dokter).'':''?><br>
+        <small style="margin-top: -10px !important">   
+          <?php echo ucwords($nama_bagian); ?>
+        </small> 
+    </span>   -->
   </div>  
-
-  
-
 <div>   
 
   <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
@@ -701,7 +696,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
         </div>
 
         <!-- form pelayanan -->
-        <div class="col-md-7">
+        <div class="col-md-10" style="width: 85%">
 
           <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
             <div class="center">
@@ -782,31 +777,14 @@ function rollback(no_registrasi, no_kunjungan, flag){
                 </li>
 
                 <li class="hover">
-                  <a href="#" class="dropdown-toggle">
-                    <i class="menu-icon fa fa-history"></i>
-                    <span class="menu-text">
-                      Riwayat
-                    </span>
-                    <b class="arrow fa fa-angle-down"></b>
-                  </a>
-
-                  <b class="arrow"></b>
-
-                  <ul class="submenu">
-                    <li style="text-align: left">
-                        <a href="#" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Billing Pasien</span></a><b class="arrow"></b>
-                    </li>
-                    <li style="text-align: left">
-                        <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
-                    </li>
-                    <li style="text-align: left">
-                        <a href="#" data-id="<?php echo $id?>" data-url="rekam_medis/File_rm/index/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> Rekam Medis  </span></a><b class="arrow"></b>
-                    </li>
-                  </ul>
-
+                  <a href="#" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Billing Pasien</span></a><b class="arrow"></b>
                 </li>
-
-                
+                <li class="hover">
+                  <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
+                </li>
+                <li class="hover">
+                  <a href="#" data-id="<?php echo $id?>" data-url="rekam_medis/File_rm/index/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> Rekam Medis  </span></a><b class="arrow"></b>
+                </li>
                 <?php 
                   $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir(isset($value->no_registrasi)?$value->no_registrasi:'',isset($value->no_kunjungan)?$value->no_kunjungan:'');
                   $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
@@ -826,19 +804,21 @@ function rollback(no_registrasi, no_kunjungan, flag){
             <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
             <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
             <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-            <?php else: echo ''; endif;?>
-            
+            <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
           </div>
-          
+          <div class="pull-right">
+              <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">Pasien Selesai</label>
+              <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important">Pasien Umum</label>
+          </div>
           <br>
-          <!-- <div class="form-group">
+          <div class="form-group">
             <label class="control-label col-sm-2" for="" ><i class="fa fa-user bigger-120 green"></i> Antrian Pasien</label>
             <div class="col-sm-7">
               <select class="form-control" name="no_mr_selected" id="no_mr_selected" style="font-weight: bold">
                   <option value="">-Silahkan Pilih-</option>
                 </select>
             </div>
-          </div> -->
+          </div>
 
           <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
           <table class="table table-bordered">
@@ -918,44 +898,6 @@ function rollback(no_registrasi, no_kunjungan, flag){
           
         </div>
 
-        <div class="col-md-3 no-padding">
-            <div class="tabbable">
-                <ul class="nav nav-tabs" id="myTab">
-                    <li class="active">
-                        <a data-toggle="tab" href="#antrian_tabs">
-                            <i class="green ace-icon fa fa-user bigger-120"></i>
-                            Antrian Pasien
-                        </a>
-                    </li>
-
-                    <li>
-                        <a data-toggle="tab" href="#rm_tabs">
-                            <i class="green ace-icon fa fa-history bigger-120"></i>
-                            Riwayat Medis
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div id="antrian_tabs" class="tab-pane fade in active">
-                        <div class="center">
-                            <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">Pasien Selesai</label>
-                            <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important">Pasien Umum</label>
-                        </div>
-                        <table class="table" id="antrian_pasien_tbl">
-                            <tbody>
-                                <tr><td>Silahkan tunggu...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div id="rm_tabs" class="tab-pane fade">
-                        <div id="cppt_data_on_tabs"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
   </form>
 
 <div id="GlobalModal" class="modal fade" tabindex="-1">
@@ -1006,5 +948,4 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
 <!-- ace scripts -->
 <script src="<?php echo base_url()?>assets/js/ace/ace.settings.js"></script>
-
 

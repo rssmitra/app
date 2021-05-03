@@ -34,7 +34,9 @@ $(document).ready(function(){
     find_pasien_by_keyword('<?php echo $no_mr?>');
     get_riwayat_medis('<?php echo $no_mr?>');
 
-    getMenuTabs('pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
+    getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
+
+    $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosa');
 
     // get data antrian pasien
     setInterval("getDataAntrianPasien();",30000); 
@@ -58,9 +60,7 @@ $(document).ready(function(){
             contentType: false,
             processData: false,            
             beforeSend: function() {
-              if( $('#form_pelayanan').attr('action')=='pelayanan/Pl_pelayanan/processPelayananSelesai' ){
-                  achtungShowFadeIn();                      
-              }  
+              achtungShowFadeIn();
             },
             uploadProgress: function(event, position, total, percentComplete) {
             },
@@ -71,39 +71,16 @@ $(document).ready(function(){
 
               if( jsonResponse.status === 200 ){    
 
-                $.achtung({message: jsonResponse.message, timeout:5});  
-                $('#table-pesan-resep').DataTable().ajax.reload(null, false);
-                $('#jumlah_r').val('');
-                $("#modalEditPesan").modal('hide');  
-
-                if(jsonResponse.type_pelayanan == 'Penunjang Medis' ){
-
-                  getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+jsonResponse.no_mr+'/'+$('#kode_bagian_val').val()+'', 'tabs_riwayat_kunjungan');
-
-                }
-
-                if( jsonResponse.type_pelayanan == 'Pasien Selesai' ){
-                  // back after process
-                  if( jsonResponse.next_id_pl_tc_poli != '' ){
-                    getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
-                  }else{
-                    getMenu('pelayanan/Pl_pelayanan');
-                  }
-
-                }
-
-                if( jsonResponse.type_pelayanan == 'Expertise' ){
-                  // back after process
-                  $('#kode_expertise').val(jsonResponse.ID);
-
-                }
-
+                $.achtung({message: jsonResponse.message, timeout:5});
+                getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
                 
               }else{          
 
-                $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});  
+                $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
                 //focus tabs diagnosa
-                getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
+                // getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
+
+                
 
               }        
 
@@ -182,64 +159,6 @@ $(document).ready(function(){
       }    
 
     });   
-
-    /*onchange form module when click tabs*/
-    $('#tabs_tindakan').click(function (e) {    
-      e.preventDefault();  
-      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/process');
-      // backToDefaultForm();
-    });
-
-    $('#tabs_diagnosa').click(function (e) {    
-      e.preventDefault();  
-      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosa');
-      // backToDefaultForm();
-    });
-
-    $('#tabs_pesan_resep').click(function (e) {  
-      e.preventDefault();  
-      $('#form_pelayanan').attr('action', 'farmasi/Farmasi_pesan_resep/process');
-      // backToDefaultForm();
-    });   
-
-    $('#tabs_penunjang_medis').click(function (e) {   
-      e.preventDefault();  
-      $('#form_pelayanan').attr('action', 'registration/Reg_pm/process');
-      // backToDefaultForm();
-    });
-    
-    $('#tabs_input_usg').click(function (e) {   
-      e.preventDefault();  
-      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/process_input_expertise');
-    });
-
-    $('#tabs_riwayat_transaksi').click(function (e) {     
-      e.preventDefault();  
-      backToDefaultForm();
-    });
-
-    $('#tabs_billing_pasien').click(function (e) {     
-      e.preventDefault();  
-      backToDefaultForm();
-    });
-
-    $('#tabs_perjanjian').click(function (e) {     
-      e.preventDefault();  
-      backToDefaultForm();
-    });
-
-    
-
-    /*onchange form module when click tabs*/   
-
-    $('#no_mr_selected').change(function (e) {  
-      e.preventDefault();  
-      var element = $(this).find('option:selected'); 
-      var params_id = element.attr("data-id");
-      getMenu('pelayanan/Pl_pelayanan/form/'+params_id+'?no_mr='+$(this).val()+'');
-    });
-
-
 
 })
 
@@ -390,16 +309,28 @@ function getDataAntrianPasien(){
   $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
         $('#no_mr_selected option').remove();         
         $('#antrian_pasien_tbl tbody').remove();         
+        $('#antrian_pasien_tbl_done tbody').remove();         
         $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
         var arr = [];
         var arr_cancel = [];
         $.each(data, function (i, o) {   
             var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
-            var penjamin = (o.kode_perusahaan==120)? '('+o.nama_perusahaan+')' : '' ;
-            var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #f998878c; color: black"';
-            $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + ' '+penjamin+' </option>').appendTo($('#no_mr_selected')); 
+            var penjamin = (o.kode_perusahaan==120)? '<span style="background: #f998878c">('+o.nama_perusahaan+')</span>' : '<span style="background: #6fb3e0">(UMUM)</span>' ;
 
-            $('<tr '+style+'><td>'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br>'+penjamin+' </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
+            var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
+
+            if(o.tgl_keluar_poli == null){
+              $('<tr '+style+'><td>'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br>'+penjamin+' </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
+            }
+
+            if(o.tgl_keluar_poli != null){
+              $('<tr '+style+'><td>'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br>'+penjamin+' </span></td></tr>').appendTo($('#antrian_pasien_tbl_done'));  
+            }
+
+            if(o.status_batal == 1){
+              $('<tr '+style+'><td>'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br>'+penjamin+' </span></td></tr>').appendTo($('#antrian_pasien_tbl_cancel'));  
+            }
+            
             // sudah dilayani
             if (o.tgl_keluar_poli != null) {
                 arr.push(o);
@@ -422,96 +353,96 @@ function getDataAntrianPasien(){
 
 }
 
-function getTotalBilling(){
+// function getTotalBilling(){
 
-  $.getJSON("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_total_billing_dr_current_day?kode_dokter="+$('#kode_dokter_poli').val()+"&kode_bagian="+$('#kode_bagian_val').val()+"", '', function (data) {  
-    $('#total_bill_dr_current').text(formatMoney(data.total_billing));
-  });
+//   $.getJSON("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_total_billing_dr_current_day?kode_dokter="+$('#kode_dokter_poli').val()+"&kode_bagian="+$('#kode_bagian_val').val()+"", '', function (data) {  
+//     $('#total_bill_dr_current').text(formatMoney(data.total_billing));
+//   });
 
-}
+// }
 
-function selesaikanKunjungan(){
+// function selesaikanKunjungan(){
 
-  noMr = $('#noMrHidden').val();
-  preventDefault();  
-  getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
-  $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processPelayananSelesai?bag='+$('#kode_bagian_val').val()+'');
-  $('#form_default_pelayanan').show('fast');
-  $('#form_default_pelayanan').load('pelayanan/Pl_pelayanan/form_end_visit?mr='+noMr+'&id='+$('#id_pl_tc_poli').val()+'&no_kunjungan='+$('#no_kunjungan').val()+''); 
+//   noMr = $('#noMrHidden').val();
+//   preventDefault();  
+//   getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
+//   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processPelayananSelesai?bag='+$('#kode_bagian_val').val()+'');
+//   $('#form_default_pelayanan').show('fast');
+//   $('#form_default_pelayanan').load('pelayanan/Pl_pelayanan/form_end_visit?mr='+noMr+'&id='+$('#id_pl_tc_poli').val()+'&no_kunjungan='+$('#no_kunjungan').val()+''); 
 
-}
+// }
 
-function backToDefaultForm(){
+// function backToDefaultForm(){
 
-  noMr = $('#noMrHidden').val();
-  preventDefault();  
-  $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processPelayananSelesai');
-  $('#form_default_pelayanan').hide('fast');
-  $('#form_default_pelayanan').html(''); 
+//   noMr = $('#noMrHidden').val();
+//   preventDefault();  
+//   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processPelayananSelesai');
+//   $('#form_default_pelayanan').hide('fast');
+//   $('#form_default_pelayanan').html(''); 
   
-}
+// }
 
-function perjanjian(){
-  noMr = $('#noMrHidden').val();
-  if (noMr == '') {
-    alert('Silahkan cari pasien terlebih dahulu !'); return false;    
-  }else{
-    $('#form_modal').load('registration/reg_pasien/form_perjanjian_modal/'+noMr); 
-    $("#GlobalModal").modal();
-  }
-}
+// function perjanjian(){
+//   noMr = $('#noMrHidden').val();
+//   if (noMr == '') {
+//     alert('Silahkan cari pasien terlebih dahulu !'); return false;    
+//   }else{
+//     $('#form_modal').load('registration/reg_pasien/form_perjanjian_modal/'+noMr); 
+//     $("#GlobalModal").modal();
+//   }
+// }
 
-function cancel_visit(no_registrasi, no_kunjungan){
+// function cancel_visit(no_registrasi, no_kunjungan){
 
-  preventDefault();  
+//   preventDefault();  
 
-  achtungShowLoader();
+//   achtungShowLoader();
 
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan/cancel_visit",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
+//   $.ajax({
+//       url: "pelayanan/Pl_pelayanan/cancel_visit",
+//       data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
+//       dataType: "json",
+//       type: "POST",
+//       complete: function (xhr) {
+//         var data=xhr.responseText;  
+//         var jsonResponse = JSON.parse(data);  
+//         if(jsonResponse.status === 200){  
+//           $.achtung({message: jsonResponse.message, timeout:5}); 
+//           getMenu('pelayanan/Pl_pelayanan');
+//         }else{          
+//           $.achtung({message: jsonResponse.message, timeout:5});  
+//         } 
+//         achtungHideLoader();
+//       }
+//   });
 
-}
+// }
 
-function rollback(no_registrasi, no_kunjungan, flag){
+// function rollback(no_registrasi, no_kunjungan, flag){
 
-  preventDefault();  
+//   preventDefault();  
 
-  achtungShowLoader();
+//   achtungShowLoader();
 
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan/rollback",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan/form/'+$('#id_pl_tc_poli').val()+'/'+no_kunjungan+'?no_mr='+$('#noMrHidden').val()+'');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
+//   $.ajax({
+//       url: "pelayanan/Pl_pelayanan/rollback",
+//       data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },            
+//       dataType: "json",
+//       type: "POST",
+//       complete: function (xhr) {
+//         var data=xhr.responseText;  
+//         var jsonResponse = JSON.parse(data);  
+//         if(jsonResponse.status === 200){  
+//           $.achtung({message: jsonResponse.message, timeout:5}); 
+//           getMenu('pelayanan/Pl_pelayanan/form/'+$('#id_pl_tc_poli').val()+'/'+no_kunjungan+'?no_mr='+$('#noMrHidden').val()+'');
+//         }else{          
+//           $.achtung({message: jsonResponse.message, timeout:5});  
+//         } 
+//         achtungHideLoader();
+//       }
+//   });
 
-}
+// }
 
 </script>
 
@@ -703,7 +634,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
         <!-- form pelayanan -->
         <div class="col-md-7">
 
-          <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
+          <!-- <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
             <div class="center">
               <ul class="nav nav-list">
 
@@ -815,22 +746,21 @@ function rollback(no_registrasi, no_kunjungan, flag){
                   <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="rollback(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>, <?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>, '<?php echo $flag_rollback?>')"><i class="menu-icon fa fa-undo"></i><span class="menu-text"> Rollback  </span></a><b class="arrow"></b>
                 </li>
 
-              </ul><!-- /.nav-list -->
+              </ul>
             </div>
-          </div>
+          </div> -->
           
           <!-- end action form  -->
           
           <div class="pull-left" style="margin-bottom:1%; width: 100%">
             <?php if(empty($value->tgl_keluar_poli)) :?>
-            <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
-            <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
+            <!-- <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
+            <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a> -->
             <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
             <?php else: echo ''; endif;?>
             
           </div>
           
-          <br>
           <!-- <div class="form-group">
             <label class="control-label col-sm-2" for="" ><i class="fa fa-user bigger-120 green"></i> Antrian Pasien</label>
             <div class="col-sm-7">
@@ -939,14 +869,30 @@ function rollback(no_registrasi, no_kunjungan, flag){
                 <div class="tab-content">
                     <div id="antrian_tabs" class="tab-pane fade in active">
                         <div class="center">
-                            <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">Pasien Selesai</label>
-                            <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important">Pasien Umum</label>
+                            <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
+                            <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
                         </div>
+                        <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
                         <table class="table" id="antrian_pasien_tbl">
                             <tbody>
-                                <tr><td>Silahkan tunggu...</td></tr>
+                                <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
                             </tbody>
                         </table>
+                        <br>
+                        <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Sudah Diperiksa</span>
+                        <table class="table" id="antrian_pasien_tbl_done">
+                            <tbody>
+                                <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                            </tbody>
+                        </table>
+                        <br>
+                        <span style="font-weight: bold"><i class="fa fa-times-circle red"></i> Batal Berobat</span>
+                        <table class="table" id="antrian_pasien_tbl_cancel">
+                            <tbody>
+                                <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                            </tbody>
+                        </table>
+
                     </div>
 
                     <div id="rm_tabs" class="tab-pane fade">
@@ -958,7 +904,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
   </form>
 
-<div id="GlobalModal" class="modal fade" tabindex="-1">
+<!-- <div id="GlobalModal" class="modal fade" tabindex="-1">
 
   <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:70%">
 
@@ -1002,7 +948,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
   </div>
 
-</div>
+</div> -->
 
 <!-- ace scripts -->
 <script src="<?php echo base_url()?>assets/js/ace/ace.settings.js"></script>

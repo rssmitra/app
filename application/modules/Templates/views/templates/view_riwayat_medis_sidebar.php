@@ -13,7 +13,7 @@ hr {
     <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->no_kunjungan?>">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->no_kunjungan?>" style="background: linear-gradient(1deg, #9ad62c, #ceff75)">
                 <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
                 &nbsp;<?php echo $this->tanggal->formatDateTime($value->tgl_periksa)?>
               </a>

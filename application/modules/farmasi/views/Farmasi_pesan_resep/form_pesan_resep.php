@@ -168,8 +168,8 @@ function showModalEdit(id) {
     <input type="hidden" value="<?php echo $kode_profit?>" name="kode_profit" id="kode_profit">
 
     <div class="form-group">
-        <label class="control-label col-md-2">Tanggal Pesan</label>
-        <div class="col-md-3">
+        <label class="control-label col-md-3">Tanggal Pesan</label>
+        <div class="col-md-4">
             <input class="form-control" name="tgl_pesan" id="tgl_pesan" type="text" value="<?php echo $this->tanggal->formatDateTime(date("Y-m-d h:i:s")) ?>"/>
         </div>
 
@@ -180,13 +180,13 @@ function showModalEdit(id) {
     </div>
 
     <div class="form-group">
-        <label class="control-label col-md-2">Nama Dokter</label>
-        <div class="col-md-3">
+        <label class="control-label col-md-3">Nama Dokter</label>
+        <div class="col-md-4">
             <input id="kode_dokter_show" class="form-control" name="kode_dokter_show" type="text" value="<?php echo $value->nama_pegawai ?>" />
             <input id="kode_dokter" class="form-control" name="kode_dokter" type="hidden" value="<?php echo $value->kode_dokter ?>" />
         </div>
 
-        <label class="control-label col-md-2">Lokasi Tebus</label>
+        <label class="control-label col-md-2">Lok Tebus</label>
         <div class="col-md-3">
             <select name="lokasi_tebus" id="lokasi_tebus" class="form-control">
                 <option value="1">Dalam RS</option>
