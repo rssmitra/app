@@ -47,7 +47,7 @@
           </tr>
           <tr>
             <td>Dokter</td>
-            <td>: <?php echo $data->reg_data->nama_pegawai?></td>
+            <td>: <?php echo isset($data->reg_data->nama_pegawai)?$data->reg_data->nama_pegawai:$data->trans_data[0]->nama_dokter?></td>
           </tr>
         </table>
       </div>

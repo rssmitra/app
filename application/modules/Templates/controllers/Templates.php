@@ -459,6 +459,13 @@ class Templates extends MX_Controller {
 
     public function setGlobalProfilePasienTemplate($data, $flag='', $pm=''){
         $html = '';
+
+        $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
+        if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
+            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
+        }
+        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+
         $html .= '<table class="table table-striped" width="100%" cellpadding="0" cellspacing="0" border="0">
                      
                     <tr>
@@ -478,7 +485,7 @@ class Templates extends MX_Controller {
                     </tr>
                     <tr>
                         <td width="100px">Nama Dokter</td>
-                        <td width="200px">: '.$data->reg_data->nama_pegawai.'</td>
+                        <td width="200px">: '.$nama_dr.'</td>
                     </tr> 
                    
                   </table>';
@@ -487,6 +494,13 @@ class Templates extends MX_Controller {
     
     public function setGlobalProfileRekamMedis($data, $flag='', $pm=''){
         $html = '';
+
+        $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
+        if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
+            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
+        }
+        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+
         $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                 <tr>
                     <td width="100px">No. RM</td>
@@ -498,7 +512,7 @@ class Templates extends MX_Controller {
                     <td width="100px" align="left">Nama Pasien</td>
                     <td width="180px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
                     <td width="100px">Dokter</td>
-                    <td width="350px">: '.$data->reg_data->nama_pegawai.'</td>
+                    <td width="350px">: '.$nama_dr.'</td>
                 </tr>
                 <tr>
                     <td width="100px">Umur</td>
@@ -1443,8 +1457,20 @@ class Templates extends MX_Controller {
 
     public function setGlobalFooterRm($data){
         $html = '';
-        $ttd = ($data->reg_data->ttd != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$data->reg_data->ttd.'" width="250px" style="position: relative">' : '';
-        $stamp = ($data->reg_data->stamp != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$data->reg_data->stamp.'" width="700px" style="position: absolute !important">' : '<u>'.$data->reg_data->nama_pegawai.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+        
+        $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
+        if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
+            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
+        }
+        
+        $ttd = (!empty($data->reg_data->ttd))?$data->reg_data->ttd:$get_dokter->ttd;
+        $stamp_dr = (!empty($data->reg_data->stamp))?$data->reg_data->stamp:$get_dokter->stamp;
+        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+
+        $ttd = ($ttd != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
+        $stamp = ($stamp_dr != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+        
+
         $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
                         <td width="70%"></td>
@@ -1452,7 +1478,7 @@ class Templates extends MX_Controller {
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                         '.COMP_FULL.'
-                        <br>
+                        <br><br>
                         '.$ttd.'
                         '.$stamp.'
                         </td>   
