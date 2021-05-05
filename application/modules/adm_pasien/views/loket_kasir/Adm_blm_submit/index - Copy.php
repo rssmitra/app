@@ -19,7 +19,6 @@
 
   $(document).ready(function(){
 
-    $('#keyword').focus();
     get_total_billing();
    
     oTable = $('#dt_pasien_kasir').DataTable({ 
@@ -211,7 +210,7 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <!-- <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+    <div class="row" style="padding-bottom: 10px; padding-top: 10px">
       <div class="col-xs-12">
         <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #91ff00">
           <span style="font-size: 12px">Total pemasukan</span>
@@ -224,7 +223,7 @@
         </div>
 
       </div>
-    </div> -->
+    </div>
 
     <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
       <!-- hidden form -->
@@ -236,47 +235,116 @@
         <div class="col-md-2">
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
-            <option value="a.no_mr" <?php echo ($_GET['owner']=='kasir') ? 'selected' : ''?>>No MR</option>
+            <option value="a.no_mr" selected>No MR</option>
             <option value="c.nama_pasien">Nama Pasien</option>
-            <option value="b.no_sep" <?php echo ($_GET['owner']=='costing') ? 'selected' : ''?>>Nomor SEP</option>
-            <option value="b.no_registrasi">No Registrasi</option>
+            <option value="b.no_sep">No SEP</option>
           </select>
         </div>
         <label class="control-label col-md-1">Keyword</label>
-        <div class="col-sm-2">
-          <input type="text" class="form-control" name="keyword" id="keyword">
+        <div class="col-sm-6">
+          <input type="text" class="col-xs-10 col-sm-4" name="keyword" id="keyword">
+          <span class="help-inline col-xs-12 col-sm-7">
+            <label class="middle">
+              <input class="ace" type="checkbox" id="add_search_by_date" name="is_with_date" value="1">
+              <span class="lbl"> Tambahkan pencarian tanggal</span>
+            </label>
+          </span>
         </div>
+      </div>
 
-        <label class="control-label col-md-1">Tanggal </label>
+      <div class="form-group" id="form_tanggal" style="display:none">
+        <label class="control-label col-md-1">Tanggal</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
             </div>
           </div>
-          <div class="col-md-2" style="margin-left: -2%">
+
+          <label class="control-label col-md-1">s/d</label>
+          <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
             </div>
           </div>
-
-          <div class="col-md-2" style="margin-left: -1.8%">
-            <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
-              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-              Cari
-            </a>
-            <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
-              <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-              Reload
-            </a>
-          </div>
-
       </div>
+
+      <div class="form-group" id="form_tanggal" style="display:none">
+        <label class="control-label col-md-1">Dari tanggal</label>
+        <div class="col-md-1">
+          <select name="date" id="date" class="form-control">
+            <option value="">-Tanggal-</option>
+            <?php 
+              for($i=1; $i<=31;$i++) : 
+                $selected = ($i==date('d'))?'selected':'';
+            ?>
+            <option value="<?php echo $i?>" <?php echo $selected?> ><?php echo $i?></option>
+            <?php endfor;?>
+          </select>
+        </div>
+        <div class="col-md-2" style="margin-left: -20px">
+          <select name="month" id="month" style="width: 100px !important">
+            <option value="">-Bulan-</option>
+            <?php 
+              for($j=1; $j<=12;$j++) : 
+                $selected = ($j==date('m'))?'selected':'';
+            ?>
+            <option value="<?php echo $j?>" <?php echo $selected?> ><?php echo $this->tanggal->getBulan($j)?></option>
+            <?php endfor;?>
+          </select>
+        </div>
+        <div class="col-md-1" style="margin-left: -65px">
+          <?php echo $this->master->get_tahun(date('Y'),'year','year','form-control','','')?>
+        </div>
+        <!-- sd tanggal -->
+
+        <label class="control-label col-md-1">s/d Tanggal</label>
+        <div class="col-md-1">
+          <select name="to_date" id="to_date" class="form-control">
+            <option value="">-Tanggal-</option>
+            <?php 
+              for($i=1; $i<=31;$i++) : 
+                $selected = ($i==date('d'))?'selected':'';
+            ?>
+            <option value="<?php echo $i?>" <?php echo $selected?> ><?php echo $i?></option>
+            <?php endfor;?>
+          </select>
+        </div>
+        <div class="col-md-2" style="margin-left: -20px">
+          <select name="to_month" id="to_month" style="width: 100px !important">
+            <option value="">-Bulan-</option>
+            <?php 
+              for($j=1; $j<=12;$j++) : 
+                $selected = ($j==date('m'))?'selected':'';
+            ?>
+            <option value="<?php echo $j?>" <?php echo $selected?> ><?php echo $this->tanggal->getBulan($j)?></option>
+            <?php endfor;?>
+          </select>
+        </div>
+        <div class="col-md-1" style="margin-left: -65px">
+          <?php echo $this->master->get_tahun(date('Y'),'to_year','to_year','form-control','','')?>
+        </div>
+
+      </div>    
+
+      <div class="form-group">
+        <label class="control-label col-md-1">&nbsp;</label>
+        <div class="col-md-6" style="margin-left:6px">
+          <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+            Cari
+          </a>
+          <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
+            <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+            Reload
+          </a>
+        </div>
+      </div>   
 
       <div id="showDataTables">
         <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_kasir/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">
@@ -285,7 +353,7 @@
               <th width="50px"></th>
               <th class="center"></th>
               <th width="50px" class="center">No</th>
-              <th width="70px">No. Reg</th>
+              <th>No. Reg</th>
               <?php echo ($flag=='bpjs') ? '<th>No SEP</th>' : '' ; ?>
               <th>No. MR</th>
               <th>Nama Pasien</th>

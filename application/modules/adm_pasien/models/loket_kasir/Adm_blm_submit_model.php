@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Adm_kasir_model extends CI_Model {
+class Adm_blm_submit_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
@@ -17,13 +17,14 @@ class Adm_kasir_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
-		$this->db->select('CAST(bill_rs as INT) as bill_rs, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(lain_lain as INT) as lain_lain');
+		$this->db->select('CAST(bill_rs as INT) as bill_rs, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(lain_lain as INT) as lain_lain, c.tlp_almt_ttp as no_telp, c.no_hp');
 		$this->db->from($this->table.' a');
 		$this->db->join('tc_registrasi b','b.no_registrasi=a.no_registrasi','left');
 		$this->db->join('mt_master_pasien c','c.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian d','d.kode_bagian=b.kode_bagian_masuk','left');
 		$this->db->join('mt_perusahaan e','e.kode_perusahaan=b.kode_perusahaan','left');
 		$this->db->join('mt_nasabah f','f.kode_kelompok=b.kode_kelompok','left');
+		$this->db->where("a.kode_tc_trans_kasir IS NULL");
 
 		if ( isset($_GET['search_by']) ) {
 			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
@@ -39,7 +40,8 @@ class Adm_kasir_model extends CI_Model {
 			}
 			
 		}else{
-			$this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
+			$this->db->where('DATEDIFF(day,tgl_jam_masuk,GETDATE()) < 7');
+			$this->db->where("CAST(tgl_jam_masuk as DATE) != ", date('Y-m-d') );
 		}
 
 			
@@ -108,6 +110,8 @@ class Adm_kasir_model extends CI_Model {
 						'no_sep' => $value->no_sep,
 						'no_registrasi' => $value->no_registrasi,
 						'no_mr' => $value->no_mr,
+						'no_telp' => $value->no_telp,
+						'no_hp' => $value->no_hp,
 						'tgl_jam_masuk' => $value->tgl_jam_masuk,
 						'kode_perusahaan' => $value->kode_perusahaan,
 						'kode_kelompok' => $value->kode_kelompok,
@@ -128,6 +132,8 @@ class Adm_kasir_model extends CI_Model {
 						'no_sep' => $value->no_sep,
 						'no_registrasi' => $value->no_registrasi,
 						'no_mr' => $value->no_mr,
+						'no_telp' => $value->no_telp,
+						'no_hp' => $value->no_hp,
 						'tgl_jam_masuk' => $value->tgl_jam_masuk,
 						'kode_perusahaan' => $value->kode_perusahaan,
 						'kode_kelompok' => $value->kode_kelompok,

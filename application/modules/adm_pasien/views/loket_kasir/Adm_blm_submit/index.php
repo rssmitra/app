@@ -228,17 +228,17 @@
 
     <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
       <!-- hidden form -->
-      <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
-      <input type="hidden" name="pelayanan" id="pelayanan" value="<?php echo $pelayanan?>">
+      <input type="hidden" name="flag" id="flag" value="">
+      <input type="hidden" name="pelayanan" id="pelayanan" value="RJ">
 
       <div class="form-group">
         <label class="control-label col-md-1">Pencarian</label>
         <div class="col-md-2">
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
-            <option value="a.no_mr" <?php echo ($_GET['owner']=='kasir') ? 'selected' : ''?>>No MR</option>
+            <option value="a.no_mr" selected>No MR</option>
             <option value="c.nama_pasien">Nama Pasien</option>
-            <option value="b.no_sep" <?php echo ($_GET['owner']=='costing') ? 'selected' : ''?>>Nomor SEP</option>
+            <option value="b.no_sep">Nomor SEP</option>
             <option value="b.no_registrasi">No Registrasi</option>
           </select>
         </div>
@@ -277,20 +277,19 @@
           </div>
 
       </div>
-
+      <span style="font-style: italic"><b>*</b> Data yang ditampilkan adalah transaksi pasien yang belum disubmit selama 7 hari kebelakang (default)</span>
       <div id="showDataTables">
-        <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_kasir/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">
+        <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_blm_submit/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
               <th width="50px"></th>
               <th class="center"></th>
               <th width="50px" class="center">No</th>
               <th width="70px">No. Reg</th>
-              <?php echo ($flag=='bpjs') ? '<th>No SEP</th>' : '' ; ?>
-              <th>No. MR</th>
               <th>Nama Pasien</th>
               <th>Poli/Klinik Asal</th>
               <th>Penjamin</th>
+              <th>No Telp/Hp</th>
               <th width="150px">Tanggal Masuk</th>
               <th width="100px">Total Billing</th>
             </tr>
