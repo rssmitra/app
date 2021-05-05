@@ -28,6 +28,7 @@ class Global_report_model extends CI_Model {
 	public function akunting_mod_1(){
 		// jenis
 		$where = ($_POST['seri_kuitansi'] != '') ? 'AND seri_kuitansi = '."'".$_POST['seri_kuitansi']."'".' ' : '';
+		
 		$query = "select no_kuitansi, seri_kuitansi, CAST(tgl_jam as DATE)as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as INT) as tunai, CAST(debet as INT) as debet, CAST(kredit as INT) as kredit, CAST(nk_perusahaan as INT) as piutang, CAST(bill as INT)as billing, nama_pegawai  
 		from tc_trans_kasir 
 		left join mt_karyawan on mt_karyawan.no_induk=tc_trans_kasir.no_induk
@@ -36,24 +37,64 @@ class Global_report_model extends CI_Model {
 	}
 
 	public function akunting_mod_2(){
-		$query = "select tc_registrasi.no_registrasi, seri_kuitansi, tc_registrasi.no_mr, nama_pasien, 
-					nama_bagian, no_sep, tgl_jam_masuk, CAST(billing.total as int) as total
-					from tc_registrasi
-					left join mt_bagian on mt_bagian.kode_bagian=tc_registrasi.kode_bagian_masuk
-					left join mt_master_pasien on mt_master_pasien.no_mr=tc_registrasi.no_mr
-					left join (
-						select no_registrasi, SUM(bill)as total, seri_kuitansi from tc_trans_kasir where no_registrasi in (
-						select no_registrasi from tc_registrasi
-						where YEAR(tgl_jam_masuk) = ".$_POST['year']."
-						and MONTH(tgl_jam_keluar) between ".$_POST['from_month']." and ".$_POST['to_month']."
-						and tgl_jam_keluar is not null
-						and tc_registrasi.kode_perusahaan=120 and status_batal is null
-						)
-						group by no_registrasi, seri_kuitansi
-					) as billing on billing.no_registrasi=tc_registrasi.no_registrasi
-					where tgl_jam_keluar is not null
-					and tc_registrasi.kode_perusahaan=120 and status_batal is null and seri_kuitansi='".$_POST['keterangan']."'
-					ORDER BY nama_bagian,tgl_jam_masuk ASC";
+		// $query = "select tc_registrasi.no_registrasi, seri_kuitansi, tc_registrasi.no_mr, nama_pasien, 
+		// 			nama_bagian, no_sep, tgl_jam_masuk, CAST(billing.total as int) as total
+		// 			from tc_registrasi
+		// 			left join mt_bagian on mt_bagian.kode_bagian=tc_registrasi.kode_bagian_masuk
+		// 			left join mt_master_pasien on mt_master_pasien.no_mr=tc_registrasi.no_mr
+		// 			left join (
+		// 				select no_registrasi, SUM(bill)as total, seri_kuitansi from tc_trans_kasir where no_registrasi in (
+		// 				select no_registrasi from tc_registrasi
+		// 				where YEAR(tgl_jam_masuk) = ".$_POST['year']."
+		// 				and MONTH(tgl_jam_keluar) between ".$_POST['from_month']." and ".$_POST['to_month']."
+		// 				and tgl_jam_keluar is not null
+		// 				and tc_registrasi.kode_perusahaan=120 and status_batal is null
+		// 				)
+		// 				group by no_registrasi, seri_kuitansi
+		// 			) as billing on billing.no_registrasi=tc_registrasi.no_registrasi
+		// 			where tgl_jam_keluar is not null
+		// 			and tc_registrasi.kode_perusahaan=120 and status_batal is null and seri_kuitansi='".$_POST['keterangan']."'
+		// 			ORDER BY nama_bagian,tgl_jam_masuk ASC";
+		
+		if (isset($_POST['jenis_kunjungan']) AND $_POST['jenis_kunjungan'] == 'rj') {
+			$where = "b.no_kunjungan IN ( SELECT no_kunjungan
+			FROM tc_kunjungan a
+			where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '03' AND MONTH(tgl_masuk) BETWEEN '".$_POST['from_month']."' AND '".$_POST['to_month']."' AND YEAR(tgl_masuk) = ".$_POST['year']." AND a.status_batal is null)";
+		}
+
+		if (isset($_POST['jenis_kunjungan']) AND $_POST['jenis_kunjungan'] == 'ri') {
+			$where = "b.no_kunjungan IN ( SELECT no_kunjungan
+			FROM ri_tc_rawatinap a
+			where MONTH(tgl_masuk) BETWEEN '".$_POST['from_month']."' AND '".$_POST['to_month']."' AND YEAR(tgl_masuk) = ".$_POST['year']."   )";
+		}
+		
+		$query = "SELECT
+					b.no_registrasi,
+					f.no_sep,
+					d.nama_bagian,
+					CAST( ( SUM ( bill_rs ) + SUM ( bill_dr1 ) + SUM ( bill_dr2 ) + SUM ( bill_dr3 ) ) as INT) AS total,
+					b.no_mr,
+					e.nama_pasien,
+					CAST(c.tgl_masuk as DATE) as tgl_masuk
+				FROM
+					tc_trans_pelayanan b
+					LEFT JOIN tc_registrasi f ON f.no_registrasi = b.no_registrasi
+					LEFT JOIN tc_kunjungan c ON c.no_kunjungan = b.no_kunjungan
+					LEFT JOIN mt_bagian d ON d.kode_bagian = f.kode_bagian_masuk
+					LEFT JOIN mt_master_pasien e ON e.no_mr = b.no_mr 
+				WHERE
+					b.kode_perusahaan = 120 
+					AND ".$where."
+				GROUP BY
+					b.no_registrasi,
+					f.no_sep,
+					d.nama_bagian,
+					e.nama_pasien,
+					b.no_mr,
+					CAST(c.tgl_masuk as DATE) 
+				ORDER BY
+					f.no_sep ASC";
+		
 		return $query;
 	}
     

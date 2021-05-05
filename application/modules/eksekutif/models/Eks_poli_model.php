@@ -102,6 +102,8 @@ class Eks_poli_model extends CI_Model {
 			}
 			$mth_dt = $this->db->get();
 
+			// print_r($this->db->last_query());die;
+
 			// year
 			$this->_main_query();
 			if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {

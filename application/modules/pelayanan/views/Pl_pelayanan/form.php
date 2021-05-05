@@ -388,37 +388,49 @@ function getDataAntrianPasien(){
 
   // getTotalBilling();
   $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
-        $('#no_mr_selected option').remove();         
-        $('#antrian_pasien_tbl tbody').remove();         
-        $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
-        var arr = [];
-        var arr_cancel = [];
-        $.each(data, function (i, o) {   
-            var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
-            var penjamin = (o.kode_perusahaan==120)? '('+o.nama_perusahaan+')' : '' ;
-            var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #f998878c; color: black"';
-            $('<option value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+o.no_antrian+'. '+o.no_mr+' - ' + o.nama_pasien + ' '+penjamin+' </option>').appendTo($('#no_mr_selected')); 
+      $('#no_mr_selected option').remove();         
+      $('#antrian_pasien_tbl tbody').remove();         
+      $('#antrian_pasien_tbl_done tbody').remove();         
+      $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
+      var arr = [];
+      var arr_cancel = [];
+      $.each(data, function (i, o) {   
+          var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
+          var penjamin = (o.kode_perusahaan==120)? '<span style="background: #f998878c">('+o.nama_perusahaan+')</span>' : '<span style="background: #6fb3e0">(UMUM)</span>' ;
 
-            $('<tr '+style+'><td>'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br>'+penjamin+' </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
-            // sudah dilayani
-            if (o.tgl_keluar_poli != null) {
-                arr.push(o);
-            }
-            // batal
-            if (o.status_batal == 1) {
-              arr_cancel.push(o);
-            }
-        });   
-        // total antrian
-        var total_antrian = data.length;
-        $('#total_antrian').text(total_antrian);
-        // dilayani
-        $('#sudah_dilayani').text(arr.length);
-        // batal
-        $('#pasien_batal').text(arr_cancel.length);
+          var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
 
-        console.log(arr_cancel.length);
-    });
+          if(o.tgl_keluar_poli == null){
+            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span> </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
+          }
+
+          if(o.tgl_keluar_poli != null){
+            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_done'));  
+          }
+
+          if(o.status_batal == 1){
+            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_cancel'));  
+          }
+          
+          // sudah dilayani
+          if (o.tgl_keluar_poli != null) {
+              arr.push(o);
+          }
+          // batal
+          if (o.status_batal == 1) {
+            arr_cancel.push(o);
+          }
+      });   
+      // total antrian
+      var total_antrian = data.length;
+      $('#total_antrian').text(total_antrian);
+      // dilayani
+      $('#sudah_dilayani').text(arr.length);
+      // batal
+      $('#pasien_batal').text(arr_cancel.length);
+
+      console.log(arr_cancel.length);
+  });
 
 }
 
@@ -919,41 +931,57 @@ function rollback(no_registrasi, no_kunjungan, flag){
         </div>
 
         <div class="col-md-3 no-padding">
-            <div class="tabbable">
-                <ul class="nav nav-tabs" id="myTab">
-                    <li class="active">
-                        <a data-toggle="tab" href="#antrian_tabs">
-                            <i class="green ace-icon fa fa-user bigger-120"></i>
-                            Antrian Pasien
-                        </a>
-                    </li>
+          <div class="tabbable">
+            <ul class="nav nav-tabs" id="myTab">
+                <li class="active">
+                    <a data-toggle="tab" href="#antrian_tabs">
+                        <i class="green ace-icon fa fa-user bigger-120"></i>
+                        Antrian Pasien
+                    </a>
+                </li>
 
-                    <li>
-                        <a data-toggle="tab" href="#rm_tabs">
-                            <i class="green ace-icon fa fa-history bigger-120"></i>
-                            Riwayat Medis
-                        </a>
-                    </li>
-                </ul>
+                <li>
+                    <a data-toggle="tab" href="#rm_tabs">
+                        <i class="green ace-icon fa fa-history bigger-120"></i>
+                        Riwayat Medis
+                    </a>
+                </li>
+            </ul>
 
-                <div class="tab-content">
-                    <div id="antrian_tabs" class="tab-pane fade in active">
-                        <div class="center">
-                            <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">Pasien Selesai</label>
-                            <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important">Pasien Umum</label>
-                        </div>
-                        <table class="table" id="antrian_pasien_tbl">
-                            <tbody>
-                                <tr><td>Silahkan tunggu...</td></tr>
-                            </tbody>
-                        </table>
+            <div class="tab-content">
+                <div id="antrian_tabs" class="tab-pane fade in active">
+                    <div class="center">
+                        <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
+                        <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
                     </div>
+                    <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
+                    <table class="table" id="antrian_pasien_tbl" style="background: linear-gradient(45deg, #c0ec70, transparent) !important">
+                        <tbody>
+                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Sudah Diperiksa</span>
+                    <table class="table" id="antrian_pasien_tbl_done" style="background: linear-gradient(77deg, #fee951cc, transparent)">
+                        <tbody>
+                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <span style="font-weight: bold"><i class="fa fa-times-circle red"></i> Batal Berobat</span>
+                    <table class="table" id="antrian_pasien_tbl_cancel" style="background: linear-gradient(45deg, #ef8e8e, transparent)">
+                        <tbody>
+                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                        </tbody>
+                    </table>
 
-                    <div id="rm_tabs" class="tab-pane fade">
-                        <div id="cppt_data_on_tabs"></div>
-                    </div>
+                </div>
+
+                <div id="rm_tabs" class="tab-pane fade">
+                    <div id="cppt_data_on_tabs"></div>
                 </div>
             </div>
+          </div>
         </div>
 
   </form>

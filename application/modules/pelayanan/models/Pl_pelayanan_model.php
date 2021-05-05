@@ -103,8 +103,9 @@ class Pl_pelayanan_model extends CI_Model {
         }else{
         	$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
 		}
-        $this->db->order_by('tgl_keluar_poli, no_antrian','ASC');
+        $this->db->order_by('no_antrian','ASC');
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

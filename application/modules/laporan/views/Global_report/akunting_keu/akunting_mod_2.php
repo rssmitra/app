@@ -31,9 +31,9 @@
           <div class="form-group">
               <label class="control-label col-md-1">Jenis Transaksi</label>
                <div class="col-md-2">
-                <select name="keterangan" class="form-control">
-                  <option value="RJ">Rawat Jalan </option>
-                  <option value="RI">Rawat Inap</option>
+                <select name="jenis_kunjungan" class="form-control">
+                  <option value="rj">Rawat Jalan </option>
+                  <option value="ri">Rawat Inap</option>
                 </select>
               </div>
               <label class="control-label col-md-1">Bulan</label>
