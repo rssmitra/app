@@ -1023,10 +1023,10 @@ class Pl_pelayanan extends MX_Controller {
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
 
-        $required = ($_POST['flag_form_pelayanan'] == 'dokter') ? 'required' : '';
-        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim|'.$required.'');        
+        $required = isset($_POST['flag_form_pelayanan'])?($_POST['flag_form_pelayanan'] == 'dokter') ? 'required' : 'xss_clean' : '';
+        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim|required');        
         $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa', 'trim|required');        
-        $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim|'.$required.'');        
+        $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
@@ -1095,7 +1095,7 @@ class Pl_pelayanan extends MX_Controller {
             {
                 $this->db->trans_commit();
                 // jika session dokter
-                if($_POST['flag_form_pelayanan'] == 'dokter'){
+                if(isset($_POST['flag_form_pelayanan']) AND $_POST['flag_form_pelayanan'] == 'dokter'){
                     /*update pl_tc_poli*/
                     $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
                     $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );

@@ -67,7 +67,7 @@
 <p><b><i class="fa fa-edit"></i> DIAGNOSA DAN PEMERIKSAAN </b></p>
 
 <div>
-  <label for="form-field-8">Anamnesa : </label>
+  <label for="form-field-8">Anamnesa <span style="color:red">* : </span> </label>
   <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?></textarea>
   <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>

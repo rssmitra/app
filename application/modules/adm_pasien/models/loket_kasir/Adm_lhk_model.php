@@ -29,8 +29,8 @@ class Adm_lhk_model extends CI_Model {
 
 		$this->db->where('a.seri_kuitansi', $_GET['flag']);
 
-		if ( isset($_GET['kode_perusahaan']) AND $_GET['kode_perusahaan'] != '' ) {
-			$this->db->where('a.kode_perusahaan', $_GET['kode_perusahaan']);
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] != '' ) {
+			$this->db->where('a.kode_perusahaan', $_GET['penjamin']);
 		}
 		
 	}
@@ -116,8 +116,8 @@ class Adm_lhk_model extends CI_Model {
 
 		$this->db->where('seri_kuitansi', $_GET['flag']);
 
-		if ( isset($_GET['kode_perusahaan']) AND $_GET['kode_perusahaan'] != '' ) {
-			$this->db->where('kode_perusahaan', $_GET['kode_perusahaan']);
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] != '' ) {
+			$this->db->where('kode_perusahaan', $_GET['penjamin']);
 		}
 		
 		$query = $this->db->get()->row();

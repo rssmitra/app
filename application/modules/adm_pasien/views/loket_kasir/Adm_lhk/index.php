@@ -148,6 +148,7 @@
         success: function(data) {
           console.log(data.data);
           find_data_reload(data);
+          $('#tgl_filter').text(getFormattedDate($('#from_tgl').val()));
         }
       });
   });
@@ -178,7 +179,7 @@
   function find_data_reload(result){
       get_total_billing();
       oTable.ajax.url($('#dt_harian_kasir').attr('base-url')+'?'+result.data).load();
-      $("html, body").animate({ scrollTop: "400px" });
+      // $("html, body").animate({ scrollTop: "400px" });
 
   }
 
@@ -235,45 +236,10 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <div class="row" style="padding-bottom: 10px; padding-top: 10px">
-      <div class="col-xs-12">
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #89f56ed1">
-          <span style="font-size: 12px">Tunai</span>
-          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_tunai">0</span>,-</h3>
-        </div>
-
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #9ff988d1">
-          <span style="font-size: 12px">Debet</span>
-          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_debet">0</span>,-</h3>
-        </div>
-
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #b4f3a4d1">
-          <span style="font-size: 12px">Kredit</span>
-          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_kredit">0</span>,-</h3>
-        </div>
-
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d0f7c6d1">
-          <span style="font-size: 12px">Piutang Perusahaan</span>
-          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_nk_perusahaan">0</span>,-</h3>
-        </div>
-
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #e3f5dfc7">
-          <span style="font-size: 12px">Piutang Karyawan</span>
-          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_nk_karyawan">0</span>,-</h3>
-        </div>
-
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #e3f5df66">
-          <span style="font-size: 12px">Total Billing</span>
-          <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="label_total_billing">0</span>,-</h3>
-        </div>
-
-      </div>
-    </div>
-
     <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
         <!-- hidden form -->
         <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
-
+        <span style="font-weight: bold">PENCARIAN DATA TRANSAKSI</span>
         <div class="form-group">
             <label class="control-label col-md-2">Tanggal Transaksi</label>
             <div class="col-md-2">
@@ -284,18 +250,12 @@
                 </span>
               </div>
             </div>
-        </div>
 
-        <div class="form-group">
             <label class="control-label col-md-2">Perusahaan Penjamin</label>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <?php echo $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array()), '' , 'penjamin', 'penjamin', 'form-control', '', '') ?>
             </div>
-        </div>
-
-        <div class="form-group" >
-            <label class="col-md-2">&nbsp;</label>
-            <div class="col-md-6">
+            <div class="col-md-3">
               <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Tampilkan
@@ -310,7 +270,78 @@
                 Export Excel
               </a>
             </div>
+
         </div>
+        <hr>
+        <span style="font-weight: bold">REKAPITULASI PENDAPATAN RS TANGGAL <span id="tgl_filter"><?php echo date('d/M/Y')?></span></span>
+        <div class="col-md-12 no-padding">
+          <div class="col-md-2 no-padding">
+            <table class="table">
+              <tr>
+                <td align="right" style="font-size: 11px">
+                  TUNAI<br>
+                  <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_tunai">0</span>,-</h3>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-2 no-padding">
+            <table class="table">
+              <tr>
+                <td align="right" style="font-size: 11px">
+                  DEBET<br>
+                  <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_debet">0</span>,-</h3>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-2 no-padding">
+            <table class="table">
+              <tr>
+                <td align="right" style="font-size: 11px">
+                  KREDIT<br>
+                  <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_kredit">0</span>,-</h3>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-2 no-padding">
+            <table class="table">
+              <tr>
+                <td align="right" style="font-size: 11px">
+                  PIUTANG PERUSAHAAN<br>
+                  <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_nk_perusahaan">0</span>,-</h3>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-2 no-padding">
+            <table class="table">
+              <tr>
+                <td align="right" style="font-size: 11px">
+                  PIUTANG KARYAWAN<br>
+                  <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_nk_karyawan">0</span>,-</h3>
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-2 no-padding">
+            <table class="table">
+              <tr>
+                <td align="right" style="font-size: 11px">
+                  TOTAL BILLING<br>
+                  <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_total_billing">0</span>,-</h3>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        
 
         <table id="dt_harian_kasir" base-url="adm_pasien/loket_kasir/Adm_lhk/get_data" class="table table-bordered table-hover">
           <thead>
