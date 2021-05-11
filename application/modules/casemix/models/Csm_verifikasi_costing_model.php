@@ -29,6 +29,8 @@ class Csm_verifikasi_costing_model extends CI_Model {
 			}else{
 				$this->db->where(" MONTH(csm_dokumen_klaim.created_date) > ".$curr_month." " );
 			}
+		}else{
+			$this->db->where(" MONTH(csm_dokumen_klaim.created_date) > ".$curr_month."  AND YEAR(csm_dokumen_klaim.created_date) = ".date('Y')." " );
 		}
 		
 		if( isset($_GET['field']) AND $_GET['field']=='month_year'){
