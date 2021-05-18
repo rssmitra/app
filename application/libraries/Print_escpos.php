@@ -434,10 +434,7 @@ class Print_escpos{
                     $linespace += 30 ;
                 }
             }
-
-            
-
-            
+     
         }
 
         $count_dt_above = count($params['resep']);
@@ -449,6 +446,9 @@ class Print_escpos{
         printer_draw_line($p, 10, $linespace2, 610, $linespace2);
         
         $linespace3 = $linespace2 + 30;
+        
+        if(count($params['resep_kronis']) > 0) :
+        
 
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
@@ -495,21 +495,37 @@ class Print_escpos{
                 $linespace4 += 30 ;
               }
             endif; 
-
-            
+     
         }
 
+        endif; 
+        $line_ex = isset($linespace4)?$linespace4:$linespace3;
         // keterangan
-        $ln_keterangan = $linespace4 + 5;
+        $ln_keterangan = $line_ex + 5;
         // $font = printer_create_font("Arial", 30, 10, PRINTER_FW_BOLD, false, false, false, 0);
         // printer_select_font($p, $font);
         // printer_draw_text($p, "Keterangan : " , $var_margin_left, $ln_keterangan);
         
+        // Form Penyerahan
+        $line_form = $ln_keterangan + 30;
+        $font = printer_create_font("Arial", 25, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Penerima" , 280, $line_form);
+
+        // TTD Pasien
+        $line_ttd = $line_form + 100;
+        $font = printer_create_font("Arial", 25, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, $dt_index['nama_pasien'], 280, $line_ttd);
+
+
+
+
         // tanggal cetak
-        $line_tgl = $ln_keterangan + 30;
+        $line_tgl = $line_ttd + 30;
         $font = printer_create_font("Arial", 25, 8, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Tanggal cetak : ".$CI->tanggal->formatDateTime(date('Y-m-d H:i:s')) , $var_margin_left, $line_tgl);
+        printer_draw_text($p, "Tanggal cetak : ".$CI->tanggal->formatDateTime(date('Y-m-d H:i:s')) , 100, $line_tgl);
 
                         
         printer_delete_font($font);
