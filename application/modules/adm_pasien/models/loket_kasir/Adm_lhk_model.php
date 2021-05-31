@@ -29,8 +29,17 @@ class Adm_lhk_model extends CI_Model {
 
 		$this->db->where('a.seri_kuitansi', $_GET['flag']);
 
-		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] != '' ) {
+
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 120 ) {
 			$this->db->where('a.kode_perusahaan', $_GET['penjamin']);
+		}
+
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 'um' ) {
+			$this->db->where('a.kode_perusahaan', 0);
+		}
+
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 'asuransi' ) {
+			$this->db->where('a.kode_perusahaan not in(0, 120)');
 		}
 		
 	}
@@ -116,8 +125,16 @@ class Adm_lhk_model extends CI_Model {
 
 		$this->db->where('seri_kuitansi', $_GET['flag']);
 
-		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] != '' ) {
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 120 ) {
 			$this->db->where('kode_perusahaan', $_GET['penjamin']);
+		}
+
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 'um' ) {
+			$this->db->where('kode_perusahaan', 0);
+		}
+
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 'asuransi' ) {
+			$this->db->where('kode_perusahaan not in(0, 120)');
 		}
 		
 		$query = $this->db->get()->row();

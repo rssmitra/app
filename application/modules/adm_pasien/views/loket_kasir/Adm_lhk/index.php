@@ -240,7 +240,7 @@
         <!-- hidden form -->
         <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
         <span style="font-weight: bold">PENCARIAN DATA TRANSAKSI</span>
-        <div class="form-group">
+          <div class="form-group">
             <label class="control-label col-md-2">Tanggal Transaksi</label>
             <div class="col-md-2">
               <div class="input-group">
@@ -253,7 +253,12 @@
 
             <label class="control-label col-md-2">Perusahaan Penjamin</label>
             <div class="col-md-3">
-              <?php echo $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array()), '' , 'penjamin', 'penjamin', 'form-control', '', '') ?>
+              <select class="form-control" name="penjamin" id="penjamin">
+                <option value="#">-Pilih-</option>
+                <option value="120">BPJS Kesehatan</option>
+                <option value="um">Umum</option>
+                <option value="asuransi">Asuransi Lainnya</option>
+              </select>
             </div>
             <div class="col-md-3">
               <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
