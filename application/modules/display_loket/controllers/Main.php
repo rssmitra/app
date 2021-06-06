@@ -46,6 +46,7 @@ class Main extends MX_Controller {
                 $status_jadwal = $row_list->status_jadwal.'<br>';
             }
 
+            $url_foto = ($row_list->url_foto_karyawan != NULL)?base_url().PATH_PHOTO_PEGAWAI.$row_list->url_foto_karyawan:base_url().'assets/img/avatar.png';
             $row[] = '<div style="'.$clr_loket.'">
                         <table width="100%">
                             <tr style="background-color: green">
@@ -53,7 +54,7 @@ class Main extends MX_Controller {
                             </tr>
                             <tr style="background-color: white !important">
                                 <td rowspan="6" style="width: 100px; vertical-align: top">
-                                    <img src="'.base_url().'assets/img/avatar.png" style="width: 250px;" >
+                                    <img src="'.$url_foto.'" style="width: 250px;" >
                                 </td>
                             </tr>
                             <tr style="color: black !important; font-weight: bold; line-height: 1.2">

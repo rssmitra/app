@@ -307,6 +307,8 @@ class Billing extends MX_Controller {
     public function load_billing_view($no_registrasi, $tipe){
         /*get detail data billing*/
         $result = json_decode($this->Billing->getDetailData($no_registrasi));
+        $log_activity = $this->Billing->getLogActivity($no_registrasi);
+        // echo '<pre>';print_r($log_activity);die;
         $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
 
         $data = array(
@@ -316,8 +318,8 @@ class Billing extends MX_Controller {
             'tipe' => $tipe,
             'data' => $result,
             'kunjungan' => $grouping,
+            'log_activity' => $log_activity,
         );
-        // echo '<pre>'; print_r($result->trans_data);die;
         $this->load->view('Billing/data_billing_view', $data, false);
 
     }

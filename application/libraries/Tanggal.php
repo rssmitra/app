@@ -77,6 +77,20 @@ final class Tanggal {
         return $hari;
     }
 
+    public  function getHariFromDateSql($input) {
+        if (empty($input)) {
+            $hari = "-";
+        } else {
+            sscanf($input, '%d-%d-%d', $y, $m, $d);
+            $tanggal = $y."-".$m."-".$d;
+            $timestamp = strtotime($tanggal);
+            $day = date('D', $timestamp);
+            $hari = tanggal::getHari($day);
+        }
+
+        return $hari;
+    }
+
     public  function formatDateForm($input) {
         if (empty($input)) {
             $tanggal = "-";

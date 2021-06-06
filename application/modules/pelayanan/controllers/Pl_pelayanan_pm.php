@@ -61,6 +61,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_pm->get_by_id($kode_penunjang);
         $data['riwayat'] = $this->Pl_pelayanan_pm->get_riwayat_pasien_by_id($no_kunjungan);
+        $data['tgl_kontrol'] = $this->Pl_pelayanan_pm->get_tgl_kontrol($no_kunjungan);
         $data['transaksi'] = $this->Pl_pelayanan_pm->get_transaksi_pasien_by_id($no_kunjungan);
         /*variable*/
         $bag = substr($data['value']->kode_bagian_asal, 1, 1);

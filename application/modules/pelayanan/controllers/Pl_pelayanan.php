@@ -84,7 +84,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['kode_klas'] = $kode_klas;
         $data['kode_profit'] = 2000;
         $data['no_kunjungan'] = $no_kunjungan;
-        // echo '<pre>';print_r($data);die;
+        
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -93,6 +93,7 @@ class Pl_pelayanan extends MX_Controller {
         if($this->session->userdata('flag_form_pelayanan') == 'dokter'){
             $this->load->view('Pl_pelayanan/form_dr', $data);
         }else{
+            // echo '<pre>';print_r($data);die;
             $this->load->view('Pl_pelayanan/form', $data);
         }
     }
@@ -1254,7 +1255,7 @@ class Pl_pelayanan extends MX_Controller {
 
 
         $this->db->trans_begin();  
-        print_r($_POST);die;
+        // print_r($_POST);die;
         $data = array();
         foreach ($_POST['fields_'.$_GET['kode'].''] as $field) {
             $data[$field] = $_POST['total_diskon_'.$field.'_'.$_GET['kode'].''];

@@ -4,42 +4,24 @@
 
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 
-<style>
-.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
-    color: red !important;
-    font-weight: bold;
-}
-
-</style>
 <script>
 
 jQuery(function($) {  
 
   
-  var disableDates = ["1-1-2021","12-2-2021", "11-3-2021","14-3-2021","2-4-2021","1-5-2021","12-5-2021","13-5-2021","14-5-2021","26-5-2021","1-6-2021","20-7-2021","10-8-2021","17-8-2021","19-10-2021","24-12-2021","25-12-2021"];
   $("#tgl_kunjungan").datepicker({
 
     autoclose: true,    
-    todayHighlight: true,
-    daysOfWeekDisabled: [0],
-    format: 'yyyy-mm-dd',
-    beforeShowDay: function(date){
-        dmy = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
-        if(disableDates.indexOf(dmy) != -1){
-            return false;
-        }
-        else{
-            return true;
-        }
 
-    },
+    todayHighlight: true,
+
     onSelect: function(dateText) {
       $(this).change();
     }
+  
   }).on("change", function() {
     
     var str_selected_date = this.value;
-    console.log(str_selected_date);
     var selected_date = str_selected_date.split("/").join("-");
     var spesialis = $('#klinik_rajal').val();
     var dokter = $('#dokter_rajal').val();
@@ -305,7 +287,6 @@ function formatDate(date) {
                       <i class="ace-icon fa fa-calendar"></i>
                     </span>
                   </div>
-                  <small id="" style="margin-top:1px; padding-left: 8px">*) Hari Minggu & Tanggal Merah Libur</small>
                   <small id="view_msg_kuota" style="margin-top:1px"></small>
               </div>
 

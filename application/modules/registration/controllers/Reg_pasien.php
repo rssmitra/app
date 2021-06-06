@@ -740,7 +740,7 @@ class Reg_pasien extends MX_Controller {
              $tgl = $this->tanggal->sqlDateForm($this->input->post('tanggal_perjanjian_pm'));
              $bag = $this->input->post('pm_tujuan');
          }else{
-             $tgl = $this->tanggal->sqlDateForm($this->input->post('tanggal_kunjungan'));
+             $tgl = $this->input->post('tanggal_kunjungan');
              $bag =  $this->input->post('klinik_rajal');
          }
          

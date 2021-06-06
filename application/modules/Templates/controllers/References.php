@@ -206,11 +206,11 @@ class References extends MX_Controller {
 
                       <thead>
 
-                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Nama Dokter</th>
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Nama Dokter</th>
 
-                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Jam Praktek</th>
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Jam Praktek</th>
 
-                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Keterangan</th>
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Keterangan</th>
 
                       </thead>
 
@@ -246,11 +246,11 @@ class References extends MX_Controller {
 		$jd_id = $_POST['jadwal_id'];
 
 		/*get day from date*/
-		$day = $this->tanggal->getHariFromDate($date);
+		$day = $this->tanggal->getHariFromDateSql($date);
 		/*change to sql date*/
 		$sqlDate = $this->tanggal->sqlDateFormStrip($date);
 		/*check current date*/
-		$selected_date = strtotime($sqlDate);
+		$selected_date = strtotime($date);
 		/*get status date*/
 		$status = ($selected_date < time() ) ? 'expired' : 'success' ;
 		/*get master jadwal*/

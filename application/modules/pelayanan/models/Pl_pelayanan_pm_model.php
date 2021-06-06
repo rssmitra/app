@@ -256,6 +256,16 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		
 	}
 
+	public function get_tgl_kontrol($no_kunjungan){
+		$kunjungan = $this->db->get_where('tc_kunjungan', array('no_kunjungan' => $no_kunjungan))->row();
+		$last_kontrol = $this->db->select('CAST(tgl_pesanan as DATE) as tgl_kontrol')->order_by('id_tc_pesanan', 'DESC')->get_where('tc_pesanan', array('no_mr' => $kunjungan->no_mr, 'no_poli' => $kunjungan->kode_bagian_asal) )->row();
+		if(!empty($last_kontrol)){
+			return $last_kontrol->tgl_kontrol;			
+		}else{
+			return false;
+		}
+	}
+
 	public function update($table, $data, $where)
 	{
 		$this->db->update($table, $data, $where);

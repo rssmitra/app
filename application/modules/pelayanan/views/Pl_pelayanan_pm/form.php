@@ -665,6 +665,7 @@ function perjanjian_pasien_pm(){
                 <th>Bagian Asal</th>
                 <th>Penjamin</th>
                 <th>Petugas</th>
+                <th>Kontrol Kembali</th>
               </tr>
 
               <tr>
@@ -675,6 +676,7 @@ function perjanjian_pasien_pm(){
                 <td><?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
                 <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?></td>
                 <td><?php echo $this->session->userdata('user')->fullname?></td>
+                <td><?php echo isset($tgl_kontrol) ? $this->tanggal->formatDatedmY($tgl_kontrol) : '-'; ?></td>
               </tr>
 
             </table>            

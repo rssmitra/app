@@ -172,7 +172,8 @@ $(document).ready(function(){
 
       beforeSend: function() {        
 
-        achtungShowLoader();          
+        achtungShowLoader();    
+        $('#btn_submit').attr('disabled', true);  
 
       },      
 
@@ -203,9 +204,12 @@ $(document).ready(function(){
           
         }else{          
 
-          $.achtung({message: jsonResponse.message, timeout:5});          
+          $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});   
+          $('#btn_submit').attr('disabled', false);       
 
         }    
+
+        $('#btn_submit').attr('disabled', false);
 
         achtungHideLoader();  
         
@@ -413,21 +417,21 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       /*radio*/
       $("input[name=urgensi][value="+obj.urgensi+"]").prop('checked', true);
 
-      if(obj.prb_ditangguhkan == 1){
-        $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
-        $('#btn_submit').attr('disabled', false);
-      }else{
-        $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
-        $('#btn_submit').attr('disabled', true);
-      }
+      // if(obj.prb_ditangguhkan == 1){
+      //   $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
+      //   $('#btn_submit').attr('disabled', false);
+      // }else{
+      //   $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
+      //   $('#btn_submit').attr('disabled', true);
+      // }
 
-      if(obj.resep_ditangguhkan == 1){
-        $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
-        $('#btn_submit').attr('disabled', false);
-      }else{
-        $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
-        $('#btn_submit').attr('disabled', true);
-      }
+      // if(obj.resep_ditangguhkan == 1){
+      //   $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
+      //   $('#btn_submit').attr('disabled', false);
+      // }else{
+      //   $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
+      //   $('#btn_submit').attr('disabled', true);
+      // }
       
       $('#dosis_start').val(obj.dosis_per_hari);
       $('#dosis_end').val(obj.dosis_obat);
