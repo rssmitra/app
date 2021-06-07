@@ -54,7 +54,7 @@ class Main extends MX_Controller {
                             </tr>
                             <tr style="background-color: white !important">
                                 <td rowspan="6" style="width: 100px; vertical-align: top">
-                                    <img src="'.$url_foto.'" style="width: 250px;" >
+                                    <img src="'.$url_foto.'" style="width: 250px; margin-top: -8px" >
                                 </td>
                             </tr>
                             <tr style="color: black !important; font-weight: bold; line-height: 1.2">
