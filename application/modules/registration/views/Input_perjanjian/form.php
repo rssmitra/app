@@ -9,15 +9,23 @@
 jQuery(function($) {  
 
   
+  var disableDates = ["1-1-2021","12-2-2021", "11-3-2021","14-3-2021","2-4-2021","1-5-2021","12-5-2021","13-5-2021","14-5-2021","26-5-2021","1-6-2021","20-7-2021","10-8-2021","17-8-2021","19-10-2021","24-12-2021","25-12-2021"];
   $("#tgl_kunjungan").datepicker({
 
     autoclose: true,    
-
     todayHighlight: true,
+    daysOfWeekDisabled: [0],
+    format: 'yyyy-mm-dd',
+    beforeShowDay: function(date){
+        dmy = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+        if(disableDates.indexOf(dmy) != -1){
+            return false;
+        }
+        else{
+            return true;
+        }
 
-    onSelect: function(dateText) {
-      $(this).change();
-    }
+    },
   
   }).on("change", function() {
     
