@@ -103,7 +103,7 @@ class Reg_pm extends MX_Controller {
             $kode_dokter = $this->regex->_genRegex(0,'RGXINT');
             $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
-            $no_sep = $this->regex->_genRegex($_POST['noSep'],'RGXQSL');
+            $no_sep = isset($_POST['noSep']) ? $this->regex->_genRegex($_POST['noSep'],'RGXQSL') : '';
 
 
             if( !$this->input->post('no_registrasi_rujuk') && empty($this->input->post('no_registrasi_rujuk')) ){
