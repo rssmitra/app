@@ -180,10 +180,11 @@ th, td {
   <table style="width: 100% !important; text-align: center">
     <tr>
       <td style="text-align: left; width: 30%">
-        <b>Tembusan :</b><br>
-        1. Akuntansi <br>
-        2. Gudang <br>
-        3. Arsip <br>
+        <b>Keterangan :</b><br>
+        1. Supplier (Putih) <br>
+        2. Akutansi (Merah) <br>
+        3. Gudang (Kuning) <br>
+        3. Tukar Faktur (Hijau) <br>
       </td>
       <td style="text-align: center; width: 40%">&nbsp;</td>
       <td style="text-align: center; width: 30%">

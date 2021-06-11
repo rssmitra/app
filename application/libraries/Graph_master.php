@@ -611,6 +611,10 @@ final Class Graph_master {
     			// custom table resume kunjungan pasien
     			if ($params['style']=='TableResumeKunjungan') {
     				return $this->TableResumeKunjungan($fields, $params, $data);
+				}
+				
+				if ($params['style']=='TableResumePendaftaran') {
+    				return $this->TableResumePendaftaran($fields, $params, $data);
     			}
 
     			if ($params['style']=='TableResumeKunjunganHarian') {
@@ -969,7 +973,27 @@ final Class Graph_master {
 		return $chart_data;
     }
 
-    public function TableResumeKunjungan($fields, $params, $data){
+	public function TableResumePendaftaran($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	
+    	// load view
+    	$result = array(
+    		'value' => $data,
+		);
+		// echo '<pre>';print_r($result);
+    	// die;
+    	$html = $CI->load->view('eksekutif/Eks_pendaftaran/TableResumeKunjungan', $result, true);
+        
+        
+        $chart_data = array(
+			'xAxis' 	=> 0,
+			'series' 	=> $html,
+		);
+		return $chart_data;
+	}
+	
+	public function TableResumeKunjungan($fields, $params, $data){
     	$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
     	

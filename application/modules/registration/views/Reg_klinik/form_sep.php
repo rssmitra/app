@@ -33,7 +33,7 @@
               <div id="tglLahir">Tanggal Lahir</div>
             </li>
             <li class="list-group-item">
-              <div id="umur">Umur</div>
+              <div id="umur_p_bpjs">Umur</div>
             </li>
             <li class="list-group-item">
               <div id="jenisPeserta">Jenis Peserta</div>

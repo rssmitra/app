@@ -142,7 +142,7 @@ $(document).ready(function () {
                 $('#noMR').text(data.result.noMR);
                 $('#nik').text(data.result.nik);
                 $('#tglLahir').text(data.result.tglLahir);
-                $('#umur').text(data.result.umur);
+                $('#umur_p_bpjs').text(data.result.umur);
                 $('#hakKelas').text(data.result.hakKelas);
                 $('#jenisPeserta').text(data.result.jenisPeserta);
                 $('#statusPeserta').text(data.result.statusPeserta);
@@ -194,7 +194,7 @@ $(document).ready(function () {
                 $('#nama').text(peserta.nama);
                 $('#nik').text(peserta.nik);
                 $('#tglLahir').text(peserta.tglLahir);
-                $('#umur').text(peserta.umur.umurSekarang);
+                $('#umur_p_bpjs').text(peserta.umur.umurSekarang);
                 $('#jenisPeserta').text(peserta.jenisPeserta.keterangan);
                 $('#hakKelas').text(peserta.hakKelas.keterangan);
                 $('#statusPeserta').text(peserta.statusPeserta.keterangan);
@@ -262,7 +262,7 @@ $(document).ready(function () {
                 $('#nama').text(peserta.nama);
                 $('#nik').text(peserta.nik);
                 $('#tglLahir').text(peserta.tglLahir);
-                $('#umur').text(peserta.umur.umurSekarang);
+                $('#umur_p_bpjs').text(peserta.umur.umurSekarang);
                 $('#jenisPeserta').text(peserta.jenisPeserta.keterangan);
                 $('#hakKelas').text(peserta.hakKelas.keterangan);
                 $('#statusPeserta').text(peserta.statusPeserta.keterangan);
