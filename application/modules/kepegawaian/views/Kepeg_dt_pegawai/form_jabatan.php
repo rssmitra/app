@@ -108,7 +108,7 @@ $(document).ready(function(){
           <div class="form-group" id="pas_foto">
             <label class="control-label col-md-2">Pas Foto</label>
             <div class="col-md-2">
-              <input type="file" name="pas_foto" value="<?php echo isset($value->ktp_foto)?$value->ktp_foto:''?>" class="form-control">
+              <input type="file" name="pas_foto" value="<?php echo isset($value->pas_foto)?$value->pas_foto:''?>" class="form-control">
             </div>
           </div>
 

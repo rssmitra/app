@@ -64,7 +64,7 @@
       <hr class="separator">
 
       <div class="clearfix" style="margin-bottom:-5px">
-        <?php echo $this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','C','',1)?>
+        <?php echo $this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','C','',1)?> <!-- C , Create | D, Delete -->
           <?php echo $this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','D','',5)?>
       </div>
 
