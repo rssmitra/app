@@ -130,6 +130,9 @@ $(document).ready(function(){
     afterSelect: function (item) {
       // do what is needed with item
       var val_item=item.split(':')[0];
+      var val_label=item.split(':')[1];
+
+      $('#inputTmpLhr').val(va_label);
            
     }
   });

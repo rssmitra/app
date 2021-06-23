@@ -87,6 +87,32 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $this->load->view('Kepeg_dt_pegawai/form_jabatan', $data);
     }
 
+    public function form_riwayat_pekerjaan($id)
+    {
+        /*breadcrumbs for view*/
+        $this->breadcrumbs->push(strtolower($this->title).' - Riwayat Pekerjaan', 'Kepeg_dt_pegawai/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*define data variabel*/
+        $data['value'] = $this->Kepeg_dt_pegawai->get_by_id($id);
+        // echo '<pre>';print_r($data);die;
+        $data['title'] = 'Riwayat Pekerjaan';
+        $data['flag'] = "update";
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Kepeg_dt_pegawai/form_riwayat_pekerjaan', $data);
+    }
+    
+    public function form_riwayat_pendidikan($id)
+    {
+        /*breadcrumbs for view*/
+        $this->breadcrumbs->push(strtolower($this->title).' - Riwayat pendidikan', 'Kepeg_dt_pegawai/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*define data variabel*/
+        $data['value'] = $this->Kepeg_dt_pegawai->get_by_id($id);
+        $data['title'] = $this->title;
+        $data['flag'] = "update";
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Kepeg_dt_pegawai/form_riwayat_pendidikan', $data);
+    }
     public function show_detail( $id )
     {   
         $fields = $this->master->list_fields( 'view_dt_pegawai' );
@@ -124,6 +150,9 @@ class Kepeg_dt_pegawai extends MX_Controller {
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','R',$row_list->kepeg_id,6).'</li>
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','U',$row_list->kepeg_id,6).'</li>
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','D',$row_list->kepeg_id,6).'</li>
+                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_jabatan/".$row_list->kepeg_id."'".')">Update Data Kepegawaian</a></li>
+                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pekerjaan/".$row_list->kepeg_id."'".')">Riwayat Pekerjaan</a></li>
+                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pendidikan/".$row_list->kepeg_id."'".')">Riwayat Pendidikan</a></li>
                         </ul>
                         </div>
                     </div>';
@@ -139,9 +168,6 @@ class Kepeg_dt_pegawai extends MX_Controller {
             $row[] = $status_kepegawaian.'<br>Aktif kerja : <br>'.$row_list->kepeg_tgl_aktif;
             $status_aktif = ($row_list->kepeg_status_aktif == 'Y') ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
-            $row[] = '<div class="center">
-                        <a href="#" style="width: 100% !important" class="label label-xs label-success" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_jabatan/".$row_list->kepeg_id."'".')"><i class="fa fa-pencil"></i> Update Kepegawaian</a>
-            </div>';
                    
             $data[] = $row;
         }
@@ -255,7 +281,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
 
     public function process()
     {
-        // echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($_FILES);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
 
@@ -356,9 +382,9 @@ class Kepeg_dt_pegawai extends MX_Controller {
             if(isset($_FILES['pas_foto']['name'])){
                 /*hapus dulu file yang lama*/
                 if( $id != 0 ){
-                    $pas_foto = $this->db->get_where('ktp', array('ktp_nik' => $nik) )->row();
-                    if ($pas_foto->ktp_foto != NULL) {
-                        unlink(PATH_PHOTO_PEGAWAI.$pas_foto->ktp_foto.'');
+                    $pas_foto = $this->Kepeg_dt_pegawai->get_by_id($id);
+                    if ($pas_foto->pas_foto != NULL AND $pas_foto->pas_foto != 0) {
+                        unlink(PATH_PHOTO_PEGAWAI.$pas_foto->pas_foto.'');
                     }
                 }
                 $dataktp['ktp_foto'] = $this->upload_file->doUpload('pas_foto', PATH_PHOTO_PEGAWAI);
@@ -396,13 +422,28 @@ class Kepeg_dt_pegawai extends MX_Controller {
         }
     }
 
+    public function process_riwayat_pekerjaan()
+    {
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+
+        // Validasi form riwayat perkerjaan
+        $val->set_rules();
+        $val->set_rules();
+
+        // set messages if error
+        $val->set_messages();
+
+        // 
+
+    }
+
     public function delete()
     {
         $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
         $toArray = explode(',',$id);
         if($id!=null){
             if($this->Kepeg_dt_pegawai->delete_by_id($toArray)){
-                $this->logs->save('tmp_mst_level', $id, 'delete record', '', 'nik');
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
 
             }else{
