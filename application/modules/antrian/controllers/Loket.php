@@ -109,7 +109,7 @@ class Loket extends MX_Controller {
             'ant_date' => date('Y-m-d H:i:s'),
             'ant_no' => $no,
             'ant_panggil' => 0,
-            'log' => json_encode(array('dokter' => 'Lainnya','klinik' => $_POST['poli'], 'jam_praktek' => '-' )),
+            'log' => json_encode(array('dokter' => '-','klinik' => $_POST['poli'], 'jam_praktek' => '-' )),
         );
 
         

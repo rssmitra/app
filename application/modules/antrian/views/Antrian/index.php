@@ -199,70 +199,85 @@
 				?>
 				<div class="row">
 				<?php foreach($klinik as $row_modul) : ?>
-					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:170px;">
+					<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:170px;">
 					<!-- small box -->
-					<button onclick="add_antrian_poli(<?php echo $row_modul->jd_kode_dokter ?>,'<?php echo $row_modul->nama_pegawai?>','<?php echo $row_modul->jd_kode_spesialis ?>','<?php echo $row_modul->nama_bagian?>','<?php echo $row_modul->jd_hari ?>','<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai) ?>','<?php echo $row_modul->jd_jam_selesai ?>',<?php echo $row_modul->kuota ?>)" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
-						<div class="inner" style="margin-top:-10px">
-						<h3 style="font-size:14px;color:black;"><b><?php echo ucwords($row_modul->nama_bagian)?></b></h3>
-						<p style="font-size:12px;color:black;">
-							<?php echo $row_modul->nama_pegawai?><br>
-							<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_modul->jd_jam_selesai)?><br>
-							<?php if($type!='online'){ ?> <b>Sisa Kuota : <?php echo $row_modul->kuota.'</b>'; }?><br>
-							<?php echo isset($row_modul->jd_keterangan)?$row_modul->jd_keterangan:''?> <?php echo isset($row_modul->keterangan)?$row_modul->keterangan:''?> 
-						</p>
-						</div> 
-							
-						<input type="hidden" id="kode_dokter" val="<?php echo $row_modul->jd_kode_dokter ?>">
-						<input type="hidden" id="kode_spesialis" val="<?php echo $row_modul->jd_kode_spesialis ?>">
-					</button>
+						<button onclick="add_antrian_poli(<?php echo $row_modul->jd_kode_dokter ?>,'<?php echo $row_modul->nama_pegawai?>','<?php echo $row_modul->jd_kode_spesialis ?>','<?php echo $row_modul->nama_bagian?>','<?php echo $row_modul->jd_hari ?>','<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai) ?>','<?php echo $row_modul->jd_jam_selesai ?>',<?php echo $row_modul->kuota ?>)" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+							<div class="inner" style="margin-top:-10px">
+							<h3 style="font-size:18px;color:black;"><b><?php echo ucwords($row_modul->nama_bagian)?></b></h3>
+							<p style="font-size:14px;color:black;">
+								<?php echo $row_modul->nama_pegawai?><br>
+								<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_modul->jd_jam_selesai)?><br>
+								<?php if($type!='online'){ ?> <b>Sisa Kuota : <?php echo $row_modul->kuota.'</b>'; }?><br>
+								<?php echo isset($row_modul->jd_keterangan)?$row_modul->jd_keterangan:''?> <?php echo isset($row_modul->keterangan)?$row_modul->keterangan:''?> 
+							</p>
+							</div> 
+								
+							<input type="hidden" id="kode_dokter" val="<?php echo $row_modul->jd_kode_dokter ?>">
+							<input type="hidden" id="kode_spesialis" val="<?php echo $row_modul->jd_kode_spesialis ?>">
+						</button>
 					</div>
 				<?php endforeach; ?>
-				
-					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+
+					<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
 						<button onclick="add_other('Fisioterapi')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
-						<div class="inner" style="margin-top:-10px">
-							<h3 style="font-size:16px;color:black;"><b>FISIOTERAPI</b></h3>
-							<p style="font-size:12px;color:black;">
-							Pendaftaran pasien Penunjang Medis Fisioterapi
+						<div class="inner" style="margin-top:-10px; text-align: center">
+							<h3 style="font-size:28px;color:black;"><b>FISIOTERAPI</b></h3>
+							<p style="font-size:14px;color:black;">
+								Pelayanan Pendaftaran ke Fisioterapi
 							</p>
 						</div>                      
 						</button>
 					</div>
 
-					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+					<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
 						<button onclick="add_other('Laboratorium')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
-						<div class="inner" style="margin-top:-10px">
-							<h3 style="font-size:16px;color:black;"><b>LABORATORIUM</b></h3>
-							<p style="font-size:12px;color:black;">
-							Pendaftaran pasien Penunjang Medis Laboratorium
+						<div class="inner" style="margin-top:-10px; text-align: center">
+							<h3 style="font-size:28px;color:black;"><b>LABORATORIUM</b></h3>
+							<p style="font-size:14px;color:black;">
+								Buka 24 Jam Setiap hari<br>Dengan membawa surat pengantar lab dari dokter
 							</p>
 						</div>                      
 						</button>
 					</div>
 
-					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+					<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
 						<button onclick="add_other('Radiologi')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
-						<div class="inner" style="margin-top:-10px">
-							<h3 style="font-size:16px;color:black;"><b>RADIOLOGI</b></h3>
-							<p style="font-size:12px;color:black;">
-							Pendaftaran pasien Penunjang Medis Radiologi
+						<div class="inner" style="margin-top:-10px;text-align: center">
+							<h3 style="font-size:28px;color:black;"><b>RADIOLOGI</b></h3>
+							<p style="font-size:14px;color:black;">
+								Pendaftaran Pasien Radiologi
 							</p>
 						</div>                      
 						</button>
 					</div>
 
-					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+					<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
 						<button onclick="add_other('IGD')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
-						<div class="inner" style="margin-top:-10px">
-							<h3 style="font-size:16px;color:black;"><b>IGD</b></h3>
-							<p style="font-size:12px;color:black;">
-							Pendaftaran pasien IGD
+						<div class="inner" style="margin-top:-10px; text-align: center">
+							<h3 style="font-size:28px;color:black;"><b>IGD</b></h3>
+							<span style="font-size:18px;color:black;">
+							Instalasi Gawat Darurat
+							</span>
+							<p style="font-size:14px;color:black;">
+								Buka 24 Jam Setiap hari
 							</p>
 						</div>                      
 						</button>
 					</div>
 
+					<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
+						<button onclick="add_other('Perjanjian')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+						<div class="inner" style="margin-top:-10px; text-align: center">
+							<h3 style="font-size:28px;color:black;"><b>Perjanjian Pasien</b></h3>
+							<p style="font-size:14px;color:black;">
+								Penjadwalan Pasien/Reschedule Perjanjian
+							</p>
+						</div>                      
+						</button>
+					</div>
+					
 				</div>
+
 			</div><!-- /.col -->
 		</div>
     </div>

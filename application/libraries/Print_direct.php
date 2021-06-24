@@ -233,7 +233,7 @@ final Class Print_direct {
         $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4");
         // $p = printer_open("\\\\10.10.10.206\EPSON TM-T88V(tracer obat)");
        
-        $var_magin_left = 10;
+        $var_magin_left = 20;
         printer_set_option($p, PRINTER_MODE, "RAW");
         
     
