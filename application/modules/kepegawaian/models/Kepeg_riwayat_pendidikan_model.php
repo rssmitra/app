@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Kepeg_dt_pegawai_model extends CI_Model {
+class Kepeg_riwayat_pendidikan_model extends CI_Model {
 
-	var $table = 'view_dt_pegawai';
-	var $column = array('view_dt_pegawai.nama_pegawai');
-	var $select = 'view_dt_pegawai.*';
+	var $table = 'Kepeg_riwayat_pendidikan';
+	var $column = array('Kepeg_riwayat_pendidikan.kepeg_rpd_nama_sekolah');
+	var $select = 'Kepeg_riwayat_pendidikan.*';
 
-	var $order = array('view_dt_pegawai.kepeg_id' => 'DESC', 'view_dt_pegawai.updated_date'=> 'DESC');
+	var $order = array('Kepeg_riwayat_pendidikan.kepeg_rpd_id' => 'DESC');
 
 	public function __construct()
 	{
@@ -24,25 +24,6 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-		// search query
-		if(isset($_GET['checked_nama_pegawai']) AND $_GET['checked_nama_pegawai'] == 1){
-			if(isset($_GET['nama_pegawai']) AND $_GET['nama_pegawai'] != ''){
-				$this->db->like('view_dt_pegawai.nama_pegawai', $_GET['nama_pegawai']);
-			}
-		}
-
-		if(isset($_GET['checked_unit']) AND $_GET['checked_unit'] == 1){
-			if(isset($_GET['unit']) AND $_GET['unit'] != ''){
-				$this->db->where('view_dt_pegawai.kepeg_unit', $_GET['unit']);
-			}
-		}
-
-		if(isset($_GET['checked_level_jabatan']) AND $_GET['checked_level_jabatan'] == 1){
-			if(isset($_GET['level_jabatan']) AND $_GET['level_jabatan'] != ''){
-				$this->db->where('view_dt_pegawai.kepeg_level', $_GET['level_jabatan']);
-			}
-		}
-
 		$i = 0;
 	
 		foreach ($this->column as $item) 
@@ -90,11 +71,11 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 	{
 		$this->_main_query();
 		if(is_array($id)){
-			$this->db->where_in(''.$this->table.'.kepeg_id',$id);
+			$this->db->where_in(''.$this->table.'.kepeg_rpd_id',$id);
 			$query = $this->db->get();
 			return $query->result();
 		}else{
-			$this->db->where(''.$this->table.'.kepeg_id',$id);
+			$this->db->where(''.$this->table.'.kepeg_rpd_id',$id);
 			$query = $this->db->get();
 			return $query->row();
 		}
@@ -116,14 +97,9 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 
 	public function delete_by_id($id)
 	{
-		$get_data = $this->get_by_id($id);
-		// print_r($get_data);die;
-		// delete ktp
-		$this->db->where_in('ktp.ktp_nik', $get_data[0]->kepeg_nik);
-		$this->db->delete('ktp');
-		// delete pegawai
-		$this->db->where_in('kepeg_dt_pegawai.kepeg_id', $id);
-		return $this->db->delete('kepeg_dt_pegawai');
+		// delete riwayat pekerjaan
+		$this->db->where_in('Kepeg_riwayat_pendidikan.kepeg_rpd_id', $id);
+		return $this->db->delete('Kepeg_riwayat_pendidikan');
 	}
 
 

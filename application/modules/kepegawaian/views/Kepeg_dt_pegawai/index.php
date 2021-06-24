@@ -1,3 +1,18 @@
+<script>
+$(document).ready(function(){
+
+  $( "#form_search" )    
+      .keypress(function(event) {  
+        var keycode =(event.keyCode?event.keyCode:event.which);  
+        if(keycode ==13){   
+          event.preventDefault();  
+          $('#btn_search_data').click();  
+          return false;  
+        }  
+  });
+
+})
+</script>
 <div class="row">
   <div class="col-xs-12">
 
@@ -20,7 +35,7 @@
         <div class="control-label col-md-2">
           <div class="checkbox" style="margin-top: -5px">
             <label>
-              <input name="checked_nama_tarif" id="checked_nama_tarif" type="checkbox" class="ace" value="1">
+              <input name="checked_unit" id="checked_unit" type="checkbox" class="ace" value="1">
               <span class="lbl"> Unit</span>
             </label>
           </div>
@@ -34,19 +49,19 @@
           <div class="control-label col-md-2">
             <div class="checkbox" style="margin-top: -5px">
               <label>
-                <input name="checked_nama_tarif" id="checked_nama_tarif" type="checkbox" class="ace" value="1">
+                <input name="checked_nama_pegawai" id="checked_nama_pegawai" type="checkbox" class="ace" value="1">
                 <span class="lbl"> Nama Pegawai</span>
               </label>
             </div>
           </div>
           <div class="col-md-2" style="margin-left: -15px">
-              <input type="text" value="" name="nama_tarif" id="nama_tarif" class="form-control">
+              <input type="text" value="" name="nama_pegawai" id="nama_pegawai" class="form-control">
           </div>
 
           <div class="control-label col-md-2">
             <div class="checkbox" style="margin-top: -5px">
               <label>
-                <input name="checked_jenis_tindakan" value="1" type="checkbox" class="ace">
+                <input name="checked_level_jabatan" value="1" type="checkbox" class="ace">
                 <span class="lbl"> Level Jabatan</span>
               </label>
             </div>
@@ -91,7 +106,6 @@
               <th>Jabatan/Golongan</th>
               <th>Status Karyawan</th>
               <th>Status Aktif</th>
-              <th width="100px">Action</th>
             </tr>
           </thead>
           <tbody>
