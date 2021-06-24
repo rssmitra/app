@@ -88,6 +88,10 @@ class Ws_index_model extends CI_Model {
 		$c = curl_init();
 
 		curl_setopt($c, CURLOPT_URL, $uri);
+		$certificate_location = 'assets/cacert.pem';
+		curl_setopt($c, CURLOPT_SSL_VERIFYHOST, $certificate_location);
+		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, $certificate_location);
+
 		if($method!=''){
 		    curl_setopt($c, CURLOPT_CUSTOMREQUEST, "$method");
 		}
@@ -100,7 +104,7 @@ class Ws_index_model extends CI_Model {
 		curl_setopt($c, CURLOPT_POSTFIELDS, $json);
 
 		$result = curl_exec($c);
-		// print_r($result);die;
+		// print_r(curl_error($c));die;
 		curl_close($c); 
 		return json_decode($result);
 
@@ -192,12 +196,23 @@ class Ws_index_model extends CI_Model {
 	function RefDokterDPJP(){
 		$service_name = "referensi/dokter/pelayanan/".$_POST['jp']."/tglPelayanan/".$this->tanggal->sqlDateForm($_POST['tgl'])."/Spesialis/".$_POST['spesialis'];
 		$result = $this->getData($service_name);
-		//print_r($result);die;
+		// print_r($result);die;
 		if($result->metaData->code==200){
 			foreach ($result->response->list as $key => $value) {
 				$arrResult[] = ''.$value->kode.' : '.$value->nama;
 			}
 			return $arrResult;
+		}
+	}
+
+	function GetRefDokterDPJPRandom(){
+		$service_name = "referensi/dokter/pelayanan/".$_GET['jp']."/tglPelayanan/".$this->tanggal->sqlDateForm($_GET['tgl'])."/Spesialis/".$_GET['spesialis'];
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($result->response);die;
+		if($result->metaData->code==200){
+			shuffle($result->response->list);
+			$row = $result->response->list;
+			return $row[0];
 		}
 	}
 
@@ -415,8 +430,9 @@ class Ws_index_model extends CI_Model {
 	 	}
 	}
 
-	function get_data_sep($sep){
-		$data = $this->db->get_where('ws_bpjs_sep', array('noSep' => $sep) )->row();
+	function get_data_sep($no_sep){
+		$data = $this->findSep($no_sep);
+		// $data = $this->db->get_where('ws_bpjs_sep', array('noSep' => $sep) )->row();
 		return $data;
 	}
 

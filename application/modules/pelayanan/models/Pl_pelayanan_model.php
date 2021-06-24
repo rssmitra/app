@@ -461,5 +461,15 @@ class Pl_pelayanan_model extends CI_Model {
 
 	}
 
+	public function check_rujukan_pm($pm, $kode_bagian_asal, $no_registrasi){
+		$query = $this->db->where( array('kode_bagian_tujuan' => $pm, 'kode_bagian_asal' => $kode_bagian_asal, 'no_registrasi' => $no_registrasi))->get('tc_kunjungan')->result();
+		// print_r($this->db->last_query());die;
+		if(!empty($query)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 
 }

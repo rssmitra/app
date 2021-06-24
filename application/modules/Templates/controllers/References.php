@@ -1942,4 +1942,30 @@ class References extends MX_Controller {
         echo json_encode(array('opt_coa' => $exc->result(), 'new_kode_akun' => $new_kode_akun));
 	}
 
+	public function findKodeBooking()
+	{
+		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian');
+		$this->db->from('tc_pesanan');
+		$this->db->where('unique_code_counter', $_POST['kode']);
+		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
+		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter','left');
+        $exc = $this->db->get();
+		if ($exc->num_rows() == 0) {
+			echo json_encode(array('status' => 201, 'message' => 'Data tidak ditemukan', 'data' => false ));
+		}else{
+			$dt = $exc->row();
+			$result = array(
+				'no_mr' => $dt->no_mr,
+				'nama' => $dt->nama,
+				'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
+				'nama_dr' => strtoupper($dt->nama_dr),
+				'poli' => strtoupper($dt->nama_bagian),
+				'jam_praktek' => $this->tanggal->formatDateTimeToTime($dt->jam_pesanan),
+			);
+			echo json_encode(array('status' => 200, 'message' => 'Data ditemukan', 'data' => $result ));
+		}
+	}
+
+
+
 }

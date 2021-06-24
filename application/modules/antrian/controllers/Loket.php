@@ -109,7 +109,7 @@ class Loket extends MX_Controller {
             'ant_date' => date('Y-m-d H:i:s'),
             'ant_no' => $no,
             'ant_panggil' => 0,
-            'log' => json_encode(array('dokter' => 'Lainnya','klinik' => 'Lainnya', 'jam_praktek' => 'Lainnya' )),
+            'log' => json_encode(array('dokter' => 'Lainnya','klinik' => $_POST['poli'], 'jam_praktek' => '-' )),
         );
 
         
@@ -126,7 +126,7 @@ class Loket extends MX_Controller {
         else
         {
             $this->db->trans_commit();
-            echo json_encode(array('dokter' => '','klinik' => 'Antrian Lainnya', 'jam_praktek' => '-','type' => $_POST['type'] ,'no' => $no));
+            echo json_encode(array('dokter' => '', 'klinik' => $_POST['poli'], 'jam_praktek' => '-', 'type' => $_POST['type'] ,'no' => $no));
         }
 
     }

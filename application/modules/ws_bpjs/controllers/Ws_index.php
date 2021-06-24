@@ -300,7 +300,7 @@ class Ws_index extends MX_Controller {
 
     public function insertSep()
     {
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         /*global*/
@@ -324,7 +324,7 @@ class Ws_index extends MX_Controller {
         $val->set_rules('user', 'Pengguna', 'trim|required');
         $val->set_rules('noSuratSKDP', 'Nomor Surat Kontrol', 'trim|required');
         $val->set_rules('KodedokterDPJP', 'Dokter DPJP', 'trim|required');
-        $val->set_rules('dokterDPJP', 'Dokter DPJP', 'trim|required');
+        $val->set_rules('dokterDPJP', 'Dokter DPJP', 'trim');
         $val->set_rules('find_member_by', 'Cari Peserta Berdasarkan', 'trim|required');
 
         /*poli*/
@@ -431,8 +431,8 @@ class Ws_index extends MX_Controller {
                         ),
                     ),
                 );
-            $result = $this->Ws_index->insertSep($data);
-            // print_r($result);die;
+                $result = $this->Ws_index->insertSep($data);
+                // print_r($data);die;
 
             if( $result->metaData->code==200 ){
                 /*simpan data sep*/
@@ -656,9 +656,9 @@ class Ws_index extends MX_Controller {
         $row_sep = $this->Ws_index->get_data_sep($noSep);
         $cetakan_ke = $this->Ws_index->count_sep_by_day();
 
-        $data = array('sep'=>$row_sep, 'cetakan_ke' => $cetakan_ke);
-
-        $this->load->view('Ws_index/barcode', $data);
+        $data = array('sep'=>$row_sep->response, 'cetakan_ke' => $cetakan_ke);
+        // echo '<pre>'; print_r($data);die;
+        $this->load->view('Ws_index/viewSEP', $data);
 
         //echo $html;
     }

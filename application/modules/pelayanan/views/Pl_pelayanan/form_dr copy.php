@@ -78,7 +78,7 @@ $(document).ready(function(){
 
                 $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
                 //focus tabs diagnosa
-                // getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
+                // getMenuTabs('pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
 
                 
 
@@ -365,7 +365,7 @@ function getDataAntrianPasien(){
 
 //   noMr = $('#noMrHidden').val();
 //   preventDefault();  
-//   getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
+//   getMenuTabs('pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
 //   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processPelayananSelesai?bag='+$('#kode_bagian_val').val()+'');
 //   $('#form_default_pelayanan').show('fast');
 //   $('#form_default_pelayanan').load('pelayanan/Pl_pelayanan/form_end_visit?mr='+noMr+'&id='+$('#id_pl_tc_poli').val()+'&no_kunjungan='+$('#no_kunjungan').val()+''); 
@@ -639,7 +639,7 @@ function getDataAntrianPasien(){
               <ul class="nav nav-list">
 
                 <li class="hover">
-                  <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Diagnosa </span></a><b class="arrow"></b>
+                  <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Diagnosa </span></a><b class="arrow"></b>
                 </li>
 
                 <li class="hover">

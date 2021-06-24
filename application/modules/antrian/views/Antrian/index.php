@@ -218,16 +218,49 @@
 					</div>
 				<?php endforeach; ?>
 				
-				<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
-					<button onclick="add_other()" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
-					<div class="inner" style="margin-top:-10px">
-						<h3 style="font-size:16px;color:black;"><b>Antrian Lainnya</b></h3>
-						<p style="font-size:12px;color:black;">
-						Pendaftaran pasien untuk Penunjang Medis, IGD, Rawat Inap, dan lainnya.
-						</p>
-					</div>                      
-					</button>
-				</div>
+					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+						<button onclick="add_other('Fisioterapi')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+						<div class="inner" style="margin-top:-10px">
+							<h3 style="font-size:16px;color:black;"><b>FISIOTERAPI</b></h3>
+							<p style="font-size:12px;color:black;">
+							Pendaftaran pasien Penunjang Medis Fisioterapi
+							</p>
+						</div>                      
+						</button>
+					</div>
+
+					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+						<button onclick="add_other('Laboratorium')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+						<div class="inner" style="margin-top:-10px">
+							<h3 style="font-size:16px;color:black;"><b>LABORATORIUM</b></h3>
+							<p style="font-size:12px;color:black;">
+							Pendaftaran pasien Penunjang Medis Laboratorium
+							</p>
+						</div>                      
+						</button>
+					</div>
+
+					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+						<button onclick="add_other('Radiologi')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+						<div class="inner" style="margin-top:-10px">
+							<h3 style="font-size:16px;color:black;"><b>RADIOLOGI</b></h3>
+							<p style="font-size:12px;color:black;">
+							Pendaftaran pasien Penunjang Medis Radiologi
+							</p>
+						</div>                      
+						</button>
+					</div>
+
+					<div class="col-lg-2 col-xs-2" style="margin-top:0px;height:180px;">
+						<button onclick="add_other('IGD')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+						<div class="inner" style="margin-top:-10px">
+							<h3 style="font-size:16px;color:black;"><b>IGD</b></h3>
+							<p style="font-size:12px;color:black;">
+							Pendaftaran pasien IGD
+							</p>
+						</div>                      
+						</button>
+					</div>
 
 				</div>
 			</div><!-- /.col -->
@@ -975,13 +1008,13 @@
 		
 	}
 
-	function add_other() {
+	function add_other(other_name) {
 		/* console.log(dokter);
 		console.log(spesialis); */
 		var dataString = $('#tipe_antrian').val(); 
 		$.ajax({
 			url:"<?php echo base_url(); ?>antrian/loket/process_other",
-			data:{type: dataString}, 
+			data:{type: dataString, poli: other_name}, 
 			dataType: "json", 
 			type:"POST",       
 			success:function (data) {
