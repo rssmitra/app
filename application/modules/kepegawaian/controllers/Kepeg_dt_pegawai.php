@@ -151,8 +151,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','U',$row_list->kepeg_id,6).'</li>
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','D',$row_list->kepeg_id,6).'</li>
                             <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_jabatan/".$row_list->kepeg_id."'".')">Update Data Kepegawaian</a></li>
-                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pekerjaan/".$row_list->kepeg_id."'".')">Riwayat Pekerjaan</a></li>
-                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pendidikan/".$row_list->kepeg_id."'".')">Riwayat Pendidikan</a></li>
+                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pekerjaan/".$row_list->kepeg_id."'".')">Riwayat Pegawai</a></li>
                         </ul>
                         </div>
                     </div>';
