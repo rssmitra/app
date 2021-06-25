@@ -1243,7 +1243,7 @@ class Pl_pelayanan extends MX_Controller {
                     );
 
                     /*save penunjang medis*/
-                    $this->Reg_klinik->save('pm_tc_penunjang', $data_pm_tc_penunjang);
+                    $this->Pl_pelayanan->save('pm_tc_penunjang', $data_pm_tc_penunjang);
 
                     /*save logs*/
                     $this->logs->save('pm_tc_penunjang', $kode_penunjang, 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
@@ -1279,7 +1279,7 @@ class Pl_pelayanan extends MX_Controller {
                 $dataexc_fr['jumlah_r'] = 1;
                 $dataexc_fr['lokasi_tebus'] = 1;
                 /*save post data*/
-                $this->Farmasi_pesan_resep->save('fr_tc_pesan_resep',$dataexc_fr);
+                $this->Pl_pelayanan->save('fr_tc_pesan_resep',$dataexc_fr);
 
                 /*save logs*/
                 $this->logs->save('fr_tc_pesan_resep', $kode_pesan_resep, 'update record on '.$this->title.' module', json_encode($dataexc_fr),'kode_pesan_resep');

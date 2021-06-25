@@ -117,7 +117,7 @@ function sumClassBilling(classname){
             <div class="form-group">
               <label class="control-label col-sm-2" for="">Jenis Tindakan</label>
               <div class="col-sm-4">
-              <?php echo $this->master->custom_selection($params = array('table' => 'mt_jenis_tindakan', 'id' => 'kode_jenis_tindakan', 'name' => 'jenis_tindakan', 'where' => array('flag' => 'kode_jenis_tindakan')), '' , 'kode_jenis_tindakan', 'kode_jenis_tindakan', 'form-control', '', '') ?>
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_jenis_tindakan', 'id' => 'kode_jenis_tindakan', 'name' => 'jenis_tindakan', 'where' => array() ), '' , 'kode_jenis_tindakan', 'kode_jenis_tindakan', 'form-control', '', '') ?>
               </div>
             </div>
 
