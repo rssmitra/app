@@ -310,6 +310,7 @@ function getDataAntrianPasien(){
     $('#no_mr_selected option').remove();         
     $('#antrian_pasien_tbl tbody').remove();         
     $('#antrian_pasien_tbl_done tbody').remove();         
+    $('#antrian_pasien_tbl_cancel tbody').remove();         
     $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
     var arr = [];
     var arr_cancel = [];

@@ -1149,7 +1149,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function processSaveDiagnosaDr(){
 
-        print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
 
@@ -1263,7 +1263,7 @@ class Pl_pelayanan extends MX_Controller {
                     'kode_perusahaan' => ($this->input->post('kode_perusahaan'))?$this->input->post('kode_perusahaan'):0,
                     'kode_kelompok' => $this->input->post('kode_kelompok'),
                     'kode_klas' => $this->input->post('kode_klas'),
-                    'kode_profit' => $this->input->post('kode_profit'),
+                    'kode_profit' => 2000,
                     'kode_bagian_asal' => $this->input->post('kode_bagian_asal'),
                 );
     
@@ -1278,7 +1278,6 @@ class Pl_pelayanan extends MX_Controller {
                 $dataexc_fr['kode_dokter'] = $this->regex->_genRegex($val->set_value('kode_dokter_poli'), 'RGXQSL');
                 $dataexc_fr['jumlah_r'] = 1;
                 $dataexc_fr['lokasi_tebus'] = 1;
-                // print_r($dataexc_fr);die;
                 /*save post data*/
                 $this->Farmasi_pesan_resep->save('fr_tc_pesan_resep',$dataexc_fr);
 
