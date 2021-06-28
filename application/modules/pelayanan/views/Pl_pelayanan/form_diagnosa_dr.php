@@ -128,7 +128,10 @@
     <label for="form-field-8">Resep Farmasi : </label>
     <div class="checkbox">
         <label>
-            <input name="check_resep" type="checkbox" class="ace" value="1">
+            <?php 
+                $checked_resep = ($this->Pl_pelayanan->check_resep_fr($value->kode_bagian, $value->no_registrasi) == true ) ? 'checked' : ''; 
+            ?>
+            <input name="check_resep" type="checkbox" class="ace" value="1" <?php echo $checked_resep; ?>>
             <span class="lbl"> Ya</span>
         </label>
     </div>

@@ -72,7 +72,11 @@ $(document).ready(function(){
               if( jsonResponse.status === 200 ){    
 
                 $.achtung({message: jsonResponse.message, timeout:5});
-                getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
+                if(jsonResponse.next_id_pl_tc_poli != 0){
+                  getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
+                }else{
+                  $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
+                }
                 
               }else{          
 

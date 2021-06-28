@@ -1409,8 +1409,8 @@ class Templates extends MX_Controller {
             }elseif ($flag=='LAB') {
                 // $img = '<img src="'.base_url().'assets/images/stamp-rs-lab.png" style="width: 200px;float: left !important">';
                 $img = '<br>';
-                // $petugas = $this->session->userdata('user')->fullname;
-                $petugas = 'Al Iksan';
+                $petugas = $this->session->userdata('user')->fullname;
+                // $petugas = 'Al Iksan';
                 $html .= '<table border="0" cellspacing="0" cellpadding="0" style="font-size:36px">
                     <tr> 
                         <td align="left" width="60%" style="font-size: 32px">
@@ -1547,12 +1547,12 @@ class Templates extends MX_Controller {
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
             // $pm_ = 453169; 
-            // $no_mr = '00254028';
-            // $nama_pasien = 'Asep Cucu Sutisna';
-            // $umur = '53';
+            // $no_mr = '00262639';
+            // $nama_pasien = 'Asrofi';
+            // $umur = '47';
             // $jk_ = 'Pria';
-            // $tgl_daftar = '12 Juni 2021 - 09:10:25';
-            // $tgl_periksa = '12 Juni 2021 - 09:27:21';
+            // $tgl_daftar = '27 Juni 2021 - 16:10:25';
+            // $tgl_periksa = '27 Juni 2021 - 16:27:21';
 
             // form db
             $pm_ = $pm;

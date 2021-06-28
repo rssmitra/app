@@ -37,12 +37,17 @@ class Pl_pelayanan_model extends CI_Model {
 		
 		$this->_main_query();
 
-		if( in_array($_GET['bag'], array('012801','013101') ) ) {
-			$this->db->where('pl_tc_poli.kode_bagian='."'".$_GET['bag']."'".'');
+		if($_GET['bag'] == 0){
+			$this->db->where('pl_tc_poli.tgl_keluar_poli is not null');
 		}else{
-			$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
-			$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+			if( in_array($_GET['bag'], array('012801','013101') ) ) {
+				$this->db->where('pl_tc_poli.kode_bagian='."'".$_GET['bag']."'".'');
+			}else{
+				$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
+				$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+			}
 		}
+		
 
 		if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
 			if( $_GET['keyword'] != '' ){
@@ -463,6 +468,16 @@ class Pl_pelayanan_model extends CI_Model {
 
 	public function check_rujukan_pm($pm, $kode_bagian_asal, $no_registrasi){
 		$query = $this->db->where( array('kode_bagian_tujuan' => $pm, 'kode_bagian_asal' => $kode_bagian_asal, 'no_registrasi' => $no_registrasi))->get('tc_kunjungan')->result();
+		// print_r($this->db->last_query());die;
+		if(!empty($query)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public function check_resep_fr($kode_bagian_asal, $no_registrasi){
+		$query = $this->db->where( array('kode_bagian_asal' => $kode_bagian_asal, 'no_registrasi' => $no_registrasi))->get('fr_tc_pesan_resep')->result();
 		// print_r($this->db->last_query());die;
 		if(!empty($query)){
 			return true;
