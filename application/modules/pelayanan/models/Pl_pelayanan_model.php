@@ -38,6 +38,14 @@ class Pl_pelayanan_model extends CI_Model {
 		$this->_main_query();
 
 		if($_GET['bag'] == 0){
+			if(isset($_GET['poliklinik']) AND $_GET['poliklinik'] != ''){
+				$this->db->where('pl_tc_poli.kode_bagian='."'".$_GET['poliklinik']."'".'');
+			}
+
+			if(isset($_GET['select_dokter']) AND $_GET['select_dokter'] != ''){
+				$this->db->where('pl_tc_poli.kode_dokter='."'".$_GET['select_dokter']."'".'');
+			}
+
 			$this->db->where('pl_tc_poli.kode_bagian not in ('."'012801'".', '."'013101'".') ');
 			$this->db->where('pl_tc_poli.tgl_keluar_poli is not null');
 		}else{
