@@ -94,18 +94,24 @@ class Pl_pelayanan extends MX_Controller {
         $data['kode_klas'] = $kode_klas;
         $data['kode_profit'] = 2000;
         $data['no_kunjungan'] = $no_kunjungan;
+        $data['form_type'] = $_GET['form'];
         
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        if($this->session->userdata('flag_form_pelayanan') == 'dokter'){
-            $this->load->view('Pl_pelayanan/form_dr', $data);
-        }else{
-            // echo '<pre>';print_r($data);die;
+        if($_GET['form'] == 'billing_entry'){
             $this->load->view('Pl_pelayanan/form', $data);
+        }else{
+            if($this->session->userdata('flag_form_pelayanan') == 'dokter'){
+                $this->load->view('Pl_pelayanan/form_dr', $data);
+            }else{
+                // echo '<pre>';print_r($data);die;
+                $this->load->view('Pl_pelayanan/form', $data);
+            }
         }
+
     }
 
     public function tindakan($id='', $no_kunjungan='')
@@ -280,6 +286,7 @@ class Pl_pelayanan extends MX_Controller {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
         /*get data from model*/
         $list = $this->Pl_pelayanan->get_datatables();
+        $form_type = isset($_GET['form'])?$_GET['form']:'form_rj';
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -307,11 +314,11 @@ class Pl_pelayanan extends MX_Controller {
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
                             '.$rollback_btn.' '.$cancel_btn.'                            
-                            <li><a href="#">Selengkapnya</a></li>
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
@@ -652,7 +659,7 @@ class Pl_pelayanan extends MX_Controller {
             $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'Tindakan', 'trim|required');
         }
         $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');
-        $this->form_validation->set_rules('pl_tgl_transaksi', 'Tanggal', 'trim|required');
+        $this->form_validation->set_rules('pl_tgl_transaksi', 'Tanggal', 'trim');
         
 
         // set message error
@@ -1312,6 +1319,45 @@ class Pl_pelayanan extends MX_Controller {
                 
 
             endif; 
+
+            // save billing pasien 
+
+            /*tarif sarana rs*/
+            $kode_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
+            
+            $dataexc = array(
+                /*form hidden input default*/
+                'no_kunjungan' => $this->regex->_genRegex($no_kunjungan,'RGXINT'),
+                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),
+                'kode_kelompok' => $this->regex->_genRegex($this->input->post('kode_kelompok'),'RGXINT'),
+                'kode_perusahaan' => $this->regex->_genRegex($this->input->post('kode_perusahaan'),'RGXINT'),
+                'no_mr' => $this->regex->_genRegex($this->input->post('noMrHidden'),'RGXQSL'),
+                'nama_pasien_layan' => $this->regex->_genRegex($this->input->post('nama_pasien_layan'),'RGXQSL'),
+                'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
+                /*end form hidden input default*/
+                'kode_bagian' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
+                'kode_klas' => $this->regex->_genRegex($this->input->post('kode_klas'),'RGXINT'),
+                'tgl_transaksi' => date('Y-m-d'),                
+                'jumlah' => 1,  
+                'satuan_tindakan' => '',  
+            );
+
+            // cek tarif sarana
+            $cek_tarif_sarana = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'], 'jenis_tindakan' => 13) )->num_rows();
+            if($cek_tarif_sarana == 0){
+                // tarif sarana
+                $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);            
+            }
+            
+            // cek tarif konsultasi
+            $cek_tarif_konsultasi = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'], 'jenis_tindakan' => 12) )->num_rows();
+            if($cek_tarif_konsultasi == 0){
+                /*tarif konsultasi*/
+                $dataexc['kode_dokter1'] = $_POST['kode_dokter_poli'];
+                $tarif_konsultasi = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 12);
+            }
+            
+
 
             if ($this->db->trans_status() === FALSE)
             {

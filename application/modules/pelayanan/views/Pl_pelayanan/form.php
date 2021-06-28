@@ -85,7 +85,7 @@ $(document).ready(function(){
                 if( jsonResponse.type_pelayanan == 'Pasien Selesai' ){
                   // back after process
                   if( jsonResponse.next_id_pl_tc_poli != '' ){
-                    getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
+                    getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
                   }else{
                     getMenu('pelayanan/Pl_pelayanan');
                   }
@@ -236,7 +236,7 @@ $(document).ready(function(){
       e.preventDefault();  
       var element = $(this).find('option:selected'); 
       var params_id = element.attr("data-id");
-      getMenu('pelayanan/Pl_pelayanan/form/'+params_id+'?no_mr='+$(this).val()+'');
+      getMenu('pelayanan/Pl_pelayanan/form/'+params_id+'?no_mr='+$(this).val()+'&form=<?php echo $form_type?>');
     });
 
 
@@ -246,7 +246,7 @@ $(document).ready(function(){
 
 function click_selected_patient(id_pl_tc_poli, no_kunjungan, no_mr){
   preventDefault();  
-  getMenu('pelayanan/Pl_pelayanan/form/'+id_pl_tc_poli+'/'+no_kunjungan+'?no_mr='+no_mr+'');
+  getMenu('pelayanan/Pl_pelayanan/form/'+id_pl_tc_poli+'/'+no_kunjungan+'?no_mr='+no_mr+'&form=<?php echo $form_type?>');
 }
 /*format date to m/d/Y*/
 function formatDate(date) {
@@ -515,7 +515,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
         var jsonResponse = JSON.parse(data);  
         if(jsonResponse.status === 200){  
           $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan/form/'+$('#id_pl_tc_poli').val()+'/'+no_kunjungan+'?no_mr='+$('#noMrHidden').val()+'');
+          getMenu('pelayanan/Pl_pelayanan/form/'+$('#id_pl_tc_poli').val()+'/'+no_kunjungan+'?no_mr='+$('#noMrHidden').val()+'&form=<?php echo $form_type?>');
         }else{          
           $.achtung({message: jsonResponse.message, timeout:5});  
         } 

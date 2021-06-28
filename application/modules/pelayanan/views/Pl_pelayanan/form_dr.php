@@ -61,6 +61,7 @@ $(document).ready(function(){
             processData: false,            
             beforeSend: function() {
               achtungShowFadeIn();
+              
             },
             uploadProgress: function(event, position, total, percentComplete) {
             },
@@ -73,18 +74,16 @@ $(document).ready(function(){
 
                 $.achtung({message: jsonResponse.message, timeout:5});
                 if(jsonResponse.next_id_pl_tc_poli != 0){
-                  getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
+                  getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
                 }else{
                   $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
                 }
+
+                
                 
               }else{          
 
                 $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
-                //focus tabs diagnosa
-                // getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
-
-                
 
               }        
 
@@ -169,7 +168,7 @@ $(document).ready(function(){
 
 function click_selected_patient(id_pl_tc_poli, no_kunjungan, no_mr){
   preventDefault();  
-  getMenu('pelayanan/Pl_pelayanan/form/'+id_pl_tc_poli+'/'+no_kunjungan+'?no_mr='+no_mr+'');
+  getMenu('pelayanan/Pl_pelayanan/form/'+id_pl_tc_poli+'/'+no_kunjungan+'?no_mr='+no_mr+'&form=<?php echo $form_type?>');
 }
 /*format date to m/d/Y*/
 function formatDate(date) {
@@ -358,96 +357,6 @@ function getDataAntrianPasien(){
 
 }
 
-// function getTotalBilling(){
-
-//   $.getJSON("adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/get_total_billing_dr_current_day?kode_dokter="+$('#kode_dokter_poli').val()+"&kode_bagian="+$('#kode_bagian_val').val()+"", '', function (data) {  
-//     $('#total_bill_dr_current').text(formatMoney(data.total_billing));
-//   });
-
-// }
-
-// function selesaikanKunjungan(){
-
-//   noMr = $('#noMrHidden').val();
-//   preventDefault();  
-//   getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
-//   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processPelayananSelesai?bag='+$('#kode_bagian_val').val()+'');
-//   $('#form_default_pelayanan').show('fast');
-//   $('#form_default_pelayanan').load('pelayanan/Pl_pelayanan/form_end_visit?mr='+noMr+'&id='+$('#id_pl_tc_poli').val()+'&no_kunjungan='+$('#no_kunjungan').val()+''); 
-
-// }
-
-// function backToDefaultForm(){
-
-//   noMr = $('#noMrHidden').val();
-//   preventDefault();  
-//   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processPelayananSelesai');
-//   $('#form_default_pelayanan').hide('fast');
-//   $('#form_default_pelayanan').html(''); 
-  
-// }
-
-// function perjanjian(){
-//   noMr = $('#noMrHidden').val();
-//   if (noMr == '') {
-//     alert('Silahkan cari pasien terlebih dahulu !'); return false;    
-//   }else{
-//     $('#form_modal').load('registration/reg_pasien/form_perjanjian_modal/'+noMr); 
-//     $("#GlobalModal").modal();
-//   }
-// }
-
-// function cancel_visit(no_registrasi, no_kunjungan){
-
-//   preventDefault();  
-
-//   achtungShowLoader();
-
-//   $.ajax({
-//       url: "pelayanan/Pl_pelayanan/cancel_visit",
-//       data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
-//       dataType: "json",
-//       type: "POST",
-//       complete: function (xhr) {
-//         var data=xhr.responseText;  
-//         var jsonResponse = JSON.parse(data);  
-//         if(jsonResponse.status === 200){  
-//           $.achtung({message: jsonResponse.message, timeout:5}); 
-//           getMenu('pelayanan/Pl_pelayanan');
-//         }else{          
-//           $.achtung({message: jsonResponse.message, timeout:5});  
-//         } 
-//         achtungHideLoader();
-//       }
-//   });
-
-// }
-
-// function rollback(no_registrasi, no_kunjungan, flag){
-
-//   preventDefault();  
-
-//   achtungShowLoader();
-
-//   $.ajax({
-//       url: "pelayanan/Pl_pelayanan/rollback",
-//       data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },            
-//       dataType: "json",
-//       type: "POST",
-//       complete: function (xhr) {
-//         var data=xhr.responseText;  
-//         var jsonResponse = JSON.parse(data);  
-//         if(jsonResponse.status === 200){  
-//           $.achtung({message: jsonResponse.message, timeout:5}); 
-//           getMenu('pelayanan/Pl_pelayanan/form/'+$('#id_pl_tc_poli').val()+'/'+no_kunjungan+'?no_mr='+$('#noMrHidden').val()+'');
-//         }else{          
-//           $.achtung({message: jsonResponse.message, timeout:5});  
-//         } 
-//         achtungHideLoader();
-//       }
-//   });
-
-// }
 
 </script>
 
@@ -824,6 +733,7 @@ function getDataAntrianPasien(){
           <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
           <input type="hidden" class="form-control" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
           <input type="hidden" class="form-control" name="flag_mcu" id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
+          <!-- cek tarif existing -->
 
           <!-- <p><b><i class="fa fa-edit"></i> FORM PELAYANAN PASIEN </b></p> -->
 

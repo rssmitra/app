@@ -38,6 +38,7 @@ class Pl_pelayanan_model extends CI_Model {
 		$this->_main_query();
 
 		if($_GET['bag'] == 0){
+			$this->db->where('pl_tc_poli.kode_bagian not in ('."'012801'".', '."'013101'".') ');
 			$this->db->where('pl_tc_poli.tgl_keluar_poli is not null');
 		}else{
 			if( in_array($_GET['bag'], array('012801','013101') ) ) {
