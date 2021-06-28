@@ -36,7 +36,6 @@ jQuery(function($) {
     },
     afterSelect: function (item) {
       // do what is needed with item
-      // var val_item=item.split(':')[0];
       var val_label=item.split(':')[0];
 
       $('#kepeg_rpd_kota').val(val_label);
@@ -73,7 +72,7 @@ jQuery(function($) {
       },  
   });
 
-});
+
 
   
 // Reload table riwayat pekerjaan after process success
@@ -122,7 +121,7 @@ jQuery(function($) {
       }
       achtungHideLoader();
       }
-    });
+  });
 
 
   // Update riwayat pekerjaan pegawai
@@ -228,6 +227,7 @@ jQuery(function($) {
     }
     
   }
+});
 // enf of document ready
 
 </script>
@@ -241,10 +241,9 @@ jQuery(function($) {
     line-height: 2.0;
     padding-left: 6px;
   }
-  /* .style_data tbody tr td {
-    vertical-align: top;
+  .style_data tbody tr td {
     padding-left : 6px !important;
-  } */
+  }
 </style>
 
 
@@ -444,12 +443,11 @@ jQuery(function($) {
               <div class="form-group">
                 <label class="control-label col-md-2">Kota</label>
                   <div class="col-md-2">
-                    <!-- input hidden id kota -->
                     <input name="kepeg_rpd_kota" id="kepeg_rpd_kota" value="<?php echo isset($value->kepeg_rpd_kota)?$value->kepeg_rpd_kota:''?>" class="form-control" type="text">
                   </div>
                   <label class="control-label col-md-2">Jenjang Pendidikan</label>
                   <div class="col-md-2">
-                    <?php echo $this->master->custom_selection($params = array('table' => 'mst_education', 'id' => 'education_id', 'name' => 'education_name', 'where' => array('is_active' => 'Y')), isset($value->kepeg_rpd_jenjang_pendidikan)?$value->kepeg_rpd_jenjang_pendidikan:'' , 'kepeg_rpd_jenjang_pendidikan', 'kepeg_rpd_jenjang_pendidikan', 'form-control', '', '') ?>
+                    <?php echo $this->master->custom_selection($params = array('table' => 'mst_education', 'id' => 'education_name', 'name' => 'education_name', 'where' => array('is_active' => 'Y')), isset($value->kepeg_rpd_jenjang_pendidikan)?$value->kepeg_rpd_jenjang_pendidikan:'' , 'kepeg_rpd_jenjang_pendidikan', 'kepeg_rpd_jenjang_pendidikan', 'form-control', '', '') ?>
                   </div>
               </div>               
               <div class="form-group">
