@@ -1,109 +1,132 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+
 <script>
-jQuery(function($) {
 
-  $('.date-picker').datepicker({
-    autoclose: true,
-    todayHighlight: true
-  })
-  //show datepicker when clicking on the icon
-  .next().on(ace.click_event, function(){
-    $(this).prev().focus();
-  });
-});
+  jQuery(function($) {
 
-$( ".form-control" )    
-    .keypress(function(event) {  
-      var keycode =(event.keyCode?event.keyCode:event.which);  
-      if(keycode ==13){   
-        event.preventDefault();  
-        $('#btn_search_data').click();  
-        return false;  
-      }  
-});
-
-
-$('#btn_update_session_poli').click(function (e) {  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan/destroy_session_kode_bagian",
-      data: { kode: $('#sess_kode_bagian').val()},            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
+    $('.date-picker').datepicker({
+      autoclose: true,
+      todayHighlight: true
+    })
+    //show datepicker when clicking on the icon
+    .next().on(ace.click_event, function(){
+      $(this).prev().focus();
+    });
   });
 
-});
-
-function cancel_visit(no_registrasi, no_kunjungan){
-
-  preventDefault();  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan/cancel_visit",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#sess_kode_bagian').val() },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
+  $( ".form-control" )    
+      .keypress(function(event) {  
+        var keycode =(event.keyCode?event.keyCode:event.which);  
+        if(keycode ==13){   
+          event.preventDefault();  
+          $('#btn_search_data').click();  
+          return false;  
+        }  
   });
 
-}
 
-function rollback(no_registrasi, no_kunjungan, flag){
+  $('#btn_update_session_poli').click(function (e) {  
 
-  preventDefault();  
+    achtungShowLoader();
 
-  achtungShowLoader();
+    $.ajax({
+        url: "pelayanan/Pl_pelayanan/destroy_session_kode_bagian",
+        data: { kode: $('#sess_kode_bagian').val()},            
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            getMenu('pelayanan/Pl_pelayanan');
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5});  
+          } 
+          achtungHideLoader();
+        }
+    });
 
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan/rollback",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          reload_table();
-          //getMenu('pelayanan/Pl_pelayanan');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
   });
 
-}
+  $('select[name="poliklinik"]').change(function () {      
 
+
+    $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {              
+
+        $('#select_dokter option').remove();                
+
+        $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
+
+        $.each(data, function (i, o) {                  
+
+            $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));                    
+              
+        });      
+
+
+    });    
+
+  });
+
+
+  function cancel_visit(no_registrasi, no_kunjungan){
+
+    preventDefault();  
+
+    achtungShowLoader();
+
+    $.ajax({
+        url: "pelayanan/Pl_pelayanan/cancel_visit",
+        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#sess_kode_bagian').val() },            
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            getMenu('pelayanan/Pl_pelayanan');
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5});  
+          } 
+          achtungHideLoader();
+        }
+    });
+
+  }
+
+  function rollback(no_registrasi, no_kunjungan, flag){
+
+    preventDefault();  
+
+    achtungShowLoader();
+
+    $.ajax({
+        url: "pelayanan/Pl_pelayanan/rollback",
+        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },            
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            reload_table();
+            //getMenu('pelayanan/Pl_pelayanan');
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5});  
+          } 
+          achtungHideLoader();
+        }
+    });
+
+  }
 
 </script>
+
 <div class="row">
   <div class="col-xs-12">
 
@@ -141,6 +164,20 @@ function rollback(no_registrasi, no_kunjungan, flag){
             <input type="text" class="form-control" name="keyword" id="keyword_form">
           </div>
 
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-2">Poli/Klinik</label>
+        <div class="col-md-4">
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-2">Dokter</label>
+        <div class="col-md-4">
+          <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
+        </div>
       </div>
 
       <div class="form-group">
