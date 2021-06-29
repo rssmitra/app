@@ -652,11 +652,14 @@ class Ws_index extends MX_Controller {
 
     public function view_sep($noSep)
     {   
+        $this->load->library('Print_escpos');
         /*data sep*/
         $row_sep = $this->Ws_index->get_data_sep($noSep);
         $cetakan_ke = $this->Ws_index->count_sep_by_day();
 
         $data = array('sep'=>$row_sep->response, 'cetakan_ke' => $cetakan_ke);
+        // print sep
+        $this->print_escpos->print_sep();
         // echo '<pre>'; print_r($data);die;
         $this->load->view('Ws_index/viewSEP', $data);
 

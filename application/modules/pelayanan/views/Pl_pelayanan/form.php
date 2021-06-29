@@ -602,7 +602,10 @@ function rollback(no_registrasi, no_kunjungan, flag){
   </div>
 </div>  -->
 
+
 <div class="row">
+
+<?php if($form_type != 'billing_entry') : ?>
   <div class="page-header">  
       <ul class="nav ace-nav">
         <li class="light-blue" style="background-color: lightgrey !important;color: black">
@@ -652,11 +655,20 @@ function rollback(no_registrasi, no_kunjungan, flag){
             <i class="ace-icon fa fa-sign-out"></i>
           </a>
         </li>
-      </ul>
-    
+      </ul>    
   </div>  
+<?php else: ?>
 
-  
+  <div class="page-header">
+    <h1>
+      Entry Billing Rawat Jalan
+      <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        Input Billing Tindakan Pasien Rawat Jalan
+      </small>
+    </h1>
+  </div>
+<?php endif; ?>
 
 <div>   
 
@@ -713,7 +725,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
         </div>
 
         <!-- form pelayanan -->
-        <div class="col-md-7">
+        <div class="<?php echo ($form_type != 'billing_entry') ? 'col-md-7':'col-md-10';?>">
 
           <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
             <div class="center">
@@ -822,10 +834,14 @@ function rollback(no_registrasi, no_kunjungan, flag){
                 <?php 
                   $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir(isset($value->no_registrasi)?$value->no_registrasi:'',isset($value->no_kunjungan)?$value->no_kunjungan:'');
                   $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
+                  if($flag_rollback == 'unsubmit') :
                 ?>
+
                 <li class="hover">
                   <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="rollback(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>, <?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>, '<?php echo $flag_rollback?>')"><i class="menu-icon fa fa-undo"></i><span class="menu-text"> Rollback  </span></a><b class="arrow"></b>
                 </li>
+
+                <?php endif; ?>
 
               </ul><!-- /.nav-list -->
             </div>
@@ -929,7 +945,8 @@ function rollback(no_registrasi, no_kunjungan, flag){
           </div>
           
         </div>
-
+        
+        <?php if($form_type != 'billing_entry') : ?>
         <div class="col-md-3 no-padding">
           <div class="tabbable">
             <ul class="nav nav-tabs" id="myTab">
@@ -949,6 +966,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
             </ul>
 
             <div class="tab-content">
+
                 <div id="antrian_tabs" class="tab-pane fade in active">
                     <div class="center">
                         <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
@@ -983,6 +1001,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
             </div>
           </div>
         </div>
+        <?php endif;?>
 
   </form>
 
