@@ -441,7 +441,8 @@ class Pl_pelayanan_model extends CI_Model {
 	}
 
 	public function cek_transaksi_kasir($no_registrasi, $no_kunjungan){
-		$trans_kasir = $this->db->get_where('tc_trans_kasir', array('no_registrasi' => $no_registrasi))->num_rows();
+		// $trans_kasir = $this->db->get_where('tc_trans_kasir', array('no_registrasi' => $no_registrasi))->num_rows();
+		$trans_kasir = $this->db->where('kode_tc_trans_kasir IS NOT NULL')->get_where('tc_trans_pelayanan', array('no_registrasi' => $no_registrasi))->num_rows();
 		if($trans_kasir > 0){
 			return false;
 		}else{

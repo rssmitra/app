@@ -304,7 +304,9 @@ class Pl_pelayanan extends MX_Controller {
             $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi,$row_list->no_kunjungan);
             //$rollback_btn = ($trans_kasir==true)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
             $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
-            $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>';
+
+            $rollback_btn = ($flag_rollback == 'unsubmit') ? '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>' : '';
+            
 
             $cancel_btn = ($row_list->status_periksa==NULL) ? '<li><a href="#" onclick="cancel_visit('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Batalkan Kunjungan</a></li>' : '' ;
 
@@ -314,6 +316,7 @@ class Pl_pelayanan extends MX_Controller {
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
                             '.$rollback_btn.' '.$cancel_btn.'                            
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_perjanjian_modal/".$row_list->no_mr."'".', '."'PERJANJIAN PASIEN'".')">Perjanjian Pasien</a></li>
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
@@ -333,7 +336,13 @@ class Pl_pelayanan extends MX_Controller {
                 if($row_list->tgl_keluar_poli==NULL || empty($row_list->tgl_keluar_poli)){
                     $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
                 }else {
-                    $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                    if($flag_rollback != 'submited'){
+                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                        
+                    }else{
+                        $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>';
+
+                    }
                 }
             }
 
@@ -1560,7 +1569,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function process_add_tindakan_lain(){
 
-        /*print_r($_POST);die;*/
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');      
         $this->form_validation->set_rules('kode_jenis_tindakan', 'Jenis Tindakan', 'trim|required');      
@@ -1615,6 +1624,8 @@ class Pl_pelayanan extends MX_Controller {
             $dataexc["pendapatan_rs"] = (isset($_POST['pendapatan_rs']))?(int)$_POST['pendapatan_rs']:NULL;
             $dataexc["kamar_tindakan"] = (isset($_POST['kamar_tindakan']))?(int)$_POST['kamar_tindakan']:NULL;
             //$dataexc["tindakan_luar"] = $this->input->post('tindakan_luar');
+            
+            // print_r($dataexc);die;
 
             $this->Pl_pelayanan->save('tc_trans_pelayanan', $dataexc);
 
