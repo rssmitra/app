@@ -39,6 +39,16 @@ $(document).ready(function(){
     }
   }); 
 
+  $('select[name="kepeg_status_kerja"]').change(function(){
+
+    if ($(this).val() == 212) {
+      $('#div_status_kerja').show('fast');
+    } else {
+      $('#div_status_kerja').hide('fast');
+    }
+
+  });
+
 })
 
 </script>
@@ -112,6 +122,17 @@ $(document).ready(function(){
             </div>
           </div>
 
+          <?php if(isset($value->pas_foto)) :?>
+
+          <div class="form-group">
+            <label class="control-label col-md-2">&nbsp;</label>
+            <div class="col-md-4">
+              <img style="max-width:150px" class="editable img-responsive" alt="" id="avatar2" src="<?php echo base_url().PATH_PHOTO_PEGAWAI.$value->pas_foto?>" />
+            </div>
+          </div>
+
+          <?php endif;?>
+
           <p style="padding-top: 10px"><b>PANGKAT/GOLONGAN DAN JABATAN PEGAWAI</b></p>
           <div class="form-group" id="unit">
             <label class="control-label col-md-2">Unit/Bagian</label>
@@ -173,25 +194,30 @@ $(document).ready(function(){
               </div>
             </div>
           </div>
+          
+          <!-- not-shown for karyawan tetap -->
 
-          <div class="form-group" id="masa_kontrak">
-            <label class="control-label col-md-2">Masa Kontrak (bulan)</label>
-            <div class="col-md-2">
-              <input type="text" name="kepeg_masa_kontrak" value="<?php echo isset($value->kepeg_masa_kontrak)?$value->kepeg_masa_kontrak:''?>" class="form-control">
+          <div id="div_status_kerja" style="<?php echo isset($value->kepeg_status_kerja) ? ($value->kepeg_status_kerja == 212) ? '' : 'display : none' : 'display : none' ;?>">
+            <div class="form-group" id="masa_kontrak">
+              <label class="control-label col-md-2">Masa Kontrak (bulan)</label>
+              <div class="col-md-2">
+                <input type="text" name="kepeg_masa_kontrak" value="<?php echo isset($value->kepeg_masa_kontrak)?$value->kepeg_masa_kontrak:''?>" class="form-control">
+              </div>
             </div>
-          </div>
 
-          <div class="form-group" id="tgl_akhir_kerja">
-            <label class="control-label col-md-2">Tanggal Berakhir Kerja</label>
-            <div class="col-md-2">
-              <div class="input-group">
-                  <input name="kepeg_tgl_selesai" id="kepeg_tgl_selesai" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_selesai):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
-                  <span class="input-group-addon">
-                  <i class="ace-icon fa fa-calendar"></i>
-                  </span>
+            <div class="form-group" id="tgl_akhir_kerja">
+              <label class="control-label col-md-2">Tanggal Berakhir Kerja</label>
+              <div class="col-md-2">
+                <div class="input-group">
+                    <input name="kepeg_tgl_selesai" id="kepeg_tgl_selesai" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_selesai):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
+                    <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                    </span>
+                </div>
               </div>
             </div>
           </div>
+          <!-- end of not-shown -->
 
           <div class="form-group" id="status_aktif">
             <label class="control-label col-md-2">Status Aktif Pegawai</label>

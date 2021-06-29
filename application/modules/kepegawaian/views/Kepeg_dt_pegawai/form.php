@@ -116,7 +116,7 @@ $(document).ready(function(){
   $('#inputTmpLhr').typeahead({
     source: function (query, result) {
         $.ajax({
-            url: "Templates/References/getDistricts",
+            url: "Templates/References/getRegenciesPob",
             data: 'keyword=' + query,             
             dataType: "json",
             type: "POST",
@@ -130,9 +130,8 @@ $(document).ready(function(){
     afterSelect: function (item) {
       // do what is needed with item
       var val_item=item.split(':')[0];
-      var val_label=item.split(':')[1];
 
-      $('#inputTmpLhr').val(va_label);
+      $('#inputTmpLhr').val(val_item);
            
     }
   });
@@ -180,26 +179,26 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="control-label col-md-2">NIK</label>
               <div class="col-md-2">
-                <input name="nik" id="nik" value="<?php echo isset($value->nik)?$value->nik:''?>" class="form-control" type="text">
+                <input name="nik" id="nik" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->nik)?$value->nik:''?>" class="form-control" type="text">
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2">Nama Lengkap</label>
               <div class="col-md-3">
-                <input name="nama_pegawai" id="nama_pegawai" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?>" class="form-control" type="text">
+                <input name="nama_pegawai" id="nama_pegawai" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?>" class="form-control" type="text">
               </div>
             </div>
 
             <div class="form-group">
               <label class="control-label col-md-2">Tempat Lahir</label>
               <div class="col-md-3">
-                <input name="tmp_lahir" id="inputTmpLhr" value="<?php echo isset($value->tmp_lahir)?$value->tmp_lahir:''?>" class="form-control" type="text">
+                <input name="tmp_lahir" id="inputTmpLhr" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->tmp_lahir)?$value->tmp_lahir:''?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-1">Tgl Lahir</label>
               <div class="col-md-2">
                 <div class="input-group">
-                    <input name="dob_pegawai" id="dob_pegawai" value="<?php echo isset($value->tgl_lahir)?$this->tanggal->formatDateForm($value->tgl_lahir):''?>"  class="form-control date-picker" type="text">
+                    <input name="dob_pegawai" id="dob_pegawai" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->tgl_lahir)?$this->tanggal->formatDateForm($value->tgl_lahir):''?>"  class="form-control date-picker" type="text">
                     <span class="input-group-addon">
                     <i class="ace-icon fa fa-calendar"></i>
                     </span>
@@ -230,7 +229,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2">Provinsi</label>
 
               <div class="col-md-3">
-                  <input id="inputProvinsi" style="margin-left:-9px;margin-bottom:3px;" class="form-control" name="provinsi" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->nama_provinsi)?($value->nama_provinsi!=null)?"$value->id_propinsi : $value->nama_provinsi":'':''?>" <?php echo ($flag=='read')?'readonly':''?>/>
+                  <input id="inputProvinsi" style="margin-left:-9px;margin-bottom:3px;" class="form-control" name="provinsi" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->nama_provinsi)?($value->nama_provinsi!=null)?"$value->nama_provinsi":'':''?>" <?php echo ($flag=='read')?'readonly':''?>/>
                   <input type="hidden" name="provinsiHidden" value="<?php echo isset($value->id_propinsi)?$value->id_propinsi:'' ?>" id="provinsiHidden">
               </div>
 
@@ -238,7 +237,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2" style="margin-left:-13px;">Kota / Kabupaten</label>
 
               <div class="col-md-3">
-                  <input id="inputKota" style="margin-left:-9px" class="form-control" name="kota" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kota)?($value->id_kota!=null)?"$value->id_kota : $value->nama_kota":'':''?>" <?php echo ($flag=='read')?'readonly':''?>/>
+                  <input id="inputKota" style="margin-left:-9px" class="form-control" name="kota" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kota)?($value->id_kota!=null)?"$value->nama_kota":'':''?>" <?php echo ($flag=='read')?'readonly':''?>/>
                   <input type="hidden" name="kotaHidden" value="<?php echo isset($value->id_kota)?$value->id_kota:'' ?>" id="kotaHidden">
               </div>
             </div>
@@ -250,7 +249,7 @@ $(document).ready(function(){
             <label class="control-label col-md-2">Kecamatan</label>
 
             <div class="col-md-3">
-                <input id="inputKecamatan" class="form-control" name="kecamatan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kecamatan)?($value->id_kecamatan!=null)?"$value->id_kecamatan : $value->nama_kecamatan":'':''?>"  <?php echo ($flag=='read')?'readonly':''?>/>
+                <input id="inputKecamatan" class="form-control" name="kecamatan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kecamatan)?($value->id_kecamatan!=null)?"$value->nama_kecamatan":'':''?>"  <?php echo ($flag=='read')?'readonly':''?>/>
                 <input type="hidden" name="kecamatanHidden" value="<?php echo isset($value->id_kecamatan)?$value->id_kecamatan:''?>" id="kecamatanHidden">
             </div>
             
@@ -259,7 +258,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2">Kelurahan</label>
 
               <div class="col-md-3">
-                  <input id="inputKelurahan" style="margin-left:-9px" class="form-control" name="kelurahan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kelurahan)?($value->id_kelurahan!=null)?"$value->id_kelurahan : $value->nama_kelurahan":'':''?>" <?php echo ($flag=='read')?'readonly':''?>/> 
+                  <input id="inputKelurahan" style="margin-left:-9px" class="form-control" name="kelurahan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kelurahan)?($value->id_kelurahan!=null)?"$value->nama_kelurahan":'':''?>" <?php echo ($flag=='read')?'readonly':''?>/> 
                   <input type="hidden" name="kelurahanHidden" value="<?php echo isset($value->id_kelurahan)?$value->id_kelurahan:''?>" id="kelurahanHidden">
               </div>
             </div>
@@ -316,40 +315,22 @@ $(document).ready(function(){
             </div>
 
           </div>
-
-          <!-- <div class="form-group">
-
-            <label class="control-label col-md-2">Telp/HP</label>
-
+          
+          <div class="form-group">
+            <label class="control-label col-md-2">Is Active?</label>
             <div class="col-md-2">
-              <input type="text" name="tlp_almt_ttp" id="tlp_almt_ttp" class="form-control" value="<?php //echo isset($value->tlp_almt_ttp)?($value->tlp_almt_ttp!=0 || $value->tlp_almt_ttp!='' )?$value->tlp_almt_ttp:'':'' ?>" <?php // echo ($flag=='read')?'readonly':''?> >
-            </div>
-
-            <label class="control-label col-md-2">HP</label>
-
-            <div class="col-md-2">
-              <input type="text" name="telp_pegawai" id="telp_pegawai" class="form-control" value="<?php // echo isset($value->no_hp)?$value->no_hp:''; ?>" >
-            </div>
-
-
-          </div> -->
-
-            
-            <div class="form-group">
-              <label class="control-label col-md-2">Is Active?</label>
-              <div class="col-md-2">
-                <div class="radio">
-                      <label>
-                        <input name="is_active" type="radio" class="ace" value="Y" <?php echo isset($value->is_active) ? ($value->is_active == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
-                        <span class="lbl"> Ya</span>
-                      </label>
-                      <label>
-                        <input name="is_active" type="radio" class="ace" value="N" <?php echo isset($value->is_active) ? ($value->is_active == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
-                        <span class="lbl"> Tidak</span>
-                      </label>
-                </div>
+              <div class="radio">
+                    <label>
+                      <input name="is_active" type="radio" class="ace" value="Y" <?php echo isset($value->is_active) ? ($value->is_active == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                      <span class="lbl"> Ya</span>
+                    </label>
+                    <label>
+                      <input name="is_active" type="radio" class="ace" value="N" <?php echo isset($value->is_active) ? ($value->is_active == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                      <span class="lbl"> Tidak</span>
+                    </label>
               </div>
             </div>
+          </div>
 
             <hr>
 
@@ -358,31 +339,18 @@ $(document).ready(function(){
             <div class="form-group" id="status_kepegawaian">
               <label class="control-label col-md-2">NIP</label>
               <div class="col-md-1">
-                <input type="text" name="kepeg_nip" value="<?php echo isset($value->kepeg_nip)?$value->kepeg_nip:''?>" class="form-control">
+                <input type="text" name="kepeg_nip" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->kepeg_nip)?$value->kepeg_nip:''?>" class="form-control">
               </div>
             </div>
-            <!-- <div class="form-group" id="status_kepegawaian">
-              <label class="control-label col-md-2">NIK</label>
-              <div class="col-md-2">
-                <input type="text" name="kepeg_nik" value="<?php // echo isset($value->kepeg_nik)?$value->kepeg_nik:''?>" class="form-control">
-              </div>
-            </div> -->
-
-            <!-- <div class="form-group" id="status_kepegawaian">
-              <label class="control-label col-md-2">Nama Pegawai</label>
-              <div class="col-md-3">
-                <input type="text" name="nama_pegawai" value="<?php // echo isset($value->nama_pegawai)?$value->nama_pegawai:''?>" class="form-control">
-              </div>
-            </div> -->
 
             <div class="form-group" id="status_kepegawaian">
               <label class="control-label col-md-2">No. Telp/HP</label>
               <div class="col-md-2">
-                <input type="text" name="kepeg_no_telp" value="<?php echo isset($value->kepeg_no_telp)?$value->kepeg_no_telp:''?>" class="form-control">
+                <input type="tel" placeholder="08xxx..." name="kepeg_no_telp" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->kepeg_no_telp)?$value->kepeg_no_telp:''?>" class="form-control">
               </div>
               <label class="control-label col-md-1">Email</label>
               <div class="col-md-2">
-                <input type="text" name="kepeg_email" value="<?php echo isset($value->kepeg_email)?$value->kepeg_email:''?>" class="form-control">
+                <input type="text" name="kepeg_email" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->kepeg_email)?$value->kepeg_email:''?>" class="form-control">
               </div>
             </div>
 
@@ -465,7 +433,7 @@ $(document).ready(function(){
               <label class="control-label col-md-2">Tanggal Aktif Kerja</label>
               <div class="col-md-2">
                 <div class="input-group">
-                    <input name="kepeg_tgl_aktif" id="kepeg_tgl_aktif" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_aktif):''?>"  data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
+                    <input name="kepeg_tgl_aktif" id="kepeg_tgl_aktif" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_aktif):''?>"  data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
                     <span class="input-group-addon">
                     <i class="ace-icon fa fa-calendar"></i>
                     </span>
@@ -473,11 +441,11 @@ $(document).ready(function(){
               </div>
             </div>
 
-              <div id="div_status_kerja" style="<?php echo isset($value->kepeg_status_kerja)? ($value->kepeg_status_kerja == 212)? '' : 'display: none' : 'display:none' ;?>">
+            <div id="div_status_kerja" style="<?php echo isset($value->kepeg_status_kerja)? ($value->kepeg_status_kerja == 212)? '' : 'display: none' : 'display:none' ;?>">
                 <div class="form-group" id="masa_kontrak">
                   <label class="control-label col-md-2">Masa Kontrak (bulan)</label>
                   <div class="col-md-2">
-                    <input type="text" name="kepeg_masa_kontrak" value="<?php echo isset($value->kepeg_masa_kontrak)?$value->kepeg_masa_kontrak:''?>" class="form-control">
+                    <input type="text" name="kepeg_masa_kontrak" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value->kepeg_masa_kontrak)?$value->kepeg_masa_kontrak:''?>" class="form-control">
                   </div>
                 </div>
 
@@ -485,7 +453,7 @@ $(document).ready(function(){
                   <label class="control-label col-md-2">Tanggal Berakhir Kerja</label>
                   <div class="col-md-2">
                     <div class="input-group">
-                        <input name="kepeg_tgl_selesai" id="kepeg_tgl_selesai" value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_selesai):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
+                        <input name="kepeg_tgl_selesai" id="kepeg_tgl_selesai" <?php echo ($flag=='read')?'readonly':''?> value="<?php echo isset($value)?$this->tanggal->formatDateForm($value->kepeg_tgl_selesai):''?>" data-date-format="yyyy-mm-dd"  class="form-control date-picker" type="text">
                         <span class="input-group-addon">
                         <i class="ace-icon fa fa-calendar"></i>
                         </span>
@@ -519,10 +487,6 @@ $(document).ready(function(){
             </div>
 
             <div class="form-actions center">
-
-              <!--hidden field-->
-              <!-- <input type="text" name="id" value="<?php echo isset($value)?$value->level_id:0?>"> -->
-
               <a onclick="getMenu('kepegawaian/Kepeg_dt_pegawai')" href="#" class="btn btn-sm btn-success">
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                 Kembali ke daftar

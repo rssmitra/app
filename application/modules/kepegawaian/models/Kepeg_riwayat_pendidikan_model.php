@@ -18,6 +18,8 @@ class Kepeg_riwayat_pendidikan_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table);
+		// filter by kepeg_id
+		$this->db->where('kepeg_id', $_GET['kepeg_id']);
 	}
 
 	private function _get_datatables_query()

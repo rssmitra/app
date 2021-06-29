@@ -87,7 +87,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $this->load->view('Kepeg_dt_pegawai/form_jabatan', $data);
     }
 
-    public function form_riwayat_pekerjaan($id)
+    public function form_riwayat_pegawai($id)
     {
         /*breadcrumbs for view*/
         $this->breadcrumbs->push(strtolower($this->title).' - Riwayat Pekerjaan', 'Kepeg_dt_pegawai/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
@@ -98,7 +98,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $data['flag'] = "update";
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Kepeg_dt_pegawai/form_riwayat_pekerjaan', $data);
+        $this->load->view('Kepeg_dt_pegawai/form_riwayat_pegawai', $data);
     }
     
     public function form_riwayat_pendidikan($id)
@@ -151,7 +151,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','U',$row_list->kepeg_id,6).'</li>
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','D',$row_list->kepeg_id,6).'</li>
                             <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_jabatan/".$row_list->kepeg_id."'".')">Update Data Kepegawaian</a></li>
-                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pekerjaan/".$row_list->kepeg_id."'".')">Riwayat Pegawai</a></li>
+                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pegawai/".$row_list->kepeg_id."'".')">Riwayat Pegawai</a></li>
                         </ul>
                         </div>
                     </div>';
@@ -187,21 +187,21 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $this->load->library('form_validation');
         $val = $this->form_validation;
 
-        $val->set_rules('kepeg_nip','kepeg_nip', 'trim|required'); 
-        $val->set_rules('nama_pegawai','nama_pegawai', 'trim|required');
-        $val->set_rules('kepeg_no_telp','kepeg_no_telp', 'trim');
-        $val->set_rules('kepeg_email','kepeg_email', 'trim|valid_email');
-        $val->set_rules('kepeg_gol','kepeg_gol', 'trim|required');
-        $val->set_rules('kepeg_pendidikan_terakhir','kepeg_pendidikan_terakhir', 'trim|required');
-        $val->set_rules('kepeg_unit','kepeg_unit', 'trim|required');
-        $val->set_rules('kepeg_level','kepeg_level', 'trim|required');
-        $val->set_rules('kepeg_hak_perawatan','kepeg_hak_perawatan', 'trim');
-        $val->set_rules('kepeg_tenaga_medis','kepeg_tenaga_medis', 'trim|required');
-        $val->set_rules('kepeg_status_kerja','kepeg_status_kerja', 'trim|required');
-        $val->set_rules('kepeg_tgl_aktif','kepeg_tgl_aktif', 'trim|required');
-        $val->set_rules('kepeg_tgl_selesai','kepeg_tgl_selesai', 'trim');
-        $val->set_rules('kepeg_masa_kontrak','kepeg_masa_kontrak', 'trim');
-        $val->set_rules('kepeg_status_aktif','kepeg_status_aktif', 'trim|required');
+        $val->set_rules('kepeg_nip','NIP Pegawai', 'integer|trim|required'); 
+        $val->set_rules('nama_pegawai','Nama Pegawai', 'trim|required');
+        $val->set_rules('kepeg_no_telp','No Telpon Pegawai', 'integer|trim|required');
+        $val->set_rules('kepeg_email','Email Pegawai', 'trim|valid_email');
+        $val->set_rules('kepeg_gol','Golongan Pegawai', 'trim|required');
+        $val->set_rules('kepeg_pendidikan_terakhir','Pendidikan Terakhir', 'trim|required');
+        $val->set_rules('kepeg_unit','Unit Pegawai', 'trim|required');
+        $val->set_rules('kepeg_level','Jabatan Pegawai', 'trim|required');
+        $val->set_rules('kepeg_hak_perawatan','Hak Keperawatan', 'trim');
+        $val->set_rules('kepeg_tenaga_medis','Jenis Pegawai', 'trim|required');
+        $val->set_rules('kepeg_status_kerja','Status Kepegawaian', 'trim|required');
+        $val->set_rules('kepeg_tgl_aktif','Tanggal Aktif Pegawai', 'trim|required');
+        $val->set_rules('kepeg_tgl_selesai','Tanggal Berakhir Kerja', 'trim');
+        $val->set_rules('kepeg_masa_kontrak','Masa Kontrak (bulan)', 'trim');
+        $val->set_rules('kepeg_status_aktif','Status Aktif Pegawai', 'trim|required');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -285,43 +285,40 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $val = $this->form_validation;
 
         // Validasi Form Data Pribadi
-        $val->set_rules('nik','ktp_nik', 'trim|required'); // NIK - ktp
-        $val->set_rules('nama_pegawai','ktp_nama_lengkap', 'trim|required'); //Nama Pegawai - ktp
-        $val->set_rules('tmp_lahir','ktp_tempat_lahir', 'trim'); // Tempat Lahir - ktp
-        $val->set_rules('dob_pegawai','ktp_tanggal_lahir', 'trim'); // Tanggal Lahir - ktp
-        $val->set_rules('alamat','ktp_alamat', 'trim|required'); // Alamat - ktp
-        $val->set_rules('rt','ktp_rt', 'trim|required'); // RT - ktp
-        $val->set_rules('rw','ktp_rw', 'trim|required'); // RW - ktp
-        $val->set_rules('kecamatanHidden','distric_id', 'trim|required'); // Kecamatan - ktp
-        $val->set_rules('kelurahanHidden','sub_distric_id', 'trim'); // Kelurahan - ktp
-        $val->set_rules('provinsiHidden','province_id', 'trim|required'); // Propinsi - ktp
-        $val->set_rules('kotaHidden','city_id', 'trim|required'); // Kota - ktp
-        $val->set_rules('zipcode','zipcode', 'trim|required'); // Kode Pos - ktp
-        $val->set_rules('gender','ktp_jk', 'trim'); // Jenis Kelamin - ktp
-        $val->set_rules('type_blood','type_blood', 'trim'); // Golongan darah - ktp
-        $val->set_rules('marital_status','ms_id', 'trim|required'); // Status perkawinan - ktp
-        $val->set_rules('religion','religion_id', 'trim|required'); // Agama - ktp
-        // $val->set_rules('tlp_almt_ttp','kepeg_no_telp', 'trim|required'); // Telp/HP - kepeg_dt_pegawai - pindah ke validasu data pegawai
-        // $val->set_rules('telp_pegawai','No Hp', 'trim|required'); // HP - unused..
-        $val->set_rules('is_active','is_active', 'trim|required'); // Is Active - ktp
-        $val->set_rules('created_by','Created By', 'trim'); // Last Update - ktp
+        $val->set_rules('nik','NIK Pegawai', 'integer|trim|required|is_unique[ktp.ktp_nik]'); 
+        $val->set_rules('nama_pegawai','Nama Lengkap Pegawai', 'trim|required');
+        $val->set_rules('tmp_lahir','Tempat Lahir Pegawai', 'trim|required'); 
+        $val->set_rules('dob_pegawai','Tanggal Lahir Pegawai', 'trim|required');
+        $val->set_rules('alamat','Alamat Pegawai', 'trim|required'); 
+        $val->set_rules('rt','RT', 'integer|trim|required'); 
+        $val->set_rules('rw','RW', 'integer|trim|required'); 
+        $val->set_rules('kecamatanHidden','Kecamatan', 'trim|required'); 
+        $val->set_rules('kelurahanHidden','Kelurahan', 'trim|required'); 
+        $val->set_rules('provinsiHidden','Provinsi', 'trim|required');
+        $val->set_rules('kotaHidden','Kota / Kabupaten', 'trim|required');
+        $val->set_rules('zipcode','Kode Pos', 'integer|trim|required'); 
+        $val->set_rules('gender','Jenis Kelamin', 'trim|required'); 
+        $val->set_rules('type_blood','Golongan Darah', 'trim|required'); 
+        $val->set_rules('marital_status','Status Pernikahan', 'trim|required'); 
+        $val->set_rules('religion','Agama', 'trim|required'); 
+        $val->set_rules('is_active','Status Aktif Pegawai', 'trim|required'); 
+        $val->set_rules('created_by','Created By', 'trim'); 
 
         // Validasi Data Pegawai
-        $val->set_rules('kepeg_nip','kepeg_nip', 'trim|required');
-        // $val->set_rules('nama_pegawai','nama_pegawai', 'trim|required'); di validasi data pribadi
-        $val->set_rules('kepeg_no_telp','kepeg_no_telp', 'trim');
-        $val->set_rules('kepeg_email','kepeg_email', 'trim|valid_email');
-        $val->set_rules('kepeg_pendidikan_terakhir','kepeg_pendidikan_terakhir', 'trim|required');
-        $val->set_rules('kepeg_unit','kepeg_unit', 'trim|required');
-        $val->set_rules('kepeg_level','kepeg_level', 'trim|required');
-        $val->set_rules('kepeg_gol','kepeg_gol', 'trim|required');  
-        $val->set_rules('kepeg_hak_perawatan','kepeg_hak_perawatan', 'trim');
-        $val->set_rules('kepeg_tenaga_medis','kepeg_tenaga_medis', 'trim|required');
-        $val->set_rules('kepeg_status_kerja','kepeg_status_kerja', 'trim|required');
-        $val->set_rules('kepeg_tgl_aktif','kepeg_tgl_aktif', 'trim|required');
-        $val->set_rules('kepeg_masa_kontrak','kepeg_masa_kontrak', 'trim');
-        $val->set_rules('kepeg_tgl_selesai','kepeg_tgl_selesai', 'trim');
-        $val->set_rules('kepeg_status_aktif','kepeg_status_aktif', 'trim|required');
+        $val->set_rules('kepeg_nip','NIP Pegawai', 'integer|trim|required|is_unique[kepeg_dt_pegawai.kepeg_nip]');
+        $val->set_rules('kepeg_no_telp','No. Telpon Pegawai', 'integer|trim|required');
+        $val->set_rules('kepeg_email','Email Pegawai', 'trim|valid_email');
+        $val->set_rules('kepeg_pendidikan_terakhir','Pendidikan Terakhir', 'trim|required');
+        $val->set_rules('kepeg_unit','Unit / Bagian', 'trim|required');
+        $val->set_rules('kepeg_level','Level Jabatan', 'trim|required');
+        $val->set_rules('kepeg_gol','Golongan', 'trim|required');  
+        $val->set_rules('kepeg_hak_perawatan','Hak Keperawatan', 'trim');
+        $val->set_rules('kepeg_tenaga_medis','Jenis Pegawai', 'trim|required');
+        $val->set_rules('kepeg_status_kerja','Status Kepegawaian', 'trim|required');
+        $val->set_rules('kepeg_tgl_aktif','Tanggal Aktif Kerja', 'trim|required');
+        $val->set_rules('kepeg_masa_kontrak','Masa Kontrak (bulan)', 'trim');
+        $val->set_rules('kepeg_tgl_selesai','Tanggal Berakhir Kerja', 'trim');
+        $val->set_rules('kepeg_status_aktif','Status Aktif Pegawai', 'trim|required');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -427,7 +424,6 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $val = $this->form_validation;
 
         // Validasi form riwayat perkerjaan
-        $val->set_rules();
         $val->set_rules();
 
         // set messages if error
