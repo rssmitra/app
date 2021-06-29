@@ -285,7 +285,11 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $val = $this->form_validation;
 
         // Validasi Form Data Pribadi
-        $val->set_rules('nik','NIK Pegawai', 'integer|trim|required|is_unique[ktp.ktp_nik]'); 
+        if($_POST['kepeg_id'] == 0){
+            $val->set_rules('nik','NIK Pegawai', 'integer|trim|required|is_unique[ktp.ktp_nik]'); 
+        }else{
+            $val->set_rules('nik','NIK Pegawai', 'integer|trim|required'); 
+        }
         $val->set_rules('nama_pegawai','Nama Lengkap Pegawai', 'trim|required');
         $val->set_rules('tmp_lahir','Tempat Lahir Pegawai', 'trim|required'); 
         $val->set_rules('dob_pegawai','Tanggal Lahir Pegawai', 'trim|required');
@@ -305,7 +309,11 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $val->set_rules('created_by','Created By', 'trim'); 
 
         // Validasi Data Pegawai
-        $val->set_rules('kepeg_nip','NIP Pegawai', 'integer|trim|required|is_unique[kepeg_dt_pegawai.kepeg_nip]');
+        if($_POST['kepeg_id'] == 0){
+            $val->set_rules('kepeg_nip','NIP Pegawai', 'integer|trim|required|is_unique[kepeg_dt_pegawai.kepeg_nip]');
+        }else{
+            $val->set_rules('kepeg_nip','NIP Pegawai', 'integer|trim|required');
+        }
         $val->set_rules('kepeg_no_telp','No. Telpon Pegawai', 'integer|trim|required');
         $val->set_rules('kepeg_email','Email Pegawai', 'trim|valid_email');
         $val->set_rules('kepeg_pendidikan_terakhir','Pendidikan Terakhir', 'trim|required');
@@ -332,6 +340,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
             $this->db->trans_begin();
             
             $id = ($this->input->post('kepeg_id'))?$this->regex->_genRegex($this->input->post('kepeg_id'),'RGXINT'):0;
+
             $nik = ($this->input->post('nik'))?$this->regex->_genRegex($this->input->post('nik'),'RGXINT'):0;
 
             $dataktp = array(
