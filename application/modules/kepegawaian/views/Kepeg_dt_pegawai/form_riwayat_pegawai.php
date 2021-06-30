@@ -124,7 +124,7 @@ jQuery(function($) {
       });
 
 });
-// enf of document ready
+// end of document ready
 
 
 
