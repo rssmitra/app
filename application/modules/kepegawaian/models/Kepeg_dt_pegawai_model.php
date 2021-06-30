@@ -121,8 +121,18 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 		// delete ktp
 		$this->db->where_in('ktp.ktp_nik', $get_data[0]->kepeg_nik);
 		$this->db->delete('ktp');
+
+		// delete kepeg riwayat pekerjaan
+		$this->db->where_in('kepeg_riwayat_pekerjaan.kepeg_id', $id);
+		$this->db->delete('kepeg_riwayat_pekerjaan');
+		
+		// delete kepeg riwayat pekerjaan
+		$this->db->where_in('kepeg_riwayat_pendidikan.kepeg_id', $id);
+		$this->db->delete('kepeg_riwayat_pendidikan');
+		
 		// delete pegawai
 		$this->db->where_in('kepeg_dt_pegawai.kepeg_id', $id);
+
 		return $this->db->delete('kepeg_dt_pegawai');
 	}
 

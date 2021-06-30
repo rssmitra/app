@@ -19,113 +19,117 @@ jQuery(function($) {
 
   $(document).ready(function(){
 
-  // type ahead input kota sekolah
-  $('#kepeg_rpd_kota').typeahead({
-    source: function (query, result) {
-        $.ajax({
-            url: "Templates/References/getRegenciesPob",
-            data: 'keyword=' + query,             
-            dataType: "json",
-            type: "POST",
-            success: function (response) {
-              result($.map(response, function (item) {
-                  return item;
-              }));
-            }
-        });
-    },
-    afterSelect: function (item) {
-      // do what is needed with item
-      var val_label=item.split(':')[0];
-
-      $('#kepeg_rpd_kota').val(val_label);
-           
-    }
-  });
-  
-  // datatable riwayat pekerjaan
-
-  oTable = $('#table-riwayat-pekerjaan').DataTable({ 
-    "processing": true, //Feature control the processing indicator.
-    "serverSide": true, //Feature control DataTables' server-side processing mode.
-    "ordering": false,
-    "searching": false,
-    "bPaginate": false,
-    "bInfo": false,
-      "ajax": {
-        "url": "kepegawaian/Kepeg_riwayat_pekerjaan/get_data?kepeg_id="+$('#kepeg_id').val()+"",
-        "type": "POST"
+    // type ahead input kota sekolah
+    $('#kepeg_rpd_kota').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "Templates/References/getRegenciesPob",
+              data: 'keyword=' + query,             
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                result($.map(response, function (item) {
+                    return item;
+                }));
+              }
+          });
       },
-  });
+      afterSelect: function (item) {
+        // do what is needed with item
+        var val_label=item.split(':')[0];
 
-  // datatable riwayat pendidikan
-  oTablePendidikan = $('#table-riwayat-pendidikan').DataTable({       
-    "processing": true, //Feature control the processing indicator.
-    "serverSide": true, //Feature control DataTables' server-side processing mode.
-    "ordering": false,
-    "searching": false,
-    "bPaginate": false,
-    "bInfo": false,
-      "ajax": {
-        "url": "kepegawaian/Kepeg_riwayat_pendidikan/get_data?kepeg_id="+$('#kepeg_id_frm_rpd').val()+"",
-        "type": "POST"
-      },  
-  });
-
-
-
-  
-// Reload table riwayat pekerjaan after process success
-  $('#form_kepeg_riwayat_pekerjaan').ajaxForm({
-    beforeSend: function() {
-      achtungShowLoader();  
-    },
-    uploadProgress: function(event, position, total, percentComplete) {
-    },
-    complete: function(xhr) {     
-      var data=xhr.responseText;
-      var jsonResponse = JSON.parse(data);
-
-      if(jsonResponse.status === 200){
-        $.achtung({message: jsonResponse.message, timeout:5});
-        // jika berhasil maka reload table
-        oTable.ajax.url("kepegawaian/Kepeg_riwayat_pekerjaan/get_data?kepeg_id="+$('#kepeg_id').val()+"").load();
-        // reset form
-        $('#form_kepeg_riwayat_pekerjaan')[0].reset()
-      }else{
-        $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-      }
-      achtungHideLoader();
+        $('#kepeg_rpd_kota').val(val_label);
+            
       }
     });
+    
+    // datatable riwayat pekerjaan
 
-// Reload table riwayat pendidikan after process succes
-  $('#form_kepeg_riwayat_pendidikan').ajaxForm({
-    beforeSend: function() {
-      achtungShowLoader();  
-    },
-    uploadProgress: function(event, position, total, percentComplete) {
-    },
-    complete: function(xhr) {     
-      var data=xhr.responseText;
-      var jsonResponse = JSON.parse(data);
+    oTable = $('#table-riwayat-pekerjaan').DataTable({ 
+      "processing": true, //Feature control the processing indicator.
+      "serverSide": true, //Feature control DataTables' server-side processing mode.
+      "ordering": false,
+      "searching": false,
+      "bPaginate": false,
+      "bInfo": false,
+        "ajax": {
+          "url": "kepegawaian/Kepeg_riwayat_pekerjaan/get_data?kepeg_id="+$('#kepeg_id').val()+"",
+          "type": "POST"
+        },
+    });
 
-      if(jsonResponse.status === 200){
-        $.achtung({message: jsonResponse.message, timeout:5});
-        // jika berhasil maka reload table
-        oTablePendidikan.ajax.url("kepegawaian/Kepeg_riwayat_pendidikan/get_data?kepeg_id="+$('#kepeg_id').val()+"").load();
-        // reset form
-        $('#form_kepeg_riwayat_pendidikan')[0].reset()
-      }else{
-        $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-      }
-      achtungHideLoader();
-      }
-  });
+    // datatable riwayat pendidikan
+    oTablePendidikan = $('#table-riwayat-pendidikan').DataTable({       
+      "processing": true, //Feature control the processing indicator.
+      "serverSide": true, //Feature control DataTables' server-side processing mode.
+      "ordering": false,
+      "searching": false,
+      "bPaginate": false,
+      "bInfo": false,
+        "ajax": {
+          "url": "kepegawaian/Kepeg_riwayat_pendidikan/get_data?kepeg_id="+$('#kepeg_id_frm_rpd').val()+"",
+          "type": "POST"
+        },  
+    });
+
+
+
+    
+    // Reload table riwayat pekerjaan after process success
+      $('#form_kepeg_riwayat_pekerjaan').ajaxForm({
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            // jika berhasil maka reload table
+            oTable.ajax.url("kepegawaian/Kepeg_riwayat_pekerjaan/get_data?kepeg_id="+$('#kepeg_id').val()+"").load();
+            // reset form
+            $('#form_kepeg_riwayat_pekerjaan')[0].reset()
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          }
+          achtungHideLoader();
+          }
+        });
+
+    // Reload table riwayat pendidikan after process succes
+      $('#form_kepeg_riwayat_pendidikan').ajaxForm({
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            // jika berhasil maka reload table
+            oTablePendidikan.ajax.url("kepegawaian/Kepeg_riwayat_pendidikan/get_data?kepeg_id="+$('#kepeg_id').val()+"").load();
+            // reset form
+            $('#form_kepeg_riwayat_pendidikan')[0].reset()
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          }
+          achtungHideLoader();
+          }
+      });
+
+});
+// enf of document ready
+
 
 
   // Update riwayat pekerjaan pegawai
-  function update_row(kepeg_rpj_id){
+  function update_row_pekerjaan(kepeg_rpj_id){
     preventDefault();
     // get data by id
     $.getJSON("<?php echo site_url('kepegawaian/Kepeg_riwayat_pekerjaan/get_data_by_id') ?>/" + kepeg_rpj_id, '', function (response) {                        
@@ -227,8 +231,6 @@ jQuery(function($) {
     }
     
   }
-});
-// enf of document ready
 
 </script>
 

@@ -21,10 +21,9 @@ class Kepeg_riwayat_pekerjaan extends MX_Controller {
         $this->output->enable_profiler(false);
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
-
     }
 
-    public function get_data_by_id( $id )
+    public function get_data_by_id($id)
     {   
         $data = $this->Kepeg_riwayat_pekerjaan->get_by_id($id);   
         echo json_encode($data);
@@ -35,6 +34,7 @@ class Kepeg_riwayat_pekerjaan extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Kepeg_riwayat_pekerjaan->get_datatables();
+        // print_r($list);die;
         
         $data = array();
         $no = $_POST['start'];
@@ -47,7 +47,7 @@ class Kepeg_riwayat_pekerjaan extends MX_Controller {
             $row[] = $row_list->kepeg_rpj_dari_tahun.' s.d '.$row_list->kepeg_rpj_sd_tahun;
             $row[] = $row_list->kepeg_rpj_deskripsi_pekerjaan;
             $row[] = '<div class="center">
-            <a href="#" onclick="update_row('.$row_list->kepeg_rpj_id.')"><span class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></span></a>
+            <a href="#" onclick="update_row_pekerjaan('.$row_list->kepeg_rpj_id.')"><span class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></span></a>
             <a href="#" onclick="delete_row('.$row_list->kepeg_rpj_id.')"><span class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></span></a>
             </div>';
                    

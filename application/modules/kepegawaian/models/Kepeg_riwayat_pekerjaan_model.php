@@ -18,14 +18,15 @@ class Kepeg_riwayat_pekerjaan_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		// filter by kepeg id
-		$this->db->where('kepeg_id', $_GET['kepeg_id']);
+		
 	}
 
 	private function _get_datatables_query()
 	{
 		
 		$this->_main_query();
+		// filter by kepeg id
+		$this->db->where('kepeg_id', $_GET['kepeg_id']); // possibly kepeg_id null
 		$i = 0;
 	
 		foreach ($this->column as $item) 
