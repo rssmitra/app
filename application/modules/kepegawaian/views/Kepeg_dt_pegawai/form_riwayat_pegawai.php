@@ -433,7 +433,7 @@ jQuery(function($) {
             
             <!-- hidden form -->
             <input type="hidden" name="kepeg_id_frm_rpd" id="kepeg_id_frm_rpd" value="<?php echo $value->kepeg_id?>">
-            <input type="text" name="kepeg_rpd_id" id="kepeg_rpd_id" style="dislpay:none" value="<?php echo isset($value->kepeg_rpd_id)?$value->kepeg_rpd_id:''?>">
+            <input type="text" name="kepeg_rpd_id" id="kepeg_rpd_id" style="display:none" value="<?php echo isset($value->kepeg_rpd_id)?$value->kepeg_rpd_id:''?>">
             
             <div class="col-md-12">
               <p style="padding-top: 10px; padding-bottom:3px;"><b>FORM RIWAYAT PENDIDIKAN PEGAWAI</b></p>
