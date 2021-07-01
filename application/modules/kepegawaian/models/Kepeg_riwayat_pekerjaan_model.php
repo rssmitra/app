@@ -7,7 +7,7 @@ class Kepeg_riwayat_pekerjaan_model extends CI_Model {
 	var $column = array('kepeg_riwayat_pekerjaan.kepeg_rpj_nama_perusahaan');
 	var $select = 'kepeg_riwayat_pekerjaan.*';
 
-	var $order = array('kepeg_riwayat_pekerjaan.kepeg_rpj_id' => 'DESC');
+	var $order = array('kepeg_riwayat_pekerjaan.kepeg_rpj_sd_tahun' => 'DESC');
 
 	public function __construct()
 	{
@@ -26,7 +26,7 @@ class Kepeg_riwayat_pekerjaan_model extends CI_Model {
 		
 		$this->_main_query();
 		// filter by kepeg id
-		$this->db->where('kepeg_id', $_GET['kepeg_id']); // possibly kepeg_id null
+		$this->db->where('kepeg_id', $_GET['kepeg_id']); 
 		$i = 0;
 	
 		foreach ($this->column as $item) 

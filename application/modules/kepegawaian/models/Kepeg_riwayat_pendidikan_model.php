@@ -7,7 +7,7 @@ class Kepeg_riwayat_pendidikan_model extends CI_Model {
 	var $column = array('Kepeg_riwayat_pendidikan.kepeg_rpd_nama_sekolah');
 	var $select = 'Kepeg_riwayat_pendidikan.*';
 
-	var $order = array('Kepeg_riwayat_pendidikan.kepeg_rpd_id' => 'DESC');
+	var $order = array('Kepeg_riwayat_pendidikan.kepeg_rpd_tahun_lulus' => 'DESC');
 
 	public function __construct()
 	{
