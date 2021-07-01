@@ -56,8 +56,8 @@ class Export_data extends MX_Controller {
         $data = '' ;
         /*get content html*/
         $html = json_decode($csm_bp->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, $flag_mcu));
-        
         // echo '<pre>';print_r($html);die;
+        
 
         /*generate pdf*/
         $this->exportPdf($html, $flag, $pm, $act_code); 

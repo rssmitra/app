@@ -1875,16 +1875,26 @@ class References extends MX_Controller {
 	public function get_riwayat_medis($no_mr){
 		$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','inner')->order_by('no_kunjungan','DESC')->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result();
 
+		
 		$transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11) )->result();
+
+		$penunjang = $this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05')->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')->join('pm_tc_penunjang', 'pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left')->get_where('tc_kunjungan', array('no_mr' => $no_mr) )->result();
+		foreach ($penunjang as $key_pm => $val_pm) {
+			$getDataPm[$val_pm->no_registrasi][] = $val_pm;
+		}
+		// echo '<pre>';print_r($getDataPm);die;
+
 		$getData = array();
 		foreach ($transaksi as $key => $value) {
 			$getData[$value->no_registrasi] [] = $value;
 		}
 
 		$data = array(
+			'penunjang' => $getDataPm,
 			'result' => $result,
 			'obat' => $getData,
 		);
+		
 		$html = $this->load->view('Templates/templates/view_riwayat_medis_sidebar', $data, true);
 		
 		echo json_encode( array('html' => $html) );

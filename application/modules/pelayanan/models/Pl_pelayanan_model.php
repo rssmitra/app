@@ -38,11 +38,12 @@ class Pl_pelayanan_model extends CI_Model {
 		$this->_main_query();
 
 		if($_GET['bag'] == 0){
+			
 			if(isset($_GET['poliklinik']) AND $_GET['poliklinik'] != ''){
 				$this->db->where('pl_tc_poli.kode_bagian='."'".$_GET['poliklinik']."'".'');
 			}
 
-			if(isset($_GET['select_dokter']) AND $_GET['select_dokter'] != ''){
+			if(isset($_GET['select_dokter']) AND $_GET['select_dokter'] != 0){
 				$this->db->where('pl_tc_poli.kode_dokter='."'".$_GET['select_dokter']."'".'');
 			}
 
@@ -67,7 +68,7 @@ class Pl_pelayanan_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 		}else{
-			$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
+			$this->db->where( 'CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d') );
 		}
 
 		$i = 0;

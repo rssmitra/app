@@ -1294,7 +1294,7 @@ class Billing_model extends CI_Model {
     }
 
     public function getHasilLab($params, $kode_penunjang, $flag_mcu){
-        //print_r($params);die;
+        
         if($flag_mcu==''){
             $table = 'pm_hasilpasien_v as a';
             $where = 'a.kode_trans_pelayanan IN (SELECT kode_trans_pelayanan FROM tc_trans_pelayanan WHERE kode_penunjang='.$kode_penunjang.')';
@@ -1313,7 +1313,10 @@ class Billing_model extends CI_Model {
         // $this->db->order_by('a.nama_pemeriksaan', 'ASC');
         // $this->db->order_by('a.kode_trans_pelayanan', 'ASC');
         //$this->db->order_by('a.detail_item_2', 'ASC');
-        return $this->db->get()->result();
+        $result = $this->db->get()->result();
+        // print_r($result);die;
+
+        return $result;
 
     }
 
