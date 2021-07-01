@@ -56,6 +56,28 @@ hr {
                               - <?php echo $row_obt->nama_tindakan?></br>
                             <?php endforeach; ?>
                       </li>
+                      <li>Penunjang Medis<br>
+                            <?php 
+                              $result_pm = isset($penunjang[$value->no_registrasi])?$penunjang[$value->no_registrasi]:array();
+                              foreach($result_pm as $row_pm) : 
+                                switch ($row_pm->kode_bagian_tujuan) {
+                                  case '050101':
+                                    $type_pm = 'LAB';
+                                    $color_pm = '#e8b0b0';
+                                    break;
+                                  case '050201':
+                                    $type_pm = 'RAD';
+                                    $color_pm = '#e2b73e';
+                                    break;
+                                  case '050201':
+                                    $type_pm = 'FISIO';
+                                    $color_pm = '#5ed3f7';
+                                    break;
+                                }
+                              ?>
+                              - <a href="#" onclick="PopupCenter('<?php echo base_url()?>Templates/Export_data/export?type=pdf&flag=<?php echo $type_pm; ?>&noreg=<?php echo $row_pm->no_registrasi;?>&pm=<?php echo $row_pm->kode_penunjang?>&kode_pm=<?php echo $row_pm->kode_bagian_tujuan?>&no_kunjungan=<?php echo $row_pm->no_kunjungan?>', 'Hasil Penunjang Medis', 850, 650)" style="font-weight: bold; background: <?php echo $color_pm?>; color: black; padding: 2px"><?php echo $row_pm->nama_bagian?></a></br>
+                            <?php endforeach; ?>
+                      </li>
                     </ol>
                   </td>
                 </tr>

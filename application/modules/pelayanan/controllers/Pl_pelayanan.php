@@ -1352,14 +1352,14 @@ class Pl_pelayanan extends MX_Controller {
             );
 
             // cek tarif sarana
-            $cek_tarif_sarana = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'], 'jenis_tindakan' => 13) )->num_rows();
+            $cek_tarif_sarana = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'kode_bagian_asal' => $_POST['kode_bagian_asal'], 'jenis_tindakan' => 13) )->num_rows();
             if($cek_tarif_sarana == 0){
                 // tarif sarana
                 $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);            
             }
             
             // cek tarif konsultasi
-            $cek_tarif_konsultasi = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'], 'jenis_tindakan' => 12) )->num_rows();
+            $cek_tarif_konsultasi = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'kode_bagian_asal' => $_POST['kode_bagian_asal'], 'jenis_tindakan' => 12) )->num_rows();
             if($cek_tarif_konsultasi == 0){
                 /*tarif konsultasi*/
                 $dataexc['kode_dokter1'] = $_POST['kode_dokter_poli'];
