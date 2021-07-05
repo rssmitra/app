@@ -927,5 +927,9 @@ class Reg_pasien_model extends CI_Model {
 		return true;
 	}
 
+	public function get_jadwal_dokter($jd_id){
+		return $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
+	}
+
 
 }
