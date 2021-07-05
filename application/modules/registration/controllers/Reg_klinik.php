@@ -281,7 +281,7 @@ class Reg_klinik extends MX_Controller {
             $kode_dokter = $this->regex->_genRegex($this->form_validation->set_value('reg_dokter_rajal'),'RGXINT');
             $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('reg_klinik_rajal'),'RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
-            $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
+            $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXALNUM');
             $jd_id =  $this->input->post('jd_id');
 
             if( !$this->input->post('no_registrasi_hidden') && !$this->input->post('no_registrasi_rujuk')){

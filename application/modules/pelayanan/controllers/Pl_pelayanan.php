@@ -316,7 +316,7 @@ class Pl_pelayanan extends MX_Controller {
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
                             '.$rollback_btn.' '.$cancel_btn.'                            
-                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_perjanjian_modal/".$row_list->no_mr."'".', '."'PERJANJIAN PASIEN'".')">Perjanjian Pasien</a></li>
+                            <li><a href="#" onclick="show_modal('."'pelayanan/Pl_pelayanan/form_perjanjian_modal/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."'".', '."'PERJANJIAN PASIEN'".')">Perjanjian Pasien</a></li>
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
@@ -1712,6 +1712,43 @@ class Pl_pelayanan extends MX_Controller {
         
         }
 
+    }
+
+    public function form_perjanjian_modal($id='')
+    
+    {
+        
+        $data = array();
+        
+        /*if id is not null then will show form edit*/
+        
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $id, array('no_mr') );
+
+        /*echo '<pre>'; print_r($data_pasien);*/
+
+        $data['value'] = $data_pasien[0];
+        $data['kode_bagian'] = $_GET['kode_bagian'];
+        $data['kode_dokter'] = $_GET['kode_dokter'];
+        $data['kode_perusahaan'] = $_GET['kode_perusahaan'];
+        
+
+
+        $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
+        
+        $data['booking_id'] = $booking_id;
+
+
+        if($booking_id!=0){
+
+            $booking_data = $this->db->get_where('regon_booking', array('regon_booking_id' => $booking_id) )->row();
+            $data['booking'] = $booking_data;
+
+        }
+        
+        /*load form view*/
+        
+        $this->load->view('Pl_pelayanan/form_perjanjian_rj_modal', $data);
+    
     }
 
 

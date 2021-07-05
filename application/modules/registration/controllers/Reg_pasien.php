@@ -629,6 +629,10 @@ class Reg_pasien extends MX_Controller {
 
     public function show_modul($modul_id) { 
         
+        $data = array(
+            'kode_bagian' => isset($_GET['kode_bagian'])?$_GET['kode_bagian']:'',
+            'kode_dokter' => isset($_GET['kode_dokter'])?$_GET['kode_dokter']:'',
+        );
         switch ($modul_id) {
             case 'RJ':
                 $view_modul = 'Reg_pasien/form_rajal';
@@ -644,7 +648,7 @@ class Reg_pasien extends MX_Controller {
                 break;
         }
 
-        $this->load->view($view_modul);
+        $this->load->view($view_modul, $data);
     
     }
 
@@ -933,7 +937,7 @@ class Reg_pasien extends MX_Controller {
             /*process*/
 
             $dataexc = array(
-                'no_sep' => ($val->set_value('noSepEditPenjamin'))?$this->regex->_genRegex($val->set_value('noSepEditPenjamin'),'RGXQSL'):'',
+                'no_sep' => ($val->set_value('noSepEditPenjamin'))?$this->regex->_genRegex($val->set_value('noSepEditPenjamin'),'RGXALNUM'):'',
                 'kode_kelompok' => $this->regex->_genRegex($val->set_value('kode_kelompok_hidden_edit_penjamin'),'RGXINT'),
                 'kode_perusahaan' => isset($_POST['kode_perusahaan_hidden_edit_penjamin'])?$this->regex->_genRegex($val->set_value('kode_perusahaan_hidden_edit_penjamin'),'RGXINT'):NULL,
             );
