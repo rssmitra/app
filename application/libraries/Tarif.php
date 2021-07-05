@@ -397,7 +397,6 @@ final class Tarif extends AvObjects {
         $db->where('(a.kode_klas='.$data['kode_klas'].' or a.kode_klas=0)');
         $db->order_by('a.revisi_ke', 'DESC');
         $row_data = $db->get()->row();
-        // print_r($db->last_query());die;
 
         /*data for execute*/
         $kode_trans_pelayanan = $CI->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
@@ -414,6 +413,8 @@ final class Tarif extends AvObjects {
         $mergeData = array_merge($tarif_data, $data);
         
         $db->insert('tc_trans_pelayanan', $mergeData);
+
+
         return true;
     }
 
