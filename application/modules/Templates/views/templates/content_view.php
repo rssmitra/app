@@ -98,7 +98,7 @@
             <li>
               <a href="#">
                 <i class="ace-icon fa fa-user"></i>
-                <?php echo $this->session->userdata('user')->username; ?>
+                <?php echo $this->session->userdata('user')->fullname; ?>
               </a>
             </li>
 
