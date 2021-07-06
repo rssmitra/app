@@ -64,7 +64,7 @@
 </div>
 
 <br>
-<p><b><i class="fa fa-edit"></i> DIAGNOSA DAN PEMERIKSAAN </b></p>
+<p><b><i class="fa fa-stethoscope bigger-120"></i>  DIAGNOSA DAN PEMERIKSAAN </b></p>
 
 <div>
   <label for="form-field-8">Anamnesa <span style="color:red">* : </span> </label>
@@ -90,7 +90,7 @@
 </div>
 
 <br>
-<p><b><i class="fa fa-edit"></i> PENUNJANG MEDIS DAN RESEP FARMASI </b></p>
+<p><b><i class="fa fa-stethoscope bigger-120"></i> PENUNJANG MEDIS DAN RESEP FARMASI </b></p>
 
 <div style="margin-top: 6px">
     <label for="form-field-8">Penunjang Medis : </label>
@@ -134,6 +134,23 @@
             <input name="check_resep" type="checkbox" class="ace" value="1" <?php echo $checked_resep; ?>>
             <span class="lbl"> Ya</span>
         </label>
+    </div>
+</div>
+
+<br>
+<p><b><i class="fa fa-stethoscope bigger-120"></i> STATUS KUNJUNGAN PASIEN </b></p>
+
+<div class="form-group">
+    <label class="control-label col-sm-3" for="">Cara Keluar Pasien</label>
+    <div class="col-sm-4">
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-sm-3" for="">Pasca Pulang</label>
+    <div class="col-sm-4">
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
     </div>
 </div>
 

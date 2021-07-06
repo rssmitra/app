@@ -1217,11 +1217,11 @@ class Pl_pelayanan extends MX_Controller {
                 'no_kunjungan' => $no_kunjungan,
                 'no_mr' => $this->form_validation->set_value('noMrHidden'),
                 'nama_pasien' => $this->input->post('nama_pasien_layan'),
-                'diagnosa_awal' => $this->form_validation->set_value('pl_diagnosa'),
-                'anamnesa' => $this->form_validation->set_value('pl_anamnesa'),
-                'pengobatan' => $this->form_validation->set_value('pl_pengobatan'),
+                'diagnosa_awal' => nl2br($this->form_validation->set_value('pl_diagnosa')),
+                'anamnesa' => nl2br($this->form_validation->set_value('pl_anamnesa')),
+                'pengobatan' => nl2br($this->form_validation->set_value('pl_pengobatan')),
                 'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
-                'pemeriksaan' => $this->form_validation->set_value('pl_pemeriksaan'),
+                'pemeriksaan' => nl2br($this->form_validation->set_value('pl_pemeriksaan')),
                 'tgl_periksa' => date('Y-m-d H:i:s'),
                 'kode_bagian' => $this->form_validation->set_value('kode_bagian_asal'),
                 'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
@@ -1314,7 +1314,7 @@ class Pl_pelayanan extends MX_Controller {
                 $dataexc_fr['lokasi_tebus'] = 1;
 
                 // cek existing pesan resep
-                $existing_fr = $this->db->get_where('fr_tc_pesan_resep', array('no_registrasi' => $no_registrasi, 'kode_bagian_asal' => $kode_bagian_asal) )->num_rows();
+                $existing_fr = $this->db->get_where('fr_tc_pesan_resep', array('no_registrasi' => $no_registrasi, 'kode_bagian_asal' => $this->input->post('kode_bagian_asal')) )->num_rows();
 
                 if($existing_fr == 0){
                     /*save post data*/
@@ -1378,6 +1378,9 @@ class Pl_pelayanan extends MX_Controller {
                 $this->db->trans_commit();
                 // jika session dokter
                 if(isset($_POST['flag_form_pelayanan']) AND $_POST['flag_form_pelayanan'] == 'dokter'){
+                    /*last func to finsih visit*/
+                    // pulangkan pasien
+                    $this->daftar_pasien->pulangkan_pasien($no_kunjungan,3);
                     /*update pl_tc_poli*/
                     $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
                     $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );

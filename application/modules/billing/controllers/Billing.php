@@ -320,6 +320,7 @@ class Billing extends MX_Controller {
             'kunjungan' => $grouping,
             'log_activity' => $log_activity,
         );
+        // echo '<pre>';print_r($data);die;
         $this->load->view('Billing/data_billing_view', $data, false);
 
     }

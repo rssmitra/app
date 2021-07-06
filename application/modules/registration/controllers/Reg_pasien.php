@@ -880,6 +880,11 @@ class Reg_pasien extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
+                 if(isset($_POST['print_booking'])){
+                    //  print_booking
+                    $this->print_booking($_POST['jd_id'], $newId);
+                    
+                 }
                  echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.''));
              }
  
@@ -896,6 +901,16 @@ class Reg_pasien extends MX_Controller {
 
     }
 
+    public function print_booking($jd_id, $id_tc_pesanan){
+        
+        $booking = $this->Reg_pasien->get_pesanan_pasien_($id_tc_pesanan);
+        $data['value'] = $booking;
+        $data['jadwal'] = $this->Reg_pasien->get_jadwal_dokter($jd_id);
+        // echo '<pre>';print_r($_POST);die;
+        $this->print_escpos->print_booking($data);
+
+    }
+
     public function delete_registrasi(){
         
         $no_registrasi = $_POST['ID'];
@@ -907,7 +922,8 @@ class Reg_pasien extends MX_Controller {
 
     public function process_edit_transaksi_penjamin_pasien()
     {
-        /*print_r($_POST);die;*/
+        
+        
         $this->load->library('form_validation');
         $val = $this->form_validation;
 
