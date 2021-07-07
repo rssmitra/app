@@ -94,7 +94,7 @@ $(document).ready(function(){
                 <div class="form-group">
                   <label class="control-label col-md-2">Username</label>
                   <div class="col-md-2">
-                    <input name="username" id="username" value="<?php echo isset($value)?$value->username:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+                    <input name="username" id="username" value="<?php echo isset($value)?$value->username:''?>" placeholder="" class="form-control" type="text" <?php echo ($this->session->userdata('user')->role == 'Admin Sistem')?'':'readonly'?> >
                   </div>
                 </div>
                 <div class="form-group">
@@ -109,7 +109,7 @@ $(document).ready(function(){
                     <input name="confirm" id="confirm" value="" placeholder="" class="form-control" type="password" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="display:<?php echo ($this->session->userdata('user')->role == 'Admin Sistem')?'':'none'?>" >
                   <label class="control-label col-md-2">Is active?</label>
                   <div class="col-md-2">
                     <div class="radio">
