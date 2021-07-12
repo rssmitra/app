@@ -964,12 +964,25 @@ function find_pasien_by_keyword(keyword){
 
     }); 
 
+    
+
+
     <?php if(isset($pm)):?>
       showChangeModul( 3 );
     <?php endif ?>
 
 }
 
+function get_riwayat_medis(){
+
+  noMr = $('#noMrHidden').val();
+  if (noMr == '') {
+    alert('Silahkan cari pasien terlebih dahulu !'); return false;
+  }else{
+    getMenuTabs('registration/Reg_pasien/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
+  }
+
+}
 </script>
 
 <style type="text/css">
@@ -1033,8 +1046,13 @@ function find_pasien_by_keyword(keyword){
                 <a href="#" onclick="showModalEditPasien()"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Update Pasien </span></a><b class="arrow"></b>
               </li>
               <li class="hover">
+                <a data-toggle="tab" id="tabs_rekam_medis_id" href="#" data-id="0" data-url="registration/reg_pasien/get_riwayat_medis" onclick="get_riwayat_medis()"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Rekam Medis </span></a><b class="arrow"></b>
+              </li>
+
+              <li class="hover">
                 <a data-toggle="tab" id="tabs_riwayat_kunjungan_id" href="#" data-id="0" data-url="registration/reg_pasien/riwayat_kunjungan" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-leaf"></i><span class="menu-text"> Kunjungan </span></a><b class="arrow"></b>
               </li>
+
               <li class="hover">
                 <a data-toggle="tab" data-id="1" data-url="registration/reg_pasien/riwayat_transaksi" id="tabs_riwayat_transaksi_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
               </li>

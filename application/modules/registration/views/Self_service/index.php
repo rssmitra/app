@@ -1,289 +1,540 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta charset="utf-8" />
-    <title>KIOSK - Pelayanan Mandiri Pasien</title>
+<head>
+	<meta charset="UTF-8">
+	<title>RS SETIA MITRA</title>
 
-    <meta name="description" content="top menu &amp; navigation" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<!-- Enable zoom on mobile device
+	====================================	 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- css default for blank page -->
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-fonts.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
-    <script src="<?php echo base_url()?>assets/js/ace-extra.js"></script>
-    <!-- css default for blank page -->
-    <!-- Favicon -->
+	<!-- Install fonts to your website
+	====================================	 -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:300|Source+Sans+Pro:300,400,700" rel="stylesheet"> 
 
-    <!-- page specific plugin styles -->
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/jquery-ui.custom.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/jquery.gritter.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/select2.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-editable.css" />
+	<!-- Animate css
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/animate.min.css">
 
-    <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
-  </head>
-  <style>
-    .page-content-main{
-      min-height: 950px !important;
-    }
+	<!-- Icofont
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/icofont.css">
 
-    #footer {
-      position:absolute;
-      bottom:0;
-      width:100%;
-      height:60px;   /* Height of the footer */
-      background:#6cf;
-    }
-  </style>
-  <body class="no-skin">
-    <!-- #section:basics/navbar.layout -->
-    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background: white;">
-      <script type="text/javascript">
-        try{ace.settings.check('navbar' , 'fixed')}catch(e){}
-      </script>
+	<!-- Mean menu
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/meanmenu.min.css">
 
-      <div class="navbar-container" id="navbar-container">
-        <div class="pull-right">
-          <a href="<?php echo base_url().'registration/Self_service'?>" class="btn btn-lg btn-primary">
-            MENU UTAMA</a>
+	<!-- venobox
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/venobox.css">
+
+	<!-- Default Owl theme
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/owl.theme.default.min.css">
+
+	<!-- Owl carousel
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/owl.carousel.min.css">
+
+	<!-- Bootstrap theme
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/bootstrap.min.css">
+
+	<!-- style css
+	====================================	 -->
+	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/style.css">
+
+	<!-- faveicon
+	================================ -->
+	<link rel="shortcut icon" href="img/icon/favicon.png" type="image/x-icon">
+
+	<script>
+		function scrollSmooth(div_id, link){
+			if(div_id == 'content-green'){
+				$('.content-green').show('slow');
+				$('.content-white').hide('slow');
+			}else{
+				$('.content-green').hide('slow');
+				$('.content-white').show('slow');
+			}
+			$('#'+div_id+'').load(link);
+			$('html,body').animate({
+					scrollTop: $("."+div_id+"").offset().top},
+					'slow');
+		}
+	</script>
+</head>
+<body class="home2 inner-page">
+
+<style>
+	.main-navigation ul li a {
+		font-size: 22px;
+	}
+	.subscribe-content-area ul li:first-child {
+		width: 80%;
+	}
+	.subscribe-content-area ul li:nth-child(2) {
+		width: 20%;
+	}
+	.green-btn {
+		background: #27ae61 none repeat scroll 0 0;
+		border-radius: 2px;
+		box-shadow: 0 5px 0 #239b56;
+		color: #fff;
+		display: inline-block;
+		font-family: "Source Sans Pro",sans-serif;
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 50px;
+		padding-left: 27px;
+		padding-right: 27px;
+		position: relative;
+		text-transform: uppercase;
+		transition: all .10s linear;
+	}
+</style>
+
+<div class="preloader" style="display: none;">
+    <div class="preloader-inner-area">
+        <div class="loader-overlay">
+            <div class="l-preloader">
+                <div class="c-preloader"></div>
+            </div>
         </div>
-        <div class="navbar-header pull-left">
-          
-          <!-- #section:basics/navbar.layout.brand -->
-          <a href="#" class="navbar-brand">
-            <small style="color: black; font-weight: bold; font-size: 18px">
-              KIOSK PELAYANAN MANDIRI PASIEN - Smart Hospital System 4.0 
-            </small>
-          </a>
-
-          <!-- /section:basics/navbar.layout.brand -->
-
-          <!-- #section:basics/navbar.toggle -->
-          <button class="pull-right navbar-toggle navbar-toggle-img collapsed" type="button" data-toggle="collapse" data-target=".navbar-buttons,.navbar-menu">
-            <span class="sr-only">Toggle user menu</span>
-          </button>
-
-          <!-- <button class="pull-right navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#sidebar">
-            <span class="sr-only">Toggle sidebar</span>
-
-            <span class="icon-bar"></span>
-
-            <span class="icon-bar"></span>
-
-            <span class="icon-bar"></span>
-          </button> -->
-
-          <!-- /section:basics/navbar.toggle -->
-        </div>
-
-        <!-- #section:basics/navbar.dropdown -->
-        
-      </div><!-- /.navbar-container -->
     </div>
+</div>
 
-    <!-- /section:basics/navbar.layout -->
-    <div class="main-container" id="main-container">
-      <script type="text/javascript">
-        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
-      </script>
+<!-- =====================================================
+				==Start Banner==
+===================================================== -->
+<section class="banner-type2">
+	<div class="navigation-type2">
+		<div class="container">
+			<div class="navigation-type2-inner-area clearfix">
+				<!-- <div class="col-md-2 col-sm-2 col-xs-12">
+					<div class="brand-logo" style="width: 250px; padding-top: 5px !important">
+						<a href="index.html">
+							<img src="<?php echo base_url()?>assets/kiosk/logo_rssm.png" alt="main-logo">
+						</a>
+					</div>
+				</div> -->
+				<div class="col-md-12 col-sm-12">
+					<div class="navigation-inner-container type2">
+						<div class="cart-search-bar navbar-right">
+							
+						</div>
+						<div class="main-navigation">
+							<ul>
+								<li>
+									<a href="#" onclick="scrollSmooth('content-green','mandiri_bpjs')">
+										MANDIRI BPJS 
+									</a>
+								</li>
+								<li>
+									<a href="#" onclick="scrollSmooth('content-white','mandiri_umum')">
+										MANDIRI UMUM & ASURANSI 
+									</a>
+								</li>
+								<li>
+									<a href="#" onclick="scrollSmooth('content-white','antrian_poli')">
+										ANTRIAN POLI/KLINIK SPESIALIS 
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										IGD & PENUNJANG MEDIS   
+									</a>
+								</li>
+							</ul>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="banner-type2-inner-area">
+				<div class="banner-type2-content">
+					<div class="banner-type2-inner-content">
+						<div class="banner-icon1">
+							<img src="<?php echo base_url()?>assets/kiosk/banner-icon7.png" alt="banner-icon">
+						</div>
+						<div class="banner-icon2">
+							<img src="<?php echo base_url()?>assets/kiosk/banner-icon6.png" alt="banner-icon">
+						</div>
+						<div class="banner-icon3">
+							<img src="<?php echo base_url()?>assets/kiosk/banner-icon5.png" alt="banner-icon">
+						</div>
+						<div class="banner-icon4">
+							<img src="<?php echo base_url()?>assets/kiosk/banner-icon4.png" alt="banner-icon">
+						</div>
+						<div class="banner-icon5">
+							<img src="<?php echo base_url()?>assets/kiosk/banner-icon1.png" alt="banner-icon">
+						</div>
+						<div class="banner-icon6">
+							<img src="<?php echo base_url()?>assets/kiosk/banner-icon3.png" alt="banner-icon">
+						</div>
+						<div class="banner-icon7">
+							<img src="<?php echo base_url()?>assets/kiosk/banner-icon2.png" alt="banner-icon">
+						</div>
+						<div class="col-md-8 col-md-offset-2">
+							<h2>
+							KIOSK PENDAFTARAN & ANTRIAN PASIEN
+							</h2>
+							<p>
+								Kiosk Pendaftaran Mandiri Pasien BPJS, Umum dan Asuransi. <br>
+								Persiapkan Dokumen anda sebelum melakukan Pendaftaran Mandiri seperti Surat Rujukan Puskesmas, KTP, Nomor Rekam Medis, dsb.
+							</p>
+							<!-- <a href="#" class="seo-btn">
+								free seo analysis
+								<img src="<?php echo base_url()?>assets/kiosk/symbols1.png" alt="icon-symbols">
+							</a> -->
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
 
-      <!-- /section:basics/sidebar.horizontal -->
-      <div class="main-content">
-          <div class="page-content-main">
-            
-            <div class="row" id="page-area-content">
-              <div class="col-xs-12">
-                <!-- PAGE CONTENT BEGINS -->
-                
-                <div class="main-nav-modules" style="margin-top:20px">
+		
 
-                  <div class="col-lg-3 col-xs-6" style="margin-top:-10px">
-                    <div class="small-box bg-red" style="min-height: 133px; cursor: pointer !important" onclick="getMenu('Self_service/pmp_bpjs')">
-                      <div class="inner">
-                        <h3 style="font-size:16px">PENDAFTARAN MANDIRI <br>PASIEN BPJS</h3>
-                        <p style="font-size:12px; line-height: 15px; color: black; font-weight: bold">Wajib membawa Surat Rujukan dari Puskesmas atau Nomor Kartu BPJS anda.</p>
-                      </div>
-                      <div class="icon" style="margin-top:-10px">
-                        <i class="fa fa-globe"></i>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-3 col-xs-6" style="margin-top:-10px">
-                    <div class="small-box bg-blue" style="min-height: 133px; cursor: pointer !important" onclick="return confirm('OK')">
-                      <div class="inner">
-                        <h3 style="font-size:16px">PENDAFTARAN MANDIRI <br>PASIEN UMUM & ASURANSI</h3>
-                        <p style="font-size:12px; line-height: 15px; color: black; font-weight: bold">Mohon siapkan KTP jika anda Pasien Baru atau Nomor Rekam Medis jika anda sudah pernah berobat sebelumnya.</p>
-                      </div>
-                      <div class="icon" style="margin-top:-10px">
-                        <i class="fa fa-globe"></i>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-3 col-xs-6" style="margin-top:-10px">
-                    <div class="small-box bg-green" style="min-height: 133px; cursor: pointer !important" onclick="return confirm('OK')">
-                      <div class="inner">
-                        <h3 style="font-size:16px">ANTRIAN PENDAFTARAN <br> POLI/KLINIK SPESIALIS</h3>
-                        <p style="font-size:12px; line-height: 15px; color: black; font-weight: bold">Pengambilan Nomor untuk Antrian Pendaftaran ke Poli/Klinik Spesialis</p>
-                      </div>
-                      <div class="icon" style="margin-top:-10px">
-                        <i class="fa fa-globe"></i>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-lg-3 col-xs-6" style="margin-top:-10px">
-                    <div class="small-box bg-yellow" style="min-height: 133px; cursor: pointer !important" onclick="return confirm('OK')">
-                      <div class="inner">
-                        <h3 style="font-size:16px">ANTRIAN PENDAFTARAN <br> IGD, PENUNJANG MEDIS & LAINNYA</h3>
-                        <p style="font-size:12px; line-height: 15px; color: black; font-weight: bold">Pengambilan Nomor Antrian Pendaftaran untuk IGD, Penunjang Medis, Pasien Baru, dsb.</p>
-                      </div>
-                      <div class="icon" style="margin-top:-10px">
-                        <i class="fa fa-globe"></i>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-                <!-- PAGE CONTENT ENDS -->
-              </div><!-- /.col -->
-            </div><!-- /.row -->
-          </div><!-- /.page-content -->
-        </div>
-      </div><!-- /.main-content -->
-
-      <div id="footer">
-        <span>RS SETIA MITRA - JAKARTA</span>
-      </div>
-
-      <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-      </a>
-    </div><!-- /.main-container -->
-
-    <!-- basic scripts -->
-
-    <!--[if !IE]> -->
-    <script type="text/javascript">
-      window.jQuery || document.write("<script src='<?php echo base_url()?>assets/js/jquery.js'>"+"<"+"/script>");
-    </script>
-
-    <script type="text/javascript">
-      if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
-    </script>
-    <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
-
-    <!-- page specific plugin scripts -->
-
-    <!--[if lte IE 8]>
-      <script src="<?php echo base_url()?>assets/js/excanvas.js"></script>
-    <![endif]-->
-    <script src="<?php echo base_url()?>assets/js/jquery-ui.custom.js"></script>
-    <script src="<?php echo base_url()?>assets/js/jquery.ui.touch-punch.js"></script>
-    <script src="<?php echo base_url()?>assets/js/jquery.gritter.js"></script>
-    
-    <!-- achtung loader -->
-    <link href="<?php echo base_url()?>assets/achtung/ui.achtung-mins.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="<?php echo base_url()?>assets/achtung/ui.achtung-min.js"></script>
-    <script type="text/javascript" src="<?php echo base_url()?>assets/achtung/achtung.js"></script> 
-
-    <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.form.js"></script>
-    <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-validation/dist/jquery.validate.js"></script>
-
-    <!-- the following scripts are used in demo only for onpage help and you don't need them -->
-    <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.onpage-help.css" />
-
-    <script type="text/javascript"> ace.vars['base'] = '..'; </script>
-    <script src="<?php echo base_url()?>assets/js/ace/elements.onpage-help.js"></script>
-    <script src="<?php echo base_url()?>assets/js/ace/ace.onpage-help.js"></script> -->
-    <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
-    <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
-    <script>
-      jQuery(function($) {
-
-        $('.date-picker').datepicker({
-          autoclose: true,
-          todayHighlight: true
-        })
-        //show datepicker when clicking on the icon
-        .next().on(ace.click_event, function(){
-          $(this).prev().focus();
-        });
-
-      });
-
-      $(document).ready(function(){
-  
-        $('#form_tmp_user').ajaxForm({
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          uploadProgress: function(event, position, total, percentComplete) {
-          },
-          complete: function(xhr) {     
-            var data=xhr.responseText;
-            var jsonResponse = JSON.parse(data);
-
-            if(jsonResponse.status === 200){
-              $.achtung({message: jsonResponse.message, timeout:3});
-              $('#message_success').show({
-                  speed: 'slow',
-                  timeout: 5000,
-              });
-            }else{
-              $.achtung({message: jsonResponse.message, timeout:5});
-            }
-            achtungHideLoader();
-          }
-        });
-
-        $('#form_update_profile').ajaxForm({
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          uploadProgress: function(event, position, total, percentComplete) {
-          },
-          complete: function(xhr) {     
-            var data=xhr.responseText;
-            var jsonResponse = JSON.parse(data);
-
-            if(jsonResponse.status === 200){
-              $.achtung({message: jsonResponse.message, timeout:3});
-              $('#message_success').show({
-                  speed: 'slow',
-                  timeout: 1000,
-              });
-            }else{
-              $.achtung({message: jsonResponse.message, timeout:5});
-            }
-            achtungHideLoader();
-          }
-        });
+	</div>
+</section>
+<!-- =====================================================
+				==End Banner==
+===================================================== -->
 
 
-      })
+<!-- ======================================================
+			==Start subscription area==
+====================================================== -->
+<section class="content-green subscribe-area">
+	<div class="container">
+		<div class="row" id="content-green"></div>
+	</div>
+</section>
+<!-- ======================================================
+			==End subscription area==
+====================================================== -->
 
-      function exc_my_account() {
-        $('#form_tmp_user').submit();
-        return false;
-      }
 
-      function exc_update_profile() {
-        $('#form_update_profile').submit();
-        return false;
-      }
+<!-- =====================================================
+			==Start testimonial==
+===================================================== -->
+<section class="content-white testimonial" style="padding-bottom: 20px">
+	<div class="container">
+		<div class="row" id="content-white"></div>
+	</div>
+</section>
+<!-- =====================================================
+			==End testimonial==
+===================================================== -->
 
-      
-    </script>
 
-    
-  </body>
+<div class="facts-area">
+	<div class="container">
+		<style>
+			
+		</style>
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2">
+				<div class="section-title" style="padding-bottom: 25px !important">
+					<h2>Masukan Nomor Rujukan Puskesmas</h2>
+					<span></span>
+					<p>
+						Masukan Nomor Rujukan dari Puskesmas untuk mencetak Surat Eligibiltas Pasien (SEP)
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12  col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+				<div class="subscribe-content-area">
+					<form action="#">
+						<ul>
+							<li>
+								<div class="subscribe-field">
+									<div class="form-group">
+										<input type="text" placeholder="Masukan Nomor Rujukan Puskesmas" class="input-field" style="font-size:18px;">
+									</div>
+								</div>
+							</li>
+							<li>
+								<div class="subscribe-btn" style="padding-left: 15px">
+									<a href="#!" class="green-btn">
+										Cari Data
+										<img src="<?php echo base_url()?>assets/kiosk/symbols2.png" alt="symbol2">
+									</a>
+								</div>
+							</li>
+						</ul>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" id="result-dt-rujukan" style="padding-top: 20px">
+			
+			<div class="col-md-3">
+				<div class="box box-primary">
+
+					<ul class="list-group list-group-unbordered">
+
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">No Kartu BPJS : </small> <div id="noKartuFromNik">-</div>
+						</li>
+
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">Nama Peserta : </small> <div id="nama">-</div>
+						</li>
+
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">NIK : </small> <div id="nik">-</div>
+						</li>
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">Tanggal Lahir : </small> <div id="tglLahir">-</div>
+						</li>
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">Umur : </small> <div id="umur_p_bpjs">-</div>
+						</li>
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">Jenis Peserta : </small> <div id="jenisPeserta">-</div>
+						</li>
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">Hak Kelas : </small> <div id="hakKelas">-</div>
+						</li>
+						<li class="list-group-item">
+						<small style="color: blue; font-weight: bold; font-size:11px">Status Kepesertaan : </small> <div id="statusPeserta">-</div>
+						</li>
+					</ul>
+
+				</div>
+			</div>
+
+			<div class="col-sm-9 col-md-9 col-lg-9">
+				<div class="contact-info-right" style="padding-top: 0px !important">
+					
+					<div class="contact-area-contact-field" style="padding-top: 0px !important;">
+						<form action="#">
+							<!-- form hidden -->
+							<input name="tglSEP" id="tglSEP" value="<?php echo date('m/d/Y')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
+							<input name="jenis_faskes" type="hidden" class="ace" value="1" checked/>
+							<input type="hidden" class="form-control" id="noKartuHidden" name="noKartuHidden" readonly>
+							<input name="jnsPelayanan" type="hidden" class="ace" value="2" checked/>
+							<input name="lakalantas" type="hidden" class="ace" value="0" checked/>
+							<input name="penjaminKLL" type="hidden" class="ace" value="0" checked/>
+							<input type="hidden" class="form-control" name="catatan" id="catatan" value="">
+							<input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value="">
+							<input type="hidden" class="form-control" id="user" name="user" value="" readonly>
+							<input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden" placeholder="Masukan keyword minimal 3 karakter" />
+							<input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
+							<input type="hidden" class="form-control" id="noRujukan" name="noRujukan" readonly>
+							<input name="eksekutif" type="hidden" class="ace" value="0">
+							<input name="tglRujukan" id="tglKunjungan" value="" placeholder="dd/mm/YYYY" class="form-control date-picker" type="hidden" readonly>
+							
+							<div class="row">
+
+								<div class="col-sm-6">
+									<div class="single-form-field">
+										<label>PPK Asal Rujukan</label>
+										<div class="form-group">
+											<input id="inputKeyFaskes" class="form-control" name="ppkRujukan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="" readonly/>
+											<input type="hidden" name="kodeFaskesHidden" value="" id="kodeFaskesHidden">
+										</div>
+									</div>
+								</div>
+
+								<div class="col-sm-6">
+									<div class="single-form-field">
+										<label>Spesialis/SubSpesialis</label>
+										<div class="form-group">
+											<input id="inputKeyPoli" class="form-control" name="tujuan" type="text" placeholder="Masukan keyword minimal 3 karakter" readonly/>
+                                            <input type="hidden" name="kodePoliHidden" value="" id="kodePoliHidden">	
+										</div>
+									</div>
+								</div>
+
+								<div class="col-sm-6">
+									<div class="single-form-field">
+										<label>Dokter DPJP</label>
+										<div class="form-group">
+											<input id="show_dpjp" class="form-control" name="show_dpjp" type="text" readonly/>	
+										</div>
+									</div>
+								</div>
+
+								<div class="col-sm-6">
+									<div class="single-form-field">
+										<label>No. Telp/Hp</label>
+										<div class="form-group">
+											<input type="text" class="form-control" id="noTelp" name="noTelp">	
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12">
+									<div class="single-form-field">
+										<label>Diagnosa Awal</label>
+										<div class="form-group">
+											<input type="hidden" name="kodeDiagnosaHidden" value="" id="kodeDiagnosaHidden">
+													
+											<textarea id="inputKeyDiagnosa" class="form-control" name="diagAwal" type="text" placeholder="Masukan keyword minimal 3 karakter" style="text-transform: uppercase" readonly></textarea>
+										</div>
+										<a href="#!" class="seo-btn">
+											PROSES PENDAFTARAN 
+										</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<!-- =====================================================
+				==Start facts==
+===================================================== -->
+<div class="facts-area">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 col-sm-3">
+				<div class="single-facts-container">
+					<span class='counter'>15</span>
+					<p>
+						Pendaftaran Mandiri Pasien BPJS
+					</p>
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-3">
+				<div class="single-facts-container">
+					<span class='counter'>300</span>
+					<p>
+					Pendaftaran Mandiri Pasien Umum
+					</p>
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-3">
+				<div class="single-facts-container">
+					<span class='counter'>455</span>
+					<p>
+					Antrian Poli/Klinik Spesialis
+					</p>
+				</div>
+			</div>
+			<div class="col-md-3 col-sm-3">
+				<div class="single-facts-container">
+					<span class='counter'>200</span>
+					<p>
+						Gawat Darurat (IGD) & Penunjang Medis
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- =====================================================
+				==End facts==
+===================================================== -->
+
+
+
+<!-- ======================================================
+			==Start call to action==
+====================================================== -->
+<section class="call-to-action-area">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8 col-md-6">
+				<div class="call-to-action-left">
+					<h4>Kami Peduli Kesehatan Anda.</h4>
+				</div>
+			</div>
+			<!-- <div class="col-sm-4 col-md-6">
+				<div class="call-to-actioin-right">
+					<a href="#" class="seo-btn2">
+						get started 
+						<span>
+							<i class="icofont get started   icofont-paper-plane"></i>
+						</span>   
+					</a>
+				</div>
+			</div> -->
+		</div>
+	</div>
+</section>
+<!-- ======================================================
+			==End call to action==
+====================================================== -->
+
+<!-- ======================================================
+			==Start footer==
+====================================================== -->
+<footer>
+	<div class="footer-bottom-area">
+		<div class="container">
+			<div class="col-xs-12">
+				<div class="footer-bottom-content">
+					<ul>
+						<li>
+							© Copyright <?php echo date('Y')?> Smart Hospital System, All Rights Reserved     
+						</li>
+						<li>
+							  Developed by <a href="#">IT Department RS Setia Mitra</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- ======================================================
+			==End footer==
+====================================================== -->
+
+
+
+	<!-- vendor js
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/jquery-1.12.1.min.js"></script>
+
+	<!-- Bootstrap
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/bootstrap.min.js"></script>
+
+	<!-- 
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/jquery.mixitup.min.js"></script>
+
+	<!-- 
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/owl.carousel.min.js"></script>
+
+	<!-- Venobox
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/venobox.min.js"></script>
+
+	<!-- counter up
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/jquery.counterup.js"></script>
+
+	<!-- Mean Menu
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/jquery.meanmenu.min.js"></script>
+
+	<!-- waypoint
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/waypoints.min.js"></script>
+
+	<!-- main js
+	====================================	 -->
+	<script src="<?php echo base_url()?>assets/kiosk/main.js"></script>
+</body>
 </html>

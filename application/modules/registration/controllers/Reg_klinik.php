@@ -1,3 +1,4 @@
+
 <?php
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
@@ -100,7 +101,7 @@ class Reg_klinik extends MX_Controller {
 
         /*daftar dari pm */
         if(isset($_GET['pm'])){
-            $data['pm'] = $_GET['pm'];
+            $data['pm'] = $x_GET['pm'];
             $value = new stdClass;
             $value->is_active = 'onsite';
             $data['value'] = $value;
@@ -462,3 +463,4 @@ class Reg_klinik extends MX_Controller {
 /* End of file example.php */
 
 /* Location: ./application/functiones/example/controllers/example.php */
+

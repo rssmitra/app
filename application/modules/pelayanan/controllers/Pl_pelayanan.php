@@ -1366,8 +1366,6 @@ class Pl_pelayanan extends MX_Controller {
                 $tarif_konsultasi = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 12);
             }
             
-
-
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
