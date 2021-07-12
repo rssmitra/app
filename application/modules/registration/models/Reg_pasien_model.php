@@ -10,7 +10,7 @@ class Reg_pasien_model extends CI_Model {
 		','mt_perusahaan.nama_perusahaan','no_kartu_bpjs');
 
 		var $select = 'mt_master_pasien.no_mr,mt_master_pasien.no_ktp,mt_master_pasien.nama_pasien,mt_master_pasien.tgl_lhr,mt_master_pasien.tempat_lahir,mt_master_pasien.almt_ttp_pasien,mt_master_pasien.pekerjaan_ayah,mt_master_pasien.nama_ayah,mt_master_pasien.nama_ibu,mt_master_pasien.tlp_almt_ttp,mt_master_pasien.jen_kelamin,mt_master_pasien.no_hp,mt_master_pasien.title,mt_master_pasien.
-		status_meninggal,mt_master_pasien.kode_perusahaan,mt_perusahaan.nama_perusahaan,no_kartu_bpjs, mt_master_pasien.nama_panggilan, mt_master_pasien.nama_kel_pasien, mt_master_pasien.no_ktp, mt_master_pasien.almt_ttp_pasien, mt_master_pasien.id_dc_propinsi, mt_master_pasien.id_dc_kota, mt_master_pasien.id_dc_kecamatan, mt_master_pasien.id_dc_kelurahan, mt_master_pasien.id_dc_agama, mt_master_pasien.id_dc_kawin, villages_new.name as kelurahan, districts.name as kecamatan, regencies.name as kota, provinces.name as provinsi, mt_master_pasien.kode_pos, mt_master_pasien.kode_kelompok, mt_nasabah.nama_kelompok, mt_master_pasien.url_foto_pasien, mt_master_pasien.keterangan';
+		status_meninggal,mt_master_pasien.kode_perusahaan,mt_perusahaan.nama_perusahaan,no_kartu_bpjs, mt_master_pasien.nama_panggilan, mt_master_pasien.nama_kel_pasien, mt_master_pasien.no_ktp, mt_master_pasien.almt_ttp_pasien, mt_master_pasien.id_dc_propinsi, mt_master_pasien.id_dc_kota, mt_master_pasien.id_dc_kecamatan, mt_master_pasien.id_dc_kelurahan, mt_master_pasien.id_dc_agama, mt_master_pasien.id_dc_kawin, villages_new.name as kelurahan, districts.name as kecamatan, regencies.name as kota, provinces.name as provinsi, mt_master_pasien.kode_pos, mt_master_pasien.kode_kelompok, mt_nasabah.nama_kelompok, mt_master_pasien.url_foto_pasien, mt_master_pasien.keterangan, mst_religion.religion_name, mst_marital_status.ms_name';
 
 	var $order = array('mt_master_pasien.nama_pasien' => 'ASC');
 
@@ -28,6 +28,8 @@ class Reg_pasien_model extends CI_Model {
 		
 		$this->db->from($this->table);
 
+		$this->db->join('mst_marital_status','mst_marital_status.ms_id=mt_master_pasien.id_dc_kawin','left');
+		$this->db->join('mst_religion','mst_religion.religion_id=mt_master_pasien.id_dc_agama','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=mt_master_pasien.kode_perusahaan','left');
 		$this->db->join('mt_nasabah','mt_nasabah.kode_kelompok=mt_master_pasien.kode_kelompok','left');
 		$this->db->join('districts','districts.id=mt_master_pasien.id_dc_kecamatan','left');

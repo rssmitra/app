@@ -71,11 +71,11 @@ window.onload = generateBarcode;
   <td>Tempat & Tanggal Lahir</td>
   <td>: <?php echo $pasien->tempat_lahir.', '?> <?php echo $this->tanggal->formatDateShort($pasien->tgl_lhr)?> </td>
   <td>Agama</td>
-  <td>: - </td>
+  <td>: <?php echo $pasien->religion_name?> </td>
 </tr>
 <tr>
   <td>Status Perkawinan</td>
-  <td>: - </td>  
+  <td>: <?php echo $pasien->ms_name?> </td>  
   <td>Umur</td>
   <td>: <?php echo $this->tanggal->AgeWithYearMonthDay($pasien->tgl_lhr)?> </td>
 </tr>
@@ -84,8 +84,8 @@ window.onload = generateBarcode;
   <td colspan="3">: <?php echo $pasien->almt_ttp_pasien?> </td>
 </tr>
 <tr>
-  <td>No Telp</td>
-  <td colspan="3">: <?php echo $pasien->tlp_almt_ttp?> </td>
+  <td>No Telp/Hp</td>
+  <td colspan="3">: <?php echo $pasien->tlp_almt_ttp?> / <?php echo $pasien->no_hp?> </td>
 </tr>
 
 <tr>

@@ -127,12 +127,12 @@
 						<div class="main-navigation">
 							<ul>
 								<li>
-									<a href="#" onclick="scrollSmooth('content-green','mandiri_bpjs')">
+									<a href="#" onclick="scrollSmooth('content-green','Self_service/mandiri_bpjs')">
 										MANDIRI BPJS 
 									</a>
 								</li>
 								<li>
-									<a href="#" onclick="scrollSmooth('content-white','mandiri_umum')">
+									<a href="#" onclick="scrollSmooth('content-white','Self_service/mandiri_umum')">
 										MANDIRI UMUM & ASURANSI 
 									</a>
 								</li>
@@ -234,7 +234,7 @@
 ===================================================== -->
 
 
-<div class="facts-area">
+<div class="facts-area" style="display: none">
 	<div class="container">
 		<style>
 			
