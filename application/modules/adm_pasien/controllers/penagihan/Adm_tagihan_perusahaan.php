@@ -126,7 +126,6 @@ class Adm_tagihan_perusahaan extends MX_Controller {
 
     public function process()
     {
-        print_r($_POST);die;
         
         $this->load->library('form_validation');
         $val = $this->form_validation;
@@ -135,9 +134,11 @@ class Adm_tagihan_perusahaan extends MX_Controller {
         $val->set_rules('tgl_tagihan', 'Tanggal Faktur', 'trim|required');
         $val->set_rules('tgl_jatuh_tempo', 'Tanggal Jatuh Tempo', 'trim|required');
         $val->set_rules('diskon', 'Diskon', 'trim|required');
+        $val->set_rules('is_checked[]', 'Is Checked', 'trim|required', array('required' => 'Silahkan ceklist terlebih dahulu!'));
+        
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
-
+        
         if ($val->run() == FALSE)
         {
             $val->set_error_delimiters('<div style="color:white">', '</div>');
@@ -145,27 +146,32 @@ class Adm_tagihan_perusahaan extends MX_Controller {
         }
         else
         {                       
+            // print_r($_POST);die;
             $this->db->trans_begin();
             $id = ($this->input->post('id'))?$this->regex->_genRegex($this->input->post('id'),'RGXINT'):0;
-
+            
             // data header tagihan
             $dataexc = array(
-                'no_invoice_tagih' => $this->regex->_genRegex($_POST['total_harga'],'RGXINT'),
-                'jenis_tagih' => $this->regex->_genRegex($_POST['total_sbl_ppn'],'RGXINT'),
-                'tgl_tagih' => $this->regex->_genRegex($_POST['total_ppn'],'RGXINT'),
-                'jumlah_tagih' => $this->regex->_genRegex($_POST['total_diskon'],'RGXINT'),
-                'diskon' => $this->regex->_genRegex($_POST['no_seri_pajak'],'RGXQSL'),
-                'nama_tertagih' => $this->regex->_genRegex($_POST['total_biaya_materai'],'RGXINT'),
-                'id_tertagih' => $this->regex->_genRegex($_POST['kodesupplier'],'RGXINT'),
-                'tgl_jt_tempo' => $this->regex->_genRegex($_POST['tgl_faktur'],'RGXQSL'),
+                'no_invoice_tagih' => $this->regex->_genRegex($_POST['no_invoice'],'RGXQSL'),
+                'jenis_tagih' => $this->regex->_genRegex(3,'RGXINT'),
+                'tgl_tagih' => $this->regex->_genRegex($_POST['tgl_tagihan'],'RGXQSL'),
+                'jumlah_tagih' => $this->regex->_genRegex($_POST['total_tagihan'],'RGXINT'),
+                'diskon' => $this->regex->_genRegex($_POST['diskon'],'RGXINT'),
+                'nama_tertagih' => $this->regex->_genRegex($_POST['nama_perusahaan'],'RGXQSL'),
+                'id_tertagih' => $this->regex->_genRegex($_POST['kode_perusahaan'],'RGXINT'),
+                'id_dd_user' => $this->regex->_genRegex($this->session->userdata('user')->user_id, 'RGXQSL'),
+                'tgl_input' => date('Y-m-d H:i:s'),
+                'tgl_jt_tempo' => $this->regex->_genRegex($_POST['tgl_jatuh_tempo'],'RGXQSL'),
+                'tr_yg_diskon' => $this->regex->_genRegex($_POST['total_diskon_val'],'RGXINT'),
             );
             
             if($id==0){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
-                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname);
+                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname, 'RGXQSL');
                 $newId = $this->Adm_tagihan_perusahaan->save('tc_tagih', $dataexc);
                 /*save logs*/
                 $this->logs->save('tc_tagih', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_tagih');
+                // print_r($_POST);die;
             }else{
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname);
@@ -182,22 +188,31 @@ class Adm_tagihan_perusahaan extends MX_Controller {
                     $data_detail[] = array(
                         'kode_tc_trans_kasir' => $value,
                         'id_tc_tagih' => $newId,
-                        'tgl_kui' => $_POST['tgl_tagihan'],
+                        'tgl_kui' => $_POST['tgl_tagihan'].' '.date('H:i:s'),
                         'no_mr' => $_POST['no_mr'][$value],
                         'no_registrasi' => $_POST['no_registrasi'][$value],
                         'nama_pasien' => $_POST['nama_pasien'][$value],
-                        'kode_perusahaan' => $_POST['kode_perusahaan'][$value],
+                        'kode_perusahaan' => $_POST['kode_perusahaan'],
                         'jumlah_billing' => $_POST['jumlah_billing'][$value],
                         'jumlah_dijamin' => $_POST['jumlah_ditagih'][$value],
                         'jumlah_tagih' => $_POST['beban_pasien'][$value],
-                        'penyesuaian' => $_POST['jumlah_ditagih'][$value],
+                        'penyesuaian' => $_POST['input_penyesuaian_'.$value.''],
                     );
+                    $data_update[] = array(
+                        'kode_tc_trans_kasir' => $value,
+                        'kd_inv_persh_tx' => $newId,
+                    );
+                    // Update tc_trans_kasir -> kd_inv_persh_tx
+                    // $this->db->where('kode_tc_trans_kasir', $value);
+                    // $this->db->update('tc_trans_kasir', ['kd_inv_persh_tx' => $newId, 'nama_pasien' => $_POST['nama_pasien'][$value]]);
                 }
                 $this->db->insert_batch('tc_tagih_det', $data_detail);
+                $this->db->update_batch('tc_trans_kasir', $data_update, 'kode_tc_trans_kasir');
             }
             
-
-
+            // mapping jurnal
+            // code here
+            // $this->accounting->create_jurnal_piutang($dataexc);
             
             if ($this->db->trans_status() === FALSE)
             {
@@ -207,7 +222,7 @@ class Adm_tagihan_perusahaan extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id' => $newId));
             }
         }
     }

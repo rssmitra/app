@@ -341,6 +341,20 @@
 		return $title;
 	}
 
+	public function create_jurnal_piutang(){
+		$mapping = array();
+		/*
+			1. get data transaksi pasien
+			2. maaping coa berdasarkan jenis transaksi dan coa
+			3. insert ke tabel 
+				- ak_tc_transaksi(header)
+				- ak_tc_transaksi_det(child)
+			4. menampilkan data jurnal
+		*/
+		$mapping['debet']= array('101030000');
+		$mapping['kredit']= array('101030000');
+	}
+
 }
      
 ?>

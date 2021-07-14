@@ -32,12 +32,13 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-          $('#page-area-content').load('purchasing/po/Po_revisi/view_data?flag=<?php echo $flag?>');
-          // popup cetak po
-          PopupCenter('purchasing/po/Po_penerbitan/print_preview?ID='+jsonResponse.id+'&flag='+jsonResponse.flag+'','Cetak PO',900,650);
+          // tampilkan invoice
+          PopupCenter('adm_pasien/penagihan/Adm_tagihan_list/preview_invoice?ID='+jsonResponse.id+'&jenis_pelayanan='+$('#jenis_pelayanan').val()+'','Preview Invoice',900,650);
+          // redirect to list penagihan
+          $('#page-area-content').load('adm_pasien/penagihan/Adm_tagihan_list');
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
         }
         achtungHideLoader();
       }
@@ -71,8 +72,8 @@ function checkOne(kode_tc_trans_kasir) {
   if($('#checkbox_trx_'+kode_tc_trans_kasir+'').prop("checked") == true){
     $('#tr_'+kode_tc_trans_kasir+' input[type=text]').attr('disabled', false);
 
-    $('#txt_penyesuaian_'+kode_tc_trans_kasir+'').text(formatMoney($('#beban_pasien_'+kode_tc_trans_kasir+'').val()));
-    $('#input_penyesuaian_'+kode_tc_trans_kasir+'').val($('#beban_pasien_'+kode_tc_trans_kasir+'').val());
+    $('#txt_penyesuaian_'+kode_tc_trans_kasir+'').text(0);
+    $('#input_penyesuaian_'+kode_tc_trans_kasir+'').val(0);
     
     $('#jml_tagihan_'+kode_tc_trans_kasir+'').text(formatMoney($('#jml_tagihan_hidden_'+kode_tc_trans_kasir+'').val()));
     $('#jml_tagihan_class_'+kode_tc_trans_kasir+'').val($('#jml_tagihan_hidden_'+kode_tc_trans_kasir+'').val());
@@ -91,17 +92,20 @@ function inputPenyesuaian(kode_tc_trans_kasir){
     preventDefault();
     var input = $('#input_penyesuaian_'+kode_tc_trans_kasir+'').val();
     var bill = $('#bill_'+kode_tc_trans_kasir+'').val();
+    var beban_pasien= $('#beban_pasien_val'+kode_tc_trans_kasir+'').val();
     // txt penyesuaian
     $('#txt_penyesuaian_'+kode_tc_trans_kasir+'').text(formatMoney(input));
-    console.log(input);
-    console.log(bill);
+    // console.log(input);
+    // console.log(bill);
+    // console.log(beban_pasien);
     // jumlah tagihan row
-    var jml_tagihan = parseInt(bill) - parseInt(input);
+    var jml_tagihan = parseInt(bill) - (parseInt(input)+parseInt(beban_pasien));
     console.log(jml_tagihan);
     $('#jml_tagihan_'+kode_tc_trans_kasir+'').text(formatMoney(jml_tagihan));
     $('#jml_tagihan_class_'+kode_tc_trans_kasir+'').val(jml_tagihan);
+    $('#jumlah_ditagih_'+kode_tc_trans_kasir+'').val(jml_tagihan);
     hitungSubtotalTrx();
-    // inputDisc(kode_tc_trans_kasir);
+    inputDisc();
     // inputPpn(kode_tc_trans_kasir);
   }
 
@@ -110,6 +114,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
     var subtotal = parseInt(formatNumberFromCurrency($('#subtotal').text()));
     var rp_disc = subtotal * (disc/100);
     $('#total_diskon').text(formatMoney(Math.floor(rp_disc)));
+    $('#total_diskon_val').val(rp_disc);
 
     console.log(rp_disc);
     hitungSubtotalTrx();
@@ -160,8 +165,9 @@ function inputPenyesuaian(kode_tc_trans_kasir){
             <!-- input form hidden -->
             <input type="hidden" name="from_tgl" value="<?php echo $_GET['from_tgl']?>">
             <input type="hidden" name="to_tgl" value="<?php echo $_GET['to_tgl']?>">
-            <input type="hidden" name="jenis_pelayanan" value="<?php echo $_GET['jenis_pelayanan']?>">
+            <input type="hidden" name="jenis_pelayanan" id="jenis_pelayanan" value="<?php echo $_GET['jenis_pelayanan']?>">
             <input type="hidden" name="kode_perusahaan" value="<?php echo $value->kode_perusahaan?>">
+            <input type="hidden" name="nama_perusahaan" value="<?php echo $value->nama_perusahaan?>">
 
             <div class="col-sm-10 col-sm-offset-1">
               <div class="widget-box transparent">
@@ -256,7 +262,6 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                               <td align="center"><input type="checkbox" class="checkbox_trx" id="checkbox_trx_<?php echo $row->kode_tc_trans_kasir; ?>" class="form-control" value="<?php echo $row->kode_tc_trans_kasir; ?>" onClick="checkOne('<?php echo $row->kode_tc_trans_kasir; ?>');" style="cursor:pointer" name="is_checked[<?php echo $row->kode_tc_trans_kasir; ?>]">
                               <input type="hidden" name="no_mr[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->no_mr; ?>">
                               <input type="hidden" name="no_registrasi[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->no_registrasi; ?>">
-                              <input type="hidden" name="kode_perusahaan[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->kode_perusahaan; ?>">
                               <input type="hidden" name="nama_pasien[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->nama_pasien; ?>">
                               <input type="hidden" name="jumlah_billing[<?php echo $row->kode_tc_trans_kasir; ?>]" value="<?php echo $row->bill_int; ?>">
                               <input type="hidden" name="beban_pasien[<?php echo $row->kode_tc_trans_kasir; ?>]" id="beban_pasien_<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->beban_pasien; ?>">
@@ -267,10 +272,12 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                               <td><?php echo $row->no_mr; ?></td>
                               <td><?php echo $row->nama_pasien; ?></td>
                               <td align="right">
+                                <input type="hidden" name="bill_<?php echo $row->kode_tc_trans_kasir; ?>" id="bill_<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->bill_int?>" >
                                 <?php echo number_format($row->bill_int); ?>
                               </td>
                               <!-- beban biaya pasien -->
                               <td align="right">
+                                <input type="hidden" name="beban_pasien_val<?php echo $row->kode_tc_trans_kasir; ?>" id="beban_pasien_val<?php echo $row->kode_tc_trans_kasir; ?>" value="<?php echo $row->beban_pasien?>" >
                                 <?php echo number_format($row->beban_pasien); ?>
                               </td>
                               <!-- input penyesuaian -->
@@ -299,8 +306,12 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                             <td id="subtotal" align="right" style="background: beige; height: 39px !important;">0</td>
                           </tr>
                           <tr>
-                            <td colspan="7" align="right">Diskon</td>
-                            <td id="total_diskon" align="right" style="background: beige; height: 39px !important;">0</td>
+                            <td colspan="7" align="right">
+                            <input type="hidden" id="total_diskon_val" name="total_diskon_val" value="">
+                            Diskon</td>
+                            <td id="total_diskon" align="right" style="background: beige; height: 39px !important;">0
+                            
+                            </td>
                           </tr>
                       </table>
                     </div>
@@ -323,10 +334,6 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                         <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                         Kembali ke daftar
                       </a>
-                      <button type="reset" id="btnReset" class="btn btn-xs btn-danger">
-                        <i class="ace-icon fa fa-close icon-on-right bigger-110"></i>
-                        Reset
-                      </button>
                       <button type="submit" id="btnSave" name="submit" class="btn btn-xs btn-info">
                         <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
                         Submit

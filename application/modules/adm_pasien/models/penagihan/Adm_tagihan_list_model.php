@@ -6,7 +6,7 @@ class Adm_tagihan_list_model extends CI_Model {
 	var $table = 'tc_tagih';
 	var $column = array('nama_tertagih');
 	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, tr_yg_diskon';
-	var $order = array('tgl_tagih' => 'DESC');
+	var $order = array('id_tc_tagih' => 'DESC');
 
 	public function __construct()
 	{
@@ -17,7 +17,7 @@ class Adm_tagihan_list_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
-		$this->db->select('SUM(CAST(b.jumlah_tagih as INT)) as jumlah_tagihan, SUM(CAST(jumlah_bayar as INT)) as jumlah_bayar');
+		$this->db->select('SUM(CAST(b.jumlah_dijamin as INT)) as jumlah_tagihan, SUM(CAST(jumlah_bayar as INT)) as jumlah_bayar');
 		$this->db->from($this->table.' a');
 		$this->db->join('tc_tagih_det b', 'b.id_tc_tagih=a.id_tc_tagih', 'left');
 		$this->db->join('tc_bayar_tagih c', 'c.id_tc_tagih=a.id_tc_tagih', 'left');
@@ -129,7 +129,7 @@ class Adm_tagihan_list_model extends CI_Model {
 	}
 
 	public function get_invoice_detail($id_tagih){
-		$this->db->select('a.*, CAST(a.jumlah_tagih as INT) as jumlah_tagih_int, CAST(a.penyesuaian as INT) as beban_pasien_int, b.no_invoice_tagih, c.tgl_jam, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1');
+		$this->db->select('a.*, CAST(a.jumlah_dijamin as INT) as jumlah_tagih_int, CAST(a.jumlah_tagih as INT) as beban_pasien_int, b.no_invoice_tagih, c.tgl_jam, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1');
 		$this->db->from('tc_tagih_det a');
 		$this->db->join('tc_tagih b', 'b.id_tc_tagih=a.id_tc_tagih','left');
 		$this->db->join('tc_trans_kasir c', 'c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');

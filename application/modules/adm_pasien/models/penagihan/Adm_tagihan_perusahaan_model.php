@@ -90,9 +90,9 @@ class Adm_tagihan_perusahaan_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
-	public function save($data)
+	public function save($table, $data)
 	{
-		$this->db->insert($this->table, $data);
+		$this->db->insert($table, $data);
 		return $this->db->insert_id();
 	}
 
