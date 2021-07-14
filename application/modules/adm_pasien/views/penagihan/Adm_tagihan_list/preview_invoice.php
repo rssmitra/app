@@ -124,6 +124,14 @@ th, td {
               </td>
             </tr>
             <tr>
+              <td colspan="4" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Diskon </td>
+              <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
+                <?php 
+                  echo number_format($result[0]->rp_diskon);
+                ?>
+              </td>
+            </tr>
+            <tr>
               <td colspan="4" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Materai </td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
                 <?php
@@ -136,7 +144,7 @@ th, td {
               <td colspan="4" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
                 <?php
-                  $total = $subtotal + $biaya_materai;
+                  $total = $subtotal + $biaya_materai - $result[0]->rp_diskon;
                   echo number_format($total);
                 ?>
               </td>

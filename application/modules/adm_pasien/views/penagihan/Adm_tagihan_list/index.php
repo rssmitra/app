@@ -160,6 +160,38 @@
     PopupCenter('billing/Billing/print_preview?no_registrasi='+no_registrasi+'&status_nk=1&flag_bill=true', 'Billing Pasien' , 900 , 650);
   }
 
+  function delete_data(myid){
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: 'adm_pasien/penagihan/Adm_tagihan_list/delete',
+        type: "post",
+        data: {ID:myid},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            reload_table();
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+  
+}
+
 </script>
 
 <div class="page-header">
@@ -255,14 +287,17 @@
               <th width="50px"></th>
               <th class="center"></th>
               <th width="50px" class="center">No</th> 
-              <th>No. Invoice</th>
+              <th width="200px">No. Invoice</th>
               <th>Tanggal</th>
               <th>Jatuh Tempo</th>
               <th>Nama Perusahaan</th>
-              <th width="150px">Jumlah Tagihan</th>
-              <th>Status</th>
+              <th>Tagihan</th>
+              <th class="center">Diskon</th>
+              <th width="100px" class="center">Total Tagihan</th>
+              <th class="center">Status</th>
               <th class="center">INV</th>
               <th class="center">KWI</th>
+              <th class="center">Action</th>
             </tr>
           </thead>
         </table>

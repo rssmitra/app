@@ -89,17 +89,23 @@ class Adm_tagihan_list extends MX_Controller {
             $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->tgl_jt_tempo).'</div>';
             $row[] = $row_list->nama_tertagih;
             $row[] = '<div class="pull-right">'.number_format($row_list->jumlah_tagihan).'</div>';
-            $saldo = $row_list->jumlah_tagihan - $row_list->jumlah_bayar;
+            $row[] = '<div class="center">'.$row_list->diskon.' %</div>';
+
+            $setelah_diskon = $row_list->jumlah_tagihan - $row_list->tr_yg_diskon;
+            $row[] = '<div class="pull-right">'.number_format($setelah_diskon).'</div>';
+
+            $saldo = $setelah_diskon - $row_list->jumlah_bayar;
             if ($saldo == 0) {
                 $status = '<label class="label label-xs label-success">Lunas</label>';
-            }elseif ($saldo == $row_list->jumlah_tagihan) {
+            }elseif ($saldo == $setelah_diskon) {
                 $status = '<label class="label label-xs label-danger">Belum Bayar</label>';
-            }elseif ($saldo != 0 AND $saldo < $row_list->jumlah_tagihan) {
+            }elseif ($saldo != 0 AND $saldo < $setelah_diskon) {
                 $status = '<label class="label label-xs label-danger">Cicil</label>';
             }
             $row[] = '<div class="center">'.$status.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/penagihan/Adm_tagihan_list/preview_invoice?ID=".$row_list->id_tc_tagih."&".$qry_url."'".','."'Preview Invoice'".',900,650);"><i class="fa fa-print green bigger-150"></i></a></div>';
-            $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/penagihan/Adm_tagihan_list/preview_kuitansi?nm=".$row_list->nama_tertagih."&inv=".$row_list->no_invoice_tagih."&tgl=".$row_list->tgl_tagih."&jml=".$row_list->jumlah_tagihan."'".','."'Preview Kuitansi'".',900,650);"><i class="fa fa-print blue bigger-150"></i></a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="PopupCenter('."'adm_pasien/penagihan/Adm_tagihan_list/preview_kuitansi?nm=".$row_list->nama_tertagih."&inv=".$row_list->no_invoice_tagih."&tgl=".$row_list->tgl_tagih."&jml=".$setelah_diskon."'".','."'Preview Kuitansi'".',900,650);"><i class="fa fa-print blue bigger-150"></i></a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="delete_data('.$row_list->id_tc_tagih.')"><i class="fa fa-remove red bigger-150"></a></div>';
             $data[] = $row;
               
         }
@@ -173,13 +179,13 @@ class Adm_tagihan_list extends MX_Controller {
         $data = array();
         $list = $this->Adm_tagihan_list->get_invoice_detail($_GET['ID']);
         $data['result'] = $list;
+        // echo "<pre>"; print_r($data); die;
         
         $this->load->view('penagihan/Adm_tagihan_list/preview_invoice', $data);
     }
 
     public function preview_kuitansi(){
- 
-        
+   
         $data = array(
             'inv' => $_GET['inv'],
             'name' => $_GET['nm'],
@@ -188,6 +194,22 @@ class Adm_tagihan_list extends MX_Controller {
         );
         $this->load->view('penagihan/Adm_tagihan_list/preview_kuitansi', $data, false);
          
+    }
+
+    public function delete()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        if($id!=null){
+            if($this->Adm_tagihan_list->delete_by_id($id)){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
     }
 
 }

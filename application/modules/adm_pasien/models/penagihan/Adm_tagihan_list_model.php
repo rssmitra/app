@@ -129,7 +129,7 @@ class Adm_tagihan_list_model extends CI_Model {
 	}
 
 	public function get_invoice_detail($id_tagih){
-		$this->db->select('a.*, CAST(a.jumlah_dijamin as INT) as jumlah_tagih_int, CAST(a.jumlah_tagih as INT) as beban_pasien_int, b.no_invoice_tagih, c.tgl_jam, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1');
+		$this->db->select('a.*, CAST(a.jumlah_dijamin as INT) as jumlah_tagih_int, CAST(a.jumlah_tagih as INT) as beban_pasien_int, b.no_invoice_tagih, c.tgl_jam, b.tgl_tagih, b.tgl_jt_tempo, b.nama_tertagih, d.alamat, d.telpon1, b.tr_yg_diskon as rp_diskon, b.diskon');
 		$this->db->from('tc_tagih_det a');
 		$this->db->join('tc_tagih b', 'b.id_tc_tagih=a.id_tc_tagih','left');
 		$this->db->join('tc_trans_kasir c', 'c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');
@@ -164,5 +164,21 @@ class Adm_tagihan_list_model extends CI_Model {
 		$query = $this->db->get()->result();
 		return $query;
 	}
+
+	// Delete tc_tagih, tc_tagih_det by id_tc_tagih, and update tc_trans_kasir.kd_inv_persh_tx to null
+	public function delete_by_id($id){
+		// delete from tc_tagih
+		$this->db->where('tc_tagih.id_tc_tagih', $id);
+		$this->db->delete('tc_tagih');
+
+		// delete from tc_tagih_det
+		$this->db->where('tc_tagih_det.id_tc_tagih', $id);
+		$this->db->delete('tc_tagih_det');
+
+		// update tc_trans_kasir.kd_inv_persh_tx back to null
+		$this->db->update('tc_trans_kasir', ['kd_inv_persh_tx'=> NULL] , ['kd_inv_persh_tx' => $id] );
+
+		return true;
+	} 
 
 }
