@@ -253,18 +253,20 @@
         <table id="dt_table_perusahaan" base-url="adm_pasien/penagihan/adm_tagihan_pelunasan/get_data?<?php $qry_url = isset($_GET) ? http_build_query($_GET) . "\n" : ''; echo $qry_url?>" url-detail="adm_pasien/penagihan/adm_tagihan_pelunasan/get_hist_inv" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
-              <th width="50px"></th>
-              <th class="center"></th>
-              <th width="50px" class="center">No</th> 
-              <th class="center">INV</th>
-              <th class="center">KWI</th>
-              <th>No. Invoice</th>
-              <th>Tanggal</th>
-              <th>Jth Tempo</th>
-              <th>Nama Perusahaan</th>
-              <th width="120px">Jumlah Tagihan</th>
-              <th>Status</th>
-              <th>Pembayaran</th>
+              <th width="38px"></th>
+              <th></th>
+              <th width="40px" class="center">No</th> 
+              <th width="40px" class="center">INV</th>
+              <th width="40px" class="center">KWI</th>
+              <th width="180px">No. Invoice</th>
+              <th class="center">Tanggal</th>
+              <th width="80px" class="center">Jth Tempo</th>
+              <th width="360px">Nama Perusahaan</th>
+              <th class="center">Total Tagihan</th>
+              <th class="center">Diskon</th>
+              <th class="center">Total Tagihan</th>
+              <th class="center">Status</th>
+              <th width="110px" class="center">Pembayaran</th>
             </tr>
           </thead>
         </table>
