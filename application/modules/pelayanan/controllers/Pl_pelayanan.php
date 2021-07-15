@@ -1240,6 +1240,43 @@ class Pl_pelayanan extends MX_Controller {
                 $this->Pl_pelayanan->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
             }
 
+            // save billing pasien 
+
+            /*tarif sarana rs*/
+            $kode_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
+            
+            $dataexc = array(
+                /*form hidden input default*/
+                'no_kunjungan' => $this->regex->_genRegex($no_kunjungan,'RGXINT'),
+                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),
+                'kode_kelompok' => $this->regex->_genRegex($this->input->post('kode_kelompok'),'RGXINT'),
+                'kode_perusahaan' => $this->regex->_genRegex($this->input->post('kode_perusahaan'),'RGXINT'),
+                'no_mr' => $this->regex->_genRegex($this->input->post('noMrHidden'),'RGXQSL'),
+                'nama_pasien_layan' => $this->regex->_genRegex($this->input->post('nama_pasien_layan'),'RGXQSL'),
+                'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
+                /*end form hidden input default*/
+                'kode_bagian' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
+                'kode_klas' => $this->regex->_genRegex($this->input->post('kode_klas'),'RGXINT'),
+                'tgl_transaksi' => date('Y-m-d'),                
+                'jumlah' => 1,  
+                'satuan_tindakan' => '',  
+            );
+
+            // cek tarif sarana
+            $cek_tarif_sarana = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'kode_bagian_asal' => $_POST['kode_bagian_asal'], 'jenis_tindakan' => 13) )->num_rows();
+            if($cek_tarif_sarana == 0){
+                // tarif sarana
+                $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);            
+            }
+            
+            // cek tarif konsultasi
+            $cek_tarif_konsultasi = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'kode_bagian_asal' => $_POST['kode_bagian_asal'], 'jenis_tindakan' => 12) )->num_rows();
+            if($cek_tarif_konsultasi == 0){
+                /*tarif konsultasi*/
+                $dataexc['kode_dokter1'] = $_POST['kode_dokter_poli'];
+                $tarif_konsultasi = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 12);
+            }
+
             // simpan penunjang medis
             if(isset($_POST['check_pm'])) :
                 $title = 'Rujuk Penunjang Medis';
@@ -1329,42 +1366,7 @@ class Pl_pelayanan extends MX_Controller {
 
             endif; 
 
-            // save billing pasien 
-
-            /*tarif sarana rs*/
-            $kode_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
             
-            $dataexc = array(
-                /*form hidden input default*/
-                'no_kunjungan' => $this->regex->_genRegex($no_kunjungan,'RGXINT'),
-                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),
-                'kode_kelompok' => $this->regex->_genRegex($this->input->post('kode_kelompok'),'RGXINT'),
-                'kode_perusahaan' => $this->regex->_genRegex($this->input->post('kode_perusahaan'),'RGXINT'),
-                'no_mr' => $this->regex->_genRegex($this->input->post('noMrHidden'),'RGXQSL'),
-                'nama_pasien_layan' => $this->regex->_genRegex($this->input->post('nama_pasien_layan'),'RGXQSL'),
-                'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
-                /*end form hidden input default*/
-                'kode_bagian' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
-                'kode_klas' => $this->regex->_genRegex($this->input->post('kode_klas'),'RGXINT'),
-                'tgl_transaksi' => date('Y-m-d'),                
-                'jumlah' => 1,  
-                'satuan_tindakan' => '',  
-            );
-
-            // cek tarif sarana
-            $cek_tarif_sarana = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'kode_bagian_asal' => $_POST['kode_bagian_asal'], 'jenis_tindakan' => 13) )->num_rows();
-            if($cek_tarif_sarana == 0){
-                // tarif sarana
-                $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);            
-            }
-            
-            // cek tarif konsultasi
-            $cek_tarif_konsultasi = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'kode_bagian_asal' => $_POST['kode_bagian_asal'], 'jenis_tindakan' => 12) )->num_rows();
-            if($cek_tarif_konsultasi == 0){
-                /*tarif konsultasi*/
-                $dataexc['kode_dokter1'] = $_POST['kode_dokter_poli'];
-                $tarif_konsultasi = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 12);
-            }
             
             if ($this->db->trans_status() === FALSE)
             {

@@ -133,7 +133,7 @@ th, td {
    
     </tbody>
   </table>
-  Catatan : Setiap usulan pembelian dari semua bagian dengan nilai > Rp. 50.000,- harus mendapatkan persetujuan Direktur
+
   <br>
   <br>
   <br>

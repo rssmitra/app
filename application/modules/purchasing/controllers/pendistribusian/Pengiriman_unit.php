@@ -105,7 +105,7 @@ class Pengiriman_unit extends MX_Controller {
     
     public function process()
     {
-        // print_r($_POST);die;
+        print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
@@ -150,15 +150,15 @@ class Pengiriman_unit extends MX_Controller {
                 // insert detail barang
                 $dt_detail = array(
                     'id_tc_permintaan_inst' => $this->regex->_genRegex($newId,'RGXINT'),
-                    'jumlah_permintaan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXINT'),
+                    'jumlah_permintaan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
                     'kode_brg' => $this->regex->_genRegex($row_brg,'RGXQSL'),
                     'satuan' => $this->regex->_genRegex($_POST['satuan'][$row_brg],'RGXQSL'),
                     'tgl_kirim' => $this->regex->_genRegex(date('Y-m-d H:i:s'),'RGXQSL'),
                     'tgl_input' => $this->regex->_genRegex(date('Y-m-d H:i:s'),'RGXQSL'),
-                    'jumlah_penerimaan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXINT'),
-                    'kekurangan' => $this->regex->_genRegex(0,'RGXINT'),
-                    'jml_acc_atasan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXINT'),
-                    'jml_acc_umu' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXINT'),
+                    'jumlah_penerimaan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
+                    'kekurangan' => $this->regex->_genRegex(0,'RGXQSL'),
+                    'jml_acc_atasan' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
+                    'jml_acc_umu' => $this->regex->_genRegex($_POST['total_dikirim'][$row_brg],'RGXQSL'),
                 );
                 
                 $dt_detail['created_date'] = date('Y-m-d H:i:s');

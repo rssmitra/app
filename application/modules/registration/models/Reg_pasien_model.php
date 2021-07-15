@@ -720,7 +720,6 @@ class Reg_pasien_model extends CI_Model {
 		// delete akunting and trans pelayanan
 		$this->deleteAkunting($no_reg, $no_kunjungan);		
 		
-
 		// kunjungan poli
 		$this->deletePoli($no_reg, $no_kunjungan);		
 		
@@ -786,8 +785,10 @@ class Reg_pasien_model extends CI_Model {
 	}
 	function deletePenunjang($no_reg, $no_kunjungan){
 
-		$this->db->delete('pm_tc_penunjang', array('no_kunjungan' => $no_kunjungan) );
-		$this->db->delete('tc_trans_pelayanan_paket_lab', array('no_kunjungan' => $no_kunjungan) );
+		// cek no_kunjungan by no registrasi
+		$this->db->where('no_kunjungan IN (select no_kunjungan from tc_kunjungan where no_registrasi='.$no_reg.')')->delete('pm_tc_penunjang');
+		$this->db->where('no_kunjungan IN (select no_kunjungan from tc_kunjungan where no_registrasi='.$no_reg.')')->delete('tc_trans_pelayanan_paket_lab');
+
 		// $this->db->delete('pm_terima_sample_lab', array('no_kunjungan' => $no_kunjungan) );
 		// $this->db->delete('pm_pasienlab_sample', array('no_kunjungan' => $no_kunjungan) );
 		$this->db->where("kode_trans_pelayanan in (select kode_trans_pelayanan from tc_trans_pelayanan where no_registrasi=".$no_reg." and no_kunjungan=".$no_kunjungan.")")->delete('pm_tc_hasilpenunjang');
@@ -804,16 +805,16 @@ class Reg_pasien_model extends CI_Model {
 	function deleteFarmasi($no_reg, $no_kunjungan){
 		
 		// racikan
-		$this->db->where("kode_trans_far in (select kode_trans_far from fr_tc_far where no_kunjungan=".$no_kunjungan.")")->delete('tc_far_racikan');
+		$this->db->where("kode_trans_far in (select kode_trans_far from fr_tc_far where no_kunjungan IN (select no_kunjungan from tc_kunjungan where no_registrasi=".$no_reg."))")->delete('tc_far_racikan');
 		
 		// detail obat
-		$this->db->where("kode_trans_far in (select kode_trans_far from fr_tc_far where no_kunjungan=".$no_kunjungan.")")->delete('fr_tc_far_detail');
+		$this->db->where("kode_trans_far in (select kode_trans_far from fr_tc_far where no_kunjungan IN (select no_kunjungan from tc_kunjungan where no_registrasi=".$no_reg."))")->delete('fr_tc_far_detail');
 
 		// detail log
-		$this->db->where("kode_pesan_resep in (select kode_pesan_resep from fr_tc_far where no_kunjungan=".$no_kunjungan.")")->delete('fr_tc_far_detail_log');
+		$this->db->where("kode_pesan_resep in (select kode_pesan_resep from fr_tc_far where no_kunjungan IN (select no_kunjungan from tc_kunjungan where no_registrasi=".$no_reg."))")->delete('fr_tc_far_detail_log');
 
-		$this->db->delete('fr_tc_far', array( 'no_kunjungan' => $no_kunjungan) );
-		$this->db->delete('fr_tc_pesan_resep', array( 'no_kunjungan' => $no_kunjungan) );
+		$this->db->where('no_kunjungan IN (select no_kunjungan from tc_kunjungan where no_registrasi='.$no_reg.')')->delete('fr_tc_far');
+		$this->db->where('no_kunjungan IN (select no_kunjungan from tc_kunjungan where no_registrasi='.$no_reg.')')->delete('fr_tc_pesan_resep');
 
 	}
 

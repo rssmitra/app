@@ -239,7 +239,6 @@ $(document).ready(function(){
           console.log(val_item);
           $('#inputKeyObat').val(label_item);
           var detailObat = getDetailObatByKodeBrg(val_item,'060101');
-          $('#jumlah_pesan').focus();
 
         },
 
@@ -341,15 +340,15 @@ $(document).ready(function(){
         }
     });
 
-    $('#resep_ditangguhkan').click(function() {
-      if($('#sisa_stok').val() <= 0){
-        if (!$(this).is(':checked')) {
-          $('#btn_submit').attr('disabled', true);
-        }else{
-          $('#btn_submit').attr('disabled', false);
-        }
-      }
-    });
+    // $('#resep_ditangguhkan').click(function() {
+    //   if($('#sisa_stok').val() <= 0){
+    //     if (!$(this).is(':checked')) {
+    //       $('#btn_submit').attr('disabled', true);
+    //     }else{
+    //       $('#btn_submit').attr('disabled', false);
+    //     }
+    //   }
+    // });
 
     $('#prb_ditangguhkan').click(function() {
       if($('#sisa_stok').val() <= 0){
@@ -368,12 +367,16 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
 
   $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok=<?php echo isset($value)?$value->kode_kelompok:0?>&kode_perusahaan="+$('#kode_perusahaan').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal&urgensi="+$().val()+"", '' , function (response) {
     $('#sisa_stok').val(response.sisa_stok);
+
     if(response.sisa_stok <= 0){
-      $('#jumlah_pesan').focus();
+      $('#inputKeyObat').focus();
       $('#btn_submit').attr('disabled', true);
+      $('#jumlah_pesan').attr('disabled', true);
       $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
-    $('#detailPembelianObatHtml').html('');
+      $('#detailPembelianObatHtml').html('');
     }else{
+      $('#jumlah_pesan').focus();
+      $('#jumlah_pesan').attr('disabled', false);
       $('#btn_submit').attr('disabled', false);
       $('#warning_stok_obat').html('');
       // cek data obat bpjs yang sudah pernah di beli sebelumnya
@@ -666,12 +669,12 @@ function changeUrgensi(){
         <div class="col-sm-12">
           <table class="table">
             <tr style="background-color: #edf3f4; font-weight: bold">
-              <td> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> </td>
-              <td> <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?> </td>
-              <td> <?php echo isset($value)?ucwords($value->nama_kelompok):''?> <?php echo isset($value)?ucwords($value->nama_perusahaan):''?> </td>
-              <td> <?php echo isset($value)?ucwords($value->nama_bagian):''?> </td>
-              <td> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
-              <td> <div style="font-size: 18px" id="td_total_biaya_farmasi"> <b>Rp.0,-</b>  </div></td>
+              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> </td>
+              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?> </td>
+              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($value->nama_kelompok):''?> <?php echo isset($value)?ucwords($value->nama_perusahaan):''?> </td>
+              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($value->nama_bagian):''?> </td>
+              <td style="vertical-align: middle"> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+              <td style="vertical-align: middle"> <div style="font-size: 18px" id="td_total_biaya_farmasi"> <b>Rp.0,-</b>  </div></td>
             </tr>
           </table>
         </div>
@@ -768,10 +771,6 @@ function changeUrgensi(){
                     <span class="lbl"> Ditangguhkan</span>
                   </label>
                 </div>
-                <!-- <label class="control-label col-sm-1">Tebus</label>
-                <div class="col-md-2">
-                    <input class="form-control" name="jumlah_tebus" id="jumlah_tebus" type="text" style="text-align:center" />
-                </div> -->
               </div>
 
               <div class="form-group">
@@ -782,7 +781,7 @@ function changeUrgensi(){
                 </div>
                 <div class="col-md-6">
                   <label class="inline" style="margin-top: 4px;margin-left: -12px;">
-                    <input type="checkbox" class="ace" name="prb_ditangguhkan" id="prb_ditangguhkan" value="1">
+                    <input type="checkbox" class="ace" name="prb_ditangguhkan" id="prb_ditangguhkan" value="1" <?php echo ($value->kode_perusahaan==120) ? '' : 'disabled'?>>
                     <span class="lbl"> Ditangguhkan</span>
                   </label>
                 </div>
@@ -853,10 +852,29 @@ function changeUrgensi(){
             <div class="widget-body" style="padding:5px; min-height: 304px !important">
               <div id="div_detail_obat">
                 <div id="warning_stok_obat"></div>
-                <div id="detailObatHtml" class="center">
-                <img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%">
+                <div id="detailObatHtml" style="margin-top: 5px">
+                  <!-- <img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%"> -->
+                  <div class="alert alert-danger" style="margin-left: 6px; margin-bottom: 3px">
+                  <p><b>HARAP DIBACA..!</b></p>
+
+                  <p>Terhitung mulai tanggal 15 Juli 2021.</p>
+                  <div>
+                    <ol >
+                      <li>Jika stok obat pada sistem t<strong>idak sesuai dengan stok fisik</strong>, maka <strong>harus diperbaiki stok pada sistem</strong> terlebih dahulu. Silahkan lapor ke Bagian Gudang Farmasi.</li>
+                      <li>Jika <b style="box-sizing: border-box; font-weight: 700;">Stok Obat kosong</b> pada sistem, maka &quot;Jml Tebus&quot; <b style="box-sizing: border-box; font-weight: 700;">tidak bisa Ditangguhkan,&nbsp;</b>untuk &quot;Resep Kronis&quot; masih bisa ditangguhkan.</li>
+                      <li>Barang yang status nya <b style="box-sizing: border-box; font-weight: 700;">&quot;Not Active&quot;</b> tidak akan muncul ketika pencarian Obat. Jika ingin merubah status Aktifnya silahkan lapor ke Bagian Gudang Farmasi.</li>
+                      <li>Perhatikan kolom <b style="box-sizing: border-box; font-weight: 700;">&quot;Jenis&quot;&nbsp;</b>cito atau biasa, karena mempengaruhi harga jual obat.</li>
+                      <li>Semua Resep Obat, untuk <b>kolom Signa</b> dan catatan <strong>harap diisi dengan lengkap</strong>, terutama jika ada catatan obat, agar pasien bisa mengetahui informasi tentang obat. Kalo hanya sekedar dijelaskan oleh apoteker terkadang pasien lupa, kasian pasien yang sudah tua.</li>
+                      <li>Jika ada yang kurang jelas silahkan tanyakan kepada Kepala Instalasi Farmasi.</li>
+                      <li>Jika ada yang keberatan <strong>silahkan ajukan komplain</strong> ke Manajemen.</li>
+                      <li>Atas kerja sama nya kami ucapkan Terima Kasih.</li>
+                    </ol>
+                  </div>
+
+                  </div>
+                    
                 </div>
-                <div id="detailPembelianObatHtml"></div>
+                <div id="detailPembelianObatHtml" style="margin-top: 5px"></div>
               </div>
             </div>
           </div>

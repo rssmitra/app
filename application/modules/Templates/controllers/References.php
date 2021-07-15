@@ -1293,7 +1293,6 @@ class References extends MX_Controller {
 		}else if($_POST['bag'] == '031001'){
 			$this->db->where('a.kode_bagian', '031001');	
 			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
-
 		/*VK*/
 		}else if($_POST['bag'] == '030501' || $_POST['bag'] == '013201'){
 			$this->db->where('a.kode_bagian', '030501');
@@ -1310,6 +1309,7 @@ class References extends MX_Controller {
 			$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
 			$this->db->where('a.kode_bagian', $_POST['bag']);
 		}
+		$this->db->where('a.is_active', 1);
 
 		
 		$this->db->order_by('b.nama_brg', 'ASC');
@@ -1331,7 +1331,8 @@ class References extends MX_Controller {
 		$this->load->library('tarif');
 
 		// stok umum
-        $this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content, d.kode_profit');
+		$this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content, d.kode_profit');
+		
         $this->db->from('tc_kartu_stok a, mt_barang b, mt_rekap_stok c');
         $this->db->where('a.kode_brg=b.kode_brg');
 		$this->db->where('b.kode_brg=c.kode_brg');
@@ -1443,10 +1444,14 @@ class References extends MX_Controller {
 			
 			$html .= '</table>';	
 		}else{
-			$html .= '<div class="alert alert-danger" style="text-align: left !important"><b><i class="fa fa-exclamation-triangle"></i> Barang Expired !</b> Silahkan lakukan update barang.</div> ';
+			$html .= '<div class="alert alert-danger" style="text-align: left !important"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Kartu Stok tidak ditemukan, silahkan lapor ke gudang farmasi.</div> ';
 		}
-		
-    	echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0, 'data' => $exc[0], 'harga_beli' => $exc[0]->harga_beli, 'harga_satuan_umum' => $harga_satuan) );
+		// print_r($exc);die;
+		if(isset($exc[0])){
+			echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0, 'data' => $exc[0], 'harga_beli' => $exc[0]->harga_beli, 'harga_satuan_umum' => $harga_satuan) );
+		}else{
+			echo json_encode( array('html' => $html, 'sisa_stok' => 0) );
+		}
         
 	}
 
