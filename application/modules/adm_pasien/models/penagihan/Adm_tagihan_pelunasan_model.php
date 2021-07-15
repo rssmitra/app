@@ -5,7 +5,7 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 
 	var $table = 'tc_tagih';
 	var $column = array('nama_tertagih');
-	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, tr_yg_diskon';
+	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, tr_yg_diskon, a.jumlah_tagih';
 	var $order = array('tgl_tagih' => 'DESC');
 
 	public function __construct()
@@ -17,7 +17,7 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
-		$this->db->select('SUM(CAST(b.jumlah_tagih as INT)) as jumlah_tagihan, SUM(CAST(jumlah_bayar as INT)) as jumlah_bayar');
+		$this->db->select('SUM(CAST(b.jumlah_billing as INT)) as jumlah_tagihan, SUM(CAST(jumlah_bayar as INT)) as jumlah_bayar');
 		$this->db->from($this->table.' a');
 		$this->db->join('tc_tagih_det b', 'b.id_tc_tagih=a.id_tc_tagih', 'left');
 		$this->db->join('tc_bayar_tagih c', 'c.id_tc_tagih=a.id_tc_tagih', 'left');

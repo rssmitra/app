@@ -90,6 +90,8 @@ class Adm_tagihan_pelunasan extends MX_Controller {
             $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->tgl_jt_tempo).'</div>';
             $row[] = $row_list->nama_tertagih;
             $row[] = '<div class="pull-right">'.number_format($row_list->jumlah_tagihan).'</div>';
+            $row[] = '<div class="pull-right">'.number_format($row_list->tr_yg_diskon).'</div>';
+            $row[] = '<div class="pull-right">'.number_format($row_list->jumlah_tagih).'</div>';
             $saldo = $row_list->jumlah_tagihan - $row_list->jumlah_bayar;
             if ($saldo == 0) {
                 $status = '<label class="label label-xs label-success">Lunas</label>';
