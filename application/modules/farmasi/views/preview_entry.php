@@ -64,6 +64,7 @@
             </thead>
                 <?php 
                   $no=0; 
+                  $arr_total = [];
                   foreach($resep as $key_dt=>$row_dt) : 
                     if( $row_dt['jumlah_tebus'] > 0 ) :
                     $no++; 
@@ -89,6 +90,7 @@
                     <td style="text-align:right; border-collapse: collapse"><?php echo number_format($subtotal)?></td>
                   </tr>
                   <?php 
+                    $arr_total = [];
                     if($row_dt['flag_resep'] == 'racikan') :
                       foreach ($row_dt['racikan'][0] as $key => $value) {
                         $arr_total[] = ($value->harga_jual * $value->jumlah);

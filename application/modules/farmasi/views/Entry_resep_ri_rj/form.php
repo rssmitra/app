@@ -371,12 +371,12 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
       $('#btn_submit').attr('disabled', true);
-      $('#jumlah_pesan').attr('disabled', true);
+      $('#jumlah_pesan').attr('readonly', true);
       $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
       $('#detailPembelianObatHtml').html('');
     }else{
       $('#jumlah_pesan').focus();
-      $('#jumlah_pesan').attr('disabled', false);
+      $('#jumlah_pesan').attr('readonly', false);
       $('#btn_submit').attr('disabled', false);
       $('#warning_stok_obat').html('');
       // cek data obat bpjs yang sudah pernah di beli sebelumnya
@@ -763,7 +763,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Jml Tebus</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')"/>
+                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value="0"/>
                 </div>
                 <div class="col-md-6">
                   <label class="inline" style="margin-top: 4px;margin-left: -12px;">
