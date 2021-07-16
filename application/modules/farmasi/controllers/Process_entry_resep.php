@@ -37,7 +37,7 @@ class Process_entry_resep extends MX_Controller {
         // form validation
         if( $_POST['submit'] != 'header' ){
             $this->form_validation->set_rules('kode_brg', 'Cari Obat', 'trim|required');
-            $this->form_validation->set_rules('jumlah_pesan', 'Jumlah Pesan', 'trim|required');
+            $this->form_validation->set_rules('jumlah_pesan', 'Jumlah Pesan', 'trim');
         }
 
         if(isset($_POST['jenis_resep']) AND $_POST['jenis_resep'] == 'rk'){
