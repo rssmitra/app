@@ -69,9 +69,8 @@
     <td width="30%" valign="top" style="padding-left:120px">
     Pasien/Keluarga Pasien<br><br>
     <?php 
-
-      if(!empty($header->ttd_pasien)) {
-        $img_base64_encoded = $header->ttd_pasien;
+      if(!empty($header->ttd)) {
+        $img_base64_encoded = $header->ttd;
         $imageContent = file_get_contents($img_base64_encoded);
         $path = tempnam(sys_get_temp_dir(), 'prefix');
         

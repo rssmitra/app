@@ -172,7 +172,7 @@
             <div class="row no-padding">
               <div class="col-md-8 no-padding" style="padding-right: 5px !important">
                 <div class="col-xs-12 widget-container-col ui-sortable no-padding" style="padding-right: 20px" id="widget-container-col-1">
-                  <span style="" class="stamp is-nope-2">Uji Coba</span>
+                  <!-- <span style="" class="stamp is-nope-2">Uji Coba</span> -->
                   <?php for($box=1;$box<6;$box++) :?>
                     <div class="alert alert-success" style="background-image: linear-gradient(#00cc00, #004d00);color:white;border-radius:5px;">
                       <div class="text-no" style="width:15%;float:left;border-right:2px solid white; margin-right: 20px; text-align: center">

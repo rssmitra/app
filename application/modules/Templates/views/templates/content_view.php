@@ -498,11 +498,18 @@
       </div><!-- /.modal-dialog -->
 
     </div>
+    
+    
 
     <!--[if !IE]> -->
     <script type="text/javascript">
       window.jQuery || document.write("<script src='<?php echo base_url()?>/assets/js/jquery.js'>"+"<"+"/script>");
     </script>
+
+    <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery-ui.min.js"></script>
+
+
 
     <script type="text/javascript">
       if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
@@ -562,8 +569,9 @@
     
     <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
     <script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
-
     
+    
+
     <script type="text/javascript">
       
       $('.format_number').number( true, 2 );
@@ -916,6 +924,7 @@
       
 
     </script>
+
 
   </body>
 </html>

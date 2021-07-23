@@ -128,6 +128,8 @@ class Verifikasi_resep_prb_model extends CI_Model {
 	}
 
 	public function get_header_data($kode_trans_far){
+		$this->db->select('c.ttd as ttd_pasien');
+		$this->db->select('a.*, b.*, e.*, d.nama_bagian');
 		$this->db->from('fr_tc_far a');
 		$this->db->join('tc_registrasi b', 'b.no_registrasi=a.no_registrasi', 'left');
 		$this->db->join('th_riwayat_pasien e', 'e.no_registrasi=a.no_registrasi', 'left');
@@ -139,7 +141,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 	
 	public function get_detail($kode_trans_far)
 	{
-		return $this->db->join('fr_tc_far', 'fr_tc_far.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far', 'left')->get_where('fr_tc_far_detail_log_prb', array('fr_tc_far_detail_log_prb.kode_trans_far' => $kode_trans_far))->result();		
+		return $this->db->select('fr_tc_far_detail_log_prb.*, fr_tc_far.*, fr_tc_far_detail_log.jumlah_tebus as jumlah_7')->join('fr_tc_far', 'fr_tc_far.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far', 'left')->join('fr_tc_far_detail_log','fr_tc_far_detail_log.relation_id=fr_tc_far_detail_log_prb.kd_tr_resep','left')->get_where('fr_tc_far_detail_log_prb', array('fr_tc_far_detail_log_prb.kode_trans_far' => $kode_trans_far))->result();		
 	}
 
 	public function insert_verify($kode_trans_far)

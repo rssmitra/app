@@ -51,24 +51,25 @@
         }else{
 
             if( $config['transaksi']['tunai'] > 0 || $config['transaksi']['debet'] > 0 || $config['transaksi']['kredit'] > 0 ){
+				$total_nominal = $config['transaksi']['tunai'] + $config['transaksi']['debet'] + $config['transaksi']['kredit'];
                 $acc_no = '101010102' ;
                 $insertMapingDet["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
                 $insertMapingDet["acc_no"] = $acc_no;
                 $insertMapingDet["tipe_tx"] = 'D';
-                $insertMapingDet["nominal"] = $bayar_tunai;
+                $insertMapingDet["nominal"] = $total_nominal;
                 $insertMapingDet["keterangan"] = "Penerimaan Kas/Bank : [".$config['transaksi']['nama_pasien']."] ";
                 $jurnal_data[] = $insertMapingDet;
             }
 
-            if( $nk_perusahaan > 0){
-                $acc_no = '101030201' ;
-                $insertMapingDet["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
-                $insertMapingDet["acc_no"] = $acc_no;
-                $insertMapingDet["tipe_tx"] = 'D';
-                $insertMapingDet["nominal"] = $nk_perusahaan;
-                $insertMapingDet["keterangan"] = "Penerimaan Kas/Bank : [".$config['transaksi']['nama_pasien']."] ";
-                $jurnal_data[] = $insertMapingDet;
-            }
+            // if( $nk_perusahaan > 0){
+            //     $acc_no = '101030201' ;
+            //     $insertMapingDet["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
+            //     $insertMapingDet["acc_no"] = $acc_no;
+            //     $insertMapingDet["tipe_tx"] = 'D';
+            //     $insertMapingDet["nominal"] = $nk_perusahaan;
+            //     $insertMapingDet["keterangan"] = "Penerimaan Kas/Bank : [".$config['transaksi']['nama_pasien']."] ";
+            //     $jurnal_data[] = $insertMapingDet;
+            // }
 
             if( $config['transaksi']['nk_perusahaan'] > 0){
                 $acc_no = '101030105' ;

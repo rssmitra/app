@@ -211,7 +211,6 @@ class Adm_tagihan_perusahaan extends MX_Controller {
             }
             
             // mapping jurnal
-            // code here
             // $this->accounting->create_jurnal_piutang($dataexc);
             
             if ($this->db->trans_status() === FALSE)

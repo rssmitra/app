@@ -1548,22 +1548,24 @@ class Templates extends MX_Controller {
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
-            // $pm_ = 453169; 
-            // $no_mr = '00262639';
-            // $nama_pasien = 'Alfina Nurdin';
-            // $umur = '18';
-            // $jk_ = 'Perempuan';
-            // $tgl_daftar = '8 Juli 2021 - 10:10:25';
-            // $tgl_periksa = '8 Juli 2021 - 10:27:21';
+            $pm_ = 453170; 
+            $no_mr = '00270741';
+            $nama_pasien = 'Arif Suherman';
+            $umur = '39';
+            $jk_ = 'Pria';
+            $tgl_daftar = '4 Juli 2021 - 07:05:15';
+            $tgl_periksa = '4 Juli 2021 - 07:33:42';
+            $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db
-            $pm_ = $pm;
-            $no_mr = $data->reg_data->no_mr;
-            $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
-            $umur = $data->reg_data->umur;
-            $jk_ = $jk;
-            $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-            $tgl_periksa = $tgl_pemeriksaan;
+            // $pm_ = $pm;
+            // $no_mr = $data->reg_data->no_mr;
+            // $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
+            // $umur = $data->reg_data->umur;
+            // $jk_ = $jk;
+            // $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
+            // $tgl_periksa = $tgl_pemeriksaan;
+            // $dokter_pengirim = $data->reg_data->nama_pegawai;
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
@@ -1575,7 +1577,7 @@ class Templates extends MX_Controller {
                         </tr>
                         <tr>
                             <td width="150px">Dokter Pengirim</td>
-                            <td width="250px">: '.$data->reg_data->nama_pegawai.'</td>
+                            <td width="250px">: '.$dokter_pengirim.'</td>
                             <td width="100px" align="left">Nama Pasien</td>
                             <td width="250px">: '.$nama_pasien.'</td>
                         </tr>

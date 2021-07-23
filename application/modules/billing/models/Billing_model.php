@@ -197,6 +197,29 @@ class Billing_model extends CI_Model {
         return $result;
     }
 
+    public function getDetailDataApt($kode_trans_far){
+        // get trans far
+        $reg_data = $this->getTransFar($kode_trans_far);
+        /*get kasir data*/
+        $kasir_data = $this->getKasirDataApt($kode_trans_far);
+        /*get data trans pelayanan by no registrasi*/
+        $trans_data = $this->getTransDataApt($kode_trans_far);
+        // echo '<pre>';print_r($this->db->last_query());die;
+        
+        $group = array();
+        foreach ($trans_data as $value) {
+            $group[$value->nama_jenis_tindakan][] = $value;
+        }
+        $result = json_encode(array('group' => $group, 'kasir_data' => $kasir_data, 'kode_trans_far' => $kode_trans_far, 'trans_data' => $trans_data, 'reg_data' => $reg_data ));
+
+        return $result;
+    }
+
+    public function getTransFar($kode_trans_far){
+        $this->db->where('kode_trans_far', $kode_trans_far);
+        return $this->db->get('fr_tc_far')->row();
+    }
+
     public function getDetailDataa($no_registrasi,$no_mr){
         $kasir_data = $this->getKasirDataa($no_registrasi,$no_mr);
         /*get data trans pelayanan by no registrasi*/
@@ -1162,6 +1185,15 @@ class Billing_model extends CI_Model {
 		$this->db->where('no_registrasi', $no_registrasi);
 		return $this->db->get()->result();
     }
+
+    public function getKasirDataApt($kode_trans_far)
+	{
+		$this->db->from('tc_trans_kasir');
+		$this->db->where('kode_tc_trans_kasir IN (SELECT kode_tc_trans_kasir FROM tc_trans_pelayanan WHERE kode_trans_far = '.$kode_trans_far.')');
+		return $this->db->get()->result();
+    }
+
+
      public function getKasirDataa($no_registrasi,$no_mr)
     {
         $this->db->from('tc_trans_kasir');
@@ -1187,6 +1219,26 @@ class Billing_model extends CI_Model {
             $this->db->where('(status_nk is null or status_nk = 0)');
         }
 
+        if(isset($_GET['bagian'])){
+            $this->db->where('tc_trans_pelayanan.kode_bagian', $_GET['bagian']);
+        }
+
+		$this->db->order_by('tc_kunjungan.tgl_masuk', 'ASC');
+        $query = $this->db->get()->result();
+        // print_r($this->db->last_query());die;
+		return $query;
+    }
+
+    public function getTransDataApt($kode_trans_far){
+		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar');
+		$this->db->from('tc_trans_pelayanan');
+		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
+        $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
+		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_trans_pelayanan.kode_perusahaan','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_trans_pelayanan.kode_bagian','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left');
+		$this->db->where('tc_trans_pelayanan.kode_trans_far', $kode_trans_far);
+        
         if(isset($_GET['bagian'])){
             $this->db->where('tc_trans_pelayanan.kode_bagian', $_GET['bagian']);
         }
@@ -1453,6 +1505,35 @@ class Billing_model extends CI_Model {
         return true;
     }
 
+    public function rollback_kasir_apt(){
+
+        /*delete detail akunting*/
+        $this->db->where(' id_ak_tc_transaksi IN 
+                            (select id_ak_tc_transaksi from ak_tc_transaksi where kode_tc_trans_kasir in 
+                                (select kode_tc_trans_kasir from tc_trans_pelayanan where kode_trans_far in ('.$_POST['kode_trans_far'].')
+                                )
+                            ) ')->delete('ak_tc_transaksi_det');
+
+        /*delete akunting*/
+        $this->db->where(' id_ak_tc_transaksi IN 
+                            (select id_ak_tc_transaksi from ak_tc_transaksi where kode_tc_trans_kasir in 
+                                (select kode_tc_trans_kasir from tc_trans_pelayanan where kode_trans_far in 
+                                    ('.$_POST['kode_trans_far'].')
+                                )
+                            ) ')->delete('ak_tc_transaksi');
+
+        // delete tc_trans_kasir
+        $this->db->where('kode_tc_trans_kasir IN (SELECT kode_tc_trans_kasir FROM tc_trans_pelayanan WHERE kode_trans_far = '.$_POST['kode_trans_far'].') ')->delete('tc_trans_kasir');
+
+        /*update trans pelayanan*/
+        $this->db->update('tc_trans_pelayanan', array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL), array('kode_trans_far' => $_POST['kode_trans_far']) );
+
+        // update fr_tc_far
+        $this->db->update('fr_tc_far', array('status_bayar' => NULL), array('kode_trans_far' => $_POST['kode_trans_far']) );
+
+        return true;
+    }
+
     public function getOriginalTransData($no_registrasi){
         $this->db->select('tc_trans_pelayanan.*,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_klas.nama_klas, kode_perusahaan, status_nk, kode_tc_trans_kasir');
         $this->db->from('tc_trans_pelayanan');
@@ -1519,6 +1600,7 @@ class Billing_model extends CI_Model {
 
         return $arr_merge;
     }
+
     
 
 }

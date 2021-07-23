@@ -779,6 +779,18 @@ final Class Master {
 		return array('seri_kuitansi' => $seri_kuitansi, 'no_kuitansi' => $no_seri);
 	}
 
+	public function no_seri_kuitansi_apt($kode_trans_far){
+
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+
+		$seri_kuitansi = 'PB';
+
+		$no_seri = $this->get_max_number('tc_trans_kasir', 'no_kuitansi', array('seri_kuitansi' => $seri_kuitansi));
+
+		return array('seri_kuitansi' => $seri_kuitansi, 'no_kuitansi' => $no_seri);
+	}
+
 	public function get_kode_cuti($kepeg_id){
 
 		$CI =&get_instance();

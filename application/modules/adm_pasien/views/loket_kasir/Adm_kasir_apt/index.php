@@ -157,7 +157,7 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <div class="row" style="padding-bottom: 10px; padding-top: 10px">
+    <!-- <div class="row" style="padding-bottom: 10px; padding-top: 10px">
       <div class="col-xs-12">
         <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #91ff00">
           <span style="font-size: 12px">Total pemasukan</span>
@@ -170,7 +170,7 @@
         </div>
 
       </div>
-    </div>
+    </div> -->
 
     <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
       <!-- hidden form -->
@@ -283,7 +283,7 @@
         <div class="col-md-2" style="margin-left:6px">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-            Cari
+            Cari Data
           </a>
           <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
             <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>

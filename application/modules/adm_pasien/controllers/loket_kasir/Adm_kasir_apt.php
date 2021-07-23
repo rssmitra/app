@@ -60,7 +60,7 @@ class Adm_kasir_apt extends MX_Controller {
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list->no_registrasi."/".$_GET['pelayanan'].""."'".')">'.$row_list->kode_trans_far.'</div>';
+            $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasirApt/".$row_list->kode_trans_far."/".$_GET['pelayanan'].""."'".')">'.$row_list->kode_trans_far.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $total = $row_list->bill_rs + $row_list->bill_dr1 + $row_list->bill_dr2 + $row_list->bill_dr3 + $row_list->lain_lain;
@@ -70,7 +70,7 @@ class Adm_kasir_apt extends MX_Controller {
                 $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
             }
 
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list->no_registrasi."/RJ?flag=umum'".')"><i class="fa fa-money"></i> Bayar</a></div>';
+            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'billing/Billing/viewDetailBillingKasirApt/".$row_list->kode_trans_far."/RJ?flag=umum'".')"><i class="fa fa-money"></i> Bayar</a></div>';
 
             $data[] = $row;
               

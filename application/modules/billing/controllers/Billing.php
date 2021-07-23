@@ -86,6 +86,28 @@ class Billing extends MX_Controller {
         $this->load->view('Billing/form_payment', $data);
     }
 
+    public function payment_apt_view($kode_trans_far, $tipe) { 
+        /*define variable data*/
+        $result = json_decode($this->Billing->getDetailDataApt($kode_trans_far));
+        // get total sudah dibayar
+        $arr_sum_total = array();
+        foreach($result->trans_data as $row){
+            $arr_sum_total[] = (int)$row->bill_rs;
+        }
+
+        $data = array(
+            'title' => 'Form Pembayaran Pasien',
+            'kode_trans_far' => $kode_trans_far,
+            'tipe' => $tipe,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'result' => $result,
+            'total_paid' => array_sum($arr_sum_total),
+        );
+        // echo '<pre>'; print_r($data);die;
+
+        $this->load->view('Billing/form_payment_apt', $data);
+    }
+
     public function payment_um_view($no_registrasi, $tipe) { 
         /*define variable data*/
         $result = json_decode($this->Billing->getDetailData($no_registrasi));
@@ -240,6 +262,28 @@ class Billing extends MX_Controller {
 
     }
 
+    public function viewDetailBillingKasirApt($kode_trans_far, $tipe){
+        
+        /*get detail data billing*/
+        $result = json_decode($this->Billing->getDetailDataApt($kode_trans_far));
+        $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
+
+        $data = array(
+            'title' => 'Billing Pasien',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'kode_trans_far' => $kode_trans_far,
+            'tipe' => $tipe,
+            'flag' => isset($_GET['flag'])?$_GET['flag']:'',
+            'data' => $result,
+            'kunjungan' => $grouping,
+        );
+        // echo '<pre>';print_r($data);die;
+        $data['header'] = $this->load->view('Billing/temp_header_dt_apt', $data, true);
+
+        $this->load->view('Billing/temp_trans_kasir_apt', $data, false);
+
+    }
+
     public function viewDetailBillingKasir($no_registrasi, $tipe){
         
         /*get detail data billing*/
@@ -325,6 +369,25 @@ class Billing extends MX_Controller {
 
     }
 
+    public function load_billing_view_apt($kode_trans_far, $tipe){
+        /*get detail data billing*/
+        $result = json_decode($this->Billing->getDetailDataApt($kode_trans_far));
+        // echo '<pre>';print_r($log_activity);die;
+        $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
+
+        $data = array(
+            'title' => 'Billing Pasien',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'kode_trans_far' => $kode_trans_far,
+            'tipe' => $tipe,
+            'data' => $result,
+            'kunjungan' => $grouping,
+        );
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Billing/data_billing_view_apt', $data, false);
+
+    }
+
 
     public function getBillingByPenjamin($no_registrasi, $tipe){
         
@@ -354,6 +417,11 @@ class Billing extends MX_Controller {
         $exc = $this->Billing->rollback_kasir( $_POST['no_reg'] );
         // delete casemix data if exist
         $this->db->update('csm_reg_pasien', array('is_submitted' => 'N'), array('no_registrasi' => $_POST['no_reg']) );
+        echo json_encode( array('status' => 200) );
+    }
+
+    public function rollback_kasir_apt(){
+        $exc = $this->Billing->rollback_kasir_apt( $_POST['kode_trans_far'] );
         echo json_encode( array('status' => 200) );
     }
 
@@ -410,6 +478,28 @@ class Billing extends MX_Controller {
 
     }
 
+    public function print_preview_apt(){
+ 
+        $result = json_decode($this->Billing->getDetailDataApt($_GET['kode_trans_far']));
+        $tipe = $this->Billing->cek_tipe_pasien($_GET['kode_trans_far']);
+        $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
+
+        $data = array(
+            'title' => 'Billing Pasien Sementara',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'kode_trans_far' => $_GET['kode_trans_far'],
+            'tipe' => $tipe,
+            'flag_bill' => isset($_GET['flag_bill'])?$_GET['flag_bill']:'temporary',
+            'data' => $result,
+            'kasir_data' => $result->kasir_data,
+            'kunjungan' => $grouping,
+        );
+        // echo '<pre>';print_r($data);die;
+        $data['header'] = $this->load->view('Billing/temp_header_dt_apt', $data, true);
+        $this->load->view('Billing/cetakBilling_sem_rssm_apt', $data, false);
+
+    }
+
     public function print_kuitansi(){
  
         $result = json_decode($this->Billing->getDetailData($_GET['no_registrasi']));
@@ -455,7 +545,7 @@ class Billing extends MX_Controller {
         $dataTranskasir["cash"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
         $dataTranskasir["change"] = $change;
 
-        $dataTranskasir["tunai"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
+        $dataTranskasir["tunai"] = isset($_POST['jumlah_bayar_tunai']) ? (float)$_POST['jumlah_bayar_tunai']:(float)0;
         // debet
         $dataTranskasir["debet"] = isset($_POST['jumlah_bayar_debet']) ? (float)$_POST['jumlah_bayar_debet'] : (float)0;
         $dataTranskasir["no_debet"] = $_POST['nomor_kartu_debet'];
@@ -477,16 +567,19 @@ class Billing extends MX_Controller {
             // nk_karyawan
             $dataTranskasir["nk_karyawan"] = $_POST['total_nk'];
             $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
-            $potongan_nk = $_POST['total_nk'];
         }else{
-            $dataTranskasir["nk_karyawan"] = 0;
+            if(isset($_POST['metode_bon_karyawan'])){
+                $dataTranskasir["nk_karyawan"] = $_POST['total_nk'];
+                $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
+            }else{
+                $dataTranskasir["nk_karyawan"] = 0;
+            }
         }
 
         if( !in_array($_POST['kode_kelompok_val'], array(1,4,7,8,11,12,13,14,15,16)) ){
             $dataTranskasir["nk_perusahaan"] = $_POST['total_nk'];
             $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
             $dataTranskasir["pembayar"] = $_POST['perusahaan_penjamin'];
-            $potongan_nk = $_POST['total_nk'];
         }else{
             $dataTranskasir["pembayar"] = $_POST['nama_pasien_val'];
             $dataTranskasir["nk_perusahaan"] = 0;
@@ -578,6 +671,139 @@ class Billing extends MX_Controller {
             $return['kode_perusahaan'] = $_POST['kode_perusahaan_val'];
             $return['billing_nk'] = count($preview_billing_nk);
             $return['billing_um'] = count($preview_billing_um);
+            echo json_encode($return);
+        }
+        
+    }
+
+    public function process_apt(){
+        
+        // print_r($_POST);die;
+
+        $this->load->library('accounting');
+
+        $this->db->trans_begin();
+        
+        // get no seri kuitansi
+        $seri_kuitansi_dt = $this->master->no_seri_kuitansi_apt($_POST['kode_trans_far']);
+        // print_r($seri_kuitansi_dt);die;
+        // insert tc_trans_kasir
+        $dataTranskasir["kode_tc_trans_kasir"] = $this->master->get_max_number('tc_trans_kasir','kode_tc_trans_kasir');
+        $dataTranskasir["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
+        $dataTranskasir["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
+        $dataTranskasir["no_induk"] = $this->session->userdata('user')->user_id; 
+        $dataTranskasir["tgl_jam"] = date("Y-m-d H:i:s");
+
+        $change = ( $_POST['uang_dibayarkan_tunai'] > $_POST['jumlah_bayar_tunai'] ) ? $_POST['uang_dibayarkan_tunai'] - $_POST['jumlah_bayar_tunai'] : 0;
+
+        $dataTranskasir["cash"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
+        $dataTranskasir["change"] = $change;
+
+        // tunai
+        $dataTranskasir["tunai"] = isset($_POST['jumlah_bayar_tunai']) ? (float)$_POST['jumlah_bayar_tunai']:(float)0;
+        // debet
+        $dataTranskasir["debet"] = isset($_POST['jumlah_bayar_debet']) ? (float)$_POST['jumlah_bayar_debet'] : (float)0;
+        $dataTranskasir["no_debet"] = $_POST['nomor_kartu_debet'];
+        $dataTranskasir["no_batch_dc"] = $_POST['nomor_batch_debet'];
+        $dataTranskasir["kd_bank_dc"] = $_POST['kd_bank_dc'];
+        // kredit
+        $dataTranskasir["kredit"] = isset($_POST['jumlah_bayar_kredit'])?(float)$_POST['jumlah_bayar_kredit']:(float)0;
+        $dataTranskasir["no_kredit"] = $_POST['nomor_kartu_kredit'];
+        $dataTranskasir["no_batch_cc"] = $_POST['nomor_batch_kredit'];
+        $dataTranskasir["kd_bank_cc"] = $_POST['kd_bank_cc'];
+        
+        $dataTranskasir["no_mr"] = $_POST['no_mr_val'];
+        $dataTranskasir["nama_pasien"] = $_POST['nama_pasien_val'];
+        // $dataTranskasir["no_registrasi"] = $_POST['no_registrasi'];
+        $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
+        $dataTranskasir["keterangan"] = 'Pembayaran Administrasi Pasien pada Loket';
+
+        if( in_array($_POST['kode_kelompok_val'], array(4,7,8,11,12,13,14,15,16)) ){
+            // nk_karyawan
+            $dataTranskasir["nk_karyawan"] = $_POST['total_nk'];
+            $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
+        }else{
+            if(isset($_POST['metode_bon_karyawan'])){
+                $dataTranskasir["nk_karyawan"] = $_POST['total_nk'];
+                $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
+            }else{
+                $dataTranskasir["nk_karyawan"] = 0;
+            }
+        }
+
+        if( !in_array($_POST['kode_kelompok_val'], array(1,4,7,8,11,12,13,14,15,16)) ){
+            $dataTranskasir["nk_perusahaan"] = $_POST['total_nk'];
+            $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
+            $dataTranskasir["pembayar"] = $_POST['perusahaan_penjamin'];
+        }else{
+            $dataTranskasir["pembayar"] = $_POST['nama_pasien_val'];
+            $dataTranskasir["nk_perusahaan"] = 0;
+        }
+
+        $potongan_diskon = ($_POST['total_payment'] * ($_POST['jumlah_diskon']/100));
+        $sisa_bill = $_POST['total_payment'] - $potongan_diskon;
+        $dataTranskasir["potongan"] = $potongan_diskon;
+        $dataTranskasir["discount"] = ($_POST['jumlah_diskon'])?$_POST['jumlah_diskon']:0;
+        $dataTranskasir["bill"] = $sisa_bill;
+
+        // print_r($dataTranskasir);die;
+        // kode shift
+        $dataTranskasir["kode_shift"] = $_POST['shift'];
+        $dataTranskasir["kode_loket"] = $_POST['loket'];
+        // insert tc trans kasir
+        $this->db->insert('tc_trans_kasir', $dataTranskasir);
+
+        // insert trans bagian
+        $bon_karyawan_nk = isset($_POST['metode_bon_karyawan']) ? 1 : NULL;
+        $str_to_array = explode(',', $_POST['array_data_checked']);
+        foreach ($str_to_array as $key => $kode_trans_pelayanan) {
+            $data_trans = $this->db->get_where('tc_trans_pelayanan', array('kode_trans_pelayanan' => $kode_trans_pelayanan))->row();
+            $dataTransKasirBagian["kode_tc_trans_kasir"] = $dataTranskasir["kode_tc_trans_kasir"];
+            $dataTransKasirBagian["kode_bagian"] = $data_trans->kode_bagian;
+            $this->db->insert('tc_trans_kasir_bagian', $dataTransKasirBagian);
+            // update status, kode_tc_trans_kasir tc_trans_pelayanan per item
+
+            $data_tr_pl = array('status_selesai' => 3, 'kode_tc_trans_kasir' => $dataTranskasir["kode_tc_trans_kasir"], 'status_nk' => $bon_karyawan_nk);
+            $this->db->update('tc_trans_pelayanan', $data_tr_pl, array('kode_trans_pelayanan' => $kode_trans_pelayanan));
+            // update status bayar farmasi
+            if($data_trans->kode_trans_far != null || $data_trans->kode_trans_far != 0){
+                $this->db->update('fr_tc_far', array('status_bayar' => 1), array('kode_trans_far' => $data_trans->kode_trans_far)  );
+            }
+            $this->db->trans_commit();
+        }
+        
+        // untuk masuk ke akunting
+        $dataAkunting["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
+        $dataAkunting["no_bukti"] = $seri_kuitansi_dt['seri_kuitansi'].  $seri_kuitansi_dt['no_kuitansi'];
+        $dataAkunting["tgl_transaksi"] = date("Y-m-d H:i:s");
+        $dataAkunting["uraian_transaksi"] = 'Pendapatan Pasien '.$seri_kuitansi_dt['seri_kuitansi'].' '.$_POST['no_mr_val'].' - '.$_POST['nama_pasien_val'];
+        $dataAkunting["total_nominal"] = $_POST['total_payment_all'];
+        $dataAkunting["nama_pasien"] = $_POST['nama_pasien_val'];
+        $dataAkunting["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
+        $dataAkunting["no_mr"] = $_POST['no_mr_val'];
+        $dataAkunting["kode_tc_trans_kasir"] = $dataTranskasir["kode_tc_trans_kasir"];
+        $this->db->insert('ak_tc_transaksi', $dataAkunting);
+        $new_id_ak_tc_transaksi = $this->db->insert_id();
+        
+        // jurnal accounting
+        $this->create_jurnal($dataTranskasir, $dataAkunting, $new_id_ak_tc_transaksi);
+
+        $preview_billing_nk = $this->db->get_where('tc_trans_pelayanan', array('kode_trans_far' => $_POST['kode_trans_far'], 'status_nk' => 1))->result();
+
+        
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            
+            $return['status'] = 200;
+            $return['message'] = 'Proses Berhasil Dilakukan';
+            $return['kode_perusahaan'] = $_POST['kode_perusahaan_val'];
+            $return['billing_nk'] = count($preview_billing_nk);
             echo json_encode($return);
         }
         
@@ -675,7 +901,6 @@ class Billing extends MX_Controller {
         }
         // print_r($jurnal_kredit_data);die;
         
-
         // jurnal um
         $jurnal_um = $this->accounting->get_jurnal_um($config_jurnal);
         if( count($jurnal_um) > 0 ){

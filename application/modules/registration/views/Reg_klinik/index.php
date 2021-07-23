@@ -209,6 +209,44 @@ $(document).ready(function(){
 
       }      
 
+    }); 
+
+    $('#form_ttd_pasien').ajaxForm({      
+
+      beforeSend: function() {        
+
+        // achtungShowLoader();          
+
+      },      
+
+      uploadProgress: function(event, position, total, percentComplete) {        
+
+      },      
+
+      complete: function(xhr) {             
+
+        var data=xhr.responseText;        
+
+        var jsonResponse = JSON.parse(data);        
+
+        if(jsonResponse.status === 200){          
+
+          // $.achtung({message: jsonResponse.message, timeout:5});          
+
+          $('#modalTTDPasien').modal('hide');
+          find_pasien_by_keyword( jsonResponse.no_mr );
+
+
+        }else{          
+
+          // $.achtung({message: jsonResponse.message, timeout:5});          
+
+        }        
+
+        // achtungHideLoader();        
+
+      }      
+
       }); 
 
       
@@ -657,6 +695,28 @@ function showModalEditPasien()
     
 }
 
+function showModalTTD()
+{  
+
+  noMr = $('#noMrHidden').val();
+  //alert(noMr); return false;
+  if (noMr == '') {
+
+    alert('Silahkan cari pasien terlebih dahulu !'); return false;
+  
+  }else{
+
+    // PopupCenter('registration/reg_pasien/form_modal_ttd/'+noMr+'', 'TANDA TANGAN PASIEN (DIGITAL SIGNATURE)', 900, 500);
+    $('#result_text_edit_pasien').text('TANDA TANGAN PASIEN');
+
+    $('#form_pasien_modal_ttd').load('registration/reg_pasien/form_modal_ttd/'+noMr+''); 
+
+    $("#modalTTDPasien").modal();
+
+  }
+    
+}
+
 function showModalMergePasien()
 
 {  
@@ -840,6 +900,8 @@ function find_pasien_by_keyword(keyword){
 
             $('#catatan_pasien').text(obj.keterangan);
 
+            $('#ttd_pasien').attr('src', obj.ttd);
+
             $('#noKartuBpjs').val(obj.no_kartu_bpjs);
 
             if( obj.url_foto_pasien ){
@@ -993,8 +1055,8 @@ function get_riwayat_medis(){
     padding: 5px !important;
   }
   .list-group-item {
-    padding: 2px 13px 24px 5px !important;
-}
+    padding: 3px 6px 15px 5px !important;
+  }
 </style>
 
 <!-- <div class="page-header">    
@@ -1084,7 +1146,7 @@ function get_riwayat_medis(){
               <div class="box box-primary" id='box_identity'>
                   <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-                  <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
+                  <h3 class="profile-username text-center"><div id="no_mr" style="font-size: 16px !important">-No. Rekam Medis-</div></h3>
 
                   <ul class="list-group list-group-unbordered">
                     <li class="list-group-item">
@@ -1113,10 +1175,15 @@ function get_riwayat_medis(){
                     <li class="list-group-item">
                       <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>
                     </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">TTD: </small><div><img id="ttd_pasien" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/images/ttd-no-found.png'?>" alt="User profile picture" style="width:100%"></div>
+                    </li>
                   </ul>
 
-                  <a href="#" class="btn btn-primary btn-block center" onclick="showModalEditPasien()"><b>Selengkapnya</b></a>
+                  <a href="#" class="btn btn-primary btn-block center" onclick="showModalEditPasien()" style="margin-top:10px"><b>Selengkapnya</b></a>
                   <a href="#" class="btn btn-danger btn-block center" onclick="showModalMergePasien()"><b>Merge Pasien</b></a>
+                  <a href="#" class="btn btn-success btn-block center" onclick="showModalTTD()"><b>Tanda Tangan</b></a>
+                  
                 <!-- /.box-body -->
               </div>
             </div>
@@ -1845,6 +1912,64 @@ function get_riwayat_medis(){
       <form class="form-horizontal" method="post" id="form_edit_pasien" action="registration/Input_pasien_baru/process" enctype="multipart/form-data" autocomplete="off">                                    
         
         <div id="form_edit_pasien_modal"></div>
+
+        <button type="submit" name="submit" class="btn btn-xs btn-primary">
+
+          <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+
+          Submit
+
+        </button>
+
+      </form>
+
+      </div>
+
+      <!-- <div class="modal-footer no-margin-top">
+
+        <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
+
+          <i class="ace-icon fa fa-times"></i>
+
+          Close
+
+        </button>
+
+      </div> -->
+
+    </div><!-- /.modal-content -->
+
+  </div><!-- /.modal-dialog -->
+
+</div>
+
+<div id="modalTTDPasien" class="modal fade" tabindex="-1">
+
+  <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:95%">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <div class="table-header">
+
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+
+            <span class="white">&times;</span>
+
+          </button>
+
+          <span>TANDA TANGAN PASIEN (DIGITAL SIGNATURE)</span>
+
+        </div>
+
+      </div>
+
+      <div class="modal-body">
+
+      <form class="form-horizontal" method="post" id="form_ttd_pasien" action="registration/Reg_pasien/process_ttd" enctype="multipart/form-data" autocomplete="off">                                    
+        
+        <div id="form_pasien_modal_ttd"></div>
 
         <button type="submit" name="submit" class="btn btn-xs btn-primary">
 

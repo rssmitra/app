@@ -40,7 +40,7 @@ class Adm_kasir_apt_model extends CI_Model {
 			
 						
 		}else{
-			$this->db->where("CAST(tgl_trans as DATE)", date('Y-m-d'));
+			$this->db->where("CAST(tgl_trans as DATE) = ", date('Y-m-d'));
 			$this->db->where('status_selesai', 2);
 			$this->db->where('kode_tc_trans_kasir IS NULL');
 		}

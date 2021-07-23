@@ -297,7 +297,7 @@
               <th class="center">Status</th>
               <th class="center">INV</th>
               <th class="center">KWI</th>
-              <th class="center">Action</th>
+              <th class="center">Hapus</th>
             </tr>
           </thead>
         </table>

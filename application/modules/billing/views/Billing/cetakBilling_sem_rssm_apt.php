@@ -46,29 +46,6 @@
   
 </style>
 
- <?php 
-      // data header
-    // $no_mr_txt = '00211762';
-    // $nama_pasien = 'Rizky Kurnia Pratama';
-    // $bop = 'Jakarta';
-    // $bod = '14/03/1994';
-    // $tgl = '17 Juli 2021 19:12:01';
-    // $poli = 'Laboratorium';
-    // $dokter = 'Arief Indra Sanjaya,dr. Sp PK';
-    // $penjamin = 'Umum';
-    // $ex_date = '17/07/2021';
-
-    $no_mr_txt = $data->reg_data->no_mr;
-    $nama_pasien = $data->reg_data->nama_pasien;
-    $bop = $data->reg_data->tempat_lahir;
-    $bod = $this->tanggal->formatDate($data->reg_data->tgl_lhr);
-    $tgl =  $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-    $poli = ucwords($data->reg_data->bagian_masuk_field);
-    $dokter = isset($data->reg_data->nama_pegawai)?$data->reg_data->nama_pegawai:$data->trans_data[0]->nama_dokter;
-    $penjamin = isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'UMUM';
-    $ex_date = date('d/M/Y');
-    ?>
-
 <div class="body_print">
   
   <table width="100%" border="0">
@@ -87,11 +64,11 @@
       
       <tr>
         <td width="30%">No MR</td>
-        <td>: <?php echo $no_mr_txt?></td>
+        <td>: <?php echo $data->reg_data->no_mr?></td>
       </tr>
       <tr>
         <td>Nama Pasien</td>
-        <td>: <?php echo $nama_pasien?></td>
+        <td>: <?php echo $data->reg_data->nama_pasien?></td>
       </tr>
       <!-- <tr>
         <td>TTL</td>
@@ -103,20 +80,8 @@
       </tr> -->
       <tr>
         <td>Tanggal</td>
-        <td>: <?php echo $tgl?></td>
+        <td>: <?php echo $this->tanggal->formatDateTime($data->reg_data->tgl_trans)?></td>
       </tr>
-      <tr>
-        <td>Poli/Klinik</td>
-        <td>: <?php echo $poli?></td>
-      </tr>
-      <tr>
-        <td>Dokter</td>
-        <td>: <?php echo $dokter?></td>
-      </tr>
-      <!-- <tr>
-        <td>Penjamin</td>
-        <td>: <?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'Umum'?> <?php echo ($data->reg_data->kode_perusahaan==120) ? '( '.$data->reg_data->no_sep.' )' :'';?></td>
-      </tr> -->
     </table>
     
       <hr>
@@ -124,20 +89,13 @@
       <?php if( count($kunjungan) > 0 ) : ?>
       <?php $no_key=1; foreach($kunjungan as $key=>$row_dt_kunj) : $no_key++; ?>
           
-        <!-- <span style="font-size: 12px; color: black">Tanggal, <?php echo ucwords($key)?> <br></span> -->
-        <span style="font-size: 12px; color: black">Tanggal, 17 Juli 2021 <br></span>
+        <span style="font-size: 12px; color: black">Tanggal, <?php echo ucwords($key)?><br></span>
 
         <?php 
             foreach($row_dt_kunj as $key_s=>$row_s) : 
         ?>
       
-          <?php echo '<span style="font-size: 12px; font-weight: bold">'.ucwords($key_s).'</span>';?> 
-            ( 
-              <?php echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> 
-              s/d 
-              <?php echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> 
-            )
-
+          <?php echo '<span style="font-size: 12px; font-weight: bold">'.ucwords($key_s).'</span>';?> ( <?php echo $this->tanggal->formatDateTimeToTime($data->reg_data->tgl_trans)?> )
           
           <table class="" width="100%" style="color: black">
               <tr style="background-color: lightgrey;">
@@ -228,7 +186,7 @@
         <table border="0" width="100%">
           <tr>
             <td style="text-align: right">
-              Jakarta, <?php echo $ex_date; ?>
+              Jakarta, <?php echo date('d/m/Y')?>
               <br><br><br><br><br>
               <?php if( $flag_bill == 'temporary' ) : ?>
               <div class="col-xs-4">

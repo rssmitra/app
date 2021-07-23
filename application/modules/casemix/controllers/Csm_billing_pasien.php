@@ -16,6 +16,7 @@ class Csm_billing_pasien extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Csm_billing_pasien_model', 'Csm_billing_pasien');
+        $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
         /*load module*/
         $this->load->module('Templates/Templates.php');
         $this->load->module('Templates/Export_data.php');
@@ -346,7 +347,15 @@ class Csm_billing_pasien extends MX_Controller {
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($template_html);
                 $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
-                
+                break;
+
+            case 'SEP':
+                $row_sep = $this->Ws_index->findSep($data->reg_data->no_sep);
+                $header = $this->Csm_billing_pasien->get_header_data($no_registrasi);
+                // echo '<pre>'; print_r($header);die;
+                $cetakan_ke = $this->Ws_index->count_sep_by_day();
+                $result = array('sep'=>$row_sep->response, 'cetakan_ke' => $cetakan_ke, 'header' => $header);
+                $html .= $this->load->view('casemix/Csm_billing_pasien/preview_sep', $result, true);
                 break;
             
             default:
@@ -441,7 +450,12 @@ class Csm_billing_pasien extends MX_Controller {
 
 
         //kotak form
-        $pdf->AddPage('P', 'A4');
+        if(in_array($flag, array('SEP') )){
+            $pdf->AddPage('L', 'A5');
+        }else{
+            $pdf->AddPage('P', 'A4');
+        }
+
         //$pdf->setY(10);
         $pdf->setXY(5,20,5,5);
         $pdf->SetMargins(10, 10, 10, 10); 
@@ -459,7 +473,9 @@ EOD;
         /*save to folder*/
         $pdf->Output('uploaded/casemix/log/'.$filename.'.pdf', ''.$action.''); 
 
-        if( in_array($flag, array('RESUME','LAB','RAD') )){
+        if( in_array($flag, array('RESUME','LAB','RAD', 'SEP') )){
+            //kotak form
+            
             // update file emr pasien
             $file_name_merge_emr = 'EMR-'.$reg_data->no_registrasi.'-'.date('Ymd');
             $this->Csm_billing_pasien->saveEmr($file_name_merge_emr, $reg_data);
@@ -468,6 +484,9 @@ EOD;
             $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.''); 
             
         }
+
+        
+
         /*show pdf*/
         //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'I'); 
         /*download*/

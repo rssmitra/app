@@ -470,11 +470,18 @@ class Verifikasi_resep_prb extends MX_Controller {
 
         switch ($named) {
 
+            case 'FRM_BAST':
+                $result = array();
+                $result['value'] = $header;
+                $result['resep'] = $data;
+                $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_form_bast', $result, true);
+            break;
+
             case 'NOTA':
                 $result = array();
                 $result['value'] = $header;
                 $result['resep'] = $data;
-                $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_nota_farmasi', $result, true);
+                $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_nota_farmasi_klaim', $result, true);
             break;
 
             case 'COPY_RESEP':
@@ -527,9 +534,10 @@ class Verifikasi_resep_prb extends MX_Controller {
 
         /*get data*/
         $data = $this->Etiket_obat->get_by_id($kode_trans_far);
-        $filename[] ='NOTA-'.$data->no_sep.'-'.$kode_trans_far;
-        $filename[] ='COPY_RESEP-'.$data->no_sep.'-'.$kode_trans_far;
         $filename[] ='SEP-'.$data->no_sep.'-'.$kode_trans_far;
+        $filename[] ='NOTA-'.$data->no_sep.'-'.$kode_trans_far;
+        $filename[] ='FRM_BAST-'.$data->no_sep.'-'.$kode_trans_far;
+        $filename[] ='COPY_RESEP-'.$data->no_sep.'-'.$kode_trans_far;
 
         return $filename;
 
@@ -584,7 +592,7 @@ class Verifikasi_resep_prb extends MX_Controller {
 
 
         //kotak form
-        if(in_array($named, array('NOTA', 'COPY_RESEP') )){
+        if(in_array($named, array('NOTA', 'COPY_RESEP', 'FRM_BAST') )){
             $pdf->AddPage('P', 'A5');
         }else{
             $pdf->AddPage('L', 'A5');

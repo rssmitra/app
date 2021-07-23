@@ -543,6 +543,37 @@ class Reg_pasien extends MX_Controller {
     
     }
 
+    public function form_modal_ttd($noMr='')
+    
+    {
+        
+        $data = array();
+        
+        /*if id is not null then will show form edit*/
+        
+        //$data_pasien = $this->Input_pasien_baru->get_by_mr($noMr);
+
+        /*echo '<pre>'; print_r($data_pasien);*/
+
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'registration/Input_pasien_baru/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
+
+        $data['flag'] = "update";
+
+        $data['breadcrumbs'] = '';
+
+        $data['title'] = 'Edit data pasien';
+
+        $data['value'] = $this->Input_pasien_baru->get_by_mr($noMr);
+        //echo '<pre>';print_r($data);die;
+        /*load form view*/
+        
+        //$this->load->view('Input_pasien_baru/form', $data);
+
+        $this->load->view('Reg_pasien/form_modal_ttd', $data);
+    
+    }
+
     public function form_modal_merge_pasien($noMr='')
     
     {
@@ -1061,6 +1092,44 @@ class Reg_pasien extends MX_Controller {
              {
                  $this->db->trans_commit();
                  echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr_baru']));
+             }
+ 
+         }
+    }
+
+    public function process_ttd()
+    {
+        //  print_r($_POST);die;
+         $this->load->library('form_validation');
+         $val = $this->form_validation;
+     
+         $val->set_rules('noMrHiddenPasien', 'MR Pasien', 'trim|required', array('required' => 'MR Pasien tidak ditemukan'));
+ 
+         $val->set_message('required', "Silahkan isi field \"%s\"");
+ 
+         if ($val->run() == FALSE)
+         {
+             $val->set_error_delimiters('<div style="color:white">', '</div>');
+             echo json_encode(array('status' => 301, 'message' => validation_errors()));
+         }
+         else
+         {                       
+ 
+            $this->db->trans_begin();
+            
+            /*eksekusi proses merge pasien*/
+            
+            $this->db->update('mt_master_pasien', array('ttd' => $_POST['paramsSignature']), array('no_mr' => $_POST['noMrHiddenPasien'])  );
+
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHiddenPasien']));
              }
  
          }

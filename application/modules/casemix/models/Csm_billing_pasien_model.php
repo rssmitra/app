@@ -1181,6 +1181,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $grouping_doc = $this->groupingDocumentPM($decode_data->group);
         // echo '<pre>';print_r($decode_data);die;
         
+        $filename[] ='SEP-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
         /*document billing*/
         foreach ($decode_data->kasir_data as $key_kasir_data => $val_kasir_data) {
             /*filenam BILL-{no_mr}{no_reg}{kode_tc_trans_kasir}*/
@@ -1190,6 +1191,7 @@ class Csm_billing_pasien_model extends CI_Model {
         }
 
         $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
+        
 
         foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
             $explode_key = explode('-',$key_group);
@@ -1259,13 +1261,14 @@ class Csm_billing_pasien_model extends CI_Model {
     }
 
     public function saveEmr($filename, $reg_data){
+        // print_r($reg_data);die;
         $data_emr = array(
             'filename' => $filename, 
             'no_registrasi' => $reg_data->no_registrasi, 
-            'no_mr' => $reg_data->csm_rp_no_mr,
-            'nama_bagian' => $reg_data->csm_rp_bagian,
-            'nama_dokter' => $reg_data->csm_rp_nama_dokter,
-            'tgl_kunjungan' => $reg_data->csm_rp_tgl_masuk,
+            'no_mr' => $reg_data->no_mr,
+            'nama_bagian' => $reg_data->nama_bagian,
+            'nama_dokter' => $reg_data->nama_pegawai,
+            'tgl_kunjungan' => $reg_data->tgl_jam_masuk,
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $this->session->userdata('user')->fullname,
         );
@@ -1276,5 +1279,14 @@ class Csm_billing_pasien_model extends CI_Model {
             $this->db->insert('th_file_emr_pasien', $data_emr );
         }
     }
+
+    public function get_header_data($no_registrasi){
+		$this->db->from('tc_registrasi b');
+		$this->db->join('th_riwayat_pasien e', 'e.no_registrasi=b.no_registrasi', 'left');
+		$this->db->join('mt_master_pasien c', 'c.no_mr=b.no_mr', 'left');
+		$this->db->join('mt_bagian d', 'd.kode_bagian=b.kode_bagian_masuk', 'left');
+		$this->db->where('b.no_registrasi', $no_registrasi);
+		return $this->db->get()->row();
+	}
 
 }
