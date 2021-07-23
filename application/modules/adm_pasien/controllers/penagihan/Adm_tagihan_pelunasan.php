@@ -184,7 +184,7 @@ class Adm_tagihan_pelunasan extends MX_Controller {
         $data = array();
         $list = $this->Adm_tagihan_pelunasan->get_inv_lunas_detail($_GET['ID'], $_GET['id_tc_tagih']);
         $data['result'] = $list;
-		echo '<pre>'; print_r($data);die;
+		// echo '<pre>'; print_r($data);die;
         
         $this->load->view('penagihan/Adm_tagihan_pelunasan/create_invoice', $data);
     }

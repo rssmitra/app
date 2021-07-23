@@ -97,7 +97,6 @@ th, td {
         <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
           <th style="text-align:center; width: 30px; border: 1px solid black; border-collapse: collapse">No</th>
           <th style="text-align:center; width:70px; border: 1px solid black; border-collapse: collapse">No. MR</th>
-          <th style="text-align:center; width: 100px; border: 1px solid black; border-collapse: collapse">Tgl. Kunjungan</th>
           <th style="padding-left:5px; border: 1px solid black; border-collapse: collapse">Nama Pasien</th>
           <th style="text-align:center; width: 120px; border: 1px solid black; border-collapse: collapse">Jumlah (Rp)</th>
         </tr>
@@ -106,19 +105,18 @@ th, td {
         <?php 
           $no=0; 
           foreach($result as $key_dt=>$row_dt) : $no++; 
-          $arr_tagihan[] = $row_dt->jumlah_dijamin_int;
+          $arr_tagihan[] = $row_dt->jumlah_bayar;
         ?>
             <tr>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $no?></td>
               <td style="border: 1px solid black; border-collapse: collapse"><?php echo $row_dt->no_mr; ?></td>
-              <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $this->tanggal->formatDateDmy($row_dt->tgl_jam); ?></td>
               <td style="padding-left:5px; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt->nama_pasien; ?></td>
-              <td style="padding-right:5px; text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt->jumlah_dijamin_int)?></td>
+              <td style="padding-right:5px; text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt->jumlah_bayar)?></td>
             </tr>
             <?php endforeach;?>
 
             <tr>
-              <td colspan="4" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Subtotal </td>
+              <td colspan="3" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Subtotal </td>
               <td style="padding-right:5px; text-align:right; border: 1px solid black; border-collapse: collapse">
                 <?php 
                   $subtotal = array_sum($arr_tagihan);
@@ -130,7 +128,7 @@ th, td {
               $diskon = $result[0]->tr_yg_diskon;
               if ($diskon != 0){
                 echo '<tr>';
-                echo    '<td colspan="4" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Diskon </td>';
+                echo    '<td colspan="3" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Diskon </td>';
                 echo    '<td style="padding-right:5px; text-align:right; border: 1px solid black; border-collapse: collapse">';
                 echo      number_format($result[0]->tr_yg_diskon);
                 echo    '</td>';
@@ -138,7 +136,7 @@ th, td {
               }
             ?>
             <tr>
-              <td colspan="4" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Materai </td>
+              <td colspan="3" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Materai </td>
               <td style="padding-right:5px; text-align:right; border: 1px solid black; border-collapse: collapse">
                 <?php
                   $biaya_materai = ($subtotal > 5000000) ? 10000 : 0; echo number_format($biaya_materai);
@@ -147,7 +145,7 @@ th, td {
             </tr>
 
             <tr>
-              <td colspan="4" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
+              <td colspan="3" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
               <td style="padding-right:5px; text-align:right; border: 1px solid black; border-collapse: collapse">
                 <?php
                   $total = $subtotal + $biaya_materai - $diskon;
