@@ -114,7 +114,6 @@
         success: function(data) {
           console.log(data.data);
           find_data_reload(data);
-          $('#load_form_pembayaran').load();
         }
       });
    });
@@ -264,7 +263,7 @@
               <th width="360px">Nama Perusahaan</th>
               <th class="center">Total Tagihan</th>
               <th class="center">Diskon</th>
-              <th class="center">Total Tagihan</th>
+              <th class="center">Total Bayar</th>
               <th class="center">Status</th>
               <th width="110px" class="center">Pembayaran</th>
             </tr>
@@ -273,7 +272,6 @@
       </div>   
     </form>
 
-    <div id="load_form_pembayaran"></div>
 
   </div><!-- /.col -->
 </div><!-- /.row -->
