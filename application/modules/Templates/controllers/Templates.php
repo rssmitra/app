@@ -1548,24 +1548,24 @@ class Templates extends MX_Controller {
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
-            $pm_ = 453170; 
-            $no_mr = '00270741';
-            $nama_pasien = 'Arif Suherman';
-            $umur = '39';
-            $jk_ = 'Pria';
-            $tgl_daftar = '4 Juli 2021 - 07:05:15';
-            $tgl_periksa = '4 Juli 2021 - 07:33:42';
-            $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
+            // $pm_ = 453170; 
+            // $no_mr = '00270741';
+            // $nama_pasien = 'Arif Suherman';
+            // $umur = '39';
+            // $jk_ = 'Pria';
+            // $tgl_daftar = '4 Juli 2021 - 07:05:15';
+            // $tgl_periksa = '4 Juli 2021 - 07:33:42';
+            // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db
-            // $pm_ = $pm;
-            // $no_mr = $data->reg_data->no_mr;
-            // $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
-            // $umur = $data->reg_data->umur;
-            // $jk_ = $jk;
-            // $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-            // $tgl_periksa = $tgl_pemeriksaan;
-            // $dokter_pengirim = $data->reg_data->nama_pegawai;
+            $pm_ = $pm;
+            $no_mr = $data->reg_data->no_mr;
+            $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
+            $umur = $data->reg_data->umur;
+            $jk_ = $jk;
+            $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
+            $tgl_periksa = $tgl_pemeriksaan;
+            $dokter_pengirim = $data->reg_data->nama_pegawai;
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
