@@ -187,9 +187,9 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                   </div>
 
                   <div class="widget-toolbar hidden-480">
-                    <a href="#">
+                    <!-- <a href="#"> -->
                       <i class="ace-icon fa fa-print"></i>
-                    </a>
+                    <!-- </a> -->
                   </div>
                 </div>
 
@@ -307,7 +307,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
                           </tr>
                           <tr>
                             <td colspan="7" align="right">
-                            <input type="hidden" id="total_diskon_val" name="total_diskon_val" value="">
+                            <input type="hidden" id="total_diskon_val" name="total_diskon_val" value="0">
                             Diskon</td>
                             <td id="total_diskon" align="right" style="background: beige; height: 39px !important;">0
                             

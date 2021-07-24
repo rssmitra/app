@@ -5,7 +5,7 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 
 	var $table = 'tc_tagih';
 	var $column = array('nama_tertagih');
-	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, tr_yg_diskon, a.jumlah_tagih';
+	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, a.tr_yg_diskon, a.jumlah_tagih';
 	var $order = array('tgl_tagih' => 'DESC');
 
 	public function __construct()
@@ -91,9 +91,9 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 		return $this->db->count_all_results();
 	}
 
-	public function save($data)
+	public function save($table, $data)
 	{
-		$this->db->insert($this->table, $data);
+		$this->db->insert($table, $data);
 		return $this->db->insert_id();
 	}
 
@@ -141,6 +141,23 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 		return $query;
 	}
 
+	public function get_inv_lunas_detail($id_tc_bayar_tagih, $id_tc_tagih){
+		// tc_tagih_det , tc_bayar_tagih, tc_bayar_tagih_det
+		$this->db->select('a.id_tc_tagih, a.no_invoice_tagih, a.tgl_tagih, b.id_tc_bayar_tagih, b.no_kuitansi_bayar, b.tgl_bayar, b.tr_yg_diskon, b.metode_pembayaran, b.bank, c.id_tc_bayar_tagih_det, c.jumlah_bayar, d.no_mr, d.nama_pasien, d.kode_perusahaan, e.nama_perusahaan, e.alamat, e.telpon1');
+		$this->db->from('tc_tagih a');
+		// $this->db->from('tc_bayar_tagih b');
+		$this->db->join('tc_bayar_tagih b', 'b.id_tc_tagih=a.id_tc_tagih','left');
+		$this->db->join('tc_bayar_tagih_det c', 'c.id_tc_bayar_tagih=b.id_tc_bayar_tagih','left');
+		$this->db->join('tc_tagih_det d', 'd.id_tc_tagih=a.id_tc_tagih','left');
+		$this->db->join('mt_perusahaan e', 'e.kode_perusahaan=d.kode_perusahaan','left');
+		$this->db->where('a.id_tc_tagih', $id_tc_tagih);
+		// $this->db->where('b.id_tc_bayar_tagih', $id_tc_bayar_tagih);
+		$this->db->order_by('c.id_tc_bayar_tagih_det', 'DESC');
+		$query = $this->db->get()->result();
+		print_r($this->db->last_query());die;
+		return $query;
+	}
+
 	public function get_billing_detail($kode_tc_trans_kasir){
 		$this->db->select('a.*, CAST((bill_rs + bill_dr1 + bill_dr2 + bill_dr3) as INT) as subtotal');
 		$this->db->from('tc_trans_pelayanan a');
@@ -154,7 +171,7 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 	public function get_detail_pasien($id_tc_tagih){
 
 		$this->db->select('a.*');
-		$this->db->select('CAST(jumlah_tagih as INT) as jumlah_tagih_int, CAST(penyesuaian as INT) as penyesuaian_int');
+		$this->db->select('CAST(jumlah_billing as INT) as jumlah_tagih_int, CAST(penyesuaian as INT) as penyesuaian_int');
 		$this->db->from('tc_tagih_det a');
 		$this->db->where('a.id_tc_tagih', $id_tc_tagih);			
 		$query = $this->db->get()->result();

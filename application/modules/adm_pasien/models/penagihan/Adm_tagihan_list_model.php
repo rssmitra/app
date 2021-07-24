@@ -5,7 +5,7 @@ class Adm_tagihan_list_model extends CI_Model {
 
 	var $table = 'tc_tagih';
 	var $column = array('nama_tertagih');
-	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, tr_yg_diskon';
+	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, a.tr_yg_diskon';
 	var $order = array('id_tc_tagih' => 'DESC');
 
 	public function __construct()
