@@ -30,7 +30,7 @@ class Adm_kasir_model extends CI_Model {
 				if($_GET['search_by'] == 'c.nama_pasien'){
 					$this->db->like($_GET['search_by'], $_GET['keyword']);		
 				}else{
-					$this->db->where($_GET['search_by'], $_GET['keyword']);		
+					$this->db->like($_GET['search_by'], $_GET['keyword']);		
 				}
 			}		
 
