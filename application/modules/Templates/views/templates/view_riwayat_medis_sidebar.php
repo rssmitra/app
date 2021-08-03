@@ -24,20 +24,17 @@ hr {
             <div class="panel-body" style="border: 1px solid #dcd9d9;padding: 5px;background: lightyellow;">
               <table style="width: 100%">
                 <tr>
-                  <td style="vertical-align: text-top" width="70px">No. Reg</td>
-                  <td style="vertical-align: text-top"> : </td>
-                  <td> <a href="#" onclick="show_modal('registration/reg_pasien/view_detail_resume_medis/<?php echo $value->no_registrasi?>', 'RESUME MEDIS PASIEN')"><?php echo $value->no_registrasi?></a></td>
+                  <td style="vertical-align: text-top" colspan="2" >No. Registrasi <a href="#" onclick="show_modal('registration/reg_pasien/view_detail_resume_medis/<?php echo $value->no_registrasi?>', 'RESUME MEDIS PASIEN')"><?php echo $value->no_registrasi?></a> </td>
+                  <td> </td>
                 </tr>
 
-                <tr >
-                  <td style="vertical-align: text-top">Poli/Klinik</td>
-                  <td style="vertical-align: text-top"> : </td>
+                <tr>
+                  <td style="vertical-align: text-top"><i class="fa fa-building"></i></td>
                   <td> <?php echo ucwords($value->nama_bagian)?></td>
                 </tr>
 
                 <tr>
-                  <td style="vertical-align: text-top">Dokter</td>
-                  <td style="vertical-align: text-top"> : </td>
+                  <td style="vertical-align: text-top"><i class="fa fa-user"></i></td>
                   <td> <?php echo $value->dokter_pemeriksa?></td>
                 </tr>
                 <tr>
@@ -45,40 +42,89 @@ hr {
                 </tr>
                 <tr>
                   <td colspan="3" align="left">
-                    <ol>
-                      <li>Anamnesa dan Pemeriksaan Fisik<br><?php echo ($value->anamnesa != '')?$value->anamnesa:'-';?><br><?php echo ($value->pemeriksaan != '')?$value->pemeriksaan:'-'?></li>
-                      <li>Diagnosis (Kode ICD)<br><?php echo ($value->diagnosa_akhir != '')?$value->diagnosa_akhir:'-'?></li>
-                      <li>Terapi/ Tindakan<br><?php echo ($value->pengobatan != '')?$value->pengobatan:'-'?></li>
-                      <li>Obat Farmasi<br>
-                            <?php 
-                              $result = isset($obat[$value->no_registrasi])?$obat[$value->no_registrasi]:array();
-                              foreach($result as $row_obt) : ?>
-                              - <?php echo $row_obt->nama_tindakan?></br>
-                            <?php endforeach; ?>
-                      </li>
-                      <li>Penunjang Medis<br>
-                            <?php 
-                              $result_pm = isset($penunjang[$value->no_registrasi])?$penunjang[$value->no_registrasi]:array();
-                              foreach($result_pm as $row_pm) : 
-                                switch ($row_pm->kode_bagian_tujuan) {
-                                  case '050101':
-                                    $type_pm = 'LAB';
-                                    $color_pm = '#e8b0b0';
-                                    break;
-                                  case '050201':
-                                    $type_pm = 'RAD';
-                                    $color_pm = '#e2b73e';
-                                    break;
-                                  case '050201':
-                                    $type_pm = 'FISIO';
-                                    $color_pm = '#5ed3f7';
-                                    break;
-                                }
-                              ?>
-                              - <a href="#" onclick="PopupCenter('<?php echo base_url()?>Templates/Export_data/export?type=pdf&flag=<?php echo $type_pm; ?>&noreg=<?php echo $row_pm->no_registrasi;?>&pm=<?php echo $row_pm->kode_penunjang?>&kode_pm=<?php echo $row_pm->kode_bagian_tujuan?>&no_kunjungan=<?php echo $row_pm->no_kunjungan?>', 'Hasil Penunjang Medis', 850, 650)" style="font-weight: bold; background: <?php echo $color_pm?>; color: black; padding: 2px"><?php echo $row_pm->nama_bagian?></a></br>
-                            <?php endforeach; ?>
-                      </li>
-                    </ol>
+                  <b>Assesment Pasien :</b>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td class="center">TB (cm)</td>
+                      <td class="center">TD</td>
+                      <td class="center">Nadi</td>
+                      <td class="center">BB (Kg)</td>
+                      <td class="center">Suhu (C)</td>
+                    </tr>
+                    <tr>
+                      <td class="center"><?php echo ($value->tinggi_badan != '')?$value->tinggi_badan:'-';?></td>
+                      <td class="center"><?php echo ($value->tekanan_darah != '')?$value->tekanan_darah:'-';?></td>
+                      <td class="center"><?php echo ($value->nadi != '')?$value->nadi:'-';?></td>
+                      <td class="center"><?php echo ($value->berat_badan != '')?$value->berat_badan:'-';?></td>
+                      <td class="center"><?php echo ($value->suhu != '')?$value->suhu:'-';?></td>
+                    </tr>
+                  </table>
+                  <b>Anamnesa dan Pemeriksaan Fisik :</b>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td>
+                        <?php echo ($value->anamnesa != '')?$value->anamnesa.'<br>':'';?>
+                        <?php echo ($value->pemeriksaan != '')?$value->pemeriksaan:''?>
+
+                      </td>
+                    </tr>
+                  </table>
+                  <b>Diagnosis (Kode ICD) :</b>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td>
+                        <?php echo ($value->diagnosa_akhir != '')?$value->diagnosa_akhir:'-'?>
+                      </td>
+                    </tr>
+                  </table>
+                  <b>Tearapi/Tindakan :</b>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td>
+                        <?php echo ($value->pengobatan != '')?$value->pengobatan:'-'?>
+                      </td>
+                    </tr>
+                  </table>
+                  <b>Obat/Farmasi :</b>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td>
+                      <?php 
+                        $result = isset($obat[$value->no_registrasi])?$obat[$value->no_registrasi]:array();
+                        foreach($result as $row_obt) : ?>
+                        - <?php echo $row_obt->nama_tindakan?></br>
+                      <?php endforeach; ?>
+                      </td>
+                    </tr>
+                  </table>
+                  <b>Hasil Penunjang Medis :</b>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td>
+                      <?php 
+                        $result_pm = isset($penunjang[$value->no_registrasi])?$penunjang[$value->no_registrasi]:array();
+                        foreach($result_pm as $row_pm) : 
+                          switch ($row_pm->kode_bagian_tujuan) {
+                            case '050101':
+                              $type_pm = 'LAB';
+                              $color_pm = '#e8b0b0';
+                              break;
+                            case '050201':
+                              $type_pm = 'RAD';
+                              $color_pm = '#e2b73e';
+                              break;
+                            case '050201':
+                              $type_pm = 'FISIO';
+                              $color_pm = '#5ed3f7';
+                              break;
+                          }
+                        ?>
+                        - <a href="#" onclick="PopupCenter('<?php echo base_url()?>Templates/Export_data/export?type=pdf&flag=<?php echo $type_pm; ?>&noreg=<?php echo $row_pm->no_registrasi;?>&pm=<?php echo $row_pm->kode_penunjang?>&kode_pm=<?php echo $row_pm->kode_bagian_tujuan?>&no_kunjungan=<?php echo $row_pm->no_kunjungan?>', 'Hasil Penunjang Medis', 850, 650)" style="font-weight: bold; background: <?php echo $color_pm?>; color: black; padding: 2px"><?php echo $row_pm->nama_bagian?></a></br>
+                      <?php endforeach; ?>
+                      </td>
+                    </tr>
+                  </table>
+
                   </td>
                 </tr>
               </table>
