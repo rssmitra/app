@@ -160,19 +160,19 @@ function cetak_kuitansi(){
             <ul class="dropdown-menu dropdown-yellow">
                 <li>
                     <?php
-                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?no_registrasi=".$no_registrasi."'".','."'Cetak'".',1200,750);">Billing Sementara</a>';
+                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?no_registrasi=".$no_registrasi."'".','."'Cetak'".',600,750);">Billing Sementara</a>';
                     ?>
                 </li>
 
                 <li>
                     <?php
-                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$no_registrasi."&status_nk=0'".','."'Cetak'".',1200,750);"> Billing Pasien</a>';
+                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$no_registrasi."&status_nk=0'".','."'Cetak'".',600,750);"> Billing Pasien</a>';
                     ?>
                 </li>
 
                 <li>
                     <?php
-                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$no_registrasi."&status_nk=1'".','."'Cetak'".',1200,750);"> Billing NK</a>';
+                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$no_registrasi."&status_nk=1'".','."'Cetak'".',600,750);"> Billing NK</a>';
                     ?>
                 </li>
                 <li>
