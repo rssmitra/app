@@ -102,12 +102,12 @@ class Pl_pelayanan extends MX_Controller {
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
         if($_GET['form'] == 'billing_entry'){
+            // echo '<pre>';print_r($data);die;
             $this->load->view('Pl_pelayanan/form', $data);
         }else{
             if($this->session->userdata('flag_form_pelayanan') == 'dokter'){
                 $this->load->view('Pl_pelayanan/form_dr', $data);
             }else{
-                // echo '<pre>';print_r($data);die;
                 $this->load->view('Pl_pelayanan/form', $data);
             }
         }
@@ -1217,11 +1217,11 @@ class Pl_pelayanan extends MX_Controller {
                 'no_kunjungan' => $no_kunjungan,
                 'no_mr' => $this->form_validation->set_value('noMrHidden'),
                 'nama_pasien' => $this->input->post('nama_pasien_layan'),
-                'diagnosa_awal' => nl2br($this->form_validation->set_value('pl_diagnosa')),
-                'anamnesa' => nl2br($this->form_validation->set_value('pl_anamnesa')),
-                'pengobatan' => nl2br($this->form_validation->set_value('pl_pengobatan')),
+                'diagnosa_awal' => $this->master->br2nl($_POST['pl_diagnosa']),
+                'anamnesa' => $this->master->br2nl($_POST['pl_anamnesa']),
+                'pengobatan' => $this->master->br2nl($_POST['pl_pengobatan']),
                 'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
-                'pemeriksaan' => nl2br($this->form_validation->set_value('pl_pemeriksaan')),
+                'pemeriksaan' => $this->master->br2nl($_POST['pl_pemeriksaan']),
                 'tgl_periksa' => date('Y-m-d H:i:s'),
                 'kode_bagian' => $this->form_validation->set_value('kode_bagian_asal'),
                 'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
@@ -1366,8 +1366,6 @@ class Pl_pelayanan extends MX_Controller {
 
             endif; 
 
-            
-            
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -1376,21 +1374,17 @@ class Pl_pelayanan extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                // jika session dokter
-                if(isset($_POST['flag_form_pelayanan']) AND $_POST['flag_form_pelayanan'] == 'dokter'){
-                    /*last func to finsih visit*/
-                    // pulangkan pasien
-                    $this->daftar_pasien->pulangkan_pasien($no_kunjungan,3);
-                    /*update pl_tc_poli*/
-                    $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
-                    $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );
-                    // search pasien berikutnya
-                    $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien_sess_dr();
-                    $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
-                    echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai', 'next_pasien' => isset($next_pasien->no_mr)?$next_pasien->no_mr:'', 'next_id_pl_tc_poli' => isset($next_pasien->id_pl_tc_poli)?$next_pasien->id_pl_tc_poli:'', 'next_no_kunjungan' => isset($next_pasien->no_kunjungan)?$next_pasien->no_kunjungan:''));
-                }else{
-                    echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan')); 
-                }
+                // pulangkan pasien
+                $this->daftar_pasien->pulangkan_pasien($no_kunjungan,3);
+
+                /*update pl_tc_poli*/
+                $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
+                $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );
+                // search pasien berikutnya
+                $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien_sess_dr();
+                $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
+
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai', 'next_pasien' => isset($next_pasien->no_mr)?$next_pasien->no_mr:'', 'next_id_pl_tc_poli' => isset($next_pasien->id_pl_tc_poli)?$next_pasien->id_pl_tc_poli:'', 'next_no_kunjungan' => isset($next_pasien->no_kunjungan)?$next_pasien->no_kunjungan:''));
             }
 
         

@@ -2,33 +2,32 @@
 
 <script type="text/javascript">
   
-    $('#pl_diagnosa').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "templates/references/getICD10",
-                data: 'keyword=' + query,            
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
+  $('#pl_diagnosa').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getICD10",
+              data: 'keyword=' + query,            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
                 result($.map(response, function (item) {
-                        return item;
-                    }));
+                      return item;
+                  }));
                 
-                }
-            });
-        },
-        afterSelect: function (item) {
+              }
+          });
+      },
+      afterSelect: function (item) {
         // do what is needed with item
         var label_item=item.split(':')[1];
         var val_item=item.split(':')[0];
         console.log(val_item);
         $('#pl_diagnosa').val(label_item);
         $('#pl_diagnosa_hidden').val(val_item);
-        }
+      }
 
-    });
-
-    $("#check_resep").change(function() {
+  });
+  $("#check_resep").change(function() {
         if(this.checked) {
             $('#form_input_resep').show();
         }else{
@@ -37,53 +36,75 @@
     });
 
 
-    counterfile = <?php $j=2;echo $j.";";?>
-
-    function hapus_file(a, b)
-    {
-        preventDefault();
-        if(b != 0){
-            /*$.getJSON("<?php echo base_url('posting/delete_file') ?>/" + b, '', function(data) {
-                document.getElementById("file"+a).innerHTML = "";
-                greatComplate(data);
-            });*/
-        }else{
-            y = a ;
-            document.getElementById("file"+a).innerHTML = "";
-        }
-    }
-
-    function tambah_file()
-    {
-        preventDefault();
-        counternextfile = counterfile + 1;
-        counterIdfile = counterfile + 1;
-        if(counternextfile > 3){
-            var marginTop = 'style="margin-top:5px"';
-        }else{
-            var marginTop = '';
-        }
-        var html = "<div id=\"file"+counternextfile+"\" class='clonning_form'>\
-                        <table "+marginTop+">\
-                            <tr>\
-                                <td><input type='text' class='form-control' name='keyword_obat' id='keyword_obat' placeholder='Masukan keyword obat' value='' style='width:330px'></td>\
-                                <td><input type='text' class='form-control' name='dosis' id='dosis' value=''  placeholder='EX. 3 x 1' style='width: 94px;margin-left: 10px;'></td>\
-                                <td><input type='text' class='form-control' name='jumlah_obat' id='jumlah_obat' value=''  placeholder='ex. 10 TAB' style='text-transform: uppercase; width: 94px;margin-left: 10px;'></td>\
-                                <td>\
-                                <a style='margin-left: 4px' href='#' class='btn btn-xs btn-primary' onClick='tambah_file()'><i class='fa fa-plus'></i></a>\
-                                <a href='#' onclick='hapus_file("+counternextfile+",0)' class='btn btn-xs btn-danger'><i class='fa fa-times'></i></a>\
-                                </td>\
-                            </tr>\
-                        </table>\
-                    </div>\
-                    <div id=\"input_file"+counternextfile+"\"></div>";
-
-        document.getElementById("input_file"+counterfile).innerHTML = html;
-        counterfile++;
-    }
-
 </script>
 
+<script>
+  $( function() {
+    var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+ 
+    $( "#keyword_obat" )
+      // don't navigate away from the field on tab when selecting an item
+      .on( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+            $( this ).autocomplete( "instance" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+          // delegate back to autocomplete, but extract the last term
+          response( $.ui.autocomplete.filter(
+            availableTags, extractLast( request.term ) ) );
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function( event, ui ) {
+          var terms = split( this.value );
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push( ui.item.value );
+          // add placeholder to get the comma-and-space at the end
+          terms.push( "" );
+          this.value = terms.join( ", " );
+          return false;
+        }
+      });
+  } );
+  </script>
+  
 <!-- hidden form -->
 <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>">
 
@@ -160,27 +181,25 @@
         </label>
     </div>
 </div>
-<div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?> style="background: darkgrey">
-    <div style="margin-top: 6px; padding: 5px !important; padding-left:12px !important" class="col-md-6 no-padding">
+<div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?> >
+    <div style="margin-top: 6px; padding: 5px !important; padding-left:12px !important" class="col-md-7 no-padding">
         <label for="form-field-8">Cari Nama Obat<span style="color:red">* : </span></label>
-        <input disabled type="text" class="form-control" name="keyword_obat" id="keyword_obat" placeholder="Masukan keyword obat" value="">
+        <input type="text" class="form-control" name="keyword_obat" id="keyword_obat" placeholder="Masukan keyword obat" value="">
     </div>
     <div style="margin-top: 6px; padding: 5px !important" class="col-md-2 no-padding">
         <label for="form-field-8">Dosis<span style="color:red">* : </span></label>
-        <input disabled type="text" class="form-control" name="dosis" id="dosis" value="" placeholder="EX. 3 x 1">
+        <input type="text" class="form-control" name="dosis" id="dosis" value="" placeholder="EX. 3 x 1">
     </div>
     <div style="margin-top: 6px; padding: 5px !important" class="col-md-2 no-padding">
         <label for="form-field-8">Jumlah<span style="color:red">* : </span></label>
-        <input disabled type="text" class="form-control" name="jumlah_obat" id="jumlah_obat" value="" placeholder="ex. 10 TAB" style="text-transform: uppercase">
+        <input type="text" class="form-control" name="jumlah_obat" id="jumlah_obat" value="" placeholder="ex. 10 TAB" style="text-transform: uppercase">
     </div>
     <div style="margin-top: 35px; margin-left: -2px" class="col-md-1 no-padding">
-        <a href="#" class="btn btn-xs btn-primary" onClick="tambah_file()"><i class="fa fa-plus"></i></a>
+        <a href="#" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i></a>
     </div>
 </div>
 
-<div id="clone_form_dokter">
-    <div id="input_file<?php echo $j;?>"></div>
-</div>
+
 
 <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i> PENUNJANG MEDIS </b></p>
