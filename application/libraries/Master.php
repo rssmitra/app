@@ -1023,6 +1023,10 @@ final Class Master {
 		return array('no_urut' => $no_urut, 'no_induk' => $no_induk);
 	}
 
+	function br2nl($string)
+	{
+		return preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
+	}
 
 }
 
