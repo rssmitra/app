@@ -1549,12 +1549,12 @@ class Templates extends MX_Controller {
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
             // $pm_ = 453170; 
-            // $no_mr = '00270741';
-            // $nama_pasien = 'Arif Suherman';
-            // $umur = '39';
-            // $jk_ = 'Pria';
-            // $tgl_daftar = '4 Juli 2021 - 07:05:15';
-            // $tgl_periksa = '4 Juli 2021 - 07:33:42';
+            // $no_mr = '00211762';
+            // $nama_pasien = 'Ade Irmawati';
+            // $umur = '44';
+            // $jk_ = 'Perempuan';
+            // $tgl_daftar = '28 Juli 2021 - 08:05:15';
+            // $tgl_periksa = '28 Juli 2021 - 08:33:42';
             // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db
