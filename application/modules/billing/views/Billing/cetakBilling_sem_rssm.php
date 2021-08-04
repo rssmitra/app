@@ -10,7 +10,8 @@
   <style>
   
     .body_print{
-      padding: 10px;
+      /* margin: 0px 0px 0px 10px; */
+      padding: 10px 0px 0px 15px;
     }
   
     .body_print, table, p{
@@ -25,6 +26,10 @@
     th, td {
     padding: 0px;
     text-align: left;
+    }
+
+    .top-row-bottom-line, th {
+      border-bottom : 1px solid black;
     }
     @media print{ #barPrint{
         display:none;
@@ -58,19 +63,20 @@
 <div class="body_print">
   
   <table width="500px" border="0">
+    <!-- Nama RS dan Alamat -->
     <tr>
       <!-- <td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td> -->
-      <td valign="bottom"><b><span style="font-size: 14px"><?php echo COMP_LONG; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
-      <td width="160px"></td>
+      <td valign="bottom"><b><span style="font-size: 15px"><?php echo COMP_LONG; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
+      <td width="180px"></td>
     </tr>
     <tr>
-      <td align="center" colspan="2" style="font-size:18px"><center><b>Rincian Biaya Pasien</b></center></td>
+      <td align="center" colspan="2" style="font-size:16px;border-bottom: 2px solid black; "><center><b>Rincian Biaya Pasien</b></center></td>
     </tr>
   </table>
-  <hr>      
   <div class="row">
   <div class="col-xs-12">
-    <table width="500px" style="font-size:14px">
+    <!-- Detail Pasien -->
+    <table width="485px" style="font-size:13px; border-bottom: 2px solid black;">
       
       <tr>
         <td width="25%">No MR</td>
@@ -90,7 +96,7 @@
       </tr> -->
       <tr>
         <td>Tanggal</td>
-        <td>: <?php echo $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk)?></td>
+        <td>: <?php echo $this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).' - '.$this->tanggal->formatDateTimeToTime($data->reg_data->tgl_jam_masuk).' WIB'?></td>
       </tr>
       <tr>
         <td>Poli/Klinik</td>
@@ -102,27 +108,28 @@
       </tr>
       <!-- <tr>
         <td>Penjamin</td>
-        <td>: <?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'Umum'?> <?php echo ($data->reg_data->kode_perusahaan==120) ? '( '.$data->reg_data->no_sep.' )' :'';?></td>
+        <td>: <?php //echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'Umum'?> <?php //echo ($data->reg_data->kode_perusahaan==120) ? '( '.$data->reg_data->no_sep.' )' :'';?></td>
       </tr> -->
     </table>
     
-      <hr>
+      
       <!-- PAGE CONTENT BEGINS -->
       <?php if( count($kunjungan) > 0 ) : ?>
       <?php $no_key=1; foreach($kunjungan as $key=>$row_dt_kunj) : $no_key++; ?>
           
-        <span style="font-size: 14px; color: black">Tanggal, <?php echo ucwords($key)?><br></span>
+        <!-- <span style="font-size: 20px; color: black">Tanggal, <?php //echo ucwords($key)?><br></span> -->
 
         <?php 
             foreach($row_dt_kunj as $key_s=>$row_s) : 
         ?>
       
-          <?php echo '<span style="font-size: 15px; font-weight: bold">'.ucwords($key_s).'</span>';?> ( <?php echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> s/d <?php echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> )
+          <?php echo '<span style="font-size: 12px; font-weight: bold">'.ucwords($key_s).'</span>';?> 
+          <!-- ( --><?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> <!-- s/d --> <?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> <!-- ) -->
           
-          <table class="" width="485px" style="color: black" border="0">
-              <tr style="background-color: lightgrey;">
-                  <th> Uraian </th>
-                  <th style="text-align:right" width="100px">Subtotal (Rp.)</th>
+          <table class="" width="485px">
+              <tr>
+                  <th style="text-align: center;"> Uraian </th>
+                  <th style="text-align: center;" width="100px">Jumlah ( Rp )</th>
               </tr>
 
             <?php 
@@ -131,7 +138,7 @@
 
                 $sign_pay = ($value_data->kode_tc_trans_kasir==NULL)?'#d3d3d321':'#d3d3d321';
                 $checkbox = ($value_data->kode_tc_trans_kasir==NULL)?'<input type="checkbox" name="selected_bill[]" value="'.$value_data->kode_trans_pelayanan.'" checked>':'';
-                $penjamin = $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array() ), $value_data->kode_perusahaan , 'penjamin[]', 'penjamin_val_'.$value_data->kode_trans_pelayanan.'', '', '', ' style="font-size: 14px;width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100% border-bottom: 1px #ccc solid; margin: 0px 1px !important; display: none"').'<span id="penjamin_txt_'.$value_data->kode_trans_pelayanan.'">'.$value_data->nama_perusahaan.'</span>'; 
+                $penjamin = $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array() ), $value_data->kode_perusahaan , 'penjamin[]', 'penjamin_val_'.$value_data->kode_trans_pelayanan.'', '', '', ' style="font-size: 12px;width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100% border-bottom: 1px #ccc solid; margin: 0px 1px !important; display: none"').'<span id="penjamin_txt_'.$value_data->kode_trans_pelayanan.'">'.$value_data->nama_perusahaan.'</span>'; 
 
                 if(isset($_GET['flag_bill']) AND $_GET['flag_bill'] == true) :
                   if($value_data->kode_tc_trans_kasir != NULL) : 
@@ -171,9 +178,9 @@
                 $arr_sum_total[] = array_sum($sum_array[$no_key][$key_s]);
             ?>
 
-            <tr style="font-weight: bold; font-size: 14px">
-                <td align="right">Subtotal</td>
-                <td style="text-align: right"><?php echo number_format(array_sum($sum_array[$no_key][$key_s]))?>,-</td>
+            <tr style="font-weight: bold">
+                <td style="text-align: right; padding-right: 10px; font-size: 12px"><i>Subtotal &nbsp;</i></td>
+                <td style="text-align: right; border-top: 1px solid black; font-size: 12px;"><?php echo number_format(array_sum($sum_array[$no_key][$key_s]))?>,-</td>
             </tr>
             
           </table>
@@ -183,29 +190,29 @@
         ?>
 
       <?php endforeach?>
-      <hr>
-      <table width="485px" border="0">
+      
+      <table width="485px" style="border-top: 1px solid black;"  border="0">
           <tr>
-            <td style="text-align: right"><b>Total</b></td>
-            <td style="text-align: right; width: 100px"><?php echo number_format(array_sum($arr_sum_total))?>,-</td>
+            <td style="text-align: right; font-size: 13px;"><b>Total : </b></td>
+            <td style="text-align: right; font-size: 13px; width: 100px"><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td style="text-align: right"><b>Bayar</b></td>
             <td style="text-align: right; width: 100px"><?php echo isset($kasir_data[0]->cash)?number_format($kasir_data[0]->cash):0?>,-</td>
           </tr>
           <tr>
             <td style="text-align: right"><b>Kembali</b></td>
             <td style="text-align: right; width: 100px"><?php echo isset($kasir_data[0]->change)?number_format($kasir_data[0]->change):0?>,-</td>
-          </tr>
+          </tr> -->
       </table>
-      <br>
+      <!-- <br> -->
       <!-- footer -->
-      <div width="98%" style="padding-left: 0%; padding-right: 1%">
-        <span style="font-size: 14px">Total biaya keseluruhan : <b>Rp. <?php echo number_format(array_sum($arr_sum_total))?></b></span>
+      <div width="98%" style="padding-left: 0%; padding-right: 170px;">
+        <!-- <span style="font-size: 20px">Total biaya keseluruhan : <b>Rp. <?php echo number_format(array_sum($arr_sum_total))?></b></span>
+        <br> -->
+        Terbilang : <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah"</i></b>
         <br>
-        Terbilang : <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?>"</i></b>
-        <br>
-        <table border="0" width="485px">
+        <table width="485px" style="border-top: 1px solid black;">
           <tr>
             <td style="text-align: right">
               Jakarta, <?php echo date('d/m/Y')?>
@@ -217,7 +224,7 @@
               <?php endif;?>
               ( <?php echo $this->session->userdata('user')->fullname?> )
               <br>
-              <center><p style="font-size: 11px">Terima Kasih atas kepercayaan anda kepada <?php echo COMP_LONG; ?>, semoga lekas sembuh.</p></center>
+              <center><p style="font-size: 11px;">Terima Kasih atas kepercayaan anda kepada <?php echo COMP_LONG; ?>, semoga lekas sembuh.</p></center>
             </td>
           </tr>
         </table>
