@@ -16,7 +16,81 @@
     });
   });
 
-  $( ".form-control" )    
+  $(document).ready(function(){
+
+    oTable = $('#dynamic-table').DataTable({ 
+            
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "ordering": false,
+        "searching": false,
+        "bPaginate": true,
+        "bInfo": false,
+        "pageLength": 100,
+        "ajax": {
+            "url": "pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry",
+            "type": "POST"
+        },
+        "columnDefs": [
+            { 
+                "targets": [ -1 ], //last column
+                "orderable": false, //set not orderable
+            },
+            {"aTargets" : [0], "mData" : 1, "sClass":  "details-control"}, 
+            { "visible": false, "targets": [1,2] },
+            ],
+
+    });
+
+    $('#dynamic-table tbody').on('click', 'td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = oTable.row( tr );
+        var data = oTable.row( $(this).parents('tr') ).data();
+        var no_registrasi = data[ 2 ];
+        
+
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            /*data*/
+            
+            $.getJSON("pelayanan/Pl_pelayanan/view_detail_resume_medis/" + no_registrasi , '', function (data) {
+                response_data = data;
+                // Open this row
+                row.child( format( response_data ) ).show();
+                tr.addClass('shown');
+            });
+            
+        }
+    });
+
+  
+    $('#btn_search_data').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            url: 'tarif/Mst_tarif/find_data',
+            type: "post",
+            data: $('#form_search').serialize(),
+            dataType: "json",
+            beforeSend: function() {
+            achtungShowLoader();  
+            },
+            success: function(data) {
+            achtungHideLoader();
+            find_data_reload(data,'tarif/Mst_tarif');
+            }
+        });
+    });
+
+    $('#btn_reset_data').click(function (e) {
+        e.preventDefault();
+        find_data_reload();
+    });
+
+    $( ".form-control" )    
       .keypress(function(event) {  
         var keycode =(event.keyCode?event.keyCode:event.which);  
         if(keycode ==13){   
@@ -24,55 +98,67 @@
           $('#btn_search_data').click();  
           return false;  
         }  
-  });
-
-
-  $('#btn_update_session_poli').click(function (e) {  
-
-    achtungShowLoader();
-
-    $.ajax({
-        url: "pelayanan/Pl_pelayanan/destroy_session_kode_bagian",
-        data: { kode: $('#sess_kode_bagian').val()},            
-        dataType: "json",
-        type: "POST",
-        complete: function (xhr) {
-          var data=xhr.responseText;  
-          var jsonResponse = JSON.parse(data);  
-          if(jsonResponse.status === 200){  
-            $.achtung({message: jsonResponse.message, timeout:5}); 
-            getMenu('pelayanan/Pl_pelayanan');
-          }else{          
-            $.achtung({message: jsonResponse.message, timeout:5});  
-          } 
-          achtungHideLoader();
-        }
     });
 
-  });
 
-  $('select[name="poliklinik"]').change(function () {      
+    $('#btn_update_session_poli').click(function (e) {  
+
+        achtungShowLoader();
+
+        $.ajax({
+            url: "pelayanan/Pl_pelayanan/destroy_session_kode_bagian",
+            data: { kode: $('#sess_kode_bagian').val()},            
+            dataType: "json",
+            type: "POST",
+            complete: function (xhr) {
+                var data=xhr.responseText;  
+                var jsonResponse = JSON.parse(data);  
+                if(jsonResponse.status === 200){  
+                $.achtung({message: jsonResponse.message, timeout:5}); 
+                getMenu('pelayanan/Pl_pelayanan');
+                }else{          
+                $.achtung({message: jsonResponse.message, timeout:5});  
+                } 
+                achtungHideLoader();
+            }
+        });
+
+    });
+
+    $('select[name="poliklinik"]').change(function () {      
+
+        $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {              
+
+            $('#select_dokter option').remove();                
+
+            $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
+
+            $.each(data, function (i, o) {                  
+
+                $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));                    
+                    
+            });      
 
 
-    $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {              
+        });    
 
-        $('#select_dokter option').remove();                
+    });
 
-        $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
+})
 
-        $.each(data, function (i, o) {                  
+function format ( data ) {
+  return data.html;
+}
 
-            $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));                    
-              
-        });      
+function find_data_reload(result=''){
+    oTable.ajax.url('pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry&'+result.data).load();
+}
 
+function reload_data(){
+    oTable.ajax.url('pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry').load();
+}
 
-    });    
-
-  });
-
-
-  function cancel_visit(no_registrasi, no_kunjungan){
+function cancel_visit(no_registrasi, no_kunjungan){
 
     preventDefault();  
 
@@ -84,21 +170,21 @@
         dataType: "json",
         type: "POST",
         complete: function (xhr) {
-          var data=xhr.responseText;  
-          var jsonResponse = JSON.parse(data);  
-          if(jsonResponse.status === 200){  
+            var data=xhr.responseText;  
+            var jsonResponse = JSON.parse(data);  
+            if(jsonResponse.status === 200){  
             $.achtung({message: jsonResponse.message, timeout:5}); 
             getMenu('pelayanan/Pl_pelayanan');
-          }else{          
+            }else{          
             $.achtung({message: jsonResponse.message, timeout:5});  
-          } 
-          achtungHideLoader();
+            } 
+            achtungHideLoader();
         }
     });
 
-  }
+}
 
-  function rollback(no_registrasi, no_kunjungan, flag){
+function rollback(no_registrasi, no_kunjungan, flag){
 
     preventDefault();  
 
@@ -110,20 +196,44 @@
         dataType: "json",
         type: "POST",
         complete: function (xhr) {
-          var data=xhr.responseText;  
-          var jsonResponse = JSON.parse(data);  
-          if(jsonResponse.status === 200){  
+            var data=xhr.responseText;  
+            var jsonResponse = JSON.parse(data);  
+            if(jsonResponse.status === 200){  
             $.achtung({message: jsonResponse.message, timeout:5}); 
             reload_table();
             //getMenu('pelayanan/Pl_pelayanan');
+            }else{          
+            $.achtung({message: jsonResponse.message, timeout:5});  
+            } 
+            achtungHideLoader();
+        }
+    });
+
+}
+
+function selesaikanKunjungan(no_registrasi, no_kunjungan){
+
+  preventDefault(); 
+  achtungShowLoader();
+  $.ajax({
+      url: "pelayanan/Pl_pelayanan/processSelesaikanKunjungan",
+      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan},            
+      dataType: "json",
+      type: "POST",
+      complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+          $.achtung({message: jsonResponse.message, timeout:5}); 
+          reload_data();
           }else{          
             $.achtung({message: jsonResponse.message, timeout:5});  
           } 
           achtungHideLoader();
-        }
-    });
+      }
+  });
 
-  }
+}
 
 </script>
 
@@ -221,10 +331,12 @@
     <hr class="separator">
     <!-- div.dataTables_borderWrap -->
     <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan/get_data?bag=0&form=billing_entry" class="table table-bordered table-hover">
+      <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry" class="table table-bordered table-hover">
        <thead>
         <tr>  
           <th width="30px" class="center"></th>
+          <th></th>
+          <th></th>
           <th></th>
           <th>Kode</th>
           <th>No MR</th>
@@ -247,7 +359,7 @@
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
+<!-- <script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script> -->
 
 
 

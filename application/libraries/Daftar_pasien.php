@@ -92,7 +92,6 @@ final Class Daftar_pasien {
         /*save logs tc_registrasi*/
         $CI->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi modul pelayanan', json_encode($arrRegistrasi),'no_registrasi');
 
-
         /*update tc_kunjungan*/
         $arrKunjungan = array(
             'status_keluar' => ($status_keluar!='')?$status_keluar:3, 
@@ -100,7 +99,9 @@ final Class Daftar_pasien {
             'cara_keluar_pasien' => isset($_POST['cara_keluar'])?$_POST['cara_keluar']:'', 
             'pasca_pulang' => isset($_POST['pasca_pulang'])?$_POST['pasca_pulang']:''
         );
+
         $CI->db->update('tc_kunjungan', $arrKunjungan, array('no_kunjungan' => $no_kunjungan) );
+        
         /*save logs tc_kunjungan*/
         $CI->logs->save('tc_kunjungan', $no_kunjungan, 'update tc_kunjungan modul pelayanan', json_encode($arrKunjungan),'no_kunjungan');
 
