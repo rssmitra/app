@@ -67,7 +67,8 @@
     <tr>
       <!-- <td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td> -->
       <td valign="bottom"><b><span style="font-size: 15px"><?php echo COMP_LONG; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
-      <td width="180px"></td>
+      <td width="180px" valign="bottom" style="text-align: right;"><b>Reg. No. <?php echo $data->reg_data->no_registrasi;?></b></td>
+      <td width="40px"></td>
     </tr>
     <tr>
       <td align="center" colspan="2" style="font-size:16px;border-bottom: 2px solid black; "><center><b>Rincian Biaya Pasien</b></center></td>
@@ -76,7 +77,7 @@
   <div class="row">
   <div class="col-xs-12">
     <!-- Detail Pasien -->
-    <table width="485px" style="font-size:13px; border-bottom: 2px solid black;">
+    <table width="460px" style="font-size:13px; border-bottom: 2px solid black;">
       
       <tr>
         <td width="25%">No MR</td>
@@ -100,7 +101,15 @@
       </tr>
       <tr>
         <td>Poli/Klinik</td>
-        <td>: <?php echo ucwords($data->reg_data->bagian_masuk_field)?></td>
+        <td>: 
+          <?php 
+            if($data->reg_data->bagian_masuk_field == 'Gawat Darurat'){
+              echo 'Instalasi '.$data->reg_data->bagian_masuk_field;
+            }else{
+              echo ucwords($data->reg_data->bagian_masuk_field);
+            }
+          ?>
+        </td>
       </tr>
       <tr>
         <td>Dokter</td>
@@ -123,13 +132,23 @@
             foreach($row_dt_kunj as $key_s=>$row_s) : 
         ?>
       
-          <?php echo '<span style="font-size: 12px; font-weight: bold">'.ucwords($key_s).'</span>';?> 
-          <!-- ( --><?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> <!-- s/d --> <?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> <!-- ) -->
-          
-          <table class="" width="485px">
+      <!-- ( --><?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> <!-- s/d --> <?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> <!-- ) -->
+      <br>
+      <table class="" width="460px">
               <tr>
-                  <th style="text-align: center;"> Uraian </th>
-                  <th style="text-align: center;" width="100px">Jumlah ( Rp )</th>
+                <th style="text-align: center; font-size: 13px;" colspan="2">
+                  <?php 
+                  if($key_s === 'Gawat Darurat'){
+                    echo 'INSTALASI '.strtoupper($key_s);
+                  }else{
+                    echo strtoupper($key_s);
+                  }
+                  ?> 
+                </th>
+              </tr>
+              <tr>
+                <th style="text-align: left;"> Uraian </th>
+                <th style="text-align: right;" width="100px">Jumlah ( Rp )</th>
               </tr>
 
             <?php 
@@ -191,10 +210,10 @@
 
       <?php endforeach?>
       
-      <table width="485px" style="border-top: 1px solid black;"  border="0">
+      <table width="460px" style="border-top: 1px solid black;"  border="0">
           <tr>
             <td style="text-align: right; font-size: 13px;"><b>Total : </b></td>
-            <td style="text-align: right; font-size: 13px; width: 100px"><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></td>
+            <td style="text-align: right; font-size: 13px; width: 100px"><i><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></i></td>
           </tr>
           <!-- <tr>
             <td style="text-align: right"><b>Bayar</b></td>
@@ -207,12 +226,18 @@
       </table>
       <!-- <br> -->
       <!-- footer -->
-      <div width="98%" style="padding-left: 0%; padding-right: 170px;">
+      <div width="98%" style="padding-left: 0%;">
         <!-- <span style="font-size: 20px">Total biaya keseluruhan : <b>Rp. <?php echo number_format(array_sum($arr_sum_total))?></b></span>
         <br> -->
-        Terbilang : <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah"</i></b>
-        <br>
-        <table width="485px" style="border-top: 1px solid black;">
+        <!-- <hr> -->
+        <table width="460px" style="border-bottom: 1px solid black;">
+          <tr>
+            <td valign="top" width="65px">Terbilang :&nbsp;</td>
+            <td><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</i></b></td>
+            <td width="50px"></td>
+          </tr>
+        </table>
+        <table width="460px">
           <tr>
             <td style="text-align: right">
               Jakarta, <?php echo date('d/m/Y')?>
