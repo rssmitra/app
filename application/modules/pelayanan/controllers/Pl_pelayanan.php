@@ -361,6 +361,83 @@ class Pl_pelayanan extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function get_data_entry_billing()
+    {
+        /*akan di filter berdasarkan pasien pada klinik masing2*/
+        /*get data from model*/
+        $list = $this->Pl_pelayanan->get_datatables();
+        $form_type = isset($_GET['form'])?$_GET['form']:'form_rj';
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '';
+            $row[] = '';
+            $row[] = $row_list->no_registrasi;
+            /*fungsi rollback pasien, jika belum disubmit kasir maka poli masih bisa melakukan rollback*/
+            /*cek transaksi*/
+            //$trans_kasir = ($row_list->status_periksa!=NULL)?TRUE:FALSE;
+            $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi,$row_list->no_kunjungan);
+            //$rollback_btn = ($trans_kasir==true)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
+            $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
+
+            $rollback_btn = ($flag_rollback == 'unsubmit') ? '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>' : '';
+            
+
+            $cancel_btn = ($row_list->status_periksa==NULL) ? '<li><a href="#" onclick="cancel_visit('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Batalkan Kunjungan</a></li>' : '' ;
+
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">
+                            '.$rollback_btn.' '.$cancel_btn.'                            
+                            <li><a href="#" onclick="show_modal('."'pelayanan/Pl_pelayanan/form_perjanjian_modal/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."'".', '."'PERJANJIAN PASIEN'".')">Perjanjian Pasien</a></li>
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
+                        </ul>
+                    </div></div>';
+
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
+            $row[] = strtoupper($row_list->nama_pasien);
+            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_poli);
+            $row[] = $row_list->nama_pegawai;
+            $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
+            $row[] = '<div class="center">'.$row_list->created_by.'</div>';
+
+            if($row_list->status_batal==1){
+                $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
+            }else{
+                if($row_list->tgl_keluar_poli==NULL || empty($row_list->tgl_keluar_poli)){
+                    $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
+                }else {
+                    if($flag_rollback != 'submited'){
+                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                        
+                    }else{
+                        $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>';
+
+                    }
+                }
+            }
+
+            $row[] = '<div class="center">'.$status_periksa.'</div>';
+           
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Pl_pelayanan->count_all(),
+                        "recordsFiltered" => $this->Pl_pelayanan->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
     public function get_data_tindakan()
     {
         /*get data from model*/
@@ -1077,6 +1154,75 @@ class Pl_pelayanan extends MX_Controller {
 
     }
 
+    public function processSelesaikanKunjungan(){
+
+        // print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required', array('required' => 'No Kunjungan Tidak ditemukan!') );               
+        $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required', array('required' => 'No Registrasi Tidak ditemukan!') );               
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $no_kunjungan = $this->form_validation->set_value('no_kunjungan');
+            $no_registrasi = $this->form_validation->set_value('no_registrasi');
+
+            /*update pl_tc_poli*/
+            $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
+            /*cek transaksi minimal apakah sudah ada tindakan*/
+            $cek_transaksi = $this->Pl_pelayanan->cek_transaksi_minimal($no_kunjungan);
+
+            /*jika sudah ada minimal 1 transaksi atau tindakan, maka lanjutkan proses*/
+            if($cek_transaksi){
+
+                /*proses utama pasien selesai*/
+                $this->Pl_pelayanan->update('pl_tc_poli', $arrPlTcPoli, array('no_kunjungan' => $no_kunjungan ) );
+                /*save logs pl_tc_poli*/
+                $this->logs->save('pl_tc_poli', $no_kunjungan, 'update pl_tc_poli Modul Pelayanan', json_encode($arrPlTcPoli),'no_kunjungan');
+                       
+                /*last func to finsih visit*/
+                /*update tc_kunjungan*/
+                $arrKunjungan = array(
+                    'status_keluar' => 3, 
+                    'tgl_keluar' => date('Y-m-d H:i:s'), 
+                    'cara_keluar_pasien' => isset($_POST['cara_keluar'])?$_POST['cara_keluar']:'', 
+                    'pasca_pulang' => isset($_POST['pasca_pulang'])?$_POST['pasca_pulang']:''
+                );
+
+                $this->db->update('tc_kunjungan', $arrKunjungan, array('no_kunjungan' => $no_kunjungan) );
+
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Tidak ada data transaksi, Silahkan klik Batal Berobat jika tidak ada tindakan atau minimal konsultasi dokter'));
+                exit;
+            }
+
+            
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+
+        
+        }
+
+    }
+
     public function processSaveDiagnosa(){
 
         // print_r($_POST);die;
@@ -1366,6 +1512,14 @@ class Pl_pelayanan extends MX_Controller {
 
             endif; 
 
+            // pulangkan pasien
+            $this->daftar_pasien->pulangkan_pasien($no_kunjungan,3);
+
+            /*update pl_tc_poli*/
+            $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
+            $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );
+
+
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -1374,12 +1528,7 @@ class Pl_pelayanan extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                // pulangkan pasien
-                $this->daftar_pasien->pulangkan_pasien($no_kunjungan,3);
-
-                /*update pl_tc_poli*/
-                $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
-                $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );
+                
                 // search pasien berikutnya
                 $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien_sess_dr();
                 $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
@@ -1747,6 +1896,39 @@ class Pl_pelayanan extends MX_Controller {
         $this->load->view('Pl_pelayanan/form_perjanjian_rj_modal', $data);
     
     }
+
+    public function view_detail_resume_medis($no_registrasi) { 
+        
+        $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+        $data = [
+            'result' => $resume,
+            'penunjang' => $resume['penunjang'],
+            'no_registrasi' => $no_registrasi,
+        ];
+
+        $userDob = $data['result']['registrasi']->tgl_lhr;
+ 
+        //Create a DateTime object using the user's date of birth.
+        $dob = new DateTime($userDob);
+     
+        //We need to compare the user's date of birth with today's date.
+        $now = new DateTime();
+
+        //Calculate the time difference between the two dates.
+        $difference = $now->diff($dob);
+
+        //Get the difference in years, as we are looking for the user's age.
+        $umur = $difference->format('%y');
+
+        $data['umur'] = $umur;
+
+        // echo '<pre>';print_r($data);die;
+
+        $html = $this->load->view('Pl_pelayanan/view_resume_medis', $data, true);
+        echo json_encode(array('html' => $html, 'data' => $data));
+    
+    }
+
 
 
 }

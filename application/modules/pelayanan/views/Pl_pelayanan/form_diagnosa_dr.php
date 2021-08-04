@@ -28,6 +28,34 @@
 
     });
 
+    <?php for ( $ix = 0; $ix < 30; $ix++) :?>
+        $('#keyword_obat<?php echo $ix?>').typeahead({
+            source: function (query, result) {
+                $.ajax({
+                    url: "templates/references/getObatByBagianAutoComplete",
+                    data: { keyword:query, bag: '060101'},            
+                    dataType: "json",
+                    type: "POST",
+                    success: function (response) {
+                    result($.map(response, function (item) {
+                        return item;
+                    }));
+                    }
+                });
+            },
+            afterSelect: function (item) {
+            // do what is needed with item
+            var val_item=item.split(':')[0];
+            var label_item=item.split(':')[1];
+            console.log(val_item);
+            $('#keyword_obat<?php echo $ix?>').val(label_item);
+
+            }
+        });
+    <?php endfor; ?>
+
+
+
     $("#check_resep").change(function() {
         if(this.checked) {
             $('#form_input_resep').show();
@@ -66,7 +94,7 @@
         var html = "<div id=\"file"+counternextfile+"\" class='clonning_form'>\
                         <table "+marginTop+">\
                             <tr>\
-                                <td><input type='text' class='form-control' name='keyword_obat' id='keyword_obat' placeholder='Masukan keyword obat' value='' style='width:330px'></td>\
+                                <td><input type='text' class='inputKeyObat form-control' name='keyword_obat[]' id='keyword_obat"+counternextfile+"' placeholder='Masukan keyword obat' value='' style='width:330px'></td>\
                                 <td><input type='text' class='form-control' name='dosis' id='dosis' value=''  placeholder='EX. 3 x 1' style='width: 94px;margin-left: 10px;'></td>\
                                 <td><input type='text' class='form-control' name='jumlah_obat' id='jumlah_obat' value=''  placeholder='ex. 10 TAB' style='text-transform: uppercase; width: 94px;margin-left: 10px;'></td>\
                                 <td>\
@@ -128,19 +156,19 @@
 
 <div style="margin-top: 6px">
     <label for="form-field-8">Anamnesa <span style="color:red">* : </span> </label>
-    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?></textarea>
+    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
     <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
 
 <div class="row">
     <div class="col-md-6" style="margin-top: 6px">
         <label for="form-field-8">Pemeriksaan : </label>
-        <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$riwayat->pemeriksaan:''?></textarea>
+        <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
     </div>
 
     <div class="col-md-6" style="margin-top: 6px">
         <label for="form-field-8">Anjuran Dokter : </label>
-        <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$riwayat->pengobatan:''?></textarea>
+        <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
     </div>
 </div>
 
@@ -160,18 +188,18 @@
         </label>
     </div>
 </div>
-<div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?> style="background: darkgrey">
+<!-- <div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?>>
     <div style="margin-top: 6px; padding: 5px !important; padding-left:12px !important" class="col-md-6 no-padding">
         <label for="form-field-8">Cari Nama Obat<span style="color:red">* : </span></label>
-        <input disabled type="text" class="form-control" name="keyword_obat" id="keyword_obat" placeholder="Masukan keyword obat" value="">
+        <input type="text" class="inputKeyObat form-control" name="keyword_obat[]" id="keyword_obat1" placeholder="Masukan keyword obat" value="">
     </div>
     <div style="margin-top: 6px; padding: 5px !important" class="col-md-2 no-padding">
         <label for="form-field-8">Dosis<span style="color:red">* : </span></label>
-        <input disabled type="text" class="form-control" name="dosis" id="dosis" value="" placeholder="EX. 3 x 1">
+        <input type="text" class="form-control" name="dosis" id="dosis" value="" placeholder="EX. 3 x 1">
     </div>
     <div style="margin-top: 6px; padding: 5px !important" class="col-md-2 no-padding">
         <label for="form-field-8">Jumlah<span style="color:red">* : </span></label>
-        <input disabled type="text" class="form-control" name="jumlah_obat" id="jumlah_obat" value="" placeholder="ex. 10 TAB" style="text-transform: uppercase">
+        <input type="text" class="form-control" name="jumlah_obat" id="jumlah_obat" value="" placeholder="ex. 10 TAB" style="text-transform: uppercase">
     </div>
     <div style="margin-top: 35px; margin-left: -2px" class="col-md-1 no-padding">
         <a href="#" class="btn btn-xs btn-primary" onClick="tambah_file()"><i class="fa fa-plus"></i></a>
@@ -180,7 +208,7 @@
 
 <div id="clone_form_dokter">
     <div id="input_file<?php echo $j;?>"></div>
-</div>
+</div> -->
 
 <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i> PENUNJANG MEDIS </b></p>

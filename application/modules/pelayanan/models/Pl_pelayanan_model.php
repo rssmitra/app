@@ -68,7 +68,14 @@ class Pl_pelayanan_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 		}else{
-			$this->db->where( 'CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d') );
+			if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
+				if( $_GET['keyword'] != '' ){
+					$this->db->where( 'YEAR(pl_tc_poli.tgl_jam_poli) = ', date('Y') );
+					$this->db->order_by('pl_tc_poli.tgl_jam_poli', 'DESC');
+				}
+			}else{
+				$this->db->where( 'CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d') );
+			}
 		}
 
 		$i = 0;
