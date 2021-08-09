@@ -133,8 +133,7 @@
         ?>
       
       <!-- ( --><?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> <!-- s/d --> <?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> <!-- ) -->
-      <br>
-      <table class="" width="460px">
+      <table class="" width="460px" style="margin-top: 3px;">
               <tr>
                 <th style="text-align: center; font-size: 13px;" colspan="2">
                   <?php 
@@ -241,10 +240,10 @@
           <tr>
             <td style="text-align: right">
               Jakarta, <?php echo date('d/m/Y')?>
-              <br><br><br>
+              <br><br><br><br><br>
               <?php if( $flag_bill == 'temporary' ) : ?>
               <div class="col-xs-4">
-              <span style="margin-left:-80%; margin-top: -15%; font-size: 24px" class="stamp center">BILLING<br>SEMENTARA</span>
+              <span style="margin-left:-31%; margin-top: -13%; font-size: 24px" class="stamp center">BILLING<br>SEMENTARA</span>
               </div>
               <?php endif;?>
               ( <?php echo $this->session->userdata('user')->fullname?> )
