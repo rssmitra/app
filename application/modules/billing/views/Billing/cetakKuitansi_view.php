@@ -106,7 +106,7 @@
           <tr>
             <td width="20%" valign="top" style="font-size:13px">Terbilang </td> 
             <td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:14px;">: 
-            <span style="font-weight: bold; font-style: italic;"><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</span>
+            <span style="font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif"><i><b><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</b></i></span>
             </td>
           </tr> 
           <tr>

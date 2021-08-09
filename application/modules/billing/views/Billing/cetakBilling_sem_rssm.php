@@ -212,7 +212,7 @@
       <table width="460px" style="border-top: 1px solid black;"  border="0">
           <tr>
             <td style="text-align: right; font-size: 13px;"><b>Total : </b></td>
-            <td style="text-align: right; font-size: 13px; width: 100px"><i><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></i></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></i></td>
           </tr>
           <!-- <tr>
             <td style="text-align: right"><b>Bayar</b></td>
@@ -232,7 +232,7 @@
         <table width="460px" style="border-bottom: 1px solid black;">
           <tr>
             <td valign="top" width="65px">Terbilang :&nbsp;</td>
-            <td><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</i></b></td>
+            <td style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</i></b></td>
             <td width="50px"></td>
           </tr>
         </table>
