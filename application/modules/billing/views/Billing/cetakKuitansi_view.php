@@ -141,7 +141,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              Kuitansi ini menjadi SAH bila telah diberi cap & tanda tangan petugas
+              Kuitansi ini SAH bila ada cap & tanda tangan petugas
             </td>
           </tr>
         </table>
