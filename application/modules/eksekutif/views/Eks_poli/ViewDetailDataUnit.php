@@ -19,7 +19,7 @@
           foreach($group_poli as $ky3=>$row_k3) :
             foreach ($row_k3 as $ky7 => $val7) :
               $arr_ttl_poli[$ky3][] = $val7->total; 
-              $kode_bagian[$ky3] = $val7->kode_bagian_tujuan;
+              $kode_bagian[$ky3] = $val7->kode_bagian;
         ?>
         <?php 
           endforeach; 

@@ -21,7 +21,7 @@
         <tr>
           <td align="center"><?php echo ucwords($no)?></td>
           <td><?php echo ucwords($row_k3->no_mr)?></td>
-          <td><?php echo ucwords($row_k3->nama_pasien_layan)?></td>
+          <td><?php echo ucwords($row_k3->nama_pasien)?></td>
           <td align="right">
             <a href="#"><?php echo number_format($row_k3->total)?></a>
           </td>
