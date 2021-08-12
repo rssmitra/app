@@ -1550,11 +1550,11 @@ class Templates extends MX_Controller {
             // hardcode
             // $pm_ = 453170; 
             // $no_mr = '00211762';
-            // $nama_pasien = 'Ade Irmawati';
-            // $umur = '44';
-            // $jk_ = 'Perempuan';
-            // $tgl_daftar = '28 Juli 2021 - 08:05:15';
-            // $tgl_periksa = '28 Juli 2021 - 08:33:42';
+            // $nama_pasien = 'Rizky Kurnia Pratama';
+            // $umur = '27';
+            // $jk_ = 'Pria';
+            // $tgl_daftar = '5 Agustus 2021 - 08:05:15';
+            // $tgl_periksa = '5 Agustus 2021 - 08:33:42';
             // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db

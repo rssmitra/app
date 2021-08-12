@@ -1340,6 +1340,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('pl_td', 'Tekanan Darah', 'trim');        
         $this->form_validation->set_rules('pl_suhu', 'Suhu', 'trim');        
         $this->form_validation->set_rules('pl_nadi', 'Nadi', 'trim');        
+        $this->form_validation->set_rules('pl_resep_farmasi', 'Nadi', 'trim');        
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -1366,6 +1367,7 @@ class Pl_pelayanan extends MX_Controller {
                 'diagnosa_awal' => $this->master->br2nl($_POST['pl_diagnosa']),
                 'anamnesa' => $this->master->br2nl($_POST['pl_anamnesa']),
                 'pengobatan' => $this->master->br2nl($_POST['pl_pengobatan']),
+                'resep_farmasi' => $this->master->br2nl($_POST['pl_resep_farmasi']),
                 'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
                 'pemeriksaan' => $this->master->br2nl($_POST['pl_pemeriksaan']),
                 'tgl_periksa' => date('Y-m-d H:i:s'),
@@ -1373,11 +1375,11 @@ class Pl_pelayanan extends MX_Controller {
                 'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
                 'kategori_tindakan' => 3,
                 'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
-                'tinggi_badan' => (float)$this->input->post('pl_tb'),
-                'tekanan_darah' => (float)$this->input->post('pl_td'),
-                'berat_badan' => (float)$this->input->post('pl_bb'),
-                'suhu' => (float)$this->input->post('pl_suhu'),
-                'nadi' => (float)$this->input->post('pl_nadi'),
+                'tinggi_badan' => $this->input->post('pl_tb'),
+                'tekanan_darah' => $this->input->post('pl_td'),
+                'berat_badan' => $this->input->post('pl_bb'),
+                'suhu' => $this->input->post('pl_suhu'),
+                'nadi' => $this->input->post('pl_nadi'),
             );
 
             if($this->input->post('kode_riwayat')==0){
@@ -1477,6 +1479,7 @@ class Pl_pelayanan extends MX_Controller {
                     'no_registrasi' => $this->input->post('no_registrasi'),
                     'no_kunjungan' => $this->input->post('no_kunjungan'),
                     'no_mr' => $this->input->post('noMrHidden'),
+                    'resep_farmasi' => $this->master->br2nl($_POST['pl_resep_farmasi']),
                     'kode_perusahaan' => ($this->input->post('kode_perusahaan'))?$this->input->post('kode_perusahaan'):0,
                     'kode_kelompok' => $this->input->post('kode_kelompok'),
                     'kode_klas' => $this->input->post('kode_klas'),
@@ -1497,15 +1500,18 @@ class Pl_pelayanan extends MX_Controller {
                 $dataexc_fr['lokasi_tebus'] = 1;
 
                 // cek existing pesan resep
-                $existing_fr = $this->db->get_where('fr_tc_pesan_resep', array('no_registrasi' => $no_registrasi, 'kode_bagian_asal' => $this->input->post('kode_bagian_asal')) )->num_rows();
+                $existing_fr = $this->db->get_where('fr_tc_pesan_resep', array('no_registrasi' => $no_registrasi, 'kode_bagian_asal' => $this->input->post('kode_bagian_asal')) );
 
-                if($existing_fr == 0){
+                if($existing_fr->num_rows() == 0){
                     /*save post data*/
                     $this->Pl_pelayanan->save('fr_tc_pesan_resep',$dataexc_fr);
 
                     /*save logs*/
                     $this->logs->save('fr_tc_pesan_resep', $kode_pesan_resep, 'update record on '.$this->title.' module', json_encode($dataexc_fr),'kode_pesan_resep');
 
+                    $this->db->trans_commit();
+                }else{
+                    $this->Pl_pelayanan->update('fr_tc_pesan_resep',$dataexc_fr, array('kode_pesan_resep' => $existing_fr->row()->kode_pesan_resep) );
                     $this->db->trans_commit();
                 }
                 

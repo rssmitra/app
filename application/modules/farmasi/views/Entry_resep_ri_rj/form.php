@@ -763,7 +763,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Jml Tebus</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value="0"/>
+                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
                 </div>
                 <div class="col-md-6">
                   <label class="inline" style="margin-top: 4px;margin-left: -12px;">
@@ -844,35 +844,37 @@ function changeUrgensi(){
         <div class="col-sm-5 no-padding">
           <div class="widget-box">
             <div class="widget-header">
-                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Stok Barang/Obat Farmasi</span>
+                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Informasi Resep Dokter & Stok Barang</span>
               <div class="widget-toolbar">
 
               </div>
             </div>
             <div class="widget-body" style="padding:5px; min-height: 304px !important">
+              <span style="font-weight: bold">RESEP DOKTER : </span><br>
+              <div style="padding: 3px; border: 1px solid #d4cfcf; margin-bottom: 5px">
+                <?php echo isset($value)?nl2br($value->resep_farmasi):''?>
+              </div>
               <div id="div_detail_obat">
                 <div id="warning_stok_obat"></div>
                 <div id="detailObatHtml" style="margin-top: 5px">
                   <!-- <img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%"> -->
-                  <div class="alert alert-danger" style="margin-left: 6px; margin-bottom: 3px">
-                  <p><b>HARAP DIBACA..!</b></p>
+                  <!-- <div class="alert alert-danger" style="margin-left: 6px; margin-bottom: 3px">
+                    <p><b>HARAP DIBACA..!</b></p>
 
-                  <p>Terhitung mulai tanggal 15 Juli 2021.</p>
-                  <div>
-                    <ol >
-                      <li>Jika stok obat pada sistem t<strong>idak sesuai dengan stok fisik</strong>, maka <strong>harus diperbaiki stok pada sistem</strong> terlebih dahulu. Silahkan lapor ke Bagian Gudang Farmasi.</li>
-                      <li>Jika <b style="box-sizing: border-box; font-weight: 700;">Stok Obat kosong</b> pada sistem, maka &quot;Jml Tebus&quot; <b style="box-sizing: border-box; font-weight: 700;">tidak bisa Ditangguhkan,&nbsp;</b>untuk &quot;Resep Kronis&quot; masih bisa ditangguhkan.</li>
-                      <li>Barang yang status nya <b style="box-sizing: border-box; font-weight: 700;">&quot;Not Active&quot;</b> tidak akan muncul ketika pencarian Obat. Jika ingin merubah status Aktifnya silahkan lapor ke Bagian Gudang Farmasi.</li>
-                      <li>Perhatikan kolom <b style="box-sizing: border-box; font-weight: 700;">&quot;Jenis&quot;&nbsp;</b>cito atau biasa, karena mempengaruhi harga jual obat.</li>
-                      <li>Semua Resep Obat, untuk <b>kolom Signa</b> dan catatan <strong>harap diisi dengan lengkap</strong>, terutama jika ada catatan obat, agar pasien bisa mengetahui informasi tentang obat. Kalo hanya sekedar dijelaskan oleh apoteker terkadang pasien lupa, kasian pasien yang sudah tua.</li>
-                      <li>Jika ada yang kurang jelas silahkan tanyakan kepada Kepala Instalasi Farmasi.</li>
-                      <li>Jika ada yang keberatan <strong>silahkan ajukan komplain</strong> ke Manajemen.</li>
-                      <li>Atas kerja sama nya kami ucapkan Terima Kasih.</li>
-                    </ol>
-                  </div>
-
-                  </div>
-                    
+                    <p>Terhitung mulai tanggal 15 Juli 2021.</p>
+                    <div>
+                      <ol >
+                        <li>Jika stok obat pada sistem t<strong>idak sesuai dengan stok fisik</strong>, maka <strong>harus diperbaiki stok pada sistem</strong> terlebih dahulu. Silahkan lapor ke Bagian Gudang Farmasi.</li>
+                        <li>Jika <b style="box-sizing: border-box; font-weight: 700;">Stok Obat kosong</b> pada sistem, maka &quot;Jml Tebus&quot; <b style="box-sizing: border-box; font-weight: 700;">tidak bisa Ditangguhkan,&nbsp;</b>untuk &quot;Resep Kronis&quot; masih bisa ditangguhkan.</li>
+                        <li>Barang yang status nya <b style="box-sizing: border-box; font-weight: 700;">&quot;Not Active&quot;</b> tidak akan muncul ketika pencarian Obat. Jika ingin merubah status Aktifnya silahkan lapor ke Bagian Gudang Farmasi.</li>
+                        <li>Perhatikan kolom <b style="box-sizing: border-box; font-weight: 700;">&quot;Jenis&quot;&nbsp;</b>cito atau biasa, karena mempengaruhi harga jual obat.</li>
+                        <li>Semua Resep Obat, untuk <b>kolom Signa</b> dan catatan <strong>harap diisi dengan lengkap</strong>, terutama jika ada catatan obat, agar pasien bisa mengetahui informasi tentang obat. Kalo hanya sekedar dijelaskan oleh apoteker terkadang pasien lupa, kasian pasien yang sudah tua.</li>
+                        <li>Jika ada yang kurang jelas silahkan tanyakan kepada Kepala Instalasi Farmasi.</li>
+                        <li>Jika ada yang keberatan <strong>silahkan ajukan komplain</strong> ke Manajemen.</li>
+                        <li>Atas kerja sama nya kami ucapkan Terima Kasih.</li>
+                      </ol>
+                    </div>
+                  </div> -->
                 </div>
                 <div id="detailPembelianObatHtml" style="margin-top: 5px"></div>
               </div>
