@@ -584,7 +584,7 @@ function rollback(no_registrasi, no_kunjungan){
 
                 <li>
                   <a data-toggle="tab" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-                    <i class="orange ace-icon fa fa-money bigger-120"></i>
+                    <i class="orange ace-icon fa fa-history bigger-120"></i>
                     Rekam Medis
                   </a>
                 </li>
