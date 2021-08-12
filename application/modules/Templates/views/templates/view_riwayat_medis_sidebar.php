@@ -73,7 +73,9 @@ hr {
                   <table class="table table-bordered">
                     <tr>
                       <td>
-                        <?php echo ($value->diagnosa_akhir != '')?nl2br($value->diagnosa_akhir):'-'?>
+                      <?php echo ($value->diagnosa_awal != '') ? ($value->diagnosa_akhir != $value->diagnosa_awal) ? 'Diagnosa Awal. '.nl2br($value->diagnosa_awal).'<br>': ''.nl2br($value->diagnosa_awal) : ''?>
+                      
+                        <?php echo ($value->diagnosa_akhir != '') ? ($value->diagnosa_akhir != $value->diagnosa_awal) ? 'Diagnosa Akhir. '.nl2br($value->diagnosa_akhir): '' : ''?>
                       </td>
                     </tr>
                   </table>
