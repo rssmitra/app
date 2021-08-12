@@ -133,8 +133,7 @@
         ?>
       
       <!-- ( --><?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> <!-- s/d --> <?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> <!-- ) -->
-      <br>
-      <table class="" width="460px">
+      <table class="" width="460px" style="margin-top: 3px;">
               <tr>
                 <th style="text-align: center; font-size: 13px;" colspan="2">
                   <?php 
@@ -213,7 +212,7 @@
       <table width="460px" style="border-top: 1px solid black;"  border="0">
           <tr>
             <td style="text-align: right; font-size: 13px;"><b>Total : </b></td>
-            <td style="text-align: right; font-size: 13px; width: 100px"><i><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></i></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></i></td>
           </tr>
           <!-- <tr>
             <td style="text-align: right"><b>Bayar</b></td>
@@ -233,7 +232,7 @@
         <table width="460px" style="border-bottom: 1px solid black;">
           <tr>
             <td valign="top" width="65px">Terbilang :&nbsp;</td>
-            <td><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</i></b></td>
+            <td style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</i></b></td>
             <td width="50px"></td>
           </tr>
         </table>
@@ -241,10 +240,10 @@
           <tr>
             <td style="text-align: right">
               Jakarta, <?php echo date('d/m/Y')?>
-              <br><br><br>
+              <br><br><br><br><br>
               <?php if( $flag_bill == 'temporary' ) : ?>
               <div class="col-xs-4">
-              <span style="margin-left:-80%; margin-top: -15%; font-size: 24px" class="stamp center">BILLING<br>SEMENTARA</span>
+              <span style="margin-left:-31%; margin-top: -13%; font-size: 24px" class="stamp center">BILLING<br>SEMENTARA</span>
               </div>
               <?php endif;?>
               ( <?php echo $this->session->userdata('user')->fullname?> )

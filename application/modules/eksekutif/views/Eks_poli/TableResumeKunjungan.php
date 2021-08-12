@@ -55,6 +55,7 @@
 
   <?php 
     $count_mth = count($value['mth_dt']);
+    $ttl_mth = [];
     foreach ($value['mth_dt'] as $k3 => $v3) {
       $ttl_mth[] = $v3->total;
     }
@@ -80,6 +81,7 @@
 
   <?php 
     $count_yr = count($value['yr_dt']);
+    $ttl_yr = [];
     foreach ($value['yr_dt'] as $k3 => $v3) {
       $ttl_yr[] = $v3->total;
     }

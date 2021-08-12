@@ -1372,7 +1372,7 @@ class References extends MX_Controller {
 			}else{
 				$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
 			}
-
+			$html .= '<b>INFORMASI STOK OBAT</b>';
 			$html .= '<table class="table" style="font-size: 12px !important">';
 				
 				$flag_medis = ($exc[0]->flag_medis==1) ? 'Alkes' : 'Obat' ;
@@ -1574,7 +1574,7 @@ class References extends MX_Controller {
 			if($_GET['search_by']=='c.nama_pasien'){
 				$this->db->like( $_GET['search_by'], $_GET['keyword']);
 			}else{
-				$this->db->where( $_GET['search_by'], $_GET['keyword']);
+				$this->db->like( $_GET['search_by'], $_GET['keyword']);
 			}
 		}
 

@@ -177,7 +177,7 @@
 <div style="margin-top: 6px">
     <div class="checkbox" style="margin-left: -20px">
         <label>
-        Resep Farmasi ?
+        Resep Farmasi / Resep Dokter ?
         </label>
         <label>
             <?php 
@@ -188,6 +188,13 @@
         </label>
     </div>
 </div>
+
+<div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?>>
+    <div class="col-md-12" style="margin-top: 6px">
+        <textarea name="pl_resep_farmasi" id="pl_resep_farmasi" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->resep_farmasi)?$this->master->br2nl($riwayat->resep_farmasi):''?></textarea>
+    </div>
+</div>
+
 <!-- <div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?>>
     <div style="margin-top: 6px; padding: 5px !important; padding-left:12px !important" class="col-md-6 no-padding">
         <label for="form-field-8">Cari Nama Obat<span style="color:red">* : </span></label>

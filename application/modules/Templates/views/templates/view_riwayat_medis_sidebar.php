@@ -63,8 +63,8 @@ hr {
                   <table class="table table-bordered">
                     <tr>
                       <td>
-                        <?php echo ($value->anamnesa != '')?$value->anamnesa.'<br>':'';?>
-                        <?php echo ($value->pemeriksaan != '')?$value->pemeriksaan:''?>
+                        <?php echo ($value->anamnesa != '')?nl2br($value->anamnesa).'<br>':'';?>
+                        <?php echo ($value->pemeriksaan != '')?nl2br($value->pemeriksaan):''?>
 
                       </td>
                     </tr>
@@ -73,7 +73,7 @@ hr {
                   <table class="table table-bordered">
                     <tr>
                       <td>
-                        <?php echo ($value->diagnosa_akhir != '')?$value->diagnosa_akhir:'-'?>
+                        <?php echo ($value->diagnosa_akhir != '')?nl2br($value->diagnosa_akhir):'-'?>
                       </td>
                     </tr>
                   </table>
@@ -81,11 +81,19 @@ hr {
                   <table class="table table-bordered">
                     <tr>
                       <td>
-                        <?php echo ($value->pengobatan != '')?$value->pengobatan:'-'?>
+                        <?php echo ($value->pengobatan != '')?nl2br($value->pengobatan):'-'?>
                       </td>
                     </tr>
                   </table>
-                  <b>Obat/Farmasi :</b>
+                  <b>Resep Dokter :</b>
+                  <table class="table table-bordered">
+                    <tr>
+                      <td>
+                        <?php echo ($value->resep_farmasi != '')?nl2br($value->resep_farmasi):'-'?>
+                      </td>
+                    </tr>
+                  </table>
+                  <b>Obat yang diberikan farmasi :</b>
                   <table class="table table-bordered">
                     <tr>
                       <td>

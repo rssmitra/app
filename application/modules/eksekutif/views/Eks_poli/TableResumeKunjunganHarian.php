@@ -80,10 +80,10 @@
         <?php 
           for($i=1; $i<32;$i++) :
         ?>
-        <td align="center"><b><?php echo isset($arr_jml_unit_tgl[$i]) ? array_sum($arr_jml_unit_tgl[$i]) : 0?></b></td>
+        <td align="center"><b><?php echo isset($arr_jml_unit_tgl[$i]) ? number_format(array_sum($arr_jml_unit_tgl[$i])) : 0?></b></td>
         <td align="right"><b><?php echo isset($arr_rp_unit_tgl[$i])?number_format(array_sum($arr_rp_unit_tgl[$i])) : 0;?>,-</b></td>
       <?php endfor;?>
-      <td align="center"><b><?php echo isset($arr_ttl_jml) ? array_sum($arr_ttl_jml) : 0?></b></td>
+      <td align="center"><b><?php echo isset($arr_ttl_jml) ? number_format(array_sum($arr_ttl_jml)) : 0?></b></td>
         <td align="right"><b><?php echo isset($arr_ttl_rp) ? number_format(array_sum($arr_ttl_rp)) : 0?>,-</b></td>
       </tr>
     </tbody>

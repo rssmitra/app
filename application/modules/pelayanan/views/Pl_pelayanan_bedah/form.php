@@ -536,7 +536,7 @@ function rollback(no_registrasi, no_kunjungan){
                 <li>
                   <a data-toggle="tab" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_bedah/riwayat_medis/<?php echo $value->no_kunjungan?>" id="tabs_riwayat_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                     <i class="red ace-icon fa fa-file bigger-120"></i>
-                    Riwayat Medis
+                    Diagnosa Pasien
                   </a>
                 </li>
 
@@ -579,6 +579,13 @@ function rollback(no_registrasi, no_kunjungan){
                   <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
                     <i class="orange ace-icon fa fa-money bigger-120"></i>
                     Billing Pasien
+                  </a>
+                </li>
+
+                <li>
+                  <a data-toggle="tab" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
+                    <i class="orange ace-icon fa fa-history bigger-120"></i>
+                    Rekam Medis
                   </a>
                 </li>
 
