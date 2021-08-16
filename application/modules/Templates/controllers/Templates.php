@@ -557,7 +557,7 @@ class Templates extends MX_Controller {
                         <td width="100px">Umur</td>
                         <td width="300px">: '.$data->reg_data->umur.' Tahun</td>
                         <td width="120px">Tanggal Masuk</td>
-                        <td align="left" width="300px">: '.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'</td>
+                        <td align="left" width="300px">: '.$this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk).'</td>
                         
                     </tr>
 
@@ -565,7 +565,7 @@ class Templates extends MX_Controller {
                         <td width="100px">Jenis Kelamin</td>
                         <td width="300px">: '.$jk.'</td>
                         <td width="120px">Tanggal Keluar</td>
-                        <td width="300px">: '.$this->tanggal->formatDate($data->reg_data->tgl_jam_keluar).'</td>
+                        <td width="300px">: '.$this->tanggal->formatDateTime($data->reg_data->tgl_jam_keluar).'</td>
                     </tr>
                     <tr>
                         <td width="100px">Ruangan</td>
