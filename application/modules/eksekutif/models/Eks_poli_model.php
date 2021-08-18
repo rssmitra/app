@@ -176,6 +176,25 @@ class Eks_poli_model extends CI_Model {
 			$subtitle = 'Source: RSSM - SIRS';
 		}
 
+		if($params['prefix']==2){
+			$year = isset($_GET['tahun_graph_line_1'])?$_GET['tahun_graph_line_1']: date('Y');
+			$query = "SELECT MONTH(tgl_masuk) AS bulan, COUNT(id_tc_kunjungan) AS total FROM tc_kunjungan WHERE YEAR(tgl_masuk)=".$year." GROUP BY MONTH(tgl_masuk)";	
+			$fields = array('Jumlah_Pasien'=>'total');
+			$title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Tahun '.$year.' RS. Setia Mitra</span>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $this->db->query($query)->result_array();
+		}
+
+		if($params['prefix']==3){
+			$query = "SELECT TOP 10 YEAR(tc_registrasi.tgl_jam_masuk) AS tahun, mt_perusahaan.nama_perusahaan as name, COUNT(no_registrasi) as total FROM tc_registrasi LEFT JOIN mt_perusahaan ON mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan WHERE YEAR(tc_registrasi.tgl_jam_masuk)=".date('Y')." GROUP BY tc_registrasi.kode_perusahaan, YEAR(tc_registrasi.tgl_jam_masuk), mt_perusahaan.nama_perusahaan ORDER BY COUNT(no_registrasi) DESC";	
+			$fields = array('name' => 'total');
+			$title = '<span style="font-size:13.5px">Persentase Perusahaan Asuransi Aktif</span>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $this->db->query($query)->result_array();
+		}
+
 		if($params['prefix']==4){
 			$data = array();
 			// periode
@@ -264,23 +283,54 @@ class Eks_poli_model extends CI_Model {
 			$subtitle = 'Source: RSSM - SIRS';
 		}
 
-		if($params['prefix']==2){
-			$year = isset($_GET['tahun_graph_line_1'])?$_GET['tahun_graph_line_1']: date('Y');
-			$query = "SELECT MONTH(tgl_masuk) AS bulan, COUNT(id_tc_kunjungan) AS total FROM tc_kunjungan WHERE YEAR(tgl_masuk)=".$year." GROUP BY MONTH(tgl_masuk)";	
-			$fields = array('Jumlah_Pasien'=>'total');
-			$title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Tahun '.$year.' RS. Setia Mitra</span>';
-			$subtitle = 'Source: RSSM - SIRS';
-			/*excecute query*/
-			$data = $this->db->query($query)->result_array();
-		}
+		if($params['prefix']==6){
+			$data = array();
+			// periode
+			$this->_main_query();	
+			$this->db->join('mt_perusahaan e ', 'e.kode_perusahaan=b.kode_perusahaan','left');
+			$this->db->select('b.kode_perusahaan, e.nama_perusahaan, c.tgl_masuk');	
+			if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
+				if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
+					$this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');
+					$this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+					FROM tc_kunjungan a
+					where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
+				}
 
-		if($params['prefix']==3){
-			$query = "SELECT TOP 10 YEAR(tc_registrasi.tgl_jam_masuk) AS tahun, mt_perusahaan.nama_perusahaan as name, COUNT(no_registrasi) as total FROM tc_registrasi LEFT JOIN mt_perusahaan ON mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan WHERE YEAR(tc_registrasi.tgl_jam_masuk)=".date('Y')." GROUP BY tc_registrasi.kode_perusahaan, YEAR(tc_registrasi.tgl_jam_masuk), mt_perusahaan.nama_perusahaan ORDER BY COUNT(no_registrasi) DESC";	
-			$fields = array('name' => 'total');
-			$title = '<span style="font-size:13.5px">Persentase Perusahaan Asuransi Aktif</span>';
+				if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
+					$this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+					FROM ri_tc_rawatinap a
+					where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".'  )');
+				}
+			}else{
+				$this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+					FROM tc_kunjungan a
+					where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
+			}
+			
+			$this->db->group_by('e.nama_perusahaan, b.kode_perusahaan, c.tgl_masuk');
+			$this->db->order_by('e.nama_perusahaan ASC');
+			$prd_dt = $this->db->get();
+			// echo '<pre>';print_r($this->db->last_query());die;
+			$getData = [];
+			foreach ($prd_dt->result() as $key => $value) {
+				// nama_perusahaan
+				$nama_perusahaan = ($value->nama_perusahaan != '')?$value->nama_perusahaan:'UMUM';
+				$getData[$nama_perusahaan][] = $value->total;
+			}
+
+			foreach ($getData as $k => $v) {
+				$resData[$k] = array('total_kunjungan' => array_sum($getData[$k]), 'total_biaya' => count($getData[$k]));
+			}
+			
+			$data = array(
+				'prd_dt' => $resData,
+			);
+			// echo '<pre>';print_r($data);die;
+
+			$fields = array();
+			$title = '<span style="font-size: 16px">Rekapitulasi Kunjungan Berdasarkan Asuransi<br>Periode <b>'.$this->tanggal->formatDateDmy($_GET['from_tgl']).'</b> s.d <b>'.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
 			$subtitle = 'Source: RSSM - SIRS';
-			/*excecute query*/
-			$data = $this->db->query($query)->result_array();
 		}
 
 		// echo '<pre>';print_r($getData);die;
