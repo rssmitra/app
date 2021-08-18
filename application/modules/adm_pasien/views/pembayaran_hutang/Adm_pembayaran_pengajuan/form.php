@@ -203,7 +203,7 @@ function inputPenyesuaian(kode_tc_trans_kasir){
         </div> 
 
         <div class="form-group">
-          <label class="control-label col-md-3">Jenis Pembayaran</label>
+          <label class="control-label col-md-3">Jenis Transaksi</label>
           <div class="col-md-6">
             <?php echo $this->master->custom_selection_with_label($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'metode_pemb_inv') ), '' , 'metode_pembayaran', 'metode_pembayaran', 'form-control', '', '') ?>
           </div>

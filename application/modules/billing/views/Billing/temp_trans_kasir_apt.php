@@ -141,36 +141,7 @@ function cetak_kuitansi(){
         <a href="#" class="btn btn-xs btn-success" onclick="payment()"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
 
         <div class="btn-group">
-            <button type="button" class="btn btn-xs btn-yellow"><i class="fa fa-print"></i> Cetak Billing</button>
-
-            <button data-toggle="dropdown" class="btn btn-xs btn-yellow dropdown-toggle" aria-expanded="false">
-                <i class="ace-icon fa fa-angle-down icon-only"></i>
-            </button>
-
-            <ul class="dropdown-menu dropdown-yellow">
-                <li>
-                    <?php
-                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview_apt?kode_trans_far=".$kode_trans_far."'".','."'Cetak'".',1200,750);">Billing Sementara</a>';
-                    ?>
-                </li>
-
-                <li>
-                    <?php
-                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview_apt?flag_bill=true&kode_trans_far=".$kode_trans_far."&status_nk=0'".','."'Cetak'".',1200,750);"> Billing Pasien</a>';
-                    ?>
-                </li>
-
-                <li>
-                    <?php
-                        echo '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview_apt?flag_bill=true&kode_trans_far=".$kode_trans_far."&status_nk=1'".','."'Cetak'".',1200,750);"> Billing NK</a>';
-                    ?>
-                </li>
-                <li>
-                    <?php
-                        echo '<a href="#" onclick="cetak_kuitansi();" data-id="0" id="btn-cetak-kuitansi"> Kuitansi</a>';
-                    ?>
-                </li>
-            </ul>
+            <button type="button" class="btn btn-xs btn-yellow" onclick="PopupCenter('billing/Billing/print_preview_apt?kode_trans_far=<?php echo $kode_trans_far; ?>','Cetak',1200,750);"><i class="fa fa-print"></i> Cetak Billing</button>
         </div>
         
     </div>

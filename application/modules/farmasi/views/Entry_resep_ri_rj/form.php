@@ -852,7 +852,7 @@ function changeUrgensi(){
             <div class="widget-body" style="padding:5px; min-height: 304px !important">
               <span style="font-weight: bold">RESEP DOKTER : </span><br>
               <div style="padding: 3px; border: 1px solid #d4cfcf; margin-bottom: 5px">
-                <?php echo isset($value)?nl2br($value->resep_farmasi):''?>
+                <?php echo isset($value)?($value->resep_farmasi != '')?nl2br($value->resep_farmasi):'-Tidak ada resep dokter-':'-Tidak ada resep dokter-'; ?>
               </div>
               <div id="div_detail_obat">
                 <div id="warning_stok_obat"></div>

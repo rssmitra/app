@@ -17,6 +17,8 @@ class Pembelian_cito extends MX_Controller {
         }
         /*load model*/
         $this->load->model('farmasi/Pembelian_cito_model', 'Pembelian_cito');
+        // load library
+        $this->load->library('stok_barang');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -108,11 +110,16 @@ class Pembelian_cito extends MX_Controller {
                             <span class="lbl"></span>
                         </label>
                       </div>';
-            $row[] = '<div class="center">
-                        '.$this->authuser->show_button('farmasi/Pembelian_cito','R',$row_list->id_fr_pengadaan_cito,2).'
-                        '.$this->authuser->show_button('farmasi/Pembelian_cito','U',$row_list->id_fr_pengadaan_cito,2).'
-                        '.$this->authuser->show_button('farmasi/Pembelian_cito','D',$row_list->id_fr_pengadaan_cito,2).'
-                      </div>'; 
+            if($row_list->status_transaksi != 1){
+                $row[] = '<div class="center">
+                            '.$this->authuser->show_button('farmasi/Pembelian_cito','R',$row_list->id_fr_pengadaan_cito,2).'
+                            '.$this->authuser->show_button('farmasi/Pembelian_cito','U',$row_list->id_fr_pengadaan_cito,2).'
+                            '.$this->authuser->show_button('farmasi/Pembelian_cito','D',$row_list->id_fr_pengadaan_cito,2).'
+                        </div>'; 
+            }else{
+                $row[] = '<div class="center"><label class="label label-success"><i class="fa fa-check"></i> Selesai</label></div>';
+            }
+            
             $row[] = '<div class="center">'.$row_list->id_fr_pengadaan_cito.'</div>';
             // $row[] = '<div class="left">'.$row_list->kode_pengadaan.'</div>';
             $row[] = strtoupper($row_list->nama_brg);
@@ -272,6 +279,9 @@ class Pembelian_cito extends MX_Controller {
             // print_r($dt);die;
             foreach ($dt as $key => $val) {
                 // add kartu stok cito
+                $this->stok_barang->stock_process_cito($val->kode_brg, $val->jumlah_kcl, '060101', 15, $val->tempat_pembelian.'-'.$val->tgl_pembelian, 'restore');
+                // update status transaksi
+                $this->db->update('fr_pengadaan_cito', array('status_transaksi' => 1), array('id_fr_pengadaan_cito' => $val->id_fr_pengadaan_cito) );
             }
 
             if ($this->db->trans_status() === FALSE)

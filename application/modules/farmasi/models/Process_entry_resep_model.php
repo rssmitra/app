@@ -189,7 +189,15 @@ class Process_entry_resep_model extends CI_Model {
             if($value->id_tc_far_racikan != 0){
                 $sisa_di_retur = $value->jumlah_tebus;
                 // retur stok ke farmasi
-                $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore');                
+                if($value->urgensi == 'cito'){
+                    // retur stok ke farmasi
+                    $this->stok_barang->stock_process_cito($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 16 ," - (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
+                }else{
+                    // retur stok ke farmasi
+                    $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
+                }
+
+                               
             }else{
                 // get detail racikan
                 $dt_racikan = $this->db->get_where('tc_far_racikan_detail', array('id_tc_far_racikan' => $value->id_tc_far_racikan) )->result();
@@ -237,8 +245,14 @@ class Process_entry_resep_model extends CI_Model {
                     $jml_kronis = ( $value->prb_ditangguhkan != 1 ) ? (int)$value->jumlah_obat_23 : 0 ;
                     $jml_tebus = ( $value->resep_ditangguhkan != 1 ) ? (int)$value->jumlah_tebus : 0 ;
                     $sisa_di_retur = $jml_kronis + $jml_tebus;
-                    // retur stok ke farmasi
-                    $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore');                
+                    if($value->urgensi == 'cito'){
+                        // retur stok ke farmasi
+                        $this->stok_barang->stock_process_cito($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 16 ," - (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
+                    }else{
+                        // retur stok ke farmasi
+                        $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
+                    }
+                                   
                 }else{
                     // get detail racikan
                     $dt_racikan = $this->db->join('tc_far_racikan', 'tc_far_racikan.id_tc_far_racikan=tc_far_racikan_detail.id_tc_far_racikan', 'left')->get_where('tc_far_racikan_detail', array('tc_far_racikan.id_tc_far_racikan' => $value->id_tc_far_racikan, 'status_input' => null) )->result();
