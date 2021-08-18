@@ -301,7 +301,7 @@ class Process_entry_resep extends MX_Controller {
         // $this->db->join('fr_tc_far b','c.kode_trans_far=b.kode_trans_far','left');
         // $this->db->where('c.kode_trans_far', $ID);
         $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
-        // print_r($_POST);die;
+        // print_r($trans_dt);die;
         /*execution begin*/
         $this->db->trans_begin();
 
@@ -341,7 +341,13 @@ class Process_entry_resep extends MX_Controller {
                     $jml_mutasi_brg = $jml_kronis + $jml_tebus;
                     // kurangi stok depo, update kartu stok dan rekap stok
                     if( $jml_mutasi_brg > 0 ){
-                        $this->stok_barang->stock_process($row_dt->kode_brg, $jml_mutasi_brg, $kode_bagian, 14, " No Transaksi : ".$row_dt->kode_trans_far."", 'reduce');
+                        if($row_dt->urgensi=='cito'){
+                            // potong stok cito
+                            $this->stok_barang->stock_process_cito($row_dt->kode_brg, $jml_mutasi_brg, $kode_bagian, 16, " No Transaksi : ".$row_dt->kode_trans_far."", 'reduce');
+                        }else{
+                            // potong stok biasa
+                            $this->stok_barang->stock_process($row_dt->kode_brg, $jml_mutasi_brg, $kode_bagian, 14, " No Transaksi : ".$row_dt->kode_trans_far."", 'reduce');
+                        }
                     }
 
                     // define untuk obat biasa atau non racikan

@@ -71,63 +71,6 @@ final Class Stok_barang{
 
     }
 
-    function stock_process_cito($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag) {
-
-        // restore => untuk mengembalikan stok ke jumlah sebelumnya
-        // reduce => untuk mengurangi stok sesuai dengan jumlah yang dikirim
-
-        $CI =&get_instance();
-        $db = $CI->load->database('default', TRUE);
-        $CI->load->library('master');
-        
-        $t_kartu_stok = 'tc_kartu_stokcito' ;
-        $t_depo_stok = 'fr_depo_cito' ;
-
-        $dataexc=array();
-        
-        if( $jumlah > 0 ) {
-            /*get last kartu stok*/
-            $kartu_stok = $db->order_by('id_kartucito', 'DESC')->get_where($t_kartu_stok, array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian) )->row();
-            $depo_cito = $db->get_where('fr_depo_cito', array('kode_brg' => $kodeBrg) )->row();
-            
-            /*jumlah setelah ditambah dengan stok sebelumnya*/
-            $stok_akhir_mutasi = isset($kartu_stok->stok_akhir)?$kartu_stok->stok_akhir:0;
-            if($flag=='restore'){
-                $last_stok = $stok_akhir_mutasi + $jumlah;
-            }else{
-                $last_stok = $stok_akhir_mutasi - $jumlah;
-            }
-            
-            /*get max id kartu stok*/
-            $id_kartucito = $CI->master->get_max_number($t_kartu_stok, 'id_kartucito');
-            $dataexc["id_kartucito"] = $id_kartucito;
-            $dataexc["kode_brg"] = $kodeBrg;
-            $dataexc["stok_awal"] = $stok_akhir_mutasi;
-            $dataexc["pemasukan"] = ($flag=='restore')?$jumlah:0;
-            $dataexc["pengeluaran"] = ($flag=='reduce')?$jumlah:0;
-            $dataexc["stok_akhir"] = $last_stok;
-            $dataexc["jenis_transaksi"] = $jenisKartuStok;
-            $dataexc["kode_bagian"] = $kodeBagian;
-
-            $ket_jenis_kartu = $db->get_where('mt_jenis_kartu_stok', array('jenis_transaksi' => $jenisKartuStok) )->row();
-
-            $dataexc["keterangan"] = $ket_jenis_kartu->nama_jenis. ' ' .$keterangan;
-            $dataexc["petugas"] = $CI->session->userdata('user')->user_id;
-            $dataexc["tgl_input"]= date('Y-m-d H:i:s');
-            // print_r($dataexc);die;
-            $db->insert($t_kartu_stok, $dataexc);
-            
-            /*update mt_depo_stokcito*/
-            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok), array('kode_brg' => $kodeBrg) );
-
-                        
-        }
-
-        // print_r($dataexc);die;
-        return $dataexc;
-
-    }
-
     function stock_process_depo($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag, $kode_bagian_minta='') {
 
         // restore => untuk mengembalikan stok ke jumlah sebelumnya

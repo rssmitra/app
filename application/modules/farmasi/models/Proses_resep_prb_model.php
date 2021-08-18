@@ -29,7 +29,7 @@ class Proses_resep_prb_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-		$this->db->where('kode_trans_far IN ( select kode_trans_far from view_fr_hutang_obat_pasien group by kode_trans_far)');
+		$this->db->where('kode_trans_far IN ( select kode_trans_far from view_fr_hutang_obat_pasien where sisa_hutang > 0 group by kode_trans_far)');
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			if($_GET['search_by'] == 'no_sep'){

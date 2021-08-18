@@ -72,6 +72,16 @@
             // }
 
             if( $config['transaksi']['nk_perusahaan'] > 0){
+                $acc_no = '101030101' ;
+                $insertMapingDet["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
+                $insertMapingDet["acc_no"] = $acc_no;
+                $insertMapingDet["tipe_tx"] = 'D';
+                $insertMapingDet["nominal"] = $config['transaksi']['nk_perusahaan'];
+                $insertMapingDet["keterangan"] = "Penerimaan Kas/Bank : [".$config['transaksi']['nama_pasien']."] ";
+                $jurnal_data[] = $insertMapingDet;
+			}
+			
+			if( $config['transaksi']['nk_karyawan'] > 0){
                 $acc_no = '101030105' ;
                 $insertMapingDet["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
                 $insertMapingDet["acc_no"] = $acc_no;
@@ -87,7 +97,7 @@
                 $insertMapingDet["acc_no"] = $acc_no;
                 $insertMapingDet["tipe_tx"] = 'D';
                 $insertMapingDet["nominal"] = $config['transaksi']['potongan'];
-                $insertMapingDet["keterangan"] = "Penerimaan Kas/Bank : [".$config['transaksi']['nama_pasien']."] ";
+                $insertMapingDet["keterangan"] = "Potongan/Diskon : [".$config['transaksi']['nama_pasien']."] ";
                 $jurnal_data[] = $insertMapingDet;
             }
 
@@ -96,38 +106,73 @@
         return $jurnal_data;
 	}
 
+	function get_jurnal_kredit($config) {
+
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+
+		$resume_pendapatan = $db->get_where('ak_pendapatan_v', array('kode_tc_trans_kasir' => $config['kode_tc_trans_kasir']))->row();
+
+		$account_number = $this->mapping_account();
+		// print_r($account_number);die;
+		$getData = array();
+		foreach ($account_number as $key => $value) {
+			# code...
+			// print_r($value);die;
+			$field = key($value);
+			$values = array_values($value);
+			// print_r($resume_pendapatan);die;
+			if( isset($resume_pendapatan->$field) AND $resume_pendapatan->$field > 0 ){
+				$dataJurnalKredit = array();
+	            $dataJurnalKredit["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
+	            $dataJurnalKredit["acc_no"]  = $value[$field];
+	            $dataJurnalKredit["tipe_tx"] = 'K';
+				$dataJurnalKredit["nominal"] = $resume_pendapatan->$field;
+				$uraian_title = $this->get_title_text($field);
+	            $uraian="ADM MEDIS : [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
+	            $dataJurnalKredit["keterangan"] = $uraian;
+	            $getData[] = $dataJurnalKredit;
+	        }
+		}
+        
+        return $getData;
+
+	}
+
 	function get_jurnal_um($config){
 
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
 		
 		$jurnalData = array();
-		// uang muka
-		$nominal = $db->query("select sum(tunai)as tunai, sum(debit) as debit, sum(kredit)as kredit from ks_tc_trans_um where no_registrasi='".$config['transaksi']['no_registrasi']."'group by no_registrasi")->row();
-		$tunai = isset($nominal->tunai) ? $nominal->tunai : 0 ;
-		$kredit = isset($nominal->kredit) ? $nominal->kredit : 0 ;
-		$debit = isset($nominal->debit) ? $nominal->debit : 0 ;
-		$um_total = $tunai + $kredit + $debit;
-		$uang_kembali = $um_total - $config['transaksi']['bill'];							
-		// echo '<pre>'; print_r($uang_kembali);die;
-		if( $debit > 0 || $kredit > 0 || $tunai > 0){
-			$insertMapingDet["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
-			$insertMapingDet["acc_no"] = '201020301';
-			$insertMapingDet["tipe_tx"] = 'D';
-			$insertMapingDet["nominal"] = $um_total;
-			$uraian="Uang Muka : [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
-			$insertMapingDet["keterangan"] = $uraian;
-			$jurnalData[] = $insertMapingDet;
-		}
+		if(isset($config['transaksi']['no_registrasi'])) {
+			// uang muka
+			$nominal = $db->query("select sum(tunai)as tunai, sum(debit) as debit, sum(kredit)as kredit from ks_tc_trans_um where no_registrasi='".$config['transaksi']['no_registrasi']."'group by no_registrasi")->row();
+			$tunai = isset($nominal->tunai) ? $nominal->tunai : 0 ;
+			$kredit = isset($nominal->kredit) ? $nominal->kredit : 0 ;
+			$debit = isset($nominal->debit) ? $nominal->debit : 0 ;
+			$um_total = $tunai + $kredit + $debit;
+			$uang_kembali = $um_total - $config['transaksi']['bill'];							
+			// echo '<pre>'; print_r($uang_kembali);die;
+			if( $debit > 0 || $kredit > 0 || $tunai > 0){
+				$insertMapingDet["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
+				$insertMapingDet["acc_no"] = '201020301';
+				$insertMapingDet["tipe_tx"] = 'D';
+				$insertMapingDet["nominal"] = $um_total;
+				$uraian="Uang Muka : [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
+				$insertMapingDet["keterangan"] = $uraian;
+				$jurnalData[] = $insertMapingDet;
+			}
 
-		if( $um_total > $config['transaksi']['bill'] ){
-			$insertMapingDet["id_ak_tc_transaksi"] = $id_ak_tc_transaksi;
-			$insertMapingDet["acc_no"] = '101010105';
-			$insertMapingDet["tipe_tx"] = 'K';
-			$insertMapingDet["nominal"] = $uang_kembali;
-			$uraian = "Uang Muka : [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
-			$insertMapingDet["keterangan"] = $uraian;
-			$jurnalData[] = $insertMapingDet;
+			if( $um_total > $config['transaksi']['bill'] ){
+				$insertMapingDet["id_ak_tc_transaksi"] = $id_ak_tc_transaksi;
+				$insertMapingDet["acc_no"] = '101010105';
+				$insertMapingDet["tipe_tx"] = 'K';
+				$insertMapingDet["nominal"] = $uang_kembali;
+				$uraian = "Uang Muka : [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
+				$insertMapingDet["keterangan"] = $uraian;
+				$jurnalData[] = $insertMapingDet;
+			}
 		}
 
 		return $jurnalData;
@@ -214,38 +259,7 @@
 		return $account;
 	}
 
-	function get_jurnal_kredit($config) {
-
-		$CI =&get_instance();
-		$db = $CI->load->database('default', TRUE);
-
-		$resume_pendapatan = $db->get_where('ak_pendapatan_v', array('kode_tc_trans_kasir' => $config['kode_tc_trans_kasir']))->row();
-
-		$account_number = $this->mapping_account();
-		// print_r($account_number);die;
-		$getData = array();
-		foreach ($account_number as $key => $value) {
-			# code...
-			// print_r($value);die;
-			$field = key($value);
-			$values = array_values($value);
-			// print_r($resume_pendapatan);die;
-			if( isset($resume_pendapatan->$field) AND $resume_pendapatan->$field > 0 ){
-				$dataJurnalKredit = array();
-	            $dataJurnalKredit["id_ak_tc_transaksi"] = $config['id_ak_tc_transaksi'];
-	            $dataJurnalKredit["acc_no"]  = $value[$field];
-	            $dataJurnalKredit["tipe_tx"] = 'K';
-				$dataJurnalKredit["nominal"] = $resume_pendapatan->$field;
-				$uraian_title = $this->get_title_text($field);
-	            $uraian="ADM MEDIS : [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
-	            $dataJurnalKredit["keterangan"] = $uraian;
-	            $getData[] = $dataJurnalKredit;
-	        }
-		}
-        
-        return $getData;
-
-	}
+	
 	
 	function get_jurnal_kredit_dokter($config){
 

@@ -146,7 +146,8 @@ class Proses_resep_prb extends MX_Controller {
             $row[] = $row_list->nama_pelayanan;
             // $row[] = '<div class="pull-right">'.number_format($row_list->total).'</div>'; 
             $status = ($row_list->proses_mutasi_prb==NULL)?'<label class="label label-warning">On Process</label>':'<a href="#" onclick="getMenu('."'farmasi/Proses_resep_prb/preview_mutasi/".$row_list->kode_trans_far."?flag=RJ'".')"><label class="label label-success" style="cursor: pointer"> <i class="fa fa-check-circle"></i> Selesai</label></a>';
-            $row[] = '<div class="center">'.$status.'</div>';             
+
+            // $row[] = '<div class="center">'.$status.'</div>';             
             $data[] = $row;
         }
 

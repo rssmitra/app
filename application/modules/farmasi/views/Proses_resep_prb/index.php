@@ -130,7 +130,7 @@ function popUnder(node) {
           <th>Nama Dokter</th>
           <th>Pelayanan</th>
           <!-- <th>Total</th> -->
-          <th>Status</th>
+          <!-- <th>Status</th> -->
         </tr>
       </thead>
       <tbody>

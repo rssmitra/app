@@ -700,7 +700,7 @@ class Billing extends MX_Controller {
         $dataTranskasir["change"] = $change;
 
         // tunai
-        $dataTranskasir["tunai"] = isset($_POST['jumlah_bayar_tunai']) ? (float)$_POST['jumlah_bayar_tunai']:(float)0;
+        $dataTranskasir["tunai"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
         // debet
         $dataTranskasir["debet"] = isset($_POST['jumlah_bayar_debet']) ? (float)$_POST['jumlah_bayar_debet'] : (float)0;
         $dataTranskasir["no_debet"] = $_POST['nomor_kartu_debet'];
@@ -716,29 +716,20 @@ class Billing extends MX_Controller {
         $dataTranskasir["nama_pasien"] = $_POST['nama_pasien_val'];
         // $dataTranskasir["no_registrasi"] = $_POST['no_registrasi'];
         $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
-        $dataTranskasir["keterangan"] = 'Pembayaran Administrasi Pasien pada Loket';
+        
+        $dataTranskasir["pembayar"] = $_POST['nama_pasien_val'];
 
-        if( in_array($_POST['kode_kelompok_val'], array(4,7,8,11,12,13,14,15,16)) ){
-            // nk_karyawan
+        // nk karyawan
+        if(isset($_POST['metode_bon_karyawan'])){
             $dataTranskasir["nk_karyawan"] = $_POST['total_nk'];
             $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
+            $dataTranskasir["keterangan"] = 'Bon Karyawan a.n '.$_POST['nama_pasien_val'];
         }else{
-            if(isset($_POST['metode_bon_karyawan'])){
-                $dataTranskasir["nk_karyawan"] = $_POST['total_nk'];
-                $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
-            }else{
-                $dataTranskasir["nk_karyawan"] = 0;
-            }
+            $dataTranskasir["keterangan"] = 'Pembayaran Administrasi Pasien pada Loket';
         }
-
-        if( !in_array($_POST['kode_kelompok_val'], array(1,4,7,8,11,12,13,14,15,16)) ){
-            $dataTranskasir["nk_perusahaan"] = $_POST['total_nk'];
-            $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
-            $dataTranskasir["pembayar"] = $_POST['perusahaan_penjamin'];
-        }else{
-            $dataTranskasir["pembayar"] = $_POST['nama_pasien_val'];
-            $dataTranskasir["nk_perusahaan"] = 0;
-        }
+        $dataTranskasir["nk_perusahaan"] = 0;
+        $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
+        
 
         $potongan_diskon = ($_POST['total_payment'] * ($_POST['jumlah_diskon']/100));
         $sisa_bill = $_POST['total_payment'] - $potongan_diskon;
@@ -777,7 +768,7 @@ class Billing extends MX_Controller {
         $dataAkunting["no_bukti"] = $seri_kuitansi_dt['seri_kuitansi'].  $seri_kuitansi_dt['no_kuitansi'];
         $dataAkunting["tgl_transaksi"] = date("Y-m-d H:i:s");
         $dataAkunting["uraian_transaksi"] = 'Pendapatan Pasien '.$seri_kuitansi_dt['seri_kuitansi'].' '.$_POST['no_mr_val'].' - '.$_POST['nama_pasien_val'];
-        $dataAkunting["total_nominal"] = $_POST['total_payment_all'];
+        $dataAkunting["total_nominal"] = $dataTranskasir["bill"];
         $dataAkunting["nama_pasien"] = $_POST['nama_pasien_val'];
         $dataAkunting["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
         $dataAkunting["no_mr"] = $_POST['no_mr_val'];

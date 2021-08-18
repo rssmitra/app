@@ -18,12 +18,13 @@ class Adm_kasir_apt_model extends CI_Model {
 
 		
 		$this->db->select($this->select);
-		$this->db->select('SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_rs) AS bill_rs, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr1) AS bill_dr1, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr2) AS bill_dr2, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr3) AS bill_dr3, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * lain_lain) AS lain_lain ');
+		$this->db->select('SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_rs) AS bill_rs, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr1) AS bill_dr1, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr2) AS bill_dr2, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr3) AS bill_dr3, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * lain_lain) AS lain_lain, (c.bill + c.potongan) as bill_kasir, c.tgl_jam as tgl_bayar ');
 		$this->db->from($this->table.' a');
 		$this->db->join('fr_tc_far b','b.kode_trans_far=a.kode_trans_far','left');
+		$this->db->join('tc_trans_kasir c','c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');
 		$this->db->where('a.kode_bagian', '060101');
 		$this->db->where('a.no_registrasi', 0);
-		$this->db->group_by('nama_pasien_layan, a.kode_trans_far, a.no_registrasi, a.kode_tc_trans_kasir, b.tgl_trans');
+		$this->db->group_by('nama_pasien_layan, a.kode_trans_far, a.no_registrasi, a.kode_tc_trans_kasir, b.tgl_trans, c.bill, c.potongan, c.tgl_jam');
 
 		if ( isset($_GET['search_by']) ) {
 			
@@ -41,8 +42,8 @@ class Adm_kasir_apt_model extends CI_Model {
 						
 		}else{
 			$this->db->where("CAST(tgl_trans as DATE) = ", date('Y-m-d'));
-			$this->db->where('status_selesai', 2);
-			$this->db->where('kode_tc_trans_kasir IS NULL');
+			// $this->db->where('status_selesai', 2);
+			// $this->db->where('kode_tc_trans_kasir IS NULL');
 		}
 		
 	}
