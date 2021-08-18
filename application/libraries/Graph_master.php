@@ -623,6 +623,10 @@ final Class Graph_master {
 				
 				if ($params['style']=='TableResumeKunjunganPasien') {
     				return $this->TableResumeKunjunganPasien($fields, $params, $data);
+				}
+				
+				if ($params['style']=='TableResumeKunjunganPasienAsuransi') {
+    				return $this->TableResumeKunjunganPasienAsuransi($fields, $params, $data);
     			}
 
     			if ($params['style']=='TableResumeHutang') {
@@ -1056,6 +1060,26 @@ final Class Graph_master {
 		// echo '<pre>';print_r($result);
     	// die;
     	$html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjunganPasien', $result, true);
+        
+        
+        $chart_data = array(
+			'xAxis' 	=> 0,
+			'series' 	=> $html,
+		);
+		return $chart_data;
+	}
+	
+	public function TableResumeKunjunganPasienAsuransi($fields, $params, $data){
+    	$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+    	
+    	// load view
+    	$result = array(
+    		'value' => $data,
+		);
+		// echo '<pre>';print_r($result);
+    	// die;
+    	$html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjunganPasienAsuransi', $result, true);
         
         
         $chart_data = array(

@@ -214,6 +214,11 @@
                 <input name="tbl-resume-kunjungan-pasien" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
                 <span class="lbl"> Rekapitulasi Kunjungan Berdasarkan Nama Pasien per Periode</span>
               </label>
+              <br>
+              <label>
+                <input name="tbl-resume-kunjungan-pasien-asuransi" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Kunjungan Berdasarkan Asuransi per Periode</span>
+              </label>
 
             </div>
             <br>

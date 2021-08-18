@@ -75,6 +75,15 @@ class Eks_poli extends MX_Controller {
             );
         }
 
+        if(isset($_GET['tbl-resume-kunjungan-pasien-asuransi'])){
+            $data[4] = array(
+                'nameid' => 'tbl-resume-kunjungan-pasien-asuransi',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=6&TypeChart=table&style=TableResumeKunjunganPasienAsuransi&'.$output.'',
+            );
+        }
+
         // $data[2] = array(
         //     'mod' => $_GET['mod'],
         //     'nameid' => 'graph-pie-1',
