@@ -438,6 +438,43 @@ class Templates extends MX_Controller {
             
             
         }
+
+        // modul eksekutif
+        if ($_GET['mod']==35) {
+
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=353&TypeChart=table&style=263&mod='.$_GET['mod'].'',
+            );
+
+            $data[1] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=351&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+            );
+
+            $data[2] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=352&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+            );
+
+            $data[3] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-2',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=354&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+
+        }
         
         echo json_encode($data);
     }

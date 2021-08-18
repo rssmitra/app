@@ -125,8 +125,8 @@ class Process_entry_resep extends MX_Controller {
                 
                 $sisa = $_POST['jumlah_pesan'] - $isset_jml_tebus;
                 $data_farmasi_detail = array(
-                    'jumlah_pesan' => $_POST['jumlah_pesan'],
-                    'jumlah_tebus' => $isset_jml_tebus,
+                    'jumlah_pesan' => ($_POST['jumlah_pesan']) ? $_POST['jumlah_pesan'] : 0,
+                    'jumlah_tebus' => ($isset_jml_tebus) ? $isset_jml_tebus : 0,
                     'sisa' => $sisa,
                     'kode_brg' => $this->regex->_genRegex($_POST['kode_brg'], 'RGXQSL'),
                     'harga_beli' => $_POST['pl_harga_beli'],

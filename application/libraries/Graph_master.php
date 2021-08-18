@@ -542,12 +542,87 @@ final Class Graph_master {
 			$exc_qry_5 = $db->query($query_5)->row();	
 			$fields['total_pendapatan'] = array('flag' => 'Total Pendapatan Lab', 'total' => $exc_qry_5->total);
 			
-			
 			/*excecute query*/
 			$data = $fields;
 		}
 
 		if($params['prefix']==264){
+			$query = "SELECT TOP 20 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
+						FROM pm_hasilpasien_v b
+						WHERE YEAR(b.tgl_periksa) = ".date('Y')."
+						GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";	
+			$fields = array('Nama_Pemeriksaan' => 'nama_tindakan', 'Total' => 'total');
+			$title = '<span style="font-size:13.5px">20 Jenis Pemeriksaan Lab Terbanyak  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' Tahun '.date('Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+
+		// modul eksekutif
+		if($params['prefix']==351){
+			$query = "SELECT MONTH(tgl_daftar) AS bulan, COUNT(kode_penunjang) AS total 
+						FROM pm_tc_penunjang 
+						WHERE YEAR(tgl_daftar)=".date('Y')." GROUP BY MONTH(tgl_daftar)";	
+			$fields = array('Kunjungan Pasien Lab'=>'total');
+			$title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Lab Tahun '.date('Y').'</span>';
+			$subtitle = 'Source: RSSM - SIRS';
+			/*excecute query*/
+			$data = $db->query($query)->result_array();
+		}
+
+		if($params['prefix']==352){
+			$query = "SELECT TOP 10 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
+						FROM pm_hasilpasien_v b
+						WHERE YEAR(b.tgl_periksa) = ".date('Y')."
+						GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";	
+			$data_qry = $CI->db->query($query)->result_array();
+			$getData = [];
+			foreach ($data_qry as $key => $value) {
+				$data[] = array( 'name' => $value['nama_tindakan'], 'total' => $value['total'] );
+			}
+
+			$fields = array('name' => 'total');
+			$title = '<span style="font-size:13.5px">10 Jenis Pemeriksaan Lab Terbanyak Tahun '.date('Y').'</span>';
+			$subtitle = 'Source : RSSM - SIRS';
+		}
+
+		if($params['prefix']==353){
+			$title = '<span style="font-size:18px; font-weight: bold">Rekapitulasi Data Pasien Laboratorium Hari Ini, '.date('D, d/m/Y').' </span></small>';
+			$subtitle = 'Source: RSSM - SIRS';
+			// query kunjungan pasien hari ini
+			$query_1 = "SELECT COUNT(no_registrasi) AS total 
+						FROM tc_registrasi a
+						WHERE CAST(tgl_jam_masuk as DATE)='".date('Y-m-d')."' AND a.kode_perusahaan=120 GROUP BY MONTH(tgl_jam_masuk)";
+			$exc_qry_1 = $db->query($query_1)->row();	
+			$fields['kunjungan_bpjs'] = array('flag' => 'Pendaftaran Pasien BPJS ', 'total' => $exc_qry_1->total);
+
+			$query_4 = "SELECT COUNT(no_registrasi) AS total 
+						FROM tc_registrasi a
+						WHERE CAST(tgl_jam_masuk as DATE)='".date('Y-m-d')."' AND a.kode_perusahaan != 120 GROUP BY MONTH(tgl_jam_masuk)";
+			$exc_qry_4 = $db->query($query_4)->row();	
+			$fields['kunjungan'] = array('flag' => 'Pendaftaran Pasien Umum ', 'total' => $exc_qry_4->total);
+
+			// submit kasir
+			$query_2 = "SELECT COUNT(no_registrasi) AS total 
+						FROM tc_trans_kasir 
+						WHERE no_registrasi IN (SELECT no_registrasi
+						FROM tc_registrasi a
+						WHERE CAST(tgl_jam_masuk as DATE)='".date('Y-m-d')."' GROUP BY no_registrasi)";
+			$exc_qry_2 = $db->query($query_2)->row();	
+			$fields['pemeriksaan'] = array('flag' => 'Submit Kasir', 'total' => $exc_qry_2->total);
+
+			// isi hasil
+			$query_5 = "SELECT SUM(bill_rs) AS total 
+						FROM tc_trans_pelayanan 
+						WHERE CAST(tgl_transaksi as DATE)='".date('Y-m-d')."' GROUP BY CAST(tgl_transaksi as DATE)";
+			$exc_qry_5 = $db->query($query_5)->row();	
+			$fields['total_pendapatan'] = array('flag' => 'Total Pendapatan RS', 'total' => $exc_qry_5->total);
+			
+			/*excecute query*/
+			$data = $fields;
+		}
+
+		if($params['prefix']==354){
 			$query = "SELECT TOP 20 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
 						FROM pm_hasilpasien_v b
 						WHERE YEAR(b.tgl_periksa) = ".date('Y')."
@@ -604,8 +679,8 @@ final Class Graph_master {
     				return $this->TableStyleOneData($fields, $params, $data);
     			}
 
-    			if ($params['style']==261) {
-    				return $this->TableStyleCustom261($fields, $params, $data);
+    			if ($params['style']==263) {
+    				return $this->TableStyleCustom263($fields, $params, $data);
     			}
 
     			// custom table resume kunjungan pasien
@@ -952,7 +1027,7 @@ final Class Graph_master {
 		return $chart_data;
     }
 
-    public function TableStyleCustom261($fields, $params, $data){
+    public function TableStyleCustom263($fields, $params, $data){
     	$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
     	

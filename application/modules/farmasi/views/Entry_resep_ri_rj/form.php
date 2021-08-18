@@ -340,15 +340,17 @@ $(document).ready(function(){
         }
     });
 
-    // $('#resep_ditangguhkan').click(function() {
-    //   if($('#sisa_stok').val() <= 0){
-    //     if (!$(this).is(':checked')) {
-    //       $('#btn_submit').attr('disabled', true);
-    //     }else{
-    //       $('#btn_submit').attr('disabled', false);
-    //     }
-    //   }
-    // });
+    $('#resep_ditangguhkan').click(function() {
+      if($('#sisa_stok').val() <= 0){
+        if (!$(this).is(':checked')) {
+          $('#jumlah_pesan').attr('readonly', true);
+          ('#btn_submit').attr('disabled', true);
+        }else{
+          $('#jumlah_pesan').attr('readonly', false);
+          $('#btn_submit').attr('disabled', false);
+        }
+      }
+    });
 
     $('#prb_ditangguhkan').click(function() {
       if($('#sisa_stok').val() <= 0){
@@ -420,21 +422,21 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
       /*radio*/
       $("input[name=urgensi][value="+obj.urgensi+"]").prop('checked', true);
 
-      // if(obj.prb_ditangguhkan == 1){
-      //   $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
-      //   $('#btn_submit').attr('disabled', false);
-      // }else{
-      //   $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
-      //   $('#btn_submit').attr('disabled', true);
-      // }
+      if(obj.prb_ditangguhkan == 1){
+        $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
+        $('#btn_submit').attr('disabled', false);
+      }else{
+        $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
+        $('#btn_submit').attr('disabled', true);
+      }
 
-      // if(obj.resep_ditangguhkan == 1){
-      //   $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
-      //   $('#btn_submit').attr('disabled', false);
-      // }else{
-      //   $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
-      //   $('#btn_submit').attr('disabled', true);
-      // }
+      if(obj.resep_ditangguhkan == 1){
+        $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
+        $('#btn_submit').attr('disabled', false);
+      }else{
+        $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
+        $('#btn_submit').attr('disabled', true);
+      }
       
       $('#dosis_start').val(obj.dosis_per_hari);
       $('#dosis_end').val(obj.dosis_obat);
