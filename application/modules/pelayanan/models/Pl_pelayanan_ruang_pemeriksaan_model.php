@@ -186,5 +186,20 @@ class Pl_pelayanan_ruang_pemeriksaan_model extends CI_Model {
 		return $query->row();
 	}
 
+	public function get_pemeriksaan($no_kunjungan)
+	{
+		$this->db->select('pm_pemeriksaanpasien_v.*, a.kode_mt_hasilpm, b.hasil');
+		$this->db->from('pm_pemeriksaanpasien_v');
+		$this->db->join('pm_mt_standarhasil a','pm_pemeriksaanpasien_v.kode_tarif=a.kode_tarif','left');
+		$this->db->join('pm_tc_hasilpenunjang b','b.kode_trans_pelayanan=pm_pemeriksaanpasien_v.kode_trans_pelayanan','left');
+		$this->db->where( 'pm_pemeriksaanpasien_v.no_kunjungan',$no_kunjungan );
+		$this->db->order_by('pm_pemeriksaanpasien_v.kode_trans_pelayanan','ASC');
+		$query = $this->db->get()->result();
+		// echo '<pre>';print_r($this->db->last_query());die;
+		return $query;
+		
+	}
+
+
 
 }

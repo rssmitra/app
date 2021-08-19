@@ -71,6 +71,7 @@ $(document).ready(function(){
     $('input[name=metode_bon_karyawan]').change(function(){
         preventDefault();
         if($(this).is(':checked')){
+          $('#div_bon_karyawan').show();
           // sisa dari jumlah yang dibayarkan
           var sum_class = sumClass('uang_dibayarkan');
           var total_bayar = formatNumberFromCurrency($('#total_pembayaran').text());
@@ -82,6 +83,7 @@ $(document).ready(function(){
         } else {
           $('#jumlah_nk').val(0);
           $('#jumlah_diskon').val(0);
+          $('#div_bon_karyawan').hide();
         }
         sum_total_pembayaran();
     });
@@ -340,6 +342,7 @@ function sum_total_pembayaran(){
           </div>
         </div>
 
+      <div id="div_bon_karyawan" style="display:none">
         <hr class="separator">
         <p><b>NOTA KREDIT PERUSAHAAN</b></p>
         <div class="form-group">
@@ -355,6 +358,7 @@ function sum_total_pembayaran(){
             <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
           </div>
         </div>
+      </div>
 
         <hr class="separator">
         <p><b>PETUGAS KASIR</b></p>

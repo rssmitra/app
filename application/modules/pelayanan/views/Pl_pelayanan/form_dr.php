@@ -353,7 +353,7 @@ function getDataAntrianPasien(){
     $('#pasien_batal').text(arr_cancel.length);
 
     console.log(arr_cancel.length);
-});
+  });
 
 }
 
