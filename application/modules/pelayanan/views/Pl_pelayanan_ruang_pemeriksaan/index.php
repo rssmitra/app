@@ -195,6 +195,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
         <tr>  
           <th width="30px" class="center">No</th>
           <th>No Kunjungan</th>
+          <th>No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
           <th>Nama Dokter</th>

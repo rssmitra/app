@@ -4,38 +4,52 @@
   }
 </script>
 
-<style>
-    .wysiwyg-editor{
-        max-height: 700px !important;
-    }
-</style>
-
 <!-- hidden form -->
+<input type="hidden" name="kode_penunjang" id="kode_penunjang" value="<?php echo isset($riwayat->kode_expertise)?$riwayat->kode_expertise:0?>">
 <input type="hidden" name="kode_expertise" id="kode_expertise" value="<?php echo isset($riwayat->kode_expertise)?$riwayat->kode_expertise:0?>">
 <input type="hidden" name="jenis_expertise" id="jenis_expertise" value="<?php echo $jenis_expertise?>">
 <input type="hidden" name="kode_bag_expertise" id="kode_bag_expertise" value="<?php echo $kode_bag_expertise?>">
-
-<div class="pull-left">
-  <p style="font-size: 15px">INPUT HASIL PEMERIKSAAN<br>USG Abdomen Full</p>
-</div>
 
 <div class="pull-right" style="padding-bottom: 3px">
   <div class="form-group">
     <div class="col-sm-12 no-padding">
       <button type="button" class="btn btn-xs btn-inverse" id="btn_print_hasil" onclick="cetak_hasil_expertise('<?php echo isset($riwayat->kode_expertise)?$riwayat->kode_expertise:0?>','<?php echo $jenis_expertise?>')"> <i class="fa fa-print"></i> Cetak Hasil Pemeriksaan </button>
-      <button type="button" class="btn btn-xs btn-primary" id="btn_delete_hasil"> <i class="fa fa-save"></i> Simpan Hasil Pemeriksaan</button>
+      <button type="submit" class="btn btn-xs btn-primary" id="btn_save"> <i class="fa fa-save"></i> Simpan Hasil Pemeriksaan</button>
     </div>
   </div>
 </div>
 
-<div class="form-group">
-  <div class="col-md-12 no-padding">
-    <div class="wysiwyg-editor" id="editor_konten" style="height: 700px !important">
-      <?php echo isset($riwayat->hasil_expertise)?$riwayat->hasil_expertise:''?>
-    </div>
-    <textarea spellcheck="false" id="konten" name="konten" style="display:none"></textarea>
+<div class="row">
+  <div class="col-sm-12">
+
+      <?php
+        $no = 0;
+        foreach ($pemeriksaan as $k => $v) :
+          $no++;
+      ?>
+        <!-- hidden form -->
+        <input type="hidden" name="kode_mt_hasilpm[<?php echo $v->kode_trans_pelayanan; ?>]" value="<?php echo $v->kode_mt_hasilpm; ?>">
+        <input type="hidden" name="kode_trans_pelayanan[]" value="<?php echo $v->kode_trans_pelayanan; ?>">
+        <div class="panel-body">
+          <span>Nama Pemeriksaan <?php echo $no; ?>:</span><br>
+          <span style="font-weight: bold"><?php echo strtoupper($v->nama_tindakan)?></span>
+          <div class="wysiwyg-editor" id="editor_konten_<?php echo $no?>" style="height: 300px !important">
+            <?php echo isset($v->hasil)?$v->hasil:''?>
+          </div>
+          <textarea spellcheck="false" id="konten<?php echo $no?>" name="hasil_pemeriksaan[<?php echo $v->kode_trans_pelayanan; ?>]" style="display:none"> <?php echo isset($v->hasil)?$v->hasil:''?></textarea>
+        </div>
+      <?php endforeach; ?>
+
   </div>
+
+  <div class="col-sm-12" style="margin-top: 10px"> 
+      <span style="font-weight: bold">Catatan Pemeriksaan : </span><br>
+      <textarea name="catatan_hasil" id="catatan_hasil" class="form-control" cols="50" style="height:100px !important;"><?php echo isset($pemeriksaan[0]->catatan_hasil)?$pemeriksaan[0]->catatan_hasil:'';?></textarea>
+  </div>
+
+
 </div>
+
 
 <script src="<?php echo base_url()?>/assets/js/jquery-ui.custom.js"></script>
 <script src="<?php echo base_url()?>/assets/js/jquery.ui.touch-punch.js"></script>
@@ -47,7 +61,7 @@
 
 <script type="text/javascript">
     jQuery(function($) {
-      $('.wysiwyg-editor').ace_wysiwyg({
+      $('#editor_konten_1, #editor_konten_2, #editor_konten_3, #editor_konten_4').ace_wysiwyg({
         toolbar:
         [
           {
@@ -99,7 +113,11 @@
       }).prev().addClass('wysiwyg-style2');
 
       $('#form_pelayanan').on('reset', function() {
-        $('#editor_konten').empty();
+        $('#editor_konten_1').empty();
+        $('#editor_konten_2').empty();
+        $('#editor_konten_3').empty();
+        $('#editor_konten_4').empty();
+        $('#editor_konten_5').empty();
       });
 
     });

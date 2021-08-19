@@ -725,6 +725,8 @@ class Billing extends MX_Controller {
             $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
             $dataTranskasir["keterangan"] = 'Bon Karyawan a.n '.$_POST['nama_pasien_val'];
         }else{
+            $dataTranskasir["nk_karyawan"] = 0;
+            $dataTranskasir["no_mr_karyawan"] = '';
             $dataTranskasir["keterangan"] = 'Pembayaran Administrasi Pasien pada Loket';
         }
         $dataTranskasir["nk_perusahaan"] = 0;

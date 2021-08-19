@@ -32,8 +32,9 @@ $(document).ready(function(){
 
     /*when page load find pasien by mr*/
     find_pasien_by_keyword('<?php echo $no_mr?>');
+    get_riwayat_medis('<?php echo $no_mr?>');
 
-    $('#form_default_pelayanan').load('pelayanan/Pl_pelayanan_ruang_pemeriksaan/form_input_hasil?mr=<?php echo $no_mr?>&id='+$('#id_tc_pesanan').val()+'&no_kunjungan='+$('#no_kunjungan').val()+'&kode_bag=<?php echo $kode_bagian; ?>'); 
+    $('#form_default_pelayanan').load('pelayanan/Pl_pelayanan_ruang_pemeriksaan/form_input_hasil?mr=<?php echo $no_mr?>&id='+$('#id_tc_pesanan').val()+'&no_kunjungan='+$('#no_kunjungan').val()+'&bag=<?php echo $kode_bagian; ?>'); 
 
     // get data antrian pasien
     setInterval("getDataAntrianPasien();",30000); 
@@ -43,7 +44,11 @@ $(document).ready(function(){
 
     $('#form_pelayanan').on('submit', function(){
                
-        $('#konten').val($('#editor_konten').html());
+        $('#konten1').val($('#editor_konten_1').html());
+        $('#konten2').val($('#editor_konten_2').html());
+        $('#konten3').val($('#editor_konten_3').html());
+        $('#konten4').val($('#editor_konten_4').html());
+        $('#konten5').val($('#editor_konten_5').html());
         var formData = new FormData($('#form_pelayanan')[0]);        
         i=0;
         url = $('#form_pelayanan').attr('action');
@@ -100,9 +105,9 @@ $(document).ready(function(){
                 
               }else{          
 
-                $.achtung({message: jsonResponse.message, timeout:5});  
+                $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
                 //focus tabs diagnosa
-                getMenuTabs('pelayanan/Pl_pelayanan_ruang_pemeriksaan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($kode_bagian)?$kode_bagian:''?>', 'tabs_form_pelayanan'); 
+                getMenuTabs('pelayanan/Pl_pelayanan_ruang_pemeriksaan/diagnosa/<?php echo $id?>/<?php echo $kunjungan->no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($kode_bagian)?$kode_bagian:''?>', 'tabs_form_pelayanan'); 
 
               }        
 
@@ -322,15 +327,17 @@ function get_riwayat_medis(no_mr){
 
   $.getJSON("templates/References/get_riwayat_medis/" +no_mr, '', function (data) { 
       $('#cppt_data').html(data.html); 
+      $('#cppt_data_on_tabs').html(data.html); 
   });
 
 }
 
 function getDataAntrianPasien(){
 
-  getTotalBilling();
+  // getTotalBilling();
   $.getJSON("pelayanan/Pl_pelayanan_ruang_pemeriksaan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
         $('#no_mr_selected option').remove();         
+        $('#antrian_pasien_tbl_done tbody').remove();         
         $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
         var arr = [];
         var arr_cancel = [];
@@ -340,7 +347,11 @@ function getDataAntrianPasien(){
             var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
             var penjamin = (o.kode_perusahaan==120)? '('+o.nama_perusahaan+')' : '' ;
             var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? (o.kode_perusahaan == 120) ? '' : 'style="background-color: #6fb3e0; color: black"' : 'style="background-color: #f998878c; color: black"';
-            $('<option value="'+o.no_mr+'" data-id="'+o.id_tc_pesanan+'/'+o.no_kunjungan+'" '+selected+' '+style+'>'+no+'. '+o.no_mr+' - ' + o.nama + ' '+penjamin+' </option>').appendTo($('#no_mr_selected'));  
+
+            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+no+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_tc_pesanan+'/'+o.referensi_no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_tc_pesanan+','+o.referensi_no_kunjungan+','+"'"+o.no_mr+"'"+', '+no+')">'+o.no_mr+' - ' + o.nama + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_done')); 
+
+
+            $('<option value="'+o.no_mr+'" data-id="'+o.id_tc_pesanan+'/'+o.referensi_no_kunjungan+'" '+selected+' '+style+'>'+no+'. '+o.no_mr+' - ' + o.nama + ' '+penjamin+' </option>').appendTo($('#no_mr_selected'));  
             // sudah dilayani
             if (o.tgl_keluar_poli != null) {
                 arr.push(o);
@@ -371,87 +382,10 @@ function getTotalBilling(){
 
 }
 
-function selesaikanKunjungan(){
-
-  noMr = $('#noMrHidden').val();
+function click_selected_patient(id_tc_pesanan, no_kunjungan, no_mr, no){
   preventDefault();  
-  getMenuTabs('pelayanan/Pl_pelayanan_ruang_pemeriksaan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($kode_bagian)?$kode_bagian:''?>', 'tabs_form_pelayanan');
-  $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ruang_pemeriksaan/processPelayananSelesai?bag='+$('#kode_bagian_val').val()+'');
-  $('#form_default_pelayanan').show('fast');
-  $('#form_default_pelayanan').load('pelayanan/Pl_pelayanan_ruang_pemeriksaan/form_end_visit?mr='+noMr+'&id='+$('#id_tc_pesanan').val()+'&no_kunjungan='+$('#no_kunjungan').val()+''); 
-
-}
-
-function backToDefaultForm(){
-
-  noMr = $('#noMrHidden').val();
-  preventDefault();  
-  $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ruang_pemeriksaan/processPelayananSelesai');
-  $('#form_default_pelayanan').hide('fast');
-  $('#form_default_pelayanan').html(''); 
-  
-}
-
-function perjanjian(){
-  noMr = $('#noMrHidden').val();
-  if (noMr == '') {
-    alert('Silahkan cari pasien terlebih dahulu !'); return false;    
-  }else{
-    $('#form_modal').load('registration/reg_pasien/form_perjanjian_modal/'+noMr); 
-    $("#GlobalModal").modal();
-  }
-}
-
-function cancel_visit(no_registrasi, no_kunjungan){
-
-  preventDefault();  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan_ruang_pemeriksaan/cancel_visit",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
-
-}
-
-function rollback(no_registrasi, no_kunjungan, flag){
-
-  preventDefault();  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan_ruang_pemeriksaan/rollback",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val(), flag: flag },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan_ruang_pemeriksaan/form/'+$('#id_tc_pesanan').val()+'/'+no_kunjungan+'?no_mr='+$('#noMrHidden').val()+'');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
-
+  $('#no_antrian_tbl').text(no);
+  getMenu('pelayanan/Pl_pelayanan_ruang_pemeriksaan/form/'+id_tc_pesanan+'/'+no_kunjungan+'?no_mr='+no_mr+'&bag='+$('#kode_bagian_val').val()+'');
 }
 
 </script>
@@ -515,22 +449,6 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
 </style>
 
-<div class="scrollbar ace-settings-container" id="ace-settings-container-rj" style="position: fixed">
-  <div class="btn btn-app btn-xs btn-primary ace-settings-btn" id="ace-settings-btn-rj">
-    <i class="ace-icon fa fa-file bigger-130"></i>
-  </div>
-
-  <div class="ace-settings-box clearfix" id="ace-settings-box-rj">
-
-    <div class="pull-left">
-        <center><b>PENGKAJIAN MEDIS RAWAT JALAN</b><hr></center>
-        <div id="cppt_data">Tidak ada data ditemukan</div>
-    </div>
-
-
-  </div><!-- /.ace-settings-box -->
-</div> 
-
 <div class="row">
   <div class="page-header">  
       <ul class="nav ace-nav">
@@ -566,14 +484,6 @@ function rollback(no_registrasi, no_kunjungan, flag){
           </a>
         </li>
 
-        <li class="light-blue" style="background-color: lightgrey !important;color: black">
-          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black" onclick="show_modal('adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/getDetailTransaksiDokter?kode_dokter=265&from_tgl=2020-04-17&to_tgl=2020-04-17&type=view_only','TAGIHAN DOKTER')">
-            <span class="user-info">
-              <b><span style="font-size: 14px;" id="total_bill_dr_current"></span></b>
-              <small>Total Billing</small></span>
-          </a>
-        </li>
-
         <li style="color: black">
           <a href="#" style="background-color: red !important; color: white" id="btn_update_session_poli">
             Tutup Session Poli
@@ -588,13 +498,13 @@ function rollback(no_registrasi, no_kunjungan, flag){
   </div>  
 <div>   
 
-<form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
+<form class="form-horizontal" method="post" id="form_pelayanan" action="pelayanan/Pl_pelayanan_ruang_pemeriksaan/process" enctype="multipart/form-data" autocomplete="off" >      
   
     <!-- hidden form -->
     <input type="hidden" name="noMrHidden" id="noMrHidden">
     <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo ($id)?$id:''?>">
     <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
-    <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($no_kunjungan)?$no_kunjungan:''?>" id="no_kunjungan" readonly>
+    <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($kunjungan->no_kunjungan)?$kunjungan->no_kunjungan:''?>" id="no_kunjungan" readonly>
     <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>  
     <!-- hidden form -->
     <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
@@ -643,39 +553,13 @@ function rollback(no_registrasi, no_kunjungan, flag){
       </div>
 
       <!-- form pelayanan -->
-      <div class="col-md-10" style="width: 85%">
-
-        
-        <!-- end action form  -->
-        
-        <div class="pull-left" style="margin-bottom:1%; width: 100%">
-          <?php if(empty($value->tgl_keluar_poli)) :?>
-          <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
-          <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
-          <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-          <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
-        </div>
-
-        <div class="pull-right">
-            <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">Pasien Selesai</label>
-            <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important">Pasien Umum</label>
-        </div>
-
-        <br>
-        <div class="form-group">
-          <label class="control-label col-sm-2" for="" ><i class="fa fa-user bigger-120 green"></i> Antrian Pasien</label>
-          <div class="col-sm-7">
-            <select class="form-control" name="no_mr_selected" id="no_mr_selected" style="font-weight: bold">
-                <option value="">-Silahkan Pilih-</option>
-              </select>
-          </div>
-        </div>
+      <div class="col-md-7">
 
         <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
         <table class="table table-bordered">
           <tr style="background-color:#f4ae11">
             <td rowspan="2" width="100px" class="center" style="background-color: darkturquoise;">
-            <span style="font-size: 11px">No. Antrian </span> <br> <span style="font-size: 30px; font-weight: bold"><?php echo isset($value->no_antrian)?$value->no_antrian:0?></span>
+            <span style="font-size: 11px">No. Antrian </span> <br> <span style="font-size: 30px; font-weight: bold" id="no_antrian_tbl"></span>
             </td>
             <th>Kode</th>
             <th>No Reg</th>
@@ -685,11 +569,10 @@ function rollback(no_registrasi, no_kunjungan, flag){
           </tr>
 
           <tr>
-            <td><?php echo $this->session->userdata('user')->fullname?></td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
+            <td><?php echo $value->nama;?></td>
+            <td><?php echo $kunjungan->no_registrasi?></td>
+            <td><?php echo $kunjungan->tgl_masuk?></td>
+            <td><?php echo $nama_dokter?></td>
           </tr>
 
         </table>
@@ -699,6 +582,42 @@ function rollback(no_registrasi, no_kunjungan, flag){
         <!-- form default pelayanan pasien -->
         <div id="form_default_pelayanan"></div>
         
+      </div>
+
+      <div class="col-md-3 no-padding">
+        <div class="tabbable">
+          <ul class="nav nav-tabs" id="myTab">
+              <li class="active">
+                  <a data-toggle="tab" href="#antrian_tabs">
+                      <i class="green ace-icon fa fa-user bigger-120"></i>
+                      Antrian Pasien
+                  </a>
+              </li>
+
+              <li>
+                  <a data-toggle="tab" href="#rm_tabs">
+                      <i class="green ace-icon fa fa-history bigger-120"></i>
+                      Riwayat Medis
+                  </a>
+              </li>
+          </ul>
+
+          <div class="tab-content">
+              <div id="antrian_tabs" class="tab-pane fade in active">
+                  <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Daftar Antrian Pasien</span>
+                  <table class="table" id="antrian_pasien_tbl_done" style="background: linear-gradient(77deg, #fee951cc, transparent)">
+                      <tbody>
+                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                      </tbody>
+                  </table>
+
+              </div>
+
+              <div id="rm_tabs" class="tab-pane fade">
+                  <div id="cppt_data_on_tabs"></div>
+              </div>
+          </div>
+        </div>
       </div>
 
 </form>

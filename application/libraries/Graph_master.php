@@ -587,7 +587,7 @@ final Class Graph_master {
 		}
 
 		if($params['prefix']==353){
-			$title = '<span style="font-size:18px; font-weight: bold">Rekapitulasi Data Pasien Laboratorium Hari Ini, '.date('D, d/m/Y').' </span></small>';
+			$title = '<span style="font-size:18px; font-weight: bold">Resume Pendaftaran Pasien Hari Ini, '.date('D, d/m/Y').' </span></small>';
 			$subtitle = 'Source: RSSM - SIRS';
 			// query kunjungan pasien hari ini
 			$query_1 = "SELECT COUNT(no_registrasi) AS total 
@@ -600,7 +600,7 @@ final Class Graph_master {
 						FROM tc_registrasi a
 						WHERE CAST(tgl_jam_masuk as DATE)='".date('Y-m-d')."' AND a.kode_perusahaan != 120 GROUP BY MONTH(tgl_jam_masuk)";
 			$exc_qry_4 = $db->query($query_4)->row();	
-			$fields['kunjungan'] = array('flag' => 'Pendaftaran Pasien Umum ', 'total' => $exc_qry_4->total);
+			$fields['kunjungan'] = array('flag' => 'Pendaftaran Pasien Umum & Asuransi ', 'total' => $exc_qry_4->total);
 
 			// submit kasir
 			$query_2 = "SELECT COUNT(no_registrasi) AS total 
