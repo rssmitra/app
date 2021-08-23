@@ -232,6 +232,15 @@ class Billing extends MX_Controller {
         
     }
 
+    public function getDetailLessApt($kode_trans_far, $tipe){
+      /* Get detail data Farmasi */
+      $result = json_decode($this->Billing->getDetailDataApt($kode_trans_far));
+      
+      $html = $this->Billing->getDetailBillingRILess($kode_trans_far, $tipe, $result);
+
+      echo json_encode(array('html' => $html));
+    }
+
     public function getRincianBilling($noreg, $tipe, $field){
         $temp = new Templates;
         /*header html*/
@@ -472,7 +481,7 @@ class Billing extends MX_Controller {
             'kasir_data' => $result->kasir_data,
             'kunjungan' => $grouping,
         );
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data['data']);die;
         $data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
         $this->load->view('Billing/cetakBilling_sem_rssm', $data, false);
 
@@ -545,7 +554,9 @@ class Billing extends MX_Controller {
         $dataTranskasir["cash"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai']:(float)0;
         $dataTranskasir["change"] = $change;
 
-        $dataTranskasir["tunai"] = isset($_POST['jumlah_bayar_tunai']) ? (float)$_POST['jumlah_bayar_tunai']:(float)0;
+        // Tunai
+        // $dataTranskasir["tunai"] = isset($_POST['jumlah_bayar_tunai']) ? (float)$_POST['jumlah_bayar_tunai']:(float)0;
+        $dataTranskasir["tunai"] = isset($_POST['uang_dibayarkan_tunai']) ? (float)$_POST['uang_dibayarkan_tunai'] : (float)0;
         // debet
         $dataTranskasir["debet"] = isset($_POST['jumlah_bayar_debet']) ? (float)$_POST['jumlah_bayar_debet'] : (float)0;
         $dataTranskasir["no_debet"] = $_POST['nomor_kartu_debet'];
