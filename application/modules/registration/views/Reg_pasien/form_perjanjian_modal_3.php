@@ -80,12 +80,12 @@ jQuery(function($) {
   
   });
  
-
 });
 
 $(document).ready(function(){
 
     $('#jenis_instalasi').focus();    
+    $('#change_modul_view_perjanjian_form').load('registration/Reg_pasien/show_modul/RJ');
 
     $('#form_booking').ajaxForm({      
 
@@ -129,23 +129,17 @@ $(document).ready(function(){
       }      
 
     });     
-
-      
+  
     $('select[name="jenis_instalasi"]').change(function () {      
 
         if ($(this).val()) {          
-
           /*load modul*/
-
-          $('#change_modul_view_perjanjian').load('registration/Reg_pasien/show_modul/'+$(this).val());
+          $('#change_modul_view_perjanjian_form').load('registration/Reg_pasien/show_modul/'+$(this).val());
           $('#tgl_kunjungan_form').hide('fast');
           //$("html, body").animate({ scrollTop: "700px" }, "slow");  
-
         } else {          
-
           /*Eksekusi jika salah*/
           $('#tgl_kunjungan_form').hide('fast');
-
         }        
 
     });
@@ -199,8 +193,6 @@ function formatDate(date) {
   return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
 }
 
-
-
 </script>
 
 <div class="row">
@@ -208,9 +200,7 @@ function formatDate(date) {
   <div class="col-xs-12">  
 
     <!-- div.dataTables_borderWrap -->
-
-    <div>    
-
+ 
     <div id="user-profile-1" class="user-profile row">
       
       <div class="col-xs-12 col-sm-12">
@@ -218,67 +208,67 @@ function formatDate(date) {
 
         <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
 
-        <!-- hidden form  -->
-        <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
-        <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">
-        <input type="hidden" name="alamat" value="<?php echo $value->almt_ttp_pasien?>" id="alamat">
-        <input type="hidden" name="jd_id" id="jd_id">
-        <input type="hidden" name="selected_day" id="selected_day">
-        <input type="hidden" name="selected_time" id="selected_time">
-        <input type="hidden" name="time_start" id="time_start">
-        <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
-        <input type="hidden" name="kode_booking" id="kode_booking_id" value="<?php echo isset($booking->regon_booking_kode)?$booking->regon_booking_kode:''?>">
-        <input type="hidden" name="is_no_mr" id="is_no_mr" value="N">
+          <!-- hidden form  -->
+          <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
+          <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">
+          <input type="hidden" name="alamat" value="<?php echo $value->almt_ttp_pasien?>" id="alamat">
+          <input type="hidden" name="jd_id" id="jd_id">
+          <input type="hidden" name="selected_day" id="selected_day">
+          <input type="hidden" name="selected_time" id="selected_time">
+          <input type="hidden" name="time_start" id="time_start">
+          <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
+          <input type="hidden" name="kode_booking" id="kode_booking_id" value="<?php echo isset($booking->regon_booking_kode)?$booking->regon_booking_kode:''?>">
+          <input type="hidden" name="is_no_mr" id="is_no_mr" value="N">
 
-        <div class="form-group">
+          <div class="form-group">
 
-            <label class="control-label col-sm-2">*No.MR</label>
+              <label class="control-label col-sm-2">*No.MR</label>
 
-            <div class="col-sm-2">
+              <div class="col-sm-2">
 
-                <input type="text" name="no_mr_show" class="form-control" id="no_mr_show" value="<?php echo $value->no_mr?>" readonly="">
+                  <input type="text" name="no_mr_show" class="form-control" id="no_mr_show" value="<?php echo $value->no_mr?>" readonly="">
 
-            </div>
+              </div>
 
-        </div>
+          </div>
 
-        <div class="form-group">
-          <label class="control-label col-sm-2">Jenis Penjamin</label>
-          <div class="col-md-8">
-            <div class="radio">
-                  <label>
-                    <input name="jenis_penjamin" type="radio" class="ace" value="Jaminan Perusahaan" />
-                    <span class="lbl"> Jaminan Perusahaan</span>
-                  </label>
-                  <label>
-                    <input name="jenis_penjamin" type="radio" class="ace" value="Umum" />
-                    <span class="lbl"> Umum</span>
-                  </label>
+          <div class="form-group">
+            <label class="control-label col-sm-2">Jenis Penjamin</label>
+            <div class="col-md-8">
+              <div class="radio">
+                    <label>
+                      <input name="jenis_penjamin" type="radio" class="ace" value="Jaminan Perusahaan" />
+                      <span class="lbl"> Jaminan Perusahaan</span>
+                    </label>
+                    <label>
+                      <input name="jenis_penjamin" type="radio" class="ace" value="Umum" />
+                      <span class="lbl"> Umum</span>
+                    </label>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="form-group" id="showFormPerusahaan" style="display:none">
+          <div class="form-group" id="showFormPerusahaan" style="display:none">
 
-            <label class="control-label col-sm-2">Perusahaan</label>
+              <label class="control-label col-sm-2">Perusahaan</label>
 
-            <div class="col-sm-6">
+              <div class="col-sm-6">
 
-                <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
+                  <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
+                  <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
 
-            </div>
+              </div>
 
-        </div>
+          </div>
 
-        <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
+          <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
 
           <div class="form-group">
               <label class="control-label col-sm-2">Instalasi</label>
               <div class="col-md-3">
                 <select name="jenis_instalasi" id="jenis_instalasi" class="form-control">
                   <option>-Silahkan Pilih-</option>
-                  <option value="RJ">Rawat Jalan</option>
+                  <option value="RJ" selected>Rawat Jalan</option>
                   <option value="PM">Penunjang Medis</option>
                   <option value="BD">Bedah</option>
                 </select>
@@ -286,7 +276,7 @@ function formatDate(date) {
             
           </div>
 
-          <div id="change_modul_view_perjanjian"> </div>
+          <div id="change_modul_view_perjanjian_form"></div>
             
           <!-- end change modul view -->
 
@@ -325,16 +315,12 @@ function formatDate(date) {
 
           <div id="view_last_message" style="margin-top:5px"></div>
           
-
       </form>
 
       </div>
 
     </div>
 
-    
-
-    </div>
 
   </div><!-- /.col -->
 
