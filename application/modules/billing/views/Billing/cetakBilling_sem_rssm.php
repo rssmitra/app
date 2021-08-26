@@ -11,7 +11,7 @@
   
     .body_print{
       /* margin: 0px 0px 0px 10px; */
-      padding: 10px 0px 0px 15px;
+      padding: 0;
     }
   
     .body_print, table, p{
