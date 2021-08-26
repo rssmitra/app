@@ -1111,12 +1111,12 @@ class Templates extends MX_Controller {
                             <tr>
                                 <td valign="top" width="100px"><b>Hasil</b> </td>
                                 <td width="10px">:</td>
-                                <td>'.nl2br($value->hasil).'</td>
+                                <td>'.$this->master->br2nl($value->hasil).'</td>
                             </tr>
                             <tr>
                                 <td valign="top" width="100px"><b>Kesan</b> </td>
                                 <td width="10px">:</td>
-                                <td>'.nl2br($value->keterangan).'</td>
+                                <td>'.$this->master->br2nl($value->keterangan).'</td>
                             </tr>
                             ';
                 }
@@ -1265,7 +1265,7 @@ class Templates extends MX_Controller {
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
-        // echo '<pre>';print_r($pm_data);die;
+        // echo '<pre>';print_r($data_pm);die;
         $html = '';
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
@@ -1297,10 +1297,14 @@ class Templates extends MX_Controller {
                         </tr>
                         ';
             }
-
+            $html .= '<hr><tr>
+                        <td valign="top" width="100px"><b>Catatan</b> </td>
+                        <td width="10px">:</td>
+                        <td>'.trim($data_pm->catatan_hasil).'</td>
+                    </tr>';
             $html .= '</table><br><br>';
 
-            $html .= '<b style="font-size:36px">Catatan : </b><br> '.trim($data_pm->catatan_hasil).'<br>';
+            // $html .= '<b style="font-size:36px">Catatan : </b><br> '.trim($data_pm->catatan_hasil).'<br>';
 
         }elseif ($tipe=='LAB') {
         
@@ -1585,13 +1589,31 @@ class Templates extends MX_Controller {
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
-            // $pm_ = 453170; 
+            // $pm_ = 472854; 
+            // $no_mr = '00246856';
+            // $nama_pasien = 'Wisca Gumanti';
+            // $umur = '34';
+            // $jk_ = 'Perempuan';
+            // $tgl_daftar = '19 Agustus 2021 - 15:05:15';
+            // $tgl_periksa = '19 Agustus 2021 - 15:33:42';
+            // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
+
+            // $pm_ = 472812; 
             // $no_mr = '00211762';
-            // $nama_pasien = 'Rizky Kurnia Pratama';
-            // $umur = '27';
+            // $nama_pasien = 'Muhammad Amin Lubis';
+            // $umur = '30';
             // $jk_ = 'Pria';
-            // $tgl_daftar = '5 Agustus 2021 - 08:05:15';
-            // $tgl_periksa = '5 Agustus 2021 - 08:33:42';
+            // $tgl_daftar = '19 Agustus 2021 - 15:21:10';
+            // $tgl_periksa = '19 Agustus 2021 - 15:53:02';
+            // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
+
+            // $pm_ = 472324; 
+            // $no_mr = '00248745';
+            // $nama_pasien = 'Muhammad Dwiyan Rinaldi';
+            // $umur = '28';
+            // $jk_ = 'Pria';
+            // $tgl_daftar = '19 Agustus 2021 - 15:15:11';
+            // $tgl_periksa = '19 Agustus 2021 - 15:43:12';
             // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db

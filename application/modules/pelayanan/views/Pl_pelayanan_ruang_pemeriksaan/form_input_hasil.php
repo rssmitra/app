@@ -1,19 +1,19 @@
 <script>
-  function cetak_hasil_expertise(kode_expertise, title) {
-    
+  function cetak_hasil_expertise() {
+    window.open('Templates/Export_data/export?type=pdf&flag=RAD&noreg='+$('#no_registrasi_pm').val()+'&pm='+$('#kode_penunjang_pm').val()+'&kode_pm='+$('#kode_bag_tujuan_pm').val()+'&no_kunjungan='+$('#no_kunjungan_pm').val()+'', '_blank');
   }
 </script>
 
 <!-- hidden form -->
-<input type="hidden" name="kode_penunjang" id="kode_penunjang" value="<?php echo isset($riwayat->kode_expertise)?$riwayat->kode_expertise:0?>">
-<input type="hidden" name="kode_expertise" id="kode_expertise" value="<?php echo isset($riwayat->kode_expertise)?$riwayat->kode_expertise:0?>">
-<input type="hidden" name="jenis_expertise" id="jenis_expertise" value="<?php echo $jenis_expertise?>">
-<input type="hidden" name="kode_bag_expertise" id="kode_bag_expertise" value="<?php echo $kode_bag_expertise?>">
+<input type="hidden" name="kode_penunjang_pm" id="kode_penunjang_pm" value="<?php echo isset($kunjungan->kode_penunjang)?$kunjungan->kode_penunjang:0?>">
+<input type="hidden" name="no_kunjungan_pm" id="no_kunjungan_pm" value="<?php echo isset($kunjungan->no_kunjungan)?$kunjungan->no_kunjungan:0?>">
+<input type="hidden" name="no_registrasi_pm" id="no_registrasi_pm" value="<?php echo isset($kunjungan->no_registrasi)?$kunjungan->no_registrasi:0?>">
+<input type="hidden" name="kode_bag_tujuan_pm" id="kode_bag_tujuan_pm" value="<?php echo isset($kunjungan->kode_bagian_tujuan)?$kunjungan->kode_bagian_tujuan:''?>">
 
 <div class="pull-right" style="padding-bottom: 3px">
   <div class="form-group">
     <div class="col-sm-12 no-padding">
-      <button type="button" class="btn btn-xs btn-inverse" id="btn_print_hasil" onclick="cetak_hasil_expertise('<?php echo isset($riwayat->kode_expertise)?$riwayat->kode_expertise:0?>','<?php echo $jenis_expertise?>')"> <i class="fa fa-print"></i> Cetak Hasil Pemeriksaan </button>
+      <button type="button" class="btn btn-xs btn-inverse" id="btn_print_hasil" onclick="cetak_hasil_expertise()"> <i class="fa fa-print"></i> Cetak Hasil Pemeriksaan </button>
       <button type="submit" class="btn btn-xs btn-primary" id="btn_save"> <i class="fa fa-save"></i> Simpan Hasil Pemeriksaan</button>
     </div>
   </div>
@@ -33,10 +33,19 @@
         <div class="panel-body">
           <span>Nama Pemeriksaan <?php echo $no; ?>:</span><br>
           <span style="font-weight: bold"><?php echo strtoupper($v->nama_tindakan)?></span>
-          <div class="wysiwyg-editor" id="editor_konten_<?php echo $no?>" style="height: 300px !important">
+          <!-- <div class="wysiwyg-editor" id="editor_konten_<?php echo $no?>" style="height: 300px !important">
             <?php echo isset($v->hasil)?$v->hasil:''?>
-          </div>
-          <textarea spellcheck="false" id="konten<?php echo $no?>" name="hasil_pemeriksaan[<?php echo $v->kode_trans_pelayanan; ?>]" style="display:none"> <?php echo isset($v->hasil)?$v->hasil:''?></textarea>
+          </div> -->
+          <textarea  id="konten<?php echo $no?>" name="hasil_pemeriksaan[<?php echo $v->kode_trans_pelayanan; ?>]" class="form-control" style="height: 200px !important"><?php echo isset($v->hasil)?$this->master->br2nl($v->hasil):''?></textarea>
+
+          <span style="font-weight: bold">Kesan</span>
+          <!-- <div class="wysiwyg-editor" id="editor_konten_<?php echo $no?>" style="height: 300px !important">
+            <?php echo isset($v->hasil)?$v->hasil:''?>
+          </div> -->
+          <textarea  id="kesan<?php echo $no?>" name="kesan_pemeriksaan[<?php echo $v->kode_trans_pelayanan; ?>]" class="form-control" style="height: 100px !important"><?php echo isset($v->kesan)?$this->master->br2nl($v->kesan):''?></textarea>
+          <br>
+          <hr>
+
         </div>
       <?php endforeach; ?>
 
