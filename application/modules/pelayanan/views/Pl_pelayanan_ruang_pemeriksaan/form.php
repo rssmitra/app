@@ -44,11 +44,11 @@ $(document).ready(function(){
 
     $('#form_pelayanan').on('submit', function(){
                
-        $('#konten1').val($('#editor_konten_1').html());
-        $('#konten2').val($('#editor_konten_2').html());
-        $('#konten3').val($('#editor_konten_3').html());
-        $('#konten4').val($('#editor_konten_4').html());
-        $('#konten5').val($('#editor_konten_5').html());
+        // $('#konten1').val($('#editor_konten_1').html());
+        // $('#konten2').val($('#editor_konten_2').html());
+        // $('#konten3').val($('#editor_konten_3').html());
+        // $('#konten4').val($('#editor_konten_4').html());
+        // $('#konten5').val($('#editor_konten_5').html());
         var formData = new FormData($('#form_pelayanan')[0]);        
         i=0;
         url = $('#form_pelayanan').attr('action');

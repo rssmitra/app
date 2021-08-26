@@ -188,7 +188,7 @@ class Pl_pelayanan_ruang_pemeriksaan_model extends CI_Model {
 
 	public function get_pemeriksaan($no_kunjungan)
 	{
-		$this->db->select('pm_pemeriksaanpasien_v.*, a.kode_mt_hasilpm, b.hasil');
+		$this->db->select('pm_pemeriksaanpasien_v.*, a.kode_mt_hasilpm, b.hasil, b.kesan');
 		$this->db->from('pm_pemeriksaanpasien_v');
 		$this->db->join('pm_mt_standarhasil a','pm_pemeriksaanpasien_v.kode_tarif=a.kode_tarif','left');
 		$this->db->join('pm_tc_hasilpenunjang b','b.kode_trans_pelayanan=pm_pemeriksaanpasien_v.kode_trans_pelayanan','left');

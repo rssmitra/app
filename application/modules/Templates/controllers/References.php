@@ -1960,7 +1960,7 @@ class References extends MX_Controller {
 	public function findKodeBooking()
 	{
 		$kode = isset($_POST['kode'])?$_POST['kode']:$_GET['kode'];
-		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian');
+		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs');
 		$this->db->from('tc_pesanan');
 		$this->db->where('unique_code_counter', $kode);
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
@@ -1973,6 +1973,7 @@ class References extends MX_Controller {
 			$result = array(
 				'no_mr' => $dt->no_mr,
 				'nama' => $dt->nama,
+				'kode_poli_bpjs' => $dt->kode_poli_bpjs,
 				'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
 				'nama_dr' => strtoupper($dt->nama_dr),
 				'poli' => strtoupper($dt->nama_bagian),

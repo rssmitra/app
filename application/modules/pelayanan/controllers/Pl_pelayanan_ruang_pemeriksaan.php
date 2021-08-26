@@ -140,7 +140,7 @@ class Pl_pelayanan_ruang_pemeriksaan extends MX_Controller {
         $data['sess_kode_bag'] = ($_GET['bag'])?$_GET['bag']:$this->session->userdata('kode_bag');
         $data['value'] = $this->Pl_pelayanan_ruang_pemeriksaan->get_by_id($_GET['id']);
         $data['pemeriksaan'] = $this->Pl_pelayanan_ruang_pemeriksaan->get_pemeriksaan($_GET['no_kunjungan']);
-        $data['kunjungan'] = $this->db->get_where('tc_kunjungan', array('no_kunjungan' => $_GET['no_kunjungan']) )->row();
+        $data['kunjungan'] = $this->db->join('pm_tc_penunjang', 'pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left')->get_where('tc_kunjungan', array('tc_kunjungan.no_kunjungan' => $_GET['no_kunjungan']) )->row();
         // echo '<pre>'; print_r($data);die;
         /*title header*/
         $data['jenis_expertise'] = $_GET['bag'];
@@ -174,7 +174,7 @@ class Pl_pelayanan_ruang_pemeriksaan extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();    
-            $txt_nl2br = nl2br($_POST['catatan_hasil'], '<br>');
+            $txt_nl2br = nl2br($_POST['catatan_hasil'], '</br>');
             /*Update pm_tc_penunjang */
             $pm_tc_penunjang = array(
                 'tgl_isihasil' => date('Y-m-d H:i:s'),
@@ -191,10 +191,13 @@ class Pl_pelayanan_ruang_pemeriksaan extends MX_Controller {
                 $kode_tc_hasilpenunjang = $this->master->get_max_number('pm_tc_hasilpenunjang', 'kode_tc_hasilpenunjang');
                 $kode_trans_pelayanan = $row_dt;
                 $hasil = $_POST['hasil_pemeriksaan'][$row_dt];
+                $kesan = $_POST['kesan_pemeriksaan'][$row_dt];
 
                 $dataexc = array(
                     'kode_mt_hasilpm' => $_POST['kode_mt_hasilpm'][$row_dt],
-                    'hasil' => $hasil,
+                    'hasil' => $this->master->br2nl($hasil),
+                    'kesan' => $this->master->br2nl($kesan),
+                    'keterangan' => $this->master->br2nl($kesan),
                 );
 
                 // cek hasil apakah sudah pernah diinput
