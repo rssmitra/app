@@ -155,32 +155,33 @@ class References extends MX_Controller {
         echo json_encode($exc->result());
 	}
 
-	public function getJadwalPraktek($kode_dokter, $kode_spesialis)
+	public function getJadwalPraktek($kode_spesialis='', $kode_dokter='')
 	{	
-		$query = "select a.jd_id, a.jd_kode_dokter,b.nama_pegawai as nama_dokter, a.jd_kode_spesialis, 
-					c.nama_bagian as spesialis,a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai, a.jd_keterangan, a.jd_kuota
-					from tr_jadwal_dokter a
-					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
-					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
-					where a.jd_kode_spesialis=".$kode_spesialis." and a.jd_kode_dokter=".$kode_dokter."";
+		$html = '';
+			$query = "select a.jd_id, a.jd_kode_dokter,b.nama_pegawai as nama_dokter, a.jd_kode_spesialis, 
+						c.nama_bagian as spesialis,a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai, a.jd_keterangan, a.jd_kuota
+						from tr_jadwal_dokter a
+						left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
+						left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+						where a.jd_kode_spesialis=".$kode_spesialis." and a.jd_kode_dokter=".$kode_dokter."";
 
-        $query = $this->db->query($query)->result();
-        $jadwal = [];
-        $html = '';
-		$array_color_day = array('green','red','purple','blue','black','orange','grey');
-    	shuffle($array_color_day);
+	        $query = $this->db->query($query)->result();
+	        $jadwal = [];
+	        
+			$array_color_day = array('green','red','purple','blue','black','orange','grey');
+	    	shuffle($array_color_day);
 
-    	$html .= '<p><strong><i class="fa fa-list"></i> JADWAL PRAKTEK DOKTER</strong></p>';
-        foreach ($query as $key => $value) {
-        	$time = $this->tanggal->formatTime($value->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($value->jd_jam_selesai);
-        	$jadwal[] = array('day' => $value->jd_hari , 'time' => $time);
-        	$html .= '<a href="#"  onclick="detailJadwalPraktek('.$value->jd_id.')"><div class="infobox infobox-'.array_shift($array_color_day).' infobox-small infobox-dark">
-						    <div class="infobox-data">
-						        <div class="infobox-content">'.$value->jd_hari.'</div>
-						        <div class="infobox-content">'.$time.'</div>
-						    </div>
-						</div></a>';
-        }
+	    	$html .= '<p><strong><i class="fa fa-list"></i> JADWAL PRAKTEK DOKTER</strong></p>';
+	        foreach ($query as $key => $value) {
+	        	$time = $this->tanggal->formatTime($value->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($value->jd_jam_selesai);
+	        	$jadwal[] = array('day' => $value->jd_hari , 'time' => $time);
+	        	$html .= '<a href="#"  onclick="detailJadwalPraktek('.$value->jd_id.')"><div class="infobox infobox-'.array_shift($array_color_day).' infobox-small infobox-dark">
+							    <div class="infobox-data">
+							        <div class="infobox-content">'.$value->jd_hari.'</div>
+							        <div class="infobox-content">'.$time.'</div>
+							    </div>
+							</div></a>';
+	        }
         $html .= '<br><small>* Silahkan pilih jadwal dokter praktek </small>';
 		echo json_encode(array('html' => $html));
 
