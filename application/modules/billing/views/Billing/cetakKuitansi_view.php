@@ -101,7 +101,7 @@
           </tr>
           <tr> 
             <td width="20%" style="font-size:13px">Telah Terima dari </td> 
-            <td width="67%"><font size="2">: <?php echo $data->reg_data->nama_perusahaan?>&nbsp;</font></td>
+            <td width="67%"><font size="2">: <?php echo isset($_GET['terima_dari']) ? ($_GET['terima_dari'] != '') ?strtoupper($_GET['terima_dari']) : $data->reg_data->nama_perusahaan : $data->reg_data->nama_perusahaan?>&nbsp;</font></td>
           </tr>
           <tr>
             <td width="20%" valign="top" style="font-size:13px">Terbilang </td> 
