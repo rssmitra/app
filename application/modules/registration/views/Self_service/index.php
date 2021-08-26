@@ -1,353 +1,264 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>RS SETIA MITRA</title>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>KIOSK</title>
 
-	<!-- Enable zoom on mobile device
-	====================================	 -->
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="top menu &amp; navigation" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
-	<!-- Install fonts to your website
-	====================================	 -->
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Poppins:300|Source+Sans+Pro:300,400,700" rel="stylesheet"> 
+    <!-- css default for blank page -->
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-fonts.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <script src="<?php echo base_url()?>assets/js/ace-extra.js"></script>
+    <!-- css default for blank page -->
+    <!-- Favicon -->
 
-	<!-- Animate css
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/animate.min.css">
+    <!-- page specific plugin styles -->
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/jquery-ui.custom.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/jquery.gritter.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/select2.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-editable.css" />
 
-	<!-- Icofont
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/icofont.css">
+    <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
+  </head>
+	<style>
+	body{
+		overflow-y: scroll;
+	}
+	.centered {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
 
-	<!-- Mean menu
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/meanmenu.min.css">
+	.wrapper {
+		display: flex;
+		justify-content: space-around;
+	}
 
-	<!-- venobox
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/venobox.css">
+	.box {
+		flex: 0 0 40%;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border: 1px dashed red;
+		padding: 20px;
+		margin: 10px;
+		max-width: 275px;
+	}
 
-	<!-- Default Owl theme
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/owl.theme.default.min.css">
+  .ui-keyboard{
+    font-size: 20px !important;
+  }
 
-	<!-- Owl carousel
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/owl.carousel.min.css">
+	button { margin-top: auto; }
 
-	<!-- Bootstrap theme
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/bootstrap.min.css">
+	
 
-	<!-- style css
-	====================================	 -->
-	<link rel="stylesheet" href="<?php echo base_url()?>assets/kiosk/style.css">
+	</style>
+  <body class="no-skin">
+    <!-- #section:basics/navbar.layout -->
+    <!-- <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background: url('assets/images/KIOSK.png');"> -->
+    
 
-	<!-- faveicon
-	================================ -->
-	<link rel="shortcut icon" href="img/icon/favicon.png" type="image/x-icon">
+    <!-- /section:basics/navbar.layout -->
+    <div class="main-container" id="main-container">
+      <script type="text/javascript">
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+      </script>
 
-	<script>
+      <!-- /section:basics/sidebar.horizontal -->
+      <div class="main-content">
+        <div class="main-content-inner">
+          <!-- #section:basics/content.breadcrumbs -->
+          <?php
+            $arr_color_breadcrumbs = array('#076960');
+            shuffle($arr_color_breadcrumbs);
+          ?>
+          <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>">
+            <script type="text/javascript">
+              try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
+            </script>
+          </div>
+          <div class="page-content-main" style="background: white !important">
+          <h2 class="center" style="font-family: fantasy; font-weight: bold">KIOSK LAYANAN MANDIRI PASIEN<br>RS SETIA MITRA</h2><br>
+            
+            <div class="row centered" style="width: 100% !important">
+              <div class="col-xs-12">
+                <!-- PAGE CONTENT BEGINS -->
+                <!-- MODULE MENU -->
+                <div id="load-content-page">
+                  <div class="row ">
+
+                    <div class="wrapper">
+                      <div class="box">
+                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                        <h2>PENDAFTARAN PASIEN BPJS</h2>
+                        <p>Layanan Pendaftaran Mandiri <br>Pasien BPJS Kesehatan</p>
+                        <button onclick="scrollSmooth('Self_service/mandiri_bpjs')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                      </div>
+
+                      <div class="box">
+                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                        <h2>PENDAFTARAN <br> UMUM & ASURANSI</h2>
+                        <p>Layanan Pendaftaran Mandiri Pasien Umum dan Asuransi Lainnya</p>
+                        <button onclick="scrollSmooth('Self_service/mandiri_umum')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                      </div>
+
+                      <div class="box">
+                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                        <h2>ANTRIAN PENDAFTARAN</h2>
+                        <p>Pengambilan Nomor Antrian Pendaftaran Pasien Poli/Klinik</p>
+                        <button onclick="scrollSmooth('Self_service/antrian_poli')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                      </div>
+                      <div class="box">
+                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                        <h2>INFORMASI & PERJANJIAN</h2>
+                        <p>Informasi Jadwal Praktek Dokter dan Perjanjian Pasien</p>
+                        <button onclick="scrollSmooth('Self_service/')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- END MODULE MENU -->
+
+                <!-- PAGE CONTENT ENDS -->
+              </div><!-- /.col -->
+            </div><!-- /.row -->
+          </div><!-- /.page-content -->
+        </div>
+      </div><!-- /.main-content -->
+
+
+      <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+      </a>
+    </div><!-- /.main-container -->
+
+    <!-- basic scripts -->
+
+    <!--[if !IE]> -->
+    <script type="text/javascript">
+      window.jQuery || document.write("<script src='<?php echo base_url()?>assets/js/jquery.js'>"+"<"+"/script>");
+    </script>
+
+    <script type="text/javascript">
+      if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+    </script>
+    <script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
+
+    <!-- page specific plugin scripts -->
+
+    <!--[if lte IE 8]>
+      <script src="<?php echo base_url()?>assets/js/excanvas.js"></script>
+    <![endif]-->
+    <script src="<?php echo base_url()?>assets/js/jquery-ui.custom.js"></script>
+    <script src="<?php echo base_url()?>assets/js/jquery.ui.touch-punch.js"></script>
+    <script src="<?php echo base_url()?>assets/js/jquery.gritter.js"></script>
+    
+    <!-- achtung loader -->
+    <link href="<?php echo base_url()?>assets/achtung/ui.achtung-mins.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="<?php echo base_url()?>assets/achtung/ui.achtung-min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url()?>assets/achtung/achtung.js"></script> 
+
+    <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.form.js"></script>
+    <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-validation/dist/jquery.validate.js"></script>
+
+    <!-- the following scripts are used in demo only for onpage help and you don't need them -->
+    <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.onpage-help.css" />
+
+    <script type="text/javascript"> ace.vars['base'] = '..'; </script>
+    <script src="<?php echo base_url()?>assets/js/ace/elements.onpage-help.js"></script>
+    <script src="<?php echo base_url()?>assets/js/ace/ace.onpage-help.js"></script> -->
+    <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
+    <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+
+    <!-- keyboar on screen -->
+    <!-- keyboard widget css & script -->
+    <link href="<?php echo base_url()?>assets/Keyboard-master/css/keyboard-dark.css" rel="stylesheet">
+    <script src="<?php echo base_url()?>assets/Keyboard-master/js/jquery.keyboard.js"></script>
+
+    <!-- css for the preview keyset extension -->
+    <link href="<?php echo base_url()?>assets/Keyboard-master/css/keyboard-previewkeyset.css" rel="stylesheet">
+
+    <!-- keyboard optional extensions - include ALL (includes mousewheel) -->
+    <script src="<?php echo base_url()?>assets/Keyboard-master/js/jquery.keyboard.extension-all.js"></script>
+    <style>
+      .form-control .ui-widget-content .ui-corner-all .ui-keyboard-preview{
+        text-align: center !important;
+      }
+    </style>
+
+    <script>
 		function scrollSmooth(link){
+			$('#banner-home').hide('fast');
 			$('#load-content-page').load(link);
 			$('html,body').animate({
 					scrollTop: $("#load-content-page").offset().top},
 					'slow');
 		}
-	</script>
-</head>
-<body class="home2 inner-page">
 
-<style>
-	.main-navigation ul li a {
-		font-size: 22px;
-	}
-	.subscribe-content-area ul li:first-child {
-		width: 80%;
-	}
-	.subscribe-content-area ul li:nth-child(2) {
-		width: 20%;
-	}
-	.green-btn {
-		background: #27ae61 none repeat scroll 0 0;
-		border-radius: 2px;
-		box-shadow: 0 5px 0 #239b56;
-		color: #fff;
-		display: inline-block;
-		font-family: "Source Sans Pro",sans-serif;
-		font-size: 14px;
-		font-weight: 700;
-		line-height: 50px;
-		padding-left: 27px;
-		padding-right: 27px;
-		position: relative;
-		text-transform: uppercase;
-		transition: all .10s linear;
-	}
-</style>
+      jQuery(function($) {
 
-<div class="preloader" style="display: none;">
-    <div class="preloader-inner-area">
-        <div class="loader-overlay">
-            <div class="l-preloader">
-                <div class="c-preloader"></div>
-            </div>
-        </div>
-    </div>
-</div>
+        $('.date-picker').datepicker({
+          autoclose: true,
+          todayHighlight: true
+        })
+        //show datepicker when clicking on the icon
+        .next().on(ace.click_event, function(){
+          $(this).prev().focus();
+        });
 
-<!-- =====================================================
-				==Start Banner==
-===================================================== -->
-<section class="banner-type2">
-	<div class="navigation-type2">
-		<div class="container">
-			<div class="navigation-type2-inner-area clearfix">
-				<!-- <div class="col-md-2 col-sm-2 col-xs-12">
-					<div class="brand-logo" style="width: 250px; padding-top: 5px !important">
-						<a href="index.html">
-							<img src="<?php echo base_url()?>assets/kiosk/logo_rssm.png" alt="main-logo">
-						</a>
-					</div>
-				</div> -->
-				<div class="col-md-12 col-sm-12">
-					<div class="navigation-inner-container type2">
-						<div class="cart-search-bar navbar-right">
-							
-						</div>
-						<div class="main-navigation">
-							<ul>
-								<li>
-									<a href="#" onclick="scrollSmooth('Self_service/mandiri_bpjs')">
-										MANDIRI BPJS 
-									</a>
-								</li>
-								<li>
-									<a href="#" onclick="scrollSmooth('Self_service/mandiri_umum')">
-										MANDIRI UMUM & ASURANSI 
-									</a>
-								</li>
-								<li>
-									<a href="#" onclick="scrollSmooth('antrian_poli')">
-										ANTRIAN POLI/KLINIK SPESIALIS 
-									</a>
-								</li>
-								<li>
-									<a href="#">
-										IGD & PENUNJANG MEDIS   
-									</a>
-								</li>
-							</ul>
-						</div>
-						
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container">
-		<div class="row">
-			<div class="banner-type2-inner-area">
-				<div class="banner-type2-content">
-					<div class="banner-type2-inner-content">
-						<div class="banner-icon1">
-							<img src="<?php echo base_url()?>assets/kiosk/banner-icon7.png" alt="banner-icon">
-						</div>
-						<div class="banner-icon2">
-							<img src="<?php echo base_url()?>assets/kiosk/banner-icon6.png" alt="banner-icon">
-						</div>
-						<div class="banner-icon3">
-							<img src="<?php echo base_url()?>assets/kiosk/banner-icon5.png" alt="banner-icon">
-						</div>
-						<div class="banner-icon4">
-							<img src="<?php echo base_url()?>assets/kiosk/banner-icon4.png" alt="banner-icon">
-						</div>
-						<div class="banner-icon5">
-							<img src="<?php echo base_url()?>assets/kiosk/banner-icon1.png" alt="banner-icon">
-						</div>
-						<div class="banner-icon6">
-							<img src="<?php echo base_url()?>assets/kiosk/banner-icon3.png" alt="banner-icon">
-						</div>
-						<div class="banner-icon7">
-							<img src="<?php echo base_url()?>assets/kiosk/banner-icon2.png" alt="banner-icon">
-						</div>
-						<div class="col-md-8 col-md-offset-2">
-							<h2>
-							KIOSK PENDAFTARAN & ANTRIAN PASIEN
-							</h2>
-							<p>
-								Kiosk Pendaftaran Mandiri Pasien BPJS, Umum dan Asuransi. <br>
-								Persiapkan Dokumen anda sebelum melakukan Pendaftaran Mandiri seperti Surat Rujukan Puskesmas, KTP, Nomor Rekam Medis, dsb.
-							</p>
-							<!-- <a href="#" class="seo-btn">
-								free seo analysis
-								<img src="<?php echo base_url()?>assets/kiosk/symbols1.png" alt="icon-symbols">
-							</a> -->
-						</div>
-					</div>
-				</div>
-				
-			</div>
-		</div>
+      });
 
-		
+      $(document).ready(function(){
+  
+        $('#form_tmp_user').ajaxForm({
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          uploadProgress: function(event, position, total, percentComplete) {
+          },
+          complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
 
-	</div>
-</section>
-<!-- =====================================================
-				==End Banner==
-===================================================== -->
+            if(jsonResponse.status === 200){
+              $.achtung({message: jsonResponse.message, timeout:3});
+              $('#message_success').show({
+                  speed: 'slow',
+                  timeout: 5000,
+              });
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5});
+            }
+            achtungHideLoader();
+          }
+        });
+	    })
 
+    function getDateToday(){
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1); //January is 0!
+      var yyyy = today.getFullYear();
 
-<!-- ======================================================
-			==Start content page area==
-====================================================== -->
+      current_date = dd + '/' + mm + '/' + yyyy;
+      return current_date;
+    }
 
-<div id="load-content-page"></div>
+      
+    </script>
 
-<!-- ======================================================
-			==End content page area==
-====================================================== -->
-
-
-<!-- =====================================================
-				==Start facts==
-===================================================== -->
-<div class="facts-area">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-3 col-sm-3">
-				<div class="single-facts-container">
-					<span class='counter'>15</span>
-					<p>
-						Pendaftaran Mandiri Pasien BPJS
-					</p>
-				</div>
-			</div>
-			<div class="col-md-3 col-sm-3">
-				<div class="single-facts-container">
-					<span class='counter'>300</span>
-					<p>
-					Pendaftaran Mandiri Pasien Umum
-					</p>
-				</div>
-			</div>
-			<div class="col-md-3 col-sm-3">
-				<div class="single-facts-container">
-					<span class='counter'>455</span>
-					<p>
-					Antrian Poli/Klinik Spesialis
-					</p>
-				</div>
-			</div>
-			<div class="col-md-3 col-sm-3">
-				<div class="single-facts-container">
-					<span class='counter'>200</span>
-					<p>
-						Gawat Darurat (IGD) & Penunjang Medis
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- =====================================================
-				==End facts==
-===================================================== -->
-
-
-
-<!-- ======================================================
-			==Start call to action==
-====================================================== -->
-<section class="call-to-action-area">
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-8 col-md-6">
-				<div class="call-to-action-left">
-					<h4>Kami Peduli Kesehatan Anda.</h4>
-				</div>
-			</div>
-			<!-- <div class="col-sm-4 col-md-6">
-				<div class="call-to-actioin-right">
-					<a href="#" class="seo-btn2">
-						get started 
-						<span>
-							<i class="icofont get started   icofont-paper-plane"></i>
-						</span>   
-					</a>
-				</div>
-			</div> -->
-		</div>
-	</div>
-</section>
-<!-- ======================================================
-			==End call to action==
-====================================================== -->
-
-<!-- ======================================================
-			==Start footer==
-====================================================== -->
-<footer>
-	<div class="footer-bottom-area">
-		<div class="container">
-			<div class="col-xs-12">
-				<div class="footer-bottom-content">
-					<ul>
-						<li>
-							© Copyright <?php echo date('Y')?> Smart Hospital System, All Rights Reserved     
-						</li>
-						<li>
-							  Developed by <a href="#">IT Department RS Setia Mitra</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-</footer>
-<!-- ======================================================
-			==End footer==
-====================================================== -->
-
-
-
-	<!-- vendor js
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/jquery-1.12.1.min.js"></script>
-
-	<!-- Bootstrap
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/bootstrap.min.js"></script>
-
-	<!-- 
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/jquery.mixitup.min.js"></script>
-
-	<!-- 
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/owl.carousel.min.js"></script>
-
-	<!-- Venobox
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/venobox.min.js"></script>
-
-	<!-- counter up
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/jquery.counterup.js"></script>
-
-	<!-- Mean Menu
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/jquery.meanmenu.min.js"></script>
-
-	<!-- waypoint
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/waypoints.min.js"></script>
-
-	<!-- main js
-	====================================	 -->
-	<script src="<?php echo base_url()?>assets/kiosk/main.js"></script>
-</body>
+    
+  </body>
 </html>

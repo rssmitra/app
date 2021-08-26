@@ -481,7 +481,7 @@ class Ws_index extends MX_Controller {
                 $sep = new stdClass;
             }
 
-            $response = json_encode(array('status' => $result->metaData->code, 'message' => $result->metaData->message, 'result' => $sep, 'no_sep' => isset($sep->noSep)?$sep->noSep:'', 'redirect' => base_url().'ws_bpjs/ws_index?modWs=InsertSep' ));
+            $response = json_encode(array('status' => $result->metaData->code, 'message' => $result->metaData->message, 'result' => $sep, 'no_sep' => isset($sep->noSep)?$sep->noSep:'', 'redirect' => base_url().'ws_bpjs/ws_index?modWs=InsertSep', 'data' => $data ));
 
             return $response;
     }
@@ -650,17 +650,18 @@ class Ws_index extends MX_Controller {
     }
 
 
-    public function view_sep($noSep)
+    public function view_sep($noSep, $no_registrasi)
     {   
         $this->load->library('Print_escpos');
         /*data sep*/
         $row_sep = $this->Ws_index->get_data_sep($noSep);
         $cetakan_ke = $this->Ws_index->count_sep_by_day();
-
+        // get detail kunjungan by sep
+        
+        // echo '<pre>'; print_r($row_sep);die;
         $data = array('sep'=>$row_sep->response, 'cetakan_ke' => $cetakan_ke);
         // print sep
-        $this->print_escpos->print_sep();
-        // echo '<pre>'; print_r($data);die;
+        $this->print_escpos->print_sep($data);
         $this->load->view('Ws_index/viewSEP', $data);
 
         //echo $html;

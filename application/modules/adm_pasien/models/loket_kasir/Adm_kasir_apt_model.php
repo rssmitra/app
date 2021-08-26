@@ -30,18 +30,18 @@ class Adm_kasir_apt_model extends CI_Model {
 			
 			
 			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
-				$this->db->where('a.'.$_GET['search_by'], $_GET['keyword']);		
+				$this->db->like('a.'.$_GET['search_by'], $_GET['keyword']);		
 			}
 			
 			if( isset($_GET['is_with_date']) AND $_GET['is_with_date'] == 1 ){
 
-				$this->db->where("convert(varchar,b.tgl_trans,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+				$this->db->where("CAST(c.tgl_jam as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 
 			}
 			
 						
 		}else{
-			$this->db->where("CAST(tgl_trans as DATE) = ", date('Y-m-d'));
+			$this->db->where("CAST(c.tgl_jam as DATE) = ", date('Y-m-d'));
 			// $this->db->where('status_selesai', 2);
 			// $this->db->where('kode_tc_trans_kasir IS NULL');
 		}

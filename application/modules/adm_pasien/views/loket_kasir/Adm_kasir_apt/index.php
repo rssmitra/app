@@ -183,7 +183,7 @@
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
             <option value="no_mr" selected>No MR</option>
-            <option value="nama_pasien">Nama Pasien</option>
+            <option value="nama_pasien_layan">Nama Pasien</option>
           </select>
         </div>
         <label class="control-label col-md-1">Keyword</label>

@@ -1398,13 +1398,14 @@ class Billing_model extends CI_Model {
         $this->db->from('pm_tc_penunjang');
         $this->db->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=pm_tc_penunjang.no_kunjungan', 'left');
         $this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter', 'left');
+        $this->db->join('tmp_user', 'tmp_user.user_id=pm_tc_penunjang.petugas_isihasil', 'left');
         $this->db->where('pm_tc_penunjang.kode_penunjang', $kode_pm);
         $exc = $this->db->get()->row();
-        //print_r($this->db->last_query());die;
+        // print_r($this->db->last_query());die;
         if( $exc && isset($exc->nama_pegawai) || $exc->nama_pegawai!=''){
             return $exc->nama_pegawai;
         }else{
-            return 'Administrator';
+            return $exc->fullname;
         }
 
     }
