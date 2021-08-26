@@ -188,6 +188,14 @@ class Reg_klinik extends MX_Controller {
     
     }
 
+    public function form_create_sep()
+    
+    {
+        
+        $this->load->view('Reg_klinik/form_create_sep');
+    
+    }
+
     public function rujuk_klinik($no_reg='',$bag_asal='',$type_asal='',$klas='')
     {
         /*get value by no_kunj*/
@@ -233,6 +241,10 @@ class Reg_klinik extends MX_Controller {
 
             case 7:
                 $view_modul = 'Reg_klinik/form_paket_bedah';
+                break;
+
+            case 8:
+                $view_modul = 'Reg_klinik/form_create_sep';
                 break;
             
             default:

@@ -98,6 +98,7 @@ $(document).ready(function(){
         find_data_reload();
     });
 
+
 })
 
 function format ( data ) {

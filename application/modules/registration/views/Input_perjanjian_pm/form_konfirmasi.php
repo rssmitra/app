@@ -83,7 +83,7 @@ $(document).ready(function(){
     <form class="form-horizontal" method="post" id="form_konfirmasi" action="<?php echo site_url('registration/Input_perjanjian_pm/process_konfirmasi_kedatangan')?>" enctype="multipart/form-data" autocomplete="off">   
 
       <!-- hidden form  -->
-      <input type="hiddenxx" name="arrr_ids" id="arr_ids" value="<?php echo $ids?>">
+      <input type="hidden" name="arrr_ids" id="arr_ids" value="<?php echo $ids?>">
       
       <div class="form-group" id="tanggal_perjanjian" >
           <label class="control-label col-sm-2">Tanggal Kunjungan</label>  

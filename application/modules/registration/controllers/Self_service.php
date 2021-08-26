@@ -54,12 +54,42 @@ class Self_service extends MX_Controller {
         $this->load->view('Self_service/index_antrian_poli', $data);
     }
 
-    public function pmp_bpjs() {
+    public function form_rujukan() {
         
         $data = array();
-
-        $this->load->view('Self_service/form_pmp_bpjs', $data);
+        $data['profile'] = $this->findKodeBooking($_GET['kode']);
+        $data['kode'] = $_GET['kode'];
+        // echo '<pre>'; print_r($data);die;
+        $this->load->view('Self_service/form_rujukan', $data);
     }
+    
+    public function findKodeBooking($kode)
+	{
+        
+		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs');
+		$this->db->from('tc_pesanan');
+		$this->db->where('unique_code_counter', $kode);
+		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
+		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter','left');
+        $exc = $this->db->get();
+		if ($exc->num_rows() == 0) {
+            return false;
+		}else{
+			$dt = $exc->row();
+			$result = array(
+				'kode' => $kode,
+				'no_mr' => $dt->no_mr,
+				'nama' => $dt->nama,
+				'kode_poli_bpjs' => $dt->kode_poli_bpjs,
+				'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
+				'nama_dr' => strtoupper($dt->nama_dr),
+				'poli' => strtoupper($dt->nama_bagian),
+				'jam_praktek' => $this->tanggal->formatDateTimeToTime($dt->jam_pesanan),
+			);
+			return $result;
+		}
+    }
+    
 
 }
 

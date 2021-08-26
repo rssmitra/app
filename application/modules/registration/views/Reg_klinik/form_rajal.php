@@ -43,45 +43,45 @@ $('select[name="reg_klinik_rajal"]').change(function () {
     $('#title-select-klinik').text( $('#reg_klinik_rajal option:selected').text().toUpperCase() );
 }); 
 
-    $('select[id="reg_dokter_rajal"]').change(function () {      
+$('select[id="reg_dokter_rajal"]').change(function () {      
 
-        if ($(this).val()) {          
+    if ($(this).val()) {          
 
-            $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {              
+        $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {              
 
-                $('#sisa_kuota').val(data.sisa_kuota);              
-                $('#message_for_kuota').html(data.message);              
-                $('#jd_id').val(data.jd_id); 
-            });            
-            
-            $('#title-select-dokter').text( $('#reg_dokter_rajal option:selected').text() );
+            $('#sisa_kuota').val(data.sisa_kuota);              
+            $('#message_for_kuota').html(data.message);              
+            $('#jd_id').val(data.jd_id); 
+        });            
+        
+        $('#title-select-dokter').text( $('#reg_dokter_rajal option:selected').text() );
 
-        }      
+    }      
 
-    });  
+});  
 
-    $('#inputDokter').typeahead({
-        source: function (query, result) {
-                $.ajax({
-                    url: "templates/references/getDokterByBagian",
-                    data: 'keyword=' + query + '&bag=' + $('#reg_klinik_rajal').val(),         
-                    dataType: "json",
-                    type: "POST",
-                    success: function (response) {
-                    result($.map(response, function (item) {
-                        return item;
-                    }));
-                    }
-                });
-            },
-            afterSelect: function (item) {
-            // do what is needed with item
-            var val_item=item.split(':')[0];
-            console.log(val_item);
-            $('#reg_dokter_rajal_dinamis').val(val_item);
-            
-        }
-    });
+$('#inputDokter').typeahead({
+    source: function (query, result) {
+            $.ajax({
+                url: "templates/references/getDokterByBagian",
+                data: 'keyword=' + query + '&bag=' + $('#reg_klinik_rajal').val(),         
+                dataType: "json",
+                type: "POST",
+                success: function (response) {
+                result($.map(response, function (item) {
+                    return item;
+                }));
+                }
+            });
+        },
+        afterSelect: function (item) {
+        // do what is needed with item
+        var val_item=item.split(':')[0];
+        console.log(val_item);
+        $('#reg_dokter_rajal_dinamis').val(val_item);
+        
+    }
+});
 
 
 </script>
@@ -113,8 +113,6 @@ $('select[name="reg_klinik_rajal"]').change(function () {
 <!-- hidden kuota dr -->
 <input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
 <div class="form-group">
-    <label class="col-sm-3"></label>
-    <div class="col-sm-9">
         <div id="message_for_kuota" style="margin-left: 7px"></div>
     </div>
 </div>
@@ -147,7 +145,7 @@ $('select[name="reg_klinik_rajal"]').change(function () {
     </script>
 
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12 no-padding">
         <div id="tabs_riwayat_kunjungan"></div>
         </div>
     </div>

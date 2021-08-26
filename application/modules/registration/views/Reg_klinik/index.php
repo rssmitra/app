@@ -292,6 +292,28 @@ $(document).ready(function(){
 
         }        
 
+    }); 
+
+    $( "#form_cari_pasien_by_kode_perjanjian_id" )    
+
+      .keypress(function(event) {        
+
+        var keycode =(event.keyCode?event.keyCode:event.which);         
+
+        if(keycode ==13){          
+
+          event.preventDefault();          
+
+          if($(this).valid()){            
+
+            $('#btn_search_kode_perjanjian').click();            
+
+          }          
+
+          return false;                 
+
+        }        
+
     });      
 
     $('select[name="jenis_pendaftaran"]').change(function () {      
@@ -384,22 +406,70 @@ $(document).ready(function(){
         
       }    
 
+    });
+
+    $('#btn_search_kode_perjanjian').click(function (e) {      
+
+      e.preventDefault();      
+
+      if( $("#form_cari_pasien_by_kode_perjanjian_id").val() == "" ){
+
+        alert('Masukan Kode Perjanjian !');
+
+        return $("#form_cari_pasien_by_kode_perjanjian_id").focus();
+
+      }else{
+
+        achtungShowLoader();
+
+        $.getJSON("<?php echo site_url('templates/References/findKodeBooking') ?>?kode=" + $("#form_cari_pasien_by_kode_perjanjian_id").val(), '', function (response) {              
+
+          achtungHideLoader();
+
+          if( response.status != 200){
+            $('#perjanjian_result_view_div').hide('fast');
+            alert('Kode Perjanjian tidak ditemukan'); return $("#form_cari_pasien_by_kode_perjanjian_id").focus();
+
+          }else{
+
+            var obj_data = response.data;
+
+            $('#perjanjian_result_view_div').show('fast');
+            $('#div_load_after_selected_pasien_perjanjian').show('fast');
+
+            /*put data in form*/
+            $('#noMrHidden').val(obj_data.no_mr);
+            find_pasien_by_keyword(obj_data.no_mr);
+            $('#nama_pasien_hidden').val(obj_data.nama);
+            $('#perjanjian_result_view_div').html(obj_data.html);
+
+          }
+
+        });             
+        
+      }    
+
     }); 
 
 
     $('input[name="tipe_registrasi"]').click(function (e) {
       var value = $(this).val();
 
-      if (value=='onsite' || value=='perjanjian') {
+      if (value=='onsite') {
         $('#search_mr_form').show('fast');
-        $('#search_kode_booking_form').hide('fast');
-        $('#search_kode_booking_result').hide('fast');
         $('#form_cari_pasien').focus();
         $('#div_form_onsite').show('fast');
+        $('#table_profile_pasien_id').show('fast');
+
+        $('#search_kode_booking_form').hide('fast');
+        $('#search_kode_booking_result').hide('fast');
         $('#div_riwayat_pasien').hide('fast');
         $('#div_penangguhan_pasien').hide('fast');
-        $('#table_profile_pasien_id').show('fast');
         $('#div_load_after_selected_pasien').hide('fast');
+        $('#search_kode_perjanjian_form').hide('fast');
+        $('#search_kode_perjanjian_result').hide('fast');
+        $('#div_load_after_selected_pasien_perjanjian').hide('fast');
+
         /*reset all field data*/
         $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
 
@@ -408,8 +478,20 @@ $(document).ready(function(){
       if (value=='online') {
         $('#search_kode_booking_form').show('fast');
         $('#search_kode_booking_result').show('fast');
-        $('#search_mr_form').hide('fast');
         $('#form_cari_pasien_by_kode_booking_id').focus();
+
+        $('#search_mr_form').hide('fast');
+        $('#div_form_onsite').hide('fast');
+        $('#div_riwayat_pasien').hide('fast');
+        $('#booking_result_view_div').hide('fast');
+      }
+
+      if (value=='perjanjian') {
+        $('#search_kode_perjanjian_form').show('fast');
+        $('#search_kode_perjanjian_result').show('fast');
+        $('#form_cari_pasien_by_kode_perjanjian_id').focus();
+
+        $('#search_mr_form').hide('fast');
         $('#div_form_onsite').hide('fast');
         $('#div_riwayat_pasien').hide('fast');
         $('#booking_result_view_div').hide('fast');
@@ -570,7 +652,7 @@ function hideLabelPerjanjian(){
 
 function showChangeModul(modul_id, id_tc_pesanan=''){
 
-  $('#change_modul_view').show('fast');
+    $('#change_modul_view').show('fast');
 
     if ( modul_id )  {          
 
@@ -602,6 +684,8 @@ function showChangeModul(modul_id, id_tc_pesanan=''){
       $('#form_registration').attr('action', 'registration/Reg_odc/process');
     } else if ( modul_id ==7 ) {          
       $('#form_registration').attr('action', 'registration/Reg_bedah/process');
+    }else if ( modul_id ==8 ) {          
+      $('#form_registration').attr('action', 'registration/Reg_klinik/process');
     }else {   
       /*Eksekusi jika salah*/
       $('#form_registration').attr('action', '#');
@@ -1026,14 +1110,107 @@ function find_pasien_by_keyword(keyword){
 
     }); 
 
-    
-
 
     <?php if(isset($pm)):?>
       showChangeModul( 3 );
     <?php endif ?>
 
 }
+
+
+$('#btnSearchNoRujukan').click(function (e) {
+    e.preventDefault();
+
+    $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/8') ;
+
+    var field = $('input[name=find_member_by]:checked').val();
+    var jenis_faskes = $('input[name=jenis_faskes]:checked').val();
+    var flag = $('input[name=find_member_by]:checked').val();
+    var noRujukan = $('#noRujukan').val();
+
+    e.preventDefault();
+    $.ajax({
+      url: 'ws_bpjs/ws_index/searchRujukan',
+      type: "post",
+      data: {flag:flag,noRujukan:noRujukan,jenis_faskes:jenis_faskes},
+      dataType: "json",
+      beforeSend: function() {
+        achtungShowLoader();  
+      },
+      success: function(data) {
+        achtungHideLoader();
+        if(data.status==200){
+
+          var rujukan = data.result.rujukan;
+          var peserta = data.result.peserta;
+          var diagnosa = data.result.diagnosa;
+          var pelayanan = data.result.pelayanan;
+          var poliRujukan = data.result.poliRujukan;
+          var provPerujuk = data.result.provPerujuk;
+
+          /*show hidden*/
+          $('#result-dt-rujukan').show('fast');
+          $('#showFormPenjaminKLL').hide('fast');
+          $('#showResultData').show('fast');
+          $('#formDetailInsertSEP').show('fast');
+
+          /*text*/
+          $('#noKartuFromNik').text(peserta.noKartu);
+          $('#nama').text(peserta.nama);
+          $('#user').val(peserta.nama);
+          $('#nik').text(peserta.nik);
+          $('#tglLahir').text(peserta.tglLahir);
+          $('#umur_p_bpjs').text(peserta.umur.umurSekarang);
+          $('#jenisPeserta').text(peserta.jenisPeserta.keterangan);
+          $('#hakKelas').text(peserta.hakKelas.keterangan);
+          $('#statusPeserta').text(peserta.statusPeserta.keterangan);
+
+          /*form*/
+          $('#noKartuHidden').val(peserta.noKartu);
+          $('#noMR').val(peserta.mr.noMR);
+          $('#inputKeyPoli').val(poliRujukan.nama);
+          $('#kodePoliHidden').val(poliRujukan.kode);
+          $('#inputKeyFaskes').val(provPerujuk.nama);
+          $('#kodeFaskesHidden').val(provPerujuk.kode);
+          $('#noRujukanView').val(rujukan.noKunjungan);
+          $('#tglKunjungan').val(rujukan.tglKunjungan);
+          $('#inputKeyDiagnosa').val(diagnosa.nama);
+          $('#kodeDiagnosaHidden').val(diagnosa.kode);
+          $('#noTelp').val(peserta.mr.noTelepon);
+          $('#catatan').val(rujukan.keluhan);
+
+          /*show dokter DPJP*/
+          $.getJSON("ws_bpjs/Ws_index/getRef?ref=GetRefDokterDPJPRandom", { spesialis:$('#kodePoliHidden').val(),jp:$('input[name=jnsPelayanan]:checked').val(),tgl:$('#tglSEP').val() }, function (row) {
+                $('#KodedokterDPJP').val(row.kode);
+                $('#InputKeydokterDPJP').val(row.nama.toUpperCase());    
+                $('#show_dpjp').val(row.nama.toUpperCase());    
+          });
+
+          $("input[name=jnsPelayanan][value="+pelayanan.kode+"]").attr('checked', true);
+
+        }else{
+          $.achtung({message: data.message, timeout:5});
+        }
+        
+      }
+    });
+
+});
+
+$('#btnCreateSep').click(function (e){
+    
+  $.ajax({
+    url: "ws_bpjs/ws_index/insertSep",
+    data: $('form_registration').serialize(),            
+    dataType: "json",
+    type: "POST",
+    success: function (response) {
+      $('#show_sep').load("ws_bpjs/Ws_index/view_sep/0112R0340621V003929?PPKPerujuk="+jsonResponse.perujuk+"&DPJP="+jsonResponse.dpjp+"");
+    }
+  })
+
+}); 
+
 
 function get_riwayat_medis(){
 
@@ -1229,17 +1406,26 @@ function get_riwayat_medis(){
 
                           <input name="tipe_registrasi" type="radio" class="ace" value="onsite" <?php echo isset($value) ? ($value->is_active == 'onsite') ? 'checked="checked"' : '' : 'checked="checked"'; ?>  />
 
-                          <span class="lbl"> Datang Langsung </span>
+                          <span class="lbl"> Datang Langsung (BPJS/Umum)</span>
 
                         </label>
 
                         <label>
 
+                          <input name="tipe_registrasi" type="radio" class="ace" value="perjanjian" <?php echo isset($value) ? ($value->is_active == 'perjanjian') ? 'checked="checked"' : '' : ''; ?> />
+
+                          <span class="lbl"> Pasien Dengan Perjanjian (BPJS)</span>
+
+                        </label>
+
+                        <!-- <label>
+
                           <input name="tipe_registrasi" type="radio" class="ace" value="online" <?php echo isset($value) ? ($value->is_active == 'online') ? 'checked="checked"' : '' : ''; ?> />
 
                           <span class="lbl"> Via Online / Mobile JKN</span>
 
-                        </label>
+                        </label> -->
+
 
                     </div>
 
@@ -1275,6 +1461,96 @@ function get_riwayat_medis(){
                   </div>
 
                 </div>
+
+                <!-- PASIEN BPJS DENGAN PERJANJIAN -->
+                <div class="form-group" id="search_kode_perjanjian_form" <?php echo isset($kode_perjanjian)?'':'style="display:none"'?> >
+                  <label class="control-label col-md-3"><b>KODE PERJANJIAN</b></label>            
+                  <div class="col-md-5">            
+                    <div class="input-group">
+                      <input type="text" name="kode_perjanjian" id="form_cari_pasien_by_kode_perjanjian_id" class="form-control search-query" placeholder="Kode Booking" value="<?php echo isset($kode_perjanjian)?$kode_perjanjian:''?>">
+                      <span class="input-group-btn">
+                        <button type="button" id="btn_search_kode_perjanjian" class="btn btn-default btn-sm">
+                          <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                          Search
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div id="search_kode_perjanjian_result" <?php echo isset($kode_perjanjian)?'':'style="display:none;margin-top:10px"'?>>
+                
+                  <div class="form-group" id="perjanjian_result_view_div"></div>
+
+                  <div id="div_load_after_selected_pasien_perjanjian" style="display: none">
+                    <hr>
+                    <p><b>SILAHKAN MASUKAN NOMOR RUJUKAN</b></p>
+                    <!-- hidden form -->
+                    <!-- nasabah -->
+                    <input id="InputKeyNasabahBPJS" class="form-control" name="kelompok_nasabah" type="hidden" placeholder="Masukan keyword minimal 3 karakter" />
+                    <input type="hidden" name="kode_kelompok_hidden_bpjs" value="" id="kode_kelompok_hidden_bpjs">
+
+                    <!-- penjamin -->
+                    <input id="InputKeyPenjaminBPJS" class="form-control" name="penjamin" type="hidden" placeholder="Masukan keyword minimal 3 karakter" />
+                    <input type="hidden" name="kode_perusahaan_hidden_bpjs" value="" id="kode_perusahaan_hidden_bpjs">
+
+                    <div class="form-group" id="form_rujukan">
+
+                      <label class="control-label col-sm-3">Nomor Rujukan</label>            
+
+                      <div class="col-md-6">            
+
+                        <div class="input-group">
+
+                          <!-- for hidden for searching nomor rujukan -->
+                          <input name="find_member_by" type="radio" class="ace" value="noRujukan" checked>
+                          <input name="tglSEP" id="tglSEP" value="<?php echo date('m/d/Y')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
+                          <input name="jenis_faskes" type="radio" class="ace" value="1" checked/>
+                          <input type="hidden" class="form-control" id="noKartuHidden" name="noKartuHidden" readonly>
+                          <input name="jnsPelayanan" type="radio" class="ace" value="2" checked/>
+                          <input name="lakalantas" type="radio" class="ace" value="0" checked/>
+                          <input name="penjaminKLL" type="radio" class="ace" value="0" checked/>
+                          <input type="hidden" class="form-control" name="catatan" id="catatan" value="">
+                          <input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value="">
+                          <input type="hidden" class="form-control" id="user" name="user" value="" readonly>
+                          <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden" placeholder="Masukan keyword minimal 3 karakter" />
+                          <input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
+
+
+                          <input name="noRujukan" id="noRujukan" class="form-control" type="text" placeholder="Masukan No Rujukan" style="width: 250px;">
+
+                          <span class="input-group-btn">
+
+                            <button type="button" id="btnSearchNoRujukan" class="btn btn-primary btn-sm">
+
+                              <span class="ace-icon fa fa-file icon-on-right bigger-110"></span>
+
+                              Cari Nomor Rujukan
+
+                            </button>
+
+                          </span>
+
+                        </div>
+
+                      </div>   
+
+
+                    </div>
+
+                    <hr>
+
+                    <!-- change modul view -->
+
+                    <div id="change_modul_view_perjanjian" style="margin-top:10px"></div>
+                    
+                    <!-- end change modul view -->
+                  </div>
+
+
+                </div>
+
+                <!-- END FORM PASIEN BPJS DENGAN PERJANJIAN -->
 
                 <div class="form-group" id="search_kode_booking_form" <?php echo isset($kode_booking)?'':'style="display:none"'?> >
 
@@ -1585,15 +1861,13 @@ function get_riwayat_medis(){
 
                         <div class="form-group" id="btn_submit" style="display:none">
 
-                            <label class="control-label col-sm-3">&nbsp;</label>
-
-                            <div class="col-sm-4" style="margin-left:7px">
+                            <div class="col-sm-12 no-padding center">
 
                                 <button type="submit" name="submit" class="btn btn-xs btn-primary">
 
                                   <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
 
-                                  Submit
+                                  Proses Pendaftaran Pasien
 
                                 </button>
 
