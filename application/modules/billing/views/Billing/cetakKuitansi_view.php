@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Cetak Kuitansi</title>
 
 
   <?php
@@ -38,6 +38,11 @@
           -o-transform: rotate(25deg);
           transform: rotate(0deg);
         
+    }
+    @media print {
+      #printpagebutton {
+      display: none;
+      }
     }
   </style>
 </head>
@@ -101,7 +106,7 @@
           </tr>
           <tr> 
             <td width="20%" style="font-size:13px">Telah Terima dari </td> 
-            <td width="67%"><font size="2">: <?php echo $data->reg_data->nama_perusahaan?>&nbsp;</font></td>
+            <td width="67%">: <input name="nama_penjamin" type="text" style="border: none; width: 90%; font-size: 14px;" value="<?php echo isset($data->reg_data->nama_perusahaan) ? $data->reg_data->nama_perusahaan : $data->reg_data->nama_pasien?>"></input></td>
           </tr>
           <tr>
             <td width="20%" valign="top" style="font-size:13px">Terbilang </td> 
@@ -145,6 +150,20 @@
             </td>
           </tr>
         </table>
+        <div id="options">
+          <button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer; padding: 20px; position:absolute; right: 15px;" onclick="printpage()" style="cursor: pointer"/>Print Kuitansi</button>
+        </div>
+        <script>
+          function printpage() {
+              //Get the print button and put it into a variable
+              var printButton = document.getElementById("printpagebutton");
+              //Set the print button visibility to 'hidden' 
+              printButton.style.visibility = 'hidden';
+              //Print the page content
+              window.print()
+              printButton.style.visibility = 'visible';
+          }
+        </script>
       </div>
     </div>
   </body>
