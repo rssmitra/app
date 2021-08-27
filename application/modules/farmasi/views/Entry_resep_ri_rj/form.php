@@ -618,6 +618,7 @@ function changeUrgensi(){
   if(urgensi=='cito'){
     if( $('#pl_sisa_stok_cito').val() > 0){
       $('#jumlah_pesan').attr('readonly', false);
+      $('#btn_submit').attr('disabled', false);
     }
   }
 }
@@ -740,7 +741,16 @@ function changeUrgensi(){
                     </div>
                 </div>
               </div>
-              <!-- tanggal -->
+
+              <!-- cari obat -->
+              <div class="form-group">
+                <label class="control-label col-sm-2">Cari Obat</label>            
+                <div class="col-md-8">            
+                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
+                </div>
+              </div>
+
+              <!-- Jenis Obat -->
               <div class="form-group">
                 <label class="control-label col-sm-2">Jenis</label>
                 <div class="col-md-5">
@@ -757,13 +767,6 @@ function changeUrgensi(){
                   </div>
                 </div> 
 
-              </div>
-              <!-- cari obat -->
-              <div class="form-group">
-                <label class="control-label col-sm-2">Cari Obat</label>            
-                <div class="col-md-8">            
-                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
-                </div>
               </div>
 
               <!-- jumlah pesan -->
