@@ -1,22 +1,17 @@
 <script type="text/javascript">
 
-function preventDefault(e) {
-  e = e || window.event;
-  if (e.preventDefault)
-      e.preventDefault();
-  e.returnValue = false;  
-}
-
 $(document).ready(function(){
 
-    getJadwalPraktek($('#kode_bagian_hidden').val(), $('#kode_dokter_hidden').val());
+    // var kode_bag_hd = $('#kode_bagian_hidden').val() ? $('#kode_bagian_hidden').val() : $('#klinik_rajal').val()
+    // var kode_dok_hd = $('#kode_bagian_hidden').val() ? $('#kode_bagian_hidden').val() : $('#dokter_rajal').val()
+    // getJadwalPraktek(kode_bag_hd, kode_dok_hd);
 
     $('select[name="klinik_rajal"]').change(function () {      
 
         $('#show_detail_praktek').hide('fast');
         $('#tgl_kunjungan_form').hide('fast');
         $('#view_last_message').hide('fast');
-        $('#show_jadwal_dokter').hide('fast');
+        $('#show_jadwal_dokter_form').hide('fast');
 
         if ($(this).val()) {          
 
@@ -47,14 +42,14 @@ $(document).ready(function(){
 
         if ($(this).val()) {          
 
-            var kode_spesialis = $('#klinik_rajal').val();
+            var kode_spesialis = ($('#klinik_rajal').val()) ? $('#klinik_rajal').val() : '';
 
             getJadwalPraktek(kode_spesialis, $(this).val());
             // $.getJSON("<?php echo site_url('Templates/References/getJadwalPraktek') ?>/" + $(this).val() + '/' + kode_spesialis, '', function (data) {              
 
             //     /*here show data from jadwal praktek*/     
-            //     $('#show_jadwal_dokter').show('fast');          
-            //     $('#show_jadwal_dokter').html(data.html);
+            //     $('#show_jadwal_dokter_form').show('fast');          
+            //     $('#show_jadwal_dokter_form').html(data.html);
             //     $('#show_detail_praktek').hide('fast');
             //     $('#tgl_kunjungan_form').hide('fast');
             //     $('#view_last_message').hide('fast');
@@ -67,20 +62,20 @@ $(document).ready(function(){
         }      
 
     });  
+
 })
 
-
-function getJadwalPraktek(kode_bagian, kode_dokter){
-    $.getJSON("<?php echo site_url('Templates/References/getJadwalPraktek') ?>/" + kode_dokter + '/' + kode_bagian, '', function (data) {              
-
+function getJadwalPraktek(){
+    $.getJSON("<?php echo site_url('Templates/References/getJadwalPraktek') ?>/" + $('#klinik_rajal').val() + '/' + $('#dokter_rajal').val(), '', function (data) {              
         /*here show data from jadwal praktek*/     
-        $('#show_jadwal_dokter').show('fast');          
-        $('#show_jadwal_dokter').html(data.html);
+        $('#show_jadwal_dokter_form').show('fast');          
+        $('#show_jadwal_dokter_form').html(data.html);
         $('#show_detail_praktek').hide('fast');
         $('#tgl_kunjungan_form').hide('fast');
         $('#view_last_message').hide('fast');
     }); 
 }
+
 function detailJadwalPraktek(jd_id){
     preventDefault();
     $.getJSON("<?php echo site_url('Templates/References/getDetailJadwalPraktek') ?>/" + jd_id, function (data) {
@@ -98,7 +93,6 @@ function detailJadwalPraktek(jd_id){
             $('#tgl_kunjungan').val('');
             $("html, body").animate({ scrollTop: "700px" }, "slow"); 
     });
-
 }
 
 </script>
@@ -129,7 +123,7 @@ function detailJadwalPraktek(jd_id){
 
 </div>
 
-<div id="show_jadwal_dokter"></div>
+<div id="show_jadwal_dokter_form"></div>
 
 <div id="show_detail_praktek"></div>
 

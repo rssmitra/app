@@ -119,7 +119,7 @@ $(document).ready(function(){
 
           /*load modul*/
 
-          $('#change_modul_view_perjanjian').load('registration/Reg_pasien/show_modul/'+$(this).val());
+          $('#change_modul_view_perjanjian_form').load('registration/Reg_pasien/show_modul/'+$(this).val());
           $('#tgl_kunjungan_form').hide('fast');
           //$("html, body").animate({ scrollTop: "700px" }, "slow");  
 
@@ -268,7 +268,7 @@ function formatDate(date) {
             
           </div>
 
-          <div id="change_modul_view_perjanjian"> </div>
+          <div id="change_modul_view_perjanjian_form"> </div>
             
           <!-- end change modul view -->
 
