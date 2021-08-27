@@ -1361,12 +1361,18 @@ class References extends MX_Controller {
 
 		$html = '';
 		if(count($exc) > 0){
+
+      	// stok cito
+				$stok_cito = isset($cito->stok_akhir)?$cito->stok_akhir:0;
+				$harga_satuan_cito = isset($cito->harga_jual)?$cito->harga_jual:0;
+
 			$html .= '<input type="hidden" name="id_obat" value="'.$exc[0]->id_obat.'">';
 			$html .= '<input type="hidden" name="kode_brg" value="'.$exc[0]->kode_brg.'">';
 			$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_brg.'">';
 			$html .= '<input type="hidden" name="pl_satuan_kecil" value="'.$exc[0]->satuan_kecil.'">';
 			$html .= '<input type="hidden" name="pl_harga_beli" value="'.(int)$exc[0]->harga_beli.'">';
 			$html .= '<input type="hidden" name="pl_sisa_stok" value="'.(int)$exc[0]->stok_akhir.'">';
+			$html .= '<input type="hidden" name="pl_sisa_stok_cito" value="'.(int)$stok_cito.'" id="pl_sisa_stok_cito">';
 
 			if($_GET['type_layan']=='Ranap'){
 				$html .= '<input type="hidden" name="kode_bagian_depo" value="'.$exc[0]->kode_bagian.'">';

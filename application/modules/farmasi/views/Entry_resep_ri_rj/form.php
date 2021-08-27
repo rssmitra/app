@@ -614,7 +614,12 @@ function rollback_resep_farmasi(id){
 }
 
 function changeUrgensi(){
-  // alert($("input[type='radio'][name='urgensi']:checked").val());
+  var urgensi = $("input[type='radio'][name='urgensi']:checked").val();
+  if(urgensi=='cito'){
+    if( $('#pl_sisa_stok_cito').val() > 0){
+      $('#jumlah_pesan').attr('readonly', false);
+    }
+  }
 }
 
 </script>
