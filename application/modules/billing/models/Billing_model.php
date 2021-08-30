@@ -1223,7 +1223,8 @@ class Billing_model extends CI_Model {
             $this->db->where('tc_trans_pelayanan.kode_bagian', $_GET['bagian']);
         }
 
-		$this->db->order_by('tc_kunjungan.tgl_masuk', 'ASC');
+		$this->db->order_by('tc_trans_pelayanan.tgl_transaksi', 'ASC');
+		// $this->db->order_by('tc_kunjungan.tgl_masuk', 'ASC');
         $query = $this->db->get()->result();
         // print_r($this->db->last_query());die;
 		return $query;
