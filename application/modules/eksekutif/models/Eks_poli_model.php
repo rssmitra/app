@@ -333,6 +333,58 @@ class Eks_poli_model extends CI_Model {
 			$subtitle = 'Source: RSSM - SIRS';
 		}
 
+		if($params['prefix']==7){
+			$data = array();
+			// periode
+			$this->db->select('SUM(bill_dr1) as total_bill_dr');
+			$this->_main_query();	
+			$this->db->join('mt_dokter_v e ', 'e.kode_dokter=c.kode_dokter','left');
+			$this->db->select('e.kode_dokter, e.nama_pegawai, c.tgl_masuk');	
+
+			if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
+				if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
+					$this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');
+					$this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+					FROM tc_kunjungan a
+					where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
+				}
+
+				if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
+					$this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+					FROM ri_tc_rawatinap a
+					where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".'  )');
+				}
+			}else{
+				$this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+					FROM tc_kunjungan a
+					where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
+			}
+			
+			$this->db->group_by('e.nama_pegawai, e.kode_dokter, c.tgl_masuk');
+			$this->db->order_by('e.nama_pegawai ASC');
+			$prd_dt = $this->db->get();
+			// echo '<pre>';print_r($this->db->last_query());die;
+			$getData = [];
+			foreach ($prd_dt->result() as $key => $value) {
+				// nama_pegawai
+				$nama_pegawai = ($value->nama_pegawai != '')?$value->nama_pegawai:'UMUM';
+				$getData[$nama_pegawai][] = $value->total_bill_dr;
+			}
+
+			foreach ($getData as $k => $v) {
+				$resData[$k] = array('total_biaya' => array_sum($getData[$k]), 'total_kunjungan' => count($getData[$k]));
+			}
+			
+			$data = array(
+				'prd_dt' => $resData,
+			);
+			// echo '<pre>';print_r($data);die;
+
+			$fields = array();
+			$title = '<span style="font-size: 16px">Rekapitulasi Kinerja Dokter Berdasarkan Kunjungan Periode <b>'.$this->tanggal->formatDateDmy($_GET['from_tgl']).'</b> s.d <b>'.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+			$subtitle = 'Source: RSSM - SIRS';
+		}
+
 		// echo '<pre>';print_r($getData);die;
 		/*find and set type chart*/
 		$chart = $this->graph_master->chartTypeData($params['TypeChart'], $fields, $params, $data);

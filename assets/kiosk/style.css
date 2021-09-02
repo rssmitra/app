@@ -1193,7 +1193,7 @@ h1{
 	position: relative;
 }
 .bread-crumb-area::before{
-	background: rgba(60,182,112,.56);
+	background: #25af62;
 	content: "";
 	width: 100%;
 	position: absolute;

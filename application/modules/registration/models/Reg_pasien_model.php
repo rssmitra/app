@@ -233,6 +233,43 @@ class Reg_pasien_model extends CI_Model {
 
 	}
 
+	public function search_pasien_by_mr($keyword, $field)
+	
+	{
+		
+		$this->_main_query();
+
+		$i = 0;
+
+		foreach ($field as $item) 
+		
+		{
+
+			if($keyword)
+				($i===0) ? $this->db->where($item, $keyword) : $this->db->or_where($item
+					, $keyword);
+			
+			$column[$i] = $item;
+			
+			$i++;
+		
+		}
+
+		if(isset($this->order))
+		
+		{
+			
+			$order = $this->order;
+			
+			$this->db->order_by(key($order), $order[key($order)]);
+		
+		}
+
+
+		return $this->db->get()->result();
+
+	}
+
 	public function query_get_riwayat_pasien($select, $column, $mr)
 	
 	{

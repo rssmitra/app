@@ -1,6 +1,8 @@
 <div class="row">
 	<div class="col-md-8 col-md-offset-2">
-		<div class="center section-title">
+		<div class="section-title">
+			<h2>Antrian Pendaftaran Poli/Klinik Spesialis</h2>
+			<br>
 			<botton class="btn btn-sm btn-primary" data-wow-delay="0.8s" id="btn_non_bpjs" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">NON BPJS</h3></botton>
 				<botton class="btn btn-sm btn-primary" data-wow-delay="1.0s" id="btn_bpjs" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">&nbsp; BPJS &nbsp; </h3></botton>
 				<botton onclick="online()" href="#" class="btn btn-sm btn-primary" data-wow-delay="1.0s" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">ONLINE</h3></botton>
@@ -16,14 +18,13 @@
 			<!-- home section -->
 			<section id="home">
 
-				<div class="row center"><br>
-					<span class="center animate" style="font-size:250%; padding: 20px"><b id="title_tipe_antrian">ANTRIAN PASIEN BPJS</b></span><br>
+				<div class="row" >
+					<span class="center animate" style="font-size:250%"><b id="title_tipe_antrian">ANTRIAN PASIEN BPJS</b></span>
 					<div id="refresh2">  
 						<div class="col-xs-12" id="loket_refresh">
 							<?php 
 								
-								$arr_color = array('yellow','lime','orange','fuchsia','lightgray','lightblue','lightgrey','cyan','aqua','khaki','lightpink','wheat');
-								// $arr_color = array(''); 
+								$arr_color = array('yellow','lime','orange','fuchsia','lightgray','lightblue','lightgrey','cyan','aqua','khaki','lightpink','wheat'); 
 								/*$arr_color = array('yellow','olive','lime','orange','fuchsia','lightgray','lightblue'); */
 								shuffle($arr_color);
 
