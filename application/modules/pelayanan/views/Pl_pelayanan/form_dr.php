@@ -60,7 +60,7 @@ $(document).ready(function(){
             contentType: false,
             processData: false,            
             beforeSend: function() {
-              // achtungShowFadeIn();
+              achtungShowFadeIn();
               
             },
             uploadProgress: function(event, position, total, percentComplete) {
@@ -87,7 +87,7 @@ $(document).ready(function(){
 
               }        
 
-              // achtungHideLoader();        
+              achtungHideLoader();        
 
               }   
         });

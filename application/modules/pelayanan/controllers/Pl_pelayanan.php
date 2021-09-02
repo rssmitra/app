@@ -1356,7 +1356,7 @@ class Pl_pelayanan extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();           
-            print_r($_POST);die;
+            // print_r($_POST);die;
             $no_kunjungan = $this->form_validation->set_value('no_kunjungan');
             $no_registrasi = $this->form_validation->set_value('no_registrasi');
 
