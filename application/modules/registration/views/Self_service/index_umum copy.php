@@ -13,101 +13,92 @@
 
 
 </style>
-<div class="row">
-    <div class="col-xs-2">
-        &nbsp;
-    </div>
-    <div class="col-xs-8">
-        <div class="widget-box effect8">
-            <div class="widget-header">
-                <h4 class="widget-title">KODE PERJANJIAN/BOOKING</h4>
-            </div>
+<div class="col-xs-12">
+    <div class="widget-box effect8">
+        <div class="widget-header">
+            <h4 class="widget-title">PENCARIAN DATA PASIEN</h4>
+        </div>
 
-            <div class="widget-body">
-                <div class="widget-main">
-                    <div>
-                        <label for="form-field-mask-1">
-                            Silahkan masukan Kode Booking atau Kode Perjanjian anda.
-                        </label>
+        <div class="widget-body">
+            <div class="widget-main">
+                <div>
+                    <label for="form-field-mask-1">
+                        Silahkan masukan Nomor Rekam Medis (MR) atau NIK anda.
+                    </label>
 
-                        <div>
-                            <input class="form-control" type="text"id="kodeBooking" name="kodeBooking" style="font-size:40px;height: 55px !important; width: 100%; text-align: center !important">
-                        </div>
+                    <div class="input-group">
+                        <input class="" type="text" id="kode" name="kode" style="font-size:40px;height: 55px !important; width: 100%; text-align: center !important">
+                        <span class="input-group-btn">
+                            <button class="btn btn-sm btn-primary" type="button" id="btnSearchPasien" style="font-size:25px;height: 55px !important">
+                                <i class="ace-icon fa fa-search bigger-110"></i>
+                                Cari Data
+                            </button>
+                        </span>
                     </div>
-                    <div style="width: 100%; margin-top: 10px; text-align: center">
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <div id="message_result_kode_booking"></div>
+
+    <div class="row" style="display: none" id="resultSearchPasien">
+
+        <!-- hidden parameter -->
+        <input type="hidden" name="pnomr" id="pnomr">
+        <input type="hidden" name="noSuratSKDP" id="noSuratSKDP">
+        <input type="hidden" name="kode_poli_bpjs" id="kode_poli_bpjs">
+
+        <div class="col-xs-12 col-sm-9">
+            <h4 class="blue">
+                <span class="middle"><span id="kb_no_mr">No.MR</span> - <span id="kb_nama_pasien">Nama Pasien</span></span>
+            </h4>
+
+            <div class="profile-user-info">
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> Tujuan Poli/Klinik </div>
+
+                    <div class="profile-info-value">
+                        <span id="kb_poli_tujuan">Poli/Klinik</span>
+                    </div>
+                </div>
+
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> Dokter </div>
+
+                    <div class="profile-info-value">
+                    <span id="kb_dokter">Nama Dokter</span>
+                    </div>
+                </div>
+
+                <div class="profile-info-row">
+                    <div class="profile-info-name"> Tanggal/Jam Kunjungan </div>
+
+                    <div class="profile-info-value">
+                        <span id="kb_tgl_kunjungan"></span> <span id="kb_jam_praktek"></span> 
+                        <span id="is_available"></span>
                         
-                        <button style="height: 35px !important; font-size: 14px" class="btn btn-sm btn-primary" type="button" id="btnSearchKodeBooking">
-                            <i class="ace-icon fa fa-search bigger-110"></i>
-                            Cek Kode Booking/Perjanjian
-                        </button>
                     </div>
-                    
-                </div>
-            </div>
-        </div>
-
-        <hr>
-        <div id="message_result_kode_booking"></div>
-
-        <div class="row" style="display: none" id="resultSearchKodeBooking">
-
-            <!-- hidden parameter -->
-            <input type="hidden" name="pnomr" id="pnomr">
-            <input type="hidden" name="noSuratSKDP" id="noSuratSKDP">
-            <input type="hidden" name="kode_poli_bpjs" id="kode_poli_bpjs">
-
-            <div class="col-xs-12 col-sm-9">
-                <h4 class="blue">
-                    <span class="middle"><span id="kb_no_mr">No.MR</span> - <span id="kb_nama_pasien">Nama Pasien</span></span>
-                </h4>
-
-                <div class="profile-user-info">
-                    <div class="profile-info-row">
-                        <div class="profile-info-name"> Tujuan Poli/Klinik </div>
-
-                        <div class="profile-info-value">
-                            <span id="kb_poli_tujuan">Poli/Klinik</span>
-                        </div>
-                    </div>
-
-                    <div class="profile-info-row">
-                        <div class="profile-info-name"> Dokter </div>
-
-                        <div class="profile-info-value">
-                        <span id="kb_dokter">Nama Dokter</span>
-                        </div>
-                    </div>
-
-                    <div class="profile-info-row">
-                        <div class="profile-info-name"> Tanggal/Jam Kunjungan </div>
-
-                        <div class="profile-info-value">
-                            <span id="kb_tgl_kunjungan"></span> <span id="kb_jam_praktek"></span> 
-                            <span id="is_available"></span>
-                            
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
 
-            <div class="col-xs-12 col-sm-3 center">
-                <a href="#" class="btn btn-success btn-app radius-4" onclick="nextProcess('Self_service/form_rujukan')" style="width: 100% !important; height: 100% !important; margin-top: 35px">
-                    <i class="ace-icon fa fa-arrow-right bigger-350" style="padding: 20px"></i>
-                </a>
-            </div>
-
-
         </div>
 
-        
+        <div class="col-xs-12 col-sm-3 center">
+            <a href="#" class="btn btn-success btn-app radius-4" onclick="nextProcess('Self_service/form_rujukan')" style="width: 100% !important; height: 100% !important; margin-top: 35px">
+                <i class="ace-icon fa fa-arrow-right bigger-350" style="padding: 20px"></i>
+            </a>
+        </div>
 
-        
+
     </div>
-    <div class="col-xs-2">
-        &nbsp;
-    </div>
+
+    
+
+    
 </div>
 
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
@@ -120,13 +111,13 @@ $(document).ready(function () {
 
     var today = getDateToday();
     console.log(today);
-	$('#btnSearchKodeBooking').click(function (e) {
+	$('#btnSearchPasien').click(function (e) {
       e.preventDefault();
       findKodeBooking();
     });
 
     // screen keyboard
-    $('#kodeBooking').keyboard({
+    $('#kode').keyboard({
 
         // set this to ISO 639-1 language code to override language set by the layout
         // http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
@@ -418,17 +409,16 @@ $(document).ready(function () {
 });
 
 function nextProcess(link){
-    $('#load-content-page').load(link+'?kode='+$('#kodeBooking').val());
+    $('#load-content-page').load(link+'?kode='+$('#kode').val());
 }
 
 function findKodeBooking(){
-    var kodeBooking = $('#kodeBooking').val();
-    var today = getDateToday();
+    var kode = $('#kode').val();
 
       $.ajax({
         url: '../Templates/References/findKodeBooking',
         type: "post",
-        data: {kode:kodeBooking},
+        data: {kode:kode},
         dataType: "json",
         beforeSend: function() {
         //   achtungShowLoader();  
@@ -440,11 +430,11 @@ function findKodeBooking(){
             var no_mr = obj.no_mr;
 
             /*show hidden*/
-            $('#resultSearchKodeBooking').show('fast');
+            $('#resultSearchPasien').show('fast');
             $('#message_result_kode_booking').html('');
 			
 			$('html,body').animate({
-					scrollTop: $("#resultSearchKodeBooking").offset().top},
+					scrollTop: $("#resultSearchPasien").offset().top},
 					'slow');
 
             /*text*/
@@ -455,10 +445,8 @@ function findKodeBooking(){
             $('#kb_poli_tujuan').text(obj.poli);
             $('#kb_dokter').text(obj.nama_dr);
             $('#kb_jam_praktek').text(obj.jam_praktek);
-            $('#noSuratSKDP').val(kodeBooking);
+            $('#noSuratSKDP').val(kode);
             $('#kode_poli_bpjs').val(obj.kode_poli_bpjs);
-            console.log(today);
-            console.log(obj.tgl_kunjungan);
 
             if(today == obj.tgl_kunjungan){
                 $('#is_available').html('<span class="label label-success arrowed-in-right">available</span>');
@@ -469,8 +457,8 @@ function findKodeBooking(){
 
           }else{
             // $.achtung({message: data.message, timeout:5});
-            $('#resultSearchKodeBooking').hide('fast');
-            $('#message_result_kode_booking').html('<div class="center"><img src="<?php echo base_url()?>assets/kiosk/alert.jpeg" style="width: 100px "><strong><h3>Pemberitahuan !</h3> </strong><span style="font-size: 14px">'+response.message+'</span></div>');
+            $('#resultSearchPasien').hide('fast');
+            $('#message_result_kode_booking').html('<div class="alert alert-danger"><strong>Pemberitahuan ! </strong>'+response.message+'</div>');
 
           }
           

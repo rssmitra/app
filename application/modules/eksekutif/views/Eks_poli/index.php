@@ -220,6 +220,12 @@
                 <span class="lbl"> Rekapitulasi Kunjungan Berdasarkan Asuransi per Periode</span>
               </label>
 
+              <br>
+              <label>
+                <input name="tbl-resume-kinerja-dokter" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Kinerja Dokter Berdasarkan Kunjungan Pasien </span>
+              </label>
+
             </div>
             <br>
             <hr class="separator">

@@ -1321,7 +1321,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function processSaveDiagnosaDr(){
 
-        // print_r($_POST);die;
+        
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
 
@@ -1334,6 +1334,8 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
         $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');             
         $this->form_validation->set_rules('kode_dokter_poli', 'Dokter Poli', 'trim');             
+        $this->form_validation->set_rules('check_pm', 'Pilih Penunjang Medis', 'trim|required', array('required' => 'Apakah ada penunjang? Jika "Tidak Ada" silahkan pilih "Tidak ada Penunjang"'));             
+        $this->form_validation->set_rules('check_resep', 'Dokter Poli', 'trim|required', array('required' => 'Apakah ada Resep? Jika "Tidak ada" maka pilih "Tidak"'));             
         // form assesment
         $this->form_validation->set_rules('pl_tb', 'Tinggi Badan', 'trim');        
         $this->form_validation->set_rules('pl_bb', 'Berat Badan', 'trim');        
@@ -1354,7 +1356,7 @@ class Pl_pelayanan extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();           
-
+            print_r($_POST);die;
             $no_kunjungan = $this->form_validation->set_value('no_kunjungan');
             $no_registrasi = $this->form_validation->set_value('no_registrasi');
 
@@ -1437,42 +1439,43 @@ class Pl_pelayanan extends MX_Controller {
 
                 foreach ($_POST['check_pm'] as $row_val) {
                     
-                    // cek existing
-                    $existing_pm = $this->db->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi, 'kode_bagian_tujuan' => $row_val, 'kode_bagian_asal' => $kode_bagian_asal) )->num_rows();
+                    if($row_val != 0):
+                        // cek existing
+                        $existing_pm = $this->db->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi, 'kode_bagian_tujuan' => $row_val, 'kode_bagian_asal' => $kode_bagian_asal) )->num_rows();
+                        if($existing_pm == 0){
+                            $kode_bagian_tujuan = $this->regex->_genRegex($row_val,'RGXQSL');
+                            $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title, $no_registrasi, $no_mr, $kode_dokter, $kode_bagian_tujuan, $kode_bagian_asal);
+                            
+                            /*insert penunjang medis*/
+                            $kode_penunjang = $this->master->get_max_number('pm_tc_penunjang', 'kode_penunjang');
+                            $no_antrian = $this->master->get_no_antrian_pm($this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'));
+                            $klas = $this->input->post('kode_klas');
+                            $data_pm_tc_penunjang = array(
+                                'kode_penunjang' => $kode_penunjang,
+                                'tgl_daftar' => date('Y-m-d H:i:s'),
+                                'kode_bagian' => $this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'),
+                                'no_kunjungan' => $no_kunjungan,
+                                'no_antrian' => $no_antrian,
+                                'kode_klas' => $klas,
+                                'petugas_input' => $this->session->userdata('user')->user_id,
+                            );
 
-                    if($existing_pm == 0){
-                        $kode_bagian_tujuan = $this->regex->_genRegex($row_val,'RGXQSL');
-                        $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title, $no_registrasi, $no_mr, $kode_dokter, $kode_bagian_tujuan, $kode_bagian_asal);
-                        
-                        /*insert penunjang medis*/
-                        $kode_penunjang = $this->master->get_max_number('pm_tc_penunjang', 'kode_penunjang');
-                        $no_antrian = $this->master->get_no_antrian_pm($this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'));
-                        $klas = $this->input->post('kode_klas');
-                        $data_pm_tc_penunjang = array(
-                            'kode_penunjang' => $kode_penunjang,
-                            'tgl_daftar' => date('Y-m-d H:i:s'),
-                            'kode_bagian' => $this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'),
-                            'no_kunjungan' => $no_kunjungan,
-                            'no_antrian' => $no_antrian,
-                            'kode_klas' => $klas,
-                            'petugas_input' => $this->session->userdata('user')->user_id,
-                        );
+                            /*save penunjang medis*/
+                            $this->Pl_pelayanan->save('pm_tc_penunjang', $data_pm_tc_penunjang);
 
-                        /*save penunjang medis*/
-                        $this->Pl_pelayanan->save('pm_tc_penunjang', $data_pm_tc_penunjang);
+                            /*save logs*/
+                            $this->logs->save('pm_tc_penunjang', $kode_penunjang, 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
 
-                        /*save logs*/
-                        $this->logs->save('pm_tc_penunjang', $kode_penunjang, 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
-
-                        $this->db->trans_commit();
-                    }
+                            $this->db->trans_commit();
+                        }
+                    endif;
                     
                 }
                 
             endif; 
             
             // simpan pesan farmasi
-            if(isset($_POST['check_resep'])) :
+            if(isset($_POST['check_resep']) AND $_POST['check_resep'] != 0) :
 
                 $dataexc_fr = array(
                     'kode_bagian' => $this->regex->_genRegex('060101', 'RGXQSL'),
@@ -1486,8 +1489,6 @@ class Pl_pelayanan extends MX_Controller {
                     'kode_profit' => 2000,
                     'kode_bagian_asal' => $this->input->post('kode_bagian_asal'),
                 );
-    
-                // log
                 $dataexc_fr['created_date'] = date('Y-m-d H:i:s');
                 $dataexc_fr['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 

@@ -177,14 +177,21 @@
 <div style="margin-top: 6px">
     <div class="checkbox" style="margin-left: -20px">
         <label>
-        Resep Farmasi / Resep Dokter ?
+        Apakah ada Resep Farmasi / Resep Dokter ?
         </label>
         <label>
             <?php 
                 $checked_resep = ($this->Pl_pelayanan->check_resep_fr($value->kode_bagian, $value->no_registrasi) == true ) ? 'checked' : ''; 
             ?>
-            <input name="check_resep" id="check_resep" type="checkbox" class="ace" value="1" <?php echo $checked_resep; ?>>
+            <input name="check_resep" id="check_resep" type="radio" class="ace" value="1" <?php echo $checked_resep; ?>>
             <span class="lbl"> Ya</span>
+        </label>
+        <label>
+            <?php 
+                $checked_resep_no = ($this->Pl_pelayanan->check_resep_fr($value->kode_bagian, $value->no_registrasi) == false ) ? 'checked' : ''; 
+            ?>
+            <input name="check_resep" id="check_resep" type="radio" class="ace" value="0" <?php echo $checked_resep_no; ?>>
+            <span class="lbl"> Tidak</span>
         </label>
     </div>
 </div>
@@ -248,6 +255,11 @@
         </label>
 
         <?php endforeach; ?>
+
+        <label>
+            <input name="check_pm[]" type="checkbox" value="0" class="ace" >
+            <span class="lbl"> Tidak Ada Penunjang </span>
+        </label>
 
     </div>
 </div>

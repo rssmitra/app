@@ -28,43 +28,44 @@
     <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
   </head>
 	<style>
-	body{
-		overflow-y: scroll;
-	}
-	.centered {
-		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-	}
+    body{
+      overflow-y: scroll;
+    }
+    
+    .ui-keyboard{
+      font-size: 20px !important;
+    }
 
-	.wrapper {
-		display: flex;
-		justify-content: space-around;
-	}
+    button { margin-top: auto; }
+    .alert-success {
+        background-color: #dff0d8 !important;
+        border-color: #d6e9c6 !important;
+        color: #3c763d !important;
+    }
 
-	.box {
-		flex: 0 0 40%;
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		border: 1px dashed red;
-		padding: 20px;
-		margin: 10px;
-		max-width: 275px;
-	}
+    .alert-danger {
+        background-color: #f2dede !important;
+        border-color: #ebccd1 !important;
+        color: #a94442 !important;
+    }
 
-  .ui-keyboard{
-    font-size: 20px !important;
-  }
+    .footer .footer-inner .footer-content {
+        background: linear-gradient(2deg, #8bc32ea3, transparent);
+    }
 
-	button { margin-top: auto; }
+    .smaller{
+      font-weight: bold !important;
+      color: #024a19 !important;
+    }
 
-	
+    .btn-primary, .btn-primary:focus {
+      background-color: #8bc22d !important;
+      border-color: #7fb720;
+    }
 
 	</style>
-  <body class="no-skin">
+
+  <body class="no-skin" style="background: url('../assets/images/bg2.jpg') !important;">
     <!-- #section:basics/navbar.layout -->
     <!-- <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background: url('assets/images/KIOSK.png');"> -->
     
@@ -89,16 +90,129 @@
             </script>
           </div>
           <div class="page-content-main" style="background: white !important">
-          <h2 class="center" style="font-family: fantasy; font-weight: bold">KIOSK LAYANAN MANDIRI PASIEN<br>RS SETIA MITRA</h2><br>
+          <br>
+          <div class="center">
+            <img src="<?php echo base_url().'assets/images/logo.png'?>" style="width: 100px">
+            <h2 style="font-family: sans-serif; font-weight: bold; font-size:25px; color: #024a19; ">KIOSK LAYANAN MANDIRI PASIEN<br>RS SETIA MITRA</h2><br>
+          </div>
             
+
+            <div class="center">
+              <a style="height: 40px; font-size: 18px" class="btn btn-sm btn-success" type="button" href="<?php echo base_url().'registration/Self_service'?>">
+                  <i class="ace-icon fa fa-home bigger-110"></i>
+                  Kembali ke Halaman Utama
+              </a>
+            </div>
+            <br>
             <div class="row centered" style="width: 100% !important">
               <div class="col-xs-12">
                 <!-- PAGE CONTENT BEGINS -->
                 <!-- MODULE MENU -->
+                
                 <div id="load-content-page">
                   <div class="row ">
 
-                    <div class="wrapper">
+                    <div class="col-sm-3" style="text-align: center">
+                      <div class="widget-box">
+                        <div class="widget-header">
+                          <h4 class="smaller">
+                          BPJS KESEHATAN
+                          </h4>
+                        </div>
+
+                        <div class="widget-body">
+                          <div class="widget-main">
+                            <p class="muted">
+                              <img src="<?php echo base_url()?>assets/kiosk/bpjs.jpeg" height="100" alt=""><br>
+                              Layanan Pendaftaran Mandiri <br>Pasien BPJS Kesehatan
+                            </p>
+
+                            <hr>
+
+                            <p>
+                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/mandiri_bpjs')">Selengkapnya</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3" style="text-align: center">
+                      <div class="widget-box">
+                        <div class="widget-header">
+                          <h4 class="smaller">
+                          UMUM & ASURANSI
+                          </h4>
+                        </div>
+
+                        <div class="widget-body">
+                          <div class="widget-main">
+                            <p class="muted">
+                              <img src="<?php echo base_url()?>assets/kiosk/insurance.png" height="100" alt=""><br>
+                              Layanan Pendaftaran Mandiri <br>Pasien Umum dan Asuransi Lainnya
+                            </p>
+
+                            <hr>
+
+                            <p>
+                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/mandiri_umum')">Selengkapnya</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3" style="text-align: center">
+                      <div class="widget-box">
+                        <div class="widget-header">
+                          <h4 class="smaller">
+                          ANTRIAN PENDAFTARAN
+                          </h4>
+                        </div>
+
+                        <div class="widget-body">
+                          <div class="widget-main">
+                            <p class="muted">
+                            <img src="<?php echo base_url()?>assets/kiosk/antrian.png" height="100" alt=""><br>
+                              Pengambilan Nomor Antrian <br>Pendaftaran Pasien Poli/Klinik
+                            </p>
+
+                            <hr>
+
+                            <p>
+                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/antrian_poli')">Selengkapnya</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-sm-3" style="text-align: center">
+                      <div class="widget-box">
+                        <div class="widget-header">
+                          <h4 class="smaller">
+                            INFORMASI & PERJANJIAN
+                          </h4>
+                        </div>
+
+                        <div class="widget-body">
+                          <div class="widget-main">
+                            <p class="muted">
+                            <img src="<?php echo base_url()?>assets/kiosk/appointment.png" height="100" alt=""><br>
+                              Informasi Jadwal Praktek Dokter <br>dan Perjanjian Pasien
+                            </p>
+
+                            <hr>
+
+                            <p>
+                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/jadwal_dokter')">Selengkapnya</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- <div class="wrapper">
                       <div class="box">
                         <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
                         <h2>PENDAFTARAN PASIEN BPJS</h2>
@@ -125,7 +239,8 @@
                         <p>Informasi Jadwal Praktek Dokter dan Perjanjian Pasien</p>
                         <button onclick="scrollSmooth('Self_service/')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
                       </div>
-                    </div>
+                    </div> -->
+
                   </div>
                 </div>
                 <!-- END MODULE MENU -->
@@ -137,11 +252,57 @@
         </div>
       </div><!-- /.main-content -->
 
+      <div class="footer">
+				<div class="footer-inner">
+					<div class="footer-content">
+						<span class="bigger-120">
+							<span class="blue bolder">KIOSK - </span>
+							RS. Setia Mitra <?php echo date('Y')?>
+						</span>
+					</div>
+				</div>
+			</div>
 
       <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
       </a>
     </div><!-- /.main-container -->
+
+
+
+     <div id="globalModalView" class="modal fade" tabindex="-1">
+
+      <div class="modal-dialog" style="overflow-y: scroll; max-height:100%;  margin-top: 50px; margin-bottom:50px;width:40%">
+
+        <div class="modal-content">
+
+          <div class="modal-header">
+
+            <!-- <div class="table-header"> -->
+
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+
+                <span class="white">&times;</span>
+
+              </button>
+
+              <span id="text_title" style="font-size: 14px; color: white">JADWAL DOKTER DAN PERJANJIAN PASIEN</span>
+
+            <!-- </div> -->
+
+          </div>
+
+          <div class="modal-body" style="min-height: 400px !important">
+
+            <div id="global_modal_content_detail"></div>
+
+          </div>
+
+        </div><!-- /.modal-content -->
+
+      </div><!-- /.modal-dialog -->
+
+    </div>
 
     <!-- basic scripts -->
 
@@ -171,6 +332,11 @@
 
     <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery.form.js"></script>
     <script type="text/javascript" src="<?php echo base_url()?>assets/js/jquery-validation/dist/jquery.validate.js"></script>
+
+    <script src="<?php echo base_url()?>/assets/js/dataTables/jquery.dataTables.js"></script>
+    <script src="<?php echo base_url()?>/assets/js/dataTables/jquery.dataTables.bootstrap.js"></script>
+    <script src="<?php echo base_url()?>/assets/js/dataTables/extensions/TableTools/js/dataTables.tableTools.js"></script>
+    <script src="<?php echo base_url()?>/assets/js/dataTables/extensions/ColVis/js/dataTables.colVis.js"></script>
 
     <!-- the following scripts are used in demo only for onpage help and you don't need them -->
     <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.onpage-help.css" />
@@ -202,9 +368,9 @@
 		function scrollSmooth(link){
 			$('#banner-home').hide('fast');
 			$('#load-content-page').load(link);
-			$('html,body').animate({
-					scrollTop: $("#load-content-page").offset().top},
-					'slow');
+			// $('html,body').animate({
+			// 		scrollTop: $("#load-content-page").offset().top},
+			// 		'slow');
 		}
 
       jQuery(function($) {
@@ -255,6 +421,26 @@
       current_date = dd + '/' + mm + '/' + yyyy;
       return current_date;
     }
+
+    function show_modal(url, title){  
+
+          preventDefault();
+          
+          $('#text_title').text(title);
+
+          $('#global_modal_content_detail').load(url); 
+
+          $("#globalModalView").modal();
+          
+    }
+
+    function preventDefault(e) {
+        e = e || window.event;
+        if (e.preventDefault)
+            e.preventDefault();
+        e.returnValue = false;  
+    }
+
 
       
     </script>

@@ -1600,31 +1600,40 @@ class Templates extends MX_Controller {
 
             // $pm_ = 472812; 
             // $no_mr = '00211762';
-            // $nama_pasien = 'Muhammad Amin Lubis';
-            // $umur = '30';
+            // $nama_pasien = 'Asep Cucu Sutisna';
+            // $umur = '54';
             // $jk_ = 'Pria';
-            // $tgl_daftar = '19 Agustus 2021 - 15:21:10';
-            // $tgl_periksa = '19 Agustus 2021 - 15:53:02';
+            // $tgl_daftar = '31 Agustus 2021 - 15:21:10';
+            // $tgl_periksa = '31 Agustus 2021 - 15:53:02';
             // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
-            // $pm_ = 472324; 
-            // $no_mr = '00248745';
-            // $nama_pasien = 'Muhammad Dwiyan Rinaldi';
-            // $umur = '28';
-            // $jk_ = 'Pria';
-            // $tgl_daftar = '19 Agustus 2021 - 15:15:11';
-            // $tgl_periksa = '19 Agustus 2021 - 15:43:12';
+            // $pm_ = 472353; 
+            // $no_mr = '00298753';
+            // $nama_pasien = 'Nofarita Naili';
+            // $umur = '51';
+            // $jk_ = 'Perempuan';
+            // $tgl_daftar = '31 Agustus 2021 - 14:21:21';
+            // $tgl_periksa = '31 Agustus 2021 - 14:53:11';
             // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
+
+            $pm_ = 472333; 
+            $no_mr = '00298762';
+            $nama_pasien = 'Rivo Rivaldo Achmad Sevano';
+            $umur = '20';
+            $jk_ = 'Pria';
+            $tgl_daftar = '02 September 2021 - 13:22:11';
+            $tgl_periksa = '02 September 2021 - 13:52:21';
+            $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db
-            $pm_ = $pm;
-            $no_mr = $data->reg_data->no_mr;
-            $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
-            $umur = $data->reg_data->umur;
-            $jk_ = $jk;
-            $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
-            $tgl_periksa = $tgl_pemeriksaan;
-            $dokter_pengirim = $data->reg_data->nama_pegawai;
+            // $pm_ = $pm;
+            // $no_mr = $data->reg_data->no_mr;
+            // $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
+            // $umur = $data->reg_data->umur;
+            // $jk_ = $jk;
+            // $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
+            // $tgl_periksa = $tgl_pemeriksaan;
+            // $dokter_pengirim = $data->reg_data->nama_pegawai;
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">

@@ -134,16 +134,11 @@ $(function() {
     </tr>
   </table>
   
-  <!-- <div id="sig"></div>
-  <p style="clear: both;">
-    <button id="disable">Disable</button> 
-    <button style="height: 20px; font-size: 14px" id="clear">Reset Signature</button> 
-    <button style="height: 20px; font-size: 14px" id="print_sep">Cetak SEP</button> 
-    <button id="json">To JSON</button>
-    <button id="svg">To SVG</button>
-  </p> -->
-
-  <a href="">Print</a>
+  <br>
+  <div class="center">
+    <a href="<?php echo base_url().'registration/Self_service'?>" class="btn btn-success"><i class="fa fa-arrow-left bigger-150"></i> Kembali ke Halaman Utama</a>
+    <a href="#" class="btn btn-inverse"><i class="fa fa-print bigger-150"></i> Cetak Surat Elegibilitas Pasien (SEP)</a>
+  </div>
   
 
 </div>

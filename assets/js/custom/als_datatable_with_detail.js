@@ -112,6 +112,28 @@ $('#btn_search_data').click(function (e) {
   });
  });
 
+$('#btn_export_excel').click(function (e) {
+  var url_search = $('#form_search').attr('action');
+  e.preventDefault();
+  $.ajax({
+    url: url_search,
+    type: "post",
+    data: $('#form_search').serialize(),
+    dataType: "json",
+    success: function(data) {
+      console.log(data.data);
+      export_excel(data);
+    }
+  });
+});
+
+
+function export_excel(result){
+
+  window.open(base_url+'/export_excel?'+result.data+'','_blank'); 
+
+}
+
 function format_html ( data ) {
   return data.html;
 }
