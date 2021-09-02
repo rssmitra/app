@@ -1334,8 +1334,8 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
         $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');             
         $this->form_validation->set_rules('kode_dokter_poli', 'Dokter Poli', 'trim');             
-        $this->form_validation->set_rules('check_pm', 'Pilih Penunjang Medis', 'trim|required', array('required' => 'Apakah ada penunjang? Jika "Tidak Ada" silahkan pilih "Tidak ada Penunjang"'));             
-        $this->form_validation->set_rules('check_resep', 'Dokter Poli', 'trim|required', array('required' => 'Apakah ada Resep? Jika "Tidak ada" maka pilih "Tidak"'));             
+        $this->form_validation->set_rules('check_pm[]', 'Pilih Penunjang Medis', 'trim|required', array('required' => 'Apakah ada penunjang? Jika "Tidak Ada" silahkan pilih "Tidak ada Penunjang"'));             
+        $this->form_validation->set_rules('check_resep[]', 'Dokter Poli', 'trim|required', array('required' => 'Apakah ada Resep? Jika "Tidak ada" maka pilih "Tidak"'));             
         // form assesment
         $this->form_validation->set_rules('pl_tb', 'Tinggi Badan', 'trim');        
         $this->form_validation->set_rules('pl_bb', 'Berat Badan', 'trim');        
