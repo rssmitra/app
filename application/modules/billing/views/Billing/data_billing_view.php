@@ -98,7 +98,7 @@ function checkedNk(kode) {
                       <?php 
                         $var_no = 0;
                         foreach($data->kasir_data as $row_kasir_data) : $var_no++; ?>
-                      <th class="center">
+                      <th class="center" style="padding: 0px 10px !important;">
                         Pembayaran <?php echo $var_no;?>
                       </th>
                       <?php endforeach; // end foreach row_kasir_data?>
