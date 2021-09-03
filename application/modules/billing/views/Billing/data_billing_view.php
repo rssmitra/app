@@ -90,7 +90,7 @@ function checkedNk(kode) {
           <div>
               <!-- Log Pembayaran Kasir -->
               <?php if( $data->kasir_data != NULL ) : // if log transaksi kasir ?>
-              <div class="pull-left" style="padding-left: 10px;">
+              <div class="pull-left" style="padding-left: 7%;">
                 <?php echo '<span style="font-weight: bold;">Log Pembayaran Kasir</span>' ?>
                 <table class="table_billing_data table-2 table-bordered table-hover" width="100%" style="color: black; margin-top: 3px;">
                   <thead>
@@ -98,21 +98,22 @@ function checkedNk(kode) {
                       <?php 
                         $var_no = 0;
                         foreach($data->kasir_data as $row_kasir_data) : $var_no++; ?>
-                      <th class="center" style="padding: 0px 10px !important;">
-                        Pembayaran <?php echo $var_no;?>
-                      </th>
+                      <td class="center" colspan="2" style="padding: 0px 10px !important;text-align: center; font-size: 20px; line-height: 15px">
+                      <br>
+                        <a href="#" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>', 'Cetak Billing' , 600 , 750);"> <b><?php echo $row_kasir_data->kode_tc_trans_kasir;?></b> </a>  <br>
+                        <span style="font-size: 11px"><?php echo $this->tanggal->formatDateTime($row_kasir_data->tgl_jam); ?><br><?php echo $row_kasir_data->fullname;?></span>
+                      </td>
                       <?php endforeach; // end foreach row_kasir_data?>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="center">
-                      <?php 
-                        $var_no = 0;
-                        foreach($data->kasir_data as $row_kasir_data) : $var_no++; ?>
-                      <td>
-                        <a href="#" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>', 'Cetak Billing' , 600 , 750);"> <?php echo $row_kasir_data->kode_tc_trans_kasir;?> </a>  
+                      <td style="width: 50%">
+                        <a href="#" class="label label-block label-primary" style="width: 100% !important;" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>&nk=1', 'Cetak Billing' , 600 , 750);">Bill NK</a>
                       </td>
-                      <?php endforeach; // end foreach row_kasir_data?>
+                      <td style="width: 50%">
+                        <a href="#" class="label label-block label-primary" style="width: 100% !important;" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>&nk=0', 'Cetak Billing' , 600 , 750);">Bill Pasien</a>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
