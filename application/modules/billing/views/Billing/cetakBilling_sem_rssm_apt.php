@@ -37,7 +37,7 @@
     <table width="500px" border="0">
       <tr>
         <td valign="bottom"><b><span style="font-size: 15px"><?php echo COMP_LONG; ?></span></b><br><span style="font-size: 12px;"><?php echo COMP_ADDRESS; ?></span></td>
-        <td width="180px" valign="bottom" style="text-align: right;"><b>No. Trx. <?php echo $data->kode_trans_far ?></b></td>
+        <td width="180px" valign="bottom" style="text-align: right;"><b>No. Trx. <?php echo $data->reg_data->flag_trans.'/'.$data->kode_trans_far ?></b></td>
         <td width="36px"></td>
       </tr>
       <tr>
@@ -142,7 +142,7 @@
           <?php    
               endforeach;
           endforeach;
-          if( $kasir_data[0]->nk_karyawan !=0 ){
+          if( $kasir_data[0]->nk_karyawan !=0 || $kasir_data[0]->potongan !=0  ){
             echo  '<tr style="font-style:italic;  line-height: 0.75;">';
             echo  '  <td style="text-align: right; font-family: Segoe UI;"><b>Potongan</b></td>';
             echo  '  <td style="text-align: right; width: 100px">'. number_format( $kasir_data[0]->potongan ) .',-</td>';

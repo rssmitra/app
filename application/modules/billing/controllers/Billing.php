@@ -682,6 +682,7 @@ class Billing extends MX_Controller {
             $return['kode_perusahaan'] = $_POST['kode_perusahaan_val'];
             $return['billing_nk'] = count($preview_billing_nk);
             $return['billing_um'] = count($preview_billing_um);
+            $return['kode_tc_trans_kasir'] = $dataTranskasir["kode_tc_trans_kasir"] ;
             echo json_encode($return);
         }
         

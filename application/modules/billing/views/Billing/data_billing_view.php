@@ -84,19 +84,54 @@ function checkedNk(kode) {
                 </div>
             </div> 
         </div>
-
         <br>
         <hr>
         <div class="row">
-            <div class="col-xs-12 no-padding">
-            <div class="pull-right">
+          <div>
+              <!-- Log Pembayaran Kasir -->
+              <?php if( $data->kasir_data != NULL ) : // if log transaksi kasir ?>
+              <div class="pull-left" style="padding-left: 10px;">
+                <?php echo '<span style="font-weight: bold;">Log Pembayaran Kasir</span>' ?>
+                <table class="table_billing_data table-2 table-bordered table-hover" width="100%" style="color: black; margin-top: 3px;">
+                  <thead>
+                    <tr>
+                      <?php 
+                        $var_no = 0;
+                        foreach($data->kasir_data as $row_kasir_data) : $var_no++; ?>
+                      <th class="center">
+                        Pembayaran <?php echo $var_no;?>
+                      </th>
+                      <?php endforeach; // end foreach row_kasir_data?>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="center">
+                      <?php 
+                        $var_no = 0;
+                        foreach($data->kasir_data as $row_kasir_data) : $var_no++; ?>
+                      <td>
+                        <a href="#" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>', 'Cetak Billing' , 600 , 750);"> <?php echo $row_kasir_data->kode_tc_trans_kasir;?> </a>  
+                      </td>
+                      <?php endforeach; // end foreach row_kasir_data?>
+                    </tr>
+                  </tbody>
+                </table>
+              </div> <!-- end Log Pembayaran Kasir -->
+              <?php endif; //endif log transaksi ?>
+              
+              <div class="pull-right" style="padding-top: 12px;">
                 Total billing : <br>
                 <span id="total_billing_all"><b>Rp. 0,-</b></span>
-            </div>
+              </div>
+          </div>
+        </div> 
+        <br>
+        <div class="row">
+            <div class="col-xs-12 no-padding">
             <!-- PAGE CONTENT BEGINS -->
             <?php foreach($kunjungan as $key=>$row_dt_kunj) :?>
-                            
-            <div class="timeline-container timeline-style2">
+              
+            <div class="timeline-container timeline-style2" style="z-index: 1;">
                 <span class="timeline-label" style="width:210px !important">
                     <b><span style="font-size: 14px"><?php echo ucwords($key)?></span></b>
                 </span>
