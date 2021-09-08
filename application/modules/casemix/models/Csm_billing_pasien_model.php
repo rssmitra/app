@@ -1185,7 +1185,7 @@ class Csm_billing_pasien_model extends CI_Model {
         /*document billing*/
         foreach ($decode_data->kasir_data as $key_kasir_data => $val_kasir_data) {
             /*filenam BILL-{no_mr}{no_reg}{kode_tc_trans_kasir}*/
-            $filename[] ='BILL'.$tipe.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$val_kasir_data->kode_tc_trans_kasir.'';
+            $filename[] = preg_replace('/\s+/', '', 'BILL'.$tipe.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$val_kasir_data->kode_tc_trans_kasir.'');
             /*merge rincian biaya keseluruhan pasien rawat inap*/
             //$this->export->getContentPDF($no_registrasi, $tipe,'','F');
         }

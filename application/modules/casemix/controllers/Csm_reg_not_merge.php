@@ -202,8 +202,9 @@ class Csm_reg_not_merge extends MX_Controller {
                 $this->db->delete('csm_dokumen_export', array('no_registrasi' => $value));
                 /*created document name*/
                 $createDocument = $this->Csm_billing_pasien->createDocument($value, $original->csm_rp_tipe);
-                //print_r($createDocument);die;
+                // print_r($createDocument);die;
                 foreach ($createDocument as $k_cd => $v_cd) {
+                    
                     # code...
                     $explode = explode('-', $v_cd);
                     /*explode result*/
@@ -223,7 +224,7 @@ class Csm_reg_not_merge extends MX_Controller {
                         'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
                         'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
                         'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
-                        'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/'.$filename.'', 'RGXQSL'),
+                        'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
                     );
                     $doc_save['created_date'] = date('Y-m-d H:i:s');
                     $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
@@ -237,6 +238,7 @@ class Csm_reg_not_merge extends MX_Controller {
 
                 $data[] = base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$value.'/'.$original->csm_rp_tipe.'';
             }
+
             
         }
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect_data' =>$data));
