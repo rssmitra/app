@@ -460,11 +460,11 @@ function cetak_slip(kode_penunjang) {
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal ft" method="post" id="form_search" action="pelayanan/Pl_pelayanan_pm/find_data">
+    <form class="form-horizontal ft" method="post" id="form_search" action="pelayanan/Pl_pelayanan_pm/find_data" autocomplete="off">
 
     <div class="col-md-12">
 
-      <center><h4>DATA PASIEN <?php echo strtoupper($nama_bag) ?><br><small>Data yang ditampilkan adalah data pasien 2 bulan ke terakhir.</small></h4></center>
+      <center><h4>DATA PASIEN <?php echo strtoupper($nama_bag) ?><br><small>Data yang ditampilkan adalah data pasien 1 bulan ke terakhir.</small></h4></center>
       <br>
 
       <div class="f1-steps" style="margin-top:0px !important">
