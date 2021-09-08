@@ -84,6 +84,15 @@ class Eks_poli extends MX_Controller {
             );
         }
 
+        if(isset($_GET['tbl-resume-kinerja-dokter'])){
+            $data[4] = array(
+                'nameid' => 'tbl-resume-kinerja-dokter',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=7&TypeChart=table&style=TableResumeKinerjaDokter&'.$output.'',
+            );
+        }
+
         // $data[2] = array(
         //     'mod' => $_GET['mod'],
         //     'nameid' => 'graph-pie-1',

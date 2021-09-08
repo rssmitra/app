@@ -13,8 +13,11 @@
 
 
 </style>
-<div class="row centered" style="width: 80% !important">
-    <div class="col-xs-12">
+<div class="row">
+    <div class="col-xs-2">
+        &nbsp;
+    </div>
+    <div class="col-xs-8">
         <div class="widget-box effect8">
             <div class="widget-header">
                 <h4 class="widget-title">KODE PERJANJIAN/BOOKING</h4>
@@ -27,15 +30,16 @@
                             Silahkan masukan Kode Booking atau Kode Perjanjian anda.
                         </label>
 
-                        <div class="input-group">
-                            <input class="" type="text"id="kodeBooking" name="kodeBooking" style="font-size:40px;height: 55px !important; width: 100%; text-align: center !important">
-                            <span class="input-group-btn">
-                                <button class="btn btn-sm btn-primary" type="button" id="btnSearchKodeBooking" style="font-size:25px;height: 55px !important">
-                                    <i class="ace-icon fa fa-search bigger-110"></i>
-                                    Cek Kode
-                                </button>
-                            </span>
+                        <div>
+                            <input class="form-control" type="text"id="kodeBooking" name="kodeBooking" style="font-size:40px;height: 55px !important; width: 100%; text-align: center !important">
                         </div>
+                    </div>
+                    <div style="width: 100%; margin-top: 10px; text-align: center">
+                        
+                        <button style="height: 35px !important; font-size: 14px" class="btn btn-sm btn-primary" type="button" id="btnSearchKodeBooking">
+                            <i class="ace-icon fa fa-search bigger-110"></i>
+                            Cek Kode Booking/Perjanjian
+                        </button>
                     </div>
                     
                 </div>
@@ -100,6 +104,9 @@
         
 
         
+    </div>
+    <div class="col-xs-2">
+        &nbsp;
     </div>
 </div>
 
@@ -416,6 +423,7 @@ function nextProcess(link){
 
 function findKodeBooking(){
     var kodeBooking = $('#kodeBooking').val();
+    var today = getDateToday();
 
       $.ajax({
         url: '../Templates/References/findKodeBooking',
@@ -449,6 +457,8 @@ function findKodeBooking(){
             $('#kb_jam_praktek').text(obj.jam_praktek);
             $('#noSuratSKDP').val(kodeBooking);
             $('#kode_poli_bpjs').val(obj.kode_poli_bpjs);
+            console.log(today);
+            console.log(obj.tgl_kunjungan);
 
             if(today == obj.tgl_kunjungan){
                 $('#is_available').html('<span class="label label-success arrowed-in-right">available</span>');
@@ -460,7 +470,7 @@ function findKodeBooking(){
           }else{
             // $.achtung({message: data.message, timeout:5});
             $('#resultSearchKodeBooking').hide('fast');
-            $('#message_result_kode_booking').html('<div class="alert alert-danger"><strong>Pemberitahuan ! </strong>'+response.message+'</div>');
+            $('#message_result_kode_booking').html('<div class="center"><img src="<?php echo base_url()?>assets/kiosk/alert.jpeg" style="width: 100px "><strong><h3>Pemberitahuan !</h3> </strong><span style="font-size: 14px">'+response.message+'</span></div>');
 
           }
           

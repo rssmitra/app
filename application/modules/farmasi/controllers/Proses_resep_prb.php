@@ -187,7 +187,8 @@ class Proses_resep_prb extends MX_Controller {
             $count_log_mutasi_obat = $this->db->select('kode_trans_far, kode_log_mutasi_obat')->group_by('kode_trans_far, kode_log_mutasi_obat')->get_where('fr_tc_log_mutasi_obat', array('kode_trans_far' => $_POST['kode_trans_far']) )->num_rows();
             $max_num = $count_log_mutasi_obat + 1;
             $kode_log_mutasi_obat = $_POST['kode_trans_far'].'-0'.$max_num;
-            foreach ($_POST['id_fr_tc_far_detail_log_prb'] as $key => $value) {
+
+            foreach ($_POST['selected_id'] as $key => $value) {
                 $log_jml_mutasi = $_POST['jumlah_'.$value.''] + $_POST['log_jml_mutasi_'.$value.''];
                 $sisa_mutasi = $_POST['jumlah_tebus_'.$value.''] - $log_jml_mutasi;
                 if ( $sisa_mutasi > 0 ) {

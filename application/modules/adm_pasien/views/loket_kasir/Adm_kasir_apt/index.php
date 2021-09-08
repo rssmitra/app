@@ -179,10 +179,11 @@
 
       <div class="form-group">
         <label class="control-label col-md-1">Pencarian</label>
-        <div class="col-md-2">
+        <div class="col-lg-2">
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
             <option value="no_mr" selected>No MR</option>
+            <option value="kode_trans_far">No Transaksi Farmasi</option>
             <option value="nama_pasien_layan">Nama Pasien</option>
           </select>
         </div>
@@ -280,7 +281,7 @@
 
       <div class="form-group">
         <label class="control-label col-md-1">&nbsp;</label>
-        <div class="col-md-2" style="margin-left:6px">
+        <div class="col-md-3" style="margin-left:6px">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Cari Data

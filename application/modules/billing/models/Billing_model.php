@@ -1181,7 +1181,9 @@ class Billing_model extends CI_Model {
 
     public function getKasirData($no_registrasi)
 	{
+		$this->db->select('tc_trans_kasir.*, tmp_user.fullname');
 		$this->db->from('tc_trans_kasir');
+		$this->db->join('tmp_user', 'tmp_user.user_id=tc_trans_kasir.no_induk', 'left');
 		$this->db->where('no_registrasi', $no_registrasi);
 		return $this->db->get()->result();
     }

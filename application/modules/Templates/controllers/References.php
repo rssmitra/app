@@ -1990,6 +1990,39 @@ class References extends MX_Controller {
 		}
 	}
 
+	public function findPasien() { 
+        
+        /*define variable data*/
+        $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+        
+        $keyword = $this->input->post('no_mr');
+
+		/*return search pasien*/
+
+		$data_pasien = $this->Reg_pasien->search_pasien_by_mr( $keyword, array('no_mr','nama_pasien') ); 
+		// echo '<pre>'; print_r($data_pasien);die;
+
+		$no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
+
+		$data = array(
+
+			'count' => count($data_pasien),
+
+			'result' => $data_pasien,
+
+		);
+		
+		if(count($data_pasien) > 0){
+			echo json_encode( array('status' => 200, 'message' => 'Data ditemukan', 'data' => $data_pasien) );
+		}else{
+			echo json_encode( array('status' => 201, 'message' => 'Data tidak ditemukan!') );
+			
+		}
+		
+        
+    
+    }
+
 
 
 }

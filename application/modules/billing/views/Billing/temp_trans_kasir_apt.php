@@ -141,7 +141,7 @@ function cetak_kuitansi(){
         <a href="#" class="btn btn-xs btn-success" onclick="payment()"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
 
         <div class="btn-group">
-            <button type="button" class="btn btn-xs btn-yellow" onclick="PopupCenter('billing/Billing/print_preview_apt?kode_trans_far=<?php echo $kode_trans_far; ?>','Cetak',1200,750);"><i class="fa fa-print"></i> Cetak Billing</button>
+            <button type="button" class="btn btn-xs btn-yellow" onclick="PopupCenter('billing/Billing/print_preview_apt?kode_trans_far=<?php echo $kode_trans_far; ?>','Cetak',600,750);"><i class="fa fa-print"></i> Cetak Billing</button>
         </div>
         
     </div>

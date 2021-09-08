@@ -233,6 +233,43 @@ class Reg_pasien_model extends CI_Model {
 
 	}
 
+	public function search_pasien_by_mr($keyword, $field)
+	
+	{
+		
+		$this->_main_query();
+
+		$i = 0;
+
+		foreach ($field as $item) 
+		
+		{
+
+			if($keyword)
+				($i===0) ? $this->db->where($item, $keyword) : $this->db->or_where($item
+					, $keyword);
+			
+			$column[$i] = $item;
+			
+			$i++;
+		
+		}
+
+		if(isset($this->order))
+		
+		{
+			
+			$order = $this->order;
+			
+			$this->db->order_by(key($order), $order[key($order)]);
+		
+		}
+
+
+		return $this->db->get()->result();
+
+	}
+
 	public function query_get_riwayat_pasien($select, $column, $mr)
 	
 	{
@@ -826,114 +863,97 @@ class Reg_pasien_model extends CI_Model {
 
 	function mergeNoMr(){
 
-		$this->db->query("delete from mt_master_pasien where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+		// cek no mr baru exist
+		$exist = $this->db->get_where('mt_master_pasien', array('no_mr' => $_POST['no_mr_baru']));
+		
+		if($exist->num_rows() > 0) :
 
-		$this->db->query("update mt_master_pasien set keterangan = "."'Asal No MR ".$_POST['no_mr_lama']."'"." where no_mr="."'".$_POST['no_mr_baru']."'"."");
+			$this->db->query("delete from mt_master_pasien where no_mr = "."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update tc_tagih_det set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update mt_master_pasien set keterangan = "."'Asal No MR ".$_POST['no_mr_lama']."'"." where no_mr="."'".$_POST['no_mr_baru']."'"."");
 
-		$this->db->query("delete from tc_tagih_det where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_tagih_det set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update fr_tc_far set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update fr_tc_far set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from fr_tc_far where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update fr_tc_far_batal set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update fr_tc_far_batal set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update ak_tc_transaksi set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from fr_tc_far_batal where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_trans_kartu set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update ak_tc_transaksi set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_kunjungan set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from ak_tc_transaksi where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update gd_th_rujuk_ri set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update tc_trans_kartu set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update th_riwayat_pasien set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from tc_trans_kartu where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update rg_tc_rujukan set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update tc_kunjungan set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_trans_kasir set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from tc_kunjungan where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update ri_tc_riwayat_kelas set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_trans_pelayanan set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update gd_th_rujuk_ri set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update fr_tc_pesan_resep set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from gd_th_rujuk_ri where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_registrasi set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update th_riwayat_pasien set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_trans_pelayanan_paket_odc set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from th_riwayat_pasien where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update gd_tc_status_harian set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update rg_tc_rujukan set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update gd_tc_cetak_racun set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from rg_tc_rujukan where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update odc_tc_registrasi set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update tc_trans_kasir set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_trans_pelayanan_paket_mcu set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from tc_trans_kasir where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update gd_th_kematian set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update ri_tc_riwayat_kelas set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-		$this->db->query("delete from ri_tc_riwayat_kelas where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update mt_karyawan set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update tc_trans_pelayanan set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update tc_trans_pelayanan_paket_lab set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from tc_trans_pelayanan where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update gd_tc_cetak_visum set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update fr_tc_pesan_resep set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update ri_pesan_bedah set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from fr_tc_pesan_resep where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update ri_pasien_vk set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update tc_registrasi set no_mr = "."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			$this->db->query("update mcu_tc_registrasi set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("delete from tc_registrasi where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_tagih_det where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from fr_tc_far where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from fr_tc_far_batal where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from ak_tc_transaksi where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_trans_kartu where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_kunjungan where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from gd_th_rujuk_ri where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from th_riwayat_pasien where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from rg_tc_rujukan where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_trans_kasir where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from ri_tc_riwayat_kelas where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_trans_pelayanan where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from fr_tc_pesan_resep where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_registrasi where no_mr = "."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_trans_pelayanan_paket_odc where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from gd_tc_status_harian where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from gd_tc_cetak_racun where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from odc_tc_registrasi where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_trans_pelayanan_paket_mcu where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from gd_th_kematian where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from mt_karyawan where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from tc_trans_pelayanan_paket_lab where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from gd_tc_cetak_visum where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from ri_pesan_bedah where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from ri_pasien_vk where no_mr="."'".$_POST['no_mr_lama']."'"."");
+			// $this->db->query("delete from mcu_tc_registrasi where no_mr="."'".$_POST['no_mr_lama']."'"."");
 
-		$this->db->query("update tc_trans_pelayanan_paket_odc set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from tc_trans_pelayanan_paket_odc where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update gd_tc_status_harian set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from gd_tc_status_harian where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update gd_tc_cetak_racun set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from gd_tc_cetak_racun where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update odc_tc_registrasi set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from odc_tc_registrasi where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update tc_trans_pelayanan_paket_mcu set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from tc_trans_pelayanan_paket_mcu where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update gd_th_kematian set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from gd_th_kematian where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update mt_karyawan set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from mt_karyawan where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update tc_trans_pelayanan_paket_lab set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from tc_trans_pelayanan_paket_lab where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update gd_tc_cetak_visum set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from gd_tc_cetak_visum where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update ri_pesan_bedah set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from ri_pesan_bedah where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update ri_pasien_vk set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from ri_pasien_vk where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("update mcu_tc_registrasi set no_mr="."'".$_POST['no_mr_baru']."'"." where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		$this->db->query("delete from mcu_tc_registrasi where no_mr="."'".$_POST['no_mr_lama']."'"."");
-
-		return true;
+			return true;
+		else:
+			return false;
+		endif;
 	}
 
 	public function get_jadwal_dokter($jd_id){
