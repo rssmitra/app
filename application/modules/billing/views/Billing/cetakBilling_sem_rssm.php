@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Cetak Billing</title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
   
   <style>
@@ -60,6 +60,46 @@
 </head>
 <body>
 
+<?php 
+  if( count( $kunjungan ) > 0 ) : 
+    foreach( $kunjungan as $key=>$row_dt_kunj ) :
+      foreach( $row_dt_kunj as $key_s=>$row_s ) : 
+        $sum_array_default[$key_s] = [];
+         
+        if( isset( $_GET['kode_tc_trans_kasir'] ) ) :   
+          foreach( $row_s as $value_data ) : 
+              if( $value_data->kode_tc_trans_kasir == $_GET['kode_tc_trans_kasir'] ) : 
+                if(isset($_GET['flag_bill']) AND $_GET['flag_bill'] == true) :
+                  if($value_data->kode_tc_trans_kasir != NULL) : 
+                    $subtotal = $this->Billing->get_total_tagihan($value_data);
+                    $sum_array_default[$key_s][] = $subtotal;
+                  endif;
+                else:
+                  $subtotal = $this->Billing->get_total_tagihan($value_data);
+                  $sum_array_default[$key_s][] = $subtotal;
+                endif; 
+              endif;
+          endforeach; 
+        else:
+          foreach( $row_s as $value_data ) : 
+            if(isset($_GET['flag_bill']) AND $_GET['flag_bill'] == true) :
+              if($value_data->kode_tc_trans_kasir != NULL) : 
+                $subtotal = $this->Billing->get_total_tagihan($value_data);
+                $sum_array_default[$key_s][] = $subtotal;
+              endif;
+            else:
+              $subtotal = $this->Billing->get_total_tagihan($value_data);
+              $sum_array_default[$key_s][] = $subtotal;
+            endif; 
+          endforeach; 
+        endif;
+      endforeach;
+    endforeach;
+  endif;
+
+  // echo '<pre>';print_r($sum_array_default);die;        
+?>
+
 <div class="body_print">
   
   <table width="500px" border="0">
@@ -87,14 +127,6 @@
         <td>Nama Pasien</td>
         <td>: <?php echo $data->reg_data->nama_pasien?></td>
       </tr>
-      <!-- <tr>
-        <td>TTL</td>
-        <td>: <?php echo $data->reg_data->tempat_lahir?>, <?php echo $this->tanggal->formatDate($data->reg_data->tgl_lhr)?></td>
-      </tr>
-      <tr>
-        <td>Umur Pasien</td>
-        <td>: <?php echo $data->reg_data->umur?> Tahun</td>
-      </tr> -->
       <tr>
         <td>Tanggal</td>
         <td>: <?php echo $this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).' - '.$this->tanggal->formatDateTimeToTime($data->reg_data->tgl_jam_masuk).' WIB'?></td>
@@ -115,32 +147,28 @@
         <td>Dokter</td>
         <td>: <?php echo $data->reg_data->nama_pegawai?></td>
       </tr>
-      <!-- <tr>
-        <td>Penjamin</td>
-        <td>: <?php //echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'Umum'?> <?php //echo ($data->reg_data->kode_perusahaan==120) ? '( '.$data->reg_data->no_sep.' )' :'';?></td>
-      </tr> -->
     </table>
     
       
       <!-- PAGE CONTENT BEGINS -->
-      <?php if( count($kunjungan) > 0 ) : ?>
-      <?php $no_key=1; foreach($kunjungan as $key=>$row_dt_kunj) : $no_key++; ?>
+      <?php if( count( $kunjungan ) > 0 ) :  ?>
+      <?php $no_key = 1; foreach( $kunjungan as $key=>$row_dt_kunj ) : $no_key++; ?>
           
-        <!-- <span style="font-size: 20px; color: black">Tanggal, <?php //echo ucwords($key)?><br></span> -->
-
         <?php 
-            foreach($row_dt_kunj as $key_s=>$row_s) : 
+            
+            foreach( $row_dt_kunj as $key_s=>$row_s ) : 
+              $sum_array[$no_key][$key_s] = array();
+              if(array_sum($sum_array_default[$key_s]) > 0) :
         ?>
       
-      <!-- ( --><?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_masuk)?> <!-- s/d --> <?php //echo $this->tanggal->formatDateTimeToTime($row_s[0]->tgl_keluar)?> <!-- ) -->
       <table class="" width="460px" style="margin-top: 3px;">
               <tr>
                 <th style="text-align: center; font-size: 13px;" colspan="2">
                   <?php 
-                  if($key_s === 'Gawat Darurat'){
-                    echo 'INSTALASI '.strtoupper($key_s);
+                  if( $key_s === 'Gawat Darurat' ){
+                    echo 'INSTALASI '.strtoupper( $key_s );
                   }else{
-                    echo strtoupper($key_s);
+                    echo strtoupper( $key_s );
                   }
                   ?> 
                 </th>
@@ -150,40 +178,65 @@
                 <th style="text-align: right;" width="100px">Jumlah ( Rp )</th>
               </tr>
             
-            <?php if(isset($_GET['kode_tc_trans_kasir'])) : ?>
+            <?php 
+              
+              if( isset( $_GET['kode_tc_trans_kasir'] ) AND $_GET['kode_tc_trans_kasir'] != NULL ) : 
+                
+            ?>
               <!-- jika ada kode tc trans kasir maka billing difilter berdasarkan kode tc trans kasir -->
             <?php 
-              $sum_array[$no_key][$key_s] = array();
-              
+              // $arr_sum_total = [];
               foreach( $row_s as $value_data ) : 
-                  if($value_data->kode_tc_trans_kasir == $_GET['kode_tc_trans_kasir']) : 
-                
+                  if( $value_data->kode_tc_trans_kasir == $_GET['kode_tc_trans_kasir'] ) : 
+                    
                     $sign_pay = ($value_data->kode_tc_trans_kasir==NULL)?'#d3d3d321':'#d3d3d321';
                     $checkbox = ($value_data->kode_tc_trans_kasir==NULL)?'<input type="checkbox" name="selected_bill[]" value="'.$value_data->kode_trans_pelayanan.'" checked>':'';
                     $penjamin = $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array() ), $value_data->kode_perusahaan , 'penjamin[]', 'penjamin_val_'.$value_data->kode_trans_pelayanan.'', '', '', ' style="font-size: 12px;width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 100% border-bottom: 1px #ccc solid; margin: 0px 1px !important; display: none"').'<span id="penjamin_txt_'.$value_data->kode_trans_pelayanan.'">'.$value_data->nama_perusahaan.'</span>'; 
 
                     if(isset($_GET['flag_bill']) AND $_GET['flag_bill'] == true) :
                       if($value_data->kode_tc_trans_kasir != NULL) : 
-                        $subtotal = $this->Billing->get_total_tagihan($value_data);
-                        $sum_array[$no_key][$key_s][] = $subtotal;
-                ?>
-                  
-                  <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
-                      <td>
-                          <?php echo $value_data->nama_tindakan;?>
-                      </td>
-                      <td style="text-align: right">
-                          <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>
-                      </td>
-                  </tr>
-                <?php 
+                        
+                        if(isset($_GET['status_nk'])) :
+                          if($_GET['status_nk'] == $value_data->status_nk) :
+                          $subtotal = $this->Billing->get_total_tagihan($value_data);
+                          $sum_array[$no_key][$key_s][] = $subtotal;
+                          // $arr_sum_total[] = array_sum($sum_array[$no_key][$key_s]);
+              ?>
                     
+                            <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
+                                <td>
+                                    <?php echo $value_data->nama_tindakan;?>
+                                </td>
+                                <td style="text-align: right">
+                                    <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>
+                                </td>
+                            </tr>
+                  <?php 
+                      
+                            endif;
+                        else:
+                            $subtotal = $this->Billing->get_total_tagihan($value_data);
+                            $sum_array[$no_key][$key_s][] = $subtotal;
+                            // $arr_sum_total[] = array_sum($sum_array[$no_key][$key_s]);
+                  ?>
+                            <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
+                                <td>
+                                    <?php echo $value_data->nama_tindakan;?>
+                                </td>
+                                <td style="text-align: right">
+                                    <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>
+                                </td>
+                            </tr>
+                <?php
+                            
+                        endif;
                       endif;
                     else: 
                 ?>
                   <?php 
                     $subtotal = $this->Billing->get_total_tagihan($value_data);
                     $sum_array[$no_key][$key_s][] = $subtotal;
+                    // $arr_sum_total[] = array_sum($sum_array[$no_key][$key_s]);
                   ?>
                   <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
                       <td>
@@ -194,18 +247,21 @@
                       </td>
               </tr>
             <?php 
-                endif; 
-                endif;
+                    endif; 
+                  endif;
                 endforeach; 
                 $arr_sum_total[] = array_sum($sum_array[$no_key][$key_s]); 
+              // endif;
             ?>
             <!-- selesai -- jika ada kode tc trans kasir maka billing difilter berdasarkan kode tc trans kasir -->
 
             <!-- jika tidak ada kode tc trans kasir maka billing ditampilkan semua -->
-            <?php else: ?>
               <?php 
-              $sum_array[$no_key][$key_s] = array();
-              
+                
+              else :
+                // echo 'dsini';
+              // $sum_array[$no_key][$key_s] = array();
+              // $arr_sum_total = [];
               foreach( $row_s as $value_data ) : 
                 
                     $sign_pay = ($value_data->kode_tc_trans_kasir==NULL)?'#d3d3d321':'#d3d3d321';
@@ -216,24 +272,29 @@
                       if($value_data->kode_tc_trans_kasir != NULL) : 
                         $subtotal = $this->Billing->get_total_tagihan($value_data);
                         $sum_array[$no_key][$key_s][] = $subtotal;
-                ?>
-                  
-                  <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
-                      <td>
-                          <?php echo $value_data->nama_tindakan;?>
-                      </td>
-                      <td style="text-align: right">
-                          <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>
-                      </td>
-                  </tr>
-                <?php 
+                        
+                        // echo $subtotal;
+                        ?>
+                            
+                            <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
+                                <td>
+                                    <?php echo $value_data->nama_tindakan;?>
+                                </td>
+                                <td style="text-align: right">
+                                    <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>
+                                </td>
+                            </tr>
+                          <?php 
                     
                       endif;
+                      // echo $subtotal;
+                      // $arr_sum_total[] = $subtotal;
                     else: 
                 ?>
                   <?php 
                     $subtotal = $this->Billing->get_total_tagihan($value_data);
                     $sum_array[$no_key][$key_s][] = $subtotal;
+                    
                   ?>
                   <tr id="tr_<?php echo $value_data->kode_trans_pelayanan?>" style="background-color:<?php echo $sign_pay?>">
                       <td>
@@ -245,11 +306,15 @@
               </tr>
             <?php 
                 endif;
-                endforeach; 
-                $arr_sum_total[] = array_sum($sum_array[$no_key][$key_s]); 
+                
+              endforeach; 
+                
             ?>
 
-            <?php endif;?>
+            <?php 
+              endif;
+              
+            ?>
             <!-- selesai --- jika tidak ada kode tc trans kasir maka billing ditampilkan semua -->
 
 
@@ -261,15 +326,27 @@
           </table>
 
         <?php    
-          endforeach;
+            $getDataBill[] = array_sum($sum_array[$no_key][$key_s]);
+          endif;
+          $arr_sum_total[] = array_sum($sum_array[$no_key][$key_s]);
+          
+        endforeach;
+        
         ?>
 
-      <?php endforeach?>
+<?php 
+          endforeach;
+          // echo '<pre>';print_r($getDataBill);die;
+          
+      ?>
       
-      <table width="460px" style="border-top: 1px solid black;"  border="0">
+      <table width="460px" style="border-top: 1px solid black; margin-top: 15px !important;"  border="0">
           <tr>
             <td style="text-align: right; font-size: 13px;"><b>Total : </b></td>
-            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b><?php echo number_format(array_sum($arr_sum_total))?>,-</b></i></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b>
+              <?php 
+                $total_all_bill = isset($getDataBill) ? array_sum($getDataBill)  : 0; echo number_format($total_all_bill); ?>,-</b></i>
+            </td>
           </tr>
           <!-- <tr>
             <td style="text-align: right"><b>Bayar</b></td>
@@ -283,13 +360,13 @@
       <!-- <br> -->
       <!-- footer -->
       <div width="98%" style="padding-left: 0%;">
-        <!-- <span style="font-size: 20px">Total biaya keseluruhan : <b>Rp. <?php echo number_format(array_sum($arr_sum_total))?></b></span>
+        <!-- <span style="font-size: 20px">Total biaya keseluruhan : <b>Rp. <?php echo number_format($total_all_bill)?></b></span>
         <br> -->
         <!-- <hr> -->
         <table width="460px" style="border-bottom: 1px solid black;">
           <tr>
             <td valign="top" width="65px">Terbilang :&nbsp;</td>
-            <td style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_sum_total)))?> Rupiah</i></b></td>
+            <td style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($total_all_bill))?> Rupiah</i></b></td>
             <td width="50px"></td>
           </tr>
         </table>
