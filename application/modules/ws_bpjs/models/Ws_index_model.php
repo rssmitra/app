@@ -15,7 +15,9 @@ class Ws_index_model extends CI_Model {
 	var $base_api_url	= "https://new-api.bpjs-kesehatan.go.id:8080/new-vclaim-rest";
 
 	// aplicare
-	var $base_api_url_applicare = "http://api.bpjs-kesehatan.go.id/aplicaresws";
+	// var $base_api_url_applicare = "http://api.bpjs-kesehatan.go.id/aplicaresws";
+	var $base_api_url_applicare = "https://new-api.bpjs-kesehatan.go.id/aplicaresws";
+
 
 
 	public function __construct()
@@ -119,6 +121,9 @@ class Ws_index_model extends CI_Model {
 		$c = curl_init();
 
 		curl_setopt($c, CURLOPT_URL, $uri);
+		$certificate_location = 'assets/cacert.pem';
+		curl_setopt($c, CURLOPT_SSL_VERIFYHOST, $certificate_location);
+		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, $certificate_location);
 		if($method!=''){
 		    curl_setopt($c, CURLOPT_CUSTOMREQUEST, "$method");
 		}
@@ -131,7 +136,8 @@ class Ws_index_model extends CI_Model {
 		curl_setopt($c, CURLOPT_POSTFIELDS, $json);
 
 		$result = curl_exec($c);
-		// print_r($headers);die;
+		// echo 'Curl error: ' . curl_error($c);
+		// print_r($result);die;
 		curl_close($c); 
 		return json_decode($result);
 
@@ -548,6 +554,7 @@ class Ws_index_model extends CI_Model {
 	function get_data_ruangan(){
 		$this->_main_query_ruangan_rs();
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query;
 	}
 

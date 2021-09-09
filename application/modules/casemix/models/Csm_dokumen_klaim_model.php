@@ -18,7 +18,7 @@ class Csm_dokumen_klaim_model extends CI_Model {
 
 	private function _main_query(){
 		
-		$curr_month = date('m')-1;
+		$curr_month = date('m')-2;
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('csm_reg_pasien', 'csm_reg_pasien.no_registrasi='.$this->table.'.no_registrasi', 'left');
@@ -43,6 +43,7 @@ class Csm_dokumen_klaim_model extends CI_Model {
 		}
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
 		$this->db->where(" MONTH(csm_reg_pasien.csm_rp_tgl_masuk) > ".$curr_month." " );
+		$this->db->where(" YEAR(csm_reg_pasien.csm_rp_tgl_masuk) = ".date('Y')." " );
 
 		
 	}
@@ -80,7 +81,7 @@ class Csm_dokumen_klaim_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

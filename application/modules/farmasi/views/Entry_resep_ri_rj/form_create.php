@@ -28,7 +28,8 @@ jQuery(function($) {
 
       beforeSend: function() {        
 
-        achtungShowLoader();          
+        achtungShowLoader();   
+        $(this).find("button[type='submit']").prop('disabled',true);      
 
       },      
 
@@ -60,7 +61,7 @@ jQuery(function($) {
           $.achtung({message: jsonResponse.message, timeout:5});          
 
         }    
-
+        $(this).find("button[type='submit']").prop('disabled',false); 
         achtungHideLoader();  
         
       }      

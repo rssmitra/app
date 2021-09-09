@@ -11,6 +11,7 @@
       <?php 
         $no=0;
         $arr_ttl = [];
+        $arr_ttl_biaya = [];
         foreach($value['prd_dt'] as $k_dt=>$v_dt) : $no++;
         $arr_ttl[] = $v_dt['total_biaya'];
         $arr_ttl_biaya[] = $v_dt['total_kunjungan'];

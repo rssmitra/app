@@ -59,10 +59,11 @@ class Retur_obat_model extends CI_Model {
 			if (in_array($_GET['search_by'], array('no_mr', 'nama_pasien') )) {
 				// no action
 			}else{
-				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
+				$this->db->where('YEAR(tgl_trans)', date('Y'));
 			}
 		}else{
-			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
+			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
+			
 		}
 
 		$i = 0;

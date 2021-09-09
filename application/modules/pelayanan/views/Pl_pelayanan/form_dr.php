@@ -60,18 +60,18 @@ $(document).ready(function(){
             contentType: false,
             processData: false,            
             beforeSend: function() {
-              achtungShowFadeIn();
-              
+              achtungShowLoader();   
+              //  disabled button submit
+              $(this).find("button[type='submit']").prop('disabled',true);
             },
             uploadProgress: function(event, position, total, percentComplete) {
             },
             complete: function(xhr) {     
-
               var data=xhr.responseText;    
               var jsonResponse = JSON.parse(data);  
 
               if( jsonResponse.status === 200 ){    
-
+                achtungShowFadeIn();
                 $.achtung({message: jsonResponse.message, timeout:5});
                 if(jsonResponse.next_id_pl_tc_poli != 0){
                   getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
@@ -88,6 +88,7 @@ $(document).ready(function(){
               }        
 
               achtungHideLoader();        
+              $(this).find("button[type='submit']").prop('disabled',false);
 
               }   
         });

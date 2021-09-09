@@ -537,6 +537,8 @@ function resep_farmasi_selesai(type){
         dataType: "json",
         beforeSend: function() {
           // achtungShowLoader();  
+          $('#btn_resep_selesai').attr('disabled', true);
+          $('#btn_resep_selesai_diantar').attr('disabled', true);
         },
         uploadProgress: function(event, position, total, percentComplete) {
         },
@@ -554,6 +556,8 @@ function resep_farmasi_selesai(type){
             $.achtung({message: jsonResponse.message, timeout:5});
           }
           // achtungHideLoader();
+          $('#btn_resep_selesai').attr('disabled', false);
+          $('#btn_resep_selesai_diantar').attr('disabled', false);
         }
 
       });

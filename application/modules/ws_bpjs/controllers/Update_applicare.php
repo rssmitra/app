@@ -16,14 +16,15 @@ class Update_applicare extends MX_Controller {
     }
 
     public function index() { 
-        clearstatcache();
-        if(!$this->input->is_cli_request())
-        {
-            echo "This script can only be accessed via the command line" . PHP_EOL;
-            return;
-        }
+        // clearstatcache();
+        // if(!$this->input->is_cli_request())
+        // {
+        //     echo "This script can only be accessed via the command line" . PHP_EOL;
+        //     return;
+        // }
 
         $list = $this->Ws_index->get_data_ruangan();
+        
         $getData = [];
         foreach ($list->result() as $key => $value) {
             $count = $this->countRuangan($value->kode_bagian, $value->kode_klas);
@@ -46,7 +47,7 @@ class Update_applicare extends MX_Controller {
             }
         }
         $response = array();
-        
+        // echo '<pre>';print_r($data);die;
         foreach($data as $row_dt){
             $post_data = array(
                 'kodekelas' => $row_dt['kodekelas'],
@@ -62,7 +63,7 @@ class Update_applicare extends MX_Controller {
                 // print_r($post_data);die;
                 $response[] = $this->Ws_index->updateRuangan($post_data, $this->kodeppk);
         }
-        // echo '<pre>';print_r($post_data);die;
+        
         echo json_encode(array('response' => $response));
 
         // $file = "application/logs/".date('Y_m_d_H_i_s').".log";

@@ -60,6 +60,7 @@ $(document).ready(function() {
 
 function load_billing_data(){
     $('#billing_data').html(loading);
+    $('#btn_lanjutkan_pembayaran').attr('disabled', false);
     $('#billing_data').load('billing/Billing/load_billing_view/<?php echo $no_registrasi?>/<?php echo $tipe?>');
 }
 
@@ -73,6 +74,7 @@ function rollback_kasir(no_reg){
           success: function (response) {
             /*sukses*/
             load_billing_data();  
+            $('#btn_lanjutkan_pembayaran').attr('disabled', false);
           }
         })
     }
@@ -85,6 +87,7 @@ function getSum(total, num) {
 function payment(){
 
     preventDefault();
+    $('#btn_lanjutkan_pembayaran').attr('disabled', true);
     // ceklist nk
     var status_nk = $(".table_billing_data input[name=checklist_nk]:checked").map(function(){
         if( $('#selected_bill_'+$(this).val()+'').prop("checked", true) ) {
@@ -125,6 +128,7 @@ function payment(){
 function pembayaran_um(){
 
     preventDefault();
+    $('#btn_lanjutkan_pembayaran').attr('disabled', false);
     $('#billing_data').html(loading);
     getMenuTabs('billing/Billing/payment_um_view/<?php echo $no_registrasi?>/<?php echo $tipe?>', 'billing_data');
 
@@ -142,13 +146,13 @@ function cetak_kuitansi(){
 
     <div class="center no-padding">
     
-        <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" > <i class="fa fa-refresh"></i> Reload Billing </a>
+        <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" id="btn_reload_billing"> <i class="fa fa-refresh"></i> Reload Billing </a>
 
         <a href="#" class="btn btn-xs btn-primary" onclick="rollback_kasir(<?php echo $no_registrasi?>)" > <i class="fa fa-undo"></i> Rollback</a>
 
-        <a href="#" class="btn btn-xs btn-danger" onclick="pembayaran_um()"> <i class="fa fa-credit-card"></i> Pembayaran DP / Bertahap  </a>
+        <!-- <a href="#" class="btn btn-xs btn-danger" onclick="pembayaran_um()"> <i class="fa fa-credit-card"></i> Pembayaran DP / Bertahap  </a> -->
 
-        <a href="#" class="btn btn-xs btn-success" onclick="payment()"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
+        <a href="#" class="btn btn-xs btn-success" onclick="payment()" id="btn_lanjutkan_pembayaran"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
 
         <div class="btn-group">
             <button type="button" class="btn btn-xs btn-yellow"><i class="fa fa-print"></i> Cetak Billing</button>

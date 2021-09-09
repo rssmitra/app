@@ -149,25 +149,25 @@
 <p><b><i class="fa fa-stethoscope bigger-120"></i>  DIAGNOSA DAN PEMERIKSAAN </b></p>
 
 <div>
-    <label for="form-field-8">Diagnosa (ICD10) <span style="color:red">* : </span></label>
+    <label for="form-field-8">Diagnosa (ICD10) <span style="color:red">* </span></label>
     <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
     <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
 </div>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8">Anamnesa <span style="color:red">* : </span> </label>
+    <label for="form-field-8">Anamnesa <span style="color:red">* </span> <small>(minimal 8 karakter)</small> </label>
     <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
     <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
 
 <div class="row">
     <div class="col-md-6" style="margin-top: 6px">
-        <label for="form-field-8">Pemeriksaan : </label>
+        <label for="form-field-8">Pemeriksaan </label>
         <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
     </div>
 
     <div class="col-md-6" style="margin-top: 6px">
-        <label for="form-field-8">Anjuran Dokter : </label>
+        <label for="form-field-8">Anjuran Dokter </label>
         <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
     </div>
 </div>
@@ -177,7 +177,7 @@
 <div style="margin-top: 6px">
     <div class="checkbox" style="margin-left: -20px">
         <label>
-        Apakah ada Resep Farmasi / Resep Dokter ?
+        Apakah ada Resep Farmasi / Resep Dokter ? <span style="color:red">*</span>
         </label>
         <label>
             <?php 
@@ -228,7 +228,7 @@
 <p><b><i class="fa fa-stethoscope bigger-120"></i> PENUNJANG MEDIS </b></p>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8">Penunjang Medis : </label>
+    <label for="form-field-8">Penunjang Medis <span style="color:red">*</span></label>
     <div class="checkbox">
 
         <?php

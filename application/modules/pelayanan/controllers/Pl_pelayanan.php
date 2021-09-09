@@ -1326,7 +1326,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
 
         $required = isset($_POST['flag_form_pelayanan'])?($_POST['flag_form_pelayanan'] == 'dokter') ? 'required' : 'xss_clean' : '';
-        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim|required');        
+        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim|required|min_length[8]');        
         $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa', 'trim|required');        
         $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
@@ -1346,6 +1346,7 @@ class Pl_pelayanan extends MX_Controller {
 
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+        $this->form_validation->set_message('min_length', "\"%s\" Minimal 8 Karakter");        
 
         if ($this->form_validation->run() == FALSE)
         {

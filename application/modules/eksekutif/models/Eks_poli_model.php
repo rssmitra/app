@@ -61,7 +61,7 @@ class Eks_poli_model extends CI_Model {
 					where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
 			}
 			$prd_dt = $this->db->get();
-			// print_r($this->db->last_query());die;
+			
 			
 			// day
 			$this->_main_query();
@@ -133,6 +133,7 @@ class Eks_poli_model extends CI_Model {
 					where YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null)');
 			}
 			$yr_dt = $this->db->get();
+			// print_r($this->db->last_query());die;
 
 			// text title
 			if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
@@ -367,10 +368,12 @@ class Eks_poli_model extends CI_Model {
 			$getData = [];
 			foreach ($prd_dt->result() as $key => $value) {
 				// nama_pegawai
-				$nama_pegawai = ($value->nama_pegawai != '')?$value->nama_pegawai:'UMUM';
-				$getData[$nama_pegawai][] = $value->total_bill_dr;
+				$nama_pegawai = ($value->nama_pegawai != '')?$value->nama_pegawai:0;
+				// if($nama_pegawai !=0){
+					$getData[$nama_pegawai][] = $value->total_bill_dr;
+				// }
 			}
-
+			$resData = [];
 			foreach ($getData as $k => $v) {
 				$resData[$k] = array('total_biaya' => array_sum($getData[$k]), 'total_kunjungan' => count($getData[$k]));
 			}
@@ -378,7 +381,7 @@ class Eks_poli_model extends CI_Model {
 			$data = array(
 				'prd_dt' => $resData,
 			);
-			// echo '<pre>';print_r($data);die;
+			echo '<pre>';print_r($resData);die;
 
 			$fields = array();
 			$title = '<span style="font-size: 16px">Rekapitulasi Kinerja Dokter Berdasarkan Kunjungan Periode <b>'.$this->tanggal->formatDateDmy($_GET['from_tgl']).'</b> s.d <b>'.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';

@@ -13,9 +13,11 @@ hr {
     <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->no_kunjungan?>" style="background: linear-gradient(1deg, #9ad62c, #ceff75)">
+              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->no_kunjungan?>" style="background: linear-gradient(1deg, #c0ef6b, #f9f9f9a3); line-height: 15px; font-weight: normal !important">
                 <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-                &nbsp;<?php echo $this->tanggal->formatDateTime($value->tgl_periksa)?>
+                <b><?php echo $this->tanggal->formatDateTime($value->tgl_periksa)?></b><br>
+                <?php echo $value->dokter_pemeriksa?><br>
+                <?php echo ucwords($value->nama_bagian)?>
               </a>
             </h4>
           </div>
