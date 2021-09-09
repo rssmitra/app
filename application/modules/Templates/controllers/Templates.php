@@ -486,7 +486,6 @@ class Templates extends MX_Controller {
     public function setGlobalHeaderTemplate(){
         $html = '';
         $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
-                    <tr><td align ="left" rowspan="4"><img src="'.base_url().'/'.COMP_ICON.'"></td></tr>
                     <tr><td align ="left" colspan="2"><b>'.COMP_LONG.'</b>&nbsp;</td></tr>
                     <tr><td align ="left" colspan="2">'.COMP_ADDRESS_SORT.'</td></tr>
                     <tr><td align ="left" colspan="2">Telp:&nbsp;'.COMP_TELP.'&nbsp;(Hunting)&nbsp;Fax:&nbsp;'.COMP_FAX.'&nbsp;<br><br></td></tr>
