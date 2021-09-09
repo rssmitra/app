@@ -5,7 +5,7 @@ class Adm_lhk_model extends CI_Model {
 
 	var $table = 'tc_trans_kasir';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'no_kuitansi, seri_kuitansi, a.no_registrasi, a.kode_tc_trans_kasir, CAST(tgl_jam as DATE)as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as FLOAT) as tunai, CAST(debet as FLOAT) as debet, CAST(kredit as FLOAT) as kredit, CAST(nk_perusahaan as FLOAT) as piutang, CAST(bill as FLOAT)as billing, CAST(nk_karyawan as FLOAT)as nk_karyawan,CAST(potongan as FLOAT)as potongan, nama_pegawai';
+	var $select = 'no_kuitansi, seri_kuitansi, a.no_registrasi, a.kode_tc_trans_kasir, CAST(tgl_jam as DATE)as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as FLOAT) as tunai, CAST(debet as FLOAT) as debet, CAST(kredit as FLOAT) as kredit, CAST(nk_perusahaan as FLOAT) as piutang, CAST(bill as FLOAT)as billing, CAST(nk_karyawan as FLOAT)as nk_karyawan,CAST(potongan as FLOAT)as potongan, nama_pegawai, d.fullname';
 	var $order = array('a.no_registrasi' => 'DESC');
 
 	public function __construct()
@@ -19,6 +19,7 @@ class Adm_lhk_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->from($this->table.' a');
 		$this->db->join('mt_karyawan b','b.no_induk=a.no_induk','left');
+		$this->db->join('tmp_user d','d.user_id=a.no_induk','left');
 		$this->db->join('tc_registrasi c','c.no_registrasi=a.no_registrasi','left');
 
 		if ( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' ) {

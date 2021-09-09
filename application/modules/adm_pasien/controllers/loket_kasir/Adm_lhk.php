@@ -78,7 +78,8 @@ class Adm_lhk extends MX_Controller {
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-            $row[] = '<small style="font-size: 10px !important">'.ucfirst($row_list->nama_pegawai).'</small>';
+            $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
+            $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'</small>';
             $data[] = $row;
               
         }

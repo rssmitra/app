@@ -5,7 +5,7 @@ class Csm_reg_not_merge_model extends CI_Model {
 
 
 	var $table = 'csm_reg_pasien';
-	var $column = array('csm_dokumen_klaim.no_registrasi');
+	var $column = array('csm_reg_pasien.no_registrasi','csm_reg_pasien.csm_rp_nama_pasien', 'csm_reg_pasien.csm_rp_no_mr');
 	var $select = 'csm_reg_pasien.*';
 	var $order = array('csm_reg_pasien.csm_rp_no_sep' => 'ASC');
 	

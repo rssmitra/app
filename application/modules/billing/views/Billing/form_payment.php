@@ -17,10 +17,17 @@ $(document).ready(function(){
     //   $('#div_form_payment').load('billing/Billing/payment_success/'+$('#no_registrasi').val()+'');
     // }
 
+    // defult pembayaran
+    var sisa_nk = parseInt($('#total_payment').val()) - parseInt($('#total_nk').val());
 
     get_resume_billing();
-
+    $('#uang_dibayarkan').val(formatMoney(sisa_nk));
     $('#uang_dibayarkan').focus();
+    console.log($('#array_data_billing').val());
+    if($('#array_data_billing').val() == 0){
+      $('#alert_no_checked').html('<div class="alert alert-danger" style="margin-top: 29px;line-height: 0px;"><span><strong><i class="fa fa-info-circle red bigger-120"></i> Peringatan !</strong></span> Tidak ada data yang di ceklist, silahkan "Reload Billing" untuk mengetahui data terbaru.</div>');
+      $('#btnSave').attr('disabled', true);
+    }
 
     $( ".uang_dibayarkan" ).keypress(function(event) {  
         var keycode =(event.keyCode?event.keyCode:event.which);
@@ -39,33 +46,39 @@ $(document).ready(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#div_tunai').show();
+          cek_sisa_belum_bayar('uang_dibayarkan');
         } else {
           $('#div_tunai').hide();
-          $('#div_tunai .uang_dibayarkan').val(0);
+          $('#uang_dibayarkan').val(0);
+          sum_total_pembayaran();
         }
-        sum_total_pembayaran();
+        
     });
 
     $('input[name=metode_kredit]').change(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#div_kredit').show();
+          cek_sisa_belum_bayar('jumlah_bayar_kredit');
         } else {
           $('#div_kredit').hide();
-          $('#div_kredit .uang_dibayarkan').val(0);
+          $('#jumlah_bayar_kredit').val(0);
+          sum_total_pembayaran();
         }
-        sum_total_pembayaran();
+        
     });
 
     $('input[name=metode_debet]').change(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#div_debet').show();
+          cek_sisa_belum_bayar('jumlah_bayar_debet');
         } else {
           $('#div_debet').hide();
-          $('#div_debet .uang_dibayarkan').val(0);
+          $('#jumlah_bayar_debet').val(0);
+          sum_total_pembayaran();
         }
-        sum_total_pembayaran();
+        
     });
 
 })
@@ -131,10 +144,10 @@ function sum_total_pembayaran(){
   var total = formatNumberFromCurrency($('#jml_dibayarkan').text());
   var total_um_nk = formatNumberFromCurrency($('#jml_um_nk').text());
   var cash = $('#uang_dibayarkan').val();
-  var sum_class = sumClass('uang_dibayarkan')
-  $('#uang_dibayarkan_text').text( formatMoney(parseInt(sum_class)) );
-  // console.log(cash);
-  console.log(total);
+  var sum_class = sumClass('uang_dibayarkan');
+  
+  console.log(sum_class);
+  // console.log(total);
   // uang kembali
   var kembali = parseInt(cash) - parseInt(total);
   if( parseInt(cash) >= parseInt(total) ){
@@ -144,9 +157,7 @@ function sum_total_pembayaran(){
     var sisa_tunai = kembali;
     var uang_kembali = 0;
   }
-  var sum_class_int = formatNumberFromCurrency(sum_class);
-
-  console.log(sum_class_int);
+  
 
   $('#uang_kembali_text').text( formatMoney(uang_kembali) );
   // sisa belum dibayar
@@ -157,8 +168,24 @@ function sum_total_pembayaran(){
     var blm_dibayarkan = 0;
   }
   $('#sisa_blm_dibayar').text( formatMoney(blm_dibayarkan) );
-  $('#uang_dibayarkan').val( formatMoney(blm_dibayarkan) )
 
+  $('#uang_dibayarkan_text').text( formatMoney(parseInt(sum_class)) );
+
+
+}
+
+function cek_sisa_belum_bayar(div_id){
+  var sum_class = sumClass('uang_dibayarkan');
+  var total = formatNumberFromCurrency($('#jml_dibayarkan').text());
+  var sisa_blm_bayar = parseInt(total) - parseInt(sum_class);
+  if (parseInt(sisa_blm_bayar) > 0) {
+    var blm_dibayarkan = sisa_blm_bayar;
+  }else{
+    var blm_dibayarkan = 0;
+  }
+  console.log(sum_class);
+  $('#'+div_id+'').val(blm_dibayarkan);
+  sum_total_pembayaran();
 }
 
 </script>
@@ -247,7 +274,7 @@ function sum_total_pembayaran(){
             <div class="col-md-8">
               <!-- hidden total yang harus dibayarkan -->
               <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hidden">
-              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" value="" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
+              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
             </div>
           </div>
         </div>
@@ -256,7 +283,7 @@ function sum_total_pembayaran(){
           <hr>
           <p><b>PEMBAYARAN KARTU DEBET</b></p>
           <div class="form-group">
-            <label class="control-label col-md-4">Jumlah Pembayaran</label>
+            <label class="control-label col-md-4">Jumlah Pembayaran Debet</label>
             <div class="col-md-8">
             <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
             </div>
@@ -289,7 +316,7 @@ function sum_total_pembayaran(){
           <hr>
           <p><b>PEMBAYARAN KARTU KREDIT</b></p>
           <div class="form-group">
-            <label class="control-label col-md-4">Jumlah Pembayaran</label>
+            <label class="control-label col-md-4">Jumlah Pembayaran Kredit</label>
             <div class="col-md-8">
             <input name="jumlah_bayar_kredit" id="jumlah_bayar_kredit" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
             </div>
@@ -357,6 +384,7 @@ function sum_total_pembayaran(){
           </div>
         </div>
         
+        
         <div class="form-actions center">
           <button type="reset" id="btnReset" class="btn btn-sm btn-danger">
             <i class="ace-icon fa fa-close icon-on-right bigger-110"></i>
@@ -371,49 +399,53 @@ function sum_total_pembayaran(){
   </div><!-- /.col -->
 
   <div class="col-xs-6">
+    
+    <div id="alert_no_checked">
+    
+      <div id="resume_billing"></div>
 
-    <div id="resume_billing"></div>
+      <div class="col-xs-12 no-padding">
+        <table width="100%" style="padding: 5px">
+          <tr>
+            <td width="75%">Uang Muka (UM) / Sudah dibayar</td>
+            <td width="25%" align="right">Rp. <span id="jml_um">0</span></td>
+          </tr>
+          <tr>
+            <td>NK Perusahaan <span id="nama_perusahaan_nk"></span> </td>
+            <td align="right">Rp. <span id="jml_nk_dibayarkan">0</span></td>
+          </tr>
+          <tr>
+            <td>UM + NK Perusahaan</span> </td>
+            <td align="right" style="font-size: 14px; font-weight: bold">Rp. <span id="jml_um_nk">0</span></td>
+          </tr>
 
-    <div class="col-xs-12 no-padding">
-      <table width="100%" style="padding: 5px">
-        <tr>
-          <td width="75%">Uang Muka (UM) / Sudah dibayar</td>
-          <td width="25%" align="right">Rp. <span id="jml_um">0</span></td>
-        </tr>
-        <tr>
-          <td>NK Perusahaan <span id="nama_perusahaan_nk"></span> </td>
-          <td align="right">Rp. <span id="jml_nk_dibayarkan">0</span></td>
-        </tr>
-        <tr>
-          <td>UM + NK Perusahaan</span> </td>
-          <td align="right" style="font-size: 14px; font-weight: bold">Rp. <span id="jml_um_nk">0</span></td>
-        </tr>
+          <tr>
+            <td colspan="2"><hr></td>
+          </tr>
+          <tr>
+            <td>Jumlah Yang Harus Dibayar</td>
+            <td align="right" style="font-size: 14px; font-weight: bold">Rp. <span id="jml_dibayarkan">0</span></td>
+          </tr>
+          <tr>
+            <td>Uang Yang Dibayarkan</td>
+            <td align="right" style="font-size: 14px; font-weight: bold">Rp. <span id="uang_dibayarkan_text">0</span></td>
+          </tr>
+          <tr>
+            <td>Uang Kembali</td>
+            <td align="right" style="font-size: 14px; font-weight: bold; color: blue">Rp. <span id="uang_kembali_text">0</span></td>
+          </tr>
+          <tr>
+            <td colspan="2"><hr></td>
+          </tr>
+          <tr>
+            <td><b>Sisa yang belum dibayar</b></td>
+            <td align="right" style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">Rp. <span id="sisa_blm_dibayar">0</span></td>
+          </tr>
 
-        <tr>
-          <td colspan="2"><hr></td>
-        </tr>
-        <tr>
-          <td>Jumlah Yang Harus Dibayar</td>
-          <td align="right" style="font-size: 14px; font-weight: bold">Rp. <span id="jml_dibayarkan">0</span></td>
-        </tr>
-        <tr>
-          <td>Uang Yang Dibayarkan</td>
-          <td align="right" style="font-size: 14px; font-weight: bold">Rp. <span id="uang_dibayarkan_text">0</span></td>
-        </tr>
-        <tr>
-          <td>Uang Kembali</td>
-          <td align="right" style="font-size: 14px; font-weight: bold; color: blue">Rp. <span id="uang_kembali_text">0</span></td>
-        </tr>
-        <tr>
-          <td colspan="2"><hr></td>
-        </tr>
-        <tr>
-          <td><b>Sisa yang belum dibayar</b></td>
-          <td align="right" style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">Rp. <span id="sisa_blm_dibayar">0</span></td>
-        </tr>
+        </table>
+        <hr>
+      </div>
 
-      </table>
-      <hr>
     </div>
     
   </div>

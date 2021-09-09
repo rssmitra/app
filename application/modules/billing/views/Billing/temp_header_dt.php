@@ -68,7 +68,7 @@
     <input type="hidden" id="no_sep_val" value="<?php echo isset($data->reg_data->no_sep)?$data->reg_data->no_sep:''?>" name="no_sep_val">
     <input type="hidden" name="array_data_checked" id="array_data_checked">
     <input type="hidden" name="array_data_nk_checked" id="array_data_nk_checked">
-    <input type="hidden" name="array_data_billing" id="array_data_billing">
+    <input type="hidden" name="array_data_billing" id="array_data_billing" value="0">
     <input type="hidden" name="total_nk" id="total_nk">
     <input type="hidden" name="total_uang_muka" id="total_uang_muka" value="0">
     <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val">

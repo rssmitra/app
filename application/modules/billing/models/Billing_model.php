@@ -494,6 +494,7 @@ class Billing_model extends CI_Model {
             }        
         }
 
+        // echo '<pre>';print_r($resume_billing);die;
         $html .= '<table class="table" style="background-color: white">';
         $html .= '<tr>';
             $html .= '<th align="right">Dokter</th>';
@@ -502,6 +503,7 @@ class Billing_model extends CI_Model {
             $html .= '<th align="right">Penunjang</th>';
             $html .= '<th align="right">Tindakan</th>';
             $html .= '<th align="right">BPAKO</th>';
+            $html .= '<th align="right">Lainnya</th>';
         $html .= '</tr>';
          /*split resume billing*/
         $split_billing = $this->splitResumeBilling($resume_billing);
@@ -512,6 +514,7 @@ class Billing_model extends CI_Model {
         $bill_pm    = isset($split_billing['bill_pm'])?$split_billing['bill_pm']:0;
         $bill_tindakan  = isset($split_billing['bill_tindakan'])?$split_billing['bill_tindakan']:0;
         $bill_bpako     = isset($split_billing['bill_bpako'])?$split_billing['bill_bpako']:0;
+        $bill_lainnya     = isset($split_billing['bill_lainnya'])?$split_billing['bill_lainnya']:0;
         
         $html .= '<tr>';
             $html .= '<td align="right">Rp. '.number_format($bill_dr).',-</td>';
@@ -520,10 +523,11 @@ class Billing_model extends CI_Model {
             $html .= '<td align="right">Rp. '.number_format($bill_pm).',-</td>';
             $html .= '<td align="right">Rp. '.number_format($bill_tindakan).',-</td>';
             $html .= '<td align="right">Rp. '.number_format($bill_bpako).',-</td>';
+            $html .= '<td align="right">Rp. '.number_format($bill_lainnya).',-</td>';
         $html .= '</tr>'; 
         $html .= '<tr>';
-            $html .= '<td align="left" colspan="4"><b>Total Biaya Keseluruhan</b></td>';
-            $total_billing = (double)$bill_dr + (double)$bill_adm_rs + (double)$bill_farm + (double)$bill_pm + (double)$bill_tindakan+ (double)$bill_bpako; 
+            $html .= '<td align="left" colspan="5"><b>Total Biaya Keseluruhan</b></td>';
+            $total_billing = (double)$bill_dr + (double)$bill_adm_rs + (double)$bill_farm + (double)$bill_pm + (double)$bill_tindakan+ (double)$bill_bpako  + (double)$bill_lainnya; 
             $html .= '<td align="right" style="font-size: 14px; font-weight: bold" colspan="2"><b>Rp. '.number_format($total_billing).',-</b></td>';
         $html .= '</tr>';
         $html .= '</table>'; 
@@ -1068,7 +1072,13 @@ class Billing_model extends CI_Model {
         $bill_pm = 0;
         $bill_tindakan = 0;
         $bill_bpako = 0;
+        $bill_lainnya = 0;
         
+        /*lainnya*/
+        if (in_array($jenis_tindakan, array(8))) {
+            $bill_lainnya = $subtotal;
+        }
+
         /*dokter*/
         if (in_array($jenis_tindakan, array(12))) {
             $bill_dr = $subtotal;
@@ -1109,6 +1119,7 @@ class Billing_model extends CI_Model {
             'bill_pm' => $bill_pm,
             'bill_tindakan' => $bill_tindakan,
             'bill_bpako' => $bill_bpako,
+            'bill_lainnya' => $bill_lainnya,
             );
 
         return $data;
@@ -1122,6 +1133,7 @@ class Billing_model extends CI_Model {
             $bill_pm[] = $value['bill_pm'];
             $bill_tindakan[] = $value['bill_tindakan'];
             $bill_bpako[] = $value['bill_bpako'];
+            $bill_lainnya[] = $value['bill_lainnya'];
         }
         $data = array(
             'bill_dr' => array_sum($bill_dr),
@@ -1130,6 +1142,7 @@ class Billing_model extends CI_Model {
             'bill_pm' => array_sum($bill_pm),
             'bill_tindakan' => array_sum($bill_tindakan),
             'bill_bpako' => array_sum($bill_bpako),
+            'bill_lainnya' => array_sum($bill_lainnya),
             );
 
         return $data;
