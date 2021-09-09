@@ -204,6 +204,7 @@ class Csm_reg_not_merge extends MX_Controller {
                 $createDocument = $this->Csm_billing_pasien->createDocument($value, $original->csm_rp_tipe);
                 // print_r($createDocument);die;
                 foreach ($createDocument as $k_cd => $v_cd) {
+                    
                     # code...
                     $explode = explode('-', $v_cd);
                     /*explode result*/
@@ -237,6 +238,7 @@ class Csm_reg_not_merge extends MX_Controller {
 
                 $data[] = base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$value.'/'.$original->csm_rp_tipe.'';
             }
+
             
         }
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect_data' =>$data));
