@@ -59,7 +59,7 @@ final Class Stok_barang{
             $db->insert($t_kartu_stok, $dataexc);
             
             /*update mt_depo_stok*/
-            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian ) );
+            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu, 'is_active' => 'Y'), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian ) );
 
             $db->update($mt_rekap_stok ,array('jml_sat_kcl' => $last_stok), array('kode_brg' => $kodeBrg, 'kode_bagian_gudang' => $kodeBagian ) );
             // print_r($db->last_query());die;
@@ -118,7 +118,7 @@ final Class Stok_barang{
             $db->insert($t_kartu_stok, $dataexc);
             
             /*update mt_depo_stokcito*/
-            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok), array('kode_brg' => $kodeBrg) );
+            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'is_active' => 'Y'), array('kode_brg' => $kodeBrg) );
 
                         
         }
@@ -178,7 +178,7 @@ final Class Stok_barang{
                 $dt_depo = $db->get_where($t_depo_stok, array( 'kode_brg' => $kodeBrg, 'kode_bagian' => $kode_bagian_minta ) );
                 
                 if( $dt_depo->num_rows() > 0 ){
-                    $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kode_bagian_minta ) );
+                    $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu, 'is_active' => 'Y'), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kode_bagian_minta ) );
                 }else{
                     $dt_depo = array(
                         'kode_depo_stok' => $CI->master->get_max_number($t_depo_stok, 'kode_depo_stok'),
@@ -258,7 +258,7 @@ final Class Stok_barang{
             $db->insert($t_kartu_stok, $dataexc);
             
             /*update mt_depo_stok*/
-            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian ) );
+            $db->update($t_depo_stok ,array('jml_sat_kcl' => $last_stok, 'id_kartu' => $id_kartu, 'is_active' => 'Y'), array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian ) );
                         
         }
 
