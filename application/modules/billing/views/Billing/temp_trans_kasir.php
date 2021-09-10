@@ -39,7 +39,9 @@ $(document).ready(function() {
           load_billing_data();
         //   $('#total_payment').val(jsonResponse.count_um);
           if (jsonResponse.billing_um > 0) {
-            PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=&kode_tc_trans_kasir='+jsonResponse.kode_tc_trans_kasir+'','Cetak',1200,750);
+
+            PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=&kode_tc_trans_kasir='+jsonResponse.kode_tc_trans_kasir+'','Cetak',600,750);
+
           }
 
           if(jsonResponse.kode_perusahaan == 120){
