@@ -28,6 +28,7 @@
               echo '<th class="center">Nama Petugas</th>';
             }
           ?>
+          <th>Total</th>
         </tr>
       </thead>
       <tbody>
@@ -45,10 +46,12 @@
             echo '<td align="left">&nbsp;&nbsp;&nbsp;- '.$sub_key.'</td>';
             foreach($column as $key_col=>$col){
               // search data
-              $tunai = $this->master->sumArrayByColumn($rowData['data'], array( array('nama_pegawai' => $key_col), array('jenis_tindakan' => $sub_key), array('nama_bagian' => $key_row) ), 'bill_rs' );
+              $tunai = $this->master->sumArrayByColumn($rowData['data'], array( array('petugas' => $key_col), array('jenis_tindakan' => $sub_key), array('nama_bagian' => $key_row) ), 'bill_rs' );
               $arr_tunai[$key_col][] = $tunai;
               echo '<td align="right">'.number_format($tunai).'</td>';
+              $arr_total[$sub_key][] = $tunai;
             }
+            echo '<td align="right">'.number_format(array_sum($arr_total[$sub_key])).'</td>';
             echo '<tr>';
           }
         endforeach;
@@ -60,11 +63,12 @@
               $arr_total[] = array_sum($arr_tunai[$key_col]);
               echo '<td align="right">'.number_format(array_sum($arr_tunai[$key_col])).'</td>';
             }
+            echo '<td align="right">'.number_format(array_sum($arr_total)).'</td>';
         ?>
       </tr>
       <tr style="font-weight: bold">
         <td colspan="2" align="left">Total Pemasukan Kasir</td>
-        <td colspan="<?php echo (count($column) > 0) ? count($column) : 0?>" align="right"><?php echo isset($arr_total) ? number_format(array_sum($arr_total)) : 0;?></td>
+        <td colspan="<?php echo (count($column) > 0) ? count($column) + 1 : 0?>" align="right" style="font-size: 16px"><?php echo isset($arr_total) ? number_format(array_sum($arr_total)) : 0;?></td>
       </tr>
       </tbody>
     </table>
@@ -150,10 +154,12 @@
       <tbody>
       <?php
         $no_urut = 0; 
-        foreach($resume as $row_resume) { $no_urut++;
+        foreach($resume as $row_resume) { 
+          $no_urut++;
+          $nama_petugas = ($row_resume['fullname'])?$row_resume['fullname']:$row_resume['nama_pegawai'].'<span style="color: red"> (av) </spanb>';
           echo '<tr>';
           echo '<td align="center">'.$no_urut.'</td>';
-          echo '<td>'.strtoupper($row_resume['nama_pegawai']).'</td>';
+          echo '<td>'.strtoupper($nama_petugas).'</td>';
           echo '<td align="right">'.number_format($row_resume['tunai']).'</td>';
           $arr_tunai[] = $row_resume['tunai'];
           echo '<td align="right">'.number_format($row_resume['debet']).'</td>';

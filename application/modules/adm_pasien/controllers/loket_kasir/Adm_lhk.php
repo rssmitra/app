@@ -62,25 +62,27 @@ class Adm_lhk extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            $no++;
-            $row = array();
-            $row[] = '<div class="center"></div>';
-            $row[] = $row_list->kode_tc_trans_kasir;
-            $row[] = $row_list->no_registrasi;
-            $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
-            $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
-            $row[] = $row_list->nama_pasien;
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-            $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-            $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'</small>';
-            $data[] = $row;
+            if($row_list->billing > 0) :
+                $no++;
+                $row = array();
+                $row[] = '<div class="center"></div>';
+                $row[] = $row_list->kode_tc_trans_kasir;
+                $row[] = $row_list->no_registrasi;
+                $row[] = '<div class="center">'.$no.'</div>';
+                $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
+                $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
+                $row[] = $row_list->nama_pasien;
+                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
+                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
+                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
+                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
+                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
+                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
+                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
+                $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
+                $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'</small>';
+                $data[] = $row;
+            endif;
               
         }
         

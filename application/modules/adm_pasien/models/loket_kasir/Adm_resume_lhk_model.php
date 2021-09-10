@@ -5,7 +5,7 @@ class Adm_resume_lhk_model extends CI_Model {
 
 	var $table = 'tc_trans_kasir';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'no_kuitansi, seri_kuitansi, a.no_registrasi, a.kode_tc_trans_kasir, CAST(tgl_jam as DATE)as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as FLOAT) as tunai, CAST(debet as FLOAT) as debet, CAST(kredit as FLOAT) as kredit, CAST(nk_perusahaan as FLOAT) as piutang, CAST(bill as FLOAT)as billing, CAST(nk_karyawan as FLOAT)as nk_karyawan,CAST(potongan as FLOAT)as potongan, nama_pegawai';
+	var $select = 'no_kuitansi, seri_kuitansi, a.no_registrasi, a.kode_tc_trans_kasir, CAST(tgl_jam as DATE)as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as FLOAT) as tunai, CAST(debet as FLOAT) as debet, CAST(kredit as FLOAT) as kredit, CAST(nk_perusahaan as FLOAT) as piutang, CAST(bill as FLOAT)as billing, CAST(nk_karyawan as FLOAT)as nk_karyawan,CAST(potongan as FLOAT)as potongan, nama_pegawai, d.fullname';
 	var $order = array('a.no_registrasi' => 'DESC');
 
 	public function __construct()
@@ -19,6 +19,7 @@ class Adm_resume_lhk_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->from($this->table.' a');
 		$this->db->join('mt_karyawan b','b.no_induk=a.no_induk','left');
+		$this->db->join('tmp_user d','d.user_id=a.no_induk','left');
 		$this->db->join('tc_registrasi c','c.no_registrasi=a.no_registrasi','left');
 
 		if ( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' ) {
@@ -67,7 +68,7 @@ class Adm_resume_lhk_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get()->result();
-		print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query;
 	}
 
@@ -80,25 +81,28 @@ class Adm_resume_lhk_model extends CI_Model {
 		}else{
 			$from_tgl_str .= "CAST(a.tgl_jam as DATE) = '".date('Y-m-d')."'";
 		}
-		$query = "SELECT a.kode_tc_trans_kasir, mt_bagian.kode_bagian, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_jenis_tindakan.jenis_tindakan, kode_master_tarif_detail, nama_tindakan, SUM(bill_rs) as bill_rs, SUM(bill_dr1) as bill_dr1, SUM(bill_dr2) as bill_dr2, SUM(kamar_tindakan) as kamar_tindakan, SUM(pendapatan_rs) as pendapatan_rs, SUM(bhp) as bhp, SUM(biaya_lain) as biaya_lain, SUM(alkes) as alkes, SUM(alat_rs) as alat_rs, SUM(adm) as adm, SUM(obat) as obat, SUM(bill_bs_rs)as bill_bs_rs, SUM(lain_lain) as lain_lain 
+		$query = "SELECT a.kode_tc_trans_kasir, mt_bagian.kode_bagian, mt_bagian.nama_bagian, mt_jenis_tindakan.jenis_tindakan, kode_master_tarif_detail, nama_tindakan, SUM(bill_rs) as bill_rs, SUM(bill_dr1) as bill_dr1, SUM(bill_dr2) as bill_dr2, SUM(kamar_tindakan) as kamar_tindakan, SUM(pendapatan_rs) as pendapatan_rs, SUM(bhp) as bhp, SUM(biaya_lain) as biaya_lain, SUM(alkes) as alkes, SUM(alat_rs) as alat_rs, SUM(adm) as adm, SUM(obat) as obat, SUM(bill_bs_rs)as bill_bs_rs, SUM(lain_lain) as lain_lain, CASE 
+		WHEN tmp_user.fullname is null THEN mt_karyawan.nama_pegawai ELSE tmp_user.fullname END AS petugas
 			FROM tc_trans_pelayanan a 
 			LEFT JOIN mt_bagian ON mt_bagian.kode_bagian=a.kode_bagian 
 			LEFT JOIN mt_jenis_tindakan ON mt_jenis_tindakan.kode_jenis_tindakan=a.jenis_tindakan 
 			LEFT JOIN tc_trans_kasir ON tc_trans_kasir.kode_tc_trans_kasir=a.kode_tc_trans_kasir 
 			LEFT JOIN mt_karyawan ON mt_karyawan.no_induk=tc_trans_kasir.no_induk 
+			LEFT JOIN tmp_user ON tmp_user.user_id=tc_trans_kasir.no_induk 
 			WHERE a.kode_tc_trans_kasir in 
 			( SELECT a.kode_tc_trans_kasir FROM tc_trans_kasir a WHERE ".$from_tgl_str." AND a.seri_kuitansi = 'RJ' AND (".$_GET['method']." >0) GROUP BY a.kode_tc_trans_kasir) 
-			GROUP BY a.kode_tc_trans_kasir,mt_bagian.kode_bagian, mt_bagian.nama_bagian,mt_karyawan.nama_pegawai, mt_jenis_tindakan.jenis_tindakan, kode_master_tarif_detail, nama_tindakan ORDER BY nama_bagian ASC";
+			GROUP BY a.kode_tc_trans_kasir,mt_bagian.kode_bagian, mt_bagian.nama_bagian,mt_karyawan.nama_pegawai, mt_jenis_tindakan.jenis_tindakan, kode_master_tarif_detail, nama_tindakan, tmp_user.fullname ORDER BY nama_bagian ASC";
 		$exc_qry_1 = $this->db->query( $query );
 		// print_r($this->db->last_query());die;
 
 		// resume 
-		$query_2 = "SELECT  nama_pegawai, SUM(bill) as bill, SUM(tunai) as tunai, SUM(debet) as debet, SUM(kredit) as kredit, SUM(nk_perusahaan) as piutang, SUM(bill)as billing, SUM(nk_karyawan)as nk_karyawan, SUM(cetak_kartu) as cetak_kartu, SUM(potongan)as potongan
+		$query_2 = "SELECT  nama_pegawai, fullname, SUM(bill) as bill, SUM(tunai) as tunai, SUM(debet) as debet, SUM(kredit) as kredit, SUM(nk_perusahaan) as piutang, SUM(bill)as billing, SUM(nk_karyawan)as nk_karyawan, SUM(cetak_kartu) as cetak_kartu, SUM(potongan)as potongan
 			FROM tc_trans_kasir a
 			LEFT JOIN mt_karyawan b ON b.no_induk=a.no_induk
+			LEFT JOIN tmp_user ON tmp_user.user_id=a.no_induk 
 			WHERE ".$from_tgl_str."
 			AND a.seri_kuitansi = 'RJ' AND ".$_GET['method']." > 0
-			GROUP BY  nama_pegawai";
+			GROUP BY  nama_pegawai, fullname";
 
 		$exc_qry_2 = $this->db->query( $query_2 );
 

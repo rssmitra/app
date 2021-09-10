@@ -67,18 +67,18 @@ class Adm_resume_lhk extends MX_Controller {
     {
         
         $result = $this->Adm_resume_lhk->get_index_data();
-        
+        // echo '<pre>';print_r($result['data']);die;
         // column 
         $getColumn = array();
         foreach ($result['data'] as $key => $value) {
-            $getColumn[$value['nama_pegawai']][] = $value;
+            $getColumn[$value['petugas']][] = $value;
         }
 
         $resume_billing = array();
         foreach ($result['trans_data']->result() as $key => $value) {
             $resume_billing[] = $this->Csm_billing_pasien->resumeBillingRI($value);
         }
-        // echo '<pre>';print_r($resume_billing);die;
+        
         // split
         $getDataBilling = array();
         if(count($resume_billing) > 0){
