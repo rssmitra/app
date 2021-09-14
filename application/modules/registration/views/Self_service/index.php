@@ -63,11 +63,49 @@
       border-color: #7fb720;
     }
 
+    .widget-header{
+      padding-left: 0px !important;
+      padding: 0px 5px 0px 5px;
+    }
+
+    .row {
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+    .muted {
+      min-height: 154px !important;
+    }
+
 	</style>
 
   <body class="no-skin" style="background: url('../assets/images/bg2.jpg') !important;">
     <!-- #section:basics/navbar.layout -->
-    <!-- <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background: url('assets/images/KIOSK.png');"> -->
+    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar navbar-fixed-top" style="background: white;">
+      <script type="text/javascript">
+        try{ace.settings.check('navbar' , 'fixed')}catch(e){}
+      </script>
+
+      <div class="navbar-container" id="navbar-container">
+        <div class="navbar-header pull-left">
+          <!-- #section:basics/navbar.layout.brand -->
+          <a href="#" class="navbar-brand">
+            <small style="color: black; font-weight: bold; font-size: 18px">
+            <img src="<?php echo base_url().'assets/images/logo.png'?>" width="80px">
+            </small>
+          </a>
+          <!-- /section:basics/navbar.toggle -->
+        </div>
+        <div class="pull-left">
+        <h2 style="font-family: sans-serif; font-weight: bold; font-size:25px; color: #024a19; ">KIOSK LAYANAN MANDIRI PASIEN <br> RS SETIA MITRA</h2>
+        </div>
+        <div class="pull-right">
+            <a href="<?php echo base_url().'registration/Self_service'?>" class="btn btn-success" style="margin-top: 10px;background: linear-gradient(45deg, #0a4b19, #ea4b94) !important;border-color: #9fca6b;">
+                <i class="ace-icon fa fa-home bigger-300"></i>
+            </a>
+        </div>
+
+      </div><!-- /.navbar-container -->
+    </div>
     
 
     <!-- /section:basics/navbar.layout -->
@@ -84,170 +122,167 @@
             $arr_color_breadcrumbs = array('#076960');
             shuffle($arr_color_breadcrumbs);
           ?>
-          <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>">
+          <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>; line-height: 25px !important; position: fixed; width: 100%">
             <script type="text/javascript">
               try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
             </script>
+            <div style="background: linear-gradient(45deg, #8cc22f, transparent);margin-top: 3%;">
+                  <marquee style="font-size: 18px;color: white;margin-top: 14px;">Hanya untuk pasien yang sudah pernah terdaftar atau yang pernah berobat ke RS Setia Mitra. Untuk pasien baru silahkan mengambil Nomor Antrian Pendaftaran</marquee>
+                </div>
+
           </div>
-          <div class="page-content-main" style="background: white !important">
-          <br>
+          <div class="page-content-main" style="background: white !important; margin-top:10%; min-height: 0px !important">
+          <!-- <br>
           <div class="center">
             <img src="<?php echo base_url().'assets/images/logo.png'?>" style="width: 100px">
             <h2 style="font-family: sans-serif; font-weight: bold; font-size:25px; color: #024a19; ">KIOSK LAYANAN MANDIRI PASIEN<br>RS SETIA MITRA</h2><br>
-          </div>
+          </div> -->
             
 
-            <div class="center">
+            <!-- <div class="pull-left">
               <a style="height: 40px; font-size: 18px" class="btn btn-sm btn-success" type="button" href="<?php echo base_url().'registration/Self_service'?>">
                   <i class="ace-icon fa fa-home bigger-110"></i>
                   Kembali ke Halaman Utama
               </a>
-            </div>
-            <br>
-            <div class="row centered" style="width: 100% !important">
-              <div class="col-xs-12">
-                <!-- PAGE CONTENT BEGINS -->
-                <!-- MODULE MENU -->
-                
-                <div id="load-content-page">
-                  <div class="row ">
+            </div> -->
 
-                    <div class="col-sm-3" style="text-align: center">
-                      <div class="widget-box">
-                        <div class="widget-header">
-                          <h4 class="smaller">
-                          BPJS KESEHATAN
-                          </h4>
-                        </div>
+            <!-- PAGE CONTENT BEGINS -->
+            <div class="center" id="load-content-page" style="margin-top: 10px">
+              <span><h2>MODUL KIOSK MANDIRI PASIEN</h2></span>
+              <div class="row">
 
-                        <div class="widget-body">
-                          <div class="widget-main">
-                            <p class="muted">
-                              <img src="<?php echo base_url()?>assets/kiosk/bpjs.jpeg" height="100" alt=""><br>
-                              Layanan Pendaftaran Mandiri <br>Pasien BPJS Kesehatan
-                            </p>
-
-                            <hr>
-
-                            <p>
-                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/mandiri_bpjs')">Selengkapnya</span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                <div class="col-sm-3" style="text-align: center">
+                  <div class="widget-box">
+                    <div class="widget-header">
+                      <h4 class="smaller">
+                      PENDAFTARAN PASIEN BPJS KESEHATAN
+                      </h4>
                     </div>
 
-                    <div class="col-sm-3" style="text-align: center">
-                      <div class="widget-box">
-                        <div class="widget-header">
-                          <h4 class="smaller">
-                          UMUM & ASURANSI
-                          </h4>
-                        </div>
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p class="muted">
+                          <img src="<?php echo base_url()?>assets/kiosk/bpjs.jpeg" height="100" alt=""><br>
+                          Persiapkan <b>Nomor Rujukan</b> Puskesmas anda untuk melakukan Pendaftaran ke Poli/Klinik
+                        </p>
 
-                        <div class="widget-body">
-                          <div class="widget-main">
-                            <p class="muted">
-                              <img src="<?php echo base_url()?>assets/kiosk/insurance.png" height="100" alt=""><br>
-                              Layanan Pendaftaran Mandiri <br>Pasien Umum dan Asuransi Lainnya
-                            </p>
+                        <hr>
 
-                            <hr>
-
-                            <p>
-                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/mandiri_umum')">Selengkapnya</span>
-                            </p>
-                          </div>
-                        </div>
+                        <p>
+                          <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/mandiri_bpjs')">Selengkapnya</span>
+                        </p>
                       </div>
                     </div>
-
-                    <div class="col-sm-3" style="text-align: center">
-                      <div class="widget-box">
-                        <div class="widget-header">
-                          <h4 class="smaller">
-                          ANTRIAN PENDAFTARAN
-                          </h4>
-                        </div>
-
-                        <div class="widget-body">
-                          <div class="widget-main">
-                            <p class="muted">
-                            <img src="<?php echo base_url()?>assets/kiosk/antrian.png" height="100" alt=""><br>
-                              Pengambilan Nomor Antrian <br>Pendaftaran Pasien Poli/Klinik
-                            </p>
-
-                            <hr>
-
-                            <p>
-                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/antrian_poli')">Selengkapnya</span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-sm-3" style="text-align: center">
-                      <div class="widget-box">
-                        <div class="widget-header">
-                          <h4 class="smaller">
-                            INFORMASI & PERJANJIAN
-                          </h4>
-                        </div>
-
-                        <div class="widget-body">
-                          <div class="widget-main">
-                            <p class="muted">
-                            <img src="<?php echo base_url()?>assets/kiosk/appointment.png" height="100" alt=""><br>
-                              Informasi Jadwal Praktek Dokter <br>dan Perjanjian Pasien
-                            </p>
-
-                            <hr>
-
-                            <p>
-                              <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/jadwal_dokter')">Selengkapnya</span>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <!-- <div class="wrapper">
-                      <div class="box">
-                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
-                        <h2>PENDAFTARAN PASIEN BPJS</h2>
-                        <p>Layanan Pendaftaran Mandiri <br>Pasien BPJS Kesehatan</p>
-                        <button onclick="scrollSmooth('Self_service/mandiri_bpjs')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
-                      </div>
-
-                      <div class="box">
-                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
-                        <h2>PENDAFTARAN <br> UMUM & ASURANSI</h2>
-                        <p>Layanan Pendaftaran Mandiri Pasien Umum dan Asuransi Lainnya</p>
-                        <button onclick="scrollSmooth('Self_service/mandiri_umum')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
-                      </div>
-
-                      <div class="box">
-                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
-                        <h2>ANTRIAN PENDAFTARAN</h2>
-                        <p>Pengambilan Nomor Antrian Pendaftaran Pasien Poli/Klinik</p>
-                        <button onclick="scrollSmooth('Self_service/antrian_poli')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
-                      </div>
-                      <div class="box">
-                        <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
-                        <h2>INFORMASI & PERJANJIAN</h2>
-                        <p>Informasi Jadwal Praktek Dokter dan Perjanjian Pasien</p>
-                        <button onclick="scrollSmooth('Self_service/')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
-                      </div>
-                    </div> -->
-
                   </div>
                 </div>
-                <!-- END MODULE MENU -->
 
-                <!-- PAGE CONTENT ENDS -->
-              </div><!-- /.col -->
-            </div><!-- /.row -->
+                <div class="col-sm-3" style="text-align: center">
+                  <div class="widget-box">
+                    <div class="widget-header">
+                      <h4 class="smaller">
+                      PENDAFTARAN PASIEN UMUM & ASURANSI
+                      </h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p class="muted">
+                          <img src="<?php echo base_url()?>assets/kiosk/insurance.png" height="100" alt=""><br>
+                          Persiapkan <b>Nomor Rekam Medis</b> anda untuk melakukan pendaftaran ke poli/klinik.
+                        </p>
+
+                        <hr>
+
+                        <p>
+                          <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/mandiri_umum')">Selengkapnya</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-3" style="text-align: center">
+                  <div class="widget-box">
+                    <div class="widget-header">
+                      <h4 class="smaller">
+                      ANTRIAN <br> PENDAFTARAN PASIEN
+                      </h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p class="muted">
+                        <img src="<?php echo base_url()?>assets/kiosk/antrian.png" height="100" alt=""><br>
+                          Pengambilan <b>Nomor Antrian</b> <br>Pendaftaran Poli/Klinik, Pasien Baru, IGD dan Penunjang Medis
+                        </p>
+
+                        <hr>
+
+                        <p>
+                          <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/antrian_poli')">Selengkapnya</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-3" style="text-align: center">
+                  <div class="widget-box">
+                    <div class="widget-header">
+                      <h4 class="smaller">
+                        INFORMASI JADWAL & <br>PERJANJIAN PASIEN
+                      </h4>
+                    </div>
+
+                    <div class="widget-body">
+                      <div class="widget-main">
+                        <p class="muted">
+                        <img src="<?php echo base_url()?>assets/kiosk/appointment.png" height="100" alt=""><br>
+                          Informasi Jadwal Praktek Dokter <br>dan Perjanjian Pasien
+                        </p>
+
+                        <hr>
+
+                        <p>
+                          <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/jadwal_dokter')">Selengkapnya</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- <div class="wrapper">
+                  <div class="box">
+                    <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                    <h2>PENDAFTARAN PASIEN BPJS</h2>
+                    <p>Layanan Pendaftaran Mandiri <br>Pasien BPJS Kesehatan</p>
+                    <button onclick="scrollSmooth('Self_service/mandiri_bpjs')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                  </div>
+
+                  <div class="box">
+                    <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                    <h2>PENDAFTARAN <br> UMUM & ASURANSI</h2>
+                    <p>Layanan Pendaftaran Mandiri Pasien Umum dan Asuransi Lainnya</p>
+                    <button onclick="scrollSmooth('Self_service/mandiri_umum')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                  </div>
+
+                  <div class="box">
+                    <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                    <h2>ANTRIAN PENDAFTARAN</h2>
+                    <p>Pengambilan Nomor Antrian Pendaftaran Pasien Poli/Klinik</p>
+                    <button onclick="scrollSmooth('Self_service/antrian_poli')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                  </div>
+                  <div class="box">
+                    <img src="http://i.imgur.com/60PVLis.png" width="50" height="50" alt="">
+                    <h2>INFORMASI & PERJANJIAN</h2>
+                    <p>Informasi Jadwal Praktek Dokter dan Perjanjian Pasien</p>
+                    <button onclick="scrollSmooth('Self_service/')" class="btn btn-danger btn-block" style="height: 50px !important;">Selengkapnya</button>
+                  </div>
+                </div> -->
+
+              </div>
+            </div>
+            <!-- PAGE CONTENT ENDS -->
           </div><!-- /.page-content -->
         </div>
       </div><!-- /.main-content -->

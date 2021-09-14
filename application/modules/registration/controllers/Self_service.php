@@ -53,10 +53,9 @@ class Self_service extends MX_Controller {
             $data_loket[$key]->kuota = $kuota;
         }
 
-        //print_r($_GET['type']);die;
         $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
-        
         $data['klinik'] = $data_loket;
+        // echo '<pre>';print_r($data);die;
 
         $this->load->view('Self_service/index_umum', $data);
     }
