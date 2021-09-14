@@ -60,14 +60,16 @@ class Adm_kasir extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Adm_kasir->get_datatables();
-        // print_r($list);die;
+        
         $data = array();
         $arr_total = array();
+        $tgl_keluar_null = [];
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             
             if( $_GET['pelayanan'] != 'RI' ){
                 if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) != '03'){
+                    
                     $no++;
                     $row = array();
                     // sum total
@@ -98,6 +100,8 @@ class Adm_kasir extends MX_Controller {
             }
               
         }
+
+        // echo '<pre>';print_r($tgl_keluar);die;
         
         $output = array(
                         "draw" => $_POST['draw'],
@@ -136,12 +140,14 @@ class Adm_kasir extends MX_Controller {
     public function getDetailTransaksi($no_registrasi){
         $result = json_decode($this->Billing->getDetailData($no_registrasi));
         $akunting = $this->Adm_kasir->get_jurnal_akunting($no_registrasi);
+        $log_activity = $this->Billing->getLogActivity($no_registrasi);
         $data = array(
             'result' => $result,
             'transaksi' => $akunting['data'],
             'jurnal' => $akunting['data'],
+            'log_activity' => $log_activity,
         );
-        // echo '<pre>';print_r($akunting);die;
+        // echo '<pre>';print_r($data);die;
         $html = $this->load->view('loket_kasir/Adm_kasir/detail_transaksi_view', $data, true);
         echo json_encode(array('html' => $html));
     }

@@ -5,12 +5,12 @@ class Adm_kasir_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok';
+	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar';
 	var $order = array('a.no_registrasi' => 'DESC');
 
 	public function __construct()
 	{
-		parent::__construct();
+		// parent::__construct();
 		$this->load->database();
 	}
 
@@ -20,6 +20,7 @@ class Adm_kasir_model extends CI_Model {
 		$this->db->select('CAST(bill_rs as INT) as bill_rs, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(lain_lain as INT) as lain_lain');
 		$this->db->from($this->table.' a');
 		$this->db->join('tc_registrasi b','b.no_registrasi=a.no_registrasi','left');
+		$this->db->join('tc_kunjungan g','g.no_kunjungan=a.no_kunjungan','left');
 		$this->db->join('mt_master_pasien c','c.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian d','d.kode_bagian=b.kode_bagian_masuk','left');
 		$this->db->join('mt_perusahaan e','e.kode_perusahaan=b.kode_perusahaan','left');
@@ -96,7 +97,7 @@ class Adm_kasir_model extends CI_Model {
 	}
 
 	function getTotalRow($array){
-		// print_r($array);die;
+		// echo '<pre>';print_r($array);die;
 		$getData = array();
 		foreach ($array as $key => $value) {
 			$total = ($value->bill_rs + $value->bill_dr1 + $value->bill_dr2 + $value->bill_dr3 + $value->lain_lain);
@@ -129,6 +130,7 @@ class Adm_kasir_model extends CI_Model {
 						'no_registrasi' => $value->no_registrasi,
 						'no_mr' => $value->no_mr,
 						'tgl_jam_masuk' => $value->tgl_jam_masuk,
+						'tgl_keluar' => $value->tgl_keluar,
 						'kode_perusahaan' => $value->kode_perusahaan,
 						'kode_kelompok' => $value->kode_kelompok,
 						'kode_dokter' => $value->kode_dokter,

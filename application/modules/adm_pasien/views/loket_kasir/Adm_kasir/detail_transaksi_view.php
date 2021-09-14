@@ -1,3 +1,33 @@
+<div class="row">
+    <div class="pull-left col-xs-12">
+        <div id="fuelux-wizard-container" class="no-steps-container">
+            <div>
+                <span style="font-weight: bold; padding-left: 100px">Log Aktifitas Kunjungan</span>
+                <ul class="steps" style="margin-left: 0">
+                    <?php $num_log=1; foreach($log_activity as $row_log) : $num_log++; ?>
+                    <li data-step="<?php echo $num_log?>" <?php echo isset($row_log['tgl_keluar']) ? (!empty($row_log['tgl_keluar'])) ? 'class="active"' : '' : 'class="active"';?> >
+                        <span class="step">
+                            <?php 
+                                $icon = isset($row_log['tgl_keluar']) ? ($row_log['tgl_keluar'] != '') ? '<i class="fa fa-check green bigger-120"></i>' : '<i class="fa fa-times red bigger-120"></i>' : '<i class="fa fa-times red bigger-120"></i>' ;
+
+                                echo ($row_log['nama_bagian'] == 'Farmasi') ? '<i class="fa fa-exclamation-triangle orange bigger-120"></i>' : $icon;?>
+                        </span>
+                        <span class="title"><?php echo ucwords($row_log['nama_bagian']); ?><br>
+                            <?php echo isset($row_log['tgl_masuk']) ? $this->tanggal->formatDateTimeFormDmy($row_log['tgl_masuk']) :''?>
+                        </span>
+                    </li>
+                    <?php endforeach; ?>
+                    <li data-step="<?php echo $num_log?>" <?php echo isset($row_log['tgl_keluar']) ? (!empty($row_log['tgl_keluar'])) ? 'class="active"' : '' : 'class="active"';?> >
+                        <span class="step"><i class="fa fa-money green bigger-120"></i></span>
+                        <span class="title">Kasir</span>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div> 
+</div>
+
 <b>TRANSAKSI KASIR</b>
 <table class="table table-bordered" style="width:80% !important">
   <thead>
@@ -19,6 +49,7 @@
       $no_kasir = 0;
       foreach($result->kasir_data as $row_kasir_dt) :
         $no_kasir++;
+        $bill_nk = $row_kasir_dt->nk_perusahaan + $row_kasir_dt->nk_karyawan + $row_kasir_dt->nk_askes + $row_kasir_dt->nk_kel_karyawan + $row_kasir_dt->nk_pendiri + $row_kasir_dt->nk_pemegang_saham;
     ?>
       <tr>
         <td align="center"><?php echo $no_kasir?></td>
@@ -28,7 +59,7 @@
         <td align="right"><?php echo number_format($row_kasir_dt->tunai)?>,-</td>
         <td align="right"><?php echo number_format($row_kasir_dt->debet)?>,-</td>
         <td align="right"><?php echo number_format($row_kasir_dt->kredit)?>,-</td>
-        <td align="right"><?php echo number_format($row_kasir_dt->nk_perusahaan)?>,-</td>
+        <td align="right"><?php echo ($bill_nk > 0) ? '<a href="#" onclick="PopupCenter('."'billing/Billing/print_preview?flag_bill=true&no_registrasi=".$row_kasir_dt->no_registrasi."&kode_tc_trans_kasir=".$row_kasir_dt->kode_tc_trans_kasir."&status_nk=1'".', '."'Cetak Billing'".' , 600 , 750);">'.number_format($bill_nk).'</a>' : 0?>,-</td>
         <td align="right"><?php echo number_format($row_kasir_dt->bill)?>,-</td>
       </tr>
     <?php 
@@ -85,7 +116,7 @@
   </tbody>
 
 </table> 
-<br>
+<!-- <br>
 <b>PENCATATAN JURNAL AKUNTING</b>
 
 <table class="table" style="width: 60% !important">
@@ -129,6 +160,6 @@
     <td align="right"><?php echo number_format(array_sum($arr_kredit))?></td>
   </tr>
   </tbody>
-</table>
+</table> -->
 
 
