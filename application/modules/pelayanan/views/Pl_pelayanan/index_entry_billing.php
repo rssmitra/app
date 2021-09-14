@@ -37,7 +37,7 @@
                 "orderable": false, //set not orderable
             },
             {"aTargets" : [0], "mData" : 1, "sClass":  "details-control"}, 
-            { "visible": false, "targets": [1,2] },
+            { "visible": false, "targets": [1,2,3] },
             ],
 
     });
@@ -46,7 +46,8 @@
         var tr = $(this).closest('tr');
         var row = oTable.row( tr );
         var data = oTable.row( $(this).parents('tr') ).data();
-        var no_registrasi = data[ 2 ];
+        var no_kunjungan = data[ 2 ];
+        var no_registrasi = data[ 3 ];
         
 
         if ( row.child.isShown() ) {
@@ -57,7 +58,7 @@
         else {
             /*data*/
             
-            $.getJSON("pelayanan/Pl_pelayanan/view_detail_resume_medis/" + no_registrasi , '', function (data) {
+            $.getJSON("pelayanan/Pl_pelayanan/view_detail_resume_medis/" + no_registrasi+"/"+no_kunjungan , '', function (data) {
                 response_data = data;
                 // Open this row
                 row.child( format( response_data ) ).show();
@@ -335,6 +336,7 @@ function selesaikanKunjungan(no_registrasi, no_kunjungan){
        <thead>
         <tr>  
           <th width="30px" class="center"></th>
+          <th></th>
           <th></th>
           <th></th>
           <th></th>

@@ -374,6 +374,7 @@ class Pl_pelayanan extends MX_Controller {
             $row = array();
             $row[] = '';
             $row[] = '';
+            $row[] = $row_list->no_kunjungan;
             $row[] = $row_list->no_registrasi;
             /*fungsi rollback pasien, jika belum disubmit kasir maka poli masih bisa melakukan rollback*/
             /*cek transaksi*/
@@ -1905,9 +1906,9 @@ class Pl_pelayanan extends MX_Controller {
     
     }
 
-    public function view_detail_resume_medis($no_registrasi) { 
+    public function view_detail_resume_medis($no_registrasi, $no_kunjungan='') { 
         
-        $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+        $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan);
         $data = [
             'result' => $resume,
             'penunjang' => $resume['penunjang'],
