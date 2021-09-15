@@ -23,7 +23,7 @@ class Adm_kasir_apt_model extends CI_Model {
 		$this->db->join('fr_tc_far b','b.kode_trans_far=a.kode_trans_far','left');
 		$this->db->join('tc_trans_kasir c','c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');
 		$this->db->where('a.kode_bagian', '060101');
-		$this->db->where('a.no_registrasi', 0);
+		$this->db->where('a.no_registrasi ', 0);
 		$this->db->group_by('nama_pasien_layan, a.kode_trans_far, a.no_registrasi, a.kode_tc_trans_kasir, b.tgl_trans, c.bill, c.potongan, c.tgl_jam');
 
 		if ( isset($_GET['search_by']) ) {
@@ -33,15 +33,13 @@ class Adm_kasir_apt_model extends CI_Model {
 				$this->db->like('a.'.$_GET['search_by'], $_GET['keyword']);		
 			}
 			
-			if( isset($_GET['is_with_date']) AND $_GET['is_with_date'] == 1 ){
-
-				$this->db->where("CAST(c.tgl_jam as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
-
+      if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
+        $this->db->where("CAST(b.tgl_trans as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 			}
-			
 						
 		}else{
-			$this->db->where("CAST(c.tgl_jam as DATE) = ", date('Y-m-d'));
+			$this->db->where("CAST(b.tgl_trans as DATE) = ", date('Y-m-d'));
+			// $this->db->where("CAST(c.tgl_jam as DATE) = ", date('Y-m-d'));
 			// $this->db->where('status_selesai', 2);
 			// $this->db->where('kode_tc_trans_kasir IS NULL');
 		}

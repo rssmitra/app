@@ -65,7 +65,7 @@ class Adm_kasir_apt extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $total = $row_list->bill_rs + $row_list->bill_dr1 + $row_list->bill_dr2 + $row_list->bill_dr3 + $row_list->lain_lain;
             if( $total > 0 ){
-                $row[] = '<div class="pull-right"><a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list->kode_trans_far."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a><input type="hidden" class="total_billing_class" value="'.$total.'"></div>';
+                $row[] = '<div class="pull-right"><a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLessApt/".$row_list->kode_trans_far."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a><input type="hidden" class="total_billing_class" value="'.$total.'"></div>';
             }else{
                 $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
             }
