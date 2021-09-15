@@ -34,6 +34,10 @@
             <td colspan="2"><b>DATA TRANSAKSI</b></td>
           </tr>
           <tr>
+            <td width="120px">No Trx Farmasi</td>
+            <td>: <?php echo $data->kode_trans_far?></td>
+          </tr>
+          <tr>
             <td>Tanggal</td>
             <td>: <?php echo $this->tanggal->formatDateTime($data->reg_data->tgl_trans)?></td>
           </tr>
