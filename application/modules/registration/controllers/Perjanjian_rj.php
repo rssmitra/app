@@ -98,6 +98,7 @@ class Perjanjian_rj extends MX_Controller {
                 if( !isset($_GET['no_mr']) ){
                     $row[] = $row_list->unique_code_counter;
                 }
+                $row[] = $row_list->keterangan;
                 $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
 
 

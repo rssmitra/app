@@ -125,7 +125,8 @@ function cetak_surat_kontrol(ID) {
           <?php endif; ?>
           <th>Jam Praktek</th>
           <th>No Telp</th>
-          <th>Status</th>
+          <th>Kd. Perjanjian</th>
+          <th>Keterangan</th>
           <th>Status</th>
           
         </tr>
