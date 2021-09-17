@@ -486,6 +486,10 @@ class Templates extends MX_Controller {
     public function setGlobalHeaderTemplate(){
         $html = '';
         $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
+                    
+                    <tr>
+                        <td align ="left"><img src="'.base_url().'/'.COMP_ICON.'" width="50px"></td>
+                    </tr>
                     <tr><td align ="left" colspan="2"><b>'.COMP_LONG.'</b>&nbsp;</td></tr>
                     <tr><td align ="left" colspan="2">'.COMP_ADDRESS_SORT.'</td></tr>
                     <tr><td align ="left" colspan="2">Telp:&nbsp;'.COMP_TELP.'&nbsp;(Hunting)&nbsp;Fax:&nbsp;'.COMP_FAX.'&nbsp;<br><br></td></tr>
@@ -1436,8 +1440,8 @@ class Templates extends MX_Controller {
         if($flag=='RAD'){
             $html .= '<table border="0" cellspacing="0" cellpadding="0" style="font-size:36px">
                     <tr> 
-                        <td align="right" width="70%"></td>
-                        <td align="center" width="30%">
+                        <td align="right" width="60%"></td>
+                        <td align="center" width="40%">
                         <br><br>
                         Dokter Radiologi<br>
                         '.COMP_FULL.'
@@ -1555,8 +1559,9 @@ class Templates extends MX_Controller {
     public function setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm=''){
         $html = '';
         $jk = ($data->reg_data->jk == 'L')?'Pria':'Wanita';
-        // echo'<pre>';print_r($data);die;
+        // echo'<pre>';print_r($data_pm);die;
         if($flag=='RAD'){
+            $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
                             <td width="100px">No. RM</td>
@@ -1574,7 +1579,7 @@ class Templates extends MX_Controller {
                             <td width="100px">Umur</td>
                             <td width="250px">: '.$data->reg_data->umur.' Tahun</td>
                             <td width="150px">Tanggal Pemeriksaan</td>
-                            <td align="left" width="200px">: '.$this->tanggal->formatDateTime($data_pm->tgl_transaksi).'</td>
+                            <td align="left" width="200px">: '.$this->tanggal->formatDateTime($data_pm->tgl_periksa).'</td>
                             
                         </tr>
 
@@ -1582,19 +1587,19 @@ class Templates extends MX_Controller {
                             <td width="100px">Jenis Kelamin</td>
                             <td width="250px">: '.$jk.'</td>
                             <td width="150px">Laporan Pemeriksaan</td>
-                            <td width="250px">: '.$this->tanggal->formatDateTime(date('Y-m-d H:i:s')).'</td>
+                            <td width="250px">: '.$this->tanggal->formatDateTime($data_pm->tgl_isihasil).'</td>
                         </tr>                    
                     </table>';
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
             // $pm_ = 472854; 
-            // $no_mr = '00272846';
-            // $nama_pasien = 'Syafriza Yenti';
-            // $umur = '55';
+            // $no_mr = '00246856';
+            // $nama_pasien = 'Wisca Gumanti';
+            // $umur = '34';
             // $jk_ = 'Perempuan';
-            // $tgl_daftar = '14 September 2021 - 15:05:15';
-            // $tgl_periksa = '14 September 2021 - 15:33:42';
+            // $tgl_daftar = '19 Agustus 2021 - 15:05:15';
+            // $tgl_periksa = '19 Agustus 2021 - 15:33:42';
             // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db
