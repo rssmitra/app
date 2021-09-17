@@ -44,6 +44,25 @@ class Self_service extends MX_Controller {
     public function mandiri_umum() {
         
         $data = array();
+        // $data_loket = $this->loket->get_open_loket();
+
+        // foreach ($data_loket as $key => $value) {
+        //     # code...
+        //     $kuota = $this->loket->get_sisa_kuota($value);
+        //     if($kuota<0)$kuota=0;
+        //     $data_loket[$key]->kuota = $kuota;
+        // }
+
+        // $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
+        // $data['klinik'] = $data_loket;
+        // echo '<pre>';print_r($data);die;
+
+        $this->load->view('Self_service/index_umum', $data);
+    }
+
+    public function tab_poli() {
+        
+        $data = array();
         $data_loket = $this->loket->get_open_loket();
 
         foreach ($data_loket as $key => $value) {
@@ -53,11 +72,15 @@ class Self_service extends MX_Controller {
             $data_loket[$key]->kuota = $kuota;
         }
 
-        $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
         $data['klinik'] = $data_loket;
         // echo '<pre>';print_r($data);die;
 
-        $this->load->view('Self_service/index_umum', $data);
+        $this->load->view('Self_service/tab_poli', $data);
+    }
+
+    public function tab_pm() {        
+        $data = array();
+        $this->load->view('Self_service/tab_pm', $data);
     }
 
     public function antrian_poli() {

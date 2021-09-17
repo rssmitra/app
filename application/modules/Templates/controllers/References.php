@@ -189,7 +189,7 @@ class References extends MX_Controller {
 
 	public function getDetailJadwalPraktek($jd_id)
 	{
-		$query = "select a.*, a.jd_kode_dokter as kode_dokter,b.nama_pegawai
+		$query = "select a.*, a.jd_kode_dokter as kode_dokter,b.nama_pegawai, c.nama_bagian
 					from tr_jadwal_dokter a
 					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
@@ -232,7 +232,7 @@ class References extends MX_Controller {
 					Kuota Pasien <b>'.$quota_dokter.'</b>
 				</address>';*/
 
-        echo json_encode(array('html' => $html, 'day' => $exc->jd_hari, 'time' => $time, 'id' => $exc->jd_id, 'time_start' => $this->tanggal->formatTime($exc->jd_jam_mulai) ));
+        echo json_encode(array('html' => $html, 'data' => $exc, 'day' => $exc->jd_hari, 'time' => $time, 'id' => $exc->jd_id, 'time_start' => $this->tanggal->formatTime($exc->jd_jam_mulai) ));
 	}
 
 	function cek_kuota($kode_dokter, $tgl_pesan){

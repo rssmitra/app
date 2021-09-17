@@ -5,7 +5,7 @@ class Csm_verifikasi_costing_model extends CI_Model {
 
 
 	var $table = 'csm_dokumen_klaim';
-	var $column = array('csm_dokumen_klaim.no_sep','csm_reg_pasien.csm_rp_nama_pasien','csm_reg_pasien.csm_rp_no_mr');
+	var $column = array('csm_reg_pasien.csm_rp_no_sep','csm_reg_pasien.csm_rp_nama_pasien','csm_reg_pasien.csm_rp_no_mr');
 	var $select = 'csm_dokumen_klaim.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_dokumen_klaim.created_date, csm_dokumen_klaim.created_by';
 	var $order = array('csm_dokumen_klaim.no_sep' => 'ASC');
 	

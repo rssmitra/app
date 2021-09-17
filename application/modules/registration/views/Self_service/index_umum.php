@@ -13,6 +13,11 @@
     .small-box{
         margin-bottom: -5px;
     }
+    .alert-warning {
+        background-color: #fcf8e3 !important;
+        border-color: #faebcc !important;
+        color: #8a6d3b !important;
+    }
 </style>
 <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
 
@@ -102,41 +107,32 @@
 
                 <hr>
                 <div id="div_select_tujuan_kunjungan">
-                    <table width="100%">
-                        <tr class="center">
-                            <td style="width: 33%; height: 55px; font-size: 20px;font-weight: bold text-align: center; background: red">POLI/KLINIK SPESIALIS</td>
-                            <td style="width: 33%; height: 55px; font-size: 20px;font-weight: bold text-align: center; background: blue">PENUNJANG MEDIS</td>
-                            <td style="width: 33%; height: 55px; font-size: 20px;font-weight: bold text-align: center; background: green">IGD</td>
-                        </tr>
-                    </table>
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
+                            <li class="active">
+                                <a data-toggle="tab" href="#tab-poli" onclick="getMenuTabs('Self_service/tab_poli', 'tab_jenis_kunjungan')">POLI/KLINIK SPESIALIS</a>
+                            </li>
+
+                            <li>
+                                <a data-toggle="tab" href="#tab-penunjang" onclick="getMenuTabs('Self_service/tab_PM', 'tab_jenis_kunjungan')">PENUNJANG MEDIS</a>
+                            </li>
+
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="tab_jenis_kunjungan" class="tab-pane in active">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="div_select_jadwal_dokter" style="display: none">
-                    <p style="font-size:12px; font-style: italic">Jadwal Praktek Dokter Tanggal <?php echo date('d/M/Y')?>, Silahkan pilih Poli/Klinik Spesialis dibawah ini : </p>
-                    
-                    <?php 
-                        $no=0; foreach($klinik as $key=>$row) : $no++; 
-                        $arr_color = array('bg-red','bg-yellow','bg-aqua','bg-blue','bg-light-blue','bg-green','bg-navy','bg-teal','bg-olive','bg-lime','bg-orange','bg-fuchsia','bg-purple','bg-maroon','bg-black'); 
-                        shuffle($arr_color);
-                    ?>
-                        <div class="col-lg-2 col-xs-3 no-padding" style="margin-top:5px; padding: 5px !important">
-                        <!-- small box -->
-                        <div class="small-box <?php echo array_shift($arr_color)?>" style="min-height: 115px; border-radius: 10px !important">
-                            <div class="inner" style="line-height: 13px; min-height: 90px">
-                            <h3 style="font-size:12px;word-wrap: break-word;"><?php echo strtoupper($row->nama_bagian)?></h3>
-                            <p style="font-size:12px">
-                                <?php echo $row->nama_pegawai?><br>
-                                <?php echo $this->tanggal->formatTime($row->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row->jd_jam_selesai);?>
-                            </p>
-                            </div>
-                            <div class="icon" style="margin-top:-10px">
-                            <i class="fa fa-stethoscope"></i>
-                            </div>
-                            <?php 
-                            echo '<a href="'.base_url().'dashboard?mod='.$row->jd_id.'" class="small-box-footer"><b>PENDAFTARAN</b> <i class="fa fa-arrow-circle-right"></i></a>';
-                            ?>
-                        </div>
-                        </div>
-                    <?php endforeach; ?>
+                
+                <div id="div_selected_poli">
+                    <!-- input type hidden -->
+                    <input type="hidden" name="reg_klinik_rajal" id="reg_klinik_rajal">
+                    <input type="hidden" name="reg_dokter_rajal" id="reg_dokter_rajal">
+                    <input type="hidden" name="jd_id" id="jd_id">
+                    <div id="konfirmasi_kunjungan"></div>
                 </div>
 
             </div>
@@ -156,6 +152,7 @@
 
 $(document).ready(function () {
 
+    getMenuTabs('Self_service/tab_poli', 'tab_jenis_kunjungan');
     var today = getDateToday();
     console.log(today);
 	$('#btnSearchPasien').click(function (e) {
@@ -188,8 +185,20 @@ $(document).ready(function () {
 
 });
 
-function selected_item(){
+function select_dokter_poli(kode_dokter, kode_spesialis, jd_id){
+    $('#div_select_tujuan_kunjungan').hide();
+    $('#div_selected_poli').show();
+    $('#reg_dokter_rajal').val(kode_dokter);
+    $('#reg_klinik_rajal').val(kode_spesialis);
+    $('#jd_id').val(jd_id);
 
+    $.getJSON("../Templates/References/getDetailJadwalPraktek/"+jd_id+"", '', function (response) {
+        console.log(response.data);
+        var obj = response.data;
+        var poli = obj.nama_bagian;
+        var dokter = obj.nama_pegawai;
+        $('#konfirmasi_kunjungan').html('<div class="alert alert-warning center"><strong><h3>Konfirmasi !</h3> </strong><span style="font-size: 14px">Anda akan berkunjung ke <b>'+poli.toUpperCase()+'</b></span><br><span style="font-size: 14px"> dengan Dokter <b>'+dokter.toUpperCase()+'</b></span></div>');
+    });
 
 }
 

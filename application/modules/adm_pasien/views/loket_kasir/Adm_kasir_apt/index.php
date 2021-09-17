@@ -208,7 +208,7 @@
             </div>
           </div>
 
-          <div class="col-md-2" style="margin-left: -1.8%">
+          <div class="col-md-2" style="margin-left: -1.5%">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Cari
