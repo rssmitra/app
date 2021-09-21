@@ -19,7 +19,13 @@
         color: #8a6d3b !important;
     }
 </style>
-<form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
+<form class="form-horizontal" method="post" id="form_registrasi" action="<?php echo site_url('registration/Self_service/processRegistrasi')?>" enctype="multipart/form-data" autocomplete="off">   
+    <!-- hidden -->
+    <input type="hidden" class="form-control" value="" id="noMRBooking" name="noMRBooking">
+    <input type="hidden" class="form-control" value="" id="nama_pasien_hidden" name="nama_pasien_hidden">
+    <input type="hidden" class="form-control" value="" id="umur_saat_pelayanan_hidden" name="umur_saat_pelayanan_hidden">
+    <input type="hidden" class="form-control" value="" id="kode_kelompok_hidden" name="kode_kelompok_hidden">
+    <input type="hidden" class="form-control" value="" id="jenis_pendaftaran" name="jenis_pendaftaran" value="1">
 
 <div class="row" id="search_nomr_div">
     <div class="col-xs-2">&nbsp;</div>
@@ -90,14 +96,14 @@
                             <span class="lbl"> Jaminan Perusahaan</span>
                             </label>
                             <label>
-                            <input name="jenis_penjamin" type="radio" class="ace" value="Umum" />
+                            <input name="jenis_penjamin" type="radio" class="ace" value="Umum" checked/>
                             <span class="lbl"> Umum</span>
                             </label>
                     </div>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="div_penjamin_perusahaan" style="display: none">
                     <label class="control-label col-sm-3">Perusahaan Penjamin</label>
                     <div class="col-md-6">
                         <input id="InputKeyPenjamin" class="form-control" name="penjamin" type="text" placeholder="Masukan keyword minimal 3 karakter" />
@@ -153,11 +159,44 @@
 $(document).ready(function () {
 
     getMenuTabs('Self_service/tab_poli', 'tab_jenis_kunjungan');
+    $('#jenis_pendaftaran').val(1);
+    
     var today = getDateToday();
     console.log(today);
 	$('#btnSearchPasien').click(function (e) {
       e.preventDefault();
       findPasien();
+    });
+
+    $('#form_registrasi').ajaxForm({
+        beforeSend: function() {
+        achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+
+        if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:3});
+            
+        }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+        }
+        achtungHideLoader();
+        }
+    });
+    
+
+    $('input[name="jenis_penjamin"]').click(function (e) {
+        var value = $(this).val();
+        if(value == 'Umum'){
+            $('#div_penjamin_perusahaan').hide();
+        }else{
+            $('#div_penjamin_perusahaan').show();
+        }
+        
     });
 
     $('#InputKeyPenjamin').typeahead({
@@ -197,7 +236,7 @@ function select_dokter_poli(kode_dokter, kode_spesialis, jd_id){
         var obj = response.data;
         var poli = obj.nama_bagian;
         var dokter = obj.nama_pegawai;
-        $('#konfirmasi_kunjungan').html('<div class="alert alert-warning center"><strong><h3>Konfirmasi !</h3> </strong><span style="font-size: 14px">Anda akan berkunjung ke <b>'+poli.toUpperCase()+'</b></span><br><span style="font-size: 14px"> dengan Dokter <b>'+dokter.toUpperCase()+'</b></span></div>');
+        $('#konfirmasi_kunjungan').html('<div class="center"><strong><h3>Konfirmasi !</h3> </strong><span style="font-size: 14px">Anda akan berkunjung ke <b>'+poli.toUpperCase()+'</b></span><br><span style="font-size: 14px"> dengan Dokter <b>'+dokter.toUpperCase()+'</b><br><br><button type="submit" class="btn btn-xs btn-primary">Proses dan Cetak Bukti Pendaftaran</button></span></div>');
     });
 
 }
@@ -235,11 +274,20 @@ function findPasien(){
                 // $('html,body').animate({
                 //         scrollTop: $("#result_nomr_div").offset().top},
                 //         'slow');
-                
+                var umur_pasien = hitung_usia(obj.tgl_lhr);
+
                 $('#no_mr').val(obj.no_mr);
                 $('#nama_pasien').val(obj.nama_pasien);
+                $('#noMRBooking').val(obj.no_mr);
+                $('#nama_pasien_hidden').val(obj.nama_pasien);
+                $('#umur_saat_pelayanan_hidden').val(umur_pasien);
+                
+                
                 $('#message_result_pasien').html('<div class="alert alert-success"><strong>Selamat Datang, </strong>&nbsp; '+obj.nama_pasien+' ('+obj.no_mr+'), silahkan pilih tujuan kunjungan anda.</div>');
-
+                setTimeout(function () {
+                    $('#message_result_pasien').html('');
+                }, 5000);
+                
                 /*text*/
                 // $('#kb_no_mr').text(obj.no_mr);
                 // $('#pnomr').val(obj.no_mr);

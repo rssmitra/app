@@ -525,7 +525,7 @@ final Class Master {
    		foreach ($fields as $key => $value) {
 			$val_data = isset($data->$value)?$data->$value:'-';
 			$html .= '<tr>';    
-			$html .= '<td width="150px">'.ucfirst($value).'</td><td style="text-align: justify"> '.$val_data.'</td>';    
+			$html .= '<td width="150px" valign="top">'.ucfirst($value).'</td><td style="text-align: justify" valign="top">: '.$val_data.'</td>';    
 			$html .= '</tr>'; 
             // $html .= $value->name.' : '.$row_data[$value->name].' | '; 
 		}

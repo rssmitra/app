@@ -434,12 +434,12 @@ class Self_service extends MX_Controller {
 
     public function processRegistrasi($sep=''){
 
-        // print_r($_POST);die;
+        print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
         $this->form_validation->set_rules('reg_klinik_rajal', 'Poli/Klinik', 'trim|required');
         $this->form_validation->set_rules('reg_dokter_rajal', 'Dokter', 'trim|required');
-        $this->form_validation->set_rules('noMRBooking', 'Dokter', 'trim|required');
+        $this->form_validation->set_rules('noMRBooking', 'No MR', 'trim|required');
         $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Perusahaan', 'trim');
         $this->form_validation->set_rules('kode_kelompok_hidden', 'Kode Perusahaan', 'trim');
         $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
@@ -559,7 +559,6 @@ class Self_service extends MX_Controller {
                 $this->db->trans_commit();
                 
                 /*jika transaksi berhasil maka print tracer*/
-
                 $tracer = $this->print_escpos->print_direct($data_tracer);
                 if( $tracer == 1 ) {
                         $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
