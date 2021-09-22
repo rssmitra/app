@@ -559,10 +559,8 @@ class Self_service extends MX_Controller {
                 $this->db->trans_commit();
                 
                 /*jika transaksi berhasil maka print tracer*/
-                $tracer = $this->print_escpos->print_direct($data_tracer);
-                if( $tracer == 1 ) {
-                        $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
-                }
+                // $tracer = $this->print_escpos->print_direct($data_tracer);
+                
 
                 // get detail data
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);
@@ -571,6 +569,15 @@ class Self_service extends MX_Controller {
         
         }
 
+    }
+
+    function print_bukti_registrasi($no_registrasi){
+        $registrasi = $this->Reg_klinik->get_by_id($no_registrasi);
+        $tracer = $this->print_escpos->print_bukti_registrasi($registrasi);
+        if( $tracer == 1 ) {
+                $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
+        }
+        return true;
     }
     
 
