@@ -78,7 +78,7 @@
     
     <div class="row"> 
       <div class="col-xs-8">
-        <table style="font-size:13px; padding: 45mm 10px 1px 9mm;" border="0">
+        <table style="font-size:13px; padding-top: 30mm;" border="0">
           <tr>
             <td style="font-size: 13px; font-weight: bold;">No. Bukti Pembayaran</td>
             <td style="font-size: 13px; font-weight: bold;">: 
