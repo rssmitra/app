@@ -91,7 +91,7 @@ window.onload = generateBarcode;
 </tr>
 
 <tr>
-<td>Catatan</td><td colspan="2">: <?php echo $value->keterangan?> </td>
+<td>Catatan</td><td colspan="2">: <?php //echo $value->keterangan?> </td>
 </tr>
 
 </table>

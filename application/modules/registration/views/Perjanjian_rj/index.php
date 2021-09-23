@@ -236,6 +236,8 @@ function delete_perjanjian(id_tc_pesanan){
           <th>Nama Dokter</th>
           <th>Jam Praktek</th>
           <th>No. Telp</th>
+          <th>Kd. Perjanjian</th>
+          <th>Keterangan</th>
           <th>Status</th>
           
         </tr>

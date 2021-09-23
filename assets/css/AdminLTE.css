@@ -33,7 +33,7 @@
   font-size: 38px;
   font-weight: bold;
   margin: 0 0 10px 0;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   padding: 0;
 }
 .small-box p {
