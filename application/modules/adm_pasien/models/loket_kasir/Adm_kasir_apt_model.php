@@ -6,7 +6,7 @@ class Adm_kasir_apt_model extends CI_Model {
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.nama_pasien_layan');
 	var $select = 'a.kode_tc_trans_kasir, a.no_registrasi, a.kode_trans_far, nama_pasien_layan AS nama_pasien, b.tgl_trans';
-	var $order = array('a.kode_trans_far' => 'DESC');
+	var $order = array('a.nama_pasien_layan' => 'ASC');
 
 	public function __construct()
 	{

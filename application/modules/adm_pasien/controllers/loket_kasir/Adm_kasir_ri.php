@@ -128,6 +128,7 @@ class Adm_kasir_ri extends MX_Controller {
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'adm_pasien/loket_kasir/Adm_kasir_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = '<span style="color:'.$color.'"><b>'.strtoupper($row_list->nama_pasien).'</b></span>';
