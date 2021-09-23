@@ -7,7 +7,7 @@ class Adm_kasir_ri_model extends CI_Model {
 	var $column = array('ri_tc_rawatinap.nama_pasien','mt_karyawan.nama_pegawai');
 	var $select = 'ri_tc_rawatinap.bag_pas,ri_tc_rawatinap.no_kunjungan,mt_master_pasien.nama_pasien, kode_ri, ri_tc_rawatinap.status_pulang, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, ri_tc_rawatinap.tgl_masuk, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, mt_bagian.nama_bagian, ri_tc_rawatinap.dr_merawat, ri_tc_rawatinap.kelas_pas,ri_tc_rawatinap.kelas_titipan, ri_tc_rawatinap.kode_ruangan, x.nama_klas as klas,y.nama_klas as klas_titip, tc_registrasi.tarif_inacbgs, tc_registrasi.ina_cbgs, pasien_titipan, c.no_kamar, c.no_bed';
 
-	var $order = array('ri_tc_rawatinap.no_kunjungan' => 'DESC');
+	var $order = array('mt_master_pasien.nama_pasien' => 'ASC');
 
 	public function __construct()
 	{

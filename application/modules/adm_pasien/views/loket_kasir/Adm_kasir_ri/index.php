@@ -228,6 +228,7 @@ function rollback(no_registrasi, no_kunjungan){
             <th width="50px">&nbsp;</th>
             <th></th>
             <th></th>
+            <th>No</th>
             <th>Kode</th>
             <th>No MR</th>
             <th>Nama Pasien</th>
