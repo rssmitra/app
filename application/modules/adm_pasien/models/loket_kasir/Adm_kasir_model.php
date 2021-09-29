@@ -79,8 +79,9 @@ class Adm_kasir_model extends CI_Model {
 		} 
 		else if(isset($this->order))
 		{
-			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
+			// $order = $this->order;
+			// $this->db->order_by(key($order), $order[key($order)]);
+      $this->db->order_by('c.nama_pasien ASC, a.no_registrasi DESC, d.nama_bagian ASC');
 		}
 	}
 	

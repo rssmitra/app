@@ -111,8 +111,9 @@ class Adm_kasir_ri_model extends CI_Model {
 		} 
 		else if(isset($this->order))
 		{
-			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
+			// $order = $this->order;
+			// $this->db->order_by(key($order), $order[key($order)]);
+      $this->db->order_by('mt_master_pasien.nama_pasien ASC, ri_tc_rawatinap.no_kunjungan DESC, mt_bagian.nama_bagian ASC');
 		}
 	}
 	

@@ -5,7 +5,7 @@ class Adm_kasir_apt_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.nama_pasien_layan');
-	var $select = 'a.kode_tc_trans_kasir, a.no_registrasi, a.kode_trans_far, nama_pasien_layan AS nama_pasien, b.tgl_trans';
+	var $select = 'a.kode_tc_trans_kasir, a.no_registrasi, a.kode_trans_far, a.nama_pasien_layan AS nama_pasien, b.tgl_trans';
 	var $order = array('a.nama_pasien_layan' => 'ASC');
 
 	public function __construct()
@@ -24,7 +24,7 @@ class Adm_kasir_apt_model extends CI_Model {
 		$this->db->join('tc_trans_kasir c','c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');
 		// $this->db->where('a.kode_bagian', '060101');
 		$this->db->where('a.no_registrasi ', 0);
-		$this->db->group_by('nama_pasien_layan, a.kode_trans_far, a.no_registrasi, a.kode_tc_trans_kasir, b.tgl_trans, c.bill, c.potongan, c.tgl_jam');
+		$this->db->group_by('a.nama_pasien_layan, a.kode_trans_far, a.no_registrasi, a.kode_tc_trans_kasir, b.tgl_trans, c.bill, c.potongan, c.tgl_jam');
 
 		if ( isset($_GET['search_by']) ) {
 			
@@ -67,8 +67,9 @@ class Adm_kasir_apt_model extends CI_Model {
 		} 
 		else if(isset($this->order))
 		{
-			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
+			// $order = $this->order;
+			// $this->db->order_by(key($order), $order[key($order)]);
+      $this->db->order_by('b.tgl_trans DESC, nama_pasien ASC');
 		}
 	}
 	
