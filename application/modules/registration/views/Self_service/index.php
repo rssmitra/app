@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-fonts.css" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
     <script src="<?php echo base_url()?>assets/js/ace-extra.js"></script>
@@ -32,6 +33,10 @@
       overflow-y: scroll;
     }
     
+    .main-container:before {
+        background-color: #024a15 !important;
+    }
+
     .ui-keyboard{
       font-size: 20px !important;
     }
@@ -67,6 +72,9 @@
       padding-left: 0px !important;
       padding: 0px 5px 0px 5px;
     }
+    .widget-body{
+      background: white !important;
+    }
 
     .row {
         margin-left: 0px !important;
@@ -76,11 +84,15 @@
       min-height: 154px !important;
     }
 
+    .tab-content{
+      background: white !important;
+    }
+
 	</style>
 
-  <body class="no-skin" style="background: url('../assets/images/bg2.jpg') !important;">
+  <body class="no-skin" style="background: url('../assets/images/bg2.jpg') !important; background: #024a15 !important">
     <!-- #section:basics/navbar.layout -->
-    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar navbar-fixed-top" style="background: white;">
+    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar navbar-fixed-top" style="background: linear-gradient(271deg, #72ad40, #f2f5ee);">
       <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
       </script>
@@ -96,7 +108,8 @@
           <!-- /section:basics/navbar.toggle -->
         </div>
         <div class="pull-left">
-        <h2 style="font-family: sans-serif; font-weight: bold; font-size:25px; color: #024a19; ">KIOSK LAYANAN MANDIRI PASIEN <br> RS SETIA MITRA</h2>
+        <h2 style="font-family: sans-serif; font-weight: bold; font-size:25px; color: #024a19; color: #024a15;
+    text-shadow: 2px 2px #1674264d;">KIOSK LAYANAN MANDIRI PASIEN <br> RS SETIA MITRA</h2>
         </div>
         <div class="pull-right">
             <a href="<?php echo base_url().'registration/Self_service'?>" class="btn btn-success" style="margin-top: 10px;background: linear-gradient(45deg, #0a4b19, #ea4b94) !important;border-color: #9fca6b;">
@@ -107,31 +120,35 @@
       </div><!-- /.navbar-container -->
     </div>
     
-
     <!-- /section:basics/navbar.layout -->
-    <div class="main-container" id="main-container">
+    <div class="main-container" id="main-container" style="background: #024a15;">
       <script type="text/javascript">
         try{ace.settings.check('main-container' , 'fixed')}catch(e){}
       </script>
 
       <!-- /section:basics/sidebar.horizontal -->
-      <div class="main-content">
-        <div class="main-content-inner">
+      <div class="main-content" style="background: #024a15;">
+        <div class="main-content-inner" style="background: #024a15;">
           <!-- #section:basics/content.breadcrumbs -->
           <?php
-            $arr_color_breadcrumbs = array('#076960');
+            $arr_color_breadcrumbs = array('#013518');
             shuffle($arr_color_breadcrumbs);
           ?>
-          <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>; line-height: 25px !important; position: fixed; width: 100%">
+          <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>; line-height: 25px !important; position: fixed !important; width: 100%">
             <script type="text/javascript">
               try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
             </script>
-            <div style="background: linear-gradient(45deg, #8cc22f, transparent);margin-top: 3%;">
-                  <marquee style="font-size: 18px;color: white;margin-top: 14px;">Hanya untuk pasien yang sudah pernah terdaftar atau yang pernah berobat ke RS Setia Mitra. Untuk pasien baru silahkan mengambil Nomor Antrian Pendaftaran</marquee>
-                </div>
+            <div style="background: linear-gradient(45deg, #8cc22f, transparent);margin-top: 3%; width: 100%">
+              <div style="float: right; width: 20%; padding: 5px; padding-top: 8px; border-left: 1px solid white; text-align: center; font-size: 14px; color: white">
+                <?php echo date('d/M/Y') ?> <span id="clock"><?php echo date('H:i:s')?></span>
+              </div>
+              <div style="float: left; width: 80%">
+                  <marquee style="font-size: 18px;color: white;margin-top: 8px;">Hanya untuk pasien yang sudah pernah terdaftar atau yang pernah berobat ke RS Setia Mitra. Untuk pasien baru silahkan mengambil Nomor Antrian Pendaftaran</marquee>
+              </div>
+            </div>
 
           </div>
-          <div class="page-content-main" style="background: white !important; margin-top:10%; min-height: 0px !important">
+          <div class="page-content-main" style="background: #024a15 !important; margin-top:8%; min-height: 0px !important">
           <!-- <br>
           <div class="center">
             <img src="<?php echo base_url().'assets/images/logo.png'?>" style="width: 100px">
@@ -145,11 +162,10 @@
                   Kembali ke Halaman Utama
               </a>
             </div> -->
-
             <!-- PAGE CONTENT BEGINS -->
-            <div class="center" id="load-content-page" style="margin-top: 10px">
-              <span><h2>MODUL KIOSK MANDIRI PASIEN</h2></span>
-              <div class="row">
+            <div class="center" id="load-content-page" >
+              <div class="row" style="padding-top: 50px">
+              <span style="color: white"><h2>MODUL KIOSK LAYANAN MANDIRI PASIEN</h2></span>
 
                 <div class="col-sm-3" style="text-align: center">
                   <div class="widget-box">
@@ -160,7 +176,8 @@
                     </div>
 
                     <div class="widget-body">
-                      <div class="widget-main">
+                      <div class="widget-main" onclick="scrollSmooth('Self_service/mandiri_bpjs')">
+                        <span style="margin-left:-40%;position:absolute;transform: rotate(-25deg) !important; margin-top: 16%" class="stamp is-nope-2">comming soon</span>
                         <p class="muted">
                           <img src="<?php echo base_url()?>assets/kiosk/bpjs.jpeg" height="100" alt=""><br>
                           Persiapkan <b>Nomor Rujukan</b> Puskesmas anda untuk melakukan Pendaftaran ke Poli/Klinik
@@ -169,7 +186,7 @@
                         <hr>
 
                         <p>
-                          <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/mandiri_bpjs')">Selengkapnya</span>
+                          <span class="btn btn-block btn-default" disable data-rel="tooltip" title="" data-original-title="Default" style="cursor: disabled">Selengkapnya</span>
                         </p>
                       </div>
                     </div>
@@ -185,7 +202,7 @@
                     </div>
 
                     <div class="widget-body">
-                      <div class="widget-main">
+                      <div class="widget-main" onclick="scrollSmooth('Self_service/mandiri_umum')">
                         <p class="muted">
                           <img src="<?php echo base_url()?>assets/kiosk/insurance.png" height="100" alt=""><br>
                           Persiapkan <b>Nomor Rekam Medis</b> anda untuk melakukan pendaftaran ke poli/klinik.
@@ -210,7 +227,7 @@
                     </div>
 
                     <div class="widget-body">
-                      <div class="widget-main">
+                      <div class="widget-main" onclick="scrollSmooth('Self_service/antrian_poli')">
                         <p class="muted">
                         <img src="<?php echo base_url()?>assets/kiosk/antrian.png" height="100" alt=""><br>
                           Pengambilan <b>Nomor Antrian</b> <br>Pendaftaran Poli/Klinik, Pasien Baru, IGD dan Penunjang Medis
@@ -235,7 +252,7 @@
                     </div>
 
                     <div class="widget-body">
-                      <div class="widget-main">
+                      <div class="widget-main" onclick="scrollSmooth('Self_service/jadwal_dokter')">
                         <p class="muted">
                         <img src="<?php echo base_url()?>assets/kiosk/appointment.png" height="100" alt=""><br>
                           Informasi Jadwal Praktek Dokter <br>dan Perjanjian Pasien
@@ -287,7 +304,7 @@
         </div>
       </div><!-- /.main-content -->
 
-      <div class="footer">
+      <!-- <div class="footer">
 				<div class="footer-inner">
 					<div class="footer-content">
 						<span class="bigger-120">
@@ -296,7 +313,7 @@
 						</span>
 					</div>
 				</div>
-			</div>
+			</div> -->
 
       <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -337,7 +354,17 @@
 
       </div><!-- /.modal-dialog -->
 
-    </div>
+      </div>
+
+      <div id="proses-loading">
+        <div class="loading-content">
+            <img width="125px" src="<?php echo base_url('assets/images/logo.png') ?>" alt="Logo <?php echo COMP_SORT; ?>">
+            <br>
+            <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+            <br>
+            <span class="">Transaksi sedang di proses harap menunggu</span>
+        </div>
+      </div>
 
     <!-- basic scripts -->
 
@@ -400,6 +427,37 @@
     </style>
 
     <script>
+
+    setInterval(showTime, 1000);
+    function showTime() {
+        let time = new Date();
+        let hour = time.getHours();
+        let min = time.getMinutes();
+        let sec = time.getSeconds();
+        am_pm = "AM";
+
+        if (hour > 12) {
+            hour -= 12;
+            am_pm = " PM";
+        }
+        if (hour == 0) {
+            hr = 12;
+            am_pm = " AM";
+        }
+
+        hour = hour < 10 ? "0" + hour : hour;
+        min = min < 10 ? "0" + min : min;
+        sec = sec < 10 ? "0" + sec : sec;
+
+        let currentTime = hour + ":" 
+            + min + ":" + sec + am_pm;
+
+        document.getElementById("clock")
+            .innerHTML = currentTime;
+    }
+
+    showTime();
+
 		function scrollSmooth(link){
 			$('#banner-home').hide('fast');
 			$('#load-content-page').load(link);
@@ -475,6 +533,14 @@
             e.preventDefault();
         e.returnValue = false;  
     }
+
+    function getFormattedDate(paramsDate) {
+          var date = new Date(paramsDate);
+          let year = date.getFullYear();
+          let month = (1 + date.getMonth()).toString().padStart(2, '0');
+          let day = date.getDate().toString().padStart(2, '0');        
+          return day + '/' + month + '/' + year;
+      }
 
     function hitung_usia(DOB){
 

@@ -29,8 +29,107 @@ jQuery(function($) {
     }
   });
 
-
 });  
+
+var oTable;
+var base_url = $('#dynamic-table').attr('base-url'); 
+var params = $('#dynamic-table').attr('data-id'); 
+
+$(document).ready(function() {
+
+  $( ".form-control" )  
+    .keypress(function(event) {  
+      var keycode =(event.keyCode?event.keyCode:event.which);  
+      if(keycode ==13){    
+        event.preventDefault();     
+        if($(this).valid()){  
+          $('#btn_search_data').click();  
+        }    
+        return false;   
+      }  
+  }); 
+
+    //initiate dataTables plugin
+    oTable = $('#dynamic-table').DataTable({ 
+          
+      "processing": true, //Feature control the processing indicator.
+      "serverSide": true, //Feature control DataTables' server-side processing mode.
+      "ordering": false,
+      "searching": false,
+      "pageLength": 25,
+      // Load data for the table's content from an Ajax source
+      "ajax": {
+          "url": base_url,
+          "type": "POST"
+      },
+
+    });
+    
+
+    $('#dynamic-table tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            oTable.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    } );
+      
+    $("#button_delete").click(function(event){
+          event.preventDefault();
+          var searchIDs = $("#dynamic-table input:checkbox:checked").map(function(){
+            return $(this).val();
+          }).toArray();
+          delete_data(''+searchIDs+'')
+          console.log(searchIDs);
+    });
+
+    $('#btn_search_data').click(function (e) {
+        
+          e.preventDefault();
+          $.ajax({
+          url: $('#form_search').attr('action'),
+          type: "post",
+          data: $('#form_search').serialize(),
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          success: function(data) {
+            achtungHideLoader();
+            find_data_reload(data,base_url);
+          }
+        });
+      });
+
+    $('#btn_reset_data').click(function (e) {
+            e.preventDefault();
+            reset_table();
+    });
+
+
+});
+
+function find_data_reload(result, base_url){
+  
+    var data = result.data;    
+    oTable.ajax.url(base_url+'&'+data).load();
+    $("html, body").animate({ scrollTop: "400px" });
+
+}
+
+function reset_table(){
+    oTable.ajax.url(base_url).load();
+    $("html, body").animate({ scrollTop: "400px" });
+
+}
+
+function reload_table(){
+   oTable.ajax.reload(); //reload datatable ajax 
+}
+  
+
 </script>
 
 <div class="row">
@@ -51,13 +150,32 @@ jQuery(function($) {
     <div class="col-md-12">
       <center><h4>VERIFIKASI COSTING<br><small style="font-size:12px">(Silahkan lakukan pencarian data berdasarkan parameter dibawah ini)</small></h4></center>
       <br>
+
       <div class="form-group">
-        <label class="control-label col-md-2">Pencarian Berdasarkan</label>
+        <label class="control-label col-md-2">Pencarian berdasarkan</label>
+        <div class="col-md-2">
+          <select name="search_by" id="search_by" class="form-control">
+            <option value="">-Silahkan Pilih-</option>
+            <option value="csm_reg_pasien.csm_rp_no_sep" selected>Nomor SEP</option>
+            <option value="nocsm_reg_pasien.csm_rp_no_mr">No MR</option>
+            <option value="csm_reg_pasien.csm_rp_nama_pasien">Nama Pasien</option>
+          </select>
+        </div>
+        <label class="control-label col-md-1">Keyword</label>
+        <div class="col-sm-2">
+          <input type="text" class="form-control" name="keyword" id="keyword">
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+        <label class="control-label col-md-2">Jenis Tanggal</label>
           <div class="col-md-10">
             <div class="radio">
               <label>
                 <input name="search_by_field" type="radio" class="ace" value="csm_dokumen_klaim.created_date" checked>
-                <span class="lbl"> Waktu Input/Costing</span>
+                <span class="lbl"> Tanggal Costing</span>
               </label>
 
               <label>
@@ -67,7 +185,7 @@ jQuery(function($) {
 
               <label>
                 <input name="search_by_field" type="radio" class="ace" value="csm_reg_pasien.csm_rp_tgl_masuk">
-                <span class="lbl"> Tanggal Kunjungan</span>
+                <span class="lbl"> Tanggal Kunjungan Pasien</span>
               </label>
 
               <!-- <label>
@@ -126,6 +244,13 @@ jQuery(function($) {
           </div>
       </div>
       <div class="form-group">
+        <label class="control-label col-md-2">Poli/Klinik</label>
+          <div class="col-md-4">
+          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'group_bag' => 'Detail', 'status_aktif' => 1) ),'' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+          </div>
+      </div>
+
+      <div class="form-group">
         <label class="control-label col-md-2">Tipe (RI/RJ)</label>
           <div class="col-md-2">
             <select name="tipe" id="tipe" class="form-control">
@@ -176,7 +301,7 @@ jQuery(function($) {
         <tbody>
         </tbody>
       </table>
-      <script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
+      
 
     </div>
     </form>

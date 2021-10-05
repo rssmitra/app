@@ -34,7 +34,7 @@ final Class Daftar_pasien {
           'no_sep' => $no_sep,
           'sirs_v1' => 1,
           'jd_id' => $jd_id,
-          'no_induk' => $CI->session->userdata('user')->user_id,
+          'no_induk' => isset($CI->session->userdata('user')->user_id)?$CI->session->userdata('user')->user_id:0,
         );
         
         /*print_r($data);die;*/

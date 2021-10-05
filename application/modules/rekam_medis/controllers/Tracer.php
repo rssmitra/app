@@ -91,9 +91,14 @@ class Tracer extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_masuk);
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->nama_pegawai;
-            $row[] = $row_list->fullname;
+            $is_kiosk = isset($row_list->fullname) ? 1 : 2 ;
+            $row[] = isset($row_list->fullname)?$row_list->fullname:'<span class="label label-success">KIOSK</span>';
             $row[] = '<div class="center">'.strtoupper($row_list->stat_pasien).'</div>';
-            $row[] = (($row_list->print_tracer == 'N') || ($row_list->print_tracer == NULL)) ? '<div class="center"><i class="fa fa-times-circle red"></i></div>' : '<div class="center"><i class="fa fa-check-circle green"></i></div>';
+            if($is_kiosk == 2){
+                $row[] = '<div class="center"><span class="label label-success">print barcode</span></div>';
+            }else{
+                $row[] = (($row_list->print_tracer == 'N') || ($row_list->print_tracer == NULL)) ? '<div class="center"><i class="fa fa-times-circle red"></i></div>' : '<div class="center"><i class="fa fa-check-circle green"></i></div>';
+            }
             
             $data[] = $row;
         }

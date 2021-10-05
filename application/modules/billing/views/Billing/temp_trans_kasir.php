@@ -1,3 +1,7 @@
+<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+
 <style type="text/css">
     input[type=checkbox]{
         margin:-2px 0px 0px !important;
@@ -18,6 +22,19 @@
 </style>
 
 <script>
+
+jQuery(function($) {
+
+    $('.date-picker').datepicker({
+    autoclose: true,
+    todayHighlight: true,
+    format: 'yyyy-mm-dd'
+    })
+    //show datepicker when clicking on the icon
+    .next().on(ace.click_event, function(){
+    $(this).prev().focus();
+    });
+});
 
 $(document).ready(function() {
 
@@ -57,6 +74,31 @@ $(document).ready(function() {
         achtungHideLoader();
       }
     }); 
+
+    $('#perusahaan_penjamin').typeahead({
+        source: function (query, result) {
+            $.ajax({
+                url: "templates/references/getPerusahaan",
+                data: { keyword:query },            
+                dataType: "json",
+                type: "POST",
+                success: function (response) {
+                    result($.map(response, function (item) {
+                        return item;
+                    }));
+                }
+            });
+        },
+        afterSelect: function (item) {
+            // do what is needed with item
+            var val_item=item.split(':')[0];
+            var val_label=item.split(':')[1];
+            console.log(val_item);
+            $('#perusahaan_penjamin').val(val_label);
+            $('#kode_perusahaan_val').val(val_item);
+        }
+    });
+
   
 });
 
@@ -142,10 +184,23 @@ function cetak_kuitansi(){
 
 </script>
 
-<form class="form-horizontal" method="post" id="form_billing_kasir" action="<?php echo site_url('billing/Billing/process')?>" enctype="multipart/form-data" >
+<form class="form-horizontal" method="post" id="form_billing_kasir" action="<?php echo site_url('billing/Billing/process')?>" enctype="multipart/form-data" automplete="off">
 
     <?php echo isset($header)?$header:''?>
 
+    <b>TRANSAKSI KASIR</b>
+    <div class="form-group">                        
+        <label class="control-label col-sm-2">Tanggal Transaksi</label>        
+        <div class="col-md-2">
+            <div class="input-group">
+                <input name="tgl_trans_kasir" id="tgl_trans_kasir"  class="form-control date-picker" type="text" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar):$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_masuk);?>">
+                <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    
     <div class="center no-padding">
     
         <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" id="btn_reload_billing"> <i class="fa fa-refresh"></i> Reload Billing </a>

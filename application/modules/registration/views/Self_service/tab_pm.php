@@ -1,7 +1,6 @@
 <div class="row">
-    <p style="font-size:16px; font-style: italic">PENUNJANG MEDIS</p>
 
-    
+    <p style="font-size:16px; font-style: italic">PENUNJANG MEDIS</p>
     <div class="col-lg-4 col-xs-4 no-padding" style="margin-top:5px; padding: 5px !important">
         <!-- small box -->
         <div class="small-box bg-olive" style="min-height: 115px; border-radius: 10px !important">
@@ -15,7 +14,7 @@
                 <i class="fa fa-stethoscope"></i>
             </div>
             <?php 
-            echo '<a href="'.base_url().'dashboard?mod=" class="small-box-footer"><b>DAFTAR PENUNJANG</b> <i class="fa fa-arrow-circle-right"></i></a>';
+            echo '<a href="#" onclick="select_penunjang('."'050101'".')" class="small-box-footer"><b>DAFTAR PENUNJANG</b> <i class="fa fa-arrow-circle-right"></i></a>';
             ?>
         </div>
     </div>
@@ -33,7 +32,7 @@
                 <i class="fa fa-stethoscope"></i>
             </div>
             <?php 
-            echo '<a href="'.base_url().'dashboard?mod=" class="small-box-footer"><b>DAFTAR PENUNJANG</b> <i class="fa fa-arrow-circle-right"></i></a>';
+            echo '<a href="#" onclick="select_penunjang('."'050201'".')" class="small-box-footer"><b>DAFTAR PENUNJANG</b> <i class="fa fa-arrow-circle-right"></i></a>';
             ?>
         </div>
     </div>
@@ -51,7 +50,7 @@
                 <i class="fa fa-stethoscope"></i>
             </div>
             <?php 
-            echo '<a href="'.base_url().'dashboard?mod=" class="small-box-footer"><b>DAFTAR PENUNJANG</b> <i class="fa fa-arrow-circle-right"></i></a>';
+            echo '<a href="#" onclick="select_penunjang('."'050301'".')" class="small-box-footer"><b>DAFTAR PENUNJANG</b> <i class="fa fa-arrow-circle-right"></i></a>';
             ?>
         </div>
     </div>

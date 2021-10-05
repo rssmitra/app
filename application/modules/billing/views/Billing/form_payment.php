@@ -12,6 +12,8 @@ $(function(){
 });
 
 $(document).ready(function(){
+
+    statButton();
     
     // if( $('#count_kasir').val() > 0 ) {
     //   $('#div_form_payment').load('billing/Billing/payment_success/'+$('#no_registrasi').val()+'');
@@ -171,6 +173,7 @@ function sum_total_pembayaran(){
 
   $('#uang_dibayarkan_text').text( formatMoney(parseInt(sum_class)) );
 
+  statButton();
 
 }
 
@@ -186,6 +189,18 @@ function cek_sisa_belum_bayar(div_id){
   console.log(sum_class);
   $('#'+div_id+'').val(blm_dibayarkan);
   sum_total_pembayaran();
+}
+
+function statButton(){
+  $("#btnSave").attr("disabled", true);
+  let int_sisa_blm_dibayar = formatNumberFromCurrency($('#sisa_blm_dibayar').text());
+  if (int_sisa_blm_dibayar == 0){
+    $('#btnSave').removeAttr("disabled");
+    console.log('disabled');
+  }else{
+    $('#btnSave').attr("disabled", true);
+    console.log('enabled');
+  }
 }
 
 </script>
@@ -274,7 +289,7 @@ function cek_sisa_belum_bayar(div_id){
             <div class="col-md-8">
               <!-- hidden total yang harus dibayarkan -->
               <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hidden">
-              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
+              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" oninput="sum_total_pembayaran()">
             </div>
           </div>
         </div>
@@ -285,7 +300,7 @@ function cek_sisa_belum_bayar(div_id){
           <div class="form-group">
             <label class="control-label col-md-4">Jumlah Pembayaran Debet</label>
             <div class="col-md-8">
-            <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
+            <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" oninput="sum_total_pembayaran()">
             </div>
           </div>
 
@@ -318,7 +333,7 @@ function cek_sisa_belum_bayar(div_id){
           <div class="form-group">
             <label class="control-label col-md-4">Jumlah Pembayaran Kredit</label>
             <div class="col-md-8">
-            <input name="jumlah_bayar_kredit" id="jumlah_bayar_kredit" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
+            <input name="jumlah_bayar_kredit" id="jumlah_bayar_kredit" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" oninput="sum_total_pembayaran()">
             </div>
           </div>
 
