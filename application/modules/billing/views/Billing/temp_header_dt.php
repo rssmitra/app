@@ -1,3 +1,4 @@
+
 <div class="row">
   <div class="col-xs-12">
 
@@ -53,13 +54,18 @@
       </div>
 
       <div class="col-md-4" style="background: white;min-height: 80px">
-        <b>PERUSAHAAN PENJAMIN</b><br>
-        <span><?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'UMUM'?></span>
+        <b>PERUSAHAAN PENJAMIN</b> <span class="badge badge-success">editable</span><br>
+        <?php 
+          $nama_penjamin =  isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'UMUM';
+          $kode_perusahaan =  isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:'';
+        ?>
+        <input id="perusahaan_penjamin" class="form-control" name="perusahaan_penjamin" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo $nama_penjamin?>" style="border: none" />
+        <input type="hidden" name="kode_perusahaan_val" value="<?php echo $kode_perusahaan?>" id="kode_perusahaan_val">
       </div>
     </div>
 
     <!-- hidden form -->
-    <input type="hidden" id="perusahaan_penjamin" value="<?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'UMUM'?>" name="perusahaan_penjamin">
+    <!-- <input type="hidden" id="perusahaan_penjamin" value="<?php echo isset($data->reg_data->nama_perusahaan)?$data->reg_data->nama_perusahaan:'UMUM'?>" name="perusahaan_penjamin"> -->
     <input type="hidden" id="no_registrasi" value="<?php echo $no_registrasi?>" name="no_registrasi">
     <input type="hidden" id="total_payment_all" value="" name="total_payment_all">
     <input type="hidden" id="total_payment" value="" name="total_payment">
@@ -71,7 +77,7 @@
     <input type="hidden" name="array_data_billing" id="array_data_billing" value="0">
     <input type="hidden" name="total_nk" id="total_nk">
     <input type="hidden" name="total_uang_muka" id="total_uang_muka" value="0">
-    <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val">
+    <!-- <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val"> -->
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
 

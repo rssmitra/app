@@ -1,23 +1,23 @@
 <div class="row">
 	<div class="col-md-8 col-md-offset-2">
 		<div class="center section-title">
-			<botton class="btn btn-sm btn-primary" data-wow-delay="0.8s" id="btn_non_bpjs" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">NON BPJS</h3></botton>
-				<botton class="btn btn-sm btn-primary" data-wow-delay="1.0s" id="btn_bpjs" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">&nbsp; BPJS &nbsp; </h3></botton>
-				<botton onclick="online()" href="#" class="btn btn-sm btn-primary" data-wow-delay="1.0s" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">ONLINE</h3></botton>
+			<botton class="btn btn-sm btn-primary" id="btn_non_bpjs" onclick="clickBtnType('umum')" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">NON BPJS</h3></botton>
+			<botton class="btn btn-sm btn-primary" onclick="clickBtnType('bpjs')" id="btn_bpjs" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">&nbsp; BPJS &nbsp; </h3></botton>
+			<!-- <botton onclick="online()" href="#" class="btn btn-sm btn-primary" data-wow-delay="1.0s" style="border-radius:10px;text-decoration:none;"><h3 style="font-size: 2rem;margin:20px">ONLINE</h3></botton> -->
 
 				<input type="hidden" name="tipe_antrian" id="tipe_antrian" value="bpjs">
 		</div>
 	</div>
 </div>
 <div class="row">
-	<div class="col-xs-12  col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+	<div class="col-xs-12">
 		<div class="subscribe-content-area">
 			
 			<!-- home section -->
 			<section id="home">
 
 				<div class="row center"><br>
-					<span class="center animate" style="font-size:250%; padding: 20px"><b id="title_tipe_antrian">ANTRIAN PASIEN BPJS</b></span><br>
+					<span class="center animate" style="font-size:250%; padding: 20px; color: white; padding-bottom: 20px"><b id="title_tipe_antrian">ANTRIAN PASIEN BPJS</b></span><br>
 					<div id="refresh2">  
 						<div class="col-xs-12" id="loket_refresh">
 							<?php 
@@ -50,17 +50,17 @@
 							<?php endforeach; ?>
 
 								<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
-									<button onclick="add_other('Fisioterapi')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+									<button onclick="add_other('Penunjang')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
 									<div class="inner" style="margin-top:-10px; text-align: center">
-										<h3 style="font-size:28px;color:black;"><b>FISIOTERAPI</b></h3>
+										<h3 style="font-size:28px;color:black;"><b>Penunjang Medis</b></h3>
 										<p style="font-size:14px;color:black;">
-											Pelayanan Pendaftaran ke Fisioterapi
+											Pelayanan Pendaftaran Penunjang Medis (Lab, Radiologi, Fisioterapi)
 										</p>
 									</div>                      
 									</button>
 								</div>
 
-								<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
+								<!-- <div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
 									<button onclick="add_other('Laboratorium')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
 									<div class="inner" style="margin-top:-10px; text-align: center">
 										<h3 style="font-size:28px;color:black;"><b>LABORATORIUM</b></h3>
@@ -80,7 +80,7 @@
 										</p>
 									</div>                      
 									</button>
-								</div>
+								</div> -->
 
 								<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
 									<button onclick="add_other('IGD')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
@@ -91,17 +91,6 @@
 										</span>
 										<p style="font-size:14px;color:black;">
 											Buka 24 Jam Setiap hari
-										</p>
-									</div>                      
-									</button>
-								</div>
-
-								<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
-									<button onclick="add_other('Perjanjian')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
-									<div class="inner" style="margin-top:-10px; text-align: center">
-										<h3 style="font-size:28px;color:black;"><b>Perjanjian Pasien</b></h3>
-										<p style="font-size:14px;color:black;">
-											Penjadwalan Pasien/Reschedule Perjanjian
 										</p>
 									</div>                      
 									</button>
@@ -125,6 +114,7 @@
 		color: white;
 	}
 </style>
+
 
 <script>
 	setInterval("update_antrian();",15000); 
@@ -181,31 +171,25 @@
 	var header = document.getElementById("myButtonType");
 	var btns = header.getElementsByClassName("btn");
 	for (var i = 0; i < btns.length; i++) {
-	btns[i].addEventListener("click", function() {
-		var current = document.getElementsByClassName("active");
-		if (current.length > 0) { 
-			current[0].className = current[0].className.replace(" active", "");
-		}
-		this.className += " active";
-	});
+		btns[i].addEventListener("click", function() {
+			var current = document.getElementsByClassName("active");
+			if (current.length > 0) { 
+				current[0].className = current[0].className.replace(" active", "");
+			}
+			this.className += " active";
+		});
 	}
-</script>
-
-<script type="text/javascript">
-	$('#btn_non_bpjs').click(function(){
-		$('#title_tipe_antrian').text('ANTRIAN PASIEN NON BPJS ATAU UMUM');
-		$('#tipe_antrian').val('umum');
-	});
-	$('#btn_bpjs').click(function(){
-		$('#title_tipe_antrian').text('ANTRIAN PASIEN BPJS');
-		$('#tipe_antrian').val('bpjs');
-	});
-</script>
-
-<script>
 
 	// setInterval("my_function();",3000); 
-
+	function clickBtnType(flag){
+		if(flag == 'bpjs'){
+			$('#title_tipe_antrian').text('ANTRIAN PASIEN BPJS');
+			$('#tipe_antrian').val('bpjs');
+		}else{
+			$('#title_tipe_antrian').text('ANTRIAN PASIEN NON BPJS ATAU UMUM');
+			$('#tipe_antrian').val('umum');
+		}
+	}
 	function my_function(){
 		$('#refresh').load(location.href + ' #time');
 		$('#refresh2').load(location.href + ' #loket_refresh');
@@ -247,10 +231,6 @@
 		}
 	}
 
-</script>
-
-<script>
-
 	function add_antrian_poli(dokter,nama_dokter,spesialis,nama_spesialis,hari,jam_mulai,jam_selesai,kuota) {
 		/* console.log(dokter);
 		console.log(spesialis); */
@@ -268,7 +248,7 @@
 		data[7] = jam_selesai;
 		console.log(data)
 			$.ajax({
-				url:"<?php echo base_url(); ?>antrian/loket/process",
+				url:"<?php echo base_url(); ?>antrian/loket/process_kiosk",
 				data:{data:data}, 
 				dataType: "json", 
 				type:"POST",       
@@ -303,7 +283,7 @@
 		console.log(spesialis); */
 		var dataString = $('#tipe_antrian').val(); 
 		$.ajax({
-			url:"<?php echo base_url(); ?>antrian/loket/process_other",
+			url:"<?php echo base_url(); ?>antrian/loket/process_other_kiosk",
 			data:{type: dataString, poli: other_name}, 
 			dataType: "json", 
 			type:"POST",       

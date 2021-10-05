@@ -92,7 +92,8 @@ class Retur_obat extends MX_Controller {
                           </div>';
             }else{
                 if($row_list->no_registrasi != 0){
-                    $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important" onclick="getMenu('."'billing/Billing/viewDetailBillingKasirByUnit/".$row_list->no_registrasi."/RJ?flag=".$flag."&bagian=060101&kode_trans_far=".$row_list->kode_trans_far."&status_lunas=".$status_lunas."'".')"><i class="fa fa-money"></i> Lunas </a></div>';
+                    $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
+                    // $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important" onclick="getMenu('."'billing/Billing/viewDetailBillingKasirByUnit/".$row_list->no_registrasi."/RJ?flag=".$flag."&bagian=060101&kode_trans_far=".$row_list->kode_trans_far."&status_lunas=".$status_lunas."'".')"><i class="fa fa-money"></i> Lunas </a></div>';
                 }else{
                     $row[] = '<div class="center">Lunas '.strtoupper($flag).'</div>';
                 }

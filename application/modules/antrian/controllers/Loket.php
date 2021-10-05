@@ -182,6 +182,99 @@ class Loket extends MX_Controller {
 
     }
 
+    public function process_other_kiosk()
+    {
+        # code...
+        $this->db->trans_begin();
+
+        $query="select * from tr_antrian where ant_type = '".$_POST['type']."' ";
+        $no_ = $this->db->query($query)->num_rows();
+        $no = $no_ + 1;
+
+        $dataexc = array(
+            'ant_kode_spesialis' => '',
+            'ant_kode_dokter' => '',
+            'ant_status' => 0,
+            'ant_type' => $_POST['type'],
+            'ant_date' => date('Y-m-d H:i:s'),
+            'ant_no' => $no,
+            'ant_panggil' => 0,
+            'log' => json_encode(array('dokter' => '-','klinik' => $_POST['poli'], 'jam_praktek' => '-' )),
+        );
+
+        
+        /*save antrian */
+        $this->loket->save('tr_antrian',$dataexc);
+
+        $this->print_direct->printer_antrian_php_kiosk($dataexc);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('dokter' => '', 'klinik' => $_POST['poli'], 'jam_praktek' => '-', 'type' => $_POST['type'] ,'no' => $no));
+        }
+
+    }
+
+    public function process_kiosk()
+    {
+        # code...
+        $data = $_POST['data'];
+
+        $this->db->trans_begin();
+
+        if($data[0]=='umum' or $data[0]=='online'){
+            $query="select * from tr_antrian where ant_type = 'umum' or ant_type ='online'";
+            $no_ = $this->db->query($query)->num_rows();
+            $no = $no_ + 1;
+        } else {
+            $no_ = $this->db->get_where('tr_antrian',array('ant_type' => 'bpjs'))->num_rows();
+            $no = $no_ + 1;
+        }
+
+        $dataexc = array(
+            'ant_kode_spesialis' => $data[3],
+            'ant_kode_dokter' => $data[1],
+            'ant_status' => 0,
+            'ant_type' => $data[0],
+            'ant_date' => date('Y-m-d H:i:s'),
+            'ant_no' => $no,
+            'ant_panggil' => 0,
+            'log' => json_encode(array('dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6])),
+        );
+
+        $datakuota = array(
+            'tanggal' => date('Y-m-d'),
+            'kode_dokter' => $dataexc['ant_kode_dokter'],
+            'kode_spesialis' => $dataexc['ant_kode_spesialis'], 
+            'flag' => 'mesin_antrian', 
+        );
+        // print_r($datakuota);die;
+        /*save antrian */
+        $this->loket->save('tr_antrian',$dataexc);
+
+        $this->loket->save('log_kuota_dokter',$datakuota);
+
+        $this->print_direct->printer_antrian_php_kiosk($dataexc);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6],'type' => $data[0],'no' => $no));
+        }
+
+    }
+
 }
 
 /* End of file empty_module.php */

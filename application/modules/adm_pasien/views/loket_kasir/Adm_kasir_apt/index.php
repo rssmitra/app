@@ -225,7 +225,7 @@
         <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_kasir_apt/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">
           <thead>
             <tr style="background-color:#428bca">
-              <th width="30px"></th>
+              <th width="30px">No</th>
               <th width="100px" class="center">No. Transaksi</th>
               <th>Nama Pasien</th>
               <th width="150px">Tanggal Transaksi</th>

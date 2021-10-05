@@ -32,7 +32,18 @@ $(document).ready(function(){
           }         
           return false;                
         }       
-    });  
+    }); 
+    
+    $( "#kode_transaksi" ).keypress(function(event) {  
+        var keycode =(event.keyCode?event.keyCode:event.which);
+        if(keycode ==13){          
+          event.preventDefault();         
+          if($(this).valid()){           
+            $('#div_detail_brg').load('templates/References/getDataTransaksiFarmasi/'+$(this).val()+'');    
+          }         
+          return false;                
+        }       
+    }); 
 
     $('#inputKeyBarang').typeahead({
       source: function (query, result) {
@@ -87,11 +98,23 @@ $(document).ready(function(){
     
     $('select[name=jenis_retur]').change(function(){
       var value = $(this).val();
-      if(  value == 'penerimaan_brg'){
+
+      
+
+      if(  value == 'penjualan_brg'){
         // hide unit
         $('#dari_unit_div').hide();
+        $('#div_retur_penjualan').show();
+        $('#div_jenis_retur_ex_penjualan').hide();
       }else{
-        $('#dari_unit_div').show();
+        $('#div_retur_penjualan').hide();
+        $('#div_jenis_retur_ex_penjualan').show();
+        if(  value == 'penerimaan_brg'){
+        // hide unit
+          $('#dari_unit_div').hide();
+        }else{
+          $('#dari_unit_div').show();
+        }
       }
       // reset detail brg
       $('#reff_kode').val('');
@@ -346,6 +369,7 @@ th, td {
                           <label class="control-label col-md-3">Jenis Retur</label>
                           <div class="col-md-9">
                             <select name="jenis_retur" id="jenis_retur" class="form-control">
+                              <option value="penjualan_brg">Penjualan Barang</option>
                               <option value="penerimaan_brg">Penerimaan Barang</option>
                               <!-- <option value="pengiriman_brg_unit">Pengiriman Barang Unit</option> -->
                               <option value="lainnya" selected>Lainnya</option>
@@ -353,36 +377,48 @@ th, td {
                           </div>  
                         </div>
 
-                        <div class="form-group">
-                          <label class="control-label col-md-3">Retur ke Gudang</label>
-                          <div class="col-md-9">
-                            <div class="radio">
-                              <label>
-                                <input name="flag_gudang" type="radio" class="ace" value="medis" checked />
-                                <span class="lbl"> Medis</span>
-                              </label>
-                              <label>
-                                <input name="flag_gudang" type="radio" class="ace" value="non_medis"/>
-                                <span class="lbl"> Non Medis</span>
-                              </label>
-                            </div>
-                          </div>             
-                        </div>
-
-                        <div class="form-group" id="dari_unit_div">
-                          <label class="control-label col-md-3">Dari unit</label>
-                          <div class="col-md-9">
-                            <?php 
-                              echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060101' , 'dari_unit', 'dari_unit', 'form-control', '', '') ?>
-                          </div>  
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Cari Barang</label>
+                        <div id="div_jenis_retur_ex_penjualan">
+                          <div class="form-group">
+                            <label class="control-label col-md-3">Retur ke Gudang</label>
                             <div class="col-md-9">
-                              <input type="text" class="form-control" name="keyword" id="inputKeyBarang">
-                            </div>
+                              <div class="radio">
+                                <label>
+                                  <input name="flag_gudang" type="radio" class="ace" value="medis" checked />
+                                  <span class="lbl"> Medis</span>
+                                </label>
+                                <label>
+                                  <input name="flag_gudang" type="radio" class="ace" value="non_medis"/>
+                                  <span class="lbl"> Non Medis</span>
+                                </label>
+                              </div>
+                            </div>             
+                          </div>
+
+                          <div class="form-group" id="dari_unit_div">
+                            <label class="control-label col-md-3">Dari unit</label>
+                            <div class="col-md-9">
+                              <?php 
+                                echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060101' , 'dari_unit', 'dari_unit', 'form-control', '', '') ?>
+                            </div>  
+                          </div>
+
+                          <div class="form-group">
+                              <label class="control-label col-md-3">Cari Barang</label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" name="keyword" id="inputKeyBarang">
+                              </div>
+                          </div>
                         </div>
+
+                        <div id="div_retur_penjualan" style="display: none">
+                          <div class="form-group">
+                              <label class="control-label col-md-3">Kode Transaksi</label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" name="kode_transaksi" id="kode_transaksi">
+                              </div>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
                   </div>
