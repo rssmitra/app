@@ -333,10 +333,16 @@ counterfile++;
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                 Kembali ke daftar
               </a>
-              <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info">
+              <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info" value="submit">
                 <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
                 Submit
               </button>
+
+              <button type="submit" id="btnUpdateDokKlaim" name="submit" class="btn btn-sm btn-warning" value="update_dok_klaim">
+                <i class="ace-icon fa fa-files-o icon-on-right bigger-110"></i>
+                Update Dokumen Klaim
+              </button>
+
               <a href="<?php echo base_url()?>casemix/Csm_billing_pasien/mergePDFFiles/<?php echo isset($reg->no_registrasi)?$reg->no_registrasi:''?>/RJ" target="_blank"  class="btn btn-sm btn-danger">
                 <i class="ace-icon fa fa-pdf-file icon-on-right bigger-110"></i>
                 Merge PDF Files

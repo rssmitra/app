@@ -33,8 +33,8 @@ final Class Logs {
             $data['created_by'] = json_encode(array('user_id' => $user_id, 'fullname' => $fullname));
             $data['user_id'] = $user_id;
         }else{
-            $data['created_by'] = json_encode(array('user_id' => $CI->session->userdata('user')->user_id, 'fullname' => $CI->session->userdata('user')->fullname));
-            $data['user_id'] = $CI->session->userdata('user')->user_id;
+            $data['created_by'] = isset($CI->session->userdata('user')->user_id) ? json_encode(array('user_id' => $CI->session->userdata('user')->user_id, 'fullname' => $CI->session->userdata('user')->fullname)) : 0;
+            $data['user_id'] = isset($CI->session->userdata('user')->user_id) ? $CI->session->userdata('user')->user_id : 0;
         }
         
         /*print_r($data);die;*/

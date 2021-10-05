@@ -1810,7 +1810,6 @@ class References extends MX_Controller {
 			}
 			$html .= '</table>';
 		}
-		
 
 		echo json_encode( array('data' => $result, 'html' => $html ) );
 	}
@@ -1999,7 +1998,7 @@ class References extends MX_Controller {
 
 		/*return search pasien*/
 
-		$data_pasien = $this->Reg_pasien->search_pasien_by_mr( $keyword, array('no_mr','nama_pasien') ); 
+		$data_pasien = $this->Reg_pasien->search_pasien_by_mr( $keyword, array('no_mr','no_ktp') ); 
 		// echo '<pre>'; print_r($data_pasien);die;
 
 		$no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
@@ -2021,7 +2020,12 @@ class References extends MX_Controller {
 		
         
     
-    }
+	}
+	
+	public function getRefPm($kode_bagian){
+		$penunjang = $this->db->get_where('mt_bagian', array('kode_bagian' => $kode_bagian) )->row();
+		echo json_encode(array('kode_bag' => $penunjang->kode_bagian, 'nama_bag' => $penunjang->nama_bagian));
+	}
 
 
 

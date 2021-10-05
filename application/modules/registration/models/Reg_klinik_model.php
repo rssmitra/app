@@ -31,7 +31,7 @@ class Reg_klinik_model extends CI_Model {
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
 		// $this->db->where($this->table.".is_deleted != 'Y'");
 		/*check level user*/
-		$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
+		// $this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
 
 	}
 
@@ -86,6 +86,8 @@ class Reg_klinik_model extends CI_Model {
 	public function get_by_id($id)
 	{
 		$this->_main_query();
+		$this->db->select('jd_jam_mulai, jd_jam_selesai');
+		$this->db->join('tr_jadwal_dokter','tr_jadwal_dokter.jd_id=tc_registrasi.jd_id','left');
 		if(is_array($id)){
 			$this->db->where_in(''.$this->table.'.no_registrasi',$id);
 			$query = $this->db->get();

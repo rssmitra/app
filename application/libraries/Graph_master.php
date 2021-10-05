@@ -1156,8 +1156,8 @@ final Class Graph_master {
     	$result = array(
     		'value' => $data,
 		);
-		// echo '<pre>';print_r($result);
-    	// die;
+		echo '<pre>';print_r($result);
+    	die;
     	$html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjunganPasienAsuransi', $result, true);
         
         

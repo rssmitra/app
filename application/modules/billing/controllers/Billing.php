@@ -263,7 +263,7 @@ class Billing extends MX_Controller {
             'data' => $data,
             'kunjungan' => $this->Billing->getRiwayatKunjungan($no_registrasi),
         );
-        //echo '<pre>';print_r($data['kunjungan']);die;
+        // echo '<pre>';print_r($data);die;
 
         $html = $this->load->view('Billing/temp_trans_kasir', $data, true);
 
@@ -547,7 +547,7 @@ class Billing extends MX_Controller {
         $dataTranskasir["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
         $dataTranskasir["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
         $dataTranskasir["no_induk"] = $this->session->userdata('user')->user_id; 
-        $dataTranskasir["tgl_jam"] = date("Y-m-d H:i:s");
+        $dataTranskasir["tgl_jam"] = $_POST['tgl_trans_kasir'];
 
         $change = ( $_POST['uang_dibayarkan_tunai'] > $_POST['jumlah_bayar_tunai'] ) ? $_POST['uang_dibayarkan_tunai'] - $_POST['jumlah_bayar_tunai'] : 0;
 
@@ -636,7 +636,7 @@ class Billing extends MX_Controller {
         // untuk masuk ke akunting
         $dataAkunting["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
         $dataAkunting["no_bukti"] = $seri_kuitansi_dt['seri_kuitansi'].  $seri_kuitansi_dt['no_kuitansi'];
-        $dataAkunting["tgl_transaksi"] = date("Y-m-d H:i:s");
+        $dataAkunting["tgl_transaksi"] = $_POST['tgl_trans_kasir'];
         $dataAkunting["uraian_transaksi"] = 'Pendapatan Pasien '.$seri_kuitansi_dt['seri_kuitansi'].' '.$_POST['no_mr_val'].' - '.$_POST['nama_pasien_val'];
         $dataAkunting["total_nominal"] = $_POST['total_payment_all'];
         $dataAkunting["nama_pasien"] = $_POST['nama_pasien_val'];
@@ -704,7 +704,7 @@ class Billing extends MX_Controller {
         $dataTranskasir["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
         $dataTranskasir["no_kuitansi"] = $seri_kuitansi_dt['no_kuitansi'];
         $dataTranskasir["no_induk"] = $this->session->userdata('user')->user_id; 
-        $dataTranskasir["tgl_jam"] = date("Y-m-d H:i:s");
+        $dataTranskasir["tgl_jam"] = $_POST['tgl_trans_kasir'];
 
         $change = ( $_POST['uang_dibayarkan_tunai'] > $_POST['jumlah_bayar_tunai'] ) ? $_POST['uang_dibayarkan_tunai'] - $_POST['jumlah_bayar_tunai'] : 0;
 
@@ -780,7 +780,7 @@ class Billing extends MX_Controller {
         // untuk masuk ke akunting
         $dataAkunting["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
         $dataAkunting["no_bukti"] = $seri_kuitansi_dt['seri_kuitansi'].  $seri_kuitansi_dt['no_kuitansi'];
-        $dataAkunting["tgl_transaksi"] = date("Y-m-d H:i:s");
+        $dataAkunting["tgl_transaksi"] = $_POST['tgl_trans_kasir'];
         $dataAkunting["uraian_transaksi"] = 'Pendapatan Pasien '.$seri_kuitansi_dt['seri_kuitansi'].' '.$_POST['no_mr_val'].' - '.$_POST['nama_pasien_val'];
         $dataAkunting["total_nominal"] = $dataTranskasir["bill"];
         $dataAkunting["nama_pasien"] = $_POST['nama_pasien_val'];

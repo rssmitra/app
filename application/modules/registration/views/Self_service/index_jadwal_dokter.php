@@ -54,31 +54,33 @@
     .table-custom tbody tr:hover {background-color: #e6e6e6e0;}
 </style>
 
-<p style="font-size: 14px; font-style: italic; font-weight: bold">Informasi Jadwal Dokter dan Perjanjian Pasien</p>
-<hr class="separator">
+<div style="background: white; padding: 10px">
+  <p style="font-size: 24px; font-weight: bold;text-align: center;text-shadow: 1px 2px 2px #c5c4c4;">INFORMASI JADWAL DOKTER</p>
+  <hr class="separator">
 
-<div style="margin-top:-27px">
-    <table id="dynamic-table" base-url="information/regon_info_jadwal_dr" class="table-custom">
-      <thead>
-      <tr>  
-        <th style="color: white !important" rowspan="2">No</th>
-        <th style="color: white !important" rowspan="2">Nama Dokter</th>
-        <th style="color: white !important" rowspan="2">Poli/Klinik Spesialis</th>
-        <th style="color: white !important" colspan="7" class="center">Hari/Jam Praktek</th>
-      </tr>
-      <tr style="color: white !important">
-        <th style="color: white !important" class="center" width="105px">Senin</th>
-        <th style="color: white !important" class="center" width="105px">Selasa</th>
-        <th style="color: white !important" class="center" width="105px">Rabu</th>
-        <th style="color: white !important" class="center" width="105px">Kamis</th>
-        <th style="color: white !important" class="center" width="105px">Jumat</th>
-        <th style="color: white !important" class="center" width="105px">Sabtu</th>
-        <th style="color: white !important" class="center" width="105px">Minggu</th>        
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+  <div style="margin-top:-27px">
+      <table id="dynamic-table" base-url="information/regon_info_jadwal_dr" class="table-custom">
+        <thead>
+        <tr>  
+          <th style="color: white !important" rowspan="2">No</th>
+          <th style="color: white !important" rowspan="2">Nama Dokter</th>
+          <th style="color: white !important" rowspan="2">Poli/Klinik Spesialis</th>
+          <th style="color: white !important" colspan="7" class="center">Hari/Jam Praktek</th>
+        </tr>
+        <tr style="color: white !important">
+          <th style="color: white !important" class="center" width="105px">Senin</th>
+          <th style="color: white !important" class="center" width="105px">Selasa</th>
+          <th style="color: white !important" class="center" width="105px">Rabu</th>
+          <th style="color: white !important" class="center" width="105px">Kamis</th>
+          <th style="color: white !important" class="center" width="105px">Jumat</th>
+          <th style="color: white !important" class="center" width="105px">Sabtu</th>
+          <th style="color: white !important" class="center" width="105px">Minggu</th>        
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 

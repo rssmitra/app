@@ -45,7 +45,7 @@ class Csm_verifikasi_costing extends MX_Controller {
         $data['no_registrasi'] = $no_registrasi;
         $data['form_type'] = $tipe;
         $data['value'] = $this->Csm_billing_pasien->get_by_id($no_registrasi);
-        $data['title'] = 'Costing '.$title_name.'';
+        $data['title'] = 'Verifikasi Costing '.$title_name.'';
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         $data['attachment'] = $this->upload_file->CsmgetUploadedFile($no_registrasi);
         //echo '<pre>';print_r($data);die;
