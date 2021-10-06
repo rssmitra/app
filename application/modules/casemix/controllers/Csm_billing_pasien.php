@@ -109,98 +109,101 @@ class Csm_billing_pasien extends MX_Controller {
             $this->db->trans_begin();
             $no_registrasi = ($this->input->post('no_registrasi_hidden'))?$this->regex->_genRegex($this->input->post('no_registrasi_hidden'),'RGXINT'):0;
 
-            /*csm_reg_pasien*/
-            $dataexc = array(
-                'csm_rp_no_sep' => $this->regex->_genRegex($val->set_value('csm_rp_no_sep'), 'RGXQSL'),
-                'csm_rp_tgl_masuk' => $this->regex->_genRegex($val->set_value('csm_rp_tgl_masuk'), 'RGXQSL'),
-                'csm_rp_tgl_keluar' => $this->regex->_genRegex($val->set_value('csm_rp_tgl_keluar'), 'RGXQSL'),
-            );
-
-            if($no_registrasi==0){
-                $dataexc['created_date'] = date('Y-m-d H:i:s');
-                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                $exc_qry = $this->db->insert('csm_reg_pasien', $dataexc);
-                $newId = $this->db->insert_id();
-                $this->logs->save('csm_reg_pasien', $newId, 'insert new record', json_encode($dataexc), 'no_registrasi');
-            }else{
-                $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                $exc_qry = $this->db->update('csm_reg_pasien', $dataexc, array('no_registrasi' => $no_registrasi));
-                $newId = $no_registrasi;
-                $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc), 'no_registrasi');
-            }
-            $this->db->update('csm_reg_pasien', array('is_submitted' => 'Y') , array('no_registrasi' => $no_registrasi));
-            
-            // update diagnosa
-            $riwayat_diagnosa = array();
-            $riwayat_diagnosa['kode_icd_diagnosa'] = $_POST['diagnosa_akhir_hidden'];
-            $riwayat_diagnosa['diagnosa_akhir'] = $_POST['diagnosa_akhir'];
-
-            if(isset($_POST['kode_riwayat_hidden']) AND !empty($_POST['kode_riwayat_hidden']) ){
-                $this->db->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $_POST['kode_riwayat_hidden']) );
-            }else{
-                $riwayat_diagnosa['no_registrasi'] = $no_registrasi;
-                $riwayat_diagnosa['no_mr'] = $_POST['csm_rp_no_mr'];
-                $riwayat_diagnosa['nama_pasien'] = $_POST['csm_rp_nama_pasien'];
-                $riwayat_diagnosa['diagnosa_awal'] = $_POST['diagnosa_akhir'];
-                $riwayat_diagnosa['dokter_pemeriksa'] = $_POST['csm_rp_nama_dokter'];
-                $riwayat_diagnosa['tgl_periksa'] = $_POST['csm_rp_tgl_keluar'];
-                $riwayat_diagnosa['kode_bagian'] = $_POST['poliklinik'];
-                $riwayat_diagnosa['kategori_tindakan'] = 3;
-                $this->db->insert('th_riwayat_pasien', $riwayat_diagnosa );
-            }
-
-            /*update to sirs*/
-            $this->Csm_billing_pasien->updateSirs($no_registrasi, $dataexc);
-            
-            $type = $this->input->post('form_type');
-            /*created document name*/
-            /*clean first data*/
-            //$this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
-
-            $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
-            //echo '<pre>';print_r($createDocument);die;
-            
-            // foreach ($createDocument as $k_cd => $v_cd) {
-            //     # code...
-            //     $explode = explode('-', $v_cd);
-            //     /*explode result*/
-            //     $named = str_replace('BILL','',$explode[0]);
-            //     $no_mr = $explode[1];
-            //     $exp_no_registrasi = $explode[2];
-            //     $unique_code = $explode[3];
-
-            //     /*create and save download file pdf*/
-            //     if( $this->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
-            //     /*save document to database*/
-            //     /*csm_reg_pasien*/
-            //     $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+            if($_POST['submit'] == 'update_dok_klaim'){
+                $type = $this->input->post('form_type');
+                /*created document name*/
+                /*clean first data*/
+                //$this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
                 
-            //     $doc_save = array(
-            //         'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
-            //         'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
-            //         'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
-            //         'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/'.$filename.'', 'RGXQSL'),
-            //     );
-            //     $doc_save['created_date'] = date('Y-m-d H:i:s');
-            //     $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-            //     /*check if exist*/
-            //     if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
-            //         $this->db->insert('csm_dokumen_export', $doc_save);
-            //     }
-            //     endif;
-            //     /*insert database*/
-            // }
-            
-            /*insert dokumen adjusment*/
-            if(isset($_FILES['pf_file'])){
-                $this->upload_file->CsmdoUploadMultiple(array(
-                    'name' => 'pf_file',
-                    'path' => 'uploaded/casemix/log/',
-                    'ref_id' => $no_registrasi,
-                    'ref_table' => 'csm_dokumen_export',
-                    'flag' => 'dokumen_export',
-                ));
+                $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
+                //echo '<pre>';print_r($createDocument);die;
+                
+                foreach ($createDocument as $k_cd => $v_cd) {
+                    # code...
+                    $explode = explode('-', $v_cd);
+                    /*explode result*/
+                    $named = str_replace('BILL','',$explode[0]);
+                    $no_mr = $explode[1];
+                    $exp_no_registrasi = $explode[2];
+                    $unique_code = $explode[3];
+
+                    /*create and save download file pdf*/
+                    if( $this->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
+                    /*save document to database*/
+                    /*csm_reg_pasien*/
+                    $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+                    
+                    $doc_save = array(
+                        'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+                        'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+                        'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+                        'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/'.$filename.'', 'RGXQSL'),
+                    );
+                    $doc_save['created_date'] = date('Y-m-d H:i:s');
+                    $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                    /*check if exist*/
+                    if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+                        $this->db->insert('csm_dokumen_export', $doc_save);
+                    }
+                    endif;
+                    /*insert database*/
+                }
+            }else{
+                /*csm_reg_pasien*/
+                $dataexc = array(
+                    'csm_rp_no_sep' => $this->regex->_genRegex($val->set_value('csm_rp_no_sep'), 'RGXQSL'),
+                    'csm_rp_tgl_masuk' => $this->regex->_genRegex($val->set_value('csm_rp_tgl_masuk'), 'RGXQSL'),
+                    'csm_rp_tgl_keluar' => $this->regex->_genRegex($val->set_value('csm_rp_tgl_keluar'), 'RGXQSL'),
+                );
+
+                if($no_registrasi==0){
+                    $dataexc['created_date'] = date('Y-m-d H:i:s');
+                    $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                    $exc_qry = $this->db->insert('csm_reg_pasien', $dataexc);
+                    $newId = $this->db->insert_id();
+                    $this->logs->save('csm_reg_pasien', $newId, 'insert new record', json_encode($dataexc), 'no_registrasi');
+                }else{
+                    $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                    $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                    $exc_qry = $this->db->update('csm_reg_pasien', $dataexc, array('no_registrasi' => $no_registrasi));
+                    $newId = $no_registrasi;
+                    $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc), 'no_registrasi');
+                }
+                $this->db->update('csm_reg_pasien', array('is_submitted' => 'Y') , array('no_registrasi' => $no_registrasi));
+                
+                // update diagnosa
+                $riwayat_diagnosa = array();
+                $riwayat_diagnosa['kode_icd_diagnosa'] = $_POST['diagnosa_akhir_hidden'];
+                $riwayat_diagnosa['diagnosa_akhir'] = $_POST['diagnosa_akhir'];
+
+                if(isset($_POST['kode_riwayat_hidden']) AND !empty($_POST['kode_riwayat_hidden']) ){
+                    $this->db->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $_POST['kode_riwayat_hidden']) );
+                }else{
+                    $riwayat_diagnosa['no_registrasi'] = $no_registrasi;
+                    $riwayat_diagnosa['no_mr'] = $_POST['csm_rp_no_mr'];
+                    $riwayat_diagnosa['nama_pasien'] = $_POST['csm_rp_nama_pasien'];
+                    $riwayat_diagnosa['diagnosa_awal'] = $_POST['diagnosa_akhir'];
+                    $riwayat_diagnosa['dokter_pemeriksa'] = $_POST['csm_rp_nama_dokter'];
+                    $riwayat_diagnosa['tgl_periksa'] = $_POST['csm_rp_tgl_keluar'];
+                    $riwayat_diagnosa['kode_bagian'] = $_POST['poliklinik'];
+                    $riwayat_diagnosa['kategori_tindakan'] = 3;
+                    $this->db->insert('th_riwayat_pasien', $riwayat_diagnosa );
+                }
+
+                /*update to sirs*/
+                $this->Csm_billing_pasien->updateSirs($no_registrasi, $dataexc);
+                
+                /*insert dokumen adjusment*/
+                if(isset($_FILES['pf_file'])){
+                    $this->upload_file->CsmdoUploadMultiple(array(
+                        'name' => 'pf_file',
+                        'path' => 'uploaded/casemix/log/',
+                        'ref_id' => $no_registrasi,
+                        'ref_table' => 'csm_dokumen_export',
+                        'flag' => 'dokumen_export',
+                    ));
+                }
+                
             }
 
             if ($this->db->trans_status() === FALSE)

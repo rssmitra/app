@@ -653,7 +653,7 @@ class Self_service extends MX_Controller {
             {
                 $this->db->trans_commit();
 
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHidden'], 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'Penunjang Medis', 'no_sep' => $no_sep));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMRBooking'], 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'Penunjang Medis', 'no_sep' => $no_sep));
 
                 // get detail data
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);

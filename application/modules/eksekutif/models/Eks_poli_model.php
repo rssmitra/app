@@ -320,14 +320,30 @@ class Eks_poli_model extends CI_Model {
 				$getData[$nama_perusahaan][] = $value->total;
 			}
 
+			// foreach ($prd_dt->result() as $key => $value) {
+			// 	// nama_perusahaan
+			// 	$no_kunjungan = ($value->no_kunjungan != '')?$value->no_kunjungan:'UMUM';
+			// 	$getData[$no_kunjungan][] = $value;
+			// }
+
+			// foreach ($getData as $k1 => $v1) {
+			// 	foreach ($v1 as $k2 => $v2) {
+			// 		$nama_perusahaan = ($value->nama_perusahaan != '')?$value->nama_perusahaan:'UMUM';
+			// 		$arr_ttl[$k1][] = $v2->total;
+			// 	}
+			// 	$getTtl[$k1] = array_sum($arr_ttl[$k1]);
+			// 	$getCount[$k1] = ;
+			// 	$getAsuransi[$k1] = array('nama_perusahaan' => $v1[0]->nama_perusahaan, 'total_kunjungan' => count($arr_ttl[$k1]), 'total_biaya' => array_sum($arr_ttl[$k1]));
+			// }
+
 			foreach ($getData as $k => $v) {
-				$resData[$k] = array('total_kunjungan' => array_sum($getData[$k]), 'total_biaya' => count($getData[$k]));
+				$resData[$k] = array('total_biaya' => array_sum($getData[$k]), 'total_kunjungan' => count($getData[$k]));
 			}
 			
 			$data = array(
 				'prd_dt' => $resData,
 			);
-			// echo '<pre>';print_r($data);die;
+			echo '<pre>';print_r($getTtl);die;
 
 			$fields = array();
 			$title = '<span style="font-size: 16px">Rekapitulasi Kunjungan Berdasarkan Asuransi<br>Periode <b>'.$this->tanggal->formatDateDmy($_GET['from_tgl']).'</b> s.d <b>'.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';

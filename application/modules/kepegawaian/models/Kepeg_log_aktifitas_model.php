@@ -7,7 +7,7 @@ class Kepeg_log_aktifitas_model extends CI_Model {
 	var $column = array('kepeg_log_aktifitas.nama_pegawai');
 	var $select = 'kepeg_log_aktifitas.*';
 
-	var $order = array('kepeg_log_aktifitas.id' => 'DESC', 'kepeg_log_aktifitas.updated_date'=> 'DESC');
+	var $order = array('kepeg_log_aktifitas.tanggal' => 'DESC');
 
 	public function __construct()
 	{
