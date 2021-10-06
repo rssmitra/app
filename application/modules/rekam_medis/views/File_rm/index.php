@@ -17,7 +17,7 @@
 
         <div class="panel-collapse collapse <?php echo ($key_emr==0)?'in':'collapsed'?>" id="collapse<?php echo $key_emr?>">
             <div class="panel-body">
-            <iframe src="<?php echo base_url().'uploaded/rekam_medis/'.$row_emr->no_mr.'/'.$row_emr->filename.'.pdf'?>" frameborder="0" width="100%" style="height: 900px !important"></iframe>
+            <iframe src="<?php echo BASE_FILE_RM.'uploaded/rekam_medis/'.$row_emr->no_mr.'/'.$row_emr->filename.'.pdf'?>" frameborder="0" width="100%" style="height: 900px !important"></iframe>
             </div>
         </div>
     </div>
