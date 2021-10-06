@@ -35,8 +35,15 @@ class Adm_kasir_model extends CI_Model {
 				}
 			}		
 
+			if( isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ){
+				$this->db->where("b.kode_bagian_masuk", $_GET['kode_bagian']);
+			}
+
 			if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
 				$this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+			}else{
+				$this->db->where('DATEDIFF(day,b.tgl_jam_masuk,GETDATE()) < 30');
+				// $this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
 			}
 			
 		}else{

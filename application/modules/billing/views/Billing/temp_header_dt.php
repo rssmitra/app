@@ -71,7 +71,7 @@
     <input type="hidden" id="total_payment" value="" name="total_payment">
     <input type="hidden" id="no_mr_val" value="<?php echo isset($data->reg_data->no_mr)?$data->reg_data->no_mr:''?>" name="no_mr_val">
     <input type="hidden" id="nama_pasien_val" value="<?php echo isset($data->reg_data->nama_pasien)?$data->reg_data->nama_pasien:''?>" name="nama_pasien_val">
-    <input type="hidden" id="no_sep_val" value="<?php echo isset($data->reg_data->no_sep)?$data->reg_data->no_sep:''?>" name="no_sep_val">
+    <!-- <input type="hidden" id="no_sep_val" value="<?php echo isset($data->reg_data->no_sep)?$data->reg_data->no_sep:''?>" name="no_sep_val"> -->
     <input type="hidden" name="array_data_checked" id="array_data_checked">
     <input type="hidden" name="array_data_nk_checked" id="array_data_nk_checked">
     <input type="hidden" name="array_data_billing" id="array_data_billing" value="0">
@@ -80,6 +80,8 @@
     <!-- <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val"> -->
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
+    <input type="hidden" id="nama_dokter_val" value="<?php echo isset($data->reg_data->nama_pegawai)?$data->reg_data->nama_pegawai:$data->trans_data[0]->nama_dokter?>" name="nama_dokter_val">
+    <input type="hidden" id="kode_bag_val" value="<?php echo isset($data->reg_data->kode_bagian_masuk)?$data->reg_data->kode_bagian_masuk:''?>" name="kode_bag_val">
 
   </div><!-- /.col -->
 </div>

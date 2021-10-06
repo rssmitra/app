@@ -232,7 +232,7 @@
       <input type="hidden" name="pelayanan" id="pelayanan" value="<?php echo $pelayanan?>">
 
       <div class="form-group">
-        <label class="control-label col-md-1">Pencarian</label>
+        <label class="control-label col-md-2">Pencarian berdasarkan</label>
         <div class="col-md-2">
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
@@ -264,8 +264,15 @@
               </span>
             </div>
           </div>
+      </div>
 
-          <div class="col-md-2" style="margin-left: -1.8%">
+      <div class="form-group">
+          <label class="control-label col-md-2">Poli/Klinik</label>
+          <div class="col-md-4">
+          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'group_bag' => 'Detail', 'status_aktif' => 1) ),'' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+          </div>
+        
+          <div class="col-md-2" style="margin-left: -1%">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Cari
@@ -277,6 +284,7 @@
           </div>
 
       </div>
+
 
       <div id="showDataTables">
         <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_kasir/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">

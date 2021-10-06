@@ -75,6 +75,32 @@ $(document).ready(function() {
       }
     }); 
 
+    $('#diagnosa_akhir').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getICD10",
+              data: 'keyword=' + query,            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                result($.map(response, function (item) {
+                      return item;
+                  }));
+                
+              }
+          });
+      },
+      afterSelect: function (item) {
+        // do what is needed with item
+        var label_item=item.split(':')[1];
+        var val_item=item.split(':')[0];
+        console.log(val_item);
+        $('#diagnosa_akhir').val(label_item);
+        $('#diagnosa_akhir_hidden').val(val_item);
+      }
+
+  });
+
     $('#perusahaan_penjamin').typeahead({
         source: function (query, result) {
             $.ajax({
@@ -184,13 +210,13 @@ function cetak_kuitansi(){
 
 </script>
 
-<form class="form-horizontal" method="post" id="form_billing_kasir" action="<?php echo site_url('billing/Billing/process')?>" enctype="multipart/form-data" automplete="off">
+<form class="form-horizontal" method="post" id="form_billing_kasir" action="<?php echo site_url('billing/Billing/process')?>" enctype="multipart/form-data" autocomplete="off">
 
     <?php echo isset($header)?$header:''?>
 
     <b>TRANSAKSI KASIR</b>
     <div class="form-group">                        
-        <label class="control-label col-sm-2">Tanggal Transaksi</label>        
+        <label class="control-label col-md-2">Tanggal Transaksi</label>        
         <div class="col-md-2">
             <div class="input-group">
                 <input name="tgl_trans_kasir" id="tgl_trans_kasir"  class="form-control date-picker" type="text" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar):$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_masuk);?>">
@@ -200,6 +226,43 @@ function cetak_kuitansi(){
             </div>
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">No. SEP</label>
+        <div class="col-md-2">
+        <input name="no_sep_val" id="no_sep_val" value="<?php echo isset($data->reg_data->no_sep)?$data->reg_data->no_sep: ''?>" class="form-control" type="text" style="text-transform: uppercase">
+        </div>
+        <label class="control-label col-md-1">Tgl Masuk</label>
+        <div class="col-md-2">
+            <div class="input-group">
+            <input class="form-control date-picker" name="tgl_jam_masuk" id="tgl_jam_masuk" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($data->reg_data->tgl_jam_masuk)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_masuk): ''?>"/>
+            <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+            </span>
+            </div>
+        </div>
+
+        <label class="control-label col-md-1">Tgl Keluar</label>
+        <div class="col-md-2">
+            <div class="input-group">
+            <input class="form-control date-picker" name="tgl_jam_keluar" id="tgl_jam_keluar" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar): ''?>"/>
+            <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+            </span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label class="control-label col-md-2" for="">Diagnosa <span style="color:red">(*)</span></label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="diagnosa_akhir" id="diagnosa_akhir" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
+            <input type="hidden" class="form-control" name="diagnosa_akhir_hidden" id="diagnosa_akhir_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
+            <input type="hidden" class="form-control" name="kode_riwayat_hidden" id="kode_riwayat_hidden" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
+        </div>
+    </div>
+
     
     <div class="center no-padding">
     

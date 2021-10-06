@@ -262,8 +262,9 @@ class Billing extends MX_Controller {
             'tipe' => $tipe,
             'data' => $data,
             'kunjungan' => $this->Billing->getRiwayatKunjungan($no_registrasi),
+            'riwayat' => $this->Csm_billing_pasien->get_by_id($no_registrasi),
         );
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data['riwayat']);die;
 
         $html = $this->load->view('Billing/temp_trans_kasir', $data, true);
 
@@ -307,6 +308,7 @@ class Billing extends MX_Controller {
             'flag' => isset($_GET['flag'])?$_GET['flag']:'',
             'data' => $result,
             'kunjungan' => $grouping,
+            'riwayat' => $this->Csm_billing_pasien->get_by_id($no_registrasi),
         );
         // echo '<pre>';print_r($data);die;
         $data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
@@ -632,6 +634,26 @@ class Billing extends MX_Controller {
             }
             $this->db->trans_commit();
         }
+
+        // update diagnosa
+        $riwayat_diagnosa = array();
+        $riwayat_diagnosa['kode_icd_diagnosa'] = $_POST['diagnosa_akhir_hidden'];
+        $riwayat_diagnosa['diagnosa_akhir'] = $_POST['diagnosa_akhir'];
+
+        if(isset($_POST['kode_riwayat_hidden']) AND !empty($_POST['kode_riwayat_hidden']) ){
+            $this->db->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $_POST['kode_riwayat_hidden']) );
+        }else{
+            $riwayat_diagnosa['no_registrasi'] = $_POST['no_registrasi'];
+            $riwayat_diagnosa['no_mr'] = $_POST['no_mr_val'];
+            $riwayat_diagnosa['nama_pasien'] = $_POST['nama_pasien_val'];
+            $riwayat_diagnosa['diagnosa_awal'] = $_POST['diagnosa_akhir'];
+            $riwayat_diagnosa['dokter_pemeriksa'] = $_POST['nama_dokter_val'];
+            $riwayat_diagnosa['tgl_periksa'] = $_POST['tgl_jam_keluar'];
+            $riwayat_diagnosa['kode_bagian'] = $_POST['kode_bag_val'];
+            $riwayat_diagnosa['kategori_tindakan'] = 3;
+            $this->db->insert('th_riwayat_pasien', $riwayat_diagnosa );
+        }
+
         
         // untuk masuk ke akunting
         $dataAkunting["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
