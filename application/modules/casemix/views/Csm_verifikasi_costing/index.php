@@ -157,7 +157,7 @@ function reload_table(){
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
             <option value="csm_reg_pasien.csm_rp_no_sep" selected>Nomor SEP</option>
-            <option value="nocsm_reg_pasien.csm_rp_no_mr">No MR</option>
+            <option value="csm_reg_pasien.csm_rp_no_mr">No MR</option>
             <option value="csm_reg_pasien.csm_rp_nama_pasien">Nama Pasien</option>
           </select>
         </div>

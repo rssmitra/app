@@ -317,7 +317,7 @@ function popUnder(node) {
           <th>Nama Dokter</th>  
           <th>Petugas</th>         
           <th>Status Pasien</th>      
-          <th>Tracer</th>      
+          <th style="min-width: 70px">Tracer</th>      
         </tr>
       </thead>
       <tbody>

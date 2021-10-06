@@ -95,7 +95,11 @@ class Tracer extends MX_Controller {
             $row[] = isset($row_list->fullname)?$row_list->fullname:'<span class="label label-success">KIOSK</span>';
             $row[] = '<div class="center">'.strtoupper($row_list->stat_pasien).'</div>';
             if($is_kiosk == 2){
-                $row[] = '<div class="center"><span class="label label-success">print barcode</span></div>';
+                if(in_array($row_list->kode_bagian_tujuan, array('050101','050201','050301'))){
+                    $row[] = '<div class="center"><span class="label label-success">print barcode</span></div>';
+                }else{
+                    $row[] = '<div class="center"><span class="red" style="font-weight: bold">-no tracer-</span></div>';
+                }
             }else{
                 $row[] = (($row_list->print_tracer == 'N') || ($row_list->print_tracer == NULL)) ? '<div class="center"><i class="fa fa-times-circle red"></i></div>' : '<div class="center"><i class="fa fa-check-circle green"></i></div>';
             }
