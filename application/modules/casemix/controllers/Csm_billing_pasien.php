@@ -137,7 +137,7 @@ class Csm_billing_pasien extends MX_Controller {
                         'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
                         'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
                         'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
-                        'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/'.$filename.'', 'RGXQSL'),
+                        'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
                     );
                     $doc_save['created_date'] = date('Y-m-d H:i:s');
                     $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');

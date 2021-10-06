@@ -650,7 +650,7 @@ class Ws_index extends MX_Controller {
     }
 
 
-    public function view_sep($noSep, $no_registrasi='')
+    public function viw_sep($noSep, $no_registrasi='')
     {   
         $this->load->library('Print_escpos');
         /*data sep*/
