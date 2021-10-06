@@ -10,7 +10,7 @@ class Ws_index_model extends CI_Model {
 
 	/*production*/
 	var $consID 		= "17971";
-	var $secretKey 		= "9bK292AE57";
+	var $secretKey 		= "H9139FJ385";
 	// var $base_api_url	= "http://api.bpjs-kesehatan.go.id:8080/vclaim-rest";
 	var $base_api_url	= "https://new-api.bpjs-kesehatan.go.id:8080/new-vclaim-rest";
 
