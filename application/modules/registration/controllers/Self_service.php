@@ -658,6 +658,16 @@ class Self_service extends MX_Controller {
                 // get detail data
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);
                 $this->print_bukti_registrasi($no_registrasi,0, $tipe_pasien);
+                // tracer
+                $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+                $data_tracer = [
+                    'no_mr' => $no_mr,
+                    'result' => $detail_data,
+                ];
+                $tracer = $this->print_escpos->print_direct($data_tracer);
+                if( $tracer == 1 ) {
+                        $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
+                }
                 
             }
             
