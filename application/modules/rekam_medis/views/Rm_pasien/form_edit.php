@@ -136,7 +136,7 @@ jQuery(function($) {
 
 $(document).ready(function(){
     
-    $('#form_Csm_billing_pasien').ajaxForm({
+    $('#form_rm_pasien').ajaxForm({
       beforeSend: function() {
         achtungShowLoader();  
       },
@@ -148,7 +148,7 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-          getMenu('casemix/Csm_verifikasi_costing/editBilling/'+$('#no_registrasi_hidden').val()+'/'+$('#form_type').val()+'');
+          getMenu('rekam_medis/Rm_pasien/editBilling/'+$('#no_registrasi_hidden').val()+'/'+$('#form_type').val()+'');
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});
         }
@@ -225,7 +225,7 @@ counterfile++;
     <!-- PAGE CONTENT BEGINS -->
       <div class="widget-body">
         <div class="widget-main no-padding">
-          <form class="form-horizontal" method="post" id="form_Csm_billing_pasien" action="<?php echo site_url('casemix/Csm_billing_pasien/process')?>" enctype="multipart/form-data">
+          <form class="form-horizontal" method="post" id="form_rm_pasien" action="<?php echo site_url('casemix/Csm_billing_pasien/process')?>" enctype="multipart/form-data">
             <br>
             <b><h4>DATA REGISTRASI PASIEN</h4></b>
 
@@ -329,7 +329,7 @@ counterfile++;
             <br><br>
             <div class="form-actions center">
 
-              <a onclick="getMenu('casemix/Csm_verifikasi_costing')" href="#" class="btn btn-sm btn-success">
+              <a onclick="getMenu('rekam_medis/Rm_pasien')" href="#" class="btn btn-sm btn-success">
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                 Kembali ke daftar
               </a>
