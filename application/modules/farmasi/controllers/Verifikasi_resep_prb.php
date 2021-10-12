@@ -153,7 +153,9 @@ class Verifikasi_resep_prb extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();
-            
+            // delete all
+            $this->db->where('kode_trans_far', $_POST['kode_trans_far'])->delete('fr_tc_far_detail_log_prb');
+
             // selected id
             foreach( $_POST['selected_id'] as $key => $row ){
                 $explode_row_dt = explode('-', $row);

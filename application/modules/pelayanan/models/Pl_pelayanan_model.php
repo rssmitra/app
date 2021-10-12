@@ -234,7 +234,7 @@ class Pl_pelayanan_model extends CI_Model {
 		if($_GET['jenis']=='tindakan'){
 			$this->db->where_in('jenis_tindakan', array(3,4,10,12,13,7,5,8,14) );
 		}else{
-			$this->db->where_in('jenis_tindakan', array(9,11) );
+			$this->db->where_in('jenis_tindakan', array(9) );
 		}
 
 		$i = 0;

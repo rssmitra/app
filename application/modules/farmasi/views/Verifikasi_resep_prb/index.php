@@ -62,8 +62,8 @@ function popUnder(node) {
         <div class="col-md-2">
           <select name="search_by" class="form-control">
             <option value="no_sep">Nomor SEP</option>
-            <option value="kode_trans_far">Kode Transaksi</option>
-            <option value="no_mr" selected>No MR</option>
+            <option value="kode_trans_far" selected>Kode Transaksi</option>
+            <option value="no_mr">No MR</option>
             <option value="nama_pasien">Nama Pasien</option>
           </select>
         </div>

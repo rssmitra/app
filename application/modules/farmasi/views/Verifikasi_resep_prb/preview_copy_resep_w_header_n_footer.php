@@ -120,8 +120,8 @@
   $stamp_dr = isset($get_dokter) ? (!empty($get_dokter->stamp))?$get_dokter->stamp:NULL : NULL;
   $nama_dr = isset($get_dokter) ? (!empty($get_dokter->nama_pegawai))?$get_dokter->nama_pegawai:NULL : NULL;
 
-  $ttd = ($ttd != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$ttd.'" width="250px">' : '';
-  $stamp = ($stamp_dr != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$stamp_dr.'" style="width: 700px">' : '<u>'.$nama_dr.'</u><br>SIP. '.$get_dokter->no_sip.'';
+  $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px">' : '';
+  $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" style="width: 700px">' : '<u>'.$nama_dr.'</u><br>SIP. '.$get_dokter->no_sip.'';
   
 
   ?>
