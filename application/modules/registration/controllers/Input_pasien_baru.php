@@ -196,7 +196,7 @@ class Input_pasien_baru extends MX_Controller {
         if($_POST['kelompok_pasien']==3){
             $this->form_validation->set_rules('kode_perusahaan', 'Nama Perusahaan', 'trim|required');
             if($_POST['kode_perusahaan']==120){
-              $this->form_validation->set_rules('no_kartu_bpjs', 'Nomer Kartu BPJS', 'trim|required');
+              $this->form_validation->set_rules('no_kartu_bpjs', 'Nomer Kartu BPJS', 'trim');
             }
         }
 
