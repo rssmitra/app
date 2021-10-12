@@ -40,7 +40,7 @@
     </tr>
     <tr>
       <td width="100px">Unit/Bagian</td>
-      <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $value->kode_bagian_asal) )?></td>
+      <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $value->kode_bagian_asal) ))?></td>
     </tr>
   </table>
   <br>
@@ -51,7 +51,7 @@
           <td style="border-bottom: 1px solid black; width: 60%; border-collapse: collapse">Nama Obat</td>
           <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Jumlah</td>
           <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Satuan</td>
-          <td style="text-align:center; width: 15%; border-bottom: 1px solid black; border-collapse: collapse">Subtotal</td>
+          <!-- <td style="text-align:center; width: 15%; border-bottom: 1px solid black; border-collapse: collapse">Subtotal</td> -->
         </tr>
     </thead>
         <?php 
@@ -65,12 +65,12 @@
             <td style="border-collapse: collapse; width: 60%; "><?php echo $row_dt->nama_brg;?></td>
             <td style="text-align:center; width: 10%; border-collapse: collapse"><?php echo number_format($row_dt->jumlah);?></td>
             <td style="text-align:left; width: 10%; border-collapse: collapse"><?php echo $row_dt->satuan_kecil?></td>
-            <td style="text-align:right; width: 15%; border-collapse: collapse"><?php echo number_format($row_dt->sub_total)?></td>
+            <!-- <td style="text-align:right; width: 15%; border-collapse: collapse"><?php echo number_format($row_dt->sub_total)?></td> -->
           </tr>
           
         <?php endforeach;?>
 
-          <tr>
+          <!-- <tr>
             <td colspan="4" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
             <td style="text-align:right; border-top: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_total))?></td>
           </tr>
@@ -78,7 +78,7 @@
             <td colspan="5" style="text-align:left; border-top: 1px solid black; border-collapse: collapse">
             <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_total)))?> Rupiah"</i></b>
             </td>
-          </tr>
+          </tr> -->
 
   </table>
   <br>
