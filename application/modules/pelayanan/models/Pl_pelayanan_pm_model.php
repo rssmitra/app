@@ -119,10 +119,14 @@ class Pl_pelayanan_pm_model extends CI_Model {
 					$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 				}			
 			}else{
-				$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 30');	
+				if($_GET['sess_kode_bagian'] == '050301'){
+					$this->db->where('CAST(tc_kunjungan.tgl_masuk as DATE) = ', date('Y-m-d'));	
+				}else{
+					$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 30');	
+				}
 			}
-
-				$this->db->where("(pm_tc_penunjang.status_daftar is null or pm_tc_penunjang.status_daftar = 0 )");
+			
+			$this->db->where("(pm_tc_penunjang.status_daftar is null or pm_tc_penunjang.status_daftar = 0 )");
 			
 		}
 
