@@ -109,8 +109,8 @@ class Csm_billing_pasien extends MX_Controller {
             $this->db->trans_begin();
             $no_registrasi = ($this->input->post('no_registrasi_hidden'))?$this->regex->_genRegex($this->input->post('no_registrasi_hidden'),'RGXINT'):0;
 
+            $type = $this->input->post('form_type');
             if($_POST['submit'] == 'update_dok_klaim'){
-                $type = $this->input->post('form_type');
                 /*created document name*/
                 /*clean first data*/
                 //$this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
