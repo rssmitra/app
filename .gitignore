@@ -5,6 +5,8 @@
 /vendor
 /uploaded
 /application/logs
+/application/libraries/tcpdf/cache
+/application/modules/ws_bpjs/Ws_index_model.php
 .env
 .phpunit.result.cache
 Homestead.json
