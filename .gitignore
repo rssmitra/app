@@ -5,6 +5,7 @@
 /vendor
 /uploaded
 /application/logs
+/application/modules/ws_bpjs/Ws_index_model.php
 .env
 .phpunit.result.cache
 Homestead.json
