@@ -909,11 +909,21 @@ class Print_escpos{
                 // Keterangan
                 $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
                 printer_select_font($p, $font);
-                printer_draw_text($p, "* Berikan form checklist ini ke petugas ", $var_margin_left, 870);
+                printer_draw_text($p, "Kasir", $var_margin_left, 870);
 
                 $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
                 printer_select_font($p, $font);
-                printer_draw_text($p, "  setiap kali akan dilakukan pemeriksaan", $var_margin_left, 900);
+                printer_draw_text($p, "Pelunasan Administrasi", $var_margin_lists, 900);
+                $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+                printer_select_font($p, $font);
+                printer_draw_text($p, " [     ] ", 230, 900);
+
+                $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
+                printer_select_font($p, $font);
+                printer_draw_text($p, "Biaya APD (Rp. 100,000)", $var_margin_lists, 930);
+                $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+                printer_select_font($p, $font);
+                printer_draw_text($p, " [     ] ", 230, 930);
 
                 // $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
                 // printer_select_font($p, $font);
