@@ -177,7 +177,7 @@ class Retur_obat_model extends CI_Model {
 		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN a.kd_tr_resep ELSE a.id_tc_far_racikan END as relation_id", false);
 		$this->db->select("CASE WHEN a.id_tc_far_racikan = 0 THEN 'biasa' ELSE 'racikan' END as flag_resep", false);
 		$this->db->select('a.kd_tr_resep, a.kode_trans_far, a.kode_brg, a.id_tc_far_racikan, 
-		a.jumlah_tebus, a.jumlah_pesan, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, b.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, b.jumlah_retur, tgl_retur, d.no_registrasi, d.no_mr, d.nama_pasien, d.kode_bagian_asal, d.kode_bagian, d.kode_profit, no_kunjungan, d.flag_trans, a.resep_ditangguhkan');
+		a.jumlah_tebus, a.jumlah_pesan, c.satuan_kecil, b.urgensi, b.dosis_obat, b.dosis_per_hari, b.aturan_pakai, b.anjuran_pakai, b.catatan_lainnya, b.status_tebus, b.tgl_input, b.status_input, b.prb_ditangguhkan, b.jumlah_obat_23, b.satuan_obat, a.jumlah_retur, tgl_retur, d.no_registrasi, d.no_mr, d.nama_pasien, d.kode_bagian_asal, d.kode_bagian, d.kode_profit, no_kunjungan, d.flag_trans, a.resep_ditangguhkan');
 		$this->db->from('fr_tc_far_detail a');
 		$this->db->join('fr_tc_far_detail_log b','(a.kode_brg=b.kode_brg AND a.kode_trans_far=b.kode_trans_far)','left');
 		$this->db->join('fr_tc_far d','d.kode_trans_far=a.kode_trans_far','left');

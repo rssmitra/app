@@ -244,7 +244,9 @@ class Process_entry_resep_model extends CI_Model {
                     $this->db->update('fr_tc_far_detail', array('status_input' => null), array('kd_tr_resep' => $value->kd_tr_resep) );
                     $jml_kronis = ( $value->prb_ditangguhkan != 1 ) ? (int)$value->jumlah_obat_23 : 0 ;
                     $jml_tebus = ( $value->resep_ditangguhkan != 1 ) ? (int)$value->jumlah_tebus : 0 ;
-                    $sisa_di_retur = $jml_kronis + $jml_tebus;
+                    $jml_retur = (int)$value->jumlah_retur;
+                    $sisa_di_retur = ($jml_kronis + $jml_tebus) - $jml_retur;
+                    
                     if($value->urgensi == 'cito'){
                         // retur stok ke farmasi
                         $this->stok_barang->stock_process_cito($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 16 ," - (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 

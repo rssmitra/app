@@ -785,7 +785,7 @@ function tambah_file()
 <div class="row">
     <div class="col-sm-12">
       <br>
-        <p><b><i class="fa fa-edit"></i> OBAT YANG DIBERIKAN </b></p>
+        <p><b><i class="fa fa-edit"></i> OBAT YANG DIBERIKAN (BPAKO)</b></p>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Nama Obat</label>

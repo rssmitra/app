@@ -1627,7 +1627,7 @@ class Templates extends MX_Controller {
 	            $tgl_periksa = $tgl_pemeriksaan;
 	            $dokter_pengirim = $data->reg_data->nama_pegawai;
             }
-            
+          
             
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
