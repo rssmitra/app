@@ -1011,12 +1011,14 @@ function find_pasien_by_keyword(keyword){
             if( obj.kode_perusahaan==120){
 
               $('#form_sep').show('fast'); 
-
+              $('#no_kartu_bpjs_txt').text('('+obj.no_kartu_bpjs+')');
+              
               //showModalFormSep(obj.no_kartu_bpjs,obj.no_mr);
-
+              
             }else{
-
+              
               $('#form_sep').hide('fast'); 
+              $('#no_kartu_bpjs_txt').text('');
 
             }
 
@@ -1347,7 +1349,7 @@ function get_riwayat_medis(){
                       <div id="no_telp"></div>
                     </li>
                     <li class="list-group-item">
-                      <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div>
+                      <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div><div id="no_kartu_bpjs_txt"></div>
                     </li>
                     <li class="list-group-item">
                       <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>

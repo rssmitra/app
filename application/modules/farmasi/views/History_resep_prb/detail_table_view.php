@@ -78,7 +78,11 @@
                 <td style="text-align:center; border-collapse: collapse"><?php echo number_format($row_dt->jumlah);?></td>
                 <td style="text-align: center; border-collapse: collapse"><?php echo $row_dt->satuan_kecil; ?></td>
                 <td style="text-align:center; border-collapse: collapse"><?php echo number_format($row_dt->log_jml_mutasi);?></td>
-                <td style="text-align:center; border-collapse: collapse"><?php echo number_format((int)$sisa)?></td>
+                <td style="text-align:center; border-collapse: collapse">
+                  <?php 
+                      $sisa_txt = ((int)$sisa > 0) ? number_format((int)$sisa) : '<span style="font-weight: bold; color: green">Lunas</span>';
+                    echo $sisa_txt; ?>
+                </td>
               </tr>
 
             <?php endforeach;?>

@@ -560,6 +560,13 @@ $('#pob_pasien').typeahead({
 
           </div>
 
+          <div class="form-group" id="no_kartu_bpjs_div" style="<?php isset($value)?$value->kode_kelompok:'' ?>">
+            <label class="control-label col-md-2" for="Province">*No Kartu BPJS</label>
+            <div class="col-sm-2">
+                <input id="no_kartu_bpjs" class="form-control" name="no_kartu_bpjs" type="text" placeholder="Masukan No Kartu BPJS" value="<?php echo isset($value)?($value->no_kartu_bpjs!=null)?"$value->no_kartu_bpjs":'':''?>"/>
+            </div>
+          </div>
+
           <div id="member" style="display:none;">
 
             <div class="form-group">

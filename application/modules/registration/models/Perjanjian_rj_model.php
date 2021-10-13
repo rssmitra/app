@@ -18,6 +18,7 @@ class Perjanjian_rj_model extends CI_Model {
 	private function _main_query(){
 		$year_limit = date('Y') - 2;
 		$this->db->select($this->select);
+		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr order by no_registrasi DESC) as no_sep');
 		$this->db->from('tc_pesanan');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','inner');
 		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter','left');
@@ -64,7 +65,7 @@ class Perjanjian_rj_model extends CI_Model {
 		}
 		else{
 			$this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
-			$this->db->where('YEAR(tgl_pesanan) >='.date('Y').'');
+			$this->db->where('YEAR(tgl_pesanan) ='.date('Y').'');
 		}
 
         if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {

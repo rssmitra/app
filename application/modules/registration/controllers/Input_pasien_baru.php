@@ -195,6 +195,9 @@ class Input_pasien_baru extends MX_Controller {
 
         if($_POST['kelompok_pasien']==3){
             $this->form_validation->set_rules('kode_perusahaan', 'Nama Perusahaan', 'trim|required');
+            if($_POST['kode_perusahaan']==120){
+              $this->form_validation->set_rules('no_kartu_bpjs', 'Nomer Kartu BPJS', 'trim');
+            }
         }
 
         if($_POST['tipe_pasien_baru']=='bayi'){
@@ -275,6 +278,7 @@ class Input_pasien_baru extends MX_Controller {
                 'is_active' => 1,
                 'kode_kelompok' => $this->regex->_genRegex($this->form_validation->set_value('kelompok_pasien'),'RGXINT'),
                 'kode_perusahaan' => isset($_POST['kode_perusahaan'])?$this->regex->_genRegex($this->form_validation->set_value('kode_perusahaan'),'RGXINT'):NULL,
+                'no_kartu_bpjs' => isset($_POST['no_kartu_bpjs'])?$this->regex->_genRegex($this->form_validation->set_value('no_kartu_bpjs'),'RGXQSL'):NULL,
                 'keterangan' => isset($_POST['keterangan_pasien'])?$this->regex->_genRegex($this->form_validation->set_value('keterangan_pasien'),'RGXQSL'):NULL,
             );
 
