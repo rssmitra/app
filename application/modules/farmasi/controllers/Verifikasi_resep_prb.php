@@ -25,6 +25,8 @@ class Verifikasi_resep_prb extends MX_Controller {
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
+        // driver
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         // load module
         $this->load->module('Templates/Templates.php');
 
@@ -88,6 +90,9 @@ class Verifikasi_resep_prb extends MX_Controller {
 
     public function get_data()
     {
+        // Save into the cache for 5 minutes
+		$this->cache->save('cache', $_GET, 300);
+        
         /*get data from model*/
         $list = $this->Verifikasi_resep_prb->get_datatables();
         if(isset($_GET['search']) AND $_GET['search']==TRUE){
@@ -95,7 +100,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         }
         $data = array();
         $no = $_POST['start'];
-        $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
+        $atts = array('class' => 'btn btn-xs btn-warning','width' => 900,'height' => 500,'scrollbars'  => 'no','status'=> 'no','resizable'=> 'no','screenx'=> 1000,'screeny'=> 80,'window_name' => '_blank'
             );
 
         foreach ($list as $row_list) {
