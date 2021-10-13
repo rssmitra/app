@@ -343,7 +343,6 @@ class Pengiriman_unit extends MX_Controller {
 
     public function process_retur_brg_unit()
     {
-        
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
@@ -396,26 +395,56 @@ class Pengiriman_unit extends MX_Controller {
             
             foreach( $cart_data as $row_brg ){
 
-                // retur penerimaan barang
+                // retur penerimaan dan penjualan
                 if( !empty($row_brg->reff_kode) || $row_brg->reff_kode != NULL ){
-                    // select penerimaan
-                    $tc_penerimaan = ($_POST['flag']=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
-                    $dt_penerimaan = $this->db->get_where($tc_penerimaan.'_detail', array('kode_detail_penerimaan_barang' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg ) )->row();
-                    // convert to satuan besar
-                    $jml_convert = $row_brg->qty / $dt_penerimaan->content;
-                    if(!empty($dt_penerimaan)){
-                        $jml_retur = $dt_penerimaan->jumlah_kirim - $jml_convert;
-                        $jml_retur_decimal = $dt_penerimaan->jumlah_kirim_decimal - $jml_convert;
-                        // print_r($jml_convert);die;
-                        // update data penerimaan
-                        $this->db->update($tc_penerimaan.'_detail', array('jumlah_kirim' => $jml_retur, 'jumlah_kirim_decimal' => $jml_retur_decimal, 'keterangan' => 'Retur barang '.$jml_convert.'' ), array('kode_detail_penerimaan_barang' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg) );
-                        // kurang stok gudang
-                        $konversi = $row_brg->qty;
-                        $this->stok_barang->stock_process($row_brg->kode_brg, $konversi, $kode_bagian_gudang, 21 ," ".$nama_gudang." Nomor ".$row_brg->reff_kode." ", 'reduce');
+
+                    if($row_brg->retur_type == 'penerimaan_brg'){
+                        // select penerimaan
+                        $tc_penerimaan = ($_POST['flag']=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
+                        $dt_penerimaan = $this->db->get_where($tc_penerimaan.'_detail', array('kode_detail_penerimaan_barang' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg ) )->row();
+                        // convert to satuan besar
+                        $jml_convert = $row_brg->qty / $dt_penerimaan->content;
+                        if(!empty($dt_penerimaan)){
+                            $jml_retur = $dt_penerimaan->jumlah_kirim - $jml_convert;
+                            $jml_retur_decimal = $dt_penerimaan->jumlah_kirim_decimal - $jml_convert;
+                            // print_r($jml_convert);die;
+                            // update data penerimaan
+                            $this->db->update($tc_penerimaan.'_detail', array('jumlah_kirim' => $jml_retur, 'jumlah_kirim_decimal' => $jml_retur_decimal, 'keterangan' => 'Retur barang '.$jml_convert.'' ), array('kode_detail_penerimaan_barang' => $row_brg->reff_kode, 'kode_brg' => $row_brg->kode_brg) );
+                            // kurang stok gudang
+                            $konversi = $row_brg->qty;
+                            $this->stok_barang->stock_process($row_brg->kode_brg, $konversi, $kode_bagian_gudang, 21 ," ".$nama_gudang." Nomor ".$row_brg->reff_kode." ", 'reduce');
+                        }
+                        $catatan = 'Retur penerimaan kode '. $row_brg->reff_kode.'';
+                        // update status selesai po
+                        $this->db->where('id_tc_po IN (SELECT id_tc_po FROM '.$tc_po.'_det WHERE id_tc_po_det = '.$dt_penerimaan->id_tc_po_det.')')->update($tc_po, array('status_selesai' => NULL));
                     }
-                    $catatan = 'Retur penerimaan kode '. $row_brg->reff_kode.'';
-                    // update status selesai po
-                    $this->db->where('id_tc_po IN (SELECT id_tc_po FROM '.$tc_po.'_det WHERE id_tc_po_det = '.$dt_penerimaan->id_tc_po_det.')')->update($tc_po, array('status_selesai' => NULL));
+
+                    if($row_brg->retur_type == 'penjualan_brg'){
+                        // select tr resep
+                        $resep = $this->db->get_where('fr_tc_far_detail', array('kd_tr_resep' => $row_brg->reff_kode) )->row();
+                        $harga_retur = $row_brg->qty * $resep->harga_jual;
+                        $data_for_update = array(
+                            'jumlah_retur' => $row_brg->qty,
+                            'harga_r_retur' => $harga_retur,
+                            'status_retur' => 1,
+                        );
+                        // fr_tc_far
+                        $this->db->where(array('kd_tr_resep' => $row_brg->reff_kode))->update('fr_tc_far_detail', $data_for_update);
+
+                        $data_log_for_update = array(
+                            'jumlah_retur' => $row_brg->qty,
+                            'tgl_retur' => date('Y-m-d'),
+                            'retur_by' => $this->session->userdata('user')->fullname,
+                        );
+                        $this->db->where(array('relation_id' => $row_brg->reff_kode))->update('fr_tc_far_detail_log', $data_log_for_update);
+
+                        // retur stok ke farmasi
+                        $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, '060101' , 8 ," (Retur Penjualan) - . ".$row_brg->reff_kode." ", 'restore'); 
+
+                        $this->db->trans_commit();
+
+                    }
+                    
 
                 }else{
 
@@ -486,7 +515,7 @@ class Pengiriman_unit extends MX_Controller {
         $data = array();
         $data['cart_data'] = $this->Pengiriman_unit->get_cart_data($_GET['form']);
         $data['form'] = ($_GET['form']=='retur')?$_GET['form']:'distribusi';
-        
+        // print_r($data);die;
         if($_GET['form'] == 'retur'){
             $this->load->view('pendistribusian/Pengiriman_unit/form_cart_retur', $data);
         }else{
@@ -533,6 +562,7 @@ class Pengiriman_unit extends MX_Controller {
                 'kode_bagian' => isset($_POST['kode_bagian']) ? $_POST['kode_bagian'] : $kode_bagian,
                 'flag_form' => isset($_POST['flag_form'])?$_POST['flag_form']:'',
                 'reff_kode' => isset($_POST['reff_kode'])?$_POST['reff_kode']:'',
+                'retur_type' => isset($_POST['retur_type'])?$_POST['retur_type']:'',
             );
             $this->db->insert('tc_permintaan_inst_cart_log', $dataexc);
             $this->db->trans_commit();

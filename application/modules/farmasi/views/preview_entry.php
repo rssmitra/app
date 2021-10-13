@@ -75,12 +75,13 @@
                     $penangguhan_resep = ($row_dt['resep_ditangguhkan'] == 1) ? 'Ya' : '-';
                     $color_penangguhan_resep = ($row_dt['resep_ditangguhkan'] == 1) ? 'red' : 'blue';
                     $racikan = isset($row_dt['racikan'][0])?$row_dt['racikan'][0]:[];
+                    $is_retur = ($row_dt['jumlah_retur'] > 0) ? '<span style="color: red !important"> retur ('.$row_dt['jumlah_retur'].') </span>' : '' ;
                 ?>
 
                   <tr>
                     <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
                     <td style="border-collapse: collapse"><?php echo $desc?></td>
-                    <td style="text-align:center; border-collapse: collapse; color: <?php echo $color_penangguhan_resep; ?>; font-weight: bold"><?php echo ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->jml_content : $row_dt['jumlah_tebus'];?></td>
+                    <td style="text-align:center; border-collapse: collapse; color: <?php echo $color_penangguhan_resep; ?>; font-weight: bold"><?php echo ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->jml_content : $row_dt['jumlah_tebus'];?> <?php echo $is_retur?></td>
                     <td style="text-align:center; border-collapse: collapse;"><?php echo $penangguhan_resep;?></td>
                     <td style="text-align: center; border-collapse: collapse"><?php echo ($row_dt['flag_resep'] == 'racikan') ? $racikan[0]->satuan_racikan : $satuan;?></td>
                     <?php if (count($resep_kronis) == 0) : ?>
@@ -291,7 +292,7 @@
         </button>
         <?php if($status_lunas == 0) : ?>
         <button onclick="rollback_by_kode_trans_far(<?php echo $kode_trans_far; ?>, '<?php echo strtolower($flag); ?>')" class="btn btn-xs btn-danger" title="rollback">
-          <i class="fa fa-undo dark"></i> Rollback Resep
+          <i class="fa fa-undo dark"></i> Revisi Data Resep
         </button>
         <?php endif; ?>
         <button onclick="print_tracer(<?php echo $kode_trans_far; ?>)" class="btn btn-xs btn-default" title="etiket">

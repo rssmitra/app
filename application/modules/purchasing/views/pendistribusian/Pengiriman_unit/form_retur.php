@@ -39,11 +39,12 @@ $(document).ready(function(){
         if(keycode ==13){          
           event.preventDefault();         
           if($(this).valid()){           
-            $('#div_detail_brg').load('templates/References/getDataTransaksiFarmasi/'+$(this).val()+'');    
+            getDataTransaksiFarmasi($(this).val())
           }         
           return false;                
         }       
     }); 
+
 
     $('#inputKeyBarang').typeahead({
       source: function (query, result) {
@@ -168,6 +169,25 @@ function getDetailBarang(kode_brg, jumlah){
   
 }
 
+function getDataTransaksiFarmasi(kode_trans_far){
+  preventDefault();  
+
+  $('#div_detail_brg').show();
+  $.getJSON('templates/References/getDataTransaksiFarmasi/'+kode_trans_far+'', '', function (response) {
+      // detail barang
+      var dt_brg = response.data;
+      $('#kode_brg_hidden').val(dt_brg.kode_brg);
+      $('#nama_brg_hidden').val(dt_brg.nama_brg);
+      $('#satuan_brg_hidden').val(dt_brg.satuan_kecil);
+      $('#harga_brg_hidden').val(dt_brg.harga_beli);
+      $('#qtyBarang').focus();
+      $('#div_detail_brg').html( response.html );
+
+  });
+  
+}
+
+
 function show_default_cart(){
   $('#div_cart').load('purchasing/pendistribusian/Pengiriman_unit/show_cart?flag='+$("input[name='flag_gudang']:checked"). val()+'&unit='+$('#dari_unit option:selected').val()+'&form=retur');
 }
@@ -186,6 +206,7 @@ function insert_cart_log(){
     qtyBefore: $('#qtyStok').val(),
     reff_kode: $('#reff_kode').val(),
     flag_form: 'retur',
+    retur_type: $('#retur_type').val(),
 
   };
   if( parseInt($('#qtyBarang').val()) > parseInt($('#qtyStok').val()) ){
@@ -292,6 +313,20 @@ function click_select_item(kode, qty){
   $('#reff_kode').val(kode);
   $('#qtyBarang').focus();
   $('#nama_brg_hidden').val($('#inputKeyBarang').val());
+  $('#retur_type').val('penerimaan_brg');
+}
+
+function click_select_item_trans_far(kd_tr_resep, kode_brg, nama_brg, qty){
+
+  console.log(kd_tr_resep);
+  console.log(qty);
+  $('#qtyStok').val(qty);
+  $('#qtyBarang').val(qty);
+  $('#reff_kode').val(kd_tr_resep);
+  $('#qtyBarang').focus();
+  $('#nama_brg_hidden').val(nama_brg);
+  $('#kode_brg_hidden').val(kode_brg);
+  $('#retur_type').val('penjualan_brg');
 }
 
 </script>
@@ -369,15 +404,16 @@ th, td {
                           <label class="control-label col-md-3">Jenis Retur</label>
                           <div class="col-md-9">
                             <select name="jenis_retur" id="jenis_retur" class="form-control">
-                              <option value="penjualan_brg">Penjualan Barang</option>
+                              <option value="#">-Pilih Jenis Retur-</option>
+                              <option value="penjualan_brg" <?php echo isset($_GET['type'])?($_GET['type'] == 'penjualan')?'selected':'':''?>>Penjualan Farmasi</option>
                               <option value="penerimaan_brg">Penerimaan Barang</option>
                               <!-- <option value="pengiriman_brg_unit">Pengiriman Barang Unit</option> -->
-                              <option value="lainnya" selected>Lainnya</option>
+                              <option value="lainnya">Retur Stok Unit ke Gudang</option>
                             </select>
                           </div>  
                         </div>
 
-                        <div id="div_jenis_retur_ex_penjualan">
+                        <div id="div_jenis_retur_ex_penjualan" style="display: none">
                           <div class="form-group">
                             <label class="control-label col-md-3">Retur ke Gudang</label>
                             <div class="col-md-9">
@@ -410,7 +446,7 @@ th, td {
                           </div>
                         </div>
 
-                        <div id="div_retur_penjualan" style="display: none">
+                        <div id="div_retur_penjualan" <?php echo isset($_GET['type'])?($_GET['type'] == 'penjualan')?'':'style="display: none"':'style="display: none"'?> >
                           <div class="form-group">
                               <label class="control-label col-md-3">Kode Transaksi</label>
                               <div class="col-md-9">
@@ -448,6 +484,7 @@ th, td {
                               <input class="form-control" type="number" name="qtyBrg" id="qtyBarang" value="0">
                               <input class="form-control" type="hidden" name="qtyBrgStok" id="qtyStok">
                               <input class="form-control" type="hidden" name="reff_kode" id="reff_kode">
+                              <input class="form-control" type="hidden" name="retur_type" id="retur_type">
                             </div>
                             <div class="col-md-1" style="margin-left: -10px">
                               <a href="#" onclick="insert_cart_log()" class="btn btn-xs btn-yellow"><i class="fa fa-shopping-cart"></i></a>

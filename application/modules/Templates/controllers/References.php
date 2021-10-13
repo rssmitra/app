@@ -1605,7 +1605,7 @@ class References extends MX_Controller {
 
 	public function find_data()
     {   
-        $output = array( "data" => http_build_query($_POST) . "\n" );
+        $output = array( "data" => http_build_query($_POST) . "\n", 'cache' => $_POST );
         echo json_encode($output);
 	}
 	
@@ -1742,6 +1742,8 @@ class References extends MX_Controller {
 		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;
 		$warning_stok = ($result->jml_sat_kcl <= 0) ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '' ;
 		$link_image = ( $result->path_image != NULL ) ? PATH_IMG_MST_BRG.$result->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
+
+		// form retur unit ke gudang
 		if( $_GET['retur'] == 'lainnya' ){
 			$html .= '<div class="widget-box">
 						<div class="widget-body" style="background: #edf3f4;">
@@ -1773,6 +1775,7 @@ class References extends MX_Controller {
 					  </div>';
 		}
 
+		// form retur penerimaan brg
 		if( $_GET['retur'] == 'penerimaan_brg' ){
 			// cek penerimaan barang
 			$this->db->select('a.kode_detail_penerimaan_barang, a.kode_penerimaan as kode, tgl_penerimaan as tgl, a.jumlah_kirim_decimal as qty, a.content, b.satuan_besar');
@@ -1810,6 +1813,46 @@ class References extends MX_Controller {
 			}
 			$html .= '</table>';
 		}
+
+
+		echo json_encode( array('data' => $result, 'html' => $html ) );
+	}
+
+	public function getDataTransaksiFarmasi($kode_trans_far)
+	{
+
+
+		$this->db->select('c.nama_brg, c.satuan_kecil, a.*, c.harga_beli');
+		$this->db->from('fr_tc_far_detail as a');
+		$this->db->join('fr_tc_far as b', 'b.kode_trans_far=a.kode_trans_far' , 'left');
+		$this->db->join('mt_barang as c', 'c.kode_brg=a.kode_brg' , 'left');
+		$this->db->where('a.kode_trans_far', $kode_trans_far);
+		$result = $this->db->get()->result();
+		// print_r($this->db->last_query());die;
+		$html = '';
+		
+		$html .= '<strong style="color: blue">DATA TRANSAKSI FARMASI</strong><br>';
+		$html .= '<table class="table">';
+		$html .= '<tr>';
+		$html .= '<th>No</th>';
+		$html .= '<th>Kode</th>';
+		$html .= '<th>Nama Obat</th>';
+		$html .= '<th>Jumlah Tebus</th>';
+		$html .= '<th class="center">#</th>';
+		$html .= '</tr>';
+		$no = 0;
+		foreach($result as $row_ress){
+			$no++;
+			$html .= '<tr>';
+			$html .= '<td>'.$no.'</td>';
+			$html .= '<td>'.$row_ress->kode_brg.'</td>';
+			$html .= '<td>'.$row_ress->nama_brg.'</td>';
+			$html .= '<td>'.$row_ress->jumlah_tebus.'</td>';
+			$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item_trans_far('.$row_ress->kd_tr_resep.','."'".$row_ress->kode_brg."'".', '."'".$row_ress->nama_brg."'".', '.$row_ress->jumlah_tebus.')"><i class="fa fa-sign-out"></i></a></td>';
+			$html .= '</tr>';
+		}
+		$html .= '</table>';
+		
 
 		echo json_encode( array('data' => $result, 'html' => $html ) );
 	}

@@ -1593,13 +1593,15 @@ class Templates extends MX_Controller {
         }else{
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
+            
+
             // $pm_ = 472854; 
-            // $no_mr = '00246856';
-            // $nama_pasien = 'Wisca Gumanti';
-            // $umur = '34';
-            // $jk_ = 'Perempuan';
-            // $tgl_daftar = '19 Agustus 2021 - 15:05:15';
-            // $tgl_periksa = '19 Agustus 2021 - 15:33:42';
+            // $no_mr = '00274062';
+            // $nama_pasien = 'Sufriadi';
+            // $umur = '30';
+            // $jk_ = 'Laki-laki';
+            // $tgl_daftar = '10 Oktober 2021 - 16:05:15';
+            // $tgl_periksa = '10 Oktober 2021 - 16:33:42';
             // $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 
             // form db
