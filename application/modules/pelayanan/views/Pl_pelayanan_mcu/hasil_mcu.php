@@ -52,7 +52,7 @@
     
   </table> -->
 
-
+  <br>
   <div class="content" style="display:inline-block">
 
     <span class="center">
@@ -65,14 +65,16 @@
       <tr>
         <td width="20px"></td>
         <td class="title">Nama</td>
-        <td width="40%">: <?php echo ucwords(strtolower($kunjungan->nama_pasien)) ?></td>
+        <td width="5px">:</td>
+        <td width="40%"> <?php echo ucwords(strtolower($kunjungan->nama_pasien)) ?></td>
         <td>No. RM</td>
         <td>: <?php echo $kunjungan->no_mr ?></td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Jenis Kelamin</td>
-        <td >:
+        <td width="5px">:</td>
+        <td>
           <span class="dejavu-font"><?php echo ($pasien->jen_kelamin=='L')?'&#9745;':'&#9744;' ?></span>&nbsp;Pria &nbsp;&nbsp;
           <span class="dejavu-font"><?php echo ($pasien->jen_kelamin=='P')?'&#9745;':'&#9744;' ?></span>&nbsp;Wanita &nbsp;&nbsp;
         </td>
@@ -80,17 +82,20 @@
       <tr>
         <td width="20px"></td>
         <td class="title">Umur</td>
-        <td width="78%">: <?php echo $pasien->umur ?> Tahun</td>
+        <td width="5px">:</td>
+        <td width="78%"> <?php echo $pasien->umur ?> Tahun</td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Tempat / Tgl Lahir</td>
-        <td width="78%">: <?php echo ucwords(strtolower($pasien->tempat_lahir)) ?>, <?php echo $this->tanggal->formatDate($pasien->tgl_lhr) ?></td>
+        <td width="5px">:</td>
+        <td width="78%"> <?php echo ucwords(strtolower($pasien->tempat_lahir)) ?>, <?php echo $this->tanggal->formatDate($pasien->tgl_lhr) ?></td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Agama</td>
-        <td width="67%">:
+        <td width="5px">:</td>
+        <td width="80%">
           <?php
             foreach ($param_agama as $value) : ?>
               
@@ -102,19 +107,19 @@
       <tr>
         <td width="20px"></td>
         <td class="title">Status Perkawinan</td>
-        <td >:
+        <td width="5px">:</td>
+        <td>
           <?php
             foreach ($param_perkawinan as $value) : ?>
-              
               <span class="dejavu-font"><?php echo ($pasien->id_dc_kawin==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $value->label ?> &nbsp;&nbsp;
-
           <?php  endforeach ?>
         </td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Alamat</td>
-        <td width="78%">: <?php echo ucwords(strtolower($pasien->almt_ttp_pasien)) ?><?php echo isset($pasien->kelurahan)?', '.ucwords(strtolower($pasien->kelurahan)):'' ?><?php echo isset($pasien->kecamatan)?', '.ucwords(strtolower($pasien->kecamatan)):'' ?><?php echo isset($pasien->kota)?', '.ucwords(strtolower($pasien->kota)):'' ?></td>
+        <td width="5px">:</td>
+        <td width="80%" style="padding-left: 20px"> <?php echo ucwords(strtolower($pasien->almt_ttp_pasien)) ?><?php echo isset($pasien->kelurahan)?', '.ucwords(strtolower($pasien->kelurahan)):'' ?><?php echo isset($pasien->kecamatan)?', '.ucwords(strtolower($pasien->kecamatan)):'' ?><?php echo isset($pasien->kota)?', '.ucwords(strtolower($pasien->kota)):'' ?></td>
       </tr>
     </table><br>
 
@@ -125,13 +130,13 @@
     <?php $no=1; foreach ($anamnesa as $key => $value) {
       $res = str_replace('_', ' ', $key);
       echo 
-      '
-      <tr>
+      '<tr>
         <td width="20px"></td>
         <td width="40%"><b>'.$no.'. '.ucwords($res).' </b></td>';
       if(!is_object($value)){
         echo '
-        <td width="50%"><b>:</b> '.$value.' </td>
+        <td width="5px">:</td>
+        <td width="50%"> '.$value.' </td>
       </tr>';
       }else{
         echo '
@@ -159,6 +164,8 @@
     } ?>
   
     </table><br>
+
+    <br pagebreak="true"/>
 
     <h3>C. PEMERIKSAAN FISIK</h3>
       
@@ -346,6 +353,8 @@
       } ?>
 
     </table><br>
+    
+    <br pagebreak="true"/>
 
     <h3>D. PEMERIKSAAN RADIOLOGI</h3>
 
@@ -460,7 +469,8 @@
       <?php  endforeach ?>
 
     </table><br>
-
+    
+    <br pagebreak="true"/>
     <h3>H. ANJURAN / SARAN</h3>
 
     <table border="0" width="100%">
@@ -474,20 +484,20 @@
 
     <table border="0" width="100%">
       <tr>
-        <td width="70%"></td>
-        <td width="30%" style="text-align:center"1>Penanggung Jawab</td>
+        <td width="60%"></td>
+        <td width="40%" style="text-align:center"1>Penanggung Jawab</td>
       </tr>
       <tr>
-        <td width="70%"></td>
-        <td width="30%"></td>
+        <td width="60%"></td>
+        <td width="40%"></td>
       </tr>
       <tr>
-        <td width="70%"></td>
-        <td width="30%"></td>
+        <td width="60%"></td>
+        <td width="40%"></td>
       </tr>
       <tr>
-        <td width="70%"></td>
-        <td width="30%"></td>
+        <td width="60%"></td>
+        <td width="40%"></td>
       </tr>
       <tr>
         <td ></td>

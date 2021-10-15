@@ -5,7 +5,7 @@ class Perjanjian_rj_model extends CI_Model {
 
 	var $table = 'tc_pesanan';
 	var $column = array('tc_pesanan.nama','mt_bagian.nama_bagian','mt_karyawan.nama_pegawai','mt_perusahaan.nama_perusahaan');
-	var $select = 'tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.no_telp, tc_pesanan.no_hp, tc_pesanan.keterangan, mt_master_pasien.tlp_almt_ttp, mt_master_pasien.no_hp as no_hp_pasien';
+	var $select = 'tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.no_telp, tc_pesanan.no_hp, tc_pesanan.keterangan, mt_master_pasien.tlp_almt_ttp, mt_master_pasien.no_hp as no_hp_pasien, no_kartu_bpjs, input_tgl';
 
 	var $order = array('tc_pesanan.tgl_pesanan' => 'ASC', 'tc_pesanan.id_tc_pesanan' => 'DESC');
 
@@ -18,7 +18,7 @@ class Perjanjian_rj_model extends CI_Model {
 	private function _main_query(){
 		$year_limit = date('Y') - 2;
 		$this->db->select($this->select);
-		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr order by no_registrasi DESC) as no_sep');
+		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr AND kode_perusahaan=120 order by no_registrasi DESC) as no_sep');
 		$this->db->from('tc_pesanan');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','inner');
 		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter','left');
@@ -64,6 +64,7 @@ class Perjanjian_rj_model extends CI_Model {
             $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) <= '".$_GET['to_tgl']."'" );
 		}
 		else{
+			$this->db->where('DAY(tgl_pesanan) >= '.date('d').'');	
 			$this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
 			$this->db->where('YEAR(tgl_pesanan) ='.date('Y').'');
 		}
