@@ -70,7 +70,7 @@ function popUnder(node) {
 
         <label class="control-label col-md-1">Keyword</label>
         <div class="col-md-2">
-          <input type="text" class="form-control" name="keyword" id="keyword">
+          <input type="text" class="form-control" name="keyword" id="keyword" value="<?php echo isset($this->cache->get('cache')['keyword'])?$this->cache->get('cache')['keyword']:''?>">
         </div>
     </div>
 
@@ -78,7 +78,7 @@ function popUnder(node) {
       <label class="control-label col-md-2">Tanggal</label>
         <div class="col-md-2">
           <div class="input-group">
-            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+            <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($this->cache->get('cache')['from_tgl'])?$this->cache->get('cache')['from_tgl']:''?>"/>
             <span class="input-group-addon">
               <i class="fa fa-calendar bigger-110"></i>
             </span>
@@ -88,7 +88,7 @@ function popUnder(node) {
         <label class="control-label col-md-1">s/d</label>
         <div class="col-md-2" style="margin-lef:-10px">
           <div class="input-group">
-            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+            <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($this->cache->get('cache')['to_tgl'])?$this->cache->get('cache')['to_tgl']:''?>"/>
             <span class="input-group-addon">
               <i class="fa fa-calendar bigger-110"></i>
             </span>
@@ -115,7 +115,7 @@ function popUnder(node) {
   <hr class="separator">
   <!-- div.dataTables_borderWrap -->
   <div style="margin-top:-27px">
-  <table id="dynamic-table" base-url="farmasi/Verifikasi_resep_prb/get_data" data-id="flag=All" url-detail="farmasi/Verifikasi_resep_prb/get_detail" class="table table-bordered table-hover">
+  <table id="dynamic-table" base-url="farmasi/Verifikasi_resep_prb/get_data" data-id="flag=All&from_tgl=<?php echo isset($this->cache->get('cache')['from_tgl'])?$this->cache->get('cache')['from_tgl']:''?>&to_tgl=<?php echo isset($this->cache->get('cache')['to_tgl'])?$this->cache->get('cache')['to_tgl']:''?>&search_by=<?php echo isset($this->cache->get('cache')['search_by'])?$this->cache->get('cache')['search_by']:''?>&keyword=<?php echo isset($this->cache->get('cache')['keyword'])?$this->cache->get('cache')['keyword']:''?>" url-detail="farmasi/Verifikasi_resep_prb/get_detail" class="table table-bordered table-hover">
 
       <thead>
         <tr>  

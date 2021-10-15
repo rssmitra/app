@@ -83,22 +83,24 @@ class Perjanjian_rj extends MX_Controller {
                         </div></div>';
                 if( !isset($_GET['no_mr']) ){
                     $no_mr = ($row_list->no_mr == NULL)?'<i class="fa fa-user green bigger-150"></i>':$row_list->no_mr;
-                    $row[] = '<div class="center">'.$no_mr.'</div>';
-                    $row[] = '<a href="#">'.strtoupper($row_list->nama).'</>';
+                    // $row[] = '<div class="center">'.$no_mr.'</div>';
+                    $row[] = '<b>'.$no_mr.'</b><br>'.strtoupper($row_list->nama);
                 }
-                $row[] = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
-                $row[] = '<div class="left">'.$row_list->nama_bagian.'</div>';
-                $row[] = '<div class="left">'.$row_list->nama_pegawai.'</div>';
+                // $row[] = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
+                // $row[] = '<div class="left">'.ucwords($row_list->nama_bagian).'</div>';
+                $row[] = '<div class="left"><b>'.$row_list->nama_pegawai.'</b><br><small>'.ucwords($row_list->nama_bagian).'</small></div>';
                 if( isset($_GET['flag']) AND $_GET['flag']=='HD' ){
                     $row[] = $row_list->selected_day;
                 }else{
                     $row[] = $this->tanggal->formatDate($row_list->tgl_pesanan);
                 }
-                $row[] = $row_list->tlp_almt_ttp."/".$row_list->no_telp;
+                $row[] = $row_list->tlp_almt_ttp."<br>".$row_list->no_telp;
                 if( !isset($_GET['no_mr']) ){
                     $row[] = $row_list->no_sep;
                 }
-                $row[] = $row_list->keterangan;
+                $row[] = $row_list->no_kartu_bpjs;
+                $row[] = '<div class="center"><input type="text" class="form-control" style="border: 1px solid white !important" name="kode_perjanjian" value="'.$row_list->kode_perjanjian.'" id="surat_kontrol_'.$row_list->id_tc_pesanan.'" onchange="saveRow('.$row_list->id_tc_pesanan.')"></div>';
+                $row[] = $this->tanggal->formatDateTime($row_list->input_tgl);
                 $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
 
 
@@ -134,6 +136,11 @@ class Perjanjian_rj extends MX_Controller {
         // echo '<pre>';print_r($data);die;
         $this->load->view('Perjanjian_rj/excel_view', $data);
 
+    }
+
+    public function saveNoSuratKontrol(){
+        $this->db->where('id_tc_pesanan', $_POST['ID'])->update('tc_pesanan', array('kode_perjanjian' => $_POST['no_surat_kontrol']));
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
     }
 
 }

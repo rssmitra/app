@@ -311,7 +311,7 @@ class Process_entry_resep extends MX_Controller {
                 // update sisa tebus fr_tc_far_detail
                 $sisa_tebus = $row_dt->jumlah_pesan - $row_dt->jumlah_tebus;
                 // print_r($row_dt);die;
-                $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1, 'status_input' => 1), array('kd_tr_resep' => $row_dt->kd_tr_resep) );
+                $this->db->update('fr_tc_far_detail', array('sisa' => $sisa_tebus, 'status_kirim' => 1, 'status_input' => 1, 'jumlah_retur' => 0), array('kd_tr_resep' => $row_dt->kd_tr_resep) );
                     
                 // create mutasi untuk obat racikan
                 if( $row_dt->id_tc_far_racikan != 0 ){
@@ -338,7 +338,7 @@ class Process_entry_resep extends MX_Controller {
                     // jika ditangguhkan maka yang dipotong stok hanya jumlah tebus
                     $jml_kronis = ( $row_dt->prb_ditangguhkan != 1 ) ? (int)$row_dt->jumlah_obat_23 : 0 ;
                     $jml_tebus = ( $row_dt->resep_ditangguhkan != 1 ) ? (int)$row_dt->jumlah_tebus : 0 ;
-                    $jml_mutasi_brg = $jml_kronis + $jml_tebus;
+                    $jml_mutasi_brg = ($jml_kronis + $jml_tebus);
                     // kurangi stok depo, update kartu stok dan rekap stok
                     if( $jml_mutasi_brg > 0 ){
                         if($row_dt->urgensi=='cito'){
@@ -400,7 +400,7 @@ class Process_entry_resep extends MX_Controller {
 
             // update fr_tc_far_detail_log
             $this->db->where('kode_trans_far', $ID);
-            $this->db->update('fr_tc_far_detail_log', array('status_tebus' => 1, 'status_input' => 1) );
+            $this->db->update('fr_tc_far_detail_log', array('status_tebus' => 1, 'status_input' => 1, 'jumlah_retur' => 0) );
     
             /*log transaksi*/
             $this->db->update('fr_tc_pesan_resep', array('status_tebus' => 1), array('kode_pesan_resep' => $_POST['kode_pesan_resep']) );   

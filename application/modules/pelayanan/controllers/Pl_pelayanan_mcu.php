@@ -1024,8 +1024,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
 
         //echo"<pre>";print_r($data);die;
 
-        //$this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data);
-        
+        // $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data);   
         $html_content =  $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data, TRUE);   
 
         $this->exportHasilMCU($html_content,$data['kunjungan']->no_registrasi,$data['pasien']->nama_pasien);
@@ -1048,11 +1047,11 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $pdf->SetTitle(''.$filename.'');
 
         $PDF_HEADER_LOGO = "logo_rssm_default.png";//any image file. check correct path.
-        $PDF_HEADER_LOGO_WIDTH = "20";
+        $PDF_HEADER_LOGO_WIDTH = "25";
         $PDF_HEADER_TITLE = COMP_LONG;
         $PDF_HEADER_STRING = COMP_ADDRESS;
         $PDF_FONT_NAME_MAIN = "helvetica";
-        $PDF_FONT_SIZE_MAIN="8";
+        $PDF_FONT_SIZE_MAIN="10";
 
         $pdf->setHeaderFont(Array($PDF_FONT_NAME_MAIN, '', $PDF_FONT_SIZE_MAIN));
         $pdf->SetHeaderData($PDF_HEADER_LOGO, $PDF_HEADER_LOGO_WIDTH, $PDF_HEADER_TITLE, $PDF_HEADER_STRING);
@@ -1064,7 +1063,8 @@ class Pl_pelayanan_mcu extends MX_Controller {
 
     // set margins
         //$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT,PDF_MARGIN_BOTTOM);
-        $pdf->SetMargins(20, 25, 25, true); 
+        $pdf->SetMargins(20, 30, 25, true); 
+        $pdf->SetHeaderMargin(5);
         $pdf->SetFooterMargin(20);
 
     // set auto page breaks

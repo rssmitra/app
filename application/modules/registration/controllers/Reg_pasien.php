@@ -277,7 +277,7 @@ class Reg_pasien extends MX_Controller {
                 }
                 $penjamin = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
 
-                $label_code = ($row_list->tgl_masuk == NULL) ? '<div class="pull-right"><span class="label label-sm label-danger">'.$row_list->unique_code_counter.'</span></div>' : '<div class="pull-right"><span class="label label-sm label-success">'.$row_list->unique_code_counter.'</span></div>';
+                $label_code = ($row_list->tgl_masuk == NULL) ? '<div class="pull-right"><span class="label label-sm label-danger">'.$row_list->kode_perjanjian.'</span></div>' : '<div class="pull-right"><span class="label label-sm label-success">'.$row_list->kode_perjanjian.'</span></div>';
 
                 $row[] = '<div class="center">
                             <label class="pos-rel">
@@ -304,7 +304,7 @@ class Reg_pasien extends MX_Controller {
                 
                 $row[] = '<div class="left">'.$row_list->nama_pegawai.'</div>';
                 
-                $row[] = $row_list->unique_code_counter;
+                $row[] = $row_list->kode_perjanjian;
                 $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
 
 

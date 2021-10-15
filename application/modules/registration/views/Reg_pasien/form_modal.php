@@ -66,6 +66,12 @@
         var val_item=item.split(':')[0];
         console.log(val_item);
         $('#kode_perusahaan_').val(val_item);
+        $('#kode_perusahaan_').val(val_item);
+        if(val_item==120){
+          $('#no_kartu_bpjs_div').show();
+        }else{
+          $('#no_kartu_bpjs_div').hide();
+        }
       }
   });
 
@@ -363,7 +369,7 @@
       </div>
     </div>
 
-    <div class="form-group" id="no_kartu_bpjs_div" style="<?php isset($value)?$value->kode_kelompok:'' ?>">
+    <div class="form-group" id="no_kartu_bpjs_div" style="<?php echo isset($value)?($value->kode_perusahaan==120)?'':'display:none':'display:none' ?>">
       <label class="control-label col-md-2" for="Province">*No Kartu BPJS</label>
       <div class="col-sm-2">
           <input id="no_kartu_bpjs" class="form-control" name="no_kartu_bpjs" type="text" placeholder="Masukan No Kartu BPJS" value="<?php echo isset($value)?($value->no_kartu_bpjs!=null)?"$value->no_kartu_bpjs":'':''?>"/>

@@ -122,6 +122,34 @@ function delete_perjanjian(id_tc_pesanan){
     
 }
 
+function saveRow(id_tc_pesanan){  
+
+  preventDefault();
+  $.ajax({
+      url: 'registration/Perjanjian_rj/saveNoSuratKontrol',
+      type: "post",
+      data: {ID:id_tc_pesanan, no_surat_kontrol: $('#surat_kontrol_'+id_tc_pesanan+'').val()},
+      dataType: "json",
+      beforeSend: function() {
+        // achtungShowLoader();  
+      },
+      uploadProgress: function(event, position, total, percentComplete) {
+      },
+      complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        if(jsonResponse.status === 200){
+          $.achtung({message: jsonResponse.message, timeout:5});
+          reload_table();
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5});
+        }
+        achtungHideLoader();
+      }
+  });
+  
+}
+
 
 </script>
 <div class="row">
@@ -229,15 +257,16 @@ function delete_perjanjian(id_tc_pesanan){
         <tr>  
           <th width="30px" class="center">No</th>
           <th></th>
-          <th>No MR</th>
+          <!-- <th>No MR</th> -->
           <th>Nama Pasien</th>
-          <th>Penjamin</th>
-          <th>Tujuan Poli</th>
-          <th>Nama Dokter</th>
-          <th>Jam Praktek</th>
+          <!-- <th>Tujuan Poli</th> -->
+          <th>Dokter/Poli/Klinik</th>
+          <th>Tgl Kunjungan</th>
           <th>No. Telp</th>
           <th>No. SEP</th>
-          <th>Keterangan</th>
+          <th>No Kartu BPJS</th>
+          <th>No Surat Kontrol</th>
+          <th>Tgl Input</th>
           <th>Status</th>
           
         </tr>
@@ -281,7 +310,7 @@ function delete_perjanjian(id_tc_pesanan){
 
       </div>
 
-      </div> -->
+      </div>
 
     </div><!-- /.modal-content -->
 
