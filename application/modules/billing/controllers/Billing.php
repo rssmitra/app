@@ -755,7 +755,7 @@ class Billing extends MX_Controller {
 
         // nk karyawan
         if(isset($_POST['metode_bon_karyawan'])){
-            $dataTranskasir["nk_karyawan"] = $_POST['total_nk'];
+            $dataTranskasir["nk_karyawan"] = $_POST['jumlah_nk'];
             $dataTranskasir["no_mr_karyawan"] = $_POST['no_mr_val'];
             $dataTranskasir["keterangan"] = 'Bon Karyawan a.n '.$_POST['nama_pasien_val'];
         }else{

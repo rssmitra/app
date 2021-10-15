@@ -37,17 +37,9 @@ $(document).ready(function() {
           $.achtung({message: jsonResponse.message, timeout:5});
           // $('#page-area-content').load('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real');
           load_billing_data();
-        //   $('#total_payment').val(jsonResponse.count_um);
-          if (jsonResponse.billing_um > 0) {
-            PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=null','Cetak',1200,750);
-          }
-
-          if(jsonResponse.kode_perusahaan == 120){
-            PopupCenter(jsonResponse.redirect,'SEP',1000,700);
-            // window.open(jsonResponse.redirect, '_blank');
-          }
-
-          
+          //   $('#total_payment').val(jsonResponse.count_um);
+          PopupCenter('billing/Billing/print_preview_apt?kode_trans_far=<?php echo $kode_trans_far; ?>','Cetak',600,750);
+          // PopupCenter('billing/Billing/print_preview_apt?kode_trans_far='804843<?php //echo $kode_trans_far?>'','Cetak',1200,750);
 
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});
@@ -132,8 +124,25 @@ function cetak_kuitansi(){
 
     <?php echo isset($header)?$header:''?>
 
+    <b>TRANSAKSI KASIR</b>
+      <div class="form-group">                        
+        <label class="control-label col-md-2">Tanggal Transaksi</label>        
+        <div class="col-md-2">
+          <div class="input-group">
+            <input name="tgl_trans_kasir" id="tgl_trans_kasir"  class="form-control date-picker" type="text" value="<?php echo isset
+              ($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar):$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_trans);?>"
+            />
+            <span class="input-group-addon">
+              <i class="ace-icon fa fa-calendar"></i>
+            </span>
+          </div>
+        </div>
+    </div>
+
     <div class="center no-padding">
-    
+      
+        <!-- <a href="#" class="btn btn-xs btn-default" onclick="load_billing_data()" > <i class="fa fa-refresh"></i> Kembali </a> -->
+      
         <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" > <i class="fa fa-refresh"></i> Reload Billing </a>
 
         <a href="#" class="btn btn-xs btn-primary" onclick="rollback_kasir(<?php echo $kode_trans_far?>)" > <i class="fa fa-undo"></i> Rollback</a>

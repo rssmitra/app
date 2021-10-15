@@ -39,6 +39,7 @@ $(document).ready(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#div_tunai').show();
+          cek_sisa_belum_bayar('uang_dibayarkan');
         } else {
           $('#div_tunai').hide();
           $('#div_tunai .uang_dibayarkan').val(0);
@@ -50,6 +51,7 @@ $(document).ready(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#div_kredit').show();
+          cek_sisa_belum_bayar('jumlah_bayar_kredit');
         } else {
           $('#div_kredit').hide();
           $('#div_kredit .uang_dibayarkan').val(0);
@@ -61,6 +63,7 @@ $(document).ready(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#div_debet').show();
+          cek_sisa_belum_bayar('jumlah_bayar_debet');
         } else {
           $('#div_debet').hide();
           $('#div_debet .uang_dibayarkan').val(0);
@@ -71,18 +74,21 @@ $(document).ready(function(){
     $('input[name=metode_bon_karyawan]').change(function(){
         preventDefault();
         if($(this).is(':checked')){
+          $('#hutang_nk').removeAttr("disabled");
           $('#div_bon_karyawan').show();
           // sisa dari jumlah yang dibayarkan
           var sum_class = sumClass('uang_dibayarkan');
           var total_bayar = formatNumberFromCurrency($('#total_pembayaran').text());
           var diskon_rp = total_bayar * (20/100)
-          var jml_nk = (parseInt(total_bayar)-parseInt(diskon_rp)) - sum_class;
-          $('#jumlah_nk').val( jml_nk );
-          $('#total_nk').val( jml_nk );
+          var jml_nk = parseInt(total_bayar)-parseInt(diskon_rp);
+          // $('#jumlah_nk').val( jml_nk );
+          // $('#total_nk').val( jml_nk );
           $('#jumlah_diskon').val(20);
+          // cek_sisa_belum_bayar('jumlah_nk');
         } else {
           $('#jumlah_nk').val(0);
           $('#jumlah_diskon').val(0);
+          $('#hutang_nk').attr("disabled", true);
           $('#div_bon_karyawan').hide();
         }
         sum_total_pembayaran();
@@ -138,6 +144,9 @@ function get_resume_billing(){
     // nk + um
     var nk_um = parseInt( total_um_dibayar ) + parseInt($('#total_nk').val());
     $('#jml_um_nk').text( formatMoney( nk_um ) );
+    
+    $('#uang_dibayarkan').val( formatNumberFromCurrency($('#jml_dibayarkan').text()) );
+    
     sum_total_pembayaran();
 
 }
@@ -147,11 +156,16 @@ function sum_total_pembayaran(){
   preventDefault();
   var total_all = $('#total_payment_all').val();
   var total_payment = $('#total_payment').val();
+
+  // total tagihan billing utuh
   var total = formatNumberFromCurrency($('#jml_dibayarkan').text());
 
   var total_um_nk = formatNumberFromCurrency($('#jml_um_nk').text());
+
   var cash = $('#uang_dibayarkan').val();
   var diskon = $('#jumlah_diskon').val();
+
+  // total uang dibayarkan (Tunai, Debet, Kredit,)
   var sum_class = sumClass('uang_dibayarkan');
 
   
@@ -159,9 +173,11 @@ function sum_total_pembayaran(){
   // diskon rp
   var diskon_rp = total * (diskon/100);
   $('#jml_diskon_rp').text(formatMoney(parseInt(diskon_rp)));
+  $('#nominal_diskon').val(diskon_rp);
 
   var total_stl_diskon = total - diskon_rp;
-  $('#total_pembayaran').text(formatMoney(parseInt(total_stl_diskon)));
+  $('#total_pembayaran').text( formatMoney( parseInt(total_stl_diskon) ));
+
   // uang kembali
   var kembali =  parseInt(total_stl_diskon) - parseInt(sum_class);
   if( parseInt(sum_class) >= parseInt(total_stl_diskon) ){
@@ -177,6 +193,7 @@ function sum_total_pembayaran(){
 
   $('#uang_kembali_text').text( formatMoney(uang_kembali) );
   // console.log(uang_kembali);
+  
   // sisa belum dibayar
   var sisa_blm_bayar = parseInt(total_stl_diskon) - parseInt(sum_class);
   console.log(sum_class);
@@ -185,11 +202,54 @@ function sum_total_pembayaran(){
   }else{
     var blm_dibayarkan = 0;
   }
+
   $('#sisa_blm_dibayar').text( formatMoney(blm_dibayarkan) );
   $('#uang_dibayarkan_text').text( formatMoney(parseInt(sum_class)) );
-  // $('#uang_dibayarkan').val( formatMoney(blm_dibayarkan) )
+  // $('#uang_dibayarkan').val( parseInt(sum_class) )
+
+  statButton();
 
 }
+
+function cek_sisa_belum_bayar(div_id){
+  var sum_class = sumClass('uang_dibayarkan');
+  var total = formatNumberFromCurrency($('#total_pembayaran').text());
+  // let diskon_rp = formatNumberFromCurrency($('#jml_diskon_rp').text());
+  var sisa_blm_bayar = parseInt(total) - parseInt(sum_class);// - parseInt(diskon_rp);
+  if (parseInt(sisa_blm_bayar) > 0) {
+    var blm_dibayarkan = sisa_blm_bayar;
+  }else{
+    var blm_dibayarkan = 0;
+  }
+  console.log(sum_class);
+  $('#'+div_id+'').val(blm_dibayarkan);
+  sum_total_pembayaran();
+}
+
+function statButton(){
+  $("#btnSave").attr("disabled", true);
+  let int_sisa_blm_dibayar = formatNumberFromCurrency($('#sisa_blm_dibayar').text());
+  if (int_sisa_blm_dibayar == 0){
+    $('#btnSave').removeAttr("disabled");
+    console.log('disabled');
+  }else{
+    $('#btnSave').attr("disabled", true);
+    console.log('enabled');
+  }
+}
+
+$('input[name=hutang_nk]').change(function hutangKaryawan(){
+  preventDefault();
+  if($(this).is(':checked')){
+    $('#jumlah_nk').removeAttr("readonly");
+    $('#hutang_nk').val(1);
+    cek_sisa_belum_bayar('jumlah_nk');
+  }else{
+    $('#jumlah_nk').val(0);
+    $('#hutang_nk').val(0);
+    $('#jumlah_nk').attr("readonly", true);
+  }
+});
 
 </script>
 
@@ -239,6 +299,25 @@ function sum_total_pembayaran(){
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="control-label col-md-4">Status Pembayar</label>
+          <div class="col-md-8" style="margin-left: 8px; padding-top: 3px">
+            <label>
+              <?php 
+                $arr_kode_kelompok = [4,7,8,9,11,12,13,14,15,16];
+                $kode_kelompok = $result->trans_data[0]->kode_kelompok;
+                // if( in_array($kode_kelompok, $arr_kode_kelompok) ){
+                //   $status='';
+                // }else{
+                //   $status = 'disabled';
+                // }
+              ?>
+              <input name="metode_bon_karyawan" id="bon_karyawan" type="checkbox" class="ace" value="4" <?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? 'checked' : '' ?> >
+              <span class="lbl"> Internal / Karyawan &nbsp;&nbsp; </span>
+            </label>
+          </div>
+        </div>
+
         <div class="form-group" id="metode_pembayaran_form">
           <label class="control-label col-md-4">Metode Pembayaran</label>
           <div class="col-md-8" style="padding-top: 3px;padding-left: 20px;">
@@ -255,8 +334,8 @@ function sum_total_pembayaran(){
               <span class="lbl"> Kredit &nbsp;&nbsp; </span>
             </label>
             <label>
-              <input name="metode_bon_karyawan" id="bon_karyawan" type="checkbox" class="ace" value="4">
-              <span class="lbl"> Bon Karyawan &nbsp;&nbsp; </span>
+              <input name="hutang_nk" id="hutang_nk" value="" class="ace" type="checkbox" <?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'disabled' ?>>
+              <span class="lbl"> Bon Karyawan</span>
             </label>
           </div>
         </div>
@@ -272,7 +351,7 @@ function sum_total_pembayaran(){
               <!-- hidden total yang harus dibayarkan -->
               <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hidden">
 
-              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" value="" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
+              <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" value="" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" oninput="sum_total_pembayaran()">
             </div>
           </div>
         </div>
@@ -283,7 +362,7 @@ function sum_total_pembayaran(){
           <div class="form-group">
             <label class="control-label col-md-4">Jumlah Pembayaran</label>
             <div class="col-md-8">
-            <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
+            <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" oninput="sum_total_pembayaran()">
             </div>
           </div>
 
@@ -316,7 +395,7 @@ function sum_total_pembayaran(){
           <div class="form-group">
             <label class="control-label col-md-4">Jumlah Pembayaran</label>
             <div class="col-md-8">
-            <input name="jumlah_bayar_kredit" id="jumlah_bayar_kredit" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" onchange="sum_total_pembayaran()">
+            <input name="jumlah_bayar_kredit" id="jumlah_bayar_kredit" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" oninput="sum_total_pembayaran()">
             </div>
           </div>
 
@@ -342,20 +421,20 @@ function sum_total_pembayaran(){
           </div>
         </div>
 
-      <div id="div_bon_karyawan" style="display:none">
+      <div id="div_bon_karyawan" style="<?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'display:none' ?>">
         <hr class="separator">
         <p><b>NOTA KREDIT PERUSAHAAN</b></p>
         <div class="form-group">
           <label class="control-label col-md-4">Total NK Perusahaan</label>
           <div class="col-md-8">
-            <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control uang_dibayarkan format_number" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
+            <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control uang_dibayarkan format_number" type="text" style="text-align: right" oninput="sum_total_pembayaran()" readonly>
           </div>
         </div>
         
         <div class="form-group">
           <label class="control-label col-md-4">Diskon (%) </label>
           <div class="col-md-8">
-            <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" onchange="sum_total_pembayaran()">
+            <input name="jumlah_diskon" id="jumlah_diskon" value="<?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '20' : '' ?>" class="form-control" type="text" style="text-align: right" oninput="sum_total_pembayaran()">
           </div>
         </div>
       </div>
@@ -452,6 +531,7 @@ function sum_total_pembayaran(){
         </tr>
 
       </table>
+      <input type="hidden" name="nominal_diskon" id="nominal_diskon" value="0">
       <hr>
     </div>
     
