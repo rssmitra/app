@@ -324,7 +324,7 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = ($row_list->kode_perusahaan == 120) ? ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>' : ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_poli);
             $row[] = $row_list->nama_pegawai;
             $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
