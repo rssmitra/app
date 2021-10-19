@@ -174,7 +174,7 @@ function saveRow(id_tc_pesanan){
 
       <div class="form-group">
           <label class="control-label col-md-2">Pencarian berdasarkan</label>
-          <div class="col-md-2">
+          <div class="col-md-2" style="margin-right: -40px;">
             <select name="search_by">
               <option value="no_mr">No MR</option>
               <option value="nama">Nama Pasien</option>
@@ -205,9 +205,26 @@ function saveRow(id_tc_pesanan){
           </div>
 
       </div>
+      
+      <div class="form-group">
+
+          <label class="control-label col-md-2">Tanggal Input Perjanjian</label>
+
+          <div class="col-md-2">
+
+            <div class="input-group">
+              <input class="form-control date-picker" name="tgl_input_prj" id="tgl_input_prj" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+              </span>
+            </div>
+
+          </div>
+
+      </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2">Tanggal Booking</label>
+        <label class="control-label col-md-2">Tanggal Kontrol Pasien</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
@@ -261,8 +278,8 @@ function saveRow(id_tc_pesanan){
           <th>Nama Pasien</th>
           <!-- <th>Tujuan Poli</th> -->
           <th>Dokter/Poli/Klinik</th>
-          <th>Tgl Kunjungan</th>
-          <th>No. Telp</th>
+          <th>Tgl Kontrol Pasien</th>
+          <th>No. Telp / HP</th>
           <th>No. SEP</th>
           <th>No Kartu BPJS</th>
           <th>No Surat Kontrol</th>

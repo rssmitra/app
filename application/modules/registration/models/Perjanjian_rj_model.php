@@ -59,6 +59,10 @@ class Perjanjian_rj_model extends CI_Model {
 			}
 		}
 
+		if (isset($_GET['tgl_input_prj']) AND $_GET['tgl_input_prj'] != '') {
+            $this->db->where("CAST(tc_pesanan.input_tgl as DATE) = '".$_GET['tgl_input_prj']."'" );
+		}
+
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
             $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['from_tgl']."'" );
             $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) <= '".$_GET['to_tgl']."'" );
