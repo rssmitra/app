@@ -21,6 +21,31 @@
       $(this).prev().focus();    
 
     });  
+    var oTable;
+    var base_url = $('#dynamic-table').attr('base-url'); 
+
+    oTable = $('#dynamic-table').DataTable({ 
+          
+      "processing": true, //Feature control the processing indicator.
+      "serverSide": true, //Feature control DataTables' server-side processing mode.
+      "ordering": false,
+      "bPaginate": false,
+      "searching": false,
+      "bInfo": false,
+      // Load data for the table's content from an Ajax source
+      "ajax": {
+          "url": base_url,
+          "type": "POST"
+      },
+      "columnDefs": [
+          { 
+            "targets": [ 0 ], //last column
+            "orderable": false, //set not orderable
+          },
+      ],
+
+    });
+    
 
   });
 
@@ -134,13 +159,8 @@
         <th></th>
         <!-- <th>No MR</th>
         <th>Nama Pasien</th> -->
-        <th>Penjamin</th>
         <th>Tujuan</th>
-        <th>Nama Dokter</th>
-        <th>Tanggal</th>
-        <th>No Telp/Hp</th>
-        <!-- <th>No Surat</th> -->
-        <th>Status</th>
+        <th>Tgl Kontrol</th>
         
       </tr>
     </thead>
@@ -185,7 +205,6 @@
 
 </div>
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
 
 
 
