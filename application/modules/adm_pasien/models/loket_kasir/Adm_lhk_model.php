@@ -28,7 +28,7 @@ class Adm_lhk_model extends CI_Model {
 			$this->db->where("CAST(a.tgl_jam as DATE) = '".date('Y-m-d')."'");
 		}
 
-		$this->db->where('a.seri_kuitansi', $_GET['flag']);
+		// $this->db->where('a.seri_kuitansi', $_GET['flag']);
 
 
 		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 120 ) {
