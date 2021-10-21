@@ -318,7 +318,7 @@ class Print_escpos{
         $CI =& get_instance();
         $dt_index = $params['resep'][0];
         $petugas = json_decode($dt_index['created_by']);
-        $p = printer_open("\\\\10.10.10.206\EPSON TM-T88V(tracer obat)");
+        $p = printer_open("\\\\10.10.10.91\EPSON TM-T88V(tracer obat)");
        
         $var_margin_left = 10;
         printer_set_option($p, PRINTER_MODE, "RAW");
