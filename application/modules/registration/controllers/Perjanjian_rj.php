@@ -94,7 +94,7 @@ class Perjanjian_rj extends MX_Controller {
                 }else{
                     $row[] = $this->tanggal->formatDate($row_list->tgl_pesanan);
                 }
-                $row[] = $row_list->tlp_almt_ttp."<br>".$row_list->no_telp;
+                $row[] = $row_list->tlp_almt_ttp."<br>".$row_list->no_telp."<br>".$row_list->no_hp_pasien;
                 if( !isset($_GET['no_mr']) ){
                     $row[] = $row_list->no_sep;
                 }

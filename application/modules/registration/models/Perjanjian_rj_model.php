@@ -25,53 +25,62 @@ class Perjanjian_rj_model extends CI_Model {
 		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr','left');
 		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan','left');
 		$this->db->where('tc_pesanan.tgl_masuk IS NULL');
-		
-		/*if isset parameter*/
-		if(isset($_GET['flag']) AND $_GET['flag']=='bedah'){
-			$this->db->where('tc_pesanan.flag', $_GET['flag']);
-
-		}else if(isset($_GET['flag']) AND $_GET['flag']=='HD'){
-			$this->db->where('tc_pesanan.flag', $_GET['flag']);
-			
-		}else{
-			$this->db->where('tc_pesanan.flag IS NULL');
-		}
 
 		if(isset($_GET['no_mr']) AND $_GET['no_mr']!=0 ){
 			if($_GET['no_mr']!='' or $_GET['no_mr']!=0){
 				$this->db->where('tc_pesanan.no_mr', $_GET['no_mr']);
 			}
 		}
+		
+		/*if isset parameter*/
+		if(isset($_GET['search_by'])) {
 
-		if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
-			$this->db->like('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
-		}
+			if(isset($_GET['flag']) AND $_GET['flag']=='bedah'){
+				$this->db->where('tc_pesanan.flag', $_GET['flag']);
 
-		if(isset($_GET['klinik'])){
-			if($_GET['klinik']!='' or $_GET['klinik']!=0){
-				$this->db->where('tc_pesanan.no_poli', (int)$_GET['klinik']);
+			}else if(isset($_GET['flag']) AND $_GET['flag']=='HD'){
+				$this->db->where('tc_pesanan.flag', $_GET['flag']);
+				
+			}else{
+				$this->db->where('tc_pesanan.flag IS NULL');
 			}
-		}
 
-		if(isset($_GET['dokter']) AND $_GET['dokter']!=0 ){
-			if($_GET['dokter']!='' or $_GET['dokter']!=0){
-				$this->db->where('tc_pesanan.kode_dokter', $_GET['dokter']);
+			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
+				$this->db->like('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
+
+			if(isset($_GET['klinik'])){
+				if($_GET['klinik']!='' or $_GET['klinik']!=0){
+					$this->db->where('tc_pesanan.no_poli', (int)$_GET['klinik']);
+				}
+			}
+
+			if(isset($_GET['dokter']) AND $_GET['dokter']!=0 ){
+				if($_GET['dokter']!='' or $_GET['dokter']!=0){
+					$this->db->where('tc_pesanan.kode_dokter', $_GET['dokter']);
+				}
+			}
+
+			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+				$this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['from_tgl']."'" );
+				$this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) <= '".$_GET['to_tgl']."'" );
+			}
+
+			if (isset($_GET['tgl_input_prj']) AND $_GET['tgl_input_prj'] != '') {
+				$this->db->where("CAST(tc_pesanan.input_tgl as DATE) = '".$_GET['tgl_input_prj']."'" );
+			}
+			
+		}else {
+			$this->db->where("CAST(tc_pesanan.input_tgl as DATE) = '".date('Y-m-d')."'" );
+			// $this->db->where('DAY(tgl_pesanan) >= '.date('d').'');	
+			// $this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
+			// $this->db->where('YEAR(tgl_pesanan) ='.date('Y').'');
 		}
 
-		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['from_tgl']."'" );
-            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) <= '".$_GET['to_tgl']."'" );
-		}
-		else{
-			$this->db->where('DAY(tgl_pesanan) >= '.date('d').'');	
-			$this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
-			$this->db->where('YEAR(tgl_pesanan) ='.date('Y').'');
-		}
 
-        if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {
-            $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) = '".$_GET['tanggal']."'" );
-		}
+        // if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {
+        //     $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) = '".$_GET['tanggal']."'" );
+		// }
         /*end parameter*/
 
 

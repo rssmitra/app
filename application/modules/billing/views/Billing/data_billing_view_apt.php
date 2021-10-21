@@ -56,6 +56,45 @@ function checkedNk(kode) {
 <div class="row">
     <div class="col-xs-12">
         <div class="row">
+
+        <!-- Riwayat Pembayaran Kasir -->
+        <?php if( $data->kasir_data != NULL ) : // if log transaksi kasir ?>
+              <div class="pull-left" style="padding-left: 5%;">
+                <?php echo '<span style="font-weight: bold;">Riwayat Pembayaran Kasir</span>' ?>
+                <table class="table-bordered table-hover" style="color: black; margin-top: 3px; max-width: 80%">
+                  <thead>
+                    <tr>
+                      <?php 
+                        $var_no = 0;
+                        foreach($data->kasir_data as $row_kasir_data) : $var_no++;
+                      ?>
+                      <td class="center" colspan="2" style="padding: 0px 10px !important; text-align: center; font-size: 20px; line-height: 15px; padding-bottom: 5px !important;" width="200px">
+                      <br>
+                        <a href="#" onclick="PopupCenter('billing/Billing/print_preview_apt?kode_trans_far=<?php echo $data->kode_trans_far; ?>', 'Cetak Billing' , 600 , 750);"> <b>Rp <?php echo number_format($row_kasir_data->bill);?>,-</b> </a>
+                        <br>
+                        <span style="font-size: 11px;"><?php echo $this->tanggal->formatDateTime($row_kasir_data->tgl_jam); ?>
+                        <br>
+                        <?php echo $data->kode_trans_far.' - '//.isset($row_kasir_data->fullname)?$row_kasir_data->fullname:'';?></span>
+                      </td>
+                      <?php endforeach; // end foreach row_kasir_data header ?>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="center">
+                      <?php 
+                        $var_no = 0;
+                        foreach($data->kasir_data as $row_kasir_data) : $var_no++;
+                      ?>
+                      <td style="width: 100%">
+                        <a href="#" class="label label-block label-primary" style="width: 100% !important;" onclick="PopupCenter('billing/Billing/print_preview_apt?kode_trans_far=<?php echo $data->kode_trans_far; ?>', 'Cetak Billing' , 600 , 750);">Cetak Ulang Bill</a>
+                      </td>
+                      <?php endforeach; // end foreach row_kasir_data actions ?>
+                    </tr>
+                  </tbody>
+                </table>
+              </div> <!-- end Riwayat Pembayaran Kasir -->
+              <?php endif; //endif log transaksi ?>
+
             <div class="col-xs-12 no-padding">
             <div class="pull-right">
                 Total billing : <br>

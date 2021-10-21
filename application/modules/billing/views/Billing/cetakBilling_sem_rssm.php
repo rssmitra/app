@@ -183,11 +183,11 @@
               if( isset( $_GET['kode_tc_trans_kasir'] ) AND $_GET['kode_tc_trans_kasir'] != NULL ) : 
                 
             ?>
-              <!-- jika ada kode tc trans kasir maka billing difilter berdasarkan kode tc trans kasir -->
+              <!-- jika ada kode tc trans kasir maka billing difilter berdasarkan kode tc trans kasir // jenis_tindakan != 9, tindakan yang bukan BPAKO -->
             <?php 
               // $arr_sum_total = [];
               foreach( $row_s as $value_data ) : 
-                  if( $value_data->kode_tc_trans_kasir == $_GET['kode_tc_trans_kasir'] ) : 
+                  if( $value_data->kode_tc_trans_kasir == $_GET['kode_tc_trans_kasir'] /*&& $value_data->jenis_tindakan != 9*/ ) : 
                     
                     $sign_pay = ($value_data->kode_tc_trans_kasir==NULL)?'#d3d3d321':'#d3d3d321';
                     $checkbox = ($value_data->kode_tc_trans_kasir==NULL)?'<input type="checkbox" name="selected_bill[]" value="'.$value_data->kode_trans_pelayanan.'" checked>':'';
