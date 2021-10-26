@@ -343,7 +343,7 @@ class Eks_poli_model extends CI_Model {
 			$data = array(
 				'prd_dt' => $resData,
 			);
-			echo '<pre>';print_r($getTtl);die;
+			// echo '<pre>';print_r($getTtl);die;
 
 			$fields = array();
 			$title = '<span style="font-size: 16px">Rekapitulasi Kunjungan Berdasarkan Asuransi<br>Periode <b>'.$this->tanggal->formatDateDmy($_GET['from_tgl']).'</b> s.d <b>'.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
@@ -353,11 +353,11 @@ class Eks_poli_model extends CI_Model {
 		if($params['prefix']==7){
 			$data = array();
 			// periode
-			$this->db->select('SUM(bill_dr1) as total_bill_dr');
+			$this->db->select('SUM(bill_dr1) as total_bill_dr, SUM(bill_dr2) as total_bill_dr2, kode_dokter1, kode_dokter2');
 			$this->_main_query();	
-			$this->db->join('mt_dokter_v e ', 'e.kode_dokter=c.kode_dokter','left');
-			$this->db->select('e.kode_dokter, e.nama_pegawai, c.tgl_masuk');	
-
+			$this->db->select('c.tgl_masuk, c.kode_dokter');
+			$this->db->where('c.kode_dokter != 0');
+			$this->db->where('b.jenis_tindakan IN (3,4,12,14)');
 			if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
 				if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
 					$this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');
@@ -377,27 +377,18 @@ class Eks_poli_model extends CI_Model {
 					where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
 			}
 			
-			$this->db->group_by('e.nama_pegawai, e.kode_dokter, c.tgl_masuk');
-			$this->db->order_by('e.nama_pegawai ASC');
+			$this->db->group_by('c.tgl_masuk, kode_dokter1, kode_dokter2, c.kode_dokter');
 			$prd_dt = $this->db->get();
 			// echo '<pre>';print_r($this->db->last_query());die;
 			$getData = [];
 			foreach ($prd_dt->result() as $key => $value) {
-				// nama_pegawai
-				$nama_pegawai = ($value->nama_pegawai != '')?$value->nama_pegawai:0;
-				// if($nama_pegawai !=0){
-					$getData[$nama_pegawai][] = $value->total_bill_dr;
-				// }
-			}
-			$resData = [];
-			foreach ($getData as $k => $v) {
-				$resData[$k] = array('total_biaya' => array_sum($getData[$k]), 'total_kunjungan' => count($getData[$k]));
+				$getData[$value->kode_dokter][] = $value;
 			}
 			
 			$data = array(
-				'prd_dt' => $resData,
+				'prd_dt' => $getData,
 			);
-			echo '<pre>';print_r($resData);die;
+			// echo '<pre>';print_r($getData);die;
 
 			$fields = array();
 			$title = '<span style="font-size: 16px">Rekapitulasi Kinerja Dokter Berdasarkan Kunjungan Periode <b>'.$this->tanggal->formatDateDmy($_GET['from_tgl']).'</b> s.d <b>'.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';

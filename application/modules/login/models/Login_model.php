@@ -27,14 +27,14 @@ class Login_model extends CI_Model {
 
     public function get_hash_password($usr){
         $query = $this->db->select('tmp_user.user_id, tmp_user.email, tmp_user.fullname, tmp_user.username, tmp_user.flag_user, tmp_user.password, tmp_user.last_logon, tmp_user_profile.path_foto')
-                          ->select("STUFF((
+                            ->select("STUFF((
                                   SELECT '/' + tmp_mst_role.name
                                   FROM tmp_user_has_role tuhr
                                   LEFT JOIN tmp_mst_role ON tmp_mst_role.role_id=tuhr.role_id
                                   WHERE user_id = tmp_user.user_id
                                   FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') as role")
-                          ->join('tmp_user_profile','tmp_user_profile.user_id=tmp_user.user_id','left')
-                          ->get_where('tmp_user', array('username' => $usr, 'tmp_user.is_active' => 'Y'))->row();
+                            ->join('tmp_user_profile','tmp_user_profile.user_id=tmp_user.user_id','left')
+                            ->get_where('tmp_user', array('username' => $usr, 'tmp_user.is_active' => 'Y'))->row();
                           // print_r($query);die;
         if($query){
             return $query;

@@ -17,6 +17,8 @@ $(document).ready(function() {
       "ordering": false,
       "searching": true,
       "pageLength": 25,
+      "scrollY": "600px",
+      "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
       // Load data for the table's content from an Ajax source
       "ajax": {
           "url": base_url,
@@ -24,6 +26,7 @@ $(document).ready(function() {
       },
 
     });
+    
 
     $('#dynamic-table tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('selected') ) {

@@ -46,6 +46,7 @@ function getMenuTabs(link, tabs_id)
         type: "POST",
         beforeSend: function() {
             //achtungShowLoader();
+            $('#'+tabs_id+'').html('Loading...');
           },
         error: function(xhr)
         { 

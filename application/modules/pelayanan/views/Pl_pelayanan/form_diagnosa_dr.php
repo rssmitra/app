@@ -202,27 +202,6 @@
     </div>
 </div>
 
-<!-- <div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?>>
-    <div style="margin-top: 6px; padding: 5px !important; padding-left:12px !important" class="col-md-6 no-padding">
-        <label for="form-field-8">Cari Nama Obat<span style="color:red">* : </span></label>
-        <input type="text" class="inputKeyObat form-control" name="keyword_obat[]" id="keyword_obat1" placeholder="Masukan keyword obat" value="">
-    </div>
-    <div style="margin-top: 6px; padding: 5px !important" class="col-md-2 no-padding">
-        <label for="form-field-8">Dosis<span style="color:red">* : </span></label>
-        <input type="text" class="form-control" name="dosis" id="dosis" value="" placeholder="EX. 3 x 1">
-    </div>
-    <div style="margin-top: 6px; padding: 5px !important" class="col-md-2 no-padding">
-        <label for="form-field-8">Jumlah<span style="color:red">* : </span></label>
-        <input type="text" class="form-control" name="jumlah_obat" id="jumlah_obat" value="" placeholder="ex. 10 TAB" style="text-transform: uppercase">
-    </div>
-    <div style="margin-top: 35px; margin-left: -2px" class="col-md-1 no-padding">
-        <a href="#" class="btn btn-xs btn-primary" onClick="tambah_file()"><i class="fa fa-plus"></i></a>
-    </div>
-</div>
-
-<div id="clone_form_dokter">
-    <div id="input_file<?php echo $j;?>"></div>
-</div> -->
 
 <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i> PENUNJANG MEDIS </b></p>

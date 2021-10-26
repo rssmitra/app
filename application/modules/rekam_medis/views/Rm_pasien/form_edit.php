@@ -1,141 +1,9 @@
-<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
-<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
-
-<script type="text/javascript">
-  
-  $('#diagnosa_akhir').typeahead({
-      source: function (query, result) {
-          $.ajax({
-              url: "templates/references/getICD10",
-              data: 'keyword=' + query,            
-              dataType: "json",
-              type: "POST",
-              success: function (response) {
-                result($.map(response, function (item) {
-                      return item;
-                  }));
-                
-              }
-          });
-      },
-      afterSelect: function (item) {
-        // do what is needed with item
-        var label_item=item.split(':')[1];
-        var val_item=item.split(':')[0];
-        console.log(val_item);
-        $('#diagnosa_akhir').val(label_item);
-        $('#diagnosa_akhir_hidden').val(val_item);
-      }
-
-  });
-
-</script>
 <script>
-function preventDefault(e) {
-  e = e || window.event;
-  if (e.preventDefault)
-      e.preventDefault();
-  e.returnValue = false;  
-}
-
-function deactive_form(id){
-  preventDefault();
-  document.getElementById('subtotal_tindakan_'+id+'').value = 0;
-  document.getElementById('subtotal_tindakan_'+id+'').readonly = true;
-  document.getElementById('nama_tindakan_'+id+'').disabled = true;
-  total_sum_parent('subtotal_tindakan');
-  executeChange(id);
-}
-
-function actived_form(id){
-  preventDefault();
-  document.getElementById('subtotal_tindakan_'+id+'').readonly = false;
-  document.getElementById('nama_tindakan_'+id+'').disabled = false;
-  document.getElementById('subtotal_tindakan_'+id+'').value = document.getElementById('subtotal_ori_'+id+'').value;
-  total_sum_parent('subtotal_tindakan');
-  executeChange(id);
-}
-
-function executeChange(id){
-  total_sum_parent('subtotal_tindakan');
-  var jenis_tindakan = document.getElementById("jenis_tindakan_"+id+"").value;
-  var kode_bagian = document.getElementById("kode_bagian_"+id+"").value;
-  var subtotal = document.getElementById("subtotal_tindakan_"+id+"").value;
-  resumeBilling(jenis_tindakan, kode_bagian, subtotal);
-}
-
-function total_sum_parent(classname){
-  var items = document.getElementsByClassName(""+classname+"");
-  var itemCount = items.length;
-  var total = 0;
-  for(var i = 0; i < itemCount; i++)
-  {
-     total = total +  parseInt(items[i].value);
-  }
-  document.getElementById(classname).value = total;
-  document.getElementById("total_resume").value = total;
-}
-
-function total_resume_billing(classname){
-  var items = document.getElementsByClassName(""+classname+"");
-  var itemCount = items.length;
-  var total = 0;
-  for(var i = 0; i < itemCount; i++)
-  {
-     total = total +  parseInt(items[i].value);
-  }
-  return total;
-}
-
-function resumeBilling(jenis_tindakan, kode_bagian, subtotal){
-  /*dokter*/
-    if (jenis_tindakan==12) {
-      bill_dr = total_resume_billing("jenis_tindakan_"+jenis_tindakan+"");
-      document.getElementById("bill_dr").value = bill_dr;
-    }
-  /*obat farmasi*/
-    if (jenis_tindakan==11) {
-      bill_far = total_resume_billing("jenis_tindakan_"+jenis_tindakan+"");
-      document.getElementById("bill_far").value = bill_far;
-    }
-  /*adm*/
-    if (jenis_tindakan==2 || jenis_tindakan==13) {
-      bill_adm = total_resume_billing("jenis_tindakan_"+jenis_tindakan+"");
-      document.getElementById("bill_adm").value = bill_adm;
-    }
-  /*pm*/
-    str_pm = kode_bagian.substring(0,2);
-    if(str_pm == '05'){
-        if (jenis_tindakan==3) {
-            bill_pm = total_resume_billing("jenis_tindakan_"+jenis_tindakan+"");
-            document.getElementById("bill_pm").value = bill_pm;
-        }
-    }else{
-        var bill_pm = 0;
-        /*tindakan*/
-        if (jenis_tindakan==3) {
-            bill_tindakan = total_resume_billing("jenis_tindakan_"+jenis_tindakan+"");
-            document.getElementById("bill_tindakan").value = bill_tindakan;
-        }
-    }
-    
-}
-
-jQuery(function($) {
-
-  $('.date-picker').datepicker({
-    autoclose: true,
-    todayHighlight: true
-  })
-  //show datepicker when clicking on the icon
-  .next().on(ace.click_event, function(){
-    $(this).prev().focus();
-  });
-});
 
 $(document).ready(function(){
     
+    $('#tabs_detail_pasien').load('rekam_medis/Rm_pasien/form_diagnosa/'+$('#no_registrasi_hidden').val()+'');
+
     $('#form_rm_pasien').ajaxForm({
       beforeSend: function() {
         achtungShowLoader();  
@@ -156,55 +24,31 @@ $(document).ready(function(){
       }
     }); 
 
-    $('select[name="poliklinik"]').change(function () {      
-        var text_label_poli = $('select[name="poliklinik"] option:selected').text();
-        $('#csm_rp_bagian').val(text_label_poli);
-        $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {  
-            $('#select_dokter option').remove();  
-            $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));
-            $.each(data, function (i, o) {        
-                $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));       
-            });   
-        });    
+    
+    $('#btn_barcode_pasien').click(function (e) {   
+      var no_mr = $('#no_mr').val();
+      if( no_mr == '' ){
+        alert('Silahkan cari pasien terlebih dahulu !'); return false;
+      }else{
+        url = 'registration/Reg_pasien/barcode_pasien/'+no_mr+'/1';
+        title = 'Cetak Barcode';
+        width = 600;
+        height = 450;
+        PopupCenter(url, title, width, height);
+      }
+    });
 
-    }); 
-
-    $('select[name="select_dokter"]').change(function () {      
-        var text_label_dr = $('select[name="select_dokter"] option:selected').text();
-        $('#csm_rp_nama_dokter').val(text_label_dr); 
-    }); 
 
 })
 
-function hapus_file(a, b)
+function get_riwayat_medis(){
 
-{
-
-  if(b != 0){
-    $.getJSON("<?php echo base_url('posting/delete_file') ?>/" + b, '', function(data) {
-        document.getElementById("file"+a).innerHTML = "";
-        greatComplate(data);
-    });
-  }else{
-    y = a ;
-    document.getElementById("file"+a).innerHTML = "";
-  }
-
+noMr = $('#no_mr').val();
+if (noMr == '') {
+  alert('Silahkan cari pasien terlebih dahulu !'); return false;
+}else{
+  getMenuTabs('registration/Reg_pasien/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
 }
-
-counterfile = <?php $j=1;echo $j.";";?>
-
-function tambah_file()
-
-{
-
-counternextfile = counterfile + 1;
-
-counterIdfile = counterfile + 1;
-
-document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='col-md-2'>&nbsp;</label><div class='col-md-2'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><label class='control-label col-md-1'>Pilih File</label><div class='col-md-3'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1' style='margin-left:-2.5%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\"></div>";
-
-counterfile++;
 
 }
 
@@ -220,134 +64,63 @@ counterfile++;
   </h1>
 </div><!-- /.page-header -->
 
+<!-- PAGE CONTENT BEGINS -->
+<div class="invisible">
+  <button data-target="#sidebar2" data-toggle="collapse" type="button" class="pull-left navbar-toggle collapsed">
+    <span class="sr-only">Toggle sidebar</span>
+    <i class="ace-icon fa fa-dashboard white bigger-125"></i>
+  </button>
+
+  <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
+    <div class="center">
+      <ul class="nav nav-list">
+        <li class="hover">
+          <a href="#" data-toggle="tab" onclick="getMenuTabs('rekam_medis/Rm_pasien/form_diagnosa/<?php echo $no_registrasi; ?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-home bigger-150"></i><span class="menu-text"> Form Resume</span></a><b class="arrow"></b>
+        </li>
+        <li class="hover">
+          <a href="#" data-toggle="tab" id="btn_barcode_pasien"><i class="menu-icon fa fa-barcode"></i><span class="menu-text"> Barcode </span></a><b class="arrow"></b>
+        </li>
+        <li class="hover">
+          <a data-toggle="tab" id="tabs_rekam_medis_id" href="#" data-id="0" data-url="registration/reg_pasien/get_riwayat_medis" onclick="get_riwayat_medis()"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Rekam Medis </span></a><b class="arrow"></b>
+        </li>
+
+        <li class="hover">
+          <a data-toggle="tab" href="#" data-id="75780" data-url="" id="tabs_rekam_medis" onclick="getMenuTabs('rekam_medis/File_rm/index/<?php echo $reg->no_mr?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> E R M  </span></a><b class="arrow"></b>
+        </li>
+
+        <li class="hover">
+          <a data-toggle="tab" id="tabs_riwayat_kunjungan_id" href="#" data-id="0" data-url="registration/reg_pasien/riwayat_kunjungan" onclick="getMenuTabs('rekam_medis/Rm_pasien/riwayat_kunjungan/<?php echo $reg->no_mr?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-leaf"></i><span class="menu-text"> Kunjungan </span></a><b class="arrow"></b>
+        </li>
+        <li class="hover">
+          <a data-toggle="tab" data-id="0" data-url="registration/reg_pasien/riwayat_perjanjian" id="tabs_riwayat_perjanjian_id" href="#" onclick="getMenuTabs('registration/reg_pasien/riwayat_perjanjian/<?php echo $reg->no_mr?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> Riwayat Perjanjian </span></a><b class="arrow"></b>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-xs-12">
     <!-- PAGE CONTENT BEGINS -->
       <div class="widget-body">
         <div class="widget-main no-padding">
-          <form class="form-horizontal" method="post" id="form_rm_pasien" action="<?php echo site_url('casemix/Csm_billing_pasien/process')?>" enctype="multipart/form-data">
-            <br>
-            <b><h4>DATA REGISTRASI PASIEN</h4></b>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">No. Registrasi</label>
-              <div class="col-md-1">
-                <input name="no_registrasi" id="no_registrasi" value="<?php echo $reg->no_registrasi?>" class="form-control" type="text" readonly>
-              </div>
-              <label class="control-label col-md-1">No. MR</label>
-              <div class="col-md-2">
-                <input name="csm_rp_no_mr" id="csm_rp_no_mr" value="<?php echo $reg->csm_rp_no_mr?>" class="form-control" type="text">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">Nama Pasien</label>
-              <div class="col-md-4">
-                <input name="csm_rp_nama_pasien" id="csm_rp_nama_pasien" value="<?php echo $reg->csm_rp_nama_pasien?>" placeholder="" class="form-control" type="text" >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">No. SEP</label>
-              <div class="col-md-3">
-                <input name="csm_rp_no_sep" id="csm_rp_no_sep" value="<?php echo $reg->csm_rp_no_sep?>" class="form-control" type="text">
-              </div>
-            </div>
-
-            
-            <div class="form-group">
-              <label class="control-label col-md-2">Tanggal Masuk</label>
-                <div class="col-md-2">
-                  <div class="input-group">
-                    <input class="form-control date-picker" name="csm_rp_tgl_masuk" id="csm_rp_tgl_masuk" type="text" data-date-format="yyyy-mm-dd" value="<?php echo $reg->csm_rp_tgl_masuk?>"/>
-                    <span class="input-group-addon">
-                      <i class="fa fa-calendar bigger-110"></i>
-                    </span>
-                  </div>
-                </div>
-
-                <label class="control-label col-md-2">Tanggal Keluar</label>
-                <div class="col-md-2">
-                  <div class="input-group">
-                    <input class="form-control date-picker" name="csm_rp_tgl_keluar" id="csm_rp_tgl_keluar" type="text" data-date-format="yyyy-mm-dd" value="<?php echo $reg->csm_rp_tgl_keluar?>"/>
-                    <span class="input-group-addon">
-                      <i class="fa fa-calendar bigger-110"></i>
-                    </span>
-                  </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">Poli/Klinik</label>
-              <div class="col-md-4">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'status_aktif' => 1)), isset($reg->csm_rp_kode_bagian)?$reg->csm_rp_kode_bagian:'' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
-                <input name="csm_rp_bagian" id="csm_rp_bagian" value="<?php echo $reg->csm_rp_bagian?>" class="form-control" type="hidden">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">Dokter</label>
-              <div class="col-md-4">
-                <?php echo $this->master->get_change($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), isset($reg->csm_rp_kode_dokter)?$reg->csm_rp_kode_dokter:'' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
-                <input name="csm_rp_nama_dokter" id="csm_rp_nama_dokter" value="<?php echo $reg->csm_rp_nama_dokter?>" placeholder="" class="form-control" type="hidden" >
-              </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-md-2" for="">Diagnosa <span style="color:red">(*)</span></label>
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" name="diagnosa_akhir" id="diagnosa_akhir" placeholder="Masukan keyword ICD 10" value="<?php echo isset($value->diagnosa_akhir)?$value->diagnosa_akhir:''?>">
-                  <input type="hidden" class="form-control" name="diagnosa_akhir_hidden" id="diagnosa_akhir_hidden" value="<?php echo isset($value->kode_icd_diagnosa)?$value->kode_icd_diagnosa:''?>">
-                  <input type="hidden" class="form-control" name="kode_riwayat_hidden" id="kode_riwayat_hidden" value="<?php echo isset($value->kode_riwayat)?$value->kode_riwayat:''?>">
-                </div>
-            </div>
-
-            <hr>
-            <b><h4>DOKUMEN KLAIM TAMBAHAN</h4></b>
-            <div class="form-group">
-              <label class="control-label col-md-2">Nama Dokumen</label>
-              <div class="col-md-2">
-                <input name="pf_file_name[]" id="pf_file_name" class="form-control" type="text">
-              </div>
-              <label class="control-label col-md-1">Pilih File</label>
-              <div class="col-md-3">
-                <input type="file" id="pf_file" name="pf_file[]" class="upload_file form-control"/>
-              </div>
-              <div class ="col-md-1" style="margin-left:-2.5%">
-                <input onClick="tambah_file()" value="+" type="button" class="btn btn-sm btn-info" />
-              </div>
-            </div>
-
-            <div id="input_file<?php echo $j;?>"></div>
-            
-            <b><h4>DOKUMEN UPLOAD</h4></b>
-            <?php echo $attachment; ?>
-
+          <form class="form-horizontal" method="post" id="form_rm_pasien" action="<?php echo site_url('rekam_medis/Rm_pasien/process')?>" enctype="multipart/form-data">
+          <!-- <p><b><i class="fa fa-user"></i> REGISTRASI PASIEN </b></p> -->
+            <p style="margin-top: 20px">
+              <span style="font-size: 14px; font-weight: bold"><?php echo $reg->no_mr.' - '.$reg->nama_pasien?></span><br>
+                No Registrasi. <span><?php echo $reg->no_registrasi; ?></span> &nbsp;&nbsp;&nbsp; Tgl. <?php echo $this->tanggal->formatDateTime($reg->tgl_jam_masuk)?><br>
+                <?php echo strtoupper($reg->nama_bagian); ?><br>
+                <?php echo strtoupper($reg->nama_pegawai); ?>
+            </p>
+            <!-- hidden form -->
+            <input name="no_mr" id="no_mr" value="<?php echo $reg->no_mr?>" class="form-control" type="hidden">
+            <input name="nama_pasien" id="nama_pasien" value="<?php echo $reg->nama_pasien?>" placeholder="" class="form-control" type="hidden" >
             <input name="no_registrasi_hidden" id="no_registrasi_hidden" value="<?php echo $no_registrasi?>" class="form-control" type="hidden">
             <input name="form_type" id="form_type" value="RJ" class="form-control" type="hidden">
 
-            <br><br>
-            <div class="form-actions center">
 
-              <a onclick="getMenu('rekam_medis/Rm_pasien')" href="#" class="btn btn-sm btn-success">
-                <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
-                Kembali ke daftar
-              </a>
-              <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info" value="submit">
-                <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-                Submit
-              </button>
-
-              <button type="submit" id="btnUpdateDokKlaim" name="submit" class="btn btn-sm btn-warning" value="update_dok_klaim">
-                <i class="ace-icon fa fa-files-o icon-on-right bigger-110"></i>
-                Update Dokumen Klaim
-              </button>
-
-              <a href="<?php echo base_url()?>casemix/Csm_billing_pasien/mergePDFFiles/<?php echo isset($reg->no_registrasi)?$reg->no_registrasi:''?>/RJ" target="_blank"  class="btn btn-sm btn-danger">
-                <i class="ace-icon fa fa-pdf-file icon-on-right bigger-110"></i>
-                Merge PDF Files
-              </a>
-            </div>
+            <div id="tabs_detail_pasien" style="margin-top: 20px"></div>
+            
           </form>
         </div>
       </div>

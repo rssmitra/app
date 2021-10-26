@@ -112,7 +112,7 @@ class Reg_klinik extends MX_Controller {
             $data['no_mr'] = $_GET['mr'];
             $data['is_new'] = $_GET['is_new'];
         }
-        //echo'<pre>';print_r($data);die;
+        // echo'<pre>';print_r($this->session->all_userdata());die;
         /*load view index*/
         
         $this->load->view('Reg_klinik/index', $data);

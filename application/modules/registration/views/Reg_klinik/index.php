@@ -1221,6 +1221,7 @@ function get_riwayat_medis(){
     alert('Silahkan cari pasien terlebih dahulu !'); return false;
   }else{
     getMenuTabs('registration/Reg_pasien/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
+    // getMenuTabs('templates/References/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
   }
 
 }

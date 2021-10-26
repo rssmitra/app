@@ -96,7 +96,7 @@ class Tracer extends MX_Controller {
             $row[] = '<div class="center">'.strtoupper($row_list->stat_pasien).'</div>';
             if($is_kiosk == 2){
                 if(in_array($row_list->kode_bagian_tujuan, array('050101','050201','050301'))){
-                    $row[] = '<div class="center"><span class="label label-success">print barcode</span></div>';
+                    $row[] = '<div class="center" style="cursor: pointer !important"><span class="label label-success" onclick="PopupCenter('."'".base_url()."registration/Reg_pasien/barcode_pasien/".$row_list->no_mr."/1'".', '."'PRINT BARCODE'".', 350, 500)">print barcode</span></div>';
                 }else{
                     $row[] = '<div class="center"><span class="red" style="font-weight: bold">-no tracer-</span></div>';
                 }

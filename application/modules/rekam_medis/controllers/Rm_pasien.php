@@ -17,7 +17,11 @@ class Rm_pasien extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Rm_pasien_model', 'Rm_pasien');
+        $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         $this->load->model('casemix/Csm_billing_pasien_model', 'Csm_billing_pasien');
+        /*load module*/
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
         /*enable profiler*/
         $this->output->enable_profiler(false);
 
@@ -34,53 +38,133 @@ class Rm_pasien extends MX_Controller {
         $this->load->view('Rm_pasien/index', $data);
     }
 
-    public function editBilling($no_registrasi, $tipe)
+    public function form($no_registrasi, $tipe='RJ')
     {
         /*breadcrumbs for view*/
         $this->breadcrumbs->push('Edit function', 'Rm_pasien/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$no_registrasi);
         /*define data variabel*/
+        $registrasi = $this->Csm_billing_pasien->get_by_id($no_registrasi);
         /*load form view*/
-        $view_name = ($tipe=='RJ')?'form_edit':'form_edit_ri';
-        $title_name = ($tipe=='RJ')?'Rawat Jalan':'Rawat Inap';
         $data['no_registrasi'] = $no_registrasi;
-        $data['form_type'] = $tipe;
-        $data['value'] = $this->Csm_billing_pasien->get_by_id($no_registrasi);
-        $data['title'] = 'Resume Medis Pasien '.$title_name.'';
+        $data['value'] = $registrasi;
+        $data['title'] = 'Resume Medis Pasien';
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['reg'] = $this->Rm_pasien->get_by_id($no_registrasi);
+        //echo '<pre>';print_r($data);die;
+        $this->load->view('Rm_pasien/form_edit', $data);
+    }
+
+    public function form_diagnosa($no_registrasi, $tipe='RJ')
+    {
+        /*breadcrumbs for view*/
+        $this->breadcrumbs->push('Edit function', 'Rm_pasien/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$no_registrasi);
+        /*define data variabel*/
+        $registrasi = $this->Csm_billing_pasien->get_by_id($no_registrasi);
+        /*load form view*/
+        $data['no_registrasi'] = $no_registrasi;
+        $data['riwayat'] = $this->Rm_pasien->get_riwayat_pasien_by_id($registrasi);
+        $data['value'] = $registrasi;
+        $data['title'] = 'Resume Medis Pasien';
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         $data['attachment'] = $this->upload_file->CsmgetUploadedFile($no_registrasi);
+        $data['reg'] = $this->Rm_pasien->get_by_id($no_registrasi);
         //echo '<pre>';print_r($data);die;
-        /*get data trans pelayanan by no registrasi from sirs*/
-        $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        //echo '<pre>';print_r($sirs_data);die;
-        /*cek apakah data sudah pernah diinsert ke database atau blm*/
-        if( $this->Csm_billing_pasien->checkExistingData($no_registrasi) ){
+        $this->load->view('Rm_pasien/form_diagnosa', $data);
+    }
+
+    public function riwayat_kunjungan($no_mr, $kode_bagian='') { 
+        
+        $data = [
+            'no_mr' => $no_mr,
+            'kode_bagian' => $kode_bagian,
+        ];
+        $this->load->view('Rm_pasien/tab_riwayat_kunjungan', $data);
+    
+    }
+
+    public function get_riwayat_pasien() { 
+        
+        /*define variable data*/
+        
+        $mr = $this->input->get('mr');
+
+        /*return search pasien*/
+        $data = array();
+        $output = array();
+
+        $column = array('tc_kunjungan.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_perusahaan','tc_kunjungan.tgl_masuk','mt_dokter_v.nama_pegawai','mt_bagian.nama_bagian','tc_kunjungan.tgl_keluar','tc_kunjungan.kode_bagian_tujuan','mt_perusahaan.nama_perusahaan','tc_kunjungan.no_kunjungan', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.no_mr');
+
+        $list = $this->Reg_pasien->get_riwayat_pasien( $column, $mr ); 
+
+        $no = 0;
+
+        $atts = array('width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
+            );
+
+        foreach ($list as $row_list) {
             
-        }else{
-        /*jika data belum ada atau belum pernah diinsert, maka insert ke table*/
-            /*insert data untuk pertama kali*/
-            if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
-            $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
+            $no++;
+            
+            $row = array();
 
-        }
+            /*status pasien*/
+            $status = ($row_list->tgl_keluar==NULL)?'<div class="center"><label class="label label-danger">Proses Menunggu...</label></div>':'<div class="center"><label class="label label-success">Sudah Pulang</label></div>';  
+            $status_icon = ($row_list->tgl_keluar==NULL)?'<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>':'<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';  
 
-    //    echo '<pre>';print_r($data);die;
-        /*no action if data exist, continue to view data*/
-        $dataBilling = $this->Csm_billing_pasien->getBillingDataLocal($no_registrasi, $tipe);
-        $data['reg'] = (count($dataBilling['reg_data']) > 0) ? $dataBilling['reg_data'] : [] ;
-        if( $tipe=='RJ' ){
-            $group = array();
-            foreach ($dataBilling['billing'] as $value) {
-                /*group berdasarkan nama jenis tindakan*/
-                $group[$value->csm_bp_nama_jenis_tindakan][] = $value;
+            $delete_registrasi = ($row_list->tgl_keluar==NULL)?'<li><a href="#" onclick="delete_registrasi('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Hapus</a></li>':'';  
+            
+            /*btn hasil pm*/
+            $subs_kode_bag = substr($row_list->kode_bagian_tujuan, 0,2);
+            $btn_view_hasil_pm = ($subs_kode_bag=='05')?'<li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_view_hasil_pm/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".', '."'HASIL PENUNJANG MEDIS (".$row_list->nama_bagian.")'".')">Lihat Hasil '.$row_list->nama_bagian.'</a></li>':'';
+            $btn_print_out_checklist_mcu = '';
+            /*btn for medical checkup*/
+            if( $row_list->kode_bagian_tujuan=='010901' ){
+                /*get data from trans_pelayanan*/
+                $dt_trans_mcu = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $row_list->no_registrasi, 'no_kunjungan' => $row_list->no_kunjungan) )->row();
+                $btn_print_out_checklist_mcu = '<li><a href="#" onclick="PopupCenter('."'registration/Reg_mcu/print_checklist_mcu?kode_tarif=".$dt_trans_mcu->kode_tarif."&nama=".$dt_trans_mcu->nama_pasien_layan."&no_mr=".$dt_trans_mcu->no_mr."&no_reg=".$row_list->no_registrasi."'".', '."'FORM CHEKLIST MCU'".', 850, 500)">Cetak Form Cheklist MCU</a></li>';
             }
-            $data['group'] = $group;
-            $data['resume'] = $dataBilling['resume'];
-        }else{
-            $data['content_view'] = $this->Csm_billing_pasien->getDetailBillingRI($no_registrasi, $tipe, $sirs_data);
+
+            if($row_list->nama_perusahaan==''){
+                $penjamin = 'Umum';
+            }else if(($row_list->nama_perusahaan!='') AND ($row_list->kode_perusahaan==120) AND ($row_list->no_sep!='')){
+                $penjamin = $row_list->nama_perusahaan.' ('.$row_list->no_sep.')';
+            }else{
+                $penjamin = $row_list->nama_perusahaan;
+            }
+
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">
+                            <li><a href="#" onclick="PopupCenter('."'registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama=".$row_list->nama_pasien."&no_mr=".$row_list->no_mr."&no_reg=".$row_list->no_registrasi."&poli=".$row_list->nama_bagian."&dokter=".$row_list->nama_pegawai."&nasabah=".$penjamin."'".', '."'FORM BUKTI PENDAFTARAN PASIEN'".', 950, 550)">Cetak Bukti Pendaftaran</a></li>
+                            <li>'.anchor_popup('registration/reg_pasien/tracer/'.$row_list->no_registrasi.'/'.$mr.'', 'Cetak Tracer', $atts).'</li>
+                            <li class="divider"></li>
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
+                        </ul>
+                    </div></div>';
+
+            
+            $nama_dokter = ($row_list->nama_pegawai != '') ? $row_list->nama_pegawai.'<br>' : '' ;
+
+            $row[] = '<div class="center">'.$row_list->no_registrasi.'</div>';
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
+            $row[] = ucwords($row_list->nama_bagian);
+            $row[] = $row_list->nama_pegawai;
+            $row[] = $penjamin;
+            $row[] = $status;
+
+            // $row[] = anchor_popup('registration/reg_pasien/tracer/'.$row_list->no_registrasi.'/'.$mr.'', '<div class="center"><button class="btn btn-xs btn-inverse" ><i class="fa fa-print"></i></button></div>', $atts);
+          
+            $data[] = $row;
+        
         }
 
-        //echo '<pre>';print_r($data);die;
-        $this->load->view('Rm_pasien/'.$view_name.'', $data);
+        $output = array( "draw" => $_POST['draw'], "recordsTotal" => count($list), "recordsFiltered" => $this->Reg_pasien->count_filtered_riwayat_pasien( $column, $mr ), "data" => $data );
+
+        echo json_encode( $output );
+    
     }
 
     public function get_data()
@@ -92,23 +176,13 @@ class Rm_pasien extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                      </div>';
-            $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'rekam_medis/Rm_pasien/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')">'.$row_list->no_registrasi.'</a></div>';
-            $row[] = $row_list->csm_rp_no_sep;
-            $row[] = $row_list->csm_rp_no_mr;
-            $row[] = strtoupper($row_list->csm_rp_nama_pasien);
-            $row[] = strtoupper($row_list->csm_rp_bagian);
-            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
-            $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
-
-            $row[] = '<div class="center">'.$row_list->csm_rp_tipe.'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
-            $row[] = $this->tanggal->formatDate($row_list->created_date).'<br>by : '.$row_list->created_by;
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'".'rekam_medis/Rm_pasien/form/'.$row_list->no_registrasi.''."'".')">'.$row_list->no_registrasi.'</a></div>';
+            $row[] = $row_list->no_mr;
+            $row[] = strtoupper($row_list->nama_pasien);
+            $row[] = strtoupper($row_list->nama_bagian);
+            $row[] = $row_list->nama_pegawai;
+            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->tgl_jam_masuk);
             $data[] = $row;
         }
         $output = array(
@@ -205,6 +279,103 @@ class Rm_pasien extends MX_Controller {
 
         //output to json format
         return $html;
+    }
+
+    public function process()
+    {
+        echo '<pre>';print_r($_POST);die;
+
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+        $val->set_rules('no_registrasi', 'No Registrasi', 'trim|required', array('required' => 'Nomor Registrasi tidak ditemukan'));
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+            $no_registrasi = ($this->input->post('no_registrasi_hidden'))?$this->regex->_genRegex($this->input->post('no_registrasi_hidden'),'RGXINT'):0;
+
+            // update riwayat pasien
+            $riwayat_diagnosa = array(
+                'diagnosa_awal' => $this->input->post('pl_diagnosa'),
+                'anamnesa' => $this->input->post('pl_anamnesa'),
+                'pengobatan' => $this->input->post('pl_pengobatan'),
+                'pemeriksaan' => $this->input->post('pl_pemeriksaan'),
+                'diagnosa_akhir' => $this->input->post('pl_diagnosa'),
+                'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
+                'tinggi_badan' => (float)$this->input->post('pl_tb'),
+                'tekanan_darah' => (float)$this->input->post('pl_td'),
+                'berat_badan' => (float)$this->input->post('pl_bb'),
+                'suhu' => (float)$this->input->post('pl_suhu'),
+                'nadi' => (float)$this->input->post('pl_nadi'),
+            );
+
+            $this->db->where(array('kode_riwayat' => $this->input->post('kode_riwayat') ))->update('th_riwayat_pasien', $riwayat_diagnosa );
+
+            // upload dokumen medis tambahan
+            /*insert dokumen adjusment*/
+            if(isset($_FILES['pf_file'])){
+                $this->upload_file->CsmdoUploadMultiple(array(
+                    'name' => 'pf_file',
+                    'path' => 'uploaded/casemix/log/',
+                    'ref_id' => $no_registrasi,
+                    'ref_table' => 'csm_dokumen_export',
+                    'flag' => 'dokumen_export',
+                ));
+            }
+
+            // update dokumen
+            $type = $this->input->post('form_type');
+            $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
+            
+            foreach ($createDocument as $k_cd => $v_cd) {
+                # code...
+                $explode = explode('-', $v_cd);
+                /*explode result*/
+                $named = str_replace('BILL','',$explode[0]);
+                $no_mr = $explode[1];
+                $exp_no_registrasi = $explode[2];
+                $unique_code = $explode[3];
+
+                /*create and save download file pdf*/
+                if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
+                /*save document to database*/
+                /*csm_reg_pasien*/
+                $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+                
+                $doc_save = array(
+                    'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+                    'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+                    'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+                    'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                );
+                $doc_save['created_date'] = date('Y-m-d H:i:s');
+                $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                /*check if exist*/
+                if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+                    $this->db->insert('csm_dokumen_export', $doc_save);
+                }
+                endif;
+                /*insert database*/
+            }
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.''));
+            }
+            
+        }
     }
 
 

@@ -18,9 +18,9 @@
 
   $('#btn_search_data').click(function (e) {
       e.preventDefault();
-      achtungShowLoader();  
+      // achtungShowLoader();  
       
-
+      $('#contentPage').html('Loading...');
       $.getJSON('eksekutif/Eks_poli/get_content_page', $('#form_search').serialize(), function(response_data) {
         html = '';
         $.each(response_data, function (i, o) {
@@ -41,7 +41,7 @@
           });
           $('#contentPage').html(html);
       });
-      achtungHideLoader();
+      // achtungHideLoader();
   });
 
   function show_detail(flag){

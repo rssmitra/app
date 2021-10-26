@@ -169,6 +169,7 @@ class Csm_billing_pasien extends MX_Controller {
                     $newId = $no_registrasi;
                     $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc), 'no_registrasi');
                 }
+
                 $this->db->update('csm_reg_pasien', array('is_submitted' => 'Y') , array('no_registrasi' => $no_registrasi));
                 
                 // update diagnosa
@@ -216,6 +217,7 @@ class Csm_billing_pasien extends MX_Controller {
                 $this->db->trans_commit();
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.''));
             }
+            
         }
     }
 
