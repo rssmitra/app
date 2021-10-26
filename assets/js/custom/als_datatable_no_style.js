@@ -13,6 +13,7 @@ $(document).ready(function() {
       "serverSide": true, //Feature control DataTables' server-side processing mode.
       "ordering": false,
       "paging": false,
+      "scrollY": "600px",
       // Load data for the table's content from an Ajax source
       "ajax": {
           "url": base_url+'/get_data',

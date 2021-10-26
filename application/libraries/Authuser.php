@@ -360,25 +360,17 @@ final Class Authuser {
         return $btn;
     }
 
-    function get_user_description(){
-
-        $this->db->from('m_user');
-        $this->db->join('m_role', 'm_role.id_role=m_user.id_role','left');
-        $this->db->where(array('id_user'=>$this->session->userdata('data_user')->id_user));
-        $value = $this->db->get()->row();
-        
-        $field = 'Anda login sebagai, ';
-        if( $this->session->userdata('data_user')->id_role == 5 ){
-            $field .= '<strong><i> Puskesmas : '.ucwords($value->nama_puskesmas_kab).' || Kab/Kota : '.ucwords($value->nama_kabupaten).' || Provinsi : '.ucwords($value->nama_provinsi).'</strong></i>';
-        }elseif( $this->session->userdata('data_user')->id_role == 4 ){
-            $field .= '<strong><i> Kab/Kota : '.ucwords($value->nama_kabupaten).' || Provinsi : '.ucwords($value->nama_provinsi).'</strong></i>';
-        }elseif( $this->session->userdata('data_user')->id_role == 3 ){
-            $field .= '<strong><i> Provinsi : '.ucwords($value->nama_provinsi).'</strong></i>';
+    public function is_administrator($user_id){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        // cek is administrator
+        $result = $db->get_where('tmp_user_has_role', array('user_id' => $user_id, 'role_id' => 1));
+        if($result->num_rows() == 1){
+            return true;
         }else{
-            $field .= '<strong><i> '.ucwords($value->role_name).'</strong></i>';
+            return false;
         }
 
-        return $field;
     }
 
 	

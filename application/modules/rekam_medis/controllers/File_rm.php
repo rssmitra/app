@@ -29,7 +29,7 @@ class File_rm extends MX_Controller {
         $data = array(
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
-            'file_emr' => $this->db->get_where('th_file_emr_pasien', array('no_mr' => $no_mr))->result(),
+            'file_emr' => $this->db->order_by('id', 'DESC')->get_where('th_file_emr_pasien', array('no_mr' => $no_mr))->result(),
         );
         // print_r($data);die;
         /*load view index*/

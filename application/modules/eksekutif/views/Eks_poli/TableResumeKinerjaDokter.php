@@ -12,21 +12,22 @@
         $no=0;
         $arr_ttl = [];
         $arr_ttl_biaya = [];
-        foreach($value['prd_dt'] as $k_dt=>$v_dt) : $no++;
-        $arr_ttl[] = $v_dt['total_biaya'];
-        $arr_ttl_biaya[] = $v_dt['total_kunjungan'];
+        foreach($value as $k_dt=>$v_dt) : $no++;
+        // echo '<pre>';print_r($v_dt);die;
+        $arr_ttl[] = $v_dt['jml_kunjungan'];
+        $arr_ttl_biaya[] = $v_dt['jml_billing'];
       ?>
       <tr>
         <td align="center"><?php echo $no?></td>
-        <td><?php echo strtoupper($k_dt) ?></td>
-        <td align="center"><?php echo number_format($v_dt['total_kunjungan']) ?></td>
-        <td align="right"><?php echo number_format($v_dt['total_biaya']) ?></td>
+        <td><?php echo strtoupper($v_dt['nama_dokter']) ?></td>
+        <td align="center"><?php echo number_format($v_dt['jml_kunjungan']) ?></td>
+        <td align="right"><?php echo number_format($v_dt['jml_billing']) ?></td>
       </tr>
       <?php endforeach;?>
       <tr>
         <td align="right" colspan="2">TOTAL</td>
-        <td align="center"><b><?php echo number_format(array_sum($arr_ttl_biaya))?></b></td>
-        <td align="right"><b><?php echo number_format(array_sum($arr_ttl))?></b></td>
+        <td align="center"><b><?php echo number_format(array_sum($arr_ttl))?></b></td>
+        <td align="right"><b><?php echo number_format(array_sum($arr_ttl_biaya))?></b></td>
       </tr>
     </tbody>
       

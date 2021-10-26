@@ -1598,24 +1598,25 @@ class Templates extends MX_Controller {
             	if(isset($_GET['num']) AND $_GET['num']==1){
 	            		$pm_ = 472854; 
 			            $no_mr = '00246856';
-			            $nama_pasien = 'Wisca Gumanti';
-			            $umur = '34';
+			            $nama_pasien = 'Devi Fitarti';
+			            $umur = '28';
 			            $jk_ = 'Perempuan';
-			            $tgl_daftar = '22 Agustus 2021 - 15:05:15';
-			            $tgl_periksa = '22 Agustus 2021 - 15:33:42';
+			            $tgl_daftar = '22 Oktober 2021 - 10:05:15';
+			            $tgl_periksa = '22 Oktober 2021 - 10:33:42';
 			            $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 	            }
 
 	            if(isset($_GET['num']) AND $_GET['num']==2){
-	            	$pm_ = 472853; 
-		            $no_mr = '00211762';
-		            $nama_pasien = 'Muihammad Amin Lubis';
-		            $umur = '30';
+	            	$pm_ = 472852; 
+		            $no_mr = '00221948';
+		            $nama_pasien = 'Alfan Ali';
+		            $umur = '27';
 		            $jk_ = 'Laki- Laki';
-		            $tgl_daftar = '22 Agustus 2021 - 15:10:12';
-		            $tgl_periksa = '22 Agustus 2021 - 15:31:22';
+		            $tgl_daftar = '22 Oktober 2021 - 11:20:12';
+		            $tgl_periksa = '22 Oktober 2021 - 11:21:22';
 		            $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
 	            }
+
             }else{
             	// form db
 	            $pm_ = $pm;
