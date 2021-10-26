@@ -5,7 +5,7 @@
 /vendor
 /uploaded
 /application/logs
-/application/modules/ws_bpjs/Ws_index_model.php
+/application/modules/ws_bpjs/
 /application/libraries/tcpdf/cache/
 .env
 .phpunit.result.cache
