@@ -157,8 +157,8 @@ function reload_table(){
         <div class="col-md-2">
           <select name="search_by" id="search_by" class="form-control">
             <option value="">-Silahkan Pilih-</option>
-            <option value="tc_registrasi.no_sep" selected>Nomor SEP</option>
-            <option value="tc_registrasi.no_mr">No MR</option>
+            <option value="tc_registrasi.no_mr" selected>No MR</option>
+            <option value="tc_registrasi.no_sep">Nomor SEP</option>
             <option value="nama_pasien">Nama Pasien</option>
           </select>
         </div>
@@ -170,7 +170,7 @@ function reload_table(){
       </div>
 
       <div class="form-group" id="tanggal_field">
-        <label class="control-label col-md-2" id="text_label">Pilih Tanggal</label>
+        <label class="control-label col-md-2" id="text_label">Tanggal Pendaftaran</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>

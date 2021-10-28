@@ -82,6 +82,16 @@ class Rm_pasien extends MX_Controller {
     
     }
 
+    public function riwayat_perjanjian($no_mr, $kode_bagian='') { 
+        
+        $data = [
+            'no_mr' => $no_mr,
+            'kode_bagian' => $kode_bagian,
+        ];
+        $this->load->view('Rm_pasien/tab_riwayat_perjanjian', $data);
+    
+    }
+
     public function get_riwayat_pasien() { 
         
         /*define variable data*/
@@ -162,6 +172,82 @@ class Rm_pasien extends MX_Controller {
         }
 
         $output = array( "draw" => $_POST['draw'], "recordsTotal" => count($list), "recordsFiltered" => $this->Reg_pasien->count_filtered_riwayat_pasien( $column, $mr ), "data" => $data );
+
+        echo json_encode( $output );
+    
+    }
+
+    public function get_riwayat_perjanjian() { 
+        
+        /*define variable data*/
+        
+        $mr = $this->input->get('mr');
+
+        /*return search pasien*/
+        $data = array();
+
+        $output = array();
+
+        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day');
+
+        $list = $this->Reg_pasien->get_riwayat_perjanjian( $column, $mr ); 
+
+        $no = 0;
+
+        $atts = array(
+                    'width'       => 900,
+                    'height'      => 500,
+                    'scrollbars'  => 'no',
+                    'status'      => 'no',
+                    'resizable'   => 'no',
+                    'screenx'     => 1000,
+                    'screeny'     => 80,
+                    'window_name' => '_blank'
+            );
+
+            foreach ($list as $row_list) {
+                $no++;
+                $row = array();
+                $html = '';
+
+                if( isset($_GET['no_mr']) AND $_GET['no_mr'] != '' ){
+                    $html .= '<li><a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">Daftarkan Pasien</a></li>';
+                }else{
+                    $html .= '<li><a href="#" onclick="getMenu('."'registration/Reg_klinik?idp=".$row_list->id_tc_pesanan."&kode_dokter=".$row_list->kode_dokter."&poli=".$row_list->no_poli."&kode_perjanjian=".$row_list->kode_perjanjian."&no_mr=".$row_list->no_mr."'".')">Daftarkan Pasien</a></li>';
+                }
+
+                if( isset($_GET['flag']) AND $_GET['flag']=='HD' ){
+                    $tgl = $row_list->selected_day;
+                }else{
+                    $tgl = $this->tanggal->formatDate($row_list->tgl_pesanan);
+                }
+                $penjamin = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
+
+                $label_code = ($row_list->tgl_masuk == NULL) ? '<div class="pull-right"><span class="label label-sm label-danger">'.$row_list->kode_perjanjian.'</span></div>' : '<div class="pull-right"><span class="label label-sm label-success">'.$row_list->kode_perjanjian.'</span></div>';
+
+                $row[] = '<div class="center">'.$no.'</div>';
+                $row[] = '<div class="center"><div class="btn-group">
+                            <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                                <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-inverse">
+                                '.$html.'
+                                <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.')">Cetak Surat Kontrol</a></li>
+								<li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
+                            </ul>
+                        </div></div>';
+                $row[] = ucwords($row_list->nama_bagian);
+                $row[] = $row_list->nama_pegawai;
+                $row[] = $tgl;
+                $row[] = $penjamin;
+                $row[] = $row_list->kode_perjanjian;
+                $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
+
+
+                $data[] = $row;
+            }
+
+        $output = array( "draw" => $_POST['draw'], "recordsTotal" => count($list), "recordsFiltered" => $this->Reg_pasien->count_filtered_riwayat_perjanjian_pasien( $column, $mr ), "data" => $data );
 
         echo json_encode( $output );
     
@@ -283,11 +369,11 @@ class Rm_pasien extends MX_Controller {
 
     public function process()
     {
-        echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($_POST);die;
 
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('no_registrasi', 'No Registrasi', 'trim|required', array('required' => 'Nomor Registrasi tidak ditemukan'));
+        $val->set_rules('no_registrasi_hidden', 'No Registrasi', 'trim|required', array('required' => 'Nomor Registrasi tidak ditemukan'));
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
         if ($val->run() == FALSE)
@@ -331,39 +417,48 @@ class Rm_pasien extends MX_Controller {
 
             // update dokumen
             $type = $this->input->post('form_type');
-            $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
-            
-            foreach ($createDocument as $k_cd => $v_cd) {
-                # code...
-                $explode = explode('-', $v_cd);
-                /*explode result*/
-                $named = str_replace('BILL','',$explode[0]);
-                $no_mr = $explode[1];
-                $exp_no_registrasi = $explode[2];
-                $unique_code = $explode[3];
 
-                /*create and save download file pdf*/
-                if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
-                /*save document to database*/
-                /*csm_reg_pasien*/
-                $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+            if($_POST['submit'] == 'update_dok_klaim'){
+                /*created document name*/
+                /*clean first data*/
+                //$this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
                 
-                $doc_save = array(
-                    'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
-                    'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
-                    'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
-                    'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
-                );
-                $doc_save['created_date'] = date('Y-m-d H:i:s');
-                $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                /*check if exist*/
-                if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
-                    $this->db->insert('csm_dokumen_export', $doc_save);
-                }
-                endif;
-                /*insert database*/
-            }
+                $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
+                //echo '<pre>';print_r($createDocument);die;
+                
+                foreach ($createDocument as $k_cd => $v_cd) {
+                    # code...
+                    $explode = explode('-', $v_cd);
+                    /*explode result*/
+                    $named = str_replace('BILL','',$explode[0]);
+                    $no_mr = $explode[1];
+                    $exp_no_registrasi = $explode[2];
+                    $unique_code = $explode[3];
 
+                    /*create and save download file pdf*/
+                    if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
+                    /*save document to database*/
+                    /*csm_reg_pasien*/
+                    $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+                    
+                    $doc_save = array(
+                        'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+                        'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+                        'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+                        'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                    );
+                    $doc_save['created_date'] = date('Y-m-d H:i:s');
+                    $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                    /*check if exist*/
+                    if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+                        $this->db->insert('csm_dokumen_export', $doc_save);
+                    }
+                    endif;
+                    /*insert database*/
+                }
+
+            }
+            
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();

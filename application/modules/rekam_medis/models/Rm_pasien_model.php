@@ -37,7 +37,7 @@ class Rm_pasien_model extends CI_Model {
         if(isset($_GET['search_by'])) {
 
             if (isset($_GET['search_by']) AND $_GET['search_by'] != '' || isset($_GET['keyword']) AND $_GET['keyword'] != '' ) {
-                if($_GET['search_by'] == 'csm_reg_pasien.csm_rp_nama_pasien'){
+                if($_GET['search_by'] == 'nama_pasien'){
                     $this->db->like($_GET['search_by'], $_GET['keyword']);  
                 }else{
                     $this->db->where("".$_GET['search_by']." = '".$_GET['keyword']."' " );
@@ -46,15 +46,9 @@ class Rm_pasien_model extends CI_Model {
     
     
             if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-                $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_masuk as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
+                $this->db->where("CAST(tgl_jam_masuk as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
             }
             
-            if (isset($_GET['tipe']) AND $_GET['tipe'] != '' ) {
-                if( $_GET['tipe']!='all' ){
-                    $this->db->where("csm_rp_tipe = '".$_GET['tipe']."' " );
-                }
-            }
-    
             if (isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ) {
                 $this->db->where("csm_rp_kode_bagian = '".$_GET['kode_bagian']."' " );
             }

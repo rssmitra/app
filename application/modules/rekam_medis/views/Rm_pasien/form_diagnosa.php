@@ -30,7 +30,7 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-          getMenu('rekam_medis/Rm_pasien/editBilling/'+$('#no_registrasi_hidden').val()+'/'+$('#form_type').val()+'');
+          getMenu('rekam_medis/Rm_pasien/form/'+$('#no_registrasi_hidden').val()+'/'+$('#form_type').val()+'');
         }else{
           $.achtung({message: jsonResponse.message, timeout:5});
         }
