@@ -680,7 +680,9 @@ class Templates extends MX_Controller {
         $this->load->model('registration/Reg_pasien_model','Reg_pasien');
         // get riwayat pasien
         $riwayat_pasien = $this->db->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
+        
         $result = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+        
 
         $userDob = $result['registrasi']->tgl_lhr;
  
@@ -715,12 +717,12 @@ class Templates extends MX_Controller {
                                 <br>Diagnosa awal, '.$riwayat_pasien->diagnosa_awal.'
                                 <br>Diagnosa akhir, '.$riwayat_pasien->diagnosa_akhir.'
                             </li>
-                            <li><b>Pemeriksaan yang dilakukan</b><br>'.$riwayat_pasien->pemeriksaan.'</li>
-                            <li><b>Anjuran Dokter</b><br>'.$riwayat_pasien->pengobatan.'</li>
+                            <li><b>Pemeriksaan yang dilakukan</b><br>'.htmlspecialchars($riwayat_pasien->pemeriksaan, ENT_QUOTES).'</li>
+                            <li><b>Anjuran Dokter</b><br>'.htmlspecialchars($riwayat_pasien->pengobatan, ENT_QUOTES).'</li>
                         </ol>
                       </td>';
         $html .= '</tr>';
-
+        // echo '<pre>';print_r($html);die;
 
         // $html .= '<tr>';
         //     $html .= '<td colspan="2">
@@ -777,7 +779,7 @@ class Templates extends MX_Controller {
         // $html .= '</tr>';
 
         $html .= '</table>';
-
+        // echo $html; die;
 
         return $html;
     }
@@ -1504,21 +1506,21 @@ class Templates extends MX_Controller {
     }
 
     public function setGlobalFooterRm($data){
-        $html = '';
         
         $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
         if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
             $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
         }
+        // echo '<pre>'; print_r($data);die;
         
         $ttd = (!empty($data->reg_data->ttd))?$data->reg_data->ttd:$get_dokter->ttd;
         $stamp_dr = (!empty($data->reg_data->stamp))?$data->reg_data->stamp:$get_dokter->stamp;
         $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
 
-        $ttd = ($ttd != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
-        $stamp = ($stamp_dr != NULL) ? '<img src="'.base_url().'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+        $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
+        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
         
-
+        $html = '';
         $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
                         <td width="70%"></td>
