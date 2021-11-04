@@ -1,45 +1,39 @@
-<?php
-$tgl = date("d");
-$bln = date("m");
-$thn = date("Y");
-$tglsekarang = date("d-m-Y");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 
-?>
-<script src="<?php echo base_url().'assets/barcode-master/prototype/sample/prototype.js'?>" type="text/javascript"></script>
-<script src="<?php echo base_url().'assets/barcode-master/prototype/prototype-barcode.js'?>" type="text/javascript"></script>
-<link rel="stylesheet" href="<?php echo base_url()?>assets/css/print.css" class="ace-main-stylesheet" id="main-ace-style" />
+  <?php
+  $tgl = date("d");
+  $bln = date("m");
+  $thn = date("Y");
+  $tglsekarang = date("d-m-Y");
 
-<style>
+  ?>
+  <script src="<?php echo base_url().'assets/barcode-master/prototype/sample/prototype.js'?>" type="text/javascript"></script>
+  <script src="<?php echo base_url().'assets/barcode-master/prototype/prototype-barcode.js'?>" type="text/javascript"></script>
+  <script>
+    function printpage() {
+        //Get the print button and put it into a variable
+        var printButton = document.getElementById("printpagebutton");
+        //Set the print button visibility to 'hidden' 
+        printButton.style.visibility = 'hidden';
+        //Print the page content
+        window.print()
+        printButton.style.visibility = 'visible';
+    }
+  </script>
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/print.css" class="ace-main-stylesheet" id="main-ace-style" />
 
-.stamp {
-      margin-top: -96px;
-      margin-left: 600px;
-      position: absolute;
-      display: inline-block;
-      color: black;
-      padding: 1px;
-      padding-left: 10px;
-      padding-right: 10px;
-      background-color: white;
-      box-shadow:inset 0px 0px 0px 0px;
-      /*opacity: 0.5;*/
-      -webkit-transform: rotate(25deg);
-      -moz-transform: rotate(25deg);
-      -ms-transform: rotate(25deg);
-      -o-transform: rotate(25deg);
-      transform: rotate(0deg);
-     
-}
-   
-</style>
+  <style>
+
+  </style>
+</head>
 <body>
-
-	<div style="float: right">
-		<button class="tular" onClick="window.close()">Tutup</button>
-		<button class="tular" onClick="print()">Cetak</button>
-	</div>
-
-	<div class="row"> 
+	<div class="row" style="margin-top: 30mm;"> 
 		<div class="col-xs-8">
 			<table style="font-size:12px" border="0">
 				<tr> 
@@ -48,13 +42,13 @@ $tglsekarang = date("d-m-Y");
 				</tr>
 				<tr>
 					<td width="20%" style="font-size:12px">Uang Sejumlah</td> 
-					<td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:12px">: <b>Rp. <?php echo number_format($total)?></b></td> 
+					<td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:12px">: <b>Rp <?php echo number_format(intval($total))?>,-</b></td> 
 				</tr>
 				<tr>
 					<td width="20%" valign="top" style="font-size:12px">Terbilang </td> 
-					<td style="67%" bgcolor="#EBEBEB" nowrap style="font-size:12px">: 
+					<td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:12px">: 
 					<b>
-						<i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($total))?> Rupiah"</i></b>
+						<i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(intval($total)))?> Rupiah"</i></b>
 					</td>
 				</tr> 
 				<tr>
@@ -68,38 +62,45 @@ $tglsekarang = date("d-m-Y");
 				</tr>
 			</table>
 			<br>
-			<table width="90%" border="0" cellspacing="0" cellpadding="2" align="center"> 
+			<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center"> 
 				<tr> 			
-					<td width="10%">&nbsp;</td> 
-					<td valign="top" width="42%">&nbsp; 
-					</td> 
+					<td valign="center" colspan="3" style="font-weight: bolder; font-size:15px;">
+          Pembayaran mohon ditransfer melalui <br>
+          BANK MANDIRI <br>
+          NO REK : 1270097000275 <br>
+          a.n. PT. SETIA MITRA LESTARI  
+          &nbsp;</td> 
 					<?
 						//$nm_perusahaan=baca_tabel("dd_konfigurasi","nama_perusahaan");
 
 					?>
-					<td valign="top" width="2%">&nbsp;</td>
-					<td valign="top" width="55%" align="center" style="font-size:12px">
-						<!--Jakarta,<?=$tgl_now_full?><br>Petugas Kasir<?//=trim($total_nd)=="0" || $bill!="0" ? $nm_perusahaan : ""?>-->
-						<!-- Update Kwitansi Pengembalian Uang Muka 131011-->
-						Jakarta, <?php echo $tgl ?><br>Penerima
-						<br/><br/><br/><br/> 
-						<br/><BR><BR> 
-						( ..................... )<br/><br/>
-						</td>
+					<td valign="top" width="30%" align="center" style="font-size:12px">
+						Jakarta, <?php $date_kui = $_GET['tgl']; echo $this->tanggal->formatDatedmY($date_kui); ?><br><?php echo COMP_FULL;?>
+						<br/>
+            <br/>
+            <br/>
+            <br/> 
+						<br/>
+            <?php echo $this->master->get_ttd('ttd_kabag_keu');?>
+            <br/>
+            <br/>
+          </td>
 				</tr>
 				<tr>
 					<td colspan="4">
 						Kuitansi ini menjadi SAH bila telah diberi cap & tanda tangan petugas
 					</td>
 				</tr>
-				<tr>
+				<!-- <tr>
 					<td colspan="4">
 						<br/><br/><br/><br/><br/>
 					</td>
-				</tr>
+				</tr> -->
 			</table>
+      <div id="options">
+        <button id="printpagebutton" style="font-family: arial; background: blue; color: white; cursor: pointer; padding: 20px; position:absolute; right: 15px;" onclick="printpage()" style="cursor: pointer">Print Kuitansi</button>
+      </div>
 		</div>
 	</div>
 </body>
-
-   
+</html>

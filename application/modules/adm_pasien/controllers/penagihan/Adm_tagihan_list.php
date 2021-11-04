@@ -177,7 +177,9 @@ class Adm_tagihan_list extends MX_Controller {
 
     public function preview_invoice(){
         $data = array();
+        // $perusahaan = $this->Adm_tagihan_list->get_tagihan_perusahaan($_GET['ID']);
         $list = $this->Adm_tagihan_list->get_invoice_detail($_GET['ID']);
+        $data['perusahaan'] = $list[0]->nama_tertagih;
         $data['result'] = $list;
         // echo "<pre>"; print_r($data); die;
         
