@@ -33,7 +33,7 @@
   </style>
 </head>
 <body>
-	<div class="row" style="margin-top: 30mm;"> 
+	<div class="row" style="margin-top: 45mm;"> 
 		<div class="col-xs-8">
 			<table style="font-size:12px" border="0">
 				<tr> 
@@ -58,13 +58,13 @@
 				<tr> 
 					<td width="20%" style="font-size:12px">Untuk Pembayaran</td> 
 					<!-- Update Pengembalian Uang Muka 131011-->
-					<td width="67%" bgcolor="#EBEBEB">: Pembayaran Tagihan Invoice No. <?php echo $inv; ?></td> 
+					<td width="67%" bgcolor="#EBEBEB">: Invoice No. <?php echo $inv; ?></td> 
 				</tr>
 			</table>
 			<br>
-			<table width="95%" border="0" cellspacing="0" cellpadding="2" align="center"> 
+			<table style="margin-top: 10px;" width="95%" border="0" cellspacing="0" cellpadding="2" align="center"> 
 				<tr> 			
-					<td valign="center" colspan="3" style="font-weight: bolder; font-size:15px;">
+					<td valign="top" colspan="3" style="font-weight: bolder; font-size:15px;">
           Pembayaran mohon ditransfer melalui <br>
           BANK MANDIRI <br>
           NO REK : 1270097000275 <br>
@@ -76,18 +76,20 @@
 					?>
 					<td valign="top" width="30%" align="center" style="font-size:12px">
 						Jakarta, <?php $date_kui = $_GET['tgl']; echo $this->tanggal->formatDatedmY($date_kui); ?><br><?php echo COMP_FULL;?>
+						<br/>Kabag Keuangan
 						<br/>
             <br/>
             <br/>
             <br/> 
 						<br/>
-            <?php echo $this->master->get_ttd('ttd_kabag_keu');?>
+            <?php //echo $this->master->get_ttd('ttd_kabag_keu');?>
+            <span>Cumanto, SE.</span>
             <br/>
             <br/>
           </td>
 				</tr>
 				<tr>
-					<td colspan="4">
+					<td colspan="4" style="text-align: center;">
 						Kuitansi ini menjadi SAH bila telah diberi cap & tanda tangan petugas
 					</td>
 				</tr>
