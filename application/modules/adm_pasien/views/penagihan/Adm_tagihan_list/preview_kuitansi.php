@@ -33,7 +33,7 @@
   </style>
 </head>
 <body>
-	<div class="row" style="margin-top: 45mm;"> 
+	<div class="row" style="margin-top: 40mm;"> 
 		<div class="col-xs-8">
 			<table style="font-size:12px" border="0">
 				<tr> 
@@ -77,13 +77,9 @@
 					<td valign="top" width="30%" align="center" style="font-size:12px">
 						Jakarta, <?php $date_kui = $_GET['tgl']; echo $this->tanggal->formatDatedmY($date_kui); ?><br><?php echo COMP_FULL;?>
 						<br/>Kabag Keuangan
-						<br/>
-            <br/>
-            <br/>
-            <br/> 
-						<br/>
+            <br >
             <?php //echo $this->master->get_ttd('ttd_kabag_keu');?>
-            <span>Cumanto, SE.</span>
+            <span style="margin-top: 35mm; display: inline-block;">Cumanto, SE.</span>
             <br/>
             <br/>
           </td>
