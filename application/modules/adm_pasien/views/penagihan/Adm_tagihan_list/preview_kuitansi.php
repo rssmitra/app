@@ -33,7 +33,7 @@
   </style>
 </head>
 <body>
-	<div class="row" style="margin-top: 40mm;"> 
+	<div class="row" style="margin-top: 37mm;"> 
 		<div class="col-xs-8">
 			<table style="font-size:12px" border="0">
 				<tr> 
@@ -79,7 +79,7 @@
 						<br/>Kabag Keuangan
             <br >
             <?php //echo $this->master->get_ttd('ttd_kabag_keu');?>
-            <span style="margin-top: 35mm; display: inline-block;">Cumanto, SE.</span>
+            <span style="margin-top: 30mm; display: inline-block;">Cumanto, SE.</span>
             <br/>
             <br/>
           </td>
