@@ -274,6 +274,7 @@ class Reg_pasien_model extends CI_Model {
 	
 	{
 		$this->db->select($select);
+		$this->db->select('tc_kunjungan.status_batal');
 
 		$this->db->from( 'tc_kunjungan' );
 
@@ -312,6 +313,7 @@ class Reg_pasien_model extends CI_Model {
 		}
 
 		$this->db->group_by( $select );
+		$this->db->group_by('tc_kunjungan.status_batal');
 
 		$this->db->order_by( 'tgl_masuk', 'DESC' );
 

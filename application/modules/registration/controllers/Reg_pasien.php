@@ -132,8 +132,13 @@ class Reg_pasien extends MX_Controller {
             // cek authuser
             $btn_delete = ($this->authuser->is_administrator($this->session->userdata('user')->user_id) ) ? '<li><a href="#" onclick="delete_registrasi('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Hapus</a></li>' : '';
             
-            
-            $row[] = '<div class="center">'.$status_icon.'</div>';
+            if( $row_list->status_batal == 1 ){
+                $row[] = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
+                $is_batal = '<span style="font-weight: bold; color: red">Batal Berobat</span>';
+            }else{
+                $row[] = '<div class="center">'.$status_icon.'</div>';
+                $is_batal = '';
+            }
             $row[] = '<div class="center"><div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
@@ -153,7 +158,7 @@ class Reg_pasien extends MX_Controller {
 
             
             $nama_dokter = ($row_list->nama_pegawai != '') ? $row_list->nama_pegawai.'<br>' : '' ;
-            $row[] = $row_list->no_registrasi.' - '.$penjamin.'<br>'.ucfirst($row_list->nama_bagian).'<br>'.$nama_dokter.'<small style="font-size:11px">'.$this->tanggal->formatDateTime($row_list->tgl_masuk).' s/d '.$this->tanggal->formatDateTime($row_list->tgl_keluar).'</small>';
+            $row[] = $row_list->no_registrasi.' - '.$penjamin.'<br>'.ucfirst($row_list->nama_bagian).'<br>'.$nama_dokter.'<small style="font-size:11px">'.$this->tanggal->formatDateTime($row_list->tgl_masuk).' s/d '.$this->tanggal->formatDateTime($row_list->tgl_keluar).'</small><br>'.$is_batal.'';
             
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
             
@@ -320,8 +325,6 @@ class Reg_pasien extends MX_Controller {
         echo json_encode( $output );
     
     }
-
-
 
     public function index() { 
         

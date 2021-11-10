@@ -1595,6 +1595,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function cancel_visit()
     {   
+        // echo '<pre>';print_r($_POST);die;
         $this->db->trans_begin();   
         /*update tc_registrasi*/
         $reg_data = array('tgl_jam_keluar' => date('Y-m-d H:i:s'), 'kode_bagian_keluar' => $_POST['kode_bag'], 'status_batal' => 1 );
@@ -1609,7 +1610,8 @@ class Pl_pelayanan extends MX_Controller {
 
         // igd batal
         if($_POST['kode_bag']=='020101'){
-            $gd_dt = array('status_batal' => 1, 'tgl_keluar' => date('Y-m-d H:i:s') );
+            // echo '<pre>';print_r($_POST);die;
+            $gd_dt = array('status_batal' => 1, 'tgl_jam_kel' => date('Y-m-d H:i:s') );
             $this->db->update('gd_tc_gawat_darurat', $gd_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
             $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($gd_dt),'no_kunjungan');
         }else{

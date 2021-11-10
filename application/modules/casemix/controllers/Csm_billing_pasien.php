@@ -314,7 +314,7 @@ class Csm_billing_pasien extends MX_Controller {
         /*header html*/
         /*get detail data billing*/
         $data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        // echo '<pre>'; print_r($data);die;
+        
         $html = '';
 
        switch ($flag) {
@@ -480,7 +480,7 @@ EOD;
         /*save to folder*/
         $pdf->Output('uploaded/casemix/log/'.$filename.'.pdf', ''.$action.''); 
 
-        if( in_array($flag, array('RESUME','LAB','RAD', 'SEP') )){
+        if( in_array($flag, array('RESUME','LAB','RAD') )){
             //kotak form
             
             // update file emr pasien
@@ -503,7 +503,6 @@ EOD;
 
     public function mergePDFFiles($no_registrasi, $tipe){
         /*get doc*/
-
         $reg_data = $this->Csm_billing_pasien->getRegDataLocal($no_registrasi);
         // echo '<pre>';print_r($reg_data);die;
         $doc_pdf = $this->Csm_billing_pasien->getDocumentPDF($no_registrasi);
@@ -533,6 +532,7 @@ EOD;
             }
 
         $fields_string = "";
+
         foreach($doc_pdf as $key=>$value) {
             $month = date("M",strtotime($value->csm_rp_tgl_masuk));
             $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
@@ -546,7 +546,6 @@ EOD;
 
     public function rollback_kasir(){
         $exc = $this->Csm_billing_pasien->rollback_kasir( $_POST['no_reg'] );
-        
         echo json_encode( array('status' => 200) );
     }
 

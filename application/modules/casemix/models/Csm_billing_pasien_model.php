@@ -1180,8 +1180,9 @@ class Csm_billing_pasien_model extends CI_Model {
         // dokumen penunjang medis
         $grouping_doc = $this->groupingDocumentPM($decode_data->group);
         // echo '<pre>';print_r($decode_data);die;
-        
-        $filename[] ='SEP-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
+        if($decode_data->reg_data->kode_perusahaan == 120){
+            $filename[] ='SEP-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
+        }
         /*document billing*/
         foreach ($decode_data->kasir_data as $key_kasir_data => $val_kasir_data) {
             /*filenam BILL-{no_mr}{no_reg}{kode_tc_trans_kasir}*/

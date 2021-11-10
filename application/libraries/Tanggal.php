@@ -102,6 +102,17 @@ final class Tanggal {
         return $tanggal;
     }
 
+    public  function formatDateMdyToSql($input) {
+        if (empty($input)) {
+            $tanggal = "-";
+        } else {
+            sscanf($input, '%d/%d/%d', $m, $d, $y);
+            $tanggal = $y . "-" . $m . "-" . $d;
+        }
+
+        return $tanggal;
+    }
+
     public  function formatDatedmY($input) {
         if (empty($input)) {
             $tanggal = "-";

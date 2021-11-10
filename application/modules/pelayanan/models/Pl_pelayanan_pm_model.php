@@ -223,6 +223,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
 		$this->db->join('mt_bagian','tc_kunjungan.kode_bagian_asal=mt_bagian.kode_bagian','left');
 		$this->db->join('mt_klas',''.$this->table.'.kode_klas=mt_klas.kode_klas','left');
+		
 		if($flag_mcu==''){
 			$this->db->join('tc_trans_pelayanan tp',''.$this->table.'.kode_penunjang=tp.kode_penunjang','left');
 		}else{

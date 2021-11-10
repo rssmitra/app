@@ -689,6 +689,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $this->db->update('ri_tc_rawatinap', $ri_tc_rawatinap, array('kode_ri' => $kode_ri) );
 
                 /*insert biaya administrasi */
+
                 /*cek biaya farmasi*/
                 $biaya_obat = $this->Pl_pelayanan_ri->cek_biaya_obat($no_registrasi); 
                 if($biaya_obat){
@@ -716,8 +717,11 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $biaya_rs = $biaya_by_registrasi->biy_rs + $biaya_by_registrasi->biy_lain;
                 $biaya_dr1 = $biaya_by_registrasi->biy_dr1;
                 $biaya_dr2 = $biaya_by_registrasi->biy_dr2 + $biaya_by_registrasi->biy_dr3;
-
-                $biy_adm = 0.06 * ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
+                
+                $total_adm = ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
+                $materai = ($total_adm > 5000000) ? 10000 : 0;
+                $biy_adm = 0.06 * ($total_adm + $materai);
+                
 
                 /*save tc_trans_pelayanan */
                 $kode_tc_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');

@@ -18,10 +18,11 @@ class Perjanjian_rj_model extends CI_Model {
 	private function _main_query(){
 		$year_limit = date('Y') - 2;
 		$this->db->select($this->select);
-		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr AND kode_perusahaan=120 order by no_registrasi DESC) as no_sep');
+		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr AND kode_perusahaan=120 order by no_registrasi DESC) as no_sep, fullname as petugas');
 		$this->db->from('tc_pesanan');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','inner');
 		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter','left');
+		$this->db->join('tmp_user', 'tmp_user.user_id=tc_pesanan.no_induk','left');
 		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr','left');
 		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan','left');
 		$this->db->where('tc_pesanan.tgl_masuk IS NULL');

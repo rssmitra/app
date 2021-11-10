@@ -712,7 +712,7 @@ class Templates extends MX_Controller {
         $html .= '<tr>';
             $html .= '<td width="100%">
                         <ol>
-                            <li><b>Anamnesa</b><br>'.$riwayat_pasien->anamnesa.'</li>
+                            <li><b>Anamnesa</b><br>'.htmlspecialchars($riwayat_pasien->anamnesa, ENT_QUOTES).'</li>
                             <li><b>Diagnosa Penyakit</b>
                                 <br>Diagnosa awal, '.$riwayat_pasien->diagnosa_awal.'
                                 <br>Diagnosa akhir, '.$riwayat_pasien->diagnosa_akhir.'
@@ -1596,30 +1596,30 @@ class Templates extends MX_Controller {
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             // hardcode
 
-            if(isset($_GET['num'])){
-            	if(isset($_GET['num']) AND $_GET['num']==1){
-	            		$pm_ = 472854; 
-			            $no_mr = '00246856';
-			            $nama_pasien = 'Devi Fitarti';
-			            $umur = '28';
-			            $jk_ = 'Perempuan';
-			            $tgl_daftar = '22 Oktober 2021 - 10:05:15';
-			            $tgl_periksa = '22 Oktober 2021 - 10:33:42';
-			            $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
-	            }
+            // if(isset($_GET['num'])){
+            // 	if(isset($_GET['num']) AND $_GET['num']==1){
+	        //     		$pm_ = 472854; 
+			//             $no_mr = '00246856';
+			//             $nama_pasien = 'Devi Fitarti';
+			//             $umur = '28';
+			//             $jk_ = 'Perempuan';
+			//             $tgl_daftar = '22 Oktober 2021 - 10:05:15';
+			//             $tgl_periksa = '22 Oktober 2021 - 10:33:42';
+			//             $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
+	        //     }
 
-	            if(isset($_GET['num']) AND $_GET['num']==2){
-	            	$pm_ = 472852; 
-		            $no_mr = '00221948';
-		            $nama_pasien = 'Alfan Ali';
-		            $umur = '27';
-		            $jk_ = 'Laki- Laki';
-		            $tgl_daftar = '22 Oktober 2021 - 11:20:12';
-		            $tgl_periksa = '22 Oktober 2021 - 11:21:22';
-		            $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
-	            }
+	        //     if(isset($_GET['num']) AND $_GET['num']==2){
+	        //     	$pm_ = 472852; 
+		    //         $no_mr = '00221948';
+		    //         $nama_pasien = 'Alfan Ali';
+		    //         $umur = '27';
+		    //         $jk_ = 'Laki- Laki';
+		    //         $tgl_daftar = '22 Oktober 2021 - 11:20:12';
+		    //         $tgl_periksa = '22 Oktober 2021 - 11:21:22';
+		    //         $dokter_pengirim = 'Arief Indra Sanjaya,dr. Sp PK';
+	        //     }
 
-            }else{
+            // }else{
             	// form db
 	            $pm_ = $pm;
 	            $no_mr = $data->reg_data->no_mr;
@@ -1629,7 +1629,7 @@ class Templates extends MX_Controller {
 	            $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
 	            $tgl_periksa = $tgl_pemeriksaan;
 	            $dokter_pengirim = $data->reg_data->nama_pegawai;
-            }
+            // }
           
             
 

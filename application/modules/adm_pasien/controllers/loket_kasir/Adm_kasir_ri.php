@@ -316,7 +316,12 @@ class Adm_kasir_ri extends MX_Controller {
                 $biaya_dr1 = $biaya_by_registrasi->biy_dr1;
                 $biaya_dr2 = $biaya_by_registrasi->biy_dr2 + $biaya_by_registrasi->biy_dr3;
 
-                $biy_adm = 0.06 * ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
+                $total_adm = ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
+                $materai = ($total_adm > 5000000) ? 10000 : 0;
+                
+                $biy_adm = 0.06 * ($total_adm + $materai);
+
+                // $biy_adm = 0.06 * ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
 
                 /*save tc_trans_pelayanan */
                 $kode_tc_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
@@ -372,7 +377,7 @@ class Adm_kasir_ri extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai'));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai', 'total_biaya' => $total_adm, 'materai' => $materai));
             }
 
         

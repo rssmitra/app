@@ -100,7 +100,7 @@ class Perjanjian_rj extends MX_Controller {
                 }
                 $row[] = $row_list->no_kartu_bpjs;
                 $row[] = '<div class="center"><input type="text" class="form-control" style="border: 1px solid white !important" name="kode_perjanjian" value="'.$row_list->kode_perjanjian.'" id="surat_kontrol_'.$row_list->id_tc_pesanan.'" onchange="saveRow('.$row_list->id_tc_pesanan.')"></div>';
-                $row[] = $this->tanggal->formatDateTime($row_list->input_tgl);
+                $row[] = $this->tanggal->formatDateTime($row_list->input_tgl).'<br>'.$row_list->petugas;
                 $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
 
 

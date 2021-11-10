@@ -18,14 +18,14 @@
       <tr>
         <td align="center"><?php echo $no?></td>
         <td><?php echo strtoupper($k_dt) ?></td>
-        <td align="center"><?php echo $v_dt['total_biaya'] ?></td>
-        <td align="right"><?php echo number_format($v_dt['total_kunjungan']) ?></td>
+        <td align="center"><?php echo number_format($v_dt['total_kunjungan']) ?></td>
+        <td align="right"><?php echo number_format($v_dt['total_biaya']) ?></td>
       </tr>
       <?php endforeach;?>
       <tr>
         <td align="right" colspan="2">TOTAL</td>
-        <td align="center"><b><?php echo number_format(array_sum($arr_ttl_biaya))?></b></td>
-        <td align="right"><b><?php echo number_format(array_sum($arr_ttl))?></b></td>
+        <td align="center"><b><?php echo number_format(array_sum($arr_ttl))?></b></td>
+        <td align="right"><b><?php echo number_format(array_sum($arr_ttl_biaya))?></b></td>
       </tr>
     </tbody>
       

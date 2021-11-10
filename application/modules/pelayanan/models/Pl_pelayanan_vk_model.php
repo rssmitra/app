@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Pl_pelayanan_igd_model extends CI_Model {
+class Pl_pelayanan_vk_model extends CI_Model {
 
-	var $table = 'gd_tc_gawat_darurat';
-	var $column = array('gd_tc_gawat_darurat.nama_pasien_igd','mt_karyawan.nama_pegawai');
-	var $select = 'gd_tc_gawat_darurat.no_kunjungan,gd_tc_gawat_darurat.nama_pasien_igd, kode_gd, gd_tc_gawat_darurat.status_diterima, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, gd_tc_gawat_darurat.tanggal_gd, gd_tc_gawat_darurat.tgl_kecelakaan, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, gd_tc_gawat_darurat.dokter_jaga, gd_tc_gawat_darurat.no_induk,tc_kunjungan.tgl_keluar,tmp_user.fullname, gd_tc_gawat_darurat.status_batal, tgl_jam_kel';
+	var $table = 'ri_pasien_vk_v';
+	var $column = array('ri_pasien_vk_v.nama_pasien');
+	var $select = 'ri_pasien_vk_v.*, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, mt_karyawan.nama_pegawai, nama_bagian, nama_klas';
 
-	var $order = array('gd_tc_gawat_darurat.kode_gd' => 'desc');
+	var $order = array('ri_pasien_vk_v.no_kunjungan' => 'desc');
 
 	public function __construct()
 	{
@@ -27,12 +27,12 @@ class Pl_pelayanan_igd_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
-		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=gd_tc_gawat_darurat.dokter_jaga','left');
-		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
-		$this->db->join('mt_perusahaan','tc_registrasi.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
-		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
-		$this->db->join('tmp_user','tmp_user.user_id='.$this->table.'.no_induk','left');
-		$this->db->where("tc_kunjungan.no_mr is not null");
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=ri_pasien_vk_v.dr_merawat','left');
+		$this->db->join('mt_perusahaan','ri_pasien_vk_v.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
+		$this->db->join('mt_nasabah','ri_pasien_vk_v.kode_kelompok=mt_nasabah.kode_kelompok','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=ri_pasien_vk_v.bag_pas','left');
+		$this->db->join('mt_klas','mt_klas.kode_klas=ri_pasien_vk_v.kelas_pas','left');
+		$this->db->where("flag_vk", 0);
 
 
 		/*check level user*/
@@ -52,10 +52,7 @@ class Pl_pelayanan_igd_model extends CI_Model {
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("convert(varchar,gd_tc_gawat_darurat.tanggal_gd,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-        }else{
-			$this->db->where("gd_tc_gawat_darurat.tanggal_gd > '".$date."' ");
-			//$this->db->where(array('YEAR(gd_tc_gawat_darurat.tanggal_gd)' => date('Y'), 'MONTH(gd_tc_gawat_darurat.tanggal_gd)' => date('m'), 'DAY(gd_tc_gawat_darurat.tanggal_gd)' => date('d') ) );
+			$this->db->where("convert(varchar,ri_pasien_vk_v.tanggal_gd,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
         }
 
 		$i = 0;
@@ -106,11 +103,11 @@ class Pl_pelayanan_igd_model extends CI_Model {
 	{
 		$this->_main_query();
 		if(is_array($id)){
-			$this->db->where_in(''.$this->table.'.kode_gd',$id);
+			$this->db->where_in(''.$this->table.'.id_pasien_vk',$id);
 			$query = $this->db->get();
 			return $query->result();
 		}else{
-			$this->db->where(''.$this->table.'.kode_gd',$id);
+			$this->db->where(''.$this->table.'.id_pasien_vk',$id);
 			$query = $this->db->get();
 			//print_r($this->db->last_query());die;
 			return $query->row();
@@ -158,8 +155,8 @@ class Pl_pelayanan_igd_model extends CI_Model {
 		$this->db->select('gd_tc_cetak_racun.*,mt_master_pasien.nama_pasien,mt_master_pasien.jen_kelamin,mt_master_pasien.almt_ttp_pasien,mt_karyawan.nama_pegawai');
 		$this->db->from('gd_tc_cetak_racun');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=gd_tc_cetak_racun.no_mr','left');
-		$this->db->join('gd_tc_gawat_darurat','gd_tc_gawat_darurat.no_kunjungan=gd_tc_cetak_racun.no_kunjungan','left');
-		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=gd_tc_gawat_darurat.dokter_jaga','left');
+		$this->db->join('ri_pasien_vk_v','ri_pasien_vk_v.no_kunjungan=gd_tc_cetak_racun.no_kunjungan','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=ri_pasien_vk_v.dokter_jaga','left');
 		$this->db->where('gd_tc_cetak_racun.no_kunjungan', $no_kunjungan );
 		$query = $this->db->get();
 		return $query->row();

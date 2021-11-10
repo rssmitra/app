@@ -110,7 +110,7 @@ class Auto_hitung_ruangan extends MX_Controller {
                         'id_dd_user' => 1
                     );
 
-                    echo '<pre>'; print_r($dataexc);
+                    // echo '<pre>'; print_r($dataexc);
 
                     if(!isset($trans)){
 
