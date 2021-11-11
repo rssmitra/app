@@ -113,7 +113,7 @@ function get_resume_billing(){
     // sisa yang tidak di NK kan
     var sisa_nk = parseInt($('#total_payment').val()) - parseInt($('#total_nk').val());
     if( sisa_nk > 0 ){
-      $('<tr><td>'+$('#nama_pasien_val').val()+'</td><td align="right"><span style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">'+formatMoney(sisa_nk)+'</span></td></tr>').appendTo($('#table_pembayar'));
+      $('<tr><td><input type="text" name="pembayar" class="form-control" style="border-radius: 4px !important; border: none; box-shadow: 0 0 0 0.2rem rgba(193, 255, 155, 0.25) !important;" value="'+$('#nama_pasien_val').val()+'"></td><td align="right" style="padding-top: 7px;"><span style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">'+formatMoney(sisa_nk)+'</span></td></tr>').appendTo($('#table_pembayar'));
     }
     
     // total uang muka atau yang sudah dibayar
@@ -146,10 +146,21 @@ function sum_total_pembayaran(){
   var total = formatNumberFromCurrency($('#jml_dibayarkan').text());
   var total_um_nk = formatNumberFromCurrency($('#jml_um_nk').text());
   var cash = $('#uang_dibayarkan').val();
+  var jml_diskon = formatNumberFromCurrency($('#jml_diskon_internal').text());
   var sum_class = sumClass('uang_dibayarkan');
   
-  console.log(sum_class);
+  console.log(sum_class + ' sum_class Uang Dibayarkan - sum_total_pembayaran');
   // console.log(total);
+
+  // diskon
+  // var diskon_rp = total * (jml_diskon/100);
+  // $('#jml_diskon_internal').text(formatMoney(parseInt(diskon_rp)));
+  // $('#nominal_diskon').val(diskon_rp);
+  // console.log('Diskon RP : '+diskon_rp);
+  // console.log('total : '+total);
+  // console.log('Diskon jml : '+jml_diskon);
+
+
   // uang kembali
   var kembali = parseInt(cash) - parseInt(total);
   if( parseInt(cash) >= parseInt(total) ){
@@ -186,7 +197,7 @@ function cek_sisa_belum_bayar(div_id){
   }else{
     var blm_dibayarkan = 0;
   }
-  console.log(sum_class);
+  console.log(sum_class + 'sum_class uang_dibayarkan - cek_sisa_belum_bayar');
   $('#'+div_id+'').val(blm_dibayarkan);
   sum_total_pembayaran();
 }
@@ -200,6 +211,51 @@ function statButton(){
   }else{
     $('#btnSave').attr("disabled", true);
     console.log('enabled');
+  }
+}
+
+function statusKaryawan(id){
+  // NOTICE : Ketika Perubahan status pastikan nominal diskon tidak bertambah/akumulasi, think about it!
+
+  // console.log(id);
+  let kode_kel = id;
+  // console.log(kode_kel);
+
+  if ( kode_kel != 1 && kode_kel !=2 && kode_kel !=3 && kode_kel !=5 && kode_kel !=6 && kode_kel !=10 && kode_kel !=null ){
+    console.log('Bisa Bon Karyawan + Diskon');
+    // console.log(kode_kel);
+    $('#hutang_nk').removeAttr("disabled");
+    $('#div_bon_karyawan').show();
+    $('#jumlah_diskon').val(20);
+
+    // diskon
+    var total = formatNumberFromCurrency($('#jml_dibayarkan').text());
+    var jml_diskon = $('#jumlah_diskon').val();
+    var diskon_rp = total * (jml_diskon/100);
+    $('#jml_diskon_internal').text(formatMoney(parseInt(diskon_rp)));
+    $('#nominal_diskon').val(diskon_rp);
+
+    // hitung ulang UM + NK + Diskon
+    let jml_um_rp = formatNumberFromCurrency($('#jml_um').text());
+    let jml_nk_rp = formatNumberFromCurrency($('#jml_nk_dibayarkan').text());
+    let total_um_nk_disc = jml_um_rp + jml_nk_rp + diskon_rp;
+
+    $('#jml_um_nk').text(formatMoney(parseInt(total_um_nk_disc)));
+
+    let total_setelah_diskon = total - total_um_nk_disc;
+    $('#jml_dibayarkan').text(formatMoney(total_setelah_diskon));
+
+    // sum_total_pembayaran();
+  }else {
+    console.log('Gak Bisa Bon Karyawan');
+    // console.log(kode_kel);
+    $('#hutang_nk').attr("disabled", true);
+    $('#jumlah_diskon').val(0);
+    $('#jml_um_nk').text(0);
+    $('#jml_diskon_internal').text(0);
+    $('#div_bon_karyawan').hide();
+
+    // sum_total_pembayaran();
   }
 }
 
@@ -243,6 +299,15 @@ function statButton(){
             <input name="pembayar" id="pembayar" value="<?php echo $result->reg_data->nama_pasien?>" class="form-control" type="text">
           </div>
         </div> -->
+        <div class="form-group" id="">
+          <label class="control-label col-md-4">Kode Penjamin</label>
+          <div class="col-md-8" id="kode_kelompok_form">
+          <?php ($result->reg_data->kode_perusahaan == 120) ? $state='disabled' : $state='';
+            echo $this->master->custom_selection($params = array('table' => 'mt_nasabah', 'id' => 'kode_kelompok', 'name' => 'nama_kelompok', 'where' => array()), $result->reg_data->kode_kelompok , 'kode_penjamin_pasien', 'kode_penjamin_pasien', 'form-control', 'onchange=statusKaryawan(value);', $state) ?>
+          </div>
+        </div>
+
+        <hr>
 
         <div class="form-group">
           <label class="control-label col-md-4">Nama Pasien</label>
@@ -250,6 +315,16 @@ function statButton(){
             <b><?php echo $result->reg_data->nama_pasien?></b>
           </div>
         </div>
+        <!-- <?php if($result->reg_data->kode_perusahaan == 0) :?>
+        <div class="form-group" id="">
+          <label class="control-label col-md-4">Penjamin</label>
+          <div class="col-md-8">
+            <input type="text" class="form-control" name="nama_penjamin_pasien" id="nama_penjamin_pasien">
+          </div>
+        </div>
+        
+        <?php endif; ?>
+           -->
         <!-- jika pasien BPJS  -->
         <?php if($result->reg_data->kode_perusahaan == 120) :?>
         <div class="form-group" id="form_sep_pasien">
@@ -275,7 +350,14 @@ function statButton(){
               <input name="metode_kredit" id="kredit" type="checkbox" class="ace" value="3">
               <span class="lbl"> Kredit &nbsp;&nbsp; </span>
             </label>
-            
+            <label>
+              <?php
+                $arr_kode_kelompok = [4,7,8,9,11,12,13,14,15,16];
+                $kode_kelompok = $result->reg_data->kode_kelompok;
+              ?>
+              <input name="hutang_nk" id="hutang_nk" value="" class="ace" type="checkbox" <?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'disabled' ?>>
+              <span class="lbl"> Bon Karyawan</span>
+            </label>
           </div>
         </div>
 
@@ -359,19 +441,21 @@ function statButton(){
           </div>
         </div>
 
-        <hr class="separator">
-        <p><b>NOTA KREDIT PERUSAHAAN</b></p>
-        <div class="form-group">
-          <label class="control-label col-md-4">Total NK Perusahaan</label>
-          <div class="col-md-8">
-            <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control" type="text" style="text-align: right" readonly>
+        <div id="div_bon_karyawan" style="<?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'display:none' ?>">
+          <hr class="separator">
+          <p><b>NOTA KREDIT PERUSAHAAN</b></p>
+          <div class="form-group">
+            <label class="control-label col-md-4">Total NK Perusahaan</label>
+            <div class="col-md-8">
+              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control" type="text" style="text-align: right" readonly>
+            </div>
           </div>
-        </div>
-        
-        <div class="form-group">
-          <label class="control-label col-md-4">Diskon</label>
-          <div class="col-md-8">
-            <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right">
+          
+          <div class="form-group">
+            <label class="control-label col-md-4">Diskon ( % )</label>
+            <div class="col-md-8">
+              <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" oninput="sum_total_pembayaran()">
+            </div>
           </div>
         </div>
 
@@ -430,7 +514,11 @@ function statButton(){
             <td align="right">Rp. <span id="jml_nk_dibayarkan">0</span></td>
           </tr>
           <tr>
-            <td>UM + NK Perusahaan</span> </td>
+            <td>Diskon ( % ) <span id="diskon_karyawan"></span> </td>
+            <td align="right">Rp. <span id="jml_diskon_internal">0</span></td>
+          </tr>
+          <tr>
+            <td>UM + NK Perusahaan + Diskon</span> </td>
             <td align="right" style="font-size: 14px; font-weight: bold">Rp. <span id="jml_um_nk">0</span></td>
           </tr>
 
