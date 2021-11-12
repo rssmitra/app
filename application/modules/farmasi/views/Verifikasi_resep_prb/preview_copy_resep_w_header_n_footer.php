@@ -54,9 +54,10 @@
             'use' => $row['anjuran_pakai'],
           );
           $format_signa = $this->master->formatSigna($config);
+          $jumlah_tebus_bln = (int)$row['jumlah_tebus'] + (int)$row['jumlah_obat_23'];
           echo '<span>R/</span><br>';
           echo '<div style="padding-left: 15px">';
-          echo $row['nama_brg'].' &nbsp;&nbsp; No. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).'<br>';
+          echo $row['nama_brg'].' &nbsp;&nbsp; No. '.$this->master->formatRomawi($jumlah_tebus_bln).'<br>';
           echo '<i>'.$format_signa.'</i>';
           // echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row['dosis_per_hari'].' x '.$row['dosis_obat'].'&nbsp; '.$row['satuan_obat'].'  ('.$row['anjuran_pakai'].')<br>';
           echo ' ____________ det / nedet<br>';
@@ -66,6 +67,7 @@
           echo '<div style="padding-left: 15px">';
           echo '<table>';
           $first_dt = $row['racikan'][0];
+          $jumlah_tebus_bln = (int)$row['jumlah_tebus'] + (int)$row['jumlah_obat_23'];
           foreach ($row['racikan'][0] as $key => $value) {
 
             echo '<tr>';  
@@ -75,7 +77,7 @@
           }
           echo '</table>';
           $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($first_dt[0]->satuan_racikan)) );
-          echo '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).' da in '.$unit_code.'</i> <br>';
+          echo '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$jumlah_tebus_bln).' da in '.$unit_code.'</i> <br>';
 
           $config_racikan = array(
             'dd' => $first_dt[0]->dosis_per_hari,

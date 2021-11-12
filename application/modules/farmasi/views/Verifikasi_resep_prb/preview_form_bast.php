@@ -57,13 +57,14 @@
         <?php 
           $no=0; 
           foreach($resep as $key_dt=>$row_dt) : $no++;    
-          $arr_total[] = $row_dt->sub_total;       
+          $arr_total[] = $row_dt->sub_total;  
+          $jumlah_bln = $row_dt->jumlah + $row_dt->jumlah_obat_23;     
         ?>
 
           <tr>
             <td style="text-align:center; width: 5%; border-collapse: collapse"><?php echo $no?>.</td>
             <td style="border-collapse: collapse; width: 60%; "><?php echo $row_dt->nama_brg;?></td>
-            <td style="text-align:center; width: 10%; border-collapse: collapse"><?php echo number_format($row_dt->jumlah);?></td>
+            <td style="text-align:center; width: 10%; border-collapse: collapse"><?php echo number_format($jumlah_bln);?></td>
             <td style="text-align:left; width: 10%; border-collapse: collapse"><?php echo $row_dt->satuan_kecil?></td>
             <!-- <td style="text-align:right; width: 15%; border-collapse: collapse"><?php echo number_format($row_dt->sub_total)?></td> -->
           </tr>
