@@ -1107,7 +1107,7 @@ class Billing_model extends CI_Model {
         }else{
             $bill_pm = 0;
             /*tindakan*/
-            if (in_array($jenis_tindakan, array(3))) {
+            if (in_array($jenis_tindakan, array(3,10))) {
                 $bill_tindakan = $subtotal;
             }
         }
