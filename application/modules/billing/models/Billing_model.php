@@ -1107,7 +1107,7 @@ class Billing_model extends CI_Model {
         }else{
             $bill_pm = 0;
             /*tindakan*/
-            if (in_array($jenis_tindakan, array(3))) {
+            if (in_array($jenis_tindakan, array(3,10))) {
                 $bill_tindakan = $subtotal;
             }
         }
@@ -1246,9 +1246,9 @@ class Billing_model extends CI_Model {
     }
 
     public function getTransDataApt($kode_trans_far){
-		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_trans_kasir.no_induk, tmp_user.fullname');
+		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_perusahaan.nama_perusahaan, tc_trans_kasir.no_induk, tmp_user.fullname');
 		$this->db->from('tc_trans_pelayanan');
-		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
+		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=tc_trans_pelayanan.kode_trans_far','left');
 		$this->db->join('tc_trans_kasir','tc_trans_kasir.kode_tc_trans_kasir=tc_trans_pelayanan.kode_tc_trans_kasir','left');
 		$this->db->join('tmp_user','tmp_user.user_id=tc_trans_kasir.no_induk','left');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
@@ -1261,7 +1261,7 @@ class Billing_model extends CI_Model {
             $this->db->where('tc_trans_pelayanan.kode_bagian', $_GET['bagian']);
         }
 
-		$this->db->order_by('tc_kunjungan.tgl_masuk', 'ASC');
+		$this->db->order_by('fr_tc_far.tgl_trans', 'ASC');
         $query = $this->db->get()->result();
         // print_r($this->db->last_query());die;
 		return $query;

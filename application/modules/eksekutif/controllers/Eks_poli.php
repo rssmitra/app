@@ -93,6 +93,15 @@ class Eks_poli extends MX_Controller {
             );
         }
 
+        if(isset($_GET['tbl-resume-pasien-harian'])){
+            $data[5] = array(
+                'nameid' => 'tbl-resume-pasien-harian',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=8&TypeChart=table&style=TableResumePasienHarian&'.$output.'',
+            );
+        }
+
         // $data[2] = array(
         //     'mod' => $_GET['mod'],
         //     'nameid' => 'graph-pie-1',

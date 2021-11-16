@@ -72,6 +72,14 @@
       }
     }
 
+    if (nameid == 'tbl-resume-pasien-harian') {
+      if($('input[name='+nameid+']').is(':checked')){
+          $('#div_bulan_resume_pasien').show('fast');
+      } else {
+        $('#div_bulan_resume_pasien').hide('fast');
+      }
+    }
+
     if (nameid == 'graph-line-1') {
       if($('input[name='+nameid+']').is(':checked')){
           $('#div_tahun_graph-line-1').show('fast');
@@ -126,7 +134,7 @@
                 <div class="col-md-2">
                   <select class="form-control" name="jenis_kunjungan">
                   <option value="all">Pilih Semua</option>
-                    <option value="rj">Rawat Jalan</option>
+                    <option value="rj" selected>Rawat Jalan</option>
                     <option value="ri">Rawat Inap</option>
                   </select>
                 </div>
@@ -225,6 +233,22 @@
                 <input name="tbl-resume-kinerja-dokter" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
                 <span class="lbl"> Rekapitulasi Kinerja Dokter Berdasarkan Kunjungan Pasien </span>
               </label>
+              <br>
+              <label>
+                <input name="tbl-resume-pasien-harian" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Detail Harian Berdasarkan Jumlah Pasien per Bulan</span>
+              </label>
+              <div class="form-group" id="div_bulan_resume_pasien" style="display: none">
+                  <label class="control-label col-md-1">Bulan</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_bulan(date('m'),'bulan','bulan','form-control','','')?>
+                  </div>
+                  <label class="control-label col-md-1">Tahun</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_tahun(date('Y'),'tahun','tahun','form-control','','')?>
+                  </div>
+              </div>
+              <br>
 
             </div>
             <br>
