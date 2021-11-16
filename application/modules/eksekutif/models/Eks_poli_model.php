@@ -10,7 +10,7 @@ class Eks_poli_model extends CI_Model {
     }
 
     private function _main_query(){
-        $this->db->select('b.no_kunjungan, d.nama_bagian, (SUM(bill_rs) + SUM(bill_dr1) + SUM(bill_dr2) + SUM(bill_dr3)) as total');
+        $this->db->select('(SUM(bill_rs) + SUM(bill_dr1) + SUM(bill_dr2) + SUM(bill_dr3)) as total');
         $this->db->from('tc_trans_pelayanan b');
         $this->db->join('tc_kunjungan c', 'c.no_kunjungan=b.no_kunjungan','left');
         $this->db->join('mt_bagian d', 'd.kode_bagian=b.kode_bagian','left');
@@ -29,7 +29,6 @@ class Eks_poli_model extends CI_Model {
             }
         }
 
-        $this->db->group_by('b.no_kunjungan, d.nama_bagian');
         
     }
 
@@ -40,6 +39,7 @@ class Eks_poli_model extends CI_Model {
         if($params['prefix']==1){
             $data = array();
             // periode
+            $this->db->select('b.no_kunjungan, d.nama_bagian');
             $this->_main_query();
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
@@ -60,11 +60,13 @@ class Eks_poli_model extends CI_Model {
                     FROM tc_kunjungan a
                     where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
             }
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $prd_dt = $this->db->get();
             
             
             // day
             $this->_main_query();
+            $this->db->select('b.no_kunjungan, d.nama_bagian');
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') { 
                     $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');   
@@ -84,10 +86,12 @@ class Eks_poli_model extends CI_Model {
                     FROM tc_kunjungan a
                     where CAST(tgl_masuk as DATE) = '."'".date('Y-m-d')."'".' AND a.status_batal is null )');   
             }
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $dy_dt = $this->db->get();
 
             // month
             $this->_main_query();
+            $this->db->select('b.no_kunjungan, d.nama_bagian');
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') { 
                     $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');   
@@ -107,12 +111,14 @@ class Eks_poli_model extends CI_Model {
                     FROM tc_kunjungan a
                     where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null)');       
             }
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $mth_dt = $this->db->get();
 
             
 
             // year
             $this->_main_query();
+            $this->db->select('b.no_kunjungan, d.nama_bagian');
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') { 
                     $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');   
@@ -132,6 +138,7 @@ class Eks_poli_model extends CI_Model {
                     FROM tc_kunjungan a
                     where YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null)');
             }
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $yr_dt = $this->db->get();
             // print_r($this->db->last_query());die;
 
@@ -171,6 +178,7 @@ class Eks_poli_model extends CI_Model {
                 'mth_dt' => $mth_dt->result(),
                 'yr_dt' => $yr_dt->result(),
             );
+
             $fields = array();
             $title = isset($_GET['jenis_kunjungan']) ? '' : '' ;
             $title = '<span style="font-size: 14px">LAPORAN KUNJUNGAN PASIEN <br><b>'.strtoupper($ttl_jk).' - '.strtoupper($ttl_pj).'</b></span>';
@@ -179,7 +187,7 @@ class Eks_poli_model extends CI_Model {
 
         if($params['prefix']==2){
             $year = isset($_GET['tahun_graph_line_1'])?$_GET['tahun_graph_line_1']: date('Y');
-            $query = "SELECT MONTH(tgl_masuk) AS bulan, COUNT(id_tc_kunjungan) AS total FROM tc_kunjungan WHERE YEAR(tgl_masuk)=".$year." GROUP BY MONTH(tgl_masuk)";   
+            $query = "SELECT MONTH(tgl_masuk) AS bulan, COUNT(no_mr) AS total FROM tc_kunjungan WHERE YEAR(tgl_masuk)=".$year." GROUP BY MONTH(tgl_masuk)";   
             $fields = array('Jumlah_Pasien'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Tahun '.$year.' RS. Setia Mitra</span>';
             $subtitle = 'Source: RSSM - SIRS';
@@ -200,6 +208,7 @@ class Eks_poli_model extends CI_Model {
             $data = array();
             // periode
             $this->_main_query();   
+            $this->db->select('b.no_kunjungan, d.nama_bagian');
             $this->db->select('DAY(tgl_masuk) as tgl'); 
             if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
@@ -223,6 +232,7 @@ class Eks_poli_model extends CI_Model {
             }
             $this->db->group_by('DAY(tgl_masuk)');
             $this->db->order_by('d.nama_bagian ASC');
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $prd_dt = $this->db->get();
             // echo '<pre>';print_r($this->db->last_query());die;
             $getData = [];
@@ -243,7 +253,8 @@ class Eks_poli_model extends CI_Model {
         if($params['prefix']==5){
             $data = array();
             // periode
-            $this->_main_query();   
+            $this->_main_query(); 
+            $this->db->select('b.no_kunjungan, d.nama_bagian');  
             $this->db->join('mt_master_pasien e ', 'e.no_mr=b.no_mr','left');
             $this->db->select('b.no_mr, e.nama_pasien, c.tgl_masuk');   
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
@@ -267,6 +278,7 @@ class Eks_poli_model extends CI_Model {
             
             $this->db->group_by('e.nama_pasien, b.no_mr, c.tgl_masuk');
             $this->db->order_by('d.nama_bagian ASC');
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $prd_dt = $this->db->get();
             // echo '<pre>';print_r($this->db->last_query());die;
             $getData = [];
@@ -288,6 +300,7 @@ class Eks_poli_model extends CI_Model {
             $data = array();
             // periode
             $this->_main_query();   
+            $this->db->select('b.no_kunjungan, d.nama_bagian');
             $this->db->join('mt_perusahaan e ', 'e.kode_perusahaan=b.kode_perusahaan','left');
             $this->db->select('b.kode_perusahaan, e.nama_perusahaan, c.tgl_masuk'); 
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
@@ -310,6 +323,7 @@ class Eks_poli_model extends CI_Model {
             }
             
             $this->db->group_by('e.nama_perusahaan, b.kode_perusahaan, c.tgl_masuk');
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $this->db->order_by('e.nama_perusahaan ASC');
             $prd_dt = $this->db->get();
             // echo '<pre>';print_r($this->db->last_query());die;
@@ -354,6 +368,7 @@ class Eks_poli_model extends CI_Model {
             $data = array();
             // periode
             $this->db->select('SUM(bill_dr1) as total_bill_dr, SUM(bill_dr2) as total_bill_dr2, kode_dokter1, kode_dokter2');
+            $this->db->select('b.no_kunjungan, d.nama_bagian');
             $this->_main_query();   
             $this->db->select('c.tgl_masuk, c.kode_dokter');
             $this->db->where('c.kode_dokter != 0');
@@ -376,7 +391,7 @@ class Eks_poli_model extends CI_Model {
                     FROM tc_kunjungan a
                     where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null   )');
             }
-            
+            $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $this->db->group_by('c.tgl_masuk, kode_dokter1, kode_dokter2, c.kode_dokter');
             $prd_dt = $this->db->get();
             // echo '<pre>';print_r($this->db->last_query());die;
@@ -392,6 +407,64 @@ class Eks_poli_model extends CI_Model {
 
             $fields = array();
             $title = '<span style="font-size: 16px">Rekapitulasi Kinerja Dokter Berdasarkan Kunjungan Periode <b>'.$this->tanggal->formatDateDmy($_GET['from_tgl']).'</b> s.d <b>'.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+            $subtitle = 'Source: RSSM - SIRS';
+        }
+
+        if($params['prefix']==8){
+            $data = array();
+            // periode
+            $this->_main_query();  
+            $this->db->select('b.no_mr'); 
+            $this->db->select("CASE 
+                                    WHEN SUBSTRING(b.kode_bagian, 1, 2) = '01' THEN 'Poli/Klinik'
+                                    WHEN SUBSTRING(b.kode_bagian, 1, 2) = '03' THEN 'Rawat Inap'
+                                    WHEN SUBSTRING(b.kode_bagian, 1, 2) = '05' THEN 'Penunjang Medis'
+                                    WHEN SUBSTRING(b.kode_bagian, 1, 2) = '02' THEN 'IGD'
+                                    WHEN SUBSTRING(b.kode_bagian, 1, 2) = '06' THEN 'Farmasi'
+                                END as 'nama_bagian'"); 
+            $this->db->select('DAY(tgl_masuk) as tgl'); 
+            if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
+                if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
+                    $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');
+                    $this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+                    FROM tc_kunjungan a
+                    where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '."'03'".' AND MONTH(tgl_masuk) = '.$_GET['bulan'].' AND YEAR(tgl_masuk) = '.$_GET['tahun'].' AND a.status_batal is null   )');
+                    
+                }
+
+                if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
+                    $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) = '."'03'".'');
+                    $this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+                    FROM ri_tc_rawatinap a
+                    where MONTH(tgl_masuk) = '.$_GET['bulan'].' AND YEAR(tgl_masuk) = '.$_GET['tahun'].' )');
+                }
+            }else{
+                $this->db->where('b.no_kunjungan IN ( SELECT no_kunjungan
+                    FROM tc_kunjungan a
+                    where MONTH(tgl_masuk) = '.$_GET['bulan'].' AND YEAR(tgl_masuk) = '.$_GET['tahun'].' AND a.status_batal is null )');
+            }
+            // $this->db->where("SUBSTRING(b.kode_bagian, 1, 2) != '06'");
+            $this->db->group_by('DAY(tgl_masuk), b.kode_bagian, b.no_mr');
+            $prd_dt = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
+            $getData = [];
+            foreach ($prd_dt->result() as $key => $value) {
+                $getData[$value->nama_bagian][] = $value;
+            }
+
+            foreach ($prd_dt->result() as $key => $value) {
+                $getDataRI[$value->no_mr][] = $value;
+            }
+
+            
+            $data = array(
+                'data_ri' => $getDataRI,
+                'prd_dt' => $getData,
+                'jenis_kunjungan' => $_GET['jenis_kunjungan'],
+            );
+            // echo '<pre>';print_r($data);die;
+            $fields = array();
+            $title = '<span style="font-size: 14px">Rekapitulasi Detail Harian Berdasarkan Jumlah Pasien<br>Bulan <b>'.$this->tanggal->getBulan($_GET['bulan']).'</b> Tahun <b>'.$_GET['tahun'].'</b></span>';
             $subtitle = 'Source: RSSM - SIRS';
         }
 
