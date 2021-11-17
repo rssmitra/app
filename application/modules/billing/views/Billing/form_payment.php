@@ -83,6 +83,16 @@ $(document).ready(function(){
         
     });
 
+    $('input[name=hutang_nk]').change(function(){
+        preventDefault();
+        if($(this).is(':checked')){
+          $('#jumlah_nk').attr('readonly', false);
+        } else {
+          $('#jumlah_nk').attr('readonly', true);
+        }
+        
+    });
+
 })
 
 function get_resume_billing(){
@@ -184,6 +194,8 @@ function sum_total_pembayaran(){
 
   $('#uang_dibayarkan_text').text( formatMoney(parseInt(sum_class)) );
 
+  $('#jml_nk_dibayarkan').text( formatMoney($('#total_nk').val()) );
+
   statButton();
 
 }
@@ -220,6 +232,7 @@ function statusKaryawan(id){
   // console.log(id);
   let kode_kel = id;
   // console.log(kode_kel);
+  var total = formatNumberFromCurrency($('#jumlah_bayar_tunai').text());
 
   if ( kode_kel != 1 && kode_kel !=2 && kode_kel !=3 && kode_kel !=5 && kode_kel !=6 && kode_kel !=10 && kode_kel !=null ){
     console.log('Bisa Bon Karyawan + Diskon');
@@ -229,7 +242,7 @@ function statusKaryawan(id){
     $('#jumlah_diskon').val(20);
 
     // diskon
-    var total = formatNumberFromCurrency($('#jml_dibayarkan').text());
+    
     var jml_diskon = $('#jumlah_diskon').val();
     var diskon_rp = total * (jml_diskon/100);
     $('#jml_diskon_internal').text(formatMoney(parseInt(diskon_rp)));
@@ -254,9 +267,11 @@ function statusKaryawan(id){
     $('#jml_um_nk').text(0);
     $('#jml_diskon_internal').text(0);
     $('#div_bon_karyawan').hide();
+    $('#jml_dibayarkan').text(formatMoney(total));
 
     // sum_total_pembayaran();
   }
+  sum_total_pembayaran();
 }
 
 </script>
@@ -300,7 +315,7 @@ function statusKaryawan(id){
           </div>
         </div> -->
         <div class="form-group" id="">
-          <label class="control-label col-md-4">Kode Penjamin</label>
+          <label class="control-label col-md-4">Kategori Pasien</label>
           <div class="col-md-8" id="kode_kelompok_form">
           <?php ($result->reg_data->kode_perusahaan == 120) ? $state='disabled' : $state='';
             echo $this->master->custom_selection($params = array('table' => 'mt_nasabah', 'id' => 'kode_kelompok', 'name' => 'nama_kelompok', 'where' => array()), $result->reg_data->kode_kelompok , 'kode_penjamin_pasien', 'kode_penjamin_pasien', 'form-control', 'onchange=statusKaryawan(value);', $state) ?>
@@ -445,9 +460,9 @@ function statusKaryawan(id){
           <hr class="separator">
           <p><b>NOTA KREDIT PERUSAHAAN</b></p>
           <div class="form-group">
-            <label class="control-label col-md-4">Total NK Perusahaan</label>
+            <label class="control-label col-md-4">NK Perusahaan/Karyawan</label>
             <div class="col-md-8">
-              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control" type="text" style="text-align: right" readonly>
+              <input name="jumlah_nk" id="jumlah_nk" value="" class="format_number form-control" type="text" style="text-align: right" readonly oninput="sum_total_pembayaran()">
             </div>
           </div>
           
@@ -510,7 +525,7 @@ function statusKaryawan(id){
             <td width="25%" align="right">Rp. <span id="jml_um">0</span></td>
           </tr>
           <tr>
-            <td>NK Perusahaan <span id="nama_perusahaan_nk"></span> </td>
+            <td>NK Perusahaan/Karyawan <span id="nama_perusahaan_nk"></span> </td>
             <td align="right">Rp. <span id="jml_nk_dibayarkan">0</span></td>
           </tr>
           <tr>
