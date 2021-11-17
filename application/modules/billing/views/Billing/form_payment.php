@@ -82,6 +82,19 @@ $(document).ready(function(){
         }
         
     });
+    
+    $('input[name=hutang_nk]').change(function(){
+        preventDefault();
+        if($(this).is(':checked')){
+          $('#jumlah_nk').removeAttr('readonly');
+          cek_sisa_belum_bayar('jumlah_nk');
+        } else {
+          $('#jumlah_nk').attr('readonly', true);
+          $('#jumlah_nk').val(0);
+          sum_total_pembayaran();
+        }
+        
+    });
 
 })
 
@@ -257,6 +270,31 @@ function statusKaryawan(id){
 
     // sum_total_pembayaran();
   }
+}
+
+function hitungDiskon(){
+  let persentaseDiskon = $('#jumlah_diskon').val();
+  let total_payment = $('#total_payment').val();
+
+  // console.log(persentaseDiskon+' Persentase Diskon');
+  // console.log(total_payment+' Nominal Utuh');
+  
+  let intDiskon = (persentaseDiskon/100) * total_payment;
+  // console.log(intDiskon+' Nominal Diskon');
+
+  let intUangMuka = formatNumberFromCurrency($('#jml_um').text());
+  let intNKPerusahaan = formatNumberFromCurrency($('#jml_nk_dibayarkan').text());
+
+  let sumUmNkDisc = 0;
+  sumUmNkDisc = parseInt(intDiskon) + parseInt(intUangMuka) + parseInt(intNKPerusahaan);
+
+  $('#jml_diskon_internal').text( formatMoney(intDiskon) );
+  $('#jml_um_nk').text( formatMoney(sumUmNkDisc) );
+
+  let jumlah_dibayarkan = 0;
+  jumlah_dibayarkan = parseInt(total_payment) - parseInt(sumUmNkDisc);
+
+  $('#jml_dibayarkan').text( formatMoney(jumlah_dibayarkan) );
 }
 
 </script>
@@ -447,14 +485,14 @@ function statusKaryawan(id){
           <div class="form-group">
             <label class="control-label col-md-4">Total NK Perusahaan</label>
             <div class="col-md-8">
-              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control" type="text" style="text-align: right" readonly>
+              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control uang_dibayarkan format_number" type="text" style="text-align: right" oninput="sum_total_pembayaran()" readonly>
             </div>
           </div>
           
           <div class="form-group">
             <label class="control-label col-md-4">Diskon ( % )</label>
             <div class="col-md-8">
-              <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" oninput="sum_total_pembayaran()">
+              <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" oninput="hitungDiskon()">
             </div>
           </div>
         </div>
