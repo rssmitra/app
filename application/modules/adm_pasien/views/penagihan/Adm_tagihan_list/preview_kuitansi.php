@@ -58,7 +58,7 @@
 				<tr> 
 					<td width="20%" style="font-size:12px">Untuk Pembayaran</td> 
 					<!-- Update Pengembalian Uang Muka 131011-->
-					<td width="67%" bgcolor="#EBEBEB">: Invoice No. <?php echo $inv; ?></td> 
+					<td width="67%" bgcolor="#EBEBEB">: Invoice No. <span style="font-size:15px; font-weight:bolder;"><?php echo $inv; ?></span></td> 
 				</tr>
 			</table>
 			<br>
