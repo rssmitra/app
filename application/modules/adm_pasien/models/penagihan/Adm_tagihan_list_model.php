@@ -21,7 +21,7 @@ class Adm_tagihan_list_model extends CI_Model {
 		$this->db->from($this->table.' a');
 		$this->db->join('tc_tagih_det b', 'b.id_tc_tagih=a.id_tc_tagih', 'left');
 		$this->db->join('tc_bayar_tagih c', 'c.id_tc_tagih=a.id_tc_tagih', 'left');
-		// $this->db->where('(a.id_tertagih NOT IN (120, 221, 0, 299))');
+		$this->db->where('(a.id_tertagih NOT IN (120, 221, 0, 299))');
 
 		$this->db->group_by($this->select);
 
