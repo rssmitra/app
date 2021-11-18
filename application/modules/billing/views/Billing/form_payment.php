@@ -500,11 +500,7 @@ function hitungDiskon(){
           <div class="form-group">
             <label class="control-label col-md-4">NK Perusahaan/Karyawan</label>
             <div class="col-md-8">
-<<<<<<< HEAD
-              <input name="jumlah_nk" id="jumlah_nk" value="" class="format_number form-control" type="text" style="text-align: right" readonly oninput="sum_total_pembayaran()">
-=======
               <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control uang_dibayarkan format_number" type="text" style="text-align: right" oninput="sum_total_pembayaran()" readonly>
->>>>>>> 5316ebbbba6bb483f0be7edc3af5f1c1a7fe7c00
             </div>
           </div>
           
