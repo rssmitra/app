@@ -58,7 +58,7 @@
           $no=0; 
           foreach($resep as $key_dt=>$row_dt) : $no++;    
           $arr_total[] = $row_dt->sub_total;  
-          $jumlah_bln = $row_dt->jumlah + $row_dt->jumlah_obat_23;     
+          $jumlah_bln = $row_dt->jumlah_7 + $row_dt->jumlah_obat_23;     
         ?>
 
           <tr>
