@@ -149,12 +149,12 @@ th, td {
           </td>
         </tr>
         <tr>
-          <td colspan="3" style="font-size: 18px; text-align:center; border: 1px solid black; border-collapse: collapse; padding: 10px 0 10px 0; ">Terbilang : 
+          <td colspan="3" style="text-align:center; border: 1px solid black; border-collapse: collapse; padding: 10px 0 10px 0; "><span style="font-size: 16px !important;"> Terbilang : 
           <b><i>"
             <?php 
               $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($biaya_materai+$total_tagih_perusahaan))
             ?> 
-            Rupiah "</i></b>
+            Rupiah "</i></b></span>
           </td>
         </tr>
       </tbody>
