@@ -83,7 +83,7 @@ th, td {
 
   <div class="page" id="tagihanPerusahaanUtuh">
 
-    <table width="100%" border="0">
+    <table width="100%" >
       <tr>
         <td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td>
         <td valign="bottom" width="320px"><b><span style="font-size: 18px"><?php echo COMP_FULL; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
@@ -110,7 +110,7 @@ th, td {
 
     <br>
     <center><span style="font-size: 16px"><strong>TAGIHAN PERUSAHAAN ASURANSI</strong></span></center> 
-    <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
+    <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px; border-top: black 2px solid;">
       <thead>
         <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
           <td style="border: 1px solid black; border-collapse: collapse">Nama Perusahaan</td>
@@ -203,7 +203,7 @@ th, td {
     </center> 
     <br>
     <center><span style="font-size: 16px"><strong>LIST DATA PASIEN PERUSAHAAN ASURANSI</strong></span></center> 
-    <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
+    <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px; border-top: black 2px solid;">
       <thead>
           <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
             <td style="text-align:center; width: 30px; border: 1px solid black; border-collapse: collapse">No</td>
