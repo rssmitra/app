@@ -35,18 +35,18 @@
 <body>
 	<div class="row" style="margin-top: 37mm;"> 
 		<div class="col-xs-8">
-			<table style="font-size:12px" border="0">
+			<table style="font-size:13px" border="0">
 				<tr> 
-					<td width="20%" style="font-size:12px">Telah Terima dari </td> 
-					<td width="67%"><font size="2">: <?php echo $name; ?>&nbsp;</font></td>
+					<td width="20%" style="font-size: 13px">Telah Terima dari </td> 
+					<td width="67%" style="font-size: 13px;">: <?php echo $name; ?>&nbsp;</td>
 				</tr>
 				<tr>
-					<td width="20%" style="font-size:12px">Uang Sejumlah</td> 
-					<td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:12px">: <b>Rp <?php echo number_format(intval($total))?>,-</b></td> 
+					<td width="20%" style="font-size:13px">Uang Sejumlah</td> 
+					<td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:13px">: <b>Rp <?php echo number_format(intval($total))?>,-</b></td> 
 				</tr>
 				<tr>
-					<td width="20%" valign="top" style="font-size:12px">Terbilang </td> 
-					<td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:12px">: 
+					<td width="20%" valign="top" style="font-size:13px">Terbilang </td> 
+					<td width="67%" bgcolor="#EBEBEB" nowrap style="font-size:13px">: 
 					<b>
 						<i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(intval($total)))?> Rupiah"</i></b>
 					</td>
@@ -56,9 +56,9 @@
 					<td width="67%" bgcolor="#EBEBEB">&nbsp;</td> 
 				</tr>
 				<tr> 
-					<td width="20%" style="font-size:12px">Untuk Pembayaran</td> 
+					<td width="20%" style="font-size:13px">Untuk Pembayaran</td> 
 					<!-- Update Pengembalian Uang Muka 131011-->
-					<td width="67%" bgcolor="#EBEBEB">: Invoice No. <span style="font-size:15px; font-weight:bolder;"><?php echo $inv; ?></span></td> 
+					<td width="67%" bgcolor="#EBEBEB"><span style="font-size:13px; font-weight:bolder;">: Invoice No. <?php echo $inv; ?></span></td> 
 				</tr>
 			</table>
 			<br>

@@ -168,12 +168,14 @@ th, td {
         <td style="text-align: center; width: 40%">&nbsp;</td>
         <td style="text-align: center; width: 30%">
           <span>Jakarta, <?php echo $this->tanggal->formatDatedmY($result[0]->tgl_tagih); ?></span><br>
-          <span style="font-size: 14px"><b><?php echo COMP_FULL; ?></b></span>
+          <span style="font-size: 14px"><b><?php echo COMP_FULL; ?></b></span><br>
+          <span>Kabag Keuangan</span>
           <br>
           <br>
           <br>
           <br>
-          <?php echo $this->master->get_ttd('ttd_kabag_keu');?>
+          <span>Cumanto, SE</span>
+          <!-- <?php echo $this->master->get_ttd('ttd_kabag_keu');?> -->
         </td>
       </tr>
     </table>
