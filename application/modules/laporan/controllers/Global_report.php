@@ -48,6 +48,7 @@ class Global_report extends MX_Controller {
 
     public function show_data(){
 
+        
         $query_data = $this->Global_report->get_data();
 
         $data = array(
@@ -55,6 +56,7 @@ class Global_report extends MX_Controller {
             'title' => $_POST['title'],
             'result' => $query_data,
         );
+        // echo '<pre>';print_r($data);die;
 
         if($_POST['submit']=='format_so'){
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);

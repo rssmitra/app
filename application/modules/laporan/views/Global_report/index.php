@@ -173,6 +173,7 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=6'?>">Rekap Pembelian Barang Berdasarkan Supplier <i class="fa fa-star orange bigger-120"></i></a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=9'?>">Laporan Mutasi Per-periode</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=11'?>">Laporan PO Donasi </a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/pengadaan?mod=12'?>">Laporan Pengeluaran Obat per Periode Berdasarkan Mutasi Barang  <i class="fa fa-star orange bigger-120"></i> </a></li>
 										</ol>
 										</div>
 									</div>
