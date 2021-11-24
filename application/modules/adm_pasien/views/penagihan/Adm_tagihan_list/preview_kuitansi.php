@@ -62,9 +62,9 @@
 				</tr>
 			</table>
 			<br>
-			<table style="margin-top: 10px;" width="95%" border="0" cellspacing="0" cellpadding="2" align="center"> 
+			<table style="margin-top: 10px;" width="95%" cellspacing="0" cellpadding="2" align="center"> 
 				<tr> 			
-					<td valign="top" colspan="3" style="font-weight: bolder; font-size:15px;">
+					<td valign="middle" colspan="3" style="font-weight: bolder; font-size:13px;">
           Pembayaran mohon ditransfer melalui <br>
           BANK MANDIRI <br>
           NO REK : 1270097000275 <br>
@@ -75,12 +75,12 @@
 
 					?>
 					<td valign="top" width="30%" align="center" style="font-size:12px">
-						Jakarta, <?php $date_kui = $_GET['tgl']; echo $this->tanggal->formatDatedmY($date_kui); ?><br><?php echo COMP_FULL;?>
-						<br/>Kabag Keuangan
+						Jakarta, <?php $date_kui = $_GET['tgl']; echo $this->tanggal->formatDate($date_kui); ?><br><span style="font-weight: bolder;"><?php echo COMP_FULL;?></span>
             <br >
             <?php //echo $this->master->get_ttd('ttd_kabag_keu');?>
-            <span style="margin-top: 30mm; display: inline-block;">Cumanto, SE.</span>
+            (<span style="margin-top: 30mm; margin-bottom: 3px; display: inline-block; font-weight: bolder;">&nbsp;Cumanto, SE.&nbsp;</span>)
             <br/>
+            <span>Kepala Bagian Keuangan</span>
             <br/>
           </td>
 				</tr>

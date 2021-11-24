@@ -119,7 +119,7 @@ th, td {
       </thead>
       <tbody>
         <tr>
-          <td style="font-weight: bolder; font-size: 16px; border: 1px solid black; border-collapse: collapse"><?php echo $perusahaan; ?></td>
+          <td style="font-weight: bolder; font-size: 14px; border: 1px solid black; border-collapse: collapse"><?php echo $perusahaan; ?></td>
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
             <?php
               $no=0; 
@@ -134,7 +134,7 @@ th, td {
         </tr>
 
         <tr>
-          <td style="text-align:right; font-weight: bolder; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Biaya Materai </td>
+          <td style="text-align:right; font-weight: bolder; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Biaya Meterai </td>
           <td style="text-align:right; border: 1px solid black; border-collapse: collapse">
             <?php
               $biaya_materai = ($total_tagih_perusahaan > 5000000) ? 10000 : 0; echo number_format($biaya_materai);
@@ -144,12 +144,12 @@ th, td {
         <tr>
         <tr>
           <td style="text-align:right; font-weight: bolder; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
-          <td style="font-weight: bolder; font-size: 16px; text-align:right; border: 1px solid black; border-collapse: collapse" nowrap>Rp 
-            <?php echo number_format($biaya_materai+$total_tagih_perusahaan); ?>,-
+          <td style="font-weight: bolder; text-align:right; border: 1px solid black; border-collapse: collapse" nowrap>
+            <?php echo number_format($biaya_materai+$total_tagih_perusahaan); ?>
           </td>
         </tr>
         <tr>
-          <td colspan="3" style="text-align:center; border: 1px solid black; border-collapse: collapse; padding: 10px 0 10px 0; "><span style="font-size: 16px !important;"> Terbilang : 
+          <td colspan="3" style="text-align:center; border: 1px solid black; border-collapse: collapse; padding: 10px 0 10px 0; "><span style="font-size: 14px !important;"> Terbilang : 
           <b><i>"
             <?php 
               $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($biaya_materai+$total_tagih_perusahaan))
@@ -167,14 +167,15 @@ th, td {
         </td>
         <td style="text-align: center; width: 40%">&nbsp;</td>
         <td style="text-align: center; width: 30%">
-          <span>Jakarta, <?php echo $this->tanggal->formatDatedmY($result[0]->tgl_tagih); ?></span><br>
+          <span>Jakarta, <?php echo $this->tanggal->formatDate($result[0]->tgl_tagih); ?></span><br>
           <span style="font-size: 14px"><b><?php echo COMP_FULL; ?></b></span><br>
-          <span>Kabag Keuangan</span>
           <br>
           <br>
           <br>
           <br>
-          <span>Cumanto, SE</span>
+          (<span style="font-weight: bolder;">&nbsp;Cumanto, SE&nbsp;</span>)
+          <br>
+          <span>Kepala Bagian Keuangan</span>
           <!-- <?php echo $this->master->get_ttd('ttd_kabag_keu');?> -->
         </td>
       </tr>
