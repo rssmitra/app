@@ -131,7 +131,7 @@ function rollback(no_registrasi, no_kunjungan){
 
     <div class="col-md-12">
 
-      <center><h4>FORM PELAYANAN GAWAT DARURAT <br> <small style="font-size:12px">Data yang ditampilkan adalah data per hari ini, yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?></small><br></h4></center>
+      <center><h4>FORM PELAYANAN VERLOS KAMER <br> <small style="font-size:12px">Data yang ditampilkan adalah data per hari ini, yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?></small><br></h4></center>
       <br>
 
       <!-- hidden form -->
