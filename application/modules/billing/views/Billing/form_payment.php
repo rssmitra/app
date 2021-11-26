@@ -23,6 +23,7 @@ $(document).ready(function(){
     var sisa_nk = parseInt($('#total_payment').val()) - parseInt($('#total_nk').val());
 
     get_resume_billing();
+
     $('#uang_dibayarkan').val(formatMoney(sisa_nk));
     $('#uang_dibayarkan').focus();
     console.log($('#array_data_billing').val());
@@ -57,15 +58,23 @@ $(document).ready(function(){
         
     });
 
-    $('input[name=metode_kredit]').change(function(){
+    $('input[name=metode_penyesuaian_NK_asuransi]').change(function(){
         preventDefault();
         if($(this).is(':checked')){
-          $('#div_kredit').show();
-          cek_sisa_belum_bayar('jumlah_bayar_kredit');
+          $('#div_bon_karyawan').show();
+          $('#divPersentaseDiskon').hide();
+          $('#jumlah_nk').removeAttr('readonly');
+          cek_sisa_belum_bayar('jumlah_nk');
+          // $('#div_kredit').show();
+          // cek_sisa_belum_bayar('jumlah_bayar_kredit');
         } else {
-          $('#div_kredit').hide();
-          $('#jumlah_bayar_kredit').val(0);
+          $('#div_bon_karyawan').hide();
+          $('#divPersentaseDiskon').show();
+          $('#jumlah_nk').val(0);
           sum_total_pembayaran();
+          // $('#div_kredit').hide();
+          // $('#jumlah_bayar_kredit').val(0);
+          // sum_total_pembayaran();
         }
         
     });
@@ -88,6 +97,7 @@ $(document).ready(function(){
         if($(this).is(':checked')){
           $('#jumlah_nk').removeAttr('readonly');
           cek_sisa_belum_bayar('jumlah_nk');
+          hitungDiskon();
         } else {
           $('#jumlah_nk').attr('readonly', true);
           $('#jumlah_nk').val(0);
@@ -96,15 +106,9 @@ $(document).ready(function(){
         
     });
 
-    $('input[name=hutang_nk]').change(function(){
-        preventDefault();
-        if($(this).is(':checked')){
-          $('#jumlah_nk').attr('readonly', false);
-        } else {
-          $('#jumlah_nk').attr('readonly', true);
-        }
-        
-    });
+    let id_kel = $('#id_kel').val();
+    console.log('kode kelompok '+ id_kel);
+    statusKaryawan(id_kel);
 
 })
 
@@ -240,14 +244,13 @@ function statButton(){
 }
 
 function statusKaryawan(id){
-  // NOTICE : Ketika Perubahan status pastikan nominal diskon tidak bertambah/akumulasi, think about it!
 
   // console.log(id);
   let kode_kel = id;
   // console.log(kode_kel);
   var total = formatNumberFromCurrency($('#jumlah_bayar_tunai').text());
 
-  if ( kode_kel != 1 && kode_kel !=2 && kode_kel !=3 && kode_kel !=5 && kode_kel !=6 && kode_kel !=10 && kode_kel !=null ){
+  if ( kode_kel != 0 && kode_kel != 1 && kode_kel !=2 && kode_kel !=3 && kode_kel !=5 && kode_kel !=6 && kode_kel !=10 && kode_kel !=null ){
     console.log('Bisa Bon Karyawan + Diskon');
     // console.log(kode_kel);
     $('#hutang_nk').removeAttr("disabled");
@@ -282,8 +285,19 @@ function statusKaryawan(id){
     $('#div_bon_karyawan').hide();
     $('#jml_dibayarkan').text(formatMoney(total));
 
-    // sum_total_pembayaran();
   }
+
+  // Penyesuaian selisih khusus asuransi umum
+  if ( kode_kel == 3){
+    $('#labelNK').removeAttr('hidden');
+    $('#labelBonKaryawan').attr('hidden', true);
+  }else{
+    $('#labelNK').attr('hidden', true);
+    $('#checkBoxNK').attr('checked', false);
+    $('#jumlah_nk').val(0);
+    $('#labelBonKaryawan').removeAttr('hidden');
+  }
+
   sum_total_pembayaran();
 }
 
@@ -303,6 +317,7 @@ function hitungDiskon(){
   let sumUmNkDisc = 0;
   sumUmNkDisc = parseInt(intDiskon) + parseInt(intUangMuka) + parseInt(intNKPerusahaan);
 
+  $('#diskon_int').val(intDiskon);
   $('#jml_diskon_internal').text( formatMoney(intDiskon) );
   $('#jml_um_nk').text( formatMoney(sumUmNkDisc) );
 
@@ -329,6 +344,8 @@ function hitungDiskon(){
 <!-- hidden form -->
 <input type="hidden" value="<?php echo count($result->kasir_data)?>" id="count_kasir">
 <input type="hidden" value="<?php echo $total_paid; ?>" id="total_paid">
+<input type="hidden" value="<?php echo $result->reg_data->kode_kelompok; ?>" id="id_kel">
+<input type="hidden" value="" name="diskon_int" id="diskon_int">
 
 <hr class="separator">
 
@@ -390,20 +407,20 @@ function hitungDiskon(){
 
         <div class="form-group" id="metode_pembayaran_form">
           <label class="control-label col-md-4">Metode Pembayaran</label>
-          <div class="col-md-8" style="padding-top: 3px;padding-left: 20px;">
+          <div class="col-md-8" style="padding-top: 3px;padding-left: 20px;padding-right: -20px;">
             <label>
               <input name="metode_tunai" id="tunai" type="checkbox" class="ace" value="1" checked>
               <span class="lbl"> Tunai &nbsp;&nbsp; </span>
             </label>
             <label>
               <input name="metode_debet" id="debet" type="checkbox" class="ace" value="2">
-              <span class="lbl"> Debit &nbsp;&nbsp; </span>
+              <span class="lbl"> Kartu Debit/Kredit &nbsp;&nbsp; </span>
             </label>
-            <label>
-              <input name="metode_kredit" id="kredit" type="checkbox" class="ace" value="3">
-              <span class="lbl"> Kredit &nbsp;&nbsp; </span>
+            <label id="labelNK" hidden>
+              <input name="metode_penyesuaian_NK_asuransi" id="checkBoxNK" type="checkbox" class="ace" value="3">
+              <span class="lbl"> Nota Kredit &nbsp;&nbsp; </span>
             </label>
-            <label>
+            <label id="labelBonKaryawan">
               <?php
                 $arr_kode_kelompok = [4,7,8,9,11,12,13,14,15,16];
                 $kode_kelompok = $result->reg_data->kode_kelompok;
@@ -431,9 +448,9 @@ function hitungDiskon(){
         
         <div id="div_debet" style="display:none">
           <hr>
-          <p><b>PEMBAYARAN KARTU DEBET</b></p>
+          <p><b>PEMBAYARAN KARTU DEBIT</b></p>
           <div class="form-group">
-            <label class="control-label col-md-4">Jumlah Pembayaran Debet</label>
+            <label class="control-label col-md-4">Jumlah Pembayaran Debit</label>
             <div class="col-md-8">
             <input name="jumlah_bayar_debet" id="jumlah_bayar_debet" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" oninput="sum_total_pembayaran()">
             </div>
@@ -504,7 +521,7 @@ function hitungDiskon(){
             </div>
           </div>
           
-          <div class="form-group">
+          <div class="form-group" id="divPersentaseDiskon">
             <label class="control-label col-md-4">Diskon ( % )</label>
             <div class="col-md-8">
               <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" oninput="hitungDiskon()">
