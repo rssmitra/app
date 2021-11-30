@@ -695,7 +695,8 @@ class Print_escpos{
         sscanf($_SERVER['REMOTE_ADDR'], '%d.%d.%d.%d', $a, $b, $c, $d);
 
         // $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
-        $p = printer_open("\\\\10.10.10.238\EPSON TM-T82X KIOSK238");
+        $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4");
+        // $p = printer_open("\\\\10.10.10.238\EPSON TM-T82X KIOSK238");
         
             // define
             $font_familiy = "Calibri";
