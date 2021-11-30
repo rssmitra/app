@@ -230,7 +230,7 @@ final Class Print_direct {
 
         $no = $CI->Counter_model->format_counter_number($params['ant_type'],$params['ant_no']);
               
-        $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4");
+        $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4t");
         // $p = printer_open("\\\\10.10.10.206\EPSON TM-T88V(tracer obat)");
        
         $var_magin_left = 20;
