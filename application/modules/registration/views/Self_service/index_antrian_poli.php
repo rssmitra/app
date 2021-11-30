@@ -60,6 +60,17 @@
 									</button>
 								</div>
 
+								<div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
+									<button onclick="add_other('Perjanjian')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
+									<div class="inner" style="margin-top:-10px; text-align: center">
+										<h3 style="font-size:28px;color:black;"><b>Perjanjian Pasien</b></h3>
+										<p style="font-size:14px;color:black;">
+											Penjadwalan Pasien/Reschedule Perjanjian
+										</p>
+									</div>                      
+									</button>
+								</div>
+
 								<!-- <div class="col-lg-3 col-xs-3" style="margin-top:0px;height:180px;">
 									<button onclick="add_other('Laboratorium')" class="shadow" style="border:none;text-decoration: none;border-radius:10px;margin-bottom:20px;height:150px !important;width:100%;text-align:left;padding-bottom:20px;background:<?php echo array_shift($arr_color)?>;">
 									<div class="inner" style="margin-top:-10px; text-align: center">
