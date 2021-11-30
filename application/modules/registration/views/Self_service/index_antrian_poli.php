@@ -125,7 +125,7 @@
 
 		var type = $('#select_tipe').val();
 
-		$.post("antrian/Loket/reload_page", { loket:loket, tipe:type } ).done( function(data) {
+		$.post("<?php echo base_url()?>antrian/Loket/reload_page", { loket:loket, tipe:type } ).done( function(data) {
 		
 			var obj = JSON.parse(data);
 			console.log(obj)
@@ -180,7 +180,7 @@
 		});
 	}
 
-	// setInterval("my_function();",3000); 
+	setInterval("my_function();",3000); 
 	function clickBtnType(flag){
 		if(flag == 'bpjs'){
 			$('#title_tipe_antrian').text('ANTRIAN PASIEN BPJS');

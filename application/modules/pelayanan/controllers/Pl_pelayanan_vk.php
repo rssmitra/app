@@ -903,3 +903,4 @@ class Pl_pelayanan_vk extends MX_Controller {
 /* End of file example.php */
 /* Location: ./application/functiones/example/controllers/example.php */
 
+

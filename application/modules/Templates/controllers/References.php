@@ -2012,7 +2012,8 @@ class References extends MX_Controller {
 		$kode = isset($_POST['kode'])?$_POST['kode']:$_GET['kode'];
 		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs');
 		$this->db->from('tc_pesanan');
-		$this->db->where('unique_code_counter', $kode);
+		$this->db->like('unique_code_counter', $kode);
+		$this->db->or_like('kode_perjanjian', $kode);
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
 		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter','left');
         $exc = $this->db->get();

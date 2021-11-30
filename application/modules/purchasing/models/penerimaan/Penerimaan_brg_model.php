@@ -143,7 +143,7 @@ class Penerimaan_brg_model extends CI_Model {
 		$t_po = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$t_rekap_stok = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
-		$this->db->select('z.no_po, a.id_tc_po, a.id_tc_po_det, a.kode_brg, a.content, c.nama_brg, c.satuan_besar, c.satuan_kecil, jumlah_besar, SUM(b.jumlah_kirim) as jumlah_kirim, CAST(a.harga_satuan_netto as INT) as harga_satuan_netto, CAST(a.jumlah_harga_netto as INT) as total_harga_netto, CAST(a.harga_satuan as INT) as harga_satuan, CAST(a.jumlah_harga as INT) as total_harga, batch_log.jml_diterima, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.ppn, a.jumlah_besar_acc');
+		$this->db->select('z.no_po, a.id_tc_po, a.id_tc_po_det, a.kode_brg, a.content, c.nama_brg, c.satuan_besar, c.satuan_kecil, jumlah_besar, SUM(b.jumlah_kirim) as jumlah_kirim, SUM(b.jumlah_kirim_decimal) as jumlah_kirim_decimal, CAST(a.harga_satuan_netto as INT) as harga_satuan_netto, CAST(a.jumlah_harga_netto as INT) as total_harga_netto, CAST(a.harga_satuan as INT) as harga_satuan, CAST(a.jumlah_harga as INT) as total_harga, batch_log.jml_diterima, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.ppn, a.jumlah_besar_acc');
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($table.' z', 'z.id_tc_po=a.id_tc_po', 'left');
 		$this->db->join($t_penerimaan.'_detail b', 'b.id_tc_po_det=a.id_tc_po_det', 'left');

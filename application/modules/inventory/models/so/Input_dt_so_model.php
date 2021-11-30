@@ -5,12 +5,12 @@ class Input_dt_so_model extends CI_Model {
 
 	var $table = 'mt_depo_stok_v';
 	var $column = array('mt_depo_stok_v.nama_brg');
-	var $select = 'kode_depo_stok, mt_depo_stok_v.kode_brg, nama_brg, mt_depo_stok_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, mt_golongan.nama_golongan,mt_sub_golongan.nama_sub_golongan, nama_jenis, nama_layanan, nama_petugas, tgl_stok_opname, stok_exp, stok_sekarang, stok_sebelum';
+	var $select = 'kode_depo_stok, mt_depo_stok_v.kode_brg, nama_brg, mt_depo_stok_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, mt_golongan.nama_golongan,mt_sub_golongan.nama_sub_golongan, nama_jenis, nama_layanan, nama_petugas, tgl_stok_opname, stok_exp, will_stok_exp, stok_sekarang, stok_sebelum, path_image';
 
 	/*non medis*/
 	var $table_nm = 'mt_depo_stok_nm_v';
 	var $column_nm = array('mt_depo_stok_nm_v.nama_brg');
-	var $select_nm = 'kode_depo_stok,mt_depo_stok_nm_v.kode_brg, nama_brg, mt_depo_stok_nm_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, nama_petugas, tgl_stok_opname, stok_exp, stok_sekarang, stok_sebelum';
+	var $select_nm = 'kode_depo_stok,mt_depo_stok_nm_v.kode_brg, nama_brg, mt_depo_stok_nm_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, nama_petugas, tgl_stok_opname, stok_exp, will_stok_exp, stok_sekarang, stok_sebelum';
 
 	public function __construct()
 	{
@@ -183,6 +183,7 @@ class Input_dt_so_model extends CI_Model {
 		$fld['stok_sebelum'] = $last_stok->jml_sat_kcl;
 		$fld['stok_sekarang'] = $_POST['input_stok_so'];
 		$fld['stok_exp'] = ($_POST['exp_stok'])?$_POST['exp_stok']:0;
+		$fld['will_stok_exp'] = ($_POST['will_exp_stok'])?$_POST['will_exp_stok']:0;
 		$fld['set_status_aktif'] = $_POST['status_aktif'];
 		$fld['nama_petugas'] = $this->session->userdata('session_input_so')['nama_pegawai'];
 		$fld['harga_pembelian_terakhir'] = ($harga_terakhir->harga)?$harga_terakhir->harga:$dt_brg->harga_beli;
@@ -238,6 +239,7 @@ class Input_dt_so_model extends CI_Model {
 			$fld['stok_sekarang'] = $_POST['input_stok_so'];
 		}
 		$fld['stok_exp'] = ($_POST['exp_stok'])?$_POST['exp_stok']:0;
+		$fld['will_stok_exp'] = ($_POST['will_exp_stok'])?$_POST['will_exp_stok']:0;
 		$fld['nama_petugas'] = $this->session->userdata('session_input_so')['nama_pegawai'];
 		$fld['harga_pembelian_terakhir'] = $harga_terakhir->harga;
 		$fld['set_status_aktif'] = $_POST['status_aktif'];

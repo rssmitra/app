@@ -177,7 +177,7 @@
 
                     <div class="widget-body">
                       <div class="widget-main" onclick="scrollSmooth('Self_service/mandiri_bpjs')">
-                        <span style="margin-left:-40%;position:absolute;transform: rotate(-25deg) !important; margin-top: 16%" class="stamp is-nope-2">comming soon</span>
+                        <!-- <span style="margin-left:-40%;position:absolute;transform: rotate(-25deg) !important; margin-top: 16%" class="stamp is-nope-2">comming soon</span> -->
                         <p class="muted">
                           <img src="<?php echo base_url()?>assets/kiosk/bpjs.jpeg" height="100" alt=""><br>
                           Persiapkan <b>Nomor Rujukan</b> Puskesmas anda untuk melakukan Pendaftaran ke Poli/Klinik
@@ -186,7 +186,7 @@
                         <hr>
 
                         <p>
-                          <span class="btn btn-block btn-default" disable data-rel="tooltip" title="" data-original-title="Default" style="cursor: disabled">Selengkapnya</span>
+                          <span class="btn btn-block btn-primary" disable data-rel="tooltip" title="" data-original-title="Default">Selengkapnya</span>
                         </p>
                       </div>
                     </div>

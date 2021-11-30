@@ -72,12 +72,12 @@
               if($count_dt > 0){
                 foreach($row_dt as $sub_row_dt){
                   $jumlah_pesan_arr[$key_dt][] = $sub_row_dt->jumlah_besar_acc;
-                  $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim;
+                  $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim_decimal;
                   echo '<input type="hidden" name="id_tc_po_det['.$key_dt.']" id="id_tc_po_det_'.$key_dt.'" value="'.$sub_row_dt->id_tc_po_det.'">';
                 }
               }else{
                 $jumlah_pesan_arr[$key_dt][] = $row_dt[0]->jumlah_besar_acc;
-                $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim;
+                $jumlah_kirim_arr[$key_dt][] = $sub_row_dt->jumlah_kirim_decimal;
                 echo '<input type="hidden" name="id_tc_po_det['.$key_dt.']" id="id_tc_po_det_'.$key_dt.'" value="'.$row_dt[0]->id_tc_po_det.'">';
               }
               $no++; 
@@ -90,6 +90,7 @@
             
             <?php if( array_sum($jumlah_pesan_arr[$key_dt]) > array_sum($jumlah_kirim_arr[$key_dt])) : ?>
             <td class="center" style="border: 1px #d8d5d5  solid">
+              
               <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" class="form-control" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer;width:17px" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]" <?php echo (!empty($row_dt[0]->no_batch))?'checked':''; ?> >
             </td>
             <?php else: ?>

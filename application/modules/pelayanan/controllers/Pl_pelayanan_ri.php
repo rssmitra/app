@@ -720,7 +720,9 @@ class Pl_pelayanan_ri extends MX_Controller {
                 
                 $total_adm = ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
                 $materai = ($total_adm > 5000000) ? 10000 : 0;
-                $biy_adm = 0.06 * ($total_adm + $materai);
+
+                $biy_adm_x = 0.06 * ($total_adm + $materai);
+                $biy_adm = ($biy_adm_x > 2400000) ? 2400000 : $biy_adm_x;
                 
 
                 /*save tc_trans_pelayanan */

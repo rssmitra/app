@@ -129,10 +129,25 @@ class Self_service extends MX_Controller {
     public function form_rujukan() {
         
         $data = array();
-        $data['profile'] = $this->findKodeBooking($_GET['kode']);
+        $profile = $this->findKodeBooking($_GET['kode']);
+        $data['profile'] = $profile;
+        // cek apakah sudah terdaftar
+        $is_registered = $this->cekRegister($profile);
+        $data['is_registered'] = $is_registered;
         $data['kode'] = $_GET['kode'];
         // echo '<pre>'; print_r($data);die;
         $this->load->view('Self_service/form_rujukan', $data);
+    }
+
+    public function cekRegister($param) {
+        
+        $this->db->select('tc_registrasi.no_registrasi, tc_kunjungan.no_kunjungan, no_antrian');
+        $this->db->from('tc_registrasi');
+        $this->db->join('tc_kunjungan', 'tc_kunjungan.no_registrasi=tc_registrasi.no_registrasi','left');
+        $this->db->join('pl_tc_poli', 'pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+        $this->db->where('tc_registrasi.no_mr', $param['no_mr']);
+        $this->db->where('CAST(tgl_jam_masuk as DATE) = ', $param['tgl_kunjungan_sql']);
+        return $this->db->get()->row();
     }
 
     public function form_perjanjian($jd_id) {
@@ -211,34 +226,36 @@ class Self_service extends MX_Controller {
     }
     
     public function findKodeBooking($kode)
-	{
+    {
         
-		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, kode_bagian, tc_pesanan.kode_dokter, id_tc_pesanan ');
-		$this->db->from('tc_pesanan');
-		$this->db->where('unique_code_counter', $kode);
-		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
-		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter','left');
+        $this->db->select('no_mr, nama, CAST(jam_pesanan as DATE) as jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, kode_bagian, tc_pesanan.kode_dokter, id_tc_pesanan ');
+        $this->db->from('tc_pesanan');
+        $this->db->like('unique_code_counter', $kode);
+        $this->db->or_like('kode_perjanjian', $kode);
+        $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
+        $this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter','left');
         $exc = $this->db->get();
         // echo '<pre>'; print_r($this->db->last_query());die;
-		if ($exc->num_rows() == 0) {
+        if ($exc->num_rows() == 0) {
             return false;
-		}else{
-			$dt = $exc->row();
-			$result = array(
-				'kode' => $kode,
-				'id_tc_pesanan' => $dt->id_tc_pesanan,
-				'no_mr' => $dt->no_mr,
-				'nama' => $dt->nama,
-				'kode_bagian' => $dt->kode_bagian,
-				'kode_dokter' => $dt->kode_dokter,
-				'kode_poli_bpjs' => $dt->kode_poli_bpjs,
-				'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
-				'nama_dr' => strtoupper($dt->nama_dr),
-				'poli' => strtoupper($dt->nama_bagian),
-				'jam_praktek' => $this->tanggal->formatDateTimeToTime($dt->jam_pesanan),
-			);
-			return $result;
-		}
+        }else{
+            $dt = $exc->row();
+            $result = array(
+                'kode' => $kode,
+                'id_tc_pesanan' => $dt->id_tc_pesanan,
+                'no_mr' => $dt->no_mr,
+                'nama' => $dt->nama,
+                'kode_bagian' => $dt->kode_bagian,
+                'kode_dokter' => $dt->kode_dokter,
+                'kode_poli_bpjs' => $dt->kode_poli_bpjs,
+                'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
+                'tgl_kunjungan_sql' => $dt->jam_pesanan,
+                'nama_dr' => strtoupper($dt->nama_dr),
+                'poli' => strtoupper($dt->nama_bagian),
+                'jam_praktek' => $this->tanggal->formatDateTimeToTime($dt->jam_pesanan),
+            );
+            return $result;
+        }
     }
 
     public function insertSep()
@@ -681,16 +698,63 @@ class Self_service extends MX_Controller {
         $tracer = $this->print_escpos->print_bukti_registrasi($registrasi, $no_antrian, $tipe_pasien);
         // echo '<pre>';print_r($tracer);die;
         if( $tracer == 1 ) {
-                $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
-                
+                $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );        
         }
         return true;
         
     }
+
+    public function processCetakSep(){
+
+        // echo '<pre>';print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('paramsSignature', 'TTD Pasien', 'trim|required');
+        $this->form_validation->set_rules('no_mr', 'No MR', 'trim|required');
+        $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
+        $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();
+
+            // update ttd pasien
+            $this->db->where('no_mr', $_POST['no_mr'])->update('mt_master_pasien', array('ttd' => $_POST['paramsSignature']));
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                $dt = $this->Reg_klinik->get_by_id($_POST['no_registrasi']);
+                $this->print_bukti_registrasi($_POST['no_registrasi'], $_POST['no_antrian'], $_POST['tipe_pasien']);
+
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $_POST['no_registrasi'], 'type_pelayanan' => 'Rawat Jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien ));
+            }
+        
+        }
+
+    }
+
+
     
 
 }
 
 /* End of file empty_module.php */
 /* Location: ./application/modules/empty_module/controllers/empty_module.php */
+
+
 

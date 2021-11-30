@@ -93,10 +93,11 @@ function updateRow(kode_brg, kode_bag, agenda_so_id){
   preventDefault();
   var val_id = $('#row_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   var val_exp_id = $('#row_exp_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
+  var val_will_exp_id = $('#row_will_exp_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   var is_active = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   $.ajax({
       url: "inventory/so/Input_dt_so/process_input_so",
-      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so :val_id, exp_stok : val_exp_id, status_aktif: is_active },
+      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so :val_id, exp_stok : val_exp_id, will_exp_stok : val_will_exp_id, status_aktif: is_active },
       dataType: "json",
       type: "POST",
       complete: function (xhr) {
@@ -105,7 +106,7 @@ function updateRow(kode_brg, kode_bag, agenda_so_id){
         if(jsonResponse.status === 200){  
           /*$.achtung({message: jsonResponse.message, timeout:5}); */
           /*reload table*/
-          reset_table(kode_bag);
+          // reset_table(kode_bag);
         }else{          
           /*$.achtung({message: jsonResponse.message, timeout:5});  */
         } 
@@ -126,6 +127,8 @@ function reset_table(kode_bag){
 function setStatusAktifBrg(kode_brg, kode_bag, agenda_so_id){
   var val_id = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   var val_exp_id = $('#row_exp_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
+  var val_will_exp_id = $('#row_will_exp_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
+
   $.ajax({
       url: "inventory/so/Input_dt_so/set_status_brg",
       data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so:0, exp_stok: 0, value :val_id, status_aktif: val_id },
@@ -276,13 +279,15 @@ function find_data_reload(){
            <thead>
             <tr>
               <th class="center">NO</th>
-              <th>KODE</th>
+              <th>IMAGE</th>
+              <!-- <th>KODE</th> -->
               <th>NAMA BARANG</th>
-              <th class="center">SATUAN<br>KECIL/BESAR</th>
+              <th class="center">SATUAN KECIL</th>
               <th class="center">STOK TGL<br><?php echo isset($value->agenda_so_cut_off_stock)?$this->tanggal->formatDatedmY($value->agenda_so_cut_off_stock):''?></th>
               <th class="center">STOK AKHIR<br>(Setelah/Sebelum SO)</th>
               <th class="center">STOK FISIK <br>(Input SO)</th>
               <th class="center">JML EXP</th>
+              <th class="center">JML EXP -3 Bln</th>
               <th class="center">STATUS AKTIF</th>
               <th class="center">LAST UPDATE</th>
             </tr>

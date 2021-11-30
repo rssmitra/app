@@ -485,11 +485,11 @@ function show_form_rujukan(){
 
 <style>
 .kbw-signature { min-width: 550px !important;border: 0px }
-/* audio, canvas, progress, video {
+audio, canvas, progress, video {
     border: 1px solid #cccccc !important;
-} */
+}
 </style>
-<script src="<?php echo base_url()?>assets/jSignature/js/jquery.signature.custom.js"></script>
+<script src="<?php echo base_url()?>assets/jSignature/js/jquery.signature.js"></script>
 <script>
 $(function() {
   var sig = $('#sig').signature({thickness: 4});
@@ -537,7 +537,7 @@ function showModalTTD()
 
       <div class="widget-box effect8">
         <div class="widget-header">
-            <h4 class="widget-title" style="padding-left: 10px; font-weight: bold">CETAK SURAT ELEGIBILITAS PASIEN (SEP)</h4>
+            <h4 class="widget-title">PENCARIAN RUJUKAN</h4>
         </div>
 
         <div class="widget-body">
@@ -566,59 +566,161 @@ function showModalTTD()
                 </table>
                 <br>
                 <br>
-                <form class="form-horizontal" method="post" id="formInsertSep" action="<?php echo base_url().'registration/Self_service/processCetakSep'?>" enctype="Application/x-www-form-urlencoded" autocomplete="off">   
-                    <div class="row" id="result-dt-rujukan" style="padding-top: 0px;">
-                        <!-- hidden form -->
-                        <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($profile['no_mr'])?$profile['no_mr']:0?>">
-                        <input type="hidden" name="no_registrasi" id="no_registrasi" value="<?php echo isset($is_registered->no_registrasi)?$is_registered->no_registrasi:0?>">
-                        <input type="hidden" name="no_antrian" id="no_antrian" value="<?php echo isset($is_registered->no_antrian)?$is_registered->no_antrian:0?>">
-                        <input type="hidden" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($is_registered->no_kunjungan)?$is_registered->no_kunjungan:0?>">
-                        <input type="hidden" name="tipe_pasien" id="tipe_pasien" value="bpjs">
-
-                        <div class="col-md-12">
-                            <div class="col-sm-12 no-padding">
-                                <div class="single-form-field">
-                                    <label class="center">TTd Pasien/Keluarga Pasien : </label>
-                                    <div id="sig" style="padding: 5px; "></div>
-                                    <span style="margin-top:-10px; margin-bottom: 10px"><i>Jangan sampai keluar garis atau keluar kotak..</i></span>
-                                    <div class="form-group">
-                                        <input type="text" value="" name="paramsSignature" class="form-control" id="paramsSignature" style="width: 98.8%; margin-bottom: 10px">
-                                    </div>
-                                    <div class="center">
-                                        <button type="button" id="clear" class="btn btn-sm btn-danger" style="height: 30px !important; font-size: 14px"><i class="fa fa-undo"></i> Reset TTD</button> 
-                                        <button type="button" id="jpg" class="btn btn-sm btn-success" style="height: 30px !important; font-size: 14px"><i class="fa fa-save"></i> Simpan TTD</button>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="row">
+                  <div class="col-md-3">&nbsp;</div>
+                  <div class="col-md-6 center">
+                    <div>
+                        <label for="form-field-mask-1">
+                            Silahkan masukan Nomor Rujukan dari Puskesmas :
+                        </label>
+                        <div class="center">
+                            <input class="form-control center" type="text" id="noRujukanVal" name="noRujukanVal" style="font-size:40px;height: 55px !important; width: 100% !important">
                         </div>
-
-                        <div class="col-md-12">
-<!-- 
-                            <div class="single-form-field">
-                                <label>Masukan No. Telp/Hp : </label>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="noTelp" name="noTelp" style="height: 40px !important;font-size: 20px;"> 
-                                </div>
-                            </div>   -->
-
-                            <div class="col-sm-12 center">
-                            <span id="btnPrintSEP" style="display:none">
-                                <button type="submit" class="btn btn-success btn-lg" style="height: 50px !important; font-size: 20px; margin-top:15px; background: green !important">
-                                    Cetak Surat Elegibilitas Pasien (SEP)
-                                </button>
-                            </span>
-                            </div>
-                            
-                        </div>
-
                     </div>
-                </form>
-                
+                    <div style="width: 100%; text-align: center; margin-top: 10px">
+                        <button class="btn btn-sm btn-primary" type="button" id="btnSearchNoRujukan" style="height: 35px !important; font-size: 14px">
+                            <i class="ace-icon fa fa-search bigger-110"></i>
+                            Cari Nomor Rujukan
+                        </button>
+                    </div>
+                  </div>
+                  <div class="col-md-3">&nbsp;</div>
+                </div>
             </div>
         </div>
       </div>
 
-      
+      <form class="form-horizontal" method="post" id="formInsertSep" action="<?php echo base_url().'registration/Self_service/insertSep'?>" enctype="Application/x-www-form-urlencoded" autocomplete="off">   
+        <div class="row" id="result-dt-rujukan" style="padding-top: 0px; display: none">
+            <p style="font-weight: bold; font-style: italic; padding-left: 15px">Hasil pencarian nomor rujukan ...</p>
+
+            <div class="col-sm-4" style="margin-top:-10px">
+                <div class="contact-info-right">  
+                    <div class="contact-area-contact-field">
+                      
+                            <!-- form hidden -->
+                            <input name="tglSEP" id="tglSEP" value="<?php echo date('m/d/Y')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
+                            <input name="jenis_faskes" type="hidden" class="ace" value="1"/>
+                            <input type="hidden" class="form-control" id="noKartuHidden" name="noKartuHidden" readonly>
+                            <input name="jnsPelayanan" type="hidden" class="ace" value="2"/>
+                            <input name="lakalantas" type="hidden" class="ace" value="0"/>
+                            <input name="penjaminKLL" type="hidden" class="ace" value="0"/>
+                            <input type="hidden" class="form-control" name="catatan" id="catatan" value="">
+                            <input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value="<?php echo isset($kode)?$kode:''?>">
+                            <input type="hidden" class="form-control" id="user" name="user" value="" readonly>
+                            <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden" placeholder="" />
+                            <input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
+                            <input type="hidden" class="form-control" id="noRujukan" name="noRujukan" readonly>
+                            <input name="eksekutif" type="hidden" class="ace" value="0">
+                            <input name="tglRujukan" id="tglKunjungan" value="" placeholder="dd/mm/YYYY" class="form-control date-picker" type="hidden" >
+                            <input name="find_member_by" type="hidden" class="ace" value="noRujukan" />
+                            <input name="jenis_faskes" type="hidden" class="ace" value="1" />
+                            <input type="hidden" class="form-control" id="noMR" name="noMR">
+                            <input type="hidden" class="form-control" id="noMRBooking" name="noMRBooking" value="<?php echo isset($profile['no_mr'])?$profile['no_mr']:''?>">
+                            <input type="hidden" class="form-control" id="kodePoliBpjs" name="kodePoliBpjs" value="<?php echo isset($profile['kode_poli_bpjs'])?$profile['kode_poli_bpjs']:''?>">
+                            <!-- ppk asal rujukan -->
+                            <input id="inputKeyFaskes" class="form-control" name="ppkRujukan" type="hidden" placeholder="" value="" />
+                            <input type="hidden" name="kodeFaskesHidden" value="" id="kodeFaskesHidden">
+                            <!-- diagnosa awal -->
+                            <input type="hidden" name="kodeDiagnosaHidden" value="" id="kodeDiagnosaHidden">  
+                            <input type="hidden" class="form-control" name="diagAwal" value="" id="inputKeyDiagnosa" >  
+                            <input id="show_dpjp" class="form-control" name="show_dpjp" type="hidden" />
+                            <input id="inputKeyPoli" class="form-control" name="tujuan" type="hidden" placeholder="" />
+                            <input type="hidden" name="kodePoliHidden" value="" id="kodePoliHidden">
+
+                            <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
+                            <input type="hidden" name="tgl_registrasi" value="<?php echo date('Y-m-d')?>" id="tgl_registrasi">
+                            <input type="hidden" name="reg_klinik_rajal" value="<?php echo isset($profile['kode_bagian'])?$profile['kode_bagian']:'-'?>" id="reg_klinik_rajal">
+                            <input type="hidden" name="reg_dokter_rajal" value="<?php echo isset($profile['kode_dokter'])?$profile['kode_dokter']:'-'?>" id="reg_dokter_rajal">
+                            <input type="hidden" name="kode_perusahaan_hidden" value="120" id="kode_perusahaan_hidden">
+                            <input type="hidden" name="kode_kelompok_hidden" value="3" id="kode_kelompok_hidden">
+                            <input type="hidden" name="umur_saat_pelayanan_hidden" value="" id="umur_saat_pelayanan_hidden">
+                            <input type="hidden" name="jenis_pendaftaran" value="1" id="jenis_pendaftaran">
+                            <input type="hidden" name="id_tc_pesanan" value="<?php echo isset($profile['id_tc_pesanan'])?$profile['id_tc_pesanan']:'-'?>" id="id_tc_pesanan">
+                            
+                            <!-- <div id="formDetailInsertSEP" style="padding-top:0px; background: white;padding: 18px;">
+                              <div id="message-result"></div>
+                            </div> -->
+
+                            <div class="row">
+                              <div class="col-md-12" style="padding: 20px">
+                                <table class="table-utama">
+                                  <tbody>
+                                    <tr>
+                                      <td width="150px">NIK</td><td><span id="nik">-</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Nama Peserta</td><td><span id="nama">-</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Tgl Lahir</td><td><span id="tglLahir">-</span> <span id="umur_p_bpjs">-</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td>No Kartu BPJS</td><td><span id="noKartuFromNik">-</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Jenis Peserta</td><td><span id="jenisPeserta">-</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Hak Kelas</td><td><span id="hakKelas">-</span></td>
+                                    </tr>
+                                    <tr>
+                                      <td>Status Kepesertaan</td><td><span id="statusPeserta">-</span></td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                              
+
+                            </div>
+                            
+                        </form>
+                    
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="box box-primary">
+                  <div class="col-sm-12">
+                      <div class="single-form-field">
+                          <label class="center">TTd Pasien/Keluarga Pasien : </label>
+                          <div id="sig" style="padding: 5px; margin-left:19px"></div>
+                          <span style="margin-left: 10px; margin-top:-10px; margin-bottom: 10px"><i>Jangan sampai keluar garis atau keluar kotak..</i></span>
+                          <div class="form-group">
+                            <input type="text" value="" name="paramsSignature" class="form-control" id="paramsSignature" style="width: 98.8%; margin-bottom: 10px">
+                          </div>
+                          <div class="center">
+                            <button type="button" id="clear" class="btn btn-sm btn-danger" style="height: 30px !important; font-size: 14px"><i class="fa fa-undo"></i> Reset TTD</button> 
+                            <button type="button" id="jpg" class="btn btn-sm btn-success" style="height: 30px !important; font-size: 14px"><i class="fa fa-save"></i> Simpan TTD</button>
+                          </div>
+                      </div>
+                  </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="single-form-field">
+                    <label>Masukan No. Telp/Hp : </label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="noTelp" name="noTelp" style="height: 40px !important;font-size: 20px;"> 
+                    </div>
+                </div>  
+
+                <div class="col-sm-12 center">
+                  <span id="btnPrintSEP" style="display:none">
+                    <button type="submit" class="btn btn-success btn-lg" style="height: 100px !important; font-size: 20px; margin-top:15px; background: green !important">
+                        Proses Pendaftaran Rawat Jalan <br> dan Cetak SEP
+                    </button>
+                  </span>
+                </div>
+                
+            </div>
+
+        </div>
+      </form>
 
     </div>
 
