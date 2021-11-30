@@ -359,7 +359,9 @@ final Class Print_direct {
 
         $no = $CI->Counter_model->format_counter_number($params['ant_type'],$params['ant_no']);
         sscanf($_SERVER['REMOTE_ADDR'], '%d.%d.%d.%d', $a, $b, $c, $d);
-        $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
+
+        // $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
+        $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4t");
         
         // $p = printer_open("\\\\10.10.10.206\EPSON TM-T88V(tracer obat)");
        
