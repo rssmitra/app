@@ -97,7 +97,8 @@ class Input_dt_so extends MX_Controller {
                             <span class="lbl"></span>
                         </label>
                     </div>';
-            $row[] = $row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname);
+            $row[] = '<div class="center">'.$row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname).'</div>';
+            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="deleteRow('.$row_list->kode_depo_stok.')"><i class="fa fa-times bigger-120"></i></a></div>';
             $data[] = $row;
         }
 
@@ -192,6 +193,21 @@ class Input_dt_so extends MX_Controller {
 
             $this->Input_dt_so->update_status_brg('tc_stok_opname', array('set_status_aktif' => $value), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
             $this->Input_dt_so->save_dt_so();
+            
+        }
+
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+
+    }
+
+    public function delete_row()
+    {
+        /*proses input so*/
+        if($_POST['kode_bagian']=='070101'){
+            // delete depo stok
+            $this->db->where('kode_depo_stok', $_POST['ID'])->delete('mt_depo_stok_nm');
+        }else{
+            $this->db->where('kode_depo_stok', $_POST['ID'])->delete('mt_depo_stok');
             
         }
 

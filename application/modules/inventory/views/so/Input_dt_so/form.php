@@ -76,7 +76,6 @@ $(document).ready(function() {
             var jsonResponse = JSON.parse(data);  
             if(jsonResponse.status === 200){  
               $.achtung({message: jsonResponse.message, timeout:5}); 
-              getMenu('inventory/so/Input_dt_so');
             }else{          
               $.achtung({message: jsonResponse.message, timeout:5});  
             } 
@@ -147,6 +146,33 @@ function setStatusAktifBrg(kode_brg, kode_bag, agenda_so_id){
         achtungHideLoader();
       }
   });
+}
+
+function deleteRow(kode_depo_stok){
+
+  preventDefault();
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: "inventory/so/Input_dt_so/delete_row",
+        data: {ID : kode_depo_stok, kode_bagian : $('#kode_bagian').val() },
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            /*reload table*/
+            reset_table($('#kode_bagian').val());
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5});  
+          } 
+          achtungHideLoader();
+        }
+    });
+  }else{
+      return false;
+  }
 }
 
 function find_data_reload(){
@@ -290,6 +316,7 @@ function find_data_reload(){
               <th class="center">JML EXP -3 Bln</th>
               <th class="center">STATUS AKTIF</th>
               <th class="center">LAST UPDATE</th>
+              <th class="center"></th>
             </tr>
           </thead>
           <tbody>
