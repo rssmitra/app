@@ -240,6 +240,7 @@ class References extends MX_Controller {
 	}
 
 	function CheckSelectedDate(){
+		// echo '<pre>'; print_r($_POST);die;
 		/*get data from post*/
 		$date = $_POST['date'];
 		$kode_spesialis = $_POST['kode_spesialis'];
@@ -260,12 +261,16 @@ class References extends MX_Controller {
 		/*get kuota dokter*/
 		$substr_kode_spesialis = substr($kode_spesialis, 1);
 		/*get data from averin*/
-		$row_data_averin = $this->db->get_where('tc_pesanan', array('tgl_pesanan' => $date, 'no_poli' => $substr_kode_spesialis, 'kode_dokter' => $kode_dokter) )->num_rows();
+		$row_data_perjanjian = $this->db->get_where('tc_pesanan', array('tgl_pesanan' => $date, 'no_poli' => $substr_kode_spesialis, 'kode_dokter' => $kode_dokter) )->num_rows();
+		
 		$row_data_registrasi = $this->db->get_where('tc_registrasi', array('tgl_jam_masuk' => $date, 'kode_bagian_masuk' => $substr_kode_spesialis, 'kode_dokter' => $kode_dokter) )->num_rows();
+
 		/*get data from reg online*/
-		$regon = $this->db->get_where('regon_booking', array('regon_booking_tanggal_perjanjian' => $date, 'regon_booking_klinik' => $kode_spesialis, 'regon_booking_kode_dokter' => $kode_dokter) )->num_rows();
+		// $regon = $this->db->get_where('regon_booking', array('regon_booking_tanggal_perjanjian' => $date, 'regon_booking_klinik' => $kode_spesialis, 'regon_booking_kode_dokter' => $kode_dokter) )->num_rows();
+		
 		/*terisi*/
-		$terisi = $row_data_averin + $row_data_registrasi + $regon;
+		$terisi = $row_data_perjanjian + $row_data_registrasi;
+		// echo '<pre>'; print_r($terisi);die;
 		/*sisa kuota*/
 		$kuota = $kuota_dr - $terisi;
 

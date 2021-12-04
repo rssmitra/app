@@ -1113,8 +1113,8 @@ public function pengadaan_mod_8(){
 			$this->db->order_by( 'nama_brg','ASC' );
 			$this->db->order_by( 'nama_sub_golongan','ASC' );
 			$this->db->order_by( 'nama_golongan','ASC' );
-			$query = $this->db->get();
 			// print_r($this->db->last_query());die;
+			$query = $this->db->get();
 
 		// Gudang Medis
 		}else{
@@ -1125,7 +1125,9 @@ public function pengadaan_mod_8(){
 						ELSE jenis_golongan +' ."'/'". '+nama_golongan 
 						END AS jenis_golongan_concat, stok_akhir, is_active, rak, tgl_input ';
 			$qry .= 'FROM view_depo_stok_so ';
-			$qry .= 'WHERE kode_bagian = '."'".$_POST['bagian']."'".' AND CAST("tgl_input" as DATE) <= '."'".$tgl_stok."'".' AND "tgl_input" is not null ';
+			// $qry .= 'WHERE kode_bagian = '."'".$_POST['bagian']."'".' AND CAST("tgl_input" as DATE) <= '."'".$tgl_stok."'".' AND "tgl_input" is not null ';
+
+			$qry .= 'WHERE kode_bagian = '."'".$_POST['bagian']."'".' ';
 			
 
 			if( isset($_POST['kode_kategori']) AND $_POST['kode_kategori'] != '' ){
@@ -1144,9 +1146,10 @@ public function pengadaan_mod_8(){
 				$qry .= 'AND rak = '."'".$_POST['rak']."'".' ';
 			}
 
-			$qry .= 'ORDER BY "nama_brg" ASC, "nama_jenis" ASC, "nama_layanan" ASC';
+			$qry .= 'GROUP BY kode_brg, nama_brg, satuan_besar, satuan_kecil, jenis_golongan, nama_golongan, nama_kategori, nama_bagian, jenis_golongan, stok_akhir, is_active, rak, tgl_input ';
+			$qry .= 'ORDER BY is_active DESC, nama_brg ASC';
 			$query = $this->db->query($qry);
-			// print_r($this->db->last_query());die;
+			//  print_r($this->db->last_query());die;
 		}
 
 		return $this->db->last_query();

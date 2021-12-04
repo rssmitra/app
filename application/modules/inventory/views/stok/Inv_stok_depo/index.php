@@ -15,6 +15,49 @@
 
   });
 
+  $("#button_print_multiple_kartu_stok").click(function(event){
+        event.preventDefault();
+        var searchIDs = $("#dynamic-table input:checkbox:checked").map(function(){
+          return $(this).val();
+        }).toArray();
+        print_data_label(''+searchIDs+'');
+        console.log(searchIDs);
+  });
+
+  function print_data_label(myid){
+  
+    $.ajax({
+      url: 'inventory/master/Inv_master_barang/print_multiple?flag=medis',
+      type: "post",
+      data: {ID:myid, flag: 'medis'},
+      dataType: "json",
+      beforeSend: function() {
+      },
+      uploadProgress: function(event, position, total, percentComplete) {
+      },
+      complete: function(xhr) {     
+        // response
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        PopupCenter('inventory/master/Inv_master_barang//print_multiple_preview?'+jsonResponse.queryString+'&tipe=kartu_stok', 'PRINT PREVIEW', 1000, 550);
+      }
+
+    });
+    
+  }
+
+  function checkAll(elm) {
+
+    if($(elm).prop("checked") == true){
+      $('.ace').each(function(){
+          $(this).prop("checked", true);
+      });
+    }else{
+      $('.ace').prop("checked", false);
+    }
+
+  }
+
   function click_detail(kode_brg){
     getMenu('inventory/stok/Inv_stok_depo/detail/'+kode_brg+'/'+$('#kode_bagian').val()+'');
   }
@@ -64,7 +107,7 @@
             <label class="control-label col-md-1">PRB</label>
             <div class="col-md-1">
                 <select name="prb" id="prb" class="form-control" >
-                  <option value="">- Semua -</option>
+                  <option value="">-</option>
                   <option value="Y">Ya</option>
                   <option value="N">Tidak</option>
                 </select>
@@ -73,11 +116,21 @@
             <label class="control-label col-md-1">Kronis</label>
             <div class="col-md-1">
                 <select name="kronis" id="kronis" class="form-control">
-                  <option value="">- Semua -</option>
+                  <option value="">-</option>
                   <option value="Y">Ya</option>
                   <option value="N">Tidak</option>
                 </select>
             </div>
+
+            <label class="control-label col-md-1">Status</label>
+            <div class="col-md-2">
+                <select name="status" id="status" class="form-control">
+                  <option value="">-</option>
+                  <option value="1">Aktif</option>
+                  <option value="0">Tidak Aktif</option>
+                </select>
+            </div>
+
         </div>
 
         <div class="form-group">
@@ -106,6 +159,7 @@
           <?php echo $this->authuser->show_button('inventory/stok/Inv_stok_depo','C','',1)?>
           <?php echo $this->authuser->show_button('inventory/stok/Inv_stok_depo','D','',5)?>
           <a href="#" class="btn btn-xs btn-success" onclick="export_excel()" id="btn_export_excel"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple_kartu_stok"><i class="fa fa-print"></i> Label Kartu Stok</a>
           <div class="pull-right tableTools-container"></div>
         </div>
         <hr class="separator">
@@ -113,10 +167,17 @@
         
         <!-- div.dataTables_borderWrap -->
         <div style="margin-top:-27px">
-          <table id="dynamic-table" base-url="inventory/stok/Inv_stok_depo" class="table table-striped table-bordered table-hover">
+          <table id="dynamic-table" base-url="inventory/stok/Inv_stok_depo" data-id="flag=medis" class="table table-striped table-bordered table-hover">
           <thead>
             <tr>  
-              <th width="30px" class="center"></th>
+            <th width="30px" class="center">
+                <div class="center">
+                  <label class="pos-rel">
+                      <input type="checkbox" class="ace" name="" onClick="checkAll(this);" value="0"/>
+                      <span class="lbl"></span>
+                  </label>
+                </div>
+              </th>
               <th width="30px">No</th>
               <th width="100px">Image</th>
               <th>Kode & Nama Barang</th>
