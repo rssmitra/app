@@ -20,7 +20,7 @@ class Input_dt_so_model extends CI_Model {
 
 	private function _main_query(){
 
-		$this->db->select('mt_depo_stok_v.is_active as status_aktif');
+		$this->db->select('mt_depo_stok_v.is_active as status_aktif, agenda_so.set_status_aktif, agenda_so.agenda_so_id');
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('mt_golongan', 'mt_golongan.kode_golongan=mt_depo_stok_v.kode_golongan');
@@ -45,7 +45,7 @@ class Input_dt_so_model extends CI_Model {
 			$this->db->where('rak', $_GET['rak']);
 		}
 
-		$this->db->group_by('is_active');
+		$this->db->group_by('is_active, agenda_so.set_status_aktif, agenda_so.agenda_so_id');
 		$this->db->group_by($this->select);
 
 		$this->db->order_by( 'is_active','DESC' );
@@ -243,7 +243,8 @@ class Input_dt_so_model extends CI_Model {
 		$fld['will_stok_exp'] = ($_POST['will_exp_stok'])?$_POST['will_exp_stok']:0;
 		$fld['nama_petugas'] = $this->session->userdata('session_input_so')['nama_pegawai'];
 		$fld['harga_pembelian_terakhir'] = $harga_terakhir->harga;
-		$fld['set_status_aktif'] = $_POST['status_aktif'];
+		$status_aktif = ($_POST['flag'] == 'setstatusaktif') ? ($_POST['value'] == 0) ? 1 : 0 : $_POST['status_aktif'] ;
+		$fld['set_status_aktif'] = $status_aktif;
 		// print_r($fld);die;
 		/*cek dulu sudah ada atau blm sebelumnya*/
 		$cek_existing = $this->cek_input_stok_before('tc_stok_opname', array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian'], 'agenda_so_id' => $_POST['agenda_so_id']) );
