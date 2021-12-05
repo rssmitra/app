@@ -481,6 +481,7 @@ class Verifikasi_resep_prb extends MX_Controller {
                 $result = array();
                 $result['value'] = $header;
                 $result['resep'] = $data;
+                // echo '<pre>'; print_r($data);die;
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_form_bast', $result, true);
             break;
 
@@ -528,6 +529,7 @@ class Verifikasi_resep_prb extends MX_Controller {
 
         /*get content data*/
         $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
+        // echo '<pre>'; print_r($data);die;
         /*get content html*/
         $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far) );
         /*generate pdf*/
