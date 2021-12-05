@@ -6,7 +6,7 @@ class Dt_hasil_so_model extends CI_Model {
 	var $table = 'tc_stok_opname';
 	var $table_nm = 'tc_stok_opname_nm';
 	var $column = array('nama_bagian', 'nama_brg', 'a.kode_brg');
-	var $select = 'mt_bagian.kode_bagian, nama_bagian, nama_brg, stok_sebelum, stok_sekarang, tgl_stok_opname, nama_petugas, harga_pembelian_terakhir, set_status_aktif, stok_exp';
+	var $select = 'mt_bagian.kode_bagian, nama_bagian, nama_brg, stok_sebelum, stok_sekarang, tgl_stok_opname, nama_petugas, harga_pembelian_terakhir, set_status_aktif, stok_exp, will_stok_exp';
 	var $order = array('nama_brg' => 'ASC');
 
 	public function __construct()

@@ -52,11 +52,13 @@ $(document).ready(function(){
       afterSelect: function (item) {
         // do what is needed with item
         var val_item=item.split(':')[0];
+        var label_item=item.split(':')[1];
         console.log(val_item);
         $('#div_detail_brg').html('');
         // get item detail
         getDetailBarang(val_item);
         $('#qtyBarang').focus();
+        $('#inputKeyBarang').val(label_item);
         $('#barcode_value').val('');
         $('#barcode_text').text('');
         $('#barcode_input').hide();
@@ -123,11 +125,13 @@ function insert_cart_log(){
     nama_brg : $('#nama_brg_hidden').val(),
     satuan : $('#satuan_brg_hidden').val(),
     harga : $('#harga_brg_hidden').val(),
-    qty: $('#qtyBarang').val(),
-    qtyBefore: $('#qtyStok').val(),
-    flag_form: 'distribusi',
+    qty : $('#qtyBarang').val(),
+    qtyBefore : $('#qtyStok').val(),
+    is_bhp : $('input[name=is_bhp]:checked').val(),
+    flag_form : 'distribusi',
 
   };
+
   console.log($('#qtyBarang').val());
   console.log($('#qtyStok').val());
 
@@ -280,93 +284,108 @@ th, td {
               
               <div class="row">
 
-                <div class="col-md-6">
-
-                  <div class="widget-box">
-                    <div class="widget-body">
-                      <div class="widget-main">
-                        <div class="form-group">
-                          <label class="control-label col-md-3">Dari Gudang</label>
-                          <div class="col-md-9">
-                            <div class="radio">
-                              <label>
-                                <input name="flag_gudang" type="radio" class="ace" value="medis" <?php echo ($flag=='medis')?'checked':''; ?> />
-                                <span class="lbl"> Medis</span>
-                              </label>
-                              <label>
-                                <input name="flag_gudang" type="radio" class="ace" value="non_medis" <?php echo ($flag=='non_medis')?'checked':''; ?> />
-                                <span class="lbl"> Non Medis</span>
-                              </label>
-                            </div>
-                          </div>                
-                        </div>
-                        <!-- <div class="form-group">
-                          <label class="control-label col-md-3">Metode</label>
-                          <div class="col-md-9">
-                            <div class="radio">
-                              <label>
-                                <input name="flag_metode" type="radio" class="ace" value="cari_brg" />
-                                <span class="lbl"> Cari Barang</span>
-                              </label>
-                              <label>
-                                <input name="flag_metode" type="radio" class="ace" value="scan_barcode" checked/>
-                                <span class="lbl"> Scan Barcode</span>
-                              </label>
-                            </div>
-                          </div>                
-                        </div> -->
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Cari Barang</label>
-                            <div class="col-md-9">
-                              <input type="text" class="form-control" name="keyword" id="inputKeyBarang">
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="widget-box">
-                    <div class="widget-body" style="background: #edf3f4;">
-                      <div class="widget-main">
-                          <div class="form-group" id="barcode_input" style="display: none">
-                            <label class="control-label col-md-3">Kode Barcode</label>
-                            <div class="col-md-9" style="margin-top: 4px; padding-left: 20px">
-                              <span id="barcode_text"><i class="fa fa-question-circle bigger-150 orange"></i></span>
-                              <input type="hidden" id="barcode_value">
-                            </div>
-                          </div>
+                <div class="col-md-12">
+                  <div class="col-md-8">
+                    <div class="widget-box">
+                      <div class="widget-body">
+                        <div class="widget-main">
                           <div class="form-group">
-                            <label class="control-label col-md-3">Kode Barang</label>
-                            <div class="col-md-4" >
-                              <input class="form-control" type="text" name="kode_brg_hidden" id="kode_brg_hidden">
-                              <input class="form-control" type="hidden" name="nama_brg_hidden" id="nama_brg_hidden">
-                              <input class="form-control" type="hidden" name="satuan_brg_hidden" id="satuan_brg_hidden">
-                              <input class="form-control" type="hidden" name="harga_brg_hidden" id="harga_brg_hidden">
-                            </div>
-                            <label class="control-label col-md-1">Qty</label>
-                            <div class="col-md-3" >
-                              <input class="form-control" type="number" name="qtyBrg" id="qtyBarang">
-                              <input class="form-control" type="hidden" name="qtyBrgStok" id="qtyStok">
-                            </div>
-                            <div class="col-md-1" style="margin-left: -10px">
-                              <a href="#" onclick="insert_cart_log()" class="btn btn-xs btn-yellow"><i class="fa fa-shopping-cart"></i></a>
-                            </div>
+                            <label class="control-label col-md-2">Dari Gudang</label>
+                            <div class="col-md-9">
+                              <div class="radio">
+                                <label>
+                                  <input name="flag_gudang" type="radio" class="ace" value="medis" checked />
+                                  <span class="lbl"> Medis</span>
+                                </label>
+                                <label>
+                                  <input name="flag_gudang" type="radio" class="ace" value="non_medis"  />
+                                  <span class="lbl"> Non Medis</span>
+                                </label>
+                              </div>
+                            </div>                
                           </div>
+                          <!-- <div class="form-group">
+                            <label class="control-label col-md-2">Metode</label>
+                            <div class="col-md-9">
+                              <div class="radio">
+                                <label>
+                                  <input name="flag_metode" type="radio" class="ace" value="cari_brg" />
+                                  <span class="lbl"> Cari Barang</span>
+                                </label>
+                                <label>
+                                  <input name="flag_metode" type="radio" class="ace" value="scan_barcode" checked/>
+                                  <span class="lbl"> Scan Barcode</span>
+                                </label>
+                              </div>
+                            </div>                
+                          </div> -->
+                          <div class="form-group">
+                              <label class="control-label col-md-2">Cari Barang</label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" name="keyword" id="inputKeyBarang">
+                              </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    <div class="widget-box">
+                      <div class="widget-body" style="background: #edf3f4;">
+                        <div class="widget-main">
+                            <div class="form-group" id="barcode_input" style="display: none">
+                              <label class="control-label col-md-3">Kode Barcode</label>
+                              <div class="col-md-9" style="margin-top: 4px; padding-left: 20px">
+                                <span id="barcode_text"><i class="fa fa-question-circle bigger-150 orange"></i></span>
+                                <input type="hidden" id="barcode_value">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="control-label col-md-2">Kode Barang</label>
+                              <div class="col-md-2" >
+                                <input class="form-control" type="text" name="kode_brg_hidden" id="kode_brg_hidden" readonly>
+                                <input class="form-control" type="hidden" name="nama_brg_hidden" id="nama_brg_hidden">
+                                <input class="form-control" type="hidden" name="satuan_brg_hidden" id="satuan_brg_hidden">
+                                <input class="form-control" type="hidden" name="harga_brg_hidden" id="harga_brg_hidden">
+                              </div>
+                              <label class="control-label col-md-1">Qty</label>
+                              <div class="col-md-2" >
+                                <input class="form-control" type="number" name="qtyBrg" id="qtyBarang">
+                                <input class="form-control" type="hidden" name="qtyBrgStok" id="qtyStok">
+                              </div>
+                              <div class="col-md-2" >
+                              <label style="padding-top: 3px">
+                                <input name="is_bhp" id="is_bhp" value="1" type="checkbox" class="ace">
+                                <span class="lbl"> BHP</span>
+                              </label>
+                              </div>
+                              <div class="col-md-1" style="margin-left: -50px">
+                                <a href="#" onclick="insert_cart_log()" class="btn btn-xs btn-yellow"><i class="fa fa-shopping-cart"></i> Masukan List</a>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="widget-box">
+                      <div class="widget-body">
+                        <div class="widget-main">
+                          <!-- <h3 class="header smaller lighter blue" style="font-size: 15px;margin-top: -8px;margin-left: -12px;">Daftar Pengiriman Barang ke Unit</h3> -->
+                          <div id="div_cart" style="padding: 10px"></div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
-                  
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div id="div_detail_brg"></div>
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div id="div_detail_brg"></div>
+                      </div>
                     </div>
                   </div>
 
                 </div>
-                <div class="col-md-6">
-                <h3 class="header smaller lighter blue" style="font-size: 15px;margin-top: -8px;margin-left: -12px;">Daftar Pengiriman Barang ke Unit</h3>
-                  <div id="div_cart"></div>
-                </div>
+
 
               </div>
 

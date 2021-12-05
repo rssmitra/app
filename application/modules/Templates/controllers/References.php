@@ -1629,7 +1629,9 @@ class References extends MX_Controller {
 
 		$arrResult = [];
 		foreach ($result as $key => $value) {
-			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;
+			$txt_color = ($value->jml_sat_kcl > 0)?'blue':'red';
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg.' : <span style="color: '.$txt_color.'; font-weight: bold">'.$value->jml_sat_kcl.'</span> '.strtolower($value->satuan_kecil);
+			
 		}
 		echo json_encode($arrResult);
 	}

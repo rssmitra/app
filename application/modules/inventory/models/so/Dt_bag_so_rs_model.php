@@ -6,7 +6,7 @@ class Dt_bag_so_rs_model extends CI_Model {
 	var $table = 'tc_stok_opname';
 	var $table_nm = 'tc_stok_opname_nm';
 	var $column = array('nama_brg');
-	var $select = 'nama_brg, SUM(stok_sebelum) as stok_sebelum, SUM(stok_sekarang) as stok_sekarang, SUM(stok_exp) as stok_exp, AVG(harga_pembelian_terakhir) as harga_pembelian_terakhir, content';
+	var $select = 'nama_brg, SUM(stok_sebelum) as stok_sebelum, SUM(stok_sekarang) as stok_sekarang, SUM(stok_exp) as stok_exp, SUM(will_stok_exp) as will_stok_exp, AVG(harga_pembelian_terakhir) as harga_pembelian_terakhir, content';
 	var $order = array('nama_brg' => 'ASC');
 
 	public function __construct()
