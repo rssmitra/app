@@ -5,7 +5,7 @@ class Dt_hasil_so_model extends CI_Model {
 
 	var $table = 'tc_stok_opname';
 	var $table_nm = 'tc_stok_opname_nm';
-	var $column = array('nama_bagian', 'nama_brg', 'a.kode_brg');
+	var $column = array('nama_brg');
 	var $select = 'mt_bagian.kode_bagian, nama_bagian, nama_brg, stok_sebelum, stok_sekarang, tgl_stok_opname, nama_petugas, harga_pembelian_terakhir, set_status_aktif, stok_exp, will_stok_exp';
 	var $order = array('nama_brg' => 'ASC');
 
@@ -25,10 +25,9 @@ class Dt_hasil_so_model extends CI_Model {
 		$this->db->select(''.$join_t_brg.'.satuan_kecil');
 		$this->db->select(''.$join_t_brg.'.content');
 		$this->db->from($table.' a');
-		$this->db->where('agenda_so_id', $_GET['agenda_so_id']);
-		$this->db->where('a.kode_bagian', $_GET['kode_bagian']);
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=a.kode_bagian');
 		$this->db->join($join_t_brg, ''.$join_t_brg.'.kode_brg=a.kode_brg');
+		$this->db->where('(agenda_so_id = '.$_GET['agenda_so_id'].' AND a.kode_bagian = '.$_GET['kode_bagian'].')');
 	}
 
 	private function _get_datatables_query()

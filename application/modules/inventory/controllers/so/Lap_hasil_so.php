@@ -165,7 +165,7 @@ class Lap_hasil_so extends MX_Controller {
         
         foreach($list as $row){
             
-            $hpa = ($row->harga_pembelian_terakhir > 0) ? $row->harga_pembelian_terakhir / $row->content : 0;
+            $hpa = ($row->harga_pembelian_terakhir > 0 AND $row->content > 0) ? $row->harga_pembelian_terakhir / $row->content : 0;
 
             if( $row->set_status_aktif == 1 || $row->set_status_aktif != 0 ){
                 if( $hpa > 0 AND $row->stok_sekarang > 0 ){
@@ -380,7 +380,7 @@ class Lap_hasil_so extends MX_Controller {
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $hpa = ( !empty($row_list->harga_pembelian_terakhir) ) ? $row_list->harga_pembelian_terakhir : 0 ;
-            $harga_pembelian_terakhir = ( $hpa > 0) ? ($hpa / $row_list->content) : 0;
+            $harga_pembelian_terakhir = ( $hpa > 0 AND $row_list->content > 0) ? ($hpa / $row_list->content) : 0;
             $total = $row_list->stok_sekarang * $hpa;
             $totalr = $row_list->stok_sekarang * $harga_pembelian_terakhir;
             $no++;
