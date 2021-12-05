@@ -527,11 +527,6 @@ class Verifikasi_resep_prb extends MX_Controller {
 
         /*get content data*/
         $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
-<<<<<<< HEAD
-        // echo '<pre>'; print_r($data);die;
-=======
-        // echo '<pre>'; echo($data); die;
->>>>>>> de00bff8bb596847d913cb9a8acd63e30c2c370d
         /*get content html*/
         $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far) );
         /*generate pdf*/
