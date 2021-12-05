@@ -474,14 +474,12 @@ class Verifikasi_resep_prb extends MX_Controller {
         /*header html*/
         $header = $this->Verifikasi_resep_prb->get_header_data($kode_trans_far);
         $html = '';
-
         switch ($named) {
 
             case 'FRM_BAST':
                 $result = array();
                 $result['value'] = $header;
                 $result['resep'] = $data;
-                // echo '<pre>'; print_r($data);die;
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_form_bast', $result, true);
             break;
 
@@ -512,7 +510,7 @@ class Verifikasi_resep_prb extends MX_Controller {
                 $row_sep = $this->Ws_index->findSep($no_sep);
                 // echo '<pre>'; print_r($row_sep);die;
                 $cetakan_ke = $this->Ws_index->count_sep_by_day();
-                $result = array('sep'=>$row_sep->response, 'cetakan_ke' => $cetakan_ke, 'header' => $header);
+                $result = array('sep'=>$row_sep['data'], 'cetakan_ke' => $cetakan_ke, 'header' => $header);
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_sep', $result, true);
             break;
             
@@ -529,7 +527,11 @@ class Verifikasi_resep_prb extends MX_Controller {
 
         /*get content data*/
         $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
+<<<<<<< HEAD
         // echo '<pre>'; print_r($data);die;
+=======
+        // echo '<pre>'; echo($data); die;
+>>>>>>> de00bff8bb596847d913cb9a8acd63e30c2c370d
         /*get content html*/
         $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far) );
         /*generate pdf*/
@@ -537,6 +539,13 @@ class Verifikasi_resep_prb extends MX_Controller {
         
         return true;
 
+    }
+
+    public function get_detail_xx($kode_trans_far){
+
+        /*get content data*/
+        $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
+        echo '<pre>'; print_r($data); die;
     }
 
     public function createDocument($kode_trans_far){

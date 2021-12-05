@@ -72,8 +72,8 @@ function show_hide_note(action){
     <input type="hidden" name="flag" id="flag_cart" value="<?php echo isset($flag)?$flag:''?>">
     <input type="hidden" name="flag_form" id="flag_form" value="<?php echo isset($form)?$form:''?>">
     <div class="form-group">
-      <label class="control-label col-md-3">Tanggal Pengiriman</label>
-      <div class="col-md-4">
+      <label class="control-label col-md-2">Tgl Kirim</label>
+      <div class="col-md-3">
         <div class="input-group">
           <input class="form-control date-picker" name="tgl_pengiriman" id="tgl_pengiriman" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
           <span class="input-group-addon">
@@ -85,7 +85,7 @@ function show_hide_note(action){
 
 
     <div class="form-group">
-      <?php $form_label = ($form == 'distribusi') ? '<label class="control-label col-md-3">Tujuan ke unit</label>' : '<label class="control-label col-md-3">Dari unit</label>' ; echo $form_label; ?>
+      <?php $form_label = ($form == 'distribusi') ? '<label class="control-label col-md-2">Tujuan Unit</label>' : '<label class="control-label col-md-2">Dari unit</label>' ; echo $form_label; ?>
       <div class="col-md-7">
         <?php 
           echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), isset($value)?$value->kode_bagian_minta:'' , 'kode_bagian_minta', 'kode_bagian_minta', 'form-control', '', '') ?>
@@ -96,7 +96,7 @@ function show_hide_note(action){
     </div>
 
     <div class="form-group" id="catatan_form" style="display: none">
-      <label class="control-label col-md-3">Catatan</label>
+      <label class="control-label col-md-2">Catatan</label>
       <div class="col-md-7">
         <textarea class="form-control" style="height: 50px !important; margin-bottom: 5px" id="catatan" name="catatan"></textarea>
       </div>

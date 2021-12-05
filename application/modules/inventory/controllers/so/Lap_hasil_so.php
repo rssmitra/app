@@ -117,6 +117,7 @@ class Lap_hasil_so extends MX_Controller {
         $arr_harga_exp = array();
         $arr_harga = array();
         $arr_harga_brg_exp = array();
+        $arr_harga_brg_will_exp = array();
         foreach($list as $row){
             
             if( $row->harga_pembelian_terakhir != 0 AND $row->stok_sekarang != 0 ){
@@ -135,6 +136,10 @@ class Lap_hasil_so extends MX_Controller {
                     $arr_harga_brg_exp[] = round($harga_pembelian_terakhir * $row->stok_exp);
                 }
 
+                if( $row->will_stok_exp > 0 ){
+                    $arr_harga_brg_will_exp[] = round($harga_pembelian_terakhir * $row->will_stok_exp);
+                }
+
             }
         }
 
@@ -143,6 +148,7 @@ class Lap_hasil_so extends MX_Controller {
             'total_rp_aktif' => array_sum($arr_harga),
             'total_rp_not_aktif' => array_sum($arr_harga_exp),
             'total_rp_exp' => array_sum($arr_harga_brg_exp),
+            'total_rp_will_exp' => array_sum($arr_harga_brg_will_exp),
         );
 
         echo json_encode($result);
@@ -159,7 +165,7 @@ class Lap_hasil_so extends MX_Controller {
         
         foreach($list as $row){
             
-            $hpa = $row->harga_pembelian_terakhir / $row->content;
+            $hpa = ($row->harga_pembelian_terakhir > 0 AND $row->content > 0) ? $row->harga_pembelian_terakhir / $row->content : 0;
 
             if( $row->set_status_aktif == 1 || $row->set_status_aktif != 0 ){
                 if( $hpa > 0 AND $row->stok_sekarang > 0 ){
@@ -176,12 +182,17 @@ class Lap_hasil_so extends MX_Controller {
                 $arr_harga_exp[] = round($hpa * $row->stok_exp);
             }
 
+            if( $row->will_stok_exp > 0 ){
+                $arr_harga_will_exp[] = round($hpa * $row->will_stok_exp);
+            }
+
         }
 
         $result = array(
             'total_aset_barang_rs' => array_sum($arr_harga),
             'total_aset_barang_rs_not_active' => array_sum($arr_harga_not_active),
             'total_exp_barang_rs' => array_sum($arr_harga_exp),
+            'total_will_exp_barang_rs' => array_sum($arr_harga_will_exp),
         );
 
         echo json_encode($result);
@@ -286,6 +297,10 @@ class Lap_hasil_so extends MX_Controller {
             if( $row_dt->stok_exp > 0 ){
                 $arr_exp[$row_dt->kode_bagian][] = true;
             }
+
+            if( $row_dt->will_stok_exp > 0 ){
+                $arr_will_exp[$row_dt->kode_bagian][] = true;
+            }
         }
         // echo '<pre>';print_r($arr_not_aktif);die;
 
@@ -295,12 +310,14 @@ class Lap_hasil_so extends MX_Controller {
             $count_aktif = isset($arr_aktif[$row_list->kode_bagian]) ? count($arr_aktif[$row_list->kode_bagian]) : 0;
             $count_not_aktif = isset($arr_not_aktif[$row_list->kode_bagian])?count($arr_not_aktif[$row_list->kode_bagian]): 0;
             $count_exp = isset($arr_exp[$row_list->kode_bagian])?count($arr_exp[$row_list->kode_bagian]): 0;
-            $total = $count_aktif + $count_not_aktif;
+            $count_will_exp = isset($arr_will_exp[$row_list->kode_bagian])?count($arr_will_exp[$row_list->kode_bagian]): 0;
+            $total = $count_aktif + $count_not_aktif + $count_exp + $count_will_exp;
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_bagian.'</div>';
             $row[] = '<a href="#" onclick="getMenuTabs('."'inventory/so/Lap_hasil_so/view_data_hasil_so/".$_GET['agenda_so_id']."/".$row_list->kode_bagian."/".$_GET['flag']."'".', '."'tabs_so'".')">'.ucwords($row_list->nama_bagian).'</a>';
             $row[] = '<div class="center">'.$count_aktif.'</div>';
             $row[] = '<div class="center">'.$count_not_aktif.'</div>';
+            $row[] = '<div class="center">'.$count_will_exp.'</div>';
             $row[] = '<div class="center">'.$count_exp.'</div>';
             $row[] = '<div class="center">'.$total.'</div>';
                    
@@ -333,9 +350,11 @@ class Lap_hasil_so extends MX_Controller {
             $row[] = '<div class="left">'.$row_list->nama_brg.'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sebelum).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sekarang).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->stok_exp).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->will_stok_exp).'</div>';
             $harga = isset($row_list->harga_pembelian_terakhir)?$row_list->harga_pembelian_terakhir:0;
             $content = isset($row_list->content)?$row_list->content:0;
-            $hpa = $harga / $content;
+            $hpa = ($content > 0) ? $harga / $content : 0;
             $total = $row_list->stok_sekarang * $hpa;
             $row[] = '<div align="right">'.number_format($hpa).'</div>';
             $row[] = '<div align="right">'.number_format($total).'</div>';
@@ -361,7 +380,7 @@ class Lap_hasil_so extends MX_Controller {
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $hpa = ( !empty($row_list->harga_pembelian_terakhir) ) ? $row_list->harga_pembelian_terakhir : 0 ;
-            $harga_pembelian_terakhir = ( $hpa > 0) ? ($hpa / $row_list->content) : 0;
+            $harga_pembelian_terakhir = ( $hpa > 0 AND $row_list->content > 0) ? ($hpa / $row_list->content) : 0;
             $total = $row_list->stok_sekarang * $hpa;
             $totalr = $row_list->stok_sekarang * $harga_pembelian_terakhir;
             $no++;
@@ -375,6 +394,8 @@ class Lap_hasil_so extends MX_Controller {
             // $row[] = '<div class="center">'.$row_list->content.'</div>';
             $row[] = '<div class="center">'.$row_list->stok_sebelum.'</div>';
             $row[] = '<div class="center">'.$row_list->stok_sekarang.'</div>';
+            $row[] = '<div class="center">'.$row_list->will_stok_exp.'</div>';
+            $row[] = '<div class="center">'.$row_list->stok_exp.'</div>';
             // $row[] = '<div align="right">'.number_format($total).'</div>';
             $row[] = '<div align="right">'.number_format($totalr).'</div>';
             $status_aktif = ($row_list->set_status_aktif==0)?'<span style="color:red; font-weight: bold;">Not Active</span>':'<span style="color:green; font-weight: bold;">Active</span>';

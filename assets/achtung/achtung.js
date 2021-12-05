@@ -1,8 +1,8 @@
 var achtungloader = '';
 
-function achtungCreate(message, sticky) {
+function achtungCreate(message, sticky, achtungClass) {
     var timeout = (true == sticky) ? 0 : 5;
-    achtungBox = $.achtung({message: message, timeout: timeout});
+    achtungBox = $.achtung({message: message, timeout: timeout, className: achtungClass});
     return achtungBox;
 }
 

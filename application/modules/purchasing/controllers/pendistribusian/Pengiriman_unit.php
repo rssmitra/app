@@ -290,8 +290,14 @@ class Pengiriman_unit extends MX_Controller {
                 // kurang stok gudang
                 $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'reduce');
 
-                // tambah stok depo
-                $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
+                if($row_brg->is_bhp == 1){
+                    // jika bhp maka langsung di mutasi stok nya
+                    // tambah stok depo dan kurang
+                    $this->stok_barang->stock_process_depo_bhp($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
+                }else{
+                    $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
+
+                }
                 
                 // update status aktif depo unit
                 $this->db->update($mt_depo_stok, array('is_active' => 1), array('kode_brg' => $row_brg->kode_brg, 'kode_bagian' => $kode_bagian) );
@@ -563,6 +569,7 @@ class Pengiriman_unit extends MX_Controller {
                 'flag_form' => isset($_POST['flag_form'])?$_POST['flag_form']:'',
                 'reff_kode' => isset($_POST['reff_kode'])?$_POST['reff_kode']:'',
                 'retur_type' => isset($_POST['retur_type'])?$_POST['retur_type']:'',
+                'is_bhp' => isset($_POST['is_bhp'])?$_POST['is_bhp']:'',
             );
             $this->db->insert('tc_permintaan_inst_cart_log', $dataexc);
             $this->db->trans_commit();
