@@ -46,6 +46,29 @@
     
   }
 
+  function setStatusAktifBrg(kode_brg, kode_bag){
+  var val_id = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'').val();
+
+  $.ajax({
+      url: "inventory/stok/Inv_stok_depo/set_status_brg",
+      data: {kode_bagian : kode_bag, kode_brg : kode_brg, value : val_id },
+      dataType: "json",
+      type: "POST",
+      complete: function (xhr) {
+        var data=xhr.responseText;  
+        var jsonResponse = JSON.parse(data);  
+        if(jsonResponse.status === 200){  
+          $.achtung({message: jsonResponse.message, timeout:5}); 
+          /*reload table*/
+          reset_table(kode_bag);
+        }else{          
+          $.achtung({message: jsonResponse.message, timeout:5});  
+        } 
+        achtungHideLoader();
+      }
+  });
+}
+
   function checkAll(elm) {
 
     if($(elm).prop("checked") == true){
@@ -187,6 +210,7 @@
               <th>Satuan</th>
               <!-- <th>Harga Beli</th> -->
               <th>Mutasi Terakhir</th>
+              <th>Status</th>
               <th>Status</th>
             </tr>
           </thead>
