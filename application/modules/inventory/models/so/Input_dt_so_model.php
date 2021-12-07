@@ -48,7 +48,7 @@ class Input_dt_so_model extends CI_Model {
 		$this->db->group_by('is_active, agenda_so.set_status_aktif, agenda_so.agenda_so_id');
 		$this->db->group_by($this->select);
 
-		$this->db->order_by( 'is_active','DESC' );
+		// $this->db->order_by( 'is_active','DESC' );
 		$this->db->order_by( 'nama_brg','ASC' );
 		$this->db->order_by( 'nama_jenis','ASC' );
 		$this->db->order_by( 'nama_layanan','ASC' );

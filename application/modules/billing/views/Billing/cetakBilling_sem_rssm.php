@@ -373,7 +373,7 @@
         <table width="460px">
           <tr>
             <td style="text-align: right">
-              Jakarta, <?php echo date('d/m/Y')?>
+              Jakarta, <?php echo $this->tanggal->formatDatedmY($data->reg_data->tgl_jam_masuk)?>
               <br><br><br><br><br>
               <?php if( $flag_bill == 'temporary' ) : ?>
               <div class="col-xs-4">

@@ -182,9 +182,13 @@ function checkedNk(kode) {
                                             <th class="center" width="100px">Subtotal (Rp.)</th>
                                         </tr>
 
+                                        <!-- FOREACH -->
                                     <?php 
                                         $sum_array[$key.''.$key_s] = array();
-                                        foreach( $row_s as $value_data ) : ?>
+                                        
+                                        foreach( $row_s as $value_data ) : 
+                                    ?>
+                                        <!-- filter untuk BPAKO -->
                                         
                                         <?php 
                                             $subtotal = $this->Billing->get_total_tagihan($value_data);
@@ -245,6 +249,9 @@ function checkedNk(kode) {
                                             <input type="hidden" name="kode_trans_pelayanan[]" id="<?php echo $value_data->kode_trans_pelayanan?>" value="<?php echo $value_data->kode_trans_pelayanan?>">
                                             <input type="hidden" name="delete_row_val[]" id="delete_row_val_<?php echo $value_data->kode_trans_pelayanan?>" value="0">
                                             <?php echo $value_data->kode_trans_pelayanan.' - '.$value_data->nama_tindakan;?>
+                                            <?php
+                                                echo ($value_data->jenis_tindakan == 9) ? '<span style="color: green; font-weight: bold; background: yellow">BPAKO</span>' : '';
+                                            ?>
                                         </td>
                                         
                                         <!-- <td>
@@ -304,6 +311,9 @@ function checkedNk(kode) {
                                         $sum_array_total[$key.''.$key_s][] = $subtotal;
                                         endforeach; 
                                     ?>
+
+                                    <!-- END FOREACH -->
+
                                     <tr style="font-weight: bold; font-size: 13px">
                                         <td colspan="7" align="right">Total</td>
                                         <td align="right">
@@ -322,12 +332,59 @@ function checkedNk(kode) {
                     endforeach;
                     ?>
 
+                    
+
                 </div><!-- /.timeline-items -->
             </div>
             
             <?php endforeach?>
             </div>
         </div>
+        <br>
+        <div class="row">
+        <!-- resume grouping billing berdasarkan kategori -->
+            <div id="accordion" class="accordion-style1 panel-group" style="margin-left: 14%">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+                                &nbsp;GROUPING KATEGORI BILLING
+                            </a>
+                        </h4>
+                    </div>
+
+                    <div class="panel-collapse collapse in" id="collapseOne">
+                        <div class="panel-body">
+                            <table class="table">
+                                <tr style="background: #eef4f9">
+                                    <?php 
+                                        foreach($data->group as $key_group=>$row_group) :
+                                            echo '<th class="center">'.strtoupper($key_group).'</th>';
+                                            foreach ($row_group as $k_group => $v_group) {
+                                                $subtotal_grouping[$key_group][] = $this->Billing->get_total_tagihan($v_group);
+                                            }
+                                        endforeach;
+                                    ?>
+                                    <th>TOTAL</th>
+                                </tr>
+                                <tr>
+                                    <?php 
+                                        foreach($data->group as $key_group=>$row_group) :
+                                            $total_grouping[] = array_sum($subtotal_grouping[$key_group]);
+                                            echo '<td align="right" style="font-size: 14px; font-weight: bold">'.number_format(array_sum($subtotal_grouping[$key_group])).'</td>';
+                                        endforeach;
+                                    ?>
+                                    <td align="right" style="font-size: 14px; font-weight: bold"><?php echo number_format(array_sum($total_grouping))?></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
 
     <p>
         Keterangan : <br>

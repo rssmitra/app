@@ -211,7 +211,7 @@
               <!-- <th>Harga Beli</th> -->
               <th>Mutasi Terakhir</th>
               <th>Status</th>
-              <th>Status</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
