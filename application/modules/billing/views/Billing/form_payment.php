@@ -62,19 +62,22 @@ $(document).ready(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#div_bon_karyawan').show();
+          $('#divNkAsuransi').show();
           $('#divPersentaseDiskon').hide();
-          $('#jumlah_nk').removeAttr('readonly');
-          cek_sisa_belum_bayar('jumlah_nk');
-          // $('#div_kredit').show();
-          // cek_sisa_belum_bayar('jumlah_bayar_kredit');
+          $('#divNkPerusahaanOrKaryawan').hide();
+          $('#jumlah_nk_asuransi').val(0);
+          // $('#jumlah_nk').removeAttr('readonly');
+          sum_um_nk_diskon();
         } else {
           $('#div_bon_karyawan').hide();
+          $('#divNkAsuransi').hide();
           $('#divPersentaseDiskon').show();
-          $('#jumlah_nk').val(0);
+          $('#divNkPerusahaanOrKaryawan').show();
+          $('#jumlah_nk_asuransi').val(0);
+          $('#jml_nk_dibayarkan').text( formatMoney(0) );
+          // $('#jumlah_nk').val(0);
+          sum_um_nk_diskon();
           sum_total_pembayaran();
-          // $('#div_kredit').hide();
-          // $('#jumlah_bayar_kredit').val(0);
-          // sum_total_pembayaran();
         }
         
     });
@@ -176,7 +179,7 @@ function sum_total_pembayaran(){
   var jml_diskon = formatNumberFromCurrency($('#jml_diskon_internal').text());
   var sum_class = sumClass('uang_dibayarkan');
   
-  console.log(sum_class + ' sum_class Uang Dibayarkan - sum_total_pembayaran');
+  // console.log(sum_class + ' sum_class Uang Dibayarkan - sum_total_pembayaran');
   // console.log(total);
 
   // diskon
@@ -211,7 +214,7 @@ function sum_total_pembayaran(){
 
   $('#uang_dibayarkan_text').text( formatMoney(parseInt(sum_class)) );
 
-  $('#jml_nk_dibayarkan').text( formatMoney($('#total_nk').val()) );
+  // $('#jml_nk_dibayarkan').text( formatMoney($('#total_nk').val()) );
 
   statButton();
 
@@ -226,7 +229,7 @@ function cek_sisa_belum_bayar(div_id){
   }else{
     var blm_dibayarkan = 0;
   }
-  console.log(sum_class + 'sum_class uang_dibayarkan - cek_sisa_belum_bayar');
+  // console.log(sum_class + 'sum_class uang_dibayarkan - cek_sisa_belum_bayar');
   $('#'+div_id+'').val(blm_dibayarkan);
   sum_total_pembayaran();
 }
@@ -325,6 +328,33 @@ function hitungDiskon(){
   jumlah_dibayarkan = parseInt(total_payment) - parseInt(sumUmNkDisc);
 
   $('#jml_dibayarkan').text( formatMoney(jumlah_dibayarkan) );
+}
+
+function inputNominalNK(){
+  // add nominal Nota Kredit
+  let intNK = $('#jumlah_nk_asuransi').val();
+  $('#jml_nk_dibayarkan').text( formatMoney(intNK) );
+
+  sum_um_nk_diskon();
+
+  sum_total_pembayaran();
+
+}
+
+function sum_um_nk_diskon(){
+  let intNK = $('#jumlah_nk_asuransi').val();
+  let uangMuka = formatNumberFromCurrency( $('#jml_um').text() );
+  let diskon = formatNumberFromCurrency( $('#jml_diskon_internal').text() );
+  let total_um_nk_diskon = parseInt(intNK) + parseInt(uangMuka) + parseInt(diskon);
+
+  $('#jml_um_nk').text( formatMoney(total_um_nk_diskon) );
+
+  // Set Jumlah yang harus dibayar
+  let total_payment = $('#total_payment').val();
+  let jumlah_dibayarkan = 0;
+  jumlah_dibayarkan = parseInt(total_payment) - parseInt(total_um_nk_diskon);
+  $('#jml_dibayarkan').text( formatMoney(jumlah_dibayarkan) );
+
 }
 
 </script>
@@ -514,13 +544,18 @@ function hitungDiskon(){
         <div id="div_bon_karyawan" style="<?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'display:none' ?>">
           <hr class="separator">
           <p><b>NOTA KREDIT PERUSAHAAN</b></p>
-          <div class="form-group">
+          <div class="form-group" id="divNkPerusahaanOrKaryawan">
             <label class="control-label col-md-4">NK Perusahaan/Karyawan</label>
             <div class="col-md-8">
-              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control uang_dibayarkan format_number" type="text" style="text-align: right" oninput="sum_total_pembayaran()" readonly>
+              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control uang_dibayarkan nominalNK format_number" type="text" style="text-align: right" oninput="inputNominalNK()" readonly>
             </div>
           </div>
-          
+          <div class="form-group" id="divNkAsuransi" style="display: none;">
+            <label class="control-label col-md-4">NK Asuransi</label>
+            <div class="col-md-8">
+              <input name="jumlah_nk_asuransi" id="jumlah_nk_asuransi" value="" class="form-control nominalNK format_number" type="text" style="text-align: right" oninput="inputNominalNK()">
+            </div>
+          </div>
           <div class="form-group" id="divPersentaseDiskon">
             <label class="control-label col-md-4">Diskon ( % )</label>
             <div class="col-md-8">
