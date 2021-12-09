@@ -81,7 +81,7 @@ class Billing extends MX_Controller {
             'result' => $result,
             'total_paid' => array_sum($arr_sum_total),
         );
-        // echo '<pre>'; print_r($arr_sum_total);die;
+        // echo '<pre>'; print_r($data);die;
 
         $this->load->view('Billing/form_payment', $data);
     }
@@ -536,6 +536,7 @@ class Billing extends MX_Controller {
     public function process(){
         
         // print_r($_POST);die;
+        // print("<pre>".print_r($_POST,true)."</pre>");die;
 
         $this->load->library('accounting');
 
@@ -596,6 +597,11 @@ class Billing extends MX_Controller {
         }else{
             $dataTranskasir["pembayar"] = $_POST['nama_pasien_val'];
             $dataTranskasir["nk_perusahaan"] = 0;
+        }
+
+        // NK Asuransi
+        if($_POST['kode_penjamin_pasien'] == 3){
+          $dataTranskasir["nk_perusahaan"] = $_POST['jumlah_nk_asuransi'];
         }
 
         $potongan_diskon = ($_POST['total_payment'] * ($_POST['jumlah_diskon']/100));
