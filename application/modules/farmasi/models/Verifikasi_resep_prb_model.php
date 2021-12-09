@@ -128,8 +128,8 @@ class Verifikasi_resep_prb_model extends CI_Model {
 	}
 
 	public function get_header_data($kode_trans_far){
-		$this->db->select('c.ttd as ttd_pasien');
-		$this->db->select('a.*, b.*, e.*, d.nama_bagian');
+		$this->db->select('c.ttd as ttd_pasien, c.jen_kelamin, CAST(c.tgl_lhr as DATE) as tgl_lhr');
+		$this->db->select('a.*, b.*, e.*, d.nama_bagian, d.kode_poli_bpjs, c.no_hp');
 		$this->db->from('fr_tc_far a');
 		$this->db->join('tc_registrasi b', 'b.no_registrasi=a.no_registrasi', 'left');
 		$this->db->join('th_riwayat_pasien e', 'e.no_registrasi=a.no_registrasi', 'left');
