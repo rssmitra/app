@@ -51,7 +51,6 @@
           <td style="border-bottom: 1px solid black; width: 60%; border-collapse: collapse">Nama Obat</td>
           <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Jumlah</td>
           <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Satuan</td>
-          <!-- <td style="text-align:center; width: 15%; border-bottom: 1px solid black; border-collapse: collapse">Subtotal</td> -->
         </tr>
     </thead>
         <?php 

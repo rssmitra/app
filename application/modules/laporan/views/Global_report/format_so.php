@@ -35,9 +35,9 @@
       
       <div style="width:200px">
         Unit/Bagian <b><?php echo ($result['data'][0]->nama_bagian)?strtoupper($result['data'][0]->nama_bagian):'GUDANG NON MEDIS'?></b>
+        <br>
         Tanggal SO _________________, Nama Petugas ________________________, <br>
       </div>
-      <br><br>
       <!-- table for data barang non medis -->
       <table class="table" border="1" style="font-size:14px !important">
         <thead>
@@ -60,6 +60,7 @@
             <th class="center">STOK AKHIR</th>
             <th class="center">STOK KARTU</th>
             <th class="center">STOK FISIK</th>
+            <th class="center">JML AKAN EXP</th>
             <th class="center">JML EXP</th>
             <th class="center">KETERANGAN</th>
           </tr>
@@ -94,6 +95,7 @@
               <td align="center" style="width:120px !important; overflow-wrap: break-word;vertical-align: middle"><?php echo $satuan;?></td>
               <td align="center" style="width:100px !important; overflow-wrap: break-word;vertical-align: middle"><?php echo ($row_data->is_active == 1)?'AKTIF':'NON AKTIF' ;?></td>
               <td align="center" style="width:100px !important; overflow-wrap: break-word;vertical-align: middle"><?php echo $row_data->stok_akhir;?></td>
+              <td style="width:100px !important; overflow-wrap: break-word;"></td>
               <td style="width:100px !important; overflow-wrap: break-word;"></td>
               <td style="width:100px !important; overflow-wrap: break-word;"></td>
               <td style="width:100px !important; overflow-wrap: break-word;"></td>

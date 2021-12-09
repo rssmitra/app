@@ -473,8 +473,8 @@ class Verifikasi_resep_prb extends MX_Controller {
         $temp = new Templates;
         /*header html*/
         $header = $this->Verifikasi_resep_prb->get_header_data($kode_trans_far);
+        // echo '<pre>'; print_r($header);die;
         $html = '';
-
         switch ($named) {
 
             case 'FRM_BAST':
@@ -509,9 +509,9 @@ class Verifikasi_resep_prb extends MX_Controller {
             case 'SEP':
                 /*data sep*/
                 $row_sep = $this->Ws_index->findSep($no_sep);
-                // echo '<pre>'; print_r($row_sep);die;
+                
                 $cetakan_ke = $this->Ws_index->count_sep_by_day();
-                $result = array('sep'=>$row_sep->response, 'cetakan_ke' => $cetakan_ke, 'header' => $header);
+                $result = array('sep'=>$row_sep['data'], 'cetakan_ke' => $cetakan_ke, 'header' => $header);
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_sep', $result, true);
             break;
             
@@ -522,6 +522,12 @@ class Verifikasi_resep_prb extends MX_Controller {
         }
         // echo '<pre>'; echo($html); die;
         return json_encode( array('html' => $html) );
+    }
+
+    public function findSep($no_sep){
+        $row_sep = $this->Ws_index->findSep($no_sep);
+        echo '<pre>'; print_r($row_sep);die;
+
     }
 
     public function getContentPDF($named, $no_sep, $kode_trans_far, $act_code=''){
@@ -535,6 +541,13 @@ class Verifikasi_resep_prb extends MX_Controller {
         
         return true;
 
+    }
+
+    public function get_detail_xx($kode_trans_far){
+
+        /*get content data*/
+        $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
+        echo '<pre>'; print_r($data); die;
     }
 
     public function createDocument($kode_trans_far){

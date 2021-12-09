@@ -154,6 +154,48 @@ function cetak_kuitansi(){
     <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val">
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
 
+    <b>TRANSAKSI KASIR</b>
+    <div class="form-group">                        
+        <label class="control-label col-md-2">Tanggal Transaksi</label>        
+        <div class="col-md-2">
+            <div class="input-group">
+                <input name="tgl_trans_kasir" id="tgl_trans_kasir"  class="form-control date-picker" type="text" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar):$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_masuk);?>">
+                <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">No. SEP</label>
+        <div class="col-md-3">
+        <input name="no_sep_val" id="no_sep_val" value="<?php echo isset($data->reg_data->no_sep)?$data->reg_data->no_sep: ''?>" class="form-control" type="text" style="text-transform: uppercase">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Tgl Masuk</label>
+        <div class="col-md-2">
+            <div class="input-group">
+            <input class="form-control date-picker" name="tgl_jam_masuk" id="tgl_jam_masuk" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($data->reg_data->tgl_jam_masuk)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_masuk): ''?>"/>
+            <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+            </span>
+            </div>
+        </div>
+
+        <label class="control-label col-md-1">Tgl Keluar</label>
+        <div class="col-md-2">
+            <div class="input-group">
+            <input class="form-control date-picker" name="tgl_jam_keluar" id="tgl_jam_keluar" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar): ''?>"/>
+            <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+            </span>
+            </div>
+        </div>
+    </div>
+
     <div class="center no-padding">
     
         <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" > <i class="fa fa-refresh"></i> Reload Billing </a>

@@ -83,6 +83,7 @@ function reset_table(kode_bag){
           <th style="background-color: black; color: white">Nama Bagian</th>
           <th style="background-color: black; color: white" style="width:30px" class="center">Barang Aktif</th>
           <th style="background-color: black; color: white" style="width:30px" class="center">Barang Tidak Aktif</th>
+          <th style="background-color: black; color: white" style="width:30px" class="center">Barang Expired (-3 Bln)</th>
           <th style="background-color: black; color: white" style="width:30px" class="center">Barang Expired</th>
           <th style="background-color: black; color: white" style="width:30px" class="center">Total Barang<br>(Aktif + Tidak Aktif)</th>
           

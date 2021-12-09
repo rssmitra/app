@@ -118,6 +118,14 @@ class Inv_stok_depo extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
             $status_aktif = ($row_list->is_active == 1) ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
+            $status_brg_aktif = ($row_list->is_active == 0 ) ? '' : 'checked';
+            $params_kode_bagian = isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '060101' ;
+            $row[] = '<div class="center">
+                        <label>
+                            <input name="status_brg_aktif" id="stat_on_off_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'" onclick="setStatusAktifBrg('."'".$row_list->kode_brg."'".', '."'".$params_kode_bagian."'".')" class="ace ace-switch ace-switch-3" type="checkbox" '.$status_brg_aktif.' value="'.$row_list->is_active.'">
+                            <span class="lbl"></span>
+                            </label>
+                    </div>';
                    
             $data[] = $row;
         }
@@ -373,6 +381,26 @@ class Inv_stok_depo extends MX_Controller {
 
     }
 
+    public function set_status_brg()
+    {
+        // print_r($_POST);die;
+        /*proses input so*/
+        $value = ($_POST['value'] == 0) ? 1 : 0;
+        // $value = $_POST['value'];
+        if($_POST['kode_bagian']=='070101'){
+            $this->db->update('mt_barang_nm', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );
+            $this->db->update('mt_depo_stok_nm', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
+        }else{
+            if($_POST['kode_bagian']=='060201'){
+                $this->db->update('mt_barang', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );
+            }
+            $this->db->update('mt_depo_stok', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
+            
+        }
+
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+
+    }
 
 }
 

@@ -116,7 +116,7 @@ class Csm_billing_pasien extends MX_Controller {
                 //$this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
                 
                 $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
-                //echo '<pre>';print_r($createDocument);die;
+                
                 
                 foreach ($createDocument as $k_cd => $v_cd) {
                     # code...
@@ -338,8 +338,8 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
             case 'RAD':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                // echo '<pre>'; print_r($this->db->last_query());die;
-                // echo '<pre>'; print_r($data_pm);die;
+                
+                
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
@@ -348,7 +348,8 @@ class Csm_billing_pasien extends MX_Controller {
                 
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                
+                // echo '<pre>'; print_r($this->db->last_query());die;
+                // echo '<pre>'; print_r($data_pm);die;
                 $template_html = $temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm);
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
@@ -391,13 +392,13 @@ class Csm_billing_pasien extends MX_Controller {
         return json_encode(array('html' => $html));
     }
 
-    public function getContentPDF($no_registrasi, $flag, $pm, $act_code=''){
+    public function getContentPDF($no_registrasi, $flag, $pm, $act_code='', $no_kunjungan=''){
 
       /*get content data*/
       $data = $this->getBillingLocal($no_registrasi, $flag); 
 
       /*get content html*/
-      $html = json_decode( $this->getHtmlData($data, $no_registrasi, $flag, $pm) );
+      $html = json_decode( $this->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, '') );
     //   if($flag=='RESUME') {
     //     print_r($html);die;
     //   }

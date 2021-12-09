@@ -1141,7 +1141,7 @@ class Csm_billing_pasien_model extends CI_Model {
                     if ($str_pm_resume=='05') {
                         /*get tindakan by kode penunjang*/
                         $grouping_tindakan[$vvval_pm->kode_penunjang][] = $vvval_pm->nama_tindakan; 
-                        $grouping[$vvval_pm->kode_penunjang.'-'.$vvval_pm->kode_bagian.'-'.$vvval_pm->nama_bagian][] = array('kode_bagian' => $vvval_pm->kode_bagian,'kode_penunjang' => $vvval_pm->kode_penunjang, 'pm_name' => $vvval_pm->nama_bagian);
+                        $grouping[$vvval_pm->kode_penunjang.'-'.$vvval_pm->kode_bagian.'-'.$vvval_pm->nama_bagian][] = array('kode_bagian' => $vvval_pm->kode_bagian,'kode_penunjang' => $vvval_pm->kode_penunjang, 'pm_name' => $vvval_pm->nama_bagian, 'no_kunjungan' => $vvval_pm->no_kunjungan);
                     }
                 }
             }
@@ -1156,7 +1156,7 @@ class Csm_billing_pasien_model extends CI_Model {
 
                         if(strpos($mixedStr, $searchStr)) {
                             $grouping_tindakan[$vvval_pm->kode_penunjang][] = $vvval_pm->nama_tindakan; 
-                            $grouping[$vvval_pm->kode_penunjang.'-'.$vvval_pm->kode_bagian.'-'.$vvval_pm->nama_bagian][] = array('kode_bagian' => $vvval_pm->kode_bagian,'kode_penunjang' => $vvval_pm->kode_penunjang, 'pm_name' => $vvval_pm->nama_bagian);
+                            $grouping[$vvval_pm->kode_penunjang.'-'.$vvval_pm->kode_bagian.'-'.$vvval_pm->nama_bagian][] = array('kode_bagian' => $vvval_pm->kode_bagian,'kode_penunjang' => $vvval_pm->kode_penunjang, 'pm_name' => $vvval_pm->nama_bagian,'no_kunjungan' => $vvval_pm->no_kunjungan);
                         }
                         
                     }
@@ -1179,7 +1179,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $decode_data = json_decode($data);
         // dokumen penunjang medis
         $grouping_doc = $this->groupingDocumentPM($decode_data->group);
-        // echo '<pre>';print_r($decode_data);die;
+        // echo '<pre>';print_r($grouping_doc);die;
         if($decode_data->reg_data->kode_perusahaan == 120){
             $filename[] ='SEP-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
         }
@@ -1199,6 +1199,7 @@ class Csm_billing_pasien_model extends CI_Model {
             $offset_kode_penunjang = $explode_key[0];
             $offset_kode_bagian = $explode_key[1];
             $offset_nama_pm = $explode_key[2];
+            $no_kunjungan = isset($val_group[0]['no_kunjungan'])?$val_group[0]['no_kunjungan']:0;
             /*convert arr tindakan to string*/
             $convert_to_string_tindakan = implode(' / ', $grouping_doc['grouping_tindakan'][$offset_kode_penunjang]);
 
@@ -1212,7 +1213,7 @@ class Csm_billing_pasien_model extends CI_Model {
                 $flag = 0;
             }
             /*filename ex: {flag}{no_mr}{no_registrasi}{kode_penunjang}*/
-            $filename[] = $flag.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$offset_kode_penunjang.'';
+            $filename[] = $flag.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$offset_kode_penunjang.'-'.$no_kunjungan.'';
         }
 
         return $filename;

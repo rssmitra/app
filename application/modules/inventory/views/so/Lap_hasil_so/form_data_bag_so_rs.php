@@ -62,6 +62,7 @@ function get_total_aset_barang_rs(){
      $('#total_aset_barang_rs').text( formatMoney(data.total_aset_barang_rs) );
      $('#total_aset_barang_rs_not_active').text( formatMoney(data.total_aset_barang_rs_not_active) );
      $('#total_exp_barang_rs').text( formatMoney(data.total_exp_barang_rs) );
+     $('#total_will_exp_barang_rs').text( formatMoney(data.total_will_exp_barang_rs) );
   });
 }
 
@@ -88,20 +89,25 @@ function get_rincian_log(kode_brg){
         <a href="<?php echo base_url().'inventory/so/Lap_hasil_so/excel_rs?agenda_so_id='.$agenda_so_id.'&flag='.$flag.''?>" class="btn btn-xs btn-success" target="blank"><i class="fa fa-excel-o"></i> Export Excel</a>   
       </div>
 
-      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #91ff00">
-        <span style="font-size: 14px">Total Aset Barang RS</span>
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
+        <span style="font-size: 14px">Aset Barang RS</span>
         <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs"></span>,-</h3>
       </div> 
 
-      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: gold">
-        <span style="font-size: 14px">Total Barang Tidak Aktif</span>
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
+        <span style="font-size: 14px">Barang Tidak Aktif</span>
         <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs_not_active"></span>,-</h3>
       </div> 
 
-      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #ff0000a3">
-        <span style="font-size: 14px">Total Barang RS Expired</span>
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
+        <span style="font-size: 14px">Sudah Expired</span>
         <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_exp_barang_rs"></span>,-</h3>
-      </div>      
+      </div>
+      
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
+        <span style="font-size: 14px">Expired (-3 Bln)</span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_will_exp_barang_rs"></span>,-</h3>
+      </div>
 
     </div>
 
@@ -119,6 +125,8 @@ function get_rincian_log(kode_brg){
             <th style="background-color: black; color: white">Nama Barang</th>
             <th style="background-color: black; color: white" style="width:30px">Stok Sebelum</th>
             <th style="background-color: black; color: white" style="width:30px">Hasil SO</th>
+            <th style="background-color: black; color: white" style="width:30px">Expired</th>
+            <th style="background-color: black; color: white" style="width:30px">Expired (-3bln)</th>
             <th style="background-color: black; color: white" style="width:30px">Harga Satuan Pembelian</th>
             <th style="background-color: black; color: white" style="width:30px">Total</th>
             

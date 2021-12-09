@@ -1034,6 +1034,41 @@ final Class Master {
 		return preg_replace('/\<br(\s*)?\/?\>/i', "\n", $string);
 	}
 
+	function get_depo_aktif($custom=array(), $nid='',$name,$id,$class='',$required='',$inline='',$readonly='') {
+		
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		
+		$data = $db->select(''.$custom['table'].'.'.$custom['id'].', '.$custom['name'].'')->join('mt_bagian', 'mt_bagian.kode_bagian='.$custom['table'].'.kode_bagian','left')->group_by(''.$custom['table'].'.'.$custom['id'].', '.$custom['name'].'')->where($custom['where'])->get($custom['table'])->result_array();
+		
+        //$data = $db->where($custom['where'])->get($custom['table'])->result_array();
+		
+		$selected = $nid?'':'selected';
+		//$readonly = '';//$CI->session->userdata('nrole')=='approver'?'readonly':'';
+		
+		$starsign = $required?'*':'';
+		
+		$fieldset = $inline?'':'<fieldset>';
+		$fieldsetend = $inline?'':'</fieldset>';
+		
+		$field='';
+		$field.='
+		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>
+			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+				$field_id = ($custom['id']==$custom['name']) ? 'ID' : $custom['id'] ;
+				foreach($data as $row){
+					$sel = trim($nid) == trim($row[$field_id])?'selected':'';
+					$field.='<option value="'.trim($row[$field_id]).'" '.$sel.' >'.strtoupper(trim($row[$custom['name']])).'</option>';
+				}	
+			
+		$field.='
+		</select>
+		';
+		
+		return $field;
+		
+	}
+
 }
 
 ?> 

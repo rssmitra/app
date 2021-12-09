@@ -87,13 +87,19 @@ class Retur_obat extends MX_Controller {
             $row[] = $row_list->dokter_pengirim;
             $row[] = $row_list->nama_pelayanan;
             if($row_list->kode_tc_trans_kasir == null) {
-                $row[] = '<div class="center">
+                if($row_list->status_transaksi == 1){
+                    $row[] = '<div class="center">
                             <label class="label lebel-xs label-success"> <i class="fa fa-check-circle"></i> Selesai</label>
+                          </div>';    
+                }else{
+                    $row[] = '<div class="center">
+                            <label class="label lebel-xs label-warning" alt="Belum diselesaikan"> <i class="fa fa-exclamation-circle"></i> Pending </label>
                           </div>';
+                }
+                
             }else{
                 if($row_list->no_registrasi != 0){
                     $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
-                    // $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important" onclick="getMenu('."'billing/Billing/viewDetailBillingKasirByUnit/".$row_list->no_registrasi."/RJ?flag=".$flag."&bagian=060101&kode_trans_far=".$row_list->kode_trans_far."&status_lunas=".$status_lunas."'".')"><i class="fa fa-money"></i> Lunas </a></div>';
                 }else{
                     $row[] = '<div class="center">Lunas '.strtoupper($flag).'</div>';
                 }

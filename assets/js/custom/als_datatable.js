@@ -1,5 +1,6 @@
 var oTable;
 var base_url = $('#dynamic-table').attr('base-url'); 
+var params = $('#dynamic-table').attr('data-id'); 
 
 $(document).ready(function() {
   /*static datatables*/

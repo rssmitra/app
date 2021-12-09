@@ -221,7 +221,7 @@ class Billing extends MX_Controller {
         
         /*get detail data billing*/
         $data = json_decode($this->Billing->getDetailData($no_registrasi));
-
+        // echo '<pre>';print_r($data);die;
         if($tipe=='RJ'){
             $html = $this->Billing->getDetailBillingRJLess($no_registrasi, $tipe, $data);
         }else{
@@ -354,7 +354,7 @@ class Billing extends MX_Controller {
             'data' => $result,
             'kunjungan' => $grouping,
         );
-
+        // echo '<pre>';print_r($data);die;
         $this->load->view('Billing/temp_trans_kasir_ri', $data, false);
 
     }
@@ -641,25 +641,26 @@ class Billing extends MX_Controller {
             $this->db->trans_commit();
         }
 
-        // update diagnosa
-        $riwayat_diagnosa = array();
-        $riwayat_diagnosa['kode_icd_diagnosa'] = $_POST['diagnosa_akhir_hidden'];
-        $riwayat_diagnosa['diagnosa_akhir'] = $_POST['diagnosa_akhir'];
+        if(isset($_POST['diagnosa_akhir'])) {
+            // update diagnosa
+            $riwayat_diagnosa = array();
+            $riwayat_diagnosa['kode_icd_diagnosa'] = isset($_POST['diagnosa_akhir_hidden'])?$_POST['diagnosa_akhir_hidden']:'';
+            $riwayat_diagnosa['diagnosa_akhir'] = isset($_POST['diagnosa_akhir'])?$_POST['diagnosa_akhir']:'';
 
-        if(isset($_POST['kode_riwayat_hidden']) AND !empty($_POST['kode_riwayat_hidden']) ){
-            $this->db->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $_POST['kode_riwayat_hidden']) );
-        }else{
-            $riwayat_diagnosa['no_registrasi'] = $_POST['no_registrasi'];
-            $riwayat_diagnosa['no_mr'] = $_POST['no_mr_val'];
-            $riwayat_diagnosa['nama_pasien'] = $_POST['nama_pasien_val'];
-            $riwayat_diagnosa['diagnosa_awal'] = $_POST['diagnosa_akhir'];
-            $riwayat_diagnosa['dokter_pemeriksa'] = $_POST['nama_dokter_val'];
-            $riwayat_diagnosa['tgl_periksa'] = $_POST['tgl_jam_keluar'];
-            $riwayat_diagnosa['kode_bagian'] = $_POST['kode_bag_val'];
-            $riwayat_diagnosa['kategori_tindakan'] = 3;
-            $this->db->insert('th_riwayat_pasien', $riwayat_diagnosa );
+            if(isset($_POST['kode_riwayat_hidden']) AND !empty($_POST['kode_riwayat_hidden']) ){
+                $this->db->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $_POST['kode_riwayat_hidden']) );
+            }else{
+                $riwayat_diagnosa['no_registrasi'] = $_POST['no_registrasi'];
+                $riwayat_diagnosa['no_mr'] = $_POST['no_mr_val'];
+                $riwayat_diagnosa['nama_pasien'] = $_POST['nama_pasien_val'];
+                $riwayat_diagnosa['diagnosa_awal'] = $_POST['diagnosa_akhir'];
+                $riwayat_diagnosa['dokter_pemeriksa'] = $_POST['nama_dokter_val'];
+                $riwayat_diagnosa['tgl_periksa'] = $_POST['tgl_jam_keluar'];
+                $riwayat_diagnosa['kode_bagian'] = $_POST['kode_bag_val'];
+                $riwayat_diagnosa['kategori_tindakan'] = 3;
+                $this->db->insert('th_riwayat_pasien', $riwayat_diagnosa );
+            }
         }
-
         
         // untuk masuk ke akunting
         $dataAkunting["seri_kuitansi"] = $seri_kuitansi_dt['seri_kuitansi'];
@@ -872,7 +873,8 @@ class Billing extends MX_Controller {
         $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
         /*created document name*/
         $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
-        
+        // echo '<pre>';print_r($createDocument);die;
+
         foreach ($createDocument as $k_cd => $v_cd) {
             # code...
             $explode = explode('-', $v_cd);
@@ -881,10 +883,11 @@ class Billing extends MX_Controller {
             $no_mr = $explode[1];
             $exp_no_registrasi = $explode[2];
             $unique_code = $explode[3];
+            $no_kunjungan = isset($explode[4])?$explode[4]:0;
 
             /*create and save download file pdf*/
             //$cbpModule = new Csm_billing_pasien;
-            if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
+            if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F', $no_kunjungan) ) :
             /*save document to database*/
             /*csm_reg_pasien*/
             $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';

@@ -97,7 +97,7 @@ function updateRow(kode_brg, kode_bag, agenda_so_id){
   var is_active = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'_'+agenda_so_id+'').val();
   $.ajax({
       url: "inventory/so/Input_dt_so/process_input_so",
-      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so :val_id, exp_stok : val_exp_id, will_exp_stok : val_will_exp_id, status_aktif: is_active },
+      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so :val_id, exp_stok : val_exp_id, will_exp_stok : val_will_exp_id, status_aktif: is_active, flag : 'updaterow' },
       dataType: "json",
       type: "POST",
       complete: function (xhr) {
@@ -131,7 +131,7 @@ function setStatusAktifBrg(kode_brg, kode_bag, agenda_so_id){
 
   $.ajax({
       url: "inventory/so/Input_dt_so/set_status_brg",
-      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so:0, exp_stok: 0, value :val_id, status_aktif: val_id },
+      data: {kode_bagian : kode_bag, kode_brg : kode_brg, agenda_so_id : agenda_so_id, input_stok_so:0, exp_stok: 0, value :val_id, status_aktif: val_id, will_exp_stok : val_will_exp_id, flag : 'setstatusaktif' },
       dataType: "json",
       type: "POST",
       complete: function (xhr) {
@@ -147,6 +147,33 @@ function setStatusAktifBrg(kode_brg, kode_bag, agenda_so_id){
         achtungHideLoader();
       }
   });
+}
+
+function deleteRow(kode_depo_stok){
+
+  preventDefault();
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: "inventory/so/Input_dt_so/delete_row",
+        data: {ID : kode_depo_stok, kode_bagian : $('#kode_bagian').val() },
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            /*reload table*/
+            reset_table($('#kode_bagian').val());
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5});  
+          } 
+          achtungHideLoader();
+        }
+    });
+  }else{
+      return false;
+  }
 }
 
 function find_data_reload(){
@@ -290,6 +317,7 @@ function find_data_reload(){
               <th class="center">JML EXP -3 Bln</th>
               <th class="center">STATUS AKTIF</th>
               <th class="center">LAST UPDATE</th>
+              <th class="center"></th>
             </tr>
           </thead>
           <tbody>

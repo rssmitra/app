@@ -89,15 +89,16 @@ class Input_dt_so extends MX_Controller {
 
             $row[] = '<div class="center"><input type="text" name="stok_will_exp" id="row_will_exp_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" style="width:80px !important; text-align: center" value="'.$row_list->will_stok_exp.'" onchange="updateRow('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')"></div>';
 
-            $value_brg_aktif = ($row_list->status_aktif == 0) ? 0 : 1;
+            $value_brg_aktif = $row_list->status_aktif;
             $status_brg_aktif = ($value_brg_aktif==0)?'':'checked';
             $row[] = '<div class="center">
                         <label>
                             <input name="status_brg_aktif" id="stat_on_off_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'_'.$this->agenda_so_id.'" onclick="setStatusAktifBrg('."'".$row_list->kode_brg."'".', '."'".$row_list->kode_bagian."'".','.$this->agenda_so_id.')" class="ace ace-switch ace-switch-3" type="checkbox" '.$status_brg_aktif.' value="'.$value_brg_aktif.'">
                             <span class="lbl"></span>
-                        </label>
+                            </label>
                     </div>';
-            $row[] = $row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname);
+            $row[] = '<div class="center">'.$row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname).'</div>';
+            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="deleteRow('.$row_list->kode_depo_stok.')"><i class="fa fa-times bigger-120"></i></a></div>';
             $data[] = $row;
         }
 
@@ -176,8 +177,10 @@ class Input_dt_so extends MX_Controller {
 
     public function set_status_brg()
     {
+        // print_r($_POST);die;
         /*proses input so*/
-        $value = ($_POST['value'] == 1) ? 0 : 1;
+        $value = ($_POST['value'] == 0) ? 1 : 0;
+        // $value = $_POST['value'];
         if($_POST['kode_bagian']=='070101'){
             $this->Input_dt_so->update_status_brg('mt_barang_nm', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );
             $this->Input_dt_so->update_status_brg('tc_stok_opname_nm', array('set_status_aktif' => $value), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
@@ -191,7 +194,23 @@ class Input_dt_so extends MX_Controller {
             $this->Input_dt_so->update_status_brg('mt_depo_stok', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
 
             $this->Input_dt_so->update_status_brg('tc_stok_opname', array('set_status_aktif' => $value), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
+
             $this->Input_dt_so->save_dt_so();
+            
+        }
+
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+
+    }
+
+    public function delete_row()
+    {
+        /*proses input so*/
+        if($_POST['kode_bagian']=='070101'){
+            // delete depo stok
+            $this->db->where('kode_depo_stok', $_POST['ID'])->delete('mt_depo_stok_nm');
+        }else{
+            $this->db->where('kode_depo_stok', $_POST['ID'])->delete('mt_depo_stok');
             
         }
 
