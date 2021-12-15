@@ -628,6 +628,11 @@ class Billing extends MX_Controller {
           $dataTranskasir["nk_perusahaan"] = $_POST['jumlah_nk_asuransi'];
         }
 
+        // NK Karyawan untuk Pasien Keluarga Karyawan
+        if( in_array($_POST['kode_penjamin_pasien'], array(4, 7, 8, 11, 12, 13, 14, 15, 16)) ){
+          $dataTranskasir["nk_karyawan"] = $_POST['jumlah_nk'];
+        }
+
         // // Pasien Tanggungan Internal/PT/Karyawan
         // if($_POST['kode_penjamin_pasien'] == 3){
         //   $dataTranskasir["nk_perusahaan"] = $_POST['jumlah_nk_asuransi'];

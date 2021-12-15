@@ -506,7 +506,7 @@ function sum_um_nk_diskon(){
                 $arr_kode_kelompok = [4,7,8,9,11,12,13,14,15,16];
                 $kode_kelompok = $result->reg_data->kode_kelompok;
               ?>
-              <input name="hutang_nk" id="hutang_nk" value="" class="ace" type="checkbox" <?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'disabled' ?>>
+              <input name="hutang_nk" id="hutang_nk" value="4" class="ace" type="checkbox" <?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'disabled' ?>>
               <span class="lbl"> Bon Karyawan</span>
             </label>
           </div>
