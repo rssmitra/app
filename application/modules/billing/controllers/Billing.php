@@ -631,6 +631,7 @@ class Billing extends MX_Controller {
         // NK Karyawan untuk Pasien Keluarga Karyawan
         if( in_array($_POST['kode_penjamin_pasien'], array(4, 7, 8, 11, 12, 13, 14, 15, 16)) ){
           $dataTranskasir["nk_karyawan"] = $_POST['jumlah_nk'];
+          $dataTranskasir["pembayar"] = $_POST['pembayar'];
         }
 
         // // Pasien Tanggungan Internal/PT/Karyawan
