@@ -315,7 +315,7 @@ function hitungDiskon(){
   // console.log(persentaseDiskon+' Persentase Diskon');
   // console.log(total_payment+' Nominal Utuh');
   
-  let intDiskon = (persentaseDiskon/100) * total_payment;
+  let intDiskon = Math.round( (persentaseDiskon/100) * total_payment );
   // console.log(intDiskon+' Nominal Diskon');
 
   let intUangMuka = formatNumberFromCurrency($('#jml_um').text());
@@ -332,6 +332,10 @@ function hitungDiskon(){
   jumlah_dibayarkan = parseInt(total_payment) - parseInt(sumUmNkDisc);
 
   $('#jml_dibayarkan').text( formatMoney(jumlah_dibayarkan) );
+
+  sum_um_nk_diskon();
+
+  sum_total_pembayaran();
 }
 
 // add nominal Bon Karyawan to NK Karyawan
@@ -610,7 +614,7 @@ function sum_um_nk_diskon(){
           <div class="form-group" id="divPersentaseDiskon">
             <label class="control-label col-md-4">Diskon ( % )</label>
             <div class="col-md-8">
-              <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" oninput="hitungDiskon()">
+              <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right;" oninput="hitungDiskon()">
             </div>
           </div>
         </div>
