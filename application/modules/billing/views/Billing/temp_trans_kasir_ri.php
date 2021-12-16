@@ -185,7 +185,7 @@ function cetak_kuitansi(){
             </div>
         </div>
 
-        <label class="control-label col-md-1">Tgl Keluar</label>
+        <label class="control-label col-md-2" style="margin-left: 25px;">Tgl Keluar</label>
         <div class="col-md-2">
             <div class="input-group">
             <input class="form-control date-picker" name="tgl_jam_keluar" id="tgl_jam_keluar" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar): ''?>"/>
@@ -195,6 +195,7 @@ function cetak_kuitansi(){
             </div>
         </div>
     </div>
+    <br>
 
     <div class="center no-padding">
     
