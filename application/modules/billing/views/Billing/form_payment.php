@@ -67,6 +67,7 @@ $(document).ready(function(){
           $('#divNkPerusahaanOrKaryawan').hide();
           $('#jumlah_nk_asuransi').val(0);
           // $('#jumlah_nk').removeAttr('readonly');
+          addNominalNK();
           sum_um_nk_diskon();
         } else {
           $('#div_bon_karyawan').hide();
@@ -99,11 +100,14 @@ $(document).ready(function(){
         preventDefault();
         if($(this).is(':checked')){
           $('#jumlah_nk').removeAttr('readonly');
-          cek_sisa_belum_bayar('jumlah_nk');
+          addNominalBonKaryawan();
           hitungDiskon();
+          // cek_sisa_belum_bayar('jumlah_nk');
         } else {
           $('#jumlah_nk').attr('readonly', true);
           $('#jumlah_nk').val(0);
+          $('#jml_nk_dibayarkan').text(0);
+          sum_um_nk_diskon();
           sum_total_pembayaran();
         }
         
@@ -279,7 +283,7 @@ function statusKaryawan(id){
 
     // sum_total_pembayaran();
   }else {
-    console.log('Gak Bisa Bon Karyawan');
+    // console.log('Gak Bisa Bon Karyawan');
     // console.log(kode_kel);
     $('#hutang_nk').attr("disabled", true);
     $('#jumlah_diskon').val(0);
@@ -311,7 +315,7 @@ function hitungDiskon(){
   // console.log(persentaseDiskon+' Persentase Diskon');
   // console.log(total_payment+' Nominal Utuh');
   
-  let intDiskon = (persentaseDiskon/100) * total_payment;
+  let intDiskon = Math.round( (persentaseDiskon/100) * total_payment );
   // console.log(intDiskon+' Nominal Diskon');
 
   let intUangMuka = formatNumberFromCurrency($('#jml_um').text());
@@ -328,11 +332,54 @@ function hitungDiskon(){
   jumlah_dibayarkan = parseInt(total_payment) - parseInt(sumUmNkDisc);
 
   $('#jml_dibayarkan').text( formatMoney(jumlah_dibayarkan) );
+
+  sum_um_nk_diskon();
+
+  sum_total_pembayaran();
 }
 
+// add nominal Bon Karyawan to NK Karyawan
+function addNominalBonKaryawan(){
+  let intBonKaryawan = formatNumberFromCurrency($('#sisa_blm_dibayar').text());
+  $('#jml_nk_dibayarkan').text( formatMoney(intBonKaryawan) );
+  $('#jumlah_nk').val(intBonKaryawan);
+
+  sum_um_nk_diskon();
+
+  sum_total_pembayaran();
+
+
+}
+
+// add nominal NK Asuransi to NK Perusahaan
+function addNominalNK(){
+  let intNKAsuransi = formatNumberFromCurrency($('#sisa_blm_dibayar').text());
+  $('#jml_nk_dibayarkan').text( formatMoney(intNKAsuransi) );
+  $('#jumlah_nk_asuransi').val(intNKAsuransi);
+
+  sum_um_nk_diskon();
+
+  sum_total_pembayaran();
+
+
+}
+
+// input nominal Bon Karyawan
+function inputNominalBonKaryawan(){
+  let intBonKaryawan = $('#jumlah_nk').val();
+  // console.log('intBonKaryawan = '+ intBonKaryawan);
+  $('#jml_nk_dibayarkan').text( formatMoney(intBonKaryawan) );
+
+  sum_um_nk_diskon();
+
+  sum_total_pembayaran();
+
+}
+
+// input nominal Nota Kredit
 function inputNominalNK(){
-  // add nominal Nota Kredit
   let intNK = $('#jumlah_nk_asuransi').val();
+  // console.log('intNK = '+ intNK);
   $('#jml_nk_dibayarkan').text( formatMoney(intNK) );
 
   sum_um_nk_diskon();
@@ -343,9 +390,17 @@ function inputNominalNK(){
 
 function sum_um_nk_diskon(){
   let intNK = $('#jumlah_nk_asuransi').val();
+  let intBonKaryawan = $('#jumlah_nk').val();
+  let nominalNK
+  if (intNK != 0){
+    nominalNK = intNK;
+  }else{
+    nominalNK = intBonKaryawan;
+  }
+
   let uangMuka = formatNumberFromCurrency( $('#jml_um').text() );
   let diskon = formatNumberFromCurrency( $('#jml_diskon_internal').text() );
-  let total_um_nk_diskon = parseInt(intNK) + parseInt(uangMuka) + parseInt(diskon);
+  let total_um_nk_diskon = parseInt(nominalNK) + parseInt(uangMuka) + parseInt(diskon);
 
   $('#jml_um_nk').text( formatMoney(total_um_nk_diskon) );
 
@@ -455,7 +510,7 @@ function sum_um_nk_diskon(){
                 $arr_kode_kelompok = [4,7,8,9,11,12,13,14,15,16];
                 $kode_kelompok = $result->reg_data->kode_kelompok;
               ?>
-              <input name="hutang_nk" id="hutang_nk" value="" class="ace" type="checkbox" <?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'disabled' ?>>
+              <input name="hutang_nk" id="hutang_nk" value="4" class="ace" type="checkbox" <?php echo (in_array($kode_kelompok, $arr_kode_kelompok)) ? '' : 'disabled' ?>>
               <span class="lbl"> Bon Karyawan</span>
             </label>
           </div>
@@ -547,7 +602,7 @@ function sum_um_nk_diskon(){
           <div class="form-group" id="divNkPerusahaanOrKaryawan">
             <label class="control-label col-md-4">NK Perusahaan/Karyawan</label>
             <div class="col-md-8">
-              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control uang_dibayarkan nominalNK format_number" type="text" style="text-align: right" oninput="inputNominalNK()" readonly>
+              <input name="jumlah_nk" id="jumlah_nk" value="" class="form-control nominalNK format_number" type="text" style="text-align: right" oninput="inputNominalBonKaryawan()" readonly>
             </div>
           </div>
           <div class="form-group" id="divNkAsuransi" style="display: none;">
@@ -559,7 +614,7 @@ function sum_um_nk_diskon(){
           <div class="form-group" id="divPersentaseDiskon">
             <label class="control-label col-md-4">Diskon ( % )</label>
             <div class="col-md-8">
-              <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right" oninput="hitungDiskon()">
+              <input name="jumlah_diskon" id="jumlah_diskon" value="" class="form-control" type="text" style="text-align: right;" oninput="hitungDiskon()">
             </div>
           </div>
         </div>

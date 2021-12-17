@@ -532,6 +532,30 @@ class Billing extends MX_Controller {
         $this->load->view('Billing/cetakKuitansi_view', $data, false);
          
     }
+    
+    public function print_kuitansi_pasien(){
+ 
+        $result = json_decode($this->Billing->getDetailData($_GET['no_registrasi']));
+        $tipe = $this->Billing->cek_tipe_pasien($_GET['no_registrasi']);
+        $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
+
+        $data = array(
+            'title' => 'Billing Pasien Sementara',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'no_registrasi' => $_GET['no_registrasi'],
+            'tipe' => $tipe,
+            'data' => $result,
+            'kunjungan' => $grouping,
+            'total_payment' => $_GET['payment'],
+        );
+        // echo '<pre>';print_r($kasir_data);die;
+        //$this->load->view('Billing/cetakKuitansi_view', $data, false);
+        //$data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
+        $this->load->view('Billing/cetakKuitansiPasien_view', $data, false);
+         
+    }
+
+
 
     public function process(){
         
@@ -603,6 +627,17 @@ class Billing extends MX_Controller {
         if($_POST['kode_penjamin_pasien'] == 3){
           $dataTranskasir["nk_perusahaan"] = $_POST['jumlah_nk_asuransi'];
         }
+
+        // NK Karyawan untuk Pasien Keluarga Karyawan
+        if( in_array($_POST['kode_penjamin_pasien'], array(4, 7, 8, 11, 12, 13, 14, 15, 16)) ){
+          $dataTranskasir["nk_karyawan"] = $_POST['jumlah_nk'];
+          $dataTranskasir["pembayar"] = $_POST['pembayar'];
+        }
+
+        // // Pasien Tanggungan Internal/PT/Karyawan
+        // if($_POST['kode_penjamin_pasien'] == 3){
+        //   $dataTranskasir["nk_perusahaan"] = $_POST['jumlah_nk_asuransi'];
+        // }
 
         $potongan_diskon = ($_POST['total_payment'] * ($_POST['jumlah_diskon']/100));
         $sisa_bill = $_POST['total_payment'] - $potongan_diskon;

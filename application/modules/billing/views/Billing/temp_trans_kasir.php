@@ -208,6 +208,10 @@ function cetak_kuitansi(){
     PopupCenter('billing/Billing/print_kuitansi?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val()+'','Cetak Kuitansi', 900, 550);
 }
 
+function cetak_kuitansi_pasien(){
+    PopupCenter('billing/Billing/print_kuitansi_pasien?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val()+'','Cetak Kuitansi', 900, 550);
+}
+
 </script>
 
 <form class="form-horizontal" method="post" id="form_billing_kasir" action="<?php echo site_url('billing/Billing/process')?>" enctype="multipart/form-data" autocomplete="off">
@@ -302,6 +306,12 @@ function cetak_kuitansi(){
                 <li>
                     <?php
                         echo '<a href="#" onclick="cetak_kuitansi();" data-id="0" id="btn-cetak-kuitansi"> Kuitansi</a>';
+                    ?>
+                </li>
+                </li>
+                <li>
+                    <?php
+                        echo '<a href="#" onclick="cetak_kuitansi_pasien();" data-id="0" id="btn-cetak-kuitansi"> Kuitansi Pasien</a>';
                     ?>
                 </li>
             </ul>
