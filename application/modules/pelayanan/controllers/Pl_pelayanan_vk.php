@@ -34,11 +34,23 @@ class Pl_pelayanan_vk extends MX_Controller {
     public function index() { 
         /*define variable data*/
         $data = array(
+            'sess_kode_bagian' => '030501',
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show()
         );
 
         $this->load->view('Pl_pelayanan_vk/index', $data);
+    }
+
+    public function index_riwayat() { 
+        /*define variable data*/
+        $data = array(
+            'sess_kode_bagian' => '030501',
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show()
+        );
+
+        $this->load->view('Pl_pelayanan_vk/index_riwayat', $data);
     }
 
     public function form($id, $no_kunjungan)
@@ -54,7 +66,7 @@ class Pl_pelayanan_vk extends MX_Controller {
         //$data['transaksi'] = $this->Pl_pelayanan_vk->get_transaksi_pasien_by_id($no_kunjungan);
         /*variable*/
          /*type*/
-        $kode_klas = 16;
+        $kode_klas = $data['value']->kode_klas;
 
         $data['no_mr'] = $data['value']->no_mr;
         $data['id'] = $id;
@@ -97,6 +109,22 @@ class Pl_pelayanan_vk extends MX_Controller {
         $this->load->view('Pl_pelayanan/form_tindakan', $data);
     }
 
+    public function form_bayi()
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_vk/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$_GET['no_mr_ibu']);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_vk->get_data_bayi($_GET['no_mr_ibu']); 
+        $data['orgtuaby'] = $this->db->get_where('mt_master_pasien', array('no_mr' => $_GET['no_mr_ibu']))->row(); 
+        // echo '<pre>'; print_r($data);die;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_vk/form_bayi', $data);
+    }
+
     public function diagnosa($id='', $no_kunjungan='')
     {
          /*breadcrumbs for edit*/
@@ -116,38 +144,13 @@ class Pl_pelayanan_vk extends MX_Controller {
         $data['status_pulang'] = ($data['value']->status_pulang > 0)?1:0;
         $data['kode_klas'] = $kode_klas;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
+        // echo '<pre>'; print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
         $this->load->view('Pl_pelayanan_vk/form_diagnosa', $data);
-    }
-
-    public function laporan_catatan($no_kunjungan='', $id='')
-    {
-         /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_vk/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
-        /*get value by id*/
-        $data['value'] = $this->Pl_pelayanan_vk->get_by_id($id);
-        /*mr*/
-        $data['no_mr'] = $data['value']->no_mr;
-        $data['no_registrasi'] = $data['value']->no_registrasi;
-        $data['no_kunjungan'] = $no_kunjungan;
-        $data['id_pasien_vk'] = $id;
-        $vital_sign = $this->Pl_pelayanan_vk->get_vital_sign($data['value']->no_registrasi);
-        if(!empty($vital_sign))$data['vital_sign'] = $vital_sign[0];
-        $data['laporan_dr'] = $this->Pl_pelayanan_vk->get_laporan_dr($no_kunjungan);
-        $data['laporan_perawat'] = $this->Pl_pelayanan_vk->get_laporan_perawat($no_kunjungan);
-        $data['keracunan'] = $this->Pl_pelayanan_vk->get_keracunan($no_kunjungan);
-        //print_r($data['keracunan']);die;
-        $data['type']='IGD';
-        /*title header*/
-        $data['title'] = $this->title;
-        /*show breadcrumbs*/
-        $data['breadcrumbs'] = $this->breadcrumbs->show();
-        /*load form view*/
-        $this->load->view('Pl_pelayanan_vk/form_laporan_catatan', $data);
     }
 
     public function form_end_visit()
@@ -237,33 +240,73 @@ class Pl_pelayanan_vk extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function get_vital_sign()
+    public function get_data_history()
     {
+        /*akan di filter berdasarkan pasien pada klinik masing2*/
         /*get data from model*/
-        $list = $this->Pl_pelayanan_vk->get_vital_sign($_GET['no_registrasi']);
+        $list = $this->Pl_pelayanan_vk->get_datatables();
+        //print_r($this->db->last_query());die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+            // $row[] = '<div class="center">
+            //             <label class="pos-rel">
+            //                 <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_kunjungan.'"/>
+            //                 <span class="lbl"></span>
+            //             </label>
+            //         </div>';
+            $row[] = '<div class="center">'.$no.'</div>';
+            /*fungsi rollback pasien, jika belum disubmit kasir maka poli masih bisa melakukan rollback*/
+            /*cek transaksi*/
+            $trans_kasir = $this->Pl_pelayanan_vk->get_transaksi_pasien_by_id($row_list->no_kunjungan);
+            $rollback_btn = ($trans_kasir!=0)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
+            // $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>';
             
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="edit_vital_sign('.$row_list->kode_rujuk_ri.')"><i class="fa fa-edit"></i></a></div>';
-            $row[] = $row_list->kode_rujuk_ri;
-            $row[] = $row_list->keadaan_umum;
-            $row[] = $row_list->kesadaran_pasien;
-            $row[] = $row_list->tekanan_darah;
-            $row[] = $row_list->nadi;
-            $row[] = $row_list->suhu;
-            $row[] = $row_list->pernafasan;
-            $row[] = $row_list->berat_badan;
+                        
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">                     
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
+                        </ul>
+                    </div></div>';
+
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_vk/form/".$row_list->id_pasien_vk."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
+            $row[] = strtoupper($row_list->nama_pasien);
+            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_kelompok.'<br>'.$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
+            $row[] = $row_list->nama_pegawai;
+            $row[] = $row_list->nama_bagian.'<br>'.$row_list->nama_klas;
+            // $row[] = '<div class="center">'.$row_list->fullname.'</div>';
+
+
+           
+            if($row_list->tgl_keluar==NULL || empty($row_list->tgl_keluar)){
+                $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
+            }else {
+
+                if($row_list->status_batal == 1){
+                    $status_periksa = '<label class="label label-danger"><i class="fa fa-times"></i> Batal Kunjungan</label>';
+                }else{
+                    $status_periksa = ($trans_kasir==0)?'<label class="label label-info"><i class="fa fa-money"></i> Lunas</label>':'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                }
+                
+            }
+            
+
+            $row[] = '<div class="center">'.$status_periksa.'</div>';
            
             $data[] = $row;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => count($list),
-                        "recordsFiltered" => count($list),
+                        "recordsTotal" => $this->Pl_pelayanan_vk->count_all(),
+                        "recordsFiltered" => $this->Pl_pelayanan_vk->count_filtered(),
                         "data" => $data,
                 );
         //output to json format
@@ -274,273 +317,6 @@ class Pl_pelayanan_vk extends MX_Controller {
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
-    }
-
-    public function process_add_vital_sign(){
-
-        // form validation
-        $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');
-        $this->form_validation->set_rules('vs_keadaan_umum_igd', 'Keadaan Umum', 'trim|required');
-        $this->form_validation->set_rules('vs_kesadaran_pasien', 'Kesadaran Pasien', 'trim|required');
-        
-
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();           
-
-            $dataexc = array(
-                'no_mr' => $this->regex->_genRegex($this->input->post('noMrHidden'),'RGXQSL'),
-                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),
-                'keadaan_umum' => $this->regex->_genRegex($this->input->post('vs_keadaan_umum_igd'),'RGXQSL'),           
-                'kesadaran_pasien' => $this->regex->_genRegex($this->input->post('vs_kesadaran_pasien'),'RGXQSL'),
-                'tekanan_darah' => $this->regex->_genRegex($this->input->post('vs_tekanan_darah'),'RGXINT'),
-                'nadi' => $this->regex->_genRegex($this->input->post('vs_nadi'),'RGXINT'),
-                'suhu' => $this->regex->_genRegex($this->input->post('vs_suhu'),'RGXINT'),
-                'pernafasan' => $this->regex->_genRegex($this->input->post('vs_pernafasan'),'RGXINT'),
-                'berat_badan' => $this->regex->_genRegex($this->input->post('vs_berat_badan'),'RGXINT'),
-                'dokter_igd' => $this->regex->_genRegex($this->input->post('kode_dokter_igd'),'RGXINT'),
-                'tgl_input' => date('Y-m-d H:i:s'),
-            );
-
-            //print_r($dataexc);die;
-
-            if(isset($_POST['kode_rujuk_ri']) AND $_POST['kode_rujuk_ri']!=''){
-                $this->Pl_pelayanan_vk->update('gd_th_rujuk_ri', $dataexc, array('kode_rujuk_ri' => $_POST['kode_rujuk_ri'] ) );
-                $id = $_POST['kode_rujuk_ri'];
-            }else{
-                $id = $this->Pl_pelayanan_vk->save('gd_th_rujuk_ri', $dataexc);
-            }
-
-            //print_r($this->db->last_query());die;
-            
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id' => $id));
-            }
-        
-        }
-
-    }
-
-    public function process_add_laporan_dokter(){
-
-        // form validation
-        $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');
-        $this->form_validation->set_rules('laporan_dokter_keadaan_umum', 'Keadaan Umum', 'trim|required');
-        $this->form_validation->set_rules('laporan_dokter_kesadaran', 'Kesadaran', 'trim|required');
-        
-
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();         
- 
-            $dataexc = array(
-                'no_mr' => $this->regex->_genRegex($this->input->post('noMrHidden'),'RGXQSL'),
-                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),
-                'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXINT'),           
-                'keadaan_umum' => $this->regex->_genRegex($this->input->post('laporan_dokter_keadaan_umum'),'RGXQSL'),
-                'kesadaran' => $this->regex->_genRegex($this->input->post('laporan_dokter_kesadaran'),'RGXQSL'),
-            );
-
-            //print_r($dataexc);die;
-
-            if(isset($_POST['id_th_laporan_dr']) AND $_POST['id_th_laporan_dr']!=''){
-                $this->Pl_pelayanan_vk->update('th_laporan_dr', $dataexc, array('id_th_laporan_dr' => $_POST['id_th_laporan_dr'] ) );
-                $id = $_POST['id_th_laporan_dr'];
-            }else{
-                $id = $this->Pl_pelayanan_vk->save('th_laporan_dr', $dataexc);
-            }
-
-            //print_r($this->db->last_query());die;
-            
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id' => $id));
-            }
-        
-        }
-
-    }
-
-    public function process_add_laporan_perawat(){
-
-        // form validation
-        $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');
-        $this->form_validation->set_rules('laporan_perawat', 'Laporan Perawat', 'trim|required');
-                
-
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();         
- 
-            $dataexc = array(
-                'no_mr' => $this->regex->_genRegex($this->input->post('noMrHidden'),'RGXQSL'),
-                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),
-                'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXINT'),           
-                'laporan_perawat' => $this->regex->_genRegex($this->input->post('laporan_perawat'),'RGXQSL'),
-            );
-
-            //print_r($dataexc);die;
-
-            if(isset($_POST['id_th_laporan_perawat']) AND $_POST['id_th_laporan_perawat']!=''){
-                $this->Pl_pelayanan_vk->update('th_laporan_perawat', $dataexc, array('id_th_laporan_perawat' => $_POST['id_th_laporan_perawat'] ) );
-                $id = $_POST['id_th_laporan_perawat'];
-            }else{
-                $id = $this->Pl_pelayanan_vk->save('th_laporan_perawat', $dataexc);
-            }
-            
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id' => $id));
-            }
-        
-        }
-
-    }
-
-    public function process_add_keracunan(){
-
-        // form validation
-        $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');              
-
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin(); 
-            
-            $dataexc = array(
-                'no_mr' => $this->regex->_genRegex($this->input->post('noMrHidden'),'RGXQSL'),                      
-                'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXINT'),         
-                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),       
-                'tempat_kejadian' => $this->regex->_genRegex($this->input->post('tempat_kejadian_keracunan'),'RGXQSL'),     
-                'keluhan_utama' => $this->regex->_genRegex($this->input->post('keluhan_keracunan'),'RGXQSL'),           
-                'rps' => $this->regex->_genRegex($this->input->post('rps_keracunan'),'RGXQSL'),                             
-                'ket_pas_menyusui' => $this->regex->_genRegex($this->input->post('menyusui_keracunan'),'RGXQSL'),       
-                'hamil' => $this->regex->_genRegex($this->input->post('hamil_keracunan'),'RGXQSL'),                 
-                'tgl_keracunan' => $this->tanggal->sqlDateForm($this->regex->_genRegex($this->input->post('tgl_laporan'),'RGXQSL')),            
-                'keluhan' => $this->regex->_genRegex($this->input->post('keluhan_keracunan'),'RGXQSL'),             
-                'bahan_napza' => $this->regex->_genRegex($this->input->post('napza_bahan_keracunan'),'RGXQSL'),         
-                'jumlah_napza' => $this->regex->_genRegex($this->input->post('napza_jml_bahan_keracunan'),'RGXQSL'),            
-                'bahan_obat' => $this->regex->_genRegex($this->input->post('obat_bahan_keracunan'),'RGXQSL'),               
-                'jumlah_obat' => $this->regex->_genRegex($this->input->post('obat_jml_bahan_keracunan'),'RGXQSL'),          
-                'bahan_obattradisional' => $this->regex->_genRegex($this->input->post('obat_tradisional_bahan_keracunan'),'RGXQSL'),    
-                'jumlah_obattradisional' => $this->regex->_genRegex($this->input->post('obat_tradisional_jml_bahan_keracunan'),'RGXQSL'),
-                'bahan_makanan' => $this->regex->_genRegex($this->input->post('makanan_bahan_keracunan'),'RGXQSL'),         
-                'jumlah_makanan' => $this->regex->_genRegex($this->input->post('makanan_jml_bahan_keracunan'),'RGXQSL'),            
-                'bahan_suplemen' => $this->regex->_genRegex($this->input->post('suplemen_bahan_keracunan'),'RGXQSL'),           
-                'jumlah_suplemen' => $this->regex->_genRegex($this->input->post('suplemen_jml_bahan_keracunan'),'RGXQSL'),      
-                'bahan_kosmetik' => $this->regex->_genRegex($this->input->post('kosmetik_bahan_keracunan'),'RGXQSL'),           
-                'jumlah_kosmetik' => $this->regex->_genRegex($this->input->post('kosmetik_jml_bahan_keracunan'),'RGXQSL'),      
-                'bahan_kimia' => $this->regex->_genRegex($this->input->post('bahan_kimia_bahan_keracunan'),'RGXQSL'),           
-                'jumlah_kimia' => $this->regex->_genRegex($this->input->post('bahan_kimia_jml_bahan_keracunan'),'RGXQSL'),          
-                'bahan_pestisida' => $this->regex->_genRegex($this->input->post('pestisida_bahan_keracunan'),'RGXQSL'),     
-                'jumlah_pestisida' => $this->regex->_genRegex($this->input->post('pestisida_jml_bahan_keracunan'),'RGXQSL'),        
-                'bahan_ular' => $this->regex->_genRegex($this->input->post('gigitan_ular_bahan_keracunan'),'RGXQSL'),               
-                'jumlah_ular' => $this->regex->_genRegex($this->input->post('gigitan_ular_jml_bahan_keracunan'),'RGXQSL'),          
-                'bahan_bukanular' => $this->regex->_genRegex($this->input->post('binatang_bahan_keracunan'),'RGXQSL'),      
-                'jumlah_bukanular' => $this->regex->_genRegex($this->input->post('binatang_jml_bahan_keracunan'),'RGXQSL'),     
-                'bahan_tumbuhan' => $this->regex->_genRegex($this->input->post('tumbuhan_bahan_keracunan'),'RGXQSL'),       
-                'jumlah_tumbuhan' => $this->regex->_genRegex($this->input->post('tumbuhan_jml_bahan_keracunan'),'RGXQSL'),      
-                'bahan_pencemaran' => $this->regex->_genRegex($this->input->post('pencemaran_bahan_keracunan'),'RGXQSL'),       
-                'jumlah_pencemaran' => $this->regex->_genRegex($this->input->post('pencemaran_jml_bahan_keracunan'),'RGXQSL'),      
-                'bahan_tdkdiketahui' => $this->regex->_genRegex($this->input->post('tdk_diketahui_bahan_keracunan'),'RGXQSL'),      
-                'jumlah_tdkdiketahui' => $this->regex->_genRegex($this->input->post('tdk_diketahui_jml_bahan_keracunan'),'RGXQSL'),
-                'tipe_pemaparan' => $this->regex->_genRegex($this->input->post('tipe_pemaparan_keracunan'),'RGXQSL'),
-                'tipe_kejadian' => $this->regex->_genRegex($this->input->post('tipe_kejadian_keracunan'),'RGXQSL'),
-                'kesadaran' => $this->regex->_genRegex($this->input->post('kesadaran_pasien_keracunan'),'RGXQSL'),              
-                'tekanan_darah' => $this->regex->_genRegex($this->input->post('tekanan_darah_keracunan'),'RGXQSL'),         
-                'nadi' => $this->regex->_genRegex($this->input->post('nadi_keracunan'),'RGXQSL'),               
-                'suhu' => $this->regex->_genRegex($this->input->post('suhu_keracunan'),'RGXQSL'),                   
-                'pernafasan' => $this->regex->_genRegex($this->input->post('pernafasan_keracunan'),'RGXQSL'),               
-                'urine' => $this->regex->_genRegex($this->input->post('urine_keracunan'),'RGXQSL'),                 
-                'bau_bahan' => $this->regex->_genRegex($this->input->post('bau_bahan_keracunan'),'RGXQSL'),             
-                'keterangan_bau_bahan' => $this->regex->_genRegex($this->input->post('nama_bau_bahan_keracunan'),'RGXQSL'), 
-                'pupil' => $this->regex->_genRegex($this->input->post('kondisi_pupil_keracunan'),'RGXQSL'),                 
-                'kode_icd_x' => $this->regex->_genRegex($this->input->post('diagnosa_keracunan_hidden'),'RGXQSL'),              
-                'pemeriksaan_penunjang' => $this->regex->_genRegex($this->input->post('pemeriksaan_penunjang_keracunan'),'RGXQSL'), 
-                'penatalaksanaan' => $this->regex->_genRegex($this->input->post('penatalaksanaan_keracunan'),'RGXQSL'),     
-                'tindak_lanjut' => $this->regex->_genRegex($this->input->post('tindak_lanjut_keracunan'),'RGXQSL'),         
-                'umur_tahun' => $this->regex->_genRegex($this->input->post('umur_saat_pelayanan_hidden'),'RGXQSL'),                                     
-                'pengobatan_sbl_igd' => $this->regex->_genRegex($this->input->post('sebelum_igd_keracunan'),'RGXQSL'),  
-            );
-
-            if(isset($_POST['id_cetak_racun']) AND $_POST['id_cetak_racun']!=''){
-                $this->Pl_pelayanan_vk->update('gd_tc_cetak_racun', $dataexc, array('id_cetak_racun' => $_POST['id_cetak_racun'] ) );
-                $id = $_POST['id_cetak_racun'];
-            }else{
-                $id = $this->Pl_pelayanan_vk->save('gd_tc_cetak_racun', $dataexc);
-            }
-            
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id' => $id));
-            }
-        
-        }
-
     }
 
     public function delete()
@@ -787,7 +563,78 @@ class Pl_pelayanan_vk extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => $type_pelayanan, 'kode_meninggal' => $kode_meninggal));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'save_diagnosa'));
+            }
+
+        
+        }
+
+    }
+
+    public function process_data_bayi(){
+
+        
+        // form validation
+        $this->form_validation->set_rules('nama_bayi', 'Nama Bayi', 'trim|required' );        
+        $this->form_validation->set_rules('no_mr_ibu', 'No MR Ibu', 'trim|required');
+        $this->form_validation->set_rules('nama_ibu_kandung', 'Nama Ibu', 'trim|required');
+        $this->form_validation->set_rules('panjang_badan', 'Panjang Badan', 'trim|required');
+        $this->form_validation->set_rules('berat_badan', 'Berat Badan', 'trim|required');
+        $this->form_validation->set_rules('anus', 'Anus', 'trim');
+        $this->form_validation->set_rules('apgar', 'APGAR', 'trim|required');
+        $this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'trim|required');
+        $this->form_validation->set_rules('dokter_penolong', 'Dokter Penolong', 'trim|required');
+        $this->form_validation->set_rules('no_gelang', 'No Gelang', 'trim');
+        $this->form_validation->set_rules('tempat_lahir', 'Tempat Lahir', 'trim|required');
+        $this->form_validation->set_rules('tgl_jam_lahir', 'Tanggal Lahir', 'trim|required');
+        $this->form_validation->set_rules('jam_lahir', 'Jam Lahir', 'trim|required');
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $dataexc = array(
+                'nama_bayi' => $this->form_validation->set_value('nama_bayi'),
+                'mr_ibu' => $this->form_validation->set_value('no_mr_ibu'),
+                'nama_ibu' => $this->form_validation->set_value('nama_ibu_kandung'),
+                'panjang_badan' => $this->form_validation->set_value('panjang_badan'),
+                'berat_badan' => $this->form_validation->set_value('berat_badan'),
+                'anus' => $this->form_validation->set_value('anus'),
+                'apgar' => $this->form_validation->set_value('apgar'),
+                'jenis_kelamin' => $this->form_validation->set_value('jenis_kelamin'),
+                'dokter_penolong' => $this->form_validation->set_value('dokter_penolong'),
+                'no_gelang' => $this->form_validation->set_value('no_gelang'),
+                'tempat_lahir' => $this->form_validation->set_value('tempat_lahir'),
+                'tgl_jam_lahir' => $this->form_validation->set_value('tgl_jam_lahir').' '.$this->form_validation->set_value('jam_lahir'),
+            );
+
+            // print_r($dataexc);die;
+
+            if($this->input->post('id_bayi')==0){
+                $this->Pl_pelayanan_vk->save('ri_bayi_lahir', $dataexc);
+            }else{
+                $this->Pl_pelayanan_vk->update('ri_bayi_lahir', $dataexc, array('id_bayi' => $this->input->post('id_bayi') ) );
+            }
+
+            
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
             }
 
         
@@ -817,20 +664,6 @@ class Pl_pelayanan_vk extends MX_Controller {
 
     }
 
-    public function surat_keracunan(){
-        
-        $no_mr = $_GET['no_mr'];
-        $no_kunjungan = $_GET['no_kunjungan'];
-        
-        $data['value'] = $this->Pl_pelayanan_vk->get_keracunan($no_kunjungan);
-        $exp = explode(':',$data['value']->kode_icd_x);
-        $data['diagnosa'] = isset($exp[1])?$exp[1]:'';
-        $data['icd_x'] = isset($exp[0])?$exp[0]:'';
-
-        $this->load->view('Pl_pelayanan_vk/surat_keracunan', $data);
-
-    }
-   
     public function rollback()
     {   
         $this->db->trans_begin();  

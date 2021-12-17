@@ -199,12 +199,12 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $row[] = '<div class="center"><i class="fa fa-check-circle red"></i></div>';
             }
 
-            $row[] = $this->tanggal->formatDate($row_list->tgl_periksa);
+            $row[] = $this->tanggal->formatDatedmY($row_list->tgl_periksa);
             $row[] = strtoupper($row_list->nama_bagian);
             $row[] = $row_list->anamnesa;
-            $row[] = $row_list->diagnosa_awal;
-            $row[] = $row_list->diagnosa_akhir;
-            $row[] = $row_list->pengobatan;
+            $row[] = ($row_list->diagnosa_awal == $row_list->diagnosa_akhir) ? $row_list->diagnosa_awal : $row_list->diagnosa_awal.'<br>'.$row_list->diagnosa_akhir;
+            $row[] = $row_list->pemeriksaan;
+            $row[] = nl2br($row_list->pengobatan);
            
             $data[] = $row;
         }

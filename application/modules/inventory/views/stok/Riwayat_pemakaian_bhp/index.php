@@ -18,6 +18,39 @@
   function click_detail(kode_brg){
     getMenu('inventory/stok/Riwayat_pemakaian_bhp/detail/'+kode_brg+'/'+$('#kode_bagian').val()+'');
   }
+
+  function rollback_stok_bhp(id_kartu){
+    if(confirm('Are you sure?')){
+      $.ajax({
+          url: 'inventory/stok/Riwayat_pemakaian_bhp/rollback_stok_bhp',
+          type: "post",
+          data: {ID:id_kartu},
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          uploadProgress: function(event, position, total, percentComplete) {
+          },
+          complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+              $.achtung({message: jsonResponse.message, timeout:5});
+              reload_table();
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5});
+            }
+            achtungHideLoader();
+          }
+
+        });
+
+    }else{
+      return false;
+    }
+    
+  }
+
 </script>
 
 <div class="row">
@@ -98,6 +131,7 @@
                 <th>Nama Barang</th>
                 <th width="80px">Jumlah</th>
                 <th width="200px">Keterangan</th>
+                <th width="200px">Rollback</th>
               </tr>
             </thead>
             <tbody>

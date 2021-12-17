@@ -1,5 +1,3 @@
-FORM
-
 <script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
 
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
@@ -84,15 +82,13 @@ $(document).ready(function(){
 
           }
 
-          if(jsonResponse.type_pelayanan == 'Pasien Meninggal' )
+          if(jsonResponse.type_pelayanan == 'save_diagnosa' )
           {
 
-            $('#btn_cetak_meninggal').show('fast');
-            $('#btn_selesai_igd').hide('fast');
-            $("html, body").animate({ scrollTop: "0" });
-            $('#kode_meninggal').val(jsonResponse.kode_meninggal);
+            getMenuTabs('pelayanan/Pl_pelayanan_vk/diagnosa/'+$('#id_pasien_vk').val()+'/'+$('#no_kunjungan').val()+'?type=Rajal&kode_bag=030501', 'tabs_form_pelayanan');
 
           }
+
           
         }else{          
 
@@ -186,6 +182,16 @@ $(document).ready(function(){
       e.preventDefault();  
 
       $('#form_pelayanan').attr('action', 'registration/Reg_pm/process');
+      $('#form_default_pelayanan').hide('fast');
+      $('#form_default_pelayanan').html(''); 
+
+    });
+
+    $('#tabs_bayi').click(function (e) {     
+      
+      e.preventDefault();  
+
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_vk/process_data_bayi');
       $('#form_default_pelayanan').hide('fast');
       $('#form_default_pelayanan').html(''); 
 
@@ -519,7 +525,6 @@ function reload_page(){
           <!-- hidden form -->
           <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
           <input type="hidden" name="id_pasien_vk" id="id_pasien_vk" value="<?php echo ($id)?$id:''?>">
-          <input type="hidden" name="kode_meninggal" id="kode_meninggal" value="<?php echo isset($meninggal->kode_meninggal)?$meninggal->kode_meninggal:''?>">
           <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
           <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
           <input type="hidden" name="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
@@ -574,7 +579,7 @@ function reload_page(){
                   <ul class="nav nav-list">
 
                     <li class="hover">
-                      <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> DIAGNOSA </span></a><b class="arrow"></b>
+                      <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=RI&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> DIAGNOSA </span></a><b class="arrow"></b>
                     </li>
 
                     <li class="hover">
@@ -582,7 +587,7 @@ function reload_page(){
                     </li>
 
                     <li class="hover">
-                      <a id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-edit"></i><span class="menu-text"> DATA BAYI </span></a><b class="arrow"></b>
+                      <a id="tabs_bayi" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501&no_mr_ibu=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan_vk/form_bayi/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-edit"></i><span class="menu-text"> DATA KELAHIRAN </span></a><b class="arrow"></b>
                     </li>
 
                     <li class="hover">
@@ -652,7 +657,7 @@ function reload_page(){
               <tr>
                 <td><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
                 <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td>
-                <td><?php echo isset($value->tanggal_gd)?$this->tanggal->formatDateTime($value->tanggal_gd):''?></td>
+                <td><?php echo isset($value->tgl_masuk)?$this->tanggal->formatDateTime($value->tgl_masuk):''?></td>
                 <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
                 <td>
                   <a href="#" onclick="show_modal('registration/reg_pasien/form_modal_edit_penjamin/<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>/<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>', 'Update Penjamin Pasien')">

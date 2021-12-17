@@ -48,6 +48,7 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
             $row[] = '<div class="left">'.strtoupper($row_list->nama_brg).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->pengeluaran).'</div>';
             $row[] = $row_list->keterangan;
+            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="rollback_stok_bhp('.$row_list->id_kartu.')">Rollback</a></div>';
                    
             $data[] = $row;
         }
@@ -92,36 +93,33 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
         $this->load->view('inventory/stok/Riwayat_pemakaian_bhp/kartu_stok', $data);
     }
 
-    public function reset_stok_depo($kode_bagian, $agenda_so_id){
-        // select kartu stok
-        $kartu_stok = $this->db->where('id_kartu IN (select MAX(id_kartu) as id_kartu from tc_kartu_stok where kode_bagian='."'".$kode_bagian."'".' group by kode_brg) ')->from('tc_kartu_stok')->get()->result();
+    public function rollback_stok_bhp(){
         
-        foreach($kartu_stok as $row){
-            $mutasi = array(
-                'id_kartu' => $this->master->get_max_number('tc_kartu_stok','id_kartu'),
-                'tgl_input' => date('Y-m-d H:i:s'),
-                'kode_brg' => $row->kode_brg,
-                'stok_awal' => $row->stok_awal,
-                'pemasukan' => 0,
-                'pengeluaran' => $row->stok_awal,
-                'stok_akhir' => 0,
-                'jenis_transaksi' => 10,
-                'kode_bagian' => $kode_bagian,
-                'keterangan' => 'Reset stok depo untuk stok opname',
-                'petugas' => 0,
-                'nama_petugas' => 'Administrator Sistem',
-                'agenda_so_id' => $agenda_so_id,
-            );
-            // reset 0 kartu stok
-        // $this->db->insert('tc_kartu_stok', $mutasi);
-        }
+        // select kartu stok
+        $row = $this->db->where('id_kartu', $_POST['ID'])->from('tc_kartu_stok')->get()->row();
+        // restore stok
+        $stok_akhir = $row->stok_awal + $row->pengeluaran;
+        $mutasi = array(
+            'id_kartu' => $this->master->get_max_number('tc_kartu_stok','id_kartu'),
+            'tgl_input' => date('Y-m-d H:i:s'),
+            'kode_brg' => $row->kode_brg,
+            'stok_awal' => $row->stok_awal,
+            'pemasukan' => $row->pengeluaran,
+            'pengeluaran' => 0,
+            'stok_akhir' => $stok_akhir,
+            'jenis_transaksi' => 23,
+            'kode_bagian' => $kode_bagian,
+            'keterangan' => 'Retur Pemakaian BHP',
+            'petugas' => 0,
+            'nama_petugas' => 'Administrator Sistem',
+        );
 
         // echo '<pre>';print_r($mutasi);die;
+        $this->db->insert('tc_kartu_stok', $mutasi);
 
-        
 
         // update mt_rekap stok
-        $this->db->update('mt_depo_stok', array('jml_sat_kcl' => 0), array('kode_bagian' => $kode_bagian) );
+        $this->db->update('mt_depo_stok', array('jml_sat_kcl' => $stok_akhir), array('kode_bagian' => $row->kode_bagian, 'kode_brg' => $row->kode_brg) );
 
         echo 'Sukses';
 

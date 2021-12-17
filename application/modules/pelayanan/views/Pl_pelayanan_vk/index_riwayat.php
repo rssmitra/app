@@ -15,104 +15,6 @@ jQuery(function($) {
 });
 
 
-$('#btn_update_session_poli').click(function (e) {  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan_vk/destroy_session_kode_bagian",
-      data: { kode: $('#sess_kode_bagian').val()},            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan_vk');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
-
-});
-
-function cetak_surat_kematian(no_registrasi,no_kunjungan,umur) {
-  
-  url = 'pelayanan/Pl_pelayanan_vk/surat_kematian?no_kunjungan='+no_kunjungan+'&no_registrasi='+no_registrasi+'&umur='+umur;
-  title = 'Cetak Surat Kematian';
-  width = 850;
-  height = 500;
-  PopupCenter(url, title, width, height); 
-
-}
-
-function cetak_surat_keracunan(no_kunjungan,no_mr) {
-
-  url = 'pelayanan/Pl_pelayanan_vk/surat_keracunan?no_kunjungan='+no_kunjungan+'&no_mr='+no_mr;
-  title = 'Cetak Surat Keracunan';
-  width = 1200;
-  height = 1200;
-  PopupCenter(url, title, width, height); 
-
-}
-
-function cancel_visit(no_registrasi, no_kunjungan){
-
-  preventDefault();  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan_vk/cancel_visit",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#sess_kode_bagian').val() },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan_vk');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
-
-}
-
-
-function rollback(no_registrasi, no_kunjungan){
-
-  preventDefault();  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan_vk/rollback",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan_vk');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
-
-}
-
-
 </script>
 <div class="row">
   <div class="col-xs-12">
@@ -131,7 +33,7 @@ function rollback(no_registrasi, no_kunjungan){
 
     <div class="col-md-12">
 
-      <center><h4>FORM PELAYANAN VERLOS KAMER <br> <small style="font-size:12px">Data yang ditampilkan adalah data per hari ini, yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?></small><br></h4></center>
+      <center><h4>RIWAYAT PASIEN VK <br> <small style="font-size:12px">Data yang ditampilkan adalah data 30 hari terakhir dari tanggal hari ini <?php echo $this->tanggal->formatDate(date('Y-m-d'))?></small><br></h4></center>
       <br>
 
       <!-- hidden form -->
@@ -199,10 +101,10 @@ function rollback(no_registrasi, no_kunjungan){
     <hr class="separator">
     <!-- div.dataTables_borderWrap -->
     <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan_vk" class="table table-bordered table-hover">
+      <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan_vk/get_data_history?flag=history" class="table table-bordered table-hover">
        <thead>
         <tr>  
-          <th width="30px" class="center"></th>
+          <th width="30px" class="center">No</th>
           <th></th>
           <th>Kode</th>
           <th>No MR</th>
@@ -210,7 +112,7 @@ function rollback(no_registrasi, no_kunjungan){
           <th>Penjamin</th>
           <th>Tanggal Masuk</th>
           <th>Dokter</th>
-          <th>Petugas</th>
+          <th>Kamar/Ruangan</th>
           <th>Status</th>          
         </tr>
       </thead>
@@ -224,7 +126,7 @@ function rollback(no_registrasi, no_kunjungan){
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
+<script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
 
 
 

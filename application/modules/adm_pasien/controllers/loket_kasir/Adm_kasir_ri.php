@@ -318,10 +318,7 @@ class Adm_kasir_ri extends MX_Controller {
 
                 $total_adm = ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
                 $materai = ($total_adm > 5000000) ? 10000 : 0;
-                
                 $biy_adm = 0.06 * ($total_adm + $materai);
-
-                // $biy_adm = 0.06 * ($biaya_rs + $biaya_dr1 + $biaya_dr2 + $billApo);
 
                 /*save tc_trans_pelayanan */
                 $kode_tc_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');

@@ -32,17 +32,12 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		$this->db->join('mt_nasabah','ri_pasien_vk_v.kode_kelompok=mt_nasabah.kode_kelompok','left');
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian=ri_pasien_vk_v.bag_pas','left');
 		$this->db->join('mt_klas','mt_klas.kode_klas=ri_pasien_vk_v.kelas_pas','left');
-		$this->db->where("flag_vk", 0);
-
-
-		/*check level user*/
-		//$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
 
 	}
 
 	private function _get_datatables_query()
 	{
-		$date = date('Y-m-d H:i:s', strtotime('-3 days', strtotime(date('Y-m-d H:i:s'))));
+		$range_date = 
 		$this->_main_query();
 
 		if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
@@ -52,8 +47,16 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("convert(varchar,ri_pasien_vk_v.tanggal_gd,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-        }
+			$this->db->where("CAST(ri_pasien_vk_v.tgl_masuk AS DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
+        }else{
+			if(isset($_GET['flag']) AND $_GET['flag'] == 'history'){
+				$this->db->where("ri_pasien_vk_v.tgl_keluar is not null");
+				$this->db->where('DATEDIFF(Day, ri_pasien_vk_v.tgl_masuk, getdate()) <= 30');	
+			}else{
+				// $this->db->where("flag_vk", 0);
+				$this->db->where("ri_pasien_vk_v.tgl_keluar is null OR flag_vk=0");
+			}
+		}
 
 		$i = 0;
 	
@@ -82,7 +85,7 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
@@ -133,49 +136,6 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		return $this->db->get_where('th_riwayat_pasien', array('no_kunjungan' => $no_kunjungan) )->row();
 	}
 
-	public function get_vital_sign($no_registrasi)
-	{
-		return $this->db->get_where('gd_th_rujuk_ri', array('no_registrasi' => $no_registrasi) )->result();
-	}
-
-	public function get_laporan_dr($no_kunjungan)
-	{
-		return $this->db->get_where('th_laporan_dr', array('no_kunjungan' => $no_kunjungan) )->row();
-	}
-
-	public function get_laporan_perawat($no_kunjungan)
-	{
-		return $this->db->get_where('th_laporan_perawat', array('no_kunjungan' => $no_kunjungan) )->row();
-	}
-
-	public function get_keracunan($no_kunjungan)
-	{
-		//return $this->db->get_where('gd_tc_cetak_racun', array('no_kunjungan' => $no_kunjungan) )->row();
-
-		$this->db->select('gd_tc_cetak_racun.*,mt_master_pasien.nama_pasien,mt_master_pasien.jen_kelamin,mt_master_pasien.almt_ttp_pasien,mt_karyawan.nama_pegawai');
-		$this->db->from('gd_tc_cetak_racun');
-		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=gd_tc_cetak_racun.no_mr','left');
-		$this->db->join('ri_pasien_vk_v','ri_pasien_vk_v.no_kunjungan=gd_tc_cetak_racun.no_kunjungan','left');
-		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=ri_pasien_vk_v.dokter_jaga','left');
-		$this->db->where('gd_tc_cetak_racun.no_kunjungan', $no_kunjungan );
-		$query = $this->db->get();
-		return $query->row();
-	}
-
-	public function get_meninggal($no_kunjungan,$no_registrasi)
-	{
-	
-		$this->db->select('gd_th_kematian.*,mt_master_pasien.nama_pasien,mt_master_pasien.almt_ttp_pasien,mt_bagian.nama_bagian,mt_karyawan.nama_pegawai');
-		$this->db->from('gd_th_kematian');
-		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=gd_th_kematian.no_mr','left');
-		$this->db->join('mt_bagian','mt_bagian.kode_bagian=gd_th_kematian.kode_bagian','left');
-		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=gd_th_kematian.dokter_asal','left');
-		$this->db->where('gd_th_kematian.no_kunjungan', $no_kunjungan );
-		$this->db->where('gd_th_kematian.no_registrasi', $no_registrasi );
-		$query = $this->db->get();
-		return $query->row();
-	}
-
 	public function cek_transaksi_minimal($no_kunjungan){
 		$transaksi_min = $this->db->get_where('tc_trans_pelayanan', array('no_kunjungan' => $no_kunjungan) )->num_rows();
 		if( $transaksi_min > 0 ){
@@ -213,6 +173,14 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		$this->db->where("kode_tc_trans_kasir is null" );
 		$query = $this->db->get();
 		return $query->num_rows();
+	}
+
+	public function get_data_bayi($no_mr_ibu){
+		$this->db->from('ri_bayi_lahir');
+		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=ri_bayi_lahir.dokter_penolong', 'left' );
+		$this->db->where('mr_ibu', $no_mr_ibu );
+		$query = $this->db->get();
+		return $query->row();
 	}
 
 }

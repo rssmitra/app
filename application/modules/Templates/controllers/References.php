@@ -1140,7 +1140,7 @@ class References extends MX_Controller {
 	public function getDetailTarif()
 	{
 		$this->load->library('tarif');
-		$tarifAktif = $this->tarif->getTarifAktif($_GET['kode'], $_GET['klas']);
+		$tarifAktif = $this->tarif->getTarifAktif(trim($_GET['kode']), $_GET['klas']);
 		$exc = $tarifAktif->result();
 		// echo '<pre>'; print_r($tarifAktif->result());die;
     	$html = '';
