@@ -104,10 +104,12 @@ $(document).ready(function(){
 
       if(  value == 'penjualan_brg'){
         // hide unit
+        $('#div_restock').show();
         $('#dari_unit_div').hide();
         $('#div_retur_penjualan').show();
         $('#div_jenis_retur_ex_penjualan').hide();
       }else{
+        $('#div_restock').hide();
         $('#div_retur_penjualan').hide();
         $('#div_jenis_retur_ex_penjualan').show();
         if(  value == 'penerimaan_brg'){
@@ -207,6 +209,7 @@ function insert_cart_log(){
     reff_kode: $('#reff_kode').val(),
     flag_form: 'retur',
     retur_type: $('#retur_type').val(),
+    restock : $('input[name=restock]:checked').val(),
 
   };
   if( parseInt($('#qtyBarang').val()) > parseInt($('#qtyStok').val()) ){
@@ -400,6 +403,13 @@ th, td {
                   <div class="widget-box" style="margin-top: -13px">
                     <div class="widget-body">
                       <div class="widget-main">
+                        <div class="form-group" id="barcode_input" style="display: none">
+                          <label class="control-label col-md-3">Kode Barcode</label>
+                          <div class="col-md-9" style="margin-top: 4px; padding-left: 20px">
+                            <span id="barcode_text"><i class="fa fa-question-circle bigger-150 orange"></i></span>
+                            <input type="hidden" id="barcode_value">
+                          </div>
+                        </div>
                         <div class="form-group">
                           <label class="control-label col-md-3">Jenis Retur</label>
                           <div class="col-md-9">
@@ -462,33 +472,32 @@ th, td {
                   <div class="widget-box">
                     <div class="widget-body" style="background: #edf3f4;">
                       <div class="widget-main">
-
-                          <div class="form-group" id="barcode_input" style="display: none">
-                            <label class="control-label col-md-3">Kode Barcode</label>
-                            <div class="col-md-9" style="margin-top: 4px; padding-left: 20px">
-                              <span id="barcode_text"><i class="fa fa-question-circle bigger-150 orange"></i></span>
-                              <input type="hidden" id="barcode_value">
-                            </div>
-                          </div>
                           
                           <div class="form-group">
-                            <label class="control-label col-md-3">Kode Barang</label>
-                            <div class="col-md-4" >
+                            <label class="control-label col-md-2">Kode brg</label>
+                            <div class="col-md-3" >
                               <input class="form-control" type="text" name="kode_brg_hidden" id="kode_brg_hidden">
                               <input class="form-control" type="hidden" name="nama_brg_hidden" id="nama_brg_hidden">
                               <input class="form-control" type="hidden" name="satuan_brg_hidden" id="satuan_brg_hidden">
                               <input class="form-control" type="hidden" name="harga_brg_hidden" id="harga_brg_hidden">
                             </div>
                             <label class="control-label col-md-1">Qty</label>
-                            <div class="col-md-3" >
+                            <div class="col-md-2" >
                               <input class="form-control" type="number" name="qtyBrg" id="qtyBarang" value="0">
                               <input class="form-control" type="hidden" name="qtyBrgStok" id="qtyStok">
                               <input class="form-control" type="hidden" name="reff_kode" id="reff_kode">
                               <input class="form-control" type="hidden" name="retur_type" id="retur_type">
                             </div>
-                            <div class="col-md-1" style="margin-left: -10px">
-                              <a href="#" onclick="insert_cart_log()" class="btn btn-xs btn-yellow"><i class="fa fa-shopping-cart"></i></a>
+                            <div class="col-md-3" id="div_restock">
+                                <label style="padding-top: 3px">
+                                  <input name="form-field-checkbox" type="checkbox" class="ace" name="restock" id="restock" value="1">
+                                  <span class="lbl"> Kembalikan stok</span>
+                                </label>
                             </div>
+                            <div class="col-md-1" style="margin-left: -10px;">
+                              <a href="#" onclick="insert_cart_log()" class="btn btn-xs btn-yellow"><i class="fa fa-shopping-cart"></i> Masukan List</a>
+                            </div>
+                            
                           </div>
 
                       </div>

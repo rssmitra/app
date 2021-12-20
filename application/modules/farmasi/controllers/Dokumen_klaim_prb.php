@@ -92,7 +92,7 @@ class Dokumen_klaim_prb extends MX_Controller {
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
             $row[] = $row_list->nama_pelayanan;
-            // $row[] = '<div class="pull-right">'.number_format($row_list->total).'</div>';            
+            $row[] = '<div class="center"><a href="'.base_url().'farmasi/Verifikasi_resep_prb/mergePDFFiles/'.$row_list->kode_trans_far.'/'.$row_list->no_sep.'" target="_blank" class="btn btn-xs btn-danger"><i class="fa fa-files"></i> Merge Files</div>';            
             $data[] = $row;
         }
 

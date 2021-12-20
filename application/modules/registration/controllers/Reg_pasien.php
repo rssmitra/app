@@ -772,7 +772,7 @@ class Reg_pasien extends MX_Controller {
 
     public function process_perjanjian()
     {
-         
+        //  echo '<pre>';print_r($_POST);die;
          $this->load->library('form_validation');
          $val = $this->form_validation;
  
@@ -922,9 +922,8 @@ class Reg_pasien extends MX_Controller {
                  if(isset($_POST['print_booking'])){
                     //  print_booking
                     $this->print_booking($_POST['jd_id'], $newId);
-                    
                  }
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.''));
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].''));
              }
  
          }
@@ -946,6 +945,7 @@ class Reg_pasien extends MX_Controller {
         $data['value'] = $booking;
         $data['jadwal'] = $this->Reg_pasien->get_jadwal_dokter($jd_id);
         // echo '<pre>';print_r($_POST);die;
+        // $this->print_escpos->print_testing();
         $this->print_escpos->print_booking($data);
 
     }
@@ -1136,7 +1136,7 @@ class Reg_pasien extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHiddenPasien']));
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHiddenPasien'], 'ttd' => $_POST['paramsSignature']));
              }
  
          }

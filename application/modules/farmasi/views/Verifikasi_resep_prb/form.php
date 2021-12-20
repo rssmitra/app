@@ -8,6 +8,37 @@ $(function(){
   
 });
 
+$('#form_ttd_pasien').ajaxForm({      
+
+  beforeSend: function() {           
+
+  },      
+
+  uploadProgress: function(event, position, total, percentComplete) {        
+
+  },      
+
+  complete: function(xhr) {             
+
+    var data=xhr.responseText;        
+
+    var jsonResponse = JSON.parse(data);        
+
+    if(jsonResponse.status === 200){          
+
+      $('#modalTTDPasien').modal('hide');
+      $('#ttd_pasien').attr('src', jsonResponse.ttd);
+
+    }else{          
+
+      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});          
+
+    }              
+
+  }      
+
+}); 
+
 function checkAll(elm) {
 
   if($(elm).prop("checked") == true){
@@ -31,6 +62,27 @@ function pressEnter(kode_brg){
       saveRow(kode_brg);
       return false;       
     }
+}
+
+function showModalTTD()
+{  
+
+  noMr = $('#no_mr_val').val();
+  //alert(noMr); return false;
+  if (noMr == '') {
+
+    alert('Silahkan cari pasien terlebih dahulu !'); return false;
+  
+  }else{
+
+    $('#result_text_edit_pasien').text('TANDA TANGAN PASIEN');
+
+    $('#form_pasien_modal_ttd').load('registration/reg_pasien/form_modal_ttd/'+noMr+''); 
+
+    $("#modalTTDPasien").modal();
+
+  }
+    
 }
 
 $("#btn_submit_resep").click(function(event){
@@ -170,7 +222,6 @@ function hitungSubTotalBarang(kode_brg){
 
         <div class="col-md-4">
           <table>
-          
             <tr style="">
               <td width="100px">Tanggal</td>
               <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $this->tanggal->formatDateTime($value->tgl_trans) ?></td>
@@ -185,6 +236,23 @@ function hitungSubTotalBarang(kode_brg){
             </tr>
           </table>
         </div>
+
+        <div class="col-md-4">
+          <table>
+            <tr style="">
+              <td width="100px"><span style="font-size: 10px; font-style: italic">Ttd Pasien</span></td>
+            </tr>
+            <tr>
+              <td>
+                <?php
+                  $img_ttd = ($value->ttd != null)?$value->ttd:base_url().'assets/images/ttd-no-found.png';
+                ?>
+              <a href="#" onclick="showModalTTD()"><img id="ttd_pasien" class="profile-user-img img-responsive center" src="<?php echo $img_ttd; ?>" alt="User profile picture" style="width:100%"></a>
+              </td>
+            </tr>
+          </table>
+        </div>
+
       </div>
       <hr class="separator">
 
@@ -398,4 +466,62 @@ function hitungSubTotalBarang(kode_brg){
   </div>
 
 </div><!-- /.row -->
+
+<div id="modalTTDPasien" class="modal fade" tabindex="-1">
+
+  <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:95%">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <div class="table-header">
+
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+
+            <span class="white">&times;</span>
+
+          </button>
+
+          <span>TANDA TANGAN PASIEN (DIGITAL SIGNATURE)</span>
+
+        </div>
+
+      </div>
+
+      <div class="modal-body">
+
+      <form class="form-horizontal" method="post" id="form_ttd_pasien" action="registration/Reg_pasien/process_ttd" enctype="multipart/form-data" autocomplete="off">                                    
+        
+        <div id="form_pasien_modal_ttd"></div>
+
+        <button type="submit" name="submit" class="btn btn-xs btn-primary">
+
+          <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+
+          Submit
+
+        </button>
+
+      </form>
+
+      </div>
+
+      <!-- <div class="modal-footer no-margin-top">
+
+        <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
+
+          <i class="ace-icon fa fa-times"></i>
+
+          Close
+
+        </button>
+
+      </div> -->
+
+    </div><!-- /.modal-content -->
+
+  </div><!-- /.modal-dialog -->
+
+</div>
 

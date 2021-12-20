@@ -66,8 +66,8 @@ No. <?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[0]['
         foreach($resep as $key_dt=>$row_dt) : $no++; 
           if( $row_dt['jumlah_tebus'] > 0 ) :
           $harga_jual = $row_dt['harga_jual'];
-          $jumlah_obat = ($tipe_resep == 'resep_kronis') ? $row_dt['jumlah_obat_23'] : $row_dt['jumlah_tebus'];
-          $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : (($harga_jual * $jumlah_obat) + $row_dt['jasa_r']); 
+          $jumlah_obat = ($tipe_resep == 'resep_kronis') ? $row_dt['jumlah_obat_23'] : ($row_dt['jumlah_tebus'] - $row_dt['jumlah_retur']);
+          $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : ($jumlah_obat > 0) ? (($harga_jual * $jumlah_obat) + $row_dt['jasa_r']) : 0; 
           $arr_total[] = $subtotal;
           $desc = ($row_dt['flag_resep'] == 'racikan') ? 'Jasa Racikan Obat' : $row_dt['nama_brg'];
           $satuan = ($row_dt['satuan_kecil'] != null) ? $row_dt['satuan_kecil'] : $row_dt['satuan_brg'];

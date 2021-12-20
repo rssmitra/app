@@ -38,7 +38,9 @@ class Dokumen_klaim_prb_model extends CI_Model {
 			}else{
 				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
-		}
+		}else{
+        	$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=90');
+        }
 
 		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){
 			$this->db->where('fr_tc_far.kode_bagian_asal', $_GET['bagian']);
@@ -46,8 +48,6 @@ class Dokumen_klaim_prb_model extends CI_Model {
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
             $this->db->where("CAST(fr_tc_far.tgl_trans as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
-        }else{
-        	$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=90');
         }
 
 		$i = 0;

@@ -291,8 +291,7 @@ class Pengiriman_unit extends MX_Controller {
                 $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'reduce');
 
                 if($row_brg->is_bhp == 1){
-                    // jika bhp maka langsung di mutasi stok nya
-                    // tambah stok depo dan kurang
+                    // jika bhp maka langsung di mutasi stok nya tambah stok depo dan kurang
                     $this->stok_barang->stock_process_depo_bhp($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
                 }else{
                     $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian, 3 ," ".$nama_bagian." ", 'restore', $val->set_value('kode_bagian_minta'));
@@ -439,13 +438,17 @@ class Pengiriman_unit extends MX_Controller {
 
                         $data_log_for_update = array(
                             'jumlah_retur' => $row_brg->qty,
+                            'is_restock' => $row_brg->is_restock,
                             'tgl_retur' => date('Y-m-d'),
                             'retur_by' => $this->session->userdata('user')->fullname,
                         );
+                        
                         $this->db->where(array('relation_id' => $row_brg->reff_kode))->update('fr_tc_far_detail_log', $data_log_for_update);
 
                         // retur stok ke farmasi
-                        $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, '060101' , 8 ," (Retur Penjualan) - . ".$row_brg->reff_kode." ", 'restore'); 
+                        if($row_brg->is_restock == 1){
+                            $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, '060101' , 8 ," (Retur Penjualan) - . ".$row_brg->reff_kode." ", 'restore'); 
+                        }
 
                         $this->db->trans_commit();
 
@@ -570,6 +573,7 @@ class Pengiriman_unit extends MX_Controller {
                 'reff_kode' => isset($_POST['reff_kode'])?$_POST['reff_kode']:'',
                 'retur_type' => isset($_POST['retur_type'])?$_POST['retur_type']:'',
                 'is_bhp' => isset($_POST['is_bhp'])?$_POST['is_bhp']:'',
+                'is_restock' => isset($_POST['restock'])?$_POST['restock']:'',
             );
             $this->db->insert('tc_permintaan_inst_cart_log', $dataexc);
             $this->db->trans_commit();

@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Etiket_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
-	var $column = array('kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.flag_trans, fr_tc_far.no_registrasi, tc_registrasi.kode_perusahaan, fr_tc_far.kode_dokter, fr_tc_far.kode_bagian, fr_tc_far.kode_bagian_asal';
+	var $column = array('kode_trans_far','fr_tc_far.nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
+	var $select = 'fr_tc_far.kode_trans_far,fr_tc_far.nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.flag_trans, fr_tc_far.no_registrasi, tc_registrasi.kode_perusahaan, fr_tc_far.kode_dokter, fr_tc_far.kode_bagian, fr_tc_far.kode_bagian_asal';
 	var $order = array('tgl_trans' => 'DESC', 'fr_tc_far.kode_trans_far' => 'DESC');
 
 	public function __construct()
@@ -17,13 +17,16 @@ class Etiket_obat_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->select('CAST(copy_resep_text AS nvarchar(max)) as copy_resep_text');
+		$this->db->select('CAST(ttd AS nvarchar(max)) as ttd');
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
+		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr = fr_tc_far.no_mr','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
 		$this->db->join('(SELECT kode_tc_trans_kasir, kode_trans_far FROM tc_trans_pelayanan where (kode_tc_trans_kasir is not null and kode_trans_far is not null) GROUP BY kode_tc_trans_kasir,kode_trans_far) as tc_trans_pelayanan','tc_trans_pelayanan.kode_trans_far=fr_tc_far.kode_trans_far','left');
 		
 		$this->db->group_by($this->select);
 		$this->db->group_by('CAST(copy_resep_text AS nvarchar(max))');
+		$this->db->group_by('CAST(ttd AS nvarchar(max))');
 
 	}
 

@@ -187,6 +187,8 @@ class Verifikasi_resep_prb extends MX_Controller {
                     'sub_total' =>  isset($_POST['sub_total_'.$kode_brg.''])?$this->regex->_genRegex($_POST['sub_total_'.$kode_brg.''], 'RQXINT'):0,
                 );
 
+                
+
                 if( count($dt_existing) > 0 ){
                     /*update existing*/
                     $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
@@ -207,6 +209,16 @@ class Verifikasi_resep_prb extends MX_Controller {
     
                 }
 
+                $this->db->trans_commit();
+
+                $data_log = array(
+                    'jumlah_obat_23' => isset($_POST['jumlah_'.$kode_brg.''])?$this->regex->_genRegex($_POST['jumlah_'.$kode_brg.''], 'RQXINT'):0,
+                );
+                // update log
+                $this->db->update('fr_tc_far_detail_log', $data_log, array('kode_trans_far' => $_POST['kode_trans_far'], 'relation_id' => $data_farmasi['kd_tr_resep']) );
+                $this->db->trans_commit();
+
+                $this->db->update('fr_tc_far_detail', $data_log, array('kode_trans_far' => $_POST['kode_trans_far'], 'kd_tr_resep' => $data_farmasi['kd_tr_resep']) );
                 $this->db->trans_commit();
                 
             }
@@ -526,7 +538,7 @@ class Verifikasi_resep_prb extends MX_Controller {
 
     public function findSep($no_sep){
         $row_sep = $this->Ws_index->findSep($no_sep);
-        echo '<pre>'; print_r($row_sep);die;
+        // echo '<pre>'; print_r($row_sep);die;
 
     }
 
