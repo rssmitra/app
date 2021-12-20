@@ -133,20 +133,20 @@ class Distribusi_permintaan_model extends CI_Model {
 	public function get_brg_permintaan($flag, $id){
 		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
 		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
-		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
+		$join_3 = ($flag=='non_medis')?'mt_depo_stok_nm':'mt_depo_stok';
 
-		$this->db->select('a.id_tc_permintaan_inst_det, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, f.harga_beli, c.content as rasio, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.nama_bagian');
+		$this->db->select('a.id_tc_permintaan_inst_det, e.kode_bagian_kirim, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, c.content as rasio, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl as jumlah_stok_sebelumnya, g.nama_bagian');
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
 		$this->db->join($table.' e', 'e.id_tc_permintaan_inst=a.id_tc_permintaan_inst', 'left');
 		$this->db->join('mt_bagian g', 'g.kode_bagian=e.kode_bagian_minta', 'left');
-		$this->db->join($join_3.' f', 'f.kode_brg=a.kode_brg', 'left');
+		$this->db->join($join_3.' f', '(f.kode_brg=a.kode_brg AND f.kode_bagian=e.kode_bagian_kirim)', 'left');
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('a.id_tc_permintaan_inst IN ('.$id.')');
-		$this->db->group_by('a.id_tc_permintaan_inst_det, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, f.harga_beli, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian');
+		$this->db->group_by('a.id_tc_permintaan_inst_det, e.kode_bagian_kirim, jumlah_permintaan, jumlah_penerimaan , a.kode_brg,, c.nama_brg, c.content, c.satuan_kecil, c.satuan_besar, e.nomor_permintaan, e.jenis_permintaan, e.tgl_permintaan, f.jml_sat_kcl, g.nama_bagian');
 		$this->db->order_by('c.nama_brg ASC');
 		$query = $this->db->get()->result();
-		// print_r($this->db->last_query());
+		// print_r($this->db->last_query());die;
 		return $query;
 	}
 

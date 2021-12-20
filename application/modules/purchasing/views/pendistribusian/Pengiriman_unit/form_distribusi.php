@@ -38,8 +38,8 @@ $(document).ready(function(){
     $('#inputKeyBarang').typeahead({
       source: function (query, result) {
           $.ajax({
-              url: "templates/References/getItemBarang",
-              data: { keyword:query, flag: $("input[name='flag_gudang']:checked"). val() },            
+              url: "templates/References/getItemBarangByUnit",
+              data: { keyword:query, flag: $("input[name='flag_gudang']:checked"). val(), unit: $('#dari_unit').val() },            
               dataType: "json",
               type: "POST",
               success: function (response) {
@@ -76,7 +76,11 @@ $(document).ready(function(){
 
     $('input[name=flag_gudang]').change(function(){
       var value = $( 'input[name=flag_gudang]:checked' ).val();
-      $('#flag_cart').val(value);
+      if(value == 'medis'){
+        $('#dari_unit').val('060201');
+      }else{
+        $('#dari_unit').val('070101');
+      }
     });
 
     $( "#qtyBarang" ).keypress(function(event) {  
@@ -95,7 +99,7 @@ $(document).ready(function(){
 function getDetailBarang(kode_brg){
   preventDefault();
   $('#div_detail_brg').show();
-  $.getJSON('Templates/References/getItemBarangDetail?kode_brg=' + kode_brg + '&flag='+$("input[name='flag_gudang']:checked"). val(), '', function (response) {
+  $.getJSON('Templates/References/getItemBarangDetailByUnit?kode_brg=' + kode_brg + '&flag='+$("input[name='flag_gudang']:checked"). val()+'&from_unit='+$('#dari_unit').val()+'', '', function (response) {
       // detail barang
       var dt_brg = response.data;
       $('#kode_brg_hidden').val(kode_brg);
@@ -127,6 +131,7 @@ function insert_cart_log(){
     harga : $('#harga_brg_hidden').val(),
     qty : $('#qtyBarang').val(),
     qtyBefore : $('#qtyStok').val(),
+    dari_unit : $('#dari_unit').val(),
     is_bhp : $('input[name=is_bhp]:checked').val(),
     flag_form : 'distribusi',
 
@@ -279,7 +284,10 @@ th, td {
       <div class="widget-body">
         <div class="widget-main no-padding">
 
-          <form class="form-horizontal" autocomplete="off">
+        <?php $url = ($form == 'distribusi') ? 'purchasing/pendistribusian/Pengiriman_unit/process_pengiriman_brg_unit' : 'purchasing/pendistribusian/Pengiriman_unit/process_retur_brg_unit' ; ?>
+
+        <form class="form-horizontal" method="post" id="form_cart" action="<?php echo base_url().$url?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
+
             <br>
               
               <div class="row">
@@ -289,21 +297,33 @@ th, td {
                     <div class="widget-box">
                       <div class="widget-body">
                         <div class="widget-main">
-                          <div class="form-group">
-                            <label class="control-label col-md-2">Dari Gudang</label>
-                            <div class="col-md-9">
-                              <div class="radio">
-                                <label>
-                                  <input name="flag_gudang" type="radio" class="ace" value="medis" checked />
-                                  <span class="lbl"> Medis</span>
-                                </label>
-                                <label>
-                                  <input name="flag_gudang" type="radio" class="ace" value="non_medis"  />
-                                  <span class="lbl"> Non Medis</span>
-                                </label>
-                              </div>
-                            </div>                
+
+                        <div class="form-group">
+                          <label class="control-label col-md-2">Jenis Barang</label>
+                          <div class="col-md-9">
+                            <div class="radio">
+                              <label>
+                                <input name="flag_gudang" type="radio" class="ace" value="medis" checked />
+                                <span class="lbl"> Medis</span>
+                              </label>
+                              <label>
+                                <input name="flag_gudang" type="radio" class="ace" value="non_medis"  />
+                                <span class="lbl"> Non Medis</span>
+                              </label>
+                            </div>
+                          </div>                
+                        </div>
+                        
+                        <div class="form-group">
+                          <label class="control-label col-md-2">Dari unit</label>
+                          <div class="col-md-7">
+                            <?php 
+                              echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060201' , 'dari_unit', 'dari_unit', 'form-control', '', '') ?>
                           </div>
+                        </div>
+                        
+                          
+
                           <!-- <div class="form-group">
                             <label class="control-label col-md-2">Metode</label>
                             <div class="col-md-9">
@@ -319,6 +339,7 @@ th, td {
                               </div>
                             </div>                
                           </div> -->
+
                           <div class="form-group">
                               <label class="control-label col-md-2">Cari Barang</label>
                               <div class="col-md-9">
@@ -397,81 +418,4 @@ th, td {
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<!-- MODAL SEARCH PASIEN -->
-<!-- <div id="modal_input_qty" class="modal fade" tabindex="-1">
-
-  <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;width:50%">
-
-    <div class="modal-content">
-
-      <div class="modal-header no-padding">
-
-        <div class="table-header">
-
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-
-            <span class="white">&times;</span>
-
-          </button>
-
-          <span id="result_text">Results for ""</span>
-
-        </div>
-
-      </div>
-
-      <div class="modal-body no-padding">
-
-        <div class="row">
-
-          <div class="col-xs-12">
-              <div class="widget-body">
-                <div class="widget-main no-padding">
-                  <form class="form-horizontal" method="post" id="form_qty_brg" action="#" enctype="multipart/form-data">
-                    <center>
-                    Kode barcode.<br>
-                    <h2 id="barcode_text" style="margin-top: -2px"></h2>
-                    <span id="detail_brg_modal"></span>
-                      <div class="col-md-12">
-                        <input type="text" class="form-control" name="qty" id="qtyBarang" style="height: 70px !important; text-align: center; font-size: 35px; width: 300px !important">
-                        <span>Silahkan masukan jumlah barang</span>
-                      </div>
-                      <br>
-                      <br>
-                    </center>
-                  </form>
-                </div>
-              </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="modal-footer no-margin-top">
-
-        <button class="btn btn-sm btn-primary pull-right" >
-
-          <i class="ace-icon fa fa-check"></i>
-
-          Submit
-
-        </button>
-
-        <button class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
-
-          <i class="ace-icon fa fa-times"></i>
-
-          Close
-
-        </button>
-
-        
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div> -->
 

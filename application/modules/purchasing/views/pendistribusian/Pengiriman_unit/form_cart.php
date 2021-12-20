@@ -63,9 +63,7 @@ function show_hide_note(action){
 }
 </script>
 
-<?php $url = ($form == 'distribusi') ? 'purchasing/pendistribusian/Pengiriman_unit/process_pengiriman_brg_unit' : 'purchasing/pendistribusian/Pengiriman_unit/process_retur_brg_unit' ; ?>
 
-<form class="form-horizontal" method="post" id="form_cart" action="<?php echo site_url().$url?>" enctype="multipart/form-data" style="margin-top: -10px">
   <div class="row" style="margin-top: -13px;">
 
   <!-- hidden form -->
@@ -175,5 +173,4 @@ function show_hide_note(action){
     </div>
 
   </div>
-</form>
 

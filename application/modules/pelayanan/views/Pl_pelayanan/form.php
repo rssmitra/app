@@ -476,26 +476,29 @@ function perjanjian(){
 function cancel_visit(no_registrasi, no_kunjungan){
 
   preventDefault();  
-
   achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan/cancel_visit",
-      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
-        } 
-        achtungHideLoader();
-      }
-  });
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: "pelayanan/Pl_pelayanan/cancel_visit",
+        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            getMenu('pelayanan/Pl_pelayanan');
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5});  
+          } 
+          achtungHideLoader();
+        }
+    });
+  }else{
+    return false;
+  }
+  
 
 }
 
