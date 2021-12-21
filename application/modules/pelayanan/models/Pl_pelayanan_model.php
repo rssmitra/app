@@ -476,7 +476,7 @@ class Pl_pelayanan_model extends CI_Model {
 	public function getComponentTarifLain($kode_trans_pelayanan)
 	{
 		# code...
-		$this->db->select('bill_rs, bill_dr1, bill_dr2, bill_dr3');
+		$this->db->select('bill_dr1, bill_dr2, bill_dr3, bhp, pendapatan_rs, alat_rs, kamar_tindakan');
 		$this->db->from('tc_trans_pelayanan');
 		$this->db->where( array('kode_trans_pelayanan' => $kode_trans_pelayanan) );
 		$query = $this->db->get();
