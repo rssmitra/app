@@ -40,7 +40,7 @@ $(document).ready(function() {
 
   load_billing_data();
 
-  $('#form_billing_kasir').ajaxForm({
+    $('#form_billing_kasir').ajaxForm({
       beforeSend: function() {
         achtungShowLoader();  
       },

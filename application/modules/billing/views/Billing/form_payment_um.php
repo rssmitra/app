@@ -1,20 +1,56 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+<!-- jquery number -->
+<script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
+<script type="text/javascript">
 
-<script>
 $(document).ready(function(){
-    
-    get_resume_billing();
 
-    $('#uang_dibayarkan').focus();
+  $('.format_number').number( true, 2 );
+  
+  $('.date-picker').datepicker({
+    autoclose: true,
+    todayHighlight: true,
+    format: 'yyyy-mm-dd'
+    })
+    //show datepicker when clicking on the icon
+    .next().on(ace.click_event, function(){
+    $(this).prev().focus();
+  });
 
-    $( "#uang_dibayarkan" ).keypress(function(event) {  
+  $('#form_billing_kasir_um').ajaxForm({
+    beforeSend: function() {
+      achtungShowLoader();  
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+    },
+    complete: function(xhr) {     
+      var data=xhr.responseText;
+      var jsonResponse = JSON.parse(data);
+
+      if(jsonResponse.status === 200){
+        $.achtung({message: jsonResponse.message, timeout:5});
+
+        if (jsonResponse.billing_um > 0) {
+
+          getMenuTabs('billing/Billing/payment_um_view/'+jsonResponse.no_registrasi+'/RI?flag=&ID='+jsonResponse.kode_ri+'');
+
+        }
+
+      }else{
+        $.achtung({message: jsonResponse.message, timeout:5});
+      }
+      achtungHideLoader();
+    }
+  }); 
+  
+  $( ".uang_dibayarkan" ).keypress(function(event) {  
       var keycode =(event.keyCode?event.keyCode:event.which);
       if(keycode ==13){          
         event.preventDefault();         
         if($(this).valid()){           
-          $('#jumlah_nk').focus();    
+          // $('#jumlah_nk').focus();    
         }         
         return false;                
       }   
@@ -22,92 +58,58 @@ $(document).ready(function(){
       
   });
 
-    $('select[name=metode_pembayaran]').change(function () {
-      if( $(this).val()==1 ){
+  $('input[name=metode_tunai]').change(function(){
+      preventDefault();
+      if($(this).is(':checked')){
         $('#div_tunai').show();
-        $('#div_debet').hide();
-        $('#div_kredit').hide();
-      }
-
-      if( $(this).val()==2 ){
+        cek_sisa_belum_bayar('uang_dibayarkan');
+      } else {
         $('#div_tunai').hide();
+        $('#uang_dibayarkan').val(0);
+        sum_total_pembayaran();
+      }
+      
+  });
+
+  $('input[name=metode_debet]').change(function(){
+      preventDefault();
+      if($(this).is(':checked')){
         $('#div_debet').show();
-        $('#div_kredit').hide();
-      }
-
-      if( $(this).val()==3 ){
-        $('#div_tunai').hide();
+        cek_sisa_belum_bayar('jumlah_bayar_non_tunai');
+      } else {
         $('#div_debet').hide();
-        $('#div_kredit').show();
+        $('#jumlah_bayar_non_tunai').val(0);
+        sum_total_pembayaran();
       }
-
-    });
-
+      
+  });
+    
 })
-
-function get_resume_billing(){
-  $.getJSON("billing/Billing/getDetailLess/<?php echo $no_registrasi; ?>/<?php echo $tipe; ?>", '' , function (data) {
-    $('#resume_billing').html(data.html);
-    
-    if( $('#perusahaan_penjamin').val() != 'UMUM' ){
-      $('#pembayar').val( $('#perusahaan_penjamin').val() );
-      // apend to table
-      if( $('#total_nk').val() > 0 ){
-        $('<tr><td>'+$('#perusahaan_penjamin').val()+'</td><td align="right">'+formatMoney($('#total_nk').val())+'</td></tr>').appendTo($('#table_pembayar'));
-      }
-      $('#nama_perusahaan_nk').html( '<span> ( '+$('#perusahaan_penjamin').val()+'</span> )' );
-      $('#jml_nk_dibayarkan').text( formatMoney($('#total_nk').val()) );
-    }else{
-      $('#pembayar').val( $('#nama_pasien_val').val() );
-      // apend to table
-      if( $('#total_nk').val() > 0 ){
-        $('<tr><td>'+$('#nama_pasien_val').val()+'</td><td align="right">'+formatMoney($('#total_nk').val())+'</td></tr>').appendTo($('#table_pembayar'));
-      }
-    }
-    // sisa yang tidak di NK kan
-    var sisa_nk = parseInt($('#total_payment').val()) - parseInt($('#total_nk').val());
-    if( sisa_nk > 0 ){
-      $('<tr><td>'+$('#nama_pasien_val').val()+'</td><td align="right"><span style="font-size: 14px; font-weight: bold; color: red" class="blink_me">'+formatMoney(sisa_nk)+'</span></td></tr>').appendTo($('#table_pembayar'));
-    }
-    
-    // total uang muka atau yang sudah dibayar
-    var total_um_dibayar = parseInt($('#total_uang_muka').val()) + parseInt($('#total_paid').val());
-    $('#jumlah_nk').val( formatMoney($('#total_nk').val()) );
-    $('.jumlah_bayar').val( formatMoney( sisa_nk) );
-    $('#jml_dibayarkan').text( formatMoney( sisa_nk ) );
-    $('#jml_um').text( formatMoney( total_um_dibayar ) );
-
-    // nk + um
-    var nk_um = parseInt( total_um_dibayar ) + parseInt($('#total_nk').val());
-    $('#jml_um_nk').text( formatMoney( nk_um ) );
-    sum_total_pembayaran();
-  })
-}
 
 function sum_total_pembayaran(){
 
-  var total_all = $('#total_payment_all').val();
-  var total_payment = $('#total_payment').val();
-  var total = formatNumberFromCurrency($('#jml_dibayarkan').text());
-  var total_um_nk = formatNumberFromCurrency($('#jml_um_nk').text());
+  preventDefault();
+
   var cash = $('#uang_dibayarkan').val();
-  $('#uang_dibayarkan_text').text( formatMoney(parseInt(cash)) );
+  var sum_class = sumClass('uang_dibayarkan');
 
-  // uang kembali
-  var kembali = parseInt(cash) - parseInt(total);
-  if( parseInt(cash) >= parseInt(total) ){
-    var sisa_tunai = 0;
-    var uang_kembali = kembali;
+  console.log(sum_class + ' sum_class Uang Dibayarkan - sum_total_pembayaran');
+  // console.log(total);
+  $('#total_payment').val(sum_class);
+
+}
+
+function cek_sisa_belum_bayar(div_id){
+  var total_deposit = $('#total_deposit').val();
+  var sum_class = sumClass('uang_dibayarkan');
+  var sisa_blm_bayar = parseInt(total_deposit) - parseInt(sum_class);
+  if (parseInt(sisa_blm_bayar) > 0) {
+    var blm_dibayarkan = sisa_blm_bayar;
   }else{
-    var sisa_tunai = kembali;
-    var uang_kembali = 0;
+    var blm_dibayarkan = 0;
   }
-
-  $('#uang_kembali_text').text( formatMoney(uang_kembali) );
-  // sisa belum dibayar
-  var sisa_blm_bayar = parseInt(total_all) - parseInt(total_um_nk) - (parseInt(total) + parseInt(sisa_tunai) );
-  $('#sisa_blm_dibayar').text( formatMoney(sisa_blm_bayar) );
-
+  $('#'+div_id+'').val(blm_dibayarkan);
+  sum_total_pembayaran();
 }
 
 </script>
@@ -124,43 +126,212 @@ function sum_total_pembayaran(){
   }
 </style>
 
+<form class="form-horizontal" method="post" id="form_billing_kasir_um" action="<?php echo site_url('billing/Billing/process_um')?>" enctype="multipart/form-data" autocomplete="off">
+
 <!-- hidden form -->
 <input type="hidden" value="<?php echo count($result->kasir_data)?>" id="count_kasir">
-<input type="hidden" value="<?php echo $total_paid; ?>" id="total_paid">
 
-<hr class="separator">
+<input name="total_deposit" id="total_deposit" value="<?php echo isset($deposit->nilai_deposit)?$deposit->nilai_deposit : 0;?>" class="form-control" style="text-align: right" type="hidden">
+<input name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($deposit->no_kunjungan)?$deposit->no_kunjungan : 0;?>" class="form-control" style="text-align: right" type="hidden">
 
-<div class="row" id="div_form_payment">
+<input type="hidden" id="total_payment" value="<?php echo isset($deposit->nilai_deposit)?$deposit->nilai_deposit : 0;?>" name="total_payment">
+<input type="hidden" value="<?php echo $result->reg_data->kode_kelompok; ?>" id="id_kel">
+<input type="hidden" id="perusahaan_penjamin" value="<?php echo isset($result->reg_data->nama_perusahaan)?$result->reg_data->nama_perusahaan:'UMUM'?>" name="perusahaan_penjamin">
+<input type="hidden" id="no_registrasi" value="<?php echo $no_registrasi?>" name="no_registrasi">
+<input type="hidden" id="no_mr_val" value="<?php echo isset($result->reg_data->no_mr)?$result->reg_data->no_mr:''?>" name="no_mr_val">
+<input type="hidden" id="nama_pasien_val" value="<?php echo isset($result->reg_data->nama_pasien)?$result->reg_data->nama_pasien:''?>" name="nama_pasien_val">
+<input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($result->reg_data->kode_perusahaan)?$result->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val">
+<input type="hidden" id="kode_kelompok_val" value="<?php echo isset($result->reg_data->kode_kelompok)?$result->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
+<input type="hidden" id="nama_dokter_val" value="<?php echo isset($result->reg_data->nama_pegawai)?$result->reg_data->nama_pegawai:$result->trans_data[0]->nama_dokter?>" name="nama_dokter_val">
+<input type="hidden" id="kode_bag_val" value="<?php echo isset($result->reg_data->kode_bagian_masuk)?$result->reg_data->kode_bagian_masuk:''?>" name="kode_bag_val">
+<input type="hidden" id="kode_bag_ri" value="<?php echo isset($deposit->bag_pas)?$deposit->bag_pas:''?>" name="kode_bag_ri">
 
-  <div class="col-xs-6">
-    <div id="resume_billing"></div>
-    <hr>
-    <div class="col-xs-12">
-      <b>Pembayaran Uang Muka / yang sudah dibayar</b><br>
-      <table width="100%" >
-      <?php
-        $no = 0; 
-        foreach($result->kasir_data as $row_um) : $no++;
-      ?>
+
+<div class="row">
+  <div class="col-xs-12">
+    <div class="pull-left">
+      <table class="table">
         <tr>
-          <td width="20%"><?php echo $no.'. '.$row_um->pembayar?></td>
-          <td width="10%"><a href="#" onclick="PopupCenter('billing/Billing/print_kuitansi?no_registrasi=<?php echo $no_registrasi?>&payment=<?php echo (int)$row_um->bill?>','Cetak Kuitansi', 900, 350)"><?php echo $row_um->seri_kuitansi.'-'.$row_um->no_kuitansi?></a></td>
-          <td width="30%" align="right"><?php echo $this->tanggal->formatDateTime($row_um->tgl_jam)?></td>
-          <td width="20%" align="right" style="font-weight: bold">Rp. <?php echo number_format($row_um->bill)?>,-</td>
+          <?php if(count($um) > 0) :?>
+            <?php 
+              foreach($um as $row_um) : 
+                $total_um[] = $row_um->jumlah;
+            ?>
+              <td style="padding: 10px">
+                  No. <?php echo $row_um->no_kuitansi; ?> <br><i><?php echo $this->tanggal->formatDateTime($row_um->tgl_bayar); ?></i><br>
+                  Total Bayar<br>
+                  <span style="font-size: 14px; font-weight: bold"> <i class="fa fa-check-circle green"></i> <?php echo number_format($row_um->jumlah); ?></span>
+            </td>
+            <?php endforeach; ?>
+          <?php 
+            endif;
+            $nilai_deposit = isset($deposit->nilai_deposit) ? $deposit->nilai_deposit : 0;
+            $sisa_deposit = $nilai_deposit - array_sum($total_um);
+          ?>
         </tr>
-      <?php endforeach; ?>
-      <tr>
-        <td colspan="2"><hr></td>
-      </tr>
-      <tr>
-        <td colspan="3"><b>Sisa yang belum dibayar</b></td>
-        <td align="right" style="font-size: 14px; font-weight: bold; color: red" class="blink_me">Rp. <span id="sisa_blm_dibayar">0</span></td>
-      </tr>
-
-    </table>
+      </table>
+    </div>
+    <div class="pull-right">
+      Nilai Deposit<br>
+      <span style="font-size: 20px; font-weight: bold"> <?php echo isset($deposit->nilai_deposit)?number_format($deposit->nilai_deposit) : 0;?></span>
     </div>
   </div>
+</div>
 
-</div><!-- /.row -->
+<div class="row" id="div_form_payment">
+  
+  <div class="col-xs-12">
 
+    <!-- <div class="form-group">
+      <label class="control-label col-md-3">Pembayar (a.n)</label>
+      <div class="col-md-9">
+        <input name="pembayar" id="pembayar" value="<?php echo $result->reg_data->nama_pasien?>" class="form-control" type="text">
+      </div>
+    </div> -->
 
+    <!-- <div class="form-group" id="">
+      <label class="control-label col-md-3">Kategori Pasien</label>
+      <div class="col-md-9" id="kode_kelompok_form">
+      <?php ($result->reg_data->kode_perusahaan == 120) ? $state='disabled' : $state='';
+        echo $this->master->custom_selection($params = array('table' => 'mt_nasabah', 'id' => 'kode_kelompok', 'name' => 'nama_kelompok', 'where' => array()), $result->reg_data->kode_kelompok , 'kode_penjamin_pasien', 'kode_penjamin_pasien', 'form-control', 'onchange=statusKaryawan(value);', $state) ?>
+      </div>
+    </div> -->
+
+    <hr>
+
+    <div class="form-group">                        
+        <label class="control-label col-md-3">Tanggal Transaksi</label>        
+        <div class="col-md-2">
+            <div class="input-group">
+                <input name="tgl_trans_kasir" id="tgl_trans_kasir"  class="form-control date-picker" type="text" value="<?php echo isset($result->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($result->reg_data->tgl_jam_keluar):$this->tanggal->formatDateTimeToSqlDate($result->reg_data->tgl_jam_masuk);?>">
+                <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-3">Nama Pasien</label>
+      <div class="col-md-9" style="margin-left: 8px; padding-top: 5px">
+        <b><?php echo $result->reg_data->nama_pasien?></b>
+      </div>
+    </div>
+    
+    <div class="form-group" id="metode_pembayaran_form">
+      <label class="control-label col-md-3">Metode Pembayaran</label>
+      <div class="col-md-9" style="padding-top: 3px;padding-left: 20px;padding-right: -20px;">
+        <label>
+          <input name="metode_tunai" id="tunai" type="checkbox" class="ace" value="1" checked>
+          <span class="lbl"> Tunai &nbsp;&nbsp; </span>
+        </label>
+        <label>
+          <input name="metode_debet" id="debet" type="checkbox" class="ace" value="2">
+          <span class="lbl"> Non Tunai (Kartu Debet/Kredit) &nbsp;&nbsp; </span>
+        </label>
+      </div>
+    </div>
+
+    
+    <div id="div_tunai">
+      <hr class="separator">
+      <p><b>PEMBAYARAN TUNAI</b></p>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Uang Yang Dibayarkan</label>
+        <div class="col-md-9">
+          <!-- hidden total yang harus dibayarkan -->
+          <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" value="<?php echo $sisa_deposit; ?>">
+        </div>
+      </div>
+    </div>
+    
+    <div id="div_debet" style="display:none">
+      <hr>
+      <p><b>PEMBAYARAN NON TUNAI</b></p>
+      
+      <div class="form-group">
+        <label class="control-label col-md-3">Jenis kartu</label>
+        <div class="col-md-9" style="padding-top: 3px; margin-left: 5px">
+          <label>
+            <input type="radio" class="ace" name="jenis_kartu" value="debet" checked>
+            <span class="lbl"> Debet</span>
+          </label>
+
+          <label>
+            <input type="radio" class="ace" name="jenis_kartu" value="kredit">
+            <span class="lbl"> Kredit</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Jumlah Pembayaran Non Tunai</label>
+        <div class="col-md-9">
+        <input name="jumlah_bayar_non_tunai" id="jumlah_bayar_non_tunai" value="" class="format_number uang_dibayarkan form-control" style="text-align: right" type="text" oninput="sum_total_pembayaran()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Bank</label>
+        <div class="col-md-9">
+          <?php echo $this->master->custom_selection_with_label($params = array('table' => 'mt_bank', 'id' => 'kode_bank', 'name' => 'nama_bank', 'label' => 'acc_no', 'where' => array() ), '' , 'kd_bank_non_tunai', 'kd_bank_non_tunai', 'form-control', '', '') ?>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Nomor Kartu</label>
+        <div class="col-md-9">
+          <input name="nomor_kartu_non_tunai" id="nomor_kartu_non_tunai" value="" class="form-control" type="text">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-3">Nomor Batch</label>
+        <div class="col-md-9">
+          <input name="nomor_batch_non_tunai" id="nomor_batch_non_tunai" value="" class="form-control" type="text">
+        </div>
+      </div>
+    </div>
+
+    <hr class="separator">
+    <p><b>PETUGAS KASIR</b></p>
+    <div class="form-group">
+      <label class="control-label col-md-2">Shift</label>
+      <div class="col-md-3">
+        <select class="form-control" name="shift">
+          <option value="1">Pagi</option>
+          <option value="2">Siang</option>
+          <option value="3">Malam</option>
+        </select>
+      </div>
+      <label class="control-label col-md-2">Loket</label>
+      <div class="col-md-2">
+        <select class="form-control" name="loket">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+      <div class="col-md-4" style="margin-left:-4%">
+        <input type="text" class="form-control" name="petugas" style="width: 100% !important" value="<?php echo $this->session->userdata('user')->fullname?>" readonly>
+      </div>
+    </div>
+    
+    
+    <div class="form-actions center">
+      <button type="reset" id="btnReset" class="btn btn-sm btn-danger">
+        <i class="ace-icon fa fa-close icon-on-right bigger-110"></i>
+        Batal
+      </button>
+      <button type="submit" id="btnSave" name="submit" class="btn btn-sm btn-info">
+        <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+        Submit
+      </button>
+    </div>
+
+  </div><!-- /.col -->
+
+</div>
+
+</form>

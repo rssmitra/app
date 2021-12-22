@@ -19,16 +19,11 @@ $(document).ready(function(){
     //   $('#div_form_payment').load('billing/Billing/payment_success/'+$('#no_registrasi').val()+'');
     // }
 
-    // defult pembayaran
-    var sisa_nk = parseInt($('#total_payment').val()) - parseInt($('#total_nk').val());
-
     get_resume_billing();
-
-    $('#uang_dibayarkan').val(formatMoney(sisa_nk));
     $('#uang_dibayarkan').focus();
-    console.log($('#array_data_billing').val());
+    // console.log($('#array_data_billing').val());
     if($('#array_data_billing').val() == 0){
-      $('#alert_no_checked').html('<div class="alert alert-danger" style="margin-top: 29px;line-height: 0px;"><span><strong><i class="fa fa-info-circle red bigger-120"></i> Peringatan !</strong></span> Tidak ada data yang di ceklist, silahkan "Reload Billing" untuk mengetahui data terbaru.</div>');
+      $('#alert_no_checked').html('<div class="alert alert-danger" style="margin-top: 29px;"><span><strong><i class="fa fa-info-circle red bigger-120"></i> Peringatan !</strong></span> Tidak ada data yang di ceklist, silahkan "Reload Billing" untuk mengetahui data terbaru.</div>');
       $('#btnSave').attr('disabled', true);
     }
 
@@ -114,7 +109,7 @@ $(document).ready(function(){
     });
 
     let id_kel = $('#id_kel').val();
-    console.log('kode kelompok '+ id_kel);
+    // console.log('kode kelompok '+ id_kel);
     statusKaryawan(id_kel);
 
 })
@@ -122,7 +117,7 @@ $(document).ready(function(){
 function get_resume_billing(){
   $.getJSON("billing/Billing/getDetailLess/<?php echo $no_registrasi; ?>/<?php echo $tipe; ?>", '' , function (data) {
     $('#resume_billing').html(data.html);
-    console.log($('#no_sep_val').val());
+    // console.log($('#no_sep_val').val());
     var no_sep = $('#no_sep_val').val();
     if( $('#perusahaan_penjamin').val() != 'UMUM' ){
       $('#pembayar').val( $('#perusahaan_penjamin').val() );
@@ -145,20 +140,23 @@ function get_resume_billing(){
       }
     }
     // sisa yang tidak di NK kan
-    var sisa_nk = parseInt($('#total_payment').val()) - parseInt($('#total_nk').val());
+    
+    var total_um_dibayar = parseInt($('#total_uang_muka').val()) + parseInt($('#total_paid').val());
+    var sisa_nk = parseInt($('#total_payment').val()) - (parseInt($('#total_nk').val()) + parseInt(total_um_dibayar));
+    $('#uang_dibayarkan').val(sisa_nk);
     if( sisa_nk > 0 ){
       $('<tr><td><input type="text" name="pembayar" class="form-control" style="border-radius: 4px !important; border: none; box-shadow: 0 0 0 0.2rem rgba(193, 255, 155, 0.25) !important;" value="'+$('#nama_pasien_val').val()+'"></td><td align="right" style="padding-top: 7px;"><span style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">'+formatMoney(sisa_nk)+'</span></td></tr>').appendTo($('#table_pembayar'));
     }
     
     // total uang muka atau yang sudah dibayar
-    var total_um_dibayar = parseInt($('#total_uang_muka').val()) + parseInt($('#total_paid').val());
+    
     $('#jumlah_nk').val( formatMoney($('#total_nk').val()) );
     $('#jumlah_bayar_tunai').val( sisa_nk );
     $('.jumlah_bayar').text( formatMoney( sisa_nk) );
     $('#uang_dibayarkan').text( formatMoney( sisa_nk ) );
-    $('#jml_dibayarkan').text( formatMoney( sisa_nk ) );
     $('#jml_um').text( formatMoney( total_um_dibayar ) );
-
+    
+    
     // hide form bayar tunai 
     if( sisa_nk == 0 ){
         $('#div_tunai').hide();
@@ -168,6 +166,12 @@ function get_resume_billing(){
     // nk + um
     var nk_um = parseInt( total_um_dibayar ) + parseInt($('#total_nk').val());
     $('#jml_um_nk').text( formatMoney( nk_um ) );
+
+    var jml_dibayarkan = sisa_nk - nk_um;
+    $('#jml_dibayarkan').text( formatMoney( sisa_nk ) );
+    
+
+
     sum_total_pembayaran();
   })
 }
@@ -183,7 +187,7 @@ function sum_total_pembayaran(){
   var jml_diskon = formatNumberFromCurrency($('#jml_diskon_internal').text());
   var sum_class = sumClass('uang_dibayarkan');
   
-  // console.log(sum_class + ' sum_class Uang Dibayarkan - sum_total_pembayaran');
+  console.log(total_um_nk + ' Uang Muka');
   // console.log(total);
 
   // diskon
@@ -191,13 +195,15 @@ function sum_total_pembayaran(){
   // $('#jml_diskon_internal').text(formatMoney(parseInt(diskon_rp)));
   // $('#nominal_diskon').val(diskon_rp);
   // console.log('Diskon RP : '+diskon_rp);
-  // console.log('total : '+total);
+  
   // console.log('Diskon jml : '+jml_diskon);
 
+  var uang_dibayarkan_txt = (parseInt(sum_class));
+  $('#uang_dibayarkan_text').text( formatMoney(uang_dibayarkan_txt) );
 
   // uang kembali
-  var kembali = parseInt(cash) - parseInt(total);
-  if( parseInt(cash) >= parseInt(total) ){
+  var kembali = parseInt(uang_dibayarkan_txt) - parseInt(total);
+  if( parseInt(uang_dibayarkan_txt) >= parseInt(total) ){
     var sisa_tunai = 0;
     var uang_kembali = kembali;
   }else{
@@ -207,6 +213,7 @@ function sum_total_pembayaran(){
   
 
   $('#uang_kembali_text').text( formatMoney(uang_kembali) );
+  $('#change').val( uang_kembali );
   // sisa belum dibayar
   var sisa_blm_bayar = parseInt(total) - parseInt(sum_class);
   if (parseInt(sisa_blm_bayar) > 0) {
@@ -216,9 +223,13 @@ function sum_total_pembayaran(){
   }
   $('#sisa_blm_dibayar').text( formatMoney(blm_dibayarkan) );
 
-  $('#uang_dibayarkan_text').text( formatMoney(parseInt(sum_class)) );
-
-  // $('#jml_nk_dibayarkan').text( formatMoney($('#total_nk').val()) );
+  // uang dibayarkan setelah dipotong uang muka 
+  // console.log('sum_class : '+sum_class);
+  // console.log('total_um_nk : '+total_um_nk);
+  // console.log('total : '+total);
+  
+  
+  
 
   statButton();
 
@@ -243,10 +254,10 @@ function statButton(){
   let int_sisa_blm_dibayar = formatNumberFromCurrency($('#sisa_blm_dibayar').text());
   if (int_sisa_blm_dibayar == 0){
     $('#btnSave').removeAttr("disabled");
-    console.log('disabled');
+    // console.log('disabled');
   }else{
     $('#btnSave').attr("disabled", true);
-    console.log('enabled');
+    // console.log('enabled');
   }
 }
 
@@ -258,7 +269,7 @@ function statusKaryawan(id){
   var total = formatNumberFromCurrency($('#jumlah_bayar_tunai').text());
 
   if ( kode_kel != 0 && kode_kel != 1 && kode_kel !=2 && kode_kel !=3 && kode_kel !=5 && kode_kel !=6 && kode_kel !=10 && kode_kel !=null ){
-    console.log('Bisa Bon Karyawan + Diskon');
+    // console.log('Bisa Bon Karyawan + Diskon');
     // console.log(kode_kel);
     $('#hutang_nk').removeAttr("disabled");
     $('#div_bon_karyawan').show();
@@ -457,7 +468,7 @@ function sum_um_nk_diskon(){
         <div class="form-group" id="">
           <label class="control-label col-md-4">Kategori Pasien</label>
           <div class="col-md-8" id="kode_kelompok_form">
-          <?php ($result->reg_data->kode_perusahaan == 120) ? $state='disabled' : $state='';
+          <?php ($result->reg_data->kode_perusahaan == 120) ? $state='readonly' : $state='';
             echo $this->master->custom_selection($params = array('table' => 'mt_nasabah', 'id' => 'kode_kelompok', 'name' => 'nama_kelompok', 'where' => array()), $result->reg_data->kode_kelompok , 'kode_penjamin_pasien', 'kode_penjamin_pasien', 'form-control', 'onchange=statusKaryawan(value);', $state) ?>
           </div>
         </div>
@@ -696,6 +707,8 @@ function sum_um_nk_diskon(){
           <tr>
             <td>Uang Kembali</td>
             <td align="right" style="font-size: 14px; font-weight: bold; color: blue">Rp. <span id="uang_kembali_text">0</span></td>
+            <!-- hidden change -->
+            <input type="hidden" name="change" id="change" value="0" >
           </tr>
           <tr>
             <td colspan="2"><hr></td>

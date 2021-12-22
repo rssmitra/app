@@ -269,7 +269,8 @@ final Class Master {
 
 				foreach($data as $row){
 					$sel = $nid==$row[$custom['id']]?'selected':'';
-					$field.='<option value="'.$row[$custom['id']].'" '.$sel.' >'.$row[$custom['id']].' - '.strtoupper($row[$custom['name']]).'</option>';
+					$add_label = isset($custom['label']) ? $row[$custom['label']] : $row[$custom['id']];
+					$field.='<option value="'.$row[$custom['id']].'" '.$sel.' >'.$add_label.' - '.strtoupper($row[$custom['name']]).'</option>';
 				}	
 			
 		$field.='

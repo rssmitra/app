@@ -433,7 +433,11 @@ function rollback(no_registrasi, no_kunjungan){
                   </li>
 
                   <li class="hover">
-                    <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/viewDetailBillingKasirRI/<?php echo $value->no_registrasi?>/RI?flag=" id="tabs_billing_pasien" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-money"></i><span class="menu-text"> Pembayaran </span></a><b class="arrow"></b>
+                    <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/payment_um_view/<?php echo $value->no_registrasi?>/RI?flag=&ID=<?php echo $id?>" id="tabs_billing_pasien" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-money"></i><span class="menu-text"> Uang Muka </span></a><b class="arrow"></b>
+                  </li>
+
+                  <li class="hover">
+                    <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/viewDetailBillingKasirRI/<?php echo $value->no_registrasi?>/RI?flag=" id="tabs_billing_pasien" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-credit-card"></i><span class="menu-text"> Pembayaran </span></a><b class="arrow"></b>
                   </li>
 
                   <li class="hover">

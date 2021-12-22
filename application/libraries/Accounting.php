@@ -259,8 +259,6 @@
 		return $account;
 	}
 
-	
-	
 	function get_jurnal_kredit_dokter($config){
 
 		$CI =&get_instance();
@@ -289,6 +287,28 @@
 		}
 
 		return $getData;
+
+	}
+
+	function get_jurnal_transaksi_um($config, $flag){
+
+		if ($flag == 'debet') {
+			$data_jurnal["acc_no"] = '101010102';
+			$data_jurnal["tipe_tx"] = 'D';
+			$data_jurnal["nominal"] = $config['transaksi']['bill'];
+			$uraian="Penerimaan UM : [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
+			$data_jurnal["keterangan"] = $uraian;
+		}
+
+		if ($flag == 'kredit') {
+			$data_jurnal["acc_no"] = '201020301';
+			$data_jurnal["tipe_tx"] = 'K';
+			$data_jurnal["nominal"] = $config['transaksi']['bill'];
+			$uraian="Uang Muka: [".$config['transaksi']['nama_pasien']."] "; //Catatan Keterangan
+			$data_jurnal["keterangan"] = $uraian;
+		}
+		
+		return $data_jurnal;
 
 	}
 

@@ -23,6 +23,7 @@ class Reg_pasien_model extends CI_Model {
 	private function _main_query($params=''){
 		
 		$this->db->select($this->select);
+		$this->db->select('CAST(tgl_lhr as DATE) as tgl_lahir');
 		
 		$this->db->from($this->table);
 

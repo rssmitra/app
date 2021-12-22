@@ -270,13 +270,18 @@ function checkedNk(kode) {
 
                                             <?php
                                                 if($value_data->kode_tc_trans_kasir==NULL){
-
+                                                     
                                                     $cheked = ( $value_data->kode_perusahaan == 120 ) ? 'checked' : ( $value_data->status_nk ==  1 ) ? 'checked' : '';
+                                                        
+                                                    if( $row_s[0]->tgl_keluar == NULL ){
+                                                        echo '<i class="fa fa-times-circle red bigger-120"></i>';
+                                                    }else{
                                                         echo '<label>
                                                                 <input name="checklist_nk" id="selected_nk_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" type="checkbox" class="checklist_nk_'.$row_s[0]->kode_bagian.' ace" '.$cheked.' onclick="checkedNk('.$value_data->kode_trans_pelayanan.')">
                                                                 <span class="lbl"></span>
                                                             </label>';
-                                                    
+                                                    }
+
                                                 }else{
                                                     $label_nk = ( $value_data->status_nk ==  1 ) ? '<i class="fa fa-check green bigger-120"></i>' : '';
 
@@ -299,10 +304,10 @@ function checkedNk(kode) {
                                         </td>
 
                                         <td width="80px" align="right">
-                                                
                                             <span id="subtotal_<?php echo $value_data->kode_trans_pelayanan?>"><?php echo number_format($subtotal)?>,-</span>
                                             <input type="hidden" name="" id="subtotal_hidden_<?php echo $value_data->kode_trans_pelayanan?>" class="class_subtotal" value="<?php echo $subtotal?>">
                                         </td>
+
                                     </tr>
                                     <?php 
                                         if($value_data->kode_tc_trans_kasir == NULL){

@@ -1595,7 +1595,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function cancel_visit()
     {   
-        echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($_POST);die;
         $this->db->trans_begin();   
         /*update tc_registrasi*/
         $reg_data = array('tgl_jam_keluar' => date('Y-m-d H:i:s'), 'kode_bagian_keluar' => $_POST['kode_bag'], 'status_batal' => 1 );

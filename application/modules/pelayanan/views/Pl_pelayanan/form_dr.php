@@ -324,16 +324,17 @@ function getDataAntrianPasien(){
 
         var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
 
-        if(o.tgl_keluar_poli == null){
-          $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span> </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
-        }
-
-        if(o.tgl_keluar_poli != null){
-          $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_done'));  
-        }
-
+       
         if(o.status_batal == 1){
           $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_cancel'));  
+        }else{
+          if(o.tgl_keluar_poli == null){
+            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span> </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
+          }
+
+          if(o.tgl_keluar_poli != null){
+            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_done'));  
+          }
         }
         
         // sudah dilayani
@@ -358,6 +359,34 @@ function getDataAntrianPasien(){
 
 }
 
+function cancel_visit_dr(no_registrasi, no_kunjungan){
+
+preventDefault();  
+achtungShowLoader();
+if(confirm('Are you sure?')){
+  $.ajax({
+      url: "pelayanan/Pl_pelayanan/cancel_visit",
+      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: $('#kode_bagian_val').val() },            
+      dataType: "json",
+      type: "POST",
+      complete: function (xhr) {
+        var data=xhr.responseText;  
+        var jsonResponse = JSON.parse(data);  
+        if(jsonResponse.status === 200){  
+          $.achtung({message: jsonResponse.message, timeout:5}); 
+          getMenu('pelayanan/Pl_pelayanan/form/'+$('#id_pl_tc_poli').val()+'/'+no_kunjungan+'?no_mr='+$('#no_mr_val').val()+'&form=form_rj');
+        }else{          
+          $.achtung({message: jsonResponse.message, timeout:5});  
+        } 
+        achtungHideLoader();
+      }
+  });
+}else{
+  return false;
+}
+
+
+}
 
 </script>
 
@@ -510,7 +539,7 @@ function getDataAntrianPasien(){
           <div class="box box-primary" id='box_identity'>
               <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-              <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
+              <h3 class="profile-username text-center"><div i_vald="no_mr">No. MR</div></h3>
 
               <ul class="list-group list-group-unbordered">
                   <li class="list-group-item">
@@ -671,7 +700,7 @@ function getDataAntrianPasien(){
             <?php if(empty($value->tgl_keluar_poli)) :?>
             <!-- <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
             <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a> -->
-            <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
+            <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit_dr(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
             <?php else: echo ''; endif;?>
             
           </div>
@@ -727,7 +756,7 @@ function getDataAntrianPasien(){
           <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
           <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
           <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" id="kode_perusahaan_val">
-          <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
+          <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>" id="no_mr_val">
           <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
           <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
           <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian_val">
