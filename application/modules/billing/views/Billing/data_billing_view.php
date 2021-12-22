@@ -228,6 +228,7 @@ function checkedNk(kode) {
                                                         }else{
                                                             echo '<i class="fa fa-times-circle red bigger-120"></i>';
                                                         }
+                                                        // echo '<i class="fa fa-times-circle red bigger-120"></i>';
                                                         
                                                         
                                                     }else{
@@ -274,7 +275,14 @@ function checkedNk(kode) {
                                                     $cheked = ( $value_data->kode_perusahaan == 120 ) ? 'checked' : ( $value_data->status_nk ==  1 ) ? 'checked' : '';
                                                         
                                                     if( $row_s[0]->tgl_keluar == NULL ){
-                                                        echo '<i class="fa fa-times-circle red bigger-120"></i>';
+                                                        if($value_data->kode_perusahaan != 120){
+                                                            echo '<label>
+                                                                <input name="checklist_nk" id="selected_nk_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" type="checkbox" class="checklist_nk_'.$row_s[0]->kode_bagian.' ace" '.$cheked.' onclick="checkedNk('.$value_data->kode_trans_pelayanan.')">
+                                                                <span class="lbl"></span>
+                                                            </label>';
+                                                        }else{
+                                                            echo '<i class="fa fa-times-circle red bigger-120"></i>';
+                                                        }
                                                     }else{
                                                         echo '<label>
                                                                 <input name="checklist_nk" id="selected_nk_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" type="checkbox" class="checklist_nk_'.$row_s[0]->kode_bagian.' ace" '.$cheked.' onclick="checkedNk('.$value_data->kode_trans_pelayanan.')">

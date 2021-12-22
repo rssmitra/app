@@ -623,18 +623,25 @@ class Billing extends MX_Controller {
         }
 
         if( !in_array($_POST['kode_kelompok_val'], array(1,4,7,8,11,12,13,14,15,16)) ){
-            $dataTranskasir["nk_perusahaan"] = $_POST['total_nk'];
-            $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
-            $dataTranskasir["pembayar"] = $_POST['perusahaan_penjamin'];
+            if($_POST['kode_perusahaan_val'] == 120){
+                $dataTranskasir["nk_perusahaan"] = $_POST['total_nk'];
+                $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
+                $dataTranskasir["pembayar"] = $_POST['perusahaan_penjamin'];
+            }else{
+                if($_POST['kode_penjamin_pasien'] == 3){
+                    $dataTranskasir["kode_perusahaan"] = $_POST['kode_perusahaan_val'];
+                    $dataTranskasir["pembayar"] = $_POST['perusahaan_penjamin'];
+                    $nk_asuransi_lainnya = isset($_POST['jumlah_nk_asuransi'])?$_POST['jumlah_nk_asuransi']:0;
+                    $dataTranskasir["nk_perusahaan"] = ($nk_asuransi_lainnya > 0) ? $nk_asuransi_lainnya : $_POST['total_nk'] ;
+                }
+            }
         }else{
             $dataTranskasir["pembayar"] = $_POST['nama_pasien_val'];
             $dataTranskasir["nk_perusahaan"] = 0;
         }
 
-        // NK Asuransi
-        if($_POST['kode_penjamin_pasien'] == 3){
-          $dataTranskasir["nk_perusahaan"] = $_POST['jumlah_nk_asuransi'];
-        }
+        
+
 
         // NK Karyawan untuk Pasien Keluarga Karyawan
         if( in_array($_POST['kode_penjamin_pasien'], array(4, 7, 8, 11, 12, 13, 14, 15, 16)) ){
