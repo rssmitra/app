@@ -100,7 +100,7 @@ class Pl_pelayanan_vk extends MX_Controller {
         $data['status_pulang'] = ($data['value']->status_pulang > 0)?1:0;
         $data['kode_klas'] = $kode_klas;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
-        //echo '<pre>'; print_r($data);die;
+        // echo '<pre>'; print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -170,7 +170,7 @@ class Pl_pelayanan_vk extends MX_Controller {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
         /*get data from model*/
         $list = $this->Pl_pelayanan_vk->get_datatables();
-        //print_r($this->db->last_query());die;
+        // echo '<pre>';print_r($list);die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -208,22 +208,15 @@ class Pl_pelayanan_vk extends MX_Controller {
             $row[] = $row_list->nama_bagian.'<br>'.$row_list->nama_klas;
             // $row[] = '<div class="center">'.$row_list->fullname.'</div>';
 
-
-           
-            if($row_list->tgl_keluar==NULL || empty($row_list->tgl_keluar)){
-                $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
-            }else {
-                /*cek rujuk */
-                $cek_rujuk = $this->Pl_pelayanan_vk->cekRujuk($row_list->no_kunjungan);
-
-                if($row_list->status_batal == 1){
-                    $status_periksa = '<label class="label label-danger"><i class="fa fa-times"></i> Batal Kunjungan</label>';
-                }else{
+            if($row_list->status_batal == 1){
+                $status_periksa = '<label class="label label-danger"><i class="fa fa-times"></i> Batal Kunjungan</label>';
+            }else{
+                if($row_list->tgl_keluar_vk == NULL || empty($row_list->tgl_keluar_vk)){
+                    $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
+                }else {
                     $status_periksa = ($trans_kasir==0)?'<label class="label label-info"><i class="fa fa-money"></i> Lunas</label>':'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
-                }
-                
+                }  
             }
-            
 
             $row[] = '<div class="center">'.$status_periksa.'</div>';
            
@@ -337,7 +330,7 @@ class Pl_pelayanan_vk extends MX_Controller {
 
     public function processPelayananSelesai(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );        
         $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
@@ -382,11 +375,11 @@ class Pl_pelayanan_vk extends MX_Controller {
                 }*/
 
                 /*proses utama pasien selesai*/
-                /*update gd_tc_gawat_darurat*/
+                /*update ri_pasien_vk*/
                 $arrGdTc = array('tgl_keluar' => date('Y-m-d H:i:s') );
-                $this->Pl_pelayanan_vk->update('gd_tc_gawat_darurat', $arrGdTc, array('id_pasien_vk' => $id_pasien_vk ) );
-                /*save logs gd_tc_gawat_darurat*/
-                $this->logs->save('gd_tc_gawat_darurat', $id_pasien_vk, 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($arrGdTc),'id_pasien_vk');                               
+                $this->Pl_pelayanan_vk->update('ri_pasien_vk', $arrGdTc, array('id_pasien_vk' => $id_pasien_vk ) );
+                /*save logs ri_pasien_vk*/
+                
 
                 /*insert log diagnosa pasien th_riwayat pasien*/
                 $riwayat_diagnosa = array(
@@ -573,7 +566,6 @@ class Pl_pelayanan_vk extends MX_Controller {
 
     public function process_data_bayi(){
 
-        
         // form validation
         $this->form_validation->set_rules('nama_bayi', 'Nama Bayi', 'trim|required' );        
         $this->form_validation->set_rules('no_mr_ibu', 'No MR Ibu', 'trim|required');
@@ -610,14 +602,13 @@ class Pl_pelayanan_vk extends MX_Controller {
                 'berat_badan' => $this->form_validation->set_value('berat_badan'),
                 'anus' => $this->form_validation->set_value('anus'),
                 'apgar' => $this->form_validation->set_value('apgar'),
-                'jenis_kelamin' => $this->form_validation->set_value('jenis_kelamin'),
+                'jenis_kelamin' => ($this->form_validation->set_value('jenis_kelamin') == 1)?'L':'P',
                 'dokter_penolong' => $this->form_validation->set_value('dokter_penolong'),
                 'no_gelang' => $this->form_validation->set_value('no_gelang'),
                 'tempat_lahir' => $this->form_validation->set_value('tempat_lahir'),
                 'tgl_jam_lahir' => $this->form_validation->set_value('tgl_jam_lahir').' '.$this->form_validation->set_value('jam_lahir'),
+                'flag_lahir' => NULL,
             );
-
-            // print_r($dataexc);die;
 
             if($this->input->post('id_bayi')==0){
                 $this->Pl_pelayanan_vk->save('ri_bayi_lahir', $dataexc);
@@ -668,53 +659,27 @@ class Pl_pelayanan_vk extends MX_Controller {
     {   
         $this->db->trans_begin();  
 
+        /*tc_kunjungan*/
+        $kunj_data = array('tgl_keluar' => NULL, 'status_keluar' => NULL, 'status_batal' => NULL );
+        $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
+
+        /*update ri_pasien_vk*/
+        $arrGdTc = array('tgl_keluar' => NULL, 'status_batal' => NULL );
+        $this->Pl_pelayanan_vk->update('ri_pasien_vk', $arrGdTc, array('no_kunjungan' => $_POST['no_kunjungan'] ) );
+
+        /*tc_trans_pelayanan*/
+        $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
+        $this->db->update('tc_trans_pelayanan', $trans_data, array('no_kunjungan' => $_POST['no_kunjungan'], 'no_registrasi' => $_POST['no_registrasi'] ) );
+
         $cek_rujuk = $this->Pl_pelayanan_vk->cekRujuk($_POST['no_kunjungan']);
 
         if(!isset($cek_rujuk) OR (isset($cek_rujuk) AND $cek_rujuk->status!=1)){
-             /*update tc_registrasi*/
-            $reg_data = array('tgl_keluaruar' => NULL, 'kode_bagian_keluar' => NULL, 'status_batal' => NULL );
-            $this->db->update('tc_registrasi', $reg_data, array('no_registrasi' => $_POST['no_registrasi'] ) );
-            $this->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi Modul Pelayanan', json_encode($reg_data),'no_registrasi');
-
-
-            /*tc_kunjungan*/
-            $kunj_data = array('tgl_keluar' => NULL, 'status_pulang' => NULL, 'status_batal' => NULL );
-            $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
-            $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
-
-            /*update gd_tc_gawat_darurat*/
-            $arrGdTc = array('tgl_keluar' => NULL, 'status_batal' => NULL );
-            $this->Pl_pelayanan_vk->update('gd_tc_gawat_darurat', $arrGdTc, array('no_kunjungan' => $_POST['no_kunjungan'] ) );
-            /*save logs gd_tc_gawat_darurat*/
-            $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($arrGdTc),'no_kunjungan');
-
-            /*tc_trans_pelayanan*/
-            $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
-            $this->db->update('tc_trans_pelayanan', $trans_data, array('no_kunjungan' => $_POST['no_kunjungan'], 'no_registrasi' => $_POST['no_registrasi'] ) );
-
+            
             if( isset($cek_rujuk) AND $cek_rujuk->status!=1 ){
                 $this->db->where('rg_tc_rujukan.no_kunjungan_lama', $_POST['no_kunjungan']);
                 $this->db->delete('rg_tc_rujukan');
             }
 
-        }else{
-            // echo json_encode(array('status' => 301, 'message' => 'Maaf pasien sudah terdaftar di bagian lain'));
-            // exit;
-
-            /*tc_kunjungan*/
-            $kunj_data = array('tgl_keluar' => NULL, 'status_pulang' => NULL, 'status_batal' => NULL );
-            $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
-            $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
-
-            /*update gd_tc_gawat_darurat*/
-            $arrGdTc = array('tgl_keluar' => NULL );
-            $this->Pl_pelayanan_vk->update('gd_tc_gawat_darurat', $arrGdTc, array('no_kunjungan' => $_POST['no_kunjungan'] ) );
-            /*save logs gd_tc_gawat_darurat*/
-            $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($arrGdTc),'no_kunjungan');
-
-            /*tc_trans_pelayanan*/
-            $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
-            $this->db->update('tc_trans_pelayanan', $trans_data, array('no_kunjungan' => $_POST['no_kunjungan'], 'no_registrasi' => $_POST['no_registrasi'] ) );
         }
 
         if ($this->db->trans_status() === FALSE)

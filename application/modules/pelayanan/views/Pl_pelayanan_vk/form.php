@@ -526,6 +526,7 @@ function reload_page(){
           <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
           <input type="hidden" name="id_pasien_vk" id="id_pasien_vk" value="<?php echo ($id)?$id:''?>">
           <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
+          <input type="hidden" name="kode_dokter_vk" value="<?php echo isset($value->dr_merawat)?$value->dr_merawat:'';?>" id="kode_dokter_vk">
           <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
           <input type="hidden" name="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
           <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
@@ -634,7 +635,7 @@ function reload_page(){
 
           <!-- end action form  -->
             <div class="pull-right" style="margin-bottom:1%">
-              <?php if(empty($value->tgl_keluar)) :?>
+              <?php if(empty($value->tgl_keluar_vk)) :?>
               <a href="#" class="btn btn-xs btn-primary" id="btn_selesai_igd" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
               <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
             <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_vk'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
@@ -674,7 +675,7 @@ function reload_page(){
             <?php if(isset($value) AND $value->status_batal==1) :?>
           <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal</span>
           <?php else:?>
-            <?php if(isset($value) AND $value->tgl_keluar!=NULL) :?>
+            <?php if(isset($value) AND $value->tgl_keluar_vk!=NULL) :?>
             <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
             <?php endif;?>  
           <?php endif;?>

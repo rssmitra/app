@@ -1,6 +1,8 @@
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
+<link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
 
 <script type="text/javascript">
   
@@ -19,6 +21,22 @@
       $(this).prev().focus();    
 
     });  
+
+    $('.timepicker').timepicker({
+        minuteStep: 1,
+        showSeconds: true,
+        showMeridian: false,
+        disableFocus: true,
+        icons: {
+            up: 'fa fa-chevron-up',
+            down: 'fa fa-chevron-down'
+        }
+    }).on('focus', function() {
+        $('.timepicker').timepicker('showWidget');
+    }).next().on(ace.click_event, function(){
+        $(this).prev().focus();
+    });
+    
 
   });
 
@@ -125,8 +143,13 @@
       </div>
     </div>
     <label class="control-label col-sm-1" for="">Jam</label>
-    <div class="col-sm-1">
-       <input type="text" class="form-control" name="jam_lahir" value="<?php echo isset($value->tgl_jam_lahir)?$this->tanggal->formatDateTimeToTime($value->tgl_jam_lahir):''?>">
+    <div class="col-sm-2">
+        <div class="input-group bootstrap-timepicker">
+            <input id="jam_lahir" name="jam_lahir" type="text" class="timepicker form-control" value="<?php echo isset($value->tgl_jam_lahir)?$this->tanggal->formatDateTimeToTime($value->tgl_jam_lahir):''?>">
+            <span class="input-group-addon">
+                <i class="fa fa-clock-o bigger-110"></i>
+            </span>
+        </div>
     </div>
 </div>
 

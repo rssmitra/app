@@ -50,8 +50,22 @@ class Rm_pasien extends MX_Controller {
         $data['title'] = 'Resume Medis Pasien';
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         $data['reg'] = $this->Rm_pasien->get_by_id($no_registrasi);
-        //echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data);die;
         $this->load->view('Rm_pasien/form_edit', $data);
+    }
+
+    public function form_data_pasien($no_mr)
+    {
+        /*breadcrumbs for view*/
+        $this->breadcrumbs->push('Edit function', 'Rm_pasien/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$no_mr);
+        /*define data variabel*/
+        $data_pasien = $this->db->get_where('mt_master_pasien', array('no_mr' => $no_mr))->row();
+        /*load form view*/
+        $data['value'] = $data_pasien;
+        $data['title'] = 'Data Pasien';
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Rm_pasien/form_data_pasien', $data);
     }
 
     public function form_diagnosa($no_registrasi, $tipe='RJ')

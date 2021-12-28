@@ -26,7 +26,7 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+		// $this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=ri_pasien_vk_v.dr_merawat','left');
 		$this->db->join('mt_perusahaan','ri_pasien_vk_v.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
 		$this->db->join('mt_nasabah','ri_pasien_vk_v.kode_kelompok=mt_nasabah.kode_kelompok','left');
@@ -42,7 +42,7 @@ class Pl_pelayanan_vk_model extends CI_Model {
 
 		if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
 			if( $_GET['keyword'] != '' ){
-				$this->db->like(''.$_GET['search_by'].'', $_GET['keyword']);
+				$this->db->like('ri_pasien_vk_v.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
 		}
 
@@ -162,9 +162,7 @@ class Pl_pelayanan_vk_model extends CI_Model {
 
 	public function cekRujuk($no_kunjungan)
 	{
-		
 		return $this->db->get_where('rg_tc_rujukan', array('no_kunjungan_lama' => $no_kunjungan))->row();
-
 	}
 
 	public function get_transaksi_pasien_by_id($no_kunjungan){
@@ -179,6 +177,7 @@ class Pl_pelayanan_vk_model extends CI_Model {
 		$this->db->from('ri_bayi_lahir');
 		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=ri_bayi_lahir.dokter_penolong', 'left' );
 		$this->db->where('mr_ibu', $no_mr_ibu );
+		$this->db->order_by('id_bayi', 'DESC' );
 		$query = $this->db->get();
 		return $query->row();
 	}

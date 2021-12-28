@@ -837,7 +837,7 @@ class References extends MX_Controller {
 
 	public function getBayiRS()
 	{
-		$query = "select  id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir
+		$query = "select  id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir, jenis_kelamin
 					from ri_bayi_lahir
 					where (flag_lahir = 0 or flag_lahir is null) and nama_bayi <> '' and YEAR(tgl_jam_lahir)= ".date('Y')." ";
         $exc = $this->db->query($query);
@@ -1025,14 +1025,20 @@ class References extends MX_Controller {
 
 	public function getTindakanByBagianAutoComplete()
 	{
-		//$where_str = ($_POST['kode_perusahaan']==120) ? 'and nama_tarif like '."'%BPJS%'".'' : 'and nama_tarif not like '."'%BPJS%'".'' ;
+
 		// just for kamar bedah
 		$where_str = ($_POST['kode_bag']=='030901')?'and a.referensi in (select kode_tarif from mt_master_tarif where kode_bagian='."'".$_POST['kode_bag']."'".' and referensi='.$_POST['jenis_bedah'].')':'';
+
+		if(in_array($_POST['kode_bag'], array('030501', '031201'))){
+			$where_kode_bag = "a.kode_bagian IN ('030501', '031201')";
+		}else{
+			$where_kode_bag = "a.kode_bagian="."'".$_POST['kode_bag']."'"."";
+		}
         $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi
 					from mt_master_tarif a
 					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
 					left join mt_master_tarif c on c.kode_tarif=a.referensi
-					where  a.tingkatan=5 and (a.kode_bagian="."'".$_POST['kode_bag']."'"." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
+					where  a.tingkatan=5 and (".$where_kode_bag." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
 					// echo $query;exit;
         $exc = $this->db->query($query)->result();
 

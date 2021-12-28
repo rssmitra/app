@@ -137,7 +137,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['status_pulang'] = (empty($data['value']->tgl_keluar_poli))?0:1;
         $data['kode_klas'] = $kode_klas;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
-        //echo '<pre>'; print_r($data);die;
+        // echo '<pre>'; print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -1614,7 +1614,11 @@ class Pl_pelayanan extends MX_Controller {
             $gd_dt = array('status_batal' => 1, 'tgl_jam_kel' => date('Y-m-d H:i:s') );
             $this->db->update('gd_tc_gawat_darurat', $gd_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
             $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($gd_dt),'no_kunjungan');
-        }else{
+        }elseif($_POST['kode_bag']=='030501'){
+            $vk_dt = array('status_batal' => 1, 'tgl_keluar' => date('Y-m-d H:i:s') );
+            $this->db->update('ri_pasien_vk', $vk_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
+        }
+        else{
             /*pl_tc_poli*/
             $poli_data = array('status_batal' => 1, 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
             $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );

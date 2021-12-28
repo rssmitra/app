@@ -2,7 +2,7 @@
 
 $(document).ready(function(){
     
-    $('#tabs_detail_pasien').load('rekam_medis/Rm_pasien/form_diagnosa/'+$('#no_registrasi_hidden').val()+'');
+    $('#tabs_detail_pasien').load('registration/reg_pasien/form_modal_/'+$('#no_mr').val()+'');
 
     $('#form_rm_pasien').ajaxForm({
       beforeSend: function() {
@@ -74,9 +74,15 @@ if (noMr == '') {
   <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
     <div class="center">
       <ul class="nav nav-list">
+
+        <li class="hover">
+          <a href="#" data-toggle="tab" onclick="getMenuTabs('registration/reg_pasien/form_modal_/<?php echo $value->no_mr; ?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-user bigger-150"></i><span class="menu-text"> Data Pasien</span></a><b class="arrow"></b>
+        </li>
+
         <li class="hover">
           <a href="#" data-toggle="tab" onclick="getMenuTabs('rekam_medis/Rm_pasien/form_diagnosa/<?php echo $no_registrasi; ?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-home bigger-150"></i><span class="menu-text"> Form Resume</span></a><b class="arrow"></b>
         </li>
+
         <li class="hover">
           <a href="#" data-toggle="tab" id="btn_barcode_pasien"><i class="menu-icon fa fa-barcode"></i><span class="menu-text"> Barcode </span></a><b class="arrow"></b>
         </li>

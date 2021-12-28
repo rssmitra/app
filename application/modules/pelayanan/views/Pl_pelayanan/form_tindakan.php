@@ -30,6 +30,8 @@ $(document).ready(function() {
     $('#pl_kode_dokter_hidden1').val( $('#kode_dokter_igd').val() );
   }else if( $('#kode_bagian_val').val()=='050101'){
     $('#pl_kode_dokter_hidden1').val( 55 );
+  }else if( $('#kode_bagian_val').val()=='030501'){
+    $('#pl_kode_dokter_hidden1').val( $('#kode_dokter_vk').val() );
   }else{
     $('#pl_kode_dokter_hidden1').val( $('#kode_dokter_poli').val() );
   }

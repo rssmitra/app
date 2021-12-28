@@ -526,7 +526,7 @@ class Input_pasien_baru extends MX_Controller {
                 //print_r($dataexc);die;
 
                 /*save pasien */
-                $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
+                $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
 
                 /*save logs*/
                 $this->logs->save('mt_master_pasien', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_mt_master_pasien');
