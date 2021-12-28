@@ -1110,12 +1110,13 @@ class References extends MX_Controller {
 
 	public function getTindakanRIByBagianAutoComplete()
 	{
+		// print_r($_POST);die;
         $where_str = ($_POST['kode_perusahaan']==120) ? ($_POST['kode_klas']==1 || $_POST['kode_klas']==2)?'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ':'and nama_tarif like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' : 'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' ;
 
         $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif
 					from mt_master_tarif a
 					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
-					where  a.tingkatan=5 and a.kode_bagian like '03%' and (kode_bagian <> '030501') AND (kode_bagian <> '030901') and a.kode_bagian in ('030001', '031001') and a.nama_tarif like '%".$_POST['keyword']."%' and a.is_active!= 'N' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif order by a.nama_tarif ";
+					where  a.tingkatan=5 and a.kode_bagian like '03%' AND (kode_bagian <> '030901') and a.nama_tarif like '%".$_POST['keyword']."%' and a.is_active!= 'N' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif order by a.nama_tarif ";
 		$exc = $this->db->query($query)->result();
 		// print_r($this->db->last_query());die;
 		$arrResult = [];
@@ -1148,84 +1149,88 @@ class References extends MX_Controller {
 		$this->load->library('tarif');
 		$tarifAktif = $this->tarif->getTarifAktif(trim($_GET['kode']), $_GET['klas']);
 		$exc = $tarifAktif->result();
-		// echo '<pre>'; print_r($tarifAktif->result());die;
-    	$html = '';
-    	$html .= '';
-    	$html .= '<p style="padding: 8px 0px 0px"><b>';
-    	$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
-    	$html .= isset($exc[0]->tingkat)?' | <span style="color: blue">'.$exc[0]->tingkat.'</span>':'';
-    	$html .= isset($exc[0]->tipe_operasi)?' | <span style="color: green">'.$exc[0]->tipe_operasi.'</span>':'';
-    	$html .= isset($exc[0]->nama_klas)?' ('.$exc[0]->nama_klas.' )':'';
-    	$html .= '</b></p>';
-    	$html .= '<input type="hidden" name="kode_tarif" value="'.$exc[0]->kode_tarif.'">';
-    	$html .= '<input type="hidden" name="jenis_tindakan" value="'.$exc[0]->jenis_tindakan.'">';
-    	$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_tarif.'">';
-    	//$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
-    	//$html .= '<input type="hidden" name="kode_klas" value="'.$_GET['klas'].'">';
-    	$html .= '<input type="hidden" name="kode_master_tarif_detail" value="'.$exc[0]->kode_master_tarif_detail.'">';
-    	$html .= '<table class="table table-bordered">';
-    	$html .= '<thead>';
-    	$html .= '<tr>';
-    	$html .= '<th>&nbsp;</th>';
-    	$html .= '<th>Bill dr1</th>';
-    	$html .= '<th>Bill dr2</th>';
-    	$html .= '<th>Bill dr3</th>';
-    	$html .= '<th>Kamar Tindakan</th>';
-    	$html .= '<th>BHP</th>';
-    	$html .= '<th>Alkes</th>';
-    	$html .= '<th>Alat RS</th>';
-    	$html .= '<th>Pendapatan RS</th>';
-    	$html .= '<th>Total Tarif</th>';
-    	$html .= '<th>Revisi ke-</th>';
-    	$html .= '</tr>';
-    	$html .= '</thead>';
-    	foreach ($exc as $key => $value) {
-			if(in_array($key, array(0,1) )) :
-				$bill_rs = isset($value->bill_rs)?$value->bill_rs:0;
-				$bill_dr1 = isset($value->bill_dr1)?$value->bill_dr1:0;
-				$bill_dr2 = isset($value->bill_dr2)?$value->bill_dr2:0;
-				$bill_dr3 = isset($value->bill_dr3)?$value->bill_dr3:0;
-				$kamar_tindakan = isset($value->kamar_tindakan)?$value->kamar_tindakan:0;
-				$bhp = isset($value->bhp)?$value->bhp:0;
-				$alkes = isset($value->alkes)?$value->alkes:0;
-				$alat_rs = isset($value->alat_rs)?$value->alat_rs:0;
-				$pendapatan_rs = isset($value->pendapatan_rs)?$value->pendapatan_rs:0;
-				$total = isset($value->total)?$value->total:0;
-				$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
-	    		$checked = ($key==0)?'checked':'';
-	    		/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
-	    		$html .= '<tr>';
-		    	$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
-		    	/*$html .= '<td align="center">'.$sign.'</td>';*/
-		    	$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
-		    	$html .= '<td align="right">'.number_format($bill_dr2).'</td>';
-		    	$html .= '<td align="right">'.number_format($bill_dr3).'</td>';
-		    	$html .= '<td align="right">'.number_format($kamar_tindakan).'</td>';
-		    	$html .= '<td align="right">'.number_format($bhp).'</td>';
-		    	$html .= '<td align="right">'.number_format($alkes).'</td>';
-		    	$html .= '<td align="right">'.number_format($alat_rs).'</td>';
-		    	$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
-		    	$html .= '<td align="right">'.number_format($total).'</td>';
-		    	$html .= '<td align="center">'.$revisi_ke.'</td>';
-		    	if($key==0){
-			    	$html .= '<input type="hidden" name="total" value="'.round($total).'">';
-			    	$html .= '<input type="hidden" name="bill_dr1" value="'.round($bill_dr1).'">';
-			    	$html .= '<input type="hidden" name="bill_dr2" value="'.round($bill_dr2).'">';
-			    	$html .= '<input type="hidden" name="bill_dr3" value="'.round($bill_dr3).'">';
-			    	$html .= '<input type="hidden" name="kamar_tindakan" value="'.round($kamar_tindakan).'">';
-			    	$html .= '<input type="hidden" name="bill_rs" value="'.round($bill_rs).'">';
-			    	$html .= '<input type="hidden" name="bhp" value="'.round($bhp).'">';
-			    	$html .= '<input type="hidden" name="pendapatan_rs" value="'.round($pendapatan_rs).'">';
-			    	$html .= '<input type="hidden" name="alat_rs" value="'.round($alat_rs).'">';
-			    	$html .= '<input type="hidden" name="alkes" value="'.round($alkes).'">';
-		    	}
+		$html = '';
+		if(isset($exc[0]->kode_tarif)) {
+			// echo '<pre>'; print_r($tarifAktif->result());die;
+			$html .= '';
+			$html .= '<p style="padding: 8px 0px 0px"><b>';
+			$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
+			$html .= isset($exc[0]->tingkat)?' | <span style="color: blue">'.$exc[0]->tingkat.'</span>':'';
+			$html .= isset($exc[0]->tipe_operasi)?' | <span style="color: green">'.$exc[0]->tipe_operasi.'</span>':'';
+			$html .= isset($exc[0]->nama_klas)?' ('.$exc[0]->nama_klas.' )':'';
+			$html .= '</b></p>';
+			$html .= '<input type="hidden" name="kode_tarif" value="'.$exc[0]->kode_tarif.'">';
+			$html .= '<input type="hidden" name="jenis_tindakan" value="'.$exc[0]->jenis_tindakan.'">';
+			$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_tarif.'">';
+			//$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
+			//$html .= '<input type="hidden" name="kode_klas" value="'.$_GET['klas'].'">';
+			$html .= '<input type="hidden" name="kode_master_tarif_detail" value="'.$exc[0]->kode_master_tarif_detail.'">';
+			$html .= '<table class="table table-bordered">';
+			$html .= '<thead>';
+			$html .= '<tr>';
+			$html .= '<th>&nbsp;</th>';
+			$html .= '<th>Bill dr1</th>';
+			$html .= '<th>Bill dr2</th>';
+			$html .= '<th>Bill dr3</th>';
+			$html .= '<th>Kamar Tindakan</th>';
+			$html .= '<th>BHP</th>';
+			$html .= '<th>Alkes</th>';
+			$html .= '<th>Alat RS</th>';
+			$html .= '<th>Pendapatan RS</th>';
+			$html .= '<th>Total Tarif</th>';
+			$html .= '<th>Revisi ke-</th>';
+			$html .= '</tr>';
+			$html .= '</thead>';
+			foreach ($exc as $key => $value) {
+				if(in_array($key, array(0,1) )) :
+					$bill_rs = isset($value->bill_rs)?$value->bill_rs:0;
+					$bill_dr1 = isset($value->bill_dr1)?$value->bill_dr1:0;
+					$bill_dr2 = isset($value->bill_dr2)?$value->bill_dr2:0;
+					$bill_dr3 = isset($value->bill_dr3)?$value->bill_dr3:0;
+					$kamar_tindakan = isset($value->kamar_tindakan)?$value->kamar_tindakan:0;
+					$bhp = isset($value->bhp)?$value->bhp:0;
+					$alkes = isset($value->alkes)?$value->alkes:0;
+					$alat_rs = isset($value->alat_rs)?$value->alat_rs:0;
+					$pendapatan_rs = isset($value->pendapatan_rs)?$value->pendapatan_rs:0;
+					$total = isset($value->total)?$value->total:0;
+					$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
+					$checked = ($key==0)?'checked':'';
+					/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
+					$html .= '<tr>';
+					$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
+					/*$html .= '<td align="center">'.$sign.'</td>';*/
+					$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
+					$html .= '<td align="right">'.number_format($bill_dr2).'</td>';
+					$html .= '<td align="right">'.number_format($bill_dr3).'</td>';
+					$html .= '<td align="right">'.number_format($kamar_tindakan).'</td>';
+					$html .= '<td align="right">'.number_format($bhp).'</td>';
+					$html .= '<td align="right">'.number_format($alkes).'</td>';
+					$html .= '<td align="right">'.number_format($alat_rs).'</td>';
+					$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
+					$html .= '<td align="right">'.number_format($total).'</td>';
+					$html .= '<td align="center">'.$revisi_ke.'</td>';
+					if($key==0){
+						$html .= '<input type="hidden" name="total" value="'.round($total).'">';
+						$html .= '<input type="hidden" name="bill_dr1" value="'.round($bill_dr1).'">';
+						$html .= '<input type="hidden" name="bill_dr2" value="'.round($bill_dr2).'">';
+						$html .= '<input type="hidden" name="bill_dr3" value="'.round($bill_dr3).'">';
+						$html .= '<input type="hidden" name="kamar_tindakan" value="'.round($kamar_tindakan).'">';
+						$html .= '<input type="hidden" name="bill_rs" value="'.round($bill_rs).'">';
+						$html .= '<input type="hidden" name="bhp" value="'.round($bhp).'">';
+						$html .= '<input type="hidden" name="pendapatan_rs" value="'.round($pendapatan_rs).'">';
+						$html .= '<input type="hidden" name="alat_rs" value="'.round($alat_rs).'">';
+						$html .= '<input type="hidden" name="alkes" value="'.round($alkes).'">';
+					}
 
-		    	$html .= '</tr>';
-	    	endif;
-    	}
-    	$html .= '</table>';
+					$html .= '</tr>';
+				endif;
+			}
+			$html .= '</table>';
+		}else{
+			$html .= '<span style="color: red; font-weight: bold">-Tidak ada data tarif ditemukan-</span>';
+		}
 
-    	echo json_encode( array('html' => $html, 'data' => $exc, 'jenis_bedah' => $exc[0]->kode_jenis_bedah) );
+    	echo json_encode( array('html' => $html, 'data' => isset($exc[0])?$exc:[], 'jenis_bedah' => isset($exc[0]->kode_jenis_bedah)?$exc[0]->kode_jenis_bedah:'') );
         
 	}
 
