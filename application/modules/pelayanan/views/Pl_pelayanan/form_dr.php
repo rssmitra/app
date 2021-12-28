@@ -539,7 +539,7 @@ if(confirm('Are you sure?')){
           <div class="box box-primary" id='box_identity'>
               <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-              <h3 class="profile-username text-center"><div i_vald="no_mr">No. MR</div></h3>
+              <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
 
               <ul class="list-group list-group-unbordered">
                   <li class="list-group-item">
