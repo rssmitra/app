@@ -778,7 +778,7 @@ class References extends MX_Controller {
 
 		$id = $kuota_dokter->jd_id; 
 		$kuota_dr = $kuota_dokter->jd_kuota;
-		$sisa = $kuota_dokter->jd_kuota - ($sisa_perjanjian + $log_kuota_current + $sisa_mjkn);
+		$sisa = $kuota_dokter->jd_kuota - ($log_kuota_current + $sisa_mjkn);
 
 		$data = array(
 			'kuota' => $kuota_dr,
