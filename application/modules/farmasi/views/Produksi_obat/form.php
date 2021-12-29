@@ -85,8 +85,8 @@ $(document).ready(function(){
           $('#id_tc_prod_obat').val(jsonResponse.id_tc_prod_obat);
           oTable.ajax.reload();
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

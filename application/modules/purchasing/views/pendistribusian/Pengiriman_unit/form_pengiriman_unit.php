@@ -39,8 +39,8 @@ $(document).ready(function(){
           PopupCenter('purchasing/pendistribusian/Distribusi_permintaan/print_preview/'+jsonResponse.id+'?flag='+jsonResponse.flag+'', 'Cetak Bukti Pengiriman Barang ke Unit', 900, 600);
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

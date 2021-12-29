@@ -122,11 +122,9 @@ $(document).ready(function(){
 
 
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         //achtungHideLoader();        
 
@@ -160,11 +158,9 @@ $(document).ready(function(){
 
           find_pasien_by_keyword( jsonResponse.no_mr );
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         //achtungHideLoader();        
 
@@ -199,11 +195,9 @@ $(document).ready(function(){
           find_pasien_by_keyword( jsonResponse.no_mr );
 
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         //achtungHideLoader();        
 
@@ -247,7 +241,7 @@ $(document).ready(function(){
 
       }      
 
-      }); 
+    }); 
 
       
     $( "#form_cari_pasien" )    
@@ -1864,9 +1858,9 @@ function get_riwayat_medis(){
 
                         <div class="form-group" id="btn_submit" style="display:none">
 
-                            <div class="col-sm-12 no-padding center">
+                            <div class="col-sm-12 no-padding" style="padding-top: 10px">
 
-                                <button type="submit" name="submit" class="btn btn-xs btn-primary">
+                                <button type="submit" name="submit" class="btn btn-xs btn-primary" style="height: 50px !important; font-size: 20px">
 
                                   <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
 

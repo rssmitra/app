@@ -82,11 +82,9 @@ $(document).ready(function(){
           $('#kode_trans_far').val(jsonResponse.kode_trans_far);
           $('#inputKeyObatRacikan').focus();
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }    
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }    
           reload_table();
           achtungHideLoader();
           sum_total_biaya_farmasi();
@@ -499,8 +497,8 @@ function process_selesai(myid){
           reload_table();
         
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
 
       }

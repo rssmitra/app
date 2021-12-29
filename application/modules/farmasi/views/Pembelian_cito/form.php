@@ -167,8 +167,8 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           $('#page-area-content').load('farmasi/Pembelian_cito/preview_transaksi?induk='+$('#induk_cito').val()+'');
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
 

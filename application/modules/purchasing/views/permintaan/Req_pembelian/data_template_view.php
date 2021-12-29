@@ -73,8 +73,8 @@
           $('#total_brg').text( jsonResponse.total_brg );
           get_detail_permintaan_brg();
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     });

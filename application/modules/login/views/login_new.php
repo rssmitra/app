@@ -248,7 +248,7 @@
                     if(jsonResponse.status === 200){
                       window.location = '<?php echo base_url().'main'?>';
                     }else{
-                      $.achtung({message: jsonResponse.message, timeout:5});
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
                     }
                     achtungHideLoader();
                   }
@@ -275,7 +275,7 @@
                     if(jsonResponse.status === 200){
                       window.location = '<?php echo base_url().'main'?>';
                     }else{
-                      $.achtung({message: jsonResponse.message, timeout:5});
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
                     }
                     achtungHideLoader();
                   }
@@ -301,7 +301,7 @@
                     if(jsonResponse.status === 200){
                       window.location = jsonResponse.redirect;
                     }else{
-                      $.achtung({message: jsonResponse.message, timeout:5});
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
                     }
                     achtungHideLoader();
                   }

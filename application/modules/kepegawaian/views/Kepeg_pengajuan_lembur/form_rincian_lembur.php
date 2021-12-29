@@ -56,8 +56,8 @@ $(document).ready(function(){
           $('#tgl_lembur').val('');
           $('#tgl_lembur').val('');
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

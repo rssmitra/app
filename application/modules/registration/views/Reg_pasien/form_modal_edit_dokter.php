@@ -31,11 +31,9 @@
           /*show action after success submit form*/
           $("#tabs_detail_pasien").load("registration/reg_pasien/riwayat_kunjungan/"+jsonResponse.no_mr);
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         achtungHideLoader();        
 

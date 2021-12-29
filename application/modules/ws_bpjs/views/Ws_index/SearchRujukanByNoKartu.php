@@ -40,8 +40,8 @@ $(document).ready(function(){
           $('#diagnosa').text(jsonResponse.result.diagnosa);
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

@@ -45,8 +45,8 @@ $(document).ready(function(){
           $('#form_input_terima_'+jsonResponse.kode_brg).val( jsonResponse.jml_diterima );
           $('#td_input_batch_'+jsonResponse.kode_brg).html('<a href="#" onclick="show_modal_input_batch('+"'"+jsonResponse.kode_brg+"'"+', '+jsonResponse.id_tc_po_det+')">'+jsonResponse.no_batch+'</a>');
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

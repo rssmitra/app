@@ -36,8 +36,8 @@ $(document).ready(function(){
           $('#jenisPeserta').text(jsonResponse.result.jenisPeserta);
           $('#statusPeserta').text(jsonResponse.result.statusPeserta);
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

@@ -81,11 +81,9 @@ $(document).ready(function(){
 
           }
           
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         achtungHideLoader();        
 

@@ -37,8 +37,8 @@ $(document).ready(function(){
           PopupCenter('keuangan/Keu_trans_umum/preview_kuitansi/'+jsonResponse.id+'','Cetak PO',900,650);
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

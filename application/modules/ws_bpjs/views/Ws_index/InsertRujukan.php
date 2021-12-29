@@ -140,8 +140,8 @@ $(document).ready(function(){
         if(jsonResponse.status == 200){
           $.achtung({message: jsonResponse.message, timeout:5});
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

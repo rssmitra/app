@@ -31,8 +31,8 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           getMenuTabs('adm_pasien/loket_kasir/Adm_resume_lhk/get_data?method=tunai&from_tgl=<?php echo $date?>&flag='+$('#flag').val()+'', 'tab_content_data');
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

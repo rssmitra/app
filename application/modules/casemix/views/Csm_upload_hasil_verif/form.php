@@ -119,8 +119,8 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           getMenu('casemix/Csm_upload_hasil_verif');
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

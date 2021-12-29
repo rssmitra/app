@@ -64,11 +64,9 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});     
           getMenu('kamar_bedah/Ok_acc_jadwal_bedah');
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         achtungHideLoader();        
 
