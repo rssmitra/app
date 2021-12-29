@@ -120,8 +120,25 @@ $(document).ready(function() {
             var val_item=item.split(':')[0];
             var val_label=item.split(':')[1];
             console.log(val_item);
-            $('#perusahaan_penjamin').val(val_label);
-            $('#kode_perusahaan_val').val(val_item);
+            // save or update kode perusahaan to transaction
+            if(confirm('Are you sure?')){
+                $('#perusahaan_penjamin').val(val_label);
+                $('#kode_perusahaan_val').val(val_item);
+                $.ajax({
+                    url: "billing/Billing/update_penjamin",
+                    data: {no_reg : $('#no_registrasi').val(), kode_perusahaan : val_item},            
+                    dataType: "json",
+                    type: "POST",
+                    success: function (response) {
+                        // after submit success
+                        alert('Data penjamin berhasil diperbaharui!');
+                    }
+                })
+            }else{
+                // not change
+                $('#perusahaan_penjamin').val('');
+                return false;
+            }
         }
     });
 

@@ -28,6 +28,10 @@ class Regon_info_jadwal_dr_model extends CI_Model {
         
         $this->_main_query();
 
+        if(isset($_GET['kode'])){
+            $this->db->where('jd_kode_spesialis', $_GET['kode']);
+        }
+
         $i = 0;
     
         foreach ($this->column as $item) 
@@ -120,7 +124,7 @@ class Regon_info_jadwal_dr_model extends CI_Model {
 
     public function get_jadwal_by_dr_spesialis($data)
     {
-        $result = $this->db->get_where($this->table, array('jd_kode_dokter' => $data->jd_kode_dokter, 'jd_kode_spesialis' => $data->jd_kode_spesialis) );
+        $result = $this->db->order_by('jd_id', 'ASC')->get_where($this->table, array('jd_kode_dokter' => $data->jd_kode_dokter, 'jd_kode_spesialis' => $data->jd_kode_spesialis) );
         return $result->result_array();
     }
 

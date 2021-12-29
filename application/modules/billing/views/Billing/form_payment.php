@@ -20,6 +20,9 @@ $(document).ready(function(){
     // }
 
     get_resume_billing();
+    
+    
+
     $('#uang_dibayarkan').focus();
     // console.log($('#array_data_billing').val());
     if($('#array_data_billing').val() == 0){
@@ -142,7 +145,7 @@ function get_resume_billing(){
     // sisa yang tidak di NK kan
     
     var total_um_dibayar = parseInt($('#total_uang_muka').val()) + parseInt($('#total_paid').val());
-    var sisa_nk = parseInt($('#total_payment').val()) - (parseInt($('#total_nk').val()) + parseInt(total_um_dibayar));
+    var sisa_nk = parseInt($('#total_payment').val()) - (parseInt($('#total_nk').val()));
     $('#uang_dibayarkan').val(sisa_nk);
     if( sisa_nk > 0 ){
       $('<tr><td><input type="text" name="pembayar" class="form-control" style="border-radius: 4px !important; border: none; box-shadow: 0 0 0 0.2rem rgba(193, 255, 155, 0.25) !important;" value="'+$('#nama_pasien_val').val()+'"></td><td align="right" style="padding-top: 7px;"><span style="font-size: 14px; font-weight: bold; color: red" class="blink_me_xx">'+formatMoney(sisa_nk)+'</span></td></tr>').appendTo($('#table_pembayar'));
@@ -244,7 +247,7 @@ function cek_sisa_belum_bayar(div_id){
   }else{
     var blm_dibayarkan = 0;
   }
-  // console.log(sum_class + 'sum_class uang_dibayarkan - cek_sisa_belum_bayar');
+  
   $('#'+div_id+'').val(blm_dibayarkan);
   sum_total_pembayaran();
 }
@@ -536,7 +539,7 @@ function sum_um_nk_diskon(){
             <label class="control-label col-md-4">Uang Yang Dibayarkan</label>
             <div class="col-md-8">
               <!-- hidden total yang harus dibayarkan -->
-              <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hidden">
+              <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hiddenxx">
               <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" oninput="sum_total_pembayaran()">
             </div>
           </div>

@@ -1159,6 +1159,39 @@ class Billing extends MX_Controller {
 
     }
 
+    function update_penjamin(){
+        
+        $data = array('kode_perusahaan' => $_POST['kode_perusahaan']);
+        
+        $this->db->trans_begin();
+        // tc_registrasi
+        $this->db->update('tc_registrasi', $data, array('no_registrasi' => $_POST['no_reg']));
+
+        // tc_trans_pelayanan
+        $this->db->update('tc_trans_pelayanan', $data, array('no_registrasi' => $_POST['no_reg']));
+
+        // tc_trans_kasir
+        $this->db->update('tc_trans_kasir', $data, array('no_registrasi' => $_POST['no_reg']));
+
+        // fr_tc_pesan_resep
+        $this->db->update('fr_tc_pesan_resep', $data, array('no_registrasi' => $_POST['no_reg']));
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            
+            $return['status'] = 200;
+            $return['message'] = 'Proses Berhasil Dilakukan';
+            echo json_encode($return);
+        }
+
+    }
+
     
 
 

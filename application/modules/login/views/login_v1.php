@@ -32,6 +32,9 @@
     }
     </script>
     <style type="text/css">
+      body{
+        font-family: cursive !important;
+      }
       .pull-bottom {
         position: relative !important; 
       }
@@ -65,10 +68,10 @@
       <div class="login-container bg-white">
         <div class="p-l-50 p-r-50 p-t-50 sm-p-l-15 sm-p-r-15 sm-p-t-40">
           <left>
-          <img src="<?php echo base_url()?>assets/img/stethoscope.png" width="60px">
+          <img src="<?php echo base_url()?>assets/images/logo.png" width="100px">
 
-          <h2 style="line-height: 25px;">Smart Hospital System 4.0</h2>
-          <small style="padding-top:-30px !important; font-size: 14px">SHS-4.0 v.1.0 &copy;  RS Setia Mitra </small> 
+          <h2 style="line-height: 25px;font-family: cursive !important">Smart Hospital System 4.0</h2>
+          <small style="padding-top:-30px !important; font-size: 14px">SHS-4.0 v.2.0 &copy;  RS Setia Mitra </small> 
           
           </left>
           <p class="p-t-10"><b>LOGIN FORM</b></p>

@@ -484,13 +484,13 @@ class Billing_model extends CI_Model {
         foreach ($data->group as $k => $val) {
             $no++; 
             foreach ($val as $value_data) {
-                if( empty($value_data->kode_tc_trans_kasir) ){
+                // if( empty($value_data->kode_tc_trans_kasir) ){
                     $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
                     /*total*/
                     $sum_subtotal[] = $subtotal;
                     /*resume billing*/
                     $resume_billing[] = $this->Billing->resumeBillingRJ($value_data->jenis_tindakan, $value_data->kode_bagian, $subtotal);
-                }
+                // }
             }        
         }
 
