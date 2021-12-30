@@ -37,8 +37,8 @@ $(document).ready(function(){
           PopupCenter('adm_pasien/pembayaran_hutang/Adm_pembayaran_riwayat/print_bp?ID='+jsonResponse.id+'&flag='+jsonResponse.flag+'','Cetak PO',900,650);
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

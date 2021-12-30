@@ -50,8 +50,8 @@ $(document).ready(function(){
           // id penerimaan brg
           $('#id').val(jsonResponse.id);
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

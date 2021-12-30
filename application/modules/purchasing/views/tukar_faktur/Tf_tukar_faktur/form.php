@@ -34,8 +34,8 @@ $(document).ready(function(){
           PopupCenter('purchasing/tukar_faktur/Tf_riwayat_tukar_faktur/preview_ttf?ID='+jsonResponse.id+'&flag='+jsonResponse.flag+'','BUKTI TANDA TERIMA FAKTUR',900,650);
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

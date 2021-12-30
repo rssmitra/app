@@ -37,8 +37,8 @@ $(document).ready(function(){
           PopupCenter('adm_pasien/penagihan/Adm_tagihan_pelunasan/create_invoice?ID='+jsonResponse.id+'&id_tc_tagih='+jsonResponse.id_tc_tagih+'&flag='+jsonResponse.flag+'','Cetak Invoice Pelunasan',900,650);
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

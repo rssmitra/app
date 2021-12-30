@@ -15,8 +15,8 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           getMenu('pelayanan/Pl_pelayanan_ruang_pemeriksaan');
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

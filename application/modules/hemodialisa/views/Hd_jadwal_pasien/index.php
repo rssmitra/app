@@ -67,11 +67,9 @@ $(document).ready(function(){
           $('select[name="jenis_pendaftaran"]').val('');
 
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         //achtungHideLoader();        
 

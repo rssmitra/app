@@ -32,8 +32,8 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           getMenu('rekam_medis/Rm_pasien/form/'+$('#no_registrasi_hidden').val()+'/'+$('#form_type').val()+'');
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

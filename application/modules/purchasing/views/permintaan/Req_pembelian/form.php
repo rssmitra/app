@@ -38,8 +38,8 @@ $(document).ready(function(){
           $('#page-area-content').load('purchasing/permintaan/Req_pembelian/form/'+jsonResponse.id+'?flag='+jsonResponse.flag+'');
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

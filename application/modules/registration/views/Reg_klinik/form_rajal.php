@@ -49,8 +49,15 @@ $('select[id="reg_dokter_rajal"]').change(function () {
 
         $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {              
 
-            $('#sisa_kuota').val(data.sisa_kuota);              
+            $('#sisa_kuota').val(data.sisa_kuota); 
             $('#message_for_kuota').html(data.message);              
+            if(data.sisa_kuota > 0){
+                $('#btn_submit').show('fast');
+                $('#message_for_kuota_null').html('');
+            }else{
+                $('#btn_submit').hide('fast');
+                $('#message_for_kuota_null').html('<span style="color: red; font-weight: bold; font-style:italic">- Mohon Maaf Kuota Dokter Sudah Penuh !</span>');
+            }
             $('#jd_id').val(data.jd_id); 
         });            
         
@@ -114,6 +121,7 @@ $('#inputDokter').typeahead({
 <input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
 <div class="form-group">
         <div id="message_for_kuota" style="margin-left: 7px"></div>
+        <div id="message_for_kuota_null" style="margin-left: 7px"></div>
     </div>
 </div>
 
@@ -125,11 +133,13 @@ $('#inputDokter').typeahead({
     <input type="hidden" id="asal_pasien_rujuk" name="asal_pasien_rujuk" value="<?php echo isset($bag_asal)?$bag_asal:''?>">
     <input type="hidden" id="tgl_registrasi" name="tgl_registrasi" value="<?php echo date("m/d/Y") ?>">
     <input type="hidden" id="klas" name="klas" value="<?php  echo isset($klas)?$klas:'' ?>">
+
     <div class="form-group">
         <div class="col-sm-2">
             <button type="submit" href="#" class="btn btn-xs btn-primary"><i class="fa fa-save"></i> Submit</button>
         </div>
     </div>
+
     <br>
     <script type="text/javascript">
             

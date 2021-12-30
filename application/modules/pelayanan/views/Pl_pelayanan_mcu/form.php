@@ -84,11 +84,9 @@ $(document).ready(function(){
             
           }
           
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         achtungHideLoader();        
 
@@ -167,11 +165,9 @@ $(document).ready(function(){
           find_pasien_by_keyword( jsonResponse.no_mr );
 
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         //achtungHideLoader();        
 

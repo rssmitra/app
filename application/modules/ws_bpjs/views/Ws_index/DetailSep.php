@@ -181,8 +181,8 @@ $(document).ready(function () {
           window.open("ws_bpjs/Ws_index/view_sep/"+jsonResponse.noSep+"", '_blank');
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

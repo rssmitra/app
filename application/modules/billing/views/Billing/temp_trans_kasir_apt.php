@@ -42,8 +42,8 @@ $(document).ready(function() {
           // PopupCenter('billing/Billing/print_preview_apt?kode_trans_far='804843<?php //echo $kode_trans_far?>'','Cetak',1200,750);
 
         }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }
         achtungHideLoader();
       }
     }); 

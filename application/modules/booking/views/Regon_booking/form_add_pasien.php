@@ -154,11 +154,9 @@ $(document).ready(function(){
           /*show massage success*/
           setTimeout(function(){getMenu(jsonResponse.redirect)} , 1000);   
 
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5});          
-
-        }        
+        }else{
+                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+                    }        
 
         achtungHideLoader();        
 
