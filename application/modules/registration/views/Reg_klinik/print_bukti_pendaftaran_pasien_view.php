@@ -207,8 +207,8 @@
             <span style="margin-top: -0px; padding-left: 10px"> Pelunasan Administrasi</span>
           </td>
         </tr>
-        <tr>
-          <td>&nbsp;</td>
+        <!-- <tr> -->
+          <!-- <td>&nbsp;</td>
           <td>
             <?php if(!in_array($registrasi->kode_bagian_masuk, array('013101','050301') )) :?>
               <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
@@ -217,8 +217,8 @@
               <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 15px; float: left"> 
               <span style="margin-top: -0px; padding-left: 10px"> Biaya APD <?php echo ucwords($_GET['poli'])?> </span>
             <?php endif; ?>
-          </td>
-        </tr>
+          </td> -->
+        <!-- </tr> -->
       </table>
     </td>
     
