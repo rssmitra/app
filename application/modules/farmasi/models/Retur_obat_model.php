@@ -34,6 +34,18 @@ class Retur_obat_model extends CI_Model {
 			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 		}
 
+		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
+			if (in_array($_GET['search_by'], array('no_mr', 'nama_pasien') )) {
+				// no action
+				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
+			}else{
+				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
+			}
+		}else{
+			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
+			
+		}
+
 		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){
 			$this->db->where('fr_tc_far.kode_bagian_asal', $_GET['bagian']);
 		}
@@ -55,16 +67,7 @@ class Retur_obat_model extends CI_Model {
 			$this->db->like('fr_tc_far.no_resep', $_GET['flag']);
 		}
 
-		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
-			if (in_array($_GET['search_by'], array('no_mr', 'nama_pasien') )) {
-				// no action
-			}else{
-				$this->db->where('YEAR(tgl_trans)', date('Y'));
-			}
-		}else{
-			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
-			
-		}
+		
 
 		$i = 0;
 	

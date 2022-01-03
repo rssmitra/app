@@ -539,7 +539,7 @@ function sum_um_nk_diskon(){
             <label class="control-label col-md-4">Uang Yang Dibayarkan</label>
             <div class="col-md-8">
               <!-- hidden total yang harus dibayarkan -->
-              <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hiddenxx">
+              <input name="jumlah_bayar_tunai" id="jumlah_bayar_tunai" value="" class="jumlah_bayar form-control" style="text-align: right" type="hidden">
               <input name="uang_dibayarkan_tunai" id="uang_dibayarkan" class="format_number uang_dibayarkan form-control" type="text" style="text-align: right" oninput="sum_total_pembayaran()">
             </div>
           </div>
