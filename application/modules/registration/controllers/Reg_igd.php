@@ -150,11 +150,11 @@ class Reg_igd extends MX_Controller {
                 'jumlah' => 1,   
             );
             
-            if( in_array($_POST['jenis_pendaftaran'], array(1,4)) ){
-                if($kode_perusahaan != 120){
-                    $this->tarif->insert_tarif_APD($datatarif, 8);
-                }
-            }
+            // if( in_array($_POST['jenis_pendaftaran'], array(1,4)) ){
+            //     if($kode_perusahaan != 120){
+            //         $this->tarif->insert_tarif_APD($datatarif, 8);
+            //     }
+            // }
 
              /*save logs*/
              $this->logs->save('gd_tc_gawat_darurat', $data_gd_tc_gawat_darurat['kode_gd'], 'insert new record on Pendaftaran IGD module', json_encode($data_gd_tc_gawat_darurat),'kode_gd');

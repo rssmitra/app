@@ -357,11 +357,11 @@ class Reg_klinik extends MX_Controller {
                 'jumlah' => 1,   
             );
 
-            if( in_array($_POST['jenis_pendaftaran'], array(1,4)) ){
-                if($kode_perusahaan != 120){
-                    $this->tarif->insert_tarif_APD($datatarif, 8);
-                }
-            }
+            // if( in_array($_POST['jenis_pendaftaran'], array(1,4)) ){
+            //     if($kode_perusahaan != 120){
+            //         $this->tarif->insert_tarif_APD($datatarif, 8);
+            //     }
+            // }
 
             /*parameter untuk print tracer*/
             $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
