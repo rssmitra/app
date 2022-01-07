@@ -55,7 +55,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 								$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
 							}
 			
-							$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y')));
+							$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 120');	
 						}
 			
 						if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
@@ -74,7 +74,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 					if( (isset($_GET['keyword']) AND $_GET['keyword']!='') OR ( (isset($_GET['from_tgl']) AND $_GET['from_tgl']!='') AND (isset($_GET['from_tgl']) AND $_GET['to_tgl']!='') ) ){
 						if(isset($_GET['search_by']) AND $_GET['keyword'] != ''){
 							$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
-							$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y')));
+							$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 120');	
 						}
 			
 						if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {

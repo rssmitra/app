@@ -87,11 +87,11 @@ class Pl_input_inacbgs extends MX_Controller {
             //         </div></div>';
             // $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_input_inacbgs/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
             // $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = '<a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">'.$row_list->no_mr.'<br><span style="color:'.$color.'"><b>'.strtoupper($row_list->nama_pasien).'</b></span><br><small>'.$this->tanggal->formatDateTime($row_list->tgl_masuk).'</small>'.'</a>';
+            $row[] = '<a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')" style="font-weight: bold">'.$row_list->no_mr.'</a><br><span style="color:'.$color.'"><b>'.strtoupper($row_list->nama_pasien).'</b></span><br><small>'.$this->tanggal->formatDateTime($row_list->tgl_masuk).'</small>';
             $row[] = $row_list->nama_bagian.'<br>'.$row_list->klas;
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
-            // $row[] = $row_list->klas;
-            $row[] = ($row_list->klas_titip)?$row_list->klas_titip:'-';
+            $row[] = $row_list->klas;
+            // $row[] = ($row_list->klas_titip)?$row_list->klas_titip:'-';
             // $row[] = number_format($row_list->tarif_inacbgs);
             // $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
             $row[] = $row_list->nama_pegawai;
