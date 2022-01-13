@@ -51,8 +51,6 @@ class Csm_verifikasi_costing_model extends CI_Model {
 			if (isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ) {
 				$this->db->where("csm_rp_kode_bagian = '".$_GET['kode_bagian']."' " );
 			}
-
-			$this->db->where(" YEAR(csm_dokumen_klaim.created_date) = ".date('Y')." " );
 			
 		}else{
 			$this->db->where(" MONTH(csm_dokumen_klaim.created_date) > ".$curr_month." " );
@@ -98,7 +96,7 @@ class Csm_verifikasi_costing_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 
 		$query = $this->db->get();
-		// print_r($this->db->last_query());die;
+		print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
