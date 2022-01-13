@@ -33,7 +33,7 @@ $(document).ready(function(){
     "ordering": false,
     "searching": false,
     "bPaginate": true,
-    "bInfo": false,
+    "bInfo": true,
     "pageLength" : 50,
     // Load data for the table's content from an Ajax source
      "ajax": {
