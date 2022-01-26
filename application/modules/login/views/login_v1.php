@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+TheNautigalDOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <TheNautigal http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
     <title>SHS 4.0 - Form Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Signika&family=The+Nautigal:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Signika&family=TheNautigal:wght@700&display=swap" rel="stylesheet"> -->
     <link rel="apple-touch-icon" href="<?php echo base_url()?>assets/login/pages/ico/60.png">
     <link rel="apple-touch-icon" sizes="76x76" href="<?php echo base_url()?>assets/login/pages/ico/76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="<?php echo base_url()?>assets/login/pages/ico/120.png">
@@ -35,6 +35,9 @@
     }
     </script>
     <style type="text/css">
+      @font-face { font-family: Signika; src: url('assets/fonts/signika.ttf'); } 
+      @font-face { font-family: TheNautigal; src: url('assets/fonts/TheNautigal.ttf'); } 
+
       body{
         font-family: 'Signika', sans-serif !important;
       }
@@ -73,7 +76,7 @@
           <left>
           <img src="<?php echo base_url()?>uploaded/images/31226logo_rssm.png" width="325px" style="margin-left: -10px !important; margin-bottom: -6px">
 
-          <h1 style="line-height: 25px;font-family: 'The Nautigal', cursive !important">Smart Hospital System 4.0</h1>
+          <h1 style="line-height: 25px;font-family: 'TheNautigal', cursive !important">Smart Hospital System 4.0</h1>
           <small style="padding-top:-30px !important;font-size: 16px;font-family: 'Signika', sans-serif !important;">SHS-4.0 v2.0 ©  RS Setia Mitra </small> 
           
           </left>
