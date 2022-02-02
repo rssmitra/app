@@ -1,5 +1,10 @@
 <?php
 
+if( ! ini_get('date.timezone') )
+{
+    date_default_timezone_set('GMT');
+}
+
 /*check directory is exist*/
 $filename = '../uploaded/casemix/merge-'.$_GET['month'].'-'.$_GET['year'];
 if (file_exists($filename)) {
