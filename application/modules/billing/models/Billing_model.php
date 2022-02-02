@@ -6,7 +6,7 @@ class Billing_model extends CI_Model {
 	var $table = 'ri_tc_rawatinap';
 	var $column = array('ri_tc_rawatinap.nama_pasien','mt_karyawan.nama_pegawai');
     var $select = 'ri_tc_rawatinap.bag_pas,ri_tc_rawatinap.no_kunjungan,mt_master_pasien.nama_pasien, kode_ri, ri_tc_rawatinap.status_pulang, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, ri_tc_rawatinap.tgl_masuk, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, mt_bagian.nama_bagian, ri_tc_rawatinap.dr_merawat, ri_tc_rawatinap.kelas_pas,ri_tc_rawatinap.kelas_titipan, ri_tc_rawatinap.kode_ruangan, mt_klas.nama_klas';
-    var $fields = array('bill_kamar_perawatan','bill_kamar_icu','bill_tindakan_inap','bill_tindakan_oksigen','bill_tindakan_bedah','bill_tindakan_vk','bill_obat','bill_ambulance','bill_dokter','bill_apotik','bill_lain_lain','bill_adm','bill_ugd','bill_rad','bill_lab','bill_fisio','bill_klinik','bill_pemakaian_alat', 'bill_tindakan_luar_rs', 'bill_bpako', 'bill_sarana_rs');
+    var $fields = array('bill_kamar_perawatan','bill_kamar_icu','bill_tindakan_inap','bill_tindakan_oksigen','bill_tindakan_bedah','bill_tindakan_vk','bill_obat','bill_ambulance','bill_dokter','bill_apotik','bill_lain_lain','bill_adm','bill_ugd','bill_rad','bill_lab','bill_fisio','bill_klinik','bill_pemakaian_alat', 'bill_tindakan_luar_rs', 'bill_bpako', 'bill_sarana_rs', 'bill_tindakan_hd');
 	
 
 	var $order = array('ri_tc_rawatinap.no_kunjungan' => 'DESC');
@@ -618,8 +618,8 @@ class Billing_model extends CI_Model {
         /*html data untuk tampilan*/
         $dataRI = $this->getDataRI($no_registrasi);
         //print_r($this->db->last_query());die;
+        // echo '<pre>';print_r($data->group);die;
         $no=1;
-        //print_r($data->group);die;
         foreach ($data->group as $k => $val) {
             foreach ($val as $value_data) {
                 $subtotal = $this->Billing->get_total_tagihan($value_data);
@@ -650,7 +650,7 @@ class Billing_model extends CI_Model {
         $html .= '</table>';
         $html .= '</br>';
        
-        //print_r($resume_billing);die;
+        // echo '<pre>';print_r($resume_billing);die;
 
         if( isset($resume_billing) ) :
         /*split resume billing*/
@@ -722,7 +722,7 @@ class Billing_model extends CI_Model {
             $html .= '<th width="100px" class="center">Subtotal (Rp.)</th>';
         $html .= '</tr>'; 
         $no=1;
-        //echo '<pre>';print_r($split_billing);die;
+        // echo '<pre>';print_r($split_billing);die;
         foreach ($split_billing as $k => $val) {
             /*total*/
             if((int)$val['subtotal'] > 0){
@@ -912,7 +912,7 @@ class Billing_model extends CI_Model {
                     $kode_trans_pelayanan['bill_tindakan_inap'] = $data->kode_trans_pelayanan;
                 }
             }elseif( $str_type == '01'){
-                if(strpos($data->nama_tindakan, 'Hemodialis') !== false){
+                if(in_array($data->kode_bagian, array('013101'))){
                     $bill['bill_tindakan_hd'] = $subtotal;
                     $kode_trans_pelayanan['bill_tindakan_hd'] = $data->kode_trans_pelayanan;
                 }else{
@@ -1329,6 +1329,9 @@ class Billing_model extends CI_Model {
                 break;
             case 'bill_bpako':
                 $title_name = 'BPAKO';
+                break;
+            case 'bill_tindakan_hd':
+                $title_name = 'Hemodialis';
                 break;
             case 'bill_sarana_rs':
                 $title_name = 'Sarana '.COMP_FLAG.'';

@@ -3,6 +3,7 @@
 if( ! ini_get('date.timezone') )
 {
     date_default_timezone_set('GMT');
+    date_default_timezone_set('Asia/Bangkok');
 }
 
 /*check directory is exist*/
@@ -28,7 +29,7 @@ include 'PDFMerger-master/PDFMerger.php';
 
 $pdf = new PDFMerger; // or use $pdf = new \PDFMerger; for Laravel
 
-$file_name_merge_emr = 'EMR-'.$_GET['noreg'].'-'.date('Ymd');
+$file_name_merge_emr = 'EMR-'.$_GET['noreg'];
 
 foreach ($_GET as $key => $value) {
 	if ( !in_array($key, array('action','noreg','sep','tipe','month','year','no_mr'))) {

@@ -1032,15 +1032,20 @@ class Templates extends MX_Controller {
                     $html .= '</tr>';
             }
         }
-        /*biaya materai*/
-            $html .= '<tr>';
-                    $html .= '<td width="7%" align="center"><b>'.$no.'</b></td>';
-                    $html .= '<td width="73%"><b>MATERAI</b></td>';
-                    $html .= '<td width="20%" align="right"><b><i>Subtotal</i>&nbsp;&nbsp;&nbsp; 6,000 </b></td>';
-                    $html .= '</tr>';
-        //$html .= '<hr>';
 
-        $total_plus_materai = array_sum($sum_subtotal) + 6000;
+        /*biaya materai*/
+        $biaya_materai = (array_sum($sum_subtotal) > 5000000) ? 10000 : 0;
+
+        if($biaya_materai > 0){
+            $html .= '<tr>';
+            $html .= '<td width="7%" align="center"><b>'.$no.'</b></td>';
+            $html .= '<td width="73%"><b>MATERAI</b></td>';
+            $html .= '<td width="20%" align="right"><b><i>Subtotal</i>&nbsp;&nbsp;&nbsp; '.number_format($biaya_materai).' </b></td>';
+            $html .= '</tr>';
+        }
+           
+        $total_plus_materai = array_sum($sum_subtotal) + $biaya_materai;
+        
         $html .= '<tr>';
                     $html .= '<td width="100%" align="right"><b>TOTAL Rp. '.number_format($total_plus_materai).'</b></td>';
                     $html .= '</tr>';
