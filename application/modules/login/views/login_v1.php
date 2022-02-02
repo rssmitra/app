@@ -1,7 +1,7 @@
-TheNautigalDOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
-    <TheNautigal http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
     <title>SHS 4.0 - Form Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
