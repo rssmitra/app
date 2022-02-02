@@ -1,9 +1,6 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
-
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
-
 <style>
 .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
     color: red !important;
@@ -14,9 +11,8 @@
 <script>
 
 jQuery(function($) {  
-
-  
-  var disableDates = ["1-1-2021","12-2-2021", "11-3-2021","14-3-2021","2-4-2021","1-5-2021","12-5-2021","13-5-2021","14-5-2021","26-5-2021","1-6-2021","20-7-2021","10-8-2021","17-8-2021","19-10-2021","25-12-2021"];
+  var disableDates = getLiburNasional(<?php echo date('Y')?>);
+  console.log(disableDates);
   $("#tgl_kunjungan").datepicker({
 
     autoclose: true,    
@@ -54,12 +50,12 @@ jQuery(function($) {
         }else{
           if(data.day!=$('#selected_day').val() ){
                 var message = '<div class="alert alert-danger"><strong>Tidak Sesuai !</strong><br>Tanggal Kunjungan tidak sesuai dengan jadwal Praktek Dokter yang anda pilih !</div>';
-                $('#view_msg_kuota').hide('fast');
+                // $('#view_msg_kuota').hide('fast');
           }else{
             
 
             if(data.sisa > 0 ){
-              var msg_kuota = '<p style="font-size: 12px">*Total Pasien Perjanjian '+data.terisi+' orang, Kuota tersedia pada tanggal ini, '+data.sisa+' pasien</p>';
+              var msg_kuota = '<p style="font-size: 12px"> <i class="fa fa-check-circle bigger-120 green"></i> Total Pasien Perjanjian '+data.terisi+' orang, Kuota tersedia pada tanggal ini, '+data.sisa+' pasien</p>';
 
               var message = '<div class="alert alert-block alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><strong><i class="ace-icon fa fa-check"></i> Selesai ! </strong>Apakah anda akan melanjutkan ke proses berikutnya ?</p><p><button type="submit" id="btnSave" class="btn btn-sm btn-success">Lanjutkan</button><a href="#" onclick="getMenu('+"'"+'booking/regon_booking'+"'"+')" class="btn btn-sm btn-danger">Batalkan</a></p></div>';
 
@@ -171,7 +167,9 @@ $(document).ready(function(){
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
+          $('#perusahaan').val(label_item);
           $('#kodePerusahaanHidden').val(val_item);
         }
 
@@ -239,15 +237,10 @@ function formatDate(date) {
         <input type="hidden" name="kode_bagian_hidden" id="kode_bagian_hidden" value="<?php echo isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '';?>">
 
         <div class="form-group">
-
             <label class="control-label col-sm-2">*No.MR</label>
-
             <div class="col-sm-2">
-
                 <input type="text" name="no_mr_show" class="form-control" id="no_mr_show" value="<?php echo $value->no_mr?>" readonly="">
-
             </div>
-
         </div>
 
         <div class="form-group">
@@ -269,15 +262,21 @@ function formatDate(date) {
         <div class="form-group" id="showFormPerusahaan"  <?php echo isset($_GET['kode_perusahaan']) ? ($_GET['kode_perusahaan'] != 0) ? '' : 'style="display:none"' :'style="display:none"';?> >
 
             <label class="control-label col-sm-2">Perusahaan</label>
-
-            <div class="col-sm-6">
-
-                <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
-
+            <div class="col-sm-4">
+                <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="BPJS KESEHATAN"/>
+                <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" value="120"/>
             </div>
 
         </div>
+
+        <?php if($_GET['kode_perusahaan'] == 120) :?>
+          <div class="form-group">
+            <label class="control-label col-sm-2">No SEP Referensi</label>
+            <div class="col-sm-2">
+                <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo $_GET['no_sep']?>"/>
+            </div>
+          </div>
+        <?php endif;?>
 
         <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
 
@@ -306,17 +305,15 @@ function formatDate(date) {
               
               <label class="control-label col-sm-2">Tanggal Kunjungan</label>
               
-              <div class="col-md-4">                
+              <div class="col-md-2">                
                 <div class="input-group">                    
                     <input name="tanggal_kunjungan" id="tgl_kunjungan" value="" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text">
                     <span class="input-group-addon">
                       <i class="ace-icon fa fa-calendar"></i>
                     </span>
                   </div>
-                  <small id="" style="margin-top:1px; padding-left: 8px">*) Hari Minggu & Tanggal Merah Libur</small>
-                  <small id="view_msg_kuota" style="margin-top:1px"></small>
               </div>
-
+              <small id="view_msg_kuota" style="margin-top:1px">*) Hari Minggu & Tanggal Merah Libur</small>
             </div>
 
             <div class="form-group">

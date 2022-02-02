@@ -11,9 +11,9 @@ class Csm_billing_pasien extends MX_Controller {
         /*breadcrumb default*/
         $this->breadcrumbs->push('Index', 'casemix/Csm_billing_pasien');
         /*session redirect login if not login*/
-        if($this->session->userdata('logged')!=TRUE){
-            redirect(base_url().'login');exit;
-        }
+        // if($this->session->userdata('logged')!=TRUE){
+        //     redirect(base_url().'login');exit;
+        // }
         /*load model*/
         $this->load->model('Csm_billing_pasien_model', 'Csm_billing_pasien');
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
@@ -338,8 +338,6 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
             case 'RAD':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                
-                
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
@@ -485,7 +483,7 @@ EOD;
             //kotak form
             
             // update file emr pasien
-            $file_name_merge_emr = 'EMR-'.$reg_data->no_registrasi.'-'.date('Ymd');
+            $file_name_merge_emr = 'EMR-'.$reg_data->no_registrasi;
             $this->Csm_billing_pasien->saveEmr($file_name_merge_emr, $reg_data);
             
             // create directory no_mr
@@ -493,7 +491,6 @@ EOD;
             
         }
 
-        
 
         /*show pdf*/
         //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'I'); 

@@ -109,6 +109,7 @@ hr {
                   </td>
                 </tr>
               </table>
+              <?php if(count($penunjang) > 0) : ?>
               <b>Hasil Penunjang Medis :</b>
               <table class="table table-bordered">
                 <tr>
@@ -136,6 +137,26 @@ hr {
                   </td>
                 </tr>
               </table>
+              <?php endif;?>
+
+              <?php if(count($file) > 0) : ?>
+              <b>File Rekam Medis :</b>
+              <table class="table table-bordered">
+                <tr>
+                  <td>
+                  <?php 
+                    $result_file = isset($file[$value->no_registrasi])?$file[$value->no_registrasi]:array();
+                    foreach($result_file as $row_file) : 
+                      $exp_file = explode('-', $row_file->csm_dex_nama_dok);
+                      $filename = isset($exp_file[0])?$exp_file[0]:'Lampiran File';
+                      if(!in_array($filename, array('SEP','RJ'))) :
+                    ?>
+                    - <a href="#" onclick="show_modal_with_iframe('<?php echo BASE_FILE_RM.$row_file->csm_dex_fullpath?>', '<?php echo $filename; ?>')"><?php echo $filename; ?></a></br>
+                  <?php endif; endforeach; ?>
+                  </td>
+                </tr>
+              </table>
+              <?php endif; ?>
 
               </td>
             </tr>

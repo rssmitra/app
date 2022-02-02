@@ -2127,7 +2127,8 @@ pre.prettyprint {
 .nav-list > li .submenu > li > a {
   display: block;
   position: relative;
-  padding: 7px 0 9px 37px;
+  /* padding: 7px 0 9px 37px; */
+  padding: 8px 0 9px 30px;
   margin: 0;
   border-top-width: 1px;
   border-top-style: dotted;

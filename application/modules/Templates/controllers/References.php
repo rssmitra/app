@@ -208,9 +208,9 @@ class References extends MX_Controller {
                       <thead>
 
                         <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Nama Dokter</th>
-
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Hari</th>
                         <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Jam Praktek</th>
-
+                        <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Kuota</th>
                         <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%); color: white">Keterangan</th>
 
                       </thead>
@@ -218,8 +218,10 @@ class References extends MX_Controller {
                       <tbody>
 
                         <td>'.ucwords($exc->nama_pegawai).'</td>
-                        <td>'.$exc->jd_hari.'<br>'.$time.'</td>
-                        <td>Kuota '.$quota_dokter.'<br>'.$exc->jd_keterangan.'</td>
+                        <td>'.$exc->jd_hari.'</td>
+                        <td>'.$time.'</td>
+                        <td>Kuota '.$quota_dokter.'</td>
+                        <td>'.$exc->jd_keterangan.'</td>
 
                       </tbody>
 
@@ -1953,11 +1955,18 @@ class References extends MX_Controller {
 		$transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11) )->result();
 
 		$penunjang = $this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05')->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')->join('pm_tc_penunjang', 'pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left')->get_where('tc_kunjungan', array('no_mr' => $no_mr) )->result();
+
+		// file emr pasien
+		$emr = $this->db->select('csm_dokumen_export.*, tc_registrasi.no_mr')->join('tc_registrasi', 'tc_registrasi.no_registrasi=csm_dokumen_export.no_registrasi', 'left')->get_where('csm_dokumen_export', array('tc_registrasi.no_mr' => $no_mr))->result();
+		$getDataFile = [];
+		foreach ($emr as $key_file => $val_file) {
+			$getDataFile[$val_file->no_registrasi][] = $val_file;
+		}
 		$getDataPm = [];
 		foreach ($penunjang as $key_pm => $val_pm) {
 			$getDataPm[$val_pm->no_registrasi][] = $val_pm;
 		}
-		// echo '<pre>';print_r($getDataPm);die;
+		// echo '<pre>';print_r($getDataFile);die;
 
 		$getData = array();
 		foreach ($transaksi as $key => $value) {
@@ -1965,6 +1974,7 @@ class References extends MX_Controller {
 		}
 
 		$data = array(
+			'file' => $getDataFile,
 			'penunjang' => $getDataPm,
 			'result' => $result,
 			'obat' => $getData,
@@ -2030,27 +2040,34 @@ class References extends MX_Controller {
 	public function findKodeBooking()
 	{
 		$kode = isset($_POST['kode'])?$_POST['kode']:$_GET['kode'];
-		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs');
+		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, input_tgl');
+		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr AND kode_perusahaan=120 order by no_registrasi DESC) as no_sep');
 		$this->db->from('tc_pesanan');
-		$this->db->like('unique_code_counter', $kode);
-		$this->db->or_like('kode_perjanjian', $kode);
+		// $this->db->where("(unique_code_counter LIKE '%".$kode."' OR kode_perjanjian LIKE '".$kode."%') ");
+		$this->db->where("kode_perjanjian", $kode);
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
 		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter','left');
         $exc = $this->db->get();
 		if ($exc->num_rows() == 0) {
 			echo json_encode(array('status' => 201, 'message' => 'Data tidak ditemukan', 'data' => false ));
 		}else{
+			// get data rencana kontrol
 			$dt = $exc->row();
 			$result = array(
+				'no_sep_lama' => $dt->no_sep,
+				'kode' => $kode,
 				'no_mr' => $dt->no_mr,
 				'nama' => $dt->nama,
 				'kode_poli_bpjs' => $dt->kode_poli_bpjs,
 				'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
+				'tgl_rencana_kontrol' => $this->tanggal->formatDateTimeToSqlDate($dt->jam_pesanan),
 				'nama_dr' => strtoupper($dt->nama_dr),
 				'poli' => strtoupper($dt->nama_bagian),
 				'jam_praktek' => $this->tanggal->formatDateTimeToTime($dt->jam_pesanan),
+				'input_tgl' => $this->tanggal->formatDatedmY($dt->input_tgl),
 			);
-			echo json_encode(array('status' => 200, 'message' => 'Data ditemukan', 'data' => $result ));
+			$html = $this->load->view('Templates/templates/form_surat_kontrol', $result, true);
+			echo json_encode(array('status' => 200, 'message' => 'Data ditemukan', 'data' => $result, 'html' => $html ));
 		}
 	}
 
@@ -2058,33 +2075,26 @@ class References extends MX_Controller {
         
         /*define variable data*/
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
-        
         $keyword = $this->input->post('no_mr');
-
 		/*return search pasien*/
 
 		$data_pasien = $this->Reg_pasien->search_pasien_by_mr( $keyword, array('no_mr','no_ktp') ); 
-		// echo '<pre>'; print_r($data_pasien);die;
-
+		$data_perjanjian = $this->Reg_pasien->get_perjanjian_pasien( $keyword ); 
 		$no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
-
 		$data = array(
-
 			'count' => count($data_pasien),
-
 			'result' => $data_pasien,
-
+			'count_perjanjian' => count($data_perjanjian),
+			'perjanjian' => $data_perjanjian,
 		);
 		
 		if(count($data_pasien) > 0){
-			echo json_encode( array('status' => 200, 'message' => 'Data ditemukan', 'data' => $data_pasien) );
+			echo json_encode( array('status' => 200, 'message' => 'Data ditemukan', 'data' => $data_pasien, 'perjanjian' => $data_perjanjian, 'count_perjanjian' => count($data_perjanjian)) );
 		}else{
 			echo json_encode( array('status' => 201, 'message' => 'Data tidak ditemukan!') );
 			
 		}
 		
-        
-    
 	}
 	
 	public function getRefPm($kode_bagian){

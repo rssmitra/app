@@ -394,7 +394,7 @@ class Pl_pelayanan extends MX_Controller {
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
                             '.$rollback_btn.' '.$cancel_btn.'                            
-                            <li><a href="#" onclick="show_modal('."'pelayanan/Pl_pelayanan/form_perjanjian_modal/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."'".', '."'PERJANJIAN PASIEN'".')">Perjanjian Pasien</a></li>
+                            <li><a href="#" onclick="show_modal('."'pelayanan/Pl_pelayanan/form_perjanjian_modal/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=".$row_list->no_sep."'".', '."'PERJANJIAN PASIEN'".')">Perjanjian Pasien</a></li>
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
@@ -402,7 +402,8 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $no_sep = ($row_list->kode_perusahaan==120)?'<br><b>'.$row_list->no_sep.'</b>':'';
+            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.''.$no_sep:$row_list->nama_kelompok;
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_poli);
             $row[] = $row_list->nama_pegawai;
             $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
@@ -1891,20 +1892,17 @@ class Pl_pelayanan extends MX_Controller {
         $data['kode_bagian'] = $_GET['kode_bagian'];
         $data['kode_dokter'] = $_GET['kode_dokter'];
         $data['kode_perusahaan'] = $_GET['kode_perusahaan'];
-        
-
 
         $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
         
-        $data['booking_id'] = $booking_id;
+        // $data['booking_id'] = $booking_id;
 
+        // if($booking_id!=0){
 
-        if($booking_id!=0){
+        //     $booking_data = $this->db->get_where('regon_booking', array('regon_booking_id' => $booking_id) )->row();
+        //     $data['booking'] = $booking_data;
 
-            $booking_data = $this->db->get_where('regon_booking', array('regon_booking_id' => $booking_id) )->row();
-            $data['booking'] = $booking_data;
-
-        }
+        // }
         
         /*load form view*/
         

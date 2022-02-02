@@ -1,4 +1,8 @@
 <?php
+	if( ! ini_get('date.timezone') )
+	{
+	    date_default_timezone_set('Asia/Bangkok');
+	}
 
 	/*check directory is exist*/
 	$filename = '../uploaded/farmasi/merge-'.$_GET['month'].'-'.$_GET['year'];
@@ -25,7 +29,7 @@
 		if (file_exists($path)) {
 			unlink($path);
 		}
-		$pdf->merge('file', 'sirs-dev/app'.$path); 
+		$pdf->merge('file', 'sirs/app'.$path); 
 	}else{
 		$pdf->merge($_GET['action'], ''.$_GET['sep'].'.pdf'); 
 	}
