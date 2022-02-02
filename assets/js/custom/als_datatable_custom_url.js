@@ -77,13 +77,13 @@ function find_data_reload(result, base_url){
   
     var data = result.data;    
     oTable.ajax.url(base_url+'&'+data).load();
-    $("html, body").animate({ scrollTop: "400px" });
+    // $("html, body").animate({ scrollTop: "400px" });
 
 }
 
 function reset_table(){
     oTable.ajax.url(base_url).load();
-    $("html, body").animate({ scrollTop: "400px" });
+    // $("html, body").animate({ scrollTop: "400px" });
 
 }
 
@@ -110,7 +110,7 @@ function delete_data(myid){
             $.achtung({message: jsonResponse.message, timeout:5});
             reload_table();
           }else{
-            $.achtung({message: jsonResponse.message, timeout:5});
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
           }
           achtungHideLoader();
         }

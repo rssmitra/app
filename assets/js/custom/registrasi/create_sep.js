@@ -53,35 +53,6 @@ $(document).ready(function () {
           }
       });
 
-
-      $('input[name=find_member_by]').click(function(e){
-        var field = $('input[name=find_member_by]:checked').val();
-        $('#showResultData').hide('fast');
-        $('#formDetailInsertSEP').hide('fast');
-
-        if ( field == 'noKartu' ) {
-          $('#searchByNoKartu').show('fast');
-          $('#searchBySEP').hide('fast');
-          $('#showResultData').hide('fast');
-          $('#noRujukanField').hide('fast');
-          $('#byJenisFaskesId').show('fast');
-
-        }else if (field == 'sep') {
-          $('#searchByNoKartu').hide('fast');
-          $('#searchBySEP').show('fast');
-          $('#showResultData').hide('fast');
-          $('#noRujukanField').hide('fast');
-          $('#byJenisFaskesId').hide('fast');
-          
-        }else if (field == 'noRujukan') {
-          $('#searchByNoKartu').hide('fast');
-          $('#searchBySEP').hide('fast');
-          $('#showResultData').hide('fast');
-          $('#noRujukanField').show('fast');
-          $('#byJenisFaskesId').show('fast');
-        }
-      });
-
       $('input[name=jnsPelayanan]').click(function(e){
         var field = $('input[name=jnsPelayanan]:checked').val();
         if ( field == '1' ) {
@@ -157,24 +128,24 @@ $(document).ready(function () {
 
       });
 
-      $('#btnSearchNoRujukan').click(function (e) {
+      $('#btnSearchRujukan').click(function (e) {
           e.preventDefault();
-          var field = $('input[name=find_member_by]:checked').val();
           var jenis_faskes = $('input[name=jenis_faskes]:checked').val();
-          var flag = $('input[name=find_member_by]:checked').val();
-          var noRujukan = $('#noRujukanVal').val();
+          var jenis_pencarian = $('#find_member_by').val();
+          var inputValue = $('#keyvalue').val();
 
           e.preventDefault();
           $.ajax({
             url: 'ws_bpjs/ws_index/searchRujukan',
             type: "post",
-            data: {flag:flag,noRujukan:noRujukan,jenis_faskes:jenis_faskes},
+            data: {flag: jenis_pencarian, keyvalue: inputValue, jenis_faskes: jenis_faskes},
             dataType: "json",
             beforeSend: function() {
               achtungShowLoader();  
             },
             success: function(data) {
               achtungHideLoader();
+
               if(data.status==200){
 
                 var rujukan = data.result.rujukan;
@@ -214,17 +185,24 @@ $(document).ready(function () {
                 $('#catatan').val(rujukan.keluhan);
 
                 /*reset form*/
-                $('#InputKeydokterDPJP').val('');
-                $('#KodedokterDPJP').val('');
+                // $('#InputKeydokterDPJP').val('');
+                // $('#KodedokterDPJP').val('');
 
+                /*show dokter DPJP*/
+                $.getJSON("ws_bpjs/Ws_index/getRef?ref=GetRefDokterDPJPRandom&spesialis="+$('#kodePoliHidden').val()+"&jp="+$('input[name=jnsPelayanan]:checked').val()+"&tgl="+$('#tglSEP').val()+"", '' , function (row) {
+                    $('#KodedokterDPJP').val(row.kode);
+                    $('#InputKeydokterDPJP').val(row.nama.toUpperCase());    
+                    // $('#show_dpjp').val(row.nama.toUpperCase());    
 
+                });
+                
                 $("input[name=jnsPelayanan][value="+pelayanan.kode+"]").attr('checked', true);
 
-                
-
-
               }else{
-                $.achtung({message: data.message, timeout:5});
+                $('#showFormPenjaminKLL').hide('fast');
+                $('#showResultData').hide('fast');
+                $('#formDetailInsertSEP').hide('fast');
+                $.achtung({message: data.message, timeout:5, className: 'achtungFail'});
               }
               
             }
@@ -351,29 +329,32 @@ $(document).ready(function () {
       });
 
       $('#formInsertSep').ajaxForm({
-      beforeSend: function() {
-        achtungShowLoader();  
-      },
-      uploadProgress: function(event, position, total, percentComplete) {
-      },
-      complete: function(xhr) {     
-        var data=xhr.responseText;
-        var jsonResponse = JSON.parse(data);
-        if(jsonResponse.status == 200){
-          $.achtung({message: jsonResponse.message, timeout:5});
-          $('#page-area-content').load(jsonResponse.redirect);
-          $('#noSep').val(jsonResponse.no_sep);
-          /*load sep untuk di print*/
-          window.open("ws_bpjs/Ws_index/view_sep/"+jsonResponse.result+"", '_blank');
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
 
-        }else{
-          $.achtung({message: jsonResponse.message, timeout:5});
+          if(jsonResponse.status == 200){
+
+            $.achtung({message: jsonResponse.message, timeout:5});
+            
+            $('#noSep').val(jsonResponse.no_sep);
+            getMenu('ws_bpjs/ws_index?modWs=InsertSEP');
+            /*load sep untuk di print*/
+            show_modal_medium("ws_bpjs/ws_index/view_sep/"+jsonResponse.no_sep+"", 'SURAT ELEGIBILITAS PASIEN (SEP)');
+
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          }
+          achtungHideLoader();
         }
-        achtungHideLoader();
-      }
-    }); 
+      }); 
 
-    $( "#noNik" )
+      $( "#noNik" )
           .keypress(function(event) {
             var keycode =(event.keyCode?event.keyCode:event.which); 
             if(keycode ==13){
@@ -382,20 +363,20 @@ $(document).ready(function () {
                 $('.btnSearchMember').focus();
               }
               return false;       
-            }
-    });
-
-    $( "#noKartu" )
-      .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-          event.preventDefault();
-          if($(this).valid()){
-            $('.btnSearchMember').focus();
           }
-          return false;       
-        }
-    });
+      });
+
+      $( "#keyvalue" )
+        .keypress(function(event) {
+          var keycode =(event.keyCode?event.keyCode:event.which); 
+          if(keycode ==13){
+            event.preventDefault();
+            if($(this).valid()){
+              $('#btnSearchRujukan').click();
+            }
+            return false;       
+          }
+      });
 
       $('select[name="provinceId"]').change(function () {
         if ($(this).val()) {
@@ -410,51 +391,32 @@ $(document).ready(function () {
         } else {
             $('#regencyId option').remove()
         }
-    });
+      });
 
-    $('select[name="regencyId"]').change(function () {
-        if ($(this).val()) {
-            $.getJSON("Templates/References/getDistrictByRegency/" + $(this).val(), '', function (data) {
-                $('#districtId option').remove();
-                $('<option value="">-Pilih Kecamatan-</option>').appendTo($('#districtId'));
-                $.each(data, function (i, o) {
-                    $('<option value="' + o.id + '">' + o.name + '</option>').appendTo($('#districtId'));
-                });
+      $('select[name="regencyId"]').change(function () {
+          if ($(this).val()) {
+              $.getJSON("Templates/References/getDistrictByRegency/" + $(this).val(), '', function (data) {
+                  $('#districtId option').remove();
+                  $('<option value="">-Pilih Kecamatan-</option>').appendTo($('#districtId'));
+                  $.each(data, function (i, o) {
+                      $('<option value="' + o.id + '">' + o.name + '</option>').appendTo($('#districtId'));
+                  });
 
-            });
-        } else {
-            $('#regencyId option').remove()
-        }
-    });
+              });
+          } else {
+              $('#regencyId option').remove()
+          }
+      });
 
-    /*$('select[name="districtId"]').change(function () {
-        if ($(this).val()) {
-            $.getJSON("Templates/References/getVillageByDistrict/" + $(this).val(), '', function (data) {
-                $('#villageId option').remove();
-                $('<option value="">-Pilih Kelurahan-</option>').appendTo($('#villageId'));
-                $.each(data, function (i, o) {
-                    $('<option value="' + o.id + '">' + o.name + '</option>').appendTo($('#villageId'));
-                });
-
-            });
-        } else {
-            $('#villageId option').remove()
-        }
-    });*/
-
-
-  });
-
-jQuery(function($) {
-
-  $('.date-picker').datepicker({
-    autoclose: true,
-    todayHighlight: true,
-    dateFormat: 'yyyy-MM-dd'
-  })
-  //show datepicker when clicking on the icon
-  .next().on(ace.click_event, function(){
-    $(this).prev().focus();
-  });
+      $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        dateFormat: 'yyyy-MM-dd'
+      })
+      //show datepicker when clicking on the icon
+      .next().on(ace.click_event, function(){
+        $(this).prev().focus();
+      });
 
 });
+

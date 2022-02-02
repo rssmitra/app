@@ -465,6 +465,40 @@
 
     </div>
 
+    <div id="globalModalViewWithiFrame" class="modal fade" tabindex="-1">
+
+      <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:90%">
+
+        <div class="modal-content">
+
+          <div class="modal-header">
+
+            <!-- <div class="table-header"> -->
+
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+
+                <span class="white">&times;</span>
+
+              </button>
+
+              <span id="text_title_iframe" style="font-size: 14px; color: white">TITLE</span>
+
+            <!-- </div> -->
+
+          </div>
+
+          <div class="modal-body">
+
+            <iframe id="content_iframe" style="width: 100%; height: 750px !important"></iframe>
+
+          </div>
+
+        </div><!-- /.modal-content -->
+
+      </div><!-- /.modal-dialog -->
+
+    </div>
+
     <div id="globalModalViewMedium" class="modal fade" tabindex="-1">
 
       <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;width:70%; background-color: white">
@@ -481,7 +515,7 @@
 
               </button>
 
-              <span id="text_title_medium">TITLE</span>
+              <span id="text_title_medium" style="color: white; font-weight: bold">TITLE</span>
 
             <!-- </div> -->
 
@@ -630,6 +664,18 @@
           
       }
 
+      function show_modal_with_iframe(url, title){  
+
+        preventDefault();
+
+        $('#text_title_iframe').text(title);
+
+        $('#content_iframe').attr('src', url); 
+
+        $("#globalModalViewWithiFrame").modal();
+
+      }
+
       function show_modal_medium(url, title){  
 
         preventDefault();
@@ -675,6 +721,26 @@
 
           /*custom hide after show popup*/
           $('#modalCetakTracer').modal('hide');
+      }
+
+      function copyToClipboard(text) {
+        var selected = false;
+        var el = document.createElement('textarea');
+        el.value = text;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        if (document.getSelection().rangeCount > 0) {
+            selected = document.getSelection().getRangeAt(0)
+        }
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        if (selected) {
+            document.getSelection().removeAllRanges();
+            document.getSelection().addRange(selected);
+        }
       }
 
       function preventDefault(e) {
@@ -930,6 +996,37 @@
           //Combines the two sections
           return components.join("");
       }
+
+      function getLiburNasional(year){
+
+        if(year == 2022){
+            var dataLiburNasional = ["1-1-2022","1-2-2022", "28-2-2022","3-3-2022","15-4-2022","1-5-2022","2-5-2022","3-5-2022","16-5-2022","26-5-2022","1-6-2022","9-7-2022","30-7-2022","17-8-2022","8-10-2022","25-12-2022"];
+        }
+
+        return dataLiburNasional;
+
+      }
+
+      function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+    
+
 
       
 
