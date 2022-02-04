@@ -17,11 +17,11 @@ class Reg_pasien extends MX_Controller {
         
         /*session redirect login if not login*/
         
-        if($this->session->userdata('logged')!=TRUE){
+        // if($this->session->userdata('logged')!=TRUE){
             
-            echo 'Session Expired !'; exit;
+        //     echo 'Session Expired !'; exit;
         
-        }
+        // }
         
         $this->load->module('casemix/Csm_billing_pasien');
 
@@ -301,7 +301,7 @@ class Reg_pasien extends MX_Controller {
                             <ul class="dropdown-menu dropdown-inverse">
                                 '.$html.'
                                 <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.')">Cetak Surat Kontrol</a></li>
-								<li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
+                                <li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
                             </ul>
                         </div></div>';
                 $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.''.$label_code;
@@ -828,6 +828,11 @@ class Reg_pasien extends MX_Controller {
          if($this->input->post('jenis_penjamin')=='Jaminan Perusahaan'){
              $val->set_rules('kode_perusahaan', 'Nama Perusahaan', 'trim|required');
          }
+
+        if($this->input->post('kode_perusahaan')==120){
+            $val->set_rules('no_sep_lama', 'No SEP Lama', 'trim|required', array('required' => 'Silahkan masukan No SEP Lama/Terakhir'));
+        }
+
  
          $val->set_message('required', "Silahkan isi field \"%s\"");
  
@@ -839,39 +844,87 @@ class Reg_pasien extends MX_Controller {
          else
          {                       
  
-             $this->db->trans_begin();
-             $id = ($this->input->post('id_tc_pesanan'))?$this->regex->_genRegex($this->input->post('id_tc_pesanan'),'RGXINT'):0;
-  
-             /*get_unique_code*/
-             $kode_faskes = '0112R034';
-             $unique_code_max = $this->master->get_max_number('tc_pesanan', 'unique_code_counter');
-             $length = strlen((string)$unique_code_max);
-             $less = 6-$length;
-             $null = '';
-             for ($i=0; $i < $less; $i++) { 
-                 $null .= '0';
-             }
-             $kode_perjanjian = $kode_faskes.date('my').$null.$unique_code_max;
- 
-             $dataexc = array(
-                 'nama' => $this->regex->_genRegex($this->input->post('nama_pasien'), 'RGXQSL'),
-                 'keterangan' => $this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
-                 'alamat' => $this->regex->_genRegex($this->input->post('alamat'), 'RGXQSL'),
-                 'no_poli' => $bag,
-                 'kode_dokter' => $this->regex->_genRegex($val->set_value('dokter_rajal'), 'RGXQSL'),
-                 'penjamin' => $this->regex->_genRegex($this->input->post('jenis_penjamin'), 'RGXQSL'),
-                 'no_induk' => $this->session->userdata('user')->user_id,
-                 'input_tgl' => date('Y-m-d h:i:s'),
-                 'kode_perjanjian' => $kode_perjanjian,
-                 'unique_code_counter' =>  $unique_code_max,
-                 'no_telp' => $this->input->post('no_telp'),
-                 'no_hp' => $this->input->post('no_hp'),
-             );
+            $this->db->trans_begin();
 
-             if($dataexc['no_poli'] != '50201'){
+            $id = ($this->input->post('id_tc_pesanan'))?$this->regex->_genRegex($this->input->post('id_tc_pesanan'),'RGXINT'):0;
+            $ex_no_surat_kontrol = ($this->input->post('no_surat_kontrol'))?$this->regex->_genRegex($this->input->post('no_surat_kontrol'),'RGXQSL'):0;
+            
+            // untuk rawat jalan saja
+            if($_POST['jenis_instalasi']=='RJ'){
+                if($_POST['kode_perusahaan'] == 120){
+                    // get kode dokter dpjp bpjs
+                    $dokter_dpjp = $this->db->get_where('mt_karyawan', array('kode_dokter' => $_POST['dokter_rajal']))->row();
+                    // get kode poli bpjs
+                    $poli_rj = $this->db->get_where('mt_bagian', array('kode_bagian' => $_POST['klinik_rajal']) )->row();
+                    $petugas = isset($this->session->userdata('user')->fullname)?$this->session->userdata('user')->fullname:'KIOSK';
+
+                    if($id == 0){
+                        // insert rencana kontrol
+                        $data = array(
+                            'request' => array(
+                                'noSEP' => isset($_POST['no_sep_lama'])?trim($_POST['no_sep_lama']):'',
+                                'kodeDokter' => $dokter_dpjp->kode_dokter_bpjs,
+                                'poliKontrol' => $poli_rj->kode_poli_bpjs,
+                                'tglRencanaKontrol' => $tgl,
+                                'user' => 'ws-'.$petugas,
+                            ),
+                        );
+                        $result = $this->Ws_index->insertRencanaKontrol($data);
+                    }else{
+                        // update rencana kontrol
+                        
+                        $data = array(
+                            'request' => array(
+                                "noSuratKontrol" => $ex_no_surat_kontrol,
+                                'noSEP' => isset($_POST['no_sep_lama'])?trim($_POST['no_sep_lama']):'',
+                                'kodeDokter' => $dokter_dpjp->kode_dokter_bpjs,
+                                'poliKontrol' => $poli_rj->kode_poli_bpjs,
+                                'tglRencanaKontrol' => $tgl,
+                                'user' => 'ws-'.$petugas,
+                            ),
+                        );
+                        $result = $this->Ws_index->updateRencanaKontrol($data);
+                    }
+                    
+                    $response = isset($result['response']) ? $result : false;
+                    if($response == false){
+                        echo json_encode(array('status' => 0, 'message' => 'Error API ! Silahkan cek koneksi anda!'));
+                        exit;
+                    }
+                    // if($response['response']->metaData->code != 200){
+                    //     echo json_encode(array('status' => $result['response']->metaData->code, 'message' => $result['response']->metaData->message));
+                    //     exit;
+                    // }
+                    // nomor surat kontrol
+                    $no_surat_kontrol = isset($response['data']->noSuratKontrol)?$response['data']->noSuratKontrol:false;
+                }
+            }
+
+            $kode_faskes = '0112R034';
+            /*get_unique_code*/
+            $string = $kode_faskes.$this->input->post('nama_pasien').$this->input->post('no_mr');
+            $unique_code_max = $this->master->generateRandomString($string, 6);
+
+            $dataexc = array(
+                'nama' => $this->regex->_genRegex($this->input->post('nama_pasien'), 'RGXQSL'),
+                'keterangan' => $this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
+                'alamat' => $this->regex->_genRegex($this->input->post('alamat'), 'RGXQSL'),
+                'no_poli' => $bag,
+                'kode_dokter' => $this->regex->_genRegex($val->set_value('dokter_rajal'), 'RGXQSL'),
+                'penjamin' => $this->regex->_genRegex($this->input->post('jenis_penjamin'), 'RGXQSL'),
+                'no_induk' => isset($this->session->userdata('user')->user_id)?$this->session->userdata('user')->user_id:0,
+                'input_tgl' => date('Y-m-d h:i:s'),
+                'unique_code_counter' =>  strtoupper($unique_code_max),
+                'no_telp' => $this->input->post('no_telp'),
+                'no_hp' => $this->input->post('no_hp'),
+                'jd_id' => $this->input->post('jd_id'),
+                'no_sep_lama' => $this->input->post('no_sep_lama'),
+            );
+
+            if($dataexc['no_poli'] != '50201'){
                 $dataexc['tgl_pesanan'] = $tgl;
                 $dataexc['jam_pesanan'] = $jam_pesanan;
-             }
+            }
 
             if(isset($_POST['is_no_mr']) AND $_POST['is_no_mr']=='Y'){
             }else{
@@ -895,16 +948,17 @@ class Reg_pasien extends MX_Controller {
              }
             //  print_r($dataexc);die;
              if($id==0){
-                 /*save post data*/
-                 $newId = $this->Perjanjian->save($dataexc);
-                 /*save logs*/
-                // $this->logs->save('log', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_pesanan');
+                $kode_perjanjian = ($no_surat_kontrol != false) ? $no_surat_kontrol : $kode_faskes.date('my').$unique_code_max;
+                $dataexc['kode_perjanjian'] = $kode_perjanjian;
+                /*save post data*/
+                $newId = $this->Perjanjian->save($dataexc);
                  /*save log kuota dokter*/
                 if( !isset($_POST['is_no_mr']) AND $_POST['is_no_mr'] != 'Y' ){
                     $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['kode_dokter'], 'kode_spesialis' => $dataexc['no_poli'], 'tanggal' => $dataexc['tgl_pesanan'], 'keterangan' => $dataexc['keterangan'], 'flag' => 'perjanjian' ));
                 }
              }else{
                  /*update record*/
+                 $dataexc['keterangan'] = 'Reschedule Perjanjian';
                  $this->Perjanjian->update(array('id_tc_pesanan' => $id), $dataexc);
                  $newId = $id;
                  /*save logs*/
@@ -923,7 +977,7 @@ class Reg_pasien extends MX_Controller {
                     //  print_booking
                     $this->print_booking($_POST['jd_id'], $newId);
                  }
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].''));
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id_tc_pesanan' => $newId, 'jd_id' => $_POST['jd_id'], 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].''));
              }
  
          }
@@ -932,9 +986,10 @@ class Reg_pasien extends MX_Controller {
     public function surat_control(){
         
         $id_tc_pesanan = $_GET['id_tc_pesanan'];
+        $jd_id = $_GET['jd_id'];
         $data['value'] = $this->Reg_pasien->get_pesanan_pasien_($id_tc_pesanan);
-        //print_r($data);die;
-
+        $data['jadwal'] = $this->Reg_pasien->get_jadwal_dokter($jd_id);
+        $this->print_escpos->print_booking($data);
         $this->load->view('Reg_pasien/surat_kontrol', $data);
 
     }
@@ -944,9 +999,10 @@ class Reg_pasien extends MX_Controller {
         $booking = $this->Reg_pasien->get_pesanan_pasien_($id_tc_pesanan);
         $data['value'] = $booking;
         $data['jadwal'] = $this->Reg_pasien->get_jadwal_dokter($jd_id);
-        // echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($data);die;
         // $this->print_escpos->print_testing();
         $this->print_escpos->print_booking($data);
+        return true;
 
     }
 
@@ -1144,32 +1200,33 @@ class Reg_pasien extends MX_Controller {
 
     public function get_riwayat_medis($no_mr){
         
-		$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result();
+        $result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result();
         
-		$transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11) )->result();
+        $transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11) )->result();
 
-		$penunjang = $this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05')->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')->join('pm_tc_penunjang', 'pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left')->get_where('tc_kunjungan', array('no_mr' => $no_mr) )->result();
-		foreach ($penunjang as $key_pm => $val_pm) {
-			$getDataPm[$val_pm->no_registrasi][] = $val_pm;
-		}
-		// echo '<pre>';print_r($getDataPm);die;
+        $penunjang = $this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05')->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')->join('pm_tc_penunjang', 'pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left')->get_where('tc_kunjungan', array('no_mr' => $no_mr) )->result();
+        foreach ($penunjang as $key_pm => $val_pm) {
+            $getDataPm[$val_pm->no_registrasi][] = $val_pm;
+        }
+        // echo '<pre>';print_r($getDataPm);die;
 
-		$getData = array();
-		foreach ($transaksi as $key => $value) {
-			$getData[$value->no_registrasi] [] = $value;
-		}
+        $getData = array();
+        foreach ($transaksi as $key => $value) {
+            $getData[$value->no_registrasi] [] = $value;
+        }
 
-		$data = array(
-			'penunjang' => $getDataPm,
-			'result' => $result,
-			'obat' => $getData,
-		);
-		
-		$this->load->view('registration/Reg_pasien/view_riwayat_medis_sidebar', $data);
-	}
+        $data = array(
+            'penunjang' => $getDataPm,
+            'result' => $result,
+            'obat' => $getData,
+        );
+        
+        $this->load->view('registration/Reg_pasien/view_riwayat_medis_sidebar', $data);
+    }
 
 }
 
 /* End of file example.php */
 
 /* Location: ./application/functiones/example/controllers/example.php */
+

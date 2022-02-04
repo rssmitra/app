@@ -422,8 +422,6 @@ $(document).ready(function(){
 
           if( response.status != 200){
             $('#perjanjian_result_view_div').hide('fast');
-            $('#div_load_after_selected_pasien_perjanjian').hide('fast');
-
             alert('Kode Perjanjian tidak ditemukan'); return $("#form_cari_pasien_by_kode_perjanjian_id").focus();
 
           }else{
@@ -437,7 +435,7 @@ $(document).ready(function(){
             $('#noMrHidden').val(obj_data.no_mr);
             find_pasien_by_keyword(obj_data.no_mr);
             $('#nama_pasien_hidden').val(obj_data.nama);
-            $('#perjanjian_result_view_div').html(response.html);
+            $('#perjanjian_result_view_div').html(obj_data.html);
 
           }
 
@@ -465,11 +463,10 @@ $(document).ready(function(){
         $('#search_kode_perjanjian_form').hide('fast');
         $('#search_kode_perjanjian_result').hide('fast');
         $('#div_load_after_selected_pasien_perjanjian').hide('fast');
-        $('#search_kode_perjanjian_result').hide('fast');
-        $('#perjanjian_result_view_div').hide('fast');
 
         /*reset all field data*/
         $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+
       }
 
       if (value=='online') {
@@ -1131,7 +1128,7 @@ $('#btnSearchNoRujukan').click(function (e) {
     $.ajax({
       url: 'ws_bpjs/ws_index/searchRujukan',
       type: "post",
-      data: {flag:flag, keyvalue:noRujukan, jenis_faskes:jenis_faskes_pasien, noKartuBPJS: $('#noKartuBpjs').val() },
+      data: {flag:flag,noRujukan:noRujukan,jenis_faskes:jenis_faskes_pasien},
       dataType: "json",
       beforeSend: function() {
         achtungShowLoader();  
@@ -1146,15 +1143,14 @@ $('#btnSearchNoRujukan').click(function (e) {
           var pelayanan = data.result.pelayanan;
           var poliRujukan = data.result.poliRujukan;
           var provPerujuk = data.result.provPerujuk;
-          console.log(poliRujukan);
 
           /*show hidden*/
           $('#result-dt-rujukan').show('fast');
           $('#showFormPenjaminKLL').hide('fast');
           $('#showResultData').show('fast');
+          $('#formDetailInsertSEP').show('fast');
 
           /*text*/
-          $('#noSuratSKDP').val($('#form_cari_pasien_by_kode_perjanjian_id').val());
           $('#noKartuFromNik').text(peserta.noKartu);
           $('#nama').text(peserta.nama);
           $('#user').val(peserta.nama);
@@ -1168,8 +1164,8 @@ $('#btnSearchNoRujukan').click(function (e) {
           /*form*/
           $('#noKartuHidden').val(peserta.noKartu);
           $('#noMR').val(peserta.mr.noMR);
-          $('#inputKeyPoliTujuan').val(poliRujukan.nama);
-          $('#kodePoliHiddenTujuan').val(poliRujukan.kode);
+          $('#inputKeyPoli').val(poliRujukan.nama);
+          $('#kodePoliHidden').val(poliRujukan.kode);
           $('#inputKeyFaskes').val(provPerujuk.nama);
           $('#kodeFaskesHidden').val(provPerujuk.kode);
           $('#noRujukanView').val(rujukan.noKunjungan);
@@ -1478,23 +1474,21 @@ function get_riwayat_medis(){
                     </div>
                   </div>
                 </div>
-                <!-- result perjanjian -->
-                <div class="form-group" id="perjanjian_result_view_div"></div>
-
+                
                 <div id="search_kode_perjanjian_result" <?php echo isset($kode_perjanjian)?'':'style="display:none;margin-top:10px"'?>>
                 
-                  
+                  <div class="form-group" id="perjanjian_result_view_div"></div>
 
                   <div id="div_load_after_selected_pasien_perjanjian" style="display: none">
                     <hr>
                     <p><b>SILAHKAN MASUKAN NOMOR RUJUKAN</b></p>
                     <!-- hidden form -->
                     <!-- nasabah -->
-                    <input id="InputKeyNasabahBPJS" class="form-control" name="kelompok_nasabah" type="hidden"/>
+                    <input id="InputKeyNasabahBPJS" class="form-control" name="kelompok_nasabah" type="hidden" placeholder="Masukan keyword minimal 3 karakter" />
                     <input type="hidden" name="kode_kelompok_hidden_bpjs" value="" id="kode_kelompok_hidden_bpjs">
 
                     <!-- penjamin -->
-                    <input id="InputKeyPenjaminBPJS" class="form-control" name="penjamin" type="hidden"  />
+                    <input id="InputKeyPenjaminBPJS" class="form-control" name="penjamin" type="hidden" placeholder="Masukan keyword minimal 3 karakter" />
                     <input type="hidden" name="kode_perusahaan_hidden_bpjs" value="" id="kode_perusahaan_hidden_bpjs">
 
                     <div class="form-group" id="form_rujukan">
@@ -1507,17 +1501,19 @@ function get_riwayat_medis(){
 
                           <!-- for hidden for searching nomor rujukan -->
                           <input name="find_member_by" type="radio" class="ace" value="noRujukan" checked>
-                          <input name="tglSEP" id="tglSEP" value="<?php echo date('Y-m-d')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
-                          <input name="jenis_faskes_pasien" type="radio" class="ace" value="pcare" checked/>
+                          <input name="tglSEP" id="tglSEP" value="<?php echo date('m/d/Y')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
+                          <input name="jenis_faskes_pasien" type="radio" class="ace" value="1" checked/>
                           <input type="hidden" class="form-control" id="noKartuHidden" name="noKartuHidden" readonly>
                           <input name="jnsPelayanan" type="radio" class="ace" value="2" checked/>
                           <input name="lakalantas" type="radio" class="ace" value="0" checked/>
                           <input name="penjaminKLL" type="radio" class="ace" value="0" checked/>
                           <input type="hidden" class="form-control" name="catatan" id="catatan" value="">
-                          <!-- <input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value=""> -->
+                          <input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value="">
                           <input type="hidden" class="form-control" id="user" name="user" value="" readonly>
-                          <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden"/>
+                          <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden" placeholder="Masukan keyword minimal 3 karakter" />
                           <input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
+
+
                           <input name="noRujukan" id="noRujukan" class="form-control" type="text" placeholder="Masukan No Rujukan" style="width: 250px;">
 
                           <span class="input-group-btn">

@@ -2080,16 +2080,18 @@ class References extends MX_Controller {
 
 		$data_pasien = $this->Reg_pasien->search_pasien_by_mr( $keyword, array('no_mr','no_ktp') ); 
 		$data_perjanjian = $this->Reg_pasien->get_perjanjian_pasien( $keyword ); 
+		$sep = $this->Reg_pasien->get_last_sep( $keyword ); 
 		$no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
 		$data = array(
 			'count' => count($data_pasien),
 			'result' => $data_pasien,
 			'count_perjanjian' => count($data_perjanjian),
 			'perjanjian' => $data_perjanjian,
+			'no_sep' => $sep,
 		);
 		
 		if(count($data_pasien) > 0){
-			echo json_encode( array('status' => 200, 'message' => 'Data ditemukan', 'data' => $data_pasien, 'perjanjian' => $data_perjanjian, 'count_perjanjian' => count($data_perjanjian)) );
+			echo json_encode( array('status' => 200, 'message' => 'Data ditemukan', 'data' => $data_pasien, 'perjanjian' => $data_perjanjian, 'count_perjanjian' => count($data_perjanjian), 'sep' => $sep) );
 		}else{
 			echo json_encode( array('status' => 201, 'message' => 'Data tidak ditemukan!') );
 			

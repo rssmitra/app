@@ -16,7 +16,8 @@
 jQuery(function($) {  
 
   
-  var disableDates = ["1-1-2021","12-2-2021", "11-3-2021","14-3-2021","2-4-2021","1-5-2021","12-5-2021","13-5-2021","14-5-2021","26-5-2021","1-6-2021","20-7-2021","11-8-2021","17-8-2021","20-10-2021","25-12-2021", "1-1-2022", "1-2-2022", "28-2-2022", "3-3-2022", "15-4-2022", "2-5-2022", "3-5-2022", "16-5-2022", "26-5-2022", "1-6-2022", "9-7-2022", "30-7-2022", "17-8-2022", "8-10-2022"];
+  var disableDates = getLiburNasional(<?php echo date('Y')?>);
+
   $("#tgl_kunjungan").datepicker({
 
     autoclose: true,    
@@ -165,6 +166,11 @@ $(document).ready(function(){
           var val_item=item.split(':')[0];
           console.log(val_item);
           $('#kodePerusahaanHidden').val(val_item);
+          if(val_item == 120){
+            $('#div_no_sep_lama').show();
+          }else{
+            $('#div_no_sep_lama').hide();
+          }
         }
 
     });
@@ -251,17 +257,20 @@ function formatDate(date) {
           </div>
 
           <div class="form-group" id="showFormPerusahaan" style="display:none">
-
               <label class="control-label col-sm-2">Perusahaan</label>
-
-              <div class="col-sm-6">
-
+              <div class="col-sm-4">
                   <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
                   <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
-
               </div>
-
           </div>
+
+          <div class="form-group" id="div_no_sep_lama" style="display: none">
+            <label class="control-label col-sm-2">No SEP Referensi</label>
+            <div class="col-sm-3">
+                <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="" value=""/>
+            </div>
+          </div>
+
 
           <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
 

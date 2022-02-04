@@ -2,9 +2,10 @@
 
 $(document).ready(function(){
 
-    // var kode_bag_hd = $('#kode_bagian_hidden').val() ? $('#kode_bagian_hidden').val() : $('#klinik_rajal').val()
-    // var kode_dok_hd = $('#kode_bagian_hidden').val() ? $('#kode_bagian_hidden').val() : $('#dokter_rajal').val()
-    // getJadwalPraktek(kode_bag_hd, kode_dok_hd);
+    var kode_spesialis = ($('#klinik_rajal').val()) ? $('#klinik_rajal').val() : '';
+    var kode_dokter = ($('#dokter_rajal').val()) ? $('#dokter_rajal').val() : '';
+
+    getJadwalPraktek(kode_spesialis, kode_dokter);
 
     $('select[name="klinik_rajal"]').change(function () {      
 
@@ -45,15 +46,6 @@ $(document).ready(function(){
             var kode_spesialis = ($('#klinik_rajal').val()) ? $('#klinik_rajal').val() : '';
 
             getJadwalPraktek(kode_spesialis, $(this).val());
-            // $.getJSON("<?php echo site_url('Templates/References/getJadwalPraktek') ?>/" + $(this).val() + '/' + kode_spesialis, '', function (data) {              
-
-            //     /*here show data from jadwal praktek*/     
-            //     $('#show_jadwal_dokter_form').show('fast');          
-            //     $('#show_jadwal_dokter_form').html(data.html);
-            //     $('#show_detail_praktek').hide('fast');
-            //     $('#tgl_kunjungan_form').hide('fast');
-            //     $('#view_last_message').hide('fast');
-            // });            
 
         } else {          
 

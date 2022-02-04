@@ -690,14 +690,27 @@ class Reg_pasien_model extends CI_Model {
 				WHERE kode_riwayat=(SELECT MAX(z.kode_riwayat) FROM th_riwayat_pasien z 
 				WHERE z.no_mr=a.no_mr)) as diagnosa_akhir, (SELECT no_registrasi FROM tc_registrasi 
 				WHERE no_registrasi=(SELECT MAX(x.no_registrasi) FROM tc_registrasi x 
-				WHERE x.no_mr=a.no_mr)) as no_registrasi, c.nama_bagian, d.nama_pegawai as dokter,
-				e.nama_perusahaan
+				WHERE x.no_mr=a.no_mr)) as no_registrasi, (SELECT no_sep FROM tc_registrasi 
+				WHERE no_registrasi=(SELECT MAX(x.no_registrasi) FROM tc_registrasi x 
+				WHERE x.no_mr=a.no_mr)) as no_sep, c.nama_bagian, d.nama_pegawai as dokter,
+				e.nama_perusahaan, CAST(a.input_tgl as DATE) as input_tgl
 				FROM tc_pesanan a
 				LEFT JOIN mt_master_pasien b on b.no_mr=a.no_mr
 				LEFT JOIN mt_perusahaan e on e.kode_perusahaan=b.kode_perusahaan
 				LEFT JOIN mt_bagian c on c.kode_bagian=a.no_poli
 				LEFT JOIN mt_karyawan d on d.kode_dokter=a.kode_dokter
 				WHERE a.id_tc_pesanan=".$id_tc_pesanan."";
+		return $this->db->query($qry)->row();
+		//return $this->db->get_where('tc_pesanan', array('id_tc_pesanan' => $id_tc_pesanan))->row();
+	}
+
+	public function get_last_sep($keyword){
+		$qry = "
+				SELECT a.no_mr, a.nama_pasien, (SELECT no_sep FROM tc_registrasi 
+				WHERE no_registrasi=(SELECT MAX(x.no_registrasi) FROM tc_registrasi x 
+				WHERE x.no_mr=a.no_mr AND x.kode_perusahaan=120)) as no_sep
+				FROM mt_master_pasien a
+				WHERE (a.no_mr='".$keyword."' OR a.no_ktp='".$keyword."')";
 		return $this->db->query($qry)->row();
 		//return $this->db->get_where('tc_pesanan', array('id_tc_pesanan' => $id_tc_pesanan))->row();
 	}
@@ -961,6 +974,20 @@ class Reg_pasien_model extends CI_Model {
 
 	public function get_jadwal_dokter($jd_id){
 		return $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
+	}
+
+	public function get_perjanjian_pasien($keyword){
+		$this->db->select('CAST(tgl_pesanan as DATE) as tgl_pesanan, kode_perjanjian, nama, tc_pesanan.no_mr, tgl_masuk, nama_bagian, nama_pegawai as nama_dokter, id_tc_pesanan, jd_id, input_tgl, fullname as petugas, no_sep_lama');
+		$this->db->from('tc_pesanan');
+		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','inner');
+		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter','left');
+		$this->db->join('tmp_user', 'tmp_user.user_id=tc_pesanan.no_induk','left');
+		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr','inner');
+		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan','left');
+		$this->db->where("(tc_pesanan.no_mr = '".$keyword."' OR no_ktp='".$keyword."')");
+		$this->db->where("CAST(input_tgl as DATE) = '".date('Y-m-d')."'");
+		$this->db->order_by('input_tgl', 'DESC');
+		return $this->db->get()->row();
 	}
 
 

@@ -3,13 +3,6 @@
     <p><b>HASIL PENCARIAN NOMOR RUJUKAN</b></p>
 
     <div class="form-group">
-        <label class="control-label col-md-3">No.Surat Kontrol/SKDP</label>
-        <div class="col-md-3">
-        <input type="text" class="form-control" id="noSuratSKDP" name="noSuratSKDP">
-        </div>
-    </div>
-    
-    <div class="form-group">
         <label class="col-md-3 control-label">PPK Asal Rujukan</label>
         <div class="col-md-5 col-sm-5 col-xs-12">
             <input id="inputKeyFaskes" class="form-control" name="ppkRujukan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="" readonly/>
@@ -73,10 +66,10 @@
         </div>
         
         <div class="form-group">
-            <label class="col-md-3 col-sm-3 col-xs-12 control-label">Spesialis/SubSpesialis</label>
+            <label class="col-md-3 col-sm-3 col-xs-12 control-label">Spesialis/SubSpesialis </label>
             <div class="col-md-5 col-sm-5 col-xs-12">
-                <input id="inputKeyPoliTujuan" class="form-control" name="tujuan" type="text" placeholder="Masukan keyword minimal 3 karakter" readonly/>
-                <input type="hidden" name="kodePoliHidden" value="" id="kodePoliHiddenTujuan">
+                <input id="inputKeyPoli" class="form-control" name="tujuan" type="text" placeholder="Masukan keyword minimal 3 karakter" readonly/>
+                <input type="hidden" name="kodePoliHidden" value="" id="kodePoliHidden">
             </div>
 
             <div class="col-md-3">
@@ -93,32 +86,6 @@
             <label class="control-label col-md-3">Dokter DPJP </label>
             <div class="col-md-6">
             <input id="show_dpjp" class="form-control" name="show_dpjp" type="text" readonly/>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label col-md-3">Tujuan Kunjungan </label>
-            <div class="col-md-6">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'tujuan_kunjungan')), '0' , 'tujuanKunj', 'tujuanKunj', 'form-control', '', '') ?>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-3">Procedure</label>
-            <div class="col-md-6">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'flag_procedure')), '' , 'flagProcedure', 'flagProcedure', 'form-control', '', '') ?>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-3">Penunjang</label>
-            <div class="col-md-6">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'penunjang')), '' , 'kdPenunjang', 'kdPenunjang', 'form-control', '', '') ?>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-3">Assesment Pelayanan</label>
-            <div class="col-md-6">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'assesment_pelayanan')), '' , 'assesmentPel', 'assesmentPel', 'form-control', '', '') ?>
             </div>
         </div>
         
