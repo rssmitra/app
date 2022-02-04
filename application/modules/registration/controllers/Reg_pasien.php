@@ -989,7 +989,7 @@ class Reg_pasien extends MX_Controller {
         $jd_id = $_GET['jd_id'];
         $data['value'] = $this->Reg_pasien->get_pesanan_pasien_($id_tc_pesanan);
         $data['jadwal'] = $this->Reg_pasien->get_jadwal_dokter($jd_id);
-        $this->print_escpos->print_booking($data);
+        // $this->print_escpos->print_booking($data);
         $this->load->view('Reg_pasien/surat_kontrol', $data);
 
     }

@@ -426,7 +426,6 @@ class Reg_klinik extends MX_Controller {
                 $this->db->trans_commit();
                 
                 /*jika transaksi berhasil maka print tracer*/
-
                 if($this->input->post('is_new')!='Yes'){
                     $tracer = $this->print_escpos->print_direct($data_tracer);
                     if( $tracer == 1 ) {
