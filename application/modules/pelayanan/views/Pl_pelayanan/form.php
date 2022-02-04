@@ -468,7 +468,8 @@ function perjanjian(){
   if (noMr == '') {
     alert('Silahkan cari pasien terlebih dahulu !'); return false;    
   }else{
-    $('#form_modal').load('registration/reg_pasien/form_perjanjian_modal/'+noMr); 
+    $('#form_modal').load('pelayanan/Pl_pelayanan/form_perjanjian_modal/'+noMr+'?kode_bagian='+$('#kode_bagian_val').val()+'&kode_dokter='+$('#kode_dokter_poli').val()+'&kode_perusahaan='+$('#kode_perusahaan_val').val()+'&no_sep='+$('#no_sep').val()+''); 
+    // $('#form_modal').load('registration/reg_pasien/form_perjanjian_modal/'+noMr+'?kode_bagian='+$('#kode_bagian_val').val()+'&kode_dokter='+$('#kode_dokter_poli').val()+'&kode_perusahaan='+$('#kode_perusahaan_val').val()+'&no_sep='+$('#no_sep').val()+''); 
     $("#GlobalModal").modal();
   }
 }
@@ -892,7 +893,9 @@ function rollback(no_registrasi, no_kunjungan, flag){
               <td><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
               <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
               <td><?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
-              <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?></td>
+              <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?>
+              <?php echo isset($value->kode_perusahaan)?($value->kode_perusahaan==120) ? $value->no_sep : '' : '';?>
+            </td>
               <?php if($value->flag_ri==1) : echo '<td class="center"><label class="label label-danger">Pasien Rawat Inap</label></td>'; endif;?>
 
               <td><?php echo $this->session->userdata('user')->fullname?></td>
@@ -909,6 +912,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
           <?php endif;?>            
 
           <!-- hidden form -->
+          <input type="hidden" class="form-control" name="no_sep" id="no_sep" value="<?php echo isset($value->no_sep)?$value->no_sep:''?>">
           <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
           <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
           <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">

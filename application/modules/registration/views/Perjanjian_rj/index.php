@@ -74,12 +74,12 @@ function showModalDaftarPerjanjian(booking_id, no_mr)
     
 }
 
-function cetak_surat_kontrol(ID) {   
+function cetak_surat_kontrol(ID, jd_id) {   
     var no_mr = $('#tabs_riwayat_perjanjian_id').attr('data-id');  
     if( no_mr == '' ){
       alert('Silahkan cari pasien terlebih dahulu !'); return false;
     }else{
-      url = 'registration/Reg_pasien/surat_control?id_tc_pesanan='+ID;
+      url = 'registration/Reg_pasien/surat_control?id_tc_pesanan='+ID+'&jd_id='+jd_id+'';
       title = 'Cetak Barcode';
       width = 850;
       height = 500;

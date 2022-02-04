@@ -34,8 +34,8 @@ class Reg_klinik extends MX_Controller {
 
         /*load library*/
 
-        $this->load->library('Daftar_pasien');
         $this->load->library('Form_validation');
+        $this->load->library('Daftar_pasien');
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos');  
         $this->load->library('tarif');      
@@ -258,7 +258,7 @@ class Reg_klinik extends MX_Controller {
 
     public function process(){
 
-        // print_r($_POST);die;
+        print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
         $this->form_validation->set_rules('reg_klinik_rajal', 'Poli/Klinik', 'trim|required');
@@ -392,14 +392,14 @@ class Reg_klinik extends MX_Controller {
             }
 
             /*jika terdapat kode_booking maka update tgl_masuk pada table regon_booking*/
-            if( $this->input->post('kode_booking') AND  $this->input->post('tipe_registrasi') == 'online'){
-                $this->db->update('regon_booking', array('regon_booking_tgl_registrasi_ulang' => date('Y-m-d H:i:s'), 'regon_booking_status' => 1, 'updated_date' => date('Y-m-d H:i:s'), 'updated_by' => $this->session->userdata('user')->fullname ), array('regon_booking_kode' => $this->input->post('kode_booking') ) );
+            // if( $this->input->post('kode_booking') AND  $this->input->post('tipe_registrasi') == 'online'){
+            //     $this->db->update('regon_booking', array('regon_booking_tgl_registrasi_ulang' => date('Y-m-d H:i:s'), 'regon_booking_status' => 1, 'updated_date' => date('Y-m-d H:i:s'), 'updated_by' => $this->session->userdata('user')->fullname ), array('regon_booking_kode' => $this->input->post('kode_booking') ) );
 
                 
-                // update kuota dokter used
-                $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'flag' => 'mobile_jkn', 'status' => NULL ), 1);
+            //     // update kuota dokter used
+            //     $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'flag' => 'mobile_jkn', 'status' => NULL ), 1);
 
-            }
+            // }
 
             // jika tidak terdapat perjanjian dan mobile
             if( $this->input->post('tipe_registrasi') == 'onsite' ){

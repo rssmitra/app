@@ -71,13 +71,16 @@ class Perjanjian_rj extends MX_Controller {
                                 <span class="lbl"></span>
                             </label>
                           </div>';
+                
+                $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol</a></li>' : '';
+
                 $row[] = '<div class="center"><div class="btn-group">
                             <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                                 <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-inverse">
                                 '.$html.'
-                                <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.')">Cetak Surat Kontrol</a></li>
+                                '.$print_surat_kontrol.'
                                 <li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus Perjanjian</a></li>
                             </ul>
                         </div></div>';
@@ -100,7 +103,7 @@ class Perjanjian_rj extends MX_Controller {
                 }
                 $row[] = $row_list->no_kartu_bpjs;
                 $row[] = '<div class="center"><input type="text" class="form-control" style="border: 1px solid white !important" name="kode_perjanjian" value="'.$row_list->kode_perjanjian.'" id="surat_kontrol_'.$row_list->id_tc_pesanan.'" onchange="saveRow('.$row_list->id_tc_pesanan.')"></div>';
-                $row[] = $this->tanggal->formatDateTime($row_list->input_tgl).'<br>'.$row_list->petugas;
+                $row[] = $this->tanggal->formatDateTime($row_list->input_tgl).'<br>'.$row_list->petugas.'<br>'.$row_list->keterangan;
                 $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
 
 
