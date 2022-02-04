@@ -220,7 +220,7 @@ function formatDate(date) {
           <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
           <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">
           <input type="hidden" name="alamat" value="<?php echo $value->almt_ttp_pasien?>" id="alamat">
-          <input type="hidden" name="jd_id" id="jd_id">
+          <input type="hiddenxx" name="jd_id" id="jd_id">
           <input type="hidden" name="selected_day" id="selected_day">
           <input type="hidden" name="selected_time" id="selected_time">
           <input type="hidden" name="time_start" id="time_start">
