@@ -141,7 +141,8 @@ class Dokter extends MX_Controller {
         $val->set_rules('no_sip', 'No SIP', 'trim|required');
         $val->set_rules('kode_spesialisasi', 'Spesialisasi', 'trim|required');
         $val->set_rules('no_mr', 'No MR', 'trim');
-        $val->set_rules('status', 'Status Kedinasan', 'trim');
+        // $val->set_rules('status', 'Status Kedinasan', 'trim');
+        $val->set_rules('is_active', 'Status Kedinasan', 'trim');
         $val->set_rules('status_dr', 'Tipe Dokter', 'trim');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -161,7 +162,8 @@ class Dokter extends MX_Controller {
                 'no_sip' => $val->set_value('no_sip'),
                 'kode_spesialisasi' => $val->set_value('kode_spesialisasi'),
                 'no_mr' => $val->set_value('no_mr'),
-                'status_dr' => $val->set_value('status'),
+                'status_dr' => $val->set_value('status_dr'),
+                'is_active' => $val->set_value('is_active'),
             );
 
             // ttd
@@ -206,6 +208,8 @@ class Dokter extends MX_Controller {
                 $dataexc['no_induk'] = $IDP['no_induk'];
                 $dataexc['urutan_karyawan'] = $IDP['no_urut'];
                 $dataexc['kode_dokter'] = $IDP['no_urut']; //no urut = kode dokter
+                $dataexc['status_dr'] = $_POST['status_dr'];
+                $dataexc['is_active'] = $_POST['is_active'];
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
                 $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 

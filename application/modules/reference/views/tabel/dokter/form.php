@@ -122,11 +122,11 @@ $(document).ready(function(){
                   <div class="col-md-8">
                     <div class="radio">
                           <label>
-                            <input name="status" type="radio" class="ace" value="1" <?php echo isset($value) ? ($value->status == '1') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <input name="is_active" type="radio" class="ace" value="Y" <?php echo isset($value) ? ($value->is_active == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
                             <span class="lbl"> Aktif</span>
                           </label>
                           <label>
-                            <input name="status" type="radio" class="ace" value="0" <?php echo isset($value) ? ($value->status == '0') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <input name="is_active" type="radio" class="ace" value="N" <?php echo isset($value) ? ($value->is_active == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
                             <span class="lbl">Tidak Aktif</span>
                           </label>
                     </div>
