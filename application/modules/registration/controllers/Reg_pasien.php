@@ -770,9 +770,8 @@ class Reg_pasien extends MX_Controller {
 
     }
 
-    public function process_perjanjian()
+     public function process_perjanjian()
     {
-         echo '<pre>';print_r($_POST);die;
          $this->load->library('form_validation');
          $val = $this->form_validation;
  
@@ -992,6 +991,7 @@ class Reg_pasien extends MX_Controller {
  
          }
     }
+
 
     public function surat_control(){
         

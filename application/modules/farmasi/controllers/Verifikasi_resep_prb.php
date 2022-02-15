@@ -521,9 +521,12 @@ class Verifikasi_resep_prb extends MX_Controller {
             case 'SEP':
                 /*data sep*/
                 $row_sep = $this->Ws_index->findSep($no_sep);
-                
+                $sep = isset($row_sep -> data) ? $row_sep -> data : [];
                 $cetakan_ke = $this->Ws_index->count_sep_by_day();
-                $result = array('sep'=>$row_sep['data'], 'cetakan_ke' => $cetakan_ke, 'header' => $header);
+                $cetakan = isset($cetakan_ke) ? $cetakan_ke : [];
+                $header_ = isset($header) ? $header : [];
+
+                $result = array('sep' => $sep, 'cetakan_ke' => $cetakan, 'header' => $header_);
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_sep', $result, true);
             break;
             

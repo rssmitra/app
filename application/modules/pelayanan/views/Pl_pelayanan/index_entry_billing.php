@@ -26,7 +26,7 @@
         "searching": false,
         "bPaginate": true,
         "bInfo": false,
-        "pageLength": 100,
+        "pageLength": 10,
         "ajax": {
             "url": "pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry",
             "type": "POST"
