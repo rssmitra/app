@@ -9,7 +9,7 @@
 jQuery(function($) {  
 
   
-  var disableDates = ["1-1-2021","12-2-2021", "11-3-2021","14-3-2021","2-4-2021","1-5-2021","12-5-2021","13-5-2021","14-5-2021","26-5-2021","1-6-2021","20-7-2021","10-8-2021","17-8-2021","20-10-2021","25-12-2021"];
+  var disableDates = getLiburNasional(<?php echo date('Y')?>);
   $("#tgl_kunjungan").datepicker({
 
     autoclose: true,    
@@ -156,6 +156,11 @@ $(document).ready(function(){
           var val_item=item.split(':')[0];
           console.log(val_item);
           $('#kodePerusahaanHidden').val(val_item);
+          if(val_item == 120){
+            $('#div_no_rujukan').show();
+          }else{
+            $('#div_no_rujukan').hide();
+          }
         }
 
     });
@@ -273,7 +278,7 @@ function formatDate(date) {
             <div class="col-md-2">
               <input type="text" name="no_telp" id="no_telp" class="form-control" value="<?php echo isset($value)?($value->no_telp!=0 || $value->no_telp!='' )?$value->no_telp:'':'' ?>" <?php echo ($flag=='read')?'readonly':''?> >
             </div>
-            <label class="control-label col-sm-2">HP</label>
+            <label class="control-label col-sm-1">HP</label>
             <div class="col-md-2">
               <input type="text" name="no_hp" id="no_hp" class="form-control" value="<?php echo isset($value->no_hp)?$value->no_hp:''; ?>" >
             </div>
@@ -302,6 +307,13 @@ function formatDate(date) {
                 <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
             </div>
         </div>
+
+        <div class="form-group" id="div_no_rujukan" style="display: none">
+            <label class="control-label col-sm-2">No Rujukan</label>
+            <div class="col-sm-3">
+                <input id="no_rujukan" name="no_rujukan" class="form-control"  type="text" placeholder="" value=""/>
+            </div>
+          </div>
 
         <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
           <div class="form-group">

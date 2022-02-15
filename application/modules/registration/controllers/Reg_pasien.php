@@ -770,9 +770,9 @@ class Reg_pasien extends MX_Controller {
 
     }
 
-    public function process_perjanjian()
+     public function process_perjanjian()
     {
-        //  echo '<pre>';print_r($_POST);die;
+         // echo '<pre>';print_r($_POST);die;
          $this->load->library('form_validation');
          $val = $this->form_validation;
  
@@ -790,6 +790,7 @@ class Reg_pasien extends MX_Controller {
          if(isset($_POST['is_no_mr']) AND $_POST['is_no_mr']=='Y'){
              $val->set_rules('nama_pasien', 'Nama Pasien', 'trim|required');
              $val->set_rules('alamat', 'Alamat', 'trim|required');
+
          }else{
              $val->set_rules('no_mr', 'MR Pasien', 'trim|required', array('required' => 'MR Pasien tidak ditemukan'));
          }
@@ -830,7 +831,13 @@ class Reg_pasien extends MX_Controller {
          }
 
         if($this->input->post('kode_perusahaan')==120){
-            $val->set_rules('no_sep_lama', 'No SEP Lama', 'trim|required', array('required' => 'Silahkan masukan No SEP Lama/Terakhir'));
+            if(isset($_POST['is_no_mr']) AND $_POST['is_no_mr']=='Y'){
+                $val->set_rules('no_rujukan', 'No Rujukan', 'trim|required');    
+            }else{
+                $val->set_rules('no_sep_lama', 'No SEP Lama', 'trim|required', array('required' => 'Silahkan masukan No SEP Lama/Terakhir'));   
+            }
+            
+            
         }
 
  
@@ -897,6 +904,7 @@ class Reg_pasien extends MX_Controller {
                     // }
                     // nomor surat kontrol
                     $no_surat_kontrol = isset($response['data']->noSuratKontrol)?$response['data']->noSuratKontrol:false;
+                    $is_bridging = isset($response['data']->noSuratKontrol) ? 1 : 0;
                 }
             }
 
@@ -918,7 +926,7 @@ class Reg_pasien extends MX_Controller {
                 'no_telp' => $this->input->post('no_telp'),
                 'no_hp' => $this->input->post('no_hp'),
                 'jd_id' => $this->input->post('jd_id'),
-                'no_sep_lama' => $this->input->post('no_sep_lama'),
+                'is_bridging' => $is_bridging,
             );
 
             if($dataexc['no_poli'] != '50201'){
@@ -927,8 +935,10 @@ class Reg_pasien extends MX_Controller {
             }
 
             if(isset($_POST['is_no_mr']) AND $_POST['is_no_mr']=='Y'){
+                $dataexc['norujukan'] = $this->input->post('no_rujukan');
             }else{
                 $dataexc['no_mr'] = $this->regex->_genRegex($val->set_value('no_mr'), 'RGXQSL');
+                $dataexc['no_sep_lama'] = $this->input->post('no_sep_lama');
             }
 
              if($this->input->post('jenis_penjamin')=='Jaminan Perusahaan'){
@@ -982,6 +992,7 @@ class Reg_pasien extends MX_Controller {
  
          }
     }
+
 
     public function surat_control(){
         

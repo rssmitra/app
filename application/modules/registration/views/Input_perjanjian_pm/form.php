@@ -87,6 +87,11 @@ $(document).ready(function(){
           var val_item=item.split(':')[0];
           console.log(val_item);
           $('#kodePerusahaanHidden').val(val_item);
+          if(val_item == 120){
+            $('#div_no_sep_lama').show();
+          }else{
+            $('#div_no_sep_lama').hide();
+          }
         }
 
     });
@@ -222,6 +227,13 @@ function formatDate(date) {
                 <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
                 <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
             </div>
+        </div>
+
+        <div class="form-group" id="div_no_sep_lama" style="display: none">
+          <label class="control-label col-sm-2">No SEP Referensi</label>
+          <div class="col-sm-3">
+              <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="" value=""/>
+          </div>
         </div>
 
         
