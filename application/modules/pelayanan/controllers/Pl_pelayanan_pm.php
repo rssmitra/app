@@ -290,7 +290,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.'<br /><b>'.$row_list->no_sep.'</b>':$row_list->nama_kelompok;
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
 			$row[] = ($row_list->status_cito==1)?'Cito':'Biasa';
             $row[] = $row_list->nama_bagian;
