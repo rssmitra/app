@@ -158,7 +158,8 @@
         </div>
 
         <div class="row display-video">
-          <iframe src="<?php echo base_url()?>/display_loket/main" width="100%" height="100%" frameborder="0"></iframe>
+          <!-- <iframe src="<?php echo base_url()?>/display_loket/main" width="100%" height="100%" frameborder="0"></iframe> -->
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/QJsy7RVpETE?autoplay=1&mute=1&loop=1&showinfo=1" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
         </div>
 
       </div>
