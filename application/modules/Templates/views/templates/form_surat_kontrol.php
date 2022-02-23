@@ -4,13 +4,10 @@
 <script>
 
 var oTable;
+var oTableJadwalDokter;
+var base_url_poli = $('#dynamic-table-poli').attr('base-url'); 
 var base_url = $('#dynamic-table').attr('base-url'); 
 var params = $('#dynamic-table').attr('data-id'); 
-
-jQuery(function($) {
-
-  
-});
 
 $(document).ready(function(){
     
@@ -80,11 +77,14 @@ $(document).ready(function(){
 
         var data=xhr.responseText;
         var jsonResponse = JSON.parse(data);
-        
+        console.log(jsonResponse);
+
         if(jsonResponse.status == 200){
+            var objDt = jsonResponse.data;
             reload_table_surat_kontrol();
             // reset form
             $('#formCreateSuratKontrol')[0].reset();
+            $('#noSuratKontrol').val(objDt.noSuratKontrol);
             $.achtung({message: jsonResponse.message, timeout:5});
         }else{
 
@@ -114,6 +114,66 @@ $(document).ready(function(){
         },
 
     });
+
+    //initiate dataTables plugin
+    oTableJadwalDokter = $('#dynamic-table-poli').DataTable({ 
+          
+          "processing": true, //Feature control the processing indicator.
+          "serverSide": true, //Feature control DataTables' server-side processing mode.
+          "ordering": false,
+          "searching": false,
+          "bInfo": false,
+          "bFilter": false,
+          "bLengthChange": false,
+          "bPaginate": false,
+          // Load data for the table's content from an Ajax source
+          "ajax": {
+              "url": base_url_poli,
+              "type": "POST"
+          },
+          
+          "columnDefs": [
+              { 
+                  "targets": [ 0 ], //last column
+                  "orderable": false, //set not orderable
+              },
+              { "aTargets" : [ 1 ], "mData" : 1, "sClass":  "details-control"}, 
+              { "visible": true, "targets": [ 1 ] },
+              { "targets": [ 2 ], "visible": false },
+          ],
+  
+      });
+  
+      $('#dynamic-table-poli tbody').on('click', 'td.details-control', function () {
+          var tr = $(this).closest('tr');
+          var row = oTableJadwalDokter.row( tr );
+          var data = oTableJadwalDokter.row( $(this).parents('tr') ).data();
+  
+          var kodePoli = data[ 2 ];
+          $('#kodePoliHidden').val(kodePoli);
+          var namaPoli = data[ 4 ];
+          $('#inputKeyPoli').val(namaPoli);
+  
+          
+  
+          if ( row.child.isShown() ) {
+              // This row is already open - close it
+              row.child.hide();
+              tr.removeClass('shown');
+          }
+          else {
+              /*data*/
+              
+              $.getJSON("ws_bpjs/Ws_index/get_jadwal_praktek_dokter_html?KdPoli="+kodePoli+"&JnsKontrol=2&TglRencanaKontrol="+$('#tglRencanaKontrol').val()+"" , '', function (data) {
+                  response_data = data;
+                  // Open this row
+                  row.child( format_html( response_data ) ).show();
+                  tr.addClass('shown');
+              });
+              
+          }
+      });
+
     
 
     $('#dynamic-table tbody').on( 'click', 'tr', function () {
@@ -275,6 +335,42 @@ function show_form_kontrol(flagType){
     }
 }
 
+function find_poli_kontrol(){  
+
+    preventDefault();
+    if($('#noSEP').val() == ''){
+        alert('Masukan No SEP!');
+        return false;
+    }
+    oTableJadwalDokter.ajax.url(base_url_poli+'?JnsKontrol=2&nomor='+$('#noSEP').val()+'&TglRencanaKontrol='+$('#tglRencanaKontrol').val()).load();
+    $('#tglRencanaKontrolEdited').val($('#tglRencanaKontrol').val());
+    $("#modal-show-poli-kontrol").modal();
+
+}
+
+function reload_poli_kontrol(){  
+
+    preventDefault();
+    oTableJadwalDokter.ajax.url(base_url_poli+'?JnsKontrol=2&nomor='+$('#noSEP').val()+'&TglRencanaKontrol='+$('#tglRencanaKontrolEdited').val()).load();
+    $('#tglRencanaKontrol').val($('#tglRencanaKontrolEdited').val());
+    $("#modal-show-poli-kontrol").modal();
+
+}
+
+function selected_jadwal_dokter(kode_dokter, nama_dokter){  
+
+    preventDefault();
+    $('#KodedokterDPJP').val(kode_dokter);
+    $('#InputKeydokterDPJP').val(nama_dokter);
+    $("#modal-show-poli-kontrol").modal('toggle');
+
+}
+
+function format_html ( data ) {
+  return data.html;
+}
+
+
 
 </script>
 <div class="row">
@@ -293,7 +389,12 @@ function show_form_kontrol(flagType){
                 </tr>
 
                 <tr>
-                    <td id="TglRencanaKontrol"><?php echo $tgl_kunjungan?></td>
+                    <td id="TglRencanaKontrol">
+                        <?php echo $tgl_kunjungan?><br>
+                        <?php 
+                            echo ($is_bridging == 1) ? '<span style="background: green; padding: 2px; color: white">Bridging</span>' : '<span style="background: red; padding: 2px; color: white">Not Bridging</span>' ;
+                        ?>
+                    </td>
                     <td id="PoliTujuan"><?php echo $poli?><br><?php echo $nama_dr?></td>
                     <td id="jamPrakter" class="center"><?php echo $jam_praktek?></td>
                     <td id="TglEntri" class="center"><?php echo $input_tgl?></td>
@@ -307,13 +408,14 @@ function show_form_kontrol(flagType){
                 <form class="form-horizontal" method="post" id="formCreateSuratKontrol" action="<?php echo base_url().'ws_bpjs/ws_index/insertSuratKontrol'?>" enctype="Application/x-www-form-urlencoded" autocomplete="off">
                     <!-- hidden form -->
                     <input type="hidden" class="form-control" id="user" name="user" value="<?php echo $this->session->userdata('user')->fullname?>">
-                    <input type="hidden" class="form-control" id="noSuratKontrol" name="noSuratKontrol" value="<?php echo $kode?>">
+                    <input type="hidden" class="form-control" id="noSuratKontrol" name="noSuratKontrol" value="<?php echo $kode_perjanjian?>">
+                    <input type="hidden" class="form-control" id="isBridging" name="isBridging" value="<?php echo $is_bridging?>">
                     <input name="jnsPelayanan" type="radio" class="ace" value="2" checked />
-                    <input type="hidden" name="kodePoliHidden" value="<?php echo $kode_poli_bpjs?>" id="kodePoliHidden">
+                    
 
                     <p style="padding-top: 5px"><b>UPDATE PERJANJIAN ATAU RENCANA KONTROL PASIEN <a href="#" onclick="show_form_kontrol('hide')"><i class="fa fa-external-link bigger-120"></i></a> </b></p>
                     <div class="form-group">
-                        <label class="control-label col-md-3">Tanggal Rencana Kontrol</label>
+                        <label class="control-label col-md-2">Tgl Kontrol</label>
                         <div class="col-md-3">
                             <div class="input-group">
                                 <input name="tglRencanaKontrol" id="tglRencanaKontrol" value="<?php echo $tgl_rencana_kontrol; ?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text">
@@ -322,30 +424,40 @@ function show_form_kontrol(flagType){
                                     </span>
                             </div>
                         </div>
-                        <label class="control-label col-md-3">Nomor SEP Lama</label>
-                        <div class="col-md-3">
-                            <input type="text" name="noSEP" id="noSEP" class="form-control" value="<?php echo $no_sep_lama; ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">No SEP Lama</label>
+                        <div class="col-md-5">
+                        <div class="input-group">
+                                <input type="text" name="noSEP" id="noSEP" class="form-control search-query" value="<?php echo $no_sep_lama; ?>">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-purple btn-sm" onclick="find_poli_kontrol()">
+                                        <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                        Search
+                                    </button>
+                                </span>
+                            </div>
+
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label class="col-md-3 control-label">Poli Tujuan </label>
-                        <div class="col-md-5">
-                            <input id="inputKeyPoli" class="form-control" name="tujuan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo $poli?>" />
+                        <label class="col-md-2 control-label">Poli Tujuan </label>
+                        <div class="col-md-4">
+                            <input id="inputKeyPoli" class="form-control" name="tujuan" type="text" readonly value="<?php echo $poli?>" />
+                            <input type="hidden" name="kodePoliHidden" value="<?php echo $kode_poli_bpjs?>" id="kodePoliHidden">
+                        </div>
+                        <label class="control-label col-md-2">Dokter DPJP</label>
+                        <div class="col-md-4">
+                            <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="text" value="<?php echo $nama_dr?>" readonly />
+                            <input type="hidden" name="KodedokterDPJP" value="<?php echo $kode_dokter_bpjs?>" id="KodedokterDPJP">
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-3">Dokter DPJP</label>
-                        <div class="col-md-5">
-                            <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                            <input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
-                        </div>
-                    </div>
-
+                    <div id="response_msg"></div>
                     <div class="form-group">
                         <div class="col-md-1 no-padding">
-                            <button type="submit" class="btn btn-primary btn-sm">
+                            <button type="submit" class="btn btn-primary btn-sm" style="margin-left: 0px">
                                 <span class="ace-icon fa fa-save icon-on-right bigger-110"></span>
                                 Update Tanggal Rencana Kontrol
                             </button>
@@ -353,12 +465,79 @@ function show_form_kontrol(flagType){
                     </div>
                 </form>
 
-                <hr>
-
             </div>
         </div>
     <!-- PAGE CONTENT ENDS -->
   </div><!-- /.col -->
 </div><!-- /.row -->
+
+<div id="modal-show-poli-kontrol" class="modal fade" tabindex="-1">
+
+    <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;width:70%; background-color: white">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+        <!-- <div class="table-header"> -->
+
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+
+            <span class="white">&times;</span>
+
+            </button>
+
+            <span style="color: white; font-weight: bold">JADWAL POLI SPESIALIS</span>
+
+        <!-- </div> -->
+
+        </div>
+
+        <div class="modal-body" style="min-height: 400px !important">
+
+            <div class="form-group">
+                <label class="control-label col-md-2" style="margin-top: 4px">Tgl Rencana Kontrol</label>
+                <div class="col-md-2">
+                    <div class="input-group">
+                        <input name="tglRencanaKontrolEdited" id="tglRencanaKontrolEdited" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text">
+                            <span class="input-group-addon">
+                                <i class="ace-icon fa fa-calendar"></i>
+                            </span>
+                    </div>
+                </div>
+                <div class="col-md-1 no-padding">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="reload_poli_kontrol()">
+                        <span class="ace-icon fa fa-save icon-on-right bigger-110"></span>
+                        Reload
+                    </button>
+                </div>
+            </div>
+
+            <table id="dynamic-table-poli" base-url="ws_bpjs/Ws_index/get_rencana_kontrol_poli_with_detail" class="table">
+                <thead>
+                <tr style="background: #add46d;">  
+                    <th width="30px" class="center">No</th>
+                    <th width="30px" class="center"></th>
+                    <th width="80px"></th>
+                    <th width="80px">Kode Poli</th>
+                    <th>Nama Poli</th>
+                    <th width="100px">Kapasitas</th>
+                    <th width="100px">Jumlah Rencana Kontrol</th>
+                    <th width="100px">Persentase</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+
+        </div>
+
+    </div><!-- /.modal-content -->
+
+    </div><!-- /.modal-dialog -->
+
+</div>
+
 
 

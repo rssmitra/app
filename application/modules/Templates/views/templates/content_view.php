@@ -1024,7 +1024,21 @@
             }
             return '<span class="' + cls + '">' + match + '</span>';
         });
-    }
+      }
+
+      function reprint(jd_id, id_tc_pesanan, printerName){
+        $.ajax({
+            url: "registration/Reg_pasien/print_booking/"+jd_id+"/"+id_tc_pesanan+"",
+            dataType: "json",
+            data: {printer : printerName},
+            type: "POST",
+            success: function (response) {
+              // no action
+              console.log(response);
+            }
+        });
+      }
+
     
 
 

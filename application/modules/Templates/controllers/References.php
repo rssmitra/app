@@ -137,7 +137,7 @@ class References extends MX_Controller {
 					from tr_jadwal_dokter a
 					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
-					where a.jd_kode_spesialis='".$kd_bagian."' and a.jd_hari='".$day."' and a.status_loket = 'on'
+					where a.jd_kode_spesialis like '%".$kd_bagian."' and a.jd_hari='".$day."' and a.status_loket = 'on'
 					group by a.jd_id, a.jd_kode_dokter,b.nama_pegawai";
 		$exc = $this->db->query($query); 
         echo json_encode($exc->result());
@@ -2039,12 +2039,16 @@ class References extends MX_Controller {
 
 	public function findKodeBooking()
 	{
+		// load model
+		$this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+
 		$kode = isset($_POST['kode'])?$_POST['kode']:$_GET['kode'];
-		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, input_tgl');
+		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, input_tgl, kode_perjanjian, is_bridging, kode_dokter_bpjs, id_tc_pesanan, no_poli, tc_pesanan.kode_dokter');
 		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr AND kode_perusahaan=120 order by no_registrasi DESC) as no_sep');
 		$this->db->from('tc_pesanan');
-		// $this->db->where("(unique_code_counter LIKE '%".$kode."' OR kode_perjanjian LIKE '".$kode."%') ");
-		$this->db->where("kode_perjanjian", $kode);
+		$this->db->where("(unique_code_counter LIKE '%".$kode."' OR kode_perjanjian LIKE '".$kode."%') ");
+		// $this->db->where("unique_code_counter", $kode);
+		// $this->db->where("kode_perjanjian", $kode);
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','left');
 		$this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_pesanan.kode_dokter','left');
         $exc = $this->db->get();
@@ -2053,18 +2057,34 @@ class References extends MX_Controller {
 		}else{
 			// get data rencana kontrol
 			$dt = $exc->row();
+
+			// find no rujukan by sep
+			$result = $this->Ws_index->check_surat_kontrol_by_sep($dt->no_sep);
+        	$response = isset($result['response']) ? $result : false;
+			if($response['response']->metaData->code == 200){
+				$obj = $response['data'];
+				$norujukan = $obj->provPerujuk->noRujukan;
+			}
+
 			$result = array(
+				'id_tc_pesanan' => $dt->id_tc_pesanan,
 				'no_sep_lama' => $dt->no_sep,
 				'kode' => $kode,
+				'kode_perjanjian' => $dt->kode_perjanjian,
+				'norujukan' => isset($norujukan)?$norujukan:'',
 				'no_mr' => $dt->no_mr,
 				'nama' => $dt->nama,
+				'kode_poli' => $dt->no_poli,
+				'kode_dokter' => $dt->kode_dokter,
 				'kode_poli_bpjs' => $dt->kode_poli_bpjs,
+				'kode_dokter_bpjs' => $dt->kode_dokter_bpjs,
 				'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
 				'tgl_rencana_kontrol' => $this->tanggal->formatDateTimeToSqlDate($dt->jam_pesanan),
 				'nama_dr' => strtoupper($dt->nama_dr),
 				'poli' => strtoupper($dt->nama_bagian),
 				'jam_praktek' => $this->tanggal->formatDateTimeToTime($dt->jam_pesanan),
 				'input_tgl' => $this->tanggal->formatDatedmY($dt->input_tgl),
+				'is_bridging' => $dt->is_bridging,
 			);
 			$html = $this->load->view('Templates/templates/form_surat_kontrol', $result, true);
 			echo json_encode(array('status' => 200, 'message' => 'Data ditemukan', 'data' => $result, 'html' => $html ));

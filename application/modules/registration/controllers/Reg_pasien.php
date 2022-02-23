@@ -89,7 +89,7 @@ class Reg_pasien extends MX_Controller {
         $data = array();
         $output = array();
 
-        $column = array('tc_kunjungan.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_perusahaan','tc_kunjungan.tgl_masuk','mt_dokter_v.nama_pegawai','mt_bagian.nama_bagian','tc_kunjungan.tgl_keluar','tc_kunjungan.kode_bagian_tujuan','mt_perusahaan.nama_perusahaan','tc_kunjungan.no_kunjungan', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.no_mr');
+        $column = array('tc_kunjungan.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_perusahaan','tc_kunjungan.tgl_masuk','mt_dokter_v.nama_pegawai','mt_bagian.nama_bagian','tc_kunjungan.tgl_keluar','tc_kunjungan.kode_bagian_tujuan','mt_perusahaan.nama_perusahaan','tc_kunjungan.no_kunjungan', 'tc_kunjungan.kode_dokter', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.no_mr');
 
         $list = $this->Reg_pasien->get_riwayat_pasien( $column, $mr ); 
 
@@ -121,6 +121,10 @@ class Reg_pasien extends MX_Controller {
                 $btn_print_out_checklist_mcu = '<li><a href="#" onclick="PopupCenter('."'registration/Reg_mcu/print_checklist_mcu?kode_tarif=".$dt_trans_mcu->kode_tarif."&nama=".$dt_trans_mcu->nama_pasien_layan."&no_mr=".$dt_trans_mcu->no_mr."&no_reg=".$row_list->no_registrasi."'".', '."'FORM CHEKLIST MCU'".', 850, 500)">Cetak Form Cheklist MCU</a></li>';
             }
 
+            $btn_perjanjian = ( $subs_kode_bag == '01') ? '<li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian_tujuan."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=".$row_list->no_sep."'".')">Surat Kontrol Pasien</a></li>' : '';
+
+            $btn_cetak_sep = ($row_list->kode_perusahaan == 120)?'<li><a href="#" onclick="show_modal('."'ws_bpjs/Ws_index/view_sep/".$row_list->no_sep."'".', '."'SURAT ELEGIBILITAS PASIEN'".')">Cetak Ulang SEP</a></li>':'';
+
             if($row_list->nama_perusahaan==''){
                 $penjamin = 'Umum';
             }else if(($row_list->nama_perusahaan!='') AND ($row_list->kode_perusahaan==120) AND ($row_list->no_sep!='')){
@@ -149,8 +153,9 @@ class Reg_pasien extends MX_Controller {
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_edit_dokter/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".' ,'."'UBAH DOKTER PEMERIKSA'".')">Ubah Dokter Pemeriksa</a></li>
                             '.$btn_view_hasil_pm.'
                             '.$btn_print_out_checklist_mcu.'
+                            '.$btn_perjanjian.'
+                            '.$btn_cetak_sep.'
                             <li><a href="#" onclick="PopupCenter('."'registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama=".$row_list->nama_pasien."&no_mr=".$row_list->no_mr."&no_reg=".$row_list->no_registrasi."&poli=".$row_list->nama_bagian."&dokter=".$row_list->nama_pegawai."&nasabah=".$penjamin."'".', '."'FORM BUKTI PENDAFTARAN PASIEN'".', 950, 550)">Cetak Bukti Pendaftaran</a></li>
-                            <li>'.anchor_popup('registration/reg_pasien/tracer/'.$row_list->no_registrasi.'/'.$mr.'', 'Cetak Tracer', $atts).'</li>
                             <li class="divider"></li>
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
@@ -251,7 +256,7 @@ class Reg_pasien extends MX_Controller {
 
         $output = array();
 
-        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day');
+        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id');
 
         $list = $this->Reg_pasien->get_riwayat_perjanjian( $column, $mr ); 
 
@@ -300,7 +305,7 @@ class Reg_pasien extends MX_Controller {
                             </button>
                             <ul class="dropdown-menu dropdown-inverse">
                                 '.$html.'
-                                <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.')">Cetak Surat Kontrol</a></li>
+                                <li><a href="#" onclick="show_modal('."'registration/Reg_pasien/surat_control?id_tc_pesanan=".$row_list->id_tc_pesanan."&jd_id=".$row_list->jd_id."'".')">Cetak Surat Kontrol</a></li>
                                 <li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
                             </ul>
                         </div></div>';
@@ -765,13 +770,14 @@ class Reg_pasien extends MX_Controller {
             'no_mr' => $no_mr,
             'pasien' => $this->Reg_pasien->get_by_mr($no_mr),
             );
-        // echo '<pre>';print_r($data);die;
+        
         $this->load->view('Reg_pasien/identitas_berobat_pasien', $data);
 
     }
 
      public function process_perjanjian()
     {
+        // echo '<pre>'; print_r($_POST);die;
          $this->load->library('form_validation');
          $val = $this->form_validation;
  
@@ -835,8 +841,6 @@ class Reg_pasien extends MX_Controller {
             }else{
                 $val->set_rules('no_sep_lama', 'No SEP Lama', 'trim|required', array('required' => 'Silahkan masukan No SEP Lama/Terakhir'));   
             }
-            
-            
         }
 
  
@@ -854,67 +858,20 @@ class Reg_pasien extends MX_Controller {
 
             $id = ($this->input->post('id_tc_pesanan'))?$this->regex->_genRegex($this->input->post('id_tc_pesanan'),'RGXINT'):0;
             $ex_no_surat_kontrol = ($this->input->post('no_surat_kontrol'))?$this->regex->_genRegex($this->input->post('no_surat_kontrol'),'RGXQSL'):0;
-            
-            // untuk rawat jalan saja
-            if($_POST['jenis_instalasi']=='RJ'){
-                if($_POST['kode_perusahaan'] == 120){
-                    // get kode dokter dpjp bpjs
-                    $dokter_dpjp = $this->db->get_where('mt_karyawan', array('kode_dokter' => $_POST['dokter_rajal']))->row();
-                    // get kode poli bpjs
-                    $poli_rj = $this->db->get_where('mt_bagian', array('kode_bagian' => $_POST['klinik_rajal']) )->row();
-                    $petugas = isset($this->session->userdata('user')->fullname)?$this->session->userdata('user')->fullname:'KIOSK';
 
-                    if($id == 0){
-                        // insert rencana kontrol
-                        $data = array(
-                            'request' => array(
-                                'noSEP' => isset($_POST['no_sep_lama'])?trim($_POST['no_sep_lama']):'',
-                                'kodeDokter' => $dokter_dpjp->kode_dokter_bpjs,
-                                'poliKontrol' => $poli_rj->kode_poli_bpjs,
-                                'tglRencanaKontrol' => $tgl,
-                                'user' => 'ws-'.$petugas,
-                            ),
-                        );
-                        $result = $this->Ws_index->insertRencanaKontrol($data);
-                    }else{
-                        // update rencana kontrol
-                        
-                        $data = array(
-                            'request' => array(
-                                "noSuratKontrol" => $ex_no_surat_kontrol,
-                                'noSEP' => isset($_POST['no_sep_lama'])?trim($_POST['no_sep_lama']):'',
-                                'kodeDokter' => $dokter_dpjp->kode_dokter_bpjs,
-                                'poliKontrol' => $poli_rj->kode_poli_bpjs,
-                                'tglRencanaKontrol' => $tgl,
-                                'user' => 'ws-'.$petugas,
-                            ),
-                        );
-                        $result = $this->Ws_index->updateRencanaKontrol($data);
-                    }
-                    
-                    $response = isset($result['response']) ? $result : false;
-                    if($response == false){
-                        echo json_encode(array('status' => 0, 'message' => 'Error API ! Silahkan cek koneksi anda!'));
-                        exit;
-                    }
-                    // if($response['response']->metaData->code != 200){
-                    //     echo json_encode(array('status' => $result['response']->metaData->code, 'message' => $result['response']->metaData->message));
-                    //     exit;
-                    // }
-                    // nomor surat kontrol
-                    $no_surat_kontrol = isset($response['data']->noSuratKontrol)?$response['data']->noSuratKontrol:false;
-                    $is_bridging = isset($response['data']->noSuratKontrol) ? 1 : 0;
-                }
-            }
+            $check_surat_kontrol = $this->Ws_index->check_surat_kontrol_by_no($ex_no_surat_kontrol);
+            $response_dt = isset($check_surat_kontrol['response']) ? $check_surat_kontrol : false;
+            $is_bridging = ( $response_dt['response']->metaData->code == 200 ) ? 1 : 0;
 
             $kode_faskes = '0112R034';
             /*get_unique_code*/
             $string = $kode_faskes.$this->input->post('nama_pasien').$this->input->post('no_mr');
             $unique_code_max = $this->master->generateRandomString($string, 6);
 
+            $ket_rujukan_internal = ($_POST['jenis_perjanjian'] == 1) ? 'Rujukan Internal - ' : '';
             $dataexc = array(
                 'nama' => $this->regex->_genRegex($this->input->post('nama_pasien'), 'RGXQSL'),
-                'keterangan' => $this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
+                'keterangan' => $ket_rujukan_internal.$this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
                 'alamat' => $this->regex->_genRegex($this->input->post('alamat'), 'RGXQSL'),
                 'no_poli' => $bag,
                 'kode_dokter' => $this->regex->_genRegex($val->set_value('dokter_rajal'), 'RGXQSL'),
@@ -957,7 +914,7 @@ class Reg_pasien extends MX_Controller {
              }
             //  print_r($dataexc);die;
              if($id==0){
-                $kode_perjanjian = ($no_surat_kontrol != false) ? $no_surat_kontrol : $kode_faskes.date('my').$unique_code_max;
+                $kode_perjanjian = ($ex_no_surat_kontrol != 0) ? $ex_no_surat_kontrol : $kode_faskes.date('my').$unique_code_max;
                 $dataexc['kode_perjanjian'] = $kode_perjanjian;
                 /*save post data*/
                 $newId = $this->Perjanjian->save($dataexc);
@@ -982,10 +939,6 @@ class Reg_pasien extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
-                 if(isset($_POST['print_booking'])){
-                    //  print_booking
-                    $this->print_booking($_POST['jd_id'], $newId);
-                 }
                  echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id_tc_pesanan' => $newId, 'jd_id' => $_POST['jd_id'], 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].''));
              }
  
@@ -997,9 +950,11 @@ class Reg_pasien extends MX_Controller {
         
         $id_tc_pesanan = $_GET['id_tc_pesanan'];
         $jd_id = $_GET['jd_id'];
+        $data['jd_id'] = $jd_id;
+        $data['id_tc_pesanan'] = $id_tc_pesanan;
         $data['value'] = $this->Reg_pasien->get_pesanan_pasien_($id_tc_pesanan);
         $data['jadwal'] = $this->Reg_pasien->get_jadwal_dokter($jd_id);
-        // $this->print_escpos->print_booking($data);
+        $data['jenis_printer'] = $this->db->get_where('global_parameter', array('flag' => 'printer_booking'))->result();
         $this->load->view('Reg_pasien/surat_kontrol', $data);
 
     }
@@ -1010,9 +965,8 @@ class Reg_pasien extends MX_Controller {
         $data['value'] = $booking;
         $data['jadwal'] = $this->Reg_pasien->get_jadwal_dokter($jd_id);
         // echo '<pre>';print_r($data);die;
-        // $this->print_escpos->print_testing();
         $this->print_escpos->print_booking($data);
-        return true;
+        echo json_encode($_POST);
 
     }
 

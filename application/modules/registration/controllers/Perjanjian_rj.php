@@ -74,6 +74,8 @@ class Perjanjian_rj extends MX_Controller {
                 
                 $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol</a></li>' : '';
 
+                $is_bridging = ($row_list->is_bridging == 1) ? '<span style="background: green; padding: 2px; color: white"><i class="fa fa-check"></i> Bridging</span>' : '' ;
+
                 $row[] = '<div class="center"><div class="btn-group">
                             <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                                 <span class="ace-icon fa fa-caret-down icon-on-right"></span>
@@ -87,10 +89,11 @@ class Perjanjian_rj extends MX_Controller {
                 if( !isset($_GET['no_mr']) ){
                     $no_mr = ($row_list->no_mr == NULL)?'<i class="fa fa-user green bigger-150"></i>':$row_list->no_mr;
                     // $row[] = '<div class="center">'.$no_mr.'</div>';
-                    $row[] = '<b>'.$no_mr.'</b><br>'.strtoupper($row_list->nama);
+                    $row[] = '<b>'.$no_mr.'</b><br>'.strtoupper($row_list->nama).'<br>'.$is_bridging;
                 }
                 // $row[] = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
                 // $row[] = '<div class="left">'.ucwords($row_list->nama_bagian).'</div>';
+                
                 $row[] = '<div class="left"><b>'.$row_list->nama_pegawai.'</b><br><small>'.ucwords($row_list->nama_bagian).'</small></div>';
                 if( isset($_GET['flag']) AND $_GET['flag']=='HD' ){
                     $row[] = $row_list->selected_day;

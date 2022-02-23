@@ -80,10 +80,7 @@ function cetak_surat_kontrol(ID, jd_id) {
       alert('Silahkan cari pasien terlebih dahulu !'); return false;
     }else{
       url = 'registration/Reg_pasien/surat_control?id_tc_pesanan='+ID+'&jd_id='+jd_id+'';
-      title = 'Cetak Barcode';
-      width = 850;
-      height = 500;
-      PopupCenter(url, title, width, height);
+      getMenu(url);
     }
 
 }

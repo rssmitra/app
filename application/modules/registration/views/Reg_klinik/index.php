@@ -29,6 +29,7 @@ jQuery(function($) {
 });
 
 $(document).ready(function(){
+  
 
 
     table_booking = $('#riwayat-booking-table').DataTable({ 
@@ -90,11 +91,17 @@ $(document).ready(function(){
             PopupCenter('registration/Reg_mcu/print_checklist_mcu?kode_tarif='+jsonResponse.kode_tarif_mcu+'&nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'', 'FORM CHEKLIST MCU', 850, 500);
           }
 
-          // 
+          // jika tujuan rawat jalan
           if( $('select[name="jenis_pendaftaran"]').val() == 1 || $('select[name="jenis_pendaftaran"]').val() == 4){
             PopupCenter('registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'&poli='+jsonResponse.poli+'&dokter='+jsonResponse.dokter+'&nasabah='+jsonResponse.nasabah+'', 'FORM BUKTI PENDAFTARAN PASIEN', 950, 550);
           }
 
+          if( jsonResponse.type_pelayanan == 'create_sep' ){
+            $('#noSep').val(jsonResponse.no_sep);
+            $('#show-sep-from-response').show('fast');
+            $('#txt-no-sep').text(jsonResponse.no_sep);
+            show_modal('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep+'', 'SURAT ELEGIBILTAS PASIEN (SEP)');
+          }
 
           /*show action after success submit form*/
           $("#tabs_detail_pasien").load("registration/reg_pasien/riwayat_kunjungan/"+jsonResponse.no_mr);
@@ -113,18 +120,15 @@ $(document).ready(function(){
 
           $('#pasien_dengan_perjanjian').hide('fast');
           $('#id_tc_pesanan').val('');
-          $('#noSep').val('');
+          
 
           $('#label_info_rujukan').hide('fast');
           $('#kode_rujukan_hidden').val(0); 
           $('#no_registrasi_hidden').val('');  
 
-
-
-
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }        
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }        
 
         //achtungHideLoader();        
 
@@ -159,8 +163,8 @@ $(document).ready(function(){
           find_pasien_by_keyword( jsonResponse.no_mr );
 
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }        
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }        
 
         //achtungHideLoader();        
 
@@ -194,10 +198,9 @@ $(document).ready(function(){
           console.log(jsonResponse);
           find_pasien_by_keyword( jsonResponse.no_mr );
 
-
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }        
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }        
 
         //achtungHideLoader();        
 
@@ -419,11 +422,11 @@ $(document).ready(function(){
         $.getJSON("<?php echo site_url('templates/References/findKodeBooking') ?>?kode=" + $("#form_cari_pasien_by_kode_perjanjian_id").val(), '', function (response) {              
 
           achtungHideLoader();
+          $('#change_modul_view_perjanjian').html('');
 
           if( response.status != 200){
             $('#perjanjian_result_view_div').hide('fast');
             $('#div_load_after_selected_pasien_perjanjian').hide('fast');
-
             alert('Kode Perjanjian tidak ditemukan'); return $("#form_cari_pasien_by_kode_perjanjian_id").focus();
 
           }else{
@@ -432,11 +435,16 @@ $(document).ready(function(){
 
             $('#perjanjian_result_view_div').show('fast');
             $('#div_load_after_selected_pasien_perjanjian').show('fast');
-
+            $('#noRujukan').val(obj_data.norujukan);
             /*put data in form*/
             $('#noMrHidden').val(obj_data.no_mr);
             find_pasien_by_keyword(obj_data.no_mr);
+            $('#id_tc_pesanan').val(obj_data.id_tc_pesanan);
             $('#nama_pasien_hidden').val(obj_data.nama);
+            $('#kodeDokterDPJPPerjanjianBPJS').val(obj_data.kode_dokter_bpjs);
+            $('#kodeDokterDPJPPerjanjian').val(obj_data.kode_dokter);
+            $('#kodePoliPerjanjian').val(obj_data.kode_poli);
+            $('#namaDokterDPJPPerjanjianBPJS').val(obj_data.nama_dr);
             $('#perjanjian_result_view_div').html(response.html);
 
           }
@@ -682,7 +690,7 @@ function showChangeModul(modul_id, id_tc_pesanan=''){
     } else if ( modul_id ==7 ) {          
       $('#form_registration').attr('action', 'registration/Reg_bedah/process');
     }else if ( modul_id ==8 ) {          
-      $('#form_registration').attr('action', 'registration/Reg_klinik/process');
+      $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
     }else {   
       /*Eksekusi jika salah*/
       $('#form_registration').attr('action', '#');
@@ -1120,12 +1128,14 @@ function find_pasien_by_keyword(keyword){
 $('#btnSearchNoRujukan').click(function (e) {
     e.preventDefault();
 
-    $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/8') ;
-
     var field = $('input[name=find_member_by]:checked').val();
     var jenis_faskes_pasien = $('input[name=jenis_faskes_pasien]:checked').val();
     var flag = $('input[name=find_member_by]:checked').val();
     var noRujukan = $('#noRujukan').val();
+    var idTcPesanan = $('#id_tc_pesanan').val();
+
+    $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/8/'+idTcPesanan+'') ;
+    $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
 
     e.preventDefault();
     $.ajax({
@@ -1146,7 +1156,7 @@ $('#btnSearchNoRujukan').click(function (e) {
           var pelayanan = data.result.pelayanan;
           var poliRujukan = data.result.poliRujukan;
           var provPerujuk = data.result.provPerujuk;
-          console.log(poliRujukan);
+          console.log(provPerujuk.kode);
 
           /*show hidden*/
           $('#result-dt-rujukan').show('fast');
@@ -1154,7 +1164,7 @@ $('#btnSearchNoRujukan').click(function (e) {
           $('#showResultData').show('fast');
 
           /*text*/
-          $('#noSuratSKDP').val($('#form_cari_pasien_by_kode_perjanjian_id').val());
+          $('#noSuratSKDP').val($('#noSuratKontrol').val());
           $('#noKartuFromNik').text(peserta.noKartu);
           $('#nama').text(peserta.nama);
           $('#user').val(peserta.nama);
@@ -1180,16 +1190,26 @@ $('#btnSearchNoRujukan').click(function (e) {
           $('#catatan').val(rujukan.keluhan);
 
           /*show dokter DPJP*/
-          $.getJSON("ws_bpjs/Ws_index/getRef?ref=GetRefDokterDPJPRandom", { spesialis:$('#kodePoliHidden').val(),jp:$('input[name=jnsPelayanan]:checked').val(),tgl:$('#tglSEP').val() }, function (row) {
-                $('#KodedokterDPJP').val(row.kode);
-                $('#InputKeydokterDPJP').val(row.nama.toUpperCase());    
-                $('#show_dpjp').val(row.nama.toUpperCase());    
-          });
+          // $.getJSON("ws_bpjs/Ws_index/getRef?ref=GetRefDokterDPJPRandom", { spesialis:$('#kodePoliHidden').val(),jp:$('input[name=jnsPelayanan]:checked').val(),tgl:$('#tglSEP').val(), dokterDPJP:$().val() }, function (row) {
+          //       $('#KodedokterDPJP').val(row.kode);
+          //       $('#InputKeydokterDPJP').val(row.nama.toUpperCase());    
+          //       $('#show_dpjp').val(row.nama.toUpperCase());    
+          // });
+
+          // default from perjanjian
+          $('#KodedokterDPJP').val($('#kodeDokterDPJPPerjanjianBPJS').val());
+          $('#InputKeydokterDPJP').val($('#namaDokterDPJPPerjanjianBPJS').val());    
+          $('#show_dpjp').val($('#namaDokterDPJPPerjanjianBPJS').val());
+
+          // kode perusahaan
+          $('#kode_perusahaan_hidden').val(120);
+          $('#kode_kelompok_hidden').val(120);
+          
 
           $("input[name=jnsPelayanan][value="+pelayanan.kode+"]").attr('checked', true);
 
         }else{
-          $.achtung({message: data.message, timeout:5});
+          $.achtung({message: data.message, timeout:5, className: 'achtungFail'});
         }
         
       }
@@ -1319,6 +1339,10 @@ function get_riwayat_medis(){
             <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
             <input name="noKartuBpjs" id="noKartuBpjs" class="form-control" type="hidden" value="">
             <input name="is_new" id="is_new" class="form-control" type="hidden" value="<?php echo isset($is_new)?$is_new:'';?>">          
+            <input type="hidden" name="kodeDokterDPJPPerjanjianBPJS" value="" id="kodeDokterDPJPPerjanjianBPJS">
+            <input type="hidden" name="kodeDokterDPJPPerjanjian" value="" id="kodeDokterDPJPPerjanjian">
+            <input type="hidden" name="kodePoliPerjanjian" value="" id="kodePoliPerjanjian">
+            <input type="hidden" name="namaDokterDPJPPerjanjianBPJS" value="" id="namaDokterDPJPPerjanjianBPJS">
             
             <div class="col-md-2 no-padding">
               <div class="box box-primary" id='box_identity'>
@@ -1382,7 +1406,7 @@ function get_riwayat_medis(){
                     
                     <div class="input-group">
                         
-                        <input name="tgl_registrasi" id="tgl_registrasi" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
+                        <input name="tgl_registrasi" id="tgl_registrasi" placeholder="yyyy-mm-dd" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo date('Y-m-d')?>">
                         <span class="input-group-addon">
                           
                           <i class="ace-icon fa fa-calendar"></i>
@@ -1483,7 +1507,6 @@ function get_riwayat_medis(){
 
                 <div id="search_kode_perjanjian_result" <?php echo isset($kode_perjanjian)?'':'style="display:none;margin-top:10px"'?>>
                 
-                  
 
                   <div id="div_load_after_selected_pasien_perjanjian" style="display: none">
                     <hr>
@@ -1515,7 +1538,7 @@ function get_riwayat_medis(){
                           <input name="penjaminKLL" type="radio" class="ace" value="0" checked/>
                           <input type="hidden" class="form-control" name="catatan" id="catatan" value="">
                           <!-- <input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value=""> -->
-                          <input type="hidden" class="form-control" id="user" name="user" value="" readonly>
+                          <input type="hidden" class="form-control" id="user" name="user" value="<?php echo $this->session->userdata('user')->fullname?>" readonly>
                           <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden"/>
                           <input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
                           <input name="noRujukan" id="noRujukan" class="form-control" type="text" placeholder="Masukan No Rujukan" style="width: 250px;">
@@ -1859,24 +1882,26 @@ function get_riwayat_medis(){
                         
 
                         <!-- end change modul view -->
+                        
+                        <div class="form-group" id="btn_submit" style="display: none">
 
-                        <div class="form-group" id="btn_submit" style="display:none">
+                          <div class="col-sm-12 no-padding" style="padding-top: 10px">
 
-                            <div class="col-sm-12 no-padding" style="padding-top: 10px">
+                              <button type="submit" name="submit" class="btn btn-xs btn-primary" style="height: 50px !important; font-size: 20px">
 
-                                <button type="submit" name="submit" class="btn btn-xs btn-primary" style="height: 50px !important; font-size: 20px">
+                                <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
 
-                                  <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+                                Proses Pendaftaran Pasien
 
-                                  Proses Pendaftaran Pasien
+                              </button>
 
-                                </button>
-
-                            </div>
+                          </div>
 
                         </div>
 
                         <div id="message_pasien_pending"></div>
+                        
+                        
 
                       </div>
 
@@ -1886,7 +1911,10 @@ function get_riwayat_medis(){
 
                 </div>
 
-              </div>
+              
+                
+
+            </div>
 
               <div class="col-md-4">
 
@@ -2033,8 +2061,6 @@ function get_riwayat_medis(){
             </div>
 
             <!-- div antrian pasien -->
-
-            
 
         </form>
 
