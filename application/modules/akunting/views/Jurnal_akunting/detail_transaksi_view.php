@@ -15,9 +15,6 @@
       $arr_kredit = array();
       foreach($jurnal as $key_jurnal=>$row_jurnal) :
     ?>
-    <tr>
-      <td colspan="4"><b><?php echo $jurnal[$key_jurnal][0]->acc_no_ref.'. '.$key_jurnal?></b></td>
-    </tr>
     <?php foreach($row_jurnal as $row_dt_jurnal) :?>
       <tr>
         <td></td>
