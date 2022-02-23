@@ -21,10 +21,10 @@
       $(this).prev().focus();    
 
     });  
-    var oTable;
-    var base_url = $('#dynamic-table').attr('base-url'); 
+    var oTablePerjanjianByMR;
+    var base_url = $('#dynamic-table-perjanjian-bymr').attr('base-url'); 
 
-    oTable = $('#dynamic-table').DataTable({ 
+    oTablePerjanjianByMR = $('#dynamic-table-perjanjian-bymr').DataTable({ 
           
       "processing": true, //Feature control the processing indicator.
       "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -52,23 +52,55 @@
   $('input[name="flag"]').click(function (e) {
     var value = $(this).val();
     var no_mr = $('#no_mr_pasien_perjanjian').val();   
-    oTable.ajax.url('registration/Perjanjian_rj/get_data?no_mr='+no_mr+'&flag='+value).load();
+    oTablePerjanjianByMR.ajax.url('registration/Perjanjian_rj/get_data?no_mr='+no_mr+'&flag='+value).load();
     
   }); 
 
-  function cetak_surat_kontrol(ID) {   
+  function cetak_surat_kontrol(ID, jd_id) {   
     var no_mr = $('#tabs_riwayat_perjanjian_id').attr('data-id');  
     if( no_mr == '' ){
       alert('Silahkan cari pasien terlebih dahulu !'); return false;
     }else{
-      url = 'registration/Reg_pasien/surat_control?id_tc_pesanan='+ID;
-      title = 'Cetak Barcode';
-      width = 850;
-      height = 500;
-      PopupCenter(url, title, width, height);
+      url = 'registration/Reg_pasien/surat_control?id_tc_pesanan='+ID+'&jd_id='+jd_id+'';
+      getMenu(url);
     }
 
+}
+
+function delete_perjanjian(id_tc_pesanan){  
+
+  if(confirm('Are you sure?')){
+    preventDefault();
+    $.ajax({
+        url: 'registration/Input_perjanjian/delete',
+        type: "post",
+        data: {ID:id_tc_pesanan},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            var no_mr = $('#no_mr_pasien_perjanjian').val();   
+            oTablePerjanjianByMR.ajax.url('registration/Perjanjian_rj/get_data?no_mr='+no_mr+'&flag=RJ').load();
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
   }
+    
+}
 
 </script>
 
@@ -152,7 +184,7 @@
 <hr class="separator">
 <!-- div.dataTables_borderWrap -->
 <div style="margin-top:-27px">
-  <table id="dynamic-table" base-url="registration/Perjanjian_rj/get_data?no_mr=<?php echo $no_mr?>" class="table table-bordered table-hover">
+  <table id="dynamic-table-perjanjian-bymr" base-url="registration/Perjanjian_rj/get_data?no_mr=<?php echo $no_mr?>" class="table table-bordered table-hover">
     <thead>
       <tr>  
         <th width="30px" class="center"></th>
@@ -169,7 +201,7 @@
   </table>
 </div>
 
-<div id="modalDaftarPerjanjian" class="modal fade" tabindex="-1">
+<!-- <div id="modalDaftarPerjanjian" class="modal fade" tabindex="-1">
 
   <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:70%">
 
@@ -203,7 +235,7 @@
 
   </div>
 
-</div>
+</div> -->
 
 
 

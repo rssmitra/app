@@ -868,7 +868,7 @@ class Reg_pasien extends MX_Controller {
             $string = $kode_faskes.$this->input->post('nama_pasien').$this->input->post('no_mr');
             $unique_code_max = $this->master->generateRandomString($string, 6);
 
-            $ket_rujukan_internal = ($_POST['jenis_perjanjian'] == 1) ? 'Rujukan Internal - ' : '';
+            $ket_rujukan_internal = isset($_POST['jenis_perjanjian']) ? ($_POST['jenis_perjanjian'] == 1) ? 'Rujukan Internal - ' : '' : '';
             $dataexc = array(
                 'nama' => $this->regex->_genRegex($this->input->post('nama_pasien'), 'RGXQSL'),
                 'keterangan' => $ket_rujukan_internal.$this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
@@ -939,7 +939,7 @@ class Reg_pasien extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id_tc_pesanan' => $newId, 'jd_id' => $_POST['jd_id'], 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].''));
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id_tc_pesanan' => $newId, 'jd_id' => $_POST['jd_id'], 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].'', 'type_pelayanan' => 'create_perjanjian'));
              }
  
          }

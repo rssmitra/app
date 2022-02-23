@@ -398,7 +398,7 @@ function format_html ( data ) {
                     <td id="PoliTujuan"><?php echo $poli?><br><?php echo $nama_dr?></td>
                     <td id="jamPrakter" class="center"><?php echo $jam_praktek?></td>
                     <td id="TglEntri" class="center"><?php echo $input_tgl?></td>
-                    <td id="TglEntri" class="center"><?php echo ($tgl_kunjungan == date('Y-m-d')) ? '<span class="green" style="font-weight: bold">Available</span>' : '<span class="red" style="font-weight: bold">Not Available</span>' ; ?></td>
+                    <td id="TglEntri" class="center"><?php echo (strtotime($tgl_rencana_kontrol) == strtotime(date('Y-m-d'))) ? '<span class="green" style="font-weight: bold">Available</span>' : '<span class="red" style="font-weight: bold">Not Available</span>' ; ?></td>
                     <td id="TglEntri" class="center"><a href="#" class="label label-success" onclick="show_form_kontrol('show')">Update</a></td>
                 </tr>
             </table>

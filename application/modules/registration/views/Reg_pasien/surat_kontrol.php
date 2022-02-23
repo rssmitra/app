@@ -32,7 +32,6 @@
     <td style="padding-left:30px;">
   <b>SURAT KONTROL PASIEN<br><?php echo strtoupper(COMP_LONG); ?></b>
   </td>
-  <td align="right"><div class="stamp"><h1> WAJIB DIBAWA </h1></div></td>
   </tr>
   </table>
   </br>
@@ -47,11 +46,11 @@
   </tr>
 
   <tr>
-  <td>Tanggal Kembali</td><td>: <?php echo $this->tanggal->formatDate($value->tgl_kembali)?></td><td style="padding-left:80px">Penjamin</td><td>: <?php echo $value->nama_perusahaan?></td>
+  <td>Tanggal Kembali</td><td>: <?php echo $this->tanggal->formatDate($value->tgl_kembali)?></td><td style="padding-left:20px">Penjamin</td><td>: <?php echo $value->nama_perusahaan?></td>
   </tr>
 
   <tr>
-  <td>Nama Pasien</td><td>: <?php echo $value->nama?></td><td style="padding-left:80px">No RM</td><td>: <?php echo $value->no_mr?></td>
+  <td>Nama Pasien</td><td>: <?php echo $value->nama?></td><td style="padding-left:20px">No RM</td><td>: <?php echo $value->no_mr?></td>
   </tr>
 
   <tr>

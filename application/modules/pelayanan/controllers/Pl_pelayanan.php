@@ -101,8 +101,8 @@ class Pl_pelayanan extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
+        // echo '<pre>';print_r($data);die;
         if($_GET['form'] == 'billing_entry'){
-            // echo '<pre>';print_r($data);die;
             $this->load->view('Pl_pelayanan/form', $data);
         }else{
             if($this->session->userdata('flag_form_pelayanan') == 'dokter'){
@@ -1946,6 +1946,42 @@ class Pl_pelayanan extends MX_Controller {
         /*load form view*/
         
         $this->load->view('Pl_pelayanan/form_perjanjian_rj_view', $data);
+    
+    }
+
+    public function form_perjanjian_view_ontabs($id='') 
+    {
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        $data = array();
+        
+        /*if id is not null then will show form edit*/
+        
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $id, array('no_mr') );
+
+        /*echo '<pre>'; print_r($data_pasien);*/
+
+        $data['title'] = 'Perjanjian Pasien Rawat Jalan';
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['value'] = $data_pasien[0];
+        $data['kode_bagian'] = $_GET['kode_bagian'];
+        $data['kode_dokter'] = $_GET['kode_dokter'];
+        $data['kode_perusahaan'] = $_GET['kode_perusahaan'];
+
+        $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
+        
+        // $data['booking_id'] = $booking_id;
+
+        // if($booking_id!=0){
+
+        //     $booking_data = $this->db->get_where('regon_booking', array('regon_booking_id' => $booking_id) )->row();
+        //     $data['booking'] = $booking_data;
+
+        // }
+        
+        /*load form view*/
+        
+        $this->load->view('Pl_pelayanan/form_perjanjian_rj_view_2', $data);
     
     }
 

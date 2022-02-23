@@ -71,8 +71,11 @@ class Perjanjian_rj extends MX_Controller {
                                 <span class="lbl"></span>
                             </label>
                           </div>';
-                
-                $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol</a></li>' : '';
+                if(isset($_GET['no_mr'])){
+                    $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="getMenuTabs('."'registration/Reg_pasien/surat_control?id_tc_pesanan=".$row_list->id_tc_pesanan."&jd_id=".$row_list->jd_id."'".', '."'tabs_form_pelayanan'".')">Cetak Surat Kontrol</a></li>' : '';
+                }else{
+                    $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol</a></li>' : '';
+                }
 
                 $is_bridging = ($row_list->is_bridging == 1) ? '<span style="background: green; padding: 2px; color: white"><i class="fa fa-check"></i> Bridging</span>' : '' ;
 
