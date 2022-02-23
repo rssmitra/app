@@ -206,12 +206,12 @@
           console.log(response.data);
           $.getJSON("adm_pasien/loket_kasir/Adm_lhk/get_resume_kasir?"+response.data, '', function (data) {
              // code here
-              $('#label_tunai').text( formatMoney(parseInt(data.tunai)) );
-              $('#label_debet').text( formatMoney(parseInt(data.debet)) );
-              $('#label_kredit').text( formatMoney(parseInt(data.kredit)) );
-              $('#label_nk_perusahaan').text( formatMoney(parseInt(data.nk_perusahaan)) );
-              $('#label_nk_karyawan').text( formatMoney(parseInt(data.nk_karyawan)) );
-              $('#label_total_billing').text( formatMoney(parseInt(data.bill)) );
+              ( parseInt(data.tunai) >= 0 ) ? $('#label_tunai').text( formatMoney(parseInt(data.tunai)) ) : $('#label_tunai').text( formatMoney(0) );
+              ( parseInt(data.debet) >= 0 ) ? $('#label_debet').text( formatMoney(parseInt(data.debet)) ) : $('#label_debet').text( formatMoney(0) ) ;
+              ( parseInt(data.kredit) >= 0 ) ? $('#label_kredit').text( formatMoney(parseInt(data.kredit)) ) : $('#label_kredit').text( formatMoney(0) ) ;
+              ( parseInt(data.nk_perusahaan) >= 0 ) ? $('#label_nk_perusahaan').text( formatMoney(parseInt(data.nk_perusahaan)) ) : $('#label_nk_perusahaan').text( formatMoney(0) ) ;
+              ( parseInt(data.nk_karyawan) >= 0 ) ? $('#label_nk_karyawan').text( formatMoney(parseInt(data.nk_karyawan)) ) : $('#label_nk_karyawan').text( formatMoney(0) ) ;
+              ( parseInt(data.bill) >= 0 ) ? $('#label_total_billing').text( formatMoney(parseInt(data.bill)) ) : $('#label_total_billing').text( formatMoney(0) ) ;
           });
         }
       });
@@ -295,14 +295,14 @@
             <table class="table">
               <tr>
                 <td align="right" style="font-size: 11px">
-                  DEBET<br>
+                  NON TUNAI (DEBIT/CC)<br>
                   <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_debet">0</span>,-</h3>
                 </td>
               </tr>
             </table>
           </div>
 
-          <div class="col-md-2 no-padding">
+          <!-- <div class="col-md-2 no-padding">
             <table class="table">
               <tr>
                 <td align="right" style="font-size: 11px">
@@ -311,7 +311,7 @@
                 </td>
               </tr>
             </table>
-          </div>
+          </div> -->
 
           <div class="col-md-2 no-padding">
             <table class="table">
@@ -359,8 +359,8 @@
               <th>Tanggal</th>
               <th>Pasien</th>
               <th>Tunai</th>
-              <th>Debet</th>
-              <th>Kredit</th>
+              <th width="100px">Non-Tunai</th>
+              <!-- <th>Kredit</th> -->
               <th>Potongan</th>
               <th>Piutang Perusahaan</th>
               <th>Piutang Karyawan</th>

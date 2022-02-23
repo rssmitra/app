@@ -60,13 +60,13 @@
       $arr_kredit = array();
       foreach($jurnal as $key_jurnal=>$row_jurnal) :
     ?>
-    <tr>
+    <!-- <tr>
       <td colspan="4"><b><?php echo $jurnal[$key_jurnal][0]->acc_no_ref.'. '.$key_jurnal?></b></td>
-    </tr>
+    </tr> -->
     <?php foreach($row_jurnal as $row_dt_jurnal) :?>
       <tr>
         <td></td>
-        <td><?php echo $row_dt_jurnal->acc_no.'. '.$row_dt_jurnal->acc_nama?></td>
+        <td><?php echo '<b>'.$row_dt_jurnal->acc_no.'</b>. '.$row_dt_jurnal->acc_nama?></td>
         <td align="right">
           <?php echo ($row_dt_jurnal->tipe_tx == 'D') ? number_format($row_dt_jurnal->nominal) : 0; ?>
         </td>
