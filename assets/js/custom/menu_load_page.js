@@ -17,23 +17,26 @@ $('.delete_attachment').click(function(e){  // ... or however you attach to that
 
 function getMenu(link)
 {
-  
-    $.ajax({
-        url : link,
-        type: "POST",
-        beforeSend: function() {
-            //achtungShowLoader();
-            $('#page-area-content').html(loading);
-          },
-        error: function(xhr)
-        { 
-           $('#page-area-content').html(xhr.responseText);
-        },
-        complete: function(xhr) {     
-            $('#page-area-content').load(link);
-            //achtungHideLoader();
-        }
-    });
+
+    $('#page-area-content').html(loading);
+    $('#page-area-content').load(link);
+
+    // $.ajax({
+    //     url : link,
+    //     type: "POST",
+    //     beforeSend: function() {
+    //         //achtungShowLoader();
+    //         $('#page-area-content').html(loading);
+    //       },
+    //     error: function(xhr)
+    //     { 
+    //        $('#page-area-content').html(xhr.responseText);
+    //     },
+    //     complete: function(xhr) {     
+    //         $('#page-area-content').load(link);
+    //         //achtungHideLoader();
+    //     }
+    // });
 
 }
 

@@ -94,7 +94,7 @@ jQuery(function($) {
 $(document).ready(function(){
 
     $('#jenis_instalasi').focus();    
-    $('#change_modul_view_perjanjian_form').load('registration/Reg_pasien/show_modul/RJ');
+    $('#change_modul_view_perjanjian_form').load('registration/Reg_pasien/show_modul/RJ-PJ');
 
     $('#form_booking').ajaxForm({      
 
@@ -118,18 +118,11 @@ $(document).ready(function(){
 
           $.achtung({message: jsonResponse.message, timeout:5});          
 
-          setTimeout(function(){
-            PopupCenter(jsonResponse.redirect, 'SURAT KONTROL PASIEN', 850, 500);
-            //window.open(jsonResponse.redirect, '_blank');
-            $("#modalDaftarPerjanjian").modal('hide');
-            //$('#page-area-content').load(jsonResponse.redirect);
-
-          },1800);
-
+          getMenuTabs(jsonResponse.redirect, 'div_load_page_perjanjian');
 
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }        
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }        
 
         achtungHideLoader();        
 
@@ -217,153 +210,137 @@ function createSuratKontrol(){
   <div class="col-xs-12">  
 
     <!-- div.dataTables_borderWrap -->
- 
-    <div id="user-profile-1" class="user-profile row">
-      
-      <div class="col-xs-12 col-sm-12">
+    <div id="div_load_page_perjanjian">
         
+      <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
 
-        <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
+        <!-- hidden form  -->
+        <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
+        <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">
+        <input type="hidden" name="alamat" value="<?php echo $value->almt_ttp_pasien?>" id="alamat">
+        <input type="hidden" name="jd_id" id="jd_id">
+        <input type="hidden" name="selected_day" id="selected_day">
+        <input type="hidden" name="selected_time" id="selected_time">
+        <input type="hidden" name="time_start" id="time_start">
+        <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
+        <input type="hidden" name="kode_booking" id="kode_booking_id" value="<?php echo isset($booking->regon_booking_kode)?$booking->regon_booking_kode:''?>">
+        <input type="hidden" name="is_no_mr" id="is_no_mr" value="N">
+        <input type="hidden" name="no_mr_show" class="form-control" id="no_mr_show" value="<?php echo $value->no_mr?>" readonly="">
 
-          <!-- hidden form  -->
-          <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
-          <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">
-          <input type="hidden" name="alamat" value="<?php echo $value->almt_ttp_pasien?>" id="alamat">
-          <input type="hidden" name="jd_id" id="jd_id">
-          <input type="hidden" name="selected_day" id="selected_day">
-          <input type="hidden" name="selected_time" id="selected_time">
-          <input type="hidden" name="time_start" id="time_start">
-          <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
-          <input type="hidden" name="kode_booking" id="kode_booking_id" value="<?php echo isset($booking->regon_booking_kode)?$booking->regon_booking_kode:''?>">
-          <input type="hidden" name="is_no_mr" id="is_no_mr" value="N">
+        <p style="padding-top: 10px"><b><i class="fa fa-globe"></i> PERJANJIAN PASIEN </b></p>
 
-          <div class="form-group">
-
-              <label class="control-label col-sm-2">*No.MR</label>
-
-              <div class="col-sm-2">
-
-                  <input type="text" name="no_mr_show" class="form-control" id="no_mr_show" value="<?php echo $value->no_mr?>" readonly="">
-
-              </div>
-
-          </div>
-
-          <div class="form-group">
-            <label class="control-label col-sm-2">Jenis Penjamin</label>
-            <div class="col-md-8">
-              <div class="radio">
-                    <label>
-                      <input name="jenis_penjamin" type="radio" class="ace" value="Jaminan Perusahaan" />
-                      <span class="lbl"> Jaminan Perusahaan</span>
-                    </label>
-                    <label>
-                      <input name="jenis_penjamin" type="radio" class="ace" value="Umum" />
-                      <span class="lbl"> Umum</span>
-                    </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group" id="showFormPerusahaan" style="display:none">
-              <label class="control-label col-sm-2">Perusahaan</label>
-              <div class="col-sm-4">
-                  <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                  <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
-              </div>
-          </div>
-
-          <div class="form-group" id="div_no_sep_lama" style="display: none">
-            <label class="control-label col-sm-2">No SEP Referensi</label>
-            <div class="col-sm-3">
-                <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="" value=""/>
-            </div>
-          </div>
-
-
-          <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
-
-          <div class="form-group">
-              <label class="control-label col-sm-2">Instalasi</label>
-              <div class="col-md-3">
-                <select name="jenis_instalasi" id="jenis_instalasi" class="form-control">
-                  <option>-Silahkan Pilih-</option>
-                  <option value="RJ" selected>Rawat Jalan</option>
-                  <option value="PM">Penunjang Medis</option>
-                  <option value="BD">Bedah</option>
-                </select>
-              </div>
-            
-          </div>
-
-          <div id="change_modul_view_perjanjian_form"></div>
-            
-          <!-- end change modul view -->
-
-          <div id="tgl_kunjungan_form" style="display:none">
-            
-            <p><b><i class="fa fa-calendar"></i> KUNJUNGAN </b></p>
-
-            <div class="form-group">
-              <label class="control-label col-sm-2">Jenis Perjanjian</label>
-              <div class="col-sm-6">
-                <div class="checkbox">
+        <div class="form-group">
+          <label class="control-label col-sm-3">Jenis Penjamin</label>
+          <div class="col-md-8">
+            <div class="radio">
                   <label>
-                    <input name="jenis_perjanjian" type="checkbox" class="ace" value="1">
-                    <span class="lbl"> Rujukan Internal</span>
+                    <input name="jenis_penjamin" type="radio" class="ace" value="Jaminan Perusahaan" />
+                    <span class="lbl"> Jaminan Perusahaan</span>
                   </label>
-                </div>
+                  <label>
+                    <input name="jenis_penjamin" type="radio" class="ace" value="Umum" />
+                    <span class="lbl"> Umum</span>
+                  </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="showFormPerusahaan" style="display:none">
+            <label class="control-label col-sm-3">Perusahaan</label>
+            <div class="col-sm-4">
+                <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="" />
+                <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
+            </div>
+        </div>
+
+        <div class="form-group" id="div_no_sep_lama" style="display: none">
+          <label class="control-label col-sm-3">No SEP Referensi</label>
+          <div class="col-sm-4">
+              <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="" value=""/>
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-3">Pilih Instalasi</label>
+            <div class="col-md-3">
+              <select name="jenis_instalasi" id="jenis_instalasi" class="form-control">
+                <option>-Silahkan Pilih-</option>
+                <option value="RJ-PJ" selected>Rawat Jalan</option>
+                <option value="PM">Penunjang Medis</option>
+                <option value="BD">Bedah</option>
+              </select>
+            </div>
+          
+        </div>
+
+        <div id="change_modul_view_perjanjian_form"></div>
+          
+        <!-- end change modul view -->
+
+        <div id="tgl_kunjungan_form" style="display:none">
+          
+          <p><b><i class="fa fa-calendar"></i> KUNJUNGAN </b></p>
+
+          <div class="form-group">
+            <label class="control-label col-sm-3">Jenis Perjanjian</label>
+            <div class="col-sm-6">
+              <div class="checkbox">
+                <label>
+                  <input name="jenis_perjanjian" type="checkbox" class="ace" value="1">
+                  <span class="lbl"> Rujukan Internal</span>
+                </label>
               </div>
             </div>
+          </div>
 
-            <div class="form-group">
-              
-              <label class="control-label col-sm-2">Tanggal Kunjungan</label>
-              
-              <div class="col-md-2">                
-                <div class="input-group">                    
-                    <input name="tanggal_kunjungan" id="tgl_kunjungan_perjanjian" value="" placeholder="yyyy-mm-dd" class="form-control date-picker" type="text">
-                    <span class="input-group-addon">
-                      <i class="ace-icon fa fa-calendar"></i>
-                    </span>
-                  </div>
-              </div>
-              <div id="div_jadwal_hfis" style="display: none" class="no-padding">
-                <div class="col-md-2">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="createSuratKontrol()">
-                      <span class="ace-icon fa fa-calendar icon-on-right bigger-110"></span>
-                      Cek Jadwal HFIS
-                  </button>
-                </div>
-                <label class="control-label col-sm-2">No Surat Kontrol</label>
-                <div class="col-md-2" style="margin-left: -17px">
-                  <input name="no_surat_kontrol" id="noSuratKontrolPerjanjianForm" value="" class="form-control" type="text" readonly>
-                </div>
-              </div>
-
-            </div>
-
-            <div id="view_msg_kuota" style="margin-top:1px">*) Hari Minggu & Tanggal Merah Libur</div>    
+          <div class="form-group">
             
-            <div class="form-group">
-              
-              <label class="control-label col-sm-2">Keterangan</label>
-              
-              <div class="col-md-5">
-                
-                  <textarea class="form-control" name="keterangan" style="height:50px !important"></textarea>
+            <label class="control-label col-sm-3">Tanggal Kunjungan</label>
+            <div class="col-md-2">                
+                <div class="input-group">                    
+                  <input name="tanggal_kunjungan" id="tgl_kunjungan_perjanjian" value="" placeholder="yyyy-mm-dd" class="form-control date-picker" type="text">
+                  <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                  </span>
+                </div>
+            </div>
 
+            <div id="div_jadwal_hfis" style="display: none">
+              <label class="control-label col-sm-2" style="margin-left: 60px">No SKDP</label>
+              <div class="col-md-4" style="margin-left: -15px">
+                <div class="input-group">
+                  <input name="no_surat_kontrol" id="noSuratKontrolPerjanjianForm" value="" class="form-control" type="text" readonly>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="createSuratKontrol()">
+                        <span class="ace-icon fa fa-calendar icon-on-right bigger-110"></span>
+                        Cek HFIS
+                    </button>
+                  </span>
+                </div>
               </div>
+            </div>
+
+          </div>
+
+          <div id="view_msg_kuota" style="margin-top:1px">*) Hari Minggu & Tanggal Merah Libur</div>    
+          
+          <div class="form-group">
+            
+            <label class="control-label col-sm-3">Keterangan</label>
+            
+            <div class="col-md-5">
+              
+                <textarea class="form-control" name="keterangan" style="height:50px !important"></textarea>
 
             </div>
 
           </div>
 
-          <div id="view_last_message" style="margin-top:5px"></div>
-          
-      </form>
+        </div>
 
-      </div>
+        <div id="view_last_message" style="margin-top:5px"></div>
+        
+      </form>
 
     </div>
 

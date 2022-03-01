@@ -3,8 +3,11 @@
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script>
 
+var oTable;
 var oTableJadwalDokter;
 var base_url_poli = $('#dynamic-table-poli').attr('base-url'); 
+var base_url = $('#dynamic-table').attr('base-url'); 
+var params = $('#dynamic-table').attr('data-id'); 
 
 $(document).ready(function(){
     
@@ -94,6 +97,25 @@ $(document).ready(function(){
     }); 
 
     //initiate dataTables plugin
+    oTable = $('#dynamic-table').DataTable({ 
+          
+        "processing": true, //Feature control the processing indicator.
+        "serverSide": true, //Feature control DataTables' server-side processing mode.
+        "ordering": false,
+        "searching": false,
+        "bInfo": false,
+        "bFilter": false,
+        "bLengthChange": false,
+        "bPaginate": false,
+        // Load data for the table's content from an Ajax source
+        "ajax": {
+            "url": base_url,
+            "type": "POST"
+        },
+
+    });
+
+    //initiate dataTables plugin
     oTableJadwalDokter = $('#dynamic-table-poli').DataTable({ 
           
           "processing": true, //Feature control the processing indicator.
@@ -152,6 +174,17 @@ $(document).ready(function(){
           }
       });
 
+    
+
+    $('#dynamic-table tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            oTable.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    } );
         
     $("#button_delete").click(function(event){
             event.preventDefault();
@@ -201,6 +234,21 @@ $(document).ready(function(){
 
 })
 
+function find_data_reload(result, base_url){
+  
+    var data = result.data;    
+    oTable.ajax.url(base_url+'?'+data).load();
+
+}
+
+function reset_table(){
+    oTable.ajax.url(base_url).load();
+
+}
+
+function reload_table_surat_kontrol(){
+   oTable.ajax.reload(); //reload datatable ajax 
+}
   
 function delete_surat_kontrol(myid){
   if(confirm('Are you sure?')){
@@ -396,20 +444,16 @@ function format_html ( data ) {
                     
                     <div class="form-group">
                         <label class="col-md-2 control-label">Poli Tujuan </label>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input id="inputKeyPoli" class="form-control" name="tujuan" type="text" readonly value="<?php echo $poli?>" />
                             <input type="hidden" name="kodePoliHidden" value="<?php echo $kode_poli_bpjs?>" id="kodePoliHidden">
                         </div>
-                    </div>
-
-                    <div class="form-group">
                         <label class="control-label col-md-2">Dokter DPJP</label>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="text" value="<?php echo $nama_dr?>" readonly />
                             <input type="hidden" name="KodedokterDPJP" value="<?php echo $kode_dokter_bpjs?>" id="KodedokterDPJP">
                         </div>
                     </div>
-
                     <div id="response_msg"></div>
                     <div class="form-group">
                         <div class="col-md-1 no-padding">

@@ -82,6 +82,13 @@ $(document).ready(function(){
 
                 }
 
+                if(jsonResponse.type_pelayanan == 'create_perjanjian' ){
+
+                  $('#tabs_form_pelayanan').load(jsonResponse.redirect);
+                  $('#tabs_form_pelayanan').css("padding","5px");
+
+                }
+
                 if( jsonResponse.type_pelayanan == 'Pasien Selesai' ){
                   // back after process
                   if( jsonResponse.next_id_pl_tc_poli != '' ){
@@ -211,6 +218,11 @@ $(document).ready(function(){
     $('#tabs_input_usg').click(function (e) {   
       e.preventDefault();  
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/process_input_expertise');
+    });
+
+    $('#btn_perjanjian_rj').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'registration/Reg_pasien/process_perjanjian');
     });
 
     $('#tabs_riwayat_transaksi').click(function (e) {     
@@ -855,7 +867,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
           
           <div class="pull-left" style="margin-bottom:1%; width: 100%">
             <?php if(empty($value->tgl_keluar_poli)) :?>
-            <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
+            <a href="#" class="btn btn-xs btn-purple" id="btn_perjanjian_rj" onclick="getMenuTabs('pelayanan/Pl_pelayanan/form_perjanjian_view_ontabs/<?php echo $value->no_mr?>?kode_bagian=<?php echo $value->kode_bagian_asal?>&kode_dokter=<?php echo $value->kode_dokter?>&kode_perusahaan=<?php echo $value->kode_perusahaan?>&no_sep=<?php echo $value->no_sep?>', 'tabs_form_pelayanan')" ><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
             <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
             <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
             <?php else: echo ''; endif;?>

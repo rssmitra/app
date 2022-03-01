@@ -130,6 +130,106 @@ class Print_escpos{
        
     }
 
+    public function print_direct_new_bug($params)
+    {
+        # code...
+        $CI =& get_instance();
+                     
+        $p = printer_open("\\\\10.10.10.62\EPSON TM-U220 ReceiptE4");
+       
+        $var_margin_left = 30;
+        printer_set_option($p, PRINTER_MODE, "RAW");
+        
+        printer_start_doc($p);
+        printer_start_page($p);
+
+        // define variable
+        $registrasi = $params['result']['registrasi'];
+        $nama_pasien = $registrasi->nama_pasien;
+        $nama_perusahaan = ($registrasi->nama_perusahaan)?$registrasi->nama_perusahaan:"UMUM";
+        $klinik  = $registrasi->nama_bagian;
+        $dokter  = $registrasi->nama_pegawai;
+        $tanggal  = $CI->tanggal->formatDateTime($registrasi->tgl_jam_masuk);
+        $no_reg = $registrasi->no_registrasi;
+        $currentdate = $CI->tanggal->formatDateTime(date("Y-m-d h:i:s"));
+
+        $nomor = $params['result']['no_antrian'];
+        $no = isset($nomor->no_antrian)?$nomor->no_antrian:'-';
+
+        $petugas_ = $params['result']['petugas'];
+        $petugas = ($petugas_->fullname)?$petugas_->fullname:'-';
+
+
+        // header
+        $font = printer_create_font("Arial", 50, 20, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, COMP_LONG ,170,0);
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, COMP_ADDRESS_SORT, 110, 40);
+        $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
+        printer_select_pen($p, $pen);
+        printer_draw_line($p, 30, 70, 610, 70);
+
+        // end header
+
+        $font = printer_create_font("Arial", 45, 20, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, '' , 260, 80);
+
+        $font = printer_create_font("Arial", 80, 40, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+
+        printer_draw_text($p, "No Antrian: ".$no."\n" , 220, 120);
+
+        printer_draw_text($p, "No MR", $var_margin_left, 200);
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, ": ".$params['no_mr']."\n" , 110, 200);
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "No Reg  : ".$no_reg."\n", $var_margin_left, 230);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+
+        printer_select_font($p, $font);
+        printer_draw_text($p, " : " , 110, 230);
+
+        /*Tanggal*/
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Tanggal", $var_margin_left, 260);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, " : " , 110, 260);
+
+        /*catatan*/
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Catatan ",$var_margin_left, 300);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, " *Jika terlewat 5 nomor antrian, harap ambil antrian baru ! ", 110, 330);
+        
+        /*printer_draw_text($p, "Catatan ",$var_margin_left, 300);*/
+
+
+        printer_draw_text($p,  "Tanggal cetak: " ,$var_margin_left, 400);
+                        
+        printer_delete_font($font);
+        printer_delete_pen($pen);
+        printer_end_page($p);
+        printer_end_doc($p);
+
+        printer_close($p);
+       
+    }
+
     public function print_testing()
     {
         # code...
@@ -905,208 +1005,12 @@ class Print_escpos{
        
     }
 
-    public function print_booking($obj)
-    {
-        // echo '<pre>';print_r($obj);die;
-        $objDt = $obj['value'];
-        $jadwal = $obj['jadwal'];
-
-        # code...
-        $CI =& get_instance();
-        sscanf($_SERVER['REMOTE_ADDR'], '%d.%d.%d.%d', $a, $b, $c, $d);
-        $printerName = isset($_POST['printer'])?$_POST['printer']:'';
-        $p = printer_open("\\\\".$printerName."");
-        // $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
-        // $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4t");
-        // $p = printer_open("\\\\10.10.10.238\EPSON TM-T82X KIOSK238");
-        // $p = printer_open("\\\\10.10.10.3\EPSON TM-T88Vsupport");
-        
-        // define
-        $font_familiy = "Calibri";
-        $var_margin_left = 5;
-        $var_margin_lists = 29;
-        $var_margin_draw_text = 125;
-        $font_medium_width = 26;
-        $font_medium_height = 12;
-        $line_space = 20;
-        
-        printer_start_doc($p);
-        printer_start_page($p);
-
-
-        printer_set_option($p, PRINTER_MODE, "raw");
-        printer_set_option($p, PRINTER_TEXT_ALIGN, PRINTER_TA_CENTER);
-
-        /*Title*/
-        $font = printer_create_font("Arial", 35, 15, PRINTER_FW_BOLD, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "BUKTI PERJANJIAN PASIEN", 70, 30);
-
-        $font = printer_create_font("Arial", 30, 12, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "RS SETIA MITRA", 175, 60);
-
-        // no mr
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "No MR", $var_margin_left, 100);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$objDt->no_mr." ", 175, 100);
-
-        // nama pasien
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Nama Pasien", $var_margin_left, 130);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$objDt->nama." ", 175, 130);
-
-        // kode booking
-        $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Kode Booking", 215, 170);
-        $font = printer_create_font("Arial", 45, 18, PRINTER_FW_BOLD, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$objDt->counter." ", 180, 215);
-        // line
-        // $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
-        // printer_select_pen($p, $pen);
-        // printer_draw_line($p, 110, 230, 460, 230);
-
-
-        // tgl kontrol
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Tanggal Kontrol", $var_margin_left, 270);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$CI->tanggal->formatDatedmY($objDt->tgl_kembali)." ", 175, 270);
-
-        // nama dokter
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Dokter", $var_margin_left, 300);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$objDt->dokter." ", 175, 300);
-
-        // poli tujuan
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Poli Tujuan", $var_margin_left, 330);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".ucwords($objDt->nama_bagian)." ", 175, 330);
-
-        // jam praktek
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Jam Praktek", $var_margin_left, 360);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        $jam_praktek = $CI->tanggal->formatTime($jadwal->jd_jam_mulai)."-".$CI->tanggal->formatTime($jadwal->jd_jam_selesai);
-        printer_draw_text($p, "  ".(string)$jam_praktek." " , 175, 360);
-
-        // petugas
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Petugas", $var_margin_left, 400);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        $petugas = isset($CI->session->userdata('user')->fullname)?$CI->session->userdata('user')->fullname:'KIOSK';
-        printer_draw_text($p, "  ".$petugas." ", 175, 400);
-
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Tanggal Dibuat", $var_margin_left, 430);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$CI->tanggal->formatDatedmY($objDt->input_tgl)." ", 175, 430);
-
-        // keterangan
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Keterangan", $var_margin_left, 460);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$objDt->keterangan." ", 175, 460);
-
-        
-
-        // petugas dan stempel
-        // $font = printer_create_font("Arial", 24, 9, PRINTER_FW_BOLD, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, " ".$CI->session->userdata('user')->fullname." ", 350, 370);
-
-        
-
-        // $font = printer_create_font("Arial", 24, 9, PRINTER_FW_BOLD, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "Keterangan", 5, 430);
-
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, 'Catatan', 5, 520);
-
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        $msg_2 = "* Silahkan datang 2 jam sebelum praktek dokter dimulai";
-        printer_draw_text($p, (string)$msg_2, 5, 550);
-
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        $msg_3 = "* Simpan Kode Booking ini untuk Registrasi";
-        printer_draw_text($p, (string)$msg_3, 5, 580);
-
-        // $font = printer_create_font("Arial", 20, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "Dicetak pada tanggal, ".date('d/M/Y H:i:s')."", 5, 490);
-
-        $font = printer_create_font("Arial", 23, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "", 27, 550);
-
-        // $font = printer_create_font("Arial", 23, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "3. Atau anda bisa melakukan Check In pada Aplikasi Mobile JKN", 5, 550);
-
-        // $font = printer_create_font("Arial", 23, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, " menggunakan Aplikasi Mobile JKN BPJS Kesehatan", 27, 570);
-
-        // $font = printer_create_font("Arial", 27, 11, PRINTER_FW_BOLD, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "  ".$objDt->kode_perjanjian." ", 175, 400);
-        
-
-
-        // $length = ($no_antrian > 0) ? 1300 : 350;
-        // // tgl cetak +80
-        // $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "Tanggal cetak  ".date('d/M/Y H:i:s')." WIB ", 100, $length);
-
-        
-        printer_delete_font($font);
-        // printer_delete_pen($pen);
-        printer_end_page($p);
-        printer_end_doc($p);
-        printer_close($p);
-       
-    }
-
     public function print_sep($data)
     {
         # code...
-        // echo '<pre>';print_r($data);die;
         $CI =& get_instance();
-        
-        $printerName = isset($_POST['printer'])?$_POST['printer']:'';
-        $noAntrian = isset($_POST['no_antrian'])?$_POST['no_antrian']:'';
-
-        $p = printer_open("\\\\".$printerName."");
-        // $p = printer_open("\\\\10.10.10.238\EPSON TM-T82X KIOSK238");
+                     
+        $p = printer_open("\\\\10.10.10.3\EPSON TM-T82X KIOSK01");
        
         // define
         $font_familiy = "Calibri";
@@ -1121,8 +1025,6 @@ class Print_escpos{
 
         // sep data
         $sep = $data['sep'];
-        $registrasi = $data['registrasi'];
-        $dpjp = $sep->dpjp;
 
 
         printer_set_option($p, PRINTER_MODE, "raw");
@@ -1209,61 +1111,53 @@ class Print_escpos{
         printer_select_font($p, $font);
         printer_draw_text($p, "  ".$sep->poli." ", 175, 340);
 
-        // Dokter
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Dokter DPJP", $var_margin_left, 370);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$dpjp->nmDPJP." ", 175, 370);
-
         // Faskes Perujuk
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Faskes Perujuk", $var_margin_left, 400);
+        printer_draw_text($p, "Faskes Perujuk", $var_margin_left, 370);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$sep->peserta->noKartu." ", 175, 400);
+        printer_draw_text($p, "  ".$sep->peserta->noKartu." ", 175, 370);
 
         // Jns Rawat
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Jns. Rawat", $var_margin_left, 430);
+        printer_draw_text($p, "Jns. Rawat", $var_margin_left, 400);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$sep->jnsPelayanan." ", 175, 430);
+        printer_draw_text($p, "  ".$sep->jnsPelayanan." ", 175, 400);
 
         // Kls Rawat
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Kls. Rawat", $var_margin_left, 460);
+        printer_draw_text($p, "Kls. Rawat", $var_margin_left, 430);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$sep->peserta->hakKelas." ", 175, 460);
+        printer_draw_text($p, "  ".$sep->peserta->hakKelas." ", 175, 430);
 
         // Peserta
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Peserta", $var_margin_left, 490);
+        printer_draw_text($p, "Peserta", $var_margin_left, 460);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$sep->peserta->jnsPeserta." ", 175, 490);
+        printer_draw_text($p, "  ".$sep->peserta->jnsPeserta." ", 175, 460);
 
         // COB
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "COB", $var_margin_left, 520);
+        printer_draw_text($p, "COB", $var_margin_left, 490);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ", 175, 520);
+        printer_draw_text($p, "  ", 175, 490);
 
         // Penjamin
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Penjamin", $var_margin_left, 550);
+        printer_draw_text($p, "Penjamin", $var_margin_left, 520);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, " BPJS Kesehatan ", 175, 550);
+        printer_draw_text($p, " BPJS Kesehatan ", 175, 520);
 
         // DPJP yang melayani
         // $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
@@ -1276,76 +1170,71 @@ class Print_escpos{
         // Diagnosa Awal
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Diagnosa Awal", $var_margin_left, 580);
+        printer_draw_text($p, "Diagnosa Awal", $var_margin_left, 550);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, " ".$sep->diagnosa."", 30, 610);
+        printer_draw_text($p, " ".$sep->diagnosa."", 30, 580);
 
         // Catatan
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Catatan ", $var_margin_left, 640);
+        printer_draw_text($p, "Catatan ", $var_margin_left, 610);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, " ".$sep->catatan." ", 30, 670);
+        printer_draw_text($p, " ".$sep->catatan." ", 30, 640);
 
         // Keterangan
         $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "*Saya menyetujui BPJS Kesehatan menggunakan informasi", $var_margin_left, 730);
+        printer_draw_text($p, "*Saya menyetujui BPJS Kesehatan menggunakan informasi", $var_margin_left, 700);
 
         $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  medis pasien jika diperlukan SEP, Bukan sebagai bukti", $var_margin_left, 760);
+        printer_draw_text($p, "  medis pasien jika diperlukan SEP, Bukan sebagai bukti", $var_margin_left, 730);
 
         $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, " penjaminan peserta", $var_margin_left, 790);
+        printer_draw_text($p, " penjaminan peserta", $var_margin_left, 760);
 
         $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Pasien/Keluarga Pasien", 300, 820);
+        printer_draw_text($p, "Pasien/Keluarga Pasien", 300, 790);
+
+        // $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
+        // printer_select_pen($p, $pen);
+        // printer_draw_line($p, 270, 900, 550, 900);
 
         $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
         printer_select_pen($p, $pen);
         printer_draw_line($p, 10, 900, 550, 900);
 
-        // Penjamin
-        $font = printer_create_font("Arial", 27, 11, PRINTER_FW_BOLD, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "No. Antrian Poli", $var_margin_left, 1000);
-        $font = printer_create_font("Arial", 27, 11, PRINTER_FW_BOLD, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, $noAntrian, 220, 1000);
-
-
         /*nomor antrian poli*/
-        // $font = printer_create_font("Arial", 150, 50, PRINTER_FW_MEDIUM, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "22", 230, 1060);
+        $font = printer_create_font("Arial", 150, 50, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "22", 230, 1060);
 
-        // $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "(NOMOR ANTRIAN POLI)", 170, 1085);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "(NOMOR ANTRIAN POLI)", 170, 1085);
 
         // Nama Poli
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, ucwords($registrasi->nama_bagian), 5, 1050);
+        printer_draw_text($p, "Spesialis Penyakit Jantung dan Pembuluh Darah", 5, 1130);
 
         // Nama Dokter
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, $registrasi->nama_pegawai, 5, 1080);
+        printer_draw_text($p, "dr. Adelin Dhivi Kemalasari", 5, 1160);
 
         // Jam Praktek
-        // $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        // printer_select_font($p, $font);
-        // printer_draw_text($p, "(10.00 - 11.00)", 5, 1110);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "(10.00 - 11.00)", 5, 1190);
 
         $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Tanggal cetak  ".date('d/M/Y H:i:s')." WIB ", 100, 1150);
+        printer_draw_text($p, "Tanggal cetak  ".date('d/M/Y H:i:s')." WIB ", 100, 1290);
         
         printer_delete_font($font);
         printer_end_page($p);
@@ -1353,6 +1242,96 @@ class Print_escpos{
         printer_close($p);
        
     }
+
+    // public function print_booking($params){
+
+    //     // print_r($params);die;
+    //     $CI =& get_instance();
+    //     /* Text */
+    //     // $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
+    //     // $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4t");
+    //     // $p = printer_open("\\\\10.10.10.238\EPSON TM-T82X KIOSK238");
+        
+    //     // $profile = CapabilityProfile::load("SP2000");
+    //     $connector = new WindowsPrintConnector("smb://10.10.10.238/EPSON TM-T82X KIOSK238");
+    //     // $connector = new NetworkPrintConnector("10.10.10.62", 9100);
+    //     // $connector = new FilePrintConnector("php://stdout");
+    //     // $printer = new Printer($connector);
+    //     $printer = new Printer($connector);
+
+    //     /* Initialize */
+    //     $printer -> initialize();
+
+    //     $printer->setFont(Printer::FONT_A);
+
+    //     $printer -> setJustification(Printer::JUSTIFY_CENTER);
+    //     $printer -> setEmphasis(true);
+    //     $printer -> setTextSize(2, 2);
+    //     $printer -> text(strtoupper(COMP_LONG)."\n");
+    //     $printer -> setEmphasis(false);
+
+    //     $printer -> setTextSize(1, 1);
+    //     $printer -> text(COMP_ADDRESS_SORT."\n");
+    //     $printer -> text("-----------------------------------------------\n");
+
+    //     $printer -> setTextSize(1, 1);
+    //     $printer -> setEmphasis(true);
+    //     $printer -> setJustification(Printer::JUSTIFY_CENTER);
+    //     $printer -> text("BUKTI PERJANJIAN PASIEN\n");  
+    //     $printer -> text("\n");  
+    //     $printer -> setEmphasis(false);
+        
+    //     $printer -> setLineSpacing(64);
+    //     $printer -> setTextSize(1,1);
+    //     $printer -> setJustification(Printer::JUSTIFY_LEFT);
+    //     $printer->text($this->addSpaces('No MR', 15) . $this->addSpaces($params['value']->no_mr, 20) . "\n");
+    //     $printer->text($this->addSpaces('Nama Pasien', 15) . $this->addSpaces($params['value']->nama, 20) . "\n");
+    //     $printer->text($this->addSpaces('Penjamin', 15) . $this->addSpaces($params['value']->nama_perusahaan, 20) . "\n");
+        
+    //     $printer->text("\n");
+        
+
+    //     // qrcode
+    //     $printer -> setJustification(Printer::JUSTIFY_CENTER);
+        
+    //     $printer -> setTextSize(1, 1);
+    //     $printer -> setEmphasis(true);
+    //     $printer->text(ucwords($params['value']->nama_bagian)."\n");
+    //     $printer->text($params['value']->dokter."\n");
+    //     $printer->text('Tgl. Perjanjian '.$CI->tanggal->formatDatedmy($params['value']->tgl_kembali).' '.$CI->tanggal->formatTime($params['jadwal']->jd_jam_mulai).' - '.$CI->tanggal->formatTime($params['jadwal']->jd_jam_selesai).''."\n");
+        
+    //     $printer->text("\n");
+        
+    //     $printer -> qrCode($params['value']->kode_perjanjian, Printer::QR_ECLEVEL_L, 13);
+    //     $printer -> setTextSize(1, 1);
+    //     $printer -> text($params['value']->kode_perjanjian."\n");
+    //     $printer -> setEmphasis(false);
+    //     $printer->setFont();
+
+    //     $printer->text("\n");
+    //     $printer -> setTextSize(1, 1);
+    //     $printer->setFont(Printer::FONT_B);
+    //     $printer -> setJustification(Printer::JUSTIFY_LEFT);
+    //     $printer -> text("1. Simpan Bukti Perjanjian ini untuk dapat melakukan \n   registrasi ulang\n");
+    //     $printer -> text("2. Silahkan datang 2 jam sebelum praktek dokter dimulai \n   untuk melakukan registrasi ulang.\n");
+    //     $printer -> setJustification();
+    //     $printer -> feed();
+
+
+    //     $printer -> cut(Printer::CUT_FULL, 1);
+
+    //     /* Pulse */
+    //     $printer -> pulse();
+
+    //     /* Always close the printer! On some PrintConnectors, no actual
+    //     * data is sent until the printer is closed. */
+
+    //     $printer -> close();
+    
+
+    //     return true;
+       
+    // }
 
     function addSpaces($string = '', $valid_string_length = 0) {
         if (strlen($string) < $valid_string_length) {
@@ -1395,7 +1374,16 @@ class Print_escpos{
         fclose( $ifp ); 
         return( $output_file ); 
     }
+    
+    
+
+
+
 
 }
 
+
 ?>
+
+
+

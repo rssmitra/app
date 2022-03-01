@@ -27,7 +27,7 @@
     <td width="100px">No SEP</td><td colspan="3">: <?php echo isset($sep->noSep)?$sep->noSep:$header->no_sep?></td>
   </tr>
   <tr>
-    <td>Tgl SEP</td><td width="230px">: <?php echo isset($sep->tglSep)?$sep->tglSep:$this->tanggal->formatDateDmy($header->tgl_trans)?></td>
+    <td>Tgl SEP</td><td width="230px">: <?php echo isset($sep->tglSep)?$sep->tglSep:$this->tanggal->formatDateDmy($header->tgl_jam_masuk)?></td>
     <td style="padding-left:200px; width: 70px">Peserta</td><td>: <?php echo isset($sep->peserta->jnsPeserta)?$sep->peserta->jnsPeserta:''?></td>
   </tr>
   <tr>
@@ -36,10 +36,10 @@
   </tr>
   <tr>
     <td>Nama Peserta</td><td>: <?php echo isset($sep->peserta->nama)?$sep->peserta->nama:$header->nama_pasien?></td>
-    <td style="padding-left:200px">Jns. Rawat</td><td>: <?php echo isset($sep->jnsPelayanan)?$sep->jnsPelayanan: ( $header->flag_trans == 'RJ')?'R.Jalan':'R.Inap'?></td>
+    <td style="padding-left:200px">Jns. Rawat</td><td>: <?php echo isset($sep->jnsPelayanan) ? $sep->jnsPelayanan: 'R.Jalan'?></td>
   </tr>
   <tr>
-    <td>Tgl Lahir</td><td>: <?php echo isset($sep->peserta->tglLahir)?$sep->peserta->tglLahir:$this->tanggal->formatDateDmy($header->tgl_lhr)?> &nbsp;&nbsp;&nbsp;&nbsp; Kelamin : <?php echo isset($sep->peserta->kelamin)?$sep->peserta->kelamin:$header->jen_kelamin?></td><td style="padding-left:200px">Kls. Rawat</td><td>: <?php echo isset($sep->kelasRawat)?$sep->kelasRawat:'-'?></td>
+    <td>Tgl Lahir</td><td>: <?php echo isset($sep->peserta->tglLahir)?$sep->peserta->tglLahir:$this->tanggal->formatDateDmy($header->tgl_lhr)?> &nbsp;&nbsp;&nbsp;&nbsp; Kelamin : <?php echo isset($sep->peserta->kelamin)?$sep->peserta->kelamin:$header->jen_kelamin?></td><td style="padding-left:200px">Kls. Rawat</td><td>: <?php echo isset($sep->kelasRawat)?$sep->kelasRawat:'Kelas 3'?></td>
   </tr>
   <tr>
     <td>No Telepon</td><td>: <?php echo isset($sep->noTelp)?$sep->noTelp:$header->no_hp; ?></td>

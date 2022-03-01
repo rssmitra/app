@@ -1,9 +1,6 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
-
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
-
 <style>
 .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
     color: red !important;
@@ -14,87 +11,84 @@
 <script>
 
 jQuery(function($) {  
+  var disableDates = getLiburNasional(<?php echo date('Y')?>);
+  console.log(disableDates);
+  $("#tgl_kunjungan_perjanjian").datepicker({
 
-  
-    var disableDates = getLiburNasional(<?php echo date('Y')?>);
+    autoclose: true,    
+    todayHighlight: true,
+    daysOfWeekDisabled: [0],
+    format: 'yyyy-mm-dd',
+    beforeShowDay: function(date){
+        dmy = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+        if(disableDates.indexOf(dmy) != -1){
+            return false;
+        }
+        else{
+            return true;
+        }
 
-    $("#tgl_kunjungan_perjanjian").datepicker({
+    }
+    // onSelect: function(dateText) {
+    //   $(this).change();
+    // }
+  }).on("change", function() {
+    
+    var str_selected_date = this.value;
+    console.log(str_selected_date);
+    var selected_date = str_selected_date.split("/").join("-");
+    var spesialis = $('#klinik_rajal').val();
+    var dokter = $('#dokter_rajal').val();
+    var jd_id = $('#jd_id').val();
+    /*check selected date */
 
-      autoclose: true,    
-      todayHighlight: true,
-      daysOfWeekDisabled: [0],
-      format: 'yyyy-mm-dd',
-      beforeShowDay: function(date){
-          dmy = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
-          if(disableDates.indexOf(dmy) != -1){
-              return false;
-          }
-          else{
-              return true;
-          }
+    $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id} , function(data) {
+        // Do something with the request
+        if(data.status=='expired'){
+           var message = '<div class="alert alert-danger"><strong>Expired Date !</strong><br>Tanggal yang anda pilih sudah lewat atau sedang berjalan.</div>';
+           $('#view_msg_kuota').hide('fast');
+        }else{
+          if(data.day!=$('#selected_day').val() ){
+                var message = '<div class="alert alert-danger"><strong>Tidak Sesuai !</strong><br>Tanggal Kunjungan tidak sesuai dengan jadwal Praktek Dokter yang anda pilih !</div>';
+                // $('#view_msg_kuota').hide('fast');
+          }else{
+            
 
-      }
-      // onSelect: function(dateText) {
-      //   $(this).change();
-      // }
-    }).on("change", function() {
+            if(data.sisa > 0 ){
+              var msg_kuota = '<p style="font-size: 12px"> <i class="fa fa-check-circle bigger-120 green"></i> Total Pasien Perjanjian '+data.terisi+' orang, Kuota tersedia pada tanggal ini, '+data.sisa+' pasien</p>';
 
-        var str_selected_date = this.value;
-        console.log(str_selected_date);
-        var selected_date = str_selected_date.split("/").join("-");
-        var spesialis = $('#klinik_rajal').val();
-        var dokter = $('#dokter_rajal').val();
-        var jd_id = $('#jd_id').val();
-        /*check selected date */
+              var message = '<div class="alert alert-block alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><strong><i class="ace-icon fa fa-check"></i> Selesai ! </strong>Apakah anda akan melanjutkan ke proses berikutnya ?</p><p><button type="submit" id="btnSave" class="btn btn-sm btn-success">Lanjutkan</button><a href="#" onclick="getMenu('+"'"+'booking/regon_booking'+"'"+')" class="btn btn-sm btn-danger">Batalkan</a></p></div>';
 
-        $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id} , function(data) {
-            // Do something with the request
-            if(data.status=='expired'){
-              var message = '<div class="alert alert-danger"><strong>Expired Date !</strong><br>Tanggal yang anda pilih sudah lewat atau sedang berjalan.</div>';
-              $('#view_msg_kuota').hide('fast');
+              $('#div_jadwal_hfis').show('fast');
+
             }else{
-              if(data.day!=$('#selected_day').val() ){
-                    var message = '<div class="alert alert-danger"><strong>Tidak Sesuai !</strong><br>Tanggal Kunjungan tidak sesuai dengan jadwal Praktek Dokter yang anda pilih !</div>';
-                    // $('#view_msg_kuota').hide('fast');
-              }else{
-                
-
-                if(data.sisa > 0 ){
-                  var msg_kuota = '<p style="font-size: 12px"> <i class="fa fa-check-circle bigger-120 green"></i> Total Pasien Perjanjian '+data.terisi+' orang, Kuota tersedia pada tanggal ini, '+data.sisa+' pasien</p>';
-
-                  var message = '<div class="alert alert-block alert-success"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><strong><i class="ace-icon fa fa-check"></i> Selesai ! </strong>Apakah anda akan melanjutkan ke proses berikutnya ?</p><p><button type="submit" id="btnSave" class="btn btn-sm btn-success">Lanjutkan</button><a href="#" onclick="getMenu('+"'"+'booking/regon_booking'+"'"+')" class="btn btn-sm btn-danger">Batalkan</a></p></div>';
-
-                  $('#div_jadwal_hfis').show('fast');
-
-                }else{
-                  var msg_kuota = '<p style="color:red; font-weight: bold; font-style: italic"> -Kuota Dokter Penuh-</p>';
-                  
-                  var message = '<div class="alert alert-danger"><strong>Kuota Penuh !</strong><br>Mohon maaf kuota dokter sudah penuh, silahkan cari tanggal lain !</div>';
-                }
-
-                $('#view_msg_kuota').show('fast');
-                $('#view_msg_kuota').html(msg_kuota);
-
-              }
-
+              var msg_kuota = '<p style="color:red; font-weight: bold; font-style: italic"> -Kuota Dokter Penuh-</p>';
+              
+              var message = '<div class="alert alert-danger"><strong>Kuota Penuh !</strong><br>Mohon maaf kuota dokter sudah penuh, silahkan cari tanggal lain !</div>';
             }
 
-            $('#view_last_message').show('fast');
-            $('#view_last_message').html(message);
-            $("html, body").animate({ scrollTop: "700px" }, "slow");  
+            $('#view_msg_kuota').show('fast');
+            $('#view_msg_kuota').html(msg_kuota);
+
+          }
+
+        }
+
+        $('#view_last_message').show('fast');
+        $('#view_last_message').html(message);
+        $("html, body").animate({ scrollTop: "700px" }, "slow");  
 
 
-        }, 'json');    
-
-    });
- 
+    }, 'json');    
+  
+  });
 
 });
 
 $(document).ready(function(){
 
     $('#jenis_instalasi').focus();    
-    $('#change_modul_view_perjanjian_form').load('registration/Reg_pasien/show_modul/RJ');
+    $('#change_modul_view_perjanjian').load('registration/Reg_pasien/show_modul/'+$('#jenis_instalasi').val()+'?kode_dokter='+$('#kode_dokter_hidden').val()+'&kode_bagian='+$('#kode_bagian_hidden').val()+'' );
 
     $('#form_booking').ajaxForm({      
 
@@ -117,36 +111,36 @@ $(document).ready(function(){
         if(jsonResponse.status === 200){          
 
           $.achtung({message: jsonResponse.message, timeout:5});          
-
-          setTimeout(function(){
-            PopupCenter(jsonResponse.redirect, 'SURAT KONTROL PASIEN', 850, 500);
-            //window.open(jsonResponse.redirect, '_blank');
-            $("#modalDaftarPerjanjian").modal('hide');
-            //$('#page-area-content').load(jsonResponse.redirect);
-
-          },1800);
-
-
+          
+          $('#content-perjanjian-form').load(jsonResponse.redirect);
+          $('#content-perjanjian-form').css("padding","25px");
+          
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }        
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }        
 
         achtungHideLoader();        
 
       }      
 
     });     
-  
+
+      
     $('select[name="jenis_instalasi"]').change(function () {      
 
         if ($(this).val()) {          
+
           /*load modul*/
-          $('#change_modul_view_perjanjian_form').load('registration/Reg_pasien/show_modul/'+$(this).val());
+
+          $('#change_modul_view_perjanjian').load('registration/Reg_pasien/show_modul/'+$(this).val());
           $('#tgl_kunjungan_form').hide('fast');
           //$("html, body").animate({ scrollTop: "700px" }, "slow");  
+
         } else {          
+
           /*Eksekusi jika salah*/
           $('#tgl_kunjungan_form').hide('fast');
+
         }        
 
     });
@@ -168,13 +162,10 @@ $(document).ready(function(){
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
+          $('#perusahaan').val(label_item);
           $('#kodePerusahaanHidden').val(val_item);
-          if(val_item == 120){
-            $('#div_no_sep_lama').show();
-          }else{
-            $('#div_no_sep_lama').hide();
-          }
         }
 
     });
@@ -210,6 +201,9 @@ function createSuratKontrol(){
 }
 
 
+
+
+
 </script>
 
 <div class="row">
@@ -217,11 +211,19 @@ function createSuratKontrol(){
   <div class="col-xs-12">  
 
     <!-- div.dataTables_borderWrap -->
- 
-    <div id="user-profile-1" class="user-profile row">
+    <div class="page-header">
+      <h1>
+        <?php echo $title?>
+        <small>
+          <i class="ace-icon fa fa-angle-double-right"></i>
+          <?php echo isset($breadcrumbs)?$breadcrumbs:''?>
+        </small>
+      </h1>
+    </div><!-- /.page-header -->
+
+    <div id="content-perjanjian-form" class="user-profile row">
       
       <div class="col-xs-12 col-sm-12">
-        
 
         <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
 
@@ -236,17 +238,15 @@ function createSuratKontrol(){
           <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
           <input type="hidden" name="kode_booking" id="kode_booking_id" value="<?php echo isset($booking->regon_booking_kode)?$booking->regon_booking_kode:''?>">
           <input type="hidden" name="is_no_mr" id="is_no_mr" value="N">
+          <input type="hidden" name="print_booking" id="print_booking" value="Y">
+          <input type="hidden" name="kode_dokter_hidden" id="kode_dokter_hidden" value="<?php echo isset($_GET['kode_dokter']) ? $_GET['kode_dokter'] : '';?>">
+          <input type="hidden" name="kode_bagian_hidden" id="kode_bagian_hidden" value="<?php echo isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '';?>">
 
           <div class="form-group">
-
               <label class="control-label col-sm-2">*No.MR</label>
-
               <div class="col-sm-2">
-
                   <input type="text" name="no_mr_show" class="form-control" id="no_mr_show" value="<?php echo $value->no_mr?>" readonly="">
-
               </div>
-
           </div>
 
           <div class="form-group">
@@ -254,34 +254,37 @@ function createSuratKontrol(){
             <div class="col-md-8">
               <div class="radio">
                     <label>
-                      <input name="jenis_penjamin" type="radio" class="ace" value="Jaminan Perusahaan" />
+                      <input name="jenis_penjamin" type="radio" class="ace" value="Jaminan Perusahaan" <?php echo isset($_GET['kode_perusahaan']) ? ($_GET['kode_perusahaan'] != 0) ? 'checked' : '' :'';?>/>
                       <span class="lbl"> Jaminan Perusahaan</span>
                     </label>
                     <label>
-                      <input name="jenis_penjamin" type="radio" class="ace" value="Umum" />
+                      <input name="jenis_penjamin" type="radio" class="ace" value="Umum" <?php echo isset($_GET['kode_perusahaan']) ? ($_GET['kode_perusahaan'] == 0) ? 'checked' : '' :'';?>/>
                       <span class="lbl"> Umum</span>
                     </label>
               </div>
             </div>
           </div>
 
-          <div class="form-group" id="showFormPerusahaan" style="display:none">
+          <div class="form-group" id="showFormPerusahaan"  <?php echo isset($_GET['kode_perusahaan']) ? ($_GET['kode_perusahaan'] != 0) ? '' : 'style="display:none"' :'style="display:none"';?> >
+
               <label class="control-label col-sm-2">Perusahaan</label>
               <div class="col-sm-4">
-                  <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                  <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" />
+                  <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="BPJS KESEHATAN"/>
+                  <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" value="120"/>
               </div>
+
           </div>
 
-          <div class="form-group" id="div_no_sep_lama" style="display: none">
-            <label class="control-label col-sm-2">No SEP Referensi</label>
-            <div class="col-sm-3">
-                <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="" value=""/>
+          <?php if($_GET['kode_perusahaan'] == 120) :?>
+            <div class="form-group">
+              <label class="control-label col-sm-2">No SEP Referensi</label>
+              <div class="col-sm-2">
+                  <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo $_GET['no_sep']?>"/>
+              </div>
             </div>
-          </div>
+          <?php endif;?>
 
-
-          <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
+          <p style="margin-top:7px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
 
           <div class="form-group">
               <label class="control-label col-sm-2">Instalasi</label>
@@ -296,8 +299,9 @@ function createSuratKontrol(){
             
           </div>
 
-          <div id="change_modul_view_perjanjian_form"></div>
-            
+          <div id="change_modul_view_perjanjian"></div>
+          
+
           <!-- end change modul view -->
 
           <div id="tgl_kunjungan_form" style="display:none">
@@ -359,14 +363,15 @@ function createSuratKontrol(){
 
           </div>
 
-          <div id="view_last_message" style="margin-top:5px"></div>
+          <div id="view_last_message" style="margin-top:7px"></div>
           
-      </form>
+
+        </form>
 
       </div>
 
     </div>
-
+    
 
   </div><!-- /.col -->
 

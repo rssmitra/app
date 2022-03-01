@@ -277,9 +277,13 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->select($select);
 		$this->db->select('tc_kunjungan.status_batal');
 
+		$this->db->select('pl_tc_poli.no_antrian');
+
 		$this->db->from( 'tc_kunjungan' );
 
 		$this->db->join('tc_registrasi','tc_kunjungan.no_registrasi=tc_registrasi.no_registrasi','left');
+
+		$this->db->join('pl_tc_poli','pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 
 		$this->db->join('mt_dokter_v','mt_dokter_v.kode_dokter=tc_kunjungan.kode_dokter','left');
 
@@ -314,8 +318,7 @@ class Reg_pasien_model extends CI_Model {
 		}
 
 		$this->db->group_by( $select );
-		$this->db->group_by('tc_kunjungan.status_batal');
-
+		$this->db->group_by('tc_kunjungan.status_batal, pl_tc_poli.no_antrian');
 		$this->db->order_by( 'tgl_masuk', 'DESC' );
 
 	}

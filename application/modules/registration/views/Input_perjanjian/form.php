@@ -158,8 +158,10 @@ $(document).ready(function(){
           $('#kodePerusahaanHidden').val(val_item);
           if(val_item == 120){
             $('#div_no_rujukan').show();
+            $('#div_no_sep_lama').show();
           }else{
             $('#div_no_rujukan').hide();
+            $('#div_no_sep_lama').hide();
           }
         }
 
@@ -254,6 +256,7 @@ function formatDate(date) {
         <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($booking_id)?$booking_id:''?>">
         <input type="hidden" name="is_no_mr" id="is_no_mr" value="Y">
         <input type="hidden" name="no_mr" id="no_mr" value="">
+        <input type="hidden" name="jenis_perjanjian" id="jenis_perjanjian" value="0">
 
         <p><b>DATA PASIEN</b></p>
         <div class="form-group">
@@ -309,11 +312,18 @@ function formatDate(date) {
         </div>
 
         <div class="form-group" id="div_no_rujukan" style="display: none">
-            <label class="control-label col-sm-2">No Rujukan</label>
-            <div class="col-sm-3">
-                <input id="no_rujukan" name="no_rujukan" class="form-control"  type="text" placeholder="" value=""/>
-            </div>
+          <label class="control-label col-sm-2">No Rujukan</label>
+          <div class="col-sm-3">
+              <input id="no_rujukan" name="no_rujukan" class="form-control"  type="text" placeholder="" value=""/>
           </div>
+        </div>
+
+        <div class="form-group" id="div_no_sep_lama" style="display: none">
+          <label class="control-label col-sm-2">No SEP Referensi</label>
+          <div class="col-sm-3">
+          <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="" value=""/>
+          </div>
+        </div>
 
         <p style="margin-top:5px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
           <div class="form-group">

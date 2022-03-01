@@ -124,8 +124,6 @@ $('#inputDokter').typeahead({
         <div id="message_for_kuota_null" style="margin-left: 7px"></div>
     </div>
 </div>
-
-
 <?php endif;?>
 
 <?php if(isset($no_reg) && $no_reg != '') :?>

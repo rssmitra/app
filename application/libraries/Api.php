@@ -212,12 +212,12 @@ final Class Api {
     public function getDataWs($params) {
 
         $url = $params['link'];
-        
         $data = $params['data'];
 
         try {
             
             $field_string = http_build_query($data);
+            
 
             $options = array(
                  CURLOPT_RETURNTRANSFER => true,     // return web page
@@ -252,9 +252,14 @@ final Class Api {
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 
             }
+
+            if(isset($params['header'])){
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $params['header']);
+            }
             // execute!
             $response = curl_exec($ch);
             // close the connection, release resources used
+            echo '<pre>';print_r($response);exit;
 
             curl_close($ch);
 
