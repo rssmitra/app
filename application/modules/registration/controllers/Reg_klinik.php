@@ -709,7 +709,6 @@ class Reg_klinik extends MX_Controller {
                     $dt = $this->Reg_klinik->get_by_id($no_registrasi);
                     echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'create_sep', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien, 'no_sep' => $no_sep ));
                 }
-                
 
             }
 
