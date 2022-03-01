@@ -39,7 +39,7 @@
     <td style="padding-left:200px">Jns. Rawat</td><td>: <?php echo isset($sep->jnsPelayanan)?$sep->jnsPelayanan: ( $header->flag_trans == 'RI')?'R.Inap':'R.Jalan'?></td>
   </tr>
   <tr>
-    <td>Tgl Lahir</td><td>: <?php echo isset($sep->peserta->tglLahir)?$sep->peserta->tglLahir:$this->tanggal->formatDateDmy($header->tgl_lhr)?> &nbsp;&nbsp;&nbsp;&nbsp; Kelamin : <?php echo isset($sep->peserta->kelamin)?$sep->peserta->kelamin:$header->jen_kelamin?></td><td style="padding-left:200px">Kls. Rawat</td><td>: <?php echo isset($sep->kelasRawat)?$sep->kelasRawat:'-'?></td>
+    <td>Tgl Lahir</td><td>: <?php echo isset($sep->peserta->tglLahir)?$sep->peserta->tglLahir:$this->tanggal->formatDateDmy($header->tgl_lhr)?> &nbsp;&nbsp;&nbsp;&nbsp; Kelamin : <?php echo isset($sep->peserta->kelamin)?$sep->peserta->kelamin:$header->jen_kelamin?></td><td style="padding-left:200px">Kls. Rawat</td><td>: <?php echo isset($sep->kelasRawat)?$sep->kelasRawat:'Kelas 3'?></td>
   </tr>
   <tr>
     <td>No Telepon</td><td>: <?php echo isset($sep->noTelp)?$sep->noTelp:$header->no_hp; ?></td>
