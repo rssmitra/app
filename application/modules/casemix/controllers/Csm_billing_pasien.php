@@ -360,7 +360,7 @@ class Csm_billing_pasien extends MX_Controller {
                 $header = $this->Csm_billing_pasien->get_header_data($no_registrasi);
                 // echo '<pre>'; print_r($header);die;
                 $cetakan_ke = $this->Ws_index->count_sep_by_day();
-                $result = array('sep'=>$row_sep->response, 'cetakan_ke' => $cetakan_ke, 'header' => $header);
+                $result = array('sep'=>$row_sep, 'cetakan_ke' => $cetakan_ke, 'header' => $header);
                 $html .= $this->load->view('casemix/Csm_billing_pasien/preview_sep', $result, true);
                 break;
             
