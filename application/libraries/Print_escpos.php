@@ -1099,7 +1099,7 @@ class Print_escpos{
     public function print_sep($data)
     {
         # code...
-        echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data);die;
         $CI =& get_instance();
         $printerName = isset($_POST['printer'])?$_POST['printer']:'';
         $noAntrian = isset($_POST['no_antrian'])?$_POST['no_antrian']:'';
