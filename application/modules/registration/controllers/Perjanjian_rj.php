@@ -52,6 +52,7 @@ class Perjanjian_rj extends MX_Controller {
             $this->find_data();
         }else{
             $list = $this->Perjanjian_rj->get_datatables(); 
+            // echo '<pre />'; print_r($list); die;
             $data = array();
             $no = $_POST['start'];
             foreach ($list as $row_list) {
@@ -95,7 +96,7 @@ class Perjanjian_rj extends MX_Controller {
                 if( isset($_GET['flag']) AND $_GET['flag']=='HD' ){
                     $row[] = $row_list->selected_day;
                 }else{
-                    $row[] = $this->tanggal->formatDate($row_list->tgl_pesanan);
+                    $row[] = 'Kode Booking : <span style="font-weight: bold; color: BLUE;">'.$row_list->unique_code_counter."</span><br />".$this->tanggal->formatDate($row_list->tgl_pesanan);
                 }
                 $row[] = $row_list->tlp_almt_ttp."<br>".$row_list->no_telp."<br>".$row_list->no_hp_pasien;
                 if( !isset($_GET['no_mr']) ){
