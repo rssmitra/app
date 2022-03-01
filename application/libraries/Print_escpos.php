@@ -1101,6 +1101,7 @@ class Print_escpos{
         # code...
         // echo '<pre>';print_r($data);die;
         $CI =& get_instance();
+        
         $printerName = isset($_POST['printer'])?$_POST['printer']:'';
         $noAntrian = isset($_POST['no_antrian'])?$_POST['no_antrian']:'';
 
@@ -1120,6 +1121,7 @@ class Print_escpos{
 
         // sep data
         $sep = $data['sep'];
+        $registrasi = $data['registrasi'];
         $dpjp = $sep->dpjp;
 
 
@@ -1329,17 +1331,17 @@ class Print_escpos{
         // Nama Poli
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Spesialis Penyakit Jantung dan Pembuluh Darah", 5, 1050);
+        printer_draw_text($p, ucwords($registrasi->nama_bagian), 5, 1050);
 
         // Nama Dokter
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "dr. Adelin Dhivi Kemalasari", 5, 1080);
+        printer_draw_text($p, $registrasi->nama_pegawai, 5, 1080);
 
         // Jam Praktek
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "(10.00 - 11.00)", 5, 1110);
+        // $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        // printer_select_font($p, $font);
+        // printer_draw_text($p, "(10.00 - 11.00)", 5, 1110);
 
         $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);

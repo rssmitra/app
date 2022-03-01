@@ -103,6 +103,31 @@ $('#inputDokter').typeahead({
     }
 });
 
+$('#show_dpjp').typeahead({
+    source: function (query, result) {
+            $.ajax({
+                url: "templates/references/getRefDokterBPJS",
+                data: 'keyword=' + query + '&spesialis='+$('#kodePoliHiddenTujuan').val()+' &tgl='+$('#tglKunjungan').val()+'',         
+                dataType: "json",
+                type: "POST",
+                success: function (response) {
+                result($.map(response, function (item) {
+                    return item;
+                }));
+                }
+            });
+        },
+        afterSelect: function (item) {
+        // do what is needed with item
+        var val_item=item.split(':')[0];
+        var label_item=item.split(':')[1];
+        console.log(val_item);
+        $('#show_dpjp').val(label_item);
+        $('#kodeDokterDPJPPerjanjianBPJS').val(val_item);
+        
+    }
+});
+
 function changeCheckboxRujukanBaru(){
     var value_checkbox = $('input[name="rujukan_baru"]:checked').val();
     if( value_checkbox == 1){
@@ -212,7 +237,7 @@ function changeCheckboxRujukanBaru(){
         <div class="form-group">
             <label class="control-label col-md-3">Dokter DPJP </label>
             <div class="col-md-6">
-            <input id="show_dpjp" class="form-control" name="show_dpjp" type="text" readonly/>
+            <input id="show_dpjp" class="form-control" name="show_dpjp" type="text"/>
             </div>
         </div>
         
@@ -277,10 +302,6 @@ function changeCheckboxRujukanBaru(){
             <input name="jd_id" id="jd_id" class="form-control" type="hidden">
         </div>
 
-        <div class="col-sm-8" id="dokter_dinamis_klinik" style="display:none;">
-            <input id="inputDokter" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-            <input type="hidden" name="" id="reg_dokter_rajal_sep_dinamis" class="form-control">
-        </div>
     </div>
 
     <!-- hidden kuota dr -->

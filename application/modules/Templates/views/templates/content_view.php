@@ -1027,6 +1027,7 @@
       }
 
       function reprint(jd_id, id_tc_pesanan, printerName){
+        preventDefault();
         $.ajax({
             url: "registration/Reg_pasien/print_booking/"+jd_id+"/"+id_tc_pesanan+"",
             dataType: "json",
@@ -1040,6 +1041,7 @@
       }
 
       function reprintSEP(no_sep, no_antrian, printerName){
+        preventDefault();
         $.ajax({
             url: "ws_bpjs/Ws_index/print_sep/"+no_sep+"",
             dataType: "json",

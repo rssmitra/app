@@ -2126,6 +2126,23 @@ class References extends MX_Controller {
 		echo json_encode(array('kode_bag' => $penunjang->kode_bagian, 'nama_bag' => $penunjang->nama_bagian));
 	}
 
+	function getRefDokterBPJS(){
+		$this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+		$service_name = "referensi/dokter/".$_POST['keyword'];
+		$service_name = "referensi/dokter/pelayanan/2/tglPelayanan/".$_POST['tgl']."/Spesialis/".$_POST['spesialis'];
+		$result = $this->Ws_index->getData($service_name);
+
+		// echo '<pre>'; print_r($_POST);die;
+
+		if($result['response']->metaData->code==200){
+			foreach ($result['data']->list as $key => $value) {
+				$arrResult[] = ''.$value->kode.' : '.$value->nama;
+			}
+			echo json_encode($arrResult);
+		}
+	}
+
+
 
 
 }

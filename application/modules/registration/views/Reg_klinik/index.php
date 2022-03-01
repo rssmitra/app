@@ -119,10 +119,10 @@ $(document).ready(function(){
           }
 
           if( jsonResponse.type_pelayanan == 'create_sep' ){
-            $('#noSep').val('0112R0340222V005545');
+            $('#noSep').val(jsonResponse.no_sep);
             $('#jenis_pendaftaran').val('1');
             $('#form_registration').attr('action', 'registration/Reg_klinik/process');
-            $('#divLoadSEP').load('registration/Reg_klinik/process_sep_success/0112R0340222V005545');
+            $('#divLoadSEP').load('registration/Reg_klinik/process_sep_success/'+jsonResponse.no_sep+'');
             $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/1/') ;
           }else{
             $('#id_tc_pesanan').val('');
@@ -1258,19 +1258,19 @@ $('#btnSearchNoRujukan').click(function (e) {
 
 });
 
-$('#btnCreateSep').click(function (e){
+// $('#btnCreateSep').click(function (e){
     
-  $.ajax({
-    url: "ws_bpjs/ws_index/insertSep",
-    data: $('form_registration').serialize(),            
-    dataType: "json",
-    type: "POST",
-    success: function (response) {
-      $('#show_sep').load("ws_bpjs/Ws_index/view_sep/0112R0340621V003929?PPKPerujuk="+jsonResponse.perujuk+"&DPJP="+jsonResponse.dpjp+"");
-    }
-  })
+//   $.ajax({
+//     url: "ws_bpjs/ws_index/insertSep",
+//     data: $('form_registration').serialize(),            
+//     dataType: "json",
+//     type: "POST",
+//     success: function (response) {
+//       $('#show_sep').load("ws_bpjs/Ws_index/view_sep/0112R0340621V003929?PPKPerujuk="+jsonResponse.perujuk+"&DPJP="+jsonResponse.dpjp+"");
+//     }
+//   })
 
-}); 
+// }); 
 
 
 function get_riwayat_medis(){
