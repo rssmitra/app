@@ -103,6 +103,12 @@ $('#inputDokter').typeahead({
     }
 });
 
+function changeCheckboxRujukanBaru(){
+    var value_checkbox = $('input[name="rujukan_baru"]:checked').val();
+    if( value_checkbox == 1){
+        $('#noSuratSKDP').val('');
+    }
+}
 
 </script>
 
@@ -113,7 +119,15 @@ $('#inputDokter').typeahead({
     <div class="form-group">
         <label class="control-label col-md-3">No.Surat Kontrol/SKDP</label>
         <div class="col-md-3">
-        <input type="text" class="form-control" id="noSuratSKDP" name="noSuratSKDP">
+            <input type="text" class="form-control" id="noSuratSKDP" name="noSuratSKDP">
+        </div>
+        <div class="col-md-6">
+            <div class="checkbox">
+                <label>
+                <input name="rujukan_baru" type="checkbox" class="ace" value="1" onclick="changeCheckboxRujukanBaru()">
+                <span class="lbl"> Nomor Rujukan Baru</span>
+                </label>
+            </div>
         </div>
     </div>
     

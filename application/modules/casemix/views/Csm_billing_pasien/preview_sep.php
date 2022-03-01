@@ -27,7 +27,7 @@
     <td width="100px">No SEP</td><td colspan="3">: <?php echo isset($sep->noSep)?$sep->noSep:$header->no_sep?></td>
   </tr>
   <tr>
-    <td>Tgl SEP</td><td width="230px">: <?php echo isset($sep->tglSep)?$sep->tglSep:$this->tanggal->formatDateDmy($header->tgl_trans)?></td>
+    <td>Tgl SEP</td><td width="230px">: <?php echo isset($sep->tglSep)?$sep->tglSep:$this->tanggal->formatDateDmy($header->tgl_jam_masuk)?></td>
     <td style="padding-left:200px; width: 70px">Peserta</td><td>: <?php echo isset($sep->peserta->jnsPeserta)?$sep->peserta->jnsPeserta:''?></td>
   </tr>
   <tr>

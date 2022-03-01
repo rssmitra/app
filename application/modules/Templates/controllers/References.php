@@ -2061,11 +2061,13 @@ class References extends MX_Controller {
 			// find no rujukan by sep
 			$result = $this->Ws_index->check_surat_kontrol_by_sep($dt->no_sep);
         	$response = isset($result['response']) ? $result : false;
-			if($response['response']->metaData->code == 200){
-				$obj = $response['data'];
-				$norujukan = $obj->provPerujuk->noRujukan;
+			if($response != false){
+				if($response['response']->metaData->code == 200){
+					$obj = $response['data'];
+					$norujukan = $obj->provPerujuk->noRujukan;
+				}
 			}
-
+			
 			$result = array(
 				'id_tc_pesanan' => $dt->id_tc_pesanan,
 				'no_sep_lama' => $dt->no_sep,

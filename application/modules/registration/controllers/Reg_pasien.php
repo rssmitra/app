@@ -123,7 +123,7 @@ class Reg_pasien extends MX_Controller {
 
             $btn_perjanjian = ( $subs_kode_bag == '01') ? '<li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian_tujuan."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=".$row_list->no_sep."'".')">Surat Kontrol Pasien</a></li>' : '';
 
-            $btn_cetak_sep = ($row_list->kode_perusahaan == 120)?'<li><a href="#" onclick="show_modal('."'ws_bpjs/Ws_index/view_sep/".$row_list->no_sep."'".', '."'SURAT ELEGIBILITAS PASIEN'".')">Cetak Ulang SEP</a></li>':'';
+            $btn_cetak_sep = ($row_list->kode_perusahaan == 120)?'<li><a href="#" onclick="show_modal('."'ws_bpjs/Ws_index/view_sep/".$row_list->no_sep."?no_antrian=".$row_list->no_antrian."'".', '."'SURAT ELEGIBILITAS PASIEN'".')">Cetak Ulang SEP</a></li>':'';
 
             if($row_list->nama_perusahaan==''){
                 $penjamin = 'Umum';
@@ -638,6 +638,38 @@ class Reg_pasien extends MX_Controller {
     
     }
 
+    public function form_perjanjian_ontabs($id='')
+    
+    {
+        
+        $data = array();
+        
+        /*if id is not null then will show form edit*/
+        
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $id, array('no_mr') );
+
+        /*echo '<pre>'; print_r($data_pasien);*/
+
+        $data['value'] = $data_pasien[0];
+
+        $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
+        
+        $data['booking_id'] = $booking_id;
+
+
+        if($booking_id!=0){
+
+            $booking_data = $this->db->get_where('regon_booking', array('regon_booking_id' => $booking_id) )->row();
+            $data['booking'] = $booking_data;
+
+        }
+        
+        /*load form view*/
+        
+        $this->load->view('Reg_pasien/form_perjanjian_ontabs', $data);
+    
+    }
+
     public function form_reschedule_modal($id='')
     
     {
@@ -685,6 +717,9 @@ class Reg_pasien extends MX_Controller {
                 break;
             case 'PM':
                 $view_modul = 'Reg_pasien/form_perjanjian_pm';
+                break;
+            case 'RJ-PJ':
+                $view_modul = 'Reg_pasien/form_rajal_pj';
                 break;
             default:
                 $view_modul = 'Reg_pasien/index';
@@ -812,7 +847,7 @@ class Reg_pasien extends MX_Controller {
              $val->set_rules('selected_time', 'Jam Praktek', 'trim|required');
              $date = date_create($tgl.' '.$this->tanggal->formatTime($this->input->post('selected_time')) );
              $jam_pesanan = date_format($date, 'Y-m-d H:i:s');
-         }else if($_POST['jenis_instalasi']=='RJ'){
+         }else if($_POST['jenis_instalasi']=='RJ' || $_POST['jenis_instalasi']=='RJ-PJ'){
              $val->set_rules('klinik_rajal', 'Klinik', 'trim|required');
              $val->set_rules('tanggal_kunjungan', 'Tanggal Kunjungan', 'trim|required');
              $val->set_rules('dokter_rajal', 'Dokter', 'trim|required');

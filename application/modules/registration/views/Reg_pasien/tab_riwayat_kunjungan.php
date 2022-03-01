@@ -7,7 +7,7 @@
     var no_reg = '<?php echo (isset($no_reg))?$no_reg:''?>';
     var tujuan = '<?php echo (isset($tujuan))?$tujuan:''?>';
 
-    var url = (no_reg!='')?'registration/Reg_pasien/get_riwayat_pasien?mr='+no_mr+'&tujuan='+tujuan+'&no_reg='+no_reg+'':'registration/Reg_pasien/get_riwayat_pasien?mr='+no_mr+'&kode_bagian='+kode_bagian+''
+    var url = (no_reg!='')?'registration/Reg_pasien/get_riwayat_pasien?mr='+no_mr+'&tujuan='+tujuan+'&no_reg='+no_reg+'':'registration/Reg_pasien/get_riwayat_pasien?mr='+no_mr+'&kode_bagian='+kode_bagian+'';
 
     table_riwayat = $('#riwayat-table').DataTable({ 
       

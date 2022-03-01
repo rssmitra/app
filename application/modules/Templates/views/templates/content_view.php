@@ -1039,6 +1039,19 @@
         });
       }
 
+      function reprintSEP(no_sep, no_antrian, printerName){
+        $.ajax({
+            url: "ws_bpjs/Ws_index/print_sep/"+no_sep+"",
+            dataType: "json",
+            data: {printer : printerName, no_antrian : no_antrian},
+            type: "POST",
+            success: function (response) {
+              // no action
+              console.log(response);
+            }
+        });
+      }
+
     
 
 

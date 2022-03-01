@@ -102,7 +102,7 @@
 <div style="margin-top: 20px;" class="center">
   
   <?php foreach($jenis_printer as $row) :?>
-    <a href="#" class="btn btn-success" onclick="reprint(<?php echo $jd_id?>, <?php echo $id_tc_pesanan?>, '<?php echo $row->value; ?>')">
+    <a href="#" class="<?php echo $row->desc_text?>" onclick="reprint(<?php echo $jd_id?>, <?php echo $id_tc_pesanan?>, '<?php echo $row->value; ?>')">
       <i class="fa fa-print"></i> <?php echo $row->label?>
     </a>
   <?php endforeach; ?>

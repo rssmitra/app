@@ -1,4 +1,4 @@
-<script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
+<!-- <script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script> -->
 
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 
@@ -65,7 +65,9 @@ $(document).ready(function(){
 
       beforeSend: function() {        
 
-        achtungShowFadeIn();          
+        if( $('#noRujukan').val() == ''){
+          achtungShowFadeIn();          
+        }
 
       },      
 
@@ -94,13 +96,36 @@ $(document).ready(function(){
           // jika tujuan rawat jalan
           if( $('select[name="jenis_pendaftaran"]').val() == 1 || $('select[name="jenis_pendaftaran"]').val() == 4){
             PopupCenter('registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'&poli='+jsonResponse.poli+'&dokter='+jsonResponse.dokter+'&nasabah='+jsonResponse.nasabah+'', 'FORM BUKTI PENDAFTARAN PASIEN', 950, 550);
+            if( $('#kode_perusahaan_hidden').val() == 120 ){
+              if($('#noSep').val().length == 19){ // karakter SEP harus 19
+                getMenuTabs('ws_bpjs/Ws_index/view_sep/'+$('#noSep').val()+'', 'div_load_perjanjian_form');
+              }
+            }
+          }
+
+          console.log(jsonResponse.type_pelayanan);
+
+          if( jsonResponse.type_pelayanan == 'rawat_jalan' ){
+            $('#change_modul_view_perjanjian').hide('fast');
+            // show bukti registrasi atau SEP
+            if( jsonResponse.kode_perusahaan == 120 ){
+              // show sep
+              $('#divLoadSEP').load('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep+'?no_antrian='+jsonResponse.no_antrian+'');
+            }else{
+              // show bukti registrasi
+            }
+
+
           }
 
           if( jsonResponse.type_pelayanan == 'create_sep' ){
-            $('#noSep').val(jsonResponse.no_sep);
-            $('#show-sep-from-response').show('fast');
-            $('#txt-no-sep').text(jsonResponse.no_sep);
-            show_modal('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep+'', 'SURAT ELEGIBILTAS PASIEN (SEP)');
+            $('#noSep').val('0112R0340222V005545');
+            $('#jenis_pendaftaran').val('1');
+            $('#form_registration').attr('action', 'registration/Reg_klinik/process');
+            $('#divLoadSEP').load('registration/Reg_klinik/process_sep_success/0112R0340222V005545');
+            $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/1/') ;
+          }else{
+            $('#id_tc_pesanan').val('');
           }
 
           /*show action after success submit form*/
@@ -109,22 +134,14 @@ $(document).ready(function(){
           /*hide form rajal*/
           
           $('#btn_submit').hide('fast');
-
           $('#change_modul_view').hide('fast');
-
           $('select[name="jenis_pendaftaran"]').val('');
-
           $('#label_info_pasien_baru').hide('fast');
-          
           $('#is_new').val('');
-
           $('#pasien_dengan_perjanjian').hide('fast');
-          $('#id_tc_pesanan').val('');
-          
-
-          $('#label_info_rujukan').hide('fast');
           $('#kode_rujukan_hidden').val(0); 
           $('#no_registrasi_hidden').val('');  
+          $('#label_info_rujukan').hide('fast');
 
         }else{
           $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
@@ -311,7 +328,29 @@ $(document).ready(function(){
 
         }        
 
-    });      
+    });  
+    
+    $( "#noRujukan" )    
+
+      .keypress(function(event) {        
+
+        var keycode =(event.keyCode?event.keyCode:event.which);         
+
+        if(keycode ==13){          
+
+          event.preventDefault();          
+
+          if($(this).valid()){            
+
+            $('#btnSearchNoRujukan').click();            
+
+          }          
+
+          return false;                 
+
+        }        
+
+    });  
 
     $('select[name="jenis_pendaftaran"]').change(function () {      
 
@@ -328,7 +367,7 @@ $(document).ready(function(){
     $('#btn_search_pasien').click(function (e) {      
 
       e.preventDefault();      
-
+      $('#div_load_perjanjian_form').hide('fast');
       $('#pasien_dengan_perjanjian').hide('fast');
       $('#id_tc_pesanan').val('');
       $('#noSep').val('');
@@ -446,6 +485,7 @@ $(document).ready(function(){
             $('#kodePoliPerjanjian').val(obj_data.kode_poli);
             $('#namaDokterDPJPPerjanjianBPJS').val(obj_data.nama_dr);
             $('#perjanjian_result_view_div').html(response.html);
+            $('#btnSearchNoRujukan').focus();
 
           }
 
@@ -657,6 +697,7 @@ function hideLabelPerjanjian(){
 
 function showChangeModul(modul_id, id_tc_pesanan=''){
 
+    $('#div_load_after_selected_pasien').show('fast');
     $('#change_modul_view').show('fast');
 
     if ( modul_id )  {          
@@ -1203,7 +1244,7 @@ $('#btnSearchNoRujukan').click(function (e) {
 
           // kode perusahaan
           $('#kode_perusahaan_hidden').val(120);
-          $('#kode_kelompok_hidden').val(120);
+          $('#kode_kelompok_hidden').val(3);
           
 
           $("input[name=jnsPelayanan][value="+pelayanan.kode+"]").attr('checked', true);
@@ -1243,6 +1284,20 @@ function get_riwayat_medis(){
   }
 
 }
+
+function form_perjanjian(){
+
+  $('#div_load_perjanjian_form').show();
+  $('#div_load_after_selected_pasien').hide();
+  noMr = $('#noMrHidden').val();
+  if (noMr == '') {
+    alert('Silahkan cari pasien terlebih dahulu !'); return false;
+  }else{
+    getMenuTabs('registration/reg_pasien/form_perjanjian_ontabs/'+noMr, 'div_load_perjanjian_form');
+  }
+
+}
+
 </script>
 
 <style type="text/css">
@@ -1288,8 +1343,13 @@ function get_riwayat_medis(){
           <div class="center">
             <ul class="nav nav-list">
               <li class="hover">
-                <a href="#" onclick="showModalDaftarPerjanjian(0)"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian </span></a><b class="arrow"></b>
+                <a data-toggle="tab" data-id="0" id="tabs_perjanjian_form" href="#" onclick="form_perjanjian()"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian </span></a><b class="arrow"></b>
               </li>
+
+              <!-- <li class="hover">
+                <a href="#" onclick="showModalDaftarPerjanjian(0)"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian </span></a><b class="arrow"></b>
+              </li> -->
+
               <li class="hover">
                 <a href="#" id="btn_barcode_pasien"><i class="menu-icon fa fa-barcode"></i><span class="menu-text"> Barcode </span></a><b class="arrow"></b>
               </li>
@@ -1343,6 +1403,7 @@ function get_riwayat_medis(){
             <input type="hidden" name="kodeDokterDPJPPerjanjian" value="" id="kodeDokterDPJPPerjanjian">
             <input type="hidden" name="kodePoliPerjanjian" value="" id="kodePoliPerjanjian">
             <input type="hidden" name="namaDokterDPJPPerjanjianBPJS" value="" id="namaDokterDPJPPerjanjianBPJS">
+            <input type="hidden" name="id_tc_pesanan" value="<?php echo isset($id_tc_pesanan)?$id_tc_pesanan:''?>" id="id_tc_pesanan">
             
             <div class="col-md-2 no-padding">
               <div class="box box-primary" id='box_identity'>
@@ -1462,7 +1523,6 @@ function get_riwayat_medis(){
                 <div class="form-group" id="search_mr_form" <?php echo isset($kode_booking)?'style="display:none"':''?>>
 
                   <label class="control-label col-md-3"><b>CARI PASIEN</b></label>            
-
                   <div class="col-md-8">            
 
                     <div class="input-group">
@@ -1507,7 +1567,6 @@ function get_riwayat_medis(){
 
                 <div id="search_kode_perjanjian_result" <?php echo isset($kode_perjanjian)?'':'style="display:none;margin-top:10px"'?>>
                 
-
                   <div id="div_load_after_selected_pasien_perjanjian" style="display: none">
                     <hr>
                     <p><b>SILAHKAN MASUKAN NOMOR RUJUKAN</b></p>
@@ -1567,10 +1626,10 @@ function get_riwayat_medis(){
                     <!-- change modul view -->
 
                     <div id="change_modul_view_perjanjian" style="margin-top:10px"></div>
+                    <div id="divLoadSEP"></div>
                     
                     <!-- end change modul view -->
                   </div>
-
 
                 </div>
 
@@ -1707,8 +1766,6 @@ function get_riwayat_medis(){
                       <div id="pasien_dengan_perjanjian" <?php echo isset($id_tc_pesanan)?'':'style="display:none"'?> >
                         <?php echo isset($id_tc_pesanan)?'<div style="margin-top:3px"><a href="#" onclick="hideLabelPerjanjian()"><i class="fa fa-times-circle bigger-150 red"></i></a> <label class="label label-warning"><i class="fa fa-exchange"></i> <b> PASIEN DENGAN PERJANJIAN NOMOR '.$kode_perjanjian.' </b> </label> </div>':''?>
                       </div>
-
-                      <input type="hidden" name="id_tc_pesanan" value="<?php echo isset($id_tc_pesanan)?$id_tc_pesanan:''?>" id="id_tc_pesanan">
 
                       <div id="div_penangguhan_pasien" style="display:none">
 
@@ -1905,16 +1962,15 @@ function get_riwayat_medis(){
 
                       </div>
 
+                      <div id="div_load_perjanjian_form" style="display: none"></div>
+
                     </div>
 
                   </div>
 
                 </div>
 
-              
-                
-
-            </div>
+              </div>
 
               <div class="col-md-4">
 

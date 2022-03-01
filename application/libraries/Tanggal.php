@@ -147,12 +147,9 @@ final class Tanggal {
             $tanggal = "-";
         } else {
             sscanf($input, "%d-%d-%d %d:%d:%d", $y, $m, $d, $h, $i, $s);
-            $bulan = tanggal::getBln($m);
-            
             $h = tanggal::normalDigit($h);
             $i = tanggal::normalDigit($i);
             $s = tanggal::normalDigit($s);
-            
             $tanggal = $y . "-" . $m . "-" . $d;
         }
 
