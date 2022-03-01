@@ -6,6 +6,17 @@
 <div class="row">
   <div class="col-md-12">
     <table id="dt_selected_brg" class="table table-striped table-bordered">
+        <tr>
+          <th></th>
+          <th>No</th>
+          <th>No Kunjungan</th>
+          <th>Nama Pasien</th>
+          <th>Dokter/Poli</th>
+          <th>No SEP</th>
+          <th>Diagnosa Akhir</th>
+          <th>Pesan Resep</th>
+          <th>#</th>
+        </tr>
         <?php 
           if( count($result) > 0 ) {
             $no = 0;
@@ -29,14 +40,13 @@
               echo '</td>';
 
               echo '<td align="center">'.$no.'</td>';
-              echo '<td>'.$row_result->no_kunjungan.'</td>';
-              echo '<td>'.$row_result->no_mr.'</td>';
-              echo '<td>'.$row_result->nama_pasien.'</td>';
-              echo '<td>'.ucwords($row_result->nama_bagian).'</td>';
-              echo '<td>'.$this->tanggal->formatDateTime($row_result->tgl_masuk).'</td>';
+              echo '<td><b>'.$row_result->no_kunjungan.'</b><br>'.$this->tanggal->formatDateTime($row_result->tgl_masuk).'</td>';
+              echo '<td>'.$row_result->no_mr.'<br>'.$row_result->nama_pasien.'</td>';
+              echo '<td>'.ucwords($row_result->nama_bagian).'<br>'.$row_result->nama_pegawai.'</td>';
+              echo '<td>'.$row_result->no_sep.'</td>';
+              echo '<td>'.ucwords($row_result->diagnosa_akhir).'</td>';
               echo '<td>Jml Pesan : '.$row_result->jml_pesan.' ( <a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_result->kode_pesan_resep."?mr=".$row_result->no_mr."&tipe_layanan=RJ'".')" >'.$row_result->kode_pesan_resep.'</a> )</td>';
               echo '<td align="center" width="50px"><a href="#" class="btn btn-xs btn-primary" onclick="submitPesanResep('.$row_result->no_kunjungan.')">Pesan Resep</a></td>';
-              
               
               echo '</tr>';
 

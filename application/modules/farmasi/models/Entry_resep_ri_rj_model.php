@@ -19,6 +19,7 @@ class Entry_resep_ri_rj_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
+		$this->db->select('(SELECT top 1 diagnosa_akhir FROM th_riwayat_pasien WHERE no_kunjungan=fr_listpesanan_v.no_kunjungan) as diagnosa_akhir');
 		$this->db->from($this->table);
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=fr_listpesanan_v.kode_perusahaan','left');
 		$this->db->join('mt_nasabah','mt_nasabah.kode_kelompok=fr_listpesanan_v.kode_kelompok','left');

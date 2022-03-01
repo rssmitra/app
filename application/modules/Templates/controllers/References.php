@@ -1586,11 +1586,12 @@ class References extends MX_Controller {
 
 	public function search_pasien_rj(){
 		// search kunjungan pasien
-		$this->db->select('a.no_kunjungan, a.tgl_masuk, a.no_mr, c.nama_pasien, d.nama_bagian, a.no_registrasi, b.kode_dokter, a.kode_bagian_tujuan, b.kode_kelompok, b.kode_perusahaan, total_pesan.jml_pesan, total_pesan.kode_pesan_resep ');
+		$this->db->select('a.no_kunjungan, a.tgl_masuk, a.no_mr, c.nama_pasien, d.nama_bagian, a.no_registrasi, b.kode_dokter, e.nama_pegawai, a.kode_bagian_tujuan, b.kode_kelompok, b.kode_perusahaan, total_pesan.jml_pesan, total_pesan.kode_pesan_resep, (SELECT top 1 diagnosa_akhir FROM th_riwayat_pasien WHERE no_kunjungan=a.no_kunjungan) as diagnosa_akhir, b.no_sep');
 		$this->db->from('tc_kunjungan a');
 		$this->db->join('tc_registrasi b ', 'b.no_registrasi=a.no_registrasi' ,'left');
 		$this->db->join('mt_master_pasien c ', 'c.no_mr=b.no_mr' ,'left');
 		$this->db->join('mt_bagian d ', 'd.kode_bagian=a.kode_bagian_tujuan' ,'left');
+		$this->db->join('mt_dokter_v e ', 'e.kode_dokter=a.kode_dokter' ,'left');
 		$this->db->join('(select no_kunjungan, kode_pesan_resep, COUNT(kode_pesan_resep) as jml_pesan from fr_listpesanan_v group by no_kunjungan, kode_pesan_resep) as total_pesan', 'total_pesan.no_kunjungan=a.no_kunjungan' ,'left');
 		$arr_kode_bagian = array('01','02');
 		$this->db->where_in('SUBSTRING(kode_bagian_tujuan,1,2)', $arr_kode_bagian);
@@ -1610,6 +1611,7 @@ class References extends MX_Controller {
 			$this->db->where('YEAR(a.tgl_masuk)', date('Y') );
 		}
 
+		$this->db->group_by('a.no_kunjungan, a.tgl_masuk, a.no_mr, c.nama_pasien, d.nama_bagian, a.no_registrasi, b.kode_dokter, e.nama_pegawai, a.kode_bagian_tujuan, b.kode_kelompok, b.kode_perusahaan, total_pesan.jml_pesan, total_pesan.kode_pesan_resep, b.no_sep');
 		$this->db->order_by('a.tgl_masuk', 'DESC');
 		$this->db->limit(5);
 		$result = $this->db->get()->result();

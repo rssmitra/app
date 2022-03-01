@@ -44,7 +44,7 @@ class Entry_resep_rj extends MX_Controller {
         /*get value by id*/
         $data['kode_pesan_resep'] = $id;
         $data['value'] = $this->Entry_resep_rj->get_by_id($id);
-        //echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data);die;
         /*no mr default*/
         $data['no_mr'] = $_GET['mr'];
         /*initialize flag for form*/

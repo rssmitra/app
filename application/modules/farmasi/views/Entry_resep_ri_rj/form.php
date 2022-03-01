@@ -681,11 +681,10 @@ function changeUrgensi(){
         <div class="col-sm-12">
           <table class="table">
             <tr style="background-color: #edf3f4; font-weight: bold">
-              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> </td>
-              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?> </td>
-              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($value->nama_kelompok):''?> <?php echo isset($value)?ucwords($value->nama_perusahaan):''?> </td>
-              <td style="vertical-align: middle"> <?php echo isset($value)?ucwords($value->nama_bagian):''?> </td>
-              <td style="vertical-align: middle"> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+              <td style="vertical-align: middle"> <span style="font-weight: normal !important">Kode/Tgl Pesan :</span><br> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> / <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?></td>
+              <td style="vertical-align: middle"> <span style="font-weight: normal !important">Penjamin :</span><br> <?php echo isset($value)?ucwords($value->nama_kelompok):''?><br><?php echo isset($value)?ucwords($value->nama_perusahaan):''?> </td>
+              <td style="vertical-align: middle"> <span style="font-weight: normal !important">Dokter/Poli :</span><br> <?php echo isset($value)?ucwords($value->nama_bagian):''?> <br> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+              <td style="vertical-align: middle"><span style="font-weight: normal !important">Diagnosa Akhir :</span> <br><?php echo isset($value)?$value->diagnosa_akhir:''?> </td>
               <td style="vertical-align: middle"> <div style="font-size: 18px" id="td_total_biaya_farmasi"> <b>Rp.0,-</b>  </div></td>
             </tr>
           </table>
