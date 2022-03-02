@@ -447,6 +447,7 @@ $(document).ready(function(){
     $('#btn_search_kode_perjanjian').click(function (e) {      
 
       e.preventDefault();      
+      $('#div_load_page_perjanjian').hide('fast');
 
       if( $("#form_cari_pasien_by_kode_perjanjian_id").val() == "" ){
 
@@ -457,14 +458,16 @@ $(document).ready(function(){
       }else{
 
         achtungShowLoader();
-
+        $('#divLoadSEP').html('');
         $.getJSON("<?php echo site_url('templates/References/findKodeBooking') ?>?kode=" + $("#form_cari_pasien_by_kode_perjanjian_id").val(), '', function (response) {              
 
           achtungHideLoader();
           $('#change_modul_view_perjanjian').html('');
 
           if( response.status != 200){
+            
             $('#perjanjian_result_view_div').hide('fast');
+            $('#search_kode_perjanjian_result').hide('fast');
             $('#div_load_after_selected_pasien_perjanjian').hide('fast');
             alert('Kode Perjanjian tidak ditemukan'); return $("#form_cari_pasien_by_kode_perjanjian_id").focus();
 
@@ -473,6 +476,7 @@ $(document).ready(function(){
             var obj_data = response.data;
 
             $('#perjanjian_result_view_div').show('fast');
+            $('#search_kode_perjanjian_result').show('fast');
             $('#div_load_after_selected_pasien_perjanjian').show('fast');
             $('#noRujukan').val(obj_data.norujukan);
             /*put data in form*/
@@ -541,6 +545,8 @@ $(document).ready(function(){
         $('#div_riwayat_pasien').hide('fast');
         $('#booking_result_view_div').hide('fast');
       }
+
+      $('#div_load_perjanjian_form').hide();
 
     }); 
 
@@ -1289,6 +1295,8 @@ function form_perjanjian(){
 
   $('#div_load_perjanjian_form').show();
   $('#div_load_after_selected_pasien').hide();
+  $('#perjanjian_result_view_div').hide();
+  $('#search_kode_perjanjian_result').hide();
   noMr = $('#noMrHidden').val();
   if (noMr == '') {
     alert('Silahkan cari pasien terlebih dahulu !'); return false;
@@ -1562,6 +1570,7 @@ function form_perjanjian(){
                     </div>
                   </div>
                 </div>
+
                 <!-- result perjanjian -->
                 <div class="form-group" id="perjanjian_result_view_div"></div>
 
@@ -1698,7 +1707,7 @@ function form_perjanjian(){
 
                 </div>
 
-                <div id="div_form_onsite" <?php echo isset($kode_booking)?'style="display:none"':''?>>
+                <div id="div_form_onsite" <?php echo isset($kode_booking)?'style="display:none"':''?> >
 
                   <div class="form-group">
 
@@ -1962,13 +1971,15 @@ function form_perjanjian(){
 
                       </div>
 
-                      <div id="div_load_perjanjian_form" style="display: none"></div>
+                      
 
                     </div>
 
                   </div>
 
                 </div>
+
+                <div id="div_load_perjanjian_form" style="display: none"></div>
 
               </div>
 

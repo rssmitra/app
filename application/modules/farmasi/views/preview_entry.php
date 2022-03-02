@@ -44,6 +44,10 @@
               <td width="100px">Unit/Bagian</td>
               <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['nama_bagian'])?></td>
             </tr>
+            <tr>
+              <td width="100px">&nbsp;</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> &nbsp;</td>
+            </tr>
             
           </table>
 
@@ -175,11 +179,11 @@
             </tr>
             <tr>
               <td width="100px">Nama Pasien</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep_kronis[0]['nama_pasien'])?></td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep_kronis[0]['nama_pasien'])?> (<?php echo $resep_kronis[0]['no_mr']?>)</td>
             </tr>
             <tr>
-              <td width="100px">No. MR</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep_kronis[0]['no_mr']?></td>
+              <td width="100px">No. SEP</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep_kronis[0]['no_sep']?></td>
             </tr>
             <tr>
               <td width="100px">Dokter</td>
@@ -189,10 +193,10 @@
               <td width="100px">Unit/Bagian</td>
               <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep_kronis[0]['nama_bagian'])?></td>
             </tr>
-            <!-- <tr>
-              <td width="100px">Penjamin</td>
-              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep_kronis[0]['nama_perusahaan']?></td>
-            </tr> -->
+            <tr>
+              <td width="100px">Diagnosa Akhir</td>
+              <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep_kronis[0]['diagnosa_akhir']?></td>
+            </tr>
           </table>
 
           <table class="table-utama" style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
@@ -322,7 +326,8 @@
             <th>No Mr</th>
             <th>Nama Pasien</th>
             <th>Nama Dokter</th>
-            <th>Pelayanan</th>
+            <th>Penjamin</th>
+            <th>Diagnosa Akhir</th>
             <th>Status</th>
           </tr>
         </thead>

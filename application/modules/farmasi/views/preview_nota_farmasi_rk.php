@@ -55,6 +55,10 @@ No. RSK-<?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[
     <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $this->tanggal->formatDateTime($resep[0]['tgl_trans']) ?></td>
   </tr>
   <tr style="border: 1px solid black; border-collapse: collapse">
+    <td width="100px">No SEP</td>
+    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['no_sep'])?></td>
+  </tr>
+  <tr style="border: 1px solid black; border-collapse: collapse">
     <td width="100px">Nama Pasien</td>
     <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['nama_pasien'])?></td>
   </tr>
@@ -67,8 +71,12 @@ No. RSK-<?php echo $resep[0]['kode_trans_far']?> - <?php echo strtoupper($resep[
     <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['dokter_pengirim'])?></td>
   </tr>
   <tr style="border: 1px solid black; border-collapse: collapse">
-    <td width="100px">Asal</td>
-    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['nama_bagian']?></td>
+    <td width="100px">Asal Poli/Klinik</td>
+    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo ucwords($resep[0]['nama_bagian'])?></td>
+  </tr>
+  <tr style="border: 1px solid black; border-collapse: collapse">
+    <td width="100px">Diagnosa Akhir</td>
+    <td style="background-color: #FFF;color: #0a0a0a;border: 1px solid #FFF; border-collapse: collapse"> : <?php echo $resep[0]['diagnosa_akhir']?></td>
   </tr>
 </table>
 

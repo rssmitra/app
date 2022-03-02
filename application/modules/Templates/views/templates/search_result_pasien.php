@@ -46,7 +46,11 @@
               echo '<td>'.$row_result->no_sep.'</td>';
               echo '<td>'.ucwords($row_result->diagnosa_akhir).'</td>';
               echo '<td>Jml Pesan : '.$row_result->jml_pesan.' ( <a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_result->kode_pesan_resep."?mr=".$row_result->no_mr."&tipe_layanan=RJ'".')" >'.$row_result->kode_pesan_resep.'</a> )</td>';
-              echo '<td align="center" width="50px"><a href="#" class="btn btn-xs btn-primary" onclick="submitPesanResep('.$row_result->no_kunjungan.')">Pesan Resep</a></td>';
+              if($row_result->jml_pesan > 0){
+                echo '<td align="center" width="50px"><a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_result->kode_pesan_resep."?mr=".$row_result->no_mr."&tipe_layanan=RJ'".')">Input Resep</a></td>';
+              }else{
+                echo '<td align="center" width="50px"><a href="#" class="btn btn-xs btn-primary" onclick="submitPesanResep('.$row_result->no_kunjungan.')">Pesan Resep</a></td>';
+              }
               
               echo '</tr>';
 

@@ -131,12 +131,13 @@ function popUnder(node) {
             <tr>  
               <th class="center">No</th>
               <th>Kode</th>
-              <th>No Resep</th>
+              <th width="80px">No Resep</th>
               <th>Tgl Pesan</th>
               <th>No Mr</th>
               <th>Nama Pasien</th>
               <th>Nama Dokter</th>
-              <th>Pelayanan</th>
+              <th>Penjamin</th>
+              <th width="180px">Diagnosa Akhir</th>
               <th>Status</th>
             </tr>
           </thead>

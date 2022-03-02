@@ -464,7 +464,7 @@ class Process_entry_resep extends MX_Controller {
             'status_lunas' => isset($_GET['status_lunas']) ? $_GET['status_lunas'] : 0,
         );
         $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
-
+        // echo '<pre>'; print_r($resep_log);die;
         $getData = array();
         $getDataResepKronis = array();
         foreach($resep_log as $row){
@@ -479,7 +479,7 @@ class Process_entry_resep extends MX_Controller {
         $data['resep_kronis'] = $getDataResepKronis;
         $data['no_mr'] = isset($getData[0]['no_mr'])?$getData[0]['no_mr']:0;
         $data['kode_trans_far'] = $kode_trans_far;
-        // echo '<pre>'; print_r($data);die;
+        
         
         $this->load->view('farmasi/preview_entry', $data);
 

@@ -85,7 +85,9 @@ class Retur_obat extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
-            $row[] = $row_list->nama_pelayanan;
+            $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
+            $row[] = $row_list->nama_perusahaan.$no_sep;
+            $row[] = $row_list->diagnosa_akhir;
             if($row_list->kode_tc_trans_kasir == null) {
                 if($row_list->status_transaksi == 1){
                     $row[] = '<div class="center">
