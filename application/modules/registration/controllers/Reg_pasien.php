@@ -256,7 +256,7 @@ class Reg_pasien extends MX_Controller {
 
         $output = array();
 
-        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id');
+        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id, tc_pesanan.kode_perusahaan');
 
         $list = $this->Reg_pasien->get_riwayat_perjanjian( $column, $mr ); 
 
@@ -279,7 +279,7 @@ class Reg_pasien extends MX_Controller {
                 $html = '';
 
                 if( isset($_GET['no_mr']) AND $_GET['no_mr'] != '' ){
-                    $html .= '<li><a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">Daftarkan Pasien</a></li>';
+                    // $html .= '<li><a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">Daftarkan Pasien</a></li>';
                 }else{
                     $html .= '<li><a href="#" onclick="getMenu('."'registration/Reg_klinik?idp=".$row_list->id_tc_pesanan."&kode_dokter=".$row_list->kode_dokter."&poli=".$row_list->no_poli."&kode_perjanjian=".$row_list->kode_perjanjian."&no_mr=".$row_list->no_mr."'".')">Daftarkan Pasien</a></li>';
                 }
@@ -291,7 +291,7 @@ class Reg_pasien extends MX_Controller {
                 }
                 $penjamin = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
 
-                $label_code = ($row_list->tgl_masuk == NULL) ? '<div class="pull-right"><span class="label label-sm label-danger">'.$row_list->kode_perjanjian.'</span></div>' : '<div class="pull-right"><span class="label label-sm label-success">'.$row_list->kode_perjanjian.'</span></div>';
+                $label_code = ($row_list->tgl_masuk == NULL) ? '<div class="pull-right"><span class="red" style="font-weight: bold; font-size: 16px;">'.$row_list->unique_code_counter.'</span></div>' : '<div class="pull-right"><span class="green" style="font-weight: bold; font-size: 16px; cursor: pointer">'.$row_list->unique_code_counter.'</span></div>';
 
                 $row[] = '<div class="center">
                             <label class="pos-rel">
@@ -309,7 +309,11 @@ class Reg_pasien extends MX_Controller {
                                 <li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
                             </ul>
                         </div></div>';
-                $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.''.$label_code;
+                if( $row_list->kode_perusahaan == 120){
+                    $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.'<br><small class="pull-right">Kode Booking : </small><br><a href="#" onclick="changeModulRjFromPerjanjianBPJS('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
+                }else{
+                    $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.'<a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
+                }
 
                 $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
                 $row[] = '<a href="#">'.strtoupper($row_list->nama).'</>';
