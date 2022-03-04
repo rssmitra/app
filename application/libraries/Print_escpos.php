@@ -907,7 +907,6 @@ class Print_escpos{
 
     public function print_booking($obj)
     {
-        // echo '<pre>';print_r($obj);die;
         $objDt = $obj['value'];
         $jadwal = $obj['jadwal'];
 
@@ -979,9 +978,14 @@ class Print_escpos{
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
         printer_draw_text($p, "Tanggal Kontrol", $var_margin_left, 270);
+        // get day from date
+        $numDay = date('w', strtotime($objDt->tgl_kembali));
+        $dayText = $CI->tanggal->getDayByNum($numDay);
+
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$CI->tanggal->formatDatedmY($objDt->tgl_kembali)." ", 175, 270);
+        $jam_praktek = $CI->tanggal->formatTime($jadwal->jd_jam_mulai)."-".$CI->tanggal->formatTime($jadwal->jd_jam_selesai);
+        printer_draw_text($p, " ".$dayText.", ".$CI->tanggal->formatDatedmY($objDt->tgl_kembali)." (".$jam_praktek.")", 175, 270);
 
         // nama dokter
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
@@ -1000,13 +1004,17 @@ class Print_escpos{
         printer_draw_text($p, "  ".ucwords($objDt->nama_bagian)." ", 175, 330);
 
         // jam praktek
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "Jam Praktek", $var_margin_left, 360);
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        $jam_praktek = $CI->tanggal->formatTime($jadwal->jd_jam_mulai)."-".$CI->tanggal->formatTime($jadwal->jd_jam_selesai);
-        printer_draw_text($p, "  ".(string)$jam_praktek." " , 175, 360);
+        // $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        // printer_select_font($p, $font);
+        // printer_draw_text($p, "Jam Praktek", $var_margin_left, 360);
+        // $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        // printer_select_font($p, $font);
+        // $jam_praktek = $CI->tanggal->formatTime($jadwal->jd_jam_mulai)."-".$CI->tanggal->formatTime($jadwal->jd_jam_selesai);
+        // printer_draw_text($p, "  ".(string)$jam_praktek." " , 175, 360);
+        
+        $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
+        printer_select_pen($p, $pen);
+        printer_draw_line($p, 10, 365, 550, 365);
 
         // petugas
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
@@ -1122,6 +1130,7 @@ class Print_escpos{
         // sep data
         $sep = $data['sep'];
         $registrasi = $data['registrasi'];
+        $rujukan = $data['rujukan'];
         $dpjp = $sep->dpjp;
 
 
@@ -1191,7 +1200,8 @@ class Print_escpos{
         printer_draw_text($p, "Kelamin", $var_margin_left, 280);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$sep->peserta->kelamin." ", 175, 280);
+        $jk = ($sep->peserta->kelamin =='L') ? 'Laki-laki':'Perempuan';
+        printer_draw_text($p, "  ".$jk." ", 175, 280);
 
         // No Telp
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
@@ -1199,7 +1209,7 @@ class Print_escpos{
         printer_draw_text($p, "No Telp", $var_margin_left, 310);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$sep->peserta->noKartu." ", 175, 310);
+        printer_draw_text($p, "  ".$registrasi->no_hp." / ".$registrasi->tlp_almt_ttp." ", 175, 310);
 
         // Poli
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
@@ -1223,7 +1233,7 @@ class Print_escpos{
         printer_draw_text($p, "Faskes Perujuk", $var_margin_left, 400);
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "  ".$sep->peserta->noKartu." ", 175, 400);
+        printer_draw_text($p, $rujukan->provPerujuk->nmProviderPerujuk, 175, 400);
 
         // Jns Rawat
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
@@ -1313,10 +1323,10 @@ class Print_escpos{
         // Penjamin
         $font = printer_create_font("Arial", 27, 11, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "No. Antrian Poli", $var_margin_left, 1000);
+        printer_draw_text($p, "No. Antrian Poli", $var_margin_left, 950);
         $font = printer_create_font("Arial", 27, 11, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, $noAntrian, 220, 1000);
+        printer_draw_text($p, $noAntrian, 220, 950);
 
 
         /*nomor antrian poli*/
@@ -1331,12 +1341,36 @@ class Print_escpos{
         // Nama Poli
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, ucwords($registrasi->nama_bagian), 5, 1050);
+        printer_draw_text($p, ucwords($registrasi->nama_bagian), 5, 1000);
 
         // Nama Dokter
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, $registrasi->nama_pegawai, 5, 1080);
+        printer_draw_text($p, $registrasi->nama_pegawai, 5, 1030);
+
+        // ======================= CATATAN TENSI ====================== //
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Suhu", $var_margin_left, 1080);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "(____________)", 175, 1080);
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Tensi", $var_margin_left, 1130);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "(____________)", 175, 1130);
+
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Nadi", $var_margin_left, 1180);
+        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "(____________)", 175, 1180);
+
 
         // Jam Praktek
         // $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
@@ -1345,7 +1379,7 @@ class Print_escpos{
 
         $font = printer_create_font("Arial", 23, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        printer_draw_text($p, "Tanggal cetak  ".date('d/M/Y H:i:s')." WIB ", 100, 1150);
+        printer_draw_text($p, "Tanggal cetak  ".date('d/M/Y H:i:s')." WIB ", 100, 1230);
         
         printer_delete_font($font);
         printer_end_page($p);

@@ -256,7 +256,7 @@ class References extends MX_Controller {
 		/*check current date*/
 		$selected_date = strtotime($date);
 		/*get status date*/
-		$status = ($selected_date < time() ) ? 'expired' : 'success' ;
+		$status = ($date == date('Y-m-d')) ? 'success' : ($selected_date < strtotime(date('Y-m-d')) ) ? 'expired' : 'success' ;
 		/*get master jadwal*/
 		$jadwal = $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
 		$kuota_dr = $jadwal->jd_kuota;
@@ -275,7 +275,6 @@ class References extends MX_Controller {
 		// echo '<pre>'; print_r($terisi);die;
 		/*sisa kuota*/
 		$kuota = $kuota_dr - $terisi;
-
 
 		echo json_encode(array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota) );
 	}

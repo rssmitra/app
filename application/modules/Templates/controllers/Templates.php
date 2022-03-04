@@ -714,8 +714,8 @@ class Templates extends MX_Controller {
                         <ol>
                             <li><b>Anamnesa</b><br>'.htmlspecialchars($riwayat_pasien->anamnesa, ENT_QUOTES).'</li>
                             <li><b>Diagnosa Penyakit</b>
-                                <br>Diagnosa awal, '.$riwayat_pasien->diagnosa_awal.'
-                                <br>Diagnosa akhir, '.$riwayat_pasien->diagnosa_akhir.'
+                                <br>Diagnosa awal, '.htmlspecialchars($riwayat_pasien->diagnosa_awal, ENT_QUOTES).'
+                                <br>Diagnosa akhir, '.htmlspecialchars($riwayat_pasien->diagnosa_akhir, ENT_QUOTES).'
                             </li>
                             <li><b>Pemeriksaan yang dilakukan</b><br>'.htmlspecialchars($riwayat_pasien->pemeriksaan, ENT_QUOTES).'</li>
                             <li><b>Anjuran Dokter</b><br>'.htmlspecialchars($riwayat_pasien->pengobatan, ENT_QUOTES).'</li>
