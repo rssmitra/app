@@ -143,8 +143,8 @@ $(document).ready(function() {
     });
 
     $('#btn_reset_data').click(function (e) {
-            e.preventDefault();
-            reset_table();
+        e.preventDefault();
+        reset_table();
     });
 
 
@@ -152,6 +152,8 @@ $(document).ready(function() {
 
 
 function updateDokumen(no_registrasi, type){
+  
+  preventDefault();
   $.ajax({
     url: 'casemix/Csm_billing_pasien/process',
     type: "post",
@@ -167,7 +169,6 @@ function updateDokumen(no_registrasi, type){
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
           window.open('casemix/Csm_billing_pasien/mergePDFFiles/'+jsonResponse.no_registrasi+'/'+jsonResponse.type+'', '_blank');
-          reset_table();
         }else{
           $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
         }

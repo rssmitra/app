@@ -115,7 +115,6 @@ class Csm_billing_pasien extends MX_Controller {
                 //$this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
                 
                 $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
-                
                 foreach ($createDocument as $k_cd => $v_cd) {
                     # code...
                     $explode = explode('-', $v_cd);

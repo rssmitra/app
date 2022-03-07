@@ -1191,11 +1191,7 @@ class Csm_billing_pasien_model extends CI_Model {
             //$this->export->getContentPDF($no_registrasi, $tipe,'','F');
         }
 
-        if($tipe == 'RJ'){
-            $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi;
-        }else{
-            $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
-        }
+        $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
         
         foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
             $explode_key = explode('-',$key_group);
