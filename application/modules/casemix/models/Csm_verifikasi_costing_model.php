@@ -4,10 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Csm_verifikasi_costing_model extends CI_Model {
 
 
-	var $table = 'csm_dokumen_klaim';
+	var $table = 'csm_reg_pasien';
 	var $column = array('csm_reg_pasien.csm_rp_no_sep','csm_reg_pasien.csm_rp_nama_pasien','csm_reg_pasien.csm_rp_no_mr', 'csm_dokumen_klaim.no_sep');
-	var $select = 'csm_dokumen_klaim.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_dokumen_klaim.created_date, csm_dokumen_klaim.created_by';
-	var $order = array('csm_dokumen_klaim.no_sep' => 'ASC');
+	var $select = 'csm_reg_pasien.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_reg_pasien.created_date, csm_reg_pasien.created_by';
+	var $order = array('csm_reg_pasien.csm_rp_no_sep' => 'ASC');
 	
 
 	public function __construct()
@@ -23,7 +23,7 @@ class Csm_verifikasi_costing_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		$this->db->join('csm_reg_pasien', 'csm_reg_pasien.no_registrasi='.$this->table.'.no_registrasi', 'INNER');
+		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi='.$this->table.'.no_registrasi', 'LEFT');
 
 
 		if(isset($_GET['search_by'])) {
@@ -53,8 +53,8 @@ class Csm_verifikasi_costing_model extends CI_Model {
 			}
 			
 		}else{
-			$this->db->where(" MONTH(csm_dokumen_klaim.created_date) > ".$curr_month." " );
-			$this->db->where(" YEAR(csm_dokumen_klaim.created_date) = ".date('Y')." " );
+			$this->db->where(" MONTH(csm_reg_pasien.created_date) > ".$curr_month." " );
+			$this->db->where(" YEAR(csm_reg_pasien.created_date) = ".date('Y')." " );
 		}
 
 		

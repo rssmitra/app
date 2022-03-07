@@ -91,7 +91,6 @@ class Csm_billing_pasien extends MX_Controller {
     public function process()
     {
         // echo '<pre>';print_r($_POST);die;
-
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('csm_rp_no_sep', 'No.SEP', 'trim|required');
@@ -117,7 +116,6 @@ class Csm_billing_pasien extends MX_Controller {
                 
                 $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
                 
-                
                 foreach ($createDocument as $k_cd => $v_cd) {
                     # code...
                     $explode = explode('-', $v_cd);
@@ -139,6 +137,7 @@ class Csm_billing_pasien extends MX_Controller {
                         'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
                         'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
                     );
+                    
                     $doc_save['created_date'] = date('Y-m-d H:i:s');
                     $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                     /*check if exist*/
@@ -148,6 +147,7 @@ class Csm_billing_pasien extends MX_Controller {
                     endif;
                     /*insert database*/
                 }
+
             }else{
                 /*csm_reg_pasien*/
                 $dataexc = array(
@@ -215,7 +215,7 @@ class Csm_billing_pasien extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.''));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'redirect' => base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'', 'no_registrasi' => $no_registrasi, 'type' => $type));
             }
             
         }

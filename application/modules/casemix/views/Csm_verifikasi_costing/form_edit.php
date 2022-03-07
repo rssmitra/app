@@ -150,8 +150,8 @@ $(document).ready(function(){
           $.achtung({message: jsonResponse.message, timeout:5});
           getMenu('casemix/Csm_verifikasi_costing/editBilling/'+$('#no_registrasi_hidden').val()+'/'+$('#form_type').val()+'');
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }
         achtungHideLoader();
       }
     }); 

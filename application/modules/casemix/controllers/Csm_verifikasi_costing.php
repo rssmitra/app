@@ -83,6 +83,29 @@ class Csm_verifikasi_costing extends MX_Controller {
         $this->load->view('Csm_verifikasi_costing/'.$view_name.'', $data);
     }
 
+    public function viewDetailDokumen($no_registrasi, $tipe)
+    {
+        $data = array();
+        $value = $this->db->get_where('csm_reg_pasien', array('no_registrasi' => $no_registrasi))->row();
+        $html = '';
+        $html .= '<div style="padding-left: 38px; padding: 10px">';
+        $html .= '<span style="padding-top: 10px; font-weight: bold; font-size: 14px">Log Dokumen</span>';
+        $html .= $this->upload_file->CsmgetUploadedFile($no_registrasi);
+        $html .= '<input type="hidden" id="tgl_masuk_'.$no_registrasi.'" value="'.$value->csm_rp_tgl_masuk.'">';
+        $html .= '<input type="hidden" id="tgl_keluar_'.$no_registrasi.'" value="'.$value->csm_rp_tgl_keluar.'">';
+        $html .= '<input type="hidden" id="csm_rp_no_sep_'.$no_registrasi.'" value="'.$value->csm_rp_no_sep.'">';
+        $html .= '<div class="center"><button onclick="updateDokumen('.$no_registrasi.', '."'".$tipe."'".')" type="button" name="submit" class="btn btn-sm btn-primary" value="update_dok_klaim">
+        <i class="ace-icon fa fa-files-o icon-on-right bigger-110"></i>
+        Update Dokumen Klaim
+      </button><a href="'.base_url().'/casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$tipe.'" target="_blank"  class="btn btn-sm btn-danger">
+      <i class="ace-icon fa fa-pdf-file icon-on-right bigger-110"></i>
+      Merge PDF Files
+    </a></div>';
+        $html .= '</div>';
+        //echo '<pre>';print_r($data);die;
+        echo json_encode(array('html' => $html));
+    }
+
     public function get_data()
     {
         /*get data from model*/
@@ -92,12 +115,9 @@ class Csm_verifikasi_costing extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                      </div>';
+            $row[] = '<div class="center"></div>';
+            $row[] = $row_list->no_registrasi;
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/Csm_verifikasi_costing/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')">'.$row_list->no_registrasi.'</a></div>';
             $row[] = $row_list->csm_rp_no_sep;
             $row[] = $row_list->csm_rp_no_mr;
@@ -105,8 +125,7 @@ class Csm_verifikasi_costing extends MX_Controller {
             $row[] = strtoupper($row_list->csm_rp_bagian);
             $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
             $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
-
-            $row[] = '<div class="center">'.$row_list->csm_rp_tipe.'</div>';
+            $row[] = $row_list->csm_rp_tipe;
             $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
             $row[] = $this->tanggal->formatDate($row_list->created_date).'<br>by : '.$row_list->created_by;
             $data[] = $row;

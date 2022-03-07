@@ -62,19 +62,58 @@ $(document).ready(function() {
           "url": base_url,
           "type": "POST"
       },
+      "columnDefs": [
+          { 
+            "targets": [ 0 ], 
+            "orderable": false,
+          },
+          {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
+          { "visible": false, "targets": [1] },
+        ],
 
     });
     
 
+    $('#dynamic-table tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = oTable.row( tr );
+            var data = oTable.row( $(this).parents('tr') ).data();
+            var no_registrasi = data[ 1 ];
+            var tipe = data[ 10 ];
+            
+
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                /*data*/
+               
+                $.getJSON("casemix/Csm_verifikasi_costing/viewDetailDokumen/" + no_registrasi+"/"+tipe+"", '', function (data) {
+                    response_data = data;
+                     // Open this row
+                    row.child( format( response_data ) ).show();
+                    tr.addClass('shown');
+                });
+               
+            }
+    } );
+
     $('#dynamic-table tbody').on( 'click', 'tr', function () {
         if ( $(this).hasClass('selected') ) {
+            //achtungShowLoader();
             $(this).removeClass('selected');
+            //achtungHideLoader();
         }
         else {
+            //achtungShowLoader();
             oTable.$('tr.selected').removeClass('selected');
             $(this).addClass('selected');
+            //achtungHideLoader();
         }
     } );
+
       
     $("#button_delete").click(function(event){
           event.preventDefault();
@@ -89,19 +128,19 @@ $(document).ready(function() {
         
           e.preventDefault();
           $.ajax({
-          url: $('#form_search').attr('action'),
-          type: "post",
-          data: $('#form_search').serialize(),
-          dataType: "json",
-          beforeSend: function() {
-            achtungShowLoader();  
-          },
-          success: function(data) {
-            achtungHideLoader();
-            find_data_reload(data,base_url);
-          }
-        });
-      });
+            url: $('#form_search').attr('action'),
+            type: "post",
+            data: $('#form_search').serialize(),
+            dataType: "json",
+            beforeSend: function() {
+              achtungShowLoader();  
+            },
+            success: function(data) {
+              achtungHideLoader();
+              find_data_reload(data,base_url);
+            }
+          });
+    });
 
     $('#btn_reset_data').click(function (e) {
             e.preventDefault();
@@ -110,6 +149,33 @@ $(document).ready(function() {
 
 
 });
+
+
+function updateDokumen(no_registrasi, type){
+  $.ajax({
+    url: 'casemix/Csm_billing_pasien/process',
+    type: "post",
+    data: {no_registrasi_hidden: no_registrasi, submit: 'update_dok_klaim', form_type: type, csm_rp_no_sep: $('#csm_rp_no_sep_'+no_registrasi+'').val(), csm_rp_tgl_masuk: $('#tgl_masuk_'+no_registrasi+'').val(), csm_rp_tgl_keluar: $('#tgl_keluar_'+no_registrasi+'').val()},
+    dataType: "json",
+    beforeSend: function() {
+      achtungShowLoader();  
+    },
+    complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+
+        if(jsonResponse.status === 200){
+          $.achtung({message: jsonResponse.message, timeout:5});
+          window.open('casemix/Csm_billing_pasien/mergePDFFiles/'+jsonResponse.no_registrasi+'/'+jsonResponse.type+'', '_blank');
+          reset_table();
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }
+        achtungHideLoader();
+    }
+
+  });
+}
 
 function find_data_reload(result, base_url){
   
@@ -127,6 +193,10 @@ function reset_table(){
 
 function reload_table(){
    oTable.ajax.reload(); //reload datatable ajax 
+}
+
+function format ( data ) {
+    return data.html;
 }
   
 
@@ -174,7 +244,7 @@ function reload_table(){
           <div class="col-md-10">
             <div class="radio">
               <label>
-                <input name="search_by_field" type="radio" class="ace" value="csm_dokumen_klaim.created_date" checked>
+                <input name="search_by_field" type="radio" class="ace" value="csm_reg_pasien.created_date" checked>
                 <span class="lbl"> Tanggal Costing</span>
               </label>
 
@@ -285,7 +355,9 @@ function reload_table(){
       <table id="dynamic-table" base-url="casemix/Csm_verifikasi_costing/get_data?flag=" class="table table-bordered table-hover">
         <thead>
           <tr>  
-            <th width="30px" class="center"></th>
+            <th width="50px"></th>
+            <th class="center"></th>
+            <th width="50px" class="center">No</th>
             <th width="70px">No. Reg</th>
             <th width="80px">No. SEP</th>
             <th width="70px">No. MR</th>
