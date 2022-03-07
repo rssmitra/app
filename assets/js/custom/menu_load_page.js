@@ -91,7 +91,7 @@ function getMenuTabsHtml(link, tabs_id)
 function delete_attachment_csm(myid){
     if(confirm('Are you sure?')){
       $('#tr_id_'+myid+'').hide();
-      
+      preventDefault();
       $.ajax({
           url: 'Templates/Attachment/delete_attachment_csm',
           type: "post",
@@ -108,7 +108,7 @@ function delete_attachment_csm(myid){
             if(jsonResponse.status === 200){
               $.achtung({message: jsonResponse.message, timeout:5});
               $('#attc_table_id tbody tr #'+myid+'').hide();
-              reload_table();
+              // reload_table();
             }else{
               $.achtung({message: jsonResponse.message, timeout:5});
             }
