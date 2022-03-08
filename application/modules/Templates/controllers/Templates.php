@@ -678,12 +678,12 @@ class Templates extends MX_Controller {
     public function TemplateResumeMedis($no_registrasi, $tipe, $data){
         /*html data untuk tampilan*/    
         $this->load->model('registration/Reg_pasien_model','Reg_pasien');
-        // get riwayat pasien
-        $riwayat_pasien = $this->db->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
-        
+        // get kunjungan
         $result = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+        // get riwayat pasien
+        $no_kunjungan = $result->no_kunjungan;
+        $riwayat_pasien = $this->db->order_by('kode_riwayat', 'DESC')->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
         
-
         $userDob = $result['registrasi']->tgl_lhr;
  
         //Create a DateTime object using the user's date of birth.
@@ -697,6 +697,7 @@ class Templates extends MX_Controller {
 
         //Get the difference in years, as we are looking for the user's age.
         $umur = $difference->format('%y');
+
         $html = '';
         $html .= '<center><h2>RESUME MEDIS PASIEN</h2></center>';
         $html .= '<table align="left" cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px;">';

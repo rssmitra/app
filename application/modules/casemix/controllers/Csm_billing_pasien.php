@@ -313,7 +313,7 @@ class Csm_billing_pasien extends MX_Controller {
         /*header html*/
         /*get detail data billing*/
         $data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        
+        // echo '<pre>'; print_r($data);die;
         $html = '';
 
        switch ($flag) {
