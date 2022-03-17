@@ -157,7 +157,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
                     </div>';
             
             $link_image = ( $row_list->pas_foto != NULL ) ? PATH_PHOTO_PEGAWAI.$row_list->pas_foto : PATH_ASSETS_IMG.'avatar.png' ;
-            $jk = ($row_list->jk == 'P')?'Perempuan':'Laki-laki';
+            $jk = ($row_list->jk == 'P' || $row_list->jk == 2 )?'Perempuan':'Laki-laki';
             $status_kepegawaian = ($row_list->kepeg_status_kerja == '211')?'Karyawan Tetap':'Karyawan KKWT';
             $row[] = '<div class="center"><a href="'.base_url().$link_image.'" target="_blank"><img src="'.base_url().$link_image.'" width="80px"></a><br> <b>'.$row_list->kepeg_nip.'</b></div>';
             $row[] = $row_list->kepeg_nik.'<br>'.$row_list->nama_pegawai.'<br>'.$jk;
