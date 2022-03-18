@@ -64,7 +64,7 @@
 			<br>
 			<table style="margin-top: 10px;" width="95%" cellspacing="0" cellpadding="2" align="center"> 
 				<tr> 			
-					<td valign="middle" colspan="3" style="font-weight: bolder; font-size:13px;">
+					<td valign="middle" colspan="3" style="font-family:'Segoe UI Black', Tahoma, Geneva, Verdana, sans-serif ;font-weight: bolder; font-size:13px;">
           Pembayaran mohon ditransfer melalui <br>
           BANK MANDIRI <br>
           NO REK : 1270097000275 <br>
