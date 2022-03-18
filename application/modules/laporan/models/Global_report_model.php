@@ -325,17 +325,18 @@ class Global_report_model extends CI_Model {
 
 	public function get_saldo_awal(){
 		$month = isset($_POST['from_month'])?$_POST['from_month']: $_GET['month'];
+		$last_month = ( ($month - 1) == 0 ) ? 12 : ($month - 1);
 		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
+		$last_year = ( ($month - 1) == 0 ) ? $year -1 : $year;
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 		$this->db->select('tc_kartu_stok.kode_brg, nama_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, tc_kartu_stok.kode_bagian, keterangan, petugas, id_kartu, nama_bagian');
 		$this->db->from('tc_kartu_stok');
 		$this->db->join('mt_barang','mt_barang.kode_brg=tc_kartu_stok.kode_brg','left');
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian = tc_kartu_stok.kode_bagian','left');
-		$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where MONTH(tgl_input) < '."'".$month."'".' and YEAR(tgl_input) = '."'".$year."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
+		$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where MONTH(tgl_input) <= '."'".$last_month."'".' and YEAR(tgl_input) = '."'".$last_year."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
 		$this->db->where('nama_brg is not null');
 		$this->db->where('stok_akhir > 0');
 		$this->db->where('tc_kartu_stok.kode_bagian', $bagian);
-		$this->db->where('mt_bagian.status_aktif', 1);
 		return $this->db->get()->result_array();
 	}
 
@@ -346,7 +347,7 @@ class Global_report_model extends CI_Model {
 		$this->db->from('tc_kartu_stok');
 		$this->db->join('mt_barang','mt_barang.kode_brg=tc_kartu_stok.kode_brg','left');
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian = tc_kartu_stok.kode_bagian','left');
-		$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where MONTH(tgl_input) < '."'".$month."'".' and YEAR(tgl_input) = '."'".$year."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
+		$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where MONTH(tgl_input) <= '."'".$month."'".' and YEAR(tgl_input) = '."'".$year."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
 		$this->db->where('nama_brg is not null');
 		$this->db->where('stok_akhir > 0');
 		$this->db->where('mt_bagian.status_aktif', 1);

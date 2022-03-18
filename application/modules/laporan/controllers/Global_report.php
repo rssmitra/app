@@ -75,10 +75,10 @@ class Global_report extends MX_Controller {
         // echo '<pre>';print_r($_POST);die;
         $query_data = $this->Global_report->get_data();
         $g_saldo = $this->Global_report->get_saldo_awal();
+        // echo '<pre>';print_r($this->db->last_query());die;
         $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
         $penjualan = $this->Global_report->penjualan_obat();
         $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
-        // echo '<pre>';print_r($g_saldo);die;
         // get saldo
         foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
             $get_dt_g_saldo[trim($v_g_saldo['kode_brg'])] = (int)$v_g_saldo['stok_akhir'];

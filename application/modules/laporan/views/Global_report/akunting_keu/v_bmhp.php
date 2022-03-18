@@ -8,6 +8,10 @@
     header("Cache-Control: private",false);
   }
 
+  // array_multisort(array_map(function($element) {
+  //   return $element->harga_beli;
+  // }, $result['data']), SORT_DESC, $result['data']);
+
 ?>
 
 <html>
@@ -17,42 +21,40 @@
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/blue.css"/>
 </head>
 <body>
-  <div class="row">
+  <div class="row" style="padding-left: 5px; padding-right: 5px">
     <div class="col-xs-12">
 
-      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir <br>Bulan <?php echo $this->tanggal->getBulan($month)?> Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center>
+      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir <br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $_GET['year']?> <br>Unit/Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center>
 
       <br>
 
-      <table class="table table-bordered">
+      <table class="table table-bordered" >
         <thead>
           <tr style="text-align: center">
             <th rowspan="2">No</th>
             <th rowspan="2" width="105">Kode Barang<br/></th>
             <th rowspan="2" width="95">Nama Barang</th>
             <th rowspan="2" width="304">HPP Satuan</th>
-            <th width="304" colspan="2">Saldo Awal <?php echo $this->tanggal->getBulan($month)?></th>
-            <th width="304" colspan="2">Penerimaan/Pembelian</th>
-            <th width="304" colspan="2">Penjualan BPJS</th>
-            <th width="304" colspan="2">Penjualan Umum</th>
-            <th width="304" colspan="2">Penggunaan Internal</th>
-            <th width="304" colspan="2">Saldo Akhir</th>
-            <th width="304" rowspan="2">Quantity</th>
-            <th width="304" rowspan="2">Keterangan</th>
+            <th width="304" style="text-align: center" colspan="2">Saldo Awal <?php echo $this->tanggal->getBulan($month)?></th>
+            <th width="304" style="text-align: center" colspan="2">Penerimaan/Pembelian</th>
+            <th width="304" style="text-align: center" colspan="2">Penjualan BPJS</th>
+            <th width="304" style="text-align: center" colspan="2">Penjualan Umum</th>
+            <th width="304" style="text-align: center" colspan="2">Penggunaan Internal</th>
+            <th width="304" style="text-align: center" colspan="2">Saldo Akhir</th>
           </tr>
           <tr>
-            <th width="304">Quantity</th>
-            <th width="304">Jumlah</th>
-            <th width="304">Quantity</th>
-            <th width="304">Jumlah</th>
-            <th width="304">Quantity</th>
-            <th width="304">Jumlah</th>
-            <th width="304">Quantity</th>
-            <th width="304">Jumlah</th>
-            <th width="304">Quantity</th>
-            <th width="304">Jumlah</th>
-            <th width="304">Quantity</th>
-            <th width="304">Jumlah</th>
+            <th width="304" style="text-align: center">Quantity</th>
+            <th width="304" style="text-align: center">Jumlah</th>
+            <th width="304" style="text-align: center">Quantity</th>
+            <th width="304" style="text-align: center">Jumlah</th>
+            <th width="304" style="text-align: center">Quantity</th>
+            <th width="304" style="text-align: center">Jumlah</th>
+            <th width="304" style="text-align: center">Quantity</th>
+            <th width="304" style="text-align: center">Jumlah</th>
+            <th width="304" style="text-align: center">Quantity</th>
+            <th width="304" style="text-align: center">Jumlah</th>
+            <th width="304" style="text-align: center">Quantity</th>
+            <th width="304" style="text-align: center">Jumlah</th>
           </tr>
         </thead>
         <tbody>
@@ -65,6 +67,7 @@
             $jmldistribusi=0;
             $jmlakhir=0;
             $jmlsaldoakhir=0;
+
           foreach($result['data'] as $row_data){
             $no++; 
             $kode_brg = trim($row_data->kode_brg);
@@ -118,47 +121,70 @@
               <?php 
                 echo '<td>'.$kode_brg.'</td>';
                 echo '<td>'.$row_data->nama_brg.'</td>';
-                echo '<td>'.$row_data->harga_beli.'</td>';
+                $txt_harga_beli = ($submit == 'excel')?$row_data->harga_beli:number_format($row_data->harga_beli);
+                echo '<td style="text-align: right">'.$txt_harga_beli.'</td>';
                 // saldo awal
                 echo '<td align="center">'.$qty_saldo_awal.'</td>';
-                echo '<td align="right">'.$rp_saldo_awal.'</td>';
+                $txt_rp_saldo_awal = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                echo '<td align="right">'.$txt_rp_saldo_awal.'</td>';
                 // penerimaan
                 echo '<td align="center">'.$qty_penerimaan.'</td>';
-                echo '<td align="right">'.$rp_penerimaan.'</td>';
+                $txt_rp_penerimaan = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                echo '<td align="right">'.$txt_rp_penerimaan.'</td>';
                 // penjualan bpjs
                 echo '<td align="center">'.$qty_penjualan_bpjs.'</td>';
-                echo '<td align="right">'.$rp_penjualan_bpjs.'</td>';
+                $txt_rp_penjualan_bpjs = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                echo '<td align="right">'.$txt_rp_penjualan_bpjs.'</td>';
                 // penjualan umum
                 echo '<td align="center">'.$qty_penjualan.'</td>';
-                echo '<td align="right">'.$rp_penjualan.'</td>';
+                $txt_rp_penjualan = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                echo '<td align="right">'.$txt_rp_penjualan.'</td>';
                 // bmhp
                 echo '<td align="center">'.$qty_bmhp.'</td>';
-                echo '<td align="right">'.$rp_bmhp.'</td>';
+                $txt_rp_bmhp = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                echo '<td align="right">'.$txt_rp_bmhp.'</td>';
 
                 echo '<td align="center">'.$qty_saldo_akhir.'</td>';
-                echo '<td align="right">'.$rp_saldo_akhir.'</td>';
+                $txt_rp_saldo_akhir = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                echo '<td align="right"><b>'.$txt_rp_saldo_akhir.'</b></td>';
 
-                echo '<td></td>';
-                echo '<td></td>';
               ?>
             </tr>
           <?php } 
           // echo '<pre>'; print_r($arr_rp_saldo_awal);die;
           ?>
-            <tr>
-              <td colspan="4"><b>TOTAL </b></td>
+            <tr style="font-weight: bold">
+              <td colspan="4" style="text-align: right"><b>TOTAL </b></td>
               <td></td>
-              <td><?php echo array_sum($arr_rp_saldo_awal);?></td> 
+              <td style="text-align: right">
+                <?php 
+                    $txt_arr_rp_saldo_awal = array_sum($arr_rp_saldo_awal); 
+                    echo ($submit == 'excel') ? $txt_arr_rp_saldo_awal : number_format($txt_arr_rp_saldo_awal);?></td> 
               <td></td>
-              <td><?php echo array_sum($arr_rp_penerimaan);?></td> 
+              <td style="text-align: right">
+                <?php 
+                    $txt_arr_rp_penerimaan = array_sum($arr_rp_penerimaan); 
+                    echo ($submit == 'excel') ? $txt_arr_rp_penerimaan : number_format($txt_arr_rp_penerimaan);?></td> 
               <td></td>
-              <td><?php echo array_sum($arr_rp_penjualan_bpjs);?></td> 
+              <td style="text-align: right">
+                <?php 
+                    $txt_arr_rp_penjualan_bpjs = array_sum($arr_rp_penjualan_bpjs); 
+                    echo ($submit == 'excel') ? $txt_arr_rp_penjualan_bpjs : number_format($txt_arr_rp_penjualan_bpjs);?></td> 
               <td></td>
-              <td><?php echo array_sum($arr_rp_penjualan);?></td> 
+              <td style="text-align: right">
+                <?php 
+                    $txt_arr_rp_penjualan = array_sum($arr_rp_penjualan); 
+                    echo ($submit == 'excel') ? $txt_arr_rp_penjualan : number_format($txt_arr_rp_penjualan);?></td> 
               <td></td>
-              <td><?php echo array_sum($arr_rp_bmhp);?></td> 
+              <td style="text-align: right">
+                <?php 
+                    $txt_arr_rp_bmhp = array_sum($arr_rp_bmhp); 
+                    echo ($submit == 'excel') ? $txt_arr_rp_bmhp : number_format($txt_arr_rp_bmhp);?></td> 
               <td></td>
-              <td><?php echo array_sum($arr_rp_saldo_akhir);?></td> 
+              <td style="text-align: right">
+                <?php 
+                    $txt_arr_rp_saldo_akhir = array_sum($arr_rp_saldo_akhir); 
+                    echo ($submit == 'excel') ? $txt_arr_rp_saldo_akhir : number_format($txt_arr_rp_saldo_akhir);?></td> 
             </tr>
         </tbody>
       </table>
