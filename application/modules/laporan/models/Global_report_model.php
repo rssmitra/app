@@ -429,24 +429,28 @@ class Global_report_model extends CI_Model {
 	// ================= PENGADAAN DAN LOGISTIK =================== //
     public function pengadaan_mod_12(){
 
+		$c_month = ($_POST['from_month'] > 0) ? "AND MONTH(c.tgl_input)= ".$_POST['from_month']."" : "";
+		$d_month = ($_POST['from_month'] > 0) ? "AND MONTH(d.tgl_input)= ".$_POST['from_month']."" : "";
+		$f_month = ($_POST['from_month'] > 0) ? "AND MONTH(f.tgl_input)= ".$_POST['from_month']."" : "";
+		$a_month = ($_POST['from_month'] > 0) ? "AND MONTH(a.tgl_input)= ".$_POST['from_month']."" : "";
+
 		$query = "select a.kode_brg, b.nama_brg, a.kode_bagian,
 					(select SUM(pengeluaran) from tc_kartu_stok c where c.jenis_transaksi in (14,16) AND 
 						(c.kode_brg=a.kode_brg AND c.kode_bagian=a.kode_bagian and c.kode_bagian='".$_POST['bagian']."' 
-						AND YEAR(c.tgl_input)=".$_POST['year']." AND MONTH(c.tgl_input)= ".$_POST['from_month'].")
+						AND YEAR(c.tgl_input)=".$_POST['year']." ".$c_month.")
 						group by kode_brg, kode_bagian ) as pengeluaran,
 					(select SUM(pemasukan) from tc_kartu_stok d where d.jenis_transaksi in (8,17) AND 
 						(d.kode_brg=a.kode_brg AND d.kode_bagian=a.kode_bagian and d.kode_bagian='".$_POST['bagian']."' 
-						AND YEAR(d.tgl_input)=".$_POST['year']." AND MONTH(d.tgl_input)= ".$_POST['from_month'].")
+						AND YEAR(d.tgl_input)=".$_POST['year']." ".$d_month.")
 						group by kode_brg, kode_bagian ) as retur, 
 					(select stok_akhir from tc_kartu_stok g where g.id_kartu in (
 						select MAX(id_kartu) from tc_kartu_stok f 
-						where f.kode_bagian='".$_POST['bagian']."' AND YEAR(f.tgl_input)=".$_POST['year']." AND MONTH(f.tgl_input)=".$_POST['from_month']." 
+						where f.kode_bagian='".$_POST['bagian']."' AND YEAR(f.tgl_input)=".$_POST['year']." ".$f_month."
 						group by f.kode_brg, f.kode_bagian) 
 						AND (g.kode_brg=a.kode_brg AND g.kode_bagian=a.kode_bagian)) as stok_akhir
-
 				from tc_kartu_stok a 
 				left join mt_barang b on b.kode_brg=a.kode_brg
-				where a.kode_bagian='".$_POST['bagian']."' AND YEAR(a.tgl_input)=".$_POST['year']." AND MONTH(a.tgl_input)= ".$_POST['from_month']."
+				where a.kode_bagian='".$_POST['bagian']."' AND YEAR(a.tgl_input)=".$_POST['year']." ".$a_month."
 				GROUP BY b.nama_brg, a.kode_brg, a.kode_bagian order by b.nama_brg ASC";
 		// echo $query; exit;
 		return $query;
