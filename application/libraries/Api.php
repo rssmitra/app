@@ -259,7 +259,7 @@ final Class Api {
             // execute!
             $response = curl_exec($ch);
             // close the connection, release resources used
-            echo '<pre>';print_r($response);exit;
+            // echo '<pre>';print_r($response);exit;
 
             curl_close($ch);
 

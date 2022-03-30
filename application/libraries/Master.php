@@ -104,7 +104,7 @@ final Class Master {
 		$field='';
 		$field.=$fieldset.'
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
-			<option value="0" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="0" '.$selected.'> - Pilih - </option>';
 
 				foreach($data as $row){
 					$sel = $nid==$row['key']?'selected':'';
@@ -164,7 +164,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>
-			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="" '.$selected.'> - Pilih - </option>';
 				$field_id = ($custom['id']==$custom['name']) ? 'ID' : $custom['id'] ;
 				foreach($data as $row){
 					$sel = trim($nid) == trim($row[$field_id])?'selected':'';
@@ -217,7 +217,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>
-			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="" '.$selected.'> - Pilih - </option>';
 
 				foreach($data as $row){
 					$sel = $nid==$row[$custom['id']]?'selected':'';
@@ -265,7 +265,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
-			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="" '.$selected.'> - Pilih - </option>';
 
 				foreach($data as $row){
 					$sel = $nid==$row[$custom['id']]?'selected':'';
@@ -308,7 +308,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
-			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="" '.$selected.'> - Pilih - </option>';
 
 				foreach($data as $row){
 					$sel = $nid==$row[$custom['id']]?'selected':'';
@@ -348,7 +348,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
-			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="" '.$selected.'> - Pilih - </option>';
 
 				foreach($data as $row){
 					$sel = $nid==$row[$custom['id']]?'selected':'';
@@ -385,7 +385,7 @@ final Class Master {
         $field='';
         $field.=$fieldset.'
         <select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
-            <option value="0" '.$selected.'> - Silahkan pilih - </option>';
+            <option value="0" '.$selected.'> - Pilih - </option>';
                 foreach($data as $row){
                     $sel = $nid==$row[$params['id']]?'selected':'';
                     $field.='<option value="'.$row[$params['id']].'" '.$sel.' >'.strtoupper($row[$params['name']]).'</option>';
@@ -1055,7 +1055,7 @@ final Class Master {
 		$field='';
 		$field.='
 		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>
-			<option value="" '.$selected.'> - Silahkan pilih - </option>';
+			<option value="" '.$selected.'> - Pilih - </option>';
 				$field_id = ($custom['id']==$custom['name']) ? 'ID' : $custom['id'] ;
 				foreach($data as $row){
 					$sel = trim($nid) == trim($row[$field_id])?'selected':'';

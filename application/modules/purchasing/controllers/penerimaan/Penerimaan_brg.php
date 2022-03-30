@@ -259,8 +259,8 @@ class Penerimaan_brg extends MX_Controller {
                     
                     // ============= update mt_rekap_stok
                     // harga satuan kecil
-                    $harga_satuan_kecil = $_POST['harga_satuan'][$rows] / $_POST['rasio'][$rows]; 
-                    $harga_satuan_kecil_netto = $_POST['harga_satuan_netto'][$rows] / $_POST['rasio'][$rows]; 
+                    // $harga_satuan_kecil = $_POST['harga_satuan'][$rows] / $_POST['rasio'][$rows]; 
+                    // $harga_satuan_kecil_netto = $_POST['harga_satuan_netto'][$rows] / $_POST['rasio'][$rows]; 
                     
                     // ============= insert penerimaan barang detail
                     $config = array(

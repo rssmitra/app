@@ -27,7 +27,8 @@ class Pl_pelayanan extends MX_Controller {
         $this->output->enable_profiler(false);
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
-
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
     }
 
     public function index() { 
@@ -1533,6 +1534,12 @@ class Pl_pelayanan extends MX_Controller {
             $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
             $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );
 
+            // generate dokumen resume
+            if($_POST['kode_perusahaan'] == 120){
+                $filename = 'RESUME-'.$_POST['no_mr'].'-'.$_POST['no_registrasi'].'-'.date('dmY').'';;
+                $this->cbpModule->generateSingleDoc($filename);
+            }
+
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -1932,6 +1939,8 @@ class Pl_pelayanan extends MX_Controller {
         $data['kode_dokter'] = $_GET['kode_dokter'];
         $data['kode_perusahaan'] = $_GET['kode_perusahaan'];
 
+        // echo '<pre>'; print_r($data);
+        
         $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
         
         // $data['booking_id'] = $booking_id;

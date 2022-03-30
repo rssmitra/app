@@ -256,7 +256,11 @@ class References extends MX_Controller {
 		/*check current date*/
 		$selected_date = strtotime($date);
 		/*get status date*/
-		$status = ($date == date('Y-m-d')) ? 'success' : ($selected_date < strtotime(date('Y-m-d')) ) ? 'expired' : 'success' ;
+		if($date ==  date('Y-m-d')){
+			$status = 'success';
+		}else{
+			$status = ($selected_date < strtotime(date('Y-m-d')) ) ? 'expired' : 'success' ;
+		}
 		/*get master jadwal*/
 		$jadwal = $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
 		$kuota_dr = $jadwal->jd_kuota;
@@ -275,8 +279,9 @@ class References extends MX_Controller {
 		// echo '<pre>'; print_r($terisi);die;
 		/*sisa kuota*/
 		$kuota = $kuota_dr - $terisi;
+		$return_data = array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota);
 
-		echo json_encode(array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota) );
+		echo json_encode($return_data);
 	}
 
 	public function getProvince()
@@ -974,7 +979,21 @@ class References extends MX_Controller {
 		$result = $this->db->query($query)->result();
 		$arrResult = [];
 		foreach ($result as $key => $value) {
-			$arrResult[] = $value->kode_bagian.' : '.$value->nama_bagian;
+			$arrResult[] = $value->kode_bagian.' : '.strtoupper($value->nama_bagian);
+		}
+		echo json_encode($arrResult);
+		
+	}
+
+	public function getSpesialis()
+	{
+        $query = "select a.kode_bagian, a.nama_bagian
+					from mt_bagian a
+					where a.validasi=100 AND a.nama_bagian LIKE '%".$_POST['keyword']."%' order by nama_bagian asc";
+		$result = $this->db->query($query)->result();
+		$arrResult = [];
+		foreach ($result as $key => $value) {
+			$arrResult[] = $value->kode_bagian.' : '.strtoupper($value->nama_bagian);
 		}
 		echo json_encode($arrResult);
 		
@@ -2044,7 +2063,7 @@ class References extends MX_Controller {
 		$this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
 
 		$kode = isset($_POST['kode'])?$_POST['kode']:$_GET['kode'];
-		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, input_tgl, kode_perjanjian, is_bridging, kode_dokter_bpjs, id_tc_pesanan, no_poli, tc_pesanan.kode_dokter');
+		$this->db->select('no_mr, nama, jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, input_tgl, kode_perjanjian, is_bridging, kode_dokter_bpjs, id_tc_pesanan, no_poli, tc_pesanan.kode_dokter, tgl_masuk');
 		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr AND kode_perusahaan=120 order by no_registrasi DESC) as no_sep');
 		$this->db->from('tc_pesanan');
 		$this->db->where("(unique_code_counter LIKE '%".$kode."' OR kode_perjanjian LIKE '".$kode."%') ");
@@ -2059,6 +2078,7 @@ class References extends MX_Controller {
 			// get data rencana kontrol
 			$dt = $exc->row();
 
+			
 			// find no rujukan by sep
 			$result = $this->Ws_index->check_surat_kontrol_by_sep($dt->no_sep);
         	$response = isset($result['response']) ? $result : false;
@@ -2069,6 +2089,9 @@ class References extends MX_Controller {
 				}
 			}
 			
+			// cek registrasi by date
+			$cek_register = $this->db->where("CAST(tgl_jam_masuk as DATE) = '".$dt->jam_pesanan."'")->get_where('tc_registrasi', array('no_mr' => $dt->no_mr) )->row();
+
 			$result = array(
 				'id_tc_pesanan' => $dt->id_tc_pesanan,
 				'no_sep_lama' => $dt->no_sep,
@@ -2082,6 +2105,8 @@ class References extends MX_Controller {
 				'kode_poli_bpjs' => $dt->kode_poli_bpjs,
 				'kode_dokter_bpjs' => $dt->kode_dokter_bpjs,
 				'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
+				'tgl_masuk' => $this->tanggal->formatDatedmY(isset($cek_register->tgl_jam_masuk)?$cek_register->tgl_jam_masuk:null),
+				'tgl_kunjungan_mdy' => $this->tanggal->formatDateForm($dt->jam_pesanan),
 				'tgl_rencana_kontrol' => $this->tanggal->formatDateTimeToSqlDate($dt->jam_pesanan),
 				'nama_dr' => strtoupper($dt->nama_dr),
 				'poli' => strtoupper($dt->nama_bagian),
@@ -2121,6 +2146,26 @@ class References extends MX_Controller {
 		}
 		
 	}
+
+	public function search_pasien() { 
+        
+		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+        /*define variable data*/
+        $keyword = $this->input->get('keyword');
+        /*return search pasien*/
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs') ); 
+        // echo '<pre>'; print_r($data_pasien);die;
+        $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
+        $data_transaksi_pending = $this->Reg_pasien->cek_status_pasien( $no_mr );
+        $data = array(
+            'count' => count($data_pasien),
+            'result' => $data_pasien,
+            'count_pending' => count($data_transaksi_pending),
+            'pending' => $data_transaksi_pending,
+        );
+        echo json_encode( $data );
+    }
+
 	
 	public function getRefPm($kode_bagian){
 		$penunjang = $this->db->get_where('mt_bagian', array('kode_bagian' => $kode_bagian) )->row();
