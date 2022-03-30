@@ -141,7 +141,7 @@ class Reg_klinik extends MX_Controller {
 
         /*return search pasien*/
 
-        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs') ); 
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr','nama_pasien','no_ktp') ); 
         // echo '<pre>'; print_r($data_pasien);die;
 
         $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
