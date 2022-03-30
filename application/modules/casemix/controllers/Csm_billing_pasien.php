@@ -546,6 +546,40 @@ EOD;
         echo json_encode( array('status' => 200) );
     }
 
+    public function generateSingleDoc($filename_doc)
+    {
+        // echo '<pre>';print_r($_POST);die;
+        # code...
+        $explode = explode('-', $filename_doc);
+        /*explode result*/
+        $named = str_replace('BILL','',$explode[0]);
+        $no_mr = $explode[1];
+        $exp_no_registrasi = $explode[2];
+        $unique_code = $explode[3];
+
+        /*create and save download file pdf*/
+        if( $this->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F') ) :
+            /*save document to database*/
+            /*csm_reg_pasien*/
+            $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+            
+            $doc_save = array(
+                'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+                'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+                'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+                'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+            );
+            
+            $doc_save['created_date'] = date('Y-m-d H:i:s');
+            $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+            /*check if exist*/
+            if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+                $this->db->insert('csm_dokumen_export', $doc_save);
+            }
+        endif;
+         
+    }
+
 }
 /* End of file example.php */
 /* Location: ./application/functiones/example/controllers/example.php */
