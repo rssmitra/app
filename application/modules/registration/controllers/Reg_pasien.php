@@ -907,7 +907,7 @@ class Reg_pasien extends MX_Controller {
             $kode_faskes = '0112R034';
             /*get_unique_code*/
             $string = $kode_faskes.$this->input->post('nama_pasien').$this->input->post('no_mr');
-            $unique_code_max = $this->master->generateRandomString($string, 6);
+            $unique_code_max = date('my').$this->master->generateRandomString($string, 6);
 
             $ket_rujukan_internal = isset($_POST['jenis_perjanjian']) ? ($_POST['jenis_perjanjian'] == 1) ? 'Rujukan Internal - ' : '' : '';
             $dataexc = array(
@@ -955,7 +955,7 @@ class Reg_pasien extends MX_Controller {
              }
             //  print_r($dataexc);die;
              if($id==0){
-                $kode_perjanjian = ($ex_no_surat_kontrol != 0) ? $ex_no_surat_kontrol : $kode_faskes.date('my').$unique_code_max;
+                $kode_perjanjian = ($ex_no_surat_kontrol != 0) ? $ex_no_surat_kontrol : $kode_faskes.$unique_code_max;
                 $dataexc['kode_perjanjian'] = $kode_perjanjian;
                 /*save post data*/
                 $newId = $this->Perjanjian->save($dataexc);
