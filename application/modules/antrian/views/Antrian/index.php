@@ -29,8 +29,6 @@
 
 	<!-- stylesheets css -->
 	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_/animate.min.css" />
-
-
   	<link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_/vegas.min.css" />
 
 	<!-- keyboar on screen -->
@@ -166,8 +164,6 @@
 </head>
 <body id="body-antrian">
 
-
-
 <!-- home section -->
 <section id="home">
 
@@ -175,8 +171,8 @@
 
 	<div class="col-xs-6">
 		<img alt="" src="<?php echo COMP_ICON?>" width="60" style="margin:5px 20px;float:left">
-			<h3 id="id_header" style="margin:0;text-align:left;font-size:30px;color:#333"><?php echo COMP_LONG?></h3>
-			<p style="font-family: Helvetica;margin:0;text-align:left"><b><?php echo COMP_ADDRESS?></b></p>
+		<h3 id="id_header" style="margin:0;text-align:left;font-size:30px;color:#333"><?php echo COMP_LONG?></h3>
+		<p style="font-family: Helvetica;margin:0;text-align:left"><b><?php echo COMP_ADDRESS?></b></p>
 	</div>
 
 	<div class="col-xs-6" id="myButtonType" style="left:16%">

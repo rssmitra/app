@@ -40,7 +40,7 @@
 
         if(response.status==200){
           // show success
-          $('#konfirmasi_kunjungan').html('<div class="center" style="padding-top: 20px"><span style="font-size: 36px; font-weight: bold; color: green"><i class="fa fa-check-circle green bigger-250"></i><br>PENDAFTARAN BERHASIL DILAKUKAN!</span><br><span style="font-size: 20px">Silahkan menunggu diruang tunggu pelayanan untuk dipanggil.</span></div><br><div class="center"><a href="#" class="btn btn-lg" style="background : green !important; border-color: green;" onclick="getMenu('+"'kiosk/Kiosk/umum_asuransi'"+')"> <i class="fa fa-arrow-left"></i> Kembali ke Menu Sebelumnya</a> <a href="#" class="btn btn-lg" style="background : green !important; border-color: green"><i class="fa fa-print"></i> Cetak Ulang Bukti Pendaftaran</a></div>');
+          $('#konfirmasi_kunjungan').html('<div class="center" style="padding-top: 20px"><span style="font-size: 36px; font-weight: bold; color: green"><i class="fa fa-check-circle green bigger-250"></i><br>PENDAFTARAN BERHASIL DILAKUKAN!</span><br><span style="font-size: 20px">Silahkan menunggu diruang tunggu pelayanan untuk dipanggil.</span></div><br><div class="center"><a href="#" class="btn btn-lg" style="background : green !important; border-color: green;" onclick="getMenu('+"'kiosk/Kiosk/umum_asuransi'"+')"> <i class="fa fa-arrow-left"></i> Kembali ke Menu Sebelumnya</a> <a href="#" onclick="reprint('+"'kiosk/Kiosk/print_bukti_registrasi/"+response.no_registrasi+"/"+response.no_antrian+"/"+response.tipe+"'"+')" class="btn btn-lg" style="background : green !important; border-color: green"><i class="fa fa-print"></i> Cetak Ulang Bukti Pendaftaran</a></div>');
 
           // setTimeout(function () {
           //         location.reload();
@@ -89,7 +89,8 @@
                   <p style="align: justify; padding-top: 10px; min-height: 100px">Pendaftaran mandiri Pasien Umum Rawat Jalan tujuan ke Poli/Klinik/Spesialis.</p>
                 </div>
                 <div class="center">
-                  <a href="#" onclick="getMenu('kiosk/Kiosk/asum_mod_poli')" class="btn btn-lg" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
+                  <!-- <a href="#" onclick="getMenu('kiosk/Kiosk/asum_mod_poli')" class="btn btn-lg" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a> -->
+                  <a href="#" class="btn btn-lg" disabled style="background: grey !important; border-color: grey">On Progress</a>
                 </div>
               </div>
             </div>
@@ -187,6 +188,8 @@
   <!-- hidden -->
   <input type="hidden" name="pm_tujuan" value="" id="pm_tujuan">
   <input type="hidden" name="asal_pasien_pm" value="" id="asal_pasien_pm">
+  <input type="hidden" class="form-control" id="kode_kelompok_hidden" name="kode_kelompok_hidden" value="1">
+  <input type="hidden" name="kode_perusahaan_hidden" value="0" id="kode_perusahaan_hidden">
 
 </div>
 

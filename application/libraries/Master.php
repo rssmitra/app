@@ -454,7 +454,7 @@ final Class Master {
 		$db = $CI->load->database('default', TRUE);
 		$db->select_max('no_antrian');
 		$db->from('pm_tc_penunjang');
-		$db->where( "kode_bagian='".$kode_bagian."' and YEAR(tgl_daftar)=".date('Y')." and MONTH(tgl_daftar)=".date('m')." and DAY(tgl_daftar)=".date('d')."" );
+		$db->where( "kode_bagian='".$kode_bagian."' and CAST(tgl_daftar as DATE)='".date('Y-m-d')."' " );
 		$qry = $db->get()->row();
 		/*plus 1*/
 		$max_num = $qry->no_antrian + 1 ;

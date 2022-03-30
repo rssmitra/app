@@ -68,8 +68,8 @@
             <input type="hidden" class="form-control" value="" id="no_mr_val" name="no_mr" readonly>
             <input type="hidden" class="form-control" value="" id="nama_pasien" name="nama_pasien" readonly>
             <input type="hidden" class="form-control" value="" id="umur_saat_pelayanan_hidden" name="umur_saat_pelayanan_hidden">
-            <input type="hidden" class="form-control" id="kode_kelompok_hidden" name="kode_kelompok_hidden" value="1">
             <input type="hidden" class="form-control" id="jenis_pendaftaran" name="jenis_pendaftaran" value="1">
+            
 
 
             
@@ -251,6 +251,21 @@
               e.preventDefault();
           e.returnValue = false;  
         }
+
+        function reprint(link){
+        preventDefault();
+        $.ajax({
+            url: link,
+            dataType: "json",
+            data: {},
+            type: "POST",
+            success: function (response) {
+              // no action
+              console.log(response);
+            }
+        });
+      }
+
         
     </script>
 </body>

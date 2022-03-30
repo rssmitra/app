@@ -93,6 +93,8 @@ class Antrian extends MX_Controller {
     public function process()
     {
         # code...
+
+        // print_r($_POST);die;
         $data = $_POST['data'];
            
         $booking = $this->antrian_model->get_booked($data[1]);
@@ -135,6 +137,93 @@ class Antrian extends MX_Controller {
             }
         } else {
             echo json_encode(array('status' => 301, 'message' => 'Kode booking tidak valid'));
+        }
+
+    }
+
+    public function process_cek_kode_booking()
+    {
+        # code...
+
+        $data = $_POST['data'];
+        
+        $kode_dokter = $data[1];
+        $kode_poli = $data[3];
+        $kode_booking = $data[8];
+        
+        // cek kode perjanjian
+        $perjanjian = $this->antrian_model->cek_kode_perjanjian($kode_booking, $kode_dokter, $kode_poli);
+        if( $perjanjian->num_rows() == 0){
+            echo json_encode(array('status' => 301, 'message' => 'Data Perjanjian/Booking tidak ditemukan untuk hari ini!'));
+            exit;
+        }else{
+
+            $obj_data = $perjanjian->row();
+            // cek kode poli
+            if( $obj_data->no_poli != (int)$kode_poli ){
+                echo json_encode(array('status' => 301, 'message' => 'Poli yang anda pilih tidak sesuai dengan data perjanjian anda!'));
+                exit;
+            }
+
+            // cek kode dokter
+            if( $obj_data->kode_dokter != (int)$kode_dokter ){
+                echo json_encode(array('status' => 301, 'message' => 'Dokter yang anda pilih tidak sesuai dengan data perjanjian anda!'));
+                exit;
+            }
+
+            // cek tgl available
+            if( $obj_data->tgl_pesanan != date('Y-m-d') ){
+                echo json_encode(array('status' => 301, 'message' => 'Tanggal kontrol anda tidak sesuai!'));
+                exit;
+            }
+
+            $this->db->trans_begin();
+
+            
+            // prosess 
+            $no_ = $this->db->get_where('tr_antrian',array('ant_type' => 'bpjs'))->num_rows();
+            $no = $no_ + 1;
+    
+            $dataexc = array(
+                'ant_kode_spesialis' => $data[3],
+                'ant_kode_dokter' => $data[1],
+                'ant_status' => 0,
+                'ant_type' => $data[0],
+                'ant_date' => date('Y-m-d H:i:s'),
+                'ant_no' => $no,
+                'ant_panggil' => 0,
+                'log' => json_encode(array('dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6])),
+            );
+    
+            $datakuota = array(
+                'tanggal' => date('Y-m-d'),
+                'kode_dokter' => $dataexc['ant_kode_dokter'],
+                'kode_spesialis' => $dataexc['ant_kode_spesialis'], 
+                'flag' => 'mesin_antrian', 
+            );
+            // print_r($datakuota);die;
+            /*save antrian */
+            if($obj_data->status_konfirmasi_kedatangan != 1){
+                $this->loket->save('tr_antrian',$dataexc);
+                $this->loket->save('log_kuota_dokter',$datakuota);
+            }
+            
+            // udpate perjanjian
+            $this->db->where('unique_code_counter', $kode_booking)->update('tc_pesanan', array('status_konfirmasi_kedatangan' => 1));
+    
+            $this->print_direct->printer_antrian_php_kiosk($dataexc);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses berhasil dilakukan!', 'dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6],'type' => $data[0],'no' => $no));
+            }
+
         }
 
     }

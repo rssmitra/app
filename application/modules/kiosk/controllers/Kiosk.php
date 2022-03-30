@@ -372,8 +372,8 @@ class Kiosk extends MX_Controller {
         $this->form_validation->set_rules('no_mr', 'No MR Pasien', 'trim|required', array('required' => 'No MR Pasien tidak ditemukan') );
         $this->form_validation->set_rules('nama_pasien', 'Nama Pasien', 'trim');
         $this->form_validation->set_rules('kode_kelompok_hidden', 'Kode Kelompok', 'trim');
+        $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Kelompok', 'trim');
         $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
-
         $this->form_validation->set_rules('pm_tujuan', 'Penunjang Medis', 'trim|required');
 
         // set message error
@@ -392,13 +392,13 @@ class Kiosk extends MX_Controller {
             
             $title = 'Pendaftaran Penunjang Medis';
             $no_mr = $this->regex->_genRegex($this->form_validation->set_value('no_mr'),'RGXQSL');
-            $kode_perusahaan = $this->regex->_genRegex(null,'RGXINT');
+            $kode_perusahaan = $this->regex->_genRegex($this->form_validation->set_value('kode_perusahaan_hidden'),'RGXINT');
             $kode_kelompok =  $this->regex->_genRegex($this->form_validation->set_value('kode_kelompok_hidden'),'RGXINT');
             $kode_dokter = $this->regex->_genRegex(0,'RGXINT');
             $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
 
-            $tipe_pasien = 'umum';
+            $tipe_pasien = ($kode_perusahaan==120) ? 'bpjs' : 'umum';
 
             $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,'');
             $no_registrasi = $data_registrasi['no_registrasi'];
@@ -424,8 +424,6 @@ class Kiosk extends MX_Controller {
             /*save logs*/
             $this->logs->save('pm_tc_penunjang', $data_pm_tc_penunjang['kode_penunjang'], 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
 
-            
-            
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -435,12 +433,29 @@ class Kiosk extends MX_Controller {
             {
                 $this->db->trans_commit();
 
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $no_registrasi, 'type_pelayanan' => 'Penunjang Medis'));
+                // get detail data
+                $dt = $this->Reg_klinik->get_by_id($no_registrasi);
+                $this->print_bukti_registrasi($no_registrasi, $no_antrian, $tipe_pasien);
+
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $no_registrasi, 'no_antrian' => $no_antrian, 'tipe' => $tipe_pasien, 'type_pelayanan' => 'Penunjang Medis'));
+
+                
                 
             }
             
         }
 
+    }
+
+    function print_bukti_registrasi($no_registrasi, $no_antrian, $tipe_pasien){
+        $registrasi = $this->Reg_klinik->get_by_id($no_registrasi);
+        // echo '<pre>';print_r($registrasi);die;
+        $tracer = $this->print_escpos->print_bukti_registrasi($registrasi, $no_antrian, $tipe_pasien);
+        // echo '<pre>';print_r($tracer);die;
+        if( $tracer == 1 ) {
+            $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );        
+        }
+        return true;
     }
 
     // bpjs
