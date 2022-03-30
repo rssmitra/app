@@ -176,6 +176,7 @@ class Inv_master_barang extends MX_Controller {
         $val->set_rules('satuan_kecil','Satuan Kecil', 'trim|required');
         $val->set_rules('is_active','Status Aktif', 'trim|required');
         $val->set_rules('spesifikasi','Spesifikasi', 'trim|required');
+        $val->set_rules('harga_beli','Harga Pembelian Terakhir', 'trim|required');
         $val->set_rules('rak','rak', 'trim');
         $val->set_rules('id_pabrik','Pabrikan', 'trim');
 
@@ -214,6 +215,7 @@ class Inv_master_barang extends MX_Controller {
                 'content' => $this->regex->_genRegex( $val->set_value('content'), 'RGXQSL' ),
                 'spesifikasi' => $this->regex->_genRegex( $val->set_value('spesifikasi'), 'RGXQSL' ),
                 'rak' => $this->regex->_genRegex( $val->set_value('rak'), 'RGXQSL' ),
+                'harga_beli' => $this->regex->_genRegex( $val->set_value('harga_beli'), 'RGXQSL' ),
                 'is_active' => $this->regex->_genRegex( $val->set_value('is_active'), 'RGXQSL' ),
             );
             
@@ -228,6 +230,7 @@ class Inv_master_barang extends MX_Controller {
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
                 $dataexc['is_kronis'] = $this->regex->_genRegex( $val->set_value('is_kronis'), 'RGXQSL' );
                 $dataexc['is_prb'] = $this->regex->_genRegex( $val->set_value('is_prb'), 'RGXQSL' );
+                
             }else{
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
             }

@@ -779,6 +779,34 @@ final class Tanggal {
 
     }
 
+    function GetAge($tgl_lahir) {
+        
+        $formatDate = $this->formatDateForm($tgl_lahir);
+        $hours_in_day   = 24;
+        $minutes_in_hour= 60;
+        $seconds_in_mins= 60;
+
+        $birth_date     = new DateTime($formatDate);
+        $current_date   = new DateTime();
+
+        $diff           = $birth_date->diff($current_date);
+
+        $mth = ($diff->y * 12) + $diff->m;
+
+        $years     = $diff->y . " <sup>th</sup> " . $diff->m . " <sup>bln</sup> ";
+        $months    = ($diff->y * 12) + $diff->m . " months " . $diff->d . " day(s)";
+        $weeks     = floor($diff->days/7) . " weeks " . $diff->d%7 . " day(s)";
+        $days      = $diff->days;
+        $hours     = $diff->h + ($diff->days * $hours_in_day) . " hours";
+        $mins      = $diff->h + ($diff->days * $hours_in_day * $minutes_in_hour) . " minutest";
+        $seconds   = $diff->h + ($diff->days * $hours_in_day * $minutes_in_hour * $seconds_in_mins) . " seconds";
+
+        $age = $diff->y;
+        
+        return $age;
+
+    }
+
 
 }
 

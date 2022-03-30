@@ -229,6 +229,8 @@ function createSuratKontrol(){
 
           <!-- hidden form  -->
           <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
+          <input type="hidden" name="no_ktp" value="<?php echo $value->no_ktp?>" id="no_ktp">
+          <input type="hidden" name="no_kartu_bpjs" value="<?php echo $value->no_kartu_bpjs?>" id="no_kartu_bpjs">
           <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">
           <input type="hidden" name="alamat" value="<?php echo $value->almt_ttp_pasien?>" id="alamat">
           <input type="hidden" name="jd_id" id="jd_id">
@@ -310,11 +312,23 @@ function createSuratKontrol(){
 
             <div class="form-group">
               <label class="control-label col-sm-2">Jenis Perjanjian</label>
-              <div class="col-sm-6">
-                <div class="checkbox">
+              <div class="col-sm-10">
+                <div class="radio">
                   <label>
-                    <input name="jenis_perjanjian" type="checkbox" class="ace" value="1">
+                    <input name="jeniskunjungan" type="radio" class="ace" value="2">
                     <span class="lbl"> Rujukan Internal</span>
+                  </label>
+                  <label>
+                    <input name="jeniskunjungan" type="radio" class="ace" value="1">
+                    <span class="lbl"> Rujukan Baru FKTP</span>
+                  </label>
+                  <label>
+                    <input name="jeniskunjungan" type="radio" class="ace" value="3" checked>
+                    <span class="lbl"> Kontrol</span>
+                  </label>
+                  <label>
+                    <input name="jeniskunjungan" type="radio" class="ace" value="4">
+                    <span class="lbl"> Rujukan Antar RS</span>
                   </label>
                 </div>
               </div>

@@ -183,14 +183,18 @@ $('select[name="kode_sub_gol"]').change(function () {
                 </div>
                 
                 <div class="form-group">
-                  <label class="control-label col-md-2">Stok Minimum</label>
+                  <label class="control-label col-md-2">Stok Min</label>
                   <div class="col-md-1">
                     <input name="stok_minimum" id="stok_minimum" value="<?php echo isset($value)?$value->stok_minimum:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>
-                  <label class="control-label col-md-2">Stok Maksimum</label>
-                  <div class="col-md-2">
+                  <label class="control-label col-md-1">Stok Maks</label>
+                  <div class="col-md-1">
                     <input name="stok_maksimum" id="stok_maksimum" value="<?php echo isset($value)?$value->stok_maksimum:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                   </div>
+                  <label class="control-label col-md-2">Harga Pembelian Terakhir</label>
+                    <div class="col-md-2">
+                      <input name="harga_beli" id="harga_beli" value="<?php echo isset($value)?$value->harga_beli:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -252,6 +256,12 @@ $('select[name="kode_sub_gol"]').change(function () {
                         echo $this->master->custom_selection($params = array('table' => 'fr_mt_profit_margin', 'id' => 'id_profit', 'name' => 'nama_pelayanan', 'where' => array() ), isset($value->id_profit)?$value->id_profit:'' , 'id_profit', 'id_profit', 'form-control', '',  ($flag=='read')?'readonly':'') ?>
                     <input type="hidden" name="margin_percent" id="margin_percent" value="<?php echo isset($value->margin_percent)?$value->margin_percent:''?>">
                     </div>
+
+                    <label class="control-label col-md-2">Harga Pembelian Terakhir</label>
+                    <div class="col-md-2">
+                      <input name="harga_beli" id="harga_beli" value="<?php echo isset($value)?$value->harga_beli:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
+                    </div>
+                    
                   </div>
 
                   <div class="form-group">
