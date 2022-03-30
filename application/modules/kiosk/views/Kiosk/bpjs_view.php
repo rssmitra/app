@@ -29,6 +29,7 @@
         nama_pasien : $('#nama_pasien').val(),
         umur_saat_pelayanan_hidden : $('#umur_saat_pelayanan_hidden').val(),
         kode_kelompok_hidden : $('#kode_kelompok_hidden').val(),
+        kode_perusahaan_hidden : $('#kode_perusahaan_hidden').val(),
         jenis_pendaftaran : $('#jenis_pendaftaran').val(),
         pm_tujuan : $('#pm_tujuan').val(),
         asal_pasien_pm : $('#asal_pasien_pm').val(),
@@ -46,7 +47,7 @@
 
         if(response.status==200){
           // show success
-          $('#konfirmasi_kunjungan').html('<div class="center" style="padding-top: 20px"><span style="font-size: 36px; font-weight: bold; color: green"><i class="fa fa-check-circle green bigger-250"></i><br>PENDAFTARAN BERHASIL DILAKUKAN!</span><br><span style="font-size: 20px">Silahkan menunggu diruang tunggu pelayanan untuk dipanggil.</span></div><br><div class="center"><a href="#" class="btn btn-lg" style="background : green !important; border-color: green;" onclick="getMenu('+"'kiosk/Kiosk/bpjs'"+')"> <i class="fa fa-arrow-left"></i> Kembali ke Menu Sebelumnya</a> <a href="#" class="btn btn-lg" style="background : green !important; border-color: green"><i class="fa fa-print"></i> Cetak Ulang Bukti Pendaftaran</a></div>');
+          $('#konfirmasi_kunjungan').html('<div class="center" style="padding-top: 20px"><span style="font-size: 36px; font-weight: bold; color: green"><i class="fa fa-check-circle green bigger-250"></i><br>PENDAFTARAN BERHASIL DILAKUKAN!</span><br><span style="font-size: 20px">Silahkan menunggu diruang tunggu pelayanan untuk dipanggil.</span></div><br><div class="center"><a href="#" class="btn btn-lg" style="background : green !important; border-color: green;" onclick="getMenu('+"'kiosk/Kiosk/bpjs'"+')"> <i class="fa fa-arrow-left"></i> Kembali ke Menu Sebelumnya</a> <a href="#" onclick="reprint('+"'kiosk/Kiosk/print_bukti_registrasi/"+response.no_registrasi+"/"+response.no_antrian+"/"+response.tipe+"'"+')" class="btn btn-lg" style="background : green !important; border-color: green"><i class="fa fa-print"></i> Cetak Ulang Bukti Pendaftaran</a></div>');
 
           // setTimeout(function () {
           //         location.reload();
@@ -60,6 +61,10 @@
         
       }
     });
+
+  }
+
+  function rePrint(){
 
   }
 
@@ -95,7 +100,8 @@
                   <p style="align: justify; padding-top: 10px; min-height: 100px">Untuk Pasien BPJS yang sudah melakukan Perjanjian via Mobile JKN atau dari Nurse Station.</p>
                 </div>
                 <div class="center">
-                  <a href="#" class="btn btn-lg" onclick="checkInForm()"  style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
+                  <!-- <a href="#" class="btn btn-lg" onclick="checkInForm()"  style="background: green !important; border-color: #b7d9b74f">Klik Disini</a> -->
+                  <a href="#" class="btn btn-lg" disabled style="background: grey !important; border-color: grey">On Progress</a>
                 </div>
               </div>
             </div>
@@ -118,7 +124,8 @@
                   <p style="align: justify; padding-top: 10px; min-height: 100px; text-align: center">Pendaftaran Pasien BPJS untuk Pasien Baru atau Pasien Lama  <br> dengan Nomor Rujukan Baru tujuan ke Poli/Klinik/Spesialis.</p>
                 </div>
                 <div class="center">
-                  <a href="#" onclick="getMenu('kiosk/Kiosk/bpjs_mod_poli')" class="btn btn-lg" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
+                  <!-- <a href="#" onclick="getMenu('kiosk/Kiosk/bpjs_mod_poli')" class="btn btn-lg" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a> -->
+                  <a href="#" class="btn btn-lg" disabled style="background: grey !important; border-color: grey">On Progress</a>
                 </div>
               </div>
             </div>
@@ -193,6 +200,9 @@
   <!-- hidden -->
   <input type="hidden" name="pm_tujuan" value="" id="pm_tujuan">
   <input type="hidden" name="asal_pasien_pm" value="" id="asal_pasien_pm">
+  <input type="hidden" class="form-control" id="kode_kelompok_hidden" name="kode_kelompok_hidden" value="3">
+  <input type="hidden" name="kode_perusahaan_hidden" value="120" id="kode_perusahaan_hidden">
+  
 
 </div>
 

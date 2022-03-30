@@ -55,6 +55,10 @@
         kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
 
         $('#penjamin').text(penjamin);
+        $('#kode_kelompok_hidden').val(obj.kode_kelompok);
+        $('#kode_perusahaan_hidden').val(obj.kode_perusahaan);
+        
+       
 
       }else{              
 

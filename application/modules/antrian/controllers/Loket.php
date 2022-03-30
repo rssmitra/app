@@ -270,7 +270,7 @@ class Loket extends MX_Controller {
         else
         {
             $this->db->trans_commit();
-            echo json_encode(array('dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6],'type' => $data[0],'no' => $no));
+            echo json_encode(array('status' => 200, 'message' => 'Proses berhasil dilakukan!', 'dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6],'type' => $data[0],'no' => $no));
         }
 
     }
