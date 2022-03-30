@@ -40,6 +40,8 @@ class Reg_pasien extends MX_Controller {
 
         $this->load->model('casemix/Migration_model', 'Migration');
 
+        $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
+
 
         $this->load->library('Print_direct');
 
@@ -961,6 +963,17 @@ class Reg_pasien extends MX_Controller {
                 if( !isset($_POST['is_no_mr']) AND $_POST['is_no_mr'] != 'Y' ){
                     $this->logs->save_log_kuota(array('kode_dokter' => $dataexc['kode_dokter'], 'kode_spesialis' => $dataexc['no_poli'], 'tanggal' => $dataexc['tgl_pesanan'], 'keterangan' => $dataexc['keterangan'], 'flag' => 'perjanjian' ));
                 }
+
+                // add antrian to mobile jkn
+                $dataexc['jampraktek'] = str_replace(' s/d ', '-', $_POST['selected_time']);
+                $dataexc['rujukan_internal'] = $_POST['no_ktp'];
+                $dataexc['no_ktp'] = $_POST['no_ktp'];
+                $dataexc['nomorkartubpjs'] = $_POST['no_kartu_bpjs'];
+                $dataexc['jeniskunjungan'] = $_POST['jeniskunjungan'];
+                $dataexc['no_sep_lama'] = $_POST['no_sep_lama'];
+                $dataexc['nomorreferensi'] = (!empty($_POST['no_surat_kontrol']))?$_POST['no_surat_kontrol']:0;
+                $this->AntrianOnline->addAntrian($dataexc);
+
              }else{
                  /*update record*/
                  $dataexc['keterangan'] = 'Reschedule Perjanjian';

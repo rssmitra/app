@@ -49,6 +49,9 @@ class Reg_klinik extends MX_Controller {
         get_menu_by_class(get_class($this))->name : 'Title';
 
         $this->kode_faskses = '0112R034';
+
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
     
     }
 
@@ -138,7 +141,7 @@ class Reg_klinik extends MX_Controller {
 
         /*return search pasien*/
 
-        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr','nama_pasien') ); 
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs') ); 
         // echo '<pre>'; print_r($data_pasien);die;
 
         $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
@@ -428,6 +431,13 @@ class Reg_klinik extends MX_Controller {
 
             // update no kartu bpjs
             $this->db->where('no_mr', $no_mr)->update('mt_master_pasien', array('no_kartu_bpjs' => $_POST['noKartuBpjs']));
+
+            if($kode_perusahaan == 120){
+                if(in_array($_POST['jenis_pendaftaran'], array(1,4))){
+                    $filename = 'SEP-'.$no_mr.'-'.$no_registrasi.'-'.date('dmY').'';;
+                    $this->cbpModule->generateSingleDoc($filename);
+                }
+            }
 
             if ($this->db->trans_status() === FALSE)
             {
