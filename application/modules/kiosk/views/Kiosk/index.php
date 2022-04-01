@@ -84,11 +84,12 @@
             </div>
             
             <div id="page-area-content">
-
               <div class="col-md-12 center" style="padding-top: 15%">
                 <a href="#" onclick="getMenu('kiosk/Kiosk/pasien_baru')" class="btn btn-lg" style="background: green !important; border-color: green; height: 70px; font-size: 2.8em; border-radius: 10px 10px 10px 10px"><i class="fa fa-user"></i> Pasien Baru</a>
                 &nbsp;&nbsp;
                 <a href="#" onclick="getMenu('kiosk/Kiosk/pasien_lama')" class="btn btn-lg" style="background: green !important; border-color: green; height: 70px; font-size: 2.8em; border-radius: 10px 10px 10px 10px"><i class="fa fa-users"></i> Pasien Lama</a>
+                &nbsp;&nbsp;
+                <a href="#" onclick="getMenu('Kiosk/antrian_front')" class="btn btn-lg" style="background: green !important; border-color: green; height: 70px; font-size: 2.8em; border-radius: 10px 10px 10px 10px"><i class="fa fa-list"></i> No Antrian</a>
               </div>
             </div>
 

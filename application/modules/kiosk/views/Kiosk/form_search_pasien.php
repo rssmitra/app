@@ -22,12 +22,7 @@
         $('#breadcrumb_nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
         $('#breadcrumb_description').text(obj.no_mr+' | '+obj.almt_ttp_pasien+' | '+getFormattedDate(obj.tgl_lhr)+'');
 
-        // value
-        $('#nama_pasien').val(obj.nama_pasien);
-        $('#no_mr_val').val(obj.no_mr);
-
-        var umur_pasien = hitung_usia(obj.tgl_lhr);
-        $('#umur_saat_pelayanan_hidden').val(umur_pasien);
+       
 
         // text
         $('#no_mr').text(obj.no_mr);
@@ -54,6 +49,11 @@
         penjamin = (obj.nama_perusahaan==null)?obj.nama_kelompok:obj.nama_perusahaan;
         kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
 
+         // value
+        $('#nama_pasien').val(obj.nama_pasien);
+        $('#no_mr_val').val(obj.no_mr);
+        var umur_pasien = hitung_usia(obj.tgl_lhr);
+        $('#umur_saat_pelayanan_hidden').val(umur_pasien);
         $('#penjamin').text(penjamin);
         $('#kode_kelompok_hidden').val(obj.kode_kelompok);
         $('#kode_perusahaan_hidden').val(obj.kode_perusahaan);

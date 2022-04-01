@@ -86,6 +86,25 @@ class Kiosk extends MX_Controller {
 
         $this->load->view('kiosk/Kiosk/antrian_view', $data);
     }
+
+    public function antrian_front() {
+        
+        $data = array();
+        
+        $data_loket = $this->loket->get_open_loket();
+
+        foreach ($data_loket as $key => $value) {
+            # code...
+            $kuota = $this->loket->get_sisa_kuota($value);
+            if($kuota<0)$kuota=0;
+            $data_loket[$key]->kuota = $kuota;
+        }
+
+        $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
+        $data['klinik'] = $data_loket;
+
+        $this->load->view('kiosk/Kiosk/antrian_front_view', $data);
+    }
     // end modul antrian
 
     // ========================================================================================================= //
