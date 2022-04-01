@@ -24,7 +24,7 @@ final class Tarif extends AvObjects {
         $this->_prop["kode_bagian"]="";
 
         //$this->_prop["cito"]="";
-        $this->tax = 0.11; //11%
+        $this->tax = 0.01; //11%
 
     } // end of public function __construct()
 
