@@ -24,6 +24,7 @@ final class Tarif extends AvObjects {
         $this->_prop["kode_bagian"]="";
 
         //$this->_prop["cito"]="";
+        $this->tax = 0.11; //11%
 
     } // end of public function __construct()
 
@@ -171,7 +172,7 @@ final class Tarif extends AvObjects {
         $hasil=array();
 
         $nilai_cito=$db->get_where('pm_mt_kenaikancito', array('kode_bagian' => $this->get("kode_bagian")))->row();        
-        $kenaikan_cito = ($nilai_cito->prosentase * 0.01) + 1;
+        $kenaikan_cito = ($nilai_cito->prosentase * $this->tax) + 1;
         
         $bill_rs=$params * $kenaikan_cito;
         $bill_dr1=$bill_dr1 * $kenaikan_cito;
@@ -241,7 +242,7 @@ final class Tarif extends AvObjects {
             }
         }
 
-        $kenaikan_profit = ($nilai_profit * 0.01) + 1;
+        $kenaikan_profit = ($nilai_profit * $this->tax) + 1;
         $total_harga_jual = ceil($harga_beli * $kenaikan_profit * $jumlah);
         // print_r($total_harga_jual);
         // print_r($harga_beli);
@@ -284,7 +285,7 @@ final class Tarif extends AvObjects {
             }
         }
 
-        $kenaikan_profit = ($nilai_profit * 0.01) + 1;
+        $kenaikan_profit = ($nilai_profit * $this->tax) + 1;
         $total_harga_jual = ceil($harga_beli * $kenaikan_profit * $jumlah);
         // print_r($total_harga_jual);
         // print_r($harga_beli);

@@ -91,6 +91,27 @@
         /*show action after success submit form*/
         $('#form-create-pasien').html('<div class="center" style="padding-top: 20px"><span style="font-size: 36px; font-weight: bold; color: green"><i class="fa fa-check-circle green bigger-250"></i><br>PENDAFTARAN BERHASIL DILAKUKAN!</span><br><span style="font-size: 20px">Nomor Rekam Medis Anda <b>'+jsonResponse.no_mr+'</b></span><br><span style="font-size: 16px">Simpan Nomor Rekam Medis Anda Untuk Pendaftaran Pasien Berikutnya.</span></div><br><div class="center"><a href="#" class="btn btn-lg" style="background : green !important; border-color: green" onclick="getMenu('+"'kiosk/Kiosk/main'"+')">Lanjutkan ke Menu Utama <i class="fa fa-arrow-right"></i></a></div>');
 
+        $.getJSON("<?php echo site_url('Templates/References/search_pasien') ?>?keyword=" + jsonResponse.no_mr, '', function (data) {      
+
+          // jika data ditemukan
+            
+            var obj = data.result[0];
+            $('#noKartuBpjs').val(obj.no_kartu_bpjs);
+
+            penjamin = (obj.nama_perusahaan==null)?obj.nama_kelompok:obj.nama_perusahaan;
+            kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
+
+            // value
+            $('#nama_pasien').val(obj.nama_pasien);
+            $('#no_mr_val').val(obj.no_mr);
+            var umur_pasien = hitung_usia(obj.tgl_lhr);
+            $('#umur_saat_pelayanan_hidden').val(umur_pasien);
+            $('#penjamin').text(penjamin);
+            $('#kode_kelompok_hidden').val(obj.kode_kelompok);
+            $('#kode_perusahaan_hidden').val(obj.kode_perusahaan);
+
+        });
+
 
     }else{          
 
