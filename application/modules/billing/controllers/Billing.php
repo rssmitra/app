@@ -842,20 +842,20 @@ class Billing extends MX_Controller {
 
         // insert ks_tc_trans_um
         $insertKsTcTransUm["kode_tc_trans_kasir"] =  $dataTranskasir["kode_tc_trans_kasir"];
-		$insertKsTcTransUm["no_registrasi"] = $dataTranskasir["no_registrasi"];
-		$insertKsTcTransUm["no_kunjungan"] = $_POST['no_kunjungan'];
-		$insertKsTcTransUm["no_mr"] = $dataTranskasir["no_mr"];
-		$insertKsTcTransUm["nama_pasien"] = $dataTranskasir["nama_pasien"];
-		$insertKsTcTransUm["kode_bagian"] = $_POST['kode_bag_ri'];
-		$insertKsTcTransUm["no_kuitansi"] = $dataTranskasir["no_kuitansi"];
-		$insertKsTcTransUm["tunai"] = $dataTranskasir["tunai"];
-		$insertKsTcTransUm["debit"] = isset($dataTranskasir["debet"]) ? $dataTranskasir["debet"] : 0;
+        $insertKsTcTransUm["no_registrasi"] = $dataTranskasir["no_registrasi"];
+        $insertKsTcTransUm["no_kunjungan"] = $_POST['no_kunjungan'];
+        $insertKsTcTransUm["no_mr"] = $dataTranskasir["no_mr"];
+        $insertKsTcTransUm["nama_pasien"] = $dataTranskasir["nama_pasien"];
+        $insertKsTcTransUm["kode_bagian"] = $_POST['kode_bag_ri'];
+        $insertKsTcTransUm["no_kuitansi"] = $dataTranskasir["no_kuitansi"];
+        $insertKsTcTransUm["tunai"] = $dataTranskasir["tunai"];
+        $insertKsTcTransUm["debit"] = isset($dataTranskasir["debet"]) ? $dataTranskasir["debet"] : 0;
         $insertKsTcTransUm["kredit"] = isset($dataTranskasir["kredit"]) ? $dataTranskasir["kredit"] : 0;
-		$insertKsTcTransUm["jumlah"] = $dataTranskasir["bill"];
+        $insertKsTcTransUm["jumlah"] = $dataTranskasir["bill"];
         // debet
         $insertKsTcTransUm["kd_bank_dc"] = isset($dataTranskasir["kd_bank_dc"]) ? $dataTranskasir["kd_bank_dc"] : '';
         $insertKsTcTransUm["kd_bank_cc"] = isset($dataTranskasir["kd_bank_cc"]) ? $dataTranskasir["kd_bank_cc"] : '';
-		$insertKsTcTransUm["tgl_bayar"] = $dataTranskasir["tgl_jam"];
+        $insertKsTcTransUm["tgl_bayar"] = $dataTranskasir["tgl_jam"];
         $this->db->insert('ks_tc_trans_um', $insertKsTcTransUm);
         $this->db->trans_commit();
     
@@ -1080,6 +1080,7 @@ class Billing extends MX_Controller {
             if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
                 $this->db->insert('csm_dokumen_export', $doc_save);
             }
+            
             endif;
             /*insert database*/
         }
@@ -1192,10 +1193,8 @@ class Billing extends MX_Controller {
 
     }
 
-    
-
-
 }
 
 /* End of file example.php */
 /* Location: ./application/functiones/example/controllers/example.php */
+
