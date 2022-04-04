@@ -13,9 +13,9 @@ class Regon_booking extends MX_Controller {
         /*breadcrumb default*/
         $this->breadcrumbs->push('Index', 'booking/Regon_booking');
         /*session redirect login if not login*/
-        if($this->session->userdata('logged')!=TRUE){
-            echo 'Session Expired !'; exit;
-        }
+        // if($this->session->userdata('logged')!=TRUE){
+        //     echo 'Session Expired !'; exit;
+        // }
 
         /*load model*/
         $this->load->model('Regon_booking_model', 'Regon_booking');

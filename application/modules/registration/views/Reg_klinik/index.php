@@ -773,7 +773,7 @@ function select_item_from_modal_pasien(mr){
 
     $('#div_riwayat_pasien').show('fast');
 
-    find_pasien_by_keyword( mr );
+    find_pasien_by_mr( mr );
 
 
 }
@@ -1198,6 +1198,198 @@ function find_pasien_by_keyword(keyword){
 
   }); 
 
+
+    <?php if(isset($pm)):?>
+      showChangeModul( 3 );
+    <?php endif ?>
+
+}
+
+function find_pasien_by_mr(keyword){  
+
+    $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien_by_mr') ?>?keyword=" + keyword, '', function (data) {      
+            achtungHideLoader();          
+
+            if( data.count == 0){
+
+              $('#div_load_after_selected_pasien').hide('fast');
+
+              $('#div_riwayat_pasien').hide('fast');
+              
+              $('#div_penangguhan_pasien').hide('fast');
+
+              /*reset all field data*/
+              $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+
+              alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
+
+            }
+
+            if( data.count == 1 )     {
+
+              var obj = data.result[0];
+
+              var pending_data_pasien = data.pending; 
+              var umur_pasien = hitung_usia(obj.tgl_lhr);
+              console.log(pending_data_pasien);
+              console.log(hitung_usia(obj.tgl_lhr));
+
+              $('#no_mr').text(obj.no_mr);
+
+              $('#noMrHidden').val(obj.no_mr);
+
+              $('#no_ktp').text(obj.no_ktp);
+
+              $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
+
+              $('#nama_pasien_hidden').val(obj.nama_pasien);
+
+              $('#jk').text(obj.jen_kelamin);
+
+              $('#umur').text(umur_pasien+' Tahun');
+
+              $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
+              
+              $('#umur_saat_pelayanan_hidden').val(umur_pasien);
+
+              $('#alamat').text(obj.almt_ttp_pasien);
+
+              $('#hp').text(obj.no_hp);
+
+              $('#no_telp').text(obj.tlp_almt_ttp);
+
+              $('#catatan_pasien').text(obj.keterangan);
+
+              $('#ttd_pasien').attr('src', obj.ttd);
+
+              $('#noKartuBpjs').val(obj.no_kartu_bpjs);
+
+              if( obj.url_foto_pasien ){
+
+                $('#avatar').attr('src', '<?php echo base_url()?>uploaded/images/photo/'+obj.url_foto_pasien+'');
+
+              }else{
+
+                if( obj.jen_kelamin == 'L' ){
+              
+                  $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
+                
+                }else{
+                  
+                  $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/girl.jpg');
+
+                }
+
+              }
+
+              
+              
+              if( obj.kode_perusahaan==120){
+
+                $('#form_sep').show('fast'); 
+                $('#no_kartu_bpjs_txt').text('('+obj.no_kartu_bpjs+')');
+                
+                //showModalFormSep(obj.no_kartu_bpjs,obj.no_mr);
+                
+              }else{
+                
+                $('#form_sep').hide('fast'); 
+                $('#no_kartu_bpjs_txt').text('');
+
+              }
+
+              penjamin = (obj.nama_perusahaan==null)?obj.nama_kelompok:obj.nama_perusahaan;
+              kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
+
+              $('#kode_perusahaan').text(penjamin);
+              
+              $('#kode_perusahaan_hidden').val(obj.kode_perusahaan);
+              /*penjamin pasien*/
+              $('#kode_kelompok_hidden').val(obj.kode_kelompok);
+
+              $('#InputKeyPenjamin').val(obj.nama_perusahaan);
+              $('#InputKeyNasabah').val(obj.nama_kelompok);
+
+              $('#total_kunjungan').text(obj.total_kunjungan);
+
+              /*for tabs riwayat*/
+              $('#tabs_riwayat_kunjungan_id').attr('data-id', obj.no_mr);
+              $('#tabs_riwayat_transaksi_id').attr('data-id', obj.no_mr);
+              $('#tabs_riwayat_perjanjian_id').attr('data-id', obj.no_mr);
+              $('#tabs_riwayat_booking_online_id').attr('data-id', obj.no_mr);
+
+              $("#myTab li").removeClass("active");
+              // show riwayat perjanjian as default
+              getMenuTabs('registration/reg_pasien/riwayat_perjanjian/'+obj.no_mr, 'tabs_detail_pasien');
+
+              // $("#tabs_detail_pasien").html("<div class='alert alert-block alert-success center'><p><strong><i class='ace-icon fa fa-glass bigger-150'></i><br>Selamat Datang!</strong><br>Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !</p></div>");
+
+              if(data.count_pending > 0){
+
+                /*show pending data pasien*/
+                
+                $('#div_penangguhan_pasien').show('fast');
+
+                $('#div_load_after_selected_pasien').hide('fast');
+
+                $('#div_riwayat_pasien').show('fast');
+
+                $('#result_penangguhan_pasien tbody').remove();
+
+                $.each(pending_data_pasien, function (x, y) {                  
+
+                    dt = new Date(y.tgl_masuk);
+                    
+                    formatDt = formatDate(dt);
+                    
+                    if(y.total_ditangguhkan > 0){
+                      status = 'Total Ditangguhkan '+y.total_ditangguhkan+'';
+                    }else{
+                      status = '<label class="label label-danger">Belum dipulangkan</label>';
+                    }
+                    $('<tr><td>'+y.no_kunjungan+'</td><td>'+y.no_registrasi+'</td><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td>'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
+
+                }); 
+
+
+              }else{
+
+                $('#div_penangguhan_pasien').hide('fast');
+
+                $('#result_penangguhan_pasien tbody').remove();
+
+                /*show detail form */
+
+                $('#div_load_after_selected_pasien').show('fast');
+
+                $('#div_riwayat_pasien').show('fast');
+
+              }
+
+
+            }else{              
+
+              $("#result_pasien_data tr").remove();
+
+              $.each(data.result, function (i, o) {                  
+
+                  d = new Date(o.tgl_lhr);
+                  
+                  e = formatDate(d);
+                  
+                  penjamin = (o.nama_perusahaan==null)?'-':o.nama_perusahaan;
+                  
+                  umur = (o.umur=='undefined')?'-':o.umur;
+
+                  $('<tr><td>'+o.no_mr+'</td><td>'+o.nama_pasien+'</td><td>'+o.tempat_lahir+', '+e+'</td><td>'+umur+'</td><td>'+o.almt_ttp_pasien+'</td><td>'+penjamin+'</td><td align="center"><a href="#" class="btn btn-xs btn-pink" onclick="select_item_from_modal_pasien('+"'"+o.no_mr+"'"+')"><i class="fa fa-arrow-down"></i></a></td></tr>').appendTo($('#result_pasien_data'));                    
+
+              }); 
+
+              showModal();  
+
+            }           
+
+    }); 
 
     <?php if(isset($pm)):?>
       showChangeModul( 3 );

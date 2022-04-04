@@ -164,6 +164,37 @@ class Reg_klinik extends MX_Controller {
     
     }
 
+    public function search_pasien_by_mr() { 
+        
+        /*define variable data*/
+        
+        $keyword = $this->input->get('keyword');
+
+        /*return search pasien*/
+
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr') ); 
+        // echo '<pre>'; print_r($data_pasien);die;
+
+        $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
+        
+        $data_transaksi_pending = $this->Reg_pasien->cek_status_pasien( $no_mr );
+
+        $data = array(
+
+            'count' => count($data_pasien),
+
+            'result' => $data_pasien,
+            
+            'count_pending' => count($data_transaksi_pending),
+
+            'pending' => $data_transaksi_pending,
+
+        );
+        
+        echo json_encode( $data );
+    
+    }
+
     
     /*function for view data only*/
     

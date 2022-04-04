@@ -62,6 +62,16 @@ class Regon_info_jadwal_dr_model extends CI_Model {
         return $query->result_array();
     }
 
+    function get_data()
+    {
+        $this->_main_query();
+        if(isset($_GET['kode'])){
+            $this->db->where('jd_kode_spesialis', $_GET['kode']);
+        }
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
     function count_filtered()
     {
         $this->_get_datatables_query();
