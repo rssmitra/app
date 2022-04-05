@@ -138,8 +138,8 @@
         <div class="hr"></div>
         
         <div id="no-data-found">
-          <div class="center" style="padding-top: 120px !important">
-            <img src="<?php echo base_url()?>assets/images/no-data-found.png">
+          <div class="center" style="padding-top: 30px !important">
+            <img src="<?php echo base_url()?>assets/images/no-data-found.png" width="300px">
           </div>
         </div>
 

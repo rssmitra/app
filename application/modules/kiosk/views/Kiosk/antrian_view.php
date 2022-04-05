@@ -46,7 +46,7 @@
 					shuffle($arr_color);
 					foreach($klinik as $row_modul) : ?>
 					<div class="col-xs-12 col-sm-3 widget-container-col ui-sortable" id="widget-container-col-5" style="padding-bottom: 5px">
-						<div class="widget-box ui-sortable-handle" id="widget-box-5" style="min-height: 200px; <?php echo ($row_modul->kuota > 0)?'':'background: #D5D8DC';?>">
+						<div class="widget-box ui-sortable-handle" id="widget-box-5" style="min-height: 200px; <?php echo ($row_modul->kuota > 0)?'background: white;':'background: #D5D8DC';?>">
 							<div class="widget-body center" style="color: black;">
 								<div class="widget-main padding-10" style="min-height: 170px !important">
 									<span>
@@ -77,7 +77,7 @@
 				<?php endforeach;?>
 
 				<div class="col-xs-12 col-sm-3 widget-container-col ui-sortable" id="widget-container-col-5">
-					<div class="widget-box ui-sortable-handle" id="widget-box-5">
+					<div class="widget-box ui-sortable-handle" id="widget-box-5" style="background: white">
 						<div class="widget-body center" style="color: black;">
 							<div class="widget-main padding-6" style="min-height: 170px !important">
 								<span>

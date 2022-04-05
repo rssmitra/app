@@ -291,18 +291,13 @@ $('#pob_pasien').typeahead({
 }
 
 </style>
+
 <div class="row">
-
-  <div class="col-xs-12">  
-
-
-    <!-- div.dataTables_borderWrap -->
-
+  <div class="col-xs-12">
+    
     <div style="margin-top:-10px" id="form-create-pasien">    
-      <form class="form-horizontal" method="post" id="form_registration" action="kiosk/Kiosk/process_register_pasien" enctype="multipart/form-data" autocomplete="off">      
-        
+      <form class="form-horizontal" method="post" id="form_registration" action="kiosk/Kiosk/process_register_pasien" enctype="multipart/form-data" autocomplete="off">
         <br>
-
         <div id="data_pribadi">
           <p><h3><b><i class="fa fa-user"></i> FORM DATA PASIEN </b></h3></p>
 
@@ -390,12 +385,7 @@ $('#pob_pasien').typeahead({
           </div>
 
         </div>
-
-        
-
-        <br>
-        <br>
-
+        <br><br>
         <div class="form-group" id="btn_submit">
             <a href="" class="btn btn-sm btn-success">
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
@@ -406,5 +396,8 @@ $('#pob_pasien').typeahead({
             Simpan Data Pasien
             </button>
         </div>
+      </form>
+    </div>
 
-    </form>
+  </div>
+</div>

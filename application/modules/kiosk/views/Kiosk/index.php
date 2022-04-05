@@ -37,8 +37,20 @@
       font-weight: bold;
       border-top: 1px solid #F7FBFF;
     }
+    .page-content {
+        /* background-color: #ffffff; */
+        background: url('assets/images/unit-pendaftaran.jpg') fixed;
+        position: relative;
+        margin: 0;
+        padding: 0px 20px 24px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        min-height: 750px;
+    }
+
   </style>
-	<body class="no-skin">
+	<body class="no-skin" style="background: url('assets/images/unit-pendaftaran.jpg');">
 		<div id="navbar" class="navbar navbar-default    navbar-collapse       h-navbar ace-save-state" style="background: green">
 			<div class="navbar-container ace-save-state" id="navbar-container" >
 				<div class="navbar-header pull-left">
@@ -87,6 +99,8 @@
                 <a href="#" onclick="getMenu('kiosk/Kiosk/pasien_lama')" class="btn btn-lg" style="background: green !important; border-color: green; height: 70px; font-size: 2.8em; border-radius: 10px 10px 10px 10px"><i class="fa fa-users"></i> Pasien Lama</a>
                 &nbsp;&nbsp;
                 <a href="#" onclick="getMenu('Kiosk/antrian_front')" class="btn btn-lg" style="background: green !important; border-color: green; height: 70px; font-size: 2.8em; border-radius: 10px 10px 10px 10px"><i class="fa fa-list"></i> No Antrian</a>
+                &nbsp;&nbsp;
+                <a href="#" onclick="getMenu('Kiosk/spesialis_front')" class="btn btn-lg" style="background: green !important; border-color: green; height: 70px; font-size: 2.8em; border-radius: 10px 10px 10px 10px"><i class="fa fa-calendar"></i> Jadwal Dokter</a>
               </div>
             </div>
 

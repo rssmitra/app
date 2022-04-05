@@ -569,7 +569,13 @@ function perjanjian_pasien_pm(){
           <input type="hidden" name="kode_penunjang" id="kode_penunjang" value="<?php echo ($id)?$id:''?>">
           <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
-          <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:($value->kode_bagian_tujuan=='050101')?'Arief Indra Sanjaya,dr. Sp PK':'';?>" id="dokter_pemeriksa">
+          
+          <?php if($value->kode_bagian_tujuan=='050101') :?>
+            <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'Arief Indra Sanjaya,dr. Sp PK';?>" id="dokter_pemeriksa">
+          <?php else: ?>
+            <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
+          <?php endif; ?>
+
           <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:0?>">
           <input type="hidden" class="form-control" name="flag_mcu" id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
           

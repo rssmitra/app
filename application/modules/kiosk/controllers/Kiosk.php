@@ -121,6 +121,17 @@ class Kiosk extends MX_Controller {
         $this->load->view('kiosk/Kiosk/spesialis_view', $data);
     }
 
+    public function spesialis_front() { 
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'spesialis' => $this->db->select('kode_bagian, nama_bagian')->like('nama_bagian', 'klinik')->get_where('mt_bagian', array('validasi' => 100, 'status_aktif' => 1))->result(),
+        );
+        /*load view index*/
+        $this->load->view('kiosk/Kiosk/spesialis_front_view', $data);
+    }
+
     public function jadwal_dokter() { 
         /*define variable data*/
 
@@ -173,6 +184,60 @@ class Kiosk extends MX_Controller {
         // echo '<pre>';print_r($data);die;
         /*load view index*/
         $this->load->view('kiosk/Kiosk/jadwal_dokter_view', $data);
+    }
+
+    public function jadwal_dokter_front() { 
+        /*define variable data*/
+
+        /*get data from model*/
+        $list = $this->Regon_info_jadwal_dr->get_data();
+        $arrData = array();
+        /*format data*/
+        foreach ($list as $key => $value) {
+            $arrData[$value['jd_kode_dokter']][$value['jd_kode_spesialis']][] = $value;
+        }
+
+        $data = array();
+
+        foreach ($arrData as $key => $row_list) {
+
+            foreach ($row_list as $key_2 => $value_2) {
+                $main_data = $value_2[0];
+                $row = array();
+                $row['nama_dr'] = $main_data['nama_pegawai'];
+
+                for ($i=1; $i < 8; $i++) { 
+                    if(count($value_2) > 0){
+                        $day_lib = $this->tanggal->getDayByNum($i);
+                        $key = array_search($day_lib, array_column($value_2, 'jd_hari'));
+
+                        if(isset($value_2[$key]['jd_hari'])){
+                            if($day_lib==$value_2[$key]['jd_hari']){
+                                $note = ($value_2[$key]['jd_keterangan'] != '')?' <br> '.$value_2[$key]['jd_keterangan'].'':'';
+                                $end = ($value_2[$key]['jd_jam_selesai'] != '')?' - '.$value_2[$key]['jd_jam_selesai'].'':'';
+                                $val_result = $this->tanggal->formatTime($value_2[$key]['jd_jam_mulai']).' s/d '.$this->tanggal->formatTime($value_2[$key]['jd_jam_selesai']).'';
+
+                                $row[strtolower($value_2[$key]['jd_hari'])] = array('time' => $val_result, 'jd_id' => $value_2[$key]['jd_id']);
+                            }
+                        }
+                        
+                    }
+                    
+                }
+
+                $getData[] = $row;
+            }
+            
+        }
+
+        $data = array(
+            'nama_bagian' => $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $_GET['kode'])),
+            'result' => $getData,
+        );
+
+        // echo '<pre>';print_r($data);die;
+        /*load view index*/
+        $this->load->view('kiosk/Kiosk/jadwal_dokter_front_view', $data);
     }
 
     public function get_data_jadwal_dokter()
