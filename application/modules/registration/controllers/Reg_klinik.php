@@ -463,12 +463,12 @@ class Reg_klinik extends MX_Controller {
             // update no kartu bpjs
             $this->db->where('no_mr', $no_mr)->update('mt_master_pasien', array('no_kartu_bpjs' => $_POST['noKartuBpjs']));
 
-            if($kode_perusahaan == 120){
-                if(in_array($_POST['jenis_pendaftaran'], array(1,4))){
-                    $filename = 'SEP-'.$no_mr.'-'.$no_registrasi.'-'.date('dmY').'';;
-                    $this->cbpModule->generateSingleDoc($filename);
-                }
-            }
+            // if($kode_perusahaan == 120){
+            //     if(in_array($_POST['jenis_pendaftaran'], array(1,4))){
+            //         $filename = 'SEP-'.$no_mr.'-'.$no_registrasi.'-'.date('dmY').'';;
+            //         $this->cbpModule->generateSingleDoc($filename);
+            //     }
+            // }
 
             if ($this->db->trans_status() === FALSE)
             {
