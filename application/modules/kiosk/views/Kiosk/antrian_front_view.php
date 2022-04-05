@@ -157,14 +157,19 @@
 				</div>
 			</div>
 
-			<div id="div_form_input_kode_booking_success" style="display: none">
+			<div id="div_form_input_kode_booking_success" >
 				<div style="width: 100%; margin-top: 10px; text-align: center">
 					<div class="alert alert-success">
-						<strong>Sukses !</strong> Silahkan ambil print out Nomor Antrian
+						<i class="fa fa-check bigger-120"></i>
+						<strong>Sukses !</strong> Silahkan ambil print out Nomor Antrian Anda !
 					</div>
-					<button class="btn btn-inverse" type="button" onclick="rePrintAntrian()" id="btnRePrintAntrian" style="height: 50px !important; font-size: 20px; font-weight: bold">
+					<button class="btn btn-primary" type="button" onclick="rePrintAntrian()" id="btnRePrintAntrian" style="height: 50px !important; font-size: 20px; font-weight: bold">
 						<i class="ace-icon fa fa-print bigger-110"></i>
 						Cetak Ulang
+					</button>
+					<button class="btn btn-danger" type="button" onclick="close_modal()" id="btnRePrintAntrian" style="height: 50px !important; font-size: 20px; font-weight: bold">
+						<i class="ace-icon fa fa-times-circle bigger-110"></i>
+						Close
 					</button>
 				</div>
 			</div>
@@ -229,6 +234,11 @@
 <script>
 	
 	// setInterval("my_function();",3000); 
+
+	function close_modal(){
+		$('#modalVerifyKodeBooking').modal('hide');
+		$('#div_form_input_kode_booking_success').hide();
+	}
 
 	function update_antrian() {
 
@@ -334,27 +344,9 @@
 					console.log(response['status']);
 
 					if(response['status'] == 200){
-						
-						// print no antrian
-						// $.ajax({
-						// 	url:"<?php echo base_url(); ?>antrian/loket/process_kiosk",
-						// 	data:{data:data}, 
-						// 	dataType: "json", 
-						// 	type:"POST",       
-						// 	success:function (data) {
-						// 		//console.log(data)
-								
-						// 		no = pad(response['no'], 3);
-
-						// 		$('#klinik_modal').text(response['klinik']);
-						// 		$('#dokter_modal').text(response['dokter']);
-						// 		$('#no_modal').text(no);
-						// 	}
-						// });
 						// close modal
 						$("#div_form_input_kode_booking").hide('fast'); 
 						$("#div_form_input_kode_booking_success").show('fast'); 
-
 
 					}else if(response['status']!=200){
 						// achtungCreate("<h3 style='text-align:center;'>"+response['message']+"</h3>",false, 'achtungFail');

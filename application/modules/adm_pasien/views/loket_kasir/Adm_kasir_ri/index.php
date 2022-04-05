@@ -143,7 +143,7 @@ function rollback(no_registrasi, no_kunjungan){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('adm_pasien/loket_kasir/Adm_kasir_ri');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

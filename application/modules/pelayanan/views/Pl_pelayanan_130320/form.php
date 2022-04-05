@@ -434,7 +434,7 @@ function cancel_visit(no_registrasi, no_kunjungan){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('pelayanan/Pl_pelayanan');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }
@@ -461,7 +461,7 @@ function rollback(no_registrasi, no_kunjungan){
           reload_table();
           //getMenu('pelayanan/Pl_pelayanan');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

@@ -147,7 +147,7 @@ function rollback(no_registrasi, no_kunjungan){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('farmasi/Resep_ri');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

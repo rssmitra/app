@@ -62,7 +62,7 @@
           /*reload table*/
           reset_table(kode_bag);
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

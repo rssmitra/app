@@ -26,7 +26,10 @@ $(document).ready(function(){
     "ordering": false,
     "searching": false,
     "bPaginate": true,
-    "bInfo": false,
+    // "bInfo": false,
+    "pageLength": 50,
+    "bLengthChange": false,
+    "bInfo": true,
     // Load data for the table's content from an Ajax source
     "ajax": {
         "url": "pelayanan/Pl_pelayanan_pm/get_data?sess_kode_bagian="+$("#sess_kode_bagian").val()+"&search_by="+$("#search_by").val()+"&keyword="+$("#keyword_form").val()+"&from_tgl="+$("#from_tgl").val()+"&to_tgl="+$("#to_tgl").val()+"",
@@ -100,6 +103,17 @@ $(document).ready(function(){
         });
       });
 
+      $( ".form-input-nosep" ).keypress(function(event) {        
+       var keycode =(event.keyCode?event.keyCode:event.which);         
+       if(keycode ==13){          
+         event.preventDefault();          
+         if($(this).valid()){            
+           $(this).focus();            
+         }          
+         return false;                 
+       }        
+      }); 
+
 })
 
 function format ( data ) {
@@ -121,7 +135,7 @@ function getBillingDetail(noreg, type, field){
 function find_data_reload(result){
 
   oTable.ajax.url('pelayanan/Pl_pelayanan_pm/get_data?'+result.data).load();
-  $("html, body").animate({ scrollTop: "400px" });
+  // $("html, body").animate({ scrollTop: "400px" });
 
 }
 
@@ -143,9 +157,31 @@ function rollback(kode_penunjang){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('pelayanan/Pl_pelayanan_pm?type_tujuan='+$("#sess_kode_bagian").val()+'');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
+      }
+  });
+
+}
+
+function saveNoSep(noreg, nokunj){
+
+  preventDefault();  
+
+  $.ajax({
+      url: "pelayanan/Pl_pelayanan_pm/saveNoSep",
+      data: { no_registrasi : noreg, no_kunjungan: nokunj, no_sep : $('#no_sep_'+nokunj+'').val() },            
+      dataType: "json",
+      type: "POST",
+      complete: function (xhr) {
+        var data=xhr.responseText;  
+        var jsonResponse = JSON.parse(data);  
+        if(jsonResponse.status === 200){  
+          $.achtung({message: jsonResponse.message, timeout:5}); 
+        }else{          
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
+        } 
       }
   });
 
@@ -186,7 +222,7 @@ function periksa(kode_penunjang) {
             }
           });
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }
@@ -311,10 +347,10 @@ function cetak_slip(kode_penunjang) {
             <th>Kode</th>
             <th>No MR</th>
             <th>Nama Pasien</th>
-            <th width="60px">Antrian</th>
+            <th>Urutan</th>
             <th>Penjamin</th>
+            <th width="150px">No SEP</th>
             <th>Tanggal Masuk</th>
-            <th>Prioritas</th>
             <th>Asal Daftar</th>
             <th>Status</th>          
           </tr>

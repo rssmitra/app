@@ -136,7 +136,7 @@ function rollback(kode_penunjang, flag){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('pelayanan/Pl_pelayanan_pm?type_tujuan='+kode_bagian);
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

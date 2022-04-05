@@ -491,7 +491,7 @@ function rollback(kode_penunjang){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('pelayanan/Pl_pelayanan_pm?type_tujuan=<?php echo isset($value)?$value->kode_bagian_tujuan:0 ?>');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

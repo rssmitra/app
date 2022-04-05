@@ -533,7 +533,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('pelayanan/Pl_pelayanan/form/'+$('#id_pl_tc_poli').val()+'/'+no_kunjungan+'?no_mr='+$('#noMrHidden').val()+'&form=<?php echo $form_type?>');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

@@ -70,9 +70,6 @@
             <input type="hidden" class="form-control" value="" id="umur_saat_pelayanan_hidden" name="umur_saat_pelayanan_hidden">
             <input type="hidden" class="form-control" id="jenis_pendaftaran" name="jenis_pendaftaran" value="1">
             
-
-
-            
             <div class="page-header">
               <h1>
                 <span id="breadcrumb_nama_pasien">Beranda</span>
@@ -124,8 +121,6 @@
     <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery.min.js"></script>
     <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery-ui.min.js"></script>
 
-
-
     <script type="text/javascript">
       if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>/assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
     </script>
@@ -134,8 +129,6 @@
     <script src="<?php echo base_url()?>assets/js/bootstrap-multiselect.js"></script>
 
     <!-- page specific plugin scripts -->
-
-
     <script src="<?php echo base_url()?>/assets/js/dataTables/jquery.dataTables.js"></script>
     <script src="<?php echo base_url()?>/assets/js/dataTables/jquery.dataTables.bootstrap.js"></script>
     <script src="<?php echo base_url()?>/assets/js/dataTables/extensions/TableTools/js/dataTables.tableTools.js"></script>
