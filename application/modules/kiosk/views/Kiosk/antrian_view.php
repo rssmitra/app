@@ -166,6 +166,10 @@
 						<i class="ace-icon fa fa-print bigger-110"></i>
 						Cetak Ulang
 					</button>
+					<button class="btn btn-danger" type="button" onclick="close_modal()" id="btnRePrintAntrian" style="height: 50px !important; font-size: 20px; font-weight: bold">
+						<i class="ace-icon fa fa-times-circle bigger-110"></i>
+						Close
+					</button>
 				</div>
 			</div>
 
@@ -230,6 +234,11 @@
 	
 	// setInterval("my_function();",3000); 
 
+	function close_modal(){
+		$('#modalVerifyKodeBooking').modal('hide');
+		$('#div_form_input_kode_booking_success').hide();
+	}
+	
 	function update_antrian() {
 
 		var loket = $('#select_loket').val();
