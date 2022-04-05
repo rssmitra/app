@@ -26,7 +26,7 @@
   });
 
   function searchItem(){
-    $('#search-result').load('Kiosk/jadwal_dokter?kode='+$('#keyword_spesialis_id_hidden').val()+'');
+    $('#search-result').load('Kiosk/jadwal_dokter_front?kode='+$('#keyword_spesialis_id_hidden').val()+'');
   }
 
   $( "#keyword_spesialis" )    
@@ -94,8 +94,8 @@
         <div class="hr"></div>
         
         <div id="search-result">
-          <div class="center" style="padding-top: 120px !important">
-            <img src="<?php echo base_url()?>assets/images/no-data-found.png" width="100px">
+          <div class="center" style="padding-top: 30px !important">
+            <img src="<?php echo base_url()?>assets/images/no-data-found.png" width="300px">
           </div>
         </div>
         
@@ -105,8 +105,8 @@
     </div>
 </form>
 
-<div class="center" style="left: 50%; top:70%" >
-  <a href="#" class="btn btn-lg" style="background : green !important; border-color: green; margin-top: 10%" onclick="getMenu('kiosk/Kiosk/main')"> <i class="fa fa-home"></i> Kembali ke Menu Utama</a>
+<div class="center" style="left: 50%; top:50%" >
+  <a href="<?php echo base_url().'kiosk'?>" class="btn btn-lg" style="background : green !important; border-color: green; margin-top: 10%" > <i class="fa fa-home"></i> Kembali ke Menu Utama</a>
 </div>
 
 

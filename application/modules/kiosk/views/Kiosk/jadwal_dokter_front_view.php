@@ -87,7 +87,6 @@
               <tr>
                 <?php foreach ($value as $k => $v) : if($k != 'nama_dr') : ?>
                   <td style="font-size: 20px"><?php echo $value[$k]['time']?><br>
-                    <a href="#" class="btn btn-lg" style="background: green !important; border-color: green; margin-top: 10px" onclick="getMenu('kiosk/Kiosk/form_perjanjian/<?php echo $value[$k]['jd_id']?>')">Pilih</a>
                 </td>
                 <?php endif; endforeach; ?>
               </tr>

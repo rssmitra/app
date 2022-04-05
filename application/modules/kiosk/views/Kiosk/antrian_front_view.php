@@ -46,11 +46,11 @@
 					shuffle($arr_color);
 					foreach($klinik as $row_modul) : ?>
 					<div class="col-xs-12 col-sm-3 widget-container-col ui-sortable" id="widget-container-col-5" style="padding-bottom: 5px">
-						<div class="widget-box ui-sortable-handle" id="widget-box-5" style="min-height: 200px; <?php echo ($row_modul->kuota > 0)?'':'background: #D5D8DC';?>">
+						<div class="widget-box ui-sortable-handle" id="widget-box-5" style="min-height: 200px; <?php echo ($row_modul->kuota > 0)?'background: white;':'background: #D5D8DC';?>">
 							<div class="widget-body center" style="color: black;">
 								<div class="widget-main padding-10" style="min-height: 170px !important">
 									<span>
-									<span style="font-size: 16px; font-weight: bold"><?php echo strtoupper($row_modul->nama_bagian)?></span><br>
+									<span style="font-size: 14px; font-weight: bold"><?php echo strtoupper($row_modul->nama_bagian)?></span><br>
 									<p style="font-size:14px;">
 										<span style="font-size: 16px !important"><?php echo $row_modul->nama_pegawai?></span><br>
 										<?php echo $this->tanggal->formatTime($row_modul->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($row_modul->jd_jam_selesai)?><br>
@@ -77,11 +77,11 @@
 				<?php endforeach;?>
 
 				<div class="col-xs-12 col-sm-3 widget-container-col ui-sortable" id="widget-container-col-5">
-					<div class="widget-box ui-sortable-handle" id="widget-box-5">
+					<div class="widget-box ui-sortable-handle" id="widget-box-5" style="background: white">
 						<div class="widget-body center" style="color: black;">
 							<div class="widget-main padding-6" style="min-height: 170px !important">
 								<span>
-								<span style="font-size: 16px; font-weight: bold">ADMISSION</span><br>
+								<span style="font-size: 14px; font-weight: bold">ADMISSION</span><br>
 								<p style="font-size:14px;">
 									Bagian Informasi dan Pendaftaran Pasien<br>
 								</p>
@@ -157,7 +157,7 @@
 				</div>
 			</div>
 
-			<div id="div_form_input_kode_booking_success" >
+			<div id="div_form_input_kode_booking_success" style="display: none" >
 				<div style="width: 100%; margin-top: 10px; text-align: center">
 					<div class="alert alert-success">
 						<i class="fa fa-check bigger-120"></i>
