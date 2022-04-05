@@ -289,17 +289,18 @@ class Pl_pelayanan_pm extends MX_Controller {
             $row[] = '<div class="center">'.$form.'</div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.'<br /><b>'.$row_list->no_sep.'</b>':$row_list->nama_kelompok;
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
-			$row[] = ($row_list->status_cito==1)?'Cito':'Biasa';
-            $row[] = $row_list->nama_bagian;
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.'':$row_list->nama_kelompok;
+            $row[] = '<div class="center no-padding"><input type="text" id="no_sep_'.$row_list->no_kunjungan.'" name="no_sep['.$row_list->no_kunjungan.']" class="form-input-nosep form-control" style="width: 150px; margin: 0px; border: 0px; text-align: center" onchange="saveNoSep('.$row_list->no_registrasi.', '.$row_list->no_kunjungan.')" value="'.$row_list->no_sep.'"></div>';
+            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_masuk);
+			// $row[] = ($row_list->status_cito==1)?'Cito':'Biasa';
+            $row[] = ucwords($row_list->nama_bagian);
 
             $bag = substr($row_list->kode_bagian_asal, 1, 1);
 
             if($status_pasien=='belum_ditindak'){
 
-                $status = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum ditindak</label>';
+                $status = '<label class="label label-warning" title="Belum Dilayani"><i class="fa fa-info-circle bigger-120"></i></label>';
 
             }else if($status_pasien=='belum_bayar'){
 
@@ -831,6 +832,28 @@ class Pl_pelayanan_pm extends MX_Controller {
 
         /*update tc_kunjungan */
         $this->Pl_pelayanan_pm->update('tc_kunjungan', array('kode_dokter' =>  $this->regex->_genRegex($this->input->post('kode_dokter1'),'RGXINT')), array('no_kunjungan' => $data_pm->no_kunjungan) );
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan' ) );
+        }
+    }
+
+    public function saveNoSep()
+    {
+        // print_r($_POST);die;
+        $this->db->trans_begin();  
+      
+        $no_registrasi = $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL');
+        $no_sep = $this->regex->_genRegex($this->input->post('no_sep'),'RGXQSL');    
+
+        $this->db->update('tc_registrasi', array('no_sep' => $no_sep), array('no_registrasi' => $no_registrasi) );
 
         if ($this->db->trans_status() === FALSE)
         {

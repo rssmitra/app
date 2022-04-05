@@ -182,7 +182,7 @@ function rollback(no_registrasi, no_kunjungan){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           oTable.ajax.reload();
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }

@@ -318,7 +318,10 @@ $(document).ready(function(){
          }          
          return false;                 
        }        
-   }); 
+      }); 
+
+      
+
 })
 
 function format ( data ) {
@@ -340,7 +343,7 @@ function getBillingDetail(noreg, type, field){
 function find_data_reload(result){
 
   oTable.ajax.url('pelayanan/Pl_pelayanan_pm/get_data?'+result.data).load();
-  $("html, body").animate({ scrollTop: "400px" });
+  // $("html, body").animate({ scrollTop: "400px" });
 
 }
 
@@ -362,7 +365,7 @@ function rollback(kode_penunjang){
           $.achtung({message: jsonResponse.message, timeout:5}); 
           getMenu('pelayanan/Pl_pelayanan_pm?type_tujuan='+$("#sess_kode_bagian").val()+'');
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }
@@ -428,7 +431,7 @@ function periksa(kode_penunjang) {
             }
           });
         }else{          
-          $.achtung({message: jsonResponse.message, timeout:5});  
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
         } 
         achtungHideLoader();
       }
@@ -543,11 +546,11 @@ function cetak_slip(kode_penunjang) {
             <th>Kode</th>
             <th>No MR</th>
             <th>Nama Pasien</th>
-            <th>Antrian</th>
+            <th>Urutan</th>
             <th>Penjamin</th>
-            <th>Tanggal Masuk</th>
-            <th>Prioritas</th>
-            <th>Asal Daftar</th>
+            <th width="150px">No SEP</th>
+            <th>Tgl Daftar</th>
+            <th>Asal Pasien</th>
             <th>Status</th>          
           </tr>
         </thead>
