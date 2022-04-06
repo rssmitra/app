@@ -344,9 +344,8 @@ function selesaikanKunjungan(no_registrasi, no_kunjungan){
           <th>No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
-          <th>Tanggal Masuk</th>
+          <th width="150px">Tanggal Kunjungan</th>
           <th>Dokter</th>
-          <th>Antrian ke-</th>
           <th>Petugas</th>
           <th>Status</th>          
         </tr>

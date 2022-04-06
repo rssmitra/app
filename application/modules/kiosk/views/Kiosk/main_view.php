@@ -120,6 +120,12 @@
       </div>
     </div>
     
+    <div class="center" style="left: 50%; top:70%" >
+      <a href="<?php echo base_url().'kiosk'?>" class="btn btn-lg" style="background : green !important; border-color: green; margin-top: 7%"> <i class="fa fa-home"></i> Kembali Ke Beranda</a>
+    </div>
+
+
+
   </div>
   
 </div>
