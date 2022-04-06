@@ -326,7 +326,7 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = ($row_list->kode_perusahaan == 120) ? ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>' : ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>';
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_poli);
+            $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
             $row[] = $row_list->nama_pegawai;
             $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
             $row[] = '<div class="center">'.$row_list->created_by.'</div>';
@@ -409,9 +409,9 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = strtoupper($row_list->nama_pasien);
             $no_sep = ($row_list->kode_perusahaan==120)?'<br><b>'.$row_list->no_sep.'</b>':'';
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.''.$no_sep:$row_list->nama_kelompok;
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_poli);
+            $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
             $row[] = $row_list->nama_pegawai;
-            $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
+            // $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
             $row[] = '<div class="center">'.$row_list->created_by.'</div>';
 
             if($row_list->status_batal==1){

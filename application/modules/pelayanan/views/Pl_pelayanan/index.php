@@ -199,7 +199,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
           <th>No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
-          <th>Tanggal Masuk</th>
+          <th>Tanggal Kunjungan</th>
           <th>Dokter</th>
           <th>Antrian ke-</th>
           <th>Petugas</th>

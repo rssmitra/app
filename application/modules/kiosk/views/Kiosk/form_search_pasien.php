@@ -15,6 +15,7 @@
       if( data.count == 1 )     {
         
         $('#result-find-pasien').show();
+        $('#btn-next-to-main-menu').show();
         $('#no-data-found').hide();
         var obj = data.result[0];
 
@@ -61,7 +62,8 @@
        
 
       }else{              
-
+        $('#btn-next-to-main-menu').hide();
+        $('#result-find-pasien').hide();
         $('#no-data-found').show();
         $('#no-data-found').html('<div class="alert alert-danger"><strong>Data tidak ditemukan!</strong><br>Silahkan masukan No Rekam Medis/NIK anda dengan benar<div>'); 
 
@@ -139,7 +141,7 @@
         
         <div id="no-data-found">
           <div class="center" style="padding-top: 30px !important">
-            <img src="<?php echo base_url()?>assets/images/no-data-found.png" width="300px">
+            <img src="<?php echo base_url()?>assets/images/no-data-found.png" width="200px">
           </div>
         </div>
 
@@ -207,14 +209,18 @@
 
             </div><!-- /.col -->
           </div><!-- /.row -->
-          <div class="center">
-            <a href="#" class="btn btn-lg" style="background : green !important; border-color: green" onclick="getMenu('kiosk/Kiosk/main')">Lanjutkan ke Menu Utama <i class="fa fa-arrow-right"></i></a>
-          </div>
         </div>
 
       </div>
     </div>
-  </form>
+</form>
+
+
+<div class="center" style="left: 50%; top:80%; margin-top: 50px" >
+  <a href="<?php echo base_url().'kiosk'?>" class="btn btn-lg" style="background : green !important; border-color: green"> <i class="fa fa-home"></i> Kembali Ke Beranda</a>
+
+  <a href="#" class="btn btn-lg" id="btn-next-to-main-menu" style="background : green !important; border-color: green; display: none" onclick="getMenu('kiosk/Kiosk/main')">Lanjutkan ke Menu Utama <i class="fa fa-arrow-right"></i></a>
+</div>
 
 
 <!-- <div style="background: white; padding: 10px">

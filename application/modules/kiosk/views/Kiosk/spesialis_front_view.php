@@ -95,7 +95,7 @@
         
         <div id="search-result">
           <div class="center" style="padding-top: 30px !important">
-            <img src="<?php echo base_url()?>assets/images/no-data-found.png" width="300px">
+            <img src="<?php echo base_url()?>assets/images/no-data-found.png" width="200px">
           </div>
         </div>
         
