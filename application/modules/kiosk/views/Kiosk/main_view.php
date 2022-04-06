@@ -14,7 +14,7 @@
   <p style="text-align: center; font-size: 2.5em; font-weight: bold">KIOSK PELAYANAN PASIEN</p>
   <div style="padding-top: 20px">
 
-    <div class="col-sm-3 widget-container-col ui-sortable" id="widget-container-col-11">
+    <div class="col-sm-4 widget-container-col ui-sortable" id="widget-container-col-11">
       <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
         <!-- <div class="widget-header">
           <h6 class="widget-title">BPJS KESEHATAN</h6>
@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <div class="col-sm-3 widget-container-col ui-sortable" id="widget-container-col-11">
+    <div class="col-sm-4 widget-container-col ui-sortable" id="widget-container-col-11">
       <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
         <!-- <div class="widget-header">
           <h6 class="widget-title">UMUM & ASURANSI</h6>
@@ -66,11 +66,11 @@
       </div>
     </div>
 
-    <div class="col-sm-3 widget-container-col ui-sortable" id="widget-container-col-11">
+    <!-- <div class="col-sm-4 widget-container-col ui-sortable" id="widget-container-col-11">
       <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
-        <!-- <div class="widget-header">
+        <div class="widget-header">
           <h6 class="widget-title">ANTRIAN PASIEN</h6>
-        </div> -->
+        </div>
         <div class="widget-body">
           <div class="widget-main padding-4" data-size="125" style="position: relative;">
             <div style="min-height: 350px;">
@@ -91,9 +91,9 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="col-sm-3 widget-container-col ui-sortable" id="widget-container-col-11">
+    <div class="col-sm-4 widget-container-col ui-sortable" id="widget-container-col-11">
       <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
         <!-- <div class="widget-header">
           <h6 class="widget-title">PERJANJIAN PASIEN</h6>

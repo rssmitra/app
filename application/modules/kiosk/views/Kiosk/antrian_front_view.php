@@ -237,6 +237,7 @@
 
 	function close_modal(){
 		$('#modalVerifyKodeBooking').modal('hide');
+		$('#div_form_input_kode_booking').show();
 		$('#div_form_input_kode_booking_success').hide();
 	}
 

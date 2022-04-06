@@ -100,8 +100,8 @@
                   <p style="align: justify; padding-top: 10px; min-height: 100px">Untuk Pasien BPJS yang sudah melakukan Perjanjian via Mobile JKN atau dari Nurse Station.</p>
                 </div>
                 <div class="center">
-                  <!-- <a href="#" class="btn btn-lg" onclick="checkInForm()"  style="background: green !important; border-color: #b7d9b74f">Klik Disini</a> -->
-                  <a href="#" class="btn btn-lg" disabled style="background: grey !important; border-color: grey">On Progress</a>
+                  <a href="#" class="btn btn-lg" onclick="checkInForm()"  style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
+                  <!-- <a href="#" class="btn btn-lg" disabled style="background: grey !important; border-color: grey">On Progress</a> -->
                 </div>
               </div>
             </div>
@@ -124,8 +124,8 @@
                   <p style="align: justify; padding-top: 10px; min-height: 100px; text-align: center">Pendaftaran Pasien BPJS untuk Pasien Baru atau Pasien Lama  <br> dengan Nomor Rujukan Baru tujuan ke Poli/Klinik/Spesialis.</p>
                 </div>
                 <div class="center">
-                  <!-- <a href="#" onclick="getMenu('kiosk/Kiosk/bpjs_mod_poli')" class="btn btn-lg" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a> -->
-                  <a href="#" class="btn btn-lg" disabled style="background: grey !important; border-color: grey">On Progress</a>
+                  <a href="#" onclick="getMenu('kiosk/Kiosk/bpjs_mod_poli')" class="btn btn-lg" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
+                  <!-- <a href="#" class="btn btn-lg" disabled style="background: grey !important; border-color: grey">On Progress</a> -->
                 </div>
               </div>
             </div>
