@@ -13,8 +13,12 @@ class Display_antrian extends MX_Controller {
     }
 
     public function index() {
-   
-        $this->load->view('display_antrian/index');
+        
+        $data = array(
+            'app' => $this->db->get_where('tmp_profile_app', array('id' => 1))->row(),
+        );
+
+        $this->load->view('display_antrian/index', $data);
     }
 
     public function farmasi() {

@@ -159,7 +159,10 @@
 
         <div class="row display-video">
           <!-- <iframe src="<?php echo base_url()?>/display_loket/main" width="100%" height="100%" frameborder="0"></iframe> -->
-          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/QJsy7RVpETE?autoplay=1&mute=1&loop=1&playlist=QJsy7RVpETE" title="Setia Mitra Hospital" frameborder="0" allowfullscreen></iframe>
+          
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/6djTBlnC5Pk?autoplay=1&mute=1&loop=1&playlist=6djTBlnC5Pk" title="Setia Mitra Hospital" frameborder="0" allowfullscreen></iframe>
+          
+            <!-- <iframe width="560" height="315" src="https://www.youtube.com/embed/6djTBlnC5Pk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
         </div>
 
       </div>
