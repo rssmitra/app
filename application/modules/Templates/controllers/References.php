@@ -1399,8 +1399,8 @@ class References extends MX_Controller {
 		if(count($exc) > 0){
 
       	// stok cito
-				$stok_cito = isset($cito->stok_akhir)?$cito->stok_akhir:0;
-				$harga_satuan_cito = isset($cito->harga_jual)?$cito->harga_jual:0;
+			$stok_cito = isset($cito->stok_akhir)?$cito->stok_akhir:0;
+			$harga_satuan_cito = isset($cito->harga_jual)?$cito->harga_jual:0;
 
 			$html .= '<input type="hidden" name="id_obat" value="'.$exc[0]->id_obat.'">';
 			$html .= '<input type="hidden" name="kode_brg" value="'.$exc[0]->kode_brg.'">';
