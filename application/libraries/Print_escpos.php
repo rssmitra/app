@@ -580,6 +580,97 @@ class Print_escpos{
        
     }
 
+    public function print_barcode($params)
+    {
+        # code...
+        $CI =& get_instance();
+                     
+        $p = printer_open("\\\\10.10.10.62\EPSON TM-U220 ReceiptE4");
+        
+        // define
+        $font_familiy = "Calibri";
+        $var_margin_left = 5;
+        $var_margin_draw_text = 125;
+        $font_medium_width = 26;
+        $font_medium_height = 12;
+        $line_space = 20;
+
+        printer_set_option($p, PRINTER_MODE, "RAW");
+            
+        printer_start_doc($p);
+        printer_start_page($p);
+
+        $nama_pasien = $params['nama_pasien'];
+        $no_mr = $params['no_mr'];
+        $unit = $params['unit'];
+        $currentdate = $CI->tanggal->formatDateTimeFormDmy(date("Y-m-d h:i:s"));
+
+        // header
+        $font = printer_create_font($font_familiy, 65, 25, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, $no, 180, -10);
+
+        $font = printer_create_font($font_familiy, 30, 12, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, strtoupper(COMP_LONG), 125, 60);
+
+        // address
+        $font = printer_create_font($font_familiy, 25, 9, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, COMP_ADDRESS_SORT, 30,90);
+
+        // title tracer
+        $font = printer_create_font($font_familiy, 32, 12, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Tracer Barcode", 140, 110);
+
+        // line
+        $pen = printer_create_pen(PRINTER_PEN_SOLID, 3, "000000");
+        printer_select_pen($p, $pen);
+        // printer_draw_line($p, padding-left, margin-bottom-ip, padding-right, margin-bottm-up);
+        printer_draw_line($p, 0, 155, 900, 155);
+
+        // no mr
+        $font = printer_create_font($font_familiy, $font_medium_width, $font_medium_height, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "No. MR ", 100, 165);
+
+        $font = printer_create_font($font_familiy, 45, 17, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, $no_mr, 190, 160);
+
+        // nama pasien
+        $font = printer_create_font($font_familiy, $font_medium_width, $font_medium_height, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Nama", $var_margin_left, 240);
+        $font = printer_create_font($font_familiy, $font_medium_width, $font_medium_height, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, " : ". $nama_pasien , $var_margin_draw_text, 240);
+
+        // dokter pengirim
+        $font = printer_create_font($font_familiy, $font_medium_width, $font_medium_height, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "Tujuan", $var_margin_left, 270);
+        $font = printer_create_font($font_familiy, $font_medium_width, $font_medium_height, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, " : ". $unit , $var_margin_draw_text, 270);
+
+        $font = printer_create_font($font_familiy, 45, 17, PRINTER_FW_BOLD, false, false, false, 0);
+        printer_select_font($p, $font);
+        printer_draw_text($p, "CETAK BARCODE", 120, 320);
+
+                        
+        printer_delete_font($font);
+        printer_delete_pen($pen);
+        printer_end_page($p);
+        printer_end_doc($p);
+
+        printer_close($p);
+
+        return true;
+       
+    }
+
     function title(Printer $printer, $text)
     {
         $printer -> selectPrintMode(Printer::MODE_EMPHASIZED);

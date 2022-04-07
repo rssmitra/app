@@ -521,6 +521,20 @@ class Kiosk extends MX_Controller {
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);
                 $this->print_bukti_registrasi($no_registrasi, $no_antrian, $tipe_pasien);
 
+                // print tracer
+                $data_tracer = [
+                    'no_mr' => $no_mr,
+                    'nama_pasien' => $_POST['nama_pasien'],
+                    'unit' => $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $kode_bagian_masuk)),
+                ];
+                
+                if($kode_bagian_masuk == '050101'){
+                    $tracer = $this->print_escpos->print_barcode($data_tracer);
+                    if( $tracer == 1 ) {
+                        $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
+                    }
+                }
+
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $no_registrasi, 'no_antrian' => $no_antrian, 'tipe' => $tipe_pasien, 'type_pelayanan' => 'Penunjang Medis'));
 
                 
