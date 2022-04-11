@@ -178,10 +178,12 @@ function formatDate(date) {
         <input type="hidden" name="selected_day" id="selected_day">
         <input type="hidden" name="selected_time" id="selected_time">
         <input type="hidden" name="time_start" id="time_start">
-        <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($value->id_tc_pesanan)?$value->id_tc_pesanan:''?>">
-        <input type="hidden" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($no_kunjungan)?$no_kunjungan: $value->referensi_no_kunjungan?>">
+        <input type="hidden" name="id_tc_pesanan" id="id_tc_pesanan" value="<?php echo isset($pasien->id_tc_pesanan)?$pasien->id_tc_pesanan:''?>">
+        <input type="hidden" name="no_ktp" id="no_ktp" value="<?php echo isset($pasien->no_ktp)?$pasien->no_ktp:''?>">
+        <input type="hidden" name="no_kartu_bpjs" id="no_kartu_bpjs" value="<?php echo isset($pasien->no_kartu_bpjs)?$pasien->no_kartu_bpjs:''?>">
+        <input type="hidden" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($no_kunjungan)?$no_kunjungan: $pasien->referensi_no_kunjungan?>">
         <input type="hidden" name="is_no_mr" id="is_no_mr" value="N">
-        <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($_GET['no_mr'])?$_GET['no_mr']:$value->no_mr?>">
+        <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($_GET['no_mr'])?$_GET['no_mr']:$pasien->no_mr?>">
 
         <p><b>DATA PASIEN</b></p>
         <div class="form-group">
@@ -189,7 +191,7 @@ function formatDate(date) {
             <div class="col-md-6">
               <input type="text" name="nama_pasien" id="nama_pasien" class="form-control" style="width:75%;display:inline; margin-left: 10px" value="<?php echo isset($pasien->nama_pasien)?$pasien->nama_pasien:''?>" >
               <span style="display:inline;float:left;width:18%;">
-                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'gelar_nama')), isset($value->title)?$value->title:'Tn.'  , 'gelar_nama', 'gelar_nama', 'form-control', '', '') ?> 
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'gelar_nama')), isset($pasien->title)?$pasien->title:'Tn.'  , 'gelar_nama', 'gelar_nama', 'form-control', '', '') ?> 
               </span>
             </div>
         </div>
@@ -197,11 +199,11 @@ function formatDate(date) {
         <div class="form-group" style="margin-top: 3px">
             <label class="control-label col-sm-2">Telp Rumah</label>
             <div class="col-md-2">
-              <input type="text" name="no_telp" id="no_telp" class="form-control" value="<?php echo isset($value)?($value->no_telp!=0 || $value->no_telp!='' )?$value->no_telp:'':'' ?>"  >
+              <input type="text" name="no_telp" id="no_telp" class="form-control" value="<?php echo isset($value)?($pasien->no_telp!=0 || $pasien->no_telp!='' )?$pasien->no_telp:'':'' ?>"  >
             </div>
             <label class="control-label col-sm-1">No HP</label>
             <div class="col-md-2">
-              <input type="text" name="no_hp" id="no_hp" class="form-control" value="<?php echo isset($value->no_hp)?$value->no_hp:''; ?>" >
+              <input type="text" name="no_hp" id="no_hp" class="form-control" value="<?php echo isset($pasien->no_hp)?$pasien->no_hp:''; ?>" >
             </div>
         </div>
         

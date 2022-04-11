@@ -383,27 +383,25 @@ $(document).ready(function () {
 
   $('#formInsertSep').ajaxForm({
       beforeSend: function() {
-      achtungShowLoader();  
+      // achtungShowLoader();  
       },
       uploadProgress: function(event, position, total, percentComplete) {
       },
       complete: function(xhr) {     
-      var data=xhr.responseText;
-      var jsonResponse = JSON.parse(data);
-      if(jsonResponse.status == 200){
-          $.achtung({message: jsonResponse.message, timeout:5});
-          // $('#load-content-page').load('Self_service/mandiri_bpjs');
-          $('#noSep').val(jsonResponse.no_sep);
-          /*load sep untuk di print*/
-          $('#load-content-page').load("../ws_bpjs/Ws_index/view_sep/0112R0340621V003929");
-      }else{
-          $('#load-content-page').load("../ws_bpjs/Ws_index/view_sep/0112R0340621V003929");
-          // window.open("../ws_bpjs/Ws_index/view_sep/0112R0340621V003929", '_blank');
-          $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
-          $('#message-result').html('<div class="alert alert-danger">'+jsonResponse.message+'</div>');
-      }
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        if(jsonResponse.status == 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            var no_sep = '0112R0340122V000062';
+            $('#noSep').val(jsonResponse.no_sep);
+            /*load sep untuk di print*/
+            $('#load-content-page').load("../ws_bpjs/Ws_index/view_sep/"+no_sep+"");
+        }else{
+            // window.open("../ws_bpjs/Ws_index/view_sep/0112R0340621V003929", '_blank');
+            $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
+            $('#message-result').html('<div class="alert alert-danger">'+jsonResponse.message+'</div>');
+        }
 
-      achtungHideLoader();
       }
   }); 
 
@@ -569,6 +567,7 @@ function showModalTTD()
                 <form class="form-horizontal" method="post" id="formInsertSep" action="<?php echo base_url().'registration/Self_service/processCetakSep'?>" enctype="Application/x-www-form-urlencoded" autocomplete="off">   
                     <div class="row" id="result-dt-rujukan" style="padding-top: 0px;">
                         <!-- hidden form -->
+                        <input type="hidden" name="kode_booking" id="kode_booking" value="<?php echo isset($_GET['kode'])?$_GET['kode']:0?>">
                         <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($profile['no_mr'])?$profile['no_mr']:0?>">
                         <input type="hidden" name="no_registrasi" id="no_registrasi" value="<?php echo isset($is_registered->no_registrasi)?$is_registered->no_registrasi:0?>">
                         <input type="hidden" name="no_antrian" id="no_antrian" value="<?php echo isset($is_registered->no_antrian)?$is_registered->no_antrian:0?>">

@@ -25,6 +25,9 @@ class Self_service extends MX_Controller {
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->
         get_menu_by_class(get_class($this))->name : 'Title';
 
+        $this->username = '4dm1nR55m';
+        $this->password = 'P@s5W0rdR55m';
+
     }
 
     public function index() {
@@ -94,23 +97,34 @@ class Self_service extends MX_Controller {
             $data_loket[$key]->kuota = $kuota;
         }
 
-        //print_r($_GET['type']);die;
         $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
-        
         $data['klinik'] = $data_loket;
+
+        // print_r($data);die;
 
         $this->load->view('Self_service/index_antrian_poli', $data);
     }
 
     public function jadwal_dokter() { 
-        //echo '<pre>';print_r($this->session->all_userdata());die;
         /*define variable data*/
         $data = array(
             'title' => $this->title,
-            'breadcrumbs' => $this->breadcrumbs->show()
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'nama_bagian' => $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $_GET['kode'])),
         );
         /*load view index*/
         $this->load->view('Self_service/index_jadwal_dokter', $data);
+    }
+
+    public function view_spesialis() { 
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'spesialis' => $this->db->select('kode_bagian, nama_bagian')->like('nama_bagian', 'klinik')->get_where('mt_bagian', array('validasi' => 100, 'status_aktif' => 1))->result(),
+        );
+        /*load view index*/
+        $this->load->view('Self_service/view_spesialis', $data);
     }
 
      public function detail_jadwal($jd_id, $hari) { 
@@ -146,14 +160,29 @@ class Self_service extends MX_Controller {
         $this->db->join('tc_kunjungan', 'tc_kunjungan.no_registrasi=tc_registrasi.no_registrasi','left');
         $this->db->join('pl_tc_poli', 'pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan','left');
         $this->db->where('tc_registrasi.no_mr', $param['no_mr']);
-        $this->db->where('CAST(tgl_jam_masuk as DATE) = ', $param['tgl_kunjungan_sql']);
-        return $this->db->get()->row();
+        $this->db->where('tc_registrasi.kode_bagian_masuk', $param['kode_bagian']);
+        $this->db->where('tc_registrasi.kode_dokter', $param['kode_dokter']);
+        $this->db->where('CAST(tgl_jam_masuk as DATE) = ', $param['tgl_masuk']);
+        $query = $this->db->get()->row();
+        echo $this->db->last_query();
+        return $query;
     }
 
     public function form_perjanjian($jd_id) {
         
         $data = array();
-        $data['value'] =  $this->db->join('mt_bagian','mt_bagian.kode_bagian=tr_jadwal_dokter.jd_kode_spesialis','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tr_jadwal_dokter.jd_kode_dokter','left')->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
+        // jadwal by dr spesialis
+        $row_jadwal = $this->db->join('mt_bagian','mt_bagian.kode_bagian=tr_jadwal_dokter.jd_kode_spesialis','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tr_jadwal_dokter.jd_kode_dokter','left')->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
+        $obj = new stdClass();
+        $obj->jd_kode_dokter = $row_jadwal->jd_kode_dokter;
+        $obj->jd_kode_spesialis = $row_jadwal->jd_kode_spesialis;
+        $jadwal_dr = $this->Regon_info_jadwal_dr->get_jadwal_by_dr_spesialis($obj);
+        foreach ($jadwal_dr as $key => $value) {
+            $getData[$value['jd_hari']] = $value;
+        }
+
+        $data['jadwal_dr_spesialis'] =  $getData;
+        $data['value'] =  $row_jadwal;
         
         // echo '<pre>'; print_r($data);die;
         $this->load->view('Self_service/form_perjanjian', $data);
@@ -179,9 +208,8 @@ class Self_service extends MX_Controller {
                 // echo '<pre>';print_r($value_2);die;
                 $no++;
                 $row = array();
-                $row[] = '<div class="center" style="font-size: 14px">'.$no.'</div>';
-                $row[] = '<div style="text-align: left !important" style="font-size: 14px">'.$main_data['nama_pegawai'].'</div>';
-                $row[] = '<div style="text-align: left !important" style="font-size: 14px">'.ucwords($main_data['nama_bagian']).'</div>';
+                $row[] = '<div style="text-align: left !important; font-size: 14px;
+                font-weight: bold;">'.$main_data['nama_pegawai'].'</div>';
 
                 for ($i=1; $i < 8; $i++) { 
 
@@ -195,7 +223,7 @@ class Self_service extends MX_Controller {
                                 $end = ($value_2[$key]['jd_jam_selesai'] != '')?' - '.$value_2[$key]['jd_jam_selesai'].'':'';
                                 $val_result = $this->tanggal->formatTime($value_2[$key]['jd_jam_mulai']).' s/d '.$this->tanggal->formatTime($value_2[$key]['jd_jam_selesai']).'';
 
-                                $row[] = '<div class="center" style="font-weight: bold"><a href="#" onclick="show_modal('."'Self_service/detail_jadwal/".$value_2[$key]['jd_id']."/".$value_2[$key]['jd_hari']."'".')">'.$val_result.'</a></div>';
+                                $row[] = '<div class="center" style="font-weight: bold; font-size: 12px"><a href="#" onclick="scrollSmooth('."'Self_service/form_perjanjian/".$value_2[$key]['jd_id']."/".$value_2[$key]['jd_hari']."'".')">'.$val_result.'</a></div>';
                                 /*$row[] = '<div class="center"><span class="btn btn-info btn-sm tooltip-info" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Bottm Info">Bottom</span></div>';*/
                             }else{
                                 $row[] = '<div class="center"><i class="fa fa-info-circle orange bigger-150"></i></div>';
@@ -228,7 +256,7 @@ class Self_service extends MX_Controller {
     public function findKodeBooking($kode)
     {
         
-        $this->db->select('no_mr, nama, CAST(jam_pesanan as DATE) as jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, kode_bagian, tc_pesanan.kode_dokter, id_tc_pesanan ');
+        $this->db->select('no_mr, nama, CAST(jam_pesanan as DATE) as jam_pesanan, mt_dokter_v.nama_pegawai as nama_dr, mt_bagian.nama_bagian, kode_poli_bpjs, kode_bagian, tc_pesanan.kode_dokter, id_tc_pesanan, CAST(tgl_masuk as DATE)as tgl_masuk ');
         $this->db->from('tc_pesanan');
         $this->db->like('unique_code_counter', $kode);
         $this->db->or_like('kode_perjanjian', $kode);
@@ -250,6 +278,7 @@ class Self_service extends MX_Controller {
                 'kode_poli_bpjs' => $dt->kode_poli_bpjs,
                 'tgl_kunjungan' => $this->tanggal->formatDatedmY($dt->jam_pesanan),
                 'tgl_kunjungan_sql' => $dt->jam_pesanan,
+                'tgl_masuk' => $dt->tgl_masuk,
                 'nama_dr' => strtoupper($dt->nama_dr),
                 'poli' => strtoupper($dt->nama_bagian),
                 'jam_praktek' => $this->tanggal->formatDateTimeToTime($dt->jam_pesanan),
@@ -698,10 +727,9 @@ class Self_service extends MX_Controller {
         $tracer = $this->print_escpos->print_bukti_registrasi($registrasi, $no_antrian, $tipe_pasien);
         // echo '<pre>';print_r($tracer);die;
         if( $tracer == 1 ) {
-                $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );        
+            $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );        
         }
         return true;
-        
     }
 
     public function processCetakSep(){
@@ -727,8 +755,23 @@ class Self_service extends MX_Controller {
             /*execution*/
             $this->db->trans_begin();
 
+            $no_registrasi = $_POST['no_registrasi'];
+            $no_antrian = $_POST['no_antrian'];
+
             // update ttd pasien
             $this->db->where('no_mr', $_POST['no_mr'])->update('mt_master_pasien', array('ttd' => $_POST['paramsSignature']));
+            // cek data registrasi
+            if($_POST['no_registrasi'] == 0){
+                $response = array(
+                    'status' => 201,
+                    'message' => 'Silahkan lakukan check in terlebih dahulu pada Aplikasi Mobile JKN anda, atau ambil nomor antrian untuk ke bagian pendaftaran!',
+                );
+                
+                echo json_encode($response);
+                exit;
+            }
+
+            // cek data registrasi
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -738,10 +781,9 @@ class Self_service extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                $dt = $this->Reg_klinik->get_by_id($_POST['no_registrasi']);
-                $this->print_bukti_registrasi($_POST['no_registrasi'], $_POST['no_antrian'], $_POST['tipe_pasien']);
-
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $_POST['no_registrasi'], 'type_pelayanan' => 'Rawat Jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien ));
+                $dt = $this->Reg_klinik->get_by_id($no_registrasi);
+                $this->print_bukti_registrasi($no_registrasi, $no_antrian, $_POST['tipe_pasien']);
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $no_registrasi, 'type_pelayanan' => 'Rawat Jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien, 'no_sep' => $dt->no_sep ));
             }
         
         }

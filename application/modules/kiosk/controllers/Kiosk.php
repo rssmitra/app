@@ -537,8 +537,6 @@ class Kiosk extends MX_Controller {
 
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $no_registrasi, 'no_antrian' => $no_antrian, 'tipe' => $tipe_pasien, 'type_pelayanan' => 'Penunjang Medis'));
 
-                
-                
             }
             
         }

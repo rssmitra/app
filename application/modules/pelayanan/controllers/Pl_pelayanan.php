@@ -1435,6 +1435,9 @@ class Pl_pelayanan extends MX_Controller {
                 $tarif_konsultasi = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 12);
             }
 
+            // pulangkan pasien
+            $this->daftar_pasien->pulangkan_pasien($no_kunjungan,3);
+
             // simpan penunjang medis
             if(isset($_POST['check_pm'])) :
                 $title = 'Rujuk Penunjang Medis';
@@ -1527,18 +1530,20 @@ class Pl_pelayanan extends MX_Controller {
 
             endif; 
 
-            // pulangkan pasien
-            $this->daftar_pasien->pulangkan_pasien($no_kunjungan,3);
-
             /*update pl_tc_poli*/
             $arrPlTcPoli = array('status_periksa' => 3, 'tgl_keluar_poli' => date('Y-m-d H:i:s'), 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
             $this->db->where('id_pl_tc_poli', $_POST['id_pl_tc_poli'])->update('pl_tc_poli', $arrPlTcPoli );
 
             // generate dokumen resume
-            if($_POST['kode_perusahaan'] == 120){
-                $filename = 'RESUME-'.$_POST['no_mr'].'-'.$_POST['no_registrasi'].'-'.date('dmY').'';;
-                $this->cbpModule->generateSingleDoc($filename);
-            }
+            // if($_POST['kode_perusahaan'] == 120){
+            //     $filename = 'RESUME-'.$_POST['no_mr'].'-'.$_POST['no_registrasi'].'-'.date('dmY').'';;
+            //     $this->cbpModule->generateSingleDoc($filename);
+            // }
+
+            // update task
+            // update task antrian online
+            $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
+            $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $_POST['kode_perjanjian'], 'taskid' => 5, 'waktu' => $waktukirim));
 
 
             if ($this->db->trans_status() === FALSE)

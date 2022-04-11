@@ -138,12 +138,12 @@
             <script type="text/javascript">
               try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
             </script>
-            <div style="background: linear-gradient(45deg, #8cc22f, transparent);margin-top: 3%; width: 100%">
-              <div style="float: right; width: 20%; padding: 5px; padding-top: 8px; border-left: 1px solid white; text-align: center; font-size: 14px; color: white">
+            <div style="background: linear-gradient(45deg, #8cc22f, transparent);margin-top: 17px; width: 100%">
+              <div style="float: right; width: 20%; padding: 5px; padding-top: 30px; border-left: 1px solid white; text-align: center; font-size: 14px; color: white">
                 <?php echo date('d/M/Y') ?> <span id="clock"><?php echo date('H:i:s')?></span>
               </div>
               <div style="float: left; width: 80%">
-                  <marquee style="font-size: 18px;color: white;margin-top: 8px;">Hanya untuk pasien yang sudah pernah terdaftar atau yang pernah berobat ke RS Setia Mitra. Untuk pasien baru silahkan mengambil Nomor Antrian Pendaftaran</marquee>
+                  <marquee style="font-size: 18px;color: white;margin-top: 29px;">Hanya untuk pasien yang sudah pernah terdaftar atau yang pernah berobat ke RS Setia Mitra. Untuk pasien baru silahkan mengambil Nomor Antrian Pendaftaran</marquee>
               </div>
             </div>
 
@@ -252,7 +252,7 @@
                     </div>
 
                     <div class="widget-body">
-                      <div class="widget-main" onclick="scrollSmooth('Self_service/jadwal_dokter')">
+                      <div class="widget-main" onclick="scrollSmooth('Self_service/view_spesialis')">
                         <p class="muted">
                         <img src="<?php echo base_url()?>assets/kiosk/appointment.png" height="100" alt=""><br>
                           Informasi Jadwal Praktek Dokter <br>dan Perjanjian Pasien
@@ -261,7 +261,7 @@
                         <hr>
 
                         <p>
-                          <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/jadwal_dokter')">Selengkapnya</span>
+                          <span class="btn btn-block btn-primary" data-rel="tooltip" title="" data-original-title="Default" onclick="scrollSmooth('Self_service/view_spesialis')">Selengkapnya</span>
                         </p>
                       </div>
                     </div>
@@ -575,6 +575,16 @@
 
         return age;
         //alert('You are ' + age + ' years old'); 
+    }
+
+    function getLiburNasional(year){
+
+      if(year == 2022){
+          var dataLiburNasional = ["1-1-2022","1-2-2022", "28-2-2022","3-3-2022","15-4-2022","1-5-2022","2-5-2022","3-5-2022","16-5-2022","26-5-2022","1-6-2022","9-7-2022","30-7-2022","17-8-2022","8-10-2022","25-12-2022"];
+      }
+
+      return dataLiburNasional;
+
     }
 
 

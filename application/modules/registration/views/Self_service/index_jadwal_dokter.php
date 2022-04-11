@@ -9,9 +9,10 @@
       "ordering": false,
       "paging": false,
       "searching": false,
+      "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": "Self_service/get_data_jadwal_dokter",
+          "url": "Self_service/get_data_jadwal_dokter?kode=<?php echo isset($_GET['kode'])?$_GET['kode']:''?>",
           "type": "POST"
       },
 
@@ -43,43 +44,45 @@
       font-size: 12px;
     }
     .table-custom thead {
-      background-color: #14506b;
+      background-color: #013518;
       color: white;
+      font-size: 14px;
     }
 
     .table-custom th, td {
-      padding: 10px;
+      padding: 5px;
       border: 1px solid #c5d0dc;
     }
     .table-custom tbody tr:hover {background-color: #e6e6e6e0;}
 </style>
 
 <div style="background: white; padding: 10px">
-  <p style="font-size: 24px; font-weight: bold;text-align: center;text-shadow: 1px 2px 2px #c5c4c4;">INFORMASI JADWAL DOKTER</p>
+  <p style="font-size: 20px; font-weight: bold;text-align: center;text-shadow: 1px 1px 1px #c5c4c4; color: darkgreen"><?php echo strtoupper($nama_bagian)?></p>
   <hr class="separator">
 
   <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="information/regon_info_jadwal_dr" class="table-custom">
+      <table id="dynamic-table" class="table-custom">
         <thead>
         <tr>  
-          <th style="color: white !important" rowspan="2">No</th>
-          <th style="color: white !important" rowspan="2">Nama Dokter</th>
-          <th style="color: white !important" rowspan="2">Poli/Klinik Spesialis</th>
+          <!-- <th style="color: white !important" rowspan="2">No</th> -->
+          <th style="color: white !important; width: 300px" rowspan="2">Nama Dokter</th>
           <th style="color: white !important" colspan="7" class="center">Hari/Jam Praktek</th>
         </tr>
         <tr style="color: white !important">
-          <th style="color: white !important" class="center" width="105px">Senin</th>
-          <th style="color: white !important" class="center" width="105px">Selasa</th>
-          <th style="color: white !important" class="center" width="105px">Rabu</th>
-          <th style="color: white !important" class="center" width="105px">Kamis</th>
-          <th style="color: white !important" class="center" width="105px">Jumat</th>
-          <th style="color: white !important" class="center" width="105px">Sabtu</th>
-          <th style="color: white !important" class="center" width="105px">Minggu</th>        
+          <th style="color: white !important" class="center" width="115px">Senin</th>
+          <th style="color: white !important" class="center" width="115px">Selasa</th>
+          <th style="color: white !important" class="center" width="115px">Rabu</th>
+          <th style="color: white !important" class="center" width="115px">Kamis</th>
+          <th style="color: white !important" class="center" width="115px">Jumat</th>
+          <th style="color: white !important" class="center" width="115px">Sabtu</th>
+          <th style="color: white !important" class="center" width="115px">Minggu</th>        
         </tr>
       </thead>
       <tbody>
       </tbody>
     </table>
+
+    <a href="#" class="btn btn-sm btn-success" onclick="scrollSmooth('Self_service/view_spesialis')" style="margin-bottom: 20px"><i class="fa fa-arrow-left"></i> Ganti Poli/Klinik Tujuan</a>
   </div>
 </div>
 
