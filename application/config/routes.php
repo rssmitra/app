@@ -54,5 +54,4 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 /*custom routes*/
-$route['surat/disposisi/masuk'] = "surat/disposisi";
-$route['surat/disposisi/keluar'] = "surat/disposisi?out=true";
+$route['verifikasiDoc'] = "Templates/Attachment/verifikasiDoc";
