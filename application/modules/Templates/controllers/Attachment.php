@@ -9,12 +9,6 @@ class Attachment extends MX_Controller {
     function __construct() {
 
         parent::__construct();
-        /*breadcrumb default*/
-        //$this->breadcrumbs->push('Index', 'templates/'.get_class($this).'');
-        /*session redirect login if not login*/
-        if($this->session->userdata('logged')!=TRUE){
-            redirect(base_url().'Login');exit;
-        }
         /*load model*/
         $this->load->model('attachment_model');
         $this->load->library('lib_menus');
@@ -32,6 +26,37 @@ class Attachment extends MX_Controller {
         );
         /*load view index*/
         $this->load->view('attachment/index', $data);
+    }
+
+    public function verifikasiDoc() {
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show()
+        );
+        /*load view index*/
+        $this->load->view('attachment/form_verifikasi_doc', $data);
+    }
+
+    public function prosesValidasiDok($kode){
+        
+        $query = $this->db->get_where('pm_pasienpm_v', array('CAST(kode_penunjang as NVARCHAR(55)) = ' => $kode));
+
+        if($query->num_rows() > 0){
+            $response = array(
+                'code' => 200,
+                'message' => 'Data ditemukan',
+                'data' => $query->row(),
+            );
+        }else{
+            $response = array(
+                'code' => 300,
+                'message' => 'Data tidak ditemukan'
+            );
+        }
+
+        echo json_encode($response);
+
     }
 
     public function get_data()
