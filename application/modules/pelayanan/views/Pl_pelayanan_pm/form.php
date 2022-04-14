@@ -212,7 +212,7 @@ function formatDate(date) {
 /*function find pasien*/
 function find_pasien_by_keyword(keyword){  
 
-    $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword=" + keyword, '', function (data) {      
+    $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien_by_mr') ?>?keyword=" + keyword, '', function (data) {      
           achtungHideLoader();          
 
           /*if cannot find data show alert*/
