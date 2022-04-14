@@ -167,6 +167,7 @@ function changeCheckboxRujukanBaru(){
             </div>
         </div>
     </div>
+
     <div class="form-group">
         <label class="control-label col-md-3">No.Surat Kontrol/SKDP</label>
         <div class="col-md-3">
@@ -280,6 +281,10 @@ function changeCheckboxRujukanBaru(){
             <i class="ace-icon fa fa-globe icon-on-right bigger-110"></i>
             Terbitkan SEP
         </button>
+        <a href="#" onclick="show_form_sep()" class="btn btn-xs btn-success" style="height: 30px !important; font-size: 14px">
+            <i class="ace-icon fa fa-edit icon-on-right bigger-110"></i>
+            Input No SEP Manual
+        </a>
     </div>
 
 
@@ -293,15 +298,22 @@ function changeCheckboxRujukanBaru(){
 
     <input name="current_day" id="current_day" class="form-control" type="hidden" value="<?php echo $this->tanggal->gethari(date('D'))?>">
 
+    <div class="form-group" id="form_sep">
+        <label class="control-label col-sm-3">* Nomor SEP</label>            
+        <div class="col-md-4">            
+            <input name="noSepManual" id="noSepManual" class="form-control" onChange="duplicateFieldValue('noSepManual', 'noSep')" type="text" placeholder="Masukan No SEP">
+        </div>   
+    </div>
+    
     <div class="form-group">
-        <label class="control-label col-sm-3">*Klinik</label>
+        <label class="control-label col-sm-3">* Klinik</label>
         <div class="col-sm-9">
             <?php echo $this->master->get_change($params = array('table' => 'tr_jadwal_dokter', 'id' => 'jd_kode_spesialis', 'name' => 'jd_kode_spesialis', 'where' => array()), '' , 'reg_klinik_rajal_sep', 'reg_klinik_rajal_sep', 'form-control', '', '') ?>
         </div>
     </div>
 
     <div class="form-group">
-        <label class="control-label col-sm-3">*Dokter</label>
+        <label class="control-label col-sm-3">* Dokter</label>
         <div class="col-sm-9" id="dokter_by_klinik">
             <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'reg_dokter_rajal_sep', 'reg_dokter_rajal_sep', 'form-control', '', '') ?>
             <input name="jd_id" id="jd_id" class="form-control" type="hidden">

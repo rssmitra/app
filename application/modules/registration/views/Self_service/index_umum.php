@@ -180,225 +180,225 @@
 
 <script>
 
-$(document).ready(function () {
+    $(document).ready(function () {
 
-    // focus input
-    $('#keyword_mr').focus();
+        // focus input
+        $('#keyword_mr').focus();
 
-    getMenuTabs('Self_service/tab_poli', 'tab_jenis_kunjungan');
-    $('#jenis_pendaftaran').val(1);
-    
-    var today = getDateToday();
-    console.log(today);
-	$('#btnSearchPasien').click(function (e) {
-      e.preventDefault();
-      findPasien();
-    });
-
-    $('#tab-penunjang').click(function (e) {
-        $('#form_registrasi').attr('action', 'Self_service/processRegistrasiPenunjang');
-    })
-
-    $('#tab-poli').click(function (e) {
-        $('#form_registrasi').attr('action', 'Self_service/processRegistrasi');
-    })
-
-    $( "#keyword_mr" )
-    .keypress(function(event) {
-        var keycode =(event.keyCode?event.keyCode:event.which); 
-        if(keycode ==13){
-        event.preventDefault();
-        if($(this).valid()){
-            $('#btnSearchPasien').click();
-        }
-        return false;       
-        }
-    });
-    
-    $('#form_registrasi').ajaxForm({
-        beforeSend: function() {
-            achtungShowFadeIn();  
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-        },
-        complete: function(xhr) {     
-        var data=xhr.responseText;
-        var jsonResponse = JSON.parse(data);
-
-        if(jsonResponse.status === 200){
-            $.achtung({message: jsonResponse.message, timeout:3});
-            // message success
-            $('#konfirmasi_kunjungan').html('<div class="alert alert-block center"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><strong><img src="<?php echo base_url()?>assets/kiosk/check-circle.jpeg" width="100px"><br> <h2>Sukses !</h2> </strong> <p>Silahkan langsung menunggu di Ruang Tunggu Poli/Klinik.<br>Terima Kasih.</p></div>');
-            setTimeout(function () {
-                    location.reload();
-            }, 5000);
-        }else{
-            $.achtung({message: jsonResponse.message, timeout:5});
-        }
-        achtungHideLoader();
-        }
-    });
-    
-
-    $('input[name="jenis_penjamin"]').click(function (e) {
-        var value = $(this).val();
-        if(value == 'Umum'){
-            $('#div_penjamin_perusahaan').hide();
-        }else{
-            $('#div_penjamin_perusahaan').show();
-        }
+        getMenuTabs('Self_service/tab_poli', 'tab_jenis_kunjungan');
+        $('#jenis_pendaftaran').val(1);
         
-    });
+        var today = getDateToday();
+        console.log(today);
+        $('#btnSearchPasien').click(function (e) {
+        e.preventDefault();
+        findPasien();
+        });
 
-    $('#InputKeyPenjamin').typeahead({
-        source: function (query, result) {
-            $.ajax({
-                url: "../templates/references/getPerusahaan",
-                data: { keyword:query },            
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                  result($.map(response, function (item) {
-                      return item;
-                  }));
-                }
-            });
-        },
-        afterSelect: function (item) {
-          // do what is needed with item
-          var val_item=item.split(':')[0];
-          console.log(val_item);
-          $('#kode_perusahaan_hidden').val(val_item);
-        }
-    });
+        $('#tab-penunjang').click(function (e) {
+            $('#form_registrasi').attr('action', 'Self_service/processRegistrasiPenunjang');
+        })
 
+        $('#tab-poli').click(function (e) {
+            $('#form_registrasi').attr('action', 'Self_service/processRegistrasi');
+        })
 
-});
+        $( "#keyword_mr" )
+        .keypress(function(event) {
+            var keycode =(event.keyCode?event.keyCode:event.which); 
+            if(keycode ==13){
+            event.preventDefault();
+            if($(this).valid()){
+                $('#btnSearchPasien').click();
+            }
+            return false;       
+            }
+        });
+        
+        $('#form_registrasi').ajaxForm({
+            beforeSend: function() {
+                achtungShowFadeIn();  
+            },
+            uploadProgress: function(event, position, total, percentComplete) {
+            },
+            complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
 
-function select_dokter_poli(kode_dokter, kode_spesialis, jd_id){
-    $('#div_select_tujuan_kunjungan').hide();
-    $('#div_selected_poli').show();
-    $('#reg_dokter_rajal').val(kode_dokter);
-    $('#reg_klinik_rajal').val(kode_spesialis);
-    $('#jd_id').val(jd_id);
-
-    $.getJSON("../Templates/References/getDetailJadwalPraktek/"+jd_id+"", '', function (response) {
-        console.log(response.data);
-        var obj = response.data;
-        var poli = obj.nama_bagian;
-        var dokter = obj.nama_pegawai;
-        $('#konfirmasi_kunjungan').html('<div class="center" style="padding-bottom: 100px"><strong><h3>Konfirmasi !</h3> </strong><span style="font-size: 14px">Anda akan berkunjung ke <b>'+poli.toUpperCase()+'</b></span><br><span style="font-size: 14px; "> dengan Dokter <b>'+dokter.toUpperCase()+'</b><br><br><button type="button" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px; background: #147995 !important; border-color: #066681" onclick="updateTujuanPoli()"><i class="fa fa-arrow-left bigger-150"></i> Ganti Tujuan Kunjungan Poli/Klinik </button> <button type="submit" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px"><i class="fa fa-print bigger-150"></i> Proses dan Cetak Bukti Pendaftaran</button></span></div>');
-    });
-
-}
-
-function select_penunjang(kode_bagian){
-    $('#div_select_tujuan_kunjungan').hide();
-    $('#div_selected_poli').show();
-    $('#pm_tujuan').val(kode_bagian);
-    $('#asal_pasien_pm').val(kode_bagian);
-    $.getJSON("../Templates/References/getRefPm/"+kode_bagian+"", '', function (response) {
-        console.log(response.data);
-        var poli = response.nama_bag;
-        $('#konfirmasi_kunjungan').html('<div class="center" style="padding-bottom: 100px"><strong><h3>Konfirmasi !</h3> </strong><span style="font-size: 14px">Anda akan berkunjung ke <b>'+poli.toUpperCase()+'</b></span><br><span style="font-size: 14px; "><br><br><button type="button" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px; background: #147995 !important; border-color: #066681" onclick="updateTujuanPoli()"><i class="fa fa-arrow-left bigger-150"></i> Ganti Tujuan Kunjungan Poli/Klinik </button> <button type="submit" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px"><i class="fa fa-print bigger-150"></i> Proses dan Cetak Bukti Pendaftaran</button></span></div>');
-    });
-
-}
-
-function findPasien(){
-    var keyword_mr = $('#keyword_mr').val();
-    var today = getDateToday();
-
-    if(keyword_mr == ''){
-        alert('Silahkan masukan Nomor Rekam Medis anda..!');
-        return false;
-    }
-
-    $.ajax({
-        url: '../Templates/References/findPasien',
-        type: "post",
-        data: {no_mr: keyword_mr},
-        dataType: "json",
-        beforeSend: function() {
-            /*show hidden*/
-            $('#message_result_pasien').html('Loading...');
-        },
-        success: function(response) {
-            console.log(response.status);
-        //   achtungHideLoader();
-            if(response.status==200){
-                $('#search_nomr_div').hide('fast');
-                $('#resultSearchPasien').show('fast');
-                var result = response.data;
-                var obj = result[0];
-                var no_mr = obj.no_mr;
-                // console.log(obj[0]);
-                $('#message_result_pasien').html('');
-                
-                // $('html,body').animate({
-                //         scrollTop: $("#result_nomr_div").offset().top},
-                //         'slow');
-                var umur_pasien = hitung_usia(obj.tgl_lhr);
-
-                // txt data
-                $('#txt_no_mr').text(obj.no_mr);
-                $('#txt_nik').text(obj.no_ktp);
-                $('#txt_nama_pasien').text(obj.nama_pasien+' ( '+obj.jen_kelamin+' )');
-                $('#txt_tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
-                $('#txt_umur').text(umur_pasien+' thn');
-                $('#txt_alamat').text(obj.almt_ttp_pasien);
-
-
-                $('#no_mr').val(obj.no_mr);
-                $('#nama_pasien').val(obj.nama_pasien);
-                $('#noMRBooking').val(obj.no_mr);
-                $('#nama_pasien_hidden').val(obj.nama_pasien);
-                $('#umur_saat_pelayanan_hidden').val(umur_pasien);
-                
-                
-                $('#message_result_pasien').html('<div class="alert alert-success"><strong>Selamat Datang, </strong>&nbsp; '+obj.nama_pasien+' ('+obj.no_mr+'), silahkan pilih tujuan kunjungan anda.</div>');
+            if(jsonResponse.status === 200){
+                $.achtung({message: jsonResponse.message, timeout:3});
+                // message success
+                $('#konfirmasi_kunjungan').html('<div class="alert alert-block center"><button type="button" class="close" data-dismiss="alert"><i class="ace-icon fa fa-times"></i></button><p><strong><img src="<?php echo base_url()?>assets/kiosk/check-circle.jpeg" width="100px"><br> <h2>Sukses !</h2> </strong> <p>Silahkan langsung menunggu di Ruang Tunggu Poli/Klinik.<br>Terima Kasih.</p></div>');
                 setTimeout(function () {
-                    $('#message_result_pasien').html('');
+                        location.reload();
                 }, 5000);
-                
-                /*text*/
-                // $('#kb_no_mr').text(obj.no_mr);
-                // $('#pnomr').val(obj.no_mr);
-                // $('#kb_nama_pasien').text(obj.nama);
-                // $('#kb_tgl_kunjungan').text(obj.tgl_kunjungan);
-                // $('#kb_poli_tujuan').text(obj.poli);
-                // $('#kb_dokter').text(obj.nama_dr);
-                // $('#kb_jam_praktek').text(obj.jam_praktek);
-                // $('#noSuratSKDP').val(keyword_mr);
-                // $('#kode_poli_bpjs').val(obj.kode_poli_bpjs);
-                // console.log(today);
-                // console.log(obj.tgl_kunjungan);
-
-                if(today == obj.tgl_kunjungan){
-                    $('#is_available').html('<span class="label label-success arrowed-in-right">available</span>');
-                }else{
-                    $('#is_available').html('<span class="label label-danger arrowed-in-right">not available</span>');
-                }
-                //   $('#noMR').val(response.data.no_mr);
-
             }else{
-                // $.achtung({message: data.message, timeout:5});
-                $('#resultSearchPasien').hide('fast');
-                $('#search_nomr_div').show('fast');
-                $('#message_result_pasien').html('<div class="center" style="padding: 50px"><img src="<?php echo base_url()?>assets/kiosk/alert.jpeg" style="width: 100px "><strong><h3>Pemberitahuan !</h3> </strong><span style="font-size: 14px">'+response.message+'</span></div>');
+                $.achtung({message: jsonResponse.message, timeout:5});
+            }
+            achtungHideLoader();
+            }
+        });
+        
 
+        $('input[name="jenis_penjamin"]').click(function (e) {
+            var value = $(this).val();
+            if(value == 'Umum'){
+                $('#div_penjamin_perusahaan').hide();
+            }else{
+                $('#div_penjamin_perusahaan').show();
             }
             
-        }
+        });
+
+        $('#InputKeyPenjamin').typeahead({
+            source: function (query, result) {
+                $.ajax({
+                    url: "../templates/references/getPerusahaan",
+                    data: { keyword:query },            
+                    dataType: "json",
+                    type: "POST",
+                    success: function (response) {
+                    result($.map(response, function (item) {
+                        return item;
+                    }));
+                    }
+                });
+            },
+            afterSelect: function (item) {
+            // do what is needed with item
+            var val_item=item.split(':')[0];
+            console.log(val_item);
+            $('#kode_perusahaan_hidden').val(val_item);
+            }
+        });
+
+
     });
 
-}
+    function select_dokter_poli(kode_dokter, kode_spesialis, jd_id){
+        $('#div_select_tujuan_kunjungan').hide();
+        $('#div_selected_poli').show();
+        $('#reg_dokter_rajal').val(kode_dokter);
+        $('#reg_klinik_rajal').val(kode_spesialis);
+        $('#jd_id').val(jd_id);
 
-function updateTujuanPoli(){
-    $('#div_select_tujuan_kunjungan').show();
-    getMenuTabs('Self_service/tab_poli', 'tab_jenis_kunjungan');
-    $('#konfirmasi_kunjungan').html('');
-}
+        $.getJSON("../Templates/References/getDetailJadwalPraktek/"+jd_id+"", '', function (response) {
+            console.log(response.data);
+            var obj = response.data;
+            var poli = obj.nama_bagian;
+            var dokter = obj.nama_pegawai;
+            $('#konfirmasi_kunjungan').html('<div class="center" style="padding-bottom: 100px"><strong><h3>Konfirmasi !</h3> </strong><span style="font-size: 14px">Anda akan berkunjung ke <b>'+poli.toUpperCase()+'</b></span><br><span style="font-size: 14px; "> dengan Dokter <b>'+dokter.toUpperCase()+'</b><br><br><button type="button" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px; background: #147995 !important; border-color: #066681" onclick="updateTujuanPoli()"><i class="fa fa-arrow-left bigger-150"></i> Ganti Tujuan Kunjungan Poli/Klinik </button> <button type="submit" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px"><i class="fa fa-print bigger-150"></i> Proses dan Cetak Bukti Pendaftaran</button></span></div>');
+        });
+
+    }
+
+    function select_penunjang(kode_bagian){
+        $('#div_select_tujuan_kunjungan').hide();
+        $('#div_selected_poli').show();
+        $('#pm_tujuan').val(kode_bagian);
+        $('#asal_pasien_pm').val(kode_bagian);
+        $.getJSON("../Templates/References/getRefPm/"+kode_bagian+"", '', function (response) {
+            console.log(response.data);
+            var poli = response.nama_bag;
+            $('#konfirmasi_kunjungan').html('<div class="center" style="padding-bottom: 100px"><strong><h3>Konfirmasi !</h3> </strong><span style="font-size: 14px">Anda akan berkunjung ke <b>'+poli.toUpperCase()+'</b></span><br><span style="font-size: 14px; "><br><br><button type="button" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px; background: #147995 !important; border-color: #066681" onclick="updateTujuanPoli()"><i class="fa fa-arrow-left bigger-150"></i> Ganti Tujuan Kunjungan Poli/Klinik </button> <button type="submit" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 16px;min-width: 320px"><i class="fa fa-print bigger-150"></i> Proses dan Cetak Bukti Pendaftaran</button></span></div>');
+        });
+
+    }
+
+    function findPasien(){
+        var keyword_mr = $('#keyword_mr').val();
+        var today = getDateToday();
+
+        if(keyword_mr == ''){
+            alert('Silahkan masukan Nomor Rekam Medis anda..!');
+            return false;
+        }
+
+        $.ajax({
+            url: '../Templates/References/findPasien',
+            type: "post",
+            data: {no_mr: keyword_mr},
+            dataType: "json",
+            beforeSend: function() {
+                /*show hidden*/
+                $('#message_result_pasien').html('Loading...');
+            },
+            success: function(response) {
+                console.log(response.status);
+            //   achtungHideLoader();
+                if(response.status==200){
+                    $('#search_nomr_div').hide('fast');
+                    $('#resultSearchPasien').show('fast');
+                    var result = response.data;
+                    var obj = result[0];
+                    var no_mr = obj.no_mr;
+                    // console.log(obj[0]);
+                    $('#message_result_pasien').html('');
+                    
+                    // $('html,body').animate({
+                    //         scrollTop: $("#result_nomr_div").offset().top},
+                    //         'slow');
+                    var umur_pasien = hitung_usia(obj.tgl_lhr);
+
+                    // txt data
+                    $('#txt_no_mr').text(obj.no_mr);
+                    $('#txt_nik').text(obj.no_ktp);
+                    $('#txt_nama_pasien').text(obj.nama_pasien+' ( '+obj.jen_kelamin+' )');
+                    $('#txt_tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
+                    $('#txt_umur').text(umur_pasien+' thn');
+                    $('#txt_alamat').text(obj.almt_ttp_pasien);
+
+
+                    $('#no_mr').val(obj.no_mr);
+                    $('#nama_pasien').val(obj.nama_pasien);
+                    $('#noMRBooking').val(obj.no_mr);
+                    $('#nama_pasien_hidden').val(obj.nama_pasien);
+                    $('#umur_saat_pelayanan_hidden').val(umur_pasien);
+                    
+                    
+                    $('#message_result_pasien').html('<div class="alert alert-success"><strong>Selamat Datang, </strong>&nbsp; '+obj.nama_pasien+' ('+obj.no_mr+'), silahkan pilih tujuan kunjungan anda.</div>');
+                    setTimeout(function () {
+                        $('#message_result_pasien').html('');
+                    }, 5000);
+                    
+                    /*text*/
+                    // $('#kb_no_mr').text(obj.no_mr);
+                    // $('#pnomr').val(obj.no_mr);
+                    // $('#kb_nama_pasien').text(obj.nama);
+                    // $('#kb_tgl_kunjungan').text(obj.tgl_kunjungan);
+                    // $('#kb_poli_tujuan').text(obj.poli);
+                    // $('#kb_dokter').text(obj.nama_dr);
+                    // $('#kb_jam_praktek').text(obj.jam_praktek);
+                    // $('#noSuratSKDP').val(keyword_mr);
+                    // $('#kode_poli_bpjs').val(obj.kode_poli_bpjs);
+                    // console.log(today);
+                    // console.log(obj.tgl_kunjungan);
+
+                    if(today == obj.tgl_kunjungan){
+                        $('#is_available').html('<span class="label label-success arrowed-in-right">available</span>');
+                    }else{
+                        $('#is_available').html('<span class="label label-danger arrowed-in-right">not available</span>');
+                    }
+                    //   $('#noMR').val(response.data.no_mr);
+
+                }else{
+                    // $.achtung({message: data.message, timeout:5});
+                    $('#resultSearchPasien').hide('fast');
+                    $('#search_nomr_div').show('fast');
+                    $('#message_result_pasien').html('<div class="center" style="padding: 50px"><img src="<?php echo base_url()?>assets/kiosk/alert.jpeg" style="width: 100px "><strong><h3>Pemberitahuan !</h3> </strong><span style="font-size: 14px">'+response.message+'</span></div>');
+
+                }
+                
+            }
+        });
+
+    }
+
+    function updateTujuanPoli(){
+        $('#div_select_tujuan_kunjungan').show();
+        getMenuTabs('Self_service/tab_poli', 'tab_jenis_kunjungan');
+        $('#konfirmasi_kunjungan').html('');
+    }
 
 
 </script>

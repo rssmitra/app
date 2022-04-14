@@ -61,6 +61,8 @@ $(document).ready(function(){
             processData: false,            
             beforeSend: function() {
               achtungShowLoader();   
+              pauseStopWatch();
+              resetStopWatch();
               //  disabled button submit
               $(this).find("button[type='submit']").prop('disabled',true);
             },
@@ -533,6 +535,8 @@ if(confirm('Are you sure?')){
         <input type="hidden" name="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
         <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
         <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
+        <input type="hidden" name="kode_perjanjian" class="form-control" value="<?php echo isset($value->kode_perjanjian)?$value->kode_perjanjian:''?>" id="kode_perjanjian" readonly>
+        <input type="hidden" name="taskId" class="form-control" value="4" id="taskId" readonly>
       
         <!-- profile Pasien -->
         <div class="col-md-2 no-padding">

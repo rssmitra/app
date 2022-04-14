@@ -11,6 +11,7 @@ class Antrian extends MX_Controller {
         $this->load->model('antrian_model'); 
         $this->load->model('loket_model','loket');
         $this->load->model('display_loket/main_model','Main');  
+        $this->load->model('ws/AntrianOnlineModel','AntrianOnline');  
 
         $this->load->library('Print_direct');
 
@@ -210,6 +211,10 @@ class Antrian extends MX_Controller {
             
             // udpate perjanjian
             $this->db->where('unique_code_counter', $kode_booking)->update('tc_pesanan', array('status_konfirmasi_kedatangan' => 1));
+
+            // update task antrian online
+            $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
+            $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $perjanjian->kode_perjanjian, 'taskid' => 2, 'waktu' => $waktukirim));
     
             $this->print_direct->printer_antrian_php_kiosk($dataexc);
 

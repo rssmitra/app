@@ -120,6 +120,7 @@ $(document).ready(function(){
 
           if( jsonResponse.type_pelayanan == 'create_sep' ){
             $('#noSep').val(jsonResponse.no_sep);
+            $('#noSepManual').val(jsonResponse.no_sep);
             $('#noKartuBpjs').val(jsonResponse.no_kartu);
             $('#jenis_pendaftaran').val('1');
             $('#form_registration').attr('action', 'registration/Reg_klinik/process');
@@ -1527,6 +1528,8 @@ function form_perjanjian(){
 
 }
 
+
+
 </script>
 
 <style type="text/css">
@@ -2104,7 +2107,6 @@ function form_perjanjian(){
                         </div>
 
                         <div class="form-group" id="form_sep" style="display:none">
-
                           <label class="control-label col-sm-3">Nomor SEP</label>            
                           <div class="col-md-4">            
                                 <input name="noSep" id="noSep" class="form-control" type="text" placeholder="Masukan No SEP">
@@ -2113,8 +2115,6 @@ function form_perjanjian(){
                           <div class="col-md-3">            
                                 <input name="noKartuBpjs" id="noKartuBpjs" class="form-control" type="text" value="">
                           </div>   
-
-
                         </div>
 
                         <div class="form-group">

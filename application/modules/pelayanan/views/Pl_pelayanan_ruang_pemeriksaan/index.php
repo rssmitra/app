@@ -131,8 +131,8 @@ function rollback(no_registrasi, no_kunjungan, flag){
           <div class="col-md-2">
             <select name="search_by" class="form-control">
               <option value="">-Silahkan Pilih-</option>
-              <option value="tc_kunjungan.no_mr" selected>No MR</option>
-              <option value="pl_tc_poli.nama_pasien">Nama Pasien</option>
+              <option value="no_mr" selected>No MR</option>
+              <option value="nama_pasien">Nama Pasien</option>
             </select>
           </div>
 

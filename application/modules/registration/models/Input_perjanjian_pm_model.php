@@ -39,12 +39,11 @@ class Input_perjanjian_pm_model extends CI_Model {
 		}
 
 		if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
-			if($_GET['no_mr']!='' or $_GET['no_mr']!=0){
+			if(isset($_GET['no_mr'])){
 				$this->db->where('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
 			}else{
 				$this->db->like('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
-			
 		}
 
 		if(isset($_GET['dokter']) AND $_GET['dokter'] != '' ){
