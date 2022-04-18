@@ -61,9 +61,6 @@ $(document).ready(function(){
             processData: false,            
             beforeSend: function() {
               achtungShowLoader();   
-              pauseStopWatch();
-              resetStopWatch();
-              //  disabled button submit
               $(this).find("button[type='submit']").prop('disabled',true);
             },
             uploadProgress: function(event, position, total, percentComplete) {
@@ -81,18 +78,18 @@ $(document).ready(function(){
                   $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
                 }
 
-                
-                
               }else{          
 
                 $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
 
               }        
 
+              pauseStopWatch();
+              resetStopWatch();
               achtungHideLoader();        
               $(this).find("button[type='submit']").prop('disabled',false);
 
-              }   
+            }   
         });
         return false;
       });

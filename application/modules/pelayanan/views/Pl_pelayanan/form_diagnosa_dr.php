@@ -254,7 +254,7 @@
         <?php endforeach; ?>
 
         <label>
-            <input name="check_pm[]" type="checkbox" value="0" class="ace" >
+            <input name="check_pm[]" type="checkbox" value="0" class="ace" <?php echo ($checked == '')?'checked': ''?> >
             <span class="lbl"> Tidak Ada Penunjang </span>
         </label>
 

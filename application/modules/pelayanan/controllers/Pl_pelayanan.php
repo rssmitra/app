@@ -18,6 +18,7 @@ class Pl_pelayanan extends MX_Controller {
         /*load model*/
         $this->load->model('Pl_pelayanan_model', 'Pl_pelayanan');
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+        $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
         /*load library*/
         $this->load->library('Form_validation');
         $this->load->library('stok_barang');
@@ -325,7 +326,14 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = ($row_list->kode_perusahaan == 120) ? ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>' : ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>';
+
+            if($row_list->kode_perusahaan == 120){
+                $nm_perusahaan = $row_list->nama_perusahaan;
+            }else{
+                $nm_perusahaan = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>';
+            }
+            $row[] = $nm_perusahaan;
+
             $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
             $row[] = $row_list->nama_pegawai;
             $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
