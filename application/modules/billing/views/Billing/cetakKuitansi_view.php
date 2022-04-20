@@ -139,7 +139,7 @@
             <td valign="top" align="center" style="font-size:13px">
               <!--Jakarta,<?//=$tgl_now_full?><br>Petugas Kasir<?//=trim($total_nd)=="0" || $bill!="0" ? $nm_perusahaan : ""?>-->
               <!-- Update Kwitansi Pengembalian Uang Muka 131011-->
-              Jakarta, <?php echo $this->tanggal->formatDate($data->reg_data->tgl_jam_masuk); //setlocale(LC_TIME, 'id_ID'); echo strftime( "%d %B %Y", time()); ?><br>
+              Jakarta, <?php echo $this->tanggal->formatDate($data->reg_data->tgl_jam_keluar); //setlocale(LC_TIME, 'id_ID'); echo strftime( "%d %B %Y", time()); ?><br>
               <br/><br/><br/><br/> <br/> 
               ( <?php echo $this->session->userdata('user')->fullname?> )<br/><br/>
             </td>
