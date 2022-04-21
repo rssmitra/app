@@ -24,7 +24,7 @@
       $.ajax({
           url: 'inventory/stok/Riwayat_pemakaian_bhp/rollback_stok_bhp',
           type: "post",
-          data: {ID:id_kartu},
+          data: {ID:id_kartu, kode_bagian : $('#kode_bagian').val()},
           dataType: "json",
           beforeSend: function() {
             achtungShowLoader();  

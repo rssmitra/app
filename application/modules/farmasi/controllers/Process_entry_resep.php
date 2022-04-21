@@ -418,9 +418,9 @@ class Process_entry_resep extends MX_Controller {
         else
         {
             $this->db->trans_commit();
-            if($_POST['is_rollback'] == 0){
-                $this->print_tracer_gudang($ID);
-            }
+            // if($_POST['is_rollback'] == 0){
+            //     $this->print_tracer_gudang($ID);
+            // }
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_trans_far' => $ID ));
         }
         

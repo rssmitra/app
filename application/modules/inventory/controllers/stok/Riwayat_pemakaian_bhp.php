@@ -108,7 +108,7 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
             'pengeluaran' => 0,
             'stok_akhir' => $stok_akhir,
             'jenis_transaksi' => 23,
-            'kode_bagian' => $kode_bagian,
+            'kode_bagian' => $row->kode_bagian,
             'keterangan' => 'Retur Pemakaian BHP',
             'petugas' => 0,
             'nama_petugas' => 'Administrator Sistem',
@@ -121,7 +121,7 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
         // update mt_rekap stok
         $this->db->update('mt_depo_stok', array('jml_sat_kcl' => $stok_akhir), array('kode_bagian' => $row->kode_bagian, 'kode_brg' => $row->kode_brg) );
 
-        echo 'Sukses';
+        echo json_encode(array('status' => 200, 'message' => 'Proses berhasil dilakukan'));
 
     }
 
