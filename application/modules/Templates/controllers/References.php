@@ -1969,8 +1969,9 @@ class References extends MX_Controller {
 	}
 
 	public function get_riwayat_medis($no_mr){
-		$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','inner')->order_by('no_kunjungan','DESC')->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result();
-
+		$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result();
+    
+    // echo '<pre>';print_r($this->db->last_query());die;
 		
 		$transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11) )->result();
 
@@ -1986,7 +1987,7 @@ class References extends MX_Controller {
 		foreach ($penunjang as $key_pm => $val_pm) {
 			$getDataPm[$val_pm->no_registrasi][] = $val_pm;
 		}
-		// echo '<pre>';print_r($getDataFile);die;
+		echo '<pre>';print_r($result);die;
 
 		$getData = array();
 		foreach ($transaksi as $key => $value) {
