@@ -1987,7 +1987,7 @@ class References extends MX_Controller {
 		foreach ($penunjang as $key_pm => $val_pm) {
 			$getDataPm[$val_pm->no_registrasi][] = $val_pm;
 		}
-		echo '<pre>';print_r($result);die;
+		// echo '<pre>';print_r($result);die;
 
 		$getData = array();
 		foreach ($transaksi as $key => $value) {
