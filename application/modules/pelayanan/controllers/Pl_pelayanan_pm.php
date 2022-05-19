@@ -741,7 +741,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         $kode_penunjang = $this->regex->_genRegex($this->input->post('kode_penunjang'),'RGXINT');
              
         /*update pm_tc_penunjang*/
-        $pm_tc_penunjang = array('status_daftar' => 0);
+        $pm_tc_penunjang = array('status_daftar' => 0, 'status_isihasil' => 0);
         $this->Pl_pelayanan_pm->update('pm_tc_penunjang', $pm_tc_penunjang, array('kode_penunjang' => $kode_penunjang ) );
         /*save logs*/
         //$this->logs->save('pl_tc_poli', $no_kunjungan, 'update pl_tc_poli Modul Pelayanan', json_encode($arrPlTcPoli),'no_kunjungan');
