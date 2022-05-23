@@ -389,6 +389,7 @@
 				$('#day_txt').text(hari);
 				$('#jam_txt').text(jam_mulai);
 				$('#error_message').html('');
+				$('#kode_booking').val('');
 				$("#modalVerifyKodeBooking").modal();  
 			}else{
 				data = [];
