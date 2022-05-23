@@ -1389,7 +1389,7 @@ class Pl_pelayanan extends MX_Controller {
                 'resep_farmasi' => $this->master->br2nl($_POST['pl_resep_farmasi']),
                 'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
                 'pemeriksaan' => $this->master->br2nl($_POST['pl_pemeriksaan']),
-                'tgl_periksa' => date('Y-m-d H:i:s'),
+                'tgl_periksa' => $this->input->post('tgl_jam_poli'),
                 'kode_bagian' => $this->form_validation->set_value('kode_bagian_asal'),
                 'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
                 'kategori_tindakan' => 3,

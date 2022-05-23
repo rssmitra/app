@@ -74,7 +74,7 @@
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_search" action="templates/References/find_data" autocomplete="off">
+    <form class="form-horizontal" method="post" id="form_search" action="Templates/References/find_data" autocomplete="off">
 
       <left>
         <h4>Antrian Pemanggilan Pasien Farmasi<br> 

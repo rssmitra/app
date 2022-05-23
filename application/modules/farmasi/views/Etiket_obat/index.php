@@ -57,7 +57,7 @@ function popUnder(node) {
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_search" action="templates/References/find_data" autocomplete="off">
+    <form class="form-horizontal" method="post" id="form_search" action="Templates/References/find_data" autocomplete="off">
 
       <div class="col-md-12">
         <div class="form-group">
