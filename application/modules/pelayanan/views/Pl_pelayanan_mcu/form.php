@@ -31,7 +31,7 @@ jQuery(function($) {
 $(document).ready(function(){
 
     /*when page load find pasien by mr*/
-    find_pasien_by_keyword('<?php echo $no_mr?>');
+    find_pasien_by_mr('<?php echo $no_mr?>');
 
     /*focus on form input pasien*/
     $('#form_cari_pasien').focus();    
@@ -131,7 +131,7 @@ $(document).ready(function(){
 
         achtungShowLoader();
 
-        find_pasien_by_keyword( $("#form_cari_pasien").val() );
+        find_pasien_by_mr( $("#form_cari_pasien").val() );
 
       }    
 
@@ -162,7 +162,7 @@ $(document).ready(function(){
 
           $('#modalEditPasien').modal('hide');
           console.log(jsonResponse);
-          find_pasien_by_keyword( jsonResponse.no_mr );
+          find_pasien_by_mr( jsonResponse.no_mr );
 
 
         }else{
@@ -190,80 +190,161 @@ function formatDate(date) {
 }
 
 /*function find pasien*/
-function find_pasien_by_keyword(keyword){  
+// function find_pasien_by_keyword(keyword){  
 
-    $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword=" + keyword, '', function (data) {      
-          achtungHideLoader();          
+//     $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword=" + keyword, '', function (data) {      
+//           achtungHideLoader();          
 
-          /*if cannot find data show alert*/
-          if( data.count == 0){
+//           /*if cannot find data show alert*/
+//           if( data.count == 0){
 
-            $('#div_load_after_selected_pasien').hide('fast');
+//             $('#div_load_after_selected_pasien').hide('fast');
 
-            $('#div_riwayat_pasien').hide('fast');
+//             $('#div_riwayat_pasien').hide('fast');
             
-            $('#div_penangguhan_pasien').hide('fast');
+//             $('#div_penangguhan_pasien').hide('fast');
 
-            /*reset all field data*/
-            $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+//             /*reset all field data*/
+//             $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
 
-            alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
+//             alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
+
+//           }
+
+//           /*if count data = 1*/
+//           if( data.count == 1 )     {
+
+//             var obj = data.result[0];
+
+//             var pending_data_pasien = data.pending; 
+//             var umur_pasien = hitung_usia(obj.tgl_lhr);
+//             console.log(pending_data_pasien);
+//             console.log(hitung_usia(obj.tgl_lhr));
+
+//             $('#no_mr').text(obj.no_mr);
+//             $('#noMrHidden').val(obj.no_mr);
+//             $('#no_ktp').text(obj.no_ktp);
+//             $('#nama_pasien').text(obj.nama_pasien);
+//             $('#nama_pasien_hidden').val(obj.nama_pasien);
+//             $('#jk').text(obj.jen_kelamin);
+//             $('#umur').text(umur_pasien+' Tahun');          
+//             $('#umur_saat_pelayanan_hidden').val(umur_pasien);
+//             $('#alamat').text(obj.almt_ttp_pasien);
+//             $('#noKartuBpjs').val(obj.no_kartu_bpjs);
+
+//             penjamin = (obj.nama_perusahaan==null)?'-':obj.nama_perusahaan;
+//             kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
+//             $('#kode_perusahaan').text(kelompok+' '+obj.nama_perusahaan);
+
+
+
+//             if( obj.url_foto_pasien ){
+
+//               $('#avatar').attr('src', '<?php echo base_url()?>uploaded/images/photo/'+obj.url_foto_pasien+'');
+
+//             }else{
+
+//               if( obj.jen_kelamin == 'L' ){
+
+//                 $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
+
+//               }else{
+
+//                 $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/girl.jpg');
+
+//               }
+
+//             }
+
+//             /*default show tabs*/
+//             $("#tabs_form_pelayanan").load('pelayanan/Pl_pelayanan_mcu/anamnesa/<?php echo $value->kode_gcu?>/<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>');
+
+//           }            
+
+//     }); 
+
+// }
+
+function find_pasien_by_mr(keyword){  
+
+$.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien_by_mr') ?>?keyword=" + keyword, '', function (data) {      
+      achtungHideLoader();          
+
+      /*if cannot find data show alert*/
+      if( data.count == 0){
+
+        $('#div_load_after_selected_pasien').hide('fast');
+
+        $('#div_riwayat_pasien').hide('fast');
+        
+        $('#div_penangguhan_pasien').hide('fast');
+
+        /*reset all field data*/
+        $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+
+        alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
+
+      }
+
+      /*if count data = 1*/
+      if( data.count == 1 )     {
+
+        var obj = data.result[0];
+
+        var pending_data_pasien = data.pending; 
+        var umur_pasien = hitung_usia(obj.tgl_lhr);
+        console.log(pending_data_pasien);
+        console.log(hitung_usia(obj.tgl_lhr));
+
+        $('#no_mr').text(obj.no_mr);
+        $('#noMrHidden').val(obj.no_mr);
+        $('#no_ktp').text(obj.no_ktp);
+        $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
+        $('#nama_pasien_hidden').val(obj.nama_pasien);
+        $('#jk').text(obj.jen_kelamin);
+        $('#umur').text(umur_pasien+' Tahun');
+        $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));              
+        $('#umur_saat_pelayanan_hidden').val(umur_pasien);
+        $('#alamat').text(obj.almt_ttp_pasien);
+        $('#hp').text(obj.no_hp);
+        $('#no_telp').text(obj.tlp_almt_ttp);
+        $('#catatan_pasien').text(obj.keterangan);
+        $('#ttd_pasien').attr('src', obj.ttd);
+        $('#noKartuBpjs').val(obj.no_kartu_bpjs);
+
+        penjamin = (obj.nama_perusahaan==null)?'-':obj.nama_perusahaan;
+        kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
+        $('#kode_perusahaan').text(kelompok+' '+obj.nama_perusahaan);
+
+
+
+        if( obj.url_foto_pasien ){
+
+          $('#avatar').attr('src', '<?php echo base_url()?>uploaded/images/photo/'+obj.url_foto_pasien+'');
+
+        }else{
+
+          if( obj.jen_kelamin == 'L' ){
+
+            $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
+
+          }else{
+
+            $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/girl.jpg');
 
           }
 
-          /*if count data = 1*/
-          if( data.count == 1 )     {
+        }
 
-            var obj = data.result[0];
+        /*default show tabs*/
+        $("#tabs_form_pelayanan").load('pelayanan/Pl_pelayanan_mcu/anamnesa/<?php echo $value->kode_gcu?>/<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>');
 
-            var pending_data_pasien = data.pending; 
-            var umur_pasien = hitung_usia(obj.tgl_lhr);
-            console.log(pending_data_pasien);
-            console.log(hitung_usia(obj.tgl_lhr));
+      }            
 
-            $('#no_mr').text(obj.no_mr);
-            $('#noMrHidden').val(obj.no_mr);
-            $('#no_ktp').text(obj.no_ktp);
-            $('#nama_pasien').text(obj.nama_pasien);
-            $('#nama_pasien_hidden').val(obj.nama_pasien);
-            $('#jk').text(obj.jen_kelamin);
-            $('#umur').text(umur_pasien+' Tahun');          
-            $('#umur_saat_pelayanan_hidden').val(umur_pasien);
-            $('#alamat').text(obj.almt_ttp_pasien);
-            $('#noKartuBpjs').val(obj.no_kartu_bpjs);
-
-            penjamin = (obj.nama_perusahaan==null)?'-':obj.nama_perusahaan;
-            kelompok = (obj.nama_kelompok==null)?'-':obj.nama_kelompok;
-            $('#kode_perusahaan').text(kelompok+' '+obj.nama_perusahaan);
-
-
-
-            if( obj.url_foto_pasien ){
-
-              $('#avatar').attr('src', '<?php echo base_url()?>uploaded/images/photo/'+obj.url_foto_pasien+'');
-
-            }else{
-
-              if( obj.jen_kelamin == 'L' ){
-
-                $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
-
-              }else{
-
-                $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/girl.jpg');
-
-              }
-
-            }
-
-            /*default show tabs*/
-            $("#tabs_form_pelayanan").load('pelayanan/Pl_pelayanan_mcu/anamnesa/<?php echo $value->kode_gcu?>/<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>');
-
-          }            
-
-    }); 
+}); 
 
 }
+
 
 function selesaikanKunjungan(){
 
@@ -391,38 +472,50 @@ function showModalEditPasien()
           <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
           
-          <!-- profile Pasien -->
-          <div class="col-md-2">
-            <div class="box box-primary" id='box_identity'>
-                <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
+          <div class="col-md-2 no-padding">
+              <div class="box box-primary" id='box_identity'>
+                  <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-                <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
+                  <h3 class="profile-username text-center"><div id="no_mr" style="font-size: 16px !important">-No. Rekam Medis-</div></h3>
 
-                <ul class="list-group list-group-unbordered">
-                  <li class="list-group-item">
-                    <div id="nama_pasien">Nama Pasien</div>
-                  </li>
-                  <li class="list-group-item">
-                    <div id="no_ktp">NIK</div>
-                  </li>
-                  <li class="list-group-item">
-                    <div id="jk">Jenis Kelamin</div>
-                  </li>
-                  <li class="list-group-item">
-                    <div id="umur">Umur</div>
-                  </li>
-                  <li class="list-group-item">
-                    <div id="alamat">Alamat</div>
-                  </li>
-                 <!--  <li class="list-group-item">
-                    <div id="kode_perusahaan">Penjamin</div>
-                  </li> -->
-                </ul>
+                  <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">Nama Pasien: </small><div id="nama_pasien"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">NIK: </small><div id="no_ktp"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">Tgl Lahir: </small><div id="tgl_lhr"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">Umur: </small><div id="umur"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">Alamat: </small><div id="alamat"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">No Telp/HP: </small>
+                      <div id="hp"></div>
+                      <div id="no_telp"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div><div id="no_kartu_bpjs_txt"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>
+                    </li>
+                    <li class="list-group-item">
+                      <small style="color: blue; font-weight: bold; font-size: 11px">TTD: </small><div><img id="ttd_pasien" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/images/ttd-no-found.png'?>" alt="User profile picture" style="width:100%"></div>
+                    </li>
+                  </ul>
 
-                <a href="#" id="btn_search_pasien" class="btn btn-inverse btn-block">Tampilkan Pasien</a>
-              <!-- /.box-body -->
+                  <a href="#" id="btn_search_pasien" class="btn btn-inverse btn-block">Tampilkan Pasien</a>
+                  
+                <!-- /.box-body -->
+              </div>
             </div>
-          </div>
+
 
           <!-- form pelayanan -->
           <div class="col-md-10">
