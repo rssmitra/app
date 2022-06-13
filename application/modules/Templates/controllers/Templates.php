@@ -1460,17 +1460,18 @@ class Templates extends MX_Controller {
                         </td>   
                     </tr>
                 </table>';
-            }elseif ($flag=='LAB') {
+        }elseif ($flag=='LAB') {
                 // $img = '<img src="'.base_url().'assets/images/stamp-rs-lab.png" style="width: 200px;float: left !important">';
                 $img = '<br>';
                 $petugas = $this->session->userdata('user')->fullname;
                 // $petugas = 'Al Iksan';
+                $nm_dokter = ($this->Billing->getNamaDokter_($flag, $pm))?$this->Billing->getNamaDokter_($flag, $pm):'Arief Indra Sanjaya,dr. Sp PK';
                 $html .= '<table border="0" cellspacing="0" cellpadding="0" style="font-size:36px">';
 
                 $html .= '<tr> 
                             <td align="left" width="60%" style="font-size: 32px">
                             <br><br>                        
-                            Penanggung Jawab : <br>&nbsp;&nbsp;'.$this->Billing->getNamaDokter_($flag, $pm).'
+                            Penanggung Jawab : <br>&nbsp;&nbsp;'.$nm_dokter.'
                             </td>
                             <td align="center" width="10%">&nbsp;</td>';
 
