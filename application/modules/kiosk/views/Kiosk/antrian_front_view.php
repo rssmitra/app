@@ -150,7 +150,7 @@
 
 				<div style="width: 100%; margin-top: 10px; text-align: center">
 					<div id="error_message"></div>
-					<button class="btn" type="button" onclick="verifkodeperjanjian()" id="btnSearchPasien" style="height: 50px !important; font-size: 20px; font-weight: bold; background: green !important; border-color: green">
+					<button class="btn" type="button" onclick="verifkodeperjanjian()" id="btnVerifAndPrint" style="height: 50px !important; font-size: 20px; font-weight: bold; background: green !important; border-color: green">
 						<i class="ace-icon fa fa-print bigger-110"></i>
 						Cetak Nomor Antrian
 					</button>
@@ -242,6 +242,7 @@
 	// setInterval("my_function();",3000); 
 
 	function close_modal(){
+		$('#btnVerifAndPrint').attr('disabled', false);
 		$('#modalVerifyKodeBooking').modal('hide');
 		$('#div_form_input_kode_booking').show();
 		$('#div_form_input_kode_booking_success').hide();
@@ -321,7 +322,7 @@
 			$('#error_message').html('<div class="alert alert-danger center" style="margin: 10px"><strong>Pemberitahuan! </strong><br>Masukan Kode Booking anda!</div>');
 			return false;
 		} else {
-
+			
 			var dataString = $('#modal_dataString').val();
 			var dokter = $('#modal_dokter').val();
 			var nama_dokter = $('#modal_nama_dokter').val();
@@ -342,21 +343,27 @@
 			data[7] = jam_selesai;
 			data[8] = $('#kode_booking').val();
 
+			
+
 			$.ajax({
 				url:"<?php echo base_url(); ?>antrian/process_cek_kode_booking",
 				data:{data:data}, 
 				dataType: "json", 
-				type:"POST",       
+				type:"POST",   
+				beforeSend: function() {
+					$('#btnVerifAndPrint').attr('disabled', true);
+				},    
 				success:function (response) {
 					console.log(response['status']);
 
 					if(response['status'] == 200){
 						// close modal
-						$("#div_form_input_kode_booking").hide('fast'); 
-						$("#div_form_input_kode_booking_success").show('fast'); 
+						// $("#div_form_input_kode_booking").hide('fast'); 
+						// $("#div_form_input_kode_booking_success").show('fast'); 
+						close_modal();
 
 					}else if(response['status']!=200){
-						// achtungCreate("<h3 style='text-align:center;'>"+response['message']+"</h3>",false, 'achtungFail');
+						$('#btnVerifAndPrint').attr('disabled', false);
 						$('#kode_booking').val('');
 						$('#error_message').html('<div class="alert alert-danger center" style="margin: 10px"><strong>Pemberitahuan! </strong><br>'+response['message']+'</div>');
 					}

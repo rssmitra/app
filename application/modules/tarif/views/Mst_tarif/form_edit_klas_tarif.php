@@ -168,8 +168,8 @@ function changeTotal(){
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Total</label>
             <div class="col-sm-2">
+              <input type="text" class="form-control" name="total" id="total" value="<?php echo isset($value->total)?$value->total:''?>">
                 <span id="txt_total_tarif">-</span>
-                <input type="text" class="form-control" name="total" id="total" value="<?php echo isset($value->total)?$value->total:''?>">
             </div>
         </div>
         <div class="form-actions center">

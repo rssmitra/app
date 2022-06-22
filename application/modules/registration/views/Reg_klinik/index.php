@@ -1234,57 +1234,32 @@ function find_pasien_by_mr(keyword){
               var umur_pasien = hitung_usia(obj.tgl_lhr);
               console.log(pending_data_pasien);
               console.log(hitung_usia(obj.tgl_lhr));
-
               $('#no_mr').text(obj.no_mr);
-
               $('#noMrHidden').val(obj.no_mr);
-
               $('#no_ktp').text(obj.no_ktp);
-
               $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
-
               $('#nama_pasien_hidden').val(obj.nama_pasien);
-
               $('#jk').text(obj.jen_kelamin);
-
               $('#umur').text(umur_pasien+' Tahun');
-
-              $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
-              
+              $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));              
               $('#umur_saat_pelayanan_hidden').val(umur_pasien);
-
               $('#alamat').text(obj.almt_ttp_pasien);
-
               $('#hp').text(obj.no_hp);
-
               $('#no_telp').text(obj.tlp_almt_ttp);
-
               $('#catatan_pasien').text(obj.keterangan);
-
               $('#ttd_pasien').attr('src', obj.ttd);
-
               $('#noKartuBpjs').val(obj.no_kartu_bpjs);
 
               if( obj.url_foto_pasien ){
-
                 $('#avatar').attr('src', '<?php echo base_url()?>uploaded/images/photo/'+obj.url_foto_pasien+'');
-
               }else{
-
                 if( obj.jen_kelamin == 'L' ){
-              
                   $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
-                
                 }else{
-                  
                   $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/girl.jpg');
-
                 }
-
               }
 
-              
-              
               if( obj.kode_perusahaan==120){
 
                 $('#form_sep').show('fast'); 

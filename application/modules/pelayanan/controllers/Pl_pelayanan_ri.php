@@ -24,6 +24,9 @@ class Pl_pelayanan_ri extends MX_Controller {
         $this->load->library('daftar_pasien');
         /*enable profiler*/
         $this->output->enable_profiler(false);
+        // load other module
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
@@ -44,7 +47,7 @@ class Pl_pelayanan_ri extends MX_Controller {
     public function form($kode_ri='', $no_kunjungan)
     {
          /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$kode_ri);
+        $this->breadcrumbs->push('Lembar Kerja '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$kode_ri);
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_ri->get_by_id($kode_ri);
         //echo '<pre>';print_r($data['value']);die;
@@ -62,8 +65,47 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+
+        // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form', $data);
+    }
+
+    public function form_main($kode_ri='', $no_kunjungan)
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$kode_ri);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($kode_ri);
+        // echo '<pre>';print_r($data['value']);die;
+        $data['riwayat'] = $this->Pl_pelayanan_ri->get_riwayat_pasien_by_id($no_kunjungan);
+        $data['transaksi'] = $this->Pl_pelayanan_ri->get_transaksi_pasien_by_id($no_kunjungan);
+        $data['ruangan'] = $this->Pl_pelayanan_ri->get_ruangan_by_id($data['value']->kode_ruangan);
+        // cek transaksi
+        $cek_trans = $this->Pl_pelayanan_ri->cek_trans_pelayanan($data['value']->no_registrasi);
+        if($cek_trans==0){
+            $status_pasien = '<span style="color: blue; font-weight: bold; font-size: 14px">SUDAH LUNAS </span>';
+        }else{
+            $status_pasien = ($data['value']->status_pulang== 0 || NULL)?($data['value']->pasien_titipan== 1)?'<span style="color: darkgoldenrod; font-weight: bold; font-size: 14px">PASIEN TITIPAN</span>':'<span style="color: red; font-weight: bold; font-size: 14px">MASIH DIRAWAT</span>':'<span style="color: green; font-weight: bold; font-size: 14px">SUDAH PULANG</span>';
+        }
+
+        $data['status_rawat'] = $status_pasien;
+
+        /*variable*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['id'] = $kode_ri;
+        $data['kode_klas'] = $data['value']->kelas_pas;
+        $data['klas_titipan'] = ($data['value']->kelas_titipan!=NULL)?$data['value']->kelas_titipan:0;
+        $data['kode_profit'] = 2000;
+        $data['no_kunjungan'] = $no_kunjungan;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+
+        // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_main', $data);
     }
 
     public function tindakan($id='', $no_kunjungan='')
@@ -83,8 +125,30 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+
         /*load form view*/
         $this->load->view('Pl_pelayanan/form_tindakan', $data);
+    }
+
+    public function cppt($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_ri'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['type']='Ranap';
+        $data['status_pulang'] = $data['value']->status_pulang;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_cppt', $data);
     }
 
     public function pesan($id='', $no_registrasi='')
@@ -176,6 +240,40 @@ class Pl_pelayanan_ri extends MX_Controller {
                         "recordsFiltered" => $this->Pl_pelayanan_ri->count_filtered(),
                         "data" => $data,
                 );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function get_list_pasien()
+    {
+        /*akan di filter berdasarkan pasien pada klinik masing2*/
+        /*get data from model*/
+        $list = $this->Pl_pelayanan_ri->get_list_data();
+        $data = array();
+        $no=0;
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            /*color of type Ruangan RI*/
+            /*LB*/
+            if ( in_array($row_list->bag_pas, array('030101','031401','031301','030801','030401','031601') ) ) {
+                $color = 'red';
+            /*LA*/
+            }elseif( in_array($row_list->bag_pas,  array('030701','030301','030601','030201') )){
+                $color = 'green';
+            /*VK Ruang Bersalin*/
+            }elseif( in_array($row_list->bag_pas,  array('031201','031701','030501') )){
+                $color = 'blue';
+            }else{
+                $color = 'black';
+            }
+            // $row[] = '<li><span style="color:'.$color.'" onclick="getMenu('."'pelayanan/Pl_pelayanan_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</span></li>';
+            
+            $row[] = array('no_kunjungan' => $row_list->no_kunjungan, 'kode_ri' => $row_list->kode_ri, 'no_mr' => $row_list->no_mr, 'nama_pasien' => strtoupper($row_list->nama_pasien), 'color_txt' => $color);
+            $data[] = $row;
+        }
+
+        $output = array("data" => $data );
         //output to json format
         echo json_encode($output);
     }
@@ -330,15 +428,56 @@ class Pl_pelayanan_ri extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function get_data_cppt()
+    {
+        /*get data from model*/
+        $list = $this->Pl_pelayanan_ri->get_datatables_cppt($_GET['kode_ri']);
+        //print_r($list);die;
+        $data = array();
+        $no=0;
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = $no;
+            $row[] = $this->tanggal->formatDateTime($row_list->cppt_tgl_jam).'<br>'.strtoupper($row_list->cppt_ppa).'<br>'.$row_list->cppt_nama_ppa;
+            $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->cppt_subjective).'<br><br>'.'<b>O (Objective) : </b><br><br>'.nl2br($row_list->cppt_objective).'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->cppt_assesment).'<br><br>'.'<b>P (Plan) : </b><br>'.nl2br($row_list->cppt_plan).'<br>';
+
+            $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
+
+            $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->cppt_id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->cppt_id.', this.value)" '.$checked.' ><span class="lbl"></span></div>';
+
+            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->cppt_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->cppt_id.')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+           
+            $data[] = $row;
+        }
+
+        $output = array("data" => $data);
+        //output to json format
+        echo json_encode($output);
+    }
+
     public function form_end_visit()
     {
         $data = array(
-            'no_mr' => isset($_GET['no_mr'])?$_GET['no_mr']:'',
+            'no_mr' => isset($_GET['mr'])?$_GET['mr']:'',
             'kode_ri' => isset($_GET['id'])?$_GET['id']:'',
             'no_kunjungan' => isset($_GET['no_kunjungan'])?$_GET['no_kunjungan']:'',
+            'cppt' => $this->Pl_pelayanan_ri->get_datatables_cppt($_GET['id']),
+            'riwayat' => $this->Pl_pelayanan_ri->get_riwayat_pasien_by_id($_GET['no_kunjungan']),
             );
+            // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_end_visit', $data);
+    }
+
+    public function view_cppt()
+    {
+        $data = array(
+            'cppt' => $this->db->get_where('th_cppt', array('no_kunjungan' => $_GET['no_kunjungan']))->result(),
+            );
+            // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/view_cppt', $data);
     }
 
     public function find_data()
@@ -551,6 +690,113 @@ class Pl_pelayanan_ri extends MX_Controller {
         
     }
 
+    public function process_cppt(){
+
+        // echo '<pre>';print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('subjective', 'Subjective', 'trim|required');
+        $this->form_validation->set_rules('objective', 'Objective', 'trim|required');
+        $this->form_validation->set_rules('plan', 'Plan', 'trim|required');
+        $this->form_validation->set_rules('assesment', 'Assesment', 'trim|required');
+               
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $cppt_id = ($_POST['cppt_id'])?$_POST['cppt_id']:0;
+
+            $tgl_jam = $_POST['cppt_tgl'].' '.$_POST['cppt_jam'];
+
+            $dataexc = array(
+                'cppt_tgl_jam' => $this->regex->_genRegex($tgl_jam,'RGXQSL'), 
+                'cppt_ppa' => $this->regex->_genRegex($this->input->post('ppa'),'RGXQSL'), 
+                'cppt_nama_ppa' => $this->regex->_genRegex($this->input->post('nama_ppa'),'RGXQSL'), 
+                'cppt_subjective' => $this->regex->_genRegex($this->master->br2nl($this->input->post('subjective')),'RGXQSL'), 
+                'cppt_objective' => $this->regex->_genRegex($this->master->br2nl($this->input->post('objective')),'RGXQSL'), 
+                'cppt_assesment' => $this->regex->_genRegex($this->master->br2nl($this->input->post('assesment')),'RGXQSL'), 
+                'cppt_plan' => $this->regex->_genRegex($this->master->br2nl($this->input->post('plan')),'RGXQSL'), 
+                'kode_ri' => $this->regex->_genRegex($this->input->post('kode_ri'),'RGXQSL'), 
+                'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXQSL'), 
+                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
+            );
+
+            if( $cppt_id == 0 ){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->insert('th_cppt', $dataexc);
+                $newId = $this->db->insert_id();
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->where('cppt_id', $cppt_id)->update('th_cppt', $dataexc);
+                $newId = $cppt_id;
+            }
+                        
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'cppt'));
+            }
+        
+        }
+
+    }
+
+    public function delete_cppt()
+    {
+        $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
+        if($id!=null){
+            if($this->db->where('cppt_id', $id)->delete('th_cppt')){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
+
+    public function verif_cppt()
+    {
+        $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
+        if($id!=null){
+            if($this->db->where('cppt_id', $id)->update('th_cppt', array('is_verified' => $_POST['status_verif']))){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
+
+    public function get_cppt_dt(){
+
+        $query = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['id']))->row();
+        echo json_encode($query);
+    }
+
+
     public function delete()
     {
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
@@ -576,14 +822,18 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function processPelayananSelesai(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
-        $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required');        
+        $this->form_validation->set_rules('no_mr', 'Pasien', 'trim|required');        
         $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
-        $this->form_validation->set_rules('pl_diagnosa_awal', 'Diagnosa Awal', 'trim|required');        
-        $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa Akhir', 'trim|required');        
-        //$this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
+        $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
+        $this->form_validation->set_rules('pl_anjuran_dokter', 'Anjuran Dokter', 'trim');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
+        $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa', 'trim|required');        
+        $this->form_validation->set_rules('pl_diagnosa_sekunder', 'Diagnosa Sekunder', 'trim');        
+        $this->form_validation->set_rules('pl_tindakan_prosedur', 'Tindakan / Prosedur', 'trim');        
+        $this->form_validation->set_rules('pl_alergi_obat', 'Alergi Obat', 'trim');        
+        $this->form_validation->set_rules('pl_diet', 'Diet', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
         $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');        
@@ -606,7 +856,7 @@ class Pl_pelayanan_ri extends MX_Controller {
             $no_kunjungan = $this->form_validation->set_value('no_kunjungan');
             $no_registrasi = $this->form_validation->set_value('no_registrasi');
             $kode_ri = $this->regex->_genRegex($this->input->post('kode_ri'),'RGXINT');
-            $no_mr = $this->form_validation->set_value('noMrHidden');
+            $no_mr = $this->form_validation->set_value('no_mr');
 
             /*cek kunjungan poli */
             $cek_poli = $this->Pl_pelayanan_ri->cek_poli_pulang($no_registrasi);
@@ -753,18 +1003,27 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $riwayat_diagnosa = array(
                     'no_registrasi' => $this->form_validation->set_value('no_registrasi'),
                     'no_kunjungan' => $no_kunjungan,
-                    'no_mr' => $this->form_validation->set_value('noMrHidden'),
+                    'no_mr' => $this->form_validation->set_value('no_mr'),
                     'nama_pasien' => $this->input->post('nama_pasien_layan'),
-                    'diagnosa_awal' => $this->form_validation->set_value('pl_diagnosa_awal'),
+                    'kode_bagian' => $this->form_validation->set_value('kode_bagian'),
+                    'tgl_periksa' => date('Y-m-d H:i:s'),
+                    'kategori_tindakan' => 3,
+                    'dokter_pemeriksa' => $this->input->post('dr_merawat'),
+                    'kode_bagian' => $this->input->post('kode_bagian_asal'),
                     'anamnesa' => $this->form_validation->set_value('pl_anamnesa'),
                     'pengobatan' => $this->form_validation->set_value('pl_pengobatan'),
-                    'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
                     'pemeriksaan' => $this->form_validation->set_value('pl_pemeriksaan'),
-                    'tgl_periksa' => date('Y-m-d H:i:s'),
-                    'kode_bagian' => $this->form_validation->set_value('kode_bagian'),
-                    'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
-                    'kategori_tindakan' => 3,
+                    'anjuran_dokter' => $this->form_validation->set_value('pl_anjuran_dokter'),
+                    'diagnosa_awal' => $this->form_validation->set_value('pl_diagnosa'),
                     'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
+                    'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
+                    'diagnosa_sekunder' => $this->form_validation->set_value('pl_diagnosa_sekunder'),
+                    'tindakan_prosedur' => $this->form_validation->set_value('pl_tindakan_prosedur'),
+                    'alergi_obat' => $this->form_validation->set_value('pl_alergi_obat'),
+                    'diet' => $this->form_validation->set_value('pl_diet'),
+                    'cara_keluar' => $this->input->post('cara_keluar'),
+                    'pasca_pulang' => $this->input->post('pasca_pulang'),
+ 
                 );
 
                 if($this->input->post('kode_riwayat')==0){
@@ -786,7 +1045,10 @@ class Pl_pelayanan_ri extends MX_Controller {
                 /*update bagian_keluar */
                 $this->Pl_pelayanan_ri->update('tc_registrasi', array('kode_bagian_keluar' => $this->input->post('kode_bagian') ), array('no_registrasi' => $no_registrasi ) );
 
-               
+                // generate file resume medis
+                $this->generateResumeMedisRI($no_mr, $no_registrasi);
+                
+
 
             }else{
                 echo json_encode(array('status' => 301, 'message' => 'Masih ada Resep yang belum selesai'));
@@ -802,12 +1064,18 @@ class Pl_pelayanan_ri extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai'));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'pulangkan_pasien'));
             }
 
         
         }
 
+    }
+
+    public function generateResumeMedisRI($no_mr, $no_registrasi){
+        // generate resume medis
+        $filename = 'Resume_Medis_RI-'.$no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
+        $this->cbpModule->generateSingleDoc($filename);
     }
 
     public function rollback()

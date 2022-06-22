@@ -26,6 +26,9 @@ class Pl_pelayanan_igd extends MX_Controller {
         $this->load->library('daftar_pasien');
         /*enable profiler*/
         $this->output->enable_profiler(false);
+        // load other module
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
@@ -230,7 +233,12 @@ class Pl_pelayanan_igd extends MX_Controller {
 
                 if(isset($cek_rujuk) AND $cek_rujuk->status==1){
                     $tujuan = substr($cek_rujuk->rujukan_tujuan, 1, 1);
-                    $status_periksa = ($tujuan=='3')?'<label class="label label-info"><i class="fa fa-arrow-circle-right"></i> Rujuk Rawat Jalan</label>':($tujuan=='1')?'<label class="label label-purple"><i class="fa fa-arrow-circle-right"></i> Rujuk Rawat Inap</label>':'<label class="label label-blue"><i class="fa fa-arrow-circle-right"></i> Rujuk</label>';
+                    if($tujuan == '3'){
+                        $status_periksa = '<label class="label label-info"><i class="fa fa-arrow-circle-right"></i> Rujuk Rawat Jalan</label>';
+                    }else{
+                        $status_periksa = ($tujuan=='1')?'<label class="label label-purple"><i class="fa fa-arrow-circle-right"></i> Rujuk Rawat Inap</label>':'<label class="label label-blue"><i class="fa fa-arrow-circle-right"></i> Rujuk</label>';
+                    }
+
                 }else{
                     if($row_list->status_batal == 1){
                         $status_periksa = '<label class="label label-danger"><i class="fa fa-times"></i> Batal Kunjungan</label>';
@@ -581,7 +589,7 @@ class Pl_pelayanan_igd extends MX_Controller {
 
     public function processPelayananSelesai(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );        
         $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
@@ -744,9 +752,15 @@ class Pl_pelayanan_igd extends MX_Controller {
 
     }
 
+    public function generateSuratPermohonan($no_mr, $no_registrasi){
+        // generate file surat permohonan
+        $filename = 'Surat_Permohonan_RI-'.$no_mr.'-'.$no_registrasi.'';
+        return $this->cbpModule->generateSingleDoc($filename);
+    }
+
     public function processSaveDiagnosa(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );        
         $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        

@@ -14373,7 +14373,7 @@ ul.attachment-list > li {
 .dataTable > thead > tr > th[class*=sort]:after {
   float: right;
   display: inline;
-  content: "\f0dc";
+  /* content: "\f0dc"; */
   /*font-family: FontAwesome;*/
   font : 11px/normal tahoma,verdana;
   font-size: 12px;

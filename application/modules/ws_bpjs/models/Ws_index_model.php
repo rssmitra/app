@@ -1,21 +1,29 @@
 <?php
+require_once 'vendor/autoload.php';
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Ws_index_model extends CI_Model {
 
-	/*development*/
-	// var $consID 		= "12973";
-	// var $secretKey 		= "4aT7357418";
-	// var $base_api_url	= "https://dvlp.bpjs-kesehatan.go.id/VClaim-Rest";
+	/*vclaim production versi 1.0*/
+	// var $consID 		= "17971";
+	// var $secretKey 		= "H9139FJ385";
+	// var $base_api_url	= "https://new-api.bpjs-kesehatan.go.id:8080/new-vclaim-rest";
 
-	/*production*/
+    // vclaim development v2.0
+	// var $consID 		= "12973";
+	// var $secretKey 		= "4aT7357418xxChanged";
+	// var $user_key 		= "0dd67b5d8c5863dadb0cb9a6cf266e98";
+	// var $base_api_url	= "https://apijkn-dev.bpjs-kesehatan.go.id/vclaim-rest-dev";
+
+	// vclaim production v2.0
 	var $consID 		= "17971";
 	var $secretKey 		= "H9139FJ385";
-	// var $base_api_url	= "http://api.bpjs-kesehatan.go.id:8080/vclaim-rest";
-	var $base_api_url	= "https://new-api.bpjs-kesehatan.go.id:8080/new-vclaim-rest";
+	var $user_key 		= "111ba0057476395e9dc61b6c86963111";
+	var $base_api_url	= "https://apijkn.bpjs-kesehatan.go.id/vclaim-rest";
 
-	// aplicare
-	// var $base_api_url_applicare = "http://api.bpjs-kesehatan.go.id/aplicaresws";
+	// aplicare v1.0
+    var $consIDApplicare 		= "17971";
+	var $secretKeyApplicare 	= "H9139FJ385";
 	var $base_api_url_applicare = "https://new-api.bpjs-kesehatan.go.id/aplicaresws";
 
 
@@ -35,12 +43,13 @@ class Ws_index_model extends CI_Model {
 		$encodedSignature = base64_encode($signature);	
 		$headers = array( 
 	            /*"Accept: application/json", */
-	            "X-cons-id:".$this->consID, 
+	            "X-cons-id: ".$this->consID, 
 	            "X-timestamp: ".$stamp, 
 	            "X-signature: ".$encodedSignature,
-	            'Content-Type: application/x-www-form-urlencoded'
+	            "user-key: ".$this->user_key,
+	            // 'Content-Type: application/x-www-form-urlencoded'
 	        ); 
-		//echo '<pre>';print_r($headers);die;
+		// echo '<pre>';print_r($headers);die;
 		return $headers;
 
 	}
@@ -48,45 +57,58 @@ class Ws_index_model extends CI_Model {
 	function getSignatureHeaderApplicare(){
 
 		$stamp		= time();
-		$data 		= $this->consID.'&'.$stamp;
+		$data 		= $this->consIDApplicare.'&'.$stamp;
 		
-		$signature = hash_hmac('sha256', $data, $this->secretKey, true);
+		$signature = hash_hmac('sha256', $data, $this->secretKeyApplicare, true);
 		$encodedSignature = base64_encode($signature);	
 		$headers = array( 
 	            /*"Accept: application/json", */
-	            "X-cons-id:".$this->consID, 
+	            "X-cons-id:".$this->consIDApplicare, 
 	            "X-timestamp: ".$stamp, 
 	            "X-signature: ".$encodedSignature,
 	            'Content-Type: application/json'
 	        ); 
-		//echo '<pre>';print_r($headers);die;
+		// echo '<pre>';print_r($headers);die;
 		return $headers;
 
 	}
 
 	function getData($service_name){
 
-		// print_r($service_name);die;
+		$header = $this->getSignatureHeader();
+		$key = $this->consID.$this->secretKey.time();
 		$uri = $this->base_api_url.'/'.$service_name;
 		$ch = curl_init($uri);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $this->getSignatureHeader()); 
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header); 
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$data = curl_exec($ch);
+		$result = json_decode($data);
+		// echo '<pre>';print_r($result);die;
+		// decrypt
+		if(isset($result->response)){
+			$strdecrpt = $this->stringDecrypt($key, $result->response);
+			$decompress = $this->decompress($strdecrpt);
+		}
+		
+		$getData = array(
+			'response' => $result,
+			'data' => isset($decompress)?json_decode($decompress):'',
+		);
 		curl_close($ch);
-		return json_decode($data);
+		return $getData;
+		
 
 	}
 
 	function postDataWs($service_name, $post_data='', $method=''){
 
 		$uri = $this->base_api_url.'/'.$service_name;
-
 		$json = json_encode($post_data); 
-		// print_r($json);die;
+		$key = $this->consID.$this->secretKey.time();
 		$c = curl_init();
 
 		curl_setopt($c, CURLOPT_URL, $uri);
@@ -105,10 +127,20 @@ class Ws_index_model extends CI_Model {
 		curl_setopt($c, CURLOPT_POST, true);
 		curl_setopt($c, CURLOPT_POSTFIELDS, $json);
 
-		$result = curl_exec($c);
-		// print_r(curl_error($c));die;
-		curl_close($c); 
-		return json_decode($result);
+		$data = curl_exec($c);
+        $result = json_decode($data);
+
+		if(isset($result->response)){
+			$strdecrpt = $this->stringDecrypt($key, $result->response);
+			$decompress = $this->decompress($strdecrpt);
+		}
+		
+		$getData = array(
+			'response' => $result,
+			'data' => isset($decompress)?json_decode($decompress):'',
+		);
+		curl_close($c);
+		return $getData;
 
 	}
 
@@ -147,8 +179,9 @@ class Ws_index_model extends CI_Model {
 	function refDiagnosa(){
 		$service_name = "referensi/diagnosa/".$_POST['keyword'];
 		$result = $this->getData($service_name); 
-		if($result->metaData->code==200){
-			foreach ($result->response->diagnosa as $key => $value) {
+		// echo '<pre>';print_r($result);die;
+		if($result['response']->metaData->code==200){
+			foreach ($result['data']->diagnosa as $key => $value) {
 				$arrResult[] = $value->kode.' : '.$value->nama;
 			}
 			return $arrResult;
@@ -158,8 +191,8 @@ class Ws_index_model extends CI_Model {
 	function refPoli(){
 		$service_name = "referensi/poli/".$_POST['keyword'];
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			foreach ($result->response->poli as $key => $value) {
+		if($result['response']->metaData->code==200){
+			foreach ($result['data']->poli as $key => $value) {
 				$arrResult[] = $value->kode.' : '.$value->nama;
 			}
 			return $arrResult;
@@ -169,8 +202,8 @@ class Ws_index_model extends CI_Model {
 	function refFaskes(){
 		$service_name = "referensi/faskes/".$_POST['keyword']."/".$_POST['jf'];
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			foreach ($result->response->faskes as $key => $value) {
+		if($result['response']->metaData->code==200){
+			foreach ($result['data']->faskes as $key => $value) {
 				$arrResult[] = $value->kode.' : '.$value->nama;
 			}
 			return $arrResult;
@@ -180,8 +213,8 @@ class Ws_index_model extends CI_Model {
 	function refProcedure(){
 		$service_name = "referensi/procedure/".$_POST['keyword'];
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			foreach ($result->response->procedure as $key => $value) {
+		if($result['response']->metaData->code==200){
+			foreach ($result['data']->procedure as $key => $value) {
 				$arrResult[] = $value->nama;
 			}
 			return $arrResult;
@@ -191,8 +224,8 @@ class Ws_index_model extends CI_Model {
 	function refDokter(){
 		$service_name = "referensi/dokter/".$_POST['keyword'];
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			foreach ($result->response->list as $key => $value) {
+		if($result['response']->metaData->code==200){
+			foreach ($result['data']->list as $key => $value) {
 				$arrResult[] = ''.$value->kode.' : '.$value->nama;
 			}
 			return $arrResult;
@@ -200,11 +233,11 @@ class Ws_index_model extends CI_Model {
 	}
 
 	function RefDokterDPJP(){
-		$service_name = "referensi/dokter/pelayanan/".$_POST['jp']."/tglPelayanan/".$this->tanggal->sqlDateForm($_POST['tgl'])."/Spesialis/".$_POST['spesialis'];
+		$service_name = "referensi/dokter/pelayanan/".$_POST['jp']."/tglPelayanan/".$_POST['tgl']."/Spesialis/".$_POST['spesialis'];
 		$result = $this->getData($service_name);
-		// print_r($result);die;
-		if($result->metaData->code==200){
-			foreach ($result->response->list as $key => $value) {
+		// print_r($_POST);die;
+		if($result['response']->metaData->code==200){
+			foreach ($result['data']->list as $key => $value) {
 				$arrResult[] = ''.$value->kode.' : '.$value->nama;
 			}
 			return $arrResult;
@@ -212,12 +245,12 @@ class Ws_index_model extends CI_Model {
 	}
 
 	function GetRefDokterDPJPRandom(){
-		$service_name = "referensi/dokter/pelayanan/".$_GET['jp']."/tglPelayanan/".$this->tanggal->sqlDateForm($_GET['tgl'])."/Spesialis/".$_GET['spesialis'];
+		$service_name = "referensi/dokter/pelayanan/".$_GET['jp']."/tglPelayanan/".$_GET['tgl']."/Spesialis/".$_GET['spesialis'];
 		$result = $this->getData($service_name);
 		// echo '<pre>';print_r($result->response);die;
-		if($result->metaData->code==200){
-			shuffle($result->response->list);
-			$row = $result->response->list;
+		if($result['response']->metaData->code==200){
+			shuffle($result['data']->list);
+			$row = $result['data']->list;
 			return $row[0];
 		}
 	}
@@ -225,40 +258,40 @@ class Ws_index_model extends CI_Model {
 	function refKelasRawat(){
 		$service_name = "referensi/kelasrawat";
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			return $result->response->list;
+		if($result['response']->metaData->code==200){
+			return $result['data']->list;
 		}
 	}
 
 	function refSpesialistik(){
 		$service_name = "referensi/spesialistik";
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			return $result->response->list;
+		if($result['response']->metaData->code==200){
+			return $result['data']->list;
 		}
 	}
 
 	function refRuangRawat(){
 		$service_name = "referensi/ruangrawat";
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			return $result->response->list;
+		if($result['response']->metaData->code==200){
+			return $result['data']->list;
 		}
 	}
 
 	function refCaraKeluar(){
 		$service_name = "referensi/carakeluar";
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			return $result->response->list;
+		if($result['response']->metaData->code==200){
+			return $result['data']->list;
 		}
 	}
 
 	function refPascaPulang(){
 		$service_name = "referensi/pascapulang";
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
-			return $result->response->list;
+		if($result['response']->metaData->code==200){
+			return $result['data']->list;
 		}
 	}
 
@@ -287,26 +320,28 @@ class Ws_index_model extends CI_Model {
 
 	/*rujukan*/
 	function searchRujukan(){
-
+		// print_r($_POST);exit;
 		/*puskesmas*/
-		if($_POST['jenis_faskes']=='1') {
+		if($_POST['jenis_faskes']=='pcare') {
 
 			if($_POST['flag']=='noRujukan'){
-				$service_name = "Rujukan/".$_POST['noRujukan'];
+				$service_name = "Rujukan/".$_POST['keyvalue'];
 			}else{
-				$service_name = "Rujukan/List/Peserta/".$_POST['nokartu'];
+				$service_name = "Rujukan/Peserta/".$_POST['keyvalue'];
 			}
 
 		/*ini untuk rs*/
 		}else{
 
 			if($_POST['flag']=='noRujukan'){
-				$service_name = "Rujukan/RS/".$_POST['noRujukan'];
+				$service_name = "Rujukan/RS/".$_POST['keyvalue'];
 			}else{
-				$service_name = "Rujukan/RS/List/Peserta/".$_POST['nokartu'];
+				$service_name = "Rujukan/RS/Peserta/".$_POST['keyvalue'];
 			}
 
 		}
+
+		
 				
 		return $this->getData($service_name);
 	}
@@ -321,8 +356,18 @@ class Ws_index_model extends CI_Model {
 	
 
 	function insertRujukan($request){
-		$service_name = "Rujukan/insert";
+		$service_name = "Rujukan/2.0/insert";
 		return $this->postDataWs($service_name, $request);
+	}
+
+	function insertRujukanKhusus($request){
+		$service_name = "Rujukan/Khusus/insert";
+		return $this->postDataWs($service_name, $request);
+	}
+
+	function updateRujukan($request){
+		$service_name = "Rujukan/2.0/Update";
+		return $this->postDataWs($service_name, $request, 'PUT');
 	}
 
 	function updateRuangan($request, $kodeppk){
@@ -342,9 +387,8 @@ class Ws_index_model extends CI_Model {
 	function daftarRuanganRs($kode_ppk='0112R034', $start_data=1, $limit=10){
 		$service_name = "aplicaresws/rest/bed/read/".$kode_ppk."/".$start_data."/".$limit."";
 		$result = $this->getData($service_name);
-
-		if($result->metaData->code==200){
-			return $result->response->list;
+		if($result['response']->metaData->code==200){
+			return $result['data']->list;
 		}
 	}
 
@@ -352,20 +396,160 @@ class Ws_index_model extends CI_Model {
 
 	function get_datatables_kunjungan()
     {
-    	$tglSep = isset($_GET['tglSep'])?$_GET['tglSep']:date('m/d/Y');
+    	$tglSep = isset($_GET['tglSep'])?$_GET['tglSep']:date('Y-m-d');
     	$jnsPelayanan = isset($_GET['jnsPelayanan'])?$_GET['jnsPelayanan']:2;
-    	$service_name = "Monitoring/Kunjungan/Tanggal/".$this->tanggal->sqlDateForm($tglSep)."/JnsPelayanan/".$jnsPelayanan."";
-		return $this->getData($service_name);
+    	$service_name = "Monitoring/Kunjungan/Tanggal/".$tglSep."/JnsPelayanan/".$jnsPelayanan."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($result);die;
+		return $result;
+    }
+
+    function get_jadwal_praktek_dokter()
+    {
+    	$JnsKontrol = isset($_GET['JnsKontrol'])?$_GET['JnsKontrol']:1;
+    	$TglRencanaKontrol = isset($_GET['TglRencanaKontrol'])?$_GET['TglRencanaKontrol']:date('Y-m-d');
+    	$KdPoli = isset($_GET['KdPoli'])?$_GET['KdPoli']:'';
+    	$service_name = "RencanaKontrol/JadwalPraktekDokter/JnsKontrol/".$JnsKontrol."/KdPoli/".$KdPoli."/TglRencanaKontrol/".$TglRencanaKontrol."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function get_rencana_kontrol_poli()
+    {
+    	$JnsKontrol = isset($_GET['JnsKontrol'])?$_GET['JnsKontrol']:1;
+    	$TglRencanaKontrol = isset($_GET['TglRencanaKontrol'])?$_GET['TglRencanaKontrol']:date('Y-m-d');
+    	$nomor = isset($_GET['nomor'])?$_GET['nomor']:'';
+    	$service_name = "RencanaKontrol/ListSpesialistik/JnsKontrol/".$JnsKontrol."/nomor/".$nomor."/TglRencanaKontrol/".$TglRencanaKontrol."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function get_data_rencana_kontrol()
+    {
+    	$tglAwal = isset($_GET['tglAwal'])?$_GET['tglAwal']:date('Y-m-d');
+    	$tglAkhir = isset($_GET['tglAkhir'])?$_GET['tglAkhir']:date('Y-m-d');
+    	$filter = isset($_GET['search_by'])?$_GET['search_by']:1;
+    	$service_name = "RencanaKontrol/ListRencanaKontrol/tglAwal/".$tglAwal."/tglAkhir/".$tglAkhir."/filter/".$filter."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function get_data_rujukan_keluar_rs()
+    {
+    	$tglMulai = isset($_GET['tglMulai'])?$_GET['tglMulai']:date('Y-m-d');
+    	$tglAkhir = isset($_GET['tglAkhir'])?$_GET['tglAkhir']:date('Y-m-d');
+    	$service_name = "Rujukan/Keluar/List/tglMulai/".$tglMulai."/tglAkhir/".$tglAkhir."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function find_surat_kontrol_by_noka()
+    {
+    	$Bulan = isset($_GET['Bulan'])?$_GET['Bulan']:date('m');
+    	$Tahun = isset($_GET['Tahun'])?$_GET['Tahun']:date('Y');
+    	$Nokartu = isset($_GET['Nokartu'])?$_GET['Nokartu']:'';
+    	$filter = isset($_GET['filter'])?$_GET['filter']:1;
+    	$service_name = "RencanaKontrol/ListRencanaKontrol/Bulan/".$Bulan."/Tahun/".$Tahun."/Nokartu/".$Nokartu."/filter/".$filter."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function edit_rujukan_keluar_rs()
+    {
+    	$noRujukan = isset($_GET['noRujukan'])?$_GET['noRujukan']:'';
+    	$service_name = "Rujukan/Keluar/".$noRujukan."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function find_surat_kontrol_by_sep()
+    {
+    	$nosep = isset($_GET['nosep'])?$_GET['nosep']:'';
+    	$service_name = "RencanaKontrol/nosep/".$nosep."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function check_surat_kontrol_by_sep($nosep)
+    {
+    	$service_name = "RencanaKontrol/nosep/".$nosep."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function find_surat_kontrol_by_no()
+    {
+    	$noSuratKontrol = isset($_GET['noSuratKontrol'])?$_GET['noSuratKontrol']:'';
+    	$service_name = "RencanaKontrol/noSuratKontrol/".$noSuratKontrol."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function check_surat_kontrol_by_no($noSuratKontrol)
+    {
+    	$service_name = "RencanaKontrol/noSuratKontrol/".$noSuratKontrol."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function list_rujukan_khusus()
+    {
+    	$Bulan = isset($_GET['Bulan'])?$_GET['Bulan']:date('m');
+    	$Tahun = isset($_GET['Tahun'])?$_GET['Tahun']:date('Y');
+    	$service_name = "Rujukan/Khusus/List/Bulan/".$Bulan."/Tahun/".$Tahun."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
+    }
+
+	function list_spesialistik_rujukan()
+    {
+    	$PPKRujukan = isset($_GET['PPKRujukan'])?$_GET['PPKRujukan']:'';
+    	$TglRujukan = isset($_GET['TglRujukan'])?$_GET['TglRujukan']:date('Y-m-d');
+    	$service_name = "Rujukan/ListSpesialistik/PPKRujukan/".trim($PPKRujukan)."/TglRujukan/".$TglRujukan."";
+		$result = $this->getData($service_name);
+		// echo '<pre>';print_r($service_name);die;
+		return $result;
     }
 
     /*SEP*/
     function insertSep($request){
-		$service_name = "SEP/1.1/insert";
+		$service_name = "SEP/2.0/insert";
 		return $this->postDataWs($service_name, $request);
 	}
 
+    function insertRencanaKontrol($request){
+		$service_name = "RencanaKontrol/insert";
+		return $this->postDataWs($service_name, $request, "POST");
+	}
+
+	function insertRencanaKontrolRI($request){
+		$service_name = "RencanaKontrol/InsertSPRI";
+		return $this->postDataWs($service_name, $request, "POST");
+	}
+
+	function updateRencanaKontrolRI($request){
+		$service_name = "RencanaKontrol/UpdateSPRI";
+		return $this->postDataWs($service_name, $request, "PUT");
+	}
+
+	function updateRencanaKontrol($request){
+		$service_name = "RencanaKontrol/Update";
+		return $this->postDataWs($service_name, $request, "PUT");
+	}
+
 	function updateSep($request){
-		$service_name = "SEP/1.1/Update";
+		$service_name = "SEP/2.0/Update";
 		return $this->postDataWs($service_name, $request,"PUT");
 	}
 
@@ -373,6 +557,17 @@ class Ws_index_model extends CI_Model {
 		$service_name = "SEP/Delete";
 		$method = "DELETE";
 		return $this->postDataWs($service_name, $request, $method);
+	}
+
+    function deleteSuratKontrol($no_surat_kontrol, $request){
+		$service_name = "RencanaKontrol/Delete";
+		$method = "DELETE";
+		return $this->postDataWs($service_name, $request, $method);
+	}
+
+	function editSuratKontrol($no_surat_kontrol){
+		$service_name = "RencanaKontrol/noSuratKontrol/".$no_surat_kontrol."";
+		return $this->getData($service_name);
 	}
 
 	function updateTglPulang($request){
@@ -398,9 +593,34 @@ class Ws_index_model extends CI_Model {
 	function findSep($no_sep){
 		$service_name = "SEP/".$no_sep;
 		$result = $this->getData($service_name);
-		if($result->metaData->code==200){
+		// echo '<pre>';print_r($result);die;
 			return $result;
-		}
+		// if($result['response']->metaData->code==200){
+		// 	return $result;
+		// }
+	}
+
+	public function findSepReturnArray($noSep)
+    {   
+
+		$result = $this->findSep($noSep);
+        $response = isset($result['response']) ? $result : false;
+
+        if($response['response']->metaData->code == 200){
+            return $response['data'];
+        }else{
+            return false;
+        }
+        
+        
+
+    }
+
+
+	function find_sep_internal(){
+		$service_name = "SEP/Internal/".$_GET['nosep'];
+		$result = $this->getData($service_name);
+		return $result;
 	}
 
 	function findSepFromLocal($no_sep){
@@ -783,5 +1003,39 @@ class Ws_index_model extends CI_Model {
 		curl_close($ch);
 	}
 
+	// function decrypt
+	function stringDecrypt($key, $string){
+		
+	
+		$encrypt_method = 'AES-256-CBC';
+
+		// hash
+		$key_hash = hex2bin(hash('sha256', $key));
+	
+		// iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+		$iv = substr(hex2bin(hash('sha256', $key)), 0, 16);
+
+		$output = openssl_decrypt(base64_decode($string), $encrypt_method, $key_hash, OPENSSL_RAW_DATA, $iv);
+	
+		return $output;
+	}
+
+	// function lzstring decompress 
+	// download libraries lzstring : https://github.com/nullpunkt/lz-string-php
+	function decompress($string){
+	
+		return \LZCompressor\LZString::decompressFromEncodedURIComponent($string);
+
+	}
+
+	public function get_data_registrasi($no_sep){
+		$this->db->select('b.nama_pegawai, c.nama_bagian, d.no_hp, d.tlp_almt_ttp');
+		$this->db->from('tc_registrasi a');
+		$this->db->join('mt_dokter_v b', 'b.kode_dokter=a.kode_dokter','left');
+		$this->db->join('mt_master_pasien d', 'd.no_mr=a.no_mr','left');
+		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');
+		$this->db->where('a.no_sep', $no_sep);
+		return $this->db->get()->row();
+	}
 
 }

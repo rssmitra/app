@@ -182,9 +182,10 @@ final Class upload_file {
               $_FILES['userfile']['size']     = $_FILES[''.$params['name'].'']['size'][$i];
 
               $random = rand(1,99);
-              $custom_dok_name = isset($_POST['pf_file_name']) ? preg_replace('/\s+/','-', $_POST['pf_file_name'][$i]).'-'.$_POST['csm_rp_no_sep'] : 'Lampiran-'.$random ;
+              $no_primary = isset($_POST['csm_rp_no_sep'])?$_POST['csm_rp_no_sep']:$params['ref_id'];
+              $custom_dok_name = isset($_POST['pf_file_name']) ? preg_replace('/\s+/','-', $_POST['pf_file_name'][$i]).'-'.$no_primary : 'Lampiran-'.$random ;
               $nama_file_unik = $custom_dok_name.'-'.preg_replace('/\s+/','', $_FILES[''.$params['name'].'']['name'][$i]);
-              //$nama_file_unik = preg_replace('/\s+/', '-', $custom_dok_name).'-'.$_POST['csm_rp_no_sep'];
+              //$nama_file_unik = preg_replace('/\s+/', '-', $custom_dok_name).'-'.$no_primary;
 
               $type_file = $_FILES[''.$params['name'].'']['type'][$i];
 

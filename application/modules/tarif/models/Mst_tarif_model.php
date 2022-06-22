@@ -4,10 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Mst_tarif_model extends CI_Model {
 
 
-	var $table = 'mt_master_tarif';
+	var $table = 'view_tarif_update';
 	var $column = array('nama_tarif');
-	var $select = 'nama_tarif, mt_master_tarif.kode_bagian, mt_master_tarif.kode_tarif, kode_jenis_tindakan, mt_jenis_tindakan.jenis_tindakan, nama_bagian, revisi_ke, mt_master_tarif.is_active';
-
+	var $select = 'view_tarif_update.*';
 	var $order = array('nama_tarif' => 'ASC');
 
 	public function __construct()
@@ -19,20 +18,14 @@ class Mst_tarif_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		$this->db->join('mt_jenis_tindakan', 'mt_jenis_tindakan.kode_jenis_tindakan=mt_master_tarif.jenis_tindakan', 'left');
-		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif.kode_bagian', 'left');
-		$this->db->join('(select kode_tarif from mt_master_tarif_detail group by kode_tarif) as trf_detail', 'trf_detail.kode_tarif=mt_master_tarif.kode_tarif', 'left');
-
 		if(isset($_GET['unit']) AND $_GET['unit'] != ''){
-			$this->db->where('mt_master_tarif.kode_bagian', $_GET['unit']);
+			$this->db->where('view_tarif_update.kode_bagian', $_GET['unit']);
 		}
 
-		if(isset($_GET['checked_nama_tarif']) AND $_GET['checked_nama_tarif'] == 1){
-			if(isset($_GET['nama_tarif']) AND $_GET['nama_tarif'] != ''){
-				$this->db->like('mt_master_tarif.nama_tarif', $_GET['nama_tarif']);
-			}
+		if(isset($_GET['nama_tarif']) AND $_GET['nama_tarif'] != ''){
+			$this->db->like('view_tarif_update.nama_tarif', $_GET['nama_tarif']);
 		}
-
+		
 	}
 
 	private function _get_datatables_query()
@@ -42,13 +35,13 @@ class Mst_tarif_model extends CI_Model {
 
 		$i = 0;
 	
-		foreach ($this->column as $item) 
-		{
-			if($_POST['search']['value'])
-				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
-			$column[$i] = $item;
-			$i++;
-		}
+		// foreach ($this->column as $item) 
+		// {
+		// 	if($_POST['search']['value'])
+		// 		($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
+		// 	$column[$i] = $item;
+		// 	$i++;
+		// }
 		
 		if(isset($_POST['order']))
 		{
@@ -64,11 +57,18 @@ class Mst_tarif_model extends CI_Model {
 	function get_datatables()
 	{
 		$this->_get_datatables_query();
-		if($_POST['length'] != -1)
-		$this->db->limit($_POST['length'], $_POST['start']);
-		$query = $this->db->get();
+
+		$query = $this->db->get()->result();
+		$getData = [];
+		foreach ($query as $key => $value) {
+			# code...
+			// $getData[$value->kode_tarif][$value->kode_klas] = $value;
+			$getData[$value->kode_tarif]['nama_tarif'] = $value->nama_tarif;
+			$getData[$value->kode_tarif]['nama_bagian'] = $value->nama_bagian;
+			$getData[$value->kode_tarif]['klas'][$value->kode_klas] = $value;
+		}
 		// print_r($this->db->last_query());die;
-		return $query->result();
+		return $getData;
 	}
 
 	function count_filtered()
