@@ -32,7 +32,10 @@ hr {
 
             <tr>
               <td style="vertical-align: text-top"><i class="fa fa-building"></i></td>
-              <td> <?php echo ucwords($value->nama_bagian)?></td>
+              <td>
+                <?php echo ucwords($value->nama_bagian)?>
+                <?php echo ($value->validasi ==  300) ? '<a href="#" class="pull-right label label-primary" onclick="show_modal_medium('."'pelayanan/Pl_pelayanan_ri/view_cppt?no_kunjungan=".$value->no_kunjungan."'".', '."'CATATAN PERKEMBANGAN PASIEN TERINTEGRASI (CPPT)'".')">Lihat CPPT</a>' : '' ;?>
+              </td>
             </tr>
 
             <tr>
@@ -71,24 +74,43 @@ hr {
                   </td>
                 </tr>
               </table>
+              
               <b>Diagnosis (Kode ICD) :</b>
               <table class="table table-bordered">
                 <tr>
                   <td>
                   <?php echo ($value->diagnosa_awal != '') ? ($value->diagnosa_akhir != $value->diagnosa_awal) ? 'Diagnosa Awal. '.nl2br($value->diagnosa_awal).'<br>': ''.nl2br($value->diagnosa_awal) : ''?>
-                  
-                    <?php echo ($value->diagnosa_akhir != '') ? ($value->diagnosa_akhir != $value->diagnosa_awal) ? 'Diagnosa Akhir. '.nl2br($value->diagnosa_akhir): '' : ''?>
+                  <?php echo ($value->diagnosa_akhir != '') ? ($value->diagnosa_akhir != $value->diagnosa_awal) ? 'Diagnosa Akhir. '.nl2br($value->diagnosa_akhir): '' : ''?><br>
+                  <?php 
+                    if((int)$value->validasi == 300) {
+                      echo ($value->diagnosa_sekunder != '') ? '<br>Diagnosa Sekunder : <br>'.$value->diagnosa_sekunder : '';
+                    }
+                  ?>
                   </td>
                 </tr>
               </table>
-              <b>Tearapi/Tindakan :</b>
+              
+              <b>Terapi/Tindakan/Prosedur :</b>
               <table class="table table-bordered">
                 <tr>
                   <td>
-                    <?php echo ($value->pengobatan != '')?nl2br($value->pengobatan):'-'?>
+                    <?php echo ($value->pengobatan != '')?nl2br($value->pengobatan):'-'?><br>
+                    <?php echo ($value->tindakan_prosedur != '')?nl2br($value->tindakan_prosedur):'-'?>
+                    <?php echo ($value->anjuran_dokter != '')?nl2br($value->anjuran_dokter):'-'?>
                   </td>
                 </tr>
               </table>
+
+              <b>Lainnya :</b>
+              <table class="table table-bordered">
+                <tr>
+                  <td>
+                    <?php echo ($value->alergi_obat != '')?nl2br($value->alergi_obat):'-'?><br>
+                    <?php echo ($value->diet != '')?nl2br($value->diet):'-'?>
+                  </td>
+                </tr>
+              </table>
+              
               <b>Resep Dokter :</b>
               <table class="table table-bordered">
                 <tr>
@@ -97,6 +119,7 @@ hr {
                   </td>
                 </tr>
               </table>
+
               <b>Obat yang diberikan farmasi :</b>
               <table class="table table-bordered">
                 <tr>
@@ -109,6 +132,7 @@ hr {
                   </td>
                 </tr>
               </table>
+              
               <?php if(count($penunjang) > 0) : ?>
               <b>Hasil Penunjang Medis :</b>
               <table class="table table-bordered">
@@ -145,13 +169,13 @@ hr {
                 <tr>
                   <td>
                   <?php 
-                    $result_file = isset($file[$value->no_registrasi])?$file[$value->no_registrasi]:array();
+                    $result_file = isset($file[$value->no_registrasi][$value->no_kunjungan])?$file[$value->no_registrasi][$value->no_kunjungan]:array();
                     foreach($result_file as $row_file) : 
                       $exp_file = explode('-', $row_file->csm_dex_nama_dok);
                       $filename = isset($exp_file[0])?$exp_file[0]:'Lampiran File';
                       if(!in_array($filename, array('SEP','RJ'))) :
                     ?>
-                    - <a href="#" onclick="show_modal_with_iframe('<?php echo BASE_FILE_RM.$row_file->csm_dex_fullpath?>', '<?php echo $filename; ?>')"><?php echo $filename; ?></a></br>
+                    - <a href="#" onclick="show_modal_with_iframe('<?php echo BASE_FILE_RM.$row_file->csm_dex_fullpath?>', '<?php echo $filename; ?>')"><?php echo $row_file->csm_dex_nama_dok; ?></a></br>
                   <?php endif; endforeach; ?>
                   </td>
                 </tr>

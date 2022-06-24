@@ -32,11 +32,10 @@ $(document).ready(function(){
     "serverSide": true, //Feature control DataTables' server-side processing mode.
     "ordering": false,
     "searching": false,
-    "bPaginate": true,
+    "bPaginate": false,
     "bInfo": false,
-    "pageLength": 100,
      "ajax": {
-        "url": "tarif/Mst_tarif/get_data",
+        "url": "tarif/Mst_tarif/get_data?unit="+$('#unit').val()+"&nama_tarif="+$('#nama_tarif').val()+"",
         "type": "POST"
     },
     "columnDefs": [
@@ -93,13 +92,51 @@ $(document).ready(function(){
       });
     });
 
+    $('#btn_export_excel').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+        url: 'tarif/Mst_tarif/find_data',
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        success: function(data) {
+          achtungHideLoader();
+          find_data_reload(data,'tarif/Mst_tarif');
+        }
+      });
+    });
+
     $('#btn_reset_data').click(function (e) {
         e.preventDefault();
         find_data_reload();
     });
 
+    $('#btn_export_excel').click(function (e) {
+      var url_search = $('#form_search').attr('action');
+      e.preventDefault();
+      $.ajax({
+        url: url_search,
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        success: function(data) {
+          console.log(data.data);
+          export_excel(data);
+        }
+      });
+    });
 
 })
+
+
+function export_excel(result){
+
+  window.open('tarif/Mst_tarif/export_excel?'+result.data+'','_blank'); 
+
+}
 
 function format ( data ) {
     return data.html;
@@ -203,14 +240,11 @@ function delete_tarif_klas(myid){
       </center>
       <br>
       <div class="form-group">
-        <label class="control-label col-md-2">Unit/Bagian</label>
-        <div class="col-md-4">
-          <?php echo $this->master->custom_selection(array('table'=>'view_unit_tarif', 'where'=>array(), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),'','unit','unit','chosen-slect form-control','','');?>
+        <label class="control-label col-md-1">Unit/Bagian</label>
+        <div class="col-md-3">
+          <?php echo $this->master->custom_selection(array('table'=>'view_unit_tarif', 'where'=>array(), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($this->cache->get('cache')['unit'])?$this->cache->get('cache')['unit']:'','unit','unit','chosen-slect form-control','','');?>
         </div>
-      </div>
-
-      <div class="form-group">
-          <div class="control-label col-md-2">
+        <div class="control-label col-md-2">
             <div class="checkbox" style="margin-top: -5px">
               <label>
                 <input name="checked_nama_tarif" id="checked_nama_tarif" type="checkbox" class="ace" value="1">
@@ -219,26 +253,22 @@ function delete_tarif_klas(myid){
             </div>
           </div>
           <div class="col-md-2" style="margin-left: -15px">
-              <input type="text" value="" name="nama_tarif" id="nama_tarif" class="form-control">
+              <input type="text" value="<?php echo isset($this->cache->get('cache')['nama_tarif'])?$this->cache->get('cache')['nama_tarif']:''?>" name="nama_tarif" id="nama_tarif" class="form-control">
           </div>
-
-          <div class="control-label col-md-2">
-            <div class="checkbox" style="margin-top: -5px">
-              <label>
-                <input name="checked_jenis_tindakan" value="1" type="checkbox" class="ace">
-                <span class="lbl"> Jenis Tindakan</span>
-              </label>
-            </div>
-          </div>
-          <div class="col-md-2" style="margin-left: -15px">
-              <?php echo $this->master->custom_selection(array('table'=>'mt_jenis_tindakan', 'where'=>array(), 'id'=>'kode_jenis_tindakan', 'name' => 'jenis_tindakan'),'','jenis_tindakan','jenis_tindakan','chosen-slect form-control','','');?>
-          </div>
-          <div class="col-md-2" style="margin-left: -15px">
+          <div class="col-md-4" style="margin-left: -15px">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Tampilkan Data
             </a>
+            <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+              <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+              Export Excel Detail 
+            </a>
           </div>
+      </div>
+
+      <div class="form-group">
+          
       </div>
       <hr class="separator">
       <div class="clearfix" style="margin-bottom:-5px">
@@ -254,11 +284,12 @@ function delete_tarif_klas(myid){
               <th width="50px">&nbsp;</th>
               <th width="50px">&nbsp;</th>
               <th></th>
-              <th>Nama Tarif</th>         
-              <th>Jenis Tindakan</th>         
-              <th>Unit/Bagian</th>         
-              <th>Revisi ke-</th>         
-              <th>Action</th>         
+              <th>Kode & Nama Tarif</th>      
+              <th>Unit/Bagian</th>      
+              <?php foreach($klas as $row_klas) :?>      
+              <th width="100px"><?php echo $row_klas->nama_klas; ?></th>         
+              <?php endforeach; ?>      
+              <th width="100px">Action</th>         
             </tr>
           </thead>
           <tbody>
@@ -272,7 +303,6 @@ function delete_tarif_klas(myid){
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<!-- <script src="<?php //echo base_url().'assets/js/custom/als_datatable.js'?>"></script> -->
 
 
 

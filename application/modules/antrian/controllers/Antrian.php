@@ -154,6 +154,9 @@ class Antrian extends MX_Controller {
         
         // cek kode perjanjian
         $perjanjian = $this->antrian_model->cek_kode_perjanjian($kode_booking, $kode_dokter, $kode_poli);
+
+        // echo '<pre>'; print_r($_POST);die;
+        // echo '<pre>'; print_r($perjanjian->row());die;
         if( $perjanjian->num_rows() == 0){
             echo json_encode(array('status' => 301, 'message' => 'Data Perjanjian/Booking tidak ditemukan untuk hari ini!'));
             exit;
@@ -180,7 +183,8 @@ class Antrian extends MX_Controller {
 
             $this->db->trans_begin();
 
-            
+            // print_r($datakuota);die;
+
             // prosess 
             $no_ = $this->db->get_where('tr_antrian',array('ant_type' => 'bpjs'))->num_rows();
             $no = $no_ + 1;
@@ -191,31 +195,36 @@ class Antrian extends MX_Controller {
                 'ant_status' => 0,
                 'ant_type' => $data[0],
                 'ant_date' => date('Y-m-d H:i:s'),
-                'ant_no' => $no,
                 'ant_panggil' => 0,
-                'log' => json_encode(array('dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6])),
+                'log' => json_encode(array('dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6], 'kode_booking' => $obj_data->unique_code_counter)),
             );
-    
-            $datakuota = array(
-                'tanggal' => date('Y-m-d'),
-                'kode_dokter' => $dataexc['ant_kode_dokter'],
-                'kode_spesialis' => $dataexc['ant_kode_spesialis'], 
-                'flag' => 'mesin_antrian', 
-            );
-            // print_r($datakuota);die;
-            /*save antrian */
+
+            /*save antrian  jika belum pernah diprint, maka print baru*/
             if($obj_data->status_konfirmasi_kedatangan != 1){
+
+                $dataexc['ant_no'] = $no;
+                $datakuota = array(
+                    'tanggal' => date('Y-m-d'),
+                    'kode_dokter' => $dataexc['ant_kode_dokter'],
+                    'kode_spesialis' => $dataexc['ant_kode_spesialis'], 
+                    'flag' => 'mesin_antrian', 
+                );
+
                 $this->loket->save('tr_antrian',$dataexc);
                 $this->loket->save('log_kuota_dokter',$datakuota);
+
+                // update task antrian online
+                $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
+                $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $perjanjian->kode_perjanjian, 'taskid' => 2, 'waktu' => $waktukirim));
+
+            }else{
+                $dataexc['ant_no'] = $obj_data->no_antrian;
             }
             
             // udpate perjanjian
-            $this->db->where('unique_code_counter', $kode_booking)->update('tc_pesanan', array('status_konfirmasi_kedatangan' => 1));
+            $this->db->where('id_tc_pesanan', $obj_data->id_tc_pesanan)->update('tc_pesanan', array('status_konfirmasi_kedatangan' => 1, 'no_antrian' => $dataexc['ant_no']));
+            // print_r($this->db->last_query());die;
 
-            // update task antrian online
-            $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
-            $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $perjanjian->kode_perjanjian, 'taskid' => 2, 'waktu' => $waktukirim));
-    
             $this->print_direct->printer_antrian_php_kiosk($dataexc);
 
             if ($this->db->trans_status() === FALSE)
@@ -226,7 +235,7 @@ class Antrian extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses berhasil dilakukan!', 'dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6],'type' => $data[0],'no' => $no));
+                echo json_encode(array('status' => 200, 'message' => 'Proses berhasil dilakukan!', 'dokter' => $data[2],'klinik' => $data[4], 'jam_praktek' => $data[6],'type' => $data[0],'no' => $dataexc['ant_no']));
             }
 
         }

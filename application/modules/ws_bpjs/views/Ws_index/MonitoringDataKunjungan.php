@@ -7,7 +7,7 @@ jQuery(function($) {
 
   $('.date-picker').datepicker({
     autoclose: true,
-    todayHighlight: true
+    todayHighlight: true,
   })
   //show datepicker when clicking on the icon
   .next().on(ace.click_event, function(){
@@ -19,28 +19,27 @@ jQuery(function($) {
 function delete_sep(no_sep){
   if(confirm('Are you sure?')){
     $.ajax({
-        url: 'ws_bpjs/ws_index/delete_sep',
-        type: "post",
-        data: {ID:no_sep,jnsPelayanan:$('input[name=jnsPelayanan]:checked').val(),tglSep:$('#tglSep').val()},
-        dataType: "json",
-        beforeSend: function() {
-          achtungShowLoader();  
-        },
-        uploadProgress: function(event, position, total, percentComplete) {
-        },
-        complete: function(xhr) {     
-          var data=xhr.responseText;
-          var jsonResponse = JSON.parse(data);
-          if(jsonResponse.status == 200){
-            $('#page-area-content').load('ws_bpjs/ws_index?modWs=MonitoringDataKunjungan');
-            $.achtung({message: jsonResponse.message, timeout:5});
-          }else{
-            $.achtung({message: jsonResponse.message, timeout:5});
-          }
-          achtungHideLoader();
+      url: 'ws_bpjs/ws_index/delete_sep',
+      type: "post",
+      data: {ID:no_sep,jnsPelayanan:$('input[name=jnsPelayanan]:checked').val(),tglSep:$('#tglSep').val()},
+      dataType: "json",
+      beforeSend: function() {
+        achtungShowLoader();  
+      },
+      uploadProgress: function(event, position, total, percentComplete) {
+      },
+      complete: function(xhr) {     
+        var data = xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        if(jsonResponse.status == 200){
+          $.achtung({message: jsonResponse.message, timeout:5});
+          reload_table();
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
         }
-
-      });
+        achtungHideLoader();
+      }
+    });
 
   }else{
     return false;
@@ -54,6 +53,7 @@ function view_sep(no_sep){
 
     if(response.status==200){
       var sep = response.data;
+      var peserta = sep.peserta;
       $('#modal_title_noSep').text('DATA SEP NOMOR : '+sep.noSep);
       $('#modal_noSep').text(': '+sep.noSep);
       $('#modal_tglSep').text(': '+sep.tglSep);
@@ -68,15 +68,15 @@ function view_sep(no_sep){
       $('#modal_PPKPerujuk').text(': '+sep.PPKPerujuk);
       $('#modal_cob').text(': -');
 
-      $('#modal_noKartu').text(': '+sep.noKartu);
-      $('#modal_jnsPeserta').text(': '+sep.jnsPeserta);
-      $('#modal_tglLahir').text(': '+sep.tglLahir);
-      $('#modal_kelamin').text(': '+sep.kelamin);
-      $('#modal_hakKelas').text(': '+sep.hakKelas);
-      $('#modal_asuransi').text(': '+sep.asuransi);
-      $('#modal_nama').text(': '+sep.nama);
-      $('#modal_noMr').text(': '+sep.noMr);
-      $('#modal_noTelp').text(': '+sep.noTelp);
+      $('#modal_noKartu').text(': '+peserta.noKartu);
+      $('#modal_nama').text(': '+peserta.nama);
+      $('#modal_tglLahir').text(': '+peserta.tglLahir);
+      $('#modal_kelamin').text(': '+peserta.kelamin);
+      $('#modal_jnsPeserta').text(': '+peserta.jnsPeserta);
+      $('#modal_hakKelas').text(': '+peserta.hakKelas);
+      $('#modal_asuransi').text(': '+peserta.asuransi);
+      $('#modal_noMr').text(': '+peserta.noMr);
+      $('#modal_noTelp').text(': ');
       
       /*show modal*/
       $("#modalViewSep").modal(); 
@@ -102,7 +102,7 @@ function view_sep(no_sep){
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_search">
+    <form class="form-horizontal" method="post" id="form_search" action="ws_bpjs/Ws_index/find_data">
 
     <div class="col-md-12">
       <center><h4>FORM PENCARIAN DATA KUNJUNGAN PASIEN<br><small style="font-size:12px">(Silahkan lakukan pencarian data berdasarkan parameter dibawah ini)</small></h4></center>
@@ -125,7 +125,7 @@ function view_sep(no_sep){
         <label class="control-label col-md-1">Tanggal SEP</label>
         <div class="col-md-2">
           <div class="input-group">
-              <input name="tglSep" id="tglSep" value="<?php echo date('m/d/Y')?>" placeholder="ex : yyyy-MM-dd" class="form-control date-picker" type="text">
+              <input name="tglSep" id="tglSep" value="<?php echo date('Y-m-d')?>" placeholder="ex : yyyy-MM-dd" class="form-control date-picker" type="text" data-date-format="yyyy-mm-dd">
               <span class="input-group-addon">
                 <i class="ace-icon fa fa-calendar"></i>
               </span>
@@ -154,6 +154,7 @@ function view_sep(no_sep){
           <tr>  
             <th width="130px" class="center"></th>
             <th width="120px">Nama</th>
+            <th>No Rujukan</th>
             <th>No Kartu</th>
             <th>No SEP</th>
             <th>Tanggal SEP</th>
@@ -186,6 +187,7 @@ function view_sep(no_sep){
        </div>
      </div>
      <div class="modal-body no-padding">
+
       <div style="margin-left:20px;margin-right:20px;padding-bottom:50px;padding-top:30px">
        
         <style type="text/css">
@@ -229,9 +231,9 @@ function view_sep(no_sep){
             <tr>
                 <td>Poli Tujuan</td><td id="modal_poli"></td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td>Faskes Perujuk</td><td id="modal_PPKPerujuk"></td>
-            </tr>
+            </tr> -->
             <tr>
                 <td>Diagnosa Awal</td><td id="modal_diagnosa" colspan="2"></td>
             </tr>

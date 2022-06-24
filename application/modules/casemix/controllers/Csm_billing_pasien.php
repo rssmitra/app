@@ -317,10 +317,23 @@ class Csm_billing_pasien extends MX_Controller {
         $html = '';
 
        switch ($flag) {
+            case 'Surat_Permohonan_RI':
+                $html .= $temp->setGlobalHeaderTemplate();
+                $html .= $temp->setTemplateSuratPermohonanRI($data);
+                $html .= $temp->setGlobalFooterRm($data);
+                break;
+
             case 'RESUME':
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfileRekamMedis($data);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateResumeMedis($no_registrasi, $flag, $data));
+                $html .= $temp->setGlobalFooterRm($data);
+                break;
+                
+            case 'Resume_Medis_RI':
+                $html .= $temp->setGlobalHeaderTemplate();
+                $html .= $temp->setGlobalProfilePasienTemplateRI($data);
+                $html .= $temp->setGlobalContentBilling($temp->TemplateResumeMedisRI($no_registrasi, $flag, $data));
                 $html .= $temp->setGlobalFooterRm($data);
                 break;
             case 'RJ':

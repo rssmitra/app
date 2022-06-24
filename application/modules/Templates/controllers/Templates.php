@@ -612,7 +612,8 @@ class Templates extends MX_Controller {
                         <td width="300px">: '.$ri->nama_bagian.'</td>
                         <td width="120px">Kelas</td>
                         <td width="300px">: '.$ri->nama_klas.'</td>
-                    </tr>                    
+                    </tr>  
+                    
                   </table>';
         return $html;
     }
@@ -723,68 +724,148 @@ class Templates extends MX_Controller {
                         </ol>
                       </td>';
         $html .= '</tr>';
-        // echo '<pre>';print_r($html);die;
-
-        // $html .= '<tr>';
-        //     $html .= '<td colspan="2">
-        //                 <b>Tindakan kepada Pasien</b><br>
-        //                 Berikut adalah tindakan yang dilakukan oleh dokter kepada pasien sebagai dasar tagihan kepada pasien.<br>
-        //                 <table class="table table-striped" cellpadding="2" cellspacing="2" style="font-size:36px;">
-        //                     <tr>
-        //                         <th align="center" width="30px" style="border-collapse: collapse; border-bottom: 1px solid black;">No</th>
-        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;">Deskripsi</th>
-        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="120px">Jenis Tindakan</th>
-        //                     </tr>';
-        //                     $no_tindakan = 0;
-        //                     foreach($result['tindakan'] as $row_tindakan) : 
-        //                         if(in_array($row_tindakan->kode_jenis_tindakan, array(3,10,12) )) :
-        //                             $no_tindakan++;
-        //                             $html .= '
-        //                             <tr>
-        //                                 <td align="center">'.$no_tindakan.'</td>
-        //                                 <td>'.$row_tindakan->nama_tindakan.'</td>
-        //                                 <td>'.$row_tindakan->jenis_tindakan.'</td>
-        //                             </tr>';
-        //                         endif;
-        //                     endforeach;
-        //                 $html .= '</table>
-        //               </td>';
-        // $html .= '</tr>';
-
-        // $html .= '<tr>';
-        //     $html .= '<td colspan="2">
-        //                 <b>Obat yang diberikan</b><br>
-        //                 Berikut adalah obat yang diberikan kepada pasien sebagai resep dokter.<br>
-        //                 <table class="table table-striped" cellpadding="2" cellspacing="2"  width="100%" style="font-size:36px;">
-        //                     <tr>
-        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="30px">No</th>
-        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;">Nama Obat</th>
-        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" align="center" width="100px">Jumlah</th>
-        //                         <th style="border-collapse: collapse; border-bottom: 1px solid black;" width="100px">Keterangan</th>
-        //                     </tr>';
-        //                     $no_obt = 0;
-        //                     foreach($result['tindakan'] as $row_obt) : 
-        //                         if(in_array($row_obt->kode_jenis_tindakan, array(11) )) :
-        //                             $no_obt++;
-        //                             $html .= '
-        //                             <tr>
-        //                                 <td align="center">'.$no_obt.'</td>
-        //                                 <td>'.$row_obt->nama_tindakan.'</td>
-        //                                 <td align="center">'.$row_obt->jumlah_tebus.'</td>
-        //                                 <td>'.$row_obt->jenis_tindakan.'</td>
-        //                             </tr>';
-        //                         endif;
-        //                     endforeach;
-        //                 $html .= '</table>
-        //               </td>';
-        // $html .= '</tr>';
-
+        
         $html .= '</table>';
         // echo $html; die;
 
         return $html;
     }
-    
+
+
+    public function TemplateResumeMedisRI($no_registrasi, $tipe, $data){
+        /*html data untuk tampilan*/    
+        $this->load->model('registration/Reg_pasien_model','Reg_pasien');
+        // get kunjungan
+        $result = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+        // get riwayat pasien
+        $no_kunjungan = $result->no_kunjungan;
+        $riwayat_pasien = $this->db->order_by('kode_riwayat', 'DESC')->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
+        
+        $userDob = $result['registrasi']->tgl_lhr;
+ 
+        //Create a DateTime object using the user's date of birth.
+        $dob = new DateTime($userDob);
+     
+        //We need to compare the user's date of birth with today's date.
+        $now = new DateTime();
+
+        //Calculate the time difference between the two dates.
+        $difference = $now->diff($dob);
+
+        //Get the difference in years, as we are looking for the user's age.
+        $umur = $difference->format('%y');
+
+        $html = '';
+
+        $html .= '<div style="width: 100%"><hr><br>';
+        $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0">';
+
+        $html .= '<tr>';
+            $html .= '<td colspan="2" align="center"><h2>RESUME MEDIS PASIEN</h2><br></td>';
+        $html .= '</tr>';
+
+        $html .= '<tr>';
+            $html .= '<td colspan="2">';
+            $html .= '<ol>';
+            $html .= '<li><b>ANAMNESIS</b><br>'.htmlspecialchars($riwayat_pasien->anamnesa, ENT_QUOTES).'<br></li>';
+            $html .= '<li><b>PEMERIKSAAN FISIK</b><br>'.htmlspecialchars($riwayat_pasien->pemeriksaan, ENT_QUOTES).'<br></li>';
+            $html .= '<li><b>DIAGNOSA UTAMA</b><br>'.htmlspecialchars($riwayat_pasien->diagnosa_akhir, ENT_QUOTES).'<br></li>';
+            $html .= '<li><b>DIAGNOSA SEKUNDER</b><br>'.htmlspecialchars($riwayat_pasien->diagnosa_sekunder, ENT_QUOTES).'<br></li>';
+            $html .= '<li><b>TINDAKAN / PROSEDUR</b><br>'.htmlspecialchars($riwayat_pasien->tindakan_prosedur, ENT_QUOTES).'<br></li>';
+            $html .= '<li><b>ALERGI (Reaksi Obat)</b><br>'.htmlspecialchars($riwayat_pasien->alergi_obat, ENT_QUOTES).'</li>';
+            $html .= '<li><b>DIET</b><br>'.htmlspecialchars($riwayat_pasien->diet, ENT_QUOTES).'<br></li>';
+            $html .= '<li><b>INSTRUKSI/ ANJURAN DAN EDUKASI</b><br>'.htmlspecialchars($riwayat_pasien->anjuran_dokter, ENT_QUOTES).'<br></li>';
+            $html .= '<li><b>KONDISI PASCA PULANG</b><br>'.htmlspecialchars($riwayat_pasien->pasca_pulang, ENT_QUOTES).'<br></li>';
+            $html .= '</ol>';
+
+            $html .= '</td>';
+        $html .= '</tr>';
+        
+        $html .= '</table>';
+        $html .= '</div>';
+
+        // echo $html; die;
+
+        return $html;
+    }
+
+    public function setTemplateSuratPermohonanRI($data, $flag='', $pm=''){
+        
+        $html = '';
+        /*html data untuk tampilan*/    
+        $this->load->model('registration/Reg_pasien_model','Reg_pasien');
+        // get kunjungan
+        $result = $this->Reg_pasien->get_detail_resume_medis($data->no_registrasi);
+        // get riwayat pasien
+        $no_kunjungan = $result['registrasi']->no_kunjungan;
+        $riwayat_pasien = $this->db->where("SUBSTRING(kode_bagian, 1,2) IN ('02','01') ")->order_by('kode_riwayat', 'DESC')->get_where('th_riwayat_pasien', array('no_registrasi' => $data->no_registrasi) )->row();
+        // echo '<pre>';print_r($this->db->last_query());die;
+
+
+        $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
+        if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
+            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
+        }
+        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+
+        $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
+                <tr>
+                    <td><h2>PERMOHONAN UNTUK RAWAT INAP</h2><br></td>
+                </tr>
+
+                <tr>
+                    <td width="100px">No. RM</td>
+                    <td width="180px">: '.$data->reg_data->no_mr.'</td>
+                    <td width="100px">Poli/Klinik</td>
+                    <td width="350px">: '.ucwords($data->reg_data->nama_bagian).'</td>
+                </tr>
+                <tr>
+                    <td width="100px" align="left">Nama Pasien</td>
+                    <td width="180px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
+                    <td width="100px">Dokter</td>
+                    <td width="350px">: '.$nama_dr.'</td>
+                </tr>
+                <tr>
+                    <td width="100px">Umur</td>
+                    <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
+                    <td width="100px">Tanggal Periksa</td>
+                    <td align="left" width="350px">: '.$this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk).'</td>
+                    
+                </tr>
+
+                <tr>
+                    <td width="100px">Jenis Kelamin</td>
+                    <td width="180px">: '.$data->reg_data->jk.'</td>
+                </tr> 
+                
+                <tr>
+                    <td colspan="4" style="height: 30px">&nbsp;</td>
+                </tr> 
+                
+                <tr>
+                    <td colspan="4" align="left"><b>Diagnosis :</b> </td>
+                </tr> 
+                
+                <tr>
+                    <td colspan="4">'.htmlspecialchars($riwayat_pasien->diagnosa_akhir, ENT_QUOTES).' </td>
+                </tr> 
+                <tr>
+                    <td colspan="4" align="left"><br></td>
+                </tr> 
+                <tr>
+                    <td colspan="4" align="left"><b>Instruksi :</b> </td>
+                </tr> 
+
+                <tr>
+                    <td colspan="4" width="100%">Mohon pasien tersebut agar bisa dirawat di Rumah Sakit Setia Mitra</td>
+                </tr>   
+
+            </table>';
+            
+
+        return $html;
+    }
+ 
     public function TemplateRincianRI($noreg, $tipe, $field){
         $title_name = $this->Billing->getTitleNameBilling($field);
         $rincian_detail_billing = $this->Billing->getDetailData($noreg, $tipe, $field);

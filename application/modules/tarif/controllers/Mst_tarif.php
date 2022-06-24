@@ -18,6 +18,8 @@ class Mst_tarif extends MX_Controller {
         /*load model*/
         $this->load->model('Mst_tarif_model', 'Mst_tarif');
         $this->load->library('tarif');
+        // driver
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -29,7 +31,8 @@ class Mst_tarif extends MX_Controller {
         /*define variable data*/
         $data = array(
             'title' => $this->title,
-            'breadcrumbs' => $this->breadcrumbs->show()
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'klas' => $this->db->order_by('no_urut', 'ASC')->where('kode_klas IN (6,12,13,16)')->get('mt_klas')->result()
         );
         /*load view index*/
         $this->load->view('Mst_tarif/index', $data);
@@ -151,23 +154,36 @@ class Mst_tarif extends MX_Controller {
 
     public function get_data()
     {
+
+        // Save into the cache for 5 minutes
+		$this->cache->save('cache', $_GET, 300);
+
+        // get klas
+        $klas = $this->db->order_by('no_urut', 'ASC')->where('kode_klas IN (6,12,13,16)')->get('mt_klas')->result();
+
         /*get data from model*/
-        $list = $this->Mst_tarif->get_datatables();
+        $list = [];
+        if(isset($_GET['unit'])){
+            $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
+        }
+        // echo '<pre>';print_r($list);die;
         $data = array();
         $no = $_POST['start'];
-        foreach ($list as $row_list) {
+        foreach ($list as $key=>$row_list) {
             $no++;
             $row = array();
             $row[] = '';
             $row[] = '';
-            $row[] = $row_list->kode_tarif;
-            $row[] = $row_list->kode_tarif.' - '.ucwords($row_list->nama_tarif);
-            $row[] = ucwords($row_list->jenis_tindakan);
-            $row[] = ucwords($row_list->nama_bagian);
-            $row[] = '<div class="center">'.$row_list->revisi_ke.'</div>';
+            $row[] = $key;
+            $row[] = $key.' - '.ucwords($row_list['nama_tarif']);
+            $row[] = ucwords($row_list['nama_bagian']);
+            foreach ($klas as $key_klas => $row_klas) {
+                # code...
+                $row[] = isset($row_list['klas'][$row_klas->kode_klas]) ? '<div class="pull-right">'.number_format($row_list['klas'][$row_klas->kode_klas]->total).'</div>' : '<div class="pull-right">0</div>';
+            }
             $row[] = '<div class="center">
-                '.$this->authuser->show_button('tarif/Mst_tarif','U',$row_list->kode_tarif,2).'
-                '.$this->authuser->show_button('tarif/Mst_tarif','D',$row_list->kode_tarif,2).'
+                '.$this->authuser->show_button('tarif/Mst_tarif','U',$key,2).'
+                '.$this->authuser->show_button('tarif/Mst_tarif','D',$key,2).'
                 </div>';
 
             $data[] = $row;
@@ -353,6 +369,19 @@ class Mst_tarif extends MX_Controller {
         }
         $new_kode_plus_one = $max_kode->max_tarif + 1;
         return $new_kode_plus_one;
+    }
+
+    public function export_excel()
+    {   
+        // box data
+        $data = array();
+        $list = [];
+        if(isset($_GET['unit'])){
+            $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
+        }
+        $data['data'] = $list;
+        $data['klas'] = $this->db->order_by('no_urut', 'ASC')->get('mt_klas')->result();
+        $this->load->view('Mst_tarif/export_excel', $data);
     }
 
 }

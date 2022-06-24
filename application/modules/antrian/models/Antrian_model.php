@@ -176,7 +176,7 @@ class Antrian_model extends CI_Model {
 
 	public function cek_kode_perjanjian($keyword, $kode_dokter, $kode_poli)
     {
-        $this->db->select('CAST(tgl_pesanan as DATE) as tgl_pesanan, tc_pesanan.no_mr, no_ktp, kode_perjanjian, unique_code_counter, nama_pasien, kode_dokter, no_poli, status_konfirmasi_kedatangan');
+        $this->db->select('CAST(tgl_pesanan as DATE) as tgl_pesanan, tc_pesanan.no_mr, no_ktp, kode_perjanjian, unique_code_counter, nama_pasien, kode_dokter, no_poli, status_konfirmasi_kedatangan, id_tc_pesanan, no_antrian');
         $this->db->from('tc_pesanan');
         $this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr', 'left');
 		$this->db->order_by('id_tc_pesanan', 'DESC');

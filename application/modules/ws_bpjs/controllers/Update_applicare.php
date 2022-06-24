@@ -53,13 +53,13 @@ class Update_applicare extends MX_Controller {
                 'kodekelas' => $row_dt['kodekelas'],
                 'koderuang' => $row_dt['koderuang'],
                 'namaruang' => $row_dt['namaruang'],
-                'kapasitas' => $row_dt['kapasitas'],
-                'tersedia' => $row_dt['tersedia'],
-                'tersediapria' => $row_dt['tersediapria'],
-                'tersediawanita' => $row_dt['tersediawanita'],
-                'tersediapriawanita' => $row_dt['tersediapriawanita'],
-                // 'kodekelas' => $row_dt['nama_klas_bpjs'],
+                'kapasitas' => (string)$row_dt['kapasitas'],
+                'tersedia' => (string)$row_dt['tersedia'],
+                'tersediapria' => (string)$row_dt['tersediapria'],
+                'tersediawanita' => (string)$row_dt['tersediawanita'],
+                'tersediapriawanita' => (string)$row_dt['tersediapriawanita'],
                 );
+
                 // print_r($post_data);die;
                 $response[] = $this->Ws_index->updateRuangan($post_data, $this->kodeppk);
         }

@@ -56,45 +56,15 @@
 
           <form class="form-horizontal" method="post" id="formInsertSep" action="<?php echo base_url().'ws_bpjs/ws_index/insertSep'?>" enctype="Application/x-www-form-urlencoded" autocomplete="off">
             <br>
-
-            <div style="background-color:rgb(183, 234, 243); padding:5px 5px 2px 5px">
-              <div class="form-group">
-                <label class="control-label col-md-3">Cari Peserta Berdasarkan</label>
-                <div class="col-md-6">
-                  <div class="radio">
-                        <label>
-                          <input name="find_member_by" type="radio" class="ace" value="noKartu" />
-                          <span class="lbl"> No Kartu BPS</span>
-                        </label>
-                        <!-- <label>
-                          <input name="find_member_by" type="radio" class="ace" value="sep" />
-                          <span class="lbl"> Nomor SEP </span>
-                        </label> -->
-                        <label>
-                          <input name="find_member_by" type="radio" class="ace" value="noRujukan" />
-                          <span class="lbl"> Nomor Rujukan </span>
-                        </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <br>
-            <div class="form-group" id="searchBySEP" style="display:none">
-              <label class="control-label col-md-3">Nomor SEP </label>
-              <div class="col-md-3">
-                <input type="text" class="form-control" id="noSEPVal" name="noSEPVal">
-              </div>
-              <div class="col-md-2">
-                <a href="#" class="btn btn-xs btn-primary" id="btnSearchSep" style="margin-left:-20px">Cari SEP</a>
-              </div>
-            </div>
+            <!-- hidden form -->
+            <input name="find_member_by" id="find_member_by" type="hidden" value="noRujukan" />
             
             <div id="byJenisFaskesId">
               <div class="form-group">
                 <label class="control-label col-md-3">Tanggal SEP</label>
                 <div class="col-md-3">
                   <div class="input-group">
-                      <input name="tglSEP" id="tglSEP" value="" placeholder="dd/mm/YYYY" class="form-control date-picker" type="text">
+                      <input name="tglSEP" id="tglSEP" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text">
                        <span class="input-group-addon">
                         <i class="ace-icon fa fa-calendar"></i>
                       </span>
@@ -107,11 +77,11 @@
                 <div class="col-md-6">
                   <div class="radio">
                         <label>
-                          <input name="jenis_faskes" type="radio" class="ace" value="1" />
+                          <input name="jenis_faskes" type="radio" class="ace" value="pcare" checked/>
                           <span class="lbl"> Faskes 1 / Puskesmas</span>
                         </label>
                         <label>
-                          <input name="jenis_faskes" type="radio" class="ace" value="2" />
+                          <input name="jenis_faskes" type="radio" class="ace" value="rs" />
                           <span class="lbl"> Faskes 2 / RS </span>
                         </label>
                   </div>
@@ -119,23 +89,13 @@
               </div>
             </div>
 
-            <div class="form-group" id="noRujukanField" style="display:none">
-              <label class="control-label col-md-3">No Rujukan </label>
+            <div class="form-group" id="noRujukanField">
+              <label class="control-label col-md-3">Mauskan No Rujukan</label>
               <div class="col-md-3">
-                <input type="text" class="form-control" id="noRujukanVal" name="noRujukanVal">
+                <input type="text" class="form-control" id="keyvalue" name="keyvalue">
               </div>
               <div class="col-md-2">
-                <a href="#" class="btn btn-xs btn-primary" id="btnSearchNoRujukan" style="margin-left:-20px">Cari Rujukan</a>
-              </div>
-            </div>
-
-            <div class="form-group" id="searchByNoKartu" style="display:none">
-              <label class="control-label col-md-3">Masukan No Kartu BPJS </label>
-              <div class="col-md-3">
-                <input type="text" class="form-control" id="noKartu" name="noKartu">
-              </div>
-              <div class="col-md-2">
-                <a href="#" class="btn btn-xs btn-primary" id="btnSearchMember" style="margin-left:-20px">Cari No Kartu</a>
+                <a href="#" class="btn btn-xs btn-primary" id="btnSearchRujukan" style="margin-left:-20px">Cari Data</a>
               </div>
             </div>
 
@@ -272,6 +232,33 @@
                   </div>
                 </div>
 
+                <div class="form-group">
+                  <label class="control-label col-md-3">Tujuan Kunjungan </label>
+                  <div class="col-md-6">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'tujuan_kunjungan')), '0' , 'tujuanKunj', 'tujuanKunj', 'form-control', '', '') ?>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3">Procedure</label>
+                  <div class="col-md-6">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'flag_procedure')), '' , 'flagProcedure', 'flagProcedure', 'form-control', '', '') ?>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3">Penunjang</label>
+                  <div class="col-md-6">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'penunjang')), '' , 'kdPenunjang', 'kdPenunjang', 'form-control', '', '') ?>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3">Assesment Pelayanan</label>
+                  <div class="col-md-6">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'assesment_pelayanan')), '' , 'assesmentPel', 'assesmentPel', 'form-control', '', '') ?>
+                  </div>
+                </div>
+
+
               </div>
 
               <p>Apakah merupakan kasus kecelakaan ?</p>
@@ -284,7 +271,7 @@
                             <span class="lbl"> Ya</span>
                           </label>
                           <label>
-                            <input name="lakalantas" type="radio" class="ace" value="0" />
+                            <input name="lakalantas" type="radio" class="ace" value="0" checked/>
                             <span class="lbl"> Tidak </span>
                           </label>
                     </div>
@@ -300,7 +287,7 @@
                             <span class="lbl"> Ya</span>
                           </label>
                           <label>
-                            <input name="penjaminKLL" type="radio" class="ace" value="0" />
+                            <input name="penjaminKLL" type="radio" class="ace" value="0" checked/>
                             <span class="lbl"> Tidak </span>
                           </label>
                     </div>

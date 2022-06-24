@@ -11,9 +11,10 @@ $(document).ready(function() {
           
       "processing": true, //Feature control the processing indicator.
       "serverSide": true, //Feature control DataTables' server-side processing mode.
-      "ordering": false,
+      "ordering": true,
       "paging": false,
       "scrollY": "600px",
+      "order": [[7, 'desc']],
       // Load data for the table's content from an Ajax source
       "ajax": {
           "url": base_url+'/get_data',

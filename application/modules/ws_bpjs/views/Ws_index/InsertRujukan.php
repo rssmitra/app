@@ -80,19 +80,21 @@ $(document).ready(function () {
           success: function(response) {
             achtungHideLoader();
             if(response.status==200){
+
               $('#showResultData').show('fast');
-              $('#noKartuFromNik').text(response.data.noKartu);
-              $('#nama').text(response.data.nama);
-              $('#noMr').text(response.data.noMr);
-              $('#noTelp').text(response.data.noTelp);
-              $('#kelamin').text(response.data.kelamin);
-              $('#tglLahir').text(response.data.tglLahir);
-              $('#jnsPeserta').text(response.data.jnsPeserta);
-              $('#hakKelas').text(response.data.hakKelas);
+              var peserta = response.data.peserta;
+              var kelas = response.data.klsRawat;
+
+              $('#noKartu').text(peserta.noKartu);
+              $('#nama').text(peserta.nama);
+              $('#noMr').text(peserta.noMr);
+              $('#kelamin').text(peserta.kelamin);
+              $('#tglLahir').text(peserta.tglLahir);
+              $('#jnsPeserta').text(peserta.jnsPeserta);
+              $('#hakKelas').text(peserta.hakKelas);
 
               /*detail sep*/
               $('#noRujukanSep').text(response.data.noRujukan);
-              $('#hakKelasSep').text(response.data.hakKelas);
               $('#kelasRawatSep').text(response.data.kelasRawat);
               $('#jnsPelayananSep').text(response.data.jnsPelayanan);
               $('#poliSep').text(response.data.poli);
@@ -137,11 +139,11 @@ $(document).ready(function(){
         var data=xhr.responseText;
         var jsonResponse = JSON.parse(data);
 
-        if(jsonResponse.status == 200){
-          $.achtung({message: jsonResponse.message, timeout:5});
-        }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
+        var str = JSON.stringify(jsonResponse, undefined, 4);
+        var output_highlight = syntaxHighlight(str);
+        console.log(output_highlight);
+        $('#find-result').html('<p style="font-weight: bold">Response Data Rujukan</p><pre>'+output_highlight+'</pre>');
+
         achtungHideLoader();
       }
     }); 
@@ -185,24 +187,24 @@ $(document).ready(function(){
               </div>
             </div>
 
-            <div id="showResultData" style="display:none">
-
-              <div class="form-group">
-                <div class="col-md-12">
-                <table class="table table-bordered table-hover">
+            <div id="showResultData" style="display:none; padding-top: 10px">
+              <span style="font-style: italic">Hasil pencarian data SEP</span>
+              <table class="table table-bordered table-hover">
                   <thead>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">No Kartu</th>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Nama Peserta</th>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">No Mr</th>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">JK</th>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Tanggal Lahir</th>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">No Telp</th>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Jenis Peserta</th>
-                    <th style="background-image:linear-gradient(to bottom, #195651 90%, #ddb909 20%)">Hak Kelas</th>
+                    <tr style="background: grey">
+                      <th>No Kartu</th>
+                      <th>Nama Peserta</th>
+                      <th>No Mr</th>
+                      <th>JK</th>
+                      <th>Tanggal Lahir</th>
+                      <th>No Telp</th>
+                      <th>Jenis Peserta</th>
+                      <th>Hak Kelas</th>
+                    </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><div id="noKartuFromNik"></div></td>
+                      <td><div id="noKartu"></div></td>
                       <td><div id="nama"></div></td>
                       <td><div id="noMr"></div></td>
                       <td><div id="kelamin"></div></td>
@@ -212,60 +214,72 @@ $(document).ready(function(){
                       <td><div id="hakKelas"></div></td>
                     </tr>
                   </tbody>
-                </table>
-                <b>DETAIL SEP</b>
-                <div class="col-md-12">
-                      <div class="profile-user-info profile-user-info-striped" style="margin-left:-20px">
-                        <div class="profile-info-row">
-                          <div class="profile-info-name"> Jenis Pelayanan </div>
-                          <div class="profile-info-value">
-                            <span class="editable"> <div id="jnsPelayananSep"></div> </span>
-                          </div>
-                        </div>
-                        <div class="profile-info-row">
-                          <div class="profile-info-name"> Kelas Rawat </div>
-                          <div class="profile-info-value">
-                            <span class="editable"> <div id="kelasRawatSep"></div> </span>
-                          </div>
-                        </div>
-                        <div class="profile-info-row">
-                          <div class="profile-info-name"> Poli Tujuan </div>
-                          <div class="profile-info-value">
-                            <span class="editable"> <div id="poliSep"></div> </span>
-                          </div>
-                        </div>
-                        <div class="profile-info-row">
-                          <div class="profile-info-name"> Faskes Perujuk </div>
-                          <div class="profile-info-value">
-                            <span class="editable"> <div id="PPKPerujukSep"></div> </span>
-                          </div>
-                        </div>
-                        <div class="profile-info-row">
-                          <div class="profile-info-name"> Diagnosa Awal </div>
-                          <div class="profile-info-value">
-                            <span class="editable"> <div id="diagnosaSep"></div> </span>
-                          </div>
-                        </div>
-                        <div class="profile-info-row">
-                          <div class="profile-info-name"> Catatan </div>
-                          <div class="profile-info-value">
-                            <span class="editable"> <div id="catatanSep"></div> </span>
-                          </div>
-                        </div>
-
+              </table>
+              <hr>
+              <div>
+              <p style="font-weight: bold">Data SEP selengkapnya</p>
+                  <div class="profile-user-info profile-user-info-striped">
+                    <div class="profile-info-row">
+                      <div class="profile-info-name"> Jenis Pelayanan </div>
+                      <div class="profile-info-value">
+                        <span class="editable"> <div id="jnsPelayananSep"></div> </span>
                       </div>
-                      <br>
+                    </div>
+                    <div class="profile-info-row">
+                      <div class="profile-info-name"> Kelas Rawat </div>
+                      <div class="profile-info-value">
+                        <span class="editable"> <div id="kelasRawatSep"></div> </span>
+                      </div>
+                    </div>
+                    <div class="profile-info-row">
+                      <div class="profile-info-name"> Poli Tujuan </div>
+                      <div class="profile-info-value">
+                        <span class="editable"> <div id="poliSep"></div> </span>
+                      </div>
+                    </div>
+                    <div class="profile-info-row">
+                      <div class="profile-info-name"> Faskes Perujuk </div>
+                      <div class="profile-info-value">
+                        <span class="editable"> <div id="PPKPerujukSep"></div> </span>
+                      </div>
+                    </div>
+                    <div class="profile-info-row">
+                      <div class="profile-info-name"> Diagnosa Awal </div>
+                      <div class="profile-info-value">
+                        <span class="editable"> <div id="diagnosaSep"></div> </span>
+                      </div>
+                    </div>
+                    <div class="profile-info-row">
+                      <div class="profile-info-name"> Catatan </div>
+                      <div class="profile-info-value">
+                        <span class="editable"> <div id="catatanSep"></div> </span>
+                      </div>
+                    </div>
+
                   </div>
-
-                </div>
+                  <br>
               </div>
+              
             </div>
-
+            <p style="font-weight: bold; padding-top: 10px">Form Pembuatan Rujukan RS</p>
             <div class="form-group">
               <label class="control-label col-md-2">Tanggal Rujukan</label>
               <div class="col-md-2">
                 <div class="input-group">
-                    <input name="tglRujukan" id="tglRujukan" value="" placeholder="dd/MM/YYYY" class="form-control date-picker" type="text">
+                    <input name="tglRujukan" id="tglRujukan" value="" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text">
+                    <span class="input-group-addon">
+                      <i class="ace-icon fa fa-calendar"></i>
+                    </span>
+                    
+                  </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2">Tgl Rencana Kunjungan</label>
+              <div class="col-md-2">
+                <div class="input-group">
+                    <input name="tglRencanaKunjungan" id="tglRencanaKunjungan" value="" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text">
                     <span class="input-group-addon">
                       <i class="ace-icon fa fa-calendar"></i>
                     </span>
@@ -372,50 +386,7 @@ $(document).ready(function(){
             </div>
 
             <br>
-            <h4>Hasil Input : <span id="result_not_found"></span></h4>
-            <div class="col-md-12">
-                <div class="profile-user-info profile-user-info-striped" style="margin-left:-20px">
-                  
-                  <div class="profile-info-row">
-                    <div class="profile-info-name"> No Kunjungan </div>
-                    <div class="profile-info-value">
-                      <span class="editable"> <div id="noKunjungan"></div> </span>
-                    </div>
-                  </div>
-                  <div class="profile-info-row">
-                    <div class="profile-info-name"> Poli Rujukan </div>
-                    <div class="profile-info-value">
-                      <span class="editable"> <div id="poliPerujuk"></div> </span>
-                    </div>
-                  </div>
-                  <div class="profile-info-row">
-                    <div class="profile-info-name"> Kota/Kabupaten </div>
-                    <div class="profile-info-value">
-                      <span class="editable"> <div id="provPerujuk"></div> </span>
-                    </div>
-                  </div>
-                  <div class="profile-info-row">
-                    <div class="profile-info-name"> Diagnosa Awal </div>
-                    <div class="profile-info-value">
-                      <span class="editable"> <div id="diagnosa"></div> </span>
-                    </div>
-                  </div>
-
-                </div>
-                <br>
-            </div>
-
-            
-
-            <h4>Keterangan : </h4>
-
-            Fungsi : Insert Rujukan <br>
-
-            Method : POST <br>
-
-            Format : Json <br>
-
-            Content-Type: Application/x-www-form-urlencoded <br>
+            <div id="find-result"></div>
 
           </form>
       </div>
