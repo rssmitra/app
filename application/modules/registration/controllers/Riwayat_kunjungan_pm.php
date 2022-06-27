@@ -143,6 +143,17 @@ class Riwayat_kunjungan_pm extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function export_excel(){
+      /*get data from model*/
+      $list = $this->Riwayat_kunjungan_pm->get_datatables();
+      $data =array();
+      $data['list'] = $list;
+
+      // var_dump($list); die;
+
+      $this->load->view('Riwayat_kunjungan_pm/export_excel', $data);
+    }
+
 
 }
 
