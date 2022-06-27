@@ -55,6 +55,24 @@ $(document).ready(function(){
     });
   });
 
+  $('#btn_export_excel').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+        url: 'registration/Riwayat_kunjungan_pm/find_data',
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        success: function(data) {
+          achtungHideLoader();
+          export_excel(data);
+        }
+    });
+         
+  });
+
   $('#btn_reset_data').click(function (e) {
         e.preventDefault();
         $('#form_search')[0].reset();
@@ -152,6 +170,12 @@ function cetak_slip(kode_penunjang) {
   width = 500;
   height = 600;
   PopupCenter(url, title, width, height); 
+
+}
+
+function export_excel(result){
+
+window.open('registration/Riwayat_kunjungan_pm/export_excel?'+result.data+'','_blank'); 
 
 }
 
