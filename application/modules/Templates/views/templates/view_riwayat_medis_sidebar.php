@@ -34,7 +34,7 @@ hr {
               <td style="vertical-align: text-top"><i class="fa fa-building"></i></td>
               <td>
                 <?php echo ucwords($value->nama_bagian)?>
-                <?php echo ($value->validasi ==  300) ? '<a href="#" class="pull-right label label-primary" onclick="show_modal_medium('."'pelayanan/Pl_pelayanan_ri/view_cppt?no_kunjungan=".$value->no_kunjungan."'".', '."'CATATAN PERKEMBANGAN PASIEN TERINTEGRASI (CPPT)'".')">Lihat CPPT</a>' : '' ;?>
+                <?php echo ($value->validasi ==  300) ? '<a href="#" class="pull-right label label-primary" onclick="show_modal_medium('."'pelayanan/Pl_pelayanan_ri/view_cppt?no_mr=".$value->no_mr."'".', '."'CATATAN PERKEMBANGAN PASIEN TERINTEGRASI (CPPT)'".')">Lihat CPPT</a>' : '' ;?>
               </td>
             </tr>
 

@@ -1,5 +1,14 @@
 <script type="text/javascript">
 
+    $('.date-picker').datepicker({    
+        autoclose: true,    
+        todayHighlight: true    
+    })  
+    //show datepicker when clicking on the icon
+    .next().on(ace.click_event, function(){    
+        $(this).prev().focus();    
+    }); 
+
     $('select[name="pasca_pulang"]').change(function () {      
 
         if ($(this).val() == 'Meninggal') {        
@@ -90,6 +99,26 @@
             <textarea name="pl_diet" id="pl_diet" class="form-control" style="height: 50px !important"><?php echo isset($riwayat->diet)?$this->master->br2nl($riwayat->diet):''?></textarea>
         </div>
 
+        
+        <div style="margin-top: 6px">
+            <label for="form-field-8">Obat yang diberikan</label>
+              <textarea name="obat_diberikan" id="obat_diberikan" class="form-control" style="height: 50px !important" placeholder="" ><?php echo isset($riwayat->obat_diberikan)?$this->master->br2nl($riwayat->obat_diberikan):''?></textarea>  
+        </div>
+        <br>
+        <p><b>TGL KONTROL </b></p>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="">*Tgl Kembali</label>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input name="tgl_kontrol_kembali" id="tgl_kontrol_kembali" data-date-format="yyyy-mm-dd" placeholder="" class="form-control date-picker" type="text" value="<?php echo isset($riwayat->tgl_kontrol_kembali)?$this->master->br2nl($riwayat->tgl_kontrol_kembali):''?>">
+                    <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
         <br>
         <p><b>KONDISI WAKTU KELUAR </b></p>
 
@@ -109,12 +138,16 @@
             </div>
         </div>
 
+
         <div class="form-group">
             <label class="control-label col-sm-2" for="">&nbsp;</label>
             <div class="col-sm-4" style="margin-left:6px">
-               <button type="button" class="btn btn-xs btn-danger" id="btn_hide_" onclick="backToDefaultForm()"> <i class="fa fa-angle-double-left"></i> Sembunyikan </button>
-               <!-- <button type="submit" class="btn btn-xs btn-primary" id="btn_submit_selesai"> <i class="fa fa-save"></i> Submit </button> -->
-               <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_pulang"><i class="fa fa-save"></i> Submit </a>
+                <?php if(!empty($riwayat->kode_riwayat)) :?>
+                    <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_pulang"><i class="fa fa-save"></i> Submit </a>
+                <?php else: ?>
+                    <a href="#" class="btn btn-xs btn-success" id="btn_pasien_pulang"><i class="fa fa-save"></i> Update  </a>
+                    <a href="#" class="btn btn-xs btn-danger" id="btn_export_resume_pdf"><i class="fa fa-file-pdf-o"></i> Export PDF </a>
+                <?php endif;?>
             </div>
         </div>
 
@@ -126,14 +159,18 @@
         <div style="height: 750px;overflow: scroll;">
         <table class="table" id="table-riwayat-cppt" style="padding: 5px">
             
-            <tbody>
-                <?php if(count($cppt) > 0 ) : foreach($cppt as $row_cppt) :?>
+        <tbody>
+                <?php 
+                    if(count($cppt) > 0 ) : 
+                        foreach($cppt as $row_cppt) :
+                            if($row_cppt->jenis_form == null) :
+                ?>
                 <tr>
                     <td style="padding: 5px">
                         <table class="table table-bordered" style="width: 100%">
-                            <tr><td width="40%">Tgl/Jam</td><td width="60%"> : <?php echo $this->tanggal->formatDateTime($row_cppt->cppt_tgl_jam)?></td></tr>
+                            <tr><td width="20%">Tgl/Jam</td><td width="80%"> : <?php echo $this->tanggal->formatDateTime($row_cppt->cppt_tgl_jam)?></td></tr>
                             <tr><td>PPA</td><td> : <?php echo $row_cppt->cppt_nama_ppa?> (<?php echo strtoupper($row_cppt->cppt_ppa)?>)</td></tr>
-                            <tr><td>Verifikasi DPJP</td><td> : <?php echo ($row_cppt->is_verified == 1) ? '<label class="label label-success">Sudah diverifikasi</label>' : '<label class="label label-danger">Belum diverifikasi</label>';?></td></tr>
+                            <tr><td>Verifikasi DPJP</td><td> : <?php echo ($row_cppt->is_verified == 1) ? '<label class="label label-success">Sudah diverifikasi</label> '.$row_cppt->verified_by.' - '.$row_cppt->verified_date.'' : '<label class="label label-danger">Belum diverifikasi</label>';?></td></tr>
                         </table>
                         <br>
                         <b>S <i>(Subjective)</i> : </b><br>
@@ -150,7 +187,19 @@
                         <hr style="width: 100%">
                     </td>
                 </tr>
-                <?php endforeach; else: echo '<span style="padding-top: 20px; color: red; font-weight: bold">Tidak ada ditemukan</span>'; endif; ?>
+                <?php else : ?>
+                <tr>
+                    <td style="padding: 5px">
+                        <table class="table table-bordered" style="width: 100%">
+                            <tr><td width="20%">Tgl/Jam</td><td width="80%"> : <?php echo $this->tanggal->formatDateTime($row_cppt->cppt_tgl_jam)?></td></tr>
+                            <tr><td>PPA</td><td> : <?php echo $row_cppt->cppt_nama_ppa?> (<?php echo strtoupper($row_cppt->cppt_ppa)?>)</td></tr>
+                            <tr><td>Verifikasi DPJP</td><td> : <?php echo ($row_cppt->is_verified == 1) ? '<label class="label label-success">Sudah diverifikasi</label> '.$row_cppt->verified_by.' - '.$row_cppt->verified_date.'' : '<label class="label label-danger">Belum diverifikasi</label>';?></td></tr>
+                        </table>
+                        <br>
+                        <?php echo $row_cppt->catatan_pengkajian?>
+                    </td>
+                </tr>
+                <?php endif; endforeach; else: echo '<span style="padding-top: 20px; color: red; font-weight: bold">Tidak ada ditemukan</span>'; endif; ?>
             </tbody>
         </table>
         </div>

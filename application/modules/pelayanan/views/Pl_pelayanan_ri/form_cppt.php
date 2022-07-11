@@ -50,7 +50,7 @@ $(document).ready(function() {
       "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?kode_ri=<?php echo $kode_ri?>",
+          "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>",
           "type": "POST"
       },
 
@@ -69,7 +69,7 @@ $(document).ready(function() {
             var jsonResponse = JSON.parse(data);        
             if(jsonResponse.status === 200){          
               $.achtung({message: jsonResponse.message, timeout:5});     
-              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?kode_ri=<?php echo $kode_ri?>').load();
+              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>').load();
               // reset form
               $('#cppt_id').val('');
               $('#subjective').val('');
@@ -84,6 +84,43 @@ $(document).ready(function() {
       });
 
     });
+
+    $('#btn_search_data_cppt').click(function (e) {
+        
+        e.preventDefault();
+        $.ajax({
+        url: $('#form_search').attr('action'),
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        success: function(data) {
+          achtungHideLoader();
+          find_data_reload(data,base_url);
+        }
+      });
+    });
+
+  $('#btn_reset_data_cppt').click(function (e) {
+          e.preventDefault();
+          reset_table();
+  });
+
+  $('#btn_export_pdf_cppt').click(function (e) {
+    var url_search = $('#form_search').attr('action');
+    e.preventDefault();
+    $.ajax({
+      url: url_search,
+      type: "post",
+      data: $('#form_search').serialize(),
+      dataType: "json",
+      success: function(result) {
+        window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=<?php echo $kode_ri?>&'+result.data+'','_blank'); 
+      }
+    });
+  });
 
 
 });
@@ -106,7 +143,7 @@ function delete_cppt(myid){
           var jsonResponse = JSON.parse(data);
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
-            oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?kode_ri=<?php echo $kode_ri?>').load();
+            oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>').load();
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
@@ -135,6 +172,12 @@ function verif_dpjp(cppt_id, value){
         dataType: "json",
         type: "POST",
         complete: function (xhr) {
+          if(status != 0){
+            $('#verif_id_'+cppt_id+'').html('<?php echo $this->session->userdata('user')->fullname?><br><?php echo $this->tanggal->formatDateTime(date('Y-m-d H:i:s'))?>');
+          }else{
+            $('#verif_id_'+cppt_id+'').html('');
+
+          }
           return false;
         }
     });
@@ -158,6 +201,24 @@ function show_edit(myid){
     $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
   }); 
 
+}
+
+function find_data_reload(result, base_url){
+  
+  var data = result.data;    
+  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&"+data).load();
+  // $("html, body").animate({ scrollTop: "400px" });
+
+}
+
+function reset_table(){
+  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>").load();
+  // $("html, body").animate({ scrollTop: "400px" });
+
+}
+
+function reload_table(){
+ oTableCppt.ajax.reload(); //reload datatable ajax 
 }
 
 </script>
@@ -204,6 +265,21 @@ function show_edit(myid){
                 <input name="ppa" type="radio" class="ace" value="dokter"/>
                 <span class="lbl"> Dokter</span>
               </label>
+
+              <label>
+                <input name="ppa" type="radio" class="ace" value="fisioterapist"/>
+                <span class="lbl"> Fisioterapist</span>
+              </label>
+
+              <label>
+                <input name="ppa" type="radio" class="ace" value="dietizen"/>
+                <span class="lbl"> Dietizen</span>
+              </label>
+
+              <label>
+                <input name="ppa" type="radio" class="ace" value="farmasi klinis"/>
+                <span class="lbl"> Farmasi Klinis</span>
+              </label>
           </div>
         </div>
     </div>
@@ -218,56 +294,107 @@ function show_edit(myid){
     <div class="center">
         <!-- form default pelayanan pasien -->
         <input type="hidden" name="cppt_id" value="" id="cppt_id">
-        <div class="col-md-6">
+        <div class="col-md-6 no-padding">
             <label class="padding-10">S (<i>Subjective</i>) <span style="color:red">(*)</span></label><br>
             <div class="col-sm-12">
               <textarea name="subjective" id="subjective" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->subjective)?$riwayat->subjective:''?></textarea>  
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 no-padding">
             <label class="padding-10">O (<i>Objective</i>) <span style="color:red">(*)</span></label><br>
             <div class="col-sm-12">
               <textarea name="objective" id="objective" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->objective)?$riwayat->objective:''?></textarea>  
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 no-padding">
             <label class="padding-10">A (<i>Assesment</i>) <span style="color:red">(*)</span></label><br>
             <div class="col-sm-12">
               <textarea name="assesment" id="assesment" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->assesment)?$riwayat->assesment:''?></textarea>  
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6 no-padding">
             <label class="padding-10">P (<i>Plan</i>) <span style="color:red">(*)</span></label><br>
             <div class="col-sm-12">
               <textarea name="plan" id="plan" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->plan)?$riwayat->plan:''?></textarea>  
             </div>
         </div>
 
+        <!-- <div class="col-md-12 no-padding" style="padding-top: 10px !important">
+            <label class="padding-10">Obat yang diberikan  <span style="color:red">(*)</span></label><br>
+            <div class="col-sm-12">
+              <textarea name="obat_diberikan" id="obat_diberikan" class="form-control" style="height:120px !important"  placeholder="" ><?php echo isset($riwayat->obat_diberikan)?$riwayat->obat_diberikan:''?></textarea>  
+            </div>
+        </div> -->
+
         <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
             <div class="col-sm-12"><a href="#" class="btn btn-sm btn-primary" id="btn_add_cppt"><i class="fa fa-save"></i> Simpan CPPT</a> 
             </div>
         </div>
+        <hr>
     </div>
     <br>
+    <hr>
 
     <div class="col-md-12" style="margin-top: 10px">
-      <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN TERINTEGRASI</b></span></center>
-      <table id="table-cppt" class="table table-bordered table-hover">
-        <thead>
-          <tr>  
-            <th width="30px">No</th>
-            <th width="70px">Tanggal/Jam/PPA</th>
-            <th>SOAP</th>
-            <th width="120px">Verifikasi DPJP</th>
-            <th width="100px">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+    <center><span style="font-size: 18px"><b>CATATAN PERKEMBANGAN PASIEN <br>TERINTEGRASI (CPPT)</b></span></center><br>
+      <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
+
+          <div class="form-group">
+            <label class="control-label col-md-2">Tanggal CPPT</label>
+              <div class="col-md-2">
+                <div class="input-group">
+                  <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                  <span class="input-group-addon">
+                    <i class="fa fa-calendar bigger-110"></i>
+                  </span>
+                </div>
+              </div>
+
+              <label class="control-label col-md-1">s/d</label>
+              <div class="col-md-2">
+                <div class="input-group">
+                  <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                  <span class="input-group-addon">
+                    <i class="fa fa-calendar bigger-110"></i>
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default">
+                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                Search
+              </a>
+              <a href="#" id="btn_reset_data_cppt" class="btn btn-xs btn-warning">
+                <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+                Reset
+              </a>
+              <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
+                <i class="fa fa-file-pdf-o bigger-110"></i>
+                Export PDF
+              </a>
+            </div>
+
+          </div>
+          
+        <table id="table-cppt" class="table table-bordered table-hover">
+          <thead>
+            <tr>  
+              <th width="30px">No</th>
+              <th width="150px">Tanggal/Jam/PPA</th>
+              <th>SOAP/Pengkajian Pasien</th>
+              <th width="120px">Verifikasi DPJP</th>
+              <th width="100px">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+
+      </form>
     </div>
 
   </div>

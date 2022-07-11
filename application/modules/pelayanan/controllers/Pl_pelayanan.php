@@ -2040,6 +2040,137 @@ class Pl_pelayanan extends MX_Controller {
     
     }
 
+    public function cppt($id='', $no_kunjungan)
+    {
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan->get_by_id($id);
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+        $data['kode_bagian'] = $this->session->userdata('kode_bagian');
+        $data['nama_bagian'] = $this->session->userdata('nama_bagian');
+        $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
+
+        // echo '<pre>';print_r($data['riwayat']);die;
+        //$data['transaksi'] = $this->Pl_pelayanan->get_transaksi_pasien_by_id($no_kunjungan);
+        /*variable*/
+         /*type*/
+        if($data['value']->flag_ri==1){
+            $kode_klas = $data['value']->kelas_ri;
+        }else{
+            $kode_klas = 16;
+        }
+
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['id'] = $id;
+        $data['kode_klas'] = $kode_klas;
+        $data['kode_profit'] = 2000;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['form_type'] = $_GET['form'];
+        
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Pl_pelayanan/form_cppt', $data);
+
+    }
+
+
+    public function catatan_lainnya($id='', $no_kunjungan)
+    {
+        
+        /*get value by id*/
+        $data['kode_bagian'] = $this->session->userdata('kode_bagian');
+        $data['nama_bagian'] = $this->session->userdata('nama_bagian');
+        $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
+
+        $data['no_mr'] = $_GET['no_mr'];
+        $data['id'] = $id;
+        $data['no_kunjungan'] = $no_kunjungan;
+        // $data['form_type'] = $_GET['form'];
+        $template = $this->load->view('Pl_pelayanan/form_1', $data, true);
+        $data['template'] = $template;
+        
+        /*load form view*/
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Pl_pelayanan/form_catatan_lainnya', $data);
+
+    }
+
+    public function switch_template_form($id, $no_kunjungan){
+
+        $data = [];
+        $html = $this->load->view('Pl_pelayanan/form_'.$id.'', $data, true);
+        echo json_encode(array('html' => $html));
+
+    }
+
+    public function processSaveCatatanPengkajian(){
+
+        // echo '<pre>';print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('jenis_form_catatan', 'Subjective', 'trim');
+        $this->form_validation->set_rules('catatan_pengkajian', 'Subjective', 'trim');
+               
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $cppt_id = ($_POST['cppt_id'])?$_POST['cppt_id']:0;
+            $tgl_jam = $_POST['cppt_tgl'].' '.$_POST['cppt_jam'];
+            $dataexc = array(
+                'cppt_tgl_jam' => $this->regex->_genRegex($tgl_jam,'RGXQSL'), 
+                'cppt_ppa' => $this->regex->_genRegex('dokter','RGXQSL'), 
+                'cppt_nama_ppa' => $this->regex->_genRegex($this->input->post('nama_ppa'),'RGXQSL'), 
+                'jenis_form' => $this->regex->_genRegex($this->input->post('jenis_form_catatan'),'RGXQSL'), 
+                'catatan_pengkajian' => $this->regex->_genRegex($this->input->post('catatan_pengkajian'),'RGXQSL'), 
+                'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXQSL'), 
+                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
+            );
+
+            if( $cppt_id == 0 ){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->insert('th_cppt', $dataexc);
+                $newId = $this->db->insert_id();
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->where('cppt_id', $cppt_id)->update('th_cppt', $dataexc);
+                $newId = $cppt_id;
+            }
+                        
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'catatan_pengkajian'));
+            }
+        
+        }
+
+    }
+
 
 
 }

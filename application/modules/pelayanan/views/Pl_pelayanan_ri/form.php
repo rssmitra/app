@@ -159,10 +159,12 @@ function find_pasien_by_keyword(keyword){
 
 function get_list_pasien(){  
 
+  $('#box_list_pasien').html('Loading...');
+  
   $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_list_pasien') ?>", '', function (response) {    
     html = '';  
     // html = '<div class="left" style="padding: 5px; font-size: 12px;background: darkblue; color: white"><b>PASIEN RAWAT INAP</b><br>Pasien dirawat s.d tgl <?php echo date('d/M/Y')?><br>BPJS : 20 <br>Umum/Asuransi : 10</div>';
-    html += '<div style="padding-top: 1px; padding-bottom: 10px;"><b>Cari pasien rawat inap:</b> <br><input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);"></div>';
+    html += '<div style="padding-top: 1px; padding-bottom: 10px;"><b>Cari pasien rawat inap:</b> <br><input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);"><a style="margin-top:4px" href="#" onclick="get_list_pasien()" class="btn btn-block btn-primary">Refresh</a></div>';
     html += '<ol class="list-group list-group-unbordered" id="list_pasien" style="background-color:lightblue;height: 650px;overflow: scroll;">';
 
     $.each(response.data, function( i, v ) {

@@ -14,7 +14,7 @@
         }
       });
     }
-
+    
     /*submit form*/
     $('#form_pelayanan').ajaxForm({      
       beforeSend: function() {        
@@ -159,6 +159,14 @@
       e.preventDefault();  
 
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_cppt');
+
+    });
+
+    $('#tabs_catatan').click(function (e) {     
+      
+      e.preventDefault();  
+
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveCatatanPengkajian');
 
     });
 
@@ -355,6 +363,13 @@ function delete_diagnosa(myid){
       </li>
 
       <li>
+        <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+          <i class="blue ace-icon fa fa-file bigger-120"></i>
+          PENGKAJIAN
+        </a>
+      </li>
+
+      <li>
         <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
           <i class="green ace-icon fa fa-history bigger-120"></i>
           TINDAKAN
@@ -364,7 +379,7 @@ function delete_diagnosa(myid){
       <li>
         <a data-toggle="tab" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
           <i class="red ace-icon fa fa-list bigger-120"></i>
-          PESAN RESEP
+          RESEP
         </a>
       </li>
 
@@ -385,14 +400,14 @@ function delete_diagnosa(myid){
       <li>
         <a data-toggle="tab" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_ri/pesan/<?php echo $id?>/<?php echo $value->no_registrasi?>" id="tabs_pesan" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
           <i class="purple ace-icon fa fa-list bigger-120"></i>
-          PESAN (OK/VK/PINDAH)
+          (OK/VK/PINDAH)
         </a>
       </li>
 
       <li>
         <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
           <i class="orange ace-icon fa fa-money bigger-120"></i>
-          BILLING PASIEN
+          BILLING
         </a>
       </li>
 

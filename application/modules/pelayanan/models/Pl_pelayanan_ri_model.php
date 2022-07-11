@@ -576,9 +576,22 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		return $this->db->get_where('mt_ruangan', array('kode_ruangan' => $kode) )->row();
 	}
 
-	function get_datatables_cppt($kode_ri)
-	{
-		$query = $this->db->order_by('cppt_id', 'DESC')->get_where('th_cppt', array('kode_ri' => $kode_ri))->result();
+	function get_datatables_cppt($no_mr)
+	{	
+		$this->db->where('no_mr', $no_mr);
+		$this->db->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=th_cppt.no_kunjungan', 'left');
+		$this->db->join("(SELECT * FROM global_parameter WHERE flag='jenis_form_catatan') as jenis_catatan", 'jenis_catatan.value=th_cppt.jenis_form', 'left');
+		$query = $this->db->order_by('cppt_id', 'DESC')->get_where('th_cppt')->result();
+		return $query;
+	}
+
+
+	function get_cppt_by_id($cppt_id)
+	{	
+		$this->db->where('cppt_id', $cppt_id);
+		$this->db->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=th_cppt.no_kunjungan', 'left');
+		$this->db->join("(SELECT * FROM global_parameter WHERE flag='jenis_form_catatan') as jenis_catatan", 'jenis_catatan.value=th_cppt.jenis_form', 'left');
+		$query = $this->db->order_by('cppt_id', 'DESC')->get_where('th_cppt')->row();
 		return $query;
 	}
 

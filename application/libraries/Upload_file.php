@@ -183,7 +183,9 @@ final Class upload_file {
 
               $random = rand(1,99);
               $no_primary = isset($_POST['csm_rp_no_sep'])?$_POST['csm_rp_no_sep']:$params['ref_id'];
+              
               $custom_dok_name = isset($_POST['pf_file_name']) ? preg_replace('/\s+/','-', $_POST['pf_file_name'][$i]).'-'.$no_primary : 'Lampiran-'.$random ;
+
               $nama_file_unik = $custom_dok_name.'-'.preg_replace('/\s+/','', $_FILES[''.$params['name'].'']['name'][$i]);
               //$nama_file_unik = preg_replace('/\s+/', '-', $custom_dok_name).'-'.$no_primary;
 
@@ -318,7 +320,8 @@ final Class upload_file {
                 # code...
                 $html .= '<tr id="tr_id_'.$row_list->csm_dex_id.'">';
                     $html .= '<td align="center">'.$no.'</td>';
-                    $html .= '<td align="left">'.$row_list->csm_dex_nama_dok.'</td>';
+                    $filename = explode('-',$row_list->csm_dex_nama_dok);
+                    $html .= '<td align="left">'.$filename[0].'</td>';
                     $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
                     $html .= '<td align="center"><a href="'.BASE_FILE_RM.$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
