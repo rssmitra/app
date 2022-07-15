@@ -186,6 +186,11 @@ class Input_pasien_baru extends MX_Controller {
         $this->form_validation->set_rules('kelompok_pasien', 'Nasabah', 'trim');
         $this->form_validation->set_rules('keterangan_pasien', 'Catatan Pasien', 'trim');
 
+        // tambahan untuk akreditasi
+        $this->form_validation->set_rules('suku', 'Suku', 'trim|required', array('required' => 'Untuk kebutuhan akreditasi, silahkan lengkapi data SUKU'));
+        $this->form_validation->set_rules('kebangsaan', 'Kewarganegaraan', 'trim|required', array('required' => 'Untuk kebutuhan akreditasi, silahkan lengkapi data KEWARGANEGARAAN'));
+        $this->form_validation->set_rules('kode_pendidikan', 'Pendidikan Terakhir', 'trim|required', array('required' => 'Untuk kebutuhan akreditasi, silahkan lengkapi data PENDIDIKAN TERAKHIR'));
+
         /*regional*/
         $this->form_validation->set_rules('provinsiHidden', 'Provinsi', 'trim');
         $this->form_validation->set_rules('kotaHidden', 'Kota / Kabupaten', 'trim');
@@ -280,6 +285,10 @@ class Input_pasien_baru extends MX_Controller {
                 'kode_perusahaan' => isset($_POST['kode_perusahaan'])?$this->regex->_genRegex($this->form_validation->set_value('kode_perusahaan'),'RGXINT'):NULL,
                 'no_kartu_bpjs' => isset($_POST['no_kartu_bpjs'])?$this->regex->_genRegex($this->form_validation->set_value('no_kartu_bpjs'),'RGXQSL'):NULL,
                 'keterangan' => isset($_POST['keterangan_pasien'])?$this->regex->_genRegex($this->form_validation->set_value('keterangan_pasien'),'RGXQSL'):NULL,
+
+                'suku' => $this->regex->_genRegex($this->form_validation->set_value('suku'),'RGXQSL'),
+                'kebangsaan' => $this->regex->_genRegex($this->form_validation->set_value('kebangsaan'),'RGXQSL'),
+                'kode_pendidikan' => $this->regex->_genRegex($this->form_validation->set_value('kode_pendidikan'),'RGXQSL'),
             );
 
             if(isset($_FILES['path_foto']['name'])){

@@ -331,6 +331,33 @@
       </div>
     </div>
 
+    <div class="form-group" id="data_dewasa">
+
+      <label class="control-label col-md-2">Suku *</label>
+
+      <div class="col-md-2">
+
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'suku')), isset($value)?$value->suku:'' , 'suku', 'suku', 'form-control', '', '') ?> 
+
+      </div>
+
+      <label class="control-label col-md-2">Kewarganegaraan *</label>
+
+      <div class="col-md-2">
+
+      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'kewarganegaraan')), isset($value)?$value->kebangsaan:'' , 'kebangsaan', 'kebangsaan', 'form-control', '', '') ?> 
+
+      </div>
+
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-md-2">Pendidikan Terakhir *</label>
+      <div class="col-md-2">
+        <?php echo $this->master->custom_selection($params = array('table' => 'mst_education', 'id' => 'education_id', 'name' => 'education_name', 'where' => array()), isset($value)?$value->kode_pendidikan:'' , 'kode_pendidikan', 'kode_pendidikan', 'form-control', '', '') ?> 
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="control-label col-md-2">Telp</label>
       <div class="col-md-2">
