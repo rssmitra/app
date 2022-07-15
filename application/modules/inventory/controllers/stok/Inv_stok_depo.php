@@ -72,6 +72,7 @@ class Inv_stok_depo extends MX_Controller {
         $this->load->view('stok/Inv_stok_depo/form', $data);
     }
 
+
     public function detail($kode_brg, $kode_bagian)
     {
         /*breadcrumbs for view*/
@@ -87,6 +88,22 @@ class Inv_stok_depo extends MX_Controller {
         $this->load->view('stok/Inv_stok_depo/form_mutasi', $data);
     }
 
+    public function update_rak($kode_brg, $kode_bagian)
+    {
+        /*breadcrumbs for view*/
+        $this->breadcrumbs->push('Update Rak '.strtolower($this->title).'', 'inventory/stok/Inv_stok_depo/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$kode_brg);
+        /*define data variabel*/
+        $data['value'] = $this->Inv_stok_depo->get_mutasi_stok($kode_brg, $kode_bagian);
+        // echo '<pre>'; print_r($data);die;
+        $data['kode_brg'] = $kode_brg;
+        $data['kode_bagian'] = $kode_bagian;
+        $data['title'] = $this->title;
+        $data['flag'] = "read";
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('stok/Inv_stok_depo/form_update_rak', $data);
+    }
+
 
     public function get_data()
     {
@@ -94,6 +111,8 @@ class Inv_stok_depo extends MX_Controller {
         $list = $this->Inv_stok_depo->get_datatables();
         $data = array();
         $no = $_POST['start'];
+        $params_kode_bagian = isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '060101' ;
+
         foreach ($list as $row_list) {
             $no++;
             $row = array();
@@ -107,8 +126,10 @@ class Inv_stok_depo extends MX_Controller {
             $is_prb = ($row_list->is_prb == 'Y') ? '<span style="background: gold; color: black; font-weight: bold; font-size: 10px">PRB</span>' : '' ;
             $is_kronis = ($row_list->is_kronis == 'Y') ? '<span style="background: green; color: white; font-weight: bold; font-size: 10px">Kronis</span>' : '' ;
 
-            $row[] = '<a href="#" onclick="click_detail('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'<br>'.strtoupper($row_list->nama_brg).'</a><br>Harga beli @ '.number_format($row_list->harga_beli).',-<br>'.$is_prb.' '.$is_kronis;;
-            $row[] = '<div class="center">'.strtoupper($row_list->content).'</div>';
+            $rak_lemari = (!empty($row_list->rak))?'<br>rak/lemari : <a href="#" onclick="show_modal_small('."'inventory/stok/Inv_stok_depo/update_rak/".$row_list->kode_brg."/".$params_kode_bagian."'".', '."'FORM UPDATE RAK/LEMARI PENYIMPANAN BARANG'".')"><b>'.$row_list->rak.'</b></a>':'<br><a href="#" onclick="show_modal_small('."'inventory/stok/Inv_stok_depo/update_rak/".$row_list->kode_brg."/".$params_kode_bagian."'".', '."'FORM UPDATE RAK/LEMARI PENYIMPANAN BARANG'".')" class="label label-inverse">update rak</a>';
+            
+            $row[] = '<a href="#" onclick="click_detail('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'<br>'.strtoupper($row_list->nama_brg).'</a><br>Harga beli @ '.number_format($row_list->harga_beli).',-<br>'.$is_prb.' '.$is_kronis.$rak_lemari;
+            $row[] = '<div class="center">1/'.strtoupper($row_list->content).'</div>';
             // labeling stok minimum
             $label_color = ( $row_list->stok_minimum > $row_list->stok_akhir || $row_list->stok_akhir == 0 ) ? 'style="background-color: #d15b476b; height: 25px"' : '' ;
             $row[] = '<div class="center">'.$row_list->stok_minimum.'</div>';
@@ -119,7 +140,7 @@ class Inv_stok_depo extends MX_Controller {
             $status_aktif = ($row_list->is_active == 1) ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
             $status_brg_aktif = ($row_list->is_active == 0 ) ? '' : 'checked';
-            $params_kode_bagian = isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '060101' ;
+            
             $row[] = '<div class="center">
                         <label>
                             <input name="status_brg_aktif" id="stat_on_off_'.$row_list->kode_brg.'_'.$row_list->kode_brg.'" onclick="setStatusAktifBrg('."'".$row_list->kode_brg."'".', '."'".$params_kode_bagian."'".')" class="ace ace-switch ace-switch-3" type="checkbox" '.$status_brg_aktif.' value="'.$row_list->is_active.'">
@@ -170,11 +191,12 @@ class Inv_stok_depo extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function process()
+    public function process_update_rak()
     {
+        // echo '<pre>'; print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('education_name', 'Nama Pendidikan', 'trim|required');
+        $val->set_rules('rak', 'Rak/Lemari', 'trim|required');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -186,29 +208,12 @@ class Inv_stok_depo extends MX_Controller {
         else
         {                       
             $this->db->trans_begin();
-            $id = ($this->input->post('id'))?$this->input->post('id'):0;
-
-            $dataexc = array(
-                'education_name' => $val->set_value('education_name'),
-                'is_active' => $this->input->post('is_active'),
-            );
-            if($id==0){
-                $dataexc['created_date'] = date('Y-m-d H:i:s');
-                $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                /*save post data*/
-                $this->Inv_stok_depo->save($dataexc);
-                $newId = $this->db->insert_id();
-                /*save logs*/
-                $this->logs->save('Inv_stok_depo', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'kode_brg');
-            }else{
-                $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                /*update record*/
-                $this->Inv_stok_depo->update(array('kode_brg' => $id), $dataexc);
-                $newId = $id;
-                /*save logs*/
-                $this->logs->save('Inv_stok_depo', $newId, 'update record on '.$this->title.' module', json_encode($dataexc),'kode_brg');
-            }
+            $dataexc['rak'] = $val->set_value('rak');
+            $dataexc['updated_date'] = date('Y-m-d H:i:s');
+            $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+            /*update record*/
+            $this->Inv_stok_depo->update(array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']), $dataexc);
+        
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();

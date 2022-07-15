@@ -532,6 +532,40 @@
       </div><!-- /.modal-dialog -->
 
     </div>
+
+    <div id="globalModalViewSmall" class="modal fade" tabindex="-1">
+
+      <div class="modal-dialog" style="overflow-y: scroll; max-height:45%;  margin-top: 50px; margin-bottom:50px;width:50%; background-color: white">
+
+        <div class="modal-content">
+
+          <div class="modal-header">
+
+            <!-- <div class="table-header"> -->
+
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+
+                <span class="white">&times;</span>
+
+              </button>
+
+              <span id="text_title_small" style="color: white; font-weight: bold">TITLE</span>
+
+            <!-- </div> -->
+
+          </div>
+
+          <div class="modal-body" style="min-height: 400px !important">
+
+            <div id="global_modal_content_detail_small" style="background-color: white"></div>
+
+          </div>
+
+        </div><!-- /.modal-content -->
+
+      </div><!-- /.modal-dialog -->
+
+    </div>
     
     
 
@@ -685,6 +719,18 @@
         $('#global_modal_content_detail_medium').load(url); 
 
         $("#globalModalViewMedium").modal();
+
+      }
+
+      function show_modal_small(url, title){  
+
+        preventDefault();
+
+        $('#text_title_small').text(title);
+
+        $('#global_modal_content_detail_small').load(url); 
+
+        $("#globalModalViewSmall").modal();
 
       }
 

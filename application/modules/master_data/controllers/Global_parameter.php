@@ -26,10 +26,13 @@ class Global_parameter extends MX_Controller {
 
     public function index() {
         /*define variable data*/
+        $string = isset($_GET['flag'])?'flag='.$_GET['flag'].'':'?';
+        $string .= isset($_GET['kode_bagian'])?'&kode_bagian='.$_GET['kode_bagian'].'':'';
         $data = array(
             'title' => ucwords(str_replace('_',' ',$_GET['flag'])),
             'breadcrumbs' => $this->breadcrumbs->show(),
-            'flag_string' => $_GET['flag'],
+            'flag_string' => $string,
+            'kode_bagian' => isset($_GET['kode_bagian'])?$_GET['kode_bagian']:'',
         );
         /*load view index*/
         $this->load->view('Global_parameter/index', $data);
@@ -99,14 +102,16 @@ class Global_parameter extends MX_Controller {
                     </label></div>';
             $row[] = '';
             $row[] = $row_list->auto_id;
+            $Query_String  = isset($_SERVER['REQUEST_URI']) ? explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] ) : '' ;
+            $param_string = isset($Query_String[0])?$Query_String[0]:'';
             $row[] = '<div class="center"><div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
-                            <li>'.$this->authuser->show_button('master_data/Global_parameter?flag='.$_GET['flag'].'','R',$row_list->auto_id,67).'</li>
-                            <li>'.$this->authuser->show_button('master_data/Global_parameter?flag='.$_GET['flag'].'','U',$row_list->auto_id,67).'</li>
-                            <li>'.$this->authuser->show_button('master_data/Global_parameter?flag='.$_GET['flag'].'','D',$row_list->auto_id,6).'</li>
+                            <li>'.$this->authuser->show_button('master_data/Global_parameter'.$param_string.'','R',$row_list->auto_id,67).'</li>
+                            <li>'.$this->authuser->show_button('master_data/Global_parameter'.$param_string.'','U',$row_list->auto_id,67).'</li>
+                            <li>'.$this->authuser->show_button('master_data/Global_parameter'.$param_string.'','D',$row_list->auto_id,6).'</li>
                         </ul>
                       </div></div>';
             

@@ -25,7 +25,6 @@ class Rm_pasien extends MX_Controller {
         /*enable profiler*/
         $this->output->enable_profiler(false);
 
-
     }
 
     public function index() { 

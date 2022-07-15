@@ -46,6 +46,10 @@ define('COMP_TELP', '(021) 7656000');
 define('COMP_FAX', '(021) 7656875');
 define('KARS', 'dr. Untung Sugiharto, MARS');
 
+// setup 
+define('PPN', 11);
+
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes

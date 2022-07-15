@@ -13,6 +13,7 @@ class Export_data extends MX_Controller {
         $this->load->module('casemix/Csm_resume_billing');
         $this->load->module('casemix/Csm_resume_billing_ri');
         $this->load->module('casemix/Csm_dokumen_klaim');
+        $this->load->module('pelayanan/Pl_pelayanan_ri');
         $this->load->model('registration/Reg_pm_model');
     }
 
@@ -145,11 +146,12 @@ EOD;
         $obj = new $class;
         $data = $obj->get_content_data();
         $html_content = $obj->html_content($data);
+        $paper_type = isset($_GET['paper']) ? $_GET['paper'] : 'L';
         
         switch ($type_doc) {
             case 'pdf':
                 # code...
-                $this->exportPdfContent($html_content,'L');
+                $this->exportPdfContent($html_content,$paper_type);
                 break;
             case 'excel':
                 # code...
@@ -172,7 +174,7 @@ EOD;
         $pdf->SetCreator(PDF_CREATOR);
         
         $pdf->SetAuthor(COMP_FULL);
-        $pdf->SetTitle('Content');
+        $pdf->SetTitle('Print PDF Document');
 
     // remove default header/footer
         $pdf->setPrintHeader(false);

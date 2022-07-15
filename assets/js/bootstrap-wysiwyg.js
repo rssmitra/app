@@ -197,6 +197,7 @@
 			'ctrl+b meta+b': 'bold',
 			'ctrl+i meta+i': 'italic',
 			'ctrl+u meta+u': 'underline',
+			'ctrl+g meta+g': 'strikethrough',
 			'ctrl+z meta+z': 'undo',
 			'ctrl+y meta+y meta+shift+z': 'redo',
 			'ctrl+l meta+l': 'justifyleft',

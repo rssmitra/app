@@ -44,15 +44,8 @@ $(document).ready(function(){
     window.filter = function(element)
     {
       var value = $(element).val().toUpperCase();
-      if($('#status_antrian_rj').val() == 1){
-        var div_id = 'list_antrian_existing';
-      }else if($('#status_antrian_rj').val() == 2){
-        var div_id = 'list_antrian_done';
-      }else{
-        var div_id = 'list_antrian_cancel';
-      }
 
-      $("#"+div_id+" > li").each(function() 
+      $(".itemdiv").each(function() 
       {
         if ($(this).text().toUpperCase().search(value) > -1){
           $(this).show();
@@ -63,12 +56,14 @@ $(document).ready(function(){
       });
     }
 
+
     /*focus on form input pasien*/
     $('#form_cari_pasien').focus();    
 
     $('#form_pelayanan').on('submit', function(){
                
         $('#konten').val($('#editor_konten').html());
+        $('input[name=catatan_pengkajian]' , this).val($('#editor').html());
         var formData = new FormData($('#form_pelayanan')[0]);        
         i=0;
         url = $('#form_pelayanan').attr('action');
@@ -91,30 +86,38 @@ $(document).ready(function(){
               var data=xhr.responseText;    
               var jsonResponse = JSON.parse(data);  
 
-              if( jsonResponse.status === 200 ){    
-                achtungShowFadeIn();
+              if( jsonResponse.status === 200 ){   
+
                 $.achtung({message: jsonResponse.message, timeout:5});
-                if(jsonResponse.next_id_pl_tc_poli != 0){
-                  getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
+                
+                if(jsonResponse.type_pelayanan == 'catatan_pengkajian'){
+                  oTableCppt.ajax.reload();
                 }else{
-                  $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
+                  achtungShowFadeIn();
+                  if(jsonResponse.next_id_pl_tc_poli != 0){
+                    getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
+                  }else{
+                    $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
+                  }
+                  pauseStopWatch();
+                  resetStopWatch();
                 }
 
               }else{          
-
+                pauseStopWatch();
+                resetStopWatch();
                 $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
 
               }        
 
-              pauseStopWatch();
-              resetStopWatch();
               achtungHideLoader();        
+              
               $(this).find("button[type='submit']").prop('disabled',false);
 
             }   
         });
         return false;
-      });
+    });
  
     
     /*on keypress or press enter = search pasien*/
@@ -183,7 +186,23 @@ $(document).ready(function(){
 
       }    
 
-    });  
+    }); 
+    
+    $('#tabs_diagnosa_dr').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosaDr');
+    });
+
+    $('#tabs_cppt').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_cppt');
+    });
+
+    $('#tabs_catatan').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveCatatanPengkajian');
+    });
+
     
     $('select[name="status_antrian_rj"]').change(function () {      
 
@@ -371,19 +390,53 @@ function getDataAntrianPasien(){
         if(o.status_batal == 1){
 
           html_cancel = '';
-          html_cancel += '<li class="list-group-item">';
-          html_cancel += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">No. '+o.no_antrian+'<br>'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span></span>';
-          html_cancel += '</li>';
-          $(html_cancel).appendTo($('#list_antrian_cancel'));
+          html_cancel += '<div class="itemdiv commentdiv">';
+          html_cancel += '<div class="user">';
+          html_cancel += '<h2>'+o.no_antrian+'</h2>';
+          html_cancel += '</div>';
+          html_cancel += '<div class="body" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+          html_cancel += '<div class="name">';
+          html_cancel += '<a href="#">'+o.no_mr+'</a>';
+          html_cancel += '</div>';
+          html_cancel += '<div class="time">';
+          html_cancel += '<i class="ace-icon fa fa-times-circle red"></i>';
+          html_cancel += '<span class="red">batal kunjungan</span>';
+          html_cancel += '</div>';
+          html_cancel += '<div class="text">';
+          html_cancel += '<span style="font-size: 14px">'+o.nama_pasien+'</span><br>';
+          html_cancel += '<span style="font-size:10px">'+penjamin+'</span>';
+          html_cancel += '</div>';
+          html_cancel += '</div>';
+          html_cancel += '</div>';
+          
+          // html_cancel += '<li class="list-group-item" style="color: red">';
+          // html_cancel += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">No. '+o.no_antrian+'<br>'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span><span class="label label-danger pull-right">Batal Berobat</span></span>';
+          // html_cancel += '</li>';
+          $(html_cancel).appendTo($('#list_antrian_existing'));
         
         }else{
 
           if(o.tgl_keluar_poli == null){
 
             html_existing = '';
-            html_existing += '<li class="list-group-item">';
-            html_existing += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span></span>';
-            html_existing += '</li>';
+            html_existing += '<div class="itemdiv commentdiv" style="box-shadow: inset 0 0 10px #0000002e;">';
+            html_existing += '<div class="user">';
+            html_existing += '<h2 style="margin-top: 6px !important;">'+o.no_antrian+'</h2>';
+            html_existing += '</div>';
+            html_existing += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_existing += '<div class="name">';
+            html_existing += '<span style="font-size: 16px; font-weight: bold">'+o.no_mr+'</span>';
+            html_existing += '</div>';
+            html_existing += '<div class="text">';
+            html_existing += '<span style="font-size: 14px">'+o.nama_pasien+'</span><br>';
+            html_existing += '<span style="font-size:10px">'+penjamin+'</span>';
+            html_existing += '</div>';
+            html_existing += '</div>';
+            html_existing += '</div>';
+
+            // html_existing += '<li class="list-group-item">';
+            // html_existing += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span></span>';
+            // html_existing += '</li>';
             $(html_existing).appendTo($('#list_antrian_existing'));
 
           }
@@ -391,10 +444,29 @@ function getDataAntrianPasien(){
           if(o.tgl_keluar_poli != null){
 
             html_done = '';
-            html_done += '<li class="list-group-item">';
-            html_done += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span></span>';
-            html_done += '</li>';
-            $(html_done).appendTo($('#list_antrian_done'));
+            html_done += '<div class="itemdiv commentdiv" style="background: linear-gradient(45deg, yellowgreen, transparent)">';
+            html_done += '<div class="user" style="background: #a7d353">';
+            html_done += '<h2 style="margin-top: 6px !important;">'+o.no_antrian+'</h2>';
+            html_done += '</div>';
+            html_done += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_done += '<div class="name">';
+            html_done += '<span style="font-size: 16px; font-weight: bold">'+o.no_mr+'</span>';
+            html_done += '</div>';
+            html_done += '<div class="time">';
+            html_done += '<i class="ace-icon fa fa-check-circle green"></i>';
+            html_done += '<span class="green"> sudah diperiksa</span>';
+            html_done += '</div>';
+            html_done += '<div class="text">';
+            html_done += '<span style="font-size: 14px">'+o.nama_pasien+'</span><br>';
+            html_done += '<span style="font-size:10px">'+penjamin+'</span>';
+            html_done += '</div>';
+            html_done += '</div>';
+            html_done += '</div>';
+
+            // html_done += '<li class="list-group-item">';
+            // html_done += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span><span class="label label-success pull-right">Sudah Diperiksa</span></span>';
+            // html_done += '</li>';
+            $(html_done).appendTo($('#list_antrian_existing'));
 
           }
         }
@@ -510,25 +582,26 @@ function changeSelection(){
   .user-info{
     max-width: 200px !important;
   }
+
+  .itemdiv > .body > .text {
+    padding-left: 0px;
+    margin-top: 0px;
+  }
+  .user h2{
+    text-align: center !important;
+  }
+
+  .itemdiv > .body > .text:after {
+    border-top: 0px solid #E4ECF3;
+  }
+
+  .itemdiv > .body > .name {
+    display: block;
+    color: black !important;
+}
   
 
 </style>
-
-<!-- <div class="scrollbar ace-settings-container" id="ace-settings-container-rj" style="position: fixed">
-  <div class="btn btn-app btn-xs btn-primary ace-settings-btn" id="ace-settings-btn-rj">
-    <i class="ace-icon fa fa-file bigger-130"></i>
-  </div>
-
-  <div class="ace-settings-box clearfix" id="ace-settings-box-rj">
-
-    <div class="pull-left">
-        <center><b>PENGKAJIAN MEDIS RAWAT JALAN</b><hr></center>
-        <div id="cppt_data">Tidak ada data ditemukan</div>
-    </div>
-
-
-  </div>
-</div>  -->
 
 <div class="row">
   <div class="page-header">  
@@ -565,15 +638,6 @@ function changeSelection(){
           </a>
         </li>
 
-        <!-- <li class="light-blue" style="background-color: lightgrey !important;color: black">
-          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black" onclick="show_modal('adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/getDetailTransaksiDokter?kode_dokter=265&from_tgl=2020-04-17&to_tgl=2020-04-17&type=view_only','TAGIHAN DOKTER')">
-            <span class="user-info">
-              <b><span style="font-size: 14px;" id="total_bill_dr_current"></span></b>
-              <small>Total Billing</small></span>
-          </a>
-        </li> -->
-
-
         <li style="color: black">
           <a href="#" style="background-color: red !important; color: white" id="btn_update_session_poli">
             Tutup Session Poli
@@ -583,9 +647,6 @@ function changeSelection(){
       </ul>
     
   </div>  
-
-  
-
 <div>   
 
   <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
@@ -723,10 +784,32 @@ function changeSelection(){
         <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
 
           <div class="tabbable">  
+            <ul class="nav nav-tabs" id="myTab">
+              <li class="active">
+                <a data-toggle="tab" id="tabs_diagnosa_dr" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                <i class="green ace-icon fa fa-file bigger-120"></i>
+                  Form Resume Medis
+                </a>
+              </li>
+              <li>
+                <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                  <i class="red ace-icon fa fa-leaf bigger-120"></i>
+                  Input CPPT
+                </a>
+              </li>
 
+              <li>
+                <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                  <i class="blue ace-icon fa fa-edit bigger-120"></i>
+                  Catatan Riwayat Penyakit/Pengkajian Pasien
+                </a>
+              </li>
+            </ul>
+            
+            
             <div class="tab-content">                  
 
-              <div id="tabs_form_pelayanan">
+              <div id="tabs_form_pelayanan" class="tab-pane fade in active">
 
                 <div class="alert alert-block alert-success">
                     <p>
@@ -766,12 +849,12 @@ function changeSelection(){
             <div class="tab-content">
                 <div id="antrian_tabs" class="tab-pane fade in active">
                   <div class="center">
-                    <span class="pull-left"><b>Status Antrian :</b></span> <br>
+                    <!-- <span class="pull-left"><b>Status Antrian :</b></span> <br>
                     <select class="form-control" name="status_antrian_rj" id="status_antrian_rj" onclick="changeSelection()">
                       <option value="1" selected>Belum Diperiksa</option>
                       <option value="2">Sudah Diperiksa</option>
                       <option value="3">Batal Berobat</option>
-                    </select>
+                    </select> -->
                     <span class="pull-left" style="padding-top: 10px"><b>Cari pasien :</b></span> <br>
                     <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);">
                   </div>
@@ -782,25 +865,26 @@ function changeSelection(){
                       <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
                   </div>
                   <br>
-                  <div id="div_antrian_existing">
+
+                  <div class="comments ace-scroll"  style="position: relative;height: 650px;overflow: scroll;">
+                    <div id="list_antrian_existing"></div>
+                  </div>
+                  
+                  <!-- <div id="div_antrian_existing">
                     <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Antrian Pasien Belum Diperiksa</span></center>
                     <ol class="list-group list-group-unbordered" id="list_antrian_existing" style="background-color:white;height: 650px;overflow: scroll;">
                     </ol>
-                  </div>
 
-                  <div id="div_antrian_done" style="display: none">
-                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Sudah Diperiksa</span></center>
+                    <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Sudah Diperiksa</span></center>
                     <ol class="list-group list-group-unbordered" id="list_antrian_done" style="background-color:white;height: 650px;overflow: scroll;">
                     </ol>
-                  </div>
 
-                  <div id="div_antrian_cancel" style="display: none">
-                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Batal Berobat</span></center>
+                    <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Batal Berobat</span></center>
                     <ol class="list-group list-group-unbordered" id="list_antrian_cancel" style="background-color:white;height: 650px;overflow: scroll;">
                     </ol>
                   </div>
 
-                    <!-- <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
+                    <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
                     <table class="table" id="antrian_pasien_tbl" style="background: linear-gradient(45deg, #c0ec70, transparent) !important">
                         <tbody>
                             <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
@@ -831,54 +915,5 @@ function changeSelection(){
         </div>
 
   </form>
-
-<!-- <div id="GlobalModal" class="modal fade" tabindex="-1">
-
-  <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:70%">
-
-    <div class="modal-content">
-
-      <div class="modal-header">
-
-        <div class="table-header">
-
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-
-            <span class="white">&times;</span>
-
-          </button>
-
-          <span id="result_text_riwayat_medis">PERJANJIAN PASIEN</span>
-
-        </div>
-
-      </div>
-
-      <div class="modal-body">
-
-        <div id="form_modal"></div>
-
-      </div>
-
-      <div class="modal-footer no-margin-top">
-
-        <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
-
-          <i class="ace-icon fa fa-times"></i>
-
-          Close
-
-        </button>
-
-      </div> 
-
-    </div>
-
-  </div>
-
-</div> -->
-
-<!-- ace scripts -->
-<script src="<?php echo base_url()?>assets/js/ace/ace.settings.js"></script>
 
 

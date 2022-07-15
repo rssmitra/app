@@ -575,6 +575,61 @@ class Templates extends MX_Controller {
         return $html;
     }
 
+    public function setGlobalProfileCppt($data, $flag='', $pm=''){
+        $html = '';
+
+        $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
+        if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
+            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
+        }
+        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+
+        $html .= '<table border="1" style="padding: 10px"><tr><td style="width: 50%">';
+        $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:30px">
+                    
+                    <tr>
+                        <td align ="left"><img src="'.base_url().'/'.COMP_ICON.'" width="50px"></td>
+                    </tr>
+                    <tr><td align ="left" colspan="2"><b>'.COMP_LONG.'</b>&nbsp;</td></tr>
+                    <tr><td align ="left" colspan="2">'.COMP_ADDRESS_SORT.'</td></tr>
+                    <tr><td align ="left" colspan="2">Telp:&nbsp;'.COMP_TELP.'&nbsp;(Hunting)&nbsp;Fax:&nbsp;'.COMP_FAX.'&nbsp;</td></tr>
+                  </table>';
+        $html .= '</td>';
+        $html .= '<td style="width: 50%;">';
+        $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:30px">
+                    <tr>
+                        <td width="100px">No. RM</td>
+                        <td width="180px">: '.$data->reg_data->no_mr.'</td>
+                    </tr>
+                    <tr>
+                        <td width="100px" align="left">Nama Pasien</td>
+                        <td width="180px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
+                    </tr>
+
+                    <tr>
+                        <td width="100px">Dokter</td>
+                        <td width="350px">: '.$nama_dr.'</td>
+                    </tr>
+                    <tr>
+                        <td width="100px">Umur</td>
+                        <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
+                        
+                    </tr>
+
+                    <tr>
+                        <td width="100px">Jenis Kelamin</td>
+                        <td width="180px">: '.$data->reg_data->jk.'</td>
+                    </tr>                    
+                </table>';
+            
+        $html .= '</td>';
+        $html .= '</tr>';
+        $html .= '</table>';
+        // $html .= '<hr>';
+
+        return $html;
+    }
+
     public function setGlobalProfilePasienTemplateRI($data, $flag='', $pm=''){
         $html = '';
         $jk = ($data->reg_data->jk == 'L')?'Pria':'Wanita';
