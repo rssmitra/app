@@ -12,8 +12,8 @@
     </div><!-- /.page-header -->
 
     <div class="clearfix" style="margin-bottom:-5px">
-      <?php echo $this->authuser->show_button('master_data/Global_parameter?flag='.$flag_string.'','C','',7)?>
-      <?php echo $this->authuser->show_button('master_data/Global_parameter?flag='.$flag_string.'','D','',5)?>
+      <?php echo $this->authuser->show_button('master_data/Global_parameter?'.$flag_string.'','C','',7)?>
+      <?php echo $this->authuser->show_button('master_data/Global_parameter?'.$flag_string.'','D','',5)?>
       <div class="pull-right tableTools-container"></div>
     </div>
     <hr class="separator">
@@ -21,7 +21,7 @@
 
     <!-- div.dataTables_borderWrap -->
     <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="master_data/Global_parameter" data-id="flag=<?php echo $flag_string?>" url-detail="master_data/Global_parameter/get_detail" class="table table-bordered table-hover">
+      <table id="dynamic-table" base-url="master_data/Global_parameter" data-id="<?php echo $flag_string?>" url-detail="master_data/Global_parameter/get_detail" class="table table-bordered table-hover">
 
        <thead>
         <tr>  
