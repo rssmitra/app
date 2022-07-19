@@ -100,7 +100,7 @@ function changeTotal(){
         <input type="hidden" value="<?php echo isset($value->kode_tarif)?$value->kode_tarif:''?>" name="id" id="id">        
         <input type="hidden" class="form-control" name="nama_tarif" value="<?php echo isset($value->nama_tarif)?$value->nama_tarif:''?>">
         <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value->kode_bagian)?$value->kode_bagian:''?>">
-        <input type="hidden" class="form-control" name="jenis_tindakan" value="<?php echo isset($value->kode_jenis_tindakan)?$value->kode_jenis_tindakan:''?>">
+        <input type="hiddenxx" class="form-control" name="jenis_tindakan" value="<?php echo isset($value->jenis_tindakan)?$value->jenis_tindakan:''?>">
 
         <p style="font-weight: bold;">Klas & Jenis Tarif</p>
         <div class="form-group">

@@ -80,6 +80,7 @@ class Mst_tarif extends MX_Controller {
     {
         // define
         $tarif = $this->Mst_tarif->get_by_id($kode_tarif);
+        // print_r($tarif); die;
         /*breadcrumbs for view*/
         /*define data variabel*/
         $data['value'] = $tarif;
