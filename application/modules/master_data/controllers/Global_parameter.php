@@ -10,7 +10,7 @@ class Global_parameter extends MX_Controller {
 
         parent::__construct();
         /*breadcrumb default*/
-        $this->breadcrumbs->push('Index', 'master_data/Global_parameter?flag='.$_GET['flag'].'');
+        $this->breadcrumbs->push('Index', 'master_data/Global_parameter?'.http_build_query($_GET).'');
         /*session redirect login if not login*/
         if($this->session->userdata('logged')!=TRUE){
             echo 'Session Expired !'; exit;
@@ -43,7 +43,7 @@ class Global_parameter extends MX_Controller {
         /*if id is not null then will show form edit*/
         if( $id != '' ){
             /*breadcrumbs for edit*/
-            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'master_data/Global_parameter/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?flag='.$_GET['flag']);
+            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'master_data/Global_parameter/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?'.http_build_query($_GET));
             /*get value by id*/
             $data['value'] = $this->Global_parameter->get_by_id($id);
             /*initialize flag for form*/
@@ -67,7 +67,7 @@ class Global_parameter extends MX_Controller {
     public function show($id)
     {
         /*breadcrumbs for view*/
-        $this->breadcrumbs->push('View '.strtolower($this->title).'', 'master_data/Global_parameter/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?flag='.$_GET['flag']);
+        $this->breadcrumbs->push('View '.strtolower($this->title).'', 'master_data/Global_parameter/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id.'?'.http_build_query($_GET));
         /*define data variabel*/
         $data['value'] = $this->Global_parameter->get_by_id($id);
         $data['title'] = $this->title;
@@ -102,16 +102,14 @@ class Global_parameter extends MX_Controller {
                     </label></div>';
             $row[] = '';
             $row[] = $row_list->auto_id;
-            $Query_String  = isset($_SERVER['REQUEST_URI']) ? explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] ) : '' ;
-            $param_string = isset($Query_String[0])?$Query_String[0]:'';
             $row[] = '<div class="center"><div class="btn-group">
                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
-                            <li>'.$this->authuser->show_button('master_data/Global_parameter'.$param_string.'','R',$row_list->auto_id,67).'</li>
-                            <li>'.$this->authuser->show_button('master_data/Global_parameter'.$param_string.'','U',$row_list->auto_id,67).'</li>
-                            <li>'.$this->authuser->show_button('master_data/Global_parameter'.$param_string.'','D',$row_list->auto_id,6).'</li>
+                            <li>'.$this->authuser->show_button('master_data/Global_parameter?'.http_build_query($_GET).'','R',$row_list->auto_id,67).'</li>
+                            <li>'.$this->authuser->show_button('master_data/Global_parameter?'.http_build_query($_GET).'','U',$row_list->auto_id,67).'</li>
+                            <li>'.$this->authuser->show_button('master_data/Global_parameter?'.http_build_query($_GET).'','D',$row_list->auto_id,6).'</li>
                         </ul>
                       </div></div>';
             
@@ -137,7 +135,7 @@ class Global_parameter extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
+        
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('label', 'Label', 'trim|required');
@@ -162,6 +160,11 @@ class Global_parameter extends MX_Controller {
                 'is_active' => $this->regex->_genRegex( $this->input->post('is_active') , 'RGXQSL'), 
                 'flag' => $this->regex->_genRegex( $this->input->post('flag') , 'RGXQSL'), 
             );
+
+            foreach ($_GET as $key => $row_get) {
+                $dataexc[$key] = $row_get;
+            }
+            
 
             if($id==0){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
