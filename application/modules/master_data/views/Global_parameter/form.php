@@ -14,11 +14,9 @@
       <div class="widget-body">
         <div class="widget-main no-padding">
             
-          <form class="form-horizontal" method="post" id="form-default" action="<?php echo site_url('master_data/Global_parameter/process?flag='.$flag_string.'')?>" enctype="multipart/form-data">
+          <form class="form-horizontal" method="post" id="form-default" action="<?php echo site_url('master_data/Global_parameter/process?'.http_build_query($_GET).'')?>" enctype="multipart/form-data">
               <br>
               <!-- hidden form -->
-              <input type="hidden" name="flag" value="<?php echo $flag_string?>" id="flag_string">
-
               <div class="form-group">
                 <label class="control-label col-md-2">ID</label>
                 <div class="col-md-1">
@@ -64,7 +62,7 @@
               </div>
               
               <div class="form-actions center">
-                <a onclick="getMenu('master_data/Global_parameter?flag=<?php echo $flag_string?>')" href="#" class="btn btn-sm btn-success">
+                <a onclick="getMenu('master_data/Global_parameter?<?php echo http_build_query($_GET)?>')" href="#" class="btn btn-sm btn-success">
                     <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                     Kembali ke daftar
                 </a>
@@ -190,7 +188,7 @@
 
               if(jsonResponse.status === 200){
                 $.achtung({message: jsonResponse.message, timeout:5});
-                $('#page-area-content').load('master_data/Global_parameter?flag='+$('#flag_string').val()+'&_=' + (new Date()).getTime());
+                $('#page-area-content').load('master_data/Global_parameter?<?php echo http_build_query($_GET)?>');
               }else{
                 $.achtung({message: jsonResponse.message, timeout:5});
               }

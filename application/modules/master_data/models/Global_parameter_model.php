@@ -23,6 +23,9 @@ class Global_parameter_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+		if(isset($_GET['reff_id'])){
+			$this->db->where('reff_id', $_GET['reff_id']);
+		}
 
 		$i = 0;
 	

@@ -42,7 +42,8 @@ final Class Authuser {
             $ori_code = (string)$exp_code[0];
             $flag = isset($exp_code[1])?$exp_code[1]:'';
             //print_r($flag);die;
-            $repl_link = str_replace("?flag=$flag",'',$link);
+            // $Query_String  = isset($_SERVER['REQUEST_URI']) ? explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] ) : '' ;
+            // $repl_link = str_replace("?flag=$flag",'',$link);
 
             /*switch code to get button*/
             return $this->switch_to_get_btn($str_to_array, $link, $code, $id, $style);
@@ -80,9 +81,14 @@ final Class Authuser {
     }
 
     function remove_url_query($url, $key) {
-        $url = preg_replace('/(?:&|(\?))' . $key . '=[^&]*(?(1)&|)?/i', "$1", $url);
-        $url = rtrim($url, '?');
-        $url = rtrim($url, '&');
+        // $url = preg_replace('/(?:&|(\?))' . $key . '=[^&]*(?(1)&|)?/i', "$1", $url);
+        // $url = rtrim($url, '?');
+        // $url = rtrim($url, '&');
+
+        $url_arr = parse_url($url);
+        $query = isset($url_arr['query'])?$url_arr['query']:'';
+        $url = str_replace(array($query,'?'), '', $url);
+
         return $url;
     }
 
@@ -138,7 +144,8 @@ final Class Authuser {
             case 'C7':
                 # code...
                 $Query_String  = isset($_SERVER['REQUEST_URI']) ? explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] ) : '' ;
-                $param_string = isset($Query_String[0])?$Query_String[0]:'';
+                $param_string = http_build_query($_GET);
+
                 $btn = '<a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'".$link.'/form?'.$param_string.''."'".')"><i class="ace-icon glyphicon glyphicon-plus bigger-50"></i>Create New</a>';
                 break;
 
@@ -271,7 +278,8 @@ final Class Authuser {
             case 'U67':
                 # code...
                 $Query_String  = explode("&", explode("?", $_SERVER['REQUEST_URI'])[1] );
-                $param_string = isset($Query_String[0])?$Query_String[0]:'';
+                // $param_string = isset($Query_String[0])?$Query_String[0]:'';
+                $param_string = http_build_query($_GET);
                 $btn = '<a href="#" onclick="getMenu('."'".$link.'/form/'.$id.'?'.$param_string.''."'".')" title="Update">Update</a>';
                 break;
 
