@@ -142,6 +142,24 @@ $(document).ready(function() {
           });
     });
 
+    $('#btn_export_excel').click(function (e) {
+        
+        e.preventDefault();
+        $.ajax({
+          url: $('#form_search').attr('action'),
+          type: "post",
+          data: $('#form_search').serialize(),
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          success: function(data) {
+            achtungHideLoader();
+            export_excel(data,base_url);
+          }
+        });
+  });
+
     $('#btn_reset_data').click(function (e) {
         e.preventDefault();
         reset_table();
@@ -176,6 +194,12 @@ function updateDokumen(no_registrasi, type){
     }
 
   });
+}
+
+function export_excel(result){
+
+  window.open('casemix/Csm_verifikasi_costing/export_excel?'+result.data+'','_blank'); 
+
 }
 
 function find_data_reload(result, base_url){
