@@ -12,7 +12,7 @@
 
 <html>
 <head>
-  <title>Format Stok Opname RS. Setia Mitra</title>
+  <title>Format Stok Opname <?php echo COMP_LONG; ?></title>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
 </head>
@@ -20,7 +20,7 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <center><h4>Form Stok Opname RS. Setia Mitra</h4></center>
+      <center><h4>Form Stok Opname <?php echo COMP_LONG; ?></h4></center>
       <br>
       <?php if($_POST['flag_string'] == 'non_medis') : ?>
       <span><?php echo ($result['data'][0]->nama_golongan)?'Golongan <b>'.strtoupper($result['data'][0]->nama_golongan.'</b>'):' '?> </span>

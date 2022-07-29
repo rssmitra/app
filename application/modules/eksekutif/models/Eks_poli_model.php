@@ -189,7 +189,7 @@ class Eks_poli_model extends CI_Model {
             $year = isset($_GET['tahun_graph_line_1'])?$_GET['tahun_graph_line_1']: date('Y');
             $query = "SELECT MONTH(tgl_masuk) AS bulan, COUNT(no_mr) AS total FROM tc_kunjungan WHERE YEAR(tgl_masuk)=".$year." GROUP BY MONTH(tgl_masuk)";   
             $fields = array('Jumlah_Pasien'=>'total');
-            $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Tahun '.$year.' RS. Setia Mitra</span>';
+            $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Tahun '.$year.' '.COMP_LONG.'</span>';
             $subtitle = 'Source: RSSM - SIRS';
             /*excecute query*/
             $data = $this->db->query($query)->result_array();

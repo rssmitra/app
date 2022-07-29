@@ -21,13 +21,21 @@ $('select[name="bagian"]').change(function () {
       $('#section_non_medis').hide();  
       /*flag string*/
       $('#flag_string').val('medis');
-
     } else {    
       $('#section_non_medis').show();
       $('#section_medis').hide();
       /*flag string*/
       $('#flag_string').val('non_medis');
     }    
+
+    $.getJSON("<?php echo site_url('Templates/References/getRakUnit') ?>/" + $(this).val() , '', function (data) {   
+        $('#rak option').remove();         
+        $('<option value="">-Pilih Rak-</option>').appendTo($('#rak'));  
+        $.each(data, function (i, o) {   
+            $('<option value="' + o.value + '">' + o.label.toUpperCase() + '</option>').appendTo($('#rak'));  
+        });   
+    }); 
+    
 });
 
 $('select[name="kode_golongan"]').change(function () {  

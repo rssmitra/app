@@ -77,7 +77,7 @@
           <img src="<?php echo base_url()?>uploaded/images/31226logo_rssm.png" width="325px" style="margin-left: -10px !important; margin-bottom: -6px">
 
           <h1 style="line-height: 25px;font-family: 'TheNautigal', cursive !important">Smart Hospital System 4.0</h1>
-          <small style="padding-top:-30px !important;font-size: 16px;font-family: 'Signika', sans-serif !important;">SHS-4.0 v2.0 ©  RS Setia Mitra </small> 
+          <small style="padding-top:-30px !important;font-size: 16px;font-family: 'Signika', sans-serif !important;">SHS-4.0 v2.0 ©  <?php echo COMP_LONG; ?> </small> 
           
           </left>
           <p class="p-t-10"><b>LOGIN FORM</b></p>
