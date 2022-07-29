@@ -918,6 +918,17 @@ class References extends MX_Controller {
         return $exc->result();
 	}
 
+
+	public function getRakUnit($kode_bagian)
+	{
+		$query = "select a.label, a.value
+							from global_parameter a
+							where a.reff_id='".$kode_bagian."'";
+		
+		$exc = $this->db->query($query);
+        echo json_encode($exc->result());
+	}
+
 	public function getDokterByBagian_($kd_bagian='')
 	{
 		$query = "select  a.kode_dokter, a.nama_pegawai

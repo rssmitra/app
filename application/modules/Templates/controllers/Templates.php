@@ -912,7 +912,7 @@ class Templates extends MX_Controller {
                 </tr> 
 
                 <tr>
-                    <td colspan="4" width="100%">Mohon pasien tersebut agar bisa dirawat di Rumah Sakit Setia Mitra</td>
+                    <td colspan="4" width="100%">Mohon pasien tersebut agar bisa dirawat di '.COMP_FULL.'</td>
                 </tr>   
 
             </table>';

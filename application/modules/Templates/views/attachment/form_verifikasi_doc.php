@@ -55,7 +55,7 @@
 									<span class="red">Validasi</span>
 									<span class="white" id="id-text2">Dokumen</span>
 								</h1>
-								<h4 class="blue" id="id-company-text">&copy; RS Setia Mitra</h4>
+								<h4 class="blue" id="id-company-text">&copy; <?php echo COMP_LONG; ?></h4>
 							</div>
 
 							<div class="space-6"></div>
@@ -111,7 +111,7 @@
 
 										<div class="toolbar center">
 											<a href="#" data-target="#login-box" class="back-to-login-link">
-												Copyright @ RS Setia Mitra
+												Copyright @ <?php echo COMP_LONG; ?>
 											</a>
 										</div>
 									</div><!-- /.widget-body -->

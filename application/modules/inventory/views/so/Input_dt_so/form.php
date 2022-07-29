@@ -282,7 +282,7 @@ function find_data_reload(){
           <label class="control-label col-md-2">Rak/Lemari</label>
           <div class="col-md-3">
               <?php 
-                echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'rak_medis')), '' , 'rak_m', 'rak_m', 'form-control', '', '') ?>
+                echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'rak_medis', 'reff_id' => isset($this->session->userdata('session_input_so')['bagian']) ? $this->session->userdata('session_input_so')['bagian'] : '')), '' , 'rak_m', 'rak_m', 'form-control', '', '') ?>
           </div>
         </div>
         

@@ -40,7 +40,7 @@ class Eks_piutang_model extends CI_Model {
 	
 			$query = $this->db->select('MONTH(tgl_tagih) as bulan, SUM(tc_tagih_det.jumlah_tagih) as total')->join('tc_tagih_det', 'tc_tagih_det.id_tc_tagih=tc_tagih.id_tc_tagih','left')->where('YEAR(tgl_tagih) = '.date('Y').' ')->where('(tc_tagih.id_tertagih NOT IN (120, 221, 0, 299))')->group_by('MONTH(tgl_tagih)')->get('tc_tagih');
 			$fields = array('Total_Piutang'=>'total');
-			$title = '<span style="font-size:13.5px">Piutang Perusahaan Berdasarkan Tanggal Penagihan Invoice '.date('Y').' RS. Setia Mitra</span>';
+			$title = '<span style="font-size:13.5px">Piutang Perusahaan Berdasarkan Tanggal Penagihan Invoice '.date('Y').' '.COMP_LONG.'</span>';
 			$subtitle = 'Source: RSSM - SIRS';
 			/*excecute query*/
 			$data = $query->result_array();
