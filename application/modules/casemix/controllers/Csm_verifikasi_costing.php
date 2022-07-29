@@ -142,6 +142,14 @@ class Csm_verifikasi_costing extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function export_excel()
+    {
+        /*get data from model*/
+        $list = $this->Csm_verifikasi_costing->get_data();
+        $data['result'] = $list;
+        $this->load->view('Csm_verifikasi_costing/export_excel_view', $data);
+    }
+
     public function find_data()
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );

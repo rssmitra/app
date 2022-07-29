@@ -104,9 +104,9 @@ class Csm_verifikasi_costing_model extends CI_Model {
 	function get_data()
 	{
 		$this->_main_query();
-		$this->db->group_by('no_sep');
-		$this->db->order_by('csm_dokumen_klaim.tgl_transaksi_kasir', 'ASC');
-		$this->db->order_by('csm_dokumen_klaim.no_sep', 'ASC');
+		// $this->db->group_by('no_sep');
+		// $this->db->order_by('csm_dokumen_klaim.tgl_transaksi_kasir', 'ASC');
+		// $this->db->order_by('csm_dokumen_klaim.no_sep', 'ASC');
 		$query = $this->db->get();
 
 		return $query->result();
