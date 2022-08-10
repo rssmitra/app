@@ -446,16 +446,40 @@ function reload_table(){
 						'viewSource',
 						'resize'
 					],
-					//speech_button:false,//hide speech button on chrome
-					
 					'wysiwyg': {
 						hotKeys : {} //disable hotkeys
 					}
 					
 				}).prev().addClass('wysiwyg-style2');
 
-				
+				$('#editor').on('contentDom',function(){
+          var html = $(editor.editable().$);
+          $('.myplugin',html).on('click',function(){
+              //this will return the input element 
+              console.log(this);
+              //check it's checked or not
+              if($(this).attr('checked') == 'true'){
+                  // Add/Remove class or something
+                  console.log(this);
+                  $(this).attr('checked', true);
+              }else{
+                  // Add/Remove class or something
+                  console.log(this);
+              }
+          });
+        });
+
 			});
+
+      function checkthis(id){
+        // $('#'+id+'').attr('checked', true);
+
+        if($('#'+id+'').is(':checked')) {
+            $('#'+id+'').attr('checked', true);
+        } else {
+            $('#'+id+'').attr('checked', false);    
+        }
+      }
 		</script>
 
 

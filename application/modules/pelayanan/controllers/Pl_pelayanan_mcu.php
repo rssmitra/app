@@ -226,7 +226,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
         /*get data from model*/
         $list = $this->Pl_pelayanan_mcu->get_datatables();
-        //print_r($this->db->last_query());die;
+        // print_r($this->db->last_query());die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
