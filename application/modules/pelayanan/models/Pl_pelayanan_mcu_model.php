@@ -6,7 +6,6 @@ class Pl_pelayanan_mcu_model extends CI_Model {
 	var $table = 'pl_tc_poli';
 	var $column = array('pl_tc_poli.nama_pasien','mt_karyawan.nama_pegawai');
 	var $select = 'pl_tc_poli.kode_bagian,pl_tc_poli.no_kunjungan,pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, id_pl_tc_poli, pl_tc_poli.status_periksa, pl_tc_poli.status_daftar, pl_tc_poli.kode_gcu, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, pl_tc_poli.tgl_jam_poli, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, pl_tc_poli.kode_dokter, pl_tc_poli.status_batal, pl_tc_poli.created_by, pl_tc_poli.tgl_keluar_poli, tc_registrasi.tgl_jam_keluar, pl_tc_poli.flag_ri, pl_tc_poli.kelas_ri,tc_trans_pelayanan_mcu_v.status_selesai_bayar as status_selesai,tc_trans_pelayanan_mcu_v.kode_tarif,tc_trans_pelayanan_mcu_v.kode_trans_pelayanan,tc_trans_pelayanan_mcu_v.nama_tindakan as nama_tarif';
-
 	var $order = array('MONTH(pl_tc_poli.tgl_jam_poli)' => 'DESC');
 	var $order2 = array('DAY(pl_tc_poli.tgl_jam_poli)' => 'DESC');
 	var $order3 = array('pl_tc_poli.no_antrian' => 'ASC');
