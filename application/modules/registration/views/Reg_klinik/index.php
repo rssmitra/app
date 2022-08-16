@@ -1419,7 +1419,6 @@ $('#btnSearchNoRujukan').click(function (e) {
                 // $('#search_kode_perjanjian_result').hide();
             }
             
-
             /*text*/
             $('#noSuratSKDP').val($('#noSuratKontrol').val());
             $('#noKartuFromNik').text(peserta.noKartu);

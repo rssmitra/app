@@ -30,6 +30,7 @@ class Reg_klinik extends MX_Controller {
         $this->load->model('Reg_pasien_model', 'Reg_pasien');
         $this->load->model('Reg_pasien_rujukan_model', 'Reg_pasien_rujukan');
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+        $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
         $this->load->model('counter/Counter_model', 'Counter');
 
         /*load library*/
