@@ -569,7 +569,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 	}
 
 	public function get_riwayat_pasien_by_id($no_kunjungan){
-		return $this->db->get_where('th_riwayat_pasien', array('no_kunjungan' => $no_kunjungan) )->row();
+		return $this->db->join('ri_tc_rawatinap','ri_tc_rawatinap.no_kunjungan=th_riwayat_pasien.no_kunjungan','left')->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_kunjungan' => $no_kunjungan) )->row();
 	}
 
 	public function get_ruangan_by_id($kode){
