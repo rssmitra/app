@@ -23,9 +23,9 @@ define('PATH_HASIL_VERIF_BPJS', 'uploaded/casemix/hasil_verif/');
 define('PATH_DOK_KLAIM_FARMASI', 'uploaded/farmasi/');
 define('PATH_ASSETS_IMG', 'assets/img/');
 define('PATH_TTD_FILE', 'uploaded/ttd/');
-define('BASE_FILE_RM', 'http://10.10.10.5:88/sirs/app/');
+define('BASE_FILE_RM', 'http://10.10.11.5:88/sirs/app/');
 
-define('WS_URL', 'http://10.10.10.5:88/rssm/ws_rssm/');
+define('WS_URL', 'http://10.10.11.5:88/rssm/ws_rssm/');
 define('ICON_UNCHECKBOX', 'assets/img/uncheck.png');
 defined('SHOW_DEBUG_BACKTRACE') OR define('SHOW_DEBUG_BACKTRACE', TRUE);
 define('SECURITY_KEY', '@m1nLu81523og90');
