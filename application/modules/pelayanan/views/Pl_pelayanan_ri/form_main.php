@@ -343,8 +343,9 @@ function delete_diagnosa(myid){
       <?php if($value->status_pulang==0) :?>
         <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pulangkan Pasien</a>
       <?php else: ?>
-        <a href="#" class="btn btn-xs btn-success" onclick="getMenu('pelayanan/Pl_pelayanan_ri')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>
-        <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-danger" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Rollback Data</a><?php endif ?>
+        <!-- <a href="#" class="btn btn-xs btn-primary" onclick="getMenu('pelayanan/Pl_pelayanan_ri')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a> -->
+        <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" ><i class="fa fa-stethoscope"></i> Resume Medis Pasien</a>
+        <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-primary" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Rollback Data</a><?php endif ?>
       <?php endif;?>
     </div>
   </div>

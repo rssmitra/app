@@ -928,10 +928,13 @@ class Pl_pelayanan_ri extends MX_Controller {
             $cek_resep = $this->Pl_pelayanan_ri->cek_resep_progress($no_kunjungan);
 
             /*jika sudah tidak ada resep yang belum diproses, maka lanjutkan*/
-            if($cek_resep==0){
+            if($cek_resep > 0){
+                echo json_encode(array('status' => 301, 'message' => 'Masih ada Resep yang belum selesai'));
+                exit;
+            }
 
-                /*proses utama pasien selesai*/
-
+            /*proses utama pasien selesai*/
+            if( $_POST['status_pulang'] == 0 ) : 
                 /*cek pemeriksaan pm */
                 $cek_pm = $this->Pl_pelayanan_ri->cek_pemeriksaan_pm($no_registrasi);
 
@@ -988,10 +991,10 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $biaya_obat = $this->Pl_pelayanan_ri->cek_biaya_obat($no_registrasi); 
                 if($biaya_obat){
                     $_bi_apoA = $biaya_obat->bi_apo;
-		            $_bi_lainA = $biaya_obat->bi_lain;
+                    $_bi_lainA = $biaya_obat->bi_lain;
                 }else{
                     $_bi_apoA = 0;
-		            $_bi_lainA = 0;
+                    $_bi_lainA = 0;
                 }
                 
                 $biaya_obat_kredit = $this->Pl_pelayanan_ri->cek_biaya_obat_kredit($no_registrasi); 
@@ -1002,9 +1005,9 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $_bi_apoB = 0;
                     $_bi_lainB = 0;
                 }
-               
+            
                 $bi_apo = ( $_bi_apoA + $_bi_lainA ) - ( $_bi_apoB + $_bi_lainB ) ;
-		        $billApo = $bi_apo;
+                $billApo = $bi_apo;
 
                 /*cek semua biaya by reg */
                 $biaya_by_registrasi = $this->Pl_pelayanan_ri->cek_biaya_reg($no_registrasi); 
@@ -1042,42 +1045,6 @@ class Pl_pelayanan_ri extends MX_Controller {
                 /*save logs tc_trans_pelayanan*/
                 $this->logs->save('tc_trans_pelayanan', $kode_tc_trans_pelayanan, 'insert tc_trans_pelayanan modul pelayanan', json_encode($data_tc_trans_pelayanan),'kode_trans_pelayanan');
 
-
-                /*insert log diagnosa pasien th_riwayat pasien*/
-                $riwayat_diagnosa = array(
-                    'no_registrasi' => $this->form_validation->set_value('no_registrasi'),
-                    'no_kunjungan' => $no_kunjungan,
-                    'no_mr' => $this->form_validation->set_value('no_mr'),
-                    'nama_pasien' => $this->input->post('nama_pasien_layan'),
-                    'kode_bagian' => $this->form_validation->set_value('kode_bagian'),
-                    'tgl_periksa' => date('Y-m-d H:i:s'),
-                    'kategori_tindakan' => 3,
-                    'dokter_pemeriksa' => $this->input->post('dr_merawat'),
-                    'kode_bagian' => $this->input->post('kode_bagian_asal'),
-                    'anamnesa' => $this->form_validation->set_value('pl_anamnesa'),
-                    'pengobatan' => $this->form_validation->set_value('pl_pengobatan'),
-                    'pemeriksaan' => $this->form_validation->set_value('pl_pemeriksaan'),
-                    'anjuran_dokter' => $this->form_validation->set_value('pl_anjuran_dokter'),
-                    'diagnosa_awal' => $this->form_validation->set_value('pl_diagnosa'),
-                    'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
-                    'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
-                    'diagnosa_sekunder' => $this->form_validation->set_value('pl_diagnosa_sekunder'),
-                    'tindakan_prosedur' => $this->form_validation->set_value('pl_tindakan_prosedur'),
-                    'alergi_obat' => $this->form_validation->set_value('pl_alergi_obat'),
-                    'diet' => $this->form_validation->set_value('pl_diet'),
-                    'obat_diberikan' => $this->form_validation->set_value('obat_diberikan'),
-                    'tgl_kontrol_kembali' => $this->form_validation->set_value('tgl_kontrol_kembali'),
-                    'cara_keluar' => $this->input->post('cara_keluar'),
-                    'pasca_pulang' => $this->input->post('pasca_pulang'),
- 
-                );
-
-                if($this->input->post('kode_riwayat')==0){
-                    $this->Pl_pelayanan_ri->save('th_riwayat_pasien', $riwayat_diagnosa);
-                }else{
-                    $this->Pl_pelayanan_ri->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
-                }
-
                 /*update kunjungan by no_kunjungan */
                 $this->daftar_pasien->pulangkan_pasien($no_kunjungan,$status_keluar);
 
@@ -1091,15 +1058,46 @@ class Pl_pelayanan_ri extends MX_Controller {
                 /*update bagian_keluar */
                 $this->Pl_pelayanan_ri->update('tc_registrasi', array('kode_bagian_keluar' => $this->input->post('kode_bagian') ), array('no_registrasi' => $no_registrasi ) );
 
-                // generate file resume medis
-                $this->generateResumeMedisRI($no_mr, $no_registrasi);
-                
+            endif; 
+            
+            /*insert log diagnosa pasien th_riwayat pasien*/
+            $riwayat_diagnosa = array(
+                'no_registrasi' => $this->form_validation->set_value('no_registrasi'),
+                'no_kunjungan' => $no_kunjungan,
+                'no_mr' => $this->form_validation->set_value('no_mr'),
+                'nama_pasien' => $this->input->post('nama_pasien_layan'),
+                'kode_bagian' => $this->form_validation->set_value('kode_bagian'),
+                'tgl_periksa' => date('Y-m-d H:i:s'),
+                'kategori_tindakan' => 3,
+                'dokter_pemeriksa' => $this->input->post('dr_merawat'),
+                'kode_bagian' => $this->input->post('kode_bagian_asal'),
+                'anamnesa' => $this->form_validation->set_value('pl_anamnesa'),
+                'pengobatan' => $this->form_validation->set_value('pl_pengobatan'),
+                'pemeriksaan' => $this->form_validation->set_value('pl_pemeriksaan'),
+                'anjuran_dokter' => $this->form_validation->set_value('pl_anjuran_dokter'),
+                'diagnosa_awal' => $this->form_validation->set_value('pl_diagnosa'),
+                'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
+                'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
+                'diagnosa_sekunder' => $this->form_validation->set_value('pl_diagnosa_sekunder'),
+                'tindakan_prosedur' => $this->form_validation->set_value('pl_tindakan_prosedur'),
+                'alergi_obat' => $this->form_validation->set_value('pl_alergi_obat'),
+                'diet' => $this->form_validation->set_value('pl_diet'),
+                'obat_diberikan' => $this->form_validation->set_value('obat_diberikan'),
+                'tgl_kontrol_kembali' => $this->form_validation->set_value('tgl_kontrol_kembali'),
+                'cara_keluar' => $this->input->post('cara_keluar'),
+                'pasca_pulang' => $this->input->post('pasca_pulang'),
 
+            );
 
+            if($this->input->post('kode_riwayat')==0){
+                $this->Pl_pelayanan_ri->save('th_riwayat_pasien', $riwayat_diagnosa);
             }else{
-                echo json_encode(array('status' => 301, 'message' => 'Masih ada Resep yang belum selesai'));
-                exit;
+                $this->Pl_pelayanan_ri->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
             }
+
+            // generate file resume medis
+            $this->generateResumeMedisRI($no_mr, $no_registrasi);
+
 
             
             if ($this->db->trans_status() === FALSE)

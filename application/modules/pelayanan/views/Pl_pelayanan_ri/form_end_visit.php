@@ -49,6 +49,7 @@
 
         <!-- hidden form -->
         <input type="hidden" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:0?>">
+        <input type="hidden" name="status_pulang" id="status_pulang" value="<?php echo isset($riwayat->status_pulang)?$riwayat->status_pulang:0?>">
 
         <div style="margin-top: 6px">
             <label for="form-field-8">Anamnesa <span style="color:red">* </span> <small>(minimal 8 karakter)</small> </label>
@@ -102,7 +103,7 @@
         
         <div style="margin-top: 6px">
             <label for="form-field-8">Obat yang diberikan</label>
-              <textarea name="obat_diberikan" id="obat_diberikan" class="form-control" style="height: 50px !important" placeholder="" ><?php echo isset($riwayat->obat_diberikan)?$this->master->br2nl($riwayat->obat_diberikan):''?></textarea>  
+              <textarea name="obat_diberikan" id="obat_diberikan" class="form-control" style="height: 70px !important" placeholder="" ><?php echo isset($riwayat->obat_diberikan)?$this->master->br2nl($riwayat->obat_diberikan):''?></textarea>  
         </div>
         <br>
         <p><b>TGL KONTROL </b></p>
@@ -142,11 +143,11 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="">&nbsp;</label>
             <div class="col-sm-4" style="margin-left:6px">
-                <?php if(!empty($riwayat->kode_riwayat)) :?>
-                    <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_pulang"><i class="fa fa-save"></i> Submit </a>
+                <?php if($riwayat->status_pulang == 0) :?>
+                    <button type="button" class="btn btn-xs btn-primary" id="btn_pasien_pulang" name="btn_pasien_pulang" value="simpan_dan_pulangkan"><i class="fa fa-save"></i> Simpan Resume dan Pulangkan Pasien </button>
                 <?php else: ?>
-                    <a href="#" class="btn btn-xs btn-success" id="btn_pasien_pulang"><i class="fa fa-save"></i> Update  </a>
-                    <a href="#" class="btn btn-xs btn-danger" id="btn_export_resume_pdf"><i class="fa fa-file-pdf-o"></i> Export PDF </a>
+                    <a href="#" class="btn btn-xs btn-success" id="btn_pasien_pulang"><i class="fa fa-save"></i> Update Resume Pasien  </a>
+                    <!-- <a href="#" class="btn btn-xs btn-danger" id="btn_export_resume_pdf"><i class="fa fa-file-pdf-o"></i> Export PDF </a> -->
                 <?php endif;?>
             </div>
         </div>
