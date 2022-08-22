@@ -68,7 +68,7 @@ final Class Print_direct {
 
         //print_r($no);die;
        
-        $p = printer_open("\\\\10.10.10.62\EPSON TM-U220 Receipt");  
+        $p = printer_open("\\\\10.10.11.69\EPSON TM-U220 Receipt");  
 
         if( $p ){
 
@@ -77,8 +77,6 @@ final Class Print_direct {
             $var_magin_left = 30;
                     
             $this->print_doc($p, $var_magin_left, $params['no_mr'], $nama_pasien,$nama_perusahaan,$klinik,$dokter,$tanggal,$no_reg,$currentdate, $no, $petugas);
-
-            //$this->print_doc($p, $var_magin_left, $params['no_mr'], $nama_pasien,$nama_perusahaan,$klinik,$dokter,$tanggal,$no_reg,$currentdate, $no, $petugas);
             
             printer_close($p);
 
