@@ -1463,20 +1463,22 @@ class Templates extends MX_Controller {
             // echo '<pre>';print_r($getReferensiDt);die;
             $getRef = array();
             // echo '<pre>';print_r($pm_data);die;
-            $html .= '<br><table cellpadding="0" cellspacing="0" border="0" style="font-size:38px">
+            $html .= '<br><br>';
+            $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px; float: left">
                     <tr>
                         <td colspan="5" align="center"><b>HASIL PEMERIKSAAN LABORATORIUM</b></td>
                     </tr> 
                     <hr>
                     <tr>                        
-                        <th align="center" width="160px"><b>JENIS TEST</b></th>
-                        <th align="center" width="100px"><b>HASIL</b></th>
-                        <th align="center" width="150px"><b>NILAI STANDAR</b></th>
-                        <th align="center" width="80px"><b>SATUAN</b></th>
-                        <th width="100px"><b>KETERANGAN</b></th>
+                        <td align="center"><b>JENIS TEST</b></td>
+                        <td align="center"><b>HASIL</b></td>
+                        <td align="center"><b>NILAI STANDAR</b></td>
+                        <td align="center"><b>SATUAN</b></td>
+                        <td align="center"><b>KETERANGAN</b></td>
                     </tr>
                     <hr>';
             $no=0;
+            
             if(count($pm_data) > 0){
                 $referen = '';
                 $nama_tindakan = '';
@@ -1487,71 +1489,49 @@ class Templates extends MX_Controller {
                 for($i=0;$i<count($referensi);$i++) {
 
                     if(($referensi[$i]->referensi!=$referen)){
-                        $html .= '<tr>
-                                <td colspan="5"><b>'.$referensi[$i]->referensi.'</b></td>
-                            </tr>';
-                            $referen = $referensi[$i]->referensi;
+                        $html .= '<tr><td colspan="5"><b>'.$referensi[$i]->referensi.'</b></td></tr>';
+                        $referen = $referensi[$i]->referensi;
                     }
                                     
                     foreach ($pm_data as $key => $value) {
                         $standar = ($data->reg_data->jk == 'L') ? $value->standar_hasil_pria : $value->standar_hasil_wanita;
                         if(trim($value->nama_pemeriksaan)==trim($referensi[$i]->nama_pemeriksaan)){
-                        
                             if($value->detail_item_1 != ' ' AND $value->detail_item_1 != NULL){
-                                
                                 if((trim($value->nama_tindakan)!=$nama_tindakan)){
-                                    
-                                    $html .= '<tr>
-                                        <td colspan="5">&nbsp;'.strtoupper($value->nama_tindakan).'</td>
-                                    </tr>';
-
+                                    $html .= '<tr><td colspan="5">&nbsp;'.strtoupper($value->nama_tindakan).'</td></tr>';
                                     $nama_tindakan = trim($value->nama_tindakan);
-
                                 }
-
                                 if((trim($value->nama_pemeriksaan)!=$nama_pemeriksaan)){
-                                    $html .= '<tr>
-                                        <td colspan="5">&nbsp;&nbsp;&nbsp;'.$value->nama_pemeriksaan.'</td>
-                                    </tr>';
+                                    $html .= '<tr><td colspan="5">&nbsp;&nbsp;&nbsp;'.$value->nama_pemeriksaan.'</td></tr>';
                                     $nama_pemeriksaan = trim($value->nama_pemeriksaan);
                                 }
-
-                                if($value->detail_item_2 != ' ' AND $value->detail_item_2 != NULL){
-                                    
+                                if($value->detail_item_2 != ' ' AND $value->detail_item_2 != NULL){   
                                     if((trim($value->detail_item_1)!=$detail_item_1)){
-                                        $html .= '<tr>
-                                            <td colspan="5">&nbsp;&nbsp;&nbsp;&nbsp;&#x203A; '.$value->detail_item_1.'</td>
-                                        </tr>';
+                                        $html .= '<tr><td colspan="5">&nbsp;&nbsp;&nbsp;&nbsp;&#x203A; '.$value->detail_item_1.'</td></tr>';
                                         $detail_item_1 = trim($value->detail_item_1);
                                     }
-
                                     if((trim($value->detail_item_2)!=$detail_item_2)){
                                         $html .= '<tr>
-                                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#xbb; '.$value->detail_item_2.'</td>
-                                                <td align="center">'.stripslashes($value->hasil).'</td>
-                                                <td align="center">'.str_replace(array('>','<'), array('&rsaquo;','&lsaquo;'), $standar).'</td>
-                                                <td align="center">'.$value->satuan.'</td>
-                                                <td><br>'.$value->keterangan.'</td>
-                                            </tr>';
+                                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#xbb; '.$value->detail_item_2.'</td>
+                                                    <td align="center">'.stripslashes($value->hasil).'</td>
+                                                    <td align="center">'.str_replace(array('>','<'), array('&rsaquo;','&lsaquo;'), $standar).'</td>
+                                                    <td align="center">'.$value->satuan.'</td>
+                                                    <td><br>'.$value->keterangan.'</td>
+                                                </tr>';
                                         $detail_item_2 = trim($value->detail_item_2);
                                     }
-
                                 }else{
-
                                     if((trim($value->detail_item_1)!=$detail_item_1)){                                    
                                         $html .= '<tr>
-                                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&#x203A; '.$value->detail_item_1.'</td>
-                                            <td align="center">'.stripslashes($value->hasil).'</td>
-                                            <td align="center">'.str_replace(array('>','<'), array('&rsaquo;','&lsaquo;'), $standar).'</td>
-                                            <td align="center">'.$value->satuan.'</td>
-                                            <td><br>'.$value->keterangan.'</td>
-                                        </tr>';
+                                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&#x203A; '.$value->detail_item_1.'</td>
+                                                    <td align="center">'.stripslashes($value->hasil).'</td>
+                                                    <td align="center">'.str_replace(array('>','<'), array('&rsaquo;','&lsaquo;'), $standar).'</td>
+                                                    <td align="center">'.$value->satuan.'</td>
+                                                    <td><br>'.$value->keterangan.'</td>
+                                                </tr>';
                                         $detail_item_1 = trim($value->detail_item_1);
                                     }
-                                    
-                        
                                 }
-
                             }else{
                                 $html .= '<tr>
                                             <td>&nbsp;&nbsp;&nbsp;'.$value->nama_pemeriksaan.'</td>
@@ -1569,7 +1549,6 @@ class Templates extends MX_Controller {
 
             }
             
-            
             $html .= '</table><br><br><hr>';
             $html .= '<b><span style="font-size:38px; padding-top: 10px">Catatan : </span></b>
                 <p style="text-align: justify">'.trim($data_pm->catatan_hasil).'</p>
@@ -1579,7 +1558,7 @@ class Templates extends MX_Controller {
         
     }
 
-    public function setGlobalFooterBillingPM($nama_dokter, $flag='', $pm=''){
+    public function setGlobalFooterBillingPM($nama_dokter, $flag='', $pm='', $data_pm=''){
         $html = '';
         if($flag=='RAD'){
             $html .= '<table border="0" cellspacing="0" cellpadding="0" style="font-size:36px">
@@ -1620,17 +1599,22 @@ class Templates extends MX_Controller {
                                 
                             </td>';
                 }else{
-                    
+                    // echo '<pre>'; print_r($data_pm);die;
                     $html .= '<td align="center" width="30%">
                                 <br><br>
                                 Petugas Laboratorium<br>
                                 '.COMP_FULL.'
                                 <br>
+                                <br>
                                 '.$img.'
                                 <br/>
-                                '.$petugas.'<br>
+                                '.$petugas.'
                                 ___________________________<br>
-                                <i>Generated by '.APPS_NAME_SORT.'</i>
+                                <span style="font-size: 0.9em">
+                                    <i>Generated by '.APPS_NAME_SORT.'</i><br>
+                                    '.$this->tanggal->formatDateTime($data_pm->tgl_isihasil).'
+                                </span>
+
                                 <br>
                             </td>';
                 }
@@ -1787,8 +1771,6 @@ class Templates extends MX_Controller {
 	            $tgl_periksa = $tgl_pemeriksaan;
 	            $dokter_pengirim = $data->reg_data->nama_pegawai;
             // }
-          
-            
 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">
                         <tr>
@@ -1829,7 +1811,6 @@ class Templates extends MX_Controller {
     }
 
     public function export_tp_pdf($exp_no_registrasi, $tipe, $unique_code, $act_code){
-        
         $this->Export_data->getContentPDF($exp_no_registrasi, $tipe, $unique_code, $act_code);
         return true;
     }

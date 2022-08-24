@@ -32,8 +32,8 @@ define('SECURITY_KEY', '@m1nLu81523og90');
 
 
 // company profiling
-define('APPS_NAME_SORT', 'SIRS');
-define('APPS_NAME_LONG', 'Sistem Informasi Rumah Sakit');
+define('APPS_NAME_SORT', 'SHS 4.0');
+define('APPS_NAME_LONG', 'Smart Hospital System 4.0');
 define('COMP_ICON', 'assets/images/logo.png');
 define('COMP_FLAG', 'Rumah Sakit');
 define('COMP_SORT', 'RSSM');
