@@ -118,9 +118,10 @@ class Export_data extends MX_Controller {
         $pdf->setXY(5,20,5,5);
         $pdf->SetMargins(10, 10, 10, 10); 
         /* $pdf->Cell(150,42,'',1);*/
-        $html = <<<EOD
-        <link rel="stylesheet" href="'.file_get_contents(_BASE_PATH_.'/assets/css/bootstrap.css)'" />
-EOD;
+//         $html = <<<EOD
+//         <link rel="stylesheet" href="'.file_get_contents(_BASE_PATH_.'/assets/css/bootstrap.css)'" />
+// EOD;
+        $html = '';
         $html .= $data->html;
         $result = $html;
 
