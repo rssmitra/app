@@ -49,7 +49,6 @@ class Process_entry_resep extends MX_Controller {
             $this->form_validation->set_rules('dokter_pengirim_keyword', 'Dokter Pengirim', 'trim|required');
         }
 
-
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
 
@@ -90,6 +89,7 @@ class Process_entry_resep extends MX_Controller {
             if( $cek_existing != false ){
                 /*update existing*/
                 $kode_trans_far = $cek_existing->kode_trans_far;
+                $data_farmasi['iter'] = $_POST['jenis_iter'];
                 $data_farmasi['kode_trans_far'] = $kode_trans_far;
                 $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
                 $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
@@ -100,6 +100,7 @@ class Process_entry_resep extends MX_Controller {
             }else{
                 $kode_trans_far = $this->master->get_max_number('fr_tc_far', 'kode_trans_far', array());
                 /*update existing*/
+                $data_farmasi['iter'] = $_POST['jenis_iter'];
                 $data_farmasi['kode_trans_far'] = $kode_trans_far;
                 $data_farmasi['created_date'] = date('Y-m-d H:i:s');
                 $data_farmasi['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
@@ -142,9 +143,7 @@ class Process_entry_resep extends MX_Controller {
                     'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan'])?$_POST['prb_ditangguhkan']:0,
                     'resep_ditangguhkan' => isset($_POST['resep_ditangguhkan'])?$_POST['resep_ditangguhkan']:0,
                 );
-                // print_r($data_farmasi_detail);die;
                 
-
                 if( $_POST['kd_tr_resep'] == 0 ){
                     $data_farmasi_detail['kd_tr_resep'] = $this->master->get_max_number('fr_tc_far_detail', 'kd_tr_resep');
                     $data_farmasi_detail['kode_trans_far'] = $kode_trans_far;
@@ -295,19 +294,16 @@ class Process_entry_resep extends MX_Controller {
         // print_r($_POST);die;
         $ID = ($this->input->post('ID'))?$this->input->post('ID'):0;
         $kode_bagian = '060101'; // kode bagian farmasi
-        // select transaksi farmasi
-        // $this->db->from('fr_tc_far_detail c');
-        // $this->db->join('fr_tc_far_detail_log a','a.relation_id=c.kd_tr_resep','left');
-        // $this->db->join('fr_tc_far b','c.kode_trans_far=b.kode_trans_far','left');
-        // $this->db->where('c.kode_trans_far', $ID);
+        
         $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
-        // print_r($trans_dt);die;
+        // echo '<pre>';print_r($trans_dt);die;
         /*execution begin*/
         $this->db->trans_begin();
 
         if( count($trans_dt) > 0 ){
             
             foreach($trans_dt as $row_dt){
+
                 // update sisa tebus fr_tc_far_detail
                 $sisa_tebus = $row_dt->jumlah_pesan - $row_dt->jumlah_tebus;
                 // print_r($row_dt);die;
