@@ -695,12 +695,6 @@ function changeUrgensi(){
         <!-- form utama -->
         <div class="col-sm-7">
 
-        <button type="button" id="btn_resep_selesai_xx" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
-              <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
-              Resep Selesai <b style="color: black">(Ditunggu)</b>
-        </button>
-
-        
           <div class="widget-box">
             <div class="widget-header">
                 <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep</span>
