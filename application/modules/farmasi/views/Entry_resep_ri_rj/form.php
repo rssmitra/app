@@ -343,10 +343,11 @@ $(document).ready(function(){
     $('#resep_ditangguhkan').click(function() {
       if($('#sisa_stok').val() <= 0){
         if (!$(this).is(':checked')) {
-          $('#jumlah_pesan').attr('readonly', true);
-          ('#btn_submit').attr('disabled', true);
+          $('#jumlah_pesan').attr('disabled', true);
+          $('#jumlah_pesan').val('0');
+          $('#btn_submit').attr('disabled', true);
         }else{
-          $('#jumlah_pesan').attr('readonly', false);
+          $('#jumlah_pesan').attr('disabled', false);
           $('#btn_submit').attr('disabled', false);
         }
       }
@@ -373,12 +374,13 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
       $('#btn_submit').attr('disabled', true);
-      $('#jumlah_pesan').attr('readonly', true);
+      $('#jumlah_pesan').attr('disabled', true);
+      $('#jumlah_pesan').val('0');
       $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
       $('#detailPembelianObatHtml').html('');
     }else{
       $('#jumlah_pesan').focus();
-      $('#jumlah_pesan').attr('readonly', false);
+      $('#jumlah_pesan').attr('disabled', false);
       $('#btn_submit').attr('disabled', false);
       $('#warning_stok_obat').html('');
       // cek data obat bpjs yang sudah pernah di beli sebelumnya
@@ -621,7 +623,7 @@ function changeUrgensi(){
   var urgensi = $("input[type='radio'][name='urgensi']:checked").val();
   if(urgensi=='cito'){
     if( $('#pl_sisa_stok_cito').val() > 0){
-      $('#jumlah_pesan').attr('readonly', false);
+      $('#jumlah_pesan').attr('disabled', false);
       $('#btn_submit').attr('disabled', false);
     }
   }
@@ -693,6 +695,12 @@ function changeUrgensi(){
         <!-- form utama -->
         <div class="col-sm-7">
 
+        <button type="button" id="btn_resep_selesai_xx" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
+              <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
+              Resep Selesai <b style="color: black">(Ditunggu)</b>
+        </button>
+
+        
           <div class="widget-box">
             <div class="widget-header">
                 <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep</span>
@@ -729,12 +737,13 @@ function changeUrgensi(){
             <div class="widget-body" style="padding:5px; min-height: 278px !important" >
               <!-- Data Obat -->
               <p><b>FORM OBAT</b></p>
+
               <div class="form-group">
                 <label class="control-label col-sm-2">Kode</label>
                 <div class="col-md-2">
                 <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
                 </div> 
-                <label class="control-label col-sm-2">Tanggal</label>
+                <label class="control-label col-sm-1">Tanggal</label>
                 <div class="col-md-3">
                   <div class="input-group">
                       <input name="tgl_trans" id="tgl_trans" data-date-format="yyyy-mm-dd" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" type="text" value="<?php echo isset($trans_farmasi->tgl_trans) ? $trans_farmasi->tgl_trans : date('Y-m-d H:i:s'); ?>">
@@ -743,7 +752,12 @@ function changeUrgensi(){
                       </span>
                     </div>
                 </div>
+                <label class="control-label col-sm-2">Iterisasi</label>
+                <div class="col-md-2">
+                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_iter')), isset($trans_farmasi->iter) ? $trans_farmasi->iter : 0 , 'jenis_iter', 'jenis_iter', '', '', '');?>
+                </div> 
               </div>
+
 
               <!-- cari obat -->
               <div class="form-group">

@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Retur_obat extends MX_Controller {
+class Pengambilan_resep_iter extends MX_Controller {
 
     /*function constructor*/
     function __construct() 
@@ -11,13 +11,13 @@ class Retur_obat extends MX_Controller {
 
         parent::__construct();
         /*breadcrumb default*/
-        $this->breadcrumbs->push('Index', 'farmasi/Retur_obat');
+        $this->breadcrumbs->push('Index', 'farmasi/Pengambilan_resep_iter');
         /*session redirect login if not login*/
         if($this->session->userdata('logged')!=TRUE){
             echo 'Session Expired !'; exit;
         }
         /*load model*/
-        $this->load->model('Retur_obat_model', 'Retur_obat');
+        $this->load->model('Pengambilan_resep_iter_model', 'Pengambilan_resep_iter');
         $this->load->model('Farmasi_pesan_resep_model', 'Farmasi_pesan_resep');
         // load library
         $this->load->library('Print_direct');
@@ -38,30 +38,32 @@ class Retur_obat extends MX_Controller {
             'breadcrumbs' => $this->breadcrumbs->show(),
         );
         /*load view index*/
-        $this->load->view('Retur_obat/index', $data);
+        $this->load->view('Pengambilan_resep_iter/index', $data);
     }
 
     public function form($id='')
     {
-        /*if id is not null then will show form edit*/
+         /*if id is not null then will show form edit*/
         /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Retur_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        $this->breadcrumbs->push('Form  '.strtolower($this->title).'', 'Pengambilan_resep_iter/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        // echo '<pre>';print_r($verify);die;
         /*get value by id*/
-        $data['value'] = $this->Retur_obat->get_by_id($id);
-        $data['detail_obat'] = $this->Retur_obat->get_detail_resep_data($id)->result();
+        $data['value'] = $this->Pengambilan_resep_iter->get_by_id($id);
+        $data['resep'] = $this->Pengambilan_resep_iter->get_detail($id);
         // echo '<pre>';print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
+        $data['flag'] = strtolower($_GET['flag']);
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Retur_obat/form', $data);
+        $this->load->view('Pengambilan_resep_iter/form', $data);
     }
 
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Retur_obat->get_datatables();
+        $list = $this->Pengambilan_resep_iter->get_datatables();
         if(isset($_GET['search']) AND $_GET['search']==TRUE){
             $this->find_data(); exit;
         }
@@ -78,44 +80,25 @@ class Retur_obat extends MX_Controller {
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
             $status_lunas = ($row_list->kode_tc_trans_kasir == null) ? 0 : 1 ;
-            $iter = ($row_list->iter > 0) ? '<span style="background: green;padding:2px; color: white; font-weight: bold">Iter '.$row_list->iter.'x</span>' : '' ;
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=".$status_lunas."'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $iter = ($row_list->iter > 0) ? $row_list->iter.'x' : '' ;
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Pengambilan_resep_iter/form/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=".$status_lunas."'".')">'.$row_list->kode_trans_far.'</a></div>';
 
-            $row[] = '<div class="center">'.$row_list->no_resep.'<br>'.$iter.'</div>';
+            $row[] = '<div class="center">'.$row_list->no_resep.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
-            $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
-            $row[] = $row_list->nama_perusahaan.$no_sep;
-            $row[] = $row_list->diagnosa_akhir;
-            if($row_list->kode_tc_trans_kasir == null) {
-                if($row_list->status_transaksi == 1){
-                    $row[] = '<div class="center">
-                            <label class="label lebel-xs label-success"> <i class="fa fa-check-circle"></i> Selesai</label>
-                          </div>';    
-                }else{
-                    $row[] = '<div class="center">
-                            <label class="label lebel-xs label-warning" alt="Belum diselesaikan"> <i class="fa fa-exclamation-circle"></i> Pending </label>
-                          </div>';
-                }
-                
-            }else{
-                if($row_list->no_registrasi != 0){
-                    $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
-                }else{
-                    $row[] = '<div class="center">Lunas '.strtoupper($flag).'</div>';
-                }
-                
-            }
+            $no_sep = ($row_list->kode_perusahaan == 120) ? $row_list->no_sep : '';
+            $row[] = $no_sep;
+            $row[] = '<div class="center">'.$iter.'</div>';
             
             $data[] = $row;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Retur_obat->count_all(),
-                        "recordsFiltered" => $this->Retur_obat->count_filtered(),
+                        "recordsTotal" => $this->Pengambilan_resep_iter->count_all(),
+                        "recordsFiltered" => $this->Pengambilan_resep_iter->count_filtered(),
                         "data" => $data,
         );
         //output to json format
@@ -382,11 +365,11 @@ class Retur_obat extends MX_Controller {
     public function preview_etiket(){
         
         // get etiket data from query string
-        $resep_log = $this->Retur_obat->get_etiket_data();
+        $resep_log = $this->Pengambilan_resep_iter->get_etiket_data();
         // echo '<pre>';print_r($resep_log->result());die;
         $data = array();
         $data['result'] = $resep_log->result();
-        $this->load->view('farmasi/Retur_obat/preview_etiket', $data);
+        $this->load->view('farmasi/Pengambilan_resep_iter/preview_etiket', $data);
 
     }
 
@@ -397,28 +380,28 @@ class Retur_obat extends MX_Controller {
         // echo '<pre>';print_r($resep_log);die;
         $data = array();
         $data['result'] = $resep_log;
-        $this->load->view('farmasi/Retur_obat/preview_copy_resep', $data);
+        $this->load->view('farmasi/Pengambilan_resep_iter/preview_copy_resep', $data);
 
     }
 
     function nota_retur($no_retur){
-        $his_retur = $this->Retur_obat->get_history_retur_by_no_retur($no_retur);
+        $his_retur = $this->Pengambilan_resep_iter->get_history_retur_by_no_retur($no_retur);
         $data = array(
             'retur_data' => $his_retur,
         );
         // echo '<pre>';print_r($data);die;
-        $this->load->view('farmasi/Retur_obat/preview_nota_retur', $data);
+        $this->load->view('farmasi/Pengambilan_resep_iter/preview_nota_retur', $data);
 
     }
 
     public function print_tracer_obat($kode_trans_far)
     {   
-        $resep_log = $this->Retur_obat->get_detail_resep_data($kode_trans_far);
+        $resep_log = $this->Pengambilan_resep_iter->get_detail_resep_data($kode_trans_far);
         // echo '<pre>';print_r($resep_log->result());die;
         $this->print_escpos->print_resep_gudang($resep_log->result());
         $data = array();
         $data['result'] = $resep_log->result();
-        $this->load->view('farmasi/Retur_obat/preview_tracer_obat', $data);
+        $this->load->view('farmasi/Pengambilan_resep_iter/preview_tracer_obat', $data);
     }
 
     public function show_retur_data($id){
@@ -428,7 +411,7 @@ class Retur_obat extends MX_Controller {
         $html = '';
         $html_btn = '';
         if(count($data) > 0){
-            $his_retur = $this->Retur_obat->get_history_retur($data[0]->kode_trans_far);
+            $his_retur = $this->Pengambilan_resep_iter->get_history_retur($data[0]->kode_trans_far);
             
             if(count($his_retur) > 0){
                 $html .= '<p class="center">
@@ -437,7 +420,7 @@ class Retur_obat extends MX_Controller {
                           </p>';
                 foreach ($his_retur as $khr => $vhr) {
                     $html .= 'No. Retur : '.$khr.' &nbsp;&nbsp;&nbsp; Tgl. '.$this->tanggal->formatDateTimeFormDmy($vhr[0]->tgl_his_retur).'';
-                    $html .= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="PopupCenter('."'farmasi/Retur_obat/nota_retur/".$khr."'".')"><i class="fa fa-print dark bigger-150"></i> </a>';
+                    $html .= '&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="PopupCenter('."'farmasi/Pengambilan_resep_iter/nota_retur/".$khr."'".')"><i class="fa fa-print dark bigger-150"></i> </a>';
                     $html .= '<table class="table" style="width: 100%">';
                     $html .= '<thead>';
                     $html .= '<tr>';
