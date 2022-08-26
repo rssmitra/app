@@ -359,13 +359,11 @@ class Csm_billing_pasien extends MX_Controller {
                 
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                // echo '<pre>'; print_r($this->db->last_query());die;
-                // echo '<pre>'; print_r($data_pm);die;
                 $template_html = $temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm);
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($template_html);
-                $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
                 break;
 
             case 'SEP':
@@ -381,7 +379,7 @@ class Csm_billing_pasien extends MX_Controller {
                 # code...
                 break;
         }
-        
+        // print_r($html);die;
         return json_encode( array('html' => $html, 'data' => $data) );
     }
 
