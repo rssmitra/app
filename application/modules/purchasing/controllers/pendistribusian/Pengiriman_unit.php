@@ -362,6 +362,7 @@ class Pengiriman_unit extends MX_Controller {
 
     public function process_retur_brg_unit()
     {
+        
         $this->load->library('form_validation');
         $val = $this->form_validation;
         
@@ -386,7 +387,6 @@ class Pengiriman_unit extends MX_Controller {
             $kode_bagian_gudang = ($_POST['flag']=='medis')?'060201':'070101';
             $tc_po = ($_POST['flag']=='medis')?'tc_po':'tc_po_nm';
             $nama_gudang = ($_POST['flag']=='medis')?'Medis':'Non Medis';
-            
 
             $dataexc = array(
                 'kode_retur' => $this->master->format_nomor_retur($_POST['flag']),
@@ -411,6 +411,7 @@ class Pengiriman_unit extends MX_Controller {
             
             // get data from cart
             $cart_data = $this->Pengiriman_unit->get_cart_data($_POST['flag_form']);
+            // echo '<pre>';print_r($cart_data);die;
             
             foreach( $cart_data as $row_brg ){
 
@@ -440,28 +441,46 @@ class Pengiriman_unit extends MX_Controller {
 
                     if($row_brg->retur_type == 'penjualan_brg'){
                         // select tr resep
-                        $resep = $this->db->get_where('fr_tc_far_detail', array('kd_tr_resep' => $row_brg->reff_kode) )->row();
-                        $harga_retur = $row_brg->qty * $resep->harga_jual;
-                        $data_for_update = array(
-                            'jumlah_retur' => $row_brg->qty,
-                            'harga_r_retur' => $harga_retur,
-                            'status_retur' => 1,
-                        );
-                        // fr_tc_far
-                        $this->db->where(array('kd_tr_resep' => $row_brg->reff_kode))->update('fr_tc_far_detail', $data_for_update);
+                        $cek_non_racikan = $this->db->get_where('fr_tc_far_detail', array('kd_tr_resep' => $row_brg->reff_kode) )->row();
+                        if(empty($cek_non_racikan)){
+                            $resep = $this->db->select('id_tc_far_racikan_detail, jumlah as qty, harga_jual')->get_where('fr_obat_racikan_v', array('id_tc_far_racikan_detail' => $row_brg->reff_kode) )->row();
+                            // racikan
+                            // echo '<pre>';print_r($resep);die;
+                            $harga_retur = $row_brg->qty * $resep->harga_jual;
+                            // tc_far_racikan_detail
+                            $this->db->where(array('id_tc_far_racikan_detail' => $row_brg->reff_kode))->update('tc_far_racikan_detail', array('jumlah_retur' => $row_brg->qty));
 
-                        $data_log_for_update = array(
-                            'jumlah_retur' => $row_brg->qty,
-                            'is_restock' => $row_brg->is_restock,
-                            'tgl_retur' => date('Y-m-d'),
-                            'retur_by' => $this->session->userdata('user')->fullname,
-                        );
-                        
-                        $this->db->where(array('relation_id' => $row_brg->reff_kode))->update('fr_tc_far_detail_log', $data_log_for_update);
+                            // retur stok ke farmasi
+                            if($row_brg->is_restock == 1){
+                                // retur stok ke farmasi
+                                $this->stok_barang->stock_process_racikan($row_brg->kode_brg, (int)$row_brg->qty, '060101', 8 ," (Retur Penjualan), Kode obat racikan: ".$row_brg->reff_kode." ", 'restore');
+                            }
 
-                        // retur stok ke farmasi
-                        if($row_brg->is_restock == 1){
-                            $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, '060101' , 8 ," (Retur Penjualan) - . ".$row_brg->reff_kode." ", 'restore'); 
+                        }else{
+                            // non racikan
+                            $resep = $cek_non_racikan;
+                            $harga_retur = $row_brg->qty * $resep->harga_jual;
+                            $data_for_update = array(
+                                'jumlah_retur' => $row_brg->qty,
+                                'harga_r_retur' => $harga_retur,
+                                'status_retur' => 1,
+                            );
+                            // fr_tc_far
+                            $this->db->where(array('kd_tr_resep' => $row_brg->reff_kode))->update('fr_tc_far_detail', $data_for_update);
+
+                            $data_log_for_update = array(
+                                'jumlah_retur' => $row_brg->qty,
+                                'is_restock' => $row_brg->is_restock,
+                                'tgl_retur' => date('Y-m-d'),
+                                'retur_by' => $this->session->userdata('user')->fullname,
+                            );
+                            
+                            $this->db->where(array('relation_id' => $row_brg->reff_kode))->update('fr_tc_far_detail_log', $data_log_for_update);
+
+                            // retur stok ke farmasi
+                            if($row_brg->is_restock == 1){
+                                $this->stok_barang->stock_process($row_brg->kode_brg, $row_brg->qty, '060101' , 8 ," (Retur Penjualan) - . ".$row_brg->reff_kode." ", 'restore'); 
+                            }
                         }
 
                         $this->db->trans_commit();

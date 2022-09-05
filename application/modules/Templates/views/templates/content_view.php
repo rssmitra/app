@@ -660,19 +660,17 @@
           // last price pendapatan rs
           var harga_awal_pendapatan = $('#pendapatan_rs_'+id).val();
           var pendapatan_rs = parseInt(harga_awal_pendapatan) + parseInt(result_pendapatan_rs);
-          console.log(harga_awal_pendapatan);
-          console.log(last_price);
-          console.log(pendapatan_rs);
+          // console.log(harga_awal_pendapatan);
+          // console.log(last_price);
+          // console.log(pendapatan_rs);
           $('#total_diskon_pendapatan_rs_'+id+'').val( pendapatan_rs );
           $('#pendapatan_rs_'+id+'').val( pendapatan_rs );
           format_pendapatan_rs = formatMoney(pendapatan_rs);
           $('#text_total_diskon_pendapatan_rs_'+id).text( format_pendapatan_rs );
 
         }else{
-          
             kenaikan_tarif = harga_awal * input_persen/100;
             var last_price = parseInt(harga_awal) + parseInt(kenaikan_tarif);
-
         }
       
         $('#total_diskon_'+field+'_'+id).val( last_price );
@@ -683,6 +681,8 @@
         sum = sumClass('total_diskon_'+id+'');
         sumFormat = formatMoney(sum);
         $('#total_biaya_'+id+'').text( sumFormat );
+
+        console.log(field+'|'+id+'|'+harga_awal);
 
       }
       

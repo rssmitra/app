@@ -847,6 +847,8 @@ function btn_update_racikan(){
                 <tbody>
                 </tbody>
               </table>
+              <b>Keterangan :</b><br>
+              <i>Barang yang sudah habis di retur jika ingin di transaksikan ulang, maka data yang lama harus dihapus terlebih dahulu.</i>
             </div>
 
           </div>

@@ -5,7 +5,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, iter';
+	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, mt_bagian.nama_bagian, fr_tc_far.kode_bagian_asal, iter';
 
 	var $order = array('tgl_trans' => 'DESC');
 
@@ -20,7 +20,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=fr_tc_far.no_registrasi','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
-		$this->db->where('iter > 0');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left');
 		$this->db->group_by($this->select);
 
 	}
@@ -29,6 +29,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+		$this->db->where('iter > 0');
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
@@ -142,19 +143,10 @@ class Pengambilan_resep_iter_model extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	// public function get_log_mutasi($kode_trans_far){
-	// 	$this->db->select('fr_tc_log_mutasi_obat.*, fr_tc_far_detail_log_prb.nama_brg, satuan_kecil, harga_satuan');
-	// 	$this->db->join('fr_tc_far_detail_log_prb','fr_tc_far_detail_log_prb.id_fr_tc_far_detail_log_prb=fr_tc_log_mutasi_obat.id_fr_tc_far_detail_log_prb','left');
-	// 	$this->db->order_by('kode_log_mutasi_obat','ASC');
-	// 	if(isset($_GET['kode_log_mutasi']) AND $_GET['kode_log_mutasi'] != ''){
-	// 		$this->db->where('kode_log_mutasi_obat', $_GET['kode_log_mutasi']);
-	// 	}
-	// 	$query = $this->db->get_where('fr_tc_log_mutasi_obat', array('fr_tc_log_mutasi_obat.kode_trans_far' => $kode_trans_far))->result();
-	// 	$getData = [];
-	// 	foreach ($query as $key => $value) {
-	// 		$getData[$value->kode_log_mutasi_obat][] = $value;
-	// 	}
-	// 	return $getData;
-	// }
+	public function get_riwayat_iter($kode_trans_far){
+		$this->_main_query();
+		$this->db->where('kode_trans_far_referensi', $kode_trans_far);
+		return $this->db->get()->result();
+	}
 	
 }

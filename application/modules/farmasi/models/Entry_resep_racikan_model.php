@@ -5,7 +5,7 @@ class Entry_resep_racikan_model extends CI_Model {
 
 	var $table = 'tc_far_racikan_detail';
 	var $column = array('tc_far_racikan.id_tc_far_racikan');
-	var $select = 'id_tc_far_racikan_detail,tc_far_racikan.id_tc_far_racikan, tc_far_racikan_detail.kode_brg, tc_far_racikan_detail.nama_brg, jumlah, satuan, tc_far_racikan_detail.harga_beli, jumlah_total, tc_far_racikan_detail.harga_jual, nama_racikan, tc_far_racikan.jasa_r, tc_far_racikan.jasa_produksi, b.dosis_obat, b.dosis_per_hari, b.anjuran_pakai, b.catatan_lainnya, b.satuan_kecil as satuan_racikan, tc_far_racikan_detail.jumlah_obat_23,tc_far_racikan_detail.prb_ditangguhkan, b.resep_ditangguhkan';
+	var $select = 'id_tc_far_racikan_detail,tc_far_racikan.id_tc_far_racikan, tc_far_racikan_detail.kode_brg, tc_far_racikan_detail.nama_brg, jumlah, satuan, tc_far_racikan_detail.harga_beli, jumlah_total, tc_far_racikan_detail.harga_jual, nama_racikan, tc_far_racikan.jasa_r, tc_far_racikan.jasa_produksi, b.dosis_obat, b.dosis_per_hari, b.anjuran_pakai, b.catatan_lainnya, b.satuan_kecil as satuan_racikan, tc_far_racikan_detail.jumlah_obat_23,tc_far_racikan_detail.prb_ditangguhkan, b.resep_ditangguhkan, tc_far_racikan_detail.jumlah_retur';
 
 	var $order = array('id_tc_far_racikan' => 'DESC');
 

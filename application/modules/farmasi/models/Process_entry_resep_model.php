@@ -217,6 +217,52 @@ class Process_entry_resep_model extends CI_Model {
         $dt_trans = $this->db->get_where('fr_tc_far', array('kode_trans_far' => $kode_trans_far) )->row();
         
         if(!empty($dt_trans)){
+
+            $dt_existing = $this->db->get_where('fr_tc_far_detail', array('kode_trans_far' => $kode_trans_far, 'status_input' => 1) )->result();
+            // echo '<pre>';print_r($dt_existing);die;
+
+            // retur barang / retur mutasi
+            foreach ($dt_existing as $key => $value) {
+                # code...
+                if($value->id_tc_far_racikan == 0){
+                    $this->db->update('fr_tc_far_detail', array('status_input' => null), array('kd_tr_resep' => $value->kd_tr_resep) );
+                    $jml_kronis = ( $value->prb_ditangguhkan != 1 ) ? (int)$value->jumlah_obat_23 : 0 ;
+                    $jml_tebus = ( $value->resep_ditangguhkan != 1 ) ? (int)$value->jumlah_tebus : 0 ;
+                    $jml_retur = (int)$value->jumlah_retur;
+                    $sisa_di_retur = ($jml_kronis + $jml_tebus) - $jml_retur;
+                    
+                    if($value->urgensi == 'cito'){
+                        // retur stok cito ke farmasi
+                        $this->stok_barang->stock_process_cito($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 16 ," - (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
+                    }else{
+                        // retur stok ke farmasi
+                        $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
+                    }         
+                }
+                
+                // echo '<pre>';print_r($value->id_tc_far_racikan);die;
+                if($value->id_tc_far_racikan != 0){
+                    // get detail racikan
+                    $dt_racikan = $this->db->join('tc_far_racikan', 'tc_far_racikan.id_tc_far_racikan=tc_far_racikan_detail.id_tc_far_racikan', 'left')->get_where('tc_far_racikan_detail', array('tc_far_racikan.id_tc_far_racikan' => $value->id_tc_far_racikan, 'status_input' => 1) )->result();
+                    
+                    foreach ($dt_racikan as $key_dt => $row_dt) {
+                        // retur stok ke farmasi
+                        // jumlah yg bisa di retur
+                        $jumlah = $row_dt->jumlah - $row_dt->jumlah_retur;
+                        $this->stok_barang->stock_process_racikan($row_dt->kode_brg, (int)$jumlah, $this->kode_farmasi, 8 ," (Rollback) Racikan Kode : ".$row_dt->id_tc_far_racikan." ", 'restore');
+
+                    }
+                    // update status input resep detail
+                    $this->db->update('fr_tc_far_detail', array('status_input' => null), array('kd_tr_resep' => $value->kd_tr_resep) );
+                    // update status input racikan
+                    $this->db->update('tc_far_racikan', array('status_input' => null), array('id_tc_far_racikan' => $value->id_tc_far_racikan) );
+
+                }
+
+            }
+
+            // echo '<pre>';print_r($dt_racikan);die;
+
             /*untuk rawat jalan update log pesan resep*/
             $this->db->update('fr_tc_pesan_resep', array('status_tebus' => null), array('kode_pesan_resep' => $dt_trans->kode_pesan_resep) );   
             
@@ -230,47 +276,13 @@ class Process_entry_resep_model extends CI_Model {
                 $this->db->delete('tc_trans_pelayanan');
             }
             
-
             /*log trasaksi detail*/
             $this->db->update('fr_tc_far_detail_log', array('status_tebus' => null), array('kode_trans_far' => $kode_trans_far) );
-
-            $dt_existing = $this->db->get_where('fr_tc_far_detail', array('kode_trans_far' => $kode_trans_far, 'status_input' => 1) )->result();
-            
-            // retur barang
-            foreach ($dt_existing as $key => $value) {
-                # code...
-
-                if($value->id_tc_far_racikan == 0){
-                    $this->db->update('fr_tc_far_detail', array('status_input' => null), array('kd_tr_resep' => $value->kd_tr_resep) );
-                    $jml_kronis = ( $value->prb_ditangguhkan != 1 ) ? (int)$value->jumlah_obat_23 : 0 ;
-                    $jml_tebus = ( $value->resep_ditangguhkan != 1 ) ? (int)$value->jumlah_tebus : 0 ;
-                    $jml_retur = (int)$value->jumlah_retur;
-                    $sisa_di_retur = ($jml_kronis + $jml_tebus) - $jml_retur;
-                    
-                    if($value->urgensi == 'cito'){
-                        // retur stok ke farmasi
-                        $this->stok_barang->stock_process_cito($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 16 ," - (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
-                    }else{
-                        // retur stok ke farmasi
-                        $this->stok_barang->stock_process($value->kode_brg, (int)$sisa_di_retur, $this->kode_farmasi , 8 ," (Rollback) Kode. ".$value->kode_trans_far." ", 'restore'); 
-                    }
-                                   
-                }else{
-                    // get detail racikan
-                    $dt_racikan = $this->db->join('tc_far_racikan', 'tc_far_racikan.id_tc_far_racikan=tc_far_racikan_detail.id_tc_far_racikan', 'left')->get_where('tc_far_racikan_detail', array('tc_far_racikan.id_tc_far_racikan' => $value->id_tc_far_racikan, 'status_input' => null) )->result();
-                    // update status
-                    $this->db->update('tc_far_racikan', array('status_input' => null), array('id_tc_far_racikan' => $value->id_tc_far_racikan) );
-                    foreach ($dt_racikan as $key_dt => $row_dt) {
-                        // retur stok ke farmasi
-                        $this->stok_barang->stock_process($row_dt->kode_brg, (int)$row_dt->jumlah, $this->kode_farmasi, 8 ," (Rollback) Racikan Kode : ".$row_dt->id_tc_far_racikan." ", 'restore');
-
-                    }
-                }
-            }
             
         }
 
         return true;
 
     }
+    
 }
