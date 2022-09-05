@@ -140,7 +140,8 @@ class Entry_resep_racikan extends MX_Controller {
                 $row[] = $row_list->id_tc_far_racikan_detail;
                 $row[] = $row_list->kode_brg;
                 $row[] = strtoupper($row_list->nama_brg);
-                $row[] = '<div align="center">'.$row_list->jumlah.'</div>';
+                $is_retur = ($row_list->jumlah_retur > 0)?' <span style="color: red; font-weight: bold">retur ('.$row_list->jumlah_retur.')</span> ':'';
+                $row[] = '<div align="center">'.$row_list->jumlah.' '.$is_retur.'</div>';
                 $row[] = '<div align="center">'.$row_list->satuan.'</div>';
                 $row[] = '<div align="right">'.number_format($row_list->harga_jual).'</div>';
                 $total = $row_list->harga_jual * $row_list->jumlah;

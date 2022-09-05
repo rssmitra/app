@@ -20,7 +20,6 @@ class Dokumen_klaim_prb_model extends CI_Model {
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_tc_far.kode_profit = fr_mt_profit_margin.kode_profit','left');
 		$this->db->join('tc_registrasi','fr_tc_far.no_registrasi = tc_registrasi.no_registrasi','left');
-		// $this->db->join('(select kode_trans_far, SUM(sub_total) as total from fr_tc_far_detail_log_prb group by fr_tc_far_detail_log_prb.kode_trans_far) as log_detail','log_detail.kode_trans_far = fr_tc_far.kode_trans_far','left');
 		$this->db->where('fr_tc_far.kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log_prb group by fr_tc_far_detail_log_prb.kode_trans_far)');
 		$this->db->where('fr_tc_far.verifikasi_prb', 1);
 		$this->db->group_by($this->select);
@@ -39,7 +38,7 @@ class Dokumen_klaim_prb_model extends CI_Model {
 				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
 		}else{
-        	$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=90');
+        	$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=30');
         }
 
 		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){

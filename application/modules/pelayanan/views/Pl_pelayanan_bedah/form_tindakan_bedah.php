@@ -47,7 +47,7 @@ $(document).ready(function() {
       "ordering": false,
       "searching": false,
       "bPaginate": false,
-      "scrollX": false,
+      // "scrollX": false,
       "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
@@ -482,8 +482,10 @@ function tambah_file()
 <div class="row">
     <div class="col-sm-12">
         <div class="pull-right">
-          <a href="#" class="btn btn-xs btn-inverse" id="btn_add_tindakan_luar">Tindakan Luar RS </a> 
-          <a href="#" class="btn btn-xs btn-inverse" id="btn_add_tindakan_lain">Tindakan Lainnya </a> 
+          <?php if( in_array($this->session->userdata('user')->role, array('Admin Sistem')) ):?>
+            <a href="#" class="btn btn-xs btn-inverse" id="btn_add_tindakan_luar">Tindakan Luar RS </a> 
+            <a href="#" class="btn btn-xs btn-inverse" id="btn_add_tindakan_lain">Tindakan Lainnya </a> 
+          <?php endif; ?>
           <!-- hidden form -->
           <input type="hidden" name="tindakan_luar" id="tindakan_luar">
         </div>
@@ -623,6 +625,11 @@ function tambah_file()
           <tbody>
           </tbody>
         </table>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
     </div>
 
 </div>

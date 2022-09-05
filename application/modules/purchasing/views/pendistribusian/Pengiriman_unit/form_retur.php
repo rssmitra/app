@@ -490,7 +490,7 @@ th, td {
                             </div>
                             <div class="col-md-3" id="div_restock">
                                 <label style="padding-top: 3px">
-                                  <input name="form-field-checkbox" type="checkbox" class="ace" name="restock" id="restock" value="1">
+                                  <input type="checkbox" class="ace" name="restock" id="restock" value="1">
                                   <span class="lbl"> Kembalikan stok</span>
                                 </label>
                             </div>

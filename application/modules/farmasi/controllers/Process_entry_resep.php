@@ -317,7 +317,8 @@ class Process_entry_resep extends MX_Controller {
                     // lopping data racikan 
                     foreach ( $dt_racikan as $val_dt ) {
                         $total_prb = ( $val_dt->prb_ditangguhkan == 0) ? $val_dt->jumlah + $val_dt->jumlah_obat_23 : $val_dt->jumlah;
-                        $this->stok_barang->stock_process($val_dt->kode_brg, (int)$total_prb, $kode_bagian, 14, " Nama Racikan : ".$val_dt->nama_racikan." - No. Racikan : ".$row_dt->kode_brg."", 'reduce');
+                        $total_mutasi = $total_prb - $val_dt->jumlah_retur;
+                        $this->stok_barang->stock_process($val_dt->kode_brg, (int)$total_mutasi, $kode_bagian, 14, " Nama Racikan : ".$val_dt->nama_racikan." - No. Racikan : ".$row_dt->kode_brg."", 'reduce');
                     }
                     // update status input fr_tc_far_racikan
                     $this->db->update('tc_far_racikan', array('status_input' => 1), array('id_tc_far_racikan' => $row_dt->id_tc_far_racikan ) );
@@ -328,6 +329,7 @@ class Process_entry_resep extends MX_Controller {
                     $total_harga = $row_dt->total;
     
                 }
+                
                 // create mutasi obat biasa atau non racikan
                 else{
 

@@ -118,11 +118,6 @@ class Verifikasi_resep_prb extends MX_Controller {
             $row[] = $row_list->nama_pelayanan;
             $status = ($row_list->verifikasi_prb==NULL)?'<label class="label label-warning">Dalam Proses</label>':'<a href="#" onclick="getMenu('."'farmasi/Verifikasi_resep_prb/preview_verifikasi/".$row_list->kode_trans_far."?flag=RJ'".')"><label class="label label-success" style="cursor: pointer"> <i class="fa fa-check-circle"></i> Verify</label></a>';
             $row[] = '<div class="center">'.$status.'</div>';
-            // $row[] = '<div class="center">
-            //             <a href="#" onclick="getMenu('."'farmasi/Verifikasi_resep_prb/form/".$row_list->kode_trans_far."'".')" class="btn btn-xs btn-primary" title="etiket">
-            //               <i class="fa fa-check-square-o"></i> Verifikasi
-            //             </a>
-            //           </div>';
             
             $data[] = $row;
         }

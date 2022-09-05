@@ -188,7 +188,7 @@ function saveRow(kode_brg){
             <th width="110px">Jml Obat Biasa</th>
             <th width="110px">Jml Obat Kronis</th>
             <th width="110px">Ttl Hutang</th>
-            <th width="100px">Sisa Obat</th>
+            <th width="100px">Sisa Hutang</th>
             <th width="100px">Jml Diambil</th>
             <!-- <th width="100px">Harga Satuan</th>
             <th width="100px">Subtotal</th> -->
@@ -205,26 +205,38 @@ function saveRow(kode_brg){
               $jml_23 = ($row->prb_ditangguhkan == 1) ? $row->jumlah : 0 ;
               $txt_color = ($row->resep_ditangguhkan == 1) ? 'red' : 'blue' ;
               $txt_color_prb = ($row->prb_ditangguhkan == 1) ? 'red' : 'blue' ;
-              $sisa = ($row->jumlah + $jml_tebus) - $row->log_jml_mutasi;
+              $sisa = ($row->jumlah + $jml_tebus) - $row->jumlah_mutasi_obat;
               $total_hutang = $jml_tebus + $jml_23;
+              $txt_msg = '';
               echo '<tr id="row_kd_brg_'.$row->id_fr_tc_far_detail_log_prb.'" >';
                 if( $row->prb_ditangguhkan == 0 ){
                   echo '<td align="center">-</td>';
                 }else{
-                  echo '<td>';
-                    echo '<label class="pos-rel">
-                              <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" id="checkbox_id_'.$row->id_fr_tc_far_detail_log_prb.'" />
-                              <span class="lbl"></span>
-                          </label>';
-                    // hidden form
-                    echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
-                    echo '<input type="hidden" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
+                  echo '<td align="center">';
+                    if($sisa > 0 ) :
+                      if( $row->stok_akhir_depo > 0 ) :
+                        echo '<label class="pos-rel">
+                                  <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" id="checkbox_id_'.$row->id_fr_tc_far_detail_log_prb.'" />
+                                  <span class="lbl"></span>
+                              </label>';
+                        // hidden form
+                        echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
+                        echo '<input type="hidden" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
+                        echo '<input type="hidden" name="kd_tr_resep_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kd_tr_resep.'" >';
+                      else:
+                        $txt_msg = '<span style="color: red; font-weight: bold; font-style:italic">(out of stock)</span>';
+                        echo '<span style="color: red; font-weight: bold">n/a</span>';
+                      endif;
+
+                    else:
+                      echo '-';
+                    endif; 
                   echo '</td>';
                 }
 
                 echo '<td align="center">'.$no.'</td>';
                 echo '<td>'.$row->kode_brg.'</td>';
-                echo '<td>'.$row->nama_brg.'</td>';
+                echo '<td>'.$row->nama_brg.' '.$txt_msg.'</td>';
 
                 // jumlah obat biasa
                 echo '<td align="center">';
@@ -238,7 +250,7 @@ function saveRow(kode_brg){
                   echo '<span style="color: '.$txt_color_prb.'; font-weight: bold">'.number_format($row->jumlah).'</span>';
                   echo '<input style="width:80px;height:25px;text-align:center"  class="format_number form-control" type="hidden" name="jumlah_tebus_'.$row->id_fr_tc_far_detail_log_prb.'" id="jumlah_tebus_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->jumlah.'" '.$readonly.'>';
                   // last mutasi total
-                  echo '<input type="hidden" name="log_jml_mutasi_'.$row->id_fr_tc_far_detail_log_prb.'" id="log_jml_mutasi_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->log_jml_mutasi.'">';
+                  echo '<input type="hidden" name="log_jml_mutasi_'.$row->id_fr_tc_far_detail_log_prb.'" id="log_jml_mutasi_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->jumlah_mutasi_obat.'">';
                 echo '</td>';
 
                 // total hutang
@@ -248,7 +260,7 @@ function saveRow(kode_brg){
 
                 // jumlah tebus
                 echo '<td align="center">';
-                  echo ( $row->prb_ditangguhkan == 0 ) ? '<span style="color: green; font-weight: bold">Lunas</span>' : number_format($sisa);
+                  echo ( $sisa == 0 ) ? '<span style="color: green; font-weight: bold">Lunas</span>' : number_format($sisa);
                 echo '</td>';
 
                 // jumlah mutasi
@@ -272,9 +284,13 @@ function saveRow(kode_brg){
                   if( $row->prb_ditangguhkan == 0 ){
                     echo '-';
                   }else{
+                    if($sisa > 0):
                     echo '<a href="#" class="btn btn-xs btn-primary" id="btn_submit_'.$row->id_fr_tc_far_detail_log_prb.'" onclick="saveRow('."'".$row->id_fr_tc_far_detail_log_prb."'".')" '.$hidden.'><i class="fa fa-check-circle"></i></a> '; 
                   
                     echo '<a href="#" onclick="click_edit('."'".$row->id_fr_tc_far_detail_log_prb."'".')" id="btn_edit_'.$row->id_fr_tc_far_detail_log_prb.'" class="btn btn-xs btn-warning"><i class="fa fa-pencil dark"></i></a>';
+                    else:
+                      echo '-';
+                    endif;
                   }
                 echo '</td>';
 

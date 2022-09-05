@@ -1873,14 +1873,27 @@ class References extends MX_Controller {
 
 	public function getDataTransaksiFarmasi($kode_trans_far)
 	{
+		$query = "SELECT a.kd_tr_resep, c.kode_brg,
+		c.nama_brg,
+		c.satuan_kecil,
+		a.harga_jual, (a.jumlah_tebus+a.jumlah_obat_23) as jumlah_tebus, biaya_tebus, id_tc_far_racikan, b.status_transaksi
+		FROM
+		fr_tc_far_detail AS a
+		LEFT JOIN fr_tc_far AS b ON b.kode_trans_far = a.kode_trans_far
+		LEFT JOIN mt_barang AS c ON c.kode_brg = a.kode_brg 
+		WHERE
+		a.kode_trans_far = ".$kode_trans_far." AND id_tc_far_racikan = 0
+		
+		UNION ALL
+		
+		SELECT id_tc_far_racikan_detail, kode_brg,
+		nama_brg,
+		satuan_kecil,
+		harga_jual, jumlah, jumlah_total, id_tc_far_racikan, status_input
+		from fr_obat_racikan_v
+		WHERE kode_trans_far=".$kode_trans_far."";
+		$result = $this->db->query($query)->result();
 
-
-		$this->db->select('c.nama_brg, c.satuan_kecil, a.*, c.harga_beli');
-		$this->db->from('fr_tc_far_detail as a');
-		$this->db->join('fr_tc_far as b', 'b.kode_trans_far=a.kode_trans_far' , 'left');
-		$this->db->join('mt_barang as c', 'c.kode_brg=a.kode_brg' , 'left');
-		$this->db->where('a.kode_trans_far', $kode_trans_far);
-		$result = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
 		$html = '';
 		
@@ -1896,15 +1909,22 @@ class References extends MX_Controller {
 		$no = 0;
 		foreach($result as $row_ress){
 			$no++;
+			$is_racikan = ($row_ress->id_tc_far_racikan == 0)?'':'(racikan)';
 			$html .= '<tr>';
 			$html .= '<td>'.$no.'</td>';
 			$html .= '<td>'.$row_ress->kode_brg.'</td>';
 			$html .= '<td>'.$row_ress->nama_brg.'</td>';
-			$html .= '<td>'.$row_ress->jumlah_tebus.'</td>';
-			$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item_trans_far('.$row_ress->kd_tr_resep.','."'".$row_ress->kode_brg."'".', '."'".$row_ress->nama_brg."'".', '.$row_ress->jumlah_tebus.')"><i class="fa fa-sign-out"></i></a></td>';
+			$html .= '<td class="center">'.$row_ress->jumlah_tebus.' '.$is_racikan.'</td>';
+			if($row_ress->status_transaksi != null){
+				$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item_trans_far('.$row_ress->kd_tr_resep.','."'".$row_ress->kode_brg."'".', '."'".$row_ress->nama_brg."'".', '.$row_ress->jumlah_tebus.')"><i class="fa fa-sign-out"></i></a></td>';
+			}else{
+				$html .= '<td class="center"><b>Dalam proses...</b></td>';
+			}
 			$html .= '</tr>';
 		}
-		$html .= '</table>';
+		$html .= '</table><br>';
+		$html .= '<b>Keterangan : </b><br>';
+		$html .= '<i>Untuk jumlah retur obat racikan harus diretur semua</i>';
 		
 
 		echo json_encode( array('data' => $result, 'html' => $html ) );

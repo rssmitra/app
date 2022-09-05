@@ -58,6 +58,7 @@ class Proses_resep_prb extends MX_Controller {
         /*get value by id*/
         $data['value'] = $this->Etiket_obat->get_by_id($id);
         $detail_log = $this->Proses_resep_prb->get_detail($id);
+        // print_r($this->db->last_query());die;
         $data['resep'] = $detail_log;
         $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($id);
         // echo '<pre>';print_r($data);die;
@@ -113,7 +114,7 @@ class Proses_resep_prb extends MX_Controller {
         $year = date("Y",strtotime($data['value']->tgl_trans));
         $data['path_dok_klaim'] = PATH_DOK_KLAIM_FARMASI.'merge-'.$month.'-'.$year.'/'.$data['value']->no_sep.'.pdf';
         $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($id);
-        // echo '<pre>';print_r($data);
+        // echo '<pre>';print_r($data['log_mutasi']);die;
         $temp_view = $this->load->view('farmasi/Proses_resep_prb/detail_table_view', $data, true);
         echo json_encode( array('html' => $temp_view) );
     }
@@ -133,17 +134,18 @@ class Proses_resep_prb extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '';
+            $row[] = '';
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $row_list->kode_trans_far;
 
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Proses_resep_prb/form/".$row_list->kode_trans_far."?flag=RJ'".')">'.$row_list->kode_trans_far.'</a></div>';
-            $row[] = '<div class="left">'.$row_list->no_sep.'</div>';
+            // $row[] = '<div class="left">'.$row_list->no_sep.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = $row_list->dokter_pengirim;
-            $row[] = $row_list->nama_pelayanan;
+            $row[] = $row_list->almt_ttp_pasien;
+            $row[] = $row_list->tlp_almt_ttp;
             // $row[] = '<div class="pull-right">'.number_format($row_list->total).'</div>'; 
             $status = ($row_list->proses_mutasi_prb==NULL)?'<label class="label label-warning">On Process</label>':'<a href="#" onclick="getMenu('."'farmasi/Proses_resep_prb/preview_mutasi/".$row_list->kode_trans_far."?flag=RJ'".')"><label class="label label-success" style="cursor: pointer"> <i class="fa fa-check-circle"></i> Selesai</label></a>';
 
@@ -209,6 +211,8 @@ class Proses_resep_prb extends MX_Controller {
                 $log_mutasi[] = array(
                     'id_fr_tc_far_detail_log_prb' => $value,
                     'kode_trans_far' => $_POST['kode_trans_far'],
+                    'kd_tr_resep' => $_POST['kd_tr_resep_'.$value.''],
+                    'kode_brg' => $_POST['kode_brg_'.$value.''],
                     'kode_log_mutasi_obat' => $kode_log_mutasi_obat,
                     'jumlah_mutasi_obat' => $_POST['jumlah_'.$value.''],
                     'created_date' => date('Y-m-d H:i:s'),

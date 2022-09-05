@@ -168,7 +168,6 @@ function saveRow(kode_brg){
                   <span class="ace-icon fa fa-check-circle dark icon-on-right bigger-110"></span>
                   Proses Pengambilan Obat
             </button>
-
             </div>
           </div>
 
@@ -246,43 +245,42 @@ function saveRow(kode_brg){
                 echo '</td>';
 
                 echo '</tr>';
-                      
-              
             }
           ?>
         </tbody>
       </table>
       <br>
+
       <!-- <div class="col-md-12">
-      <left>
-        <span style="font-size: 12px;"><strong><u>LOG PENGAMBILAN OBAT</u></strong><br>
-        </span>
-        <br>
-      </left>
-      <?php 
-        foreach($log_mutasi as $key_log_mutasi=>$val_log_mutasi) :
-          $dt_header = $log_mutasi[$key_log_mutasi][0];
-          echo 'PBLOG - '.$key_log_mutasi.' | '.$this->tanggal->formatDateTimeFormDmy($dt_header->created_date).' | '.$dt_header->created_by.' | <a href="#" onclick="PopupCenter('."'farmasi/Pengambilan_resep_iter/nota_farmasi/".$value->kode_trans_far."?flag=".$flag."&kode_log_mutasi=".$key_log_mutasi."'".')"><i class="fa fa-print dark bigger-150"></i></a>';
-          
-      ?>
-      <table class="table-utama" style="width: 50% !important;margin-top: 10px; margin-bottom: 10px">
-            <?php 
-              $no=0; 
-              foreach ($val_log_mutasi as $key_vlm => $val_vlm) : $no++; 
-            ?>
+        <left>
+          <span style="font-size: 12px;"><strong><u>RIWAYAT PENGAMBILAN RESEP ITER</u></strong><br>
+          </span>
+          <br>
+        </left>
+        <?php 
+          foreach($riwayat as $key_riwayat=>$val_riwayat) :
+            $dt_header = $riwayat[$key_riwayat][0];
+            echo 'PBLOG - '.$key_riwayat.' | '.$this->tanggal->formatDateTimeFormDmy($dt_header->created_date).' | '.$dt_header->created_by.' | <a href="#" onclick="PopupCenter('."'farmasi/Pengambilan_resep_iter/nota_farmasi/".$value->kode_trans_far."?flag=".$flag."&kode_riwayat=".$key_riwayat."'".')"><i class="fa fa-print dark bigger-150"></i></a>';
+            
+        ?>
+        <table class="table-utama" style="width: 50% !important;margin-top: 10px; margin-bottom: 10px">
+              <?php 
+                $no=0; 
+                foreach ($val_log_mutasi as $key_vlm => $val_vlm) : $no++; 
+              ?>
 
-              <tr>
-                <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
-                <td style="border-collapse: collapse"><?php echo $val_vlm->nama_brg?></td>
-                <td style="text-align:center; border-collapse: collapse"><?php echo number_format($val_vlm->jumlah_mutasi_obat);?></td>
-                <td style="text-align: center; border-collapse: collapse"><?php echo $val_vlm->satuan_kecil; ?></td>
-              </tr>
+                <tr>
+                  <td style="text-align:center; border-collapse: collapse"><?php echo $no?>.</td>
+                  <td style="border-collapse: collapse"><?php echo $val_vlm->nama_brg?></td>
+                  <td style="text-align:center; border-collapse: collapse"><?php echo number_format($val_vlm->jumlah_mutasi_obat);?></td>
+                  <td style="text-align: center; border-collapse: collapse"><?php echo $val_vlm->satuan_kecil; ?></td>
+                </tr>
 
-            <?php endforeach;?>
+              <?php endforeach;?>
 
-      </table>
-      <?php endforeach;?>
-    </div> -->
+        </table>
+        <?php endforeach;?>
+      </div> -->
 
     </form>
 

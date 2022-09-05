@@ -105,10 +105,11 @@
                         $arr_total[] = ($value->harga_jual * $value->jumlah);
                         $subtotal_racikan = ($value->harga_jual * $value->jumlah);
                         $penangguhan_resep = ($value->resep_ditangguhkan == 1) ? 'Ya' : '-';
+                        $is_retur = ($value->jumlah_retur > 0)?'<span style="color: red !important; font-weight: bold"> retur ('.$value->jumlah_retur.') </span>':'';
                         echo '<tr>
                               <td style="text-align:center; border-collapse: collapse">&nbsp;</td>
                               <td style="border-collapse: collapse"> - '.$value->nama_brg.'</td>
-                              <td style="text-align: center; border-collapse: collapse">'.$value->jumlah.'</td>
+                              <td style="text-align: center; border-collapse: collapse">'.$value->jumlah.' '.$is_retur.'</td>
                               <td style="text-align: center; border-collapse: collapse">'.$penangguhan_resep.'</td>
                               <td style="text-align: center; border-collapse: collapse">'.$value->satuan.'</td>';
                         if(count($resep_kronis) == 0 ) :
