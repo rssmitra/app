@@ -131,9 +131,9 @@ class Inv_stok_depo extends MX_Controller {
             $row[] = '<a href="#" onclick="click_detail('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'<br>'.strtoupper($row_list->nama_brg).'</a><br>Harga beli @ '.number_format($row_list->harga_beli).',-<br>'.$is_prb.' '.$is_kronis.$rak_lemari;
             $row[] = '<div class="center">1/'.strtoupper($row_list->content).'</div>';
             // labeling stok minimum
-            $label_color = ( $row_list->stok_minimum > $row_list->stok_akhir || $row_list->stok_akhir == 0 ) ? 'style="background-color: #d15b476b; height: 25px"' : '' ;
-            $row[] = '<div class="center">'.$row_list->stok_minimum.'</div>';
-            $row[] = '<div class="center" '.$label_color.'><span style="font-size: 17px">'.number_format($row_list->stok_akhir).'</span></div>';
+            $label_color = ( $row_list->stok_minimum >= $row_list->stok_akhir || $row_list->stok_akhir == 0 ) ? 'style="color: red; height: 25px; font-weight: bold; font-size: 17px"' : 'style="font-size: 17px; font-weight: bold; color: green"' ;
+            $row[] = '<div class="center"><input type="text" style="text-align: center;width: 50px;height: 30px!important;font-size: 14px;" value="'.$row_list->stok_minimum.'" onchange="updateStokMinimum('.$row_list->kode_depo_stok.', '."'".$params_kode_bagian."'".')" id="stok_min_val_'.$row_list->kode_depo_stok.'"> - <input type="text" style="text-align: center;width: 50px;height: 30px!important;font-size: 14px;" value="'.$row_list->stok_maksimum.'" onchange="updateStokMaksimum('.$row_list->kode_depo_stok.', '."'".$params_kode_bagian."'".')" id="stok_max_val_'.$row_list->kode_depo_stok.'"></div>';
+            $row[] = '<div class="center" ><input type="hidden" value="'.$row_list->stok_akhir.'" id="stok_akhir_val_'.$row_list->kode_depo_stok.'" ><span id="stok_akhir_div_'.$row_list->kode_depo_stok.'" '.$label_color.' >'.number_format($row_list->stok_akhir).'</span></div>';
             $row[] = '<div class="left">'.strtoupper($row_list->satuan_kecil).'/'.strtoupper($row_list->satuan_besar).'</div>';
             // $row[] = '<div style="text-align: right">'.number_format($row_list->harga_beli).'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
@@ -404,6 +404,36 @@ class Inv_stok_depo extends MX_Controller {
         }
 
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+
+    }
+
+    public function udpate_stok_minimum()
+    {
+        // print_r($_POST);die;
+        // $value = $_POST['value'];
+        if($_POST['kode_bagian']=='070101'){
+            $this->db->update('mt_depo_stok_nm', array('stok_minimum' => $_POST['value']), array('kode_depo_stok' => $_POST['kode']) );
+        }else{
+            $this->db->update('mt_depo_stok', array('stok_minimum' => $_POST['value']), array('kode_depo_stok' => $_POST['kode']) );
+            
+        }
+
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'stok_min' => $_POST['value']));
+
+    }
+
+    public function udpate_stok_maksimum()
+    {
+        // print_r($_POST);die;
+        // $value = $_POST['value'];
+        if($_POST['kode_bagian']=='070101'){
+            $this->db->update('mt_depo_stok_nm', array('stok_maksimum' => $_POST['value']), array('kode_depo_stok' => $_POST['kode']) );
+        }else{
+            $this->db->update('mt_depo_stok', array('stok_maksimum' => $_POST['value']), array('kode_depo_stok' => $_POST['kode']) );
+            
+        }
+
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'stok_max' => $_POST['value']));
 
     }
 

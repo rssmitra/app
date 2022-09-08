@@ -47,27 +47,78 @@
   }
 
   function setStatusAktifBrg(kode_brg, kode_bag){
-  var val_id = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'').val();
+    var val_id = $('#stat_on_off_'+kode_brg+'_'+kode_brg+'').val();
 
-  $.ajax({
-      url: "inventory/stok/Inv_stok_depo/set_status_brg",
-      data: {kode_bagian : kode_bag, kode_brg : kode_brg, value : val_id },
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          /*reload table*/
-          reset_table(kode_bag);
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
-        } 
-        achtungHideLoader();
-      }
-  });
-}
+    $.ajax({
+        url: "inventory/stok/Inv_stok_depo/set_status_brg",
+        data: {kode_bagian : kode_bag, kode_brg : kode_brg, value : val_id },
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            /*reload table*/
+            reset_table(kode_bag);
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
+          } 
+          achtungHideLoader();
+        }
+    });
+  }
+
+  function updateStokMinimum(kode_depo_stok, kode_bag){
+    var val_stok_min = $('#stok_min_val_'+kode_depo_stok+'').val();
+
+    $.ajax({
+        url: "inventory/stok/Inv_stok_depo/udpate_stok_minimum",
+        data: {kode : kode_depo_stok, value : val_stok_min, kode_bagian : kode_bag },
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            /*reload table*/
+            if(jsonResponse.stok_min >= $('#stok_akhir_val_'+kode_depo_stok+'').val()){
+              $('#stok_akhir_div_'+kode_depo_stok+'').html('<span style="color: red; font-size: 20px; font-weight: bold">'+$('#stok_akhir_val_'+kode_depo_stok+'').val()+'</span>');
+            }else{
+              $('#stok_akhir_div_'+kode_depo_stok+'').html('<span style="color: green; font-size: 20px; font-weight: bold">'+$('#stok_akhir_val_'+kode_depo_stok+'').val()+'</span>');
+
+            }
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
+          } 
+          achtungHideLoader();
+        }
+    });
+  }
+
+  function updateStokMaksimum(kode_depo_stok, kode_bag){
+    var val_stok_max = $('#stok_max_val_'+kode_depo_stok+'').val();
+
+    $.ajax({
+        url: "inventory/stok/Inv_stok_depo/udpate_stok_maksimum",
+        data: {kode : kode_depo_stok, value : val_stok_max, kode_bagian : kode_bag },
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            /*reload table*/
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
+          } 
+          achtungHideLoader();
+        }
+    });
+  }
+
 
   function checkAll(elm) {
 
@@ -205,7 +256,7 @@
               <th width="100px">Image</th>
               <th>Kode & Nama Barang</th>
               <th>Rasio</th>
-              <th>Stok Minimum</th>
+              <th>Stok Min/Max</th>
               <th>Stok Akhir</th>
               <th>Satuan</th>
               <!-- <th>Harga Beli</th> -->
