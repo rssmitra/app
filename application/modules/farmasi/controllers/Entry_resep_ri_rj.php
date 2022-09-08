@@ -259,19 +259,23 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = $row_list->relation_id;
             $row[] = $row_list->flag_resep;
             
-            if( $row_list->id_tc_far_racikan != 0 ){
-                $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_trans_far."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."&kode_pesan_resep=".$row_list->kode_pesan_resep."'".', '."'RESEP RACIKAN'".')"';
-                $btn_selesai_racikan = '<li><a href="#" onclick="process_selesai('.$row_list->relation_id.')">Resep Selesai</a></li>';
-            }else{
-                $onclick = 'onclick="edit_obat_resep('."'".$row_list->kode_brg."','".$row_list->relation_id."'".')"';
-                $btn_selesai_racikan = '';
-            }
-            
-            if($row_list->status_tebus != 1){
-                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" '.$onclick.'><i class="fa fa-edit"></i></a> <a href="#" class="btn btn-xs btn-danger" onclick="delete_resep('.$row_list->relation_id.', '."'".$row_list->flag_resep."'".')"><i class="fa fa-trash"></i></a> </div>';
-            }else{
-                $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
-            }
+            if( $row_list->id_tc_log_mutasi_obat == null) :
+                if( $row_list->id_tc_far_racikan != 0 ){
+                    $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_trans_far."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."&kode_pesan_resep=".$row_list->kode_pesan_resep."'".', '."'RESEP RACIKAN'".')"';
+                    $btn_selesai_racikan = '<li><a href="#" onclick="process_selesai('.$row_list->relation_id.')">Resep Selesai</a></li>';
+                }else{
+                    $onclick = 'onclick="edit_obat_resep('."'".$row_list->kode_brg."','".$row_list->relation_id."'".')"';
+                    $btn_selesai_racikan = '';
+                }
+                
+                if($row_list->status_tebus != 1){
+                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" '.$onclick.'><i class="fa fa-edit"></i></a> <a href="#" class="btn btn-xs btn-danger" onclick="delete_resep('.$row_list->relation_id.', '."'".$row_list->flag_resep."'".')"><i class="fa fa-trash"></i></a> </div>';
+                }else{
+                    $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
+                }
+            else:
+                $row[] = '<div class="center" style="font-weight: bold; color: red; padding: 5px">n/a</div>';
+            endif;
 
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);

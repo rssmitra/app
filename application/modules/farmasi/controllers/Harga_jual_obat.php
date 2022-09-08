@@ -128,6 +128,7 @@ class Harga_jual_obat extends MX_Controller {
             $row[] = '<div class="center">'.strtoupper($row_list->satuan_besar).'/'.strtoupper($row_list->satuan_kecil).'</div>';
             $row[] = '<div class="center">'.$row_list->content.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_beli).'</div>';
+            // harga jual obat flat kurang lebih
             $harga_jual = $row_list->harga_beli + ($row_list->harga_beli * (33.3/100));
             $row[] = '<div align="right">'.number_format($harga_jual).'</div>';
             

@@ -56,7 +56,6 @@ function popUnder(node) {
 
 <form class="form-horizontal" method="post" id="form_search" action="Templates/References/find_data" autocomplete="off">
 
-  <div class="col-md-12">
     <div class="form-group">
         <label class="control-label col-md-2">Pencarian berdasarkan</label>
         <div class="col-md-2">
@@ -75,7 +74,7 @@ function popUnder(node) {
     </div>
 
     <div class="form-group">
-      <label class="control-label col-md-2">Tanggal</label>
+      <label class="control-label col-md-2">Tanggal Resep</label>
         <div class="col-md-2">
           <div class="input-group">
             <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
@@ -109,8 +108,6 @@ function popUnder(node) {
         </a>
       </div>
     </div>
-
-  </div>
 
   <hr class="separator">
   <!-- div.dataTables_borderWrap -->

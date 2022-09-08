@@ -48,7 +48,11 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
             $row[] = '<div class="left">'.strtoupper($row_list->nama_brg).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->pengeluaran).'</div>';
             $row[] = $row_list->keterangan;
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="rollback_stok_bhp('.$row_list->id_kartu.')">Rollback</a></div>';
+            if($row_list->is_rollback == null){
+                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="rollback_stok_bhp('.$row_list->id_kartu.')">Rollback</a></div>';
+            }else{
+                $row[] = '<div class="center" style="color: red; font-weight: bold">n/a</div>';
+            }
                    
             $data[] = $row;
         }
@@ -98,17 +102,18 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
         // select kartu stok
         $row = $this->db->where('id_kartu', $_POST['ID'])->from('tc_kartu_stok')->get()->row();
         // restore stok
-        $stok_akhir = $row->stok_awal + $row->pengeluaran;
+        $stok_akhir = $row->stok_akhir + $row->pengeluaran;
         $mutasi = array(
             'id_kartu' => $this->master->get_max_number('tc_kartu_stok','id_kartu'),
             'tgl_input' => date('Y-m-d H:i:s'),
             'kode_brg' => $row->kode_brg,
-            'stok_awal' => $row->stok_awal,
+            'stok_awal' => $row->stok_akhir,
             'pemasukan' => $row->pengeluaran,
             'pengeluaran' => 0,
             'stok_akhir' => $stok_akhir,
             'jenis_transaksi' => 23,
             'kode_bagian' => $row->kode_bagian,
+            'is_rollback' => 1,
             'keterangan' => 'Retur Pemakaian BHP',
             'petugas' => 0,
             'nama_petugas' => 'Administrator Sistem',
