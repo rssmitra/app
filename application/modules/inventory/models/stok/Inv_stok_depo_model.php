@@ -5,7 +5,7 @@ class Inv_stok_depo_model extends CI_Model {
 
 	var $table = 'mt_depo_stok';
 	var $column = array('b.nama_brg');
-	var $select = 'b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_akhir, b.satuan_kecil,  kartu_stok.tgl_input, kartu_stok.keterangan,  b.satuan_besar, b.path_image, a.stok_minimum, c.harga_beli, b.is_prb, b.is_kronis, a.is_active, a.rak';
+	var $select = 'a.kode_depo_stok, b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_akhir, b.satuan_kecil,  kartu_stok.tgl_input, kartu_stok.keterangan,  b.satuan_besar, b.path_image, a.stok_minimum, a.stok_maksimum, c.harga_beli, b.is_prb, b.is_kronis, a.is_active, a.rak';
 	var $order = array('kartu_stok.tgl_input' => 'DESC');
 
 	public function __construct()
