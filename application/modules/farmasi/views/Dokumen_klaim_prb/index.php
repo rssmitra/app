@@ -56,7 +56,6 @@ function popUnder(node) {
 
 <form class="form-horizontal" method="post" id="form_search" action="templates/References/find_data" autocomplete="off">
 
-  <div class="col-md-12">
     <div class="form-group">
         <label class="control-label col-md-2">Pencarian berdasarkan</label>
         <div class="col-md-2">
@@ -109,8 +108,6 @@ function popUnder(node) {
         </a>
       </div>
     </div>
-
-  </div>
 
   <hr class="separator">
   <!-- div.dataTables_borderWrap -->

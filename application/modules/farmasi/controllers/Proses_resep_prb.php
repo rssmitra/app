@@ -262,8 +262,8 @@ class Proses_resep_prb extends MX_Controller {
         );
         $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
         $data['log_mutasi'] = $this->Proses_resep_prb->get_log_mutasi($kode_trans_far);
-
         // echo '<pre>'; print_r($data);die;
+
         $this->load->view('farmasi/Proses_resep_prb/preview_mutasi', $data);
 
     }

@@ -33,6 +33,36 @@ function pressEnter(kode_brg){
     }
 }
 
+function searchObat(num){
+  $('#inputKeyObat_'+num+'').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getObatByBagianAutoComplete",
+              data: { keyword:query, bag: '060101'},            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                result($.map(response, function (item) {
+                    return item;
+                }));
+              }
+          });
+      },
+      afterSelect: function (item) {
+        // do what is needed with item
+        var val_item=item.split(':')[0];
+        var label_item=item.split(':')[1];
+        console.log(val_item);
+        $('#inputKeyObat_'+num+'').val(label_item);
+        $('#kode_brg_'+num+'').val(val_item);
+
+      }
+  });
+}
+
+
+
+
 $("#btn_submit_pengambilan_obat").click(function(event){
       event.preventDefault();
       var searchIDs = $("#verifikasi-resep-obat tbody input:checkbox:checked").map(function(){
@@ -221,7 +251,8 @@ function saveRow(kode_brg){
                               </label>';
                         // hidden form
                         echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
-                        echo '<input type="hidden" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
+                        echo '<input type="hiddenxx" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" id="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
+
                         echo '<input type="hidden" name="kd_tr_resep_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kd_tr_resep.'" >';
                       else:
                         $txt_msg = '<span style="color: red; font-weight: bold; font-style:italic">(out of stock)</span>';
@@ -236,7 +267,7 @@ function saveRow(kode_brg){
 
                 echo '<td align="center">'.$no.'</td>';
                 echo '<td>'.$row->kode_brg.'</td>';
-                echo '<td>'.$row->nama_brg.' '.$txt_msg.'</td>';
+                echo '<td><input type="text" class="nama_brg form-control" value="'.$row->nama_brg.'" name="nama_brg" id="inputKeyObat_'.$row->id_fr_tc_far_detail_log_prb.'" onclick="searchObat('.$row->id_fr_tc_far_detail_log_prb.')"></td>';
 
                 // jumlah obat biasa
                 echo '<td align="center">';

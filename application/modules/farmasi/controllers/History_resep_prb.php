@@ -22,6 +22,7 @@ class History_resep_prb extends MX_Controller {
         $this->load->model('History_resep_prb_model', 'History_resep_prb');
         $this->load->model('Dokumen_klaim_prb_model', 'Dokumen_klaim_prb');
         $this->load->model('Verifikasi_resep_prb_model', 'Verifikasi_resep_prb');
+        $this->load->model('Proses_resep_prb_model', 'Proses_resep_prb');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -74,12 +75,14 @@ class History_resep_prb extends MX_Controller {
         $data['value'] = $this->Etiket_obat->get_by_id($id);
         $detail_log = $this->Dokumen_klaim_prb->get_detail($id);
         $data['resep'] = $detail_log;
+        $log_mutasi = $this->Proses_resep_prb->get_log_mutasi($id);
+        $data['log_mutasi'] = $log_mutasi;
+        // echo '<pre>';print_r($this->db->last_query());die;
         // get dokumen klaim
         $data['dokumen'] = $this->db->get_where('fr_tc_far_dokumen_klaim_prb', array('kode_trans_far' => $id))->result();
         $month = date("M",strtotime($data['value']->tgl_trans));
         $year = date("Y",strtotime($data['value']->tgl_trans));
         $data['path_dok_klaim'] = PATH_DOK_KLAIM_FARMASI.'merge-'.$month.'-'.$year.'/'.$data['value']->no_sep.'.pdf';
-        // echo '<pre>';print_r($data);
         $temp_view = $this->load->view('farmasi/History_resep_prb/detail_table_view', $data, true);
         echo json_encode( array('html' => $temp_view) );
     }
@@ -103,7 +106,8 @@ class History_resep_prb extends MX_Controller {
             $row[] = '';
             $row[] = $row_list->kode_trans_far;
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/History_resep_prb/form/".$row_list->kode_trans_far."?flag=RJ'".')">'.$row_list->kode_trans_far.'</a></div>';
+            // $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/History_resep_prb/form/".$row_list->kode_trans_far."?flag=RJ'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $row[] = '<div class="center">'.$row_list->kode_trans_far.'</div>';
             $row[] = '<div class="left">'.$row_list->no_sep.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';

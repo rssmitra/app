@@ -54,12 +54,13 @@
               foreach ($row_dt as $key_rd => $value_rd) :
                  $no++;  
             $sub_total = $value_rd->harga_satuan * $value_rd->jumlah_mutasi_obat;
+            $nama_brg = ($value_rd->nama_brg == $value_rd->nama_brg_update) ? $value_rd->nama_brg : '<i><s>'.$value_rd->nama_brg.'</s></i> &nbsp; '.$value_rd->nama_brg_update.'';
             $arr_total[] = $sub_total;
           ?>
 
             <tr>
               <td style="text-align:center; width: 5%; border-collapse: collapse"><?php echo $no?>.</td>
-              <td style="border-collapse: collapse; width: 60%; "><?php echo $value_rd->nama_brg;?></td>
+              <td style="border-collapse: collapse; width: 60%; "><?php echo $nama_brg;?></td>
               <td style="text-align:center; width: 10%; border-collapse: collapse"><?php echo number_format($value_rd->jumlah_mutasi_obat);?></td>
               <td style="text-align:left; width: 10%; border-collapse: collapse"><?php echo $value_rd->satuan_kecil?></td>
               <td style="text-align:right; width: 15%; border-collapse: collapse"><?php echo number_format($sub_total)?></td>

@@ -160,7 +160,6 @@ function find_data_reload(result){
   <h4>DATA RESEP COPY LUNAS PASIEN<br><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data Resep Copy Lunas Pasien 1 Bulan terakhir </small></h4>
 </center>
 
-  <div class="col-md-12">
     <div class="form-group">
         <label class="control-label col-md-2">Pencarian berdasarkan</label>
         <div class="col-md-2">
@@ -213,8 +212,6 @@ function find_data_reload(result){
         </a>
       </div>
     </div>
-
-  </div>
 
   <hr class="separator">
   <!-- div.dataTables_borderWrap -->
