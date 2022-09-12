@@ -1380,6 +1380,7 @@ class References extends MX_Controller {
 
 		// stok umum
 		$this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content, d.kode_profit');
+		$this->db->select('( SELECT top 1 stok_minimum FROM mt_depo_stok WHERE mt_depo_stok.kode_brg = a.kode_brg AND mt_depo_stok.kode_bagian = a.kode_bagian ) AS stok_min ');
 		
         $this->db->from('tc_kartu_stok a, mt_barang b, mt_rekap_stok c');
         $this->db->where('a.kode_brg=b.kode_brg');
@@ -1395,7 +1396,7 @@ class References extends MX_Controller {
         $this->db->order_by('a.id_kartu', 'DESC');
         $this->db->limit(1);
         $exc = $this->db->get()->result();
-		// print_r($this->db->last_query());die;
+		// print_r($exc);die;
 
 		// stok cito
 		$this->db->from('tc_kartu_stokcito a');
@@ -1428,12 +1429,10 @@ class References extends MX_Controller {
 			}
 			$html .= '<b>INFORMASI STOK OBAT</b>';
 			$html .= '<table class="table" style="font-size: 12px !important">';
-				
 				$flag_medis = ($exc[0]->flag_medis==1) ? 'Alkes' : 'Obat' ;
-				
 				$html .= '<tr>';
 				$link_image = ( $exc[0]->path_image != NULL ) ? PATH_IMG_MST_BRG.$exc[0]->path_image : PATH_IMG_MST_BRG.'no-image.jpg' ;
-				$html .= '<td width="100px" rowspan="7" valign="middle"><img src="'.$link_image.'" width="100%"><br> 
+				$html .= '<td width="100px" rowspan="7" valign="middle" align="center"><img src="'.$link_image.'" width="100%"><br> 
 				<small>Sisa Stok : </small> <br><span style="font-size: 14px; font-weight: bold; color: green"> '.$exc[0]->stok_akhir.' ('.$exc[0]->satuan_kecil.')</span>
 				</td>';
 				$html .= '</tr>';
@@ -1481,6 +1480,12 @@ class References extends MX_Controller {
 							 </td>';
 					$html .= '<td valign="middle" align="left">Rp. '.number_format($harga_satuan, 2).',- </td>';
 				$html .= '</tr>';
+
+				if( (int)$exc[0]->stok_min > (int)$exc[0]->stok_akhir ) :
+					$html .= '<tr>';
+					$html .= '<td colspan="2" align="center" style="color: red; font-weight: bold"><span class="blink_me">stok obat sudah dibawah stok minimum</span></td>';
+					$html .= '</tr>';
+				endif; 
 			
 				// harga bpjs
 				$default_selected_bpjs = '';
