@@ -83,7 +83,7 @@
           if(jsonResponse.status === 200){  
             $.achtung({message: jsonResponse.message, timeout:5}); 
             /*reload table*/
-            if(jsonResponse.stok_min >= $('#stok_akhir_val_'+kode_depo_stok+'').val()){
+            if( parseInt(jsonResponse.stok_min) >= parseInt($('#stok_akhir_val_'+kode_depo_stok+'').val()) ){
               $('#stok_akhir_div_'+kode_depo_stok+'').html('<span style="color: red; font-size: 20px; font-weight: bold">'+$('#stok_akhir_val_'+kode_depo_stok+'').val()+'</span>');
             }else{
               $('#stok_akhir_div_'+kode_depo_stok+'').html('<span style="color: green; font-size: 20px; font-weight: bold">'+$('#stok_akhir_val_'+kode_depo_stok+'').val()+'</span>');

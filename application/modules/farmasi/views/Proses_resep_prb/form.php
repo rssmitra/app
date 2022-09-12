@@ -55,12 +55,36 @@ function searchObat(num){
         console.log(val_item);
         $('#inputKeyObat_'+num+'').val(label_item);
         $('#kode_brg_'+num+'').val(val_item);
-
+        $('#kode_brg_td_'+num+'').text(val_item);
+        getDetailObatByKodeBrg(val_item, '060101', num);
       }
   });
 }
 
+function getDetailObatByKodeBrg(kode_brg,kode_bag, num){
 
+  $.getJSON("<?php echo site_url('templates/references/getDetailObat') ?>?kode="+kode_brg+"&kode_kelompok="+$('#kode_kelompok').val()+"&kode_perusahaan="+$('#kode_perusahaan').val()+"&bag="+kode_bag+"&type=html&type_layan=Rajal", '' , function (response) {
+    
+    $('#stok_brg_'+num+'').val(response.sisa_stok);
+    $('#td_stok_akhir_depo_'+num+'').text(response.sisa_stok);
+    $('#jumlah_'+num+'').attr('max', response.sisa_stok);
+
+    if(response.sisa_stok <= 0){
+      $('#checked_id_'+num+'').html('<span style="color: red; font-weight: bold; font-style:italic">n/a</span>');
+    }else{
+      $('#checked_id_'+num+'').html('<label class="pos-rel"><input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'+num+'" id="checkbox_id_'+num+'" /><span class="lbl"></span></label>');
+      if( response.sisa_stok < $('#jumlah_'+num+'').val() ){
+        $('#jumlah_'+num+'').val(response.sisa_stok);
+      }else{
+        $('#jumlah_'+num+'').val($('#sisa_hutang_'+num+'').text());
+      }
+    }
+
+    return response;
+
+  })
+
+}
 
 
 $("#btn_submit_pengambilan_obat").click(function(event){
@@ -100,19 +124,28 @@ function submit_form(arrDataChecklist){
 
 }
 
-function click_edit(kode_brg){
+function click_edit(num){
   preventDefault();
-  $("#row_kd_brg_"+kode_brg+" input[type=text], select").attr('readonly', false); 
-  $('#btn_submit_'+kode_brg+'').show();
-  $('#btn_edit_'+kode_brg+'').hide();
+  $("#row_kd_brg_"+num+" input[type=number], select").attr('readonly', false); 
+  $('#btn_submit_'+num+'').show();
+  $('#btn_edit_'+num+'').hide();
 }
 
-function saveRow(kode_brg){
+function saveRow(num){
 
   preventDefault();
-  $("#row_kd_brg_"+kode_brg+" input[type=text], select").attr('readonly', true); 
-  $('#btn_submit_'+kode_brg+'').hide();
-  $('#btn_edit_'+kode_brg+'').show();
+  $("#row_kd_brg_"+num+" input[type=number], select").attr('readonly', true); 
+  var entry = $('#jumlah_'+num+'').val();
+  var stok = $('#stok_brg_'+num+'').val();
+
+  if( stok < entry){
+    $('#jumlah_'+num+'').val(stok);
+  }else{
+    $('#jumlah_'+num+'').val(entry);
+  }
+
+  $('#btn_submit_'+num+'').hide();
+  $('#btn_edit_'+num+'').show();
 
   return false;
 
@@ -215,6 +248,7 @@ function saveRow(kode_brg){
             <th class="center" width="30px">No</th>
             <th width="70px">Kode</th>
             <th>Nama Obat</th>
+            <th width="110px">Stok Depo</th>
             <th width="110px">Jml Obat Biasa</th>
             <th width="110px">Jml Obat Kronis</th>
             <th width="110px">Ttl Hutang</th>
@@ -242,18 +276,14 @@ function saveRow(kode_brg){
                 if( $row->prb_ditangguhkan == 0 ){
                   echo '<td align="center">-</td>';
                 }else{
-                  echo '<td align="center">';
+                  echo '<td align="center" id="checked_id_'.$row->id_fr_tc_far_detail_log_prb.'">';
                     if($sisa > 0 ) :
                       if( $row->stok_akhir_depo > 0 ) :
                         echo '<label class="pos-rel">
                                   <input type="checkbox" class="ace checkbox_resep" name="selected_id[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" id="checkbox_id_'.$row->id_fr_tc_far_detail_log_prb.'" />
                                   <span class="lbl"></span>
                               </label>';
-                        // hidden form
-                        echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
-                        echo '<input type="hiddenxx" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" id="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
-
-                        echo '<input type="hidden" name="kd_tr_resep_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kd_tr_resep.'" >';
+                        
                       else:
                         $txt_msg = '<span style="color: red; font-weight: bold; font-style:italic">(out of stock)</span>';
                         echo '<span style="color: red; font-weight: bold">n/a</span>';
@@ -266,12 +296,16 @@ function saveRow(kode_brg){
                 }
 
                 echo '<td align="center">'.$no.'</td>';
-                echo '<td>'.$row->kode_brg.'</td>';
+                echo '<td><span id="kode_brg_td_'.$row->id_fr_tc_far_detail_log_prb.'">'.$row->kode_brg.'</span></td>';
                 echo '<td><input type="text" class="nama_brg form-control" value="'.$row->nama_brg.'" name="nama_brg" id="inputKeyObat_'.$row->id_fr_tc_far_detail_log_prb.'" onclick="searchObat('.$row->id_fr_tc_far_detail_log_prb.')"></td>';
+                
+                // sisa stok depo
+                echo '<td align="center" id="td_stok_akhir_depo_'.$row->id_fr_tc_far_detail_log_prb.'">';
+                  echo '<span>'.$row->stok_akhir_depo.'</span>';
+                echo '</td>';
 
                 // jumlah obat biasa
                 echo '<td align="center">';
-                  
                   echo '<span style="color: '.$txt_color.'; font-weight: bold">'.number_format($jml_tebus).'</span>';
                   echo '<input style="width:80px;height:25px;text-align:center"  class="format_number form-control" type="hidden" name="jumlah_tebus_biasa_'.$row->id_fr_tc_far_detail_log_prb.'" id="jumlah_tebus_biasa_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$jml_tebus.'" '.$readonly.'>';
                 echo '</td>';
@@ -290,7 +324,7 @@ function saveRow(kode_brg){
                 echo '</td>';
 
                 // jumlah tebus
-                echo '<td align="center">';
+                echo '<td align="center" id="sisa_hutang_'.$row->id_fr_tc_far_detail_log_prb.'">';
                   echo ( $sisa == 0 ) ? '<span style="color: green; font-weight: bold">Lunas</span>' : number_format($sisa);
                 echo '</td>';
 
@@ -299,7 +333,7 @@ function saveRow(kode_brg){
                   echo '<td align="center">-</td>';
                 }else{
                   echo '<td align="center">';
-                  echo '<input style="width:80px;height:25px;text-align:center"  class="format_number form-control" type="text" name="jumlah_'.$row->id_fr_tc_far_detail_log_prb.'" id="jumlah_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$sisa.'" '.$readonly.' onkeypres="pressEnter('.$row->id_fr_tc_far_detail_log_prb.')" onchange="saveRow('.$row->id_fr_tc_far_detail_log_prb.')">';
+                  echo '<input style="width:80px;height:25px;text-align:center" type="number" name="jumlah_'.$row->id_fr_tc_far_detail_log_prb.'" max="'.$sisa.'" id="jumlah_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$sisa.'" '.$readonly.' onkeypres="pressEnter('.$row->id_fr_tc_far_detail_log_prb.')" onchange="saveRow('.$row->id_fr_tc_far_detail_log_prb.')">';
                   echo '</td>';
                 }
 
@@ -310,7 +344,14 @@ function saveRow(kode_brg){
 
                 // aksi
                 echo '<td align="center">';
-                  
+
+                // hidden form
+                echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
+                echo '<input type="hidden" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" id="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
+                echo '<input type="hidden" name="stok_brg_'.$row->id_fr_tc_far_detail_log_prb.'" id="stok_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->stok_akhir_depo.'" >';
+
+                echo '<input type="hidden" name="kd_tr_resep_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kd_tr_resep.'" >';
+
                 $hidden = (empty($row->id_fr_tc_far_detail_log_prb)) ? '' : 'style="display: none"' ;
                   if( $row->prb_ditangguhkan == 0 ){
                     echo '-';
@@ -333,13 +374,19 @@ function saveRow(kode_brg){
         </tbody>
       </table>
       <br>
-      <div class="col-md-12">
+      <b>Keterangan : </b><br>
+      <span style="color: red; font-weight: bold">n/a</span> : (Not Available) / Stok kosong / Tidak dapat dipilih untuk dilanjutkan transaksi<br>
+      Jumlah obat yang akan diambil <b>tidak bisa melebihi stok depo.</b>
+      <br>
+      <br>
+      <div class="col-md-12 no-padding">
       <left>
         <span style="font-size: 12px;"><strong><u>LOG PENGAMBILAN OBAT</u></strong><br>
         </span>
         <br>
       </left>
       <?php 
+        if(count($log_mutasi) > 0):
         foreach($log_mutasi as $key_log_mutasi=>$val_log_mutasi) :
           $dt_header = $log_mutasi[$key_log_mutasi][0];
           echo 'PBLOG - '.$key_log_mutasi.' | '.$this->tanggal->formatDateTimeFormDmy($dt_header->created_date).' | '.$dt_header->created_by.' | <a href="#" onclick="PopupCenter('."'farmasi/Proses_resep_prb/nota_farmasi/".$value->kode_trans_far."?flag=".$flag."&kode_log_mutasi=".$key_log_mutasi."'".')"><i class="fa fa-print dark bigger-150"></i></a>';
@@ -361,7 +408,7 @@ function saveRow(kode_brg){
             <?php endforeach;?>
 
       </table>
-      <?php endforeach;?>
+      <?php endforeach; else : echo '~ Belum ada mutasi ~'; endif;?>
     </div>
 
     </form>
