@@ -161,7 +161,8 @@ function get_list_pasien(){
 
   $('#box_list_pasien').html('Loading...');
   
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_list_pasien') ?>", '', function (response) {    
+  var is_icu = ( $('#bag_pas').val() == '031001' ) ? 'Y' : '';
+  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_list_pasien?is_icu=') ?>"+is_icu, '', function (response) {    
     html = '';  
     // html = '<div class="left" style="padding: 5px; font-size: 12px;background: darkblue; color: white"><b>PASIEN RAWAT INAP</b><br>Pasien dirawat s.d tgl <?php echo date('d/M/Y')?><br>BPJS : 20 <br>Umum/Asuransi : 10</div>';
     html += '<div style="padding-top: 1px; padding-bottom: 10px;"><b>Cari pasien rawat inap:</b> <br><input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);"><a style="margin-top:4px" href="#" onclick="get_list_pasien()" class="btn btn-block btn-primary">Refresh</a></div>';
@@ -218,6 +219,7 @@ function form_main(url, no_mr){
           <br>
           <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
           <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
+          <input type="hidden" name="bag_pas" value="<?php echo $value->bag_pas?>" id="bag_pas">
 
           <!-- profile Pasien -->
           <div class="col-md-2 no-padding">

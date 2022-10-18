@@ -336,7 +336,7 @@ class Pl_pelayanan extends MX_Controller {
 
             $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
             $row[] = $row_list->nama_pegawai;
-            $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->created_by.'</div>';
 
             if($row_list->status_batal==1){
@@ -1628,12 +1628,7 @@ class Pl_pelayanan extends MX_Controller {
     public function cancel_visit()
     {   
         // echo '<pre>';print_r($_POST);die;
-        $this->db->trans_begin();   
-        /*update tc_registrasi*/
-        $reg_data = array('tgl_jam_keluar' => date('Y-m-d H:i:s'), 'kode_bagian_keluar' => $_POST['kode_bag'], 'status_batal' => 1 );
-        $this->db->update('tc_registrasi', $reg_data, array('no_registrasi' => $_POST['no_registrasi'] ) );
-        $this->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi Modul Pelayanan', json_encode($reg_data),'no_registrasi');
-
+        $this->db->trans_begin();  
 
         /*tc_kunjungan*/
         $kunj_data = array('tgl_keluar' => date('Y-m-d H:i:s'), 'status_keluar' => 1, 'status_batal' => 1 );
@@ -1646,15 +1641,30 @@ class Pl_pelayanan extends MX_Controller {
             $gd_dt = array('status_batal' => 1, 'tgl_jam_kel' => date('Y-m-d H:i:s') );
             $this->db->update('gd_tc_gawat_darurat', $gd_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
             $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($gd_dt),'no_kunjungan');
-        }elseif($_POST['kode_bag']=='030501'){
+            // pasien vk
+        }
+        elseif($_POST['kode_bag']=='030501'){
             $vk_dt = array('status_batal' => 1, 'tgl_keluar' => date('Y-m-d H:i:s') );
             $this->db->update('ri_pasien_vk', $vk_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
+        }
+        // batal fisioterapi
+        elseif($_POST['kode_bag']=='050301'){
+            $fisio_dt = array('status_batal' => 1, 'tgl_selesai' => date('Y-m-d H:i:s'), 'status_daftar' => 2 );
+            $this->db->update('pm_tc_penunjang', $fisio_dt, array('no_kunjungan' => $_POST['no_kunjungan']) );
         }
         else{
             /*pl_tc_poli*/
             $poli_data = array('status_batal' => 1, 'no_induk' => $this->session->userdata('user')->user_id, 'created_by' => $this->session->userdata('user')->fullname );
             $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );
             $this->logs->save('pl_tc_poli', $_POST['no_kunjungan'], 'update pl_tc_poli Modul Pelayanan', json_encode($poli_data),'no_kunjungan');
+        }
+
+        // jika  IGD atau Poli maka update tc registrasi
+        if( !in_array($_POST['kode_bag'], array('030501') ) ){
+             /*update tc_registrasi*/
+            $reg_data = array('tgl_jam_keluar' => date('Y-m-d H:i:s'), 'kode_bagian_keluar' => $_POST['kode_bag'], 'status_batal' => 1 );
+            $this->db->update('tc_registrasi', $reg_data, array('no_registrasi' => $_POST['no_registrasi'] ) );
+            $this->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi Modul Pelayanan', json_encode($reg_data),'no_registrasi');
         }
 
         if ($this->db->trans_status() === FALSE)

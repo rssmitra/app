@@ -133,15 +133,18 @@ class Process_entry_resep_model extends CI_Model {
         isset($params['catatan_lainnya']) ? 
         	$data_farmasi_detail['catatan_lainnya'] = $this->regex->_genRegex($params['catatan_lainnya'], 'RGXQSL'):'';
 
-        //print_r($data_farmasi_detail);die;
+        
         /*cek terlebih dahulu data fr_tc_far*/
         /*jika sudah ada data sebelumnya maka langsung insert ke detail*/
         $cek_existing = $this->Process_entry_resep->cek_existing_data('fr_tc_far_detail_log', array('relation_id' => $relation_id, 'flag_resep' => $params['flag_resep']) );
+        
+        // echo '<pre>';print_r($cek_existing);die;
 
         if( $cek_existing == false ){
             /*save existing*/
             $data_farmasi_detail['created_date'] = date('Y-m-d H:i:s');
             $data_farmasi_detail['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+            // print_r($data_farmasi_detail);die;
             /*insert new data detail*/
             $this->db->insert('fr_tc_far_detail_log', $data_farmasi_detail);
             /*save history*/
@@ -155,12 +158,96 @@ class Process_entry_resep_model extends CI_Model {
             $this->db->update('fr_tc_far_detail_log', $data_farmasi_detail, array('relation_id' => $relation_id));
 
         }
-
-
         
         return $data_farmasi_detail;
 
     }
+
+    public function save_log_detail_iter($params, $relation_id){
+
+        /*data detail farmasi*/
+
+       /*sub total*/
+       $sub_total = (float)$params['jumlah_tebus'] * (float)$params['harga_jual'];
+       $sisa = $params['jumlah_pesan'] - $params['jumlah_tebus'];
+       /*total biaya*/
+       $jasa_produksi = isset($params['jasa_produksi']) ? $params['jasa_produksi'] : 0 ;
+       $total_biaya = ($sub_total + $params['harga_r'] + $jasa_produksi);
+       $data_farmasi_detail = array(
+           'kode_trans_far' => $this->regex->_genRegex($params['kode_trans_far'], 'RGXINT'),
+           'kode_pesan_resep' => $this->regex->_genRegex($params['kode_pesan_resep'], 'RGXINT'),
+           'tgl_input' => date('Y-m-d H:i:s'),
+           'kode_brg' => $this->regex->_genRegex($params['kode_brg'], 'RGXQSL'),
+           'nama_brg' => $this->regex->_genRegex($params['nama_brg'], 'RGXQSL'),
+           'satuan_kecil' => $this->regex->_genRegex($params['satuan_kecil'], 'RGXQSL'),
+           'jumlah_pesan' => $this->regex->_genRegex($params['jumlah_pesan'], 'RGXINT'),
+           'jumlah_tebus' => $this->regex->_genRegex($params['jumlah_tebus'], 'RGXINT'),
+           'sisa' => $sisa,
+           'harga_jual_satuan' => $params['harga_jual'],
+           'sub_total' => $sub_total,
+           'jasa_r' => $params['harga_r'],
+           'total' => $total_biaya,
+           'flag_resep' => $this->regex->_genRegex($params['flag_resep'], 'RGXQSL'),
+           'relation_id' => $this->regex->_genRegex($relation_id, 'RGXQSL'),
+
+       );
+
+       // jumlah obat 23/resep prb
+       isset($params['jumlah_obat_23']) ? 
+           $data_farmasi_detail['jumlah_obat_23'] = $this->regex->_genRegex($params['jumlah_obat_23'], 'RGXINT'):'';
+       
+       // apakah jumlah obat 23/resep prb ditangguhkan
+       isset($params['prb_ditangguhkan']) ? 
+       $data_farmasi_detail['prb_ditangguhkan'] = $this->regex->_genRegex($params['prb_ditangguhkan'], 'RGXINT'):'';
+
+       // apakah jumlah obat 7/resep prb ditangguhkan
+       isset($params['resep_ditangguhkan']) ? 
+       $data_farmasi_detail['resep_ditangguhkan'] = $this->regex->_genRegex($params['resep_ditangguhkan'], 'RGXINT'):'';
+           
+       // jasa produksi
+       isset($params['jasa_produksi']) ? 
+           $data_farmasi_detail['jasa_produksi'] = $this->regex->_genRegex($params['jasa_produksi'], 'RGXINT'):'';
+       // signa
+       isset($params['dosis_obat']) ? 
+           $data_farmasi_detail['dosis_obat'] = $this->regex->_genRegex($params['dosis_obat'], 'RGXQSL'):'';
+       isset($params['dosis_per_hari']) ? 
+           $data_farmasi_detail['dosis_per_hari'] = $this->regex->_genRegex($params['dosis_per_hari'], 'RGXQSL'):'';
+       isset($params['satuan_obat']) ? 
+           $data_farmasi_detail['satuan_obat'] = $this->regex->_genRegex($params['satuan_obat'], 'RGXQSL'):'';
+       isset($params['anjuran_pakai']) ? 
+           $data_farmasi_detail['anjuran_pakai'] = $this->regex->_genRegex($params['anjuran_pakai'], 'RGXQSL'):'';
+       isset($params['catatan_lainnya']) ? 
+           $data_farmasi_detail['catatan_lainnya'] = $this->regex->_genRegex($params['catatan_lainnya'], 'RGXQSL'):'';
+
+       
+       /*cek terlebih dahulu data fr_tc_far*/
+       /*jika sudah ada data sebelumnya maka langsung insert ke detail*/
+       $cek_existing = $this->Process_entry_resep->cek_existing_data('fr_tc_far_detail_log', array('relation_id' => $relation_id, 'flag_resep' => $params['flag_resep']) );
+       
+       // echo '<pre>';print_r($cek_existing);die;
+
+       if( $cek_existing == false ){
+           /*save existing*/
+           $data_farmasi_detail['created_date'] = date('Y-m-d H:i:s');
+           $data_farmasi_detail['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+           // print_r($data_farmasi_detail);die;
+           /*insert new data detail*/
+           $this->db->insert('fr_tc_far_detail_log', $data_farmasi_detail);
+           /*save history*/
+           
+       }else{
+
+           /*update existing*/
+           $data_farmasi_detail['updated_date'] = date('Y-m-d H:i:s');
+           $data_farmasi_detail['updated_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+           /*insert new data detail*/
+           $this->db->update('fr_tc_far_detail_log', $data_farmasi_detail, array('relation_id' => $relation_id));
+
+       }
+       
+       return $data_farmasi_detail;
+
+   }
 
     public function rollback($kode_pesan_resep){
 

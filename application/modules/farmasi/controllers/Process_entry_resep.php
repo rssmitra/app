@@ -281,8 +281,10 @@ class Process_entry_resep extends MX_Controller {
     {
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
         
+        $dt_trans = $this->db->get_where('fr_tc_far', array('kode_trans_far' => $id) )->row();
+
         if($this->Process_entry_resep->rollback_by_kode_trans_far($id)){
-            echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Berhasil Dilakukan'));
+            echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Berhasil Dilakukan', 'iter' => $dt_trans->referensi));
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Gagal Dilakukan'));
         }

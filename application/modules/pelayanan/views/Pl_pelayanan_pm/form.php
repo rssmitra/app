@@ -499,6 +499,35 @@ function rollback(kode_penunjang){
 
 }
 
+function cancel_visit(){
+
+preventDefault();  
+achtungShowLoader();
+if(confirm('Are you sure?')){
+  $.ajax({
+      url: "pelayanan/Pl_pelayanan/cancel_visit",
+      data: { no_registrasi: $('#no_registrasi').val(), no_kunjungan: $('#no_kunjungan').val(), kode_bag: $('#kode_bagian_val').val(), kode_penunjang: $('#kode_penunjang').val() },            
+      dataType: "json",
+      type: "POST",
+      complete: function (xhr) {
+        var data=xhr.responseText;  
+        var jsonResponse = JSON.parse(data);  
+        if(jsonResponse.status === 200){  
+          $.achtung({message: jsonResponse.message, timeout:5}); 
+          getMenu('pelayanan/Pl_pelayanan_pm?type_tujuan='+$('#kode_bagian_val').val()+'');
+        }else{          
+          $.achtung({message: jsonResponse.message, timeout:5});  
+        } 
+        achtungHideLoader();
+      }
+  });
+}else{
+  return false;
+}
+
+
+}
+
 function cetak_slip() {
   
   noMr = $('#noMrHidden').val();
@@ -557,7 +586,7 @@ function perjanjian_pasien_pm(){
           <br>
           <!-- hidden form -->
           <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>" id="no_kunjungan">
-          <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
+          <input type="hidden" class="form-control" name="no_registrasi" id="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
           <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
           <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>">
           <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
@@ -629,6 +658,7 @@ function perjanjian_pasien_pm(){
 
               <?php if($value->status_daftar==0) :?>
                   <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_selesai" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pasien Selesai</a>
+                  <a href="#" class="btn btn-xs btn-danger" id="btn_pasien_batal" onclick="cancel_visit()" ><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
               <?php else: 
                 switch ($status) {
                   case 'belum_ditindak':

@@ -373,13 +373,24 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
 
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
-      $('#btn_submit').attr('disabled', true);
-      $('#jumlah_pesan').attr('disabled', true);
+      // $('#btn_submit').attr('disabled', true);
+      // $('#jumlah_pesan').attr('disabled', true);
       $('#jumlah_pesan').val('0');
       $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
       $('#detailPembelianObatHtml').html('');
+      $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
+      $('#prb_ditangguhkan').attr('readonly', true);
+      $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
+      $('#resep_ditangguhkan').attr('readonly', true);
     }else{
+      $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
+      $('#prb_ditangguhkan').attr('readonly', false);
+      $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
+      $('#resep_ditangguhkan').attr('readonly', false);
+
       $('#jumlah_pesan').focus();
+      $('#jumlah_pesan').attr('max', response.sisa_stok);
+      $('#jml_23').attr('max', response.sisa_stok);
       $('#jumlah_pesan').attr('disabled', false);
       $('#btn_submit').attr('disabled', false);
       $('#warning_stok_obat').html('');
@@ -784,7 +795,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Jml Tebus</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="text" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
+                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="number" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
                 </div>
                 <div class="col-md-6">
                   <label class="inline" style="margin-top: 4px;margin-left: -12px;">
@@ -797,7 +808,7 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Resep Kronis</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jml_23" id="jml_23" type="text" value="" style="text-align:center" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
+                    <input class="form-control" name="jml_23" id="jml_23" type="number" value="" style="text-align:center" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
                
                 </div>
                 <div class="col-md-6">

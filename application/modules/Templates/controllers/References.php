@@ -1881,7 +1881,7 @@ class References extends MX_Controller {
 		$query = "SELECT a.kd_tr_resep, c.kode_brg,
 		c.nama_brg,
 		c.satuan_kecil,
-		a.harga_jual, (a.jumlah_tebus+a.jumlah_obat_23) as jumlah_tebus, biaya_tebus, id_tc_far_racikan, b.status_transaksi
+		a.harga_jual, (a.jumlah_tebus+a.jumlah_obat_23) as jumlah_tebus, a.jumlah_retur, biaya_tebus, id_tc_far_racikan, b.status_transaksi
 		FROM
 		fr_tc_far_detail AS a
 		LEFT JOIN fr_tc_far AS b ON b.kode_trans_far = a.kode_trans_far
@@ -1894,7 +1894,7 @@ class References extends MX_Controller {
 		SELECT id_tc_far_racikan_detail, kode_brg,
 		nama_brg,
 		satuan_kecil,
-		harga_jual, jumlah, jumlah_total, id_tc_far_racikan, status_input
+		harga_jual, jumlah, 0, jumlah_total, id_tc_far_racikan, status_input
 		from fr_obat_racikan_v
 		WHERE kode_trans_far=".$kode_trans_far."";
 		$result = $this->db->query($query)->result();
@@ -1915,13 +1915,19 @@ class References extends MX_Controller {
 		foreach($result as $row_ress){
 			$no++;
 			$is_racikan = ($row_ress->id_tc_far_racikan == 0)?'':'(racikan)';
+			$is_retur = ($row_ress->jumlah_retur > 0) ? '<span style="color: red; font-weight: bold">(-'.$row_ress->jumlah_retur.')</span>' : '';
 			$html .= '<tr>';
 			$html .= '<td>'.$no.'</td>';
 			$html .= '<td>'.$row_ress->kode_brg.'</td>';
 			$html .= '<td>'.$row_ress->nama_brg.'</td>';
-			$html .= '<td class="center">'.$row_ress->jumlah_tebus.' '.$is_racikan.'</td>';
+			$html .= '<td class="center">'.$row_ress->jumlah_tebus.' '.$is_retur.' '.$is_racikan.'</td>';
 			if($row_ress->status_transaksi != null){
-				$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item_trans_far('.$row_ress->kd_tr_resep.','."'".$row_ress->kode_brg."'".', '."'".$row_ress->nama_brg."'".', '.$row_ress->jumlah_tebus.')"><i class="fa fa-sign-out"></i></a></td>';
+				$sisa = $row_ress->jumlah_tebus - $row_ress->jumlah_retur;
+				if( $sisa > 0 ){
+					$html .= '<td class="center"><a class="btn btn-xs btn-inverse" onclick="click_select_item_trans_far('.$row_ress->kd_tr_resep.','."'".$row_ress->kode_brg."'".', '."'".$row_ress->nama_brg."'".', '.$row_ress->jumlah_tebus.')"><i class="fa fa-sign-out"></i></a></td>';
+				}else{
+					$html .= '<td class="center">-</td>';
+				}
 			}else{
 				$html .= '<td class="center"><b>Dalam proses...</b></td>';
 			}

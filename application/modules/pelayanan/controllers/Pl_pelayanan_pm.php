@@ -298,29 +298,34 @@ class Pl_pelayanan_pm extends MX_Controller {
 
             $bag = substr($row_list->kode_bagian_asal, 1, 1);
 
-            if($status_pasien=='belum_ditindak'){
-
-                $status = '<label class="label label-warning" title="Belum Dilayani"><i class="fa fa-info-circle bigger-120"></i></label>';
-
-            }else if($status_pasien=='belum_bayar'){
-
-                $status = '<label class="label label-danger">Belum bayar</label>';
-               
-            }else if($status_pasien=='belum_isi_hasil'){
-
-                $status = '<label class="label label-success">Belum isi hasil</label>';
-
+            if( $row_list->status_batal == 1 ){
+                $status = '<span style="color: red; font-weight: bold">-Batal-</span>';
             }else{
+                if($status_pasien=='belum_ditindak'){
 
-                if($_GET['sess_kode_bagian']!='050301'){
-                    $status = '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa</a>';
+                    $status = '<label class="label label-warning" title="Belum Dilayani"><i class="fa fa-info-circle bigger-120"></i></label>';
+    
+                }else if($status_pasien=='belum_bayar'){
+    
+                    $status = '<label class="label label-danger">Belum bayar</label>';
+                   
+                }else if($status_pasien=='belum_isi_hasil'){
+    
+                    $status = '<label class="label label-success">Belum isi hasil</label>';
+    
                 }else{
+    
+                    if($_GET['sess_kode_bagian']!='050301'){
+                        $status = '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa</a>';
+                    }else{
+                        
+                        $status = ($transaksi==0)?'<label class="label label-info">Lunas</label>':'<label class="label label-success">Selesai</label>';
+    
+                    }
                     
-                    $status = ($transaksi==0)?'<label class="label label-info">Lunas</label>':'<label class="label label-success">Selesai</label>';
-
                 }
-                
             }
+            
 
             $row[] = '<div class="center">'.$status.'</div>';
            
@@ -741,7 +746,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         $kode_penunjang = $this->regex->_genRegex($this->input->post('kode_penunjang'),'RGXINT');
              
         /*update pm_tc_penunjang*/
-        $pm_tc_penunjang = array('status_daftar' => 0, 'status_isihasil' => 0);
+        $pm_tc_penunjang = array('status_daftar' => 0, 'status_isihasil' => 0, 'status_batal' => 0, 'tgl_selesai' => null);
         $this->Pl_pelayanan_pm->update('pm_tc_penunjang', $pm_tc_penunjang, array('kode_penunjang' => $kode_penunjang ) );
         /*save logs*/
         //$this->logs->save('pl_tc_poli', $no_kunjungan, 'update pl_tc_poli Modul Pelayanan', json_encode($arrPlTcPoli),'no_kunjungan');

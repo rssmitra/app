@@ -807,6 +807,18 @@ final class Tanggal {
 
     }
 
+    function lastday($month = '', $year = '') {
+        if (empty($month)) {
+           $month = date('m');
+        }
+        if (empty($year)) {
+           $year = date('Y');
+        }
+        $result = strtotime("{$year}-{$month}-01");
+        $result = strtotime('-1 second', strtotime('+1 month', $result));
+        return date('Y-m-d', $result);
+     }
+
 
 }
 

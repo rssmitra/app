@@ -44,24 +44,27 @@ function getMenuTabs(link, tabs_id)
 {
     /*$('#content_tab_custom').html(loading);*/
     preventDefault();
-    $.ajax({
-        url : link,
-        type: "POST",
-        beforeSend: function() {
-            //achtungShowLoader();
-            $('#'+tabs_id+'').html('Loading...');
-          },
-        error: function(xhr)
-        { 
-           $('#'+tabs_id).html(xhr.responseText);
-        },
-        complete: function(xhr) {    
-            $('#'+tabs_id).load(link);
-            //$('#'+tabs_id).html(xhr.html);
-            //achtungHideLoader();
-            //$("html, body").animate({ scrollTop: "300px" });
-        }
-    });
+    $('#'+tabs_id).html('Loading...');
+    $('#'+tabs_id).load(link);
+    
+    // $.ajax({
+    //     url : link,
+    //     type: "POST",
+    //     beforeSend: function() {
+    //         //achtungShowLoader();
+    //         $('#'+tabs_id+'').html('Loading...');
+    //       },
+    //     error: function(xhr)
+    //     { 
+    //        $('#'+tabs_id).html(xhr.responseText);
+    //     },
+    //     complete: function(xhr) {    
+    //         $('#'+tabs_id).load(link);
+    //         //$('#'+tabs_id).html(xhr.html);
+    //         //achtungHideLoader();
+    //         //$("html, body").animate({ scrollTop: "300px" });
+    //     }
+    // });
 
 }
 
@@ -69,22 +72,25 @@ function getMenuTabsHtml(link, tabs_id)
 {
     /*$('#content_tab_custom').html(loading);*/
     preventDefault();
-    $.ajax({
-        url : link,
-        type: "POST",
-        beforeSend: function() {
-            //achtungShowLoader();
-          },
-        error: function(xhr)
-        { 
-           $('#'+tabs_id).html(xhr.responseText);
-        },
-        success: function(xhr) { 
-          obj = JSON.parse(xhr);
-          //alert(obj.html);
-          $('#'+tabs_id).html(obj.html);
-        }
-    });
+    $('#'+tabs_id).html('Loading...');
+    $('#'+tabs_id).html(obj.html);
+    
+    // $.ajax({
+    //     url : link,
+    //     type: "POST",
+    //     beforeSend: function() {
+    //         //achtungShowLoader();
+    //       },
+    //     error: function(xhr)
+    //     { 
+    //        $('#'+tabs_id).html(xhr.responseText);
+    //     },
+    //     success: function(xhr) { 
+    //       obj = JSON.parse(xhr);
+    //       //alert(obj.html);
+    //       $('#'+tabs_id).html(obj.html);
+    //     }
+    // });
 
 }
 

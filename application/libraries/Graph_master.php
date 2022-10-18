@@ -651,6 +651,11 @@ final Class Graph_master {
 
     public function chartTypeData($style, $fields, $params, $data){
 
+        // echo '<pre>';print_r($style);
+        // echo '<pre>';print_r($fields);
+        // echo '<pre>';print_r($params);
+        // echo '<pre>';print_r($data);
+        // die;
         switch ($style) {
             case 'column':
                 /*lanjutkan buat function jika ada style yang lain*/
@@ -710,6 +715,10 @@ final Class Graph_master {
                 
                 if ($params['style']=='TableResumeKinerjaDokter') {
                     return $this->TableResumeKinerjaDokter($fields, $params, $data);
+                }
+
+                if ($params['style']=='TableKinerjaDokter') {
+                    return $this->TableKinerjaDokter($fields, $params, $data);
                 }
 
                 if ($params['style']=='TableResumeHutang') {
@@ -1229,6 +1238,25 @@ final Class Graph_master {
         );
         // echo '<pre>'; print_r($result);die;
         $html = $CI->load->view('eksekutif/Eks_poli/TableResumeKinerjaDokter', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function TableKinerjaDokter($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+
+        // load view
+        $result = array(
+            'value' => $data['result'],
+        );
+        // echo '<pre>'; print_r($result);die;
+        $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter', $result, true);
         
         
         $chart_data = array(
