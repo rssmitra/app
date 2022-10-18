@@ -56,7 +56,7 @@ class Farmasi_pesan_resep extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Farmasi_pesan_resep->get_by_no_kunj($this->input->get('q'));
-        //print_r($this->db->last_query());
+        // print_r($this->db->last_query());
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {

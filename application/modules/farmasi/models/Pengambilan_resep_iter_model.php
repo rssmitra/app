@@ -5,7 +5,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, mt_bagian.nama_bagian, fr_tc_far.kode_bagian_asal, iter';
+	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, mt_bagian.nama_bagian, fr_tc_far.kode_bagian_asal, iter, fr_tc_far.kode_dokter';
 
 	var $order = array('tgl_trans' => 'DESC');
 
@@ -30,6 +30,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 		
 		$this->_main_query();
 		$this->db->where('iter > 0');
+		$this->db->where('referensi IS NULL');
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
@@ -112,7 +113,29 @@ class Pengambilan_resep_iter_model extends CI_Model {
 
 	public function get_detail($kode_trans_far)
 	{
-		return $this->db->join('fr_tc_far', 'fr_tc_far.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far', 'left')->join('fr_tc_far_detail_log', '(fr_tc_far_detail_log.kode_trans_far=fr_tc_far_detail_log_prb.kode_trans_far AND fr_tc_far_detail_log.relation_id=fr_tc_far_detail_log_prb.kd_tr_resep)', 'left')->get_where('fr_tc_far_detail_log_prb', array('fr_tc_far_detail_log_prb.kode_trans_far' => $kode_trans_far))->result();		
+		$query = $this->db->select("fr_tc_far_detail_log.id_fr_tc_far_detail_log,fr_tc_far_detail_log.tgl_input,fr_tc_far_detail_log.kode_brg,fr_tc_far_detail_log.nama_brg,fr_tc_far_detail_log.satuan_kecil,fr_tc_far_detail_log.jumlah_pesan,fr_tc_far_detail_log.jumlah_tebus,fr_tc_far_detail_log.harga_jual_satuan,fr_tc_far_detail_log.sub_total,fr_tc_far_detail_log.jasa_r,fr_tc_far_detail_log.jasa_produksi,fr_tc_far_detail_log.diskon,fr_tc_far_detail_log.total,fr_tc_far_detail_log.urgensi,fr_tc_far_detail_log.flag_resep,fr_tc_far_detail_log.dosis_obat,fr_tc_far_detail_log.relation_id,fr_tc_far_detail_log.satuan_obat,fr_tc_far_detail_log.anjuran_pakai,fr_tc_far_detail_log.kode_pesan_resep,fr_tc_far_detail_log.status_input,fr_tc_far_detail_log.kode_trans_far,fr_tc_far_detail_log.jumlah_obat_23,fr_tc_far_detail_log.status_tebus,fr_tc_far_detail_log.jumlah_retur,fr_tc_far_detail_log.tgl_retur,resep_ditangguhkan,
+		prb_ditangguhkan,dosis_per_hari")
+		->select("(select top 1 jml_sat_kcl from mt_depo_stok where kode_brg=fr_tc_far_detail_log.kode_brg AND kode_bagian='060101') as stok_akhir_depo, fr_tc_far_detail_log.relation_id as kd_tr_resep,  fr_tc_log_mutasi_obat.jumlah_mutasi_obat")
+		->join('fr_tc_far', 'fr_tc_far.kode_trans_far=fr_tc_far_detail_log.kode_trans_far', 'left')
+		->join('fr_tc_log_mutasi_obat','fr_tc_log_mutasi_obat.kd_tr_resep=fr_tc_far_detail_log.relation_id','left')
+		->order_by('fr_tc_far_detail_log.relation_id', 'ASC')
+		->group_by("fr_tc_far_detail_log.id_fr_tc_far_detail_log,fr_tc_far_detail_log.tgl_input,fr_tc_far_detail_log.kode_brg,fr_tc_far_detail_log.nama_brg,fr_tc_far_detail_log.satuan_kecil,fr_tc_far_detail_log.jumlah_pesan,fr_tc_far_detail_log.jumlah_tebus,fr_tc_far_detail_log.harga_jual_satuan,fr_tc_far_detail_log.sub_total,fr_tc_far_detail_log.jasa_r,fr_tc_far_detail_log.jasa_produksi,fr_tc_far_detail_log.diskon,fr_tc_far_detail_log.total,fr_tc_far_detail_log.urgensi,fr_tc_far_detail_log.flag_resep,fr_tc_far_detail_log.dosis_obat,fr_tc_far_detail_log.relation_id,fr_tc_far_detail_log.satuan_obat,fr_tc_far_detail_log.anjuran_pakai,fr_tc_far_detail_log.kode_pesan_resep,fr_tc_far_detail_log.status_input,fr_tc_far_detail_log.kode_trans_far,fr_tc_far_detail_log.jumlah_obat_23,fr_tc_far_detail_log.status_tebus,fr_tc_far_detail_log.jumlah_retur,fr_tc_far_detail_log.tgl_retur,dosis_per_hari,
+		prb_ditangguhkan, fr_tc_log_mutasi_obat.jumlah_mutasi_obat, resep_ditangguhkan")
+		->get_where('fr_tc_far_detail_log', array('fr_tc_far_detail_log.kode_trans_far' => $kode_trans_far))->result();		
+
+		return $query;
+	}
+
+	public function get_detail_group_by_id($kode_trans_far)
+	{
+
+		$query = $this->get_detail($kode_trans_far);
+		foreach ($query as $key => $value) {
+			$getData[$value->id_fr_tc_far_detail_log] = $value;
+		}
+		
+
+		return $getData;
 	}
 
 	public function get_by_id($id)
@@ -145,7 +168,7 @@ class Pengambilan_resep_iter_model extends CI_Model {
 
 	public function get_riwayat_iter($kode_trans_far){
 		$this->_main_query();
-		$this->db->where('kode_trans_far_referensi', $kode_trans_far);
+		$this->db->where('referensi', $kode_trans_far);
 		return $this->db->get()->result();
 	}
 	

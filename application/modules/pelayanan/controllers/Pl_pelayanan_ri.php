@@ -236,6 +236,7 @@ class Pl_pelayanan_ri extends MX_Controller {
             $no++;
             $row = array();
             /*color of type Ruangan RI*/
+            
             /*LB*/
             if ( in_array($row_list->bag_pas, array('030101','031401','031301','030801','030401','031601') ) ) {
                 $color = 'red';

@@ -237,7 +237,7 @@ function change_jenis_resep(value){
 
   if( value == 'rl' || value == 'pb' ){
     // default value
-    // $('#form_by_jenis_resep').hide();
+    $('#form_by_jenis_resep').show();
     $('#flag_trans').val( value.toUpperCase() );
     kode_profit = ( value == 'rl') ? 3000 : 4000 ;
     $('#kode_profit').val(kode_profit);
@@ -250,7 +250,7 @@ function change_jenis_resep(value){
 
   if( value == 'rk' ){
     // default value
-    // $('#form_by_jenis_resep').hide();
+    $('#form_by_jenis_resep').show();
     $('#kode_profit').val(4000);
     $('#flag_trans').val( value.toUpperCase() );
     // $('#div_default_form_entry').hide();

@@ -213,10 +213,19 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag){
 
     if(response.sisa_stok <= 0){
       $('#inputKeyObat').focus();
-      $('#btn_add_obat').hide('fast');
-      $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i>Stok sudah habis !</i></b></div>');
+      $('#btn_submit').hide('fast');
+
+      $('#jumlah_pesan').val('0');
+
+      $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
+      $('#detailPembelianObatHtml').html('');
+      $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',true);
+      $('#prb_ditangguhkan').attr('readonly', true);
+      $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
+      $('#resep_ditangguhkan').attr('readonly', true);
+
     }else{
-      $('#btn_add_obat').show('fast');
+      $('#btn_submit').show('fast');
       $('#warning_stok_obat').html('');
     }
 
@@ -401,7 +410,7 @@ $('select[name="jenis_resep"]').change(function () {
 
   if( $(this).val() == 'rl' || $(this).val() == 'pb' ){
     // default value
-    $('#form_by_jenis_resep').hide();
+    $('#form_by_jenis_resep').show();
     $('#flag_trans').val( $(this).val().toUpperCase() );
     kode_profit = ( $(this).val() == 'rl') ? 3000 : 4000 ;
     $('#kode_profit').val(kode_profit);
@@ -412,7 +421,7 @@ $('select[name="jenis_resep"]').change(function () {
 
   if( $(this).val() == 'rk' ){
     // default value
-    $('#form_by_jenis_resep').hide();
+    $('#form_by_jenis_resep').show();
     $('#kode_profit').val(4000);
     $('#flag_trans').val( $(this).val().toUpperCase() );
     $('#div_pencarian_obat').hide();
@@ -505,9 +514,8 @@ $('select[name="jenis_resep"]').change(function () {
       </div>
   </div>
 
-  <div class="form-group" style="margin-left: 8px">
-    <label class="col-sm-2">&nbsp;</label>
-    <div class="col-md-10" >
+  <div class="form-group" >
+    <div class="col-md-12 no-padding" >
         <?php if( !isset($value->status_transaksi) || $value->status_transaksi == null) : ?>
           <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary" value="submit_detail">
             <i class="ace-icon fa fa-plus-circle icon-on-right bigger-110"></i>
@@ -527,15 +535,15 @@ $('select[name="jenis_resep"]').change(function () {
                 Resep Selesai
           </button> -->
 
-          <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
+          <button type="button" id="btn_resep_selesai" class="btn btn-success btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
                 <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
                 Resep Selesai <b style="color: black">(Ditunggu)</b>
           </button>
 
-          <button type="button" id="btn_resep_selesai_diantar" class="btn btn-success btn-xs" name="submit" value="resep_selesai_diantar" onclick="resep_farmasi_selesai('diantar')">
+          <!-- <button type="button" id="btn_resep_selesai_diantar" class="btn btn-success btn-xs" name="submit" value="resep_selesai_diantar" onclick="resep_farmasi_selesai('diantar')">
                 <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
                 Resep Selesai <b style="color: black">(Diantar)</b>
-          </button>
+          </button> -->
 
 
       <?php else : ?>
