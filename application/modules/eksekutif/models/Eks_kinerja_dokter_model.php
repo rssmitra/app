@@ -44,11 +44,11 @@ class Eks_kinerja_dokter_model extends CI_Model {
             $this->db->where("MONTH (a.tgl) = ".$_GET['bulan']." ");
         }
 
-        if(isset($_GET['poliklinik']) AND $_GET['poliklinik'] != ''){
+        if(isset($_GET['poliklinik']) AND $_GET['poliklinik'] != 0){
             $this->db->where("a.kode_bagian = '".$_GET['poliklinik']."' ");
         }
 
-        if(isset($_GET['select_dokter']) AND $_GET['select_dokter'] != ''){
+        if(isset($_GET['select_dokter']) AND $_GET['select_dokter'] != 0){
             $this->db->where("a.kode = '".$_GET['select_dokter']."' ");
         }
         if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {

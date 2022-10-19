@@ -210,6 +210,20 @@
                 </div>
             </div>
 
+            <div class="form-group" id="div_bulan">
+                <label class="control-label col-md-2">Tampilkan Dengan</label>
+                <div class="col-md-4">
+                <label>
+                  <input name="jml_pasien" value="jp" type="checkbox" class="ace">
+                  <span class="lbl"> Jumlah Pasien</span>
+                </label>
+                <label>
+                  <input name="jml_rp" value="jr" type="checkbox" class="ace" checked>
+                  <span class="lbl"> Jumlah Rupiah</span>
+                </label>
+                </div>
+            </div>
+
             </div>
             <br>
             <hr class="separator">
