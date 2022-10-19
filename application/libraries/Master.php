@@ -1079,6 +1079,46 @@ final Class Master {
 		}
 		return strtoupper(trim($randomString));
 	}
+
+	function color_parameter( $value ){
+
+        $color = '';
+        if( $value >= 0 && $value < 49 ){
+            $color = '#FF0000';
+        }
+        if( $value >= 50 && $value < 74 ){
+            $color = '#FF8C00';
+        }
+        if( $value >= 75 && $value < 100 ){
+            // $color = '#ffeb00';
+            $color = '#58a0e0';
+        }
+
+        if( $value == 100 ){
+            // $color = '#00FF00';
+            $color = '#19d263';
+        }
+        if( $value > 100 ){
+            $color = '#0000FF';
+        }
+
+        return $color;
+
+    }
+
+	function stats_between_value( $curr, $last ){
+
+		$a = round(($curr/$last) * 100); 
+		$skor = ($curr < $last) ? 100 - $a : $a - 100;
+		if($curr < $last){
+			$result = '<i class="fa fa-arrow-down red"></i> <br>'.$skor.'%';
+		}else{
+			$result = '<i class="fa fa-arrow-up green"></i> <br>'.$skor.'%';
+		}
+		return $result;
+        
+
+    }
 	
 
 }
