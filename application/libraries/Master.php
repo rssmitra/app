@@ -1108,8 +1108,8 @@ final Class Master {
 
 	function stats_between_value( $curr, $last ){
 
-		$a = round(($curr/$last) * 100); 
-		$skor = ($curr < $last) ? 100 - $a : $a - 100;
+		$a = round(($curr/$last) * 100) ; 
+		$skor = ($curr < $last) ? 100 - $a : $a - 100 ;
 		if($curr < $last){
 			$result = '<i class="fa fa-arrow-down red"></i> <br>'.$skor.'%';
 		}else{
