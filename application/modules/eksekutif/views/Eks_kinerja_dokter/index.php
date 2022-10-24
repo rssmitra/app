@@ -16,6 +16,10 @@
 
   });
 
+  $('#jenis_kunjungan, #penjamin, #bulan, #tahun, #poliklinik, #dokter ').change(function (e) {
+    $('#btn_search_data').click();
+  });
+
   $('#btn_search_data').click(function (e) {
       e.preventDefault();
       // achtungShowLoader();  
@@ -145,7 +149,7 @@
             <div class="form-group" id="jenis_asuransi" >
               <label class="control-label col-md-2">Jenis Kunjungan</label>
                 <div class="col-md-2">
-                  <select class="form-control" name="jenis_kunjungan">
+                  <select class="form-control" name="jenis_kunjungan" id="jenis_kunjungan">
                   <option value="all">Pilih Semua</option>
                     <option value="rj">Rawat Jalan</option>
                     <option value="ri">Rawat Inap</option>
@@ -153,7 +157,7 @@
                 </div>
                 <label class="control-label col-md-2">Penjamin Pasien</label>
                 <div class="col-md-2">
-                  <select class="form-control" name="penjamin">
+                  <select class="form-control" name="penjamin" id="penjamin">
                     <option value="all">Pilih Semua</option>
                     <option value="bpjs">BPJS Kesehatan</option>
                     <option value="asuransi">Asuransi Lainnya</option>
@@ -206,21 +210,21 @@
             <div class="form-group" id="div_bulan">
                 <label class="control-label col-md-2">Dokter</label>
                 <div class="col-md-4">
-                <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
                 </div>
             </div>
 
             <div class="form-group" id="div_bulan">
                 <label class="control-label col-md-2">Tampilkan Dengan</label>
-                <div class="col-md-4">
-                <label>
-                  <input name="jml_pasien" value="jp" type="checkbox" class="ace">
-                  <span class="lbl"> Jumlah Pasien</span>
-                </label>
-                <label>
-                  <input name="jml_rp" value="jr" type="checkbox" class="ace" checked>
-                  <span class="lbl"> Jumlah Rupiah</span>
-                </label>
+                <div class="col-md-4" style="padding-top: 4px;padding-left: 18px;">
+                  <label>
+                    <input name="jml_pasien" value="jp" type="checkbox" class="ace">
+                    <span class="lbl"> Jumlah Pasien</span>
+                  </label>
+                  <label>
+                    <input name="jml_rp" value="jr" type="checkbox" class="ace" checked>
+                    <span class="lbl"> Jumlah Rupiah</span>
+                  </label>
                 </div>
             </div>
 
