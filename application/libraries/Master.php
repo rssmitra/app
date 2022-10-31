@@ -119,7 +119,7 @@ final Class Master {
 		
     }
 
-    function custom_selection($custom=array(), $nid='',$name,$id,$class='',$required='',$inline='',$readonly='') {
+    function custom_selection($custom=array(), $nid='',$name,$id,$class='',$required='',$inline='',$readonly='',$adjustment_option=array()) {
 		
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
@@ -162,18 +162,25 @@ final Class Master {
 		$fieldsetend = $inline?'':'</fieldset>';
 		
 		$field='';
-		$field.='
-		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>
-			<option value="" '.$selected.'> - Pilih - </option>';
-				$field_id = ($custom['id']==$custom['name']) ? 'ID' : $custom['id'] ;
-				foreach($data as $row){
-					$sel = trim($nid) == trim($row[$field_id])?'selected':'';
-					$field.='<option value="'.trim($row[$field_id]).'" '.$sel.' >'.strtoupper(trim($row[$custom['name']])).'</option>';
-				}	
-			
-		$field.='
-		</select>
-		';
+		
+
+		
+		$field.='<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>';
+			$field.='<option value="" '.$selected.'> - Pilih - </option>';
+
+			if(isset($adjustment_option)){
+				foreach ($adjustment_option as $key => $value) {
+					// echo '<pre>';print_r($value);die;
+					$field.='<option value="'.$key.'">'.$value.'</option>';
+				}
+			}
+			$field_id = ($custom['id']==$custom['name']) ? 'ID' : $custom['id'] ;
+			foreach($data as $row){
+				$sel = trim($nid) == trim($row[$field_id])?'selected':'';
+				$field.='<option value="'.trim($row[$field_id]).'" '.$sel.' >'.strtoupper(trim($row[$custom['name']])).'</option>';
+			}	
+		
+		$field.='</select>';
 		
 		return $field;
 		

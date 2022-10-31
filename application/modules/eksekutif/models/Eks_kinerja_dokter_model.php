@@ -14,21 +14,6 @@ class Eks_kinerja_dokter_model extends CI_Model {
         $this->db->from('tc_trans_pelayanan b');
         $this->db->join('tc_kunjungan c', 'c.no_kunjungan=b.no_kunjungan','left');
         $this->db->join('mt_bagian d', 'd.kode_bagian=b.kode_bagian','left');
-
-        if (isset($_GET['penjamin']) AND $_GET['penjamin'] != 'all') {  
-            if (isset($_GET['penjamin']) AND $_GET['penjamin'] == 'bpjs') { 
-                $this->db->where('b.kode_perusahaan', 120);
-            }
-
-            if (isset($_GET['penjamin']) AND $_GET['penjamin'] == 'asuransi') { 
-                $this->db->where('b.kode_perusahaan NOT IN(120,0) ');
-            }
-
-            if (isset($_GET['penjamin']) AND $_GET['penjamin'] == 'umum') { 
-                $this->db->where('b.kode_perusahaan', 0);
-            }
-        }
-
         
     }
 
@@ -51,6 +36,7 @@ class Eks_kinerja_dokter_model extends CI_Model {
         if(isset($_GET['select_dokter']) AND $_GET['select_dokter'] != 0){
             $this->db->where("a.kode = '".$_GET['select_dokter']."' ");
         }
+
         if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
             if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
                 $this->db->where("a.subskode NOT IN ('03') ");
@@ -116,18 +102,42 @@ class Eks_kinerja_dokter_model extends CI_Model {
             // echo '<pre>';print_r($this->db->last_query());die;
             
             $getData = [];
-            foreach ($result as $key => $value) {
-                $tgl = explode('-', $value->tgl);
-                $getData[$value->nama_dokter][$value->nama_bagian][(int)$tgl[2]] = array(
-                    'tgl' => $value->tgl,
-                    'total' => $value->total,
-                    'total_rp' => $value->total_rupiah,
-                    'total_last_month' => $value->total_last_month,
-                    'total_rp_last_month' => $value->total_rp_last_month,
-
-                );
+            if(empty($_GET['poliklinik']) AND !empty($_GET['select_dokter'])){
+                foreach ($result as $key => $value) {
+                    $tgl = explode('-', $value->tgl);
+                    $getData[$value->nama_dokter][(int)$tgl[2]] = array(
+                        'tgl' => $value->tgl,
+                        'total' => $value->total,
+                        'total_rp' => $value->total_rupiah,
+                        'total_last_month' => $value->total_last_month,
+                        'total_rp_last_month' => $value->total_rp_last_month,
+                    );
+                }
+            }elseif(!empty($_GET['poliklinik']) AND empty($_GET['select_dokter'])){
+                foreach ($result as $key => $value) {
+                    $tgl = explode('-', $value->tgl);
+                    $getData[$value->nama_bagian][(int)$tgl[2]] = array(
+                        'tgl' => $value->tgl,
+                        'total' => $value->total,
+                        'total_rp' => $value->total_rupiah,
+                        'total_last_month' => $value->total_last_month,
+                        'total_rp_last_month' => $value->total_rp_last_month,
+                    );
+                }
+            }else{
+                foreach ($result as $key => $value) {
+                    $tgl = explode('-', $value->tgl);
+                    $getData[$value->nama_dokter][$value->nama_bagian][(int)$tgl[2]] = array(
+                        'tgl' => $value->tgl,
+                        'total' => $value->total,
+                        'total_rp' => $value->total_rupiah,
+                        'total_last_month' => $value->total_last_month,
+                        'total_rp_last_month' => $value->total_rp_last_month,
+                    );
+                }
             }
-
+            
+            // echo '<pre>'; print_r($getData);die;
             // parameter
             unset($_GET['prefix']);
             unset($_GET['TypeChart']);
