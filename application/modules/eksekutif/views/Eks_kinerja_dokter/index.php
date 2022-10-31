@@ -203,14 +203,14 @@
             <div class="form-group" id="div_bulan">
                 <label class="control-label col-md-2">Poli/Klinik</label>
                 <div class="col-md-4">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '', '', array('all' => 'Pilih Semua')) ?>
                 </div>
             </div>
 
             <div class="form-group" id="div_bulan">
                 <label class="control-label col-md-2">Dokter</label>
                 <div class="col-md-4">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '', '', array('all' => 'Pilih Semua')) ?>
                 </div>
             </div>
 

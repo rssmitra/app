@@ -1255,8 +1255,17 @@ final Class Graph_master {
         $result = array(
             'value' => $data['result'],
         );
+
+        if(empty($_GET['poliklinik']) AND !empty($_GET['select_dokter'])){
+            $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_2', $result, true);
+        }elseif(!empty($_GET['poliklinik']) AND empty($_GET['select_dokter'])){
+            $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_2', $result, true);
+        }else{
+            $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter', $result, true);
+        }
+
         // echo '<pre>'; print_r($result);die;
-        $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter', $result, true);
+        
         
         
         $chart_data = array(
