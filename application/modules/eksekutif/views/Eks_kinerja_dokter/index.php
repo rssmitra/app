@@ -41,6 +41,27 @@
       // achtungHideLoader();
   });
 
+  $('#btn_export_excel').click(function (e) {
+      e.preventDefault();
+      // achtungShowLoader();  
+      
+      $('#contentPage').html('Loading...');
+      $.getJSON('eksekutif/Eks_kinerja_dokter/get_content_page', $('#form_search').serialize(), function(response_data) {
+        html = '';
+        
+        $.each(response_data, function (i, o) {
+          html += '<div class="col-sm-'+o.col_size+'"><div id="'+o.nameid+'"></div></div>';
+            
+            if(o.style=='table'){
+              window.open(o.url+'&export=excel', '_blank');
+            }
+
+          });
+          $('#contentPage').html(html);
+      });
+      // achtungHideLoader();
+  });
+
   function show_detail(flag){
     preventDefault();
     $('#show_detail_by_click').load('eksekutif/Eks_kinerja_dokter/show_detail?flag='+flag+'&'+$('#form_search').serialize()+'');
@@ -103,7 +124,8 @@
 
         $('#select_dokter option').remove();                
 
-        $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
+        $('<option value="all">-Pilih Semua-</option>').appendTo($('#select_dokter'));                         
+        // $('<option value="all">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
 
         $.each(data, function (i, o) {                  
 
@@ -236,6 +258,10 @@
                   <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
                     <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                     Tampilkan Data
+                  </a>
+                  <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+                    <i class="ace-icon fa fa-excel icon-on-right bigger-110"></i>
+                    Export Excel
                   </a>
                 </div>
             </div>

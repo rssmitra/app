@@ -39,7 +39,14 @@
 
 <div class="row">
   <div class="col-md-12" style="overflow-x:auto;">
-    <table class="table table-bordered">
+  <table class="table table-bordered">
+    <tr>
+        <td colspan="50" align="left">Laporan Kinerja Dokter</td>
+      </tr>
+  </table>
+  
+    <table class="table table-bordered" border="1">
+      
       <tr>
         <th rowspan="3" class="center" width="30px" style="vertical-align: middle">No</th>
         <th rowspan="3" style="vertical-align: middle; width: 200px !important;">Keterangan</th>
@@ -91,21 +98,19 @@
           
             <td><?php echo ucwords($key); ?></td>
 
-            <td class="center"><?php echo number_format($arr_total_last_month[$key])?></td>
-            <td><?php echo number_format($arr_total_rp_last_month[$key])?></td>
+            <td class="center"><?php echo $arr_total_last_month[$key]?></td>
+            <td><?php echo $arr_total_rp_last_month[$key]?></td>
             <td class="center">
                 <?php 
                   $var_arr_jp_ttl = isset($arr_jp_ttl[$key]) ? array_sum($arr_jp_ttl[$key]) : 0; 
-                  echo number_format($var_arr_jp_ttl); 
-                  echo '<br>'.$this->master->stats_between_value($var_arr_jp_ttl, $arr_total_last_month[$key]);
+                  echo $var_arr_jp_ttl; 
                   $arr_var_arr_jp_ttl[] = $var_arr_jp_ttl; 
                 ?>
             </td>
             <td class="center">
                 <?php 
                   $var_arr_rp_ttl = isset($arr_rp_ttl[$key]) ? array_sum($arr_rp_ttl[$key]) : 0; 
-                  echo number_format($var_arr_rp_ttl); 
-                  echo '<br>'.$this->master->stats_between_value($var_arr_rp_ttl, $arr_total_rp_last_month[$key]);
+                  echo $var_arr_rp_ttl; 
                   $arr_var_arr_rp_ttl[] = $var_arr_rp_ttl; 
                 ?>
             </td>
@@ -123,38 +128,36 @@
 
             ?>
                 <?php if(isset($_GET['jml_pasien'])) :?>
-                <td align="center"><?php echo number_format($jp)?></td>
+                <td align="center"><?php echo $jp?></td>
                 <?php endif; ?>
                 <?php if(isset($_GET['jml_rp'])) :?>
-                <td><?php echo number_format($rp)?></td>
+                <td><?php echo $rp?></td>
                 <?php endif; ?>
               <?php endfor;?>
         </tr>
       <?php endforeach; ?>
       <tr>
         <td colspan="2" class="center"><b>TOTAL</b></td>
-        <td><?php echo number_format(array_sum($ttl_arr_total_last_month))?></td>
-        <td><?php echo number_format(array_sum($ttl_arr_total_rp_last_month))?></td>
+        <td><?php echo array_sum($ttl_arr_total_last_month)?></td>
+        <td><?php echo array_sum($ttl_arr_total_rp_last_month)?></td>
         <td class="center">
             <?php 
-              echo number_format(array_sum($arr_var_arr_jp_ttl));
-              echo '<br>'.$this->master->stats_between_value(array_sum($arr_var_arr_jp_ttl), array_sum($arr_total_last_month));
+              echo array_sum($arr_var_arr_jp_ttl);
             ?>
 
         </td>
         <td class="center">
           <?php 
-            echo number_format(array_sum($arr_var_arr_rp_ttl));
-            echo '<br>'.$this->master->stats_between_value(array_sum($arr_var_arr_rp_ttl), array_sum($arr_total_rp_last_month));
+            echo array_sum($arr_var_arr_rp_ttl);
           ?>
 
         </td>
         <?php for($i=1; $i<=31; $i++) :?>
           <?php if(isset($_GET['jml_pasien'])) :?>
-          <td><?php echo isset($arr_jp[$i]) ? number_format(array_sum($arr_jp[$i])) : 0?></td>
+          <td><?php echo isset($arr_jp[$i]) ? array_sum($arr_jp[$i]) : 0?></td>
           <?php endif;?>
           <?php if(isset($_GET['jml_rp'])) :?>
-          <td><?php echo isset($arr_rp[$i]) ? number_format(array_sum($arr_rp[$i])) : 0?></td>
+          <td><?php echo isset($arr_rp[$i]) ? array_sum($arr_rp[$i]) : 0?></td>
           <?php endif;?>
         <?php endfor; ?>
         

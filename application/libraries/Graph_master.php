@@ -1254,25 +1254,33 @@ final Class Graph_master {
         // load view
         $result = array(
             'value' => $data['result'],
+            'export' => isset($_GET['export'])?$_GET['export']:false,
         );
 
-        if(empty($_GET['poliklinik']) AND !empty($_GET['select_dokter'])){
-            $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_2', $result, true);
-        }elseif(!empty($_GET['poliklinik']) AND empty($_GET['select_dokter'])){
-            $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_2', $result, true);
+        if(isset($_GET['export']) AND $_GET['export'] == 'excel'){
+            // echo 'Export Here'; exit;
+            if(empty($_GET['poliklinik']) AND !empty($_GET['select_dokter'])){
+                $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_2_excel', $result);
+            }else{
+                $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_excel', $result);
+            }
         }else{
-            $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter', $result, true);
+            if(empty($_GET['poliklinik']) AND !empty($_GET['select_dokter'])){
+                $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_2', $result, true);
+            }elseif(!empty($_GET['poliklinik']) AND empty($_GET['select_dokter'])){
+                $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter_2', $result, true);
+            }else{
+                $html = $CI->load->view('eksekutif/Eks_kinerja_dokter/TableKinerjaDokter', $result, true);
+            }
+    
+            $chart_data = array(
+                'xAxis'     => 0,
+                'series'    => $html,
+            );
+            return $chart_data;
         }
 
-        // echo '<pre>'; print_r($result);die;
         
-        
-        
-        $chart_data = array(
-            'xAxis'     => 0,
-            'series'    => $html,
-        );
-        return $chart_data;
     }
 
      public function TableResumeHutang($fields, $params, $data){

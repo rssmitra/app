@@ -62,43 +62,49 @@ class Eks_kinerja_dokter_model extends CI_Model {
         }
     }
 
+    private function subQuery(){
+        // subquery select
+        $this->db->select('SUM(total) AS total');
+        $this->db->from('view_rekap_bill_dr_date');
+        $this->db->where('MONTH(tgl)', $_GET['bulan']-1);
+        $this->db->where('YEAR(tgl)', $_GET['tahun']);
+        $this->db->where('kode = a.kode');
+        $this->db->where('kode_bagian = a.kode_bagian');
+        $this->db->where('subskode = a.subskode');
+        $this->_filter();
+        $sub_query_total = $this->db->get_compiled_select();
+
+        // subquery select
+        $this->db->select('SUM(total_rupiah) AS total');
+        $this->db->from('view_rekap_bill_dr_date');
+        $this->db->where('MONTH(tgl)', $_GET['bulan']-1);
+        $this->db->where('YEAR(tgl)', $_GET['tahun']);
+        $this->db->where('kode = a.kode');
+        $this->db->where('kode_bagian = a.kode_bagian');
+        $this->db->where('subskode = a.subskode');
+        $this->_filter();
+        $sub_query_total_rp = $this->db->get_compiled_select();
+
+
+        $this->db->select('a.*, b.nama_bagian, c.nama_pegawai as nama_dokter');
+        $this->db->select('('.$sub_query_total.') as total_last_month');
+        $this->db->select('('.$sub_query_total_rp.') as total_rp_last_month');
+        $this->db->from('view_rekap_bill_dr_date a');
+        $this->_filter();
+        $this->db->join('mt_bagian b', 'b.kode_bagian=a.kode_bagian','left');
+        $this->db->join('mt_dokter_v c', 'c.kode_dokter=a.kode','left');
+        $this->db->order_by('a.kode ASC');
+
+        
+    }
+
     function get_content_data($params) {
 
         if($params['prefix']==1){
             $data = array();
-            // subquery select
-            $this->db->select('SUM(total) AS total');
-            $this->db->from('view_rekap_bill_dr_date');
-            $this->db->where('MONTH(tgl)', $_GET['bulan']-1);
-            $this->db->where('YEAR(tgl)', $_GET['tahun']);
-            $this->db->where('kode = a.kode');
-            $this->db->where('kode_bagian = a.kode_bagian');
-            $this->db->where('subskode = a.subskode');
-            $this->_filter();
-            $sub_query_total = $this->db->get_compiled_select();
-
-            // subquery select
-            $this->db->select('SUM(total_rupiah) AS total');
-            $this->db->from('view_rekap_bill_dr_date');
-            $this->db->where('MONTH(tgl)', $_GET['bulan']-1);
-            $this->db->where('YEAR(tgl)', $_GET['tahun']);
-            $this->db->where('kode = a.kode');
-            $this->db->where('kode_bagian = a.kode_bagian');
-            $this->db->where('subskode = a.subskode');
-            $this->_filter();
-            $sub_query_total_rp = $this->db->get_compiled_select();
-
-
-            $this->db->select('a.*, b.nama_bagian, c.nama_pegawai as nama_dokter');
-            $this->db->select('('.$sub_query_total.') as total_last_month');
-            $this->db->select('('.$sub_query_total_rp.') as total_rp_last_month');
-            $this->db->from('view_rekap_bill_dr_date a');
-            $this->_filter();
-            $this->db->join('mt_bagian b', 'b.kode_bagian=a.kode_bagian','left');
-            $this->db->join('mt_dokter_v c', 'c.kode_dokter=a.kode','left');
-            $this->db->order_by('a.kode ASC');
-
+            $this->subQuery();
             $result = $this->db->get()->result();
+            
             // echo '<pre>';print_r($this->db->last_query());die;
             
             $getData = [];

@@ -636,6 +636,15 @@ function changeUrgensi(){
     if( $('#pl_sisa_stok_cito').val() > 0){
       $('#jumlah_pesan').attr('disabled', false);
       $('#btn_submit').attr('disabled', false);
+    }else{
+      $('#btn_submit').attr('disabled', true);
+    }
+  }else{
+    if( $('#pl_sisa_stok').val() > 0){
+      $('#jumlah_pesan').attr('disabled', false);
+      $('#btn_submit').attr('disabled', false);
+    }else{
+      $('#btn_submit').attr('disabled', true);
     }
   }
 }
@@ -885,6 +894,14 @@ function changeUrgensi(){
               <span style="font-weight: bold">RESEP DOKTER : </span><br>
               <div style="padding: 3px; border: 1px solid #d4cfcf; margin-bottom: 5px">
                 <?php echo isset($value)?($value->resep_farmasi != '')?nl2br($value->resep_farmasi):'-Tidak ada resep dokter-':'-Tidak ada resep dokter-'; ?>
+              </div>
+              <span style="font-weight: bold">HASIL PENUNJANG : </span><br>
+              <div style="padding: 3px; border: 1px solid #d4cfcf; margin-bottom: 5px">
+                <div id="hasil_penunjang">
+                  <?php foreach($riwayat_penunjang as $row_rp) :?>
+                    <a href="<?php echo base_url().'Templates/Export_data/export?type=pdf&flag=LAB&noreg='.$row_rp->no_registrasi.'&pm=547999&kode_pm='.$row_rp->kode_bagian_tujuan.'&no_kunjungan='.$row_rp->no_kunjungan.''?>" target="_blank"><?php echo $row_rp->tgl_masuk; ?></a>
+                  <?php endforeach;;?>
+                </div>
               </div>
               <div id="div_detail_obat">
                 <div id="warning_stok_obat"></div>

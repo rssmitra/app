@@ -50,7 +50,23 @@ class Eks_kinerja_dokter extends MX_Controller {
     }
 
     public function data(){
-        echo json_encode($this->Eks_kinerja_dokter->get_content_data($_GET), JSON_NUMERIC_CHECK);
+        if(isset($_GET['export'])){
+            $this->export_excel();
+        }else{
+            echo json_encode($this->Eks_kinerja_dokter->get_content_data($_GET), JSON_NUMERIC_CHECK);
+        }
+    }
+
+    public function find_data()
+    {   
+        $output = array( "data" => http_build_query($_POST) . "\n" );
+        echo json_encode($output);
+    }
+
+    public function export_excel(){
+        $data = $this->Eks_kinerja_dokter->get_content_data($_GET);
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Eks_kinerja_dokter/export_excel', $data);
     }
 
     public function show_detail(){
