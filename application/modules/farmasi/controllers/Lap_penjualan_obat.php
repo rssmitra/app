@@ -44,22 +44,19 @@ class Lap_penjualan_obat extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->kode_brg.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                      </div>';
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = $row_list->kode_brg;
             $row[] = $row_list->nama_brg;
-            $row[] = '<div class="center">'.$row_list->satuan_kecil.'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->harga_rata_satuan).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->stok_gdg).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->stok_dp).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->jml_terjual).'</div>';
+            $row[] = '<div class="left">'.$row_list->satuan_kecil.'</div>';
+            $row[] = '<div align="right">'.number_format($row_list->harga_rata_satuan).'</div>';
             $total_jual = $row_list->harga_rata_satuan * $row_list->jml_terjual;
             $row[] = '<div align="right">'.number_format($total_jual).'</div>';
+
+            // $row[] = '<div align="right">'.number_format($row_list->stok_gdg).'</div>';
+            // $row[] = '<div align="right">'.number_format($row_list->stok_dp).'</div>';
             $data[] = $row;
+            $total[] = $total_jual;
         }
 
         $output = array(
@@ -67,6 +64,7 @@ class Lap_penjualan_obat extends MX_Controller {
                         "recordsTotal" => $this->Lap_penjualan_obat->count_all(),
                         "recordsFiltered" => $this->Lap_penjualan_obat->count_filtered(),
                         "data" => $data,
+                        "total_penjualan" => array_sum($total),
                 );
         //output to json format
         echo json_encode($output);

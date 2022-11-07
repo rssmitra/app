@@ -20,6 +20,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         $this->load->model('Entry_resep_ri_rj_model', 'Entry_resep_ri_rj');
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Retur_obat_model', 'Retur_obat');
+        $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -77,7 +78,9 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data['kode_pesan_resep'] = $id;
         $data['value'] = $this->Entry_resep_ri_rj->get_by_id($id);
         $data['trans_farmasi'] = $this->Entry_resep_ri_rj->get_trans_farmasi($id);
-        // echo '<pre>';print_r($data);die;
+        
+        $data['riwayat_penunjang'] = $this->get_riwayat_penunjang($_GET['mr']);
+        echo '<pre>';print_r($data['riwayat_penunjang']);die;
         /*no mr default*/
         $data['no_mr'] = $_GET['mr'];
         /*initialize flag for form*/
@@ -318,6 +321,14 @@ class Entry_resep_ri_rj extends MX_Controller {
         $trans_far = $this->db->where("YEAR(tgl_trans) = '".date('Y')."' AND MONTH(tgl_trans) = '".date('m')."' AND status_transaksi IS NULL")->order_by('kode_trans_far', 'DESC')->get_where('fr_tc_far', array('no_mr' => $_GET['no_mr']) );
         $return = ( $trans_far->num_rows() > 0 ) ? $trans_far->row() : array('kode_trans_far' => 0) ;
         echo json_encode($return);
+    }
+
+    public function get_riwayat_penunjang($no_mr){
+        $column = array('tc_kunjungan.no_registrasi', 'tc_kunjungan.kode_bagian_tujuan', 'tc_kunjungan.no_kunjungan', 'tc_kunjungan.tgl_masuk');
+        $this->Reg_pasien->query_get_riwayat_pasien(join($column,','), $column, $no_mr);
+        $query = $this->db->get(); 
+        //print_r($this->db->last_query());
+		return $query->result();
     }
 }
 

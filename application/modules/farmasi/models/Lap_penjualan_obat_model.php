@@ -7,28 +7,21 @@ class Lap_penjualan_obat_model extends CI_Model {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->table = 'view_lap_penjualan_farmasi';
-		$this->column = array('view_lap_penjualan_farmasi.kode_brg','view_lap_penjualan_farmasi.kode_brg','nama_brg','satuan_kecil', 'AVG(harga_jual_satuan)', 'kartu_stok_gdg.stok_akhir', 'kartu_stok_dp.stok_akhir', 'SUM(jumlah_pesan)');
-		$this->select = 'view_lap_penjualan_farmasi.kode_brg,nama_brg,satuan_kecil, SUM(jumlah_pesan) as jml_terjual, AVG(harga_jual_satuan) as harga_rata_satuan';
+		$this->table = 'view_lap_mutasi_obat';
+		$this->column = array('kode_brg','nama_brg');
+		$this->select = 'kode_brg,nama_brg,satuan_kecil';
 		$this->order = array('nama_brg' => 'ASC');
 
 	}
 
 	private function _main_query(){
 
+		$this->db->select('(SUM(penjualan)-SUM(retur)) as jml_terjual, SUM(retur) as retur, AVG(harga_beli) as harga_rata_satuan');
 		$this->db->select($this->select);
-		$this->db->select('kartu_stok_gdg.stok_akhir as stok_gdg');
-		$this->db->select('kartu_stok_dp.stok_akhir as stok_dp');
-
 		$this->db->from($this->table);
-		$this->db->join('( SELECT * FROM tc_kartu_stok WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE CAST(tgl_input as DATE) <= '."'".date('Y-m-d')."'".' AND kode_bagian='."'060201'".' GROUP BY kode_brg) ) AS kartu_stok_gdg', 'kartu_stok_gdg.kode_brg=view_lap_penjualan_farmasi.kode_brg','left');
-
-		$this->db->join('( SELECT * FROM tc_kartu_stok WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok WHERE CAST(tgl_input as DATE) <= '."'".date('Y-m-d')."'".' AND kode_bagian='."'060101'".' GROUP BY kode_brg) ) AS kartu_stok_dp', 'kartu_stok_dp.kode_brg=view_lap_penjualan_farmasi.kode_brg','left');
-
-		$this->db->group_by('view_lap_penjualan_farmasi.kode_brg,nama_brg,satuan_kecil, kartu_stok_gdg.stok_akhir, kartu_stok_dp.stok_akhir');
-
-		$this->db->having('SUM(jumlah_pesan) > 0');
-		
+		$this->db->group_by($this->select);
+		$this->db->order_by('(SUM(penjualan)-SUM(retur))', 'DESC');
+		$this->db->having('(SUM(penjualan)-SUM(retur)) > 0');
 
 	}
 
