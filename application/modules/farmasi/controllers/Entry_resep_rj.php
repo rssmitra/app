@@ -161,7 +161,7 @@ class Entry_resep_rj extends MX_Controller {
     public function process()
     {
 
-        print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
 
