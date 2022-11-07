@@ -80,7 +80,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data['trans_farmasi'] = $this->Entry_resep_ri_rj->get_trans_farmasi($id);
         
         $data['riwayat_penunjang'] = $this->get_riwayat_penunjang($_GET['mr']);
-        echo '<pre>';print_r($data['riwayat_penunjang']);die;
+        // echo '<pre>';print_r($data['riwayat_penunjang']);die;
         /*no mr default*/
         $data['no_mr'] = $_GET['mr'];
         /*initialize flag for form*/
