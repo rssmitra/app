@@ -62,9 +62,9 @@ class Retur_obat extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Retur_obat->get_datatables();
-        if(isset($_GET['search']) AND $_GET['search']==TRUE){
-            $this->find_data(); exit;
-        }
+        // if(isset($_GET['search']) AND $_GET['search']==TRUE){
+        //     $this->find_data(); exit;
+        // }
         $data = array();
         $no = $_POST['start'];
         $atts = array('class' => 'btn btn-xs btn-warning','width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
