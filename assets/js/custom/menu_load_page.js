@@ -73,24 +73,23 @@ function getMenuTabsHtml(link, tabs_id)
     /*$('#content_tab_custom').html(loading);*/
     preventDefault();
     $('#'+tabs_id).html('Loading...');
-    $('#'+tabs_id).html(obj.html);
     
-    // $.ajax({
-    //     url : link,
-    //     type: "POST",
-    //     beforeSend: function() {
-    //         //achtungShowLoader();
-    //       },
-    //     error: function(xhr)
-    //     { 
-    //        $('#'+tabs_id).html(xhr.responseText);
-    //     },
-    //     success: function(xhr) { 
-    //       obj = JSON.parse(xhr);
-    //       //alert(obj.html);
-    //       $('#'+tabs_id).html(obj.html);
-    //     }
-    // });
+    $.ajax({
+        url : link,
+        type: "POST",
+        beforeSend: function() {
+            //achtungShowLoader();
+          },
+        error: function(xhr)
+        { 
+           $('#'+tabs_id).html(xhr.responseText);
+        },
+        success: function(xhr) { 
+          obj = JSON.parse(xhr);
+          //alert(obj.html);
+          $('#'+tabs_id).html(obj.html);
+        }
+    });
 
 }
 

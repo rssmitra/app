@@ -14,7 +14,7 @@ $(document).ready(function() {
       "ordering": true,
       "paging": false,
       "scrollY": "600px",
-      "order": [[7, 'desc']],
+      "order": [[2, 'desc']],
       // Load data for the table's content from an Ajax source
       "ajax": {
           "url": base_url+'/get_data',
