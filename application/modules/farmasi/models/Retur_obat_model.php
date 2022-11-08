@@ -33,9 +33,6 @@ class Retur_obat_model extends CI_Model {
 		
 		$this->_main_query();
 
-		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
-			$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
-		}
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			if (in_array($_GET['search_by'], array('no_mr', 'nama_pasien') )) {
