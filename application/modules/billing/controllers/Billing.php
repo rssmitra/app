@@ -136,6 +136,20 @@ class Billing extends MX_Controller {
         $this->load->view('Billing/form_payment_um', $data);
     }
 
+    public function form_update_klas($no_registrasi, $tipe) { 
+        /*get detail data billing*/
+        
+        $data = array(
+            'title' => 'Form Update Klas Tarif',
+            'no_registrasi' => $no_registrasi,
+            'tipe' => $tipe,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+        );
+        // echo '<pre>'; print_r($uang_muka);die;
+
+        $this->load->view('Billing/form_update_klas', $data);
+    }
+
     public function payment_success($no_registrasi){
         $data = array(
             'no_registrasi' => $no_registrasi,
@@ -560,8 +574,6 @@ class Billing extends MX_Controller {
         $this->load->view('Billing/cetakKuitansiPasien_view', $data, false);
          
     }
-
-
 
     public function process(){
         
@@ -1014,6 +1026,109 @@ class Billing extends MX_Controller {
             $return['message'] = 'Proses Berhasil Dilakukan';
             $return['kode_perusahaan'] = $_POST['kode_perusahaan_val'];
             $return['billing_nk'] = count($preview_billing_nk);
+            echo json_encode($return);
+        }
+        
+    }
+
+    public function process_update_klas_tarif(){
+        
+        // print_r($_POST);die;
+
+        $this->db->trans_begin();
+        $kode_ruangan_new = $_POST['ri_no_ruangan'];
+        $kode_bagian_new = $_POST['ri_ruangan'];
+        $kode_klas_new = $_POST['ri_klas_ruangan'];
+        // get detail transaksi
+        $transaksi = $this->db->where('kode_tarif is not null')->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi']))->result();
+        $transaksi_kamar = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'jenis_tindakan' => 1))->result();
+
+        // echo '<pre>';print_r($transaksi_kamar);die;
+
+        // get data rawat inap
+        $ri = $this->db->get_where('view_ri_tc_rawatinap', array('no_registrasi' => $_POST['no_registrasi']))->row();
+
+        foreach ($transaksi as $key => $value) {
+
+            // get new tarif from new kode klas
+            $new_tarif = $this->db->get_where('mt_master_tarif_detail', array('kode_tarif' => $value->kode_tarif, 'kode_klas' => $kode_klas_new))->row();
+
+            if(!empty($new_tarif)){
+                $data_update = [];
+                $data_update["kode_trans_pelayanan"] = $value->kode_trans_pelayanan;
+                $data_update["bill_rs"] = $new_tarif->bill_rs;
+                $data_update["bill_dr1"] = $new_tarif->bill_dr1;
+                $data_update["bill_dr2"] = $new_tarif->bill_dr2;
+                $data_update["bill_dr3"] = $new_tarif->bill_dr3;
+                $data_update["kamar_tindakan"] = $new_tarif->kamar_tindakan;
+                $data_update["biaya_lain"] = $new_tarif->biaya_lain;
+                $data_update["obat"] = $new_tarif->obat;
+                $data_update["alkes"] = $new_tarif->alkes;
+                $data_update["alat_rs"] = $new_tarif->alat_rs;
+                $data_update["adm"] = $new_tarif->adm;
+                $data_update["overhead"] = $new_tarif->overhead;
+                $data_update["bhp"] = $new_tarif->bhp;
+                $data_update["pendapatan_rs"] = $new_tarif->pendapatan_rs;
+
+            }
+
+            $getData[] = $data_update;
+
+            // tarif ruangan
+            // master tarif ruangan
+            $tarif_ruangan = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif_ruangan.kode_bagian', 'left')->get_where('mt_master_tarif_ruangan', array('kode_klas' => $kode_klas_new, 'mt_master_tarif_ruangan.kode_bagian' => $kode_bagian_new))->row();
+            
+
+            $getDataKamar = [];
+            $tarif_kamar = [];
+            if($value->jenis_tindakan == 1){
+                $tarif = ($ri->kode_perusahaan == 120) ? $tarif_ruangan->harga_bpjs : $tarif_ruangan->harga_r;
+                $tarif_kamar["kode_trans_pelayanan"] = $value->kode_trans_pelayanan;
+                $tarif_kamar["nama_tindakan"] = 'Ruangan '.$tarif_ruangan->nama_bagian;
+                $tarif_kamar["bill_rs"] = $tarif;
+            }
+
+            $getDataKamar[] = $tarif_kamar;
+            
+
+        }
+
+        foreach ($transaksi_kamar as $key => $val_kmr) {
+
+            // tarif ruangan
+            $tarif_ruangan = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif_ruangan.kode_bagian', 'left')->get_where('mt_master_tarif_ruangan', array('kode_klas' => $kode_klas_new, 'mt_master_tarif_ruangan.kode_bagian' => $kode_bagian_new))->row();
+
+            $tarif = ($ri->kode_perusahaan == 120) ? $tarif_ruangan->harga_bpjs : $tarif_ruangan->harga_r;
+            
+            $kamar = array(
+                "nama_tindakan" => 'Ruangan '.$tarif_ruangan->nama_bagian,
+                "bill_rs" => $tarif,
+            );
+
+            $this->db->update('tc_trans_pelayanan', $kamar, array('kode_trans_pelayanan' => $val_kmr->kode_trans_pelayanan)); 
+
+        }
+
+        // update transaksi
+        $this->db->update_batch('tc_trans_pelayanan', $getData, 'kode_trans_pelayanan'); 
+        
+
+        // update klas pasien
+        $this->db->where('kode_ri', $ri->kode_ri)->update('ri_tc_rawatinap', array('kode_ruangan' => $kode_ruangan_new, 'kelas_pas' => $kode_klas_new, 'bag_pas' => $kode_bagian_new));
+
+
+        
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            
+            $return['status'] = 200;
+            $return['message'] = 'Proses Berhasil Dilakukan';
             echo json_encode($return);
         }
         

@@ -63,6 +63,7 @@ function load_billing_data(){
     $('#billing_data').load('billing/Billing/load_billing_view/<?php echo $no_registrasi?>/<?php echo $tipe?>');
 }
 
+
 function rollback_kasir(no_reg){
     if(confirm('Are you sure?')){
         $.ajax({
@@ -127,6 +128,14 @@ function pembayaran_um(){
     preventDefault();
     $('#billing_data').html(loading);
     getMenuTabs('billing/Billing/payment_um_view/<?php echo $no_registrasi?>/<?php echo $tipe?>', 'billing_data');
+
+}
+
+function update_tarif_klas(){
+
+    preventDefault();
+    $('#billing_data').html(loading);
+    getMenuTabs('billing/Billing/form_update_klas/<?php echo $no_registrasi?>/<?php echo $tipe?>?kode_klas_old='+$('#kode_klas_val').val()+'', 'billing_data');
 
 }
 
@@ -197,20 +206,19 @@ function cetak_kuitansi(){
     </div>
     <br>
 
-    <div class="center no-padding">
+    <div class="no-padding">
     
-        <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" > <i class="fa fa-refresh"></i> Reload Billing </a>
+        <a href="#" style="width: 150px !important" class="btn btn-xs btn-primary" onclick="load_billing_data()" > <i class="fa fa-refresh"></i> Reload Billing </a>
 
-        <a href="#" class="btn btn-xs btn-primary" onclick="rollback_kasir(<?php echo $no_registrasi?>)" > <i class="fa fa-undo"></i> Rollback</a>
+        <a href="#" style="width: 150px !important" class="btn btn-xs btn-primary" onclick="rollback_kasir(<?php echo $no_registrasi?>)" > <i class="fa fa-undo"></i> Rollback</a>
 
-        <!-- <a href="#" class="btn btn-xs btn-danger" onclick="pembayaran_um()"> <i class="fa fa-credit-card"></i> Pembayaran DP / Bertahap  </a> -->
+        <a href="#" style="width: 150px !important" class="btn btn-xs btn-primary" onclick="update_tarif_klas()"> <i class="fa fa-credit-card"></i> Update Klas Pasien  </a>
 
-        <a href="#" class="btn btn-xs btn-success" onclick="payment()"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
+        <a href="#" style="width: 150px !important" class="btn btn-xs btn-primary" onclick="payment()"> <i class="fa fa-money"></i> Proses Pembayaran  </a>
 
         <div class="btn-group">
-            <button class="btn btn-xs btn-yellow"><i class="fa fa-print"></i> Cetak Billing</button>
-
-            <button data-toggle="dropdown" class="btn btn-xs btn-yellow dropdown-toggle" aria-expanded="false">
+            <button class="btn btn-xs btn-primary" style="width: 150px !important"><i class="fa fa-print"></i> Cetak Billing</button>
+            <button data-toggle="dropdown" class="btn btn-xs btn-primary dropdown-toggle" aria-expanded="false">
                 <i class="ace-icon fa fa-angle-down icon-only"></i>
             </button>
 
@@ -244,6 +252,7 @@ function cetak_kuitansi(){
 
     <div class="row">
         <div class="col-xs-12">
+            <!-- <div id="form_update_klas" style="width: 100%"></div> -->
             <div id="billing_data" style="width: 100%"></div>
         </div>
     </div>
