@@ -1041,6 +1041,7 @@ class Billing extends MX_Controller {
         $kode_klas_new = $_POST['ri_klas_ruangan'];
         // get detail transaksi
         $transaksi = $this->db->where('kode_tarif is not null')->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi']))->result();
+
         $transaksi_kamar = $this->db->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'jenis_tindakan' => 1))->result();
 
         // echo '<pre>';print_r($transaksi_kamar);die;
@@ -1052,12 +1053,19 @@ class Billing extends MX_Controller {
         foreach ($transaksi as $key => $value) {
 
             // get new tarif from new kode klas
-            $new_tarif = $this->db->get_where('mt_master_tarif_detail', array('kode_tarif' => $value->kode_tarif, 'kode_klas' => $kode_klas_new))->row();
+            $new_tarif = $this->db->order_by('revisi_ke', 'DESC')->get_where('mt_master_tarif_detail', array('kode_tarif' => $value->kode_tarif, 'kode_klas' => $kode_klas_new))->row();
 
             if(!empty($new_tarif)){
+                // oksigen
+                if(in_array($value->jenis_tindakan, array(7))){
+                    $bill_rs = $new_tarif->bill_rs * $value->jumlah;
+                }else{
+                    $bill_rs = $new_tarif->bill_rs;
+                }
+
                 $getData[] = array(
                     "kode_trans_pelayanan" => $value->kode_trans_pelayanan,
-                    "bill_rs" => $new_tarif->bill_rs,
+                    "bill_rs" => $bill_rs,
                     "bill_dr1" => $new_tarif->bill_dr1,
                     "bill_dr2" => $new_tarif->bill_dr2,
                     "bill_dr3" => $new_tarif->bill_dr3,
@@ -1077,20 +1085,22 @@ class Billing extends MX_Controller {
         }
 
         // echo '<pre>';print_r($getData);die;
-
         foreach ($transaksi_kamar as $key => $val_kmr) {
-
-            // tarif ruangan
-            $tarif_ruangan = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif_ruangan.kode_bagian', 'left')->get_where('mt_master_tarif_ruangan', array('kode_klas' => $kode_klas_new, 'mt_master_tarif_ruangan.kode_bagian' => $kode_bagian_new))->row();
-            // echo '<pre>';print_r($tarif_ruangan);die;
-
-            $tarif = $tarif_ruangan->harga_r;
             
-            $kamar[] = array(
-                "kode_trans_pelayanan" => $val_kmr->kode_trans_pelayanan,
-                "nama_tindakan" => 'Ruangan '.$tarif_ruangan->nama_bagian,
-                "bill_rs" => $tarif,
-            );
+            // ICU
+            if(!in_array($val_kmr->kode_bagian, array('031001') )){
+                 // tarif ruangan
+                $tarif_ruangan = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif_ruangan.kode_bagian', 'left')->get_where('mt_master_tarif_ruangan', array('kode_klas' => $kode_klas_new, 'mt_master_tarif_ruangan.kode_bagian' => $kode_bagian_new))->row();
+
+                $tarif = isset($tarif_ruangan->harga_r)?$tarif_ruangan->harga_r:0;
+                
+                $kamar[] = array(
+                    "kode_trans_pelayanan" => $val_kmr->kode_trans_pelayanan,
+                    "nama_tindakan" => 'Ruangan '.$tarif_ruangan->nama_bagian,
+                    "bill_rs" => $tarif,
+                );
+            }
+
 
         }
 
