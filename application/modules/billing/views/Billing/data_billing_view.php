@@ -50,16 +50,26 @@ function checkedNk(kode) {
 
 }
 
-
 </script>
+
+<style>
+    .scrolls { 
+        overflow-x: scroll;
+        overflow-y: hidden;
+        height: 120px;
+        white-space:nowrap
+    } 
+</style>
 <hr class="separator">
 <div class="row">
     <div class="col-xs-12">
         <div class="row">
+            <div class="center" style="padding-bottom: 15px">
+                <span style="font-weight: bold; text-align: center">Log Aktifitas Kunjungan</span>
+            </div>
             <div class="pull-left col-xs-12">
                 <div id="fuelux-wizard-container" class="no-steps-container">
-                    <div>
-                        <span style="font-weight: bold; padding-left: 100px">Log Aktifitas Kunjungan</span>
+                    <div class="scrolls">
                         <ul class="steps" style="margin-left: 0">
                             <?php $num_log=1; foreach($log_activity as $row_log) : $num_log++; ?>
                             <li data-step="<?php echo $num_log?>" <?php echo isset($row_log['tgl_keluar']) ? (!empty($row_log['tgl_keluar'])) ? 'class="active"' : '' : 'class="active"';?> >
@@ -69,7 +79,7 @@ function checkedNk(kode) {
 
                                         echo ($row_log['nama_bagian'] == 'Farmasi') ? '<i class="fa fa-exclamation-triangle orange bigger-120"></i>' : $icon;?>
                                 </span>
-                                <span class="title"><?php echo ucwords($row_log['nama_bagian']); ?><br>
+                                <span class="title" style="padding: 12px"><?php echo ucwords($row_log['nama_bagian']); ?><br>
                                     <?php echo isset($row_log['tgl_masuk']) ? $this->tanggal->formatDateTimeFormDmy($row_log['tgl_masuk']) :''?>
                                 </span>
                             </li>
@@ -368,7 +378,7 @@ function checkedNk(kode) {
                     </div>
 
                     <div class="panel-collapse collapse in" id="collapseOne">
-                        <div class="panel-body">
+                        <div class="panel-body scrolls">
                             <table class="table">
                                 <tr style="background: #eef4f9">
                                     <?php 
