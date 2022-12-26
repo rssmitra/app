@@ -54,7 +54,7 @@ table{
     </div> -->
     <div style="text-align: center"> 
         INSTALASI FARMASI <?php echo strtoupper(COMP_LONG); ?><br>
-        <span style="font-size: 11px"><?php echo COMP_ADDRESS_SORT; ?></span><br>
+        <!-- <span style="font-size: 11px"><?php echo COMP_ADDRESS_SORT; ?></span><br> -->
     </div>
     <div style="border-bottom: 1px solid; text-align: center">
       <span>Apoteker : Sendi Permana, S.Farm., Apt</span><br>
@@ -64,8 +64,9 @@ table{
   
   <!-- nomor transaksi dan tgl transaksi -->
   <div style="width: 100%; font-size: 14px;"> 
-      <span>No : <?php echo $rows->kode_trans_far; ?></span> 
-      <span style="padding-left: 30px">Tgl : <?php echo $this->tanggal->formatDatedmY($rows->tgl_trans); ?></span>
+      <span>MR: <?php echo $rows->no_mr; ?></span> 
+      <span>| Tgl Lhr: <?php echo $this->tanggal->formatDatedmY($rows->tgl_lhr); ?></span>
+      <span>| Tgl: <?php echo $this->tanggal->formatDatedmY($rows->tgl_trans); ?></span>
   </div>
   
   <!-- profil and data transaksi pasien -->
@@ -84,7 +85,7 @@ table{
     <span>Sehari <?php echo $rows->dosis_per_hari; ?> x <?php echo $rows->dosis_obat; ?> <?php echo $rows->satuan_obat; ?>
     <?php echo $rows->anjuran_pakai; ?> </span>
   </div>
-  <div style="padding-top:10px"><span style="font-size: 11px;">Catatan : <?php echo $rows->catatan_lainnya; ?></span></div>
+  <div style="padding-top:10px"><span style="font-size: 11px;">Petunjuk Khusus : <br /><?php echo $rows->catatan_lainnya; ?></span></div>
   
   <!-- footer -->
   <div style="text-align: center; padding-top: 10px">
