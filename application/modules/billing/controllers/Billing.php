@@ -1048,69 +1048,62 @@ class Billing extends MX_Controller {
         // get data rawat inap
         $ri = $this->db->get_where('view_ri_tc_rawatinap', array('no_registrasi' => $_POST['no_registrasi']))->row();
 
+        $getData = [];
         foreach ($transaksi as $key => $value) {
 
             // get new tarif from new kode klas
             $new_tarif = $this->db->get_where('mt_master_tarif_detail', array('kode_tarif' => $value->kode_tarif, 'kode_klas' => $kode_klas_new))->row();
 
             if(!empty($new_tarif)){
-                $data_update = [];
-                $data_update["kode_trans_pelayanan"] = $value->kode_trans_pelayanan;
-                $data_update["bill_rs"] = $new_tarif->bill_rs;
-                $data_update["bill_dr1"] = $new_tarif->bill_dr1;
-                $data_update["bill_dr2"] = $new_tarif->bill_dr2;
-                $data_update["bill_dr3"] = $new_tarif->bill_dr3;
-                $data_update["kamar_tindakan"] = $new_tarif->kamar_tindakan;
-                $data_update["biaya_lain"] = $new_tarif->biaya_lain;
-                $data_update["obat"] = $new_tarif->obat;
-                $data_update["alkes"] = $new_tarif->alkes;
-                $data_update["alat_rs"] = $new_tarif->alat_rs;
-                $data_update["adm"] = $new_tarif->adm;
-                $data_update["overhead"] = $new_tarif->overhead;
-                $data_update["bhp"] = $new_tarif->bhp;
-                $data_update["pendapatan_rs"] = $new_tarif->pendapatan_rs;
+                $getData[] = array(
+                    "kode_trans_pelayanan" => $value->kode_trans_pelayanan,
+                    "bill_rs" => $new_tarif->bill_rs,
+                    "bill_dr1" => $new_tarif->bill_dr1,
+                    "bill_dr2" => $new_tarif->bill_dr2,
+                    "bill_dr3" => $new_tarif->bill_dr3,
+                    "kamar_tindakan" => $new_tarif->kamar_tindakan,
+                    "biaya_lain" => $new_tarif->biaya_lain,
+                    "obat" => $new_tarif->obat,
+                    "alkes" => $new_tarif->alkes,
+                    "alat_rs" => $new_tarif->alat_rs,
+                    "adm" => $new_tarif->adm,
+                    "overhead" => $new_tarif->overhead,
+                    "bhp" => $new_tarif->bhp,
+                    "pendapatan_rs" => $new_tarif->pendapatan_rs,
+                );
 
             }
-
-            $getData[] = $data_update;
-
-            // tarif ruangan
-            // master tarif ruangan
-            $tarif_ruangan = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif_ruangan.kode_bagian', 'left')->get_where('mt_master_tarif_ruangan', array('kode_klas' => $kode_klas_new, 'mt_master_tarif_ruangan.kode_bagian' => $kode_bagian_new))->row();
-            
-
-            $getDataKamar = [];
-            $tarif_kamar = [];
-            if($value->jenis_tindakan == 1){
-                $tarif = ($ri->kode_perusahaan == 120) ? $tarif_ruangan->harga_bpjs : $tarif_ruangan->harga_r;
-                $tarif_kamar["kode_trans_pelayanan"] = $value->kode_trans_pelayanan;
-                $tarif_kamar["nama_tindakan"] = 'Ruangan '.$tarif_ruangan->nama_bagian;
-                $tarif_kamar["bill_rs"] = $tarif;
-            }
-
-            $getDataKamar[] = $tarif_kamar;
-            
 
         }
+
+        // echo '<pre>';print_r($getData);die;
 
         foreach ($transaksi_kamar as $key => $val_kmr) {
 
             // tarif ruangan
             $tarif_ruangan = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif_ruangan.kode_bagian', 'left')->get_where('mt_master_tarif_ruangan', array('kode_klas' => $kode_klas_new, 'mt_master_tarif_ruangan.kode_bagian' => $kode_bagian_new))->row();
+            // echo '<pre>';print_r($tarif_ruangan);die;
 
-            $tarif = ($ri->kode_perusahaan == 120) ? $tarif_ruangan->harga_bpjs : $tarif_ruangan->harga_r;
+            $tarif = $tarif_ruangan->harga_r;
             
-            $kamar = array(
+            $kamar[] = array(
+                "kode_trans_pelayanan" => $val_kmr->kode_trans_pelayanan,
                 "nama_tindakan" => 'Ruangan '.$tarif_ruangan->nama_bagian,
                 "bill_rs" => $tarif,
             );
 
-            $this->db->update('tc_trans_pelayanan', $kamar, array('kode_trans_pelayanan' => $val_kmr->kode_trans_pelayanan)); 
-
         }
 
-        // update transaksi
-        $this->db->update_batch('tc_trans_pelayanan', $getData, 'kode_trans_pelayanan'); 
+        // echo '<pre>';print_r($kamar);die;
+
+        // update tarif kamar
+        if(count($kamar) > 0){
+            $this->db->update_batch('tc_trans_pelayanan', $kamar, 'kode_trans_pelayanan'); 
+        }
+        // update tarif tindakan
+        if(count($getData) > 0){
+            $this->db->update_batch('tc_trans_pelayanan', $getData, 'kode_trans_pelayanan'); 
+        }
         
 
         // update klas pasien
