@@ -1382,10 +1382,10 @@ class Billing_model extends CI_Model {
         $this->db->where($where);
         $this->db->where(' a.hasil != '."''".' ');
         $this->db->group_by('a.kode_tarif, a.nama_pemeriksaan,a.nama_tindakan, a.hasil, a.standar_hasil_pria, a.standar_hasil_wanita, a.satuan, a.keterangan, a.detail_item_1, a.detail_item_2,b.referensi,d.urutan, a.kode_trans_pelayanan');
-        $this->db->order_by('d.urutan', 'ASC');
+        // $this->db->order_by('a.urutan', 'ASC');
         // $this->db->order_by('a.nama_pemeriksaan', 'ASC');
         // $this->db->order_by('a.kode_trans_pelayanan', 'ASC');
-        //$this->db->order_by('a.detail_item_2', 'ASC');
+        // $this->db->order_by('a.detail_item_1', 'ASC');
         $result = $this->db->get()->result();
         // print_r($result);die;
 
