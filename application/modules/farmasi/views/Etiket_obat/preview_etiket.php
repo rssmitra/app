@@ -65,18 +65,13 @@ table{
   <!-- nomor transaksi dan tgl transaksi -->
   <div style="width: 100%; font-size: 14px;"> 
       <span>MR: <?php echo $rows->no_mr; ?></span> 
-      <span>| Tgl Lhr: <?php echo $this->tanggal->formatDatedmY($rows->tgl_lhr); ?></span>
-      <span>| Tgl: <?php echo $this->tanggal->formatDatedmY($rows->tgl_trans); ?></span>
+      <span style="padding-left: 60px">Tgl Lhr: <?php echo $this->tanggal->formatDatedmY($rows->tgl_lhr); ?></span>
   </div>
   
   <!-- profil and data transaksi pasien -->
   <div style="width: 100%; font-size: 14px !important; border-bottom:1px solid black"> 
     <span>Nama Pasien</span> : <?php echo ucwords(strtolower($rows->nama_pasien)); ?><br>
-    <?php
-       $jml_obat = ( $rows->jumlah_tebus ) ? ($rows->prb_ditangguhkan == 0) ? $rows->jumlah_tebus + $rows->jumlah_obat_23 : $rows->jumlah_tebus : $rows->jumlah_tebus;
-    ?>
-    <span>Jml Obat</span> :  <?php echo (int)$jml_obat; ?> <?php echo ucwords(strtolower($rows->satuan_kecil)); ?>
-    <span style="padding-left: 100px">Ed</span> :  <br>
+    
   </div>
 
   <!-- nama obat dan dosis penggunaan -->
@@ -85,7 +80,17 @@ table{
     <span>Sehari <?php echo $rows->dosis_per_hari; ?> x <?php echo $rows->dosis_obat; ?> <?php echo $rows->satuan_obat; ?>
     <?php echo $rows->anjuran_pakai; ?> </span>
   </div>
-  <div style="padding-top:10px"><span style="font-size: 11px;">Petunjuk Khusus : <br /><?php echo $rows->catatan_lainnya; ?></span></div>
+
+  <!-- Keterangan detail obat -->
+  <div style="padding-top:10px; font-size: 11px;">
+    <?php
+       $jml_obat = ( $rows->jumlah_tebus ) ? ($rows->prb_ditangguhkan == 0) ? $rows->jumlah_tebus + $rows->jumlah_obat_23 : $rows->jumlah_tebus : $rows->jumlah_tebus;
+    ?>
+    <span>Jml Obat</span> :  <?php echo (int)$jml_obat; ?> <?php echo ucwords(strtolower($rows->satuan_kecil)); ?>
+    <span style="padding-left: 30px">Tgl Resep: <?php echo $this->tanggal->formatDatedmY($rows->tgl_trans); ?></span><br />
+    <span style="">Petunjuk Khusus : <?php echo $rows->catatan_lainnya; ?></span><br />
+    <span>Ed</span> :  
+  </div>
   
   <!-- footer -->
   <div style="text-align: center; padding-top: 10px">
