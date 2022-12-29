@@ -37,18 +37,10 @@
             <th rowspan="2" width="304">HPP Satuan</th>
             <th width="304" style="text-align: center" colspan="2">Saldo Awal <?php echo $this->tanggal->getBulan($month)?></th>
             <th width="304" style="text-align: center" colspan="2">Penerimaan/Pembelian</th>
-            <th width="304" style="text-align: center" colspan="2">Penjualan BPJS</th>
-            <th width="304" style="text-align: center" colspan="2">Penjualan Umum</th>
-            <th width="304" style="text-align: center" colspan="2">Penggunaan Internal</th>
+            <th width="304" style="text-align: center" colspan="2">Distribusi Barang</th>
             <th width="304" style="text-align: center" colspan="2">Saldo Akhir</th>
           </tr>
           <tr>
-            <th width="304" style="text-align: center">Quantity</th>
-            <th width="304" style="text-align: center">Jumlah</th>
-            <th width="304" style="text-align: center">Quantity</th>
-            <th width="304" style="text-align: center">Jumlah</th>
-            <th width="304" style="text-align: center">Quantity</th>
-            <th width="304" style="text-align: center">Jumlah</th>
             <th width="304" style="text-align: center">Quantity</th>
             <th width="304" style="text-align: center">Jumlah</th>
             <th width="304" style="text-align: center">Quantity</th>
@@ -68,53 +60,35 @@
             $jmlakhir=0;
             $jmlsaldoakhir=0;
 
-          foreach($result['data'] as $row_data){
-            $no++; 
-            $kode_brg = trim($row_data->kode_brg);
-            // Saldo Awal
-            $qty_saldo_awal = isset($v_saldo[$kode_brg]) ? ($v_saldo[$kode_brg] > 0) ? $v_saldo[$kode_brg] : 0 : 0 ;
-            $rp_saldo_awal = $qty_saldo_awal * $row_data->harga_beli;
-            $arr_qty_saldo_awal[] = $qty_saldo_awal;
-            $arr_rp_saldo_awal[] = $rp_saldo_awal;
+            foreach($result['data'] as $row_data){
+              $kode_brg = trim($row_data->kode_brg);
+              $qty_saldo_awal = isset($v_saldo[$kode_brg]) ? ($v_saldo[$kode_brg] > 0) ? $v_saldo[$kode_brg] : 0 : 0 ;
+              $qty_penerimaan = isset($v_penerimaan_gdg[$kode_brg])?$v_penerimaan_gdg[$kode_brg]:0;
+              $qty_distribusi = isset($v_distribusi[$kode_brg])?$v_distribusi[$kode_brg]:0;
+              $qty_saldo_akhir = ($qty_saldo_awal + $qty_penerimaan) - $qty_distribusi;
 
-            // penerimaan
-            $qty_penerimaan = isset($v_penerimaan[$kode_brg])?$v_penerimaan[$kode_brg]:0;
-            $rp_penerimaan = $qty_penerimaan * $row_data->harga_beli;
-            $arr_qty_penerimaan[] = $qty_penerimaan;
-            $arr_rp_penerimaan[] = $rp_penerimaan;
+              if($qty_saldo_awal > 0 || $qty_penerimaan > 0 || $qty_distribusi > 0 || $qty_saldo_akhir > 0 ) :
+                $no++; 
+                // Saldo Awal
+                $rp_saldo_awal = $qty_saldo_awal * $row_data->harga_beli;
+                $arr_qty_saldo_awal[] = $qty_saldo_awal;
+                $arr_rp_saldo_awal[] = $rp_saldo_awal;
 
-            // penjualan bpjs
-            $qty_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['jumlah'])?$v_penjualan_bpjs[$kode_brg]['jumlah']:0;
-            $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['total'])?$v_penjualan_bpjs[$kode_brg]['total']:0;
-            $arr_qty_penjualan_bpjs[] = $qty_penjualan_bpjs;
-            $arr_rp_penjualan_bpjs[] = $rp_penjualan_bpjs;
+                // penerimaan
+                $rp_penerimaan = $qty_penerimaan * $row_data->harga_beli;
+                $arr_qty_penerimaan[] = $qty_penerimaan;
+                $arr_rp_penerimaan[] = $rp_penerimaan;
 
-            // penjualan umum
-            $qty_penjualan = isset($v_penjualan_umum[$kode_brg]['jumlah'])?$v_penjualan_umum[$kode_brg]['jumlah']:0;
-            $rp_penjualan = isset($v_penjualan_umum[$kode_brg]['total'])?$v_penjualan_umum[$kode_brg]['total']:0;
-            $arr_qty_penjualan[] = $qty_penjualan;
-            $arr_rp_penjualan[] = $rp_penjualan;
+                // distribusi
+                $rp_distribusi = $qty_distribusi * $row_data->harga_beli;
+                $arr_qty_distribusi[] = $qty_distribusi;
+                $arr_rp_distribusi[] = $rp_distribusi;
 
-            // bmhp
-            $qty_bmhp = isset($v_bmhp[$kode_brg])?$v_bmhp[$kode_brg]:0;
-            $rp_bmhp = $qty_bmhp * $row_data->harga_beli;
-            $arr_qty_bmhp[] = $qty_bmhp;
-            $arr_rp_bmhp[] = $rp_bmhp;
+                // summary
+                $rp_saldo_akhir = ($rp_saldo_awal + $rp_penerimaan ) - $rp_distribusi;
+                $arr_qty_saldo_akhir[] = $qty_saldo_akhir;
+                $arr_rp_saldo_akhir[] = $rp_saldo_akhir;
             
-            // summary
-            $qty_saldo_akhir = ($qty_saldo_awal + $qty_penerimaan) - ($qty_penjualan_bpjs + $qty_penjualan + $qty_bmhp);
-            $rp_saldo_akhir = ($rp_saldo_awal + $rp_penerimaan ) - ($rp_penjualan_bpjs + $rp_penjualan + $rp_bmhp);
-            $arr_qty_saldo_akhir[] = $qty_saldo_akhir;
-            $arr_rp_saldo_akhir[] = $rp_saldo_akhir;
-
-            // $jmlpenerimaan = $jmlpenerimaan + $saldopenerimaan;
-            // $jmlpenjualanbpjs=$jmlpenjualanbpjs+$j_bpjs;
-            // $jmlpenjualanumum=$jmlpenjualanumum+$j_umum;
-            // $penjualanintrnal=$penjualanintrnal+$j_internal;
-            // $jmldistribusi=$jmldistribusi+$j_distribusiU;
-
-            // $jmlakhir=$jmlakhir+$saldo_akhir;
-            // $jmlsaldoakhir=$jmlsaldoakhir+$saldoakhir;
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -131,18 +105,11 @@
                 echo '<td align="center">'.$qty_penerimaan.'</td>';
                 $txt_rp_penerimaan = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
                 echo '<td align="right">'.$txt_rp_penerimaan.'</td>';
-                // penjualan bpjs
-                echo '<td align="center">'.$qty_penjualan_bpjs.'</td>';
-                $txt_rp_penjualan_bpjs = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
-                echo '<td align="right">'.$txt_rp_penjualan_bpjs.'</td>';
-                // penjualan umum
-                echo '<td align="center">'.$qty_penjualan.'</td>';
-                $txt_rp_penjualan = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
-                echo '<td align="right">'.$txt_rp_penjualan.'</td>';
-                // bmhp
-                echo '<td align="center">'.$qty_bmhp.'</td>';
-                $txt_rp_bmhp = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
-                echo '<td align="right">'.$txt_rp_bmhp.'</td>';
+                
+                // distribusi
+                echo '<td align="center">'.$qty_distribusi.'</td>';
+                $txt_rp_distribusi = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                echo '<td align="right">'.$txt_rp_distribusi.'</td>';
 
                 echo '<td align="center">'.$qty_saldo_akhir.'</td>';
                 $txt_rp_saldo_akhir = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
@@ -150,7 +117,7 @@
 
               ?>
             </tr>
-          <?php } 
+          <?php endif; } 
           // echo '<pre>'; print_r($arr_rp_saldo_awal);die;
           ?>
             <tr style="font-weight: bold">
@@ -168,18 +135,8 @@
               <td></td>
               <td style="text-align: right">
                 <?php 
-                    $txt_arr_rp_penjualan_bpjs = array_sum($arr_rp_penjualan_bpjs); 
-                    echo ($submit == 'excel') ? $txt_arr_rp_penjualan_bpjs : number_format($txt_arr_rp_penjualan_bpjs);?></td> 
-              <td></td>
-              <td style="text-align: right">
-                <?php 
-                    $txt_arr_rp_penjualan = array_sum($arr_rp_penjualan); 
-                    echo ($submit == 'excel') ? $txt_arr_rp_penjualan : number_format($txt_arr_rp_penjualan);?></td> 
-              <td></td>
-              <td style="text-align: right">
-                <?php 
-                    $txt_arr_rp_bmhp = array_sum($arr_rp_bmhp); 
-                    echo ($submit == 'excel') ? $txt_arr_rp_bmhp : number_format($txt_arr_rp_bmhp);?></td> 
+                    $txt_arr_rp_distribusi = array_sum($arr_rp_distribusi); 
+                    echo ($submit == 'excel') ? $txt_arr_rp_distribusi : number_format($txt_arr_rp_distribusi);?></td> 
               <td></td>
               <td style="text-align: right">
                 <?php 
