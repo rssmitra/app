@@ -245,6 +245,7 @@ function count_jasa_prod(){
   var total = parseInt(subtotal) + (parseInt(subtotal) * (parseInt(percent)/100));
   $('#total_jasa_produksi').text(formatMoney(parseInt(total)));
   $('#total_jasa_produksi_val').val(parseInt(total));
+  hitung_harga_satuan();
   
 }
 
