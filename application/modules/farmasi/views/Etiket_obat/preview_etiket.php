@@ -54,7 +54,7 @@ table{
     </div> -->
     <div style="text-align: center"> 
         INSTALASI FARMASI <?php echo strtoupper(COMP_LONG); ?><br>
-        <span style="font-size: 11px"><?php echo COMP_ADDRESS_SORT; ?></span><br>
+        <!-- <span style="font-size: 11px"><?php echo COMP_ADDRESS_SORT; ?></span><br> -->
     </div>
     <div style="border-bottom: 1px solid; text-align: center">
       <span>Apoteker : Sendi Permana, S.Farm., Apt</span><br>
@@ -63,28 +63,34 @@ table{
   </div>
   
   <!-- nomor transaksi dan tgl transaksi -->
-  <div style="width: 100%; font-size: 14px;"> 
-      <span>No : <?php echo $rows->kode_trans_far; ?></span> 
-      <span style="padding-left: 30px">Tgl : <?php echo $this->tanggal->formatDatedmY($rows->tgl_trans); ?></span>
+  <div style="width: 100%; font-size: 14px; padding-left: 2px;"> 
+      <span>MR: <?php echo $rows->no_mr; ?></span> 
+      <span style="padding-left: 30px">Tgl Lhr: <?php echo $this->tanggal->formatDatedmY($rows->tgl_lhr); ?></span>
   </div>
   
   <!-- profil and data transaksi pasien -->
-  <div style="width: 100%; font-size: 14px !important; border-bottom:1px solid black"> 
+  <div style="width: 100%; font-size: 14px !important; border-bottom:1px solid black; padding-left: 2px;"> 
     <span>Nama Pasien</span> : <?php echo ucwords(strtolower($rows->nama_pasien)); ?><br>
-    <?php
-       $jml_obat = ( $rows->jumlah_tebus ) ? ($rows->prb_ditangguhkan == 0) ? $rows->jumlah_tebus + $rows->jumlah_obat_23 : $rows->jumlah_tebus : $rows->jumlah_tebus;
-    ?>
-    <span>Jml Obat</span> :  <?php echo (int)$jml_obat; ?> <?php echo ucwords(strtolower($rows->satuan_kecil)); ?>
-    <span style="padding-left: 100px">Ed</span> :  <br>
+    
   </div>
 
   <!-- nama obat dan dosis penggunaan -->
+  <span style="padding-left: 170px;">Tgl R/: <?php echo $this->tanggal->formatDatedmY($rows->tgl_trans); ?></span>
   <div style="text-align: center; padding-top: 10px">
   <?php echo strtoupper(strtolower($rows->nama_brg));?><br>
     <span>Sehari <?php echo $rows->dosis_per_hari; ?> x <?php echo $rows->dosis_obat; ?> <?php echo $rows->satuan_obat; ?>
     <?php echo $rows->anjuran_pakai; ?> </span>
   </div>
-  <div style="padding-top:10px"><span style="font-size: 11px;">Catatan : <?php echo $rows->catatan_lainnya; ?></span></div>
+
+  <!-- Keterangan detail obat -->
+  <div style="padding-top:10px; font-size: 12px;">
+    <?php
+       $jml_obat = ( $rows->jumlah_tebus ) ? ($rows->prb_ditangguhkan == 0) ? $rows->jumlah_tebus + $rows->jumlah_obat_23 : $rows->jumlah_tebus : $rows->jumlah_tebus;
+    ?>
+    <span>Jml Obat</span> :  <?php echo (int)$jml_obat; ?> <?php echo ucwords(strtolower($rows->satuan_kecil)); ?><br />
+    <span style="">Petunjuk Khusus : <?php echo $rows->catatan_lainnya; ?></span><br />
+    <span>Ed</span> :  
+  </div>
   
   <!-- footer -->
   <div style="text-align: center; padding-top: 10px">
