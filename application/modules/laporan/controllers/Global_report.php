@@ -87,8 +87,6 @@ class Global_report extends MX_Controller {
             $distribusi = $this->Global_report->distribusi_barang_unit();
             $penerimaan_brg_gudang = $this->Global_report->penerimaan_brg_gudang();
 
-            
-
             // distribusi
             foreach ($distribusi as $k_distribusi => $v_distribusi) {
                 $dt_distribusi[trim($v_distribusi['kode_brg'])] = (int)$v_distribusi['jumlah'];
@@ -96,11 +94,9 @@ class Global_report extends MX_Controller {
 
             // penerimaan barang gudang
             foreach ($penerimaan_brg_gudang as $k_penerimaan_brg => $v_penerimaan_brg_gdg) {
-                $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = (int)$v_penerimaan_brg_gdg['jumlah'];
+                $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = array('qty' => (int)$v_penerimaan_brg_gdg['jumlah'], 'harga_beli' => (int)$v_penerimaan_brg_gdg['harga_beli'], 'biaya' => (int)$v_penerimaan_brg_gdg['biaya']);
             }
 
-            // echo '<pre>';print_r($dt_penerimaan_brg_gdg);die;
-            
         }else{
             $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
             $penjualan = $this->Global_report->penjualan_obat();
@@ -132,8 +128,6 @@ class Global_report extends MX_Controller {
             
         }
         
-        
-
         $data = array(
             'flag' => isset($_POST['flag'])?$_POST['flag']:$_GET['flag'],
             'title' => isset($_POST['title'])?$_POST['title']:'',

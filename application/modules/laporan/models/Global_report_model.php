@@ -376,7 +376,7 @@ class Global_report_model extends CI_Model {
 		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 
-		$query = "select b.kode_brg, SUM(b.jumlah_kirim * b.content) as jumlah from tc_penerimaan_barang_detail b
+		$query = "select b.kode_brg, SUM(b.jumlah_kirim_decimal * b.content) as jumlah, SUM(b.jumlah_kirim_decimal * b.harga_net) as biaya, AVG(CAST((b.harga_net/b.content) AS INT)) as harga_beli from tc_penerimaan_barang_detail b
 		left join tc_penerimaan_barang a on a.id_penerimaan=b.id_penerimaan
 		where MONTH(a.tgl_penerimaan) = ".$month." AND YEAR(a.tgl_penerimaan) = ".$year." 
 		GROUP BY b.kode_brg, MONTH(a.tgl_penerimaan), YEAR(a.tgl_penerimaan)";

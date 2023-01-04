@@ -168,6 +168,7 @@ $(document).ready(function(){
       }
     });
 
+
     $('#btn_search_pasien').click(function (e) {      
 
       e.preventDefault();  

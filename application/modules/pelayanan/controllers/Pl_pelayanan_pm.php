@@ -227,6 +227,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
         /*get data from model*/
         $list = $this->Pl_pelayanan_pm->get_datatables();
+
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -300,14 +301,19 @@ class Pl_pelayanan_pm extends MX_Controller {
 
             if( $row_list->status_batal == 1 ){
                 $status = '<span style="color: red; font-weight: bold">-Batal-</span>';
-            }else{
+            }
+            else{
                 if($status_pasien=='belum_ditindak'){
 
                     $status = '<label class="label label-warning" title="Belum Dilayani"><i class="fa fa-info-circle bigger-120"></i></label>';
     
                 }else if($status_pasien=='belum_bayar'){
-    
-                    $status = '<label class="label label-danger">Belum bayar</label>';
+                    
+                    if( $row_list->kode_rujukan != null){
+                        $status = '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa '.$row_list->kode_rujukan.'</a>';
+                    }else{
+                        $status = '<label class="label label-danger">Belum bayar</label>';
+                    }
                    
                 }else if($status_pasien=='belum_isi_hasil'){
     

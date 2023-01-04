@@ -34,7 +34,8 @@
             <th rowspan="2">No</th>
             <th rowspan="2" width="105">Kode Barang<br/></th>
             <th rowspan="2" width="95">Nama Barang</th>
-            <th rowspan="2" width="304">HPP Satuan</th>
+            <th rowspan="2" width="304">Harga Jual</th>
+            <th rowspan="2" width="304">Harga Beli</th>
             <th width="304" style="text-align: center" colspan="2">Saldo Awal <?php echo $this->tanggal->getBulan($month)?></th>
             <th width="304" style="text-align: center" colspan="2">Penerimaan/Pembelian</th>
             <th width="304" style="text-align: center" colspan="2">Distribusi Barang</th>
@@ -63,7 +64,7 @@
             foreach($result['data'] as $row_data){
               $kode_brg = trim($row_data->kode_brg);
               $qty_saldo_awal = isset($v_saldo[$kode_brg]) ? ($v_saldo[$kode_brg] > 0) ? $v_saldo[$kode_brg] : 0 : 0 ;
-              $qty_penerimaan = isset($v_penerimaan_gdg[$kode_brg])?$v_penerimaan_gdg[$kode_brg]:0;
+              $qty_penerimaan = isset($v_penerimaan_gdg[$kode_brg]['qty'])?$v_penerimaan_gdg[$kode_brg]['qty']:0;
               $qty_distribusi = isset($v_distribusi[$kode_brg])?$v_distribusi[$kode_brg]:0;
               $qty_saldo_akhir = ($qty_saldo_awal + $qty_penerimaan) - $qty_distribusi;
 
@@ -75,12 +76,13 @@
                 $arr_rp_saldo_awal[] = $rp_saldo_awal;
 
                 // penerimaan
-                $rp_penerimaan = $qty_penerimaan * $row_data->harga_beli;
+                $rp_penerimaan = isset($v_penerimaan_gdg[$kode_brg]['biaya'])?$v_penerimaan_gdg[$kode_brg]['biaya']:0;
+                $harga_beli_penerimaan = isset($v_penerimaan_gdg[$kode_brg]['harga_beli']) ? $v_penerimaan_gdg[$kode_brg]['harga_beli']:0;
                 $arr_qty_penerimaan[] = $qty_penerimaan;
                 $arr_rp_penerimaan[] = $rp_penerimaan;
 
                 // distribusi
-                $rp_distribusi = $qty_distribusi * $row_data->harga_beli;
+                $rp_distribusi = $qty_distribusi * $harga_beli_penerimaan;
                 $arr_qty_distribusi[] = $qty_distribusi;
                 $arr_rp_distribusi[] = $rp_distribusi;
 
@@ -95,7 +97,11 @@
               <?php 
                 echo '<td>'.$kode_brg.'</td>';
                 echo '<td>'.$row_data->nama_brg.'</td>';
-                $txt_harga_beli = ($submit == 'excel')?$row_data->harga_beli:number_format($row_data->harga_beli);
+                // harga jual
+                $txt_harga_jual = ($submit == 'excel')?$row_data->harga_beli:number_format($row_data->harga_beli);
+                echo '<td style="text-align: right">'.$txt_harga_jual.'</td>';
+                // harga beli
+                $txt_harga_beli = ($submit == 'excel')?$harga_beli_penerimaan:number_format($harga_beli_penerimaan);
                 echo '<td style="text-align: right">'.$txt_harga_beli.'</td>';
                 // saldo awal
                 echo '<td align="center">'.$qty_saldo_awal.'</td>';
@@ -103,16 +109,16 @@
                 echo '<td align="right">'.$txt_rp_saldo_awal.'</td>';
                 // penerimaan
                 echo '<td align="center">'.$qty_penerimaan.'</td>';
-                $txt_rp_penerimaan = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_penerimaan = ($submit == 'excel')?$rp_penerimaan:number_format($rp_penerimaan);
                 echo '<td align="right">'.$txt_rp_penerimaan.'</td>';
                 
                 // distribusi
                 echo '<td align="center">'.$qty_distribusi.'</td>';
-                $txt_rp_distribusi = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_distribusi = ($submit == 'excel')?$rp_distribusi:number_format($rp_distribusi);
                 echo '<td align="right">'.$txt_rp_distribusi.'</td>';
 
                 echo '<td align="center">'.$qty_saldo_akhir.'</td>';
-                $txt_rp_saldo_akhir = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_saldo_akhir = ($submit == 'excel')?$rp_saldo_akhir:number_format($rp_saldo_akhir);
                 echo '<td align="right"><b>'.$txt_rp_saldo_akhir.'</b></td>';
 
               ?>
@@ -121,7 +127,7 @@
           // echo '<pre>'; print_r($arr_rp_saldo_awal);die;
           ?>
             <tr style="font-weight: bold">
-              <td colspan="4" style="text-align: right"><b>TOTAL </b></td>
+              <td colspan="5" style="text-align: right"><b>TOTAL </b></td>
               <td></td>
               <td style="text-align: right">
                 <?php 

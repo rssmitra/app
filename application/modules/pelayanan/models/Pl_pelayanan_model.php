@@ -507,5 +507,22 @@ class Pl_pelayanan_model extends CI_Model {
 		}
 	}
 
+	public function callPatient($params){
+		// update null all antrian aktif pasien di poli dan dokter aktif
+		if(($this->session->userdata('sess_kode_dokter'))){
+			$this->db->where('CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d'));
+			$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
+			$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+			$this->db->update('pl_tc_poli', array('antrian_aktif' => 0) );
+
+			// update current to active
+			$this->db->where('no_kunjungan', $params['no_kunjungan'])->update('pl_tc_poli', array('antrian_aktif' => 1) );
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+
 
 }

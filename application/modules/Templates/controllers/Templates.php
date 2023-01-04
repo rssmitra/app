@@ -1291,9 +1291,9 @@ class Templates extends MX_Controller {
                         </tr> 
                         <hr>
                         <tr>                        
-                            <th align="center" width="160px"><b>JENIS TEST</b></th>
+                            <th align="center" width=200px"><b>JENIS TEST</b></th>
                             <th align="center" width="100px"><b>HASIL</b></th>
-                            <th align="center" width="150px"><b>NILAI STANDAR</b></th>
+                            <th align="center" width="100px"><b>NILAI STANDAR</b></th>
                             <th align="center" width="80px"><b>SATUAN</b></th>
                             <th width="100px"><b>KETERANGAN</b></th>
                         </tr>
@@ -1412,7 +1412,7 @@ class Templates extends MX_Controller {
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
-        // echo '<pre>';print_r($data_pm);die;
+        // echo '<pre>';print_r($pm_data);die;
         $html = '';
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
@@ -1462,7 +1462,7 @@ class Templates extends MX_Controller {
             }
             // echo '<pre>';print_r($getReferensiDt);die;
             $getRef = array();
-            // echo '<pre>';print_r($pm_data);die;
+            
             $html .= '<br><br>';
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px; float: left">
                     <tr>
@@ -1470,9 +1470,9 @@ class Templates extends MX_Controller {
                     </tr> 
                     <hr>
                     <tr>                        
-                        <td align="center"><b>JENIS TEST</b></td>
-                        <td align="center"><b>HASIL</b></td>
-                        <td align="center"><b>NILAI STANDAR</b></td>
+                        <td align="center" width="200px"><b>JENIS TEST</b></td>
+                        <td align="center" width="100px"><b>HASIL</b></td>
+                        <td align="center" width="100px"><b>NILAI STANDAR</b></td>
                         <td align="center"><b>SATUAN</b></td>
                         <td align="center"><b>KETERANGAN</b></td>
                     </tr>
@@ -1492,7 +1492,7 @@ class Templates extends MX_Controller {
                         $html .= '<tr><td colspan="5"><b>'.$referensi[$i]->referensi.'</b></td></tr>';
                         $referen = $referensi[$i]->referensi;
                     }
-                                    
+                    // echo '<pre>';print_r($pm_data);die;
                     foreach ($pm_data as $key => $value) {
                         $standar = ($data->reg_data->jk == 'L') ? $value->standar_hasil_pria : $value->standar_hasil_wanita;
                         if(trim($value->nama_pemeriksaan)==trim($referensi[$i]->nama_pemeriksaan)){

@@ -1620,6 +1620,10 @@ class Pl_pelayanan extends MX_Controller {
     {
         $this->session->unset_userdata('kode_bagian');
         $this->session->unset_userdata('flag_form_pelayanan');
+        $this->session->unset_userdata('nama_bagian');
+        $this->session->unset_userdata('sess_kode_dokter');
+        $this->session->unset_userdata('sess_nama_dokter');
+
         echo json_encode(array('status' => 200, 'message' => 'Silahkan pilih Poli/Klinik kembali'));
 
         
@@ -2185,6 +2189,10 @@ class Pl_pelayanan extends MX_Controller {
         
         }
 
+    }
+
+    public function callPatient(){
+        return $this->Pl_pelayanan->callPatient($_GET);
     }
 
 

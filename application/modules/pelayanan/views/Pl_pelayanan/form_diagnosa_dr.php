@@ -117,9 +117,25 @@
         counterfile++;
     }
 
+    $('#callPatient').click(function (e) {  
+      e.preventDefault();
+      playAudio(1, 2);
+      var params = {
+        no_kunjungan : $('#no_kunjungan').val(),
+        dokter : $('#kode_dokter_poli').val(),
+        poli : $('#kode_bagian_val').val(),
+      };
+      $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan/callPatient') ?>", params , function (response) {      
+      })
+    });
+    
+
 </script>
 
 <!-- hidden form -->
+
+<audio id="container" autoplay=""></audio>
+
 <span>Waktu Pelayanan</span><br>
 <div class="pull-left" style="font-size: 20px; font-weight: bold">
     <span id="minutes">00</span> : <span id="second">00</span> : <span id="centiSecond">00</span>
@@ -127,7 +143,7 @@
 <div class="pull-right">
     <button type="button" class="btn btn-xs btn-inverse" id="startCount" onclick="startStopWatch()">Start <i class="fa fa-play"></i></button>
     <button type="button" class="btn btn-xs btn-inverse" id="pauseCount" onclick="pauseStopWatch()">Stop <i class="fa fa-pause"></i></button>
-    <!-- <button type="button" class="btn btn-xs btn-inverse" id="resetCount" onclick="resetStopWatch()" disabled>Reset <i class="fa fa-refresh"></i></button> -->
+    <button type="button" class="btn btn-xs btn-success" id="callPatient">Panggil Pasien <i class="fa fa-bullhorn bigger-120"></i></button>
 </div>
 <br>
 <div class="hr dotted"></div>
@@ -283,3 +299,5 @@
        <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> <?php echo ($this->session->userdata('flag_form_pelayanan')) ?  ($this->session->userdata('flag_form_pelayanan') == 'perawat') ? 'Simpan Data' : 'Simpan Data dan Lanjutkan ke Pasien Berikutnya' : 'Simpan Data'?> </button>
     </div>
 </div>
+
+<script src="<?php echo base_url()?>assets/js/custom/counter_poli.js"></script>

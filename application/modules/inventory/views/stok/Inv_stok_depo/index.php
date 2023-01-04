@@ -162,7 +162,7 @@
           <label class="control-label col-md-2">Pilih Depo/Unit</label>
           <div class="col-md-3">
             <?php 
-              echo $this->master->get_depo_aktif($params = array('table' => 'mt_depo_stok', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '060101' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+              echo $this->master->get_depo_aktif($params = array('table' => 'mt_depo_stok', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('depo_group != ' => NULL)), '060101' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
           </div>
 
           <label class="control-label col-md-1">Pabrikan</label>

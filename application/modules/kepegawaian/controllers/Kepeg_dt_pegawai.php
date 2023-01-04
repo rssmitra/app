@@ -265,6 +265,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
                 $this->Kepeg_dt_pegawai->update('ktp', array('ktp_nik' => $nik), $dataktp);
                 $newId = $id;
             }
+
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();

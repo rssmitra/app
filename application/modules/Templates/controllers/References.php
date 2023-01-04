@@ -399,6 +399,30 @@ class References extends MX_Controller {
 		
 		
 	}
+
+	public function getAllKaryawan()
+	{
+        
+		$query = $this->db->where("nama_pegawai LIKE '%".$_POST['keyword']."%' ")
+        				  ->order_by('nama_pegawai', 'ASC')
+                          ->get('view_dt_pegawai');
+		$arrResult = [];
+		foreach ($query->result() as $key => $value) {
+			$arrResult[] = $value->kepeg_id.' : '.$value->nama_pegawai;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
+	public function getEmployeeById($kepeg_id)
+	{
+        
+		$query = $this->db->where('kepeg_id', $kepeg_id)->get('view_dt_pegawai')->row();
+		echo json_encode($query);
+		
+		
+	}
 	
 	public function getAllDokterByKeyword($key='')
 	{

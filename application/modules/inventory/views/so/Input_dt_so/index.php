@@ -104,7 +104,8 @@ $(document).ready(function(){
       <div class="form-group">
         <label class="control-label col-md-2">Bagian Unit</label>
           <div class="col-md-4">
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1)), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
+            <?php 
+              echo $this->master->get_depo_aktif($params = array('table' => 'mt_depo_stok', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('depo_group != ' => NULL)), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
           </div>
       </div>
 
