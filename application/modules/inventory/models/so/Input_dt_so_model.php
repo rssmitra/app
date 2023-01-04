@@ -262,12 +262,15 @@ class Input_dt_so_model extends CI_Model {
 			$last_id_tc_so = $this->db->insert_id();
 		}
 
-		if( $_POST['input_stok_so'] >= 0 ){
+		// stok akan expired masih dapat dijual, maka stok fisik ditambah stok akan expired
+		$merge_stok = $fld['stok_sekarang'] + $fld['will_stok_exp'];
+
+		if( $merge_stok >= 0 ){
 			$config = array(
 				'id_tc_stok_opname' => $last_id_tc_so,
 				'agenda_so_id' => $_POST['agenda_so_id'],
 				'last_stok' => $last_stok->jml_sat_kcl,
-				'new_stok' => $_POST['input_stok_so'],
+				'new_stok' => $merge_stok,
 				'kode_bagian' => $_POST['kode_bagian'],
 				'kode_brg' => $_POST['kode_brg'],
 				'table_depo_flag' => 'mt_depo_stok',
