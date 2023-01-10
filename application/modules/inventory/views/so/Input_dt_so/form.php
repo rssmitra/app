@@ -317,7 +317,7 @@ function find_data_reload(){
               <th class="center">JML EXP -3 Bln</th>
               <th class="center">STATUS AKTIF</th>
               <th class="center">LAST UPDATE</th>
-              <th class="center"></th>
+              <!-- <th class="center"></th> -->
             </tr>
           </thead>
           <tbody>

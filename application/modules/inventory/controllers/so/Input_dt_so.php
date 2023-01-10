@@ -98,7 +98,7 @@ class Input_dt_so extends MX_Controller {
                             </label>
                     </div>';
             $row[] = '<div class="center">'.$row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname).'</div>';
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="deleteRow('.$row_list->kode_depo_stok.')"><i class="fa fa-times bigger-120"></i></a></div>';
+            // $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="deleteRow('.$row_list->kode_depo_stok.')"><i class="fa fa-times bigger-120"></i></a></div>';
             $data[] = $row;
         }
 

@@ -1093,7 +1093,7 @@ class Reg_pasien extends MX_Controller {
 
     public function process_edit_dokter_pemeriksa()
     {
-        /*print_r($_POST);die;*/
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
 
@@ -1119,13 +1119,19 @@ class Reg_pasien extends MX_Controller {
             );
 
             // update tc_registrasi
-            // $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter') ) );
+            $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter') ) );
 
             // update tc_kunjungan
             $this->db->update('tc_kunjungan', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter'), 'no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
 
+            // update pl_tc_poli
+            $this->db->update('pl_tc_poli', $dataexc, array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
+
             // update ri_tc_rawatinap
             $this->db->update('ri_tc_rawatinap', array('dr_merawat' => $val->set_value('kode_edit_dokter_hidden') ) , array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
+
+            // update ri_tc_rawatinap
+            $this->db->update('tc_trans_pelayanan', array('kode_dokter1' => $val->set_value('kode_edit_dokter_hidden') ) , array('no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );
 
             if ($this->db->trans_status() === FALSE)
             {
