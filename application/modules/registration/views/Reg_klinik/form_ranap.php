@@ -114,7 +114,7 @@
         }
     });
 
-  $('select[name="ri_ruangan"]').change(function () {      
+    $('select[name="ri_ruangan"]').change(function () {      
 
         $('#ri_no_bed_hidden').val('');
         $('#ri_no_ruangan').val('');
@@ -192,7 +192,7 @@
         }
     });
 
-     $('select[name="ri_klas_ruangan"]').change(function () {      
+    $('select[name="ri_klas_ruangan"]').change(function () {      
 
 
         /*hide value*/

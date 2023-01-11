@@ -7,7 +7,7 @@
 
 final Class Daftar_pasien {
 
-    public function daftar_registrasi($title='',$no_mr='', $kode_perusahaan='', $kode_kelompok='', $kode_dokter='', $kode_bagian_masuk='', $umur_saat_pelayanan='',$no_sep='',$jd_id='') {
+    public function daftar_registrasi($title='',$no_mr='', $kode_perusahaan='', $kode_kelompok='', $kode_dokter='', $kode_bagian_masuk='', $umur_saat_pelayanan='',$no_sep='',$jd_id='', $kode_faskes='') {
         
         $CI =& get_instance();
         $CI->load->library('session'); 
@@ -34,6 +34,7 @@ final Class Daftar_pasien {
           'no_sep' => $no_sep,
           'sirs_v1' => 1,
           'jd_id' => $jd_id,
+          'kode_faskes' => $kode_faskes,
           'no_induk' => isset($CI->session->userdata('user')->user_id)?$CI->session->userdata('user')->user_id:0,
         );
         

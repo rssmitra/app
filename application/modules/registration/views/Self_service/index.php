@@ -143,7 +143,7 @@
                 <?php echo date('d/M/Y') ?> <span id="clock"><?php echo date('H:i:s')?></span>
               </div>
               <div style="float: left; width: 80%">
-                  <marquee style="font-size: 18px;color: white;margin-top: 29px;">Hanya untuk pasien yang sudah pernah terdaftar atau yang pernah berobat ke RS Setia Mitra. Untuk pasien baru silahkan mengambil Nomor Antrian Pendaftaran</marquee>
+                  <marquee style="font-size: 18px;color: white;margin-top: 29px;">Hanya untuk pasien yang sudah pernah terdaftar atau yang pernah berobat ke <?php echo COMP_LONG; ?>. Untuk pasien baru silahkan mengambil Nomor Antrian Pendaftaran</marquee>
               </div>
             </div>
 
@@ -309,7 +309,7 @@
 					<div class="footer-content">
 						<span class="bigger-120">
 							<span class="blue bolder">KIOSK - </span>
-							RS. Setia Mitra <?php echo date('Y')?>
+							<?php echo COMP_LONG; ?> <?php echo date('Y')?>
 						</span>
 					</div>
 				</div>

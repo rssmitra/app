@@ -23,7 +23,6 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		$this->db->join('(select COUNT(jumlah_obat_23) as jumlah_obat_23, kode_trans_far from fr_tc_far_detail where jumlah_obat_23 > 0 group by kode_trans_far) as detail','detail.kode_trans_far = fr_tc_far.kode_trans_far','left');
 		$this->db->where('fr_tc_far.kode_trans_far in (select kode_trans_far from fr_tc_far_detail_log where jumlah_obat_23 > 0 group by kode_trans_far)');
 		$this->db->where('tc_registrasi.kode_perusahaan', 120);
-		$this->db->where('fr_tc_far.verifikasi_prb IS NULL');
 		// $this->db->where('detail.jumlah_obat_23 > 0');
 		$this->db->group_by($this->select);
 
@@ -33,6 +32,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+		$this->db->where('fr_tc_far.verifikasi_prb IS NULL');
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			if($_GET['search_by'] == 'no_sep'){
@@ -74,6 +74,23 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		$this->_get_datatables_query();
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function get_result_data($date='')
+	{
+		$this->_main_query();
+		// $this->db->where('fr_tc_far.verifikasi_prb IS NULL');
+		// hanya 3 bulan kebelakang
+		if($date != ''){
+			$this->db->where("CAST(fr_tc_far.tgl_trans as DATE) = '".$date."' " );
+		}else{
+			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
+		}
+		$this->db->order_by('tgl_trans', 'DESC');
+		$this->db->limit(5);
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

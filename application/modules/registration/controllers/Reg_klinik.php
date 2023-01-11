@@ -343,15 +343,16 @@ class Reg_klinik extends MX_Controller {
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXALNUM');
             $jd_id =  $this->input->post('jd_id');
+            $kode_faskes =  ($this->input->post('kode_faskes_hidden'))?$this->input->post('kode_faskes_hidden'):'';
 
             if( !$this->input->post('no_registrasi_hidden') && !$this->input->post('no_registrasi_rujuk')){
                 /*save tc_registrasi*/
-                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id);
+                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id, $kode_faskes);
                 $no_registrasi = $data_registrasi['no_registrasi'];
                 $no_kunjungan = $data_registrasi['no_kunjungan'];
             }else{
                 $no_registrasi = ($this->input->post('no_registrasi_hidden'))?$this->input->post('no_registrasi_hidden'):$this->input->post('no_registrasi_rujuk');
-                $kode_bagian_asal = ($this->input->post('kode_bagian_asal'))?$this->input->post('kode_bagian_asal'):$this->input->post('asal_pasien_rujuk');
+                $kode_bagian_asal = ($this->input->post('kode_bagian_asal')) ? $this->input->post('kode_bagian_asal') : $this->input->post('asal_pasien_rujuk');
                 $kode_bagian_tujuan = $this->regex->_genRegex($this->form_validation->set_value('reg_klinik_rajal'),'RGXQSL');
                 $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_tujuan,$kode_bagian_asal);
                 $bag = substr($this->input->post('kode_bagian_asal'), 1, 1);

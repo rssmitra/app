@@ -6,7 +6,10 @@
 
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 
+
 <script>
+
+
 
 jQuery(function($) {  
 
@@ -592,6 +595,28 @@ $(document).ready(function(){
           }else{
             $('#form_sep').hide();
           }
+        }
+    });
+
+    $('#InputKeyFaskes').typeahead({
+        source: function (query, result) {
+            $.ajax({
+                url: "templates/references/getFaskes",
+                data: { keyword:query },            
+                dataType: "json",
+                type: "POST",
+                success: function (response) {
+                  result($.map(response, function (item) {
+                      return item;
+                  }));
+                }
+            });
+        },
+        afterSelect: function (item) {
+          // do what is needed with item
+          var val_item=item.split(':')[0];
+          console.log(val_item);
+          $('#kode_faskes_hidden').val(val_item);
         }
     });
 
@@ -2079,16 +2104,26 @@ function form_perjanjian(){
 
                           </div>
                         </div>
+                        
+                        <div id="form_sep" style="display:none">
+                          <div class="form-group">
+                            <label class="control-label col-sm-3">Nomor SEP</label>            
+                            <div class="col-md-4">            
+                                  <input name="noSep" id="noSep" class="form-control" type="text" placeholder="Masukan No SEP">
+                            </div> 
+                            <label class="control-label col-sm-2">No Kartu</label>            
+                            <div class="col-md-3">            
+                                  <input name="noKartuBpjs" id="noKartuBpjs" class="form-control" type="text" value="">
+                            </div>   
+                          </div>
 
-                        <div class="form-group" id="form_sep" style="display:none">
-                          <label class="control-label col-sm-3">Nomor SEP</label>            
-                          <div class="col-md-4">            
-                                <input name="noSep" id="noSep" class="form-control" type="text" placeholder="Masukan No SEP">
-                          </div> 
-                          <label class="control-label col-sm-2">No Kartu</label>            
-                          <div class="col-md-3">            
-                                <input name="noKartuBpjs" id="noKartuBpjs" class="form-control" type="text" value="">
-                          </div>   
+                          <div class="form-group">
+                            <label class="control-label col-sm-3">Nama Faskes</label>
+                            <div class="col-md-9">
+                                <input id="InputKeyFaskes" class="form-control" name="faskes" type="text" placeholder="Masukan keyword minimal 3 karakter" />
+                                <input type="hidden" name="kode_faskes_hidden" value="" id="kode_faskes_hidden">
+                            </div>
+                          </div>
                         </div>
 
                         <div class="form-group">

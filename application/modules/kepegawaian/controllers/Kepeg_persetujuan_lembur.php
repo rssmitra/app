@@ -117,7 +117,7 @@ class Kepeg_persetujuan_lembur extends MX_Controller {
                       </div>';
             $row[] = '';
             $row[] = $row_list->pengajuan_lembur_id;
-            $status = (!empty($row_list->acc_by_name)) ? '<span class="label label-xs label-warning">Menunggu persetujuan</span><br>'.$row_list->acc_by_level.' - '.$row_list->acc_by_unit.' ('.$row_list->acc_by_name.')' : 'Cuti anda telah disetujui';
+            $status = (!empty($row_list->acc_by_name)) ? '<span class="label label-xs label-warning">Menunggu persetujuan</span><br>'.$row_list->acc_by_level.' - '.$row_list->acc_by_unit.' ('.$row_list->acc_by_name.')' : 'Lembur anda telah disetujui';
             $row[] = $row_list->kode;
             $row[] = $this->tanggal->formatDatedmY($row_list->tgl_pengajuan_lembur);
             $row[] = '<b>NIP : '.$row_list->kepeg_nip.'</b><br>'.$row_list->nama_pegawai;

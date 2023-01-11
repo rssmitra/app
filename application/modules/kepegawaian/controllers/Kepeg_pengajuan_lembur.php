@@ -135,7 +135,7 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
                         </div>
                     </div>';
             
-            $status = (!empty($row_list->acc_by_name)) ? '<span class="label label-xs label-warning">Menunggu persetujuan</span><br>'.$row_list->acc_by_level.' '.$row_list->acc_by_unit.' ('.$row_list->acc_by_name.')' : 'Cuti anda telah disetujui';
+            $status = (!empty($row_list->acc_by_name)) ? '<span class="label label-xs label-warning">Menunggu persetujuan</span><br>'.$row_list->acc_by_level.' '.$row_list->acc_by_unit.' ('.$row_list->acc_by_name.')' : 'Lembur anda telah disetujui';
             $row[] = $row_list->kode;
             $row[] = $this->tanggal->formatDatedmY($row_list->tgl_pengajuan_lembur);
             $row[] = '<b>NIP : '.$row_list->kepeg_nip.'</b><br>'.$row_list->nama_pegawai;
@@ -207,6 +207,7 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
         $val->set_rules('nama_pegawai', 'nama_pegawai', 'trim|required');
         $val->set_rules('kepeg_id', 'kepeg_id', 'trim|required');
         $val->set_rules('periode_lembur_bln', 'periode_lembur_bln', 'trim|required');
+        $val->set_rules('tahun', 'Tahun', 'trim|required');
         $val->set_rules('keterangan', 'keterangan', 'trim|required');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -226,6 +227,7 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
                 'kepeg_id' => $this->regex->_genRegex($val->set_value('kepeg_id'), 'RGXQSL'),
                 'periode_lembur_bln' => $this->regex->_genRegex($val->set_value('periode_lembur_bln'), 'RGXQSL'),
                 'keterangan' => $this->regex->_genRegex($val->set_value('keterangan'), 'RGXQSL'),
+                'tahun' => $this->regex->_genRegex($val->set_value('tahun'), 'RGXQSL'),
             );
 
             // get detail pegawai
@@ -235,7 +237,6 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
                 $dataexc['level_pegawai'] = $dt_pegawai->kepeg_level;
                 $dataexc['unit_bagian'] = $dt_pegawai->kepeg_unit;
             }
-            
 
             if($id==0){
                 // kode lembur

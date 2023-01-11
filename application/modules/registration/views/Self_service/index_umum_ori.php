@@ -22,7 +22,7 @@
 			<h2>Masukan Nomor Rekam Medis atau NIK anda</h2>
 			<span></span>
 			<p>
-				Jika anda belum terdaftar sebagai pasien Rumah Sakit Setia Mitra, silahkan lakukan pendaftaran dahulu ke petugas pendaftaran.
+				Jika anda belum terdaftar sebagai pasien <?php echo COMP_FULL; ?>, silahkan lakukan pendaftaran dahulu ke petugas pendaftaran.
 			</p>
 		</div>
 	</div>

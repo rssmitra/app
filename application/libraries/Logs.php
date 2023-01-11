@@ -18,15 +18,15 @@ final Class Logs {
         /*print_r($modul);die;*/
         /*save logs*/
         $data = array();
-    	$data['ref_table'] = $ref_table;
-    	$data['ref_id'] = $ref_id;
+        $data['ref_table'] = $ref_table;
+        $data['ref_id'] = $ref_id;
         $data['content'] = $content;
         $data['data'] = $value;
         $data['modul_id'] = isset($modul->modul_id)?$modul->modul_id:0;
         $data['menu_id'] = isset($modul->menu_id)?$modul->menu_id:0;
         $data['full_modul'] = json_encode(array('menu_id' => isset($modul->menu_id)?$modul->menu_id:0,'menu_name' => isset($modul->name)?$modul->name:0, 'modul_id' => isset($modul->modul_id)?$modul->modul_id:0));
-        $data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-        $data['ip_address'] = $_SERVER['REMOTE_ADDR'];
+        $data['user_agent'] = isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:'';
+        $data['ip_address'] = isset($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:'';
         $data['query_executed'] = $CI->db->last_query();
         $data['created_date'] = date('Y-m-d H:i:s');
         if($user_id){

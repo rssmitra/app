@@ -301,7 +301,7 @@
 							© Copyright <?php echo date('Y')?> Smart Hospital System, All Rights Reserved     
 						</li>
 						<li>
-							  Developed by <a href="#">IT Department RS Setia Mitra</a>
+							  Developed by <a href="#">IT Department <?php echo COMP_LONG; ?></a>
 						</li>
 					</ul>
 				</div>

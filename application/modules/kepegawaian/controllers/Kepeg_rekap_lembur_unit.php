@@ -48,6 +48,7 @@ class Kepeg_rekap_lembur_unit extends MX_Controller {
         /*define data variabel*/
         $data = array();
         $data['value'] = $this->Kepeg_rekap_lembur_unit->get_rekap_lembur_pegawai($_GET['unit'], $_GET['periode_lembur_bln']);
+        echo '<pre>'; print_r($this->db->last_query());die;
         /*load form view*/
         $this->load->view('Kepeg_rekap_lembur_unit/form_rincian_lembur', $data);
     }

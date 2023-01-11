@@ -375,6 +375,18 @@ class References extends MX_Controller {
 		}
 		echo json_encode($arrResult);
 		
+	}
+
+	public function getFaskes()
+	{
+		$query = $this->db->where("nama_faskes LIKE '%".$_POST['keyword']."%' ")
+		->order_by('nama_faskes', 'ASC')
+		->get('mst_faskes')->result();
+		$arrResult = [];
+		foreach ($query as $key => $value) {
+			$arrResult[] = $value->kode_faskes.' : '.strtoupper($value->nama_faskes);
+		}
+		echo json_encode($arrResult);
 		
 	}
 	
