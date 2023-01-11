@@ -31,7 +31,8 @@ class Auto_merge_farmasi extends MX_Controller {
         // echo '<pre>';
         // print_r($data);
         // exit;
-
+        $txt_success = '';
+        $txt_failed = '';
         foreach ($data as $key => $list) {
         
             // kode sep untuk file scan resep
@@ -129,23 +130,25 @@ class Auto_merge_farmasi extends MX_Controller {
                     echo "success  " . PHP_EOL;
                     echo "====================================================================". PHP_EOL;
         
-                    // $file = "application/logs/".date('Y_m_d_H_i_s').".log";
-                    // $fp = fopen ($file,'w');
-        
-                    // $data_general = 'Execute query : '.$this->db->last_query().'';
-                    // $data_log = var_export($log, true);
-        
-                    // fwrite($fp,  $data_general."".$data_log);
-                    // fclose($fp);
                 }else{
                     echo 'No data available'. PHP_EOL;
                 }
+                $count_result[] = 1;
+                $txt_success .= $list->kode_trans_far. PHP_EOL;
 
             } else {
+                $txt_failed .= $list->kode_trans_far. PHP_EOL;
                 echo "The file ".$substr_no_sep.".pdf does not exist". PHP_EOL;
             }
         
         }
+
+        $file = "uploaded/farmasi/log_scheduler/".date('Y_m_d_H_i_s').".log";
+        $fp = fopen ($file,'w');
+        $data_general = "Total Eksekusi : ".count($count_result)." \n List transaksi sukses :\n ".$txt_success." \n List transaksi gagal : \n ".$txt_failed."";
+        $data_log = var_export($log, true);
+        fwrite($fp,  $data_general."\n".$data_log);
+        fclose($fp);
 
     }
 
