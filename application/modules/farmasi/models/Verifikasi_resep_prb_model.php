@@ -82,15 +82,13 @@ class Verifikasi_resep_prb_model extends CI_Model {
 	function get_result_data($date='')
 	{
 		$this->_main_query();
-		// $this->db->where('fr_tc_far.verifikasi_prb IS NULL');
-		// hanya 3 bulan kebelakang
 		if($date != ''){
 			$this->db->where("CAST(fr_tc_far.tgl_trans as DATE) = '".$date."' " );
 		}else{
 			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
 		}
+		$this->db->where("scheduler_running_time is not null");
 		$this->db->order_by('tgl_trans', 'DESC');
-		$this->db->limit(5);
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();
