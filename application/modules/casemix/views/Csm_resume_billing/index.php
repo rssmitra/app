@@ -89,6 +89,7 @@
             <th width="40px">No. MR</th>
             <th width="150px">Nama Pasien</th>
             <th width="60px" class="center">Tanggal</th>
+            <th width="180px">Nama Dokter</th>
             <th width="180px">Diagnosa</th>
             <th width="60px" class="center">Dokter</th>
             <th width="60px" class="center">Adm</th>

@@ -54,6 +54,7 @@ class Csm_resume_billing extends MX_Controller {
                 $row[] = $row_list->csm_rp_no_mr;
                 $row[] = strtoupper($row_list->csm_rp_nama_pasien);
                 $row[] = '<div class="center">'.$this->tanggal->formatDatedmY($row_list->csm_rp_tgl_keluar).'</div>';
+                $row[] = strtoupper($row_list->csm_rp_nama_dokter);
                 $row[] = ucwords(strtolower($row_list->diagnosa_akhir));
                 $row[] = '<div align="right">'.number_format($row_list->csm_brp_bill_dr).'</div>';
                 $row[] = '<div align="right">'.number_format($row_list->csm_brp_bill_adm).'</div>';
@@ -109,6 +110,7 @@ class Csm_resume_billing extends MX_Controller {
                             <th>No. MR</th>
                             <th width="150px">Nama Pasien</th>
                             <th width="150px">Tanggal Transaksi</th>
+                            <th width="150px">Nama Dokter</th>
                             <th width="70px" align="center">Dokter</th>
                             <th width="70px" align="center">Administrasi</th>
                             <th width="70px" align="center">Obat/Farmasi</th>
@@ -130,6 +132,7 @@ class Csm_resume_billing extends MX_Controller {
                         <td>'.$value->csm_rp_no_mr.'</td>
                         <td width="150px">'.$value->csm_rp_nama_pasien.'</td>
                         <td width="150px">'.$value->csm_rp_tgl_masuk.'<br>'.$value->csm_rp_tgl_keluar.'</td>
+                        <td width="150px">'.$value->csm_rp_nama_dokter.'</td>
                         <td width="70px" align="right">'.$value->csm_brp_bill_dr.'</td>
                         <td width="70px" align="right">'.$value->csm_brp_bill_adm.'</td>
                         <td width="70px" align="right">'.$value->csm_brp_bill_far.'</td>

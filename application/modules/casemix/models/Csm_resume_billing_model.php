@@ -6,7 +6,7 @@ class Csm_resume_billing_model extends CI_Model {
 
 	var $table = 'csm_resume_billing_pasien';
 	var $column = array('csm_resume_billing_pasien.no_registrasi','csm_reg_pasien.csm_rp_no_sep','csm_reg_pasien.csm_rp_no_mr','csm_reg_pasien.csm_rp_nama_pasien');
-	var $select = 'csm_brp_bill_dr, csm_brp_bill_adm, csm_brp_bill_pm, csm_brp_bill_tindakan, csm_resume_billing_pasien.no_registrasi,csm_brp_bill_far, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_pasien';
+	var $select = 'csm_resume_billing_pasien.no_registrasi, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_pasien, csm_rp_nama_dokter, csm_rp_tgl_masuk';
 	var $order = array('csm_reg_pasien.csm_rp_no_sep' => 'ASC', 'csm_reg_pasien.csm_rp_tgl_keluar' => 'ASC');
 	
 
@@ -21,6 +21,7 @@ class Csm_resume_billing_model extends CI_Model {
 		$month = date('m') - 3;
 
 		$this->db->select($this->select);
+		$this->db->select('CAST(csm_brp_bill_dr AS INT) as csm_brp_bill_dr, CAST(csm_brp_bill_adm AS INT) as csm_brp_bill_adm, CAST(csm_brp_bill_pm AS INT) as csm_brp_bill_pm, CAST(csm_brp_bill_tindakan AS INT) as csm_brp_bill_tindakan, CAST(csm_brp_bill_far AS INT) as csm_brp_bill_far');
 		$this->db->select('CAST(diagnosa_akhir as NVARCHAR(255)) as diagnosa_akhir');
 		$this->db->from($this->table);
 		$this->db->join('csm_reg_pasien', 'csm_reg_pasien.no_registrasi='.$this->table.'.no_registrasi', 'left');
@@ -36,6 +37,7 @@ class Csm_resume_billing_model extends CI_Model {
 		$this->db->where('csm_reg_pasien.csm_rp_tipe', 'RJ');
 		$this->db->where('csm_reg_pasien.is_submitted', 'Y');
 		$this->db->group_by($this->select);
+		$this->db->group_by('csm_brp_bill_dr,csm_brp_bill_adm, csm_brp_bill_pm, csm_brp_bill_tindakan, csm_brp_bill_far');
 		$this->db->group_by('CAST(diagnosa_akhir as NVARCHAR(255))');
 
 	}
@@ -72,7 +74,7 @@ class Csm_resume_billing_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
