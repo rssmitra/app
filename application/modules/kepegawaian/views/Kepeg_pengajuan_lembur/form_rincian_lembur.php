@@ -233,7 +233,7 @@ function get_dt_update(myid){
               <label class="control-label col-md-1" style="margin-left: -10px">dari jam</label>
               <div class="col-md-2">
                 <div class="input-group bootstrap-timepicker">
-                  <input id="dari_jam" name="dari_jam" type="text" class="timepicker form-control" value="">
+                  <input id="dari_jam" name="dari_jam" type="text" class="timepicker form-control" value="16:00:00">
                   <span class="input-group-addon">
                     <i class="fa fa-clock-o bigger-110"></i>
                   </span>

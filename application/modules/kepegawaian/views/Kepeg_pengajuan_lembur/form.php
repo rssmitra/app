@@ -99,13 +99,13 @@ $(document).ready(function(){
             </div>
 
             <div class="form-group">
-              <label class="control-label col-md-1">Tahun</label>
+              <label class="control-label col-md-2">Tahun</label>
               <div class="col-md-2">
-                <?php echo $this->master->get_bulan(isset($value->periode_lembur_bln)?$value->periode_lembur_bln:'' , 'periode_lembur_bln', 'periode_lembur_bln', 'form-control', '', '') ?> 
+                <?php echo $this->master->get_tahun(isset($value->tahun)?$value->tahun:date('Y') , 'tahun', 'tahun', 'form-control', '', '') ?> 
               </div>
-              <label class="control-label col-md-2">Periode Bulan</label>
+              <label class="control-label col-md-1">Periode Bulan</label>
               <div class="col-md-2">
-                <?php echo $this->master->get_tahun(isset($value->tahun)?$value->tahun:'' , 'tahun', 'tahun', 'form-control', '', '') ?> 
+              <?php echo $this->master->get_bulan(isset($value->periode_lembur_bln)?$value->periode_lembur_bln:date('m') , 'periode_lembur_bln', 'periode_lembur_bln', 'form-control', '', '') ?> 
               </div>
             </div>
 

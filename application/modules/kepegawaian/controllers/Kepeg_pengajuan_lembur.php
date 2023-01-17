@@ -201,7 +201,7 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
 
     public function process()
     {
-        // echo '<pre>';print_r($_POST);die;
+        
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('nama_pegawai', 'nama_pegawai', 'trim|required');
@@ -232,6 +232,8 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
 
             // get detail pegawai
             $dt_pegawai = $this->db->get_where('view_dt_pegawai', array('kepeg_id' => $val->set_value('kepeg_id') ) )->row();
+            // echo '<pre>';print_r($dt_pegawai);die;
+
             if(!empty($dt_pegawai)){
                 $acc_level = $dt_pegawai->kepeg_level - 1;
                 $dataexc['level_pegawai'] = $dt_pegawai->kepeg_level;
@@ -245,6 +247,11 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
                 $dataexc['kode'] = $kode_lembur;
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
                 $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                
+                if(empty($dt_pegawai->kepeg_unit)){
+                    echo json_encode(array('status' => 301, 'message' => 'Data kepegawaian anda belum di perbaharui'));
+                    exit;
+                }
                 // save data pegawai
                 $newId = $this->Kepeg_pengajuan_lembur->save('kepeg_pengajuan_lembur', $dataexc);
                 // log acc
@@ -286,11 +293,11 @@ class Kepeg_pengajuan_lembur extends MX_Controller {
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('pengajuan_lembur_id', 'pengajuan_lembur_id', 'trim|required');
-        $val->set_rules('unit_tugas', 'unit_tugas', 'trim|required');
-        $val->set_rules('dari_jam', 'dari_jam', 'trim|required');
-        $val->set_rules('sd_jam', 'sd_jam', 'trim|required');
-        $val->set_rules('tgl_lembur', 'tgl_lembur', 'trim|required');
-        $val->set_rules('deskripsi_pekerjaan', 'deskripsi_pekerjaan', 'trim|required');
+        $val->set_rules('unit_tugas', 'Ditugaskan di Unit/Bagian', 'trim|required');
+        $val->set_rules('dari_jam', 'Dari Jam', 'trim|required');
+        $val->set_rules('sd_jam', 'sd Jam', 'trim|required');
+        $val->set_rules('tgl_lembur', 'Tgl Lembur', 'trim|required');
+        $val->set_rules('deskripsi_pekerjaan', 'Deskripsi Pekerjaan', 'trim|required');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
 

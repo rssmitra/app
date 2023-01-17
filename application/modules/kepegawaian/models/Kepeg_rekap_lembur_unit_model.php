@@ -157,11 +157,17 @@ class Kepeg_rekap_lembur_unit_model extends CI_Model {
 		return $dt_spv;
 	}
 
-	public function get_rekap_lembur_pegawai($unit, $periode)
+	public function get_rekap_lembur_pegawai($unit, $periode, $tahun)
 	{
 
-		$this->db->where('kepeg_pengajuan_lembur_rincian.lembur_dtl_id', $id);
-		return $this->db->get('kepeg_pengajuan_lembur_rincian')->row();
+		$this->db->select('a.*, b.kode, b.periode_lembur_bln, b.tgl_pengajuan_lembur, b.kepeg_id, e.kepeg_gol, e.nama_level, e.nama_unit ,e.nama_pegawai, c.kepeg_unit_nama as nama_unit_tugas, d.kepeg_unit_nama as nama_unit_bagian');
+		$this->db->join('kepeg_pengajuan_lembur b','b.pengajuan_lembur_id=a.pengajuan_lembur_id','left');
+		$this->db->join('view_dt_pegawai e','e.kepeg_id=b.kepeg_id','left');
+		$this->db->join('kepeg_mt_unit c','c.kepeg_unit_id=a.unit_tugas','left');
+		$this->db->join('kepeg_mt_unit d','d.kepeg_unit_id=b.unit_bagian','left');
+		$this->db->from('kepeg_pengajuan_lembur_rincian a');
+		$query = $this->db->get()->result();
+		return $query;
 	}
 
 

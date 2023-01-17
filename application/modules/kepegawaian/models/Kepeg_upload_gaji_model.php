@@ -18,7 +18,7 @@ class Kepeg_upload_gaji_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		$this->db->join('view_dt_pegawai','view_dt_pegawai.nip=kepeg_gaji.nip','left');
+		// $this->db->join('view_dt_pegawai','view_dt_pegawai.nip=kepeg_gaji.nip','left');
 	}
 
 	private function _get_datatables_query()

@@ -28,10 +28,6 @@
     </div><!-- /.page-header -->
     <form class="form-horizontal" method="post" id="form_search" action="kepegawaian/Kepeg_upload_gaji/find_data">
 
-      <center>
-          <h4>FORM PENCARIAN DATA PENGAJUAN CUTI PEGAWAI<br><small style="font-size:12px">Data yang ditampilkan adalah data pengajuan cuti pegawai  </small></h4>
-      </center>
-      <br>
       <div class="form-group" style="margin-bottom: 3px">
         <div class="control-label col-md-2">
           <div class="checkbox" style="margin-top: -5px">
@@ -81,7 +77,12 @@
 
       <hr class="separator">
       <div>
-        <table id="dynamic-table" base-url="kepegawaian/Kepeg_upload_gaji" data-id="flag=" url-detail="kepegawaian/Kepeg_upload_gaji/show_detail" class="table table-bordered table-hover">
+        <div class="clearfix" style="margin-bottom:-5px">
+          <?php echo $this->authuser->show_button('kepegawaian/Kepeg_upload_gaji','C','',1)?>
+          <?php echo $this->authuser->show_button('kepegawaian/Kepeg_upload_gaji','D','',5)?>
+        </div>
+        
+        <table id="dynamic-table" base-url="kepegawaian/Kepeg_upload_gaji" data-id="" url-detail="kepegawaian/Kepeg_upload_gaji/show_detail" class="table table-bordered table-hover">
           <thead>
             <tr>  
               <th width="30px" class="center">
@@ -96,8 +97,10 @@
               <th width="40px" class="center"></th>
               <th>Periode Gaji</th>
               <th>Tanggal Upload</th>
+              <th>Nama Petugas</th>
               <th>Keterangan</th>
-              <th width="150px">Status</th>
+              <th width="100px">Total Pegawai</th>
+              <th width="100px">Total Gaji</th>
               <th width="100px">Action</th>
             </tr>
           </thead>

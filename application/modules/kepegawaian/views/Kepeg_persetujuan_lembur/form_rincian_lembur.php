@@ -187,7 +187,6 @@ function get_dt_update(myid){
 
               <div class="profile-info-row">
                 <div class="profile-info-name"> Periode Lembur Bulan </div>
-
                 <div class="profile-info-value">
                   <?php echo isset($value) ? $this->tanggal->getBulan($value->periode_lembur_bln) : '' ?>
                 </div>

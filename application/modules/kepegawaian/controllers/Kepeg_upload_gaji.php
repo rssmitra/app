@@ -44,8 +44,6 @@ class Kepeg_upload_gaji extends MX_Controller {
         $data['value'] = $this->Kepeg_upload_gaji->get_by_id($id);
         /*initialize flag for form*/
         $data['flag'] = "update";
-        // atasan
-        $data['acc_flow'] = $this->master->kepeg_acc_flow($data['value']->kepeg_id, $id, 'pengajuan_cuti');
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -71,10 +69,12 @@ class Kepeg_upload_gaji extends MX_Controller {
 
     public function show_detail( $id )
     {   
-        $fields = $this->master->list_fields( 'kepeg_pengajuan_cuti' );
-        // print_r($fields);die;
-        $data = $this->Kepeg_upload_gaji->get_by_id($id);
-        $html = $this->master->show_detail_row_table( $fields, $data );      
+
+        $data = $this->db->get_where('kepeg_rincian_gaji', array('kg_id' => $id))->result();
+        $response = [];
+        $response['value'] = $data;
+        // echo '<pre>'; print_r($response);die;
+        $html = $this->load->view('Kepeg_upload_gaji/rincian_gaji_view', $response, true);   
 
         echo json_encode( array('html' => $html) );
     }
@@ -97,11 +97,14 @@ class Kepeg_upload_gaji extends MX_Controller {
                       </div>';
             $row[] = '';
             $row[] = $row_list->kg_id;
-            $row[] = $row_list->kg_periode;
+            $row[] = 'GAJI PERIODE '.strtoupper($this->tanggal->getBulan($row_list->kg_periode_bln)).' / '.$row_list->kg_periode_thn;
+            $row[] = $this->tanggal->formatDate($row_list->created_date);
+            $row[] = $row_list->created_by;
             $row[] = $row_list->kg_deskripsi;
-            $row[] = $this->tanggal->formatDatedmY($row_list->created_by);
+            $row[] = '<div class="center">'.$row_list->kg_total_pegawai.' (Pegawai)</div>';
+            $row[] = '<div style="text-align: right">'.number_format($row_list->kg_total_gaji).'</div>';
             $row[] = '<div class="center">
-                        <a href="#" style="width: 100% !important" class="label label-xs label-success" onclick="getMenu('."'kepegawaian/Kepeg_upload_gaji/form/".$row_list->kg_id."'".')"><i class="fa fa-pencil"></i> Upload Gaji </a>
+                        <a href="#" style="width: 100% !important" class="label label-xs label-success" onclick="getMenu('."'kepegawaian/Kepeg_upload_gaji/form/".$row_list->kg_id."'".')"><i class="fa fa-pencil"></i> Update Data </a>
                     </div>';
                    
             $data[] = $row;
@@ -119,10 +122,14 @@ class Kepeg_upload_gaji extends MX_Controller {
 
     public function process()
     {
-        // echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($_FILES);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('acc_by_kepeg_id', 'kepeg_id', 'trim|required');
+        $val->set_rules('nama_petugas', 'Nama Petugas', 'trim|required');
+        $val->set_rules('tgl_upload', 'Tgl Upload', 'trim|required');
+        $val->set_rules('kg_periode_bln', 'Bulan', 'trim|required');
+        $val->set_rules('kg_periode_thn', 'Tahun', 'trim|required');
+        $val->set_rules('kg_deskripsi', 'Keterangan', 'trim|required');
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
         if ($val->run() == FALSE)
@@ -136,30 +143,37 @@ class Kepeg_upload_gaji extends MX_Controller {
             $id = ($this->input->post('id'))?$this->regex->_genRegex($this->input->post('id'),'RGXINT'):0;
 
             $dataexc = array(
-                'acc_date' => date('Y-m-d'),
-                'acc_status' => $this->input->post('acc_status'),
+                'kg_periode_bln' => $this->regex->_genRegex($this->input->post('kg_periode_bln',TRUE),'RGXQSL'),
+                'kg_periode_thn' => $this->regex->_genRegex($this->input->post('kg_periode_thn',TRUE),'RGXQSL'),
+                'kg_deskripsi' => $this->regex->_genRegex($this->input->post('kg_deskripsi',TRUE),'RGXQSL'),
             );
 
-            $this->Kepeg_upload_gaji->update('kepeg_log_acc_pengajuan', array('log_acc_id' => $id), $dataexc );
-            // get detail atasan
-            $dt_pegawai = $this->db->get_where('view_dt_pegawai', array('kepeg_id' => $val->set_value('acc_by_kepeg_id') ) )->row();
-             if(!empty($dt_pegawai)){
-                $acc_level = $dt_pegawai->kepeg_level - 1;
-                // log acc
-                $spv = $this->Kepeg_upload_gaji->get_spv($dt_pegawai->kepeg_unit, $acc_level);
-                if(!empty($spv)){
-                    $dataacc = array(
-                        'acc_by_level' => $spv->nama_level,
-                        'acc_by_unit' => $spv->nama_unit,
-                        'acc_by_name' => $spv->nama_pegawai,
-                        'acc_by_kepeg_id' => $spv->kepeg_id,
-                        'ref_id' => $this->input->post('kg_id'),
-                        'type' => 'pengajuan_cuti',
-                    );
-                    $this->Kepeg_upload_gaji->save('kepeg_log_acc_pengajuan', $dataacc);
+            if($id==0){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = $this->regex->_genRegex($this->input->post('nama_petugas'),'RGXQSL');
+                $newId = $this->Kepeg_upload_gaji->save('kepeg_gaji', $dataexc);
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->input->post('nama_petugas'),'RGXQSL');
+                $newId = $this->Kepeg_upload_gaji->update('kepeg_gaji', array('kg_id' => $id), $dataexc);
+                $newId = $id;
+            }
+            
+            if(isset($_FILES['file']['name'])){
+                $filename = $this->upload_file->doUpload('file', PATH_TMP_FILE);
+                if($filename != false){
+                    // delete old data
+                    $this->db->delete('kepeg_rincian_gaji', array('kg_id' => $newId));
+                    // insert data
+                    $result = $this->import_excel($newId, $filename);
+                    if($result == false){
+                        echo json_encode(array('status' => 301, 'message' => 'Format file tidak sesuai!'));        
+                    }
+                }else{
+                    echo json_encode(array('status' => 301, 'message' => 'File tidak tersimpan'));    
                 }
             }
-
+            
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -179,6 +193,7 @@ class Kepeg_upload_gaji extends MX_Controller {
         $toArray = explode(',',$id);
         if($id!=null){
             if($this->Kepeg_upload_gaji->delete_by_id($toArray)){
+                $this->db->where_in('kg_id', $toArray)->delete('kepeg_rincian_gaji');
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
 
             }else{
@@ -189,6 +204,87 @@ class Kepeg_upload_gaji extends MX_Controller {
         }
         
     }
+
+    public function import_excel($id, $filename){
+        // Load plugin PHPExcel nya
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+        $excelreader = new PHPExcel_Reader_Excel2007();
+        $loadexcel = $excelreader->load('uploaded/temp/'.$filename.'');
+        $sheet = $loadexcel->getActiveSheet()->toArray(null, true, true ,true);
+        
+        // Buat sebuah variabel array untuk menampung array data yg akan kita insert ke database
+        $data = [];
+
+        $numrow = 1;
+        foreach($sheet as $row){
+            // Cek $numrow apakah lebih dari 1
+            // Artinya karena baris pertama adalah nama-nama kolom
+            // Jadi dilewat saja, tidak usah diimport
+            if($numrow > 6){
+                // Kita push (add) array data ke variabel data
+                if(!empty($row['B'])){
+                    if(!empty($row['D'])){
+                        array_push($data, [
+                                    'kg_id'                 => $id, 
+                                    'nip'                   => $row['B'],
+                                    'nama_pegawai'          => $row['C'],
+                                    'gaji_dasar'            => $row['D'],
+                                    't_keluarga'            => $row['E'],
+                                    't_kerja'               => $row['F'],
+                                    't_jabatan'             => $row['G'],
+                                    't_shift'               => $row['H'],
+                                    't_khusus'              => $row['I'],
+                                    't_fungsional'          => $row['J'],
+                                    'jml_gaji'              => $row['K'],
+                                    'lain_lain'             => $row['L'],
+                                    'lembur'                => $row['M'],
+                                    'insentif'              => $row['N'],
+                                    'dkk'                   => $row['P'],
+                                    'cito'                  => $row['Q'],
+                                    'case_manager'          => $row['R'],
+                                    'oncall'                => $row['S'],
+                                    'transport'             => $row['T'],
+                                    'pjgk_prwt'             => $row['U'],
+                                    'home_care'             => $row['V'],
+                                    'fee_agent'             => $row['W'],
+                                    'ttl_pendapatan'        => $row['X'],
+                                    'p_absensi'             => $row['Y'],
+                                    'p_ppni'                => $row['Z'],
+                                    'p_biaya_perawatan'     => $row['AA'],
+                                    'p_apotik'              => $row['AB'],
+                                    'p_koperasi'            => $row['AC'],
+                                    'p_jamsostek'           => $row['AD'],
+                                    'p_pph21'               => $row['AE'],
+                                    'p_bpjs'                => $row['AF'],
+                                    'total_potongan'        => $row['AG'],
+                                    'gaji_diterima'         => $row['AH'],
+                                    ]);
+                        }
+                        // arr gaji
+                        $arrTotalGaji[] = $row['AF'];
+                    }
+                }
+                
+
+            $numrow++; // Tambah 1 setiap kali looping
+        }
+
+        if( $this->db->insert_batch('kepeg_rincian_gaji', $data) ){
+            $result = array(
+                'kg_total_pegawai' => count($data),
+                'kg_total_gaji' => array_sum($arrTotalGaji)
+            );
+
+            // update data header
+            $this->Kepeg_upload_gaji->update('kepeg_gaji', array('kg_id' => $id), $result);
+            $this->db->trans_commit();
+            return true;
+            
+        }else{
+            return false;
+        }
+    }
+
 
 
 }

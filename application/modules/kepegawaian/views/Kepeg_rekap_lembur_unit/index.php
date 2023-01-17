@@ -47,7 +47,7 @@
         <div class="control-label col-md-2">
           <div class="checkbox" style="margin-top: -5px">
             <label>
-              <input name="checked_unit" id="checked_unit" type="checkbox" class="ace" value="1">
+              <input name="checked_unit" id="checked_unit" type="checkbox" class="ace" value="1" checked>
               <span class="lbl"> Unit/Bagian</span>
             </label>
           </div>
@@ -59,18 +59,25 @@
         <div class="control-label col-md-1">
           <div class="checkbox" style="margin-top: -5px">
             <label>
-              <input name="checked_unit" id="checked_unit" type="checkbox" class="ace" value="1">
+              <input name="checked_periode" id="checked_periode" type="checkbox" class="ace" value="1" checked>
               <span class="lbl"> Periode </span>
             </label>
           </div>
         </div>
         <div class="col-md-2" style="margin-left: -15px">
-          <?php echo $this->master->get_bulan(isset($value->periode_lembur_bln)?$value->periode_lembur_bln:'' , 'periode_lembur_bln', 'periode_lembur_bln', 'form-control', '', '') ?> 
+          <?php echo $this->master->get_bulan(date('m') , 'bulan', 'bulan', 'form-control', '', '') ?> 
         </div>
         <div class="col-md-2" style="margin-left: -15px">
+          <?php echo $this->master->get_tahun(date('Y') , 'tahun', 'tahun', 'form-control', '', '') ?> 
+        </div>
+        <div class="col-md-3" style="margin-left: -15px">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Tampilkan Data
+          </a>
+          <a href="#" id="btn_export_data" class="btn btn-xs btn-success">
+            <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+            Export Excel
           </a>
         </div>
 
