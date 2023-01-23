@@ -61,6 +61,16 @@ class Display_antrian extends MX_Controller {
        //echo $nomor_loket;
    }
 
+   public function reload_antrian_poli()
+   {
+       # code...
+       $data = $this->display_antrian->get_antrian_poli();
+       // echo '<pre>';print_r($data);die;
+
+       echo json_encode(array('result' => $data));
+       //echo $nomor_loket;
+   }
+
 }
 
 /* End of file empty_module.php */

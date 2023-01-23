@@ -159,5 +159,40 @@ class Display_antrian_model extends CI_Model {
 		
 	}
 
+	public function get_antrian_poli()
+	{
+		$this->db->select('pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, tc_kunjungan.no_mr');
+		$this->db->from('pl_tc_poli');
+		$this->db->join('tc_kunjungan','pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=pl_tc_poli.kode_dokter','left');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_perusahaan','tc_registrasi.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
+		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
+		$this->db->where( 'CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d') );
+		$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
+		$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+		$this->db->where('tgl_keluar_poli IS NULL');
+		$this->db->where('status_periksa IS NULL');
+		$this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
+		$this->db->where('pl_tc_poli.antrian_aktif = 1');
+		$this->db->order_by('no_antrian', 'ASC');
+
+		$query = $this->db->get();
+		$result = $query->row();
+		
+		$praktek = ($this->session->userdata('sess_nama_dokter')) ? 'DOKTER SUDAH DATANG' : 'SELESAI';
+
+		$response = array(
+			'no_mr' => isset($result->no_mr) ? $result->no_mr : '',
+			'no_antrian' => isset($result->no_antrian) ? $result->no_antrian : '',
+			'nama_pasien' => isset($result->nama_pasien) ? $result->nama_pasien : $praktek,
+			'poli' => ($this->session->userdata('nama_bagian')) ? $this->session->userdata('nama_bagian') : 'Tutup',
+			'dokter' => ($this->session->userdata('sess_nama_dokter')) ? $this->session->userdata('sess_nama_dokter') : 'Tidak Praktek',
+		);
+		return $response;
+		
+	}
+
+
 	
 }
