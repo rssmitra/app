@@ -1401,11 +1401,11 @@ class Templates extends MX_Controller {
             $html .= 'Tidak ada data ditemukan';
         }
         
-        
         //echo '<pre>';
         //print_r($html);die;
 
         return $html;
+        
     }
 
     public function TemplateHasilPM($no_registrasi, $tipe, $data, $pm, $flag_mcu='',$data_pm=''){

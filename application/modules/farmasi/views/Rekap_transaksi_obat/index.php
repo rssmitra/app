@@ -15,6 +15,16 @@ jQuery(function($) {
   });
 });
 
+$('select[name="poliklinik"]').change(function () {      
+  $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {              
+      $('#select_dokter option').remove();                
+      $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
+      $.each(data, function (i, o) {                  
+          $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));                    
+      });      
+  });    
+}); 
+
 $( ".form-control" )
   .keypress(function(event) {
     var keycode =(event.keyCode?event.keyCode:event.which); 
@@ -104,10 +114,14 @@ function popUnder(node) {
 
           <div class="form-group">
             <label class="control-label col-md-2">Poli/Klinik Asal</label>
-            <div class="col-md-4">
-                <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0300','0500')) ), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
+            <div class="col-md-3">
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
             </div>
-            <div class="col-md-6" style="margin-left: -1.3%">
+            <label class="control-label col-md-1">Dokter</label>
+            <div class="col-md-3">
+              <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array()), '' , 'select_dokter', 'select_dokter', 'form-control', '', '') ?>
+            </div>
+            <div class="col-md-3" style="margin-left: -1.3%">
               <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Search

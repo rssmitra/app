@@ -44,8 +44,12 @@ class Rekap_transaksi_obat_model extends CI_Model {
 			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
 		}
 
-		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){
-			$this->db->where('fr_tc_far.kode_bagian_asal', $_GET['bagian']);
+		if( isset($_GET['poliklinik']) AND $_GET['poliklinik'] != 0 ){
+			$this->db->where('fr_tc_far.kode_bagian_asal', $_GET['poliklinik']);
+		}
+
+		if( isset($_GET['select_dokter']) AND $_GET['select_dokter'] != 0 ){
+			$this->db->where('fr_tc_far.kode_dokter', $_GET['select_dokter']);
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
