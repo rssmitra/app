@@ -37,12 +37,13 @@ class App_setup_ttd extends MX_Controller {
 
     public function process()
     {
-        
+        // echo '<pre>'; print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         foreach( $_POST['value'] as $key=>$row ){
             $val->set_rules('value['.$key.']', 'Nama '.$key.'', 'trim|required');
             $val->set_rules('label['.$key.']', 'Text Jabatan ('.$key.')', 'trim|required');
+            $val->set_rules('reff_id['.$key.']', 'Pilih user ID ('.$key.')', 'trim|required');
         }
                 
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -60,6 +61,7 @@ class App_setup_ttd extends MX_Controller {
                 $dataexc = array(
                     'value' => $this->regex->_genRegex($val->set_value('value['.$key.']'),'RGXQSL'),
                     'label' => $this->regex->_genRegex($val->set_value('label['.$key.']'),'RGXQSL'),
+                    'reff_id' => $this->regex->_genRegex($val->set_value('reff_id['.$key.']'),'RGXQSL'),
                     'flag' => $this->regex->_genRegex($key,'RGXQSL'),
                 );
                 $this->db->update('global_parameter', $dataexc, array('auto_id' => $_POST['auto_id'][$key]) );

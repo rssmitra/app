@@ -72,8 +72,11 @@ $(document).ready(function(){
                 <input name="value[ttd_ka_rs]" id="ttd_ka_rs" value="<?php echo $this->master->get_ttd_data('ttd_ka_rs','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[ttd_ka_rs]" id="ttd_ka_rs" value="<?php echo $this->master->get_ttd_data('ttd_ka_rs','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_ka_rs', 'reff_id') , 'reff_id[ttd_ka_rs]', 'reff_id_ttd_ka_rs', 'form-control', '', '') ?>
               </div>
             </div> 
             
@@ -84,8 +87,11 @@ $(document).ready(function(){
                 <input name="value[ttd_waka_rs_bid_pl]" id="ttd_waka_rs_bid_pl" value="<?php echo $this->master->get_ttd_data('ttd_waka_rs_bid_pl','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[ttd_waka_rs_bid_pl]" id="ttd_waka_rs_bid_pl" value="<?php echo $this->master->get_ttd_data('ttd_waka_rs_bid_pl','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_waka_rs_bid_pl', 'reff_id') , 'reff_id[ttd_waka_rs_bid_pl]', 'reff_id_ttd_waka_rs_bid_pl', 'form-control', '', '') ?>
               </div>
             </div>  
             
@@ -96,8 +102,11 @@ $(document).ready(function(){
                 <input name="value[ttd_waka_rs_bid_adm]" id="ttd_waka_rs_bid_adm" value="<?php echo $this->master->get_ttd_data('ttd_waka_rs_bid_adm','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[ttd_waka_rs_bid_adm]" id="ttd_waka_rs_bid_adm" value="<?php echo $this->master->get_ttd_data('ttd_waka_rs_bid_adm','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_waka_rs_bid_adm', 'reff_id') , 'reff_id[ttd_waka_rs_bid_adm]', 'reff_id_ttd_waka_rs_bid_adm', 'form-control', '', '') ?>
               </div>
             </div>  
             
@@ -108,8 +117,11 @@ $(document).ready(function(){
                 <input name="value[ttd_ka_bid_pm]" id="ttd_ka_bid_pm" value="<?php echo $this->master->get_ttd_data('ttd_ka_bid_pm','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[ttd_ka_bid_pm]" id="ttd_ka_bid_pm" value="<?php echo $this->master->get_ttd_data('ttd_ka_bid_pm','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_ka_bid_pm', 'reff_id') , 'reff_id[ttd_ka_bid_pm]', 'reff_id_ttd_ka_bid_pm', 'form-control', '', '') ?>
               </div>
             </div>  
             
@@ -120,8 +132,11 @@ $(document).ready(function(){
                 <input name="value[ttd_ka_tim_barjas]" id="ttd_ka_tim_barjas" value="<?php echo $this->master->get_ttd_data('ttd_ka_tim_barjas','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[ttd_ka_tim_barjas]" id="ttd_ka_tim_barjas" value="<?php echo $this->master->get_ttd_data('ttd_ka_tim_barjas','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_ka_tim_barjas', 'reff_id') , 'reff_id[ttd_ka_tim_barjas]', 'reff_id_ttd_ka_tim_barjas', 'form-control', '', '') ?>
               </div>
             </div>  
             
@@ -132,8 +147,11 @@ $(document).ready(function(){
                 <input name="value[ttd_ka_gdg_m]" id="ttd_ka_gdg_m" value="<?php echo $this->master->get_ttd_data('ttd_ka_gdg_m','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[ttd_ka_gdg_m]" id="ttd_ka_gdg_m" value="<?php echo $this->master->get_ttd_data('ttd_ka_gdg_m','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id') , 'reff_id[ttd_ka_gdg_m]', 'reff_id_ttd_ka_gdg_m', 'form-control', '', '') ?>
               </div>
             </div>  
             
@@ -144,8 +162,11 @@ $(document).ready(function(){
                 <input name="value[ttd_ka_gdg_nm]" id="ttd_ka_gdg_nm" value="<?php echo $this->master->get_ttd_data('ttd_ka_gdg_nm','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[ttd_ka_gdg_nm]" id="ttd_ka_gdg_nm" value="<?php echo $this->master->get_ttd_data('ttd_ka_gdg_nm','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_ka_gdg_nm', 'reff_id') , 'reff_id[ttd_ka_gdg_nm]', 'reff_id_ttd_ka_gdg_nm', 'form-control', '', '') ?>
               </div>
             </div>  
             <br>
@@ -157,8 +178,11 @@ $(document).ready(function(){
                 <input name="value[verifikator_m_1]" id="verifikator_m_1" value="<?php echo $this->master->get_ttd_data('verifikator_m_1','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[verifikator_m_1]" id="verifikator_m_1" value="<?php echo $this->master->get_ttd_data('verifikator_m_1','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('verifikator_m_1', 'reff_id') , 'reff_id[verifikator_m_1]', 'reff_id_verifikator_m_1', 'form-control', '', '') ?>
               </div>
             </div>
 
@@ -169,8 +193,11 @@ $(document).ready(function(){
                 <input name="value[verifikator_m_2]" id="verifikator_m_2" value="<?php echo $this->master->get_ttd_data('verifikator_m_2','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[verifikator_m_2]" id="verifikator_m_2" value="<?php echo $this->master->get_ttd_data('verifikator_m_2','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('verifikator_m_2', 'reff_id') , 'reff_id[verifikator_m_2]', 'reff_id_verifikator_m_2', 'form-control', '', '') ?>
               </div>
             </div>
             
@@ -183,8 +210,11 @@ $(document).ready(function(){
                 <input name="value[verifikator_nm_1]" id="verifikator_nm_1" value="<?php echo $this->master->get_ttd_data('verifikator_nm_1','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[verifikator_nm_1]" id="verifikator_nm_1" value="<?php echo $this->master->get_ttd_data('verifikator_nm_1','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('verifikator_nm_1', 'reff_id') , 'reff_id[verifikator_nm_1]', 'reff_id_verifikator_nm_1', 'form-control', '', '') ?>
               </div>
             </div>
             <div class="form-group">
@@ -194,8 +224,11 @@ $(document).ready(function(){
                 <input name="value[verifikator_nm_2]" id="verifikator_nm_2" value="<?php echo $this->master->get_ttd_data('verifikator_nm_2','value'); ?>" class="form-control" type="text">
               </div>
               <label class="control-label col-md-2">Nama Pejabat</label>
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <input name="label[verifikator_nm_2]" id="verifikator_nm_2" value="<?php echo $this->master->get_ttd_data('verifikator_nm_2','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('verifikator_nm_2', 'reff_id') , 'reff_id[verifikator_nm_2]', 'reff_id_verifikator_nm_2', 'form-control', '', '') ?>
               </div>
             </div>
             

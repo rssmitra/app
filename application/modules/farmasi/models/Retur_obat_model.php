@@ -43,7 +43,6 @@ class Retur_obat_model extends CI_Model {
 			}
 		}else{
 			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
-			
 		}
 
 		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){

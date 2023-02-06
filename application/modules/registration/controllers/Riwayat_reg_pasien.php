@@ -102,6 +102,7 @@ class Riwayat_reg_pasien extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_masuk);
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->nama_pegawai;
+            $row[] = '<div class="center"><input type="text" name="no_sep_'.$row_list->no_registrasi.'" id="no_sep_'.$row_list->no_registrasi.'" value="'.$row_list->no_sep.'" style="border: 1px solid white !important" onchange="saveRow('.$row_list->no_registrasi.')"></div>';
            
             $data[] = $row;
         }
@@ -121,6 +122,11 @@ class Riwayat_reg_pasien extends MX_Controller {
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
+    }
+
+    public function updateNoSEP(){
+        $this->db->where('no_registrasi', $_POST['ID'])->update('tc_registrasi', array('no_sep' => $_POST['no_sep']));
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
     }
 
 

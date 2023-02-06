@@ -9,9 +9,11 @@ class Auto_merge_farmasi extends MX_Controller {
 
         parent::__construct();
         $this->load->library("input"); 
-        $this->load->model('farmasi/Verifikasi_resep_prb_model', 'Verifikasi_resep_prb');
         $this->load->model('farmasi/Etiket_obat_model', 'Etiket_obat');
+        $this->load->model('farmasi/Entry_resep_racikan_model', 'Entry_resep_racikan');
+        $this->load->model('farmasi/Verifikasi_resep_prb_model', 'Verifikasi_resep_prb');
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+        $this->load->model('farmasi/Retur_obat_model', 'Retur_obat');
         // load module
         $this->load->module('Templates/Templates.php');
         // harus pake tanggal
@@ -37,8 +39,9 @@ class Auto_merge_farmasi extends MX_Controller {
         
             // kode sep untuk file scan resep
             $substr_no_sep = substr($list->no_sep, -4);
-
-            $filename = 'uploaded/farmasi/scan/'.$this->date.'/'.$substr_no_sep.'.pdf';
+            //get month and year
+            sscanf($this->date, '%d-%d-%d', $y, $m, $d);
+            $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
 
             // jika file hasil scan ada maka lanjutkan
             if (file_exists($filename)) {
