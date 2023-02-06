@@ -62,6 +62,34 @@ $( ".form-control" )
 
 }); 
 
+function saveRow(no_registrasi){  
+
+  preventDefault();
+  $.ajax({
+      url: 'registration/Riwayat_reg_pasien/updateNoSEP',
+      type: "post",
+      data: {ID:no_registrasi, no_sep: $('#no_sep_'+no_registrasi+'').val()},
+      dataType: "json",
+      beforeSend: function() {
+        // achtungShowLoader();  
+      },
+      uploadProgress: function(event, position, total, percentComplete) {
+      },
+      complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        if(jsonResponse.status === 200){
+          $.achtung({message: jsonResponse.message, timeout:5});
+          // reload_table();
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }
+        achtungHideLoader();
+      }
+  });
+
+}
+
 
 </script>
 <div class="row">
@@ -81,7 +109,7 @@ $( ".form-control" )
 
     <div class="col-md-12">
 
-      <center><h4>FORM PENCARIAN DATA REGISTRASI PASIEN<br><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data Bulan <?php echo $this->tanggal->getBulan(date('m'))?> Tahun <?php echo date('Y')?> </small></h4></center>
+      <center><h4>FORM PENCARIAN DATA REGISTRASI PASIEN<br><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data hari ini tanggal <?php echo date('d/M/Y')?></small></h4></center>
       <br>
 
       <div class="form-group">
@@ -89,7 +117,7 @@ $( ".form-control" )
           <div class="col-md-2">
             <select name="search_by" class="form-control">
               <option value="">-Silahkan Pilih-</option>
-              <option value="no_mr">No MR</option>
+              <option value="no_mr" selected>No MR</option>
               <option value="nama">Nama Pasien</option>
             </select>
           </div>
@@ -183,13 +211,14 @@ $( ".form-control" )
         <tr>  
           <th width="30px" class="center"></th>
           <th></th>
-          <th>No Reg</th>
+          <th style="width: 80px !important">No Reg</th>
           <th>No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
           <th>Tanggal Registrasi</th>
           <th>Tujuan Bagian</th>
           <th>Nama Dokter</th>          
+          <th>Nomor SEP</th>          
         </tr>
       </thead>
       <tbody>

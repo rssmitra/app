@@ -70,6 +70,7 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
@@ -104,7 +105,7 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 	public function save($table, $data)
 	{
 		$this->db->insert($table, $data);
-		// print_r($this->db->last_query());die;
+		
 		return $this->db->insert_id();
 	}
 

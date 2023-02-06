@@ -42,7 +42,11 @@ class Auto_merge_farmasi extends MX_Controller {
             $substr_no_sep = substr($list->no_sep, -4);
             // filename
             $filename = 'uploaded/farmasi/scan/'.$this->date.'/'.$substr_no_sep.'.pdf';
-            
+
+            //get month and year
+            sscanf($this->date, '%d-%d-%d', $y, $m, $d);
+            $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
+
             // jika file hasil scan ada maka lanjutkan
             if (file_exists($filename)) {
                 

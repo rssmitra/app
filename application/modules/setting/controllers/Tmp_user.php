@@ -168,6 +168,7 @@ class Tmp_user extends MX_Controller {
                 $newId = $id;
                 $this->logs->save('tmp_user', $newId, 'update record', json_encode($dataexc), 'user_id');
             }
+
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
@@ -237,6 +238,7 @@ class Tmp_user extends MX_Controller {
 
                 $dataexc['path_foto'] = $this->upload_file->doUpload('images', PATH_PHOTO_PROFILE_DEFAULT);
             }
+
             //echo '<pre>';print_r($id);die;
             if($id==0){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
@@ -252,6 +254,9 @@ class Tmp_user extends MX_Controller {
                  /*save logs*/
                 $this->logs->save('tmp_user_profile', $newId, 'update record on '.$this->title.' module', json_encode($dataexc),'user_id');
             }
+
+
+            
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
