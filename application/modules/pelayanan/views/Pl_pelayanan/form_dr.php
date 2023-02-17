@@ -522,9 +522,6 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
 
 }
 
-function changeSelection(){
-
-}
 
 </script>
 
@@ -657,10 +654,10 @@ function changeSelection(){
         <input type="hidden" name="id_pl_tc_poli" id="id_pl_tc_poli" value="<?php echo ($id)?$id:''?>">
         <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
         <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
-        <input type="hidden" name="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
+        <input type="hidden" name="no_registrasi" id="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
         <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
         <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
-        <input type="hidden" name="kode_perjanjian" class="form-control" value="<?php echo isset($value->kode_perjanjian)?$value->kode_perjanjian:''?>" id="kode_perjanjian" readonly>
+        <input type="hiddenxx" name="kode_perjanjian" class="form-control" value="<?php echo isset($value->kode_perjanjian)?$value->kode_perjanjian:''?>" id="kode_perjanjian" readonly>
         <input type="hidden" name="taskId" class="form-control" value="4" id="taskId" readonly>
       
         <!-- profile Pasien -->

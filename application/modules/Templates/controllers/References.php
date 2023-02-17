@@ -816,7 +816,7 @@ class References extends MX_Controller {
 
 
         /*kuota dokter*/
-        $kuota_dokter = $this->db->get_where('tr_jadwal_dokter', array('jd_hari' => $day, 'jd_kode_dokter' => $kode_dokter, 'jd_kode_spesialis' => $kode_spesialis) )->row(); 
+        $kuota_dokter = $this->db->select('tr_jadwal_dokter.*, kode_dokter_bpjs, kode_poli_bpjs')->join('mt_karyawan', 'mt_karyawan.kode_dokter = tr_jadwal_dokter.jd_kode_dokter', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian = tr_jadwal_dokter.jd_kode_spesialis')->get_where('tr_jadwal_dokter', array('jd_hari' => $day, 'jd_kode_dokter' => $kode_dokter, 'jd_kode_spesialis' => $kode_spesialis) )->row(); 
 
 		$id = $kuota_dokter->jd_id; 
 		$kuota_dr = $kuota_dokter->jd_kuota;
@@ -833,13 +833,17 @@ class References extends MX_Controller {
 			'sisa_antrian' => $sisa_antrian,
 			'sisa_kuota' => $sisa,
 			'kode_dokter' => $kode_dokter,
+			'kode_dokter_bpjs' => $kuota_dokter->kode_dokter_bpjs,
+			'jam_praktek_mulai' => $this->tanggal->formatFullTime($kuota_dokter->jd_jam_mulai),
+			'jam_praktek_selesai' => $this->tanggal->formatFullTime($kuota_dokter->jd_jam_selesai),
+			'kode_poli_bpjs' => $kuota_dokter->kode_poli_bpjs,
 			'kode_bagian' => $kode_spesialis,
 		);
 		$html = $this->load->view('templates/view_log_kuota_dr', $data, true);
 
 		$message = ($sisa==0)?'<label class="label label-danger"><i class="fa fa-times-circle"></i> Maaf, Kuota sudah penuh !</label>':'<label class="label label-success"><i class="fa fa-check"></i> Kuota Terpenuhi</label>';
 
-        echo json_encode(array('sisa_kuota' => $sisa, 'jd_id' => $id, 'message' => $html));
+        echo json_encode(array('sisa_kuota' => $sisa, 'jd_id' => $id, 'message' => $html, 'data' => $data));
 	}
 
 	public function view_pasien_terdaftar_current(){

@@ -152,7 +152,18 @@ final class Tanggal {
             $s = tanggal::normalDigit($s);
             $tanggal = $y . "-" . $m . "-" . $d;
         }
+        return $tanggal;
+    }
 
+    public  function formatDateBPJS($input) {
+        if (empty($input)) {
+            $tanggal = "-";
+        } else {
+            sscanf($input, "%d-%d-%d", $y, $m, $d);
+            $m = tanggal::normalDigit($m);
+            $d = tanggal::normalDigit($d);
+            $tanggal = $y . "-" . $m . "-" . $d;
+        }
         return $tanggal;
     }
     

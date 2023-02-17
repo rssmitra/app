@@ -98,8 +98,9 @@ class Reg_igd extends MX_Controller {
             $kode_bagian_masuk = $this->regex->_genRegex('020101','RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
+            $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
 
-            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep);
+            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep, $tgl_registrasi);
             $no_registrasi = $data_registrasi['no_registrasi'];
             $no_kunjungan = $data_registrasi['no_kunjungan'];
             
@@ -110,10 +111,10 @@ class Reg_igd extends MX_Controller {
                 'kode_gd' => $kode_gd,
                 'no_kunjungan' => $no_kunjungan,
                 'jns_celaka' => $this->regex->_genRegex($this->form_validation->set_value('igd_jns_kejadian'),'RGXQSL'),
-                'tanggal_gd' => date('Y-m-d H:i:s'),
-                'tgl_kecelakaan' => ($this->input->post('igd_tgl_kejadian')=='')?date('Y-m-d H:i:s'):$tgl_kecelakaan ,
+                'tanggal_gd' => $tgl_registrasi,
+                'tgl_kecelakaan' => ($this->input->post('igd_tgl_kejadian')=='') ? $tgl_registrasi : $tgl_kecelakaan ,
                 'dibawa_oleh' => $this->regex->_genRegex($this->input->post('igd_diantar_oleh'),'RGXQSL'),
-                'tgl_jam_msk' => date('Y-m-d H:i:s'),
+                'tgl_jam_msk' => $tgl_registrasi,
                 'kd_tind_igd' => 0,
                 'dikirim_oleh' => $this->regex->_genRegex($this->input->post('igd_dikirim_oleh'),'RGXQSL'),
                 'dibawa_dgn' => $this->regex->_genRegex($this->input->post('igd_dibawa_dengan'),'RGXQSL'),
@@ -146,7 +147,7 @@ class Reg_igd extends MX_Controller {
                 /*end form hidden input default*/
                 'kode_bagian' => $this->regex->_genRegex('020101','RGXQSL'),
                 'kode_klas' => $this->regex->_genRegex($this->input->post('klas'),'RGXINT'),
-                'tgl_transaksi' =>  date('Y-m-d H:i:s'),                
+                'tgl_transaksi' =>  $tgl_registrasi,                
                 'jumlah' => 1,   
             );
             

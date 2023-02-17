@@ -175,7 +175,7 @@ class Pl_pelayanan_model extends CI_Model {
 	public function get_by_id($id)
 	{
 		$this->_main_query();
-		$this->db->select("(SELECT top 1 kode_perjanjian FROM tc_pesanan WHERE no_mr=tc_kunjungan.no_mr AND CAST(tgl_pesanan as DATE) = CAST(pl_tc_poli.tgl_jam_poli as DATE) ORDER BY id_tc_pesanan DESC) as kode_perjanjian");
+		$this->db->select("(SELECT top 1 kode_perjanjian FROM tc_pesanan WHERE no_mr=tc_kunjungan.no_mr AND CAST(tgl_jam_masuk as DATE) = CAST(pl_tc_poli.tgl_jam_poli as DATE) ORDER BY id_tc_pesanan DESC) as kode_perjanjian");
 
 		if(is_array($id)){
 			$this->db->where_in(''.$this->table.'.id_pl_tc_poli',$id);
@@ -521,7 +521,10 @@ class Pl_pelayanan_model extends CI_Model {
 		}else{
 			return false;
 		}
-		
+	}
+
+	public function get_cart_resep($no_kunjungan){
+		return $this->db->get_where('fr_tc_pesan_resep_detail', array('no_kunjungan' => $no_kunjungan) )->result();
 	}
 
 
