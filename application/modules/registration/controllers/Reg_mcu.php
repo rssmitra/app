@@ -101,7 +101,9 @@ class Reg_mcu extends MX_Controller {
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
 
-            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep);
+            $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
+            
+            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,'','',$tgl_registrasi);
             $no_registrasi = $data_registrasi['no_registrasi'];
             $no_kunjungan = $data_registrasi['no_kunjungan'];
             
