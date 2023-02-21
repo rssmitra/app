@@ -127,8 +127,11 @@ $(document).ready(function(){
             $('#noKartuBpjs').val(jsonResponse.no_kartu);
             $('#jenis_pendaftaran').val('1');
             $('#form_registration').attr('action', 'registration/Reg_klinik/process');
-            $('#divLoadSEP').load('registration/Reg_klinik/process_sep_success/'+jsonResponse.no_sep+'');
-            $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/1/') ;
+            $('#divLoadSEP').load('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep+'?no_antrian='+jsonResponse.no_antrian+'');
+            // $('#divLoadSEP').load('registration/Reg_klinik/process_sep_success/'+jsonResponse.no_sep+'');
+            // $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/1/') ;
+            $('#change_modul_view_perjanjian').hide('fast') ;
+            
           }else{
             $('#id_tc_pesanan').val('');
           }
