@@ -92,16 +92,18 @@ class Reg_ranap extends MX_Controller {
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
 
+            $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
+
             if( !$this->input->post('no_registrasi_hidden') ){
                 /*save tc_registrasi*/
-                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep);
+                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep, '','', $tgl_registrasi);
                 $no_registrasi = $data_registrasi['no_registrasi'];
                 $no_kunjungan = $data_registrasi['no_kunjungan'];
             }else{
                 $no_registrasi = $this->input->post('no_registrasi_hidden');
                 $kode_bagian_asal = $this->input->post('kode_bagian_asal_hidden');
                 $kode_bagian_tujuan = $this->regex->_genRegex($this->form_validation->set_value('ri_ruangan'),'RGXQSL');
-                $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_tujuan,$kode_bagian_asal);
+                $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_tujuan,$kode_bagian_asal, $tgl_registrasi);
                 $data_ri_tc_ranap['rujukan_dari'] = $this->input->post('kode_bagian_asal_hidden');
             }
             

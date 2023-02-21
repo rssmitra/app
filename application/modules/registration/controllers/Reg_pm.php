@@ -104,7 +104,7 @@ class Reg_pm extends MX_Controller {
             $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = isset($_POST['noSep']) ? $this->regex->_genRegex($_POST['noSep'],'RGXQSL') : '';
-            $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
+            $tgl_registrasi = ($this->input->post('tgl_registrasi')) ? $this->input->post('tgl_registrasi').' '.date('H:i:s') : date('Y-m-d H:i:s');
 
             if( !$this->input->post('no_registrasi_rujuk') && empty($this->input->post('no_registrasi_rujuk')) ){
                 /*save tc_registrasi*/
