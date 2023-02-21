@@ -7,7 +7,7 @@
 
 final Class Daftar_pasien {
 
-    public function daftar_registrasi($title='',$no_mr='', $kode_perusahaan='', $kode_kelompok='', $kode_dokter='', $kode_bagian_masuk='', $umur_saat_pelayanan='',$no_sep='',$jd_id='', $kode_faskes='') {
+    public function daftar_registrasi($title='',$no_mr='', $kode_perusahaan='', $kode_kelompok='', $kode_dokter='', $kode_bagian_masuk='', $umur_saat_pelayanan='',$no_sep='',$jd_id='', $kode_faskes='', $tgl_registrasi='') {
         
         $CI =& get_instance();
         $CI->load->library('session'); 
@@ -26,7 +26,7 @@ final Class Daftar_pasien {
           'kode_perusahaan' => $kode_perusahaan,
           'kode_kelompok' => $kode_kelompok,
           'kode_dokter' => $kode_dokter,
-          'tgl_jam_masuk' => date('Y-m-d H:i:s'),
+          'tgl_jam_masuk' => ($tgl_registrasi == '') ? date('Y-m-d H:i:s') : $tgl_registrasi,
           'stat_pasien' => $stat_pasien,
           'kode_bagian_masuk' => $kode_bagian_masuk,
           'status_registrasi' => 0,
@@ -44,12 +44,12 @@ final Class Daftar_pasien {
 
         $CI->logs->save('tc_registrasi', $newId, 'insert new record on '.$title.' module', json_encode($data),'id_tc_registrasi');
 
-        $no_kunjungan = $this->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_masuk,$kode_bagian_masuk);
+        $no_kunjungan = $this->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_masuk,$kode_bagian_masuk, $tgl_registrasi);
         
         return array('no_registrasi' => $no_registrasi, 'no_kunjungan' => $no_kunjungan);
     }
 
-    public function daftar_kunjungan($title,$no_registrasi='',$no_mr='',$kode_dokter='',$kode_bagian_tujuan='',$kode_bagian_asal='') {
+    public function daftar_kunjungan($title,$no_registrasi='',$no_mr='',$kode_dokter='',$kode_bagian_tujuan='',$kode_bagian_asal='', $tgl_kunjungan='') {
         
         $CI =& get_instance();
         $CI->load->library('session');          
@@ -66,7 +66,7 @@ final Class Daftar_pasien {
             'kode_dokter' => $kode_dokter,
             'kode_bagian_tujuan' => $kode_bagian_tujuan,
             'kode_bagian_asal' => $kode_bagian_asal,
-            'tgl_masuk' => date('Y-m-d H:i:s'),
+            'tgl_masuk' => ($tgl_kunjungan == '') ? date('Y-m-d H:i:s') : $tgl_kunjungan,
             'status_masuk' => ($kode_bagian_asal!=$kode_bagian_tujuan)?1:0,
         );
 

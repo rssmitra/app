@@ -615,7 +615,8 @@ $(document).ready(function(){
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
-          console.log(val_item);
+          var label_item=item.split(':')[1];
+          $('#inputKeyFaskes').val(label_item);
           $('#kode_faskes_hidden').val(val_item);
         }
     });
@@ -721,6 +722,15 @@ $(document).ready(function(){
 
 })
 
+$('select[name="jeniskunjunganbpjs"]').change(function () {      
+
+  if ( $(this).val() == 1 ) {
+      $('#norujukanbpjs').attr('disabled', false);
+  }else{
+      $('#norujukanbpjs').attr('disabled', true);
+  }
+
+});
 
 function hideLabelPerjanjian(){
   preventDefault();
@@ -1021,7 +1031,6 @@ function changeModulRjFromPerjanjianBPJS(id_tc_pesanan, kode_dokter, kode_klinik
 }
 
 function registerNow(no_mr)
-
 {  
 
     $('#div_form_onsite').show('fast');
@@ -1072,6 +1081,7 @@ function find_pasien_by_keyword(keyword){
             $('#noMrHidden').val(obj.no_mr);
 
             $('#no_ktp').text(obj.no_ktp);
+            $('#nikPasien').val(obj.no_ktp);
 
             $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
 
@@ -1088,8 +1098,10 @@ function find_pasien_by_keyword(keyword){
             $('#alamat').text(obj.almt_ttp_pasien);
 
             $('#hp').text(obj.no_hp);
-
             $('#no_telp').text(obj.tlp_almt_ttp);
+
+            $('#hpPasien').val(obj.no_hp);
+            $('#noTelpPasien').val(obj.tlp_almt_ttp);
 
             $('#catatan_pasien').text(obj.keterangan);
 
@@ -1398,7 +1410,6 @@ function find_pasien_by_mr(keyword){
 
 }
 
-
 $('#btnSearchNoRujukan').click(function (e) {
     e.preventDefault();
 
@@ -1527,8 +1538,6 @@ function form_perjanjian(){
 
 }
 
-
-
 </script>
 
 <style type="text/css">
@@ -1625,6 +1634,9 @@ function form_perjanjian(){
             <br>
             <!-- hidden form -->
             <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
+            <input type="hidden" value="" name="nikPasien" id="nikPasien">
+            <input type="hidden" value="" name="hpPasien" id="hpPasien">
+            <input type="hidden" value="" name="noTelpPasien" id="noTelpPasien">
             <input type="hidden" name="flag" value="noKartu">
             <input type="hidden" name="umur_saat_pelayanan_hidden" value="" id="umur_saat_pelayanan_hidden">
             <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
@@ -2124,6 +2136,18 @@ function form_perjanjian(){
                                 <input type="hidden" name="kode_faskes_hidden" value="" id="kode_faskes_hidden">
                             </div>
                           </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-sm-3">Jenis Kunjungan</label>
+                            <div class="col-md-3">
+                            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jeniskunjunganbpjs')), '' , 'jeniskunjunganbpjs', 'jeniskunjunganbpjs', 'form-control', '', '') ?>
+                            </div>
+                            <label class="control-label col-sm-2">Nomor Rujukan</label>
+                            <div class="col-md-4">
+                                <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text" disabled/>
+                            </div>
+                          </div>
+
                         </div>
 
                         <div class="form-group">

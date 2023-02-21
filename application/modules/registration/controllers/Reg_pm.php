@@ -58,7 +58,7 @@ class Reg_pm extends MX_Controller {
 
     public function process(){
 
-        // print_r($_POST);die;
+        // echo '<pre>';print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Dokter', 'trim|required', array('required' => 'No MR Pasien tidak ditemukan') );
         $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Perusahaan', 'trim');
@@ -104,18 +104,18 @@ class Reg_pm extends MX_Controller {
             $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = isset($_POST['noSep']) ? $this->regex->_genRegex($_POST['noSep'],'RGXQSL') : '';
-
+            $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
 
             if( !$this->input->post('no_registrasi_rujuk') && empty($this->input->post('no_registrasi_rujuk')) ){
                 /*save tc_registrasi*/
-                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep);
+                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep, $tgl_registrasi);
                 $no_registrasi = $data_registrasi['no_registrasi'];
                 $no_kunjungan = $data_registrasi['no_kunjungan'];
             }else{
                 $no_registrasi = $this->input->post('no_registrasi_rujuk');
                 $kode_bagian_asal = $_POST['asal_pasien_pm'];
                 $kode_bagian_tujuan = $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL');
-                $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_tujuan,$kode_bagian_asal);
+                $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_tujuan,$kode_bagian_asal, $tgl_registrasi);
             }
               
             /*insert penunjang medis*/
@@ -124,7 +124,7 @@ class Reg_pm extends MX_Controller {
             $klas = ($this->input->post('klas_rujuk')!=0)?$this->input->post('klas_rujuk'):16;
             $data_pm_tc_penunjang = array(
                 'kode_penunjang' => $kode_penunjang,
-                'tgl_daftar' => date('Y-m-d H:i:s'),
+                'tgl_daftar' => $tgl_registrasi,
                 'kode_bagian' => $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL'),
                 'no_kunjungan' => $no_kunjungan,
                 'no_antrian' => $no_antrian,

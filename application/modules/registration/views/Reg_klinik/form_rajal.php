@@ -9,10 +9,7 @@ $(document).ready(function(){
         $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
         $.each(data, function (i, o) {                  
             $('<option value="' + o.kode_bagian + '">' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal'));                    
-            
-        });      
-
-
+        });     
     });            
     
 })
@@ -41,15 +38,24 @@ $('select[name="reg_klinik_rajal"]').change(function () {
     }    
     // title
     $('#title-select-klinik').text( $('#reg_klinik_rajal option:selected').text().toUpperCase() );
+    $('#reg_klinik_rajal_txt').val( $('#reg_klinik_rajal option:selected').text().toUpperCase() );
 }); 
 
 $('select[id="reg_dokter_rajal"]').change(function () {      
 
     if ($(this).val()) {          
 
-        $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {              
+        $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {  
 
+            var objData = data.data;
+            $('#kuotadr').val(objData.kuota); 
             $('#sisa_kuota').val(data.sisa_kuota); 
+            $('#kode_dokter_bpjs').val(objData.kode_dokter_bpjs); 
+            $('#reg_dokter_rajal_txt').val( $('#reg_dokter_rajal option:selected').text().toUpperCase() );
+            $('#kode_poli_bpjs').val(objData.kode_poli_bpjs); 
+            $('#jam_praktek_mulai').val(objData.jam_praktek_mulai); 
+            $('#jam_praktek_selesai').val(objData.jam_praktek_selesai); 
+
             $('#message_for_kuota').html(data.message);              
             if(data.sisa_kuota > 0){
                 $('#btn_submit').show('fast');
@@ -101,6 +107,8 @@ $('#inputDokter').typeahead({
     <label class="control-label col-sm-3">*Klinik</label>
     <div class="col-sm-9">
         <?php echo $this->master->get_change($params = array('table' => 'tr_jadwal_dokter', 'id' => 'jd_kode_spesialis', 'name' => 'jd_kode_spesialis', 'where' => array()), '' , 'reg_klinik_rajal', 'reg_klinik_rajal', 'form-control', '', '') ?>
+        <input type="hidden" name="kode_poli_bpjs" id="kode_poli_bpjs" class="form-control">
+        <input type="hidden" name="reg_klinik_rajal_txt" id="reg_klinik_rajal_txt" class="form-control">
     </div>
 </div>
 <div class="form-group">
@@ -108,17 +116,23 @@ $('#inputDokter').typeahead({
     <div class="col-sm-9" id="dokter_by_klinik">
         <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'reg_dokter_rajal', 'reg_dokter_rajal', 'form-control', '', '') ?>
         <input name="jd_id" id="jd_id" class="form-control" type="hidden">
+        <input name="kode_dokter_bpjs" id="kode_dokter_bpjs" class="form-control" type="hidden">
+        <input name="reg_dokter_rajal_txt" id="reg_dokter_rajal_txt" class="form-control" type="hidden">
     </div>
 
     <div class="col-sm-8" id="dokter_dinamis_klinik" style="display:none;">
         <input id="inputDokter" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
         <input type="hidden" name="" id="reg_dokter_rajal_dinamis" class="form-control">
+        
     </div>
 </div>
+<input type="hidden" name="jam_praktek_mulai" id="jam_praktek_mulai" class="form-control">
+<input type="hidden" name="jam_praktek_selesai" id="jam_praktek_selesai" class="form-control">
+<input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
+<input type="hidden" name="kuotadr" id="kuotadr" readonly>
 
 <?php if(isset($id_tc_pesanan) && $id_tc_pesanan == '') :?>
 <!-- hidden kuota dr -->
-<input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
 <div class="form-group">
         <div id="message_for_kuota" style="margin-left: 7px"></div>
         <div id="message_for_kuota_null" style="margin-left: 7px"></div>
