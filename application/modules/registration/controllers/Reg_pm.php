@@ -58,7 +58,7 @@ class Reg_pm extends MX_Controller {
 
     public function process(){
 
-        echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Dokter', 'trim|required', array('required' => 'No MR Pasien tidak ditemukan') );
         $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Perusahaan', 'trim');

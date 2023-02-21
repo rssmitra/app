@@ -615,7 +615,8 @@ $(document).ready(function(){
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
-          console.log(val_item);
+          var label_item=item.split(':')[1];
+          $('#inputKeyFaskes').val(label_item);
           $('#kode_faskes_hidden').val(val_item);
         }
     });
@@ -721,6 +722,15 @@ $(document).ready(function(){
 
 })
 
+$('select[name="jeniskunjunganbpjs"]').change(function () {      
+
+  if ( $(this).val() == 1 ) {
+      $('#norujukanbpjs').attr('disabled', false);
+  }else{
+      $('#norujukanbpjs').attr('disabled', true);
+  }
+
+});
 
 function hideLabelPerjanjian(){
   preventDefault();
@@ -1021,7 +1031,6 @@ function changeModulRjFromPerjanjianBPJS(id_tc_pesanan, kode_dokter, kode_klinik
 }
 
 function registerNow(no_mr)
-
 {  
 
     $('#div_form_onsite').show('fast');
@@ -1401,7 +1410,6 @@ function find_pasien_by_mr(keyword){
 
 }
 
-
 $('#btnSearchNoRujukan').click(function (e) {
     e.preventDefault();
 
@@ -1529,8 +1537,6 @@ function form_perjanjian(){
   }
 
 }
-
-
 
 </script>
 
@@ -2133,8 +2139,12 @@ function form_perjanjian(){
 
                           <div class="form-group">
                             <label class="control-label col-sm-3">Jenis Kunjungan</label>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                             <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jeniskunjunganbpjs')), '' , 'jeniskunjunganbpjs', 'jeniskunjunganbpjs', 'form-control', '', '') ?>
+                            </div>
+                            <label class="control-label col-sm-2">Nomor Rujukan</label>
+                            <div class="col-md-4">
+                                <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text" disabled/>
                             </div>
                           </div>
 

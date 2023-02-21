@@ -451,9 +451,7 @@
 
 <div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?>>
     <div class="col-md-12" style="margin-top: 6px">
-        <!-- hidden -->
-        <input type="hidden" name="id_pesan_resep_detail" id="id_pesan_resep_detail" value="">
-        <!-- for resep farmasi -->
+        <!-- <input type="hidden" name="id_pesan_resep_detail" id="id_pesan_resep_detail" value="">
         <div class="form-group">
             <label class="control-label col-sm-2">Cari Obat</label>            
             <div class="col-md-8">            
@@ -548,7 +546,7 @@
                 <?php endforeach;?>
             </tbody>
 
-        </table>
+        </table> -->
 
         
         <textarea name="pl_resep_farmasi" id="pl_resep_farmasi" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->resep_farmasi)?$this->master->br2nl($riwayat->resep_farmasi):''?></textarea>

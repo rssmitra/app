@@ -100,7 +100,7 @@ class Reg_igd extends MX_Controller {
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
             $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
 
-            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep, $tgl_registrasi);
+            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep, '','',$tgl_registrasi);
             $no_registrasi = $data_registrasi['no_registrasi'];
             $no_kunjungan = $data_registrasi['no_kunjungan'];
             

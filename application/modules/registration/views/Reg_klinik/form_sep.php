@@ -236,7 +236,7 @@
                 <div class="form-group">
                   <label class="control-label col-md-3">Tujuan Kunjungan </label>
                   <div class="col-md-6">
-                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'tujuan_kunjungan')), '0' , 'tujuanKunj', 'tujuanKunj', 'form-control', '', '') ?>
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'tujuan_kunjungan')), '2' , 'tujuanKunj', 'tujuanKunj', 'form-control', '', '') ?>
                   </div>
                 </div>
                 <div class="form-group">
@@ -255,7 +255,7 @@
                 <div class="form-group">
                   <label class="control-label col-md-3">Assesment Pelayanan</label>
                   <div class="col-md-6">
-                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'assesment_pelayanan')), '' , 'assesmentPel', 'assesmentPel', 'form-control', '', '') ?>
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'assesment_pelayanan')), '5' , 'assesmentPel', 'assesmentPel', 'form-control', '', '') ?>
                   </div>
                 </div>
 

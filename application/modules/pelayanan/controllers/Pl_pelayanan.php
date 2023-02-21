@@ -1247,7 +1247,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function processSaveDiagnosa(){
 
-        // print_r($_POST);die;
+        print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
 
@@ -1336,7 +1336,6 @@ class Pl_pelayanan extends MX_Controller {
                 }
             }
 
-        
         }
 
     }
@@ -1560,7 +1559,9 @@ class Pl_pelayanan extends MX_Controller {
 
             // update task
             // update task antrian online
-            $this->updateTaskMultiple($_POST['kode_perjanjian']);
+            if(isset($_POST['kodebookingantrol'])){
+                $this->updateTaskMultiple($_POST['kodebookingantrol']);
+            }
 
 
             if ($this->db->trans_status() === FALSE)

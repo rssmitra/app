@@ -12,11 +12,9 @@ $(document).ready(function(){
         $.each(data, function (i, o) {  
             var selected = (parseInt(o.kode_bagian) == current_kode_poli) ? 'selected' : '' ;   
             console.log(current_kode_poli);             
-            $('<option value="' + o.kode_bagian + '" '+selected+'>' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal_sep'));                    
-            
-        });      
-
-
+            $('<option value="' + o.kode_bagian + '" '+selected+'>' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal_sep'));     
+        });    
+        $('select[name="reg_klinik_rajal_sep"]').change();
     });    
     
     $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialisFromJadwal') ?>/" + current_kode_poli + '/' +current_day, '', function (data) {   
@@ -26,8 +24,9 @@ $(document).ready(function(){
             var selected = (parseInt(o.kode_dokter) == current_kode_dokter) ? 'selected' : '' ; 
             $('<option value="' + o.kode_dokter + '" '+selected+'>' + o.nama_pegawai + '</option>').appendTo($('#reg_dokter_rajal_sep'));  
         });   
+        $('select[id="reg_dokter_rajal_sep"]').change();
     }); 
-    
+
 })
 
 $('select[name="reg_klinik_rajal_sep"]').change(function () {  
@@ -54,6 +53,7 @@ $('select[name="reg_klinik_rajal_sep"]').change(function () {
     }    
     // title
     $('#title-select-klinik').text( $('#reg_klinik_rajal_sep option:selected').text().toUpperCase() );
+    $('#reg_klinik_rajal_txt').val( $('#reg_klinik_rajal_sep option:selected').text().toUpperCase() );
 }); 
 
 $('select[id="reg_dokter_rajal_sep"]').change(function () {      
@@ -62,7 +62,15 @@ $('select[id="reg_dokter_rajal_sep"]').change(function () {
 
         $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal_sep"]').val() , '', function (data) {              
 
+            var objData = data.data;
+            $('#kuotadr').val(objData.kuota); 
             $('#sisa_kuota').val(data.sisa_kuota); 
+            $('#kode_dokter_bpjs').val(objData.kode_dokter_bpjs); 
+            $('#reg_dokter_rajal_txt').val( $('#reg_dokter_rajal_sep option:selected').text().toUpperCase() );
+            $('#kode_poli_bpjs').val(objData.kode_poli_bpjs); 
+            $('#jam_praktek_mulai').val(objData.jam_praktek_mulai); 
+            $('#jam_praktek_selesai').val(objData.jam_praktek_selesai); 
+            
             $('#message_for_kuota').html(data.message);              
             if(data.sisa_kuota > 0){
                 $('#btn_submit').show('fast');
@@ -304,11 +312,21 @@ function changeCheckboxRujukanBaru(){
             <input name="noSepManual" id="noSepManual" class="form-control" onChange="duplicateFieldValue('noSepManual', 'noSep')" type="text" placeholder="Masukan No SEP">
         </div>   
     </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">* Jenis Kunjungan</label>
+        <div class="col-md-3">
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jeniskunjunganbpjs')), '' , 'jeniskunjunganbpjssep', 'jeniskunjunganbpjssep', 'form-control', '', '') ?>
+        </div>
+    </div>
     
     <div class="form-group">
         <label class="control-label col-sm-3">* Klinik</label>
         <div class="col-sm-9">
             <?php echo $this->master->get_change($params = array('table' => 'tr_jadwal_dokter', 'id' => 'jd_kode_spesialis', 'name' => 'jd_kode_spesialis', 'where' => array()), '' , 'reg_klinik_rajal_sep', 'reg_klinik_rajal_sep', 'form-control', '', '') ?>
+
+            <input type="hidden" name="kode_poli_bpjs" id="kode_poli_bpjs" class="form-control">
+            <input type="hidden" name="reg_klinik_rajal_txt" id="reg_klinik_rajal_txt" class="form-control">
         </div>
     </div>
 
@@ -317,12 +335,17 @@ function changeCheckboxRujukanBaru(){
         <div class="col-sm-9" id="dokter_by_klinik">
             <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'reg_dokter_rajal_sep', 'reg_dokter_rajal_sep', 'form-control', '', '') ?>
             <input name="jd_id" id="jd_id" class="form-control" type="hidden">
+            <input name="kode_dokter_bpjs" id="kode_dokter_bpjs" class="form-control" type="hidden">
+            <input name="reg_dokter_rajal_txt" id="reg_dokter_rajal_txt" class="form-control" type="hidden">
         </div>
 
     </div>
 
     <!-- hidden kuota dr -->
+    <input type="hidden" name="jam_praktek_mulai" id="jam_praktek_mulai" class="form-control">
+    <input type="hidden" name="jam_praktek_selesai" id="jam_praktek_selesai" class="form-control">
     <input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
+    <input type="hidden" name="kuotadr" id="kuotadr" readonly>
     <div class="form-group">
             <div id="message_for_kuota" style="margin-left: 7px"></div>
             <div id="message_for_kuota_null" style="margin-left: 7px"></div>
