@@ -1247,7 +1247,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function processSaveDiagnosa(){
 
-        print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
 
@@ -1580,7 +1580,6 @@ class Pl_pelayanan extends MX_Controller {
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai', 'next_pasien' => isset($next_pasien->no_mr)?$next_pasien->no_mr:'', 'next_id_pl_tc_poli' => isset($next_pasien->id_pl_tc_poli)?$next_pasien->id_pl_tc_poli:'', 'next_no_kunjungan' => isset($next_pasien->no_kunjungan)?$next_pasien->no_kunjungan:''));
             }
 
-        
         }
 
     }
@@ -1602,7 +1601,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 6, 'waktu' => $waktukirim));
 
         // udpate task id mulai waktu tunggu layan farmasi add 30 - 45 menit
-        $rand = rand(30,45);
+        $rand = rand(30,60);
         $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
         $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 7, 'waktu' => $waktukirim));
 

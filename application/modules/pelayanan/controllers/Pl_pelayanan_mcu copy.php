@@ -299,7 +299,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
     public function process_periksa_bagian()
     {
         
-        print_r($_POST);die;
+        // print_r($_POST);die;
       
         /*execution*/
         $this->db->trans_begin();           
