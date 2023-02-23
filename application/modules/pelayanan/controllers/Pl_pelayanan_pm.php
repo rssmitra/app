@@ -60,6 +60,7 @@ class Pl_pelayanan_pm extends MX_Controller {
 
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_pm->get_by_id($kode_penunjang);
+        // echo '<pre>'; print_r($data);die;
         $data['riwayat'] = $this->Pl_pelayanan_pm->get_riwayat_pasien_by_id($no_kunjungan);
         $data['tgl_kontrol'] = $this->Pl_pelayanan_pm->get_tgl_kontrol($no_kunjungan);
         $data['transaksi'] = $this->Pl_pelayanan_pm->get_transaksi_pasien_by_id($no_kunjungan);
@@ -558,6 +559,7 @@ class Pl_pelayanan_pm extends MX_Controller {
 
     public function processPelayananSelesai(){
 
+        // echo '<pre>';print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required');        
         $this->form_validation->set_rules('kode_penunjang', 'Kode Penunjang', 'trim');        
@@ -706,7 +708,12 @@ class Pl_pelayanan_pm extends MX_Controller {
                 $this->Pl_pelayanan_pm->update('pm_tc_penunjang', $pm_tc_penunjang_fisio, array('kode_penunjang' => $kode_penunjang ) );
                 
             }
-                                    
+            
+            
+            if(isset($_POST['kodebookingantrol'])){
+                $this->updateTaskMultiple($_POST['kodebookingantrol']);
+            }
+
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();
