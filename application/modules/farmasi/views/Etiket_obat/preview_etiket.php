@@ -57,20 +57,20 @@ table{
         <!-- <span style="font-size: 11px"><?php echo COMP_ADDRESS_SORT; ?></span><br> -->
     </div>
     <div style="border-bottom: 1px solid; text-align: center">
-      <span>Apoteker : Sendi Permana, S.Farm., Apt</span><br>
-      <span style="font-size: 12px">2/B.19/31.74.06.1001.02.026.S.2.b.d/3/-1.779.3/e/2021
+      <span>Apoteker : Apt. Quenta Anjella, S.Si</span><br>
+      <span style="font-size: 12px">2/B.19/31.74.06.1001.23.SPU-1/3/TM.09.19/e/2023
     </div>
   </div>
   
   <!-- nomor transaksi dan tgl transaksi -->
-  <div style="width: 100%; font-size: 14px; padding-left: 2px;"> 
+  <div style="width: 100%; font-size: 14px; padding-left: 2px; padding-top: 3px;"> 
       <span>MR: <?php echo $rows->no_mr; ?></span> 
       <span style="padding-left: 30px">Tgl Lhr: <?php echo $this->tanggal->formatDatedmY($rows->tgl_lhr); ?></span>
   </div>
   
   <!-- profil and data transaksi pasien -->
-  <div style="width: 100%; font-size: 14px !important; border-bottom:1px solid black; padding-left: 2px;"> 
-    <span>Nama Pasien</span> : <?php echo ucwords(strtolower($rows->nama_pasien)); ?><br>
+  <div style="width: 100%; font-size: 14px !important; border-bottom:1px solid black; padding-left: 2px; padding-bottom: 3px;"> 
+    <span>Nama Pasien</span> : <?php echo ucwords(strtoupper($rows->nama_pasien)); ?><br>
     
   </div>
 
