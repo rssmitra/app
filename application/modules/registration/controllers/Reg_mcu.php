@@ -117,7 +117,7 @@ class Reg_mcu extends MX_Controller {
                 'kode_gcu' => $kode_mcu,
                 'no_kunjungan' => $no_kunjungan,
                 'kode_bagian' => $kode_bagian_masuk,
-                'tgl_jam_poli' => date('Y-m-d H:i:s'),
+                'tgl_jam_poli' => $tgl_registrasi,
                 'kode_dokter' => $kode_dokter,
                 'no_antrian' => $no_antrian,
                 'nama_pasien' => $_POST['nama_pasien_hidden'],
@@ -165,7 +165,7 @@ class Reg_mcu extends MX_Controller {
             $data_tc_trans_pelayanan['no_registrasi'] = $no_registrasi;
             $data_tc_trans_pelayanan['no_mr'] = $no_mr;
             $data_tc_trans_pelayanan['kode_perusahaan'] = $kode_perusahaan;
-            $data_tc_trans_pelayanan['tgl_transaksi'] = date('Y-m-d H:i:s');
+            $data_tc_trans_pelayanan['tgl_transaksi'] = $tgl_registrasi;
             $data_tc_trans_pelayanan['kode_dokter1'] = $kode_dokter;
             $data_tc_trans_pelayanan['kode_bagian'] =$kode_bagian_masuk;
             $data_tc_trans_pelayanan['kode_bagian_asal'] = $kode_bagian_masuk;
