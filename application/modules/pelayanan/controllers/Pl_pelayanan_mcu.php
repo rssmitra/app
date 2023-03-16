@@ -333,7 +333,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
                 if($key != '010901'){
                     $no_kunjungan_exist = $this->db->get_where('tc_kunjungan', array('kode_bagian_tujuan' => $key, 'kode_bagian_asal' => '010901', 'no_registrasi' => $no_registrasi) );
                     if( $no_kunjungan_exist->num_rows() == 0 ){
-                        $no_kunjungan_tujuan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$_POST['dokter'][$key],$key,'010901',1);
+                        $no_kunjungan_tujuan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$_POST['dokter'][$key],$key,'010901','');
                     }else{
                         $no_kunjungan_tujuan = $no_kunjungan_exist->row()->no_kunjungan;
                     }

@@ -64,7 +64,7 @@ $(document).ready(function(){
                     if(isset($row_gb[0]->dokter)){
                       if($row_gb[0]->kode_bagian=='010901'){
                         echo $dokter_asal;
-                        echo '<input name="dokter['.$row_gb[0]->kode_bagian.']" type="text" value="'.$kode_dokter_asal.'">';
+                        echo '<input name="dokter['.$row_gb[0]->kode_bagian.']" type="hidden" value="'.$kode_dokter_asal.'">';
                       }else{
                         echo'
                           <select class="form-control" name="dokter['.$row_gb[0]->kode_bagian.']" id="dokter['.$row_gb[0]->id_mt_mcu_detail.']" >
@@ -85,14 +85,14 @@ $(document).ready(function(){
                     echo'<tr>';
                     echo '<td colspan="2">'.$row_list->nama_tindakan.'</td>';   
                     if($row_list->kode_bagian=='010901') {
-                      echo '<input name="dokter['.$row_list->kode_bagian.']" type="text" value="'.$kode_dokter_asal.'">';
+                      echo '<input name="dokter['.$row_list->kode_bagian.']" type="hidden" value="'.$kode_dokter_asal.'">';
                     }
                     echo '</tr>'; 
                     // hidden form
                     echo '<input type="hidden" value="'.$row_list->id_mt_mcu_detail.'" name="id_mt_mcu_detail['.$row_gb[0]->kode_bagian.'][]" id="id_mt_mcu_detail['.$row_list->id_mt_mcu_detail.']">';  
                   }
                   
-                  echo '<input type="text" name="bagian_tujuan[]" value="'.$row_gb[0]->kode_bagian.'">';
+                  echo '<input type="hidden" name="bagian_tujuan[]" value="'.$row_gb[0]->kode_bagian.'">';
               }
                 
           ?>
