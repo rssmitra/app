@@ -99,7 +99,7 @@
                     <td style="text-align:right; border-collapse: collapse"><?php echo number_format($subtotal)?></td>
                   </tr>
                   <?php 
-                    $arr_total = [];
+                    // $arr_total = [];
                     if($row_dt['flag_resep'] == 'racikan') :
                       foreach ($row_dt['racikan'][0] as $key => $value) {
                         $arr_total[] = ($value->harga_jual * $value->jumlah);
