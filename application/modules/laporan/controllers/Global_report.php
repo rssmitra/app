@@ -56,7 +56,7 @@ class Global_report extends MX_Controller {
             'title' => $_POST['title'],
             'result' => $query_data,
         );
-        // echo '<pre>';print_r($data);die;
+        
 
         if($_POST['submit']=='format_so'){
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
@@ -413,7 +413,6 @@ class Global_report extends MX_Controller {
                 
     }
     
-
     public function show_data_stok_m(){
 
         $query_data = $this->Global_report->get_data();
@@ -430,7 +429,8 @@ class Global_report extends MX_Controller {
            $this->load->view('Global_report/akunting_keu/v_stok_m', $data);
                 
     }
-     public function show_data_stok_nm(){
+
+    public function show_data_stok_nm(){
 
         $query_data = $this->Global_report->get_data();
 
@@ -445,6 +445,93 @@ class Global_report extends MX_Controller {
         
            $this->load->view('Global_report/akunting_keu/v_stok_nm', $data);
                 
+    }
+
+    public function show_data_keterlambatan(){
+
+        $query_data = $this->Global_report->get_data();
+
+        foreach($query_data['data'] as $key=>$row){
+            // resume keterlambatan dokter
+            $config = array(
+                'kode_dokter' => $_POST['kode_dokter'],
+                'kode_bagian' => $_POST['kode_bagian'],
+                'tgl_mulai' => $row->tgl_keluar_poli,
+            );
+            $resume = $this->master->getDataKeterlambatanDokter($config);
+            $jam_keterlambatan = ($resume['jam'] < 0) ? 0 : $resume['jam'].' jam '.$resume['menit'].' menit ';
+            $getData[] = array(
+                'dokter' => $row->nama_pegawai,
+                'bagian' => $row->nama_bagian,
+                'tgl_kunjungan_ori' => $row->tgl_keluar_poli,
+                'tgl_kunjungan' => $this->tanggal->formatDate($row->tgl_keluar_poli),
+                'jam_mulai' => $resume['jam_mulai'],
+                'jam_praktek' => $resume['jam_praktek'],
+                'waktu_keterlambatan' => $jam_keterlambatan,
+                'jam' => $resume['jam'],
+            );
+        }
+
+        $data = array(
+            'flag' => $_POST['flag'],
+            'title' => $_POST['title'],
+            'result' => $getData,
+        );
+
+        
+        $this->load->view('Global_report/v_keterlambatan_dokter', $data);
+                
+    }
+
+    public function show_detail_keterlambatan(){
+
+        $query = $this->db->order_by('no_antrian', 'ASC')->join('tc_kunjungan c','c.no_kunjungan=a.no_kunjungan','left')->join('mt_master_pasien b','b.no_mr=c.no_mr','left')
+                            ->get_where('pl_tc_poli a', array('a.kode_bagian' => $_GET['kode_bagian'], 'a.kode_dokter' => $_GET['kode_dokter'], 'CAST(a.tgl_keluar_poli as DATE) = ' => $this->tanggal->formatDateTimeToSqlDate($_GET['tgl']) ))
+                            ->result();
+
+        $data = array(
+            'flag' => '',
+            'title' => 'DATA PASIEN DOKTER <br>'.strtoupper($_GET['dokter']).'<br>POLI/KLINIK '.strtoupper($_GET['bagian']).'<br>',
+            'result' => $query,
+        );
+
+        $this->load->view('Global_report/v_detail_keterlambatan_dokter', $data);
+
+    }
+
+    public function rekap_resep(){
+
+        $year = ($_POST['tahun']) ? $_POST['tahun'] : date('Y');
+        $query = "select
+        CASE 
+        WHEN kode_perusahaan = 120 THEN 'BPJS Kesehatan'
+        ELSE 'Umum'
+        END AS perusahaan,
+        MONTH(tgl_trans) as mth, COUNT(*) as total, SUBSTRING(kode_bagian_masuk, 1, 2) as substrt from fr_tc_far 
+        left join tc_registrasi on tc_registrasi.no_registrasi = fr_tc_far.no_registrasi
+        where fr_tc_far.no_registrasi > 0 AND YEAR(tgl_trans) = ".$year." and SUBSTRING(kode_bagian_masuk, 1, 2) is not null
+        group by MONTH(tgl_trans), SUBSTRING(kode_bagian_masuk, 1, 2), CASE 
+        WHEN kode_perusahaan = 120 THEN 'BPJS Kesehatan'
+        ELSE 'Umum'
+        END 
+        ORDER BY MONTH(tgl_trans) ASC";
+        $result = $this->db->query($query)->result();
+
+        foreach($result as $row){
+            $getData[$row->mth][$row->substrt][$row->perusahaan] = $row;
+        }
+
+        // echo '<pre>'; print_r($_POST);die;
+
+        $data = array(
+            'flag' => '',
+            'title' => 'REKAPITULASI JUMLAH RESEP',
+            'result' => $getData,
+        );
+
+
+        $this->load->view('Global_report/v_rekap_resep', $data);
+
     }
 
 

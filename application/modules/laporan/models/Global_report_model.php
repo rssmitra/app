@@ -616,6 +616,29 @@ class Global_report_model extends CI_Model {
 		return $query;
 
 	}
+
+	public function kunjungan_mod_5(){
+		
+		$where = "no_antrian = 1 and c.nama_pegawai is not null";
+		if(isset($_POST['kode_bagian'])){
+			$where .= " AND a.kode_bagian = '".$_POST['kode_bagian']."'";
+			$where .= " AND a.kode_dokter = '".$_POST['kode_dokter']."'";
+		}
+
+		if(isset($_POST['from_tgl']) AND isset($_POST['to_tgl'])){
+			$where .= " AND CAST(a.tgl_keluar_poli as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."'";
+		}
+
+		$query = 'select c.nama_pegawai, b.nama_bagian, tgl_keluar_poli from pl_tc_poli a 
+					left join mt_bagian b on b.kode_bagian = a.kode_bagian
+					left join mt_dokter_v c on c.kode_dokter= a.kode_dokter
+					where '.$where.'
+					GROUP BY c.nama_pegawai, b.nama_bagian, tgl_keluar_poli, a.kode_bagian, a.kode_dokter
+					ORDER BY tgl_keluar_poli ASC';
+		return $query;
+
+	}
+
 	public function pengadaan_mod_1(){
 
 		$query = 'SELECT tc_kartu_stok_nm_v.kode_brg, tc_kartu_stok_nm_v.nama_brg, harga_barang.harga_satuan_po, 

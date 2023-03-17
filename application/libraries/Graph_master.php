@@ -729,8 +729,12 @@ final Class Graph_master {
                     return $this->TableResumePiutang($fields, $params, $data);
                 }
 
-                break;
-            
+            break;
+        
+            case 'custom-antrol':
+                return $this->customDashboardAntrol($fields, $params, $data);
+            break;
+                
             default:
                 # code...
                 break;
@@ -1314,14 +1318,47 @@ final Class Graph_master {
         // echo '<pre>';print_r($fields);
         // echo '<pre>';print_r($params);
         
-
         // load view
         $result = array(
             'value' => $data,
         );
-        // echo '<pre>';print_r($result);
-        // die;
+        
         $html = $CI->load->view('eksekutif/Eks_piutang/TableResumePiutang', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function customDashboardAntrol($fields='', $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        foreach ($data as $key => $value) {
+            // group by sumberdata
+            $getData['sumberdata'][$value->sumberdata][] = 1;
+            // group by poli
+            $getData['poli'][$value->kodepoli][] = 1;
+            // group by status
+            $status = str_replace(" ", "_", $value->status);
+            $getData['status'][$status][] = 1;
+        }
+
+        // echo '<pre>';print_r($params);die;
+
+        // load view
+        $result = array(
+            'tgl' => $params['tgl'],
+            'sumberdata' => $getData['sumberdata'],
+            'poli' => $getData['poli'],
+            'status' => $getData['status'],
+            'data' => $data,
+        );
+        // echo '<pre>';print_r($result); die;
+        $html = $CI->load->view('ws_bpjs/Ws_index/DashboardAntrolView', $result, true);
         
         
         $chart_data = array(

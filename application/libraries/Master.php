@@ -1123,9 +1123,42 @@ final Class Master {
 			$result = '<i class="fa fa-arrow-up green"></i> <br>'.$skor.'%';
 		}
 		return $result;
-        
-
     }
+
+	function getDataKeterlambatanDokter($config){
+		$CI =&get_instance();
+		/*get day from date*/
+		$day = $CI->tanggal->getHariFromDateSql($config['tgl_mulai']);
+		$tgl_kunjungan = $CI->tanggal->formatDateTimeToSqlDate($config['tgl_mulai']);
+		$time = $CI->tanggal->formatDateTimeToTime($config['tgl_mulai']);
+
+		// get jadwal dokter
+		$jadwal = $CI->db->get_where('tr_jadwal_dokter', array('jd_kode_dokter' => $config['kode_dokter'], 'jd_kode_spesialis' => $config['kode_bagian'], 'jd_hari' => $day))->row();
+
+		
+        $jam_praktek    = $CI->tanggal->formatDateTimeToTime($tgl_kunjungan.' '.$jadwal->jd_jam_mulai); // bisa juga waktu sekarang now()
+		$waktu_awal = strtotime($tgl_kunjungan.' '.$jadwal->jd_jam_mulai);
+        $waktu_akhir    = strtotime($tgl_kunjungan.' '.$time); // bisa juga waktu sekarang now()
+        
+        //menghitung selisih dengan hasil detik
+        $diff    =$waktu_akhir - $waktu_awal;
+        
+        //membagi detik menjadi jam
+        $jam    =floor($diff / (60 * 60));
+        
+        //membagi sisa detik setelah dikurangi $jam menjadi menit
+        $menit    =$diff - $jam * (60 * 60);
+
+		$return = array(
+			'jam_mulai' => $time,
+			'jam_praktek' => $jam_praktek,
+			'jam' => $jam,
+			'menit' => floor( $menit / 60 ),
+			'detik' => number_format($diff,0,",","."),
+		);
+		return $return;
+
+	}
 	
 
 }
