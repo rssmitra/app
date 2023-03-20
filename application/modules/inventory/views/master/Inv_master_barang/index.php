@@ -149,6 +149,13 @@
         </div>
         <?php if( $flag_string == 'medis' ) : ?>
           <div class="form-group">
+            <label class="control-label col-md-2">Kategori</label>
+            <div class="col-md-2">
+                <?php 
+                  echo $this->master->custom_selection($params = array('table' => 'mt_kategori', 'id' => 'kode_kategori', 'name' => 'nama_kategori', 'where' => array()), '' , 'kode_kategori', 'kode_kategori', 'form-control', '', '') ?>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="control-label col-md-2">Rak/Lemari</label>
             <div class="col-md-3">
                 <?php 

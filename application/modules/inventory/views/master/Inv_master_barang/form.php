@@ -352,6 +352,38 @@ $('select[name="kode_sub_gol"]').change(function () {
                     </div>
                   </div>
                 </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-2">Generik Formularium?</label>
+                  <div class="col-md-10">
+                    <div class="checkbox">
+                          <?php 
+                            $explode = isset($value->kategori_gf) ? explode(",", $value->kategori_gf) : [];
+                            $gf = [];
+                            foreach ($explode as $ke => $ve) {
+                              $gf[$ve] = $ve;
+                            }
+                          ?>
+                          <label>
+                            <input name="kategori_gf[]" type="checkbox" class="ace" value="A" <?php echo isset($gf['A']) ? 'checked="checked"' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Generik</span>
+                          </label>
+                          <label>
+                            <input name="kategori_gf[]" type="checkbox" class="ace" value="B" <?php echo isset($gf['B']) ? 'checked="checked"' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl"> Non Generik</span>
+                          </label>
+                          <label>
+                            <input name="kategori_gf[]" type="checkbox" class="ace" value="C" <?php echo isset($gf['C']) ? 'checked="checked"' : ''; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                            <span class="lbl"> Formularium</span>
+                          </label>
+                          <label>
+                            <input name="kategori_gf[]" type="checkbox" class="ace" value="D" <?php echo isset($gf['D']) ? 'checked="checked"' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                            <span class="lbl"> Non Formularium</span>
+                          </label>
+                    </div>
+                  </div>
+                </div>
+
                 <?php endif; ?>
                 <div class="form-group">
                   <label class="control-label col-md-2">Is active?</label>
