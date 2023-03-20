@@ -75,6 +75,11 @@ class Inv_master_barang_model extends CI_Model {
 					$this->db->where('table_brg.rak IS NULL');
 				}
 			}
+
+			if(isset($_GET['kategori_gf'])){
+				$implode = implode(",", $_GET['kategori_gf']);
+				$this->db->like('kategori_gf', $implode);
+			}
 		}
 
 		if( ( isset( $_GET['is_active']) AND $_GET['is_active'] != '' )  ){

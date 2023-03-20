@@ -80,6 +80,7 @@ class Inv_master_barang extends MX_Controller {
 
     public function get_data()
     {
+        // echo '<pre>'; print_r($_GET);die;
         /*get data from model*/
         $list = $this->Inv_master_barang->get_datatables();
         

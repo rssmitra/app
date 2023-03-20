@@ -154,6 +154,26 @@
                 <?php 
                   echo $this->master->custom_selection($params = array('table' => 'mt_kategori', 'id' => 'kode_kategori', 'name' => 'nama_kategori', 'where' => array()), '' , 'kode_kategori', 'kode_kategori', 'form-control', '', '') ?>
             </div>
+            <div class="col-md-8">
+              <div class="checkbox">
+                    <label>
+                      <input name="kategori_gf[]" type="checkbox" class="ace" value="A" />
+                      <span class="lbl"> Generik</span>
+                    </label>
+                    <label>
+                      <input name="kategori_gf[]" type="checkbox" class="ace" value="B" />
+                      <span class="lbl"> Non Generik</span>
+                    </label>
+                    <label>
+                      <input name="kategori_gf[]" type="checkbox" class="ace" value="C" />
+                      <span class="lbl"> Formularium</span>
+                    </label>
+                    <label>
+                      <input name="kategori_gf[]" type="checkbox" class="ace" value="D" />
+                      <span class="lbl"> Non Formularium</span>
+                    </label>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label class="control-label col-md-2">Rak/Lemari</label>
