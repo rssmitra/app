@@ -19,7 +19,7 @@ class Inv_master_barang_model extends CI_Model {
 		$this->db->from($this->table.' as table_brg');
 
 		if( $_GET['flag'] == 'medis' ){
-			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_generik,nama_layanan,nama_pabrik,nama_jenis,jenis_barang, Margin_percent as margin_percent, stok_minimum, stok_maksimum, mt_rekap_stok.id_profit, table_brg.id_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan, table_brg.is_prb, table_brg.is_kronis');
+			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_generik,nama_layanan,nama_pabrik,nama_jenis,jenis_barang, Margin_percent as margin_percent, stok_minimum, stok_maksimum, mt_rekap_stok.id_profit, table_brg.id_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan, table_brg.is_prb, table_brg.is_kronis, kategori_gf');
 			$this->db->join('mt_rekap_stok','mt_rekap_stok.kode_brg=table_brg.kode_brg','left');
 			$this->db->join('mt_kategori','mt_kategori.kode_kategori=table_brg.kode_kategori','left');
 			$this->db->join('mt_golongan','mt_golongan.kode_golongan=table_brg.kode_golongan','left');
@@ -74,6 +74,11 @@ class Inv_master_barang_model extends CI_Model {
 				if( $_GET['rak'] == '0' ){
 					$this->db->where('table_brg.rak IS NULL');
 				}
+			}
+
+			if(isset($_GET['kategori_gf'])){
+				$implode = implode(",", $_GET['kategori_gf']);
+				$this->db->like('kategori_gf', $implode);
 			}
 		}
 

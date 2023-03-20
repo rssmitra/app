@@ -80,6 +80,7 @@ class Inv_master_barang extends MX_Controller {
 
     public function get_data()
     {
+        // echo '<pre>'; print_r($_GET);die;
         /*get data from model*/
         $list = $this->Inv_master_barang->get_datatables();
         
@@ -220,7 +221,9 @@ class Inv_master_barang extends MX_Controller {
             );
             
             if( $_POST['flag'] == 'medis' ){
+
                 $flag_medis = ( $_POST['kode_kategori'] == 'D' ) ? '0' : '1' ;
+                $explode_gf = implode(",", $_POST['kategori_gf']);
                 $dataexc['kode_jenis'] = $this->regex->_genRegex( $val->set_value('kode_jenis'), 'RGXQSL' );
                 $dataexc['kode_generik'] = $this->regex->_genRegex( $val->set_value('kode_generik'), 'RGXQSL' );
                 $dataexc['kode_layanan'] = $this->regex->_genRegex( $val->set_value('kode_layanan'), 'RGXQSL' );
@@ -230,6 +233,7 @@ class Inv_master_barang extends MX_Controller {
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
                 $dataexc['is_kronis'] = $this->regex->_genRegex( $val->set_value('is_kronis'), 'RGXQSL' );
                 $dataexc['is_prb'] = $this->regex->_genRegex( $val->set_value('is_prb'), 'RGXQSL' );
+                $dataexc['kategori_gf'] = $this->regex->_genRegex( $explode_gf, 'RGXQSL' );
                 
             }else{
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
