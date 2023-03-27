@@ -127,7 +127,10 @@ class Inv_master_barang extends MX_Controller {
             $is_prb = isset($row_list->is_prb) ? ($row_list->is_prb == 'Y') ? '<span style="background: gold; color: black; font-weight: bold; font-size: 10px">PRB</span>' : '' : '';
             $is_kronis = isset($row_list->is_kronis) ? ($row_list->is_kronis == 'Y') ? '<span style="background: green; color: white; font-weight: bold; font-size: 10px">Kronis</span>' : '' : '';
             $row[] = 'Kategori : '.ucfirst($row_list->nama_kategori).'<br><b>'.$row_list->kode_brg.'</b><br>'.$row_list->nama_brg.'<br>'.$is_prb.' '.$is_kronis;
-            $row[] = ucfirst($txt_gol).'<br><span style="color: green">Rak : '.$row_list->rak.'</span>';
+            $explode_gf = explode(",", $row_list->kategori_gf);
+            $kategori_gf = $this->getKategoriGf($explode_gf);
+
+            $row[] = ucfirst($txt_gol).'<br><span style="color: green">Rak : '.$row_list->rak.'</span><br>'.$kategori_gf.'';
             $row[] = '<div class="center">'.strtoupper($row_list->satuan_besar).'/'.strtoupper($row_list->satuan_kecil).'</div>';
             $row[] = '<div class="center">'.$row_list->content.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_beli).'</div>';
@@ -452,6 +455,36 @@ class Inv_master_barang extends MX_Controller {
         }else{
             $this->load->view('inventory/master/Inv_master_barang/print_label', $data);
         }
+    }
+
+    public function getKategoriGf($txt){
+
+        // echo '<pre>'; print_r($txt);die;
+        $txt_string = "";
+        $string = "";
+        if(count($txt) > 0){
+            foreach ($txt as $key => $value) {
+                switch ($value) {
+                    case 'A':
+                        $string = "Generik";
+                        break;
+                    case 'B':
+                        $string = "Non Generik";
+                        break;
+                    case 'C':
+                        $string = "Formularium";
+                        break;
+                    case 'D':
+                        $string = "Non Formularium";
+                        break;
+                }
+                
+                $txt_string .= '<span style="background-color: blue; padding: 2px; font-size: 10px; color: white; font-weight: bold">'.$string.'</span> - ';
+            }
+        }
+        
+
+        return $txt_string;
     }
 
 
