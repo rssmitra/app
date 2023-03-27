@@ -35,10 +35,14 @@ class Auto_merge_farmasi extends MX_Controller {
         // exit;
         $txt_success = '';
         $txt_failed = '';
+
         foreach ($data as $key => $list) {
         
             // kode sep untuk file scan resep
             $substr_no_sep = substr($list->no_sep, -4);
+            // filename
+            $filename = 'uploaded/farmasi/scan/'.$this->date.'/'.$substr_no_sep.'.pdf';
+
             //get month and year
             sscanf($this->date, '%d-%d-%d', $y, $m, $d);
             $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
@@ -119,7 +123,7 @@ class Auto_merge_farmasi extends MX_Controller {
                         $this->db->trans_commit();
                         
                     }
-                   
+                
                     // set dokumen
                     $url_merge = $this->merge_dokumen_klaim($list->kode_trans_far);
 
@@ -143,6 +147,8 @@ class Auto_merge_farmasi extends MX_Controller {
                 $txt_failed .= $list->kode_trans_far. PHP_EOL;
                 echo "The file ".$substr_no_sep.".pdf does not exist". PHP_EOL;
             }
+            
+            
         
         }
 
@@ -375,7 +381,7 @@ EOD;
 
         rtrim($fields_string,'&');
 
-        $url = 'http://10.10.11.5:88/sirs-dev/app/ApiMerge/index_farmasi.php?action=download&"kode"='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->date.'';
+        $url = 'http://10.10.11.5:88/sirs/app/ApiMerge/index_farmasi.php?action=download&"kode"='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->date.'';
         // redirect($url, 'location');
         return $url;
     }
