@@ -55,6 +55,10 @@ class Inv_stok_depo_model extends CI_Model {
 			$this->db->where('a.is_active', $_GET['status']);
 		}
 
+		if( ( isset( $_GET['min_stok']) AND $_GET['min_stok'] == 1 )  ){
+			$this->db->where('a.stok_minimum > kartu_stok.stok_akhir');
+		}
+
 		$i = 0;
 	
 		foreach ($this->column as $item) 
