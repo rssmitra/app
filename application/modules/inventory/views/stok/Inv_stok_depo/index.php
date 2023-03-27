@@ -217,7 +217,20 @@
                 </span>
               </div>
             </div>
-            <div class="col-md-6" style="margin-left: -1%">
+            <div class="col-md-8">
+              <div class="checkbox" style="margin-top: -5px">
+                    <label>
+                      <input name="min_stok" id="min_stok" type="checkbox" class="ace" value="1" />
+                      <span class="lbl"> Tampilkan < dari Stok Minimum</span>
+                    </label>
+                    <label>
+              </div>
+            </div>
+        </div>
+        
+
+        <div class="form-group">
+            <div class="col-md-4" style="margin-left: -1%">
               <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Search
@@ -228,6 +241,7 @@
               </a>
             </div>
         </div>
+        <hr>
         
         <div class="clearfix" style="margin-bottom:-5px">
           <?php echo $this->authuser->show_button('inventory/stok/Inv_stok_depo','C','',1)?>

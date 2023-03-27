@@ -80,6 +80,10 @@ class Inv_master_barang_model extends CI_Model {
 				$implode = implode(",", $_GET['kategori_gf']);
 				$this->db->like('kategori_gf', $implode);
 			}
+
+			if( ( isset( $_GET['kode_kategori']) AND $_GET['kode_kategori'] != '' )  ){
+				$this->db->where("table_brg.kode_brg LIKE '".$_GET['kode_kategori']."%' ");
+			}
 		}
 
 		if( ( isset( $_GET['is_active']) AND $_GET['is_active'] != '' )  ){
