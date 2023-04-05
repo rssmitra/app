@@ -1159,6 +1159,30 @@ final Class Master {
 		return $return;
 
 	}
+
+	public function getLabelObatExpired($tgl_expired){
+		$ex_mth = date('m');
+		$exp_mth = date("m",strtotime($tgl_expired));
+		$count_mth_exp = $exp_mth - $ex_mth;
+		$return = ($count_mth_exp <= 0) ? 'expired : '.$tgl_expired.'' : '';
+		switch ($count_mth_exp) {
+			case 0:
+				$return = '<span class="blink_me" style="color: white; background: red; font-size: 10px; padding: 2px; font-weight: bold">'.$tgl_expired.'</span>';
+				break;
+			case 1:
+				$return = '<span style="color: white; background: orange; font-size: 10px; padding: 2px; font-weight: bold">'.$tgl_expired.'</span>';
+				break;
+			case 2:
+				$return = '<span style="color: white; background: green; font-size: 10px; padding: 2px; font-weight: bold">'.$tgl_expired.'</span>';
+				break;
+			
+			default:
+				# code...
+				$return = '<span style="color: white; background: green; font-size: 10px; padding: 2px; font-weight: bold">'.$tgl_expired.'</span>';
+				break;
+		}
+		return $return;
+	}
 	
 
 }

@@ -274,7 +274,7 @@
               <th>Stok Akhir</th>
               <th>Satuan</th>
               <!-- <th>Harga Beli</th> -->
-              <th>Mutasi Terakhir</th>
+              <th>Mutasi Terakhir/ Expired</th>
               <th>Status</th>
               <th></th>
             </tr>

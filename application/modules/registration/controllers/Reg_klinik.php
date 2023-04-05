@@ -789,7 +789,6 @@ class Reg_klinik extends MX_Controller {
                         'jeniskunjungan' => $_POST['jeniskunjunganbpjssep'],
                         'norujukan' => $_POST['noRujukan'],
                     );
-    
                     $this->processAntrol($config);
 
                 }

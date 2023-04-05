@@ -280,6 +280,7 @@
             <th width="100px" class="center">Jumlah Brg<br>yang di ACC</th>
             <th width="100px" class="center">Satuan Besar</th>
             <th width="100px" class="center">Rasio</th>
+            <th width="100px" class="center">Keterangan</th>
           </tr>
           <tbody id="table-rincian-barang">
           <?php $no=0; foreach($dt_detail_brg as $row_dt) : $no++?>
@@ -316,6 +317,7 @@
               </td>
               <td class="center"><?php echo $row_dt->satuan_besar?></td>
               <td class="center"><?php echo $row_dt->rasio?></td>
+              <td class="center"><?php echo $row_dt->keterangan?></td>
             </tr>
           <?php endforeach;?>
           </tbody>

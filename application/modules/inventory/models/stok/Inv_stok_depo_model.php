@@ -18,6 +18,7 @@ class Inv_stok_depo_model extends CI_Model {
 
 		$params_tgl = date('Y-m-d', strtotime('+1 days', strtotime($tgl)));
 		$this->db->select($this->select);
+		$this->db->select("(select top 1 tgl_expired from tc_penerimaan_brg_batch_log where kode_brg = b.kode_brg and year(tgl_expired) = ".date('Y')." and month(tgl_expired) >= ".date('m')." order by tgl_expired ASC) as tgl_expired");
 		$this->db->from($this->table.' as a');
 		$this->db->join('mt_barang b','b.kode_brg=a.kode_brg','left');
 		$this->db->join('mt_rekap_stok c','c.kode_brg=b.kode_brg','left');
@@ -58,6 +59,7 @@ class Inv_stok_depo_model extends CI_Model {
 		if( ( isset( $_GET['min_stok']) AND $_GET['min_stok'] == 1 )  ){
 			$this->db->where('a.stok_minimum > kartu_stok.stok_akhir');
 		}
+
 
 		$i = 0;
 	

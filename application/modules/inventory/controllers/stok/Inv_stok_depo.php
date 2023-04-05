@@ -135,8 +135,10 @@ class Inv_stok_depo extends MX_Controller {
             $row[] = '<div class="center"><input type="text" style="text-align: center;width: 50px;height: 30px!important;font-size: 14px;" value="'.$row_list->stok_minimum.'" onchange="updateStokMinimum('.$row_list->kode_depo_stok.', '."'".$params_kode_bagian."'".')" id="stok_min_val_'.$row_list->kode_depo_stok.'"> - <input type="text" style="text-align: center;width: 50px;height: 30px!important;font-size: 14px;" value="'.$row_list->stok_maksimum.'" onchange="updateStokMaksimum('.$row_list->kode_depo_stok.', '."'".$params_kode_bagian."'".')" id="stok_max_val_'.$row_list->kode_depo_stok.'"></div>';
             $row[] = '<div class="center" ><input type="hidden" value="'.$row_list->stok_akhir.'" id="stok_akhir_val_'.$row_list->kode_depo_stok.'" ><span id="stok_akhir_div_'.$row_list->kode_depo_stok.'" '.$label_color.' >'.number_format($row_list->stok_akhir).'</span></div>';
             $row[] = '<div class="left">'.strtoupper($row_list->satuan_kecil).'/'.strtoupper($row_list->satuan_besar).'</div>';
+            $label_expired = $this->master->getLabelObatExpired($row_list->tgl_expired);
+
             // $row[] = '<div style="text-align: right">'.number_format($row_list->harga_beli).'</div>';
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_input).'<br><span style="padding-top:10px; font-size: 10px">Tanggal Expired<span> :<br><span>'.$label_expired.'</span>';
             $status_aktif = ($row_list->is_active == 1) ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
             $status_brg_aktif = ($row_list->is_active == 0 ) ? '' : 'checked';

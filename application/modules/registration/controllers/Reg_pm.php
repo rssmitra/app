@@ -140,8 +140,6 @@ class Reg_pm extends MX_Controller {
             /*save logs*/
             $this->logs->save('pm_tc_penunjang', $data_pm_tc_penunjang['kode_penunjang'], 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
 
-            
-            
             if ($this->db->trans_status() === FALSE)
             {
                 $this->db->trans_rollback();

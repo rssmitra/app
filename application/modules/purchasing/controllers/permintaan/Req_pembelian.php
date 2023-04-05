@@ -189,6 +189,7 @@ class Req_pembelian extends MX_Controller {
 
     public function get_detail($id){
         $result = $this->Req_pembelian->get_detail_brg_permintaan($_GET['flag'], $id);
+
         $data = array(
             'dt_detail_brg' => $result,
             'flag' => $_GET['flag'],

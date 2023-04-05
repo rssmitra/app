@@ -12,6 +12,7 @@
           <th class="center" width="80px">PO</th>
           <th class="center" width="80px">Satuan Besar</th>
           <th class="center" width="80px">Rasio</th>
+          <th class="center" width="80px">Keterangan</th>
         </tr>
         <?php 
           $no=0; 
@@ -38,6 +39,7 @@
             </td>
             <td class="center"><?php echo $row_dt->satuan_besar?></td>
             <td class="center"><?php echo $row_dt->rasio?></td>
+            <td class="center"><?php echo $row_dt->keterangan?></td>
           </tr>
           <?php endforeach; else: echo '<tr><td colspan="8">Tidak ada barang ditemukan</td></tr>'; endif; ?>
       </table>

@@ -1,5 +1,3 @@
-<!-- <script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script> -->
-
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />

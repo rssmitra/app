@@ -55,25 +55,34 @@
               </span>
             </div>
           </div>
-          <div class="col-md-5">
-          <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
-            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-            Search
-          </a>
-          <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
-            <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-            Reset
-          </a>
-          <!-- <a href="#" id="btn_export_pdf" class="btn btn-xs btn-danger">
-            <i class="fa fa-file-word-o bigger-110"></i>
-            Export PDF
-          </a> -->
-          <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
-            <i class="fa fa-file-word-o bigger-110"></i>
-            Export Excel
-          </a>
-        </div>
       </div>
+      <div class="form-group">
+        <label class="control-label col-md-2">Poli/Klinik</label>
+          <div class="col-md-4">
+          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'group_bag' => 'Detail', 'status_aktif' => 1, 'validasi' => 100) ),'' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+          </div>
+      </div>
+      <div class="form-group">
+          <div class="col-md-5">
+            <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
+              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+              Search
+            </a>
+            <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
+              <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+              Reset
+            </a>
+            <!-- <a href="#" id="btn_export_pdf" class="btn btn-xs btn-danger">
+              <i class="fa fa-file-word-o bigger-110"></i>
+              Export PDF
+            </a> -->
+            <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+              <i class="fa fa-file-word-o bigger-110"></i>
+              Export Excel
+            </a>
+          </div>
+      </div>
+
       <br>
 
     </div>
