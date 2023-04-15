@@ -2,19 +2,18 @@
 
 $(document).ready(function(){
 
-    current_day = $('#current_day').val();
-
-    $.getJSON("<?php echo site_url('Templates/References/getKlinikFromJadwal') ?>/" +current_day, '', function (data) {              
-        $('#reg_klinik_rajal option').remove();  
-        $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
-        $.each(data, function (i, o) {                  
-            $('<option value="' + o.kode_bagian + '">' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal'));                    
-        });     
-    });            
+    getKlinikByJadwalDefault();          
     
 })
 
 $('select[name="reg_klinik_rajal"]').change(function () {  
+
+    if (($('#show_all_poli').is(':checked'))) {
+        var url_get_dokter = '<?php echo site_url('Templates/References/getDokterBySpesialis/')?>'+$(this).val()+'/'+current_day+'';
+    }else{
+        var url_get_dokter = '<?php echo site_url('Templates/References/getDokterBySpesialisFromJadwal/')?>'+$(this).val()+'/'+current_day+'';
+    }
+
     /*current day*/
     current_day = $('#current_day').val();
     if ($(this).val() != '012801') {     
@@ -22,7 +21,7 @@ $('select[name="reg_klinik_rajal"]').change(function () {
         $('#reg_dokter_rajal_dinamis').attr('name', 'reg_dokter_rajal_');
         $('#dokter_dinamis_klinik').hide('fast')
         $('#dokter_by_klinik').show('fast')
-        $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialisFromJadwal') ?>/" + $(this).val() + '/' +current_day, '', function (data) {   
+        $.getJSON(url_get_dokter, '', function (data) {   
             $('#reg_dokter_rajal option').remove();         
             $('<option value="">-Pilih Dokter-</option>').appendTo($('#reg_dokter_rajal'));  
             $.each(data, function (i, o) {   
@@ -35,7 +34,8 @@ $('select[name="reg_klinik_rajal"]').change(function () {
         $('#reg_dokter_rajal').attr('name', 'reg_dokter_rajal_');
         $('#dokter_by_klinik').hide('fast')
         $('#dokter_dinamis_klinik').show('fast')
-    }    
+    } 
+    
     // title
     $('#title-select-klinik').text( $('#reg_klinik_rajal option:selected').text().toUpperCase() );
     $('#reg_klinik_rajal_txt').val( $('#reg_klinik_rajal option:selected').text().toUpperCase() );
@@ -96,12 +96,49 @@ $('#inputDokter').typeahead({
     }
 });
 
+$('#show_all_poli').click(function (e) {   
+    if (($(this).is(':checked'))) {
+    
+        // show all poli
+        $.getJSON("<?php echo site_url('Templates/References/getSelectSpesialis') ?>", '', function (data) {              
+            $('#reg_klinik_rajal option').remove();  
+            $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
+            $.each(data, function (i, o) {                  
+                $('<option value="' + o.kode_bagian + '">' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal'));                    
+            });     
+        });  
+
+    }  else{
+        
+        getKlinikByJadwalDefault();
+
+    }
+});
+
+function getKlinikByJadwalDefault(){
+    current_day = $('#current_day').val();
+
+    $.getJSON("<?php echo site_url('Templates/References/getKlinikFromJadwal') ?>/" +current_day, '', function (data) {              
+        $('#reg_klinik_rajal option').remove();  
+        $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
+        $.each(data, function (i, o) {                  
+            $('<option value="' + o.kode_bagian + '">' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal'));                    
+        });     
+    });  
+}
 
 </script>
 
 <p><b><i class="fa fa-edit"></i> PENDAFTARAN RAWAT JALAN </b></p>
 
 <input name="current_day" id="current_day" class="form-control" type="hidden" value="<?php echo $this->tanggal->gethari(date('D'))?>">
+
+<div class="checkbox">
+    <label>
+        <input name="form-field-checkbox" type="checkbox" class="ace" value="Y" id="show_all_poli">
+        <span class="lbl"> Tampilkan semua poli.</span>
+    </label>
+</div>
 
 <div class="form-group">
     <label class="control-label col-sm-3">*Klinik</label>
