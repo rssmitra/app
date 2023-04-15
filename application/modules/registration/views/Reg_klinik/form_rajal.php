@@ -45,29 +45,33 @@ $('select[id="reg_dokter_rajal"]').change(function () {
 
     if ($(this).val()) {          
 
-        $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {  
+        if (($('#show_all_poli').is(':checked'))) {
+            return false;
+        }else{
+            $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {  
 
-            var objData = data.data;
-            $('#kuotadr').val(objData.kuota); 
-            $('#sisa_kuota').val(data.sisa_kuota); 
-            $('#kode_dokter_bpjs').val(objData.kode_dokter_bpjs); 
-            $('#reg_dokter_rajal_txt').val( $('#reg_dokter_rajal option:selected').text().toUpperCase() );
-            $('#kode_poli_bpjs').val(objData.kode_poli_bpjs); 
-            $('#jam_praktek_mulai').val(objData.jam_praktek_mulai); 
-            $('#jam_praktek_selesai').val(objData.jam_praktek_selesai); 
+                var objData = data.data;
+                $('#kuotadr').val(objData.kuota); 
+                $('#sisa_kuota').val(data.sisa_kuota); 
+                $('#kode_dokter_bpjs').val(objData.kode_dokter_bpjs); 
+                $('#reg_dokter_rajal_txt').val( $('#reg_dokter_rajal option:selected').text().toUpperCase() );
+                $('#kode_poli_bpjs').val(objData.kode_poli_bpjs); 
+                $('#jam_praktek_mulai').val(objData.jam_praktek_mulai); 
+                $('#jam_praktek_selesai').val(objData.jam_praktek_selesai); 
 
-            $('#message_for_kuota').html(data.message);              
-            if(data.sisa_kuota > 0){
-                $('#btn_submit').show('fast');
-                $('#message_for_kuota_null').html('');
-            }else{
-                $('#btn_submit').hide('fast');
-                $('#message_for_kuota_null').html('<span style="color: red; font-weight: bold; font-style:italic">- Mohon Maaf Kuota Dokter Sudah Penuh !</span>');
-            }
-            $('#jd_id').val(data.jd_id); 
-        });            
-        
-        $('#title-select-dokter').text( $('#reg_dokter_rajal option:selected').text() );
+                $('#message_for_kuota').html(data.message);              
+                if(data.sisa_kuota > 0){
+                    $('#btn_submit').show('fast');
+                    $('#message_for_kuota_null').html('');
+                }else{
+                    $('#btn_submit').hide('fast');
+                    $('#message_for_kuota_null').html('<span style="color: red; font-weight: bold; font-style:italic">- Mohon Maaf Kuota Dokter Sudah Penuh !</span>');
+                }
+                $('#jd_id').val(data.jd_id); 
+            });            
+
+            $('#title-select-dokter').text( $('#reg_dokter_rajal option:selected').text() );
+        }
 
     }      
 
