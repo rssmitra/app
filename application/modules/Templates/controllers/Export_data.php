@@ -147,6 +147,7 @@ class Export_data extends MX_Controller {
         $obj = new $class;
         $data = $obj->get_content_data();
         $html_content = $obj->html_content($data);
+        
         $paper_type = isset($_GET['paper']) ? $_GET['paper'] : 'L';
         
         switch ($type_doc) {
@@ -170,6 +171,7 @@ class Export_data extends MX_Controller {
 
     public function exportPdfContent($html_content, $paper_type) { 
         
+        // echo ''; print_r($html_content);die;
         $this->load->library('pdf');
         $pdf = new TCPDF($paper_type, PDF_UNIT, array(470,280), true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);

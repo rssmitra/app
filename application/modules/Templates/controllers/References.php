@@ -1050,6 +1050,16 @@ class References extends MX_Controller {
 		
 	}
 
+	public function getSelectSpesialis()
+	{
+        $query = "select a.kode_bagian, a.nama_bagian
+					from mt_bagian a
+					where a.validasi=100 order by nama_bagian asc";
+		$result = $this->db->query($query)->result();
+		echo json_encode($result);
+		
+	}
+
 	public function getDokterByBagianByKeyword($key='',$bag='')
 	{
 		$query = "select  a.kode_dokter, a.nama_pegawai
