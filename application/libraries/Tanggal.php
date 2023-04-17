@@ -396,6 +396,13 @@ final class Tanggal {
 
         return $tanggal;
     }
+
+    public function getDayFromDate($date){
+        $timestamp = strtotime($date);
+        $day = date('D', $timestamp);
+        $hari = tanggal::getHari($day);
+        return $hari;
+    }
     
 
     public  function getBulan($bln) {

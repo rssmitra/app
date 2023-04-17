@@ -372,7 +372,7 @@ class Reg_klinik extends MX_Controller {
             
             /*insert pl tc poli*/
             $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
-            $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal'),$this->form_validation->set_value('reg_dokter_rajal'));
+            $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal'),$this->form_validation->set_value('reg_dokter_rajal'), '', $tgl_registrasi);
             
             $datapoli['kode_poli'] = $kode_poli;
             $datapoli['no_kunjungan'] = $no_kunjungan;
@@ -736,7 +736,7 @@ class Reg_klinik extends MX_Controller {
                 
                 /*insert pl tc poli*/
                 $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
-                $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal_sep'),$this->form_validation->set_value('reg_dokter_rajal_sep'));
+                $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal_sep'),$this->form_validation->set_value('reg_dokter_rajal_sep'), '', $tgl_registrasi);
                 
                 $datapoli['kode_poli'] = $kode_poli;
                 $datapoli['no_kunjungan'] = $no_kunjungan;

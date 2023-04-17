@@ -1512,6 +1512,11 @@ $('#btnSearchNoRujukan').click(function (e) {
 
 });
 
+$('#tgl_registrasi').click(function (e) {
+  $('#change_modul_view').hide();
+  $('#jenis_pendaftaran').val('');
+})
+
 function get_riwayat_medis(){
 
   noMr = $('#noMrHidden').val();

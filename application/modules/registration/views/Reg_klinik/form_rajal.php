@@ -11,7 +11,7 @@ $('select[name="reg_klinik_rajal"]').change(function () {
     if (($('#show_all_poli').is(':checked'))) {
         var url_get_dokter = '<?php echo site_url('Templates/References/getDokterBySpesialis/')?>'+$(this).val()+'/'+current_day+'';
     }else{
-        var url_get_dokter = '<?php echo site_url('Templates/References/getDokterBySpesialisFromJadwal/')?>'+$(this).val()+'/'+current_day+'';
+        var url_get_dokter = '<?php echo site_url('Templates/References/getDokterBySpesialisFromJadwal/')?>'+$(this).val()+'/'+current_day+'/'+$('#tgl_registrasi').val()+'';
     }
 
     /*current day*/
@@ -48,7 +48,7 @@ $('select[id="reg_dokter_rajal"]').change(function () {
         if (($('#show_all_poli').is(':checked'))) {
             return false;
         }else{
-            $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val() , '', function (data) {  
+            $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val()+'/'+$('#tgl_registrasi').val() , '', function (data) {  
 
                 var objData = data.data;
                 $('#kuotadr').val(objData.kuota); 
@@ -120,9 +120,12 @@ $('#show_all_poli').click(function (e) {
 });
 
 function getKlinikByJadwalDefault(){
-    current_day = $('#current_day').val();
+    date = $('#tgl_registrasi').val();
+    days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    var d = new Date(date);
+    current_day = days[d.getDay()]; 
 
-    $.getJSON("<?php echo site_url('Templates/References/getKlinikFromJadwal') ?>/" +current_day, '', function (data) {              
+    $.getJSON("<?php echo site_url('Templates/References/getKlinikFromJadwal') ?>/" +current_day+'/'+date, '', function (data) {              
         $('#reg_klinik_rajal option').remove();  
         $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
         $.each(data, function (i, o) {                  

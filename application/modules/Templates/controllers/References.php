@@ -120,24 +120,28 @@ class References extends MX_Controller {
         echo json_encode($exc->result());
 	}
 
-	public function getKlinikFromJadwal($day='')
+	public function getKlinikFromJadwal($day='', $date='')
 	{
+		$where = ($date != date('Y-m-d')) ? "" : "and a.status_loket='on'";
+
 		$query = "select a.jd_kode_spesialis as kode_bagian,c.nama_bagian
 					from tr_jadwal_dokter a
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
-					where a.jd_hari='".$day."' and a.status_loket='on' or (kode_bagian = '012801' or kode_bagian='012901')
+					where a.jd_hari='".$day."' ".$where." or (kode_bagian = '012801' or kode_bagian='012901')
 					group by  a.jd_kode_spesialis,c.nama_bagian";
 		$exc = $this->db->query($query);
         echo json_encode($exc->result());
 	}
 
-	public function getDokterBySpesialisFromJadwal($kd_bagian='', $day='')
+	public function getDokterBySpesialisFromJadwal($kd_bagian='', $day='', $date='')
 	{
+		$where = ($date != date('Y-m-d')) ? "" : "and a.status_loket='on'";
+
 		$query = "select a.jd_id,a.jd_kode_dokter as kode_dokter,b.nama_pegawai
 					from tr_jadwal_dokter a
 					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
-					where a.jd_kode_spesialis like '%".$kd_bagian."' and a.jd_hari='".$day."' and a.status_loket = 'on'
+					where a.jd_kode_spesialis like '%".$kd_bagian."' and a.jd_hari='".$day."' ".$where."
 					group by a.jd_id, a.jd_kode_dokter,b.nama_pegawai";
 		$exc = $this->db->query($query); 
         echo json_encode($exc->result());
@@ -784,8 +788,10 @@ class References extends MX_Controller {
 
 	public function getKuotaDokter($kode_dokter='',$kode_spesialis='', $tanggal='')
 	{
-		$day = $this->tanggal->getHari(date('D'));
 		$date = ($tanggal=='')?date('Y-m-d'):$tanggal;
+		$day = $this->tanggal->getHariFromDateSql($date);
+		// echo $date;
+		// echo $day; exit;
 
 		/*existing*/
 		// $log_kuota_perjanjian = $this->db->get_where('tc_pesanan', array('CAST(jam_pesanan as DATE) = ' => date('Y-m-d'), 'kode_dokter' => $kode_dokter, 'no_poli' => $kode_spesialis, 'tgl_masuk' => NULL) )->num_rows();
@@ -817,7 +823,7 @@ class References extends MX_Controller {
 
         /*kuota dokter*/
         $kuota_dokter = $this->db->select('tr_jadwal_dokter.*, kode_dokter_bpjs, kode_poli_bpjs')->join('mt_karyawan', 'mt_karyawan.kode_dokter = tr_jadwal_dokter.jd_kode_dokter', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian = tr_jadwal_dokter.jd_kode_spesialis')->get_where('tr_jadwal_dokter', array('jd_hari' => $day, 'jd_kode_dokter' => $kode_dokter, 'jd_kode_spesialis' => $kode_spesialis) )->row(); 
-
+		// echo $this->db->last_query(); exit;
 		$id = $kuota_dokter->jd_id; 
 		$kuota_dr = $kuota_dokter->jd_kuota;
 		$sisa = $kuota_dokter->jd_kuota - ($log_kuota_current + $sisa_mjkn);
@@ -838,6 +844,7 @@ class References extends MX_Controller {
 			'jam_praktek_selesai' => $this->tanggal->formatFullTime($kuota_dokter->jd_jam_selesai),
 			'kode_poli_bpjs' => $kuota_dokter->kode_poli_bpjs,
 			'kode_bagian' => $kode_spesialis,
+			'tgl_registrasi' => $date,
 		);
 		$html = $this->load->view('templates/view_log_kuota_dr', $data, true);
 
@@ -847,11 +854,12 @@ class References extends MX_Controller {
 	}
 
 	public function view_pasien_terdaftar_current(){
+		$tgl_registrasi = isset($_GET['tgl_registrasi'])?$_GET['tgl_registrasi']:date('Y-m-d');
 		$pasien_terdaftar = $this->db
 			->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=pl_tc_poli.no_kunjungan', 'left')		 ->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left')
 			->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left')
 			->order_by('no_antrian', 'ASC')
-			->get_where('pl_tc_poli', array('CAST(tgl_jam_poli as DATE) = ' => date('Y-m-d'), 'pl_tc_poli.kode_dokter' => $_GET['kode_dokter'], 'pl_tc_poli.kode_bagian' => $_GET['kode_spesialis']) )->result();
+			->get_where('pl_tc_poli', array('CAST(tgl_jam_poli as DATE) = ' => $tgl_registrasi, 'pl_tc_poli.kode_dokter' => $_GET['kode_dokter'], 'pl_tc_poli.kode_bagian' => $_GET['kode_spesialis']) )->result();
 		$data = array(
 			'result' => $pasien_terdaftar,
 		);
@@ -859,8 +867,8 @@ class References extends MX_Controller {
 	}
 
 	public function view_pasien_perjanjian(){
-		
-		$pasien_perjanjian = $this->db->get_where('tc_pesanan', array('CAST(jam_pesanan as DATE) = ' => date('Y-m-d'), 'kode_dokter' => $_GET['kode_dokter'], 'no_poli' => $_GET['kode_spesialis']) )->result();
+		$tgl_registrasi = isset($_GET['tgl_registrasi'])?$_GET['tgl_registrasi']:date('Y-m-d');
+		$pasien_perjanjian = $this->db->get_where('tc_pesanan', array('CAST(jam_pesanan as DATE) = ' => $tgl_registrasi, 'kode_dokter' => $_GET['kode_dokter'], 'no_poli' => $_GET['kode_spesialis']) )->result();
 		// print_r($this->db->last_query());die;
 		$data = array(
 			'result' => $pasien_perjanjian,

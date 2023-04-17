@@ -435,10 +435,13 @@ final Class Master {
 		
 	}
 	
-    function get_no_antrian_poli($kode_bagian, $kode_dokter, $tipe_pasien='') {
+    function get_no_antrian_poli($kode_bagian, $kode_dokter, $tipe_pasien='', $tgl_registrasi = '') {
 		
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
+
+		$tgl = ($tgl_registrasi != '')?$tgl_registrasi:date('Y-m-d');
+
 		$db->select_max('no_antrian');
 		$db->from('pl_tc_poli');
 		if($tipe_pasien != ''){
@@ -447,7 +450,7 @@ final Class Master {
 		}else{
 			$txt_type = '(bpjs)';
 		}
-		$db->where( "kode_bagian='".$kode_bagian."' and kode_dokter=".$kode_dokter." and YEAR(tgl_jam_poli)=".date('Y')." and MONTH(tgl_jam_poli)=".date('m')." and DAY(tgl_jam_poli)=".date('d')."" );
+		$db->where( "kode_bagian='".$kode_bagian."' and kode_dokter=".$kode_dokter." and CAST(tgl_jam_poli as DATE) = '".$tgl."' " );
 		$qry = $db->get()->row();
 		/*plus 1*/
 		$max_num = $qry->no_antrian + 1 ;
