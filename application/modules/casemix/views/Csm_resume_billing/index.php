@@ -59,7 +59,7 @@
       <div class="form-group">
         <label class="control-label col-md-2">Poli/Klinik</label>
           <div class="col-md-4">
-          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'group_bag' => 'Detail', 'status_aktif' => 1, 'validasi' => 100) ),'' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'group_bag' => 'Detail', 'status_aktif' => 1) ),'' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
           </div>
       </div>
       <div class="form-group">
