@@ -347,7 +347,7 @@ final Class Print_direct {
         $CI =& get_instance();
         $CI->load->model('counter/Counter_model');
         $log = json_decode($params['log']);
-        //print_r($params);die;
+        
         $type = ($params['ant_type']=='umum')?'B':'A';
         $dokter = $log->dokter;
         $klinik  = $log->klinik;
@@ -358,12 +358,14 @@ final Class Print_direct {
         $no = $CI->Counter_model->format_counter_number($params['ant_type'],$params['ant_no']);
         sscanf($_SERVER['REMOTE_ADDR'], '%d.%d.%d.%d', $a, $b, $c, $d);
 
+        
         // $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
         // $p = printer_open("\\\\10.10.10.238\EPSON TM-T82X KIOSK238");
         // $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4t");
         // $p = printer_open("\\\\10.10.10.206\EPSON TM-T88V(tracer obat)");
-
+        
         $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
+        // print_r($p);die;
        
         $var_magin_left = 20;
         printer_set_option($p, PRINTER_MODE, "RAW");
