@@ -55,6 +55,9 @@
             $('#konfirmasi_finger_print').show();
             if(response.status == 200){
               var obj = response.data;
+
+              $('#profile_box').show();
+
               $('#pasien').val(obj.nama_pasien);
               $('#no_mr').val(obj.no_mr);
               $('#poli').val(obj.nama_bagian);
@@ -62,8 +65,16 @@
               $('#umur').val(obj.umur);
               $('#tgl_lahir').val(obj.tgl_lahir);
 
+
+              $('#nama_pasien_txt').text(obj.nama_pasien);
+              $('#no_rm_txt').text(obj.no_mr);
+              $('#poli_txt').text(obj.nama_bagian);
+              $('#dokter_txt').text(obj.nama_dokter);
+              $('#ttl_txt').text(obj.tgl_lahir+' ('+obj.umur+')');
+
               $('#msg_box').html('<div class="alert alert-success" style="font-size: 16px"><b><i class="fa fa-check green"></i> Sukses..!</b><br>'+response.message+'</div><br><button type="button" onclick="print_bukti_pendaftaran('+"'REGISTRASI_ONLINE'"+')" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 20px;min-width: 320px; background: green !important; border-color: green"><i class="fa fa-print bigger-150"></i> Cetak Bukti Pendaftaran</button>');
             }else{
+              $('#profile_box').hide();
               $('#msg_box').html('<div class="alert alert-danger" style="font-size: 16px"><b><i class="fa fa-times red"></i> Pemberitahuan..!</b><br>'+response.message+'</div><br><button type="button" onclick="getMenu('+"'Kiosk/antrian_front'"+')" class="btn btn-xs btn-primary" style="height: 45px !important;font-size: 20px;min-width: 320px; background: green !important; border-color: green"><i class="fa fa-print bigger-150"></i> Ambil Nomor Antrian</button>');
             }
                 
@@ -125,16 +136,36 @@
       <div id="konfirmasi_finger_print" style="display: none">
 
         <div style="padding-top: 10px">
+          <div id="profile_box" style="display: none">
+            <table class="table">
+              <tr style="background: green; color: white">
+                <th>No RM</th>
+                <th>Nama Pasien</th>
+                <th>Tgl Lahir (Usia)</th>
+                <th>Poli/Klinik</th>
+                <th>Dokter</th>
+              </tr>
+
+              <tr>
+                <td><span id="no_rm_txt"></span></td>
+                <td><span id="nama_pasien_txt"></span></td>
+                <td><span id="ttl_txt"></span></td>
+                <td><span id="poli_txt"></span></td>
+                <td><span id="dokter_txt"></span></td>
+              </tr>
+
+            </table>
+          </div>
           <div id="msg_box"></div>
           
         </div>
         <!-- hidden -->
-        <input type="hiddenxx" name="poli" value="" id="poli">
-        <input type="hiddenxx" name="nama_dokter" value="" id="nama_dokter">
-        <input type="hiddenxx" name="no_mr" value="" id="no_mr">
-        <input type="hiddenxx" name="nama_pasien" value="" id="pasien">
-        <input type="hiddenxx" name="umur_pasien" value="" id="umur">
-        <input type="hiddenxx" name="tgl_lahir" value="" id="tgl_lahir">
+        <input type="hidden" name="poli" value="" id="poli">
+        <input type="hidden" name="nama_dokter" value="" id="nama_dokter">
+        <input type="hidden" name="no_mr" value="" id="no_mr">
+        <input type="hidden" name="nama_pasien" value="" id="pasien">
+        <input type="hidden" name="umur_pasien" value="" id="umur">
+        <input type="hidden" name="tgl_lahir" value="" id="tgl_lahir">
       </div>
       <div class="center" style="left: 50%; top:80%; margin-top: 50px" >
         <a href="<?php echo base_url().'kiosk'?>" class="btn btn-lg" style="background : green !important; border-color: green"> <i class="fa fa-home"></i> Kembali Ke Beranda</a>

@@ -14,7 +14,7 @@
             <div style="padding: 0px;">
                 <div style="text-align: left !important; font-weight: bold;font-size: 14px;">JADWAL DOKTER</div>
                 <table class="table">
-                    <tr style="background: #07800147; font-size: 14px;">
+                    <tr style="background: green; font-size: 14px; color: white">
                         <th>Nama Dokter</th>
                         <?php for($i=1; $i<8;$i++) : ?>
                             <th style="text-align: left !important; width: 120px"><?php echo $this->tanggal->getDayByNum($i);?></th>
@@ -78,6 +78,9 @@
                         <input type="hidden" name="nama_pasien" id="kb_nama_pasien" value="">
                         <input type="hidden" name="alamat" id="alamat" value="">
                         <input type="hidden" name="print_booking" id="print_booking" value="1">
+                        <input type="hidden" name="no_sep_lama" id="no_sep_lama" value="11111">
+                        <input type="hidden" name="no_rujukan" id="no_rujukan" value="11111">
+                        <input type="hidden" name="kiosk" id="kiosk" value="1">
                         
                         <div class="center">
                             
@@ -97,24 +100,14 @@
 
                     <div class="col-sm-8">
                         <div class="widget-main" id="message_result_pasien" style="margin-top: -32px"></div>
-
-                        <div style="padding: 10px" id="div_no_sep_lama">
-                            <label for="form-field-8" style="font-size: 16px"><b>Nomor Rujukan Terbaru</b></label>
-                            <input type="text" class="form-control" name="no_rujukan" id="no_rujukan" id="form-field-8" placeholder="Masukan Nomor Rujukan" style="height: 46px !important; font-size: 18px !important;">
-                        </div>
-
-                        <div style="padding: 10px" id="div_no_sep_lama">
-                            <label for="form-field-8" style="font-size: 16px"><b>Nomor SEP Terakhir </b></label>
-                            <input type="text" class="form-control" name="no_sep_lama" id="no_sep_lama" id="form-field-8" placeholder="Masukan No SEP" style="height: 46px !important; font-size: 18px !important;">
-                        </div>
                         
                         <div id="view_msg_kuota" style="margin: 12px; margin-top: 5px"></div>
                         <div id="view_last_message" style="margin-top: -25px"></div>
                         
-                        <div class="center">
-                            <a href="#" class="btn btn-lg" style="margin: 10px; background : green !important; border-color: green;" onclick="getMenu('kiosk/Kiosk/spesialis')"> <i class="fa fa-arrow-left"></i> Kembali ke Menu Sebelumnya</a>
+                        <div class="center" id="btn-proses">
+                            <a href="#" class="btn btn-lg" style="margin: 10px; background : green !important; border-color: green;" onclick="getMenu('kiosk/Kiosk/spesialis')"> <i class="fa fa-arrow-left"></i> Ganti Tujuan Poli/Klinik</a>
 
-                            <button type="submit" id="btnSave" class="btn btn-lg" style="background : green !important; border-color: green; height: 45px !important"><i class="fa fa-print"></i> Cetak Bukti Perjanjian</button>
+                            <button type="submit" id="btnSave" class="btn btn-lg" style="background : green !important; border-color: green; height: 45px !important"><i class="fa fa-check"></i> Proses Perjanjiann Pasien</button>
                         </div>
 
                     </div>
@@ -230,6 +223,10 @@ function showTestDate(){
 
 $(document).ready(function () {
 
+    // get profile
+    $('#no_mr').val($('#no_mr_val').val());
+    $('#kb_nama_pasien').val($('#nama_pasien').val());
+    $('#alamat').val($('#alamat_pasien_val').val());
     var today = getDateToday();
     // console.log(today);
 	$('#btnSearchPasien').click(function (e) {
@@ -248,13 +245,14 @@ $(document).ready(function () {
       var jsonResponse = JSON.parse(data);
       if(jsonResponse.status == 200){
             $.achtung({message: jsonResponse.message, timeout:5});
-            $('#view_last_message').html('<div class="alert alert-block center"><p><strong><br> <h3>Berhasil !</h3> </strong><img src="<?php echo base_url()?>assets/kiosk/print_success.png" width="80px"><br><br><a href="#" onclick="rePrintBooking('+jsonResponse.jd_id+', '+jsonResponse.id_tc_pesanan+')" class="btn btn-sm btn-primary"><i class="fa fa-print"></i> Cetak Ulang</a></div>');
+            getMenuTabs(jsonResponse.redirect, 'view_last_message');
+            $('#btn-proses').hide();
             $('#view_msg_kuota').hide();
             $('#div_no_sep_lama').hide();
             //timeout redirect page
-            setTimeout(function () {
-                window.location.href = "Self_service"; //will redirect to your blog page (an ex: blog.html)
-            }, 5000); //will call the function after 2 secs.
+            // setTimeout(function () {
+            //     window.location.href = "Self_service"; //will redirect to your blog page (an ex: blog.html)
+            // }, 5000); //will call the function after 2 secs.
 
       }else{
           $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
@@ -271,14 +269,14 @@ $(document).ready(function () {
 function rePrintBooking(jd_id, id_tc_pesanan){
     preventDefault();
     $.ajax({
-        url: 'Reg_pasien/print_booking/'+jd_id+'/'+id_tc_pesanan+'',
+        url: 'registration/Reg_pasien/print_booking/'+jd_id+'/'+id_tc_pesanan+'',
         type: "GET",
         dataType: "json",
         beforeSend: function() {
         //   achtungShowLoader();  
         },
         success: function(response) {
-            scrollSmooth('Self_service/view_spesialis');
+            // scrollSmooth('Self_service/view_spesialis');
         }
     });
 }

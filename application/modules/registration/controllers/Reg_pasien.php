@@ -990,10 +990,12 @@ class Reg_pasien extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id_tc_pesanan' => $newId, 'jd_id' => $_POST['jd_id'], 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].'', 'type_pelayanan' => 'create_perjanjian'));
+                 $is_kiosk = isset($_POST['kiosk'])?$_POST['kiosk']:0;
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id_tc_pesanan' => $newId, 'jd_id' => $_POST['jd_id'], 'redirect' => 'registration/Reg_pasien/surat_control?id_tc_pesanan='.$newId.'&jd_id='.$_POST['jd_id'].'&kiosk='.$is_kiosk.'', 'type_pelayanan' => 'create_perjanjian'));
              }
  
          }
+
     }
 
 

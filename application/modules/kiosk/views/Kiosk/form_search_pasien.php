@@ -30,6 +30,7 @@
         $('#no_ktp').text(obj.no_ktp);
         $('#nama_pasien_txt').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
         $('#jk').text(obj.jen_kelamin);
+        $('#alamat_pasien_val').val(obj.almt_ttp_pasien);
         $('#alamat').text(obj.almt_ttp_pasien);
         $('#hp').text(obj.no_hp);
         $('#no_telp').text(obj.tlp_almt_ttp);

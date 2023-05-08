@@ -81,6 +81,7 @@
             <input type="hidden" class="form-control" value="" id="nama_pasien" name="nama_pasien" readonly>
             <input type="hidden" class="form-control" value="" id="umur_saat_pelayanan_hidden" name="umur_saat_pelayanan_hidden">
             <input type="hidden" class="form-control" id="jenis_pendaftaran" name="jenis_pendaftaran" value="1">
+            <input type="hidden" class="form-control" id="alamat_pasien_val" name="alamat_pasien_val">
             
             <div class="page-header">
               <h1>
@@ -325,8 +326,8 @@
 
         function getLiburNasional(year){
 
-          if(year == 2022){
-              var dataLiburNasional = ["1-1-2022","1-2-2022", "28-2-2022","3-3-2022","15-4-2022","1-5-2022","2-5-2022","3-5-2022","16-5-2022","26-5-2022","1-6-2022","9-7-2022","30-7-2022","17-8-2022","8-10-2022","25-12-2022"];
+          if(year == 2023){
+            var dataLiburNasional = ["1-1-2023", "22-1-2023", "18-2-2023", "22-3-2023", "7-4-2023", "22-4-2023", "23-4-2023", "1-5-2023", "18-5-2023", "1-6-2023", "4-6-2023", "29-6-2023","19-7-2023","17-8-2023","28-9-2023", "25-12-2023"];
           }
 
           return dataLiburNasional;
