@@ -67,6 +67,11 @@ class Kiosk extends MX_Controller {
         $this->load->view('Kiosk/checkin_view', $data);
     }
 
+    public function konfirmasiFp() {
+        $data = array();
+        $this->load->view('Kiosk/konfirmasifp_view', $data);
+    }
+
     // modul antrian
     public function antrian() {
         

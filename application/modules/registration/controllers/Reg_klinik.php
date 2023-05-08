@@ -347,7 +347,7 @@ class Reg_klinik extends MX_Controller {
             $kode_faskes =  ($this->input->post('kode_faskes_hidden'))?$this->input->post('kode_faskes_hidden'):'';
             $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
 
-            // print_r($tgl_registrasi);die;
+            // print_r($kode_dokter);die;
 
             if( !$this->input->post('no_registrasi_hidden') && !$this->input->post('no_registrasi_rujuk')){
                 /*save tc_registrasi*/

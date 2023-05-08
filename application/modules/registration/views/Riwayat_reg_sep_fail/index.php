@@ -218,6 +218,7 @@ function saveRow(no_registrasi){
           <th>Tujuan Kunjungan</th>
           <th>Nama Dokter</th>          
           <th width="100px">Nomor SEP</th>          
+          <th width="100px">Status Finger</th>          
         </tr>
       </thead>
       <tbody>

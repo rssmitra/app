@@ -233,7 +233,7 @@ class Eks_pendaftaran_model extends CI_Model {
 
 		if($params['prefix']==2){
 			$year = isset($_GET['tahun_graph_line_1'])?$_GET['tahun_graph_line_1']: date('Y');
-			$query = "SELECT MONTH(tgl_jam_masuk) AS bulan, COUNT(id_tc_kunjungan) AS total FROM tc_kunjungan WHERE YEAR(tgl_jam_masuk)=".$year." GROUP BY MONTH(tgl_jam_masuk)";	
+			$query = "SELECT MONTH(tgl_jam_masuk) AS bulan, COUNT(no_registrasi) AS total FROM tc_registrasi WHERE YEAR(tgl_jam_masuk)=".$year." GROUP BY MONTH(tgl_jam_masuk)";	
 			$fields = array('Jumlah_Pasien'=>'total');
 			$title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Tahun '.$year.' '.COMP_LONG.'</span>';
 			$subtitle = 'Source: RSSM - SIRS';
@@ -283,7 +283,7 @@ class Eks_pendaftaran_model extends CI_Model {
 					$this->db->where('CAST(a.tgl_jam_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
 				}
 			}else{
-				$this->db->where('AST(a.tgl_jam_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null  ');
+				$this->db->where('CAST(a.tgl_jam_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null  ');
 			}
 			$this->db->group_by('a.kode_perusahaan, SUBSTRING(a.kode_bagian_masuk, 1, 2)');
 			$prd_dt = $this->db->get();

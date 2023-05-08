@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>Sistem Antrian RS. Setia Mitra</title>
+		<title>Sistem Antrian <?php echo COMP_LONG; ?></title>
 
 		<meta name="description" content="top menu &amp; navigation" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -123,7 +123,7 @@
 								Selamat Datang,
 								<small>
 									<i class="ace-icon fa fa-angle-double-right"></i>
-									Sistem Antrian RS Setia Mitra
+									Sistem Antrian <?php echo COMP_LONG; ?>
 								</small>
 							</h1>
 						</div><!-- /.page-header -->
@@ -148,7 +148,7 @@
 					<div class="footer-content">
 						<span class="bigger-120">
 							<span class="blue bolder">SHOS 4.0</span>
-							Copyright &copy; RS Setia Mitra  2018 - <?php echo date('Y')?>
+							Copyright &copy; <?php echo COMP_LONG; ?>  2018 - <?php echo date('Y')?>
 						</span>
 
 						&nbsp; &nbsp;

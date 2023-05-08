@@ -107,20 +107,22 @@
 
     <?php
       // verifikator 1
-      if( $this->session->userdata('user')->user_id != 1){
-        if($dt_detail_brg[0]->tgl_pemeriksa == NULL) {
-          $verifikator = ($flag=='medis')?'verifikator_m_1':'verifikator_nm_1';
-          $user_ttd = $this->master->get_ttd_data($verifikator, 'reff_id');
-          if ($user_ttd != $this->session->userdata('user')->user_id) {
-            echo '<div class="alert alert-danger"><strong>Peringatan!</strong> Anda bukan sebagai verifikator.</div>'; exit;
+      if($dt_detail_brg[0]->flag_jenis != 1){
+        if( $this->session->userdata('user')->user_id != 1){
+          if($dt_detail_brg[0]->tgl_pemeriksa == NULL) {
+            $verifikator = ($flag=='medis')?'verifikator_m_1':'verifikator_nm_1';
+            $user_ttd = $this->master->get_ttd_data($verifikator, 'reff_id');
+            if ($user_ttd != $this->session->userdata('user')->user_id) {
+              echo '<div class="alert alert-danger"><strong>Peringatan!</strong> Anda bukan sebagai verifikator.</div>'; exit;
+            }
           }
-        }
-        // verifikator 2
-        if($dt_detail_brg[0]->tgl_pemeriksa!=NULL AND $dt_detail_brg[0]->tgl_penyetuju==NULL) {
-          $verifikator = ($flag=='medis')?'verifikator_m_2':'verifikator_nm_2';
-          $user_ttd = $this->master->get_ttd_data($verifikator, 'reff_id');
-          if ($user_ttd != $this->session->userdata('user')->user_id) {
-            echo '<div class="alert alert-danger"><strong>Peringatan!</strong> Anda bukan sebagai verifikator.</div>'; exit;
+          // verifikator 2
+          if($dt_detail_brg[0]->tgl_pemeriksa!=NULL AND $dt_detail_brg[0]->tgl_penyetuju==NULL) {
+            $verifikator = ($flag=='medis')?'verifikator_m_2':'verifikator_nm_2';
+            $user_ttd = $this->master->get_ttd_data($verifikator, 'reff_id');
+            if ($user_ttd != $this->session->userdata('user')->user_id) {
+              echo '<div class="alert alert-danger"><strong>Peringatan!</strong> Anda bukan sebagai verifikator.</div>'; exit;
+            }
           }
         }
       }

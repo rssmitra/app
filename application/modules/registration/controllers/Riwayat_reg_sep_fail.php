@@ -95,13 +95,16 @@ class Riwayat_reg_sep_fail extends MX_Controller {
                             <li><a href="#">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
+            $status_fp = ($row_list->konfirm_fp == 1)?'<span style="color: green"><i class="fa fa-thumbs-up"></i></span>':'<span style="color: red"><i class="fa fa-thumbs-down"></i></span>';
+
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = '<a href="#">'.strtoupper($row_list->nama_pasien).'</>';
+            $row[] = '<a href="#">'.strtoupper($row_list->nama_pasien).'</a><br><b>'.strtoupper($row_list->no_kartu_bpjs).'</b>';
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'UMUM';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_masuk);
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->nama_pegawai;
             $row[] = '<div class="center"><input type="text" name="no_sep_'.$row_list->no_registrasi.'" id="no_sep_'.$row_list->no_registrasi.'" value="'.$row_list->no_sep.'" style="border: 1px solid white !important" onchange="saveRow('.$row_list->no_registrasi.')"></div>';
+            $row[] = '<div class="center">'.$status_fp.'</div>';
            
             $data[] = $row;
         }

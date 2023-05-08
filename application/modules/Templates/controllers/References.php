@@ -2289,6 +2289,48 @@ class References extends MX_Controller {
 		}
 	}
 
+	function findFingerPrint(){
+		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir');
+		$this->db->from('tc_registrasi a');
+		$this->db->join('mt_master_pasien b', 'a.no_mr=b.no_mr','left');
+		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');
+		$this->db->join('mt_dokter_v d', 'd.kode_dokter=a.kode_dokter','left');
+		$this->db->where('b.no_kartu_bpjs', $_POST['kode']);
+		$this->db->where('CAST(a.tgl_jam_masuk as DATE) = ', date('Y-m-d'));
+		$query = $this->db->get();
+		if($query->num_rows() == 0){
+			echo json_encode(array('status' => 201, 'message' => 'Anda belum terdaftar, silahkan ambil nomor antrian pendaftaran'));
+			exit;
+		}
+		// cek bridging finger print
+		$this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+		$service_name = "SEP/FingerPrint/Peserta/".$_POST['kode']."/TglPelayanan/".date('Y-m-d')."";
+		$result = $this->Ws_index->getData($service_name);
+		
+		if(isset($result['data'])){
+			if($result['data']->kode == 0){
+				$response = array(
+					'status_fp' => 0,
+					'status' => 201,
+					'message' => $result['data']->status.', silahkan finger print terlebih dahulu di kiosk<br> atau untuk bantuan petugas silahkan ambil nomor antrian ke pendaftaran',
+					
+				);
+			}else{
+				$response = array(
+					'status_fp' => 1,
+					'status' => 200,
+					'message' => $result['data']->status,
+					'data' => $query->row(),
+					
+				);
+			}
+		}
+		// update tc_registrasi
+		$this->db->where('no_registrasi', $query->row()->no_registrasi)->update('tc_registrasi', array('konfirm_fp' => $response['status_fp']) );
+		echo json_encode($response);
+		
+	}
+
 
 
 

@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set("Asia/Jakarta");
 
-$serverName = "10.10.10.5";
+$serverName = "10.10.11.5";
 $connectionInfo = array( "Database"=>"rls_rssm_sirs", "UID"=>"sa", "PWD"=>"4v3r1n-averin");
 
 $conn = sqlsrv_connect( $serverName, $connectionInfo );
