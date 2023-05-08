@@ -204,7 +204,7 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/lappembelian'?>">Laporan Pembelian Obat (Operational Level)</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=10'?>">Laporan Mutasi Distribusi Barang Unit</a> <i class="fa fa-bookmark green"></i> </li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=11'?>">Laporan Pemakaian Unit</a></li>
-											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=12'?>">Rekapitulasi Jumlah Resep</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/farmasi?mod=12'?>">Rekapitulasi Jumlah Resep</a> <i class="fa fa-star orange bigger-120"></i> </li>
 										</ol>
 										</div>
 									</div>
@@ -250,7 +250,7 @@
 											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=2'?>">Daftar Kunjungan Pasien Per-hari</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=3'?>">Daftar Registrasi Pasien Per-hari</a></li>
 											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=4'?>">Daftar Pasien MCU</a></li>
-											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=5'?>">Data Keterlambatan Kunjungan Praktek Dokter</a></li>
+											<li><a href="<?php echo base_url().'laporan/Global_report/kunjungan?mod=5'?>">Data Keterlambatan Kunjungan Praktek Dokter</a> <i class="fa fa-star orange bigger-120"></i> </li>
 										</ol>
 										</div>
 									</div>

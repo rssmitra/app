@@ -171,7 +171,7 @@
         <div class="center" style="padding-top: 30px;">
                   
           <div>
-              <label class="" style="font-size: 20px; font-weight: bold">MASUKAN KODE BOOKING</label><br>         
+              <label class="" style="font-size: 20px; font-weight: bold;">MASUKAN KODE BOOKING</label><br>         
               <div class="input-group input-group-lg">
               <span class="input-group-addon">
                   <i class="ace-icon fa fa-check"></i>

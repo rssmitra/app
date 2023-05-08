@@ -6,7 +6,7 @@
 					Antrian Pendaftaran Pasien
 					<small>
 						<i class="ace-icon fa fa-angle-double-right"></i>
-						Sistem Antrian RS Setia Mitra
+						Sistem Antrian <?php echo COMP_LONG; ?>
 					</small>
 				</h1>
 			</div><!-- /.page-header -->

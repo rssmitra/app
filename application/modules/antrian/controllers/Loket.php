@@ -275,6 +275,35 @@ class Loket extends MX_Controller {
 
     }
 
+    public function process_other_kiosk_reg_online()
+    {
+        # code...
+        $this->db->trans_begin();
+
+        $dataexc = array(
+            'poli' => $_POST['poli'],
+            'dokter' => $_POST['dokter'],
+            'type' => $_POST['type'],
+            'no_mr' => $_POST['no_mr'],
+            'nama_pasien' => $_POST['nama_pasien'],
+            'umur_pasien' => $_POST['umur_pasien'],
+            'tgl_lahir' => $_POST['tgl_lahir']
+        );
+        $this->print_direct->printer_antrian_php_kiosk_reg_online($dataexc);
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('dokter' => $_POST['dokter'], 'klinik' => $_POST['poli'], 'type' => $_POST['type'] ));
+        }
+
+    }
+
 }
 
 /* End of file empty_module.php */

@@ -51,7 +51,7 @@
 
   </style>
 	<body class="no-skin" style="background: url('assets/images/unit-pendaftaran.jpg');">
-		<!-- <div id="navbar" class="navbar navbar-default    navbar-collapse       h-navbar ace-save-state" style="background: green">
+		<div id="navbar" class="navbar navbar-default    navbar-collapse       h-navbar ace-save-state" style="background: green">
 			<div class="navbar-container ace-save-state" id="navbar-container" >
 				<div class="navbar-header pull-left">
 					<a href="" class="navbar-brand">
@@ -63,8 +63,8 @@
 				</div>
 
 
-			</div>
-		</div> -->
+			</div><!-- /.navbar-container -->
+		</div>
 
 		<div class="main-container ace-save-state" id="main-container">
 			<script type="text/javascript">
@@ -93,94 +93,17 @@
             </div>
             
             <div id="page-area-content">
-              <style>
-                .widget-title{
-                  font-size: medium !important;
-                  font-weight: bold;
-                }
-                .widget-color-dark {
-                  border-color: #dfdcdc;
-                  border: 0px !important
-                }
-              </style>
+              <div class="col-md-12 center" style="padding-top: 15%">
+                <a href="#" onclick="getMenu('kiosk/Kiosk/pasien_baru')" class="btn btn-lg" style="background: green !important; border-color: green; height: 60px; font-size: 2.2em; border-radius: 10px 10px 10px 10px"><i class="fa fa-user"></i> Pasien Baru</a>
+                &nbsp;&nbsp;
+                <a href="#" onclick="getMenu('kiosk/Kiosk/pasien_lama')" class="btn btn-lg" style="background: green !important; border-color: green; height: 60px; font-size: 2.2em; border-radius: 10px 10px 10px 10px"><i class="fa fa-users"></i> Pasien Lama</a>
+                &nbsp;&nbsp;
+                <a href="#" onclick="getMenu('Kiosk/antrian_front')" class="btn btn-lg" style="background: green !important; border-color: green; height: 60px; font-size: 2.2em; border-radius: 10px 10px 10px 10px"><i class="fa fa-list"></i> No Antrian</a>
+                &nbsp;&nbsp;
+                <a href="#" onclick="getMenu('Kiosk/spesialis_front')" class="btn btn-lg" style="background: green !important; border-color: green; height: 60px; font-size: 2.2em; border-radius: 10px 10px 10px 10px"><i class="fa fa-calendar"></i> Jadwal Dokter</a>
+                &nbsp;&nbsp;
+                <a href="#" onclick="getMenu('kiosk/Kiosk/konfirmasiFp')" class="btn btn-lg" style="background: green !important; border-color: green; height: 60px; font-size: 2.2em; border-radius: 10px 10px 10px 10px"><i class="fa fa-thumbs-up"></i> Finger Print</a>
 
-              <div class="row" style="top:50%; left: 50%">
-
-                <p style="text-align: center; font-size: 2.5em; font-weight: bold">KIOSK PELAYANAN PASIEN</p>
-                <div style="padding-top: 20px">
-
-                  <div class="col-sm-4 widget-container-col ui-sortable" id="widget-container-col-11">
-                    <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
-                      <div class="widget-body">
-                        <div class="widget-main padding-4" data-size="125" style="position: relative;">
-                          <div style="min-height: 350px;">
-                            <div class="content">
-                              <div class="center" style="padding-top: 10px;">
-                                <img src="<?php echo base_url()?>assets/kiosk/icon-patient.png" height="100" alt="">
-                                <br>
-                                <br>
-                                <span style="font-size: 18px;font-weight: bold; padding-top: 10px">PASIEN LAMA</span>
-                                <p style="align: justify; padding-top: 10px; min-height: 100px">Layanan Mandiri untuk pasien<br> yang sudah pernah terdaftar.</p>
-                              </div>
-                              <div class="center">
-                                <a href="#" class="btn btn-lg" onclick="getMenu('kiosk/Kiosk/pasien_lama')" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-4 widget-container-col ui-sortable" id="widget-container-col-11">
-                    <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
-                      <div class="widget-body">
-                        <div class="widget-main padding-4" data-size="125" style="position: relative;">
-                          <div style="min-height: 350px;">
-                            <div class="content">
-                              <div class="center" style="padding-top: 10px;">
-                                <img src="<?php echo base_url()?>assets/kiosk/icon-que-2.png" height="100" alt="">
-                                <br>
-                                <br>
-                                <span style="font-size: 18px;font-weight: bold; padding-top: 10px">NOMOR ANTRIAN</span>
-                                <p style="align: justify; padding-top: 10px; min-height: 100px">Pengambilan Nomor Antrian Pendaftaran<br>untuk semua tujuan kunjungan rawat jalan.</p>
-                              </div>
-                              <div class="center">
-                                <a href="#" class="btn btn-lg" onclick="getMenu('Kiosk/antrian_front')" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-4 widget-container-col ui-sortable" id="widget-container-col-11">
-                    <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
-                      <div class="widget-body">
-                        <div class="widget-main padding-4" data-size="125" style="position: relative;">
-                          <div style="min-height: 350px;">
-                            <div class="content">
-                              <div class="center" style="padding-top: 10px;">
-                              <img src="<?php echo base_url()?>assets/kiosk/icon-finger-scan.png" height="100" alt="">
-                                <br>
-                                <br>
-                                <span style="font-size: 18px;font-weight: bold; padding-top: 10px">FINGER PRINT</span>
-                                <p style="align: justify; padding-top: 10px; min-height: 100px">Konfirmasi finger print khusus untuk Pasien<br> BPJS Kesehatan</p>
-                              </div>
-                              <div class="center">
-                                <a href="#" class="btn btn-lg" onclick="getMenu('kiosk/Kiosk/konfirmasiFp')" style="background: green !important; border-color: #b7d9b74f">Klik Disini</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  
-                </div>
-                
               </div>
             </div>
 
