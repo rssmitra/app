@@ -1005,8 +1005,14 @@ class Print_escpos{
         # code...
         $CI =& get_instance();
         sscanf($_SERVER['REMOTE_ADDR'], '%d.%d.%d.%d', $a, $b, $c, $d);
-        $printerName = isset($_POST['printer'])?$_POST['printer']:'';
-        $p = printer_open("\\\\".$printerName."");
+        if(isset($_POST['printer'])){
+            $printerName = isset($_POST['printer'])?$_POST['printer']:'';
+            $p = printer_open("\\\\".$printerName."");
+        }else{
+            sscanf($_SERVER['REMOTE_ADDR'], '%d.%d.%d.%d', $a, $b, $c, $d);
+            $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
+        }
+
         // $p = printer_open("\\\\".$_SERVER['REMOTE_ADDR']."\EPSON TM-T82X KIOSK".$d."");
         // $p = printer_open("\\\\10.10.10.38\EPSON TM-T82 ReceiptSA4t");
         // $p = printer_open("\\\\10.10.10.238\EPSON TM-T82X KIOSK238");
@@ -1132,14 +1138,10 @@ class Print_escpos{
         printer_select_font($p, $font);
         printer_draw_text($p, "  ".$objDt->keterangan." ", 175, 460);
 
-        
-
         // petugas dan stempel
         // $font = printer_create_font("Arial", 24, 9, PRINTER_FW_BOLD, false, false, false, 0);
         // printer_select_font($p, $font);
         // printer_draw_text($p, " ".$CI->session->userdata('user')->fullname." ", 350, 370);
-
-        
 
         // $font = printer_create_font("Arial", 24, 9, PRINTER_FW_BOLD, false, false, false, 0);
         // printer_select_font($p, $font);
@@ -1149,23 +1151,43 @@ class Print_escpos{
         printer_select_font($p, $font);
         printer_draw_text($p, 'Catatan', 5, 520);
 
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        $msg_2 = "* Silahkan datang 2 jam sebelum praktek dokter dimulai";
+        $msg_2 = "Konfirmasi kedatangan anda H-1 sebelum tanggal kunjungan";
         printer_draw_text($p, (string)$msg_2, 5, 550);
 
-        $font = printer_create_font("Arial", 25, 10, PRINTER_FW_MEDIUM, false, false, false, 0);
+        $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        $msg_3 = "* Simpan Kode Booking ini untuk Registrasi";
+        $msg_3 = "di nomor whatsapp 0821-2564-1550 dengan menunjukan kertas ini";
         printer_draw_text($p, (string)$msg_3, 5, 580);
+
+        $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        $msg_4 = "Lakukan finger print di kiosk pada hari H kunjungan sebelum";
+        printer_draw_text($p, (string)$msg_4, 5, 620);
+
+        $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        $msg_5 = "praktek dokter dimulai menggunakan No Kartu BPJS anda";
+        printer_draw_text($p, (string)$msg_5, 5, 650);
+
+        $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        $msg_6 = "Jika anda sudah melakukan tahap diatas, anda bisa langsung";
+        printer_draw_text($p, (string)$msg_6, 5, 690);
+
+        $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
+        printer_select_font($p, $font);
+        $msg_7 = "menunggu untuk di tensi dan tidak perlu mengambil nomor antrian";
+        printer_draw_text($p, (string)$msg_7, 5, 720);
 
         // $font = printer_create_font("Arial", 20, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
         // printer_select_font($p, $font);
         // printer_draw_text($p, "Dicetak pada tanggal, ".date('d/M/Y H:i:s')."", 5, 490);
 
-        $font = printer_create_font("Arial", 23, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
-        printer_select_font($p, $font);
-        printer_draw_text($p, "", 27, 550);
+        // $font = printer_create_font("Arial", 23, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
+        // printer_select_font($p, $font);
+        // printer_draw_text($p, "", 27, 550);
 
         // $font = printer_create_font("Arial", 23, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
         // printer_select_font($p, $font);
