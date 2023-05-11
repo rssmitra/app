@@ -1158,7 +1158,7 @@ class Print_escpos{
 
         $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
         printer_select_font($p, $font);
-        $msg_3 = "di nomor whatsapp 0821-2564-1550 dengan menunjukan kertas ini";
+        $msg_3 = "di nomor whatsapp 0821-2546-1550 dengan menunjukan kertas ini";
         printer_draw_text($p, (string)$msg_3, 5, 580);
 
         $font = printer_create_font("Arial", 22, 8, PRINTER_FW_MEDIUM, false, false, false, 0);
