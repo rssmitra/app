@@ -737,7 +737,8 @@ class Reg_klinik extends MX_Controller {
                 
                 /*insert pl tc poli*/
                 $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
-                $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal_sep'),$this->form_validation->set_value('reg_dokter_rajal_sep'), '', $tgl_registrasi);
+                $tipe_pasien = ($kode_perusahaan != 120) ? 'umum' : '';
+                $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal_sep'),$this->form_validation->set_value('reg_dokter_rajal_sep'), $tipe_pasien, $tgl_registrasi);
                 
                 $datapoli['kode_poli'] = $kode_poli;
                 $datapoli['no_kunjungan'] = $no_kunjungan;
