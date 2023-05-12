@@ -43,7 +43,7 @@ class Retur_obat_model extends CI_Model {
 			}
 		}else{
 			if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
-
+				$this->db->where('DATEDIFF(Day, tgl_trans, getdate()) <= 120');
 			}else{
 				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
 			}
