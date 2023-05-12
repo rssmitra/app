@@ -467,12 +467,12 @@ class Reg_klinik extends MX_Controller {
                 $this->db->trans_commit();
                 
                 /*jika transaksi berhasil maka print tracer*/
-                if($this->input->post('is_new')!='Yes'){
+                // if($this->input->post('is_new')!='Yes'){
                     $tracer = $this->print_escpos->print_direct($data_tracer);
                     if( $tracer == 1 ) {
                          $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
                     }
-                }
+                // }
 
                 // get detail data
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);
@@ -805,12 +805,12 @@ class Reg_klinik extends MX_Controller {
                     $this->db->trans_commit();
                     
                     /*jika transaksi berhasil maka print tracer*/
-                    if($this->input->post('is_new')!='Yes'){
+                    //if($this->input->post('is_new')!='Yes'){
                         $tracer = $this->print_escpos->print_direct($data_tracer);
                         if( $tracer == 1 ) {
                             $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
                         }
-                    }
+                    //}
 
                     // get detail data
                     $dt = $this->Reg_klinik->get_by_id($no_registrasi);
@@ -834,14 +834,14 @@ class Reg_klinik extends MX_Controller {
             'result' => $detail_data,
         ];
 
-        if($this->input->post('is_new')!='Yes'){
+        // if($this->input->post('is_new')!='Yes'){
 
             if( $this->print_direct->printer_php($data_tracer) ){
                 
             }else{
                 $this->db->update('tc_registrasi', array('print_tracer' => 'N'), array('no_registrasi' => $_POST['no_registrasi'] ) );
             }
-        }      
+        // }      
 
         $this->print_escpos->print_direct($data_tracer);
 
