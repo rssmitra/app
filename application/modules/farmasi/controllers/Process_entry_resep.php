@@ -479,7 +479,7 @@ class Process_entry_resep extends MX_Controller {
         $data['resep_kronis'] = $getDataResepKronis;
         $data['no_mr'] = isset($getData[0]['no_mr'])?$getData[0]['no_mr']:0;
         $data['kode_trans_far'] = $kode_trans_far;
-        
+        // echo '<pre>'; print_r($getData);die;
         
         $this->load->view('farmasi/preview_entry', $data);
 

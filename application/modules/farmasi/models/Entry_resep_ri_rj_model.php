@@ -140,6 +140,7 @@ class Entry_resep_ri_rj_model extends CI_Model {
 		}else{
 			$this->db->where(''.$this->table.'.kode_pesan_resep',$id);
 			$query = $this->db->get();
+			// print_r($this->db->last_query());die;
 			return $query->row();
 		}
 		

@@ -70,7 +70,7 @@
                   $no=0; 
                   $arr_total = [];
                   foreach($resep as $key_dt=>$row_dt) : 
-                    if( $row_dt['jumlah_tebus'] > 0 ) :
+                    // if( $row_dt['jumlah_tebus'] > 0 ) :
                     $no++; 
                     
                     // $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : ($row_dt['harga_jual'] * $row_dt['jumlah_tebus']) + $row_dt['jasa_r']; 
@@ -123,7 +123,9 @@
                     endif; 
                   ?>
 
-                  <?php endif; endforeach;?>
+                  <?php 
+                    //endif; 
+                    endforeach;?>
 
                   <tr>
                     <td colspan="<?php echo (count($resep_kronis) > 0) ? 5 : 7 ?>" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
