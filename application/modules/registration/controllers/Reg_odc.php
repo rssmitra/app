@@ -93,8 +93,8 @@ class Reg_odc extends MX_Controller {
             
             /*insert poli pl_tc_poli*/
             $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
-            //$kode_mcu = $this->master->get_max_number('pl_tc_poli', 'kode_gcu');
-            $no_antrian = $this->master->get_no_antrian_poli($this->regex->_genRegex($this->form_validation->set_value('odc_bagian'),'RGXQSL'),$this->form_validation->set_value('odc_kode_dokter'));
+            $tipe_antrian = ($kode_perusahaan != 120) ? 'umum' : '';
+            $no_antrian = $this->master->get_no_antrian_poli($this->regex->_genRegex($this->form_validation->set_value('odc_bagian'),'RGXQSL'),$this->form_validation->set_value('odc_kode_dokter'), $tipe_antrian);
             $data_pl_tc_poli = array(
                 'kode_poli' => $kode_poli,
                 'no_kunjungan' => $no_kunjungan,
@@ -102,6 +102,7 @@ class Reg_odc extends MX_Controller {
                 'tgl_jam_poli' => date('Y-m-d H:i:s'),
                 'kode_dokter' => $kode_dokter,
                 'no_antrian' => $no_antrian,
+                'flag_antrian' => $tipe_antrian,
                 'nama_pasien' => $_POST['nama_pasien_hidden'],
                 'flag_odc' => 1,
             );

@@ -111,7 +111,8 @@ class Reg_mcu extends MX_Controller {
             /*insert poli pl_tc_poli*/
             $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
             $kode_mcu = $this->master->get_max_number('pl_tc_poli', 'kode_gcu');
-            $no_antrian = $this->master->get_no_antrian_poli('010901',$this->form_validation->set_value('mcu_kode_dokter'));
+            $tipe_antrian = ($kode_perusahaan != 120) ? 'umum' : '';
+            $no_antrian = $this->master->get_no_antrian_poli('010901',$this->form_validation->set_value('mcu_kode_dokter'), $tipe_antrian, $tgl_registrasi);
             $data_pl_tc_poli = array(
                 'kode_poli' => $kode_poli,
                 'kode_gcu' => $kode_mcu,
@@ -120,6 +121,7 @@ class Reg_mcu extends MX_Controller {
                 'tgl_jam_poli' => $tgl_registrasi,
                 'kode_dokter' => $kode_dokter,
                 'no_antrian' => $no_antrian,
+                'flag_antrian' => $tipe_antrian,
                 'nama_pasien' => $_POST['nama_pasien_hidden'],
             );
 

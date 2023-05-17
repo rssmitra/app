@@ -372,14 +372,15 @@ class Reg_klinik extends MX_Controller {
             
             /*insert pl tc poli*/
             $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
-            $tipe_pasien = ($kode_perusahaan != 120) ? 'umum' : '';
-            $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal'),$this->form_validation->set_value('reg_dokter_rajal'), $tipe_pasien, $tgl_registrasi);
+            $tipe_antrian = ($kode_perusahaan != 120) ? 'umum' : 'bpjs';
+            $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal'),$this->form_validation->set_value('reg_dokter_rajal'), $tipe_antrian, $tgl_registrasi);
             
             $datapoli['kode_poli'] = $kode_poli;
             $datapoli['no_kunjungan'] = $no_kunjungan;
             $datapoli['kode_bagian'] = $this->regex->_genRegex($this->form_validation->set_value('reg_klinik_rajal'),'RGXQSL');
             $datapoli['tgl_jam_poli'] = $tgl_registrasi;
             $datapoli['kode_dokter'] = $this->regex->_genRegex($this->form_validation->set_value('reg_dokter_rajal'),'RGXINT');
+            $datapoli['flag_antrian'] = $tipe_antrian;
             $datapoli['no_antrian'] = $no_antrian;
             $datapoli['nama_pasien'] = $_POST['nama_pasien_hidden'];
             
@@ -737,8 +738,8 @@ class Reg_klinik extends MX_Controller {
                 
                 /*insert pl tc poli*/
                 $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
-                $tipe_pasien = ($kode_perusahaan != 120) ? 'umum' : '';
-                $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal_sep'),$this->form_validation->set_value('reg_dokter_rajal_sep'), $tipe_pasien, $tgl_registrasi);
+                $tipe_antrian = ($kode_perusahaan != 120) ? 'umum' : '';
+                $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal_sep'),$this->form_validation->set_value('reg_dokter_rajal_sep'), $tipe_antrian, $tgl_registrasi);
                 
                 $datapoli['kode_poli'] = $kode_poli;
                 $datapoli['no_kunjungan'] = $no_kunjungan;
@@ -746,6 +747,7 @@ class Reg_klinik extends MX_Controller {
                 $datapoli['tgl_jam_poli'] = date('Y-m-d H:i:s');
                 $datapoli['kode_dokter'] = $this->regex->_genRegex($this->form_validation->set_value('reg_dokter_rajal_sep'),'RGXINT');
                 $datapoli['no_antrian'] = $no_antrian;
+                $datapoli['flag_antrian'] = $tipe_antrian;
                 $datapoli['nama_pasien'] = $_POST['nama_pasien_hidden'];
                 
                 //print_r($datapoli);die;
@@ -846,6 +848,11 @@ class Reg_klinik extends MX_Controller {
         $this->print_escpos->print_direct($data_tracer);
 
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr']));
+    }
+
+    public function get_no_antrian(){
+        $no_antrian = $this->master->get_no_antrian_poli($_GET['poli'],$_GET['dokter'], 0, '2023-05-17');
+        echo json_encode($no_antrian);
     }
 
 }
