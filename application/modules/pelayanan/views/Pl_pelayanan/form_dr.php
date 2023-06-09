@@ -381,19 +381,20 @@ function getDataAntrianPasien(){
     $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
     var arr = [];
     var arr_cancel = [];
+    var no = 0;
     $.each(data, function (i, o) {   
         var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
         var penjamin = (o.kode_perusahaan==120)? '<span style="background: #f998878c; padding: 3px">('+o.nama_perusahaan+')</span>' : '<span style="background: #6fb3e0; padding: 3px">(UMUM)</span>' ;
 
         var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
 
-       
+       no++;
         if(o.status_batal == 1){
 
           html_cancel = '';
           html_cancel += '<div class="itemdiv commentdiv">';
           html_cancel += '<div class="user">';
-          html_cancel += '<h2>'+o.no_antrian+'</h2>';
+          html_cancel += '<h2>'+no+'</h2>';
           html_cancel += '</div>';
           html_cancel += '<div class="body" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
           html_cancel += '<div class="name">';
@@ -422,7 +423,7 @@ function getDataAntrianPasien(){
             html_existing = '';
             html_existing += '<div class="itemdiv commentdiv" style="box-shadow: inset 0 0 10px #0000002e;">';
             html_existing += '<div class="user">';
-            html_existing += '<h2 style="margin-top: 6px !important;">'+o.no_antrian+'</h2>';
+            html_existing += '<h2 style="margin-top: 6px !important;">'+no+'</h2>';
             html_existing += '</div>';
             html_existing += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             html_existing += '<div class="name">';
@@ -447,7 +448,7 @@ function getDataAntrianPasien(){
             html_done = '';
             html_done += '<div class="itemdiv commentdiv" style="background: linear-gradient(45deg, yellowgreen, transparent)">';
             html_done += '<div class="user" style="background: #a7d353">';
-            html_done += '<h2 style="margin-top: 6px !important;">'+o.no_antrian+'</h2>';
+            html_done += '<h2 style="margin-top: 6px !important;">'+no+'</h2>';
             html_done += '</div>';
             html_done += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             html_done += '<div class="name">';

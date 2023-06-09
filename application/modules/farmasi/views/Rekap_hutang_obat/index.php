@@ -56,6 +56,25 @@ function popUnder(node) {
 
 <form class="form-horizontal" method="post" id="form_search" action="Templates/References/find_data" autocomplete="off">
 
+  <div class="form-group">
+    <label class="control-label col-md-1">Bulan </label>
+    <div class="col-md-1">
+      <?php echo $this->master->get_bulan('','from_month','from_month','form-control','','');?>
+    </div>
+    <label class="control-label col-md-1">Tahun</label>
+    <div class="col-md-1">
+      <?php echo $this->master->get_tahun('','year','year','form-control','','');?>
+    </div>
+    <div class="col-md-4">
+      <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
+        Tampilkan Data
+      </button>
+      <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
+        Export Excel
+      </button>
+    </div>
+  </div>
+
   <hr class="separator">
   <!-- div.dataTables_borderWrap -->
   <div style="margin-top:-27px">

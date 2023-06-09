@@ -452,6 +452,7 @@ final Class Master {
 		}
 		$db->where( "kode_bagian='".$kode_bagian."' and kode_dokter=".$kode_dokter." and CAST(tgl_jam_poli as DATE) = '".$tgl."' " );
 		$qry = $db->get()->row();
+		// echo $db->last_query();exit;
 		/*plus 1*/
 		$max_num = $qry->no_antrian + 1 ;
 		return $max_num;

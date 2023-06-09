@@ -7,7 +7,7 @@ class Tracer_model extends CI_Model {
 	var $column = array('tc_registrasi.no_registrasi','tc_registrasi.no_mr','mt_master_pasien.nama_pasien','mt_perusahaan.nama_perusahaan','tc_registrasi.tgl_jam_masuk','mt_bagian.nama_bagian', 'mt_karyawan.nama_pegawai');
 	var $select = 'tc_registrasi.no_registrasi,tc_registrasi.no_mr,mt_master_pasien.nama_pasien,mt_perusahaan.nama_perusahaan,tc_registrasi.tgl_jam_masuk,mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, print_tracer, stat_pasien, tmp_user.fullname, kode_bagian_tujuan';
 
-	var $order = array('tc_registrasi.tgl_jam_masuk' => 'DESC');
+	var $order = array('tc_registrasi.no_registrasi' => 'DESC');
 
 	public function __construct()
 	{

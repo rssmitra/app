@@ -42,7 +42,11 @@ class Retur_obat_model extends CI_Model {
 				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
 		}else{
-			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
+			if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
+				$this->db->where('DATEDIFF(Day, tgl_trans, getdate()) <= 120');
+			}else{
+				$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
+			}
 		}
 
 		if( isset($_GET['bagian']) AND $_GET['bagian'] != 0 ){
@@ -94,7 +98,7 @@ class Retur_obat_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		// print_r($this->db->last_query());die;
+		//print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

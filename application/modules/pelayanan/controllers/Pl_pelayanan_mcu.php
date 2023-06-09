@@ -355,7 +355,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
                             
                         /*daftar pl_tc_poli */
                         $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
-                        $no_antrian = $this->master->get_no_antrian_poli($key,$_POST['dokter'][$key]);
+                        $no_antrian = $this->master->get_no_antrian_poli($key,$_POST['dokter'][$key],'umum');
                         
                         $datapoli['kode_poli'] = $kode_poli;
                         $datapoli['no_kunjungan'] = $no_kunjungan_tujuan;

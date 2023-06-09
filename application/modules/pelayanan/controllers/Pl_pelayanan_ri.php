@@ -1181,6 +1181,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function get_content_data(){
         $data = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['cppt_id']))->row();
+        // echo '<pre>'; print_r($data->catatan_pengkajian);die;
         return $data;
     }
 

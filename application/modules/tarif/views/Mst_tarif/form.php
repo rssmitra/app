@@ -130,7 +130,7 @@ function changeTotal(){
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Tarif Unit/Bagian</label>
             <div class="col-sm-3">
-              <?php echo $this->master->custom_selection(array('table'=>'view_unit_tarif', 'where'=>array(), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($value->kode_bagian)?$value->kode_bagian:'','kode_bagian','kode_bagian','chosen-slect form-control','','');?>
+              <?php echo $this->master->custom_selection(array('table'=>'mt_bagian', 'where'=>array('validasi' => 100), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($value->kode_bagian)?$value->kode_bagian:'','kode_bagian','kode_bagian','chosen-slect form-control','','');?>
             </div>
         </div>
         
