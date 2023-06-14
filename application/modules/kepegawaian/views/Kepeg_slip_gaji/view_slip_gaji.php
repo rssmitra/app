@@ -16,10 +16,10 @@
       <hr>
       <div class="widget-body">
         <div class="widget-main no-padding">
-          <p style="padding: 15px">
+          <p style="padding: 15px; font-size: 14px; font-weight: bold; text-align: center">
             <span>RINCIAN GAJI PEGAWAI</span><br>
             BULAN <?php echo strtoupper($this->tanggal->getBulan($value->kg_periode_bln))?> TAHUN <?php echo $value->kg_periode_thn?><br><br>
-            <span style="font-size: 16px; font-weight: bold"><?php echo $value->nip.' - '.$value->nama_pegawai; ?></span>
+            <span style="font-size: 13px; font-weight: bold"><?php echo $value->nip.' - '.$value->nama_pegawai; ?></span>
           </p>
           <div class="col-md-6">
             <table class="table">
@@ -203,7 +203,7 @@
 
               <tr>
                 <td colspan="2" align="right"><b>TOTAL POTONGAN</b></td>
-                <td align="right"><?php echo number_format($potongan)?></td>
+                <td align="right" style="font-weight: bold"><?php echo number_format($potongan)?></td>
               </tr>
             </table>
           </div>
@@ -234,6 +234,8 @@
                 <th style="text-align: right"><?php echo number_format($value->gaji_diterima)?></th>
               <tr>
             </table>
+            <br>
+            <a href="#" class="btn btn-xs btn-danger" onclick="PopupCenter('<?php echo base_url().'kepegawaian/Kepeg_slip_gaji/slip_gaji_view?bulan='.$_GET['bulan'].'&tahun='.$_GET['tahun'].''?>','SLIP GAJI BULAN <?php echo strtoupper($this->tanggal->getBulan($value->kg_periode_bln))?> ', 900, 650)">Cetak PDF</a>
           </div>
         </div>
       </div>
