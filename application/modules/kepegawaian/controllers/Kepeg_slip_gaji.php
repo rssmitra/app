@@ -52,6 +52,15 @@ class Kepeg_slip_gaji extends MX_Controller {
         $this->load->view('Kepeg_slip_gaji/view_slip_gaji', $data);
     }
 
+    public function slip_gaji_view()
+    {
+        /*define data variabel*/
+        $data['value'] = $this->Kepeg_slip_gaji->get_data();
+        $data['title'] = $this->title;
+        /*load form view*/
+        $this->load->view('Kepeg_slip_gaji/cetak_slip_gaji', $data);
+    }
+
 
 }
 
