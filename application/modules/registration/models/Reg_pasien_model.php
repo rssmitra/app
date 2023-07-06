@@ -605,6 +605,52 @@ class Reg_pasien_model extends CI_Model {
 		
 	}
 
+	function cek_riwayat_kunjungan_pasien_by_current_day($mr)
+	
+	{
+		
+		$this->db->select('*');
+		$this->db->select('(SELECT cast(SUM(bill_rs) AS INT) FROM tc_trans_pelayanan WHERE no_registrasi=tc_kunjungan.no_registrasi AND kode_tc_trans_kasir IS NULL) as total_tangguhan');
+		$this->db->from('tc_kunjungan');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
+		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
+		$this->db->where("tc_registrasi.no_mr='".$mr."' and CAST(tgl_jam_masuk as DATE) = '".date('Y-m-d')."'");
+		$query = $this->db->get()->result();
+		$result = array();
+		foreach ($query as $key => $value) {
+			$result[] = array('no_kunjungan' => $value->no_kunjungan, 'kode_bagian_tujuan' => $value->kode_bagian_tujuan, 'poli' => $value->nama_bagian,'tgl_masuk' => $value->tgl_masuk, 'no_registrasi' => $value->no_registrasi, 'penjamin' => $value->nama_perusahaan, 'dokter' => $value->nama_pegawai, 'total_ditangguhkan' => $value->total_tangguhan);
+		}
+
+		return $result;
+		
+	}
+
+	function cek_riwayat_kunjungan_pasien($mr)
+	
+	{
+		
+		$this->db->select('*');
+		$this->db->select('(SELECT cast(SUM(bill_rs) AS INT) FROM tc_trans_pelayanan WHERE no_registrasi=tc_kunjungan.no_registrasi AND kode_tc_trans_kasir IS NULL) as total_tangguhan');
+		$this->db->from('tc_kunjungan');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
+		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
+		$this->db->where("tc_registrasi.no_mr='".$mr."'");
+		$this->db->order_by("tc_registrasi.no_registrasi", "DESC");
+		$this->db->limit(10);
+		$query = $this->db->get()->result();
+		$result = array();
+		foreach ($query as $key => $value) {
+			$result[] = array('no_kunjungan' => $value->no_kunjungan, 'kode_bagian_tujuan' => $value->kode_bagian_tujuan, 'poli' => $value->nama_bagian,'tgl_masuk' => $value->tgl_masuk, 'no_registrasi' => $value->no_registrasi, 'penjamin' => $value->nama_perusahaan, 'dokter' => $value->nama_pegawai, 'total_ditangguhkan' => $value->total_tangguhan);
+		}
+
+		return $result;
+		
+	}
+
 	function get_detail_resume_medis($no_registrasi, $no_kunjungan='')
 	
 	{

@@ -70,7 +70,7 @@ class Kepeg_upload_gaji extends MX_Controller {
     public function show_detail( $id )
     {   
 
-        $data = $this->db->get_where('kepeg_rincian_gaji', array('kg_id' => $id))->result();
+        $data = $this->db->join('kepeg_gaji', 'kepeg_gaji.kg_id=kepeg_rincian_gaji.kg_id','left')->get_where('kepeg_rincian_gaji', array('kepeg_rincian_gaji.kg_id' => $id))->result();
         $response = [];
         $response['value'] = $data;
         // echo '<pre>'; print_r($response);die;
@@ -285,6 +285,14 @@ class Kepeg_upload_gaji extends MX_Controller {
         }
     }
 
+    public function show_detail_row()
+    {
+        /*define data variabel*/
+        $data['value'] = $this->Kepeg_upload_gaji->get_datail_row();
+        $data['title'] = $this->title;
+        /*load form view*/
+        $this->load->view('Kepeg_upload_gaji/view_rincian_gaji', $data);
+    }
 
 
 }

@@ -7,7 +7,7 @@ class Harga_jual_obat_model extends CI_Model {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->table = ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' ;
+		$this->table = isset($_GET['flag']) ? ($_GET['flag'] == 'non_medis') ? 'mt_barang_nm' : 'mt_barang' : 'mt_barang';
 		$this->column = array('table_brg.nama_brg','table_brg.kode_brg','nama_kategori','nama_golongan','nama_sub_golongan');
 		$this->select = 'table_brg.kode_brg, table_brg.nama_brg, table_brg.content, table_brg.satuan_besar, table_brg.satuan_kecil, table_brg.flag_medis, table_brg.harga_beli, table_brg.is_active, table_brg.path_image, table_brg.updated_date, table_brg.updated_by, table_brg.created_date, table_brg.created_by, table_brg.spesifikasi, rak';
 		$this->order = array('table_brg.created_date' => 'DESC', 'table_brg.updated_date' => 'DESC');
@@ -17,6 +17,19 @@ class Harga_jual_obat_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table.' as table_brg');
+
+		if(!isset($_GET['flag'])){
+			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_generik,nama_layanan,nama_pabrik,nama_jenis,jenis_barang, Margin_percent as margin_percent, stok_minimum, stok_maksimum, mt_rekap_stok.id_profit, table_brg.id_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan');
+			$this->db->join('mt_rekap_stok','mt_rekap_stok.kode_brg=table_brg.kode_brg','left');
+			$this->db->join('mt_kategori','mt_kategori.kode_kategori=table_brg.kode_kategori','left');
+			$this->db->join('mt_golongan','mt_golongan.kode_golongan=table_brg.kode_golongan','left');
+			$this->db->join('mt_sub_golongan','mt_sub_golongan.kode_sub_gol=table_brg.kode_sub_golongan','left');
+			$this->db->join('mt_generik','mt_generik.kode_generik=table_brg.kode_generik','left');
+			$this->db->join('mt_layanan_obat','mt_layanan_obat.kode_layanan=table_brg.kode_layanan','left');
+			$this->db->join('mt_pabrik','mt_pabrik.id_pabrik=table_brg.id_pabrik','left');
+			$this->db->join('mt_jenis_obat','mt_jenis_obat.kode_jenis=table_brg.jenis_obat','left');
+			$this->db->join('dd_jenis_barang','dd_jenis_barang.id_dd_jenis_barang=table_brg.kode_jenis','left');
+		}
 
 		if( $_GET['flag'] == 'medis' ){
 			$this->db->select('nama_kategori,nama_golongan,nama_sub_golongan,nama_generik,nama_layanan,nama_pabrik,nama_jenis,jenis_barang, Margin_percent as margin_percent, stok_minimum, stok_maksimum, mt_rekap_stok.id_profit, table_brg.id_pabrik, table_brg.kode_generik, table_brg.kode_kategori, table_brg.kode_sub_golongan, table_brg.kode_golongan, table_brg.kode_layanan');

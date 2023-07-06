@@ -8,10 +8,16 @@
       padding: 2px
     }
 
+    .myInput {
+      
+    }
+
 </style>
 <div style="overflow-x:auto; width: 100%; padding: 20px">
   <h3>RINCIAN GAJI PEGAWAI</h3>
-  <table class="table">
+  <input type="text" class="myInput" id="myInput_<?php echo $value[0]->kg_id?>" onkeyup="filterRow(<?php echo $value[0]->kg_id?>)" placeholder="Cari nama pegawai.." title="Type in a name" style="width: 98%;font-size: 14px;padding:12px 20px 12px 10px;border: 1px solid #ddd;margin-bottom: 12px !important;height: 35px !important;">
+  <br>
+  <table class="table" id="myTable_<?php echo $value[0]->kg_id?>">
     <thead>
       <tr>  
         <th width="40px" class="center">No</th>
@@ -23,6 +29,7 @@
         <th style="text-align: right">JUMLAH GAJI</th>
         <th style="text-align: right">TOTAL POTONGAN</th>
         <th style="text-align: right">GAJI DITERIMA</th>
+        <th style="text-align: right">RINCIAN</th>
       </tr>
     </thead>
     <tbody>
@@ -44,8 +51,30 @@
           <td align="right"><?php echo number_format($row->jml_gaji);?></td>
           <td align="right"><?php echo number_format($potongan);?></td>
           <td align="right"><?php echo number_format($row->gaji_diterima);?></td>
+          <td align="center"><a href="#" class="btn btn-xs btn-primary" onclick="show_modal('<?php echo base_url().'kepegawaian/Kepeg_upload_gaji/show_detail_row?bulan='.$row->kg_periode_bln.'&tahun='.$row->kg_periode_thn.'&nip='.$row->nip.''?>','RINCIAN GAJI - <?php echo $row->nama_pegawai.' ('.$row->nip.')'?>')"><i class="fa fa-list"></i> Rincian</a></td>
         </tr>
       <?php endforeach; ?>
     </tbody>
   </table>
 </div>
+
+<script>
+function filterRow(id) {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput_"+id+"");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable_"+id+"");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>

@@ -2253,8 +2253,15 @@ class References extends MX_Controller {
 		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         /*define variable data*/
         $keyword = $this->input->get('keyword');
+
+        if(isset($_GET['search_by'])){
+			$search_by = array($_GET['search_by']);
+		}else{
+			$search_by = array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs');
+		}
+		
         /*return search pasien*/
-        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs') ); 
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, $search_by ); 
         // echo '<pre>'; print_r($data_pasien);die;
         $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
         $data_transaksi_pending = $this->Reg_pasien->cek_status_pasien( $no_mr );
@@ -2263,6 +2270,58 @@ class References extends MX_Controller {
             'result' => $data_pasien,
             'count_pending' => count($data_transaksi_pending),
             'pending' => $data_transaksi_pending,
+        );
+        echo json_encode( $data );
+    }
+
+	public function search_pasien_public() { 
+        
+		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+        /*define variable data*/
+        $keyword = $this->input->get('keyword');
+
+        if(isset($_GET['search_by'])){
+			$search_by = array($_GET['search_by']);
+		}else{
+			$search_by = array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs');
+		}
+		
+        /*return search pasien*/
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, $search_by ); 
+        $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
+        $log_kunjungan = $this->Reg_pasien->cek_riwayat_kunjungan_pasien_by_current_day( $no_mr );
+        // echo '<pre>'; print_r($log_kunjungan);die;
+        $data = array(
+            'count' => count($data_pasien),
+            'result' => $data_pasien,
+            'count_kunjungan' => count($log_kunjungan),
+            'log_kunjungan' => $log_kunjungan,
+        );
+        echo json_encode( $data );
+    }
+
+	public function search_kunjungan_pasien_public() { 
+        
+		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+        /*define variable data*/
+        $keyword = $this->input->get('keyword');
+
+        if(isset($_GET['search_by'])){
+			$search_by = array($_GET['search_by']);
+		}else{
+			$search_by = array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs');
+		}
+		
+        /*return search pasien*/
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, $search_by ); 
+        $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
+        $log_kunjungan = $this->Reg_pasien->cek_riwayat_kunjungan_pasien( $no_mr );
+        // echo '<pre>'; print_r($log_kunjungan);die;
+        $data = array(
+            'count' => count($data_pasien),
+            'result' => $data_pasien,
+            'count_kunjungan' => count($log_kunjungan),
+            'log_kunjungan' => $log_kunjungan,
         );
         echo json_encode( $data );
     }

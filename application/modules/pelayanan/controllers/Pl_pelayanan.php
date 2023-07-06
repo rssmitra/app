@@ -19,6 +19,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->load->model('Pl_pelayanan_model', 'Pl_pelayanan');
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
+        $this->load->model('farmasi/Harga_jual_obat_model', 'Harga_jual_obat');
         /*load library*/
         $this->load->library('Form_validation');
         $this->load->library('stok_barang');
@@ -282,8 +283,8 @@ class Pl_pelayanan extends MX_Controller {
     public function get_data_antrian_pasien(){
         $list = $this->Pl_pelayanan->get_data_antrian_pasien();
         echo json_encode($list);
-
     }
+
     public function get_data()
     {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
@@ -2307,6 +2308,48 @@ class Pl_pelayanan extends MX_Controller {
     public function deleterowresep(){
         $this->db->where('id', $_POST['ID'])->delete('fr_tc_pesan_resep_detail');
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+    }
+
+    public function info_harga_obat() { 
+        /*define variable data*/
+        $data = array();
+        /*load view index*/
+        $this->load->view('Pl_pelayanan/info_harga_obat', $data);
+    }
+
+    public function get_data_harga_obat()
+    {
+        /*get data from model*/
+        $list = $this->Harga_jual_obat->get_datatables();
+        
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = $row_list->kode_brg;
+            $row[] = $row_list->nama_brg;
+            $row[] = '<div class="left">'.$row_list->content.' '.strtoupper($row_list->satuan_kecil).'/'.strtoupper($row_list->satuan_besar).'</div>';
+            // harga jual obat flat kurang lebih
+            $harga_jual = $row_list->harga_beli + ($row_list->harga_beli * (33.3/100));
+            $row[] = '<div align="right">'.number_format($harga_jual).'</div>';
+            
+            // $row[] = '<div>'.$row_list->spesifikasi.'<br>'.$this->logs->show_logs_record_datatable($row_list).'</div>';
+            $status_aktif = ($row_list->is_active == 1) ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
+            $row[] = '<div class="center">'.$status_aktif.'</div>';
+                   
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Harga_jual_obat->count_all(),
+                        "recordsFiltered" => $this->Harga_jual_obat->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
     }
 
     

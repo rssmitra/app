@@ -45,6 +45,9 @@ final Class Daftar_pasien {
         $CI->logs->save('tc_registrasi', $newId, 'insert new record on '.$title.' module', json_encode($data),'id_tc_registrasi');
 
         $no_kunjungan = $this->daftar_kunjungan($title,$no_registrasi,$no_mr,$kode_dokter,$kode_bagian_masuk,$kode_bagian_masuk, $tgl_registrasi);
+
+        // get detail no sep
+        
         
         return array('no_registrasi' => $no_registrasi, 'no_kunjungan' => $no_kunjungan);
     }
