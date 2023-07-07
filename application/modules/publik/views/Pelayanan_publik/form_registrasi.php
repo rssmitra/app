@@ -50,7 +50,7 @@
       //   $('#spinner_loading').html('');
       //   $('#no-data-found').show();
       //   $('#result-find-pasien').hide();
-      //   $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table"><tr><td style="padding: 15px; background : #80808014"><b>'+obj_kunj.no_registrasi+' - '+obj_kunj.tgl_masuk+'</b><br> '+obj_kunj.poli+'<br>'+obj_kunj.dokter+'</td></tr></table>');
+      //   $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table"><tr><td style="padding: 15px; background : #80808014" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan'"+')"><b>'+obj_kunj.no_registrasi+' - '+obj_kunj.tgl_masuk+'</b><br> '+obj_kunj.poli+'<br>'+obj_kunj.dokter+'</td></tr></table>');
       //   return false;
       // }
 
@@ -505,6 +505,7 @@
                 </div>
                 <br>
                 <div id="msg_ress_rujukan"></div>
+
                 <div id="result_rujukan" style="display: none">
                   <span class="middle" style="font-weight: bold; padding-bottom: 10px">Informasi Data Rujukan</span>
                   <table>
@@ -514,7 +515,7 @@
                     <tr><td><small style="font-weight: bold; color: #669a06">Kelas :</small><br><span id="kelas_peserta"></span></td><tr>
                     <tr><td><small style="font-weight: bold; color: #669a06">Poli Rujukan :</small><br><span id="poli_rujukan"></span></td><tr>
                   </table>
-                <div>
+                </div>
               </div>
 
               <div id="div_asuransi" style="display: none">

@@ -9,7 +9,7 @@
       <table class="table table-bordered">
       <tr style="background: white">
       <?php foreach($row as $val) : ?>
-        <td><?php echo $val['jd_hari'].'<br>'.$this->tanggal->formatTime($val['jd_jam_mulai']).' s.d '.$this->tanggal->formatTime($val['jd_jam_selesai']).''?></td>
+        <td><a href="#" onclick="getMenu('publik/Pelayanan_publik/registrasi_rj')"><?php echo $val['jd_hari'].'<br>'.$this->tanggal->formatTime($val['jd_jam_mulai']).' s.d '.$this->tanggal->formatTime($val['jd_jam_selesai']).''?></a></td>
       <?php endforeach; ?>
       </tr>
       </table>

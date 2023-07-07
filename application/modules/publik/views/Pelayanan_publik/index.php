@@ -83,6 +83,13 @@
                 <b>RIWAYAT KUNJUNGAN PASIEN</b>
               </a>
             </div>
+            <address style="background: #8080806b; padding: 10px;">
+              <b>Keterangan : </b>
+              <ol>
+                <li>Pendaftaran online hanya untuk satu kali pendaftaran.</li>
+                <li>Pendaftaran online dapat dilakukan minimal H-1 sebelum kunjungan.</li>
+              </ol>
+            </address>
           </div>
         </div>
       </div>

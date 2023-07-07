@@ -135,7 +135,7 @@
 
           <input type="text" class="form-control search-query" id="keyword_ID" placeholder="">
           <span class="input-group-btn">
-            <button type="button" class="btn btn-purple btn-sm" id="btn-search-data" onclick="searchKunjungan()">
+            <button type="button" class="btn btn-purple btn-sm" id="btn-search-data" onclick="searchKunjungan()" style="background : green !important; border-color: green">
               <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
               Cari Data Pasien
             </button>
