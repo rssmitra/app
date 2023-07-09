@@ -4,7 +4,7 @@
 
 <script type="text/javascript">
 
-window.onload = generateBarcode;
+  window.onload = generateBarcode;
 
   function generateBarcode(){
 

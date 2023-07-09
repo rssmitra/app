@@ -5,7 +5,7 @@ class Regon_info_jadwal_dr_model extends CI_Model {
 
     var $table = 'tr_jadwal_dokter';
     var $column = array('tr_jadwal_dokter.jd_hari','tr_jadwal_dokter.jd_jam_mulai','tr_jadwal_dokter.jd_jam_selesai','tr_jadwal_dokter.jd_keterangan','tr_jadwal_dokter.jd_kuota','mt_karyawan.nama_pegawai','mt_bagian.nama_bagian');
-    var $select = 'tr_jadwal_dokter.jd_id, tr_jadwal_dokter.jd_kode_dokter,tr_jadwal_dokter.jd_kode_spesialis,tr_jadwal_dokter.jd_hari,tr_jadwal_dokter.jd_jam_mulai,tr_jadwal_dokter.jd_jam_selesai,tr_jadwal_dokter.jd_keterangan,tr_jadwal_dokter.jd_kuota,mt_karyawan.nama_pegawai,mt_bagian.nama_bagian';
+    var $select = 'tr_jadwal_dokter.jd_id, tr_jadwal_dokter.jd_kode_dokter,tr_jadwal_dokter.jd_kode_spesialis,tr_jadwal_dokter.jd_hari,tr_jadwal_dokter.jd_jam_mulai,tr_jadwal_dokter.jd_jam_selesai,tr_jadwal_dokter.jd_keterangan,tr_jadwal_dokter.jd_kuota,mt_karyawan.nama_pegawai,mt_bagian.nama_bagian, url_foto_karyawan';
 
     var $order = array('mt_karyawan.nama_pegawai' => 'ASC');
 

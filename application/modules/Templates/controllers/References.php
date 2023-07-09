@@ -130,6 +130,7 @@ class References extends MX_Controller {
 					where a.jd_hari='".$day."' ".$where." or (kode_bagian = '012801' or kode_bagian='012901')
 					group by  a.jd_kode_spesialis,c.nama_bagian";
 		$exc = $this->db->query($query);
+		// echo $this->db->last_query(); die;
         echo json_encode($exc->result());
 	}
 
@@ -137,12 +138,12 @@ class References extends MX_Controller {
 	{
 		$where = ($date != date('Y-m-d')) ? "" : "and a.status_loket='on'";
 
-		$query = "select a.jd_id,a.jd_kode_dokter as kode_dokter,b.nama_pegawai
+		$query = "select a.jd_id,a.jd_kode_dokter as kode_dokter,b.nama_pegawai, CONVERT(char(10), jd_jam_mulai, 108) as jam_mulai, CONVERT(char(10), jd_jam_selesai, 108) as jam_selesai
 					from tr_jadwal_dokter a
 					left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
 					where a.jd_kode_spesialis like '%".$kd_bagian."' and a.jd_hari='".$day."' ".$where."
-					group by a.jd_id, a.jd_kode_dokter,b.nama_pegawai";
+					group by a.jd_id, a.jd_kode_dokter,b.nama_pegawai, jd_jam_mulai, jd_jam_selesai";
 		$exc = $this->db->query($query); 
         echo json_encode($exc->result());
 	}

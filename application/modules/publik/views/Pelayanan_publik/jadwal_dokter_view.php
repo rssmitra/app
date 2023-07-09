@@ -1,7 +1,15 @@
 <table class="table">
-  <?php foreach($jadwal_dokter as $key=>$row) :?>
+  <?php 
+    foreach($jadwal_dokter as $key=>$row) :
+      $path_img = 'uploaded/images/photo_karyawan/'.$row[0]['jd_kode_dokter'].'.png';
+      if(file_exists($path_img)){
+        $path_img = base_url().$path_img;
+      }else{
+        $path_img = base_url().'assets/img/avatar.png';
+      }
+  ?>
   <tr style="background: white">
-      <td class="center"><img src="<?php echo base_url().'assets/img/avatar.png'?>" style="max-width: 150px"><br><span style="font-weight: bold;"><?php echo $key?></span></td>
+      <td class="center"><img src="<?php echo $path_img; ?>" style="max-width: 150px"><br><span style="font-weight: bold;"><?php echo $key?></span></td>
   </tr>
   <tr style="background: white">
     <td>

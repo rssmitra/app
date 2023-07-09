@@ -1,6 +1,7 @@
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+
 <script type="text/javascript">
 
   jQuery(function($) {  
@@ -25,7 +26,34 @@
 
   $(document).ready(function(){
 
-    getKlinikByJadwalDefault();          
+    getKlinikByJadwalDefault(); 
+    if($('#keyword_ID').val() != ''){
+      searchItem();
+    }
+
+    $('#form-registrasi').ajaxForm({
+      beforeSend: function() {
+        achtungShowFadeIn();  
+      },
+      uploadProgress: function(event, position, total, percentComplete) {
+      },
+      complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+
+        if(jsonResponse.status === 200){
+          $.achtung({message: jsonResponse.message, timeout:5});
+          getMenu('publik/Pelayanan_publik/konfirmasi_kunjungan/'+jsonResponse.no_kunjungan+'?noKartu='+$('#noKartuBpjs').val()+'&tgl='+jsonResponse.tgl_registrasi+'&jam_praktek='+jsonResponse.jam_praktek+'');
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          // status sudah pernah terdaftar
+          if(jsonResponse.status === 202){
+            getMenu('publik/Pelayanan_publik/konfirmasi_kunjungan/'+jsonResponse.no_kunjungan+'');
+          }
+        }
+        achtungHideLoader();
+      }
+    });          
 
   })
 
@@ -45,19 +73,19 @@
     $.getJSON("<?php echo site_url('Templates/References/search_pasien_public') ?>?keyword=" + keyword + "&search_by=" + search_by, '', function (data) {      
       
       // jika data ditemukan
-      // if( data.count_kunjungan > 0){
-      //   var obj_kunj = data.log_kunjungan[0];
-      //   $('#spinner_loading').html('');
-      //   $('#no-data-found').show();
-      //   $('#result-find-pasien').hide();
-      //   $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table"><tr><td style="padding: 15px; background : #80808014" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan'"+')"><b>'+obj_kunj.no_registrasi+' - '+obj_kunj.tgl_masuk+'</b><br> '+obj_kunj.poli+'<br>'+obj_kunj.dokter+'</td></tr></table>');
-      //   return false;
-      // }
+      if( data.count_kunjungan > 0){
+        var obj_kunj = data.log_kunjungan[0];
+        $('#spinner_loading').html('');
+        $('#no-data-found').show();
+        $('#result-find-pasien').hide();
+        $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table" style="background: #e9f5ff"><tr><td style="padding: 15px; background : #80808014"><b>'+obj_kunj.no_registrasi+' - '+obj_kunj.tgl_masuk+'</b><br><table><tr><td style="text-align: center; width: 70px"><span style="font-size: 3em; font-weight: bold">'+obj_kunj.no_antrian+'</span><br><small>(no urut)</small></td><td>'+obj_kunj.poli+'<br>'+obj_kunj.dokter+'<br>'+obj_kunj.status+'</td></tr></table></td></tr></table>');
+        return false;
+      }
 
       if( data.count == 1 )     {
         
         $('#result-find-pasien').show();
-        $('#btn-next-to-main-menu').show();
+        $('#btn-proses-registrasi').show();
         $('#no-data-found').hide();
         var obj = data.result[0];
 
@@ -76,6 +104,10 @@
         $('#ttd_pasien').attr('src', obj.ttd);
         $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
         $('#noKartuBpjs').val(obj.no_kartu_bpjs);
+        $('#nama_pasien_hidden').val(obj.nama_pasien);
+        $('#hpPasien').val(obj.hp);
+        $('#noMrHidden').val(obj.no_mr);
+        $('#nikPasien').val(obj.no_ktp);
 
         if( obj.url_foto_pasien ){
           $('#avatar').attr('src', '<?php echo base_url()?>uploaded/images/photo/'+obj.url_foto_pasien+'');
@@ -106,7 +138,7 @@
 
       }else{              
         $('#spinner_loading').html('');
-        $('#btn-next-to-main-menu').hide();
+        $('#btn-proses-registrasi').hide();
         $('#result-find-pasien').hide();
         $('#no-data-found').show();
         $('#no-data-found').html('<div class="alert alert-danger"><strong>Data tidak ditemukan!</strong><br>Silahkan masukan No Rekam Medis/NIK anda dengan benar, atau silahkan klik <a href="#" onclick="getMenu('+"'publik/Pelayanan_publik/pasien_baru'"+')" style="font-style: italic; font-weight: bold">disini</a> untuk daftar sebagai pasien baru.<div>'); 
@@ -124,6 +156,18 @@
         event.preventDefault();          
         if($(this).valid()){            
           $('#btn-search-data').click();            
+        }          
+        return false;                 
+      }        
+  });
+
+  $( "#noRujukan" )    
+    .keypress(function(event) {        
+      var keycode =(event.keyCode?event.keyCode:event.which);         
+      if(keycode ==13){          
+        event.preventDefault();          
+        if($(this).valid()){            
+          $('#btnSearchNoRujukan').click();            
         }          
         return false;                 
       }        
@@ -161,7 +205,7 @@
             $('#reg_dokter_rajal option').remove();         
             $('<option value="">-Pilih Dokter-</option>').appendTo($('#reg_dokter_rajal'));  
             $.each(data, function (i, o) {   
-                $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#reg_dokter_rajal'));  
+                $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + ' - ( <span class="pull-right"> '+o.jam_mulai+' - '+o.jam_selesai+'</span>)</option>').appendTo($('#reg_dokter_rajal'));  
             });   
         });   
     } else {    
@@ -184,7 +228,7 @@
         if (($('#show_all_poli').is(':checked'))) {
             return false;
         }else{
-            $.getJSON("<?php echo site_url('Templates/References/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val()+'/'+$('#tgl_registrasi').val() , '', function (data) {  
+            $.getJSON("<?php echo site_url('publik/Pelayanan_publik/getKuotaDokter') ?>/" + $(this).val() + '/' +$('select[name="reg_klinik_rajal"]').val()+'/'+$('#tgl_registrasi').val() , '', function (data) {  
 
                 var objData = data.data;
                 $('#kuotadr').val(objData.kuota); 
@@ -194,6 +238,7 @@
                 $('#kode_poli_bpjs').val(objData.kode_poli_bpjs); 
                 $('#jam_praktek_mulai').val(objData.jam_praktek_mulai); 
                 $('#jam_praktek_selesai').val(objData.jam_praktek_selesai); 
+                $('#jd_id').val(objData.jd_id); 
 
                 $('#message_for_kuota').html(data.message);              
                 if(data.sisa_kuota > 0){
@@ -208,20 +253,31 @@
 
             $('#title-select-dokter').text( $('#reg_dokter_rajal option:selected').text() );
         }
-
-    }      
-
+    }    
   }); 
 
   $('#tgl_registrasi').change(function () {
+    
+    $('#pilih_kunjungan').show();
+    // hidden
+    $('#reg_klinik_rajal_txt').val('');
+    $('#reg_dokter_rajal_txt').val('');
+    $('#jam_praktek_mulai').val('');
+    $('#jam_praktek_selesai').val('');
+    $('#sisa_kuota').val('');
+    $('#kuotadr').val('');
+    $('#jd_id').val('');
     getKlinikByJadwalDefault();
   })
 
   function getKlinikByJadwalDefault(){
-    date = $('#tgl_registrasi').val();
+
+    date = ($('#tgl_registrasi').val() != '') ? $('#tgl_registrasi').val() : '<?php echo date('Y-m-d')?>';
     days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
     var d = new Date(date);
     current_day = days[d.getDay()]; 
+    // change day
+    $('#current_day').val(current_day);
     
     var url = 'getKlinikFromJadwal';
 
@@ -263,12 +319,10 @@
 
   $('#btnSearchNoRujukan').click(function (e) {
     e.preventDefault();
-
     var field = 'noRujukan';
     var jenis_faskes_pasien = 'pcare';
     var flag = 'noRujukan';
     var noRujukan = $('#noRujukan').val();
-
     e.preventDefault();
     $.ajax({
       url: 'ws_bpjs/ws_index/searchRujukan',
@@ -288,6 +342,7 @@
             var pelayanan = data.result.pelayanan;
             var poliRujukan = data.result.poliRujukan;
             var provPerujuk = data.result.provPerujuk;
+            var dueDate = data.result.masaBerlakuRujukan;
             
             if(peserta.mr.noMR != $('#no_mr').text()){
               $('#msg_ress_rujukan').show();
@@ -303,7 +358,17 @@
               return false;
             }else{
               $('#msg_ress_rujukan').show();
-              $('#msg_ress_rujukan').html('<div class="alert alert-success"><strong>'+peserta.statusPeserta.keterangan+' !</strong><br>Silahkan pilih tujuan kunjungan anda.<div>');
+              var fit_start_time  = new Date();
+              var fit_end_time    = dueDate; //2013-09-10
+
+
+              if(Date.parse(fit_start_time) <= Date.parse(fit_end_time)){
+                $('#msg_ress_rujukan').html('<div class="alert alert-success"><strong>PESERTA '+peserta.statusPeserta.keterangan+' !</strong><br>Masa berlaku rujukan anda s.d tanggal <b><i>'+dueDate+'</i></b> dengan tujuan poli spesialis <b><i>'+poliRujukan.nama+'</i></b> <div>');
+              }else{
+                $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>RUJUKAN EXPIRED !</strong><br>Masa berlaku rujukan anda expired s.d tanggal <b><i>'+dueDate+'</i></b><div>');
+              }
+
+              
             }
 
             $('#result_rujukan').show();
@@ -329,20 +394,20 @@
             $('#statusPeserta').text(peserta.statusPeserta.keterangan);
 
             /*form*/
-            $('#noKartuHidden').val(peserta.noKartu);
+            $('#noKartuBpjs').val(peserta.noKartu);
             $('#noMR').val(peserta.mr.noMR);
             $('#noKartuReadonly').val(peserta.noKartu);
             $('#namaPasienReadonly').val(peserta.nama);
             $('#inputKeyPoliTujuan').val(poliRujukan.nama);
             $('#kodePoliHiddenTujuan').val(poliRujukan.kode);
             $('#inputKeyFaskes').val(provPerujuk.nama);
-            $('#kodeFaskesHidden').val(provPerujuk.kode);
             $('#noRujukanView').val(rujukan.noKunjungan);
             $('#tglKunjungan').val(rujukan.tglKunjungan);
             $('#inputKeyDiagnosa').val(diagnosa.nama);
             $('#kodeDiagnosaHidden').val(diagnosa.kode);
-            $('#noTelp').val(peserta.mr.noTelepon);
+            $('#hpPasien').val(peserta.mr.noTelepon);
             $('#catatan').val(rujukan.keluhan);
+            $('#kode_faskes_hidden').val(provPerujuk.kode);
 
         }else{
             $.achtung({message: data.message, timeout:5, className: 'achtungFail'});
@@ -350,8 +415,7 @@
         
       }
     });
-
-});
+  });
 
 
 </script>
@@ -382,9 +446,14 @@
     .profile-info-name{
       text-align: left !important;
     }
+
+    .list-group-item {
+    padding: 3px 3px !important;
+    }
 </style>
 
-<form class="form-search" autocomplete="off">
+<form id="form-registrasi" autocomplete="off" method="POST" action="publik/Pelayanan_publik/proses_registrasi">
+
     <div class="pull-left">
       <a href="<?php echo base_url().'public'?>" class="btn btn-sm" style="background : green !important; border-color: green"> <i class="fa fa-home"></i> Home</a>
     </div>
@@ -414,7 +483,7 @@
             <i class="ace-icon fa fa-check"></i>
           </span>
 
-          <input type="text" class="form-control search-query" id="keyword_ID" placeholder="">
+          <input type="text" class="form-control search-query" id="keyword_ID" placeholder="" value="<?php echo isset($_GET['mr'])?$_GET['mr']:''?>">
           <span class="input-group-btn">
             <button type="button" class="btn btn-purple btn-sm" id="btn-search-data" onclick="searchItem()" style="background: green !important; border-color: green !important">
               <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
@@ -439,6 +508,11 @@
         <div id="result-find-pasien" class="tab-pane active" style="display: none">
           <!-- data pasien lainnya -->
           <input type="hidden" name="noKartuBpjs" id="noKartuBpjs">
+          <input type="hidden" name="noMrHidden" id="noMrHidden">
+          <input type="hidden" name="hpPasien" id="hpPasien">
+          <input type="hidden" name="nikPasien" id="nikPasien">
+          <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
+          <input type="hidden" name="umur_saat_pelayanan_hidden" id="umur_saat_pelayanan_hidden">
           
           <div class="row">
             <div class="col-xs-12 col-sm-12">
@@ -464,15 +538,8 @@
               
               <div class="hr hr-8 dotted"></div>
 
-              <label style="font-weight: bold">Tanggal Kunjungan : </label>
-              <div class="input-group">
-                  <input name="tgl_registrasi" id="tgl_registrasi" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"  class="form-control date-picker" type="text">
-                  <span class="input-group-addon">
-                  <i class="ace-icon fa fa-calendar"></i>
-                  </span>
-              </div>
-              <br>
-              <label style="font-weight: bold">Kriteria Pasien : </label>
+              
+              <label style="font-weight: bold"><span class="red">*</span> Kriteria Pasien : </label>
               <div class="radio" style="margin-top: 0px !important;margin-bottom: 0px !important;">
                 <label>
                   <input name="jenis_pasien" type="radio" class="ace" value="bpjs" checked="checked"  />
@@ -489,12 +556,11 @@
               </div>
               <div id="search_rujukan" style="display: block">
                 <br>
-                <label style="font-weight: bold">Cari Nomor Rujukan Faskes: </label>
+                <label style="font-weight: bold"><span class="red">*</span> Cari Nomor Rujukan Faskes: </label>
                 <div class="input-group">
                   <span class="input-group-addon">
                     <i class="ace-icon fa fa-check"></i>
                   </span>
-
                   <input type="text" class="form-control search-query" id="noRujukan" name="noRujukan" placeholder="">
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-purple btn-sm" id="btnSearchNoRujukan" style="background: green !important; border-color: green !important">
@@ -502,11 +568,12 @@
                       Cari Rujukan
                     </button>
                   </span>
+                  <input type="hidden" name="kode_faskes_hidden" id="kode_faskes_hidden">
                 </div>
-                <br>
+
                 <div id="msg_ress_rujukan"></div>
 
-                <div id="result_rujukan" style="display: none">
+                <div id="result_rujukanxx" style="display: none">
                   <span class="middle" style="font-weight: bold; padding-bottom: 10px">Informasi Data Rujukan</span>
                   <table>
                     <tr><td><small style="font-weight: bold; color: #669a06">Faskes perujuk :</small><br><span id="faskes_perujuk"></span></td><tr>
@@ -517,50 +584,52 @@
                   </table>
                 </div>
               </div>
+              
 
               <div id="div_asuransi" style="display: none">
                 <br>
-                <label style="font-weight: bold">Pilih Asuransi : </label>
+                <label style="font-weight: bold"><span class="red">*</span> Pilih Asuransi : </label>
                 <input id="InputKeyPenjamin" class="form-control" name="penjamin" type="text" placeholder="Masukan keyword minimal 3 karakter" />
                 <input type="hidden" name="kode_perusahaan_hidden" value="" id="kode_perusahaan_hidden">
               </div>
-
-              <div id="pilih_kunjungan">
-                <br>
-                <label style="font-weight: bold">Pilih Poli Spesialis :</label>
+              <br>
+              <label style="font-weight: bold"><span class="red">*</span> Tanggal Kunjungan : </label>
+              <div class="input-group">
+                  <input name="tgl_registrasi" id="tgl_registrasi" data-date-format="yyyy-mm-dd" value=""  class="form-control date-picker" type="text">
+                  <span class="input-group-addon">
+                  <i class="ace-icon fa fa-calendar"></i>
+                  </span>
+              </div>
+              <br>
+              <div id="pilih_kunjungan" style="display: none">
+                <label style="font-weight: bold"><span class="red">*</span> Pilih Poli Spesialis :</label>
                 <select class="form-control" name="reg_klinik_rajal" id="reg_klinik_rajal">
                     <option value="">-Pilih-</option>
                 </select>
                 <br>
-                <label style="font-weight: bold">Pilih Dokter :</label>
+                <label style="font-weight: bold"><span class="red">*</span> Pilih Dokter :</label>
                 <select class="form-control" name="reg_dokter_rajal" id="reg_dokter_rajal">
                     <option value="">-Pilih-</option>
                 </select>
+                <input type="hidden" name="reg_klinik_rajal_txt" id="reg_klinik_rajal_txt" class="form-control">
+                <input type="hidden" name="reg_dokter_rajal_txt" id="reg_dokter_rajal_txt" class="form-control">
                 <input type="hidden" name="jam_praktek_mulai" id="jam_praktek_mulai" class="form-control">
                 <input type="hidden" name="jam_praktek_selesai" id="jam_praktek_selesai" class="form-control">
                 <input type="hidden" name="sisa_kuota" id="sisa_kuota" readonly>
                 <input type="hidden" name="kuotadr" id="kuotadr" readonly>
-
+                <input type="hidden" name="jd_id" id="jd_id" readonly>
+                <input type="hidden" name="kode_poli_bpjs" id="kode_poli_bpjs" readonly>
+                <input type="hidden" name="kode_dokter_bpjs" id="kode_dokter_bpjs" readonly>
                 <input name="current_day" id="current_day" class="form-control" type="hidden" value="<?php echo $this->tanggal->gethari(date('D'))?>">
               </div>
-
-
             </div><!-- /.col -->
           </div><!-- /.row -->
         </div>
 
       </div>
     </div>
+    <hr>
+    <div class="center" id="btn-proses-registrasi" style="display: none">
+      <button class="btn btn-block" type="submit" style="background : green !important; border-color: green; height: 43px !important;text-transform: uppercase;font-weight: bold;">Proses Pendaftaran</button>
+    </div>
 </form>
-
-
-<div class="center" style="left: 50%; top:80%; margin-top: 50px" >
-  <a href="#" class="btn btn-sm" id="btn-next-to-main-menu" style="background : green !important; border-color: green; display: none" onclick="getMenu('publik/Pelayanan_publik/konfirmasi_kunjungan')">Lanjutkan <i class="fa fa-arrow-right"></i></a>
-</div>
-
-
-
-
-
-
-

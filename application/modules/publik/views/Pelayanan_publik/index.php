@@ -86,7 +86,7 @@
             <address style="background: #8080806b; padding: 10px;">
               <b>Keterangan : </b>
               <ol>
-                <li>Pendaftaran online hanya untuk satu kali pendaftaran.</li>
+                <li>Pendaftaran online hanya untuk satu kali pendaftaran pada hari yang sama.</li>
                 <li>Pendaftaran online dapat dilakukan minimal H-1 sebelum kunjungan.</li>
               </ol>
             </address>
@@ -630,63 +630,7 @@
         $('#'+valueId+'').val($('#'+fieldId+'').val());
       }
 
-      function startStopWatch(){
-        // $('#startCount').attr({'disabled':'disbaled'});
-        // $('#pauseCount').removeAttr("disabled");
-        // $('#resetCount').removeAttr("disabled");
-        
-        $.post('ws/AntrianOnline/updateTask', {kodebooking : $('#kode_perjanjian').val(), taskId : $('#taskId').val() },
-          function(response){
-            console.log(response);
-          }
-        );
-
-        minutessetInterval = setInterval(function () {
-            minutesCount += 1
-            minutes.innerHTML = minutesCount
-        }, 60000)
-
-        secondsetInterval = setInterval(function () {
-            secondCount += 1
-            if(secondCount > 59){
-                secondCount = 1
-            }
-            second.innerHTML = secondCount
-        }, 1000)
-
-        centiSecondsetInterval = setInterval(function () {
-            centiSecondCount += 1
-            if(centiSecondCount > 99){
-                centiSecondCount = 1
-            }
-            centiSecond.innerHTML = centiSecondCount
-        }, 10)
-    }
-
-    function pauseStopWatch(){
-        // $('#pauseCount').attr({'disabled':'disbaled'});
-        // $('#startCount').removeAttr("disabled");
-        clearInterval(minutessetInterval)
-        clearInterval(secondsetInterval)
-        clearInterval(centiSecondsetInterval)
-    }
-
-    function resetStopWatch(){
-        // $('#pauseCount').attr({'disabled':'disbaled'});
-        // $('#resetCount').attr({'disabled':'disbaled'});
-        // $('#startCount').removeAttr("disabled");
-
-        clearInterval(minutessetInterval)
-        clearInterval(secondsetInterval)
-        clearInterval(centiSecondsetInterval)
-
-        minutesCount = 0; secondCount = 0; centiSecondCount = 0;
-        minutes.innerHTML = minutesCount;
-        second.innerHTML = secondCount;
-        centiSecond .innerHTML = centiSecondCount;
-
-    }
-
+     
 
     </script>
 

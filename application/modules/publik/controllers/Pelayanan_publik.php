@@ -14,6 +14,7 @@ class Pelayanan_publik extends MX_Controller {
         $this->load->model('antrian/loket_model','loket');
         $this->load->model('display_loket/main_model','Main');
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+        $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
         $this->load->model('information/Regon_info_jadwal_dr_model', 'Regon_info_jadwal_dr');
         $this->load->model('registration/Input_pasien_baru_model', 'Input_pasien_baru');
         $this->load->model('Pelayanan_publik_model','Pelayanan_publik');
@@ -55,6 +56,10 @@ class Pelayanan_publik extends MX_Controller {
         $this->load->view('Pelayanan_publik/form_jadwal_dokter');
     }
 
+    public function pasien_baru() {
+        $this->load->view('Pelayanan_publik/form_create_pasien');
+    }
+
     public function get_data_antrian_pasien(){
         $list = $this->Pelayanan_publik->get_data_antrian_pasien();
         echo json_encode($list);
@@ -81,217 +86,197 @@ class Pelayanan_publik extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function konfirmasi_kunjungan() {
-        $this->load->view('Pelayanan_publik/form_konfirmasi');
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function main() {
-        $this->load->view('Pelayanan_publik/main_view');
-    }
-
-    public function pasien_lama() {
-        $this->load->view('Pelayanan_publik/form_search_pasien');
-    }
-
-    public function pasien_baru() {
-        $this->load->view('Pelayanan_publik/form_create_pasien');
-    }
-
-    public function umum_asuransi() {
-        $this->load->view('Pelayanan_publik/asum_view');
-    }
-
-    public function bpjs() {
-        $this->load->view('Pelayanan_publik/bpjs_view');
-    }
-
-    public function checkIn() {
-        $data = array();
-        $data['registrasi'] = $this->Pelayanan_publik->getRegisterPasienByCurrentDate($_GET['no_mr']);
-        // echo '<pre>';print_r($data);die;
-        $this->load->view('Pelayanan_publik/checkin_view', $data);
-    }
-
-    // modul antrian
-    public function antrian() {
-        
-        $data = array();
-        
-        $data_loket = $this->loket->get_open_loket();
-
-        foreach ($data_loket as $key => $value) {
-            # code...
-            $kuota = $this->loket->get_sisa_kuota($value);
-            if($kuota<0)$kuota=0;
-            $data_loket[$key]->kuota = $kuota;
-        }
-
-        $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
-        $data['klinik'] = $data_loket;
-
-        $this->load->view('kiosk/Pelayanan_publik/antrian_view', $data);
-    }
-
-    public function antrian_front() {
-        
-        $data = array();
-        
-        $data_loket = $this->loket->get_open_loket();
-
-        foreach ($data_loket as $key => $value) {
-            # code...
-            $kuota = $this->loket->get_sisa_kuota($value);
-            if($kuota<0)$kuota=0;
-            $data_loket[$key]->kuota = $kuota;
-        }
-
-        $data['type'] = isset($_GET['type'])?$_GET['type']:'bpjs';
-        $data['klinik'] = $data_loket;
-
-        $this->load->view('kiosk/Pelayanan_publik/antrian_front_view', $data);
-    }
-    // end modul antrian
-
-    // ========================================================================================================= //
-
-    // modul perjanjian
-    public function spesialis() { 
-        /*define variable data*/
+    public function konfirmasi_kunjungan($no_kunjungan) {
+        $query = $this->Pelayanan_publik->get_data_kunjungan($no_kunjungan);
+        // echo '<pre>'; print_r($query);die;
         $data = array(
-            'title' => $this->title,
-            'breadcrumbs' => $this->breadcrumbs->show(),
-            'spesialis' => $this->db->select('kode_bagian, nama_bagian')->like('nama_bagian', 'klinik')->get_where('mt_bagian', array('validasi' => 100, 'status_aktif' => 1))->result(),
+            'result' => $query,
         );
-        /*load view index*/
-        $this->load->view('kiosk/Pelayanan_publik/spesialis_view', $data);
+        $this->load->view('Pelayanan_publik/form_konfirmasi', $data);
     }
 
-    public function spesialis_front() { 
-        /*define variable data*/
-        $data = array(
-            'title' => $this->title,
-            'breadcrumbs' => $this->breadcrumbs->show(),
-            'spesialis' => $this->db->select('kode_bagian, nama_bagian')->like('nama_bagian', 'klinik')->get_where('mt_bagian', array('validasi' => 100, 'status_aktif' => 1))->result(),
-        );
-        /*load view index*/
-        $this->load->view('kiosk/Pelayanan_publik/spesialis_front_view', $data);
-    }
+    public function proses_registrasi(){
 
-
-    public function jadwal_dokter_front() { 
-        /*define variable data*/
-
-        /*get data from model*/
-        $list = $this->Regon_info_jadwal_dr->get_data();
-        $arrData = array();
-        /*format data*/
-        foreach ($list as $key => $value) {
-            $arrData[$value['jd_kode_dokter']][$value['jd_kode_spesialis']][] = $value;
+        
+        // form validation
+        $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
+        $this->form_validation->set_rules('reg_klinik_rajal', 'Poli/Klinik', 'trim|required');
+        $this->form_validation->set_rules('reg_dokter_rajal', 'Dokter', 'trim|required');
+        $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');
+        $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
+        
+        if(isset($_POST['jenis_pasien']) && $_POST['jenis_pasien']=='asuransi'){
+            $this->form_validation->set_rules('kode_perusahaan_hidden', 'Asuransi', 'trim|required', array('required' => 'Silahkan pilih asuransi anda'));
         }
 
-        $data = array();
+        if(isset($_POST['jenis_pasien']) && $_POST['jenis_pasien']=='bpjs'){
+            $this->form_validation->set_rules('noKartuBpjs', 'No Kartu BPJS', 'trim|required', array('required' => 'Data kepesertaan BPJS anda tidak ditemukan'));
+            $this->form_validation->set_rules('noRujukan', 'No Rujukan', 'trim|required');
+        }
 
-        foreach ($arrData as $key => $row_list) {
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
 
-            foreach ($row_list as $key_2 => $value_2) {
-                $main_data = $value_2[0];
-                $row = array();
-                $row['nama_dr'] = $main_data['nama_pegawai'];
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();
+           
 
-                for ($i=1; $i < 8; $i++) { 
-                    if(count($value_2) > 0){
-                        $day_lib = $this->tanggal->getDayByNum($i);
-                        $key = array_search($day_lib, array_column($value_2, 'jd_hari'));
+            $datapoli = array();
+            $title = $this->title;
+            $no_mr = $this->regex->_genRegex($this->form_validation->set_value('noMrHidden'),'RGXQSL');
+            $kode_perusahaan = ($_POST['jenis_pasien'] == 'bpjs') ? 120 : $this->regex->_genRegex($this->form_validation->set_value('kode_perusahaan_hidden'),'RGXINT');
+            $kode_kelompok =  ($_POST['jenis_pasien'] == 'umum') ? 1 : 3;
+            $kode_dokter = $this->regex->_genRegex($this->form_validation->set_value('reg_dokter_rajal'),'RGXINT');
+            $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('reg_klinik_rajal'),'RGXQSL');
+            $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
+            $no_sep = '111111';
+            $jd_id =  $this->input->post('jd_id');
+            $kode_faskes =  ($this->input->post('kode_faskes_hidden'))?$this->input->post('kode_faskes_hidden'):'';
+            $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
 
-                        if(isset($value_2[$key]['jd_hari'])){
-                            if($day_lib==$value_2[$key]['jd_hari']){
-                                $note = ($value_2[$key]['jd_keterangan'] != '')?' <br> '.$value_2[$key]['jd_keterangan'].'':'';
-                                $end = ($value_2[$key]['jd_jam_selesai'] != '')?' - '.$value_2[$key]['jd_jam_selesai'].'':'';
-                                $val_result = $this->tanggal->formatTime($value_2[$key]['jd_jam_mulai']).' s/d '.$this->tanggal->formatTime($value_2[$key]['jd_jam_selesai']).'';
-
-                                $row[strtolower($value_2[$key]['jd_hari'])] = array('time' => $val_result, 'jd_id' => $value_2[$key]['jd_id']);
-                            }
-                        }
-                        
-                    }
-                    
-                }
-
-                $getData[] = $row;
+            // cek register by date
+            $cek_kunjungan_by_date = $this->Pelayanan_publik->cek_kunjungan_by_date($_POST['tgl_registrasi'], $no_mr);
+            if($cek_kunjungan_by_date->num_rows() > 0){
+                $obj = $cek_kunjungan_by_date->row();
+                echo json_encode(array('status' => 202, 'message' => 'Anda sudah pernah terdaftar pada tanggal yang sama, yaitu tanggal <b>'.$obj->tgl_jam_poli.'</b> tujuan ke <b>'.ucwords($obj->nama_bagian).'</b> ', 'no_kunjungan' => $obj->no_kunjungan));
+                exit;
             }
+
+            /*save tc_registrasi*/
+            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id, $kode_faskes, $tgl_registrasi);
+            $no_registrasi = $data_registrasi['no_registrasi'];
+            $no_kunjungan = $data_registrasi['no_kunjungan'];
             
-        }
+            /*insert pl tc poli*/
+            $kode_poli = $this->master->get_max_number('pl_tc_poli', 'kode_poli');
+            $tipe_antrian = ($kode_perusahaan != 120) ? 'umum' : 'bpjs';
+            $no_antrian = $this->master->get_no_antrian_poli($this->form_validation->set_value('reg_klinik_rajal'),$this->form_validation->set_value('reg_dokter_rajal'), $tipe_antrian, $tgl_registrasi);
+            
+            $datapoli['kode_poli'] = $kode_poli;
+            $datapoli['no_kunjungan'] = $no_kunjungan;
+            $datapoli['kode_bagian'] = $this->regex->_genRegex($this->form_validation->set_value('reg_klinik_rajal'),'RGXQSL');
+            $datapoli['tgl_jam_poli'] = $tgl_registrasi;
+            $datapoli['kode_dokter'] = $this->regex->_genRegex($this->form_validation->set_value('reg_dokter_rajal'),'RGXINT');
+            $datapoli['flag_antrian'] = $tipe_antrian;
+            $datapoli['no_antrian'] = $no_antrian;
+            $datapoli['nama_pasien'] = $_POST['nama_pasien_hidden'];
+            
+            //print_r($datapoli);die;
+            /*save poli*/
+            $this->Reg_klinik->save('pl_tc_poli', $datapoli);
 
-        $data = array(
-            'nama_bagian' => $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $_GET['kode'])),
-            'result' => $getData,
+            /*save logs*/
+            $this->logs->save('pl_tc_poli', $datapoli['kode_poli'], 'insert new record on '.$this->title.' module', json_encode($datapoli),'kode_poli');
+            
+            /*jika terdapat id_tc_pesanan maka update tgl_masuk pada table tc_pesanan*/
+            $get_data_perjanjian = $this->db->get_where('tc_pesanan', array('no_mr' => $no_mr, 'CAST(tgl_pesanan as DATE) = ' => $this->input->post('tgl_registrasi'), 'kode_dokter' => $kode_dokter, 'no_poli' => $kode_poli) )->row();
+
+            if( isset($get_data_perjanjian->id_tc_pesanan) ){
+                
+                $this->db->update('tc_pesanan', array('tgl_masuk' => $tgl_registrasi, 'nopesertabpjs' => $_POST['noKartuBpjs'] ), array('id_tc_pesanan' => $get_data_perjanjian->id_tc_pesanan ) );
+
+                // update kuota dokter used
+                $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'keterangan' => null, 'flag' => 'perjanjian', 'status' => NULL ), 1);
+                $kode_booking = $get_data_perjanjian->kode_perjanjian;
+
+            }
+
+            // update no kartu bpjs
+            $this->db->where('no_mr', $no_mr)->update('mt_master_pasien', array('no_kartu_bpjs' => $_POST['noKartuBpjs'], 'no_ktp' => $_POST['nikPasien']));
+
+            $config = array(
+                'no_registrasi' => $no_registrasi,
+                'kode_booking' => isset($kode_booking) ? $kode_booking : $no_registrasi,
+                'tgl_registrasi' => $_POST['tgl_registrasi'],
+                'no_antrian' => $no_antrian,
+                'no_mr' => $no_mr,
+                'jeniskunjungan' => 3,
+                'norujukan' => isset($_POST['noRujukan'])?$_POST['noRujukan']:"",
+            );
+
+            $antrol = $this->processAntrol($config);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                // get detail data
+                $dt = $this->Reg_klinik->get_by_id($no_registrasi);
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nama_pasien' => $dt->nama_pasien, 'no_kunjungan' => $no_kunjungan, 'no_antrian' => $datapoli['no_antrian'], 'no_antrian_poli' => $no_antrian, 'antrol' => $antrol, 'tgl_registrasi' => $_POST['tgl_registrasi'], 'jam_praktek' => $antrol['jampraktek'] ));
+            }
+        }
+    }
+
+    public function getKuotaDokter($kode_dokter='',$kode_spesialis='', $tanggal=''){
+        $getData = $this->Pelayanan_publik->getKuotaDokter($kode_dokter, $kode_spesialis, $tanggal);
+        echo json_encode($getData);
+    }
+
+    public function processAntrol($params){
+        // echo '<pre>'; print_r($_POST);die;
+        // estimasi dilayani
+        $jam_mulai_praktek = $this->tanggal->formatFullTime($_POST['jam_praktek_mulai']);
+        $jam_selesai_praktek = $this->tanggal->formatFullTime($_POST['jam_praktek_selesai']);
+        $date = date_create($this->tanggal->formatDateTimeToSqlDate($params['tgl_registrasi']).' '.$jam_mulai_praktek );
+        
+        $est_hour = ceil($params['no_antrian'] / 12);
+        $estimasi = ($params['no_antrian'] <= 12) ? 1 : $est_hour; 
+        
+        // estimasi dilayani
+        date_add($date, date_interval_create_from_date_string('+'.$estimasi.' hours'));
+        $estimasidilayani = date_format($date, 'Y-m-d H:i:s');
+        $milisecond = strtotime($estimasidilayani) * 1000;
+        
+        // add antrian
+        $post_antrol = array(
+            "kodebooking" => $params['kode_booking'],
+            "jenispasien" => "NON JKN",
+            "nomorkartu" => $_POST['noKartuBpjs'],
+            "nik" => $_POST['nikPasien'],
+            "nohp" => $_POST['hpPasien'],
+            "kodepoli" => $_POST['kode_poli_bpjs'],
+            "namapoli" => $_POST['reg_klinik_rajal_txt'],
+            "pasienbaru" => 0,
+            "norm" => $params['no_mr'],
+            "tanggalperiksa" => $this->tanggal->formatDateBPJS($params['tgl_registrasi']),
+            "kodedokter" => $_POST['kode_dokter_bpjs'],
+            "namadokter" => $_POST['reg_dokter_rajal_txt'],
+            "jampraktek" => $this->tanggal->formatTime($_POST['jam_praktek_mulai']).'-'.$this->tanggal->formatTime($_POST['jam_praktek_selesai']),
+            "jeniskunjungan" => $params['jeniskunjungan'],
+            "nomorreferensi" => ($params['jeniskunjungan'] == 1) ? $params['norujukan'] : "",
+            "nomorantrean" => $_POST['kode_poli_bpjs'].'-'.$params['no_antrian'],
+            "angkaantrean" => $params['no_antrian'],
+            "estimasidilayani" => $milisecond,
+            "sisakuotajkn" => $_POST['sisa_kuota'],
+            "kuotajkn" => $_POST['kuotadr'],
+            "sisakuotanonjkn" => $_POST['sisa_kuota'],
+            "kuotanonjkn" => $_POST['kuotadr'],
+            "keterangan" => "Silahkan tensi dengan perawat"
         );
+        // echo '<pre>'; print_r($post_antrol); die;
+        // add antrian lainnya
+        $this->AntrianOnline->addAntrianOnsite($post_antrol);
 
-        // echo '<pre>';print_r($data);die;
-        /*load view index*/
-        $this->load->view('kiosk/Pelayanan_publik/jadwal_dokter_front_view', $data);
+        // update kodebooking
+        $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $params['kode_booking']) );
+
+        // update task antrian online
+        $waktukirim = strtotime($params['tgl_registrasi']) * 1000;
+        $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $params['kode_booking'], 'taskid' => 3, 'waktu' => $waktukirim));
+
+        return $post_antrol;
     }
-
-
-    public function form_perjanjian($jd_id) {
-        
-        $data = array();
-        // jadwal by dr spesialis
-        $row_jadwal = $this->db->join('mt_bagian','mt_bagian.kode_bagian=tr_jadwal_dokter.jd_kode_spesialis','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tr_jadwal_dokter.jd_kode_dokter','left')->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
-        $obj = new stdClass();
-        $obj->jd_kode_dokter = $row_jadwal->jd_kode_dokter;
-        $obj->jd_kode_spesialis = $row_jadwal->jd_kode_spesialis;
-        $jadwal_dr = $this->Regon_info_jadwal_dr->get_jadwal_by_dr_spesialis($obj);
-        foreach ($jadwal_dr as $key => $value) {
-            $getData[$value['jd_hari']] = $value;
-        }
-
-        $data['jadwal_dr_spesialis'] =  $getData;
-        $data['value'] =  $row_jadwal;
-        
-        // echo '<pre>'; print_r($data);die;
-        $this->load->view('kiosk/Pelayanan_publik/form_perjanjian_view', $data);
-    }
-    // end modul perjanjian
-
-    // umum asuransi
-    public function asum_mod_poli() {
-        
-        $data = array();
-        $data_loket = $this->loket->get_open_loket();
-
-        foreach ($data_loket as $key => $value) {
-            # code...
-            $kuota = $this->loket->get_sisa_kuota($value);
-            if($kuota<0)$kuota=0;
-            $data_loket[$key]->kuota = $kuota;
-        }
-
-        $data['klinik'] = $data_loket;
-        // echo '<pre>';print_r($data);die;
-
-        $this->load->view('kiosk/Pelayanan_publik/asum_tab_poli_view', $data);
-    }
-    // end umum asuransi
-
 
     // pasien baru
     public function process_register_pasien(){
@@ -337,7 +322,7 @@ class Pelayanan_publik extends MX_Controller {
                 'no_hp' => ($this->regex->_genRegex($this->form_validation->set_value('telp_pasien'),'RGXQSL'))?$this->regex->_genRegex($this->form_validation->set_value('telp_pasien'),'RGXQSL'):'',
                 'jen_kelamin' => ($this->regex->_genRegex($this->form_validation->set_value('gender'),'RGXQSL')==1)?'L':'P',
                 'no_kartu_bpjs' => isset($_POST['no_kartu_bpjs'])?$this->regex->_genRegex($this->form_validation->set_value('no_kartu_bpjs'),'RGXQSL'):NULL,
-                'keterangan' => '',
+                'keterangan' => 'registrasi pasien via online',
                 'is_active' => 1,
             );
 
@@ -396,132 +381,28 @@ class Pelayanan_publik extends MX_Controller {
 
     }
 
-    public function process_register_penunjang(){
+    public function checkin($no_registrasi, $no_mr, $flag){
 
-        // print_r($_POST);die;
-        // form validation
-        $this->form_validation->set_rules('no_mr', 'No MR Pasien', 'trim|required', array('required' => 'No MR Pasien tidak ditemukan') );
-        $this->form_validation->set_rules('nama_pasien', 'Nama Pasien', 'trim');
-        $this->form_validation->set_rules('kode_kelompok_hidden', 'Kode Kelompok', 'trim');
-        $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Kelompok', 'trim');
-        $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
-        $this->form_validation->set_rules('pm_tujuan', 'Penunjang Medis', 'trim|required');
 
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            //die(validation_errors());
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+        $data_tracer = [
+            'no_mr' => $no_mr,
+            'result' => $detail_data,
+        ];
+        if($flag == 'checkin'){
+            $tracer = $this->print_escpos->print_direct($data_tracer);
+            $status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
+            $this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $no_registrasi) );
+        }else{
+            // cancel
+            $this->db->update('tc_registrasi', array('status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s'), 'status_batal' => 1), array('no_registrasi' => $no_registrasi) );
         }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();   
-            
-            $title = 'Pendaftaran Penunjang Medis';
-            $no_mr = $this->regex->_genRegex($this->form_validation->set_value('no_mr'),'RGXQSL');
-            $kode_perusahaan = $this->regex->_genRegex($this->form_validation->set_value('kode_perusahaan_hidden'),'RGXINT');
-            $kode_kelompok =  $this->regex->_genRegex($this->form_validation->set_value('kode_kelompok_hidden'),'RGXINT');
-            $kode_dokter = $this->regex->_genRegex(0,'RGXINT');
-            $kode_bagian_masuk = $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL');
-            $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
-
-            $tipe_pasien = ($kode_perusahaan==120) ? 'bpjs' : 'umum';
-
-            $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,'');
-            $no_registrasi = $data_registrasi['no_registrasi'];
-            $no_kunjungan = $data_registrasi['no_kunjungan'];
-              
-            /*insert penunjang medis*/
-            $kode_penunjang = $this->master->get_max_number('pm_tc_penunjang', 'kode_penunjang');
-            $no_antrian = $this->master->get_no_antrian_pm($this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL'));
-            $klas = 16;
-            $data_pm_tc_penunjang = array(
-                'kode_penunjang' => $kode_penunjang,
-                'tgl_daftar' => date('Y-m-d H:i:s'),
-                'kode_bagian' => $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL'),
-                'no_kunjungan' => $no_kunjungan,
-                'no_antrian' => $no_antrian,
-                'kode_klas' => $klas,
-                'petugas_input' => 0,
-            );
-
-            /*save penunjang medis*/
-            $this->Reg_klinik->save('pm_tc_penunjang', $data_pm_tc_penunjang);
-
-            /*save logs*/
-            $this->logs->save('pm_tc_penunjang', $data_pm_tc_penunjang['kode_penunjang'], 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-
-                // get detail data
-                $dt = $this->Reg_klinik->get_by_id($no_registrasi);
-                $this->print_bukti_registrasi($no_registrasi, $no_antrian, $tipe_pasien);
-
-                // print tracer
-                $data_tracer = [
-                    'no_mr' => $no_mr,
-                    'nama_pasien' => $_POST['nama_pasien'],
-                    'unit' => $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $kode_bagian_masuk)),
-                ];
-                
-                if($kode_bagian_masuk == '050101'){
-                    $tracer = $this->print_escpos->print_barcode($data_tracer);
-                    if( $tracer == 1 ) {
-                        $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
-                    }
-                }
-
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr'], 'no_registrasi' => $no_registrasi, 'no_antrian' => $no_antrian, 'tipe' => $tipe_pasien, 'type_pelayanan' => 'Penunjang Medis'));
-
-            }
-            
-        }
-
-    }
-
-    function print_bukti_registrasi($no_registrasi, $no_antrian, $tipe_pasien){
-        $registrasi = $this->Reg_klinik->get_by_id($no_registrasi);
-        // echo '<pre>';print_r($registrasi);die;
-        $tracer = $this->print_escpos->print_bukti_registrasi($registrasi, $no_antrian, $tipe_pasien);
-        // echo '<pre>';print_r($tracer);die;
-        if( $tracer == 1 ) {
-            $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );        
-        }
-        return true;
-    }
-
-    // bpjs
-    public function bpjs_mod_poli() {
         
-        $data = array();
-        $data_loket = $this->loket->get_open_loket();
 
-        foreach ($data_loket as $key => $value) {
-            # code...
-            $kuota = $this->loket->get_sisa_kuota($value);
-            if($kuota<0)$kuota=0;
-            $data_loket[$key]->kuota = $kuota;
-        }
-
-        $data['klinik'] = $data_loket;
-        // echo '<pre>';print_r($data);die;
-
-        $this->load->view('kiosk/Pelayanan_publik/bpjs_tab_poli_view', $data);
+        echo json_encode( array('status' => 200, 'message' => 'Proses berhasil') );
+        
     }
 
-
-    
     
 
 }

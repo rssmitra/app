@@ -1,7 +1,9 @@
 <script type="text/javascript">
-  function checkin(){
+  function checkin(no_registrasi, no_mr, flag){
     $('#btn-action').hide();
-    $('#checkin-msg').show();
+    $.getJSON('publik/Pelayanan_publik/checkin/'+no_registrasi+'/'+no_mr+'/'+flag, '', function (data) { 
+      $('#checkin-msg').show();
+    })
   }
 </script>
 <form class="form-search" autocomplete="off">
@@ -17,32 +19,43 @@
               <div class="widget-main">
                 <address>
                   <table class="table">
-                    <tr><td>No. Rekam Medis</td><td>: 00211762</td></tr>
-                    <tr><td>No. Kartu BPJS</td><td>: 00036031223</td></tr>
-                    <tr><td>Nama pasien</td><td>: Muhammad Amin Lubis</td></tr>
-                    <tr><td>Umur</td><td>: 32 thn</td></tr>
+                    <tr><td>No. Rekam Medis</td><td>: <?php echo $result->no_mr; ?></td></tr>
+                    <?php if($result->kode_perusahaan == 120) :?>
+                    <!-- <tr><td>No. Kartu BPJS</td><td>: <?php echo $_GET['noKartu']; ?></td></tr> -->
+                    <?php else : ?>
+                      <tr><td>Penjamin</td><td>: <?php echo ($result->kode_perusahaan == 0) ? 'Umum' : $result->nama_perusahaan ; ?></td></tr>
+                    <?php endif; ?>
+                    <tr><td>Nama pasien</td><td>: <?php echo $result->nama_pasien; ?></td></tr>
+                    <tr><td>Umur</td><td>: <?php echo $result->umur; ?> thn</td></tr>
                   </table>
                   <div class="center">
                   <small>Nomor Urut.</small><br>
-                  <span style="font-size:5em; font-weight: bold; color: green; width: 100%" onclick="getMenu('publik/Pelayanan_publik/antrian_poli')">5</span><br>
+                  <span style="font-size:5em; font-weight: bold; color: green; width: 100%" onclick="getMenu('publik/Pelayanan_publik/antrian_poli')"><?php echo $result->no_antrian; ?></span><br>
                   </div>
-                  <span style="font-size: 14px"><strong>9826387</strong><br>
-                  <span style="font-size: 14px; font-weight: bold; text-transform: uppercase">Klinik Spesialis Anestesi</span>
+                  <span style="font-size: 14px"><strong><?php echo $result->no_registrasi.' | '.$this->tanggal->formatDate($result->tgl_jam_poli); ?></strong><br>
+                  <span style="font-size: 14px; font-weight: bold; text-transform: uppercase"><?php echo $result->nama_bagian; ?></span>
                   <br>
-                  dr. RR. Pramada Resvita Nugrahati Putranto, Sp.An
+                  <?php echo $result->nama_pegawai; ?>
                   <br>
-                  Kamis, 6/07/2023, 08.00 s/d 12.00
+                  <?php echo $result->jd_hari.', '.$this->tanggal->formatTime($result->jd_jam_mulai).' - '.$this->tanggal->formatTime($result->jd_jam_selesai)?>
                 </address>
+                
+                <?php if( $result->status_checkin != 1 ) : ?>
+                  <address style="margin-left: -7px" id="btn-action">
+                    <?php if($result->status_batal != 1) :?>
+                    <a href="#" class="btn btn-sm btn-success" style="background : green !important; border-color: green" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'checkin')"><i class="fa fa-check"></i> Check In</a>
+                    <a href="#" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'cancel')" class="btn btn-sm btn-danger" style="background : red !important; border-color: red"><i class="fa fa-times"></i> Batal Berobat</a>
+                    <?php else: ?>
+                      <span class="red" style="font-weight: bold">Batal kunjungan</span>
+                    <?php endif;?>
+                  </address>
+                <?php else: ?>
+                  <address style="margin-left: 0px; display: none" id="checkin-msg">
+                      <div class="alert alert-success"><span><i class="fa fa-check"></i> <b>Anda sudah berhasil checkin !</b><br>silahkan konfirmasi finger print pada kiosk !</span>
+                      </div>
+                  </address>
+                <?php endif; ?>
 
-                <address style="margin-left: -7px" id="btn-action">
-                  <a href="#" class="btn btn-sm btn-success" style="background : green !important; border-color: green" onclick="checkin()"><i class="fa fa-check"></i> Check In</a>
-                  <a href="#" class="btn btn-sm btn-danger" style="background : red !important; border-color: red"><i class="fa fa-times"></i> Batal Berobat</a>
-                </address>
-
-                <address style="margin-left: 0px; display: none" id="checkin-msg">
-                    <div class="alert alert-success"><span><i class="fa fa-check"></i> <b>Anda sudah berhasil checkin !</b><br>silahkan konfirmasi finger print pada kiosk !</span>
-                    </div>
-                </address>
               </div>
             </div>
           </div>
