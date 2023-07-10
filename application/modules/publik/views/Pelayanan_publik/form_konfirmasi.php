@@ -44,28 +44,37 @@
 
                 <div id="btn-reload"></div>
                 
-                <?php if( $result->status_checkin != 1 ) : ?>
-                  <address style="margin-left: -7px" id="btn-action" class="center">
-                    <?php if($result->status_batal != 1) :?>
-                    <a href="#" class="btn btn-sm btn-success" style="background : green !important; border-color: green" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'checkin')"><i class="fa fa-check"></i> Check In</a>
-                    <a href="#" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'cancel')" class="btn btn-sm btn-danger" style="background : red !important; border-color: red"><i class="fa fa-times"></i> Batal Berobat</a>
-                    <?php else: ?>
-                      <span class="red" style="font-weight: bold">Batal kunjungan</span>
-                    <?php endif;?>
-                  </address>
+                <?php if($result->status_batal == 1) :?>
+
+                  <span class="red" style="font-weight: bold">Batal kunjungan</span>
+
                 <?php else: ?>
+
+                  <?php if( $result->status_checkin == 1 ) : ?>
+
                     <?php if($result->konfirm_fp != 1) :?>
-                      <address style="margin-left: 0px;">
-                        <div class="alert alert-warning"><span><i class="fa fa-check"></i> <b>Silahkan Finger Print !</b><br>Silahkan scan sidik jari anda pada kiosk !</span>
-                        </div>
-                      </address>
-                    <?php else: ?>
-                    <address style="margin-left: 0px;">
-                        <div class="alert alert-success"><span><i class="fa fa-check"></i> <b>Anda sudah berhasil checkin !</b><br>silahkan konfirmasi finger print pada kiosk !</span>
-                        </div>
+                        <address style="margin-left: 0px;">
+                          <div class="alert alert-warning"><span><i class="fa fa-check"></i> <b>Silahkan Finger Print !</b><br>Silahkan scan sidik jari anda pada kiosk !</span>
+                          </div>
+                        </address>
+                      <?php else: ?>
+                        <address style="margin-left: 0px;">
+                            <div class="alert alert-success"><span><i class="fa fa-check"></i> <b>Anda sudah berhasil checkin !</b><br>silahkan konfirmasi finger print pada kiosk !</span>
+                            </div>
+                        </address>
+                      <?php endif; ?>
+
+                  <?php else: ?>
+                    
+                    <address style="margin-left: -7px" id="btn-action" class="center">
+                      <a href="#" class="btn btn-sm btn-success" style="background : green !important; border-color: green" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'checkin')"><i class="fa fa-check"></i> Check In</a>
+                      <a href="#" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'cancel')" class="btn btn-sm btn-danger" style="background : red !important; border-color: red"><i class="fa fa-times"></i> Batal Berobat</a>
                     </address>
-                    <?php endif; ?>
+                      
+                  <?php endif; ?>
                 <?php endif; ?>
+
+                
 
               </div>
             </div>

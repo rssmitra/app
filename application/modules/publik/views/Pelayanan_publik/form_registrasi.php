@@ -8,6 +8,7 @@
 
     var disableDates = getLiburNasional(<?php echo date('Y')?>);
     var today = new Date();
+    var tomorrow = today.setDate(today.getDate() + 1);
 
     $("#tgl_registrasi").datepicker({
 
@@ -15,9 +16,12 @@
       todayHighlight: true,
       daysOfWeekDisabled: [0],
       format: 'yyyy-mm-dd',
-      // endDate: today, 
-      // minDate: 0, 
+      startDate: new Date(),
+      endDate: '+1d', 
+      minDate: '0',
+      numberOfMonths: 1,
       beforeShowDay: function(date){
+
           dmy = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
           if(disableDates.indexOf(dmy) != -1){
               return false;
@@ -40,7 +44,6 @@
         $('#kuotadr').val('');
         $('#jd_id').val('');
         getKlinikByJadwalDefault();
-        
 
     });
 
@@ -430,8 +433,10 @@
 
 <style type="text/css">
     .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
-      color: #f00b0b !important;
+      color: #070707 !important;
+      background: #da0a0a73 !important;
     }
+
 </style>
 
 <form id="form-registrasi" autocomplete="off" method="POST" action="publik/Pelayanan_publik/proses_registrasi">

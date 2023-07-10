@@ -396,6 +396,8 @@ class Pelayanan_publik extends MX_Controller {
         }else{
             // cancel
             $this->db->update('tc_registrasi', array('status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s'), 'status_batal' => 1), array('no_registrasi' => $no_registrasi) );
+            $this->db->update('pl_tc_poli', array('status_batal' => 1), array('no_kunjungan' => $detail_data['registrasi']->no_kunjungan) );
+            $this->db->update('tc_kunjungan', array('status_batal' => 1), array('no_kunjungan' => $detail_data['registrasi']->no_kunjungan) );
         }
         
 
