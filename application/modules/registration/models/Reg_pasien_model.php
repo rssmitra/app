@@ -609,7 +609,7 @@ class Reg_pasien_model extends CI_Model {
 	
 	{
 		
-		$this->db->select('*, no_antrian');
+		$this->db->select('*, no_antrian, konfirm_fp, tc_registrasi.status_batal');
 		$this->db->select('(SELECT cast(SUM(bill_rs) AS INT) FROM tc_trans_pelayanan WHERE no_registrasi=tc_kunjungan.no_registrasi AND kode_tc_trans_kasir IS NULL) as total_tangguhan');
 		$this->db->from('tc_kunjungan');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
@@ -621,8 +621,14 @@ class Reg_pasien_model extends CI_Model {
 		$query = $this->db->get()->result();
 		$result = array();
 		foreach ($query as $key => $value) {
-			$status = ($value->tgl_keluar == null) ? '<span style="color: gold; font-weight: bold">Dalam antrian</span>' : '<span style="color: green; font-weight: bold">Sudah diperiksa</span><br>'.$value->tgl_keluar.'';
-			$result[] = array('no_kunjungan' => $value->no_kunjungan, 'kode_bagian_tujuan' => $value->kode_bagian_tujuan, 'poli' => strtoupper($value->nama_bagian),'tgl_masuk' => $value->tgl_masuk, 'no_registrasi' => $value->no_registrasi, 'penjamin' => $value->nama_perusahaan, 'dokter' => $value->nama_pegawai, 'total_ditangguhkan' => $value->total_tangguhan, 'no_antrian' => $value->no_antrian, 'tgl_keluar' => $value->tgl_keluar, 'status' => $status);
+			if($value->konfirm_fp == 1){
+				$status = ($value->status_batal == 1) ? '<span style="color: red; font-weight: bold">Batal kunjungan</span>' :($value->tgl_keluar == null) ? '<span style="color: red; font-weight: bold">Dalam antrian</span>' : '<span style="color: green; font-weight: bold">Sudah diperiksa</span><br>'.$value->tgl_keluar.'';
+			}else{
+				$status = '<span style="color: red; font-weight: bold">Belum finger print !</span>';
+
+			}
+
+			$result[] = array('no_kunjungan' => $value->no_kunjungan, 'kode_bagian_tujuan' => $value->kode_bagian_tujuan, 'poli' => strtoupper($value->nama_bagian),'tgl_masuk' => $this->tanggal->formatDateDmy($value->tgl_masuk), 'no_registrasi' => $value->no_registrasi, 'penjamin' => $value->nama_perusahaan, 'dokter' => $value->nama_pegawai, 'total_ditangguhkan' => $value->total_tangguhan, 'no_antrian' => $value->no_antrian, 'tgl_keluar' => $value->tgl_keluar, 'status' => $status);
 		}
 
 		return $result;
@@ -657,7 +663,7 @@ class Reg_pasien_model extends CI_Model {
 	
 	{
 		/*data registrasi*/
-		$this->db->select('tc_registrasi.no_registrasi, tc_kunjungan.no_kunjungan, nama_pegawai, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, tinggi_badan, tekanan_darah, nadi, th_riwayat_pasien.berat_badan, suhu, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr,mt_master_pasien.almt_ttp_pasien,mt_master_pasien.tempat_lahir,mt_master_pasien.tgl_lhr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan, ');
+		$this->db->select('tc_registrasi.no_registrasi, tc_kunjungan.no_kunjungan, nama_pegawai, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, tinggi_badan, tekanan_darah, nadi, th_riwayat_pasien.berat_badan, suhu, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr,mt_master_pasien.almt_ttp_pasien,mt_master_pasien.tempat_lahir,mt_master_pasien.tgl_lhr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan ');
 		$this->db->from('tc_kunjungan');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_registrasi.no_mr','left');

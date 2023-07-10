@@ -6,21 +6,43 @@
 
   jQuery(function($) {  
 
-    $('.date-picker').datepicker({    
+    var disableDates = getLiburNasional(<?php echo date('Y')?>);
+    var today = new Date();
+
+    $("#tgl_registrasi").datepicker({
 
       autoclose: true,    
+      todayHighlight: true,
+      daysOfWeekDisabled: [0],
+      format: 'yyyy-mm-dd',
+      // endDate: today, 
+      // minDate: 0, 
+      beforeShowDay: function(date){
+          dmy = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+          if(disableDates.indexOf(dmy) != -1){
+              return false;
+          }
+          else{
+            return true;
+          }
 
-      todayHighlight: true    
+      }
 
-    })  
+    }).on("change", function() {
+        
+        $('#pilih_kunjungan').show();
+        // hidden
+        $('#reg_klinik_rajal_txt').val('');
+        $('#reg_dokter_rajal_txt').val('');
+        $('#jam_praktek_mulai').val('');
+        $('#jam_praktek_selesai').val('');
+        $('#sisa_kuota').val('');
+        $('#kuotadr').val('');
+        $('#jd_id').val('');
+        getKlinikByJadwalDefault();
+        
 
-    //show datepicker when clicking on the icon
-
-    .next().on(ace.click_event, function(){    
-
-      $(this).prev().focus();    
-
-    });  
+    });
 
   });
 
@@ -78,7 +100,7 @@
         $('#spinner_loading').html('');
         $('#no-data-found').show();
         $('#result-find-pasien').hide();
-        $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table" style="background: #e9f5ff"><tr><td style="padding: 15px; background : #80808014"><b>'+obj_kunj.no_registrasi+' - '+obj_kunj.tgl_masuk+'</b><br><table><tr><td style="text-align: center; width: 70px"><span style="font-size: 3em; font-weight: bold">'+obj_kunj.no_antrian+'</span><br><small>(no urut)</small></td><td>'+obj_kunj.poli+'<br>'+obj_kunj.dokter+'<br>'+obj_kunj.status+'</td></tr></table></td></tr></table>');
+        $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table" style="background: #e9f5ff"><tr><td style="padding: 2px; background : #80808014; cursor: pointer" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan/"+obj_kunj.no_kunjungan+"'"+')" ><table style="background: azure;"><tr><td style="text-align: center; width: 70px;"><span style="font-size: 3em; font-weight: bold">'+obj_kunj.no_antrian+'</span><br><small>(no urut)</small></td><td><b>Tgl.'+obj_kunj.tgl_masuk+'</b><br>'+obj_kunj.poli+'<br>'+obj_kunj.dokter+'<br>'+obj_kunj.status+'</td></tr></table></td></tr></table>');
         return false;
       }
 
@@ -256,20 +278,6 @@
     }    
   }); 
 
-  $('#tgl_registrasi').change(function () {
-    
-    $('#pilih_kunjungan').show();
-    // hidden
-    $('#reg_klinik_rajal_txt').val('');
-    $('#reg_dokter_rajal_txt').val('');
-    $('#jam_praktek_mulai').val('');
-    $('#jam_praktek_selesai').val('');
-    $('#sisa_kuota').val('');
-    $('#kuotadr').val('');
-    $('#jd_id').val('');
-    getKlinikByJadwalDefault();
-  })
-
   function getKlinikByJadwalDefault(){
 
     date = ($('#tgl_registrasi').val() != '') ? $('#tgl_registrasi').val() : '<?php echo date('Y-m-d')?>';
@@ -421,34 +429,8 @@
 </script>
 
 <style type="text/css">
-    table{
-      width: 100% !important;
-      font-size: 12px;
-    }
-    .table-custom thead {
-      background-color: #14506b;
-      color: white;
-    }
-
-    .table-custom th, td {
-      padding: 10px;
-      border: 1px solid #c5d0dc;
-    }
-    .table-custom tbody tr:hover {background-color: #e6e6e6e0;}
-    .td_custom{font-size: 20px;font-weight: bold;color: black;border: 5px solid white; cursor: pointer}
-    .typeahead{min-width: 87%}
-    .dropdown-menu > li > a {font-size: 12px !important}
-    .dropdown-menu > li > a {
-        padding-bottom: 10px;
-        margin-bottom: 3px;
-        margin-top: 3px;
-    }
-    .profile-info-name{
-      text-align: left !important;
-    }
-
-    .list-group-item {
-    padding: 3px 3px !important;
+    .datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+      color: #f00b0b !important;
     }
 </style>
 

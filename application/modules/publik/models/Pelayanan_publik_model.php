@@ -77,7 +77,7 @@ class Pelayanan_publik_model extends CI_Model {
 
 	public function get_data_kunjungan($no_kunjungan){
 		$this->_main_query();
-		$this->db->select('tr_jadwal_dokter.*, tc_registrasi.status_checkin, checkin_date');
+		$this->db->select('konfirm_fp, tr_jadwal_dokter.*, tc_registrasi.status_checkin, checkin_date');
 		$this->db->join('tr_jadwal_dokter','tr_jadwal_dokter.jd_id=tc_registrasi.jd_id','left');
 		$this->db->where('pl_tc_poli.no_kunjungan', $no_kunjungan);
 		$query = $this->db->get()->row();

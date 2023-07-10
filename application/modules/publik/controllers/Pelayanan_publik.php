@@ -382,8 +382,7 @@ class Pelayanan_publik extends MX_Controller {
     }
 
     public function checkin($no_registrasi, $no_mr, $flag){
-
-
+        
         $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
         $data_tracer = [
             'no_mr' => $no_mr,
@@ -392,7 +391,8 @@ class Pelayanan_publik extends MX_Controller {
         if($flag == 'checkin'){
             $tracer = $this->print_escpos->print_direct($data_tracer);
             $status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
-            $this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $no_registrasi) );
+            $konfirm_fp = ($detail_data['registrasi']->kode_perusahaan != 120) ? '1' : null;
+            $this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => $konfirm_fp, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $no_registrasi) );
         }else{
             // cancel
             $this->db->update('tc_registrasi', array('status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s'), 'status_batal' => 1), array('no_registrasi' => $no_registrasi) );
