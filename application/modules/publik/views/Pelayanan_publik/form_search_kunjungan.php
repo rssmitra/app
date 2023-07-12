@@ -48,7 +48,7 @@
         html = '<p style="font-weight: bold">Riwayat Kunjungan Pasien</p><table class="table">';
         $.each(data.log_kunjungan, function(key,val) {
             dokter = (val.dokter != null) ? val.dokter : '';
-            html += '<tr><td style="padding: 15px; background : #80808014"><b>'+val.no_registrasi+' - '+val.tgl_masuk+'</b><br> '+val.poli+'<br>'+dokter+'</td></tr>';
+            html += '<tr><td style="padding: 15px; background : #80808014" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan/"+val.no_kunjungan+"'"+')"><b>'+val.no_registrasi+' - '+val.tgl_masuk+'</b><br> '+val.poli+'<br>'+dokter+'</td></tr>';
         });
         $('#riwayat_kunjungan').html(html);
 

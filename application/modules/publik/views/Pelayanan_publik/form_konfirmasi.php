@@ -13,6 +13,8 @@
     <br>
     <!-- hidden form -->
     <input type="hidden" id="no_kunjungan" value="<?php echo $result->no_kunjungan?>">
+    <input type="hidden" id="tgl_jam_poli" value="<?php echo $result->tgl_jam_poli?>">
+
     <div class="row">
       <div class="col-xs-12 col-sm-12">
         <h3 class="header smaller lighter green">Konfirmasi Kunjungan</h3>
@@ -67,7 +69,9 @@
                   <?php else: ?>
                     
                     <address style="margin-left: -7px" id="btn-action" class="center">
-                      <a href="#" class="btn btn-sm btn-success" style="background : green !important; border-color: green" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'checkin')"><i class="fa fa-check"></i> Check In</a>
+
+                      <a href="#" class="btn btn-sm btn-success" style="background : green !important; border-color: green" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'checkin')" <?php echo ($result->tgl_jam_poli != date('Y-m-d')) ? 'disabled' : ''?>><i class="fa fa-check"></i> Check In</a>
+
                       <a href="#" onclick="checkin(<?php echo $result->no_registrasi?>, '<?php echo $result->no_mr?>', 'cancel')" class="btn btn-sm btn-danger" style="background : red !important; border-color: red"><i class="fa fa-times"></i> Batal Berobat</a>
                     </address>
                       

@@ -95,6 +95,16 @@
       </div>
 
 	</div>
+
+  <div id="proses-loading">
+      <div class="loading-content">
+          <img width="125px" src="<?php echo base_url('assets/images/logo.png') ?>" alt="Logo <?php echo COMP_SORT; ?>">
+          <br>
+          <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+          <br>
+          <span class="">Transaksi sedang di proses harap menunggu</span>
+      </div>
+  </div>
 	
 	<!--[if !IE]> -->
     <script type="text/javascript">

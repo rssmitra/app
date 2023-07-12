@@ -284,7 +284,7 @@ class Pelayanan_publik extends MX_Controller {
         //print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('nama_pasien', 'Nama Pasien', 'trim|required');
-        $this->form_validation->set_rules('nik_pasien', 'NIK', 'trim|required');
+        $this->form_validation->set_rules('nik_pasien', 'NIK', 'trim|required|min_length[16]|max_length[16]|is_unique[mt_master_pasien.no_ktp]', array('is_unique' => 'NIK anda sudah pernah terdaftar', 'min_length' => 'NIK harus berisi 16 angka', 'max_length' => 'Maksimal NIK berisi 16 angka'));
         $this->form_validation->set_rules('pob_pasien', 'Tempat Lahir', 'trim|required');
         $this->form_validation->set_rules('dob_pasien', 'Tanggal Lahir', 'trim|required');
         $this->form_validation->set_rules('alamat_pasien', 'Alamat', 'trim|required');

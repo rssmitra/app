@@ -87,6 +87,7 @@
     $('#spinner_loading').html('Loading...');
     $('#msg_ress_rujukan').hide();
     $('#result_rujukan').hide();
+    $('#message_for_kuota').hide();
     
     var keyword = $('#keyword_ID').val();
     var search_by = $('input[name=search_by]').filter(':checked').val();
@@ -264,14 +265,14 @@
                 $('#jam_praktek_mulai').val(objData.jam_praktek_mulai); 
                 $('#jam_praktek_selesai').val(objData.jam_praktek_selesai); 
                 $('#jd_id').val(objData.jd_id); 
-
+                $('#message_for_kuota').show();
                 $('#message_for_kuota').html(data.message);              
                 if(data.sisa_kuota > 0){
-                    $('#btn_submit').show('fast');
-                    $('#message_for_kuota_null').html('');
+                    $('#btn-proses-registrasi').show('fast');
+                    $('#message_for_kuota').html('<div class="alert alert-success" style="padding: 5px !important"><b>Available ! </b>Sisa kuota dokter <b>'+data.sisa_kuota+'</b> pasien. </div>');
                 }else{
-                    $('#btn_submit').hide('fast');
-                    $('#message_for_kuota_null').html('<span style="color: red; font-weight: bold; font-style:italic">- Mohon Maaf Kuota Dokter Sudah Penuh !</span>');
+                    $('#btn-proses-registrasi').hide('fast');
+                    $('#message_for_kuota').html('<span style="color: red; font-weight: bold; font-style:italic">- Kuota dokter penuh, silahkan ganti tanggal lain !</span>');
                 }
                 $('#jd_id').val(data.jd_id); 
             });            
@@ -355,9 +356,9 @@
             var provPerujuk = data.result.provPerujuk;
             var dueDate = data.result.masaBerlakuRujukan;
             
-            if(peserta.mr.noMR != $('#no_mr').text()){
+            if(peserta.noKartu != $('#noKartuBpjs').val()){
               $('#msg_ress_rujukan').show();
-              $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>Pemberitahuan !</strong><br>No. Rekam Medis pada data rujukan anda tidak sesuai dengan data pasien di RS Setia Mitra.<div>');
+              $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>Pemberitahuan !</strong><br>Nomor Kartu BPJS anda belum terdaftar di RS Setia Mitra.<div>');
               $('#result_rujukan').hide();
               return false;
             }
@@ -612,6 +613,7 @@
             </div><!-- /.col -->
           </div><!-- /.row -->
         </div>
+        <div id="message_for_kuota"></div>
 
       </div>
     </div>
