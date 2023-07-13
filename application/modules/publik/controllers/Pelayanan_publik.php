@@ -97,7 +97,6 @@ class Pelayanan_publik extends MX_Controller {
 
     public function proses_registrasi(){
 
-        
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
         $this->form_validation->set_rules('reg_klinik_rajal', 'Poli/Klinik', 'trim|required');
@@ -167,6 +166,7 @@ class Pelayanan_publik extends MX_Controller {
             $datapoli['flag_antrian'] = $tipe_antrian;
             $datapoli['no_antrian'] = $no_antrian;
             $datapoli['nama_pasien'] = $_POST['nama_pasien_hidden'];
+            $datapoli['tipe_daftar'] = 'online_web';
             
             //print_r($datapoli);die;
             /*save poli*/
@@ -403,6 +403,45 @@ class Pelayanan_publik extends MX_Controller {
 
         echo json_encode( array('status' => 200, 'message' => 'Proses berhasil') );
         
+    }
+
+    public function getKlinikFromJadwal($day='', $date='')
+	{
+		
+		$query = "select a.jd_kode_spesialis as kode_bagian,c.nama_bagian
+					from tr_jadwal_dokter a
+					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
+					where a.jd_hari='".$day."' or (kode_bagian = '012801' or kode_bagian='012901')
+					group by  a.jd_kode_spesialis,c.nama_bagian";
+		$exc = $this->db->query($query);
+		// echo $this->db->last_query(); die;
+        echo json_encode($exc->result());
+	}
+
+    public function search_pasien_public() { 
+        
+		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+        /*define variable data*/
+        $keyword = $this->input->get('keyword');
+
+        if(isset($_GET['search_by'])){
+			$search_by = array($_GET['search_by']);
+		}else{
+			$search_by = array('no_mr','nama_pasien','no_ktp','no_kartu_bpjs');
+		}
+		
+        /*return search pasien*/
+        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, $search_by ); 
+        $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
+        $log_kunjungan = $this->Reg_pasien->cek_riwayat_kunjungan_pasien_by_current_day( $no_mr );
+        // echo '<pre>'; print_r($log_kunjungan);die;
+        $data = array(
+            'count' => count($data_pasien),
+            'result' => $data_pasien,
+            'count_kunjungan' => count($log_kunjungan),
+            'log_kunjungan' => $log_kunjungan,
+        );
+        echo json_encode( $data );
     }
 
     

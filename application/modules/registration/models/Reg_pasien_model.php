@@ -618,7 +618,9 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
 		$this->db->join('pl_tc_poli','pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->where("tc_registrasi.no_mr='".$mr."' and CAST(tgl_jam_masuk as DATE) = '".date('Y-m-d')."'");
+		$this->db->where("SUBSTRING(pl_tc_poli.kode_bagian,1,2)", "01");
 		$query = $this->db->get()->result();
+		// echo $this->db->last_query(); die;
 		$result = array();
 		foreach ($query as $key => $value) {
 			if($value->konfirm_fp == 1){

@@ -78,7 +78,7 @@ class Reg_loket extends MX_Controller {
                         <span class="lbl"></span>
                         </label></div>';
 
-            if($row_list->is_reschedule==NULL){
+            // if($row_list->is_reschedule==NULL){
                 $row[] = '<div class="center"><div class="btn-group">
                                     <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
                                         Action
@@ -91,19 +91,19 @@ class Reg_loket extends MX_Controller {
                                     </ul>
                                 </div>
                             </div>';
-            }else{
-                $row[] = '<div class="center"><div class="btn-group">
-                                    <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                                        Action
-                                        <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                                    </button>
+            // }else{
+            //     $row[] = '<div class="center"><div class="btn-group">
+            //                         <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+            //                             Action
+            //                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+            //                         </button>
 
-                                    <ul class="dropdown-menu dropdown-inverse">
-                                        <li><a href="#" onclick="showFormModalStatusLoket('.$row_list->jd_id.')">Status Loket</a></li>
-                                    </ul>
-                                </div>
-                            </div>';
-            }
+            //                         <ul class="dropdown-menu dropdown-inverse">
+            //                             <li><a href="#" onclick="showFormModalStatusLoket('.$row_list->jd_id.')">Status Loket</a></li>
+            //                         </ul>
+            //                     </div>
+            //                 </div>';
+            // }
 
             /*check status loket*/
             $status_loket = ($row_list->status_loket=='on')?'checked':'';
@@ -227,6 +227,8 @@ class Reg_loket extends MX_Controller {
         if($_POST['tipe_reschedule']=='jam_praktek'){
             $this->form_validation->set_rules('start', 'Jam Mulai', 'trim|required');
             $this->form_validation->set_rules('end', 'Jam Selesai', 'trim|required');
+        }elseif($_POST['tipe_reschedule']=='tidak_praktek') {
+            $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim|required');
         }else{
             $this->form_validation->set_rules('dokter', 'Dokter Pengganti', 'trim|required');
             $this->form_validation->set_rules('start_pengganti', 'Jam Mulai', 'trim|required');
@@ -254,31 +256,27 @@ class Reg_loket extends MX_Controller {
             $nama_dokter_ref = $this->db->get_where('mt_karyawan', array('kode_dokter' => $data_ref->jd_kode_dokter))->row();
             $nama_dokter = $this->db->get_where('mt_karyawan', array('kode_dokter' => $this->regex->_genRegex($this->form_validation->set_value('dokter'),'RGXQSL')))->row();
 
-            $ket = ($_POST['tipe_reschedule']=='jam_praktek')?'Reschedule ke jam '.$this->tanggal->formatTime($_POST['start']):'Digantikan oleh dokter '.$nama_dokter->nama_pegawai. ' pukul '.$this->tanggal->formatTime($this->regex->_genRegex($this->form_validation->set_value('start_pengganti'),'RGXQSL')).' WIB';
-
-            /*update jadwal referensi */
-            $row = $this->Reg_loket->update(array('jd_id'=> $_POST['jd_id']),array('status_jadwal' => 'Loket ditutup','status_loket' => 'off', 'is_reschedule' => 'Y', 'keterangan' => $ket));
-
-            $dataexc = array(
-                'jd_kode_spesialis' => $data_ref->jd_kode_spesialis,
-                'jd_hari' => $this->tanggal->getHari(date('D')),
-                'status_jadwal' => 'Loket dibuka',
-                'status_loket' => 'on',
-                'keterangan' => $this->regex->_genRegex($this->form_validation->set_value('keterangan'),'RGXQSL'),
-                'flag' => 'sementara',
-                'ref_jd_id' => $_POST['jd_id']
-                
-            );
+            $dataexc['is_active'] = 'Y';
+            
+            if( $_POST['tipe_reschedule']=='tidak_praktek' ){
+                $ket = $_POST['keterangan'];
+            }else{
+                $ket = ($_POST['tipe_reschedule']=='jam_praktek')?'Reschedule ke jam '.$this->tanggal->formatTime($_POST['start']):'Digantikan oleh dokter '.$nama_dokter->nama_pegawai. ' pukul '.$this->tanggal->formatTime($this->regex->_genRegex($this->form_validation->set_value('start_pengganti'),'RGXQSL')).' WIB';
+            }
 
             if($_POST['tipe_reschedule']=='jam_praktek'){
-
-                $dataexc['jd_kode_dokter'] = $data_ref->jd_kode_dokter;
                 $dataexc['jd_jam_mulai'] = $this->tanggal->formatTime($this->regex->_genRegex($this->form_validation->set_value('start'),'RGXQSL'));
-                $dataexc['jd_jam_selesai'] = $this->tanggal->formatTime($this->regex->_genRegex($this->form_validation->set_value('end'),'RGXQSL'));
-                $dataexc['jd_kuota'] = $data_ref->jd_kuota;                
+                $dataexc['jd_jam_selesai'] = $this->tanggal->formatTime($this->regex->_genRegex($this->form_validation->set_value('end'),'RGXQSL'));           
 
-            } else {
-
+            } else if($_POST['tipe_reschedule'] == 'ganti_dokter'){
+                $dataexc = array(
+                    'jd_kode_spesialis' => $data_ref->jd_kode_spesialis,
+                    'status_jadwal' => 'Loket dibuka',
+                    'status_loket' => 'on',
+                    'keterangan' => $this->regex->_genRegex($ket,'RGXQSL'),
+                    'flag' => 'sementara',
+                    'ref_jd_id' => $_POST['jd_id']
+                );
                 $dataexc['jd_kode_dokter'] = $this->regex->_genRegex($this->form_validation->set_value('dokter'),'RGXQSL');
                 $dataexc['jd_jam_mulai'] = $this->tanggal->formatTime($this->regex->_genRegex($this->form_validation->set_value('start_pengganti'),'RGXQSL'));
                 $dataexc['jd_jam_selesai'] = $this->tanggal->formatTime($this->regex->_genRegex($this->form_validation->set_value('end_pengganti'),'RGXQSL'));
@@ -286,15 +284,21 @@ class Reg_loket extends MX_Controller {
 
             }
 
-            $newId = $this->Reg_loket->save($dataexc);
-
-            /*update kode dokter yang sudah terlanjur disubmit*/
-            /*registrasi*/
-            $this->Reg_loket->update_registrasi_kode_dokter( $_POST['jd_id'], $dataexc['jd_kode_dokter'], $newId );
-            /*kode dokter pada poli*/
-            $this->Reg_loket->update_poli_kode_dokter( $data_ref->jd_kode_dokter, $data_ref->jd_kode_spesialis, $dataexc['jd_kode_dokter']);
-            /*kode_dokter pada kunjungan*/
-            $this->Reg_loket->update_kunjungan_kode_dokter( $data_ref->jd_kode_dokter, $data_ref->jd_kode_spesialis, $dataexc['jd_kode_dokter']);
+            if($_POST['tipe_reschedule'] == 'ganti_dokter'){
+                $newId = $this->Reg_loket->save($dataexc);
+                /*update kode dokter yang sudah terlanjur disubmit*/
+                /*registrasi*/
+                $this->Reg_loket->update_registrasi_kode_dokter( $_POST['jd_id'], $dataexc['jd_kode_dokter'], $newId );
+                /*kode dokter pada poli*/
+                $this->Reg_loket->update_poli_kode_dokter( $data_ref->jd_kode_dokter, $data_ref->jd_kode_spesialis, $dataexc['jd_kode_dokter']);
+                /*kode_dokter pada kunjungan*/
+                $this->Reg_loket->update_kunjungan_kode_dokter( $data_ref->jd_kode_dokter, $data_ref->jd_kode_spesialis, $dataexc['jd_kode_dokter']);
+            }else{
+                 /*update jadwal referensi */
+                $merge_array = array_merge(isset($dataexc)?$dataexc:[], array('status_jadwal' => 'Loket ditutup','status_loket' => 'off', 'is_reschedule' => 'Y', 'keterangan' => $ket));
+                $row = $this->Reg_loket->update(array('jd_id'=> $_POST['jd_id']), $merge_array);
+                $this->db->where( array('kode_dokter' => $data_ref->jd_kode_dokter, 'kode_bagian' => $data_ref->jd_kode_spesialis, 'CAST(tgl_jam_poli as DATE) = ' => date('Y-m-d') ) )->update('pl_tc_poli', array('keterangan_reschedule' => $ket, 'is_reschedule' => 1) );
+            }
             
             /*data for send sms*/
             $data_sms_reg       = $this->Reg_loket->get_data_sms_registrasi($_POST['jd_id']);

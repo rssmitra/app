@@ -96,7 +96,7 @@
       alert('Masukan Keyword!'); return false;
     }
 
-    $.getJSON("<?php echo site_url('Templates/References/search_pasien_public') ?>?keyword=" + keyword + "&search_by=" + search_by, '', function (data) {      
+    $.getJSON("<?php echo site_url('publik/Pelayanan_publik/search_pasien_public') ?>?keyword=" + keyword + "&search_by=" + search_by, '', function (data) {      
       
       // jika data ditemukan
       if( data.count_kunjungan > 0){
@@ -104,7 +104,7 @@
         $('#spinner_loading').html('');
         $('#no-data-found').show();
         $('#result-find-pasien').hide();
-        $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table" style="background: #e9f5ff"><tr><td style="padding: 2px; background : #80808014; cursor: pointer" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan/"+obj_kunj.no_kunjungan+"'"+')" ><table style="background: azure;"><tr><td style="text-align: center; width: 70px;"><span style="font-size: 3em; font-weight: bold">'+obj_kunj.no_antrian+'</span><br><small>(no urut)</small></td><td><b>Tgl.'+obj_kunj.tgl_masuk+'</b><br>'+obj_kunj.poli+'<br>'+obj_kunj.dokter+'<br>'+obj_kunj.status+'</td></tr></table></td></tr></table>');
+        $('#no-data-found').html('<div class="alert alert-danger"><strong>Anda sudah terdaftar pada hari ini!</strong><br>Pendaftaran online hanya bisa dilakukan satu kali per hari, untuk selanjutnya silahkan datang langsung ke pendaftaran pasien.</div> <br> <b>Riwayat pendaftaran hari ini.</b><br><table class="table" style="background: #e9f5ff; width: 100%"><tr><td style="padding: 2px; background : #80808014; cursor: pointer" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan/"+obj_kunj.no_kunjungan+"'"+')" ><table style="background: azure; width: 100%"><tr><td style="text-align: center; width: 70px;"><span style="font-size: 3em; font-weight: bold">'+obj_kunj.no_antrian+'</span><br><small>(no urut)</small></td><td><b>Tgl.'+obj_kunj.tgl_masuk+'</b><br>'+obj_kunj.poli+'<br>'+obj_kunj.dokter+'<br>'+obj_kunj.status+'</td></tr></table></td></tr></table>');
         return false;
       }
 
@@ -293,7 +293,7 @@
     
     var url = 'getKlinikFromJadwal';
 
-    $.getJSON("<?php echo site_url('Templates/References/') ?>"+url+"/" +current_day+'/'+date, '', function (data) {              
+    $.getJSON("<?php echo site_url('publik/Pelayanan_publik/') ?>"+url+"/" +current_day+'/'+date, '', function (data) {              
         $('#reg_klinik_rajal option').remove();  
         $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
         $.each(data, function (i, o) {                  

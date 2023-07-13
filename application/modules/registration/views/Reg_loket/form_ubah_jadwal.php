@@ -18,7 +18,6 @@
         $.achtung({message: jsonResponse.message, timeout:5});
         /*modal hide*/
         $("#modalUbahJadwal").modal('hide');
-        $("#ModalSuccess").modal();
         /*reload table*/
         reload_table();
       }else{
@@ -30,7 +29,8 @@
 
   $('input[name="tipe_reschedule"]').click(function (e) {
     var value = $(this).val();
-    if (value!='jam_praktek') {
+
+    if (value=='ganti_dokter') {
       $('#jam_praktek').hide('fast');
 
       $.getJSON("<?php echo site_url('Templates/References/getDokterSpesialis') ?>/"  + value, '', function (data) {              
@@ -49,11 +49,15 @@
 
       $('#ganti_dokter').show('fast');
 
-
     }
 
     if (value=='jam_praktek') {
       $('#jam_praktek').show('fast');
+      $('#ganti_dokter').hide('fast');
+    }
+
+    if (value=='tidak_praktek') {
+      $('#jam_praktek').hide('fast');
       $('#ganti_dokter').hide('fast');
     }
 
@@ -75,7 +79,7 @@
 
         <label class="control-label col-md-3">Reschedule</label>
 
-        <div class="col-md-5">
+        <div class="col-md-9">
 
           <div class="radio">
 
@@ -92,6 +96,14 @@
                 <input name="tipe_reschedule" type="radio" class="ace" value="<?php echo isset($jadwal)?$jadwal->jd_kode_spesialis:''?>"/>
 
                 <span class="lbl"> Ganti Dokter </span>
+
+              </label>
+
+              <label>
+
+                <input name="tipe_reschedule" type="radio" class="ace" value="tidak_praktek"/>
+
+                <span class="lbl"> Tidak Praktek </span>
 
               </label>
 
