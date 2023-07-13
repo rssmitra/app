@@ -56,13 +56,9 @@
                           exit;  
                         }else{
                           if( $result->status_checkin == 1 ){
-                            echo '4';
-                            echo 'disini';
                             if( $result->konfirm_fp == 1 ){
-                              echo '5';
                               echo '<span class="green" style="font-weight: bold">Silahkan langsung menuju meja tensi.</span><br>';
                             }else{
-                              echo '6';
                               echo '<span class="red" style="font-weight: bold">Silahkan finger print pada kiosk</span><br>';
                             }
                           }else{
@@ -81,8 +77,9 @@
                     <address>
                       <div style="background: azure;padding: 6px;text-align: justify;">
                         <ol>
-                          <li>Silahkan klik tombol checkin dan scan finger print di kiosk pada hari H atau pada saat sebelum praktek dokter dimulai</li>
-                          <li>Setelah berhasil checkin silahkan langsung menuju tensi dan menunggu diruang poli</li>
+                          <li>Silahkan klik tombol <b>"Checkin"</b> dan scan finger print di kiosk pada <b>hari H</b> atau pada saat sebelum praktek dokter dimulai</li>
+                          <li>Setelah berhasil checkin silahkan langsung menuju meja tensi dan menunggu diruang tunggu poli</li>
+                          <li>Jika ada informasi <i>reschedule</i> jadwal kontrol atau berobat, silahkan klik <b>"Batal Berobat"</b> lalu registrasi ulang kembali H-1 atau pada hari H maksimal sebelum jam praktek dokter dimulai. </li>
                         </ol>
                       </div>
                     </address>

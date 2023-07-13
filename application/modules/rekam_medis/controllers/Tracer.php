@@ -92,7 +92,12 @@ class Tracer extends MX_Controller {
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->nama_pegawai;
             $is_kiosk = isset($row_list->fullname) ? 1 : 2 ;
-            $row[] = isset($row_list->fullname)?$row_list->fullname:'<span class="label label-success">KIOSK</span>';
+            if($row_list->tipe_daftar == null){
+                $row[] = isset($row_list->fullname)?$row_list->fullname:'<div class="center"><span class="label label-success">KIOSK</span></div>';
+            }else{
+                $row[] = '<div class="center"><span class="label label-primary">Web Checkin</span></div>';
+            }
+
             $row[] = '<div class="center">'.strtoupper($row_list->stat_pasien).'</div>';
             if($is_kiosk == 2){
                 if(in_array($row_list->kode_bagian_tujuan, array('050101','050201','050301'))){

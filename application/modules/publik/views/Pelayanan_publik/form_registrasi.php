@@ -356,7 +356,12 @@
             var provPerujuk = data.result.provPerujuk;
             var dueDate = data.result.masaBerlakuRujukan;
             
-            if(peserta.noKartu != $('#noKartuBpjs').val()){
+            var var_a = peserta.noKartu;
+            var noKartuBpjsRujukan = var_a.replace(/\s/g, '');
+            var var_b = $('#noKartuBpjs').val();
+            var noKartuBpjsRs = var_b.replace(/\s/g, '');
+
+            if(noKartuBpjsRujukan != noKartuBpjsRs){
               $('#msg_ress_rujukan').show();
               $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>Pemberitahuan !</strong><br>Nomor Kartu BPJS anda belum terdaftar di RS Setia Mitra.<div>');
               $('#result_rujukan').hide();
@@ -372,8 +377,6 @@
               $('#msg_ress_rujukan').show();
               var fit_start_time  = new Date();
               var fit_end_time    = dueDate; //2013-09-10
-
-
               if(Date.parse(fit_start_time) <= Date.parse(fit_end_time)){
                 $('#msg_ress_rujukan').html('<div class="alert alert-success"><strong>PESERTA '+peserta.statusPeserta.keterangan+' !</strong><br>Masa berlaku rujukan anda s.d tanggal <b><i>'+dueDate+'</i></b> dengan tujuan poli spesialis <b><i>'+poliRujukan.nama+'</i></b> <div>');
               }else{

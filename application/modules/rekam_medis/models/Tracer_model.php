@@ -24,6 +24,7 @@ class Tracer_model extends CI_Model {
 
 	private function _main_query(){
 		$this->db->select($this->select);
+		$this->db->select('pl_tc_poli.tipe_daftar');
 		$this->db->from($this->table);
 		$this->db->join('tc_registrasi',''.$this->table.'.no_registrasi=tc_registrasi.no_registrasi','left');
 		$this->db->join('mt_master_pasien',''.$this->table.'.no_mr=mt_master_pasien.no_mr','left');
@@ -31,6 +32,7 @@ class Tracer_model extends CI_Model {
 		$this->db->join('mt_bagian',''.$this->table.'.kode_bagian_tujuan=mt_bagian.kode_bagian','left');
 		$this->db->join('mt_karyawan',''.$this->table.'.kode_dokter=mt_karyawan.kode_dokter','left');
 		$this->db->join('tmp_user','tc_registrasi.no_induk=tmp_user.user_id','left');
+		$this->db->join('pl_tc_poli','tc_kunjungan.no_kunjungan=pl_tc_poli.no_kunjungan','left');
 		
 		/*if isset parameter*/
 		if( $_GET ) {
