@@ -48,6 +48,7 @@
                     <address style="margin-left: -7px" id="btn-action" class="center">
 
                       <?php 
+                        echo '<span style="color: red; font-weight: bold">'.$result->keterangan_reschedule.'</span><br>';
                         if($result->is_reschedule == 1){
                           echo '<span style="color: red; font-weight: bold">'.$result->keterangan_reschedule.'</span><br>';
                         }

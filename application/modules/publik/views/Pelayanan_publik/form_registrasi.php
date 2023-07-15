@@ -205,12 +205,15 @@
       // show no rujukan
       $('#search_rujukan').show();
       $('#div_asuransi').hide();
+      $('#btn-proses-registrasi').hide();
     }else if(val_radio == 'asuransi'){
       $('#search_rujukan').hide();
       $('#div_asuransi').show();
+      $('#btn-proses-registrasi').show();
     }else{
       $('#search_rujukan').hide();
       $('#div_asuransi').hide();
+      $('#btn-proses-registrasi').show();
     }
   });
 
@@ -269,7 +272,7 @@
                 $('#message_for_kuota').html(data.message);              
                 if(data.sisa_kuota > 0){
                     $('#btn-proses-registrasi').show('fast');
-                    $('#message_for_kuota').html('<div class="alert alert-success" style="padding: 5px !important"><b>Available ! </b>Sisa kuota dokter <b>'+data.sisa_kuota+'</b> pasien. </div>');
+                    $('#message_for_kuota').html('<div class="alert alert-success" style="padding: 5px !important"><b>Available ! </b>Sisa kuota dokter <b>'+data.sisa_kuota+'</b> pasien.<br></div>');
                 }else{
                     $('#btn-proses-registrasi').hide('fast');
                     $('#message_for_kuota').html('<span style="color: red; font-weight: bold; font-style:italic">- Kuota dokter penuh, silahkan ganti tanggal lain !</span>');
@@ -372,6 +375,7 @@
               $('#msg_ress_rujukan').show();
               $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>Pemberitahuan !</strong><br>Status Peserta anda <b>'+peserta.statusPeserta.keterangan+'</b><div>');
               $('#result_rujukan').hide();
+              $('#btn-proses-registrasi').hide();
               return false;
             }else{
               $('#msg_ress_rujukan').show();
@@ -379,8 +383,10 @@
               var fit_end_time    = dueDate; //2013-09-10
               if(Date.parse(fit_start_time) <= Date.parse(fit_end_time)){
                 $('#msg_ress_rujukan').html('<div class="alert alert-success"><strong>PESERTA '+peserta.statusPeserta.keterangan+' !</strong><br>Masa berlaku rujukan anda s.d tanggal <b><i>'+dueDate+'</i></b> dengan tujuan poli spesialis <b><i>'+poliRujukan.nama+'</i></b> <div>');
+                $('#btn-proses-registrasi').show();
               }else{
                 $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>RUJUKAN EXPIRED !</strong><br>Masa berlaku rujukan anda expired s.d tanggal <b><i>'+dueDate+'</i></b><div>');
+                $('#btn-proses-registrasi').hide();
               }
 
               
@@ -425,6 +431,11 @@
             $('#kode_faskes_hidden').val(provPerujuk.kode);
 
         }else{
+            $('#btn-proses-registrasi').hide();
+            if(data.status == 202){
+              $('#msg_ress_rujukan').show();
+              $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>RUJUKAN EXPIRED !</strong><br>'+data.message+'<div>');
+            }
             $.achtung({message: data.message, timeout:5, className: 'achtungFail'});
         }
         

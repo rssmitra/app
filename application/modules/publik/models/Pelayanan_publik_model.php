@@ -67,6 +67,7 @@ class Pelayanan_publik_model extends CI_Model {
 			'kode_poli_bpjs' => $kuota_dokter->kode_poli_bpjs,
 			'kode_bagian' => $kode_spesialis,
 			'tgl_registrasi' => $date,
+			'keterangan' => $kuota_dokter->jd_keterangan,
 		);
 
 		$message = ($sisa==0)?'<label class="label label-danger"><i class="fa fa-times-circle"></i> Maaf, Kuota sudah penuh !</label>':'<label class="label label-success"><i class="fa fa-check"></i> Kuota Terpenuhi</label>';
