@@ -2350,7 +2350,7 @@ class References extends MX_Controller {
 	}
 
 	function findFingerPrint(){
-		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir');
+		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep');
 		$this->db->from('tc_registrasi a');
 		$this->db->join('mt_master_pasien b', 'a.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');

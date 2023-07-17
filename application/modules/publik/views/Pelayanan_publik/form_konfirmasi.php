@@ -2,7 +2,7 @@
   function checkin(no_registrasi, no_mr, flag){
     $('#btn-action').hide();
     $.getJSON('publik/Pelayanan_publik/checkin/'+no_registrasi+'/'+no_mr+'/'+flag, '', function (data) { 
-      $('#btn-reload').html('<a href="#" class="btn btn-block" style="background: green !important; border-color: green" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan/"+$('#no_kunjungan').val()+"'"+')">Refresh Halaman</a>');
+      $('#btn-reload').html('<a href="#" class="btn btn-block" style="background: green !important; border-color: green" onclick="getMenu('+"'publik/Pelayanan_publik/konfirmasi_kunjungan/"+$('#no_kunjungan').val()+"'"+')">CEK STATUS</a>');
     })
   }
 </script>
