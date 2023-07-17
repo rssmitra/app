@@ -2,9 +2,91 @@
 
   $(document).ready(function(){
 
+    var no_mr = '<?php echo $no_mr?>';
+
+    table_riwayat = $('#riwayat-table').DataTable({ 
+      
+      "processing": true, //Feature control the processing indicator.
+      
+      "serverSide": true, //Feature control DataTables' server-side processing mode.
+            
+      "ordering": false,
+      "searching": false,
+      "bInfo": false,
+      "scrollY": "500px",
+      //"scrollX": "500px",
+      "lengthChange": false,
+      "bPaginate": false,
+      
+      // Load data for the table's content from an Ajax source
+      
+      "ajax": {
+          
+          "url": "registration/Reg_pasien/get_riwayat_perjanjian?mr="+no_mr,
+          
+          "type": "POST"
+      
+      },
+    
+    });
 
   });
 
+  
+  $('input[name="flag"]').click(function (e) {
+    var value = $(this).val();
+    var no_mr = $('#tabs_riwayat_perjanjian_id').attr('data-id');   
+    table_riwayat.ajax.url('registration/Reg_pasien/get_riwayat_perjanjian?mr='+no_mr+'&flag='+value).load();
+    
+  }); 
+
+  function cetak_surat_kontrol(ID) {   
+    var no_mr = $('#tabs_riwayat_perjanjian_id').attr('data-id');  
+    if( no_mr == '' ){
+      alert('Silahkan cari pasien terlebih dahulu !'); return false;
+    }else{
+      url = 'registration/Reg_pasien/surat_control?id_tc_pesanan='+ID;
+      title = 'Cetak Barcode';
+      width = 850;
+      height = 500;
+      PopupCenter(url, title, width, height);
+    }
+
+  }
+
+  function delete_perjanjian(id_tc_pesanan)
+  {  
+
+    if(confirm('Are you sure?')){
+      $.ajax({
+          url: 'registration/Input_perjanjian/delete',
+          type: "post",
+          data: {ID:id_tc_pesanan},
+          dataType: "json",
+          beforeSend: function() {
+            achtungShowLoader();  
+          },
+          uploadProgress: function(event, position, total, percentComplete) {
+          },
+          complete: function(xhr) {     
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+            if(jsonResponse.status === 200){
+              $.achtung({message: jsonResponse.message, timeout:5});
+              table_riwayat.ajax.reload();
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5});
+            }
+            achtungHideLoader();
+          }
+
+        });
+
+    }else{
+      return false;
+    }
+      
+  }
 
 </script>
 
