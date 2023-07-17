@@ -164,9 +164,10 @@ class Mst_tarif extends MX_Controller {
 
         /*get data from model*/
         $list = [];
-        if(isset($_GET['unit'])){
-            $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
-        }
+        $list = $this->Mst_tarif->get_datatables();
+        // if(isset($_GET['unit'])){
+        //     $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
+        // }
         // echo '<pre>';print_r($list);die;
         $data = array();
         $no = $_POST['start'];

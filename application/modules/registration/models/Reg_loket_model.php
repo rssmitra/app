@@ -202,7 +202,7 @@ class Reg_loket_model extends CI_Model {
 
 	function update_registrasi_kode_dokter($jd_id, $dokter_pengganti, $id){
 
-		$this->db->update('tc_registrasi', array('kode_dokter' => $dokter_pengganti, 'jd_id' => $id) , array('jd_id' => $jd_id, 'YEAR(tgl_jam_masuk)' => date('Y'), 'MONTH(tgl_jam_masuk)' => date('m'), 'DAY(tgl_jam_masuk)' => date('d') ) );
+		$this->db->update('tc_registrasi', array('kode_dokter' => $dokter_pengganti, 'jd_id' => $id) , array('jd_id' => $jd_id, 'CAST(tgl_jam_masuk as DATE) = ' => date('Y-m-d') ) );
 
 		return true;
 
@@ -210,7 +210,7 @@ class Reg_loket_model extends CI_Model {
 
 	function update_poli_kode_dokter($dokter_awal, $klinik, $dokter_pengganti){
 
-		$this->db->update('pl_tc_poli', array('kode_dokter' => $dokter_pengganti) , array('kode_dokter' => $dokter_awal, 'kode_bagian' => $klinik, 'YEAR(tgl_jam_poli)' => date('Y'), 'MONTH(tgl_jam_poli)' => date('m'), 'DAY(tgl_jam_poli)' => date('d') ) );
+		$this->db->update('pl_tc_poli', array('kode_dokter' => $dokter_pengganti) , array('kode_dokter' => $dokter_awal, 'kode_bagian' => $klinik, 'CAST(tgl_jam_poli as DATE) = ' => date('Y-m-d') ) );
 
 		return true;
 
@@ -218,7 +218,7 @@ class Reg_loket_model extends CI_Model {
 
 	function update_kunjungan_kode_dokter($dokter_awal, $klinik, $dokter_pengganti){
 
-		$this->db->update('tc_kunjungan', array('kode_dokter' => $dokter_pengganti) , array('kode_dokter' => $dokter_awal, 'kode_bagian_asal' => $klinik, 'YEAR(tgl_masuk)' => date('Y'), 'MONTH(tgl_masuk)' => date('m'), 'DAY(tgl_masuk)' => date('d') ) );
+		$this->db->update('tc_kunjungan', array('kode_dokter' => $dokter_pengganti) , array('kode_dokter' => $dokter_awal, 'kode_bagian_asal' => $klinik, 'CAST(tgl_masuk AS DATE) = ' => date('Y-m-d') ) );
 
 		return true;
 

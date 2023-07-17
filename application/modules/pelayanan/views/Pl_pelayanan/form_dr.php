@@ -787,21 +787,23 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
             <ul class="nav nav-tabs" id="myTab">
               <li class="active">
                 <a data-toggle="tab" id="tabs_diagnosa_dr" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                <i class="green ace-icon fa fa-file bigger-120"></i>
                   Form Resume Medis
                 </a>
               </li>
               <li>
                 <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                  <i class="red ace-icon fa fa-leaf bigger-120"></i>
                   Input CPPT
                 </a>
               </li>
 
               <li>
                 <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                  <i class="blue ace-icon fa fa-edit bigger-120"></i>
-                  Catatan Riwayat Penyakit/Pengkajian Pasien
+                  Pengkajian Pasien
+                </a>
+              </li>
+              <li>
+                <a data-toggle="tab" id="tabs_catatan" href="#" data-id="" data-url="pelayanan/Pl_pelayanan/info_harga_obat" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')">
+                  Informasi Harga Obat
                 </a>
               </li>
             </ul>

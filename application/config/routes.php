@@ -55,3 +55,7 @@ $route['translate_uri_dashes'] = FALSE;
 
 /*custom routes*/
 $route['verifikasiDoc'] = "Templates/Attachment/verifikasiDoc";
+
+// routing for public
+$route['public'] = "publik/Pelayanan_publik";
+$route['Registrasi_RJ'] = "publik/Pelayanan_publik/registrasi_rj";

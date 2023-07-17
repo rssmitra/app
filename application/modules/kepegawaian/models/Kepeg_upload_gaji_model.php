@@ -134,4 +134,16 @@ class Kepeg_upload_gaji_model extends CI_Model {
 	}
 
 
+	public function get_datail_row()
+	{
+		$this->db->from('kepeg_rincian_gaji');
+		$this->db->join('kepeg_gaji','kepeg_gaji.kg_id=kepeg_rincian_gaji.kg_id','left');
+		$this->db->where('kg_periode_bln', $_GET['bulan']);
+		$this->db->where('kg_periode_thn', $_GET['tahun']);
+		$this->db->where('nip', $_GET['nip']);
+		return $this->db->get()->row();
+		
+	}
+
+
 }
