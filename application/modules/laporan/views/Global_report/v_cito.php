@@ -77,10 +77,17 @@
                   echo '<td>'.$row_data->nama_brg.'</td>';
                   echo '<td>'.$row_data->satuan_kecil.'</td>';
                   echo '<td>'.$row_data->jumlah_kcl.'</td>';
-                  echo '<td>'.number_format($row_data->harga_beli).'</td>';
-                  echo '<td>'.number_format($row_data->total_harga).'</td>';
-                  echo '<td>'.number_format($row_data->harga_jual).'</td>';
-                  echo '<td>'.number_format($row_data->tot_harga_jual).'</td>';
+                  if($_POST['submit']=='excel'){
+                    echo '<td>'.$row_data->harga_beli.'</td>';
+                    echo '<td>'.$row_data->total_harga.'</td>';
+                    echo '<td>'.$row_data->harga_jual.'</td>';
+                    echo '<td>'.$row_data->tot_harga_jual.'</td>';  
+                  }else{
+                    echo '<td>'.number_format($row_data->harga_beli).'</td>';
+                    echo '<td>'.number_format($row_data->total_harga).'</td>';
+                    echo '<td>'.number_format($row_data->harga_jual).'</td>';
+                    echo '<td>'.number_format($row_data->tot_harga_jual).'</td>';
+                  }
                   echo '<td>'.$row_data->tempat_pembelian.'</td>';
               ?>
             </tr>
@@ -90,9 +97,15 @@
             ?>
           <tr class="contentTable">
               <td align="center" colspan="6"><b>T O T A L</b></td>
-              <td align="right"><b><?php echo number_format($total_harganya) ?></b>&nbsp;</td>
-              <td align="right"><b><?php echo number_format($harga_jualnya) ?></b>&nbsp;</td>
-              <td align="right"><b><?php echo number_format($total_jual) ?></b>&nbsp;</td>
+              <?php if($_POST['submit']=='excel') :?>
+              <td align="right"><b><?php echo $total_harganya ?></b>&nbsp;</td>
+              <td align="right"><b><?php echo $harga_jualnya ?></b>&nbsp;</td>
+              <td align="right"><b><?php echo $total_jual ?></b>&nbsp;</td>
+              <?php else :?>
+                <td align="right"><b><?php echo number_format($total_harganya) ?></b>&nbsp;</td>
+                <td align="right"><b><?php echo number_format($harga_jualnya) ?></b>&nbsp;</td>
+                <td align="right"><b><?php echo number_format($total_jual) ?></b>&nbsp;</td>
+              <?php endif; ?>
               <td align="right">&nbsp;&nbsp;</td>
             </tr>
            
