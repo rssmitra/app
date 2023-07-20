@@ -385,6 +385,15 @@ class Reg_pasien extends MX_Controller {
     
     }
 
+    public function konfirmasi_fp($no_kartu_bpjs) { 
+        
+        $data = [
+            'no_kartu_bpjs' => $no_kartu_bpjs,
+        ];
+        $this->load->view('Reg_pasien/form_konfirm_fp', $data);
+    
+    }
+
     /*public function tracer($no_registrasi,$no_mr='') { 
         
         $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);

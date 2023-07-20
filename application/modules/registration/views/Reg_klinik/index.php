@@ -1163,6 +1163,7 @@ function find_pasien_by_keyword(keyword){
             $('#tabs_riwayat_transaksi_id').attr('data-id', obj.no_mr);
             $('#tabs_riwayat_perjanjian_id').attr('data-id', obj.no_mr);
             $('#tabs_riwayat_booking_online_id').attr('data-id', obj.no_mr);
+            $('#tabs_konfirm_fp_id').attr('data-id', obj.no_kartu_bpjs);
 
             $("#myTab li").removeClass("active");
             // show riwayat perjanjian as default
@@ -1608,9 +1609,9 @@ function form_perjanjian(){
               <li class="hover">
                 <a href="#" id="btn_identitas_berobat_pasien"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Ringkasan </span></a><b class="arrow"></b>
               </li>
-              <li class="hover">
+              <!-- <li class="hover">
                 <a href="#" onclick="showModalEditPasien()"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Update Pasien </span></a><b class="arrow"></b>
-              </li>
+              </li> -->
               <li class="hover">
                 <a data-toggle="tab" id="tabs_rekam_medis_id" href="#" data-id="0" data-url="registration/reg_pasien/get_riwayat_medis" onclick="get_riwayat_medis()"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Rekam Medis </span></a><b class="arrow"></b>
               </li>
@@ -1624,6 +1625,9 @@ function form_perjanjian(){
               </li>
               <li class="hover">
                 <a data-toggle="tab" data-id="0" data-url="registration/reg_pasien/riwayat_perjanjian" id="tabs_riwayat_perjanjian_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> Riwayat Perjanjian </span></a><b class="arrow"></b>
+              </li>
+              <li class="hover">
+                <a data-toggle="tab" data-id="0" data-url="registration/Reg_pasien/konfirmasi_fp" id="tabs_konfirm_fp_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-thumbs-up"></i><span class="menu-text"> Finger Print </span></a><b class="arrow"></b>
               </li>
               <!-- <li class="hover">
                 <a href="#" onclick="show_antrian_poli()"><i class="menu-icon fa fa-exclamation-circle"></i><span class="menu-text"> Antrian Poli/klinik </span></a><b class="arrow"></b>
@@ -1691,7 +1695,7 @@ function form_perjanjian(){
                     </li>
                   </ul>
 
-                  <a href="#" class="btn btn-primary btn-block center" onclick="showModalEditPasien()" style="margin-top:10px"><b>Selengkapnya</b></a>
+                  <a href="#" class="btn btn-primary btn-block center" onclick="showModalEditPasien()" style="margin-top:10px"><b>Update Data</b></a>
                   <a href="#" class="btn btn-danger btn-block center" onclick="showModalMergePasien()"><b>Merge Pasien</b></a>
                   <a href="#" class="btn btn-success btn-block center" onclick="showModalTTD()"><b>Tanda Tangan</b></a>
                   
