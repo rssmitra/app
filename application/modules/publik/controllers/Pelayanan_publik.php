@@ -125,7 +125,17 @@ class Pelayanan_publik extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();
-           
+            // validasi tanggal kunjungan
+            $max_date = date('Y-m-d', strtotime('+1 day'));
+            if($max_date < $_POST['tgl_registrasi']){
+                echo json_encode(array('status' => 301, 'message' => 'Anda belum bisa melakukan pendaftaran pada tanggal '.$_POST['tgl_registrasi'].''));
+                exit;
+            }
+            
+            if($_POST['is_expired'] == 1){
+                echo json_encode(array('status' => 301, 'message' => 'Udah dikasih informasi rujukan expired masih aja dilanjutin!'));
+                exit;
+            }
 
             $datapoli = array();
             $title = $this->title;

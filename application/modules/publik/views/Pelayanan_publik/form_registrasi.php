@@ -43,6 +43,7 @@
         $('#sisa_kuota').val('');
         $('#kuotadr').val('');
         $('#jd_id').val('');
+        $('#message_for_kuota').html('');
         getKlinikByJadwalDefault();
 
     });
@@ -210,10 +211,12 @@
       $('#search_rujukan').hide();
       $('#div_asuransi').show();
       $('#btn-proses-registrasi').show();
+      $('#is_expired').val(0);
     }else{
       $('#search_rujukan').hide();
       $('#div_asuransi').hide();
       $('#btn-proses-registrasi').show();
+      $('#is_expired').val(0);
     }
   });
 
@@ -272,7 +275,7 @@
                 $('#message_for_kuota').html(data.message);              
                 if(data.sisa_kuota > 0){
                     $('#btn-proses-registrasi').show('fast');
-                    $('#message_for_kuota').html('<div class="alert alert-success" style="padding: 5px !important"><b>Available ! </b>Sisa kuota dokter <b>'+data.sisa_kuota+'</b> pasien.<br></div>');
+                    $('#message_for_kuota').html('<div class="alert alert-success" style="padding: 5px !important"><b>Available ! </b>Sisa kuota dokter <b>'+data.sisa_kuota+'</b> pasien.<br>'+objData.keterangan+'</div>');
                 }else{
                     $('#btn-proses-registrasi').hide('fast');
                     $('#message_for_kuota').html('<span style="color: red; font-weight: bold; font-style:italic">- Kuota dokter penuh, silahkan ganti tanggal lain !</span>');
@@ -295,6 +298,7 @@
     $('#current_day').val(current_day);
     
     var url = 'getKlinikFromJadwal';
+    $('#reg_dokter_rajal option').remove();  
 
     $.getJSON("<?php echo site_url('publik/Pelayanan_publik/') ?>"+url+"/" +current_day+'/'+date, '', function (data) {              
         $('#reg_klinik_rajal option').remove();  
@@ -429,9 +433,11 @@
             $('#hpPasien').val(peserta.mr.noTelepon);
             $('#catatan').val(rujukan.keluhan);
             $('#kode_faskes_hidden').val(provPerujuk.kode);
+            $('#is_expired').val(0);
 
         }else{
             $('#btn-proses-registrasi').hide();
+            $('#is_expired').val(1);
             if(data.status == 202){
               $('#msg_ress_rujukan').show();
               $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>RUJUKAN EXPIRED !</strong><br>'+data.message+'<div>');
@@ -571,6 +577,7 @@
                     </button>
                   </span>
                   <input type="hidden" name="kode_faskes_hidden" id="kode_faskes_hidden">
+                  <input type="hidden" name="is_expired" id="is_expired" value="0">
                 </div>
 
                 <div id="msg_ress_rujukan"></div>

@@ -383,6 +383,8 @@ class Reg_klinik extends MX_Controller {
             $datapoli['flag_antrian'] = $tipe_antrian;
             $datapoli['no_antrian'] = $no_antrian;
             $datapoli['nama_pasien'] = $_POST['nama_pasien_hidden'];
+            $datapoli['created_date'] = date('Y-m-d H:i:s');
+            $datapoli['updated_date'] = date('Y-m-d H:i:s');
             
             //print_r($datapoli);die;
             /*save poli*/

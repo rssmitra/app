@@ -36,6 +36,8 @@ final Class Daftar_pasien {
           'jd_id' => $jd_id,
           'kode_faskes' => $kode_faskes,
           'no_induk' => isset($CI->session->userdata('user')->user_id)?$CI->session->userdata('user')->user_id:0,
+          'created_date' => date('Y-m-d H:i:s'),
+          'updated_date' => date('Y-m-d H:i:s'),
         );
         
         /*print_r($data);die;*/
@@ -71,6 +73,8 @@ final Class Daftar_pasien {
             'kode_bagian_asal' => $kode_bagian_asal,
             'tgl_masuk' => ($tgl_kunjungan == '') ? date('Y-m-d H:i:s') : $tgl_kunjungan,
             'status_masuk' => ($kode_bagian_asal!=$kode_bagian_tujuan)?1:0,
+            'created_date' => date('Y-m-d H:i:s'),
+            'updated_date' => date('Y-m-d H:i:s'),
         );
 
         
@@ -101,7 +105,8 @@ final Class Daftar_pasien {
             'status_keluar' => ($status_keluar!='')?$status_keluar:3, 
             'tgl_keluar' => date('Y-m-d H:i:s'), 
             'cara_keluar_pasien' => isset($_POST['cara_keluar'])?$_POST['cara_keluar']:'', 
-            'pasca_pulang' => isset($_POST['pasca_pulang'])?$_POST['pasca_pulang']:''
+            'pasca_pulang' => isset($_POST['pasca_pulang'])?$_POST['pasca_pulang']:'',
+            'updated_date' => date('Y-m-d H:i:s'),
         );
 
         $CI->db->update('tc_kunjungan', $arrKunjungan, array('no_kunjungan' => $no_kunjungan) );
