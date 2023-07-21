@@ -399,8 +399,12 @@ class Pelayanan_publik extends MX_Controller {
             'result' => $detail_data,
         ];
         if($flag == 'checkin'){
-            $tracer = $this->print_escpos->print_direct($data_tracer);
-            $status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
+            if($detail_data['registrasi']->print_tracer != 'Y'){
+                $tracer = $this->print_escpos->print_direct($data_tracer);
+                $status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
+            }else{
+                $status_tracer = 'Y';
+            }
             $konfirm_fp = ($detail_data['registrasi']->kode_perusahaan != 120) ? '1' : null;
             $this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => $konfirm_fp, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $no_registrasi) );
         }else{
