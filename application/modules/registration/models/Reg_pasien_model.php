@@ -745,7 +745,7 @@ class Reg_pasien_model extends CI_Model {
 
 	public function get_pesanan_pasien_($id_tc_pesanan){
 		$qry = "
-				SELECT a.no_mr, a.nama, a.kode_perjanjian, a.unique_code_counter as counter, CONVERT(date, a.tgl_pesanan) as tgl_kembali, a.keterangan,
+				SELECT a.no_mr, a.nama, a.kode_perjanjian, a.unique_code_counter as counter, CONVERT(date, a.tgl_pesanan) as tgl_kembali, a.keterangan, b.no_kartu_bpjs,
 				(SELECT diagnosa_akhir FROM th_riwayat_pasien 
 				WHERE kode_riwayat=(SELECT MAX(z.kode_riwayat) FROM th_riwayat_pasien z 
 				WHERE z.no_mr=a.no_mr)) as diagnosa_akhir, (SELECT no_registrasi FROM tc_registrasi 
