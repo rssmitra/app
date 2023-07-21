@@ -2354,7 +2354,7 @@ class References extends MX_Controller {
 		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
 		$this->load->library('print_escpos');
 
-		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep');
+		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer');
 		$this->db->from('tc_registrasi a');
 		$this->db->join('mt_master_pasien b', 'a.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');
@@ -2396,8 +2396,12 @@ class References extends MX_Controller {
 					'result' => $detail_data,
 				];
 				// echo '<pre>'; print_r($data_tracer);die;
-				$tracer = $this->print_escpos->print_direct($data_tracer);
-				$status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
+				if($response['data']->print_tracer != 'Y'){
+					$tracer = $this->print_escpos->print_direct($data_tracer);
+					$status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
+				}else{
+					$status_tracer = 'Y';
+				}
 				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
 
 			}
