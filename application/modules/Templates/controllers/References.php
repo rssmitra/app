@@ -2350,6 +2350,10 @@ class References extends MX_Controller {
 	}
 
 	function findFingerPrint(){
+
+		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+		$this->load->library('print_escpos');
+
 		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep');
 		$this->db->from('tc_registrasi a');
 		$this->db->join('mt_master_pasien b', 'a.no_mr=b.no_mr','left');
@@ -2358,6 +2362,7 @@ class References extends MX_Controller {
 		$this->db->where('b.no_kartu_bpjs', $_POST['kode']);
 		$this->db->where('CAST(a.tgl_jam_masuk as DATE) = ', date('Y-m-d'));
 		$query = $this->db->get();
+		// echo '<pre>'; print_r($query->num_rows());die;
 		if($query->num_rows() == 0){
 			echo json_encode(array('status' => 201, 'message' => 'Anda belum terdaftar, silahkan ambil nomor antrian pendaftaran'));
 			exit;
@@ -2366,6 +2371,7 @@ class References extends MX_Controller {
 		$this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
 		$service_name = "SEP/FingerPrint/Peserta/".$_POST['kode']."/TglPelayanan/".date('Y-m-d')."";
 		$result = $this->Ws_index->getData($service_name);
+		
 		
 		if(isset($result['data'])){
 			if($result['data']->kode == 0){
@@ -2381,12 +2387,22 @@ class References extends MX_Controller {
 					'status' => 200,
 					'message' => $result['data']->status,
 					'data' => $query->row(),
-					
 				);
+
+				$detail_data = $this->Reg_pasien->get_detail_resume_medis($response['data']->no_registrasi);
+				
+				$data_tracer = [
+					'no_mr' => $response['data']->no_mr,
+					'result' => $detail_data,
+				];
+				// echo '<pre>'; print_r($data_tracer);die;
+				$tracer = $this->print_escpos->print_direct($data_tracer);
+				$status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
+				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
+
 			}
 		}
-		// update tc_registrasi
-		$this->db->where('no_registrasi', $query->row()->no_registrasi)->update('tc_registrasi', array('konfirm_fp' => $response['status_fp']) );
+		
 		echo json_encode($response);
 		
 	}
