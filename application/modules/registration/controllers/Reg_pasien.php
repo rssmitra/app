@@ -387,6 +387,8 @@ class Reg_pasien extends MX_Controller {
 
     public function konfirmasi_fp($no_kartu_bpjs) { 
         
+        // $result = $this->db->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = pl_tc_poli.no_kunjungan', 'left')->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_kunjungan.no_mr AND CAST(tc_kunjungan.tgl_masuk as DATE) = '."'".date('Y-m-d')."'".'', 'left')->get_where('pl_tc_poli', array('mt_master_pasien.no_kartu_bpjs' => $no_kartu_bpjs))->row();
+        // echo $this->db->last_query();
         $data = [
             'no_kartu_bpjs' => $no_kartu_bpjs,
         ];
