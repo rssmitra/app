@@ -458,6 +458,13 @@ class Pelayanan_publik extends MX_Controller {
         echo json_encode( $data );
     }
 
+    public function getJadwalDokter($kd_bagian='', $day='', $date='')
+	{
+		$result = $this->Pelayanan_publik->getJadwalDokter($kd_bagian, $day);
+		
+        echo json_encode($result->result());
+	}
+
     
 
 }

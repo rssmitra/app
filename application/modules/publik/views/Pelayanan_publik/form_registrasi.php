@@ -225,7 +225,7 @@
     /*current day*/
     current_day = $('#current_day').val();
 
-    var url_get_dokter = '<?php echo site_url('Templates/References/getDokterBySpesialisFromJadwal/')?>'+$(this).val()+'/'+current_day+'/'+$('#tgl_registrasi').val()+'';
+    var url_get_dokter = '<?php echo site_url('publik/Pelayanan_publik/getJadwalDokter/')?>'+$(this).val()+'/'+current_day+'/'+$('#tgl_registrasi').val()+'';
 
     
     if ($(this).val() != '012801') {     

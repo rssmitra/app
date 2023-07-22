@@ -148,6 +148,8 @@ class References extends MX_Controller {
         echo json_encode($exc->result());
 	}
 
+	
+
 	public function getDokterBySpesialisFromJadwalDefault($kd_bagian='', $day='')
 	{
 		$query = "select a.jd_id,a.jd_kode_dokter as kode_dokter,b.nama_pegawai
