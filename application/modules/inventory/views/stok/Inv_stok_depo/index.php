@@ -24,6 +24,21 @@
         console.log(searchIDs);
   });
 
+  $('select[name="kode_bagian"]').change(function () {
+      if ($(this).val()) {
+          $.getJSON("<?php echo site_url('Templates/References/getRakUnit') ?>/" + $(this).val(), '', function (data) {
+              $('#rak option').remove();
+              $('<option value="">-Pilih Semua-</option>').appendTo($('#rak'));
+              $.each(data, function (i, o) {
+                  $('<option value="' + o.value + '">' + o.label + '</option>').appendTo($('#rak'));
+              });
+
+          });
+      } else {
+          $('#rak option').remove()
+      }
+  });
+
   function print_data_label(myid){
   
     $.ajax({
@@ -217,7 +232,14 @@
                 </span>
               </div>
             </div>
-            <div class="col-md-8">
+            <label class="control-label col-md-1">Rak</label>
+            <div class="col-md-2">
+              <?php 
+                  $flag_data = 'rak_medis';
+                  echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => $flag_data, 'is_active' => 'Y', 'reff_id' => '060101')), '' , 'rak', 'rak', 'form-control', '', '') 
+              ?>
+            </div>
+            <div class="col-md-4">
               <div class="checkbox" style="margin-top: -5px">
                     <label>
                       <input name="min_stok" id="min_stok" type="checkbox" class="ace" value="1" />
