@@ -103,6 +103,7 @@ class Pelayanan_publik extends MX_Controller {
         $this->form_validation->set_rules('reg_dokter_rajal', 'Dokter', 'trim|required');
         $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');
         $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
+        $this->form_validation->set_rules('is_expired', 'Status Expired Rujukan', 'trim|required');
         
         if(isset($_POST['jenis_pasien']) && $_POST['jenis_pasien']=='asuransi'){
             $this->form_validation->set_rules('kode_perusahaan_hidden', 'Asuransi', 'trim|required', array('required' => 'Silahkan pilih asuransi anda'));
@@ -132,6 +133,11 @@ class Pelayanan_publik extends MX_Controller {
                 exit;
             }
             
+            if($_POST['is_expired'] == 0){
+                echo json_encode(array('status' => 301, 'message' => 'Cari dulu Nomor Rujukannya, kalo aktif baru bisa lanjut daftar!'));
+                exit;
+            }
+
             if($_POST['is_expired'] == 1){
                 echo json_encode(array('status' => 301, 'message' => 'Udah dikasih informasi rujukan expired masih aja dilanjutin!'));
                 exit;

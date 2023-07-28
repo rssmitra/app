@@ -66,7 +66,6 @@
       complete: function(xhr) {     
         var data=xhr.responseText;
         var jsonResponse = JSON.parse(data);
-
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
           getMenu('publik/Pelayanan_publik/konfirmasi_kunjungan/'+jsonResponse.no_kunjungan+'?noKartu='+$('#noKartuBpjs').val()+'&tgl='+jsonResponse.tgl_registrasi+'&jam_praktek='+jsonResponse.jam_praktek+'');
@@ -370,7 +369,7 @@
 
             if(noKartuBpjsRujukan != noKartuBpjsRs){
               $('#msg_ress_rujukan').show();
-              $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>Pemberitahuan !</strong><br>Nomor Kartu BPJS anda belum terdaftar di RS Setia Mitra.<div>');
+              $('#msg_ress_rujukan').html('<div class="alert alert-danger"><strong>Pemberitahuan !</strong><br>Nomor Kartu BPJS ('+noKartuBpjsRujukan+') anda belum terdaftar di RS Setia Mitra atau tidak sesuai dengan data pasien diatas.<div>');
               $('#result_rujukan').hide();
               return false;
             }
@@ -433,7 +432,7 @@
             $('#hpPasien').val(peserta.mr.noTelepon);
             $('#catatan').val(rujukan.keluhan);
             $('#kode_faskes_hidden').val(provPerujuk.kode);
-            $('#is_expired').val(0);
+            $('#is_expired').val(2);
 
         }else{
             $('#btn-proses-registrasi').hide();
