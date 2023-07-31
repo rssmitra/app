@@ -475,6 +475,17 @@ class Templates extends MX_Controller {
             );
 
         }
+
+        // module kepegawaian
+        if ($_GET['mod']==8) {
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'profile-pegawai',
+                'style' => 'custom',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=80&TypeChart=custom&style=1&mod='.$_GET['mod'].'',
+            );
+        }
         
         echo json_encode($data);
     }

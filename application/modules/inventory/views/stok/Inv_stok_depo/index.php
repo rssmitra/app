@@ -75,7 +75,7 @@
           if(jsonResponse.status === 200){  
             $.achtung({message: jsonResponse.message, timeout:5}); 
             /*reload table*/
-            reset_table(kode_bag);
+            // reset_table(kode_bag);
           }else{          
             $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
           } 

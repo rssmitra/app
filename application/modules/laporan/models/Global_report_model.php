@@ -721,12 +721,22 @@ class Global_report_model extends CI_Model {
 	public function pengadaan_mod_5(){
 		if($_POST['keterangan']=='medis'){
 			
-					$query = 'SELECT a.no_po, a.tgl_po, b.kode_brg, b.jumlah_besar, b.harga_satuan_netto, b.jumlah_harga_netto, c.nama_brg, d.namasupplier FROM tc_po a JOIN tc_po_det b ON b.id_tc_po=a.id_tc_po JOIN mt_barang c ON c.kode_brg=b.kode_brg JOIN mt_supplier d ON d.kodesupplier=a.kodesupplier WHERE YEAR(a.tgl_po)='."'".$_POST['year']."'".' AND MONTH(a.tgl_po)='."'".$_POST['from_month']."'".' AND (b.status_batal<>1 OR b.status_batal IS NULL) ORDER BY a.tgl_po, d.namasupplier, c.nama_brg';
+			$query = 'SELECT a.no_po, CAST(a.tgl_po as DATE) as tgl_po, b.kode_brg, b.jumlah_besar, b.harga_satuan_netto, b.jumlah_harga_netto, c.nama_brg, d.namasupplier, e.kode_permohonan, e.tgl_acc, f.tgl_penerimaan, f.no_faktur, jumlah_kirim_decimal as jml_diterima
+			FROM tc_po_det b 
+			LEFT JOIN tc_po a ON b.id_tc_po=a.id_tc_po 
+			LEFT JOIN mt_barang c ON c.kode_brg=b.kode_brg 
+			LEFT JOIN mt_supplier d ON d.kodesupplier=a.kodesupplier 
+			LEFT JOIN tc_permohonan e ON e.id_tc_permohonan = b.id_tc_permohonan
+			LEFT JOIN tc_penerimaan_barang_detail g ON (g.id_tc_po_det = b.id_tc_po_det)
+			LEFT JOIN tc_penerimaan_barang f on f.id_penerimaan = g.id_penerimaan
+			WHERE YEAR(a.tgl_po)='."'".$_POST['year']."'".' AND MONTH(a.tgl_po)='."'".$_POST['from_month']."'".' AND (b.status_batal<>1 OR b.status_batal IS NULL) 
+			
+			ORDER BY CAST(a.tgl_po as DATE) DESC';
 				
 		}
 		else{
 			
-					$query = 'SELECT a.no_po, a.tgl_po, b.kode_brg, b.jumlah_besar, b.harga_satuan_netto, b.jumlah_harga_netto, c.nama_brg, d.namasupplier FROM tc_po_nm a JOIN tc_po_nm_det b ON b.id_tc_po=a.id_tc_po JOIN mt_barang_nm c ON c.kode_brg=b.kode_brg JOIN mt_supplier d ON d.kodesupplier=a.kodesupplier WHERE YEAR(a.tgl_po)='."'".$_POST['year']."'".' AND MONTH(a.tgl_po)='."'".$_POST['from_month']."'".' AND (b.status_batal<>1 OR b.status_batal IS NULL) ORDER BY a.tgl_po, d.namasupplier, c.nama_brg';
+			$query = 'SELECT a.no_po, a.tgl_po, b.kode_brg, b.jumlah_besar, b.harga_satuan_netto, b.jumlah_harga_netto, c.nama_brg, d.namasupplier FROM tc_po_nm a JOIN tc_po_nm_det b ON b.id_tc_po=a.id_tc_po JOIN mt_barang_nm c ON c.kode_brg=b.kode_brg JOIN mt_supplier d ON d.kodesupplier=a.kodesupplier WHERE YEAR(a.tgl_po)='."'".$_POST['year']."'".' AND MONTH(a.tgl_po)='."'".$_POST['from_month']."'".' AND (b.status_batal<>1 OR b.status_batal IS NULL) ORDER BY a.tgl_po, d.namasupplier, c.nama_brg';
 				
 		}
 			
