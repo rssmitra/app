@@ -75,7 +75,12 @@
           if(jsonResponse.status === 200){  
             $.achtung({message: jsonResponse.message, timeout:5}); 
             /*reload table*/
-            // reset_table(kode_bag);
+            $('#stat_on_off_'+kode_brg+'_'+kode_brg+'').val(jsonResponse.status_aktif);
+            if(jsonResponse.status_aktif == 1){
+              $('#status_aktif_'+kode_brg+'_'+kode_bag+'').html('<span class="label label-sm label-success">Active</span>');
+            }else{
+              $('#status_aktif_'+kode_brg+'_'+kode_bag+'').html('<span class="label label-sm label-danger">Not Active</span>');
+            }
           }else{          
             $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
           } 

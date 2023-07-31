@@ -634,6 +634,19 @@ final Class Graph_master {
             $data = $db->query($query)->result_array();
         }
 
+        // modul kepegawaian
+        if($params['prefix']==80){
+            $query = "SELECT TOP 20 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
+                        FROM pm_hasilpasien_v b
+                        WHERE YEAR(b.tgl_periksa) = ".date('Y')."
+                        GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
+            $fields = array('Nama_Pemeriksaan' => 'nama_tindakan', 'Total' => 'total');
+            $title = '<span style="font-size:13.5px">20 Jenis Pemeriksaan Lab Terbanyak  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' Tahun '.date('Y').' </span></small>';
+            $subtitle = 'Source: RSSM - SIRS';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
         // end modul laboratorium
         /*find and set type chart*/
         $chart = $this->chartTypeData($params['TypeChart'], $fields, $params, $data);
@@ -730,11 +743,14 @@ final Class Graph_master {
                 }
 
             break;
-        
+            case 'custom':
+                if ($params['style']=='profilePegawai') {
+                    return $this->profilePegawai($fields, $params, $data);
+                }
+            break;
             case 'custom-antrol':
                 return $this->customDashboardAntrol($fields, $params, $data);
             break;
-                
             default:
                 # code...
                 break;
@@ -1359,6 +1375,23 @@ final Class Graph_master {
         );
         // echo '<pre>';print_r($result); die;
         $html = $CI->load->view('ws_bpjs/Ws_index/DashboardAntrolView', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function profilePegawai($fields='', $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        $result = array();
+
+        echo '<pre>';print_r($result); die;
+        $html = $CI->load->view('kepegawaian/Kepeg_dashboard/profile_view', $result, true);
         
         
         $chart_data = array(
