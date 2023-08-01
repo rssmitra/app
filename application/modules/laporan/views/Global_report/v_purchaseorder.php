@@ -46,6 +46,7 @@
             <tr>
               <th width="25">No.</th>
               <th>No Permintaan</th>
+              <th>Tgl Permintaan</th>
               <th>Tgl Persetujuan</th>
               <th>No PO</th>
               <th>Tgl PO</th>
@@ -63,26 +64,26 @@
           </thead>
           <tbody>
             <?php $no  = 0; 
-            $sumsatuan =0;
-            $sumjumlah =0;
+            $ttlharganetto = [];
             foreach($result['data'] as $row_data){
-            $sumsatuan +=$row_data->harga_satuan_netto;
-            $sumjumlah +=$row_data->jumlah_harga_netto;
+            $subttlharganetto = $row_data->jml_diterima * $row_data->harga_satuan_netto;
+            $ttlharganetto[] = $subttlharganetto;
               $no++; 
               ?>
               <tr>
                 <td align="right" width="25"><?php echo $no ?></td>
                 <td align="center"><?php echo $row_data->kode_permohonan ?></td>
+                <td align="center"><?php echo $row_data->tgl_permohonan ?></td>
                 <td align="center"><?php echo $row_data->tgl_acc ?></td>
                 <td align="center"><?php echo $row_data->no_po ?>&nbsp;</td>
                 <td align="center"><?php echo $row_data->tgl_po ?></td>
                 <td align="left"><?php echo $row_data->namasupplier ?>&nbsp;</td>
                 <td align="left"><?php echo $row_data->nama_brg ?>&nbsp;</td>
-                <td align="right"><?php echo $row_data->jumlah_besar ?></td>
-                <td><?php echo $row_data->jml_diterima ?></td>
-                <td><?php $selisih = $row_data->jumlah_besar - $row_data->jml_diterima; echo $selisih; ?></td>
-                <td align="right"><?php echo number_format($row_data->harga_satuan_netto) ?></td>
-                <td align="right"><?php echo number_format($row_data->jumlah_harga_netto) ?></td>
+                <td align="center"><?php echo $row_data->jumlah_besar ?></td>
+                <td align="center"><?php echo $row_data->jml_diterima ?></td>
+                <td align="center"><?php $selisih = $row_data->jumlah_besar - $row_data->jml_diterima; echo $selisih; ?></td>
+                <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $row_data->harga_satuan_netto : number_format($row_data->harga_satuan_netto) ?></td>
+                <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $subttlharganetto : number_format($subttlharganetto) ?></td>
                 <td><?php echo $row_data->tgl_penerimaan ?></td>
                 <td><?php echo $row_data->no_faktur ?></td>
                 
@@ -90,9 +91,8 @@
             <?php 
           // endforeach; 
         }?>
-        <td colspan="6" align="right">Total</td>
-        <td align="right"><?php echo number_format($sumsatuan) ?></td>
-        <td align="right"><?php echo number_format($sumjumlah) ?></td>
+        <td colspan="11" align="right" style="text-transform: uppercase; font-weight: bold">Total Harga Netto Penerimaan Barang</td>
+        <td align="left" colspan="2" style="font-weight: bold"><?php echo ($_POST['submit'] == 'excel') ? array_sum($ttlharganetto) : number_format(array_sum($ttlharganetto)) ?></td>
         </tr>            
           </tbody>
         </table>

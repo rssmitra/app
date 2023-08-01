@@ -38,27 +38,14 @@
        <table class="greyGridTable">
         <thead>
           <tr>
-            <th width="55" rowspan="2" colspan="1">NO</th>
-            <th width="100" colspan="2" align="center">Permohonan</th>
-            <?php if ($status!="1"){?>
-            <th width="100" colspan="2" align="center">Persetujuan</th>
-          <?php }
-          ?>
-           <th width="120" rowspan="2" colspan="1">Jumlah</th>
-           <?php if ($status==""){?>
-            <th width="176" rowspan="2" colspan="1">Status</th>
-          <?php } ?>
-          </tr>
-           <tr>
-            <th width="100" colspan="1" align="center">Kode</th>
-            <th width="100" colspan="1" align="center">Tanggal</th>
-            <?php if ($status!="1"){?>
-            <th width="100" colspan="1" align="center">Kode</th>
-           <th width="120" rowspan="2" colspan="1" align="center">Tanggal</th>
-            <?php 
-          }
-          ?>
-          </tr>
+            <th width="55">NO</th>
+            <th align="center">Kode Permohonan</th>
+            <th align="center">Tgl Permohonan</th>
+            <th align="center">Kode Barang</th>
+            <th align="center">Nama Barang</th>
+            <th align="center">Jumlah Permohonan</th>
+            <th align="center">Jml ACC<br>Verifikator I</th>
+            <th align="center">Jml ACC<br>Verifikator II</th>
         </thead>
         <tbody>
           <?php $no = 0; 
@@ -71,14 +58,11 @@
               <?php 
                   echo '<td>'.$row_data->kode_permohonan.'</td>';
                   echo '<td>'.$row_data->tgl_permohonan.'</td>';
-              if ($status!="1"){
-                  echo '<td>'.$row_data->no_acc.' </td>';
-                  echo '<td>'.$row_data->tgl_acc.' </td>';
-                }
-                  echo '<td>'.$row_data->jml_brg.'</td>';
-               if ($status==""){  
-                  echo '<td>'.$row_data->status_batal=="0" ? "ACC" : ($row_data->status_batal=="1" ? "Tidak ACC" : "Belum Disetujui").'</td>';
-                }
+                  echo '<td>'.$row_data->kode_brg.'</td>';
+                  echo '<td style="text-align: left">'.$row_data->nama_brg.'</td>';
+                  echo '<td>'.number_format($row_data->jml_besar, 2).'</td>';
+                  echo '<td>'.number_format($row_data->jml_besar_acc, 2).'</td>';
+                  echo '<td>'.number_format($row_data->jml_acc_penyetuju, 2).'</td>';
               ?>
             </tr>
           <?php 
