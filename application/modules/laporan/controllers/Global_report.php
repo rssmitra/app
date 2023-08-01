@@ -1038,7 +1038,7 @@ class Global_report extends MX_Controller {
     public function show_data_pp(){
 
         $query_data = $this->Global_report->get_data();
-
+        // echo '<pre>';print_r($query_data);die;
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
@@ -1089,7 +1089,7 @@ class Global_report extends MX_Controller {
     public function show_data_po(){
 
         $query_data = $this->Global_report->get_data();
-
+        // echo '<pre>'; print_r($_POST);die;
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],

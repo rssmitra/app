@@ -133,14 +133,16 @@ class Pelayanan_publik extends MX_Controller {
                 exit;
             }
             
-            if($_POST['is_expired'] == 0){
-                echo json_encode(array('status' => 301, 'message' => 'Cari dulu Nomor Rujukannya, kalo aktif baru bisa lanjut daftar!'));
-                exit;
-            }
+            if(isset($_POST['jenis_pasien']) && $_POST['jenis_pasien']=='bpjs'){
+                if($_POST['is_expired'] == 0){
+                    echo json_encode(array('status' => 301, 'message' => 'Cari dulu Nomor Rujukannya, kalo aktif baru bisa lanjut daftar!'));
+                    exit;
+                }
 
-            if($_POST['is_expired'] == 1){
-                echo json_encode(array('status' => 301, 'message' => 'Udah dikasih informasi rujukan expired masih aja dilanjutin!'));
-                exit;
+                if($_POST['is_expired'] == 1){
+                    echo json_encode(array('status' => 301, 'message' => 'Udah dikasih informasi rujukan expired masih aja dilanjutin!'));
+                    exit;
+                }
             }
 
             $datapoli = array();
