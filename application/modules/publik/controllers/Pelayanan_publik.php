@@ -135,12 +135,12 @@ class Pelayanan_publik extends MX_Controller {
             
             if(isset($_POST['jenis_pasien']) && $_POST['jenis_pasien']=='bpjs'){
                 if($_POST['is_expired'] == 0){
-                    echo json_encode(array('status' => 301, 'message' => 'Cari dulu Nomor Rujukannya, kalo aktif baru bisa lanjut daftar!'));
+                    echo json_encode(array('status' => 301, 'message' => 'Silahkan masukan Nomor Rujukan anda terlebih dahulu'));
                     exit;
                 }
 
                 if($_POST['is_expired'] == 1){
-                    echo json_encode(array('status' => 301, 'message' => 'Udah dikasih informasi rujukan expired masih aja dilanjutin!'));
+                    echo json_encode(array('status' => 301, 'message' => 'Rujukan anda expired!'));
                     exit;
                 }
             }

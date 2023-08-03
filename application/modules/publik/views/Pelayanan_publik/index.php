@@ -21,7 +21,6 @@
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" />
     <link rel="shortcut icon" href="<?php echo base_url().COMP_ICON; ?>">
-    
     <title><?php echo $app->header_title?></title>
 	
   </head>
@@ -40,8 +39,15 @@
         background-size: cover;
         min-height: 900px;
     }
+
+    .responsive {
+      width: 100%;
+      height: auto;
+      /* max-height: 250px;  */
+    }
     
   </style>
+
 
   <body class="no-skin" style="background: url('assets/images/unit-pendaftaran.jpg');">
 	<div class="navbar navbar-inverse navbar-fixed-top" style="background: #024a19">
@@ -58,13 +64,15 @@
   </div>
 	
     <div class="container main-container">
-    
-      <div id="page-area-content" style="padding: 25px !important;">
-        <div class="row">
+
+      <div id="page-area-content">
+      
+        <div class="center">
+          <img class="center responsive" src="<?php echo base_url().'uploaded/images/1.jpeg'; ?>">
+        </div>
+        
+        <div class="row" style="padding: 15px !important;">
           <div class="col-xs-12">
-            <div class="center" style="padding:10px 10px 10px 10px;">
-              <img class="center" src="<?php echo base_url().COMP_ICON; ?>" width="150px">
-            </div>
             <h3 class="header smaller lighter green">MENU UTAMA</h3>
             <div class="list-group">
               <a href="#" onclick="getMenu('publik/Pelayanan_publik/registrasi_rj')" class="list-group-item" style="color: white !important;background: green;">
