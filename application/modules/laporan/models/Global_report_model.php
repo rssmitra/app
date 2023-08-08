@@ -747,6 +747,7 @@ class Global_report_model extends CI_Model {
 			e.kode_permohonan,
 			f.tgl_penerimaan,
 			f.no_faktur,
+			CAST(a.updated_date as date) as revisi,
 			jumlah_kirim_decimal AS jml_diterima 
 		FROM
 			tc_permohonan_det h 

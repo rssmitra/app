@@ -50,6 +50,7 @@
               <th>Tgl Persetujuan</th>
               <th>No PO</th>
               <th>Tgl PO</th>
+              <th>Tgl Revisi PO</th>
               <th>Nama Supplier</th>
               <th>Nama Barang</th>
               <th>Jumlah Usulan</th>
@@ -79,6 +80,7 @@
                 <td align="center"><?php echo $row_data->tgl_acc ?></td>
                 <td align="center"><?php echo $row_data->no_po ?>&nbsp;</td>
                 <td align="center"><?php echo $row_data->tgl_po ?></td>
+                <td align="center"><?php echo ($row_data->revisi != $row_data->tgl_po) ? $row_data->revisi : '' ?></td>
                 <td align="left"><?php echo $row_data->namasupplier ?>&nbsp;</td>
                 <td align="left"><?php echo $row_data->nama_brg ?>&nbsp;</td>
                 <td align="center"><?php echo $row_data->jumlah_usulan ?></td>
