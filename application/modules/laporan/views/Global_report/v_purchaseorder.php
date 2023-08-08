@@ -52,6 +52,8 @@
               <th>Tgl PO</th>
               <th>Nama Supplier</th>
               <th>Nama Barang</th>
+              <th>Jumlah Usulan</th>
+              <th>Jumlah ACC</th>
               <th>Jumlah Order</th>
               <th>Jumlah Diterima</td>
               <th>Barang Belum Diterima</td>
@@ -79,9 +81,11 @@
                 <td align="center"><?php echo $row_data->tgl_po ?></td>
                 <td align="left"><?php echo $row_data->namasupplier ?>&nbsp;</td>
                 <td align="left"><?php echo $row_data->nama_brg ?>&nbsp;</td>
-                <td align="center"><?php echo $row_data->jumlah_besar ?></td>
+                <td align="center"><?php echo $row_data->jumlah_usulan ?></td>
+                <td align="center"><?php echo $row_data->jumlah_diacc ?></td>
+                <td align="center"><?php echo $row_data->jml_order ?></td>
                 <td align="center"><?php echo $row_data->jml_diterima ?></td>
-                <td align="center"><?php $selisih = $row_data->jumlah_besar - $row_data->jml_diterima; echo $selisih; ?></td>
+                <td align="center"><?php $selisih = $row_data->jml_order - $row_data->jml_diterima; echo $selisih; ?></td>
                 <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $row_data->harga_satuan_netto : number_format($row_data->harga_satuan_netto) ?></td>
                 <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $subttlharganetto : number_format($subttlharganetto) ?></td>
                 <td><?php echo $row_data->tgl_penerimaan ?></td>
