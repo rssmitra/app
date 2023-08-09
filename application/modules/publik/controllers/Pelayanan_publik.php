@@ -299,7 +299,7 @@ class Pelayanan_publik extends MX_Controller {
     // pasien baru
     public function process_register_pasien(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('nama_pasien', 'Nama Pasien', 'trim|required');
         $this->form_validation->set_rules('nik_pasien', 'NIK', 'trim|required|min_length[16]|max_length[16]|is_unique[mt_master_pasien.no_ktp]', array('is_unique' => 'NIK anda sudah pernah terdaftar', 'min_length' => 'NIK harus berisi 16 angka', 'max_length' => 'Maksimal NIK berisi 16 angka'));
@@ -309,6 +309,11 @@ class Pelayanan_publik extends MX_Controller {
         $this->form_validation->set_rules('gender', 'Jenis Kelamin', 'trim|required');
         $this->form_validation->set_rules('telp_pasien', 'HP', 'trim|required');
         $this->form_validation->set_rules('gelar_nama', 'gelar_nama', 'trim');
+        if($_POST['jenis_pasien'] == 'bpjs'){
+            $this->form_validation->set_rules('no_kartu_bpjs', 'Nomor Kartu BPJS', 'trim|required');
+        }else{
+            $this->form_validation->set_rules('no_kartu_bpjs', 'Nomor Kartu BPJS', 'trim');
+        }
        
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -339,10 +344,20 @@ class Pelayanan_publik extends MX_Controller {
                 'almt_ttp_pasien' => strtoupper($this->regex->_genRegex($this->form_validation->set_value('alamat_pasien'),'RGXQSL')),
                 'no_hp' => ($this->regex->_genRegex($this->form_validation->set_value('telp_pasien'),'RGXQSL'))?$this->regex->_genRegex($this->form_validation->set_value('telp_pasien'),'RGXQSL'):'',
                 'jen_kelamin' => ($this->regex->_genRegex($this->form_validation->set_value('gender'),'RGXQSL')==1)?'L':'P',
-                'no_kartu_bpjs' => isset($_POST['no_kartu_bpjs'])?$this->regex->_genRegex($this->form_validation->set_value('no_kartu_bpjs'),'RGXQSL'):NULL,
                 'keterangan' => 'registrasi pasien via online',
+                'id_dc_provinsi' => $_POST['provinsiHidden'],
+                'id_dc_kota' => $_POST['kotaHidden'],
+                'id_dc_kecamatan' => $_POST['kecamatanHidden'],
+                'id_dc_kelurahan' => $_POST['kelurahanHidden'],
+                'kode_pos' => $_POST['zipcode'],
                 'is_active' => 1,
             );
+
+            if($_POST['jenis_pasien'] == 'bpjs'){
+                $dataexc['no_kartu_bpjs'] = isset($_POST['no_kartu_bpjs'])?$this->regex->_genRegex($this->form_validation->set_value('no_kartu_bpjs'),'RGXQSL'):NULL;
+            }else{
+                $dataexc['kode_perusahaan'] = isset($_POST['kode_perusahaan_hidden'])?$_POST['kode_perusahaan_hidden']:NULL;
+            }
 
             // cek pasien by ni
             $mr = $this->db->get_where('mt_master_pasien', array('no_ktp' => $dataexc['no_ktp'], 'tgl_lhr' => $dataexc['tgl_lhr']))->row();
