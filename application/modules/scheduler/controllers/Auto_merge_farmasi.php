@@ -28,8 +28,10 @@ class Auto_merge_farmasi extends MX_Controller {
             return;
         }
         
+        $last_date = ( $this->uri->segment(4) ) ? $this->date : date('Y-m-d', strtotime(date('Y-m-d'), '-1 day'));
+
         // get data verifikasi
-        $data = $this->Verifikasi_resep_prb->get_result_data($this->date);
+        $data = $this->Verifikasi_resep_prb->get_result_data($last_date);
         // echo '<pre>';
         // print_r($data);
         // exit;
@@ -174,7 +176,7 @@ class Auto_merge_farmasi extends MX_Controller {
             $kode_trans_far = $explode[2];
 
             /*create and save download file pdf*/
-            if( $this->getContentPDF($named, $no_sep, $kode_trans_far, 'F') ) :
+            if( $this->getContentPDF($named, $no_sep, $kode_trans_far, 'D') ) :
                 /*save document to database*/
                 /*csm_reg_pasien*/
                 $filename = $named.'-'.$no_sep.'-'.$kode_trans_far.'.pdf';

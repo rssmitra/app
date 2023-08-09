@@ -147,31 +147,31 @@ class Templates extends MX_Controller {
 
     public function getGraphModule(){
         
-        if ($_GET['mod']==1) {
+        // if ($_GET['mod']==1) {
 
-            $data[0] = array(
-                'mod' => $_GET['mod'],
-                'nameid' => 'graph-line-1',
-                'style' => 'line',
-                'col_size' => 12,
-                'url' => 'templates/Templates/graph?prefix=1&TypeChart=line&style=1&mod='.$_GET['mod'].'',
-                );
-            $data[1] = array(
-                'mod' => $_GET['mod'],
-                'nameid' => 'graph-pie-1',
-                'style' => 'pie',
-                'col_size' => 6,
-                'url' => 'templates/Templates/graph?prefix=2&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
-                );
-            $data[2] = array(
-            'mod' => $_GET['mod'],
-            'nameid' => 'graph-table-1',
-            'style' => 'table',
-            'col_size' => 6,
-            'url' => 'templates/Templates/graph?prefix=3&TypeChart=table&style=1&mod='.$_GET['mod'].'',
-            );
+        //     $data[0] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-line-1',
+        //         'style' => 'line',
+        //         'col_size' => 12,
+        //         'url' => 'templates/Templates/graph?prefix=1&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+        //         );
+        //     $data[1] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-pie-1',
+        //         'style' => 'pie',
+        //         'col_size' => 6,
+        //         'url' => 'templates/Templates/graph?prefix=2&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+        //         );
+        //     $data[2] = array(
+        //     'mod' => $_GET['mod'],
+        //     'nameid' => 'graph-table-1',
+        //     'style' => 'table',
+        //     'col_size' => 6,
+        //     'url' => 'templates/Templates/graph?prefix=3&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+        //     );
 
-        }
+        // }
         
         if ( in_array($_GET['mod'], array(11,22) ) ) {
             $data[0] = array(
@@ -483,7 +483,7 @@ class Templates extends MX_Controller {
                 'nameid' => 'profile-pegawai',
                 'style' => 'custom',
                 'col_size' => 12,
-                'url' => 'templates/Templates/graph?prefix=80&TypeChart=custom&style=1&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=80&TypeChart=custom&style=profilePegawai&mod='.$_GET['mod'].'',
             );
         }
         
