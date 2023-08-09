@@ -1151,34 +1151,63 @@ public function pengadaan_mod_8(){
 			and status_transaksi=1 GROUP BY kode_brg, nama_brg, satuan_kecil,harga_jual) b
 			on a.kode_brg=b.kode_brg group by a.kode_brg, a.nama_brg, a.satuan_kecil order by a.nama_brg';
 		 // echo '<pre>';print_r($query);
-
-
 		return $query;
 
 	}
 
-	
+	public function farmasi_mod_13(){
 
-	
+		$month = $_POST['month'];
+		$year  = $_POST['year'];
+		
+		$query = 'SELECT kode_brg, nama_brg, CAST(SUM(jml_pesan) as INT) as hutang, CAST(SUM(jml_mutasi) AS INT) as mutasi, CAST((SUM(jml_pesan) - SUM(jml_mutasi)) as INT) as sisa_hutang, AVG(rata_harga_jual) as rata_harga_jual
+		FROM (
+		SELECT
+			fr_tc_far_detail_log.kode_brg,
+			nama_brg,
+			SUM ( jumlah_pesan ) AS jml_pesan,
+			SUM ( jumlah_mutasi_obat ) AS jml_mutasi, 
+			CAST(avg (harga_jual_satuan) as INT) as rata_harga_jual
+		FROM
+			fr_tc_far_detail_log
+			LEFT JOIN fr_tc_far ON fr_tc_far.kode_trans_far = fr_tc_far_detail_log.kode_trans_far
+			LEFT JOIN fr_tc_log_mutasi_obat ON ( fr_tc_log_mutasi_obat.kode_trans_far = fr_tc_far_detail_log.kode_trans_far AND fr_tc_log_mutasi_obat.kode_brg = fr_tc_far_detail_log.kode_brg ) 
+		WHERE
+			resep_ditangguhkan = 1 
+			AND YEAR ( fr_tc_far.tgl_trans ) = '.$year.' 
+			AND MONTH ( fr_tc_far.tgl_trans ) <= '.$month.'
+		GROUP BY
+			fr_tc_far_detail_log.kode_brg,
+			nama_brg 
+		HAVING
+			SUM ( jumlah_pesan ) > 0 
+		
+		UNION ALL
+		SELECT
+			fr_tc_far_detail_log.kode_brg,
+			nama_brg,
+			SUM ( jumlah_obat_23 ) AS jml_pesan,
+			0, CAST(avg (harga_jual_satuan) as int) as rata_harga_jual
+		FROM
+			fr_tc_far_detail_log
+			LEFT JOIN fr_tc_far ON fr_tc_far.kode_trans_far = fr_tc_far_detail_log.kode_trans_far
+			LEFT JOIN fr_tc_log_mutasi_obat ON ( fr_tc_log_mutasi_obat.kode_trans_far = fr_tc_far_detail_log.kode_trans_far AND fr_tc_log_mutasi_obat.kode_brg = fr_tc_far_detail_log.kode_brg ) 
+		WHERE
+			prb_ditangguhkan = 1 
+			AND YEAR ( fr_tc_far.tgl_trans ) = '.$year.' 
+			AND MONTH ( fr_tc_far.tgl_trans ) <= '.$month.' 
+		GROUP BY
+			fr_tc_far_detail_log.kode_brg,
+			nama_brg 
+		HAVING
+			SUM ( jumlah_obat_23 ) > 0
+			) as tbl_mutasi_x
+			GROUP BY kode_brg, nama_brg
+			ORDER BY nama_brg ASC';
+		 // echo '<pre>';print_r($query);
+		return $query;
 
-	// public function akunting_mod_4(){
-	// 	$query = "SELECT b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_awal, kartu_stok.pemasukan, kartu_stok.pengeluaran, kartu_stok.stok_akhir, b.satuan_kecil, 
-	// 		c.harga_beli, kartu_stok.tgl_input, kartu_stok.keterangan, c.stok_minimum, b.satuan_besar, 
-	// 		b.is_active, b.path_image 
-	// 		FROM mt_depo_stok as a LEFT JOIN mt_barang b ON b.kode_brg=a.kode_brg 
-	// 		LEFT JOIN mt_rekap_stok c ON c.kode_brg=b.kode_brg 
-	// 		LEFT JOIN ( SELECT * FROM tc_kartu_stok_v WHERE id_kartu IN (SELECT MAX(id_kartu) AS id_kartu FROM tc_kartu_stok 
-	// 		WHERE MONTH(tgl_input)= ".$_POST['from_month']." and YEAR(tgl_input) = ".$_POST['year']." AND tgl_input is not null GROUP BY kode_brg) 
-	// 		AND kode_bagian='".$_POST['kode_bagian']."' ) AS kartu_stok ON kartu_stok.kode_brg=a.kode_brg WHERE a.kode_bagian = '".$_POST['kode_bagian']."' 
-	// 		AND nama_brg is not null AND kartu_stok.tgl_input is not null 
-	// 		GROUP BY b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_awal, kartu_stok.pemasukan, kartu_stok.pengeluaran,
-	// 		kartu_stok.stok_akhir, b.satuan_kecil, 
-	// 		c.harga_beli, kartu_stok.tgl_input, kartu_stok.keterangan, c.stok_minimum, 
-	// 		b.satuan_besar, b.is_active, b.path_image ORDER BY b.kode_brg DESC";
-			
-	// 	return $query;
-	// }
-	
+	}
 
 	public function so_mod_1(){
 
