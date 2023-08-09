@@ -65,7 +65,7 @@ class Tmp_user_has_role_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		print_r($this->db->last_query());
+		// print_r($this->db->last_query());
 		return $query->result();
 	}
 
