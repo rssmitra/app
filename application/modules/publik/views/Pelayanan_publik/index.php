@@ -68,7 +68,10 @@
       <div id="page-area-content">
       
         <div class="center">
-          <img class="center responsive" src="<?php echo base_url().'uploaded/images/1.jpeg'; ?>">
+          <?php 
+            $banner_active = isset($banner->value) ? $banner->value : '1-default.jpeg';
+          ?>
+          <img class="center responsive" src="<?php echo base_url().'uploaded/images/'.$banner_active.''; ?>">
         </div>
         
         <div class="row" style="padding: 15px !important;">

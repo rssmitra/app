@@ -37,6 +37,7 @@ class Pelayanan_publik extends MX_Controller {
     public function index() {
         $data = array();
         $data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
+        $data['banner'] = $this->db->order_by('auto_id', 'DESC')->get_where('global_parameter', array('is_active' => 'Y'))->row();
         $this->load->view('Pelayanan_publik/index', $data);
     }
 

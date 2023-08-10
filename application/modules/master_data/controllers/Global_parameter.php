@@ -60,7 +60,11 @@ class Global_parameter extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Global_parameter/form', $data);
+        if( in_array($_GET['flag'], array('banner_regon') )){
+            $this->load->view('Global_parameter/form_'.$_GET['flag'].'', $data);
+        }else{
+            $this->load->view('Global_parameter/form', $data);
+        }
     }
 
     /*function for view data only*/
@@ -135,12 +139,16 @@ class Global_parameter extends MX_Controller {
 
     public function process()
     {
-        
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('label', 'Label', 'trim|required');
-        $val->set_rules('value', 'Value', 'trim|required');
         $val->set_rules('desc_text', 'Keterangan', 'trim');
+        if( in_array( $_GET['flag'], array('banner_regon') ) ){
+            $val->set_rules('value', 'Value', 'trim');
+        }else{
+            $val->set_rules('value', 'Value', 'trim|required');
+        }
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
         if ($val->run() == FALSE)
@@ -153,12 +161,24 @@ class Global_parameter extends MX_Controller {
             $this->db->trans_begin();
             $id = ($this->input->post('id'))?$this->input->post('id'):0;
 
+            if(isset($_FILES['value']['name'])){
+                /*hapus dulu file yang lama*/
+                if( $id != 0 ){
+                    $profile = $this->Global_parameter->get_by_id($id);
+                    if ($profile->value != NULL) {
+                        unlink(PATH_IMG_DEFAULT.$profile->value.'');
+                    }
+                }
+
+                $datavalue = $this->upload_file->doUpload('value', PATH_IMG_DEFAULT);
+            }
+
             $dataexc = array(
                 'label' => $this->regex->_genRegex( $val->set_value('label') , 'RGXQSL'), 
-                'value' => $this->regex->_genRegex( $val->set_value('value') , 'RGXQSL'), 
+                'value' => isset($datavalue) ? $datavalue : $this->regex->_genRegex( $val->set_value('value') , 'RGXQSL'), 
                 'desc_text' => $this->regex->_genRegex( $val->set_value('desc_text') , 'RGXQSL'), 
                 'is_active' => $this->regex->_genRegex( $this->input->post('is_active') , 'RGXQSL'), 
-                'flag' => $this->regex->_genRegex( $this->input->post('flag') , 'RGXQSL'), 
+                'flag' => $this->regex->_genRegex( $this->input->get('flag') , 'RGXQSL'), 
             );
 
             foreach ($_GET as $key => $row_get) {
