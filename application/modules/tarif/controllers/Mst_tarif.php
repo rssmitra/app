@@ -165,9 +165,9 @@ class Mst_tarif extends MX_Controller {
         /*get data from model*/
         $list = [];
         $list = $this->Mst_tarif->get_datatables();
-        // if(isset($_GET['unit'])){
-        //     $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
-        // }
+        if(isset($_GET['unit'])){
+            $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
+        }
         // echo '<pre>';print_r($list);die;
         $data = array();
         $no = $_POST['start'];
@@ -203,7 +203,7 @@ class Mst_tarif extends MX_Controller {
 
     public function process()
     {
-        // echo print_r($_POST);die;
+        // echo print_r($X_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('nama_tarif', 'Nama Tarif', 'trim|required');
@@ -250,15 +250,16 @@ class Mst_tarif extends MX_Controller {
                 // kode tarif
                 $kode_tarif = $this->generate_kode_tarif($val->set_value('kode_bagian'));
                 $dataexc['kode_tarif'] = $kode_tarif;
-
+                
                 // kode tindakan
-                $new_kode_tindakan = substr($kode_tarif, 5);
+                $new_kode_tindakan = $kode_tarif;
                 $dataexc['kode_tindakan'] = 'NT'.$new_kode_tindakan;
-
+                
                 $dataexc['revisi_ke'] = 1;
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
                 $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
                 /*save post data*/
+                // print_r($dataexc);die;
                 $this->db->insert('mt_master_tarif', $dataexc);
                 $newId = $kode_tarif;
             }else{
@@ -369,7 +370,7 @@ class Mst_tarif extends MX_Controller {
         }else{
             $max_kode = $this->db->query("select MAX(kode_tarif)as max_tarif from mt_master_tarif where kode_bagian=".$kode_bagian."")->row();
         }
-        $new_kode_plus_one = $max_kode->max_tarif + 1;
+        $new_kode_plus_one = ($kode_bagian != '') ? $kode_bagian.'0'.$max_kode->max_tarif + 1 : $max_kode->max_tarif + 1;
         return $new_kode_plus_one;
     }
 
