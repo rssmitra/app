@@ -134,8 +134,12 @@ class Auto_merge_farmasi extends MX_Controller {
                     $script_cmd = 'start chrome "'.$url_merge.'" ';
                     exec( $script_cmd );
 
+                    $script_close_chrome = "taskkill /F /IM chrome.exe /T > nul";
+                    exec( $script_close_chrome );
+
                     echo "success  " . PHP_EOL;
                     echo "====================================================================". PHP_EOL;
+                    
         
                 }else{
                     echo 'No data available'. PHP_EOL;
@@ -151,6 +155,8 @@ class Auto_merge_farmasi extends MX_Controller {
             
         
         }
+
+        
 
         $file = "uploaded/farmasi/log_scheduler/".date('Y_m_d_H_i_s').".log";
         $fp = fopen ($file,'w');
@@ -174,7 +180,7 @@ class Auto_merge_farmasi extends MX_Controller {
             $kode_trans_far = $explode[2];
 
             /*create and save download file pdf*/
-            if( $this->getContentPDF($named, $no_sep, $kode_trans_far, 'D') ) :
+            if( $this->getContentPDF($named, $no_sep, $kode_trans_far, 'F') ) :
                 /*save document to database*/
                 /*csm_reg_pasien*/
                 $filename = $named.'-'.$no_sep.'-'.$kode_trans_far.'.pdf';
