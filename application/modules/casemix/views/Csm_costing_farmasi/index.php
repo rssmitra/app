@@ -23,7 +23,8 @@ $(document).ready(function(){
           data: $('#form_csm_costing_farmasi').serialize(),
           dataType: "json",
           beforeSend: function() {
-            $('#response_from_cli').html("Sedang diproses, mohon menunggu dan jangan membuka aplikasi lain sampai proses ini selesai..");
+            $('#response_from_cli').show("");
+            $('#response_from_cli').html("Sedang diproses...<br>mohon menunggu dan jangan membuka aplikasi lain sampai proses ini selesai..");
           },
           complete: function(xhr) {     
             var response=xhr.responseText;
@@ -73,7 +74,7 @@ $(document).ready(function(){
             
           </form>
 
-          <div id="response_from_cli" style="background: black; font-weight: bold; color: green"></div>
+          <div id="response_from_cli" style="background: black; font-weight: bold; color: green; min-height: 500px; display: none; padding: 10px"></div>
         </div>
       </div>
     <!-- PAGE CONTENT ENDS -->

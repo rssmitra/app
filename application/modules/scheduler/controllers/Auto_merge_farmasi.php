@@ -134,29 +134,25 @@ class Auto_merge_farmasi extends MX_Controller {
                     $script_cmd = 'start chrome "'.$url_merge.'" ';
                     exec( $script_cmd );
 
-                    $script_close_chrome = "taskkill /F /IM chrome.exe /T > nul";
-                    exec( $script_close_chrome );
-
                     echo "success  " . PHP_EOL;
                     echo "====================================================================". PHP_EOL;
-                    
         
                 }else{
                     echo 'No data available'. PHP_EOL;
                 }
+
                 $count_result[] = 1;
-                $txt_success .= $list->kode_trans_far." (".$data_farmasi['no_sep'].")". PHP_EOL;
+                $txt_success .= $list->kode_trans_far." (".$list->no_sep.")". PHP_EOL;
 
             } else {
-                $txt_failed .= $list->kode_trans_far." (".$data_farmasi['no_sep'].")". PHP_EOL;
+                $txt_failed .= $list->kode_trans_far." (".$list->no_sep.")". PHP_EOL;
                 echo "The file ".$substr_no_sep.".pdf does not exist". PHP_EOL;
             }
-            
-            
-        
-        }
 
-        
+            $script_cmd = 'taskkill /F /IM chrome.exe /T > nul';
+            exec( $script_cmd );
+            
+        }
 
         $file = "uploaded/farmasi/log_scheduler/".date('Y_m_d_H_i_s').".log";
         $fp = fopen ($file,'w');
@@ -164,7 +160,6 @@ class Auto_merge_farmasi extends MX_Controller {
         $data_log = var_export($log, true);
         fwrite($fp,  $data_general."\n".$data_log);
         fclose($fp);
-
 
     }
 
