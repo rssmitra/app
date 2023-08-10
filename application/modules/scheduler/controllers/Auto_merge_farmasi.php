@@ -145,10 +145,10 @@ class Auto_merge_farmasi extends MX_Controller {
                     echo 'No data available'. PHP_EOL;
                 }
                 $count_result[] = 1;
-                $txt_success .= $list->kode_trans_far. PHP_EOL;
+                $txt_success .= $list->kode_trans_far." (".$data_farmasi['no_sep'].")". PHP_EOL;
 
             } else {
-                $txt_failed .= $list->kode_trans_far. PHP_EOL;
+                $txt_failed .= $list->kode_trans_far." (".$data_farmasi['no_sep'].")". PHP_EOL;
                 echo "The file ".$substr_no_sep.".pdf does not exist". PHP_EOL;
             }
             
@@ -160,10 +160,11 @@ class Auto_merge_farmasi extends MX_Controller {
 
         $file = "uploaded/farmasi/log_scheduler/".date('Y_m_d_H_i_s').".log";
         $fp = fopen ($file,'w');
-        $data_general = "Total Eksekusi : ".count($count_result)." \n List transaksi sukses :\n ".$txt_success." \n List transaksi gagal : \n ".$txt_failed."";
+        $data_general = "Total Eksekusi : ".count($count_result)." \nList transaksi sukses (kode_trans_far):\n".$txt_success."\nList transaksi gagal :\n".$txt_failed."";
         $data_log = var_export($log, true);
         fwrite($fp,  $data_general."\n".$data_log);
         fclose($fp);
+
 
     }
 
