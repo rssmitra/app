@@ -23,7 +23,7 @@ $(document).ready(function(){
           data: $('#form_csm_costing_farmasi').serialize(),
           dataType: "json",
           beforeSend: function() {
-            $('#response_from_cli').html("");
+            $('#response_from_cli').html("Sedang diproses, mohon menunggu dan jangan membuka aplikasi lain sampai proses ini selesai..");
           },
           complete: function(xhr) {     
             var response=xhr.responseText;
