@@ -166,6 +166,23 @@ class Kepeg_rekap_lembur_unit_model extends CI_Model {
 		$this->db->join('kepeg_mt_unit c','c.kepeg_unit_id=a.unit_tugas','left');
 		$this->db->join('kepeg_mt_unit d','d.kepeg_unit_id=b.unit_bagian','left');
 		$this->db->from('kepeg_pengajuan_lembur_rincian a');
+
+		if(isset($_GET['checked_unit']) AND $_GET['checked_unit'] == 1){
+			if(isset($_GET['unit']) AND $_GET['unit'] != ''){
+				$this->db->where('e.kepeg_unit', $_GET['unit']);
+			}
+		}
+
+		if(isset($_GET['checked_periode']) AND $_GET['checked_periode'] == 1){
+			if(isset($_GET['bulan']) AND $_GET['bulan'] != ''){
+				$this->db->where('b.periode_lembur_bln', $_GET['bulan']);
+			}
+
+			if(isset($_GET['tahun']) AND $_GET['tahun'] != ''){
+				$this->db->where('b.tahun', $_GET['tahun']);
+			}
+		}
+
 		$query = $this->db->get()->result();
 		return $query;
 	}

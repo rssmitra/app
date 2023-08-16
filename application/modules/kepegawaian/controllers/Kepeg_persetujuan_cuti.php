@@ -146,6 +146,8 @@ class Kepeg_persetujuan_cuti extends MX_Controller {
             );
 
             $this->Kepeg_persetujuan_cuti->update('kepeg_log_acc_pengajuan', array('log_acc_id' => $id), $dataexc );
+            $this->Kepeg_persetujuan_cuti->update('kepeg_pengajuan_cuti', array('pengajuan_cuti_id' => $_POST['pengajuan_cuti_id']), array('status_acc' => $this->input->post('acc_status')) );
+
             // get detail atasan
             $dt_pegawai = $this->db->get_where('view_dt_pegawai', array('kepeg_id' => $val->set_value('acc_by_kepeg_id') ) )->row();
              if(!empty($dt_pegawai)){

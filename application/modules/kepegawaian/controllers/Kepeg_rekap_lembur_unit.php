@@ -60,6 +60,23 @@ class Kepeg_rekap_lembur_unit extends MX_Controller {
         $this->load->view('Kepeg_rekap_lembur_unit/form_rincian_lembur', $data);
     }
 
+    public function export_excel()
+    {
+        /*define data variabel*/
+        $data = array(
+            'title' => 'Periode '.$this->tanggal->getBulan($_GET['bulan']).'/'.$_GET['tahun'].'',
+            'breadcrumbs' => $this->breadcrumbs->show()
+        );
+        $result = $this->Kepeg_rekap_lembur_unit->get_rekap_lembur_pegawai($_GET['unit'], $_GET['bulan'], $_GET['tahun']);
+        foreach ($result as $key => $row) {
+            $getData[$row->nama_unit_bagian][$row->nama_pegawai][] = $row;
+        }
+        // echo '<pre>'; print_r($getData);die;
+        $data['getData'] = $getData;
+        /*load form view*/
+        $this->load->view('Kepeg_rekap_lembur_unit/form_rincian_lembur', $data);
+    }
+
 
 
     public function get_data()

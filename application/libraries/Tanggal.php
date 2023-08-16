@@ -340,8 +340,14 @@ final class Tanggal {
     }
 
      public function getRangeDay($from, $to){
-        $tanggal = date('Y-m-d', strtotime(''.$selisih.' days', strtotime( $date )));
-        return $tanggal;
+
+        $tgl1 = strtotime($from); 
+        $tgl2 = strtotime($to); 
+        
+        $jarak = $tgl2 - $tgl1;
+        
+        $hari = $jarak / 60 / 60 / 24;
+        return $hari;
     }
 
     function validateDate($date, $format = 'Y-m-d')
