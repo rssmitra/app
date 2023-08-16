@@ -25,6 +25,10 @@ $(function () {
             GraphTableStyle(o.mod, o.nameid, o.url);
           }
 
+          if(o.style=='custom'){
+            GraphCustomStyle(o.mod, o.nameid, o.url);
+          }
+
           });
           $('#content_graph').html(html);
       });
@@ -157,6 +161,16 @@ $(function () {
     }
 
     function GraphTableStyle(id, nameid, url){
+
+      //use getJSON to get the dynamic data via AJAX call
+      $.getJSON(url, {id: id}, function(chartData) {
+        //alert(chartData.xAxis.categories); return false;
+        $('#'+nameid).html('<h3 align="center">'+chartData.title+'</h3>'+chartData.series);
+
+      });
+    }
+
+    function GraphCustomStyle(id, nameid, url){
 
       //use getJSON to get the dynamic data via AJAX call
       $.getJSON(url, {id: id}, function(chartData) {
