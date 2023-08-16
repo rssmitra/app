@@ -71,7 +71,7 @@
           <?php 
             $banner_active = isset($banner->value) ? $banner->value : '1-default.jpeg';
           ?>
-          <img class="center responsive" src="<?php echo base_url().'uploaded/images/'.$banner_active.''; ?>">
+          <img class="center responsive" src="<?php echo 'http://10.10.11.5:88/sirs/app/uploaded/images/'.$banner_active.''; ?>">
         </div>
         
         <div class="row" style="padding: 15px !important;">
