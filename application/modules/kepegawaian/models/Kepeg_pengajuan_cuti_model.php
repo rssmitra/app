@@ -26,6 +26,12 @@ class Kepeg_pengajuan_cuti_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+
+		// filter by session login
+		if($this->session->userdata('user')->role != 'Admin Sistem'){
+			$this->db->where('kepeg_pengajuan_cuti.kepeg_id', $this->session->userdata('user_profile')->kepeg_id);
+		}
+
 		if(isset($_GET['checked_unit']) AND $_GET['checked_unit'] == 1){
 			if(isset($_GET['unit']) AND $_GET['unit'] != ''){
 				$this->db->where('kepeg_pengajuan_cuti.unit_bagian', $_GET['unit']);

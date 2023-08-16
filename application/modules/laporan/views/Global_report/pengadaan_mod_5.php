@@ -23,12 +23,12 @@
         <!-- content -->
         <a href="<?php echo base_url().'laporan/Global_report'?>" class="btn btn-xs btn-primary"> Kembali ke Menu Utama</a>
         <br>
-        <h4>LAPORAN PURCHASE ORDER <br>Outstanding PO
+        <h4>LAPORAN MONITORING USULAN PERMINTAAN
         </h4>
         <form class="form-horizontal" method="post" id="form_search" action="<?php echo base_url()?>laporan/Global_report/show_data_po">
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
-          <input type="hidden" name="title" value="LAPORAN PURCHASE ORDER">
+          <input type="hidden" name="title" value="LAPORAN MONITORING USULAN PERMINTAAN">
 
 
           <div class="form-group">

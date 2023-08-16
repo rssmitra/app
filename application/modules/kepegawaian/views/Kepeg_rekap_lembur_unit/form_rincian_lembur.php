@@ -1,3 +1,15 @@
+<?php 
+  if( isset($_GET['export']) AND $_GET['export']=='true') {
+    $title=="REKAP_LEMBUR_PEGAWAI_".str_replace(" ", "_", strtoupper($title))."";
+    header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+    header("Content-Disposition: attachment; filename=".$title.'_'.date('Ymd').".xls");  //File name extension was wrong
+    header("Expires: 0");
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    header("Cache-Control: private",false);
+  }
+
+?>
+
 <div class="page-header">
   <span id="" style="font-size: 16px; font-style: italic"><?php echo $title; ?></span>
 </div><!-- /.page-header -->
@@ -31,11 +43,11 @@
 
                     echo '<tr>';
                     echo '<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row_lembur->nama_unit_tugas.'</td>';
-                    echo '<td>'.$this->tanggal->formatDateDmy($row_lembur->tgl_lembur).'</td>';
-                    echo '<td>'.$this->tanggal->formatTime($row_lembur->dari_jam).'</td>';
-                    echo '<td>'.$this->tanggal->formatTime($row_lembur->sd_jam).'</td>';
-                    echo '<td>'.$row_lembur->jml_jam_lembur.'</td>';
-                    echo '<td>'.$row_lembur->pembulatan_jam_lembur.'</td>';
+                    echo '<td align="center">'.$this->tanggal->formatDateDmy($row_lembur->tgl_lembur).'</td>';
+                    echo '<td align="center">'.$this->tanggal->formatTime($row_lembur->dari_jam).'</td>';
+                    echo '<td align="center">'.$this->tanggal->formatTime($row_lembur->sd_jam).'</td>';
+                    echo '<td align="center">'.$row_lembur->jml_jam_lembur.'</td>';
+                    echo '<td align="center">'.$row_lembur->pembulatan_jam_lembur.'</td>';
                     echo '</tr>';
                   }
                 }

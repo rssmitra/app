@@ -28,8 +28,10 @@ class Auto_merge_farmasi extends MX_Controller {
             return;
         }
         
+        $last_date = ( $this->uri->segment(4) ) ? $this->date : date('Y-m-d', strtotime(date('Y-m-d'), '-1 day'));
+
         // get data verifikasi
-        $data = $this->Verifikasi_resep_prb->get_result_data($this->date);
+        $data = $this->Verifikasi_resep_prb->get_result_data($last_date);
         // echo '<pre>';
         // print_r($data);
         // exit;
@@ -40,12 +42,10 @@ class Auto_merge_farmasi extends MX_Controller {
         
             // kode sep untuk file scan resep
             $substr_no_sep = substr($list->no_sep, -4);
-            // filename
-            $filename = 'uploaded/farmasi/scan/'.$this->date.'/'.$substr_no_sep.'.pdf';
-
             //get month and year
             sscanf($this->date, '%d-%d-%d', $y, $m, $d);
             $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
+            // echo $filename; exit;
 
             // jika file hasil scan ada maka lanjutkan
             if (file_exists($filename)) {
@@ -140,21 +140,23 @@ class Auto_merge_farmasi extends MX_Controller {
                 }else{
                     echo 'No data available'. PHP_EOL;
                 }
+
                 $count_result[] = 1;
-                $txt_success .= $list->kode_trans_far. PHP_EOL;
+                $txt_success .= $list->kode_trans_far." (".$list->no_sep.")". PHP_EOL;
 
             } else {
-                $txt_failed .= $list->kode_trans_far. PHP_EOL;
+                $txt_failed .= $list->kode_trans_far." (".$list->no_sep.")". PHP_EOL;
                 echo "The file ".$substr_no_sep.".pdf does not exist". PHP_EOL;
             }
+
+            $script_cmd = 'taskkill /F /IM chrome.exe /T > nul';
+            exec( $script_cmd );
             
-            
-        
         }
 
         $file = "uploaded/farmasi/log_scheduler/".date('Y_m_d_H_i_s').".log";
         $fp = fopen ($file,'w');
-        $data_general = "Total Eksekusi : ".count($count_result)." \n List transaksi sukses :\n ".$txt_success." \n List transaksi gagal : \n ".$txt_failed."";
+        $data_general = "Total Eksekusi : ".count($count_result)." \nList transaksi sukses (kode_trans_far):\n".$txt_success."\nList transaksi gagal :\n".$txt_failed."";
         $data_log = var_export($log, true);
         fwrite($fp,  $data_general."\n".$data_log);
         fclose($fp);

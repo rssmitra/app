@@ -136,7 +136,7 @@ class Kepeg_pengajuan_lembur_model extends CI_Model {
 		$this->db->delete('kepeg_log_acc_pengajuan');
 
 		// delete rincian lembur
-		$this->db->where_in('lembur_dtl_id', $id);
+		$this->db->where_in('pengajuan_lembur_id', $id);
 		$this->db->delete('kepeg_pengajuan_lembur_rincian');
 
 		$this->db->where_in(''.$this->table.'.pengajuan_lembur_id', $id);

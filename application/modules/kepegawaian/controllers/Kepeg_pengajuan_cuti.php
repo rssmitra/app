@@ -25,7 +25,7 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
     }
 
     public function index() { 
-        //echo '<pre>';print_r($this->session->all_userdata());
+        // echo '<pre>';print_r($this->session->all_userdata());
         /*define variable data*/
         $data = array(
             'title' => $this->title,
@@ -118,15 +118,9 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
             $row[] = $row_list->kode.'<br>'.$this->tanggal->formatDatedmY($row_list->tgl_pengajuan_cuti);
             $row[] = '<b>NIP : '.$row_list->kepeg_nip.'</b><br>'.$row_list->nama_pegawai;
             $row[] = $row_list->nama_level.'<br>'.$row_list->nama_unit;
-            $row[] = $this->tanggal->formatDatedmY($row_list->cuti_dari_tgl).' s/d '.$this->tanggal->formatDatedmY($row_list->cuti_sd_tgl);
+            $row[] = $this->tanggal->formatDatedmY($row_list->cuti_dari_tgl).' s/d '.$this->tanggal->formatDatedmY($row_list->cuti_sd_tgl).'<br><b>('.$this->tanggal->getRangeDay($row_list->cuti_dari_tgl, $row_list->cuti_sd_tgl).' hari)</b>';
             $row[] = '<b>'.$row_list->jenis_cuti.'</b><br>'.$row_list->alasan_cuti;
             $row[] = $status;
-            // $status_aktif = ($row_list->kepeg_status_aktif == 'Y') ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
-            // $row[] = '<div class="center">'.$status_aktif.'</div>';
-            // $row[] = '<div class="center">
-            //             <a href="#" style="width: 100% !important" class="label label-xs label-success" onclick="getMenu('."'kepegawaian/Kepeg_pengajuan_cuti/form_jabatan/".$row_list->kepeg_pengajuan_cuti."'".')"><i class="fa fa-pencil"></i> Update Kepegawaian</a>
-            // </div>';
-                   
             $data[] = $row;
         }
 

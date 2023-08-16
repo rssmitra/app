@@ -65,7 +65,7 @@
             html_cancel = '';
             html_cancel += '<div class="itemdiv commentdiv">';
             html_cancel += '<div class="user">';
-            html_cancel += '<h2 style="margin-top: 6px !important; text-align: center">'+no+'</h2>';
+            html_cancel += '<h2 style="margin-top: 6px !important; text-align: center">'+o.no_antrian+'</h2>';
             html_cancel += '</div>';
             html_cancel += '<div class="body" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             html_cancel += '<div class="name">';
@@ -91,7 +91,7 @@
               html_existing = '';
               html_existing += '<div class="itemdiv commentdiv" style="box-shadow: inset 0 0 10px #0000002e;">';
               html_existing += '<div class="user">';
-              html_existing += '<h2 style="margin-top: 6px !important; text-align: center">'+no+'</h2>';
+              html_existing += '<h2 style="margin-top: 6px !important; text-align: center">'+o.no_antrian+'</h2>';
               html_existing += '</div>';
               html_existing += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
               html_existing += '<div class="name">';
@@ -113,7 +113,7 @@
               html_done = '';
               html_done += '<div class="itemdiv commentdiv" style="background: linear-gradient(45deg, yellowgreen, transparent)">';
               html_done += '<div class="user" style="background: #a7d353">';
-              html_done += '<h2 style="margin-top: 6px !important; text-align: center">'+no+'</h2>';
+              html_done += '<h2 style="margin-top: 6px !important; text-align: center">'+o.no_antrian+'</h2>';
               html_done += '</div>';
               html_done += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
               html_done += '<div class="name">';

@@ -148,6 +148,8 @@ class References extends MX_Controller {
         echo json_encode($exc->result());
 	}
 
+	
+
 	public function getDokterBySpesialisFromJadwalDefault($kd_bagian='', $day='')
 	{
 		$query = "select a.jd_id,a.jd_kode_dokter as kode_dokter,b.nama_pegawai
@@ -969,15 +971,19 @@ class References extends MX_Controller {
 
 
 	public function getRakUnit($kode_bagian)
-	{
-		$query = "select a.label, a.value
-							from global_parameter a
-							where a.reff_id='".$kode_bagian."'";
-		
-		$exc = $this->db->query($query);
-        echo json_encode($exc->result());
+    {
+        
+        $result = $this->db->select('value, label')
+							->where("flag","rak_medis")
+							->where("is_active","Y")
+							->where("reff_id",$kode_bagian)
+                          ->order_by('label', 'ASC')
+                          ->get('global_parameter')->result();
+						  
+        echo json_encode($result);
+        
 	}
-
+	
 	public function getDokterByBagian_($kd_bagian='')
 	{
 		$query = "select  a.kode_dokter, a.nama_pegawai

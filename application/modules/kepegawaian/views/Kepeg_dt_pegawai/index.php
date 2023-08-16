@@ -43,6 +43,22 @@ $(document).ready(function(){
         <div class="col-md-3" style="margin-left: -15px">
           <?php echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array(), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');?>
         </div>
+
+        <div class="control-label col-md-2">
+          <div class="checkbox" style="margin-top: -5px">
+            <label>
+              <input name="checked_status" id="checked_status" type="checkbox" class="ace" value="1">
+              <span class="lbl"> Status Aktif</span>
+            </label>
+          </div>
+        </div>
+        <div class="col-md-2" style="margin-left: -15px">
+          <select name="status_aktif" class="form-control">
+            <option value="Y">Aktif</option>
+            <option value="N">Tidak Aktif</option>
+          </select>
+        </div>
+
       </div>
 
       <div class="form-group">
@@ -79,7 +95,7 @@ $(document).ready(function(){
       <hr class="separator">
 
       <div class="clearfix" style="margin-bottom:-5px">
-        <?php echo $this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','C','',1)?> <!-- C , Create | D, Delete -->
+        <?php echo $this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','C','',1)?> 
           <?php echo $this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','D','',5)?>
       </div>
 

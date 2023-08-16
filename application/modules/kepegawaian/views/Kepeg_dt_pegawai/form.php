@@ -466,26 +466,18 @@ $(document).ready(function(){
               <label class="control-label col-md-2">Status Aktif Pegawai</label>
               <div class="col-md-2">
                 <div class="radio">
-                      <label>
-                        <input name="kepeg_status_aktif" type="radio" class="ace" value="Y" <?php echo isset($value) ? ($value->kepeg_status_aktif == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
-                        <span class="lbl"> Aktif</span>
-                      </label>
-                      <label>
-                        <input name="kepeg_status_aktif" type="radio" class="ace" value="N" <?php echo isset($value) ? ($value->kepeg_status_aktif == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
-                        <span class="lbl"> Tidak Aktif</span>
-                      </label>
+                  <label>
+                    <input name="kepeg_status_aktif" type="radio" class="ace" value="Y" <?php echo isset($value) ? ($value->kepeg_status_aktif == 'Y') ? 'checked="checked"' : '' : 'checked="checked"'; ?> <?php echo ($flag=='read')?'readonly':''?> />
+                    <span class="lbl"> Aktif</span>
+                  </label>
+                  <label>
+                    <input name="kepeg_status_aktif" type="radio" class="ace" value="N" <?php echo isset($value) ? ($value->kepeg_status_aktif == 'N') ? 'checked="checked"' : '' : ''; ?> <?php echo ($flag=='read')?'readonly':''?>/>
+                    <span class="lbl"> Tidak Aktif</span>
+                  </label>
                 </div>
               </div>
             </div>
-
-            <div class="form-group">
-              <label class="control-label col-md-2">Last update</label>
-              <div class="col-md-8" style="padding-top:8px;font-size:11px">
-                  &nbsp;&nbsp;<i class="fa fa-calendar"></i> <?php echo isset($value->updated_date)?$this->tanggal->formatDateTime($value->updated_date):isset($value)?$this->tanggal->formatDateTime($value->created_date):date('d-M-Y H:i:s')?> - 
-                  by : <i class="fa fa-user"></i> <?php echo isset($value->updated_by)?$value->updated_by:isset($value->created_by)?$value->created_by:$this->session->userdata('user')->username?>
-              </div>
-            </div>
-
+            
             <div class="form-actions center">
               <a onclick="getMenu('kepegawaian/Kepeg_dt_pegawai')" href="#" class="btn btn-sm btn-success">
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
