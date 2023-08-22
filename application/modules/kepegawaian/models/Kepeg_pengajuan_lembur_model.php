@@ -26,6 +26,13 @@ class Kepeg_pengajuan_lembur_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+
+		if($this->session->userdata('user')->role != 'Admin Sistem'){
+			if(isset($this->session->userdata('user_profile')->kepeg_id)){
+				$this->db->where('kepeg_pengajuan_lembur.kepeg_id', $this->session->userdata('user_profile')->kepeg_id);
+			}
+		}
+
 		if(isset($_GET['checked_unit']) AND $_GET['checked_unit'] == 1){
 			if(isset($_GET['unit']) AND $_GET['unit'] != ''){
 				$this->db->where('kepeg_pengajuan_lembur.unit_bagian', $_GET['unit']);
@@ -104,6 +111,7 @@ class Kepeg_pengajuan_lembur_model extends CI_Model {
 	public function get_by_id($id)
 	{
 		$this->_main_query();
+
 		if(is_array($id)){
 			$this->db->where_in(''.$this->table.'.pengajuan_lembur_id',$id);
 			$query = $this->db->get();

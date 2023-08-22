@@ -102,7 +102,11 @@ class Kepeg_persetujuan_lembur extends MX_Controller {
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Kepeg_persetujuan_lembur->get_datatables();
+        if( $this->session->userdata('user_profile')->kepeg_level < 6 ){
+            $list = $this->Kepeg_persetujuan_lembur->get_datatables();
+        }else{
+            $list = [];
+        }
         
         $data = array();
         $no = $_POST['start'];

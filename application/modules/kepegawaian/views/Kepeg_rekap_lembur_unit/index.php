@@ -69,7 +69,18 @@
           </div>
         </div>
         <div class="col-md-3" style="margin-left: -15px">
-          <?php echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array(), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');?>
+          <?php 
+            if( in_array($this->session->userdata('user_profile')->kepeg_unit, array(31,10,8,4,3,2,1)) ){
+              echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array(''), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');
+            }else{
+              if( $this->session->userdata('user_profile')->kepeg_level < 5 ){
+                echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array('kepeg_unit_parent' => $this->session->userdata('user_profile')->kepeg_unit), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');
+              }else{
+                echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array('kepeg_unit_id' => $this->session->userdata('user_profile')->kepeg_unit), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');
+              }
+            }
+            
+              ?>
         </div>
 
         <div class="control-label col-md-1">

@@ -390,31 +390,64 @@ class Global_report_model extends CI_Model {
 		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 
-		$query = 'select CAST(tgl_transaksi as DATE) as tgl_transaksi,a.kode_tc_trans_kasir, a.kode_perusahaan, a.kode_trans_far,
-		(CASE
-			WHEN b.nama_brg IS NULL THEN a.kode_barang
-			ELSE b.kode_brg
-		END) as kode_brg,
-		(CASE
-			WHEN b.nama_brg IS NULL THEN a.nama_tindakan
-			ELSE b.nama_brg
-		END) as nama_brg, 
-		(CASE
-			WHEN b.nama_brg IS NULL THEN CAST(a.jumlah as INT)
-			ELSE b.jumlah
-		END) as jumlah,
-		(CASE
-			WHEN b.nama_brg IS NULL THEN CAST(ISNULL(bill_rs / NULLIF(a.jumlah,0),0) as INT)
-			ELSE CAST(b.harga_jual as INT)
-		END) as harga_satuan,
-		(CASE
-			WHEN b.nama_brg IS NULL THEN CAST(bill_rs as INT)
-			ELSE CAST(b.jumlah_total as INT)
-		END) as jumlah_total
-		from tc_trans_pelayanan a
-		full outer join tc_far_racikan_detail b on CAST(b.id_tc_far_racikan as VARCHAR)=a.kode_barang
-		where (jenis_tindakan in (9,11) ) and YEAR(tgl_transaksi)='.$year.' AND MONTH(tgl_transaksi)='.$month.' and (a.kode_bagian='."'".$bagian."'".' or a.kode_bagian_asal='."'".$bagian."'".') AND bill_rs > 0
-		order by a.tgl_transaksi, a.nama_tindakan, b.nama_brg ASC';
+		// laporan penjualan obat berdasarkan data transaksi
+		// ditambah dengan data obat yang ditangguhkan dan sudah dilakukan mutasi
+		// untuk obat yang ditangguhkan dan belum dimutasikan, maka belum menjadi penjualan
+
+		$query = 'SELECT kode_brg, kode_perusahaan, SUM(jumlah) as jumlah, SUM(jumlah_total) as jumlah_total FROM (SELECT CAST
+			( tgl_transaksi AS DATE ) AS tgl_transaksi,
+			a.kode_tc_trans_kasir,
+			a.kode_perusahaan,
+			a.kode_trans_far,
+			( CASE WHEN b.nama_brg IS NULL THEN a.kode_barang ELSE b.kode_brg END ) AS kode_brg,
+			( CASE WHEN b.nama_brg IS NULL THEN a.nama_tindakan ELSE b.nama_brg END ) AS nama_brg,
+			( CASE WHEN b.nama_brg IS NULL THEN CAST ( a.jumlah AS INT ) ELSE b.jumlah END ) AS jumlah,
+			(
+			CASE
+					
+					WHEN b.nama_brg IS NULL THEN
+					CAST ( ISNULL( bill_rs / NULLIF ( a.jumlah, 0 ), 0 ) AS INT ) ELSE CAST ( b.harga_jual AS INT ) 
+				END 
+				) AS harga_satuan,
+				( CASE WHEN b.nama_brg IS NULL THEN CAST ( bill_rs AS INT ) ELSE CAST ( b.jumlah_total AS INT ) END ) AS jumlah_total 
+			FROM
+				tc_trans_pelayanan a
+				FULL OUTER JOIN tc_far_racikan_detail b ON CAST ( b.id_tc_far_racikan AS VARCHAR ) = a.kode_barang 
+			WHERE
+				( jenis_tindakan IN ( 9, 11 ) ) 
+				AND YEAR ( tgl_transaksi ) = '.$year.' 
+				AND MONTH ( tgl_transaksi ) = '.$month.' 
+				AND ( a.kode_bagian= '."'060101'".' OR a.kode_bagian_asal= '."'060101'".' ) 
+				AND bill_rs > 0 
+				UNION ALL
+			SELECT CAST
+				( tgl_input AS DATE ) AS tgl_transaksi,
+				0 as kode_tc_trans_kasir,
+				kode_perusahaan,
+				fr_tc_log_mutasi_obat.kode_trans_far,
+				fr_tc_log_mutasi_obat.kode_brg,
+				nama_brg,
+				SUM ( jumlah_mutasi_obat ) AS jml_mutasi,
+				CAST ( AVG ( harga_jual_satuan ) AS INT ) AS rata_harga_jual,
+				( SUM ( jumlah_obat_23 ) * CAST ( AVG ( harga_jual_satuan ) AS INT ) ) AS jumlah_total 
+			FROM
+				fr_tc_log_mutasi_obat
+				LEFT JOIN fr_tc_far_detail_log ON ( fr_tc_log_mutasi_obat.kode_trans_far = fr_tc_far_detail_log.kode_trans_far AND fr_tc_log_mutasi_obat.kode_brg = fr_tc_far_detail_log.kode_brg )
+				LEFT JOIN fr_tc_far ON fr_tc_far.kode_trans_far = fr_tc_far_detail_log.kode_trans_far
+				LEFT JOIN tc_registrasi ON tc_registrasi.no_registrasi = fr_tc_far.no_registrasi 
+			WHERE
+				YEAR ( fr_tc_far.tgl_trans ) = '.$year.' 
+				AND MONTH ( fr_tc_far.tgl_trans ) = '.$month.' 
+			GROUP BY
+			fr_tc_log_mutasi_obat.kode_brg,
+				CAST ( tgl_input AS DATE ),
+				kode_perusahaan,
+				fr_tc_log_mutasi_obat.kode_trans_far,
+				nama_brg 
+			HAVING
+				SUM ( jumlah_mutasi_obat ) > 0) as tbl_x
+			GROUP BY kode_brg, kode_perusahaan';
+
 		// echo $query;
 
 		return $this->db->query($query)->result_array();
@@ -1910,6 +1943,7 @@ public function pengadaan_mod_8(){
 
 		}
 	}
+	
 	public function distribusi_unit_bagian(){
 		$query = "SELECT a.kode_brg, e.kode_bagian_minta, g.nama_bagian, SUM(jumlah_permintaan) as jumlah_permintaan, SUM(jumlah_penerimaan) as jumlah_penerimaan, f.harga_beli
 				  FROM tc_permintaan_inst_det a

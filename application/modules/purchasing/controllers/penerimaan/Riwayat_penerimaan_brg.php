@@ -516,6 +516,18 @@ class Riwayat_penerimaan_brg extends MX_Controller {
         $this->load->view('penerimaan/Riwayat_penerimaan_brg/preview_penerimaan_brg', $data);
     }
 
+    public function export_excel()
+    {
+        /*get data from model*/
+        $list = $this->Riwayat_penerimaan_brg->get_data();
+        $data = array(
+            'parameter' => $_GET,
+            'result' => $list,
+        );
+        // echo '<pre>'; print_r($data);die;
+        $this->load->view('penerimaan/Riwayat_penerimaan_brg/export_excel_view', $data);
+    }
+
 
 
 }
