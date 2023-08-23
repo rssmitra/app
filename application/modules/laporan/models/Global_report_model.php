@@ -762,7 +762,7 @@ class Global_report_model extends CI_Model {
 			YEAR ( e.tgl_permohonan ) = '."'".$_POST['year']."'".' 
 			AND MONTH ( e.tgl_permohonan ) = '."'".$_POST['from_month']."'".'
 		ORDER BY
-			CAST ( e.tgl_permohonan AS DATE ) DESC';
+			f.tgl_penerimaan  DESC';
 				
 		}
 		else{
