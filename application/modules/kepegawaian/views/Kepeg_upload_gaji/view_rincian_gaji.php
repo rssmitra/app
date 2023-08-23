@@ -105,7 +105,7 @@
               </tr>
               <tr>
                 <td></td>
-                <td style="padding-left:30px ">Lembur</td>
+                <td style="padding-left:30px ">Insentif</td>
                 <td align="right"><?php echo number_format($value->insentif)?></td>
               </tr>
               

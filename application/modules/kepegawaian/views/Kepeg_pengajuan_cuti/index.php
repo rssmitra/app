@@ -100,7 +100,7 @@
                <th width="40px" class="center"></th>
               <th width="40px" class="center"></th>
               <th width="50px"></th>
-              <th width="150px">Kode/Tanggal Pengajuan</th>
+              <th width="150px">Kode/Tanggal</th>
               <th>Nama Pegawai</th>
               <th>Jabatan/Unit/Bagian</th>
               <th>Tanggal Cuti</th>

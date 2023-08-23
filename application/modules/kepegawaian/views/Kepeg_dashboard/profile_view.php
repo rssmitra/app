@@ -159,28 +159,28 @@
 										<div class="clearfix">
 											<div class="grid3 center">
 												<!-- #section:plugins/charts.easypiechart -->
-												<div class="easy-pie-chart percentage" data-percent="45" data-color="#CA5952" style="height: 72px; width: 72px; line-height: 71px; color: rgb(202, 89, 82);">
-												<span class="percent" style="font-size: 25px">45</span> (hari)
+												<div class="easy-pie-chart percentage" data-percent="45" data-color="#CA5952" style="height: 72px; line-height: 71px; color: rgb(202, 89, 82);">
+												<span class="percent" style="font-size: 25px; cursor: pointer" onclick="getMenu('kepegawaian/Kepeg_pengajuan_cuti')"><?php echo $cuti?></span> (hari)
 												</div>
 												<!-- /section:plugins/charts.easypiechart -->
 												<div class="space-2"></div>
-												Jumlah Sisa Cuti 
+												Jumlah Cuti yang sudah digunakan<br>Periode Tahun <?php echo date('Y')?>
 											</div>
 
 											<div class="grid3 center">
-												<div class="center easy-pie-chart percentage" data-percent="90" data-color="#59A84B" style="height: 72px; width: 72px; line-height: 71px; color: rgb(89, 168, 75);">
-													<span class="percent" style="font-size: 25px">90</span> (jam)
+												<div class="center easy-pie-chart percentage" data-percent="90" data-color="#59A84B" style="height: 72px; line-height: 71px; color: rgb(89, 168, 75);">
+													<span class="percent" style="font-size: 25px; cursor:pointer" onclick="getMenu('kepegawaian/Kepeg_pengajuan_lembur')"><?php echo $lembur?></span> (h:m)
 												</div>
 												<div class="space-2"></div>
-												Total Jam Lembur 
+												Total Jam Lembur<br>Periode <?php echo $this->tanggal->getBulan(date('m')).' '. date('Y')?>
 											</div>
 
 											<div class="grid3 center">
-												<div class="center easy-pie-chart percentage" data-percent="80" data-color="#9585BF" style="height: 72px; width: 72px; line-height: 71px; color: rgb(149, 133, 191);">
-													<span class="percent" style="font-size: 25px">80</span> (jam)
+												<div class="center easy-pie-chart percentage" data-percent="80" data-color="#9585BF" style="height: 72px; line-height: 71px; color: rgb(149, 133, 191);">
+													<span class="percent" style="font-size: 25px; cursor: pointer" onclick="show_modal('kepegawaian/Kepeg_upload_gaji/show_detail_row?bulan=<?php echo $gaji->kg_periode_bln; ?>&tahun=<?php echo $gaji->kg_periode_thn; ?>&nip=<?php echo $gaji->nip; ?>', 'Rincian Gaji')"><?php echo number_format($gaji->gaji_diterima)?></span> (IDR)
 												</div>
 												<div class="space-2"></div>
-												Jumlah Keterlambatan
+												Gaji diterima <br>Periode <?php echo $this->tanggal->getBulan(date('m')-1).' '. date('Y')?>
 											</div>
 										</div>
 

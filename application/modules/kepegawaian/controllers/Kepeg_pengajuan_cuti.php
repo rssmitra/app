@@ -25,7 +25,7 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
     }
 
     public function index() { 
-        //echo '<pre>';print_r($this->session->all_userdata());
+        // echo '<pre>';print_r($this->session->all_userdata());
         /*define variable data*/
         $data = array(
             'title' => $this->title,
@@ -86,7 +86,11 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Kepeg_pengajuan_cuti->get_datatables();
+        if(isset($this->session->userdata('user_profile')->kepeg_id)){
+            $list = $this->Kepeg_pengajuan_cuti->get_datatables();
+        }else{
+            $list = [];
+        }
         
         $data = array();
         $no = $_POST['start'];
@@ -118,15 +122,9 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
             $row[] = $row_list->kode.'<br>'.$this->tanggal->formatDatedmY($row_list->tgl_pengajuan_cuti);
             $row[] = '<b>NIP : '.$row_list->kepeg_nip.'</b><br>'.$row_list->nama_pegawai;
             $row[] = $row_list->nama_level.'<br>'.$row_list->nama_unit;
-            $row[] = $this->tanggal->formatDatedmY($row_list->cuti_dari_tgl).' s/d '.$this->tanggal->formatDatedmY($row_list->cuti_sd_tgl);
+            $row[] = $this->tanggal->formatDatedmY($row_list->cuti_dari_tgl).' s/d '.$this->tanggal->formatDatedmY($row_list->cuti_sd_tgl).'<br><b>('.$this->tanggal->getRangeDay($row_list->cuti_dari_tgl, $row_list->cuti_sd_tgl).' hari)</b>';
             $row[] = '<b>'.$row_list->jenis_cuti.'</b><br>'.$row_list->alasan_cuti;
             $row[] = $status;
-            // $status_aktif = ($row_list->kepeg_status_aktif == 'Y') ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
-            // $row[] = '<div class="center">'.$status_aktif.'</div>';
-            // $row[] = '<div class="center">
-            //             <a href="#" style="width: 100% !important" class="label label-xs label-success" onclick="getMenu('."'kepegawaian/Kepeg_pengajuan_cuti/form_jabatan/".$row_list->kepeg_pengajuan_cuti."'".')"><i class="fa fa-pencil"></i> Update Kepegawaian</a>
-            // </div>';
-                   
             $data[] = $row;
         }
 
@@ -176,7 +174,7 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
             // get detail pegawai
             $dt_pegawai = $this->db->get_where('view_dt_pegawai', array('kepeg_id' => $val->set_value('kepeg_id') ) )->row();
             if(!empty($dt_pegawai)){
-                $acc_level = $dt_pegawai->kepeg_level - 1;
+                $acc_level = ($dt_pegawai->kepeg_level == 7) ? 6 - 1 : $dt_pegawai->kepeg_level - 1;
                 $dataexc['level_pegawai'] = $dt_pegawai->kepeg_level;
                 $dataexc['unit_bagian'] = $dt_pegawai->kepeg_unit;
             }
@@ -193,6 +191,7 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
                 $newId = $this->Kepeg_pengajuan_cuti->save('kepeg_pengajuan_cuti', $dataexc);
                 // log acc
                 $spv = $this->Kepeg_pengajuan_cuti->get_spv($dt_pegawai->kepeg_unit, $acc_level);
+                // echo '<pre>'; print_r($spv);die;
                 $dataacc = array(
                     'acc_by_level' => $spv->nama_level,
                     'acc_by_unit' => $spv->nama_unit,

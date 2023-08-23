@@ -26,6 +26,12 @@ class Kepeg_persetujuan_lembur_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+
+		if( $this->session->userdata('user_profile')->kepeg_level < 6 ){
+			$this->db->where('view_dt_pegawai.spv_kepeg_id_2', $this->session->userdata('user_profile')->kepeg_id);
+			$this->db->or_where('view_dt_pegawai.spv_kepeg_id', $this->session->userdata('user_profile')->kepeg_id);
+		}
+		
 		if(isset($_GET['checked_unit']) AND $_GET['checked_unit'] == 1){
 			if(isset($_GET['unit']) AND $_GET['unit'] != ''){
 				$this->db->where('kepeg_pengajuan_lembur.unit_bagian', $_GET['unit']);

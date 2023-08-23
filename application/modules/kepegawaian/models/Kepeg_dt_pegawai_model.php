@@ -24,6 +24,12 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+
+		// filter by session login
+		if($this->session->userdata('user')->role != 'Admin Sistem'){
+			$this->db->where('view_dt_pegawai.kepeg_id', $this->session->userdata('user_profile')->kepeg_id);
+		}
+
 		// search query
 		if(isset($_GET['checked_nama_pegawai']) AND $_GET['checked_nama_pegawai'] == 1){
 			if(isset($_GET['nama_pegawai']) AND $_GET['nama_pegawai'] != ''){

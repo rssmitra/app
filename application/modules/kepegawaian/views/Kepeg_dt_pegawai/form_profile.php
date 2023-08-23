@@ -30,7 +30,7 @@ $(document).ready(function(){
 
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-          location.reload();
+          getMenu('kepegawaian/Kepeg_dt_pegawai');
         }else{
           $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
         }
@@ -239,9 +239,9 @@ $(document).ready(function(){
 
 
             <!-- hidden form -->
-            <input type="hidden" name="no_induk" id="no_induk" value="">
-            <input type="hidden" name="kepeg_id" id="kepeg_id" value="">
-            <input type="hidden" name="profil_id" value="<?php echo isset($profile_user->up_id)?$profile_user->up_id:0?>">
+            <input type="hidden" name="no_induk" id="no_induk" value="<?php echo isset($value->no_induk)?$value->no_induk:''?>">
+            <input type="hidden" name="kepeg_id" id="kepeg_id" value="<?php echo isset($value->kepeg_id)?$value->kepeg_id:''?>">
+            <input type="hidden" name="profil_id" value="<?php echo isset($value->up_id)?$value->up_id:0?>">
 
             <!-- biodata pegawai -->
             <p><b>DATA PRIBADI</b></p>
