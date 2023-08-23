@@ -85,13 +85,15 @@
 
             // penjualan bpjs
             $qty_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['jumlah'])?$v_penjualan_bpjs[$kode_brg]['jumlah']:0;
-            $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['total'])?$v_penjualan_bpjs[$kode_brg]['total']:0;
+            // $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['total'])?$v_penjualan_bpjs[$kode_brg]['total']:0;
+            $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['jumlah'])?$v_penjualan_bpjs[$kode_brg]['jumlah']*$row_data->harga_beli:0;
             $arr_qty_penjualan_bpjs[] = $qty_penjualan_bpjs;
             $arr_rp_penjualan_bpjs[] = $rp_penjualan_bpjs;
 
             // penjualan umum
             $qty_penjualan = isset($v_penjualan_umum[$kode_brg]['jumlah'])?$v_penjualan_umum[$kode_brg]['jumlah']:0;
-            $rp_penjualan = isset($v_penjualan_umum[$kode_brg]['total'])?$v_penjualan_umum[$kode_brg]['total']:0;
+            // $rp_penjualan = isset($v_penjualan_umum[$kode_brg]['total'])?$v_penjualan_umum[$kode_brg]['total']:0;
+            $rp_penjualan = isset($v_penjualan_umum[$kode_brg]['jumlah'])?$v_penjualan_umum[$kode_brg]['jumlah']*$row_data->harga_beli:0;
             $arr_qty_penjualan[] = $qty_penjualan;
             $arr_rp_penjualan[] = $rp_penjualan;
 
