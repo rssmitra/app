@@ -24,7 +24,7 @@
   <div class="row" style="padding-left: 5px; padding-right: 5px">
     <div class="col-xs-12">
 
-      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Sald o Akhir <br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year?> <br>Unit/Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center>
+      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir<br>Berdasarkan Waktu Pemesanan Resep<br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year?> <br>Unit/Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center>
 
       <br>
 
@@ -107,14 +107,6 @@
             $arr_qty_saldo_akhir[] = $qty_saldo_akhir;
             $arr_rp_saldo_akhir[] = $rp_saldo_akhir;
 
-            // $jmlpenerimaan = $jmlpenerimaan + $saldopenerimaan;
-            // $jmlpenjualanbpjs=$jmlpenjualanbpjs+$j_bpjs;
-            // $jmlpenjualanumum=$jmlpenjualanumum+$j_umum;
-            // $penjualanintrnal=$penjualanintrnal+$j_internal;
-            // $jmldistribusi=$jmldistribusi+$j_distribusiU;
-
-            // $jmlakhir=$jmlakhir+$saldo_akhir;
-            // $jmlsaldoakhir=$jmlsaldoakhir+$saldoakhir;
             ?>
             <tr>
               <td align="center"><?php echo $no;?></td>
@@ -129,23 +121,23 @@
                 echo '<td align="right">'.$txt_rp_saldo_awal.'</td>';
                 // penerimaan
                 echo '<td align="center">'.$qty_penerimaan.'</td>';
-                $txt_rp_penerimaan = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_penerimaan = ($submit == 'excel')?$rp_penerimaan:number_format($rp_penerimaan);
                 echo '<td align="right">'.$txt_rp_penerimaan.'</td>';
                 // penjualan bpjs
                 echo '<td align="center">'.$qty_penjualan_bpjs.'</td>';
-                $txt_rp_penjualan_bpjs = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_penjualan_bpjs = ($submit == 'excel')?$rp_penjualan_bpjs:number_format($rp_penjualan_bpjs);
                 echo '<td align="right">'.$txt_rp_penjualan_bpjs.'</td>';
                 // penjualan umum
                 echo '<td align="center">'.$qty_penjualan.'</td>';
-                $txt_rp_penjualan = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_penjualan = ($submit == 'excel')?$rp_penjualan:number_format($rp_penjualan);
                 echo '<td align="right">'.$txt_rp_penjualan.'</td>';
                 // bmhp
                 echo '<td align="center">'.$qty_bmhp.'</td>';
-                $txt_rp_bmhp = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_bmhp = ($submit == 'excel')?$rp_bmhp:number_format($rp_bmhp);
                 echo '<td align="right">'.$txt_rp_bmhp.'</td>';
 
                 echo '<td align="center">'.$qty_saldo_akhir.'</td>';
-                $txt_rp_saldo_akhir = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
+                $txt_rp_saldo_akhir = ($submit == 'excel')?$rp_saldo_akhir:number_format($rp_saldo_akhir);
                 echo '<td align="right"><b>'.$txt_rp_saldo_akhir.'</b></td>';
 
               ?>

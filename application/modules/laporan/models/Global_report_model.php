@@ -103,7 +103,7 @@ class Global_report_model extends CI_Model {
 		$query = "SELECT a.kode_brg, b.nama_brg, CAST(AVG(c.harga_beli) as INT) as harga_beli
 		FROM  mt_depo_stok as a INNER JOIN mt_barang b on b.kode_brg=a.kode_brg 
 		LEFT JOIN mt_rekap_stok c on a.kode_brg=c.kode_brg
-		WHERE a.kode_bagian= ".$kode_bagian." AND a.kode_brg IS NOT NULL
+		WHERE a.kode_bagian= ".$kode_bagian." AND a.kode_brg IS NOT NULL and a.is_active = 1
 		group by a.kode_brg, b.nama_brg ORDER BY b.nama_brg ASC";
 			
 		return $query;
