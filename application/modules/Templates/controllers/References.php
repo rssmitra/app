@@ -1787,6 +1787,7 @@ class References extends MX_Controller {
 		$this->db->join($mt_barang.' as b', 'b.kode_brg=a.kode_brg' , 'left');
 		// $this->db->join($mt_rekap_stok.' as c', 'c.kode_brg=a.kode_brg' , 'left');
 		$this->db->where('(a.kode_brg LIKE '."'%".$_POST['keyword']."%'".' OR b.nama_brg LIKE '."'%".$_POST['keyword']."%'".')');
+    $this->db->where('a.is_active = 1');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
