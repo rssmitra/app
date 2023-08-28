@@ -82,7 +82,6 @@ class Global_report extends MX_Controller {
             
         }
 
-
         if($_POST['bagian'] == '060201'){
             $distribusi = $this->Global_report->distribusi_barang_unit();
             $penerimaan_brg_gudang = $this->Global_report->penerimaan_brg_gudang();
@@ -101,18 +100,20 @@ class Global_report extends MX_Controller {
             $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
             $penjualan = $this->Global_report->penjualan_obat();
             $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
-
-             // penerimaan barang unit
+            
+            // penerimaan barang unit
             foreach ($penerimaan_brg_unit as $k_penerimaan_brg => $v_penerimaan_brg) {
                 $dt_penerimaan_brg[trim($v_penerimaan_brg['kode_brg'])] = (int)$v_penerimaan_brg['jumlah_penerimaan'];
             }
-
+            
             // get data penjualan bpjs
             foreach ($penjualan as $k_pjl_bpjs => $v_pjl_bpjs) {
                 if($v_pjl_bpjs['kode_perusahaan'] ==  120){
                     $dt_penjualan_bpjs[trim($v_pjl_bpjs['kode_brg'])] = array('jumlah' => (int)$v_pjl_bpjs['jumlah'], 'total' => (int)$v_pjl_bpjs['jumlah_total']);
                 }
             }
+
+            // echo '<pre>';print_r($dt_penjualan_bpjs);die;
 
             // data penjualan umum
             foreach ($penjualan as $k_pjl_umum => $v_pjl_umum) {

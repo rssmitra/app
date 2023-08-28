@@ -59,15 +59,9 @@ class Req_pembelian_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_permohonan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
-			// $this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
-			// if( $_GET['flag'] == 'medis' ){
-			// 	$current_month = date('m') - 1;
-			// 	$this->db->where('MONTH(a.tgl_permohonan) >= '.$current_month.'');
-			// }
+			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 14');
 		}
 
-		// $this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, t_total.total_brg, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju, a.keterangan_permohonan');
 	}
 
 	private function _get_datatables_query()

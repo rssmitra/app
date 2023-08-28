@@ -86,6 +86,53 @@ class Riwayat_penerimaan_brg_model extends CI_Model {
 		return $query->result();
 	}
 
+	private function _main_query_penjualan(){
+		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
+		$backmonth = date('m') - 3;
+
+		$this->db->select($this->select);
+		$this->db->select('SUM(dpp) as total');
+		$this->db->select('f.nama_brg, SUM(d.jumlah_kirim) as jumlah_kirim, f.satuan_besar, f.kode_brg, d.content');
+		$this->db->from(''.$table.'_detail d');
+		$this->db->join($table.' a', 'd.id_penerimaan=a.id_penerimaan', 'left');
+		$this->db->join('mt_barang f','f.kode_brg=d.kode_brg', 'left');
+		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
+		$this->db->join('tc_po_det g','g.id_tc_po_det=d.id_tc_po_det', 'left');
+		$this->db->join('(SELECT id_penerimaan, count(kode_detail_penerimaan_barang)as jml_diterima FROM tc_penerimaan_barang_detail GROUP BY id_penerimaan) as total_brg','total_brg.id_penerimaan=a.id_penerimaan', 'left');
+		$this->db->group_by($this->select);
+		$this->db->group_by('f.nama_brg, f.satuan_besar, f.kode_brg, d.content');
+
+		if( ( isset( $_GET['keyword']) AND $_GET['keyword'] != '' )  ){
+			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'no_po' ){
+				$this->db->like( $_GET['search_by'], $_GET['keyword'] );
+			}
+		}
+
+		if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'month' ){
+			$this->db->where( 'MONTH(a.tgl_penerimaan)', $_GET['month'] );
+			$this->db->where('YEAR(a.tgl_penerimaan)', date('Y'));
+		}
+
+		if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'supplier' ){
+			$this->db->where( 'a.kodesupplier', $_GET['kodesupplier'] );
+		}
+
+		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+			$this->db->where("convert(varchar,a.tgl_penerimaan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+		}else{
+			$this->db->where('DATEDIFF(day,a.tgl_penerimaan,GETDATE()) < 120');
+		}
+
+	}
+
+	function get_data()
+	{
+		$this->_main_query_penjualan();
+		$query = $this->db->get();
+		// echo '<pre>';print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
 	function count_filtered()
 	{
 		$this->_get_datatables_query();

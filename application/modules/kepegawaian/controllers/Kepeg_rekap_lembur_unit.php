@@ -25,7 +25,7 @@ class Kepeg_rekap_lembur_unit extends MX_Controller {
     }
 
     public function index() { 
-        //echo '<pre>';print_r($this->session->all_userdata());
+        // echo '<pre>';print_r($this->session->all_userdata());
         /*define variable data*/
         $data = array(
             'title' => $this->title,

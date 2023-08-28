@@ -86,7 +86,11 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Kepeg_pengajuan_cuti->get_datatables();
+        if(isset($this->session->userdata('user_profile')->kepeg_id)){
+            $list = $this->Kepeg_pengajuan_cuti->get_datatables();
+        }else{
+            $list = [];
+        }
         
         $data = array();
         $no = $_POST['start'];
@@ -170,7 +174,7 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
             // get detail pegawai
             $dt_pegawai = $this->db->get_where('view_dt_pegawai', array('kepeg_id' => $val->set_value('kepeg_id') ) )->row();
             if(!empty($dt_pegawai)){
-                $acc_level = $dt_pegawai->kepeg_level - 1;
+                $acc_level = ($dt_pegawai->kepeg_level == 7) ? 6 - 1 : $dt_pegawai->kepeg_level - 1;
                 $dataexc['level_pegawai'] = $dt_pegawai->kepeg_level;
                 $dataexc['unit_bagian'] = $dt_pegawai->kepeg_unit;
             }
@@ -187,6 +191,7 @@ class Kepeg_pengajuan_cuti extends MX_Controller {
                 $newId = $this->Kepeg_pengajuan_cuti->save('kepeg_pengajuan_cuti', $dataexc);
                 // log acc
                 $spv = $this->Kepeg_pengajuan_cuti->get_spv($dt_pegawai->kepeg_unit, $acc_level);
+                // echo '<pre>'; print_r($spv);die;
                 $dataacc = array(
                     'acc_by_level' => $spv->nama_level,
                     'acc_by_unit' => $spv->nama_unit,
