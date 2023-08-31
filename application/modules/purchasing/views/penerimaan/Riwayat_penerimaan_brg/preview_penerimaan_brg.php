@@ -68,7 +68,7 @@ th, td {
 
   <hr>
 
-  <center><span style="font-size: 16px"><strong>BERITA ACARA PENERIMAAN BARANG</strong></span></center><br>
+  <center><span style="font-size: 16px"><strong>BERITA ACARA PENERIMAAN BARANG</strong><br><span style="font-size: 14px !important; font-weight: bold">Nomor PO : <?php echo $penerimaan->no_po;?></span> </span></center><br>
 
   <table id="no-border" style="width: 100% !important;">
     <tr>
@@ -151,34 +151,15 @@ th, td {
               $total_akhir = array_sum($arr_dpp) + array_sum($arr_ppn);
             ?>
 
-            <!-- <tr>
-              <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">DPP </td>
-              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_dpp))?></td>
-            </tr> -->
-            <!-- <tr>
-              <td colspan="9" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">PPN </td>
-              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_ppn))?></td>
-            </tr> -->
-
-            <!-- <tr>
-              <td colspan="6" style="text-align:right; padding-right: 20px; border: 0px solid black; border-collapse: collapse">Total </td>
-              <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format(array_sum($arr_dpp))?></td>
-            </tr>
-            <tr>
-              <td colspan="7" style="text-align:right; border: 1px solid black; border-collapse: collapse">Terbilang : 
-              <b><i>"<?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang(array_sum($arr_dpp)))?> Rupiah"</i></b>
-              </td>
-            </tr> -->
-
     </tbody>
   </table>
   
   <table style="width: 100% !important; text-align: center">
   <tr>
-    <td style="text-align: center; width: 25">
+    <!-- <td style="text-align: center; width: 25">
       <b>Diketahui oleh,</b><br><br><br><br>
       <?php echo ( $flag == 'non_medis' ) ? $this->master->get_ttd('verifikator_nm_2') : $this->master->get_ttd('verifikator_m_2') ; ?>
-    </td>
+    </td> -->
     <td style="text-align: center; width: 25">
       <b>Diperiksa oleh,</b><br><br><br><br>
       <?php echo ( $flag == 'non_medis' ) ? $this->master->get_ttd('ttd_ka_gdg_nm') : $this->master->get_ttd('ttd_ka_gdg_m') ; ?>
@@ -200,12 +181,9 @@ th, td {
       Catatan : <br>
       <ol>
           <li>Simpan Berita Acara Penerimaan Barang ini sebagai bukti sah untuk tukar faktur.</li>
-          <li>Total biaya pada Berita Acara Penerimaan Barang ini belum dikenakan pajak PPN 10%</li>
       </ol>
     </td>
   </tr>
 </table>
-
-
 
 </body>
