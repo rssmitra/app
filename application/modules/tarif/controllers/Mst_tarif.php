@@ -203,7 +203,7 @@ class Mst_tarif extends MX_Controller {
 
     public function process()
     {
-        // echo print_r($X_POST);die;
+        // echo print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('nama_tarif', 'Nama Tarif', 'trim|required');
@@ -249,6 +249,7 @@ class Mst_tarif extends MX_Controller {
                 
                 // kode tarif
                 $kode_tarif = $this->generate_kode_tarif($val->set_value('kode_bagian'));
+                // echo print_r($kode_tarif);die;
                 $dataexc['kode_tarif'] = $kode_tarif;
                 
                 // kode tindakan
@@ -370,7 +371,7 @@ class Mst_tarif extends MX_Controller {
         }else{
             $max_kode = $this->db->query("select MAX(kode_tarif)as max_tarif from mt_master_tarif where kode_bagian=".$kode_bagian."")->row();
         }
-        $new_kode_plus_one = ($kode_bagian != '') ? $kode_bagian.'0'.$max_kode->max_tarif + 1 : $max_kode->max_tarif + 1;
+        $new_kode_plus_one = ($kode_bagian == '') ? $kode_bagian.'0'.$max_kode->max_tarif + 1 : $max_kode->max_tarif + 1;
         return $new_kode_plus_one;
     }
 
