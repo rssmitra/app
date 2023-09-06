@@ -268,6 +268,7 @@ class Riwayat_penerimaan_brg extends MX_Controller {
 
                     // ============= insert penerimaan barang detail
                     $config = array(
+                        'kode_brg' => $rows,
                         'hna' => $_POST['harga_satuan'][$rows],
                         'disc' => $_POST['discount'][$rows],
                         'ppn' => $_POST['ppn'][$rows],

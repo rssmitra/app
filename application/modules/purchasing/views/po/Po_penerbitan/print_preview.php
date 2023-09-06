@@ -172,7 +172,7 @@ th, td {
 
     </tbody>
   </table>
-  Order Pembelian ini berlaku 14 hari kerja. <br>
+  Order Pembelian ini berlaku 7 hari kerja. <br>
   Konfirmasi jika PO dan Faktur berbeda sebelum delivery ED dekat atau stok kosong.<br>
   Lampirkan copy PO saat pengiriman dan Tukar Faktur.
   <br>

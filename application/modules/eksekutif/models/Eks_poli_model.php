@@ -468,6 +468,23 @@ class Eks_poli_model extends CI_Model {
             $subtitle = 'Source: RSSM - SIRS';
         }
 
+        if($params['prefix']==9){
+            $data = array();
+            // periode
+            $this->db->from('ak_tc_transaksi_det'); 
+            $this->db->where('id');
+            $prd_dt = $this->db->get();
+            echo '<pre>';print_r($this->db->last_query());die;
+
+            $data = array(
+                'jenis_kunjungan' => $_GET['jenis_kunjungan'],
+            );
+            
+            $fields = array();
+            $title = '<span style="font-size: 14px">Rekapitulasi Detail Harian Berdasarkan Jumlah Pasien<br>Bulan <b>'.$this->tanggal->getBulan($_GET['bulan']).'</b> Tahun <b>'.$_GET['tahun'].'</b></span>';
+            $subtitle = 'Source: RSSM - SIRS';
+        }
+
         // echo '<pre>';print_r($getData);die;
         /*find and set type chart*/
         $chart = $this->graph_master->chartTypeData($params['TypeChart'], $fields, $params, $data);
@@ -613,10 +630,10 @@ class Eks_poli_model extends CI_Model {
     function get_detail_data_unit()
     {
         $data = array();
-        $this->db->select('b.no_kunjungan, b.kode_bagian, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
+        $this->db->select('b.no_kunjungan, b.kode_bagian, d.nama_bagian, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
         $this->_main_query();   
         $this->db->where('SUBSTRING(b.kode_bagian, 1, 2) = '."'".$_GET['kode']."'".' ');
-        $this->db->group_by('b.no_kunjungan, b.kode_bagian, SUBSTRING(b.kode_bagian, 1, 2)');
+        $this->db->group_by('b.no_kunjungan, b.kode_bagian, d.nama_bagian, SUBSTRING(b.kode_bagian, 1, 2)');
         if($_GET['flag'] == 'periode'){
 
             // periode

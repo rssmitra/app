@@ -165,8 +165,8 @@ class Mst_tarif extends MX_Controller {
         /*get data from model*/
         $list = [];
         $list = $this->Mst_tarif->get_datatables();
-        if(isset($_GET['unit'])){
-            $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
+        if(isset($_GET['checked_nama_tarif'])){
+            $list = ($_GET['checked_nama_tarif'] != '') ? $this->Mst_tarif->get_datatables() : [];
         }
         // echo '<pre>';print_r($list);die;
         $data = array();
@@ -183,6 +183,7 @@ class Mst_tarif extends MX_Controller {
                 # code...
                 $row[] = isset($row_list['klas'][$row_klas->kode_klas]) ? '<div class="pull-right">'.number_format($row_list['klas'][$row_klas->kode_klas]->total).'</div>' : '<div class="pull-right">0</div>';
             }
+            $row[] = (rtrim($row_list['is_active']) == 'Y') ? '<div class="center"><span class="label label-success">Aktif</span></div>' : '<div class="center"><span class="label label-danger">Non Aktif</span></div>' ;
             $row[] = '<div class="center">
                 '.$this->authuser->show_button('tarif/Mst_tarif','U',$key,2).'
                 '.$this->authuser->show_button('tarif/Mst_tarif','D',$key,2).'

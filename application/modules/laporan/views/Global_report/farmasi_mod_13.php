@@ -87,10 +87,13 @@ $('select[name="pelayanan"]').change(function () {
           <input type="hidden" name="title" value="Rekapitulasi Hutang Obat Pasien">
 
           <div class="form-group">
-            <label class="control-label col-md-1">Bulan </label>
-            
+            <label class="control-label col-md-1">Dari Bulan </label>
             <div class="col-md-1">
-              <?php echo $this->master->get_bulan('','month','from_month','form-control','','');?>
+              <?php echo $this->master->get_bulan('','from_month','from_month','form-control','','');?>
+            </div>
+            <label class="control-label col-md-1">s.d Bulan </label>
+            <div class="col-md-1">
+              <?php echo $this->master->get_bulan('','to_month','to_month','form-control','','');?>
             </div>
             <label class="control-label col-md-1">Tahun</label>
             <div class="col-md-1">

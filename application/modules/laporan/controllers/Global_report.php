@@ -18,7 +18,7 @@ class Global_report extends MX_Controller {
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
-        $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
+        $this->title = 'Laporan Umum RS Setia Mitra';
 
     }
 
@@ -48,7 +48,7 @@ class Global_report extends MX_Controller {
 
     public function show_data(){
 
-        
+        // print_r($_POST);die;
         $query_data = $this->Global_report->get_data();
 
         $data = array(
@@ -57,6 +57,7 @@ class Global_report extends MX_Controller {
             'result' => $query_data,
         );
         
+        
 
         if($_POST['submit']=='format_so'){
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
@@ -64,6 +65,9 @@ class Global_report extends MX_Controller {
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
         }elseif($_POST['submit']=='input_so'){
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
+        }elseif($_POST['flag'] == 'farmasi_mod_13'){
+            // echo '<pre>';print_r($data);die;
+            $this->load->view('Global_report/farmasi_mod_13_view_data', $data);
         }else{
             $this->load->view('Global_report/view_data', $data);
         }
@@ -99,6 +103,7 @@ class Global_report extends MX_Controller {
         }else{
             $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
             $penjualan = $this->Global_report->penjualan_obat();
+            // echo '<pre>';print_r($penjualan);die;
             $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
             
             // penerimaan barang unit

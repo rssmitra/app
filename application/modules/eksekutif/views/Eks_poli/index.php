@@ -88,13 +88,14 @@
       }
     }
 
-    // if (nameid == 'tbl-resume-kunjungan') {
-    //   if($('input[name='+nameid+']').is(':checked')){
-    //       $('#div_form_tanggal').show('fast');
-    //   } else {
-    //     $('#div_form_tanggal').hide('fast');
-    //   }
-    // }
+    if (nameid == 'tbl-resume-akunting-byjurnal') {
+      if($('input[name='+nameid+']').is(':checked')){
+          $('#div_bulan_jurnal').show('fast');
+      } else {
+        $('#div_bulan_jurnal').hide('fast');
+      }
+    }
+
     
     return false;
   }
@@ -246,6 +247,22 @@
                   <label class="control-label col-md-1">Tahun</label>
                   <div class="col-md-2">
                     <?php echo $this->master->get_tahun(date('Y'),'tahun','tahun','form-control','','')?>
+                  </div>
+              </div>
+              <br>
+
+              <label>
+                <input name="tbl-resume-akunting-byjurnal" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Pendapatan Berdasarkan Jurnal Akunting</span>
+              </label>
+              <div class="form-group" id="div_bulan_jurnal" style="display: none">
+                  <label class="control-label col-md-1">Bulan</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_bulan(date('m'),'bulan_jurnal','bulan_jurnal','form-control','','')?>
+                  </div>
+                  <label class="control-label col-md-1">Tahun</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_tahun(date('Y'),'tahun_jurnal','tahun_jurnal','form-control','','')?>
                   </div>
               </div>
               <br>

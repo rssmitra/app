@@ -24,7 +24,7 @@
   <div class="row" style="padding-left: 5px; padding-right: 5px">
     <div class="col-xs-12">
 
-      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir<br>Berdasarkan Waktu Pemesanan Resep<br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year?> <br>Unit/Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center>
+      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir<br>Berdasarkan Waktu Pemesanan Resep<br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year?> <br><?php echo (!empty($bagian)) ? 'Unit/Bagian '.ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian))): 'RS Setia Mitra' ?> </span> </center>
 
       <br>
 

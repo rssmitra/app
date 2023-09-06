@@ -2119,7 +2119,7 @@ class Pl_pelayanan extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        // echo '<pre>';print_r($data);die;
+        echo '<pre>';print_r($data);die;
         $this->load->view('Pl_pelayanan/form_cppt', $data);
 
     }

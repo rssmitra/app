@@ -102,6 +102,15 @@ class Eks_poli extends MX_Controller {
             );
         }
 
+        if(isset($_GET['tbl-resume-akunting-byjurnal'])){
+            $data[5] = array(
+                'nameid' => 'tbl-resume-akunting-byjurnal',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=9&TypeChart=table&style=TableResumeByJurnal&'.$output.'',
+            );
+        }
+
         // $data[2] = array(
         //     'mod' => $_GET['mod'],
         //     'nameid' => 'graph-pie-1',
