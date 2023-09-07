@@ -177,6 +177,13 @@ class Eks_poli extends MX_Controller {
         $this->load->view('Eks_poli/ViewDetailDataPasien', $data);
     }
 
+    public function show_detail_jenis_tindakan(){
+        $data = array();
+        $data['value'] = $this->Eks_poli->get_detail_data_by_jenis_tindakan();
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Eks_poli/ViewDetailDataJenisTindakan', $data);
+    }
+
 
 }
 

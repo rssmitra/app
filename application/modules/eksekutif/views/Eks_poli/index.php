@@ -55,7 +55,13 @@
   }
   function show_detail_pasien(kode, flag){
     preventDefault();
-    $('#show_detail_level_2').load('eksekutif/Eks_poli/show_detail_pasien?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
+    $('#show_detail_level_3').load('eksekutif/Eks_poli/show_detail_pasien?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
+  }
+
+  function show_detail_jenis_tindakan(kode, flag){
+    preventDefault();
+    show_modal('eksekutif/Eks_poli/show_detail_jenis_tindakan?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'', 'REKAPITULASI BERDASARKAN JENIS TINDAKAN TRANSAKSI');
+    // $('#show_detail_level_3').load('eksekutif/Eks_poli/show_detail_jenis_tindakan?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
   }
 
   function hide_detail(flag){
@@ -253,7 +259,7 @@
 
               <label>
                 <input name="tbl-resume-akunting-byjurnal" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
-                <span class="lbl"> Rekapitulasi Pendapatan Berdasarkan Jurnal Akunting</span>
+                <span class="lbl"> Rekapitulasi Transaksi Berdasarkan Jenis Transaksi</span>
               </label>
               <div class="form-group" id="div_bulan_jurnal" style="display: none">
                   <label class="control-label col-md-1">Bulan</label>

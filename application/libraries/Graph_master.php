@@ -742,6 +742,10 @@ final Class Graph_master {
                     return $this->TableResumePiutang($fields, $params, $data);
                 }
 
+                if ($params['style']=='TableResumeByJurnal') {
+                    return $this->TableResumeByJurnal($fields, $params, $data);
+                }
+
             break;
             case 'custom':
                 if ($params['style']=='profilePegawai') {
@@ -1340,6 +1344,27 @@ final Class Graph_master {
         );
         
         $html = $CI->load->view('eksekutif/Eks_piutang/TableResumePiutang', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function TableResumeByJurnal($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        // load view
+        $result = array(
+            'value' => $data,
+        );
+
+        // echo '<pre>'; print_r($result);die;
+        
+        $html = $CI->load->view('eksekutif/Eks_poli/TableResumeByJurnal', $result, true);
         
         
         $chart_data = array(

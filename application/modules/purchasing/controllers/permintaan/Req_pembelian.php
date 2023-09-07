@@ -106,7 +106,18 @@ class Req_pembelian extends MX_Controller {
 
                     if ( $row_list->status_kirim == NULL ) {
                         $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
-                        $text = '<a href="#" target="_blank" class="btn btn-xs btn-white btn-warning" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                        if( $this->session->userdata('user')->user_id != 1){
+                            $kainst = $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
+                            if ($kainst == $this->session->userdata('user')->user_id) {
+                                $text = '<a href="#" target="_blank" class="btn btn-xs btn-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                            }else{
+                                $text = '<span>Menunggu Persetujuan<br>Ka.Inst Farmasi</span>';
+                            }
+                        }else{
+                            $text = '<a href="#" target="_blank" class="btn btn-xs btn-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                        }
+                        
+
                     }else{
                         if($row_list->tgl_pemeriksa == NULL){
                             $status = '<div class="left"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
@@ -172,7 +183,7 @@ class Req_pembelian extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->total_brg.'</div>';
             
             $row[] = '<div class="center">'.$status.'</div>';
-            $row[] = '<div class="left">'.$text.'</div>';
+            $row[] = '<div class="center">'.$text.'</div>';
                    
             $data[] = $row;
         }

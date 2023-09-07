@@ -315,7 +315,7 @@ class App_persetujuan_pemb extends MX_Controller {
             );
         // cek verifikator
         
-        echo '<pre>';print_r($result);die;
+        // echo '<pre>';print_r($result);die;
         $this->load->view('persetujuan_pemb/App_persetujuan_pemb/detail_table_view', $data, false);
     }
 

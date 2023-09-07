@@ -211,10 +211,23 @@ function proses_persetujuan(id){
               </a>
               <?php if( isset($value) AND !empty($value->id_tc_permohonan) ) :  ?>
               <div class="pull-right">
-                <a onclick="proses_persetujuan(<?php echo $value->id_tc_permohonan?>)" href="#" class="btn btn-sm btn-inverse" style="margin-left: -0px">
-                    Simpan dan Kirim ke Pengadaan
-                    <i class="ace-icon fa fa-send icon-on-right bigger-110"></i>
-                </a>
+                <?php
+                  if( $this->session->userdata('user')->user_id != 1){
+                      $kainst = $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
+                      if ($kainst == $this->session->userdata('user')->user_id) {
+                          echo '<a onclick="proses_persetujuan('.$value->id_tc_permohonan.')" href="#" class="btn btn-sm btn-inverse" style="margin-left: -0px">
+                          Simpan dan Kirim ke Pengadaan
+                          <i class="ace-icon fa fa-send icon-on-right bigger-110"></i></a>';
+                      }else{
+                          // echo '<span>Menunggu Persetujuan<br>Ka.Inst Farmasi</span>';
+                      }
+                  }else{
+                      echo '<a onclick="proses_persetujuan('.$value->id_tc_permohonan.')" href="#" class="btn btn-sm btn-inverse" style="margin-left: -0px">
+                      Simpan dan Kirim ke Pengadaan
+                      <i class="ace-icon fa fa-send icon-on-right bigger-110"></i></a>';
+                  }
+                ?>
+                
               </div>
               <?php endif; ?>
               <form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/permintaan/Req_pembelian/process?flag='.$string.'')?>" enctype="multipart/form-data" style="margin-top: -10px">
@@ -248,6 +261,7 @@ function proses_persetujuan(id){
                       </tr>
                     </tbody>
                   </table>
+                  <span style="font-style: italic">* Setelah mengisi item permintaan pembelian barang, Ka Ins Farmasi harus melakukan persetujuan untuk dikirim ke pengadaan.</span>
                 </div>
 
                 <div id="div_daftar_permintaan_brg" style="display:none" ></div>

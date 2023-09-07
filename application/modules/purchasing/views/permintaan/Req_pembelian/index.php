@@ -162,7 +162,7 @@
               <th>Persetujuan</th>
               <th>Total Barang</th>
               <th>Status</th>
-              <th>Keterangan</th>
+              <th style="80px">Keterangan</th>
               
             </tr>
             </thead>
