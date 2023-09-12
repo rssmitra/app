@@ -213,7 +213,8 @@ function proses_persetujuan(id){
               <div class="pull-right">
                 <?php
                   if( $this->session->userdata('user')->user_id != 1){
-                      $kainst = $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
+                    $kainst = ($_GET['flag'] == 'non_medis') ? $this->master->get_ttd_data('ttd_ka_gdg_nm', 'reff_id') : $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
+                    
                       if ($kainst == $this->session->userdata('user')->user_id) {
                           echo '<a onclick="proses_persetujuan('.$value->id_tc_permohonan.')" href="#" class="btn btn-sm btn-inverse" style="margin-left: -0px">
                           Simpan dan Kirim ke Pengadaan
