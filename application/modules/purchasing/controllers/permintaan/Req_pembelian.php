@@ -108,10 +108,11 @@ class Req_pembelian extends MX_Controller {
                         $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
                         if( $this->session->userdata('user')->user_id != 1){
                             $kainst = ($_GET['flag'] == 'non_medis') ? $this->master->get_ttd_data('ttd_ka_gdg_nm', 'reff_id') : $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
+                            $titlekainst = ($_GET['flag'] == 'non_medis') ? 'Ka Gudang Non Medis' : 'Ka.Inst Farmasi';
                             if ($kainst == $this->session->userdata('user')->user_id) {
                                 $text = '<a href="#" target="_blank" class="btn btn-xs btn-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
                             }else{
-                                $text = '<span>Menunggu Persetujuan<br>Ka.Inst Farmasi</span>';
+                                $text = '<span>Menunggu Persetujuan<br>'.$titlekainst.'</span>';
                             }
                         }else{
                             $text = '<a href="#" target="_blank" class="btn btn-xs btn-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
