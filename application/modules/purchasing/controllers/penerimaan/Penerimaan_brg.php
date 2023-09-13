@@ -221,7 +221,6 @@ class Penerimaan_brg extends MX_Controller {
                     'dikirim' => $this->regex->_genRegex( $val->set_value('dikirim'), 'RGXQSL'),
                 );
                 
-                
                 if($id==0){
                     if( $_POST['flag'] == 'non_medis' ){
                         $dataexc['id_penerimaan'] = $this->master->get_max_number($table, 'id_penerimaan' );
@@ -264,6 +263,7 @@ class Penerimaan_brg extends MX_Controller {
                     
                     // ============= insert penerimaan barang detail
                     $config = array(
+                        'kode_brg' => $rows,
                         'hna' => $_POST['harga_satuan'][$rows],
                         'disc' => $_POST['discount'][$rows],
                         'ppn' => $_POST['ppn'][$rows],

@@ -15,16 +15,32 @@
       var url_search = $('#form_search').attr('action');
       e.preventDefault();
       $.ajax({
-      url: url_search,
-      type: "post",
-      data: $('#form_search').serialize(),
-      dataType: "json",
-      success: function(response) {
-        console.log(response.data);
-        $('#rekap_lembur_pegawai').load('kepegawaian/Kepeg_rekap_lembur_unit/show_lembur_pegawai?'+response.data+'');
-      }
+        url: url_search,
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        success: function(response) {
+          console.log(response.data);
+          $('#rekap_lembur_pegawai').load('kepegawaian/Kepeg_rekap_lembur_unit/show_lembur_pegawai?'+response.data+'');
+        }
+      });
     });
-   });
+
+    $('#btn_export_excel').click(function (e) {
+        var url_search = $('#form_search').attr('action');
+        e.preventDefault();
+        $.ajax({
+          url: 'Templates/References/find_data',
+          type: "post",
+          data: $('#form_search').serialize(),
+          dataType: "json",
+          beforeSend: function() {
+          },
+          success: function(response) {
+            window.open('kepegawaian/Kepeg_rekap_lembur_unit/export_excel?export=true&'+response.data+'','_blank'); 
+          }
+        });
+    });
 
   })
 
@@ -40,7 +56,7 @@
           <?php echo isset($breadcrumbs)?$breadcrumbs:''?>
         </small>
       </h1>
-    </div><!-- /.page-header -->
+    </div>
     <form class="form-horizontal" method="post" id="form_search" action="kepegawaian/Kepeg_rekap_lembur_unit/find_data">
 
       <div class="form-group" style="margin-bottom: 3px">
@@ -53,7 +69,18 @@
           </div>
         </div>
         <div class="col-md-3" style="margin-left: -15px">
-          <?php echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array(), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');?>
+          <?php 
+            if( in_array($this->session->userdata('user_profile')->kepeg_unit, array(31,10,8,4,3,2,1)) ){
+              echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array(''), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');
+            }else{
+              if( $this->session->userdata('user_profile')->kepeg_level < 5 ){
+                echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array('kepeg_unit_parent' => $this->session->userdata('user_profile')->kepeg_unit), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');
+              }else{
+                echo $this->master->custom_selection(array('table'=>'kepeg_mt_unit', 'where'=>array('kepeg_unit_id' => $this->session->userdata('user_profile')->kepeg_unit), 'id'=>'kepeg_unit_id', 'name' => 'kepeg_unit_nama'),'','unit','unit','chosen-slect form-control','','');
+              }
+            }
+            
+              ?>
         </div>
 
         <div class="control-label col-md-1">
@@ -75,7 +102,7 @@
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Tampilkan Data
           </a>
-          <a href="#" id="btn_export_data" class="btn btn-xs btn-success">
+          <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
             <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
             Export Excel
           </a>
@@ -89,8 +116,8 @@
       
     </form>
 
-  </div><!-- /.col -->
-</div><!-- /.row -->
+  </div>
+</div>
 
 
 

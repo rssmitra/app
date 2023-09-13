@@ -140,7 +140,7 @@ class Inv_stok_depo extends MX_Controller {
             // $row[] = '<div style="text-align: right">'.number_format($row_list->harga_beli).'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input).'<br><span style="padding-top:10px; font-size: 10px">Tanggal Expired<span> :<br><span>'.$label_expired.'</span>';
             $status_aktif = ($row_list->is_active == 1) ? '<span class="label label-sm label-success">Active</span>' : '<span class="label label-sm label-danger">Not active</span>';
-            $row[] = '<div class="center">'.$status_aktif.'</div>';
+            $row[] = '<div class="center" id="status_aktif_'.$row_list->kode_brg.'_'.$params_kode_bagian.'">'.$status_aktif.'</div>';
             $status_brg_aktif = ($row_list->is_active == 0 ) ? '' : 'checked';
             
             $row[] = '<div class="center">
@@ -402,10 +402,9 @@ class Inv_stok_depo extends MX_Controller {
                 $this->db->update('mt_barang', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );
             }
             $this->db->update('mt_depo_stok', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
-            
         }
 
-        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'status_aktif' => $value));
 
     }
 

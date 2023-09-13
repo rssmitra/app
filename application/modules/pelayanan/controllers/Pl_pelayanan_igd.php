@@ -157,6 +157,40 @@ class Pl_pelayanan_igd extends MX_Controller {
         $this->load->view('Pl_pelayanan_igd/form_laporan_catatan', $data);
     }
 
+    public function cppt($id='', $no_kunjungan)
+    {
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_igd->get_by_id($id);
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+        $data['kode_bagian'] = $this->session->userdata('kode_bagian');
+        $data['nama_bagian'] = $this->session->userdata('nama_bagian');
+        $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
+
+        // echo '<pre>';print_r($data['riwayat']);die;
+        //$data['transaksi'] = $this->Pl_pelayanan->get_transaksi_pasien_by_id($no_kunjungan);
+        /*variable*/
+        /*type*/
+        $kode_klas = 16;
+
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['id'] = $id;
+        $data['kode_klas'] = $kode_klas;
+        $data['kode_profit'] = 2000;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['form_type'] = $_GET['form'];
+        
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Pl_pelayanan/form_cppt', $data);
+
+    }
+
     public function form_end_visit()
     {
         $data = array(

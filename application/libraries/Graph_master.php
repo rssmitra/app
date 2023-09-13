@@ -25,7 +25,7 @@ final Class Graph_master {
             $query = "SELECT MONTH(created_date) AS bulan, COUNT(id) AS total FROM log WHERE YEAR(created_date)=".date('Y')." GROUP BY MONTH(created_date)";    
             $fields = array('User_Activity'=>'total');
             $title = '<span style="font-size:13.5px">Log History Penggunaan Aplikasi Oleh User Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -34,7 +34,7 @@ final Class Graph_master {
             $query = "SELECT TOP 10 MONTH(log.created_date) AS bulan, tmp_mst_menu.name, COUNT(id) as total FROM LOG LEFT JOIN tmp_mst_menu ON tmp_mst_menu.menu_id=log.menu_id WHERE YEAR(log.created_date)=".date('Y')." AND log.modul_id !=0 AND log.menu_id!=0 GROUP BY log.menu_id, MONTH(log.created_date), tmp_mst_menu.name ORDER BY COUNT(id) DESC";   
             $fields = array('name' => 'total');
             $title = '<span style="font-size:13.5px">5 Modul yang sering diakses oleh pengguna</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -43,7 +43,7 @@ final Class Graph_master {
             $query = "SELECT TOP 10 content,COUNT(id) AS total FROM LOG GROUP BY content ORDER BY COUNT(id) DESC";  
             $fields = array('Activity' => 'content', 'Total' => 'total');
             $title = '<span style="font-size:13.5px">10 Fungsi yang sering diakses oleh pengguna</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -55,7 +55,7 @@ final Class Graph_master {
                         WHERE YEAR(tgl_jam_masuk)=".date('Y')." GROUP BY MONTH(tgl_jam_masuk)"; 
             $fields = array('Total Pasien'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Pendaftaran Pasien Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -66,7 +66,7 @@ final Class Graph_master {
                         WHERE YEAR(tgl_jam_poli)=".date('Y')." AND status_batal is null GROUP BY MONTH(tgl_jam_poli) "; 
             $fields = array('Total Pasien'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Kunjungan Poli Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -77,7 +77,7 @@ final Class Graph_master {
                         WHERE YEAR(tgl_masuk)=".date('Y')." GROUP BY MONTH(tgl_masuk) ";    
             $fields = array('Total Pasien'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Rawat Inap  Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -172,7 +172,7 @@ final Class Graph_master {
                         ORDER BY COUNT(b.no_registrasi) DESC";  
             $fields = array('Nama Bagian' => 'bagian', 'Total' => 'total');
             $title = '<span style="font-size:13.5px">10 Klinik Terbanyak Dikunjungi Pasien Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -186,7 +186,7 @@ final Class Graph_master {
                         ORDER BY COUNT(b.no_registrasi) DESC";  
             $fields = array('Nama Bagian' => 'bagian', 'Total' => 'total');
             $title = '<span style="font-size:13.5px">10 Klinik Terbanyak Berdasarkan Pendaftaran Pasien Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -200,7 +200,7 @@ final Class Graph_master {
                         ORDER BY COUNT(b.no_registrasi) DESC";  
             $fields = array('Nama Dokter' => 'nama_dokter', 'Total' => 'total');
             $title = '<span style="font-size:13.5px">10 Dokter dengan Pasien Terbanyak Berdasarkan Pendaftaran Pasien Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -210,7 +210,7 @@ final Class Graph_master {
             $query = "SELECT MONTH(tgl_permohonan) AS bulan, COUNT(kode_permohonan) AS total FROM tc_permohonan WHERE YEAR(tgl_permohonan)=".date('Y')." GROUP BY MONTH(tgl_permohonan)";   
             $fields = array('Total_Permintaan_Medis'=>'total');
             $title = '<span style="font-size:13.5px">Total Permintaan Barang Medis Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -225,7 +225,7 @@ final Class Graph_master {
                         
             $fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Pembelian Barang Berdasarkan Penerimaan Tahun '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -243,7 +243,7 @@ final Class Graph_master {
                         
             $fields = array('Supplier' => 'supplier', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Supplier RSSM Tahun '.date('Y').' Bulan '.$CI->tanggal->getBulan(date('m')).'</span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -277,7 +277,7 @@ final Class Graph_master {
             $query = "SELECT MONTH(tgl_jam) AS bulan, SUM(bill) AS total FROM tc_trans_kasir WHERE YEAR(tgl_jam)=".date('Y')." GROUP BY MONTH(tgl_jam)";    
             $fields = array('Total_Pendapatan_RS'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Pendapatan Rumah Sakit Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
 
@@ -309,7 +309,7 @@ final Class Graph_master {
                         GROUP BY month(a.tgl_jam) ORDER BY month(a.tgl_jam) ASC";   
             $fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Total Pendapatan RS Tahun '.date('Y').' s/d Bulan '.$CI->tanggal->getBulan(date('m')).' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -318,7 +318,7 @@ final Class Graph_master {
         // modul purchasing line chart
         if($params['prefix']==341){
             $title = '<span style="font-size:13.5px">Total Dokumen Pengajuan Klaim BPJS '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
 
             // data 1
             $query = "SELECT MONTH(tgl_transaksi_kasir) AS bulan, COUNT(csm_dokumen_klaim.no_registrasi) AS total FROM csm_dokumen_klaim INNER JOIN csm_reg_pasien ON csm_reg_pasien.no_registrasi=csm_dokumen_klaim.no_registrasi WHERE YEAR(tgl_transaksi_kasir)=".date('Y')." AND kode_perusahaan=120 GROUP BY MONTH(tgl_transaksi_kasir)";  
@@ -358,7 +358,7 @@ final Class Graph_master {
                         GROUP BY month(a.tgl_transaksi_kasir) ORDER BY month(a.tgl_transaksi_kasir) ASC";   
             $fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Total Pengajuan Klaim s/d Bulan '.$CI->tanggal->getBulan(date('m')).' '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -370,7 +370,7 @@ final Class Graph_master {
                         GROUP BY month(a.tgl_transaksi_kasir) ORDER BY month(a.tgl_transaksi_kasir) ASC";   
             $fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Total Dokumen Klaim  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -382,7 +382,7 @@ final Class Graph_master {
                         GROUP BY created_by ORDER BY created_by ASC";   
             $fields = array('Nama_Petugas' => 'petugas', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Total Costing Bulan '.$CI->tanggal->getBulan(date('m')).' '.date('Y').'</span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -391,7 +391,7 @@ final Class Graph_master {
         // line chart
         if($params['prefix']==241){
             $title = '<span style="font-size:13.5px">Grafik Resep Farmasi Berdasarkan Jenisnya tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
 
             // RJ
             $query = "SELECT MONTH(tgl_trans) AS bulan, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE YEAR(tgl_trans)=".date('Y')." AND kode_profit=2000 GROUP BY MONTH(tgl_trans)";   
@@ -425,7 +425,7 @@ final Class Graph_master {
                         GROUP BY c.nama_brg, a.kode_brg ORDER BY COUNT(a.kode_brg) DESC";   
             $fields = array('Nama_Obat' => 'nama_brg', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">10 Jenis Obat terbanyak berdasarkan resep biasa <br>Tahun '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -454,7 +454,7 @@ final Class Graph_master {
                         GROUP BY MONTH(tgl_transaksi)"; 
             $fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Total Pendapatan Farmasi  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' <br> Tahun '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -467,7 +467,7 @@ final Class Graph_master {
                         GROUP BY c.nama_bagian ORDER BY COUNT(b.kode_trans_far) DESC";  
             $fields = array('Unit' => 'nama_bagian', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">10 Unit/Poli Terbanyak Membuat Resep <br>Tahun '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -480,7 +480,7 @@ final Class Graph_master {
                         WHERE YEAR(tgl_daftar)=".date('Y')." GROUP BY MONTH(tgl_daftar)";   
             $fields = array('Kunjungan Pasien Lab'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Lab Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -503,7 +503,7 @@ final Class Graph_master {
 
         if($params['prefix']==263){
             $title = '<span style="font-size:18px; font-weight: bold">Rekapitulasi Data Pasien Laboratorium Hari Ini, '.date('D, d/m/Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             // query kunjungan pasien hari ini
             $query_1 = "SELECT COUNT(kode_penunjang) AS total 
                         FROM pm_tc_penunjang a
@@ -553,7 +553,7 @@ final Class Graph_master {
                         GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
             $fields = array('Nama_Pemeriksaan' => 'nama_tindakan', 'Total' => 'total');
             $title = '<span style="font-size:13.5px">20 Jenis Pemeriksaan Lab Terbanyak  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' Tahun '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -565,7 +565,7 @@ final Class Graph_master {
                         WHERE YEAR(tgl_daftar)=".date('Y')." GROUP BY MONTH(tgl_daftar)";   
             $fields = array('Kunjungan Pasien Lab'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Lab Tahun '.date('Y').'</span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -588,7 +588,7 @@ final Class Graph_master {
 
         if($params['prefix']==353){
             $title = '<span style="font-size:18px; font-weight: bold">Resume Pendaftaran Pasien Hari Ini, '.date('D, d/m/Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             // query kunjungan pasien hari ini
             $query_1 = "SELECT COUNT(no_registrasi) AS total 
                         FROM tc_registrasi a
@@ -629,7 +629,20 @@ final Class Graph_master {
                         GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
             $fields = array('Nama_Pemeriksaan' => 'nama_tindakan', 'Total' => 'total');
             $title = '<span style="font-size:13.5px">20 Jenis Pemeriksaan Lab Terbanyak  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' Tahun '.date('Y').' </span></small>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
+        // modul kepegawaian
+        if($params['prefix']==80){
+            $query = "SELECT TOP 20 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
+                        FROM pm_hasilpasien_v b
+                        WHERE YEAR(b.tgl_periksa) = ".date('Y')."
+                        GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
+            $fields = array('Nama_Pemeriksaan' => 'nama_tindakan', 'Total' => 'total');
+            $title = '';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
@@ -729,12 +742,19 @@ final Class Graph_master {
                     return $this->TableResumePiutang($fields, $params, $data);
                 }
 
+                if ($params['style']=='TableResumeByJurnal') {
+                    return $this->TableResumeByJurnal($fields, $params, $data);
+                }
+
             break;
-        
+            case 'custom':
+                if ($params['style']=='profilePegawai') {
+                    return $this->profilePegawai($fields, $params, $data);
+                }
+            break;
             case 'custom-antrol':
                 return $this->customDashboardAntrol($fields, $params, $data);
             break;
-                
             default:
                 # code...
                 break;
@@ -1333,6 +1353,27 @@ final Class Graph_master {
         return $chart_data;
     }
 
+    public function TableResumeByJurnal($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        // load view
+        $result = array(
+            'value' => $data,
+        );
+
+        // echo '<pre>'; print_r($result);die;
+        
+        $html = $CI->load->view('eksekutif/Eks_poli/TableResumeByJurnal', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
     public function customDashboardAntrol($fields='', $params, $data){
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
@@ -1366,6 +1407,77 @@ final Class Graph_master {
             'series'    => $html,
         );
         return $chart_data;
+    }
+
+    public function profilePegawai($fields='', $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        // echo '<pre>';print_r($CI->session->all_userdata()); die;
+        $result = array();
+        if(isset($CI->session->userdata('user_profile')->no_ktp)){
+            $result['profile'] = $CI->db->get_where('view_dt_pegawai', array('nik' => $CI->session->userdata('user_profile')->no_ktp) )->row();
+            // cuti
+            $result['cuti'] = $this->getJumlahCuti($CI->session->userdata('user_profile')->kepeg_id);
+            $result['gaji'] = $this->getPayroll($CI->session->userdata('user_profile')->no_induk);
+            $result['lembur'] = $this->getJumlahLembur($CI->session->userdata('user_profile')->kepeg_id);
+        }
+        // echo '<pre>';print_r($result); die;
+
+        
+        $html = $CI->load->view('kepegawaian/Kepeg_dashboard/profile_view', $result, true);
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function getJumlahCuti($kepeg_id){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        // get all data 
+        $query = $CI->db->get_where('kepeg_pengajuan_cuti', array('kepeg_id' => $kepeg_id, 'status_acc' => 'Y'))->result();
+        $jumlah_cuti = [];
+        foreach ($query as $key => $value) {
+            // jumlah hari cuti
+            $jumlah_cuti[] = $CI->tanggal->getRangeDay($value->cuti_dari_tgl, $value->cuti_sd_tgl);
+        }
+        // echo array_sum($jumlah_cuti); exit;
+        return array_sum($jumlah_cuti);
+    }
+
+    public function getPayroll($nip){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        // get all data 
+        // current month
+        $month = date('m') - 1;
+        $query = $CI->db->join('kepeg_gaji', 'kepeg_gaji.kg_id=kepeg_rincian_gaji.kg_id','left')->order_by('kg_periode_bln', 'DESC')->get_where('kepeg_rincian_gaji', array('kepeg_rincian_gaji.nip' => $nip, 'kg_periode_thn' => date('Y')))->row();
+        // echo '<pre>';print_r($query); die;
+        
+        return $query;
+    }
+
+    public function getJumlahLembur($kepeg_id){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        // get all data 
+        // current month
+        $month = date('m');
+        $query = $CI->db->join('kepeg_pengajuan_lembur', 'kepeg_pengajuan_lembur.pengajuan_lembur_id=kepeg_pengajuan_lembur_rincian.pengajuan_lembur_id','left')->get_where('kepeg_pengajuan_lembur_rincian', array('kepeg_pengajuan_lembur.kepeg_id' => $kepeg_id, 'periode_lembur_bln' => $month))->result();
+        $jumlah_lembur = [];
+        foreach ($query as $key => $value) {
+            # code...
+            $export_array = explode(" ", $value->jml_jam_lembur);
+            $convert_to_minute = (int)($export_array[0]) * 60;
+            $add_h_m = $convert_to_minute + (int)($export_array[1]);
+            $jumlah_lembur[] = $add_h_m;
+        }
+        $minutes = array_sum($jumlah_lembur);
+        $hours = floor($minutes / 60).':'.($minutes -   floor($minutes / 60) * 60).'';
+        // echo '<pre>';print_r($hours); die;
+        
+        return $hours;
     }
     
 }

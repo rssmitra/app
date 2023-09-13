@@ -34,20 +34,6 @@ class Po_penerbitan_model extends CI_Model {
 		$this->db->where('a.no_acc is not null');
 		$this->db->where('a.status_batal', 0);
 		$this->db->where('a.flag_proses != 3');
-		// $this->db->where('id_tc_permohonan in (select id_tc_permohonan from tc_permohonan_det where (status_po =0 or status_po IS NULL) group by id_tc_permohonan)');
-
-		// if($_GET['flag']=='medis'){
-		// 	$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE())<31');
-		// 	$this->db->where('(d.status_po=0 or d.status_po IS NULL)');
-		// 	$this->db->where('a.no_acc is not null');
-		// 	$this->db->where('a.status_batal', 0);
-		// }
-
-		// if($_GET['flag']=='non_medis'){
-		// 	$this->db->where('(d.status_po=0 or d.status_po IS NULL)');
-		// 	$this->db->where('a.no_acc is not null');
-		// 	$this->db->where('YEAR(a.tgl_permohonan)', date('Y'));
-		// }
 		
 		if( ( isset( $_GET['keyword']) AND $_GET['keyword'] != '' )  ){
 			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'kode_permohonan' ){
@@ -62,11 +48,7 @@ class Po_penerbitan_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_permohonan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			// $this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
-			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
-			// if( $_GET['flag'] == 'medis' ){
-			// 	$this->db->where('MONTH(a.tgl_permohonan)='.date('m').'');
-			// }
+			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 14');
 		}
 
 		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, flag_jenis');

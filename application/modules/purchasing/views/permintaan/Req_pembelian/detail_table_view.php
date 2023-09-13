@@ -27,7 +27,7 @@
             <td class="center">
               <?php 
                 $span_class = ( $row_dt->jml_acc_penyetuju == $row_dt->jml_besar_acc ) ? 'color: green' : 'color: red';
-                echo '<span style="'.$span_class.'">'.number_format($row_dt->jml_besar_acc, 2).'</span>'?>
+                echo '<span style="'.$span_class.'">'.number_format($row_dt->jml_acc_penyetuju, 2).'</span>'?>
             </td>
             <td class="center">
               <?php 

@@ -26,6 +26,14 @@ class Kepeg_pengajuan_cuti_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+
+		// filter by session login
+		if($this->session->userdata('user')->role != 'Admin Sistem'){
+			if(isset($this->session->userdata('user_profile')->kepeg_id)){
+				$this->db->where('kepeg_pengajuan_cuti.kepeg_id', $this->session->userdata('user_profile')->kepeg_id);
+			}
+		}
+
 		if(isset($_GET['checked_unit']) AND $_GET['checked_unit'] == 1){
 			if(isset($_GET['unit']) AND $_GET['unit'] != ''){
 				$this->db->where('kepeg_pengajuan_cuti.unit_bagian', $_GET['unit']);
@@ -129,7 +137,8 @@ class Kepeg_pengajuan_cuti_model extends CI_Model {
 	}
 
 	public function get_spv($unit, $level){
-		$qry = "SELECT * FROM view_dt_pegawai WHERE kepeg_unit = (SELECT kepeg_unit_parent FROM kepeg_mt_unit WHERE kepeg_unit_id=".$unit.") and kepeg_level = ".$level."";
+		$qry = "SELECT top 1 * FROM view_dt_pegawai WHERE kepeg_unit = ".$unit." and kepeg_level = ".$level." and kepeg_status_aktif = 'Y'";
+		// echo $qry;
 		$dt_spv = $this->db->query($qry)->row();
 		return $dt_spv;
 	}

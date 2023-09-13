@@ -87,7 +87,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		}else{
 			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
 		}
-		$this->db->where("scheduler_running_time is not null");
+		$this->db->where("scheduler_running_time is null");
 		$this->db->order_by('tgl_trans', 'DESC');
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;

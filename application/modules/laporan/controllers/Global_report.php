@@ -18,7 +18,7 @@ class Global_report extends MX_Controller {
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
-        $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
+        $this->title = 'Laporan Umum RS Setia Mitra';
 
     }
 
@@ -48,7 +48,7 @@ class Global_report extends MX_Controller {
 
     public function show_data(){
 
-        
+        // print_r($_POST);die;
         $query_data = $this->Global_report->get_data();
 
         $data = array(
@@ -57,6 +57,7 @@ class Global_report extends MX_Controller {
             'result' => $query_data,
         );
         
+        
 
         if($_POST['submit']=='format_so'){
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
@@ -64,6 +65,9 @@ class Global_report extends MX_Controller {
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
         }elseif($_POST['submit']=='input_so'){
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
+        }elseif($_POST['flag'] == 'farmasi_mod_13'){
+            // echo '<pre>';print_r($data);die;
+            $this->load->view('Global_report/farmasi_mod_13_view_data', $data);
         }else{
             $this->load->view('Global_report/view_data', $data);
         }
@@ -82,7 +86,6 @@ class Global_report extends MX_Controller {
             
         }
 
-
         if($_POST['bagian'] == '060201'){
             $distribusi = $this->Global_report->distribusi_barang_unit();
             $penerimaan_brg_gudang = $this->Global_report->penerimaan_brg_gudang();
@@ -100,19 +103,22 @@ class Global_report extends MX_Controller {
         }else{
             $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
             $penjualan = $this->Global_report->penjualan_obat();
+            // echo '<pre>';print_r($penjualan);die;
             $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
-
-             // penerimaan barang unit
+            
+            // penerimaan barang unit
             foreach ($penerimaan_brg_unit as $k_penerimaan_brg => $v_penerimaan_brg) {
                 $dt_penerimaan_brg[trim($v_penerimaan_brg['kode_brg'])] = (int)$v_penerimaan_brg['jumlah_penerimaan'];
             }
-
+            
             // get data penjualan bpjs
             foreach ($penjualan as $k_pjl_bpjs => $v_pjl_bpjs) {
                 if($v_pjl_bpjs['kode_perusahaan'] ==  120){
                     $dt_penjualan_bpjs[trim($v_pjl_bpjs['kode_brg'])] = array('jumlah' => (int)$v_pjl_bpjs['jumlah'], 'total' => (int)$v_pjl_bpjs['jumlah_total']);
                 }
             }
+
+            // echo '<pre>';print_r($dt_penjualan_bpjs);die;
 
             // data penjualan umum
             foreach ($penjualan as $k_pjl_umum => $v_pjl_umum) {
@@ -1038,7 +1044,7 @@ class Global_report extends MX_Controller {
     public function show_data_pp(){
 
         $query_data = $this->Global_report->get_data();
-
+        // echo '<pre>';print_r($query_data);die;
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
@@ -1089,7 +1095,7 @@ class Global_report extends MX_Controller {
     public function show_data_po(){
 
         $query_data = $this->Global_report->get_data();
-
+        // echo '<pre>'; print_r($_POST);die;
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],

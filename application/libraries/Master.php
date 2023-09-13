@@ -685,6 +685,9 @@ final Class Master {
 		// harga_satuan_netto = harga_satuan ditambah ppn
 		// total_harga_hetto = harga_satuan_netto * jumlah qty barang
 
+		// get maximum harga jual akhir
+		$existing = $db->select('max(harga_beli) as harga_beli')->get_where('mt_rekap_stok', array('kode_brg' => $params['kode_brg']) )->row();
+
 
 		// potonga diskon satuan barang
 		$potongan_disk_satuan = $params['hna'] * ($params['disc']/100);
@@ -718,7 +721,9 @@ final Class Master {
 		
 		// harga jual satuan 
 		$harga_jual_ppn = $harga_satuan_kecil * ($params['ppn'] / 100);
-		$harga_jual = $harga_satuan_kecil + $harga_jual_ppn;
+		// cari harga jual tertinggi
+		$harga_jual_baru = $harga_satuan_kecil + $harga_jual_ppn;
+		$harga_jual = ($existing->harga_beli > $harga_jual_baru) ? $existing->harga_beli : $harga_jual_baru;
 
 		$result = array(
 			'hna' => $params['hna'],

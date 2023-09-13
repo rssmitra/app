@@ -18,6 +18,7 @@ class Req_pembelian_model extends CI_Model {
 	private function _main_query(){
 
 		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
+		$mt_barang = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
 		$this->db->select($this->select);
 		$this->db->select('t_total.total_brg');
 		$this->db->select('CASE
@@ -30,11 +31,19 @@ class Req_pembelian_model extends CI_Model {
 		$this->db->join('dd_user','dd_user.id_dd_user=a.user_id', 'left');
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
 		$this->db->join('(SELECT id_tc_permohonan, COUNT(id_tc_permohonan_det) as total_brg FROM '.$table.'_det GROUP BY id_tc_permohonan ) as t_total', 't_total.id_tc_permohonan=a.id_tc_permohonan', 'left');
+
+
 	
 		if( ( isset( $_GET['keyword']) AND $_GET['keyword'] != '' )  ){
 			if( isset( $_GET['search_by']) AND $_GET['keyword'] != '' ){
 				if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'kode_permohonan' ){
 					$this->db->like( $_GET['search_by'], $_GET['keyword'] );
+				}
+
+				if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'nama_barang' ){
+					$this->db->join(''.$table.'_det f','f.id_tc_permohonan=t_total.id_tc_permohonan', 'left');
+					$this->db->join($mt_barang,''.$mt_barang.'.kode_brg=f.kode_brg', 'left');
+					$this->db->like( 'nama_brg', $_GET['keyword'] );
 				}
 			}
 		}
@@ -50,15 +59,9 @@ class Req_pembelian_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_permohonan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
-			// $this->db->where('YEAR(a.tgl_permohonan)='.date('Y').'');
-			// if( $_GET['flag'] == 'medis' ){
-			// 	$current_month = date('m') - 1;
-			// 	$this->db->where('MONTH(a.tgl_permohonan) >= '.$current_month.'');
-			// }
+			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 14');
 		}
 
-		// $this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, t_total.total_brg, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju, a.keterangan_permohonan');
 	}
 
 	private function _get_datatables_query()
@@ -162,6 +165,7 @@ class Req_pembelian_model extends CI_Model {
 		$this->db->join($table, ''.$table.'.id_tc_permohonan='.$table.'_det.id_tc_permohonan', 'left');
 		$this->db->join($mt_barang, ''.$mt_barang.'.kode_brg='.$table.'_det.kode_brg', 'left');
 		$this->db->join('(SELECT id_tc_permohonan_det, sum(convert(decimal(18,2),jumlah_besar_acc)) as total_po FROM '.$tc_po.'_det GROUP BY id_tc_permohonan_det) as po', 'po.id_tc_permohonan_det='.$table.'_det.id_tc_permohonan_det', 'left');
+		$this->db->order_by($mt_barang.'.nama_brg', 'ASC');
 		$this->db->where(''.$table.'_det.id_tc_permohonan', $id);
 		return $this->db->get()->result();
 	}

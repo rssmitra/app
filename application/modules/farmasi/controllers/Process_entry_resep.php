@@ -19,6 +19,7 @@ class Process_entry_resep extends MX_Controller {
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Process_entry_resep_model', 'Process_entry_resep');
         $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
+        $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
         $this->load->model('Retur_obat_model', 'Retur_obat');
         $this->load->library('Stok_barang');
         $this->load->library('Print_escpos'); 
@@ -62,7 +63,7 @@ class Process_entry_resep extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();
-
+            
             $data_farmasi = array(
                 'kode_pesan_resep' => isset($_POST['no_resep'])?$this->regex->_genRegex($_POST['no_resep'], 'RGXINT'):0,
                 'no_resep' => $this->Process_entry_resep->format_no_resep($_POST['flag_trans'], $_POST['kode_profit']),
@@ -109,6 +110,19 @@ class Process_entry_resep extends MX_Controller {
                 /*save log*/
                 $this->logs->save('fr_tc_far', $_POST['kode_trans_far'], 'insert new record on entry resep module', json_encode($data_farmasi),'kode_pesan_resep');
 
+                // get kode booking antrol
+                $kode_booking = $this->db->get_where('tc_registrasi', array('no_registrasi' => $_POST['no_registrasi']))->row();
+                if(!empty($kode_booking->kodebookingantrol)){
+                    // update task id for the first time
+                    $waktukirim_task_5 = strtotime(date('Y-m-d H:i:s')) * 1000;
+                    $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking->kodebookingantrol, 'taskid' => 5, 'waktu' => $waktukirim_task_5));
+
+                    // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
+                    $rand = rand(15,30);
+                    $waktukirim_task_6 = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+                    $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking->kodebookingantrol, 'taskid' => 6, 'waktu' => $waktukirim_task_6));
+                }
+                
             }
 
             // jika submit detail
@@ -298,13 +312,19 @@ class Process_entry_resep extends MX_Controller {
         $kode_bagian = '060101'; // kode bagian farmasi
         
         $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
-        // echo '<pre>';print_r($trans_dt);die;
+        // echo '<pre>';print_r($this->db->last_query());die;
+
+        foreach ($trans_dt as $k => $v) {
+            $getData[$v->kd_tr_resep] = $v;
+        }
+        // echo '<pre>';print_r($getData);die;
+
         /*execution begin*/
         $this->db->trans_begin();
 
-        if( count($trans_dt) > 0 ){
+        if( count($getData) > 0 ){
             
-            foreach($trans_dt as $row_dt){
+            foreach($getData as $row_dt){
 
                 // update sisa tebus fr_tc_far_detail
                 $sisa_tebus = $row_dt->jumlah_pesan - $row_dt->jumlah_tebus;

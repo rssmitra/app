@@ -81,6 +81,7 @@
               <select name="search_by" id="search_by" class="form-control">
                 <option value="">-Silahkan Pilih-</option>
                 <option value="kode_permohonan" selected>Kode Permintaan</option>
+                <option value="nama_barang">Nama Barang</option>
               </select>
             </div>
 
@@ -161,7 +162,7 @@
               <th>Persetujuan</th>
               <th>Total Barang</th>
               <th>Status</th>
-              <th>Keterangan</th>
+              <th style="80px">Keterangan</th>
               
             </tr>
             </thead>

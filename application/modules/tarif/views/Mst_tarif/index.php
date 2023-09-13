@@ -289,6 +289,7 @@ function delete_tarif_klas(myid){
               <?php foreach($klas as $row_klas) :?>      
               <th width="100px"><?php echo $row_klas->nama_klas; ?></th>         
               <?php endforeach; ?>      
+              <th width="100px">Status</th>         
               <th width="100px">Action</th>         
             </tr>
           </thead>

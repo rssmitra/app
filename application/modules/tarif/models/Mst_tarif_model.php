@@ -66,6 +66,7 @@ class Mst_tarif_model extends CI_Model {
 			$getData[$value->kode_tarif]['nama_tarif'] = $value->nama_tarif;
 			$getData[$value->kode_tarif]['nama_bagian'] = $value->nama_bagian;
 			$getData[$value->kode_tarif]['klas'][$value->kode_klas] = $value;
+			$getData[$value->kode_tarif]['is_active'] = $value->is_active;
 		}
 		// print_r($this->db->last_query());die;
 		return $getData;
@@ -127,6 +128,7 @@ class Mst_tarif_model extends CI_Model {
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=mt_master_tarif.kode_bagian', 'left');
 		$this->db->where('mt_master_tarif_detail.kode_tarif', $kode_tarif);
 		$this->db->order_by('nama_klas', 'ASC');
+		$this->db->group_by('kode_master_tarif_detail, mt_master_tarif_detail.kode_tarif, nama_tarif, nama_bagian, mt_master_tarif_detail.kode_klas, jenis_tindakan, nama_klas, CAST(bill_dr1 as INT), CAST(bill_dr2 as INT), CAST(bill_dr3 as INT), CAST(kamar_tindakan as INT), CAST(biaya_lain as INT), CAST(obat as INT), CAST(alkes as INT), CAST(alat_rs as INT), CAST(adm as INT), CAST(bhp as INT), CAST(pendapatan_rs as INT), CAST(total as INT), mt_master_tarif_detail.is_active, mt_master_tarif_detail.revisi_ke');
 		$result = $this->db->get()->result();
 		foreach ($result as $key => $value) {
 			$getData[$value->nama_klas][] = $value;

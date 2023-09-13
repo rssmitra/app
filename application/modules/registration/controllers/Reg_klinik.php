@@ -786,18 +786,19 @@ class Reg_klinik extends MX_Controller {
                     // update kuota dokter used
                     $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'keterangan' => null, 'flag' => 'perjanjian', 'status' => NULL ), 1);
 
-                    $config = array(
-                        'no_registrasi' => $no_registrasi,
-                        'kode_booking' => $get_data_perjanjian->kode_perjanjian,
-                        'tgl_registrasi' => $tgl_registrasi,
-                        'no_antrian' => $no_antrian,
-                        'no_mr' => $no_mr,
-                        'jeniskunjungan' => $_POST['jeniskunjunganbpjssep'],
-                        'norujukan' => $_POST['noRujukan'],
-                    );
-                    $this->processAntrol($config);
-
                 }
+
+                $config = array(
+                    'no_registrasi' => $no_registrasi,
+                    'kode_booking' => isset($get_data_perjanjian->kode_perjanjian)?$get_data_perjanjian->kode_perjanjian: $no_registrasi,
+                    'tgl_registrasi' => $tgl_registrasi,
+                    'no_antrian' => $no_antrian,
+                    'no_mr' => $no_mr,
+                    'jeniskunjungan' => $_POST['jeniskunjunganbpjssep'],
+                    'norujukan' => $_POST['noRujukan'],
+                );
+
+                $this->processAntrol($config);
 
                 if ($this->db->trans_status() === FALSE)
                 {

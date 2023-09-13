@@ -1561,7 +1561,9 @@ class Pl_pelayanan extends MX_Controller {
             // update task
             // update task antrian online
             if(isset($_POST['kodebookingantrol'])){
-                $this->updateTaskMultiple($_POST['kodebookingantrol']);
+                // update task selesai layanan poli
+                $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
+                $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $_POST['kodebookingantrol'], 'taskid' => 4, 'waktu' => $waktukirim));
             }
 
 
@@ -1585,28 +1587,28 @@ class Pl_pelayanan extends MX_Controller {
 
     }
 
-    public function updateTaskMultiple($kode_booking){
+    // public function updateTaskMultiple($kode_booking){
         
-        // update task 4 / selesai pelayanan poli
-        $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 4, 'waktu' => $waktukirim));
+    //     // update task 4 / selesai pelayanan poli
+    //     // $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 4, 'waktu' => $waktukirim));
 
-        // udpate task id mulai waktu tunggu farmasi add 5 - 15 menit
-        $rand = rand(5,15);
-        $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 5, 'waktu' => $waktukirim));
+    //     // // udpate task id mulai waktu tunggu farmasi add 5 - 15 menit
+    //     // $rand = rand(5,15);
+    //     // $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 5, 'waktu' => $waktukirim));
 
-        // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
-        $rand = rand(15,30);
-        $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 6, 'waktu' => $waktukirim));
+    //     // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
+    //     // $rand = rand(15,30);
+    //     // $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 6, 'waktu' => $waktukirim));
 
-        // udpate task id mulai waktu tunggu layan farmasi add 30 - 45 menit
-        $rand = rand(30,60);
-        $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 7, 'waktu' => $waktukirim));
+    //     // // udpate task id akhir waktu obat selesai
+    //     // $rand = rand(30,60);
+    //     // $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 7, 'waktu' => $waktukirim));
 
-    }
+    // }
 
     public function saveSessionPoli(){
 
@@ -2119,7 +2121,7 @@ class Pl_pelayanan extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        // echo '<pre>';print_r($data);die;
+        echo '<pre>';print_r($data);die;
         $this->load->view('Pl_pelayanan/form_cppt', $data);
 
     }

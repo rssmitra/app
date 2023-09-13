@@ -60,6 +60,11 @@ class Inv_stok_depo_model extends CI_Model {
 			$this->db->where('a.stok_minimum > kartu_stok.stok_akhir');
 		}
 
+		if( ( isset( $_GET['rak']) AND $_GET['rak'] != '' )  ){
+			$this->db->where('a.rak', $_GET['rak']);
+			$this->db->order_by('b.nama_brg', 'ASC');
+		}
+
 
 		$i = 0;
 	

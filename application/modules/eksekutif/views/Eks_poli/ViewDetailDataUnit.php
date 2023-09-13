@@ -6,7 +6,7 @@
 ?>
 
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-12">
     <center>KUNJUNGAN <?php echo $value['title']; ?> <br> Berdasarkan Unit/Bagian</center>
     <div>
       <table class="table">
@@ -29,10 +29,10 @@
         <tr>
           <td><?php echo ucwords($ky3)?></td>
           <td align="right">
-            <a href="#" onclick="show_detail_pasien('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(count($arr_ttl_poli[$ky3]))?></a>
+            <a href="#" onclick="show_detail_jenis_tindakan('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(count($arr_ttl_poli[$ky3]))?></a>
           </td>
           <td align="right">
-            <a href="#" onclick="show_detail_pasien('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(array_sum($arr_ttl_poli[$ky3]))?></a>
+            <a href="#" onclick="show_detail_jenis_tindakan('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(array_sum($arr_ttl_poli[$ky3]))?></a>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -43,8 +43,5 @@
         </tr>
       </table>
     </div>
-  </div>
-  <div class="col-md-6">
-    <div id="show_detail_level_2"></div>
   </div>
 </div>

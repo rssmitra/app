@@ -148,6 +148,8 @@ class References extends MX_Controller {
         echo json_encode($exc->result());
 	}
 
+	
+
 	public function getDokterBySpesialisFromJadwalDefault($kd_bagian='', $day='')
 	{
 		$query = "select a.jd_id,a.jd_kode_dokter as kode_dokter,b.nama_pegawai
@@ -969,15 +971,19 @@ class References extends MX_Controller {
 
 
 	public function getRakUnit($kode_bagian)
-	{
-		$query = "select a.label, a.value
-							from global_parameter a
-							where a.reff_id='".$kode_bagian."'";
-		
-		$exc = $this->db->query($query);
-        echo json_encode($exc->result());
+    {
+        
+        $result = $this->db->select('value, label')
+							->where("flag","rak_medis")
+							->where("is_active","Y")
+							->where("reff_id",$kode_bagian)
+                          ->order_by('label', 'ASC')
+                          ->get('global_parameter')->result();
+						  
+        echo json_encode($result);
+        
 	}
-
+	
 	public function getDokterByBagian_($kd_bagian='')
 	{
 		$query = "select  a.kode_dokter, a.nama_pegawai
@@ -1128,7 +1134,7 @@ class References extends MX_Controller {
 					from mt_master_tarif a
 					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
 					left join mt_master_tarif c on c.kode_tarif=a.referensi
-					where  a.tingkatan=5 and (".$where_kode_bag." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
+					where  a.tingkatan=5 and (".$where_kode_bag." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." and a.is_active = 'Y' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
 					// echo $query;exit;
         $exc = $this->db->query($query)->result();
 
@@ -1781,6 +1787,7 @@ class References extends MX_Controller {
 		$this->db->join($mt_barang.' as b', 'b.kode_brg=a.kode_brg' , 'left');
 		// $this->db->join($mt_rekap_stok.' as c', 'c.kode_brg=a.kode_brg' , 'left');
 		$this->db->where('(a.kode_brg LIKE '."'%".$_POST['keyword']."%'".' OR b.nama_brg LIKE '."'%".$_POST['keyword']."%'".')');
+    $this->db->where('a.is_active = 1');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
 		// print_r($this->db->last_query());die;

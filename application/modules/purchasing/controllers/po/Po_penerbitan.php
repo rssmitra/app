@@ -175,6 +175,7 @@ class Po_penerbitan extends MX_Controller {
                         $id_tc_permohonan_det[] = $row_id_tc_det;
                         // insert tc_po_det
                         $config = array(
+                            'kode_brg' => $row_checked,
                             'hna' => $_POST['harga_satuan_val'][$row_checked],
                             'disc' => $_POST['diskon'][$row_checked],
                             'ppn' => $_POST['ppn'][$row_checked],
@@ -229,6 +230,7 @@ class Po_penerbitan extends MX_Controller {
                         // update tc_po_det
                         // insert tc_po_det
                         $config = array(
+                            'kode_brg' => $row_checked,
                             'hna' => $_POST['harga_satuan_val'][$row_checked],
                             'disc' => $_POST['diskon'][$row_checked],
                             'ppn' => $_POST['ppn'][$row_checked],

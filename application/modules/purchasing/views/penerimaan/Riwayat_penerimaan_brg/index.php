@@ -226,6 +226,10 @@ $('#inputSupplier').typeahead({
             <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
             Reset
           </a>
+          <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+            <i class="ace-icon fa fa-file-excel icon-on-right bigger-110"></i>
+            Export Excel
+          </a>
         </div>
       </div>
       

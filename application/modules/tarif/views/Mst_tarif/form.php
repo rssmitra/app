@@ -50,7 +50,9 @@ $(document).ready(function(){
 
           $('#id').val(jsonResponse.kode_tarif);
 
-          $.achtung({message: jsonResponse.message, timeout:5});     
+          $.achtung({message: jsonResponse.message, timeout:5});  
+
+          getMenu('tarif/Mst_tarif');   
 
         }else{          
 
