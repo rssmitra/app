@@ -113,7 +113,7 @@ class Auto_merge_farmasi extends MX_Controller {
                         $this->db->trans_commit();
         
                         $data_log = array(
-                            'jumlah_obat_23' => isset($row->jumlah_tebus)?$this->regex->_genRegex($row->jumlah_tebus, 'RQXINT'):0,
+                            'jumlah_obat_23' => isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
                         );
                         // update log
                         $this->db->update('fr_tc_far_detail_log', $data_log, array('kode_trans_far' => $list->kode_trans_far, 'relation_id' => $data_farmasi['kd_tr_resep']) );
