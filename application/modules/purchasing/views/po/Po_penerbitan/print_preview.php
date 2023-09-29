@@ -64,8 +64,8 @@ th, td {
 
   <table width="100%" border="0">
     <tr>
-      <td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="60px"></td>
-      <td valign="bottom" width="320px"><b><span style="font-size: 18px"><?php echo COMP_FULL; ?></span></b><br><?php echo COMP_ADDRESS; ?></td>
+      <td width="70px"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="80px"></td>
+      <td valign="bottom" width="450px"><b><span style="font-size: 18px"><?php echo COMP_FULL; ?></span></b><br><?php echo COMP_ADDRESS.', Telp/Fax : '.COMP_TELP.'/ '.COMP_FAX.'<br> No. Izin RS : '.NO_IZIN_RS.''; ?></td>
       <td align="right"><div id="barcodeTarget" class="barcodeTarget"></div></td>
     </tr>
   </table>
@@ -75,7 +75,7 @@ th, td {
       <td width="50%">
         <table>
           <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
-            <td width="100px"><b>Nomor PO</b></td>
+            <td width="130px"><b>Nomor PO</b></td>
             <td style="background-color: #FFF;color: #0a0a0a;font-weight: bold; border: 1px solid #FFF; border-collapse: collapse"><?php echo $po->no_po?></td>
           </tr>
           <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
@@ -179,14 +179,24 @@ th, td {
   <br>
   <table style="width: 100% !important; text-align: center">
     <tr>
-      <td style="text-align: left; width: 30%">
+      <td style="text-align: left; width: 40%">
         <b>Keterangan :</b><br>
         1. Supplier (Putih) <br>
         2. Akutansi (Merah) <br>
         3. Gudang (Kuning) <br>
         3. Tukar Faktur (Hijau) <br>
       </td>
-      <td style="text-align: center; width: 40%">&nbsp;</td>
+      <td style="text-align: center; width: 30%">
+      <span style="font-size: 14px; font-weight: bold">Apoteker Penanggung Jawab</span>
+        <br>
+        <br>
+        <br>
+        <br>
+        <?php 
+          $ttd = $this->db->get_where('global_parameter', array('flag' => 'ttd_ka_gdg_m'))->row(); 
+          echo $ttd->label.'<br> ( '.$ttd->desc_text.' )'; 
+        ?>
+      </td>
       <td style="text-align: center; width: 30%">
         <span style="font-size: 14px"><b><?php echo COMP_LONG; ?></b></span>
         <br>

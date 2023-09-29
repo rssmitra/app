@@ -398,6 +398,7 @@ final class Tarif extends AvObjects {
         $db->where('(a.kode_klas='.$data['kode_klas'].' or a.kode_klas=0)');
         $db->order_by('a.revisi_ke', 'DESC');
         $row_data = $db->get()->row();
+        print_r($db->last_query());die;
         
 
         /*data for execute*/

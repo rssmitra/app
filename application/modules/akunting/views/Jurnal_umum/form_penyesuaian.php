@@ -15,7 +15,10 @@ $(document).ready(function(){
         $(this).prev().focus();
     });
     
-    $('.typeahead-input').typeahead({
+    <?php $nox = 0; foreach($jurnal as $row_dt_jurnal) : $nox++; ?>
+    var tagId = 'no_acc_<?php echo $nox; ?>';
+    var tagName = 'nama_acc_<?php echo $nox; ?>';
+    $('#'+tagId+'').typeahead({
         source: function (query, result) {
             $.ajax({
                 url: "Templates/References/getAccountCoa",
@@ -30,14 +33,15 @@ $(document).ready(function(){
             });
         },
         afterSelect: function (item) {
-          var myID = $(this).attr('id');
-          console.log(myID);
           // do what is needed with item
           var val_item=item.split(':')[0];
           var label_item=item.split(':')[1];
-          $(this).val(label_item);
+          $('#'+tagId+'').val(val_item);
+          $('#'+tagName+'').val(label_item);
+          console.log(tagId);
         }
     });
+    <?php endforeach; ?>
 
   })
 </script>
@@ -84,14 +88,19 @@ $(document).ready(function(){
                     $count_dt = count($jurnal);
                     $no = 0;
                     foreach($jurnal as $row_dt_jurnal) : $no++; ?>
-                    <tr>
-                      <td style="vertical-align: middle" align="center"><a href="#"><i class="fa fa-times-circle-o bigger-150 red"></i></a></td>
-                      <td style="vertical-align: middle"><input type="text" name="acc_no" class="typeahead-input" value="<?php echo $row_dt_jurnal->acc_no?>" id="form-<?php echo $no?>" style="width: 100%; border: 0px"></td>
-                      <td style="vertical-align: middle"><?php echo $row_dt_jurnal->acc_nama?></td>
+                    <tr id="row_<?php echo $no; ?>">
+                      <td style="vertical-align: middle" align="center">
+                        <a href="#"><i class="fa fa-times-circle-o bigger-150 red"></i></a>
+                      </td>
+                      <td style="vertical-align: middle">
+                        <input type="text" name="acc_no" class="typeahead-input" value="<?php echo $row_dt_jurnal->acc_no?>" id="no_acc_<?php echo $no?>" style="width: 100%; border: 0px">
+                      </td>
+                      <td style="vertical-align: middle">
+                        <input type="text" name="nama_acc" class="typeahead-input" value="<?php echo $row_dt_jurnal->acc_nama?>" id="nama_acc_<?php echo $no?>" style="width: 100%; border: 0px">
+                      </td>
                       <td style="vertical-align: middle" align="right">
                         <?php $nominal_debet =  ($row_dt_jurnal->tipe_tx == 'D') ? number_format($row_dt_jurnal->nominal) : 0; ?>
                         <input type="text" name="debet" class="format_number" value="<?php echo $nominal_debet?>" id="form-<?php echo $no?>" style="width: 100%; border: 0px; text-align: right">
-
                       </td>
                       <td style="vertical-align: middle" align="right">
                         <?php $nominal_kredit =  ($row_dt_jurnal->tipe_tx == 'K') ? number_format($row_dt_jurnal->nominal) : 0; ?>

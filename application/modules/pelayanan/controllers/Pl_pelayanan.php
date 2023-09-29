@@ -667,8 +667,16 @@ class Pl_pelayanan extends MX_Controller {
                 $html_tag .= '<td align="center">'.$no.'</td>';
                 $html_tag .= '<td>'.str_replace('_',' ', strtoupper($key)) .' '.$dr.'</td>';
                 //$html_tag .= '<td align="right">Rp. '.number_format($data->$key).',-</td>';
-                $html_tag .= '<td align="right"><input type="text" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.' onchange="changeTotalBiaya('."'".$key."'".','.$id.')"></td>';
-                $html_tag .= '<td align="right"><input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'></td>';
+                $html_tag .= '<td align="right">
+                    <input type="text" value="'.(int)$data->$key.'" name="hidden_'.$key.'_'.$id.'" id="hidden_'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.'>
+                    <input type="text" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.' onchange="changeTotalBiaya('."'".$key."'".','.$id.')">
+                    </td>';
+                $html_tag .= '<td align="right">
+                        <input type="text" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="hidden_diskon_'.$key.'_'.$id.'" '.$readonly.'>
+
+                        <input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'>
+
+                        </td>';
                 $html_tag .= '<td align="right" id="text_total_diskon_'.$key.'_'.$id.'">Rp. '.number_format($data->$key).',-</td>';
                 $html_tag .= '</tr>';
                 $arr_sum[] = $data->$key;
@@ -809,7 +817,7 @@ class Pl_pelayanan extends MX_Controller {
             if( isset($_GET['type']) AND ($_GET['type']=='konsultasi' OR $_GET['type']=='sarana_fisio')){
 
                 /*tarif sarana rs*/
-                $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);
+                // $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);
 
                 if($_GET['type']=='konsultasi'){
                     $dataexc['kode_dokter1'] = $_POST['pl_kode_dokter_hidden'][0];
