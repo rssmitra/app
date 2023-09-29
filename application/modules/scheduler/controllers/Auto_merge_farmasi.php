@@ -148,11 +148,11 @@ class Auto_merge_farmasi extends MX_Controller {
                 $txt_failed .= $list->kode_trans_far." (".$list->no_sep.")". PHP_EOL;
                 echo "The file ".$substr_no_sep.".pdf does not exist". PHP_EOL;
             }
-
-            $script_cmd = 'taskkill /F /IM chrome.exe /T > nul';
-            exec( $script_cmd );
-            
+    
         }
+
+        $script_cmd = 'taskkill /F /IM chrome.exe /T > nul';
+        exec( $script_cmd );
 
         $file = "uploaded/farmasi/log_scheduler/".date('Y_m_d_H_i_s').".log";
         $fp = fopen ($file,'w');
