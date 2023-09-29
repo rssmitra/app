@@ -317,7 +317,7 @@ class Process_entry_resep extends MX_Controller {
         foreach ($trans_dt as $k => $v) {
             $getData[$v->kd_tr_resep] = $v;
         }
-        // echo '<pre>';print_r($getData);die;
+        // echo '<pre>';print_r($trans_dt);die;
 
         /*execution begin*/
         $this->db->trans_begin();
@@ -429,6 +429,17 @@ class Process_entry_resep extends MX_Controller {
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada obat ditemukan dalam resep'));
             exit;
         }
+
+        // get kode booking antrol
+        $kode_booking = $this->db->get_where('tc_registrasi', array('no_registrasi' => $trans_dt[0]->no_registrasi))->row();
+        if(!empty($kode_booking->kodebookingantrol)){
+
+            // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
+            $rand = rand(15,30);
+            $waktukirim_task_7 = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+            $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking->kodebookingantrol, 'taskid' => 7, 'waktu' => $waktukirim_task_7));
+        }
+        
                             
         if ($this->db->trans_status() === FALSE)
         {
@@ -438,9 +449,6 @@ class Process_entry_resep extends MX_Controller {
         else
         {
             $this->db->trans_commit();
-            // if($_POST['is_rollback'] == 0){
-            //     $this->print_tracer_gudang($ID);
-            // }
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_trans_far' => $ID ));
         }
         

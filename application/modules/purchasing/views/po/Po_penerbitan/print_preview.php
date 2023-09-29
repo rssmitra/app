@@ -178,7 +178,7 @@ th, td {
   <br>
   <br>
   <table style="width: 100% !important; text-align: center">
-    <tr>
+    <tr style="vertical-align: top">
       <td style="text-align: left; width: 40%">
         <b>Keterangan :</b><br>
         1. Supplier (Putih) <br>
