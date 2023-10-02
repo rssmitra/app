@@ -828,9 +828,9 @@ class Global_report_model extends CI_Model {
 		FROM
 			tc_permohonan_det h 
 			LEFT JOIN tc_po_det b ON ( h.id_tc_permohonan_det = b.id_tc_permohonan_det )
-			LEFT JOIN tc_permohonan e ON e.id_tc_permohonan = b.id_tc_permohonan
+			LEFT JOIN tc_permohonan e ON e.id_tc_permohonan = h.id_tc_permohonan
 			LEFT JOIN tc_po a ON b.id_tc_po= a.id_tc_po
-			LEFT JOIN mt_barang c ON c.kode_brg= b.kode_brg
+			LEFT JOIN mt_barang c ON c.kode_brg= h.kode_brg
 			LEFT JOIN mt_supplier d ON d.kodesupplier= a.kodesupplier
 			LEFT JOIN tc_penerimaan_barang_detail g ON ( g.id_tc_po_det = b.id_tc_po_det )
 			LEFT JOIN tc_penerimaan_barang f ON f.id_penerimaan = g.id_penerimaan 
