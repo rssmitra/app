@@ -817,7 +817,7 @@ class Pl_pelayanan extends MX_Controller {
             if( isset($_GET['type']) AND ($_GET['type']=='konsultasi' OR $_GET['type']=='sarana_fisio')){
 
                 /*tarif sarana rs*/
-                // $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);
+                $tarif_sarana = $this->tarif->insert_tarif_by_jenis_tindakan($dataexc, 13);
 
                 if($_GET['type']=='konsultasi'){
                     $dataexc['kode_dokter1'] = $_POST['pl_kode_dokter_hidden'][0];
