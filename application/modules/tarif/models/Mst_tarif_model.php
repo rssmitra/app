@@ -70,7 +70,7 @@ class Mst_tarif_model extends CI_Model {
 			$getData[$value->kode_tarif]['klas'][$value->kode_klas] = $value;
 			$getData[$value->kode_tarif]['is_active'] = $value->is_active;
 		}
-		print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $getData;
 	}
 
