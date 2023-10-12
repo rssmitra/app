@@ -152,7 +152,46 @@ class Adm_kasir extends MX_Controller {
         echo json_encode(array('html' => $html));
     }
 
-}
+    public function export_excel(){
+      $list = $this->Adm_kasir->get_data(); 
+      // echo "<pre>";print_r($list);die;
+      foreach ($list as $row_list) {
+            
+        if( $_GET['pelayanan'] != 'RI' ){
+          $no = 0;
+            if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) != '03'){
+                
+                $no++;
+                $row = array();
+                // sum total
+                $total = $this->master->sumArrayByKey($row_list, 'total');
+                $status = ($total > 0) ? 'Belum dibayar' : 'Lunas';
+                $arr_total[] = $total;
+                $getData[] = array(
+                  'no_mr' =>  $row_list[0]['no_mr'],
+                  'nama_pasien' =>  $row_list[0]['nama_pasien'],
+                  'no_sep' =>  $row_list[0]['no_sep'],
+                  'nama_bagian' =>  $row_list[0]['nama_bagian'],
+                  'tgl_jam_masuk' =>  $this->tanggal->formatDateTimeFormDmy($row_list[0]['tgl_jam_masuk']),
+                  'total' =>  $total,
+                  'status' =>  $status,
+                );
+            }
+        }
+          
+    }
+      
+      $data = array(
+          'title'     => 'Kasir Rawat Jalan BPJS',
+          'fields'    => ['no_mr', 'nama_pasien', 'no_sep', 'nama_bagian', 'tgl_jam_masuk', 'status', 'total'],
+          'data'      => $getData,
+      );
+      
+      $this->load->view('loket_kasir/Adm_kasir/excel_view', $data);
+    
+    }
+
+  }
 
 
 /* End of file example.php */
