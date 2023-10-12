@@ -2409,7 +2409,7 @@ class References extends MX_Controller {
 				}else{
 					$status_tracer = 'Y';
 				}
-				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
+				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'tgl_jam_masuk' => date('Y-m-d H:i:s'), 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
 
 			}
 		}
