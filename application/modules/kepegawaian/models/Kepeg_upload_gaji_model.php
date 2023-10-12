@@ -18,7 +18,6 @@ class Kepeg_upload_gaji_model extends CI_Model {
 	private function _main_query(){
 		$this->db->select($this->select);
 		$this->db->from($this->table);
-		// $this->db->join('view_dt_pegawai','view_dt_pegawai.nip=kepeg_gaji.nip','left');
 	}
 
 	private function _get_datatables_query()
@@ -138,6 +137,7 @@ class Kepeg_upload_gaji_model extends CI_Model {
 	{
 		$this->db->from('kepeg_rincian_gaji');
 		$this->db->join('kepeg_gaji','kepeg_gaji.kg_id=kepeg_rincian_gaji.kg_id','left');
+		$this->db->join('kepeg_dt_pegawai','kepeg_dt_pegawai.kepeg_nip=kepeg_rincian_gaji.nip','left');
 		$this->db->where('kg_periode_bln', $_GET['bulan']);
 		$this->db->where('kg_periode_thn', $_GET['tahun']);
 		$this->db->where('nip', $_GET['nip']);

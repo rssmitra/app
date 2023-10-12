@@ -48,7 +48,7 @@
 
 							<hr>
 
-							<a href="#" class="btn btn-sm btn-block btn-success">
+							<a href="#" onclick="show_modal('kepegawaian/Kepeg_dt_pegawai/form_modal/<?php echo $profile->kepeg_id;?>')" class="btn btn-sm btn-block btn-success">
 								<i class="ace-icon fa fa-pencil bigger-120"></i>
 								<span class="bigger-110">Update Data Pegawai</span>
 							</a>
@@ -177,10 +177,12 @@
 
 											<div class="grid3 center">
 												<div class="center easy-pie-chart percentage" data-percent="80" data-color="#9585BF" style="height: 72px; line-height: 71px; color: rgb(149, 133, 191);">
+													<?php if($this->session->userdata('user')->user_id != 1) :?>
 													<span class="percent" style="font-size: 25px; cursor: pointer" onclick="show_modal('kepegawaian/Kepeg_upload_gaji/show_detail_row?bulan=<?php echo $gaji->kg_periode_bln; ?>&tahun=<?php echo $gaji->kg_periode_thn; ?>&nip=<?php echo $gaji->nip; ?>', 'Rincian Gaji')"><?php echo number_format($gaji->gaji_diterima)?></span> (IDR)
+													<?php endif; ?>
 												</div>
 												<div class="space-2"></div>
-												Gaji diterima <br>Periode <?php echo $this->tanggal->getBulan(date('m')-1).' '. date('Y')?>
+												Gaji diterima <br>Periode <?php echo $this->tanggal->getBulan($gaji->kg_periode_bln).' '. $gaji->kg_periode_thn?>
 											</div>
 										</div>
 
