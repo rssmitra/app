@@ -1421,12 +1421,11 @@ final Class Graph_master {
         return array_sum($jumlah_cuti);
     }
 
-    public function getPayroll($nip){
+    public function getPayroll($nip, $mth = ''){
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
         // get all data 
         // current month
-        $month = date('m') - 1;
         $query = $CI->db->join('kepeg_gaji', 'kepeg_gaji.kg_id=kepeg_rincian_gaji.kg_id','left')->order_by('kg_periode_bln', 'DESC')->get_where('kepeg_rincian_gaji', array('kepeg_rincian_gaji.nip' => $nip, 'kg_periode_thn' => date('Y')))->row();
         // echo '<pre>';print_r($query); die;
         
