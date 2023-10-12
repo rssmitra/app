@@ -1152,6 +1152,47 @@ class References extends MX_Controller {
 		
 	}
 
+	public function getTindakanByKunjungan()
+	{
+		// echo '<pre>'; print_r($_POST); die;
+
+		// get bagian kunjungan
+		$kunjungan = $this->db->select('kode_bagian_tujuan, kode_bagian_asal')->group_by('kode_bagian_tujuan, kode_bagian_asal')->get_where('tc_kunjungan', array('no_kunjungan' => $_POST['no_kunjungan']))->row();
+		// rawat jalan
+		if( substr($kunjungan->kode_bagian_tujuan, 1,2) == '01' ){
+			$kode_klas = 16;
+		}else{
+			if( substr($kunjungan->kode_bagian_asal, 1,2) == '03'){
+				$ri = $this->db->where("no_kunjungan = (select no_kunjungan from tc_kunjungan where no_registrasi = ".$_POST['no_registrasi']." and substr(kode_bagian_tujuan, 1,2) = '03')")->get('ri_tc_rawatinap')->row();
+				$kode_klas = $ri->kelas_pas;
+			}else{
+				$kode_klas = 16;
+			}
+		}
+		
+		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi');
+		$this->db->from('mt_master_tarif a');
+		$this->db->join('mt_master_tarif_detail b', 'b.kode_tarif=a.kode_tarif', 'left');
+		$this->db->join('mt_master_tarif c', 'c.kode_tarif=a.referensi', 'left');
+		$this->db->where('a.tingkatan', '5');
+		$this->db->where('a.is_active', 'Y');
+		$this->db->like('a.nama_tarif', $_POST['keyword']);
+		$this->db->group_by('a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif');
+		$this->db->order_by('a.is_old asc, a.nama_tarif asc');
+		$this->db->where('a.kode_bagian', $kunjungan->kode_bagian_tujuan);
+		$query = $this->db->get()->result();
+		// echo '<pre>'; print_r($this->db->last_query()); die;
+
+		$arrResult = [];
+		foreach ($query as $key => $value) {
+			$jenis_operasi = $value->tingkat_operasi;
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.') '.$jenis_operasi.' : '.$kode_klas.'';
+		}
+
+		echo json_encode($arrResult);
+		
+	}
+
 	public function getTindakanBedah()
 	{
         
@@ -1296,7 +1337,7 @@ class References extends MX_Controller {
 					$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
 					$checked = ($key==0)?'checked':'';
 					/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
-					$html .= '<tr>';
+					$html .= '<tr style="background: #edf3f4;">';
 					$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
 					/*$html .= '<td align="center">'.$sign.'</td>';*/
 					$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
@@ -1307,7 +1348,7 @@ class References extends MX_Controller {
 					$html .= '<td align="right">'.number_format($alkes).'</td>';
 					$html .= '<td align="right">'.number_format($alat_rs).'</td>';
 					$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
-					$html .= '<td align="right">'.number_format($total).'</td>';
+					$html .= '<td align="right"><b>'.number_format($total).'</b></td>';
 					$html .= '<td align="center">'.$revisi_ke.'</td>';
 					if($key==0){
 						$html .= '<input type="hidden" name="total" value="'.round($total).'">';
