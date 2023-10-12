@@ -27,30 +27,36 @@ class Adm_kasir_model extends CI_Model {
 		$this->db->join('mt_nasabah f','f.kode_kelompok=b.kode_kelompok','left');
 
 		if ( isset($_GET['search_by']) ) {
+
 			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
 				if($_GET['search_by'] == 'c.nama_pasien'){
 					$this->db->like($_GET['search_by'], $_GET['keyword']);		
 				}else{
 					$this->db->like($_GET['search_by'], $_GET['keyword']);		
 				}
-			}		
+
+        if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
+          $this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+        }else{
+          $this->db->where('DATEDIFF(day,b.tgl_jam_masuk,GETDATE()) < 150');
+        }
+			}	else{
+
+        if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
+          $this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+        }else{
+          $this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
+        }
+
+      }	
 
 			if( isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ){
 				$this->db->where("b.kode_bagian_masuk", $_GET['kode_bagian']);
 			}
 
-			if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
-				$this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
-			}else{
-				$this->db->where('DATEDIFF(day,b.tgl_jam_masuk,GETDATE()) < 150');
-				// $this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
-			}
-			
 		}else{
 			$this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
 		}
-
-			
 
 		if( $_GET['pelayanan']=='RJ' ){
 			if($_GET['flag']=='bpjs'){
@@ -101,6 +107,16 @@ class Adm_kasir_model extends CI_Model {
 		// echo '<pre>';print_r($this->db->last_query());die;
 		$result = $this->getTotalRow($query);
 		
+		return $result;
+	}
+
+  function get_data()
+	{
+		$this->_main_query();
+    $this->db->order_by('b.no_sep ASC');
+		$query = $this->db->get()->result(); 
+    $result = $this->getTotalRow($query);
+    // echo '<pre>';print_r($this->db->last_query());die;
 		return $result;
 	}
 

@@ -32,7 +32,7 @@ $(document).ready(function() {
   
   var is_cito = $('#jenis_layanan').val();
   var kode_tarif_existing = $('#kode_tarif_existing').val();
-  var kode_klas_existing = $('#kode_klas_val').val();
+  var kode_klas_existing = $('#kode_klas_val2').val();
 
   $('#pl_kode_tindakan_hidden').val( kode_tarif_existing );
   $('#InputKeyTindakan').val( $('#nama_tarif_existing').val() );
@@ -111,7 +111,7 @@ $(document).ready(function() {
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/getTindakanByBagianAutoComplete",
-                data: { keyword:query, kode_klas: $('#kode_klas_val').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val(), jenis_bedah : $('#jenis_bedah').val() },            
+                data: { keyword:query, kode_klas: $('#kode_klas_val2').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val(), jenis_bedah : $('#jenis_bedah').val() },            
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
@@ -128,7 +128,7 @@ $(document).ready(function() {
           $('#pl_kode_tindakan_hidden').val(val_item);
           $('.InputKeyDokterBagian').focus();
           /*get detail tarif by kode tarif and kode klas*/
-          getDetailTarifByKodeTarifAndKlas(val_item, $('#kode_klas_val').val());
+          getDetailTarifByKodeTarifAndKlas(val_item, $('#kode_klas_val2').val());
         }
 
     });
@@ -246,6 +246,13 @@ $(document).ready(function() {
       $('#change_form_tindakan').load('pelayanan/Pl_pelayanan/form_tindakan_lain?flag=luar');
       $('#default_form_tindakan').hide('fast');
       $('#detailTarifHtml').html('');
+
+    });
+
+    $('#kode_klas_val2').change(function (e) {  
+
+      e.preventDefault();
+      $('#kode_klas_val').val($(this).val());
 
     });
 
@@ -546,6 +553,13 @@ function tambah_file()
                 <label class="control-label col-sm-2" for="">Jenis Bedah</label>
                 <div class="col-sm-4">
                 <?php echo $this->master->custom_selection(array('table'=>'mt_master_tarif', 'where'=>array('is_active'=>'Y', 'tingkatan' => 3, 'kode_bagian' => $sess_kode_bag), 'id'=>'kode_tarif', 'name' => 'nama_tarif'),'','jenis_bedah','jenis_bedah','chosen-slect form-control','');?>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="">Kelas Pasien</label>
+                <div class="col-sm-4">
+                <?php echo $this->master->custom_selection(array('table'=>'mt_klas', 'where'=>array(), 'id'=>'kode_klas', 'name' => 'nama_klas'),($value->kode_klas)?$value->kode_klas:'','kode_klas','kode_klas_val2','chosen-slect form-control','');?>
                 </div>
             </div>
 

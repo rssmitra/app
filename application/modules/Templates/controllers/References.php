@@ -1121,13 +1121,17 @@ class References extends MX_Controller {
 
 	public function getTindakanByBagianAutoComplete()
 	{
-
+    // echo print_r($_POST); die;
 		// just for kamar bedah
 		$where_str = ($_POST['kode_bag']=='030901')?'and a.referensi in (select kode_tarif from mt_master_tarif where kode_bagian='."'".$_POST['kode_bag']."'".' and referensi='.$_POST['jenis_bedah'].')':'';
 
 		if(in_array($_POST['kode_bag'], array('030501', '031201'))){
 			$where_kode_bag = "a.kode_bagian IN ('030501', '031201')";
-		}else{
+		}
+    elseif(in_array($_POST['kode_bag'], array('013701', '011501', '011601', '011001'))){
+      $where_kode_bag = "a.kode_bagian IN ('013701', '011501', '011601', '011001')";
+    }
+    else{
 			$where_kode_bag = "a.kode_bagian="."'".$_POST['kode_bag']."'"."";
 		}
         $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi

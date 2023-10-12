@@ -31,7 +31,7 @@ jQuery(function($) {
 $(document).ready(function(){
 
     var kode_tarif_existing = $('#pl_tindakan_pesan_ok').val();
-    var kode_klas_existing = $('#kode_klas_val').val();
+    var kode_klas_existing = $('#kode_klas_val option:selected').val();
     getDetailTarifByKodeTarifAndKlas(kode_tarif_existing, kode_klas_existing);
 
     /*when page load find pasien by mr*/
@@ -100,12 +100,12 @@ $(document).ready(function(){
       $('#formDetailTarif').hide('fast');
     })
 
-    var kelas = $('#kode_klas_val').val() ;
+    // var kelas = $('#kode_klas_val').val() ;
     $('#inputKeyTindakanBedah').typeahead({
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/getTindakanByBagianAutoComplete",
-                data: { keyword:query, kode_klas: kelas, kode_bag : '030901', kode_perusahaan : $('#kode_perusahaan_val').val(), jenis_bedah : $('#jenis_bedah').val() },            
+                data: { keyword:query, kode_klas: $('#kode_klas_val').val(), kode_bag : '030901', kode_perusahaan : $('#kode_perusahaan_val').val(), jenis_bedah : $('#jenis_bedah').val() },            
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
@@ -119,7 +119,9 @@ $(document).ready(function(){
           // do what is needed with item
           var val_item=item.split(':')[0];
           console.log(val_item);
+          // console.log(item);
           $('#pl_tindakan_pesan_ok').val(val_item);
+          var kelas = $('#kode_klas_val').val() ;
           $('.InputKeyDokterBagian').focus();
           /*get detail tarif by kode tarif and kode klas*/
           getDetailTarifByKodeTarifAndKlas(val_item, kelas);
@@ -429,7 +431,7 @@ $('select[name="kode_ruangan"]').change(function () {
       <form class="form-horizontal" method="post" id="form_pelayanan" action="kamar_bedah/Ok_acc_jadwal_bedah/process_acc" enctype="multipart/form-data" autocomplete="off" >      
                   
           <!-- HIDDEN FORM -->
-          <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($value->kode_klas)?$value->kode_klas:''?>"  id="kode_klas_val">
+          <!-- <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($value->kode_klas)?$value->kode_klas:''?>"  id="kode_klas_val"> -->
           <input type="hidden" class="form-control" name="noMrHidden" id="noMrHidden" value="<?php echo isset($value->no_mr)?$value->no_mr:''?>" >
           <input type="hidden" class="form-control" name="no_registrasi" id="no_registrasi" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" >
           <input type="hidden" class="form-control" name="no_kunjungan" id="no_kunjungan" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" >
@@ -574,6 +576,13 @@ $('select[name="kode_ruangan"]').change(function () {
                 <label class="control-label col-sm-2" for="">Jenis Bedah</label>
                 <div class="col-sm-4">
                 <?php echo $this->master->custom_selection(array('table'=>'mt_master_tarif', 'where'=>array('is_active'=>'Y', 'tingkatan' => 3, 'kode_bagian' => '030901'), 'id'=>'kode_tarif', 'name' => 'nama_tarif'),'','jenis_bedah','jenis_bedah','chosen-slect form-control','');?>
+                </div>
+            </div>
+          
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="">Kelas Pasien</label>
+                <div class="col-sm-4">
+                <?php echo $this->master->custom_selection(array('table'=>'mt_klas', 'where'=>array(), 'id'=>'kode_klas', 'name' => 'nama_klas'),($value->kode_klas)?$value->kode_klas:'','kode_klas','kode_klas_val','chosen-slect form-control','');?>
                 </div>
             </div>
 

@@ -20,10 +20,12 @@ class Mst_tarif_model extends CI_Model {
 		$this->db->from($this->table);
 		if(isset($_GET['unit']) AND $_GET['unit'] != ''){
 			$this->db->where('view_tarif_update.kode_bagian', $_GET['unit']);
-		}
-
+		}else{
+			$this->db->where('view_tarif_update.kode_bagian', '');
+    }
+    
 		if(isset($_GET['nama_tarif']) AND $_GET['nama_tarif'] != ''){
-			$this->db->like('view_tarif_update.nama_tarif', $_GET['nama_tarif']);
+      $this->db->like('view_tarif_update.nama_tarif', $_GET['nama_tarif']);
 		}
 		
 	}
@@ -87,12 +89,14 @@ class Mst_tarif_model extends CI_Model {
 
 	public function get_by_id($id)
 	{
-		$this->_main_query();
-		if(is_array($id)){
+    if(is_array($id)){
+      $this->_main_query();
 			$this->db->where_in(''.$this->table.'.kode_tarif',$id);
 			$query = $this->db->get();
 			return $query->result();
 		}else{
+      $this->db->select($this->select);
+		  $this->db->from($this->table);
 			$this->db->where(''.$this->table.'.kode_tarif',$id);
 			$query = $this->db->get();
 			// print_r($this->db->last_query());die;
