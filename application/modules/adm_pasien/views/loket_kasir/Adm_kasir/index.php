@@ -153,6 +153,30 @@
   });
 
   
+  $('#btn_export_excel').click(function (e) {
+      e.preventDefault();
+      $.ajax({
+      url: $('#form_search').attr('action'),
+      type: "post",
+      data: $('#form_search').serialize(),
+      dataType: "json",
+      beforeSend: function() {
+        achtungShowLoader();  
+      },
+      success: function(data) {
+        achtungHideLoader();
+        export_excel(data);
+      }
+    })
+  });
+
+  function export_excel(result){
+
+    window.open('adm_pasien/loket_kasir/Adm_kasir/export_excel?'+result.data+'','_blank'); 
+
+  }
+
+  
 
   function find_data_reload(result){
       get_total_billing();
@@ -272,7 +296,7 @@
           <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'group_bag' => 'Detail', 'status_aktif' => 1) ),'' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
           </div>
         
-          <div class="col-md-2" style="margin-left: -1%">
+          <div class="col-md-3" style="margin-left: -1%">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Cari
@@ -280,6 +304,10 @@
             <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
               <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
               Reload
+            </a>
+            <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+                <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+                Export Excel
             </a>
           </div>
 
