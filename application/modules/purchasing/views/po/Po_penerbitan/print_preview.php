@@ -186,7 +186,7 @@ th, td {
         3. Gudang (Kuning) <br>
         3. Tukar Faktur (Hijau) <br>
       </td>
-      <td style="text-align: center; width: 30%">
+      <td style="text-align: center; width: 30%" <?php echo ($_GET['flag']=='non_medis')?'hidden':'';?>>
       <span style="font-size: 14px; font-weight: bold">Apoteker Penanggung Jawab</span>
         <br>
         <br>
