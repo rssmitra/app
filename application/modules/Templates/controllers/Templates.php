@@ -260,10 +260,10 @@ class Templates extends MX_Controller {
             );
             $data[1] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-1',
+                'nameid' => 'graph-table-2',
                 'style' => 'table',
                 'col_size' => 4,
-                'url' => 'templates/Templates/graph?prefix=323&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=324&TypeChart=table&style=1&mod='.$_GET['mod'].'',
             );
             $data[2] = array(
                 'mod' => $_GET['mod'],
@@ -274,11 +274,46 @@ class Templates extends MX_Controller {
             );
             $data[3] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-2',
+                'nameid' => 'graph-pie-2',
+                'style' => 'pie',
+                'col_size' => 8,
+                'url' => 'templates/Templates/graph?prefix=325&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+            );
+            $data[4] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-3',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=326&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+            
+            $data[5] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=323&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+
+            $data[6] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-4',
                 'style' => 'table',
                 'col_size' => 6,
-                'url' => 'templates/Templates/graph?prefix=324&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=327&TypeChart=table&style=1&mod='.$_GET['mod'].'',
             );
+
+            $data[7] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-5',
+                'style' => 'table',
+                'col_size' => 6,
+                'url' => 'templates/Templates/graph?prefix=328&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+            
+            
+            
+
             
         }
 
