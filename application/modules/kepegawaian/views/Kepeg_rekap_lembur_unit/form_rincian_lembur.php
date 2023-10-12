@@ -25,18 +25,19 @@
             <?php 
               $no = 0;
               foreach ($getData as $key => $value) {
-                echo '<tr><th colspan="6">'.$key.'</th></tr>';
+                echo '<tr><th colspan="7">'.$key.'</th></tr>';
                 foreach ($value as $key2 => $rincian_lembur) {
                   $no++;
                   $pg = $rincian_lembur[0];
-                  echo '<tr><td colspan="6">&nbsp;&nbsp;&nbsp;'.$no.'. '.$key2.' - '.$pg->nama_level.' '.$pg->nama_unit.' ('.$pg->kepeg_gol.')</td></tr>';
+                  echo '<tr><td colspan="7">&nbsp;&nbsp;&nbsp;'.$no.'. '.$key2.' - '.$pg->nama_level.' '.$pg->nama_unit.' ('.$pg->kepeg_gol.')</td></tr>';
                     echo '<tr>';
-                    echo '<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tugas di Unit/Bagian</th>';
+                    echo '<th style="width: 200px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tugas di Unit/Bagian</th>';
                     echo '<th style="width: 120px">Tgl Lembur</th>';
                     echo '<th style="width: 120px">Dari Jam</th>';
                     echo '<th style="width: 120px">S.d Jam</th>';
                     echo '<th style="width: 150px">Jumlah Jam Lembur</th>';
                     echo '<th style="width: 120px">Pembulatan</th>';
+                    echo '<th>Deskripsi Pekerjaan</th>';
                     echo '</tr>';
                   foreach ($rincian_lembur as $key3 => $row_lembur) {
                     
@@ -48,6 +49,7 @@
                     echo '<td align="center">'.$this->tanggal->formatTime($row_lembur->sd_jam).'</td>';
                     echo '<td align="center">'.$row_lembur->jml_jam_lembur.'</td>';
                     echo '<td align="center">'.$row_lembur->pembulatan_jam_lembur.'</td>';
+                    echo '<td align="left">'.$row_lembur->deskripsi_pekerjaan.'</td>';
                     echo '</tr>';
                   }
                 }

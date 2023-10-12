@@ -69,21 +69,11 @@ class Templates extends MX_Controller {
         $data['shortcut'] = $this->lib_menus->get_menus_shortcut($this->session->userdata('user')->user_id, $_GET['mod']);
         $data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
         $data['module'] = $this->db->get_where('tmp_mst_modul', array('modul_id' => $_GET['mod']))->row();
+        $data['profile_user'] = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id))->row();
 
-        //echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data['profile_user']);die;
 
-        /*here specially for mod 9 or module booking will suggest profile form for the first use*/
-        if($_GET['mod']==9){
-            /*check existing profile*/
-            $profile = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id) )->num_rows();
-            if($profile > 0){
-                $this->load->view('templates/content_view', $data);
-            }else{
-                $this->load->view('templates/form_profile_view', $data);
-            }
-        }else{
-            $this->load->view('templates/content_view', $data);
-        }
+        $this->load->view('templates/content_view', $data);
         
     }
 

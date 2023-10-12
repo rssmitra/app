@@ -105,7 +105,7 @@
               </tr>
               <tr>
                 <td></td>
-                <td style="padding-left:30px ">Lembur</td>
+                <td style="padding-left:30px ">Insentif</td>
                 <td align="right"><?php echo number_format($value->insentif)?></td>
               </tr>
               
@@ -178,7 +178,7 @@
               <tr>
                 <td></td>
                 <td style="padding-left: 30px">Bon Karyawan / Apotik</td>
-                <td align="right"><?php echo number_format($value->p_apotik)?></td>
+                <td align="right" style="font-weight: bold"><a href="#" onclick="show_modal('<?php echo base_url().'kepegawaian/Kepeg_slip_gaji/bon_karyawan?nik='.$value->kepeg_nik.'&periode='.$value->kg_periode_bln.'&tahun='.$value->kg_periode_thn.''?>','BON KARYAWAN / APOTIK')"><?php echo number_format($value->p_apotik)?></a></td>
               </tr>
               <tr>
                 <td></td>

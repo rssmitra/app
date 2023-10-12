@@ -427,7 +427,7 @@ class References extends MX_Controller {
                           ->get('view_dt_pegawai');
 		$arrResult = [];
 		foreach ($query->result() as $key => $value) {
-			$arrResult[] = $value->kepeg_id.' : '.$value->nama_pegawai;
+			$arrResult[] = $value->kepeg_id.' : '.strtoupper($value->nama_pegawai);
 		}
 		echo json_encode($arrResult);
 		

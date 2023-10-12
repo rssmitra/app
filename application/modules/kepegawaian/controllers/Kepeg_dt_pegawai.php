@@ -26,7 +26,7 @@ class Kepeg_dt_pegawai extends MX_Controller {
     }
 
     public function index() { 
-        //echo '<pre>';print_r($this->session->all_userdata());
+        // echo '<pre>';print_r($this->session->all_userdata());
         /*define variable data*/
         $data = array(
             'title' => $this->title,
@@ -61,6 +61,33 @@ class Kepeg_dt_pegawai extends MX_Controller {
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
         $this->load->view('Kepeg_dt_pegawai/form_profile', $data);
+    }
+
+    public function form_modal($id='')
+    {
+        /*if id is not null then will show form edit*/
+        if($id != ''){
+            /*breadcrumbs for edit*/
+            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Kepeg_dt_pegawai/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+            /*get value by id*/
+            $data['value'] = $this->Kepeg_dt_pegawai->get_by_id($id);
+            // echo '<pre>';print_r($data);die;
+            /*initialize flag for form*/
+            $data['flag'] = "update";
+        }else{
+            /*breadcrumbs for create or add row*/
+            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Kepeg_dt_pegawai/'.strtolower(get_class($this)).'/form');
+            /*initialize flag for form add*/
+            $data['flag'] = "create";
+        }
+        $data['user'] = $this->Tmp_user->get_by_id($this->session->userdata('user')->user_id);
+        // $data['profile_user'] = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id))->row();
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Kepeg_dt_pegawai/form_profile_modal', $data);
     }
     
     /*function for view data only*/
@@ -153,7 +180,6 @@ class Kepeg_dt_pegawai extends MX_Controller {
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','R',$row_list->kepeg_id,6).'</li>
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','U',$row_list->kepeg_id,6).'</li>
                             <li>'.$this->authuser->show_button('kepegawaian/Kepeg_dt_pegawai','D',$row_list->kepeg_id,6).'</li>
-                            <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_jabatan/".$row_list->kepeg_id."'".')">Update Data Kepegawaian</a></li>
                             <li><a href="#" onclick="getMenu('."'kepegawaian/Kepeg_dt_pegawai/form_riwayat_pegawai/".$row_list->kepeg_id."'".')">Riwayat Pegawai</a></li>
                         </ul>
                         </div>
@@ -186,25 +212,214 @@ class Kepeg_dt_pegawai extends MX_Controller {
 
     public function process()
     {
-        
+        // echo '<pre>';print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
+        $val->set_rules('kepeg_nip','NIP Pegawai', 'integer|trim|required'); 
+        $val->set_rules('nik','NIK', 'trim|required'); 
+        $val->set_rules('nama_pegawai','Nama Pegawai', 'trim|required');
+        $val->set_rules('kepeg_no_telp','No Telpon Pegawai', 'integer|trim|required');
+        $val->set_rules('kepeg_email','Email Pegawai', 'trim|valid_email');
+        $val->set_rules('kepeg_gol','Golongan Pegawai', 'trim');
+        $val->set_rules('kepeg_pendidikan_terakhir','Pendidikan Terakhir', 'trim|required');
+        $val->set_rules('kepeg_unit','Unit Pegawai', 'trim|required');
+        $val->set_rules('kepeg_level','Jabatan Pegawai', 'trim');
+        $val->set_rules('kepeg_hak_perawatan','Hak Keperawatan', 'trim');
+        $val->set_rules('kepeg_tenaga_medis','Jenis Pegawai', 'trim|required');
+        $val->set_rules('kepeg_status_kerja','Status Kepegawaian', 'trim');
+        $val->set_rules('kepeg_tgl_aktif','Tanggal Aktif Pegawai', 'trim|required');
+        $val->set_rules('kepeg_tgl_selesai','Tanggal Berakhir Kerja', 'trim');
+        $val->set_rules('kepeg_masa_kontrak','Masa Kontrak (bulan)', 'trim');
+        $val->set_rules('kepeg_status_aktif','Status Aktif Pegawai', 'trim');
 
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+            
+            $id = ($this->input->post('kepeg_id'))?$this->regex->_genRegex($this->input->post('kepeg_id'),'RGXINT'):0;
+            $nik = ($this->input->post('nik'))?$this->regex->_genRegex($this->input->post('nik'),'RGXINT'):0;
+            $profil_id = ($this->input->post('profil_id'))?$this->regex->_genRegex($this->input->post('profil_id'),'RGXINT'):0;
+            $no_induk = ($this->input->post('kepeg_nip'))?$this->regex->_genRegex($this->input->post('kepeg_nip'),'RGXQSL'):0;
+
+            $dataktp = array(
+                'ktp_nik' => $this->regex->_genRegex($nik, 'RGXQSL'),
+                'ktp_nama_lengkap' => $this->regex->_genRegex($_POST['nama_pegawai'], 'RGXQSL'),
+                'religion_id' => $this->regex->_genRegex($_POST['religion'], 'RGXQSL'),
+                'ms_id' => $this->regex->_genRegex($_POST['marital_status'], 'RGXQSL'),
+                'tb_id' => $this->regex->_genRegex($_POST['type_blood'], 'RGXQSL'),
+                'province_id' => $this->regex->_genRegex($_POST['provinsiHidden'], 'RGXQSL'),
+                'city_id' => $this->regex->_genRegex($_POST['kotaHidden'], 'RGXQSL'),
+                'district_id' => $this->regex->_genRegex($_POST['kecamatanHidden'], 'RGXQSL'),
+                'sub_district_id' => $this->regex->_genRegex($_POST['kelurahanHidden'], 'RGXQSL'),
+                'ktp_jk' => $this->regex->_genRegex($_POST['gender'], 'RGXQSL'),
+                'ktp_tempat_lahir' => $this->regex->_genRegex($_POST['tmp_lahir'], 'RGXQSL'),
+                'ktp_tanggal_lahir' => $this->regex->_genRegex($_POST['dob_pegawai'], 'RGXQSL'),
+                'ktp_alamat' => $this->regex->_genRegex($_POST['alamat'], 'RGXQSL'),
+                'ktp_rt' => $this->regex->_genRegex($_POST['rt'], 'RGXQSL'),
+                'ktp_rw' => $this->regex->_genRegex($_POST['rw'], 'RGXQSL'),
+                'zipcode' => $this->regex->_genRegex($_POST['zipcode'], 'RGXQSL'),
+            );
+            // echo '<pre>';print_r($dataktp);
+
+            $dataexc = array(
+                'kepeg_nik' => $this->regex->_genRegex($nik, 'RGXQSL'),
+                'kepeg_nip' => $this->regex->_genRegex($val->set_value('kepeg_nip'), 'RGXQSL'),
+                'kepeg_no_telp' => $this->regex->_genRegex($val->set_value('kepeg_no_telp'), 'RGXQSL'),
+                'kepeg_email' => $this->regex->_genRegex($val->set_value('kepeg_email'), 'RGXQSL'),
+                'kepeg_gol' => $this->regex->_genRegex($val->set_value('kepeg_gol'), 'RGXQSL'),
+                'kepeg_pendidikan_terakhir' => $this->regex->_genRegex($val->set_value('kepeg_pendidikan_terakhir'), 'RGXQSL'),
+                'kepeg_unit' => $this->regex->_genRegex($val->set_value('kepeg_unit'), 'RGXQSL'),
+                'kepeg_level' => $this->regex->_genRegex($val->set_value('kepeg_level'), 'RGXQSL'),
+                'kepeg_hak_perawatan' => $this->regex->_genRegex($val->set_value('kepeg_hak_perawatan'), 'RGXQSL'),
+                'kepeg_tenaga_medis' => $this->regex->_genRegex($val->set_value('kepeg_tenaga_medis'), 'RGXQSL'),
+                'kepeg_status_kerja' => $this->regex->_genRegex($val->set_value('kepeg_status_kerja'), 'RGXQSL'),
+                'kepeg_tgl_aktif' => $this->regex->_genRegex($val->set_value('kepeg_tgl_aktif'), 'RGXQSL'),
+                'kepeg_tgl_selesai' => $this->regex->_genRegex($val->set_value('kepeg_tgl_selesai'), 'RGXQSL'),
+                'kepeg_masa_kontrak' => $this->regex->_genRegex($val->set_value('kepeg_masa_kontrak'), 'RGXQSL'),
+                'kepeg_status_aktif' => $this->regex->_genRegex($val->set_value('kepeg_status_aktif'), 'RGXQSL'),
+                'is_active' => $this->regex->_genRegex($val->set_value('kepeg_status_aktif'), 'RGXQSL'),
+            );
+            // echo '<pre>';print_r($dataexc);
+
+            $datakaryawan = array(
+                'no_induk' => $this->regex->_genRegex($val->set_value('kepeg_nip'), 'RGXQSL'),
+                'nama_pegawai' => $this->regex->_genRegex($val->set_value('nama_pegawai'), 'RGXQSL'),
+                'kode_jabatan' => $this->regex->_genRegex($val->set_value('kepeg_level'), 'RGXQSL'),
+                'kode_bagian' => $this->regex->_genRegex($val->set_value('kepeg_unit'), 'RGXQSL'),
+                'is_active' => $this->regex->_genRegex($val->set_value('kepeg_status_aktif'), 'RGXQSL'),
+                'integration' => 1,
+            );
+            // echo '<pre>';print_r($datakaryawan);die;
+
+            // $dataprofil = array(
+            //     'fullname' => $this->regex->_genRegex($_POST['nama_pegawai'],'RGXQSL'),
+            //     'pob' => $this->regex->_genRegex($_POST['tmp_lahir'],'RGXQSL'),
+            //     'dob' => $this->regex->_genRegex($_POST['dob_pegawai'],'RGXQSL'),
+            //     'address' => $this->regex->_genRegex($_POST['alamat'],'RGXQSL'),
+            //     'no_telp' => $this->regex->_genRegex($_POST['kepeg_no_telp'],'RGXQSL'),
+            //     'gender' => $this->regex->_genRegex($_POST['gender'],'RGXQSL'),
+            //     'no_ktp' => $this->regex->_genRegex($nik,'RGXQSL'),
+            //     'nip' => $this->regex->_genRegex($val->set_value('kepeg_nip'), 'RGXQSL'),
+            // );
+
+            // echo '<pre>';print_r($dataprofil);die;
+            // if(isset($_FILES['pas_foto']['name'])){
+            //     /*hapus dulu file yang lama*/
+            //     if( $profile_id != 0 ){
+            //         $profile = $this->db->get_where('tmp_user_profile', array('nip' => $this->regex->_genRegex($val->set_value('kepeg_nip'), 'RGXQSL')) )->row();
+            //         if ($profile->path_foto != NULL) {
+            //             unlink(PATH_PHOTO_PROFILE_DEFAULT.$profile->path_foto.'');
+            //         }
+            //     }
+
+            //     if( $nik != 0 ){
+            //         $pas_foto = $this->db->get_where('ktp', array('ktp_nik' => $nik) )->row();
+            //         if ($pas_foto->ktp_foto != NULL) {
+            //             unlink(PATH_PHOTO_PEGAWAI.$pas_foto->ktp_foto.'');
+            //         }
+            //     }
+                
+            //     $foto_name = $this->upload_file->doUpload('pas_foto', PATH_PHOTO_PROFILE_DEFAULT);
+
+            //     $dataprofil['path_foto'] = $foto_name;
+            //     $dataktp['ktp_foto'] = $foto_name;
+            // }
+
+
+            // cek data exist
+            $data_ktp = $this->db->get_where('ktp', array('ktp_nik' => $nik))->num_rows();
+            if($data_ktp==0){
+                $dataktp['created_date'] = date('Y-m-d H:i:s');
+                $dataktp['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                $this->db->insert('ktp', $dataktp);
+            }else{
+                $dataktp['updated_date'] = date('Y-m-d H:i:s');
+                $dataktp['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                /*update record*/
+                $this->db->where(array('ktp_nik' => $nik))->update('ktp', $dataktp);
+                $newId = $id;
+            }
+
+            // insert pegawai
+            if($id==0){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                // save data pegawai
+                $newId = $this->db->insert('kepeg_dt_pegawai', $dataexc);
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                /*update record*/
+                $this->db->where(array('kepeg_id' => $id))->update('kepeg_dt_pegawai', $dataexc);
+            }
+
+            // insert karyawan
+            $data_karyawan = $this->db->get_where('mt_karyawan', array('no_induk' => $no_induk))->num_rows();
+
+            if($data_karyawan==0){
+                $datakaryawan['created_date'] = date('Y-m-d H:i:s');
+                $datakaryawan['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                // save data pegawai
+                $newId = $this->db->insert('mt_karyawan', $datakaryawan);
+            }else{
+                $datakaryawan['updated_date'] = date('Y-m-d H:i:s');
+                $datakaryawan['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                /*update record*/
+                $this->db->where(array('no_induk' => $no_induk))->update('mt_karyawan', $datakaryawan);
+            }
+
+            // $profile = $this->db->get_where('tmp_user_profile', array('nip' => $this->regex->_genRegex($val->set_value('kepeg_nip'), 'RGXQSL')) )->num_rows();
+
+            // if($profile==0){
+            //     $dataprofil['created_date'] = date('Y-m-d H:i:s');
+            //     $dataprofil['created_by'] = $this->session->userdata('user')->fullname;
+            //     $this->db->insert('tmp_user_profile', $dataprofil);
+            // }else{
+            //     $dataprofil['updated_date'] = date('Y-m-d H:i:s');
+            //     $dataprofil['updated_by'] = $this->session->userdata('user')->fullname;
+            //     $this->db->where(array('nip' => $this->regex->_genRegex($val->set_value('kepeg_nip'), 'RGXQSL')))->update('tmp_user_profile', $dataprofil);
+            // }
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+        }
+    }
+
+    public function process_data_pegawai()
+    {
+        // echo '<pre>';print_r($_POST);die;
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
         $val->set_rules('kepeg_nip','NIP Pegawai', 'integer|trim|required'); 
         $val->set_rules('nama_pegawai','Nama Pegawai', 'trim|required');
         $val->set_rules('kepeg_no_telp','No Telpon Pegawai', 'integer|trim|required');
         $val->set_rules('kepeg_email','Email Pegawai', 'trim|valid_email');
-        $val->set_rules('kepeg_gol','Golongan Pegawai', 'trim|required');
+        $val->set_rules('kepeg_gol','Golongan Pegawai', 'trim');
         $val->set_rules('kepeg_pendidikan_terakhir','Pendidikan Terakhir', 'trim|required');
         $val->set_rules('kepeg_unit','Unit Pegawai', 'trim|required');
-        $val->set_rules('kepeg_level','Jabatan Pegawai', 'trim|required');
+        $val->set_rules('kepeg_level','Jabatan Pegawai', 'trim');
         $val->set_rules('kepeg_hak_perawatan','Hak Keperawatan', 'trim');
         $val->set_rules('kepeg_tenaga_medis','Jenis Pegawai', 'trim|required');
-        $val->set_rules('kepeg_status_kerja','Status Kepegawaian', 'trim|required');
+        $val->set_rules('kepeg_status_kerja','Status Kepegawaian', 'trim');
         $val->set_rules('kepeg_tgl_aktif','Tanggal Aktif Pegawai', 'trim|required');
         $val->set_rules('kepeg_tgl_selesai','Tanggal Berakhir Kerja', 'trim');
         $val->set_rules('kepeg_masa_kontrak','Masa Kontrak (bulan)', 'trim');
-        $val->set_rules('kepeg_status_aktif','Status Aktif Pegawai', 'trim|required');
+        $val->set_rules('kepeg_status_aktif','Status Aktif Pegawai', 'trim');
 
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -240,8 +455,6 @@ class Kepeg_dt_pegawai extends MX_Controller {
                 'ktp_rw' => $this->regex->_genRegex($_POST['rw'], 'RGXQSL'),
                 'zipcode' => $this->regex->_genRegex($_POST['zipcode'], 'RGXQSL'),
             );
-
-            // echo '<pre>';print_r($dataktp);die;
 
             $dataexc = array(
                 'kepeg_nik' => $this->regex->_genRegex($nik, 'RGXQSL'),
@@ -283,8 +496,8 @@ class Kepeg_dt_pegawai extends MX_Controller {
                 'nip' => $this->regex->_genRegex($val->set_value('kepeg_nip'), 'RGXQSL'),
                 'user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'),
             );
+
             // echo '<pre>';print_r($dataprofil);die;
-            
             if(isset($_FILES['pas_foto']['name'])){
                 /*hapus dulu file yang lama*/
                 if( $profile_id != 0 ){
@@ -301,15 +514,15 @@ class Kepeg_dt_pegawai extends MX_Controller {
                     }
                 }
                 
-                
                 $foto_name = $this->upload_file->doUpload('pas_foto', PATH_PHOTO_PROFILE_DEFAULT);
 
                 $dataprofil['path_foto'] = $foto_name;
                 $dataktp['ktp_foto'] = $foto_name;
             }
 
-            // insert ktp
-            if($nik==0){
+            // cek data exist
+            $data_ktp = $this->db->get_where('ktp', array('ktp_nik' => $nik))->num_rows();
+            if($data_ktp==0){
                 $dataktp['created_date'] = date('Y-m-d H:i:s');
                 $dataktp['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $this->db->insert('ktp', $dataktp);
@@ -335,7 +548,8 @@ class Kepeg_dt_pegawai extends MX_Controller {
             }
 
             // insert karyawan
-            if($no_induk==0){
+            $data_karyawan = $this->db->get_where('mt_karyawan', array('no_induk' => $no_induk))->num_rows();
+            if($data_karyawan==0){
                 $datakaryawan['created_date'] = date('Y-m-d H:i:s');
                 $datakaryawan['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 // save data pegawai
