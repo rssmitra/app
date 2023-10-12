@@ -457,8 +457,6 @@ class Reg_klinik extends MX_Controller {
                 'norujukan' => isset($_POST['norujukanbpjs'])?$_POST['norujukanbpjs']:"",
             );
 
-            $this->processAntrol($config);
-
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -477,9 +475,14 @@ class Reg_klinik extends MX_Controller {
                     }
                 // }
 
+                $this->processAntrol($config);
+
                 // get detail data
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'rawat_jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien, 'kode_perusahaan' => $kode_perusahaan, 'no_kunjungan' => $no_kunjungan, 'no_antrian' => $datapoli['no_antrian'], 'no_sep' => $no_sep ));
+
+                
+
             }
         
         }
@@ -786,18 +789,18 @@ class Reg_klinik extends MX_Controller {
                     // update kuota dokter used
                     $this->logs->update_status_kuota(array('kode_dokter' => $datapoli['kode_dokter'], 'kode_spesialis' => $datapoli['kode_bagian'], 'tanggal' => date('Y-m-d'), 'keterangan' => null, 'flag' => 'perjanjian', 'status' => NULL ), 1);
 
-                    $config = array(
-                        'no_registrasi' => $no_registrasi,
-                        'kode_booking' => $get_data_perjanjian->kode_perjanjian,
-                        'tgl_registrasi' => $tgl_registrasi,
-                        'no_antrian' => $no_antrian,
-                        'no_mr' => $no_mr,
-                        'jeniskunjungan' => $_POST['jeniskunjunganbpjssep'],
-                        'norujukan' => $_POST['noRujukan'],
-                    );
-                    $this->processAntrol($config);
-
                 }
+
+                $config = array(
+                    'no_registrasi' => $no_registrasi,
+                    'kode_booking' => isset($get_data_perjanjian->kode_perjanjian)?$get_data_perjanjian->kode_perjanjian: $no_registrasi,
+                    'tgl_registrasi' => $tgl_registrasi,
+                    'no_antrian' => $no_antrian,
+                    'no_mr' => $no_mr,
+                    'jeniskunjungan' => $_POST['jeniskunjunganbpjssep'],
+                    'norujukan' => $_POST['noRujukan'],
+                );
+
 
                 if ($this->db->trans_status() === FALSE)
                 {
@@ -816,9 +819,12 @@ class Reg_klinik extends MX_Controller {
                         }
                     //}
 
+                    $this->processAntrol($config);
+
                     // get detail data
                     $dt = $this->Reg_klinik->get_by_id($no_registrasi);
                     echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'create_sep', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien, 'no_sep' => $no_sep, 'no_antrian' => $no_antrian ));
+
                 }
 
             }

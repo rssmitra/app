@@ -20,6 +20,7 @@ class Pl_pelayanan extends MX_Controller {
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
         $this->load->model('farmasi/Harga_jual_obat_model', 'Harga_jual_obat');
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         /*load library*/
         $this->load->library('Form_validation');
         $this->load->library('stok_barang');
@@ -281,7 +282,10 @@ class Pl_pelayanan extends MX_Controller {
     }
 
     public function get_data_antrian_pasien(){
+        // Save into the cache for 5 minutes
+		$this->cache->save('cache', $_GET, 300);
         $list = $this->Pl_pelayanan->get_data_antrian_pasien();
+
         echo json_encode($list);
     }
 
@@ -667,8 +671,16 @@ class Pl_pelayanan extends MX_Controller {
                 $html_tag .= '<td align="center">'.$no.'</td>';
                 $html_tag .= '<td>'.str_replace('_',' ', strtoupper($key)) .' '.$dr.'</td>';
                 //$html_tag .= '<td align="right">Rp. '.number_format($data->$key).',-</td>';
-                $html_tag .= '<td align="right"><input type="text" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.' onchange="changeTotalBiaya('."'".$key."'".','.$id.')"></td>';
-                $html_tag .= '<td align="right"><input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'></td>';
+                $html_tag .= '<td align="right">
+                    <input type="text" value="'.(int)$data->$key.'" name="hidden_'.$key.'_'.$id.'" id="hidden_'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.'>
+                    <input type="text" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.' onchange="changeTotalBiaya('."'".$key."'".','.$id.')">
+                    </td>';
+                $html_tag .= '<td align="right">
+                        <input type="text" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="hidden_diskon_'.$key.'_'.$id.'" '.$readonly.'>
+
+                        <input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'>
+
+                        </td>';
                 $html_tag .= '<td align="right" id="text_total_diskon_'.$key.'_'.$id.'">Rp. '.number_format($data->$key).',-</td>';
                 $html_tag .= '</tr>';
                 $arr_sum[] = $data->$key;
@@ -1561,7 +1573,9 @@ class Pl_pelayanan extends MX_Controller {
             // update task
             // update task antrian online
             if(isset($_POST['kodebookingantrol'])){
-                $this->updateTaskMultiple($_POST['kodebookingantrol']);
+                // update task selesai layanan poli
+                $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
+                $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $_POST['kodebookingantrol'], 'taskid' => 4, 'waktu' => $waktukirim));
             }
 
 
@@ -1585,28 +1599,28 @@ class Pl_pelayanan extends MX_Controller {
 
     }
 
-    public function updateTaskMultiple($kode_booking){
+    // public function updateTaskMultiple($kode_booking){
         
-        // update task 4 / selesai pelayanan poli
-        $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 4, 'waktu' => $waktukirim));
+    //     // update task 4 / selesai pelayanan poli
+    //     // $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 4, 'waktu' => $waktukirim));
 
-        // udpate task id mulai waktu tunggu farmasi add 5 - 15 menit
-        $rand = rand(5,15);
-        $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 5, 'waktu' => $waktukirim));
+    //     // // udpate task id mulai waktu tunggu farmasi add 5 - 15 menit
+    //     // $rand = rand(5,15);
+    //     // $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 5, 'waktu' => $waktukirim));
 
-        // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
-        $rand = rand(15,30);
-        $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 6, 'waktu' => $waktukirim));
+    //     // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
+    //     // $rand = rand(15,30);
+    //     // $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 6, 'waktu' => $waktukirim));
 
-        // udpate task id mulai waktu tunggu layan farmasi add 30 - 45 menit
-        $rand = rand(30,60);
-        $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 7, 'waktu' => $waktukirim));
+    //     // // udpate task id akhir waktu obat selesai
+    //     // $rand = rand(30,60);
+    //     // $waktukirim = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+    //     // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking, 'taskid' => 7, 'waktu' => $waktukirim));
 
-    }
+    // }
 
     public function saveSessionPoli(){
 
@@ -2119,7 +2133,7 @@ class Pl_pelayanan extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        // echo '<pre>';print_r($data);die;
+        echo '<pre>';print_r($data);die;
         $this->load->view('Pl_pelayanan/form_cppt', $data);
 
     }

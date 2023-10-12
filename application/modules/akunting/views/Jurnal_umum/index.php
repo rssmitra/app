@@ -20,7 +20,6 @@
   $(document).ready(function(){
 
     $('#keyword').focus();
-    get_total_billing();
    
     oTable = $('#ak_tc_jurnal_umum').DataTable({ 
           
@@ -173,26 +172,6 @@
       $('#form_search')[0].reset();
   });
 
-  function get_total_billing(){
-      var url_search = $('#form_search').attr('action');
-      $.ajax({
-        url: url_search,
-        type: "post",
-        data: $('#form_search').serialize(),
-        dataType: "json",
-        success: function(response) {
-          console.log(response.data);
-          $.getJSON("akunting/Jurnal_umum/get_total_billing?"+response.data, '', function (data) {
-             // code here
-              $('#total_submit').text( formatMoney(data.total_submit) );
-              var total_blm_disubmit = sumClass('total_billing_class');
-              $('#total_non_submit').text( formatMoney(total_blm_disubmit) );
-          });
-        }
-      });
-
-    
-  }
 
 
 </script>
@@ -211,20 +190,6 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <!-- <div class="row" style="padding-bottom: 10px; padding-top: 10px">
-      <div class="col-xs-12">
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #91ff00">
-          <span style="font-size: 12px">Total pemasukan</span>
-          <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_submit">0</span>,-</h3>
-        </div>
-
-        <div class="pull-left" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: gold">
-          <span style="font-size: 12px">Total billing belum submit</span>
-          <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_non_submit">0</span>,-</h3>
-        </div>
-
-      </div>
-    </div> -->
 
     <form class="form-horizontal" method="post" id="form_search" action="akunting/Jurnal_umum/find_data">
       <!-- hidden form -->

@@ -444,7 +444,7 @@ class Print_escpos{
         # code...
         $CI =& get_instance();
                      
-        $p = printer_open("\\\\10.10.11.69\EPSON TM-U220 ReceiptE4");
+        $p = printer_open("\\\\10.10.11.69\EPSON TM-U220 ReceiptE5");
         
         // define
         $font_familiy = "Calibri";

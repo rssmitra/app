@@ -1121,20 +1121,24 @@ class References extends MX_Controller {
 
 	public function getTindakanByBagianAutoComplete()
 	{
-
+    // echo print_r($_POST); die;
 		// just for kamar bedah
 		$where_str = ($_POST['kode_bag']=='030901')?'and a.referensi in (select kode_tarif from mt_master_tarif where kode_bagian='."'".$_POST['kode_bag']."'".' and referensi='.$_POST['jenis_bedah'].')':'';
 
 		if(in_array($_POST['kode_bag'], array('030501', '031201'))){
 			$where_kode_bag = "a.kode_bagian IN ('030501', '031201')";
-		}else{
+		}
+    elseif(in_array($_POST['kode_bag'], array('013701', '011501', '011601', '011001'))){
+      $where_kode_bag = "a.kode_bagian IN ('013701', '011501', '011601', '011001')";
+    }
+    else{
 			$where_kode_bag = "a.kode_bagian="."'".$_POST['kode_bag']."'"."";
 		}
         $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi
 					from mt_master_tarif a
 					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
 					left join mt_master_tarif c on c.kode_tarif=a.referensi
-					where  a.tingkatan=5 and (".$where_kode_bag." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
+					where  a.tingkatan=5 and (".$where_kode_bag." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." and a.is_active = 'Y' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
 					// echo $query;exit;
         $exc = $this->db->query($query)->result();
 
@@ -1787,6 +1791,7 @@ class References extends MX_Controller {
 		$this->db->join($mt_barang.' as b', 'b.kode_brg=a.kode_brg' , 'left');
 		// $this->db->join($mt_rekap_stok.' as c', 'c.kode_brg=a.kode_brg' , 'left');
 		$this->db->where('(a.kode_brg LIKE '."'%".$_POST['keyword']."%'".' OR b.nama_brg LIKE '."'%".$_POST['keyword']."%'".')');
+    $this->db->where('a.is_active = 1');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
@@ -2408,7 +2413,7 @@ class References extends MX_Controller {
 				}else{
 					$status_tracer = 'Y';
 				}
-				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
+				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'tgl_jam_masuk' => date('Y-m-d H:i:s'), 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
 
 			}
 		}

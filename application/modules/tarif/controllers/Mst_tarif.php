@@ -165,8 +165,8 @@ class Mst_tarif extends MX_Controller {
         /*get data from model*/
         $list = [];
         $list = $this->Mst_tarif->get_datatables();
-        if(isset($_GET['unit'])){
-            $list = ($_GET['unit'] != '') ? $this->Mst_tarif->get_datatables() : [];
+        if(isset($_GET['checked_nama_tarif'])){
+            $list = ($_GET['checked_nama_tarif'] != '') ? $this->Mst_tarif->get_datatables() : [];
         }
         // echo '<pre>';print_r($list);die;
         $data = array();
@@ -183,6 +183,7 @@ class Mst_tarif extends MX_Controller {
                 # code...
                 $row[] = isset($row_list['klas'][$row_klas->kode_klas]) ? '<div class="pull-right">'.number_format($row_list['klas'][$row_klas->kode_klas]->total).'</div>' : '<div class="pull-right">0</div>';
             }
+            $row[] = (rtrim($row_list['is_active']) == 'Y') ? '<div class="center"><span class="label label-success">Aktif</span></div>' : '<div class="center"><span class="label label-danger">Non Aktif</span></div>' ;
             $row[] = '<div class="center">
                 '.$this->authuser->show_button('tarif/Mst_tarif','U',$key,2).'
                 '.$this->authuser->show_button('tarif/Mst_tarif','D',$key,2).'
@@ -203,7 +204,7 @@ class Mst_tarif extends MX_Controller {
 
     public function process()
     {
-        // echo print_r($X_POST);die;
+        // echo print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('nama_tarif', 'Nama Tarif', 'trim|required');
@@ -249,6 +250,7 @@ class Mst_tarif extends MX_Controller {
                 
                 // kode tarif
                 $kode_tarif = $this->generate_kode_tarif($val->set_value('kode_bagian'));
+                // echo print_r($kode_tarif);die;
                 $dataexc['kode_tarif'] = $kode_tarif;
                 
                 // kode tindakan
@@ -370,7 +372,7 @@ class Mst_tarif extends MX_Controller {
         }else{
             $max_kode = $this->db->query("select MAX(kode_tarif)as max_tarif from mt_master_tarif where kode_bagian=".$kode_bagian."")->row();
         }
-        $new_kode_plus_one = ($kode_bagian != '') ? $kode_bagian.'0'.$max_kode->max_tarif + 1 : $max_kode->max_tarif + 1;
+        $new_kode_plus_one = ($kode_bagian == '') ? $kode_bagian.'0'.$max_kode->max_tarif + 1 : $max_kode->max_tarif + 1;
         return $new_kode_plus_one;
     }
 

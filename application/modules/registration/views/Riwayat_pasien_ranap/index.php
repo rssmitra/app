@@ -81,7 +81,24 @@ $(document).ready(function(){
           find_data_reload(data,'registration/Riwayat_pasien_ranap');
         }
       });
-    });
+  });
+
+  $('#btn_export_excel').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+        url: 'registration/Riwayat_pasien_ranap/find_data',
+        type: "post",
+        data: $('#form_search').serialize(),
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        success: function(data) {
+          achtungHideLoader();
+          find_data_reload(data,'registration/Riwayat_pasien_ranap');
+        }
+      });
+  });
 
   $('#btn_reset_data').click(function (e) {
       e.preventDefault();

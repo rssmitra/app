@@ -21,7 +21,7 @@
       // achtungShowLoader();  
       
       $('#contentPage').html('Loading...');
-      $.getJSON('eksekutif/Eks_poli/get_content_page', $('#form_search').serialize(), function(response_data) {
+      $.getJSON('eksekutif/Eks_rm/get_content_page', $('#form_search').serialize(), function(response_data) {
         html = '';
         $.each(response_data, function (i, o) {
           html += '<div class="col-sm-'+o.col_size+'"><div id="'+o.nameid+'"></div></div>';
@@ -46,22 +46,22 @@
 
   function show_detail(flag){
     preventDefault();
-    $('#show_detail_by_click').load('eksekutif/Eks_poli/show_detail?flag='+flag+'&'+$('#form_search').serialize()+'');
+    $('#show_detail_by_click').load('eksekutif/Eks_rm/show_detail?flag='+flag+'&'+$('#form_search').serialize()+'');
   }
 
   function show_detail_unit(kode, flag){
     preventDefault();
-    $('#show_detail_level_1').load('eksekutif/Eks_poli/show_detail_unit?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
+    $('#show_detail_level_1').load('eksekutif/Eks_rm/show_detail_unit?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
   }
   function show_detail_pasien(kode, flag){
     preventDefault();
-    $('#show_detail_level_3').load('eksekutif/Eks_poli/show_detail_pasien?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
+    $('#show_detail_level_3').load('eksekutif/Eks_rm/show_detail_pasien?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
   }
 
   function show_detail_jenis_tindakan(kode, flag){
     preventDefault();
-    show_modal('eksekutif/Eks_poli/show_detail_jenis_tindakan?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'', 'REKAPITULASI BERDASARKAN JENIS TINDAKAN TRANSAKSI');
-    // $('#show_detail_level_3').load('eksekutif/Eks_poli/show_detail_jenis_tindakan?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
+    show_modal('eksekutif/Eks_rm/show_detail_jenis_tindakan?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'', 'REKAPITULASI BERDASARKAN JENIS TINDAKAN TRANSAKSI');
+    // $('#show_detail_level_3').load('eksekutif/Eks_rm/show_detail_jenis_tindakan?kode='+kode+'&flag='+flag+'&'+$('#form_search').serialize()+'');
   }
 
   function hide_detail(flag){
@@ -70,7 +70,7 @@
   }
 
   function checked_checkbox(nameid){
-    if (nameid == 'tbl-resume-kunjungan-harian') {
+    if (nameid == 'tbl-sensus-rawat-jalan') {
       if($('input[name='+nameid+']').is(':checked')){
           $('#div_bulan').show('fast');
       } else {
@@ -124,7 +124,7 @@
 <div class="row">
   <div class="col-xs-12">
   
-    <form class="form-horizontal" method="post" id="form_search" action="eksekutif/Eks_poli/find_data">
+    <form class="form-horizontal" method="post" id="form_search" action="eksekutif/Eks_rm/find_data">
       <!-- hidden form -->
       <input type="hidden" name="mod" value="poli">
       <div class="row">
@@ -184,7 +184,25 @@
             <br>
             <div class="col-md-12 no-padding">
               <p><b>JENIS LAPORAN</b></p>
+
               <label>
+                <input name="tbl-sensus-rawat-jalan" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Kunjungan Rawat Jalan per Bulan</span>
+              </label>
+              <div class="form-group" id="div_bulan" style="display: none">
+                  <label class="control-label col-md-1">Bulan</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_bulan(date('m'),'bulan','bulan','form-control','','')?>
+                  </div>
+                  <label class="control-label col-md-1">Tahun</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_tahun(date('Y'),'tahun','tahun','form-control','','')?>
+                  </div>
+              </div>
+              <br>
+
+
+              <!-- <label>
                 <input name="tbl-resume-kunjungan" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1" checked readonly="true">
                 <span class="lbl"> Rekap Total dan Rupiah Kunjungan Pasien per Periode dan Harian, Bulanan dan Tahun Berjalan</span>
               </label>
@@ -199,7 +217,7 @@
                     <?php echo $this->master->get_tahun(date('Y'),'tahun_graph_line_1','tahun_graph_line_1','form-control','','')?>
                   </div>
               </div>
-              <br>
+              <br> -->
               <!-- <label>
                 <input name="graph-pie-1" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
                 <span class="lbl"> Persentase Jumlah Pengunjung Berdasarkan Instalasi</span>
@@ -210,8 +228,8 @@
                 <span class="lbl"> 10 Klinik Terbanyak Dikunjungi Pasien Hari Ini</span>
               </label>
               <br> -->
-              <label>
-                <input name="tbl-resume-kunjungan-harian" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+              <!-- <label>
+                <input name="tbl-sensus-rawat-jalan" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
                 <span class="lbl"> Rekapitulasi Kunjungan Detail Harian Berdasarkan Unit/Bagian per Bulan</span>
               </label>
               <div class="form-group" id="div_bulan" style="display: none">
@@ -271,7 +289,7 @@
                     <?php echo $this->master->get_tahun(date('Y'),'tahun_jurnal','tahun_jurnal','form-control','','')?>
                   </div>
               </div>
-              <br>
+              <br> -->
 
             </div>
             <br>

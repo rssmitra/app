@@ -102,6 +102,15 @@ class Eks_poli extends MX_Controller {
             );
         }
 
+        if(isset($_GET['tbl-resume-akunting-byjurnal'])){
+            $data[5] = array(
+                'nameid' => 'tbl-resume-akunting-byjurnal',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=9&TypeChart=table&style=TableResumeByJurnal&'.$output.'',
+            );
+        }
+
         // $data[2] = array(
         //     'mod' => $_GET['mod'],
         //     'nameid' => 'graph-pie-1',
@@ -166,6 +175,13 @@ class Eks_poli extends MX_Controller {
         $data['value'] = $this->Eks_poli->get_detail_data_pasien();
         // echo '<pre>';print_r($data);die;
         $this->load->view('Eks_poli/ViewDetailDataPasien', $data);
+    }
+
+    public function show_detail_jenis_tindakan(){
+        $data = array();
+        $data['value'] = $this->Eks_poli->get_detail_data_by_jenis_tindakan();
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Eks_poli/ViewDetailDataJenisTindakan', $data);
     }
 
 

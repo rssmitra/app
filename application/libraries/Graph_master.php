@@ -742,6 +742,14 @@ final Class Graph_master {
                     return $this->TableResumePiutang($fields, $params, $data);
                 }
 
+                if ($params['style']=='TableResumeByJurnal') {
+                    return $this->TableResumeByJurnal($fields, $params, $data);
+                }
+
+                if ($params['style']=='TableSensusRJ') {
+                    return $this->TableSensusRJ($fields, $params, $data);
+                }
+
             break;
             case 'custom':
                 if ($params['style']=='profilePegawai') {
@@ -1340,6 +1348,65 @@ final Class Graph_master {
         );
         
         $html = $CI->load->view('eksekutif/Eks_piutang/TableResumePiutang', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function TableResumeByJurnal($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        // load view
+        $result = array(
+            'value' => $data,
+        );
+
+        // echo '<pre>'; print_r($result);die;
+        
+        $html = $CI->load->view('eksekutif/Eks_poli/TableResumeByJurnal', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function TableSensusRJ($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        
+        // master unit
+        foreach ($data['result'] as $key => $value) {
+            $getData[$value->nama_bagian][] = $value;
+            $getDataStatusPasien[$value->nama_bagian][strtolower($value->stat_pasien)][] = $value;
+            $getDataPenjamin[$value->nama_bagian][$value->kode_perusahaan][] = $value;
+            $getDataDokter[$value->nama_bagian][$value->nama_pegawai][] = $value;
+            $getDataFaskes[$value->nama_faskes][] = $value;
+            $getDataPerusahaan[$value->nama_perusahaan][] = $value;
+        }
+
+        $result = [
+            'total' => count($data['result']),
+            'poli' => $getData,
+            'status_pasien' => $getDataStatusPasien,
+            'penjamin' => $getDataPenjamin,
+            'dokter' => $getDataDokter,
+            'faskes' => $getDataFaskes,
+            'perusahaan' => $getDataPerusahaan,
+            'diagnosa' => $data['diagnosa'],
+        ];
+
+
+        
+        $html = $CI->load->view('eksekutif/Eks_rm/TableSensusRJ', $result, true);
         
         
         $chart_data = array(

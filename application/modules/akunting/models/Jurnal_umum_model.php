@@ -5,7 +5,7 @@ class Jurnal_umum_model extends CI_Model {
 
 	var $table = 'ak_tc_transaksi';
 	var $column = array('a.no_mr', 'a.nama_pasien', 'a.no_bukti');
-	var $select = 'a.id_ak_tc_transaksi, a.no_bukti, a.tgl_transaksi, a.uraian_transaksi, a.tgl_ver, a.user_ver, a.total_nominal, a.no_mr, a.nama_pasien';
+	var $select = 'a.id_ak_tc_transaksi, a.no_bukti, a.tgl_transaksi, a.uraian_transaksi, a.tgl_ver, a.user_ver, a.total_nominal, a.no_mr, a.nama_pasien, a.status_ver';
 	var $order = array('a.no_bukti' => 'DESC');
 
 	public function __construct()
@@ -30,7 +30,7 @@ class Jurnal_umum_model extends CI_Model {
 			}		
 
 			if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
-				$this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+				$this->db->where("CAST(a.tgl_transaksi as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 			}
 			
 		}else{
