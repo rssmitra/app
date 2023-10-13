@@ -227,6 +227,10 @@ $(document).ready(function(){
 
     }); 
 
+    $('#tgl_kunjungan').change(function(){
+      getDataAntrianPasien();
+    })
+
 })
 
 
@@ -373,7 +377,7 @@ function get_riwayat_medis(no_mr){
 function getDataAntrianPasien(){
 
   // getTotalBilling();
-  $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
+  $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val()+'&tgl='+$('#tgl_kunjungan').val()+'', '', function (data) {   
     $('#no_mr_selected option').remove();         
     $('#antrian_pasien_tbl tbody').remove();         
     $('#antrian_pasien_tbl_done tbody').remove();         
@@ -659,7 +663,7 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
         <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
         <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
         <input type="hidden" name="kode_perjanjian" class="form-control" value="<?php echo isset($value->kode_perjanjian)?$value->kode_perjanjian:''?>" id="kode_perjanjian" readonly>
-        <input type="hiddenxx" name="kodebookingantrol" class="form-control" value="<?php echo isset($value->kodebookingantrol)?$value->kodebookingantrol:''?>" id="kodebookingantrol" readonly>
+        <input type="hidden" name="kodebookingantrol" class="form-control" value="<?php echo isset($value->kodebookingantrol)?$value->kodebookingantrol:''?>" id="kodebookingantrol" readonly>
         <input type="hidden" name="taskId" class="form-control" value="4" id="taskId" readonly>
       
         <!-- profile Pasien -->
@@ -851,12 +855,14 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
             <div class="tab-content">
                 <div id="antrian_tabs" class="tab-pane fade in active">
                   <div class="center">
-                    <!-- <span class="pull-left"><b>Status Antrian :</b></span> <br>
-                    <select class="form-control" name="status_antrian_rj" id="status_antrian_rj" onclick="changeSelection()">
-                      <option value="1" selected>Belum Diperiksa</option>
-                      <option value="2">Sudah Diperiksa</option>
-                      <option value="3">Batal Berobat</option>
-                    </select> -->
+                    <label for="" class="pull-left" style="font-weight: bold; text-align: left !important"> Tanggal kunjungan :</label><br>
+                    <div class="input-group pull-left">
+                        <input name="tgl_kunjungan" id="tgl_kunjungan" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo isset($this->cache->get('cache')['tgl'])?$this->cache->get('cache')['tgl']:date('Y-m-d')?>">
+                        <span class="input-group-addon">
+                          <i class="ace-icon fa fa-calendar"></i>
+                        </span>
+                    </div>
+                    <br>
                     <span class="pull-left" style="padding-top: 10px"><b>Cari pasien :</b></span> <br>
                     <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);">
                   </div>

@@ -21,7 +21,7 @@ class Po_revisi_model extends CI_Model {
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user b','b.id_dd_user=a.user_id', 'left');
 		$this->db->join('mt_supplier c','c.kodesupplier=a.kodesupplier', 'left');
-		$this->db->where('DATEDIFF(day,a.tgl_po,GETDATE()) < 120');
+		$this->db->where('DATEDIFF(day,a.tgl_po,GETDATE()) < 60');
 		// $this->db->where('YEAR(a.tgl_po)', date('Y'));
 	}
 
@@ -63,7 +63,7 @@ class Po_revisi_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//echo '<pre>';print_r($this->db->last_query());die;
+		// echo '<pre>';print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

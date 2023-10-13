@@ -405,6 +405,36 @@ final Class Master {
         return $field;
         
     }
+
+	function custom_selection_with_data($arr_data=array(), $nid='',$name,$id,$class='',$required='',$inline='',$readonly='') {
+		
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		
+		$selected = $nid?'':'selected';
+		
+		$starsign = $required?'*':'';
+		
+		$fieldset = $inline?'':'<fieldset>';
+		$fieldsetend = $inline?'':'</fieldset>';
+		
+		$field='';
+		
+		$field.='<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>';
+		$field.='<option value="" '.$selected.'> - Pilih - </option>';
+
+		foreach($arr_data['data'] as $row){
+			$val = isset($row[$arr_data['value']]) ? $row[$arr_data['value']] : 0;
+			$label = isset($row[$arr_data['label']]) ? $row[$arr_data['label']] : 0;
+			$sel = trim($nid) == trim($val)?'selected':'';
+			$field.='<option value="'.$val.'">'.strtoupper($label).'</option>';
+		}	
+		
+		$field.='</select>';
+		
+		return $field;
+		
+	}
     
 
     function get_custom_data($table, $select, $where, $return) {
@@ -1124,8 +1154,9 @@ final Class Master {
 
 	function stats_between_value( $curr, $last ){
 
-		$a = round(($curr/$last) * 100) ; 
-		$skor = ($curr < $last) ? 100 - $a : $a - 100 ;
+		$a = ($curr > 0 AND $last > 0 ) ? round(($curr/$last) * 100) : 0; 
+		$skor_a = ($curr < $last) ? 100 - $a : $a - 100 ;
+		$skor = ($skor_a > 0) ? $skor_a : 0;
 		if($curr < $last){
 			$result = '<i class="fa fa-arrow-down red"></i> <br>'.$skor.'%';
 		}else{

@@ -665,20 +665,25 @@
         /*harga * diskon*/
         var harga_awal = $('#'+field+'_'+id).val();
         var input_persen = $('#diskon_'+field+'_'+id).val();
+        var hidden_diskon = $('#hidden_diskon_'+field+'_'+id).val();
 
         // if bill dr 
         if( field == 'bill_dr1' || field == 'bill_dr2' || field == 'bill_dr3'){
           var result_bill_dr = (parseInt(harga_awal) * input_persen/100) * (70/100);
-          var result_pendapatan_rs = (parseInt(result_bill_dr) * input_persen/100) * (30/100);
+          var result_pendapatan_rs = (input_persen == 0) ? parseInt(hidden_diskon) :(parseInt(result_bill_dr) * input_persen/100) * (30/100);
 
           // last price dookter
           var last_price = parseInt(result_bill_dr) + parseInt(harga_awal);
           // last price pendapatan rs
           var harga_awal_pendapatan = $('#pendapatan_rs_'+id).val();
-          var pendapatan_rs = parseInt(harga_awal_pendapatan) + parseInt(result_pendapatan_rs);
-          // console.log(harga_awal_pendapatan);
-          // console.log(last_price);
-          // console.log(pendapatan_rs);
+          
+          if(result_bill_dr >= 0){
+            var pendapatan_rs = parseInt(harga_awal_pendapatan) + parseInt(result_pendapatan_rs);
+          }else if(result_bill_dr < 0){
+            var pendapatan_rs = parseInt(harga_awal_pendapatan) - parseInt(result_pendapatan_rs);
+          }
+          // var pendapatan_rs = (result_bill_dr < 1) ? parseInt(harga_awal_pendapatan) + parseInt(result_pendapatan_rs) : parseInt(harga_awal_pendapatan) - parseInt(result_pendapatan_rs);
+          
           $('#total_diskon_pendapatan_rs_'+id+'').val( pendapatan_rs );
           $('#pendapatan_rs_'+id+'').val( pendapatan_rs );
           format_pendapatan_rs = formatMoney(pendapatan_rs);
@@ -697,8 +702,10 @@
         sum = sumClass('total_diskon_'+id+'');
         sumFormat = formatMoney(sum);
         $('#total_biaya_'+id+'').text( sumFormat );
+        $('#hidden_diskon_'+field+'_'+id).val(result_pendapatan_rs);
 
-        console.log(field+'|'+id+'|'+harga_awal);
+        console.log(field+'|'+id+'|'+harga_awal+'|'+result_bill_dr+'|'+result_pendapatan_rs);
+        console.log(pendapatan_rs+'|'+harga_awal_pendapatan+'|'+hidden_diskon);
 
       }
       
