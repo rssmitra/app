@@ -846,6 +846,10 @@ final Class Graph_master {
                     return $this->TableSensusRJ($fields, $params, $data);
                 }
 
+                if ($params['style']=='TableSensusRI') {
+                    return $this->TableSensusRI($fields, $params, $data);
+                }
+
             break;
             case 'custom':
                 if ($params['style']=='profilePegawai') {
@@ -1517,6 +1521,45 @@ final Class Graph_master {
 
         
         $html = $CI->load->view('eksekutif/Eks_rm/TableSensusRJ', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function TableSensusRI($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        // echo "<pre>"; print_r($data['result']);die;
+        // master unit
+        foreach ($data['result'] as $key => $value) {
+            $getDataBagianAsal[strtoupper($value->bagian_asal)][] = $value;
+            $getDataStatusPasien[strtoupper($value->bagian_asal)][strtolower($value->stat_pasien)][] = $value;
+            $getDataPenjamin[strtoupper($value->bagian_asal)][$value->kode_perusahaan][] = $value;
+            $getDataDokter[$value->nama_pegawai][] = $value;
+            $getDataDokterPengirim[$value->dr_pengirim][] = count($value);
+            $getDataPerusahaan[$value->nama_perusahaan][] = $value;
+        }
+
+        // echo "<pre>"; print_r($getDataDokterPengirim);die;
+        $result = [
+            'total' => count($data['result']),
+            'bagian_asal' => $getDataBagianAsal,
+            'status_pasien' => $getDataStatusPasien,
+            'penjamin' => $getDataPenjamin,
+            'dokter' => $getDataDokter,
+            'dokter_pengirim' => $getDataDokterPengirim,
+            'perusahaan' => $getDataPerusahaan,
+            'diagnosa' => $data['diagnosa'],
+        ];
+
+
+        
+        $html = $CI->load->view('eksekutif/Eks_rm/TableSensusRI', $result, true);
         
         
         $chart_data = array(

@@ -9,8 +9,10 @@ class Eks_rm_model extends CI_Model {
         $this->load->database();
     }
 
-    private function _main_query(){
-        $this->db->from('sensus_rawat_jalan_v a');
+    private function _main_query($type='rj'){
+
+        $table = ($type == 'rj') ? 'sensus_rawat_jalan_v' : 'sensus_rawat_inap_v';
+        $this->db->from(''.$table.' a');
 
         if (isset($_GET['penjamin']) AND $_GET['penjamin'] != 'all') {  
             if (isset($_GET['penjamin']) AND $_GET['penjamin'] == 'bpjs') { 
@@ -35,7 +37,7 @@ class Eks_rm_model extends CI_Model {
         if($params['prefix']==1){
             $data = array();
             // periode
-            $this->_main_query();
+            $this->_main_query('rj');
             // $this->db->join('mt_perusahaan c', 'c.kode_perusahaan =  a.kode_perusahaan', 'left');
             $this->db->where('MONTH(tgl_masuk)', $_GET['bulan']);
             $this->db->where('YEAR(tgl_masuk)', $_GET['tahun']);
@@ -44,7 +46,7 @@ class Eks_rm_model extends CI_Model {
 
             // query diagnosa
             $this->db->select('CAST(diagnosa_akhir AS NVARCHAR(255)) as diagnosa, COUNT(b.no_kunjungan) as total');
-            $this->_main_query();
+            $this->_main_query('rj');
             $this->db->join('pl_th_riwayat_pasien_v b', 'b.no_kunjungan=a.no_kunjungan','left');
             $this->db->where('MONTH(tgl_masuk)', $_GET['bulan']);
             $this->db->where('YEAR(tgl_masuk)', $_GET['tahun']);
@@ -61,6 +63,40 @@ class Eks_rm_model extends CI_Model {
             $fields = array();
             $title = isset($_GET['jenis_kunjungan']) ? '' : '' ;
             $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PASIEN RAWAT JALAN<br>BULAN '.strtoupper($this->tanggal->getBulan($_GET['bulan'])).' TAHUN '.$_GET['tahun'].'</b></span>';
+            $subtitle = 'Source: RSSM - SIRS';
+        }
+
+        if($params['prefix']==2){
+            $data = array();
+            // periode
+            $this->_main_query('ri');
+            $this->db->where('MONTH(tgl_masuk)', $_GET['bulan_ri']);
+            $this->db->where('YEAR(tgl_masuk)', $_GET['tahun_ri']);
+            $this->db->where('a.status_batal is null');
+            $sensus_rj = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            // query diagnosa
+            $this->db->select('CAST(diagnosa_akhir AS NVARCHAR(255)) as diagnosa, COUNT(b.no_kunjungan) as total');
+            $this->_main_query('ri');
+            $this->db->join('th_riwayat_pasien b', 'b.no_kunjungan=a.no_kunjungan','left');
+            $this->db->where('MONTH(tgl_masuk)', $_GET['bulan_ri']);
+            $this->db->where('YEAR(tgl_masuk)', $_GET['tahun_ri']);
+            $this->db->where('a.status_batal is null');
+            // $this->db->where('CAST(diagnosa_akhir AS NVARCHAR(255)) is not null');
+            $this->db->group_by('CAST(diagnosa_akhir AS NVARCHAR(255))');
+            $this->db->order_by('COUNT(b.no_kunjungan)', 'DESC');
+            $diagnosa_ri = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            $data = array(
+                'result' => $sensus_rj->result(),
+                'diagnosa' => $diagnosa_ri->result(),
+            );
+
+            $fields = array();
+            $title = isset($_GET['jenis_kunjungan']) ? '' : '' ;
+            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PASIEN RAWAT INAP<br>BULAN '.strtoupper($this->tanggal->getBulan($_GET['bulan'])).' TAHUN '.$_GET['tahun'].'</b></span>';
             $subtitle = 'Source: RSSM - SIRS';
         }
 
@@ -89,7 +125,7 @@ class Eks_rm_model extends CI_Model {
 
             // periode
             $this->db->select('b.no_kunjungan, b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
-            $this->_main_query();
+            $this->_main_query('rj');
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
                     $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');
@@ -117,7 +153,7 @@ class Eks_rm_model extends CI_Model {
 
         if($_GET['flag'] == 'day'){
             $this->db->select('b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
-            $this->_main_query();
+            $this->_main_query('rj');
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
                     $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');       
@@ -144,7 +180,7 @@ class Eks_rm_model extends CI_Model {
 
         if($_GET['flag'] == 'month'){
             $this->db->select('b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
-            $this->_main_query();
+            $this->_main_query('rj');
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
                     $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');       
@@ -171,7 +207,7 @@ class Eks_rm_model extends CI_Model {
 
         if($_GET['flag'] == 'year'){
             $this->db->select('b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
-            $this->_main_query();
+            $this->_main_query('rj');
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
                     $this->db->where('SUBSTRING(b.kode_bagian, 0, 3) != '."'06'".'');       
@@ -210,7 +246,7 @@ class Eks_rm_model extends CI_Model {
     {
         $data = array();
         $this->db->select('b.no_kunjungan, b.kode_bagian, d.nama_bagian, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
-        $this->_main_query();   
+        $this->_main_query('rj');   
         $this->db->where('SUBSTRING(b.kode_bagian, 1, 2) = '."'".$_GET['kode']."'".' ');
         $this->db->group_by('b.no_kunjungan, b.kode_bagian, d.nama_bagian, SUBSTRING(b.kode_bagian, 1, 2)');
         if($_GET['flag'] == 'periode'){
@@ -332,7 +368,7 @@ class Eks_rm_model extends CI_Model {
         $data = array();
         $this->db->select('e.nama_pasien, b.no_mr');
         $this->db->join('mt_master_pasien e ','e.no_mr=b.no_mr','left');
-        $this->_main_query();   
+        $this->_main_query('rj');   
         $this->db->where('b.kode_bagian = '."'".$_GET['kode']."'".' ');
         $this->db->group_by('e.nama_pasien, b.no_mr');
 
@@ -400,7 +436,7 @@ class Eks_rm_model extends CI_Model {
         CAST ( SUM ( adm ) AS INT ) AS adm,
         CAST ( SUM ( overhead ) AS INT ) AS overhead');
         $this->db->join('mt_jenis_tindakan e ','e.kode_jenis_tindakan=b.jenis_tindakan','left');
-        $this->_main_query();   
+        $this->_main_query('rj');   
         $this->db->where('b.kode_bagian = '."'".$_GET['kode']."'".' ');
         $this->db->group_by('b.jenis_tindakan, e.jenis_tindakan');
 
