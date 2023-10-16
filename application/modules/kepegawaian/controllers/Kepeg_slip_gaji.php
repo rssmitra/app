@@ -48,6 +48,7 @@ class Kepeg_slip_gaji extends MX_Controller {
         /*define data variabel*/
         $data['value'] = $this->Kepeg_slip_gaji->get_data();
         $data['title'] = $this->title;
+        // echo '<pre>'; print_r($data);die;
         /*load form view*/
         $this->load->view('Kepeg_slip_gaji/view_slip_gaji', $data);
     }
@@ -59,6 +60,16 @@ class Kepeg_slip_gaji extends MX_Controller {
         $data['title'] = $this->title;
         /*load form view*/
         $this->load->view('Kepeg_slip_gaji/cetak_slip_gaji', $data);
+    }
+
+    public function bon_karyawan()
+    {
+        /*define data variabel*/
+        $data['bon'] = $this->Kepeg_slip_gaji->get_bon_karyawan($_GET);
+        $data['title'] = $this->title;
+        // echo '<pre>'; print_r($data);die;
+        /*load form view*/
+        $this->load->view('Kepeg_slip_gaji/view_bon_karyawan', $data);
     }
 
 

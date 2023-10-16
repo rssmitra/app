@@ -69,21 +69,11 @@ class Templates extends MX_Controller {
         $data['shortcut'] = $this->lib_menus->get_menus_shortcut($this->session->userdata('user')->user_id, $_GET['mod']);
         $data['app'] = $this->db->get_where('tmp_profile_app', array('id' => 1))->row();
         $data['module'] = $this->db->get_where('tmp_mst_modul', array('modul_id' => $_GET['mod']))->row();
+        $data['profile_user'] = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id))->row();
 
-        //echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($data['profile_user']);die;
 
-        /*here specially for mod 9 or module booking will suggest profile form for the first use*/
-        if($_GET['mod']==9){
-            /*check existing profile*/
-            $profile = $this->db->get_where('tmp_user_profile', array('user_id' => $this->session->userdata('user')->user_id) )->num_rows();
-            if($profile > 0){
-                $this->load->view('templates/content_view', $data);
-            }else{
-                $this->load->view('templates/form_profile_view', $data);
-            }
-        }else{
-            $this->load->view('templates/content_view', $data);
-        }
+        $this->load->view('templates/content_view', $data);
         
     }
 
@@ -260,10 +250,10 @@ class Templates extends MX_Controller {
             );
             $data[1] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-1',
+                'nameid' => 'graph-table-2',
                 'style' => 'table',
                 'col_size' => 4,
-                'url' => 'templates/Templates/graph?prefix=323&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=324&TypeChart=table&style=1&mod='.$_GET['mod'].'',
             );
             $data[2] = array(
                 'mod' => $_GET['mod'],
@@ -274,11 +264,46 @@ class Templates extends MX_Controller {
             );
             $data[3] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-2',
+                'nameid' => 'graph-pie-2',
+                'style' => 'pie',
+                'col_size' => 8,
+                'url' => 'templates/Templates/graph?prefix=325&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+            );
+            $data[4] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-3',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=326&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+            
+            $data[5] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=323&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+
+            $data[6] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-4',
                 'style' => 'table',
                 'col_size' => 6,
-                'url' => 'templates/Templates/graph?prefix=324&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=327&TypeChart=table&style=1&mod='.$_GET['mod'].'',
             );
+
+            $data[7] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-5',
+                'style' => 'table',
+                'col_size' => 6,
+                'url' => 'templates/Templates/graph?prefix=328&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            );
+            
+            
+            
+
             
         }
 

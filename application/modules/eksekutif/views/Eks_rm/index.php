@@ -78,31 +78,13 @@
       }
     }
 
-    if (nameid == 'tbl-resume-pasien-harian') {
+    if (nameid == 'tbl-sensus-rawat-inap') {
       if($('input[name='+nameid+']').is(':checked')){
-          $('#div_bulan_resume_pasien').show('fast');
+          $('#div_bulan_ri').show('fast');
       } else {
-        $('#div_bulan_resume_pasien').hide('fast');
+        $('#div_bulan_ri').hide('fast');
       }
     }
-
-    if (nameid == 'graph-line-1') {
-      if($('input[name='+nameid+']').is(':checked')){
-          $('#div_tahun_graph-line-1').show('fast');
-      } else {
-        $('#div_tahun_graph-line-1').hide('fast');
-      }
-    }
-
-    if (nameid == 'tbl-resume-akunting-byjurnal') {
-      if($('input[name='+nameid+']').is(':checked')){
-          $('#div_bulan_jurnal').show('fast');
-      } else {
-        $('#div_bulan_jurnal').hide('fast');
-      }
-    }
-
-    
     return false;
   }
 
@@ -132,7 +114,7 @@
             <span style="font-size: 16px; font-weight: bold">DASHBOARD EKSEKUTIF</span><br>
             Laporan Kunjungan Pasien dan Pendapatan RS berdasarkan Kunjungan Pasien
             <div class="clearfix"></div>
-            <br>
+            <!-- <br>
 
             <p><b>PARAMETER QUERY</b></p>
 
@@ -179,11 +161,11 @@
                     </span>
                   </div>
                 </div>
-            </div>
+            </div> -->
 
             <br>
             <div class="col-md-12 no-padding">
-              <p><b>JENIS LAPORAN</b></p>
+              <p><b>PILIH JENIS LAPORAN</b></p>
 
               <label>
                 <input name="tbl-sensus-rawat-jalan" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
@@ -199,6 +181,22 @@
                     <?php echo $this->master->get_tahun(date('Y'),'tahun','tahun','form-control','','')?>
                   </div>
               </div>
+              <br>
+              <label>
+                <input name="tbl-sensus-rawat-inap" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Kunjungan Rawat Inap per Bulan</span>
+              </label>
+              <div class="form-group" id="div_bulan_ri" style="display: none">
+                  <label class="control-label col-md-1">Bulan</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_bulan(date('m'),'bulan_ri','bulan_ri','form-control','','')?>
+                  </div>
+                  <label class="control-label col-md-1">Tahun</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_tahun(date('Y'),'tahun_ri','tahun_ri','form-control','','')?>
+                  </div>
+              </div>
+
               <br>
 
 

@@ -665,7 +665,7 @@ class Reg_pasien_model extends CI_Model {
 	
 	{
 		/*data registrasi*/
-		$this->db->select('tc_registrasi.no_registrasi, tc_kunjungan.no_kunjungan, nama_pegawai, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, tinggi_badan, tekanan_darah, nadi, th_riwayat_pasien.berat_badan, suhu, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr,mt_master_pasien.almt_ttp_pasien,mt_master_pasien.tempat_lahir,mt_master_pasien.tgl_lhr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan, print_tracer ');
+		$this->db->select('tc_registrasi.no_registrasi, tc_kunjungan.no_kunjungan, nama_pegawai, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, tinggi_badan, tekanan_darah, nadi, th_riwayat_pasien.berat_badan, suhu, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr,mt_master_pasien.almt_ttp_pasien,mt_master_pasien.tempat_lahir,mt_master_pasien.tgl_lhr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan, print_tracer, tc_registrasi.jd_id, tc_registrasi.norujukan, kodebookingantrol, mt_master_pasien.no_kartu_bpjs, no_ktp, no_hp, tujuan_poli.kode_poli_bpjs, mt_karyawan.kode_dokter_bpjs ');
 		$this->db->from('tc_kunjungan');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_registrasi.no_mr','left');
@@ -703,6 +703,9 @@ class Reg_pasien_model extends CI_Model {
 			$getDataPm[$val_pm->no_registrasi][] = $val_pm;
 		}
 
+		// jadwal dokter
+		$jadwal = $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $registrasi[0]->jd_id))->row();
+
 		
 		$data = array(
 			'registrasi' =>  $registrasi[0],
@@ -712,6 +715,7 @@ class Reg_pasien_model extends CI_Model {
 			'petugas' => $petugas,
 			'trans_kasir' => $trans_kasir,
 			'penunjang' => $getDataPm,
+			'jadwal' => $jadwal,
 			);
 		return $data;
 		

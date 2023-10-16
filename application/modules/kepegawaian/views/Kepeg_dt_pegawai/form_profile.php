@@ -314,19 +314,15 @@ $(document).ready(function(){
 
           </div>
 
-            <div class="form-group">
-            
+          <div class="form-group">
             <label class="control-label col-md-2">Kecamatan</label>
-
             <div class="col-md-3">
                 <input id="inputKecamatan" class="form-control" name="kecamatan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kecamatan)?($value->id_kecamatan!=null)?"$value->nama_kecamatan":'':''?>" />
                 <input type="hidden" name="kecamatanHidden" value="<?php echo isset($value->id_kecamatan)?$value->id_kecamatan:''?>" id="kecamatanHidden">
             </div>
             
-
             <div id="village" <?php echo isset($value) ?'':'style="display:none"'; ?>>
               <label class="control-label col-md-2">Kelurahan</label>
-
               <div class="col-md-3">
                   <input id="inputKelurahan" style="margin-left:-9px" class="form-control" name="kelurahan" type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($value->id_kelurahan)?($value->id_kelurahan!=null)?"$value->nama_kelurahan":'':''?>"/> 
                   <input type="hidden" name="kelurahanHidden" value="<?php echo isset($value->id_kelurahan)?$value->id_kelurahan:''?>" id="kelurahanHidden">
@@ -386,7 +382,7 @@ $(document).ready(function(){
 
           </div>
           
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label class="control-label col-md-2">Is Active?</label>
             <div class="col-md-2">
               <div class="radio">
@@ -400,7 +396,7 @@ $(document).ready(function(){
                     </label>
               </div>
             </div>
-          </div>
+          </div> -->
 
             <hr>
 

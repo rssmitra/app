@@ -217,14 +217,28 @@ final Class Graph_master {
 
         // modul purchasing table chart
         if($params['prefix']==323){
-            $query = "select MONTH(b.tgl_penerimaan) as bulan, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
-                        from tc_penerimaan_barang_detail a 
-                        left join mt_barang c on c.kode_brg=a.kode_brg
-                        left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
-                        where YEAR(b.tgl_penerimaan)=".date('Y')." GROUP BY month(b.tgl_penerimaan) ORDER BY month(b.tgl_penerimaan) ASC";
+            $query = "select t_m.bulan, CAST(total_m as INT) as total_m, CAST(total_nm as INT) as total_nm from (
+
+                select MONTH(b.tgl_penerimaan) as bulan, 
+                SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_m
+                from tc_penerimaan_barang_detail a 
+                left join mt_barang c on c.kode_brg=a.kode_brg
+                left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
+                where YEAR(b.tgl_penerimaan)=".date('Y')." GROUP BY month(b.tgl_penerimaan) 
+                ) as t_m
+                LEFT JOIN (
+                select MONTH(b.tgl_penerimaan) as bulan, 
+                SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_nm
+                from tc_penerimaan_barang_nm_detail a 
+                left join mt_barang_nm c on c.kode_brg=a.kode_brg
+                left join tc_penerimaan_barang_nm b on b.id_penerimaan=a.id_penerimaan
+                where YEAR(b.tgl_penerimaan)=".date('Y')." GROUP BY month(b.tgl_penerimaan)
+                ) as t_nm on t_nm.bulan = t_m.bulan
+                order by t_m.bulan ASC
+                ";
                         
-            $fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
-            $title = '<span style="font-size:13.5px">Pembelian Barang Berdasarkan Penerimaan Tahun '.date('Y').' </span></small>';
+            $fields = array('Bulan' => 'bulan', 'Total_Medis' => 'total_m', 'Total_Non_Medis' => 'total_nm');
+            $title = '<span style="font-size:13.5px">Total Pembelian Barang Berdasarkan Data Penerimaan Barang Tahun '.date('Y').' </span></small>';
             $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
@@ -242,7 +256,25 @@ final Class Graph_master {
                         ORDER BY SUM((a.harga_net * a.jumlah_kirim_decimal)) DESC";
                         
             $fields = array('Supplier' => 'supplier', 'Total' => 'total_format_money');
-            $title = '<span style="font-size:13.5px">Supplier RSSM Tahun '.date('Y').' Bulan '.$CI->tanggal->getBulan(date('m')).'</span></small>';
+            $title = '<span style="font-size:13.5px">Total Pembelian <b>Barang Medis</b> Berdasarkan Supplier<br>Tahun <b>'.date('Y').'</b> Bulan <b>'.$CI->tanggal->getBulan(date('m')).'</b></span></small>';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
+        if($params['prefix']==326){
+            $query = "select e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
+                        from tc_penerimaan_barang_nm_detail a 
+                        left join mt_barang_nm c on c.kode_brg=a.kode_brg
+                        left join tc_penerimaan_barang_nm b on b.id_penerimaan=a.id_penerimaan
+                        left join tc_po_nm d on d.id_tc_po=b.id_tc_po
+                        left join mt_supplier e on e.kodesupplier=d.kodesupplier
+                        where YEAR(b.tgl_penerimaan)=".date('Y')." and MONTH(b.tgl_penerimaan)=".date('m')." 
+                        GROUP BY e.kodesupplier, e.namasupplier
+                        ORDER BY SUM((a.harga_net * a.jumlah_kirim_decimal)) DESC";
+                        
+            $fields = array('Supplier' => 'supplier', 'Total' => 'total_format_money');
+            $title = '<span style="font-size:13.5px">Total Pembelian <b>Barang Non Medis</b> Berdasarkan Supplier<br>Tahun <b>'.date('Y').'</b> Bulan <b>'.$CI->tanggal->getBulan(date('m')).'</b></span></small>';
             $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
@@ -250,7 +282,7 @@ final Class Graph_master {
 
         // modul purchasing pie chart
         if($params['prefix']==322){
-            $query = "select top 20 e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total
+            $query = "select top 10 e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total
                         from tc_penerimaan_barang_detail a 
                         left join mt_barang c on c.kode_brg=a.kode_brg
                         left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
@@ -267,9 +299,73 @@ final Class Graph_master {
             }
 
             $fields = array('name' => 'total');
-            $title = '<span style="font-size:13.5px">10 Top Supplier Berdasarkan PO </span>';
+            $title = '<span style="font-size:13.5px">10 Top Supplier Barang Medis Berdasarkan PO </span>';
             $subtitle = 'Data PO Tahun '.date('Y').'';
         }
+
+        if($params['prefix']==325){
+        $query = "select top 20 e.namasupplier as supplier, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total 
+                    from tc_penerimaan_barang_nm_detail a 
+                    left join mt_barang_nm c on c.kode_brg=a.kode_brg
+                    left join tc_penerimaan_barang_nm b on b.id_penerimaan=a.id_penerimaan
+                    left join tc_po_nm d on d.id_tc_po=b.id_tc_po
+                    left join mt_supplier e on e.kodesupplier=d.kodesupplier
+                    where YEAR(b.tgl_penerimaan)=".date('Y')." and MONTH(b.tgl_penerimaan)=".date('m')." 
+                    GROUP BY e.kodesupplier, e.namasupplier
+                    ORDER BY SUM((a.harga_net * a.jumlah_kirim_decimal)) DESC";
+                            
+            $data_qry = $CI->db->query($query)->result_array();
+            $getData = [];
+            foreach ($data_qry as $key => $value) {
+                $data[] = array( 'name' => $value['supplier'], 'total' => $value['total'] );
+            }
+
+            $fields = array('name' => 'total');
+            $title = '<span style="font-size:13.5px">10 Top Supplier Barang Non Medis Berdasarkan PO </span>';
+            $subtitle = 'Data PO Tahun '.date('Y').'';
+        }
+
+        if($params['prefix']==328){
+            $query = "select top 20 c.nama_brg as nama_brg, c.satuan_kecil, CAST(SUM(a.jumlah_kirim_decimal) as INT) as jumlah_order, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
+                        from tc_penerimaan_barang_detail a 
+                        left join mt_barang c on c.kode_brg=a.kode_brg
+                        left join tc_penerimaan_barang b on b.id_penerimaan=a.id_penerimaan
+                        left join tc_po d on d.id_tc_po=b.id_tc_po
+                        left join mt_supplier e on e.kodesupplier=d.kodesupplier
+                        where YEAR(b.tgl_penerimaan)=".date('Y')." and MONTH(b.tgl_penerimaan)=".date('m')." 
+                        GROUP BY c.nama_brg, c.satuan_kecil
+                        ORDER BY SUM((a.jumlah_kirim_decimal)) DESC";
+                        
+            $fields = array('Nama_Barang' => 'nama_brg', 'Jumlah_Brg' => 'jumlah_order', 'Satuan' => 'satuan_kecil', 'Total' => 'total_format_money');
+            $title = '<span style="font-size:13.5px">20 Penerimaan <b>Barang Medis</b> Terbanyak Berdasarkan Nama Barang<br>Tahun <b>'.date('Y').'</b> Bulan <b>'.$CI->tanggal->getBulan(date('m')).'</b></span>';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
+        if($params['prefix']==327){
+            $query = "select top 20 c.nama_brg as nama_brg, c.satuan_kecil, CAST(SUM(a.jumlah_kirim_decimal) as INT) as jumlah_order, SUM((a.harga_net * a.jumlah_kirim_decimal)) as total_format_money
+                        from tc_penerimaan_barang_nm_detail a 
+                        left join mt_barang_nm c on c.kode_brg=a.kode_brg
+                        left join tc_penerimaan_barang_nm b on b.id_penerimaan=a.id_penerimaan
+                        left join tc_po_nm d on d.id_tc_po=b.id_tc_po
+                        left join mt_supplier e on e.kodesupplier=d.kodesupplier
+                        where YEAR(b.tgl_penerimaan)=".date('Y')." and MONTH(b.tgl_penerimaan)=".date('m')." 
+                        GROUP BY c.nama_brg, c.satuan_kecil
+                        ORDER BY SUM((a.jumlah_kirim_decimal)) DESC";
+                        
+            $fields = array('Nama_Barang' => 'nama_brg', 'Jumlah_Brg' => 'jumlah_order', 'Satuan' => 'satuan_kecil', 'Total' => 'total_format_money');
+            $title = '<span style="font-size:13.5px">20 Penerimaan <b>Barang Non Medis</b> Terbanyak Berdasarkan Nama Barang<br>Tahun <b>'.date('Y').'</b> Bulan <b>'.$CI->tanggal->getBulan(date('m')).'</b></span>';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
+
+
+
+
+
 
         // MODUL ADM PASIEN //
         // modul purchasing line chart
@@ -750,6 +846,10 @@ final Class Graph_master {
                     return $this->TableSensusRJ($fields, $params, $data);
                 }
 
+                if ($params['style']=='TableSensusRI') {
+                    return $this->TableSensusRI($fields, $params, $data);
+                }
+
             break;
             case 'custom':
                 if ($params['style']=='profilePegawai') {
@@ -1027,6 +1127,14 @@ final Class Graph_master {
         // die;
 
         $html = '';
+        $html .= '<style>';
+        $html .= '.div-scroll, table{
+                    max-height: 300px;
+                    overflow-y: scroll;
+                    overflow-x: clip;
+                    }';
+        $html .= '</style>';
+        $html .= '<div class="div-scroll">';
         $html .='<table class="table table-bordered table-hover"><thead>
                     <tr><th width="20px" class="center">No</th>';
                 foreach ($fields as $kf => $vf) {
@@ -1036,22 +1144,22 @@ final Class Graph_master {
         $html .='<tbody>';
           $no=0;
         $sum_arr = array();
-        foreach ($data as $key => $value) { $no++;
+        $arr_exc = array('total_format_money', 'total', 'total_m', 'total_nm', 'jumlah_order');
+        foreach ($data as $key => $value) { 
+            $no++;
             $html .='<tr>';
             $html .='<td align="center">'.$no.'</td>';
             foreach ($fields as $keyf => $valuef) {
-                $align = (strtolower($valuef)=='total_format_money')?'right':'left';
-                if( in_array($valuef, array('total_format_money', 'total') ) ){
+                $align = (in_array(strtolower($valuef), $arr_exc))?'right':'left';
+                if( in_array($valuef, $arr_exc ) ){
                     $format_value = number_format($value[$valuef]);
-                    $sum_arr[] = $value[$valuef];
+                    $sum_arr[$valuef][] = $value[$valuef];
                 }elseif(  $valuef=='bulan' ){
                     // format bulan
                     $format_value = $CI->tanggal->getBulan($value[$valuef]);
                 }else{
                     $format_value = $value[$valuef];
                 }
-                
-                
                 $html .='<td align="'.$align.'">'.ucwords(strtolower($format_value)).'</td>';
             }
             $html .='</tr>';
@@ -1059,11 +1167,17 @@ final Class Graph_master {
 
         $html .= '<tr>';
         $html .= '<td colspan="2" align="right"><b>Jumlah Total</b></td>';
-        $html .= '<td align="right">'.number_format(array_sum($sum_arr)).'</td>';
+        foreach ($fields as $keyf => $valuef) {
+            if( !in_array($valuef, array('bulan', 'supplier', 'nama_brg', 'bagian') ) ){
+                $total_sum = isset($sum_arr[$valuef]) ? array_sum($sum_arr[$valuef]) : 0;
+                $html .= '<td align="right"><b>'.number_format($total_sum).'</b></td>';
+            }
+        }
         $html .= '</tr>';
         
         $html .='</tbody>';
         $html .='</table>';
+        $html .='</div>';
 
         $chart_data = array(
             'xAxis'     => 0,
@@ -1416,6 +1530,45 @@ final Class Graph_master {
         return $chart_data;
     }
 
+    public function TableSensusRI($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        // echo "<pre>"; print_r($data['result']);die;
+        // master unit
+        foreach ($data['result'] as $key => $value) {
+            $getDataBagianAsal[strtoupper($value->bagian_asal)][] = $value;
+            $getDataStatusPasien[strtoupper($value->bagian_asal)][strtolower($value->stat_pasien)][] = $value;
+            $getDataPenjamin[strtoupper($value->bagian_asal)][$value->kode_perusahaan][] = $value;
+            $getDataDokter[$value->nama_pegawai][] = $value;
+            $getDataDokterPengirim[$value->dr_pengirim][] = count($value);
+            $getDataPerusahaan[$value->nama_perusahaan][] = $value;
+        }
+
+        // echo "<pre>"; print_r($getDataDokterPengirim);die;
+        $result = [
+            'total' => count($data['result']),
+            'bagian_asal' => $getDataBagianAsal,
+            'status_pasien' => $getDataStatusPasien,
+            'penjamin' => $getDataPenjamin,
+            'dokter' => $getDataDokter,
+            'dokter_pengirim' => $getDataDokterPengirim,
+            'perusahaan' => $getDataPerusahaan,
+            'diagnosa' => $data['diagnosa'],
+        ];
+
+
+        
+        $html = $CI->load->view('eksekutif/Eks_rm/TableSensusRI', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
     public function customDashboardAntrol($fields='', $params, $data){
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
@@ -1488,12 +1641,11 @@ final Class Graph_master {
         return array_sum($jumlah_cuti);
     }
 
-    public function getPayroll($nip){
+    public function getPayroll($nip, $mth = ''){
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
         // get all data 
         // current month
-        $month = date('m') - 1;
         $query = $CI->db->join('kepeg_gaji', 'kepeg_gaji.kg_id=kepeg_rincian_gaji.kg_id','left')->order_by('kg_periode_bln', 'DESC')->get_where('kepeg_rincian_gaji', array('kepeg_rincian_gaji.nip' => $nip, 'kg_periode_thn' => date('Y')))->row();
         // echo '<pre>';print_r($query); die;
         

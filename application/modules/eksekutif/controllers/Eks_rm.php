@@ -49,6 +49,16 @@ class Eks_rm extends MX_Controller {
             );
 
         }
+
+        if(isset($_GET['tbl-sensus-rawat-inap'])){
+            $data[0] = array(
+                'nameid' => 'tbl-sensus-rawat-inap',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_rm/data?prefix=2&TypeChart=table&style=TableSensusRI&'.$output.'',
+            );
+
+        }
         
         // if(isset($_GET['graph-line-1'])){
         //     $data[1] = array(

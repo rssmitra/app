@@ -427,7 +427,7 @@ class References extends MX_Controller {
                           ->get('view_dt_pegawai');
 		$arrResult = [];
 		foreach ($query->result() as $key => $value) {
-			$arrResult[] = $value->kepeg_id.' : '.$value->nama_pegawai;
+			$arrResult[] = $value->kepeg_id.' : '.strtoupper($value->nama_pegawai);
 		}
 		echo json_encode($arrResult);
 		
@@ -1152,6 +1152,47 @@ class References extends MX_Controller {
 		
 	}
 
+	public function getTindakanByKunjungan()
+	{
+		// echo '<pre>'; print_r($_POST); die;
+
+		// get bagian kunjungan
+		$kunjungan = $this->db->select('kode_bagian_tujuan, kode_bagian_asal')->group_by('kode_bagian_tujuan, kode_bagian_asal')->get_where('tc_kunjungan', array('no_kunjungan' => $_POST['no_kunjungan']))->row();
+		// rawat jalan
+		if( substr($kunjungan->kode_bagian_tujuan, 1,2) == '01' ){
+			$kode_klas = 16;
+		}else{
+			if( substr($kunjungan->kode_bagian_asal, 1,2) == '03'){
+				$ri = $this->db->where("no_kunjungan = (select no_kunjungan from tc_kunjungan where no_registrasi = ".$_POST['no_registrasi']." and substr(kode_bagian_tujuan, 1,2) = '03')")->get('ri_tc_rawatinap')->row();
+				$kode_klas = $ri->kelas_pas;
+			}else{
+				$kode_klas = 16;
+			}
+		}
+		
+		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi');
+		$this->db->from('mt_master_tarif a');
+		$this->db->join('mt_master_tarif_detail b', 'b.kode_tarif=a.kode_tarif', 'left');
+		$this->db->join('mt_master_tarif c', 'c.kode_tarif=a.referensi', 'left');
+		$this->db->where('a.tingkatan', '5');
+		$this->db->where('a.is_active', 'Y');
+		$this->db->like('a.nama_tarif', $_POST['keyword']);
+		$this->db->group_by('a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif');
+		$this->db->order_by('a.is_old asc, a.nama_tarif asc');
+		$this->db->where('a.kode_bagian', $kunjungan->kode_bagian_tujuan);
+		$query = $this->db->get()->result();
+		// echo '<pre>'; print_r($this->db->last_query()); die;
+
+		$arrResult = [];
+		foreach ($query as $key => $value) {
+			$jenis_operasi = $value->tingkat_operasi;
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.') '.$jenis_operasi.' : '.$kode_klas.'';
+		}
+
+		echo json_encode($arrResult);
+		
+	}
+
 	public function getTindakanBedah()
 	{
         
@@ -1296,7 +1337,7 @@ class References extends MX_Controller {
 					$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
 					$checked = ($key==0)?'checked':'';
 					/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
-					$html .= '<tr>';
+					$html .= '<tr style="background: #edf3f4;">';
 					$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
 					/*$html .= '<td align="center">'.$sign.'</td>';*/
 					$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
@@ -1307,7 +1348,7 @@ class References extends MX_Controller {
 					$html .= '<td align="right">'.number_format($alkes).'</td>';
 					$html .= '<td align="right">'.number_format($alat_rs).'</td>';
 					$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
-					$html .= '<td align="right">'.number_format($total).'</td>';
+					$html .= '<td align="right"><b>'.number_format($total).'</b></td>';
 					$html .= '<td align="center">'.$revisi_ke.'</td>';
 					if($key==0){
 						$html .= '<input type="hidden" name="total" value="'.round($total).'">';
@@ -2365,7 +2406,7 @@ class References extends MX_Controller {
 		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
 		$this->load->library('print_escpos');
 
-		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer');
+		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer, a.norujukan, a.jd_id');
 		$this->db->from('tc_registrasi a');
 		$this->db->join('mt_master_pasien b', 'a.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');
@@ -2373,7 +2414,7 @@ class References extends MX_Controller {
 		$this->db->where('b.no_kartu_bpjs', $_POST['kode']);
 		$this->db->where('CAST(a.tgl_jam_masuk as DATE) = ', date('Y-m-d'));
 		$query = $this->db->get();
-		// echo '<pre>'; print_r($query->num_rows());die;
+		// echo '<pre>'; print_r($query->row());die;
 		if($query->num_rows() == 0){
 			echo json_encode(array('status' => 201, 'message' => 'Anda belum terdaftar, silahkan ambil nomor antrian pendaftaran'));
 			exit;
@@ -2384,15 +2425,15 @@ class References extends MX_Controller {
 		$result = $this->Ws_index->getData($service_name);
 		
 		
-		if(isset($result['data'])){
-			if($result['data']->kode == 0){
-				$response = array(
-					'status_fp' => 0,
-					'status' => 201,
-					'message' => $result['data']->status.', silahkan finger print terlebih dahulu di kiosk<br> atau untuk bantuan petugas silahkan ambil nomor antrian ke pendaftaran',
+		// if(isset($result['data'])){
+		// 	if($result['data']->kode == 0){
+		// 		$response = array(
+		// 			'status_fp' => 0,
+		// 			'status' => 201,
+		// 			'message' => $result['data']->status.', silahkan finger print terlebih dahulu di kiosk<br> atau untuk bantuan petugas silahkan ambil nomor antrian ke pendaftaran',
 					
-				);
-			}else{
+		// 		);
+		// 	}else{
 				$response = array(
 					'status_fp' => 1,
 					'status' => 200,
@@ -2406,21 +2447,102 @@ class References extends MX_Controller {
 					'no_mr' => $response['data']->no_mr,
 					'result' => $detail_data,
 				];
-				// echo '<pre>'; print_r($data_tracer);die;
+				// echo '<pre>'; print_r($detail_data);die;
 				if($response['data']->print_tracer != 'Y'){
 					$tracer = $this->print_escpos->print_direct($data_tracer);
 					$status_tracer = ( $tracer == 1 ) ? 'Y' : 'N' ;
 				}else{
 					$status_tracer = 'Y';
 				}
-				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
+				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'tgl_jam_masuk' => date('Y-m-d H:i:s'), 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
+				$dt_reg = $detail_data['registrasi'];
+				$dt_antrian = $detail_data['no_antrian'];
+				$dt_jadwal = $detail_data['jadwal'];
+				// post antrian online
+				$params_dt = array(
+					"no_registrasi" => $dt_reg->no_registrasi,
+					'jam_praktek_mulai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_mulai),
+					'jam_praktek_selesai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_selesai),
+					'kuota_dr' => $dt_jadwal->jd_kuota,
+				);
+				$config_antrol = array(
+					"kodebooking" => $dt_reg->kodebookingantrol,
+					"jenispasien" => "NON JKN",
+					"nomorkartu" => $dt_reg->no_kartu_bpjs,
+					"nik" => $dt_reg->no_ktp,
+					"nohp" => $dt_reg->no_hp,
+					"kodepoli" => $dt_reg->kode_poli_bpjs,
+					"namapoli" => $dt_reg->nama_bagian,
+					"pasienbaru" => 0,
+					"norm" => $dt_reg->no_mr,
+					"tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
+					"kodedokter" => $dt_reg->kode_dokter_bpjs,
+					"namadokter" => $dt_reg->nama_pegawai,
+					"jampraktek" => $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai).'-'.$this->tanggal->formatTime($dt_jadwal->jd_jam_selesai),
+					"jeniskunjungan" => 3,
+					"nomorreferensi" => $dt_reg->norujukan,
+					"nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
+					"angkaantrean" => $dt_antrian->no_antrian,
 
-			}
-		}
+					// "estimasidilayani" => $milisecond,
+					// "sisakuotajkn" => $_POST['sisa_kuota'],
+					// "kuotajkn" => $_POST['kuotadr'],
+					// "sisakuotanonjkn" => $_POST['sisa_kuota'],
+					// "kuotanonjkn" => $_POST['kuotadr'],
+					// "keterangan" => "Silahkan tensi dengan perawat"
+				);
+
+				// echo '<pre>'; print_r($config);die;
+	
+				$antrol = $this->processAntrol($config_antrol, $params_dt);
+
+		// 	}
+		// }
 		
 		echo json_encode($response);
 		
 	}
+
+	public function processAntrol($arr_dt, $params){
+        // echo '<pre>'; print_r($_POST);die;
+        // estimasi dilayani
+        $jam_mulai_praktek = $this->tanggal->formatFullTime($params['jam_praktek_mulai']);
+        $jam_selesai_praktek = $this->tanggal->formatFullTime($params['jam_praktek_selesai']);
+        $date = date_create($this->tanggal->formatDateTimeToSqlDate($arr_dt['tanggalperiksa']).' '.$jam_mulai_praktek );
+        
+        $est_hour = ceil($arr_dt['nomorantrean'] / 12);
+        $estimasi = ($arr_dt['nomorantrean'] <= 12) ? 1 : $est_hour; 
+        
+        // estimasi dilayani
+        date_add($date, date_interval_create_from_date_string('+'.$estimasi.' hours'));
+        $estimasidilayani = date_format($date, 'Y-m-d H:i:s');
+        $milisecond = strtotime($estimasidilayani) * 1000;
+
+		$kuota = round($params['kuota_dr']/2);
+        $sisa_kuota = $kuota - $arr_dt['angkaantrean'];
+        // add antrian
+        $post_antrol = array(
+            "estimasidilayani" => $milisecond,
+            "sisakuotajkn" => $sisa_kuota,
+            "kuotajkn" => $kuota,
+            "sisakuotanonjkn" => $sisa_kuota,
+            "kuotanonjkn" => $kuota,
+            "keterangan" => "Silahkan tensi dengan perawat"
+        );
+		$getData = array_merge($arr_dt, $post_antrol);
+        // echo '<pre>'; print_r($getData); die;
+        // add antrian lainnya
+        $this->AntrianOnline->addAntrianOnsite($post_antrol);
+
+        // update kodebooking
+        $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $params['kode_booking']) );
+
+        // update task antrian online
+        $waktukirim = strtotime($params['tgl_registrasi']) * 1000;
+        $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $params['kode_booking'], 'taskid' => 3, 'waktu' => $waktukirim));
+
+        return $post_antrol;
+    }
 
 
 

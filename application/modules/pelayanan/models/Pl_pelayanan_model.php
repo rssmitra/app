@@ -120,11 +120,12 @@ class Pl_pelayanan_model extends CI_Model {
 			$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
 		}
 
-		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
+		if (isset($_GET['tgl'])) {
+			$this->db->where('CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', $_GET['tgl'] );
         }else{
-        	$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
+        	$this->db->where('CAST(pl_tc_poli.tgl_jam_poli as DATE)  = ', date('Y-m-d') );
 		}
+
         // $this->db->order_by('status_periksa','ASC');
         $this->db->order_by('no_antrian','ASC');
 		$query = $this->db->get();
@@ -139,7 +140,13 @@ class Pl_pelayanan_model extends CI_Model {
 		$this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
 		$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
 		$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
-		$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
+
+		if (isset($_GET['tgl'])) {
+			$this->db->where('CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', $_GET['tgl'] );
+        }else{
+        	$this->db->where('CAST(pl_tc_poli.tgl_jam_poli as DATE)  = ', date('Y-m-d') );
+		}
+
         $this->db->order_by('no_antrian','ASC');
 		$query = $this->db->get();
 		return $query->row();
@@ -153,7 +160,11 @@ class Pl_pelayanan_model extends CI_Model {
 		$this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
 		$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
 		$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
-		$this->db->where(array('YEAR(pl_tc_poli.tgl_jam_poli)' => date('Y'), 'MONTH(pl_tc_poli.tgl_jam_poli)' => date('m'), 'DAY(pl_tc_poli.tgl_jam_poli)' => date('d') ) );
+		if (isset($_GET['tgl'])) {
+			$this->db->where('CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', $_GET['tgl'] );
+        }else{
+        	$this->db->where('CAST(pl_tc_poli.tgl_jam_poli as DATE)  = ', date('Y-m-d') );
+		}
         $this->db->order_by('no_antrian','ASC');
 		$query = $this->db->get();
 		return $query->row();

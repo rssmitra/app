@@ -345,16 +345,16 @@ final class Tarif extends AvObjects {
 
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
-
+        $jumlah = isset($_POST['pl_jumlah'])?$_POST['pl_jumlah']:1;
         $data = array(
-            'bill_rs' => $_POST['bill_rs'] * $_POST['pl_jumlah'],
-            'bill_dr1' => $_POST['bill_dr1'] * $_POST['pl_jumlah'],
-            'bill_dr2' => $_POST['bill_dr2'] * $_POST['pl_jumlah'],
-            'bill_dr3' => $_POST['bill_dr3'] * $_POST['pl_jumlah'],
-            'bhp' => $_POST['bhp'] * $_POST['pl_jumlah'],
-            'pendapatan_rs' => $_POST['pendapatan_rs'] * $_POST['pl_jumlah'],
-            'alat_rs' => $_POST['alat_rs'] * $_POST['pl_jumlah'],
-            'kamar_tindakan' => $_POST['kamar_tindakan'] * $_POST['pl_jumlah'],
+            'bill_rs' => $_POST['bill_rs'] * $jumlah,
+            'bill_dr1' => $_POST['bill_dr1'] * $jumlah,
+            'bill_dr2' => $_POST['bill_dr2'] * $jumlah,
+            'bill_dr3' => $_POST['bill_dr3'] * $jumlah,
+            'bhp' => $_POST['bhp'] * $jumlah,
+            'pendapatan_rs' => $_POST['pendapatan_rs'] * $jumlah,
+            'alat_rs' => $_POST['alat_rs'] * $jumlah,
+            'kamar_tindakan' => $_POST['kamar_tindakan'] * $jumlah,
             );
 
         return $data;

@@ -5,7 +5,7 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 
 	var $table = 'view_dt_pegawai';
 	var $column = array('view_dt_pegawai.nama_pegawai');
-	var $select = 'view_dt_pegawai.*';
+	var $select = '*';
 
 	var $order = array('view_dt_pegawai.kepeg_id' => 'DESC', 'view_dt_pegawai.updated_date'=> 'DESC');
 
@@ -24,9 +24,11 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-
+		// filter by role name
+		$role_name = $this->filter_by_role_name($this->session->userdata('user')->role);
+		$this->db->where('kepeg_id is not null');
 		// filter by session login
-		if($this->session->userdata('user')->role != 'Admin Sistem'){
+		if( $role_name == false ){
 			$this->db->where('view_dt_pegawai.kepeg_id', $this->session->userdata('user_profile')->kepeg_id);
 		}
 
@@ -90,6 +92,7 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 	public function count_all()
 	{
 		$this->_main_query();
+		$this->db->where('kepeg_id is not null');
 		return $this->db->count_all_results();
 	}
 
@@ -141,6 +144,19 @@ class Kepeg_dt_pegawai_model extends CI_Model {
 		$this->db->where_in('kepeg_dt_pegawai.kepeg_id', $id);
 
 		return $this->db->delete('kepeg_dt_pegawai');
+	}
+
+	public function filter_by_role_name($role_name){
+		// remove special charatcter
+		$str = str_replace("/", " ", strtoupper($role_name));
+		// explode array
+		$explode = explode(" ", $str);
+		// print_r($explode);die;
+		foreach($explode as $row){
+			if(in_array($row, array('SYSADMIN', 'KEPEGAWAIAN'))){
+				return true;
+			}
+		}
 	}
 
 
