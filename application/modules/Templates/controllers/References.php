@@ -2404,6 +2404,7 @@ class References extends MX_Controller {
 	function findFingerPrint(){
 
 		$this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+		$this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
 		$this->load->library('print_escpos');
 
 		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer, a.norujukan, a.jd_id');
@@ -2425,15 +2426,15 @@ class References extends MX_Controller {
 		$result = $this->Ws_index->getData($service_name);
 		
 		
-		// if(isset($result['data'])){
-		// 	if($result['data']->kode == 0){
-		// 		$response = array(
-		// 			'status_fp' => 0,
-		// 			'status' => 201,
-		// 			'message' => $result['data']->status.', silahkan finger print terlebih dahulu di kiosk<br> atau untuk bantuan petugas silahkan ambil nomor antrian ke pendaftaran',
+		if(isset($result['data'])){
+			if($result['data']->kode == 0){
+				$response = array(
+					'status_fp' => 0,
+					'status' => 201,
+					'message' => $result['data']->status.', silahkan finger print terlebih dahulu di kiosk<br> atau untuk bantuan petugas silahkan ambil nomor antrian ke pendaftaran',
 					
-		// 		);
-		// 	}else{
+				);
+			}else{
 				$response = array(
 					'status_fp' => 1,
 					'status' => 200,
@@ -2483,21 +2484,14 @@ class References extends MX_Controller {
 					"nomorreferensi" => $dt_reg->norujukan,
 					"nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
 					"angkaantrean" => $dt_antrian->no_antrian,
-
-					// "estimasidilayani" => $milisecond,
-					// "sisakuotajkn" => $_POST['sisa_kuota'],
-					// "kuotajkn" => $_POST['kuotadr'],
-					// "sisakuotanonjkn" => $_POST['sisa_kuota'],
-					// "kuotanonjkn" => $_POST['kuotadr'],
-					// "keterangan" => "Silahkan tensi dengan perawat"
 				);
 
-				// echo '<pre>'; print_r($config);die;
+				// echo '<pre>'; print_r($config_antrol);die;
 	
 				$antrol = $this->processAntrol($config_antrol, $params_dt);
 
-		// 	}
-		// }
+			}
+		}
 		
 		echo json_encode($response);
 		
@@ -2532,14 +2526,14 @@ class References extends MX_Controller {
 		$getData = array_merge($arr_dt, $post_antrol);
         // echo '<pre>'; print_r($getData); die;
         // add antrian lainnya
-        $this->AntrianOnline->addAntrianOnsite($post_antrol);
+        $this->AntrianOnline->addAntrianOnsite($getData);
 
         // update kodebooking
-        $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $params['kode_booking']) );
+        $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
 
         // update task antrian online
-        $waktukirim = strtotime($params['tgl_registrasi']) * 1000;
-        $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $params['kode_booking'], 'taskid' => 3, 'waktu' => $waktukirim));
+        $waktukirim = strtotime($arr_dt['tanggalperiksa']) * 1000;
+        $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $arr_dt['kodebooking'], 'taskid' => 3, 'waktu' => $waktukirim));
 
         return $post_antrol;
     }

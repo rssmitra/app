@@ -118,7 +118,7 @@ class Kepeg_log_aktifitas extends MX_Controller {
             $row[] = $row_list->nama_pegawai;
             $row[] = $this->tanggal->formatDate($row_list->tanggal);
             $row[] = '<div class="center">'.strtoupper($row_list->jenis_pekerjaan).'</div>';
-            $row[] = $this->master->br2nl($row_list->deskripsi_pekerjaan);
+            $row[] = nl2br($row_list->deskripsi_pekerjaan);
             switch ($row_list->status_pekerjaan) {
                 case 'selesai':
                     $status = '<span class="label label-success">Selesai</span>';
@@ -135,7 +135,7 @@ class Kepeg_log_aktifitas extends MX_Controller {
                     break;
             }
             $row[] = '<div class="center">'.$status.'</div>';
-            $row[] = $row_list->catatan;
+            $row[] = nl2br($row_list->catatan);
                    
             $data[] = $row;
         }
