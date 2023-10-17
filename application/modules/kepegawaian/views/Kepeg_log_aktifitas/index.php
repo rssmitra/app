@@ -136,9 +136,9 @@ $(document).ready(function(){
               <th width="50px"></th>
               <th width="50px">ID</th>
               <th width="150px">Nama Pegawai</th>
-              <th>Tanggal</th>
-              <th>Jenis Pekerjaan</th>
-              <th>Deskripsi Pekerjaan</th>
+              <th style="width: 120px">Tanggal</th>
+              <th style="width: 120px">Jenis Pekerjaan</th>
+              <th style="width: 350px">Deskripsi Pekerjaan</th>
               <th>Status</th>
               <th>Catatan</th>
             </tr>
