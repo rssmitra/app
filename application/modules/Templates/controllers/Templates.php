@@ -250,31 +250,32 @@ class Templates extends MX_Controller {
             );
             $data[1] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-2',
-                'style' => 'table',
-                'col_size' => 4,
-                'url' => 'templates/Templates/graph?prefix=324&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=322&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
             );
             $data[2] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-pie-1',
-                'style' => 'pie',
-                'col_size' => 8,
-                'url' => 'templates/Templates/graph?prefix=322&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+                'nameid' => 'graph-table-2',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=324&TypeChart=table&style=TableSupplierPerMonth&mod='.$_GET['mod'].'',
             );
+            
             $data[3] = array(
                 'mod' => $_GET['mod'],
                 'nameid' => 'graph-pie-2',
                 'style' => 'pie',
-                'col_size' => 8,
+                'col_size' => 12,
                 'url' => 'templates/Templates/graph?prefix=325&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
             );
             $data[4] = array(
                 'mod' => $_GET['mod'],
                 'nameid' => 'graph-table-3',
                 'style' => 'table',
-                'col_size' => 4,
-                'url' => 'templates/Templates/graph?prefix=326&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=326&TypeChart=table&style=TableSupplierPerMonth&mod='.$_GET['mod'].'',
             );
             
             $data[5] = array(
