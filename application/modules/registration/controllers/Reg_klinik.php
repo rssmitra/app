@@ -53,6 +53,9 @@ class Reg_klinik extends MX_Controller {
 
         $this->load->module('casemix/Csm_billing_pasien');
         $this->cbpModule = new Csm_billing_pasien;
+
+        $this->load->module('Templates/References');
+        $this->reff = new References;
     
     }
 
@@ -318,6 +321,7 @@ class Reg_klinik extends MX_Controller {
             $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim|required');
             $this->form_validation->set_rules('noKartuBpjs', 'No Kartu BPJS', 'trim|required');
             $this->form_validation->set_rules('jeniskunjunganbpjs', 'Jenis Kunjungan', 'trim');
+            $this->form_validation->set_rules('norujukanbpjs', 'Nomor Rujukan', 'trim');
         }
 
         // set message error
@@ -346,12 +350,14 @@ class Reg_klinik extends MX_Controller {
             $jd_id =  $this->input->post('jd_id');
             $kode_faskes =  ($this->input->post('kode_faskes_hidden'))?$this->input->post('kode_faskes_hidden'):'';
             $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
+            $nomorrujukan =  ($this->input->post('norujukanbpjs'))?$this->input->post('norujukanbpjs'):'';
+            $jeniskunjunganbpjs =  ($this->input->post('jeniskunjunganbpjs'))?$this->input->post('jeniskunjunganbpjs'):'';
 
             // print_r($kode_dokter);die;
 
             if( !$this->input->post('no_registrasi_hidden') && !$this->input->post('no_registrasi_rujuk')){
                 /*save tc_registrasi*/
-                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id, $kode_faskes, $tgl_registrasi);
+                $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id, $kode_faskes, $tgl_registrasi, $nomorrujukan, $jeniskunjunganbpjs);
                 $no_registrasi = $data_registrasi['no_registrasi'];
                 $no_kunjungan = $data_registrasi['no_kunjungan'];
             }else{
@@ -468,20 +474,50 @@ class Reg_klinik extends MX_Controller {
                 $this->db->trans_commit();
                 
                 /*jika transaksi berhasil maka print tracer*/
-                // if($this->input->post('is_new')!='Yes'){
-                    $tracer = $this->print_escpos->print_direct($data_tracer);
-                    if( $tracer == 1 ) {
-                         $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
-                    }
-                // }
+                $tracer = $this->print_escpos->print_direct($data_tracer);
+                if( $tracer == 1 ) {
+                        $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
+                }
 
-                $this->processAntrol($config);
+                // PROSES ANTRIAN ONLINE
+                $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+				$dt_reg = $detail_data['registrasi'];
+				$dt_antrian = $detail_data['no_antrian'];
+				$dt_jadwal = $detail_data['jadwal'];
+				// post antrian online
+				$params_dt = array(
+					"no_registrasi" => $dt_reg->no_registrasi,
+					'jam_praktek_mulai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_mulai),
+					'jam_praktek_selesai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_selesai),
+					'kuota_dr' => $dt_jadwal->jd_kuota,
+				);
+				$jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
+				$config_antrol = array(
+					"kodebooking" => $config['kode_booking'],
+					"jenispasien" => "NON JKN",
+					"nomorkartu" => $dt_reg->no_kartu_bpjs,
+					"nik" => $dt_reg->no_ktp,
+					"nohp" => $dt_reg->no_hp,
+					"kodepoli" => $dt_reg->kode_poli_bpjs,
+					"namapoli" => $dt_reg->nama_bagian,
+					"pasienbaru" => 0,
+					"norm" => $dt_reg->no_mr,
+					"tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
+					"kodedokter" => $dt_reg->kode_dokter_bpjs,
+					"namadokter" => $dt_reg->nama_pegawai,
+					"jampraktek" => $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai).'-'.$this->tanggal->formatTime($dt_jadwal->jd_jam_selesai),
+					"jeniskunjungan" => $jeniskunjungan,
+					"nomorreferensi" => $dt_reg->norujukan,
+					"nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
+					"angkaantrean" => $dt_antrian->no_antrian,
+				);
+				$antrol = $this->reff->processAntrol($config_antrol, $params_dt);
+                // END PROSES ANTROL
 
                 // get detail data
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'rawat_jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien, 'kode_perusahaan' => $kode_perusahaan, 'no_kunjungan' => $no_kunjungan, 'no_antrian' => $datapoli['no_antrian'], 'no_sep' => $no_sep ));
 
-                
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'rawat_jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien, 'kode_perusahaan' => $kode_perusahaan, 'no_kunjungan' => $no_kunjungan, 'no_antrian' => $datapoli['no_antrian'], 'no_sep' => $no_sep ));
 
             }
         
@@ -490,7 +526,7 @@ class Reg_klinik extends MX_Controller {
     }
 
     public function processAntrol($params){
-        // echo '<pre>'; print_r($_POST);die;
+        // echo '<pre>'; print_r($params);die;
         // estimasi dilayani
         $jam_mulai_praktek = $this->tanggal->formatFullTime($_POST['jam_praktek_mulai']);
         $jam_selesai_praktek = $this->tanggal->formatFullTime($_POST['jam_praktek_selesai']);
@@ -812,14 +848,46 @@ class Reg_klinik extends MX_Controller {
                     $this->db->trans_commit();
                     
                     /*jika transaksi berhasil maka print tracer*/
-                    //if($this->input->post('is_new')!='Yes'){
-                        $tracer = $this->print_escpos->print_direct($data_tracer);
-                        if( $tracer == 1 ) {
-                            $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
-                        }
-                    //}
+                    $tracer = $this->print_escpos->print_direct($data_tracer);
+                    if( $tracer == 1 ) {
+                        $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
+                    }
 
-                    $this->processAntrol($config);
+                    // PROSES ANTRIAN ONLINE
+                    $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+                    $dt_reg = $detail_data['registrasi'];
+                    $dt_antrian = $detail_data['no_antrian'];
+                    $dt_jadwal = $detail_data['jadwal'];
+                    // post antrian online
+                    $params_dt = array(
+                        "no_registrasi" => $dt_reg->no_registrasi,
+                        'jam_praktek_mulai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_mulai),
+                        'jam_praktek_selesai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_selesai),
+                        'kuota_dr' => $dt_jadwal->jd_kuota,
+                    );
+                    $jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
+                    $config_antrol = array(
+                        "kodebooking" => $config['kode_booking'],
+                        "jenispasien" => "NON JKN",
+                        "nomorkartu" => $dt_reg->no_kartu_bpjs,
+                        "nik" => $dt_reg->no_ktp,
+                        "nohp" => $dt_reg->no_hp,
+                        "kodepoli" => $dt_reg->kode_poli_bpjs,
+                        "namapoli" => $dt_reg->nama_bagian,
+                        "pasienbaru" => 0,
+                        "norm" => $dt_reg->no_mr,
+                        "tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
+                        "kodedokter" => $dt_reg->kode_dokter_bpjs,
+                        "namadokter" => $dt_reg->nama_pegawai,
+                        "jampraktek" => $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai).'-'.$this->tanggal->formatTime($dt_jadwal->jd_jam_selesai),
+                        "jeniskunjungan" => $jeniskunjungan,
+                        "nomorreferensi" => $dt_reg->norujukan,
+                        "nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
+                        "angkaantrean" => $dt_antrian->no_antrian,
+                    );
+                    
+                    $antrol = $this->reff->processAntrol($config_antrol, $params_dt);
+                    // END PROSES ANTROL
 
                     // get detail data
                     $dt = $this->Reg_klinik->get_by_id($no_registrasi);

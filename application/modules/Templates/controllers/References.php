@@ -2407,7 +2407,7 @@ class References extends MX_Controller {
 		$this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
 		$this->load->library('print_escpos');
 
-		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer, a.norujukan, a.jd_id');
+		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer, a.norujukan, a.jd_id, a.jeniskunjungan');
 		$this->db->from('tc_registrasi a');
 		$this->db->join('mt_master_pasien b', 'a.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');
@@ -2415,7 +2415,7 @@ class References extends MX_Controller {
 		$this->db->where('b.no_kartu_bpjs', $_POST['kode']);
 		$this->db->where('CAST(a.tgl_jam_masuk as DATE) = ', date('Y-m-d'));
 		$query = $this->db->get();
-		// echo '<pre>'; print_r($query->row());die;
+		// echo '<pre>'; print_r($_POST);die;
 		if($query->num_rows() == 0){
 			echo json_encode(array('status' => 201, 'message' => 'Anda belum terdaftar, silahkan ambil nomor antrian pendaftaran'));
 			exit;
@@ -2466,6 +2466,9 @@ class References extends MX_Controller {
 					'jam_praktek_selesai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_selesai),
 					'kuota_dr' => $dt_jadwal->jd_kuota,
 				);
+
+				$jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
+
 				$config_antrol = array(
 					"kodebooking" => $dt_reg->kodebookingantrol,
 					"jenispasien" => "NON JKN",
@@ -2480,7 +2483,7 @@ class References extends MX_Controller {
 					"kodedokter" => $dt_reg->kode_dokter_bpjs,
 					"namadokter" => $dt_reg->nama_pegawai,
 					"jampraktek" => $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai).'-'.$this->tanggal->formatTime($dt_jadwal->jd_jam_selesai),
-					"jeniskunjungan" => 3,
+					"jeniskunjungan" => $jeniskunjungan,
 					"nomorreferensi" => $dt_reg->norujukan,
 					"nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
 					"angkaantrean" => $dt_antrian->no_antrian,
@@ -2517,28 +2520,37 @@ class References extends MX_Controller {
         // add antrian
         $post_antrol = array(
             "estimasidilayani" => $milisecond,
-            "sisakuotajkn" => $sisa_kuota,
+            "sisakuotajkn" => ($sisa_kuota > 0) ? $sisa_kuota : 1,
             "kuotajkn" => $kuota,
-            "sisakuotanonjkn" => $sisa_kuota,
+            "sisakuotanonjkn" => ($sisa_kuota > 0) ? $sisa_kuota : 1,
             "kuotanonjkn" => $kuota,
             "keterangan" => "Silahkan tensi dengan perawat"
         );
 		$getData = array_merge($arr_dt, $post_antrol);
         // echo '<pre>'; print_r($getData); die;
+
         // add antrian lainnya
-        $this->AntrianOnline->addAntrianOnsite($getData);
-
-        // update kodebooking
-        $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
-
-        // update task antrian online
-        $waktukirim = strtotime($arr_dt['tanggalperiksa']) * 1000;
-        $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $arr_dt['kodebooking'], 'taskid' => 3, 'waktu' => $waktukirim));
+		if($this->cekAntrolKodeBooking($arr_dt['kodebooking'])){
+			$this->AntrianOnline->addAntrianOnsite($getData);
+			// update kodebooking
+			$this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
+			// update task antrian online
+			$waktukirim = strtotime($arr_dt['tanggalperiksa']) * 1000;
+			$exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $arr_dt['kodebooking'], 'taskid' => 3, 'waktu' => $waktukirim));
+		}
 
         return $post_antrol;
+
     }
 
-
-
+	public function cekAntrolKodeBooking($kodebooking){
+		$this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
+		$result = $this->AntrianOnline->cekAntrolKodeBooking($kodebooking);
+		if(isset($result[0])){
+			return false;
+		}else{
+			return true;
+		}
+	}
 
 }
