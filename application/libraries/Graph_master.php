@@ -1604,17 +1604,26 @@ final Class Graph_master {
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
         
+        // echo '<pre>';print_r($data);die;
+        $getData['sumberdata'] = [];
+        $getData['poli'] = [];
+        $getData['status'] = [];
         foreach ($data as $key => $value) {
             // group by sumberdata
-            $getData['sumberdata'][$value->sumberdata][] = 1;
-            // group by poli
-            $getData['poli'][$value->kodepoli][] = 1;
-            // group by status
-            $status = str_replace(" ", "_", $value->status);
-            $getData['status'][$status][] = 1;
+            if(isset($value->sumberdata)){
+                $getData['sumberdata'][$value->sumberdata][] = isset($value->jumlah_antrean)?$value->jumlah_antrean:1;
+            }
+            if(isset($value->kodepoli)){
+                // group by poli
+                $getData['poli'][$value->kodepoli][] = isset($value->jumlah_antrean)?$value->jumlah_antrean:1;
+            }
+            if(isset($value->status)){
+                // group by status
+                $status = str_replace(" ", "_", $value->status);
+                $getData['status'][$status][] = isset($value->jumlah_antrean)?$value->jumlah_antrean:1;
+            }
         }
 
-        // echo '<pre>';print_r($params);die;
 
         // load view
         $result = array(
@@ -1624,7 +1633,7 @@ final Class Graph_master {
             'status' => $getData['status'],
             'data' => $data,
         );
-        // echo '<pre>';print_r($result); die;
+        // echo '<pre>';print_r($getData['poli']); die;
         $html = $CI->load->view('ws_bpjs/Ws_index/DashboardAntrolView', $result, true);
         
         
