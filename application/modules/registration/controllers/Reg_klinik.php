@@ -121,6 +121,11 @@ class Reg_klinik extends MX_Controller {
             $data['no_mr'] = $_GET['mr'];
             $data['is_new'] = $_GET['is_new'];
         }
+
+        /*update sep*/
+        if(isset($_GET['update_sep'])){
+            $data['no_mr'] = $_GET['mr'];
+        }
         // echo'<pre>';print_r($this->session->all_userdata());die;
         /*load view index*/
         
@@ -523,61 +528,6 @@ class Reg_klinik extends MX_Controller {
         
         }
 
-    }
-
-    public function processAntrol($params){
-        // echo '<pre>'; print_r($params);die;
-        // estimasi dilayani
-        $jam_mulai_praktek = $this->tanggal->formatFullTime($_POST['jam_praktek_mulai']);
-        $jam_selesai_praktek = $this->tanggal->formatFullTime($_POST['jam_praktek_selesai']);
-        $date = date_create($this->tanggal->formatDateTimeToSqlDate($params['tgl_registrasi']).' '.$jam_mulai_praktek );
-        
-        $est_hour = ceil($params['no_antrian'] / 12);
-        $estimasi = ($params['no_antrian'] <= 12) ? 1 : $est_hour; 
-        
-        // estimasi dilayani
-        date_add($date, date_interval_create_from_date_string('+'.$estimasi.' hours'));
-        $estimasidilayani = date_format($date, 'Y-m-d H:i:s');
-        $milisecond = strtotime($estimasidilayani) * 1000;
-        
-        // add antrian
-        $post_antrol = array(
-            "kodebooking" => $params['kode_booking'],
-            "jenispasien" => "NON JKN",
-            "nomorkartu" => $_POST['noKartuBpjs'],
-            "nik" => $_POST['nikPasien'],
-            "nohp" => $_POST['hpPasien'],
-            "kodepoli" => $_POST['kode_poli_bpjs'],
-            "namapoli" => $_POST['reg_klinik_rajal_txt'],
-            "pasienbaru" => (empty($_POST['is_new'])) ? 0 : 1,
-            "norm" => $params['no_mr'],
-            "tanggalperiksa" => $this->tanggal->formatDateBPJS($params['tgl_registrasi']),
-            "kodedokter" => $_POST['kode_dokter_bpjs'],
-            "namadokter" => $_POST['reg_dokter_rajal_txt'],
-            "jampraktek" => $this->tanggal->formatTime($_POST['jam_praktek_mulai']).'-'.$this->tanggal->formatTime($_POST['jam_praktek_selesai']),
-            "jeniskunjungan" => $params['jeniskunjungan'],
-            "nomorreferensi" => ($params['jeniskunjungan'] == 1) ? $params['norujukan'] : "",
-            "nomorantrean" => $_POST['kode_poli_bpjs'].'-'.$params['no_antrian'],
-            "angkaantrean" => $params['no_antrian'],
-            "estimasidilayani" => $milisecond,
-            "sisakuotajkn" => $_POST['sisa_kuota'],
-            "kuotajkn" => $_POST['kuotadr'],
-            "sisakuotanonjkn" => $_POST['sisa_kuota'],
-            "kuotanonjkn" => $_POST['kuotadr'],
-            "keterangan" => "Silahkan tensi dengan perawat"
-        );
-        // echo '<pre>'; print_r($post_antrol); die;
-        // add antrian lainnya
-        $this->AntrianOnline->addAntrianOnsite($post_antrol);
-
-        // update kodebooking
-        $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $params['kode_booking']) );
-
-        // update task antrian online
-        $waktukirim = strtotime($params['tgl_registrasi']) * 1000;
-        $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $params['kode_booking'], 'taskid' => 3, 'waktu' => $waktukirim));
-
-        return true;
     }
 
     public function processRegisterNSEP(){

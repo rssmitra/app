@@ -86,20 +86,13 @@ class Riwayat_reg_sep_fail extends MX_Controller {
                             <span class="lbl"></span>
                         </label>
                     </div>';
-            $row[] = '<div class="center"><div class="btn-group">
-                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-inverse">
-                            <li><a href="#">Cetak Tracer</a></li>
-                            <li><a href="#">Selengkapnya</a></li>
-                        </ul>
-                    </div></div>';
+            $row[] = '<div class="center">'.$no.'</div>';
             $status_fp = ($row_list->konfirm_fp == 1)?'<span style="color: green"><i class="fa fa-thumbs-up"></i></span>':'<span style="color: red"><i class="fa fa-thumbs-down"></i></span>';
 
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = '<a href="#">'.strtoupper($row_list->nama_pasien).'</a><br><b>'.strtoupper($row_list->no_kartu_bpjs).'</b>';
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'UMUM';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'registration/Reg_klinik?update_sep=1&no_reg=".$row_list->no_registrasi."&mr=".$row_list->no_mr."'".')">'.$row_list->no_mr.'</a></div>';
+            $row[] = strtoupper($row_list->nama_pasien);
+            $row[] = strtoupper($row_list->no_kartu_bpjs);
+            // $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'UMUM';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_masuk);
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->nama_pegawai;
