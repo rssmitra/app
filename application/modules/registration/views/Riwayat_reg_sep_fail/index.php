@@ -210,10 +210,10 @@ function saveRow(no_registrasi){
        <thead>
         <tr>  
           <th width="30px" class="center"></th>
-          <th></th>
+          <th>No</th>
           <th>No MR</th>
           <th>Nama Pasien</th>
-          <th>Penjamin</th>
+          <th width="150px">No. Kartu BPJS</th>
           <th width="150px">Tanggal Registrasi</th>
           <th>Tujuan Kunjungan</th>
           <th>Nama Dokter</th>          

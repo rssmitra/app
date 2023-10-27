@@ -2407,7 +2407,7 @@ class References extends MX_Controller {
 		$this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
 		$this->load->library('print_escpos');
 
-		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer, a.norujukan, a.jd_id, a.jeniskunjungan');
+		$this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer, a.norujukan, a.jd_id, a.jeniskunjunganbpjs');
 		$this->db->from('tc_registrasi a');
 		$this->db->join('mt_master_pasien b', 'a.no_mr=b.no_mr','left');
 		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');
@@ -2546,6 +2546,7 @@ class References extends MX_Controller {
 	public function cekAntrolKodeBooking($kodebooking){
 		$this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
 		$result = $this->AntrianOnline->cekAntrolKodeBooking($kodebooking);
+		// echo json_encode($result);
 		if(isset($result[0])){
 			return false;
 		}else{
