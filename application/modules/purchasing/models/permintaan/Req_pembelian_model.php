@@ -179,6 +179,7 @@ class Req_pembelian_model extends CI_Model {
 		$this->db->join($table, ''.$table.'.id_tc_permohonan='.$table.'_det.id_tc_permohonan', 'left');
 		$this->db->join($mt_barang, ''.$mt_barang.'.kode_brg='.$table.'_det.kode_brg', 'left');
 		$this->db->where_in(''.$table.'_det.id_tc_permohonan', $id);
+		$this->db->order_by($mt_barang.'.nama_brg', 'ASC');
 		$result = $this->db->get()->result();
 		$getData = [];
 		foreach($result as $row){
