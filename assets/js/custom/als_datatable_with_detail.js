@@ -20,7 +20,7 @@ $(document).ready(function() {
       "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": base_url,
+          "url": base_url+"/get_data",
           "type": "POST"
       },
       "columnDefs": [
@@ -142,13 +142,13 @@ function format_html ( data ) {
 
 function find_data_reload(result){
 
-    oTable.ajax.url(base_url+'?'+result.data).load();
+    oTable.ajax.url(base_url+'/get_data?'+result.data).load();
     // $("html, body").animate({ scrollTop: "400px" });
 
 }
 
 function reset_table(){
-    oTable.ajax.url(base_url).load();
+    oTable.ajax.url(base_url+"/get_data").load();
     // $("html, body").animate({ scrollDown: "400px" });
 
 }

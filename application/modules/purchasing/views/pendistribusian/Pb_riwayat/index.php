@@ -135,7 +135,7 @@ $('select[name="search_by"]').change(function () {
 
       <div style="margin-top:-25px">
 
-        <table id="dynamic-table" base-url="purchasing/penerimaan_brg/Pb_riwayat/get_data?flag=<?php echo $flag?>" url-detail="purchasing/penerimaan_brg/Pb_riwayat/get_detail/<?php echo $flag?>" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="purchasing/penerimaan_brg/Pb_riwayat" url-detail="purchasing/penerimaan_brg/Pb_riwayat/get_detail/<?php echo $flag?>" data-id="flag=<?php echo $flag?>" class="table table-bordered table-hover">
           <thead>
           <tr>  
             <th width="30px" class="center">
@@ -170,7 +170,7 @@ $('select[name="search_by"]').change(function () {
 </div><!-- /.row -->
 
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable_with_detail.js'?>"></script>
+<script src="<?php echo base_url().'assets/js/custom/als_datatable_with_detail_custom_url.js'?>"></script>
 
 
 

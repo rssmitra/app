@@ -53,7 +53,7 @@ function rollback(myid){
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_search" action="registration/Riwayat_kunjungan_poli/find_data">
+    <form class="form-horizontal" method="post" id="form_search" action="registration/Riwayat_pasien_bedah/find_data">
 
     <div class="col-md-12">
 
@@ -76,11 +76,11 @@ function rollback(myid){
       <div class="form-group">
         <label class="control-label col-md-2">Bulan</label>
           <div class="col-md-2">
-            <?php echo $this->master->get_bulan('' , 'bulan', 'bulan', 'form-control', '','') ?>
+            <?php echo $this->master->get_bulan(date('m') , 'bulan', 'bulan', 'form-control', '','') ?>
           </div>
           <label class="control-label col-md-1">Tahun</label>
           <div class="col-md-2">
-            <?php echo $this->master->get_tahun('' , 'tahun', 'tahun', 'form-control', '', '') ?>
+            <?php echo $this->master->get_tahun(date('Y') , 'tahun', 'tahun', 'form-control', '', '') ?>
           </div>
           <label class="control-label col-md-1">Status</label>
           <div class="col-md-2">
@@ -138,13 +138,13 @@ function rollback(myid){
     <hr class="separator">
     <!-- div.dataTables_borderWrap -->
     <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="registration/Riwayat_pasien_bedah/get_data" url-detail="registration/Riwayat_pasien_bedah/show_detail" class="table table-bordered table-hover">
+      <table id="dynamic-table" base-url="registration/Riwayat_pasien_bedah/" url-detail="registration/Riwayat_pasien_bedah/show_detail" class="table table-bordered table-hover">
        <thead>
         <tr>  
-          <th width="30px" class="center"></th>
-          <th width="40px" class="center"></th>
-          <th width="40px" class="center"></th>
-          <th width="40px"></th>
+          <th width="30px" class="center">No</th>
+          <th width="40px" class="center">#</th>
+          <th width="40px" class="center">#</th>
+          <th class="center" width="40px">#</th>
           <th>No.MR</th>
           <th>Data Pasien</th>
           <th>Penjamin</th>
