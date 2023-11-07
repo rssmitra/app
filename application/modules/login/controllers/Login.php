@@ -21,7 +21,7 @@ class Login extends MX_Controller {
                 'profile_form' => $this->Tmp_apps_config_model->get_by_id(1),
             );
 
-        $this->load->view('login_v1', $data);
+        $this->load->view('login_view', $data);
 
     }
 
@@ -70,6 +70,8 @@ class Login extends MX_Controller {
                 if($this->login_model->get_user_profile($result->user_id) != false){
                     $sess_data['user_profile'] = $this->login_model->get_user_profile($result->user_id);
                 }
+
+                
                 $this->session->set_userdata($sess_data);
                 /*update last logon user*/
                 $this->db->query("UPDATE tmp_user SET last_logon=GETDATE() WHERE username='".$result->username."' AND password='".$result->password."'");

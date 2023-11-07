@@ -22,16 +22,25 @@
     
   </head>
   <style type="text/css">
-    #body-style {
+    /* #body-style {
       background-image:url(<?php echo PATH_IMG_DEFAULT.$profile_form->cover_login?>);
       background-size: 100%; 
       background-attachment: fixed;
       background-position: center;
       background-size: cover;
       opacity: 1;
-      /*filter: alpha(opacity=50);*/
       background-repeat: no-repeat;
+    } */
+
+    .login-layout .widget-box .widget-main {
+        padding: 16px 36px 36px;
+        background: #FFFFFF !important;
     }
+
+    .login-box .toolbar {
+        background: #024813;
+    }
+
   </style>
 
   <body class="login-layout light-login" id="body-style">
@@ -50,10 +59,19 @@
                   <div class="widget-body">
                     
                     <div class="widget-main">
-                      <div class="center">
+                      <!-- <div class="center">
                         <h4 class="dark" id="id-text"><?php echo APPS_NAME_LONG; ?><br><small></small></h4>
                         <h4 class="dark" id="company-text"><?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?></h4>
-                      </div>
+                      </div> -->
+                      <center>
+                        <!-- <img src="<?php echo PATH_IMG_DEFAULT.$profile_form->app_logo?>" width="300px"><br> -->
+                        <img src="<?php echo base_url().'assets/images/logo_3d.gif'?>" width="200px"><br>
+                        <div class="social-or-login center">
+                          <span style="font-size: 14px">~ Kami Peduli Kesehatan Anda ~</span>
+                        </div>
+                        <span class="bigger-120"><i><?php echo APPS_NAME_LONG; ?></i></span>
+                      </center>
+
                       <!-- <center></center> -->
                       <h4 class="header blue lighter bigger">
                         <i class="ace-icon fa fa-lock green"></i>
@@ -63,35 +81,22 @@
                       <form method="post" action="<?php echo base_url().'login/process'?>" id="form-login">
                         <fieldset>
                           <label class="block clearfix">
+                            <label style="font-weight: bold">NIP/Username :</label>
                             <span class="block input-icon input-icon-right">
-                              <input type="text" class="form-control" placeholder="Username" name="username" id="username" value="<?php echo set_value('username')?>" />
+                              <input type="text" class="form-control" placeholder="Username" name="username" id="username" value="<?php echo set_value('username')?>" style="height: 32px !important;border-radius: 9px !important;"/>
                               <i class="ace-icon fa fa-user"></i>
                               <?php echo form_error('username'); ?>
                             </span>
                           </label>
 
                           <label class="block clearfix">
+                            <label style="font-weight: bold">Password :</label>
                             <span class="block input-icon input-icon-right">
-                              <input type="password" class="form-control" placeholder="Password" name="password" id="password" value="<?php echo set_value('password')?>" />
+                              <input type="password" class="form-control" placeholder="Password" name="password" id="password" value="<?php echo set_value('password')?>" style="height: 32px !important;border-radius: 9px !important;" />
                               <i class="ace-icon fa fa-lock"></i>
                               <?php echo form_error('password'); ?>
                             </span>
                           </label>
-
-                          <!-- <label for='message'>Masukan kode dibawah ini </label>
-                          <center>
-                            <img src="<?php echo base_url().'assets/captcha/captcha.php?rand='.rand().''?>" id="captchaimg" width="200px"> -->
-                            <!-- <p id="captImg"><?php echo $captchaImg; ?></p>
-                          </center>
-
-                          <br>
-                          <input type="text" class="form-control" placeholder="Validation code" name="captcha_code" id="captcha_code" value="" />
-                          <?php echo form_error('captcha_code'); ?>
-                          <br>
-                          
-
-                          Tidak dapat melihat gambar? Klik <a href="javascript:void(0);" class="refreshCaptcha" >disini</a> untuk refresh. -->
-                          
 
                           <div class="space"></div>
 
@@ -101,12 +106,13 @@
                               <span class="lbl"> Ingatkan saya</span>
                             </label>
 
-                            <input type="button" id="button-login" value="Sign In" class="width-35 pull-right btn btn-sm btn-primary" >
+                            <!-- <input type="button" id="button-submit-form" value="Sign In" class="width-35 pull-right btn btn-sm btn-primary" > -->
 
-                            <!-- <button id="button-login" name="Submit" value="submit" class="width-35 pull-right btn btn-sm btn-primary">
+                            <button id="button-submit-form" name="Submit" type="button" value="submit" class="width-35 pull-right btn btn-sm btn-primary">
                               <i class="ace-icon fa fa-key"></i>
                               <span class="bigger-110">Masuk</span>
-                            </button> -->
+                            </button>
+
                           </div>
                           
                           <div class="space-4"></div>
@@ -118,12 +124,12 @@
 
                     </div><!-- /.widget-main -->
                     <div class="toolbar clearfix">
-                      <div style="width:30% !important; padding-left:15px">
-                        <img src="<?php echo PATH_IMG_DEFAULT.$profile_form->app_logo?>" width="80px">
+                      <div style="width:100% !important; text-align:center; font-size:11px;color:white;padding-top:15px">
+                        <i class="fa fa-clock"></i><span id='ct6' style=" font-size: 16px;" ></span>
                       </div>
-                      <div style="width:70% !important; text-align:left;float:left; font-size:11px;color:white;padding-top:15px">
+                      <!-- <div style="width:70% !important; text-align:left;float:left; font-size:11px;color:white;padding-top:15px">
                         <?php echo $profile_form->footer_text_form_login?>
-                      </div>
+                      </div> -->
                     </div>
 
                     <!-- <div class="toolbar clearfix">
@@ -174,6 +180,25 @@
       if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
     </script>
 
+    <script>
+      function display_ct6() {
+        var x = new Date()
+        var ampm = x.getHours( ) >= 12 ? ' PM' : ' AM';
+        hours = x.getHours( ) % 12;
+        hours = hours ? hours : 12;
+        var x1=x.getMonth() + 1+ "/" + x.getDate() + "/" + x.getFullYear(); 
+        x1 = x1 + " - " +  hours + ":" +  x.getMinutes() + ":" +  x.getSeconds() + ":" + ampm;
+        document.getElementById('ct6').innerHTML = x1;
+        display_c6();
+      }
+      function display_c6(){
+        var refresh=1000; // Refresh rate in milli seconds
+        mytime=setTimeout('display_ct6()',refresh)
+      }
+      display_c6()
+    </script>
+
+
     <!-- inline scripts related to this page -->
     <script type="text/javascript">    
       
@@ -214,7 +239,26 @@
       $('document').ready(function() {  
 
         /*========== PROCESS LOGIN ================*/
-        $("#form-login").validate({focusInvalid:true});     
+        $("#form-login").validate({focusInvalid:true});  
+
+        $('#form-login').ajaxForm({
+          beforeSend: function() {
+            achtungShowLoader();
+          },
+          complete: function(xhr) {  
+            //alert(xhr.responseText); return false;
+            var data=xhr.responseText;
+            var jsonResponse = JSON.parse(data);
+
+            if(jsonResponse.status === 200){
+              window.location = '<?php echo base_url().'main'?>';
+            }else{
+              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+            }
+            achtungHideLoader();
+          }
+        });
+        
         $( "#username" )
           .keypress(function(event) {
             var keycode =(event.keyCode?event.keyCode:event.which); 
@@ -231,84 +275,18 @@
           .keypress(function(event) {
             var keycode =(event.keyCode?event.keyCode:event.which); 
             if(keycode ==13){
-              if($("#form-login").valid()) {  
-                $('#form-login').ajaxForm({
-                  beforeSend: function() {
-                    achtungShowLoader();
-                  },
-                  uploadProgress: function(event, position, total, percentComplete) {
-                  },
-                  complete: function(xhr) {     
-                    var data=xhr.responseText;
-                    var jsonResponse = JSON.parse(data);
-
-                    if(jsonResponse.status === 200){
-                      window.location = '<?php echo base_url().'main'?>';
-                    }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
-                    achtungHideLoader();
-                  }
-
-                });
+              if($(this).valid()) {  
+                $('#button-submit-form').click();
               }
-              $("#form-login").submit();
+              
             }
         });
         
-        $( "#button-login" )
+        $( "#button-submit-form" )
           .on("click",function(event) {
-            var keycode =(event.keyCode?event.keyCode:event.which); 
-              if($("#form-login").valid()) {  
-                $('#form-login').ajaxForm({
-                  beforeSend: function() {
-                    achtungShowLoader();
-                  },
-                  complete: function(xhr) {  
-                    //alert(xhr.responseText); return false;
-                    var data=xhr.responseText;
-                    var jsonResponse = JSON.parse(data);
-
-                    if(jsonResponse.status === 200){
-                      window.location = '<?php echo base_url().'main'?>';
-                    }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
-                    achtungHideLoader();
-                  }
-                });
-              }
-              $("#form-login").submit();
-            
+            $('#form-login').submit();
         });
 
-        $( "#button-register" )
-          .on("click",function(event) {
-            var keycode =(event.keyCode?event.keyCode:event.which); 
-              if($("#form-register").valid()) {  
-                $('#form-register').ajaxForm({
-                  beforeSend: function() {
-                    achtungShowLoader();
-                  },
-                  complete: function(xhr) {  
-                    //alert(xhr.responseText); return false;
-                    var data=xhr.responseText;
-                    var jsonResponse = JSON.parse(data);
-
-                    if(jsonResponse.status === 200){
-                      window.location = jsonResponse.redirect;
-                    }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
-                    achtungHideLoader();
-                  }
-                });
-              }
-              $("#form-register").submit();
-            
-        });
-
-        
         $("#form-login input:text").first().focus();
 
         /*========== END PROCESS LOGIN ================*/

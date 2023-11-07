@@ -249,7 +249,7 @@ class Mst_tarif extends MX_Controller {
             if($id==0){
                 
                 // kode tarif
-                $kode_tarif = $this->generate_kode_tarif($val->set_value('kode_bagian'));
+                $kode_tarif = $this->generate_kode_tarif($val->set_value('kode_bagian'), $_POST['jenis_tindakan']);
                 // echo print_r($kode_tarif);die;
                 $dataexc['kode_tarif'] = $kode_tarif;
                 
@@ -365,15 +365,27 @@ class Mst_tarif extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function generate_kode_tarif($kode_bagian=''){
+    public function generate_kode_tarif($kode_bagian='', $jenis_tindakan=''){
         /*get max kode tarif by kode_bagian*/
         if($kode_bagian == ''){
-            $max_kode = $this->db->query("select MAX(kode_tarif)as max_tarif from mt_master_tarif where kode_bagian='0'")->row();
+            $max_kode = $this->db->query("select COUNT(*)as max_tarif from mt_master_tarif where kode_bagian='0' and jenis_tindakan=".$jenis_tindakan."")->row();
         }else{
             $max_kode = $this->db->query("select MAX(kode_tarif)as max_tarif from mt_master_tarif where kode_bagian=".$kode_bagian."")->row();
         }
-        $new_kode_plus_one = ($kode_bagian == '') ? $kode_bagian.'0'.$max_kode->max_tarif + 1 : $max_kode->max_tarif + 1;
-        return $new_kode_plus_one;
+        $new_kode_plus_one = ($kode_bagian == '') ? $jenis_tindakan.'0'.$max_kode->max_tarif + 1 : $max_kode->max_tarif + 1;
+
+        $new_kode = $this->recursive_kode_tarif($new_kode_plus_one);
+        return $new_kode;
+    }
+
+    public function recursive_kode_tarif($kode_tarif){
+      $kode = $this->db->get_where('mt_master_tarif', array('kode_tarif' => $kode_tarif));
+      if($kode->num_rows() == 0){
+        return $kode_tarif;
+      }else{
+        $kode = $kode_tarif + 1;
+        return $this->recursive_kode_tarif($kode);
+      }
     }
 
     public function export_excel()

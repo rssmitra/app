@@ -2,11 +2,31 @@
 <script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
 <script type="text/javascript">
 
-$(function(){
-        
-  $('.format_number').number( true, 2 );
-  
-});
+  $(function(){
+          
+    $('.format_number').number( true, 2 );
+    
+  });
+
+  function changeVendor(kode_brg){
+    var value_select = $("#reff_vendor_"+kode_brg+"").find(":selected").text();
+    // text select option
+    var text=value_select.split('|')[0];
+    // change discount
+    var disc=value_select.split('|')[1];
+    var disc_text = disc.replace(/%/gi, "");
+    console.log(disc_text);
+    // change price
+    var price=value_select.split('|')[2];
+    var price_text = price.replace(/@/gi, "");
+    console.log(price_text);
+
+    $('#form_input_diskon_'+kode_brg+'').val(disc_text);
+    inputDisc(kode_brg);
+    $('#form_input_harga_satuan_'+kode_brg+'').val(price_text);
+    inputHargaSatuan(kode_brg);
+
+  }
 
   function checkAll(elm) {
 
@@ -155,7 +175,8 @@ $(function(){
             <th class="center" width="">No</th>
             <th width="5%">Kode</th>
             <th>Nama Barang</th>
-            <th class="center" width="10%">Satuan Besar</th>
+            <th width="15%">Referensi Vendor</th>
+            <th class="center" width="7%">Satuan<br>Besar</th>
             <th class="center" width="7%">Rasio</th>
             <th class="center" width="7%">Jumlah<br>Pesan</th>
             <th class="center" width="10%">Harga Satuan</th>
@@ -193,6 +214,14 @@ $(function(){
             <td class="center"><?php echo $no?></td>
             <td><?php echo $row_dt[0]->kode_brg?></td>
             <td><?php echo $row_dt[0]->nama_brg?></td>
+            <td>
+              <?php
+                // get vendor
+                $vendors = $history_po[$row_dt[0]->kode_brg];
+                // echo "<pre>"; print_r($vendors);
+                echo $this->master->custom_selection_ref_vendor_po(array('data' => $vendors, 'label' => 'namasupplier', 'value' => 'kodesupplier'), '','reff_vendor_'.$row_dt[0]->kode_brg.'','reff_vendor_'.$row_dt[0]->kode_brg.'','form-control','onchange="changeVendor('."'".$row_dt[0]->kode_brg."'".')"','','');
+              ?>
+            </td>
             <!-- satuan besar -->
             <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
             <!-- rasio -->
@@ -213,14 +242,14 @@ $(function(){
               // $harga_dasar = ($flag=='medis')?round($row_dt[0]->harga_po_terakhir): round($row_dt[0]->harga_po_terakhir);
               
               $jumlah_harga_dasar_satuan_besar = round($harga_dasar * $row_dt[0]->rasio);
-              $history = $history_po[$row_dt[0]->kode_brg][0];
-              $discount = isset($history->discount)?$history->discount:0;
+              $history = isset($history_po[$row_dt[0]->kode_brg][0])?$history_po[$row_dt[0]->kode_brg][0]:[];
+              $discount = isset($history['discount'])?$history['discount']:0;
             ?>
             <td class="center">
                 <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="format_number form-control" value="0" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled>
                 <!-- perhitungan harga satuan dasar -->
-                
-                <input type="hidden" name="harga_satuan_val[<?php echo $row_dt[0]->kode_brg?>]" id="hidden_form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $history->harga_satuan; ?>">
+                <input type="hidden" name="harga_satuan_val[<?php echo $row_dt[0]->kode_brg?>]" id="hidden_form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo isset($history['harga_satuan'])?$history['harga_satuan']:''; ?>">
+
             </td>
 
             <!-- diskon -->
@@ -245,21 +274,21 @@ $(function(){
           <?php endforeach;?>
         </tbody>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="10">DPP</td>
+          <td align="right" colspan="11">DPP</td>
           <td align="right">
               <input type="text" class="format_number form-control" name="total_dpp" id="total_dpp" style="height:45px;text-align:right" value="" readonly>
               <input type="hidden" class="form-control" name="total_dpp_val" id="total_dpp_val" style="height:45px;text-align:right" value="" readonly>
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="10">PPN</td>
+          <td align="right" colspan="11">PPN</td>
           <td align="right">
               <input type="text" class="format_number form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="" readonly>
               <input type="hidden" class="form-control" name="total_ppn_val" id="total_ppn_val" style="height:45px;text-align:right" value="" readonly>
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="10">TOTAL</td>
+          <td align="right" colspan="11">TOTAL</td>
           <td align="right">
               <!-- hidden potongan diskon -->
               <input type="hidden" class="form-control" name="total_potongan_diskon_val" id="total_potongan_diskon_val" style="height:45px;text-align:right" value="" readonly>
