@@ -108,6 +108,14 @@ class Riwayat_pasien_bedah_model extends CI_Model {
 		return $query->result();
 	}
 
+	function get_data()
+	{
+		$this->_main_query();
+		$query = $this->db->get();
+		//print_r($this->db->last_query());die;
+		return $query;
+	}
+
 	function count_filtered()
 	{
 		$this->_get_datatables_query();

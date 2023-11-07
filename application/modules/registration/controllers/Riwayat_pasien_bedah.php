@@ -55,12 +55,7 @@ class Riwayat_pasien_bedah extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_kunjungan.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                    </div>';
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '';
             $row[] = $row_list->id_pesan_bedah;
             $row[] = '<div class="center"><div class="btn-group">
@@ -109,6 +104,19 @@ class Riwayat_pasien_bedah extends MX_Controller {
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
+    }
+
+    public function export_excel(){
+        $list = $this->Riwayat_pasien_bedah->get_data(); 
+        $data = array(
+			'title' 	=> 'Riwayat Pasien Bedah',
+            'fields' 	=> $list->field_data(),
+            // 'fields' 	=> array('no_mr','nama', 'nama_bagian','nama_pegawai','nama_perusahaan','tgl_pesanan','no_hp_pasien','no_hp','no_telp','telp_almt_ttp','unique_code_counter','kode_perjanjian'),
+			'data' 		=> $list->result(),
+		);
+        // echo '<pre>';print_r($data);die;
+        $this->load->view('Perjanjian_rj/excel_view', $data);
+
     }
 
     
