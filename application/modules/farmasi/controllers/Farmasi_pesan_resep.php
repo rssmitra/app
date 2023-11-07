@@ -17,6 +17,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Farmasi_pesan_resep_model', 'Farmasi_pesan_resep');
+        $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
 
         /*enable profiler*/
         $this->output->enable_profiler(false);
@@ -123,7 +124,6 @@ class Farmasi_pesan_resep extends MX_Controller {
         {                       
 
             $this->db->trans_begin();
-
             $dataexc = array(
                 'kode_bagian' => $this->regex->_genRegex('060101', 'RGXQSL'),
                 'no_registrasi' => $this->input->post('no_registrasi'),
@@ -158,6 +158,7 @@ class Farmasi_pesan_resep extends MX_Controller {
 
                 /*save logs*/
                 $this->logs->save('fr_tc_pesan_resep', $kode_pesan_resep, 'update record on '.$this->title.' module', json_encode($dataexc),'kode_pesan_resep');
+                
                 
             }else{
 

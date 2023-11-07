@@ -499,7 +499,7 @@ class Reg_klinik extends MX_Controller {
 				$jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
 				$config_antrol = array(
 					"kodebooking" => $config['kode_booking'],
-					"jenispasien" => "NON JKN",
+					"jenispasien" => "JKN",
 					"nomorkartu" => $dt_reg->no_kartu_bpjs,
 					"nik" => $dt_reg->no_ktp,
 					"nohp" => $dt_reg->no_hp,
@@ -818,7 +818,7 @@ class Reg_klinik extends MX_Controller {
                     $jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
                     $config_antrol = array(
                         "kodebooking" => $config['kode_booking'],
-                        "jenispasien" => "NON JKN",
+                        "jenispasien" => "JKN",
                         "nomorkartu" => $dt_reg->no_kartu_bpjs,
                         "nik" => $dt_reg->no_ktp,
                         "nohp" => $dt_reg->no_hp,

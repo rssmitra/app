@@ -191,13 +191,24 @@ class Po_revisi_model extends CI_Model {
 		$tc_po = ($params['flag']=='non_medis')?'tc_po_nm':'tc_po';
 		$tc_permohonan = ($params['flag']=='non_medis')?'tc_permohonan_nm':'tc_permohonan';
 		$toArray = implode(',',$params['kode_brg']);
-		
+		// select po
+		$po = $this->db->get_where($tc_po.'_det', array('id_tc_po' => $params['id_tc_po']))->row();
+
+		// update status po to null in tc_permohonan_det
 		$this->db->where('id_tc_permohonan_det IN (SELECT id_tc_permohonan_det FROM '.$tc_po.'_det WHERE id_tc_po='.$params['id_tc_po'].' AND kode_brg IN ('."'".$toArray."'".'))')->update($tc_permohonan.'_det', array('status_po' => NULL) );
+
+		// update flag proses < 3
+		$this->db->where('id_tc_permohonan', $po->id_tc_permohonan)->update($tc_permohonan, array('flag_proses' => 2) );
 
 		/*delete brg po*/
 		$this->db->where('id_tc_po', $params['id_tc_po'])->where_in('kode_brg', $toArray)->delete($tc_po.'_det');
-		
-		
+
+		// cek po det
+		$po_det = $this->db->get_where($tc_po.'_det', array('id_tc_po' => $params['id_tc_po']));
+		if($po_det->num_rows() == 0){
+			// delete po
+			$this->db->delete($tc_po, array('id_tc_po' => $params['id_tc_po']));
+		}
 
 		return true;
 	}

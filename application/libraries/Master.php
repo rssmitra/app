@@ -435,6 +435,36 @@ final Class Master {
 		return $field;
 		
 	}
+
+	function custom_selection_ref_vendor_po($arr_data=array(), $nid='',$name,$id,$class='',$required='',$inline='',$readonly='') {
+		
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		
+		$selected = $nid?'':'selected';
+		
+		$starsign = $required?'*':'';
+		
+		$fieldset = $inline?'':'<fieldset>';
+		$fieldsetend = $inline?'':'</fieldset>';
+		
+		$field='';
+		
+		$field.='<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>';
+		$field.='<option value="" '.$selected.'> - Pilih - </option>';
+
+		foreach($arr_data['data'] as $row){
+			$val = isset($row[$arr_data['value']]) ? $row[$arr_data['value']] : 0;
+			$label = isset($row[$arr_data['label']]) ? $row[$arr_data['label']] : 0;
+			$sel = trim($nid) == trim($val)?'selected':'';
+			$field.='<option value="'.$val.'">'.strtoupper($label).' | '.(int)$row['discount'].' % | @ '.(int)$row['harga_satuan'].'</option>';
+		}	
+		
+		$field.='</select>';
+		
+		return $field;
+		
+	}
     
 
     function get_custom_data($table, $select, $where, $return) {

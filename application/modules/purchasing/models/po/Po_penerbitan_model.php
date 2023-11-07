@@ -219,4 +219,17 @@ class Po_penerbitan_model extends CI_Model {
 		return true;
 	}
 
+	function getReferensiPO($kode_brg, $table){
+		$query = "select top 3 * from (
+			SELECT a.discount, a.harga_satuan, b.kodesupplier, c.namasupplier
+			FROM ".$table."_det as a
+			LEFT JOIN ".$table." as b ON b.id_tc_po=a.id_tc_po
+			LEFT JOIN mt_supplier as c ON c.kodesupplier=b.kodesupplier
+			WHERE kode_brg = '".$kode_brg."'
+			GROUP BY a.discount, a.harga_satuan, b.kodesupplier, c.namasupplier
+			) as tblx 
+			ORDER BY harga_satuan ASC";
+		return $this->db->query($query)->result_array();
+	}
+
 }

@@ -384,13 +384,16 @@ class Po_penerbitan extends MX_Controller {
         $getData = array();
         foreach($dt_detail_brg as $row){
             if( $row->status_po != 1 ){
-                $history_po[$row->kode_brg][] = $this->db->order_by('id_tc_po_det', 'DESC')->get_where($table.'_det', array('kode_brg' => $row->kode_brg))->row();
+                $history = $this->Po_penerbitan->getReferensiPO($row->kode_brg, $table);
+                // echo '<pre>';print_r($this->db->last_query());die;
+                $history_po[$row->kode_brg] = $history;
                 $getData[$row->kode_brg][] = $row;
+                
             }
         }
         $data['dt_detail_brg'] = $getData;
         $data['history_po'] = $history_po;
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($history_po);die;
         $data['view_brg_po'] = $this->load->view('po/Po_penerbitan/view_brg_po', $data, true);
 
         $this->load->view('po/Po_penerbitan/form', $data, false);

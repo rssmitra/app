@@ -89,8 +89,9 @@ class Login_model extends CI_Model {
     }
 
     public function get_user_profile($user_id){
-        $profile = $this->db->get_where('tmp_user_profile', array('user_id' => $user_id))->row();
+        $profile = $this->db->join('view_dt_pegawai', 'view_dt_pegawai.kepeg_nik=tmp_user_profile.no_ktp')->get_where('tmp_user_profile', array('user_id' => $user_id))->row();
 
+        // print_r($profile);die;
         if(!empty($profile)){
             return $profile;
         }else{

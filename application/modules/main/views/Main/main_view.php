@@ -57,18 +57,6 @@
             <span class="sr-only">Toggle user menu</span>
             <img src="<?php echo isset($this->session->userdata('user')->path_foto) ? base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto:base_url().'assets/avatars/user.jpg'?>" alt="<?php echo $this->session->userdata('user')->fullname?>'s Photo"/>
 
-            <!-- <img src="<?php echo base_url()?>assets/avatars/avatar5.png" alt="<?php echo $this->session->userdata('user')->username?>" /> -->
-          </button>
-
-          <!-- <button class="pull-right navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#sidebar">
-            <span class="sr-only">Toggle sidebar</span>
-
-            <span class="icon-bar"></span>
-
-            <span class="icon-bar"></span>
-
-            <span class="icon-bar"></span>
-          </button> -->
 
           <!-- /section:basics/navbar.toggle -->
         </div>
@@ -299,7 +287,11 @@
       });
 
       $(document).ready(function(){
-  
+        
+        // <?php if( !isset($profile_user->up_id) ) :?>
+        //   $('.page-content-main').load('main/Main/form_profile');
+        // <?php endif; ?>
+
         $('#form_tmp_user').ajaxForm({
           beforeSend: function() {
             achtungShowLoader();  
