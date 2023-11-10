@@ -452,12 +452,12 @@ final Class Master {
 		
 		$field.='<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' '.$inline.'>';
 		$field.='<option value="" '.$selected.'> - Pilih - </option>';
-
-		foreach($arr_data['data'] as $row){
+		// echo "<pre>";print_r($arr_data['data']);die;
+		foreach($arr_data['data'] as $key=>$row){
 			$val = isset($row[$arr_data['value']]) ? $row[$arr_data['value']] : 0;
 			$label = isset($row[$arr_data['label']]) ? $row[$arr_data['label']] : 0;
-			$sel = trim($nid) == trim($val)?'selected':'';
-			$field.='<option value="'.$val.'">'.strtoupper($label).' | '.(int)$row['discount'].' % | @ '.(int)$row['harga_satuan'].'</option>';
+			$sel = trim($nid) == trim($val) ? 'selected' : ($key == 0) ? 'selected' : '' ;
+			$field.='<option value="'.$val.'" '.$sel.'>'.strtoupper($label).' | '.(int)$row['discount'].' % | @ '.(int)$row['harga_satuan'].'</option>';
 		}	
 		
 		$field.='</select>';
