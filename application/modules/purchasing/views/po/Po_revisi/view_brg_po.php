@@ -195,7 +195,7 @@
         ?>
           <tr id="tr_<?php echo $row_dt[0]->kode_brg?>" <?php ( empty($row_dt[0]->kode_detail_penerimaan_barang) ) ? '' : 'style="background-color: red"' ; ?> >
             <!-- checkbox -->
-            <?php if(empty($row_dt[0]->kode_detail_penerimaan_barang)) :?>
+            <?php if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?>
             <td class="center">
                 <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" class="form-control" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]">
               
@@ -210,7 +210,7 @@
             <td><?php echo $row_dt[0]->kode_brg?> </td>
             <td><?php echo $row_dt[0]->nama_brg?></td>
 
-            <?php if(empty($row_dt[0]->kode_detail_penerimaan_barang)) :?>
+            <?php if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?>
             <!-- satuan besar -->
             <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
             <!-- rasio -->
