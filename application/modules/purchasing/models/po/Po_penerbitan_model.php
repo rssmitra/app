@@ -29,7 +29,7 @@ class Po_penerbitan_model extends CI_Model {
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
 		// $this->db->join(''.$table.'_det d','d.id_tc_permohonan=a.id_tc_permohonan', 'inner');
 
-		$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 120');
+		// $this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 30');
 		// $this->db->where('(d.status_po = 0 or d.status_po IS NULL)');
 		$this->db->where('a.no_acc is not null');
 		$this->db->where('a.status_batal', 0);
@@ -38,6 +38,13 @@ class Po_penerbitan_model extends CI_Model {
 		if( ( isset( $_GET['keyword']) AND $_GET['keyword'] != '' )  ){
 			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'kode_permohonan' ){
 				$this->db->like( $_GET['search_by'], $_GET['keyword'] );
+			}
+
+			if( isset( $_GET['search_by']) AND $_GET['search_by'] == 'nama_brg' ){
+				$tbrg = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
+				$this->db->join($table.'_det z', 'z.id_tc_permohonan = a.id_tc_permohonan', 'left');
+				$this->db->join($tbrg.' v', 'v.kode_brg = z.kode_brg', 'left');
+				$this->db->like( 'v.nama_brg', $_GET['keyword'] );
 			}
 		}
 
@@ -148,7 +155,7 @@ class Po_penerbitan_model extends CI_Model {
 		$join_2 = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
-		$this->db->select('a.*, c.nama_brg, , CAST(a.jml_besar AS FLOAT) as jml_besar, CAST(a.jml_besar AS FLOAT) as jumlah_besar_po, d.content as content_po, d.harga_satuan as harga_satuan_po, d.jumlah_harga as jumlah_harga_po, e.no_po, e.tgl_po, c.satuan_besar, CAST(f.harga_beli as INT) as harga_po_terakhir, c.harga_beli as master_harga, CAST(a.jml_besar_acc AS FLOAT) as jml_besar_acc, CAST(a.jml_acc_pemeriksa AS FLOAT) as jml_acc_pemeriksa, CAST(a.jml_acc_penyetuju AS FLOAT) as jml_acc_penyetuju');
+		$this->db->select('a.*, c.nama_brg, CAST(a.jml_besar AS FLOAT) as jml_besar, CAST(a.jml_besar AS FLOAT) as jumlah_besar_po, d.content as content_po, d.harga_satuan as harga_satuan_po, d.jumlah_harga as jumlah_harga_po, e.no_po, e.tgl_po, c.satuan_besar, CAST(f.harga_beli as INT) as harga_po_terakhir, c.harga_beli as master_harga, CAST(a.jml_besar_acc AS FLOAT) as jml_besar_acc, CAST(a.jml_acc_pemeriksa AS FLOAT) as jml_acc_pemeriksa, CAST(a.jml_acc_penyetuju AS FLOAT) as jml_acc_penyetuju');
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($table.' b', 'b.id_tc_permohonan=a.id_tc_permohonan', 'left');
 		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
@@ -194,6 +201,15 @@ class Po_penerbitan_model extends CI_Model {
 		$this->db->where('id_tc_permohonan', $id)->update($tc_permohonan, array('status_kirim' => null, 'ket_acc'  => null, 'no_acc' => null, 'tgl_pemeriksa' => null, 'tgl_penyetuju' => null, 'tgl_acc' => null ) );
 		// update detail permohonan untuk jumlah acc
 		$this->db->where('status_po IS NULL')->where('id_tc_permohonan', $id)->update($tc_permohonan.'_det', array('jumlah_besar_acc' => NULL, 'jml_besar_acc' => NULL, 'jml_acc_pemeriksa' => NULL, 'jml_acc_penyetuju' => NULL, 'status_po' => NULL) );
+
+		return true;
+	}
+
+	public function rollback_status($flag, $id)
+	{
+		$tc_permohonan = ($flag=='non_medis')?'tc_permohonan_nm':'tc_permohonan';
+		// update detail permohonan untuk jumlah acc
+		$this->db->where('id_tc_permohonan_det', $id)->update($tc_permohonan.'_det', array('status_po' => NULL) );
 
 		return true;
 	}

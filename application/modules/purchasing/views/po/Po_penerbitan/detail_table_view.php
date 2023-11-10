@@ -1,5 +1,5 @@
 <script type="text/javascript">
-
+  
   function checkAll(elm) {
 
     if($(elm).prop("checked") == true){
@@ -41,7 +41,7 @@
     <!-- PAGE CONTENT BEGINS -->
       <span style="font-size:12px; font-weight:bold">Barang yang belum dibuatkan PO</span>
       <table style="font-size:11px;" width="100%">
-        <tr>
+        <tr style="background: darkseagreen">
           <th class="center" width="">No</th>
           <th>Kode Barang</th>
           <th>Nama Barang</th>
@@ -76,6 +76,7 @@
           <th class="center">Rasio</th>
           <th class="right">Harga Satuan</th>
           <th class="right">Total</th>
+          <th class="center">Rollback</th>
         </tr>
         <?php 
           $no=0; 
@@ -84,7 +85,7 @@
         ?>
           <tr>
             <td class="center"><?php echo $no?></td>
-            <td><?php echo $row_dt->no_po?></td>
+            <td><?php echo ($row_dt->no_po)?$row_dt->no_po:'<span class="red">PO telah dihapus</span>'?></td>
             <td><?php echo $this->tanggal->fieldDate($row_dt->tgl_po)?></td>
             <td><?php echo $row_dt->kode_brg?></td>
             <td><?php echo $row_dt->nama_brg?></td>
@@ -93,6 +94,7 @@
             <td class="center"><?php echo $row_dt->content_po?></td>
             <td align="right"><?php echo number_format($row_dt->harga_satuan_po, 2).',-'?></td>
             <td align="right"><?php echo number_format($row_dt->jumlah_harga_po, 2).',-'?></td>
+            <td align="center"><?php echo ($row_dt->no_po)?'-':'<a href="#" title="Rollback" onclick="rollback_status('.$row_dt->id_tc_permohonan_det.')" class="red"><b>rollback</b></a>'?></td>
           </tr>
         <?php endif; endforeach;?>
       </table>

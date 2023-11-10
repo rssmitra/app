@@ -119,12 +119,16 @@ class Po_revisi extends MX_Controller {
             $row[] = '<div class="left">'.$row_list->diajukan_oleh.'</div>';
             $row[] = '<div class="left">'.$row_list->disetujui_oleh.'</div>';
             $row[] = '<div class="pull-right">'.number_format($row_list->total_stl_ppn, 2).',-</div>';
+            
             $row[] = '<div class="center">
-                        <a href="#" onclick="getMenu('."'purchasing/po/Po_revisi/form/".$row_list->id_tc_po."?flag=".$_GET['flag']."'".')" class="btn btn-xs btn-primary" title="revisi po"><i class="fa fa-pencil"></i></a>
-                        <a href="#" onclick="PopupCenter('."'purchasing/po/Po_penerbitan/print_preview?ID=".$row_list->id_tc_po."&flag=".$_GET['flag']."'".','."'Cetak'".',900,650);" class="btn btn-xs btn-success" title="cetak po"><i class="fa fa-print"></i></a>
-                        <a href="#" onclick="PopupCenter('."'purchasing/po/Po_penerbitan/usulan_preview?ID=".$row_list->id_tc_po."&flag=".$_GET['flag']."'".','."'Cetak'".',900,650);" class="btn btn-xs btn-yellow dark" title="Usulan PO"><i class="fa fa-file"></i></a>
-                        <a href="#" onclick="rollback('.$row_list->id_tc_po.')" class="btn btn-xs btn-danger" title="Rollback"><i class="fa fa-refresh"></i></a>
-                      </div>';        
+                        <a href="#" onclick="PopupCenter('."'purchasing/po/Po_penerbitan/print_preview?ID=".$row_list->id_tc_po."&flag=".$_GET['flag']."'".','."'Cetak'".',900,650);" class="btn btn-xs btn-yellow" title="CETAK PO"><i class="fa fa-print dark"></i></a>
+                        <a href="#" onclick="PopupCenter('."'purchasing/po/Po_penerbitan/usulan_preview?ID=".$row_list->id_tc_po."&flag=".$_GET['flag']."'".','."'Cetak'".',900,650);" class="btn btn-xs btn-yellow dark" title="CETAK USULAN PO"><i class="fa fa-file dark"></i></a>
+                      </div>';  
+            $row[] = '<div class="center">
+            <a href="#" onclick="getMenu('."'purchasing/po/Po_revisi/form/".$row_list->id_tc_po."?flag=".$_GET['flag']."'".')" class="btn btn-xs btn-primary" title="REVISI PO"><i class="fa fa-pencil"></i></a>
+            <a href="#" onclick="rollback('.$row_list->id_tc_po.')" class="btn btn-xs btn-success" title="ROLLBACK"><i class="fa fa-refresh"></i></a>
+            <a href="#" onclick="delete_po('.$row_list->id_tc_po.')" class="btn btn-xs btn-danger" title="HAPUS PO GANDA"><i class="fa fa-trash"></i></a>
+        </div>';        
                   
             $data[] = $row;
         }
@@ -194,6 +198,19 @@ class Po_revisi extends MX_Controller {
     {
         if($_POST['ID']!=null){
             if($this->Po_revisi->rollback_po($_POST['flag'], $_POST['ID'])){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Data Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+    }
+
+    public function delete()
+    {
+        if($_POST['ID']!=null){
+            if($this->Po_revisi->delete_po($_POST['flag'], $_POST['ID'])){
                 echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Data Berhasil Dilakukan'));
             }else{
                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Data Gagal Dilakukan'));

@@ -195,16 +195,22 @@
         ?>
           <tr id="tr_<?php echo $row_dt[0]->kode_brg?>" <?php ( empty($row_dt[0]->kode_detail_penerimaan_barang) ) ? '' : 'style="background-color: red"' ; ?> >
             <!-- checkbox -->
+            <?php if(empty($row_dt[0]->kode_detail_penerimaan_barang)) :?>
             <td class="center">
                 <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" class="form-control" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]">
               
               <!-- hidden -->
               <input type="hidden" name="id_tc_permohonan[<?php echo $row_dt[0]->kode_brg?>]" id="id_tc_permohonan" value="<?php echo $row_dt[0]->id_tc_permohonan?>">
             </td>
+            <?php else: ?>
+              <td align="center"><i class="fa fa-check green bigger-150"></i></td>
+            <?php endif; ?>
 
             <td class="center"><?php echo $no?></td>
-            <td><?php echo $row_dt[0]->kode_brg?></td>
+            <td><?php echo $row_dt[0]->kode_brg?> </td>
             <td><?php echo $row_dt[0]->nama_brg?></td>
+
+            <?php if(empty($row_dt[0]->kode_detail_penerimaan_barang)) :?>
             <!-- satuan besar -->
             <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
             <!-- rasio -->
@@ -241,7 +247,7 @@
 
              <!-- ppn -->
              <td class="center">
-                <input type="text" name="ppn[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_ppn_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" onchange="inputPpn('<?php echo $row_dt[0]->kode_brg?>')" value="10" disabled>
+                <input type="text" name="ppn[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_ppn_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" onchange="inputPpn('<?php echo $row_dt[0]->kode_brg?>')" value="11" disabled>
                 <input type="hidden" name="ppn_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_ppn_<?php echo $row_dt[0]->kode_brg?>" class="ppn" style="height:45px;text-align:center" value="0">
             </td>
             
@@ -250,6 +256,10 @@
               <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control" style="height:45px;text-align:right" value="0" readonly disabled>
               <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
             </td>
+            <?php else : ?>
+              <td colspan="7" align="center"><span style="color: blue; letter-spacing: 2px; font-weight: bold">BARANG TELAH DITERIMA</span> <b>(<?php echo $row_dt[0]->kode_penerimaan?>)</b></td>
+            <?php endif; ?>
+
           </tr>
           <?php endforeach;?>
         </tbody>
