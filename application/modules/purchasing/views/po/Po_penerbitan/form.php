@@ -82,15 +82,18 @@ $(document).ready(function(){
                 });
             },
             afterSelect: function (item) {
+            preventDefault();
             // do what is needed with item
             var val_item=item.split(':')[0];
             $('#detail_supplier').html('');
             console.log(val_item);
             $('#supplier_id_hidden').val(val_item);
+
             // get detail data supplier
             $.getJSON("<?php echo site_url('Templates/References/getSupplierById') ?>/" + val_item, '', function (response) {
                 // detail supplier
                 $('#detail_supplier').html('<address><strong>'+response.namasupplier+'</strong><br>'+response.alamat+'<br>No. Telp : '+response.telpon1+'</address>');
+                
             });
             
             
