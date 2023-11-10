@@ -126,6 +126,38 @@ function rollback(myid){
   
 }
 
+function rollback_status(myid){
+  if(confirm('Apakah anda yakin akan mengembalikan ke status sebelumnya?')){
+    $.ajax({
+        url: 'purchasing/po/Po_penerbitan/rollback_status',
+        type: "post",
+        data: {ID:myid, flag: $('#flag').val()},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            reload_table();
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+  
+}
+
 
 </script>
 <div class="row">
@@ -141,6 +173,10 @@ function rollback(myid){
     </div>
 
     <form class="form-horizontal" method="post" id="form_search" action="purchasing/po/Po_penerbitan/find_data?flag=<?php echo $flag?>" autocomplete="off">
+      <div style="background: black; padding: 3px">
+      <span style="color: white; font-weight: bold; font-size: 12px">Data usulan pembelian yang belum dibuatkan PO melebihi 14 hari semenjak diusulkan akan expired secara otomatis, dan harus membuat usulan pembelian baru kembali.</span>
+      </div>
+      <br>
 
       <!-- hidden form -->
       <input type="hidden" name="flag" id="flag" value="<?php echo $flag;?>">
@@ -153,6 +189,7 @@ function rollback(myid){
               <option value="">-Silahkan Pilih-</option>
               <option value="kode_permohonan" selected>Kode Permintaan</option>
               <option value="month">Bulan</option>
+              <option value="nama_brg">Nama Barang</option>
             </select>
           </div>
 
@@ -210,7 +247,8 @@ function rollback(myid){
         <a href="#" class="btn btn-xs btn-danger" id="btn_create_po"><i class="fa fa-file"></i> Purchase Order (PO)</a>
       </div>
 
-      <hr class="separator">
+      
+      <hr>
 
       <div style="margin-top:-25px">
 

@@ -142,13 +142,13 @@ function format_html ( data ) {
 function find_data_reload(result){
 
     oTable.ajax.url(base_url+'/get_data?'+result.data).load();
-    $("html, body").animate({ scrollTop: "400px" });
+    // $("html, body").animate({ scrollTop: "400px" });
 
 }
 
 function reset_table(){
     oTable.ajax.url(base_url+'/get_data?'+params).load();
-    $("html, body").animate({ scrollDown: "400px" });
+    // $("html, body").animate({ scrollDown: "400px" });
 
 }
 

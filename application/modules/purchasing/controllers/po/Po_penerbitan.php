@@ -457,6 +457,21 @@ class Po_penerbitan extends MX_Controller {
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
         }
     }
+
+    public function rollback_status()
+    {
+        
+        if($_POST['ID']!=null){
+            if($this->Po_penerbitan->rollback_status($_POST['flag'], $_POST['ID'])){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Data Berhasil Dilakukan'));
+
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+    }
     
 
 }

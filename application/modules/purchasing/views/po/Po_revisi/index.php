@@ -94,6 +94,38 @@ function rollback(myid){
   
 }
 
+function delete_po(myid){
+  if(confirm('Are you sure?')){
+    $.ajax({
+        url: 'purchasing/po/Po_revisi/delete',
+        type: "post",
+        data: {ID:myid, flag: $('#flag').val()},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            reload_table();
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+  
+}
+
 $('select[name="search_by"]').change(function () {      
 
     if( $(this).val() == 'month'){
@@ -126,6 +158,10 @@ $('select[name="search_by"]').change(function () {
 
     <form class="form-horizontal" method="post" id="form_search" action="purchasing/po/Po_revisi/find_data?flag=<?php echo $flag?>">
 
+      <div style="background: red; padding: 3px">
+        <span style="color: white; font-weight: bold; font-size: 12px">Barang yang sudah diproses penerimaannya oleh Bagian Gudang, maka PO tidak dapat direvisi kembali, silahkan berkordinasi dengan Bagian Gudang untuk direvisi kembali penerimaannya</span>
+      </div>
+      <br>
       <!-- hidden form -->
       <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
 
@@ -217,12 +253,13 @@ $('select[name="search_by"]').change(function () {
             <th width="50px">ID</th>
             <th>Nomor PO</th>
             <th>Tanggal</th>
-            <th>Jenis PO</th>
+            <th>Jenis</th>
             <th>Nama Supplier</th>
             <th>Diajukan</th>
             <th>Disetujui</th>
             <th>Total</th>
-            <th width="150px">Aksi</th>
+            <th>Cetak</th>
+            <th width="100px">Aksi</th>
             
           </tr>
           </thead>
