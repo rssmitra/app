@@ -1576,6 +1576,10 @@ class Pl_pelayanan extends MX_Controller {
                 // update task selesai layanan poli
                 $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
                 $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $_POST['kodebookingantrol'], 'taskid' => 4, 'waktu' => $waktukirim));
+
+                $rand = rand(15,30);
+                $waktukirim_task_5 = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
+                $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $_POST['kodebookingantrol'], 'taskid' => 5, 'waktu' => $waktukirim_task_5));
             }
 
 

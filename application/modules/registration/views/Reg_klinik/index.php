@@ -723,15 +723,15 @@ $(document).ready(function(){
 
 })
 
-$('select[name="jeniskunjunganbpjs"]').change(function () {      
+// $('select[name="jeniskunjunganbpjs"]').change(function () {      
 
-  if ( $(this).val() == 1 ) {
-      $('#norujukanbpjs').attr('disabled', false);
-  }else{
-      $('#norujukanbpjs').attr('disabled', true);
-  }
+//   if ( $(this).val() == 1 ) {
+//       $('#norujukanbpjs').attr('disabled', false);
+//   }else{
+//       $('#norujukanbpjs').attr('disabled', true);
+//   }
 
-});
+// });
 
 function hideLabelPerjanjian(){
   preventDefault();
@@ -2152,9 +2152,9 @@ function form_perjanjian(){
                             <div class="col-md-3">
                             <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jeniskunjunganbpjs')), '' , 'jeniskunjunganbpjs', 'jeniskunjunganbpjs', 'form-control', '', '') ?>
                             </div>
-                            <label class="control-label col-sm-2">Nomor Rujukan</label>
+                            <label class="control-label col-sm-2">No. Rujukan</label>
                             <div class="col-md-4">
-                                <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text" disabled/>
+                                <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text"/>
                             </div>
                           </div>
 
