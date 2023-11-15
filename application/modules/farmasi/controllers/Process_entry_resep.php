@@ -114,9 +114,8 @@ class Process_entry_resep extends MX_Controller {
                 $kode_booking = $this->db->get_where('tc_registrasi', array('no_registrasi' => $_POST['no_registrasi']))->row();
                 if(!empty($kode_booking->kodebookingantrol)){
                     // update task id for the first time
-                    $waktukirim_task_5 = strtotime(date('Y-m-d H:i:s')) * 1000;
-                    $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking->kodebookingantrol, 'taskid' => 5, 'waktu' => $waktukirim_task_5));
-
+                    // $waktukirim_task_5 = strtotime(date('Y-m-d H:i:s')) * 1000;
+                    // $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kode_booking->kodebookingantrol, 'taskid' => 5, 'waktu' => $waktukirim_task_5));
                     // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
                     $rand = rand(15,30);
                     $waktukirim_task_6 = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
