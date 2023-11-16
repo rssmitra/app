@@ -1031,6 +1031,27 @@ final Class Master {
 		
 	}
 
+	function formatSignaFull($params){
+		// dd
+		$dd = $this->getdd($params['dd']);
+		$use = $this->getuse($params['use']);
+		// unit
+		$unit = $this->getunit($params['unit']);
+		$format = 'S. '.$dd.' '.$unit.' '.$this->formatRomawi((int)$params['qty']).' '.$use.'';
+		// response html
+		$html = '';
+		$html .= '<span class="monotype_style">R/</span><br>';
+		$html .= '<div style="padding-left: 15px">';
+		$html .= $params['nama_obat'].' &nbsp;&nbsp; No. '.$this->formatRomawi((int)$params['jumlah']).'<br>';
+		$html .= '<i>'.$format.'</i>';
+		$html .= ' ____________ det / nedet<br>';
+		$html .= '('.$params['dd'].' X '.$params['qty'].' '.$params['unit'].' '.$params['use'].')';
+		$html .= '</div>';
+
+		return $html;
+		
+	}
+
 	function getunit($for_unit){
 		$code = $this->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($for_unit)) );
 		return $code;
