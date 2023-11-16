@@ -490,8 +490,8 @@ class Reg_klinik extends MX_Controller {
                 $dt_reg = $detail_data['registrasi'];
                 $dt_antrian = $detail_data['no_antrian'];
                 $dt_jadwal = $detail_data['jadwal'];
-                $jam_praktek_mulai = ($dt_jadwal->jd_jam_mulai) ? $this->tanggal->formatFullTime($dt_jadwal->jd_jam_mulai) : '08.00';
-                $jam_praktek_selesai = ($dt_jadwal->jd_jam_selesai) ? $this->tanggal->formatFullTime($dt_jadwal->jd_jam_selesai) : '10.00';
+                $jam_praktek_mulai = ($dt_jadwal->jd_jam_mulai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai) : '08:00';
+                $jam_praktek_selesai = ($dt_jadwal->jd_jam_selesai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_selesai) : '10:00';
                 // post antrian online
                 $params_dt = array(
                   "no_registrasi" => $dt_reg->no_registrasi,
