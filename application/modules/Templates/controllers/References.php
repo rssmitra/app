@@ -2459,19 +2459,25 @@ class References extends MX_Controller {
 				$dt_reg = $detail_data['registrasi'];
 				$dt_antrian = $detail_data['no_antrian'];
 				$dt_jadwal = $detail_data['jadwal'];
+
+				$jam_praktek_mulai = ($dt_jadwal->jd_jam_mulai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai) : '08:00';
+				$jam_praktek_selesai = ($dt_jadwal->jd_jam_selesai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_selesai) : '10:00';
+				$kuota_dr = ($dt_jadwal->jd_kuota) ? $dt_jadwal->jd_kuota : 10;
+
 				// post antrian online
 				$params_dt = array(
 					"no_registrasi" => $dt_reg->no_registrasi,
-					'jam_praktek_mulai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_mulai),
-					'jam_praktek_selesai' => $this->tanggal->formatFullTime($dt_jadwal->jd_jam_selesai),
-					'kuota_dr' => $dt_jadwal->jd_kuota,
+					'jam_praktek_mulai' => $jam_praktek_mulai,
+					'jam_praktek_selesai' => $jam_praktek_selesai,
+					'kuota_dr' => $kuota_dr,
 				);
+        		// echo "<pre>";print_r($params_dt);die;
 
 				$jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
 
 				$config_antrol = array(
 					"kodebooking" => $dt_reg->kodebookingantrol,
-					"jenispasien" => "NON JKN",
+					"jenispasien" => "JKN",
 					"nomorkartu" => $dt_reg->no_kartu_bpjs,
 					"nik" => $dt_reg->no_ktp,
 					"nohp" => $dt_reg->no_hp,
@@ -2482,14 +2488,12 @@ class References extends MX_Controller {
 					"tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
 					"kodedokter" => $dt_reg->kode_dokter_bpjs,
 					"namadokter" => $dt_reg->nama_pegawai,
-					"jampraktek" => $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai).'-'.$this->tanggal->formatTime($dt_jadwal->jd_jam_selesai),
+					"jampraktek" => $jam_praktek_mulai.'-'.$jam_praktek_selesai,
 					"jeniskunjungan" => $jeniskunjungan,
 					"nomorreferensi" => $dt_reg->norujukan,
 					"nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
 					"angkaantrean" => $dt_antrian->no_antrian,
 				);
-
-				// echo '<pre>'; print_r($config_antrol);die;
 	
 				$antrol = $this->processAntrol($config_antrol, $params_dt);
 
@@ -2526,18 +2530,19 @@ class References extends MX_Controller {
             "kuotanonjkn" => $kuota,
             "keterangan" => "Silahkan tensi dengan perawat"
         );
-		$getData = array_merge($arr_dt, $post_antrol);
+
+        $getData = array_merge($arr_dt, $post_antrol);
         // echo '<pre>'; print_r($getData); die;
 
-        // add antrian lainnya
-		if($this->cekAntrolKodeBooking($arr_dt['kodebooking'])){
-			$this->AntrianOnline->addAntrianOnsite($getData);
-			// update kodebooking
-			$this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
-			// update task antrian online
-			$waktukirim = strtotime($arr_dt['tanggalperiksa']) * 1000;
-			$exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $arr_dt['kodebooking'], 'taskid' => 3, 'waktu' => $waktukirim));
-		}
+            // add antrian lainnya
+        if($this->cekAntrolKodeBooking($arr_dt['kodebooking'])){
+          $this->AntrianOnline->addAntrianOnsite($getData);
+          // update kodebooking
+          $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
+          // update task antrian online
+          $waktukirim = strtotime($arr_dt['tanggalperiksa']) * 1000;
+          $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $arr_dt['kodebooking'], 'taskid' => 3, 'waktu' => $waktukirim));
+        }
 
         return $post_antrol;
 
