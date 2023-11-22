@@ -321,10 +321,11 @@ class Reg_klinik extends MX_Controller {
         $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Perusahaan', 'trim');
         $this->form_validation->set_rules('kode_kelompok_hidden', 'Kode Perusahaan', 'trim');
         $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
+        $this->form_validation->set_rules('nikPasien', 'NIK Pasien', 'trim|required|min_length[16]|max_length[16]', array('min_length' => 'NIK pasien salah (kurang dari 16 digit)', 'max_length' => 'NIK pasien salah (lebih dari 16 digit)'));
 
         if(isset($_POST['kode_perusahaan_hidden']) && $_POST['kode_perusahaan_hidden']==120){
             $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim|required');
-            $this->form_validation->set_rules('noKartuBpjs', 'No Kartu BPJS', 'trim|required');
+            $this->form_validation->set_rules('noKartuBpjs', 'No Kartu BPJS', 'trim|required|min_length[13]|max_length[13]', array('min_length' => 'No Kartu BPJS pasien salah (kurang dari 13 digit)', 'max_length' => 'No Kartu BPJS pasien salah (lebih dari 13 digit)'));
             $this->form_validation->set_rules('jeniskunjunganbpjs', 'Jenis Kunjungan', 'trim|required');
             $this->form_validation->set_rules('norujukanbpjs', 'Nomor Rujukan', 'trim|required');
         }
