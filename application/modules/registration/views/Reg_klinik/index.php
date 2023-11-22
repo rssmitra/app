@@ -72,9 +72,7 @@ $(document).ready(function(){
 
       },      
 
-      uploadProgress: function(event, position, total, percentComplete) {        
-
-      },      
+      uploadProgress: function(event, position, total, percentComplete) {},      
 
       complete: function(xhr) {             
 
@@ -193,8 +191,9 @@ $(document).ready(function(){
 
       }      
 
-      }); 
+    }); 
 
+    
     $('#form_edit_pasien').ajaxForm({      
 
       beforeSend: function() {        
@@ -1513,6 +1512,11 @@ $('#btnSearchNoRujukan').click(function (e) {
 
 });
 
+$('#btn_search_rujukan_by_kartu').click(function (e) {
+    e.preventDefault();
+    show_modal('registration/Reg_klinik/search_rujukan_by_kartu/'+$('#noKartuBpjs').val()+'', 'DATA RUJUKAN PASIEN BPJS');
+});
+
 $('#tgl_registrasi').click(function (e) {
   $('#change_modul_view').hide();
   $('#jenis_pendaftaran').val('');
@@ -1543,6 +1547,12 @@ function form_perjanjian(){
     getMenuTabs('registration/reg_pasien/form_perjanjian_ontabs/'+noMr, 'div_load_perjanjian_form');
   }
 
+}
+
+function copyNoRujukan(no_rujukan){
+  preventDefault();
+  $('#norujukanbpjs').val(no_rujukan);
+  $('#globalModalView').modal('hide');
 }
 
 </script>
@@ -2152,10 +2162,22 @@ function form_perjanjian(){
                             <div class="col-md-3">
                             <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jeniskunjunganbpjs')), '' , 'jeniskunjunganbpjs', 'jeniskunjunganbpjs', 'form-control', '', '') ?>
                             </div>
-                            <label class="control-label col-sm-2">No. Rujukan</label>
-                            <div class="col-md-4">
-                                <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text"/>
+                          </div>
+
+                          <div class="form-group">
+                            <label class="control-label col-md-3">No. Rujukan</label>
+                            <div class="col-md-6">            
+                              <div class="input-group">
+                              <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text" placeholder="Cari atau masukan nomor rujukan" readonly/>
+                                <span class="input-group-btn">
+                                  <button type="button" id="btn_search_rujukan_by_kartu" class="btn btn-primary btn-sm">
+                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                    Cari Rujukan
+                                  </button>
+                                </span>
+                              </div>
                             </div>
+
                           </div>
 
                         </div>
