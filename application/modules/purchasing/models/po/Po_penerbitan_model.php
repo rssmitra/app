@@ -155,7 +155,11 @@ class Po_penerbitan_model extends CI_Model {
 		$join_2 = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
-		$this->db->select('a.*, c.nama_brg, CAST(a.jml_besar AS FLOAT) as jml_besar, CAST(a.jml_besar AS FLOAT) as jumlah_besar_po, d.content as content_po, d.harga_satuan as harga_satuan_po, d.jumlah_harga as jumlah_harga_po, e.no_po, e.tgl_po, c.satuan_besar, CAST(f.harga_beli as INT) as harga_po_terakhir, c.harga_beli as master_harga, CAST(a.jml_besar_acc AS FLOAT) as jml_besar_acc, CAST(a.jml_acc_pemeriksa AS FLOAT) as jml_acc_pemeriksa, CAST(a.jml_acc_penyetuju AS FLOAT) as jml_acc_penyetuju');
+		$select = "a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.satuan_besar, a.rasio, a.status_po, a.jumlah_besar_acc, a.status_batal, a.user_id, a.keterangan, a.jumlah_stok_sebelumnya, a.created_date, a.created_by, a.updated_date, a.updated_by, jml_acc_pemeriksa, jml_acc_penyetuju, jml_besar_acc, c.nama_brg, e.no_po, e.tgl_po, c.satuan_besar";
+		
+		$this->db->select($select);
+		$this->db->select('d.content AS content_po, d.harga_satuan AS harga_satuan_po, d.jumlah_harga AS jumlah_harga_po, c.harga_beli AS master_harga, CAST ( a.jml_besar AS FLOAT ) AS jml_besar, CAST ( a.jml_besar AS FLOAT ) AS jumlah_besar_po, CAST ( f.harga_beli AS INT ) AS harga_po_terakhir, CAST ( a.jml_besar_acc AS FLOAT ) AS jml_besar_acc, CAST ( a.jml_acc_pemeriksa AS FLOAT ) AS jml_acc_pemeriksa, CAST ( a.jml_acc_penyetuju AS FLOAT ) AS jml_acc_penyetuju ');
+
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($table.' b', 'b.id_tc_permohonan=a.id_tc_permohonan', 'left');
 		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
@@ -167,6 +171,12 @@ class Po_penerbitan_model extends CI_Model {
 		$this->db->where('a.id_tc_permohonan IN ('.$id.')');
 		$this->db->where('a.jml_acc_penyetuju > 0');
 		// $this->db->where('(a.status_po IS NULL or a.status_po = 0)');
+		$this->db->group_by($select);
+		$this->db->group_by('CAST ( f.harga_beli AS INT ),
+								CAST ( a.jml_besar AS FLOAT ),
+								CAST ( a.jml_besar_acc AS FLOAT ),
+								CAST ( a.jml_acc_pemeriksa AS FLOAT ),
+								CAST ( a.jml_acc_penyetuju AS FLOAT ), d.content, d.harga_satuan, d.jumlah_harga, c.harga_beli ');
 		$this->db->order_by('c.nama_brg ASC');
 		$query = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
