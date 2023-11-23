@@ -2168,7 +2168,7 @@ function copyNoRujukan(no_rujukan){
                             <label class="control-label col-md-3">No. Rujukan</label>
                             <div class="col-md-6">            
                               <div class="input-group">
-                              <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text" placeholder="Cari atau masukan nomor rujukan" readonly/>
+                              <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text" placeholder="Cari atau masukan nomor rujukan"/>
                                 <span class="input-group-btn">
                                   <button type="button" id="btn_search_rujukan_by_kartu" class="btn btn-primary btn-sm">
                                     <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
