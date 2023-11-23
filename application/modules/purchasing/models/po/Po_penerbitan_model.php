@@ -200,6 +200,7 @@ class Po_penerbitan_model extends CI_Model {
 
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('a.id_tc_po IN ('.$id.')');
+		$this->db->group_by('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan, a.harga_satuan_netto, a.jumlah_harga_netto,a.jumlah_harga, a.discount, a.discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn, b.total_sbl_ppn, b.total_stl_ppn, b.discount_harga, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik, b.jenis_po');
 		$this->db->order_by('a.id_tc_po_det DESC');
 		return $this->db->get()->result();
 	}
