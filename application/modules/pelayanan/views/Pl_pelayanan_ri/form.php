@@ -74,6 +74,10 @@ function find_pasien_by_keyword(keyword){
             $('#noMrHidden').val(obj.no_mr);
 
             $('#no_ktp').text(obj.no_ktp);
+            // tambahan
+            $('#nikPasien').val(obj.no_ktp);
+            $('#hpPasien').val(obj.no_hp);
+            $('#noTelpPasien').val(obj.tlp_almt_ttp);
 
             $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
 
@@ -219,6 +223,11 @@ function form_main(url, no_mr){
           <br>
           <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
           <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
+          <input type="hidden" value="" name="nikPasien" id="nikPasien">
+          <input type="hidden" value="" name="noKartuBpjs" id="noKartuBpjs">
+          <input type="hidden" value="3" name="jeniskunjunganbpjs" id="jeniskunjunganbpjs">
+          <input type="hidden" value="" name="hpPasien" id="hpPasien">
+          <input type="hidden" value="" name="noTelpPasien" id="noTelpPasien">
           <input type="hidden" name="bag_pas" value="<?php echo $value->bag_pas?>" id="bag_pas">
 
           <!-- profile Pasien -->
