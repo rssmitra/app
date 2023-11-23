@@ -155,10 +155,10 @@ class Po_penerbitan_model extends CI_Model {
 		$join_2 = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$join_3 = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
-		$select = "a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.satuan_besar, a.rasio, a.status_po, a.jumlah_besar_acc, a.status_batal, a.user_id, a.keterangan, a.jumlah_stok_sebelumnya, a.created_date, a.created_by, a.updated_date, a.updated_by, jml_acc_pemeriksa, jml_acc_penyetuju, jml_besar_acc, c.nama_brg, e.no_po, e.tgl_po, c.satuan_besar";
+		$select = "a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.satuan_besar, a.rasio, a.status_po, a.jumlah_besar_acc, a.status_batal, a.user_id, a.jumlah_stok_sebelumnya, a.created_date, a.created_by, a.updated_date, a.updated_by, jml_acc_pemeriksa, jml_acc_penyetuju, jml_besar_acc, c.nama_brg, e.no_po, e.tgl_po, c.satuan_besar";
 		
 		$this->db->select($select);
-		$this->db->select('d.content AS content_po, d.harga_satuan AS harga_satuan_po, d.jumlah_harga AS jumlah_harga_po, c.harga_beli AS master_harga, CAST ( a.jml_besar AS FLOAT ) AS jml_besar, CAST ( a.jml_besar AS FLOAT ) AS jumlah_besar_po, CAST ( f.harga_beli AS INT ) AS harga_po_terakhir, CAST ( a.jml_besar_acc AS FLOAT ) AS jml_besar_acc, CAST ( a.jml_acc_pemeriksa AS FLOAT ) AS jml_acc_pemeriksa, CAST ( a.jml_acc_penyetuju AS FLOAT ) AS jml_acc_penyetuju ');
+		$this->db->select('cast(a.keterangan as nvarchar(2000)) as keterangan,d.content AS content_po, d.harga_satuan AS harga_satuan_po, d.jumlah_harga AS jumlah_harga_po, c.harga_beli AS master_harga, CAST ( a.jml_besar AS FLOAT ) AS jml_besar, CAST ( a.jml_besar AS FLOAT ) AS jumlah_besar_po, CAST ( f.harga_beli AS INT ) AS harga_po_terakhir, CAST ( a.jml_besar_acc AS FLOAT ) AS jml_besar_acc, CAST ( a.jml_acc_pemeriksa AS FLOAT ) AS jml_acc_pemeriksa, CAST ( a.jml_acc_penyetuju AS FLOAT ) AS jml_acc_penyetuju ');
 
 		$this->db->from(''.$table.'_det a');
 		$this->db->join($table.' b', 'b.id_tc_permohonan=a.id_tc_permohonan', 'left');
@@ -176,7 +176,7 @@ class Po_penerbitan_model extends CI_Model {
 								CAST ( a.jml_besar AS FLOAT ),
 								CAST ( a.jml_besar_acc AS FLOAT ),
 								CAST ( a.jml_acc_pemeriksa AS FLOAT ),
-								CAST ( a.jml_acc_penyetuju AS FLOAT ), d.content, d.harga_satuan, d.jumlah_harga, c.harga_beli ');
+								CAST ( a.jml_acc_penyetuju AS FLOAT ), d.content, d.harga_satuan, d.jumlah_harga, c.harga_beli,cast(a.keterangan as nvarchar(2000)) ');
 		$this->db->order_by('c.nama_brg ASC');
 		$query = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
