@@ -146,17 +146,19 @@ class Po_revisi extends MX_Controller {
     public function get_detail($id){
         $flag = $_GET['flag'];
         $result = $this->Po_penerbitan->get_po($flag, $id);
+          // echo '<pre>';print_r($result);die;
         $getData = array();
         foreach($result as $row_dt){
             $getData[$row_dt->kode_brg][] = $row_dt;
         }
-        // echo '<pre>';print_r($getData);
+        
         $data = array(
             'po' => $result[0],
             'po_data' => $getData,
             'flag' => $flag,
             'id' => $id,
             );
+
         $temp_view = $this->load->view('po/Po_revisi/detail_table_view', $data, true);
         echo json_encode( array('html' => $temp_view) );
     }
