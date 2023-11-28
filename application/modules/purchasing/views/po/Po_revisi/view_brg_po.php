@@ -27,7 +27,7 @@
   }
 
   function checkOne(kode_brg) {
-           
+
     if($('#checkbox_brg_'+kode_brg+'').prop("checked") == true){
       $('#tr_'+kode_brg+' input[type=text]').attr('disabled', false);
       $('#form_input_harga_satuan_'+kode_brg+'').val( $('#hidden_form_input_harga_satuan_'+kode_brg+'').val() );
@@ -225,11 +225,6 @@
             </td>
 
             <!-- harga satuan -->
-            <?php
-              // harga dasar
-              // $harga_dasar = round($row_dt[0]->harga_po_terakhir / 1.1);
-              // $jumlah_harga_dasar_satuan_besar = round($harga_dasar * $row_dt[0]->rasio);
-            ?>
             <td class="center">
                 <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="format_number form-control" value="<?php echo $row_dt[0]->harga_satuan?>" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled>
                 <!-- perhitungan harga satuan dasar -->
@@ -257,7 +252,12 @@
               <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
             </td>
             <?php else : ?>
-              <td colspan="7" align="center"><span style="color: blue; letter-spacing: 2px; font-weight: bold">BARANG TELAH DITERIMA</span> <b>(<?php echo $row_dt[0]->kode_penerimaan?>)</b></td>
+              <td colspan="6" align="center"><span style="color: blue; letter-spacing: 2px; font-weight: bold">BARANG TELAH DITERIMA</span> <b>(<?php echo $row_dt[0]->kode_penerimaan?>)</b></td>
+               <!-- total -->
+            <td class="center">
+              <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control" style="height:45px;text-align:right" value="0" readonly disabled>
+              <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
+            </td>
             <?php endif; ?>
 
           </tr>
@@ -266,24 +266,24 @@
         <tr style="font-size:12px; font-weight:bold">
           <td align="right" colspan="10">DPP</td>
           <td align="right">
-              <input type="text" class="format_number form-control" name="total_dpp" id="total_dpp" style="height:45px;text-align:right" value="" readonly>
-              <input type="hidden" class="form-control" name="total_dpp_val" id="total_dpp_val" style="height:45px;text-align:right" value="" readonly>
+              <input type="text" class="format_number form-control" name="total_dpp" id="total_dpp" style="height:45px;text-align:right" value="">
+              <input type="hidden" class="form-control" name="total_dpp_val" id="total_dpp_val" style="height:45px;text-align:right" value="">
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
           <td align="right" colspan="10">PPN</td>
           <td align="right">
-              <input type="text" class="format_number form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="" readonly>
-              <input type="hidden" class="form-control" name="total_ppn_val" id="total_ppn_val" style="height:45px;text-align:right" value="" readonly>
+              <input type="text" class="format_number form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="">
+              <input type="hidden" class="form-control" name="total_ppn_val" id="total_ppn_val" style="height:45px;text-align:right" value="">
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
           <td align="right" colspan="10">TOTAL</td>
           <td align="right">
               <!-- hidden potongan diskon -->
-              <input type="hidden" class="form-control" name="total_potongan_diskon_val" id="total_potongan_diskon_val" style="height:45px;text-align:right" value="" readonly>
-              <input type="text" class="format_number form-control" name="total_nett" id="total_nett" style="height:45px;text-align:right" value="" readonly>
-              <input type="hidden" class="form-control" name="total_nett_val" id="total_nett_val" style="height:45px;text-align:right" value="" readonly>
+              <input type="hidden" class="form-control" name="total_potongan_diskon_val" id="total_potongan_diskon_val" style="height:45px;text-align:right" value="">
+              <input type="text" class="format_number form-control" name="total_nett" id="total_nett" style="height:45px;text-align:right" value="">
+              <input type="hidden" class="form-control" name="total_nett_val" id="total_nett_val" style="height:45px;text-align:right" value="">
           </td>
         </tr>
       </table>
