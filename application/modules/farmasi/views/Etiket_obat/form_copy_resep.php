@@ -133,6 +133,7 @@
                               }
                               echo '</table>';
                               $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($first_dt[0]->satuan_racikan)) );
+                              
                               echo '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).' da in '.$unit_code.'</i> <br>';
 
                               $config_racikan = array(
