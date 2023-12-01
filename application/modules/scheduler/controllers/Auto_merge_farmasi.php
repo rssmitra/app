@@ -69,6 +69,9 @@ class Auto_merge_farmasi extends MX_Controller {
         
                         // define id tc far racikan
                         $id_tc_far_racikan = isset($row->id_tc_far_racikan)?$this->regex->_genRegex($row->id_tc_far_racikan, 'RQXINT'):0;
+
+                        // sub total
+                        $subtotal = isset($row->sub_total) ? ($row->jumlah_obat_23 * $row->harga_jual) :0;
         
                         // data to execute
                         $data_farmasi = array(
@@ -80,9 +83,9 @@ class Auto_merge_farmasi extends MX_Controller {
                             'kode_brg' => isset($kode_brg)?$this->regex->_genRegex($kode_brg, 'RGXQSL'):0,
                             'nama_brg' => $row->nama_brg,
                             'satuan_kecil' => $row->satuan_kecil,
-                            'jumlah' =>  isset($row->jumlah_tebus)?$this->regex->_genRegex($row->jumlah_tebus, 'RQXINT'):0,
+                            'jumlah' =>  isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
                             'harga_satuan' =>  isset($row->harga_jual)?$this->regex->_genRegex($row->harga_jual, 'RQXINT'):0,
-                            'sub_total' =>  isset($row->sub_total)?$this->regex->_genRegex($row->sub_total, 'RQXINT'):0,
+                            'sub_total' =>  $subtotal,
                         );
         
                         // kondisi untuk diporses update/insert
