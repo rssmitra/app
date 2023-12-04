@@ -377,6 +377,7 @@ class Po_penerbitan extends MX_Controller {
         /*get value by id*/
         $format_no_po = $this->master->get_max_number_per_month($table, 'no_urut_periodik', 'tgl_po');
         $dt_detail_brg = $this->Po_penerbitan->get_detail_brg_permintaan($flag, $_GET);
+         // echo '<pre>';print_r($dt_detail_brg);die;
 
         $data['no_po'] = $format.'/'.$format_no_po['format'];
         $data['no_urut_periodik'] = $format_no_po['max_num'];
@@ -393,7 +394,7 @@ class Po_penerbitan extends MX_Controller {
         }
         $data['dt_detail_brg'] = $getData;
         $data['history_po'] = $history_po;
-        // echo '<pre>';print_r($history_po);die;
+        // echo '<pre>';print_r($data['dt_detail_brg']);die;
         $data['view_brg_po'] = $this->load->view('po/Po_penerbitan/view_brg_po', $data, true);
 
         $this->load->view('po/Po_penerbitan/form', $data, false);
