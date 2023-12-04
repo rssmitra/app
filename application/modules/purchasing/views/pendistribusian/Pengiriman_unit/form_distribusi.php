@@ -108,7 +108,7 @@ function getDetailBarang(kode_brg){
       $('#harga_brg_hidden').val(dt_brg.harga_beli);
       $('#qtyBarang').attr('max', parseInt(dt_brg.jml_sat_kcl));
       $('#qtyStok').val(parseInt(dt_brg.jml_sat_kcl));
-      $('#qtyBarang').val(1);
+      $('#qtyBarang').val('');
       $('#qtyBarang').focus();
       $('#div_detail_brg').html( response.html );
        
@@ -188,7 +188,7 @@ function check_barcode(){
             $('#inputKeyBarang').val(dt_brg.nama_brg);
             $('#satuan_brg_hidden').val(dt_brg.satuan_kecil);
             $('#harga_brg_hidden').val(dt_brg.harga_beli);
-            $('#qtyBarang').val(1);
+            $('#qtyBarang').val('');
           }else{
             $('#kode_brg_hidden').val('');
             $('#nama_brg_hidden').val('');
