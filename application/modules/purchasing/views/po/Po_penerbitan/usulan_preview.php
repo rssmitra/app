@@ -158,7 +158,7 @@ th, td {
       </td>
     </tr>
 
-    <tr>
+    <!-- <tr>
       <td colspan="2" style="text-align: center; width: 100%; font-weight: bold" >Mengesahkan, </td>
     </tr>
     <?php if($po->jenis_po == 'Non Rutin') {?>
@@ -188,7 +188,7 @@ th, td {
         <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
       </td>
     </tr>
-    <?php }?>
+    <?php }?> -->
 
 </table>
 
