@@ -118,7 +118,7 @@ class Po_revisi extends MX_Controller {
             $row[] = '<div class="left">'.$row_list->namasupplier.'</div>';
             $row[] = '<div class="left">'.$row_list->diajukan_oleh.'</div>';
             $row[] = '<div class="left">'.$row_list->disetujui_oleh.'</div>';
-            $row[] = '<div class="pull-right">'.number_format($row_list->total_stl_ppn, 2).',-</div>';
+            $row[] = '<div class="pull-right">'.number_format($row_list->total_stl_ppn).',-</div>';
             
             $row[] = '<div class="center">
                         <a href="#" onclick="PopupCenter('."'purchasing/po/Po_penerbitan/print_preview?ID=".$row_list->id_tc_po."&flag=".$_GET['flag']."'".','."'Cetak'".',900,650);" class="btn btn-xs btn-yellow" title="CETAK PO"><i class="fa fa-print dark"></i></a>
