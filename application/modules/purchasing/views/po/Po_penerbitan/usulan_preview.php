@@ -158,7 +158,7 @@ th, td {
       </td>
     </tr>
 
-    <!-- <tr>
+    <tr>
       <td colspan="2" style="text-align: center; width: 100%; font-weight: bold" >Mengesahkan, </td>
     </tr>
     <?php if($po->jenis_po == 'Non Rutin') {?>
@@ -168,14 +168,16 @@ th, td {
         <br>
         <br>
         <br>
-        <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
+        <!-- <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?> -->
+        (____________________________)
       </td>
       <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
-        <?php echo $this->master->get_ttd('ttd_dir_keu_rssm') ;?>
+        <!-- <?php echo $this->master->get_ttd('ttd_dir_keu_rssm') ;?> -->
+        (____________________________)
       </td>
     </tr>
     <?php }else{ ?>
@@ -185,10 +187,11 @@ th, td {
         <br>
         <br>
         <br>
-        <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
+        <!-- <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?> -->
+        (____________________________)
       </td>
     </tr>
-    <?php }?> -->
+    <?php }?>
 
 </table>
 
