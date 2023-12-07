@@ -72,28 +72,28 @@
               <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $row_dt[0]->jumlah_besar_acc?></td>
               <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
               <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $row_dt[0]->discount; ?></td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($row_dt[0]->discount_rp, 2).',-'; ?></td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($total_harga, 2).',-';?></td>
+              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($row_dt[0]->discount_rp).',-'; ?></td>
+              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($total_harga).',-';?></td>
             </tr>
             <?php 
               endforeach;
               $total_all = array_sum($arr_total);
-              $ppn = $total_all * (11/100);
+              $ppn = $po->ppn;
               $total_after_ppn = $total_all + $ppn;
             ?>
 
             <tr>
               <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">DPP </td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format(array_sum($arr_total), 2)?></td>
+              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format(array_sum($arr_total))?>,-</td>
             </tr>
             <tr>
               <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">PPN </td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($ppn, 2)?></td>
+              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($ppn)?>,-</td>
             </tr>
 
             <tr>
               <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">Total </td>
-              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($total_after_ppn, 2)?></td>
+              <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($total_after_ppn)?>,-</td>
             </tr>
             <tr>
             <td colspan="9">Terbilang : 
