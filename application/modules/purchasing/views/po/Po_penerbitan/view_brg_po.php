@@ -4,7 +4,7 @@
 
   $(function(){
           
-    $('.format_number').number( true, 2 );
+    $('.format_number').number( true );
     
   });
 
