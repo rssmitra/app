@@ -69,7 +69,6 @@ class Adm_kasir extends MX_Controller {
             
             if( $_GET['pelayanan'] != 'RI' ){
                 if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) != '03'){
-                    
                     $no++;
                     $row = array();
                     // sum total
@@ -87,14 +86,19 @@ class Adm_kasir extends MX_Controller {
                     $row[] = ucwords($row_list[0]['nama_bagian']);
                     $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
                     $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);
-                    if( $total > 0 ){
-                        $row[] = '<div class="pull-right">
-                                    <a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a>
-                                    <input type="hidden" class="total_billing_class" value="'.$total.'">
-                                  </div>';
+                    if( $row_list[0]['status_batal'] == 1 ){
+                        $row[] = '<div class="center"><span style="color: red; font-weight: bold">Batal</span></div>';
                     }else{
-                        $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
+                        if( $total > 0 ){
+                            $row[] = '<div class="pull-right">
+                                        <a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a>
+                                        <input type="hidden" class="total_billing_class" value="'.$total.'">
+                                      </div>';
+                        }else{
+                            $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
+                        }
                     }
+                    
                     $data[] = $row;
                 }
             }
