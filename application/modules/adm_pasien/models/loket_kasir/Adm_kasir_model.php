@@ -5,7 +5,7 @@ class Adm_kasir_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar';
+	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal';
 	var $order = array('c.nama_pasien' => 'ASC');
 
 	public function __construct()
@@ -35,20 +35,20 @@ class Adm_kasir_model extends CI_Model {
 					$this->db->like($_GET['search_by'], $_GET['keyword']);		
 				}
 
-        if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
-          $this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
-        }else{
-          $this->db->where('DATEDIFF(day,b.tgl_jam_masuk,GETDATE()) < 150');
-        }
+				if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
+				$this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+				}else{
+				$this->db->where('DATEDIFF(day,b.tgl_jam_masuk,GETDATE()) < 150');
+				}
 			}	else{
 
-        if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
-          $this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
-        }else{
-          $this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
-        }
+				if( isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' AND isset($_GET['to_tgl']) AND $_GET['to_tgl'] != ''){
+					$this->db->where("CAST(b.tgl_jam_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+				}else{
+					$this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
+				}
 
-      }	
+			}	
 
 			if( isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ){
 				$this->db->where("b.kode_bagian_masuk", $_GET['kode_bagian']);
@@ -143,6 +143,7 @@ class Adm_kasir_model extends CI_Model {
 						'nama_perusahaan' => ($value->nama_perusahaan != NULL) ? $value->nama_perusahaan : $value->nama_kelompok,
 						'total' => $status_lunas,
 						'total_billing' => $total,
+						'status_batal' => $value->status_batal,
 					);
 				}
 			}else{
@@ -164,6 +165,7 @@ class Adm_kasir_model extends CI_Model {
 						'nama_perusahaan' => ($value->nama_perusahaan != NULL) ? $value->nama_perusahaan : $value->nama_kelompok,
 						'total' => $status_lunas,
 						'total_billing' => $total,
+						'status_batal' => $value->status_batal,
 					);
 				}
 			}
