@@ -7,7 +7,7 @@
 
 <script>
 
-
+setInterval("update_antrian();",15000); 
 
 jQuery(function($) {  
 
@@ -218,6 +218,7 @@ $(document).ready(function(){
 
           $('#modalEditPasien').modal('hide');
           console.log(jsonResponse);
+          $('#nikPasien').val(jsonResponse.no_ktp);
           find_pasien_by_keyword( jsonResponse.no_mr );
 
         }else{
@@ -1275,6 +1276,9 @@ function find_pasien_by_mr(keyword){
               $('#no_mr').text(obj.no_mr);
               $('#noMrHidden').val(obj.no_mr);
               $('#no_ktp').text(obj.no_ktp);
+              $('#nikPasien').val(obj.no_ktp);
+              $('#hpPasien').val(obj.no_hp);
+              $('#noTelpPasien').val(obj.tlp_almt_ttp);
               $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
               $('#nama_pasien_hidden').val(obj.nama_pasien);
               $('#jk').text(obj.jen_kelamin);
