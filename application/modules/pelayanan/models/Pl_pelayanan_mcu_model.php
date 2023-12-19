@@ -79,8 +79,10 @@ class Pl_pelayanan_mcu_model extends CI_Model {
 		{
 			$order = $this->order;
 			$order2 = $this->order2;
+			$order3 = $this->order3;
 			$this->db->order_by(key($order), $order[key($order)]);
 			$this->db->order_by(key($order2), $order2[key($order2)]);
+			$this->db->order_by(key($order3), $order3[key($order3)]);
 		}
 	}
 	
