@@ -211,7 +211,8 @@ class Po_penerbitan_model extends CI_Model {
 		// update header permohonan
 		$this->db->where('id_tc_permohonan', $id)->update($tc_permohonan, array('status_kirim' => null, 'ket_acc'  => null, 'no_acc' => null, 'tgl_pemeriksa' => null, 'tgl_penyetuju' => null, 'tgl_acc' => null ) );
 		// update detail permohonan untuk jumlah acc
-		$this->db->where('status_po IS NULL')->where('id_tc_permohonan', $id)->update($tc_permohonan.'_det', array('jumlah_besar_acc' => NULL, 'jml_besar_acc' => NULL, 'jml_acc_pemeriksa' => NULL, 'jml_acc_penyetuju' => NULL, 'status_po' => NULL) );
+		$this->db->where('(status_po is null or status_po = 0)')->where('id_tc_permohonan', $id)->update($tc_permohonan.'_det', array('jumlah_besar_acc' => NULL, 'jml_besar_acc' => NULL, 'jml_acc_pemeriksa' => NULL, 'jml_acc_penyetuju' => NULL, 'status_po' => NULL) );
+		// print_r($this->db->last_query());die;
 
 		return true;
 	}

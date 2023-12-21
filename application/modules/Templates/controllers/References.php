@@ -2494,8 +2494,10 @@ class References extends MX_Controller {
 					"nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
 					"angkaantrean" => $dt_antrian->no_antrian,
 				);
+
+				$arr_data = array_merge($config_antrol, $params_dt);
 	
-				$antrol = $this->processAntrol($config_antrol, $params_dt);
+				$antrol = $this->processAntrol($arr_data);
 
 			}
 		}
@@ -2504,11 +2506,11 @@ class References extends MX_Controller {
 		
 	}
 
-	public function processAntrol($arr_dt, $params){
+	public function processAntrol($arr_dt){
         // echo '<pre>'; print_r($_POST);die;
         // estimasi dilayani
-        $jam_mulai_praktek = $this->tanggal->formatFullTime($params['jam_praktek_mulai']);
-        $jam_selesai_praktek = $this->tanggal->formatFullTime($params['jam_praktek_selesai']);
+        $jam_mulai_praktek = $this->tanggal->formatFullTime($arr_dt['jam_praktek_mulai']);
+        $jam_selesai_praktek = $this->tanggal->formatFullTime($arr_dt['jam_praktek_selesai']);
         $date = date_create($this->tanggal->formatDateTimeToSqlDate($arr_dt['tanggalperiksa']).' '.$jam_mulai_praktek );
         
         $est_hour = ceil($arr_dt['nomorantrean'] / 12);
@@ -2519,7 +2521,7 @@ class References extends MX_Controller {
         $estimasidilayani = date_format($date, 'Y-m-d H:i:s');
         $milisecond = strtotime($estimasidilayani) * 1000;
 
-		$kuota = round($params['kuota_dr']/2);
+		$kuota = round($arr_dt['kuota_dr']/2);
         $sisa_kuota = $kuota - $arr_dt['angkaantrean'];
         // add antrian
         $post_antrol = array(
@@ -2538,7 +2540,7 @@ class References extends MX_Controller {
         if($this->cekAntrolKodeBooking($arr_dt['kodebooking'])){
           $this->AntrianOnline->addAntrianOnsite($getData);
           // update kodebooking
-          $this->db->where('no_registrasi', $params['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
+          $this->db->where('no_registrasi', $arr_dt['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
           // update task antrian online
           $waktukirim = strtotime($arr_dt['tanggalperiksa']) * 1000;
           $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $arr_dt['kodebooking'], 'taskid' => 3, 'waktu' => $waktukirim));

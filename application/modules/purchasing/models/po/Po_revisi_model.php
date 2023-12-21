@@ -168,7 +168,7 @@ class Po_revisi_model extends CI_Model {
 
 		foreach ($dt_po as $key => $value) {
 			# code...
-			$this->db->where( array('id_tc_permohonan_det' => $value->id_tc_permohonan_det) )->update($tc_permohonan.'_det', array('status_po' => NULL) );
+			$this->db->where( array('id_tc_permohonan_det' => $value->id_tc_permohonan_det) )->update($tc_permohonan.'_det', array('status_po' => NULL, 'jml_acc_pemeriksa' => NULL, 'jml_acc_penyetuju' => NULL) );
 			$id_tc_permohonan_det[] = $value->id_tc_permohonan_det;
 		}
 		

@@ -66,6 +66,37 @@ $(document).ready(function(){
 
             <p><b>PENANDATANGAN</b></p>
             <div class="form-group">
+              <label class="control-label col-md-2">Direktur Operasional PT. SML</label>
+              <div class="col-md-3">
+                <input type="hidden" name="auto_id[ttd_dir_opr_sml]" value="<?php echo $this->master->get_ttd_data('ttd_dir_opr_sml','auto_id');?>">
+                <input name="value[ttd_dir_opr_sml]" id="ttd_dir_opr_sml" value="<?php echo $this->master->get_ttd_data('ttd_dir_opr_sml','value'); ?>" class="form-control" type="text">
+              </div>
+              <label class="control-label col-md-2">Nama Pejabat</label>
+              <div class="col-md-2">
+                <input name="label[ttd_dir_opr_sml]" id="ttd_dir_opr_sml" value="<?php echo $this->master->get_ttd_data('ttd_dir_opr_sml','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_dir_opr_sml', 'reff_id') , 'reff_id[ttd_dir_opr_sml]', 'reff_id_ttd_dir_opr_sml', 'form-control', '', '') ?>
+              </div>
+            </div> 
+
+            <div class="form-group">
+              <label class="control-label col-md-2">Direktur Keuangan PT. SML</label>
+              <div class="col-md-3">
+                <input type="hidden" name="auto_id[ttd_dir_keu_rssm]" value="<?php echo $this->master->get_ttd_data('ttd_dir_keu_rssm','auto_id');?>">
+                <input name="value[ttd_dir_keu_rssm]" id="ttd_dir_keu_rssm" value="<?php echo $this->master->get_ttd_data('ttd_dir_keu_rssm','value'); ?>" class="form-control" type="text">
+              </div>
+              <label class="control-label col-md-2">Nama Pejabat</label>
+              <div class="col-md-2">
+                <input name="label[ttd_dir_keu_rssm]" id="ttd_dir_keu_rssm" value="<?php echo $this->master->get_ttd_data('ttd_dir_keu_rssm','label'); ?>" class="form-control" type="text">
+              </div>
+              <div class="col-md-3">
+                <?php echo $this->master->custom_selection($params = array('table' => 'tmp_user', 'id' => 'user_id', 'name' => 'fullname', 'where' => array()), $this->master->get_ttd_data('ttd_dir_keu_rssm', 'reff_id') , 'reff_id[ttd_dir_keu_rssm]', 'reff_id_ttd_dir_keu_rssm', 'form-control', '', '') ?>
+              </div>
+            </div> 
+
+
+            <div class="form-group">
               <label class="control-label col-md-2">Kepala <?php echo COMP_FLAG; ?></label>
               <div class="col-md-3">
                 <input type="hidden" name="auto_id[ttd_ka_rs]" value="<?php echo $this->master->get_ttd_data('ttd_ka_rs','auto_id');?>">

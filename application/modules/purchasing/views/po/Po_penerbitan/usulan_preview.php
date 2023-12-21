@@ -168,16 +168,14 @@ th, td {
         <br>
         <br>
         <br>
-        <!-- <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?> -->
-        (____________________________)
+        <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
       </td>
       <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
-        <!-- <?php echo $this->master->get_ttd('ttd_dir_keu_rssm') ;?> -->
-        (____________________________)
+        <?php echo $this->master->get_ttd('ttd_dir_keu_rssm') ;?>
       </td>
     </tr>
     <?php }else{ ?>
@@ -187,8 +185,7 @@ th, td {
         <br>
         <br>
         <br>
-        <!-- <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?> -->
-        (____________________________)
+        <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
       </td>
     </tr>
     <?php }?>

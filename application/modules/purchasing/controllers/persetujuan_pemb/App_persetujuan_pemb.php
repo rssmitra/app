@@ -110,7 +110,6 @@ class App_persetujuan_pemb extends MX_Controller {
                         $status = '<div class="left"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
                         $text = '<span class="red">Menunggu Proses<br>'.$this->master->get_ttd_data('verifikator_'.$flag.'_1','value').'</span>';
                     }
-        
                     if($row_list->tgl_pemeriksa != NULL AND $row_list->tgl_penyetuju == NULL){
                         $status = '<div class="left"><i class="fa fa-exclamation-triangle bigger-150 orange"></i></div>';
                         $text = '<span class="green">Menunggu Persetujuan<br>'.$this->master->get_ttd_data('verifikator_'.$flag.'_2','value').'</span>';
@@ -297,7 +296,7 @@ class App_persetujuan_pemb extends MX_Controller {
             'id' => $id,
             'format_no_acc' => ($flag=='medis')?$this->format_no_acc_m:$this->format_no_acc_nm,
             );
-        // echo '<pre>';print_r($result);die;
+        // echo '<pre>';print_r($data);die;
         $temp_view = $this->load->view('persetujuan_pemb/App_persetujuan_pemb/detail_table_view', $data, true);
         echo json_encode( array('html' => $temp_view) );
     }
@@ -313,8 +312,7 @@ class App_persetujuan_pemb extends MX_Controller {
             'title' => 'Persetujuan Pembelian '.$title,
             'breadcrumbs' => $this->breadcrumbs->show(),
             );
-        // cek verifikator
-        
+
         // echo '<pre>';print_r($result);die;
         $this->load->view('persetujuan_pemb/App_persetujuan_pemb/detail_table_view', $data, false);
     }
