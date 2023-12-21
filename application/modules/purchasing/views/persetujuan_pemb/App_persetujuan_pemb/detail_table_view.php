@@ -5,7 +5,7 @@
     if($(elm).prop("checked") == true){
       $('.checkbox_brg_<?php echo $flag?>_<?php echo $id?>').each(function(){
         var kode_brg = $(this).val();
-        var jml_permohonan = $('#jml_permohonan_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').text();
+        var jml_permohonan = $('#jml_permohonan_hidden_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val();
         var jml_pemeriksa = $('#jml_acc_pemeriksa_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val();
         var jml_input = (jml_pemeriksa > 0) ? jml_pemeriksa : jml_permohonan;
         $('#form_input_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val( jml_input );
@@ -25,7 +25,8 @@
 
     if($(elm).prop("checked") == true){
         var kode_brg = $(elm).val();
-        var jml_permohonan = $('#jml_permohonan_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').text();
+        var jml_permohonan = $('#jml_permohonan_hidden_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val();
+        console.log(jml_permohonan);
         var jml_pemeriksa = $('#jml_acc_pemeriksa_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val();
         var jml_input = (jml_pemeriksa > 0) ? jml_pemeriksa : jml_permohonan;
         $('#form_input_<?php echo $flag?>_<?php echo $id?>_'+kode_brg+'').val( jml_input );
@@ -302,7 +303,10 @@
               <td><?php echo $row_dt->kode_brg?></td>
               <td><?php echo $row_dt->nama_brg?></td>
               <td class="center"><?php echo $row_dt->jumlah_stok_sebelumnya.' '.$row_dt->satuan_kecil?></td>
-              <td class="center" id="jml_permohonan_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>"><?php echo number_format($row_dt->jml_besar, 2)?></td>
+              <td class="center" id="jml_permohonan_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>">
+              <input type="hidden" id="jml_permohonan_hidden_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" value="<?php echo $row_dt->jml_besar?>">
+              <?php echo number_format($row_dt->jml_besar, 2)?>
+              </td>
               <td class="center">
                 <?php
                   if($row_dt->status_po == NULL) :

@@ -210,7 +210,8 @@
             <td><?php echo $row_dt[0]->kode_brg?> </td>
             <td><?php echo $row_dt[0]->nama_brg?></td>
 
-            <?php if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?>
+            <!-- <?php if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?> -->
+
             <!-- satuan besar -->
             <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
             <!-- rasio -->
@@ -251,13 +252,15 @@
               <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control" style="height:45px;text-align:right" value="0" readonly disabled>
               <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
             </td>
+
             <?php else : ?>
+
               <td colspan="6" align="center"><span style="color: blue; letter-spacing: 2px; font-weight: bold">BARANG TELAH DITERIMA</span> <b>(<?php echo $row_dt[0]->kode_penerimaan?>)</b></td>
                <!-- total -->
-            <td class="center">
-              <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control" style="height:45px;text-align:right" value="0" readonly disabled>
-              <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
-            </td>
+              <td class="center">
+                <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control" style="height:45px;text-align:right" value="0" readonly disabled>
+                <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
+              </td>
             <?php endif; ?>
 
           </tr>
