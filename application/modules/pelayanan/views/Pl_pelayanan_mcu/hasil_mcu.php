@@ -196,6 +196,8 @@
         <td width="20px"></td>
         <td class="title">Suhu Tubuh</td>
         <td width="30%">: <?php echo $fisik->suhu_tubuh ?> C</td>
+        <td class="title">BMI</td>
+        <td width="30%">: <?php echo $fisik->bmi ?></td>
       </tr>
 
       <tr>
