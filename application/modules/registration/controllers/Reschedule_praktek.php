@@ -3,7 +3,7 @@
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 
-class Input_pasien_baru extends MX_Controller {
+class Reschedule_praktek extends MX_Controller {
 
     /*function constructor*/
     
@@ -13,7 +13,7 @@ class Input_pasien_baru extends MX_Controller {
         
         /*breadcrumb default*/
         
-        $this->breadcrumbs->push('Index', 'registrasi/Input_pasien_baru');
+        $this->breadcrumbs->push('Index', 'registrasi/Reschedule_praktek');
         
         /*session redirect login if not login*/
         
@@ -25,7 +25,7 @@ class Input_pasien_baru extends MX_Controller {
         
         /*load model*/
         
-        $this->load->model('Input_pasien_baru_model', 'Input_pasien_baru');
+        $this->load->model('Reschedule_praktek_model', 'Reschedule_praktek');
 
 
         /*load library*/
@@ -56,22 +56,22 @@ class Input_pasien_baru extends MX_Controller {
         
         /*load view index*/
         
-        $this->load->view('Input_pasien_baru/index', $data);
+        $this->load->view('Reschedule_praktek/index', $data);
     
     }
 
     public function get_data()
     {
         /*get data from model*/
-        $list = $this->Input_pasien_baru->get_datatables_by_limit(10,10);
+        $list = $this->Reschedule_praktek->get_datatables_by_limit(10,10);
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;
             $row = array();
             $row[] = '<div class="center"><div class="hidden-sm hidden-xs action-buttons">
-                        '.$this->authuser->show_button('registration/Input_pasien_baru','R',$row_list->no_mr,2).'
-                        '.$this->authuser->show_button('registration/Input_pasien_baru','U',$row_list->no_mr,2).'
+                        '.$this->authuser->show_button('registration/Reschedule_praktek','R',$row_list->no_mr,2).'
+                        '.$this->authuser->show_button('registration/Reschedule_praktek','U',$row_list->no_mr,2).'
                         
                     </div>
                     <div class="hidden-md hidden-lg">
@@ -79,8 +79,8 @@ class Input_pasien_baru extends MX_Controller {
                             <button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown" data-position="auto"><i class="ace-icon fa fa-caret-down icon-only bigger-120"></i>
                             </button>
                             <ul class="dropdown-mst_marital_status dropdown-only-icon dropdown-yellow dropdown-mst_marital_status-right dropdown-caret dropdown-close">
-                                <li>'.$this->authuser->show_button('registration/Input_pasien_baru','R','',4).'</li>
-                                <li>'.$this->authuser->show_button('registration/Input_pasien_baru','U','',4).'</li>
+                                <li>'.$this->authuser->show_button('registration/Reschedule_praktek','R','',4).'</li>
+                                <li>'.$this->authuser->show_button('registration/Reschedule_praktek','U','',4).'</li>
                                
                             </ul>
                         </div>
@@ -98,8 +98,8 @@ class Input_pasien_baru extends MX_Controller {
 
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Input_pasien_baru->count_all_by_limit(10,10),
-                        "recordsFiltered" => $this->Input_pasien_baru->count_filtered_by_limit(10,10),
+                        "recordsTotal" => $this->Reschedule_praktek->count_all_by_limit(10,10),
+                        "recordsFiltered" => $this->Reschedule_praktek->count_filtered_by_limit(10,10),
                         "data" => $data,
                 );
         //output to json format
@@ -115,13 +115,13 @@ class Input_pasien_baru extends MX_Controller {
         /*if id is not null then will show form edit*/
         if( $noMr != '' ){
             /*breadcrumbs for edit*/
-            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'registration/Input_pasien_baru/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
+            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'registration/Reschedule_praktek/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
             /*get value by id*/
-            $data['value'] = $this->Input_pasien_baru->get_by_mr($noMr);
+            $data['value'] = $this->Reschedule_praktek->get_by_mr($noMr);
             $data['flag'] = "update";
         }else{
             /*breadcrumbs for create or add row*/
-            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'registration/Input_pasien_baru/'.strtolower(get_class($this)).'/form');
+            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'registration/Reschedule_praktek/'.strtolower(get_class($this)).'/form');
             /*initialize flag for form add*/
             $data['flag'] = "create";
         }
@@ -137,7 +137,7 @@ class Input_pasien_baru extends MX_Controller {
         
         /*load form view*/
         
-        $this->load->view('Input_pasien_baru/form', $data);
+        $this->load->view('Reschedule_praktek/form', $data);
     
     }
 
@@ -151,21 +151,21 @@ class Input_pasien_baru extends MX_Controller {
         
         /*load form view*/
         
-        $this->load->view('Input_pasien_baru/form_bayi_rs', $data);
+        $this->load->view('Reschedule_praktek/form_bayi_rs', $data);
     
     }
 
     public function show($noMr)
     {
         /*breadcrumbs for view*/
-        $this->breadcrumbs->push('View '.strtolower($this->title).'', 'registration/Input_pasien_baru/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
+        $this->breadcrumbs->push('View '.strtolower($this->title).'', 'registration/Reschedule_praktek/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
         /*define data variabel*/
-        $data['value'] = $this->Input_pasien_baru->get_by_id($noMr);
+        $data['value'] = $this->Reschedule_praktek->get_by_id($noMr);
         $data['title'] = $this->title;
         $data['flag'] = "read";
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
-        $this->load->view('Input_pasien_baru/form', $data);
+        $this->load->view('Reschedule_praktek/form', $data);
     }
 
     public function process(){
@@ -332,7 +332,7 @@ class Input_pasien_baru extends MX_Controller {
                     //print_r($dataexc);die;
 
                     /* save pasien*/
-                    $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
+                    $newId = $this->Reschedule_praktek->save('mt_master_pasien', $dataexc);
 
                     /*save logs*/
                     $this->logs->save('mt_master_pasien', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_mt_master_pasien');
@@ -356,11 +356,11 @@ class Input_pasien_baru extends MX_Controller {
             } else {       
                 
                 
-                $data = $this->Input_pasien_baru->get_by_id($mr);
+                $data = $this->Reschedule_praktek->get_by_id($mr);
                 $newId = $data->id_mt_master_pasien;
 
                 /*update record*/
-                $this->Input_pasien_baru->update('mt_master_pasien',$dataexc, array('no_mr' => $mr));
+                $this->Reschedule_praktek->update('mt_master_pasien',$dataexc, array('no_mr' => $mr));
 
                  /*save logs*/
                  $this->logs->save('mt_master_pasien', $newId, 'update record on '.$this->title.' module', json_encode($dataexc),'id_mt_master_pasien');
@@ -373,7 +373,7 @@ class Input_pasien_baru extends MX_Controller {
                 else
                 {
                     $this->db->trans_commit();
-                    echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHiddenPasien'], 'no_ktp' => $dataexc['no_ktp'], 'is_new' => 'Yes'));
+                    echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHiddenPasien'], 'is_new' => 'Yes'));
                 }
 
                
@@ -535,12 +535,12 @@ class Input_pasien_baru extends MX_Controller {
                 //print_r($dataexc);die;
 
                 /*save pasien */
-                $newId = $this->Input_pasien_baru->save('mt_master_pasien', $dataexc);
+                $newId = $this->Reschedule_praktek->save('mt_master_pasien', $dataexc);
 
                 /*save logs*/
                 $this->logs->save('mt_master_pasien', $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_mt_master_pasien');
 
-                $this->Input_pasien_baru->update('ri_bayi_lahir', array('flag_lahir' => 1), array('id_bayi' => $this->input->post('id_bayi')));
+                $this->Reschedule_praktek->update('ri_bayi_lahir', array('flag_lahir' => 1), array('id_bayi' => $this->input->post('id_bayi')));
 
                 if ($this->db->trans_status() === FALSE)
                 {
@@ -567,15 +567,15 @@ class Input_pasien_baru extends MX_Controller {
         
         /*define variable data*/
         
-        $dob = $this->input->get('dob');
+        $dob = $this->input->get('kode_dokter');
 
-        $name = $this->input->get('name');
+        $name = $this->input->get('tgl_kunjungan');
         
         //print_r($name);die;
 
         /*return search pasien*/
 
-        $data_pasien = $this->Input_pasien_baru->search_pasien_by_keyword($dob, $name); 
+        $data_pasien = $this->Reschedule_praktek->search_pasien_by_keyword($kode_dokter, $tgl_kunjungan); 
         
 
         $data = array(

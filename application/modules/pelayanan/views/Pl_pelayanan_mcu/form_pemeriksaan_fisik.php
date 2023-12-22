@@ -77,8 +77,10 @@ $(document).ready(function() {
           </div>
     </div> -->
 
+    <br><p><b><i class="fa fa-edit"></i> Pemeriksaan Fisik Umum </b></p>
+
     <div class="form-group">
-        <label class="control-label col-sm-2" for="">Tinggi Badan</label>
+        <label class="control-label col-sm-2" for="">TB</label>
         <div class="col-sm-2">    
           <div class="input-group">
 
@@ -93,7 +95,7 @@ $(document).ready(function() {
           </div>
         </div>
 
-        <label class="control-label col-sm-2" for="">Tekanan Darah</label>
+        <label class="control-label col-sm-2" for="">TD</label>
         <div class="col-sm-2">    
           <div class="input-group">
 
@@ -108,7 +110,7 @@ $(document).ready(function() {
           </div>
         </div>
 
-        <label class="control-label col-sm-2" for="">Berat Badan</label>
+        <label class="control-label col-sm-2" for="">BB</label>
         <div class="col-sm-2">    
           <div class="input-group">
 
@@ -122,6 +124,7 @@ $(document).ready(function() {
 
           </div>
         </div>
+        
 
     </div>
 
@@ -157,20 +160,22 @@ $(document).ready(function() {
           </div>
         </div>
 
-        <label class="control-label col-sm-2" for="">Keadaan Umum</label>
+        <label class="control-label col-sm-2" for="">Suhu</label>
         <div class="col-sm-2">    
           <div class="input-group">
 
-          <input type="text" class="form-control" name="fisik_keadaan_umum" id="fisik_keadaan_umum" value="<?php echo isset($keadaan_umum)?$keadaan_umum:''?>"  >
+          <input type="text" class="form-control" name="fisik_suhu_tubuh" id="fisik_suhu_tubuh" value="<?php echo isset($suhu_tubuh)?$suhu_tubuh:''?>"  >
 
             <span class="input-group-addon">
 
-              
+            &#8451;
 
             </span>
 
           </div>
         </div>
+
+        
 
     </div>
 
@@ -185,18 +190,31 @@ $(document).ready(function() {
           <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'kesadaran_pasien')), isset($kesadaran)?$kesadaran:'', 'fisik_kesadaran', 'fisik_kesadaran', 'form-control', '', '') ?>
         </div>
 
-        <label class="control-label col-sm-2" for="">Buta Warna</label>   
-        <div class="col-sm-2">
-          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'buta_warna')), isset($pemeriksaan_fisik)?$pemeriksaan_fisik->buta_warna:'', 'fisik_buta_warna', 'fisik_buta_warna', 'form-control', '', '') ?>
+        <label class="control-label col-sm-2" for="">Keadaan Umum</label>
+        <div class="col-sm-2">    
+          <div class="input-group">
+
+          <input type="text" class="form-control" name="fisik_keadaan_umum" id="fisik_keadaan_umum" value="<?php echo isset($keadaan_umum)?$keadaan_umum:''?>"  >
+          </div>
         </div>
-        
 
     </div>
 
     <div class="form-group">
+                      
+      <label class="control-label col-sm-2">BMI (Index Masa Tubuh)</label>
+      
+      <div class="col-md-3">
         
-
+        <input type="text" class="form-control" name="fisik_bmi" id="fisik_bmi" value="<?php echo isset($bmi)?$bmi:''?>"  >
+      
+      </div>
+    
+    
     </div>
+
+
+
 
     <br><p><b><i class="fa fa-edit"></i> Mata </b></p>
 
@@ -251,9 +269,19 @@ $(document).ready(function() {
         <input type="text" class="form-control" name="fisik_mata_kacamata" id="fisik_mata_kacamata" value="<?php echo isset($pemeriksaan_fisik)?$pemeriksaan_fisik->mata->kacamata:''?>"  >
       
       </div>
-  
-    
+      <label class="control-label col-sm-2" for="">Buta Warna</label>   
+      <div class="col-sm-2">
+        <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'buta_warna')), isset($pemeriksaan_fisik)?$pemeriksaan_fisik->buta_warna:'', 'fisik_buta_warna', 'fisik_buta_warna', 'form-control', '', '') ?>
+      </div>
     </div>
+
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_mata" id="keterangan_mata" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->mata->keterangan)?$pemeriksaan_fisik->mata->keterangan:''?></textarea>
+      </div>
+    </div>
+
 
     <br><p><b><i class="fa fa-edit"></i> THT </b></p>
 
@@ -292,33 +320,41 @@ $(document).ready(function() {
        
     </div>
 
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_tht" id="keterangan_tht" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->tht->keterangan)?$pemeriksaan_fisik->tht->keterangan:''?></textarea>
+      </div>
+    </div>
+
     <br><p><b><i class="fa fa-edit"></i> Mulut / Gigi </b></p>
 
     <div class="form-group">
         <label class="control-label col-sm-2" for="">Gigi</label>
         <div class="col-md-6">    
-          <?php //echo $this->master->custom_selection_radio($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'pemeriksaan_fisik_gigi')), isset($pemeriksaan_fisik)?$pemeriksaan_fisik->gigi:'', 'fisik_gigi[]', 'fisik_gigi[]', 'form-control', '', '') ?>
           <select id="fisik_gigi" class="multiselect" multiple="multiple" name="fisik_gigi[]">
               <?php 
               foreach($gigi as $row){
-                
                 $selected = (in_array($row->value, json_decode($pemeriksaan_fisik->mulut_gigi->gigi)))?'selected':'';
-  
                 echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
               }
             ?>
           </select>
         </div>
-
     </div>
 
     <div class="form-group">
-
         <label class="control-label col-sm-2" for="">Lidah</label>   
         <div class="col-md-4">
           <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'pemeriksaan_fisik_lidah')), isset($pemeriksaan_fisik)?$pemeriksaan_fisik->mulut_gigi->lidah:'', 'fisik_lidah', 'fisik_lidah', 'form-control', '', '') ?>
         </div>
+    </div>
 
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_mulut" id="keterangan_mulut" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->mulut_gigi->keterangan)?$pemeriksaan_fisik->mulut_gigi->keterangan:''?></textarea>
+      </div>
     </div>
 
     <br><p><b><i class="fa fa-edit"></i> Leher </b></p>
@@ -338,8 +374,13 @@ $(document).ready(function() {
         <div class="col-sm-2">
           <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'pemeriksaan_fisik')), isset($pemeriksaan_fisik)?$pemeriksaan_fisik->leher->kel_getah_bening:'', 'fisik_leher_getah_bening', 'fisik_leher_getah_bening', 'form-control', '', '') ?>
         </div>
+    </div>
 
-
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_leher" id="keterangan_leher" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->leher->keterangan)?$pemeriksaan_fisik->leher->keterangan:''?></textarea>
+      </div>
     </div>
 
     <br><p><b><i class="fa fa-edit"></i> Thorax </b></p>
@@ -353,8 +394,6 @@ $(document).ready(function() {
           <input type="text" class="form-control" name="fisik_thorax_paru_kanan" id="fisik_thorax_paru_kanan" value="<?php echo isset($pemeriksaan_fisik)?$pemeriksaan_fisik->thorax->paru_kanan:''?>"  >
         
         </div>
-       
-      
     </div>
 
     <div class="form-group">
@@ -367,6 +406,13 @@ $(document).ready(function() {
         
         </div>
        
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_thorax" id="keterangan_thorax" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->thorax->keterangan)?$pemeriksaan_fisik->thorax->keterangan:''?></textarea>
+      </div>
     </div>
 
     <br><p><b><i class="fa fa-edit"></i> Jantung </b></p>
@@ -386,8 +432,13 @@ $(document).ready(function() {
         <div class="col-sm-2">
           <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'pemeriksaan_jantung_bising')), isset($pemeriksaan_fisik)?$pemeriksaan_fisik->jantung->bising:'', 'fisik_jantung_bising', 'fisik_jantung_bising', 'form-control', '', '') ?>
         </div>
+    </div>
 
-
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_jantung" id="keterangan_jantung" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->jantung->keterangan)?$pemeriksaan_fisik->jantung->keterangan:''?></textarea>
+      </div>
     </div>
 
     <br><p><b><i class="fa fa-edit"></i> Abdomen </b></p>
@@ -409,7 +460,7 @@ $(document).ready(function() {
 
       <label class="control-label col-sm-2" for="Province">Nyeri Tekan</label>
     
-      <div class="col-md-3">
+      <div class="col-md-9">
 
         <div class="radio">
 
@@ -469,11 +520,11 @@ $(document).ready(function() {
 
       <label class="control-label col-sm-2">Neurologis</label>
         
-      <div class="col-md-3">
+      <div class="col-md-9">
         
         <!-- <input type="text" class="form-control" name="fisik_abdomen_neurologis" id="fisik_abdomen_neurologis" value="<?php echo isset($pemeriksaan_fisik)?$pemeriksaan_fisik->abdomen->neurologis:''?>"  > -->
 
-        <textarea name="fisik_abdomen_neurologis" id="fisik_abdomen_neurologis" cols="50" style="height:100px !important;"><?php echo isset($pemeriksaan_fisik)?$pemeriksaan_fisik->abdomen->neurologis:''?></textarea>
+        <textarea name="fisik_abdomen_neurologis" id="fisik_abdomen_neurologis" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik)?$pemeriksaan_fisik->abdomen->neurologis:''?></textarea>
       
       </div>
 
@@ -525,6 +576,55 @@ $(document).ready(function() {
         </div>
 
     </div>
+    
+    <br><p><b><i class="fa fa-edit"></i> Anggota Gerak </b></p>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2">Extr atas (kanan kiri)</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="fisik_ex_atas" id="fisik_ex_atas" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_atas:''?>"  >
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Extr bawah (kanan kiri)</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="fisik_ex_bawah" id="fisik_ex_bawah" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_bawah:''?>"  >
+        </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_anggota_gerak" id="keterangan_anggota_gerak" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->anggota_gerak->keterangan)?$pemeriksaan_fisik->anggota_gerak->keterangan:''?></textarea>
+      </div>
+    </div>
+
+    <br><p><b><i class="fa fa-edit"></i> Genitalia </b></p>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2">Vagina</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="fisik_vagina" id="fisik_vagina" value="<?php echo isset($pemeriksaan_fisik->genitalia)?$pemeriksaan_fisik->genitalia->vagina:''?>"  >
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Penis</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="fisik_penis" id="fisik_penis" value="<?php echo isset($pemeriksaan_fisik->genitalia)?$pemeriksaan_fisik->genitalia->penis:''?>"  >
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Anus</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="fisik_anus" id="fisik_anus" value="<?php echo isset($pemeriksaan_fisik->genitalia)?$pemeriksaan_fisik->genitalia->anus:''?>"  >
+        </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Keterangan lainnya</label>
+      <div class="col-md-9">
+        <textarea name="keterangan_genitalia" id="keterangan_genitalia" class="form-control" style="height:80px !important;"><?php echo isset($pemeriksaan_fisik->genitalia->keterangan)?$pemeriksaan_fisik->genitalia->keterangan:''?></textarea>
+      </div>
+    </div>
+
 
         
     <div class="form-group">

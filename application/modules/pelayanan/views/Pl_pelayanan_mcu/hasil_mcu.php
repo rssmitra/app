@@ -191,6 +191,13 @@
         <td class="title">Pernafasan</td>
         <td width="30%">: <?php echo $fisik->pernafasan ?> x/menit</td>
       </tr>
+
+      <tr>
+        <td width="20px"></td>
+        <td class="title">Suhu Tubuh</td>
+        <td width="30%">: <?php echo $fisik->suhu_tubuh ?> C</td>
+      </tr>
+
       <tr>
         <td width="20px"></td>
         <td class="title">Status Gizi</td>

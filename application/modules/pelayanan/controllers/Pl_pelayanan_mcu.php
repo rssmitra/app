@@ -143,6 +143,8 @@ class Pl_pelayanan_mcu extends MX_Controller {
             $data['status_gizi'] =$pemeriksaan->status_gizi;
             $data['kesadaran'] =$pemeriksaan->kesadaran;
             $data['nadi'] =$pemeriksaan->nadi;
+            $data['suhu_tubuh'] =$pemeriksaan->suhu_tubuh;
+            $data['bmi'] =$pemeriksaan->bmi;
         }
         $data['gigi'] = $this->db->where(array('flag' => 'pemeriksaan_fisik_gigi'))->get('global_parameter')->result();
 
@@ -586,29 +588,35 @@ class Pl_pelayanan_mcu extends MX_Controller {
                     'reflek_cahaya' => $this->input->post('fisik_mata_reflek_cahaya'),
                     'penglihatan_atau_visus' => $this->input->post('fisik_mata_visus'),
                     'kacamata' => $this->input->post('fisik_mata_kacamata'),
+                    'keterangan' => $this->input->post('keterangan_mata'),
                 ),
                 'tht' => array(
                     'telinga' => $this->input->post('fisik_tht_telinga'),
                     'hidung' => $this->input->post('fisik_tht_hidung'),
                     'tenggorokan' => $this->input->post('fisik_tht_tenggorokan'),
+                    'keterangan' => $this->input->post('keterangan_tht'),
                 ),
                 'mulut_gigi' => array(
                     'gigi' => json_encode($this->input->post('fisik_gigi')),
                     'lidah' => $this->input->post('fisik_lidah'),
+                    'keterangan' => $this->input->post('keterangan_mulut'),
                 ),
                 'leher' => array(
                     'jvp' => $this->input->post('fisik_leher_JVP'),
                     'tiroid' => $this->input->post('fisik_leher_tiroid'),
                     'kel_getah_bening' => $this->input->post('fisik_leher_getah_bening'),
+                    'keterangan' => $this->input->post('keterangan_leher'),
                 ),
                 'thorax' => array(
                     'paru_kanan' => $this->input->post('fisik_thorax_paru_kanan'),
                     'paru_kiri' => $this->input->post('fisik_thorax_paru_kiri'),
+                    'keterangan' => $this->input->post('keterangan_thorax'),
                 ),
                 'jantung' => array(
                     'besar' => $this->input->post('fisik_jantung_besar'),
                     'bunyi_S1_strip_S2' => $this->input->post('fisik_jantung_bunyi'),
                     'bising' => $this->input->post('fisik_jantung_bising'),
+                    'keterangan' => $this->input->post('keterangan_jantung'),
                 ),
                 'abdomen' => array(
                     'hati_atau_limpa' => $this->input->post('fisik_abdomen_limpa'),
@@ -619,6 +627,17 @@ class Pl_pelayanan_mcu extends MX_Controller {
                     'kulit_atau_turgor' => $this->input->post('fisik_abdomen_kulit'),
                     'kel_getah_bening' => $this->input->post('fisik_abdomen_getah_bening'),
                     'lainnya' => $this->input->post('fisik_abdomen_lainnya')
+                ),
+                'genitalia' => array(
+                    'vagina' => $this->input->post('fisik_vagina'),
+                    'penis' => $this->input->post('fisik_penis'),
+                    'anus' => $this->input->post('fisik_anus'),
+                    'keterangan' => $this->input->post('keterangan_genitalia')
+                ),
+                'anggota_gerak' => array(
+                    'extremitas_atas' => $this->input->post('fisik_ex_atas'),
+                    'extremitas_bawah' => $this->input->post('fisik_ex_bawah'),
+                    'keterangan' => $this->input->post('keterangan_anggota_gerak')
                 ),
                                 
             );
@@ -632,6 +651,8 @@ class Pl_pelayanan_mcu extends MX_Controller {
                'kesadaran'		    => $this->input->post('fisik_kesadaran'),
                'berat_badan'		=> (int)$this->input->post('fisik_berat_badan'),
                'nadi'				=> (int)$this->input->post('fisik_nadi'),
+               'suhu_tubuh'				=> (int)$this->input->post('fisik_suhu_tubuh'),
+               'bmi'				=> (int)$this->input->post('fisik_bmi'),
                'pemeriksaan_fisik ' => json_encode($data_fisik)
             );
             

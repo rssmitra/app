@@ -378,7 +378,6 @@ final Class Authuser {
         }else{
             return false;
         }
-
     }
 
 	

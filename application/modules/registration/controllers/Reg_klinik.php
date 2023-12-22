@@ -519,7 +519,9 @@ class Reg_klinik extends MX_Controller {
                   "nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
                   "angkaantrean" => $dt_antrian->no_antrian,
                 );
-                $antrol = $this->reff->processAntrol($config_antrol, $params_dt);
+
+                $arr_data = array_merge($config_antrol, $params_dt);
+                $antrol = $this->reff->processAntrol($arr_data);
                 // END PROSES ANTROL
 
                 // get detail data

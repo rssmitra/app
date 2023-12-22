@@ -1275,6 +1275,17 @@ final Class Master {
 		return $return;
 	}
 	
+	function get_child_racikan($array_data, $parent_id){
+		$html = '';
+		foreach ($array_data as $key => $value) {
+			if($value->parent == $parent_id){
+				$html .= '<span id="row_racikan_'.$value->id.'"><a href="#" onclick="deleterow('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; '. $value->jml_pesan .' &nbsp; '. $value->satuan_obat.'<br></span>';
+			}
+		}
+
+		return $html;
+
+	}
 
 }
 
