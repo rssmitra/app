@@ -168,8 +168,9 @@ class Pl_pelayanan_ruang_pemeriksaan_model extends CI_Model {
         }else{
         	$this->db->where('CAST(tgl_pesanan as DATE) = ', date('Y-m-d'));
 		}
-        $this->db->order_by('input_tgl','ASC');
+        $this->db->order_by('tgl_pesanan','ASC');
 		$query = $this->db->get();
+		// echo '<pre>';print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

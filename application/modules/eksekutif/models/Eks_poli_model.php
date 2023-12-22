@@ -61,6 +61,7 @@ class Eks_poli_model extends CI_Model {
             }
             $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $prd_dt = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
             
             
             // day
@@ -233,7 +234,7 @@ class Eks_poli_model extends CI_Model {
             $this->db->order_by('d.nama_bagian ASC');
             $this->db->group_by('b.no_kunjungan, d.nama_bagian');
             $prd_dt = $this->db->get();
-            // echo '<pre>';print_r($this->db->last_query());die;
+            
             $getData = [];
             foreach ($prd_dt->result() as $key => $value) {
                 $getData[$value->nama_bagian][] = $value;
@@ -535,12 +536,12 @@ class Eks_poli_model extends CI_Model {
     {
         $data = array();
 
-        $this->db->group_by('b.no_kunjungan, b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2)');
+        $this->db->group_by('b.no_kunjungan, SUBSTRING(b.kode_bagian, 1, 2)');
 
         if($_GET['flag'] == 'periode'){
 
             // periode
-            $this->db->select('b.no_kunjungan, b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
+            $this->db->select('b.no_kunjungan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
             $this->_main_query();
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
@@ -563,12 +564,13 @@ class Eks_poli_model extends CI_Model {
             }
             
             $prd_dt = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
             
             $title = 'PERIODE, '.$this->tanggal->formatDateDmy($_GET['from_tgl']).' s/d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).' ';
         }
 
         if($_GET['flag'] == 'day'){
-            $this->db->select('b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
+            $this->db->select('SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
             $this->_main_query();
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
@@ -595,7 +597,7 @@ class Eks_poli_model extends CI_Model {
         }
 
         if($_GET['flag'] == 'month'){
-            $this->db->select('b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
+            $this->db->select('SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
             $this->_main_query();
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
@@ -622,7 +624,7 @@ class Eks_poli_model extends CI_Model {
         }
 
         if($_GET['flag'] == 'year'){
-            $this->db->select('b.kode_perusahaan, SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
+            $this->db->select('SUBSTRING(b.kode_bagian, 1, 2) as kode_unit');
             $this->_main_query();
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {

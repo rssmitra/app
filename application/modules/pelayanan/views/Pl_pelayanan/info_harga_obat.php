@@ -107,8 +107,12 @@ function reload_table(){
 <hr class="separator">
 <div class="row">
   <div class="col-xs-12">
+    <p style="text-align: center; font-size: 14px">
+      <b>INFORMASI HARGA OBAT<br>RUMAH SAKIT SETIA MITRA</b>
+    </p>
+    <br>
     <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data">
-
+        
         <div style="margin-top:-27px">
 
           <table id="dt-info-harga-obat" base-url="pelayanan/Pl_pelayanan/get_data_harga_obat" data-id="flag=medis" url-detail="farmasi/Harga_jual_obat/show_detail" class="table table-bordered table-hover">

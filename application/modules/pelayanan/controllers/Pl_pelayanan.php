@@ -289,6 +289,70 @@ class Pl_pelayanan extends MX_Controller {
         echo json_encode($list);
     }
 
+    public function get_cart_resep($no_kunjungan)
+    {
+        /*akan di filter berdasarkan pasien pada klinik masing2*/
+        /*get data from model*/
+        $list = $this->Pl_pelayanan->get_cart_resep($no_kunjungan);
+        $data = array();
+        $no = $_POST['start'];
+
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+
+            if($row_list->parent == 0){
+                if($row_list->tipe_obat == 'non_racikan'){
+                    $config = array(
+                        'nama_obat' => $row_list->nama_brg,
+                        'dd' => $row_list->jml_dosis,
+                        'qty' => $row_list->jml_dosis_obat,
+                        'unit' => $row_list->satuan_obat,
+                        'use' => $row_list->aturan_pakai,
+                        'jumlah' => $row_list->jml_pesan,
+                    );
+                    $format_signa = $this->master->formatSignaFull($config);
+                    $row[] = '<div class="left">'.$format_signa.'<br>Ket : <br>'.$row_list->keterangan.'</div>';
+                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-warning" onclick="clickedit('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" class="btn btn-xs btn-danger" onclick="deleterow('.$row_list->id.')"><i class="fa fa-trash"></i></a></div>';
+                }else{
+    
+                    $format_signa_racikan = '<span class="monotype_style">R/</span><br>';
+
+                    $config = array(
+                        'nama_obat' => $row_list->nama_brg,
+                        'dd' => $row_list->jml_dosis,
+                        'qty' => $row_list->jml_dosis_obat,
+                        'unit' => $row_list->satuan_obat,
+                        'use' => $row_list->aturan_pakai,
+                        'jumlah' => $row_list->jml_pesan,
+                    );
+                    // komposisi obat racikan
+                    $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($row_list->satuan_obat)) );
+
+                    $format_signa_racikan .= '<div style="padding-left: 15px">';
+                    $format_signa_racikan .= $this->master->get_child_racikan($list, $row_list->id);
+                    $format_signa_racikan .= '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row_list->jml_pesan).' da in '.$unit_code.'</i> <br>';
+                    $format_signa_racikan .= ''.$this->master->formatSigna($config);
+                    $format_signa_racikan .= '</div>';
+    
+                    $row[] = '<div class="left">'.$format_signa_racikan.'<br>Ket : <br>'.$row_list->keterangan.'</div>';
+                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-warning" onclick="clickeditracikan('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" class="btn btn-xs btn-danger" onclick="deleterow('.$row_list->id.')"><i class="fa fa-trash"></i></a></div>';
+    
+                }
+                $data[] = $row;
+            }
+
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+
     public function get_data()
     {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
@@ -2227,11 +2291,13 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('jml_dosis', 'jml_dosis', 'trim|required');
         $this->form_validation->set_rules('jml_dosis_obat', 'jml_dosis_obat', 'trim|required');
         $this->form_validation->set_rules('satuan_obat', 'satuan_obat', 'trim|required');
-        $this->form_validation->set_rules('aturan_pakai', 'aturan_pakai', 'trim|required');
+        $this->form_validation->set_rules('aturan_pakai', 'aturan_pakai', 'trim');
         $this->form_validation->set_rules('no_mr', 'no_mr', 'trim|required');
         $this->form_validation->set_rules('keterangan', 'keterangan', 'trim');
         $this->form_validation->set_rules('jml_hari', 'jml_hari', 'trim|required');
         $this->form_validation->set_rules('jml_pesan', 'jml_pesan', 'trim|required');
+        $this->form_validation->set_rules('tipe_obat', 'Tipe Obat', 'trim|required');
+        $this->form_validation->set_rules('parent', 'Parent', 'trim|required');
         
 
         // set message error
@@ -2262,6 +2328,8 @@ class Pl_pelayanan extends MX_Controller {
                 'keterangan' => $this->regex->_genRegex($this->form_validation->set_value('keterangan'), 'RGXQSL'),
                 'jml_pesan' => $this->regex->_genRegex($this->form_validation->set_value('jml_pesan'), 'RGXQSL'),
                 'jml_hari' => $this->regex->_genRegex($this->form_validation->set_value('jml_hari'), 'RGXQSL'),
+                'tipe_obat' => $this->regex->_genRegex($this->form_validation->set_value('tipe_obat'), 'RGXQSL'),
+                'parent' => $this->regex->_genRegex($this->form_validation->set_value('parent'), 'RGXQSL'),
             );
 
             if( $id == 0 ){
@@ -2302,6 +2370,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function deleterowresep(){
         $this->db->where('id', $_POST['ID'])->delete('fr_tc_pesan_resep_detail');
+        $this->db->where('parent', $_POST['ID'])->delete('fr_tc_pesan_resep_detail');
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
     }
 
@@ -2345,6 +2414,10 @@ class Pl_pelayanan extends MX_Controller {
                 );
         //output to json format
         echo json_encode($output);
+    }
+
+    public function form_template_resep($no_registrasi, $no_kunjungan){
+        $this->load->view('Pl_pelayanan/form_template_resep');
     }
 
     

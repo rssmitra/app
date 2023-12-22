@@ -139,6 +139,7 @@
               if(data.kode_perusahaan==120){
                 $('#form_sep').show('fast');
               }
+
               $('#kode_perusahaan_').show('fast');
             }
 
