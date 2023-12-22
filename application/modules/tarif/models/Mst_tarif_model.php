@@ -21,7 +21,7 @@ class Mst_tarif_model extends CI_Model {
 		if(isset($_GET['unit']) AND $_GET['unit'] != ''){
 			$this->db->where('view_tarif_update.kode_bagian', $_GET['unit']);
 		}else{
-			$this->db->where('view_tarif_update.kode_bagian', '');
+			$this->db->where('view_tarif_update.kode_bagian', '0');
     }
     
 		if(isset($_GET['nama_tarif']) AND $_GET['nama_tarif'] != ''){
