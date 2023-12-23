@@ -210,10 +210,10 @@ class Auto_merge_farmasi extends MX_Controller {
         $data = $this->Etiket_obat->get_by_id($kode_trans_far);
         $substr_sep = substr($data->no_sep, -4);
 
-        $filename[] ='SEP-'.$data->no_sep.'-'.$kode_trans_far;
-        $filename[] ='NOTA-'.$data->no_sep.'-'.$kode_trans_far;
+        // $filename[] ='SEP-'.$data->no_sep.'-'.$kode_trans_far;
+        // $filename[] ='NOTA-'.$data->no_sep.'-'.$kode_trans_far;
         $filename[] ='FRM_BAST-'.$data->no_sep.'-'.$kode_trans_far;
-        $filename[] ='COPY_RESEP-'.$data->no_sep.'-'.$kode_trans_far;
+        // $filename[] ='COPY_RESEP-'.$data->no_sep.'-'.$kode_trans_far;
 
         return $filename;
 
@@ -223,6 +223,7 @@ class Auto_merge_farmasi extends MX_Controller {
 
         /*get content data*/
         $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
+        // echo "<pre>"; print_r($data);die;
         /*get content html*/
         $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far) );
         /*generate pdf*/

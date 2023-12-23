@@ -449,13 +449,11 @@ class Pengiriman_unit extends MX_Controller {
                             $harga_retur = $row_brg->qty * $resep->harga_jual;
                             // tc_far_racikan_detail
                             $this->db->where(array('id_tc_far_racikan_detail' => $row_brg->reff_kode))->update('tc_far_racikan_detail', array('jumlah_retur' => $row_brg->qty));
-
                             // retur stok ke farmasi
                             if($row_brg->is_restock == 1){
                                 // retur stok ke farmasi
                                 $this->stok_barang->stock_process_racikan($row_brg->kode_brg, (int)$row_brg->qty, '060101', 8 ," (Retur Penjualan), Kode obat racikan: ".$row_brg->reff_kode." ", 'restore');
                             }
-
                         }else{
                             // non racikan
                             $resep = $cek_non_racikan;

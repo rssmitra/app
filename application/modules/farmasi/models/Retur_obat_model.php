@@ -5,7 +5,7 @@ class Retur_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('fr_tc_far.kode_trans_far','nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, tc_trans_pelayanan.kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, iter';
+	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, tc_registrasi.no_sep, mt_perusahaan.nama_perusahaan, tc_registrasi.kode_perusahaan, iter, status_bayar';
 
 	var $order = array('tgl_trans' => 'DESC');
 
@@ -19,7 +19,7 @@ class Retur_obat_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->select('(SELECT TOP 1 diagnosa_akhir FROM th_riwayat_pasien WHERE no_kunjungan = fr_tc_far.no_kunjungan ) AS diagnosa_akhir');
 		$this->db->from($this->table);
-		$this->db->join('(SELECT kode_tc_trans_kasir, kode_trans_far FROM tc_trans_pelayanan GROUP BY kode_tc_trans_kasir,kode_trans_far) as tc_trans_pelayanan','tc_trans_pelayanan.kode_trans_far=fr_tc_far.kode_trans_far','left');
+		// $this->db->join('(SELECT kode_tc_trans_kasir, kode_trans_far FROM tc_trans_pelayanan GROUP BY kode_tc_trans_kasir,kode_trans_far) as tc_trans_pelayanan','tc_trans_pelayanan.kode_trans_far=fr_tc_far.kode_trans_far','left');
 		// $this->db->join('fr_mt_profit_margin','fr_mt_profit_margin.kode_profit=fr_tc_far.kode_profit','left');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=fr_tc_far.no_registrasi','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
@@ -46,7 +46,6 @@ class Retur_obat_model extends CI_Model {
 				$this->db->where('DATEDIFF(Day, tgl_trans, getdate()) <= 120');
 			}else{
 				$this->db->where('CAST(tgl_trans as DATE) = ', date('Y-m-d'));
-				// $this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=3');
 			}
 		}
 

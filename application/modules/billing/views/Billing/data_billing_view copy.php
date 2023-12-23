@@ -103,17 +103,65 @@ function delete_transaksi(myid){
 <div class="row">
     <div class="col-xs-12">
         <div class="row">
+            
+        </div>
+        <br>
+        <hr>
+        <div class="row">
             <div id="form_add_tindakan"></div>
         </div>
         <div class="row">
             <div class="col-md-8">
-                
-                <div class="col-xs-12 no-padding">
-                    <!-- PAGE CONTENT BEGINS -->
-                    <div class="pull-right" style="margin-bottom: -45px">
+                <div>
+                    <!-- Riwayat Pembayaran Kasir -->
+                    <?php if( $data->kasir_data != NULL ) : // if log transaksi kasir ?>
+                    <div class="pull-left" style="padding-left: 5%;">
+                        <?php echo '<span style="font-weight: bold;">Riwayat Pembayaran Kasir</span>' ?>
+                        <table class="table-bordered table-hover" style="color: black; margin-top: 3px; max-width: 80%">
+                        <thead>
+                            <tr>
+                            <?php 
+                                $var_no = 0;
+                                foreach($data->kasir_data as $row_kasir_data) : $var_no++;
+                            ?>
+                            <td class="center" colspan="2" style="padding: 0px 10px !important; text-align: center; font-size: 20px; line-height: 15px; padding-bottom: 5px !important;" width="200px">
+                            <br>
+                                <a href="#" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>', 'Cetak Billing' , 600 , 750);"> <b>Rp <?php echo number_format($row_kasir_data->bill);?>,-</b> </a>
+                                <br>
+                                <span style="font-size: 11px;"><?php echo $this->tanggal->formatDateTime($row_kasir_data->tgl_jam); ?>
+                                <br>
+                                <?php echo $row_kasir_data->kode_tc_trans_kasir.' - '.$row_kasir_data->fullname;?></span>
+                            </td>
+                            <?php endforeach; // end foreach row_kasir_data header ?>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="center">
+                            <?php 
+                                $var_no = 0;
+                                foreach($data->kasir_data as $row_kasir_data) : $var_no++;
+                            ?>
+                            <td style="width: 125px">
+                                <a href="#" class="label label-block label-primary" style="width: 100% !important;" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>&status_nk=1', 'Cetak Billing' , 600 , 750);">Bill NK</a>
+                            </td>
+                            <td style="width: 125px">
+                                <a href="#" class="label label-block label-primary" style="width: 100% !important;" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>&status_nk=', 'Cetak Billing' , 600 , 750);">Bill Pasien</a>
+                            </td>
+                            <?php endforeach; // end foreach row_kasir_data actions ?>
+                            </tr>
+                        </tbody>
+                        </table>
+                    </div> <!-- end Riwayat Pembayaran Kasir -->
+                    <?php endif; //endif log transaksi ?>
+                    <br>
+
+                    <div class="pull-right" style="padding-top: 30px;">
                         Total billing : <br>
                         <span id="total_billing_all"><b>Rp. 0,-</b></span>
                     </div>
+                </div>
+                <div class="col-xs-12 no-padding">
+                    <!-- PAGE CONTENT BEGINS -->
                     <?php foreach($kunjungan as $key=>$row_dt_kunj) :?>
                     
                     <div class="timeline-container timeline-style2" style="z-index: 1;">
@@ -147,10 +195,10 @@ function delete_transaksi(myid){
                                                             <span class="lbl"></span>
                                                         </label>
                                                     </th>
-                                                    <!-- <th width="70px"> Kode</th> -->
+                                                    <th width="70px"> Kode</th>
                                                     <th> Deskripsi Item / Nama Tindakan</th>
                                                     <!-- <th>Penjamin</th> -->
-                                                    <!-- <th class="center" width="200px">Dokter</th> -->
+                                                    <th class="center" width="200px">Dokter</th>
                                                     <th class="center" width="50px">NK</th>
                                                     <!-- <th align="right" width="100px">Bill RS</th>
                                                     <th align="right" width="100px">Bill dr1</th>
@@ -222,15 +270,13 @@ function delete_transaksi(myid){
                                                     ?>
                                                 </td>
                                                 
-                                                <!-- <td align="left"><?php echo $value_data->kode_trans_pelayanan; ?></td> -->
+                                                <td align="left"><?php echo $value_data->kode_trans_pelayanan; ?></td>
 
                                                 <td>
                                                     <!-- hidden form -->
                                                     <input type="hidden" name="kode_trans_pelayanan[]" id="<?php echo $value_data->kode_trans_pelayanan?>" value="<?php echo $value_data->kode_trans_pelayanan?>">
                                                     <input type="hidden" name="delete_row_val[]" id="delete_row_val_<?php echo $value_data->kode_trans_pelayanan?>" value="0">
-                                                    <?php 
-                                                        $txt_dokter = ($value_data->kode_dokter1 != '') ? '<br>('.$dokter.')':'';
-                                                        echo $value_data->nama_tindakan. '' .$txt_dokter;?>
+                                                    <?php echo $value_data->nama_tindakan;?>
                                                     <?php
                                                         echo ($value_data->jenis_tindakan == 9) ? '<span style="color: green; font-weight: bold; background: yellow">BPAKO</span>' : '';
                                                     ?>
@@ -242,9 +288,9 @@ function delete_transaksi(myid){
                                                         echo ucwords($value_data->nama_bagian);
                                                     ?>
                                                 </td> -->
-                                                <!-- <td id="dokter_<?php echo $value_data->kode_trans_pelayanan?>">
+                                                <td id="dokter_<?php echo $value_data->kode_trans_pelayanan?>">
                                                     <?php echo $dokter?>
-                                                </td> -->
+                                                </td>
                                                 <!-- <td id="penjamin_<?php echo $value_data->kode_trans_pelayanan?>">
                                                     <?php echo $penjamin?>
                                                 </td> -->
@@ -299,14 +345,9 @@ function delete_transaksi(myid){
                                                 </td>
 
                                                 <td align="center">
-                                                    <?php 
-                                                        if($value_data->kode_tc_trans_kasir==NULL) : 
-                                                        if($value_data->is_update_by_kasir == 1 || $this->authuser->is_administrator($this->session->userdata('user')->user_id) == true) :
-                                                    ?>
-
+                                                    <?php if($value_data->is_update_by_kasir == 1) :?>
                                                     <span style="cursor: pointer" onclick="delete_transaksi(<?php echo $value_data->kode_trans_pelayanan?>)"><i class="fa fa-times-circle bigger-150 red"></i></span>
-
-                                                    <?php else: echo "-"; endif; endif; ?>
+                                                    <?php else: echo "-"; endif; ?>
                                                 </td>
 
                                             </tr>
@@ -321,7 +362,7 @@ function delete_transaksi(myid){
                                             <!-- END FOREACH -->
 
                                             <tr style="font-weight: bold; font-size: 13px">
-                                                <td colspan="3" align="right">Total</td>
+                                                <td colspan="5" align="right">Total</td>
                                                 <td align="right">
                                                     <?php echo number_format(array_sum($sum_array_total[$key.''.$key_s]))?>,-
                                                     <input type="hidden" class="total_per_unit" value="<?php echo array_sum($sum_array[$key.''.$key_s])?>">
@@ -342,160 +383,95 @@ function delete_transaksi(myid){
 
                         </div><!-- /.timeline-items -->
                     </div>
+                    
                     <?php endforeach?>
-                    <br>
-                    <p>
-                        Keterangan : <br>
-                        <i class="fa fa-times-circle red"></i> &nbsp; Belum selesai pelayanan<br><i class="fa fa-check green"></i> Sudah selesai<br><br>
-                        <b>NK (Nota Kredit)</b> adalah Biaya yang dibebankan ke perusahaan penjamin, jika biaya dibebankan kepada pasien, maka petugas harus melakukan unceklis pada item yang dibebankan ke pasien.
-                    </p>
                 </div>
             </div>
-
             <div class="col-md-4">
-                <div id="accordion" class="accordion-style1 panel-group">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOneRiwayatKunjungan" aria-expanded="true">
-                                    <i class="bigger-110 ace-icon fa fa-angle-down" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-                                    &nbsp;RIWAYAT KUNJUNGAN
-                                </a>
-                            </h4>
-                        </div>
+                <div class="timeline-container timeline-style2">
+                    <span class="timeline-label">
+                        <b>Riwayat Kunjungan</b>
+                    </span>
 
-                        <div class="panel-collapse collapse" id="collapseOneRiwayatKunjungan" aria-expanded="true" style="">
-                            <div class="panel-body">
-                                <div class="timeline-container timeline-style2">
-                                    <div class="timeline-items">
-                                        <center><b>Riwayat Kunjungan Pasien</b></center>
-                                        <br>
-                                        <?php $num_log=1; foreach($log_activity as $row_log) : $num_log++; ?>
-                                            <div class="timeline-item clearfix">
-                                                <div class="timeline-info">
-                                                    <span class="timeline-date"><?php echo isset($row_log['tgl_masuk']) ? $this->tanggal->formatDateTimeFormDmy($row_log['tgl_masuk']) :''?></span>
+                    <div class="timeline-items">
+                    <?php $num_log=1; foreach($log_activity as $row_log) : $num_log++; ?>
+                        <div class="timeline-item clearfix">
+                            <div class="timeline-info">
+                                <span class="timeline-date"><?php echo isset($row_log['tgl_masuk']) ? $this->tanggal->formatDateTimeFormDmy($row_log['tgl_masuk']) :''?></span>
 
-                                                    <i class="timeline-indicator btn btn-info no-hover"></i>
-                                                </div>
+                                <i class="timeline-indicator btn btn-info no-hover"></i>
+                            </div>
 
-                                                <div class="widget-box transparent">
-                                                    <div class="widget-body">
-                                                        <div class="widget-main no-padding">
-                                                        <?php 
-                                                            $icon = isset($row_log['tgl_keluar']) ? ($row_log['tgl_keluar'] != '') ? '<i class="fa fa-check green bigger-120"></i>' : '<i class="fa fa-times red bigger-120"></i>' : '<i class="fa fa-times red bigger-120"></i>' ;
+                            <div class="widget-box transparent">
+                                <div class="widget-body">
+                                    <div class="widget-main no-padding">
+                                    <?php 
+                                        $icon = isset($row_log['tgl_keluar']) ? ($row_log['tgl_keluar'] != '') ? '<i class="fa fa-check green bigger-120"></i>' : '<i class="fa fa-times red bigger-120"></i>' : '<i class="fa fa-times red bigger-120"></i>' ;
 
-                                                            echo ($row_log['nama_bagian'] == 'Farmasi') ? '<i class="fa fa-exclamation-triangle orange bigger-120"></i>' : $icon;?>
-                                                            
-                                                            <span class="title" style="padding: 12px"><?php echo ucwords($row_log['nama_bagian']); ?>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                        <br>
-                                        <span style="font-style: italic">Diurutkan berdasarkan tanggal registrasi/tanggal masuk</span>
-                                        <br>
+                                        echo ($row_log['nama_bagian'] == 'Farmasi') ? '<i class="fa fa-exclamation-triangle orange bigger-120"></i>' : $icon;?>
+                                        
+                                        <span class="title" style="padding: 12px"><?php echo ucwords($row_log['nama_bagian']); ?>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    <?php endforeach; ?>
+                    </div><!-- /.timeline-items -->
+                </div>
+            
+            </div>
+        </div>
+        <div class="row">
+        <!-- resume grouping billing berdasarkan kategori -->
+            <div id="accordion" class="accordion-style1 panel-group" style="margin-left: 14%">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+                                &nbsp;GROUPING KATEGORI BILLING
+                            </a>
+                        </h4>
                     </div>
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOneBillingGrouping" aria-expanded="true">
-                                    <i class="bigger-110 ace-icon fa fa-angle-down" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-                                    &nbsp;BILLING GROUPING
-                                </a>
-                            </h4>
-                        </div>
-
-                        <div class="panel-collapse collapse" id="collapseOneBillingGrouping" aria-expanded="true" style="">
-                            <div class="panel-body">
-                                <p style="font-weight: bold; text-align: center; padding: 10px">Grouping Transaksi Berdasarkan Jenisnya</p>
-                                <table class="table">
-                                    <tr style="background: lightgrey; vertical-align: middle !important">
-                                        <th>JENIS TRANSAKSI</th>
-                                        <th align="right">SUBTOTAL</th>
-                                    </tr>
+                    <div class="panel-collapse collapse in" id="collapseOne">
+                        <div class="panel-body scrolls">
+                            <table class="table">
+                                <tr style="background: #eef4f9">
                                     <?php 
                                         foreach($data->group as $key_group=>$row_group) :
+                                            echo '<th class="center">'.strtoupper($key_group).'</th>';
                                             foreach ($row_group as $k_group => $v_group) {
                                                 $subtotal_grouping[$key_group][] = $this->Billing->get_total_tagihan($v_group);
                                             }
                                         endforeach;
+                                    ?>
+                                    <th>TOTAL</th>
+                                </tr>
+                                <tr>
+                                    <?php 
                                         foreach($data->group as $key_group=>$row_group) :
                                             $total_grouping[] = array_sum($subtotal_grouping[$key_group]);
-                                            echo '<tr>';
-                                            echo '<td class="left">'.strtoupper($key_group).'</td>';
-                                            echo '<td align="right">'.number_format(array_sum($subtotal_grouping[$key_group])).'</td>';
-                                            echo '<tr>';
+                                            echo '<td align="right" style="font-size: 14px; font-weight: bold">'.number_format(array_sum($subtotal_grouping[$key_group])).'</td>';
                                         endforeach;
                                     ?>
-                                    <tr style="font-weight: bold">
-                                        <td>TOTAL</td>
-                                        <td align="right"><?php echo number_format(array_sum($total_grouping))?></td>
-                                    </tr>
-                                </table>
-                                
-                            </div>
+                                    <td align="right" style="font-size: 14px; font-weight: bold"><?php echo number_format(array_sum($total_grouping))?></td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
-
-                </div>
-                <hr>
-                <div class="row">
-                    <!-- Riwayat Pembayaran Kasir -->
-                    <?php if( $data->kasir_data != NULL ) : // if log transaksi kasir ?>
-                    <div class="pull-left" style="padding-left: 5%;">
-                        <?php echo '<span style="font-weight: bold;">Riwayat Pembayaran Kasir</span>' ?>
-                        <table class="table-bordered table-hover" style="color: black; margin-top: 3px; max-width: 80%">
-                        <thead>
-                            <tr>
-                            <?php 
-                                $var_no = 0;
-                                foreach($data->kasir_data as $row_kasir_data) : $var_no++;
-                            ?>
-                            <td class="center" colspan="2" style="padding: 0px 10px !important; text-align: center; font-size: 20px; line-height: 15px; padding-bottom: 5px !important;" width="200px">
-                            <br>
-                                <a href="#" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>', 'Cetak Billing' , 600 , 750);"> <b>Rp <?php echo number_format($row_kasir_data->bill);?>,-</b> </a>
-                                <br>
-                                <span style="font-size: 11px;"><?php echo $this->tanggal->formatDateTime($row_kasir_data->tgl_jam); ?>
-                                <br>
-                                <?php echo $row_kasir_data->kode_tc_trans_kasir.' - '.$row_kasir_data->fullname;?></span>
-                            </td>
-                            <?php endforeach; // end foreach row_kasir_data header ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="center">
-                            <?php 
-                                $var_no = 0;
-                                foreach($data->kasir_data as $row_kasir_data) : $var_no++;
-                            ?>
-                            <td style="width: 125px">
-                                <a href="#" class="label label-block label-primary" style="width: 100% !important;" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>&status_nk=1', 'Cetak Billing' , 600 , 750);">Bill NK</a>
-                            </td>
-                            <td style="width: 125px">
-                                <a href="#" class="label label-block label-primary" style="width: 100% !important;" onclick="PopupCenter('billing/Billing/print_preview?flag_bill=true&no_registrasi=<?php echo $row_kasir_data->no_registrasi; ?>&kode_tc_trans_kasir=<?php echo $row_kasir_data->kode_tc_trans_kasir; ?>&status_nk=', 'Cetak Billing' , 600 , 750);">Bill Pasien</a>
-                            </td>
-                            <?php endforeach; // end foreach row_kasir_data actions ?>
-                            </tr>
-                        </tbody>
-                        </table>
-                    </div> <!-- end Riwayat Pembayaran Kasir -->
-                    <?php endif; //endif log transaksi ?>
-                    <br>
                 </div>
 
             </div>
         </div>
         
-        
 
-   
+    <p>
+        Keterangan : <br>
+        <i class="fa fa-times-circle red"></i> &nbsp; Belum selesai pelayanan<br><i class="fa fa-check green"></i> Sudah selesai<br><br>
+        <b>NK (Nota Kredit)</b> adalah Biaya yang dibebankan ke perusahaan penjamin, jika biaya dibebankan kepada pasien, maka petugas harus melakukan unceklis pada item yang dibebankan ke pasien.
+    </p>
     
         <!-- PAGE CONTENT ENDS -->
     </div><!-- /.col -->

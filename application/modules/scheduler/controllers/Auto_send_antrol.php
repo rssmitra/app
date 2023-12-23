@@ -16,6 +16,20 @@ class Auto_send_antrol extends MX_Controller {
 
     public function execute(){
 
+        // if(!$this->input->is_cli_request())
+        // {
+        //     echo "This script can only be accessed via the command line" . PHP_EOL;
+        //     return;
+        // }
+        /*execution*/
+        $this->db->trans_begin(); 
+
+        /*define var*/
+        $jum_record = 0;
+        $jum_record_eksekusi = 0;
+        $jum_record_no_eksekusi = 0;
+        $log='';
+
         /*first description*/
         $value =  $this->Auto_send_antrol_model->get_data_registrasi();
         // echo "<pre>"; print_r($value);die;
@@ -47,7 +61,15 @@ class Auto_send_antrol extends MX_Controller {
                 return $this->execute();
             }
         }
-        
+
+        // $file = "application/logs/antrl_".date('Y_m_d_H_i_s').".log";
+        // $fp = fopen ($file,'w');
+
+        // $data_general = 'Jumlah Record = '.$jum_record.', Eksekusi = '.$jum_record_eksekusi.', No Eksekusi = '.$jum_record_no_eksekusi.' ';
+        // $data_log = var_export($log, true);
+
+        // fwrite($fp,  $data_general."\n".$data_log);
+        // fclose($fp);
 
     }
 
