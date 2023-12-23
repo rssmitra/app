@@ -39,7 +39,6 @@ jQuery(function($) {
 $(document).ready(function() {
 
   load_billing_data();
-
     $('#form_billing_kasir').ajaxForm({
       beforeSend: function() {
         achtungShowLoader();  
@@ -150,6 +149,8 @@ function load_billing_data(){
     $('#btn_lanjutkan_pembayaran').attr('disabled', false);
     $('#billing_data').load('billing/Billing/load_billing_view/<?php echo $no_registrasi?>/<?php echo $tipe?>');
 }
+
+
 
 function rollback_kasir(no_reg){
     if(confirm('Are you sure?')){
@@ -291,7 +292,7 @@ function cetak_kuitansi_pasien(){
 
         <a href="#" class="btn btn-xs btn-primary" onclick="rollback_kasir(<?php echo $no_registrasi?>)" > <i class="fa fa-undo"></i> Rollback</a>
 
-        <!-- <a href="#" class="btn btn-xs btn-danger" onclick="pembayaran_um()"> <i class="fa fa-credit-card"></i> Pembayaran DP / Bertahap  </a> -->
+        <!-- <a href="#" class="btn btn-xs btn-danger" onclick="add_billing()"> <i class="fa fa-plus"></i> Tambah Billing  </a> -->
 
         <a href="#" class="btn btn-xs btn-success" onclick="payment()" id="btn_lanjutkan_pembayaran"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
 

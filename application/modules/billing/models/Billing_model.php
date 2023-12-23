@@ -1218,7 +1218,7 @@ class Billing_model extends CI_Model {
     }
     
     public function getTransData($no_registrasi){
-		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar');
+		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, is_update_by_kasir');
 		$this->db->from('tc_trans_pelayanan');
 		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
@@ -1409,8 +1409,10 @@ class Billing_model extends CI_Model {
         $this->db->join('pm_isihasil_v d', 'a.kode_mt_hasilpm=d.kode_mt_hasilpm', 'left');
         $this->db->where($where);
         $this->db->where("a.hasil != ''");
+        // $this->db->where("c.nama_tarif = 'LEMAK'");
         $this->db->group_by('c.kode_tarif,c.nama_tarif,b.nama_tarif,a.nama_pemeriksaan');
-        $this->db->order_by('kode_trans_pelayanan', 'ASC');
+        $this->db->order_by('c.kode_tarif', 'ASC');
+        // $this->db->order_by('kode_trans_pelayanan', 'ASC');
         $this->db->order_by('urutan', 'ASC');
         return $this->db->get()->result();
     }
@@ -1524,6 +1526,9 @@ class Billing_model extends CI_Model {
         /*update trans pelayanan*/
         $this->db->update('tc_trans_pelayanan', array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL), array('no_registrasi' => $_POST['no_reg']) );
 
+        // trans farmasi
+        $this->db->update('fr_tc_far', array('status_bayar' => null), array('no_registrasi' => $_POST['no_reg']) );
+
         return true;
     }
 
@@ -1614,11 +1619,15 @@ class Billing_model extends CI_Model {
 
     public function getLogActivity($no_registrasi){
         // kunjungan
-        $kunjungan = $this->db->select('tgl_masuk, tgl_keluar, nama_bagian')->join('mt_bagian','mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan')->order_by('tgl_masuk', 'ASC')->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi) )->result_array();
+        $kunjungan = $this->db->select('no_kunjungan, tgl_masuk, tgl_keluar, nama_bagian')->join('mt_bagian','mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan')->order_by('tgl_masuk', 'ASC')->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi) )->result_array();
         // farmasi
         $farmasi = $this->db->select('tgl_pesan as tgl_masuk, nama_bagian')->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_pesan_resep.kode_bagian')->limit(1)->order_by('tgl_pesan','ASC')->get_where('fr_tc_pesan_resep', array('fr_tc_pesan_resep.no_registrasi' => $no_registrasi) )->result_array();
-        // echo $this->db->last_query();die;
         $arr_merge = array_merge($kunjungan, $farmasi);
+        $keys = array_column($arr_merge, 'tgl_masuk');
+        array_multisort($keys, SORT_ASC, $arr_merge);
+        // var_dump($arr_merge);
+
+        // echo '<pre>';print_r($arr_merge);die;
 
         return $arr_merge;
     }

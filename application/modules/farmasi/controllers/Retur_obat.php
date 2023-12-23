@@ -77,7 +77,7 @@ class Retur_obat extends MX_Controller {
 
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
-            $status_lunas = ($row_list->kode_tc_trans_kasir == null) ? 0 : 1 ;
+            $status_lunas = ($row_list->status_bayar == null) ? 0 : 1 ;
             $iter = ($row_list->iter > 0) ? '<span style="background: green;padding:2px; color: white; font-weight: bold">Iter '.$row_list->iter.'x</span>' : '' ;
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=".$status_lunas."'".')">'.$row_list->kode_trans_far.'</a></div>';
 
@@ -89,7 +89,7 @@ class Retur_obat extends MX_Controller {
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
             $row[] = $row_list->nama_perusahaan.$no_sep;
             $row[] = $row_list->diagnosa_akhir;
-            if($row_list->kode_tc_trans_kasir == null) {
+            if($row_list->status_bayar != 1) {
                 if($row_list->status_transaksi == 1){
                     $row[] = '<div class="center">
                             <label class="label lebel-xs label-success"> <i class="fa fa-check-circle"></i> Selesai</label>

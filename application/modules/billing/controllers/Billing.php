@@ -150,6 +150,18 @@ class Billing extends MX_Controller {
         $this->load->view('Billing/form_update_klas', $data);
     }
 
+    public function add_tindakan($no_registrasi, $no_mr)
+    {
+        $data = array();
+        $data['no_mr'] = $no_mr;
+        $data['no_registrasi'] = $no_registrasi;
+        $data['kunjungan'] = $this->Billing->getLogActivity($no_registrasi);
+        // echo '<pre>'; print_r($data);die;
+
+        /*load form view*/
+        $this->load->view('Billing/form_add_tindakan', $data);
+    }
+
     public function payment_success($no_registrasi){
         $data = array(
             'no_registrasi' => $no_registrasi,
@@ -284,7 +296,7 @@ class Billing extends MX_Controller {
             'kunjungan' => $this->Billing->getRiwayatKunjungan($no_registrasi),
             'riwayat' => $this->Csm_billing_pasien->get_by_id($no_registrasi),
         );
-        // echo '<pre>';print_r($data['riwayat']);die;
+        // echo '<pre>';print_r($data);die;
 
         $html = $this->load->view('Billing/temp_trans_kasir', $data, true);
 
@@ -395,7 +407,7 @@ class Billing extends MX_Controller {
             'kunjungan' => $grouping,
             'log_activity' => $log_activity,
         );
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($result);die;
         $this->load->view('Billing/data_billing_view', $data, false);
 
     }
@@ -1310,6 +1322,98 @@ class Billing extends MX_Controller {
         }
 
     }
+
+    public function process_add_tindakan(){
+
+        // print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'Tindakan', 'trim|required');
+        $this->form_validation->set_rules('no_mr_val', 'No MR', 'trim|required');
+        $this->form_validation->set_rules('pl_tgl_transaksi', 'Tanggal', 'trim');
+        $this->form_validation->set_rules('no_kunjungan', 'Unit/Bagian', 'trim|required');
+        
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $kode_trans_pelayanan = $this->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
+            $data_kunjungan = $this->db->get_where('tc_kunjungan', array('no_kunjungan' => $_POST['no_kunjungan']))->row();
+            
+            $dataexc = array(
+                /*form hidden input default*/
+                'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXINT'),
+                'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'),
+                'kode_kelompok' => $this->regex->_genRegex($this->input->post('kode_kelompok_val'),'RGXINT'),
+                'kode_perusahaan' => $this->regex->_genRegex($this->input->post('kode_perusahaan_val'),'RGXINT'),
+                'no_mr' => $this->regex->_genRegex($this->input->post('no_mr_val'),'RGXQSL'),
+                'nama_pasien_layan' => $this->regex->_genRegex($this->input->post('nama_pasien_val'),'RGXQSL'),
+                'kode_bagian_asal' => $this->regex->_genRegex($data_kunjungan->kode_bagian_asal,'RGXQSL'),
+                /*end form hidden input default*/
+                'kode_bagian' => $this->regex->_genRegex($data_kunjungan->kode_bagian_tujuan,'RGXQSL'),
+                'kode_klas' => $this->regex->_genRegex($this->input->post('kode_klas'),'RGXINT'),
+                'tgl_transaksi' => $this->regex->_genRegex($this->input->post('pl_tgl_transaksi'),'RGXQSL'),   
+            );
+            
+            $dataexc['kode_trans_pelayanan'] = $kode_trans_pelayanan;
+            /*form hidden after select tindakan*/
+            $dataexc['kode_tarif'] = $this->regex->_genRegex($this->input->post('kode_tarif'),'RGXINT');
+            $dataexc['jenis_tindakan'] = ($this->regex->_genRegex($this->input->post('jenis_tindakan'),'RGXINT')!=0)?$this->regex->_genRegex($this->input->post('jenis_tindakan'),'RGXINT'):3;
+            $dataexc['nama_tindakan'] = $this->regex->_genRegex($this->input->post('nama_tindakan'),'RGXQSL');
+            $dataexc['kode_master_tarif_detail'] = $this->regex->_genRegex($this->input->post('kode_master_tarif_detail'),'RGXQSL');
+
+            /*status NK*/
+            $status_nk = ( $this->input->post('jenis_tarif')==120 ) ? 1 : 0 ;
+            $dataexc['status_nk'] = $status_nk;
+            $dataexc['is_update_by_kasir'] = 1;
+            $dataexc['jumlah'] = 1;
+
+            /*Penunjang Medis */
+            if( isset($_POST['kode_penunjang']) AND $_POST['kode_penunjang']!=0 ){
+                $dataexc['kode_penunjang'] = $this->input->post('kode_penunjang');
+            }
+
+            /*get tarif mulitiple kode dokter*/
+            $tarifDokter = $this->tarif->getTarifMultipleDokter( $this->input->post('pl_kode_dokter_hidden') );
+
+            $tarifInsert = $this->tarif->getTarifForinsert();
+
+            $mergeData = array_merge($dataexc, $tarifDokter, $tarifInsert);
+
+            // echo "<pre>";print_r($mergeData);die;
+            
+            /*save tc_trans_pelayanan*/
+            $this->db->insert('tc_trans_pelayanan', $mergeData);
+
+            /*save logs*/
+            $this->logs->save('tc_trans_pelayanan', $kode_trans_pelayanan, 'insert new record on '.$this->title.' module', json_encode($dataexc),'kode_trans_pelayanan');
+
+            
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+        
+        }
+
+    }
+
 
 }
 

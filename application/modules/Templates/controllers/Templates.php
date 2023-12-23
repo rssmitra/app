@@ -1492,12 +1492,12 @@ class Templates extends MX_Controller {
 
         }elseif ($tipe=='LAB') {
         
-            // echo '<pre>';print_r($data);die;
             $referensi = $this->Billing->getRefLab($data->reg_data, $pm,$flag_mcu);
+            // echo '<pre>';print_r($referensi);die;
             foreach ($referensi as $key => $value) {
                 $getReferensiDt[$value->referensi][] = array('nama_pemeriksaan' => $value->nama_pemeriksaan, 'nama_tarif' => $value->nama_tarif);
             }
-            // echo '<pre>';print_r($getReferensiDt);die;
+            
             $getRef = array();
             
             $html .= '<br><br>';
@@ -1509,7 +1509,7 @@ class Templates extends MX_Controller {
                     <tr>                        
                         <td align="center" width="200px"><b>JENIS TEST</b></td>
                         <td align="center" width="100px"><b>HASIL</b></td>
-                        <td align="center" width="100px"><b>NILAI STANDAR</b></td>
+                        <td align="center" width="110px"><b>NILAI STANDAR</b></td>
                         <td align="center"><b>SATUAN</b></td>
                         <td align="center"><b>KETERANGAN</b></td>
                     </tr>
@@ -1523,16 +1523,18 @@ class Templates extends MX_Controller {
                 $detail_item_1 = '';
                 $detail_item_2 = '';
                 
+
                 for($i=0;$i<count($referensi);$i++) {
 
-                    if(($referensi[$i]->referensi!=$referen)){
+                    if(($referensi[$i]->referensi != $referen)){
                         $html .= '<tr><td colspan="5"><b>'.$referensi[$i]->referensi.'</b></td></tr>';
                         $referen = $referensi[$i]->referensi;
                     }
-                    // echo '<pre>';print_r($pm_data);die;
+
                     foreach ($pm_data as $key => $value) {
+                        // echo '<pre>';print_r($value);die;
                         $standar = ($data->reg_data->jk == 'L') ? $value->standar_hasil_pria : $value->standar_hasil_wanita;
-                        if(trim($value->nama_pemeriksaan)==trim($referensi[$i]->nama_pemeriksaan)){
+                        if( trim($value->nama_pemeriksaan) == trim($referensi[$i]->nama_pemeriksaan)){
                             if($value->detail_item_1 != ' ' AND $value->detail_item_1 != NULL){
                                 if((trim($value->nama_tindakan)!=$nama_tindakan)){
                                     $html .= '<tr><td colspan="5">&nbsp;'.strtoupper($value->nama_tindakan).'</td></tr>';

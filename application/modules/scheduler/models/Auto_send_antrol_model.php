@@ -31,7 +31,7 @@ class Auto_send_antrol_model extends CI_Model {
 
 	public function get_data_registrasi(){
 
-		$query = "SELECT TOP 1 kodebookingantrol as kodebooking, tgl_jam_masuk as created_date, task_id as taskid FROM tc_registrasi WHERE task_id < 5 and DATEDIFF(day,tgl_jam_masuk,GETDATE()) < 7 ORDER BY tgl_jam_masuk ASC";
+		$query = "SELECT kodebookingantrol as kodebooking, MAX(tgl_jam_masuk) as created_date, MAX(task_id) as taskid FROM tc_registrasi WHERE task_id < 5 AND CAST(tgl_jam_masuk as DATE) = '".date('Y-m-d')."' GROUP BY kodebookingantrol ";
 
 		$execute = $this->db->query($query)->row();
 		return $execute;
