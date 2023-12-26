@@ -61,58 +61,38 @@ $(document).ready(function() {
 
     <input type="hidden" class="form-control" name="kode_tc_hasilMcu" id="kode_tc_hasilMcu" value="<?php echo isset($kode_tc_hasilMcu)?$kode_tc_hasilMcu:0?>">
 
-    <p><b><i class="fa fa-edit"></i> Kesimpulan </b></p>
+    <p><b><i class="fa fa-edit"></i> KESIMPULAN & SARAN</b></p>
 
-    <div class="form-group">
-                      
-      <label class="control-label col-sm-2">Keluhan Saat Ini</label>
-      
-      <div class="col-md-3">
-        
-        <textarea name="kesimpulan_keluhan" id="kesimpulan_keluhan" cols="50" style="height:100px !important;" ><?php $anam=isset($anamnesa)?$anamnesa->keluhan_utama:''; echo isset($hasil)?$hasil->keluhan_saat_ini:$anam ?></textarea>
-      
+      <label class="control-label col-sm-2" style="font-weight: bold">Keluhan Saat Ini</label>
+      <div class="col-md-12 no-padding" style="margin-bottom: 10px !important">
+        <textarea name="kesimpulan_keluhan" id="kesimpulan_keluhan" class="form-control" style="height:100px !important;" ><?php $anam=isset($anamnesa)?$anamnesa->keluhan_utama:''; echo isset($hasil)?$hasil->keluhan_saat_ini:$anam ?></textarea>
       </div>
+      <br>
     
-    
-    </div>
-
-    <div class="form-group">
-                      
-      <label class="control-label col-sm-2">Riwayat Penyakit</label>
-      
-      <div class="col-md-3">
-        
-        <textarea name="kesimpulan_riwayat_penyakit" id="kesimpulan_riwayat_penyakit" cols="50" style="height:100px !important;" ><?php 
+          
+      <label class="control-label col-sm-2" style="font-weight: bold">Riwayat Penyakit</label>
+      <div class="col-md-12 no-padding" style="margin-bottom: 10px !important">
+        <textarea name="kesimpulan_riwayat_penyakit" id="kesimpulan_riwayat_penyakit" class="form-control" style="height:100px !important;" ><?php 
             $html = '';
             if(isset($anamnesa)){
               foreach ($anamnesa->riwayat_penyakit_masa_lampau as $key => $value) {
                 $exp = str_replace('_', ' ', $key);
-                // $penyakit1 = ucfirst($exp[1]);
-                // $penyakit2 = isset($exp[2])?ucfirst($exp[2]):'';
                 $riwayat = ucwords($exp);
                 if($value=='Ada'){
                   $html .= $riwayat. PHP_EOL;
                 }
-
               }
             }
             $riw = ($html=='')?'Tidak Ada':$html;
             echo isset($hasil)?$hasil->riwayat_penyakit:$riw; 
           ?>
         </textarea>
-      
       </div>
-    
-    
-    </div>
-
-    <div class="form-group">
-                      
-      <label class="control-label col-sm-2">Riwayat Penyakit Keluarga</label>
+      <br>
       
-      <div class="col-md-3">
-        
-        <textarea name="kesimpulan_riwayat_penyakit_keluarga" id="kesimpulan_riwayat_penyakit_keluarga" cols="50" style="height:100px !important;" ><?php 
+      <label class="control-label col-sm-2" style="font-weight: bold">Riwayat Penyakit Keluarga</label>
+      <div class="col-md-12 no-padding" style="margin-bottom: 10px !important">
+        <textarea name="kesimpulan_riwayat_penyakit_keluarga" id="kesimpulan_riwayat_penyakit_keluarga" class="form-control" style="height:100px !important;" ><?php 
             $html = '';
             if(isset($anamnesa)){
               foreach ($anamnesa->riwayat_penyakit_keluarga as $key => $value) {
@@ -130,19 +110,12 @@ $(document).ready(function() {
             echo isset($hasil)?$hasil->riwayat_penyakit_keluarga:$riw;
           ?>
         </textarea>
-      
       </div>
-    
-    
-    </div>
-
-    <div class="form-group">
-                      
-      <label class="control-label col-sm-2">Alergi</label>
+      <br>
       
-      <div class="col-md-3">
-        
-        <textarea name="kesimpulan_alergi" id="kesimpulan_alergi" cols="50" style="height:100px !important;" ><?php 
+      <label class="control-label col-sm-2" style="font-weight: bold">Alergi</label>
+      <div class="col-md-12 no-padding" style="margin-bottom: 10px !important">
+        <textarea name="kesimpulan_alergi" id="kesimpulan_alergi" class="form-control" style="height:100px !important;" ><?php 
             $html = '';
             if(isset($anamnesa)){
               foreach ($anamnesa->alergi as $key => $value) {
@@ -151,18 +124,14 @@ $(document).ready(function() {
                 if($value=='Ada'){
                   $html .= $riwayat. PHP_EOL;
                 }
-
               }
             }
             $alergi = ($html=='')?'Tidak Ada':$html;
             echo isset($hasil)?$hasil->alergi:$alergi; 
           ?>
         </textarea>
-      
       </div>
-    
-    
-    </div> <br>
+      <br>
 
    
     <div class="form-group">
@@ -182,9 +151,9 @@ $(document).ready(function() {
                       
       <label class="control-label col-sm-2">Gigi</label>
       
-      <div class="col-md-3">
+      <div class="col-md-10">
         
-        <textarea name="kesimpulan_gigi" id="kesimpulan_gigi" cols="50" style="height:100px !important;" ><?php 
+        <textarea name="kesimpulan_gigi" id="kesimpulan_gigi" class="form-control" style="height:100px !important;" ><?php 
             $html = '';
             if(isset($pemeriksaan_fisik)){
               $gigi = json_decode($pemeriksaan_fisik->mulut_gigi->gigi);
@@ -205,18 +174,12 @@ $(document).ready(function() {
 
 
     <div class="form-group">
-                      
       <label class="control-label col-sm-2">Radiologi</label>
-      
-      <div class="col-md-3">
-        
-        <!-- <input type="text" class="form-control" name="kesimpulan_radiologi" id="kesimpulan_radiologi" value="<?php $rad=isset($pemeriksaan_radiologi)?$pemeriksaan_radiologi->hasil:''; echo isset($hasil)?$hasil->radiologi:$rad?>"  > -->
-        <textarea name="kesimpulan_radiologi" id="kesimpulan_radiologi" cols="50" style="height:100px !important;" ><?php $rad=isset($pemeriksaan_radiologi)?$pemeriksaan_radiologi->hasil:''; echo isset($hasil)?$hasil->radiologi:$rad?></textarea>
-      
+      <div class="col-md-10">
+        <textarea name="kesimpulan_radiologi" id="kesimpulan_radiologi" class="form-control" style="height:100px !important;" ><?php $rad=isset($pemeriksaan_radiologi)?$pemeriksaan_radiologi->hasil:''; echo isset($hasil)?$hasil->radiologi:$rad?></textarea>
       </div>
-    
-    
     </div>
+    <br>
 
     <div class="form-group">
                       
@@ -289,11 +252,9 @@ $(document).ready(function() {
                       
       <label class="control-label col-sm-2">Treadmill</label>
       
-      <div class="col-md-3">
-        
-        <!-- <input type="text" class="form-control" name="kesimpulan_treadmill" id="kesimpulan_treadmill" value="<?php echo isset($hasil)?$hasil->treadmill:''?>"  > -->
+      <div class="col-md-10">
 
-        <textarea name="kesimpulan_treadmill" id="kesimpulan_treadmill" cols="50" style="height:100px !important;" ><?php echo isset($hasil)?$hasil->treadmill:''?></textarea>
+        <textarea name="kesimpulan_treadmill" id="kesimpulan_treadmill" class="form-control" style="height:100px !important;" ><?php echo isset($hasil)?$hasil->treadmill:''?></textarea>
       
       </div>
     
@@ -306,8 +267,39 @@ $(document).ready(function() {
         <div class="col-sm-4">    
           <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'kesan_mcu')), isset($kesimpulan)?$kesimpulan:'', 'kesimpulan_kesan', 'kesimpulan_kesan', 'form-control', '', '') ?>
         </div>
+    </div>
 
-       
+    <div class="form-group">
+      <label class="control-label col-sm-2">Resiko Kardiovaskular</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" name="resiko_kardio" id="resiko_kardio" value="<?php echo isset($hasil->resiko_kardio)?$hasil->resiko_kardio:''?>"  >
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Derajat Kesehatan</label>
+      <div class="col-md-2">
+        <select id="derajat_kesehatan" class="form-control" name="derajat_kesehatan">
+            <?php 
+            for ($i=1; $i < 8; $i++) { 
+              // $selected = (in_array($row->value, json_decode($pemeriksaan_fisik->mulut_gigi->gigi)))?'selected':'';
+              echo '<option value="P'.$i.'">P'.$i.'</option>';
+            }
+          ?>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Kelaikan Kerja</label>
+      <div class="col-md-10">
+        <input type="text" class="form-control" name="kelaikan_kerja" id="kelaikan_kerja" value="<?php echo isset($hasil->kelaikan_kerja)?$hasil->kelaikan_kerja:''?>"  >
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2">Kesimpulan Kesan</label>
+      <div class="col-md-10">
+      <textarea name="penjelasan_kesan" id="penjelasan_kesan" class="form-control" style="height:100px !important;"><?php echo isset($hasil->penjelasan_kesan)?$hasil->penjelasan_kesan:'';?>
+        </textarea>
+      </div>
     </div>
 
     <br><p><b><i class="fa fa-edit"></i> Anjuran / Saran </b></p>
@@ -316,9 +308,9 @@ $(document).ready(function() {
                       
       <label class="control-label col-sm-2">Saran</label>
       
-      <div class="col-md-3">
+      <div class="col-md-10">
         
-        <textarea name="kesimpulan_saran" id="kesimpulan_saran" cols="50" style="height:100px !important;"><?php echo isset($kesan)?$kesan:'';?>
+        <textarea name="kesimpulan_saran" id="kesimpulan_saran" class="form-control" style="height:100px !important;"><?php echo isset($kesan)?$kesan:'';?>
         </textarea>
       
       </div>

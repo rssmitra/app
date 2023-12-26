@@ -197,7 +197,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
             $data['kesan'] = $hasil->kesan;
             $data['kode_tc_hasilMcu'] = $hasil->kode_tc_hasilMcu;
         }
-        //echo"<pre>";print_r($data);die;
+        // echo"<pre>";print_r($data);die;
 
         $this->load->view('Pl_pelayanan_mcu/form_kesimpulan_saran', $data);
             
@@ -597,7 +597,18 @@ class Pl_pelayanan_mcu extends MX_Controller {
                     'keterangan' => $this->input->post('keterangan_tht'),
                 ),
                 'mulut_gigi' => array(
-                    'gigi' => json_encode($this->input->post('fisik_gigi')),
+                    'gigi_kanan_atas' => $this->input->post('gigi_upright'),
+                    'gigi_kanan_atas_ke' => $this->input->post('gigi_upright_ke'),
+                    'catatan_gigi_kanan_atas' => $this->input->post('gigi_upright_note'),
+                    'gigi_kiri_atas' => $this->input->post('gigi_upleft'),
+                    'gigi_kiri_atas_ke' => $this->input->post('gigi_upleft_ke'),
+                    'catatan_gigi_kiri_atas' => $this->input->post('gigi_upleft_note'),
+                    'gigi_kanan_bawah' => $this->input->post('gigi_downright'),
+                    'gigi_kanan_bawah_ke' => $this->input->post('gigi_downright_ke'),
+                    'catatan_gigi_kanan_bawah' => $this->input->post('gigi_downright_note'),
+                    'gigi_kiri_bawah' => $this->input->post('gigi_downleft'),
+                    'gigi_kiri_bawah_ke' => $this->input->post('gigi_downleft_ke'),
+                    'catatan_gigi_kiri_bawah' => $this->input->post('gigi_downleft_note'),
                     'lidah' => $this->input->post('fisik_lidah'),
                     'keterangan' => $this->input->post('keterangan_mulut'),
                 ),
@@ -635,8 +646,10 @@ class Pl_pelayanan_mcu extends MX_Controller {
                     'keterangan' => $this->input->post('keterangan_genitalia')
                 ),
                 'anggota_gerak' => array(
-                    'extremitas_atas' => $this->input->post('fisik_ex_atas'),
-                    'extremitas_bawah' => $this->input->post('fisik_ex_bawah'),
+                    'extremitas_atas_kanan' => $this->input->post('fisik_ex_atas_kanan'),
+                    'extremitas_atas_kiri' => $this->input->post('fisik_ex_atas_kiri'),
+                    'extremitas_bawah_kanan' => $this->input->post('fisik_ex_bawah_kanan'),
+                    'extremitas_bawah_kiri' => $this->input->post('fisik_ex_bawah_kiri'),
                     'keterangan' => $this->input->post('keterangan_anggota_gerak')
                 ),
                                 
@@ -797,6 +810,10 @@ class Pl_pelayanan_mcu extends MX_Controller {
                 'buta_warna' => $this->input->post('kesimpulan_buta_warna'),
                 'audiometri' => $this->input->post('kesimpulan_audiometri'),
                 'treadmill' => $this->input->post('kesimpulan_treadmill'),
+                'resiko_kardiovaskular' => $this->input->post('resiko_kardio'),
+                'derajat_kesehatan' => $this->input->post('derajat_kesehatan'),
+                'kelaikan_kerja' => $this->input->post('kelaikan_kerja'),
+                'penjelasan_kesan' => $this->input->post('penjelasan_kesan'),
             );
 
             $dataexc = array(
@@ -808,7 +825,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
                 'kesan' =>  $this->input->post('kesimpulan_saran'),
              );
 
-             //print_r($dataexc);die;
+            //  print_r($dataexc);die;
             
             if($this->input->post('kode_tc_hasilMcu')==0){
                 $kode_tc_hasilMcu = $this->Pl_pelayanan_mcu->save('mcu_tc_hasil',$dataexc);
@@ -1043,10 +1060,10 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $data['param_ekg'] = $this->Pl_pelayanan_mcu->get_param('global_parameter','label,value',array('flag' => 'pemeriksaan_irama_ekg'));
         $data['param_kesan_mcu'] = $this->Pl_pelayanan_mcu->get_param('global_parameter','label,value',array('flag' => 'kesan_mcu'));
 
-        //echo"<pre>";print_r($data);die;
+        // echo"<pre>";print_r($data['param_gigi']);die;
 
         // $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data);   
-        $html_content =  $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data, TRUE);   
+        $html_content =  $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data, true);   
 
         $this->exportHasilMCU($html_content,$data['kunjungan']->no_registrasi,$data['pasien']->nama_pasien);
         

@@ -237,28 +237,71 @@
         </td>
       </tr>
 
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      
+      <tr>
+        <td width="20px"></td>
+        <td class="title" width="30%"><b>Mulut Gigi </b></td>
+        <td width="75%"></td>
+      </tr>
+      <tr>
+          <td width="20px"></td>
+          <td class="title" width="30%"><span class="dejavu-font">&#x26AC;</span> Gigi Kanan Atas</td>
+          <td width="20%">: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas?> </td>
+          <td class="title" width="10%" >Gigi ke -</td>
+          <td >: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas_ke; ?> (<?php echo $pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_atas; ?>)</td>
+      </tr>
+      <tr>
+          <td width="20px"></td>
+          <td class="title" width="30%"><span class="dejavu-font">&#x26AC;</span> Gigi Kanan Bawah</td>
+          <td width="20%">: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah?></td>
+          <td class="title" width="10%" >Gigi ke -</td>
+          <td >: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah_ke; ?> (<?php echo $pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_bawah; ?>)</td>
+      </tr>
+
+      <tr>
+          <td width="20px"></td>
+          <td class="title" width="30%"><span class="dejavu-font">&#x26AC;</span> Gigi Kiri Atas</td>
+          <td width="20%">: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas?></td>
+          <td class="title" width="10%" >Gigi ke -</td>
+          <td >: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas_ke; ?> (<?php echo $pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_atas; ?>)</td>
+      </tr>
+
+      <tr>
+          <td width="20px"></td>
+          <td class="title" width="30%"><span class="dejavu-font">&#x26AC;</span> Gigi Kiri Bawah</td>
+          <td width="20%">: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah?></td>
+          <td class="title" width="10%" >Gigi ke -</td>
+          <td >: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah_ke; ?> (<?php echo $pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_bawah; ?>)</td>
+      </tr>
+
+
       <?php foreach ($pemeriksaan_fisik as $key => $value) {
-        if($key != 'buta_warna'){
+        if(!in_array($key, array('buta_warna', 'mulut_gigi'))){
           $res = str_replace('_', ' ', $key);
           $name = ($key=='tht')?strtoupper($res):ucwords($res);
           echo 
           '
           <tr>
-            <td width="30px"></td>
-            <td class="title"><b>'.$name.' </b></td>
-            <td width="78%"></td>
+            <td width="20px"></td>
+            <td class="title" width="30%"><b>'.$name.' </b></td>
+            <td width="75%"></td>
           </tr>';
-
-        
+          // if($key == 'mulut_gigi'){
+          //   echo "<pre>"; print_r($value);die;
+          // }
             foreach ($pemeriksaan_fisik->$key as $k => $v) :
               $rest = str_replace('_', ' ', str_replace('atau', '/', $k)); 
               $res_ = str_replace('strip', '-', $rest);
-              $name = ($k=='jvp')?strtoupper($res_):ucwords($res_);?>
-
+              $name = ($k=='jvp')?strtoupper($res_):ucwords($res_);
+              ?>
+              
               <tr>
-                <td width="30px"></td>
-                <td class="title"><span class="dejavu-font">&#x26AC;</span> <?php echo $name ?></td>
-                <td width="78%">: 
+                <td width="20px"></td>
+                <td class="title" width="30%"><span class="dejavu-font">&#x26AC;</span> <?php echo $name ?></td>
+                <td width="75%">: 
                   <?php 
                     switch ($k) {
                       case 'hidung':
@@ -353,6 +396,7 @@
                         echo nl2br($v);
                       break;
                     }
+                    // echo "<pre>"; print_r($v);die;
                   ?>
                 </td>
               </tr>
