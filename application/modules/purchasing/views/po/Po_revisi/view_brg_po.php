@@ -195,39 +195,46 @@
         ?>
           <tr id="tr_<?php echo $row_dt[0]->kode_brg?>" <?php ( empty($row_dt[0]->kode_detail_penerimaan_barang) ) ? '' : 'style="background-color: red"' ; ?> >
             <!-- checkbox -->
-            <?php if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?>
+            <?php //if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?>
             <td class="center">
                 <input type="checkbox" class="checkbox_brg" id="checkbox_brg_<?php echo $row_dt[0]->kode_brg?>" class="form-control" value="<?php echo $row_dt[0]->kode_brg?>" onClick="checkOne('<?php echo $row_dt[0]->kode_brg?>');" style="cursor:pointer" name="is_checked[<?php echo $row_dt[0]->kode_brg?>]">
               
               <!-- hidden -->
               <input type="hidden" name="id_tc_permohonan[<?php echo $row_dt[0]->kode_brg?>]" id="id_tc_permohonan" value="<?php echo $row_dt[0]->id_tc_permohonan?>">
             </td>
-            <?php else: ?>
-              <td align="center"><i class="fa fa-check green bigger-150"></i></td>
-            <?php endif; ?>
+            <?php //else: ?>
+              <!-- <td align="center"><i class="fa fa-check green bigger-150"></i></td> -->
+            <?php //endif; ?>
 
             <td class="center"><?php echo $no?></td>
             <td><?php echo $row_dt[0]->kode_brg?> </td>
-            <td><?php echo $row_dt[0]->nama_brg?></td>
+            <td>
+              <?php echo $row_dt[0]->nama_brg?>
+              <?php 
+                echo (empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? "" : '<br><span style="color: blue; font-size:10px;">Barang telah diterima <b>('.$row_dt[0]->kode_penerimaan.')</b></span>';
+                $is_readonly = (empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? "" : "readonly";
+              ?>
+              <input type="hidden" name="brg_diterima[<?php echo $row_dt[0]->kode_brg?>]" id="barang_diterima_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo (empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? 0 : $row_dt[0]->kode_brg ?>">
+            </td>
 
-            <!-- <?php if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?> -->
+            <?php //if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?>
 
             <!-- satuan besar -->
             <td class="center"><?php echo $row_dt[0]->satuan_besar?></td>
             <!-- rasio -->
             <td class="center">
-                <input type="text" name="rasio[<?php echo $row_dt[0]->kode_brg?>]" onchange="inputRasio('<?php echo $row_dt[0]->kode_brg?>')" id="form_input_rasio_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt[0]->content?>"  disabled>
+                <input type="text" name="rasio[<?php echo $row_dt[0]->kode_brg?>]" onchange="inputRasio('<?php echo $row_dt[0]->kode_brg?>')" id="form_input_rasio_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt[0]->content?>"  disabled <?php echo $is_readonly?>>
             </td>
             <!-- jumlah acc -->
             <td class="center" id="jml_permohonan_<?php echo $row_dt[0]->kode_brg?>">
               <!-- <?php echo array_sum($jumlah_pesan_arr[$key_dt])?> -->
-              <input type="text" name="jml_permohonan[<?php echo $row_dt[0]->kode_brg?>]" onchange="inputJumlahRevisi('<?php echo $row_dt[0]->kode_brg?>')" id="form_jml_permohonan_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo array_sum($jumlah_pesan_arr[$key_dt])?>" disabled>
+              <input type="text" name="jml_permohonan[<?php echo $row_dt[0]->kode_brg?>]" onchange="inputJumlahRevisi('<?php echo $row_dt[0]->kode_brg?>')" id="form_jml_permohonan_<?php echo $row_dt[0]->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo array_sum($jumlah_pesan_arr[$key_dt])?>" disabled <?php echo $is_readonly?> >
 
             </td>
 
             <!-- harga satuan -->
             <td class="center">
-                <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="format_number form-control" value="<?php echo $row_dt[0]->harga_satuan?>" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled>
+                <input type="text" name="harga_satuan[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" style="height:45px;text-align:right" class="format_number form-control" value="<?php echo $row_dt[0]->harga_satuan?>" onchange="inputHargaSatuan('<?php echo $row_dt[0]->kode_brg?>')" disabled <?php echo $is_readonly?>>
                 <!-- perhitungan harga satuan dasar -->
                 
                 <input type="hidden" name="harga_satuan_val[<?php echo $row_dt[0]->kode_brg?>]" id="hidden_form_input_harga_satuan_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo $row_dt[0]->harga_satuan?>">
@@ -235,7 +242,7 @@
 
             <!-- diskon -->
             <td class="center">
-                <input type="text" name="diskon[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_diskon_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" value="<?php echo $row_dt[0]->discount?>" onchange="inputDisc('<?php echo $row_dt[0]->kode_brg?>')" disabled>
+                <input type="text" name="diskon[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_diskon_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" value="<?php echo $row_dt[0]->discount?>" onchange="inputDisc('<?php echo $row_dt[0]->kode_brg?>')" disabled <?php echo $is_readonly?>>
                 <!-- default -->
                 <input type="hidden" name="diskon_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_diskon_<?php echo $row_dt[0]->kode_brg?>" class="diskon" style="height:45px;text-align:center" value="0">
                 <input type="hidden" name="potongan_diskon[<?php echo $row_dt[0]->kode_brg?>]" id="potongan_diskon_<?php echo $row_dt[0]->kode_brg?>" class="potongan_diskon" style="height:45px;text-align:center" value="0">
@@ -243,7 +250,7 @@
 
              <!-- ppn -->
              <td class="center">
-                <input type="text" name="ppn[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_ppn_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" onchange="inputPpn('<?php echo $row_dt[0]->kode_brg?>')" value="11" disabled>
+                <input type="text" name="ppn[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_ppn_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" onchange="inputPpn('<?php echo $row_dt[0]->kode_brg?>')" value="11" disabled <?php echo $is_readonly?>>
                 <input type="hidden" name="ppn_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_ppn_<?php echo $row_dt[0]->kode_brg?>" class="ppn" style="height:45px;text-align:center" value="0">
             </td>
             
@@ -253,15 +260,14 @@
               <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
             </td>
 
-            <?php else : ?>
+            <?php //else : ?>
 
-              <td colspan="6" align="center"><span style="color: blue; letter-spacing: 2px; font-weight: bold">BARANG TELAH DITERIMA</span> <b>(<?php echo $row_dt[0]->kode_penerimaan?>)</b></td>
-               <!-- total -->
+              <!-- <td colspan="6" align="center"><span style="color: blue; letter-spacing: 2px; font-weight: bold">BARANG TELAH DITERIMA</span> <b>(<?php echo $row_dt[0]->kode_penerimaan?>)</b></td>
               <td class="center">
                 <input type="text" name="total[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_total_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control" style="height:45px;text-align:right" value="0" readonly disabled>
                 <input type="hidden" name="total_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_total_<?php echo $row_dt[0]->kode_brg?>" class="total" style="height:45px;text-align:center" value="0">
-              </td>
-            <?php endif; ?>
+              </td> -->
+            <?php //endif; ?>
 
           </tr>
           <?php endforeach;?>
