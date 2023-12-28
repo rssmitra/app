@@ -220,10 +220,13 @@ class Po_penerbitan extends MX_Controller {
 
             if( $_POST['action'] == 'revisi'){
                 foreach( $_POST['is_checked'] as $row_checked ){
-                    // get id_tc_permohonan_det
-                    foreach( $_POST['id_tc_permohonan_det'][$row_checked] as $row_id_tc_det ){
+                    // hanya barang yang belum diterima yang diproses
+                    
+                      // print_r($_POST['brg_diterima'][$row_checked]);die;
+                      // get id_tc_permohonan_det
+                      foreach( $_POST['id_tc_permohonan_det'][$row_checked] as $row_id_tc_det ){
                         $id_tc_permohonan[] = $_POST['id_tc_permohonan'][$row_checked];
-                        $id_tc_permohonan_det[] = $row_id_tc_det;
+                      
                         // gte data detail permohonan
                         $permohonan_det = $this->db->join($table.'_det',''.$table.'_det.id_tc_permohonan_det='.$table_permohonan.'_det.id_tc_permohonan_det','left')->get_where($table_permohonan.'_det', array(''.$table_permohonan.'_det.id_tc_permohonan_det' => $row_id_tc_det) )->row();
                         // print_r($permohonan_det);die;
@@ -260,12 +263,16 @@ class Po_penerbitan extends MX_Controller {
                             "ppn" => $harga['ppn'],
                         );
 
-                        $this->db->update($table.'_det', $updateBatch, array('id_tc_po_det' => $permohonan_det->id_tc_po_det) );
+                        if($_POST['brg_diterima'][$row_checked] == 0){
+                          $id_tc_permohonan_det[] = $row_id_tc_det;
+                          $this->db->update($table.'_det', $updateBatch, array('id_tc_po_det' => $permohonan_det->id_tc_po_det) );
+                        }
                         
-                    }
+                      }
+                  
                 }
+                // print_r($id_tc_permohonan_det);die;
             }
-            
             // update status permohonan detail sudah di PO kan
             $this->db->where_in('id_tc_permohonan_det', $id_tc_permohonan_det)->update($table_permohonan.'_det', array('status_po' => 1) );
             
