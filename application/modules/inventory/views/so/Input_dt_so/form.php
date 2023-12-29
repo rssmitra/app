@@ -313,8 +313,8 @@ function find_data_reload(){
               <th class="center">STOK TGL<br><?php echo isset($value->agenda_so_cut_off_stock)?$this->tanggal->formatDatedmY($value->agenda_so_cut_off_stock):''?></th>
               <th class="center">STOK AKHIR<br>(Setelah/Sebelum SO)</th>
               <th class="center">STOK FISIK <br>(Input SO)</th>
-              <th class="center">JML EXP</th>
               <th class="center">JML EXP -3 Bln</th>
+              <th class="center">JML EXP</th>
               <th class="center">STATUS AKTIF</th>
               <th class="center">LAST UPDATE</th>
               <!-- <th class="center"></th> -->
