@@ -1257,7 +1257,7 @@ class References extends MX_Controller {
         $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif
 					from mt_master_tarif a
 					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
-					where  a.tingkatan=5 and a.kode_bagian like '03%' AND (kode_bagian <> '030901') and a.nama_tarif like '%".$_POST['keyword']."%' and a.is_active!= 'N' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif order by a.nama_tarif ";
+					where  a.tingkatan=5 and (a.kode_bagian like '03%' OR a.kode_bagian = 0) AND (kode_bagian <> '030901') and a.nama_tarif like '%".$_POST['keyword']."%' and a.is_active!= 'N' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif order by a.nama_tarif ";
 		$exc = $this->db->query($query)->result();
 		// print_r($this->db->last_query());die;
 		$arrResult = [];
