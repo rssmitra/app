@@ -61,7 +61,7 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 				$this->db->where('kode_bagian_tujuan', $_GET['bagian_tujuan']);	
 				
 				if( (!isset($_GET['bulan'])) OR (!isset($_GET['tahun'])) OR ( (!isset($_GET['from_tgl'])) AND (!isset($_GET['to_tgl'])) )){
-					$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 10');	
+					$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 0');	
 					// $this->db->where('DAY(tgl_masuk)='.date('d').'');	
 					// $this->db->where('MONTH(tgl_masuk)='.date('m').'');	
 					// $this->db->where('YEAR(tgl_masuk)='.date('Y').'');
@@ -79,7 +79,7 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 				$this->db->where("convert(varchar,tc_kunjungan.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 	        }
 		}else{
-			$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 10');	
+			$this->db->where('DATEDIFF(Day, tgl_masuk, getdate()) <= 0');	
 
 			// $this->db->where('DAY(tgl_masuk)='.date('d').'');	
 			// $this->db->where('MONTH(tgl_masuk)='.date('m').'');	
