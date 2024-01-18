@@ -1,0 +1,12 @@
+<div style="text-align: center;"><b>HASIL PEMERIKSAAN DIAGNOSTIK NON INVASIF VASKULER</b></div>
+<div style="text-align: left;"><br><b>Pada pemeriksaan duplex ekstremitas atas didapatkan :</b></div>
+<div style="text-align: center;"><br></div>
+<div style="text-align: left;"><b>Arteri</b> :</div>
+<div style="text-align: left;"><br>-	Gambaran anatomi pembuluh darah arteri subclavia, arteri axilaris, arteri brachialis, arteri radialis, arteri ulnaris bilateral rata dan tidak menebal</div>
+<div style="text-align: left;"><br>-	Arteri subclavia, arteri axilaris, arteri brachialis, arteri radialis, arteri ulnaris bilateral morfologi kurva Doppler triphasic</div>
+<div style="text-align: left;"><b>Vena</b> :</div>
+<div style="text-align: left;"><br>-	Compressi Ultrasound (CUS) negatif pada vena brachialis bilateral</div>
+<div style="text-align: left;"><br>-	Augmentasi (+) dengan uji squeeze distal pada vena brachialis bilateral</div>
+<div style="text-align: left;"><b>Kesimpulan</b> :</div>
+<div style="text-align: left;"><br>-	Normal flow arteri dan vena pada kedua ekstremitas atas</div>
+<div style="text-align: left;"><br>-	Tidak ditemukan thrombosis (DVT) pada vena dalam di kedua ekstremitas atas</div>

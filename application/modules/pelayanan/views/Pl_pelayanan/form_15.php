@@ -1,0 +1,12 @@
+<div style="text-align: center;"><b>HASIL PEMERIKSAAN DIAGNOSTIK NON INVASIF VASKULER</b></div>
+<div style="text-align: left;"><br><b>Pada pemeriksaan duplex sonography femoralis didapatkan :</b></div>
+<div style="text-align: center;"><br></div>
+<div style="text-align: left;"><b>Arteri</b> :</div>
+<div style="text-align: left;"><br></div>
+<div style="text-align: left;"><br></div>
+<div style="text-align: left;"><b>Vena</b> :</div>
+<div style="text-align: left;"><br></div>
+<div style="text-align: left;"><br></div>
+<div style="text-align: left;"><b>Kesimpulan</b> :</div>
+<div style="text-align: left;"><br></div>
+<div style="text-align: left;"><br></div>
