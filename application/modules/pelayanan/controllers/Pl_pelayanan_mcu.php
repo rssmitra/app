@@ -813,7 +813,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
                 'resiko_kardiovaskular' => $this->input->post('resiko_kardio'),
                 'derajat_kesehatan' => $this->input->post('derajat_kesehatan'),
                 'kelaikan_kerja' => $this->input->post('kelaikan_kerja'),
-                'penjelasan_kesan' => $this->input->post('penjelasan_kesan'),
+                'penjelasan_kesan' => nl2br($this->input->post('penjelasan_kesan')),
             );
 
             $dataexc = array(
@@ -1060,7 +1060,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
         $data['param_ekg'] = $this->Pl_pelayanan_mcu->get_param('global_parameter','label,value',array('flag' => 'pemeriksaan_irama_ekg'));
         $data['param_kesan_mcu'] = $this->Pl_pelayanan_mcu->get_param('global_parameter','label,value',array('flag' => 'kesan_mcu'));
 
-        // echo"<pre>";print_r($data['param_gigi']);die;
+        // echo"<pre>";print_r($data['hasil']);die;
 
         // $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data);   
         $html_content =  $this->load->view('Pl_pelayanan_mcu/hasil_mcu', $data, true);   

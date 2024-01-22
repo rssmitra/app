@@ -155,8 +155,8 @@ $(document).ready(function() {
         
         <textarea name="kesimpulan_gigi" id="kesimpulan_gigi" class="form-control" style="height:100px !important;" ><?php 
             $html = '';
-            if(isset($pemeriksaan_fisik)){
-              $gigi = json_decode($pemeriksaan_fisik->mulut_gigi->gigi);
+            if(isset($pemeriksaan_fisik->mulut_gigi)){
+              $gigi =$pemeriksaan_fisik->mulut_gigi;
               foreach ($gigi as $value) {
                 $riwayat = ucfirst($value);
                 $html .= $riwayat. PHP_EOL;
