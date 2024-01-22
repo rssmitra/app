@@ -99,7 +99,7 @@
           <?php
             foreach ($param_agama as $value) : ?>
               
-              <span class="dejavu-font"><?php echo ($pasien->id_dc_agama==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp;<?php echo $value->label ?> &nbsp;&nbsp;
+              <span class="dejavu-font"><?php echo ($pasien->id_dc_agama==$value->value)?'&#9745;':'&#9744;' ?></span>&nbsp; <?php echo $value->label ?> <br>
 
           <?php  endforeach ?>
         </td>
@@ -119,7 +119,7 @@
         <td width="20px"></td>
         <td class="title">Alamat</td>
         <td width="5px">:</td>
-        <td width="80%" style="padding-left: 20px"> <?php echo ucwords(strtolower($pasien->almt_ttp_pasien)) ?><?php echo isset($pasien->kelurahan)?', '.ucwords(strtolower($pasien->kelurahan)):'' ?><?php echo isset($pasien->kecamatan)?', '.ucwords(strtolower($pasien->kecamatan)):'' ?><?php echo isset($pasien->kota)?', '.ucwords(strtolower($pasien->kota)):'' ?></td>
+        <td width="80%"> <?php echo ucwords(strtolower($pasien->almt_ttp_pasien)) ?><?php echo isset($pasien->kelurahan)?', '.ucwords(strtolower($pasien->kelurahan)):'' ?><?php echo isset($pasien->kecamatan)?', '.ucwords(strtolower($pasien->kecamatan)):'' ?><?php echo isset($pasien->kota)?', '.ucwords(strtolower($pasien->kota)):'' ?></td>
       </tr>
     </table><br>
 
@@ -277,6 +277,12 @@
           <td >: <?php echo $pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah_ke; ?> (<?php echo $pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_bawah; ?>)</td>
       </tr>
 
+      <tr>
+          <td width="20px"></td>
+          <td class="title" width="30%"><span class="dejavu-font">&#x26AC;</span> Keterangan</td>
+          <td width="70%" colspan="2">: <?php echo $pemeriksaan_fisik->mulut_gigi->keterangan?></td>
+      </tr>
+
 
       <?php foreach ($pemeriksaan_fisik as $key => $value) {
         if(!in_array($key, array('buta_warna', 'mulut_gigi'))){
@@ -415,12 +421,14 @@
       <tr>
         <td width="20px"></td>
         <td class="title">Thorax Foto</td>
-        <td width="78%">: <?php echo nl2br($pemeriksaan_radiologi->hasil) ?> </td>
+        <td width="3%">: </td>
+        <td width="75%"><?php echo nl2br($pemeriksaan_radiologi->hasil) ?></td>
       </tr>
       <tr>
         <td width="20px"></td>
         <td class="title">Kesan</td>
-        <td width="78%">: <?php echo nl2br($pemeriksaan_radiologi->kesan) ?></td>
+        <td width="3%">: </td>
+        <td width="75%"><?php echo nl2br($pemeriksaan_radiologi->kesan) ?></td>
       </tr>
     </table><br>
 
@@ -471,14 +479,15 @@
         '
         <tr>
           <td width="20px"></td>
-          <td width="40%">'.$no.'. '.ucwords($res).'</td>';
+          <td width="38%">'.$no.'. '.ucwords($res).'</td>
+          <td width="2%">: </td>';
         if(!is_object($value)){
           echo '
-          <td width="50%">: '.$value.' </td>
+          <td>'.$value.' </td>
         </tr>';
         }else{
           echo '
-          <td width="50%"></td>
+          <td width="40%"></td>
         </tr>';
 
         
@@ -487,8 +496,9 @@
 
             <tr>
               <td width="55px"></td>
-              <td width="34%"><?php echo ucwords($res_) ?></td>
-              <td width="78%">: <?php echo nl2br($v) ?></td>
+              <td width="32%"><?php echo ucwords($res_) ?></td>
+              <td width="2%">: </td>
+              <td width="64%"><?php echo $this->master->br2nl($v) ?></td>
             </tr>
             
           <?php endforeach;

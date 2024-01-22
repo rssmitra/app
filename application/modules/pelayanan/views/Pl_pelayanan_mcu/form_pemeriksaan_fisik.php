@@ -330,16 +330,90 @@ $(document).ready(function() {
     <br><p><b><i class="fa fa-edit"></i> Mulut / Gigi </b></p>
 
     <div class="form-group">
-        <label class="control-label col-sm-2" for="">Gigi</label>
-        <div class="col-md-6">    
-          <select id="fisik_gigi" class="multiselect" multiple="multiple" name="fisik_gigi[]">
+        <label class="control-label col-sm-2" for="">Gigi Atas Kanan</label>
+        <div class="col-md-2">    
+          <select id="gigi_upright" class="form-control" name="gigi_upright">
               <?php 
               foreach($gigi as $row){
-                $selected = (in_array($row->value, json_decode($pemeriksaan_fisik->mulut_gigi->gigi)))?'selected':'';
+                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas == $row->value)?'selected':'';
                 echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
               }
             ?>
           </select>
+        </div>
+        <label class="control-label col-sm-1" for="">Gigi ke-</label>
+        <div class="col-md-1">    
+          <input type="text" class="form-control" name="gigi_upright_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kanan_atas_ke:''?>">
+        </div>
+        <label class="control-label col-sm-1" for="">Catatan</label>
+        <div class="col-md-5">    
+          <input type="text" class="form-control" name="gigi_upright_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_atas)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_atas:''?>">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="">Gigi Atas Kiri</label>
+        <div class="col-md-2">    
+          <select id="gigi_upleft" class="form-control" name="gigi_upleft">
+              <?php 
+              foreach($gigi as $row){
+                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas == $row->value)?'selected':'';
+                echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
+              }
+            ?>
+          </select>
+        </div>
+        <label class="control-label col-sm-1" for="">Gigi ke-</label>
+        <div class="col-md-1">    
+          <input type="text" class="form-control" name="gigi_upleft_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kiri_atas_ke:''?>">
+        </div>
+        <label class="control-label col-sm-1" for="">Catatan</label>
+        <div class="col-md-5">    
+          <input type="text" class="form-control" name="gigi_upleft_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_atas)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_atas:''?>">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="">Gigi Bawah Kanan</label>
+        <div class="col-md-2">    
+          <select id="gigi_downright" class="form-control" name="gigi_downright">
+              <?php 
+              foreach($gigi as $row){
+                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah == $row->value)?'selected':'';
+                echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
+              }
+            ?>
+          </select>
+        </div>
+        <label class="control-label col-sm-1" for="">Gigi ke-</label>
+        <div class="col-md-1">    
+          <input type="text" class="form-control" name="gigi_downright_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kanan_bawah_ke:''?>">
+        </div>
+        <label class="control-label col-sm-1" for="">Catatan</label>
+        <div class="col-md-5">    
+          <input type="text" class="form-control" name="gigi_downright_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_bawah)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kanan_bawah:''?>">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="">Gigi Bawah Kiri</label>
+        <div class="col-md-2">    
+          <select id="gigi_downleft" class="form-control" name="gigi_downleft">
+              <?php 
+              foreach($gigi as $row){
+                $selected = ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah == $row->value)?'selected':'';
+                echo '<option value="'.$row->value.'" '.$selected.'>'.$row->label.'</option>';
+              }
+            ?>
+          </select>
+        </div>
+        <label class="control-label col-sm-1" for="">Gigi ke-</label>
+        <div class="col-md-1">    
+          <input type="text" class="form-control" name="gigi_downleft_ke" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah_ke)?$pemeriksaan_fisik->mulut_gigi->gigi_kiri_bawah_ke:''?>">
+        </div>
+        <label class="control-label col-sm-1" for="">Catatan</label>
+        <div class="col-md-5">    
+          <input type="text" class="form-control" name="gigi_downleft_note" value="<?php echo ($pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_bawah)?$pemeriksaan_fisik->mulut_gigi->catatan_gigi_kiri_bawah:''?>">
         </div>
     </div>
 
@@ -580,15 +654,27 @@ $(document).ready(function() {
     <br><p><b><i class="fa fa-edit"></i> Anggota Gerak </b></p>
 
     <div class="form-group">
-        <label class="control-label col-sm-2">Extr atas (kanan kiri)</label>
+        <label class="control-label col-sm-2">Extremitas atas kanan</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="fisik_ex_atas" id="fisik_ex_atas" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_atas:''?>"  >
+          <input type="text" class="form-control" name="fisik_ex_atas_kanan" id="fisik_ex_atas_kanan" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_atas_kanan:''?>"  >
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-sm-2">Extr bawah (kanan kiri)</label>
+        <label class="control-label col-sm-2">Extremitas atas kiri</label>
         <div class="col-md-10">
-          <input type="text" class="form-control" name="fisik_ex_bawah" id="fisik_ex_bawah" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_bawah:''?>"  >
+          <input type="text" class="form-control" name="fisik_ex_atas_kiri" id="fisik_ex_atas_kiri" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_atas_kiri:''?>"  >
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Extremitas bawah kanan</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="fisik_ex_bawah_kanan" id="fisik_ex_bawah_kanan" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_bawah_kanan:''?>"  >
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Extremitas bawah kiri</label>
+        <div class="col-md-10">
+          <input type="text" class="form-control" name="fisik_ex_bawah_kiri" id="fisik_ex_bawah_kiri" value="<?php echo isset($pemeriksaan_fisik->anggota_gerak)?$pemeriksaan_fisik->anggota_gerak->extremitas_bawah_kiri:''?>"  >
         </div>
     </div>
     <div class="form-group">
