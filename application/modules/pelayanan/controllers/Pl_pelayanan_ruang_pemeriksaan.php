@@ -190,8 +190,12 @@ class Pl_pelayanan_ruang_pemeriksaan extends MX_Controller {
 
                 $kode_tc_hasilpenunjang = $this->master->get_max_number('pm_tc_hasilpenunjang', 'kode_tc_hasilpenunjang');
                 $kode_trans_pelayanan = $row_dt;
-                $hasil = $_POST['hasil_pemeriksaan'][$row_dt];
-                $kesan = $_POST['kesan_pemeriksaan'][$row_dt];
+                $hasil_pm = $_POST['hasil_pemeriksaan'][$row_dt];
+                $kesan_pm = $_POST['kesan_pemeriksaan'][$row_dt];
+
+                $hasil = $this->master->convert_special_chars_to_html($hasil_pm);
+                $kesan = $this->master->convert_special_chars_to_html($kesan_pm);
+
 
                 $dataexc = array(
                     'kode_mt_hasilpm' => $_POST['kode_mt_hasilpm'][$row_dt],

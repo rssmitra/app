@@ -111,13 +111,18 @@ class Pl_pelayanan_model extends CI_Model {
 
 	function get_data_antrian_pasien()
 	{
+
+		$kode_bagian = ($this->session->userdata('kode_bagian')) ? $this->session->userdata('kode_bagian') : 0;
+		$sess_kode_dokter = ($this->session->userdata('sess_kode_dokter'))?$this->session->userdata('sess_kode_dokter') : 0 ;
+
+
 		$this->_main_query();
 		// $this->db->where('tgl_keluar_poli IS NULL');
 		if( in_array($_GET['bag'], array('012801','013101') ) ) {
 			$this->db->where('pl_tc_poli.kode_bagian='."'".$_GET['bag']."'".'');
 		}else{
-			$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
-			$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+			$this->db->where('pl_tc_poli.kode_bagian='."'".$kode_bagian."'".'');
+			$this->db->where('pl_tc_poli.kode_dokter='."'".$sess_kode_dokter."'".'');
 		}
 
 		if (isset($_GET['tgl'])) {
@@ -534,9 +539,7 @@ class Pl_pelayanan_model extends CI_Model {
 		}
 	}
 
-	public function get_cart_resep($no_kunjungan){
-		return $this->db->get_where('fr_tc_pesan_resep_detail', array('no_kunjungan' => $no_kunjungan) )->result();
-	}
+	
 
 
 }

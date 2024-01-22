@@ -459,6 +459,8 @@ class Pl_pelayanan_pm extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();    
+            // remove special character
+            
             $txt_nl2br = nl2br($_POST['catatan_hasil'], '<br>');
             /*Update pm_tc_penunjang */
             $pm_tc_penunjang = array(
@@ -476,8 +478,12 @@ class Pl_pelayanan_pm extends MX_Controller {
                 $kode_mt_hasilpm = $row_dt;
                 $kode_tc_hasilpenunjang = $this->master->get_max_number('pm_tc_hasilpenunjang', 'kode_tc_hasilpenunjang');
                 $kode_trans_pelayanan = $_POST['kode_trans_pelayanan'][$kode_mt_hasilpm];
-                $hasil = $_POST['hasil_pm'][$kode_mt_hasilpm];
+                $hasil_pm = $_POST['hasil_pm'][$kode_mt_hasilpm];
                 $keterangan = $_POST['keterangan_pm'][$kode_mt_hasilpm];
+
+
+                $hasil = $this->master->convert_special_chars_to_html($hasil_pm);
+                // echo '<pre>';print_r($hasil);die;
 
                 $dataexc = array(
                     'kode_mt_hasilpm' =>  $kode_mt_hasilpm,

@@ -813,7 +813,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
                 'resiko_kardiovaskular' => $this->input->post('resiko_kardio'),
                 'derajat_kesehatan' => $this->input->post('derajat_kesehatan'),
                 'kelaikan_kerja' => $this->input->post('kelaikan_kerja'),
-                'penjelasan_kesan' => nl2br($this->input->post('penjelasan_kesan')),
+                'penjelasan_kesan' => $this->input->post('penjelasan_kesan'),
             );
 
             $dataexc = array(

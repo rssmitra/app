@@ -154,13 +154,17 @@ class Pl_pelayanan_ruang_pemeriksaan_model extends CI_Model {
 
 	function get_data_antrian_pasien()
 	{
+
+		$kode_bagian = ($this->session->userdata('kode_bagian')) ? $this->session->userdata('kode_bagian') : '0';
+		$sess_kode_dokter = ($this->session->userdata('sess_kode_dokter'))?$this->session->userdata('sess_kode_dokter') : '0' ;
+
 		$this->_main_query();
 		// $this->db->where('tgl_keluar_poli IS NULL');
 		if( in_array($_GET['bag'], array('050201') ) ) {
 			$this->db->where('tc_pesanan.no_poli='."'".$_GET['bag']."'".'');
 		}else{
-			$this->db->where('tc_pesanan.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
-			$this->db->where('tc_pesanan.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
+			$this->db->where('tc_pesanan.kode_bagian='."'".$kode_bagian."'".'');
+			$this->db->where('tc_pesanan.kode_dokter='."'".$sess_kode_dokter."'".'');
 		}
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {

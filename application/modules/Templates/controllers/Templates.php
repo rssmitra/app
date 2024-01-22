@@ -187,37 +187,37 @@ class Templates extends MX_Controller {
                 );
         }
 
-        if ( in_array($_GET['mod'], array(5) ) ) {
-            $data[0] = array(
-                'mod' => $_GET['mod'],
-                'nameid' => 'graph-line-1',
-                'style' => 'line',
-                'col_size' => 12,
-                'url' => 'templates/Templates/graph?prefix=51&TypeChart=line&style=1&mod='.$_GET['mod'].'',
-                );
-            $data[1] = array(
-                'mod' => $_GET['mod'],
-                'nameid' => 'graph-pie-1',
-                'style' => 'pie',
-                'col_size' => 12,
-                'url' => 'templates/Templates/graph?prefix=52&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
-                );
-            $data[2] = array(
-                'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-1',
-                'style' => 'table',
-                'col_size' => 6,
-                'url' => 'templates/Templates/graph?prefix=53&TypeChart=table&style=1&mod='.$_GET['mod'].'',
-                );
-            $data[3] = array(
-                'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-2',
-                'style' => 'table',
-                'col_size' => 6,
-                'url' => 'templates/Templates/graph?prefix=54&TypeChart=table&style=1&mod='.$_GET['mod'].'',
-                );
+        // if ( in_array($_GET['mod'], array(5) ) ) {
+        //     $data[0] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-line-1',
+        //         'style' => 'line',
+        //         'col_size' => 12,
+        //         'url' => 'templates/Templates/graph?prefix=51&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+        //         );
+        //     $data[1] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-pie-1',
+        //         'style' => 'pie',
+        //         'col_size' => 12,
+        //         'url' => 'templates/Templates/graph?prefix=52&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+        //         );
+        //     $data[2] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-table-1',
+        //         'style' => 'table',
+        //         'col_size' => 6,
+        //         'url' => 'templates/Templates/graph?prefix=53&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+        //         );
+        //     $data[3] = array(
+        //         'mod' => $_GET['mod'],
+        //         'nameid' => 'graph-table-2',
+        //         'style' => 'table',
+        //         'col_size' => 6,
+        //         'url' => 'templates/Templates/graph?prefix=54&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+        //         );
 
-        }
+        // }
 
         if ( in_array($_GET['mod'], array(25) ) ) {
                 
@@ -1449,7 +1449,7 @@ class Templates extends MX_Controller {
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
-        // echo '<pre>';print_r($pm_data);die;
+        
         $html = '';
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
@@ -1457,7 +1457,7 @@ class Templates extends MX_Controller {
                         <td colspan="2" align="center"><b>HASIL PEMERIKSAAN RADIOLOGI</b></td>
                     </tr> 
                     ';
-
+            // echo '<pre>';print_r($pm_data);die;
             foreach ($pm_data as $key => $value) {
                 $name = ($value->nama_pemeriksaan)?$value->nama_pemeriksaan:$value->nama_tindakan;
                 //$no++;

@@ -6,7 +6,7 @@ class Req_pembelian_model extends CI_Model {
 	var $table_nm = 'tc_permohonan_nm';
 	var $table = 'tc_permohonan';
 	var $column = array('a.kode_permohonan', 'a.created_by', 'a.updated_by', 'dd_user.username', 'user_acc.username');
-	var $select = 'a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username as user_acc_name, a.status_batal, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju, a.keterangan_permohonan';
+	var $select = 'a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan, a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, a.status_batal, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju';
 	var $order = array('a.id_tc_permohonan' => 'DESC');
 
 	public function __construct()
@@ -21,6 +21,7 @@ class Req_pembelian_model extends CI_Model {
 		$mt_barang = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
 		$this->db->select($this->select);
 		$this->db->select('t_total.total_brg');
+		$this->db->select('user_acc.username as user_acc_name, CAST(a.keterangan_permohonan as NVARCHAR(2000)) as keterangan_permohonan');
 		$this->db->select('CASE
 								WHEN flag_jenis = 1 THEN '."'Cito'".'
 								WHEN flag_jenis = 2 THEN '."'Rutin'".'
@@ -61,6 +62,9 @@ class Req_pembelian_model extends CI_Model {
 		}else{
 			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 14');
 		}
+
+		$this->db->group_by($this->select);
+		$this->db->group_by('user_acc.username, CAST(a.keterangan_permohonan as NVARCHAR(2000)), t_total.total_brg');
 
 	}
 
