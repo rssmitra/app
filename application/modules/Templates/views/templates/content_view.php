@@ -535,7 +535,7 @@
 
     <div id="globalModalViewSmall" class="modal fade" tabindex="-1">
 
-      <div class="modal-dialog" style="overflow-y: scroll; max-height:45%;  margin-top: 50px; margin-bottom:50px;width:50%; background-color: white">
+      <div class="modal-dialog" style="overflow-y: scroll; max-height:35%;  margin-top: 50px; margin-bottom:50px;width:45%; background-color: white">
 
         <div class="modal-content">
 
@@ -555,7 +555,7 @@
 
           </div>
 
-          <div class="modal-body" style="min-height: 400px !important">
+          <div class="modal-body">
 
             <div id="global_modal_content_detail_small" style="background-color: white"></div>
 

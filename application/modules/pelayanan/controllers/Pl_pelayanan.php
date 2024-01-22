@@ -207,7 +207,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['status_pulang'] = (empty($data['value']->tgl_keluar_poli))?0:1;
         $data['kode_klas'] = $kode_klas;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
-        $data['resep_cart'] = $this->Pl_pelayanan->get_cart_resep($no_kunjungan);
+        
         // echo '<pre>'; print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
@@ -283,74 +283,13 @@ class Pl_pelayanan extends MX_Controller {
 
     public function get_data_antrian_pasien(){
         // Save into the cache for 5 minutes
-		$this->cache->save('cache', $_GET, 300);
+		$this->cache->save('cache', $_GET, 7200);
         $list = $this->Pl_pelayanan->get_data_antrian_pasien();
 
         echo json_encode($list);
     }
 
-    public function get_cart_resep($no_kunjungan)
-    {
-        /*akan di filter berdasarkan pasien pada klinik masing2*/
-        /*get data from model*/
-        $list = $this->Pl_pelayanan->get_cart_resep($no_kunjungan);
-        $data = array();
-        $no = $_POST['start'];
-
-        foreach ($list as $row_list) {
-            $no++;
-            $row = array();
-
-            if($row_list->parent == 0){
-                if($row_list->tipe_obat == 'non_racikan'){
-                    $config = array(
-                        'nama_obat' => $row_list->nama_brg,
-                        'dd' => $row_list->jml_dosis,
-                        'qty' => $row_list->jml_dosis_obat,
-                        'unit' => $row_list->satuan_obat,
-                        'use' => $row_list->aturan_pakai,
-                        'jumlah' => $row_list->jml_pesan,
-                    );
-                    $format_signa = $this->master->formatSignaFull($config);
-                    $row[] = '<div class="left">'.$format_signa.'<br>Ket : <br>'.$row_list->keterangan.'</div>';
-                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-warning" onclick="clickedit('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" class="btn btn-xs btn-danger" onclick="deleterow('.$row_list->id.')"><i class="fa fa-trash"></i></a></div>';
-                }else{
     
-                    $format_signa_racikan = '<span class="monotype_style">R/</span><br>';
-
-                    $config = array(
-                        'nama_obat' => $row_list->nama_brg,
-                        'dd' => $row_list->jml_dosis,
-                        'qty' => $row_list->jml_dosis_obat,
-                        'unit' => $row_list->satuan_obat,
-                        'use' => $row_list->aturan_pakai,
-                        'jumlah' => $row_list->jml_pesan,
-                    );
-                    // komposisi obat racikan
-                    $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($row_list->satuan_obat)) );
-
-                    $format_signa_racikan .= '<div style="padding-left: 15px">';
-                    $format_signa_racikan .= $this->master->get_child_racikan($list, $row_list->id);
-                    $format_signa_racikan .= '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row_list->jml_pesan).' da in '.$unit_code.'</i> <br>';
-                    $format_signa_racikan .= ''.$this->master->formatSigna($config);
-                    $format_signa_racikan .= '</div>';
-    
-                    $row[] = '<div class="left">'.$format_signa_racikan.'<br>Ket : <br>'.$row_list->keterangan.'</div>';
-                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-warning" onclick="clickeditracikan('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" class="btn btn-xs btn-danger" onclick="deleterow('.$row_list->id.')"><i class="fa fa-trash"></i></a></div>';
-    
-                }
-                $data[] = $row;
-            }
-
-        }
-
-        $output = array(
-                        "draw" => $_POST['draw'],
-                        "data" => $data,
-                );
-        //output to json format
-        echo json_encode($output);
-    }
 
 
     public function get_data()
@@ -2280,100 +2219,6 @@ class Pl_pelayanan extends MX_Controller {
         return $this->Pl_pelayanan->callPatient($_GET);
     }
 
-    public function add_resep_obat(){
-
-        // print_r($_POST);die;
-        // form validation
-        $this->form_validation->set_rules('no_registrasi', 'no_registrasi', 'trim|required');
-        $this->form_validation->set_rules('no_kunjungan', 'no_kunjungan', 'trim|required');
-        $this->form_validation->set_rules('kode_brg', 'kode_brg', 'trim|required');
-        $this->form_validation->set_rules('nama_brg', 'nama_brg', 'trim|required');
-        $this->form_validation->set_rules('jml_dosis', 'jml_dosis', 'trim|required');
-        $this->form_validation->set_rules('jml_dosis_obat', 'jml_dosis_obat', 'trim|required');
-        $this->form_validation->set_rules('satuan_obat', 'satuan_obat', 'trim|required');
-        $this->form_validation->set_rules('aturan_pakai', 'aturan_pakai', 'trim');
-        $this->form_validation->set_rules('no_mr', 'no_mr', 'trim|required');
-        $this->form_validation->set_rules('keterangan', 'keterangan', 'trim');
-        $this->form_validation->set_rules('jml_hari', 'jml_hari', 'trim|required');
-        $this->form_validation->set_rules('jml_pesan', 'jml_pesan', 'trim|required');
-        $this->form_validation->set_rules('tipe_obat', 'Tipe Obat', 'trim|required');
-        $this->form_validation->set_rules('parent', 'Parent', 'trim|required');
-        
-
-        // set message error
-        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
-
-        if ($this->form_validation->run() == FALSE)
-        {
-            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-            /*execution*/
-            $this->db->trans_begin();           
-            
-            $id = ($this->input->post('id_pesan_resep_detail')) ? $this->input->post('id_pesan_resep_detail') : "0";
-
-            $dataexc = array(
-                'no_registrasi' => $this->regex->_genRegex($this->form_validation->set_value('no_registrasi'), 'RGXINT'),
-                'no_kunjungan' => $this->regex->_genRegex($this->form_validation->set_value('no_kunjungan'), 'RGXINT'),
-                'kode_brg' => $this->regex->_genRegex($this->form_validation->set_value('kode_brg'), 'RGXQSL'),
-                'nama_brg' => $this->regex->_genRegex($this->form_validation->set_value('nama_brg'), 'RGXQSL'),
-                'jml_dosis' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis'), 'RGXQSL'),
-                'jml_dosis_obat' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis_obat'), 'RGXQSL'),
-                'satuan_obat' => $this->regex->_genRegex($this->form_validation->set_value('satuan_obat'), 'RGXQSL'),
-                'aturan_pakai' => $this->regex->_genRegex($this->form_validation->set_value('aturan_pakai'), 'RGXQSL'),
-                'no_mr' => $this->regex->_genRegex($this->form_validation->set_value('no_mr'), 'RGXQSL'),
-                'keterangan' => $this->regex->_genRegex($this->form_validation->set_value('keterangan'), 'RGXQSL'),
-                'jml_pesan' => $this->regex->_genRegex($this->form_validation->set_value('jml_pesan'), 'RGXQSL'),
-                'jml_hari' => $this->regex->_genRegex($this->form_validation->set_value('jml_hari'), 'RGXQSL'),
-                'tipe_obat' => $this->regex->_genRegex($this->form_validation->set_value('tipe_obat'), 'RGXQSL'),
-                'parent' => $this->regex->_genRegex($this->form_validation->set_value('parent'), 'RGXQSL'),
-            );
-
-            if( $id == 0 ){
-                $dataexc['created_date'] = date('Y-m-d H:i:s');
-                $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                $this->db->insert('fr_tc_pesan_resep_detail', $dataexc);
-                $newId = $this->db->insert_id();
-            }else{
-                $dataexc['updated_date'] = date('Y-m-d H:i:s');
-                $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                $this->db->where('id', $id)->update('fr_tc_pesan_resep_detail', $dataexc);
-                $newId = $id;
-            }
-
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'newId' => $newId));
-            }
-
-        
-        }
-
-    }
-
-    public function getrowresep(){
-        $data = $this->db->get_where('fr_tc_pesan_resep_detail', array('id' => $_GET['ID']))->row();
-        echo json_encode($data);
-    }
-
-    public function deleterowresep(){
-        $this->db->where('id', $_POST['ID'])->delete('fr_tc_pesan_resep_detail');
-        $this->db->where('parent', $_POST['ID'])->delete('fr_tc_pesan_resep_detail');
-        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
-    }
-
     public function info_harga_obat() { 
         /*define variable data*/
         $data = array();
@@ -2415,14 +2260,6 @@ class Pl_pelayanan extends MX_Controller {
         //output to json format
         echo json_encode($output);
     }
-
-    public function form_template_resep($no_registrasi, $no_kunjungan){
-        $this->load->view('Pl_pelayanan/form_template_resep');
-    }
-
-    
-
-
 
 }
 

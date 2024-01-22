@@ -167,16 +167,16 @@ class Po_revisi_model extends CI_Model {
 		$dt_po = $this->db->get_where($tc_po.'_det', array('id_tc_po' => $id) )->result();
 
 		foreach ($dt_po as $key => $value) {
-			# code...
 			$this->db->where( array('id_tc_permohonan_det' => $value->id_tc_permohonan_det) )->update($tc_permohonan.'_det', array('status_po' => NULL, 'jml_acc_pemeriksa' => NULL, 'jml_acc_penyetuju' => NULL) );
 			$id_tc_permohonan_det[] = $value->id_tc_permohonan_det;
+			$id_tc_permohonan[] = $value->id_tc_permohonan;
 		}
 		
 		// get permohonan
-		$dt_permohonan = $this->db->where_in('id_tc_permohonan_det', $id_tc_permohonan_det)->get($tc_permohonan.'_det')->result();
-		foreach ($dt_permohonan as $key => $value) {
-			$id_tc_permohonan[] = $value->id_tc_permohonan;
-		}
+		// $dt_permohonan = $this->db->where_in('id_tc_permohonan_det', $id_tc_permohonan_det)->get($tc_permohonan.'_det')->result();
+		// foreach ($dt_permohonan as $key => $value) {
+		// 	$id_tc_permohonan[] = $value->id_tc_permohonan;
+		// }
 
 		$this->db->where_in('id_tc_permohonan', $id_tc_permohonan)->update($tc_permohonan, array('flag_proses' => 2) );
 

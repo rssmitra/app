@@ -1284,7 +1284,21 @@ final Class Master {
 		}
 
 		return $html;
+	}
 
+	function get_child_racikan_template($array_data, $parent_id){
+		$html = '';
+		foreach ($array_data as $key => $value) {
+			if($value->parent == $parent_id){
+				$html .= '<span id="row_racikan_template_'.$value->id.'"><a href="#" onclick="deleterowitemtemplate('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; '. $value->jml_pesan .' &nbsp; '. $value->satuan_obat.'<br></span>';
+			}
+		}
+
+		return $html;
+	}
+	
+	function convert_special_chars_to_html($string) {
+		return htmlentities($string, ENT_COMPAT, "UTF-8");
 	}
 
 }
