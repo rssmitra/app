@@ -675,11 +675,11 @@ class Pl_pelayanan extends MX_Controller {
                 $html_tag .= '<td>'.str_replace('_',' ', strtoupper($key)) .' '.$dr.'</td>';
                 //$html_tag .= '<td align="right">Rp. '.number_format($data->$key).',-</td>';
                 $html_tag .= '<td align="right">
-                    <input type="text" value="'.(int)$data->$key.'" name="hidden_'.$key.'_'.$id.'" id="hidden_'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.'>
-                    <input type="text" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.' onchange="changeTotalBiaya('."'".$key."'".','.$id.')">
+                    <input type="hidden" value="'.(int)$data->$key.'" name="hidden_'.$key.'_'.$id.'" id="hidden_'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.'>
+                    <input type="text" class="format_number" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.' onchange="changeTotalBiaya('."'".$key."'".','.$id.')">
                     </td>';
                 $html_tag .= '<td align="right">
-                        <input type="text" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="hidden_diskon_'.$key.'_'.$id.'" '.$readonly.'>
+                        <input type="hidden" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="hidden_diskon_'.$key.'_'.$id.'" '.$readonly.'>
 
                         <input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'>
 

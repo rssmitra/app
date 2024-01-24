@@ -670,7 +670,7 @@
         // if bill dr 
         if( field == 'bill_dr1' || field == 'bill_dr2' || field == 'bill_dr3'){
           var result_bill_dr = (parseInt(harga_awal) * input_persen/100) * (70/100);
-          var result_pendapatan_rs = (input_persen == 0) ? parseInt(hidden_diskon) :(parseInt(result_bill_dr) * input_persen/100) * (30/100);
+          var result_pendapatan_rs = (input_persen == 0) ? parseInt(hidden_diskon) :(parseInt(harga_awal) * input_persen/100) * (30/100);
 
           // last price dookter
           var last_price = parseInt(result_bill_dr) + parseInt(harga_awal);
