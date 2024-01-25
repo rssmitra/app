@@ -3,7 +3,7 @@
 <div style="text-align: center;"><br></div>
 <div style="text-align: left;"><b>Arteri</b> :</div>
 <div style="text-align: left;"><br>-	Gambaran anatomi pembuluh darah arteri femoralis communis, arteri poplitea, arteri tibialis anterior-posterior, arteri dorsalis pedis bilateral rata dan tidak menebal</div>
-<div style="text-align: left;"><br>-	Arteri femoralis communis, arteri poplitea, arteri tibialis anterior-posterior, arteri dorsalis pedis bilateral morfologi kurva Doppler triphasic</div>
+<div style="text-align: left;"><br>-	Arteri femoralis communis, arteri poplitea, arteri tibialis anterior-posterior, arteri dorsalis pedis bilateral morfologi kurva Doppler ..............</div>
 <div style="text-align: left;"><br>-	Colour coded mengisi penuh lumen pembuluh darah arteri femoralis communis, arteri poplitea, arteri tibialis anterior-posterior, arteri dorsalis pedis bilateral</div>
 <div style="text-align: left;"><b>Vena</b> :</div>
 <div style="text-align: left;"><br>-	Compressi Ultrasound (CUS) negative pada vena femoralis, vena poplitea bilateral</div>
