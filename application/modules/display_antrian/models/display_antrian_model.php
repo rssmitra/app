@@ -180,14 +180,14 @@ class Display_antrian_model extends CI_Model {
 		$query = $this->db->get();
 		$result = $query->row();
 		
-		$praktek = ($this->session->userdata('sess_nama_dokter')) ? 'DOKTER SUDAH DATANG' : 'SELESAI';
+		$praktek = ($this->session->userdata('sess_nama_dokter')) ? 'DOKTER SUDAH DATANG' : 'BELUM MULAI PRAKTEK';
 
 		$response = array(
 			'no_mr' => isset($result->no_mr) ? $result->no_mr : '',
 			'no_antrian' => isset($result->no_antrian) ? $result->no_antrian : '',
 			'nama_pasien' => isset($result->nama_pasien) ? $result->nama_pasien : $praktek,
 			'poli' => ($this->session->userdata('nama_bagian')) ? $this->session->userdata('nama_bagian') : 'Tutup',
-			'dokter' => ($this->session->userdata('sess_nama_dokter')) ? $this->session->userdata('sess_nama_dokter') : 'Tidak Praktek',
+			'dokter' => ($this->session->userdata('sess_nama_dokter')) ? $this->session->userdata('sess_nama_dokter') : 'Belum Datang',
 		);
 		return $response;
 		
