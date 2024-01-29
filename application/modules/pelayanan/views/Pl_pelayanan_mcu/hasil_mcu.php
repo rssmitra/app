@@ -483,7 +483,7 @@
           <td width="2%">: </td>';
         if(!is_object($value)){
           echo '
-          <td>'.$value.' </td>
+          <td width="40%">'. nl2br($value).' </td>
         </tr>';
         }else{
           echo '
@@ -498,7 +498,7 @@
               <td width="55px"></td>
               <td width="32%"><?php echo ucwords($res_) ?></td>
               <td width="2%">: </td>
-              <td width="64%"><?php echo $this->master->br2nl($v) ?></td>
+              <td width="64%"><?php echo nl2br($v) ?></td>
             </tr>
             
           <?php endforeach;
