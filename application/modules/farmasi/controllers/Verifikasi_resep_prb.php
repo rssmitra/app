@@ -100,8 +100,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         }
         $data = array();
         $no = $_POST['start'];
-        $atts = array('class' => 'btn btn-xs btn-warning','width' => 900,'height' => 500,'scrollbars'  => 'no','status'=> 'no','resizable'=> 'no','screenx'=> 1000,'screeny'=> 80,'window_name' => '_blank'
-            );
+        // $atts = array('class' => 'btn btn-xs btn-warning','width' => 900,'height' => 500,'scrollbars'  => 'no','status'=> 'no','resizable'=> 'no','screenx'=> 1000,'screeny'=> 80,'window_name' => '_blank');
 
         foreach ($list as $row_list) {
             $no++;

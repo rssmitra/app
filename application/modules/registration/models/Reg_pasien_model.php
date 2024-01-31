@@ -205,19 +205,24 @@ class Reg_pasien_model extends CI_Model {
 
 		$i = 0;
 
-		foreach ($field as $item) 
+		if(isset($_GET['search_by'])){
+			$this->db->where($_GET['search_by'], $keyword);
+		}else{
+			foreach ($field as $item) 
 		
-		{
+			{
 
-			if($keyword)
-				($i===0) ? $this->db->like($item, $keyword) : $this->db->or_like($item
-					, $keyword);
+				if($keyword)
+					($i===0) ? $this->db->like($item, $keyword) : $this->db->or_like($item
+						, $keyword);
+				
+				$column[$i] = $item;
+				
+				$i++;
 			
-			$column[$i] = $item;
-			
-			$i++;
-		
+			}
 		}
+		
 
 		if(isset($this->order))
 		
@@ -597,8 +602,10 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->where("tgl_jam_keluar is null and tgl_keluar is null and tc_registrasi.no_mr='".$mr."'");
 		$query = $this->db->get()->result();
 		$result = array();
-		foreach ($query as $key => $value) {
-			$result[] = array('no_kunjungan' => $value->no_kunjungan, 'kode_bagian_tujuan' => $value->kode_bagian_tujuan, 'poli' => $value->nama_bagian,'tgl_masuk' => $value->tgl_masuk, 'no_registrasi' => $value->no_registrasi, 'penjamin' => $value->nama_perusahaan, 'dokter' => $value->nama_pegawai, 'total_ditangguhkan' => $value->total_tangguhan);
+		if(!empty($query)){
+			foreach ($query as $key => $value) {
+				$result[] = array('no_kunjungan' => $value->no_kunjungan, 'kode_bagian_tujuan' => $value->kode_bagian_tujuan, 'poli' => $value->nama_bagian,'tgl_masuk' => $value->tgl_masuk, 'no_registrasi' => $value->no_registrasi, 'penjamin' => $value->nama_perusahaan, 'dokter' => $value->nama_pegawai, 'total_ditangguhkan' => $value->total_tangguhan);
+			}
 		}
 
 		return $result;

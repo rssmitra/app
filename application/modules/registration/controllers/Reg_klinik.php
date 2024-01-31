@@ -148,6 +148,7 @@ class Reg_klinik extends MX_Controller {
         
         $keyword = $this->input->get('keyword');
 
+
         /*return search pasien*/
 
         $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr','nama_pasien','no_ktp', 'no_kartu_bpjs') ); 

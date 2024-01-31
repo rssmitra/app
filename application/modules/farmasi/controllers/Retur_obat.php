@@ -87,8 +87,8 @@ class Retur_obat extends MX_Controller {
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
-            $row[] = $row_list->nama_perusahaan.$no_sep;
-            $row[] = $row_list->diagnosa_akhir;
+            $row[] = ($row_list->nama_perusahaan == '') ? 'Umum' : $row_list->nama_perusahaan.$no_sep;
+            // $row[] = $row_list->diagnosa_akhir;
             if($row_list->status_bayar != 1) {
                 if($row_list->status_transaksi == 1){
                     $row[] = '<div class="center">
@@ -101,11 +101,13 @@ class Retur_obat extends MX_Controller {
                 }
                 
             }else{
-                if($row_list->no_registrasi != 0){
-                    $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
-                }else{
-                    $row[] = '<div class="center">Lunas '.strtoupper($flag).'</div>';
-                }
+                $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
+
+                // if($row_list->no_registrasi != 0){
+                //     $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
+                // }else{
+                //     $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas '.strtoupper($flag).'</a></div>';
+                // }
                 
             }
             

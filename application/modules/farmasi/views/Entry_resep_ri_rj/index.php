@@ -173,7 +173,7 @@ function rollback(id){
                 <th>Nama Pasien</th>
                 <th>Nama Dokter/Asal Poli</th>
                 <th>Penjamin</th>
-                <th width="180px">Diagnosa Akhir</th>
+                <!-- <th width="180px">Diagnosa Akhir</th> -->
                 <th width="90px">Status</th>
                 <!-- <th width="90px">Jumlah (R)</th> -->
                 <!-- <th>Lokasi Tebus</th> -->

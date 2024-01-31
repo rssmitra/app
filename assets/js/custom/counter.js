@@ -152,7 +152,7 @@
   });  
     
 
-  setInterval("update_antrian();",15000); 
+  // setInterval("update_antrian();",15000); 
 
   function update_antrian() {
 

@@ -1050,7 +1050,41 @@ function registerNow(no_mr)
 
 function find_pasien_by_keyword(keyword){  
 
-  $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword=" + keyword, '', function (data) {      
+  var search_by = $('input[name="search_by"]:checked').val();
+  // before send
+  if(search_by == 'no_mr'){
+    if(keyword.length < 8){
+      alert('Pencarian dengan Nomor Rekam Medis minimal 8 karakter');
+      achtungHideLoader();     
+      return false; 
+    }
+  }
+
+  if(search_by == 'no_ktp'){
+    if(keyword.length < 16){
+      alert('Pencarian dengan NIK minimal 16 karakter');
+      achtungHideLoader();     
+      return false; 
+    }
+  }
+
+  if(search_by == 'no_kartu_bpjs'){
+    if(keyword.length < 10){
+      alert('Pencarian dengan Nomor Kartu BPJS minimal 10 karakter');
+      achtungHideLoader();     
+      return false; 
+    }
+  }
+
+  if(search_by == 'nama_pasien'){
+    if(keyword.length < 3){
+      alert('Pencarian dengan Nama Pasien minimal 3 karakter');
+      achtungHideLoader();     
+      return false; 
+    }
+  }
+
+  $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword=" + keyword + "&search_by="+search_by , '', function (data) {      
           achtungHideLoader();          
 
           if( data.count == 0){
@@ -1063,6 +1097,10 @@ function find_pasien_by_keyword(keyword){
 
             /*reset all field data*/
             $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+
+            $('#total_kunjungan, #tgl_lhr, #hp, #no_telp, #no_kartu_bpjs_txt, #catatan_pasien').text('-');
+            $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
+            $('#ttd_pasien').attr('src', '');
 
             alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
 
@@ -1078,36 +1116,22 @@ function find_pasien_by_keyword(keyword){
             console.log(hitung_usia(obj.tgl_lhr));
 
             $('#no_mr').text(obj.no_mr);
-
             $('#noMrHidden').val(obj.no_mr);
-
             $('#no_ktp').text(obj.no_ktp);
             $('#nikPasien').val(obj.no_ktp);
-
             $('#nama_pasien').text(obj.nama_pasien+' ('+obj.jen_kelamin+')');
-
             $('#nama_pasien_hidden').val(obj.nama_pasien);
-
             $('#jk').text(obj.jen_kelamin);
-
             $('#umur').text(umur_pasien+' Tahun');
-
             $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
-            
             $('#umur_saat_pelayanan_hidden').val(umur_pasien);
-
             $('#alamat').text(obj.almt_ttp_pasien);
-
             $('#hp').text(obj.no_hp);
             $('#no_telp').text(obj.tlp_almt_ttp);
-
             $('#hpPasien').val(obj.no_hp);
             $('#noTelpPasien').val(obj.tlp_almt_ttp);
-
             $('#catatan_pasien').text(obj.keterangan);
-
             $('#ttd_pasien').attr('src', obj.ttd);
-
             $('#noKartuBpjs').val(obj.no_kartu_bpjs);
 
             if( obj.url_foto_pasien ){
@@ -1128,8 +1152,6 @@ function find_pasien_by_keyword(keyword){
 
             }
 
-            
-            
             if( obj.kode_perusahaan==120){
 
               $('#form_sep').show('fast'); 
@@ -1783,6 +1805,31 @@ function copyNoRujukan(no_rujukan){
 
                   </div>
 
+                </div>
+
+                <!-- search pasien by -->
+                <div class="form-group">
+                  <label class="control-label col-md-3">Pencarian dengan</label>
+                  <div class="col-md-9">
+                    <div class="radio">
+                        <label>
+                          <input name="search_by" type="radio" class="ace" value="no_mr" checked/>
+                          <span class="lbl"> No. MR</span>
+                        </label>
+                        <label>
+                          <input name="search_by" type="radio" class="ace" value="nama_pasien" />
+                          <span class="lbl"> Nama Pasien</span>
+                        </label>
+                        <label>
+                          <input name="search_by" type="radio" class="ace" value="no_kartu_bpjs" />
+                          <span class="lbl"> Nomor Kartu BPJS</span>
+                        </label>
+                        <label>
+                          <input name="search_by" type="radio" class="ace" value="no_ktp" />
+                          <span class="lbl"> NIK</span>
+                        </label>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- cari data pasien -->

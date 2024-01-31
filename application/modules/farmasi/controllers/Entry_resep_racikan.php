@@ -406,8 +406,11 @@ class Entry_resep_racikan extends MX_Controller {
         $query = "select relation_id as id_tc_far_racikan, nama_brg as nama_racikan
                     from fr_tc_far_detail_log where (kode_trans_far=".$kode_trans_far." or kode_pesan_resep=".$kode_trans_far.") and flag_resep='racikan' order by nama_racikan ASC";
         $exc = $this->db->query($query);
-        // echo $query;
-        echo json_encode($exc->result());
+        if($exc->num_rows() > 0){
+          echo json_encode($exc->result());
+        }else{
+          echo json_encode([]);
+        }
     }
 
     public function delete_obat()

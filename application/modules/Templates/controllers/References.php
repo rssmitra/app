@@ -1738,6 +1738,7 @@ class References extends MX_Controller {
 		$this->db->join('mt_dokter_v e ', 'e.kode_dokter=a.kode_dokter' ,'left');
 		$this->db->join('(select no_kunjungan, kode_pesan_resep, COUNT(kode_pesan_resep) as jml_pesan from fr_listpesanan_v group by no_kunjungan, kode_pesan_resep) as total_pesan', 'total_pesan.no_kunjungan=a.no_kunjungan' ,'left');
 		$arr_kode_bagian = array('01','02');
+		$this->db->where('a.status_batal is null');
 		$this->db->where_in('SUBSTRING(kode_bagian_tujuan,1,2)', $arr_kode_bagian);
 
 		if( isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){

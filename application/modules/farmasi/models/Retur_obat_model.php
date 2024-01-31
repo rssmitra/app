@@ -17,7 +17,7 @@ class Retur_obat_model extends CI_Model {
 	private function _main_query(){
 
 		$this->db->select($this->select);
-		$this->db->select('(SELECT TOP 1 diagnosa_akhir FROM th_riwayat_pasien WHERE no_kunjungan = fr_tc_far.no_kunjungan ) AS diagnosa_akhir');
+		// $this->db->select('(SELECT TOP 1 diagnosa_akhir FROM th_riwayat_pasien WHERE no_kunjungan = fr_tc_far.no_kunjungan ) AS diagnosa_akhir');
 		$this->db->from($this->table);
 		// $this->db->join('(SELECT kode_tc_trans_kasir, kode_trans_far FROM tc_trans_pelayanan GROUP BY kode_tc_trans_kasir,kode_trans_far) as tc_trans_pelayanan','tc_trans_pelayanan.kode_trans_far=fr_tc_far.kode_trans_far','left');
 		// $this->db->join('fr_mt_profit_margin','fr_mt_profit_margin.kode_profit=fr_tc_far.kode_profit','left');
@@ -118,6 +118,7 @@ class Retur_obat_model extends CI_Model {
 	public function get_by_id($id)
 	{
 		$this->_main_query();
+		$this->db->select('(SELECT TOP 1 diagnosa_akhir FROM th_riwayat_pasien WHERE no_kunjungan = fr_tc_far.no_kunjungan ) AS diagnosa_akhir');
 		if(is_array($id)){
 			$this->db->where_in(''.$this->table.'.kode_trans_far',$id);
 			$query = $this->db->get();

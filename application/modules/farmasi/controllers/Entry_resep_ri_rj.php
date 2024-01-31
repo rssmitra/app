@@ -228,7 +228,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             $penjamin = (!empty($row_list->nama_perusahaan))?$row_list->nama_perusahaan:$row_list->nama_kelompok;
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
             $row[] = ucwords($penjamin).$no_sep;
-            $row[] = $row_list->diagnosa_akhir;
+            // $row[] = $row_list->diagnosa_akhir;
             $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
             $row[] = '<div class="center">'.$status_tebus.'</div>';
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
