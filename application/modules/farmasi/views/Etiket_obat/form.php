@@ -234,7 +234,7 @@ function get_kode_eticket(myid){
                   $count_racikan = (count($row['racikan'][0]) > 0) ? $row['racikan'][0] : array();
                   $nama_obat = (count($count_racikan) > 0) ? $count_racikan[0]->nama_racikan : $row['nama_brg'];
                   
-                  $jml_obat = ( $row['jumlah_tebus'] ) ? ($row['prb_ditangguhkan'] == 0) ? $row['jumlah_tebus'] + $row['jumlah_obat_23'] : $row['jumlah_tebus'] : $row['jumlah_tebus'];
+                  $jml_obat = ($row['prb_ditangguhkan'] == 0) ? $row['jumlah_tebus'] + $row['jumlah_obat_23'] : $row['jumlah_tebus'] ;
 
                   $dosis_per_hari = (count($count_racikan) > 0) ? $count_racikan[0]->dosis_per_hari : $row['dosis_per_hari'];
                   $dosis_obat = (count($count_racikan) > 0) ? $count_racikan[0]->dosis_obat : $row['dosis_obat'];

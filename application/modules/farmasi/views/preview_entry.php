@@ -330,7 +330,7 @@
             <th>Nama Pasien</th>
             <th>Nama Dokter</th>
             <th>Penjamin</th>
-            <th>Diagnosa Akhir</th>
+            <!-- <th>Diagnosa Akhir</th> -->
             <th>Status</th>
           </tr>
         </thead>

@@ -23,8 +23,10 @@ class Resep_ri_model extends CI_Model {
 	}
 
 	private function _main_query(){
+
 		$date = date('Y-m-d H:i:s', strtotime('-3 days', strtotime(date('Y-m-d H:i:s'))));
 		$date2 = date('Y-m-d H:i:s', strtotime('-30 days', strtotime(date('Y-m-d H:i:s'))));
+		
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');

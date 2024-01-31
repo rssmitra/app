@@ -137,7 +137,7 @@ function popUnder(node) {
               <th>Nama Pasien</th>
               <th>Nama Dokter</th>
               <th>Penjamin</th>
-              <th width="180px">Diagnosa Akhir</th>
+              <!-- <th width="180px">Diagnosa Akhir</th> -->
               <th>Status</th>
             </tr>
           </thead>

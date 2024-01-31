@@ -14,6 +14,24 @@ jQuery(function($) {
   });
 });
 
+oTable = $('#dynamic-table').DataTable({ 
+          
+          "processing": true, //Feature control the processing indicator.
+          "serverSide": true, //Feature control DataTables' server-side processing mode.
+          "ordering": false,
+          "searching": false,
+          "bLengthChange": false,
+          // "pageLength": 25,
+          "bInfo": false,
+          "paging": false,
+          // Load data for the table's content from an Ajax source
+          "ajax": {
+              "url": $('#dynamic-table').attr('base-url'),
+              "type": "POST"
+          },
+      });
+      
+
 $( ".form-control" )    
     .keypress(function(event) {  
       var keycode =(event.keyCode?event.keyCode:event.which);  
@@ -166,7 +184,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2 ">&nbsp;</label>
+        <label class="col-md-2 ">&nbsp;</label>
         <div class="col-md-10" style="margin-left:6px">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary" action="pelayanan/Pl_pelayanan/find_data">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -188,19 +206,20 @@ function rollback(no_registrasi, no_kunjungan, flag){
     </div>
 
     <hr class="separator">
+    <br>
     <!-- div.dataTables_borderWrap -->
-    <div style="margin-top:-27px">
+    <div>
       <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan/get_data?bag=<?php echo isset($kode_bagian)?$kode_bagian:''?>" class="table table-bordered table-hover">
        <thead>
         <tr>  
-          <th width="30px" class="center"></th>
-          <th></th>
+          <th width="30px" class="center">No</th>
+          <th class="center">#</th>
           <th>Kode</th>
           <th>No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
           <th>Tanggal Kunjungan</th>
-          <th>Dokter</th>
+          <!-- <th>Dokter</th> -->
           <th>Antrian ke-</th>
           <th>Petugas</th>
           <th>Status</th>          
@@ -208,7 +227,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
       </thead>
       <tbody>
       </tbody>
-    </table>
+      </table>
     </div>
 
     </form>
@@ -216,7 +235,6 @@ function rollback(no_registrasi, no_kunjungan, flag){
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
 
 
 

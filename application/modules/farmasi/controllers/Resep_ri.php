@@ -98,9 +98,9 @@ class Resep_ri extends MX_Controller {
             $row = array();
             $link = 'billing/Billing';
             $str_type = 'RI';
-            $cek_trans = $this->Resep_ri->cek_trans_pelayanan($row_list->no_registrasi);
+            // $cek_trans = $this->Resep_ri->cek_trans_pelayanan($row_list->no_registrasi);
 
-            $rollback_btn = ($cek_trans>0 AND $row_list->status_pulang!= 0 || NULL)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
+            $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>';
 
             /*color of type Ruangan RI*/
             /*LB*/
@@ -115,6 +115,7 @@ class Resep_ri extends MX_Controller {
             }else{
                 $color = 'black';
             }
+
             $row[] = $row_list->no_registrasi;
             $row[] = $str_type;
             $row[] = '';
@@ -138,13 +139,23 @@ class Resep_ri extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
             $row[] = $row_list->nama_pegawai;
 
-            if($cek_trans==0){
-                $status_pulang = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas </label>';
+            if($row_list->status_pulang == 0 || $row_list->status_pulang == null){
+                if($row_list->pasien_titipan == 1){
+                    $status = '<label class="label label-yellow">Pasien Titipan</label>';
+                }else{
+                    $status = '<label class="label label-danger">Masih dirawat</label>';
+                }
             }else{
-                $status_pulang = ($row_list->status_pulang== 0 || NULL)?($row_list->pasien_titipan== 1)?'<label class="label label-yellow">Pasien Titipan</label>':'<label class="label label-danger">Masih dirawat</label>':'<label class="label label-success">Pulang</label>';
+                $status = '<label class="label label-success">Pulang</label>';
             }
 
-            $row[] = '<div class="center">'.$status_pulang.'</div>';
+            // if($cek_trans==0){
+            //     $status_pulang = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas </label>';
+            // }else{
+            //     $status_pulang = ($row_list->status_pulang == 0 || NULL) ? ($row_list->pasien_titipan== 1) ? '<label class="label label-yellow">Pasien Titipan</label>':'<label class="label label-danger">Masih dirawat</label>':'<label class="label label-success">Pulang</label>';
+            // }
+
+            $row[] = '<div class="center">'.$status.'</div>';
            
             $data[] = $row;
         }
