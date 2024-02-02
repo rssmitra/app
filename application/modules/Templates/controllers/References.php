@@ -172,24 +172,31 @@ class References extends MX_Controller {
 						left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
 						where a.jd_kode_spesialis=".$kode_spesialis." and a.jd_kode_dokter=".$kode_dokter."";
 
-	        $query = $this->db->query($query)->result();
-	        $jadwal = [];
+	        $query = $this->db->query($query);
+			if($query->num_rows() > 0){
+				$result = $query->result();
+				$jadwal = [];
 	        
-			$array_color_day = array('green','red','purple','blue','black','orange','grey');
-	    	shuffle($array_color_day);
+				$array_color_day = array('green','red','purple','blue','black','orange','grey');
+				shuffle($array_color_day);
 
-	    	$html .= '<p><strong><i class="fa fa-list"></i> JADWAL PRAKTEK DOKTER</strong></p>';
-	        foreach ($query as $key => $value) {
-	        	$time = $this->tanggal->formatTime($value->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($value->jd_jam_selesai);
-	        	$jadwal[] = array('day' => $value->jd_hari , 'time' => $time);
-	        	$html .= '<a href="#"  onclick="detailJadwalPraktek('.$value->jd_id.')"><div class="infobox infobox-'.array_shift($array_color_day).' infobox-small infobox-dark">
-							    <div class="infobox-data">
-							        <div class="infobox-content">'.$value->jd_hari.'</div>
-							        <div class="infobox-content">'.$time.'</div>
-							    </div>
-							</div></a>';
-	        }
-        $html .= '<br><small>* Silahkan pilih jadwal dokter praktek </small>';
+				$html .= '<p><strong><i class="fa fa-list"></i> JADWAL PRAKTEK DOKTER</strong></p>';
+				
+				foreach ($result as $key => $value) {
+					$time = $this->tanggal->formatTime($value->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($value->jd_jam_selesai);
+					$jadwal[] = array('day' => $value->jd_hari , 'time' => $time);
+					$html .= '<a href="#"  onclick="detailJadwalPraktek('.$value->jd_id.')"><div class="infobox infobox-'.array_shift($array_color_day).' infobox-small infobox-dark">
+									<div class="infobox-data">
+										<div class="infobox-content">'.$value->jd_hari.'</div>
+										<div class="infobox-content">'.$time.'</div>
+									</div>
+								</div></a>';
+				}
+			$html .= '<br><small>* Silahkan pilih jadwal dokter praktek </small>';
+			}else{
+				$html .= '<span class="red bold">Jadwal dokter tidak ditemukan</span>';
+			}
+	        
 		echo json_encode(array('html' => $html));
 
 	}
@@ -998,9 +1005,12 @@ class References extends MX_Controller {
         
 		$result = $this->getDokterByBagianByKeyword($_POST['keyword'], $_POST['bag']);
 		$arrResult = [];
-		foreach ($result as $key => $value) {
-			$arrResult[] = $value->kode_dokter.' : '.$value->nama_pegawai;
+		if($result != false){
+			foreach ($result as $key => $value) {
+				$arrResult[] = $value->kode_dokter.' : '.$value->nama_pegawai;
+			}
 		}
+		
 		echo json_encode($arrResult);
 		
 	}
@@ -1082,7 +1092,11 @@ class References extends MX_Controller {
 	 				where a.kd_bagian=".$bag." and a.nama_pegawai LIKE '%".$key."%' and a.nama_pegawai is not NULL and a.nama_pegawai <> ''";
 		
 		$exc = $this->db->query($query);
-        return $exc->result();
+		if($exc->num_rows() > 0){
+			return $exc->result();
+		}else{
+			return false;
+		}
 	}
 
 	public function getRegenciesPob()

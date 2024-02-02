@@ -206,7 +206,11 @@ class Reg_pasien_model extends CI_Model {
 		$i = 0;
 
 		if(isset($_GET['search_by'])){
-			$this->db->where($_GET['search_by'], $keyword);
+			if(in_array($_GET['search_by'], ['no_mr', 'no_ktp', 'no_kartu_bpjs'] )){
+				$this->db->where($_GET['search_by'], $keyword);
+			}else{
+				$this->db->like($_GET['search_by'], $keyword);
+			}
 		}else{
 			foreach ($field as $item) 
 		
@@ -711,11 +715,10 @@ class Reg_pasien_model extends CI_Model {
 		}
 
 		// jadwal dokter
-		$jadwal = $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $registrasi[0]->jd_id))->row();
-
+		$jadwal = isset($registrasi[0]->jd_id) ? $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $registrasi[0]->jd_id))->row() : [];
 		
 		$data = array(
-			'registrasi' =>  $registrasi[0],
+			'registrasi' =>  isset($registrasi[0])?$registrasi[0]:[],
 			'riwayat_medis' =>  $registrasi,
 			'tindakan' =>  $transaksi,
 			'no_antrian' => $antrian_poli,

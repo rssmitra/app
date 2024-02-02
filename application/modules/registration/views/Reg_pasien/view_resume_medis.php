@@ -1,3 +1,9 @@
+<?php
+  if(!isset($result['registrasi']->no_registrasi)){
+    echo '<div class="alert alert-danger"><strong>Data dihapus !</strong> Data registrasi tidak ditemukan.</div>';
+    exit;
+  }
+?>
 <?php if(isset($_GET['print'])) :?>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
 <?php endif; ?>

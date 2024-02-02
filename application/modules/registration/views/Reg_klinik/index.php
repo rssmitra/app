@@ -1055,6 +1055,7 @@ function find_pasien_by_keyword(keyword){
   if(search_by == 'no_mr'){
     if(keyword.length < 8){
       alert('Pencarian dengan Nomor Rekam Medis minimal 8 karakter');
+      reset_all_profile();
       achtungHideLoader();     
       return false; 
     }
@@ -1063,6 +1064,7 @@ function find_pasien_by_keyword(keyword){
   if(search_by == 'no_ktp'){
     if(keyword.length < 16){
       alert('Pencarian dengan NIK minimal 16 karakter');
+      reset_all_profile();
       achtungHideLoader();     
       return false; 
     }
@@ -1071,6 +1073,7 @@ function find_pasien_by_keyword(keyword){
   if(search_by == 'no_kartu_bpjs'){
     if(keyword.length < 10){
       alert('Pencarian dengan Nomor Kartu BPJS minimal 10 karakter');
+      reset_all_profile();
       achtungHideLoader();     
       return false; 
     }
@@ -1079,6 +1082,7 @@ function find_pasien_by_keyword(keyword){
   if(search_by == 'nama_pasien'){
     if(keyword.length < 3){
       alert('Pencarian dengan Nama Pasien minimal 3 karakter');
+      reset_all_profile();
       achtungHideLoader();     
       return false; 
     }
@@ -1096,11 +1100,9 @@ function find_pasien_by_keyword(keyword){
             $('#div_penangguhan_pasien').hide('fast');
 
             /*reset all field data*/
-            $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+            // $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
 
-            $('#total_kunjungan, #tgl_lhr, #hp, #no_telp, #no_kartu_bpjs_txt, #catatan_pasien').text('-');
-            $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
-            $('#ttd_pasien').attr('src', '');
+            reset_all_profile();
 
             alert('Data tidak ditemukan'); return $("#form_cari_pasien").focus();
 
@@ -1265,6 +1267,15 @@ function find_pasien_by_keyword(keyword){
       showChangeModul( 3 );
     <?php endif ?>
 
+}
+
+function reset_all_profile(){
+  /*reset all field data*/
+  $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+  $('#total_kunjungan, #tgl_lhr, #hp, #no_telp, #no_kartu_bpjs_txt, #catatan_pasien').text('-');
+  $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
+  $('#ttd_pasien').attr('src', '');
+  return true;
 }
 
 function find_pasien_by_mr(keyword){  

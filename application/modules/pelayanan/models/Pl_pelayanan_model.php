@@ -136,7 +136,11 @@ class Pl_pelayanan_model extends CI_Model {
         $this->db->order_by('no_antrian','ASC');
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
-		return $query->result();
+		if($query->num_rows() > 0){
+			return $query->result();
+		}else{
+			return [];
+		}
 	}
 
 	function get_next_antrian_pasien()
