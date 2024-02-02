@@ -38,11 +38,11 @@ final Class Logs {
         }
         
         /*print_r($data);die;*/
-        $CI->db->insert('log', $data);
-        $log_id = $CI->db->insert_id();
+        // $CI->db->insert('log', $data);
+        // $log_id = $CI->db->insert_id();
 
         /*update last log record data*/
-        $CI->db->update($ref_table, array('log_id' => $log_id), array($primary_key_field => $ref_id));
+        // $CI->db->update($ref_table, array('log_id' => $log_id), array($primary_key_field => $ref_id));
         return true;
     }
 
