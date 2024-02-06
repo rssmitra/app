@@ -25,7 +25,7 @@
         "ordering": false,
         "searching": false,
         "bPaginate": true,
-        "bInfo": false,
+        "bInfo": true,
         "pageLength": 25,
         "ajax": {
             "url": "pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry",
@@ -200,11 +200,11 @@ function rollback(no_registrasi, no_kunjungan, flag){
             var data=xhr.responseText;  
             var jsonResponse = JSON.parse(data);  
             if(jsonResponse.status === 200){  
-            $.achtung({message: jsonResponse.message, timeout:5}); 
+              $.achtung({message: jsonResponse.message, timeout:5}); 
             reload_table();
             //getMenu('pelayanan/Pl_pelayanan');
             }else{          
-            $.achtung({message: jsonResponse.message, timeout:5});  
+              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
             } 
             achtungHideLoader();
         }
@@ -335,7 +335,7 @@ function selesaikanKunjungan(no_registrasi, no_kunjungan){
       <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan/get_data_entry_billing?bag=0&form=billing_entry" class="table table-bordered table-hover">
        <thead>
         <tr>  
-          <th width="30px" class="center"></th>
+          <th width="50px" class="center"></th>
           <th></th>
           <th></th>
           <th></th>

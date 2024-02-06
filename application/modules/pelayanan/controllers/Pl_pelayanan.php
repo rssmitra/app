@@ -289,9 +289,6 @@ class Pl_pelayanan extends MX_Controller {
         echo json_encode($list);
     }
 
-    
-
-
     public function get_data()
     {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
@@ -303,21 +300,21 @@ class Pl_pelayanan extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_kunjungan.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                    </div>';
-            /*fungsi rollback pasien, jika belum disubmit kasir maka poli masih bisa melakukan rollback*/
-            /*cek transaksi*/
-            //$trans_kasir = ($row_list->status_periksa!=NULL)?TRUE:FALSE;
-            $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi,$row_list->no_kunjungan);
-            //$rollback_btn = ($trans_kasir==true)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
-            $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
+            $row[] = '<div class="center"><b>'.$no.'</b></div>';
 
-            $rollback_btn = ($flag_rollback == 'unsubmit') ? '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>' : '';
-            
+            $rollback_btn = '';
+            $flag_rollback = 'unsubmit';
+            if($row_list->status_batal==1){
+                $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
+                $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>';
+            }else{
+                if($row_list->tgl_keluar_poli==NULL || empty($row_list->tgl_keluar_poli)){
+                    $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
+                }else {
+                    $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                    $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>';
+                }
+            }
 
             $cancel_btn = ($row_list->status_periksa==NULL) ? '<li><a href="#" onclick="cancel_visit('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Batalkan Kunjungan</a></li>' : '' ;
 
@@ -344,25 +341,25 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = $nm_perusahaan;
 
             $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
-            $row[] = $row_list->nama_pegawai;
+            // $row[] = $row_list->nama_pegawai;
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->created_by.'</div>';
 
-            if($row_list->status_batal==1){
-                $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
-            }else{
-                if($row_list->tgl_keluar_poli==NULL || empty($row_list->tgl_keluar_poli)){
-                    $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
-                }else {
-                    if($flag_rollback != 'submited'){
-                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+            // if($row_list->status_batal==1){
+            //     $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
+            // }else{
+            //     if($row_list->tgl_keluar_poli==NULL || empty($row_list->tgl_keluar_poli)){
+            //         $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
+            //     }else {
+            //         if($flag_rollback != 'submited'){
+            //             $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
                         
-                    }else{
-                        $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>';
+            //         }else{
+            //             $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>';
 
-                    }
-                }
-            }
+            //         }
+            //     }
+            // }
 
             $row[] = '<div class="center">'.$status_periksa.'</div>';
            
@@ -397,11 +394,11 @@ class Pl_pelayanan extends MX_Controller {
             /*fungsi rollback pasien, jika belum disubmit kasir maka poli masih bisa melakukan rollback*/
             /*cek transaksi*/
             //$trans_kasir = ($row_list->status_periksa!=NULL)?TRUE:FALSE;
-            $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi,$row_list->no_kunjungan);
+            // $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi,$row_list->no_kunjungan);
             //$rollback_btn = ($trans_kasir==true)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
-            $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
+            $flag_rollback = 'unsubmit';
 
-            $rollback_btn = ($flag_rollback == 'unsubmit') ? '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>' : '';
+            $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>';
             
 
             $cancel_btn = ($row_list->status_periksa==NULL) ? '<li><a href="#" onclick="cancel_visit('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Batalkan Kunjungan</a></li>' : '' ;
@@ -415,7 +412,7 @@ class Pl_pelayanan extends MX_Controller {
                         <ul class="dropdown-menu dropdown-inverse">
                             '.$rollback_btn.' '.$cancel_btn.'                            
 
-                            <li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=".$row_list->no_sep."'".')">Perjanjian Pasien</a></li>
+                            <li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=". $this->regex->_genRegex($row_list->no_sep,'RGXALNUM')."'".')">Perjanjian Pasien</a></li>
 
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
@@ -437,13 +434,7 @@ class Pl_pelayanan extends MX_Controller {
                 if($row_list->tgl_keluar_poli==NULL || empty($row_list->tgl_keluar_poli)){
                     $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
                 }else {
-                    if($flag_rollback != 'submited'){
-                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
-                        
-                    }else{
-                        $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>';
-
-                    }
+                    $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
                 }
             }
 
@@ -1596,8 +1587,8 @@ class Pl_pelayanan extends MX_Controller {
                 $this->db->trans_commit();
                 
                 // search pasien berikutnya
-                $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien_sess_dr();
-                $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
+                // $antrian_pasien = $this->Pl_pelayanan->get_next_antrian_pasien_sess_dr();
+                // $next_pasien = isset($antrian_pasien)?$antrian_pasien: ''; 
 
                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai', 'next_pasien' => isset($next_pasien->no_mr)?$next_pasien->no_mr:'', 'next_id_pl_tc_poli' => isset($next_pasien->id_pl_tc_poli)?$next_pasien->id_pl_tc_poli:'', 'next_no_kunjungan' => isset($next_pasien->no_kunjungan)?$next_pasien->no_kunjungan:''));
             }
@@ -1711,6 +1702,12 @@ class Pl_pelayanan extends MX_Controller {
     public function rollback()
     {   
         $this->db->trans_begin();  
+
+        $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($_POST['no_registrasi'],$_POST['no_kunjungan']);
+        if($trans_kasir==false){
+            echo json_encode(array('status' => 301, 'message' => 'Transaksi tidak dapat diproses, silahkan hubungi petugas kasir'));
+            exit;
+        }
 
         /*update tc_registrasi*/
         $reg_data = array('tgl_jam_keluar' => NULL, 'kode_bagian_keluar' => NULL, 'status_batal' => NULL );
@@ -1988,7 +1985,7 @@ class Pl_pelayanan extends MX_Controller {
         
         $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $id, array('no_mr') );
 
-        /*echo '<pre>'; print_r($data_pasien);*/
+        // echo '<pre>'; print_r($data_pasien);
 
         $data['title'] = 'Perjanjian Pasien Rawat Jalan';
         $data['breadcrumbs'] = $this->breadcrumbs->show();
@@ -2055,10 +2052,12 @@ class Pl_pelayanan extends MX_Controller {
     public function view_detail_resume_medis($no_registrasi, $no_kunjungan='') { 
         
         $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan);
+        $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($no_registrasi, $no_kunjungan);
         $data = [
             'result' => $resume,
             'penunjang' => $resume['penunjang'],
             'no_registrasi' => $no_registrasi,
+            'trans_kasir' => $trans_kasir,
         ];
 
         $userDob = $data['result']['registrasi']->tgl_lhr;
