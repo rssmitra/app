@@ -1,9 +1,17 @@
-<?php if(isset($_GET['print'])) :?>
+<?php 
+
+if(isset($_GET['print'])) :
+?>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
 <?php endif; ?>
 <div class="row">
 
   <div class="col-sm-12 widget-container-col ui-sortable">
+    <?php
+      if($trans_kasir == false){
+        echo '<span style="margin-left:64%;position:absolute;transform: rotate(0deg) !important; margin-top: -40%" class="stamp is-approved">Lunas</span>';
+      }      
+    ?>
     <div class="widget-box transparent ui-sortable-handle">
       <div class="widget-body">
         <div class="col-md-6 no-padding">
@@ -137,7 +145,7 @@
               <td><?php echo $row_t->nama_pegawai?></td>
               <td><?php echo $row_t->nama_tindakan?></td>
               <td><?php echo $row_t->jenis_tindakan?></td>
-              <td align="center"><?php echo ($row_t->kode_tc_trans_kasir>0)?'<label class="label label-success">Lunas</label>':'<label class="label label-danger">Belum Dibayar</label>'?></td>
+              <td align="center"><?php echo ($row_t->kode_tc_trans_kasir>0)?'<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>':'<label class="label label-danger">Belum Dibayar</label>'?></td>
             </tr>
           <?php endif; endforeach;?>
 

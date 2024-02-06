@@ -328,7 +328,7 @@ class Reg_klinik extends MX_Controller {
             $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim|required');
             $this->form_validation->set_rules('noKartuBpjs', 'No Kartu BPJS', 'trim|required|min_length[13]|max_length[13]', array('min_length' => 'No Kartu BPJS pasien salah (kurang dari 13 digit)', 'max_length' => 'No Kartu BPJS pasien salah (lebih dari 13 digit)'));
             $this->form_validation->set_rules('jeniskunjunganbpjs', 'Jenis Kunjungan', 'trim|required');
-            $this->form_validation->set_rules('norujukanbpjs', 'Nomor Rujukan', 'trim|required');
+            $this->form_validation->set_rules('norujukanbpjs', 'Nomor Rujukan', 'trim|required|min_length[18]', array('min_length' => 'Nomor Rujukan minimal 18 karakter' ));
         }
 
         // set message error
@@ -363,7 +363,6 @@ class Reg_klinik extends MX_Controller {
             if( !$this->input->post('no_registrasi_hidden') && !$this->input->post('no_registrasi_rujuk')){
                 /*save tc_registrasi*/
                 $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,$jd_id, $kode_faskes, $tgl_registrasi, $nomorrujukan, $jeniskunjunganbpjs);
-                
                 $no_registrasi = $data_registrasi['no_registrasi'];
                 $no_kunjungan = $data_registrasi['no_kunjungan'];
             }else{

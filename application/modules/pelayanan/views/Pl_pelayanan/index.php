@@ -42,6 +42,29 @@ $( ".form-control" )
       }  
 });
 
+$('#btn_search_data').click(function (e) {
+    e.preventDefault();
+    $.ajax({
+    url:  $('#form_search').attr('action'),
+    type: "post",
+    data: $('#form_search').serialize(),
+    dataType: "json",
+    beforeSend: function() {
+      achtungShowLoader();  
+    },
+    success: function(data) {
+      achtungHideLoader();
+      find_data_reload(data);
+    }
+  });
+});
+
+function find_data_reload(result){
+
+  oTable.ajax.url( $('#dynamic-table').attr('base-url')+'/get_data?'+result.data).load();
+  $("html, body").animate({ scrollTop: "400px" });
+
+}
 
 $('#btn_update_session_poli').click(function (e) {  
 
@@ -135,7 +158,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan/find_data">
+    <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan/find_data" autocomplete="off">
 
     <div class="col-md-12">
 
