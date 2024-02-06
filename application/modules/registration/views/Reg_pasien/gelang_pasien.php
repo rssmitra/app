@@ -45,12 +45,12 @@ window.onload = generateBarcode;
 <table border="0" align="center" class="rotate-X">
   <tr>
 
-    <td align="left" width="500px" style="font-size: 18px">
+    <td align="left" width="55%" style="font-size: 18px; padding-top: 1px;">
       <b><?php echo (string)$pasien->nama_pasien?></b> <br>
       <?php echo $this->tanggal->formatDateShort($pasien->tgl_lhr)?> (<?php echo $pasien->jen_kelamin?>)
     </td>
 
-    <td align="right">
+    <td align="left">
       <div id="barcodeTarget" class="barcodeTarget"></div>
     </td>
 
