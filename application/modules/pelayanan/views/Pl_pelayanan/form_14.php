@@ -1,15 +1,7 @@
 <div style="text-align: center;"><b>HASIL PEMERIKSAAN USG</b></div>
-<div style="text-align: center;"><b><br></b></div>
-<div style="text-align: left;">Hasil Pemeriksaan :</div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;">Kesan :</div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;"><br></div>
-<div style="text-align: left;">Catatan Pemeriksaan :</div>
+<br>
+<b>Hasil Pemeriksaan :</b>
+<br>
+<b>Kesan :</b>
+<br>
+<b>Catatan Pemeriksaan :</b>
