@@ -124,7 +124,7 @@ class Counter_model extends CI_Model {
 			case 'umum':
 				$txt_tipe = 'B';
 				break;
-			case 'umum':
+			case 'online':
 				$txt_tipe = 'C';
 				break;
 			default:
