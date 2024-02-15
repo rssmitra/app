@@ -2,6 +2,10 @@
 <br>
 <b>Hasil Pemeriksaan :</b>
 <br>
+<br>
 <b>Kesan :</b>
 <br>
+<br>
 <b>Catatan Pemeriksaan :</b>
+<br>
+<br>
