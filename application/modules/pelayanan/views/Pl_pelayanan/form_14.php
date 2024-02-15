@@ -8,8 +8,5 @@
 <br>
 <b>Catatan Pemeriksaan :</b>
 <br>
-<<<<<<< HEAD
 <br>
-=======
-<br>
->>>>>>> 513bdb231cef7306dea1b028a3fb3df091d83369
+
