@@ -164,6 +164,15 @@
 
   });
 
+  $('#kelompok_pasien').change(function () {
+    if($('#kelompok_pasien').val()==3){
+      $('#kode_perusahaan_').show('fast');
+    }else{
+      $('#kode_perusahaan_').hide('fast');
+      $('#kode_perusahaan_hidden').val('');
+    }   
+  })
+
   $('#btn_registrasi').click(function (e) {
     e.preventDefault();
     $.ajax({
