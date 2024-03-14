@@ -79,7 +79,7 @@ final Class Master {
 		
     }
     
-    function get_bulan($nid='',$name,$id,$class='',$required='',$inline='') {
+    function get_bulan($nid='',$name, $id, $class='',$required='',$inline='') {
 		//print_r($nid);die;
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
@@ -89,6 +89,92 @@ final Class Master {
 				'key' => $i,
 				'value' => $CI->tanggal->getBulan($i),
 				);
+			$year[] = $list;
+		}
+		$data = $year;
+
+		$selected = $nid?'':'selected';
+		$readonly = '';//$CI->session->userdata('nrole')=='approver'?'readonly':'';
+		
+		$starsign = $required?'*':'';
+		
+		$fieldset = $inline?'':'<fieldset>';
+		$fieldsetend = $inline?'':'</fieldset>';
+		
+		$field='';
+		$field.=$fieldset.'
+		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
+			<option value="0" '.$selected.'> - Pilih - </option>';
+
+				foreach($data as $row){
+					$sel = $nid==$row['key']?'selected':'';
+					$field.='<option value="'.$row['key'].'" '.$sel.' >'.strtoupper($row['value']).'</option>';
+				}	
+			
+		$field.='
+		</select>
+		'.$fieldsetend;
+		
+		return $field;
+		
+    }
+
+	function lapi_get_tahun($nid='',$name,$id,$class='',$required='',$inline='') {
+		
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		$year = array();
+		$now = date('Y');
+		if(date('m') == 1){
+			$start_year = $now - 1;
+		}else{
+			$start_year = $now;
+		}
+		for ($i=$start_year; $i <= $now ; $i++) { 
+			$year[] = $i;
+		}
+		$data = $year;
+
+		$selected = $nid?'':'selected';
+		$readonly = '';//$CI->session->userdata('nrole')=='approver'?'readonly':'';
+		
+		$starsign = $required?'*':'';
+		
+		$fieldset = $inline?'':'<fieldset>';
+		$fieldsetend = $inline?'':'</fieldset>';
+		
+		$field='';
+		$field.=$fieldset.'
+		<select class="'.$class.'" name="'.$name.'" id="'.$id.'" '.$readonly.' '.$required.' >
+			<option value="0" '.$selected.'> - Tahun - </option>';
+
+				foreach($data as $row){
+					$sel = $nid==$row?'selected':'';
+					$field.='<option value="'.$row.'" '.$sel.' >'.strtoupper($row).'</option>';
+				}	
+			
+		$field.='
+		</select>
+		'.$fieldsetend;
+		
+		return $field;
+		
+    }
+
+	function lapi_get_bulan($nid='',$name, $id, $class='',$required='',$inline='') {
+		//print_r($nid);die;
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		$year = array();
+		$curr_month = date('m');
+		$curr_date = date('d');
+		if($curr_date >= 28){
+			$max_month = $curr_month;
+		}else{
+			$max_month = ($curr_month - 1);
+		}
+		for ($i=($curr_month-($curr_month-1)) ; $i <= $max_month ; $i++) { 
+			$list = array('key' => $i,'value' => $CI->tanggal->getBulan($i));
 			$year[] = $list;
 		}
 		$data = $year;
@@ -1299,6 +1385,58 @@ final Class Master {
 	
 	function convert_special_chars_to_html($string) {
 		return htmlentities($string, ENT_COMPAT, "UTF-8");
+	}
+
+	function get_txt_call_patient($params){
+		$CI =&get_instance();
+		// get title
+		$title = $this->getTxtTitlePatient($CI->regex->_genRegex(strtolower($params['title']), 'RGXAZ'));
+		if($title == ''){
+			$title = ( in_array($params['jk'], array('L', '1')) ) ? 'bapak' : 'ibu' ;
+		}
+		$nama_pasien = str_replace(['tn.', 'ny.', 'nn.', 'by.', 'an.'],[""], strtolower($params['nama_pasien']));
+		$txt = strtolower($title.' '.$nama_pasien.', silahkan masuk ke poli spesialis '.$params['poli']);
+
+		return $txt;
+
+	}
+
+	function getTxtTitlePatient($title=''){
+		$CI =&get_instance();
+		switch ($title) {
+			case 'tn':
+				# code...
+				$txt = 'bapak';
+				break;
+
+			case 'ny':
+				# code...
+				$txt = 'ibu';
+				break;
+			
+			case 'an':
+				# code...
+				$txt = 'anak';
+				break;
+
+			case 'nn':
+				# code...
+				$txt = 'nona';
+				break;
+			
+			case 'by':
+				# code...
+				$txt = 'bayi nyonya';
+				break;
+			
+			default:
+				# code...
+				$txt = '';
+				break;
+		}
+
+		return $txt;
+
 	}
 
 }
