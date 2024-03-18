@@ -265,11 +265,11 @@ class Po_penerbitan extends MX_Controller {
                             "ppn" => $harga['ppn'],
                         );
 
-                        if(isset($_POST['brg_diterima'][$row_checked]) AND $_POST['brg_diterima'][$row_checked] != ''){
+                        // if(isset($_POST['brg_diterima'][$row_checked]) AND $_POST['brg_diterima'][$row_checked] != ''){
                             // print_r($_POST);die;
                           $id_tc_permohonan_det[] = $row_id_tc_det;
                           $this->db->update($table.'_det', $updateBatch, array('id_tc_po_det' => $permohonan_det->id_tc_po_det) );
-                        }
+                        // }
                         
                       }
                   
