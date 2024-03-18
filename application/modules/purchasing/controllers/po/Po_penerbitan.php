@@ -219,6 +219,7 @@ class Po_penerbitan extends MX_Controller {
             }
 
             if( $_POST['action'] == 'revisi'){
+                
                 foreach( $_POST['is_checked'] as $row_checked ){
                     // hanya barang yang belum diterima yang diproses
                     
@@ -226,6 +227,7 @@ class Po_penerbitan extends MX_Controller {
                       // get id_tc_permohonan_det
                       foreach( $_POST['id_tc_permohonan_det'][$row_checked] as $row_id_tc_det ){
                         $id_tc_permohonan[] = $_POST['id_tc_permohonan'][$row_checked];
+                        $id_tc_permohonan_det[] = $row_id_tc_det;
                       
                         // gte data detail permohonan
                         $permohonan_det = $this->db->join($table.'_det',''.$table.'_det.id_tc_permohonan_det='.$table_permohonan.'_det.id_tc_permohonan_det','left')->get_where($table_permohonan.'_det', array(''.$table_permohonan.'_det.id_tc_permohonan_det' => $row_id_tc_det) )->row();
@@ -248,7 +250,7 @@ class Po_penerbitan extends MX_Controller {
                             "id_tc_permohonan_det" => $row_id_tc_det,
                             "id_tc_permohonan" => $_POST['id_tc_permohonan'][$row_checked],
                             "kode_brg" => $row_checked,
-                            "jumlah_besar" => (int)$_POST['jml_permohonan'][$row_checked],
+                            "jumlah_besar" => $_POST['jml_permohonan'][$row_checked],
                             "jumlah_besar_acc" => $_POST['jml_permohonan'][$row_checked],
                             "content" => $_POST['rasio'][$row_checked],
                             "sipa" => $_POST['sipa'],
@@ -263,7 +265,8 @@ class Po_penerbitan extends MX_Controller {
                             "ppn" => $harga['ppn'],
                         );
 
-                        if($_POST['brg_diterima'][$row_checked] == 0){
+                        if(isset($_POST['brg_diterima'][$row_checked]) AND $_POST['brg_diterima'][$row_checked] != ''){
+                            // print_r($_POST);die;
                           $id_tc_permohonan_det[] = $row_id_tc_det;
                           $this->db->update($table.'_det', $updateBatch, array('id_tc_po_det' => $permohonan_det->id_tc_po_det) );
                         }

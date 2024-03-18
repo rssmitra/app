@@ -212,9 +212,10 @@
               <?php echo $row_dt[0]->nama_brg?>
               <?php 
                 echo (empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? "" : '<br><span style="color: blue; font-size:10px;">Barang telah diterima <b>('.$row_dt[0]->kode_penerimaan.')</b></span>';
-                $is_readonly = (empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? "" : "readonly";
+                $is_readonly = ''; //(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? "" : "readonly";
               ?>
-              <input type="hidden" name="brg_diterima[<?php echo $row_dt[0]->kode_brg?>]" id="barang_diterima_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo (empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? 0 : $row_dt[0]->kode_brg ?>">
+              <!-- <input type="hiddenxx" name="brg_diterima[<?php echo $row_dt[0]->kode_brg?>]" id="barang_diterima_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo (empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) ? 0 : $row_dt[0]->kode_brg ?>"> -->
+              <input type="hiddenxx" name="brg_diterima[<?php echo $row_dt[0]->kode_brg?>]" id="barang_diterima_<?php echo $row_dt[0]->kode_brg?>" value="<?php echo (empty($row_dt[0]->kode_detail_penerimaan_barang)) ? '' : $row_dt[0]->kode_detail_penerimaan_barang ?>">
             </td>
 
             <?php //if(empty($row_dt[0]->jumlah_kirim) || $row_dt[0]->jumlah_kirim == 0) :?>
@@ -280,7 +281,7 @@
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="10">PPN</td>
+          <td align="right" colspan="10">PPNxx</td>
           <td align="right">
               <input type="text" class="format_number form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="">
               <input type="hidden" class="form-control" name="total_ppn_val" id="total_ppn_val" style="height:45px;text-align:right" value="">

@@ -32,6 +32,11 @@
             $('#nama_pasien_antrian').text(obj.nama_pasien.toUpperCase());
             $('#nama_poli').text(obj.poli.toUpperCase());
             $('#nama_dokter').text(obj.dokter.toUpperCase());
+            if(obj.kode_dokter == '0'){
+              $('#photo_dokter').attr('src', '<?php echo base_url().PATH_IMG_DEFAULT.'72logo.png'?>');
+            }else{
+              $('#photo_dokter').attr('src', '<?php echo base_url().PATH_PHOTO_PEGAWAI?>'+obj.kode_dokter+'.png');
+            }
           });
 
         }, 2000 );
@@ -70,52 +75,19 @@
         color: white;
         text-align: center;
       }
+      .grid2 {
+        margin : 0px !important;
+        padding: 0px !important;
+      }
     </style>
   </head>
 
   <body class="no-skin" >
-    <!-- #section:basics/navbar.layout -->
-    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background-image: linear-gradient(to left, #005a00, #f9f9f9);">
-      <script type="text/javascript">
-        try{ace.settings.check('navbar' , 'fixed')}catch(e){}
-      </script>
-
-      <div class="navbar-container" id="navbar-container">
-        <div class="navbar-header pull-left">
-          <!-- #section:basics/navbar.layout.brand -->
-          <a href="#" class="navbar-brand" style="padding: 16px 5px;">
-            <small style="font-size: 1.5em; text-shadow: 1px 2px #a5af98bf; color:#195005; font-weight: bold">
-              <i class="fa fa-leaf"></i>
-              ANTRIAN PELAYANAN POLI / KLINIK 
-            </small>
-          </a>
-          <!-- <div style="margin-left: -20px; width: auto">
-            <span style="font-size: 3em; text-shadow: 1px 2px #a5af98bf; color:#195005">Antrian Instalasi Farmasi </span>
-            <span style="font-size: 2em"> <?php echo COMP_LONG?> </span><br> 
-            <span style="font-size: 1em"> <?php echo COMP_ADDRESS?> </span>
-          </div> -->
-          <!-- /section:basics/navbar.toggle -->
-        </div>
-
-
-      </div><!-- /.navbar-container -->
-    </div>
-
     <!-- /section:basics/navbar.layout -->
     <div class="main-container" id="main-container">
-      <script type="text/javascript">
-        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
-      </script>
-
       <!-- /section:basics/sidebar.horizontal -->
       <div class="main-content">
         <div class="main-content-inner">
-          <!-- #section:basics/content.breadcrumbs -->
-          <div class="breadcrumbs" id="breadcrumbs" style="">
-            <script type="text/javascript">
-              try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
-            </script>
-          </div>
           <div class="page-content-main" style="background-color: black !important">
             <div class="no-padding" style="width:90%;float:left;">
               <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:7px;"> Bagi pasien yang sudah terlewati nomor antriannya harap menghubungi Perawat di <i>Nurse Station</i>. | <?php echo COMP_MOTTO?> </marquee>
@@ -126,70 +98,37 @@
             </div>
             <div class="row no-padding">
               <div class="col-md-12 no-padding" style="padding-right: 5px !important">
-                    <div class="col-sm-12 no-padding" style="color: white; padding: 5px !important">
-                        <div class="widget-box" style="border-radius: 24px;">
-                         
-                          <div class="widget-body" style=" background: linear-gradient(180deg, #128812, transparent); font-weight: bold; border-radius: 23px;">
-                            <div class="widget-main">
-                              <div class="center" style="min-height: 420px; text-align: center; vertical-align: middle">
-                              
-                                <span style="text-align: center; font-size: 15em" id="no_antrian">0</span><br>
-                                <span style="text-align: center; font-size: 5em" id="nama_pasien_antrian">-</span>
-                              </div>
-                              <div class="hr hr8 hr-double"></div>
+                <div class="col-sm-12 no-padding" style="color: white; padding: 5px !important">
+                    <div class="widget-box" style="border-radius: 24px;">
+                      
+                      <div class="widget-body" style=" background: linear-gradient(180deg, #128812, transparent); font-weight: bold; border-radius: 23px;">
+                        <div class="widget-main">
+                          <div class="center" style="height: 450px !important; text-align: center; vertical-align: middle; margin-top: -30px !important">
+                            <span style="text-align: center; font-size: 13em" id="no_antrian">0</span><br>
+                            <span style="text-align: center; font-size: 10em; line-height: 1em" id="nama_pasien_antrian">-</span>
+                          </div>
+                          <div class="hr hr8 hr-double"></div>
 
-                              <div class="clearfix" style="background: green; padding: 25px; border-radius: 10px 10px 0px 0px;">
-                                <div class="grid2">
-                                  <span class="">
-                                    <i class="ace-icon fa fa-stethoscope fa-2x orange"></i>
-                                    <span style="font-size: 1em; padding-left: 5px; color: white; font-weight: bold">POLI/KLINIK SEPESIALIS</span>
-                                  </span>
-                                  <h4 class="bigger left" style="font-weight: bold" id="nama_poli">-</h4>
-                                </div>
+                          <div class="clearfix" style="background: linear-gradient(45deg, black, transparent);padding: 10px;border-radius: 10px 10px 10px 10px;">
+                            <div class="grid2" style="width: 15% !important; text-align: PATH_IMG_DEFAULT">
+                              <img id="photo_dokter" src="<?php echo base_url().PATH_PHOTO_PEGAWAI.$this->session->userdata('sess_kode_dokter').'.png'?>" width="150px" style="border-radius: 10px">
+                            </div>
 
-                                <div class="grid2">
-                                  <span class="">
-                                    <i class="ace-icon fa fa-user fa-2x orange"></i>
-                                    <span style="font-size: 1em; padding-left: 5px; color: white; font-weight: bold">NAMA DOKTER</span>
-                                  </span>
-                                  <h4 class="bigger left" style="font-weight: bold" id="nama_dokter">-</h4>
-                                </div>
-                              </div>
-                            </div><!-- /.widget-main -->
-                          </div><!-- /.widget-body -->
-                        </div>
+                            <div class="grid2" style="width: 85% !important; padding-left: 12px !important; text-align: center">
+                              <span style="font-weight: bold; font-size: 4em !important" id="nama_dokter">-</span>
+                              <div style="border-top: 1px solid white"></div>
+                              <span style="font-weight: bold; font-size: 3em !important" id="nama_poli">-</span>
+                            </div>
+                          </div>
+                        </div><!-- /.widget-main -->
+                      </div><!-- /.widget-body -->
                     </div>
-                    
-
-                
+                </div>
               </div>
             </div><!-- /.row -->
           </div><!-- /.page-content -->
         </div>
       </div><!-- /.main-content -->
-
-      <div class="footerx">
-        <div class="footer-inner">
-          <!-- #section:basics/footer -->
-          <!-- <div class="footer-content">
-            <div style="width:90%;float:left;">
-              <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:3px;"> Bagi pasien yang belum terdaftar pada Display Antrian Instalasi Farmasi diharapkan untuk menunggu antrian diluar agar tidak terjadi kerumunuan di ruang tunggu apotik. | <?php echo COMP_MOTTO?> </marquee>
-            </div>
-            <div style="width:10%;float:left;margin-top: 5px">
-              <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
-              <p style="margin:0;font-size:16px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
-            </div>
-          </div> -->
-
-          <!-- /section:basics/footer -->
-        </div>
-      </div>
-
-      <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-      </a>
     </div><!-- /.main-container -->
-
- 
   </body>
 </html>

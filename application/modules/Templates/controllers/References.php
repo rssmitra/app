@@ -903,7 +903,7 @@ class References extends MX_Controller {
 	{
 		$query = "select  id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir, jenis_kelamin
 					from ri_bayi_lahir
-					where (flag_lahir = 0 or flag_lahir is null) and nama_bayi <> '' and YEAR(tgl_jam_lahir)= ".date('Y')." ";
+					where (flag_lahir = 0 or flag_lahir is null) and nama_bayi <> '' and YEAR(tgl_jam_lahir)= ".date('Y')." group by id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir, jenis_kelamin ";
         $exc = $this->db->query($query);
         echo json_encode($exc->result());
 	}
@@ -1715,16 +1715,18 @@ class References extends MX_Controller {
 		// get last brg by kode_generik
 		if( $_GET['flag'] == 'medis' ){
 			$this->db->where('kode_generik', $kode);
-			$this->db->order_by('id_obat', 'DESC');
+			$this->db->order_by('kode_brg', 'DESC');
 		}else{
 			$this->db->order_by('id_mt_barang_nm', 'DESC');
 			$this->db->where('kode_brg LIKE '."'%".$kode."%'".' ');
 		}
 
 		$query = $this->db->get( $table )->row();
-		
+		// echo "<pre>";print_r($this->db->last_query());die;
+
 		$count = substr($query->kode_brg,6);
 		$lastnum = $count + 1;
+		// echo "<pre>";print_r($lastnum);die;
 		$nextnum = ( strlen($lastnum) == 1 ) ?  "0".$lastnum : $lastnum ;
 		$kode_brg = $kode.$nextnum;
 
