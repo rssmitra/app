@@ -171,8 +171,8 @@ class Display_antrian_model extends CI_Model {
 		$this->db->where( 'CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d') );
 		$this->db->where('pl_tc_poli.kode_bagian='."'".$this->session->userdata('kode_bagian')."'".'');
 		$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
-		$this->db->where('tgl_keluar_poli IS NULL');
-		$this->db->where('status_periksa IS NULL');
+		// $this->db->where('tgl_keluar_poli IS NULL');
+		// $this->db->where('status_periksa IS NULL');
 		$this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
 		$this->db->where('pl_tc_poli.antrian_aktif = 1');
 		$this->db->order_by('no_antrian', 'ASC');
@@ -180,14 +180,15 @@ class Display_antrian_model extends CI_Model {
 		$query = $this->db->get();
 		$result = $query->row();
 		
-		$praktek = ($this->session->userdata('sess_nama_dokter')) ? 'DOKTER SUDAH DATANG' : 'BELUM MULAI PRAKTEK';
+		$praktek = ($this->session->userdata('sess_nama_dokter')) ? 'DOKTER DATANG' : 'BELUM MULAI';
 
 		$response = array(
 			'no_mr' => isset($result->no_mr) ? $result->no_mr : '',
 			'no_antrian' => isset($result->no_antrian) ? $result->no_antrian : '',
 			'nama_pasien' => isset($result->nama_pasien) ? $result->nama_pasien : $praktek,
 			'poli' => ($this->session->userdata('nama_bagian')) ? $this->session->userdata('nama_bagian') : 'Tutup',
-			'dokter' => ($this->session->userdata('sess_nama_dokter')) ? $this->session->userdata('sess_nama_dokter') : 'Belum Datang',
+			'dokter' => ($this->session->userdata('sess_nama_dokter')) ? $this->session->userdata('sess_nama_dokter') : '-',
+			'kode_dokter' => ($this->session->userdata('sess_kode_dokter')) ? $this->session->userdata('sess_kode_dokter') : '0',
 		);
 		return $response;
 		

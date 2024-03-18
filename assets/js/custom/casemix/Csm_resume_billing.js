@@ -282,14 +282,17 @@ $(document).ready(function() {
           var field = $('input[name=search_by_field]:checked').val();
           var from_tgl_reg = $('#from_tgl_reg').val();
           var to_tgl_reg = $('#to_tgl_reg').val();
-          window.open('Templates/export_data/exportContent?frmdt='+from_tgl_reg+'&todt='+to_tgl_reg+'&field='+field+'&type=pdf&mod=Csm_resume_billing&kode_bagian='+data.kode_bagian+'','_blank');     
+          var kode_bagian = $('#kode_bagian').val();
+          window.open('Templates/export_data/exportContent?frmdt='+from_tgl_reg+'&todt='+to_tgl_reg+'&field='+field+'&type=pdf&mod=Csm_resume_billing&kode_bagian='+kode_bagian+'','_blank');     
       });
+
       $('#btn_export_excel').click(function (e) {
           e.preventDefault();
           var field = $('input[name=search_by_field]:checked').val();
           var from_tgl_reg = $('#from_tgl_reg').val();
           var to_tgl_reg = $('#to_tgl_reg').val();
-          window.open('Templates/export_data/exportContent?frmdt='+from_tgl_reg+'&todt='+to_tgl_reg+'&field='+field+'&type=excel&mod=Csm_resume_billing&kode_bagian='+data.kode_bagian+'','_blank');     
+          var kode_bagian = $('#kode_bagian').val();
+          window.open('Templates/export_data/exportContent?frmdt='+from_tgl_reg+'&todt='+to_tgl_reg+'&field='+field+'&type=excel&mod=Csm_resume_billing&kode_bagian='+kode_bagian+'','_blank');     
       });
 
 

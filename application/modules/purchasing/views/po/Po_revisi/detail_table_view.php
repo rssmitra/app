@@ -62,7 +62,9 @@
           $no=0; 
           foreach($po_data as $key_dt=>$row_dt) : $no++; 
             $total_harga = ($row_dt[0]->harga_satuan - $row_dt[0]->discount_rp) * $row_dt[0]->jumlah_besar_acc;
+            $total_harga_add_tax = $total_harga * 1.11;
             $arr_total[] = $total_harga;
+            $arr_total_tax[] = $total_harga_add_tax;
         ?>
             <tr>
               <td style="text-align:center; border: 1px solid #cecaca; border-collapse: collapse"><?php echo $no?></td>
@@ -78,8 +80,11 @@
             <?php 
               endforeach;
               $total_all = array_sum($arr_total);
+              $total_all_tax = array_sum($arr_total_tax);
               $ppn = $po->ppn;
               $total_after_ppn = $total_all + $ppn;
+
+              // echo $total_all;
             ?>
 
             <tr>
