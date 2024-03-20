@@ -1,4 +1,4 @@
-<div style="text-align: center;"><b>HASIL PEMERIKSAAN DIAGNOSTIK TRANSTORAKAL</b></div>
+<div style="text-align: center;"><b>HASIL PEMERIKSAAN ECHOCARDIOGRAFI TRANSTHORACAL</b></div>
 <br>
 <b>Diagnosis&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : &nbsp;</b>
 <br>
