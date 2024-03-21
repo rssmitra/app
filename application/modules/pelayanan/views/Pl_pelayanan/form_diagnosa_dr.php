@@ -43,6 +43,13 @@
         }else{
             $('#form_e_resep').html('');
         }
+
+        if(this.checked) {
+            $('#form_input_resep').show();
+        }else{
+            $('#form_input_resep').hide();
+        }
+        
     });
 
     $('#callPatient').click(function (e) {  
