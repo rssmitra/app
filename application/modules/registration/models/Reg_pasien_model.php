@@ -604,6 +604,8 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
 		$this->db->where("tgl_jam_keluar is null and tgl_keluar is null and tc_registrasi.no_mr='".$mr."'");
+		$this->db->where("YEAR(tgl_jam_masuk)", date('Y'));
+		$this->db->where("tc_registrasi.kode_perusahaan != 120");
 		$query = $this->db->get()->result();
 		$result = array();
 		if(!empty($query)){

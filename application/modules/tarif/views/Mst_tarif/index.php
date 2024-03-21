@@ -148,9 +148,9 @@ function find_data_reload(result=''){
 
 }
 
-function reload_data(){
+function reload_table(){
 
-  oTable.ajax.url('tarif/Mst_tarif/get_data').load();
+  oTable.ajax.url('tarif/Mst_tarif/get_data?unit='+$('#unit').val()+'&checked_nama_tarif=1&nama_tarif='+$('#nama_tarif').val()+'').load();
 
 }
 
@@ -162,7 +162,7 @@ function delete_data(myid){
         data: {ID:myid},
         dataType: "json",
         beforeSend: function() {
-          achtungShowLoader();  
+          // achtungShowLoader();  
         },
         uploadProgress: function(event, position, total, percentComplete) {
         },

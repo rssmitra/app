@@ -44,19 +44,21 @@ class Pl_pelayanan_vk_model extends CI_Model {
 			if( $_GET['keyword'] != '' ){
 				$this->db->like('ri_pasien_vk_v.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
-		}
-
-		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("CAST(ri_pasien_vk_v.tgl_masuk AS DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-        }else{
-			if(isset($_GET['flag']) AND $_GET['flag'] == 'history'){
-				$this->db->where("ri_pasien_vk_v.tgl_keluar is not null");
-				$this->db->where('DATEDIFF(Day, ri_pasien_vk_v.tgl_masuk, getdate()) <= 30');	
+		}else{
+			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+				$this->db->where("CAST(ri_pasien_vk_v.tgl_masuk AS DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
 			}else{
-				// $this->db->where("flag_vk", 0);
-				$this->db->where("ri_pasien_vk_v.tgl_keluar is null OR flag_vk=0");
+				if(isset($_GET['flag']) AND $_GET['flag'] == 'history'){
+					$this->db->where("ri_pasien_vk_v.tgl_keluar is not null");
+					$this->db->where('DATEDIFF(Day, ri_pasien_vk_v.tgl_masuk, getdate()) <= 30');	
+				}else{
+					// $this->db->where("flag_vk", 0);
+					$this->db->where("ri_pasien_vk_v.tgl_keluar is null OR flag_vk=0");
+				}
 			}
 		}
+
+		
 
 		$i = 0;
 	

@@ -52,7 +52,7 @@ class E_resep extends MX_Controller {
         $html = '<p style="font-size: 12px; font-weight: bold;"><u>Template Resep</u></p>';
         foreach ($list as $row_list) {
 
-            if($row_list->parent == 0){
+            if($row_list->parent == '0'){
                 if($row_list->tipe_obat == 'non_racikan'){
                     $config = array(
                         'nama_obat' => $row_list->nama_brg,
@@ -81,7 +81,7 @@ class E_resep extends MX_Controller {
                     $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($row_list->satuan_obat)) );
 
                     $format_signa_racikan .= '<div style="padding-left: 15px">';
-                    $format_signa_racikan .= $this->master->get_child_racikan_template($list, $row_list->id);
+                    $format_signa_racikan .= $this->master->get_child_racikan_template($list, $row_list->kode_brg);
                     $format_signa_racikan .= '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row_list->jml_pesan).' da in '.$unit_code.'</i> <br>';
                     $format_signa_racikan .= ''.$this->master->formatSigna($config);
                     $format_signa_racikan .= '</div>';
@@ -111,7 +111,7 @@ class E_resep extends MX_Controller {
             $no++;
             $row = array();
 
-            if($row_list->parent == 0){
+            if($row_list->parent == '0'){
                 if($row_list->tipe_obat == 'non_racikan'){
                     $config = array(
                         'nama_obat' => $row_list->nama_brg,
@@ -125,9 +125,7 @@ class E_resep extends MX_Controller {
                     $row[] = '<div class="left">'.$format_signa.'<br>Ket : <br>'.$row_list->keterangan.'</div>';
                     $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-warning" onclick="clickedit('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" class="btn btn-xs btn-danger" onclick="deleterow('.$row_list->id.')"><i class="fa fa-trash"></i></a></div>';
                 }else{
-    
                     $format_signa_racikan = '<span class="monotype_style">R/</span><br>';
-
                     $config = array(
                         'nama_obat' => $row_list->nama_brg,
                         'dd' => $row_list->jml_dosis,
@@ -140,7 +138,7 @@ class E_resep extends MX_Controller {
                     $unit_code = $this->master->get_string_data('reff_id', 'global_parameter', array('flag' => 'satuan_obat', 'value' => ucfirst($row_list->satuan_obat)) );
 
                     $format_signa_racikan .= '<div style="padding-left: 15px">';
-                    $format_signa_racikan .= $this->master->get_child_racikan($list, $row_list->id);
+                    $format_signa_racikan .= $this->master->get_child_racikan($list, $row_list->kode_brg);
                     $format_signa_racikan .= '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row_list->jml_pesan).' da in '.$unit_code.'</i> <br>';
                     $format_signa_racikan .= ''.$this->master->formatSigna($config);
                     $format_signa_racikan .= '</div>';
@@ -226,13 +224,14 @@ class E_resep extends MX_Controller {
             $this->db->trans_begin();           
             
             $table = ($_POST['id_template'] > 0)? 'fr_tc_template_resep_detail' : 'fr_tc_pesan_resep_detail';
-
             $id = ($this->input->post('id_pesan_resep_detail')) ? $this->input->post('id_pesan_resep_detail') : "0";
+            
+            // print_r($kode_brg);die;
 
             $dataexc = array(
                 'no_registrasi' => $this->regex->_genRegex($this->form_validation->set_value('no_registrasi'), 'RGXINT'),
                 'no_kunjungan' => $this->regex->_genRegex($this->form_validation->set_value('no_kunjungan'), 'RGXINT'),
-                'kode_brg' => $this->regex->_genRegex($this->form_validation->set_value('kode_brg'), 'RGXQSL'),
+                
                 'nama_brg' => $this->regex->_genRegex($this->form_validation->set_value('nama_brg'), 'RGXQSL'),
                 'jml_dosis' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis'), 'RGXQSL'),
                 'jml_dosis_obat' => $this->regex->_genRegex($this->form_validation->set_value('jml_dosis_obat'), 'RGXQSL'),
@@ -247,17 +246,22 @@ class E_resep extends MX_Controller {
             );
 
             if( $id == 0 ){
+                $kode_brg = ($_POST['submit'] == 'header' && $_POST['tipe_obat'] == 'racikan') ? 'R'.rand(0,999999) : $this->form_validation->set_value('kode_brg'); 
+                $dataexc['kode_brg'] = $this->regex->_genRegex($kode_brg, 'RGXQSL');
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
                 $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $this->db->insert($table, $dataexc);
                 $newId = $this->db->insert_id();
+                $kode_brg = $kode_brg;
             }else{
+                $dataexc['kode_brg'] = $this->regex->_genRegex($this->form_validation->set_value('kode_brg'), 'RGXQSL');
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $this->db->where('id', $id)->update($table, $dataexc);
                 $newId = $id;
+                $kode_brg = $dataexc['kode_brg'];
             }
 
 
@@ -269,7 +273,7 @@ class E_resep extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'newId' => $newId, 'type' => $table));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'newId' => $newId, 'type' => $table, 'parent' => $kode_brg));
             }
 
         
@@ -393,6 +397,84 @@ class E_resep extends MX_Controller {
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $this->db->where('id', $id)->update('fr_tc_template_resep', $dataexc);
                 $newId = $id;
+            }
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'newId' => $newId));
+            }
+
+        
+        }
+
+    }
+
+    public function proses_resepkan_template(){
+
+        // form validation
+        $this->form_validation->set_rules('ID', 'ID Template Resep', 'trim|required');
+        $this->form_validation->set_rules('no_kunjungan', 'Nomor Kunjungan', 'trim|required');
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+            
+            $id_template = ($this->input->post('ID')) ? $this->input->post('ID') : "0";
+            $no_kunjungan = ($this->input->post('no_kunjungan')) ? $this->input->post('no_kunjungan') : "0";
+
+            // get data template
+            $template = $this->E_resep->get_cart_detail_by_template_id($id_template);
+            // print_r($template);die;
+
+            foreach ($template as $key => $value) {
+                # code...
+                $dataexc = array(
+                    'no_registrasi' => $this->regex->_genRegex($value->no_registrasi, 'RGXINT'),
+                    'no_kunjungan' => $this->regex->_genRegex($value->no_kunjungan, 'RGXINT'),
+                    'kode_brg' => $this->regex->_genRegex($value->kode_brg, 'RGXQSL'),
+                    'nama_brg' => $this->regex->_genRegex($value->nama_brg, 'RGXQSL'),
+                    'jml_dosis' => $this->regex->_genRegex($value->jml_dosis, 'RGXQSL'),
+                    'jml_dosis_obat' => $this->regex->_genRegex($value->jml_dosis_obat, 'RGXQSL'),
+                    'satuan_obat' => $this->regex->_genRegex($value->satuan_obat, 'RGXQSL'),
+                    'aturan_pakai' => $this->regex->_genRegex($value->aturan_pakai, 'RGXQSL'),
+                    'no_mr' => $this->regex->_genRegex($value->no_mr, 'RGXQSL'),
+                    'keterangan' => $this->regex->_genRegex($value->keterangan, 'RGXQSL'),
+                    'jml_pesan' => $this->regex->_genRegex($value->jml_pesan, 'RGXQSL'),
+                    'jml_hari' => $this->regex->_genRegex($value->jml_hari, 'RGXQSL'),
+                    'tipe_obat' => $this->regex->_genRegex($value->tipe_obat, 'RGXQSL'),
+                );
+
+                $dataexc['id_template'] = '';
+                $dataexc['tipe_obat'] = '';
+                $dataexc['parent'] = '';
+    
+                if( $id == 0 ){
+                    $dataexc['created_date'] = date('Y-m-d H:i:s');
+                    $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                    $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                    $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                    $this->db->insert('fr_tc_pesan_resep_detail', $dataexc);
+                    $newId = $this->db->insert_id();
+                }else{
+                    $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                    $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                    $this->db->where('id', $id)->update('fr_tc_pesan_resep_detail', $dataexc);
+                    $newId = $id;
+                }
             }
 
             if ($this->db->trans_status() === FALSE)

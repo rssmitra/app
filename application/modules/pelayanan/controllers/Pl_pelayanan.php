@@ -208,6 +208,9 @@ class Pl_pelayanan extends MX_Controller {
         $data['kode_klas'] = $kode_klas;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
         
+        // txt_call_patient
+        $data['txt_call_patient'] = $this->master->get_txt_call_patient(['jk' => $data['value']->jen_kelamin, 'title' => $data['value']->title, 'nama_pasien' => $data['value']->nama_pasien, 'poli' => $data['value']->short_name]);
+
         // echo '<pre>'; print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
@@ -215,6 +218,30 @@ class Pl_pelayanan extends MX_Controller {
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
         $this->load->view('Pl_pelayanan/form_diagnosa_dr', $data);
+    }
+
+    public function form_lab($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        // get master lab
+        $master_tindakan = $this->Pl_pelayanan_pm->get_master_tindakan($_GET['kode_bag']);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_penunjang'] = $id;
+        $data['sess_kode_bag'] = ( $_GET['kode_bag'])? $_GET['kode_bag']:0;
+        $data['type']='PM';
+        $data['status_pulang'] = 0;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['pemeriksaan'] = $master_tindakan;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan/form_lab', $data);
     }
 
     public function input_hasil_pemeriksaan($id='', $no_kunjungan='')

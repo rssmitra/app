@@ -28,8 +28,10 @@
           $.getJSON("<?php echo site_url('display_antrian/reload_antrian_poli') ?>", '', function (response) {              
             console.log(response)
             var obj = response.result;
+            var nama_pasien = response.nama_pasien;
+            
             $('#no_antrian').text(obj.no_antrian);
-            $('#nama_pasien_antrian').text(obj.nama_pasien.toUpperCase());
+            $('#nama_pasien_antrian').text(nama_pasien.toUpperCase());
             $('#nama_poli').text(obj.poli.toUpperCase());
             $('#nama_dokter').text(obj.dokter.toUpperCase());
             if(obj.kode_dokter == '0'){

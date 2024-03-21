@@ -70,8 +70,8 @@ class Riwayat_kunjungan_poli extends MX_Controller {
                 $cetak = '';
             }
 
-            $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi, $row_list->no_kunjungan);
-            $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
+            // $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($row_list->no_registrasi, $row_list->no_kunjungan);
+            $flag_rollback ='unsubmit';
             // $rollback_btn = ($trans_kasir==true)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
             $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'".$flag_rollback."'".')">Rollback</a></li>';
             
@@ -100,14 +100,10 @@ class Riwayat_kunjungan_poli extends MX_Controller {
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_keluar);
 
-            if($trans_kasir==false){
-                $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas </label>';
+            if($row_list->status_batal==1){
+                $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
             }else{
-                if($row_list->status_batal==1){
-                    $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
-                }else{
-                    $status_periksa = ($row_list->tgl_keluar==NULL)?'<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>':'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
-                }
+                $status_periksa = ($row_list->tgl_keluar==NULL)?'<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>':'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
             }
 
             $row[] = '<div class="center">'.$status_periksa.'</div>';

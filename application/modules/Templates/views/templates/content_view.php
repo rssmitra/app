@@ -1135,11 +1135,11 @@
         // $('#pauseCount').removeAttr("disabled");
         // $('#resetCount').removeAttr("disabled");
         
-        $.post('ws/AntrianOnline/updateTask', {kodebooking : $('#kode_perjanjian').val(), taskId : $('#taskId').val() },
-          function(response){
-            console.log(response);
-          }
-        );
+        // $.post('ws/AntrianOnline/updateTask', {kodebooking : $('#kode_perjanjian').val(), taskId : $('#taskId').val() },
+        //   function(response){
+        //     console.log(response);
+        //   }
+        // );
 
         minutessetInterval = setInterval(function () {
             minutesCount += 1
