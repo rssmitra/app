@@ -250,7 +250,7 @@ class Po_penerbitan extends MX_Controller {
                             "id_tc_permohonan_det" => $row_id_tc_det,
                             "id_tc_permohonan" => $_POST['id_tc_permohonan'][$row_checked],
                             "kode_brg" => $row_checked,
-                            "jumlah_besar" => $_POST['jml_permohonan'][$row_checked],
+                            // "jumlah_besar" => $_POST['jml_permohonan'][$row_checked],
                             "jumlah_besar_acc" => $_POST['jml_permohonan'][$row_checked],
                             "content" => $_POST['rasio'][$row_checked],
                             "sipa" => $_POST['sipa'],
