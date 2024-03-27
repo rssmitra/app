@@ -108,11 +108,11 @@ class Mst_tarif_model extends CI_Model {
 
 	public function delete_by_id($id)
 	{
-		$this->db->where('mt_master_tarif_detail.kode_tarif', $id);
-		$this->db->delete('mt_master_tarif_detail');
-
-		$this->db->where_in(''.$this->table.'.kode_tarif', $id);
-		$this->db->delete($this->table);
+		// $this->db->where('mt_master_tarif_detail.kode_tarif', $id);
+		// $this->db->delete('mt_master_tarif_detail');
+		
+		$this->db->where('kode_tarif', $id)->update('mt_master_tarif_detail', ['is_active' => 'N']);
+		$this->db->where('kode_tarif', $id)->update('mt_master_tarif', ['is_active' => 'N']);
 
 		return true;
 	}

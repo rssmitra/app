@@ -102,7 +102,7 @@ class Riwayat_kunjungan_poli_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

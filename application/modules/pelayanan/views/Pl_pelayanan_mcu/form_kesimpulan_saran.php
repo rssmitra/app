@@ -297,7 +297,7 @@ $(document).ready(function() {
     <div class="form-group">
       <label class="control-label col-sm-2">Kesimpulan Kesan</label>
       <div class="col-md-10">
-      <textarea name="penjelasan_kesan" id="penjelasan_kesan" class="form-control" style="height:100px !important;"><?php echo isset($hasil->penjelasan_kesan)?$hasil->penjelasan_kesan:'';?>
+      <textarea name="penjelasan_kesan" id="penjelasan_kesan" class="form-control" style="height:100px !important;"><?php echo isset($hasil->penjelasan_kesan)? $this->master->br2nl($hasil->penjelasan_kesan):'';?>
         </textarea>
       </div>
     </div>

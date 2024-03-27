@@ -61,7 +61,7 @@ $('#btn_search_data').click(function (e) {
 
 function find_data_reload(result){
 
-  oTable.ajax.url( $('#dynamic-table').attr('base-url')+'/get_data?'+result.data).load();
+  oTable.ajax.url( $('#dynamic-table').attr('base-url')+'&'+result.data).load();
   $("html, body").animate({ scrollTop: "400px" });
 
 }

@@ -328,7 +328,7 @@ class Reg_klinik extends MX_Controller {
             $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim|required');
             $this->form_validation->set_rules('noKartuBpjs', 'No Kartu BPJS', 'trim|required|min_length[13]|max_length[13]', array('min_length' => 'No Kartu BPJS pasien salah (kurang dari 13 digit)', 'max_length' => 'No Kartu BPJS pasien salah (lebih dari 13 digit)'));
             $this->form_validation->set_rules('jeniskunjunganbpjs', 'Jenis Kunjungan', 'trim|required');
-            $this->form_validation->set_rules('norujukanbpjs', 'Nomor Rujukan', 'trim|required|min_length[18]', array('min_length' => 'Nomor Rujukan minimal 18 karakter' ));
+            $this->form_validation->set_rules('norujukanbpjs', 'Nomor Rujukan', 'trim|required|min_length[19]|max_length[19]', array('min_length' => 'Nomor Rujukan harus 19 karakter', 'max_length' => 'Nomor Rujukan harus 19 karakter' ));
         }
 
         // set message error

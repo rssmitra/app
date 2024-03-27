@@ -1,3 +1,5 @@
+
+
 <script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
 
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
@@ -41,22 +43,6 @@ $(document).ready(function(){
     // get data antrian pasien
     getDataAntrianPasien();
 
-    window.filter = function(element)
-    {
-      var value = $(element).val().toUpperCase();
-
-      $(".itemdiv").each(function() 
-      {
-        if ($(this).text().toUpperCase().search(value) > -1){
-          $(this).show();
-        }
-        else {
-          $(this).hide();
-        }
-      });
-    }
-
-
     /*focus on form input pasien*/
     $('#form_cari_pasien').focus();    
 
@@ -77,7 +63,7 @@ $(document).ready(function(){
             contentType: false,
             processData: false,            
             beforeSend: function() {
-              achtungShowLoader();   
+              // achtungShowLoader();   
               $(this).find("button[type='submit']").prop('disabled',true);
             },
             uploadProgress: function(event, position, total, percentComplete) {
@@ -94,11 +80,15 @@ $(document).ready(function(){
                   oTableCppt.ajax.reload();
                 }else{
                   achtungShowFadeIn();
-                  if(jsonResponse.next_id_pl_tc_poli != 0){
-                    getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
-                  }else{
-                    $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
-                  }
+                  
+                  // if(jsonResponse.next_id_pl_tc_poli != 0){
+                  //   getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
+                  // }else{
+                  //   $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
+                  // }
+
+                  $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah dilayani. </div>');
+
                   pauseStopWatch();
                   resetStopWatch();
                 }
@@ -110,7 +100,7 @@ $(document).ready(function(){
 
               }        
 
-              achtungHideLoader();        
+              // achtungHideLoader();        
               
               $(this).find("button[type='submit']").prop('disabled',false);
 
@@ -194,6 +184,11 @@ $(document).ready(function(){
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosaDr');
     });
 
+    $('#tabs_pm_lab').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveOrderLab');
+    });
+
     $('#tabs_cppt').click(function (e) {   
       e.preventDefault();  
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_cppt');
@@ -227,7 +222,7 @@ $(document).ready(function(){
 
     }); 
 
-    $('#tgl_kunjungan').change(function(){
+    $('#tgl_kunjungan').change(function(){ 
       getDataAntrianPasien();
     })
 
@@ -319,10 +314,12 @@ function find_pasien_by_keyword(keyword){
               if( obj.jen_kelamin == 'L' ){
             
                 $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/boy.jpg');
+                var txt_jk = 'bapak';
               
               }else{
                 
                 $('#avatar').attr('src', '<?php echo base_url()?>assets/avatars/girl.jpg');
+                var txt_jk = 'ibu';
 
               }
 
@@ -358,6 +355,12 @@ function find_pasien_by_keyword(keyword){
 
             $("#myTab li").removeClass("active");
             
+            // // txt_call_patient
+            // txt_call = ''; 
+            // txt_call += txt_jk +' '+ obj.nama_pasien; 
+            // txt_call += ' silahkan masuk ke '; 
+            // txt_call += '<?php echo ucwords($nama_bagian); ?>'; 
+            // $('#txt_call_patient').val(txt_call);
 
           }      
 
@@ -378,10 +381,8 @@ function getDataAntrianPasien(){
 
   // getTotalBilling();
   $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val()+'&tgl='+$('#tgl_kunjungan').val()+'', '', function (data) {   
-    $('#no_mr_selected option').remove();         
-    $('#antrian_pasien_tbl tbody').remove();         
-    $('#antrian_pasien_tbl_done tbody').remove();         
-    $('#antrian_pasien_tbl_cancel tbody').remove();         
+    $('#no_mr_selected option').remove();                
+    $('#list_antrian_existing tbody').remove();     
     $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
     var arr = [];
     var arr_cancel = [];
@@ -389,35 +390,19 @@ function getDataAntrianPasien(){
     $.each(data, function (i, o) {   
         var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
         var penjamin = (o.kode_perusahaan==120)? '<span style="background: #f998878c; padding: 3px">('+o.nama_perusahaan+')</span>' : '<span style="background: #6fb3e0; padding: 3px">(UMUM)</span>' ;
+        var txt_color_penjamin = (o.kode_perusahaan==120) ? 'background: #f998878c' : 'background: #6fb3e0' ;
 
         var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
-
-       no++;
+        
+        no++;
         if(o.status_batal == 1){
 
-          html_cancel = '';
-          html_cancel += '<div class="itemdiv commentdiv">';
-          html_cancel += '<div class="user">';
-          html_cancel += '<h2>'+no+'</h2>';
-          html_cancel += '</div>';
-          html_cancel += '<div class="body" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
-          html_cancel += '<div class="name">';
-          html_cancel += '<a href="#">'+o.no_mr+'</a>';
-          html_cancel += '</div>';
-          html_cancel += '<div class="time">';
-          html_cancel += '<i class="ace-icon fa fa-times-circle red"></i>';
-          html_cancel += '<span class="red">batal kunjungan</span>';
-          html_cancel += '</div>';
-          html_cancel += '<div class="text">';
-          html_cancel += '<span style="font-size: 14px">'+o.nama_pasien+'</span><br>';
-          html_cancel += '<span style="font-size:10px">'+penjamin+'</span>';
-          html_cancel += '</div>';
-          html_cancel += '</div>';
-          html_cancel += '</div>';
-          
-          // html_cancel += '<li class="list-group-item" style="color: red">';
-          // html_cancel += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">No. '+o.no_antrian+'<br>'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span><span class="label label-danger pull-right">Batal Berobat</span></span>';
-          // html_cancel += '</li>';
+            html_cancel = '';
+            html_cancel += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_cancel += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_cancel += '<td>'+o.nama_pasien+'</td>';
+            html_cancel += '<td align="center"><i class="fa fa-times-circle red bigger-120"></i></td>';
+            html_cancel += '</tr>';
           $(html_cancel).appendTo($('#list_antrian_existing'));
         
         }else{
@@ -425,24 +410,11 @@ function getDataAntrianPasien(){
           if(o.tgl_keluar_poli == null){
 
             html_existing = '';
-            html_existing += '<div class="itemdiv commentdiv" style="box-shadow: inset 0 0 10px #0000002e;">';
-            html_existing += '<div class="user">';
-            html_existing += '<h2 style="margin-top: 6px !important;">'+no+'</h2>';
-            html_existing += '</div>';
-            html_existing += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
-            html_existing += '<div class="name">';
-            html_existing += '<span style="font-size: 16px; font-weight: bold">'+o.no_mr+'</span>';
-            html_existing += '</div>';
-            html_existing += '<div class="text">';
-            html_existing += '<span style="font-size: 14px">'+o.nama_pasien+'</span><br>';
-            html_existing += '<span style="font-size:10px">'+penjamin+'</span>';
-            html_existing += '</div>';
-            html_existing += '</div>';
-            html_existing += '</div>';
-
-            // html_existing += '<li class="list-group-item">';
-            // html_existing += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span></span>';
-            // html_existing += '</li>';
+            html_existing += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_existing += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_existing += '<td>'+o.nama_pasien+'</td>';
+            html_existing += '<td align="center"><i class="ace-icon glyphicon glyphicon-time black bigger-120"></i></td>';
+            html_existing += '</tr>';
             $(html_existing).appendTo($('#list_antrian_existing'));
 
           }
@@ -450,32 +422,17 @@ function getDataAntrianPasien(){
           if(o.tgl_keluar_poli != null){
 
             html_done = '';
-            html_done += '<div class="itemdiv commentdiv" style="background: linear-gradient(45deg, yellowgreen, transparent)">';
-            html_done += '<div class="user" style="background: #a7d353">';
-            html_done += '<h2 style="margin-top: 6px !important;">'+no+'</h2>';
-            html_done += '</div>';
-            html_done += '<div class="body" style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
-            html_done += '<div class="name">';
-            html_done += '<span style="font-size: 16px; font-weight: bold">'+o.no_mr+'</span>';
-            html_done += '</div>';
-            html_done += '<div class="time">';
-            html_done += '<i class="ace-icon fa fa-check-circle green"></i>';
-            html_done += '<span class="green"> sudah diperiksa</span>';
-            html_done += '</div>';
-            html_done += '<div class="text">';
-            html_done += '<span style="font-size: 14px">'+o.nama_pasien+'</span><br>';
-            html_done += '<span style="font-size:10px">'+penjamin+'</span>';
-            html_done += '</div>';
-            html_done += '</div>';
-            html_done += '</div>';
-
-            // html_done += '<li class="list-group-item">';
-            // html_done += '<b>No. '+o.no_antrian+'</b><br><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - '+o.nama_pasien+'<br><span style="font-size: 9px">'+penjamin+'</span><span class="label label-success pull-right">Sudah Diperiksa</span></span>';
-            // html_done += '</li>';
+            html_done += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_done += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_done += '<td>'+o.nama_pasien+'</td>';
+            html_done += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
+            html_done += '</tr>';
             $(html_done).appendTo($('#list_antrian_existing'));
 
           }
         }
+
+        
         
         // sudah dilayani
         if (o.tgl_keluar_poli != null) {
@@ -486,6 +443,7 @@ function getDataAntrianPasien(){
           arr_cancel.push(o);
         }
     });   
+
     // total antrian
     var total_antrian = data.length;
     $('#total_antrian').text(total_antrian);
@@ -525,6 +483,28 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
     return false;
   }
 
+}
+
+function searchTable() {
+    var input, filter, found, table, tr, td, i, j;
+    input = document.getElementById("seacrh_ul_li");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("list_antrian_existing");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                found = true;
+            }
+        }
+        if (found) {
+            tr[i].style.display = "";
+            found = false;
+        } else {
+            tr[i].style.display = "none";
+        }
+    }
 }
 
 
@@ -588,7 +568,8 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
 
   .itemdiv > .body > .text {
     padding-left: 0px;
-    margin-top: 0px;
+    margin-top: 5px;
+    margin-left: 25px !important;
   }
   .user h2{
     text-align: center !important;
@@ -790,10 +771,32 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
           <div class="tabbable">  
             <ul class="nav nav-tabs" id="myTab">
               <li class="active">
-                <a data-toggle="tab" id="tabs_diagnosa_dr" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                <a data-toggle="tab" id="tabs_diagnosa_dr" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                   Form Resume Medis
                 </a>
               </li>
+              <!-- <li class="dropdown">
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                  Penunjang Medis
+                  <i class="ace-icon fa fa-caret-down bigger-110 width-auto"></i>
+                </a>
+
+                <ul class="dropdown-menu dropdown-info">
+                  <li>
+                    <a data-toggle="tab" id="tabs_pm_lab" href="#" data-id="<?php echo $no_kunjungan?>?type=PM&kode_bag=050101" data-url="pelayanan/Pl_pelayanan/form_lab/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
+                    Laboratorium
+                </a>
+                  </li>
+
+                  <li>
+                    <a data-toggle="tab" href="#dropdown2">Radiologi</a>
+                  </li>
+
+                  <li>
+                    <a data-toggle="tab" href="#dropdown3">Fisioterapi</a>
+                  </li>
+                </ul>
+              </li> -->
               <li>
                 <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                   Input CPPT
@@ -862,20 +865,19 @@ function cancel_visit_dr(no_registrasi, no_kunjungan){
                           <i class="ace-icon fa fa-calendar"></i>
                         </span>
                     </div>
-                    <br>
                     <span class="pull-left" style="padding-top: 10px"><b>Cari pasien :</b></span> <br>
-                    <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);">
+                    <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup='searchTable()'>
                   </div>
                   <br>
-                  
                   <div class="center">
                       <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
                       <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
                   </div>
-                  <br>
-
-                  <div class="comments ace-scroll"  style="position: relative;height: 650px;overflow: scroll;">
-                    <div id="list_antrian_existing"></div>
+                  <div class="comments ace-scroll"  >
+                    <!-- <div id="list_antrian_existing"></div> -->
+                    <table id="list_antrian_existing" class="table">
+                      <tbody></tbody>
+                    </table>
                   </div>
                   
                   <!-- <div id="div_antrian_existing">

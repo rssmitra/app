@@ -522,5 +522,39 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		
 	}
 
+	public function get_master_tindakan($kode_bagian){
+		$query = "select a.kode_tarif, c.nama_tarif as referensi, a.nama_tarif, 'UMUM' as flag
+		from pm_standar_hasil_v a 
+		left join mt_master_tarif b on b.kode_tarif = a.kode_tarif 
+		left join mt_master_tarif c on c.kode_tarif = b.referensi
+		where a.kode_bagian = '050101' and b.is_active = 'Y' and a.nama_tarif not like '%BPJS%'
+		group by a.kode_tarif, a.nama_tarif, c.nama_tarif
+		UNION ALL
+		select a.kode_tarif, c.nama_tarif as referensi, a.nama_tarif, 'BPJS' as flag
+		from pm_standar_hasil_v a 
+		left join mt_master_tarif b on b.kode_tarif = a.kode_tarif 
+		left join mt_master_tarif c on c.kode_tarif = b.referensi
+		where a.kode_bagian = '050101' and b.is_active = 'Y' and a.nama_tarif like '%BPJS%'
+		group by a.kode_tarif, a.nama_tarif, c.nama_tarif";
+
+        $dt = $this->db->query($query)->result();
+        $ref = [];
+		foreach ($dt as $key => $value) {
+			$string = $this->trimed($value->referensi);
+			$tingkatan[$value->flag][($string == '')?'LAINNYA' : str_replace(" ","_",$string)][] = $value->kode_tarif.'|'.$value->nama_tarif;
+        }
+		// echo "<pre>";print_r($tingkatan);die;
+
+		return $tingkatan;
+    }
+
+	function trimed($txt){ 
+		$txt = trim($txt); 
+		while( strpos($txt, '  ') ){ 
+		$txt = str_replace('  ', ' ', $txt); 
+		} 
+		return $txt; 
+	} 
+
 
 }

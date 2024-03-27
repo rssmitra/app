@@ -610,6 +610,8 @@ class Pl_pelayanan_vk extends MX_Controller {
                 'flag_lahir' => NULL,
             );
 
+            // echo "<pre>"; print_r($_POST);die;
+
             if($this->input->post('id_bayi')==0){
                 $this->Pl_pelayanan_vk->save('ri_bayi_lahir', $dataexc);
             }else{

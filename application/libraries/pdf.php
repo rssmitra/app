@@ -7,7 +7,7 @@ class PDF extends TCPDF {
         $pdf = new TCPDF('P', PDF_UNIT, array(297,210), true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
         
-        $pdf->SetAuthor('SWAP - Single Window Application');
+        $pdf->SetAuthor('SHS - Smart Hospital System 4.0');
         $pdf->SetTitle($title);
 
     // remove default header/footer

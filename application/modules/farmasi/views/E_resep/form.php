@@ -70,6 +70,7 @@
     $('#btn_submit_racikan, #btn_update_header_racikan').click(function (e) {  
       e.preventDefault();
       var formData = {
+            submit : $(this).val(),
             id_template : $('#id_template').val(),
             id_pesan_resep_detail : $('#id_pesan_resep_detail').val(),
             no_registrasi : $('#no_registrasi').val(),
@@ -102,7 +103,7 @@
                     $('#btn_submit_racikan').hide();
                     $('#btn_update_header_racikan').show();
                     $('#data_obat_div').show();
-                    $('#add_komposisi_obat').val(jsonResponse.newId);
+                    $('#add_komposisi_obat').val(jsonResponse.parent);
                     $('#this_template').html('');
 
                     // reset form
@@ -119,6 +120,7 @@
     $('#add_komposisi_obat').click(function (e) {  
         e.preventDefault();
         var formData = {
+            submit : $(this).val(),
             id_template : $('#id_template').val(),
             id_pesan_resep_detail : $('#id_pesan_resep_detail').val(),
             no_registrasi : $('#no_registrasi').val(),
@@ -198,6 +200,7 @@
 
         preventDefault();  
         var formData = {
+            submit : $('#btn_add_resep_obat').attr('value'),
             id_template : $('#id_template').val(),
             id_pesan_resep_detail : $('#id_pesan_resep_detail').val(),
             no_registrasi : $('#no_registrasi').val(),
@@ -589,6 +592,24 @@
         show_modal_small('farmasi/E_resep/form_template_resep/'+$('#kode_dokter_poli').val()+'?ID='+id+'', 'SIMPAN DATA OBAT SEBAGAI TEMPLATE RESEP');
     }
 
+    function click_resepkan_template(id){
+        preventDefault();
+        if(confirm('Apakah anda yakin akan meresepkan format ini?')){
+            $.ajax({
+                url: "farmasi/E_resep/proses_resepkan_template",
+                data: { ID : id, no_kunjungan : $('#no_kunjungan').val() },            
+                dataType: "json",
+                type: "POST",
+                success: function (response) {
+                    oTable2.ajax.url("farmasi/E_resep/get_template_resep/"+$('#kode_dokter_poli').val()+"").load();
+                }
+            });
+        }else{
+            return false;
+        }
+        
+    }
+
 </script>
 
 <div class="row" id="form_input_resep">
@@ -679,7 +700,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2">Jml Hari</label>
                         <div class="col-md-2">
-                            <input class="form-control" name="jml_hari" id="jml_hari" type="text" style="text-align:center;" value="<?php echo ($value->kode_perusahaan == 120) ? 30 : "" ?>" onchange="countJmlObat()"/>
+                            <input class="form-control" name="jml_hari" id="jml_hari" type="text" style="text-align:center;" value="<?php echo ($value->kode_perusahaan == 120) ? "" : "" ?>" onchange="countJmlObat()"/>
                         </div>
                         <label class="control-label col-sm-2">Jml Obat</label>
                         <div class="col-md-2">
@@ -701,7 +722,7 @@
                     <div class="form-group">
                         <div class="col-md-12 no-padding">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-xs btn-primary" id="btn_add_resep_obat" onclick="add_resep_obat()">Tambahkan Obat</a>
+                                <a href="#" class="btn btn-xs btn-primary" id="btn_add_resep_obat" onclick="add_resep_obat()" value="add_non_racikan">Tambahkan Obat</a>
                             </div>
                         </div>
                     </div>
@@ -811,7 +832,7 @@
                         
                         <div class="form-group">
                             <div class="col-md-10 no-padding">
-                                <button type="submit" id="add_komposisi_obat"  value="" name="submit" class="btn btn-xs btn-primary">
+                                <button type="submit" id="add_komposisi_obat"  value="racikan_detail" name="submit" class="btn btn-xs btn-primary">
                                 <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
                                 Tambahkan Obat
                             </button>

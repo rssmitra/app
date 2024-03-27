@@ -1214,11 +1214,11 @@ function find_pasien_by_keyword(keyword){
                   formatDt = formatDate(dt);
                   
                   if(y.total_ditangguhkan > 0){
-                    status = 'Total Ditangguhkan '+y.total_ditangguhkan+'';
+                    status = '<span style="font-weight:bold; color: red">Belum bayar '+y.total_ditangguhkan+'</span>';
                   }else{
                     status = '<label class="label label-danger">Belum dipulangkan</label>';
                   }
-                  $('<tr><td>'+y.no_kunjungan+'</td><td>'+y.no_registrasi+'</td><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td>'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
+                  $('<tr><td>'+y.no_kunjungan+'</td><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td>'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
 
               }); 
 
@@ -2112,7 +2112,6 @@ function copyNoRujukan(no_rujukan){
                                     <thead>
                                     <tr>
                                       <th>No Kunjungan</th>
-                                      <th>No Registrasi</th>
                                       <th>Tanggal</th>
                                       <th>Poli/Klinik</th>
                                       <th>Dokter</th>

@@ -81,13 +81,13 @@ function speak() {
   }
 }
 
-inputForm.onsubmit = function (event) {
-  event.preventDefault();
+// inputForm.onsubmit = function (event) {
+//   event.preventDefault();
 
-  speak();
+//   speak();
 
-  inputTxt.blur();
-};
+//   inputTxt.blur();
+// };
 
 pitch.onchange = function () {
   pitchValue.textContent = pitch.value;
