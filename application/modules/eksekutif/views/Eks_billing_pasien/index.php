@@ -149,7 +149,7 @@
             </div>
             
             <div class="form-group">
-                <label class="control-label col-md-2">Poli/Klinik</label>
+                <label class="control-label col-md-2">Poliklinik/Unit Asal</label>
                 <div class="col-md-4">
                 <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
                 </div>
@@ -251,6 +251,7 @@
             <th>No. MR</th>
             <th>Nama Pasien</th>
             <th>Penjamin</th>
+            <th>Billing Unit</th>
             <th>Poli/Klinik Asal</th>
             <th>Dokter</th>
             <th width="150px">Tanggal</th>
