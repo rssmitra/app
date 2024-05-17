@@ -63,6 +63,7 @@ class Eks_billing_pasien extends MX_Controller {
                 $row[] = $row_list[0]['nama_pasien'];
                 $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
                 $row[] = ucwords($row_list[0]['nama_bagian']);
+                $row[] = ucwords($row_list[0]['bagian_asal']);
                 $row[] = ($row_list[0]['nama_dokter'])?$row_list[0]['nama_dokter']:'-';
                 $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);
                 if( $row_list[0]['status_batal'] == 1 ){

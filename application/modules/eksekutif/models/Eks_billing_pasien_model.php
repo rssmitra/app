@@ -5,7 +5,7 @@ class Eks_billing_pasien_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai';
+	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, i.nama_bagian as bagian_asal, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai';
 	var $order = array('b.tgl_jam_masuk' => 'ASC');
 
 	public function __construct()
@@ -22,7 +22,8 @@ class Eks_billing_pasien_model extends CI_Model {
 		$this->db->join('tc_registrasi b','b.no_registrasi=a.no_registrasi','left');
 		$this->db->join('tc_kunjungan g','g.no_kunjungan=a.no_kunjungan','left');
 		$this->db->join('mt_master_pasien c','c.no_mr=b.no_mr','left');
-		$this->db->join('mt_bagian d','d.kode_bagian=g.kode_bagian_tujuan','left');
+		$this->db->join('mt_bagian d','d.kode_bagian=a.kode_bagian','left');
+		$this->db->join('mt_bagian i','i.kode_bagian=a.kode_bagian_asal','left');
 		$this->db->join('mt_perusahaan e','e.kode_perusahaan=b.kode_perusahaan','left');
 		$this->db->join('mt_nasabah f','f.kode_kelompok=b.kode_kelompok','left');
 		$this->db->join('mt_karyawan h','h.kode_dokter=CAST(g.kode_dokter as INT)','left');
@@ -34,9 +35,9 @@ class Eks_billing_pasien_model extends CI_Model {
 		}
 
 		if( $_GET['pelayanan']=='RJ' ){
-			$this->db->where("SUBSTRING(b.kode_bagian_masuk, 0, 3) != '03'");
+			$this->db->where("SUBSTRING(a.kode_bagian_asal, 0, 3) != '03'");
 		}else if($_GET['pelayanan']=='RI') {
-			$this->db->where("SUBSTRING(b.kode_bagian_masuk, 0, 3) = '03'");
+			$this->db->where("SUBSTRING(a.kode_bagian_asal, 0, 3) = '03'");
 		}
 
 		if($_GET['flag']=='bpjs'){
@@ -62,12 +63,13 @@ class Eks_billing_pasien_model extends CI_Model {
 		}
 
 		if( $_GET['poliklinik'] != ''){
-			$this->db->where('g.kode_bagian_tujuan', $_GET['poliklinik']);
+			$this->db->where('a.kode_bagian_asal', $_GET['poliklinik']);
 		}
 
-		if( $_GET['select_dokter'] != ''){
+		if( $_GET['select_dokter'] > 0){
 			$this->db->where('g.kode_dokter', $_GET['select_dokter']);
 		}
+
 
 	}
 
@@ -129,6 +131,7 @@ class Eks_billing_pasien_model extends CI_Model {
 				'kode_bagian_masuk' => $value->kode_bagian_masuk,
 				'nama_pasien' => $value->nama_pasien,
 				'nama_bagian' => $value->nama_bagian,
+				'bagian_asal' => $value->bagian_asal,
 				'nama_perusahaan' => ($value->nama_perusahaan != NULL) ? $value->nama_perusahaan : $value->nama_kelompok,
 				'total' => $status_lunas,
 				'total_billing' => $total,
