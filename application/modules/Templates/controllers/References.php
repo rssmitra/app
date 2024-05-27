@@ -653,7 +653,7 @@ class References extends MX_Controller {
 					left join mt_klas b on b.kode_klas=a.kode_klas
 					left join mt_bagian c on c.kode_bagian=a.kode_bagian
 					left join mt_master_tarif_detail d on d.kode_klas=a.kode_klas
-					where a.kode_klas=".$kode_klas."
+					where a.kode_klas=".$kode_klas." and a.flag_cad = 0
 					group by a.kode_bagian, a.kode_klas, c.nama_bagian,b.nama_klas";
         $exc = $this->db->query($query);
         echo json_encode($exc->result());
@@ -1256,7 +1256,7 @@ class References extends MX_Controller {
 
 		$arrResult = [];
 		foreach ($exc as $key => $value) {
-			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.') (IDR '.number_format($value->total).')';
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' : '.$value->kode_tindakan.' : IDR '.number_format($value->total).')';
 		}
 		echo json_encode($arrResult);
 		
@@ -1305,6 +1305,7 @@ class References extends MX_Controller {
 		$tarifAktif = $this->tarif->getTarifAktif(trim($_GET['kode']), $_GET['klas']);
 		$exc = $tarifAktif->result();
 		$html = '';
+		
 		if(isset($exc[0]->kode_tarif)) {
 			// echo '<pre>'; print_r($tarifAktif->result());die;
 			$html .= '';
@@ -2109,6 +2110,8 @@ class References extends MX_Controller {
 		$this->db->where('a.kode_brg', $_GET['kode_brg']);
 		$this->db->where('a.kode_bagian', $_GET['from_unit']);
 		$result = $this->db->get()->row();
+
+		// echo $this->db->last_query();
 		$html = '';
 		$stok_akhir = ($result->jml_sat_kcl <= 0) ? '<span style="color: red; font-weight: bold">'.$result->jml_sat_kcl.'</span>' : '<span style="color: green; font-weight: bold">'.$result->jml_sat_kcl.'</span>' ;
 		$warning_stok = ($result->jml_sat_kcl <= 0) ? '| <span style="color: red;" class="blink_me"><b>Stok habis !</b></span>' : '' ;
@@ -2472,10 +2475,17 @@ class References extends MX_Controller {
 				}else{
 					$status_tracer = 'Y';
 				}
+				// update registrasi
 				$this->db->update('tc_registrasi', array('print_tracer' => $status_tracer, 'konfirm_fp' => 1, 'status_checkin' => 1, 'tgl_jam_masuk' => date('Y-m-d H:i:s'), 'checkin_date' => date('Y-m-d H:i:s')), array('no_registrasi' => $response['data']->no_registrasi) );
+				
 				$dt_reg = $detail_data['registrasi'];
 				$dt_antrian = $detail_data['no_antrian'];
 				$dt_jadwal = $detail_data['jadwal'];
+
+				// update kunjungan
+				$this->db->update('tc_kunjungan', array('tgl_masuk' => date('Y-m-d H:i:s')), array('no_kunjungan' => $dt_reg->no_kunjungan) );
+				// update pl_tc_poli
+				$this->db->update('pl_tc_poli', array('tgl_jam_poli' => date('Y-m-d H:i:s')), array('no_kunjungan' => $dt_reg->no_kunjungan) );
 
 				$jam_praktek_mulai = ($dt_jadwal->jd_jam_mulai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai) : '08:00';
 				$jam_praktek_selesai = ($dt_jadwal->jd_jam_selesai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_selesai) : '10:00';

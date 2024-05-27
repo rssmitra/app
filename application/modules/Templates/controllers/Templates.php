@@ -612,12 +612,13 @@ class Templates extends MX_Controller {
 
     public function setGlobalProfileCppt($data, $flag='', $pm=''){
         $html = '';
-
+        // echo "<pre>"; print_r($data);die;
         $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
         if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
             $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
         }
-        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+        // $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+        $nama_dr = $data->nama_ppa;
 
         $html .= '<table border="1" style="padding: 10px"><tr><td style="width: 50%">';
         $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:30px">
@@ -1683,17 +1684,16 @@ class Templates extends MX_Controller {
         return $html;
     }
 
-    public function setGlobalFooterRm($data){
+    public function setGlobalFooterCppt($data){
         
         $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
-        if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
-            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
-        }
+        $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $data->kode_dr))->row();
+        
         // echo '<pre>'; print_r($data);die;
         
-        $ttd = (!empty($data->reg_data->ttd))?$data->reg_data->ttd:$get_dokter->ttd;
-        $stamp_dr = (!empty($data->reg_data->stamp))?$data->reg_data->stamp:$get_dokter->stamp;
-        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+        $ttd = $get_dokter->ttd;
+        $stamp_dr = $get_dokter->stamp;
+        $nama_dr = $data->nama_ppa;
 
         $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
         $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
@@ -1714,6 +1714,38 @@ class Templates extends MX_Controller {
                 </table>';
         return $html;
     }
+
+    public function setGlobalFooterRm($data){
+        
+      $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
+      if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
+          $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
+      }
+      // echo '<pre>'; print_r($data);die;
+      
+      $ttd = (!empty($data->reg_data->ttd))?$data->reg_data->ttd:$get_dokter->ttd;
+      $stamp_dr = (!empty($data->reg_data->stamp))?$data->reg_data->stamp:$get_dokter->stamp;
+      $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+
+      $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
+      $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+      
+      $html = '';
+      $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
+                  <tr> 
+                      <td width="70%"></td>
+                      <td align="center" width="30%">
+                      <br><br>
+                      Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
+                      '.COMP_FULL.'
+                      <br><br>
+                      '.$ttd.'
+                      '.$stamp.'
+                      </td>   
+                  </tr>
+              </table>';
+      return $html;
+  }
 
     public function setGlobalFooterBillingRI($data){
         $html = '';
