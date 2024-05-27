@@ -170,6 +170,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		}else{
 			$this->db->where(''.$this->table.'.kode_ri',$id);
 			$query = $this->db->get();
+			// print_r($this->db->last_query());die;
 			return $query->row();
 		}
 		

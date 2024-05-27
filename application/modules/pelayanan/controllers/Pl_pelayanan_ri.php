@@ -87,7 +87,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         if($cek_trans==0){
             $status_pasien = '<span style="color: blue; font-weight: bold; font-size: 14px">SUDAH LUNAS </span>';
         }else{
-            $status_pasien = ($data['value']->status_pulang== 0 || NULL)?($data['value']->pasien_titipan== 1)?'<span style="color: darkgoldenrod; font-weight: bold; font-size: 14px">PASIEN TITIPAN</span>':'<span style="color: red; font-weight: bold; font-size: 14px">MASIH DIRAWAT</span>':'<span style="color: green; font-weight: bold; font-size: 14px">SUDAH PULANG</span>';
+            $status_pasien = ($data['value']->status_pulang== 0 || NULL)?($data['value']->pasien_titipan== 1)?'<span style="color: darkgoldenrod; font-weight: bold; font-size: 10px">PASIEN TITIPAN '.strtoupper($data['value']->klas_titip).' </span>':'<span style="color: red; font-weight: bold; font-size: 14px">MASIH DIRAWAT</span>':'<span style="color: green; font-weight: bold; font-size: 14px">SUDAH PULANG</span>';
         }
 
         $data['status_rawat'] = $status_pasien;
@@ -95,7 +95,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         /*variable*/
         $data['no_mr'] = $data['value']->no_mr;
         $data['id'] = $kode_ri;
-        $data['kode_klas'] = $data['value']->kelas_pas;
+        $data['kode_klas'] = ($data['value']->pasien_titipan == 1) ? $data['value']->kelas_titipan : $data['value']->kelas_pas;
         $data['klas_titipan'] = ($data['value']->kelas_titipan!=NULL)?$data['value']->kelas_titipan:0;
         $data['kode_profit'] = 2000;
         $data['no_kunjungan'] = $no_kunjungan;
@@ -1189,13 +1189,16 @@ class Pl_pelayanan_ri extends MX_Controller {
         $this->load->module('Templates/Templates.php');
         $temp = new Templates;
         $data = json_decode($this->Csm_billing_pasien->getDetailData($params->no_registrasi));
+        $data->nama_ppa = $params->cppt_nama_ppa;
+        $data->kode_dr = $params->cppt_kode_dr;
+        // echo '<pre>'; print_r($data);die;
         $html = '<div class="row">';
         $html .= $temp->setGlobalProfileCppt($data);
         $html .= '<table border="1" style="padding: 10px; height: 100%">';
         $html .= '<tr>';
         $html .= '<td>';
         $html .= $params->catatan_pengkajian;
-        $html .= $temp->setGlobalFooterRm($data);
+        $html .= $temp->setGlobalFooterCppt($data);
         $html .= '</td>';
         $html .= '</tr>';
         $html .= '</table>';

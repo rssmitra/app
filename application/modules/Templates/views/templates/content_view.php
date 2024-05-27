@@ -1126,6 +1126,21 @@
             }
         });
       }
+
+      function reprintBuktiPendaftaran(no_registrasi, no_antrian, printerName){
+        preventDefault();
+        $.ajax({
+            url: "registration/Reg_klinik/print_bukti_pendaftaran/"+no_registrasi+"",
+            dataType: "json",
+            data: {printer : printerName, no_antrian : no_antrian},
+            type: "POST",
+            success: function (response) {
+              // no action
+              console.log(response);
+            }
+        });
+      }
+      
       function duplicateFieldValue(fieldId, valueId){
         $('#'+valueId+'').val($('#'+fieldId+'').val());
       }

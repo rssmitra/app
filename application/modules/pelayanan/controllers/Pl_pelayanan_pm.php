@@ -98,6 +98,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // echo '<pre>'; print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan/form_tindakan', $data);
     }
@@ -891,8 +892,270 @@ class Pl_pelayanan_pm extends MX_Controller {
         }
     }
 
-    
+    public function get_order_penunjang()
+    {
+        /*get data from model*/
+        $list = $this->Pl_pelayanan_pm->get_datatables_order_pm();
+        // print_r($this->db->last_query());die;
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
 
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<a href="#" onclick="getDetailTarifByKodeTarifAndKlas('.$row_list->kode_tarif.', '.$row_list->kode_klas.')">'.$row_list->nama_tarif.'</a>';
+            if($row_list->kode_bagian == '050301'){
+                $row[] = $row_list->diagnosa;
+            }
+            $row[] = $row_list->keterangan.' | '.$row_list->xray_foto.' | '.$row_list->kontra_indikasi;
+            $row[] = $this->tanggal->formatDateTime($row_list->created_date);
+            $row[] = '<div class="center"><a href="#" onclick="delete_transaksi('.$row_list->order_id.')"><i class="fa fa-trash red bigger-120" title="hapus"></i></a></div>';
+           
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function get_order_penunjang_view()
+    {
+        /*get data from model*/
+        $list = $this->Pl_pelayanan_pm->get_datatables_order_pm();
+        // print_r($this->db->last_query());die;
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            // diagnosa
+            $keterangan = ($row_list->keterangan != '') ? '<br><b>keterangan :</b> <br>'. $row_list->keterangan.'<br>' : '';
+            $diagnosa = ($row_list->diagnosa != '') ? '<br><b>Diagnosa :</b> <br>'. $row_list->diagnosa.'' : '';
+            $xray_foto = ($row_list->xray_foto != '') ? ' | xray_foto : '. $row_list->xray_foto.'' : '';
+            $kontra_indikasi = ($row_list->kontra_indikasi != '') ? ' | kontra_indikasi : '. $row_list->kontra_indikasi.'' : '';
+
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<a href="#" onclick="getDetailTarifByKodeTarifAndKlas('.$row_list->kode_tarif.', '.$row_list->kode_klas.')"><b>'.$row_list->nama_tarif.'</b></a>'.$diagnosa.''.$keterangan.' '.$xray_foto.' '.$kontra_indikasi.'';
+           
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function process_order_penunjang(){
+
+        // print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'Pemeriksaan', 'trim|required');      
+        $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim');      
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();    
+            
+            // simpan penunjang medis
+            $title = 'Pesan Penunjang Medis';
+            $no_mr = $this->regex->_genRegex($_POST['noMrHidden'],'RGXQSL');
+            $kode_perusahaan = $this->regex->_genRegex($_POST['kode_perusahaan'],'RGXINT');
+            $kode_kelompok =  $this->regex->_genRegex($_POST['kode_kelompok'],'RGXINT');
+            $kode_dokter = $this->regex->_genRegex(0,'RGXINT');
+            $no_registrasi = $this->input->post('no_registrasi');
+            $kode_bagian_asal = $_POST['kode_bagian_asal'];
+            // cek existing
+            $existing_pm = $this->db->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi, 'kode_bagian_tujuan' => $_POST['kode_bagian_pm'], 'kode_bagian_asal' => $kode_bagian_asal) );
+
+            // print_r($this->db->last_query());die;
+
+            if($existing_pm->num_rows() == 0){
+                $kode_bagian_tujuan = $this->regex->_genRegex($_POST['kode_bagian_pm'],'RGXQSL');
+                $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title, $no_registrasi, $no_mr, $kode_dokter, $kode_bagian_tujuan, $kode_bagian_asal);
+                
+                /*insert penunjang medis*/
+                $kode_penunjang = $this->master->get_max_number('pm_tc_penunjang', 'kode_penunjang');
+                $no_antrian = $this->master->get_no_antrian_pm($this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'));
+                $klas = $this->input->post('kode_klas');
+                $data_pm_tc_penunjang = array(
+                    'kode_penunjang' => $kode_penunjang,
+                    'tgl_daftar' => date('Y-m-d H:i:s'),
+                    'kode_bagian' => $this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'),
+                    'no_kunjungan' => $no_kunjungan,
+                    'no_antrian' => $no_antrian,
+                    'kode_klas' => $klas,
+                    'petugas_input' => $this->session->userdata('user')->user_id,
+                );
+                /*save penunjang medis*/
+                $newIdPM = $this->Pl_pelayanan->save('pm_tc_penunjang', $data_pm_tc_penunjang);
+                $this->db->trans_commit();
+            }else{
+                $row = $existing_pm->row();
+                $newIdPM = $this->master->get_string_data('id_pm_tc_penunjang', 'pm_tc_penunjang', array('no_kunjungan' => $row->no_kunjungan));
+                $no_kunjungan = $row->no_kunjungan;
+            }
+            
+            $dataexc = array(
+                'kode_tarif' => $this->regex->_genRegex($this->input->post('pl_kode_tindakan_hidden'),'RGXINT'), 
+                'nama_tarif' => $this->regex->_genRegex($this->input->post('pl_nama_tindakan'),'RGXQSL'), 
+                'keterangan' => $this->regex->_genRegex($this->input->post('pl_keterangan_tindakan'),'RGXQSL'), 
+                'id_pm_tc_penunjang' => $this->regex->_genRegex($newIdPM,'RGXINT'), 
+                'created_date' => date('Y-m-d H:i:s'), 
+                'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'), 
+            );
+
+            if($kode_bagian_tujuan = '050301'){
+                $dataexc['diagnosa'] = $this->regex->_genRegex($this->input->post('pl_diagnosa'),'RGXQSL');
+                $dataexc['xray_foto'] = $this->regex->_genRegex($this->input->post('xray_foto'),'RGXQSL');
+                $dataexc['kontra_indikasi'] = $this->regex->_genRegex($this->input->post('kontra_indikasi'),'RGXQSL');
+            }
+            
+            // print_r($dataexc);die;
+            $this->Pl_pelayanan->save('pm_tc_penunjang_order_detail', $dataexc);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_kunjungan' => $no_kunjungan));
+            }
+        
+        }
+
+    }
+
+    public function process_order_lab(){
+
+        // print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('selected_pemeriksaan[]', 'Item Pemeriksaan', 'trim|required', array('required' => 'Silahkan pilih pemeriksaan laboratorium'));         
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();    
+            
+            // simpan penunjang medis
+            $title = 'Pesan Laboratorium';
+            $no_mr = $this->regex->_genRegex($_POST['noMrHidden'],'RGXQSL');
+            $kode_perusahaan = $this->regex->_genRegex($_POST['kode_perusahaan'],'RGXINT');
+            $kode_kelompok =  $this->regex->_genRegex($_POST['kode_kelompok'],'RGXINT');
+            $kode_dokter = $this->regex->_genRegex(0,'RGXINT');
+            $no_registrasi = $this->input->post('no_registrasi');
+            $kode_bagian_asal = $_POST['kode_bagian_asal'];
+            // cek existing
+            $existing_pm = $this->db->get_where('tc_kunjungan', array('no_registrasi' => $no_registrasi, 'kode_bagian_tujuan' => $_POST['kode_bagian_pm'], 'kode_bagian_asal' => $kode_bagian_asal) );
+
+            // print_r($this->db->last_query());die;
+
+            if($existing_pm->num_rows() == 0){
+                $kode_bagian_tujuan = $this->regex->_genRegex($_POST['kode_bagian_pm'],'RGXQSL');
+                $no_kunjungan = $this->daftar_pasien->daftar_kunjungan($title, $no_registrasi, $no_mr, $kode_dokter, $kode_bagian_tujuan, $kode_bagian_asal);
+                
+                /*insert penunjang medis*/
+                $kode_penunjang = $this->master->get_max_number('pm_tc_penunjang', 'kode_penunjang');
+                $no_antrian = $this->master->get_no_antrian_pm($this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'));
+                $klas = $this->input->post('kode_klas');
+                $data_pm_tc_penunjang = array(
+                    'kode_penunjang' => $kode_penunjang,
+                    'tgl_daftar' => date('Y-m-d H:i:s'),
+                    'kode_bagian' => $this->regex->_genRegex($kode_bagian_tujuan,'RGXQSL'),
+                    'dr_pengirim' => $this->regex->_genRegex($_POST['dokter_pemeriksa'],'RGXQSL'),
+                    'no_kunjungan' => $no_kunjungan,
+                    'no_antrian' => $no_antrian,
+                    'kode_klas' => $klas,
+                    'petugas_input' => $this->session->userdata('user')->user_id,
+                );
+                /*save penunjang medis*/
+                $newIdPM = $this->Pl_pelayanan->save('pm_tc_penunjang', $data_pm_tc_penunjang);
+                $this->db->trans_commit();
+            }else{
+                $row = $existing_pm->row();
+                $newIdPM = $this->master->get_string_data('id_pm_tc_penunjang', 'pm_tc_penunjang', array('no_kunjungan' => $row->no_kunjungan));
+
+                $data_pm_tc_penunjang = array(
+                    'dr_pengirim' => $this->regex->_genRegex($_POST['dokter_pemeriksa'],'RGXQSL'),
+                    'tgl_daftar' => date('Y-m-d H:i:s'),
+                );
+                /*save penunjang medis*/
+                $this->Pl_pelayanan->update('pm_tc_penunjang', $data_pm_tc_penunjang, ['id_pm_tc_penunjang' => $newIdPM]);
+                $this->db->trans_commit();
+
+                $no_kunjungan = $row->no_kunjungan;
+            }
+            
+            
+            // delete last order and then insert back
+            $this->db->delete('pm_tc_penunjang_order_detail', ['id_pm_tc_penunjang' => $newIdPM]);
+            foreach ($_POST['selected_pemeriksaan'] as $key => $value) {
+                $dataexc[] = array(
+                    'kode_tarif' => $this->regex->_genRegex($key,'RGXINT'), 
+                    'nama_tarif' => $this->regex->_genRegex($value,'RGXQSL'), 
+                    'id_pm_tc_penunjang' => $this->regex->_genRegex($newIdPM,'RGXINT'), 
+                    'created_date' => date('Y-m-d H:i:s'), 
+                    'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'), 
+                );
+            }
+            // print_r($dataexc);die;
+            $this->db->insert_batch('pm_tc_penunjang_order_detail', $dataexc);
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_kunjungan' => $no_kunjungan));
+            }
+        
+        }
+
+    }
+
+    public function delete_order()
+    {
+        $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
+
+        if($this->db->delete('pm_tc_penunjang_order_detail', ['order_id' => $id])){
+            echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+        }
+        
+    }
 
 }
 
