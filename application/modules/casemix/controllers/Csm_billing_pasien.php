@@ -115,6 +115,7 @@ class Csm_billing_pasien extends MX_Controller {
                 //$this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi));
                 
                 $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
+                // echo "<pre>"; print_r($createDocument);die;
                 foreach ($createDocument as $k_cd => $v_cd) {
                     # code...
                     $explode = explode('-', $v_cd);
@@ -409,7 +410,8 @@ class Csm_billing_pasien extends MX_Controller {
       /*get content html*/
       $html = json_decode( $this->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, '') );
     //   if($flag=='RESUME') {
-    //     print_r($html);die;
+        // print_r($html);
+        // die;
     //   }
       /*generate pdf*/
       $this->exportPdf($html, $flag, $pm, $act_code); 
@@ -426,7 +428,7 @@ class Csm_billing_pasien extends MX_Controller {
         $action = ($act_code=='')?'I':$act_code;
         /*filename and title*/
         $filename = $flag.'-'.$reg_data->no_mr.$reg_data->no_registrasi.$pm;
-        // print_r($reg_data);die;
+        // print_r($data);die;
         
         $tanggal = new Tanggal();
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8');
@@ -482,7 +484,10 @@ class Csm_billing_pasien extends MX_Controller {
 EOD;
         $html .= $data->html;
         
+        
         $result = $html;
+        // print_r($result);
+        // die;
 
         // output the HTML content
         $pdf->writeHTML($result, true, false, true, false, '');
@@ -501,6 +506,7 @@ EOD;
             $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.''); 
             
         }
+        exit;
 
 
         /*show pdf*/
