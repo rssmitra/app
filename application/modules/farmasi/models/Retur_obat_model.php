@@ -43,9 +43,13 @@ class Retur_obat_model extends CI_Model {
 			}
 		}else{
 			if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
-				$this->db->where('DATEDIFF(Day, tgl_trans, getdate()) <= 120');
+				$this->db->where('DATEDIFF(Day, tgl_trans, getdate()) <= 60');
 			}else{
-				$this->db->where('CAST(tgl_trans as DATE) = ', date('Y-m-d'));
+				if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+					$this->db->where("fr_tc_far.tgl_trans BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
+				}else{
+					$this->db->where('CAST(tgl_trans as DATE) = ', date('Y-m-d'));
+				}
 			}
 		}
 
@@ -57,9 +61,7 @@ class Retur_obat_model extends CI_Model {
 			$this->db->where('fr_tc_far.kode_profit', $_GET['profit']);
 		}
 
-		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-			$this->db->where("fr_tc_far.tgl_trans BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
-        }
+		
 
 		if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
 			$this->db->where('fr_tc_far.no_mr', $_GET['no_mr']);
