@@ -757,6 +757,7 @@ class Billing extends MX_Controller {
         // costing billing untuk bpjs
         if( $_POST['kode_perusahaan_val'] == 120 ){
             $return_costing = $this->costing_billing($seri_kuitansi_dt['seri_kuitansi']);
+            
             $return['redirect'] = $return_costing['redirect'];
         }else{
             $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($_POST['no_registrasi'], true));
@@ -765,7 +766,7 @@ class Billing extends MX_Controller {
 
         $preview_billing_nk = $this->db->where_in('kode_trans_pelayanan', $str_to_array_nk)->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'status_nk' => 1))->result();
         $preview_billing_um = $this->db->where_not_in('kode_trans_pelayanan', $str_to_array_nk)->where('(status_nk IS NULL or status_nk = 0) ')->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi']))->result();
-        // print_r($preview_billing_um);die;
+        
         
         if ($this->db->trans_status() === FALSE)
         {
@@ -782,6 +783,7 @@ class Billing extends MX_Controller {
             $return['billing_nk'] = count($preview_billing_nk);
             $return['billing_um'] = count($preview_billing_um);
             $return['kode_tc_trans_kasir'] = $dataTranskasir["kode_tc_trans_kasir"] ;
+            
             echo json_encode($return);
         }
         
@@ -1151,7 +1153,7 @@ class Billing extends MX_Controller {
 
     public function costing_billing($type)
     {
-        // print_r($type);die;
+        
         $this->db->trans_begin();
         $no_registrasi = ($this->input->post('no_registrasi'))?$this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'):0;
 
@@ -1162,7 +1164,6 @@ class Billing extends MX_Controller {
 
         // if( $sirs_data->group && $sirs_data->kasir_data && $sirs_data->trans_data )
         //     $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
-        
         if( $this->input->post('no_sep_val') ){
             $dataexc = array(
                 'csm_rp_no_sep' => $this->regex->_genRegex(strtoupper($this->input->post('no_sep_val')), 'RGXQSL'),
@@ -1172,7 +1173,6 @@ class Billing extends MX_Controller {
             $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
             $exc_qry = $this->db->update('csm_reg_pasien', $dataexc, array('no_registrasi' => $no_registrasi));
             $newId = $no_registrasi;
-            $this->logs->save('csm_reg_pasien', $newId, 'update record', json_encode($dataexc), 'csm_rp_id');
             
         }
         
@@ -1190,30 +1190,33 @@ class Billing extends MX_Controller {
             $exp_no_registrasi = $explode[2];
             $unique_code = $explode[3];
             $no_kunjungan = isset($explode[4])?$explode[4]:0;
-
+            
             /*create and save download file pdf*/
             //$cbpModule = new Csm_billing_pasien;
             if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F', $no_kunjungan) ) :
-            /*save document to database*/
-            /*csm_reg_pasien*/
-            $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
-            
-            $doc_save = array(
-                'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
-                'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
-                'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
-                'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
-            );
-            $doc_save['created_date'] = date('Y-m-d H:i:s');
-            $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-            /*check if exist*/
-            if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
-                $this->db->insert('csm_dokumen_export', $doc_save);
-            }
+                /*save document to database*/
+                /*csm_reg_pasien*/
+                $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+                
+                $doc_save = array(
+                    'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+                    'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+                    'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+                    'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                );
+                
+                $doc_save['created_date'] = date('Y-m-d H:i:s');
+                $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                /*check if exist*/
+                if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+                    $this->db->insert('csm_dokumen_export', $doc_save);
+                }
             
             endif;
             /*insert database*/
         }
+        
+        
         
         return array('redirect' => 'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'', 'created_by' => $doc_save['created_by'], 'created_date' => $this->tanggal->formatDateTime($doc_save['created_date']));
 

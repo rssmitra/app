@@ -315,7 +315,7 @@ class Csm_billing_pasien extends MX_Controller {
         /*header html*/
         /*get detail data billing*/
         $data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        
+        // echo '<pre>'; print_r($flag);die;
         $html = '';
 
        switch ($flag) {
@@ -352,7 +352,6 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
             case 'RAD':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                // echo '<pre>'; print_r($this->db->last_query());die;
                 $html .= $temp->setGlobalHeaderTemplate();
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
@@ -407,7 +406,8 @@ class Csm_billing_pasien extends MX_Controller {
 
       /*get content data*/
       $data = $this->getBillingLocal($no_registrasi, $flag); 
-
+        // print_r($data);
+        // die;
       /*get content html*/
       $html = json_decode( $this->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, '') );
     //   if($flag=='RESUME') {
@@ -429,6 +429,7 @@ class Csm_billing_pasien extends MX_Controller {
         $action = ($act_code=='')?'I':$act_code;
         /*filename and title*/
         $filename = $flag.'-'.$reg_data->no_mr.$reg_data->no_registrasi.$pm;
+        // print_r($filename);
         // print_r($data);die;
         
         $tanggal = new Tanggal();
@@ -507,9 +508,8 @@ EOD;
             $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.''); 
             
         }
-        exit;
 
-
+        // exit;
         /*show pdf*/
         //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'I'); 
         /*download*/
