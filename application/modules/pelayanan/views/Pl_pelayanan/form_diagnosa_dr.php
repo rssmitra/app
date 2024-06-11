@@ -101,7 +101,7 @@
 <div class="pull-right">
     <button type="button" class="btn btn-xs btn-inverse" id="startCount" onclick="startStopWatch()">Start <i class="fa fa-play"></i></button>
     <button type="button" class="btn btn-xs btn-inverse" id="pauseCount" onclick="pauseStopWatch()">Stop <i class="fa fa-pause"></i></button>
-    <button type="button" class="btn btn-xs btn-success" id="callPatient">Panggil Pasien <i class="fa fa-bullhorn bigger-120"></i></button>
+    <button type="button" class="btn btn-xs btn-success" id="callPatient">Call <i class="fa fa-bullhorn bigger-120"></i></button>
 </div>
 <div class="clearfix"></div>
 <br>
@@ -140,36 +140,35 @@
 <div class="hr dotted" ></div>
 
 <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>">
-<input type="hidden" name="no_mr_resep" id="no_mr_resep" value="<?php echo $no_mr; ?>">
 <p><b><i class="fa fa-edit"></i> ASSESMENT PASIEN </b></p>
-<div class="form-group">
-    <label class="control-label col-sm-3" for="">Tinggi Badan (cm)</label>
-    <div class="col-sm-2">
-       <input type="text" class="form-control" name="pl_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
-    </div>
-    <label class="control-label col-sm-3" for="">Berat Badan (Kg)</label>
-    <div class="col-sm-2">
-       <input type="text" class="form-control" name="pl_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="control-label col-sm-3" for="">Tekanan Darah</label>
-    <div class="col-sm-2">
-       <input type="text" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
-    </div>
-    <label class="control-label col-sm-3" for="">Suhu Tubuh</label>
-    <div class="col-sm-2">
-       <input type="text" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="control-label col-sm-3" for="">Nadi</label>
-    <div class="col-sm-2">
-       <input type="text" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
-    </div>
-</div>
+<table class="table">
+    <tr style="font-size: 11px; background: beige;">
+        <th>Tinggi Badan (Cm)</th>
+        <th>Berat Badan (Kg)</th>
+        <th>Tekanan Darah (mmHg)</th>
+        <th>Suhu Tubuh (C&deg;)</th>
+        <th>Nadi (bpm)</th>
+    </tr>
+    <tbody>
+    <tr style="background: aliceblue;">
+        <td>
+            <input type="text" style="text-align: center" class="form-control" name="pl_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
+        </td>
+        <td>
+            <input type="text" style="text-align: center" class="form-control" name="pl_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
+        </td>
+        <td>
+            <input type="text" style="text-align: center" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
+        </td>
+        <td>
+            <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
+        </td>
+        <td>
+            <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i>  DIAGNOSA DAN PEMERIKSAAN </b></p>
@@ -231,7 +230,7 @@
 </div>
 
 
-<br>
+<!-- <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i> PENUNJANG MEDIS </b></p>
 
 <div style="margin-top: 6px">
@@ -270,7 +269,7 @@
         </label>
 
     </div>
-</div>
+</div> -->
 
 <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i> STATUS KUNJUNGAN PASIEN </b></p>
