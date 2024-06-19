@@ -114,9 +114,9 @@
     <td align="right" width="125"><b>Jumlah Kunjungan</b></td>
     <td align="center"><?php echo $dt_sql_ugd->total; ?>&nbsp;</td>
     <td align="center"><?php echo $dt_sql_spesialis->total; ?>&nbsp;</td>
-    <td align="center"><?php echo $dt_sql_luar->total; ?>&nbsp;</td>
+    <td align="center"><?php echo $dt_sql_luar; ?>&nbsp;</td>
     <td align="center"><?php 
-    $sub_total = $dt_sql_ugd->total+$dt_sql_spesialis->total+$dt_sql_luar->total; 
+    $sub_total = $dt_sql_ugd->total+$dt_sql_spesialis->total+$dt_sql_luar; 
     echo $sub_total; 
     ?>&nbsp;</td>
     

@@ -649,6 +649,7 @@ class Global_report extends MX_Controller {
         $sql_ugd = $this->Global_report->vsql_ugd();
         $sql_spesialis = $this->Global_report->vsql_spesialis();
         $sql_luar = $this->Global_report->vsql_luar();
+        // echo $this->db->last_query();die;
         $sql_inap = $this->Global_report->vsql_inap();
          // get saldo
         // foreach ($sql_ugd as $k_sql_ugd => $v_sql_ugd) {
@@ -680,7 +681,7 @@ class Global_report extends MX_Controller {
             // 'result' => $query_data,
             'dt_sql_ugd' => $sql_ugd[0],
             'dt_sql_spesialis' => $sql_spesialis[0],
-            'dt_sql_luar' => $sql_luar[0],
+            'dt_sql_luar' => count($sql_luar),
             'dt_sql_inap' => $sql_inap[0],
         );
          // echo '<pre>';print_r($sql_ugd);die;;

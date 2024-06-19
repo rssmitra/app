@@ -1781,11 +1781,12 @@ public function pengadaan_mod_8(){
 
 	public function vsql_luar(){
 		if($_POST['penunjang']=='Lab'){
-		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
-						tc_registrasi c  
-				where YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
-				and c.stat_pasien = 'baru'";
+
+		$query = "select count(*) as total, no_kunjungan, b.kode_bagian_asal, b.kode_bagian_tujuan 
+					from tc_registrasi a, tc_kunjungan b where a.no_registrasi = b.no_registrasi and YEAR(b.tgl_masuk)=".$_POST['year']." and MONTH(b.tgl_masuk) = ".$_POST['from_month']." 
+					and (b.kode_bagian_asal = b.kode_bagian_tujuan and b.kode_bagian_tujuan = '050101')
+					group by b.no_registrasi, no_kunjungan, b.kode_bagian_asal, b.kode_bagian_tujuan having count(*) = 1";
+
 		}
 		else if($_POST['penunjang']=='Rad'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
