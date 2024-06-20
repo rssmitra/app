@@ -1729,21 +1729,23 @@ class References extends MX_Controller {
         $table = ($_GET['flag'] == 'medis' ) ? 'mt_barang' : 'mt_barang_nm' ;
 		// get last brg by kode_generik
 		if( $_GET['flag'] == 'medis' ){
+			$this->db->select('cast(SUBSTRING(kode_brg, 7, 11) as int) as num, *');
 			$this->db->where('kode_generik', $kode);
-			$this->db->order_by('kode_brg', 'DESC');
+			$this->db->order_by('cast(SUBSTRING(kode_brg, 7, 11) as int) DESC');
 		}else{
-			$this->db->order_by('id_mt_barang_nm', 'DESC');
-			$this->db->where('kode_brg LIKE '."'%".$kode."%'".' ');
+      $this->db->select('cast(SUBSTRING(kode_brg, 7, 11) as int) as num');
+			$this->db->order_by('cast(SUBSTRING(kode_brg, 7, 11) as int) DESC');
+			$this->db->where('kode_brg LIKE '."'".$kode."%'".' ');
 		}
 
 		$query = $this->db->get( $table )->row();
+    // echo "<pre>";print_r($query);die;
 		// echo "<pre>";print_r($this->db->last_query());die;
 
-		$count = substr($query->kode_brg,6);
-		$lastnum = $count + 1;
-		// echo "<pre>";print_r($lastnum);die;
+		$lastnum = $query->num + 1;
 		$nextnum = ( strlen($lastnum) == 1 ) ?  "0".$lastnum : $lastnum ;
 		$kode_brg = $kode.$nextnum;
+		// echo "<pre>";print_r($kode_brg);die;
 
 		// cek kode brg existing
 		$brg = $this->db->get_where($table, array('kode_brg' => $kode_brg) )->row();
@@ -1751,12 +1753,12 @@ class References extends MX_Controller {
 			$new_kode_brg = $kode_brg;
 		}else{
 			$count = substr($brg->kode_brg,6);
-			$lastnum = $count + 1;
+			$lastnum = $nextnum + 1;
 			$nextnum = ( strlen($lastnum) == 1 ) ?  "0".$lastnum : $lastnum ;
 			$new_kode_brg = $kode.$nextnum;
 		}
 
-        echo json_encode( array('kode' => $new_kode_brg) );
+    echo json_encode( array('kode' => $new_kode_brg) );
 	}
 
 	public function search_pasien_rj(){
@@ -2184,6 +2186,7 @@ class References extends MX_Controller {
 			'penunjang' => $getDataPm,
 			'result' => $result,
 			'obat' => $getData,
+			'no_mr' => $no_mr,
 		);
 
 		// echo '<pre>';print_r($data);die;
