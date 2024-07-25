@@ -1,6 +1,11 @@
 <script>
   $(document).ready(function(){
 
+    // DEFAULT 
+    getMenuTabsHtml("billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI", 'tabs_form_pelayanan')
+    getMenuTabsHtml("templates/References/get_riwayat_medis/<?php echo $value->no_mr?>", 'tabs_form_pelayanan_rm');
+    getBillingDetail(<?php echo $value->no_registrasi?>,'RI','bill_kamar_perawatan');
+
     window.filter = function(element)
     {
       var value = $(element).val().toUpperCase();
@@ -30,9 +35,10 @@
           $('#table-pesan-resep').DataTable().ajax.reload(null, false);
           $('#jumlah_r').val('');
           $("#modalEditPesan").modal('hide');  
-          if(jsonResponse.type_pelayanan == 'Penunjang Medis' || jsonResponse.type_pelayanan == 'Rawat Jalan')
+          if(jsonResponse.type_pelayanan == 'penunjang_medis' || jsonResponse.type_pelayanan == 'Rawat Jalan')
           {
             $('#riwayat-table').DataTable().ajax.reload(null, false);
+            $('#table_order_penunjang').DataTable().ajax.reload(null, false);
           }
           if(jsonResponse.type_pelayanan == 'pulangkan_pasien' )
           {
@@ -194,6 +200,14 @@
 
     });
 
+    $('#tabs_billing_pasien').click(function (e) {     
+      
+      e.preventDefault();  
+
+      getBillingDetail(<?php echo $value->no_registrasi?>,'RI','bill_kamar_perawatan');
+
+    });
+
 })
 
 
@@ -295,8 +309,6 @@ function delete_diagnosa(myid){
 </script>
 <!-- end action form  -->
   
-<!-- hidden form -->
-
 <!-- hidden form -->  
   <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
   <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
@@ -339,6 +351,7 @@ function delete_diagnosa(myid){
   </table>      
   
   <div class="row" style="margin-bottom:3px">
+
     <div class="col-md-12">
       <?php if($value->status_pulang==0) :?>
         <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pulangkan Pasien</a>
@@ -351,92 +364,136 @@ function delete_diagnosa(myid){
   </div>
 
   <hr>
+  
+  <div class="col-md-8 no-padding">
+    <div class="tabbable" >  
 
-  <div class="tabbable">  
+      <ul class="nav nav-tabs" id="myTab">
 
-    <ul class="nav nav-tabs" id="myTab">
+        <li>
+          <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+            <i class="red ace-icon fa fa-leaf bigger-120"></i>
+            CPPT
+          </a>
+        </li>
 
-      <li>
-        <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-          <i class="red ace-icon fa fa-leaf bigger-120"></i>
-          CPPT
-        </a>
-      </li>
+        <li>
+          <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+            <i class="blue ace-icon fa fa-file bigger-120"></i>
+            PENGKAJIAN
+          </a>
+        </li>
 
-      <li>
-        <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-          <i class="blue ace-icon fa fa-file bigger-120"></i>
-          PENGKAJIAN
-        </a>
-      </li>
+        
 
-      <li>
-        <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-          <i class="green ace-icon fa fa-history bigger-120"></i>
-          TINDAKAN
-        </a>
-      </li>
+        <li>
+          <a data-toggle="tab" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id')+'?kode_bag=<?php echo $value->bag_pas?>', 'tabs_form_pelayanan')" >
+            <i class="red ace-icon fa fa-list bigger-120"></i>
+            RESEP
+          </a>
+        </li>
 
-      <li>
-        <a data-toggle="tab" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id')+'?kode_bag=<?php echo $value->bag_pas?>', 'tabs_form_pelayanan')" >
-          <i class="red ace-icon fa fa-list bigger-120"></i>
-          RESEP
-        </a>
-      </li>
+        <li>
+          <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->bag_pas?>/<?php echo $kode_klas?>/ranap" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
+            <i class="orange ace-icon fa fa-flask bigger-120"></i>
+            PENUNJANG MEDIS
+          </a>
+        </li>
 
-      <li>
-        <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->bag_pas?>/<?php echo $kode_klas?>/ranap" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-          <i class="orange ace-icon fa fa-globe bigger-120"></i>
-          PENUNJANG MEDIS
-        </a>
-      </li>
+        
+        <li class="dropdown">
+          <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true">
+          <i class="green ace-icon fa fa-exchange bigger-120"></i> RUJUK INTERNAL &nbsp;
+            <i class="ace-icon fa fa-caret-down bigger-110 width-auto"></i>
+          </a>
 
-      <li>
-        <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_klinik/rujuk_klinik/<?php echo $value->no_registrasi?>/<?php echo $value->bag_pas?>/ranap/<?php echo $kode_klas?>" id="tabs_klinik" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-          <i class="blue ace-icon fa fa-edit bigger-120"></i>
-          KLINIK
-        </a>
-      </li>
+          <ul class="dropdown-menu dropdown-info">
+            <li>
+              <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_klinik/rujuk_klinik/<?php echo $value->no_registrasi?>/<?php echo $value->bag_pas?>/ranap/<?php echo $kode_klas?>" id="tabs_klinik" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
+                Rujuk ke Klinik
+              </a>
+            </li>
+            <li>
+              <a data-toggle="tab" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_ri/pesan/<?php echo $id?>/<?php echo $value->no_registrasi?>" id="tabs_pesan" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
+                (Kamar Bedah/ VK/ Pindah Ruangan)
+              </a>
+            </li>
+          </ul>
+        </li>
 
-      <li>
-        <a data-toggle="tab" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_ri/pesan/<?php echo $id?>/<?php echo $value->no_registrasi?>" id="tabs_pesan" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
-          <i class="purple ace-icon fa fa-list bigger-120"></i>
-          (OK/VK/PINDAH)
-        </a>
-      </li>
+        
 
-      <li>
-        <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-          <i class="orange ace-icon fa fa-money bigger-120"></i>
-          BILLING
-        </a>
-      </li>
+        <li class="dropdown">
+          <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true">
+          <i class="orange ace-icon fa fa-money bigger-120"></i> BILLING &nbsp;
+            <i class="ace-icon fa fa-caret-down bigger-110 width-auto"></i>
+          </a>
 
-      <li>
-        <a data-toggle="tab" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-          <i class="orange ace-icon fa fa-history bigger-120"></i>
-          REKAM MEDIS
-        </a>
-      </li>
-
-    </ul>
-
-    <div class="tab-content">
-
-      <div class="row">
-        <div id="tabs_form_pelayanan" style="padding: 10px !important">
-          <div class="alert alert-block alert-success">
-              <p class="center">
-                <strong style="font-size: 16px">LEMBAR KERJA PELAYANAN PASIEN RAWAT INAP</strong> 
-                <br>
-                Silahkan klik pada Tab diatas untuk mengisi form yang sesuai!.
-              </p>
-            </div>
-        </div>
-      </div>
+          <ul class="dropdown-menu dropdown-info">
+            <li>
+              <a data-toggle="tab" id="tabs_tindakan" href="dropdown1" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">Input Tarif Tindakan</a>
+            </li>
+            <li>
+              <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI" id="tabs_billing_pasien" href="#dropdown2" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
+                Billing Pasien
+              </a>
+            </li>
+          </ul>
+        </li>
       
-    </div>
 
+      </ul>
+
+      <div class="tab-content">
+
+        <div class="row">
+          <div id="tabs_form_pelayanan" style="padding: 10px !important">
+            <div class="alert alert-block alert-success">
+                <p class="center">
+                  <strong style="font-size: 16px">LEMBAR KERJA PELAYANAN PASIEN RAWAT INAP</strong> 
+                  <br>
+                  Silahkan klik pada Tab diatas untuk mengisi form yang sesuai!.
+                </p>
+              </div>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="tabbable" >  
+
+      <ul class="nav nav-tabs" id="myTab2">
+
+        <li>
+          <a data-toggle="tab" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan_rm')" >
+            <i class="orange ace-icon fa fa-history bigger-120"></i>
+            REKAM MEDIS
+          </a>
+        </li>
+
+      </ul>
+
+      <div class="tab-content">
+
+        <div class="row">
+          <div id="tabs_form_pelayanan_rm" style="padding: 10px !important">
+            <div class="alert alert-block alert-success">
+                <p class="center">
+                  <strong style="font-size: 16px">LEMBAR KERJA PELAYANAN PASIEN RAWAT INAP</strong> 
+                  <br>
+                  Silahkan klik pada Tab diatas untuk mengisi form yang sesuai!.
+                </p>
+              </div>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
   </div>
 
   <div id="form_default_pelayanan" style="background-color:#77dcd373"></div>

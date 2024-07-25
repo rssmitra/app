@@ -298,6 +298,22 @@ final class Tanggal {
         return $tanggal;
     }
 
+    public  function convDateAntrolToSqlDate($input) {
+        if (empty($input)) {
+            $tanggal = "-";
+        } else {
+            sscanf($input, '%d-%d-%d %d:%d:%d', $d, $m, $y, $h, $i, $s);
+            
+            $h = tanggal::normalDigit($h);
+            $i = tanggal::normalDigit($i);
+            $s = tanggal::normalDigit($s);
+            
+            $tanggal = $y . "-" . $m . "-" . $d. " ".$h.":".$i.":".$s."";
+        }
+
+        return $tanggal;
+    }
+
     public  function sqlDateTimeToDate($input) {
         if (empty($input)) {
             $tanggal = "-";

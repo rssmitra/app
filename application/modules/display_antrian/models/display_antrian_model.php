@@ -173,12 +173,13 @@ class Display_antrian_model extends CI_Model {
 		$this->db->where('pl_tc_poli.kode_dokter='."'".$this->session->userdata('sess_kode_dokter')."'".'');
 		// $this->db->where('tgl_keluar_poli IS NULL');
 		// $this->db->where('status_periksa IS NULL');
-		$this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
+		// $this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
 		$this->db->where('pl_tc_poli.antrian_aktif = 1');
 		$this->db->order_by('no_antrian', 'ASC');
 
 		$query = $this->db->get();
 		$result = $query->row();
+		// echo '<pre>';print_r($this->db->last_query());die;
 		
 		$praktek = ($this->session->userdata('sess_nama_dokter')) ? 'DOKTER DATANG' : 'BELUM MULAI';
 

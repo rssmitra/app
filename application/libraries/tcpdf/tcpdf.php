@@ -703,7 +703,7 @@ class TCPDF {
 	 * String to pring on page header after title.
 	 * @protected
 	 */
-	protected $header_string = '';
+	protected $header_string = 'Hallo selamat pagi';
 
 	/**
 	 * Default number of columns for html table.

@@ -10,6 +10,7 @@ class Entry_resep_ri_rj extends MX_Controller {
     {
 
         parent::__construct();
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         /*breadcrumb default*/
         $this->breadcrumbs->push('Index', 'farmasi/Entry_resep_ri_rj');
         /*session redirect login if not login*/
@@ -19,8 +20,10 @@ class Entry_resep_ri_rj extends MX_Controller {
         /*load model*/
         $this->load->model('Entry_resep_ri_rj_model', 'Entry_resep_ri_rj');
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
+        $this->load->model('E_resep_model', 'E_resep');
         $this->load->model('Retur_obat_model', 'Retur_obat');
-        $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+        $this->load->model('registration/Riwayat_kunjungan_pm_model', 'Riwayat_kunjungan_pm');
+        $this->load->model('pelayanan/Pl_pelayanan_pm_model', 'Pl_pelayanan_pm');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -28,6 +31,8 @@ class Entry_resep_ri_rj extends MX_Controller {
         $this->output->enable_profiler(false);
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
+        // load e resep
+        $this->load->module('farmasi/E_resep');
 
     }
 
@@ -78,9 +83,11 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data['kode_pesan_resep'] = $id;
         $data['value'] = $this->Entry_resep_ri_rj->get_by_id($id);
         $data['trans_farmasi'] = $this->Entry_resep_ri_rj->get_trans_farmasi($id);
-        
-        $data['riwayat_penunjang'] = $this->get_riwayat_penunjang($_GET['mr']);
-        // echo '<pre>';print_r($data['riwayat_penunjang']);die;
+        $data['penunjang'] = $this->Pl_pelayanan_pm->get_penunjang_by_no_mr($_GET['mr']);
+
+        $list_resep = $this->E_resep->get_cart_resep($id);
+        $data['eresep'] = $list_resep;
+        // echo '<pre>';print_r($data['eresep']);die;
         /*no mr default*/
         $data['no_mr'] = $_GET['mr'];
         /*initialize flag for form*/
@@ -169,24 +176,26 @@ class Entry_resep_ri_rj extends MX_Controller {
         
         $html = '';
         if(count($data) > 0){
-            $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.strtoupper($data->nama_brg).'</h4></b></div><br>';
-            $html .= '<table class="table table-striped" style="width: 75%">';
+            $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.$kode_brg.' - '.strtoupper($data->nama_brg).'</h4></b></div><br>';
+            $html .= '<table class="table table-striped" style="width: 100%">';
             $html .= '<tr>';
                 // $html .= '<th>Pabrikan</th>';
                 // $html .= '<th>Jenis Obat</th>';
+                $html .= '<th>Tanggal Input</th>';
                 $html .= '<th>Jml Obat Kronis/ ditangguhkan</th>';
                 $html .= '<th>Satuan Besar/Kecil</th>';
-                $html .= '<th>Rasio</th>';
+                $html .= '<th width="80px">Rasio</th>';
                 $html .= '<th>Signa</th>';
-                $html .= '<th>Catatan</th>';
+                $html .= '<th>Catatan Lainnya</th>';
             $html .= '</tr>'; 
                 $html .= '<tr>';
                     // $html .= '<td>'.$data->nama_pabrik.'</td>';
                     // $html .= '<td>'.$data->nama_jenis.'</td>';
                     $penangguhan = ($resep->prb_ditangguhkan == 1)?'Y':'N';
+                    $html .= '<td>'.$this->tanggal->formatDateTime($resep->tgl_input).'</td>';
                     $html .= '<td align="center">'.$resep->jumlah_obat_23.'/'.$penangguhan.'</td>';
-                    $html .= '<td>'.$data->satuan_besar.' / '.$data->satuan_kecil.'</td>';
-                    $html .= '<td>1 : '.$data->content.'</td>';
+                    $html .= '<td align="center">'.$data->satuan_besar.' / '.$data->satuan_kecil.'</td>';
+                    $html .= '<td align="center">1 : '.$data->content.'</td>';
                     $html .= '<td>'.$resep->dosis_per_hari.' x '.$resep->dosis_obat.' '.$resep->satuan_obat.' ('.$resep->anjuran_pakai.') </td>';
                     $html .= '<td>'.ucfirst($resep->catatan_lainnya).'</td>';
                 $html .= '</tr>';
@@ -220,10 +229,13 @@ class Entry_resep_ri_rj extends MX_Controller {
                                 <li><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">Entry Resep</a></li>                                
                             </ul>
                         </div></div>';
+            $e_resep = ($row_list->e_resep == 1) ? '<span class="label label-primary">e-resep</span>' : '';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">'.$row_list->kode_pesan_resep.'</a></div>';
-            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).' '.$e_resep.'</div>';
             $row[] = '<div class="center"><b>'.$row_list->no_mr.'</b></div>';
+            // status e_resep
             $row[] = strtoupper($row_list->nama_pasien);
+
             $row[] = $row_list->nama_pegawai.'<br>'.ucwords($row_list->nama_bagian);
             $penjamin = (!empty($row_list->nama_perusahaan))?$row_list->nama_perusahaan:$row_list->nama_kelompok;
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
@@ -253,14 +265,16 @@ class Entry_resep_ri_rj extends MX_Controller {
         $list = $this->Entry_resep_ri_rj->get_detail_resep_data(); 
         // echo '<pre>';print_r($list); die;
         $data = array();
+        $arr_total = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+
             $row[] = '';
-            
             $row[] = $row_list->relation_id;
             $row[] = $row_list->flag_resep;
+            $row[] = $row_list->kode_brg;
             
             if( $row_list->id_tc_log_mutasi_obat == null) :
                 if( $row_list->id_tc_far_racikan != 0 ){
@@ -281,25 +295,27 @@ class Entry_resep_ri_rj extends MX_Controller {
             endif;
 
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
-            $row[] = $row_list->kode_brg;
+            // $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
+            // $row[] = $row_list->kode_brg;
             $nama_brg = ($row_list->nama_brg != '')?$row_list->nama_brg:'Obat Racikan -'.$no;
-            $row[] = strtoupper($nama_brg);
+            $row[] = $row_list->kode_brg.'<br>'.strtoupper($nama_brg);
             $row[] = '<div class="center">'.(int)$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
             $status_resep_ditangguhkan = ($row_list->resep_ditangguhkan == 0) ? 'N' : 'Y' ;
-            $row[] = '<div class="center">'.$status_resep_ditangguhkan.'</div>';
+            // $row[] = '<div class="center">'.$status_resep_ditangguhkan.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_jual, 2).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->sub_total, 2).'</div>';
+            // $row[] = '<div align="right">'.number_format($row_list->sub_total, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->jasa_r, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->total, 2).'</div>';
             $status_input = ($row_list->status_input==NULL)?'<label class="label label-warning">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
             $row[] = '<div align="center">'.$status_input.'</div>';
             $data[] = $row;
+            $arr_total[] = $row_list->total;
         }
 
         $output = array(
                         "draw" => $_POST['draw'],
                         "data" => $data,
+                        "total_billing" => array_sum($arr_total),
                 );
         //output to json format
         echo json_encode($output);
@@ -324,11 +340,8 @@ class Entry_resep_ri_rj extends MX_Controller {
     }
 
     public function get_riwayat_penunjang($no_mr){
-        $column = array('tc_kunjungan.no_registrasi', 'tc_kunjungan.kode_bagian_tujuan', 'tc_kunjungan.no_kunjungan', 'tc_kunjungan.tgl_masuk');
-        $this->Reg_pasien->query_get_riwayat_pasien(join($column,','), $column, $no_mr);
-        $query = $this->db->get(); 
-        //print_r($this->db->last_query());
-		return $query->result();
+        $column = array('tc_kunjungan.no_registrasi', 'tc_kunjungan.kode_bagian_tujuan', 'tc_kunjungan.no_kunjungan', 'tc_kunjungan.tgl_masuk','nama_pegawai', 'mt_bagian.nama_bagian');
+        return $this->Riwayat_kunjungan_pm->get_data_by_nomr($no_mr);
     }
 }
 

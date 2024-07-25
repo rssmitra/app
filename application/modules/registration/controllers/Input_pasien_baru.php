@@ -385,7 +385,7 @@ class Input_pasien_baru extends MX_Controller {
 
     public function process_bayi_rs(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('nama_pasien', 'Nama Pasien', 'trim|required');
         $this->form_validation->set_rules('nik_pasien', 'NIK', 'trim|required');

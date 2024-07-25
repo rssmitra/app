@@ -172,59 +172,63 @@ function edit_diagnosa(kode_riwayat) {
 
 <div class="row">
     <div class="col-sm-12">
-      <br>
-        <p><b><i class="fa fa-edit"></i> DIAGNOSA DAN PEMERIKSAAN PASIEN </b></p>
-
+        <p><b>DIAGNOSIS DAN PEMERIKSAAN PASIEN </b></p>
         <input type="hidden" name="kode_riwayat" value="" id="kode_riwayat">
-        <div class="form-group" style="margin-bottom:3px">
-            <label class="control-label col-sm-2" for="">Diagnosa Awal <span style="color:red">(*)</span></label>
-            <div class="col-sm-4">
+        <div>
+            <label style="padding-top: 10px"> Diagnosa Awal <span style="color:red">(*) </span> : </label><br>
+            <div class="col-sm-12 no-padding">
               <textarea name="pl_diagnosa_awal" id="pl_diagnosa_awal" class="form-control" style="height:50px !important" placeholder="Masukan keyword ICD 10" ></textarea>  
             </div>
-            <label class="control-label col-sm-2" for="">Anamnesa</label>
-            <div class="col-sm-4">
+        </div>
+
+        <div>
+            <label style="padding-top: 10px">Anamnesa</label> :<br>
+            <div class="col-sm-12 no-padding">
               <textarea name="pl_anamnesa" id="pl_anamnesa" class="form-control" style="height:50px !important"></textarea>                  
             </div>
         </div>
 
-        <div class="form-group" style="margin-bottom:5px">
-            <label class="control-label col-sm-2" for="">Diagnosa Akhir <span style="color:red">(*)</span></label>
-            <div class="col-sm-4">
+        <div>
+            <label style="padding-top: 10px">Diagnosa Akhir <span style="color:red">(*)</span></label> : <br>
+            <div class="col-sm-12 no-padding">
               <textarea name="pl_diagnosa" id="pl_diagnosa" class="form-control" style="height:50px !important" placeholder="Masukan keyword ICD 10" ></textarea> 
               <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
             </div>
-            <label class="control-label col-sm-2" for="">Pengobatan</label>
-            <div class="col-sm-4">
+        </div>
+
+        <div>
+            <label style="padding-top: 10px">Pengobatan : </label><br>
+            <div class="col-sm-12 no-padding">
               <textarea name="pl_pengobtan" id="pl_pengobatan" class="form-control" style="height:50px !important"></textarea> 
             </div>
         </div>
-
-        <div class="form-group" id="btn_submit_diagnosa">
-            <label class="control-label col-sm-2" for=""></label>
-            <div class="col-sm-7" style="margin-left:1px">
-            <a href="#" class="btn btn-sm btn-primary" id="btn_add_diagnosa"><i class="fa fa-save"></i> Simpan</a> 
+        <br>
+        <div id="btn_submit_diagnosa" style="text-align: center">
+            <div class="col-sm-12" style="padding-top: 10px; margin-left: -19px">
+            <a href="#" class="btn btn-sm btn-primary" id="btn_add_diagnosa"><i class="fa fa-save"></i> Simpan Diagnosis Pasien</a> 
             </div>
         </div>
 
-      <div style="margin-top:0px">
-        <table id="table-riwayat-diagnosa" class="table table-bordered table-hover">
-          <thead>
-            <tr>  
-              <th width="80px"></th>
-              <th>Tanggal</th>
-              <th>Bagian</th>
-              <th>Anamnesa</th>
-              <th>Diagnosa Awal</th>
-              <th>Diagnosa Akhir</th>
-              <th>Pengobatan</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+        <div class="col-md-12 no-padding">
+          <hr>
+          <p style="padding-top:10px"><b>RIWAYAT DIAGNOSIS PASIEN </b></p>
+          <table id="table-riwayat-diagnosa" class="table table-bordered table-hover">
+            <thead>
+              <tr>  
+                <th width="80px"></th>
+                <th>Tanggal</th>
+                <th>Bagian</th>
+                <th>Anamnesa</th>
+                <th>Diagnosa Awal</th>
+                <th>Diagnosa Akhir</th>
+                <th>Pengobatan</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
     </div>
-
 </div>
 
 

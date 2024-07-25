@@ -32,9 +32,9 @@
 
     });
 </script>
-<div class="row" style="padding:8px">
+<div class="row" style="background-color:rgb(237 243 244); padding: 20px">
     <div class="col-sm-12">
-        <p><b><i class="fa fa-edit"></i> SELESAIKAN BEDAH PASIEN </b></p>
+        <p><b><i class="fa fa-edit"></i> SELESAIKAN PASIEN KAMAR BEDAH </b></p>
 
         <input type="hidden" value="Atas Persetujuan Dokter" name="cara_keluar" id="cara_keluar">
 
@@ -78,7 +78,7 @@
 
 
         <div class="form-group">
-            <label class="control-label col-sm-3" for="">&nbsp;</label>
+            <label class="col-sm-3" for="">&nbsp;</label>
             <div class="col-sm-4" style="margin-left:6px">
                <button type="button" class="btn btn-xs btn-danger" id="btn_hide_" onclick="backToDefaultForm()"> <i class="fa fa-angle-double-left"></i> Sembunyikan </button>
                <!-- <button type="submit" class="btn btn-xs btn-primary" id="btn_submit_selesai"> <i class="fa fa-save"></i> Submit </button> -->

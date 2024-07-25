@@ -73,7 +73,7 @@ $(document).ready(function(){
 
           }
 
-          if(jsonResponse.type_pelayanan == 'Pasien Selesai' )
+          if(jsonResponse.type_pelayanan == 'pasien_selesai' )
           {
 
             getMenu('adm_pasien/loket_kasir/Adm_kasir_ri');

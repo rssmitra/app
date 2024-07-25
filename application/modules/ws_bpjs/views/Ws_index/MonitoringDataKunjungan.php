@@ -152,6 +152,7 @@ function view_sep(no_sep){
       <table id="dynamic-table" base-url="ws_bpjs/Ws_index/get_data_kunjungan?flag=" class="table table-bordered table-hover">
         <thead>
           <tr>  
+            <th width="30px" class="center">No</th>
             <th width="130px" class="center"></th>
             <th width="120px">Nama</th>
             <th>No Rujukan</th>

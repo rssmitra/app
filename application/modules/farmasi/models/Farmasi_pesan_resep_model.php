@@ -125,6 +125,9 @@ class Farmasi_pesan_resep_model extends CI_Model {
 	public function delete_by_id($id)
 	{
 		$get_data = $this->get_by_id($id);
+		// delete resep detail
+		$this->db->where('kode_pesan_resep', $id)->delete('fr_tc_pesan_resep_detail');
+		
 		$this->db->where_in(''.$this->table.'.kode_pesan_resep', $id);
 		return $this->db->delete($this->table, array('kode_pesan_resep' => $id));
 	}

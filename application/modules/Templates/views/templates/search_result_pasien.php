@@ -45,7 +45,8 @@
               echo '<td>'.ucwords($row_result->nama_bagian).'<br>'.$row_result->nama_pegawai.'</td>';
               echo '<td>'.$row_result->no_sep.'</td>';
               echo '<td>'.ucwords($row_result->diagnosa_akhir).'</td>';
-              echo '<td>Jml Pesan : '.$row_result->jml_pesan.' ( <a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_result->kode_pesan_resep."?mr=".$row_result->no_mr."&tipe_layanan=RJ'".')" >'.$row_result->kode_pesan_resep.'</a> )</td>';
+              $e_resep = ($row_result->e_resep == 1) ? '<span class="label label-primary">e-resep</span>' : '';
+              echo '<td>Jml Pesan : '.$row_result->jml_pesan.' ( <a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_result->kode_pesan_resep."?mr=".$row_result->no_mr."&tipe_layanan=RJ'".')" >'.$row_result->kode_pesan_resep.'</a> ) '.$e_resep.'</td>';
               if($row_result->jml_pesan > 0){
                 echo '<td align="center" width="50px"><a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_result->kode_pesan_resep."?mr=".$row_result->no_mr."&tipe_layanan=RJ'".')">Input Resep</a></td>';
               }else{

@@ -34,9 +34,8 @@ $(document).ready(function(){
 
     /*when page load find pasien by mr*/
     find_pasien_by_keyword('<?php echo $no_mr?>');
-    get_riwayat_medis('<?php echo $no_mr?>');
 
-    getMenuTabs('pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
+    show_icare();
 
     $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosaDr');
 
@@ -50,6 +49,9 @@ $(document).ready(function(){
                
         $('#konten').val($('#editor_konten').html());
         $('input[name=catatan_pengkajian]' , this).val($('#editor').html());
+        $('#konten_diagnosa_sekunder').val($('#pl_diagnosa_sekunder_hidden_txt').html());
+
+
         var formData = new FormData($('#form_pelayanan')[0]);        
         i=0;
         url = $('#form_pelayanan').attr('action');
@@ -76,22 +78,28 @@ $(document).ready(function(){
 
                 $.achtung({message: jsonResponse.message, timeout:5});
                 
-                if(jsonResponse.type_pelayanan == 'catatan_pengkajian'){
-                  oTableCppt.ajax.reload();
-                }else{
-                  achtungShowFadeIn();
-                  
-                  // if(jsonResponse.next_id_pl_tc_poli != 0){
-                  //   getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
-                  // }else{
-                  //   $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah terlayani semua. </div>');
-                  // }
+                if(jsonResponse.type_pelayanan == 'penunjang_medis')
+                {
+                  $('#table_order_penunjang').DataTable().ajax.reload(null, false);
+                }
 
+                if(jsonResponse.type_pelayanan == 'eresep')
+                {
+                  $('#table-pesan-resep').DataTable().ajax.reload(null, false);
+                }
+
+                if(jsonResponse.type_pelayanan == 'pasien_selesai')
+                {
                   $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah dilayani. </div>');
-
                   pauseStopWatch();
                   resetStopWatch();
                 }
+                
+                if(jsonResponse.type_pelayanan == 'catatan_pengkajian'){
+                  oTableCppt.ajax.reload();
+                }
+
+                $.achtung({message: jsonResponse.message, timeout:5});
 
               }else{          
                 pauseStopWatch();
@@ -184,9 +192,29 @@ $(document).ready(function(){
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosaDr');
     });
 
-    $('#tabs_pm_lab').click(function (e) {   
+    // $('#tabs_pm_lab').click(function (e) {   
+    //   e.preventDefault();  
+    //   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveOrderLab');
+    // });
+
+    // $('#tabs_pm_rad').click(function (e) {   
+    //   e.preventDefault();  
+    //   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveOrderRad');
+    // });
+
+    // $('#tabs_pm_fisio').click(function (e) {   
+    //   e.preventDefault();  
+    //   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveOrderFisio');
+    // });
+
+    $('#tabs_penunjang_medis').click(function (e) {     
       e.preventDefault();  
-      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveOrderLab');
+      $('#form_pelayanan').attr('action', 'registration/Reg_pm/process');
+    });
+
+    $('#tabs_resep').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'farmasi/Farmasi_pesan_resep/process');
     });
 
     $('#tabs_cppt').click(function (e) {   
@@ -369,7 +397,9 @@ function find_pasien_by_keyword(keyword){
 }
 
 function get_riwayat_medis(no_mr){
-
+  $('#cppt_data').html('Loading...'); 
+  $('#cppt_data_on_tabs').html('Loading...'); 
+  
   $.getJSON("templates/References/get_riwayat_medis/" +no_mr, '', function (data) { 
       $('#cppt_data').html(data.html); 
       $('#cppt_data_on_tabs').html(data.html); 
@@ -400,7 +430,7 @@ function getDataAntrianPasien(){
             html_cancel = '';
             html_cancel += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             html_cancel += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
-            html_cancel += '<td>'+o.nama_pasien+'</td>';
+            html_cancel += '<td style="background-color: #f9000059">'+o.nama_pasien+'</td>';
             html_cancel += '<td align="center"><i class="fa fa-times-circle red bigger-120"></i></td>';
             html_cancel += '</tr>';
           $(html_cancel).appendTo($('#list_antrian_existing'));
@@ -412,7 +442,7 @@ function getDataAntrianPasien(){
             html_existing = '';
             html_existing += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             html_existing += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
-            html_existing += '<td>'+o.nama_pasien+'</td>';
+            html_existing += '<td >'+o.nama_pasien+'</td>';
             html_existing += '<td align="center"><i class="ace-icon glyphicon glyphicon-time black bigger-120"></i></td>';
             html_existing += '</tr>';
             $(html_existing).appendTo($('#list_antrian_existing'));
@@ -424,7 +454,7 @@ function getDataAntrianPasien(){
             html_done = '';
             html_done += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             html_done += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
-            html_done += '<td>'+o.nama_pasien+'</td>';
+            html_done += '<td style="background-color: #00800059">'+o.nama_pasien+'</td>';
             html_done += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
             html_done += '</tr>';
             $(html_done).appendTo($('#list_antrian_existing'));
@@ -505,6 +535,21 @@ function searchTable() {
             tr[i].style.display = "none";
         }
     }
+}
+
+function show_icare() {
+    var noka = $('#noKartuBpjs').val();
+    var kode_dokter = $('#kode_dokter_bpjs').val();
+
+    $.getJSON("ws_bpjs/Ws_index/getIcare/" +noka+"/"+kode_dokter+"", '', function (ress) { 
+      var obj = ress.response.metaData;
+      console.log(obj);
+      if(obj.code != 200){
+        $('#tabs_form_pelayanan').html('<div class="alert alert-danger"><strong>'+obj.message+' !</strong><br>Kemungkinan data pada VClaim dan SIMRS tidak sesuai</div>');
+      }else{
+        $('#tabs_form_pelayanan').html('<iframe src='+ress.url+' style="width: 100%; min-height: 900px" frameborder="no" scrolling="yes"></iframe>');
+      }
+  });
 }
 
 
@@ -629,301 +674,340 @@ function searchTable() {
           </a>
         </li>
       </ul>
-    
   </div>  
 <div>   
 
-  <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
+<form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
+  
+      <!-- hidden form -->
+      <input type="hidden" name="noMrHidden" id="noMrHidden" value="<?php echo $no_mr?>">
+      <input type="hidden" name="id_pl_tc_poli" id="id_pl_tc_poli" value="<?php echo ($id)?$id:''?>">
+      <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
+      <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
+      <input type="hidden" name="no_registrasi" id="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
+      <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
+      <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
+      <input type="hidden" name="kode_perjanjian" class="form-control" value="<?php echo isset($value->kode_perjanjian)?$value->kode_perjanjian:''?>" id="kode_perjanjian" readonly>
+      <input type="hidden" name="kodebookingantrol" class="form-control" value="<?php echo isset($value->kodebookingantrol)?$value->kodebookingantrol:''?>" id="kodebookingantrol" readonly>
+      <input type="hidden" name="taskId" class="form-control" value="4" id="taskId" readonly>
+      <input type="hidden" name="noKartuBpjs" class="form-control" id="noKartuBpjs" value="<?php echo $value->no_kartu_bpjs?>" readonly>
     
-        <!-- hidden form -->
-        <input type="hidden" name="noMrHidden" id="noMrHidden">
-        <input type="hidden" name="id_pl_tc_poli" id="id_pl_tc_poli" value="<?php echo ($id)?$id:''?>">
-        <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
-        <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
-        <input type="hidden" name="no_registrasi" id="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
-        <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
-        <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
-        <input type="hidden" name="kode_perjanjian" class="form-control" value="<?php echo isset($value->kode_perjanjian)?$value->kode_perjanjian:''?>" id="kode_perjanjian" readonly>
-        <input type="hidden" name="kodebookingantrol" class="form-control" value="<?php echo isset($value->kodebookingantrol)?$value->kodebookingantrol:''?>" id="kodebookingantrol" readonly>
-        <input type="hidden" name="taskId" class="form-control" value="4" id="taskId" readonly>
-      
-        <!-- profile Pasien -->
-        <div class="col-md-2 no-padding">
-          <div class="box box-primary" id='box_identity'>
-              <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
+      <!-- profile Pasien -->
+      <div class="col-md-2">
+        <div class="box box-primary" id='box_identity'>
+            <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-              <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
+            <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
 
-              <ul class="list-group list-group-unbordered">
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">Nama Pasien: </small><div id="nama_pasien"></div>
-                  </li>
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">NIK: </small><div id="no_ktp"></div>
-                  </li>
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">Tgl Lahir: </small><div id="tgl_lhr"></div>
-                  </li>
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">Umur: </small><div id="umur"></div>
-                  </li>
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">Alamat: </small><div id="alamat"></div>
-                  </li>
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">No Telp/HP: </small>
-                    <div id="hp"></div>
-                    <div id="no_telp"></div>
-                  </li>
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div>
-                  </li>
-                  <li class="list-group-item">
-                    <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>
-                  </li>
-              </ul>
-
-              <a href="#" id="btn_search_pasien" class="btn btn-inverse btn-block">Tampilkan Pasien</a>
-            <!-- /.box-body -->
-          </div>
-        </div>
-
-        <!-- form pelayanan -->
-        <div class="col-md-7">
-          
-          <!-- end action form  -->
-          
-          <div class="pull-left" style="margin-bottom:1%; width: 100%">
-            <?php if(empty($value->tgl_keluar_poli)) :?>
-            <!-- <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
-            <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a> -->
-            <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit_dr(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-            <?php else: echo ''; endif;?>
-            
-          </div>
-          
-          <!-- <div class="form-group">
-            <label class="control-label col-sm-2" for="" ><i class="fa fa-user bigger-120 green"></i> Antrian Pasien</label>
-            <div class="col-sm-7">
-              <select class="form-control" name="no_mr_selected" id="no_mr_selected" style="font-weight: bold">
-                  <option value="">-Silahkan Pilih-</option>
-                </select>
-            </div>
-          </div> -->
-
-          <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
-          <table class="table table-bordered">
-            <tr style="background-color:#f4ae11">
-              <td rowspan="2" width="100px" class="center" style="background-color: darkturquoise;">
-              <span style="font-size: 11px">No. Antrian </span> <br> <span style="font-size: 30px; font-weight: bold"><?php echo isset($value->no_antrian)?$value->no_antrian:0?></span>
-              </td>
-              <th>Kode</th>
-              <th>No Reg</th>
-              <th>Tanggal Daftar</th>
-              <th>Dokter</th>
-              <th>Penjamin</th>
-              <?php if($value->flag_ri==1) : echo '<th>Status Pasien</th>'; endif;?>
-              <th>Petugas</th>
-            </tr>
-
-            <tr>
-              <td><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
-              <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td>
-              <td><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
-              <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
-              <td><?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
-              <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?></td>
-              <?php if($value->flag_ri==1) : echo '<td class="center"><label class="label label-danger">Pasien Rawat Inap</label></td>'; endif;?>
-
-              <td><?php echo $this->session->userdata('user')->fullname?></td>
-            </tr>
-
-          </table>
-
-          <?php if(isset($value) AND $value->status_batal==1) :?>
-          <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal Berobat</span>
-          <?php endif;?>
-
-          <?php if(isset($value) AND $value->status_periksa!=NULL) :?>
-          <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
-          <?php endif;?>            
-
-          <!-- hidden form -->
-          <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
-          <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
-          <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
-          <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" id="kode_perusahaan_val">
-          <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>" id="no_mr_val">
-          <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
-          <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
-          <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian_val">
-          <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
-          <input type="hidden" class="form-control" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
-          <input type="hidden" class="form-control" name="flag_mcu" id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
-          <input type="hidden" class="form-control" name="tgl_jam_poli" id="tgl_jam_poli" value="<?php echo isset($value->tgl_jam_poli)?$value->tgl_jam_poli:''?>">
-          <!-- cek tarif existing -->
-
-          <!-- <p><b><i class="fa fa-edit"></i> FORM PELAYANAN PASIEN </b></p> -->
-
-          <!-- form default pelayanan pasien -->
-        <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
-
-          <div class="tabbable">  
-            <ul class="nav nav-tabs" id="myTab">
-              <li class="active">
-                <a data-toggle="tab" id="tabs_diagnosa_dr" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
-                  Form Resume Medis
-                </a>
-              </li>
-              <!-- <li class="dropdown">
-                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                  Penunjang Medis
-                  <i class="ace-icon fa fa-caret-down bigger-110 width-auto"></i>
-                </a>
-
-                <ul class="dropdown-menu dropdown-info">
-                  <li>
-                    <a data-toggle="tab" id="tabs_pm_lab" href="#" data-id="<?php echo $no_kunjungan?>?type=PM&kode_bag=050101" data-url="pelayanan/Pl_pelayanan/form_lab/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
-                    Laboratorium
-                </a>
-                  </li>
-
-                  <li>
-                    <a data-toggle="tab" href="#dropdown2">Radiologi</a>
-                  </li>
-
-                  <li>
-                    <a data-toggle="tab" href="#dropdown3">Fisioterapi</a>
-                  </li>
-                </ul>
-              </li> -->
-              <li>
-                <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                  Input CPPT
-                </a>
-              </li>
-
-              <li>
-                <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                  Pengkajian Pasien
-                </a>
-              </li>
-              <li>
-                <a data-toggle="tab" id="tabs_catatan" href="#" data-id="" data-url="pelayanan/Pl_pelayanan/info_harga_obat" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')">
-                  Informasi Harga Obat
-                </a>
-              </li>
+            <ul class="list-group list-group-unbordered">
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Nama Pasien: </small><div id="nama_pasien"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">NIK: </small><div id="no_ktp"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Tgl Lahir: </small><div id="tgl_lhr"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Umur: </small><div id="umur"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Alamat: </small><div id="alamat"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">No Telp/HP: </small>
+                  <div id="hp"></div>
+                  <div id="no_telp"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>
+                </li>
             </ul>
-            
-            
-            <div class="tab-content">                  
 
-              <div id="tabs_form_pelayanan" class="tab-pane fade in active">
+            <a href="#" id="btn_search_pasien" class="btn btn-inverse btn-block">Tampilkan Pasien</a>
+          <!-- /.box-body -->
+        </div>
+      </div>
 
-                <div class="alert alert-block alert-success">
-                    <p>
-                      <strong>
-                        <i class="ace-icon fa fa-check"></i>
-                        Selamat Datang!
-                      </strong> 
-                      Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !
-                    </p>
+      <!-- form pelayanan -->
+      <div class="col-md-7 no-padding">
+        
+        <!-- end action form  -->
+        
+        <div class="pull-left" style="margin-bottom:1%; width: 100%">
+          <?php if(empty($value->tgl_keluar_poli)) :?>
+          <!-- <a href="#" class="btn btn-xs btn-purple" onclick="perjanjian()"><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
+          <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a> -->
+          <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit_dr(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
+          <?php else: echo ''; endif;?>
+          
+        </div>
+        
+        <!-- <div class="form-group">
+          <label class="control-label col-sm-2" for="" ><i class="fa fa-user bigger-120 green"></i> Antrian Pasien</label>
+          <div class="col-sm-7">
+            <select class="form-control" name="no_mr_selected" id="no_mr_selected" style="font-weight: bold">
+                <option value="">-Silahkan Pilih-</option>
+              </select>
+          </div>
+        </div> -->
+
+        <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
+        <table class="table table-bordered">
+          <tr style="background-color:#f4ae11">
+            <td rowspan="2" width="100px" class="center" style="background-color: darkturquoise;">
+            <span style="font-size: 11px">No. Antrian </span> <br> <span style="font-size: 30px; font-weight: bold"><?php echo isset($value->no_antrian)?$value->no_antrian:0?></span>
+            </td>
+            <th>Tanggal Daftar</th>
+            <th>Dokter</th>
+            <th>Penjamin</th>
+            <?php if($value->flag_ri==1) : echo '<th>Status Pasien</th>'; endif;?>
+            <th>Diagnosa Rujukan</th>
+          </tr>
+
+          <tr>
+            <td><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
+            <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
+            <td><?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' ':'';?>
+            <?php echo isset($value->nama_perusahaan)?'<br>['.$value->nama_perusahaan.']':'';?></td>
+            <?php if($value->flag_ri==1) : echo '<td class="center"><label class="label label-danger">Pasien Rawat Inap</label></td>'; endif;?>
+            <td><?php echo isset($value->diagnosa_rujukan)?$value->diagnosa_rujukan:'';?></td>
+          </tr>
+
+        </table>
+
+        <?php if(isset($value) AND $value->status_batal==1) :?>
+        <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal Berobat</span>
+        <?php endif;?>
+
+        <?php if(isset($value) AND $value->status_periksa!=NULL) :?>
+        <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
+        <?php endif;?>            
+
+        <!-- hidden form -->
+        <input type="hidden" class="form-control" name="kode_dokter_bpjs" id="kode_dokter_bpjs" value="<?php echo isset($kode_dokter_bpjs)?$kode_dokter_bpjs:''?>">
+        <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
+        <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
+        <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
+        <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" id="kode_perusahaan_val">
+        <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>" id="no_mr_val">
+        <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
+        <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
+        <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian_val">
+        <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
+        <input type="hidden" class="form-control" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
+        <input type="hidden" class="form-control" name="flag_mcu" id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
+        <input type="hidden" class="form-control" name="tgl_jam_poli" id="tgl_jam_poli" value="<?php echo isset($value->tgl_jam_poli)?$value->tgl_jam_poli:''?>">
+        <!-- cek tarif existing -->
+
+        <!-- <p><b><i class="fa fa-edit"></i> FORM PELAYANAN PASIEN </b></p> -->
+
+        <!-- form default pelayanan pasien -->
+      <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
+
+        <div class="tabbable">  
+          <ul class="nav nav-tabs" id="myTab">
+
+            <li class="active">
+              <a data-toggle="tab" id="icare_tabs" href="#" onclick="show_icare()">
+                I-Care JKN
+              </a>
+            </li>
+            
+            <li>
+              <a data-toggle="tab" id="tabs_diagnosa_dr" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
+                Pemeriksaan Medis
+              </a>
+            </li>
+            <li>
+              <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_resep" href="#tabs_resep" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><span class="menu-text"> e-Resep </span></a>
+
+            </li>
+            
+            <li class="hover">
+              <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->kode_bagian?>/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><span class="menu-text"> Penunjang </span></a><b class="arrow"></b>
+            </li>
+            
+            <li>
+              <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                Input CPPT
+              </a>
+            </li>
+
+            <li>
+              <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                Pengkajian Pasien
+              </a>
+            </li>
+            <li>
+              <a data-toggle="tab" id="tabs_catatan" href="#" data-id="" data-url="pelayanan/Pl_pelayanan/info_harga_obat" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')">
+                Informasi Harga Obat
+              </a>
+            </li>
+          </ul>
+          
+          
+          <div class="tab-content">                  
+
+            <div id="tabs_form_pelayanan" class="tab-pane fade in active">
+
+              <div class="alert alert-block alert-success">
+                  <p>
+                    <strong>
+                      <i class="ace-icon fa fa-check"></i>
+                      Selamat Datang!
+                    </strong> 
+                    Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !
+                  </p>
+                </div>
+            </div>
+
+          </div>
+
+        </div>
+        
+      </div>
+
+      <div class="col-md-3">
+        <div class="tabbable">
+          <ul class="nav nav-tabs" id="myTab">
+              <li class="active">
+                  <a data-toggle="tab" href="#antrian_tabs">
+                      <i class="blue ace-icon fa fa-user bigger-120"></i>
+                      Antrian
+                  </a>
+              </li>
+
+              <li>
+                  <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_medis('<?php echo $no_mr?>')">
+                      <i class="green ace-icon fa fa-history bigger-120"></i>
+                      Resume Medis
+                  </a>
+              </li>
+          </ul>
+
+          <div class="tab-content">
+              <div id="antrian_tabs" class="tab-pane fade in active">
+                <div class="center">
+                  <label for="" class="pull-left" style="font-weight: bold; text-align: left !important"> Tanggal kunjungan :</label><br>
+                  <div class="input-group pull-left">
+                      <input name="tgl_kunjungan" id="tgl_kunjungan" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo isset($this->cache->get('cache')['tgl'])?$this->cache->get('cache')['tgl']:date('Y-m-d')?>">
+                      <span class="input-group-addon">
+                        <i class="ace-icon fa fa-calendar"></i>
+                      </span>
                   </div>
+                  <span class="pull-left" style="padding-top: 10px"><b>Cari pasien :</b></span> <br>
+                  <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup='searchTable()'>
+                </div>
+                <br>
+                <div class="center">
+                    <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
+                    <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
+                </div>
+                <div class="comments ace-scroll"  >
+                  <!-- <div id="list_antrian_existing"></div> -->
+                  <table id="list_antrian_existing" class="table">
+                    <tbody></tbody>
+                  </table>
+                </div>
+                
+                <!-- <div id="div_antrian_existing">
+                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Antrian Pasien Belum Diperiksa</span></center>
+                  <ol class="list-group list-group-unbordered" id="list_antrian_existing" style="background-color:white;height: 650px;overflow: scroll;">
+                  </ol>
+
+                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Sudah Diperiksa</span></center>
+                  <ol class="list-group list-group-unbordered" id="list_antrian_done" style="background-color:white;height: 650px;overflow: scroll;">
+                  </ol>
+
+                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Batal Berobat</span></center>
+                  <ol class="list-group list-group-unbordered" id="list_antrian_cancel" style="background-color:white;height: 650px;overflow: scroll;">
+                  </ol>
+                </div>
+
+                  <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
+                  <table class="table" id="antrian_pasien_tbl" style="background: linear-gradient(45deg, #c0ec70, transparent) !important">
+                      <tbody>
+                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                      </tbody>
+                  </table>
+                  <br>
+                  <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Sudah Diperiksa</span>
+                  <table class="table" id="antrian_pasien_tbl_done" style="background: linear-gradient(77deg, #fee951cc, transparent)">
+                      <tbody>
+                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                      </tbody>
+                  </table>
+                  <br>
+                  <span style="font-weight: bold"><i class="fa fa-times-circle red"></i> Batal Berobat</span>
+                  <table class="table" id="antrian_pasien_tbl_cancel" style="background: linear-gradient(45deg, #ef8e8e, transparent)">
+                      <tbody>
+                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                      </tbody>
+                  </table> -->
+
               </div>
 
-            </div>
+              <div id="rm_tabs" class="tab-pane fade">
+                  <div id="cppt_data_on_tabs"></div>
+              </div>
+
 
           </div>
-          
+        </div>
+      </div>
+
+</form>
+
+<!-- modal -->
+
+<div id="modalIcare" class="modal fade" tabindex="-1">
+
+  <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;width:80%">
+
+    <div class="modal-content">
+
+      <div class="modal-header no-padding">
+
+        <div class="table-header">
+
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+
+            <span class="white">&times;</span>
+
+          </button>
+
+          <span id="">ICARE JKN BPJS Kesehatan</span>
+
         </div>
 
-        <div class="col-md-3 no-padding">
-          <div class="tabbable">
-            <ul class="nav nav-tabs" id="myTab">
-                <li class="active">
-                    <a data-toggle="tab" href="#antrian_tabs">
-                        <i class="green ace-icon fa fa-user bigger-120"></i>
-                        Antrian Pasien
-                    </a>
-                </li>
+      </div>
 
-                <li>
-                    <a data-toggle="tab" href="#rm_tabs">
-                        <i class="green ace-icon fa fa-history bigger-120"></i>
-                        Riwayat Medis
-                    </a>
-                </li>
-            </ul>
+      <div class="modal-body no-padding">
+          <iframe src="" id="frame_icare" style="width: 100%; min-height: 500px"></iframe>
 
-            <div class="tab-content">
-                <div id="antrian_tabs" class="tab-pane fade in active">
-                  <div class="center">
-                    <label for="" class="pull-left" style="font-weight: bold; text-align: left !important"> Tanggal kunjungan :</label><br>
-                    <div class="input-group pull-left">
-                        <input name="tgl_kunjungan" id="tgl_kunjungan" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo isset($this->cache->get('cache')['tgl'])?$this->cache->get('cache')['tgl']:date('Y-m-d')?>">
-                        <span class="input-group-addon">
-                          <i class="ace-icon fa fa-calendar"></i>
-                        </span>
-                    </div>
-                    <span class="pull-left" style="padding-top: 10px"><b>Cari pasien :</b></span> <br>
-                    <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup='searchTable()'>
-                  </div>
-                  <br>
-                  <div class="center">
-                      <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
-                      <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
-                  </div>
-                  <div class="comments ace-scroll"  >
-                    <!-- <div id="list_antrian_existing"></div> -->
-                    <table id="list_antrian_existing" class="table">
-                      <tbody></tbody>
-                    </table>
-                  </div>
-                  
-                  <!-- <div id="div_antrian_existing">
-                    <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Antrian Pasien Belum Diperiksa</span></center>
-                    <ol class="list-group list-group-unbordered" id="list_antrian_existing" style="background-color:white;height: 650px;overflow: scroll;">
-                    </ol>
+      </div>
 
-                    <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Sudah Diperiksa</span></center>
-                    <ol class="list-group list-group-unbordered" id="list_antrian_done" style="background-color:white;height: 650px;overflow: scroll;">
-                    </ol>
+      <div class="modal-footer no-margin-top">
 
-                    <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Batal Berobat</span></center>
-                    <ol class="list-group list-group-unbordered" id="list_antrian_cancel" style="background-color:white;height: 650px;overflow: scroll;">
-                    </ol>
-                  </div>
+        <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
 
-                    <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
-                    <table class="table" id="antrian_pasien_tbl" style="background: linear-gradient(45deg, #c0ec70, transparent) !important">
-                        <tbody>
-                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                        </tbody>
-                    </table>
-                    <br>
-                    <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Sudah Diperiksa</span>
-                    <table class="table" id="antrian_pasien_tbl_done" style="background: linear-gradient(77deg, #fee951cc, transparent)">
-                        <tbody>
-                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                        </tbody>
-                    </table>
-                    <br>
-                    <span style="font-weight: bold"><i class="fa fa-times-circle red"></i> Batal Berobat</span>
-                    <table class="table" id="antrian_pasien_tbl_cancel" style="background: linear-gradient(45deg, #ef8e8e, transparent)">
-                        <tbody>
-                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                        </tbody>
-                    </table> -->
+          <i class="ace-icon fa fa-times"></i>
 
-                </div>
+          Close
 
-                <div id="rm_tabs" class="tab-pane fade">
-                    <div id="cppt_data_on_tabs"></div>
-                </div>
-            </div>
-          </div>
-        </div>
+        </button>
 
-  </form>
+      </div>
+
+    </div><!-- /.modal-content -->
+
+  </div><!-- /.modal-dialog -->
+
+</div>
 
 

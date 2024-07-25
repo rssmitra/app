@@ -6,6 +6,7 @@ class References extends MX_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
 	}
 	/*here function used for this application*/
 
@@ -133,11 +134,11 @@ class References extends MX_Controller {
 	{
 		$where = ($date != date('Y-m-d')) ? "" : "and a.status_loket='on'";
 
-		$query = "select a.jd_kode_spesialis as kode_bagian,c.nama_bagian
+		$query = "select a.jd_kode_spesialis as kode_bagian,c.nama_bagian, c.kode_poli_bpjs
 					from tr_jadwal_dokter a
 					left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
 					where a.jd_hari='".$day."' ".$where." or (kode_bagian = '012801' or kode_bagian='012901')
-					group by  a.jd_kode_spesialis,c.nama_bagian";
+					group by  a.jd_kode_spesialis,c.nama_bagian, c.kode_poli_bpjs";
 		$exc = $this->db->query($query);
 		// echo $this->db->last_query(); die;
         echo json_encode($exc->result());
@@ -381,7 +382,7 @@ class References extends MX_Controller {
                           ->get('mt_nasabah')->result();
 		$arrResult = [];
 		foreach ($result as $key => $value) {
-			$arrResult[] = $value->kode_kelompok.' : '.$value->nama_kelompok;
+			$arrResult[] = $value->kode_kelompok.' : '.strtoupper($value->nama_kelompok);
 		}
 		echo json_encode($arrResult);
 		
@@ -949,7 +950,11 @@ class References extends MX_Controller {
 
 	public function getICD10()
 	{
-        $query = "select  icd_10, nama_icd from mt_master_icd10 where  nama_icd LIKE '%".$_POST['keyword']."%' or icd_10 LIKE '%".$_POST['keyword']."%' group by icd_10, nama_icd";
+		$explode = explode(";", $_POST['keyword']);
+		// get max key
+		$key = max(array_keys($explode));
+		$keyword = $explode[$key];
+        $query = "select  icd_10, nama_icd from mt_master_icd10 where nama_icd LIKE '%".$keyword."%' or icd_10 LIKE '%".$keyword."%' group by icd_10, nama_icd";
 		
 		$result = $this->db->query($query)->result();
 		$arrResult = [];
@@ -2157,35 +2162,78 @@ class References extends MX_Controller {
         echo json_encode($exc->result());
 	}
 
-	public function get_riwayat_medis($no_mr){
+	public function get_riwayat_medis($mr){
 		
-		$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result();
-    	
-		$transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11) )->result();
+		$year = date('Y') - 1;
+		$no_mr = (string)$mr;
 
-		$penunjang = $this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05')->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')->join('pm_tc_penunjang', 'pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left')->get_where('tc_kunjungan', array('no_mr' => $no_mr) )->result();
+		$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit(20)->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result();
+
+		// echo '<pre>';print_r($this->db->last_query());die;
+		// $transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11, 'YEAR(tgl_transaksi)' => $year) )->result();
+
+		if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
+		{
+			$this->db->select('tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan');
+			$this->db->select('tgl_daftar, tgl_isihasil, tgl_periksa');
+			$this->db->select("CAST((
+				SELECT '|' + nama_tindakan
+				FROM tc_trans_pelayanan
+				LEFT JOIN pm_tc_penunjang ON pm_tc_penunjang.no_kunjungan=tc_trans_pelayanan.no_kunjungan
+				LEFT JOIN tc_kunjungan s ON s.no_kunjungan=pm_tc_penunjang.no_kunjungan
+				WHERE s.no_kunjungan = tc_kunjungan.no_kunjungan
+				FOR XML PATH(''))as varchar(max)) as nama_tarif");
+			$this->db->from('tc_kunjungan');
+			$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
+			$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
+			$this->db->join('mt_bagian as asal','asal.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
+			$this->db->join('mt_bagian as tujuan','tujuan.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
+			$this->db->join('pm_tc_penunjang','pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+			$this->db->where('tc_kunjungan.no_mr', $no_mr);
+			$this->db->where('tgl_isihasil is not null');
+			$this->db->where('DATEDIFF(year,tgl_masuk,GETDATE()) < 2 ');
+			$this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05');
+			$this->db->order_by('tgl_masuk', 'DESC');
+			$penunjang = $this->db->get()->result();
+			$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
+		}
+
+		
+		// eresep
+		$eresep = $this->db->get_where('fr_tc_pesan_resep_detail', ['no_mr' => $no_mr, 'parent' => '0'])->result();
+		// echo '<pre>';print_r($penunjang);die;
 
 		// file emr pasien
 		$emr = $this->db->select('csm_dokumen_export.*, tc_kunjungan.no_mr, tc_kunjungan.no_kunjungan')->join('tc_kunjungan', 'tc_kunjungan.no_registrasi=csm_dokumen_export.no_registrasi', 'left')->get_where('csm_dokumen_export', array('tc_kunjungan.no_mr' => $no_mr))->result();
+		
 		$getDataFile = [];
 		foreach ($emr as $key_file => $val_file) {
 			$getDataFile[$val_file->no_registrasi][$val_file->no_kunjungan][] = $val_file;
 		}
 		$getDataPm = [];
 		foreach ($penunjang as $key_pm => $val_pm) {
-			$getDataPm[$val_pm->no_registrasi][] = $val_pm;
+			$getDataPm[strtolower($val_pm->tujuan_bagian)][] = $val_pm;
 		}
+		// echo '<pre>';print_r($getDataPm);die;
 		
-		$getData = array();
-		foreach ($transaksi as $key => $value) {
-			$getData[$value->no_registrasi] [] = $value;
+		// $getData = array();
+		// foreach ($transaksi as $key => $value) {
+		// 	$getData[$value->no_registrasi] [] = $value;
+		// }
+		$getDataResep = [];
+		foreach ($eresep as $key_resep => $value_resep) {
+			$getDataResep[$value_resep->no_registrasi][$value_resep->no_kunjungan][$value_resep->kode_pesan_resep][] = $value_resep;
 		}
+
+		// echo '<pre>';print_r($getDataPm);die;
+		
 
 		$data = array(
 			'file' => $getDataFile,
 			'penunjang' => $getDataPm,
 			'result' => $result,
-			'obat' => $getData,
+			// 'obat' => $getData,
+			'eresep' => $getDataResep,
 			'no_mr' => $no_mr,
 		);
 
@@ -2578,30 +2626,41 @@ class References extends MX_Controller {
         );
 
         $getData = array_merge($arr_dt, $post_antrol);
-        // echo '<pre>'; print_r($getData); die;
+		
+		// add antrian lainnya
+		$cek_antrol = $this->AntrianOnline->cekAntrolKodeBooking($arr_dt['kodebooking']);
+		// echo '<pre>'; print_r($cek_antrol); die;
+		$addAntrian = [];
+        if(empty($cek_antrol['data'])){
+          $addAntrian = $this->AntrianOnline->addAntrianOnsite($getData);
+		//   echo '<pre>'; print_r($addAntrian); die;
+        }else{
+			 // update task antrol
+			 for($i=2; $i<=3; $i++){
+				 $updateTask = $this->AntrianOnline->update_task_antrol($arr_dt['kodebooking'], $i);
+			 }
+		}
 
-            // add antrian lainnya
-        if($this->cekAntrolKodeBooking($arr_dt['kodebooking'])){
-          $this->AntrianOnline->addAntrianOnsite($getData);
-          // update kodebooking
-          $this->db->where('no_registrasi', $arr_dt['no_registrasi'])->update('tc_registrasi', array('kodebookingantrol' => $arr_dt['kodebooking']) );
-          // update task antrian online
-          $waktukirim = strtotime($arr_dt['tanggalperiksa']) * 1000;
-          $exc_antrol = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $arr_dt['kodebooking'], 'taskid' => 3, 'waktu' => $waktukirim));
-        }
-
-        return $post_antrol;
+        return $addAntrian;
 
     }
 
-	public function cekAntrolKodeBooking($kodebooking){
+	public function cekAntrolKodeBooking($kodebooking, $taskid=''){
 		$this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
 		$result = $this->AntrianOnline->cekAntrolKodeBooking($kodebooking);
-		// echo json_encode($result);
-		if(isset($result[0])){
-			return false;
+		$getData = [];
+		foreach ($result as $key => $value) {
+			$getData[$value->taskid] = $value;
+		}
+		// echo "<pre>"; print_r($getData[$taskid]);die;
+		if($taskid != ''){
+			if(isset($getData[$taskid])){
+				return $getData[$taskid];
+			}else{
+				return $getData;
+			}
 		}else{
-			return true;
+			return $getData;
 		}
 	}
 

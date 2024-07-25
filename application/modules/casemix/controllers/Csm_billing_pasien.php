@@ -107,8 +107,11 @@ class Csm_billing_pasien extends MX_Controller {
         {                       
             $this->db->trans_begin();
             $no_registrasi = ($this->input->post('no_registrasi_hidden'))?$this->regex->_genRegex($this->input->post('no_registrasi_hidden'),'RGXINT'):0;
-
             $type = $this->input->post('form_type');
+
+            // echo "<pre>"; print_r($no_registrasi);
+            // echo "<pre>"; print_r($type);die;
+
             if($_POST['submit'] == 'update_dok_klaim'){
                 /*created document name*/
                 /*clean first data*/
@@ -315,7 +318,7 @@ class Csm_billing_pasien extends MX_Controller {
         /*header html*/
         /*get detail data billing*/
         $data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
-        // echo '<pre>'; print_r($flag);die;
+        // echo '<pre>'; print_r($data);die;
         $html = '';
 
        switch ($flag) {
@@ -352,19 +355,31 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
             case 'RAD':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
-                $html .= $temp->setGlobalHeaderTemplate();
+                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+                    $html .= $temp->setGlobalHeaderTemplate();
+                }
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm));
-                $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+                    $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
+                }
                 break;
                 
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
                 $template_html = $temp->TemplateHasilPM($no_registrasi, $flag, $data, $pm, $flag_mcu, $data_pm);
-                $html .= $temp->setGlobalHeaderTemplate();
+                if(isset($_GET['format']) && $_GET['format'] == 'html'){
+                }else{
+                    $html .= $temp->setGlobalHeaderTemplate();
+                }
+
                 $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
                 $html .= $temp->setGlobalContentBilling($template_html);
-                $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
+
+                if(isset($_GET['format']) && $_GET['format'] == 'html'){
+                }else{
+                    $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm, $data_pm);
+                }
                 break;
 
             case 'SEP':
@@ -406,13 +421,13 @@ class Csm_billing_pasien extends MX_Controller {
 
       /*get content data*/
       $data = $this->getBillingLocal($no_registrasi, $flag); 
-        // print_r($data);
-        // die;
-      /*get content html*/
+    //     print_r($flag);
+    //     die;
+    //   /*get content html*/
       $html = json_decode( $this->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, '') );
-    //   if($flag=='RESUME') {
-        // print_r($html);
-        // die;
+    //   if($flag=='RJ') {
+    //     print_r($html);
+    //     die;
     //   }
       /*generate pdf*/
       $this->exportPdf($html, $flag, $pm, $act_code); 
@@ -597,6 +612,40 @@ EOD;
             }
         endif;
          
+    }
+
+    public function createDocument($no_registrasi, $type){
+
+        $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
+        // echo '<pre>';print_r($createDocument);
+        // exit;
+        
+        foreach ($createDocument as $k_cd => $v_cd) {
+            if($k_cd == 1){
+                # code...
+                $explode = explode('-', $v_cd);
+                /*explode result*/
+                $named = str_replace('BILL','',$explode[0]);
+                $no_mr = $explode[1];
+                $exp_no_registrasi = $explode[2];
+                $unique_code = $explode[3];
+                $no_kunjungan = $explode[4];
+
+                // echo '<pre>';print_r($named);
+                // echo '<pre>';print_r($no_mr);
+                // echo '<pre>';print_r($exp_no_registrasi);
+                // echo '<pre>';print_r($unique_code);
+                // echo '<pre>';print_r($no_kunjungan);
+                // exit;
+
+                /*create and save download file pdf*/
+                if( $this->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F', $no_kunjungan) ) :
+                    // show pdf
+                endif;
+            }
+            
+        }
+        
     }
 
 }

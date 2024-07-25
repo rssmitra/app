@@ -35,6 +35,38 @@
 
     });
 
+    $('#pl_diagnosa_sekunder').typeahead({
+        source: function (query, result) {
+            $.ajax({
+                url: "templates/references/getICD10",
+                data: 'keyword=' + query,            
+                dataType: "json",
+                type: "POST",
+                success: function (response) {
+                result($.map(response, function (item) {
+                        return item;
+                    }));
+                
+                }
+            });
+        },
+        afterSelect: function (item) {
+        // do what is needed with item
+        var label_item=item.split(':')[1];
+        var val_item=item.split(':')[0];
+        console.log(val_item);
+        $('#pl_diagnosa_sekunder').val('');
+        $('<span class="multi-typeahead" id="txt_icd_'+val_item.trim().replace('.', '_')+'"><a href="#" onclick="remove_icd('+"'"+val_item.trim().replace('.', '_')+"'"+')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span><span class="text_icd_10"> '+item+' </span> </span>').appendTo('#pl_diagnosa_sekunder_hidden_txt');
+        }
+
+    });
+
+    function remove_icd(icd){
+        preventDefault();
+        $('#txt_icd_'+icd+'').html('');
+        $('#txt_icd_'+icd+'').hide();
+    }
+
     <?php for ( $ix = 0; $ix < 30; $ix++) :?>
         $('#keyword_obat<?php echo $ix?>').typeahead({
             source: function (query, result) {
@@ -61,8 +93,6 @@
         });
     <?php endfor; ?>
 
-
-
     $("#check_resep").change(function() {
         if(this.checked) {
             $('#form_input_resep').show();
@@ -70,7 +100,6 @@
             $('#form_input_resep').hide();
         }
     });
-
 
     counterfile = <?php $j=2;echo $j.";";?>
 
@@ -117,9 +146,9 @@
         counterfile++;
     }
 
-    $('#callPatient').click(function (e) {  
+    $('#callPatientPoli').click(function (e) {  
       e.preventDefault();
-      playAudio(1, 2);
+      playAudioDing(1, 2);
       var params = {
         no_kunjungan : $('#no_kunjungan').val(),
         dokter : $('#kode_dokter_poli').val(),
@@ -347,9 +376,8 @@
         $('#jml_pesan').val(ttl_pesan);
     }
 
-
 </script>
-
+<script src="<?php echo base_url()?>assets/tts/script.js"></script>
 <!-- hidden form -->
 
 <audio id="container" autoplay=""></audio>
@@ -361,139 +389,124 @@
 <div class="pull-right">
     <button type="button" class="btn btn-xs btn-inverse" id="startCount" onclick="startStopWatch()">Start <i class="fa fa-play"></i></button>
     <button type="button" class="btn btn-xs btn-inverse" id="pauseCount" onclick="pauseStopWatch()">Stop <i class="fa fa-pause"></i></button>
-    <button type="button" class="btn btn-xs btn-success" id="callPatient">Call <i class="fa fa-bullhorn bigger-120"></i></button>
+    <button type="button" class="btn btn-xs btn-success" onclick="speak()" id="callPatientPoli">Call <i class="fa fa-bullhorn bigger-120"></i></button>
 </div>
 <br>
+
 <div class="hr dotted"></div>
 
-<input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>">
-<p><b><i class="fa fa-edit"></i> ASSESMENT PASIEN </b></p>
-<table class="table">
-    <tr style="font-size: 11px; background: beige;">
-        <th>Tinggi Badan (Cm)</th>
-        <th>Berat Badan (Kg)</th>
-        <th>Tekanan Darah (mmHg)</th>
-        <th>Suhu Tubuh (C&deg;)</th>
-        <th>Nadi (bpm)</th>
-    </tr>
-    <tbody>
-    <tr style="background: aliceblue;">
-        <td>
-            <input type="text" style="text-align: center" class="form-control" name="pl_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
-        </td>
-        <td>
-            <input type="text" style="text-align: center" class="form-control" name="pl_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
-        </td>
-        <td>
-            <input type="text" style="text-align: center" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
-        </td>
-        <td>
-            <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
-        </td>
-        <td>
-            <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
-        </td>
-    </tr>
-    </tbody>
-</table>
+<div class="widget-box transparent ui-sortable-handle collapsed" id="widget-box-12" style="display: none">
+    <div class="widget-header">
+        <span style="font-style: italic; font-size: 14px" class="widget-title lighter">Pemanggilan Pasien</h4>
+        <div class="widget-toolbar no-border">
+            <a href="#" data-action="collapse">
+                <i class="ace-icon fa fa-chevron-down"></i>
+            </a>
+        </div>
+    </div>
 
+    <div class="widget-body" style="display: none;">
+        <form style="padding: 10px">
+            <label>Text to speech</label>
+            <input type="text" class="txt" style="width: 100%" value="<?php echo $txt_call_patient?>">
+            <div class="col-md-6 no-padding">
+                <label for="rate">Rate</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
+                <div class="rate-value">1</div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="col-md-6">
+                <label for="pitch">Pitch</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
+                <div class="pitch-value">1</div>
+                <div class="clearfix"></div>
+            </div>
+            <label>Language</label><br>
+            <select style="width: 100%"></select>
+        </form>
+    </div>
+</div>
 <br>
-<p><b><i class="fa fa-stethoscope bigger-120"></i>  DIAGNOSA DAN PEMERIKSAAN </b></p>
+<p style="font-size: 16px"><b><i class="fa fa-stethoscope bigger-120"></i>  SOAP (<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
 
-<div>
-    <label for="form-field-8">Diagnosa (ICD10) <span style="color:red">* </span></label>
+<span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
+
+<div style="margin-top: 6px">
+    <label for="form-field-8"> Anamnesa / Keluhan Pasien <span style="color:red">* </span> <small>(minimal 8 karakter)</small> </label>
+    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
+    <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
+</div>
+<br>
+
+<span style="font-weight: bold; font-style: italic; color: blue">(Objective)</span>
+
+<div style="margin-top: 6px">
+    <label for="form-field-8"> <i>Vital Sign</i> </label>
+    <table class="table">
+        <tr style="font-size: 11px; background: beige;">
+            <th>Tinggi Badan (Cm)</th>
+            <th>Berat Badan (Kg)</th>
+            <th>Tekanan Darah (mmHg)</th>
+            <th>Suhu Tubuh (C&deg;)</th>
+            <th>Nadi (bpm)</th>
+        </tr>
+        <tbody>
+        <tr style="background: aliceblue;">
+            <td>
+                <input type="text" style="text-align: center" class="form-control" name="pl_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
+            </td>
+            <td>
+                <input type="text" style="text-align: center" class="form-control" name="pl_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
+            </td>
+            <td>
+                <input type="text" style="text-align: center" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
+            </td>
+            <td>
+                <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
+            </td>
+            <td>
+                <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <label for="form-field-8"> Pemeriksaan Fisik </label>
+    <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
+    <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
+    
+</div>
+
+<span style="font-weight: bold; font-style: italic; color: blue">(Assesment)</span>
+
+<div style="margin-top: 6px">
+    <label for="form-field-8">Diagnosa Primer(ICD10) <span style="color:red">* </span></label>
     <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
     <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
 </div>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8">Anamnesa <span style="color:red">* </span> <small>(minimal 8 karakter)</small> </label>
-    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
-    <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
-</div>
-
-<div class="row">
-    <div class="col-md-6" style="margin-top: 6px">
-        <label for="form-field-8">Pemeriksaan </label>
-        <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
-    </div>
-
-    <div class="col-md-6" style="margin-top: 6px">
-        <label for="form-field-8">Anjuran Dokter </label>
-        <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
-    </div>
-</div>
-
-<br>
-<p><b><i class="fa fa-file bigger-120"></i> e-RESEP FARMASI </b></p>
-<div style="margin-top: 6px">
-    <div class="checkbox" style="margin-left: -20px">
-        <label>
-        Apakah ada Resep Farmasi / Resep Dokter ? <span style="color:red">*</span>
-        </label>
-        <label>
-            <?php 
-                $checked_resep = ($this->Pl_pelayanan->check_resep_fr($value->kode_bagian, $value->no_registrasi) == true ) ? 'checked' : ''; 
-            ?>
-            <input name="check_resep" id="check_resep" type="radio" class="ace" value="1" <?php echo $checked_resep; ?>>
-            <span class="lbl"> Ya</span>
-        </label>
-        <label>
-            <?php 
-                $checked_resep_no = ($this->Pl_pelayanan->check_resep_fr($value->kode_bagian, $value->no_registrasi) == false ) ? 'checked' : ''; 
-            ?>
-            <input name="check_resep" id="check_resep" type="radio" class="ace" value="0" <?php echo $checked_resep_no; ?>>
-            <span class="lbl"> Tidak</span>
-        </label>
-    </div>
-</div>
-
-<div class="row" id="form_input_resep" <?php echo ($checked_resep == '')?'style="display: none"':''; ?>>
-    <div class="col-md-12" style="margin-top: 6px">
-        <textarea name="pl_resep_farmasi" id="pl_resep_farmasi" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->resep_farmasi)?$this->master->br2nl($riwayat->resep_farmasi):''?></textarea>
-    </div>
-</div>
-
-
-<!-- <br>
-<p><b><i class="fa fa-stethoscope bigger-120"></i> PENUNJANG MEDIS </b></p>
-
-<div style="margin-top: 6px">
-    <label for="form-field-8">Penunjang Medis <span style="color:red">*</span></label>
-    <div class="checkbox">
-
+    <label for="form-field-8">Diagnosa Sekunder (ICD10)</label>
+    <input type="text" class="form-control" name="pl_diagnosa_sekunder" id="pl_diagnosa_sekunder" placeholder="Masukan keyword ICD 10" value="">
+    <div id="pl_diagnosa_sekunder_hidden_txt" style="padding: 2px; line-height: 23px; border: 1px solid #d5d5d5; min-height: 25px; margin-top: 2px">
         <?php
-            $arr_pm = array('050101','050201','050301');
-            foreach ($arr_pm as $v_rw) :
-                $checked = ($this->Pl_pelayanan->check_rujukan_pm($v_rw, $value->kode_bagian, $value->no_registrasi) == true ) ? 'checked' : ''; 
-                switch ($v_rw) {
-                    case '050101':
-                        $nm_pm = 'Laboratorium';
-                        break;
-
-                    case '050201':
-                        $nm_pm = 'Radiologi';
-                        break;
-                    
-                    default:
-                        $nm_pm = 'Fisioterapi';
-                        break;
+            $arr_text = isset($riwayat->diagnosa_sekunder) ? explode('|',$riwayat->diagnosa_sekunder) : [];
+            // echo "<pre>";print_r($arr_text);
+            foreach ($arr_text as $k => $v) {
+                $split = explode(':',$v);
+                if(count($split) > 1){
+                    echo '<span class="multi-typeahead" id="txt_icd_'.trim(str_replace('.','_',$split[0])).'"><a href="#" onclick="remove_icd('."'".trim(str_replace('.','_',$split[0]))."'".')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '.$v.' </span> </span>';
                 }
+            }
         ?>
-        <label>
-            <input name="check_pm[]" type="checkbox" value="<?php echo $v_rw; ?>" class="ace" <?php echo $checked; ?> >
-            <span class="lbl"> <?php echo $nm_pm ; ?> </span>
-        </label>
-
-        <?php endforeach; ?>
-
-        <label>
-            <input name="check_pm[]" type="checkbox" value="0" class="ace" <?php echo ($checked == '')?'checked': ''?> >
-            <span class="lbl"> Tidak Ada Penunjang </span>
-        </label>
-
     </div>
-</div> -->
+    <input type="hidden" class="form-control" name="konten_diagnosa_sekunder" id="konten_diagnosa_sekunder" value="<?php echo isset($riwayat->diagnosa_sekunder)?$riwayat->diagnosa_sekunder:''?>">
+
+</div>
+<br>
+<span style="font-weight: bold; font-style: italic; color: blue">(Planning)</span>
+<div style="margin-top: 6px">
+    <label for="form-field-8"> Rencana Asuhan / Anjuran Dokter </label>
+    <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
+</div>
 
 <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i> STATUS KUNJUNGAN PASIEN </b></p>
@@ -514,7 +527,7 @@
 
 <div class="form-group" style="padding-top: 10px">
     <div class="col-sm-12 no-padding">
-       <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> <?php echo ($this->session->userdata('flag_form_pelayanan')) ?  ($this->session->userdata('flag_form_pelayanan') == 'perawat') ? 'Simpan Data' : 'Simpan Data dan Lanjutkan ke Pasien Berikutnya' : 'Simpan Data'?> </button>
+       <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> <?php echo ($this->session->userdata('flag_form_pelayanan')) ?  ($this->session->userdata('flag_form_pelayanan') == 'perawat') ? 'Simpan Data' : 'Simpan Data' : 'Simpan Data'?> </button>
     </div>
 </div>
 

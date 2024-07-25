@@ -153,5 +153,23 @@ class Attachment_model extends CI_Model {
 
 	}
 
+	public function get_detail_doc(){
+		switch ($_GET['flag']) {
+			case 'BILL_RJ':
+				# billing rawat jalan
+				$result = $this->template_bill_rj($_GET['code']);
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+		return true;
+	}
+
+	public function template_bill_rj($no_registrasi){
+		
+	}
+
 	
 }

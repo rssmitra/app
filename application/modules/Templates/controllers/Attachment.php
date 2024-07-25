@@ -16,6 +16,9 @@ class Attachment extends MX_Controller {
         $this->output->enable_profiler(false);
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
+        // load library
+        $this->load->library('qr_code_lib');
+
     }
 
     public function index() {
@@ -28,14 +31,20 @@ class Attachment extends MX_Controller {
         $this->load->view('attachment/index', $data);
     }
 
-    public function verifikasiDoc() {
+    public function verifyDocument() {
         /*define variable data*/
+        // cek dokumen token
+        $valid_dok = $this->qr_code_lib->check_valid_qr($_GET);
+        // get data from qr
+        $docdt = $this->attachment_model->get_detail_doc($_GET);
+
+        // echo $_GET['str']; die;
         $data = array(
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show()
         );
         /*load view index*/
-        $this->load->view('attachment/form_verifikasi_doc', $data);
+        $this->load->view('attachment/verify_doc_view', $data);
     }
 
     public function prosesValidasiDok($kode){

@@ -92,7 +92,8 @@ class Reg_ranap extends MX_Controller {
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
 
-            $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
+            $tglregis = isset($this->input->post('tgl_registrasi'))?$this->input->post('tgl_registrasi'): date('Y-m-d');
+            $tgl_registrasi = $tglregis.' '.date('H:i:s');
 
             if( !$this->input->post('no_registrasi_hidden') ){
                 /*save tc_registrasi*/

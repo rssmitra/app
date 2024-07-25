@@ -32,12 +32,19 @@ $(document).ready(function(){
 
     /*when page load find pasien by mr*/
     find_pasien_by_keyword('<?php echo $no_mr?>');
-    get_riwayat_medis('<?php echo $no_mr?>');
+    
+    // getMenuTabs('pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
+    
+    <?php if($form_type == 'entry_billing') : ?>
+      getMenuTabsHtml('templates/References/get_riwayat_medis/<?php echo $no_mr?>', 'section_rekam_medis');
+    <?php else :?>
+      // get_riwayat_medis('<?php echo $no_mr?>');
+    <?php endif;?>
 
-    getMenuTabs('pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan');
+    show_icare();
 
     // get data antrian pasien
-    setInterval("getDataAntrianPasien();",30000); 
+    getDataAntrianPasien();
 
     /*focus on form input pasien*/
     $('#form_cari_pasien').focus();    
@@ -76,10 +83,8 @@ $(document).ready(function(){
                 $('#jumlah_r').val('');
                 $("#modalEditPesan").modal('hide');  
 
-                if(jsonResponse.type_pelayanan == 'Penunjang Medis' ){
-
-                  getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+jsonResponse.no_mr+'/'+$('#kode_bagian_val').val()+'', 'tabs_riwayat_kunjungan');
-
+                if(jsonResponse.type_pelayanan == 'penunjang_medis' ){
+                  $('#table_order_penunjang').DataTable().ajax.reload(null, false);
                 }
 
                 if(jsonResponse.type_pelayanan == 'create_perjanjian' ){
@@ -89,7 +94,7 @@ $(document).ready(function(){
 
                 }
 
-                if( jsonResponse.type_pelayanan == 'Pasien Selesai' ){
+                if( jsonResponse.type_pelayanan == 'pasien_selesai' ){
                   // back after process
                   if( jsonResponse.next_id_pl_tc_poli != '' ){
                     getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'&form=<?php echo $form_type?>');
@@ -110,7 +115,7 @@ $(document).ready(function(){
 
                 $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});  
                 //focus tabs diagnosa
-                getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
+                // getMenuTabs('pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>', 'tabs_form_pelayanan'); 
 
               }        
 
@@ -251,6 +256,10 @@ $(document).ready(function(){
       getMenu('pelayanan/Pl_pelayanan/form/'+params_id+'?no_mr='+$(this).val()+'&form=<?php echo $form_type?>');
     });
 
+    $('#tgl_kunjungan').change(function(){ 
+      getDataAntrianPasien();
+    })
+
 
 
 })
@@ -304,7 +313,7 @@ function find_pasien_by_keyword(keyword){
             console.log(pending_data_pasien);
             console.log(hitung_usia(obj.tgl_lhr));
 
-            $('#no_mr').text(obj.no_mr);
+            $('#txt_no_mr').text(obj.no_mr);
 
             $('#noMrHidden').val(obj.no_mr);
 
@@ -389,6 +398,8 @@ function find_pasien_by_keyword(keyword){
 
 function get_riwayat_medis(no_mr){
 
+  $('#cppt_data').html('Loading...'); 
+  $('#cppt_data_on_tabs').html('Loading...'); 
   $.getJSON("templates/References/get_riwayat_medis/" +no_mr, '', function (data) { 
       $('#cppt_data').html(data.html); 
       $('#cppt_data_on_tabs').html(data.html); 
@@ -399,49 +410,79 @@ function get_riwayat_medis(no_mr){
 function getDataAntrianPasien(){
 
   // getTotalBilling();
-  $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val(), '', function (data) {   
-      $('#no_mr_selected option').remove();         
-      $('#antrian_pasien_tbl tbody').remove();         
-      $('#antrian_pasien_tbl_done tbody').remove();         
-      $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
-      var arr = [];
-      var arr_cancel = [];
-      $.each(data, function (i, o) {   
-          var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
-          var penjamin = (o.kode_perusahaan==120)? '<span style="background: #f998878c">('+o.nama_perusahaan+')</span>' : '<span style="background: #6fb3e0">(UMUM)</span>' ;
+  $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val()+'&tgl='+$('#tgl_kunjungan').val()+'', '', function (data) {   
+    $('#no_mr_selected option').remove();                
+    $('#list_antrian_existing tbody').remove();     
+    $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
+    var arr = [];
+    var arr_cancel = [];
+    var no = 0;
+    $.each(data, function (i, o) {   
+        var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
+        var penjamin = (o.kode_perusahaan==120)? '<span style="background: #f998878c; padding: 3px">('+o.nama_perusahaan+')</span>' : '<span style="background: #6fb3e0; padding: 3px">(UMUM)</span>' ;
+        var txt_color_penjamin = (o.kode_perusahaan==120) ? 'background: #f998878c' : 'background: #6fb3e0' ;
 
-          var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
+        var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
+        
+        no++;
+        if(o.status_batal == 1){
+
+            html_cancel = '';
+            html_cancel += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_cancel += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_cancel += '<td style="background-color: #f9000059">'+o.nama_pasien+'</td>';
+            html_cancel += '<td align="center"><i class="fa fa-times-circle red bigger-120"></i></td>';
+            html_cancel += '</tr>';
+          $(html_cancel).appendTo($('#list_antrian_existing'));
+        
+        }else{
 
           if(o.tgl_keluar_poli == null){
-            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')" style="font-weight: bold">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span> </span></td></tr>').appendTo($('#antrian_pasien_tbl'));  
+
+            html_existing = '';
+            html_existing += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_existing += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_existing += '<td >'+o.nama_pasien+'</td>';
+            html_existing += '<td align="center"><i class="ace-icon glyphicon glyphicon-time black bigger-120"></i></td>';
+            html_existing += '</tr>';
+            $(html_existing).appendTo($('#list_antrian_existing'));
+
           }
 
           if(o.tgl_keluar_poli != null){
-            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_done'));  
-          }
 
-          if(o.status_batal == 1){
-            $('<tr><td align="center" style="font-weight: bold; font-size: 14px">'+o.no_antrian+' </td><td><span value="'+o.no_mr+'" data-id="'+o.id_pl_tc_poli+'/'+o.no_kunjungan+'"><a href="#" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">'+o.no_mr+' - ' + o.nama_pasien + '</a><br><span style="font-size: 9px">'+penjamin+'</span></span></td></tr>').appendTo($('#antrian_pasien_tbl_cancel'));  
-          }
-          
-          // sudah dilayani
-          if (o.tgl_keluar_poli != null) {
-              arr.push(o);
-          }
-          // batal
-          if (o.status_batal == 1) {
-            arr_cancel.push(o);
-          }
-      });   
-      // total antrian
-      var total_antrian = data.length;
-      $('#total_antrian').text(total_antrian);
-      // dilayani
-      $('#sudah_dilayani').text(arr.length);
-      // batal
-      $('#pasien_batal').text(arr_cancel.length);
+            html_done = '';
+            html_done += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_done += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_done += '<td style="background-color: #00800059">'+o.nama_pasien+'</td>';
+            html_done += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
+            html_done += '</tr>';
+            $(html_done).appendTo($('#list_antrian_existing'));
 
-      console.log(arr_cancel.length);
+          }
+        }
+
+        
+        
+        // sudah dilayani
+        if (o.tgl_keluar_poli != null) {
+            arr.push(o);
+        }
+        // batal
+        if (o.status_batal == 1) {
+          arr_cancel.push(o);
+        }
+    });   
+
+    // total antrian
+    var total_antrian = data.length;
+    $('#total_antrian').text(total_antrian);
+    // dilayani
+    $('#sudah_dilayani').text(arr.length);
+    // batal
+    $('#pasien_batal').text(arr_cancel.length);
+
+    console.log(arr_cancel.length);
   });
 
 }
@@ -539,6 +580,22 @@ function rollback(no_registrasi, no_kunjungan, flag){
       }
   });
 
+}
+
+function show_icare() {
+    var noka = $('#noKartuBpjs').val();
+    var kode_dokter = $('#kode_dokter_bpjs').val();
+    preventDefault();
+    $('#tabs_form_pelayanan').html('Loading...');
+    $.getJSON("ws_bpjs/Ws_index/getIcare/" +noka+"/"+kode_dokter+"", '', function (ress) { 
+      var obj = ress.response.metaData;
+      console.log(obj);
+      if(obj.code != 200){
+        $('#tabs_form_pelayanan').html('<div class="alert alert-danger"><strong>'+obj.message+' !</strong><br>Kemungkinan data pada VClaim dan SIMRS tidak sesuai</div>');
+      }else{
+        $('#tabs_form_pelayanan').html('<iframe src='+ress.url+' style="width: 100%; min-height: 900px" frameborder="no" scrolling="yes"></iframe>');
+      }
+  });
 }
 
 </script>
@@ -691,20 +748,34 @@ function rollback(no_registrasi, no_kunjungan, flag){
   <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
     
         <!-- hidden form -->
-        <input type="hidden" name="noMrHidden" id="noMrHidden">
+        <input type="hidden" name="noMrHidden" id="noMrHidden" value="<?php echo $no_mr?>">
+        <input type="hidden" name="kode_dokter_bpjs" id="kode_dokter_bpjs" value="<?php echo $kode_dokter_bpjs?>">
         <input type="hidden" name="id_pl_tc_poli" id="id_pl_tc_poli" value="<?php echo ($id)?$id:''?>">
         <input type="hidden" name="nama_pasien_hidden" id="nama_pasien_hidden">
         <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
-        <input type="hidden" name="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
+        <input type="hidden" name="no_registrasi" id="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
         <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
         <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
+        <input type="hidden" name="noKartuBpjs" class="form-control" id="noKartuBpjs" value="<?php echo $value->no_kartu_bpjs?>" readonly>
+        <!-- hidden form -->
+        <input type="hidden" class="form-control" name="no_sep" id="no_sep" value="<?php echo isset($value->no_sep)?$value->no_sep:''?>">
+        <input type="hidden" class="form-control" name="kode_kelompok" id="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
+        <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" id="kode_perusahaan_val">
+        <input type="hidden" class="form-control" name="no_mr" id="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
+        <input type="hidden" class="form-control" name="nama_pasien_layan" id="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
+        <input type="hidden" class="form-control" name="kode_bagian_asal" id="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
+        <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian_val">
+        <input type="hidden" class="form-control" name="kode_klas" id="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
+        <input type="hidden" class="form-control" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
+        <input type="hidden" class="form-control" name="flag_mcu"  id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
+        <input type="hidden" class="form-control" name="kode_profit"  id="kode_profit" value="<?php echo $kode_profit; ?>">
       
         <!-- profile Pasien -->
-        <div class="col-md-2 no-padding">
+        <div class="col-md-2">
           <div class="box box-primary" id='box_identity'>
               <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-              <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
+              <h3 class="profile-username text-center"><div id="txt_no_mr">No. MR</div></h3>
 
               <ul class="list-group list-group-unbordered">
                   <li class="list-group-item">
@@ -741,30 +812,38 @@ function rollback(no_registrasi, no_kunjungan, flag){
         </div>
 
         <!-- form pelayanan -->
-        <div class="<?php echo ($form_type != 'billing_entry') ? 'col-md-7':'col-md-10';?>">
+        <div class="<?php echo ($form_type != 'billing_entry') ? 'col-md-7':'col-md-10';?> no-padding">
 
           <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
             <div class="center">
               <ul class="nav nav-list">
 
                 <li class="hover">
-                  <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Diagnosa </span></a><b class="arrow"></b>
+                  <a href="#" data-toggle="tab" id="icare_tabs" href="#" onclick="show_icare()"><i class="menu-icon fa fa-leaf"></i><span class="menu-text"> i-Care JKN </span></a><b class="arrow"></b>
                 </li>
 
                 <li class="hover">
-                  <a href="#" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Tindakan </span></a><b class="arrow"></b>
+                  <a href="#" data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Diagnosa </span></a><b class="arrow"></b>
                 </li>
+
                 <li class="hover">
-                  <a href="#" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-leaf"></i><span class="menu-text"> Farmasi </span></a><b class="arrow"></b>
+                  <a href="#" data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Tindakan </span></a><b class="arrow"></b>
                 </li>
-                <li class="hover">
-                  <a href="#" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->kode_bagian?>/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-flask"></i><span class="menu-text"> Penunjang </span></a><b class="arrow"></b>
+
+                <li class="hover" id="li_tabs_farmasi">
+                  <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#tabs_pesan_resep" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-glass"></i><span class="menu-text"> e-Resep </span></a><b class="arrow"></b>
                 </li>
+
                 <li class="hover">
-                  <a href="#"  data-id="<?php echo $id?>" data-url="registration/perjanjian_rj/get_by_mr/<?php echo $value->no_mr?>" id="tabs_perjanjian" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-tag"></i><span class="menu-text"> Perjanjian </span></a><b class="arrow"></b>
+                  <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->kode_bagian?>/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-flask"></i><span class="menu-text"> Penunjang </span></a><b class="arrow"></b>
                 </li>
+
                 <li class="hover">
-                  <a href="#" class="dropdown-toggle">
+                  <a href="#" data-toggle="tab"  data-id="<?php echo $id?>" data-url="registration/perjanjian_rj/get_by_mr/<?php echo $value->no_mr?>" id="tabs_perjanjian" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-tag"></i><span class="menu-text"> Perjanjian </span></a><b class="arrow"></b>
+                </li>
+
+                <li class="hover">
+                  <a href="#" data-toggle="tab" class="dropdown-toggle">
                     <i class="menu-icon fa fa-edit"></i>
                     <span class="menu-text">
                       Expertise
@@ -776,53 +855,52 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
                   <ul class="submenu">
                     <li class="hover" style="text-align: left">
-                      <a href="#" id="tabs_input_usg" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=USG&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050201" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <a href="#" data-toggle="tab" id="tabs_input_usg" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=USG&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050201" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         USG
                       </a>
                       <b class="arrow"></b>
                     </li>
                     <li class="hover" style="text-align: left">
-                      <a href="#" id="tabs_input_fisio" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Fisioterapi&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <a href="#" data-toggle="tab" id="tabs_input_fisio" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Fisioterapi&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Fisioterapi
                       </a>
                       <b class="arrow"></b>
                     </li>
                     <li class="hover" style="text-align: left">
-                      <a href="#" id="tabs_input_echoradiography" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Echoradiography&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <a href="#" data-toggle="tab" id="tabs_input_echoradiography" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Echoradiography&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Echoradiography
                       </a>
                       <b class="arrow"></b>
                     </li>
                     <li class="hover" style="text-align: left">
-                      <a href="#" id="tabs_input_tonometri" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Tonometri&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <a href="#" data-toggle="tab" id="tabs_input_tonometri" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Tonometri&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Tonometri
                       </a>
                       <b class="arrow"></b>
                     </li>
                     <li class="hover" style="text-align: left">
-                      <a href="#" id="tabs_input_audiometri" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Audiometri&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <a href="#" data-toggle="tab" id="tabs_input_audiometri" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Audiometri&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Audiometri
                       </a>
                       <b class="arrow"></b>
                     </li>
                     <li class="hover" style="text-align: left">
-                      <a href="#" id="tabs_input_uroflometri" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Uroflometri&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <a href="#" data-toggle="tab" id="tabs_input_uroflometri" data-id="<?php echo $no_kunjungan?>?type=Rajal&title=Uroflometri&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>&kode_bag_input=050301" data-url="pelayanan/Pl_pelayanan/input_hasil_pemeriksaan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                         <i class="menu-icon fa fa-caret-right"></i>
                         Uroflometri
                       </a>
                       <b class="arrow"></b>
                     </li>
                   </ul>
-
                 </li>
 
                 <li class="hover">
-                  <a href="#" class="dropdown-toggle">
+                  <a href="#" data-toggle="tab" class="dropdown-toggle">
                     <i class="menu-icon fa fa-history"></i>
                     <span class="menu-text">
                       Riwayat
@@ -831,22 +909,19 @@ function rollback(no_registrasi, no_kunjungan, flag){
                   </a>
 
                   <b class="arrow"></b>
-
                   <ul class="submenu">
-                    <li style="text-align: left">
-                        <a href="#" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Billing Pasien</span></a><b class="arrow"></b>
+                    <li class="hover" style="text-align: left">
+                        <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Billing Pasien</span></a><b class="arrow"></b>
                     </li>
-                    <li style="text-align: left">
-                        <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
+                    <li class="hover" style="text-align: left">
+                        <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
                     </li>
-                    <li style="text-align: left">
-                        <a href="#" data-id="<?php echo $id?>" data-url="rekam_medis/File_rm/index/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> Rekam Medis  </span></a><b class="arrow"></b>
+                    <li class="hover" style="text-align: left">
+                        <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="rekam_medis/File_rm/index/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> Rekam Medis  </span></a><b class="arrow"></b>
                     </li>
                   </ul>
-
                 </li>
 
-                
                 <?php 
                   $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir(isset($value->no_registrasi)?$value->no_registrasi:'',isset($value->no_kunjungan)?$value->no_kunjungan:'');
                   $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
@@ -854,7 +929,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
                 ?>
 
                 <li class="hover">
-                  <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="rollback(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>, <?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>, '<?php echo $flag_rollback?>')"><i class="menu-icon fa fa-undo"></i><span class="menu-text"> Rollback  </span></a><b class="arrow"></b>
+                  <a href="#" data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="rollback(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>, <?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>, '<?php echo $flag_rollback?>')"><i class="menu-icon fa fa-undo"></i><span class="menu-text"> Rollback  </span></a><b class="arrow"></b>
                 </li>
 
                 <?php endif; ?>
@@ -867,10 +942,13 @@ function rollback(no_registrasi, no_kunjungan, flag){
           
           <div class="pull-left" style="margin-bottom:1%; width: 100%">
             <?php if(empty($value->tgl_keluar_poli)) :?>
-            <a href="#" class="btn btn-xs btn-purple" id="btn_perjanjian_rj" onclick="getMenuTabs('pelayanan/Pl_pelayanan/form_perjanjian_view_ontabs/<?php echo $value->no_mr?>?kode_bagian=<?php echo $value->kode_bagian_asal?>&kode_dokter=<?php echo $value->kode_dokter?>&kode_perusahaan=<?php echo $value->kode_perusahaan?>&no_sep=<?php echo $value->no_sep?>', 'tabs_form_pelayanan')" ><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
-            <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
-            <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-            <?php else: echo ''; endif;?>
+              <a href="#" class="btn btn-xs btn-purple" id="btn_perjanjian_rj" onclick="getMenuTabs('pelayanan/Pl_pelayanan/form_perjanjian_view_ontabs/<?php echo $value->no_mr?>?kode_bagian=<?php echo $value->kode_bagian_asal?>&kode_dokter=<?php echo $value->kode_dokter?>&kode_perusahaan=<?php echo $value->kode_perusahaan?>&no_sep=<?php echo $value->no_sep?>', 'tabs_form_pelayanan')" ><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
+
+              <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
+
+              <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
+            <?php else: echo ''; 
+            endif;?>
             
           </div>
           
@@ -890,27 +968,28 @@ function rollback(no_registrasi, no_kunjungan, flag){
               <td rowspan="2" width="100px" class="center" style="background-color: darkturquoise;">
               <span style="font-size: 11px">No. Antrian </span> <br> <span style="font-size: 30px; font-weight: bold"><?php echo isset($value->no_antrian)?$value->no_antrian:0?></span>
               </td>
-              <th>Kode</th>
-              <th>No Reg</th>
-              <th>Tanggal Daftar</th>
-              <th>Dokter</th>
+              <!-- <th>Kode</th>
+              <th>No Reg</th> -->
+              <th width="150px">Tanggal Daftar</th>
+              <th width="200px">Dokter</th>
               <th>Penjamin</th>
+              <th>No SEP</th>
               <?php if($value->flag_ri==1) : echo '<th>Status Pasien</th>'; endif;?>
-              <th>Petugas</th>
+              <!-- <th width="100px">Petugas</th> -->
             </tr>
 
             <tr>
-              <td><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
-              <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td>
-              <td><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
+              <!-- <td><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
+              <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td> -->
+              <td align="center"><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
               <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
               <td><?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
               <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?>
-              <?php echo isset($value->kode_perusahaan)?($value->kode_perusahaan==120) ? $value->no_sep : '' : '';?>
-            </td>
+              </td>
+              <td><?php echo isset($value->kode_perusahaan)?($value->kode_perusahaan==120) ? $value->no_sep : '' : '';?></td>
               <?php if($value->flag_ri==1) : echo '<td class="center"><label class="label label-danger">Pasien Rawat Inap</label></td>'; endif;?>
 
-              <td><?php echo $this->session->userdata('user')->fullname?></td>
+              <!-- <td><?php echo $this->session->userdata('user')->fullname?></td> -->
             </tr>
 
           </table>
@@ -923,50 +1002,44 @@ function rollback(no_registrasi, no_kunjungan, flag){
           <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
           <?php endif;?>            
 
-          <!-- hidden form -->
-          <input type="hidden" class="form-control" name="no_sep" id="no_sep" value="<?php echo isset($value->no_sep)?$value->no_sep:''?>">
-          <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
-          <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
-          <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
-          <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" id="kode_perusahaan_val">
-          <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
-          <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
-          <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
-          <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian_val">
-          <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
-          <input type="hidden" class="form-control" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
-          <input type="hidden" class="form-control" name="flag_mcu" id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
-
           <!-- <p><b><i class="fa fa-edit"></i> FORM PELAYANAN PASIEN </b></p> -->
 
           <!-- form default pelayanan pasien -->
           <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
+          
+          <?php $colspan = ($form_type == 'billing_entry') ? 8 : 12; ?>
+          <div class="col-md-<?php echo $colspan?> no-padding">
+            <div class="tabbable">  
 
-          <div class="tabbable">  
+              <div class="tab-content">                  
 
-            <div class="tab-content">                  
+                <div id="tabs_form_pelayanan">
 
-              <div id="tabs_form_pelayanan">
+                  <div class="alert alert-block alert-success">
+                      <p>
+                        <strong>
+                          <i class="ace-icon fa fa-check"></i>
+                          Selamat Datang!
+                        </strong> 
+                        Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !
+                      </p>
+                    </div>
+                </div>
 
-                <div class="alert alert-block alert-success">
-                    <p>
-                      <strong>
-                        <i class="ace-icon fa fa-check"></i>
-                        Selamat Datang!
-                      </strong> 
-                      Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !
-                    </p>
-                  </div>
               </div>
 
             </div>
-
           </div>
-          
-        </div>
+          <?php if($form_type == 'billing_entry') : ?>
+          <div class="col-md-4 no-padding" style="padding-left: 5px !important">
+            <div id="section_rekam_medis"></div>
+          </div>
+          <?php endif;?>
+
+        </div>  
         
         <?php if($form_type != 'billing_entry') : ?>
-        <div class="col-md-3 no-padding">
+        <div class="col-md-3 no-padding" style="padding-left: 5px !important">
           <div class="tabbable">
             <ul class="nav nav-tabs" id="myTab">
                 <li class="active">
@@ -977,7 +1050,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
                 </li>
 
                 <li>
-                    <a data-toggle="tab" href="#rm_tabs">
+                    <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_medis('<?php echo $no_mr?>')">
                         <i class="green ace-icon fa fa-history bigger-120"></i>
                         Riwayat Medis
                     </a>
@@ -986,33 +1059,66 @@ function rollback(no_registrasi, no_kunjungan, flag){
 
             <div class="tab-content">
 
-                <div id="antrian_tabs" class="tab-pane fade in active">
-                    <div class="center">
-                        <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
-                        <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
-                    </div>
-                    <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
-                    <table class="table" id="antrian_pasien_tbl" style="background: linear-gradient(45deg, #c0ec70, transparent) !important">
-                        <tbody>
-                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                        </tbody>
-                    </table>
-                    <br>
-                    <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Sudah Diperiksa</span>
-                    <table class="table" id="antrian_pasien_tbl_done" style="background: linear-gradient(77deg, #fee951cc, transparent)">
-                        <tbody>
-                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                        </tbody>
-                    </table>
-                    <br>
-                    <span style="font-weight: bold"><i class="fa fa-times-circle red"></i> Batal Berobat</span>
-                    <table class="table" id="antrian_pasien_tbl_cancel" style="background: linear-gradient(45deg, #ef8e8e, transparent)">
-                        <tbody>
-                            <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                        </tbody>
-                    </table>
-
+              <div id="antrian_tabs" class="tab-pane fade in active">
+                <div class="center">
+                  <label for="" class="pull-left" style="font-weight: bold; text-align: left !important"> Tanggal kunjungan :</label><br>
+                  <div class="input-group pull-left">
+                      <input name="tgl_kunjungan" id="tgl_kunjungan" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo isset($this->cache->get('cache')['tgl'])?$this->cache->get('cache')['tgl']:date('Y-m-d')?>">
+                      <span class="input-group-addon">
+                        <i class="ace-icon fa fa-calendar"></i>
+                      </span>
+                  </div>
+                  <span class="pull-left" style="padding-top: 10px"><b>Cari pasien :</b></span> <br>
+                  <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup='searchTable()'>
                 </div>
+                <br>
+                <div class="center">
+                    <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
+                    <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
+                </div>
+                <div class="comments ace-scroll"  >
+                  <!-- <div id="list_antrian_existing"></div> -->
+                  <table id="list_antrian_existing" class="table">
+                    <tbody></tbody>
+                  </table>
+                </div>
+                
+                <!-- <div id="div_antrian_existing">
+                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Antrian Pasien Belum Diperiksa</span></center>
+                  <ol class="list-group list-group-unbordered" id="list_antrian_existing" style="background-color:white;height: 650px;overflow: scroll;">
+                  </ol>
+
+                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Sudah Diperiksa</span></center>
+                  <ol class="list-group list-group-unbordered" id="list_antrian_done" style="background-color:white;height: 650px;overflow: scroll;">
+                  </ol>
+
+                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Batal Berobat</span></center>
+                  <ol class="list-group list-group-unbordered" id="list_antrian_cancel" style="background-color:white;height: 650px;overflow: scroll;">
+                  </ol>
+                </div>
+
+                  <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
+                  <table class="table" id="antrian_pasien_tbl" style="background: linear-gradient(45deg, #c0ec70, transparent) !important">
+                      <tbody>
+                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                      </tbody>
+                  </table>
+                  <br>
+                  <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Sudah Diperiksa</span>
+                  <table class="table" id="antrian_pasien_tbl_done" style="background: linear-gradient(77deg, #fee951cc, transparent)">
+                      <tbody>
+                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                      </tbody>
+                  </table>
+                  <br>
+                  <span style="font-weight: bold"><i class="fa fa-times-circle red"></i> Batal Berobat</span>
+                  <table class="table" id="antrian_pasien_tbl_cancel" style="background: linear-gradient(45deg, #ef8e8e, transparent)">
+                      <tbody>
+                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
+                      </tbody>
+                  </table> -->
+
+              </div>
 
                 <div id="rm_tabs" class="tab-pane fade">
                     <div id="cppt_data_on_tabs"></div>

@@ -26,6 +26,8 @@ class Templates extends MX_Controller {
 
         // load module
         $this->load->module('registration/Reg_pasien.php');
+        // include qr lib
+        $this->load->library('qr_code_lib');
     }
 
 
@@ -164,61 +166,68 @@ class Templates extends MX_Controller {
 
         // }
         
-        // if ( in_array($_GET['mod'], array(11,22) ) ) {
-        //     $data[0] = array(
-        //         'mod' => $_GET['mod'],
-        //         'nameid' => 'graph-line-1',
-        //         'style' => 'line',
-        //         'col_size' => 12,
-        //         'url' => 'templates/Templates/graph?prefix=111&TypeChart=line&style=1&mod='.$_GET['mod'].'',
-        //         );
-        //     $data[1] = array(
-        //         'mod' => $_GET['mod'],
-        //         'nameid' => 'graph-pie-1',
-        //         'style' => 'pie',
-        //         'col_size' => 6,
-        //         'url' => 'templates/Templates/graph?prefix=112&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
-        //         );
-        //     $data[2] = array(
-        //         'mod' => $_GET['mod'],
-        //         'nameid' => 'graph-table-1',
-        //         'style' => 'table',
-        //         'col_size' => 6,
-        //         'url' => 'templates/Templates/graph?prefix=113&TypeChart=table&style=1&mod='.$_GET['mod'].'',
-        //         );
-        // }
+        if ( in_array($_GET['mod'], array(11,22) ) ) {
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=111&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[1] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 6,
+                'url' => 'templates/Templates/graph?prefix=112&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[2] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 6,
+                'url' => 'templates/Templates/graph?prefix=113&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                );
+        }
 
-        // if ( in_array($_GET['mod'], array(5) ) ) {
-        //     $data[0] = array(
-        //         'mod' => $_GET['mod'],
-        //         'nameid' => 'graph-line-1',
-        //         'style' => 'line',
-        //         'col_size' => 12,
-        //         'url' => 'templates/Templates/graph?prefix=51&TypeChart=line&style=1&mod='.$_GET['mod'].'',
-        //         );
-        //     $data[1] = array(
-        //         'mod' => $_GET['mod'],
-        //         'nameid' => 'graph-pie-1',
-        //         'style' => 'pie',
-        //         'col_size' => 12,
-        //         'url' => 'templates/Templates/graph?prefix=52&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
-        //         );
-        //     $data[2] = array(
-        //         'mod' => $_GET['mod'],
-        //         'nameid' => 'graph-table-1',
-        //         'style' => 'table',
-        //         'col_size' => 6,
-        //         'url' => 'templates/Templates/graph?prefix=53&TypeChart=table&style=1&mod='.$_GET['mod'].'',
-        //         );
-        //     $data[3] = array(
-        //         'mod' => $_GET['mod'],
-        //         'nameid' => 'graph-table-2',
-        //         'style' => 'table',
-        //         'col_size' => 6,
-        //         'url' => 'templates/Templates/graph?prefix=54&TypeChart=table&style=1&mod='.$_GET['mod'].'',
-        //         );
+        if ( in_array($_GET['mod'], array(5) ) ) {
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=51&TypeChart=line&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[1] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 12,
+                'url' => 'templates/Templates/graph?prefix=52&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[2] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-1',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=53&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[3] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-2',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=54&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                );
+            $data[4] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-table-3',
+                'style' => 'table',
+                'col_size' => 4,
+                'url' => 'templates/Templates/graph?prefix=55&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                );
 
-        // }
+        }
 
         if ( in_array($_GET['mod'], array(25) ) ) {
                 
@@ -710,6 +719,7 @@ class Templates extends MX_Controller {
     }
 
     public function setGlobalContentBilling($html){
+
         return $html;
     }
 
@@ -1018,6 +1028,11 @@ class Templates extends MX_Controller {
                     $html .= '<td colspan="'.$colspan.'" align="right"><b>Total Biaya (Rp.)</b></td>';
                     $html .= '<td align="right"><b>Rp. '.number_format(array_sum($arr_subtotal)).',-</b></td>';
                     $html .= '</tr>';
+
+                    $add_one = (int)$colspan + 1;
+                    $html .= '<tr>';
+                    $html .= '<td colspan="'.$add_one.'"><a href="#" class="btn btn-xs btn-inverse" style="width: 100% !important"><i class="fa fa-print"></i> PRINT RINCIAN BIAYA '.strtoupper($title_name).'</a></td>';
+                    $html .= '</tr>';
         $html .= '</table>'; 
 
        
@@ -1321,11 +1336,10 @@ class Templates extends MX_Controller {
                 // }
                 
                 // echo '<pre>';print_r($pm_data);die;
-                $html .= '<br><table cellpadding="0" cellspacing="0" border="0" style="font-size:38px">
+                $html .= '<br><table cellpadding="0" cellspacing="0" border="1" style="font-size:38px">
                         <tr>
                             <td colspan="5" align="center"><b>HASIL PEMERIKSAAN LABORATORIUM</b></td>
                         </tr> 
-                        <hr>
                         <tr>                        
                             <th align="center" width=200px"><b>JENIS TEST</b></th>
                             <th align="center" width="100px"><b>HASIL</b></th>
@@ -1431,6 +1445,8 @@ class Templates extends MX_Controller {
                 $html .= '<b><span style="font-size:38px">Catatan : </span></b><br>
                     '.$data_pm->catatan_hasil.'
                     <br>
+                    <br>
+                    <br>
                 <br><div style="border-bottom:0.6px dotted black"></div>';
             }
         }else{
@@ -1453,36 +1469,40 @@ class Templates extends MX_Controller {
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
                     <tr>
-                        <td colspan="2" align="center"><b>HASIL PEMERIKSAAN RADIOLOGI</b></td>
+                        <td colspan="3" align="center"><br><b>HASIL PEMERIKSAAN RADIOLOGI</b><br><hr></td>
                     </tr> 
                     ';
-            // echo '<pre>';print_r($pm_data);die;
-            foreach ($pm_data as $key => $value) {
-                $name = ($value->nama_pemeriksaan)?$value->nama_pemeriksaan:$value->nama_tindakan;
-                //$no++;
-                $html .= '
-                        <hr>        
-                        <tr>
-                            <th width="100px"><b>Pemeriksaan</b> </th>
-                            <td width="10px">:</td>
-                            <th>'.$name.'</th>
-                        </tr>
-                        <hr>
-                        <tr>
-                            <td valign="top" width="100px"><b>Hasil</b> </td>
-                            <td width="10px">:</td>
-                            <td>'.nl2br($value->hasil).'</td>
-                        </tr>
-                        <tr>
-                            <td valign="top" width="100px"><b>Kesan</b> </td>
-                            <td width="10px">:</td>
-                            <td>'.nl2br($value->keterangan).'</td>
-                        </tr>
-                        ';
+            // echo '<pre>';print_r(count($pm_data));die;
+            if(count($pm_data) > 0){
+                foreach ($pm_data as $key => $value) {
+                    $name = ($value->nama_pemeriksaan)?$value->nama_pemeriksaan:$value->nama_tindakan;
+                    //$no++;
+                    $html .= '      
+                            <tr>
+                                <th width="100px"><b>Pemeriksaan</b> </th>
+                                <td width="10px" valign="top">:</td>
+                                <th>'.$name.'</th>
+                            </tr>
+                            <hr>
+                            <tr>
+                                <td valign="top" width="100px"><b>Hasil</b> </td>
+                                <td width="10px" valign="top">:</td>
+                                <td>'.nl2br($value->hasil).'</td>
+                            </tr>
+                            <tr>
+                                <td valign="top" width="100px"><b>Kesan</b> </td>
+                                <td width="10px" valign="top">:</td>
+                                <td>'.nl2br($value->keterangan).'</td>
+                            </tr>
+                            ';
+                }
+            }else{
+                $html .= '<tr><td colspan="3" style="color: red; font-weight: bold; font-style: italic; text-align: center; background: #efefef; padding: 10px">Belum ada hasil yang diinput</td></tr>';
             }
+            
             $html .= '<hr><tr>
                         <td valign="top" width="100px"><b>Catatan</b> </td>
-                        <td width="10px">:</td>
+                        <td width="10px" valign="top">:</td>
                         <td>'.trim($data_pm->catatan_hasil).'</td>
                     </tr>';
             $html .= '</table><br><br>';
@@ -1500,17 +1520,20 @@ class Templates extends MX_Controller {
             $getRef = array();
             
             $html .= '<br><br>';
-            $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px; float: left">
-                    <tr>
-                        <td colspan="5" align="center"><b>HASIL PEMERIKSAAN LABORATORIUM</b></td>
-                    </tr> 
-                    <hr>
-                    <tr>                        
-                        <td align="center" width="200px"><b>JENIS TEST</b></td>
-                        <td align="center" width="100px"><b>HASIL</b></td>
-                        <td align="center" width="110px"><b>NILAI STANDAR</b></td>
-                        <td align="center"><b>SATUAN</b></td>
-                        <td align="center"><b>KETERANGAN</b></td>
+            if(isset($_GET['format']) && $_GET['format'] == 'html'){
+                $html .= '<center><span style="text-align: center; font-size: 42px;"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span></center>';
+            }else{
+                $html .= '<center><span style="text-align: center; font-size: 42px"><b>HASIL PEMERIKSAAN LABORATORIUM</b></span></center>';
+                $html .= '<br><br><hr>';
+            }
+            
+            $html .= '<table border="0" style="font-size:36px;">
+                    <tr style="border-bottom: 1px solid black; border-top: 1px solid black;">                        
+                        <th valign="bottom" align="left" class="left" width="200px"><b>JENIS TEST</b></th>
+                        <th valign="bottom" align="center" class="center" width="100px"><b>HASIL</b></th>
+                        <th valign="bottom" align="center" class="center" width="110px"><b>NILAI STANDAR</b></th>
+                        <th valign="bottom" align="center" class="center" width="110px"><b>SATUAN</b></th>
+                        <th valign="bottom" align="left" width="153px"><b>KETERANGAN</b></th>
                     </tr>
                     <hr>';
             $no=0;
@@ -1549,9 +1572,10 @@ class Templates extends MX_Controller {
                                         $detail_item_1 = trim($value->detail_item_1);
                                     }
                                     if((trim($value->detail_item_2)!=$detail_item_2)){
+                                        $clr_txt = $this->master->get_clr_txt_hasil_pm(stripslashes($value->hasil));
                                         $html .= '<tr>
                                                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#xbb; '.$value->detail_item_2.'</td>
-                                                    <td align="center">'.stripslashes($value->hasil).'</td>
+                                                    <td align="center" style="color: '.$clr_txt.'; font-weight: bold">'.stripslashes($value->hasil).'</td>
                                                     <td align="center">'.str_replace(array('>','<'), array('&rsaquo;','&lsaquo;'), $standar).'</td>
                                                     <td align="center">'.$value->satuan.'</td>
                                                     <td><br>'.$value->keterangan.'</td>
@@ -1559,10 +1583,11 @@ class Templates extends MX_Controller {
                                         $detail_item_2 = trim($value->detail_item_2);
                                     }
                                 }else{
-                                    if((trim($value->detail_item_1)!=$detail_item_1)){                                    
+                                    if((trim($value->detail_item_1)!=$detail_item_1)){        
+                                        $clr_txt = $this->master->get_clr_txt_hasil_pm(stripslashes($value->hasil));                            
                                         $html .= '<tr>
                                                     <td>&nbsp;&nbsp;&nbsp;&nbsp;&#x203A; '.$value->detail_item_1.'</td>
-                                                    <td align="center">'.stripslashes($value->hasil).'</td>
+                                                    <td align="center" style="color: '.$clr_txt.'; font-weight: bold">'.stripslashes($value->hasil).'</td>
                                                     <td align="center">'.str_replace(array('>','<'), array('&rsaquo;','&lsaquo;'), $standar).'</td>
                                                     <td align="center">'.$value->satuan.'</td>
                                                     <td><br>'.$value->keterangan.'</td>
@@ -1571,9 +1596,10 @@ class Templates extends MX_Controller {
                                     }
                                 }
                             }else{
+                                $clr_txt = $this->master->get_clr_txt_hasil_pm(stripslashes($value->hasil));                            
                                 $html .= '<tr>
                                             <td>&nbsp;&nbsp;&nbsp;'.$value->nama_pemeriksaan.'</td>
-                                            <td align="center">'.stripslashes($value->hasil).'</td>
+                                            <td align="center" style="color: '.$clr_txt.'; font-weight: bold">'.stripslashes($value->hasil).'</td>
                                             <td align="center">'.str_replace(array('>','<'), array('&rsaquo;','&lsaquo;'), $standar).'</td>
                                             <td align="center">'.$value->satuan.'</td>
                                             <td><br>'.$value->keterangan.'</td>
@@ -1585,18 +1611,32 @@ class Templates extends MX_Controller {
                     }
                 }
 
+            }else{
+                $html .= '<tr><td colspan="3" style="color: red; font-weight: bold; font-style: italic; text-align: center; background: #efefef; padding: 10px">Belum ada hasil yang diinput</td></tr>';
             }
             
             $html .= '</table><br><br><hr>';
             $html .= '<b><span style="font-size:38px; padding-top: 10px">Catatan : </span></b>
                 <p style="text-align: justify">'.trim($data_pm->catatan_hasil).'</p>
-            <br><div style="border-bottom:0.6px dotted black"></div>';
+            <br><br><div style="border-bottom:0.6px dotted black"></div>';
         }
+        
         return $html;
         
     }
 
     public function setGlobalFooterBillingPM($nama_dokter, $flag='', $pm='', $data_pm=''){
+        
+        $config = [
+            'no_registrasi' => $data_pm->no_registrasi,
+            'kode' => $data_pm->kode_penunjang,
+            'tanggal' => $data_pm->tgl_daftar,
+            'flag' => $flag,
+        ];
+        // echo "<pre>"; print_r($config); die;
+        $qr_url = $this->qr_code_lib->qr_url($config);
+        $img = $this->qr_code_lib->generate($qr_url);
+
         $html = '';
         if($flag=='RAD'){
             $html .= '<table border="0" cellspacing="0" cellpadding="0" style="font-size:36px">
@@ -1605,20 +1645,18 @@ class Templates extends MX_Controller {
                         <td align="center" width="40%">
                         <br><br>
                         Dokter Radiologi<br>
-                        '.COMP_FULL.'
-                        <br/><br/><br/> 
+                        '.COMP_FULL.'<br>
+                        '.$img.'
                         <br/> 
                         ( '.$this->Billing->getNamaDokter($flag, $pm).' )<br>
-                        Generated by '.APPS_NAME_SORT.'
                         </td>   
                     </tr>
                 </table>';
         }elseif ($flag=='LAB') {
-                // $img = '<img src="'.base_url().'assets/images/stamp-rs-lab.png" style="width: 200px;float: left !important">';
-                $img = '<br>';
-                $petugas = $this->session->userdata('user')->fullname;
-                // $petugas = 'Al Iksan';
-                $nm_dokter = ($this->Billing->getNamaDokter_($flag, $pm))?$this->Billing->getNamaDokter_($flag, $pm):'Arief Indra Sanjaya,dr. Sp PK';
+                // get ttd ka inst lab
+                $petugas = $this->master->get_ttd('ka_inst_lab');
+                $pj_lab = $this->master->get_ttd_data('dok_pj_lab', 'label');
+                $nm_dokter = ($this->Billing->getNamaDokter_($flag, $pm))?$this->Billing->getNamaDokter_($flag, $pm): $pj_lab ;
                 $html .= '<table border="0" cellspacing="0" cellpadding="0" style="font-size:36px">';
 
                 $html .= '<tr> 
@@ -1628,34 +1666,17 @@ class Templates extends MX_Controller {
                             </td>
                             <td align="center" width="10%">&nbsp;</td>';
 
-                if(isset($_GET['qrcode'])){
-                    $html .= '<td align="center" width="30%">
+                $html .= '<td align="center" width="30%">
                                 <br><br>
-                                Jakarta, '.date('D, d/M/Y').'<br>
-                                '.COMP_FULL.'<br>
-                                <img class="center" src="'.base_url().'assets/images/qrcode-ver-doc.png" width="150px"><br>
-                                
-                            </td>';
-                }else{
-                    // echo '<pre>'; print_r($data_pm);die;
-                    $html .= '<td align="center" width="30%">
-                                <br><br>
-                                Petugas Laboratorium<br>
+                                Unit Laboratorium<br>
                                 '.COMP_FULL.'
                                 <br>
                                 <br>
                                 '.$img.'
                                 <br/>
                                 '.$petugas.'
-                                ___________________________<br>
-                                <span style="font-size: 0.9em">
-                                    <i>Generated by '.APPS_NAME_SORT.'</i><br>
-                                    '.$this->tanggal->formatDateTime($data_pm->tgl_isihasil).'
-                                </span>
-
                                 <br>
                             </td>';
-                }
                 
 
                 $html .= '</tr>';
@@ -1667,16 +1688,24 @@ class Templates extends MX_Controller {
 
     public function setGlobalFooterBilling($data){
         $html = '';
+        $config = [
+            'no_registrasi' => $data->reg_data->no_registrasi,
+            'kode' => $data->reg_data->no_registrasi,
+            'tanggal' => $data->reg_data->tgl_jam_masuk,
+            'flag' => 'BILL_RJ',
+        ];
+        // echo "<pre>"; print_r($config);die;
+        $qr_url = $this->qr_code_lib->qr_url($config);
+        $img = $this->qr_code_lib->generate($qr_url);
+
         $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
                         <td align="right" width="300px">
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
-                        '.COMP_FULL.'
-                        <br/><br/><br/><br/> 
+                        '.COMP_FULL.'<br>
+                        '.$img.'
                         <br/> 
-                        ( _____________________ )<br>
-                        Generated by '.APPS_NAME_SORT.' ('.date('d/M/Y').')
                         
                         </td>   
                     </tr>
@@ -1721,7 +1750,7 @@ class Templates extends MX_Controller {
       if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
           $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
       }
-      // echo '<pre>'; print_r($data);die;
+      
       
       $ttd = (!empty($data->reg_data->ttd))?$data->reg_data->ttd:$get_dokter->ttd;
       $stamp_dr = (!empty($data->reg_data->stamp))?$data->reg_data->stamp:$get_dokter->stamp;
@@ -1731,16 +1760,25 @@ class Templates extends MX_Controller {
       $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
       
       $html = '';
+
+    $config = [
+        'no_registrasi' => $data->reg_data->no_registrasi,
+        'kode' => $data->reg_data->no_registrasi,
+        'tanggal' => $data->reg_data->tgl_jam_masuk,
+        'flag' => 'RESUME_MEDIS',
+    ];
+    $qr_url = $this->qr_code_lib->qr_url($config);
+    $img = $this->qr_code_lib->generate($qr_url);
+    // echo "<pre>"; print_r($img); die;
+
       $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
                   <tr> 
                       <td width="70%"></td>
                       <td align="center" width="30%">
                       <br><br>
                       Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
-                      '.COMP_FULL.'
-                      <br><br>
-                      '.$ttd.'
-                      '.$stamp.'
+                      '.COMP_FULL.'<br>
+                      '.$img.'
                       </td>   
                   </tr>
               </table>';

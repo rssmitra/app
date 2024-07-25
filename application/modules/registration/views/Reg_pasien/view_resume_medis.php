@@ -12,21 +12,20 @@
   <div class="col-sm-12 widget-container-col ui-sortable">
     <div class="widget-box transparent ui-sortable-handle">
       <div class="widget-header">
-        <h4 class="widget-title lighter" style="padding-left: 12px">Data Riwayat Kunjungan Pasien</h4>
+        <h4 class="widget-title lighter">RESUME MEDIS PASIEN</h4>
       </div>
       <div class="widget-body">
-        <div class="col-md-6">
+        <div class="col-md-6 no-padding">
           <div class="widget-main">
             <address class="no-padding">
               No. Registrasi : <?php echo $result['registrasi']->no_registrasi?> &nbsp;&nbsp;&nbsp; Tanggal : <?php echo $this->tanggal->formatDateTime($result['registrasi']->tgl_jam_masuk)?><br>
-              <?php echo ucfirst($result['registrasi']->nama_bagian)?>&nbsp; | &nbsp;<?php echo ucwords($result['registrasi']->nama_pegawai)?>
-              <br><br>
-              <strong style="font-size:12px"><?php echo strtoupper($result['registrasi']->nama_pasien)?> (<?php echo $result['registrasi']->no_mr?>) </strong> 
-              <br>
-              Umur : <?php echo $umur?>&nbsp; Tahun
-              <br>
-              <?php echo $result['registrasi']->almt_ttp_pasien?>                     
+              <?php echo ucfirst($result['registrasi']->nama_bagian)?>&nbsp; | &nbsp;<?php echo ucwords($result['registrasi']->nama_pegawai)?>                 
             </address>
+            <table>
+              <tr><td width="130px">No. Rekam Medis</td><td>: <?php echo $result['registrasi']->no_mr?></td></tr>
+              <tr><td>Nama Pasien</td><td>: <?php echo $result['registrasi']->nama_pasien?></td></tr>
+              <tr><td>Umur</td><td>: <?php echo $umur?> Tahun</td></tr>
+            </table>
           </div>
         </div>
         <?php if(!isset($_GET['print'])) :?>
@@ -40,149 +39,126 @@
     </div>
   </div>
 
-  <div class="col-sm-12 widget-container-col ui-sortable" style="padding: 25px">
+  <div class="col-sm-12 widget-container-col ui-sortable">
     <div class="widget-box transparent ui-sortable-handle">
       <div class="widget-body">
-        <b>Resume Medis </b>
-        <table class="table table-bordered table-hover">
-
+        <div class="col-md-12">
+          <?php 
+            foreach($result['riwayat_medis'] as $row_rm) :
+              $str = substr($row_rm->kode_bagian_tujuan, 0,2);
+              $poli = [];
+              if($str == '01') :
+                $poli[] = $row_rm;
+          ?>
+          <p>
+            <span style="font-weight: bold;">DIAGNOSA AWAL :</span><br><?php echo $row_rm->diagnosa_awal; ?> <br><br>
+            <span style="font-weight: bold;">ANAMNESA :</span><br><?php echo nl2br($row_rm->anamnesa); ?> <br><br>
+            <span style="font-weight: bold;">TINDAKAN/ PEMERIKSAAN :</span><br><?php echo nl2br($row_rm->pemeriksaan); ?> <?php echo ($row_rm->pengobatan != '')?', '.nl2br($row_rm->pengobatan):'-'?> <br><br>
+            <span style="font-weight: bold;">DIAGNOSA AKHIR :</span><br><?php echo $row_rm->diagnosa_akhir; ?> <br><br>
+          </p>
+          <?php endif; endforeach; ?>
+        
+          <b>PEMERIKSAAN PENUNJANG MEDIS</b>
+          <table class="table table-bordered table-hover" style="width:100%">
             <thead>
-
-              <th style="color:black">No</th>
-
-              <th style="color:black">Jam Masuk Poli</th>
-
-              <!-- <th style="color:black">Poli Asal</th> -->
-
-              <th style="color:black">Poli Tujuan</th>
-
-              <th style="color:black">Diagnosa Awal</th>
-
-              <th style="color:black">Anamnesa</th>
-
-              <th style="color:black">Tindakan/Pemeriksaan</th>
-
-              <th style="color:black">Diagnosa Akhir</th>
-
+              <th style="color:black; width: 10%">Tanggal</th>
+              <th style="color:black; width: 20%">Dokter Pemeriksa</th>
+              <th style="color:black; width: 15%">Jenis Penunjang</th>
+              <th style="color:black">Item Pemeriksaan</th>
             </thead>
-
             <tbody>
+              <?php 
+                $getDataPenunjang = [];
+                foreach($result['tindakan'] as $row_p) {
+                  $getDataPenunjang[$row_p->kode_bagian][] = $row_p;
+                }
+                // echo "<pre>"; print_r($getDataPenunjang);die;
+                foreach($getDataPenunjang as $key_t=>$row_t) : 
+                  $str_tindakan = substr($key_t, 0,2);
+                  if($str_tindakan == '05') :
+              ?>
+                <tr>
+                  <td><?php echo $this->tanggal->formatDate($row_t[0]->tgl_transaksi)?></td>
+                  <td><?php echo $row_t[0]->nama_pegawai?></td>
+                  <td><?php echo $this->master->get_string_data('nama_bagian', 'mt_bagian', ['kode_bagian' => $row_t[0]->kode_bagian])?></td>
+                  <td>
+                    <ol>
+                    <?php foreach($row_t as $row_dt){
+                      echo "<li>".$row_dt->nama_tindakan."</li>";
+                    }?>
+                    </ol>
+                  </td>
+                </tr>
+              <?php endif; endforeach;?>
+            </tbody>
+          </table>
 
-            <?php foreach($result['riwayat_medis'] as $row_rm) :?>
+          <br>
+          <b>OBAT YANG DIBERIKAN</b>
+          <table class="table table-bordered table-hover" style="width:100% !important">
+              <thead>
+                <th style="color:black">No</th>
+                <th style="color:black">Nama Obat</th>
+                <th style="color:black">Dosis</th>
+                <th style="color:black">Jumlah</th>
+                <th style="color:black">Catatan</th>
+              </thead>
+
+              <tbody>
+
+              <?php 
+                $no = 0;
+                foreach($result['tindakan'] as $row_obt) :
+                  if(in_array($row_obt->kode_jenis_tindakan, array(11) )) :
+                    $no++;
+              ?>
               <tr>
-                <td><?php echo $row_rm->no_kunjungan?></td>
-                <td><?php echo $this->tanggal->formatDateTime($row_rm->tgl_masuk)?></td>
-                <!-- <td><?php echo $row_rm->poli_asal_kunjungan?></td> -->
-                <td><?php echo $row_rm->poli_tujuan_kunjungan?></td>
-                <td><?php echo ucfirst($row_rm->diagnosa_awal)?></td>
-                <td><?php echo ucfirst($row_rm->anamnesa)?></td>
-                <td><?php echo ucfirst($row_rm->pemeriksaan)?></td>
-                <td><?php echo ucfirst($row_rm->diagnosa_akhir)?></td>
+                <td align="center"><?php echo $no?></td>
+                <td><?php echo $row_obt->nama_tindakan?></td>
+                <td><?php echo $row_obt->dosis_per_hari.' x '.$row_obt->dosis_obat.' '.$row_obt->satuan_obat?> <?php echo $row_obt->anjuran_pakai?></td>
+                <td><?php echo ($row_obt->jumlah_tebus == 0) ? (int)$row_obt->jumlah_obat_23 : (int)$row_obt->jumlah_tebus + (int)$row_obt->jumlah_obat_23?> <?php echo $row_obt->satuan_kecil?></td>
+                <td><?php echo $row_obt->catatan_lainnya?></td>
               </tr>
-            <?php endforeach;?>
+              <?php endif; endforeach?>
 
-            </tbody>
+              </tbody>
+              <span style="color:red;margin-top:-5%;display:none" id="alert_complate_data_pasien"><i>Silahkan lengkapi data pasien terlebih dahulu</i></span>
 
-        </table>
-        <br>
-        <b>Tindakan/Pemeriksaan</b>
-        <table class="table table-bordered table-hover" style="width:80%">
+          </table>
+          <br>
+          <!-- <b>Kasir</b>
+          <table class="table table-bordered table-hover" style="width:60% !important">
 
-            <thead>
+              <thead>
 
-              <th style="color:black">Kode</th>
+                <th style="color:black">Kode</th>
+                <th style="color:black">No Kuitansi</th>
+                <th style="color:black">Tanggal</th>
+                <th style="color:black">Total Billing</th>
 
-              <th style="color:black">Tanggal</th>
+              </thead>
 
-              <th style="color:black">Dokter</th>
+              <tbody>
 
-              <th style="color:black">Deskripsi Item</th>
-
-              <th style="color:black">Jenis</th>
-
-            </thead>
-
-            <tbody>
-
-            <?php foreach($result['tindakan'] as $row_t) : if(in_array($row_t->kode_jenis_tindakan, array(3,10,12) )) :?>
+              <?php 
+                foreach($result['trans_kasir'] as $row_tk) :
+              ?>
               <tr>
-                <td><?php echo $row_t->kode_trans_pelayanan?></td>
-                <td><?php echo $this->tanggal->formatDateTime($row_t->tgl_transaksi)?></td>
-                <td><?php echo $row_t->nama_pegawai?></td>
-                <td><?php echo $row_t->nama_tindakan?></td>
-                <td><?php echo $row_t->jenis_tindakan?></td>
-                <!-- <td align="center"><?php echo ($row_t->kode_tc_trans_kasir>0)?'<label class="label label-success">Lunas</label>':'<label class="label label-danger">Belum Dibayar</label>'?></td> -->
+                <td width="15%"><?php echo $row_tk->kode_tc_trans_kasir?></td>
+                <td><?php echo $row_tk->seri_kuitansi.' - '.$row_tk->no_kuitansi?></td>
+                <td><?php echo $this->tanggal->formatDateTime($row_tk->tgl_jam)?></td>
+                <td><?php echo number_format($row_tk->bill); ?></td>
               </tr>
-            <?php endif; endforeach;?>
+              <?php endforeach?>
 
-            </tbody>
+              </tbody>
+              <span style="color:red;margin-top:-5%;display:none" id="alert_complate_data_pasien"><i>Silahkan lengkapi data pasien terlebih dahulu</i></span>
 
-        </table>
-        <br>
-        <b>Obat Yang Diberikan</b>
-        <table class="table table-bordered table-hover" style="width:60% !important">
+          </table> -->
+          <br>
+          <p><i>Generated by <?php echo APPS_NAME_SORT.'&nbsp; '.COMP_LONG; ?> <?php echo $this->tanggal->formatDateTime(date('Y-m-d H:i:s')); ?></i></p>
 
-            <thead>
-
-              <th style="color:black">Kode</th>
-
-              <th style="color:black">Nama Obat</th>
-              <th style="color:black">Jenis</th>
-              <th style="color:black">Jumlah</th>
-
-            </thead>
-
-            <tbody>
-
-            <?php 
-              foreach($result['tindakan'] as $row_obt) :
-                if(in_array($row_obt->kode_jenis_tindakan, array(11) )) :
-            ?>
-            <tr>
-              <td width="15%"><?php echo $row_obt->kode_trans_pelayanan?></td>
-              <td><?php echo $row_obt->nama_tindakan?></td>
-              <td><?php echo $row_obt->jenis_tindakan?></td>
-              <td><?php echo $row_obt->jumlah_tebus?></td>
-            </tr>
-            <?php endif; endforeach?>
-
-            </tbody>
-            <span style="color:red;margin-top:-5%;display:none" id="alert_complate_data_pasien"><i>Silahkan lengkapi data pasien terlebih dahulu</i></span>
-
-        </table>
-        <br>
-        <b>Kasir</b>
-        <table class="table table-bordered table-hover" style="width:60% !important">
-
-            <thead>
-
-              <th style="color:black">Kode</th>
-              <th style="color:black">No Kuitansi</th>
-              <th style="color:black">Tanggal</th>
-              <th style="color:black">Total Billing</th>
-
-            </thead>
-
-            <tbody>
-
-            <?php 
-              foreach($result['trans_kasir'] as $row_tk) :
-            ?>
-            <tr>
-              <td width="15%"><?php echo $row_tk->kode_tc_trans_kasir?></td>
-              <td><?php echo $row_tk->seri_kuitansi.' - '.$row_tk->no_kuitansi?></td>
-              <td><?php echo $this->tanggal->formatDateTime($row_tk->tgl_jam)?></td>
-              <td><?php echo number_format($row_tk->bill); ?></td>
-            </tr>
-            <?php endforeach?>
-
-            </tbody>
-            <span style="color:red;margin-top:-5%;display:none" id="alert_complate_data_pasien"><i>Silahkan lengkapi data pasien terlebih dahulu</i></span>
-
-        </table>
-        <br>
-      <p><i>Generated by SIRS <?php echo COMP_LONG; ?> <?php echo $this->tanggal->formatDateTime(date('Y-m-d H:i:s')); ?></i></p>
-
+        </div>
       </div>
     </div>
   </div>

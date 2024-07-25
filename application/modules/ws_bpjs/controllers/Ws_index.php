@@ -43,10 +43,22 @@ class Ws_index extends MX_Controller {
             /*get data peserta*/
             $peserta = $this->Ws_index->getData("Peserta/nokartu/".$response->noKartu."/tglSEP/".$response->tglSep."");
             $data['peserta'] = $peserta->response->peserta ;
+        }
 
+        if($mod == 'daftarRuangan'){
+            $list = $this->Ws_index->get_data_ruangan()->result();
+            foreach ($list as $key => $value) {
+                $getData[$value->nama_bagian][$value->nama_klas][$value->no_kamar][] = $value;
+            }
+            // echo '<pre>'; print_r($getData); die;
+            $data['list'] = $getData;
         }
         /*load view index*/
         $this->load->view('Ws_index/'.$mod.'', $data);
+    }
+
+    public function getSignatureHeader(){
+        echo json_encode($this->Ws_index->getSignatureHeader());
     }
 
     public function getRef() { 
@@ -101,6 +113,8 @@ class Ws_index extends MX_Controller {
                 $result_data['pelayanan'] = $response->pelayanan;
                 $result_data['poliRujukan'] = $response->poliRujukan;
                 $result_data['provPerujuk'] = $response->provPerujuk;
+                $dueDate = date('Y-m-d', strtotime($response->tglKunjungan. ' + 90 days'));
+                $result_data['masaBerlakuRujukan'] = $dueDate;
 
                 // cek no kartu bpjs
                 // if($result_data['peserta']->noKartu != $_POST['noKartuBPJS']){
@@ -339,6 +353,7 @@ class Ws_index extends MX_Controller {
             foreach ($list['data']->sep as $row_list) {
             $no++;
             $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">
                         <a href="#" title="Delete SEP" class="btn btn-xs btn-danger" onclick="delete_sep('."'".$row_list->noSep."'".')"><i class="fa fa-times-circle"></i></a>
                         <a href="#" title="Update SEP" class="btn btn-xs btn-success" onclick="getMenu('."'ws_bpjs/ws_index?modWs=DetailSEP&sep=".$row_list->noSep."'".')"><i class="fa fa-edit"></i></a>
@@ -407,11 +422,14 @@ class Ws_index extends MX_Controller {
         
         $jenis_printer = $this->db->get_where('global_parameter', array('flag' => 'printer_booking'))->result();
         $result = $this->Ws_index->get_data_sep($noSep);
+        $registrasi = $this->Ws_index->get_data_registrasi($noSep);
+        
         $response = isset($result['response']) ? $result : false;
         $no_kunjungan = isset($_GET['no_kunjungan'])?$_GET['no_kunjungan']:'';
         $no_registrasi = isset($_GET['no_registrasi'])?$_GET['no_registrasi']:'';
         $no_antrian = isset($_GET['no_antrian'])?$_GET['no_antrian']:'';
         
+
         if($response == false){
             echo json_encode(array('status' => 0, 'message' => 'Error API ! Silahkan cek koneksi anda!'));
             exit;
@@ -421,10 +439,11 @@ class Ws_index extends MX_Controller {
 
             $cetakan_ke = $this->Ws_index->count_sep_by_day();
             // get detail kunjungan by sep
-            // echo '<pre>'; print_r($row_sep);die;
-            $data = array('sep'=>$response['data'], 'cetakan_ke' => $cetakan_ke, 'jenis_printer' => $jenis_printer, 'no_registrasi' => $no_registrasi, 'no_kunjungan' => $no_kunjungan, 'no_antrian' => $no_antrian);
+            $data = array('sep'=>$response['data'], 'cetakan_ke' => $cetakan_ke, 'jenis_printer' => $jenis_printer, 'registrasi' => $registrasi, 'no_kunjungan' => $no_kunjungan, 'no_antrian' => $no_antrian, 'no_sep' => $noSep);
             // print sep
+            
             // $this->print_escpos->print_sep($data);
+            // echo '<pre>'; print_r($data);die;
             $this->load->view('Ws_index/previewSep', $data, false);
             
         }else{
@@ -440,32 +459,47 @@ class Ws_index extends MX_Controller {
         $this->load->library('Print_escpos');
         /*data sep*/
         
-        $result = $this->Ws_index->get_data_sep($noSep);
-        $response = isset($result['response']) ? $result : false;
+        // $result = $this->Ws_index->get_data_sep($noSep);
+        // $response = isset($result['response']) ? $result : false;
         $registrasi = $this->Ws_index->get_data_registrasi($noSep);
         $rujukan = $this->Ws_index->check_surat_kontrol_by_sep($noSep);
         $response_rujukan = isset($rujukan['response']) ? $rujukan : false;
 
-        if($response == false){
-            echo json_encode(array('status' => 0, 'message' => 'Error API ! Silahkan cek koneksi anda!'));
-            exit;
-        }
+        // if($response == false){
+        //     echo json_encode(array('status' => 0, 'message' => 'Error API ! Silahkan cek koneksi anda!'));
+        //     exit;
+        // }
         
         if($response['response']->metaData->code == 200){
 
             $cetakan_ke = $this->Ws_index->count_sep_by_day();
             // get detail kunjungan by sep
             
-            // echo '<pre>'; print_r($row_sep);die;
+            // echo '<pre>'; print_r($registrasi);die;
             $data = array('sep'=>$response['data'], 'registrasi' => $registrasi, 'cetakan_ke' => $cetakan_ke, 'rujukan' => $response_rujukan['data']);
             // print sep
-            $this->print_escpos->print_sep($data);
+            $this->print_escpos->print_registrasi($data);
             
         }else{
 
             echo json_encode(array('status' => $result['response']->metaData->code, 'message' => $result['response']->metaData->message));
 
         }
+
+    }
+
+    public function print_registrasi($no_registrasi)
+    {   
+        $this->load->library('Print_escpos');
+        /*data sep*/
+        
+        $registrasi = $this->Ws_index->get_data_registrasi_by_noreg($no_registrasi);
+        $cetakan_ke = $this->Ws_index->count_sep_by_day();
+        // echo '<pre>'; print_r($registrasi);die;
+        $data = array('sep'=>$response['data'], 'registrasi' => $registrasi, 'cetakan_ke' => $cetakan_ke, 'rujukan' => $response_rujukan['data']);
+        // print sep
+        $this->print_escpos->print_registrasi($data);
+            
 
     }
 
@@ -932,7 +966,7 @@ class Ws_index extends MX_Controller {
         /*get data from model*/
         
         $data = array();
-        if(isset($_GET['JnsKontrol'])) :
+        if(isset($_GET['jnsKontrol'])) :
             $list = $this->Ws_index->find_surat_kontrol_by_noka();
             // echo '<pre>';print_r($list);die;
             if ($list['response']->metaData->code ==  200) {
@@ -943,15 +977,19 @@ class Ws_index extends MX_Controller {
                     $row = array();
                     
                     $row[] = '<div class="center">'.$no.'</div>';
+                    $row[] = '<a href="#" class="label label-primary" onclick="copySuratKontrol('."'".$row_list->noSuratKontrol."'".')">'.$row_list->noSuratKontrol.'</a>';
                     $row[] = $row_list->nama;
-                    $row[] = $row_list->noKartu;
-                    $row[] = $row_list->noSuratKontrol;
                     $row[] = $row_list->jnsPelayanan;
+                    // $row[] = $row_list->noKartu;
                     $row[] = $row_list->namaJnsKontrol;
                     $row[] = $row_list->tglRencanaKontrol;
                     $row[] = $row_list->noSepAsalKontrol;
+                    $row[] = $row_list->namaPoliAsal;
                     $row[] = $row_list->namaPoliTujuan;
                     $row[] = $row_list->namaDokter;
+                    $row[] = '<div class="center">
+                        <a href="#" title="Delete Surat Kontrol" class="btn btn-xs btn-danger" onclick="delete_surat_kontrol('."'".$row_list->noSuratKontrol."'".')"><i class="fa fa-times-circle"></i></a>
+                     </div>';
                     $data[] = $row;
                 }
             }
@@ -1368,73 +1406,6 @@ class Ws_index extends MX_Controller {
         //output to json format
         echo json_encode($output);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     function prosesUpdateSep($val){
         /*insert sep*/
@@ -1975,10 +1946,6 @@ class Ws_index extends MX_Controller {
         return $count = $this->Ws_index->countRuangan($kode_bagian, $kode_klas);
     }
 
-    function getSignatureHeader(){
-        echo json_encode($this->Ws_index->getSignatureHeader());
-    }
-
     public function getKetersedianBedRs(){
 
         $result = $this->Ws_index->getBedData();
@@ -1989,6 +1956,62 @@ class Ws_index extends MX_Controller {
 
     function countCategoryBed($kode_bagian, $kode_klas){
         return $count = $this->Ws_index->countCategoryBed($kode_bagian, $kode_klas);
+    }
+
+    public function getDashboardAntrian(){
+
+        $output = http_build_query($_GET) . "\n";
+        $data[0] = array(
+            'nameid' => 'dashboard-antrol',
+            'style' => 'custom-dashboard-antrol',
+            'col_size' => 12,
+            'url' => 'ws_bpjs/Ws_index/getDataAntrol?prefix=1&TypeChart=custom-antrol&style=custom-dashboard-antrol&'.$output.'',
+        );
+        
+        echo json_encode($data);
+    }
+
+    public function getDataAntrol(){
+        // echo '<pre>'; print_r($_GET);die;
+        echo json_encode($this->Ws_index->getDataAntrol($_GET), JSON_NUMERIC_CHECK);
+    }
+
+    public function getIcare($noka='', $kodedokter=''){
+        $post_data = array(
+            'param' => $noka,
+            'kodedokter' => (int)$kodedokter
+        );
+        if($noka==''){
+            echo json_encode(['code' => 301, 'message' => 'Nomor Kartu BPJS tidak ditemukan']);
+            exit;
+        }
+
+        if($kodedokter==''){
+            echo json_encode(['code' => 301, 'message' => 'Kode Dokter tidak ditemukan', 'kodedokter' => $kodedokter]);
+            exit;
+        }
+        
+        $response = $this->Ws_index->postDataWsIcare('api/rs/validate', $post_data, 'POST');
+        $result = array(
+            'response' => isset($response['response']) ? $response['response'] : '' ,
+            'url' => isset($response['data']->url) ? $response['data']->url:'',
+            'kode_dokter' => $kodedokter,
+        );
+        // echo '<pre>'; print_r($result);die;
+        echo json_encode($result);
+    }
+
+    public function getRujukanList(){
+        $no_kartu_bpjs = $_GET['no_kartu'];
+        $tipe_faskes = $_GET['tipe_faskes'];
+        $rujukan = $this->Ws_index->get_rujukan_by_kartu($no_kartu_bpjs, $tipe_faskes);
+        // echo "<pre>"; print_r($rujukan);die;
+        $data = array(
+            'rujukan' => isset($rujukan['data']->rujukan)?$rujukan['data']->rujukan:0,
+            'code' => $rujukan['response']->metaData->code,
+            'msg' => $rujukan['response']->metaData->message,
+        );
+        echo json_encode($data);
     }
 
 

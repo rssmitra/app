@@ -160,9 +160,14 @@ class E_resep_model extends CI_Model {
 		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
 	}
 	
-	public function get_cart_resep($no_kunjungan){
-		return $this->db->order_by('id', 'ASC')->get_where('fr_tc_pesan_resep_detail', array('no_kunjungan' => $no_kunjungan, 'id_template' => NULL) )->result();
+	public function get_cart_resep($kode_pesan_resep){
+		return $this->db->order_by('id', 'ASC')->get_where('fr_tc_pesan_resep_detail', array('kode_pesan_resep' => $kode_pesan_resep, 'parent' => '0') )->result();
 	}
+
+	public function get_cart_resep_for_template($kode_pesan_resep){
+		return $this->db->order_by('id', 'ASC')->get_where('fr_tc_pesan_resep_detail', array('kode_pesan_resep' => $kode_pesan_resep) )->result();
+	}
+
 	public function get_cart_detail_by_template_id($template_id){
 		return $this->db->order_by('id', 'ASC')->get_where('fr_tc_template_resep_detail', array('id_template' => $template_id) )->result();
 	}

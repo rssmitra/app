@@ -200,6 +200,7 @@ function form_main(url, no_mr){
   .well{
     padding: 5px !important;
   }
+
 </style>
 
 <div class="row">
@@ -231,7 +232,7 @@ function form_main(url, no_mr){
           <input type="hidden" name="bag_pas" value="<?php echo $value->bag_pas?>" id="bag_pas">
 
           <!-- profile Pasien -->
-          <div class="col-md-2 no-padding">
+          <div class="col-md-2">
             <div class="box box-primary" id='box_list_pasien'></div><br>
             <label class="label label-xs label-success">&nbsp;&nbsp;</label> LA (Lantai Atas)<br>
             <label class="label label-xs label-danger">&nbsp;&nbsp;</label> LB (Lantai Bawah)<br>

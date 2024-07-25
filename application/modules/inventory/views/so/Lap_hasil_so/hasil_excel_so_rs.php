@@ -41,7 +41,11 @@
           <?php 
             $no = 0; 
             foreach($result_content as $row_data) : $no++; 
-            $total = $row_data->stok_sekarang * $row_data->harga_pembelian_terakhir;
+            $harga = $row_data->stok_sekarang * $row_data->harga_pembelian_terakhir;
+            $content = isset($row_data->content)?$row_data->content:0;
+            $hpa = ($content > 0) ? $harga / $content : 0;
+            $total = $row_data->stok_sekarang * $hpa;
+
             $arr_total[] = $total;
           ?>
             <tr>

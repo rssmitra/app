@@ -22,6 +22,8 @@ class E_resep_rj extends MX_Controller {
         $this->load->model('Retur_obat_model', 'Retur_obat');
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         $this->load->model('pelayanan/Pl_pelayanan_model', 'Pl_pelayanan');
+
+        $this->load->module('farmasi/E_resep');
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
@@ -57,7 +59,7 @@ class E_resep_rj extends MX_Controller {
             $no++;
             $row = array();
             $row[] = '<div class="center" width="30px">'.$no.'</div>';
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/E_resep_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">'.$row_list->kode_pesan_resep.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=RJ'".')" class="label label-primary">'.$row_list->kode_pesan_resep.'</a></div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $row[] = '<div class="center"><b>'.$row_list->no_mr.'</b></div>';
             $row[] = strtoupper($row_list->nama_pasien);
@@ -69,19 +71,35 @@ class E_resep_rj extends MX_Controller {
             // $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
             // $row[] = '<div class="center">'.$status_tebus.'</div>';
             
-            if( $row_list->status_resep == 'telaah_resep' ) {
-                $btn_action = '<a href="#">Telaah Resep</a>';    
-            }elseif ( $row_list->status_resep == 'pengambilan_obat' ) {
-                $btn_action = '<a href="#">Pengambilan Obat</a>';
-            }elseif ( $row_list->status_resep == 'proses_racik_obat') {
-                $btn_action = '<a href="#">Proses Racik Obat</a>';
-            }elseif ( $row_list->status_resep == 'penyerahan_obat') {
-                $btn_action = '<a href="#">Penyerahan Obat</a>';
+            // $row[] = $row_list->diagnosa_akhir;
+            if($row_list->status_bayar != 1) {
+                if($row_list->status_transaksi == 1){
+                    $row[] = '<div class="center">
+                            <label class="label lebel-xs label-success"> <i class="fa fa-check-circle"></i> Selesai</label>
+                          </div>';    
+                }else{
+                    $row[] = '<div class="center">
+                            <label class="label lebel-xs label-warning" alt="Belum diselesaikan"> <i class="fa fa-exclamation-circle"></i> Pending </label>
+                          </div>';
+                }
+                
             }else{
-                $btn_action = '<a href="#" class="btn btn-xs btn-inverse" onclick="getMenu('."'farmasi/E_resep_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$_GET['flag']."'".')">Telaah Resep</a>'; 
+                $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
             }
 
-            $row[] = '<div class="center">'.$btn_action.'</div>';
+            // if( $row_list->status_resep == 'telaah_resep' ) {
+            //     $btn_action = '<a href="#">Telaah Resep</a>';    
+            // }elseif ( $row_list->status_resep == 'pengambilan_obat' ) {
+            //     $btn_action = '<a href="#">Pengambilan Obat</a>';
+            // }elseif ( $row_list->status_resep == 'proses_racik_obat') {
+            //     $btn_action = '<a href="#">Proses Racik Obat</a>';
+            // }elseif ( $row_list->status_resep == 'penyerahan_obat') {
+            //     $btn_action = '<a href="#">Penyerahan Obat</a>';
+            // }else{
+            //     $btn_action = '<a href="#" class="btn btn-xs btn-inverse" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=RJ'".')">Telaah Resep</a>'; 
+            // }
+
+            // $row[] = '<div class="center">'.$btn_action.'</div>';
 
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
             // $row[] = $row_list->nama_lokasi;
@@ -143,7 +161,8 @@ class E_resep_rj extends MX_Controller {
         $data['kode_pesan_resep'] = $id;
         $data['value'] = $this->E_resep_rj->get_by_id($id);
         $data['trans_farmasi'] = $this->E_resep_rj->get_trans_farmasi($id);
-        $data['resep_cart'] = $this->Pl_pelayanan->get_cart_resep($data['value']->no_kunjungan);
+        $eresep = new E_resep;
+        $data['resep_cart'] = $eresep->get_cart_resep($data['value']->no_kunjungan);
         
         $data['riwayat_penunjang'] = $this->get_riwayat_penunjang($_GET['mr']);
         // echo '<pre>';print_r($data['riwayat_penunjang']);die;
@@ -160,275 +179,6 @@ class E_resep_rj extends MX_Controller {
         $this->load->view('E_resep_rj/form_telaah_resep', $data);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    public function riwayat_resep() 
-    { 
-        /*define variable data*/
-        if( $_GET['type'] == 'rl' ){
-            $name = 'Resep Luar';
-        }
-
-        if( $_GET['type'] == 'rk' ){
-            $name = 'Resep Karyawan';
-        }
-
-        if( $_GET['type'] == 'pb' ){
-            $name = 'Pembelian Bebas';
-        }
-        
-        $data = array(
-            'title' => $name ,
-            'breadcrumbs' => $this->breadcrumbs->show(),
-            'flag' => $_GET['type'],
-            'profit' => $_GET['profit']
-        );
-        /*load view index*/
-        $this->load->view('E_resep_rj/riwayat_resep_index', $data);
-    }
-
-    
-
-    public function form_create()
-    {
-        /*if id is not null then will show form edit*/
-        /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'E_resep_rj/'.strtolower(get_class($this)).'/'.__FUNCTION__);
-        
-        /*initialize flag for form*/
-        $data['tipe_layanan'] = strtolower($_GET['jenis_resep']);
-        $data['str_tipe _layanan'] = ($_GET['jenis_resep']=='RJ')?'Rajal':'Ranap';
-        $data['kode_trans_far'] = isset($_GET['kode_trans_far'])?$_GET['kode_trans_far']:'';
-        /*title header*/
-        $data['title'] = 'Resep Farmasi';
-        /*show breadcrumbs*/
-        $data['breadcrumbs'] = $this->breadcrumbs->show();
-        // print_r($data);
-        /*load form view*/
-        $this->load->view('E_resep_rj/form_create', $data);
-    }
-
-    public function form_default_entry($kode_trans_far='')
-    {
-        /*if id is not null then will show form edit*/
-        $data = array();
-        $result = $this->Retur_obat->get_by_id($kode_trans_far);
-        $flag = (!empty($result)) ? preg_replace('/[^A-Za-z\?!]/', '', $result->no_resep) : $_GET['jenis_resep'];
-        $data['flag'] = $flag;
-        $data['value'] = $result;
-        // echo '<pre>';print_r($data);die;
-        $this->load->view('E_resep_rj/form_default_entry', $data);
-    }
-
-    public function form_resep_rj()
-    {
-        $this->load->view('E_resep_rj/form_resep_rj');
-    }
-    
-    public function form_resep_luar($kode_trans_far='')
-    {
-        $data = array();
-        $data['title_form'] = ($_GET['jenis_resep']=='rl') ? 'Resep Luar' : 'Pembelian Bebas';
-        $data['value'] = $this->Retur_obat->get_by_id($kode_trans_far);
-        // echo '<pre>'; print_r($data);die;
-        $this->load->view('E_resep_rj/form_resep_luar', $data);
-    }
-
-    public function form_resep_karyawan($kode_trans_far='')
-    {
-        $data = array();
-        $data['value'] = $this->Etiket_obat->get_by_id($kode_trans_far);
-        $this->load->view('E_resep_rj/form_resep_karyawan', $data);
-    }
-
-
-    /*function for view data only*/
-    public function show($id)
-    {
-        /*breadcrumbs for view*/
-        $this->breadcrumbs->push('View '.strtolower($this->title).'', 'E_resep_rj/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
-        /*define data variabel*/
-        $data['value'] = $this->E_resep_rj->get_by_id($id);
-        $data['title'] = $this->title;
-        $data['flag'] = "read";
-        $data['breadcrumbs'] = $this->breadcrumbs->show();
-        /*load form view*/
-        $this->load->view('E_resep_rj/form', $data);
-    }
-
-    public function getDetail($kode_brg, $id){
-        
-        $data = $this->E_resep_rj->get_detail_by_kode_brg($kode_brg);
-        $resep = $this->E_resep_rj->get_detail_by_kode_tr_resep($id);
-        // echo'<pre>';print_r($resep);die;
-        
-        $html = '';
-        if(count($data) > 0){
-            $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.strtoupper($data->nama_brg).'</h4></b></div><br>';
-            $html .= '<table class="table table-striped" style="width: 75%">';
-            $html .= '<tr>';
-                // $html .= '<th>Pabrikan</th>';
-                // $html .= '<th>Jenis Obat</th>';
-                $html .= '<th>Jml Obat Kronis/ ditangguhkan</th>';
-                $html .= '<th>Satuan Besar/Kecil</th>';
-                $html .= '<th>Rasio</th>';
-                $html .= '<th>Signa</th>';
-                $html .= '<th>Catatan</th>';
-            $html .= '</tr>'; 
-                $html .= '<tr>';
-                    // $html .= '<td>'.$data->nama_pabrik.'</td>';
-                    // $html .= '<td>'.$data->nama_jenis.'</td>';
-                    $penangguhan = ($resep->prb_ditangguhkan == 1)?'Y':'N';
-                    $html .= '<td align="center">'.$resep->jumlah_obat_23.'/'.$penangguhan.'</td>';
-                    $html .= '<td>'.$data->satuan_besar.' / '.$data->satuan_kecil.'</td>';
-                    $html .= '<td>1 : '.$data->content.'</td>';
-                    $html .= '<td>'.$resep->dosis_per_hari.' x '.$resep->dosis_obat.' '.$resep->satuan_obat.' ('.$resep->anjuran_pakai.') </td>';
-                    $html .= '<td>'.ucfirst($resep->catatan_lainnya).'</td>';
-                $html .= '</tr>';
-
-            $html .= '</table>'; 
-        }else{
-            $html .= '<div style="border-bottom:1px solid #333;"><b>Tidak ada barang ditemukan</b></div><br>';
-        }
-
-        echo json_encode(array('html' => $html, 'resep_data' => $resep));
-
-    }
-
-    
-
-    public function get_data_temp_pesanan_obat()
-    {
-        /*get data from model*/
-        $list = $this->E_resep_rj->get_detail_resep_data(); 
-        // echo '<pre>';print_r($list); die;
-        $data = array();
-        $no = $_POST['start'];
-        foreach ($list as $row_list) {
-            $no++;
-            $row = array();
-            $row[] = '';
-            
-            $row[] = $row_list->relation_id;
-            $row[] = $row_list->flag_resep;
-            
-            if( $row_list->id_tc_log_mutasi_obat == null) :
-                if( $row_list->id_tc_far_racikan != 0 ){
-                    $onclick = 'onclick="show_modal('."'farmasi/Entry_resep_racikan/form/".$row_list->kode_trans_far."?kelompok=12&id_tc_far_racikan=".$row_list->relation_id."&tipe_layanan=".$_GET['tipe_layanan']."&kode_pesan_resep=".$row_list->kode_pesan_resep."'".', '."'RESEP RACIKAN'".')"';
-                    $btn_selesai_racikan = '<li><a href="#" onclick="process_selesai('.$row_list->relation_id.')">Resep Selesai</a></li>';
-                }else{
-                    $onclick = 'onclick="edit_obat_resep('."'".$row_list->kode_brg."','".$row_list->relation_id."'".')"';
-                    $btn_selesai_racikan = '';
-                }
-                
-                if($row_list->status_tebus != 1){
-                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" '.$onclick.'><i class="fa fa-edit"></i></a> <a href="#" class="btn btn-xs btn-danger" onclick="delete_resep('.$row_list->relation_id.', '."'".$row_list->flag_resep."'".')"><i class="fa fa-trash"></i></a> </div>';
-                }else{
-                    $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
-                }
-            else:
-                $row[] = '<div class="center" style="font-weight: bold; color: red; padding: 5px">n/a</div>';
-            endif;
-
-            $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
-            $row[] = $row_list->kode_brg;
-            $nama_brg = ($row_list->nama_brg != '')?$row_list->nama_brg:'Obat Racikan -'.$no;
-            $row[] = strtoupper($nama_brg);
-            $row[] = '<div class="center">'.(int)$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
-            $status_resep_ditangguhkan = ($row_list->resep_ditangguhkan == 0) ? 'N' : 'Y' ;
-            $row[] = '<div class="center">'.$status_resep_ditangguhkan.'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->harga_jual, 2).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->sub_total, 2).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->jasa_r, 2).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->total, 2).'</div>';
-            $status_input = ($row_list->status_input==NULL)?'<label class="label label-warning">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
-            $row[] = '<div align="center">'.$status_input.'</div>';
-            $data[] = $row;
-        }
-
-        $output = array(
-                        "draw" => $_POST['draw'],
-                        "data" => $data,
-                );
-        //output to json format
-        echo json_encode($output);
-    }
-
-    public function find_data()
-    {   
-        $output = array( "data" => http_build_query($_POST) . "\n" );
-        echo json_encode($output);
-    }
-
-    public function print_resep_gudang()
-    {   
-        $this->print_escpos->print_testing();
-    }
-
-    public function cek_resep_karyawan_today(){
-
-        $trans_far = $this->db->where("YEAR(tgl_trans) = '".date('Y')."' AND MONTH(tgl_trans) = '".date('m')."' AND status_transaksi IS NULL")->order_by('kode_trans_far', 'DESC')->get_where('fr_tc_far', array('no_mr' => $_GET['no_mr']) );
-        $return = ( $trans_far->num_rows() > 0 ) ? $trans_far->row() : array('kode_trans_far' => 0) ;
-        echo json_encode($return);
-    }
-
-    public function get_riwayat_penunjang($no_mr){
-        $column = array('tc_kunjungan.no_registrasi', 'tc_kunjungan.kode_bagian_tujuan', 'tc_kunjungan.no_kunjungan', 'tc_kunjungan.tgl_masuk');
-        $this->Reg_pasien->query_get_riwayat_pasien(join($column,','), $column, $no_mr);
-        $query = $this->db->get(); 
-        //print_r($this->db->last_query());
-		return $query->result();
-    }
 }
 
 

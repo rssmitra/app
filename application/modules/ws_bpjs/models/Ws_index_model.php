@@ -26,6 +26,9 @@ class Ws_index_model extends CI_Model {
 	var $secretKeyApplicare 	= "H9139FJ385";
 	var $base_api_url_applicare = "https://new-api.bpjs-kesehatan.go.id/aplicaresws";
 
+	// ICARE
+	var $base_api_url_icare	= "https://apijkn.bpjs-kesehatan.go.id/wsihs";
+
 
 
 	public function __construct()
@@ -73,11 +76,32 @@ class Ws_index_model extends CI_Model {
 
 	}
 
+	function getSignatureHeaderIcare(){
+
+		$stamp		= time();
+		$data 		= $this->consID.'&'.$stamp;
+		
+		$signature = hash_hmac('sha256', $data, $this->secretKey, true);
+		$encodedSignature = base64_encode($signature);	
+		$headers = array( 
+	            /*"Accept: application/json", */
+	            "x-cons-id: ".$this->consID, 
+	            "x-timestamp: ".$stamp, 
+	            "x-signature: ".$encodedSignature,
+	            "user-key: ".$this->user_key,
+	            'Content-Type: application/json',
+	        ); 
+		// echo '<pre>';print_r($headers);die;
+		return $headers;
+
+	}
+
 	function getData($service_name){
 
 		$header = $this->getSignatureHeader();
 		$key = $this->consID.$this->secretKey.time();
 		$uri = $this->base_api_url.'/'.$service_name;
+		// echo '<pre>';print_r($uri);die;
 		$ch = curl_init($uri);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
@@ -87,7 +111,7 @@ class Ws_index_model extends CI_Model {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$data = curl_exec($ch);
 		$result = json_decode($data);
-		// echo '<pre>';print_r($result);die;
+		
 		// decrypt
 		if(isset($result->response)){
 			$strdecrpt = $this->stringDecrypt($key, $result->response);
@@ -98,6 +122,7 @@ class Ws_index_model extends CI_Model {
 			'response' => $result,
 			'data' => isset($decompress)?json_decode($decompress):'',
 		);
+		// echo '<pre>';print_r($getData);die;
 		curl_close($ch);
 		return $getData;
 		
@@ -130,6 +155,9 @@ class Ws_index_model extends CI_Model {
 		$data = curl_exec($c);
         $result = json_decode($data);
 
+		// echo 'Curl error: ' . curl_error($c);
+		// print_r($uri);die;
+
 		if(isset($result->response)){
 			$strdecrpt = $this->stringDecrypt($key, $result->response);
 			$decompress = $this->decompress($strdecrpt);
@@ -140,6 +168,48 @@ class Ws_index_model extends CI_Model {
 			'data' => isset($decompress)?json_decode($decompress):'',
 		);
 		curl_close($c);
+		return $getData;
+
+	}
+
+	function postDataWsIcare($service_name, $post_data='', $method=''){
+
+		$uri = $this->base_api_url_icare.'/'.$service_name;
+		$json = json_encode($post_data); 
+		$key = $this->consID.$this->secretKey.time();
+		$c = curl_init();
+
+		curl_setopt($c, CURLOPT_URL, $uri);
+		// $certificate_location = 'assets/cacert.pem';
+		// curl_setopt($c, CURLOPT_SSL_VERIFYHOST, $certificate_location);
+		// curl_setopt($c, CURLOPT_SSL_VERIFYPEER, $certificate_location);
+
+		curl_setopt($c, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($c, CURLOPT_TIMEOUT, 30);
+		$headers = $this->getSignatureHeaderIcare();
+		curl_setopt($c, CURLOPT_HTTPHEADER, $headers);
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($c, CURLOPT_POST, true);
+		curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($c, CURLOPT_POSTFIELDS, $json);
+
+		
+		// echo 'Curl error: ' . curl_error($c);
+		$data = curl_exec($c);
+        $result = json_decode($data);
+		// print_r($json);die;
+		
+		if(isset($result->response)){
+			$strdecrpt = $this->stringDecrypt($key, $result->response);
+			$decompress = $this->decompress($strdecrpt);
+		}
+		
+		$getData = array(
+			'response' => $result,
+			'data' => isset($decompress)?json_decode($decompress):'',
+		);
+		curl_close($c);
+		// print_r($getData);die;
 		return $getData;
 
 	}
@@ -235,7 +305,7 @@ class Ws_index_model extends CI_Model {
 	function RefDokterDPJP(){
 		$service_name = "referensi/dokter/pelayanan/".$_POST['jp']."/tglPelayanan/".$_POST['tgl']."/Spesialis/".$_POST['spesialis'];
 		$result = $this->getData($service_name);
-		// print_r($_POST);die;
+		
 		if($result['response']->metaData->code==200){
 			foreach ($result['data']->list as $key => $value) {
 				$arrResult[] = ''.$value->kode.' : '.$value->nama;
@@ -320,10 +390,9 @@ class Ws_index_model extends CI_Model {
 
 	/*rujukan*/
 	function searchRujukan(){
-		// print_r($_POST);exit;
+		
 		/*puskesmas*/
 		if($_POST['jenis_faskes']=='pcare') {
-
 			if($_POST['flag']=='noRujukan'){
 				$service_name = "Rujukan/".$_POST['keyvalue'];
 			}else{
@@ -332,17 +401,13 @@ class Ws_index_model extends CI_Model {
 
 		/*ini untuk rs*/
 		}else{
-
 			if($_POST['flag']=='noRujukan'){
 				$service_name = "Rujukan/RS/".$_POST['keyvalue'];
 			}else{
 				$service_name = "Rujukan/RS/Peserta/".$_POST['keyvalue'];
 			}
-
 		}
-
-		
-				
+		// print_r($service_name);exit;
 		return $this->getData($service_name);
 	}
 
@@ -449,11 +514,13 @@ class Ws_index_model extends CI_Model {
 
 	function find_surat_kontrol_by_noka()
     {
-    	$Bulan = isset($_GET['Bulan'])?$_GET['Bulan']:date('m');
+    	$Bulan = isset($_GET['Bulan'])?$_GET['Bulan']:date('mm');
+		$lengthbln = strlen($Bulan);
+		$strbulan = ($lengthbln == 1)?'0'.$Bulan:$Bulan;
     	$Tahun = isset($_GET['Tahun'])?$_GET['Tahun']:date('Y');
     	$Nokartu = isset($_GET['Nokartu'])?$_GET['Nokartu']:'';
     	$filter = isset($_GET['filter'])?$_GET['filter']:1;
-    	$service_name = "RencanaKontrol/ListRencanaKontrol/Bulan/".$Bulan."/Tahun/".$Tahun."/Nokartu/".$Nokartu."/filter/".$filter."";
+    	$service_name = "RencanaKontrol/ListRencanaKontrol/Bulan/".$strbulan."/Tahun/".$Tahun."/Nokartu/".$Nokartu."/filter/".$filter."";
 		$result = $this->getData($service_name);
 		// echo '<pre>';print_r($service_name);die;
 		return $result;
@@ -589,15 +656,11 @@ class Ws_index_model extends CI_Model {
 		return $this->db->delete('ws_bpjs_sep', array('noSep' => $no_sep) );
 	}
 
-
 	function findSep($no_sep){
 		$service_name = "SEP/".$no_sep;
 		$result = $this->getData($service_name);
 		// echo '<pre>';print_r($result);die;
-			return $result;
-		// if($result['response']->metaData->code==200){
-		// 	return $result;
-		// }
+		return $result;
 	}
 
 	public function findSepReturnArray($noSep)
@@ -773,7 +836,7 @@ class Ws_index_model extends CI_Model {
 
 	function get_data_ruangan(){
 		$this->_main_query_ruangan_rs();
-		$query = $this->db->get();
+		$query = $this->db->order_by('nama_bagian', 'ASC')->get();
 		// print_r($this->db->last_query());die;
 		return $query;
 	}
@@ -1029,13 +1092,62 @@ class Ws_index_model extends CI_Model {
 	}
 
 	public function get_data_registrasi($no_sep){
-		$this->db->select('b.nama_pegawai, c.nama_bagian, d.no_hp, d.tlp_almt_ttp');
+		$this->db->select('b.nama_pegawai, c.nama_bagian, d.no_hp, d.tlp_almt_ttp, a.*, e.nama_perusahaan, d.nama_pasien');
 		$this->db->from('tc_registrasi a');
 		$this->db->join('mt_dokter_v b', 'b.kode_dokter=a.kode_dokter','left');
 		$this->db->join('mt_master_pasien d', 'd.no_mr=a.no_mr','left');
 		$this->db->join('mt_bagian c', 'c.kode_bagian=a.kode_bagian_masuk','left');
-		$this->db->where('a.no_sep', $no_sep);
+		$this->db->join('mt_perusahaan e', 'e.kode_perusahaan=a.kode_perusahaan','left');
+		$this->db->where('a.no_sep', (string)$no_sep);
 		return $this->db->get()->row();
 	}
+
+	function getDataAntrol($params) {
+
+		$ch = curl_init();
+
+		curl_setopt_array($ch, array(
+		CURLOPT_URL => 'https://bridgingjkn.rssetiamitra.co.id/sirs/app/ws/AntrianOnline/getRef?ref=getDashboard&tgl='.$params['tgl'].'&jenis_laporan='.$params['jenis_laporan'].'&bulan='.$_GET['bulan'].'&tahun='.$_GET['tahun'].'&tipe_waktu='.$params['tipe_waktu'].'',
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_CUSTOMREQUEST => 'GET',
+		));
+
+		$response = curl_exec($ch);
+
+		if (curl_errno($ch)) {
+			$error_msg = curl_error($ch);
+		}
+
+		$result = json_decode($response);
+		
+        // echo '<pre>';print_r($result);die;
+		/*excecute query*/
+		$list_data = isset($result->data) ? $result->data : $result->response->response->list;
+		$data = $list_data;
+        
+        /*find and set type chart*/
+        $chart = $this->graph_master->chartTypeData($params['TypeChart'], "" , $params, $data);
+        $chart_data = array(
+            'title'     => '',
+            'subtitle'  => '',
+            'xAxis'     => isset($chart['xAxis'])?$chart['xAxis']:'',
+            'series'    => isset($chart['series'])?$chart['series']:'',
+            );
+
+        return $chart_data;
+        
+    }
+
+	function get_rujukan_by_kartu($noka, $type=''){
+		if($type == 2){
+			$service_name = "Rujukan/RS/List/Peserta/".$noka."";
+		}else{
+			$service_name = "Rujukan/List/Peserta/".$noka."";
+		}
+		$result = $this->getData($service_name);
+		return $result;
+	}
+
 
 }

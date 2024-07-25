@@ -64,7 +64,7 @@ $('select[id="reg_dokter_rajal"]').change(function () {
                     $('#btn_submit').show('fast');
                     $('#message_for_kuota_null').html('');
                 }else{
-                    $('#btn_submit').hide('fast');
+                    $('#btn_submit').show('fast');
                     $('#message_for_kuota_null').html('<span style="color: red; font-weight: bold; font-style:italic">- Mohon Maaf Kuota Dokter Sudah Penuh !</span>');
                 }
                 $('#jd_id').val(data.jd_id); 
@@ -136,16 +136,23 @@ function getKlinikByJadwalDefault(){
 
 </script>
 
-<p><b><i class="fa fa-edit"></i> PENDAFTARAN RAWAT JALAN </b></p>
+<p><b>PENDAFTARAN RAWAT JALAN </b></p>
 
 <input name="current_day" id="current_day" class="form-control" type="hidden" value="<?php echo $this->tanggal->gethari(date('D'))?>">
 
-<div class="checkbox">
+<!-- <div class="checkbox">
     <label>
         <input name="form-field-checkbox" type="checkbox" class="ace" value="Y" id="show_all_poli">
         <span class="lbl"> Tampilkan semua poli.</span>
     </label>
-</div>
+</div> -->
+
+<!-- <div class="form-group">
+    <label class="control-label col-sm-3">Nomor SEP</label>            
+    <div class="col-md-4">            
+            <input name="noSep" id="noSep" class="form-control" type="text" placeholder="Masukan No SEP" value="<?php echo isset($_GET['no_sep'])?$_GET['no_sep']:''?>">
+    </div> 
+</div> -->
 
 <div class="form-group">
     <label class="control-label col-sm-3">*Klinik</label>

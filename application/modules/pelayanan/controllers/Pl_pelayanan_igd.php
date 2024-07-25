@@ -757,7 +757,7 @@ class Pl_pelayanan_igd extends MX_Controller {
 
                 }else{
                     $status_keluar = 3;
-                    $type_pelayanan = 'Pasien Selesai';
+                    $type_pelayanan = 'pasien_selesai';
                     $kode_meninggal = 0;
                 }
 

@@ -21,6 +21,8 @@ class Entry_resep_racikan extends MX_Controller {
         $this->load->model('Entry_resep_ri_rj_model', 'Entry_resep_ri_rj');
         $this->load->model('Etiket_obat_model', 'Etiket_obat');
         $this->load->model('Process_entry_resep_model', 'Process_entry_resep');
+        // load e resep
+        $this->load->module('farmasi/E_resep');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -42,9 +44,13 @@ class Entry_resep_racikan extends MX_Controller {
         $data['value'] = $this->db->get_where('fr_tc_far_detail_log', array('kode_trans_far' => $id, 'flag_resep' => 'racikan'))->result();
         $data['kode_kelompok'] = $_GET['kelompok'];
         $data['kode_pesan_resep'] = isset($_GET['kode_pesan_resep'])?$_GET['kode_pesan_resep']:'';
+        // get eresep by kode pesan resep
+        $no_kunjungan = isset($_GET['no_kunjungan'])?$_GET['no_kunjungan'] : $dt_header->no_kunjungan;
+        $eresep = new E_resep;
+        $list_resep = $eresep->getResepByNoKunjungan($no_kunjungan, $data['kode_pesan_resep']);
+        $data['eresep'] = $list_resep;
+        // echo '<pre>';print_r($data['eresep']);die;
         /*get fr_tc_far*/
-        // echo '<pre>';print_r($data);die;
-
         /*initialize flag for form*/
         $data['tipe_layanan'] = $_GET['tipe_layanan'];
         $data['str_tipe_layanan'] = ($_GET['tipe_layanan']=='RI')?'Ranap':'Rajal';
@@ -65,7 +71,7 @@ class Entry_resep_racikan extends MX_Controller {
         if(count($data) > 0){
             $html .= '<div style="border-bottom:1px solid #333;"><b><h4>'.strtoupper($data[0]->nama_racikan).' ('.$data[0]->id_tc_far_racikan.') <span style="font-size:14px"><i class="ace-icon fa fa-angle-double-right"></i> '.$data[0]->dosis_per_hari.' x '.$data[0]->dosis_obat.' '.$data[0]->satuan_racikan.' '.$data[0]->anjuran_pakai.'</span></h4></b></div><br>';
 
-            $html .= '<table class="table table-striped" style="width: 75%">';
+            $html .= '<table class="table table-striped" style="width: 100%">';
             $html .= '<tr>';
                 $html .= '<th>Kode</th>';
                 $html .= '<th>Nama Obat</th>';

@@ -22,7 +22,7 @@
     
   </head>
   <style type="text/css">
-    /* #body-style {
+    #body-style {
       background-image:url(<?php echo PATH_IMG_DEFAULT.$profile_form->cover_login?>);
       background-size: 100%; 
       background-attachment: fixed;
@@ -30,15 +30,21 @@
       background-size: cover;
       opacity: 1;
       background-repeat: no-repeat;
-    } */
+    }
 
     .login-layout .widget-box .widget-main {
-        padding: 16px 36px 36px;
+        padding: 10px 15px 10px;
         background: #FFFFFF !important;
     }
 
     .login-box .toolbar {
         background: #024813;
+    }
+
+    #login-box {
+        top: 50%;
+        box-shadow: 0px 0px 25px 10px grey;
+        border-radius: 15px;
     }
 
   </style>
@@ -47,35 +53,28 @@
     <div class="main-container">
       <div class="main-content">
         <div class="row">
-
-        <br><br><br>
+          <br>
+          <br>
           <div class="col-sm-10 col-sm-offset-1">
             <div class="login-container">
-
-              
-              <div class="space-6"></div>
               <div class="position-relative">
                 <div id="login-box" class="login-box visible widget-box no-border">
                   <div class="widget-body">
                     
-                    <div class="widget-main">
-                      <!-- <div class="center">
-                        <h4 class="dark" id="id-text"><?php echo APPS_NAME_LONG; ?><br><small></small></h4>
-                        <h4 class="dark" id="company-text"><?php echo COMP_SORT; ?> - <?php echo APPS_NAME_SORT; ?></h4>
-                      </div> -->
+                    <div class="widget-main" style="border-radius: 20px">
                       <center>
-                        <!-- <img src="<?php echo PATH_IMG_DEFAULT.$profile_form->app_logo?>" width="300px"><br> -->
-                        <img src="<?php echo base_url().'assets/images/logo_3d.gif'?>" width="200px"><br>
-                        <div class="social-or-login center">
-                          <span style="font-size: 14px">~ Kami Peduli Kesehatan Anda ~</span>
-                        </div>
-                        <span class="bigger-120"><i><?php echo APPS_NAME_LONG; ?></i></span>
+                        <br><img src="<?php echo base_url().'assets/images/logo_3d.gif'?>" width="160px">
+                        <br>
+                        <p style="line-height: 16px; padding-top: 10px">
+                        <span style="font-size: 35px;font-family: fantasy; color: #545658"><?php echo strtoupper(COMP_LONG); ?></span><br>
+                        <span class="bigger-120"><?php echo strtoupper(APPS_NAME_LONG).'&nbsp;'.APPS_VERSION; ?></span>
+                        </p>
                       </center>
 
                       <!-- <center></center> -->
                       <h4 class="header blue lighter bigger">
                         <i class="ace-icon fa fa-lock green"></i>
-                        Login
+                        Form Login
                       </h4>
                       <div class="space-6"></div>
                       <form method="post" action="<?php echo base_url().'login/process'?>" id="form-login">
@@ -108,7 +107,7 @@
 
                             <!-- <input type="button" id="button-submit-form" value="Sign In" class="width-35 pull-right btn btn-sm btn-primary" > -->
 
-                            <button id="button-submit-form" name="Submit" type="button" value="submit" class="width-35 pull-right btn btn-sm btn-primary">
+                            <button id="button-submit-form" name="Submit" type="button" value="submit" class="width-35 pull-right btn btn-sm btn-success" style="background: green !important;border-color: green; line-height: 0.38">
                               <i class="ace-icon fa fa-key"></i>
                               <span class="bigger-110">Masuk</span>
                             </button>
@@ -118,25 +117,34 @@
                           <div class="space-4"></div>
                         </fieldset>
                       </form>
-                      <br>
-                     
                       <div class="space-6"></div>
+                      <span style="font-style: italic; padding: 20px">Bridging system :</span>
+                      <div class="center" style="width: 100%">
+                        <img src="<?php echo base_url().'assets/images/bpjs.jpg'?>" width="60px" style="padding:2px">
+                        <img src="<?php echo base_url().'assets/images/satu-sehat.png'?>" width="40px" style="padding:2px">
+                        <img src="<?php echo base_url().'assets/images/icare-logo.png'?>" width="90px" style="padding:2px">
+                        <img src="<?php echo base_url().'assets/images/kominfo.png'?>" width="110px" style="padding:2px">
+                      </div>
+                      <br>
+                      <div style="width:100% !important; text-align:right; font-size:11px;color:black;padding-top:5px">
+                        <span id='ct6' style=" font-size: 12px;" ></span>
+                      </div>
 
                     </div><!-- /.widget-main -->
                     <div class="toolbar clearfix">
-                      <div style="width:100% !important; text-align:center; font-size:11px;color:white;padding-top:15px">
-                        <i class="fa fa-clock"></i><span id='ct6' style=" font-size: 16px;" ></span>
+                      <div style="width:100% !important; text-align:left;float:left; font-size:11px;color:white;padding-top:5px;padding-left:5px; padding-right:5px">
+                        <table border="0" width="100%">
+                          <tr>
+                            <td style="width: 15%" align="center" valign="top"><img src="<?php echo base_url().'assets/images/pse.png'?>" width="70px"></td>
+                            <td valign="top" style="width: 60%">
+                              <span style="font-size: 12px; font-weight: bold;"><?php echo strtoupper(APPS_NAME_LONG).'&nbsp;'.APPS_VERSION; ?></span><br>
+                              <span style="font-size: 11px">No. PSE. 012514.01/DJAI.PSE/12/2023</span><br>
+                              <p style="font-size: 9px;line-height: 12px !important;font-style: italic;padding-top: 8px;">Aplikasi ini telah terdaftar sebagai Penyelenggara Sistem Elektronik pada Direktorat Tata Kelola Aptika KOMINFO</p>
+                            </td>
+                          </tr>
+                        </table>
                       </div>
-                      <!-- <div style="width:70% !important; text-align:left;float:left; font-size:11px;color:white;padding-top:15px">
-                        <?php echo $profile_form->footer_text_form_login?>
-                      </div> -->
                     </div>
-
-                    <!-- <div class="toolbar clearfix">
-                      <div style="width:100% !important; text-align:left;float:left; font-size:11px;color:white;padding-top:15px;padding-left:5px; padding-right:5px">
-                        <?php echo $profile_form->footer_text_form_login?>
-                      </div>
-                    </div> -->
                   </div><!-- /.widget-body -->
                 </div><!-- /.login-box -->
 

@@ -32,23 +32,17 @@
 
 <p><b><i class="fa fa-edit"></i> DIAGNOSA DAN PEMERIKSAAN </b></p>
 
+<input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
+
 <div class="form-group">
     <label class="control-label col-sm-2" for="">Kategori Triase</label>
-    <div class="col-sm-2">
+    <div class="col-sm-3">
       <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'kategori_tindakan')), 3 , 'kategori_tindakan', 'kategori_tindakan', 'form-control', '', '') ?>
     </div>
 
     <label class="control-label col-sm-2" for="">Jenis Kasus</label>
     <div class="col-sm-4">
       <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_kasus_igd')), '' , 'jenis_kasus_igd', 'jenis_kasus_igd', 'form-control', '', '') ?>
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="control-label col-sm-2" for="">Anamnesa</label>
-    <div class="col-sm-4">
-       <input type="text" class="form-control" name="pl_anamnesa" value="<?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?>">
-       <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
     </div>
 </div>
 
@@ -60,17 +54,29 @@
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group" >
+    <label class="control-label col-sm-2" for="">Anamnesa</label>
+    <div class="col-sm-10">
+      <textarea name="pl_anamnesa" id="pl_anamnesa" class="form-control" style="height: 150px !important"><?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?></textarea>
+    
+       <!-- <input type="text" class="form-control" name="pl_anamnesa" value="<?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?>"> -->
+       
+    </div>
+</div>
+
+
+
+<div class="form-group" style="padding-top: 6px">
     <label class="control-label col-sm-2" for="">Pemeriksaan</label>
     <div class="col-sm-10">
-        <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$riwayat->pemeriksaan:''?></textarea>
+        <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 150px !important"><?php echo isset($riwayat->pemeriksaan)?$riwayat->pemeriksaan:''?></textarea>
     </div>
 </div>
 
 <div class="form-group" style="margin-top: 6px">
     <label class="control-label col-sm-2" for="">Anjuran Dokter</label>
     <div class="col-sm-10">
-      <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$riwayat->pengobatan:''?></textarea>
+      <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 150px !important"><?php echo isset($riwayat->pengobatan)?$riwayat->pengobatan:''?></textarea>
     </div>
 </div>
 

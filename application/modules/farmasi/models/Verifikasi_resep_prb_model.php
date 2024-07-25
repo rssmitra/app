@@ -32,7 +32,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-		$this->db->where('fr_tc_far.verifikasi_prb IS NULL');
+		// $this->db->where('fr_tc_far.verifikasi_prb IS NULL');
 
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			if($_GET['search_by'] == 'no_sep'){

@@ -88,7 +88,7 @@ final Class Graph_master {
             $query = "SELECT substring(a.kode_bagian, 1, 2) as substr,a.kode_bagian, a.nama_bagian as bagian,COUNT(b.no_registrasi) AS total 
                         FROM tc_registrasi b
                         left join mt_bagian a on a.kode_bagian=b.kode_bagian_masuk 
-                        WHERE YEAR(b.tgl_jam_masuk) = ".date('Y')." and month(b.tgl_jam_masuk)=".date('m')." and day(b.tgl_jam_masuk)=".date('d')."
+                        WHERE CAST(b.tgl_jam_masuk as DATE) = '".date('Y-m-d')."'
                         GROUP BY a.kode_bagian, a.nama_bagian 
                         ORDER BY COUNT(b.no_registrasi) DESC";  
             $data_qry = $CI->db->query($query)->result_array();
@@ -164,42 +164,54 @@ final Class Graph_master {
 
         /*table*/
         if($params['prefix']==113){
-            $query = "SELECT TOP 10 a.nama_bagian as bagian,COUNT(b.no_registrasi) AS total 
+            $query = "SELECT a.nama_bagian as bagian,COUNT(b.no_registrasi) AS total 
                         FROM tc_registrasi b
                         left join mt_bagian a on a.kode_bagian=b.kode_bagian_masuk 
-                        WHERE YEAR(b.tgl_jam_masuk) = ".date('Y')." and month(b.tgl_jam_masuk)=".date('m')." and day(b.tgl_jam_masuk)=".date('d')."
+                        WHERE CAST(b.tgl_jam_masuk as DATE) = '".date('Y-m-d')."'
                         GROUP BY a.nama_bagian 
                         ORDER BY COUNT(b.no_registrasi) DESC";  
             $fields = array('Nama Bagian' => 'bagian', 'Total' => 'total');
-            $title = '<span style="font-size:13.5px">10 Klinik Terbanyak Dikunjungi Pasien Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
+            $title = '<span style="font-size:13.5px">Total Pasien Terdaftar Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
             $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
 
         if($params['prefix']==53){
-            $query = "SELECT TOP 10 a.nama_bagian as bagian,COUNT(b.no_registrasi) AS total 
+            $query = "SELECT a.nama_bagian as bagian,COUNT(b.no_registrasi) AS total 
                         FROM tc_registrasi b
                         left join mt_bagian a on a.kode_bagian=b.kode_bagian_masuk 
-                        WHERE YEAR(b.tgl_jam_masuk) = ".date('Y')." and month(b.tgl_jam_masuk)=".date('m')." and day(b.tgl_jam_masuk)=".date('d')."
+                        WHERE CAST(b.tgl_jam_masuk as DATE) = '".date('Y-m-d')."' AND SUBSTRING(b.kode_bagian_masuk, 1,2) = '01' and b.kode_bagian_masuk != '010901'
                         GROUP BY a.nama_bagian 
                         ORDER BY COUNT(b.no_registrasi) DESC";  
             $fields = array('Nama Bagian' => 'bagian', 'Total' => 'total');
-            $title = '<span style="font-size:13.5px">10 Klinik Terbanyak Berdasarkan Pendaftaran Pasien Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
+            $title = '<span style="font-size:13.5px">Total Kunjungan Pasien Poliklinik Spesialis Rawat Jalan <br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
             $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
         }
 
         if($params['prefix']==54){
-            $query = "SELECT TOP 10 a.nama_pegawai as nama_dokter,COUNT(b.no_registrasi) AS total 
+            $query = "SELECT a.nama_pegawai as nama_dokter, COUNT(b.no_registrasi) AS total 
                         FROM tc_registrasi b
                         left join mt_karyawan a on a.kode_dokter=b.kode_dokter
-                        WHERE YEAR(b.tgl_jam_masuk) = ".date('Y')." and month(b.tgl_jam_masuk)=".date('m')." and day(b.tgl_jam_masuk)=".date('d')." AND a.nama_pegawai is not null
+                        WHERE CAST(b.tgl_jam_masuk as DATE) = '".date('Y-m-d')."' AND a.nama_pegawai is not null AND SUBSTRING(b.kode_bagian_masuk, 1,2) = '01' and b.kode_bagian_masuk != '010901'
                         GROUP BY a.nama_pegawai 
                         ORDER BY COUNT(b.no_registrasi) DESC";  
             $fields = array('Nama Dokter' => 'nama_dokter', 'Total' => 'total');
-            $title = '<span style="font-size:13.5px">10 Dokter dengan Pasien Terbanyak Berdasarkan Pendaftaran Pasien Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
+            $title = '<span style="font-size:13.5px">Total Kunjungan Pasien RJ Berdasarkan DPJP <br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
+            $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
+        if($params['prefix']==55){
+            $query = "SELECT 'Pasien Batal' as label, COUNT(b.no_registrasi) AS total 
+                        FROM tc_registrasi b
+                        WHERE CAST(b.tgl_jam_masuk as DATE) = '".date('Y-m-d')."' AND b.status_batal = 1 
+                        ORDER BY COUNT(b.no_registrasi) DESC";  
+            $fields = array('Jumlah Pasien Batal' => 'label', 'Total' => 'total');
+            $title = '<span style="font-size:13.5px">Jumlah Pasien Batal Berkunjung Hari Ini<br><small style="font-size:12px !important">Tanggal '.$CI->tanggal->formatDate(date('Y-m-d')).' </span></small>';
             $subtitle = 'Source: RSSM - Smart Hospital System 4.0';
             /*excecute query*/
             $data = $db->query($query)->result_array();
@@ -1170,7 +1182,7 @@ final Class Graph_master {
         $html .= '<tr>';
         $html .= '<td colspan="2" align="right"><b>Jumlah Total</b></td>';
         foreach ($fields as $keyf => $valuef) {
-            if( !in_array($valuef, array('bulan', 'supplier', 'nama_brg', 'bagian') ) ){
+            if( !in_array($valuef, array('bulan', 'supplier', 'nama_brg', 'bagian', 'nama_dokter', 'label') ) ){
                 $total_sum = isset($sum_arr[$valuef]) ? array_sum($sum_arr[$valuef]) : 0;
                 $html .= '<td align="right"><b>'.number_format($total_sum).'</b></td>';
             }

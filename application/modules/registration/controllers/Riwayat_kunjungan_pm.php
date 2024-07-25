@@ -11,6 +11,7 @@ class Riwayat_kunjungan_pm extends MX_Controller {
         parent::__construct();
         /*breadcrumb default*/
         $this->breadcrumbs->push('Index', 'registration/Riwayat_kunjungan_pm');
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         /*session redirect login if not login*/
         if($this->session->userdata('logged')!=TRUE){
             redirect(base_url().'login');exit;
@@ -42,12 +43,32 @@ class Riwayat_kunjungan_pm extends MX_Controller {
         /*load view index*/
         $this->load->view('Riwayat_kunjungan_pm/index', $data);
     }
+
+    public function riwayat_kunjungan_pm_by_mr() { 
+
+        $kode_bagian = (isset($_GET['kode_bagian']))?$_GET['kode_bagian']:0;
+        $type = (isset($_GET['type']))?$_GET['type']:'';
+        // ex 
+        $pm = $this->db->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=pm_tc_penunjang.no_kunjungan','left')->get_where('pm_tc_penunjang', ['tc_kunjungan.no_mr' => $_GET['no_mr']])->result();
+        /*define variable data*/
+        $data = array(
+            'title' => 'Riwayat Kunjungan',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'kode_bagian' => $kode_bagian ,
+            'type' => $type,
+            'no_mr' => $_GET['no_mr'],
+            'pm' => $pm
+        );
+        // echo "<pre>";print_r($data);die;
+        /*load view index*/
+        $this->load->view('Riwayat_kunjungan_pm/view_riwayat_kunjungan_pm_by_mr', $data);
+    }
     
     public function get_data()
     {
         /*get data from model*/
         $list = $this->Riwayat_kunjungan_pm->get_datatables();
-        //print_r($this->db->last_query());die;
+        // echo "<pre>";print_r($list);die;
         //print_r($_GET);die;
         $data = array();
         $no = $_POST['start'];
@@ -59,7 +80,7 @@ class Riwayat_kunjungan_pm extends MX_Controller {
             
 
             $trans_kasir = $this->Riwayat_kunjungan_pm->cek_transaksi_kasir($row_list->no_registrasi, $row_list->no_kunjungan);
-            if( $_GET['bagian_tujuan']=='050301'){
+            if( isset($_GET['bagian_tujuan']) && $_GET['bagian_tujuan']=='050301'){
                 $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
                 $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.','."'".$flag_rollback."'".')">Rollback</a></li>';
             }else{
@@ -132,6 +153,71 @@ class Riwayat_kunjungan_pm extends MX_Controller {
                         "recordsTotal" => $this->Riwayat_kunjungan_pm->count_all(),
                         "recordsFiltered" => $this->Riwayat_kunjungan_pm->count_filtered(),
                         "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function get_data_by_mr()
+    {
+        /*get data from model*/
+        $no_mr = isset($_GET['keyword'])?$_GET['keyword']:[];
+        if( ! $list = $this->cache->get('get_data_rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
+		{
+            $list = $this->Riwayat_kunjungan_pm->get_datatables_by_mr();
+            $this->cache->save('get_data_rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $list, 3600);
+        }
+
+
+        // echo "<pre>";print_r($list);die;
+        //print_r($_GET);die;
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $subs_kode_bag = substr($row_list->kode_bagian_tujuan, 0,2);
+
+            $btn_view_hasil_pm = ($subs_kode_bag=='05')?'<li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_view_hasil_pm/".$row_list->no_registrasi."/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$row_list->kode_bagian_tujuan."'".', '."'HASIL PENUNJANG MEDIS (".$row_list->tujuan_bagian.")'".')">Lihat Hasil '.$row_list->tujuan_bagian.'</a></li>':'';
+            
+            $row[] = '';
+            $row[] = $row_list->no_registrasi;
+            $row[] = $row_list->no_kunjungan;
+            $row[] = $row_list->kode_penunjang;
+            $row[] = $row_list->kode_bagian_tujuan;
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_daftar);
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_periksa);
+            $row[] = $row_list->asal_bagian;
+            // color parameter by penunjang
+            $txt_label_pm = $this->master->get_color_pm($row_list->kode_bagian_tujuan, $row_list->tujuan_bagian);
+            $row[] = '<div class="center">'.$txt_label_pm.'</div>';
+            $row[] = $row_list->dokter;
+            $arr_str = explode("|",$row_list->nama_tarif);
+            // print_r($arr_str);die;
+            $html = '<ul class="no-padding">';
+            foreach ($arr_str as $key => $value) {
+                if(!empty($value)){
+                    $html .= '<li>'.$value.'</li>';
+                }
+            }
+            $html .= '</ul>';
+
+            $row[] = $html;
+
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_isihasil);
+
+
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Riwayat_kunjungan_pm->count_all_by_mr(),
+                        "recordsFiltered" => $this->Riwayat_kunjungan_pm->count_filtered_by_mr(),
+                        "no_mr" => isset($list[0]->no_mr)?$list[0]->no_mr:'',
+                        "nama_pasien" => isset($list[0]->nama_pasien)?$list[0]->nama_pasien:'',
+                        "data" => $data,
+                        
                 );
         //output to json format
         echo json_encode($output);

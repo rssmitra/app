@@ -74,7 +74,7 @@ $(document).ready(function(){
 
           }
 
-          if(jsonResponse.type_pelayanan == 'Pasien Selesai' )
+          if(jsonResponse.type_pelayanan == 'pasien_selesai' )
           {
 
             $('#btn_cetak_hasil').show('fast');

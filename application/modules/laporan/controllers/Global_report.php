@@ -46,6 +46,19 @@ class Global_report extends MX_Controller {
         $this->load->view('Global_report/form', $data);
     }
 
+    public function master_tarif() { 
+        /*define variable data*/
+        $data = array(
+            'title' => $this->title,
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'flag' => 'master_tarif'
+        );
+
+        /*load view index*/
+        $data['html'] = $this->load->view('Global_report/index_master_tarif', $data, true);
+        $this->load->view('Global_report/form', $data);
+    }
+
     public function show_data(){
 
         // print_r($_POST);die;
@@ -73,7 +86,7 @@ class Global_report extends MX_Controller {
         }
 
     }
-
+    
     public function show_data_bmhp(){
 
         // echo '<pre>';print_r($_POST);die;
@@ -539,6 +552,41 @@ class Global_report extends MX_Controller {
         $this->load->view('Global_report/v_rekap_resep', $data);
 
     }
+
+    public function show_data_master_tarif(){
+
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+
+        // $implode = (isset($_POST['klas'])) ? implode("_", $_POST['klas']) : '';
+        // if( ! $list = $this->cache->get('master_tarif_'.date('Y-m-d').'_'.$_POST['bagian'].'_'.$implode.'') )
+		// {
+        //     $list = $this->Global_report->get_data();
+        //     $this->cache->save('master_tarif_'.date('Y-m-d').'_'.$_POST['bagian'].'_'.$implode.'', $list, 3600);
+        // }
+        $list = $this->Global_report->get_data();
+        // get tarif
+        foreach ($list['data'] as $key => $row) {
+            $tarif[$row->nama_tarif][$row->kode_klas][$row->revisi_ke] = $row;
+        }
+        // echo '<pre>';print_r($tarif);die;
+        $klas = $this->db->order_by('no_urut', 'ASC')->get_where('mt_klas', ['is_active' => 1])->result();
+
+        $data = array(
+            'flag' => isset($_POST['flag'])?$_POST['flag']:$_GET['flag'],
+            'title' => isset($_POST['title'])?$_POST['title']:'',
+            'bagian' => isset($_POST['bagian'])?$_POST['bagian']:$_GET['kode_bagian'],
+            'result' => $tarif,
+            'klas' => $klas,
+        );
+
+        $this->load->view('Global_report/v_master_tarif', $data);
+                
+    }
+
+
+
+
+
 
 
 

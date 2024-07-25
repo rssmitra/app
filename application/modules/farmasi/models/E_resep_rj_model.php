@@ -24,7 +24,7 @@ class E_resep_rj_model extends CI_Model {
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=fr_listpesanan_v.kode_perusahaan','left');
 		$this->db->join('mt_nasabah','mt_nasabah.kode_kelompok=fr_listpesanan_v.kode_kelompok','left');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=fr_listpesanan_v.no_registrasi','left');
-		$this->db->where('kode_pesan_resep IN (select kode_pesan_resep from fr_tc_pesan_resep_detail group by kode_pesan_resep)');
+		$this->db->where('e_resep', 1);
 	}
 
 	private function _get_datatables_query()

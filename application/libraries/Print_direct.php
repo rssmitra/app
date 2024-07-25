@@ -623,8 +623,6 @@ final Class Print_direct {
         printer_draw_line($p, 0, 750, 610, 750);
 
         // KONTROL KEMBALI //
-
-        
         $font = printer_create_font("Arial", 25, 10, PRINTER_FW_BOLD, false, false, false, 0);
         printer_select_font($p, $font);
         printer_draw_text($p, "JADWAL KONTROL", 180, 780);

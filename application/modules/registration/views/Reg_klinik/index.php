@@ -31,8 +31,6 @@ jQuery(function($) {
 
 $(document).ready(function(){
   
-
-
     table_booking = $('#riwayat-booking-table').DataTable({ 
       
       "processing": true, //Feature control the processing indicator.
@@ -66,9 +64,9 @@ $(document).ready(function(){
 
       beforeSend: function() {        
 
-        if( $('#noRujukan').val() == ''){
-          achtungShowFadeIn();          
-        }
+        achtungShowFadeIn();          
+        $('#divLoadSEP').html('Loading..');
+        $('#div_form_onsite').hide();
 
       },      
 
@@ -83,25 +81,41 @@ $(document).ready(function(){
         if(jsonResponse.status === 200){          
 
           // scroll down
-          $('body,html').animate({ scrollTop: 0 }, 800);
-
-          $.achtung({message: jsonResponse.message, timeout:5});     
-          
+          // $('body,html').animate({ scrollTop: 0 }, 800);
+          $.achtung({message: jsonResponse.message, timeout:5});    
           /*jika tujuan pendaftaran MCU maka tampil print out MCU*/
           if( $('select[name="jenis_pendaftaran"]').val() == 5){
             PopupCenter('registration/Reg_mcu/print_checklist_mcu?kode_tarif='+jsonResponse.kode_tarif_mcu+'&nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'', 'FORM CHEKLIST MCU', 850, 500);
           }
 
-          // jika tujuan rawat jalan
-          if( $('select[name="jenis_pendaftaran"]').val() == 1 || $('select[name="jenis_pendaftaran"]').val() == 4){
-            PopupCenter('registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'&poli='+jsonResponse.poli+'&dokter='+jsonResponse.dokter+'&nasabah='+jsonResponse.nasabah+'', 'FORM BUKTI PENDAFTARAN PASIEN', 950, 550);
-            if( $('#kode_perusahaan_hidden').val() == 120 ){
-              if($('#noSep').val().length == 19){ // karakter SEP harus 19
-                getMenuTabs('ws_bpjs/Ws_index/view_sep/'+$('#noSep').val()+'', 'div_load_perjanjian_form');
-              }
-            }
+          // bikin sep
+          if( jsonResponse.type_pelayanan == 'create_sep' ){
+            $('#noSep').val(jsonResponse.no_sep);
+            $('#noSepManual').val(jsonResponse.no_sep);
+            $('#noKartuBpjs').val(jsonResponse.no_kartu);
+            $('#div_form_onsite').hide();
+            $('#jenis_pendaftaran').val('1');
+            $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
+            $('#divLoadSEP').load('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep);
+            // show riwayat kunjungan
+            $('#tabs_riwayat_kunjungan_id').click();
+
+            // show_modal('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep+'?no_antrian='+jsonResponse.no_antrian+'');
+            // $('#divLoadSEP').load('registration/Reg_klinik/process_sep_success/'+jsonResponse.no_sep+'');
+            // $('#change_modul_view_perjanjian').hide('fast') ;
+            // $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/1?no_sep='+jsonResponse.no_sep+'') ;
           }
 
+
+          // jika tujuan rawat jalan
+          // if( $('select[name="jenis_pendaftaran"]').val() == 1 || $('select[name="jenis_pendaftaran"]').val() == 4){
+          //   // PopupCenter('registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'&poli='+jsonResponse.poli+'&dokter='+jsonResponse.dokter+'&nasabah='+jsonResponse.nasabah+'', 'FORM BUKTI PENDAFTARAN PASIEN', 950, 550);
+          //   if( $('#kode_perusahaan_hidden').val() == 120 ){
+          //     if($('#noSep').val().length == 19){ // karakter SEP harus 19
+          //       show_modal('ws_bpjs/Ws_index/view_sep/'+$('#noSep').val()+'');
+          //     }
+          //   }
+          // }
           console.log(jsonResponse.type_pelayanan);
 
           if( jsonResponse.type_pelayanan == 'rawat_jalan' ){
@@ -113,46 +127,36 @@ $(document).ready(function(){
             }else{
               // show bukti registrasi
             }
-
-
-          }
-
-          if( jsonResponse.type_pelayanan == 'create_sep' ){
-            $('#noSep').val(jsonResponse.no_sep);
-            $('#noSepManual').val(jsonResponse.no_sep);
-            $('#noKartuBpjs').val(jsonResponse.no_kartu);
-            $('#jenis_pendaftaran').val('1');
-            $('#form_registration').attr('action', 'registration/Reg_klinik/process');
-            $('#divLoadSEP').load('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep+'?no_antrian='+jsonResponse.no_antrian+'');
-            // $('#divLoadSEP').load('registration/Reg_klinik/process_sep_success/'+jsonResponse.no_sep+'');
-            // $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/1/') ;
-            $('#change_modul_view_perjanjian').hide('fast') ;
-            
-          }else{
-            $('#id_tc_pesanan').val('');
           }
 
           /*show action after success submit form*/
-          $("#tabs_detail_pasien").load("registration/reg_pasien/riwayat_kunjungan/"+jsonResponse.no_mr);
-
+          // $("#tabs_detail_pasien").load("registration/reg_pasien/riwayat_kunjungan/"+jsonResponse.no_mr);
           /*hide form rajal*/
-          
-          $('#btn_submit').hide('fast');
-          $('#change_modul_view').hide('fast');
-          $('select[name="jenis_pendaftaran"]').val('');
-          $('#label_info_pasien_baru').hide('fast');
+          // $('#btn_submit').hide('fast');
+          // $('#change_modul_view').hide('fast');
           $('#is_new').val('');
+          // $('select[name="jenis_pendaftaran"]').val('');
+          $('#label_info_pasien_baru').hide('fast');
           $('#pasien_dengan_perjanjian').hide('fast');
           $('#kode_rujukan_hidden').val(0); 
           $('#no_registrasi_hidden').val('');  
           $('#label_info_rujukan').hide('fast');
 
         }else{
+          // bikin sep
+          if( jsonResponse.type_pelayanan == 'create_sep' ){
+            $('#noSep').val(jsonResponse.no_sep);
+            $('#noSepManual').val(jsonResponse.no_sep);
+            $('#noKartuBpjs').val(jsonResponse.no_kartu);
+            $('#jenis_pendaftaran').val('1');
+            $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
+            $('#divLoadSEP').html('<div class="alert alert-danger"><b>'+jsonResponse.message+'</b><br>Pasien berhasil didaftarkan namun Nomor SEP belum berhasil diterbitkan, silahkan lakukan update data kunjungan pasien kembali.</div>');
+            $('#div_form_onsite').hide();
+            $('#tabs_riwayat_kunjungan_id').click();
+          }
           $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
         }        
-
-        //achtungHideLoader();        
-
+      
       }      
 
     });     
@@ -373,6 +377,9 @@ $(document).ready(function(){
     $('#btn_search_pasien').click(function (e) {      
 
       e.preventDefault();      
+      $('#divLoadSEP').html('');
+      $('#form_sep').hide();
+      $('#div_form_onsite').show();
       $('#div_load_perjanjian_form').hide('fast');
       $('#pasien_dengan_perjanjian').hide('fast');
       $('#id_tc_pesanan').val('');
@@ -527,7 +534,7 @@ $(document).ready(function(){
         $('#perjanjian_result_view_div').hide('fast');
 
         /*reset all field data*/
-        $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');
+        $('#no_mr').text('-');$('#noMrHidden').val('');$('#no_ktp').text('-');$('#nama_pasien').text('-');$('#jk').text('-');$('#umur').text('-');$('#alamat').text('-');$('#noKartuBpjs').val('-');$('#kode_perusahaan').text('-');$('#total_kunjungan').text('-');$('#noRujukan').val('-');
       }
 
       if (value=='online') {
@@ -589,12 +596,15 @@ $(document).ready(function(){
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
+          $('#InputKeyPenjamin').val(label_item);
           $('#kode_perusahaan_hidden').val(val_item);
-          if( val_item == 120 ){
-            $('#form_sep').show();
+          if(val_item == 120 && $('#jenis_pendaftaran').val() == 1){
+            showChangeModul(1);
           }else{
-            $('#form_sep').hide();
+            $('#jenis_pendaftaran').val('');
+            $('#form_sep').hide(); 
           }
         }
     });
@@ -639,9 +649,12 @@ $(document).ready(function(){
           afterSelect: function (item) {
             // do what is needed with item
             var val_item=item.split(':')[0];
+            var label_item=item.split(':')[1];
             console.log(val_item);
+            $('#InputKeyNasabah').val(label_item);
             $('#kode_kelompok_hidden').val(val_item);
             $('#kode_perusahaan_hidden').val('');
+            $('#InputKeyPenjamin').focus();
             $('#InputKeyPenjamin').val('');
             $('#form_sep').hide('fast');
             
@@ -760,24 +773,40 @@ function showChangeModul(modul_id, id_tc_pesanan=''){
 
     /*change action*/
     if ( modul_id ==1 ) {     
+      // if bpjs show rujukan
+      if( $('#kode_perusahaan_hidden').val() == 120){
+          $('#form_sep').show();
+          $('#change_modul_view_perjanjian').show();
+          $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/8/'+id_tc_pesanan+'') ;
+      }else{
+         $('#form_sep').hide(); 
+      }
       $('#reg_klinik_rajal option').remove();     
-      $('#form_registration').attr('action', 'registration/Reg_klinik/process');
+      $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
     } else if ( modul_id ==2 ) {          
+      $('#form_sep').hide(); 
       $('#form_registration').attr('action', 'registration/Reg_ranap/process');
     } else if ( modul_id ==3 ) {          
+      $('#form_sep').hide(); 
       $('#form_registration').attr('action', 'registration/Reg_pm/process');
     } else if ( modul_id ==4 ) {          
+      $('#form_sep').hide(); 
       $('#form_registration').attr('action', 'registration/Reg_igd/process');
-    } else if ( modul_id ==5 ) {          
+    } else if ( modul_id ==5 ) {       
+      $('#form_sep').hide();    
       $('#form_registration').attr('action', 'registration/Reg_mcu/process');
     } else if ( modul_id ==6 ) {          
+      $('#form_sep').hide(); 
       $('#form_registration').attr('action', 'registration/Reg_odc/process');
     } else if ( modul_id ==7 ) {          
+      $('#form_sep').hide(); 
       $('#form_registration').attr('action', 'registration/Reg_bedah/process');
-    }else if ( modul_id ==8 ) {          
+    }else if ( modul_id ==8 ) {    
+      $('#form_sep').hide();       
       $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
     }else {   
       /*Eksekusi jika salah*/
+      $('#form_sep').hide(); 
       $('#form_registration').attr('action', '#');
 
     } 
@@ -1155,17 +1184,10 @@ function find_pasien_by_keyword(keyword){
             }
 
             if( obj.kode_perusahaan==120){
-
-              $('#form_sep').show('fast'); 
               $('#no_kartu_bpjs_txt').text('('+obj.no_kartu_bpjs+')');
               
-              //showModalFormSep(obj.no_kartu_bpjs,obj.no_mr);
-              
             }else{
-              
-              $('#form_sep').hide('fast'); 
               $('#no_kartu_bpjs_txt').text('');
-
             }
 
             penjamin = (obj.nama_perusahaan==null)?obj.nama_kelompok:obj.nama_perusahaan;
@@ -1191,7 +1213,7 @@ function find_pasien_by_keyword(keyword){
 
             $("#myTab li").removeClass("active");
             // show riwayat perjanjian as default
-            getMenuTabs('registration/reg_pasien/riwayat_perjanjian/'+obj.no_mr, 'tabs_detail_pasien');
+            getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+obj.no_mr, 'tabs_detail_pasien');
 
             // $("#tabs_detail_pasien").html("<div class='alert alert-block alert-success center'><p><strong><i class='ace-icon fa fa-glass bigger-150'></i><br>Selamat Datang!</strong><br>Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !</p></div>");
 
@@ -1207,6 +1229,11 @@ function find_pasien_by_keyword(keyword){
 
               $('#result_penangguhan_pasien tbody').remove();
 
+              var firstObj = pending_data_pasien[0];
+              tipe_daftar = (firstObj.tipe_daftar != null) ? 'online_web' : 'on the spot';
+              $('#tipe_daftar_txt').html('<b>['+tipe_daftar+']</b>');
+              $('#tgl_daftar_txt').html('<b>['+firstObj.tgl_masuk+']</b>');
+
               $.each(pending_data_pasien, function (x, y) {                  
 
                   dt = new Date(y.tgl_masuk);
@@ -1216,9 +1243,9 @@ function find_pasien_by_keyword(keyword){
                   if(y.total_ditangguhkan > 0){
                     status = '<span style="font-weight:bold; color: red">Belum bayar '+y.total_ditangguhkan+'</span>';
                   }else{
-                    status = '<label class="label label-danger">Belum dipulangkan</label>';
+                    status = '<label class="label label-danger">Belum dilayani</label>';
                   }
-                  $('<tr><td>'+y.no_kunjungan+'</td><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td>'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
+                  $('<tr><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td width="100px">'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
 
               }); 
 
@@ -1457,7 +1484,6 @@ $('#btnSearchNoRujukan').click(function (e) {
     var noRujukan = $('#noRujukan').val();
     var idTcPesanan = $('#id_tc_pesanan').val();
 
-    $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/8/'+idTcPesanan+'') ;
     $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
 
     e.preventDefault();
@@ -1487,12 +1513,11 @@ $('#btnSearchNoRujukan').click(function (e) {
             $('#showResultData').show('fast');
 
             // jika no_mr tidak sama dengan no mr rujukan show warning
-            if(peserta.mr.noMR != $('#noMrHidden').val() ){
-                find_pasien_by_keyword(peserta.mr.noMR);
-                $('#perjanjian_result_view_div').html('<div class="center red" style="font-weight: bold; font-style: italic; padding-top: 25px; font-size: 16px">Silahkan pilih kode booking kembali!</div>');
-                // $('#search_kode_perjanjian_result').hide();
-            }
-            
+            // if(peserta.mr.noMR != $('#noMrHidden').val() ){
+            //     find_pasien_by_keyword(peserta.mr.noMR);
+            //     $('#perjanjian_result_view_div').html('<div class="center red" style="font-weight: bold; font-style: italic; padding-top: 25px; font-size: 16px">Silahkan pilih kode booking kembali!</div>');
+            //     // $('#search_kode_perjanjian_result').hide();
+            // }
             /*text*/
             $('#noSuratSKDP').val($('#noSuratKontrol').val());
             $('#noKartuFromNik').text(peserta.noKartu);
@@ -1532,13 +1557,14 @@ $('#btnSearchNoRujukan').click(function (e) {
             $('#KodedokterDPJP').val($('#kodeDokterDPJPPerjanjianBPJS').val());
             $('#InputKeydokterDPJP').val($('#namaDokterDPJPPerjanjianBPJS').val());    
             $('#show_dpjp').val($('#namaDokterDPJPPerjanjianBPJS').val());
-
             // set value default
             $('#kode_perusahaan_hidden').val(120);
             $('#kode_kelompok_hidden').val(3);
             $('#noKartuBpjs').val(peserta.noKartu);
 
             $("input[name=jnsPelayanan][value="+pelayanan.kode+"]").attr('checked', true);
+            
+            getKlinikByJadwalDefault(poliRujukan.kode);
 
         }else{
             $.achtung({message: data.message, timeout:5, className: 'achtungFail'});
@@ -1549,15 +1575,34 @@ $('#btnSearchNoRujukan').click(function (e) {
 
 });
 
-$('#btn_search_rujukan_by_kartu').click(function (e) {
-    e.preventDefault();
-    show_modal('registration/Reg_klinik/search_rujukan_by_kartu/'+$('#noKartuBpjs').val()+'', 'DATA RUJUKAN PASIEN BPJS');
-});
+
 
 $('#tgl_registrasi').click(function (e) {
   $('#change_modul_view').hide();
   $('#jenis_pendaftaran').val('');
 })
+
+function getKlinikByJadwalDefault(kode_poli_bpjs){
+    date = $('#tgl_registrasi').val();
+    days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    var d = new Date(date);
+    current_day = days[d.getDay()]; 
+
+    $.getJSON("<?php echo site_url('Templates/References/getKlinikFromJadwal') ?>/" +current_day+'/'+date, '', function (data) {              
+        $('#reg_klinik_rajal option').remove();  
+        $('<option value="">-Pilih Klinik-</option>').appendTo($('#reg_klinik_rajal'));
+        $.each(data, function (i, o) {   
+          var selected = (o.kode_poli_bpjs == 'PAR') ? 'selected' : '';
+            $('<option value="' + o.kode_bagian + '" '+selected+'>' + o.nama_bagian + '</option>').appendTo($('#reg_klinik_rajal'));                    
+        });     
+    });  
+}
+
+
+function show_list_rujukan(){
+    preventDefault();
+    show_modal('registration/Reg_klinik/search_rujukan_by_kartu/'+$('#noKartuBpjs').val()+'', 'DATA RUJUKAN PASIEN BPJS');
+}
 
 function get_riwayat_medis(){
 
@@ -1565,8 +1610,7 @@ function get_riwayat_medis(){
   if (noMr == '') {
     alert('Silahkan cari pasien terlebih dahulu !'); return false;
   }else{
-    getMenuTabs('registration/Reg_pasien/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
-    // getMenuTabs('templates/References/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
+    getMenuTabsHtml('templates/References/get_riwayat_medis/00175760/'+noMr, 'tabs_detail_pasien');
   }
 
 }
@@ -1589,7 +1633,10 @@ function form_perjanjian(){
 function copyNoRujukan(no_rujukan){
   preventDefault();
   $('#norujukanbpjs').val(no_rujukan);
+  $('#noRujukan').val(no_rujukan);
   $('#globalModalView').modal('hide');
+  // click btn rujukan
+  $('#btnSearchNoRujukan').click();
 }
 
 </script>
@@ -1650,9 +1697,9 @@ function copyNoRujukan(no_rujukan){
               <li class="hover">
                 <a href="#" id="btn_gelang_pasien"><i class="menu-icon fa fa-lemon-o"></i><span class="menu-text"> Gelang Pasien </span></a><b class="arrow"></b>
               </li>
-              <li class="hover">
+              <!-- <li class="hover">
                 <a href="#"  id="btn_card_member_temp"><i class="menu-icon fa fa-credit-card"></i><span class="menu-text"> Kartu Pasien </span></a><b class="arrow"></b>
-              </li>
+              </li> -->
               <li class="hover">
                 <a href="#" id="btn_identitas_berobat_pasien"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Ringkasan </span></a><b class="arrow"></b>
               </li>
@@ -1667,9 +1714,10 @@ function copyNoRujukan(no_rujukan){
                 <a data-toggle="tab" id="tabs_riwayat_kunjungan_id" href="#" data-id="0" data-url="registration/reg_pasien/riwayat_kunjungan" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-leaf"></i><span class="menu-text"> Kunjungan </span></a><b class="arrow"></b>
               </li>
 
-              <li class="hover">
+              <!-- <li class="hover">
                 <a data-toggle="tab" data-id="1" data-url="registration/reg_pasien/riwayat_transaksi" id="tabs_riwayat_transaksi_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
-              </li>
+              </li> -->
+              
               <li class="hover">
                 <a data-toggle="tab" data-id="0" data-url="registration/reg_pasien/riwayat_perjanjian" id="tabs_riwayat_perjanjian_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> Riwayat Perjanjian </span></a><b class="arrow"></b>
               </li>
@@ -1704,7 +1752,7 @@ function copyNoRujukan(no_rujukan){
             <input type="hidden" name="namaDokterDPJPPerjanjianBPJS" value="" id="namaDokterDPJPPerjanjianBPJS">
             <input type="hidden" name="id_tc_pesanan" value="<?php echo isset($id_tc_pesanan)?$id_tc_pesanan:''?>" id="id_tc_pesanan">
             
-            <div class="col-md-2 no-padding">
+            <div class="col-md-2">
               <div class="box box-primary" id='box_identity'>
                   <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
@@ -1750,7 +1798,7 @@ function copyNoRujukan(no_rujukan){
               </div>
             </div>
 
-            <div class="col-md-10">
+            <div class="col-md-10 no-padding">
 
               <!-- div main form -->
               <div class="col-md-8 no-padding">
@@ -1762,7 +1810,7 @@ function copyNoRujukan(no_rujukan){
                         
                   <label class="control-label col-sm-3">Tanggal</label>
                   
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     
                     <div class="input-group">
                         
@@ -1779,7 +1827,7 @@ function copyNoRujukan(no_rujukan){
                 </div>
 
                 <!-- tipe registrasi -->
-                <div class="form-group">
+                <!-- <div class="form-group">
 
                   <label class="control-label col-md-3">Tipe Registrasi</label>
 
@@ -1803,20 +1851,20 @@ function copyNoRujukan(no_rujukan){
 
                         </label>
 
-                        <!-- <label>
+                        <label>
 
                           <input name="tipe_registrasi" type="radio" class="ace" value="online" <?php echo isset($value) ? ($value->is_active == 'online') ? 'checked="checked"' : '' : ''; ?> />
 
                           <span class="lbl"> Via Online / Mobile JKN</span>
 
-                        </label> -->
+                        </label>
 
 
                     </div>
 
                   </div>
 
-                </div>
+                </div> -->
 
                 <!-- search pasien by -->
                 <div class="form-group">
@@ -1845,40 +1893,12 @@ function copyNoRujukan(no_rujukan){
 
                 <!-- cari data pasien -->
                 <div class="form-group" id="search_mr_form" <?php echo isset($kode_booking)?'style="display:none"':''?>>
-
                   <label class="control-label col-md-3"><b>CARI PASIEN</b></label>            
                   <div class="col-md-8">            
-
                     <div class="input-group">
-
                       <input type="text" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>">
-
                       <span class="input-group-btn">
-
                         <button type="button" id="btn_search_pasien" class="btn btn-inverse btn-sm">
-
-                          <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-
-                          Search
-
-                        </button>
-
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <!-- PASIEN BPJS DENGAN PERJANJIAN -->
-                <div class="form-group" id="search_kode_perjanjian_form" <?php echo isset($kode_perjanjian)?'':'style="display:none"'?> >
-                  <label class="control-label col-md-3"><b>KODE PERJANJIAN</b></label>            
-                  <div class="col-md-5">            
-                    <div class="input-group">
-                      <input type="text" name="kode_perjanjian" id="form_cari_pasien_by_kode_perjanjian_id" class="form-control search-query" placeholder="Kode Booking" value="<?php echo isset($kode_perjanjian)?$kode_perjanjian:''?>">
-                      <span class="input-group-btn">
-                        <button type="button" id="btn_search_kode_perjanjian" class="btn btn-default btn-sm">
                           <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
                           Search
                         </button>
@@ -1887,147 +1907,11 @@ function copyNoRujukan(no_rujukan){
                   </div>
                 </div>
 
-                <!-- result perjanjian -->
-                <div class="form-group" id="perjanjian_result_view_div"></div>
-
-                <div id="search_kode_perjanjian_result" <?php echo isset($kode_perjanjian)?'':'style="display:none;margin-top:10px"'?>>
+                <div id="divLoadSEP"></div>
                 
-                  <div id="div_load_after_selected_pasien_perjanjian" style="display: none">
-                    <hr>
-                    <p><b>SILAHKAN MASUKAN NOMOR RUJUKAN</b></p>
-                    <!-- hidden form -->
-                    <!-- nasabah -->
-                    <input id="InputKeyNasabahBPJS" class="form-control" name="kelompok_nasabah" type="hidden"/>
-                    <input type="hidden" name="kode_kelompok_hidden_bpjs" value="" id="kode_kelompok_hidden_bpjs">
-
-                    <!-- penjamin -->
-                    <input id="InputKeyPenjaminBPJS" class="form-control" name="penjamin" type="hidden"  />
-                    <input type="hidden" name="kode_perusahaan_hidden_bpjs" value="" id="kode_perusahaan_hidden_bpjs">
-
-                    <div class="form-group" id="form_rujukan">
-
-                      <label class="control-label col-sm-3">Nomor Rujukan</label>            
-
-                      <div class="col-md-6">            
-
-                        <div class="input-group">
-
-                          <!-- for hidden for searching nomor rujukan -->
-                          <input name="find_member_by" type="radio" class="ace" value="noRujukan" checked>
-                          <input name="tglSEP" id="tglSEP" value="<?php echo date('Y-m-d')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
-                          <input name="jenis_faskes_pasien" type="radio" class="ace" value="pcare" checked/>
-                          <input type="hidden" class="form-control" id="noKartuHidden" name="noKartuHidden" readonly>
-                          <input name="jnsPelayanan" type="radio" class="ace" value="2" checked/>
-                          <input name="lakalantas" type="radio" class="ace" value="0" checked/>
-                          <input name="penjaminKLL" type="radio" class="ace" value="0" checked/>
-                          <input type="hidden" class="form-control" name="catatan" id="catatan" value="">
-                          <!-- <input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value=""> -->
-                          <input type="hidden" class="form-control" id="user" name="user" value="<?php echo $this->session->userdata('user')->fullname?>" readonly>
-                          <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden"/>
-                          <input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
-                          <input name="noRujukan" id="noRujukan" class="form-control" type="text" placeholder="Masukan No Rujukan" style="width: 250px;">
-
-                          <span class="input-group-btn">
-
-                            <button type="button" id="btnSearchNoRujukan" class="btn btn-primary btn-sm">
-
-                              <span class="ace-icon fa fa-file icon-on-right bigger-110"></span>
-
-                              Cari Nomor Rujukan
-
-                            </button>
-
-                          </span>
-
-                        </div>
-
-                      </div>   
-
-
-                    </div>
-
-                    <div id="warning_no_mr" style="margin-top:10px;"></div>
-                    <hr>
-
-                    <!-- change modul view -->
-
-                    <div id="change_modul_view_perjanjian" style="margin-top:10px"></div>
-                    <div id="divLoadSEP"></div>
-                    
-                    <!-- end change modul view -->
-                  </div>
-
-                </div>
-
-                <!-- END FORM PASIEN BPJS DENGAN PERJANJIAN -->
-
-                <div class="form-group" id="search_kode_booking_form" <?php echo isset($kode_booking)?'':'style="display:none"'?> >
-
-                  <label class="control-label col-md-3"><b>KODE BOOKING</b></label>            
-
-                  <div class="col-md-5">            
-
-                    <div class="input-group">
-
-                      <input type="text" name="kode_booking" id="form_cari_pasien_by_kode_booking_id" class="form-control search-query" placeholder="Kode Booking" value="<?php echo isset($kode_booking)?$kode_booking:''?>">
-
-                      <span class="input-group-btn">
-
-                        <button type="button" id="btn_search_kode_booking" class="btn btn-default btn-sm">
-
-                          <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-
-                          Search
-
-                        </button>
-
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <!-- pencarian kode booking -->
-                <div id="search_kode_booking_result" <?php echo isset($kode_booking)?'':'style="display:none;margin-top:10px"'?> >
-
-                  <div class="form-group" style="display:none">
-
-                    <table id="riwayat-booking-table" class="table table-bordered table-hover">
-
-                      <thead>
-
-                        <th width="50px">Kode Booking</th>
-
-                        <th>Data Pasien</th>
-
-                        <th>Tanggal Kunjungan</th>
-
-                        <th>Tujuan Klinik</th>
-
-                        <th>Penjamin</th>
-
-                        <th>Keterangan</th>
-
-                      </thead>
-
-                      <tbody></tbody>
-
-                    </table>
-
-                  </div>
-
-                  <br>
-
-                  <div class="form-group" id="booking_result_view_div"></div>
-
-                </div>
-
                 <div id="div_form_onsite" <?php echo isset($kode_booking)?'style="display:none"':''?> >
 
                   <div class="form-group">
-
                     <div class="col-md-12 no-padding">
 
                       <!-- untuk pasien baru -->
@@ -2094,121 +1978,138 @@ function copyNoRujukan(no_rujukan){
                       </div>
 
                       <div id="div_penangguhan_pasien" style="display:none">
+                        
+                        <div class="alert alert-success" style="border-radius: 3px"><b>Pemberitahuan !</b> <br>Pasien sudah terdaftar pada hari ini <span id="tgl_daftar_txt"></span> <span id="tipe_daftar_txt"></span></div>
+                        <div class="col-md-12 no-padding">
+                          <table class="table table-bordered table-hover" id="result_penangguhan_pasien">
+                            <thead>
+                            <tr>
+                              <th>Tanggal</th>
+                              <th>Poli/Klinik</th>
+                              <th>Dokter</th>
+                              <th>Penjamin</th>
+                              <th>Status</th>
+                            </tr>
+                            </thead>
 
-                        <div id="accordion" class="accordion-style1 panel-group accordion-style2">
-                            <div class="panel panel-default">
-                              <div class="panel-heading">
-                                <h4 class="panel-title">
-                                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true">
-                                    <i class="bigger-110 ace-icon fa fa-angle-right" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-                                    <b style="color:red">&nbsp;Pasien dalam penangguhan !</b>
-                                  </a>
-                                </h4>
-                              </div>
-
-                              <div class="panel-collapse collapse in" id="collapseOne" aria-expanded="true" style="min-height: 100px;">
-                                <div class="panel-body">
-                                  <table class="table table-bordered table-hover" id="result_penangguhan_pasien">
-                                    <thead>
-                                    <tr>
-                                      <th>No Kunjungan</th>
-                                      <th>Tanggal</th>
-                                      <th>Poli/Klinik</th>
-                                      <th>Dokter</th>
-                                      <th>Penjamin</th>
-                                      <th>Status</th>
-                                    </tr>
-                                    </thead>
-
-                                    <tbody>
-                                      
-                                    </tbody>
-                                  </table>
-                                  <span style="margin-top:-30px !important; font-size:11px">NB : Silahkan hubungi bagian terkait, jika terdapat penangguhan administrasi maka pasien tidak dapat didaftarkan untuk berobat sebelum menyelesaikan tangguhan nya. Jika tidak ada penangguhan silahkan abaikan peringatan ini. </span><br>
-                                  <div class="checkbox">
-                                    <label>
-                                      <input name="form-field-checkbox" type="checkbox" class="ace" value="Y" id="decline_warning">
-                                      <span class="lbl"> Abaikan peringatan ini.</span>
-                                    </label>
-                                  </div>
-
-                                </div>
-                              </div>
-                            </div>
+                            <tbody>
+                              
+                            </tbody>
+                          </table>
+                          <!-- <span style="margin-top:-30px !important; font-size:11px">NB : Silahkan hubungi bagian terkait, jika terdapat penangguhan administrasi maka pasien tidak dapat didaftarkan untuk berobat sebelum menyelesaikan tangguhan nya. Jika tidak ada penangguhan silahkan abaikan peringatan ini. </span><br> -->
+                          <div class="checkbox">
+                            <label>
+                              <input name="form-field-checkbox" type="checkbox" class="ace" value="Y" id="decline_warning">
+                              <span class="lbl" style="font-weight: bold;"> UPDATE DATA KUNJUNGAN PASIEN</span>
+                            </label>
+                          </div>
+                          
                         </div>
-
                       </div>
 
                       <div id="div_load_after_selected_pasien" style="display:none">
-                        <hr>
-                        <p><b>SILAHKAN ISI FORM DIBAWAH INI</b></p>
-
+                        <!-- nasabah -->
                         <div class="form-group">
-                          
-                          <label class="control-label col-sm-3">Cetak Kartu</label>
-
-                          <div class="col-md-6">
-
-                            <div class="radio">
-
-                                <label>
-
-                                  <input name="cetak_kartu" type="radio" class="ace" value="Y" <?php echo isset($value) ? ($value->is_active == 'Y') ? 'checked="checked"' : '' : ''; ?>  />
-
-                                  <span class="lbl"> Ya</span>
-
-                                </label>
-
-                                <label>
-
-                                  <input name="cetak_kartu" type="radio" class="ace" value="N" <?php echo isset($value) ? ($value->is_active == 'N') ? 'checked="checked"' : '' : 'checked="checked"'; ?> />
-
-                                  <span class="lbl"> Tidak</span>
-
-                                </label>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                        <div class="form-group">
-
                           <label class="control-label col-sm-3">Nasabah</label>
-
                           <div class="col-md-6">
-
                               <input id="InputKeyNasabah" class="form-control" name="kelompok_nasabah" type="text" placeholder="Masukan keyword minimal 3 karakter" />
-
                               <input type="hidden" name="kode_kelompok_hidden" value="" id="kode_kelompok_hidden">
-
                           </div>
-
                         </div>
-
+                        <!-- penjamin -->
                         <div class="form-group">
                           <label class="control-label col-sm-3">Penjamin</label>
                           <div class="col-md-6">
-
                               <input id="InputKeyPenjamin" class="form-control" name="penjamin" type="text" placeholder="Masukan keyword minimal 3 karakter" />
-
                               <input type="hidden" name="kode_perusahaan_hidden" value="" id="kode_perusahaan_hidden">
-
                           </div>
                         </div>
+                        <!-- tujuan pendaftaran -->
+                        <div class="form-group">
+                          <label class="control-label col-sm-3">Tujuan Pendaftaran</label>
+                          <div class="col-md-6">
+                            <select name="jenis_pendaftaran" class="form-control" id="jenis_pendaftaran">
+                              <option value="">-Pilih-</option>
+                              <option value="1">RAWAT JALAN</option>  
+                              <option value="2">RAWAT INAP</option> 
+                              <option value="3" <?php echo isset($pm)?'selected':'' ?>>PENUNJANG MEDIS</option> 
+                              <option value="4">IGD</option>  
+                              <option value="5">MCU</option>  
+                              <option value="6">ODC</option>  
+                              <option value="7">PAKET BEDAH</option>
+                            </select>
+                          </div>
+                        </div>
+                        <!-- tujuan pendaftaran -->
                         
+                        <!-- untuk pasien bpjs -->
                         <div id="form_sep" style="display:none">
+
+                          <!-- get data rujukan -->
+                          <hr>
+                          <p><b>MASUKAN NOMOR RUJUKAN</b></p>
+                          
                           <div class="form-group">
-                            <label class="control-label col-sm-3">Nomor SEP</label>            
-                            <div class="col-md-4">            
-                                  <input name="noSep" id="noSep" class="form-control" type="text" placeholder="Masukan No SEP">
-                            </div> 
-                            <label class="control-label col-sm-2">No Kartu</label>            
+                            <label class="control-label col-sm-3">No Kartu BPJS</label>            
                             <div class="col-md-3">            
                                   <input name="noKartuBpjs" id="noKartuBpjs" class="form-control" type="text" value="">
                             </div>   
+                            <!-- <label class="control-label col-sm-3">Nomor SEP</label>            
+                            <div class="col-md-4">            
+                                  <input name="noSep" id="noSep" class="form-control" type="text" placeholder="Masukan No SEP">
+                            </div>  -->
                           </div>
+                          <div class="form-group" id="form_rujukan">
+                            <label class="control-label col-sm-3">Nomor Rujukan</label>            
+                            <div class="col-md-6">            
+                              <div class="input-group">
+                                <!-- for hidden for searching nomor rujukan -->
+                                <input name="find_member_by" type="radio" class="ace" value="noRujukan" checked>
+                                <input name="tglSEP" id="tglSEP" value="<?php echo date('Y-m-d')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
+                                <input name="jenis_faskes_pasien" type="radio" class="ace" value="pcare" checked/>
+                                <input type="hidden" class="form-control" id="noKartuHidden" name="noKartuHidden" readonly>
+                                <input name="jnsPelayanan" type="radio" class="ace" value="2" checked/>
+                                <input name="lakalantas" type="radio" class="ace" value="0" checked/>
+                                <input name="penjaminKLL" type="radio" class="ace" value="0" checked/>
+                                <input type="hidden" class="form-control" name="catatan" id="catatan" value="">
+                                <!-- <input type="hidden" class="form-control" id="noSuratSKDP" name="noSuratSKDP" value=""> -->
+                                <input type="hidden" class="form-control" id="user" name="user" value="<?php echo $this->session->userdata('user')->fullname?>" readonly>
+                                <input id="InputKeydokterDPJP" class="form-control" name="dokterDPJP" type="hidden"/>
+                                <input type="hidden" name="KodedokterDPJP" value="" id="KodedokterDPJP">
+
+                                <input name="noRujukan" id="noRujukan" class="form-control" type="text" placeholder="Masukan No Rujukan" style="width: 250px;" onclick="show_list_rujukan()">
+
+                                <span class="input-group-btn">
+                                  <button type="button" id="btnSearchNoRujukan" class="btn btn-primary btn-sm">
+                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                                    Tampilkan data
+                                  </button>
+                                </span>
+                              </div>
+                            </div>   
+                          </div>
+                          <!-- hidden form -->
+                          <!-- nasabah -->
+                          <input id="InputKeyNasabahBPJS" class="form-control" name="kelompok_nasabah" type="hidden"/>
+                          <input type="hidden" name="kode_kelompok_hidden_bpjs" value="" id="kode_kelompok_hidden_bpjs">
+
+                          <!-- penjamin -->
+                          <input id="InputKeyPenjaminBPJS" class="form-control" name="penjamin" type="hidden"  />
+                          <input type="hidden" name="kode_perusahaan_hidden_bpjs" value="" id="kode_perusahaan_hidden_bpjs">
+
+                          <div id="warning_no_mr" style="margin-top:10px;"></div>
+
+                          <!-- change modul view -->
+                          <div id="change_modul_view_perjanjian" style="margin-top:10px"></div>
+                          
+                          <!-- <div class="form-group">
+                            <label class="control-label col-sm-3">Nomor SEP</label>            
+                            <div class="col-md-4">            
+                                  <input name="noSep" id="noSep" class="form-control" type="text" placeholder="Masukan No SEP">
+                            </div>  
+                          </div> -->
+
+                          <!-- 
 
                           <div class="form-group">
                             <label class="control-label col-sm-3">Nama Faskes</label>
@@ -2216,252 +2117,274 @@ function copyNoRujukan(no_rujukan){
                                 <input id="InputKeyFaskes" class="form-control" name="faskes" type="text" placeholder="Masukan keyword minimal 3 karakter" />
                                 <input type="hidden" name="kode_faskes_hidden" value="" id="kode_faskes_hidden">
                             </div>
-                          </div>
-
-                          <div class="form-group">
-                            <label class="control-label col-sm-3">Jenis Kunjungan</label>
-                            <div class="col-md-3">
-                            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jeniskunjunganbpjs')), '' , 'jeniskunjunganbpjs', 'jeniskunjunganbpjs', 'form-control', '', '') ?>
-                            </div>
-                          </div>
-
-                          <div class="form-group">
-                            <label class="control-label col-md-3">No. Rujukan</label>
-                            <div class="col-md-6">            
-                              <div class="input-group">
-                              <input id="norujukanbpjs" class="form-control" name="norujukanbpjs" type="text" placeholder="Cari atau masukan nomor rujukan"/>
-                                <span class="input-group-btn">
-                                  <button type="button" id="btn_search_rujukan_by_kartu" class="btn btn-primary btn-sm">
-                                    <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
-                                    Cari Rujukan
-                                  </button>
-                                </span>
-                              </div>
-                            </div>
-
-                          </div>
+                          </div> -->
 
                         </div>
+                        <!-- end untuk pasien bpjs -->
 
-                        <div class="form-group">
-                          
-                          <label class="control-label col-sm-3">Tujuan Pendaftaran</label>
-                          
-                          <div class="col-md-6">
-                            
-                            <select name="jenis_pendaftaran" class="form-control" id="jenis_pendaftaran">
-
-                              <option value="">-Silahkan Pilih-</option>
-                              
-                              <option value="1">Rawat Jalan</option>
-
-                              <option value="2">Rawat Inap</option>
-
-                              <option value="3" <?php echo isset($pm)?'selected':'' ?>>Penunjang Medis</option>
-
-                              <option value="4">IGD</option>
-
-                              <option value="5">MCU</option>
-
-                              <option value="6">ODC</option>
-
-                              <option value="7">Paket Bedah</option>
-
-
-                            </select>
-                          
-                          </div>
-                        
-                        </div>
-
-                        <!-- change modul view -->
-
+                        <!-- change modul from global form view -->
                         <div id="change_modul_view" style="margin-top:10px"></div>
-                        
-
                         <!-- end change modul view -->
                         
                         <hr>
-
-                        <div class="form-group center" id="btn_submit" style="display: none">
-
+                        <!-- btn proses pendaftaran -->
+                        <div class="form-group" id="btn_submit" style="display: none">
                           <div class="col-sm-12 no-padding" style="padding-top: 10px">
-
                               <button type="submit" name="submit" class="btn btn-xs btn-primary" style="height: 35px !important; font-size: 16px">
-
                                 <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-
                                 Proses Pendaftaran Pasien
-
                               </button>
-
                           </div>
-
                         </div>
-
-                        <div id="message_pasien_pending"></div>
-                        
-                        
 
                       </div>
 
-                      
-
                     </div>
 
                   </div>
 
                 </div>
 
-                <div id="div_load_perjanjian_form" style="display: none"></div>
 
-              </div>
+                <!-- PASIEN BPJS DENGAN PERJANJIAN -->
+                <div class="form-group" id="search_kode_perjanjian_form" <?php echo isset($kode_perjanjian)?'':'style="display:none"'?> >
+                  <label class="control-label col-md-3"><b>KODE PERJANJIAN</b></label>            
+                  <div class="col-md-5">            
+                    <div class="input-group">
+                      <input type="text" name="kode_perjanjian" id="form_cari_pasien_by_kode_perjanjian_id" class="form-control search-query" placeholder="Kode Booking" value="<?php echo isset($kode_perjanjian)?$kode_perjanjian:''?>">
+                      <span class="input-group-btn">
+                        <button type="button" id="btn_search_kode_perjanjian" class="btn btn-default btn-sm">
+                          <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+                          Search
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
-              <div class="col-md-4">
+                <!-- rujukan -->
+                <div class="form-group" id="perjanjian_result_view_div"></div>
 
-                <div class="tabbable">
-                  <ul class="nav nav-tabs no-padding tab-color-blue background-blue" id="myTab4">
-                    <li class="active">
-                      <a data-toggle="tab" href="#home4">Aktifitas</a>
-                    </li>
+                  <div id="search_kode_perjanjian_result" style="display:block;margin-top:10px">
+                  
+                    <div id="div_load_after_selected_pasien_perjanjian" style="display: block"></div>
 
-                    <li>
-                      <a data-toggle="tab" href="#tab-antrian-pasien">Antrian Pasien</a>
-                    </li>
-                  </ul>
+                  </div>
 
-                  <div class="tab-content" style="background-color: #edf3f4">
-                    <div id="home4" class="tab-pane in active">
-                      <p>
-                        <div id="tabs_detail_pasien">
-                          <div class="alert alert-warning center">
-                            <button type="button" class="close" data-dismiss="alert">
-                              <i class="ace-icon fa fa-times"></i>
-                            </button>
-                            <h2><i class="fa fa-exclamation-circle red"></i></h2>
-                            <strong>Tidak ada data yang dapat ditampilkan!</strong>
-                            <br>
-                            Silahkan melakukan pencarian pasien dahulu dengan mencari <b>No MR</b> atau <b>Nama pasien</b>
-                            <br>
+                  <!-- END FORM PASIEN BPJS DENGAN PERJANJIAN -->
+
+                  <div class="form-group" id="search_kode_booking_form" <?php echo isset($kode_booking)?'':'style="display:none"'?> >
+
+                    <label class="control-label col-md-3"><b>KODE BOOKING</b></label>            
+
+                    <div class="col-md-5">            
+
+                      <div class="input-group">
+
+                        <input type="text" name="kode_booking" id="form_cari_pasien_by_kode_booking_id" class="form-control search-query" placeholder="Kode Booking" value="<?php echo isset($kode_booking)?$kode_booking:''?>">
+
+                        <span class="input-group-btn">
+
+                          <button type="button" id="btn_search_kode_booking" class="btn btn-default btn-sm">
+
+                            <span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
+
+                            Search
+
+                          </button>
+
+                        </span>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <!-- pencarian kode booking -->
+                  <div id="search_kode_booking_result" <?php echo isset($kode_booking)?'':'style="display:none;margin-top:10px"'?> >
+
+                    <div class="form-group" style="display:none">
+
+                      <table id="riwayat-booking-table" class="table table-bordered table-hover">
+
+                        <thead>
+
+                          <th width="50px">Kode Booking</th>
+
+                          <th>Data Pasien</th>
+
+                          <th>Tanggal Kunjungan</th>
+
+                          <th>Tujuan Klinik</th>
+
+                          <th>Penjamin</th>
+
+                          <th>Keterangan</th>
+
+                        </thead>
+
+                        <tbody></tbody>
+
+                      </table>
+
+                    </div>
+
+                    <br>
+
+                    <div class="form-group" id="booking_result_view_div"></div>
+
+                  </div>
+
+                  <div id="div_load_perjanjian_form" style="display: none"></div>
+
+                </div>
+              
+                <!-- tabs on the right content -->
+                <div class="col-md-4">
+
+                  <div class="tabbable">
+                    <ul class="nav nav-tabs no-padding tab-color-blue background-blue" id="myTab4">
+                      <li class="active">
+                        <a data-toggle="tab" href="#home4">Aktifitas</a>
+                      </li>
+
+                      <li>
+                        <a data-toggle="tab" href="#tab-antrian-pasien">Antrian Pasien</a>
+                      </li>
+                    </ul>
+
+                    <div class="tab-content" style="background-color: #edf3f4">
+                      <div id="home4" class="tab-pane in active">
+                        <p>
+                          <div id="tabs_detail_pasien">
+                            <div class="alert alert-warning center">
+                              <button type="button" class="close" data-dismiss="alert">
+                                <i class="ace-icon fa fa-times"></i>
+                              </button>
+                              <h2><i class="fa fa-exclamation-circle red"></i></h2>
+                              <strong>Tidak ada data yang dapat ditampilkan!</strong>
+                              <br>
+                              Silahkan melakukan pencarian pasien dahulu dengan mencari <b>No MR</b> atau <b>Nama pasien</b>
+                              <br>
+                            </div>
                           </div>
-                        </div>
-                      </p>
+                        </p>
+                      </div>
+                      
+                      <!-- tab antrian pasien -->
+                      <div id="tab-antrian-pasien" class="tab-pane no-padding">
+                        <form action="" class="form-horizontal">
+                          <div class="form-group">
+                              <label class="control-label col-sm-4">*Tipe</label>
+                              <div class="col-sm-8">
+                                <select name="select_tipe" id="select_tipe" class="form-control">
+                                  <option value="#">-Pilih-</option>
+                                  <option value="bpjs" >BPJS</option>
+                                  <option value="umum">Non BPJS</option>
+                                  <option value="online">Online</option>
+                                </select>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label class="control-label col-sm-4">*Loket</label>
+                              <div class="col-sm-6">
+                                <select name="select_loket" id="select_loket" class="form-control">
+                                  <option value="#">-Pilih-</option>
+                                  <?php for($i=1;$i<5;$i++) :?>
+                                  <option value="<?php echo $i?>"> <?php echo $i?> </option>
+                                  <?php endfor;?>
+                                </select>
+                              </div>
+                              <div class="col-sm-2" style="margin-left:-5%;">
+                                <button class="btn btn-xs btn-success" id="btn_submit_loket" onclick="update_antrian()"  type="button" title="Pilih Loket"> <i class="fa fa-check"></i> </button>
+                              </div>
+                          </div>
+
+                          <div id="message_loket"></div>
+
+                          <div class="row">
+                            <center id="counter_apps">
+                              <br>
+                              <label style="font-size:16px; font-weight: bold"> LOKET <span id="label_loket"> 0 </span> - <span id="label_tipe"> 0 </span>
+                              </label>
+                              <br>
+                              <input type="hidden" name="" id="loket_hidden" value="0">
+                              <input type="hidden" name="" id="tipe_hidden" value="0">
+                              <ul class="pagination">
+                                <!-- <li>
+                                  <a href="#" id="prev_count">
+                                    <i class="ace-icon fa fa-angle-double-left"></i> Prev
+                                  </a>
+                                </li> -->
+
+                                <li class="active">
+                                  <input type="hidden" name="counter_number_curr" id="counter_number_value" value="0">
+                                  <a href="#" style="font-size:18px" id="counter_number"> 
+                                    0
+                                  </a>
+                                </li>
+
+                                <!-- <li>
+                                  <a href="#" id="next_count">
+                                    Next <i class="ace-icon fa fa-angle-double-right"></i>
+                                  </a>
+                                </li> -->
+
+                              </ul>
+
+                              <audio id="container" autoplay=""></audio>
+                              <br>
+                              <button class="btn btn-xs btn-success" id="btn_finish" alt="Finish">Finish <i class="fa fa-check"></i></button>
+                              <button class="btn btn-xs btn-danger" id="btn_play" alt="Call">&nbsp;&nbsp;Call <i class="fa fa-volume-up"></i>&nbsp;&nbsp;</button><br>
+                              <!-- <button class="btn btn-xs btn-danger" id="btn_skip" alt="Skip">Skip <i class="fa fa-step-forward"></i></button><br> -->
+                              Antrian ke - <label id="from_num">0</label> dari <label id="to_num">0</label>
+                            
+                            </center>
+                            <center>
+                              <div width="100%">
+                                <b style="font-size:16px">BPJS</b><br>
+                                <div width="500%" style="float:left;margin-left:5px">
+                                Total Antrian <h2 style="margin-top:5px" id="total_bpjs"> 0 </h2>
+                                </div>
+                                <div width="500%" style="float:right;margin-right:5px">
+                                Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_bpjs"> 0 </h2>
+                                </div>
+                              </div>
+                              <br>
+                              <hr>
+                              <div width="100%">
+                                <b style="font-size:16px">NON BPJS</b><br>
+                                <div width="500%" style="float:left;margin-left:5px">
+                                Total Antrian <h2 style="margin-top:5px" id="total_non_bpjs"> 0 </h2>
+                                </div>
+                                <div width="500%" style="float:right; margin-right:5px">
+                                Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_non_bpjs"> 0 </h2>
+                                </div>
+                              </div>
+                              <br>
+                              <hr>
+                              <div width="100%">
+                                <b style="font-size:16px">ONLINE MOBILE</b><br>
+                                <div width="500%" style="float:left;margin-left:5px">
+                                Total Antrian <h2 style="margin-top:5px" id="total_online"> 0 </h2>
+                                </div>
+                                <div width="500%" style="float:right; margin-right:5px">
+                                Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_online"> 0 </h2>
+                                </div>
+                              </div>
+                            </center>
+
+                          </div>
+
+                        </form>
                     </div>
-                    
-                    <!-- tab antrian pasien -->
-                    <div id="tab-antrian-pasien" class="tab-pane no-padding">
-                      <form action="" class="form-horizontal">
-                        <div class="form-group">
-                            <label class="control-label col-sm-4">*Tipe</label>
-                            <div class="col-sm-8">
-                              <select name="select_tipe" id="select_tipe" class="form-control">
-                                <option value="#">-Pilih-</option>
-                                <option value="bpjs" >BPJS</option>
-                                <option value="umum">Non BPJS</option>
-                                <option value="online">Online</option>
-                              </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-4">*Loket</label>
-                            <div class="col-sm-6">
-                              <select name="select_loket" id="select_loket" class="form-control">
-                                <option value="#">-Pilih-</option>
-                                <?php for($i=1;$i<5;$i++) :?>
-                                <option value="<?php echo $i?>"> <?php echo $i?> </option>
-                                <?php endfor;?>
-                              </select>
-                            </div>
-                            <div class="col-sm-2" style="margin-left:-5%;">
-                              <button class="btn btn-xs btn-success" id="btn_submit_loket" onclick="update_antrian()"  type="button" title="Pilih Loket"> <i class="fa fa-check"></i> </button>
-                            </div>
-                        </div>
-
-                        <div id="message_loket"></div>
-
-                        <div class="row">
-                          <center id="counter_apps">
-                            <br>
-                            <label style="font-size:16px; font-weight: bold"> LOKET <span id="label_loket"> 0 </span> - <span id="label_tipe"> 0 </span>
-                            </label>
-                            <br>
-                            <input type="hidden" name="" id="loket_hidden" value="0">
-                            <input type="hidden" name="" id="tipe_hidden" value="0">
-                            <ul class="pagination">
-                              <!-- <li>
-                                <a href="#" id="prev_count">
-                                  <i class="ace-icon fa fa-angle-double-left"></i> Prev
-                                </a>
-                              </li> -->
-
-                              <li class="active">
-                                <input type="hidden" name="counter_number_curr" id="counter_number_value" value="0">
-                                <a href="#" style="font-size:18px" id="counter_number"> 
-                                  0
-                                </a>
-                              </li>
-
-                              <!-- <li>
-                                <a href="#" id="next_count">
-                                  Next <i class="ace-icon fa fa-angle-double-right"></i>
-                                </a>
-                              </li> -->
-
-                            </ul>
-
-                            <audio id="container" autoplay=""></audio>
-                            <br>
-                            <button class="btn btn-xs btn-success" id="btn_finish" alt="Finish">Finish <i class="fa fa-check"></i></button>
-                            <button class="btn btn-xs btn-danger" id="btn_play" alt="Call">&nbsp;&nbsp;Call <i class="fa fa-volume-up"></i>&nbsp;&nbsp;</button><br>
-                            <!-- <button class="btn btn-xs btn-danger" id="btn_skip" alt="Skip">Skip <i class="fa fa-step-forward"></i></button><br> -->
-                            Antrian ke - <label id="from_num">0</label> dari <label id="to_num">0</label>
-                          
-                          </center>
-                          <center>
-                            <div width="100%">
-                              <b style="font-size:16px">BPJS</b><br>
-                              <div width="500%" style="float:left;margin-left:5px">
-                              Total Antrian <h2 style="margin-top:5px" id="total_bpjs"> 0 </h2>
-                              </div>
-                              <div width="500%" style="float:right;margin-right:5px">
-                              Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_bpjs"> 0 </h2>
-                              </div>
-                            </div>
-                            <br>
-                            <hr>
-                            <div width="100%">
-                              <b style="font-size:16px">NON BPJS</b><br>
-                              <div width="500%" style="float:left;margin-left:5px">
-                              Total Antrian <h2 style="margin-top:5px" id="total_non_bpjs"> 0 </h2>
-                              </div>
-                              <div width="500%" style="float:right; margin-right:5px">
-                              Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_non_bpjs"> 0 </h2>
-                              </div>
-                            </div>
-                            <br>
-                            <hr>
-                            <div width="100%">
-                              <b style="font-size:16px">ONLINE MOBILE</b><br>
-                              <div width="500%" style="float:left;margin-left:5px">
-                              Total Antrian <h2 style="margin-top:5px" id="total_online"> 0 </h2>
-                              </div>
-                              <div width="500%" style="float:right; margin-right:5px">
-                              Sisa Antrian <h2 style="margin-top:5px" id="sisa_antrian_online"> 0 </h2>
-                              </div>
-                            </div>
-                          </center>
-
-                        </div>
-
-                      </form>
                   </div>
+                  
                 </div>
-                 
-              </div>
+                <!-- end tabs on the right content -->
 
             </div>
-
-            <!-- div antrian pasien -->
 
         </form>
 

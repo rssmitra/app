@@ -55,7 +55,7 @@ class Po_penerbitan_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,a.tgl_permohonan,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 		}else{
-			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) < 14');
+			$this->db->where('DATEDIFF(day,a.tgl_permohonan,GETDATE()) <= 14');
 		}
 
 		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, flag_jenis');

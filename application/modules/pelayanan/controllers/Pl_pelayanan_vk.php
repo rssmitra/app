@@ -464,7 +464,7 @@ class Pl_pelayanan_vk extends MX_Controller {
 
                 }else{
                     $status_pulang = 3;
-                    $type_pelayanan = 'Pasien Selesai';
+                    $type_pelayanan = 'pasien_selesai';
                     $kode_meninggal = 0;
                 }
 

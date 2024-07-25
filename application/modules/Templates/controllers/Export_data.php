@@ -35,6 +35,10 @@ class Export_data extends MX_Controller {
                 $this->getContentPDF($no_registrasi, $flag, $pm, $act_code,$bagian,$no_kunjungan,$flag_mcu );
                 break;
 
+            case 'viewer':
+                $this->getContentHtml($no_registrasi, $flag, $pm, $act_code,$bagian,$no_kunjungan,$flag_mcu );
+                break;
+
             case 'word':
                 $this->exportWord();
                 break;
@@ -63,6 +67,25 @@ class Export_data extends MX_Controller {
         $this->exportPdf($html, $flag, $pm, $act_code); 
       
     }
+
+    public function getContentHtml($no_registrasi, $flag, $pm, $act_code='',$bagian,$no_kunjungan,$flag_mcu ){
+
+        
+        /*load class*/
+        $csm_bp = new Csm_billing_pasien;
+        $reg_pm = new Reg_pm_model;
+        $data = [];
+        /*get content data*/
+        //$data = $csm_bp->getBillingLocal($no_registrasi, $flag); 
+        // $data = $reg_pm->get_hasil_pm($no_registrasi, $no_kunjungan, $bagian, $flag_mcu);
+        // echo '<pre>';print_r($data);die;
+        /*get content html*/
+        $html = $csm_bp->getHtmlData($data, $no_registrasi, $flag, $pm, '', $no_kunjungan, $flag_mcu);
+        // echo '<pre>';print_r($html);die;
+        echo $html;
+
+    }
+
 
     public function exportPdf($data, $flag, $pm, $act_code='') { 
         
@@ -114,7 +137,7 @@ class Export_data extends MX_Controller {
         //kotak form
         $pdf->AddPage('P', 'A4');
         //$pdf->setY(10);
-        $pdf->setXY(5,20,5,5);
+        $pdf->setXY(10,20,5,5);
         $pdf->SetMargins(10, 10, 10, 10); 
         /* $pdf->Cell(150,42,'',1);*/
 //         $html = <<<EOD

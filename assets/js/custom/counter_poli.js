@@ -607,6 +607,36 @@
     })();
   }
 
+  function playAudioDing(num,loket) { 
+    var num1 = num;
+      (function() {
+        var numstring = num.toString();
+        var res = numstring.split("");
+        var numlenght = numstring.length;
+        var Mp3Queue = function(container, files) {
+          var index = 1;
+          var nextindex;
+          if(!container || !container.tagName || container.tagName !== 'AUDIO') throw 'Invalid container';
+          if(!files || !files.length)throw 'Invalid files array';   
+  
+          container.src = files[0];
+        };
+  
+        var container = document.getElementById('container');			
+  
+        /*find loket voice*/
+        voice_loket = get_voice_loket(loket);
+        /*alert(type);*/
+        new Mp3Queue(container, [
+          'assets/suara/ding.mp3',    // 0
+          'assets/suara/'+voice_loket+''   // 19
+          
+        ]);
+  
+  
+      })();
+    }
+
   function get_voice_loket(loket){
     strLoket = loket.toString();
     

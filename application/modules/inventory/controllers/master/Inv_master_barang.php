@@ -127,7 +127,8 @@ class Inv_master_barang extends MX_Controller {
             $is_prb = isset($row_list->is_prb) ? ($row_list->is_prb == 'Y') ? '<span style="background: gold; color: black; font-weight: bold; font-size: 10px">PRB</span>' : '' : '';
             $is_kronis = isset($row_list->is_kronis) ? ($row_list->is_kronis == 'Y') ? '<span style="background: green; color: white; font-weight: bold; font-size: 10px">Kronis</span>' : '' : '';
             $row[] = 'Kategori : '.ucfirst($row_list->nama_kategori).'<br><b>'.$row_list->kode_brg.'</b><br>'.$row_list->nama_brg.'<br>'.$is_prb.' '.$is_kronis;
-            $explode_gf = explode(",", $row_list->kategori_gf);
+            
+            $explode_gf = isset($row_list->kategori_gf) ? explode(",", $row_list->kategori_gf) : '';
             $kategori_gf = $this->getKategoriGf($explode_gf);
 
             $row[] = ucfirst($txt_gol).'<br><span style="color: green">Rak : '.$row_list->rak.'</span><br>'.$kategori_gf.'';
@@ -457,12 +458,12 @@ class Inv_master_barang extends MX_Controller {
         }
     }
 
-    public function getKategoriGf($txt){
+    public function getKategoriGf($txt=''){
 
         // echo '<pre>'; print_r($txt);die;
         $txt_string = "";
         $string = "";
-        if(count($txt) > 0){
+        if($txt != '' && count($txt) > 0){
             foreach ($txt as $key => $value) {
                 switch ($value) {
                     case 'A':
@@ -483,7 +484,6 @@ class Inv_master_barang extends MX_Controller {
             }
         }
         
-
         return $txt_string;
     }
 

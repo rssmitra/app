@@ -5,7 +5,7 @@ class Adm_kasir_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal';
+	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai';
 	var $order = array('c.nama_pasien' => 'ASC');
 
 	public function __construct()
@@ -25,6 +25,7 @@ class Adm_kasir_model extends CI_Model {
 		$this->db->join('mt_bagian d','d.kode_bagian=b.kode_bagian_masuk','left');
 		$this->db->join('mt_perusahaan e','e.kode_perusahaan=b.kode_perusahaan','left');
 		$this->db->join('mt_nasabah f','f.kode_kelompok=b.kode_kelompok','left');
+		$this->db->join('mt_karyawan h','h.kode_dokter=CAST(g.kode_dokter as INT)','left');
 
 		if ( isset($_GET['search_by']) ) {
 
@@ -137,6 +138,7 @@ class Adm_kasir_model extends CI_Model {
 						'kode_perusahaan' => $value->kode_perusahaan,
 						'kode_kelompok' => $value->kode_kelompok,
 						'kode_dokter' => $value->kode_dokter,
+						'nama_dokter' => $value->nama_pegawai,
 						'kode_bagian_masuk' => $value->kode_bagian_masuk,
 						'nama_pasien' => $value->nama_pasien,
 						'nama_bagian' => $value->nama_bagian,
@@ -159,6 +161,7 @@ class Adm_kasir_model extends CI_Model {
 						'kode_perusahaan' => $value->kode_perusahaan,
 						'kode_kelompok' => $value->kode_kelompok,
 						'kode_dokter' => $value->kode_dokter,
+						'nama_dokter' => $value->nama_pegawai,
 						'kode_bagian_masuk' => $value->kode_bagian_masuk,
 						'nama_pasien' => $value->nama_pasien,
 						'nama_bagian' => $value->nama_bagian,

@@ -367,15 +367,15 @@
         </div>
       </div><!-- /.main-content -->
 
-      <!-- <div class="footer">
+      <div class="footer">
         <div class="footer-inner">
           <div class="footer-content">
             <span class="bigger-120">
-              <?php echo $app->footer?>
+              <?php echo $app->footer?> - <?php echo date('Y')?>
             </span>
           </div>
         </div>
-      </div> -->
+      </div>
 
       <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
         <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -1200,6 +1200,11 @@
         second.innerHTML = secondCount;
         centiSecond .innerHTML = centiSecondCount;
 
+    }
+
+    function cetak_surat_kontrol_popup(ID, jd_id) {   
+      url = 'registration/Reg_pasien/surat_kontrol_popup?id_tc_pesanan='+ID+'&jd_id='+jd_id+'';
+      PopupCenter(url, 'CETAK SURAT KONTROL', 800, 650);
     }
 
 

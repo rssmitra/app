@@ -91,13 +91,7 @@
       <div class="main-content">
         <div class="main-content-inner">
           <div class="page-content-main" style="background-color: black !important">
-            <div class="no-padding" style="width:90%;float:left;">
-              <marquee behavior="scroll" direction="left" style="color: white;font-size:28px;margin-top:7px;"> Bagi pasien yang sudah terlewati nomor antriannya harap menghubungi Perawat di <i>Nurse Station</i>. | <?php echo COMP_MOTTO?> </marquee>
-            </div>
-            <div style="width:10%;float:left;margin-top: 5px;color: white; text-align: center;">
-              <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
-              <p style="margin:0;font-size:16px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
-            </div>
+            
             <div class="row no-padding">
               <div class="col-md-12 no-padding" style="padding-right: 5px !important">
                 <div class="col-sm-12 no-padding" style="color: white; padding: 5px !important">

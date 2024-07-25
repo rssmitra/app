@@ -547,6 +547,17 @@ function btn_update_racikan(){
 
 }
 
+function select_item_racikan(id){
+  preventDefault();
+  $.getJSON("<?php echo site_url('farmasi/E_resep/getrowresep') ?>?ID="+id, '' , function (response) {
+    // autofill
+    $('#inputKeyObatRacikan').val(response.nama_brg);
+    $('#jumlah_pesan_racikan').val(response.jml_pesan);
+    getDetailObatByKodeBrgRacikan(response.kode_brg,'060101');
+  })
+  
+}
+
 </script>
 
 <style type="text/css">
@@ -585,34 +596,34 @@ function btn_update_racikan(){
       <input type="hidden" name="no_resep" id="no_resep" class="form-control" value="<?php echo isset($value_header)?ucwords($value_header->kode_pesan_resep):''?>" >
 
 
-        <div class="col-sm-12 no-padding">
+        <div class="col-sm-12">
 
-          <div class="form-group">
-            <label class="control-label col-sm-2">ID Racikan</label>
-            <div class="col-md-2">
-              <input type="text" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>">
-            </div>
-            <label class="control-label col-sm-2">Kode Transaksi</label>
-            <div class="col-md-2">
-              <input type="text" id="kode_trans_far_racikan" name="kode_trans_far_racikan" value="<?php echo $kode_trans_far; ?>" class="form-control">
-            </div>
-          </div> 
+          <div class="col-md-8 no-padding">
+            <div class="form-group">
+              <label class="control-label col-sm-2">ID Racikan</label>
+              <div class="col-md-1">
+                <input type="text" id="id_tc_far_racikan" name="id_tc_far_racikan" value="<?php echo isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:0?>" class="form-control">
+              </div>
+              <label class="control-label col-sm-2">Kode Transaksi</label>
+              <div class="col-md-2">
+                <input type="text" id="kode_trans_far_racikan" name="kode_trans_far_racikan" value="<?php echo $kode_trans_far; ?>" class="form-control">
+              </div>
+            </div> 
 
-          <!-- pilih racikan -->
-          <div class="form-group">
-            <label class="control-label col-sm-2">Pilih Racikan</label>
-            <div class="col-md-4">
-              <?php echo $this->master->custom_selection($params = array('table' => 'fr_tc_far_detail_log', 'id' => 'relation_id', 'name' => 'nama_brg', 'where' => array('kode_trans_far' => $kode_trans_far, 'flag_resep' => 'racikan')), isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
-            </div>
-            <div class="col-md-1">
-              <a href="#" onclick="renew_form()" class="btn btn-xs btn-primary"><i class="fa fa-plus-circle dark"></i> Buat Racikan Baru</a>
-            </div>
-          </div> 
+            <!-- pilih racikan -->
+            <div class="form-group">
+              <label class="control-label col-sm-2">Pilih Racikan</label>
+              <div class="col-md-6">
+                <?php echo $this->master->custom_selection($params = array('table' => 'fr_tc_far_detail_log', 'id' => 'relation_id', 'name' => 'nama_brg', 'where' => array('kode_trans_far' => $kode_trans_far, 'flag_resep' => 'racikan')), isset($_GET['id_tc_far_racikan'])?$_GET['id_tc_far_racikan']:'' , 'select_racikan', 'select_racikan', 'form-control', '', '') ?>
+              </div>
+              <div class="col-md-1">
+                <a href="#" onclick="renew_form()" class="btn btn-xs btn-primary"><i class="fa fa-plus-circle dark"></i> Buat Racikan Baru</a>
+              </div>
+            </div> 
 
-          <!-- header racikan -->
-          <div class="form-group" id="result_data_racikan_div" style="display: none">
-            <div class="col-md-8">
-              <table class="table" width="50%" style="margin-left:8px !important">
+            <!-- header racikan -->
+            <div id="result_data_racikan_div" style="display: none">
+              <table class="table" width="50%">
                 <tr style="background-color:#d0e8ec; color:black">
                   <th>Kode</th>
                   <th>Nama Racikan</th>
@@ -645,111 +656,125 @@ function btn_update_racikan(){
                 </tr>
               </table>
             </div>
-          </div>
-          
-          <!-- <div class="col-sm-2">
-           <div class="pull-right"><a href="#" onclick="" id="btn_submit_racikan_selesai" class="btn btn-xs btn-primary"><i class="fa fa-check"></i> Racikan Selesai</a></div>
-          </div> -->
 
-          <!-- form racikan header -->
-          <div class="col-sm-12 no-padding" id="data_racikan_div">
+            <!-- form racikan header -->
+            <div id="data_racikan_div">
 
-              <div class="form-group">
-                <label class="control-label col-sm-2">Nama Racikan</label>
-                <div class="col-md-3">
-                    <input type="text" class="form-control" name="nama_racikan" id="nama_racikan" value="Racikan Kode. <?php echo $kode_trans_far; ?>">  
-                </div>
-                <label class="control-label col-sm-1">Jasa R</label>
-                <div class="col-md-1">
-                    <input type="text" class="form-control" name="jasa_r_racikan" id="jasa_r_racikan" value="500">   
-                </div>
-                <label class="control-label col-sm-1">Jasa Prod</label>
-                <div class="col-md-1">
-                    <input type="text" class="form-control" name="jasa_prod_racikan" id="jasa_prod_racikan" value="2000">
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-sm-2">Jumlah Obat</label>
-                <div class="col-md-1">
-                  <input type="text" class="form-control" name="jml_racikan" id="jml_racikan" style="text-align: center;">  
-                </div>
-                <!-- <div class="col-md-6">
-                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
-                    <input type="checkbox" class="ace" name="resep_ditangguhkan_r" value="1">
-                    <span class="lbl"> Ditangguhkan </span>
-                  </label>
-                </div> -->
-              </div>
-
-              <!-- <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
-              <div class="form-group">
-                  <label class="control-label col-sm-2">Resep PRB</label>
-                  <div class="col-md-1">
-                    <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;" value="">  
+                <div class="form-group">
+                  <label class="control-label col-sm-2">Nama Racikan</label>
+                  <div class="col-md-3">
+                      <input type="text" class="form-control" name="nama_racikan" id="nama_racikan" value="<?php echo isset($eresep['header_racikan']->nama_brg) ? $eresep['header_racikan']->nama_brg: 'Racikan Kode. '.$kode_trans_far.''?>">  
                   </div>
-                  <div class="col-md-6">
+                  <label class="control-label col-sm-1">Jasa R</label>
+                  <div class="col-md-1">
+                      <input type="text" class="form-control" name="jasa_r_racikan" id="jasa_r_racikan" value="500">   
+                  </div>
+                  <label class="control-label col-sm-2">Jasa Prod</label>
+                  <div class="col-md-2">
+                      <input type="text" class="form-control" name="jasa_prod_racikan" id="jasa_prod_racikan" value="2000">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-sm-2">Jumlah Obat</label>
+                  <div class="col-md-1">
+                    <input type="text" class="form-control" name="jml_racikan" id="jml_racikan" style="text-align: center;" value="<?php echo isset($eresep['header_racikan']->jml_pesan) ? $eresep['header_racikan']->jml_pesan: 0?>">  
+                  </div>
+                  <!-- <div class="col-md-6">
                     <label class="inline" style="margin-top: 4px;margin-left: -12px;">
-                      <input type="checkbox" class="ace" name="prb_ditangguhkan_r" value="1">
+                      <input type="checkbox" class="ace" name="resep_ditangguhkan_r" value="1">
                       <span class="lbl"> Ditangguhkan </span>
                     </label>
+                  </div> -->
+                </div>
+
+                <!-- <?php if( strtoupper($tipe_layanan) == 'RJ' ) : ?>
+                <div class="form-group">
+                    <label class="control-label col-sm-2">Resep PRB</label>
+                    <div class="col-md-1">
+                      <input type="text" class="form-control" name="jumlah_obat_23_r" id="jumlah_obat_23_r" style="text-align: center;" value="">  
+                    </div>
+                    <div class="col-md-6">
+                      <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                        <input type="checkbox" class="ace" name="prb_ditangguhkan_r" value="1">
+                        <span class="lbl"> Ditangguhkan </span>
+                      </label>
+                    </div>
+                </div>
+                <?php endif; ?> -->
+                <div class="form-group">
+                  <label class="control-label col-sm-2">Satuan Racikan</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), isset($eresep['header_racikan']->satuan_obat) ? $eresep['header_racikan']->satuan_obat: 'Bks' , 'satuan_racikan', 'satuan_racikan', 'form-control', '', '');?>
                   </div>
-              </div>
-              <?php endif; ?> -->
-              <div class="form-group">
-                <label class="control-label col-sm-2">Satuan Racikan</label>
-                <div class="col-md-2">
-                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'Bks' , 'satuan_racikan', 'satuan_racikan', 'form-control', '', '');?>
                 </div>
-              </div>
 
-              <div class="form-group">
-                <label class="control-label col-sm-2">Signa</label>
-                <div class="col-md-4">
-                  <span class="inline">
-                    <input name="dosis_start_r" id="dosis_start_r" type="text" style="width: 50px; text-align: center"/>
-                  </span>
-                  <span class="inline" style="padding-left: 4px;">
-                    <i class="fa fa-times bigger-150"></i>
-                  </span>
-                  <span class="inline">
-                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
-                  </span>
-                  
+                <div class="form-group">
+                  <label class="control-label col-sm-2">Signa</label>
+                  <div class="col-md-4">
+                    <span class="inline">
+                      <input name="dosis_start_r" id="dosis_start_r" type="text" style="width: 50px; text-align: center" value="<?php echo isset($eresep['header_racikan']->jml_dosis) ? $eresep['header_racikan']->jml_dosis: 0?>"/>
+                    </span>
+                    <span class="inline" style="padding-left: 4px;">
+                      <i class="fa fa-times bigger-150"></i>
+                    </span>
+                    <span class="inline">
+                      <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center" value="<?php echo isset($eresep['header_racikan']->jml_dosis_obat) ? $eresep['header_racikan']->jml_dosis_obat: 0?>"/>
+                    </span>
+                    
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-group">
-                <label class="control-label col-sm-2">Penggunaan</label>
-                <div class="col-md-2">
-                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai_r', 'anjuran_pakai_r', 'form-control', '', '');?>
+                <div class="form-group">
+                  <label class="control-label col-sm-2">Penggunaan</label>
+                  <div class="col-md-4">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), isset($eresep['header_racikan']->aturan_pakai) ? $eresep['header_racikan']->aturan_pakai: 'Sesudah Makan'  , 'anjuran_pakai_r', 'anjuran_pakai_r', 'form-control', '', '');?>
+                  </div>
                 </div>
-              </div>
-              
-              <div class="form-group">
-                <label class="control-label col-sm-2">Catatan</label>
-                <div class="col-md-1">
-                    <input class="form-control" name="catatan_r" id="catatan_r" type="text" style="width: 400px" value=""/>
+                
+                <div class="form-group">
+                  <label class="control-label col-sm-2">Catatan</label>
+                  <div class="col-md-1">
+                      <input class="form-control" name="catatan_r" id="catatan_r" type="text" style="width: 400px" value="<?php echo isset($eresep['header_racikan']->keterangan) ? $eresep['header_racikan']->keterangan: ''?>"/>
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-group">
-                <label class="col-sm-2">&nbsp;</label>
-                <div class="col-md-8" style="margin-left:6px;">
-                  <button type="submit" id="btn_submit_racikan" name="submit" value="header" class="btn btn-xs btn-primary">
-                      <i class="ace-icon fa fa-save icon-on-right bigger-110"></i>
-                      Submit
-                  </button>
-                  <button type="submit" id="btn_update_header_racikan" style="display:none" name="submit" value="header" class="btn btn-xs btn-success">
-                        <i class="ace-icon fa fa-edit icon-on-right bigger-110"></i>
-                        Update
+                <div class="form-group">
+                  <label class="col-sm-2">&nbsp;</label>
+                  <div class="col-md-8" style="margin-left:6px;">
+                    <button type="submit" id="btn_submit_racikan" name="submit" value="header" class="btn btn-xs btn-primary">
+                        <i class="ace-icon fa fa-save icon-on-right bigger-110"></i>
+                        Submit
                     </button>
-                </div>
-              </div> 
-              
-              <hr>
+                    <button type="submit" id="btn_update_header_racikan" style="display:none" name="submit" value="header" class="btn btn-xs btn-success">
+                          <i class="ace-icon fa fa-edit icon-on-right bigger-110"></i>
+                          Update
+                      </button>
+                  </div>
+                </div> 
+                
+                <hr>
 
+            </div>
           </div>
+
+          <div class="col-md-4">
+              <b>KOMPOSISI OBAT RACIKAN (e-Resep)</b>
+              <table class="table">
+                <tr style="background: #d0e8ec">
+                  <th class="center">No</th>
+                  <th>Nama Obat</th>
+                  <th>Jumlah</th>
+                </tr>
+                <?php $no=0; foreach($eresep['racikan'] as $row_racikan) : if($row_racikan->parent != '0') :$no++; ?>
+                  <tr>
+                    <td align="center"><?php echo $no; ?></td>
+                    <td><a href="#" onclick="select_item_racikan(<?php echo $row_racikan->id?>)"><?php echo $row_racikan->nama_obat; ?></a></td>
+                    <td><?php echo $row_racikan->jml_pesan.' '.$row_racikan->satuan_obat; ?></td>
+                  </tr>
+                <?php endif; endforeach;?>
+              </table>
+            </div>
 
           <!-- form obat -->
           <div class="col-sm-12 no-padding" id="data_obat_div" style="display: none" >
@@ -819,8 +844,7 @@ function btn_update_racikan(){
 
             </div>
             
-            <div class="col-sm-4 no-padding" style="display:none" id="div_detail_obat_racikan">
-              <p><b>KETERANGAN STOK DAN OBAT</b></p>
+            <div class="col-sm-4" style="display:none" id="div_detail_obat_racikan">
               <div id="warning_stok_obat_racikan"></div>
               <div id="detailObatHtmlRacikan"></div>
             </div>
@@ -828,7 +852,7 @@ function btn_update_racikan(){
           </div>
           
           <!-- datatable obat -->
-          <div class="col-sm-12 no-padding">
+          <div class="col-sm-12">
             <hr class="separator">
             <div style="margin-top:-27px">
               <table id="temp_data_racikan" base-url="farmasi/Entry_resep_racikan" class="table table-bordered table-hover">

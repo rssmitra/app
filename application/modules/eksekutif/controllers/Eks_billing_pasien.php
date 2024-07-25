@@ -136,6 +136,52 @@ class Eks_billing_pasien extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function export_excel()
+    {
+        /*get data from model*/
+        
+        $list = $this->Eks_billing_pasien->get_datatables();
+        // echo '<pre>';print_r($_POST);die;
+        $data = array();
+        $arr_total = array();
+        $arr_paid = array();
+        $arr_unpaid = array();
+        $arr_total_cancel = array();
+        $arr_total_billing = array();
+        $no = 0;
+        foreach ($list as $row_list) {
+            // var_dump($row_list);die;
+            // sum total
+            $total = $this->master->sumArrayByKey($row_list, 'total');
+                $total_billing = $this->master->sumArrayByKey($row_list, 'total_billing');
+                $arr_total[] = $total;
+                $arr_total_billing[] = $total_billing;
+                if( $row_list[0]['status_batal'] == 1 ){
+                    $arr_total_cancel[] = $total_billing;
+                }else{
+                    if( $total > 0 ){
+                    }else{
+                        $arr_paid[] = $total_billing;
+                    }
+                }
+
+              
+        }
+
+        
+        
+        $data = array(
+                        "result" => $list,
+                        "total_paid" => array_sum($arr_paid),
+                        "total_unpaid" => array_sum($arr_total),
+                        "total_cancel" => array_sum($arr_total_cancel),
+                        "total_billing" => array_sum($arr_total_billing),
+                );
+                // echo '<pre>';print_r($data);die;
+        //output to json format
+        $this->load->view('Eks_billing_pasien/download_excel', $data);
+    }
+
 
 }
 

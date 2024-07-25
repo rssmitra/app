@@ -47,6 +47,7 @@ class Reg_pm extends MX_Controller {
     {
         /*get value by no_kunj*/
         $data_reg = $this->Reg_pasien->get_detail_resume_medis($no_reg);
+        // echo '<pre>';print_r($data_reg);die;
         $data['value'] = $data_reg['registrasi'];
         $data['bagian_asal'] = $bag_asal;
         $data['no_reg'] = $no_reg;
@@ -128,6 +129,7 @@ class Reg_pm extends MX_Controller {
                 'kode_penunjang' => $kode_penunjang,
                 'tgl_daftar' => $tgl_registrasi,
                 'kode_bagian' => $this->regex->_genRegex($this->form_validation->set_value('pm_tujuan'),'RGXQSL'),
+                'asal_daftar' => isset($kode_bagian_asal)?$kode_bagian_asal:'',
                 'no_kunjungan' => $no_kunjungan,
                 'no_antrian' => $no_antrian,
                 'kode_klas' => $klas,
@@ -138,7 +140,7 @@ class Reg_pm extends MX_Controller {
             $this->Reg_klinik->save('pm_tc_penunjang', $data_pm_tc_penunjang);
 
             /*save logs*/
-            $this->logs->save('pm_tc_penunjang', $data_pm_tc_penunjang['kode_penunjang'], 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
+            // $this->logs->save('pm_tc_penunjang', $data_pm_tc_penunjang['kode_penunjang'], 'insert new record on Pendaftaran Penunjang Medis module', json_encode($data_pm_tc_penunjang),'kode_penunjang');
 
             if ($this->db->trans_status() === FALSE)
             {
@@ -149,7 +151,7 @@ class Reg_pm extends MX_Controller {
             {
                 $this->db->trans_commit();
 
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHidden'], 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'Penunjang Medis', 'no_sep' => $no_sep));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHidden'], 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'penunjang_medis', 'no_sep' => $no_sep));
 
                 if(!$this->input->post('no_registrasi_rujuk') && $this->input->post('pm_tujuan') == '050301'){
                     $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
@@ -164,7 +166,6 @@ class Reg_pm extends MX_Controller {
                         if( $tracer == 1 ) {
                             $this->db->update('tc_registrasi', array('print_tracer' => 'Y'), array('no_registrasi' => $no_registrasi) );
                         }
-                        
                     } 
                 }
                 

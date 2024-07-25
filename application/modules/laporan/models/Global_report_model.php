@@ -13,15 +13,52 @@ class Global_report_model extends CI_Model {
 		$flag = isset($_POST['flag'])?$_POST['flag']:$_GET['flag'];
 		$query 		= $this->$flag();
 		$execute 	= $this->db->query( $query );
+		echo '<pre>'; print_r($query);die;
 		/*field data*/
 		$result = array(
 			'fields' 	=> $execute->field_data(),
 			'data' 		=> $execute->result(),
 		);
-		// echo '<pre>'; print_r($query);die;
 		/*return data*/
 		return $result;
 
+	}
+
+	// master tarif
+	public function master_tarif(){
+		$where = (!empty($_POST['bagian']))? " AND b.kode_bagian = '".$_POST['bagian']."' " : '';
+		if(!empty($_POST['klas'])){
+			$implode = implode(",", $_POST['klas']);
+		}
+		$where .= (!empty($_POST['klas']))? ' AND a.kode_klas IN ('.$implode.')' : '';
+
+		$query = "SELECT
+					a.kode_tarif,
+					nama_tarif,
+					nama_bagian,
+					nama_klas,
+					a.kode_klas,
+					a.revisi_ke,
+					CAST(bill_dr1 as INT) as bill_dr1,
+				CAST(bill_dr2 as INT) as bill_dr2,
+				CAST(kamar_tindakan as INT) as kamar_tindakan,
+				CAST(bhp as INT) as bhp,
+				CAST(alat_rs as INT) as alat_rs,
+				CAST(adm as INT) as adm,
+				CAST(pendapatan_rs as INT) as pendapatan_rs 
+				FROM
+					mt_master_tarif_detail a 
+					left join mt_master_tarif b on b.kode_tarif = a.kode_tarif
+					left join mt_klas c on c.kode_klas = a.kode_klas
+					left join mt_bagian d on d.kode_bagian= b.kode_bagian
+				WHERE
+					a.is_active = 'Y' 
+					AND a.kode_tarif != '0' 
+					".$where."
+				ORDER BY
+					a.revisi_ke DESC,
+					a.kode_tarif ASC";
+		return $query;
 	}
 
 	// ================= AKUNTING DAN KEUANGAN =================== //
@@ -84,6 +121,50 @@ class Global_report_model extends CI_Model {
 					LEFT JOIN mt_master_pasien e ON e.no_mr = b.no_mr 
 				WHERE
 					b.kode_perusahaan = 120 
+					AND ".$where."
+				GROUP BY
+					b.no_registrasi,
+					f.no_sep,
+					d.nama_bagian,
+					e.nama_pasien,
+					b.no_mr,
+					CAST(c.tgl_masuk as DATE) 
+				ORDER BY
+					f.no_sep ASC";
+		
+		return $query;
+	}
+
+	public function akunting_mod_7(){
+		
+		if (isset($_POST['jenis_kunjungan']) AND $_POST['jenis_kunjungan'] == 'rj') {
+			$where = "b.no_kunjungan IN ( SELECT no_kunjungan
+			FROM tc_kunjungan a
+			where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '03' AND MONTH(tgl_masuk) BETWEEN '".$_POST['from_month']."' AND '".$_POST['to_month']."' AND YEAR(tgl_masuk) = ".$_POST['year']." AND a.status_batal is null)";
+		}
+
+		if (isset($_POST['jenis_kunjungan']) AND $_POST['jenis_kunjungan'] == 'ri') {
+			$where = "b.no_kunjungan IN ( SELECT no_kunjungan
+			FROM ri_tc_rawatinap a
+			where MONTH(tgl_masuk) BETWEEN '".$_POST['from_month']."' AND '".$_POST['to_month']."' AND YEAR(tgl_masuk) = ".$_POST['year']."   )";
+		}
+		
+		$query = "SELECT
+					b.no_registrasi,
+					f.no_sep,
+					d.nama_bagian,
+					CAST( ( SUM ( bill_rs ) + SUM ( bill_dr1 ) + SUM ( bill_dr2 ) + SUM ( bill_dr3 ) ) as INT) AS total,
+					b.no_mr,
+					e.nama_pasien,
+					CAST(c.tgl_masuk as DATE) as tgl_masuk
+				FROM
+					tc_trans_pelayanan b
+					LEFT JOIN tc_registrasi f ON f.no_registrasi = b.no_registrasi
+					LEFT JOIN tc_kunjungan c ON c.no_kunjungan = b.no_kunjungan
+					LEFT JOIN mt_bagian d ON d.kode_bagian = f.kode_bagian_masuk
+					LEFT JOIN mt_master_pasien e ON e.no_mr = b.no_mr 
+				WHERE
+					b.kode_perusahaan != 120 
 					AND ".$where."
 				GROUP BY
 					b.no_registrasi,

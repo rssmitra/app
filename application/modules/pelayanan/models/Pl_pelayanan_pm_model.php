@@ -5,9 +5,8 @@ class Pl_pelayanan_pm_model extends CI_Model {
 
 	var $table = 'pm_tc_penunjang';
 	var $column = array('mt_master_pasien.nama_pasien');
-	var $select = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.no_sep, tc_trans_pelayanan.status_selesai, nama_perusahaan, nama_kelompok, nama_bagian, pm_tc_penunjang.status_batal, kode_rujukan';
-	var $group = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.no_sep, nama_perusahaan, nama_kelompok, nama_bagian, pm_tc_penunjang.status_batal, kode_rujukan, kodebookingantrol';
-
+	var $select = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.no_sep, tc_trans_pelayanan.status_selesai, nama_perusahaan, nama_kelompok, mt_bagian.nama_bagian, pm_tc_penunjang.status_batal, kode_rujukan, eorder, id_pm_tc_penunjang';
+	var $group = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.no_sep, nama_perusahaan, nama_kelompok, mt_bagian.nama_bagian, pm_tc_penunjang.status_batal, kode_rujukan, kodebookingantrol, eorder, id_pm_tc_penunjang, bagian_tujuan.nama_bagian';
 	var $order = array('tc_kunjungan.no_kunjungan' => 'DESC');
 
 	public function __construct()
@@ -28,6 +27,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$date_2 = date('Y-m-d H:i:s', strtotime('-31 days', strtotime(date('Y-m-d H:i:s'))));
 
 		$this->db->select($this->select);
+		$this->db->select('bagian_tujuan.nama_bagian as bagian_tujuan');
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
@@ -36,6 +36,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->join('mt_perusahaan','tc_registrasi.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
 		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
 		$this->db->join('mt_bagian','tc_kunjungan.kode_bagian_asal=mt_bagian.kode_bagian','left');
+		$this->db->join('mt_bagian as bagian_tujuan','tc_kunjungan.kode_bagian_tujuan=bagian_tujuan.kode_bagian','left');
 		$this->db->join('tc_trans_pelayanan',''.$this->table.'.kode_penunjang=tc_trans_pelayanan.kode_penunjang','left');
 		
 		/*if isset parameter*/
@@ -112,7 +113,11 @@ class Pl_pelayanan_pm_model extends CI_Model {
 
 			if( (isset($_GET['keyword']) AND $_GET['keyword']!='') OR ( (isset($_GET['from_tgl']) AND $_GET['from_tgl']!='') AND (isset($_GET['from_tgl']) AND $_GET['to_tgl']!='') ) ){
 				if(isset($_GET['search_by']) AND $_GET['keyword'] != ''){
-					$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					if($_GET['search_by']=='no_mr' ){
+						$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					}else{
+						$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					}
 					$this->db->where(array('YEAR(tc_kunjungan.tgl_masuk)' => date('Y')));
 				}
 	
@@ -127,12 +132,24 @@ class Pl_pelayanan_pm_model extends CI_Model {
 				}
 			}
 			
-			$this->db->where("(pm_tc_penunjang.status_daftar is null or pm_tc_penunjang.status_daftar = 0 )");
+			// $this->db->where("(pm_tc_penunjang.status_daftar is null or pm_tc_penunjang.status_daftar = 0 )");
 			
 		}
 
-		$this->db->where("tc_kunjungan.kode_bagian_tujuan = '".$_GET['sess_kode_bagian']."'");
+		if(isset($_GET['sess_kode_bagian']) && $_GET['sess_kode_bagian'] != ''){
+			$this->db->where("tc_kunjungan.kode_bagian_tujuan = '".$_GET['sess_kode_bagian']."'");
+		}
+
+		if(isset($_GET['bagian_asal']) && $_GET['bagian_asal'] != ''){
+			$this->db->where("tc_kunjungan.kode_bagian_asal = '".$_GET['bagian_asal']."'");
+		}
+
+		if(isset($_GET['no_reg']) && $_GET['no_reg'] != 'undefined' && $_GET['no_reg'] != ''){
+			$this->db->where("tc_kunjungan.no_registrasi = '".$_GET['no_reg']."'");
+		}
+
 		$this->db->group_by($this->select);
+		$this->db->group_by($this->group);
         /*end parameter*/
 		/*check level user*/
 		$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
@@ -191,7 +208,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 	public function get_by_id($id)
 	{
 
-		$this->db->select('mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar,pm_tc_penunjang.catatan_hasil, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_trans_pelayanan.status_selesai, nama_perusahaan, nama_kelompok, nama_bagian, kodebookingantrol');
+		$this->db->select('mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar,pm_tc_penunjang.catatan_hasil, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_trans_pelayanan.status_selesai, nama_perusahaan, nama_kelompok, nama_bagian, kodebookingantrol, dr_pengirim, pm_tc_penunjang.id_pm_tc_penunjang');
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
@@ -535,13 +552,14 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		left join mt_master_tarif b on b.kode_tarif = a.kode_tarif 
 		left join mt_master_tarif c on c.kode_tarif = b.referensi
 		where a.kode_bagian = '050101' and b.is_active = 'Y' and a.nama_tarif like '%BPJS%'
-		group by a.kode_tarif, a.nama_tarif, c.nama_tarif";
+		group by a.kode_tarif, a.nama_tarif, c.nama_tarif order by a.nama_tarif ASC";
 
         $dt = $this->db->query($query)->result();
         $ref = [];
 		foreach ($dt as $key => $value) {
 			$string = $this->trimed($value->referensi);
 			$tingkatan[$value->flag][($string == '')?'LAINNYA' : str_replace(" ","_",$string)][] = $value->kode_tarif.'|'.$value->nama_tarif;
+			// $tingkatan[($string == '')?'LAINNYA' : str_replace(" ","_",$string)][] = $value->kode_tarif.'|'.$value->nama_tarif;
         }
 		// echo "<pre>";print_r($tingkatan);die;
 
@@ -555,6 +573,144 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		} 
 		return $txt; 
 	} 
+
+	// order penunjang
+	function get_datatables_order_pm()
+	{
+		$this->db->from('pm_tc_penunjang_order_detail');
+		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.id_pm_tc_penunjang=pm_tc_penunjang_order_detail.id_pm_tc_penunjang','left');
+		$this->db->where('pm_tc_penunjang.id_pm_tc_penunjang', $_GET['id_pm_tc_penunjang'] );
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+
+
+
+	// datatables order fisio
+
+
+	private function _main_query_order_penunjang(){
+
+		$this->db->select("CAST((
+			SELECT  nama_tarif+' | '
+			FROM pm_tc_penunjang_order_detail
+			LEFT JOIN pm_tc_penunjang ON pm_tc_penunjang.id_pm_tc_penunjang=pm_tc_penunjang_order_detail.id_pm_tc_penunjang
+			  LEFT JOIN tc_kunjungan ON tc_kunjungan.no_kunjungan=pm_tc_penunjang.no_kunjungan
+			WHERE tc_kunjungan.no_kunjungan = t.no_kunjungan
+			FOR XML PATH(''))as varchar(max)) as nama_tarif");
+		$this->db->select('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)) as xray_foto, CAST(diagnosa as NVARCHAR(2000)) as diagnosa, CAST(kontra_indikasi as NVARCHAR(2000)) as kontra_indikasi, CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)) as keterangan, kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian as bagian_asal, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang');
+		$this->db->from('pm_tc_penunjang_order_detail');
+		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.id_pm_tc_penunjang=pm_tc_penunjang_order_detail.id_pm_tc_penunjang','left');
+		$this->db->join('tc_kunjungan t','t.no_kunjungan=pm_tc_penunjang.no_kunjungan','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=t.kode_bagian_asal','left');
+		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=t.no_mr','left');
+
+		$this->db->where('pm_tc_penunjang.kode_bagian', $_GET['kode_bagian'] );
+		$this->db->order_by('pm_tc_penunjang_order_detail.created_date', 'DESC');
+
+		if(isset($_GET['no_mr']) && !empty($_GET['no_mr'])){
+			$this->db->where('t.no_mr', $_GET['no_mr'] );
+		}
+
+		if(isset($_GET['id_pm_tc_penunjang']) && !empty($_GET['id_pm_tc_penunjang'])){
+			$this->db->where('pm_tc_penunjang_order_detail.id_pm_tc_penunjang', $_GET['id_pm_tc_penunjang'] );
+		}
+
+		if(isset($_GET['search_by']) && $_GET['search_by'] != '' && isset($_GET['keyword']) && $_GET['keyword'] != ''){	
+			if($_GET['search_by'] == 'no_mr'){
+				$this->db->where('t.no_mr', $_GET['keyword'] );
+			}
+			if($_GET['search_by'] == 'nama_pasien'){
+				$this->db->like('mt_master_pasien.nama_pasien', $_GET['keyword'] );
+			}
+		}
+
+		$this->db->group_by('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)), CAST(diagnosa as NVARCHAR(2000)), CAST(kontra_indikasi as NVARCHAR(2000)), CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)), kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang');
+
+	}
+
+	public function _get_datatables_order_penunjang()
+	{
+		
+		$this->_main_query_order_penunjang();
+
+		$i = 0;
+		// search column array
+		$column = ['t.no_mr','nama_pasien','nama_tarif'];
+
+		foreach ($column as $item) 
+		{
+			if($_POST['search']['value'])
+				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
+			$column[$i] = $item;
+			$i++;
+		}
+
+		if($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+
+	}
+	
+	function count_filtered_order_penunjang()
+	{
+		return count($this->_get_datatables_order_penunjang());
+	}
+
+	public function count_all_order_penunjang()
+	{
+		$this->_main_query_order_penunjang();
+		return $this->db->count_all_results();
+	}
+
+	function get_datatables_order_penunjang()
+	{
+		
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+
+	function get_penunjang_by_no_mr($no_mr){
+		if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
+		{
+			$this->db->select('tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan');
+			$this->db->select('tgl_daftar, tgl_isihasil, tgl_periksa');
+			$this->db->select("CAST((
+				SELECT '|' + nama_tindakan
+				FROM tc_trans_pelayanan
+				LEFT JOIN pm_tc_penunjang ON pm_tc_penunjang.no_kunjungan=tc_trans_pelayanan.no_kunjungan
+				LEFT JOIN tc_kunjungan s ON s.no_kunjungan=pm_tc_penunjang.no_kunjungan
+				WHERE s.no_kunjungan = tc_kunjungan.no_kunjungan
+				FOR XML PATH(''))as varchar(max)) as nama_tarif");
+			$this->db->from('tc_kunjungan');
+			$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
+			$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
+			$this->db->join('mt_bagian as asal','asal.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
+			$this->db->join('mt_bagian as tujuan','tujuan.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
+			$this->db->join('pm_tc_penunjang','pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+			$this->db->where('tc_kunjungan.no_mr', $no_mr);
+			$this->db->where('tgl_isihasil is not null');
+			$this->db->where('DATEDIFF(year,tgl_masuk,GETDATE()) < 2 ');
+			$this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05');
+			$this->db->order_by('tgl_masuk', 'DESC');
+			$penunjang = $this->db->get()->result();
+			$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
+		}
+
+		$getDataPm = [];
+		foreach ($penunjang as $key_pm => $val_pm) {
+			$getDataPm[strtolower($val_pm->tujuan_bagian)][] = $val_pm;
+		}
+
+		return $getDataPm;
+	}
+	
 
 
 }

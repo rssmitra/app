@@ -123,21 +123,21 @@ $(document).ready(function(){
                 });
                
             }
-    } );
+  } );
 
-    $('#dynamic-table tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('selected') ) {
-            //achtungShowLoader();
-            $(this).removeClass('selected');
-            //achtungHideLoader();
-        }
-        else {
-            //achtungShowLoader();
-            oTable.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            //achtungHideLoader();
-        }
-    } );
+  $('#dynamic-table tbody').on( 'click', 'tr', function () {
+      if ( $(this).hasClass('selected') ) {
+          //achtungShowLoader();
+          $(this).removeClass('selected');
+          //achtungHideLoader();
+      }
+      else {
+          //achtungShowLoader();
+          oTable.$('tr.selected').removeClass('selected');
+          $(this).addClass('selected');
+          //achtungHideLoader();
+      }
+  } );
 
       $('#btn_search_data').click(function (e) {
           e.preventDefault();

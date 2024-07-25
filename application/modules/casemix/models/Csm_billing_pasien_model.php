@@ -1179,7 +1179,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $decode_data = json_decode($data);
         // dokumen penunjang medis
         $grouping_doc = $this->groupingDocumentPM($decode_data->group);
-        // echo '<pre>';print_r($grouping_doc);die;
+        
         if($decode_data->reg_data->kode_perusahaan == 120){
             $filename[] ='SEP-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
         }
@@ -1214,6 +1214,7 @@ class Csm_billing_pasien_model extends CI_Model {
             /*filename ex: {flag}{no_mr}{no_registrasi}{kode_penunjang}*/
             $filename[] = $flag.'-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$offset_kode_penunjang.'-'.$no_kunjungan.'';
         }
+        // echo '<pre>';print_r($filename);die;
 
         return $filename;
 

@@ -61,9 +61,29 @@
       });
   });
 
+  $('#btn_export_excel').click(function (e) {
+    var url_search = $('#form_search').attr('action');
+    e.preventDefault();
+    $.ajax({
+      url: url_search,
+      type: "post",
+      data: $('#form_search').serialize(),
+      dataType: "json",
+      success: function(data) {
+        export_excel(data);
+      }
+    });
+  });
+
   function find_data_reload(result){
       $('#parameter_text').html(result.data);
       oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?'+result.data).load();
+  }
+
+  function export_excel(result){
+
+    window.open('eksekutif/Eks_billing_pasien/export_excel?'+result.data+'','_blank'); 
+
   }
 
   $('select[name="poliklinik"]').change(function () {      
@@ -208,10 +228,14 @@
             </div>
 
             <div class="form-group" id="form_tanggal">
-              <div class="col-md-2 no-padding">
+              <div class="col-md-10 no-padding">
                 <a href="#" id="btn_search_data"  class="btn btn-xs btn-primary">
                   <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                   Tampilkan Data
+                </a>
+                <a href="#" id="btn_export_excel"  class="btn btn-xs btn-success">
+                  <i class="ace-icon fa fa-excel icon-on-right bigger-110"></i>
+                  Export Excel
                 </a>
               </div>
             </div>

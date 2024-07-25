@@ -26,8 +26,6 @@ jQuery(function($) {
 
 $(document).ready(function(){
 
-    sum_total_biaya_farmasi();
-
     var kode_trans_far = $('#kode_trans_far').val();
 
     table = $('#temp_data_pesan').DataTable( {
@@ -41,6 +39,11 @@ $(document).ready(function(){
             "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan=<?php echo $tipe_layanan?>",
             "type": "POST"
         },
+        "drawCallback": function (response) { 
+          // Here the response
+            var objData = response.json;
+            $('#txt_total_biaya_farmasi').text('Rp. '+formatMoney(objData.total_billing));
+        },
         "columnDefs": [
             { 
                 "targets": [ 0 ], //last column
@@ -50,6 +53,7 @@ $(document).ready(function(){
             { "visible": true, "targets": [ 0 ] },
             { "visible": false, "targets": [ 1 ] },
             { "visible": false, "targets": [ 2 ] },
+            { "visible": false, "targets": [ 3 ] },
         ],
     }); 
 
@@ -59,7 +63,7 @@ $(document).ready(function(){
             var data = table.row( $(this).parents('tr') ).data();
             var ID = data[ 1 ];
             var flag = data[ 2 ];
-            var kode_brg = data[ 6 ];
+            var kode_brg = data[ 3 ];
                       
 
             if ( row.child.isShown() ) {
@@ -200,7 +204,7 @@ $(document).ready(function(){
           /*reload table*/
           reload_table();
           /*sum total biaya farmasi*/
-          sum_total_biaya_farmasi();
+          
           
         }else{          
 
@@ -375,6 +379,7 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
       $('#inputKeyObat').focus();
       // $('#btn_submit').attr('disabled', true);
       // $('#jumlah_pesan').attr('disabled', true);
+      $('#info_stok').html('Stok kosong !').removeClass('green').addClass('red');
       $('#jumlah_pesan').val('0');
       $('#warning_stok_obat').html('<div class="alert alert-danger"><b><i class="fa fa-exclamation-triangle"></i> Peringatan !</b> Stok sudah habis, silahkan lakukan permintaan ke gudang farmasi.</div>');
       $('#detailPembelianObatHtml').html('');
@@ -383,6 +388,7 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
       $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
       $('#resep_ditangguhkan').attr('readonly', true);
     }else{
+      $('#info_stok').html('<i class="fa fa-check green"></i> Stok tersedia ('+response.sisa_stok+' '+response.satuan_kecil+') !').removeClass('red').addClass('green');;
       $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
       $('#prb_ditangguhkan').attr('readonly', false);
       $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
@@ -503,7 +509,7 @@ function reload_table(){
   var kode_trans_far = $('#kode_trans_far').val();
   table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan=<?php echo $tipe_layanan?>").load();
   // table_racikan.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=racikan&tipe_layanan=<?php echo $tipe_layanan?>").load();
-  sum_total_biaya_farmasi();
+  
 }
 
 function delete_resep(myid, flag){
@@ -649,6 +655,26 @@ function changeUrgensi(){
   }
 }
 
+function select_item(id, tipe){
+  preventDefault();
+  if(tipe == 'racikan'){
+    show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'&kode_pesan_resep='+$('#no_resep').val()+'&no_kunjungan='+$('#no_kunjungan').val()+'', 'RESEP RACIKAN');
+  }else{
+    $.getJSON("<?php echo site_url('farmasi/E_resep/getrowresep') ?>?ID="+id, '' , function (response) {
+        getDetailObatByKodeBrg(response.kode_brg,'060101');
+        // autofill
+        $('#inputKeyObat').val(response.nama_brg);
+        $('#jumlah_pesan').val(response.jml_pesan);
+        $('#dosis_start').val(response.jml_dosis);
+        $('#dosis_end').val(response.jml_dosis_obat);
+        $('#satuan_obat').val(response.satuan_obat);
+        $('#anjuran_pakai').val(response.aturan_pakai);
+        $('#catatan').val(response.keterangan);
+    })
+  }
+  
+}
+
 </script>
 
 <style type="text/css">
@@ -667,8 +693,8 @@ function changeUrgensi(){
     <!-- breadcrumbs -->
     <div class="page-header">  
       <h1>
-      <?php echo isset($value)?ucwords($value->no_mr):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
-        <small><i class="ace-icon fa fa-angle-double-right"></i> <?php echo isset($breadcrumbs)?$breadcrumbs:''?></small>        
+        <a href="#" onclick="getMenu('farmasi/Entry_resep_ri_rj/form/<?php echo $value->kode_pesan_resep?>?mr=<?php echo $value->no_mr?>&tipe_layanan=RJ')" ><?php echo isset($value)?ucwords($value->no_mr):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
+        </a>
       </h1>
     </div>  
         
@@ -702,12 +728,11 @@ function changeUrgensi(){
         <!-- keterangan pasien -->
         <div class="col-sm-12">
           <table class="table">
-            <tr style="background-color: #edf3f4; font-weight: bold">
-              <td style="vertical-align: middle"> <span style="font-weight: normal !important">Kode/Tgl Pesan :</span><br> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> / <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?></td>
-              <td style="vertical-align: middle"> <span style="font-weight: normal !important">Penjamin :</span><br> <?php echo isset($value)?ucwords($value->nama_kelompok):''?><br><?php echo isset($value)?ucwords($value->nama_perusahaan):''?> <?php echo isset($value->kode_perusahaan) ? ($value->kode_perusahaan == 120) ?'('.$value->no_sep.')' : '' :'';?></td>
-              <td style="vertical-align: middle"> <span style="font-weight: normal !important">Dokter/Poli :</span><br> <?php echo isset($value)?ucwords($value->nama_bagian):''?> <br> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
-              <td style="vertical-align: middle"><span style="font-weight: normal !important">Diagnosa Akhir :</span> <br><?php echo isset($value)?$value->diagnosa_akhir:''?> </td>
-              <td style="vertical-align: middle"> <div style="font-size: 18px" id="td_total_biaya_farmasi"> <b>Rp.0,-</b>  </div></td>
+            <tr style="background-color: #edf3f4;">
+              <td style="vertical-align: top; width: 180px"> <span style="font-weight: bold !important">Kode/Tgl Pesan :</span><br> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> <br> <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?></td>
+              <td style="vertical-align: top"> <span style="font-weight: bold !important">Penjamin :</span><br> <?php echo isset($value)?ucwords($value->nama_kelompok):''?><br><?php echo isset($value)?ucwords($value->nama_perusahaan):''?> <?php echo isset($value->kode_perusahaan) ? ($value->kode_perusahaan == 120) ?'('.$value->no_sep.')' : '' :'';?></td>
+              <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Dokter/Poli :</span><br> <?php echo isset($value)?ucwords($value->nama_bagian):''?> <br> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+              <td style="vertical-align: top"><span style="font-weight: bold !important">Diagnosa Akhir :</span> <br><?php echo isset($value)?$value->diagnosa_akhir:''?> </td>
             </tr>
           </table>
         </div>
@@ -758,7 +783,7 @@ function changeUrgensi(){
                 <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
                 </div> 
                 <label class="control-label col-sm-1">Tanggal</label>
-                <div class="col-md-3">
+                <div class="col-md-4">
                   <div class="input-group">
                       <input name="tgl_trans" id="tgl_trans" data-date-format="yyyy-mm-dd" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" type="text" value="<?php echo isset($trans_farmasi->tgl_trans) ? $trans_farmasi->tgl_trans : date('Y-m-d H:i:s'); ?>">
                       <span class="input-group-addon">
@@ -766,7 +791,7 @@ function changeUrgensi(){
                       </span>
                     </div>
                 </div>
-                <label class="control-label col-sm-2">Iterisasi</label>
+                <label class="control-label col-sm-1">Iter</label>
                 <div class="col-md-2">
                   <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_iter')), isset($trans_farmasi->iter) ? $trans_farmasi->iter : 0 , 'jenis_iter', 'jenis_iter', '', '', '');?>
                 </div> 
@@ -776,9 +801,10 @@ function changeUrgensi(){
               <!-- cari obat -->
               <div class="form-group">
                 <label class="control-label col-sm-2">Cari Obat</label>            
-                <div class="col-md-8">            
+                <div class="col-md-6">            
                   <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
                 </div>
+                <div class="help-block col-xs-12 col-sm-reset inline blink" style="font-weight: bold" id="info_stok"></div>
               </div>
 
               <!-- Jenis Obat -->
@@ -804,10 +830,10 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Jml Tebus</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="number" style="text-align:center" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
+                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="number" style="text-align:center; width: 60px !important" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
                 </div>
-                <div class="col-md-6">
-                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                <div class="col-md-2">
+                  <label class="inline" style="margin-top: 4px;margin-left: -20px;">
                     <input type="checkbox" class="ace" name="resep_ditangguhkan" id="resep_ditangguhkan" value="1">
                     <span class="lbl"> Ditangguhkan</span>
                   </label>
@@ -817,19 +843,16 @@ function changeUrgensi(){
               <div class="form-group">
                 <label class="control-label col-sm-2">Resep Kronis</label>
                 <div class="col-md-2">
-                    <input class="form-control" name="jml_23" id="jml_23" type="number" value="" style="text-align:center" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
-               
+                    <input class="form-control" name="jml_23" id="jml_23" type="number" value="" style="text-align:center; width: 60px !important" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
+                
                 </div>
-                <div class="col-md-6">
-                  <label class="inline" style="margin-top: 4px;margin-left: -12px;">
+                <div class="col-md-2">
+                  <label class="inline" style="margin-top: 4px;margin-left: -20px;">
                     <input type="checkbox" class="ace" name="prb_ditangguhkan" id="prb_ditangguhkan" value="1" <?php echo ($value->kode_perusahaan==120) ? '' : 'disabled'?>>
                     <span class="lbl"> Ditangguhkan</span>
                   </label>
                 </div>
               </div>
-
-              <p style="padding-top: 10px"><b>FORM SIGNA</b></p>
-
               <div class="form-group">
                   <label class="control-label col-sm-2">Signa</label>
                   <div class="col-md-10">
@@ -859,7 +882,7 @@ function changeUrgensi(){
 
               <div class="form-group">
                   <label class="control-label col-sm-2">Catatan</label>
-                  <div class="col-md-1">
+                  <div class="col-md-10">
                       <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value=""/>
                   </div>
               </div>
@@ -874,7 +897,35 @@ function changeUrgensi(){
                   </div>
               </div>
               <?php endif; ?>
-
+              
+              <!-- datatable detail obat -->
+              <table id="temp_data_pesan" class="table table-bordered table-hover">
+                <thead>
+                  <tr style="background: #edf3f4;">  
+                    <th class="center" width="30px"></th>
+                    <th class="center"></th>
+                    <th class="center"></th>
+                    <th class="center"></th>
+                    <th class="center" width="80px"></th>
+                    <th width="30px">No</th>
+                    <!-- <th width="150px">Tgl Input</th> -->
+                    <!-- <th>Kode</th> -->
+                    <th>Deskripsi Item</th>
+                    <th width="80px">Jumlah</th>
+                    <!-- <th width="100px">Ditangguhkan</th> -->
+                    <th width="100px">Harga Satuan</th>
+                    <!-- <th width="100px">Sub Total</th> -->
+                    <th width="80px">Jasa R</th>
+                    <th width="100px">Total (Rp.)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+              <div style="text-align: right; width: 100%">
+                Total Biaya Farmasi.<br>
+                <span style="font-size: 25px !important; font-weight: bold" id="txt_total_biaya_farmasi"></span>
+              </div>
 
             </div>
           </div>
@@ -883,106 +934,142 @@ function changeUrgensi(){
 
         <!-- detail selected obat -->
         <div class="col-sm-5 no-padding">
-          <div class="widget-box">
-            <div class="widget-header">
-                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Informasi Resep Dokter & Stok Barang</span>
-              <div class="widget-toolbar">
+          
+          <div class="tabbable">
+            <ul class="nav nav-tabs" id="myTabInfoDetailFarmasi">
+              <li class="active">
+                <a data-toggle="tab" href="#tab_eresep">
+                  e-Resep
+                </a>
+              </li>
 
+              <li>
+                <a data-toggle="tab" href="#tab_riwayat_pm">
+                  Penunjang Medis
+                </a>
+              </li>
+
+              <li>
+                <a data-toggle="tab" href="#tab_detail_obat">
+                  Detail Obat
+                </a>
+              </li>
+
+              <li>
+                <a data-toggle="tab" href="#tab_riwayat_pemberian_obat">
+                  Riwayat Pemberian Obat
+                </a>
+              </li>
+
+            </ul>
+
+            <div class="tab-content">
+
+              <div id="tab_eresep" class="tab-pane fade in active">
+                <?php
+                  // echo "<pre>"; print_r($eresep_result);die;
+                  if(isset($eresep[0]->kode_pesan_resep)) : 
+                  $html = '';
+                    $html .= '<span style="font-size:11px; font-style: italic;">Kode Resep :</span><br><span style="font-size: 18px !important; font-weight: bold">'.$eresep[0]->kode_pesan_resep.'</span> <small><i>('.$this->tanggal->formatDateTime($eresep[0]->created_date).')</i></small>';
+                    $html .= '<br>';
+                    $html .= '<table class="table" id="dt_add_resep_obat">
+                      <thead>
+                      <tr style="background: #edf3f4;">
+                          <th width="30px">No</th>
+                          <th>Nama Obat</th>
+                          <th>Signa</th>
+                          <th>Qty</th>
+                          <th></th>
+                      </tr>
+                      </thead>
+                      <tbody style="background: white">';
+                      $no = 0;
+                      
+                      foreach ($eresep as $ker => $ver) {
+                      
+                        $no++;
+                        // get child racikan
+                        $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
+                        $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+                        $html .= '<tr>';
+                        $html .= '<td align="center" valign="top">'.$no.'</td>';
+                        $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'</td>';
+                        $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
+                        $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
+                        // $html .= '<td>'.$ver->keterangan.'</td>';
+                        $html .= '<td align="right" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".')" class="btn btn-xs btn-primary">Pilih</a></td>';
+                        $html .= '</tr>';
+
+                      }
+
+                      $html .= '</tbody></table>';
+                  
+                  echo $html;
+                  else :
+                    echo "<div class='alert alert-warning'><strong>Tidak ada resep</strong><br>Dokter belum menginput resep kedalam sistem, mohon cek resep manual.</div>";
+                  endif;
+                ?>
               </div>
-            </div>
-            <div class="widget-body" style="padding:5px; min-height: 304px !important">
-              <span style="font-weight: bold">RESEP DOKTER : </span><br>
-              <div style="padding: 3px; border: 1px solid #d4cfcf; margin-bottom: 5px">
-                <?php echo isset($value)?($value->resep_farmasi != '')?nl2br($value->resep_farmasi):'-Tidak ada resep dokter-':'-Tidak ada resep dokter-'; ?>
+
+              <div id="tab_riwayat_pm" class="tab-pane fade">
+                <p style="font-weight: bold">Riwayat Pemeriksaan Penunjang Medis</p>
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr style="background: #edf3f4;">  
+                      <th width="30px">No</th>
+                      <th>Pemeriksaan Penunjang</th>
+                      <th width="30px">Hasil</th>
+                    </tr>
+                  </thead>
+                  <tbody style="background: white">
+                    <?php 
+                      $no=0; 
+                      $data_lab = isset($penunjang['laboratorium'])?$penunjang['laboratorium']:[];
+                      foreach($data_lab as $key_p=>$row_p) : 
+                        if($key_p <= 9) :
+                          $no++;
+                    ?>
+                    <tr>
+                      <td align="center"><?php echo $no; ?></td>
+                      <td>
+                        <?php 
+                          echo '<b>'.$this->tanggal->formatDateTime($row_p->tgl_daftar).'</b><br>';
+                          $arr_str = explode("|",$row_p->nama_tarif);
+                          $html_pm = '<ul class="no-padding">';
+                          foreach ($arr_str as $key => $value) {
+                              if(!empty($value)){
+                                  $html_pm .= '<li>'.$value.'</li>';
+                              }
+                          }
+                          $html_pm .= '</ul>';
+                          echo $html_pm;
+                        ?>
+                      </td>
+                      <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
+                    </tr>
+                    <?php endif; endforeach; ?>
+                  </tbody>
+                </table>
               </div>
-              <span style="font-weight: bold">HASIL PENUNJANG TERAKHIR: </span><br>
-              <div style="padding: 3px; border: 1px solid #d4cfcf; margin-bottom: 5px">
-                <div id="hasil_penunjang" style="min-height: 20px; padding: 5px">
-                  <?php $no=1; foreach($riwayat_penunjang as $row_rp) : $no++; if($no <= 6) : ?>
-                    <a href="<?php echo base_url().'Templates/Export_data/export?type=pdf&flag=LAB&noreg='.$row_rp->no_registrasi.'&pm=547999&kode_pm='.$row_rp->kode_bagian_tujuan.'&no_kunjungan='.$row_rp->no_kunjungan.''?>" style="background: beige; padding: 5px;" target="_blank"><i class="fa fa-folder"></i> <?php echo $this->tanggal->formatDateDmy($row_rp->tgl_masuk); ?></a> 
-                  <?php endif; endforeach;?>
-                </div>
-              </div>
-              <div id="div_detail_obat">
-                <div id="warning_stok_obat"></div>
+
+              <div id="tab_detail_obat" class="tab-pane fade">
                 <div id="detailObatHtml" style="margin-top: 5px">
-                  <!-- <img src="<?php echo base_url().'assets/img/no-data.png'?>" width="50%"> -->
-                  <!-- <div class="alert alert-danger" style="margin-left: 6px; margin-bottom: 3px">
-                    <p><b>HARAP DIBACA..!</b></p>
-
-                    <p>Terhitung mulai tanggal 15 Juli 2021.</p>
-                    <div>
-                      <ol >
-                        <li>Jika stok obat pada sistem t<strong>idak sesuai dengan stok fisik</strong>, maka <strong>harus diperbaiki stok pada sistem</strong> terlebih dahulu. Silahkan lapor ke Bagian Gudang Farmasi.</li>
-                        <li>Jika <b style="box-sizing: border-box; font-weight: 700;">Stok Obat kosong</b> pada sistem, maka &quot;Jml Tebus&quot; <b style="box-sizing: border-box; font-weight: 700;">tidak bisa Ditangguhkan,&nbsp;</b>untuk &quot;Resep Kronis&quot; masih bisa ditangguhkan.</li>
-                        <li>Barang yang status nya <b style="box-sizing: border-box; font-weight: 700;">&quot;Not Active&quot;</b> tidak akan muncul ketika pencarian Obat. Jika ingin merubah status Aktifnya silahkan lapor ke Bagian Gudang Farmasi.</li>
-                        <li>Perhatikan kolom <b style="box-sizing: border-box; font-weight: 700;">&quot;Jenis&quot;&nbsp;</b>cito atau biasa, karena mempengaruhi harga jual obat.</li>
-                        <li>Semua Resep Obat, untuk <b>kolom Signa</b> dan catatan <strong>harap diisi dengan lengkap</strong>, terutama jika ada catatan obat, agar pasien bisa mengetahui informasi tentang obat. Kalo hanya sekedar dijelaskan oleh apoteker terkadang pasien lupa, kasian pasien yang sudah tua.</li>
-                        <li>Jika ada yang kurang jelas silahkan tanyakan kepada Kepala Instalasi Farmasi.</li>
-                        <li>Jika ada yang keberatan <strong>silahkan ajukan komplain</strong> ke Manajemen.</li>
-                        <li>Atas kerja sama nya kami ucapkan Terima Kasih.</li>
-                      </ol>
-                    </div>
-                  </div> -->
+                  <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
                 </div>
-                <div id="detailPembelianObatHtml" style="margin-top: 5px"></div>
+              </div>
+
+              <div id="tab_riwayat_pemberian_obat" class="tab-pane fade">
+                <div id="detailPembelianObatHtml" style="margin-top: 5px">
+                  <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
+                </div>
               </div>
             </div>
           </div>
-            
+
+
         </div>
         
-        <!-- datatable detail obat -->
-        <div class="col-md-12">
-
-          <table id="temp_data_pesan" class="table table-bordered table-hover">
-            <thead>
-              <tr>  
-                <th class="center" width="50px"></th>
-                <th class="center"></th>
-                <th class="center"></th>
-                <th class="center" width="100px"></th>
-                <th width="30px">No</th>
-                <th width="150px">Tgl Input</th>
-                <th>Kode</th>
-                <th>Deskripsi Item</th>
-                <th width="100px">Jumlah</th>
-                <th width="100px">Ditangguhkan</th>
-                <th width="100px">Harga Satuan</th>
-                <th width="100px">Sub Total</th>
-                <th width="100px">Jasa R</th>
-                <th width="100px">Total (Rp.)</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-
-          <!-- <hr>
-          <b>RESEP RACIKAN</b>
-          <table id="temp_data_obat_racikan" class="table table-bordered table-hover">
-            <thead>
-              <tr>  
-                <th class="center" width="50px"></th>
-                <th class="center" ></th>
-                <th class="center"></th>
-                <th class="center" width="100px"></th>
-                <th>Tgl Input</th>
-                <th>Kode</th>
-                <th>Deskripsi Item</th>
-                <th>Jumlah</th>
-                <th>Harga Satuan</th>
-                <th>Sub Total</th>
-                <th>Jasa R</th>
-                <th>Total (Rp.)</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table> -->
-
-        </div>
+        
         
       </div>
 
@@ -992,4 +1079,5 @@ function changeUrgensi(){
   </div>
 
 </div><!-- /.row -->
+
 

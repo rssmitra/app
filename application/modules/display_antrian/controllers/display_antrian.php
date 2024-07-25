@@ -65,7 +65,7 @@ class Display_antrian extends MX_Controller {
    {
        # code...
        $data = $this->display_antrian->get_antrian_poli();
-       // echo '<pre>';print_r($data);die;
+    //    echo '<pre>';print_r($data);die;
         $nama_pasien = str_replace(['tn.', 'ny.', 'nn.', 'by.', 'an.', ','],[""], strtolower($data['nama_pasien']));
        echo json_encode(array('result' => $data, 'nama_pasien' => $nama_pasien));
        //echo $nomor_loket;

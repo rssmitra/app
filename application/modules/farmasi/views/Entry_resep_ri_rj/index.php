@@ -168,7 +168,7 @@ function rollback(id){
               <tr>  
                 <th class="center"></th>
                 <th>Kode</th>
-                <th>Tgl Pesan</th>
+                <th width="150px">Tgl Pesan</th>
                 <th>No MR</th>
                 <th>Nama Pasien</th>
                 <th>Nama Dokter/Asal Poli</th>

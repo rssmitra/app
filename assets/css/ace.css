@@ -60,7 +60,7 @@ body {
   background-color: #ffffff;
   position: relative;
   margin: 0;
-  padding: 0px 20px 24px;
+  padding: 0px 12px 24px;
 }
 
 .page-content-main {
@@ -78,7 +78,7 @@ body {
 .page-header {
   margin: 0 0 3px;
   border-bottom: 1px dotted #e2e2e2;
-  padding-bottom: 11px;
+  padding-bottom: 5px;
   padding-top: 7px;
 }
 .page-header h1 {

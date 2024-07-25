@@ -12,82 +12,199 @@ class Auto_send_antrol extends MX_Controller {
         $this->load->model('Auto_send_antrol_model');
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
 		$this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
+        // load modul antrol
+        $this->load->module('dashboard/Antrol');
+        
     }
 
     public function execute(){
 
-        // if(!$this->input->is_cli_request())
-        // {
-        //     echo "This script can only be accessed via the command line" . PHP_EOL;
-        //     return;
-        // }
+        if(!$this->input->is_cli_request())
+        {
+            echo "This script can only be accessed via the command line" . PHP_EOL;
+            return;
+        }
+
+        $execute = $this->Auto_send_antrol_model->execute_all_task();
+
+        /*execution*/
+        echo " UPDATE ALL TASK ANTROL " . PHP_EOL;
+        echo " Sedang dalam proses pengiriman data" . PHP_EOL;
+        echo " Mohon ditunggu  ..." . PHP_EOL;
+        echo " ================================================ " . PHP_EOL;
+
+        $this->db->trans_begin(); 
+        /*first description*/
+        if(!empty($execute)){
+            $no=0;
+			foreach ($execute as $key => $value) {
+                $no++;
+				# code...
+				$kodebooking = (!empty($value->kodebookingantrol))?$value->kodebookingantrol:$value->no_registrasi;
+                echo " Kode Booking. ".$kodebooking." " . PHP_EOL;
+				$flag = (!empty($value->kodebookingantrol))?'':'no_registrasi';
+				$last_task = $this->AntrianOnline->cekAntrolKodeBooking($kodebooking);
+				// get max keys
+				$max_key = (empty($last_task['data'])) ? 1 : max(array_keys($last_task['data']));
+				if($max_key >= 5){
+                    echo " Selesai sampai dengan task  ".$max_key." " . PHP_EOL;
+					// update autosendantrol
+					$this->db->where('kodebookingantrol', (string)$kodebooking )->update('tc_registrasi', array('autosendantrol' => 1));
+					$this->db->trans_commit();
+					// echo "<pre>"; print_r($this->db->last_query());die;
+				}
+				// loop till task 5
+				$response = [];
+				for($i=$max_key+1; $i<8; $i++){
+					// update task
+					$execute_task = $this->resend_antrol($kodebooking, $i, $flag);
+                    $implode = implode(" | ", $execute_task);
+					// $response[$kodebooking][$i] = $execute_task;
+                    echo " Proses update task ".$i."" . PHP_EOL;
+                    echo " Status. ".$implode."" . PHP_EOL;
+                    echo " ============================================ " . PHP_EOL;
+                    // echo "<pre>"; print_r($execute_task);die;
+				}
+				// $arr_last_task[$kodebooking] = $last_task['data'];
+			}
+
+		}else{
+			echo " Tidak ada data untuk diproses " . PHP_EOL;
+		}
+    }
+
+    public function execute_first_task(){
+
+        if(!$this->input->is_cli_request())
+        {
+            echo "This script can only be accessed via the command line" . PHP_EOL;
+            return;
+        }
+
+        /*execution*/
+        echo " UPDATE FIRST TASK ANTROL " . PHP_EOL;
+        echo " Sedang dalam proses pengiriman data" . PHP_EOL;
+        echo " Mohon ditunggu  ..." . PHP_EOL;
+        echo " ================================================ " . PHP_EOL;
+
+        $execute = $this->Auto_send_antrol_model->execute_first_task();
+        
         /*execution*/
         $this->db->trans_begin(); 
-
-        /*define var*/
-        $jum_record = 0;
-        $jum_record_eksekusi = 0;
-        $jum_record_no_eksekusi = 0;
-        $log='';
-
-        /*first description*/
-        $value =  $this->Auto_send_antrol_model->get_data_registrasi();
-        // echo "<pre>"; print_r($value);die;
-        if(!empty($value)){
-            // cek last antrol
-            $last_antrol = $this->getlisttask($value->kodebooking);
-            // echo "<pre>"; print_r($last_antrol);die;
-            if($last_antrol != false){
-                if($last_antrol < 5){
-                    $kodebooking = $value->kodebooking;
-                    $jam_masuk_registrasi = date_create($value->created_date);
-                    // $jam_masuk_registrasi = date_create(date('Y-m-d H:i:s'));
-                    for ($i=$last_antrol; $i < 5; $i++) { 
-                        $taskid = $i + 1;
-                        $newtimestamp = strtotime(''.date('Y-m-d H:i:s').' + '.$i.'5 minute');
-                        // $waktukirim = $newtimestamp * 1000;
-                        $waktukirim = strtotime(date('Y-m-d H:i:s')) * 1000;
-                        $execute_task = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kodebooking, 'taskid' => $taskid, 'waktu' => $waktukirim));
-                        echo "Kode Booking ".$kodebooking." execute to ".$taskid." <br>" . PHP_EOL;
-                    }
-                    return $this->execute();
-                }else{
-                    $this->db->where('kodebookingantrol', $value->kodebooking)->update('tc_registrasi', array('task_id' => $last_antrol));
-                    return $this->execute();
+        if(!empty($execute)){
+            foreach ($execute as $key => $value) {
+                # code...
+				$kodebooking = (!empty($value->kodebookingantrol))?$value->kodebookingantrol:$value->no_registrasi;
+                // echo "<pre>"; print_r($kodebooking);die;
+                echo " Kode Booking. ".$kodebooking." " . PHP_EOL;
+				$flag = (!empty($value->kodebookingantrol))?'':'no_registrasi';
+                for($i=0; $i<=3; $i++){
+                    $last_task = $this->AntrianOnline->cekAntrolKodeBooking($kodebooking);
+                    // resend for the first task
+                    $execute_task = $this->resend_antrol($kodebooking, $i, $flag);
+                    $implode = implode(" | ", $execute_task);
+                    // $response[$kodebooking][$i] = $execute_task;
+                    echo " Proses update task ".$i." " . PHP_EOL;
+                    echo " Status. ".$implode." " . PHP_EOL;
+                    echo " ============================================ " . PHP_EOL;
                 }
-            }else{
-                // update task
-                $this->db->where('kodebookingantrol', $value->kodebooking)->update('tc_registrasi', array('task_id' => 99));
-                return $this->execute();
-            }
-        }
-
-        // $file = "application/logs/antrl_".date('Y_m_d_H_i_s').".log";
-        // $fp = fopen ($file,'w');
-
-        // $data_general = 'Jumlah Record = '.$jum_record.', Eksekusi = '.$jum_record_eksekusi.', No Eksekusi = '.$jum_record_no_eksekusi.' ';
-        // $data_log = var_export($log, true);
-
-        // fwrite($fp,  $data_general."\n".$data_log);
-        // fclose($fp);
-
+				
+			}
+		}else{
+			echo " Tidak ada data untuk diproses " . PHP_EOL;
+		}
+        echo " Proses selesai " . PHP_EOL;
     }
 
-    public function getlisttask($kodebooking){
-        $result = $this->AntrianOnline->postDataWs('antrean/getlisttask', array('kodebooking' => $kodebooking));
-        // echo "<pre>"; print_r($result);die;
-        if($result['response']->metadata->code == 200){
-            $antrol = $result['data'];
-            $max_key = max(array_keys($antrol));
-            $getKeyData = $antrol[$max_key];
-            $last_antrol = $getKeyData->taskid;
-            return $last_antrol;
+    function resend_antrol($kodebooking, $taskid, $flag=''){
+
+        // get data registrasi
+        if($flag == 'no_registrasi'){
+            $rowdt = $this->db->get_where('tc_registrasi', ['no_registrasi' => $kodebooking])->row();
+            // update kodebooking antrol
+            $this->db->where(['no_registrasi' => $kodebooking])->update('tc_registrasi', ['kodebookingantrol' => $kodebooking]);
         }else{
-            return false;
+            $rowdt = $this->db->get_where('tc_registrasi', ['kodebookingantrol' => $kodebooking])->row();
         }
-        
-    }
 
+        $detail_data = $this->Auto_send_antrol_model->get_detail_resume_medis($rowdt->no_registrasi);
+        // echo "<pre>"; print_r($detail_data);die;
+        $dt_reg = $detail_data['registrasi'];
+        $dt_antrian = $detail_data['no_antrian'];
+        $dt_jadwal = $detail_data['jadwal'];
+
+        // jadwal praktek
+        $jam_praktek_mulai = ($dt_jadwal->jd_jam_mulai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_mulai) : '08:00';
+        $jam_praktek_selesai = ($dt_jadwal->jd_jam_selesai) ? $this->tanggal->formatTime($dt_jadwal->jd_jam_selesai) : '10:00';
+        $kuota_dr = ($dt_jadwal->jd_kuota) ? $dt_jadwal->jd_kuota : 10;
+
+        // jenis kunjungan
+        $jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
+        $tanggalperiksa = $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk));
+        $jam_mulai_praktek = $this->tanggal->formatFullTime($jam_praktek_mulai);
+        $jam_selesai_praktek = $this->tanggal->formatFullTime($jam_praktek_selesai);
+        $date = date_create($this->tanggal->formatDateTimeToSqlDate($tanggalperiksa).' '.$jam_mulai_praktek );
+        $nomorantrean = $dt_antrian->no_antrian;
+        $angkaantrean = $dt_antrian->no_antrian;
+        
+        $est_hour = ceil($nomorantrean / 12);
+        $estimasi = ($nomorantrean <= 12) ? 1 : $est_hour; 
+        
+        // estimasi dilayani
+        date_add($date, date_interval_create_from_date_string('+'.$estimasi.' hours'));
+        $estimasidilayani = date_format($date, 'Y-m-d H:i:s');
+        $milisecond = strtotime($estimasidilayani) * 1000;
+
+		$kuota = round($kuota_dr/2);
+        $sisa_kuota = $kuota - $angkaantrean;
+
+        if ($taskid == 1) {
+            # add antrol for the first
+            $config_antrol = array(
+                "no_registrasi" => $dt_reg->no_registrasi,
+                'jam_praktek_mulai' => $jam_praktek_mulai,
+                'jam_praktek_selesai' => $jam_praktek_selesai,
+                'kuota_dr' => $kuota_dr,
+                "kodebooking" => ($flag == 'no_registrasi') ? $dt_reg->no_registrasi :$dt_reg->kodebookingantrol,
+                "jenispasien" => "JKN",
+                "nomorkartu" => $dt_reg->no_kartu_bpjs,
+                "nik" => $dt_reg->no_ktp,
+                "nohp" => (int)$dt_reg->no_hp,
+                "kodepoli" => $dt_reg->kode_poli_bpjs,
+                "namapoli" => $dt_reg->nama_bagian,
+                "pasienbaru" => 0,
+                "norm" => $dt_reg->no_mr,
+                "tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
+                "kodedokter" => $dt_reg->kode_dokter_bpjs,
+                "namadokter" => $dt_reg->nama_pegawai,
+                "jampraktek" => $jam_praktek_mulai.'-'.$jam_praktek_selesai,
+                "jeniskunjungan" => $jeniskunjungan,
+                "nomorreferensi" => $dt_reg->norujukan,
+                "nomorantrean" => $dt_reg->kode_poli_bpjs.'-'.$dt_antrian->no_antrian,
+                "angkaantrean" => $dt_antrian->no_antrian,
+                "estimasidilayani" => $milisecond,
+                "sisakuotajkn" => ($sisa_kuota > 0) ? $sisa_kuota : 1,
+                "kuotajkn" => $kuota,
+                "sisakuotanonjkn" => ($sisa_kuota > 0) ? $sisa_kuota : 1,
+                "kuotanonjkn" => $kuota,
+                "keterangan" => "Silahkan tensi dengan perawat"
+            );
+            
+            $addAntrian = $this->AntrianOnline->addAntrianOnsite($config_antrol, $dt_reg->tgl_jam_masuk);
+            $milisecond = strtotime($dt_reg->tgl_jam_masuk) * 1000;
+            $convert_milisecod = date('Y-m-d H:i:s', $milisecond/1000);
+            $response = ['code' => $addAntrian['response_code'], 'msg' => $addAntrian['response_msg'], 'time' => $convert_milisecod];
+            // echo '<pre>';print_r($config_antrol);die;
+            return $response;
+        }else{
+            // update task antrol
+            $updateTask = $this->AntrianOnline->update_task_antrol($kodebooking, $taskid, $dt_reg->tgl_jam_masuk);
+            $convert_milisecod = date('Y-m-d H:i:s', $updateTask['waktu']/1000);
+            $response = ['code' => $updateTask['response_code'], 'msg' => $updateTask['response_msg'], 'time' => $convert_milisecod];
+            // echo '<pre>';print_r($convert_milisecod);die;
+            return $response;
+        }
+    }
 
 }
 /* End of file example.php */

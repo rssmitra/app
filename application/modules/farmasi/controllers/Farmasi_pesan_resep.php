@@ -17,6 +17,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Farmasi_pesan_resep_model', 'Farmasi_pesan_resep');
+        $this->load->model('E_resep_model', 'E_resep');
         $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
 
         /*enable profiler*/
@@ -42,6 +43,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Farmasi_pesan_resep/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$no_kunj);
         /*get value by no_kunj*/
         $data['value'] = $this->Farmasi_pesan_resep->get_detail_data_kunjungan($no_kunj);
+        $data['no_kunjungan'] = $no_kunj;
         $data['kode_klas'] = $kode_klas;
         $data['kode_profit'] = $kode_profit;
         $data['kode_bagian_asal'] = isset($_GET['kode_bag'])?$_GET['kode_bag']:'';
@@ -49,6 +51,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // echo "<pre>";print_r($data);die;
         /*load form view*/
         $this->load->view('Farmasi_pesan_resep/form_pesan_resep', $data);
     }
@@ -64,18 +67,28 @@ class Farmasi_pesan_resep extends MX_Controller {
             $no++;
             $row = array();
             $row[] = '';
-            $row[] = '<div class="center">
-                        <a href="#" id="btn_edit_data" class="btn btn-xs btn-success" onclick="showModalEdit('.$row_list->kode_pesan_resep.')"><i class="ace-icon fa fa-edit bigger-50"></i></a>
-                        <a href="#" id="btn_delete_data" class="btn btn-xs btn-danger" onclick="delete_pesan_resep('.$row_list->kode_pesan_resep.')"><i class="ace-icon fa fa-times bigger-50"></i></a>
-                  </div>'; 
+            $btn_delete = ($row_list->status_tebus==null)?'<li><a href="#" id="btn_delete_data" onclick="delete_pesan_resep('.$row_list->kode_pesan_resep.')">Hapus</a></li>':'';
+
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">
+                             <li><a href="#" id="btn_edit_data" onclick="showModalEdit('.$row_list->kode_pesan_resep.')">Ubah</a></li>
+                            '.$btn_delete.'
+                        </ul>
+                      </div></div>';
+
             $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_pesan).'</div>';
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->kode_pesan_resep;
             $row[] = $row_list->nama_pegawai;
-            $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
-            $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
+            // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
+            // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
             $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
             $row[] = '<div class="center">'.$status_tebus.'</div>';
+            $lbl_eresep = ($row_list->e_resep == 1) ? '<a href="#" class="label label-xs label-primary" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-check-circle"></i> e-Resep</a> ' : '<a href="#" class="label label-xs label-warning" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-times-circle"></i> e-Resep</a>';
+            $row[] = '<div class="center">'.$lbl_eresep.'</div>';
            
             $data[] = $row;
         }
@@ -108,7 +121,7 @@ class Farmasi_pesan_resep extends MX_Controller {
 
         $this->load->library('form_validation');
         $val = $this->form_validation;
-        $val->set_rules('tgl_pesan', 'Tanggal Pesan', 'trim|required');
+        $val->set_rules('tgl_pesan', 'Tanggal Pesan', 'trim');
         $val->set_rules('jumlah_r', 'Jumlah R', 'trim|required');
         $val->set_rules('kode_dokter', 'Dokter', 'trim');
         $val->set_rules('lokasi_tebus', 'Lokasi Tebus', 'trim|required');
@@ -134,6 +147,7 @@ class Farmasi_pesan_resep extends MX_Controller {
                 'kode_klas' => $this->input->post('kode_klas'),
                 'kode_profit' => $this->input->post('kode_profit'),
                 'kode_bagian_asal' => ($this->input->post('kode_bagian_asal'))?$this->input->post('kode_bagian_asal'):$this->input->post('kode_bagian_tujuan'),
+                'keterangan' => ($this->input->post('keterangan_pesan_resep'))?$this->input->post('keterangan_pesan_resep'):'',
             );
 
             
@@ -185,7 +199,7 @@ class Farmasi_pesan_resep extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $dataexc['no_mr'], 'redirect' => 'farmasi/Entry_resep_ri_rj/form/'.$newId.'?mr='.$dataexc['no_mr'].'&tipe_layanan=RJ' ));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $dataexc['no_mr'], 'redirect' => 'farmasi/Entry_resep_ri_rj/form/'.$newId.'?mr='.$dataexc['no_mr'].'&tipe_layanan=RJ', 'type_pelayanan' => 'eresep' ));
             }
 
         }
@@ -203,16 +217,55 @@ class Farmasi_pesan_resep extends MX_Controller {
     }
 
 
-    public function getDetail($id){
+    public function getDetail($kode_pesan_resep){
         
-        $data = $this->Farmasi_pesan_resep->get_detail_by_id($id);
+        $data = $this->Farmasi_pesan_resep->get_detail_by_id($kode_pesan_resep);
+        $list = $this->E_resep->get_cart_resep($kode_pesan_resep);
 
         // print_r($this->db->last_query());die;
         
         $html = '';
+        
+        $html .= '<hr>';
+        $html .= '<div style="padding: 10px">';
+        if(count($list) > 0){
+            $html .= '<div style="border-bottom:1px solid #333; font-size: 16px"><b><span>Data e-Resep ['.$kode_pesan_resep.']</span></b></div><br>';
+            $html .= '<table class="table" id="dt_add_resep_obat">
+            <thead>
+            <tr>
+                <th width="30px">No</th>
+                <th>Nama Obat</th>
+                <th width="150px">Signa</th>
+                <th width="60px">Qty</th>
+                <th>Keterangan</th>
+            </tr>
+            </thead>
+            <tbody>';
+            $no = 0;
+            foreach ($list as $row_list) {
+                $no++;
+                // get child racikan
+                $child_racikan = $this->master->get_child_racikan_data($kode_pesan_resep, $row_list->kode_brg);
+                $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+                $html .= '<tr>';
+                $html .= '<td align="center">'.$no.'</td>';
+                $html .= '<td>'.strtoupper($row_list->nama_brg).''.$html_racikan.'</td>';
+                $html .= '<td>'.$row_list->jml_dosis.' x '.$row_list->jml_dosis_obat.' '.$row_list->satuan_obat.' '.$row_list->aturan_pakai.'</td>';
+                $html .= '<td>'.$row_list->jml_pesan.' '.$row_list->satuan_obat.'</td>';
+                $html .= '<td>'.$row_list->keterangan.'</td>';
+                $html .= '</tr>';
+            }
+
+            $html .= '</tbody></table>';
+            
+        }else{
+            $html .= '<div style="border-bottom:1px solid #333; color: red"><b>Belum ada resep yang diinput oleh dokter</b></div><br>';
+        }
+        $html .= '</div>';
+
+        $html .= '<div style="padding: 10px">';
         if(count($data) > 0){
-            $html .= '<div style="border-bottom:1px solid #333;"><b><h3>Detail Obat</h3></b></div><br>';
-            $html .= '<div><b><p>No Transaksi : '.$data[0]->kode_trans_far.'</p><b></div>';
+            $html .= '<div style="border-bottom:1px solid #333; font-size: 16px"><b><span>Obat yang diberikan farmasi/ditebus ['.$data[0]->kode_trans_far.']</span></b></div><br>';
             $html .= '<div><b><p>No Resep : '.$data[0]->no_resep.'</p><b></div>';
             $html .= '<table class="table table-striped">';
             $html .= '<tr>';
@@ -244,8 +297,9 @@ class Farmasi_pesan_resep extends MX_Controller {
             $html .= '</tr>'; 
             $html .= '</table>'; 
         }else{
-            $html .= '<div style="border-bottom:1px solid #333;"><b>Belum diproses</b></div><br>';
+            $html .= '<div style="border-bottom:1px solid #333; color: red"><b>Resep belum diproses oleh apotik</b></div><br>';
         }
+        $html .= '</div>';
         
 
 

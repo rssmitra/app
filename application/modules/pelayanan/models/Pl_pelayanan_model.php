@@ -5,7 +5,7 @@ class Pl_pelayanan_model extends CI_Model {
 
 	var $table = 'pl_tc_poli';
 	var $column = array('pl_tc_poli.nama_pasien','mt_karyawan.nama_pegawai');
-	var $select = 'pl_tc_poli.kode_bagian,pl_tc_poli.no_kunjungan,pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, id_pl_tc_poli, pl_tc_poli.status_periksa, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, pl_tc_poli.tgl_jam_poli, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, pl_tc_poli.kode_dokter, pl_tc_poli.status_batal, pl_tc_poli.created_by, pl_tc_poli.tgl_keluar_poli, tc_registrasi.tgl_jam_keluar, pl_tc_poli.flag_ri, pl_tc_poli.flag_mcu, pl_tc_poli.flag_bayar_konsul, pl_tc_poli.kelas_ri, tc_registrasi.no_sep, tc_registrasi.kodebookingantrol, short_name, mt_master_pasien.jen_kelamin, mt_master_pasien.title';
+	var $select = 'pl_tc_poli.kode_bagian,pl_tc_poli.no_kunjungan,pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, id_pl_tc_poli, pl_tc_poli.status_periksa, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, pl_tc_poli.tgl_jam_poli, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, pl_tc_poli.kode_dokter, pl_tc_poli.status_batal, pl_tc_poli.created_by, pl_tc_poli.tgl_keluar_poli, tc_registrasi.tgl_jam_keluar, pl_tc_poli.flag_ri, pl_tc_poli.flag_mcu, pl_tc_poli.flag_bayar_konsul, pl_tc_poli.kelas_ri, tc_registrasi.no_sep, tc_registrasi.kodebookingantrol, short_name, mt_master_pasien.jen_kelamin, mt_master_pasien.title, mt_master_pasien.no_kartu_bpjs, diagnosa_rujukan, kode_diagnosa_rujukan, tipe_daftar';
 	var $order = array('pl_tc_poli.no_antrian' => 'ASC');
 
 	public function __construct()
@@ -543,6 +543,70 @@ class Pl_pelayanan_model extends CI_Model {
 			return true;
 		}else{
 			return false;
+		}
+	}
+
+	// order penunjang
+	function get_datatables_order_pm()
+	{
+		$this->_get_datatables_query_order_pm();
+		if($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	private function _get_datatables_query_order_pm()
+	{
+		$column = array('tc_trans_pelayanan.no_kunjungan', 'tc_trans_pelayanan.kode_bagian', 'tc_trans_pelayanan.nama_tindakan', 'mt_karyawan.nama_pegawai', 'tc_trans_pelayanan.tgl_transaksi', 'tc_trans_pelayanan.bill_rs', 'tc_trans_pelayanan.bill_dr1', 'tc_trans_pelayanan.bill_dr2');
+		$select = 'tc_trans_pelayanan.kode_tc_trans_kasir,tc_trans_pelayanan.no_kunjungan, tc_trans_pelayanan.kode_bagian, tc_trans_pelayanan.nama_tindakan, mt_karyawan.nama_pegawai, tc_trans_pelayanan.tgl_transaksi, tc_trans_pelayanan.bill_rs, tc_trans_pelayanan.bhp, tc_trans_pelayanan.pendapatan_rs, tc_trans_pelayanan.alat_rs, tc_trans_pelayanan.bill_dr1, tc_trans_pelayanan.bill_dr2, tc_trans_pelayanan.bill_dr3, tc_trans_pelayanan.harga_satuan, tc_trans_pelayanan.kode_trans_pelayanan, tc_trans_pelayanan.jumlah, tc_trans_pelayanan.satuan_tindakan, tc_trans_pelayanan.tindakan_luar, mt_barang.satuan_kecil, mt_barang.satuan_besar';
+
+		$this->db->from('tc_trans_pelayanan');
+		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left');
+		$this->db->join('mt_karyawan as dokter2','dokter2.kode_dokter=tc_trans_pelayanan.kode_dokter2','left');
+		$this->db->join('mt_karyawan as dokter3','dokter3.kode_dokter=tc_trans_pelayanan.kode_dokter3','left');
+
+		$this->db->select($select);
+		$this->db->select('dokter2.nama_pegawai as dokter_2, dokter3.nama_pegawai as dokter_3');
+		$this->db->join('mt_barang', 'mt_barang.kode_brg=tc_trans_pelayanan.kode_barang','left');
+		$this->db->where( array('tc_trans_pelayanan.no_kunjungan' => $_GET['kode'], 'flag_perawat' => 1) );
+		$this->db->group_by('dokter2.nama_pegawai, dokter3.nama_pegawai');
+		$this->db->group_by($select);
+
+		if( $_GET['bagian'] == '030901' ){
+			$this->db->where('(id_pesan_bedah='.$_GET['id_pesan_bedah'].' or tc_trans_pelayanan.kode_bagian='."'".$_GET['bagian']."'".')');
+		}else{
+			$this->db->where('(tc_trans_pelayanan.kode_bagian = '."'".$_GET['bagian']."'".' OR tc_trans_pelayanan.kode_bagian_asal = '."'".$_GET['bagian']."'".')');
+		}
+
+		if($_GET['jenis']=='tindakan'){
+			$this->db->where_in('jenis_tindakan', array(3,4,10,12,13,7,5,8,14) );
+		}else{
+			$this->db->where_in('jenis_tindakan', array(9) );
+		}
+
+		$i = 0;
+		
+		$order = array('kode_trans_pelayanan' => 'DESC');
+
+		foreach ($column as $item) 
+		{
+			if($_POST['search']['value'])
+				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
+			$column[$i] = $item;
+			$i++;
+		}
+		
+		if(isset($_POST['order']))
+		{
+			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+		} 
+		else if(isset($order))
+		{
+			$order = $order;
+			$this->db->order_by(key($order), $order[key($order)]);
 		}
 	}
 

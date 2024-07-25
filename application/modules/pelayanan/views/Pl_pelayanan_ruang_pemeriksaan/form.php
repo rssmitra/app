@@ -86,7 +86,7 @@ $(document).ready(function(){
 
                 }
 
-                if( jsonResponse.type_pelayanan == 'Pasien Selesai' ){
+                if( jsonResponse.type_pelayanan == 'pasien_selesai' ){
                   // back after process
                   if( jsonResponse.next_id_tc_pesanan != '' ){
                     getMenu('pelayanan/Pl_pelayanan_ruang_pemeriksaan/form/'+jsonResponse.next_id_tc_pesanan+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');

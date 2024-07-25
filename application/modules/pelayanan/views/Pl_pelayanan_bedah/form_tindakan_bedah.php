@@ -510,7 +510,7 @@ function tambah_file()
         </div>
 
         <div class="form-group">
-          <label class="control-label col-sm-2">Jenis Tarif Tindakan</label>
+          <label class="control-label col-sm-2">Jenis Tarif</label>
           <div class="col-md-8">
             <div class="radio">
               <label>
@@ -550,6 +550,13 @@ function tambah_file()
         <div id="default_form_tindakan">
 
             <div class="form-group">
+                <label class="control-label col-sm-2" for="">Kelas Pasien</label>
+                <div class="col-sm-3">
+                <?php echo $this->master->custom_selection(array('table'=>'mt_klas', 'where'=>array(), 'id'=>'kode_klas', 'name' => 'nama_klas'),($value->kode_klas)?$value->kode_klas:'','kode_klas','kode_klas_val2','chosen-slect form-control','');?>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="control-label col-sm-2" for="">Jenis Bedah</label>
                 <div class="col-sm-4">
                 <?php echo $this->master->custom_selection(array('table'=>'mt_master_tarif', 'where'=>array('is_active'=>'Y', 'tingkatan' => 3, 'kode_bagian' => $sess_kode_bag), 'id'=>'kode_tarif', 'name' => 'nama_tarif'),'','jenis_bedah','jenis_bedah','chosen-slect form-control','');?>
@@ -557,33 +564,22 @@ function tambah_file()
             </div>
             
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Kelas Pasien</label>
-                <div class="col-sm-4">
-                <?php echo $this->master->custom_selection(array('table'=>'mt_klas', 'where'=>array(), 'id'=>'kode_klas', 'name' => 'nama_klas'),($value->kode_klas)?$value->kode_klas:'','kode_klas','kode_klas_val2','chosen-slect form-control','');?>
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label class="control-label col-sm-2" for="">Nama Tindakan</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
                     <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
                 </div>
-                <label class="control-label col-sm-1" for="">Keterangan</label>
-                <div class="col-sm-3">
-                   <input type="text" class="form-control" id="pl_keterangan_tindakan" name="pl_keterangan_tindakan">
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label class="control-label col-sm-2" for="">Jumlah</label>
                 <div class="col-sm-1">
                    <input type="number" min="1" class="form-control" id="pl_jumlah" name="pl_jumlah" value="1">
                 </div>
-                <!-- <label class="control-label col-sm-1" for="">Satuan</label>
-                <div class="col-sm-2">
-                   <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_tindakan')), '' , 'satuan_tindakan', 'satuan_tindakan', 'form-control', '', '') ?>
-                </div> -->
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="">Keterangan</label>
+                <div class="col-sm-10">
+                   <textarea type="text" class="form-control" id="pl_keterangan_tindakan" name="pl_keterangan_tindakan" style="height: 50px"></textarea>
+                </div>
             </div>
 
             <div class="form-group" id="formDetailTarif" style="display:none">

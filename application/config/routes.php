@@ -54,8 +54,14 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 /*custom routes*/
-$route['verifikasiDoc'] = "Templates/Attachment/verifikasiDoc";
+$route['verifyDocument'] = "Templates/Attachment/verifyDocument";
 
 // routing for public
 $route['public'] = "publik/Pelayanan_publik";
 $route['Registrasi_RJ'] = "publik/Pelayanan_publik/registrasi_rj";
+
+$route['lapi'] = "laporan/Lapi_report";
+$route['lapi/form'] = "laporan/Lapi_report/form";
+$route['lapi/auth'] = "laporan/Lapi_report/auth";
+$route['lapi/logout'] = "laporan/Lapi_report/logout";
+$route['lapi/showData'] = "laporan/Lapi_report/show_data";

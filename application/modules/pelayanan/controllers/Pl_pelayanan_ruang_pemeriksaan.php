@@ -265,7 +265,7 @@ class Pl_pelayanan_ruang_pemeriksaan extends MX_Controller {
             $this->session->set_userdata('sess_kode_dokter', $this->form_validation->set_value('select_dokter'));
             $this->session->set_userdata('sess_nama_dokter', $dokter->nama_pegawai );
 
-            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai'));
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'pasien_selesai'));
         
         }
 

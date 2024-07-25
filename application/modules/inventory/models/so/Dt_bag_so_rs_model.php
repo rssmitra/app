@@ -18,12 +18,15 @@ class Dt_bag_so_rs_model extends CI_Model {
 	private function _main_query(){
 		$table = ($_GET['flag']=='medis') ? $this->table : $this->table_nm;
 		$this->db->select($this->select);
+		$mt_rekap_stok = ($_GET['flag']=='medis') ? 'mt_rekap_stok' : 'mt_rekap_stok_nm';
+		$this->db->select('CAST('.$mt_rekap_stok.'.harga_beli as INT) as harga_beli');
 		$this->db->select($table.'.kode_brg');
 		$mt_barang = ($_GET['flag']=='medis') ? 'mt_barang' : 'mt_barang_nm';
 		$this->db->from($table);
 		$this->db->where('agenda_so_id', $_GET['agenda_so_id']);
 		$this->db->join($mt_barang, $mt_barang.'.kode_brg='.$table.'.kode_brg');
-		$this->db->group_by($table.'.kode_brg, nama_brg, content');
+		$this->db->join($mt_rekap_stok, $mt_rekap_stok.'.kode_brg='.$table.'.kode_brg');
+		$this->db->group_by($table.'.kode_brg, nama_brg, content, '.$mt_rekap_stok.'.harga_beli');
 	}
 
 	private function _get_datatables_query()

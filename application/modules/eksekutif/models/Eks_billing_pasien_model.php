@@ -172,7 +172,8 @@ class Eks_billing_pasien_model extends CI_Model {
 		return $this->db->affected_rows();
 	}
 
-	public function get_total_billing(){
+	public function get_total_billing()
+	{
 		$this->_main_query();
 		$this->db->where("YEAR(tgl_jam_masuk)", date('Y'));
 		$this->db->where("MONTH(tgl_jam_masuk)", date('m'));
@@ -183,7 +184,8 @@ class Eks_billing_pasien_model extends CI_Model {
         return $result;
     }
 
-    public function get_jurnal_akunting($no_registrasi){
+    public function get_jurnal_akunting($no_registrasi)
+	{
     	$query = "select a.*, b.acc_nama, c.acc_nama as acc_ref, c.acc_no as acc_no_ref, d.tgl_transaksi from ak_tc_transaksi_det a
     				inner join ak_tc_transaksi d on d.id_ak_tc_transaksi=a.id_ak_tc_transaksi
 					inner join mt_account b on b.acc_no=a.acc_no

@@ -236,6 +236,7 @@ class Lap_hasil_so extends MX_Controller {
         $data['agenda_so_id'] = $_GET['agenda_so_id'];
         $data['flag'] = $_GET['flag'];
         /*load form view*/
+        // echo '<pre>';print_r($data);die;
         $this->load->view('so/Lap_hasil_so/hasil_excel_so_rs', $data);
     }
 
@@ -337,7 +338,6 @@ class Lap_hasil_so extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Dt_bag_so_rs->get_datatables();
-        $list_dt = $this->Dt_bag_so_rs->_main_query_all_dt();
         $data = array();
         $no = $_POST['start'];
 
@@ -357,8 +357,19 @@ class Lap_hasil_so extends MX_Controller {
             $total = $row_list->stok_sekarang * $hpa;
             $row[] = '<div align="right">'.number_format($hpa).'</div>';
             $row[] = '<div align="right">'.number_format($total).'</div>';
-                   
             $data[] = $row;
+            // hasil so 
+            if($row_list->stok_sekarang > 0){
+                $arr_hasil_so[] = $total;
+            }
+            if($row_list->stok_exp > 0){
+                $total = $row_list->stok_exp * $hpa;
+                $arr_hasil_expired[] = $total;
+            }
+            if($row_list->will_stok_exp > 0){
+                $total = $row_list->will_stok_exp * $hpa;
+                $arr_hasil_expired_soon[] = $total;
+            }
         }
 
         $output = array(
@@ -366,6 +377,9 @@ class Lap_hasil_so extends MX_Controller {
                         "recordsTotal" => $this->Dt_bag_so_rs->count_all(),
                         "recordsFiltered" => $this->Dt_bag_so_rs->count_filtered(),
                         "data" => $data,
+                        "total_active" => array_sum($arr_hasil_so),
+                        "total_expired" => array_sum($arr_hasil_expired),
+                        "total_expired_soon" => array_sum($arr_hasil_expired_soon),
                 );
         //output to json format
         echo json_encode($output);

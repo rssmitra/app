@@ -50,6 +50,10 @@ final Class Master {
 		$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
 		
+		if(isset($custom['order'])){
+			$db->order_by($custom['order']);
+		}
+
 		if(isset($custom['where_in'])){
 			$db->where_in($custom['where_in']['col'],$custom['where_in']['val']);
 			$data = $db->get($custom['table'])->result_array();
@@ -1365,8 +1369,20 @@ final Class Master {
 		$html = '';
 		foreach ($array_data as $key => $value) {
 			if($value->parent == $parent_id){
-				$html .= '<span id="row_racikan_'.$value->id.'"><a href="#" onclick="deleterow('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; '. $value->jml_pesan .' &nbsp; '. $value->satuan_obat.'<br></span>';
+				$html .= '<span id="row_racikan_'.$value->id.'"><a href="#" onclick="deleterow('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; '. $value->jml_pesan .'&nbsp; '. $value->satuan_obat .' <br></span>';
 			}
+		}
+
+		return $html;
+	}
+
+	function get_child_racikan_data($kode_pesan_resep, $parent_id){
+		$CI =&get_instance();
+		$array_data = $CI->db->select('id, kode_brg, nama_brg, jml_pesan, satuan_obat')->group_by('id, kode_brg, nama_brg, jml_pesan, satuan_obat')->order_by('id', 'DESC')->get_where('fr_tc_pesan_resep_detail', ['kode_pesan_resep' => $kode_pesan_resep, 'parent' => $parent_id])->result();
+		$html = '';
+		foreach ($array_data as $key => $value) {
+			$html .= '<span id="row_racikan_'.$value->id.'" style="font-size: 11px"><a href="#" onclick="deleterow('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; ('. $value->jml_pesan .'&nbsp;'. $value->satuan_obat .' )<br></span>';
+			
 		}
 
 		return $html;
@@ -1437,6 +1453,53 @@ final Class Master {
 
 		return $txt;
 
+	}
+
+	public function get_color_pm($kode_bag, $nama_bag){
+		switch ($kode_bag) {
+			case '050101':
+				$label = '<span class="label label-danger" style="width: 100%; font-weight: bold;">'.$nama_bag.'</span>';
+				break;
+				case '050201':
+					$label = '<span class="label label-primary" style="width: 100%; font-weight: bold;">'.$nama_bag.'</span>';
+					break;
+					case '050301':
+						$label = '<span class="label label-success" style="width: 100%; font-weight: bold;">'.$nama_bag.'</span>';
+						break;
+			
+			default:
+				$label = '';
+				break;
+		}
+		return $label;
+	}
+
+	public function get_short_name_pm($kode_bag){
+		switch ($kode_bag) {
+			case '050101':
+				$label = 'LAB';
+				break;
+				case '050201':
+					$label = 'RAD';
+					break;
+					case '050301':
+						$label = 'FISIO';
+						break;
+			
+			default:
+				$label = '';
+				break;
+		}
+		return $label;
+	}
+
+	public function get_clr_txt_hasil_pm($value){
+		if (stripos($value, "*") !== false) {
+			$clr_txt = 'red';
+		}else{
+			$clr_txt = 'black';
+		}
+		return $clr_txt;
 	}
 
 }

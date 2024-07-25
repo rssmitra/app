@@ -88,7 +88,6 @@
    table_riwayat.ajax.reload(); //reload datatable ajax 
   }
 
-
 </script>
 
 <!-- <b> RIWAYAT KUNJUNGAN PASIEN <i class="fa fa-angle-double-right bigger-120"></i> </b> -->

@@ -14,7 +14,7 @@ jQuery(function($) {
 });
 
 $(document).ready(function() {
-    get_total_aset_barang_rs();
+    // get_total_aset_barang_rs();
     //initiate dataTables plugin
     oTable = $('#dt-bag-so').DataTable({ 
           
@@ -28,7 +28,14 @@ $(document).ready(function() {
           "url": $('#dt-bag-so').attr('base-url'),
           "type": "POST"
       },
-
+      "drawCallback": function (response) { 
+        // Here the response
+          var objData = response.json;
+          $('#total_aset_barang_rs').text( formatMoney(objData.total_active) );
+          $('#total_aset_barang_rs_not_active').text( formatMoney(objData.total_not_active) );
+          $('#total_exp_barang_rs').text( formatMoney(objData.total_expired) );
+          $('#total_will_exp_barang_rs').text( formatMoney(objData.total_expired_soon) );
+      },
       "columnDefs": [
         { 
           "targets": [ -1 ], //last column
@@ -59,10 +66,7 @@ function reset_table(kode_bag){
 
 function get_total_aset_barang_rs(){
   $.getJSON("inventory/so/Lap_hasil_so/total_aset_barang_rs?agenda_so_id=<?php echo $agenda_so_id?>&flag=<?php echo $flag?>", '', function (data) {
-     $('#total_aset_barang_rs').text( formatMoney(data.total_aset_barang_rs) );
-     $('#total_aset_barang_rs_not_active').text( formatMoney(data.total_aset_barang_rs_not_active) );
-     $('#total_exp_barang_rs').text( formatMoney(data.total_exp_barang_rs) );
-     $('#total_will_exp_barang_rs').text( formatMoney(data.total_will_exp_barang_rs) );
+     
   });
 }
 
@@ -94,10 +98,10 @@ function get_rincian_log(kode_brg){
         <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs"></span>,-</h3>
       </div> 
 
-      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
+      <!-- <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
         <span style="font-size: 14px">Barang Tidak Aktif</span>
         <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs_not_active"></span>,-</h3>
-      </div> 
+      </div>  -->
 
       <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
         <span style="font-size: 14px">Sudah Expired</span>

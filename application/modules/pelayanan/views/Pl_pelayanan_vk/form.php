@@ -68,14 +68,13 @@ $(document).ready(function(){
 
           $("#modalEditPesan").modal('hide');  
 
-          if(jsonResponse.type_pelayanan == 'Penunjang Medis' )
-          {
+          if(jsonResponse.type_pelayanan == 'penunjang_medis' ){
 
-            getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+jsonResponse.no_mr+'/'+$('#kode_bagian_val').val()+'', 'tabs_riwayat_kunjungan');
-          
+            $('#table_order_penunjang').DataTable().ajax.reload(null, false);
+
           }
 
-          if(jsonResponse.type_pelayanan == 'Pasien Selesai' )
+          if(jsonResponse.type_pelayanan == 'pasien_selesai' )
           {
 
             getMenu('pelayanan/Pl_pelayanan_vk');

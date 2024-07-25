@@ -182,7 +182,6 @@
       get_total_billing();
       oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?'+result.data).load();
       $("html, body").animate({ scrollTop: "400px" });
-
   }
 
   function reload_table(){

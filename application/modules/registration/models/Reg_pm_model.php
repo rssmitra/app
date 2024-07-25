@@ -222,7 +222,7 @@ class Reg_pm_model extends CI_Model {
 		$data = $this->db->query($query)->result();
 
 		// print_r($this->db->last_query());die;
-
+		$get_data = [];
 		foreach ($data as $key => $value) {
 			$get_data[$value->kode_trans_pelayanan][] = $value;
 		}
@@ -262,7 +262,7 @@ class Reg_pm_model extends CI_Model {
 		
 		$html .= '</table>';
 
-		//echo '<pre>';print_r($html);die;
+		echo '<pre>';print_r($data);die;
 
 		return array('html' => $html, 'data' => $data);
 

@@ -82,7 +82,7 @@ $(document).ready(function(){
 
                 }
 
-                if( jsonResponse.type_pelayanan == 'Pasien Selesai' ){
+                if( jsonResponse.type_pelayanan == 'pasien_selesai' ){
                   // back after process
                   if( jsonResponse.next_id_pl_tc_poli != '' ){
                     getMenu('pelayanan/Pl_pelayanan/form/'+jsonResponse.next_id_pl_tc_poli+'/'+jsonResponse.next_no_kunjungan+'?no_mr='+jsonResponse.next_pasien+'');
@@ -807,7 +807,7 @@ function rollback(no_registrasi, no_kunjungan, flag){
             <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
           </div>
           <div class="pull-right">
-              <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">Pasien Selesai</label>
+              <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important">pasien_selesai</label>
               <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important">Pasien Umum</label>
           </div>
           <br>

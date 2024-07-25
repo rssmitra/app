@@ -401,7 +401,7 @@
 <div class="form-group">
     <label class="control-label col-sm-3">*Kelas Ruangan</label>
     <div class="col-sm-3">
-        <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array()), '' , 'ri_klas_ruangan', 'ri_klas_ruangan', 'form-control', '', '') ?>
+        <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), '' , 'ri_klas_ruangan', 'ri_klas_ruangan', 'form-control', '', '') ?>
     </div>
 </div>
 

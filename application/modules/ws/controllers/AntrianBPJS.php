@@ -483,7 +483,7 @@ class AntrianBPJS extends MX_Controller {
             $response = array(
                 'metadata' => array(
                     'code' => 300,
-                    'message' => 'Kode Poli/Klinik belum terdaftar di RS. Setia Mitra',
+                    'message' => 'Kode Poli/Klinik belum terdaftar di '.COMP_LONG.'',
                     ),
             );
             echo json_encode($response);

@@ -302,86 +302,85 @@
           </div><br>
 
           <div id="data_ibu" style="display:none">
-                    <p><b><i class="fa fa-user"></i> DATA IBU(*) </b></p>
+            <p><b><i class="fa fa-user"></i> DATA IBU(*) </b></p>
 
-                    <div class="form-group">
+            <div class="form-group">
 
-                      <label class="control-label col-md-2">No MR Ibu</label>            
+              <label class="control-label col-md-2">No MR Ibu</label>            
 
-                      <div class="col-md-2">            
+              <div class="col-md-2">            
 
-                        <div class="input-group">
+                <div class="input-group">
 
-                          <input type="text" name="mr_ibu" id="mr_ibu" class="form-control" >
+                  <input type="text" name="mr_ibu" id="mr_ibu" class="form-control" >
 
-                        </div>
+                </div>
 
-                      </div>
+              </div>
 
-                      <label class="control-label col-md-1">Nama Ibu</label>            
+              <label class="control-label col-md-1">Nama Ibu</label>            
 
-                      <div class="col-md-3">            
+              <div class="col-md-3">            
 
-                          <input type="text" name="nama_ibu_pasien" id="nama_ibu_pasien" class="form-control" >
+                  <input type="text" name="nama_ibu_pasien" id="nama_ibu_pasien" class="form-control" >
 
-                      </div>
+              </div>
 
-                    </div>
+            </div>
 
-                    <div class="form-group">
-                        
-                      <label class="control-label col-md-2">Alamat</label>
-                      
-                      <div class="col-md-3">
-                        
-                        <textarea name="alamat_pasien" id="alamat_pasien" class="form-control" style="height:50px !important"></textarea>
-                      
-                      </div>    
+            <div class="form-group">
+                
+              <label class="control-label col-md-2">Alamat</label>
+              
+              <div class="col-md-3">
+                
+                <textarea name="alamat_pasien" id="alamat_pasien" class="form-control" style="height:50px !important"></textarea>
+              
+              </div>    
 
-                      <label class="control-label col-md-1">Telp/HP</label>
+              <label class="control-label col-md-1">Telp/HP</label>
 
-                      <div class="col-md-2">
-                        <input type="text" name="telp_pasien" id="telp_pasien" class="form-control" value="<?php echo isset($value)?($value->tlp_almt_ttp!=0 || $value->tlp_almt_ttp!='' )?$value->tlp_almt_ttp:$value->no_hp:'' ?>">
-                      </div>
+              <div class="col-md-2">
+                <input type="text" name="telp_pasien" id="telp_pasien" class="form-control" value="<?php echo isset($value)?($value->tlp_almt_ttp!=0 || $value->tlp_almt_ttp!='' )?$value->tlp_almt_ttp:$value->no_hp:'' ?>">
+              </div>
+            
+            </div>
+
+            <div class="form-group">
+
+              <label class="control-label col-md-2">Agama</label>
+
+              <div class="col-md-2">
+
+                <?php echo $this->master->custom_selection($params = array('table' => 'mst_religion', 'id' => 'religion_id', 'name' => 'religion_name', 'where' => array()), '' , 'religion', 'religion', 'form-control', '', '') ?> 
+
+              </div>
+
+            </div>
+
+            <div class="form-group">
+
+              <label class="control-label col-md-2">Nasabah</label>
+
+              <div class="col-md-2">
+
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_nasabah', 'id' => 'kode_kelompok', 'name' => 'nama_kelompok', 'where' => array()), '' , 'kelompok_pasien', 'kelompok_pasien', 'form-control', '', '') ?> 
+
+              </div>
+
+              <div id="kode_perusahaan_" style="display:none;">
+
+                <label class="control-label col-md-2" for="Province">Nama Perusahaan</label>
+
+                <div class="col-sm-2">
+
+                  <?php echo $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array()), '' , 'kode_perusahaan', 'kode_perusahaan', 'form-control', '', '') ?>
                     
-                    </div>
+                </div>
 
-                    <div class="form-group">
+              </div>
 
-                      <label class="control-label col-md-2">Agama</label>
-
-                      <div class="col-md-2">
-
-                        <?php echo $this->master->custom_selection($params = array('table' => 'mst_religion', 'id' => 'religion_id', 'name' => 'religion_name', 'where' => array()), '' , 'religion', 'religion', 'form-control', '', '') ?> 
-
-                      </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                      <label class="control-label col-md-2">Nasabah</label>
-
-                      <div class="col-md-2">
-
-                        <?php echo $this->master->custom_selection($params = array('table' => 'mt_nasabah', 'id' => 'kode_kelompok', 'name' => 'nama_kelompok', 'where' => array()), '' , 'kelompok_pasien', 'kelompok_pasien', 'form-control', '', '') ?> 
-
-                      </div>
-
-                      <div id="kode_perusahaan_" style="display:none;">
-
-                        <label class="control-label col-md-2" for="Province">Nama Perusahaan</label>
-
-                        <div class="col-sm-2">
-
-                          <?php echo $this->master->custom_selection($params = array('table' => 'mt_perusahaan', 'id' => 'kode_perusahaan', 'name' => 'nama_perusahaan', 'where' => array()), '' , 'kode_perusahaan', 'kode_perusahaan', 'form-control', '', '') ?>
-                            
-                        </div>
-
-                      </div>
-
-                    </div>
-
+            </div>
           </div>
 
 
@@ -444,29 +443,29 @@
               
         </div>
 
-            <br>
+        <br>
 
-            <div class="form-group">
+        <div class="form-group">
 
-              <a onclick="getMenu('registration/Input_pasien_baru')" href="#" class="btn btn-sm btn-success">
-                <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
-                Kembali ke daftar
-              </a>
+          <a onclick="getMenu('registration/Input_pasien_baru')" href="#" class="btn btn-sm btn-success">
+            <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
+            Kembali ke daftar
+          </a>
 
-              <a href="#" id="btn_registrasi" class="btn btn-xs btn-primary" style="display:none;">
-                <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
-                Daftarkan
-              </a>
+          <a href="#" id="btn_registrasi" class="btn btn-xs btn-primary" style="display:none;">
+            <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+            Daftarkan
+          </a>
 
-              <button type="submit" name="submit" id="btn_submit" class="btn btn-xs btn-primary" >
+          <button type="submit" name="submit" id="btn_submit" class="btn btn-xs btn-primary" >
 
-                <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+            <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
 
-                Submit
+            Submit
 
-              </button>
+          </button>
 
-            </div>
+        </div>
 
       </form>
 

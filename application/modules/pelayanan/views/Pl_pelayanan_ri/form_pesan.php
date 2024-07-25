@@ -317,7 +317,7 @@ function tambah_file()
   <div class="col-md-12">
 
     <div class="form-group">
-        <label class="control-label col-sm-2" for="">*Tanggal</label>
+        <label class="control-label col-sm-3" for="">*Tanggal</label>
           <div class="col-md-3">
                 
             <div class="input-group">
@@ -335,9 +335,9 @@ function tambah_file()
 
     <div class="form-group">
 
-        <label class="control-label col-sm-2">Tipe Pesan</label>
+        <label class="control-label col-sm-3">Tipe Pesan</label>
 
-        <div class="col-md-10">
+        <div class="col-md-9">
 
           <div class="radio">
 
@@ -376,123 +376,82 @@ function tambah_file()
         <p><b><i class="fa fa-edit"></i> PESAN VK (Ruang Bersalin) </b></p>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">*Pilih Kamar</label>
+            <label class="control-label col-sm-3" for="">*Pilih Kamar</label>
             <div class="col-sm-4">
               <?php echo $this->master->custom_selection($params = array('table' => 'mt_ruangan', 'id' => 'no_kamar', 'name' => 'no_kamar', 'where' => array('kode_bagian' => '030501', 'status' => NULL)), '', 'pl_ri_kamar_vk', 'pl_ri_kamar_vk', 'form-control', '', '') ?>
             </div>
+            <div class="col-sm-2 no-padding">
+              <a href="#" class="btn btn-xs btn-primary" id="btn_add_vk"> Pesan VK </a>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">&nbsp;</label>
-            <div class="col-sm-4" style="margin-left:6px">
-              <a href="#" class="btn btn-xs btn-primary" id="btn_add_vk"> Pesan </a>
-            </div>
-        </div>  
-        
-
-        
-          <table id="table-pesan-vk" class="table table-bordered table-hover">
-            <thead>
-              <tr>  
-                <th width="50px"></th>
-                <th>ID</th>
-                <th>Tanggal</th>
-                <th>Ruangan Asal</th>
-                <th>Kelas</th>
-                <th>Kamar</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
+        <table id="table-pesan-vk" class="table table-bordered table-hover">
+          <thead>
+            <tr>  
+              <th width="50px"></th>
+              <th>ID</th>
+              <th>Tanggal</th>
+              <th>Ruangan Asal</th>
+              <th>Kelas</th>
+              <th>Kamar</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
         
 
     </div>
 
     <div id="data_ok" style="display:none">
-
         <div class="col-sm-12">
-            
-            <br>
-
-            <p><b><i class="fa fa-edit"></i> PESAN OK (Ruang Operasi)</b></p>
+          <br>
+          <p><b><i class="fa fa-edit"></i> PESAN OK (Ruang Operasi)</b></p>
 
           <div class="form-group">
-
-            <!-- <label class="control-label col-sm-2">*Jam</label>
-    
-            <div class="col-sm-4">
-                
-                <div class="input-group">
-                    <input name="selected_time" id="selected_time" placeholder="hh:mm" class="form-control" type="text" >
-                </div>
-            
-            </div> -->
-
-            <label class="control-label col-sm-2">Jenis Layanan</label>
-
-            <div class="col-md-2">
-
+            <label class="control-label col-sm-3">Jenis Layanan</label>
+            <div class="col-md-8">
               <div class="radio">
-
                   <label>
-
                     <input name="jenis_layanan_pesan_ok" type="radio" class="ace" value="0"  checked />
-
                     <span class="lbl"> Biasa</span>
-
                   </label>
-
                   <label>
-
                     <input name="jenis_layanan_pesan_ok" type="radio" class="ace" value="1" />
-
                     <span class="lbl">Cito</span>
-
                   </label>
-
               </div>
-
             </div>
-            
           </div>
-          
 
-            <div class="form-group">
+          <div class="form-group">
+              <label class="control-label col-sm-3">*Nama Tindakan</label>
+              <div class="col-sm-8">
+                  <input id="inputKeyTindakanBedah" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
+                  <input type="hidden" name="pl_tindakan_pesan_ok" id="pl_tindakan_pesan_ok" class="form-control">
+              </div>
+          </div>
 
-                <label class="control-label col-sm-2" for="City">*Nama Tindakan</label>
+          <div class="form-group">
+              <label class="control-label col-sm-3">*Dokter</label>
+              <div class="col-sm-6">
+                  <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array('kd_bagian' => '030901')), '' , 'pl_dokter_ok', 'pl_dokter_ok', 'form-control', '', '') ?>
+              </div>
+          </div>
 
-                <div class="col-sm-4">
+          <div class="form-group" id="formDetailTarif" style="display:none">
+              <label class="control-label col-sm-3" for="">&nbsp;</label>
+              <div class="col-sm-10" style="margin-left:6px">
+                <div id="detailTarifHtml"></div>
+              </div>
+          </div>
 
-                    <input id="inputKeyTindakanBedah" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-
-                    <input type="hidden" name="pl_tindakan_pesan_ok" id="pl_tindakan_pesan_ok" class="form-control">
-
-                </div>
-
-                <label class="control-label col-sm-2" for="City">*Dokter</label>
-
-                <div class="col-sm-4">
-
-                    <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array('kd_bagian' => '030901')), '' , 'pl_dokter_ok', 'pl_dokter_ok', 'form-control', '', '') ?>
-
-                </div>
-
-            </div>
-
-            <div class="form-group" id="formDetailTarif" style="display:none">
-                <label class="control-label col-sm-2" for="">&nbsp;</label>
-                <div class="col-sm-10" style="margin-left:6px">
-                  <div id="detailTarifHtml"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="">&nbsp;</label>
-                <div class="col-sm-4" style="margin-left:6px">
-                  <a href="#" class="btn btn-xs btn-primary" id="btn_add_ok"> Pesan </a>
-                </div>
-            </div>
+          <div class="form-group">
+              <label class="col-sm-3" for="">&nbsp;</label>
+              <div class="col-sm-4" style="margin-left:6px">
+                <a href="#" class="btn btn-xs btn-primary" id="btn_add_ok"> Pesan Kamar Bedah </a>
+              </div>
+          </div>
           
           <div>
             <table id="table-pesan-ok" class="table table-bordered table-hover">
@@ -519,17 +478,10 @@ function tambah_file()
 
     <div id="data_pesan_pindah" style="display:none">
             
-        <div class="alert alert-info center">
+        <div class="alert alert-warning center">
           <b><h4>Pemberitahuan !</h4></b>Apakah anda yakin akan memindahkan pasien ke ruangan lain?<br><br>
           <a href="#" class="btn btn-xs btn-primary" id="btn_add_pindah"> Ya, Pesan sekarang </a>
           <a href="#" class="btn btn-xs btn-danger" id="btn_cancel_pindah"> Tidak, Batalkan </a>
-        </div>
-
-        <div class="form-group">
-          
-            <div class="col-sm-4" style="margin-left:6px">
-              
-            </div>
         </div>
 
         <div>
@@ -554,8 +506,6 @@ function tambah_file()
 
   </div>
     
-
-     
 </div>
 
 

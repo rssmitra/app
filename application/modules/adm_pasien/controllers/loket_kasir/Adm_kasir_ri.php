@@ -374,7 +374,7 @@ class Adm_kasir_ri extends MX_Controller {
             else
             {
                 $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'Pasien Selesai', 'total_biaya' => $total_adm, 'materai' => $materai));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'pasien_selesai', 'total_biaya' => $total_adm, 'materai' => $materai));
             }
 
         

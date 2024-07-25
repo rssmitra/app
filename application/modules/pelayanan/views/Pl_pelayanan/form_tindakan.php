@@ -36,7 +36,31 @@ $(document).ready(function() {
     $('#pl_kode_dokter_hidden1').val( $('#kode_dokter_poli').val() );
   }
   
-  
+    //initiate dataTables plugin
+    oTableOrder = $('#table-order-tindakan').DataTable({ 
+            
+      "processing": true, //Feature control the processing indicator.
+      "serverSide": true, //Feature control DataTables' server-side processing mode.
+      "ordering": false,
+      "searching": false,
+      "bPaginate": false,
+      "bInfo": false,
+      // Load data for the table's content from an Ajax source
+      "ajax": {
+        "url": "pelayanan/Pl_pelayanan_pm/get_order_penunjang_view?id_pm_tc_penunjang="+$('#id_pm_tc_penunjang').val()+"&bagian=<?php echo $sess_kode_bag?>&jenis=tindakan&kode=<?php echo $no_kunjungan; ?>",
+          "type": "POST"
+      },
+      "drawCallback": function (response) { 
+        // Here the response
+          var objData = response.json;
+          console.log(objData);
+          if(objData.status == 1){
+            $('#konfirmasi_order_div').html('<span style="font-weight: bold; color: green"><i class="fa fa-check green"></i> Sudah diproses</span>');
+          }
+      },
+
+    });
+    
   //initiate dataTables plugin
     var url_tindakan = "<?php echo isset( $value->flag_mcu ) ? ( $value->flag_mcu == 1 ) ? 'get_data_tindakan_mcu?kode='.$no_kunjungan.'&bagian='.$sess_kode_bag.'' : 'get_data_tindakan?bagian='. $sess_kode_bag .'&jenis=tindakan&kode='.$no_kunjungan.'' : 'get_data_tindakan?bagian='. $sess_kode_bag .'&jenis=tindakan&kode='.$no_kunjungan.'' ?>";
     oTableTindakan = $('#table-tindakan').DataTable({ 
@@ -494,11 +518,15 @@ function getDokterAutoComplete(num){
 
 function getDetailTarifByKodeTarifAndKlas(kode_tarif, kode_klas){
 
+  preventDefault();
   $.getJSON("<?php echo site_url('templates/references/getDetailTarif') ?>?kode="+kode_tarif+"&klas="+kode_klas+"&type=html", '' , function (data) {
-
+    var obj = data.data[0];
+    console.log(obj);
     /*show detail tarif html*/
     $('#formDetailTarif').show('fast');
     $('#detailTarifHtml').html(data.html);
+    $('#pl_kode_tindakan_hidden').val(kode_tarif);
+    $('#InputKeyTindakan').val(obj.nama_tarif);
 
   })
 
@@ -597,6 +625,40 @@ function edit_transaksi(myid){
   
 }
 
+function konfirmasi_order(id_pm_tc_penunjang){
+  preventDefault();
+  if(confirm('Apakah anda yakin akan memproses order ini?')){
+    $.ajax({
+        url: 'pelayanan/Pl_pelayanan_pm/konfirmasi_order',
+        type: "post",
+        data: {ID:id_pm_tc_penunjang},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            $.achtung({message: jsonResponse.message, timeout:5});
+            $('#konfirmasi_order_div').html('<span style="font-weight: bold; color: green">Berhasil dikonfirmasi</span>');
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+  
+}
+
+
 function backToDefault(){
 
   $('#formDetailTarif').hide('fast');
@@ -637,26 +699,28 @@ function tambah_file()
 }
 
 </script>
+<!-- hidden -->
+<input type="hidden" class="form-control" id="id_pm_tc_penunjang" name="id_pm_tc_penunjang" value="<?php echo isset($value->id_pm_tc_penunjang) ? $value->id_pm_tc_penunjang:''?>">
 
 <div class="row">
-    <div class="col-sm-12">
-        <p><b> TINDAKAN PASIEN <i class="fa fa-angle-double-right bigger-120"></i></b></p>
+    <div <?php $col_sm = (in_array($sess_kode_bag, array('050201','050101'))) ? 8 : 12; ?>class="col-sm-<?php echo $col_sm?>">
+        <p><b> BILLING PEMERIKSAAN <i class="fa fa-angle-double-right bigger-120"></i></b></p>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Tanggal</label>
-              <div class="col-md-3">
-                    
-                <div class="input-group">
-                    
-                    <input name="pl_tgl_transaksi" id="pl_tgl_transaksi" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
-                    <span class="input-group-addon">
-                      
-                      <i class="ace-icon fa fa-calendar"></i>
-                    
-                    </span>
-                  </div>
-              
+            <div class="col-md-3">
+                  
+              <div class="input-group">
+                  
+                <input name="pl_tgl_transaksi" id="pl_tgl_transaksi" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
+                <span class="input-group-addon">
+                  
+                  <i class="ace-icon fa fa-calendar"></i>
+                
+                </span>
               </div>
+            
+            </div>
         </div>
 
         <?php if($type=='PM'):?>
@@ -704,7 +768,7 @@ function tambah_file()
               <?php } ?>
                 <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
             </div>
-            <label class="control-label col-sm-1" for="">Jumlah</label>
+            <label class="control-label col-sm-1" for="">Qty</label>
             <div class="col-sm-2">
                <input type="number" min="1" class="form-control" id="pl_jumlah" name="pl_jumlah" value="1">
             </div>
@@ -715,8 +779,8 @@ function tambah_file()
         </div>
 
         <div class="form-group">
-        <label class="control-label col-sm-2" for="">Keterangan</label>
-            <div class="col-sm-8">
+          <label class="control-label col-sm-2" for="">Keterangan</label>
+            <div class="col-sm-10">
                <input type="text" class="form-control" id="pl_keterangan_tindakan" name="pl_keterangan_tindakan">
             </div>
         </div>
@@ -740,13 +804,13 @@ function tambah_file()
         <div id="clone_form_dokter">
           <div id="input_file<?php echo $j;?>"></div>
         </div>
+
         <?php $flag_mcu = isset($value->flag_mcu)?$value->flag_mcu:0; if($status_pulang!=1 AND $flag_mcu != 1 ) :?>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">&nbsp;</label>
-            <div class="col-sm-10" style="margin-left:6px">
+            <div class="col-sm-12 no-padding">
                <a href="#" class="btn btn-xs btn-primary" id="btn_add_tindakan"> <i class="fa fa-plus"></i> Tambahkan </a>
                <?php if($type=='Rajal') :?>
-               <a href="#" class="btn btn-xs btn-success" id="btn_add_konsultasi"> <i class="fa fa-money"></i> Masukan Billing Konsultasi dan Sarana RS</a>
+               <a href="#" class="btn btn-xs btn-success" id="btn_add_konsultasi"> <i class="fa fa-money"></i> Masukan Billing Konsultasi & Sarana RS</a>
                <?php endif;?>
                <?php if($type=='PM' AND $sess_kode_bag=='050301') :?>
                <a href="#" class="btn btn-xs btn-success" id="btn_add_sarana_fisio"> <i class="fa fa-money"></i> Masukan Billing Sarana Fisioterapi</a>
@@ -758,10 +822,35 @@ function tambah_file()
         <?php endif;?>
 
     </div>
+    
+    <?php if(in_array($sess_kode_bag, array('050201','050101'))) : ?>
+    <div class="col-sm-4" style="min-height: 230px; border-left: 1px solid #c3c3c3;">
+      <b> ORDER PEMERIKSAAN <i class="fa fa-angle-double-right bigger-120"></i></b><br>
+      <table class="table">
+        <tr><td width="100px" style="background: #c7cccb">Bagian Asal</td><td><?php echo isset($value->nama_bagian)?$value->nama_bagian:''?></td></tr>
+        <tr><td style="background: #c7cccb">Dokter Pengirim</td><td><?php echo isset($value->dr_pengirim)?$value->dr_pengirim:''?></td></tr>
+        <tr><td style="background: #c7cccb">Tanggal Daftar</td><td><?php echo isset($value->tgl_daftar)?$this->tanggal->formatDateTime($value->tgl_daftar):''?></td></tr>
+      </table>
+      <table id="table-order-tindakan" class="table table-bordered table-hover" >
+          <thead>
+          <tr>  
+            <th width="40px">No</th>
+            <th>Pemeriksaan</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      <div style="text-align: center; margin-top: -15px" id="konfirmasi_order_div">
+        <a href="#" class="btn btn-xs btn-primary" style="width: 100% !important" onclick="konfirmasi_order(<?php echo isset($value->id_pm_tc_penunjang)?$value->id_pm_tc_penunjang:''?>)">Konfirmasi Proses Order</a>
+      </div>
+    </div>
+    <?php endif; ?>
+
 </div>
 
 <div class="row">
-      <div class="col-sm-12">
+    <div class="col-sm-12">
         <table id="table-tindakan" class="table table-bordered table-hover" >
            <thead>
             <tr>  
@@ -780,7 +869,6 @@ function tambah_file()
         </table>
 
     </div>
-
 </div>
 
 <?php if(($type=='Rajal' OR ($type=='PM' AND $sess_kode_bag=='050301'))  ) : ?>
