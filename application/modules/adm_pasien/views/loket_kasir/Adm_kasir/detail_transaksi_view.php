@@ -116,7 +116,7 @@
   </tbody>
 
 </table> 
-<!-- <br>
+<br>
 <b>PENCATATAN JURNAL AKUNTING</b>
 
 <table class="table" style="width: 60% !important">
@@ -160,6 +160,6 @@
     <td align="right"><?php echo number_format(array_sum($arr_kredit))?></td>
   </tr>
   </tbody>
-</table> -->
+</table>
 
 

@@ -30,7 +30,7 @@ jQuery(function($) {
 });
 
 $(document).ready(function(){
-  
+
     table_booking = $('#riwayat-booking-table').DataTable({ 
       
       "processing": true, //Feature control the processing indicator.
@@ -318,9 +318,7 @@ $(document).ready(function(){
 
     }); 
 
-    $( "#form_cari_pasien_by_kode_perjanjian_id" )    
-
-      .keypress(function(event) {        
+    $( "#form_cari_pasien_by_kode_perjanjian_id" ).keypress(function(event) {        
 
         var keycode =(event.keyCode?event.keyCode:event.which);         
 
@@ -336,13 +334,11 @@ $(document).ready(function(){
 
           return false;                 
 
-        }        
+        }    
 
     });  
     
-    $( "#noRujukan" )    
-
-      .keypress(function(event) {        
+    $( "#noRujukan" ).keypress(function(event) {        
 
         var keycode =(event.keyCode?event.keyCode:event.which);         
 
@@ -359,13 +355,11 @@ $(document).ready(function(){
           return false;                 
 
         }        
-
-    });  
+      
+    });
 
     $('select[name="jenis_pendaftaran"]').change(function () {      
-
         showChangeModul( $(this).val() );        
-
     });
 
     /*$('select[name="jenis_pendaftaran"]').change(function () {      
@@ -813,6 +807,11 @@ function showChangeModul(modul_id, id_tc_pesanan=''){
 
 }
 
+function click_pasien(no_mr){
+  $('#form_cari_pasien').val(no_mr);
+  $('#btn_search_pasien').click();
+}
+
 function formatDate(date) {
   var hours = date.getHours();
   var minutes = date.getMinutes();
@@ -1200,7 +1199,7 @@ function find_pasien_by_keyword(keyword){
             $('#kode_kelompok_hidden').val(obj.kode_kelompok);
 
             $('#InputKeyPenjamin').val(obj.nama_perusahaan);
-            $('#InputKeyNasabah').val(obj.nama_kelompok);
+            $('#InputKeyNasabah').val(obj.nama_kelompok.toUpperCase());
 
             $('#total_kunjungan').text(obj.total_kunjungan);
 
@@ -1386,7 +1385,7 @@ function find_pasien_by_mr(keyword){
               $('#kode_kelompok_hidden').val(obj.kode_kelompok);
 
               $('#InputKeyPenjamin').val(obj.nama_perusahaan);
-              $('#InputKeyNasabah').val(obj.nama_kelompok);
+              $('#InputKeyNasabah').val(obj.nama_kelompok.toUpperCase());
 
               $('#total_kunjungan').text(obj.total_kunjungan);
 
@@ -1721,12 +1720,18 @@ function copyNoRujukan(no_rujukan){
               <li class="hover">
                 <a data-toggle="tab" data-id="0" data-url="registration/reg_pasien/riwayat_perjanjian" id="tabs_riwayat_perjanjian_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> Riwayat Perjanjian </span></a><b class="arrow"></b>
               </li>
-              <li class="hover">
+
+              <!-- <li class="hover">
                 <a data-toggle="tab" data-id="0" data-url="registration/Reg_pasien/konfirmasi_fp" id="tabs_konfirm_fp_id" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-thumbs-up"></i><span class="menu-text"> Finger Print </span></a><b class="arrow"></b>
-              </li>
+              </li> -->
               <!-- <li class="hover">
                 <a href="#" onclick="show_antrian_poli()"><i class="menu-icon fa fa-exclamation-circle"></i><span class="menu-text"> Antrian Poli/klinik </span></a><b class="arrow"></b>
               </li> -->
+
+              <li class="hover">
+                <a data-toggle="tab" id="tabs_riwayat_kunjungan_online_id" href="#" data-id="0" data-url="registration/reg_pasien/riwayat_kunjungan_online" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_detail_pasien')"><i class="menu-icon fa fa-globe"></i><span class="menu-text"> Update SEP </span></a><b class="arrow"></b>
+              </li>
+
             </ul>
           </div>
         </div>

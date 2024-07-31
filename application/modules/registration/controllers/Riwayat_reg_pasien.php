@@ -76,42 +76,68 @@ class Riwayat_reg_pasien extends MX_Controller {
         /*get data from model*/
         $list = $this->Riwayat_reg_pasien->get_datatables();
         $data = array();
+        $resume = array();
+        $rekap_batal = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                    </div>';
-            $row[] = '<div class="center"><div class="btn-group">
-                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-inverse">
-                            <li><a href="#">Cetak Tracer</a></li>
-                            <li><a href="#">Selengkapnya</a></li>
-                        </ul>
-                    </div></div>';
-            $row[] = '<div class="center">'.$row_list->no_registrasi.'</div>';
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center"><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS PASIEN'".')" style="font-weight: bold; color: blue">'.$row_list->no_registrasi.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = '<a href="#">'.strtoupper($row_list->nama_pasien).'</>';
+            $row[] = strtoupper($row_list->nama_pasien);
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'UMUM';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_masuk);
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = $row_list->nama_pegawai;
-            $row[] = '<div class="center"><input type="text" name="no_sep_'.$row_list->no_registrasi.'" id="no_sep_'.$row_list->no_registrasi.'" value="'.$row_list->no_sep.'" style="border: 1px solid white !important" onchange="saveRow('.$row_list->no_registrasi.')"></div>';
-           
+            $row[] = '<div class="center">'.$row_list->no_sep.'</div>';
             $data[] = $row;
+            $resume[$row_list->nama_bagian][] = $row;
+            $rekap_dr[$row_list->nama_pegawai][] = $row;
+            // substring
+            $substring = substr($row_list->kode_bagian_masuk, 0,2);
+            $substr[$substring][] = $row;
+            if($row_list->status_batal == 1){
+                $rekap_batal[] = $row;
+            }
         }
+        
+        // rekap berdasarkan unit
+        foreach($resume as $key=>$val){
+            $total_unit[] = ['unit' => $key, 'total' => count($resume[$key])];
+        }
+
+        // rekap berdasarkan dokter
+        foreach($rekap_dr as $key=>$val){
+            $nama_dr = (!empty($key))?$key:'<span class="red bold">-tidak ada dokter-</spam>';
+            $total_dr[] = ['nama_dr' => $nama_dr, 'total' => count($rekap_dr[$key])];
+        }
+        // rekap berdasarkan instalasi
+        foreach($substr as $key=>$val){
+            if($key == '01'){
+                $total_kunjungan[] = ['unit' => 'POLIKLINIK', 'total' => count($substr[$key])];
+            }
+            if($key == '05'){
+                $total_kunjungan[] = ['unit' => 'PENUNJANG MEDIS', 'total' => count($substr[$key])];
+            }
+            if($key == '02'){
+                $total_kunjungan[] = ['unit' => 'IGD', 'total' => count($substr[$key])];
+            }
+            if($key == '03'){
+                $total_kunjungan[] = ['unit' => 'RAWAT INAP', 'total' => count($substr[$key])];
+            }
+        }
+        // echo "<pre>"; print_r($total_dr);die;
 
         $output = array(
                         "draw" => $_POST['draw'],
                         "recordsTotal" => $this->Riwayat_reg_pasien->count_all(),
                         "recordsFiltered" => $this->Riwayat_reg_pasien->count_filtered(),
                         "data" => $data,
+                        "resume" => $total_unit,
+                        "rekap" => $total_kunjungan,
+                        "rekap_dr" => $total_dr,
+                        "rekap_batal" => count($rekap_batal),
                 );
         //output to json format
         echo json_encode($output);

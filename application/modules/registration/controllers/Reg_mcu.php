@@ -100,9 +100,7 @@ class Reg_mcu extends MX_Controller {
             $kode_bagian_masuk = $this->regex->_genRegex('010901','RGXQSL');
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
-
             $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
-            
             $data_registrasi = $this->daftar_pasien->daftar_registrasi($title,$no_mr, $kode_perusahaan, $kode_kelompok, $kode_dokter, $kode_bagian_masuk, $umur_saat_pelayanan,$no_sep,'','',$tgl_registrasi);
             $no_registrasi = $data_registrasi['no_registrasi'];
             $no_kunjungan = $data_registrasi['no_kunjungan'];
@@ -124,9 +122,7 @@ class Reg_mcu extends MX_Controller {
                 'flag_antrian' => $tipe_antrian,
                 'nama_pasien' => $_POST['nama_pasien_hidden'],
             );
-
             //echo"<pre>";print_r($dataexc);echo"<pre>";print_r($datakunjungan);echo"<pre>";print_r($data_gd_tc_gawat_darurat);die;
-
            /*insert mcu*/
            $data_mcu = array(
                 'kode_mcu' => $kode_mcu
@@ -147,7 +143,6 @@ class Reg_mcu extends MX_Controller {
             /*insert tc_trans_pelayanan*/
 
             // ------------------- Ini Bagian Tarif -------------------
-            
 			$tarifUmum=new Tarif();
 			$tarifUmum->set("kode_tarif",$this->regex->_genRegex($this->form_validation->set_value('mcu_paket_tindakan'),'RGXINT'));
 			$tarifUmum->set("kode_klas","16");
@@ -175,14 +170,13 @@ class Reg_mcu extends MX_Controller {
             $data_tc_trans_pelayanan['kode_mcu'] = $kode_mcu;
             $data_tc_trans_pelayanan['flag_mcu'] = 1;
             $data_tc_trans_pelayanan['nama_pasien_layan'] = $_POST['nama_pasien_hidden'];
-           
+
             //echo"<pre>";print_r($data_tc_trans_pelayanan);die;
-           
-             /*save tc_trans_pelayanan*/
+            /*save tc_trans_pelayanan*/
             $this->Reg_klinik->save('tc_trans_pelayanan', $data_tc_trans_pelayanan);
 
-             /*save logs*/
-             $this->logs->save('tc_trans_pelayanan', $data_tc_trans_pelayanan['kode_trans_pelayanan'], 'insert new record on Pendaftaran MCU module', json_encode($data_tc_trans_pelayanan),'kode_trans_pelayanan');
+            /*save logs*/
+            $this->logs->save('tc_trans_pelayanan', $data_tc_trans_pelayanan['kode_trans_pelayanan'], 'insert new record on Pendaftaran MCU module', json_encode($data_tc_trans_pelayanan),'kode_trans_pelayanan');
              
             $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
                 

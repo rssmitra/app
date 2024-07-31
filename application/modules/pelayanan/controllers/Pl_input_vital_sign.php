@@ -56,12 +56,12 @@ class Pl_input_vital_sign extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
-            $row[] = '<div class="left">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'</div>';
-            $row[] = '<div class="center"><input type="text" style="width: 100px; text-align: center" class="form-control" onchange="save_vital_sign('."'tinggi_badan'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->tinggi_badan.'" id="tinggi_badan_'.$row_list->no_kunjungan.'"></div>';
-            $row[] = '<div class="center"><input type="text" style="width: 100px; text-align: center" class="form-control" onchange="save_vital_sign('."'berat_badan'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->berat_badan.'" id="berat_badan_'.$row_list->no_kunjungan.'"></div>';
-            $row[] = '<div class="center"><input type="text" style="width: 100px; text-align: center" class="form-control" onchange="save_vital_sign('."'tekanan_darah'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->tekanan_darah.'" id="tekanan_darah_'.$row_list->no_kunjungan.'"></div>';
-            $row[] = '<div class="center"><input type="text" style="width: 100px; text-align: center" class="form-control" onchange="save_vital_sign('."'suhu'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->suhu.'" id="suhu_'.$row_list->no_kunjungan.'"></div>';
-            $row[] = '<div class="center"><input type="text" style="width: 100px; text-align: center" class="form-control" onchange="save_vital_sign('."'nadi'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->nadi.'" id="nadi_'.$row_list->no_kunjungan.'"></div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'</div>';
+            $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'tinggi_badan'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->tinggi_badan.'" id="tinggi_badan_'.$row_list->no_kunjungan.'"></div>';
+            $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'berat_badan'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->berat_badan.'" id="berat_badan_'.$row_list->no_kunjungan.'"></div>';
+            $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'tekanan_darah'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->tekanan_darah.'" id="tekanan_darah_'.$row_list->no_kunjungan.'"></div>';
+            $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'suhu'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->suhu.'" id="suhu_'.$row_list->no_kunjungan.'"></div>';
+            $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'nadi'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->nadi.'" id="nadi_'.$row_list->no_kunjungan.'"></div>';
 
             if($row_list->status_batal==1){
                 $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
@@ -73,7 +73,7 @@ class Pl_input_vital_sign extends MX_Controller {
                 }
             }
 
-            $row[] = '<div class="center">'.$status_periksa.'</div>';
+            // $row[] = '<div class="center">'.$status_periksa.'</div>';
            
             $data[] = $row;
         }

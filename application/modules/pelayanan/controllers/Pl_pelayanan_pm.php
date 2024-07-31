@@ -917,6 +917,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*update pm_tc_penunjang*/
         $pm_tc_penunjang = array('status_daftar' => 0, 'status_isihasil' => 0, 'status_batal' => 0, 'tgl_selesai' => null);
         $this->Pl_pelayanan_pm->update('pm_tc_penunjang', $pm_tc_penunjang, array('kode_penunjang' => $kode_penunjang ) );
+        
         /*save logs*/
         //$this->logs->save('pl_tc_poli', $no_kunjungan, 'update pl_tc_poli Modul Pelayanan', json_encode($arrPlTcPoli),'no_kunjungan');
 
@@ -1097,7 +1098,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         $output = array(
                         "draw" => $_POST['draw'],
                         "data" => $data,
-                        "status" => $list[0]->status,
+                        "status" => isset($list[0]->status)?$list[0]->status:'',
                 );
         //output to json format
         echo json_encode($output);

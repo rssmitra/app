@@ -14,30 +14,69 @@ jQuery(function($) {
   });
 });
 
+var oTable;
+var base_url = $('#dynamic-table-igd').attr('base-url'); 
+var params = $('#dynamic-table-igd').attr('data-id'); 
 
-$('#btn_update_session_poli').click(function (e) {  
-
-  achtungShowLoader();
-
-  $.ajax({
-      url: "pelayanan/Pl_pelayanan_igd/destroy_session_kode_bagian",
-      data: { kode: $('#sess_kode_bagian').val()},            
-      dataType: "json",
-      type: "POST",
-      complete: function (xhr) {
-        var data=xhr.responseText;  
-        var jsonResponse = JSON.parse(data);  
-        if(jsonResponse.status === 200){  
-          $.achtung({message: jsonResponse.message, timeout:5}); 
-          getMenu('pelayanan/Pl_pelayanan_igd');
-        }else{          
-          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
-        } 
-        achtungHideLoader();
-      }
-  });
+oTable = $('#dynamic-table-igd').DataTable({ 
+          
+  "processing": true, //Feature control the processing indicator.
+  "serverSide": true, //Feature control DataTables' server-side processing mode.
+  "ordering": false,
+  "paging": false,
+  "searching": false,
+  // Load data for the table's content from an Ajax source
+  "ajax": {
+      "url": base_url+"/get_data",
+      "type": "POST"
+  },
 
 });
+
+$('#dynamic-table-igd tbody').on( 'click', 'tr', function () {
+    if ( $(this).hasClass('selected') ) {
+        $(this).removeClass('selected');
+    }
+    else {
+        oTable.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+} );
+
+$('#btn_search_data').click(function (e) {
+    var url_search = $('#form_search').attr('action');
+    e.preventDefault();
+    $.ajax({
+    url: url_search,
+    type: "post",
+    data: $('#form_search').serialize(),
+    dataType: "json",
+    success: function(data) {
+      console.log(data.data);
+      find_data_reload(data);
+    }
+  });
+ });
+
+
+ $( ".form-control" )  
+  .keypress(function(event) {  
+    var keycode =(event.keyCode?event.keyCode:event.which);  
+    if(keycode ==13){    
+      event.preventDefault();     
+      if($(this).valid()){  
+        $('#btn_search_data').click();  
+      }    
+      return false;   
+    }  
+}); 
+
+function find_data_reload(result){
+
+    oTable.ajax.url(base_url+'/get_data?'+result.data).load();
+    $("html, body").animate({ scrollTop: "400px" });
+
+}
 
 function cetak_surat_kematian(no_registrasi,no_kunjungan,umur) {
   
@@ -131,8 +170,8 @@ function rollback(no_registrasi, no_kunjungan){
 
     <div class="col-md-12">
 
-      <center><h4>FORM PELAYANAN GAWAT DARURAT <br> <small style="font-size:12px">Data yang ditampilkan adalah data per hari ini, yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?></small><br></h4></center>
-      <br>
+      <!-- <center><h4>FORM PELAYANAN GAWAT DARURAT <br> <small style="font-size:12px">Data yang ditampilkan adalah data per hari ini, yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?></small><br></h4></center>
+      <br> -->
 
       <!-- hidden form -->
       <input type="hidden" name="sess_kode_bagian" value="020101" id="sess_kode_bagian">
@@ -177,7 +216,7 @@ function rollback(no_registrasi, no_kunjungan){
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2 ">&nbsp;</label>
+        <label class="col-md-2 ">&nbsp;</label>
         <div class="col-md-10" style="margin-left:6px">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -199,7 +238,7 @@ function rollback(no_registrasi, no_kunjungan){
     <hr class="separator">
     <!-- div.dataTables_borderWrap -->
     <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="pelayanan/Pl_pelayanan_igd" class="table table-bordered table-hover">
+      <table id="dynamic-table-igd" base-url="pelayanan/Pl_pelayanan_igd" class="table table-bordered table-hover">
        <thead>
         <tr>  
           <th width="30px" class="center"></th>
@@ -224,7 +263,6 @@ function rollback(no_registrasi, no_kunjungan){
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
 
 
 

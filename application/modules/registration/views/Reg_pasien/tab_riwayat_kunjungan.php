@@ -88,6 +88,58 @@
    table_riwayat.ajax.reload(); //reload datatable ajax 
   }
 
+  function cancel_visit(no_registrasi, no_kunjungan, kode_bagian){
+
+    preventDefault();  
+    achtungShowLoader();
+    if(confirm('Are you sure?')){
+      $.ajax({
+          url: "pelayanan/Pl_pelayanan/cancel_visit",
+          data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: kode_bagian },            
+          dataType: "json",
+          type: "POST",
+          complete: function (xhr) {
+            var data=xhr.responseText;  
+            var jsonResponse = JSON.parse(data);  
+            if(jsonResponse.status === 200){  
+              table_riwayat.ajax.reload();
+              $.achtung({message: jsonResponse.message, timeout:5}); 
+            }else{          
+              $.achtung({message: jsonResponse.message, timeout:5});  
+            } 
+            achtungHideLoader();
+          }
+      });
+    }else{
+      return false;
+    }
+  }
+
+  function rollback(no_registrasi, no_kunjungan, flag, kode_bagian){
+
+    preventDefault();  
+    achtungShowLoader();
+    $.ajax({
+        url: "registration/Reg_pasien/rollback",
+        data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan, kode_bag: kode_bagian, flag: flag },            
+        dataType: "json",
+        type: "POST",
+        complete: function (xhr) {
+          var data=xhr.responseText;  
+          var jsonResponse = JSON.parse(data);  
+          if(jsonResponse.status === 200){  
+            $.achtung({message: jsonResponse.message, timeout:5}); 
+            table_riwayat.ajax.reload();
+          }else{          
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
+          } 
+          achtungHideLoader();
+        }
+    });
+
+  }
+
+
 </script>
 
 <!-- <b> RIWAYAT KUNJUNGAN PASIEN <i class="fa fa-angle-double-right bigger-120"></i> </b> -->

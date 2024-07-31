@@ -605,11 +605,13 @@ class Ws_index extends MX_Controller {
         }
         else
         {    
-            // echo '<pre>';print_r($_POST);die;
+            
             // cek no surat kontrol
-            $noSuratKontrol = isset($_POST['noSuratKontrol'])?$_POST['noSuratKontrol']:0;
+            $noSuratKontrol = isset($_POST['nomrsuratkontrol'])?$_POST['nomrsuratkontrol']:0;
             $check_surat_kontrol = $this->Ws_index->check_surat_kontrol_by_no($noSuratKontrol);
             $response_dt = isset($check_surat_kontrol['response']) ? $check_surat_kontrol : false;
+
+            // echo '<pre>';print_r($response_dt);die;
 
             if( $response_dt['response']->metaData->code == 201 ){
 
@@ -645,7 +647,7 @@ class Ws_index extends MX_Controller {
                 if($_POST['jnsPelayanan'] == 2){
                     $data = array(
                         'request' => array(
-                            'noSuratKontrol' => trim($_POST['noSuratKontrol']),
+                            'noSuratKontrol' => trim($_POST['nomrsuratkontrol']),
                             'noSEP' => trim($_POST['noSEP']),
                             'kodeDokter' => $_POST['KodedokterDPJP'],
                             'poliKontrol' => $_POST['kodePoliHidden'],
@@ -660,7 +662,7 @@ class Ws_index extends MX_Controller {
                 if($_POST['jnsPelayanan'] == 1){
                     $data = array(
                         'request' => array(
-                            'noSPRI' => trim($_POST['noSuratKontrol']),
+                            'noSPRI' => trim($_POST['nomrsuratkontrol']),
                             'kodeDokter' => $_POST['KodedokterDPJP'],
                             'poliKontrol' => $_POST['kodePoliHidden'],
                             'tglRencanaKontrol' => $_POST['tglRencanaKontrol'],
@@ -690,7 +692,6 @@ class Ws_index extends MX_Controller {
                     // update kode_perjanjian tc_pesanan
                     $this->db->where('kode_perjanjian', $noSuratKontrol)->update('tc_pesanan', array('kode_perjanjian' => $response['data']->noSuratKontrol, 'is_bridging' => 1, 'tgl_pesanan' => $_POST['tglRencanaKontrol'], 'kode_dokter' => $dokter_internal->kode_dokter, 'no_poli' => $poli_internal->kode_bagian ) );
                 }
-                
 
                 echo json_encode(array('status' => $result['response']->metaData->code, 'message' => $result['response']->metaData->message, 'data' => $response['data']));
                 // $this->load->view('Ws_index/previewRencanaKontrol', $data, false);
@@ -988,6 +989,7 @@ class Ws_index extends MX_Controller {
                     $row[] = $row_list->namaPoliTujuan;
                     $row[] = $row_list->namaDokter;
                     $row[] = '<div class="center">
+                        <a href="#" title="Update Surat Kontrol" class="btn btn-xs btn-success" onclick="show_data_surat_kontrol('."'".$row_list->noSuratKontrol."'".')"><i class="fa fa-pencil"></i></a>
                         <a href="#" title="Delete Surat Kontrol" class="btn btn-xs btn-danger" onclick="delete_surat_kontrol('."'".$row_list->noSuratKontrol."'".')"><i class="fa fa-times-circle"></i></a>
                      </div>';
                     $data[] = $row;

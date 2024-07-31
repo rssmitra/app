@@ -1,0 +1,40 @@
+
+@font-face {
+    font-family: "TPIcons";
+    src: url("icons/icons.eot");
+    src: url("icons/icons.eot?#iefix") format("embedded-opentype"),
+        url("icons/icons.woff2") format("woff2"),
+        url("icons/icons.woff") format("woff"),
+        url("icons/icons.ttf") format("truetype"),
+        url("icons/icons.svg#icons") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    @font-face {
+        font-family: "TPIcons";
+        src: url("icons/icons.svg#icons") format("svg");
+    }
+}
+
+[class^="tp-icon-"]:before, [class*=" tp-icon-"]:before,
+[class^="tp-icon-"]:after, [class*=" tp-icon-"]:after {   
+    font-family: TPIcons;
+    font-style: normal;
+}
+
+.tp-icon-maps-and-flags:before { content: "\f100"; }
+.tp-icon-trash:before { content: "\f101"; }
+.tp-icon-no-stopping:before { content: "\f102"; }
+.tp-icon-check:before { content: "\f103"; }
+.tp-icon-close:before { content: "\f104"; }
+.tp-icon-plus:before { content: "\f105"; }
+.tp-icon-outside:before { content: "\f106"; }
+.tp-icon-question:before { content: "\f107"; }
+.tp-icon-ellipsis:before { content: "\f108"; }
+.tp-icon-camera:before { content: "\f109"; }
+.tp-icon-upload:before { content: "\f10a"; }
+.tp-icon-minimize:before { content: "\f10b"; }
+.tp-icon-maximize:before { content: "\f10c"; }
+.tp-icon-pen:before { content: "\f10d"; }

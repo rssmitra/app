@@ -133,6 +133,7 @@
             <li>Pasien wajib melakukan daftar online H-1 sebelum kontrol kembali dengan mengakses link https://registrasi.rssetiamitra.co.id</li>
             <li>Lakukan <i>finger print</i> ketika hari H kunjungan sebelum praktek dokter dimulai di kiosk atau di bagian pendaftaran dan mohon siapkan Kartu BPJS anda</li>
             <li>Untuk informasi selengkapnya silahkan hubungi (021) 765 6000</li>
+            <li>Informasi Pendaftaran Online Via Whatsapp hubungi 0821-2546-1550</li>
           </ol>
         </td>
       </tr>

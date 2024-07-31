@@ -221,9 +221,8 @@ class Pl_pelayanan_igd extends MX_Controller {
                         </label>
                     </div>';
             /*fungsi rollback pasien, jika belum disubmit kasir maka poli masih bisa melakukan rollback*/
-            /*cek transaksi*/
-            $trans_kasir = $this->Pl_pelayanan_igd->get_transaksi_pasien_by_id($row_list->no_kunjungan);
-            $rollback_btn = ($trans_kasir!=0)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
+            $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>';
+
             // $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>';
             if($row_list->tgl_jam_kel!=NULL){
                 $kunjungan = $this->Reg_pasien->get_detail_kunjungan_by_no_kunjungan($row_list->no_kunjungan);
@@ -249,7 +248,7 @@ class Pl_pelayanan_igd extends MX_Controller {
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_igd/form/".$row_list->kode_gd."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_igd/form/".$row_list->kode_gd."/".$row_list->no_kunjungan."'".')" style="color: blue"><b>'.$row_list->no_kunjungan.'</b></a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien_igd);
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
@@ -277,7 +276,7 @@ class Pl_pelayanan_igd extends MX_Controller {
                     if($row_list->status_batal == 1){
                         $status_periksa = '<label class="label label-danger"><i class="fa fa-times"></i> Batal Kunjungan</label>';
                     }else{
-                        $status_periksa = ($trans_kasir==0)?'<label class="label label-info"><i class="fa fa-money"></i> Lunas</label>':'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
                     }
                 }
                 
@@ -909,19 +908,19 @@ class Pl_pelayanan_igd extends MX_Controller {
              /*update tc_registrasi*/
             $reg_data = array('tgl_jam_keluar' => NULL, 'kode_bagian_keluar' => NULL, 'status_batal' => NULL );
             $this->db->update('tc_registrasi', $reg_data, array('no_registrasi' => $_POST['no_registrasi'] ) );
-            $this->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi Modul Pelayanan', json_encode($reg_data),'no_registrasi');
+            // $this->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi Modul Pelayanan', json_encode($reg_data),'no_registrasi');
 
 
             /*tc_kunjungan*/
             $kunj_data = array('tgl_keluar' => NULL, 'status_keluar' => NULL, 'status_batal' => NULL );
             $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
-            $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
+            // $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
 
             /*update gd_tc_gawat_darurat*/
             $arrGdTc = array('tgl_jam_kel' => NULL, 'status_batal' => NULL );
             $this->Pl_pelayanan_igd->update('gd_tc_gawat_darurat', $arrGdTc, array('no_kunjungan' => $_POST['no_kunjungan'] ) );
             /*save logs gd_tc_gawat_darurat*/
-            $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($arrGdTc),'no_kunjungan');
+            // $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($arrGdTc),'no_kunjungan');
 
             /*tc_trans_pelayanan*/
             $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
@@ -939,13 +938,13 @@ class Pl_pelayanan_igd extends MX_Controller {
             /*tc_kunjungan*/
             $kunj_data = array('tgl_keluar' => NULL, 'status_keluar' => NULL, 'status_batal' => NULL );
             $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
-            $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
+            // $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
 
             /*update gd_tc_gawat_darurat*/
             $arrGdTc = array('tgl_jam_kel' => NULL );
             $this->Pl_pelayanan_igd->update('gd_tc_gawat_darurat', $arrGdTc, array('no_kunjungan' => $_POST['no_kunjungan'] ) );
             /*save logs gd_tc_gawat_darurat*/
-            $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($arrGdTc),'no_kunjungan');
+            // $this->logs->save('gd_tc_gawat_darurat', $_POST['no_kunjungan'], 'update gd_tc_gawat_darurat Modul Pelayanan', json_encode($arrGdTc),'no_kunjungan');
 
             /*tc_trans_pelayanan*/
             $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
@@ -963,6 +962,11 @@ class Pl_pelayanan_igd extends MX_Controller {
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan' ) );
         }
         
+    }
+
+    public function form_img_tagging() { 
+        /*define variable data*/
+        $this->load->view('Pl_pelayanan_igd/form_img_tagging');
     }
 
 

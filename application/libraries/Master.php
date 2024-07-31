@@ -650,8 +650,8 @@ final Class Master {
     	$CI =&get_instance();
 		$db = $CI->load->database('default', TRUE);
 
-		$qry_lama_baru = $db->get_where('tc_registrasi', array('no_mr' => $no_mr) );
-        $cek_riwayat_pasien =  $qry_lama_baru->num_rows();
+		$qry_lama_baru = $db->get_where('tc_registrasi', array('no_mr' => $no_mr) )->result();
+        $cek_riwayat_pasien =  count($qry_lama_baru);
         $stat_pasien = ($cek_riwayat_pasien==0)?'Baru':'Lama';
 
         return $stat_pasien;

@@ -552,8 +552,6 @@ function cancel_visit(no_registrasi, no_kunjungan){
   }else{
     return false;
   }
-  
-
 }
 
 function rollback(no_registrasi, no_kunjungan, flag){

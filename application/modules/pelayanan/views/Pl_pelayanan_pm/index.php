@@ -85,7 +85,7 @@ $(document).ready(function(){
     "bInfo": true,
     // Load data for the table's content from an Ajax source
     "ajax": {
-        "url": "pelayanan/Pl_pelayanan_pm/get_data?sess_kode_bagian="+$("#sess_kode_bagian").val()+"&search_by="+$("#search_by").val()+"&keyword="+$("#keyword_form").val()+"&from_tgl="+$("#from_tgl").val()+"&to_tgl="+$("#to_tgl").val()+"",
+        "url": "pelayanan/Pl_pelayanan_pm/get_data?status_pasien=belum_ditindak&sess_kode_bagian="+$("#sess_kode_bagian").val()+"&search_by="+$("#search_by").val()+"&keyword="+$("#keyword_form").val()+"&from_tgl="+$("#from_tgl").val()+"&to_tgl="+$("#to_tgl").val()+"",
         "type": "POST"
     },
     "columnDefs": [
@@ -467,7 +467,7 @@ function cetak_slip(kode_penunjang) {
 
     <div class="col-md-12">
 
-      <center><h4>DATA PASIEN <?php echo strtoupper($nama_bag) ?><br><small>Data yang ditampilkan adalah data pasien 1 bulan ke terakhir.</small></h4></center>
+      <center><h4>DATA PASIEN <?php echo strtoupper($nama_bag) ?><br><small>Data yang ditampilkan adalah data pasien seminggu terakhir.</small></h4></center>
       <br>
 
       <div class="f1-steps" style="margin-top:0px !important">
