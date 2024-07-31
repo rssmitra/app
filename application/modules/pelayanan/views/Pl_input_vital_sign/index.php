@@ -167,7 +167,7 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
               <option value="pl_tc_poli.nama_pasien">Nama Pasien</option>
             </select>
           </div>
-          <div class="col-md-2" style="margin-left: -5.2%">
+          <div class="col-md-2" style="margin-left: -2.7%">
             <input type="text" class="form-control" name="keyword" id="keyword_form" placeholder="Masukan keyword">
           </div>
           <label class="control-label col-md-1">Tgl Masuk</label>
@@ -196,7 +196,7 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
         <table id="dynamic-table" base-url="pelayanan/Pl_input_vital_sign/get_data" class="table table-bordered table-hover">
         <thead>
           <tr>  
-            <th width="50px" class="center"></th>
+            <th width="40px" class="center"></th>
             <th></th>
             <th></th>
             <th></th>
@@ -210,7 +210,7 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
             <th style="width: 100px" class="center">Tekanan Darah (mmHg)</th>
             <th style="width: 100px" class="center">Suhu Tubuh (C&deg;)</th>
             <th style="width: 100px" class="center">Nadi (bpm)</th>
-            <th>Status</th>          
+            <!-- <th>Status</th>           -->
           </tr>
         </thead>
         <tbody>

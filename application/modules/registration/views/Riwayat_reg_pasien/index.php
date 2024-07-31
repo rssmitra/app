@@ -14,6 +14,90 @@ jQuery(function($) {
   });
 });
 
+var oTable;
+var base_url = $('#dynamic-table').attr('base-url'); 
+var params = $('#dynamic-table').attr('data-id'); 
+
+oTable = $('#dynamic-table').DataTable({ 
+          
+  "processing": true, //Feature control the processing indicator.
+  "serverSide": true, //Feature control DataTables' server-side processing mode.
+  "ordering": false,
+  "searching": false,
+  "bLengthChange" : false,
+  "paging" : false,
+  // "pageLength": 25,
+  // "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+  // Load data for the table's content from an Ajax source
+  "drawCallback": function (response) { 
+    // Here the response
+      var objData = response.json;
+      console.log(objData);
+      $('#rekap_data tbody').remove();        
+      var no = 0;
+      $.each(objData.resume, function (i, o) {       
+        no++;
+          $('<tr><td align="center">'+no+'</td><td>'+o.unit+'</td><td align="center">'+o.total+'</td></tr>').appendTo($('#rekap_data'));   
+      });
+      $('.total_rekap').html(objData.recordsTotal);
+      $('#rekap_batal').html(objData.rekap_batal);
+      var total_berkunjung = parseInt(objData.recordsTotal) - parseInt(objData.rekap_batal);
+      $('#total_berkunjung').html(total_berkunjung);
+
+      $('#resume_rekap_data tbody').remove();  
+      var noa = 0;      
+      $.each(objData.rekap, function (k, v) {       
+        noa++;
+          $('<tr><td align="center">'+noa+'</td><td>'+v.unit+'</td><td align="center">'+v.total+'</td></tr>').appendTo($('#resume_rekap_data'));   
+      });
+
+      $('#resume_rekap_data_dr tbody').remove();  
+      var nob = 0;      
+      $.each(objData.rekap_dr, function (k, v) {       
+        nob++;
+          $('<tr><td align="center">'+nob+'</td><td>'+v.nama_dr+'</td><td align="center">'+v.total+'</td></tr>').appendTo($('#resume_rekap_data_dr'));   
+      });
+
+  },
+  "ajax": {
+      "url": base_url+"/get_data",
+      "type": "POST"
+  },
+
+});
+
+$('#dynamic-table tbody').on( 'click', 'tr', function () {
+    if ( $(this).hasClass('selected') ) {
+        $(this).removeClass('selected');
+    }
+    else {
+        oTable.$('tr.selected').removeClass('selected');
+        $(this).addClass('selected');
+    }
+} );
+
+$('#btn_reset_data').click(function (e) {
+    e.preventDefault();
+    oTable.ajax.url(base_url+'/get_data').load();
+    $('#form_search')[0].reset();
+});
+
+$('#btn_search_data').click(function (e) {
+    var url_search = $('#form_search').attr('action');
+    e.preventDefault();
+    $.ajax({
+    url: url_search,
+    type: "post",
+    data: $('#form_search').serialize(),
+    dataType: "json",
+    success: function(data) {
+      console.log(data.data);
+      oTable.ajax.url(base_url+'/get_data?'+result.data).load();
+    }
+  });
+});
+
+
 $('select[name="bagian"]').change(function () {      
 
   if ($(this).val()) {          
@@ -184,8 +268,8 @@ function saveRow(no_registrasi){
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2 ">&nbsp;</label>
-        <div class="col-md-10">
+        <label class="col-md-2">&nbsp;</label>
+        <div class="col-md-10" style="margin-left: 7px">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Search
@@ -194,44 +278,147 @@ function saveRow(no_registrasi){
             <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
             Reset
           </a>
-          <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+          <!-- <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
             <i class="fa fa-file-word-o bigger-110"></i>
             Export Excel
-          </a>
+          </a> -->
         </div>
       </div>
 
     </div>
 
     <hr class="separator">
-    <!-- div.dataTables_borderWrap -->
-    <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="registration/Riwayat_reg_pasien" class="table table-bordered table-hover">
-       <thead>
-        <tr>  
-          <th width="30px" class="center"></th>
-          <th></th>
-          <th style="width: 80px !important">No Reg</th>
-          <th>No MR</th>
-          <th>Nama Pasien</th>
-          <th>Penjamin</th>
-          <th>Tanggal Registrasi</th>
-          <th>Tujuan Bagian</th>
-          <th>Nama Dokter</th>          
-          <th>Nomor SEP</th>          
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+    
+    <div class="col-md-12" style="padding-top: 10px">
+      <div class="tabbable">
+        <ul class="nav nav-tabs" id="myTab">
+          <li class="active">
+            <a data-toggle="tab" href="#datatables">
+              DATA TABLE
+            </a>
+          </li>
+
+          <li>
+            <a data-toggle="tab" href="#resume_data">
+              REKAPITULASI DATA
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+
+          <div id="datatables" class="tab-pane fade in active">
+            <div>
+              <p style="font-size: 14px; font-weight: bold">RIWAYAT REGISTRASI PASIEN</p>
+              <table id="dynamic-table" base-url="registration/Riwayat_reg_pasien" class="table table-bordered table-hover">
+              <thead>
+                <tr>  
+                  <th width="30px" class="center"></th>
+                  <th style="width: 80px !important">No Reg</th>
+                  <th>No MR</th>
+                  <th>Nama Pasien</th>
+                  <th>Penjamin</th>
+                  <th>Tanggal Registrasi</th>
+                  <th>Tujuan Bagian</th>
+                  <th>Nama Dokter</th>          
+                  <th>Nomor SEP</th>          
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="resume_data" class="tab-pane fade">
+
+            <div class="row">
+              <div class="col-md-4">
+                <p style="font-size: 14px; font-weight: bold;">REKAP DATA REGISTRASI PASIEN</p>
+                <table class="table" id="rekap_data">
+                  <thead>
+                    <tr>
+                      <th class="center" width="30px">No</th>
+                      <th>Tujuan Kunjungan</th>
+                      <th class="center" width="100px">Jumlah</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                    <tr><td colspan="2" align="right"><b>TOTAL KUNJUNGAN PASIEN</b></td><td align="center"><span class="total_rekap"></span></td></tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <div class="col-md-4">
+                <p style="font-size: 14px; font-weight: bold;">REKAP DATA BERDASARKAN DOKTER</p>
+                <table class="table" id="resume_rekap_data_dr">
+                  <thead>
+                    <tr>
+                      <th class="center" width="30px">No</th>
+                      <th>Nama Dokter</th>
+                      <th class="center" width="100px">Jumlah</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                    <tr><td colspan="2" align="right"><b>TOTAL KUNJUNGAN PASIEN</b></td><td align="center"><span class="total_rekap"></span></td></tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <div class="col-md-3">
+                <p style="font-size: 14px; font-weight: bold;">REKAP DATA BERDASARKAN INSTALASI</p>
+                <table class="table" id="resume_rekap_data">
+                  <thead>
+                    <tr>
+                      <th class="center" width="30px">No</th>
+                      <th>Tujuan</th>
+                      <th class="center" width="100px">Jumlah</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                    <tr><td colspan="2" align="right"><b>TOTAL KUNJUNGAN PASIEN</b></td><td align="center"><span class="total_rekap"></span></td></tr>
+                  </tfoot>
+                </table>
+                <br>
+                <p style="font-size: 14px; font-weight: bold;">REKAP KUJUNGAN PASIEN</p>
+                <table class="table" id="resume_rekap_batal">
+                    <tr>
+                      <td class="center" widtd="30px">1</td>
+                      <td>TOTAL DATA PASIEN</td>
+                      <td class="center" width="100px"><span class="total_rekap"></span></td>
+                    </tr>
+                    <tr>
+                      <td class="center" widtd="30px">2</td>
+                      <td>TOTAL PASIEN BATAL KUNJUNGAN</td>
+                      <td class="center" width="100px"><span id="rekap_batal"></span></td>
+                    </tr>
+                    <tr>
+                      <td class="center" widtd="30px">&nbsp;</td>
+                      <td align="right"><b>TOTAL PASIEN BERKUNJUNG</b></td>
+                      <td class="center" width="100px"><span id="total_berkunjung"></span></td>
+                    </tr>
+                </table>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
     </div>
 
     </form>
 
   </div><!-- /.col -->
 </div><!-- /.row -->
-
-<script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
 
 
 

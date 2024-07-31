@@ -281,7 +281,7 @@ class Reg_pasien_model extends CI_Model {
 
 	}
 
-	public function query_get_riwayat_pasien($select, $column, $mr)
+	private function query_get_riwayat_pasien($select, $column, $mr='')
 	
 	{
 		$this->db->select($select);
@@ -296,8 +296,22 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_bagian as bagian_asal','bagian_asal.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
-		$this->db->where( 'tc_kunjungan.no_mr', $mr );
+		if($mr != ''){
+			$this->db->where( 'tc_kunjungan.no_mr', $mr );
+		}
 	
+		$this->db->group_by( $select );
+		$this->db->group_by('tc_kunjungan.status_batal, pl_tc_poli.no_antrian, bagian_asal.nama_bagian, tipe_daftar');
+		$this->db->order_by( 'tgl_masuk', 'DESC' );
+
+	}
+
+	private function _get_datatables_query_riwayat_pasien($select, $column, $mr)
+	
+	{
+		
+		$this->query_get_riwayat_pasien($select, $column, $mr);
+
 		if(isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != ''){
 			
 			$this->db->where( 'tc_kunjungan.kode_bagian_asal', $_GET['kode_bagian']);
@@ -319,18 +333,6 @@ class Reg_pasien_model extends CI_Model {
 			}
 					
 		}
-
-		$this->db->group_by( $select );
-		$this->db->group_by('tc_kunjungan.status_batal, pl_tc_poli.no_antrian, bagian_asal.nama_bagian, tipe_daftar');
-		$this->db->order_by( 'tgl_masuk', 'DESC' );
-
-	}
-
-	private function _get_datatables_query_riwayat_pasien($select, $column, $mr)
-	
-	{
-		
-		$this->query_get_riwayat_pasien($select, $column, $mr);
 
 		$i = 0;
 
@@ -376,6 +378,30 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 		
 		$query = $this->db->get(); //print_r($this->db->last_query());
+		
+		return $query->result();
+	
+	}
+
+	function get_riwayat_pasien_online($column, $mr)
+	
+	{
+		$select = join($column,',');
+		$this->db->select($select);
+		$this->db->from( 'pl_tc_poli' );
+		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=pl_tc_poli.no_kunjungan','left');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_dokter_v','mt_dokter_v.kode_dokter=pl_tc_poli.kode_dokter','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=pl_tc_poli.kode_bagian','left');
+		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
+		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
+		$this->db->group_by( $select );
+		$this->db->order_by( 'tgl_jam_poli', 'DESC' );
+		$this->db->where('CAST(tgl_jam_poli as DATE) = ', date('Y-m-d'));
+		$this->db->where('tipe_daftar is not null');
+		
+		$query = $this->db->get(); 
+		// print_r($this->db->last_query());
 		
 		return $query->result();
 	

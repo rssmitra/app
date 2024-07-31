@@ -1,0 +1,358 @@
+
+@import "_icons";
+
+.tagging-demo {
+    width: 600px;
+    margin: 50px auto;
+    img {
+        width: 100%;
+    }
+}
+
+.photo-tagging {
+    position: relative;
+    &.allow-add-tags {
+        cursor: crosshair;
+    }
+    span.photo-tagging-point {
+        i {
+            background: #fff;
+            width: 15px;
+            height: 15px;
+            display: block;
+            border-radius: 100%;
+            cursor: pointer;
+            &.tp-animated {
+                &:after {
+                    position: absolute;
+                    border: 2px solid #ddd;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    content: '';
+                    border-radius: 100%;
+                    opacity: 0;
+                    animation: tagging-motion 1s infinite
+                }
+            }
+        }
+        &:hover, &.show-tooltip {
+            i {
+                &:after {
+                    position: absolute;
+                    border: 2px solid #fff;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    content: '';
+                    border-radius: 100%;
+                    opacity: 0;
+                    animation: tagging-motion 0.5s infinite
+                }
+            }
+        }
+    }
+    &[data-points-color="white"] {
+        span.photo-tagging-point {
+            i {
+                background: #ffffff;
+                &:after {
+                    border-color: #ffffff;
+                }
+            }
+        }
+    }
+    &[data-points-color="black"] {
+        span.photo-tagging-point {
+            i {
+                background: #000000;
+                &:after {
+                    border-color: #000000;
+                }
+            }
+        }
+    }
+    &[data-points-color="red"] {
+        span.photo-tagging-point {
+            i {
+                background: #d30000;
+                &:after {
+                    border-color: #d30000;
+                }
+            }
+        }
+    }
+    &[data-points-color="yellow"] {
+        span.photo-tagging-point {
+            i {
+                background: #fff200;
+                &:after {
+                    border-color: #fff200;
+                }
+            }
+        }
+    }
+    &[data-points-color="orange"] {
+        span.photo-tagging-point {
+            i {
+                background: #fc6600;
+                &:after {
+                    border-color: #fc6600;
+                }
+            }
+        }
+    }
+    &[data-points-color="pink"] {
+        span.photo-tagging-point {
+            i {
+                background: #fc0fc0;
+                &:after {
+                    border-color: #fc0fc0;
+                }
+            }
+        }
+    }
+    &[data-points-color="violet"] {
+        span.photo-tagging-point {
+            i {
+                background: #b200ed;
+                &:after {
+                    border-color: #b200ed;
+                }
+            }
+        }
+    }
+    &[data-points-color="blue"] {
+        span.photo-tagging-point {
+            i {
+                background: #0018f9;
+                &:after {
+                    border-color: #0018f9;
+                }
+            }
+        }
+    }
+    &[data-points-color="green"] {
+        span.photo-tagging-point {
+            i {
+                background: #3bb143;
+                &:after {
+                    border-color: #3bb143;
+                }
+            }
+        }
+    }
+    &[data-points-color="brown"] {
+        span.photo-tagging-point {
+            i {
+                background: #7c4700;
+                &:after {
+                    border-color: #7c4700;
+                }
+            }
+        }
+    }
+    ~ .photo-tagging-list {
+        margin: 15px 0px;
+        > a {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 4px 8px;
+            display: inline-block;
+            overflow: hidden;
+            font-size: 14px;
+            border-radius: 3px;
+            margin: 0px 10px 0px 0px;
+            .photo-tagging-tag-delete {
+                background: #666;
+                display: block;
+                color: #fff;
+                font-size: 9px;
+                height: 19px;
+                width: 20px;
+                line-height: 19px;
+                text-align: center;
+                margin-left: 9px;
+                margin-right: -2px;
+                margin-top: 1px;
+                font-family: sans-serif;
+                float: right;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+                border-radius: 4px;
+                &:hover {
+                    background: #ea2b2b;
+                }
+            }
+            .photo-tagging-tag-text {
+                color: #002752;
+                font-weight: 400;
+                border-bottom: 0.5px dashed #aaa;
+                padding-bottom: 1px;
+                position: relative;
+                top: -2px;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+                &:hover {
+                    color: #0069d9;
+                }
+            }
+        }
+    }
+    /* START TOOLTIP STYLES */
+    [tooltip] {
+        position: relative; /* opinion 1 */
+    }
+    /* Applies to all tooltips */
+    [tooltip]::before,
+    [tooltip]::after {
+        text-transform: none; /* opinion 2 */
+        font-size: 14px; /* opinion 3 */
+        line-height: 1;
+        user-select: none;
+        pointer-events: none;
+        position: absolute;
+        display: none;
+        opacity: 0;
+    }
+    [tooltip]::before {
+        content: '';
+        border: 5px solid transparent; /* opinion 4 */
+        z-index: 1001; /* absurdity 1 */
+    }
+    [tooltip]::after {
+        content: attr(tooltip); /* magic! */
+        /* most of the rest of this is opinion */
+        /* 
+          Let the content set the size of the tooltips 
+          but this will also keep them from being obnoxious
+        */
+        min-width: 3em;
+        max-width: 21em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 1ch 1.5ch;
+        border-radius: .3ch;
+        box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
+        background: #333;
+        color: #fff;
+        z-index: 1000; /* absurdity 2 */
+    }
+    /* Make the tooltips respond to hover */
+    [tooltip]:hover::before,
+        [tooltip]:hover::after {
+        display: block;
+    }
+    .show-tooltip::before,
+    .show-tooltip::after {
+        display: block;
+        opacity: 1;
+    }
+    /* don't show empty tooltips */
+    [tooltip='']::before,
+    [tooltip='']::after {
+        display: none !important;
+    }
+    /* FLOW: UP */
+    [tooltip]:not([flow])::before,
+        [tooltip][flow^="up"]::before {
+        bottom: 100%;
+        border-bottom-width: 0;
+        border-top-color: #333;
+    }
+    [tooltip]:not([flow])::after,
+        [tooltip][flow^="up"]::after {
+        bottom: calc(100% + 5px);
+    }
+    [tooltip]:not([flow])::before,
+        [tooltip]:not([flow])::after,
+        [tooltip][flow^="up"]::before,
+        [tooltip][flow^="up"]::after {
+        left: 50%;
+        transform: translate(-50%, -.5em);
+    }
+    /* FLOW: DOWN */
+    [tooltip][flow^="down"]::before {
+        top: 100%;
+        border-top-width: 0;
+        border-bottom-color: #333;
+    }
+    [tooltip][flow^="down"]::after {
+        top: calc(100% + 5px);
+    }
+    [tooltip][flow^="down"]::before,
+    [tooltip][flow^="down"]::after {
+        left: 50%;
+        transform: translate(-50%, .5em);
+    }
+    /* FLOW: LEFT */
+    [tooltip][flow^="left"]::before {
+        top: 50%;
+        border-right-width: 0;
+        border-left-color: #333;
+        left: calc(0em - 5px);
+        transform: translate(-.5em, -50%);
+    }
+    [tooltip][flow^="left"]::after {
+        top: 50%;
+        right: calc(100% + 5px);
+        transform: translate(-.5em, -50%);
+    }
+    /* FLOW: RIGHT */
+    [tooltip][flow^="right"]::before {
+        top: 50%;
+        border-left-width: 0;
+        border-right-color: #333;
+        right: calc(0em - 5px);
+        transform: translate(.5em, -50%);
+    }
+    [tooltip][flow^="right"]::after {
+        top: 50%;
+        left: calc(100% + 5px);
+        transform: translate(.5em, -50%);
+    }
+    /* KEYFRAMES */
+    @keyframes tooltips-vert {
+        to {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+    }
+    @keyframes tooltips-horz {
+        to {
+            opacity: 1;
+            transform: translate(0, -50%);
+        }
+    }
+    /* FX All The Things */ 
+    [tooltip]:not([flow]):hover::before,
+        [tooltip]:not([flow]):hover::after,
+        [tooltip][flow^="up"]:hover::before,
+        [tooltip][flow^="up"]:hover::after,
+        [tooltip][flow^="down"]:hover::before,
+        [tooltip][flow^="down"]:hover::after {
+        opacity: 1;
+    }
+
+    [tooltip][flow^="left"]:hover::before,
+        [tooltip][flow^="left"]:hover::after,
+        [tooltip][flow^="right"]:hover::before,
+        [tooltip][flow^="right"]:hover::after {
+        opacity: 1;
+    }
+
+}
+
+@keyframes tagging-motion {
+    from {
+        transform: scale(0.5, 0.5);
+        opacity: 1;
+    }
+    to {
+        transform: scale(2, 2);
+        opacity: 0;
+    }
+}

@@ -199,7 +199,7 @@ function formatDate(date) {
 }
 
 function createSuratKontrol(){
-  show_modal('ws_bpjs/ws_index?modWs=CreateSuratKontrol&nosep='+$('#no_sep_lama').val()+'&tglRencanaKontrol='+$('#tgl_kunjungan_perjanjian').val()+'&noKartu='+$('#noKartuBpjs').val()+'', 'Surat Kontrol Rawat Jalan')
+  show_modal('ws_bpjs/ws_index?modWs=CreateSuratKontrol&nosep='+$('#no_sep_lama').val()+'&tglRencanaKontrol='+$('#tgl_kunjungan_perjanjian').val()+'&nokartu='+$('#noKartuBpjs').val()+'', 'Surat Kontrol Rawat Jalan');
 }
 
 function copySuratKontrol(surat_kontrol){

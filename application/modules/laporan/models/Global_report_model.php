@@ -13,7 +13,7 @@ class Global_report_model extends CI_Model {
 		$flag = isset($_POST['flag'])?$_POST['flag']:$_GET['flag'];
 		$query 		= $this->$flag();
 		$execute 	= $this->db->query( $query );
-		echo '<pre>'; print_r($query);die;
+		// echo '<pre>'; print_r($query);die;
 		/*field data*/
 		$result = array(
 			'fields' 	=> $execute->field_data(),

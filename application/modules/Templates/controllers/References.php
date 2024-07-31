@@ -875,14 +875,19 @@ class References extends MX_Controller {
 
 	public function view_pasien_terdaftar_current(){
 		$tgl_registrasi = isset($_GET['tgl_registrasi'])?$_GET['tgl_registrasi']:date('Y-m-d');
-		$pasien_terdaftar = $this->db
-			->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=pl_tc_poli.no_kunjungan', 'left')		 ->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left')
+		$pasien_terdaftar = $this->db->select('tc_kunjungan.no_mr, nama_pasien, tgl_jam_poli, nama_perusahaan, no_antrian, tgl_keluar_poli, nama_pegawai as nama_dr, pl_tc_poli.status_batal, nama_bagian, umur')
+			->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=pl_tc_poli.no_kunjungan', 'left')
+			->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left')
 			->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left')
+			->join('mt_karyawan','mt_karyawan.kode_dokter=pl_tc_poli.kode_dokter','left')
+			->join('mt_bagian','mt_bagian.kode_bagian=pl_tc_poli.kode_bagian','left')
 			->order_by('no_antrian', 'ASC')
 			->get_where('pl_tc_poli', array('CAST(tgl_jam_poli as DATE) = ' => $tgl_registrasi, 'pl_tc_poli.kode_dokter' => $_GET['kode_dokter'], 'pl_tc_poli.kode_bagian' => $_GET['kode_spesialis']) )->result();
 		$data = array(
 			'result' => $pasien_terdaftar,
 		);
+
+		// echo "<pre>";print_r($data);die;
 		$this->load->view('templates/view_pasien_terdaftar', $data);
 	}
 
@@ -1874,7 +1879,7 @@ class References extends MX_Controller {
     $this->db->where('a.is_active = 1');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
-		// print_r($this->db->last_query());die;
+		print_r($this->db->last_query());die;
 
 		$arrResult = [];
 		foreach ($result as $key => $value) {

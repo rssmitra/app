@@ -1833,7 +1833,7 @@ class Pl_pelayanan extends MX_Controller {
         $kunj_data = array('tgl_keluar' => NULL, 'status_keluar' => NULL, 'status_batal' => NULL );
         $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
         $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
-
+        
         /*pl_tc_poli*/
         $poli_data = array('tgl_keluar_poli' => NULL, 'status_periksa' => NULL, 'status_batal' => NULL );
         $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );

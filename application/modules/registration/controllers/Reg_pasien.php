@@ -30,6 +30,7 @@ class Reg_pasien extends MX_Controller {
         /*load model*/
         $this->load->model('booking/Regon_booking_model');
 
+        $this->load->model('Riwayat_reg_sep_fail_model', 'Riwayat_reg_sep_fail');
         $this->load->model('Reg_pasien_model', 'Reg_pasien');
 
         $this->load->model('Reg_pm_model', 'Reg_pm');
@@ -41,6 +42,8 @@ class Reg_pasien extends MX_Controller {
         $this->load->model('casemix/Migration_model', 'Migration');
 
         $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
+
+        $this->load->model('pelayanan/Pl_pelayanan_model', 'Pl_pelayanan');
 
 
         $this->load->library('Print_direct');
@@ -164,6 +167,13 @@ class Reg_pasien extends MX_Controller {
             $status_icon = ($row_list->tgl_keluar==NULL)?'<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>':'<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';  
 
             $delete_registrasi = ($row_list->tgl_keluar==NULL)?'<li><a href="#" onclick="delete_registrasi('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Hapus</a></li>':'';  
+
+            $cancel_visit = '<li><a href="#" onclick="cancel_visit('.$row_list->no_registrasi.','.$row_list->no_kunjungan.', '."'".$row_list->kode_bagian_tujuan."'".')">Batalkan Kunjungan</a></li>';
+            if($row_list->status_batal == 1){
+                $rollback = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.','."'unsubmit'".', '."'".$row_list->kode_bagian_tujuan."'".')")">Rollback Status Batal</a></li>';
+            }else{
+                $rollback = '';
+            }
             
             /*btn hasil pm*/
             $subs_kode_bag = substr($row_list->kode_bagian_tujuan, 0,2);
@@ -207,6 +217,8 @@ class Reg_pasien extends MX_Controller {
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
                             '.$btn_delete.'
+                            '.$cancel_visit.'
+                            '.$rollback.'
                             <li><a href="#" onclick="ubah_penjamin_pasien('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Ubah Penjamin Pasien</a></li>
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/form_modal_edit_dokter/".$row_list->no_registrasi."/".$row_list->no_kunjungan."'".' ,'."'UBAH DOKTER PEMERIKSA'".')">Ubah Dokter Pemeriksa</a></li>
                             '.$btn_view_hasil_pm.'
@@ -220,6 +232,7 @@ class Reg_pasien extends MX_Controller {
 
             $no_antrian = (substr($row_list->kode_bagian_tujuan, 0,2) == '01') ? '<br> No. Antrian : <b style="font-size:12px">'.$row_list->no_antrian.'</b>' : '';
             $nama_dokter = ($row_list->nama_pegawai != '') ? $row_list->nama_pegawai.'<br>' : '' ;
+            
             $row[] = $row_list->no_registrasi.' - '.$penjamin.'<br>'.ucfirst($row_list->nama_bagian).'<br>'.$nama_dokter.'<small style="font-size:11px">'.$this->tanggal->formatDateTime($row_list->tgl_masuk).' s/d '.$this->tanggal->formatDateTime($row_list->tgl_keluar).'</small>'.$no_antrian.' '.$tipe_daftar.'<br>'.$is_batal;
             
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
@@ -244,6 +257,38 @@ class Reg_pasien extends MX_Controller {
         }
 
         $output = array( "draw" => $_POST['draw'], "recordsTotal" => count($list), "recordsFiltered" => $this->Reg_pasien->count_filtered_riwayat_pasien( $column, $mr ), "data" => $data );
+
+        echo json_encode( $output );
+    
+    }
+
+    public function get_riwayat_pasien_online() { 
+        
+        /*define variable data*/
+        
+        $mr = $this->input->get('mr');
+
+        /*return search pasien*/
+        $data = array();
+        $output = array();
+
+        $list = $this->Riwayat_reg_sep_fail->get_datatables();
+
+        $no = 0;
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+
+            $status_fp = ($row_list->konfirm_fp == 1)?'<br><span style="color: green"><i class="fa fa-thumbs-up bigger-150"></i></span>':'<br><span style="color: red"><i class="fa fa-thumbs-down bigger-150"></i></span>';
+            $status_batal = ($row_list->status_batal == 1)?'<br><span style="color: red"><b>(Batal)</b></span> ':'';
+
+            $row[] = '<a href="#" onclick="click_pasien('."'".$row_list->no_mr."'".')"><b>'.$row_list->no_mr.'</b></a><br>'.strtoupper($row_list->nama_pasien).'<br>'.$this->tanggal->formatDateTime($row_list->tgl_jam_masuk).'<br>'.ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai.''.$status_fp.''.$status_batal;
+           
+            $data[] = $row;
+        }
+
+        $output = array( "draw" => $_POST['draw'], "data" => $data );
 
         echo json_encode( $output );
     
@@ -313,7 +358,7 @@ class Reg_pasien extends MX_Controller {
 
         $output = array();
 
-        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id, tc_pesanan.kode_perusahaan');
+        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id, tc_pesanan.kode_perusahaan, no_kartu_bpjs');
 
         $list = $this->Reg_pasien->get_riwayat_perjanjian( $column, $mr ); 
 
@@ -363,6 +408,7 @@ class Reg_pasien extends MX_Controller {
                             <ul class="dropdown-menu dropdown-inverse">
                                 '.$html.'
                                 <li><a href="#" onclick="show_modal('."'registration/Reg_pasien/surat_control?id_tc_pesanan=".$row_list->id_tc_pesanan."&jd_id=".$row_list->jd_id."'".')">Cetak Surat Kontrol</a></li>
+                                <li><a href="#" onclick="show_modal('."'ws_bpjs/ws_index?modWs=CreateSuratKontrol&tglRencanaKontrol=&nokartu=".$row_list->no_kartu_bpjs."'".', '."'Surat Kontrol Rawat Jalan'".');">Update Surat Kontrol</a></li>
                                 <li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
                             </ul>
                         </div></div>';
@@ -417,6 +463,15 @@ class Reg_pasien extends MX_Controller {
             'kode_bagian' => $kode_bagian,
         ];
         $this->load->view('Reg_pasien/tab_riwayat_kunjungan', $data);
+    }
+
+    public function riwayat_kunjungan_online($no_mr, $kode_bagian='') { 
+        
+        $data = [
+            'no_mr' => $no_mr,
+            'kode_bagian' => $kode_bagian,
+        ];
+        $this->load->view('Reg_pasien/tab_riwayat_kunjungan_online', $data);
     }
 
     public function riwayat_kunjungan_by_reg($no_mr, $tujuan='', $no_reg='') { 
@@ -1312,6 +1367,70 @@ class Reg_pasien extends MX_Controller {
         );
         
         $this->load->view('registration/Reg_pasien/view_riwayat_medis_sidebar', $data);
+    }
+
+    public function rollback()
+    {   
+        $this->db->trans_begin();  
+
+        $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($_POST['no_registrasi'],$_POST['no_kunjungan']);
+
+        if($trans_kasir==false){
+            echo json_encode(array('status' => 301, 'message' => 'Transaksi tidak dapat diproses, silahkan hubungi petugas kasir'));
+            exit;
+        }
+
+        
+        /*update tc_registrasi*/
+        $reg_data = array('tgl_jam_keluar' => NULL, 'kode_bagian_keluar' => NULL, 'status_batal' => NULL );
+        $this->db->update('tc_registrasi', $reg_data, array('no_registrasi' => $_POST['no_registrasi'] ) );
+        $this->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi Modul Pelayanan', json_encode($reg_data),'no_registrasi');
+
+
+        /*tc_kunjungan*/
+        $kunj_data = array('tgl_keluar' => NULL, 'status_keluar' => NULL, 'status_batal' => NULL );
+        $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
+        $this->db->trans_commit();
+        $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
+
+        $substr = substr($_POST['kode_bag'], 0,2);
+        if(in_array($substr, ['01','02','05'])) :
+            
+            if($substr == '01'){ // rawat jalan
+                /*pl_tc_poli*/
+                $poli_data = array('tgl_keluar_poli' => NULL, 'status_periksa' => NULL, 'status_batal' => NULL );
+                $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );
+                $this->db->trans_commit();
+            }
+
+            if($substr == '05'){ // penunjang medis
+                /*update pm_tc_penunjang*/
+                $pm_tc_penunjang = array('status_daftar' => 0, 'status_isihasil' => 0, 'status_batal' => 0, 'tgl_selesai' => null);
+                $this->Pl_pelayanan_pm->update('pm_tc_penunjang', $pm_tc_penunjang, array('no_kunjungan' => $_POST['no_kunjungan'] ) );
+                $this->db->trans_commit();
+            }
+
+            if($substr == '02'){ // IGD
+                /*update gd_tc_gawat_darurat*/
+                $arrGdTc = array('tgl_jam_kel' => NULL, 'status_batal' => NULL );
+                $this->Pl_pelayanan_igd->update('gd_tc_gawat_darurat', $arrGdTc, array('no_kunjungan' => $_POST['no_kunjungan'] ) );
+                $this->db->trans_commit();
+            }
+
+
+        endif; 
+
+        if ($this->db->trans_status() === FALSE)
+        {
+            $this->db->trans_rollback();
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+        else
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan' ) );
+        }
+        
     }
 
 }

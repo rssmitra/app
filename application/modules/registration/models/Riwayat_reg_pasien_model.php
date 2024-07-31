@@ -4,8 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Riwayat_reg_pasien_model extends CI_Model {
 
 	var $table = 'tc_registrasi';
-	var $column = array('tc_registrasi.no_registrasi,tc_registrasi.no_mr,mt_master_pasien.nama_pasien,mt_perusahaan.nama_perusahaan,tc_registrasi.tgl_jam_masuk,mt_bagian.nama_bagian, mt_karyawan.nama_pegawai');
-	var $select = 'tc_registrasi.no_registrasi,tc_registrasi.no_mr,mt_master_pasien.nama_pasien,mt_perusahaan.nama_perusahaan,tc_registrasi.tgl_jam_masuk,mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, no_sep';
+	var $column = array('tc_registrasi.no_mr', 'mt_master_pasien.nama_pasien');
+	var $select = 'tc_registrasi.no_registrasi,tc_registrasi.no_mr,mt_master_pasien.nama_pasien,mt_perusahaan.nama_perusahaan,tc_registrasi.tgl_jam_masuk,mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, no_sep, kode_bagian_masuk, tc_registrasi.status_batal';
 
 	var $order = array('tc_registrasi.no_registrasi' => 'DESC', 'tc_registrasi.updated_date' => 'DESC');
 
@@ -35,7 +35,11 @@ class Riwayat_reg_pasien_model extends CI_Model {
 
 			if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
 				if( $_GET['keyword'] != '' ){
-					$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					if($_GET['search_by'] == 'no_mr'){
+						$this->db->where('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					}else{
+						$this->db->like('mt_master_pasien.'.$_GET['search_by'].'', $_GET['keyword']);
+					}
 				}
 			}
 
@@ -57,14 +61,14 @@ class Riwayat_reg_pasien_model extends CI_Model {
 
 			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 				$this->db->where("convert(varchar,tc_registrasi.tgl_jam_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-	        }
+	        }else{
+				$this->db->where('CAST(tgl_jam_masuk as DATE)=', date('Y-m-d'));
+			}
 		
 		}else{
-			$this->db->where(array('YEAR(tgl_jam_masuk)' => date('Y'), 'MONTH(tgl_jam_masuk)' => date('m'), 'DAY(tgl_jam_masuk)' => date('d')));
+			$this->db->where('CAST(tgl_jam_masuk as DATE)=', date('Y-m-d'));
 		} 
         /*end parameter*/
-		/*check level user*/
-		$this->authuser->filtering_data_by_level_user($this->table, $this->session->userdata('user')->user_id);
 
 	}
 

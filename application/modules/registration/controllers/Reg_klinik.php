@@ -583,7 +583,7 @@ class Reg_klinik extends MX_Controller {
         $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
 
         if($_POST['kode_perusahaan_hidden'] == 120){
-            $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim|required');
+            $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim');
         }else{
             $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim');
         }
@@ -660,7 +660,7 @@ class Reg_klinik extends MX_Controller {
             }else{
                 $no_registrasi = $query->no_registrasi;
                 // update tc_registrasi
-                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['jd_id' => $_POST['jd_id'], 'kode_bagian_masuk' => $_POST['reg_klinik_rajal'], 'kode_dokter' => $_POST['reg_dokter_rajal'], 'tgl_registrasi' => $tgl_registrasi]);
+                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['jd_id' => $_POST['jd_id'], 'kode_bagian_masuk' => $_POST['reg_klinik_rajal'], 'kode_dokter' => $_POST['reg_dokter_rajal'], 'tgl_jam_masuk' => $tgl_registrasi]);
                 $this->db->trans_commit();
             }
 

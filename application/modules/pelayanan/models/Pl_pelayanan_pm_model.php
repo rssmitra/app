@@ -5,7 +5,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 
 	var $table = 'pm_tc_penunjang';
 	var $column = array('mt_master_pasien.nama_pasien');
-	var $select = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.no_sep, tc_trans_pelayanan.status_selesai, nama_perusahaan, nama_kelompok, mt_bagian.nama_bagian, pm_tc_penunjang.status_batal, kode_rujukan, eorder, id_pm_tc_penunjang';
+	var $select = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.no_sep, nama_perusahaan, nama_kelompok, mt_bagian.nama_bagian, pm_tc_penunjang.status_batal, kode_rujukan, eorder, id_pm_tc_penunjang';
 	var $group = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.flag_mcu, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.no_sep, nama_perusahaan, nama_kelompok, mt_bagian.nama_bagian, pm_tc_penunjang.status_batal, kode_rujukan, kodebookingantrol, eorder, id_pm_tc_penunjang, bagian_tujuan.nama_bagian';
 	var $order = array('tc_kunjungan.no_kunjungan' => 'DESC');
 
@@ -37,7 +37,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
 		$this->db->join('mt_bagian','tc_kunjungan.kode_bagian_asal=mt_bagian.kode_bagian','left');
 		$this->db->join('mt_bagian as bagian_tujuan','tc_kunjungan.kode_bagian_tujuan=bagian_tujuan.kode_bagian','left');
-		$this->db->join('tc_trans_pelayanan',''.$this->table.'.kode_penunjang=tc_trans_pelayanan.kode_penunjang','left');
+		// $this->db->join('tc_trans_pelayanan',''.$this->table.'.kode_penunjang=tc_trans_pelayanan.kode_penunjang','left');
 		
 		/*if isset parameter*/
 		if( (isset($_GET['status_pasien']) AND $_GET['status_pasien']!='') ) {
@@ -128,7 +128,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 				if($_GET['sess_kode_bagian'] == '050301'){
 					$this->db->where('CAST(tc_kunjungan.tgl_masuk as DATE) = ', date('Y-m-d'));	
 				}else{
-					$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 30');	
+					$this->db->where('DATEDIFF(Day, tc_kunjungan.tgl_masuk, getdate()) <= 7');	
 				}
 			}
 			
