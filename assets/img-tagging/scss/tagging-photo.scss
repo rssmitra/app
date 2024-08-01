@@ -214,7 +214,7 @@
         user-select: none;
         pointer-events: none;
         position: absolute;
-        display: none;
+        // display: none;
         opacity: 0;
     }
     [tooltip]::before {

@@ -885,6 +885,23 @@ class Global_report_model extends CI_Model {
 
 	}
 	public function pengadaan_mod_5(){
+
+		// print_r($_POST);die;
+		switch ($_POST['search_by']) {
+			case 'usulan':
+				# code...
+				$filter = 'e.tgl_permohonan';
+				break;
+			case 'penerbitan_po':
+				# code...
+				$filter = 'a.tgl_po';
+				break;
+			case 'penerimaan':
+				# code...
+				$filter = 'f.tgl_penerimaan';
+				break;
+		}
+
 		if($_POST['keterangan']=='medis'){
 			
 			$query = 'SELECT
@@ -900,7 +917,7 @@ class Global_report_model extends CI_Model {
 			b.harga_satuan_netto,
 			b.jumlah_harga_netto,
 			c.nama_brg,
-			d.namasupplier,
+			d.namasupplier, i.nama_pabrik,
 			e.kode_permohonan,
 			f.tgl_penerimaan,
 			f.no_faktur,
@@ -912,12 +929,13 @@ class Global_report_model extends CI_Model {
 			LEFT JOIN tc_permohonan e ON e.id_tc_permohonan = h.id_tc_permohonan
 			LEFT JOIN tc_po a ON b.id_tc_po= a.id_tc_po
 			LEFT JOIN mt_barang c ON c.kode_brg= h.kode_brg
+			LEFT JOIN mt_pabrik i ON i.kode_pabrik= c.kode_pabrik
 			LEFT JOIN mt_supplier d ON d.kodesupplier= a.kodesupplier
 			LEFT JOIN tc_penerimaan_barang_detail g ON ( g.id_tc_po_det = b.id_tc_po_det )
 			LEFT JOIN tc_penerimaan_barang f ON f.id_penerimaan = g.id_penerimaan 
 		WHERE
-			YEAR ( e.tgl_permohonan ) = '."'".$_POST['year']."'".' 
-			AND MONTH ( e.tgl_permohonan ) = '."'".$_POST['from_month']."'".'
+			YEAR ( '.$filter.' ) = '."'".$_POST['year']."'".' 
+			AND MONTH ( '.$filter.' ) = '."'".$_POST['from_month']."'".'
 		ORDER BY
 			f.tgl_penerimaan  DESC';
 				

@@ -229,7 +229,8 @@ class Antrol extends MX_Controller {
         $kuota_dr = ($dt_jadwal->jd_kuota) ? $dt_jadwal->jd_kuota : 10;
 
         // jenis kunjungan
-        $jeniskunjungan = ($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
+        $jeniskunjungan = 1; //($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
+        
         $tanggalperiksa = $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk));
         $jam_mulai_praktek = $this->tanggal->formatFullTime($jam_praktek_mulai);
         $jam_selesai_praktek = $this->tanggal->formatFullTime($jam_praktek_selesai);

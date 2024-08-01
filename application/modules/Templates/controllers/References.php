@@ -2604,7 +2604,7 @@ class References extends MX_Controller {
 	}
 
 	public function processAntrol($arr_dt){
-        // echo '<pre>'; print_r($_POST);die;
+        // echo '<pre>'; print_r($arr_dt);die;
         // estimasi dilayani
         $jam_mulai_praktek = $this->tanggal->formatFullTime($arr_dt['jam_praktek_mulai']);
         $jam_selesai_praktek = $this->tanggal->formatFullTime($arr_dt['jam_praktek_selesai']);
@@ -2632,13 +2632,14 @@ class References extends MX_Controller {
 
         $getData = array_merge($arr_dt, $post_antrol);
 		
+		$startdate = $arr_dt['tanggalperiksa'].' '.$jam_mulai_praktek;
+		// echo '<pre>'; print_r($startdate); die;
 		// add antrian lainnya
 		$cek_antrol = $this->AntrianOnline->cekAntrolKodeBooking($arr_dt['kodebooking']);
-		// echo '<pre>'; print_r($cek_antrol); die;
 		$addAntrian = [];
         if(empty($cek_antrol['data'])){
-          $addAntrian = $this->AntrianOnline->addAntrianOnsite($getData);
-		//   echo '<pre>'; print_r($addAntrian); die;
+          $addAntrian = $this->AntrianOnline->addAntrianOnsite($getData, $startdate);
+		  
         }else{
 			 // update task antrol
 			 for($i=2; $i<=3; $i++){

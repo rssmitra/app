@@ -580,7 +580,11 @@ class Reg_klinik extends MX_Controller {
         $this->form_validation->set_rules('jenis_pendaftaran', 'Jenis Pendaftaran', 'trim|required');
         $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Perusahaan', 'trim');
         $this->form_validation->set_rules('kode_kelompok_hidden', 'Kode Perusahaan', 'trim');
-        $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
+        if($_POST['jeniskunjunganbpjs'] == 3){
+            $this->form_validation->set_rules('noSuratSKDP', 'No Surat Kontrol', 'trim|required');   
+        }else{
+            $this->form_validation->set_rules('rujukan_baru', 'Cheklist Rujukan Baru', 'trim|required', ['required' => 'Silahkan ceklis Rujukan Baru']);   
+        }
 
         if($_POST['kode_perusahaan_hidden'] == 120){
             $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim');
@@ -601,7 +605,7 @@ class Reg_klinik extends MX_Controller {
         {                       
             /*execution*/
             $this->db->trans_begin();
-
+            
             // cek data registrasi today
             $this->db->select('a.no_registrasi, b.nama_pasien, b.no_mr, b.no_kartu_bpjs, c.nama_bagian, d.nama_pegawai as nama_dokter, a.tgl_jam_masuk, a.umur, CAST (b.tgl_lhr as DATE) AS tgl_lahir, a.no_sep, a.print_tracer, a.norujukan, a.jd_id, a.jeniskunjunganbpjs');
             $this->db->from('tc_registrasi a');

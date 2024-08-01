@@ -31,8 +31,7 @@
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
           <input type="hidden" name="title" value="Laporan BMHP (Barang Medis Habis Pakai)">
-
-        
+          
          <div class="form-group">
             <label class="control-label col-md-1">Bagian</label>
               <div class="col-md-5">
@@ -70,8 +69,8 @@
         <h4>Rekapitulasi Saldo Akhir Obat per Unit</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_bmhp_rekap" target="_blank">
         <!-- hidden form -->
-          <input type="hidden" name="flag" value="akunting_mod_3a">
-          <input type="hidden" name="title" value="Rekap Penerimaan dan Pemakaian Obat">
+        <input type="hidden" name="flag" value="akunting_mod_3a">
+        <input type="hidden" name="title" value="Rekap Penerimaan dan Pemakaian Obat">
 
         
 

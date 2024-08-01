@@ -32,7 +32,7 @@
 
 
           <div class="form-group">
-            <label class="control-label col-md-2">Keterangan</label>
+            <label class="control-label col-md-1">Keterangan</label>
                <div class="col-md-4">
                 <select name="keterangan">
                   <option value="medis">-- Medis -- </option>
@@ -41,14 +41,24 @@
               </div>
           </div>
           <div class="form-group">
-              <label class="control-label col-md-2">Tanggal </label>
-              
+            
+          </div>
+          <div class="form-group">
+              <label class="control-label col-md-1">Pencarian dengan</label>
+               <div class="col-md-2">
+                <select name="search_by" class="form-control">
+                  <option value="usulan">Usulan</option>
+                  <option value="penerbitan_po">Penerbitan PO</option>
+                  <option value="penerimaan">Penerimaan Barang</option>
+                </select>
+              </div>
+              <label class="control-label col-md-1">Bulan </label>
               <div class="col-md-1">
-                <?php echo $this->master->get_bulan('','from_month','from_month','form-control','','');?>
+                <?php echo $this->master->get_bulan(date('m'),'from_month','from_month','form-control','','');?>
               </div>
               <label class="control-label col-md-1">Tahun</label>
               <div class="col-md-1">
-                <?php echo $this->master->get_tahun('','year','year','form-control','','');?>
+                <?php echo $this->master->get_tahun(date('Y'),'year','year','form-control','','');?>
               </div>
 
           </div>

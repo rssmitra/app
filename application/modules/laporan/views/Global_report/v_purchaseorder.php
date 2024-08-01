@@ -53,6 +53,7 @@
               <th>Tgl Revisi PO</th>
               <th>Nama Supplier</th>
               <th>Nama Barang</th>
+              <th>Pabrikan</th>
               <th>Jumlah Usulan</th>
               <th>Jumlah ACC</th>
               <th>Jumlah Order</th>
@@ -83,6 +84,7 @@
                 <td align="center"><?php echo ($row_data->revisi != $row_data->tgl_po) ? $row_data->revisi : '' ?></td>
                 <td align="left"><?php echo $row_data->namasupplier ?>&nbsp;</td>
                 <td align="left"><?php echo $row_data->nama_brg ?>&nbsp;</td>
+                <td align="left"><?php echo $row_data->nama_pabrik ?>&nbsp;</td>
                 <td align="center"><?php echo $row_data->jumlah_usulan ?></td>
                 <td align="center"><?php echo $row_data->jumlah_diacc ?></td>
                 <td align="center"><?php echo $row_data->jml_order ?></td>

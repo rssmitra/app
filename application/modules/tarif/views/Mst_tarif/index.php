@@ -242,7 +242,7 @@ function delete_tarif_klas(myid){
       <div class="form-group">
         <label class="control-label col-md-1">Unit/Bagian</label>
         <div class="col-md-3">
-          <?php echo $this->master->custom_selection(array('table'=>'view_unit_tarif', 'where'=>array(), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($this->cache->get('cache')['unit'])?$this->cache->get('cache')['unit']:'','unit','unit','chosen-slect form-control','','');?>
+          <?php echo $this->master->custom_selection(array('table'=>'mt_bagian', 'where'=>array('pelayanan' => 1), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($this->cache->get('cache')['unit'])?$this->cache->get('cache')['unit']:'','unit','unit','chosen-slect form-control','','');?>
         </div>
         <div class="control-label col-md-2">
             <div class="checkbox" style="margin-top: -5px">

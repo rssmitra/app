@@ -2,6 +2,16 @@
 
 $(document).ready(function(){
 
+    $('select[id="jeniskunjunganbpjs"]').change(function () {     
+        if ($(this).val() == 1) {    
+            $('input[name="rujukan_baru"]').prop('checked', true);
+        }else{
+            $('input[name="rujukan_baru"]').prop('checked', false);
+        }
+    }); 
+
+
+
     // current_day = $('#current_day').val();
     // current_kode_poli = $('#kodePoliPerjanjian').val();
     // current_kode_dokter = $('#kodeDokterDPJPPerjanjian').val();

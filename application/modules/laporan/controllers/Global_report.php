@@ -70,8 +70,6 @@ class Global_report extends MX_Controller {
             'result' => $query_data,
         );
         
-        
-
         if($_POST['submit']=='format_so'){
             $this->load->view('Global_report/'.$_POST['submit'].'', $data);
         }elseif($_POST['submit']=='format_so_2'){

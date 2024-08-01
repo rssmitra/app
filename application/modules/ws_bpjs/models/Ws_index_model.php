@@ -621,7 +621,7 @@ class Ws_index_model extends CI_Model {
 	}
 
 	function deleteSep($no_sep, $request){
-		$service_name = "SEP/Delete";
+		$service_name = "SEP/2.0/Delete";
 		$method = "DELETE";
 		return $this->postDataWs($service_name, $request, $method);
 	}
