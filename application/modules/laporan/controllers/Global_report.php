@@ -85,6 +85,48 @@ class Global_report extends MX_Controller {
 
     }
     
+    public function show_data_gdg_nm(){
+
+        $query_data = $this->Global_report->get_data();
+        // echo '<pre>';print_r($query_data);die;
+        $g_saldo = $this->Global_report->get_saldo_awal_nm();
+
+        // get saldo
+        foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
+            $get_dt_g_saldo[trim($v_g_saldo['kode_brg'])] = (int)$v_g_saldo['stok_akhir'];
+        }
+
+        $distribusi = $this->Global_report->distribusi_barang_unit_nm();
+         // distribusi
+         foreach ($distribusi as $k_distribusi => $v_distribusi) {
+            $dt_distribusi[trim($v_distribusi['kode_brg'])] = (int)$v_distribusi['jumlah'];
+        }
+
+        $penerimaan_brg_gudang = $this->Global_report->penerimaan_brg_gudang_nm();
+        
+        // penerimaan barang gudang
+        foreach ($penerimaan_brg_gudang as $k_penerimaan_brg => $v_penerimaan_brg_gdg) {
+            $qty = isset($v_penerimaan_brg_gdg['jumlah'])?(int)$v_penerimaan_brg_gdg['jumlah']:0;
+            $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = array('qty' => $qty, 'harga_beli' => (int)$v_penerimaan_brg_gdg['harga_beli'], 'biaya' => (int)$v_penerimaan_brg_gdg['biaya']);
+        }
+        
+        $data = array(
+            'flag' => isset($_POST['flag'])?$_POST['flag']:$_GET['flag'],
+            'title' => isset($_POST['title'])?$_POST['title']:'',
+            'bagian' => '070101',
+            'result' => $query_data,
+            'year' => isset($_POST['year'])?$_POST['year']:$_GET['year'],
+            'month' => isset($_POST['from_month'])?$_POST['from_month']:$_GET['month'],
+            'v_saldo' => isset($get_dt_g_saldo)?$get_dt_g_saldo:[],
+            'v_penerimaan' => isset($dt_penerimaan_brg)?$dt_penerimaan_brg:[],
+            'v_distribusi' => isset($dt_distribusi)?$dt_distribusi:[],
+            'v_penerimaan_gdg' => isset($dt_penerimaan_brg_gdg)?$dt_penerimaan_brg_gdg:[],
+        );
+        // echo '<pre>';print_r($data['result']);die;
+
+        $this->load->view('Global_report/akunting_keu/v_bmhp_gudang_nm', $data);
+    }
+
     public function show_data_bmhp(){
 
         // echo '<pre>';print_r($_POST);die;

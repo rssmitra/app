@@ -139,6 +139,7 @@
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=7'?>">Transaksi Pasien Asuransi <i class="fa fa-star orange bigger-120"></i></a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Resume Laporan Kasir</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=3'?>">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir  <i class="fa fa-star orange bigger-120"></i> </a></li>
+												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=8'?>">Rekapitulasi Stok Awal Bulan, Penerimaan, Distribusi dan Saldo Akhir Gudang Non Medis <i class="fa fa-star orange bigger-120"></i> </a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=4'?>">Laporan IF (Unit Farmasi)</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/lainnyabillingdokter?mod=1'?>">Daftar Billing Dokter yang belum dibayarkan Per-periode</a></li>
 												<li><a href="<?php echo base_url().'laporan/Global_report/akunting?mod=5'?>">Stok Barang Medis Per-periode</a></li>
@@ -331,11 +332,11 @@
 
 		<!--[if !IE]> -->
 		<script type="text/javascript">
-			window.jQuery || document.write("<script src='../assets/js/jquery.js'>"+"<"+"/script>");
+			window.jQuery || document.write("<script src='<?php echo base_url()?>assets/js/jquery.js'>"+"<"+"/script>");
 		</script>
 
 		<script type="text/javascript">
-			if('ontouchstart' in document.documentElement) document.write("<script src='../assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
+			if('ontouchstart' in document.documentElement) document.write("<script src='<?php echo base_url()?>assets/js/jquery.mobile.custom.js'>"+"<"+"/script>");
 		</script>
 		<script src="<?php echo base_url()?>assets/js/bootstrap.js"></script>
 
