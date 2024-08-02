@@ -1603,6 +1603,7 @@ function show_list_rujukan(){
     show_modal('registration/Reg_klinik/search_rujukan_by_kartu/'+$('#noKartuBpjs').val()+'', 'DATA RUJUKAN PASIEN BPJS');
 }
 
+
 function get_riwayat_medis(){
 
   noMr = $('#noMrHidden').val();

@@ -229,7 +229,7 @@ class Antrol extends MX_Controller {
         $kuota_dr = ($dt_jadwal->jd_kuota) ? $dt_jadwal->jd_kuota : 10;
 
         // jenis kunjungan
-        $jeniskunjungan = 1; //($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 3;
+        $jeniskunjungan = 1; //($dt_reg->jeniskunjunganbpjs > 0) ? $dt_reg->jeniskunjunganbpjs : 1;
         
         $tanggalperiksa = $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk));
         $jam_mulai_praktek = $this->tanggal->formatFullTime($jam_praktek_mulai);
@@ -285,7 +285,7 @@ class Antrol extends MX_Controller {
             $milisecond = strtotime($dt_reg->tgl_jam_masuk) * 1000;
             $convert_milisecod = date('Y-m-d H:i:s', $milisecond/1000);
             $response = ['code' => $addAntrian['response_code'], 'msg' => $addAntrian['response_msg'], 'time' => $convert_milisecod];
-            // echo '<pre>';print_r($config_antrol);die;
+            
             echo json_encode($response);
         }else{
             // update task antrol

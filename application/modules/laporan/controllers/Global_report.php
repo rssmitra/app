@@ -1133,8 +1133,7 @@ class Global_report extends MX_Controller {
             'result' => $query_data,
         );
 
-        
-            $this->load->view('Global_report/v_registrasi_hari', $data);
+        $this->load->view('Global_report/v_registrasi_hari', $data);
        
         
     }
