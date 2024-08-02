@@ -694,7 +694,7 @@ class Reg_klinik extends MX_Controller {
                 "kodepoli" => $_POST['kodePoliHidden'],
                 "namapoli" => $dt_reg->nama_bagian,
                 "pasienbaru" => 0,
-                "norm" => $dt_reg->no_mr,
+                "norm" => $no_mr,
                 "tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
                 "kodedokter" => trim($_POST['kodeDokterDPJPPerjanjianBPJS']),
                 "namadokter" => $dt_reg->nama_pegawai,

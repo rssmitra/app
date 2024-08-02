@@ -121,6 +121,30 @@ $(document).ready(function(){
 //     }
 // });
 
+$('#inputKeyDiagnosa').typeahead({
+    source: function (query, result) {
+        $.ajax({
+            url: "ws_bpjs/Ws_index/getRef?ref=RefDiagnosa",
+data: 'keyword=' + query,            
+            dataType: "json",
+            type: "POST",
+            success: function (response) {
+            result($.map(response, function (item) {
+                return item;
+            }));
+            }
+        });
+    },
+    afterSelect: function (item) {
+    // do what is needed with item
+    var val_item=item.split(':')[0];
+    var label_item=item.split(':')[1];
+    console.log(val_item);
+    $('#inputKeyDiagnosa').val(label_item);
+    $('#kodeDiagnosaHidden').val(val_item);
+    }
+});
+
 $('#show_dpjp').typeahead({
     source: function (query, result) {
             $.ajax({
@@ -208,8 +232,7 @@ $('#inputKeyPoliTujuan').typeahead({
     <input type="hidden" class="form-control" id="noRujukanView" name="noRujukan" readonly>
     <input name="tglRujukan" id="tglKunjungan" value="" placeholder="dd/mm/YYYY" class="form-control date-picker" type="hidden">
     <input type="hidden" class="form-control" id="noMR" name="noMR">
-    <input id="inputKeyDiagnosa" class="form-control" name="diagAwal" type="hidden" placeholder="Masukan keyword minimal 3 karakter" style="text-transform: uppercase" readonly/>
-    <input type="hidden" name="kodeDiagnosaHidden" value="" id="kodeDiagnosaHidden">
+    
     <input type="hidden" class="form-control" id="noTelp" name="noTelp">
     <input type="hidden" class="form-control" id="noKartuReadonly" readonly>
     <input type="hidden" class="form-control" id="jnsKontrol" value="1" readonly>
@@ -312,6 +335,14 @@ $('#inputKeyPoliTujuan').typeahead({
         <label class="control-label col-md-3">Assesment Pelayanan</label>
         <div class="col-md-6">
         <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'assesment_pelayanan')), '' , 'assesmentPel', 'assesmentPel', 'form-control', '', '') ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-3 control-label">Diagnosa</label>
+        <div class="col-md-9 col-sm-9 col-xs-12">
+            <input id="inputKeyDiagnosa" class="form-control" name="diagAwal" type="text" placeholder="Masukan keyword minimal 3 karakter"/>
+            <input type="hidden" name="kodeDiagnosaHidden" value="" id="kodeDiagnosaHidden">
         </div>
     </div>
 
