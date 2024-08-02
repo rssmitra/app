@@ -123,7 +123,7 @@
 
 <!-- order penunjang medis -->
 <hr>
-<table border="0" width="100%" class="table-content">
+<!-- <table border="0" width="100%" class="table-content">
   <tr>
     <td align="left" colspan="2"><span style="font-family: arial; font-size: 14px;"><b>ORDER PENUNJANG MEDIS</b></span></td>
   </tr>
@@ -172,7 +172,7 @@
   <tr>
     <td width="100px" style="padding-left: 33px" colspan="2"><br><br></td>
   </tr>
-</table>
+</table> -->
 
 <!-- jadwal kontrol -->
 <hr>
@@ -194,7 +194,7 @@
 
 <!-- eresep -->
 <!-- <div class="pagebreak"></div> -->
-<hr>
+<!-- <hr>
 <span style="font-size: 11px"><i>Silahkan potong kertas bagian ini dan berikan ke petugas farmasi</i></span>
 <br>
 <br>
@@ -234,7 +234,7 @@
     </td>
   </tr>
   
-</table>
+</table> -->
 
 
 <br>
