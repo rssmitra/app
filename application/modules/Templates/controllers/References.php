@@ -1879,7 +1879,7 @@ class References extends MX_Controller {
     $this->db->where('a.is_active = 1');
 		$this->db->group_by('b.nama_brg, a.kode_brg, b.satuan_kecil');
 		$result = $this->db->get()->result();
-		print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 
 		$arrResult = [];
 		foreach ($result as $key => $value) {

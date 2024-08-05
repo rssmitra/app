@@ -3,7 +3,7 @@
 $(document).ready(function(){
 
     $('select[id="jeniskunjunganbpjs"]').change(function () {     
-        if ($(this).val() == 1) {    
+        if ($(this).val() == 1 || $(this).val() == 2 || $(this).val() == 4) {    
             $('input[name="rujukan_baru"]').prop('checked', true);
         }else{
             $('input[name="rujukan_baru"]').prop('checked', false);
@@ -266,11 +266,11 @@ $('#inputKeyPoliTujuan').typeahead({
         <div class="col-md-3">
             <input type="text" class="form-control" id="noSuratSKDP" name="noSuratSKDP" onclick="findSuratKontrol()">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="checkbox">
                 <label>
                 <input name="rujukan_baru" type="checkbox" class="ace" value="1" onclick="changeCheckboxRujukanBaru()">
-                <span class="lbl"> Rujukan Baru</span>
+                <span class="lbl"> Rujukan Baru/Internal/Antar RS</span>
                 </label>
             </div>
         </div>

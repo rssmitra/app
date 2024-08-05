@@ -19,6 +19,7 @@ class Antrol extends MX_Controller {
         $this->load->model('Antrol_model', 'Antrol');
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
+        $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/

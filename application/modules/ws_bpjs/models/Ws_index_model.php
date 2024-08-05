@@ -111,7 +111,8 @@ class Ws_index_model extends CI_Model {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		$data = curl_exec($ch);
 		$result = json_decode($data);
-		
+		// echo '<pre>';print_r($result);die;
+
 		// decrypt
 		if(isset($result->response)){
 			$strdecrpt = $this->stringDecrypt($key, $result->response);
@@ -122,7 +123,7 @@ class Ws_index_model extends CI_Model {
 			'response' => $result,
 			'data' => isset($decompress)?json_decode($decompress):'',
 		);
-		// echo '<pre>';print_r($getData);die;
+		
 		curl_close($ch);
 		return $getData;
 		
@@ -1148,6 +1149,12 @@ class Ws_index_model extends CI_Model {
 		$result = $this->getData($service_name);
 		return $result;
 	}
+
+	function cekSuratKontrol($no_kartu){
+        $service_name = "RencanaKontrol/ListRencanaKontrol/Bulan/".date('m')."/Tahun/".date('Y')."/Nokartu/".$no_kartu."/filter/2";
+        $result = $this->getData($service_name); 
+		return $result;
+    }
 
 
 }
