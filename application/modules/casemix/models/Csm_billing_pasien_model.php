@@ -152,13 +152,13 @@ class Csm_billing_pasien_model extends CI_Model {
         $this->_main_query();
         if(is_array($id)){
             $this->db->where_in(''.$this->table.'.no_registrasi',$id);
-            $query = $this->db->get();
-            return $query->result();
+            $query = $this->db->get()->result();
+            return $query;
         }else{
             $this->db->where(''.$this->table.'.no_registrasi',$id);
-            $query = $this->db->get();
+            $query = $this->db->get()->row();
             //echo '<pre>';print_r($this->db->last_query());die;
-            return $query->row();
+            return $query;
         }
         
     }

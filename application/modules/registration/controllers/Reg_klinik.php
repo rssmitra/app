@@ -573,7 +573,7 @@ class Reg_klinik extends MX_Controller {
 
     public function processRegisterNSEP(){
 
-        // print_r($_POST);die;
+        
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
         $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');
@@ -614,10 +614,10 @@ class Reg_klinik extends MX_Controller {
             $this->db->join('mt_dokter_v d', 'd.kode_dokter=a.kode_dokter','left');
             $this->db->where('a.kode_bagian_masuk', $_POST['reg_klinik_rajal']);
             $this->db->where('a.kode_dokter', $_POST['reg_dokter_rajal']);
-            $this->db->where('a.no_mr', $_POST['noMR']);
+            $this->db->where('a.no_mr', $_POST['noMrHidden']);
             $this->db->where('CAST(a.tgl_jam_masuk as DATE) = ', $_POST['tgl_registrasi']);
             $query = $this->db->get()->row();
-            // print_r($query);die;
+            // echo "<pre>";print_r($query);die;
 
             $title = $this->title;
             $no_mr = $this->regex->_genRegex($_POST['noMrHidden'],'RGXQSL');
@@ -722,7 +722,7 @@ class Reg_klinik extends MX_Controller {
                             'pembiayaan' => "",
                             'penanggungJawab' => ""
                         ),
-                        'noMR' => $_POST['noMR'],
+                        'noMR' => $no_mr,
                         'rujukan' => array(
                             'asalRujukan' => ($_POST['jenis_faskes_pasien'] == 'pcare') ? 1 : 2 ,
                             'tglRujukan' => $_POST['tglRujukan'],
