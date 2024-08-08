@@ -32,6 +32,7 @@
       "drawCallback": function (response) {
         var objData = response.json;
           $('#total_po').text('Rp.'+formatMoney(objData.total_po)+',-');
+          $('#nm_brg_max').html(objData.nm_brg_max+"<br>"+objData.ttl_brg_max);
       },
 
     });
@@ -280,11 +281,13 @@
             </a>
           </div>
       </div>
+      <hr>
 
       <div class="col-md-12 no-padding">
       <table class="table">
         <tr>
-          <td><i>Total Pembelian</i><br><span style="font-size: 24px; font-weight: bold" id="total_po">Rp.0,-</span></td>
+          <td style="width: 50%"><i>Total Pembelian</i><br><span style="font-size: 24px; font-weight: bold" id="total_po">Rp.0,-</span></td>
+          <td style="width: 50%"><i>Pembelian Barang Terbanyak</i><br><span style="font-size: 14px; font-weight: bold" id="nm_brg_max"></span></td>
         </tr>
       </table>
       <table id="table-monitoring-po" base-url="purchasing/po/Po_monitoring/get_data?flag=" data-id="flag=" class="table" >
@@ -300,9 +303,9 @@
             <th>Rasio</th>
             <th>Satuan</th>
             <th>Qty</th>
-            <th>@ Harga</th>
-            <th>Diskon</th>
-            <th>Total Harga</th>
+            <th>Harga @</th>
+            <th>Disc(%)</th>
+            <th>Sub Total</th>
             <th>Status</th>
             
           </tr>

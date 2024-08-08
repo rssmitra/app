@@ -69,7 +69,17 @@ class Po_monitoring extends MX_Controller {
             $row[] = '<div class="center">'.$status.'</div>';     
             $data[] = $row;
             $arr_total[] = $row_list->jumlah_harga;
+            $arr_barang[$row_list->nama_brg][] = $row_list->jumlah_besar;
         }
+
+        // berdasarkan barang
+        foreach ($arr_barang as $key => $value) {
+            $count_brg[$key] = array_sum($arr_barang[$key]);
+        }
+        arsort($count_brg);
+        $brg_terbanyak = array_search(max($count_brg), $count_brg);
+        $ttl_brg_terbanyak = $count_brg[$brg_terbanyak];
+
 
         $output = array(
                         "draw" => $_POST['draw'],
@@ -77,6 +87,8 @@ class Po_monitoring extends MX_Controller {
                         "recordsFiltered" => $this->Po_monitoring->count_filtered(),
                         "data" => $data,
                         "total_po" => array_sum($arr_total),
+                        "nm_brg_max" => $brg_terbanyak,
+                        "ttl_brg_max" => $ttl_brg_terbanyak,
                 );
         //output to json format
         echo json_encode($output);
