@@ -180,12 +180,19 @@ th, td {
     </tr>
     <?php }else{ ?>
     <tr>      
-      <td style="text-align: center; width: 100%" colspan="2">
+      <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
         <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
+      </td>
+      <td style="text-align: center; width: 50%">
+        <br>
+        <br>
+        <br>
+        <br>
+        <?php echo $this->master->get_ttd('ttd_dir_keu_rssm') ;?>
       </td>
     </tr>
     <?php }?>

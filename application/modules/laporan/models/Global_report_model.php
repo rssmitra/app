@@ -966,9 +966,7 @@ class Global_report_model extends CI_Model {
 		}
 
 		if($_POST['keterangan']=='medis'){
-			
-			$query = 'SELECT
-			e.tgl_permohonan,
+			$this->db->select('e.tgl_permohonan,
 			e.tgl_acc,
 			a.no_po,
 			CAST ( a.tgl_po AS DATE ) AS tgl_po,
@@ -985,22 +983,56 @@ class Global_report_model extends CI_Model {
 			f.tgl_penerimaan,
 			f.no_faktur,
 			CAST(a.updated_date as date) as revisi,
-			jumlah_kirim_decimal AS jml_diterima 
-		FROM
-			tc_permohonan_det h 
-			LEFT JOIN tc_po_det b ON ( h.id_tc_permohonan_det = b.id_tc_permohonan_det )
-			LEFT JOIN tc_permohonan e ON e.id_tc_permohonan = h.id_tc_permohonan
-			LEFT JOIN tc_po a ON b.id_tc_po= a.id_tc_po
-			LEFT JOIN mt_barang c ON c.kode_brg= h.kode_brg
-			LEFT JOIN mt_pabrik i ON i.kode_pabrik= c.kode_pabrik
-			LEFT JOIN mt_supplier d ON d.kodesupplier= a.kodesupplier
-			LEFT JOIN tc_penerimaan_barang_detail g ON ( g.id_tc_po_det = b.id_tc_po_det )
-			LEFT JOIN tc_penerimaan_barang f ON f.id_penerimaan = g.id_penerimaan 
-		WHERE
-			YEAR ( '.$filter.' ) = '."'".$_POST['year']."'".' 
-			AND MONTH ( '.$filter.' ) = '."'".$_POST['from_month']."'".'
-		ORDER BY
-			f.tgl_penerimaan  DESC';
+				jumlah_kirim_decimal AS jml_diterima');
+
+			if($_POST['search_by'] == 'usulan'){
+				$this->db->from('tc_permohonan_det h');
+				$this->db->join('tc_permohonan e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
+				$this->db->join('tc_po_det b', 'b.id_tc_permohonan_det= h.id_tc_permohonan_det', 'LEFT');
+				$this->db->join('tc_po a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
+				$this->db->join('mt_barang c', 'c.kode_brg= h.kode_brg', 'LEFT');
+				$this->db->join('mt_pabrik i', 'i.kode_pabrik= c.kode_pabrik', 'LEFT');
+				$this->db->join('mt_supplier d', 'd.kodesupplier= a.kodesupplier', 'LEFT');
+				$this->db->join('tc_penerimaan_barang_detail g', 'g.id_tc_po_det = b.id_tc_po_det', 'LEFT');
+				$this->db->join('tc_penerimaan_barang f', 'f.id_penerimaan = g.id_penerimaan ', 'LEFT');
+				$this->db->where('YEAR(e.tgl_permohonan) = ', $_POST['year']);
+				$this->db->where('MONTH(e.tgl_permohonan) = ', $_POST['from_month']);
+				$this->db->order_by('e.tgl_permohonan', 'ASC');
+			}
+
+			if($_POST['search_by'] == 'penerbitan_po'){
+				$this->db->from('tc_po_det b');
+				$this->db->join('tc_po a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
+				$this->db->join('tc_permohonan_det h', 'b.id_tc_permohonan_det= h.id_tc_permohonan_det', 'LEFT');
+				$this->db->join('tc_permohonan e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
+				$this->db->join('mt_barang c', 'c.kode_brg= b.kode_brg', 'LEFT');
+				$this->db->join('mt_pabrik i', 'i.kode_pabrik= c.kode_pabrik', 'LEFT');
+				$this->db->join('mt_supplier d', 'd.kodesupplier= a.kodesupplier', 'LEFT');
+				$this->db->join('tc_penerimaan_barang_detail g', 'g.id_tc_po_det = b.id_tc_po_det', 'LEFT');
+				$this->db->join('tc_penerimaan_barang f', 'f.id_penerimaan = g.id_penerimaan ', 'LEFT');
+				$this->db->where('YEAR(a.tgl_po) = ', $_POST['year']);
+				$this->db->where('MONTH(a.tgl_po) = ', $_POST['from_month']);
+				$this->db->order_by('a.tgl_po', 'ASC');
+			}
+
+			if($_POST['search_by'] == 'penerimaan'){
+				$this->db->from('tc_penerimaan_barang_detail g ');
+				$this->db->join('tc_po_det b', 'b.id_tc_po_det= g.id_tc_po_det', 'LEFT');
+				$this->db->join('tc_po a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
+				$this->db->join('tc_permohonan_det h', 'h.id_tc_permohonan_det= b.id_tc_permohonan_det', 'LEFT');
+				$this->db->join('tc_permohonan e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
+				$this->db->join('mt_barang c', 'c.kode_brg= g.kode_brg', 'LEFT');
+				$this->db->join('mt_pabrik i', 'i.kode_pabrik= c.kode_pabrik', 'LEFT');
+				$this->db->join('mt_supplier d', 'd.kodesupplier= a.kodesupplier', 'LEFT');
+				$this->db->join('tc_penerimaan_barang f', 'f.id_penerimaan = g.id_penerimaan ', 'LEFT');
+				$this->db->where('YEAR(f.tgl_penerimaan) = ', $_POST['year']);
+				$this->db->where('MONTH(f.tgl_penerimaan) = ', $_POST['from_month']);
+				$this->db->order_by('f.tgl_penerimaan', 'ASC');
+			}
+			$this->db->get();
+
+			$query = $this->db->last_query();
+			echo $query; die;
 				
 		}
 		else{

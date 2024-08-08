@@ -1,4 +1,21 @@
+<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+
 <script type="text/javascript">
+  jQuery(function($) {
+
+    $('.date-picker').datepicker({
+      autoclose: true,
+      todayHighlight: true
+    })
+    //show datepicker when clicking on the icon
+    .next().on(ace.click_event, function(){
+      $(this).prev().focus();
+    });
+
+  });
+
+
   $( "#keyword_form" ).keypress(function(event) {  
       var keycode =(event.keyCode?event.keyCode:event.which);
       if(keycode ==13){          

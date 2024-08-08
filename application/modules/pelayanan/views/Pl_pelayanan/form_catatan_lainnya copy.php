@@ -210,18 +210,10 @@ function show_edit(myid){
   preventDefault();
   $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
     // show data
-    var obj = response.result;
-    $('#cppt_id').val(obj.cppt_id);
-    $('#jenis_form_catatan').val(obj.jenis_form);
-    $('#editor').html(obj.catatan_pengkajian);
-    // set value input
-    var value_form = response.value_form;
-    console.log(value_form);
-    $.each(value_form, function(i, item) {
-      var text = item;
-      text = text.replace(/\+/g, ' ');
-      $('#'+i).val(text);
-    });
+    $('#cppt_id').val(response.cppt_id);
+    $('#jenis_form_catatan').val(response.jenis_form);
+    $('#editor').html(response.catatan_pengkajian);
+
   }); 
 
 }
@@ -244,32 +236,12 @@ function reload_table(){
  oTableCppt.ajax.reload(); //reload datatable ajax 
 }
 
-function checkthis(id){
-  if($('#'+id+'').is(':checked')) {
-      $('#'+id+'').attr('checked', true);
-  } else {
-      $('#'+id+'').attr('checked', false);    
-  }
-}
-
-function fillthis(id){
-  
-  var val_str = document.getElementById(id).value;
-  $('#'+id+'').val(val_str);
-}
-
 </script>
 
 <style>
   .wysiwyg-editor{
     max-height: 1000px !important;
     height: 700px !important;
-    padding: 5px;
-  }
-  .input_type{
-    border : none !important;
-    border-bottom : 1px solid grey !important;
-    min-width: 300px;
   }
 </style>
 <div class="row">
@@ -305,6 +277,7 @@ function fillthis(id){
           </div>
     </div>
 
+
     <div class="form-group">
         <label class="control-label col-sm-2">Nama Dokter</label>
         <div class="col-md-6">
@@ -322,9 +295,10 @@ function fillthis(id){
 
     <hr>
 
-    <div id="editor"><?php echo $template?></div>
+    <div id="editor" class="wysiwyg-editor"><?php echo $template?></div>
     <input type="hidden" name="catatan_pengkajian" value="" />
 					
+
     <div class="center">
         
         <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
@@ -396,6 +370,117 @@ function fillthis(id){
   </div>
      
 </div>
+
+<script src="<?php echo base_url()?>assets/js/bootstrap-wysiwyg.js"></script>
+		
+		<!-- ace scripts -->
+		<script src="<?php echo base_url()?>assets/js/ace-elements.js"></script>
+		<script src="<?php echo base_url()?>assets/js/ace.js"></script>
+		
+		<script type="text/javascript">
+			jQuery(function($) {
+				$('#editor').ace_wysiwyg({
+					toolbar:
+					[
+						{
+							name:'font',
+							title:'Custom tooltip',
+							values:['Some Font!','Arial','Verdana','Comic Sans MS','Custom Font!']
+						},
+						null,
+						{
+							name:'fontSize',
+							title:'Custom tooltip',
+							values:{1 : 'Size#1 Text' , 2 : 'Size#1 Text' , 3 : 'Size#3 Text' , 4 : 'Size#4 Text' , 5 : 'Size#5 Text'} 
+						},
+						null,
+						{name:'bold', title:'Custom tooltip'},
+						{name:'italic', title:'Custom tooltip'},
+						{name:'strikethrough', title:'Custom tooltip'},
+						{name:'underline', title:'Custom tooltip'},
+						null,
+						'insertunorderedlist',
+						'insertorderedlist',
+						'outdent',
+						'indent',
+						null,
+						{name:'justifyleft'},
+						{name:'justifycenter'},
+						{name:'justifyright'},
+						{name:'justifyfull'},
+						null,
+						// {
+						// 	name:'createLink',
+						// 	placeholder:'Custom PlaceHolder Text',
+						// 	button_class:'btn-purple',
+						// 	button_text:'Custom TEXT'
+						// },
+						// {name:'unlink'},
+						null,
+						// {
+						// 	name:'insertImage',
+						// 	placeholder:'Custom PlaceHolder Text',
+						// 	button_class:'btn-inverse',
+						// 	//choose_file:false,//hide choose file button
+						// 	button_text:'Set choose_file:false to hide this',
+						// 	button_insert_class:'btn-pink',
+						// 	button_insert:'Insert Image'
+						// },
+						null,
+						{
+							name:'foreColor',
+							title:'Custom Colors',
+							values:['red','green','blue','navy','orange'],
+							/**
+								You change colors as well
+							*/
+						},
+						/**null,
+						{
+							name:'backColor'
+						},*/
+						null,
+						{name:'undo'},
+						{name:'redo'},
+						null,
+						'viewSource',
+						'resize'
+					],
+					'wysiwyg': {
+						hotKeys : {} //disable hotkeys
+					}
+					
+				}).prev().addClass('wysiwyg-style2');
+
+				$('#editor').on('contentDom',function(){
+          var html = $(editor.editable().$);
+          $('.myplugin',html).on('click',function(){
+              //this will return the input element 
+              console.log(this);
+              //check it's checked or not
+              if($(this).attr('checked') == 'true'){
+                  // Add/Remove class or something
+                  console.log(this);
+                  $(this).attr('checked', true);
+              }else{
+                  // Add/Remove class or something
+                  console.log(this);
+              }
+          });
+        });
+
+			});
+
+      function checkthis(id){
+        // $('#'+id+'').attr('checked', true);
+
+        if($('#'+id+'').is(':checked')) {
+            $('#'+id+'').attr('checked', true);
+        } else {
+            $('#'+id+'').attr('checked', false);    
+        }
+      }
+		</script>
 
 
 

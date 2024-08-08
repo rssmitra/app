@@ -2247,6 +2247,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['no_mr'] = $_GET['no_mr'];
         $data['id'] = $id;
         $data['no_kunjungan'] = $no_kunjungan;
+        $data['jenis_form'] = 'form_1';
         // $data['form_type'] = $_GET['form'];
         $template = $this->load->view('Pl_pelayanan/form_1', $data, true);
         $data['template'] = $template;
@@ -2260,6 +2261,7 @@ class Pl_pelayanan extends MX_Controller {
     public function switch_template_form($id, $no_kunjungan){
 
         $data = [];
+        $data['jenis_form'] = 'form_'.$id.'';
         $html = $this->load->view('Pl_pelayanan/form_'.$id.'', $data, true);
         echo json_encode(array('html' => $html));
 
@@ -2289,6 +2291,9 @@ class Pl_pelayanan extends MX_Controller {
 
             $cppt_id = ($_POST['cppt_id'])?$_POST['cppt_id']:0;
             $tgl_jam = $_POST['cppt_tgl'].' '.$_POST['cppt_jam'];
+            $value_form = http_build_query($this->input->post($_POST['jenis_form']),'',', ');
+            // echo '<pre>';print_r($value_form);die;
+
             $dataexc = array(
                 'cppt_tgl_jam' => $this->regex->_genRegex($tgl_jam,'RGXQSL'), 
                 'cppt_ppa' => $this->regex->_genRegex('dokter','RGXQSL'), 
@@ -2297,7 +2302,9 @@ class Pl_pelayanan extends MX_Controller {
                 'catatan_pengkajian' => $this->regex->_genRegex($this->input->post('catatan_pengkajian'),'RGXQSL'), 
                 'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXQSL'), 
                 'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
+                'value_form' => $value_form, 
             );
+            
 
             if( $cppt_id == 0 ){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
