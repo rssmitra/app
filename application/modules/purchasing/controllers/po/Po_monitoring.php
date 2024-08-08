@@ -65,7 +65,7 @@ class Po_monitoring extends MX_Controller {
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->harga_satuan, 2).'</div>';
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->discount, 2).'</div>';
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->jumlah_harga, 2).'</div>';     
-            $status = ($row_list->kode_penerimaan != '') ? '<span><i class="fa fa-check-circle bigger-120 green"></i></span>' : '<span><i class="fa fa-times-circle bigger-120 red"></i></span>' ;
+            $status = ($row_list->jumlah_kirim == $row_list->jumlah_besar) ? '<span><i class="fa fa-check-circle bigger-120 green"></i></span>' : '<span><i class="fa fa-times-circle bigger-120 red"></i></span>' ;
             $row[] = '<div class="center">'.$status.'</div>';     
             $data[] = $row;
             $arr_total[] = $row_list->jumlah_harga;

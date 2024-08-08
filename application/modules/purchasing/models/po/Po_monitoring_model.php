@@ -6,7 +6,7 @@ class Po_monitoring_model extends CI_Model {
 	var $table_nm = 'tc_po_nm_det';
 	var $table = 'tc_po_det';
 	var $column = array('d.no_po','c.namasupplier');
-	var $select = 'd.id_tc_po, d.no_po, d.tgl_po, d.ppn, d.total_sbl_ppn, d.total_stl_ppn, d.discount_harga, d.term_of_pay, b.username, d.diajukan_oleh, d.disetujui_oleh, c.namasupplier, d.jenis_po, e.nama_brg, a.kode_brg, e.satuan_besar, a.jumlah_besar, a.content, a.harga_satuan, a.harga_satuan_netto, a.jumlah_harga, a.jumlah_harga_netto, a.discount, f.kode_penerimaan, f.updated_date';
+	var $select = 'd.id_tc_po, d.no_po, d.tgl_po, d.ppn, d.total_sbl_ppn, d.total_stl_ppn, d.discount_harga, d.term_of_pay, b.username, d.diajukan_oleh, d.disetujui_oleh, c.namasupplier, d.jenis_po, e.nama_brg, a.kode_brg, e.satuan_besar, a.jumlah_besar, a.content, a.harga_satuan, a.harga_satuan_netto, a.jumlah_harga, a.jumlah_harga_netto, a.discount';
 	var $order = array('d.tgl_po' => 'ASC');
 
 	public function __construct()
@@ -21,6 +21,7 @@ class Po_monitoring_model extends CI_Model {
 		$tc_penerimaan_barang_detail = ($_GET['flag']=='non_medis')?'tc_penerimaan_barang_nm_detail':'tc_penerimaan_barang_detail';
 		$mt_barang = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
 		$this->db->select($this->select);
+		$this->db->select('SUM(jumlah_kirim) as jumlah_kirim');
 		$this->db->from(''.$table.' a');
 		$this->db->join(''.$tc_po.' d','d.id_tc_po=a.id_tc_po', 'left');
 		$this->db->join(''.$tc_penerimaan_barang_detail.' f','f.id_tc_po_det=a.id_tc_po_det', 'left');
@@ -66,6 +67,8 @@ class Po_monitoring_model extends CI_Model {
 			$this->db->where('MONTH(d.tgl_po) = ', date('m'));
 				$this->db->where('YEAR(d.tgl_po) = ', date('Y'));
 		}
+
+		$this->db->group_by($this->select);
 
 
 

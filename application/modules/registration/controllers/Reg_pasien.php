@@ -545,7 +545,7 @@ class Reg_pasien extends MX_Controller {
             'no_registrasi' => $no_registrasi,
         ];
 
-        $userDob = isset($data['result']['registrasi']->tgl_lhr)?$data['result']['registrasi']->tgl_lhr:'1990-01-01';
+        $userDob = isset($data['result']['registrasi']->tgl_lhr)?$this->tanggal->formatDateTimeToSqlDate($data['result']['registrasi']->tgl_lhr):'1990-01-01';
  
         //Create a DateTime object using the user's date of birth.
         $dob = new DateTime($userDob);
