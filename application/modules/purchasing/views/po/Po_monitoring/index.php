@@ -306,7 +306,7 @@
             <th>Harga @</th>
             <th>Disc(%)</th>
             <th>Sub Total</th>
-            <th>Status</th>
+            <th width="150px">Status</th>
             
           </tr>
           </thead>

@@ -39,53 +39,23 @@ class Pl_rekap_kunjungan_model extends CI_Model {
 	            $this->db->where('YEAR(tgl_jam_poli)='.$_GET['tahun'].'');	
 	        }
 
-			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-				$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '') {
+				$this->db->where("CAST(pl_tc_poli.tgl_jam_poli as DATE) =", $_GET['from_tgl']);
 	        }
+
+			// if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+			// 	$this->db->where("convert(varchar,pl_tc_poli.tgl_jam_poli,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+	        // }
 		}else{
 			$this->db->where('DAY(tgl_jam_poli)='.date('d').'');	
 			$this->db->where('MONTH(tgl_jam_poli)='.date('m').'');	
 			$this->db->where('YEAR(tgl_jam_poli)='.date('Y').'');
 		}
 
+		$this->db->order_by('tujuan.nama_bagian', 'ASC');
+
 		/*end parameter*/
 		
-	}
-
-	private function _get_datatables_query()
-	{
-		
-		$this->_main_query();
-
-		$i = 0;
-	
-		foreach ($this->column as $item) 
-		{
-			if($_POST['search']['value'])
-				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
-			$column[$i] = $item;
-			$i++;
-		}
-		
-		if(isset($_POST['order']))
-		{
-			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} 
-		else if(isset($this->order))
-		{
-			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
-		}
-	}
-	
-	function get_datatables()
-	{
-		$this->_get_datatables_query();
-		if($_POST['length'] != -1)
-		$this->db->limit($_POST['length'], $_POST['start']);
-		$query = $this->db->get();
-		// print_r($this->db->last_query());die;
-		return $query->result();
 	}
 
 	function get_data()
@@ -96,18 +66,14 @@ class Pl_rekap_kunjungan_model extends CI_Model {
 		return $query->result();
 	}
 
-	function count_filtered()
-	{
-		$this->_get_datatables_query();
-		$query = $this->db->get();
-		return $query->num_rows();
+	function get_rekap(){
+		$date = isset($_GET['from_tgl'])?$_GET['from_tgl']:date('Y-m-d');
+		$data = $this->db->get_where('tc_rekap_kunjungan_poli', ['tgl_kunjungan' => $date])->result();
+		$getData = [];
+		foreach($data as $row){
+			$getData[$row->kode_bagian][$row->kode_dokter] = $row;
+		}
+		return $getData;
 	}
-
-	public function count_all()
-	{
-		$this->_main_query();
-		return $this->db->count_all_results();
-	}
-
 
 }

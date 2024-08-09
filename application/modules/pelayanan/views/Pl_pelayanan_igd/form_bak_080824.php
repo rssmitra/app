@@ -33,21 +33,6 @@ $(document).ready(function(){
 
     /*when page load find pasien by mr*/
     find_pasien_by_keyword('<?php echo $no_mr?>');
-    // list pasien
-    get_list_pasien();
-    window.filter = function(element)
-    {
-      var value = $(element).val().toUpperCase();
-      $(".list-group > li").each(function() 
-      {
-        if ($(this).text().toUpperCase().search(value) > -1){
-          $(this).show();
-        }
-        else {
-          $(this).hide();
-        }
-      });
-    }
 
     getMenuTabs('pelayanan/Pl_pelayanan_igd/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=020101', 'tabs_form_pelayanan');
 
@@ -229,28 +214,6 @@ function formatDate(date) {
   minutes = minutes < 10 ? '0'+minutes : minutes;
   var strTime = hours + ':' + minutes + ' ' + ampm;
   return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
-}
-
-function get_list_pasien(){  
-
-  $('#box_list_pasien').html('Loading...');
-
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_igd/get_list_pasien') ?>", '', function (response) {    
-    html = '';  
-    html += '<div style="padding-top: 5px; padding-bottom: 10px;"><b>Cari pasien:</b> <br><input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);"><a style="margin-top:4px" href="#" onclick="get_list_pasien()" class="btn btn-block btn-primary">Refresh</a></div>';
-    html += '<ol class="list-group list-group-unbordered" id="list_pasien" style="background-color:lightblue;height: 650px;overflow: scroll;">';
-
-    $.each(response.data, function( i, v ) {
-      var obj = v[0];
-      html += '<li class="list-group-item">';
-      html += '<small style="color: '+obj.color_txt+'; font-weight: bold; font-size: 11px; cursor: pointer;" onclick="getMenu('+"'pelayanan/Pl_pelayanan_igd/form/"+obj.kode_gd+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')">'+obj.no_mr+' - '+obj.nama_pasien+'</small>';
-      html += '</li>';
-
-    });
-    html += '</ol>';
-    $('#box_list_pasien').html(html);
-  }); 
-
 }
 
 /*function find pasien*/
@@ -537,7 +500,7 @@ function reload_page(){
 </style>
 <div class="row">
 
-    <!-- <div class="page-header">    
+    <div class="page-header">    
 
       <h1>      
 
@@ -553,7 +516,7 @@ function reload_page(){
 
       </h1>      
 
-    </div>   -->
+    </div>  
 
     <!-- div.dataTables_borderWrap -->
 
@@ -562,6 +525,7 @@ function reload_page(){
       <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
         
           <br>
+
           <!-- hidden form -->
           <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
           <input type="hidden" value="" name="kode_perusahaan_hidden" id="kode_perusahaan_hidden">
@@ -572,50 +536,51 @@ function reload_page(){
           <input type="hidden" name="no_registrasi" id="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
           <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
+          
+          <!-- profile Pasien -->
+          <div class="col-md-2" >
+            <div class="box box-primary" id='box_identity'>
+                <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-          <div class="col-md-2">
-            <div class="box box-primary" id='box_list_pasien'></div>
-            <label class="label label-xs label-inverse">&nbsp;&nbsp;</label> Belum dilayani<br>
-            <label class="label label-xs label-success">&nbsp;&nbsp;</label> Selesai (Sudah dilayani)<br>
-            <label class="label label-xs label-danger">&nbsp;&nbsp;</label> Batal berkunjung<br>
-            <label class="label label-xs label-primary">&nbsp;&nbsp;</label> Pasien Dirujuk<br>
+                <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
+
+                <ul class="list-group list-group-unbordered">
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">Nama Pasien: </small><div id="nama_pasien"></div>
+                      </li>
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">NIK: </small><div id="no_ktp"></div>
+                      </li>
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">Tgl Lahir: </small><div id="tgl_lhr"></div>
+                      </li>
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">Umur: </small><div id="umur"></div>
+                      </li>
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">Alamat: </small><div id="alamat"></div>
+                      </li>
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">No Telp/HP: </small>
+                        <div id="hp"></div>
+                        <div id="no_telp"></div>
+                      </li>
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div>
+                      </li>
+                      <li class="list-group-item">
+                        <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>
+                      </li>
+                  </ul>
+
+                <a href="#" id="btn_search_pasien" class="btn btn-inverse btn-block">Tampilkan Pasien</a>
+              <!-- /.box-body -->
+            </div>
           </div>
+
           <!-- form pelayanan -->
           <div class="col-md-10 no-padding">
-            
 
-            <table class="table">
-              <tr>
-                <td rowspan="2" style="background: blue">
-                  <span style="color: white; font-size: 20px;font-weight: bold" id="no_mr"></span><br>
-                  <span style="color: white; font-size: 14px;" id="nama_pasien"></span>
-                </td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">NIK</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Tgl. Lahir</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Umur</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Alamat</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">No.Telp / HP</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Penjamin</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Status : </span></td>
-              </tr>
-              <tr>
-                <td><span style="font-size: 13px;" id="no_ktp"></span></td>
-                <td><span style="font-size: 13px;" id="tgl_lhr"></span></td>
-                <td><span style="font-size: 13px;" id="umur"></span></td>
-                <td><span style="font-size: 13px;" id="alamat"></span></td>
-                <td><span style="font-size: 13px;" id="no_hp"></span></td>
-                <td><span style="font-size: 13px;" id="kode_perusahaan"></span></td>
-                <td>
-                  <?php if(isset($value) AND $value->status_batal==1) :?>
-                  <span style="font-weight: bold" class="label label-danger">Batal</span>
-                  <?php else:?>
-                    <?php if(isset($value) AND $value->tgl_jam_kel!=NULL) :?>
-                    <span style="font-weight: bold" class="label label-success">Selesai</span>
-                    <?php endif;?>  
-                  <?php endif;?>
-                </td>
-              </tr>
-            </table>
             <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
                 <div class="center">
                   <ul class="nav nav-list">
@@ -667,21 +632,17 @@ function reload_page(){
             </div>
 
             <!-- end action form  -->
-            <div class="pull-right" style="margin-top:3px">
+            <div class="pull-right" style="margin-bottom:1%">
               <?php if(empty($value->tgl_keluar)) :?>
               <a href="#" class="btn btn-xs btn-primary" id="btn_selesai_igd" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
               <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-              <?php endif;?>
+              <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_igd'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
               <a href="#" class="btn btn-xs btn-danger" id="btn_cetak_meninggal" onclick="cetak_surat_kematian(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>)" <?php echo isset($meninggal)?'':'style="display:none"' ?> ><i class="fa fa-file"></i> Cetak Surat Kematian</a>
               <a href="#" class="btn btn-xs btn-danger" id="cetak_keracunan" onclick="cetak_surat_keracunan()" <?php echo isset($keracunan->id_cetak_racun)?'':'style="display:none"'?>><i class="fa fa-file"></i> Cetak Surat Keracunan </a>
             </div>
             <br>
-            <div style="background: linear-gradient(45deg, green, transparent) ;padding: 5px; margin-top: -17px; color: white">
-              Tanggal Daftar : <span style="font-size: 14px; font-weight: bold"><?php echo isset($value->tanggal_gd)?$this->tanggal->formatDateTime($value->tanggal_gd):''?></span> | Dokter IGD : 
-              <span style="font-size: 14px; font-weight: bold">[ <?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?> ]</span>
-            </div>
             <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
-            <!-- <table class="table table-bordered">
+            <table class="table table-bordered">
               <tr style="background-color:#f4ae11">
                 <th>Kode Kunjungan</th>
                 <th>No Reg</th>
@@ -695,7 +656,7 @@ function reload_page(){
               <tr>
                 <td><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
                 <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td>
-                <td></td>
+                <td><?php echo isset($value->tanggal_gd)?$this->tanggal->formatDateTime($value->tanggal_gd):''?></td>
                 <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
                 <td>
                   <a href="#" onclick="show_modal('registration/reg_pasien/form_modal_edit_penjamin/<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>/<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>', 'Update Penjamin Pasien')">
@@ -707,9 +668,15 @@ function reload_page(){
                 <td align="center"><a href="#" onclick="reload_page()"><i class="fa fa-refresh green bigger-120"></i></a></td>
               </tr>
 
-            </table> -->
+            </table>
             
-            
+            <?php if(isset($value) AND $value->status_batal==1) :?>
+            <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal</span>
+            <?php else:?>
+              <?php if(isset($value) AND $value->tgl_jam_kel!=NULL) :?>
+              <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
+              <?php endif;?>  
+            <?php endif;?>
 
             <!-- hidden form -->
             <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
@@ -746,7 +713,7 @@ function reload_page(){
                     </div>
                   </div>
                 </div>
-                <div class="col-md-4" style="padding-top: 13px">
+                <div class="col-md-4">
                   <p ><b> RIWAYAT MEDIS <i class="fa fa-angle-double-right bigger-120"></i></b></p>
                   <div id="tabs_riwayat_medis_pasien"></div>
                 </div>

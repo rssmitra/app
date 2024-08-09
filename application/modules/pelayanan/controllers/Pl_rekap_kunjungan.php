@@ -22,6 +22,8 @@ class Pl_rekap_kunjungan extends MX_Controller {
         $this->load->model('pelayanan/Pl_pelayanan_igd_model', 'Pl_pelayanan_igd');
         $this->load->model('pelayanan/Pl_pelayanan_mcu_model', 'Pl_pelayanan_mcu');
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
+
+        $this->load->library('Form_validation');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -33,7 +35,10 @@ class Pl_rekap_kunjungan extends MX_Controller {
         /*define variable data*/
         /*get data from model*/
         $list = $this->Pl_rekap_kunjungan->get_data();
-       // print_r($this->db->last_query());die;
+        // get rekap
+        $rekap = $this->Pl_rekap_kunjungan->get_rekap();
+
+        // echo "<pre>";print_r($rekap);die;
         $data = array();
         $rekap_batal = array();
         foreach ($list as $row_list) {
@@ -70,6 +75,7 @@ class Pl_rekap_kunjungan extends MX_Controller {
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
             'getData' => $getData,
+            'rekapData' => $rekap,
             "resume" => $total_unit,
             "rekap" => $total_kunjungan,
             "rekap_dr" => $total_dr,
@@ -177,6 +183,60 @@ class Pl_rekap_kunjungan extends MX_Controller {
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
         echo json_encode($output);
+    }
+
+    public function process(){
+
+        // echo '<pre>';print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('kode_dokter', 'Kode Dokter', 'trim');
+        $this->form_validation->set_rules('kode_bagian', 'Kode Bagian', 'trim');
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+
+            $dataexc = array(
+                'ttl_terdaftar' => $this->regex->_genRegex($_POST['ttl_df'],'RGXINT'), 
+                'ttl_blm_dilayani' => $this->regex->_genRegex($_POST['ttl_bd'],'RGXINT'), 
+                'ttl_sudah_dilayani' => $this->regex->_genRegex($_POST['ttl_sd'],'RGXINT'), 
+                'ttl_batal' => $this->regex->_genRegex($_POST['ttl_btl'],'RGXINT'), 
+                'checklist' => $this->regex->_genRegex($_POST['checklist'],'RGXINT'), 
+                'kode_bagian' => $this->regex->_genRegex($_POST['kode_bagian'],'RGXQSL'), 
+                'kode_dokter' => $this->regex->_genRegex($_POST['kode_dokter'],'RGXQSL'), 
+                'tgl_kunjungan' => $this->regex->_genRegex($_POST['tgl_kunjungan'],'RGXQSL'), 
+                'keterangan' => $this->regex->_genRegex($_POST['keterangan'],'RGXQSL'), 
+                'status_poli' => $this->regex->_genRegex($_POST['status_poli'],'RGXQSL'), 
+                'created_date' => date('Y-m-d H:i:s'),
+                'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL') 
+            );
+
+            $this->db->insert('tc_rekap_kunjungan_poli', $dataexc);
+            $newId = $this->db->insert_id();
+                    
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'timestamp' => $dataexc['created_date'], 'keterangan' => $dataexc['keterangan']));
+            }
+        
+        }
+
     }
 
 

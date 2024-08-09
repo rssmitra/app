@@ -65,7 +65,11 @@ class Po_monitoring extends MX_Controller {
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->harga_satuan, 2).'</div>';
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->discount, 2).'</div>';
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->jumlah_harga, 2).'</div>';     
-            $status = ($row_list->jumlah_kirim == $row_list->jumlah_besar) ? '<span><i class="fa fa-check-circle bigger-120 green"></i></span>' : '<span><i class="fa fa-times-circle bigger-120 red"></i></span>' ;
+            if($row_list->jumlah_kirim > 0){
+                $status = ($row_list->jumlah_kirim == $row_list->jumlah_besar) ? '<span class="label label-success">Selesai</span>' : '<span style="font-size: 11px; height:100% !important" class="label label-warning">Diterima '.$row_list->jumlah_kirim.' '.$row_list->satuan_besar.' <br> '.$this->tanggal->formatDateTime($row_list->tgl_terima).'</span>' ;
+            }else{
+                $status = ($row_list->jumlah_kirim == $row_list->jumlah_besar) ? '<span class="label label-success">Selesai</span>' : '<span class="label label-danger">Belum dikirim</span>' ;
+            }
             $row[] = '<div class="center">'.$status.'</div>';     
             $data[] = $row;
             $arr_total[] = $row_list->jumlah_harga;
@@ -79,7 +83,6 @@ class Po_monitoring extends MX_Controller {
         arsort($count_brg);
         $brg_terbanyak = array_search(max($count_brg), $count_brg);
         $ttl_brg_terbanyak = $count_brg[$brg_terbanyak];
-
 
         $output = array(
                         "draw" => $_POST['draw'],

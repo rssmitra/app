@@ -441,7 +441,7 @@ class Global_report_model extends CI_Model {
 		$this->db->join('mt_bagian c','c.kode_bagian = a.kode_bagian','left');
 		$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok_nm d where MONTH(tgl_input) <= '."'".$last_month."'".' and YEAR(tgl_input) = '."'".$last_year."'".' group by d.kode_brg, d.kode_bagian)');
 		$this->db->where('nama_brg is not null');
-		$this->db->where('stok_akhir > 0');
+		// $this->db->where('stok_akhir > 0');
 		$this->db->where('a.kode_bagian', $bagian);
 		$query = $this->db->get()->result_array();
 		
@@ -1032,7 +1032,7 @@ class Global_report_model extends CI_Model {
 			$this->db->get();
 
 			$query = $this->db->last_query();
-			echo $query; die;
+			// echo $query; die;
 				
 		}
 		else{

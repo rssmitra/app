@@ -969,6 +969,54 @@ class Pl_pelayanan_igd extends MX_Controller {
         $this->load->view('Pl_pelayanan_igd/form_img_tagging');
     }
 
+    public function get_list_pasien()
+    {
+        /*akan di filter berdasarkan pasien pada klinik masing2*/
+        /*get data from model*/
+        $list = $this->Pl_pelayanan_igd->get_list_data();
+        $data = array();
+        $no=0;
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+
+            if($row_list->tgl_jam_kel==NULL || empty($row_list->tgl_jam_kel)){
+                $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
+                $color = 'black';
+            }else {
+                /*cek rujuk */
+                $cek_rujuk = $this->Pl_pelayanan_igd->cekRujuk($row_list->no_kunjungan);
+
+                if(isset($cek_rujuk) AND $cek_rujuk->status==1){
+                    $tujuan = substr($cek_rujuk->rujukan_tujuan, 1, 1);
+                    if($tujuan == '3'){
+                        $status_periksa = '<label class="label label-info"><i class="fa fa-arrow-circle-right"></i> Rujuk Rawat Jalan</label>';
+                    }else{
+                        $status_periksa = ($tujuan=='1')?'<label class="label label-purple"><i class="fa fa-arrow-circle-right"></i> Rujuk Rawat Inap</label>':'<label class="label label-blue"><i class="fa fa-arrow-circle-right"></i> Rujuk</label>';
+                    }
+                    $color = 'blue';
+
+                }else{
+                    if($row_list->status_batal == 1){
+                        $status_periksa = '<label class="label label-danger"><i class="fa fa-times"></i> Batal Kunjungan</label>';
+                        $color = 'red';
+                    }else{
+                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                        $color = 'green';
+                    }
+                }
+                
+            }
+            
+            $row[] = array('no_kunjungan' => $row_list->no_kunjungan, 'kode_gd' => $row_list->kode_gd, 'no_mr' => $row_list->no_mr, 'nama_pasien' => strtoupper($row_list->nama_pasien_igd), 'color_txt' => $color);
+            $data[] = $row;
+        }
+
+        $output = array("data" => $data );
+        //output to json format
+        echo json_encode($output);
+    }
+
 
 }
 

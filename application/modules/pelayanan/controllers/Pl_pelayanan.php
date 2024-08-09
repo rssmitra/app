@@ -582,7 +582,7 @@ class Pl_pelayanan extends MX_Controller {
             }
 
             $row[] = $row_list->kode_trans_pelayanan;
-            $row[] = $this->tanggal->tgl_indo($row_list->tgl_transaksi);
+            $row[] = $this->tanggal->formatDateDmy($row_list->tgl_transaksi);
             /*tindakan luar?*/
             $text_tl = ($row_list->tindakan_luar==1) ? '(Tindakan Lain)' : '' ;
             $row[] = strtoupper($row_list->nama_tindakan).'&nbsp;'.$text_tl;
@@ -614,6 +614,7 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = $row_list->dokter_3;
            
             $data[] = $row;
+            $arr_bill[] = $bill_total;
         }
 
         $output = array(
@@ -621,6 +622,7 @@ class Pl_pelayanan extends MX_Controller {
                         "recordsTotal" => $this->Pl_pelayanan->count_all_tindakan(),
                         "recordsFiltered" => $this->Pl_pelayanan->count_filtered_tindakan(),
                         "data" => $data,
+                        "total_bill" => array_sum($arr_bill),
                 );
         //output to json format
         echo json_encode($output);
@@ -718,14 +720,14 @@ class Pl_pelayanan extends MX_Controller {
         $html_tag = '';
         $html_tag .= '<div class="row">';
         $html_tag .= '<form id="form_update_billing_'.$id.'" action="POST" enctype="multipart/form-data">';
-        $html_tag .= '<div class="col-md-8">';
+        $html_tag .= '<div class="col-md-12">';
         $html_tag .= '<p><b><i class="fa fa-circle-o"></i> RINCIAN TRANSAKSI '.$text_cito.'</b></p>';
         $html_tag .= '<table class="table table-hover">';
         $html_tag .= '<tr style="background-color:#e4e6e6">';
         $html_tag .= '<th class="center" width="30px">No</th>';
         $html_tag .= '<th>Field Name</th>';
         $html_tag .= '<th style="text-align:center;width:120px">Biaya</th>';
-        $html_tag .= '<th style="text-align:center;width:120px">Kenaikan<br>Tarif (%)</th>';
+        $html_tag .= '<th style="text-align:center;width:100px">Kenaikan<br>Tarif (%)</th>';
         $html_tag .= '<th style="text-align:right;width:120px">Perubahan</th>';
         $html_tag .= '</tr>';
 
@@ -778,12 +780,10 @@ class Pl_pelayanan extends MX_Controller {
                     <input type="hidden" value="'.(int)$data->$key.'" name="hidden_'.$key.'_'.$id.'" id="hidden_'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.'>
                     <input type="text" class="format_number" value="'.(int)$data->$key.'" name="'.$key.'_'.$id.'" id="'.$key.'_'.$id.'" style="text-align:right;width:100px !important" '.$readonly.' onchange="changeTotalBiaya('."'".$key."'".','.$id.')">
                     </td>';
-                $html_tag .= '<td align="right">
-                        <input type="hidden" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="hidden_diskon_'.$key.'_'.$id.'" '.$readonly.'>
-
-                        <input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'>
-
-                        </td>';
+                $html_tag .= '<td align="center">
+                                <input type="hidden" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="hidden_diskon_'.$key.'_'.$id.'" '.$readonly.'>
+                                <input type="'.$text.'" onchange="changeTotalBiaya('."'".$key."'".','.$id.')" class="format_number" style="text-align:center;margin-bottom:5px;width:70px" value="0" id="diskon_'.$key.'_'.$id.'" '.$readonly.'>
+                              </td>';
                 $html_tag .= '<td align="right" id="text_total_diskon_'.$key.'_'.$id.'">Rp. '.number_format($data->$key).',-</td>';
                 $html_tag .= '</tr>';
                 $arr_sum[] = $data->$key;
@@ -805,8 +805,7 @@ class Pl_pelayanan extends MX_Controller {
 
         $html_tag .= '</table>';
         $html_tag .= '</div>';
-        $html_tag .= '<div class="col-md-4">';
-        $html_tag .= '<br><br>';
+        $html_tag .= '<div class="col-md-12">';
         $html_tag .= '<p>
                         Keterangan :<br>
                         <ol>
@@ -840,14 +839,18 @@ class Pl_pelayanan extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->kode_trans_pelayanan.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                    </div>';
-            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="delete_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-times-circle"></i></a></div>';
-            $row[] = $row_list->kode_trans_pelayanan;
+            $row[] = '<div class="center">'.$no.'</div>';
+            if($row_list->kode_tc_trans_kasir==NULL){
+                $btn_edit = '<a href="#" class="btn btn-xs btn-success" onclick="edit_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-edit"></i></a>';
+
+                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="delete_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-times-circle"></i></a></div>';
+            }else{
+                $row[] = '<div class="center"><i class="fa fa-check-circle green"></i></div>';
+            }
+
+            // $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="delete_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-times-circle"></i></a></div>';
+
+            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_transaksi);
             $row[] = strtoupper($row_list->nama_tindakan);
             $row[] = '<div class="center">'.(int)$row_list->jumlah.' ('.$row_list->satuan_kecil.') </div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_satuan).',-</div>';
@@ -855,6 +858,7 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = '<div align="right">'.number_format($bill_total).',-</div>';
            
             $data[] = $row;
+            $arr_total[] = $bill_total;
         }
 
         $output = array(
@@ -862,6 +866,7 @@ class Pl_pelayanan extends MX_Controller {
                         "recordsTotal" => $this->Pl_pelayanan->count_all_tindakan(),
                         "recordsFiltered" => $this->Pl_pelayanan->count_filtered_tindakan(),
                         "data" => $data,
+                        "total_bill" => array_sum($arr_total),
                 );
         //output to json format
         echo json_encode($output);

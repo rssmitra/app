@@ -39,7 +39,6 @@ $(document).ready(function(){
       reset_data();
   });
 
-
 });
 
 $( ".form-control" )  
@@ -63,6 +62,37 @@ function find_data_reload(result){
 function reset_data(){
 
   oTable.ajax.url('pelayanan/Pl_rekap_kunjungan/get_data').load();
+
+}
+
+function saveRekap(kode_dr, kode_bag){
+  preventDefault();
+  var post_data = {
+    "kode_bagian" : kode_bag,
+    "kode_dokter" : kode_dr,
+    "checklist" : $('#checklist_'+kode_dr+'_'+kode_bag+'').val(),
+    "status_poli" : $('#status_session_poli_'+kode_dr+'_'+kode_bag+'').val(),
+    "ttl_df" : $('#ttl_df_'+kode_dr+'_'+kode_bag+'').val(),
+    "ttl_bd" : $('#ttl_bd_'+kode_dr+'_'+kode_bag+'').val(),
+    "ttl_sd" : $('#ttl_sd_'+kode_dr+'_'+kode_bag+'').val(),
+    "ttl_btl" : $('#ttl_btl_'+kode_dr+'_'+kode_bag+'').val(),
+    "keterangan" : $('#keterangan_'+kode_dr+'_'+kode_bag+'').val(),
+    "tgl_kunjungan" : $('#tgl_kunjungan').val(),
+  };
+
+  $.ajax({
+    url: 'pelayanan/Pl_rekap_kunjungan/process',
+    type: "post",
+    data: post_data,
+    dataType: "json",
+    beforeSend: function() {
+    },
+    success: function(data) {
+      // sukses respon
+      $('#td_'+kode_dr+'_'+kode_bag+'').html(data.timestamp);
+      $('#td_keterangan_'+kode_dr+'_'+kode_bag+'').html(data.keterangan);
+    }
+  });
 
 }
 
@@ -95,7 +125,7 @@ function reset_data(){
             </div>
           </div>
 
-          <label class="control-label col-md-1">s/d</label>
+          <!-- <label class="control-label col-md-1">s/d</label>
           <div class="col-md-2">
             <div class="input-group">
               <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($_GET['from_tgl'])?$_GET['from_tgl']:date('Y-m-d')?>"/>
@@ -103,7 +133,7 @@ function reset_data(){
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
             </div>
-          </div>
+          </div> -->
           <div class="col-md-3 no-padding">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -138,7 +168,9 @@ function reset_data(){
 
       <div class="tab-content">
         <div id="datatable_tab" class="tab-pane fade in active">
-          <p>Raw denim you probably haven't heard of them jean shorts Austin.</p>
+          <p><span style="font-weight: bold; font-size: 12px">Rekap kunjungan harian<br>Tanggal, <?php echo isset($_GET['from_tgl']) ? $this->tanggal->formatDateDmy($_GET['from_tgl']) : date('d/m/Y')?></span></p>
+          <input type="hidden" id="tgl_kunjungan" value="<?php echo isset($_GET['from_tgl']) ? $_GET['from_tgl'] : date('Y-m-d')?>">
+
           <table id="dynamic-tablexx" base-url="pelayanan/Pl_rekap_kunjungan" class="table table-bordered table-hover">
             <thead>
               <tr>  
@@ -152,6 +184,7 @@ function reset_data(){
                 <th class="center" width="120px">Keterangan<br>Lainnya</th>
                 <th class="center" width="120px">Status Poli</th>
                 <th class="center" width="120px">Petugas<br>Penanggung Jawab</th>
+                <th class="center" width="80px">#</th>
               </tr>
             </thead>
             <tbody>
@@ -195,28 +228,42 @@ function reset_data(){
                     $ttl_belum_dilayani = isset($belum_dilayani[$key][$k]) ? count($belum_dilayani[$key][$k]) : '';
                     $ttl_sudah_dilayani = isset($sudah_dilayani[$key][$k]) ? count($sudah_dilayani[$key][$k]) : '';
                     $ttl_batal = isset($batal[$key][$k]) ? count($batal[$key][$k]) : '';
+                    $rekap_ex = isset($rekapData[$v[0]->kode_bagian][$v[0]->kode_dokter]) ? $rekapData[$v[0]->kode_bagian][$v[0]->kode_dokter] : [] ;
+                    $checklist = isset($rekap_ex->checklist) ? $rekap_ex->checklist : '' ;
+                    $status_poli = isset($rekap_ex->status_poli) ? $rekap_ex->status_poli : 'open' ;
+                    $created_by = isset($rekap_ex->created_by) ? $rekap_ex->created_by : '' ;
+                    $keterangan = isset($rekap_ex->keterangan) ? $rekap_ex->keterangan : '' ;
+                    $created_date = isset($rekap_ex->created_date) ? $this->tanggal->formatDateTime($rekap_ex->created_date) : '' ;
                     // echo "<pre>";print_r($v);die;
                 ?>
                   <tr>
                   <td>&nbsp;</td>
-                  <td><?php echo $k?></td>
-                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: black"><?php echo count($v)?></span></a></td>
-                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: green"><?php echo $ttl_belum_dilayani?></span></a></td>
-                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: blue"><?php echo $ttl_sudah_dilayani?></span></a></td>
-                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: red"><?php echo $ttl_batal?></span></a></td>
+                  <td valign="middle"><?php echo $k?></td>
+                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: black"><?php echo count($v)?><input type="hidden" value="<?php echo count($v)?>" id="ttl_df_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>"></span></a></td>
+                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: green"><?php echo $ttl_belum_dilayani?><input type="hidden" value="<?php echo $ttl_belum_dilayani?>" id="ttl_bd_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>"></span></a></td>
+                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: blue"><?php echo $ttl_sudah_dilayani?><input type="hidden" value="<?php echo $ttl_sudah_dilayani?>" id="ttl_sd_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>"></span></a></td>
+                  <td align="center"><a href="#" onclick="show_modal('Templates/References/view_pasien_terdaftar_current?kode_dokter=<?php echo $v[0]->kode_dokter; ?>&kode_spesialis=<?php echo $v[0]->kode_bagian; ?>&tgl_registrasi=<?php echo $this->tanggal->formatDateTimeToSqlDate($v[0]->tgl_jam_poli); ?>', 'DATA KUNJUNGAN PASIEN')"><span style="font-weight: bold; color: red"><?php echo $ttl_batal?><input type="hidden" value="<?php echo $ttl_batal?>" id="ttl_btl_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>"></span></a></td>
                   <td align="center">
-                  <div class="checkbox">
-													<label>
-														<input name="form-field-checkbox" type="checkbox" class="ace">
-														<span class="lbl">&nbsp;</span>
-													</label>
-												</div>
+                    <div class="checkbox">
+                      <label>
+                        <input name="checklist" value="1" id="checklist_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>" type="checkbox" class="ace" <?php echo ($checklist == 1)?'checked':''?> >
+                        <span class="lbl">&nbsp;</span>
+                      </label>
+                    </div>
                   </td>
-                  <td><textarea style="width: 200px; height: 45px !important"></textarea></td>
+                  <td id="td_keterangan_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>">
+                    <?php if($keterangan == '') :?>
+                    <input type="text" id="keterangan_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>" class="form-control" value="<?php echo $keterangan?>"></td>
+                      <?php else: echo $keterangan; endif; ?>
                   <td>
-                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'status_session_poli')), 'open' , 'status_session_poli', 'status_session_poli', 'form-control', '', '') ?>
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'status_session_poli')), $status_poli , 'status_session_poli_'.$v[0]->kode_dokter.'_'.$v[0]->kode_bagian.'', 'status_session_poli_'.$v[0]->kode_dokter.'_'.$v[0]->kode_bagian.'', 'form-control', '', '') ?>
                   </td>
-                  <td align="center"><?php echo $this->session->userdata('user')->fullname?></td>
+                  <td align="center"><?php echo ($created_by != '') ? $created_by : $this->session->userdata('user')->fullname?></td>
+                  <td align="center"  id="td_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>">
+                    <?php if(count($rekap_ex) == 0) : ?>
+                    <a href="#" id="btn_save_<?php echo $v[0]->kode_dokter?>_<?php echo $v[0]->kode_bagian?>" class="btn btn-xs btn-primary" onclick="saveRekap(<?php echo $v[0]->kode_dokter?>, '<?php echo $v[0]->kode_bagian?>')">save</a>
+                    <?php else : echo $created_date; endif; ?>
+                  </td>
                 </tr>
                 <?php 
                   $arr_terdaftar[] = count($v);

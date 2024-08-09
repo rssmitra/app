@@ -106,7 +106,7 @@ class Global_report extends MX_Controller {
         
         // penerimaan barang gudang
         foreach ($penerimaan_brg_gudang as $k_penerimaan_brg => $v_penerimaan_brg_gdg) {
-            $qty = isset($v_penerimaan_brg_gdg['jumlah'])?(int)$v_penerimaan_brg_gdg['jumlah']:0;
+            $qty = isset($v_penerimaan_brg_gdg['jumlah_penerimaan'])?(int)$v_penerimaan_brg_gdg['jumlah_penerimaan']:0;
             $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = array('qty' => $qty, 'harga_beli' => (int)$v_penerimaan_brg_gdg['harga_beli'], 'biaya' => (int)$v_penerimaan_brg_gdg['biaya']);
         }
         

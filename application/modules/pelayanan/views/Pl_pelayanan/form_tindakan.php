@@ -76,6 +76,11 @@ $(document).ready(function() {
         "url": "pelayanan/Pl_pelayanan/"+url_tindakan,
           "type": "POST"
       },
+      "drawCallback" : function (response){
+        var objData = response.json;
+        $('#total_biaya_tindakan').html('Rp. '+formatMoney(objData.total_bill)+',-');
+      },
+
       "columnDefs": [
             { 
                 "targets": [ 0 ], //last column
@@ -83,6 +88,7 @@ $(document).ready(function() {
             },
             {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
             { "visible": true, "targets": [0] },
+            { "visible": false, "targets": [2] },
         ],
 
     });
@@ -140,8 +146,16 @@ $(document).ready(function() {
           "url": "pelayanan/Pl_pelayanan/get_data_obat?bagian=<?php echo ($sess_kode_bag)?$sess_kode_bag:0?>&jenis=obat&kode=<?php echo $no_kunjungan?>",
           "type": "POST"
       },
+      "drawCallback" : function (response){
+        var objData = response.json;
+        $('#total_biaya_obat').html('Rp.'+formatMoney(objData.total_bill)+',-');
+      },
 
     });
+
+    function format ( data ) {
+      return data.html;
+    }
 
     var url_tindakan = '<?php echo ($sess_kode_bag=='050301')?'getTindakanFisioByBagianAutoComplete':'getTindakanByBagianAutoComplete' ?>';
     $('#InputKeyTindakan').typeahead({
@@ -482,9 +496,7 @@ $(document).ready(function() {
 
 });
 
-function format ( data ) {
-  return data.html;
-}
+
 
 
 function getDokterAutoComplete(num){
@@ -704,7 +716,7 @@ function tambah_file()
 
 <div class="row">
     <div <?php $col_sm = (in_array($sess_kode_bag, array('050201','050101'))) ? 8 : 12; ?>class="col-sm-<?php echo $col_sm?>">
-        <p><b> BILLING PEMERIKSAAN <i class="fa fa-angle-double-right bigger-120"></i></b></p>
+        <p><b> BIAYA TINDAKAN / PEMERIKSAAN <i class="fa fa-angle-double-right bigger-120"></i></b></p>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Tanggal</label>
@@ -855,8 +867,8 @@ function tambah_file()
            <thead>
             <tr>  
               <th width="40px"></th>
-              <th width="80px"></th>
-              <th>Kode</th>
+              <th width="40px"></th>
+              <th width="40px"></th>
               <th>Tanggal</th>
               <th>Nama Tindakan</th>
               <th>Jumlah</th>
@@ -866,16 +878,18 @@ function tambah_file()
           </thead>
           <tbody>
           </tbody>
+          <tr>
+              <td colspan="6" align="right">Total biaya tindakan</td>
+              <td align="right"><span id="total_biaya_tindakan" style="font-size:12px; font-weight: bold"></span></td>
+            </tr>
         </table>
-
     </div>
 </div>
 
 <?php if(($type=='Rajal' OR ($type=='PM' AND $sess_kode_bag=='050301'))  ) : ?>
 <div class="row">
     <div class="col-sm-12">
-      <br>
-        <p><b><i class="fa fa-edit"></i> OBAT YANG DIBERIKAN (BPAKO)</b></p>
+        <p><b>BIAYA OBAT YANG DIBERIKAN (BPAKO)</b></p>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Nama Obat</label>
@@ -909,24 +923,26 @@ function tambah_file()
         </div>
         <?php endif;?>
 
-    </div>
+        <table id="table-obat" class="table table-bordered table-hover">
+          <thead>
+            <tr>  
+              <th width="40px" class="center">No</th>
+              <th width="40px"></th>
+              <th width="120px">Tgl Input</th>
+              <th>Nama Obat</th>
+              <th>Jumlah</th>
+              <th>Harga Satuan</th>
+              <th width="100px">Total Tarif</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+            <tr>
+              <td colspan="6" align="right">Total biaya obat</td>
+              <td align="right"><span id="total_biaya_obat" style="font-size:12px; font-weight: bold"></span></td>
+            </tr>
+        </table>
 
-    <div style="margin-top:0px">
-      <table id="table-obat" class="table table-bordered table-hover">
-         <thead>
-          <tr>  
-            <th width="30px" class="center"></th>
-            <th width="50px"></th>
-            <th width="100px">Kode</th>
-            <th>Nama Obat</th>
-            <th>Jumlah</th>
-            <th>Harga Satuan</th>
-            <th width="150px">Total Tarif</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
     </div>
 
 </div>

@@ -62,9 +62,9 @@
         <p style="font-size: 14px; font-weight: bold; text-align: center">PENGKAJIAN KEPERAWATAN INSTALASI GAWAT DARURAT</p>
 
         <table class="table">
-          <tr><td style="background: #f4ae11; color: black;" colspan="5" align="center"><span style="font-size: 16px; font-weight: bold">T R I A S E</span></td></tr>
+          <tr><td style="background: #f4ae11; color: black;" colspan="4" align="center"><span style="font-size: 16px; font-weight: bold">T R I A S E</span></td></tr>
           <tr>
-            <td colspan="5">
+            <td colspan="4">
               <div class="checkbox">
                 <label>
                   <input name="form-field-checkbox" type="checkbox" class="ace">
@@ -82,19 +82,19 @@
             </td>
           </tr>
           <tr>
-            <td colspan="5">
+            <td colspan="4">
               Keterangan : <br>
               <textarea style="width: 100%; height: 40px !important"></textarea>
             </td>
           </tr>
           <tr>
-            <td colspan="5">
+            <td colspan="4">
               Keluhan Utama Pasien: <br>
               <textarea style="width: 100%; height: 70px !important"></textarea>
             </td>
           </tr>
           <tr>
-            <td colspan="5">
+            <td colspan="4">
               <table class="table">
                 <tr style="background: #f1f1f1; font-weight: bold">
                   <td class="center" style="width: 80px" rowspan="2">Pernafasan</td>
@@ -114,16 +114,16 @@
                   <td align="center"><input type="text" style="width: 80px"></td>
                   <td align="center"><input type="text" style="width: 80px"></td>
                   <td align="center"><input type="text" style="width: 80px"></td>
-                  <td align="center"><input type="text" style="width: 80px"></td>
-                  <td align="center"><input type="text" style="width: 80px"></td>
-                  <td align="center"><input type="text" style="width: 80px"></td>
+                  <td align="center"><input type="text" style="width: 50px"></td>
+                  <td align="center"><input type="text" style="width: 50px"></td>
+                  <td align="center"><input type="text" style="width: 50px"></td>
                   <td align="center"><input type="text" style="width: 80px"></td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td colspan="5">
+            <td colspan="4">
               <div class="checkbox">
                 &nbsp; <b>Riwayat Alergi</b>
                 <label>
@@ -139,14 +139,13 @@
                   <span class="lbl" > &nbsp; Lainnya</span>
                 </label>
                 <label>
-                  <input name="form-field-checkbox" type="text" class="ace" style="width: 300px" placeholder="diisi jika pilih lainnya">
+                  <input name="form-field-checkbox" type="text" class="ace" style="width: 200px" placeholder="diisi jika pilih lainnya">
                 </label>
               </div>
             </td>
           <tr>
 
           <tr>
-            <td>&nbsp;</td>
             <td align="center" style="background: red; color: black; font-weight: bold">
               <div class="checkbox">
                 <label>
@@ -181,7 +180,9 @@
             </td>
           </tr>
           <tr>
-            <td style="vertical-align: middle !important; font-weight: bold">Jalan Nafas</td>
+            <td colspan="4" style="vertical-align: middle !important; font-weight: bold">Jalan Nafas</td>
+          </tr>
+          <tr>
             <td>
               <div class="checkbox">
                 <label>
@@ -209,10 +210,11 @@
             <td>
               -
             </td>
-            <td></td>
           </tr>
           <tr>
-            <td style="vertical-align: middle !important; font-weight: bold">Pernafasan</td>
+            <td colspan="4" style="vertical-align: middle !important; font-weight: bold">Pernafasan</td>
+          </tr>
+          <tr>
             <td>
               <div class="checkbox">
                 <label>
@@ -257,10 +259,12 @@
                 </label>
               </div>
             </td>
-            <td></td>
+            
           </tr>
           <tr>
-            <td style="vertical-align: middle !important; font-weight: bold">Sirkulasi</td>
+            <td colspan="4" style="vertical-align: middle !important; font-weight: bold">Sirkulasi</td>
+          </tr>
+          <tr>
             <td>
               <div class="checkbox">
                 <label>
@@ -329,10 +333,12 @@
                 </label>
               </div>
             </td>
-            <td></td>
+            
           </tr>
           <tr>
-            <td style="vertical-align: middle !important; font-weight: bold">Kesadaran</td>
+            <td colspan="4" style="vertical-align: middle !important; font-weight: bold">Kesadaran</td>
+          </tr>
+          <tr>
             <td>
               <div class="checkbox">
                 <label>
@@ -383,9 +389,10 @@
                 </label>
               </div>
             </td>
-            <td></td>
+            
           </tr>
         </table>
+
         <br>
         <table class="table">
           <tr><td style="background: #f4ae11; color: black;" colspan="2" align="center"><span style="font-size: 16px; font-weight: bold">P E N G K A J I A N</span></td></tr>
@@ -1544,7 +1551,7 @@
     <div id="pengkajian_dr" class="tab-pane fade">
       <div id="html_pengkajian_dr">
         <p style="font-size: 14px; font-weight: bold; text-align: center">PENGKAJIAN DOKTER INSTALASI GAWAT DARURAT</p>
-        <button onclick="refreshIframe();" class="btn btn-xs btn-primary">Reload Image</button>
+        <button onclick="refreshIframe();" type="button" class="btn btn-xs btn-primary">Reload Image</button>
 
         <iframe name="ifr_img_tagging" src="<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging" style="width: 100%; height: 650px; border: none"></iframe>
       </div>

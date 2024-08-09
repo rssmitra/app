@@ -21,6 +21,7 @@ class Po_monitoring_model extends CI_Model {
 		$tc_penerimaan_barang_detail = ($_GET['flag']=='non_medis')?'tc_penerimaan_barang_nm_detail':'tc_penerimaan_barang_detail';
 		$mt_barang = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
 		$this->db->select($this->select);
+		$this->db->select('MAX(f.updated_date) as tgl_terima');
 		$this->db->select('SUM(jumlah_kirim) as jumlah_kirim');
 		$this->db->from(''.$table.' a');
 		$this->db->join(''.$tc_po.' d','d.id_tc_po=a.id_tc_po', 'left');
