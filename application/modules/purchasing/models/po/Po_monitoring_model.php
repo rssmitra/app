@@ -132,6 +132,7 @@ class Po_monitoring_model extends CI_Model {
 			$this->db->where('MONTH(d.tgl_po) = ', date('m'));
 				$this->db->where('YEAR(d.tgl_po) = ', date('Y'));
 		}
+		$this->db->group_by($this->select);
 		$query = $this->db->get();
 		// echo '<pre>';print_r($this->db->last_query());die;
 		return $query->result();

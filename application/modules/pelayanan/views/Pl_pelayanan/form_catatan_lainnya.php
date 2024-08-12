@@ -269,7 +269,6 @@ function fillthis(id){
   .input_type{
     border : none !important;
     border-bottom : 1px solid grey !important;
-    min-width: 300px;
   }
 </style>
 <div class="row">
