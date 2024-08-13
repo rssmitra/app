@@ -43,7 +43,7 @@ class Eks_rm_model extends CI_Model {
             $this->db->where('YEAR(tgl_masuk)', $_GET['tahun']);
             $this->db->where('a.status_batal is null');
             $sensus_rj = $this->db->get();
-            echo '<pre>';print_r($this->db->last_query());die;
+            // echo '<pre>';print_r($this->db->last_query());die;
 
             // query diagnosa
             $this->db->select('CAST(diagnosa_akhir AS NVARCHAR(255)) as diagnosa, COUNT(b.no_kunjungan) as total');

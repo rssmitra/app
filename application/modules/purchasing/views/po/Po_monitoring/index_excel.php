@@ -28,8 +28,13 @@
   <tbody>
     <?php 
       $no=0; foreach( $data as $row) : 
-        $status = ($row->kode_penerimaan != '') ? '<span>Sudah Diterima</span>' : '<span>Belum Diterima</span>' ;
-      $no++;?>
+        if($row->jumlah_kirim > 0){
+            $status = ($row->jumlah_kirim == $row->jumlah_besar) ? 'Selesai' : 'Diterima '.$row->jumlah_kirim.' '.$row->satuan_besar.' <br> '.$this->tanggal->formatDateTime($row->tgl_terima).'' ;
+        }else{
+            $status = ($row->jumlah_kirim == $row->jumlah_besar) ? 'Selesai' : 'Belum dikirim' ;
+        }
+      $no++;
+    ?>
   <tr>  
     <td><?php echo $no?></td>
     <td width="150px"><?php echo $row->no_po; ?></td>

@@ -404,7 +404,16 @@ function get_riwayat_medis(no_mr){
       $('#cppt_data').html(data.html); 
       $('#cppt_data_on_tabs').html(data.html); 
   });
+}
 
+function get_riwayat_pm(no_mr){
+  $('#cppt_data').html('Loading...'); 
+  $('#cppt_data_on_tabs').html('Loading...'); 
+  
+  $.getJSON("templates/References/get_riwayat_pm/" +no_mr, '', function (data) { 
+      $('#cppt_data').html(data.html); 
+      $('#cppt_data_on_tabs').html(data.html); 
+  });
 }
 
 function getDataAntrianPasien(){
@@ -876,16 +885,20 @@ function show_icare() {
         <div class="tabbable">
           <ul class="nav nav-tabs" id="myTab">
               <li class="active">
-                  <a data-toggle="tab" href="#antrian_tabs">
-                      <i class="blue ace-icon fa fa-user bigger-120"></i>
-                      Antrian
+                  <a data-toggle="tab" href="#antrian_tabs" title="Antrian Pasien">
+                      <i class="blue ace-icon fa fa-users bigger-150"></i>
                   </a>
               </li>
 
               <li>
-                  <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_medis('<?php echo $no_mr?>')">
-                      <i class="green ace-icon fa fa-history bigger-120"></i>
-                      Resume Medis
+                  <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_medis('<?php echo $no_mr?>')" title="Riwayat Medis">
+                      <i class="red ace-icon fa fa-book bigger-150"></i>
+                  </a>
+              </li>
+
+              <li>
+                  <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_pm('<?php echo $no_mr?>')" title="Riwayat Penunjang Medis">
+                      <i class="green ace-icon fa fa-bookmark bigger-150"></i>
                   </a>
               </li>
           </ul>

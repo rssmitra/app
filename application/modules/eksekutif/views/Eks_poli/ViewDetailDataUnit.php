@@ -18,7 +18,7 @@
         <?php 
           foreach($group_poli as $ky3=>$row_k3) :
             foreach ($row_k3 as $ky7 => $val7) :
-              $arr_ttl_poli[$ky3][] = $val7->total; 
+              $arr_ttl_poli[$ky3][] = isset($val7->total)?$val7->total:0; 
               $kode_bagian[$ky3] = $val7->kode_bagian;
         ?>
         <?php 
@@ -29,10 +29,10 @@
         <tr>
           <td><?php echo ucwords($ky3)?></td>
           <td align="right">
-            <a href="#" onclick="show_detail_jenis_tindakan('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(count($arr_ttl_poli[$ky3]))?></a>
+            <a href="#" style="font-weight: bold; color: blue" onclick="show_detail_jenis_tindakan('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(count($arr_ttl_poli[$ky3]))?></a>
           </td>
           <td align="right">
-            <a href="#" onclick="show_detail_jenis_tindakan('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(array_sum($arr_ttl_poli[$ky3]))?></a>
+            <a href="#" style="font-weight: bold; color: blue" onclick="show_detail_jenis_tindakan('<?php echo $kode_bagian[$ky3]; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(array_sum($arr_ttl_poli[$ky3]))?></a>
           </td>
         </tr>
         <?php endforeach; ?>

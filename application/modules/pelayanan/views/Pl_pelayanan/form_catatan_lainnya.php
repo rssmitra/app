@@ -223,7 +223,17 @@ function show_edit(myid){
       $('#'+i).val(text);
     });
   }); 
+}
 
+function show_modal_pengkajian(myid){
+  preventDefault();
+  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
+    // show data
+    var obj = response.result;
+    var value_form = response.value_form;
+    show_modal_with_html(obj.catatan_pengkajian, value_form);
+    
+  }); 
 }
 
 function find_data_reload(result, base_url){

@@ -29,7 +29,8 @@
             $arr_alat_rs[] = $row_k3->alat_rs;
             $arr_adm[] = (in_array($row_k3->jenis_tindakan, array(2))) ? ($row_k3->bill_rs) : ($row_k3->adm);
             $arr_pendapatan_rs[] = (in_array($row_k3->jenis_tindakan, array(2))) ? ($row_k3->bill_rs) : ($row_k3->pendapatan_rs);
-            $arr_total[] = $row_k3->total;
+            $total = ($row_k3->bill_rs + $row_k3->bill_dr1 + $row_k3->bill_dr2);
+            $arr_total[] = $total;
             $no++;
         ?>
         <tr>
@@ -48,7 +49,7 @@
           <td align="right">
             <?php echo (in_array($row_k3->jenis_tindakan, array(1,9,11))) ? number_format($row_k3->bill_rs) : number_format($row_k3->pendapatan_rs)?>
           </td>
-          <td align="right" style="font-weight: bold"><?php echo number_format($row_k3->total)?></td>
+          <td align="right" style="font-weight: bold"><?php echo number_format($total)?></td>
         </tr>
         <?php endforeach; ?>
         <tr>

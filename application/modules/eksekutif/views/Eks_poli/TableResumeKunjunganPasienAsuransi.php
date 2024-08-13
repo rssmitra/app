@@ -4,7 +4,7 @@
       <tr>
         <th class="center" width="30px">No</th>
         <th width="250px">Nama Perusahaan</th>
-        <th width="50px">Jumlah Kunjungan</th>
+        <th width="50px">Jumlah Pasien</th>
         <th class="right" width="50px">Pendapatan (Rp)</th>
       </tr>
     <tbody>

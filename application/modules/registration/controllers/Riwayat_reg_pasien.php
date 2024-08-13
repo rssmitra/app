@@ -94,6 +94,8 @@ class Riwayat_reg_pasien extends MX_Controller {
             $data[] = $row;
             $resume[$row_list->nama_bagian][] = $row;
             $rekap_dr[$row_list->nama_pegawai][] = $row;
+            $rekap_asuransi[$row_list->kode_perusahaan][] = $row_list->nama_perusahaan;
+            $rekap_stat_pasien[$row_list->stat_pasien][] = $row_list->stat_pasien;
             // substring
             $substring = substr($row_list->kode_bagian_masuk, 0,2);
             $substr[$substring][] = $row;
@@ -106,6 +108,19 @@ class Riwayat_reg_pasien extends MX_Controller {
         foreach($resume as $key=>$val){
             $total_unit[] = ['unit' => $key, 'total' => count($resume[$key])];
         }
+
+        // rekap berdasarkan stat_pasien
+        foreach($rekap_stat_pasien as $key=>$val){
+            $total_stat_pasien[] = ['status' => $key, 'total' => count($rekap_stat_pasien[$key])];
+        }
+        
+
+        // rekap berdasarkan asuransi
+        foreach($rekap_asuransi as $key=>$val){
+            $total_asuransi[$key] = ['penjamin' => ($val[0] == '')?'UMUM':$val[0], 'total' => count($rekap_asuransi[$key])];
+        }
+        // echo "<pre>"; print_r($total_asuransi);die;
+
 
         // rekap berdasarkan dokter
         foreach($rekap_dr as $key=>$val){
@@ -137,6 +152,8 @@ class Riwayat_reg_pasien extends MX_Controller {
                         "resume" => $total_unit,
                         "rekap" => $total_kunjungan,
                         "rekap_dr" => $total_dr,
+                        "rekap_asuransi" => $total_asuransi,
+                        "rekap_stat_pasien" => $total_stat_pasien,
                         "rekap_batal" => count($rekap_batal),
                 );
         //output to json format

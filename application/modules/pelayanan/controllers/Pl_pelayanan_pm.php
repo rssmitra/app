@@ -207,6 +207,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         /*load form view*/
+        $data['attachment'] = $this->upload_file->getUploadedFilePenunjang($kode_penunjang);
 
         $this->load->view('Pl_pelayanan_pm/'.$view.'', $data);
         
@@ -622,7 +623,6 @@ class Pl_pelayanan_pm extends MX_Controller {
             $this->Pl_pelayanan_pm->update('pm_tc_penunjang',$pm_tc_penunjang, array('kode_penunjang' => $this->input->post('kode_penunjang')));
 
             /*insert pm_tc_hasilpenunjang*/
-            
             foreach($_POST['kode_mt_hasilpm'] as $key=>$row_dt){
 
                 $kode_mt_hasilpm = $row_dt;
@@ -661,6 +661,19 @@ class Pl_pelayanan_pm extends MX_Controller {
                     $this->db->trans_commit();
                 }
 
+            }
+
+            // insert and upload file
+            /*insert dokumen adjusment*/
+            if(isset($_FILES['pf_file'])){
+                $this->upload_file->PMdoUploadMultiple(array(
+                    'name' => 'pf_file',
+                    'path' => 'uploaded/casemix/log/',
+                    'kode_penunjang' => $_POST['kode_penunjang'],
+                    'ref_id' => $_POST['no_registrasi'],
+                    'ref_table' => 'csm_dokumen_export',
+                    'flag' => 'dokumen_export',
+                ));
             }
                           
             if ($this->db->trans_status() === FALSE)

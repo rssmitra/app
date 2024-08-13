@@ -115,14 +115,14 @@
       <div class="row">
           <div class="col-xs-10">
             <span style="font-size: 16px; font-weight: bold">DASHBOARD EKSEKUTIF</span><br>
-            Rekapitulasi Jumlah Pasien Berdasarkan Registrasi Pasien
+            Rekapitulasi Jumlah Pasien Berdasarkan Pasien Terdaftar dari Bagian Pendaftaran atau <i>Admission</i>
             <div class="clearfix"></div>
             <br>
 
             <p><b>PARAMETER QUERY</b></p>
 
             <div class="form-group" id="jenis_asuransi" >
-              <label class="control-label col-md-2">Jenis Pendaftaran</label>
+              <label class="control-label col-md-2">Jenis Pelayanan</label>
                 <div class="col-md-2">
                   <select class="form-control" name="jenis_kunjungan">
                   <option value="all">Pilih Semua</option>
@@ -130,10 +130,7 @@
                     <option value="ri">Rawat Inap</option>
                   </select>
                 </div>
-            </div>
-
-            <div class="form-group" id="jenis_asuransi" >
-              <label class="control-label col-md-2">Penjamin Pasien</label>
+                <label class="control-label col-md-2">Penjamin Pasien</label>
                 <div class="col-md-2">
                   <select class="form-control" name="penjamin">
                     <option value="all">Pilih Semua</option>

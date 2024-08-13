@@ -567,6 +567,7 @@ class Pl_pelayanan extends MX_Controller {
         $list = $this->Pl_pelayanan->get_datatables_tindakan();
         // print_r($this->db->last_query());die;
         $data = array();
+        $arr_bill = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;

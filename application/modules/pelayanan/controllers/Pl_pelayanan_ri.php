@@ -427,7 +427,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $row[] = $no;
                     $row[] = $this->tanggal->formatDateTime($row_list->cppt_tgl_jam);
                     $row[] = '['.strtoupper($row_list->cppt_ppa).']<br>'.$row_list->cppt_nama_ppa;
-                    $row[] = '<a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->cppt_id."'".', '."'".$row_list->label."'".')">'.strtoupper($row_list->label).'</a>';
+                    $row[] = '<a href="#" onclick="show_modal_pengkajian('.$row_list->cppt_id.')">'.strtoupper($row_list->label).'</a>';
 
         
                     $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
@@ -833,24 +833,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         
     }
 
-    public function get_cppt_dt(){
-
-        $query = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['id']))->row();
-        $convert_to_array = explode(',', $query->value_form);
-
-        for($i=0; $i < count($convert_to_array ); $i++){
-            $key_value = explode('=', $convert_to_array [$i]);
-            $end_array[trim($key_value[0])] = $key_value [1];
-        }
-        
-        $result = [
-            "value_form" => $end_array,
-            "result" => $query,
-
-        ];
-        // echo "<pre>"; print_r($result);die;
-        echo json_encode($result);
-    }
+    
 
 
     public function delete()
@@ -1184,6 +1167,25 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['data'] = $list;
         // echo '<pre>'; print_r($data);die;
         $this->load->view('Pl_pelayanan_ri/export_pdf_cppt', $data);
+    }
+
+    public function get_cppt_dt(){
+
+        $query = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['id']))->row();
+        $convert_to_array = explode(',', $query->value_form);
+
+        for($i=0; $i < count($convert_to_array ); $i++){
+            $key_value = explode('=', $convert_to_array [$i]);
+            $end_array[trim($key_value[0])] = $key_value [1];
+        }
+        
+        $result = [
+            "value_form" => $end_array,
+            "result" => $query,
+
+        ];
+        // echo "<pre>"; print_r($result);die;
+        echo json_encode($result);
     }
 
     public function show_catatan_pengkajian($cppt_id){

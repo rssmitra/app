@@ -712,15 +712,11 @@
       }
       
       function show_modal(url, title){  
-
           preventDefault();
-          
           $('#text_title').text(title);
-
+          $('#global_modal_content_detail').html('Loading...'); 
           $('#global_modal_content_detail').load(url); 
-
           $("#globalModalView").modal();
-          
       }
 
       function show_modal_with_iframe(url, title){  
@@ -769,6 +765,21 @@
         
         $('#text_title_medium').text(title);
 
+        $("#globalModalViewMedium").modal();
+
+      }
+
+      function show_modal_with_html(html, value_obj){  
+
+        preventDefault();
+        $('#global_modal_content_detail_medium').html(html);
+        // set value input
+        $.each(value_obj, function(i, item) {
+          var text = item;
+          text = text.replace(/\+/g, ' ');
+          $('#'+i).val(text);
+        });
+        // $('#text_title_medium').text(title);
         $("#globalModalViewMedium").modal();
 
       }

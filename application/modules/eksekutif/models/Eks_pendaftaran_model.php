@@ -54,7 +54,7 @@ class Eks_pendaftaran_model extends CI_Model {
 				$this->db->where('CAST(a.tgl_jam_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null ');
 			}
 			$prd_dt = $this->db->get();
-			
+			// print_r($this->db->last_query());die;
 			// day
 			$this->_main_query();
 			if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {

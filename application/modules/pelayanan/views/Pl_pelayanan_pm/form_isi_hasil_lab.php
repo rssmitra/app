@@ -80,6 +80,39 @@ function prosesIsiHasilEdit() {
 
 }
 
+
+function hapus_file(a, b)
+
+{
+
+  if(b != 0){
+    $.getJSON("<?php echo base_url('posting/delete_file') ?>/" + b, '', function(data) {
+        document.getElementById("file"+a).innerHTML = "";
+        greatComplate(data);
+    });
+  }else{
+    y = a ;
+    document.getElementById("file"+a).innerHTML = "";
+  }
+
+}
+
+counterfile = <?php $j=1;echo $j.";";?>
+
+function tambah_file()
+
+{
+
+  counternextfile = counterfile + 1;
+
+  counterIdfile = counterfile + 1;
+
+  document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='col-md-2'>&nbsp;</label><div class='col-md-2'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><label class='control-label col-md-1'>Pilih File</label><div class='col-md-3'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1' style='margin-left:-2.5%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\"></div>";
+
+  counterfile++;
+
+}
+
 </script>
 
 <div class="row">
@@ -90,25 +123,26 @@ function prosesIsiHasilEdit() {
   <?php endif ?>
 
   <div class="col-md-12">
-
-    <div class="form-group">
-        <label class="control-label col-sm-2" for="">*Tanggal</label>
-          <div class="col-md-3">
-                
-            <div class="input-group">
-                
-                <input name="pl_tgl_pm" id="pl_tgl_pm" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
-                <span class="input-group-addon">
+      <p style="font-weight: bold">FORM PENGISIAN HASIL PEMERIKSAAN LABORATORIUM</p>
+      <div class="form-group">
+          <label class="control-label col-sm-2" for="">*Tanggal isi hasil</label>
+            <div class="col-md-2">
                   
-                  <i class="ace-icon fa fa-calendar"></i>
-                
-                </span>
-              </div>
-          
-          </div>
-    </div>
+              <div class="input-group">
+                  
+                  <input name="pl_tgl_pm" id="pl_tgl_pm" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
+                  <span class="input-group-addon">
+                    
+                    <i class="ace-icon fa fa-calendar"></i>
+                  
+                  </span>
+                </div>
+            
+            </div>
+      </div>
+      <br>
 
-    <div>
+      <p style="font-weight: bold">JENIS PEMERIKSAAN</p>
       <table id="dynamic-table" class="table table-bordered table-hover">
         <thead>
           <tr>  
@@ -146,7 +180,7 @@ function prosesIsiHasilEdit() {
 
                 echo
                   '<tr>
-                    <td>'.$row_list->kode_mt_hasilpm.' - '.$row_list->nama_pemeriksaan.'</td>
+                    <td style="padding-left: 30px">- '.$row_list->nama_pemeriksaan.'</td>
                     <td>'.$row_list->detail_item_1.'</td>
                     <td>'.$row_list->detail_item_2.'</td>
                     <td>'. $nilai_std.' '.$row_list->satuan.'</td> 
@@ -169,17 +203,28 @@ function prosesIsiHasilEdit() {
           ?>
         </tbody>
       </table>
-            
+      <br>
+      <p style="font-weight: bold">UPLOAD HASIL PEMERIKSAAN LAINNYA</p>
       <div class="form-group">
-                      
-        <label class="control-label col-sm-2">Catatan</label>
-        
-        <div class="col-md-10">
-          
-          <textarea class="form-control" name="catatan_hasil" id="catatan_hasil" cols="50" style="height:150px !important;"><?php echo isset($catatan_hasil)?strip_tags($catatan_hasil):'';?></textarea>
-        
-        </div>
-      
+          <label class="control-label col-md-2">Nama Dokumen</label>
+          <div class="col-md-2">
+            <input name="pf_file_name[]" id="pf_file_name" class="form-control" type="text">
+          </div>
+          <label class="control-label col-md-1">Pilih File</label>
+          <div class="col-md-3">
+            <input type="file" id="pf_file" name="pf_file[]" class="upload_file form-control"/>
+          </div>
+          <div class ="col-md-1" style="margin-left:-2.5%">
+            <input onClick="tambah_file()" value="+" type="button" class="btn btn-sm btn-info" />
+          </div>
+      </div>
+
+      <div id="input_file<?php echo $j;?>"></div>
+      <?php echo $attachment; ?>
+      <BR>
+      <p style="font-weight: bold">CATATAN PEMERIKSAAN</p>
+      <div class="col-md-12 no-padding">
+        <textarea class="form-control" name="catatan_hasil" id="catatan_hasil" cols="50" style="height:150px !important;"><?php echo isset($catatan_hasil)?strip_tags($catatan_hasil):'';?></textarea>
       </div>
 
       <?php if(isset($is_edit) AND $is_edit=='Y'): ?>   
@@ -198,10 +243,6 @@ function prosesIsiHasilEdit() {
               </span>
           </div>
       </div>
-
-    </div>
-
-    </div>
 
   </div>
 

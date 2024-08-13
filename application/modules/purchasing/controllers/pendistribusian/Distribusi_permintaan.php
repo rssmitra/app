@@ -276,6 +276,8 @@ class Distribusi_permintaan extends MX_Controller {
 
     public function get_detail($flag, $id){
         $result = $this->Distribusi_permintaan->get_brg_permintaan($flag, $id);
+        // echo "<pre>";print_r($result);die;
+
         $data = array(
             'dt_detail_brg' => $result,
             'flag' => $flag,

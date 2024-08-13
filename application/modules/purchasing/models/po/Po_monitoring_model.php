@@ -6,7 +6,7 @@ class Po_monitoring_model extends CI_Model {
 	var $table_nm = 'tc_po_nm_det';
 	var $table = 'tc_po_det';
 	var $column = array('d.no_po','c.namasupplier');
-	var $select = 'd.id_tc_po, d.no_po, d.tgl_po, d.ppn, d.total_sbl_ppn, d.total_stl_ppn, d.discount_harga, d.term_of_pay, b.username, d.diajukan_oleh, d.disetujui_oleh, c.namasupplier, d.jenis_po, e.nama_brg, a.kode_brg, e.satuan_besar, a.jumlah_besar, a.content, a.harga_satuan, a.harga_satuan_netto, a.jumlah_harga, a.jumlah_harga_netto, a.discount';
+	var $select = 'd.id_tc_po, d.no_po, d.tgl_po, d.ppn, d.total_sbl_ppn, d.total_stl_ppn, d.discount_harga, d.term_of_pay, b.username, d.diajukan_oleh, d.disetujui_oleh, c.namasupplier, d.jenis_po, e.nama_brg, a.kode_brg, e.satuan_besar, a.jumlah_besar, a.content';
 	var $order = array('d.tgl_po' => 'ASC');
 
 	public function __construct()
@@ -20,6 +20,7 @@ class Po_monitoring_model extends CI_Model {
 		$tc_po = ($_GET['flag']=='non_medis')?'tc_po_nm':'tc_po';
 		$tc_penerimaan_barang_detail = ($_GET['flag']=='non_medis')?'tc_penerimaan_barang_nm_detail':'tc_penerimaan_barang_detail';
 		$mt_barang = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
+		$this->db->select('CAST(a.harga_satuan as DECIMAL(9,2)) as harga_satuan, CAST(a.harga_satuan_netto as DECIMAL(9,2)) as harga_satuan_netto, CAST(a.jumlah_harga as DECIMAL(9,2)) as jumlah_harga, CAST(a.jumlah_harga_netto as DECIMAL(9,2)) as jumlah_harga_netto, CAST(a.discount as DECIMAL(9,2)) as discount');
 		$this->db->select($this->select);
 		$this->db->select('MAX(f.updated_date) as tgl_terima');
 		$this->db->select('SUM(jumlah_kirim) as jumlah_kirim');
@@ -70,6 +71,7 @@ class Po_monitoring_model extends CI_Model {
 		}
 
 		$this->db->group_by($this->select);
+		$this->db->group_by('CAST(a.harga_satuan as DECIMAL(9,2)), CAST(a.harga_satuan_netto as DECIMAL(9,2)), CAST(a.jumlah_harga as DECIMAL(9,2)), CAST(a.jumlah_harga_netto as DECIMAL(9,2)), CAST(a.discount as DECIMAL(9,2))');
 
 
 
@@ -133,6 +135,7 @@ class Po_monitoring_model extends CI_Model {
 				$this->db->where('YEAR(d.tgl_po) = ', date('Y'));
 		}
 		$this->db->group_by($this->select);
+		$this->db->group_by('CAST(a.harga_satuan as DECIMAL(9,2)), CAST(a.harga_satuan_netto as DECIMAL(9,2)), CAST(a.jumlah_harga as DECIMAL(9,2)), CAST(a.jumlah_harga_netto as DECIMAL(9,2)), CAST(a.discount as DECIMAL(9,2))');
 		$query = $this->db->get();
 		// echo '<pre>';print_r($this->db->last_query());die;
 		return $query->result();

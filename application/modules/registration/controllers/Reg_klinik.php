@@ -573,7 +573,7 @@ class Reg_klinik extends MX_Controller {
 
     public function processRegisterNSEP(){
 
-        
+        // echo "<pre>";print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('tgl_registrasi', 'Tanggal Registrasi', 'trim|required');
         $this->form_validation->set_rules('noMrHidden', 'No MR', 'trim|required');

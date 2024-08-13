@@ -23,13 +23,14 @@
 
           foreach($group_unit as $ky1=>$row_k) {
             foreach ($row_k as $ky2 => $vl2) {
-              $arr_unit[$ky1][] = $vl2->total;
+              $arr_unit[$ky1][] = isset($vl2->total)?$vl2->total:0;
             }
           }
-
           foreach($arr_unit as $ky3=>$vl3) : 
+            if(!empty($ky3)) : 
             $arr_ttl_unit[] = array_sum($arr_unit[$ky3]);
             $arr_ttl_pasien[] = count($arr_unit[$ky3]);
+            $arr_ky3[] = $ky3;
             switch ($ky3) {
               case '01':
                 $nama_unit = 'Poli/Klinik Rawat Jalan';
@@ -50,11 +51,11 @@
 
         ?>
         <tr>
-          <td><?php echo $nama_unit?></td>
-          <td align="right"><a href="#" onclick="show_detail_unit('<?php echo $ky3; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(count($arr_unit[$ky3]))?></a></td>
-          <td align="right"><a href="#" onclick="show_detail_unit('<?php echo $ky3; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(array_sum($arr_unit[$ky3]))?></a></td>
+          <td><b><?php echo $nama_unit?></b></td>
+          <td align="right"><a href="#" style="font-weight: bold; color: blue" onclick="show_detail_unit('<?php echo $ky3; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(count($arr_unit[$ky3]))?></a></td>
+          <td align="right"><a href="#" style="font-weight: bold; color: blue" onclick="show_detail_unit('<?php echo $ky3; ?>', '<?php echo $value['flag']; ?>')"><?php echo number_format(array_sum($arr_unit[$ky3]))?></a></td>
         </tr>
-        <?php endforeach; ?>
+        <?php endif; endforeach;  ?>
         <tr>
           <td align="right"><b>Total</b></td>
           <td align="right"><b><?php echo number_format(array_sum($arr_ttl_pasien))?></b></td>

@@ -58,6 +58,20 @@ oTable = $('#dynamic-table').DataTable({
           $('<tr><td align="center">'+nob+'</td><td>'+v.nama_dr+'</td><td align="center">'+v.total+'</td></tr>').appendTo($('#resume_rekap_data_dr'));   
       });
 
+      $('#resume_rekap_data_asuransi tbody').remove();  
+      var noc = 0;      
+      $.each(objData.rekap_asuransi, function (k, v) {       
+        noc++;
+          $('<tr><td align="center">'+noc+'</td><td>'+v.penjamin+'</td><td align="center">'+v.total+'</td></tr>').appendTo($('#resume_rekap_data_asuransi'));   
+      });
+
+      $('#resume_rekap_stat_pasien tbody').remove();  
+      var noc = 0;      
+      $.each(objData.rekap_stat_pasien, function (k, v) {       
+        noc++;
+          $('<tr><td align="center">'+noc+'</td><td>PASIEN '+v.status.toUpperCase()+'</td><td align="center">'+v.total+'</td></tr>').appendTo($('#resume_rekap_stat_pasien'));   
+      });
+
   },
   "ajax": {
       "url": base_url+"/get_data",
@@ -309,7 +323,7 @@ function saveRow(no_registrasi){
 
           <div id="datatables" class="tab-pane fade in active">
             <div>
-              <p style="font-size: 14px; font-weight: bold">RIWAYAT REGISTRASI PASIEN</p>
+              <p style="font-size: 12px; font-weight: bold">RIWAYAT REGISTRASI PASIEN</p>
               <table id="dynamic-table" base-url="registration/Riwayat_reg_pasien" class="table table-bordered table-hover">
               <thead>
                 <tr>  
@@ -334,7 +348,7 @@ function saveRow(no_registrasi){
 
             <div class="row">
               <div class="col-md-4">
-                <p style="font-size: 14px; font-weight: bold;">REKAP DATA REGISTRASI PASIEN</p>
+                <p style="font-size: 12px; font-weight: bold;">REKAP DATA REGISTRASI PASIEN</p>
                 <table class="table" id="rekap_data">
                   <thead>
                     <tr>
@@ -352,7 +366,7 @@ function saveRow(no_registrasi){
               </div>
 
               <div class="col-md-4">
-                <p style="font-size: 14px; font-weight: bold;">REKAP DATA BERDASARKAN DOKTER</p>
+                <p style="font-size: 12px; font-weight: bold;">REKAP DATA BERDASARKAN DOKTER</p>
                 <table class="table" id="resume_rekap_data_dr">
                   <thead>
                     <tr>
@@ -370,7 +384,7 @@ function saveRow(no_registrasi){
               </div>
 
               <div class="col-md-3">
-                <p style="font-size: 14px; font-weight: bold;">REKAP DATA BERDASARKAN INSTALASI</p>
+                <p style="font-size: 12px; font-weight: bold;">REKAP DATA BERDASARKAN INSTALASI</p>
                 <table class="table" id="resume_rekap_data">
                   <thead>
                     <tr>
@@ -386,7 +400,39 @@ function saveRow(no_registrasi){
                   </tfoot>
                 </table>
                 <br>
-                <p style="font-size: 14px; font-weight: bold;">REKAP KUJUNGAN PASIEN</p>
+                <p style="font-size: 12px; font-weight: bold;">REKAP DATA BERDASARKAN ASURANSI</p>
+                <table class="table" id="resume_rekap_data_asuransi">
+                  <thead>
+                    <tr>
+                      <th class="center" width="30px">No</th>
+                      <th>Tujuan</th>
+                      <th class="center" width="100px">Jumlah</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                    <tr><td colspan="2" align="right"><b>TOTAL KUNJUNGAN PASIEN</b></td><td align="center"><span class="total_rekap"></span></td></tr>
+                  </tfoot>
+                </table>
+                <br>
+                <p style="font-size: 12px; font-weight: bold;">REKAP DATA BERDASARKAN STATUS PASIEN</p>
+                <table class="table" id="resume_rekap_stat_pasien">
+                  <thead>
+                    <tr>
+                      <th class="center" width="30px">No</th>
+                      <th>Status</th>
+                      <th class="center" width="100px">Jumlah</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                    <tr><td colspan="2" align="right"><b>TOTAL KUNJUNGAN PASIEN</b></td><td align="center"><span class="total_rekap"></span></td></tr>
+                  </tfoot>
+                </table>
+                <br>
+                <p style="font-size: 12px; font-weight: bold;">REKAP KUNJUNGAN PASIEN</p>
                 <table class="table" id="resume_rekap_batal">
                     <tr>
                       <td class="center" widtd="30px">1</td>
