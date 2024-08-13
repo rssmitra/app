@@ -43,13 +43,10 @@ class Riwayat_reg_pasien_model extends CI_Model {
 				}
 			}
 
-			if (isset($_GET['bulan']) AND $_GET['bulan'] != 0) {
-	            $this->db->where('MONTH(tgl_jam_masuk)='.$_GET['bulan'].'');	
-	        }
-
-	        if (isset($_GET['tahun']) AND $_GET['tahun'] != 0) {
-	            $this->db->where('YEAR(tgl_jam_masuk)='.$_GET['tahun'].'');	
-	        }
+			// if (isset($_GET['bulan']) AND $_GET['bulan'] != 0 && isset($_GET['tahun']) AND $_GET['tahun'] != 0) {
+	        //     $this->db->where('MONTH(tgl_jam_masuk)='.$_GET['bulan'].'');	
+			// 	$this->db->where('YEAR(tgl_jam_masuk)='.$_GET['tahun'].'');	
+	        // }
 
 	        if (isset($_GET['bagian']) AND $_GET['bagian'] != 0) {
 	            $this->db->where('tc_registrasi.kode_bagian_masuk', $_GET['bagian']);	

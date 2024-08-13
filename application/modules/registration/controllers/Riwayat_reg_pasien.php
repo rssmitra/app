@@ -78,6 +78,16 @@ class Riwayat_reg_pasien extends MX_Controller {
         $data = array();
         $resume = array();
         $rekap_batal = array();
+        $rekap_stat_pasien = array();
+        $rekap_asuransi = array();
+        $rekap_dr = array();
+        $substr = array();
+        $total_unit = array();
+        $total_kunjungan = array();
+        $total_dr = array();
+        $total_asuransi = array();
+        $total_stat_pasien = array();
+
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;

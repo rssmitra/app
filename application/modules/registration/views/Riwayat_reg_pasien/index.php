@@ -106,7 +106,7 @@ $('#btn_search_data').click(function (e) {
     dataType: "json",
     success: function(data) {
       console.log(data.data);
-      oTable.ajax.url(base_url+'/get_data?'+result.data).load();
+      oTable.ajax.url(base_url+'/get_data?'+data.data).load();
     }
   });
 });
@@ -227,7 +227,7 @@ function saveRow(no_registrasi){
 
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label class="control-label col-md-2">Bulan</label>
           <div class="col-md-2">
             <?php echo $this->master->get_bulan('' , 'bulan', 'bulan', 'form-control', '','') ?>
@@ -236,7 +236,7 @@ function saveRow(no_registrasi){
           <div class="col-md-2">
             <?php echo $this->master->get_tahun('' , 'tahun', 'tahun', 'form-control', '', '') ?>
           </div>
-      </div>
+      </div> -->
 
       <div class="form-group">
 
@@ -263,7 +263,7 @@ function saveRow(no_registrasi){
         <label class="control-label col-md-2">Tanggal Registrasi</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -273,7 +273,7 @@ function saveRow(no_registrasi){
           <label class="control-label col-md-1">s/d Tanggal</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
