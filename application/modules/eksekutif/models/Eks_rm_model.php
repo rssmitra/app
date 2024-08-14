@@ -12,22 +12,31 @@ class Eks_rm_model extends CI_Model {
     private function _main_query($type='rj'){
 
         $table = ($type == 'rj') ? 'sensus_rawat_jalan_v' : 'sensus_rawat_inap_v';
-        $this->db->from(''.$table.' a');
-
-        if (isset($_GET['penjamin']) AND $_GET['penjamin'] != 'all') {  
-            if (isset($_GET['penjamin']) AND $_GET['penjamin'] == 'bpjs') { 
-                $this->db->where('a.kode_perusahaan', 120);
-            }
-
-            if (isset($_GET['penjamin']) AND $_GET['penjamin'] == 'asuransi') { 
-                $this->db->where('a.kode_perusahaan NOT IN(120,0) ');
-            }
-
-            if (isset($_GET['penjamin']) AND $_GET['penjamin'] == 'umum') { 
-                $this->db->where('a.kode_perusahaan', 0);
-            }
+        switch ($type) {
+            case 'rj':
+                # code...
+                $table = 'sensus_rawat_jalan_v';
+                break;
+                case 'ri':
+                    # code...
+                    $table = 'sensus_rawat_inap_v';
+                    break;
+                    case 'igd':
+                        # code...
+                        $table = 'sensus_igd_rj_v';
+                        break;
+                        case 'pm':
+                            # code...
+                            $table = 'sensus_pm_v';
+                            break;
+            
+            default:
+                # code...
+                $table = 'sensus_rawat_jalan_v';
+                break;
         }
- 
+
+        $this->db->from(''.$table.' a'); 
     }
 
     function get_content_data($params) {
@@ -39,9 +48,9 @@ class Eks_rm_model extends CI_Model {
             // periode
             $this->_main_query('rj');
             // $this->db->join('mt_perusahaan c', 'c.kode_perusahaan =  a.kode_perusahaan', 'left');
-            $this->db->where('MONTH(tgl_masuk)', $_GET['bulan']);
-            $this->db->where('YEAR(tgl_masuk)', $_GET['tahun']);
-            $this->db->where('a.status_batal is null');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->order_by('a.nama_bagian', 'ASC');
+            // $this->db->where('a.status_batal is null');
             $sensus_rj = $this->db->get();
             // echo '<pre>';print_r($this->db->last_query());die;
 
@@ -49,12 +58,14 @@ class Eks_rm_model extends CI_Model {
             $this->db->select('CAST(diagnosa_akhir AS NVARCHAR(255)) as diagnosa, COUNT(b.no_kunjungan) as total');
             $this->_main_query('rj');
             $this->db->join('pl_th_riwayat_pasien_v b', 'b.no_kunjungan=a.no_kunjungan','left');
-            $this->db->where('MONTH(tgl_masuk)', $_GET['bulan']);
-            $this->db->where('YEAR(tgl_masuk)', $_GET['tahun']);
-            $this->db->where('a.status_batal is null');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->where('a.status_batal', 0);
+            $this->db->where('LEN( CAST(diagnosa_akhir AS NVARCHAR(255)) ) > 1');
             $this->db->group_by('CAST(diagnosa_akhir AS NVARCHAR(255))');
             $this->db->order_by('COUNT(b.no_kunjungan)', 'DESC');
+            $this->db->limit(10);
             $diagnosa_rj = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
 
             $data = array(
                 'result' => $sensus_rj->result(),
@@ -63,26 +74,46 @@ class Eks_rm_model extends CI_Model {
 
             $fields = array();
             $title = isset($_GET['jenis_kunjungan']) ? '' : '' ;
-            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PASIEN RAWAT JALAN<br>BULAN '.strtoupper($this->tanggal->getBulan($_GET['bulan'])).' TAHUN '.$_GET['tahun'].'</b></span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PASIEN POLIKLINIK SPESIALIS RAWAT JALAN<br>PERIODE '.strtoupper($this->tanggal->formatDateDmy($_GET['from_tgl'])).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
         }
+
+        // pie chart
+        if($params['prefix']==11){
+            $data = array();
+            // periode
+            $this->_main_query('rj');
+            $this->db->select('COUNT(*) as total, nama_bagian_short');
+            // $this->db->join('mt_perusahaan c', 'c.kode_perusahaan =  a.kode_perusahaan', 'left');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('nama_bagian_short');
+            $data_qry = $this->db->get()->result_array();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            $getData = [];
+            foreach ($data_qry as $key => $value) {
+                $data[] = array( 'name' => $value['nama_bagian_short'], 'total' => $value['total'] );
+            }
+
+            $fields = array('name' => 'total');
+            $title = '<span style="font-size: 18px; font-weight: bold">PERSENTASE POLIKLINIK SPESIALIS RAWAT JALAN<br>PERIODE '.strtoupper($this->tanggal->formatDateDmy($_GET['from_tgl'])).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+        }
+
 
         if($params['prefix']==2){
             $data = array();
             // periode
             $this->_main_query('ri');
-            $this->db->where('MONTH(tgl_masuk)', $_GET['bulan_ri']);
-            $this->db->where('YEAR(tgl_masuk)', $_GET['tahun_ri']);
-            $this->db->where('a.status_batal is null');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
             $sensus_rj = $this->db->get();
-            // echo '<pre>';print_r($this->db->last_query());die;
+            echo '<pre>';print_r($this->db->last_query());die;
 
             // query diagnosa
             $this->db->select('CAST(diagnosa_akhir AS NVARCHAR(255)) as diagnosa, COUNT(b.no_kunjungan) as total');
             $this->_main_query('ri');
             $this->db->join('th_riwayat_pasien b', 'b.no_kunjungan=a.no_kunjungan','left');
-            $this->db->where('MONTH(tgl_masuk)', $_GET['bulan_ri']);
-            $this->db->where('YEAR(tgl_masuk)', $_GET['tahun_ri']);
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
             $this->db->where('a.status_batal is null');
             // $this->db->where('CAST(diagnosa_akhir AS NVARCHAR(255)) is not null');
             $this->db->group_by('CAST(diagnosa_akhir AS NVARCHAR(255))');
@@ -97,8 +128,141 @@ class Eks_rm_model extends CI_Model {
 
             $fields = array();
             $title = isset($_GET['jenis_kunjungan']) ? '' : '' ;
-            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PASIEN RAWAT INAP<br>BULAN '.strtoupper($this->tanggal->getBulan($_GET['bulan'])).' TAHUN '.$_GET['tahun'].'</b></span>';
-            $subtitle = 'Source: RSSM - SIRS';
+            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PASIEN RAWAT INAP<br>PERIODE '.strtoupper($this->tanggal->formatDateDmy($_GET['from_tgl'])).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+        }
+
+        if($params['prefix']==3){
+            $data = array();
+            // periode
+            $this->_main_query('igd');
+            // $this->db->join('mt_perusahaan c', 'c.kode_perusahaan =  a.kode_perusahaan', 'left');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->order_by('a.nama_bagian', 'ASC');
+            // $this->db->where('a.status_batal is null');
+            $sensus_gd = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            // query diagnosa
+            $this->db->select('CAST(diagnosa_akhir AS NVARCHAR(255)) as diagnosa, COUNT(b.no_kunjungan) as total');
+            $this->_main_query('igd');
+            $this->db->join('gd_th_riwayat_pasien_v b', 'b.no_kunjungan=a.no_kunjungan','left');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            // $this->db->where('LEN( CAST(diagnosa_akhir AS NVARCHAR(255)) ) > 1');
+            $this->db->group_by('CAST(diagnosa_akhir AS NVARCHAR(255))');
+            $this->db->order_by('COUNT(b.no_kunjungan)', 'DESC');
+            $this->db->limit(10);
+            $diagnosa_gd = $this->db->get();
+
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            $data = array(
+                'result' => $sensus_gd->result(),
+                'diagnosa' => $diagnosa_gd->result(),
+            );
+
+            $fields = array();
+            $title = isset($_GET['jenis_kunjungan']) ? '' : '' ;
+            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PASIEN IGD<br>PERIODE '.strtoupper($this->tanggal->formatDateDmy($_GET['from_tgl'])).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+        }
+
+        if($params['prefix']==31){
+            
+            // data 1 => jumlah kunjungan igd per hari
+            $this->_main_query('igd');
+            $this->db->select('DAY(tgl_masuk) as tgl, COUNT(*) as total');
+            $this->db->where('MONTH(tgl_masuk)', date('m'));
+            $this->db->where('YEAR(tgl_masuk)', date('Y'));
+            $this->db->group_by('DAY(tgl_masuk)');
+            $fields[0] = array('Total_Pasien_Masuk' => 'total');
+            $data[0] = $this->db->get()->result_array();
+
+            // data2 => konversi ke rawat inap
+            $this->_main_query('igd');
+            $this->db->select('DAY(tgl_masuk) as tgl, COUNT(*) as total');
+            $this->db->where('MONTH(tgl_masuk)', date('m'));
+            $this->db->where('YEAR(tgl_masuk)', date('Y'));
+            $this->db->where('CAST(cara_keluar_pasien as VARCHAR(2000)) = ', 'Rujuk ke Rawat Inap');
+            $this->db->group_by('DAY(tgl_masuk)');
+            $fields[1] = array('Total_Konversi_RI' => 'total');
+            $data[1] = $this->db->get()->result_array();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            $title = '<span style="font-size:13.5px">Grafik Jumlah Kunjungan Pasien IGD VS Konversi ke Rawat Inap</span>';
+            $subtitle = 'Data per Hari Bulan '.$this->tanggal->getBulan(date('m')).' Tahun '.date('Y').' ';
+
+
+        }
+
+        if($params['prefix']==4){
+            $data = array();
+            // periode
+            $this->_main_query('pm');
+            $this->db->select('a.*');
+            $this->db->select('SUBSTRING(kode_bagian_asal, 0,3) as prefix_kode_bagian');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->order_by('a.nama_bagian', 'ASC');
+            $sensus_pm = $this->db->get();
+
+            $this->_main_query('pm');
+            $this->db->select('b.nama_tindakan, COUNT(*) as total, b.kode_bagian');
+            $this->db->join('tc_trans_pelayanan b ','b.no_kunjungan = a.no_kunjungan', 'left');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->where('b.nama_tindakan is not null');
+            $this->db->where('b.jenis_tindakan', 3);
+            $this->db->group_by('b.nama_tindakan, b.kode_bagian');
+            $this->db->order_by('COUNT(*) DESC');
+            $sensus_pemeriksaan = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            $data = array(
+                'result' => $sensus_pm->result(),
+                'pemeriksaan' => $sensus_pemeriksaan->result(),
+            );
+
+            $fields = array();
+            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS KUNJUNGAN PENUNJANG MEDIS<br>PERIODE '.strtoupper($this->tanggal->formatDateDmy($_GET['from_tgl'])).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+        }
+
+        if($params['prefix']==41){
+            
+            // line data 1 => lab 
+            $this->_main_query('pm');
+            $this->db->select('DAY(tgl_masuk) as txt_y, COUNT(*) as total');
+            $this->db->where('MONTH(tgl_masuk)', date('m'));
+            $this->db->where('YEAR(tgl_masuk)', date('Y'));
+            $this->db->where('kode_bagian_tujuan', '050101');
+            $this->db->group_by('DAY(tgl_masuk)');
+            $fields[0] = array('Laboratorium' => 'total');
+            $data[0] = $this->db->get()->result_array();
+
+            // line data 2 => radiologi
+            $this->_main_query('pm');
+            $this->db->select('DAY(tgl_masuk) as txt_y, COUNT(*) as total');
+            $this->db->where('MONTH(tgl_masuk)', date('m'));
+            $this->db->where('YEAR(tgl_masuk)', date('Y'));
+            $this->db->where('kode_bagian_tujuan', '050201');
+            $this->db->group_by('DAY(tgl_masuk)');
+            $fields[1] = array('Radiologi' => 'total');
+            $data[1] = $this->db->get()->result_array();
+
+            // line data 1 => lab 
+            $this->_main_query('pm');
+            $this->db->select('DAY(tgl_masuk) as txt_y, COUNT(*) as total');
+            $this->db->where('MONTH(tgl_masuk)', date('m'));
+            $this->db->where('YEAR(tgl_masuk)', date('Y'));
+            $this->db->where('kode_bagian_tujuan', '050301');
+            $this->db->group_by('DAY(tgl_masuk)');
+            $fields[2] = array('Laboratorium' => 'total');
+            $data[2] = $this->db->get()->result_array();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            $title = '<span style="font-size:13.5px">Grafik Jumlah Kunjungan Pasien IGD VS Konversi ke Rawat Inap</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+
+
         }
 
        

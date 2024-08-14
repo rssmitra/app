@@ -5,19 +5,19 @@
       <ul class="nav nav-tabs" id="myTab">
         <li class="active">
           <a data-toggle="tab" href="#rekap1">
-            Poliklinik Spesialis
+            Pasien Poliklinik/Spesialis
           </a>
         </li>
 
         <li>
           <a data-toggle="tab" href="#rekap2">
-            Dokter DPJP
+            Pasien Dokter Spesialis
           </a>
         </li>
 
         <li>
           <a data-toggle="tab" href="#rekap3">
-            Diagnosa Penyakit
+            Diagnosa Penyakit Pasien
           </a>
         </li>
 
@@ -38,29 +38,21 @@
         <div id="rekap1" class="tab-pane fade in active">
           
           <div>
-            <p style="font-weight: bold"> REKAPITULASI KUNJUNGAN PASIEN POLIKLINIK SPESIALIS RAWAT JALAN</p>
+            <p style="font-weight: bold">Rekap Kunjungan Pasien Berdasarkan Poliklinik/Spesialis</p>
             <table class="table">
               <tr style="background: #e9e6e6">
-                <th rowspan="3" style="vertical-align: middle !important" class="center">No</th>
-                <th rowspan="3" style="vertical-align: middle !important">Poliklinik/Spesialis</th>
-                <th class="center" colspan="6">Kategori Pasien</th>
-                <th class="center" rowspan="3" style="vertical-align: middle !important">Jumlah<br>Pasien</th>
-                <th class="center" rowspan="3" style="vertical-align: middle !important">Pasien<br>Batal</th>
-                <th class="center" rowspan="3" style="vertical-align: middle !important">%</th>
-                <th class="center" rowspan="3" style="vertical-align: middle !important">Chart</th>
+                <th rowspan="2" class="center">No</th>
+                <th rowspan="2">Poliklinik/Spesialis</th>
+                <th class="center" colspan="4">Kategori Pasien</th>
+                <th class="center" rowspan="2">Jumlah</th>
+                <th class="center" rowspan="2">%</th>
+                <th class="center" rowspan="2">Chart</th>
               </tr>
               <tr style="background: #e9e6e6">
-                <th class="center" style="width: 160px" colspan="2">BPJS</th>
-                <th class="center" style="width: 160px" colspan="2">Umum</th>
-                <th class="center" style="width: 160px" colspan="2">Asuransi</th>
-              </tr>
-              <tr style="background: #e9e6e6">
-                <th class="center" style="width: 80px">Lama</th>
-                <th class="center" style="width: 80px">Baru</th>
-                <th class="center" style="width: 80px">Lama</th>
-                <th class="center" style="width: 80px">Baru</th>
-                <th class="center" style="width: 80px">Lama</th>
-                <th class="center" style="width: 80px">Baru</th>
+                <th class="center" style="width: 120px">Lama</th>
+                <th class="center" style="width: 120px">Baru</th>
+                <th class="center" style="width: 120px">BPJS</th>
+                <th class="center" style="width: 120px">Non BPJS</th>
               </tr>
 
               <?php 
@@ -68,44 +60,25 @@
                 foreach($poli as $key_poli => $val_poli) : $no++;
                 $total_poli = isset($poli[$key_poli]) ? count($poli[$key_poli]) : 0;
                 $arr_total_poli[] = $total_poli;
-
-                // BPJS
-                $pasien_lama_bpjs = isset($penjamin[$key_poli][120]['lama']) ? count($penjamin[$key_poli][120]['lama']) : 0;
-                $arr_pasien_lama_bpjs[] = $pasien_lama_bpjs;
-                $pasien_baru_bpjs = isset($penjamin[$key_poli][120]['baru']) ? count($penjamin[$key_poli][120]['baru']) : 0;
-                $arr_pasien_baru_bpjs[] = $pasien_baru_bpjs;
-
-                // UMUM
-                $pasien_lama_umum = isset($penjamin[$key_poli][0]['lama']) ? count($penjamin[$key_poli][0]['lama']) : 0;
-                $arr_pasien_lama_umum[] = $pasien_lama_umum;
-                $pasien_baru_umum = isset($penjamin[$key_poli][0]['baru']) ? count($penjamin[$key_poli][0]['baru']) : 0;
-                $arr_pasien_baru_umum[] = $pasien_baru_umum;
-
-                // ASURANSI
-                $pasien_lama_asuransi = isset($penjamin[$key_poli][1]['lama']) ? count($penjamin[$key_poli][1]['lama']) : 0;
-                $arr_pasien_lama_asuransi[] = $pasien_lama_asuransi;
-                $pasien_baru_asuransi = isset($penjamin[$key_poli][1]['baru']) ? count($penjamin[$key_poli][1]['baru']) : 0;
-                $arr_pasien_baru_asuransi[] = $pasien_baru_asuransi;
-
-                // PASIEN BATAL
-                $pasien_batal = isset($batal[$key_poli][1]) ? count($batal[$key_poli][1]) : 0;
-                $arr_pasien_batal[] = $pasien_batal;
-                // TOTAL POLI
-                // PERSENTASE
+                $pasien_lama = isset($status_pasien[$key_poli]['lama']) ? count($status_pasien[$key_poli]['lama']) : 0;
+                $arr_pasien_lama[] = $pasien_lama;
+                $pasien_baru = isset($status_pasien[$key_poli]['baru']) ? count($status_pasien[$key_poli]['baru']) : 0;
+                $arr_pasien_baru[] = $pasien_baru;
+                $pasien_bpjs = isset($penjamin[$key_poli][120]) ? count($penjamin[$key_poli][120]) : 0;
+                $arr_pasien_bpjs[] = $pasien_bpjs;
+                $pasien_nonbpjs = $total_poli - $pasien_bpjs;
+                $arr_pasien_nonbpjs[] = $pasien_nonbpjs;
                 $percent = ($total_poli / $total) * 100;
                 $arr_percent[] = $percent;
               ?>
                 <tr>
                   <td align="center"><?php echo $no; ?></td>
                   <td><?php echo strtoupper($key_poli);?></td>
-                  <td align="center"><?php echo $pasien_lama_bpjs;?></td>
-                  <td align="center"><?php echo $pasien_baru_bpjs;?></td>
-                  <td align="center"><?php echo $pasien_lama_umum;?></td>
-                  <td align="center"><?php echo $pasien_baru_umum;?></td>
-                  <td align="center"><?php echo $pasien_lama_asuransi;?></td>
-                  <td align="center"><?php echo $pasien_baru_asuransi;?></td>
+                  <td align="center"><?php echo $pasien_lama;?></td>
+                  <td align="center"><?php echo $pasien_baru;?></td>
+                  <td align="center"><?php echo $pasien_bpjs;?></td>
+                  <td align="center"><?php echo $pasien_nonbpjs;?></td>
                   <td align="center"><?php echo $total_poli;?></td>
-                  <td align="center"><?php echo $pasien_batal;?></td>
                   <td align="center"><?php echo number_format($percent, 2);?></td>
                   <td align="center">
                     <div class="progress progress-striped active" style="margin-bottom: 0px !important">
@@ -116,28 +89,22 @@
               <?php endforeach; ?>
               <tr style="font-weight: bold">
                 <td colspan="2" align="right">TOTAL</td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_bpjs))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_bpjs))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_umum))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_umum))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_asuransi))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_asuransi))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_bpjs))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_nonbpjs))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_total_poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_batal))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_percent))?> %</td>
+                <td align="center"><?php echo number_format(array_sum($arr_percent))?></td>
               </tr>
 
               <tr style="font-weight: bold">
-                <td colspan="2" align="right">RATA-RATA KUNJUNGAN PASIEN PER POLI</td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_bpjs) / count($poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_bpjs) / count($poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_umum) / count($poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_umum) / count($poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_asuransi) / count($poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_asuransi) / count($poli))?></td>
+                <td colspan="2" align="right">RATA-RATA</td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_lama) / count($poli))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_baru) / count($poli))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_bpjs) / count($poli))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_pasien_nonbpjs) / count($poli))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_total_poli) / count($poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_pasien_batal) / count($poli))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_percent) / count($poli))?> %</td>
+                <td align="center"><?php echo number_format(array_sum($arr_percent) / count($poli))?></td>
               </tr>
             </table>
           </div>
@@ -147,15 +114,14 @@
         <div id="rekap2" class="tab-pane fade">
           
           <div>
-            <p style="font-weight: bold"> REKAPITULASI KUNJUNGAN PASIEN PER DOKTER SPESIALIS</p>
+            <p style="font-weight: bold">Rekap Kunjungan Pasien Berdasarkan Dokter Spesialis</p>
             <table class="table">
               <tr style="background: #e9e6e6">
                 <th class="center">No</th>
                 <th colspan="2">Poliklinik/Spesialis</th>
-                <th class="center" width="120px">Jumlah<br>Pasien</th>
-                <th class="center" width="120px">Batal<br>Kunjungan</th>
-                <th class="center" width="120px">Persentase<br>Kunjungan (%)</th>
-                <th class="center" width="200px">Chart</th>
+                <th class="center">Jumlah</th>
+                <th class="center">%</th>
+                <th class="center">Chart</th>
               </tr>
 
               <?php 
@@ -172,14 +138,11 @@
                   foreach($dokter[$key_poli] as $key_dok=>$val_dok) :
                     $percent_dok = (count($dokter[$key_poli][$key_dok])/ array_sum($arr_total_poli)) * 100;
                     $arr_percent_dok[] = $percent_dok;
-                    $jml_batal = isset($dokter_batal[$key_poli][$key_dok][1])?$dokter_batal[$key_poli][$key_dok][1]:[];
-                    $arr_jml_batal[] = count($jml_batal);
               ?>
                 <tr>
                   <td align="center" width="30px"><?php echo $nob; ?></td>
                   <td><?php echo strtoupper($key_dok);?></td>
                   <td align="center"><?php echo count($dokter[$key_poli][$key_dok]);?></td>
-                  <td align="center"><span class="red bold" style="font-weight: bold"><?php echo count($jml_batal);?></span></td>
                   <td align="center"><?php echo number_format($percent_dok, 2);?></td>
                   <td align="center" style="max-width: 100px">
                     <div class="progress progress-striped active" style="margin-bottom: 0px !important">
@@ -196,7 +159,6 @@
               <tr style="font-weight: bold">
                 <td colspan="3" align="right">TOTAL</td>
                 <td align="center"><?php echo number_format(array_sum($total_pasien_dokter))?></td>
-                <td align="center"><?php echo number_format(array_sum($arr_jml_batal))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_percent_dok))?></td>
               </tr>
             </table>
@@ -207,7 +169,7 @@
         <div id="rekap3" class="tab-pane fade">
           
           <div>
-          <p style="font-weight: bold"> REKAPITULASI 10 DIAGNOSA PENYAKIT PASIEN TERBANYAK </p>
+          <p style="font-weight: bold">Rekap Diagnosa Penyakit Pasien Terbanyak</p>
             <table class="table">
               <tr style="background: #e9e6e6">
                 <th class="center">No</th>
@@ -217,12 +179,10 @@
 
               <?php 
                 $noc = 0;
-                $lainnya = [];
-                $arr_total = [];
                 foreach($diagnosa as $key_diagnosa => $val_diagnosa) : 
-                  // if($val_diagnosa->total <= 10) {
-                  //   $lainnya[] = $val_diagnosa->total;
-                  // }
+                  if($val_diagnosa->total <= 10) {
+                    $lainnya[] = $val_diagnosa->total;
+                  }
                   
                   if($val_diagnosa->total >= 10) :
                     $noc++;
@@ -237,11 +197,11 @@
                 endif;
                 endforeach; 
               ?>
-              <!-- <tr>
+              <tr>
                 <td align="center" width="30px"><?php echo $noc+1; ?></td>
                 <td>DIAGNOSA ATAU PENYAKIT LAINNYA</td>
                 <td align="center"><?php echo number_format(array_sum($lainnya));?></td>
-              </tr> -->
+              </tr>
               <tr style="font-weight: bold">
                 <td align="right" colspan="2">TOTAL</td>
                 <td align="center"><?php echo number_format(array_sum($lainnya) + array_sum($arr_total));?></td>
@@ -254,7 +214,7 @@
         <div id="rekap4" class="tab-pane fade">
           
           <div>
-          <p style="font-weight: bold"> REKAPITULASI JUMLAH KUNJUNGAN PASIEN BERDASARKAN FASKES PERUJUK</p>
+          <p style="font-weight: bold">Rekap Jumlah Pasien Berdasarkan Faskes Perujuk</p>
             <table class="table">
               <tr style="background: #e9e6e6">
                 <th class="center">No</th>
@@ -300,7 +260,7 @@
         <div id="rekap5" class="tab-pane fade">
           
           <div>
-          <p style="font-weight: bold"> REKAPITULASI KUNJUNGAN PASIEN BERDASARKAN PENJAMIN</p>
+          <p style="font-weight: bold">Rekap Jumlah Pasien Berdasarkan Perusahaan Penjamin</p>
             <table class="table">
               <tr style="background: #e9e6e6">
                 <th class="center">No</th>

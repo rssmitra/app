@@ -20,7 +20,7 @@ class Po_monitoring_model extends CI_Model {
 		$tc_po = ($_GET['flag']=='non_medis')?'tc_po_nm':'tc_po';
 		$tc_penerimaan_barang_detail = ($_GET['flag']=='non_medis')?'tc_penerimaan_barang_nm_detail':'tc_penerimaan_barang_detail';
 		$mt_barang = ($_GET['flag']=='non_medis')?'mt_barang_nm':'mt_barang';
-		$this->db->select('CAST(a.harga_satuan as DECIMAL(9,2)) as harga_satuan, CAST(a.harga_satuan_netto as DECIMAL(9,2)) as harga_satuan_netto, CAST(a.jumlah_harga as DECIMAL(9,2)) as jumlah_harga, CAST(a.jumlah_harga_netto as DECIMAL(9,2)) as jumlah_harga_netto, CAST(a.discount as DECIMAL(9,2)) as discount');
+		$this->db->select('CAST(a.harga_satuan as NUMERIC) as harga_satuan, CAST(a.harga_satuan_netto as NUMERIC) as harga_satuan_netto, CAST(a.jumlah_harga as NUMERIC) as jumlah_harga, CAST(a.jumlah_harga_netto as NUMERIC) as jumlah_harga_netto, CAST(a.discount as NUMERIC) as discount');
 		$this->db->select($this->select);
 		$this->db->select('MAX(f.updated_date) as tgl_terima');
 		$this->db->select('SUM(jumlah_kirim) as jumlah_kirim');
@@ -71,7 +71,7 @@ class Po_monitoring_model extends CI_Model {
 		}
 
 		$this->db->group_by($this->select);
-		$this->db->group_by('CAST(a.harga_satuan as DECIMAL(9,2)), CAST(a.harga_satuan_netto as DECIMAL(9,2)), CAST(a.jumlah_harga as DECIMAL(9,2)), CAST(a.jumlah_harga_netto as DECIMAL(9,2)), CAST(a.discount as DECIMAL(9,2))');
+		$this->db->group_by('CAST(a.harga_satuan as NUMERIC), CAST(a.harga_satuan_netto as NUMERIC), CAST(a.jumlah_harga as NUMERIC), CAST(a.jumlah_harga_netto as NUMERIC), CAST(a.discount as NUMERIC)');
 
 
 
@@ -135,7 +135,7 @@ class Po_monitoring_model extends CI_Model {
 				$this->db->where('YEAR(d.tgl_po) = ', date('Y'));
 		}
 		$this->db->group_by($this->select);
-		$this->db->group_by('CAST(a.harga_satuan as DECIMAL(9,2)), CAST(a.harga_satuan_netto as DECIMAL(9,2)), CAST(a.jumlah_harga as DECIMAL(9,2)), CAST(a.jumlah_harga_netto as DECIMAL(9,2)), CAST(a.discount as DECIMAL(9,2))');
+		$this->db->group_by('CAST(a.harga_satuan as NUMERIC), CAST(a.harga_satuan_netto as NUMERIC), CAST(a.jumlah_harga as NUMERIC), CAST(a.jumlah_harga_netto as NUMERIC), CAST(a.discount as NUMERIC)');
 		$query = $this->db->get();
 		// echo '<pre>';print_r($this->db->last_query());die;
 		return $query->result();

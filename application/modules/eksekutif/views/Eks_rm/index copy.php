@@ -111,13 +111,13 @@
       <input type="hidden" name="mod" value="poli">
       <div class="row">
       <div class="col-xs-12">
-            <!-- <span style="font-size: 16px; font-weight: bold">DASHBOARD EKSEKUTIF</span><br>
+            <span style="font-size: 16px; font-weight: bold">DASHBOARD EKSEKUTIF</span><br>
             <p style="text-align:justify;">
                 Fitur Laporan Kunjungan Pasien adalah rekapitulasi kunjungan pasien berdasarkan Tanggal Masuk pasien yang tercatat pada sistem sesuai dengan periode yang dipilih, dan juga dapat di filter berdasarkan jenis pelayanan atau jenis kunjungan pasien, dan jenis penjamin nya ataupun umum.<br>
                 Jenis Laporan dapat dipilih sesuai dengan kebutuhannya dan visualisasi nya, ada yang berupa grafik dan juga data tabulasi. Perlu dicatat bahwa laporan kunjungan pasien bukan menunjukan jumlah pasien, karena setiap pasien dalam satu hari terdaftar dapat berkunjung ke poli spesialis, laboratorium, radiologi, dsb. sehingga tiap kunjungan ke unit dihitung masing-masing 1 kunjungan sehingga memungkinkan 1 pasien 3 kunjungan.
             </p>
             <div class="clearfix"></div>
-            <br> -->
+            <br>
 
             <p><b>PARAMETER QUERY</b></p>
 
@@ -126,7 +126,7 @@
                 <div class="col-md-2">
                   <select class="form-control" name="jenis_kunjungan">
                   <option value="all">Pilih Semua</option>
-                    <option value="rj">Poliklinik Spesialis</option>
+                    <option value="rj">Poliklinik Spesialis RJ</option>
                     <option value="igd">IGD</option>
                     <option value="pm">Penunjang Medis</option>
                     <option value="ri">Rawat Inap</option>
@@ -142,7 +142,7 @@
                   </div>
                 </div>
 
-                <label class="control-label col-md-1">s/d Tgl</label>
+                <label class="control-label col-md-1" style="margin-left:1%">s/d Tgl</label>
                 <div class="col-md-2">
                   <div class="input-group">
                     <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
@@ -151,13 +151,70 @@
                     </span>
                   </div>
                 </div>
-                <div class="col-md-2 no-padding">
+            </div>
+            <hr class="separator">
+            <div class="form-group" style="padding-top: 10px">
+                <div class="col-md-10 no-padding">
                   <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
                     <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                     Tampilkan Data
                   </a>
                 </div>
             </div>
+
+          </div>
+
+          <div class="col-xs-10">
+            <span style="font-size: 16px; font-weight: bold">DASHBOARD EKSEKUTIF</span><br>
+            Laporan Kunjungan Pasien dan Pendapatan RS berdasarkan Kunjungan Pasien
+            <div class="clearfix"></div>
+
+            <br>
+            <div class="col-md-12 no-padding">
+              <p><b>PILIH JENIS LAPORAN</b></p>
+
+              <label>
+                <input name="tbl-sensus-rawat-jalan" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Kunjungan Pasien Poliklinik Spesialis Rawat Jalan per Bulan</span>
+              </label>
+              <div class="form-group" id="div_bulan" style="display: none">
+                  <label class="control-label col-md-1">Bulan</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_bulan(date('m'),'bulan','bulan','form-control','','')?>
+                  </div>
+                  <label class="control-label col-md-1">Tahun</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_tahun(date('Y'),'tahun','tahun','form-control','','')?>
+                  </div>
+              </div>
+              <br>
+              <label>
+                <input name="tbl-sensus-rawat-inap" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1">
+                <span class="lbl"> Rekapitulasi Kunjungan Rawat Inap per Bulan</span>
+              </label>
+              <div class="form-group" id="div_bulan_ri" style="display: none">
+                  <label class="control-label col-md-1">Bulan</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_bulan(date('m'),'bulan_ri','bulan_ri','form-control','','')?>
+                  </div>
+                  <label class="control-label col-md-1">Tahun</label>
+                  <div class="col-md-2">
+                    <?php echo $this->master->get_tahun(date('Y'),'tahun_ri','tahun_ri','form-control','','')?>
+                  </div>
+              </div>
+
+            </div>
+            <br>
+            <hr class="separator">
+            <div class="form-group" style="padding-top: 10px">
+                <div class="col-md-10 no-padding">
+                  <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+                    <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                    Tampilkan Data
+                  </a>
+                </div>
+            </div>
+
           </div>
 
       </div>

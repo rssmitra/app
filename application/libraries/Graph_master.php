@@ -794,8 +794,14 @@ final Class Graph_master {
                 if ($params['style']==2) {
                     return $this->LineStyleTwoData($fields, $params, $data);
                 }
+                if ($params['style']==21) {
+                    return $this->LineStyleTwoDataByDate($fields, $params, $data);
+                }
                 if ($params['style']==4) {
                     return $this->LineStyleFourData($fields, $params, $data);
+                }
+                if ($params['style']==5) {
+                    return $this->LineStyleDynamicData($fields, $params, $data);
                 }
                 break;
             case 'table':
@@ -854,6 +860,14 @@ final Class Graph_master {
 
                 if ($params['style']=='TableSensusRJ') {
                     return $this->TableSensusRJ($fields, $params, $data);
+                }
+
+                if ($params['style']=='TableSensusIGD') {
+                    return $this->TableSensusIGD($fields, $params, $data);
+                }
+
+                if ($params['style']=='TableSensusPM') {
+                    return $this->TableSensusPM($fields, $params, $data);
                 }
 
                 if ($params['style']=='TableSensusRI') {
@@ -1029,6 +1043,64 @@ final Class Graph_master {
         );
         return $chart_data;
     }
+
+    public function LineStyleTwoDataByDate($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        // echo '<pre>';print_r($fields);
+        
+        $getData[0] = array();
+        foreach($data[0] as $key=>$row){
+            foreach ($fields[0] as $kf => $vf) {
+                $getData[0][$kf][$row['tgl']] = round($row['total'], 2);
+            }
+        }
+
+        $getData[1] = array();
+        foreach($data[1] as $key=>$row){
+            foreach ($fields[1] as $kf => $vf) {
+                $getData[1][$kf][$row['tgl']] = round($row['total'], 2);
+            }
+        }
+        // echo '<pre>';print_r($data);
+        
+
+        for ($i=0; $i < 32; $i++) { 
+            foreach ($fields[0] as $kf2 => $vf2) {
+                if(!isset($getData[0][$kf2][$i])){
+                    $getData[0][$kf2][$i] = 0;
+                }
+                ksort($getData[0][$kf2]);
+            }
+            $categories[] = $i;
+            
+        }
+
+        for ($i=0; $i < 32; $i++) { 
+            foreach ($fields[1] as $kf2 => $vf2) {
+                if(!isset($getData[1][$kf2][$i])){
+                    $getData[1][$kf2][$i] = 0;
+                }
+                ksort($getData[1][$kf2]);
+            }
+            $categories[] = $i;
+            
+        }
+
+        foreach ($getData[0] as $k => $r) {
+            $series[] = array('name' => $k, 'data' => $r );
+        }
+
+        foreach ($getData[1] as $k => $r) {
+            $series[] = array('name' => $k, 'data' => $r );
+        }
+        
+        $chart_data = array(
+            'xAxis'     => array('categories' => $categories),
+            'series'    => $series,
+        );
+        return $chart_data;
+    }
     
     public function LineStyleFourData($fields, $params, $data){
         $CI =&get_instance();
@@ -1128,6 +1200,49 @@ final Class Graph_master {
             'xAxis'     => array('categories' => $categories),
             'series'    => $series,
         );
+        return $chart_data;
+    }
+
+    public function LineStyleDynamicData($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        $total_data = count($fields);
+        // echo '<pre>';print_r($total_data);die;
+        
+        for($td=0; $td<=($total_data-1); $td++){
+            $getData[$td] = array();
+            foreach($data[$td] as $key=>$row){
+                foreach ($fields[$td] as $kf => $vf) {
+                    $getData[$td][$kf][$row['txt_y']] = round($row['total'], 2);
+                }
+            }
+
+            for ($i=0; $i < 32; $i++) { 
+                foreach ($fields[$td] as $kf2 => $vf2) {
+                    if(!isset($getData[$td][$kf2][$i])){
+                        $getData[$td][$kf2][$i] = 0;
+                    }
+                    ksort($getData[$td][$kf2]);
+                }
+                // $categories[] = $i;
+            }
+
+            foreach ($getData[$td] as $k => $r) {
+                $series[] = array('name' => $k, 'data' => $r );
+            }
+
+        }
+
+        for ($i=0; $i < 32; $i++) { 
+            $categories[] = $i;
+        }
+        
+        $chart_data = array(
+            'xAxis'     => array('categories' => $categories),
+            'series'    => $series,
+        );
+
+        // echo "<pre>"; print_r($chart_data);die;
         return $chart_data;
     }
 
@@ -1515,10 +1630,19 @@ final Class Graph_master {
         foreach ($data['result'] as $key => $value) {
             $getData[$value->nama_bagian][] = $value;
             $getDataStatusPasien[$value->nama_bagian][strtolower($value->stat_pasien)][] = $value;
-            $getDataPenjamin[$value->nama_bagian][$value->kode_perusahaan][] = $value;
             $getDataDokter[$value->nama_bagian][$value->nama_pegawai][] = $value;
+            $getDataDokterBatal[$value->nama_bagian][$value->nama_pegawai][$value->status_batal][] = $value;
             $getDataFaskes[$value->nama_faskes][] = $value;
             $getDataPerusahaan[$value->nama_perusahaan][] = $value;
+            $getDataPasienBatal[$value->nama_bagian][$value->status_batal][] = $value;
+
+            if($value->kode_perusahaan == 120){
+                $getDataPenjamin[$value->nama_bagian][120][strtolower($value->stat_pasien)][] = $value;
+            }elseif ($value->kode_perusahaan == 0) {
+                $getDataPenjamin[$value->nama_bagian][0][strtolower($value->stat_pasien)][] = $value;
+            }else{
+                $getDataPenjamin[$value->nama_bagian][1][strtolower($value->stat_pasien)][] = $value;
+            }
         }
 
         $result = [
@@ -1527,14 +1651,153 @@ final Class Graph_master {
             'status_pasien' => $getDataStatusPasien,
             'penjamin' => $getDataPenjamin,
             'dokter' => $getDataDokter,
+            'dokter_batal' => $getDataDokterBatal,
             'faskes' => $getDataFaskes,
             'perusahaan' => $getDataPerusahaan,
+            'batal' => $getDataPasienBatal,
             'diagnosa' => $data['diagnosa'],
         ];
+        // echo "<pre>"; print_r($data['diagnosa']);die;
 
 
         
         $html = $CI->load->view('eksekutif/Eks_rm/TableSensusRJ', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function TableSensusIGD($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        $getDataStatusPasien = [];
+        $getDataPenjamin = [];
+        $getDataDokter = [];
+        $getDataDokterBatal = [];
+        $getDataDokterKonvRI = [];
+        $getDataPerusahaan = [];
+        $getDataPasienBatal = [];
+        $kategori_usia = [];
+        $caraKeluarPasien = [];
+        $getDataUmur = [];
+
+        // master unit
+        foreach ($data['result'] as $key => $value) {
+            $getData[$value->nama_bagian][] = $value;
+            $getDataStatusPasien[$value->nama_bagian][strtolower($value->stat_pasien)][] = $value;
+            $getDataDokter[$value->nama_bagian][$value->nama_pegawai][] = $value;
+            $getDataDokterBatal[$value->nama_bagian][$value->nama_pegawai][$value->status_batal][] = $value;
+            $getDataDokterKonvRI[$value->nama_bagian][$value->nama_pegawai][$value->cara_keluar_pasien][] = $value;
+            $getDataPerusahaan[$value->nama_perusahaan][] = $value;
+            $getDataPasienBatal[$value->nama_bagian][$value->status_batal][] = $value;
+            $cara_kp = ($value->cara_keluar_pasien != '')?$value->cara_keluar_pasien:'Atas kemauan sendiri';
+            $caraKeluarPasien[$cara_kp][] = $value;
+
+            if($value->kode_perusahaan == 120){
+                $getDataPenjamin[$value->nama_bagian][120][strtolower($value->stat_pasien)][] = $value;
+            }elseif ($value->kode_perusahaan == 0) {
+                $getDataPenjamin[$value->nama_bagian][0][strtolower($value->stat_pasien)][] = $value;
+            }else{
+                $getDataPenjamin[$value->nama_bagian][1][strtolower($value->stat_pasien)][] = $value;
+            }
+
+            $getDataUmur[$value->umur][] = $value;
+        }
+
+        $key_umur = array_keys($getDataUmur);
+        // echo "<pre>";print_r(array_keys($getDataUmur));die;
+
+        foreach($key_umur as $val_u){
+            $getDataUmurX[$val_u] = count($getDataUmur[$val_u]);
+        }
+
+        // get kategori usia
+        $kategori_usia = $CI->master->getKategoriUsia($getDataUmurX);
+
+        $result = [
+            'total' => count($data['result']),
+            'poli' => $getData,
+            'status_pasien' => $getDataStatusPasien,
+            'penjamin' => $getDataPenjamin,
+            'dokter' => $getDataDokter,
+            'dokter_batal' => $getDataDokterBatal,
+            'dokter_konv_ri' => $getDataDokterKonvRI,
+            'perusahaan' => $getDataPerusahaan,
+            'batal' => $getDataPasienBatal,
+            'umur' => $kategori_usia,
+            'cara_keluar' => $caraKeluarPasien,
+            'diagnosa' => $data['diagnosa'],
+        ];
+
+        
+        // echo "<pre>";print_r($kategori_usia);die;
+
+        
+        $html = $CI->load->view('eksekutif/Eks_rm/TableSensusIGD', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+    
+
+    public function TableSensusPM($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        $getDataStatusPasien = [];
+        $getDataDokter = [];
+        $getDataDokterBatal = [];
+        $getDataDokterKonvRI = [];
+        $getDataPerusahaan = [];
+        $getDataPasienBatal = [];
+
+        // master unit
+        foreach ($data['result'] as $key => $value) {
+            $getData[$value->nama_bagian][] = $value;
+            $getDataStatusPasien[$value->nama_bagian][strtolower($value->stat_pasien)][] = $value;
+            $getDataBagianAsal[$value->bagian_asal][] = $value;
+            $getDataPerusahaan[$value->nama_perusahaan][] = $value;
+            $getDataPasienBatal[$value->nama_bagian][$value->status_batal][] = $value;
+            $getDataBagianAsalperPM[$value->prefix_kode_bagian][$value->kode_bagian_tujuan][] = $value;
+
+            if($value->kode_perusahaan == 120){
+                $getDataPenjamin[$value->nama_bagian][120][strtolower($value->stat_pasien)][] = $value;
+            }elseif ($value->kode_perusahaan == 0) {
+                $getDataPenjamin[$value->nama_bagian][0][strtolower($value->stat_pasien)][] = $value;
+            }else{
+                $getDataPenjamin[$value->nama_bagian][1][strtolower($value->stat_pasien)][] = $value;
+            }
+        }
+
+        foreach($data['pemeriksaan'] as $key_p => $val_p){
+            $getDataPemeriksaan[$val_p->kode_bagian][] = $val_p;
+        }
+
+        $result = [
+            'total' => count($data['result']),
+            'unit' => $getData,
+            'status_pasien' => $getDataStatusPasien,
+            'penjamin' => $getDataPenjamin,
+            'perusahaan' => $getDataPerusahaan,
+            'bagian_asal' => $getDataBagianAsal,
+            'bagian_asal_perpm' => $getDataBagianAsalperPM,
+            'batal' => $getDataPasienBatal,
+            'pemeriksaan' => $getDataPemeriksaan,
+        ];
+        // echo "<pre>"; print_r($getDataPemeriksaan);die;
+
+
+        
+        $html = $CI->load->view('eksekutif/Eks_rm/TableSensusPM', $result, true);
         
         
         $chart_data = array(

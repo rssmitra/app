@@ -27,7 +27,7 @@ class Eks_poli_model extends CI_Model {
                 $this->db->where('b.kode_perusahaan', 0);
             }
         }
-        $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');
+        // $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');
         $this->db->where('c.no_kunjungan is not null');
  
     }
@@ -947,7 +947,7 @@ class Eks_poli_model extends CI_Model {
         if($_GET['flag'] == 'day'){         
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
-                    $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');       
+                    // $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');       
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
                     where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '."'03'".' AND CAST(tgl_masuk as DATE) = '."'".date('Y-m-d')."'".' AND a.status_batal is null )');           
@@ -972,7 +972,7 @@ class Eks_poli_model extends CI_Model {
         if($_GET['flag'] == 'month'){           
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
-                    $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');       
+                    // $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');       
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
                     where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null)');           
@@ -998,7 +998,7 @@ class Eks_poli_model extends CI_Model {
         if($_GET['flag'] == 'year'){        
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'rj') {
-                    $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');       
+                    // $this->db->where('SUBSTRING(c.kode_bagian_tujuan, 0, 3) != '."'06'".'');       
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
                     where SUBSTRING(a.kode_bagian_tujuan, 0, 3) != '."'03'".' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null)');            

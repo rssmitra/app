@@ -1502,6 +1502,79 @@ final Class Master {
 		return $clr_txt;
 	}
 
+	public function getKategoriUsia($array){
+
+		// key = umur, value = total
+		foreach($array as $key=>$val){
+			if($key < 11){
+				$txt_usia[1][] = $val;
+			}
+
+			if($key > 10 && $key < 21){
+				$txt_usia[2][] = $val;
+			}
+
+			if($key > 20 && $key < 31){
+				$txt_usia[3][] = $val;
+			}
+
+			if($key > 30 && $key < 41){
+				$txt_usia[4][] = $val;
+			}
+
+			if($key > 40 && $key < 51){
+				$txt_usia[5][] = $val;
+			}
+
+			if($key > 50 && $key < 61){
+				$txt_usia[6][] = $val;
+			}
+
+			if($key > 60){
+				$txt_usia[7][] = $val;
+			}
+		}
+		krsort($txt_usia);
+		return $txt_usia;
+	}
+
+	public function getKategoriUsiaName($key){
+		
+		// key = umur, value = total
+		switch ($key) {
+			case '1':
+				# code...
+				$txt = '0 - 10 Tahun';
+				break;
+				case '2':
+					# code...
+					$txt = '11 - 20 Tahun';
+					break;
+					case '3':
+						# code...
+						$txt = '21 - 30 Tahun';
+						break;
+						case '4':
+							# code...
+							$txt = '31 - 40 Tahun';
+							break;
+							case '5':
+								# code...
+								$txt = '41 - 50 Tahun';
+								break;
+								case '6':
+									# code...
+									$txt = '51 - 60 Tahun';
+									break;
+									case '7':
+										# code...
+										$txt = '> 60 Tahun';
+										break;
+		}
+
+		return $txt;
+	}
+
 }
 
 ?> 

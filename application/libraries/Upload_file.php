@@ -234,6 +234,76 @@ final Class upload_file {
             return $getData;
     }
 
+    function PMdoUploadMultiple($params)
+    {
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        $CI->load->library('upload');
+        //$CI->load->library('image_lib'); 
+        $getData = array();
+        foreach ($_FILES[''.$params['name'].'']['name'] as $i=>$values) {
+
+              $_FILES['userfile']['name']     = $_FILES[''.$params['name'].'']['name'][$i];
+              $_FILES['userfile']['type']     = $_FILES[''.$params['name'].'']['type'][$i];
+              $_FILES['userfile']['tmp_name'] = $_FILES[''.$params['name'].'']['tmp_name'][$i];
+              $_FILES['userfile']['error']    = $_FILES[''.$params['name'].'']['error'][$i];
+              $_FILES['userfile']['size']     = $_FILES[''.$params['name'].'']['size'][$i];
+
+              $random = rand(1,99);
+              $no_primary = isset($_POST['csm_rp_no_sep'])?$_POST['csm_rp_no_sep']:$params['ref_id'];
+              
+              $custom_dok_name = isset($_POST['pf_file_name']) ? preg_replace('/\s+/','-', $_POST['pf_file_name'][$i]).'-'.$no_primary : 'Lampiran-'.$random ;
+
+              $nama_file_unik = $custom_dok_name.'-'.preg_replace('/\s+/','', $_FILES[''.$params['name'].'']['name'][$i]);
+              //$nama_file_unik = preg_replace('/\s+/', '-', $custom_dok_name).'-'.$no_primary;
+
+              $type_file = $_FILES[''.$params['name'].'']['type'][$i];
+              $file_name = $_POST['pf_file_name'][$i];
+
+              $config = array(
+                'allowed_types' => '*',
+                'file_name'     => $nama_file_unik,
+                'max_size'      => '999999',
+                'overwrite'     => TRUE,
+                'remove_spaces' => TRUE,
+                'upload_path'   => $params['path']
+              );
+
+              $CI->upload->initialize($config);
+
+              if ($_FILES['userfile']['tmp_name'][$i]) {
+
+                  if ( ! $CI->upload->do_upload()) :
+                    $error = array('error' => $CI->upload->display_errors());
+                  else :
+
+                    $data = array( 'upload_data' => $CI->upload->data() );
+                    /*cek attchment exist*/
+                    
+                    $doc_save = array(
+                        'kode_penunjang' => $params['kode_penunjang'],
+                        'no_registrasi' => $params['ref_id'],
+                        'csm_dex_nama_dok' => $file_name,
+                        'csm_dex_jenis_dok' => $type_file,
+                        'csm_dex_fullpath' => $params['path'].$nama_file_unik,
+                        'is_adjusment' => 'Y',
+                    );
+                    $doc_save['created_date'] = date('Y-m-d H:i:s');
+                    $doc_save['created_by'] = $CI->session->userdata('user')->fullname;
+                    $db->insert('csm_dokumen_export', $doc_save);
+
+
+                    $getData[] = $doc_save;
+
+                  endif;
+
+              }
+                
+            }
+
+            return $getData;
+    }
+
     function PrbdoUploadMultiple($params)
     {
         $CI =&get_instance();
@@ -304,6 +374,51 @@ final Class upload_file {
 
         $html = '';
         $db->where('no_registrasi', $no_registrasi);
+        $files = $db->get('csm_dokumen_export')->result();
+
+        $html .= '<table id="attc_table_id" class="table table-striped table-bordered">';
+        $html .= '<tr style="background-color:darkcyan; color:white">';
+            $html .= '<th width="30px" class="center">No</th>';
+            $html .= '<th width="100px">File Name</th>';
+            $html .= '<th width="100px">Created Date</th>';
+            $html .= '<th width="60px" class="center">Download</th>';
+            $html .= '<th width="60px" class="center">Delete</th>';
+        $html .= '</tr>';
+        $no=1;
+        if(count($files) > 0){
+            foreach ($files as $key => $row_list) {
+                # code...
+                $html .= '<tr id="tr_id_'.$row_list->csm_dex_id.'">';
+                    $html .= '<td align="center">'.$no.'</td>';
+                    $filename = explode('-',$row_list->csm_dex_nama_dok);
+                    $html .= '<td align="left">'.$filename[0].'</td>';
+                    $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
+                    $html .= '<td align="center"><a href="'.BASE_FILE_RM.$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
+                    $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
+                $html .= '</tr>';
+            $no++;
+            }
+        }else{
+            $html .=  '<tr><td colspan="9">- File not found -</td></tr>';
+        }
+        
+        $html .= '</table>';
+
+
+
+
+
+        return $html;
+
+    }
+
+    function getUploadedFilePenunjang($kode_penunjang){
+
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+
+        $html = '';
+        $db->where('kode_penunjang', $kode_penunjang);
         $files = $db->get('csm_dokumen_export')->result();
 
         $html .= '<table id="attc_table_id" class="table table-striped table-bordered">';

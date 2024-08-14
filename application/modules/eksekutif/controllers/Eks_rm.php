@@ -40,17 +40,24 @@ class Eks_rm extends MX_Controller {
 
         $output = http_build_query($_GET) . "\n";
 
-        if(isset($_GET['tbl-sensus-rawat-jalan'])){
-            $data[0] = array(
+        if(isset($_GET['jenis_kunjungan']) && $_GET['jenis_kunjungan'] == 'rj'){
+            $data[1] = array(
                 'nameid' => 'tbl-sensus-rawat-jalan',
                 'style' => 'table',
                 'col_size' => 12,
                 'url' => 'eksekutif/Eks_rm/data?prefix=1&TypeChart=table&style=TableSensusRJ&'.$output.'',
             );
 
+            $data[0] = array(
+                'nameid' => 'pie-sensus-rawat-jalan',
+                'style' => 'pie',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_rm/data?prefix=11&TypeChart=pie&style=1&'.$output.'',
+            );
+
         }
 
-        if(isset($_GET['tbl-sensus-rawat-inap'])){
+        if(isset($_GET['jenis_kunjungan']) && $_GET['jenis_kunjungan'] == 'ri'){
             $data[0] = array(
                 'nameid' => 'tbl-sensus-rawat-inap',
                 'style' => 'table',
@@ -59,6 +66,43 @@ class Eks_rm extends MX_Controller {
             );
 
         }
+
+        if(isset($_GET['jenis_kunjungan']) && $_GET['jenis_kunjungan'] == 'igd'){
+            $data[1] = array(
+                'nameid' => 'tbl-sensus-rawat-jalan',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_rm/data?prefix=3&TypeChart=table&style=TableSensusIGD&'.$output.'',
+            );
+
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_rm/data?prefix=31&TypeChart=line&style=21&'.$output.'',
+            );
+
+        }
+
+        if(isset($_GET['jenis_kunjungan']) && $_GET['jenis_kunjungan'] == 'pm'){
+            $data[1] = array(
+                'nameid' => 'tbl-sensus-pm',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_rm/data?prefix=4&TypeChart=table&style=TableSensusPM&'.$output.'',
+            );
+
+            $data[0] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-line-1-pm',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_rm/data?prefix=41&TypeChart=line&style=5&'.$output.'',
+            );
+
+        }
+
         
         // if(isset($_GET['graph-line-1'])){
         //     $data[1] = array(

@@ -835,7 +835,7 @@ class Pl_pelayanan_igd extends MX_Controller {
                 'tgl_periksa' => date('Y-m-d H:i:s'),
                 'kode_bagian' => $this->form_validation->set_value('kode_bagian_asal'),
                 'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
-                'kategori_tindakan' => 3,
+                'kategori_tindakan' => $_POST['kategori_tindakan'],
                 'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
             );
 
