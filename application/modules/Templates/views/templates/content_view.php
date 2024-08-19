@@ -772,15 +772,16 @@
       function show_modal_with_html(html, value_obj){  
 
         preventDefault();
-        $('#global_modal_content_detail_medium').html(html);
+        
         // set value input
         console.log(value_obj);
         $.each(value_obj, function(i, item) {
           var text = item;
           text = text.replace(/\+/g, ' ');
-          console.log(i);
-          $('#'+i).val(text);
+          console.log(i+' = '+text);
+          $('#'+i).val(item);
         });
+        $('#global_modal_content_detail_medium').html(html);
         // $('#text_title_medium').text(title);
         $("#globalModalViewMedium").modal();
 

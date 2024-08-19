@@ -1174,7 +1174,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         $query = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['id']))->row();
         $convert_to_array = explode('|', $query->value_form);
 
-        // echo "<pre>"; print_r($query->value_form);die;
+        // echo "<pre>"; print_r($query);die;
         // echo "<pre>"; print_r($convert_to_array);die;
 
         for($i=0; $i < count($convert_to_array ); $i++){
@@ -1184,13 +1184,18 @@ class Pl_pelayanan_ri extends MX_Controller {
         
         // echo "<pre>"; print_r($end_array);die;
 
-        $result = [
+        $data = [
             "value_form" => $end_array,
             "result" => $query,
+            "jenis_form" => 'form_'.$query->jenis_form,
 
         ];
+
+        // echo "<pre>"; print_r($data);die;
+        $html = $this->load->view('Pl_pelayanan/form_'.$query->jenis_form.'', $data, true);
         
-        echo json_encode($result);
+        echo json_encode(array('html' => $html));
+        // echo json_encode($result);
     }
 
     public function show_catatan_pengkajian($cppt_id){

@@ -225,15 +225,20 @@ function show_edit(myid){
   }); 
 }
 
+// function show_modal_pengkajian(myid){
+//   preventDefault();
+//   $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
+//     // show data
+//     var obj = response.result;
+//     var value_form = response.value_form;
+//     show_modal_medium_return_json(obj.html, value_form);
+    
+//   }); 
+// }
+
 function show_modal_pengkajian(myid){
   preventDefault();
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
-    // show data
-    var obj = response.result;
-    var value_form = response.value_form;
-    show_modal_with_html(obj.catatan_pengkajian, value_form);
-    
-  }); 
+  show_modal_medium_return_json('pelayanan/Pl_pelayanan_ri/get_cppt_dt?id='+myid+'', 'DETAIL PENGKAJIAN');
 }
 
 function find_data_reload(result, base_url){
