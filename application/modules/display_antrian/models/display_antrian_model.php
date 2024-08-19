@@ -182,11 +182,12 @@ class Display_antrian_model extends CI_Model {
 		// echo '<pre>';print_r($this->db->last_query());die;
 		
 		$praktek = ($this->session->userdata('sess_nama_dokter')) ? 'DOKTER DATANG' : 'BELUM MULAI';
-
+		$nama_pasien = explode(" ", $result->nama_pasien);
+		$txt_nama_pasien = $nama_pasien[0].' '.$nama_pasien[1];
 		$response = array(
 			'no_mr' => isset($result->no_mr) ? $result->no_mr : '',
 			'no_antrian' => isset($result->no_antrian) ? $result->no_antrian : '',
-			'nama_pasien' => isset($result->nama_pasien) ? $result->nama_pasien : $praktek,
+			'nama_pasien' => isset($result->nama_pasien) ? $txt_nama_pasien : $praktek,
 			'poli' => ($this->session->userdata('nama_bagian')) ? $this->session->userdata('nama_bagian') : 'Tutup',
 			'dokter' => ($this->session->userdata('sess_nama_dokter')) ? $this->session->userdata('sess_nama_dokter') : '-',
 			'kode_dokter' => ($this->session->userdata('sess_kode_dokter')) ? $this->session->userdata('sess_kode_dokter') : '0',

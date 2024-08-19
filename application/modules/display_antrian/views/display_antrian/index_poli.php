@@ -99,21 +99,21 @@
                       
                       <div class="widget-body" style=" background: linear-gradient(180deg, #128812, transparent); font-weight: bold; border-radius: 23px;">
                         <div class="widget-main">
-                          <div class="center" style="min-height: 572px !important; text-align: center; vertical-align: middle; margin-top: 0.8% !important">
+                          <div class="center" style="height: 500px !important; text-align: center; vertical-align: middle; margin-top: 20px !important">
                             <span style="text-align: center; font-size: 13em" id="no_antrian">0</span><br>
                             <span style="text-align: center; font-size: 10em; line-height: 1em" id="nama_pasien_antrian">-</span>
                           </div>
                           <div class="hr hr8 hr-double"></div>
 
-                          <div class="clearfix" style="background: linear-gradient(45deg, black, transparent);padding: 10px;border-radius: 10px 10px 10px 10px;">
+                          <div class="clearfix" style="background: linear-gradient(45deg, black, transparent);padding: 10px;border-radius: 10px 10px 10px 10px; vertical-align: bottom ">
                             <div class="grid2" style="width: 15% !important; text-align: center">
                               <img id="photo_dokter" src="<?php echo base_url().PATH_PHOTO_PEGAWAI.$this->session->userdata('sess_kode_dokter').'.png'?>" width="150px" style="border-radius: 10px">
                             </div>
 
-                            <div class="grid2" style="width: 85% !important; padding-left: 12px !important; text-align: left">
-                              <span style="font-weight: bold; font-size: 3.5em !important" id="nama_dokter">-</span>
+                            <div class="grid2" style="width: 85% !important; padding-left: 12px !important; vertical-align: bottom; margin-top:10px !important; height: 150px">
+                              <span style="font-weight: bold; font-size: 2.6em !important; margin-top:10px" id="nama_dokter">-</span>
                               <div style="border-top: 1px solid white"></div>
-                              <span style="font-weight: bold; font-size: 2.8em !important" id="nama_poli">-</span>
+                              <span style="font-weight: bold; font-size: 2.6em !important" id="nama_poli">-</span>
                             </div>
                           </div>
                         </div><!-- /.widget-main -->
