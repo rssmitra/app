@@ -221,7 +221,7 @@ function tambah_file()
 
       <div id="input_file<?php echo $j;?>"></div>
       <?php echo $attachment; ?>
-      <BR>
+      <br>
       <p style="font-weight: bold">CATATAN PEMERIKSAAN</p>
       <div class="col-md-12 no-padding">
         <textarea class="form-control" name="catatan_hasil" id="catatan_hasil" cols="50" style="height:150px !important;"><?php echo isset($catatan_hasil)?strip_tags($catatan_hasil):'';?></textarea>

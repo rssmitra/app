@@ -63,7 +63,7 @@ $(document).ready(function() {
             find_data_reload(data,base_url);
           }
         });
-      });
+    });
 
     $('#btn_reset_data').click(function (e) {
             e.preventDefault();

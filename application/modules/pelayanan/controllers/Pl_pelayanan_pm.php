@@ -554,7 +554,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             $no++;
             $row = array();
                                 
-            $row[] = '<a href="#" class="btn btn-xs btn-danger" onclick="delete_obalkes('.$row_list->id_pm_tc_obalkes.')"><i class="fa fa-times-circle"></i></a>';
+            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="delete_obalkes('.$row_list->id_pm_tc_obalkes.')"><i class="fa fa-times-circle"></i></a></div>';
             $row[] = strtoupper($row_list->nama_brg);
             $row[] = '<div class="center">'.$row_list->volume.'</div>';
                      

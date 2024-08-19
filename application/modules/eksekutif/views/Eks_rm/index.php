@@ -122,7 +122,7 @@
             <p><b>PARAMETER QUERY</b></p>
 
             <div class="form-group"  >
-              <label class="control-label col-md-2">Jenis Kunjungan</label>
+              <label class="control-label col-md-2">Jenis Pelayanan</label>
                 <div class="col-md-2">
                   <select class="form-control" name="jenis_kunjungan">
                   <option value="all">Pilih Semua</option>
@@ -130,6 +130,7 @@
                     <option value="igd">IGD</option>
                     <option value="pm">Penunjang Medis</option>
                     <option value="ri">Rawat Inap</option>
+                    <option value="fr">Resep Farmasi</option>
                   </select>
                 </div>
                 <label class="control-label col-md-1">Periode</label>

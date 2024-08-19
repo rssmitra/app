@@ -187,11 +187,12 @@
           </tr>
           <?php 
             $nod = 0;
-            // echo "<pre>"; print_r(($bagian_asal_perpm));die;
-            foreach ($pemeriksaan['050101'] as $key_p => $val_p) :
-              $nod++;
-              if($nod < 11) :
-                $arr_total_lab[] = $val_p->total;
+            $arr_total_lab = [];
+            if(isset($pemeriksaan['050101'])) : 
+              foreach ($pemeriksaan['050101'] as $key_p => $val_p) :
+                $nod++;
+                if($nod < 11) :
+                  $arr_total_lab[] = $val_p->total;
               
           ?>
             <tr>
@@ -200,8 +201,9 @@
               <td align="center"><?php echo number_format($val_p->total);?></td>
             </tr>
           <?php 
-              endif;
-            endforeach; 
+                endif;
+              endforeach; 
+            endif;
           ?>
           <tr style="font-weight: bold">
             <td align="right" colspan="2">TOTAL</td>
@@ -221,11 +223,13 @@
           <?php 
             $nod = 0;
             // echo "<pre>"; print_r(($bagian_asal_perpm));die;
-            foreach ($pemeriksaan['050201'] as $key_p => $val_p) :
-              $nod++;
-              if($nod < 11) :
-                $arr_total_rad[] = $val_p->total;
-              
+            $arr_total_rad = [];
+            if(isset($pemeriksaan['050201'])) : 
+              foreach ($pemeriksaan['050201'] as $key_p => $val_p) :
+                $nod++;
+                if($nod < 11) :
+                  $arr_total_rad[] = $val_p->total;
+                
           ?>
             <tr>
               <td align="center" width="30px"><?php echo $nod; ?></td>
@@ -233,8 +237,9 @@
               <td align="center"><?php echo number_format($val_p->total);?></td>
             </tr>
           <?php 
-              endif;
-            endforeach; 
+                endif;
+              endforeach; 
+            endif; 
           ?>
           <tr style="font-weight: bold">
             <td align="right" colspan="2">TOTAL</td>
@@ -254,10 +259,12 @@
           <?php 
             $nod = 0;
             // echo "<pre>"; print_r(($bagian_asal_perpm));die;
-            foreach ($pemeriksaan['050301'] as $key_p => $val_p) :
-              $nod++;
-              if($nod < 11) :
-                $arr_total_fisio[] = $val_p->total;
+            $arr_total_fisio = [];
+            if(isset($pemeriksaan['050301'])) : 
+              foreach ($pemeriksaan['050301'] as $key_p => $val_p) :
+                $nod++;
+                if($nod < 11) :
+                  $arr_total_fisio[] = $val_p->total;
               
           ?>
             <tr>
@@ -266,8 +273,9 @@
               <td align="center"><?php echo number_format($val_p->total);?></td>
             </tr>
           <?php 
-              endif;
-            endforeach; 
+                endif;
+              endforeach; 
+            endif;
           ?>
           <tr style="font-weight: bold">
             <td align="right" colspan="2">TOTAL</td>

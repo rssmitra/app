@@ -288,39 +288,6 @@ function prosesIsiHasilEdit() {
 
 }
 
-
-function hapus_file(a, b)
-
-{
-
-  if(b != 0){
-    $.getJSON("<?php echo base_url('posting/delete_file') ?>/" + b, '', function(data) {
-        document.getElementById("file"+a).innerHTML = "";
-        greatComplate(data);
-    });
-  }else{
-    y = a ;
-    document.getElementById("file"+a).innerHTML = "";
-  }
-
-}
-
-counterfile = <?php $j=1;echo $j.";";?>
-
-function tambah_file()
-
-{
-
-  counternextfile = counterfile + 1;
-
-  counterIdfile = counterfile + 1;
-
-  document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='col-md-2'>&nbsp;</label><div class='col-md-2'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><label class='control-label col-md-1'>Pilih File</label><div class='col-md-3'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1' style='margin-left:-2.5%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\"></div>";
-
-  counterfile++;
-
-}
-
 </script>
 
 <div class="row">
@@ -334,151 +301,150 @@ function tambah_file()
 
     <div class="form-group">
         <label class="control-label col-sm-2" for="">*Tanggal isi hasil</label>
-          <div class="col-md-2">
+          <div class="col-md-3">
+                
             <div class="input-group">
+                
                 <input name="pl_tgl_pm" id="pl_tgl_pm" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
                 <span class="input-group-addon">
+                  
                   <i class="ace-icon fa fa-calendar"></i>
+                
                 </span>
               </div>
+          
           </div>
+
+          
     </div>
 
     <div>
-      
-        <?php $i=0; 
+      <table id="dynamic-table" class="table table-bordered table-hover">
+        <thead>
+          <tr>  
+            <th>Pemeriksaan</th>
+            <th class="center">Hasil</th>
+            <th class="center">Keterangan</th>
+            <th class="center">BPAKO</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php $i=0; 
           $nama_tindakan='';
           $kode_tarif='';
             foreach ($list as $key_list=>$row_list) {
               if($row_list->kode_tarif!=$kode_tarif){
-
                 if($row_list->nama_tindakan!=$nama_tindakan){
                   $dokter2=isset($row_list->dokter2)?' | '.$row_list->dokter2. ' ':'';
                   $dokter_param2=isset($row_list->dokter2)?','.$row_list->kode_dokter2.','."'$row_list->dokter2'".' ':'';
                   echo
-                    '<table class="table">
-                      <tr>
-                        <td>
-                          <span style="font-size: 11px; font-weight: bold; color: blue">Nama Tindakan</span><br>
-                          <span style="font-size: 16px;"><b>'.$row_list->nama_tindakan.' </b></span>
-                        </td>
-                        <td>
-                          <span style="font-size: 11px; font-weight: bold; color: blue">Nama Dokter</span><br>
-                          <span id="txt_dokter" style="display:inline; font-size: 16px; font-weight: bold">'.$row_list->dokter1.' '.$dokter2.' </span>
-                        </td>
-                        <td>
-                          <span style="font-size: 11px; font-weight: bold; color: blue">Edit dokter pemeriksa</span><br>
-                          <a href="#" class="btn btn-xs btn-success" onclick="edit_dokter('.$id.','.$row_list->kode_trans_pelayanan.','.$row_list->kode_dokter1.','."'$row_list->dokter1'".' '.$dokter_param2.')"><i class="fa fa-edit"></i> Edit dokter</a>
-                        </td>
-                      </tr>
-                    </table>
-                    
-                    <br>
-                    <div id="form_dr" style="display:none">
-                        <div class="form-group">
-                          <label class="control-label col-sm-2">Dokter 1</label>
-                            <div class="col-sm-4">
-                                <input id="inputDokterTransPelayanan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                                <input type="hidden" name="dokter_trans_pelayanan" id="dokter_trans_pelayanan" class="form-control">
+                    '<tr>
+                      <td colspan="3">
+                        <b>'.$row_list->nama_tindakan.' </b><br>
+                        Dokter: <p id="txt_dokter" style="display:inline">'.$row_list->dokter1.' '.$dokter2.' </p><a href="#" class="btn btn-link" onclick="edit_dokter('.$id.','.$row_list->kode_trans_pelayanan.','.$row_list->kode_dokter1.','."'$row_list->dokter1'".' '.$dokter_param2.')"><i class="fa fa-edit"></i></a>
+                        <div id="form_dr" style="display:none">
+                        
+            
+                            <div class="form-group">
+                              <label class="control-label col-sm-2">Dokter 1</label>
+                                <div class="col-sm-4">
+
+                                    <input id="inputDokterTransPelayanan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
+
+                                    <input type="hidden" name="dokter_trans_pelayanan" id="dokter_trans_pelayanan" class="form-control">
+                                </div>
+
+
                             </div>
-                        </div>
-                        <div class="form-group" id="dr2" style="display:none">
-                          <label class="control-label col-sm-">Dokter 2</label>
-                            <div class="col-sm-4">
-                                <input id="inputDokterTransPelayanan2" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
-                                <input type="hidden" name="dokter_trans_pelayanan2" id="dokter_trans_pelayanan2" class="form-control">
+
+                            <div class="form-group" id="dr2" style="display:none">
+                              <label class="control-label col-sm-">Dokter 2</label>
+                                <div class="col-sm-4">
+
+                                    <input id="inputDokterTransPelayanan2" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" />
+
+                                    <input type="hidden" name="dokter_trans_pelayanan2" id="dokter_trans_pelayanan2" class="form-control">
+                                </div>
+                                  
                             </div>
+
+                            <input type="hidden" name="kode_penunjang_dr" id="kode_penunjang_dr">
+                            <input type="hidden" name="kode_trans_pelayanan" id="kode_trans_pelayanan">
+
+                          <div>
+                              <a href="#" class="btn btn-xs btn-primary" id="btn_edit_dokter_selesai"> <i class="fa fa-edit"></i> Simpan </a>
+                              <button type="button" class="btn btn-xs btn-danger" id="btn_hide_" onclick="backToDefaultForm()"> <i class="fa fa-angle-double-left"></i> Sembunyikan </button>
+                          </div>
                         </div>
-                        <input type="hidden" name="kode_penunjang_dr" id="kode_penunjang_dr">
-                        <input type="hidden" name="kode_trans_pelayanan" id="kode_trans_pelayanan">
-                      <div>
-                          <a href="#" class="btn btn-xs btn-primary" id="btn_edit_dokter_selesai"> <i class="fa fa-edit"></i> Simpan </a>
-                          <button type="button" class="btn btn-xs btn-danger" id="btn_hide_" onclick="backToDefaultForm()"> <i class="fa fa-angle-double-left"></i> Sembunyikan </button>
-                      </div>
-                    </div>';
+                      </td>
+                      <td><a href="#" class="btn btn-xs btn-success" onclick="edit_obalkes('.$id.','.$row_list->kode_tarif.')"><i class="fa fa-edit"></i>&nbsp;Edit</a></td>
+                    </tr>';
                     $nama_tindakan = $row_list->nama_tindakan;
                 }
-
+                
+                //if($row_list->nama_tindakan==$nama_tindakan){
                   $hasil = (isset($row_list->hasil))?$row_list->hasil:$row_list->standar_rad;
                   $ket = (isset($row_list->keterangan))?$row_list->keterangan:$row_list->kesan;
                   $kode_tc_hasilpenunjang =  (isset($row_list->kode_tc_hasilpenunjang))?$row_list->kode_tc_hasilpenunjang:0;
                 echo
-                  '<span style="font-size: 11px; font-weight: bold; color: blue">Pemeriksaan</span><br><span  style="font-size: 16px; font-weight: bold;">'.$row_list->nama_pemeriksaan.'</span>
-                  <hr style="margin-top:5px !important; margin-bottom: 5px !important">
-                  <div class="col-md-12 no-padding">
-                    <div class="col-md-4 no-padding">
-                      <span style="font-weight: bold">Hasil pemeriksaan</span>
-                      <textarea name="hasil_pm['.$row_list->kode_mt_hasilpm.']" style="height:200px !important;width:100% !important" class="hasil_pm">'.$hasil.'</textarea>
-                    </div>
-                    <div class="col-md-4">    
-                      <span style="font-weight: bold">Keterangan :</span><br>
-                      <textarea name="keterangan_pm['.$row_list->kode_mt_hasilpm.']" style="height:200px !important;width:100% !important" class="keterangan_pm">'.$ket.'</textarea>     
-                    </div>   
-                    <div class="col-md-4">    
-                      <span style="font-weight: bold">Penggunaan BHP :</span><br>
-                      <br>
-                      <ol>';
-                      foreach ($bpako as $bpako) {
-                        $nama_brg = (isset($bpako->nama_brg))?$bpako->nama_brg:'-';
-                        $volume = (isset($bpako->volume))?$bpako->volume:0;
-                        $satuan = (isset($bpako->satuan_kecil))?$bpako->satuan_kecil:'';
-                        echo 
-                          '<li>'.$nama_brg.' / '.$volume.' '.$satuan.'</li>';
-                        
-                      }
-                      echo  
-                        '</ol>
-                        <span><a href="#" class="btn btn-xs btn-primary" onclick="edit_obalkes('.$id.','.$row_list->kode_tarif.')"><i class="fa fa-plus"></i>&nbsp;Tambah</a></span><br>
-                        <input type="hidden" name="kode_tc_hasilpenunjang['.$row_list->kode_mt_hasilpm.']" value="'.$kode_tc_hasilpenunjang.'" >
-                        <input type="hidden" name="kode_mt_hasilpm[]" value="'.$row_list->kode_mt_hasilpm.'" >
-                        <input type="hidden" name="kode_trans_pelayanan['.$row_list->kode_mt_hasilpm.']" value="'.$row_list->kode_trans_pelayanan.'" >
-                        <input type="hidden" name="jumlah_hasilpm['.$row_list->kode_mt_hasilpm.']" value="" >
-                    </div>
-                  </div>';
+                  '<tr>
+                    <td>'.$row_list->nama_pemeriksaan.'</td>
+                    <td height="150px" width="35%"><textarea name="hasil_pm['.$row_list->kode_mt_hasilpm.']" style="height:100% !important;width:100% !important" class="hasil_pm">'.$hasil.'</textarea></td>    
+                    <td height="150px" width="25%"><textarea name="keterangan_pm['.$row_list->kode_mt_hasilpm.']" style="height:100% !important;width:100% !important" class="keterangan_pm">'.$ket.'</textarea></td>           
+                    <td valign="top" width="20%">
+                      ';
+                    foreach ($bpako as $bpako) {
+                      $nama_brg = (isset($bpako->nama_brg))?$bpako->nama_brg:'-';
+                      $volume = (isset($bpako->volume))?$bpako->volume:0;
+                      $satuan = (isset($bpako->satuan_kecil))?$bpako->satuan_kecil:'';
+                      echo 
+                        '<li>'.$nama_brg.' / '.$volume.' '.$satuan.'</li>';
+                      
+                    }
+                    echo  
+                      '
+                    </td>
+                  </tr>
+                  <input type="hidden" name="kode_tc_hasilpenunjang['.$row_list->kode_mt_hasilpm.']" value="'.$kode_tc_hasilpenunjang.'" >
+                  <input type="hidden" name="kode_mt_hasilpm[]" value="'.$row_list->kode_mt_hasilpm.'" >
+                  <input type="hidden" name="kode_trans_pelayanan['.$row_list->kode_mt_hasilpm.']" value="'.$row_list->kode_trans_pelayanan.'" >
+                  <input type="hidden" name="jumlah_hasilpm['.$row_list->kode_mt_hasilpm.']" value="" >
+                  ';
                 $i++;
-                
+                //}
               }
+
               $kode_tarif = $row_list->kode_tarif;
             }
-        ?>
-        
+          ?>
+        </tbody>
+      </table>
 
-        <p style="font-weight: bold; padding-top: 10px !important">UPLOAD HASIL PEMERIKSAAN LAINNYA</p>
-        <div class="form-group">
-            <label class="control-label col-md-2">Nama Dokumen</label>
-            <div class="col-md-2">
-              <input name="pf_file_name[]" id="pf_file_name" class="form-control" type="text">
-            </div>
-            <label class="control-label col-md-1">Pilih File</label>
-            <div class="col-md-3">
-              <input type="file" id="pf_file" name="pf_file[]" class="upload_file form-control"/>
-            </div>
-            <div class ="col-md-1" style="margin-left:-2.5%">
-              <input onClick="tambah_file()" value="+" type="button" class="btn btn-sm btn-info" />
-            </div>
-        </div>
-
-        <div id="input_file<?php echo $j;?>"></div>
-        <?php echo $attachment; ?>
-        <br>
+      <div class="form-group">
+                      
+        <label class="control-label col-sm-2">Catatan</label>
         
-      <div class="col-md-12 no-padding" style="margin-top: 10px !important">
-        <label style="font-weight: bold">Catatan Pemeriksaan Lainnya : </label>
-        <div class="col-md-12 no-padding">
-          <textarea name="catatan_hasil" id="catatan_hasil" style="height:100px !important;" class="form-control"><?php echo isset($catatan_hasil)?$catatan_hasil:'';?></textarea>
+        <div class="col-md-3">
+          
+          <textarea name="catatan_hasil" id="catatan_hasil" cols="50" style="height:100px !important;"><?php echo isset($catatan_hasil)?$catatan_hasil:'';?></textarea>
+        
         </div>
+      
+      
       </div>
+
 
       <?php if(isset($is_edit) AND $is_edit=='Y'): ?>   
       </form>
       <?php endif ?>
-      <br>
+
+
       <div class="form-group">
-          <div class="col-sm-12 no-padding">
+          <div class="col-sm-8">
               <?php if(isset($is_edit) AND $is_edit=='Y'): ?>
                 <a href="#" class="btn btn-xs btn-primary" onclick="prosesIsiHasilEdit()" ><i class="fa fa-save"></i> Submit</a>
               <?php elseif((!isset($is_edit))): if( !isset($is_mcu) OR (isset($is_mcu) AND $is_mcu!=1)){?>
-                <button type="submit" href="#" id="btn_submit_isihasil" class="btn btn-xs btn-primary"><i class="fa fa-save"></i> Submit Hasil Pemeriksaan</button>
+                <button type="submit" href="#" id="btn_submit_isihasil" class="btn btn-xs btn-primary"><i class="fa fa-save"></i> Submit</button>
               <?php } endif ?>
               <span id="cetak_isi_hasil" style="display:none">
                 <a href="<?php echo base_url() ?>Templates/Export_data/export?type=pdf&flag=RAD&noreg=<?php echo isset($no_registrasi)?$no_registrasi:''?>&pm=<?php echo ($id)?$id:''?>&kode_pm=050201&no_kunjungan=<?php echo ($no_kunjungan)?$no_kunjungan:''; if(isset($is_mcu))echo '&flag_mcu=1'?>" target="blank" class="btn btn-xs btn-info" >Cetak Hasil</a>
@@ -488,8 +454,12 @@ function tambah_file()
 
     </div>
 
+    </div>
+
   </div>
     
+
+     
 </div>
 
 
@@ -509,7 +479,7 @@ function tambah_file()
 
           </button>
 
-          <span id="result_text_riwayat_medis">PENGGUNAAN BHP</span>
+          <span id="result_text_riwayat_medis">Edit BPAKO</span>
 
         </div>
 
@@ -525,11 +495,18 @@ function tambah_file()
               <input type="text" class="form-control" id="InputKeyBrg" name="pm_kode_brg_obalkes" placeholder="Masukan Keyword Tindakan">
               <input type="hidden" class="form-control" id="pm_kode_brg_obalkes_hidden" name="pm_kode_brg_obalkes_hidden" >
             </div>
-            <label class="control-label col-sm-1" for="">Qty</label>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="">Jumlah</label>
             <div class="col-sm-1">
-               <input type="number" min="1" class="form-control" id="pm_jml_obalkes" name="pm_jml_obalkes" value="1" style="text-align: center">
+               <input type="number" min="1" class="form-control" id="pm_jml_obalkes" name="pm_jml_obalkes" value="1">
             </div>
-            <div class="col-sm-2 no-padding">
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="">&nbsp;</label>
+            <div class="col-sm-10" style="margin-left:6px">
                <a href="#" class="btn btn-xs btn-primary" id="btn_add_obalkes"> <i class="fa fa-plus"></i> Tambahkan </a>
             </div>
         </div>
@@ -539,9 +516,9 @@ function tambah_file()
               <table id="table-obalkes" class="table table-bordered table-hover">
                 <thead>
                   <tr>  
-                    <th style="width:30px !important"></th>
-                    <th style="width:500px !important">Nama Barang</th>
-                    <th style="width:50px !important">Jumlah</th>
+                    <th width="80px"></th>
+                    <th>Nama Barang</th>
+                    <th>Jumlah</th>
                   </tr>
                 </thead>
                 <tbody>

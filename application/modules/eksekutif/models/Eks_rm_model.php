@@ -107,7 +107,7 @@ class Eks_rm_model extends CI_Model {
             $this->_main_query('ri');
             $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
             $sensus_rj = $this->db->get();
-            echo '<pre>';print_r($this->db->last_query());die;
+            // echo '<pre>';print_r($this->db->last_query());die;
 
             // query diagnosa
             $this->db->select('CAST(diagnosa_akhir AS NVARCHAR(255)) as diagnosa, COUNT(b.no_kunjungan) as total');
@@ -255,7 +255,7 @@ class Eks_rm_model extends CI_Model {
             $this->db->where('YEAR(tgl_masuk)', date('Y'));
             $this->db->where('kode_bagian_tujuan', '050301');
             $this->db->group_by('DAY(tgl_masuk)');
-            $fields[2] = array('Laboratorium' => 'total');
+            $fields[2] = array('Fisioterapi' => 'total');
             $data[2] = $this->db->get()->result_array();
             // echo '<pre>';print_r($this->db->last_query());die;
 
@@ -263,6 +263,86 @@ class Eks_rm_model extends CI_Model {
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
 
 
+        }
+
+        if($params['prefix']==5){
+            $data = array();
+            $this->db->from('fr_tc_far a');
+            $this->db->select('a.kode_trans_far,tgl_trans,kode_bagian_asal,d.nama_bagian AS bagian_asal,UPPER(a.flag_trans) as flag_trans,kode_perusahaan,a.status_transaksi');
+            $this->db->select("CASE WHEN resep_diantar = 'Y' THEN 1 ELSE 0 END as resep_diantar");
+            $this->db->join('mt_bagian d','d.kode_bagian=a.kode_bagian_asal','left');
+            $this->db->join('tc_registrasi b','b.no_registrasi = a.no_registrasi','left');
+            $this->db->where('CAST(a.tgl_trans as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->where('a.status_transaksi', 1);
+            $this->db->order_by('a.tgl_trans', 'DESC');
+            $sensus_fr = $this->db->get();
+
+            // racikan
+            $this->db->select('a.kode_trans_far,tgl_trans,kode_bagian_asal,d.nama_bagian AS bagian_asal,UPPER(a.flag_trans) as flag_trans,kode_perusahaan,a.status_transaksi, f.nama_brg');
+            $this->db->from('fr_tc_far_detail e');
+            $this->db->select("CASE WHEN resep_diantar = 'Y' THEN 1 ELSE 0 END as resep_diantar");
+            $this->db->join('fr_tc_far a','a.kode_trans_far=e.kode_trans_far','left');
+            $this->db->join('mt_bagian d','d.kode_bagian=a.kode_bagian_asal','left');
+            $this->db->join('mt_barang f','f.kode_brg=e.kode_brg','left');
+            $this->db->join('tc_registrasi b','b.no_registrasi = a.no_registrasi','left');
+            $this->db->where('e.id_tc_far_racikan > 0');
+            $this->db->where('a.status_transaksi', 1);
+            $this->db->where('CAST(a.tgl_trans as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->order_by('a.tgl_trans', 'DESC');
+            $sensus_fr_det = $this->db->get();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            $data = array(
+                'result' => $sensus_fr->result(),
+                'racikan' => $sensus_fr_det->result(),
+            );
+
+            $fields = array();
+            $title = '<span style="font-size: 18px; font-weight: bold">SENSUS JUMLAH RESEP<br>PERIODE '.strtoupper($this->tanggal->formatDateDmy($_GET['from_tgl'])).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</b></span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+        }
+
+        if($params['prefix']==51){
+            $title = '<span style="font-size:13.5px">Resep Farmasi Berdasarkan Jenisnya Bulan '.$this->tanggal->getBulan(date('m')).' Tahun '.date('Y').'</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+
+            // RJ
+            $query = "SELECT DAY(tgl_trans) AS txt_y, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE MONTH(tgl_trans) = ".date('m')." AND YEAR(tgl_trans) = ".date('Y')." AND kode_profit=2000 GROUP BY DAY(tgl_trans)";   
+            $fields[0] = array('Total_Resep_RJ'=>'total');
+            $data[0] = $this->db->query($query)->result_array();
+
+            // RI
+            $query2 = "SELECT DAY(tgl_trans) AS txt_y, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE MONTH(tgl_trans) = ".date('m')." AND YEAR(tgl_trans) = ".date('Y')." AND kode_profit=1000 GROUP BY DAY(tgl_trans)";  
+            $fields[1] = array('Total_Resep_RI'=>'total');
+            $data[1] = $this->db->query($query2)->result_array();
+
+            // Bebas
+            $query3 = "SELECT DAY(tgl_trans) AS txt_y, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE MONTH(tgl_trans) = ".date('m')." AND YEAR(tgl_trans) = ".date('Y')." AND kode_profit=4000 GROUP BY DAY(tgl_trans)";  
+            $fields[2] = array('Total_Resep_Bebas'=>'total');
+            $data[2] = $this->db->query($query3)->result_array();
+
+            // Luar
+            $query4 = "SELECT DAY(tgl_trans) AS txt_y, COUNT(fr_tc_far.kode_trans_far) AS total FROM fr_tc_far  WHERE MONTH(tgl_trans) = ".date('m')." AND YEAR(tgl_trans) = ".date('Y')." AND kode_profit=3000 GROUP BY DAY(tgl_trans)";  
+            $fields[3] = array('Total_Resep_Luar'=>'total');
+            $data[3] = $this->db->query($query4)->result_array();
+
+
+        }
+
+        if($params['prefix']==52){
+            $query = "SELECT UPPER(b.flag_trans) as jenis_resep, COUNT(b.kode_trans_far) AS total 
+                        FROM fr_tc_far b
+                        WHERE YEAR(b.tgl_trans) = ".date('Y')." and month(b.tgl_trans)=".date('m')."
+                        GROUP BY b.flag_trans ORDER BY COUNT(b.kode_trans_far) DESC";    
+            $data_qry = $this->db->query($query)->result_array();
+            $getData = [];
+            foreach ($data_qry as $key => $value) {
+                $data[] = array( 'name' => $value['jenis_resep'], 'total' => $value['total'] );
+            }
+
+            $fields = array('name' => 'total');
+            $title = '<span style="font-size:13.5px">Persentase Resep Farmasi Berdasarkan Jenis Resep Bulan '.$this->tanggal->getBulan(date('m')).' Tahun '.date('Y').'</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
         }
 
        

@@ -103,6 +103,33 @@ class Eks_rm extends MX_Controller {
 
         }
 
+        if(isset($_GET['jenis_kunjungan']) && $_GET['jenis_kunjungan'] == 'fr'){
+            
+
+            $data[0] = array(
+                'nameid' => 'graph-line-1-fr',
+                'style' => 'line',
+                'col_size' => 8,
+                'url' => 'eksekutif/Eks_rm/data?prefix=51&TypeChart=line&style=5&'.$output.'',
+            );
+            $data[1] = array(
+                'mod' => $_GET['mod'],
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
+                'col_size' => 4,
+                'url' => 'eksekutif/Eks_rm/data?prefix=52&TypeChart=pie&style=1&'.$output.'',
+            );
+
+            $data[2] = array(
+                'nameid' => 'tbl-sensus-fr',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_rm/data?prefix=5&TypeChart=table&style=TableSensusFr&'.$output.'',
+            );
+
+
+        }
+
         
         // if(isset($_GET['graph-line-1'])){
         //     $data[1] = array(

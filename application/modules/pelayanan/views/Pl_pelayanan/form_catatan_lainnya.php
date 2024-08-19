@@ -280,6 +280,11 @@ function fillthis(id){
     border : none !important;
     border-bottom : 1px solid grey !important;
   }
+
+  .textarea-type{
+    height: 100px !important;
+    width: 100% !important;
+  }
 </style>
 <div class="row">
 

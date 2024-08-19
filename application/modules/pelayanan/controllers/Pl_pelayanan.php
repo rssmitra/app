@@ -2297,7 +2297,8 @@ class Pl_pelayanan extends MX_Controller {
 
             $cppt_id = ($_POST['cppt_id'])?$_POST['cppt_id']:0;
             $tgl_jam = $_POST['cppt_tgl'].' '.$_POST['cppt_jam'];
-            $value_form = http_build_query($this->input->post($_POST['jenis_form']),'',', ');
+            $value_form = http_build_query($this->input->post($_POST['jenis_form']),'',' | ');
+            $value_form = urldecode($value_form);
             // echo '<pre>';print_r($value_form);die;
 
             $dataexc = array(
@@ -2305,7 +2306,7 @@ class Pl_pelayanan extends MX_Controller {
                 'cppt_ppa' => $this->regex->_genRegex('dokter','RGXQSL'), 
                 'cppt_nama_ppa' => $this->regex->_genRegex($this->input->post('nama_ppa'),'RGXQSL'), 
                 'jenis_form' => $this->regex->_genRegex($this->input->post('jenis_form_catatan'),'RGXQSL'), 
-                'catatan_pengkajian' => $this->regex->_genRegex($this->input->post('catatan_pengkajian'),'RGXQSL'), 
+                'catatan_pengkajian' => $this->input->post('catatan_pengkajian'), 
                 'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXQSL'), 
                 'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
                 'value_form' => $value_form, 

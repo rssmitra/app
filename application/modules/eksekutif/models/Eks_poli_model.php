@@ -320,7 +320,6 @@ class Eks_poli_model extends CI_Model {
                     
             }
             $this->db->group_by('DAY(tgl_masuk)');
-            $this->db->order_by('d.nama_bagian ASC');
             $this->db->group_by('c.no_kunjungan, d.nama_bagian');
             $prd_dt = $this->db->get();
             
@@ -558,7 +557,7 @@ class Eks_poli_model extends CI_Model {
                                     WHEN SUBSTRING(c.kode_bagian_tujuan, 1, 2) = '05' THEN 'Penunjang Medis'
                                     WHEN SUBSTRING(c.kode_bagian_tujuan, 1, 2) = '02' THEN 'IGD'
                                     WHEN SUBSTRING(c.kode_bagian_tujuan, 1, 2) = '06' THEN 'Farmasi'
-                                END as 'nama_bagian'"); 
+                                END as 'nama_bagian_custom'"); 
             $this->db->select('DAY(tgl_masuk) as tgl'); 
             if(isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] != 'all') {
                 // poli spesialis
@@ -593,11 +592,11 @@ class Eks_poli_model extends CI_Model {
                     where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )'); 
                     
             }
-            $this->db->group_by('DAY(tgl_masuk), c.kode_bagian_tujuan, b.no_mr');
+            $this->db->group_by('DAY(tgl_masuk), c.kode_bagian_tujuan, b.no_mr, d.nama_bagian');
             $prd_dt = $this->db->get();
             $getData = [];
             foreach ($prd_dt->result() as $key => $value) {
-                $getData[$value->nama_bagian][] = $value;
+                $getData[$value->nama_bagian_custom][] = $value;
             }
 
             foreach ($prd_dt->result() as $key => $value) {

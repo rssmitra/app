@@ -1172,19 +1172,24 @@ class Pl_pelayanan_ri extends MX_Controller {
     public function get_cppt_dt(){
 
         $query = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['id']))->row();
-        $convert_to_array = explode(',', $query->value_form);
+        $convert_to_array = explode('|', $query->value_form);
+
+        // echo "<pre>"; print_r($query->value_form);die;
+        // echo "<pre>"; print_r($convert_to_array);die;
 
         for($i=0; $i < count($convert_to_array ); $i++){
             $key_value = explode('=', $convert_to_array [$i]);
             $end_array[trim($key_value[0])] = $key_value [1];
         }
         
+        // echo "<pre>"; print_r($end_array);die;
+
         $result = [
             "value_form" => $end_array,
             "result" => $query,
 
         ];
-        // echo "<pre>"; print_r($result);die;
+        
         echo json_encode($result);
     }
 

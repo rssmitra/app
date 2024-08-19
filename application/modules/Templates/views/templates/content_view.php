@@ -774,9 +774,11 @@
         preventDefault();
         $('#global_modal_content_detail_medium').html(html);
         // set value input
+        console.log(value_obj);
         $.each(value_obj, function(i, item) {
           var text = item;
           text = text.replace(/\+/g, ' ');
+          console.log(i);
           $('#'+i).val(text);
         });
         // $('#text_title_medium').text(title);
