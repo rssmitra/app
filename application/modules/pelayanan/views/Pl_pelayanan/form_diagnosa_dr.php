@@ -148,14 +148,17 @@
 
     $('#callPatientPoli').click(function (e) {  
       e.preventDefault();
-      playAudioDing(1, 2);
+      // setTimeout(playAudioDing(1, 2), 5000);
+      
       var params = {
         no_kunjungan : $('#no_kunjungan').val(),
         dokter : $('#kode_dokter_poli').val(),
         poli : $('#kode_bagian_val').val(),
       };
-      $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan/callPatient') ?>", params , function (response) {      
+      $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan/callPatient') ?>", params , function (response) { 
+           // no action
       })
+
     });
 
     $('#inputKeyObat').typeahead({
@@ -383,7 +386,7 @@
 <audio id="container" autoplay=""></audio>
 
 <span>Waktu Pelayanan</span><br>
-<div class="pull-left" style="font-size: 20px; font-weight: bold">
+<div class="pull-left" style="font-size: 20px; font-weight: bold"> 
     <span id="minutes">00</span> : <span id="second">00</span> : <span id="centiSecond">00</span>
 </div>
 <div class="pull-right">

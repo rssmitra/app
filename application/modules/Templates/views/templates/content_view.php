@@ -9,8 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
     <title><?php echo $app->header_title?></title>
-
     <!-- bootstrap & fontawesome -->
+
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
 
