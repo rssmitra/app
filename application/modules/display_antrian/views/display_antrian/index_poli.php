@@ -111,9 +111,9 @@
                             </div>
 
                             <div class="grid2" style="width: 85% !important; padding-left: 12px !important; text-align: center">
-                              <span style="font-weight: bold; font-size: 4em !important" id="nama_dokter">-</span>
+                              <span style="font-weight: bold; font-size: 3em !important" id="nama_dokter">-</span>
                               <div style="border-top: 1px solid white"></div>
-                              <span style="font-weight: bold; font-size: 3em !important" id="nama_poli">-</span>
+                              <span style="font-weight: bold; font-size: 2em !important" id="nama_poli">-</span>
                             </div>
                           </div>
                         </div><!-- /.widget-main -->
