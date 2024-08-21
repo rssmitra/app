@@ -836,6 +836,7 @@ class Pl_pelayanan extends MX_Controller {
         /*get data from model*/
         $list = $this->Pl_pelayanan->get_datatables_tindakan();
         $data = array();
+        $arr_total = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;

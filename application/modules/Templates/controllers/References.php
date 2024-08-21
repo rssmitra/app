@@ -1354,8 +1354,7 @@ class References extends MX_Controller {
 			$html .= '<th>Bill dr2</th>';
 			$html .= '<th>Kamar Tindakan</th>';
 			$html .= '<th>BHP</th>';
-			$html .= '<th>Alkes</th>';
-			$html .= '<th>Alat RS</th>';
+			$html .= '<th>Alkes/Alat RS</th>';
 			$html .= '<th>Pendapatan RS</th>';
 			$html .= '<th>Total Tarif</th>';
 			$html .= '<th>Revisi ke-</th>';
@@ -1369,9 +1368,15 @@ class References extends MX_Controller {
 					$bill_dr3 = isset($value->bill_dr3)?$value->bill_dr3:0;
 					$kamar_tindakan = isset($value->kamar_tindakan)?$value->kamar_tindakan:0;
 					$bhp = isset($value->bhp)?$value->bhp:0;
+					// grouping as alat_rs
 					$alkes = isset($value->alkes)?$value->alkes:0;
-					$alat_rs = isset($value->alat_rs)?$value->alat_rs:0;
-					$pendapatan_rs = isset($value->pendapatan_rs)?$value->pendapatan_rs:0;
+					$alat = isset($value->alat_rs)?$value->alat_rs:0;
+					$alat_rs = $alkes + $alat;
+					// grouping as pendapatan_rs
+					$adm = isset($value->adm)?$value->adm:0;
+					$pendapatan = isset($value->pendapatan_rs)?$value->pendapatan_rs:0;
+					$pendapatan_rs = $adm + $pendapatan;
+
 					$total = isset($value->total)?$value->total:0;
 					$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
 					$checked = ($key==0)?'checked':'';
@@ -1383,7 +1388,6 @@ class References extends MX_Controller {
 					$html .= '<td align="right">'.number_format($bill_dr2).'</td>';
 					$html .= '<td align="right">'.number_format($kamar_tindakan).'</td>';
 					$html .= '<td align="right">'.number_format($bhp).'</td>';
-					$html .= '<td align="right">'.number_format($alkes).'</td>';
 					$html .= '<td align="right">'.number_format($alat_rs).'</td>';
 					$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
 					$html .= '<td align="right"><b>'.number_format($total).'</b></td>';
@@ -1399,7 +1403,6 @@ class References extends MX_Controller {
 						$html .= '<input type="hidden" name="bhp" value="'.round($bhp).'">';
 						$html .= '<input type="hidden" name="pendapatan_rs" value="'.round($pendapatan_rs).'">';
 						$html .= '<input type="hidden" name="alat_rs" value="'.round($alat_rs).'">';
-						$html .= '<input type="hidden" name="alkes" value="'.round($alkes).'">';
 					}
 
 					$html .= '</tr>';

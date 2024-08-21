@@ -32,6 +32,13 @@
             Jaminan Perusahaan
           </a>
         </li>
+
+        <li>
+          <a data-toggle="tab" href="#rekap6">
+            Tindakan Rawat Jalan
+          </a>
+        </li>
+
       </ul>
 
       <div class="tab-content">
@@ -337,6 +344,40 @@
                 <td align="right" colspan="2">TOTAL</td>
                 <td align="center"><?php echo number_format(array_sum($arr_total_perusahaan));?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_percent_perusahaan));?></td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+
+        <div id="rekap6" class="tab-pane fade">
+          
+          <div>
+          <p style="font-weight: bold"> REKAPITULASI BERDASARKAN TINDAKAN </p>
+            <table class="table">
+              <tr style="background: #e9e6e6">
+                <th class="center">No</th>
+                <th>Nama Tindakan</th>
+                <th class="center" style="width: 100px">Jumlah</th>
+              </tr>
+
+              <?php 
+                $noe = 0;
+                foreach ($tindakan as $key_p => $val_p) :
+                  $noe++;
+                  $arr_total_t[] = $val_p->total;
+              ?>
+                <tr>
+                  <td align="center" width="30px"><?php echo $noe; ?></td>
+                  <td><?php echo ($val_p->nama_tindakan) ? strtoupper($val_p->nama_tindakan) : "-";?></td>
+                  <td align="center"><?php echo number_format($val_p->total);?></td>
+                </tr>
+              <?php 
+                endforeach; 
+              ?>
+              <tr style="font-weight: bold">
+                <td align="right" colspan="2">TOTAL</td>
+                <td align="center"><?php echo number_format(array_sum($arr_total_t));?></td>
               </tr>
             </table>
           </div>

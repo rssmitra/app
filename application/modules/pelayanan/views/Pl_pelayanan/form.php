@@ -763,7 +763,7 @@ function show_icare() {
         <input type="hidden" class="form-control" name="nama_pasien_layan" id="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
         <input type="hidden" class="form-control" name="kode_bagian_asal" id="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
         <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian_val">
-        <input type="hidden" class="form-control" name="kode_klas" id="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
+        <input type="hiddenxx" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
         <input type="hidden" class="form-control" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
         <input type="hidden" class="form-control" name="flag_mcu"  id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
         <input type="hidden" class="form-control" name="kode_profit"  id="kode_profit" value="<?php echo $kode_profit; ?>">

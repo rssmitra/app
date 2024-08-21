@@ -65,11 +65,22 @@ class Eks_rm_model extends CI_Model {
             $this->db->order_by('COUNT(b.no_kunjungan)', 'DESC');
             $this->db->limit(10);
             $diagnosa_rj = $this->db->get();
+
+            // query tindakan
+            $this->db->select('nama_tindakan, COUNT(b.kode_tarif) as total');
+            $this->_main_query('rj');
+            $this->db->join('tc_trans_pelayanan b', 'b.no_kunjungan=a.no_kunjungan','left');
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->where('a.status_batal', 0);
+            $this->db->where_in('b.kode_tarif', ['11101072','300010123','10501009','10501030','10501019','10501028','10201918','10801033','10101053','10801052','10701004','11401041','11301045','11301043','11301021','11301047','11301025','1130105']);
+            $this->db->group_by('nama_tindakan, b.kode_tarif');
+            $tindakan_rj = $this->db->get();
             // echo '<pre>';print_r($this->db->last_query());die;
 
             $data = array(
                 'result' => $sensus_rj->result(),
                 'diagnosa' => $diagnosa_rj->result(),
+                'tindakan' => $tindakan_rj->result(),
             );
 
             $fields = array();
