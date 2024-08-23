@@ -9,6 +9,36 @@ class Eks_poli_model extends CI_Model {
         $this->load->database();
     }
 
+    private function _main_query_sensus($type='rj'){
+
+        $table = ($type == 'rj') ? 'sensus_rawat_jalan_v' : 'sensus_rawat_inap_v';
+        switch ($type) {
+            case 'rj':
+                # code...
+                $table = 'sensus_rawat_jalan_v';
+                break;
+                case 'ri':
+                    # code...
+                    $table = 'sensus_rawat_inap_v';
+                    break;
+                    case 'igd':
+                        # code...
+                        $table = 'sensus_igd_rj_v';
+                        break;
+                        case 'pm':
+                            # code...
+                            $table = 'sensus_pm_v';
+                            break;
+            
+            default:
+                # code...
+                $table = 'sensus_rawat_jalan_v';
+                break;
+        }
+
+        $this->db->from(''.$table.' a'); 
+    }
+
     private function _main_query(){
         $this->db->from('tc_kunjungan c');
         $this->db->join('tc_trans_pelayanan b', 'c.no_kunjungan=b.no_kunjungan','left');
@@ -36,7 +66,8 @@ class Eks_poli_model extends CI_Model {
 
         /*total klaim berdasarkan nomor sep per tahun existing*/
         /*based query*/
-        $this->db->order_by('d.nama_bagian');
+        // $this->db->order_by('d.nama_bagian');
+
         if($params['prefix']==1){
             $data = array();
             // periode
@@ -679,6 +710,119 @@ class Eks_poli_model extends CI_Model {
             $fields = array();
             $title = '<span style="font-size: 14px">Rekapitulasi Data Transaksi Berdasarkan Jenis Transaksi<br>Bulan <b>'.$this->tanggal->getBulan($_GET['bulan']).'</b> Tahun <b>'.$_GET['tahun'].'</b></span>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
+        }
+
+        if($params['prefix']==10){
+            
+            // line data 1 => rj 
+            $this->_main_query_sensus('rj');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[0] = array('Poliklinik_RJ' => 'total');
+            $data[0] = $this->db->get()->result_array();
+            // echo "<pre>";print_r($this->db->last_query());die;
+
+            // line data 2 => igd
+            $this->_main_query_sensus('igd');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[1] = array('IGD' => 'total');
+            $data[1] = $this->db->get()->result_array();
+
+            // line data 3 => pm 
+            $this->_main_query_sensus('pm');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[2] = array('Penunjang_Medis' => 'total');
+            $data[2] = $this->db->get()->result_array();
+
+            // line data 4 => RI
+            $this->_main_query_sensus('ri');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[3] = array('Rawat_Inap' => 'total');
+            $data[3] = $this->db->get()->result_array();
+            // echo '<pre>';print_r($this->db->last_query());die;
+            $title = '<span style="font-size:13.5px">Trend Kunjungan Pasien per Instalasi Periode '.$this->tanggal->formatDateDmy($_GET['from_tgl']).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+
+
+        }
+
+        if($params['prefix']==11){
+            
+            // line data 1 => rj 
+            $this->_main_query_sensus('rj');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[0] = array('Poliklinik_RJ' => 'total');
+            $data[0] = $this->db->get()->result_array();
+            foreach ($data[0] as $k => $v) {
+                $rj[$v['txt_y']] = $v['total'];
+            }
+            // echo "<pre>";print_r($this->db->last_query());die;
+
+            // line data 2 => igd
+            $this->_main_query_sensus('igd');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[1] = array('IGD' => 'total');
+            $data[1] = $this->db->get()->result_array();
+            foreach ($data[1] as $k1 => $v1) {
+                $igd[$v1['txt_y']] = $v1['total'];
+            }
+
+            // line data 3 => pm 
+            $this->_main_query_sensus('pm');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[2] = array('Penunjang_Medis' => 'total');
+            $data[2] = $this->db->get()->result_array();
+            foreach ($data[2] as $k2 => $v2) {
+                $pm[$v2['txt_y']] = $v2['total'];
+            }
+
+            // line data 4 => RI
+            $this->_main_query_sensus('ri');
+            $this->db->select("CAST(DAY(tgl_masuk) as varchar(2000))+'/'+CAST(MONTH(tgl_masuk) as varchar(2000)) as txt_y, COUNT(*) as total");
+            $this->db->where('CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' ');
+            $this->db->group_by('MONTH(tgl_masuk), DAY(tgl_masuk)');
+            $this->db->order_by('MONTH(tgl_masuk) ASC, DAY(tgl_masuk) ASC');
+            $fields[3] = array('Rawat_Inap' => 'total');
+            $data[3] = $this->db->get()->result_array();
+            foreach ($data[3] as $k3 => $v3) {
+                $ri[$v3['txt_y']] = $v3['total'];
+            }
+
+            $date_range = $this->tanggal->date_range($_GET['from_tgl'], $_GET['to_tgl']);
+            $data = array(
+                'rj' => $rj,
+                'igd' => $igd,
+                'pm' => $pm,
+                'ri' => $ri,
+                'date_range' => $date_range,
+                'from_tgl' => $_GET['from_tgl'],
+                'to_tgl' => $_GET['to_tgl'],
+            );
+
+            $fields = array();
+            $title = '<span style="font-size:13.5px">Trend Kunjungan Pasien per Instalasi Periode '.$this->tanggal->formatDateDmy($_GET['from_tgl']).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+
         }
 
         // echo '<pre>';print_r($data);die;

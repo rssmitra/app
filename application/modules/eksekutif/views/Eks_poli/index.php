@@ -128,6 +128,7 @@
       <!-- hidden form -->
       <input type="hidden" name="mod" value="poli">
       <div class="row">
+
           <div class="col-xs-12">
             <span style="font-size: 16px; font-weight: bold">DASHBOARD EKSEKUTIF</span><br>
             <p style="text-align:justify;">
@@ -187,6 +188,11 @@
               <label>
                 <input name="tbl-resume-kunjungan" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1" checked readonly="true">
                 <span class="lbl"> Rekap Total dan Rupiah Kunjungan Pasien per Periode dan Harian, Bulanan dan Tahun Berjalan Berdasarkan Tanggal Masuk Pasien</span>
+              </label>
+              <br>
+              <label>
+                <input name="graph-trend-kunjungan" type="checkbox" onclick="checked_checkbox(this.name)" class="ace" value="1" readonly="true">
+                <span class="lbl"> Grafik Line Trend Kunjungan Pasien per Hari berdasarkan Periode dipilih</span>
               </label>
               <br>
               <label>

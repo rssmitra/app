@@ -1575,6 +1575,17 @@ final Class Master {
 		return $txt;
 	}
 
+	function calculateMedian($array) {
+		if (empty($array)) {
+			return null;
+		} else {
+			sort($array);
+			$lowMiddle = $array[floor((count($array) - 1) / 2)];
+			$highMiddle = $array[ceil((count($array) - 1) / 2)];
+			return ($lowMiddle + $highMiddle) / 2;
+		}
+	}
+
 }
 
 ?> 

@@ -111,6 +111,22 @@ class Eks_poli extends MX_Controller {
             );
         }
 
+        if(isset($_GET['graph-trend-kunjungan'])){
+            $data[6] = array(
+                'nameid' => 'graph-trend-kunjungan',
+                'style' => 'line',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=10&TypeChart=line&style=6&'.$output.'',
+            );
+
+            $data[7] = array(
+                'nameid' => 'tbl-resume-trend-kunjungan',
+                'style' => 'table',
+                'col_size' => 12,
+                'url' => 'eksekutif/Eks_poli/data?prefix=11&TypeChart=table&style=TableSensusTrendKunjungan&'.$output.'',
+            );
+        }
+
         // $data[2] = array(
         //     'mod' => $_GET['mod'],
         //     'nameid' => 'graph-pie-1',

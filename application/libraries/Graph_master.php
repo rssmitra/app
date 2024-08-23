@@ -803,6 +803,9 @@ final Class Graph_master {
                 if ($params['style']==5) {
                     return $this->LineStyleDynamicData($fields, $params, $data);
                 }
+                if ($params['style']==6) {
+                    return $this->LineStyleDynamicFields($fields, $params, $data);
+                }
                 break;
             case 'table':
                 if ($params['style']==1) {
@@ -860,6 +863,10 @@ final Class Graph_master {
 
                 if ($params['style']=='TableSensusRJ') {
                     return $this->TableSensusRJ($fields, $params, $data);
+                }
+
+                if ($params['style']=='TableSensusTrendKunjungan') {
+                    return $this->TableSensusTrendKunjungan($fields, $params, $data);
                 }
 
                 if ($params['style']=='TableSensusIGD') {
@@ -1103,6 +1110,8 @@ final Class Graph_master {
             'xAxis'     => array('categories' => $categories),
             'series'    => $series,
         );
+
+        // echo '<pre>';print_r($chart_data);die;
         return $chart_data;
     }
     
@@ -1211,7 +1220,7 @@ final Class Graph_master {
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
         $total_data = count($fields);
-        // echo '<pre>';print_r($total_data);die;
+        // echo '<pre>';print_r($fields);die;
         
         for($td=0; $td<=($total_data-1); $td++){
             $getData[$td] = array();
@@ -1228,7 +1237,6 @@ final Class Graph_master {
                     }
                     ksort($getData[$td][$kf2]);
                 }
-                // $categories[] = $i;
             }
 
             foreach ($getData[$td] as $k => $r) {
@@ -1241,6 +1249,58 @@ final Class Graph_master {
             $categories[] = $i;
         }
         
+        $chart_data = array(
+            'xAxis'     => array('categories' => $categories),
+            'series'    => $series,
+        );
+
+        // echo "<pre>"; print_r($chart_data);die;
+        return $chart_data;
+    }
+
+    public function LineStyleDynamicFields($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        $total_data = count($fields);
+        // echo '<pre>';print_r($total_data);
+        // echo '<pre>';print_r($data[0]);die;
+
+        foreach ($data[1] as $ky => $rw) {
+            $categories[] = $rw['txt_y'];
+        }
+
+        $getDataX = [];
+        for($td=0; $td<=($total_data-1); $td++){
+            $getData[$td] = array();
+            foreach($data[$td] as $key=>$row){
+                foreach ($fields[$td] as $kf => $vf) {
+                    $getData[$td][$kf][$row['txt_y']] = round($row['total'], 2);
+                }
+
+                foreach ($fields[$td] as $kf2 => $vf2) {
+                    foreach ($categories as $val_x) {
+                        $value_total = isset($getData[$td][$kf2][$val_x]) ? $getData[$td][$kf2][$val_x] :0;
+                        $getDataX[$td][$kf2][$val_x] = $value_total;
+                    }
+                }
+                
+            }
+
+            foreach ($fields[$td] as $kf3 => $vf3) {
+                // echo '<pre>';print_r($getData[$td]);
+                foreach ($getDataX[$td][$kf3] as $kf4 => $vf4) {
+                    $getDataY[$td][$kf3][] = $vf4;
+                }
+            }
+
+            // echo "<pre>"; print_r($getDataY);die;
+            foreach ($getDataY[$td] as $k => $r) {
+                $series[] = array('name' => $k, 'data' => $r );
+            }
+
+            
+        }
+
         $chart_data = array(
             'xAxis'     => array('categories' => $categories),
             'series'    => $series,
@@ -1660,12 +1720,52 @@ final Class Graph_master {
             'perusahaan' => $getDataPerusahaan,
             'batal' => $getDataPasienBatal,
             'diagnosa' => $data['diagnosa'],
+            'tindakan' => $data['tindakan'],
         ];
         // echo "<pre>"; print_r($data['diagnosa']);die;
 
 
         
         $html = $CI->load->view('eksekutif/Eks_rm/TableSensusRJ', $result, true);
+        
+        
+        $chart_data = array(
+            'xAxis'     => 0,
+            'series'    => $html,
+        );
+        return $chart_data;
+    }
+
+    public function TableSensusTrendKunjungan($fields, $params, $data){
+        $CI =&get_instance();
+        $db = $CI->load->database('default', TRUE);
+        
+        // echo "<pre>"; print_r($data['date_range']['list_date']);die;
+        
+        foreach ($data['date_range']['list_date'] as $key => $value) {
+            // convert to date/month
+            $explode = explode('/', $value);
+            $dm = (int)$explode[0].'/'.(int)$explode[1];
+            $list_date_range[] = $dm;
+            $getRJ[$dm] = isset($data['rj'][$dm])?$data['rj'][$dm]:0;
+            $getIGD[$dm] = isset($data['igd'][$dm])?$data['igd'][$dm]:0;
+            $getPM[$dm] = isset($data['pm'][$dm])?$data['pm'][$dm]:0;
+            $getRI[$dm] = isset($data['ri'][$dm])?$data['ri'][$dm]:0;
+        }
+        // echo "<pre>"; print_r($getRJ);die;
+
+        $result = [
+            'range_date' => $list_date_range,
+            'rj' => $getRJ,
+            'igd' => $getIGD,
+            'pm' => $getPM,
+            'ri' => $getRI,
+            'from_tgl' => $data['from_tgl'],
+            'to_tgl' => $data['to_tgl'],
+        ];
+        // echo "<pre>"; print_r($result);die;
+
+        $html = $CI->load->view('eksekutif/Eks_poli/TableSensusTrendKunjungan', $result, true);
         
         
         $chart_data = array(
