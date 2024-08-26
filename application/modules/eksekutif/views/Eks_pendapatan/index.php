@@ -19,7 +19,6 @@
 
   $(document).ready(function(){
 
-    get_total_billing();
    
     oTable = $('#dt_harian_kasir').DataTable({ 
           
@@ -36,80 +35,21 @@
           "url": $('#dt_harian_kasir').attr('base-url')+'?flag='+$('#flag').val()+'',
           "type": "POST"
       },
-      "columnDefs": [
-        { 
-          "targets": [ 0 ], 
-          "orderable": false,
-        },
-        {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
-        { "visible": false, "targets": [1] },
-        { "visible": false, "targets": [2] },
-      ],
+      "drawCallback": function (response) { 
+        // Here the response
+          var objData = response.json;
+          $('#total_pasien').text(formatMoney(objData.recordsTotal));
+          $('#label_tunai').text(formatMoney(objData.tunai));
+          $('#label_nontunai').text(formatMoney(objData.nontunai));
+          $('#label_potongan').text(formatMoney(objData.potongan));
+          $('#label_nk_perusahaan').text(formatMoney(objData.piutang));
+          $('#label_nk_karyawan').text(formatMoney(objData.nk_karyawan));
+          $('#label_total_billing').text(formatMoney(objData.billing));
+          $('#div2').html(objData.html_trans);
+
+      },
 
     });
-
-    $('#dt_harian_kasir tbody').on('click', 'td.details-control', function () {
-            var tr = $(this).closest('tr');
-            var row = oTable.row( tr );
-            var data = oTable.row( $(this).parents('tr') ).data();
-            var kode_tc_trans_kasir = data[ 1 ];
-            var no_registrasi = data[ 2 ];
-            
-
-            if ( row.child.isShown() ) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            }
-            else {
-                /*data*/
-               
-                $.getJSON("eksekutif/Eks_pendapatan/getDetailTransaksi/" + kode_tc_trans_kasir + "/" + no_registrasi, '', function (data) {
-                    response_data = data;
-                     // Open this row
-                    row.child( format( response_data ) ).show();
-                    tr.addClass('shown');
-                });
-               
-            }
-    } );
-
-    $('#dt_harian_kasir tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('selected') ) {
-            //achtungShowLoader();
-            $(this).removeClass('selected');
-            //achtungHideLoader();
-        }
-        else {
-            //achtungShowLoader();
-            oTable.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-            //achtungHideLoader();
-        }
-    } );
-
-    $("#merge_registrasi").click(function(event){
-          event.preventDefault();
-          var searchIDs = $("#dt_harian_kasir input:checkbox:checked").map(function(){
-            return $(this).val();
-          }).toArray();
-          merge_registrasi(''+searchIDs+'')
-          console.log(searchIDs);
-    });
-
-    function merge_registrasi( arr ){
-      $.ajax({
-          url: 'adm_pasien/loket_kasir/Adm_kasir/merge_data_registrasi',
-          type: "post",
-          data: { value : arr },
-          dataType: "json",
-          beforeSend: function() {
-          },
-          success: function(data) {
-            
-          }
-      });
-    }
 
     function format ( data ) {
         return data.html;
@@ -128,15 +68,6 @@
       }       
   });
 
-
-  $('#add_search_by_date').click(function() {
-    if (!$(this).is(':checked')) {
-      $('#form_tanggal').hide();
-    }else{
-      $('#form_tanggal').show();
-    }
-  });
-
   $('#btn_search_data').click(function (e) {
       var url_search = $('#form_search').attr('action');
       e.preventDefault();
@@ -148,7 +79,6 @@
         success: function(data) {
           console.log(data.data);
           find_data_reload(data);
-          $('#tgl_filter').text(getFormattedDate($('#from_tgl').val()));
         }
       });
   });
@@ -177,47 +107,21 @@
   }
 
   function find_data_reload(result){
-      get_total_billing();
       oTable.ajax.url($('#dt_harian_kasir').attr('base-url')+'?'+result.data).load();
       // $("html, body").animate({ scrollTop: "400px" });
 
   }
 
   function reload_table(){
-    get_total_billing();
     oTable.ajax.reload();
   }
 
   $('#btn_reset_data').click(function (e) {
       e.preventDefault();
       oTable.ajax.url($('#dt_harian_kasir').attr('base-url')+'?flag='+$('#flag').val()).load();
-      $("html, body").animate({ scrollDown: "400px" });
+      // $("html, body").animate({ scrollDown: "400px" });
       $('#form_search')[0].reset();
   });
-
-  function get_total_billing(){
-      var url_search = $('#form_search').attr('action');
-      $.ajax({
-        url: url_search,
-        type: "post",
-        data: $('#form_search').serialize(),
-        dataType: "json",
-        success: function(response) {
-          console.log(response.data);
-          $.getJSON("eksekutif/Eks_pendapatan/get_resume_kasir?"+response.data, '', function (data) {
-             // code here
-              ( parseInt(data.tunai) >= 0 ) ? $('#label_tunai').text( formatMoney(parseInt(data.tunai)) ) : $('#label_tunai').text( formatMoney(0) );
-              ( parseInt(data.debet) >= 0 ) ? $('#label_debet').text( formatMoney(parseInt(data.debet)) ) : $('#label_debet').text( formatMoney(0) ) ;
-              ( parseInt(data.kredit) >= 0 ) ? $('#label_kredit').text( formatMoney(parseInt(data.kredit)) ) : $('#label_kredit').text( formatMoney(0) ) ;
-              ( parseInt(data.nk_perusahaan) >= 0 ) ? $('#label_nk_perusahaan').text( formatMoney(parseInt(data.nk_perusahaan)) ) : $('#label_nk_perusahaan').text( formatMoney(0) ) ;
-              ( parseInt(data.nk_karyawan) >= 0 ) ? $('#label_nk_karyawan').text( formatMoney(parseInt(data.nk_karyawan)) ) : $('#label_nk_karyawan').text( formatMoney(0) ) ;
-              ( parseInt(data.bill) >= 0 ) ? $('#label_total_billing').text( formatMoney(parseInt(data.bill)) ) : $('#label_total_billing').text( formatMoney(0) ) ;
-          });
-        }
-      });
-
-    
-  }
 
 
 </script>
@@ -238,35 +142,35 @@
 
     <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
         <!-- hidden form -->
-        <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
+        <!-- <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>"> -->
         <span style="font-weight: bold">PENCARIAN DATA TRANSAKSI</span>
           <div class="form-group">
             <label class="control-label col-md-1">Seri Kuitansi</label>
-            <div class="col-md-2">
-              <select class="form-control" name="seri_kuitansi">
-              <option value="all">Pilih Semua</option>
-                <option value="RJ" selected>Rawat Jalan</option>
-                <option value="RI">Rawat Inap</option>
-                <option value="PB">Pembelian Bebas</option>
+            <div class="col-md-1">
+              <select class="form-control" name="flag" id="flag">
+                <option value="all">Pilih Semua</option>
+                <option value="RJ" selected>RJ</option>
+                <option value="RI">RI</option>
+                <option value="PB">PB</option>
               </select>
             </div>
             <label class="control-label col-md-1">Tgl Transaksi</label>
             <div class="col-md-2">
-              <div class="input-group">
-                <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <div class="input-daterange input-group">
+                <input type="text" class="input-xs date-picker" style="max-width: 100px" name="from_tgl" id="from_tgl" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
                 <span class="input-group-addon">
-                  <i class="fa fa-calendar bigger-110"></i>
+                  s.d
                 </span>
+                <input type="text" class="input-xs date-picker" style="max-width: 100px; margin-left:0px !important" name="to_tgl" id="to_tgl" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
               </div>
             </div>
-
-            <label class="control-label col-md-1">Penjamin</label>
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin-left: 22px;">
               <select class="form-control" name="penjamin" id="penjamin">
-                <option value="#">-Pilih-</option>
+                <option value="#">-Pilih Penjamin-</option>
                 <option value="120">BPJS Kesehatan</option>
                 <option value="um">Umum</option>
                 <option value="asuransi">Asuransi Lainnya</option>
+                <option value="all">Semua</option>
               </select>
             </div>
             <div class="col-md-3">
@@ -291,16 +195,14 @@
         <div class="tabbable">
           <ul class="nav nav-tabs" id="myTab">
             <li class="active">
-              <a data-toggle="tab" href="#home">
-                <i class="green ace-icon fa fa-home bigger-120"></i>
-                Data Transaksi
+              <a data-toggle="tab" href="#data-transaksi">
+              Pendapatan Kasir Berdasarkan Submit Kasir
               </a>
             </li>
 
             <li>
-              <a data-toggle="tab" href="#messages">
-                Messages
-                <span class="badge badge-danger">4</span>
+              <a data-toggle="tab" href="#data-transaksi-2">
+              Pendapatan Kasir Berdasarkan Jenis Tindakan
               </a>
             </li>
 
@@ -308,12 +210,23 @@
 
           <div class="tab-content">
 
-            <div id="home" class="tab-pane fade in active">
+            <div id="data-transaksi" class="tab-pane fade in active">
 
               <div class="row">
 
-                  <span style="font-weight: bold">REKAPITULASI PENDAPATAN RS TANGGAL <span id="tgl_filter"><?php echo date('d/M/Y')?></span></span>
+                
+                  <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN RS TANGGAL <span id="tgl_filter"><?php echo date('d/M/Y')?></span></span></center>
                   <br>
+                  <div class="col-md-2">
+                    <table class="table">
+                      <tr>
+                        <td align="right" style="font-size: 11px">
+                          Total Pasien<br>
+                          <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="total_pasien">0</span></h3>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
 
                   <div class="col-md-2">
                     <table class="table">
@@ -359,7 +272,7 @@
                     </table>
                   </div>
 
-                  <div class="col-md-4">
+                  <div class="col-md-2">
                     <table class="table">
                       <tr>
                         <td align="right" style="font-size: 11px">
@@ -374,12 +287,9 @@
                     <table id="dt_harian_kasir" base-url="eksekutif/Eks_pendapatan/get_data" class="table table-bordered table-hover">
                       <thead>
                         <tr style="background-color:#428bca">
-                          <th width="50px"></th>
-                          <th width="50px"></th>
-                          <th class="center"></th>
                           <th>No</th>
                           <th width="100px">No. Kuitansi</th>
-                          <th>Tanggal</th>
+                          <th width="120px">Tanggal</th>
                           <th>Pasien</th>
                           <th>Penjamin</th>
                           <th>Bagian Masuk</th>
@@ -396,10 +306,21 @@
                   </div>
 
               </div>
+
             </div>
 
-            <div id="messages" class="tab-pane fade">
-              <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+            <div id="data-transaksi-2" class="tab-pane fade">
+              
+              <div class="row">
+                <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN RS TANGGAL <span id="tgl_filter"><?php echo date('d/M/Y')?></span></span></center>
+                <br>
+                <div class="col-md-12">
+                  <div id="div2"></div>
+
+                  
+                </div>
+              </div>
+            
             </div>
 
           </div>

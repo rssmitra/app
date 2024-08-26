@@ -38,8 +38,8 @@
             GraphTableStyle(o.mod, o.nameid, o.url);
           }
 
-          });
-          $('#contentPage').html(html);
+        });
+        $('#contentPage').html(html);
       });
       // achtungHideLoader();
   });

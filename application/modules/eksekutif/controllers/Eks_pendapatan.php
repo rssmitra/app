@@ -61,82 +61,77 @@ class Eks_pendapatan extends MX_Controller {
         // print_r($list);die;
         $data = array();
         $no = $_POST['start'];
-        if ($_GET['flag'] == 'RJ'){
 
-          // Digunakan untuk menampilkan kuitansi RJ, PB, RK selain RI
-          $kuitansi = 'RI';
+        foreach ($list['trans_1'] as $row_list) {
+        $no++;
+        $row = array();
+        $row[] = '<div class="center">'.$no.'</div>';
+        $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
+        $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_jam).'</div>';
+        $row[] = strtoupper($row_list->nama_pasien);
+        $row[] = $row_list->nama_perusahaan;
+        $row[] = $row_list->nama_bagian;
+        // non tunai
+        $nontunai = (int)$row_list->debet + (int)$row_list->kredit;
+        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
+        $row[] = '<div style="text-align: right">'.number_format((int)$nontunai).'</div>';
+        // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
+        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
+        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
+        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
+        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
+        $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
+        $row[] = '<div class="center" style="font-size:11px">'.ucfirst($petugas).'</div>';
+        $data[] = $row;
 
-          foreach ($list as $row_list) {
-            if($row_list->billing > 0 && $row_list->seri_kuitansi != $kuitansi) :
-                $no++;
-                $row = array();
-                $row[] = '<div class="center"></div>';
-                $row[] = $row_list->kode_tc_trans_kasir;
-                $row[] = $row_list->no_registrasi;
-                $row[] = '<div class="center">'.$no.'</div>';
-                $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
-                $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
-                $row[] = strtoupper($row_list->nama_pasien);
-                $row[] = $row_list->nama_perusahaan;
-                $row[] = $row_list->nama_bagian;
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
-                // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-                $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-                $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'</small>';
-                $data[] = $row;
-            endif;
-              
-          }
-        } else {
-          $kuitansi = 'RI';
-
-          // hanya menampilkan pasien RI
-          foreach ($list as $row_list) {
-              if($row_list->billing > 0 && $row_list->seri_kuitansi == $kuitansi) :
-                  $no++;
-                  $row = array();
-                  $row[] = '<div class="center"></div>';
-                  $row[] = $row_list->kode_tc_trans_kasir;
-                  $row[] = $row_list->no_registrasi;
-                  $row[] = '<div class="center">'.$no.'</div>';
-                  $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
-                  $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
-                  $row[] = $row_list->nama_pasien;
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
-                  // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-                  $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-                  $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'</small>';
-                  $data[] = $row;
-              endif;
-                
-          }
+        $arr_tunai[] = (int)$row_list->tunai;
+        $arr_nontunai[] = (int)$nontunai;
+        $arr_potongan[] = (int)$row_list->potongan;
+        $arr_piutang[] = (int)$row_list->piutang;
+        $arr_nk_karyawan[] = (int)$row_list->nk_karyawan;
+        $arr_billing[] = (int)$row_list->billing;
         }
+        
+        foreach ($list['trans_2'] as $row_dt){
+            $getDataPasien[$row_dt->no_mr] = [
+                'kode_tc_trans_kasir' => $row_dt->kode_tc_trans_kasir,
+                'jenis_tindakan' => $row_dt->jenis_tindakan,
+                'kode_jenis_tindakan' => $row_dt->kode_jenis_tindakan,
+                'no_mr' => $row_dt->no_mr,
+                'nama_pasien' => $row_dt->nama_pasien,
+                'nama_perusahaan' => $row_dt->nama_perusahaan,
+                'nama_bagian' => $row_dt->nama_bagian,
+                'tgl_jam' => $row_dt->tgl_jam,
+                'seri_kuitansi' => $row_dt->seri_kuitansi,            
+                'no_kuitansi' => $row_dt->no_kuitansi                   
+            ];
+            $getJenisTindakan[$row_dt->kode_jenis_tindakan] = $row_dt->jenis_tindakan;
+            $getDataJenisTindakan[$row_dt->no_mr][$row_dt->kode_jenis_tindakan] = $row_dt;
+        }
+        $respons = array(
+            'data_pasien' => $getDataPasien,
+            'data_trans' => $getDataJenisTindakan,
+            'fields' => $getJenisTindakan,
+        );
+        // echo "<pre>";print_r($getDataJenisTindakan);die;
+        $html = $this->load->view('eksekutif/Eks_pendapatan/index_2', $respons, true);
         
         $output = array(
                         "draw" => $_POST['draw'],
                         "recordsTotal" => $this->Eks_pendapatan->count_all(),
                         "recordsFiltered" => $this->Eks_pendapatan->count_filtered(),
                         "data" => $data,
+                        'tunai' => array_sum($arr_tunai),
+                        'nontunai' => array_sum($arr_nontunai),
+                        'potongan' => array_sum($arr_potongan),
+                        'piutang' => array_sum($arr_piutang),
+                        'nk_karyawan' => array_sum($arr_nk_karyawan),
+                        'billing' => array_sum($arr_billing),
+                        'html_trans' => $html
+                        
                 );
         //output to json format
         echo json_encode($output);
-    }
-
-    public function get_resume_kasir()
-    {
-        /*get data from model*/
-        $list = $this->Eks_pendapatan->get_resume_kasir(); 
-        echo json_encode($list);
     }
 
     public function getDetailTransaksi($kode_tc_trans_kasir, $no_registrasi){
