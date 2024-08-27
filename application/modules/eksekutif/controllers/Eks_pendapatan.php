@@ -63,43 +63,49 @@ class Eks_pendapatan extends MX_Controller {
         $no = $_POST['start'];
 
         foreach ($list['trans_1'] as $row_list) {
-        $no++;
-        $row = array();
-        $row[] = '<div class="center">'.$no.'</div>';
-        $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
-        $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_jam).'</div>';
-        $row[] = strtoupper($row_list->nama_pasien);
-        $row[] = $row_list->nama_perusahaan;
-        $row[] = $row_list->nama_bagian;
-        // non tunai
-        $nontunai = (int)$row_list->debet + (int)$row_list->kredit;
-        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
-        $row[] = '<div style="text-align: right">'.number_format((int)$nontunai).'</div>';
-        // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
-        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
-        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
-        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
-        $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-        $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-        $row[] = '<div class="center" style="font-size:11px">'.ucfirst($petugas).'</div>';
-        $data[] = $row;
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
+            $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_jam).'</div>';
+            $row[] = strtoupper($row_list->nama_pasien);
+            $row[] = $row_list->nama_perusahaan;
+            $row[] = $row_list->nama_bagian;
+            // non tunai
+            $nontunai = (int)$row_list->debet + (int)$row_list->kredit;
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$nontunai).'</div>';
+            // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
+            $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
+            $row[] = '<div class="center" style="font-size:11px">'.ucfirst($petugas).'</div>';
+            $data[] = $row;
 
-        $arr_tunai[] = (int)$row_list->tunai;
-        $arr_nontunai[] = (int)$nontunai;
-        $arr_potongan[] = (int)$row_list->potongan;
-        $arr_piutang[] = (int)$row_list->piutang;
-        $arr_nk_karyawan[] = (int)$row_list->nk_karyawan;
-        $arr_billing[] = (int)$row_list->billing;
+            $arr_tunai[] = (int)$row_list->tunai;
+            $arr_nontunai[] = (int)$nontunai;
+            $arr_potongan[] = (int)$row_list->potongan;
+            $arr_piutang[] = (int)$row_list->piutang;
+            $arr_nk_karyawan[] = (int)$row_list->nk_karyawan;
+            $arr_billing[] = (int)$row_list->billing;
         }
-        
+        $getDataPasien = [];
+        $getJenisTindaka = [];
+        $getDataJenisTindakan = [];
+
         foreach ($list['trans_2'] as $row_dt){
             $getDataPasien[$row_dt->no_mr] = [
+                'no_registrasi' => $row_dt->no_registrasi,
                 'kode_tc_trans_kasir' => $row_dt->kode_tc_trans_kasir,
                 'jenis_tindakan' => $row_dt->jenis_tindakan,
                 'kode_jenis_tindakan' => $row_dt->kode_jenis_tindakan,
                 'no_mr' => $row_dt->no_mr,
                 'nama_pasien' => $row_dt->nama_pasien,
                 'nama_perusahaan' => $row_dt->nama_perusahaan,
+                'kode_perusahaan' => $row_dt->kode_perusahaan,
+                'no_sep' => $row_dt->no_sep,
                 'nama_bagian' => $row_dt->nama_bagian,
                 'tgl_jam' => $row_dt->tgl_jam,
                 'seri_kuitansi' => $row_dt->seri_kuitansi,            
@@ -108,12 +114,13 @@ class Eks_pendapatan extends MX_Controller {
             $getJenisTindakan[$row_dt->kode_jenis_tindakan] = $row_dt->jenis_tindakan;
             $getDataJenisTindakan[$row_dt->no_mr][$row_dt->kode_jenis_tindakan] = $row_dt;
         }
+        ksort($getJenisTindakan);
         $respons = array(
             'data_pasien' => $getDataPasien,
             'data_trans' => $getDataJenisTindakan,
             'fields' => $getJenisTindakan,
         );
-        // echo "<pre>";print_r($getDataJenisTindakan);die;
+        // echo "<pre>";print_r($getJenisTindakan);die;
         $html = $this->load->view('eksekutif/Eks_pendapatan/index_2', $respons, true);
         
         $output = array(
@@ -134,7 +141,7 @@ class Eks_pendapatan extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function getDetailTransaksi($kode_tc_trans_kasir, $no_registrasi){
+    public function getDetailTransaksi($kode_tc_trans_kasir, $no_registrasi, $jenis_tindakan=''){
         if($no_registrasi != 0){
             $result = json_decode($this->Billing->getDetailData($no_registrasi));
         }else{
@@ -143,10 +150,12 @@ class Eks_pendapatan extends MX_Controller {
         $akunting = $this->Eks_pendapatan->get_jurnal_akunting($kode_tc_trans_kasir);
         $data = array(
             'result' => $result,
+            'trans_data' => $result->trans_data,
             'transaksi' => $akunting['data'],
             'jurnal' => $akunting['data'],
+            'jenis_tindakan' => $jenis_tindakan,
         );
-        // echo '<pre>';print_r($akunting);die;
+        // echo '<pre>';print_r($data['trans_data']);die;
         $html = $this->load->view('eksekutif/Eks_pendapatan/detail_transaksi_view', $data, true);
         echo json_encode(array('html' => $html));
     }

@@ -1,3 +1,40 @@
+<b>DATA TRANSAKSI</b>
+<table class="table table-striped" style="width:100% !important">
+  <thead>
+    <tr>
+        <th class="center" width="30px">No</th>
+        <th class="right" width="150px">Tanggal</th>
+        <th class="right">Keterangan</th>
+        <th class="right">Dokter</th>
+        <th class="right" width="150px">Total(Rp)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php 
+      $nox=0;
+      foreach ($trans_data as $key => $value) : 
+        if($jenis_tindakan != '') : 
+          if($value->jenis_tindakan == $jenis_tindakan) :
+            $nox++;
+            $total = $value->bill_rs + $value->bill_dr1 + $value->bill_dr2 + $value->bill_dr3;
+            $arr_total[] = $total;
+    ?>
+    <tr>
+      <td align="center"><?php echo $nox;?></td>
+      <td><?php echo $this->tanggal->formatDateTimeToDmy($value->tgl_transaksi);?></td>
+      <td><?php echo $value->nama_tindakan;?></td>
+      <td><?php echo $value->nama_dokter;?></td>
+        <td align="right">Rp. <?php echo number_format($total)?>,-</td>
+    </tr> 
+    <?php endif; endif; endforeach; ?>
+    <tr>
+      <td colspan="4" align="right"><b>Total Keseluruhan</b></td>
+      <td align="right">Rp. <?php echo number_format(array_sum($arr_total))?>,-</td>
+    </tr>
+  </tbody>
+
+</table> 
+<br>
 <?php
   $resume_billing = array();
   if(count($result) > 0 ) :
@@ -11,8 +48,9 @@
       }        
   }
 ?>
+
 <b>RESUME BILLING</b>
-<table class="table table-striped" style="width:80% !important">
+<table class="table table-striped" style="width:100% !important">
   <thead>
     <tr>
         <th class="right">Dokter</th>
@@ -45,7 +83,7 @@
 <br>
 <b>PENCATATAN JURNAL AKUNTING</b>
 
-<table class="table" style="width: 60% !important">
+<table class="table" style="width: 100% !important">
   <thead>
     <tr>
       <th></th>

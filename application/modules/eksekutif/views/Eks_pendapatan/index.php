@@ -287,8 +287,8 @@
                     <table id="dt_harian_kasir" base-url="eksekutif/Eks_pendapatan/get_data" class="table table-bordered table-hover">
                       <thead>
                         <tr style="background-color:#428bca">
-                          <th>No</th>
-                          <th width="100px">No. Kuitansi</th>
+                          <th class="center">No</th>
+                          <th width="90px">No. Kuitansi</th>
                           <th width="120px">Tanggal</th>
                           <th>Pasien</th>
                           <th>Penjamin</th>
