@@ -134,7 +134,9 @@ class Eks_pendapatan extends MX_Controller {
                         'piutang' => array_sum($arr_piutang),
                         'nk_karyawan' => array_sum($arr_nk_karyawan),
                         'billing' => array_sum($arr_billing),
-                        'html_trans' => $html
+                        'html_trans' => $html,
+                        'from_tgl' => isset($_GET['from_tgl'])?$_GET['from_tgl']:date('Y-m-d'),
+                        'to_tgl' => isset($_GET['to_tgl'])?$_GET['to_tgl']:date('Y-m-d'),
                         
                 );
         //output to json format

@@ -46,6 +46,7 @@
           $('#label_nk_karyawan').text(formatMoney(objData.nk_karyawan));
           $('#label_total_billing').text(formatMoney(objData.billing));
           $('#div2').html(objData.html_trans);
+          $('.tgl_filter').html(objData.from_tgl+' s.d '+objData.to_tgl);
 
       },
 
@@ -215,7 +216,7 @@
               <div class="row">
 
                 
-                  <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN RS TANGGAL <span id="tgl_filter"><?php echo date('d/M/Y')?></span></span></center>
+                  <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
                   <br>
                   <div class="col-md-2">
                     <table class="table">
@@ -312,7 +313,7 @@
             <div id="data-transaksi-2" class="tab-pane fade">
               
               <div class="row">
-                <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN RS TANGGAL <span id="tgl_filter"><?php echo date('d/M/Y')?></span></span></center>
+              <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>GROUPING BERDASARKAN JENIS TINDAKAN<br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
                 <br>
                 <div class="col-md-12">
                   <div id="div2"></div>
