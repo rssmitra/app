@@ -9,6 +9,10 @@
 ?>
 
 
+<button type="button" name="btn-export" value="2" onclick="export_excel(2)" class="btn btn-xs btn-success">
+  <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+  Export Excel
+</button>
 
 <table class="table">
   <?php 

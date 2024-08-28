@@ -84,26 +84,28 @@
       });
   });
 
-  $('#btn_export_excel').click(function (e) {
-      e.preventDefault();
+  function export_excel(type){
+
+    var json_data = {
+      "from_tgl" : $('#from_tgl').val(),
+      "to_tgl" : $('#to_tgl').val(),
+      "penjamin" : $('#penjamin').val(),
+      "flag" : $('#flag').val(),
+      "type" : type,
+      "title" : $('#title_'+type+'').text(),
+    };
+    preventDefault();
       $.ajax({
       url: $('#form_search').attr('action'),
       type: "post",
-      data: $('#form_search').serialize(),
+      data: json_data,
       dataType: "json",
       beforeSend: function() {
-        achtungShowLoader();  
       },
-      success: function(data) {
-        achtungHideLoader();
-        export_excel(data);
+      success: function(response) {
+        window.open('eksekutif/Eks_pendapatan/export_excel?'+response.data+'','_blank'); 
       }
     })
-  });
-
-  function export_excel(result){
-
-    window.open('eksekutif/Eks_pendapatan/export_excel?'+result.data+'','_blank'); 
 
   }
 
@@ -141,7 +143,7 @@
 <div class="row">
   <div class="col-xs-12">
 
-    <form class="form-horizontal" method="post" id="form_search" action="adm_pasien/loket_kasir/Adm_kasir/find_data">
+    <form class="form-horizontal" method="post" id="form_search" action="templates/References/find_data">
         <!-- hidden form -->
         <!-- <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>"> -->
         <span style="font-weight: bold">PENCARIAN DATA TRANSAKSI</span>
@@ -183,11 +185,7 @@
                 <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
                 Reload
               </a>
-
-              <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
-                <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
-                Export Excel
-              </a>
+              
             </div>
 
         </div>
@@ -216,67 +214,38 @@
               <div class="row">
 
                 
-                  <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
+                  <center><span style="font-weight: bold" id="title_1">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
                   <br>
-                  <div class="col-md-2">
+                  
+                  
+                  <div class="col-md-12">
+                    <button type="button" name="btn-export" value="1" onclick="export_excel(1)" class="btn btn-xs btn-success">
+                      <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+                      Export Excel
+                    </button>
                     <table class="table">
                       <tr>
-                        <td align="right" style="font-size: 11px">
+                        <td align="right" style="font-size: 11px; width: 18%">
                           Total Pasien<br>
                           <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="total_pasien">0</span></h3>
                         </td>
-                      </tr>
-                    </table>
-                  </div>
-
-                  <div class="col-md-2">
-                    <table class="table">
-                      <tr>
-                        <td align="right" style="font-size: 11px">
+                        <td align="right" style="font-size: 11px; width: 18%">
                           TUNAI<br>
                           <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_tunai">0</span>,-</h3>
                         </td>
-                      </tr>
-                    </table>
-                  </div>
-
-                  <div class="col-md-2">
-                    <table class="table">
-                      <tr>
-                        <td align="right" style="font-size: 11px">
+                        <td align="right" style="font-size: 11px; width: 18%">
                           NON TUNAI (DEBIT/CC)<br>
                           <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_debet">0</span>,-</h3>
                         </td>
-                      </tr>
-                    </table>
-                  </div>
-
-                  <div class="col-md-2">
-                    <table class="table">
-                      <tr>
-                        <td align="right" style="font-size: 11px">
+                        <td align="right" style="font-size: 11px; width: 18%">
                           PIUTANG PERUSAHAAN<br>
                           <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_nk_perusahaan">0</span>,-</h3>
                         </td>
-                      </tr>
-                    </table>
-                  </div>
-
-                  <div class="col-md-2">
-                    <table class="table">
-                      <tr>
-                        <td align="right" style="font-size: 11px">
+                        <td align="right" style="font-size: 11px; width: 18%">
                           PIUTANG KARYAWAN<br>
                           <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_nk_karyawan">0</span>,-</h3>
                         </td>
-                      </tr>
-                    </table>
-                  </div>
-
-                  <div class="col-md-2">
-                    <table class="table">
-                      <tr>
-                        <td align="right" style="font-size: 11px">
+                        <td align="right" style="font-size: 11px; width: 18%">
                           TOTAL BILLING<br>
                           <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_total_billing">0</span>,-</h3>
                         </td>
@@ -313,12 +282,10 @@
             <div id="data-transaksi-2" class="tab-pane fade">
               
               <div class="row">
-              <center><span style="font-weight: bold">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>GROUPING BERDASARKAN JENIS TINDAKAN<br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
+              <center><span style="font-weight: bold" id="title_2">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>GROUPING BERDASARKAN JENIS TINDAKAN<br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
                 <br>
                 <div class="col-md-12">
                   <div id="div2"></div>
-
-                  
                 </div>
               </div>
             

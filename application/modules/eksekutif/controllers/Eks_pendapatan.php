@@ -163,14 +163,50 @@ class Eks_pendapatan extends MX_Controller {
     }
 
     public function export_excel(){
-        $list = $this->Eks_pendapatan->get_data(); 
-        $data = array(
-            'title'     => 'Perjanjian Rawat Jalan',
-            'fields'    => $list->field_data(),
-            'data'      => $list->result(),
-        );
-        // echo '<pre>';print_r($data);die;
-        $this->load->view('eksekutif/Eks_pendapatan/excel_view', $data);
+        if($_GET['type'] == 1){
+            $list = $this->Eks_pendapatan->get_data(); 
+            $data = array(
+                'title'    => $_GET['title'],
+                'fields'    => $list->field_data(),
+                'data'      => $list->result(),
+            );
+            $this->load->view('eksekutif/Eks_pendapatan/excel_view', $data);
+        }
+        
+        
+        if($_GET['type'] == 2){
+            $list = $this->Eks_pendapatan->get_data2(); 
+
+            foreach ($list as $row_dt){
+                $getDataPasien[$row_dt->no_mr] = [
+                    'no_registrasi' => $row_dt->no_registrasi,
+                    'kode_tc_trans_kasir' => $row_dt->kode_tc_trans_kasir,
+                    'jenis_tindakan' => $row_dt->jenis_tindakan,
+                    'kode_jenis_tindakan' => $row_dt->kode_jenis_tindakan,
+                    'no_mr' => $row_dt->no_mr,
+                    'nama_pasien' => $row_dt->nama_pasien,
+                    'nama_perusahaan' => $row_dt->nama_perusahaan,
+                    'kode_perusahaan' => $row_dt->kode_perusahaan,
+                    'no_sep' => $row_dt->no_sep,
+                    'nama_bagian' => $row_dt->nama_bagian,
+                    'tgl_jam' => $row_dt->tgl_jam,
+                    'seri_kuitansi' => $row_dt->seri_kuitansi,            
+                    'no_kuitansi' => $row_dt->no_kuitansi                   
+                ];
+                $getJenisTindakan[$row_dt->kode_jenis_tindakan] = $row_dt->jenis_tindakan;
+                $getDataJenisTindakan[$row_dt->no_mr][$row_dt->kode_jenis_tindakan] = $row_dt;
+            }
+            ksort($getJenisTindakan);
+            $data = array(
+                'title'    => $_GET['title'],
+                'data_pasien' => $getDataPasien,
+                'data_trans' => $getDataJenisTindakan,
+                'fields' => $getJenisTindakan,
+            );
+            // echo '<pre>';print_r($data);die;
+
+            $this->load->view('eksekutif/Eks_pendapatan/excel_view_2', $data);
+        }
 
     }
 

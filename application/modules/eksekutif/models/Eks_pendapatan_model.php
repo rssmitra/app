@@ -112,8 +112,31 @@ class Eks_pendapatan_model extends CI_Model {
 	function get_data()
 	{
 		$this->_main_query();
+		$this->_filter();
+		$this->db->select($this->select);
 		$query = $this->db->get(); 
 		return $query;
+	}
+
+	function get_data2()
+	{
+		// query 2
+		$this->db->select('a.kode_tc_trans_kasir, h.jenis_tindakan, g.jenis_tindakan as kode_jenis_tindakan, SUM(CAST(bill_rs as INT)) as bill_rs, SUM(CAST(bill_dr1 as INT)) as bill_dr1, SUM(CAST(bill_dr2 as INT)) as bill_dr2, ( SUM(CAST(bill_rs as INT)) + SUM(CAST(bill_dr1 as INT)) + SUM(CAST(bill_dr2 as INT)) ) as total_billing, nama_pasien, e.nama_perusahaan, f.nama_bagian, a.tgl_jam, a.seri_kuitansi, g.no_mr, a.no_kuitansi, c.no_sep, c.kode_perusahaan, c.no_registrasi');
+		$this->db->from('tc_trans_pelayanan g');
+		$this->db->join('tc_trans_kasir a', 'g.kode_tc_trans_kasir = a.kode_tc_trans_kasir', 'left');
+		$this->db->join('mt_karyawan b','b.no_induk=a.no_induk','left');
+		$this->db->join('tmp_user d','d.user_id=a.no_induk','left');
+		$this->db->join('tc_registrasi c','c.no_registrasi=a.no_registrasi','left');
+		$this->db->join('mt_bagian f','f.kode_bagian=c.kode_bagian_masuk','left');
+		$this->db->join('mt_perusahaan e','e.kode_perusahaan=a.kode_perusahaan','left');
+		$this->db->join('mt_jenis_tindakan h', 'h.kode_jenis_tindakan = g.jenis_tindakan', 'left');
+		$this->_filter();
+		$this->db->where('g.kode_tc_trans_kasir is not null AND g.jenis_tindakan is not null');
+		$this->db->group_by('a.kode_tc_trans_kasir, h.jenis_tindakan, g.jenis_tindakan, nama_pasien, e.nama_perusahaan, f.nama_bagian, a.tgl_jam, a.seri_kuitansi, g.no_mr, a.no_kuitansi, c.no_sep, c.kode_perusahaan, c.no_registrasi');
+		$this->db->order_by('a.no_kuitansi');
+		$query2 = $this->db->get()->result();
+		// print_r($this->db->last_query());die;
+		return $query2;
 	}
 
 	function count_filtered()
