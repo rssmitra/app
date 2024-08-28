@@ -1,8 +1,6 @@
 <html>
 <head>
   <title>Laporan Umum</title>
-  <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery.min.js"></script>
-  <script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery-ui.min.js"></script>
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
   <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
@@ -122,17 +120,19 @@ $('select[name="pelayanan"]').change(function () {
           </div>
 
           <div class="form-group">
-              <label class="control-label col-md-1">Tanggal Distribusi </label>
+              <label class="control-label col-md-1">Tanggal Distribusi</label>
+              
               <div class="col-md-1">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                <?php echo $this->master->get_bulan('','from_month','from_month','form-control','','');?>
               </div>
               <label class="control-label col-md-1">s/d Tanggal</label>
               <div class="col-md-1">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                <?php echo $this->master->get_bulan('','to_month','to_month','form-control','','');?>
               </div>
+
           </div>
           <div class="form-group">
-            <label class="control-label col-md-1 ">&nbsp;</label>
+            <label class="control-label col-md-2 ">&nbsp;</label>
             <div class="col-md-10" style="margin-left: 5px">
               <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
                 Proses Pencarian

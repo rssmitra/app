@@ -893,10 +893,10 @@ class Global_report_model extends CI_Model {
 		LEFT JOIN '.$mt_rekap_stok.' c on a.kode_brg=c.kode_brg
 		LEFT JOIN '.$mt_barang.' d ON d.kode_brg=a.kode_brg
 		LEFT JOIN '.$mt_golongan.' e ON e.kode_golongan=d.kode_golongan
-		where MONTH(a.tgl_kirim) BETWEEN '."'".$_POST['from_month']."'".'  and '."'".$_POST['to_month']."'".' AND YEAR(tgl_kirim)='."'".$_POST['year']."'".' '.$filter_bagian.'
+		where CAST(a.tgl_kirim as DATE) BETWEEN '."'".$_POST['from_tgl']."'".'  and '."'".$_POST['to_tgl']."'".' '.$filter_bagian.'
 		group by a.kode_brg, a.nama_brg, a.nama_bagian_minta, a.satuan_kecil, e.nama_golongan
 		order by e.nama_golongan, a.nama_brg ASC';
-
+		// echo $query; exit;
 		return $query;
 
 	}
