@@ -100,7 +100,8 @@ th, td {
         <tr style="background-color: #e4e7e8;color: #0a0a0a;font-weight: bold; border: 1px solid black; border-collapse: collapse">
           <td rowspan="2" style="text-align:center; width: 30px; border: 1px solid black; border-collapse: collapse">No</td>
           <td rowspan="2" style="border: 1px solid black; border-collapse: collapse">Kode & Nama Barang</td>
-          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>Pesan</td>
+          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>Permintaan</td>
+          <td rowspan="2" style="text-align:center; width: 60px; border: 1px solid black; border-collapse: collapse">Jumlah<br>di ACC</td>
           <td rowspan="2" style="text-align:center; width: 70px; border: 1px solid black; border-collapse: collapse">Satuan</td>
           <td rowspan="2" style="text-align:center; width: 75px; border: 1px solid black; border-collapse: collapse">Harga Satuan</td>
           </tr>
@@ -111,10 +112,12 @@ th, td {
           foreach($po_data as $key_dt=>$row_dt) : $no++; 
           if(count($row_dt) > 0){
             foreach($row_dt as $row_sub_data){
+              $jumlah_permintaan[$key_dt][] = $row_sub_data->jumlah_besar;
               $jumlah_pesan[$key_dt][] = $row_sub_data->jumlah_besar_acc;
               $jumlah_harga_netto[$key_dt][] = $row_sub_data->jumlah_harga;
             }
           }else{
+            $jumlah_permintaan[$key_dt][] = $row_dt[0]->jumlah_besar;
             $jumlah_pesan[$key_dt][] = $row_dt[0]->jumlah_besar_acc;
             $jumlah_harga_netto[$key_dt][] = $row_dt[0]->jumlah_harga;
           }
@@ -124,6 +127,7 @@ th, td {
             <tr>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $no?></td>
               <td style="border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->kode_brg.' - '.$row_dt[0]->nama_brg?></td>
+              <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo array_sum($jumlah_permintaan[$row_dt[0]->kode_brg])?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo array_sum($jumlah_pesan[$row_dt[0]->kode_brg])?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt[0]->satuan_besar?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>

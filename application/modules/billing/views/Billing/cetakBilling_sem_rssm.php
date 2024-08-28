@@ -342,39 +342,91 @@
       
       <table width="460px" style="border-top: 1px solid black; margin-top: 15px !important;"  border="0">
           <tr>
-            <td style="text-align: right; font-size: 13px;"><b>Total : </b></td>
+            <td style="text-align: right; font-size: 13px;font-style: italic"><b>Total Billing</b></td>
             <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b>
               <?php 
                 $total_all_bill = isset($getDataBill) ? array_sum($getDataBill)  : 0; echo number_format($total_all_bill); ?>,-</b></i>
             </td>
           </tr>
-          <!-- <tr>
-            <td style="text-align: right"><b>Bayar</b></td>
-            <td style="text-align: right; width: 100px"><?php echo isset($kasir_data[0]->cash)?number_format($kasir_data[0]->cash):0?>,-</td>
+          <tr>
+            <td style="border-bottom: 1px solid black; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;" colspan="2"><i>Terbilang :</i> <br><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($total_all_bill))?> Rupiah</i></b></td>
+          </tr>
+
+
+          <tr>
+            <td style="text-align: right; font-size: 13px;font-style: italic" colspan="">Potongan Pembayaran : </td>
+            <td style="text-align: right; font-size: 13px;font-style: italic" colspan="">&nbsp;</td>
+          </tr>
+
+          <tr>
+            <td style="text-align: right"><b>Diskon</b></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px; font-weight: bold"><i><?php echo isset($kasir_data[0]->potongan)?number_format($kasir_data[0]->potongan):0?>,-</i></td>
           </tr>
           <tr>
-            <td style="text-align: right"><b>Kembali</b></td>
-            <td style="text-align: right; width: 100px"><?php echo isset($kasir_data[0]->change)?number_format($kasir_data[0]->change):0?>,-</td>
-          </tr> -->
+            <td style="text-align: right;"><b>Nota Kredit</b></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px; font-weight: bold; border-bottom: 1px solid black"><i>
+              <?php 
+                $nkk = isset($kasir_data[0]->nk_karyawan)?$kasir_data[0]->nk_karyawan:0;
+                $nkp = isset($kasir_data[0]->nk_perusahaan)?$kasir_data[0]->nk_perusahaan:0;
+                $nk = $nkk + $nkp;
+                echo number_format($nk);
+                ?>,-
+                </i>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="text-align: right;"><b>Jumlah Bayar</b></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px; font-weight: bold; "><i>
+              <?php 
+                $bill = isset($kasir_data[0]->bill)?$kasir_data[0]->bill:0;
+                $disc = isset($kasir_data[0]->potongan)?$kasir_data[0]->potongan:0;
+                $jb = $bill - ($nkk + $nkp + $disc);
+                echo number_format($jb);
+                ?>,-
+                </i>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="text-align: right; font-size: 13px;font-style: italic" colspan="">Metode Pembayaran : </td>
+            <td style="text-align: right; font-size: 13px;font-style: italic" colspan="">&nbsp;</td>
+          </tr>
+          <tr>
+            <td style="text-align: right; font-size: 13px;"><b>Kredit/Debit</b></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b>
+            <?php 
+                $kredit = isset($kasir_data[0]->kredit)?$kasir_data[0]->kredit:0;
+                $debet = isset($kasir_data[0]->debet)?$kasir_data[0]->debet:0;
+                $nontunai = $kredit + $debet;
+                echo number_format($nontunai);
+                ?>,-
+              </b></i>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="text-align: right; font-size: 13px;"><b>Tunai</b></td>
+            <td style="font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: right; font-size: 13px; width: 100px"><i><b>
+            <?php echo isset($kasir_data[0]->tunai)?number_format($kasir_data[0]->tunai):0?>,-</b></i>
+            </td>
+          </tr>
+
       </table>
+
+
       <!-- <br> -->
       <!-- footer -->
       <div width="98%" style="padding-left: 0%;">
         <!-- <span style="font-size: 20px">Total biaya keseluruhan : <b>Rp. <?php echo number_format($total_all_bill)?></b></span>
         <br> -->
         <!-- <hr> -->
-        <table width="460px" style="border-bottom: 1px solid black;">
-          <tr>
-            <td valign="top" width="65px">Terbilang :&nbsp;</td>
-            <td style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;"><b><i><?php $terbilang = new Kuitansi(); echo ucwords($terbilang->terbilang($total_all_bill))?> Rupiah</i></b></td>
-            <td width="50px"></td>
-          </tr>
-        </table>
+         <br>
         <table width="460px">
           <tr>
             <td style="text-align: right">
               Jakarta, <?php echo $this->tanggal->formatDatedmY($data->reg_data->tgl_jam_masuk)?>
-              <br><br><br><br><br>
+              <br><br><br>
               <?php if( $flag_bill == 'temporary' ) : ?>
               <div class="col-xs-4">
               <span style="margin-left:-31%; margin-top: -13%; font-size: 24px" class="stamp center">BILLING<br>SEMENTARA</span>
