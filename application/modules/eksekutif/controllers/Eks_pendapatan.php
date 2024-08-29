@@ -150,9 +150,16 @@ class Eks_pendapatan extends MX_Controller {
             $result = array();
         }
         $akunting = $this->Eks_pendapatan->get_jurnal_akunting($kode_tc_trans_kasir);
+
+        foreach($result->trans_data as $row_td){
+            if($row_td->jenis_tindakan == $jenis_tindakan){
+                $getData[$row_td->nama_bagian][] = $row_td;
+            }
+        }
+        // echo '<pre>';print_r($getData);die;
         $data = array(
             'result' => $result,
-            'trans_data' => $result->trans_data,
+            'trans_data' => $getData,
             'transaksi' => $akunting['data'],
             'jurnal' => $akunting['data'],
             'jenis_tindakan' => $jenis_tindakan,
