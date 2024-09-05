@@ -19,6 +19,7 @@ class App_persetujuan_pemb_model extends CI_Model {
 
 		$table = ($_GET['flag']=='non_medis')?$this->table_nm:$this->table;
 		$this->db->select($this->select);
+		$this->db->select('CAST(a.keterangan_permohonan as NVARCHAR(2000)) as keterangan_permohonan');
 		$this->db->select('t_total.total_brg');
 		$this->db->select('CASE
 								WHEN flag_jenis = 1 THEN '."'Cito'".'
@@ -61,7 +62,7 @@ class App_persetujuan_pemb_model extends CI_Model {
 		// 	$this->db->where('MONTH(a.tgl_permohonan) >= '.$curr_month.'');
 		// }
 
-		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, t_total.total_brg, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju');
+		$this->db->group_by('a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan,a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, user_acc.username, a.status_batal, t_total.total_brg, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju, CAST(a.keterangan_permohonan as NVARCHAR(2000))');
 	}
 
 	private function _get_datatables_query()

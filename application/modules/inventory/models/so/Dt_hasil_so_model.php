@@ -19,6 +19,7 @@ class Dt_hasil_so_model extends CI_Model {
 		$table = ($_GET['flag']=='medis') ? $this->table : $this->table_nm;
 		$join_t_brg = ($_GET['flag']=='medis') ? 'mt_barang' : 'mt_barang_nm';
 		
+		$this->db->select($join_t_brg.'.harga_beli');
 		$this->db->select($this->select);
 		$this->db->select(''.$join_t_brg.'.kode_brg');
 		$this->db->select(''.$join_t_brg.'.satuan_besar');

@@ -98,24 +98,24 @@ class Req_pembelian extends MX_Controller {
             $flag = ($_GET['flag']=='medis')?'m':'nm';
             
             if ( $row_list->status_batal == "1" ) {
-                    $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
+                    $status = '<i class="fa fa-times-circle bigger-150 red"></i>';
                     $text = 'Tidak disetujui';
             }else{
 
                 if( $row_list->tgl_acc == NULL ){
 
                     if ( $row_list->status_kirim == NULL ) {
-                        $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
+                        $status = '<i class="fa fa-times-circle bigger-150 red"></i>';
                         if( $this->session->userdata('user')->user_id != 1){
                             $kainst = ($_GET['flag'] == 'non_medis') ? $this->master->get_ttd_data('ttd_ka_gdg_nm', 'reff_id') : $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
                             $titlekainst = ($_GET['flag'] == 'non_medis') ? 'Ka Gudang Non Medis' : 'Ka.Inst Farmasi';
                             if ($kainst == $this->session->userdata('user')->user_id) {
-                                $text = '<a href="#" target="_blank" class="btn btn-xs btn-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                                $text = '<a href="#" target="_blank" class="label label-xs label-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
                             }else{
                                 $text = '<span>Menunggu Persetujuan<br>'.$titlekainst.'</span>';
                             }
                         }else{
-                            $text = '<a href="#" target="_blank" class="btn btn-xs btn-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                            $text = '<a href="#" target="_blank" class="label label-xs label-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
                         }
                         
 
@@ -133,10 +133,10 @@ class Req_pembelian extends MX_Controller {
                     
                 }else{
                     if ( $row_list->status_kirim == NULL ) {
-                        $status = '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>';
+                        $status = '<i class="fa fa-times-circle bigger-150 red"></i>';
                         $text = 'Persetujuan';
                     }else{
-                        $status = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
+                        $status = '<i class="fa fa-check-circle bigger-150 green"></i>';
                         $text = 'Disetujui';
                     }
                 }
@@ -180,11 +180,11 @@ class Req_pembelian extends MX_Controller {
             $row[] = '<div class="center">'.ucwords($petugas).'</div>';
             
             $row[] = '<div class="center">'.$row_list->jenis_permohonan_name.'</div>';
-            $row[] = '<div class="left">'.$row_list->no_acc.'<br>'.$this->tanggal->formatDate($row_list->tgl_acc).'</div>';
+            $row[] = $row_list->keterangan_permohonan;
+            $row[] = '<div class="center">'.$row_list->no_acc.'<br>'.$this->tanggal->formatDate($row_list->tgl_acc).'</div>';
             $row[] = '<div class="center">'.$row_list->total_brg.'</div>';
             
-            $row[] = '<div class="center">'.$status.'</div>';
-            $row[] = '<div class="center">'.$text.'</div>';
+            $row[] = '<div class="center">'.$status.'<br>'.$text.'</div>';
                    
             $data[] = $row;
         }

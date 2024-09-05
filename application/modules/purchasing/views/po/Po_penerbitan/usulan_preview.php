@@ -167,14 +167,14 @@ th, td {
     </tr>
     <?php if($po->jenis_po == 'Non Rutin') {?>
     <tr>      
-      <td style="text-align: center; width: 50%">
+      <!-- <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
         <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
-      </td>
-      <td style="text-align: center; width: 50%">
+      </td> -->
+      <td style="text-align: center; width: 50%" colspan="2">
         <br>
         <br>
         <br>
@@ -184,14 +184,14 @@ th, td {
     </tr>
     <?php }else{ ?>
     <tr>      
-      <td style="text-align: center; width: 50%">
+      <!-- <td style="text-align: center; width: 50%">
         <br>
         <br>
         <br>
         <br>
         <?php echo $this->master->get_ttd('ttd_dir_opr_sml') ; ?>
-      </td>
-      <td style="text-align: center; width: 50%">
+      </td> -->
+      <td style="text-align: center; width: 50%" colspan="2">
         <br>
         <br>
         <br>

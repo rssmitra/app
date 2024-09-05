@@ -43,24 +43,6 @@ $(document).ready(function(){
     }); 
 })
 
-$('select[name="pelayanan"]').change(function () {  
-    /*flag string*/
-    // flag_string = $('#flag_string').val();
-    if ( $(this).val() ) {     
-      
-        $.getJSON("<?php echo site_url('Templates/References/getSubBagian') ?>/" + $(this).val() , '', function (data) {   
-            $('#kode_bagian option').remove();         
-            $('<option value="">-Pilih Bagian -</option>').appendTo($('#kode_bagian'));  
-            $.each(data, function (i, o) {   
-                $('<option value="' + o.kode_bagian + '">' + o.nama_bagian.toUpperCase() + '</option>').appendTo($('#kode_bagian'));  
-            });   
-        });   
-    } else {    
-        $('#kode_bagian option').remove();
-    }    
-}); 
-
-
 </script>
 </head>
 <body>
@@ -87,21 +69,6 @@ $('select[name="pelayanan"]').change(function () {
         <!-- hidden form -->
           <input type="hidden" name="flag" value="<?php echo $flag?>">
           <input type="hidden" name="title" value="Laporan Distribusi Barang Unit">
-
-         <!--  <div class="form-group">
-            <label class="control-label col-md-2">Status</label>
-               <div class="col-md-3">
-                <?php 
-                  // $table_gol = 'mt_pelayanan' ;
-                  // echo $this->master->custom_selection($params = array('table' => $table_gol, 'id' => 'pelayanan', 'name' => 'nama', 'where' => array()), isset($value->pelayanan)?$value->pelayanan:'' , 'pelayanan', 'pelayanan', 'form-control', '',  ($flag=='read')?'readonly':'') ?>
-                   </div>
-            <label class="control-label col-md-2">Bagian</label>
-                 <div class="col-md-3">
-                  <?php 
-                     // $table_sub_gol = 'mt_bagian' ;
-                    // echo $this->master->get_change($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1)),  isset($value->kode_bagian)?$value->kode_bagian:'' , 'bagian', 'bagian', 'form-control', '',  ($flag=='read')?'readonly':'') ?>
-                            </div>
-                          </div> -->
 
            <div class="form-group">
             <label class="control-label col-md-1">Status</label>

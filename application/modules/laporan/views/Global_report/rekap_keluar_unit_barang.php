@@ -21,6 +21,7 @@
     <div class="col-xs-12">
       <center><h4><?php echo $title?></h4></center>
       <br>
+      <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
       <br>
       <table class="table">
         <thead>
@@ -28,21 +29,24 @@
             <th>NO</th>
             <th width="100">Kode Barang</th>
             <th>Nama Barang</th>
-            <th width="150px">Qty Keluar</th>
-            <th width="150px">Harga Beli (Rp. )</th>  
-            <th width="150px">Total Harga Beli (Rp. )</th>    
+            <th width="150px">Jumlah Distribusi</th>
+            <th width="150px">Harga Satuan (Rp.)</th>  
+            <th width="160px">Total Pengeluaran (Rp.)</th>    
           </tr>
         </thead>
         <tbody>
           <?php $no = 0; 
           $total=0;
-          foreach($result['data'] as $row_data){
+          foreach($result as $key_dt=>$rw){
+            $no++; 
+            echo "<tr style='font-weight: bold'><td align='center'>".$no."</td><td colspan='5'>".strtoupper($key_dt)."</td></tr>";
+            foreach($rw as $row_data){
             $hargabeli=$row_data->total * $row_data->harga_beli;
             $total=$total+$hargabeli;
-            $no++; 
+            
             ?>
               <tr>
-                <td align="center"><?php echo $no;?></td>
+                <td align="center"></td>
                 <?php 
                     echo '<td>'.$row_data->kode_brg.'</td>';
                     echo '<td>'.$row_data->nama_brg.'</td>';
@@ -52,6 +56,7 @@
                 ?>
               </tr>
             <?php 
+            }
           }?>
           <tr>
             <td colspan="5" align="right">TOTAL</td>

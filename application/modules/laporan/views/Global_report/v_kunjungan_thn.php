@@ -33,7 +33,7 @@
     <div class="col-xs-12">
 
       <center><h4><?php echo $title?></h4></center>
-      <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
+      <!-- <b>Parameter :</b> <i><?php echo print_r($_POST);?></i> -->
 
       <table class="table">
     <tbody>

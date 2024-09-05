@@ -192,6 +192,7 @@ class Po_penerbitan_model extends CI_Model {
 		$tc_permohonan = ($flag=='non_medis')?'tc_permohonan_nm':'tc_permohonan';
 
 		$this->db->select('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan as harga_satuan, a.harga_satuan_netto as harga_satuan_netto, a.jumlah_harga_netto as jumlah_harga_netto,a.jumlah_harga as jumlah_harga, a.discount, a.discount_rp as discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn as ppn, a.ppn as ppn_brg, b.total_sbl_ppn as total_sbl_ppn, b.total_stl_ppn as total_stl_ppn, b.discount_harga as total_diskon, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim as estimasi_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik, b.jenis_po');
+		$this->db->select('CAST(c.spesifikasi as NVARCHAR(2000)) as spesifikasi');
 		$this->db->from(''.$table.' a');
 		$this->db->join($join_po.' b', 'b.id_tc_po=a.id_tc_po', 'left');
 		$this->db->join($mt_barang.' c', 'c.kode_brg=a.kode_brg', 'left');
@@ -200,7 +201,7 @@ class Po_penerbitan_model extends CI_Model {
 
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('a.id_tc_po IN ('.$id.')');
-		$this->db->group_by('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan, a.harga_satuan_netto, a.jumlah_harga_netto,a.jumlah_harga, a.discount, a.discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn, b.total_sbl_ppn, b.total_stl_ppn, b.discount_harga, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik, b.jenis_po, a.ppn');
+		$this->db->group_by('a.id_tc_po_det, a.id_tc_po, a.id_tc_permohonan_det, a.id_tc_permohonan, a.kode_brg, a.jumlah_besar, a.jumlah_besar_acc, a.content, a.harga_satuan, a.harga_satuan_netto, a.jumlah_harga_netto,a.jumlah_harga, a.discount, a.discount_rp, c.nama_brg, c.satuan_besar, b.no_po, b.tgl_po, b.ppn, b.total_sbl_ppn, b.total_stl_ppn, b.discount_harga, b.term_of_pay, b.diajukan_oleh, b.tgl_kirim, e.namasupplier, e.alamat, e.kota, e.telpon1, b.no_urut_periodik, b.jenis_po, a.ppn, CAST(c.spesifikasi as NVARCHAR(2000))');
 		$this->db->order_by('c.nama_brg ASC');
 		return $this->db->get()->result();
 	}

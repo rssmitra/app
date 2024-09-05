@@ -6,7 +6,7 @@ class Dt_bag_so_rs_model extends CI_Model {
 	var $table = 'tc_stok_opname';
 	var $table_nm = 'tc_stok_opname_nm';
 	var $column = array('nama_brg');
-	var $select = 'nama_brg, SUM(stok_sebelum) as stok_sebelum, SUM(stok_sekarang) as stok_sekarang, SUM(stok_exp) as stok_exp, SUM(will_stok_exp) as will_stok_exp, AVG(harga_pembelian_terakhir) as harga_pembelian_terakhir, content';
+	var $select = 'nama_brg, SUM(stok_sebelum) as stok_sebelum, SUM(stok_sekarang) as stok_sekarang, SUM(stok_exp) as stok_exp, SUM(will_stok_exp) as will_stok_exp, AVG(harga_pembelian_terakhir) as harga_pembelian_terakhir, content, set_status_aktif, satuan_kecil';
 	var $order = array('nama_brg' => 'ASC');
 
 	public function __construct()
@@ -17,16 +17,16 @@ class Dt_bag_so_rs_model extends CI_Model {
 
 	private function _main_query(){
 		$table = ($_GET['flag']=='medis') ? $this->table : $this->table_nm;
+		$mt_barang = ($_GET['flag']=='medis') ? 'mt_barang' : 'mt_barang_nm';
 		$this->db->select($this->select);
 		$mt_rekap_stok = ($_GET['flag']=='medis') ? 'mt_rekap_stok' : 'mt_rekap_stok_nm';
-		$this->db->select('CAST('.$mt_rekap_stok.'.harga_beli as INT) as harga_beli');
+		$this->db->select('CAST('.$mt_barang.'.harga_beli as INT) as harga_beli');
 		$this->db->select($table.'.kode_brg');
-		$mt_barang = ($_GET['flag']=='medis') ? 'mt_barang' : 'mt_barang_nm';
 		$this->db->from($table);
 		$this->db->where('agenda_so_id', $_GET['agenda_so_id']);
 		$this->db->join($mt_barang, $mt_barang.'.kode_brg='.$table.'.kode_brg');
-		$this->db->join($mt_rekap_stok, $mt_rekap_stok.'.kode_brg='.$table.'.kode_brg');
-		$this->db->group_by($table.'.kode_brg, nama_brg, content, '.$mt_rekap_stok.'.harga_beli');
+		// $this->db->join($mt_rekap_stok, $mt_rekap_stok.'.kode_brg='.$table.'.kode_brg');
+		$this->db->group_by($table.'.kode_brg, nama_brg, content, set_status_aktif, '.$mt_barang.'.harga_beli, satuan_kecil');
 	}
 
 	private function _get_datatables_query()
@@ -58,7 +58,7 @@ class Dt_bag_so_rs_model extends CI_Model {
 	function get_datatables()
 	{
 		$this->_get_datatables_query();
-		$this->db->where('(set_status_aktif = 1 or set_status_aktif is null)');
+		// $this->db->where('(set_status_aktif = 1 or set_status_aktif is null)');
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
@@ -72,7 +72,7 @@ class Dt_bag_so_rs_model extends CI_Model {
 		$this->_main_query();
 		$this->db->group_by('set_status_aktif');
 		$query = $this->db->get();
-		// print_r($this->db->last_query());die;
+		print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

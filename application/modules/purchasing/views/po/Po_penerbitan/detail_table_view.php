@@ -49,6 +49,7 @@
           <th class="center">Jumlah Brg yang di ACC</th>
           <th class="center">Satuan Besar</th>
           <th class="center">Rasio</th>
+          <th class="left">Keterangan</th>
         </tr>
         <?php $no=0; foreach($dt_detail_brg as $row_dt) : if($row_dt->status_po != 1) :$no++?>
           <tr>
@@ -59,6 +60,7 @@
             <td class="center"><?php echo number_format($row_dt->jml_acc_penyetuju, 2)?></td>
             <td class="center"><?php echo $row_dt->satuan_besar?></td>
             <td class="center"><?php echo $row_dt->rasio?></td>
+            <td class="left"><?php echo $row_dt->keterangan?></td>
           </tr>
         <?php endif; endforeach;?>
       </table>

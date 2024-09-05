@@ -1755,7 +1755,7 @@ class References extends MX_Controller {
     // echo "<pre>";print_r($query);die;
 		// echo "<pre>";print_r($this->db->last_query());die;
 
-		$lastnum = $query->num + 1;
+		$lastnum = isset($query->num)?$query->num + 1 : 1;
 		$nextnum = ( strlen($lastnum) == 1 ) ?  "0".$lastnum : $lastnum ;
 		$kode_brg = $kode.$nextnum;
 		// echo "<pre>";print_r($kode_brg);die;

@@ -73,6 +73,7 @@
             <th>Kode Permintaan</th>
             <th>Tanggal</th>
             <th>Petugas</th>
+            <th>Keterangan Permohonan</th>
             <th>Persetujuan</th>
             <th>Total Barang</th>
             <th>Status</th>

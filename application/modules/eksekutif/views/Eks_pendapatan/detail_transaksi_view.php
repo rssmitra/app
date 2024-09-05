@@ -70,7 +70,7 @@
         echo "<td align='right'>".number_format($kamar_tindakan)."</td>";
         echo "<td align='right'>".number_format($adm)."</td>";
         echo "<td align='right'>".number_format($pendapatan_rs)."</td>";
-        echo "<td align='right'>".number_format($total)."</td>";
+        echo "<td align='right'>".number_format($total).",-</td>";
         echo "</tr>";
         $arr_total_all[] = $total;
         endforeach; ?>

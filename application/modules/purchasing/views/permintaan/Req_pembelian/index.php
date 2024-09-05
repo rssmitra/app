@@ -155,14 +155,14 @@
               <th width="40px" class="center"></th>
               <th width="40px"></th>
               <th width="50px">ID</th>
-              <th>Kode Permintaan</th>
-              <th>Tanggal</th>
-              <th>Petugas</th>
-              <th>Jenis</th>
-              <th>Persetujuan</th>
-              <th>Total Barang</th>
-              <th>Status</th>
-              <th style="80px">Keterangan</th>
+              <th width="100px">Kode Permintaan</th>
+              <th width="120px">Tanggal</th>
+              <th width="100px">Petugas</th>
+              <th width="100px">Jenis</th>
+              <th width="200px">Keterangan</th>
+              <th width="150px">Persetujuan</th>
+              <th width="100px">Total Barang</th>
+              <th width="150px">Status</th>
               
             </tr>
             </thead>

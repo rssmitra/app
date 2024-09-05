@@ -31,10 +31,10 @@ $(document).ready(function() {
       "drawCallback": function (response) { 
         // Here the response
           var objData = response.json;
-          $('#total_aset_barang_rs').text( formatMoney(objData.total_active) );
-          $('#total_aset_barang_rs_not_active').text( formatMoney(objData.total_not_active) );
-          $('#total_exp_barang_rs').text( formatMoney(objData.total_expired) );
-          $('#total_will_exp_barang_rs').text( formatMoney(objData.total_expired_soon) );
+          $('#total_hasil_so_aktif').text( formatMoney(objData.total_rp_aktif) );
+          $('#total_hasil_so_not_aktif').text( formatMoney(objData.total_rp_not_aktif) );
+          $('#total_hasil_so_exp').text( formatMoney(objData.total_rp_exp) );
+          $('#total_hasil_so_will_exp').text( formatMoney(objData.total_rp_will_exp) );
       },
       "columnDefs": [
         { 
@@ -89,30 +89,27 @@ function get_rincian_log(kode_brg){
     </div><!-- /.page-header -->
 
     <div class="row">
-      <div class="pull-left">
-        <a href="<?php echo base_url().'inventory/so/Lap_hasil_so/excel_rs?agenda_so_id='.$agenda_so_id.'&flag='.$flag.''?>" class="btn btn-xs btn-success" target="blank"><i class="fa fa-excel-o"></i> Export Excel</a>   
+
+    <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
+        <span style="font-size: 14px">Barang Aktif</span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_hasil_so_aktif"></span>,-</h3>
       </div>
 
       <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
-        <span style="font-size: 14px">Aset Barang RS</span>
-        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs"></span>,-</h3>
-      </div> 
-
-      <!-- <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
-        <span style="font-size: 14px">Barang Tidak Aktif</span>
-        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_aset_barang_rs_not_active"></span>,-</h3>
-      </div>  -->
+        <span style="font-size: 14px">Barang Tidak Aktif </span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_hasil_so_not_aktif"></span>,-</h3>
+      </div>
 
       <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
-        <span style="font-size: 14px">Sudah Expired</span>
-        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_exp_barang_rs"></span>,-</h3>
+        <span style="font-size: 14px"> Expired (-3 Bln) </span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_hasil_so_will_exp"></span>,-</h3>
+      </div>
+
+      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
+        <span style="font-size: 14px">Barang Expired </span>
+        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_hasil_so_exp"></span>,-</h3>
       </div>
       
-      <div class="pull-right" style="border-left: 1px solid #b2b3b5; padding-left: 10px; padding-right: 10px; background: #d7d7d766">
-        <span style="font-size: 14px">Expired (-3 Bln)</span>
-        <h3 style="font-weight: bold; margin-top : 0px">Rp. <span id="total_will_exp_barang_rs"></span>,-</h3>
-      </div>
-
     </div>
 
     <hr class="separator">
@@ -127,6 +124,7 @@ function get_rincian_log(kode_brg){
             <th style="background-color: black; color: white" width="30px" class="center"></th>
             <th style="background-color: black; color: white" width="100px">Kode Barang</th>
             <th style="background-color: black; color: white">Nama Barang</th>
+            <th style="background-color: black; color: white">Satuan Kecil</th>
             <th style="background-color: black; color: white" style="width:30px">Stok Sebelum</th>
             <th style="background-color: black; color: white" style="width:30px">Hasil SO</th>
             <th style="background-color: black; color: white" style="width:30px">Expired</th>

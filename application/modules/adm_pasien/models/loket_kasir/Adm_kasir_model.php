@@ -6,7 +6,7 @@ class Adm_kasir_model extends CI_Model {
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
 	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai';
-	var $order = array('c.nama_pasien' => 'ASC');
+	var $order = array('b.no_sep' => 'ASC');
 
 	public function __construct()
 	{
@@ -95,7 +95,7 @@ class Adm_kasir_model extends CI_Model {
 		{
 			// $order = $this->order;
 			// $this->db->order_by(key($order), $order[key($order)]);
-      $this->db->order_by('c.nama_pasien ASC, a.no_registrasi DESC, d.nama_bagian ASC');
+      $this->db->order_by('b.no_sep ASC');
 		}
 	}
 	

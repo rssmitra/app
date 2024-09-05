@@ -177,16 +177,21 @@ class Input_dt_so extends MX_Controller {
 
     public function set_status_brg()
     {
-        // print_r($_POST);die;
         /*proses input so*/
         $value = ($_POST['value'] == 0) ? 1 : 0;
+        // print_r($value);die;
         // $value = $_POST['value'];
         if($_POST['kode_bagian']=='070101'){
             $this->Input_dt_so->update_status_brg('mt_barang_nm', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );
+            $this->db->trans_commit();
             $this->Input_dt_so->update_status_brg('tc_stok_opname_nm', array('set_status_aktif' => $value), array('kode_brg' => $_POST['kode_brg'], 'agenda_so_id' => $_POST['agenda_so_id'], 'kode_bagian' => $_POST['kode_bagian']) );
+            $this->db->trans_commit();
             $this->Input_dt_so->update_status_brg('mt_depo_stok_nm', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg'], 'kode_bagian' => $_POST['kode_bagian']) );
+            echo $this->db->last_query();exit;
+            $this->db->trans_commit();
             // update
             $this->Input_dt_so->save_dt_so_nm();
+            $this->db->trans_commit();
         }else{
             if($_POST['kode_bagian']=='060201'){
                 $this->Input_dt_so->update_status_brg('mt_barang', array('is_active' => $value), array('kode_brg' => $_POST['kode_brg']) );

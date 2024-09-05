@@ -1062,13 +1062,11 @@ class Global_report_model extends CI_Model {
 		$mt_rekap_stok = ( $_POST['status'] == '1' ) ? 'mt_rekap_stok' : 'mt_rekap_stok_nm' ;
 
 		$query = 'select a.kode_brg, a.nama_brg, SUM(a.jumlah_penerimaan)as total, a.satuan_kecil,  
-							CAST(AVG(c.harga_beli) as INT) as harga_beli
-							from '.$tc_permintaan.' a
-							LEFT JOIN '.$mt_rekap_stok.' c on a.kode_brg=c.kode_brg
-							where MONTH(a.tgl_kirim) between '."'".$_POST['from_month']."'".' and '."'".$_POST['to_month']."'".' and YEAR(a.tgl_kirim)='."'".$_POST['year']."'".'
-							group by a.kode_brg, a.nama_brg, a.satuan_kecil';
-				
-
+					CAST(AVG(c.harga_beli) as INT) as harga_beli, a.nama_bagian_minta
+					from '.$tc_permintaan.' a
+					LEFT JOIN '.$mt_rekap_stok.' c on a.kode_brg=c.kode_brg
+					where CAST(a.tgl_kirim as DATE) BETWEEN '."'".$_POST['from_tgl']."'".'  and '."'".$_POST['to_tgl']."'".' group by a.kode_brg, a.nama_brg, a.satuan_kecil, a.nama_bagian_minta';
+		// echo $query; die;
 		return $query;
 
 	}

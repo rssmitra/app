@@ -15,18 +15,30 @@ jQuery(function($) {
 
 $(document).ready(function() {
 
-  get_total_rp_so();
+  // get_total_rp_so();
   //initiate dataTables plugin
     oTable = $('#dt-bag-so').DataTable({ 
           
       "processing": true, //Feature control the processing indicator.
       "serverSide": true, //Feature control DataTables' server-side processing mode.
       "ordering": false,
-      "pageLength": 50,
+      "paging": false,
+      "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
           "url": $('#dt-bag-so').attr('base-url'),
           "type": "POST"
+      },
+
+      "drawCallback": function (response) { 
+        // Here the response
+          var objData = response.json;
+
+          $('#total_hasil_so_aktif').text( formatMoney(objData.total_rp_aktif) );
+          $('#total_hasil_so_not_aktif').text( formatMoney(objData.total_rp_not_aktif) );
+          $('#total_hasil_so_exp').text( formatMoney(objData.total_rp_exp) );
+          $('#total_hasil_so_will_exp').text( formatMoney(objData.total_rp_will_exp) );
+
       },
 
       "columnDefs": [
@@ -119,7 +131,7 @@ function get_total_rp_so(){
           <th style="background-color: black; color: white" width="30px" class="center"></th>
           <th style="background-color: black; color: white" width="100px">Kode Barang</th>
           <th style="background-color: black; color: white">Nama Barang</th>
-          <th style="background-color: black; color: white">Harga Rata2<br>Satuan Kecil</th>
+          <th style="background-color: black; color: white">Harga <br>Satuan Kecil</th>
           <th style="background-color: black; color: white">Satuan Kecil</th>
           <!-- <th style="background-color: black; color: white">Content</th> -->
           <th style="background-color: black; color: white">Stok Sebelum</th>

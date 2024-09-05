@@ -1010,7 +1010,7 @@
       }
 
       function formatMoney(number){
-        money = new Intl.NumberFormat().format(number);
+        money = new Intl.NumberFormat().format(number, 0);
         format = '' +money+ '';
         return format;
       }

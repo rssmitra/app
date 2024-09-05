@@ -1116,17 +1116,19 @@ class Global_report extends MX_Controller {
                 
     }
     public function show_data_rekap_unit_barang(){
-
+        
         $query_data = $this->Global_report->get_data();
-
+        $getData = [];
+        foreach ($query_data['data'] as $key => $value) {
+            $getData[$value->nama_bagian_minta][] = $value;
+        }
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
-            'result' => $query_data,
+            'result' => $getData,
         );
-
-        
-            $this->load->view('Global_report/rekap_keluar_unit_barang', $data);
+        // echo '<pre>';print_r($getData);die;
+        $this->load->view('Global_report/rekap_keluar_unit_barang', $data);
                 
     }
 

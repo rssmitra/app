@@ -120,23 +120,23 @@ class Lap_hasil_so extends MX_Controller {
         $arr_harga_brg_will_exp = array();
         foreach($list as $row){
             
-            if( $row->harga_pembelian_terakhir != 0 AND $row->stok_sekarang != 0 ){
-                $harga_pembelian_terakhir = ( $row->harga_pembelian_terakhir != 0 ) ? ($row->harga_pembelian_terakhir / $row->content) : 0;
+            if( $row->harga_beli != 0 AND $row->stok_sekarang != 0 ){
+                $harga_beli = ( $row->harga_beli != 0 ) ? ($row->harga_beli / $row->content) : 0;
                 // barang aktif
                 if( $row->set_status_aktif == 1 ){
-                    $arr_harga[] = round($harga_pembelian_terakhir * $row->stok_sekarang);
+                    $arr_harga[] = round($harga_beli * $row->stok_sekarang);
                 }
 
                 if( $row->set_status_aktif == 0 ){
-                    $arr_harga_not_active[] = round($harga_pembelian_terakhir * $row->stok_sekarang);
+                    $arr_harga_not_active[] = round($harga_beli * $row->stok_sekarang);
                 }
 
                 if( $row->stok_exp > 0 ){
-                    $arr_harga_brg_exp[] = round($harga_pembelian_terakhir * $row->stok_exp);
+                    $arr_harga_brg_exp[] = round($harga_beli * $row->stok_exp);
                 }
 
                 if( $row->will_stok_exp > 0 ){
-                    $arr_harga_brg_will_exp[] = round($harga_pembelian_terakhir * $row->will_stok_exp);
+                    $arr_harga_brg_will_exp[] = round($harga_beli * $row->will_stok_exp);
                 }
 
             }
@@ -163,9 +163,7 @@ class Lap_hasil_so extends MX_Controller {
         $arr_harga_not_active = array();
         
         foreach($list as $row){
-            
-            $hpa = ($row->harga_pembelian_terakhir > 0 AND $row->content > 0) ? $row->harga_pembelian_terakhir / $row->content : 0;
-
+            $hpa = ($row->harga_beli > 0 AND $row->content > 0) ? $row->harga_beli / $row->content : 0;
             if( $row->set_status_aktif == 1 || $row->set_status_aktif != 0 ){
                 if( $hpa > 0 AND $row->stok_sekarang > 0 ){
                     $arr_harga[] = round($hpa * $row->stok_sekarang);
@@ -176,19 +174,16 @@ class Lap_hasil_so extends MX_Controller {
                     $arr_harga_not_active[] = round($hpa * $row->stok_sekarang);
                 }
             }
-
             if( $row->stok_exp > 0 ){
                 $arr_harga_not_active[] = round($hpa * $row->stok_exp);
             }
-
             if( $row->will_stok_exp > 0 ){
                 $arr_harga_will_exp[] = round($hpa * $row->will_stok_exp);
             }
-
         }
 
         $result = array(
-            'total_aset_barang_rs' => array_sum($arr_harga),
+            'total_aset_barang_rs' => round(array_sum($arr_harga)),
             'total_aset_barang_rs_not_active' => array_sum($arr_harga_not_active),
             'total_exp_barang_rs' => array_sum($arr_harga_not_active),
             'total_will_exp_barang_rs' => array_sum($arr_harga_will_exp),
@@ -341,35 +336,51 @@ class Lap_hasil_so extends MX_Controller {
         $data = array();
         $no = $_POST['start'];
 
+        $arr_harga = [];
+        $arr_harga_not_active = [];
+        $arr_harga_brg_exp = [];
+        $arr_harga_brg_will_exp = [];
+
         foreach ($list as $row_list) {
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="get_rincian_log('."'".$row_list->kode_brg."'".')">'.$row_list->kode_brg.'</a></div>';
             $row[] = '<div class="left">'.$row_list->nama_brg.'</div>';
+            $row[] = '<div class="left">'.$row_list->satuan_kecil.'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sebelum).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_sekarang).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->stok_exp).'</div>';
             $row[] = '<div class="center">'.number_format($row_list->will_stok_exp).'</div>';
-            $harga = isset($row_list->harga_pembelian_terakhir)?$row_list->harga_pembelian_terakhir:0;
+            $harga = isset($row_list->harga_beli)?$row_list->harga_beli:0;
             $content = isset($row_list->content)?$row_list->content:0;
             $hpa = ($content > 0) ? $harga / $content : 0;
-            $total = $row_list->stok_sekarang * $hpa;
-            $row[] = '<div align="right">'.number_format($hpa).'</div>';
+            $total = $row_list->stok_sekarang * $harga;
+            $row[] = '<div align="right">'.number_format($harga).'</div>';
             $row[] = '<div align="right">'.number_format($total).'</div>';
             $data[] = $row;
-            // hasil so 
-            if($row_list->stok_sekarang > 0){
-                $arr_hasil_so[] = $total;
+
+            if( $row_list->harga_beli != 0 AND $row_list->stok_sekarang != 0 ){
+                $harga_beli = ( $row_list->harga_beli != 0 ) ? ($row_list->harga_beli) : 0;
+                // barang aktif
+                if( $row_list->set_status_aktif == 1 ){
+                    $arr_harga[] = round($harga_beli * $row_list->stok_sekarang);
+                }
+
+                if( $row_list->set_status_aktif == 0 ){
+                    $arr_harga_not_active[] = round($harga_beli * $row_list->stok_sekarang);
+                }
+
+                if( $row_list->stok_exp > 0 ){
+                    $arr_harga_brg_exp[] = round($harga_beli * $row_list->stok_exp);
+                }
+
+                if( $row_list->will_stok_exp > 0 ){
+                    $arr_harga_brg_will_exp[] = round($harga_beli * $row_list->will_stok_exp);
+                }
+
             }
-            if($row_list->stok_exp > 0){
-                $total = $row_list->stok_exp * $hpa;
-                $arr_hasil_expired[] = $total;
-            }
-            if($row_list->will_stok_exp > 0){
-                $total = $row_list->will_stok_exp * $hpa;
-                $arr_hasil_expired_soon[] = $total;
-            }
+
         }
 
         $output = array(
@@ -377,9 +388,11 @@ class Lap_hasil_so extends MX_Controller {
                         "recordsTotal" => $this->Dt_bag_so_rs->count_all(),
                         "recordsFiltered" => $this->Dt_bag_so_rs->count_filtered(),
                         "data" => $data,
-                        "total_active" => array_sum($arr_hasil_so),
-                        "total_expired" => array_sum($arr_hasil_expired),
-                        "total_expired_soon" => array_sum($arr_hasil_expired_soon),
+                        'total_rp_aktif' => array_sum($arr_harga),
+                        'total_rp_not_aktif' => array_sum($arr_harga_not_active),
+                        'total_rp_exp' => array_sum($arr_harga_brg_exp),
+                        'total_rp_will_exp' => array_sum($arr_harga_brg_will_exp),
+                        
                 );
         //output to json format
         echo json_encode($output);
@@ -390,19 +403,25 @@ class Lap_hasil_so extends MX_Controller {
         /*get data from model*/
         $list = $this->Dt_hasil_so->get_datatables();
         $data = array();
+        $arr_harga = [];
+        $arr_harga_not_active = [];
+        $arr_harga_brg_exp = [];
+        $arr_harga_brg_will_exp = [];
+
         $no = $_POST['start'];
         foreach ($list as $row_list) {
-            $hpa = ( !empty($row_list->harga_pembelian_terakhir) ) ? $row_list->harga_pembelian_terakhir : 0 ;
-            $harga_pembelian_terakhir = ( $hpa > 0 AND $row_list->content > 0) ? ($hpa / $row_list->content) : 0;
-            $total = $row_list->stok_sekarang * $hpa;
-            $totalr = $row_list->stok_sekarang * $harga_pembelian_terakhir;
+            // $hpa = ( !empty($row_list->harga_beli) ) ? $row_list->harga_beli : 0 ;
+            // $harga_beli = ( $hpa > 0 AND $row_list->content > 0) ? ($hpa / $row_list->content) : 0;
+            $harga_beli = $row_list->harga_beli;
+            // $total = $row_list->stok_sekarang * $hpa;
+            $totalr = $row_list->stok_sekarang * $harga_beli;
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center">'.$row_list->kode_brg.'</div>';
             $row[] = $row_list->nama_brg;
             // $row[] = '<div align="right">'.number_format($hpa).'</div>';
-            $row[] = '<div align="right">'.number_format($harga_pembelian_terakhir).'</div>';
+            $row[] = '<div align="right">'.number_format($harga_beli).'</div>';
             $row[] = '<div class="center">'.$row_list->satuan_kecil.'</div>';
             // $row[] = '<div class="center">'.$row_list->content.'</div>';
             $row[] = '<div class="center">'.$row_list->stok_sebelum.'</div>';
@@ -414,7 +433,28 @@ class Lap_hasil_so extends MX_Controller {
             $status_aktif = ($row_list->set_status_aktif==0)?'<span style="color:red; font-weight: bold;">Not Active</span>':'<span style="color:green; font-weight: bold;">Active</span>';
             $row[] = '<div class="center">'.$status_aktif.'</div>';
             $row[] = $row_list->nama_petugas.'<br>'.$this->tanggal->formatDateTime($row_list->tgl_stok_opname);
-                   
+            
+            if( $row_list->harga_beli != 0 AND $row_list->stok_sekarang != 0 ){
+                $harga_beli = $row_list->harga_beli;
+                // barang aktif
+                if( $row_list->set_status_aktif == 1 ){
+                    $arr_harga[] = round($harga_beli * $row_list->stok_sekarang);
+                }
+
+                if( $row_list->set_status_aktif == 0 ){
+                    $arr_harga_not_active[] = round($harga_beli * $row_list->stok_sekarang);
+                }
+
+                if( $row_list->stok_exp > 0 ){
+                    $arr_harga_brg_exp[] = round($harga_beli * $row_list->stok_exp);
+                }
+
+                if( $row_list->will_stok_exp > 0 ){
+                    $arr_harga_brg_will_exp[] = round($harga_beli * $row_list->will_stok_exp);
+                }
+
+            }
+
             $data[] = $row;
         }
 
@@ -423,6 +463,10 @@ class Lap_hasil_so extends MX_Controller {
                         "recordsTotal" => $this->Dt_hasil_so->count_all(),
                         "recordsFiltered" => $this->Dt_hasil_so->count_filtered(),
                         "data" => $data,
+                        'total_rp_aktif' => array_sum($arr_harga),
+                        'total_rp_not_aktif' => array_sum($arr_harga_not_active),
+                        'total_rp_exp' => array_sum($arr_harga_brg_exp),
+                        'total_rp_will_exp' => array_sum($arr_harga_brg_will_exp),
                 );
         //output to json format
         echo json_encode($output);

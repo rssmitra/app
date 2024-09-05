@@ -10,7 +10,7 @@ class Input_dt_so_model extends CI_Model {
 	/*non medis*/
 	var $table_nm = 'mt_depo_stok_nm_v';
 	var $column_nm = array('mt_depo_stok_nm_v.nama_brg');
-	var $select_nm = 'kode_depo_stok,mt_depo_stok_nm_v.kode_brg, nama_brg, mt_depo_stok_nm_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, nama_petugas, tgl_stok_opname, stok_exp, will_stok_exp, stok_sekarang, stok_sebelum';
+	var $select_nm = 'kode_depo_stok,mt_depo_stok_nm_v.kode_brg, nama_brg, mt_depo_stok_nm_v.kode_bagian, nama_bagian, jml_sat_kcl, satuan_kecil,satuan_besar, nama_petugas, tgl_stok_opname, stok_exp, will_stok_exp, stok_sekarang, stok_sebelum, path_image';
 
 	public function __construct()
 	{

@@ -56,6 +56,7 @@ class Inv_stok_gdg extends MX_Controller {
             /*initialize flag for form add*/
             $data['flag'] = "create";
         }
+        // echo '<pre>'; print_r($data);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/

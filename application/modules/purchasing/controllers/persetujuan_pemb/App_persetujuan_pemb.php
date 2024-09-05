@@ -167,6 +167,7 @@ class App_persetujuan_pemb extends MX_Controller {
             $log = json_decode($row_list->created_by);
             $petugas = isset($log->fullname)?$log->fullname:$row_list->username;
             $row[] = '<div class="center">'.ucwords($petugas).'</div>';
+            $row[] = '<div class="left">'.$row_list->keterangan_permohonan.'</div>';
             $row[] = '<div class="left">'.$row_list->no_acc.'<br>'.$this->tanggal->formatDate($row_list->tgl_acc).'</div>';
             $row[] = '<div class="center">'.$row_list->total_brg.'</div>';
             
