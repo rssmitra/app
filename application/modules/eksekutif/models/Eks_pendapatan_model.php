@@ -5,7 +5,7 @@ class Eks_pendapatan_model extends CI_Model {
 
 	var $table = 'tc_trans_kasir';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'no_kuitansi, seri_kuitansi, a.no_registrasi, a.kode_tc_trans_kasir, CAST(tgl_jam as DATE)as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as FLOAT) as tunai, CAST(debet as FLOAT) as debet, CAST(kredit as FLOAT) as kredit, CAST(nk_perusahaan as FLOAT) as piutang, CAST(bill as FLOAT)as billing, CAST(nk_karyawan as FLOAT)as nk_karyawan,CAST(potongan as FLOAT)as potongan, nama_pegawai, d.fullname, e.nama_perusahaan, f.nama_bagian, a.tgl_jam';
+	var $select = 'no_kuitansi,seri_kuitansi,a.no_registrasi,a.kode_tc_trans_kasir, nama_pasien,e.nama_perusahaan,f.nama_bagian,a.tgl_jam, c.no_sep, c.no_mr, h.kode_jenis_tindakan, h.jenis_tindakan, c.kode_bagian_masuk, g.kode_bagian, c.kode_perusahaan';
 	var $order = array('a.no_kuitansi' => 'ASC');
 
 	public function __construct()
@@ -41,13 +41,50 @@ class Eks_pendapatan_model extends CI_Model {
 
 	private function _main_query(){
 
+		$this->db->select('CAST ( tunai AS FLOAT ) AS tunai,
+							CAST ( debet AS FLOAT ) AS debet,
+							CAST ( kredit AS FLOAT ) AS kredit,
+							CAST ( nk_perusahaan AS FLOAT ) AS piutang,
+							CAST ( bill AS FLOAT ) AS billing,
+							CAST ( nk_karyawan AS FLOAT ) AS nk_karyawan,
+							CAST ( potongan AS FLOAT ) AS potongan');
+
+		$this->db->select('CAST(tgl_jam AS DATE ) AS tgl_transaksi,
+							SUM(CAST(bill_rs as INT)) as bill_rs, 
+							SUM(CAST(bill_dr1 as INT)) as bill_dr1, 
+							SUM(CAST(bill_dr2 as INT)) as bill_dr2, 
+							SUM(CAST(bhp as INT)) as bhp, 
+							SUM(CAST(obat as INT)) as obat, 
+							SUM(CAST(alat_rs as INT)) as alat_rs, 
+							SUM(CAST(alkes as INT)) as alkes, 
+							SUM(CAST(adm as INT)) as adm, 
+							SUM(CAST(kamar_tindakan as INT)) as kamar_tindakan, 
+							SUM(CAST(pendapatan_rs as INT)) as pendapatan_rs, 
+							( SUM(CAST(bill_rs as INT)) + SUM(CAST(bill_dr1 as INT)) + SUM(CAST(bill_dr2 as INT)) ) as total_billing');
+		$this->db->select('CAST(c.tgl_jam_masuk AS DATE ) AS tgl_masuk');
+		$this->db->select('CAST(c.tgl_jam_keluar AS DATE ) AS tgl_keluar');
+		$this->db->select($this->select);
 		$this->db->from($this->table.' a');
 		$this->db->join('mt_karyawan b','b.no_induk=a.no_induk','left');
 		$this->db->join('tmp_user d','d.user_id=a.no_induk','left');
 		$this->db->join('tc_registrasi c','c.no_registrasi=a.no_registrasi','left');
 		$this->db->join('mt_bagian f','f.kode_bagian=c.kode_bagian_masuk','left');
 		$this->db->join('mt_perusahaan e','e.kode_perusahaan=a.kode_perusahaan','left');
-		
+		$this->db->join('tc_trans_pelayanan g','g.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');
+		$this->db->join('mt_jenis_tindakan h','h.kode_jenis_tindakan=g.jenis_tindakan','left');
+		$this->db->group_by('CAST ( tunai AS FLOAT ),
+							CAST ( debet AS FLOAT ),
+							CAST ( kredit AS FLOAT ),
+							CAST ( nk_perusahaan AS FLOAT ),
+							CAST ( bill AS FLOAT ),
+							CAST ( nk_karyawan AS FLOAT ),
+							CAST ( potongan AS FLOAT )');
+		$this->db->group_by('CAST(tgl_jam AS DATE )');
+		$this->db->group_by($this->select);
+		$this->db->group_by('CAST(c.tgl_jam_masuk AS DATE )');
+		$this->db->group_by('CAST(c.tgl_jam_keluar AS DATE )');
+		// $this->db->where('c.no_mr', '00305569');
+
 	}
 
 	private function _get_datatables_query()
@@ -55,7 +92,6 @@ class Eks_pendapatan_model extends CI_Model {
 		
 		$this->_main_query();
 		$this->_filter();
-		$this->db->select($this->select);
 
 		$i = 0;
 	
@@ -84,29 +120,8 @@ class Eks_pendapatan_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get()->result();
-
-		// query 2
-		$this->db->select('a.kode_tc_trans_kasir, h.jenis_tindakan, g.jenis_tindakan as kode_jenis_tindakan, SUM(CAST(bill_rs as INT)) as bill_rs, SUM(CAST(bill_dr1 as INT)) as bill_dr1, SUM(CAST(bill_dr2 as INT)) as bill_dr2, ( SUM(CAST(bill_rs as INT)) + SUM(CAST(bill_dr1 as INT)) + SUM(CAST(bill_dr2 as INT)) ) as total_billing, nama_pasien, e.nama_perusahaan, f.nama_bagian, a.tgl_jam, a.seri_kuitansi, g.no_mr, a.no_kuitansi, c.no_sep, c.kode_perusahaan, c.no_registrasi');
-		$this->db->from('tc_trans_pelayanan g');
-		$this->db->join('tc_trans_kasir a', 'g.kode_tc_trans_kasir = a.kode_tc_trans_kasir', 'left');
-		$this->db->join('mt_karyawan b','b.no_induk=a.no_induk','left');
-		$this->db->join('tmp_user d','d.user_id=a.no_induk','left');
-		$this->db->join('tc_registrasi c','c.no_registrasi=a.no_registrasi','left');
-		$this->db->join('mt_bagian f','f.kode_bagian=c.kode_bagian_masuk','left');
-		$this->db->join('mt_perusahaan e','e.kode_perusahaan=a.kode_perusahaan','left');
-		$this->db->join('mt_jenis_tindakan h', 'h.kode_jenis_tindakan = g.jenis_tindakan', 'left');
-		$this->_filter();
-		$this->db->where('g.kode_tc_trans_kasir is not null AND g.jenis_tindakan is not null');
-		$this->db->group_by('a.kode_tc_trans_kasir, h.jenis_tindakan, g.jenis_tindakan, nama_pasien, e.nama_perusahaan, f.nama_bagian, a.tgl_jam, a.seri_kuitansi, g.no_mr, a.no_kuitansi, c.no_sep, c.kode_perusahaan, c.no_registrasi');
-		$this->db->order_by('a.no_kuitansi');
-		$query2 = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
-
-		$return = [
-			'trans_1' => $query,
-			'trans_2' => $query2,
-		];
-		return $return;
+		return $query;
 	}
 
 	function get_data()

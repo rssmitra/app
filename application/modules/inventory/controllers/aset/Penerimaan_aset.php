@@ -23,6 +23,7 @@ class Penerimaan_aset extends MX_Controller {
         $this->output->enable_profiler(false);
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
+        $this->flag = 'non_medis';
 
     }
 
@@ -54,7 +55,7 @@ class Penerimaan_aset extends MX_Controller {
 
     public function form($id='')
     {
-        $flag = $_GET['flag'];
+        $flag = $this->flag;
         /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Penerimaan_aset/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
 
@@ -75,7 +76,7 @@ class Penerimaan_aset extends MX_Controller {
         $data['flag'] = $flag;
         
         /*title header*/
-        $data['title'] = 'Penerimaan Barang '.$title;
+        $data['title'] = $this->title;
          /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
 
@@ -130,52 +131,6 @@ class Penerimaan_aset extends MX_Controller {
         //output to json format
         echo json_encode($output);
     }
-
-    
-    function get_barang_po_penerimaan(){
-        
-        $dt_detail_brg = $this->Penerimaan_aset->get_detail_table($_GET['flag'], $_GET['id']);
-        $getData = array();
-        foreach($dt_detail_brg as $row){
-            $getData[$row->kode_brg][] = $row;
-        }
-        // echo '<pre>';print_r($getData);die;
-        $data['dt_detail_brg'] = $getData;
-        $this->load->view('inventory/aset/Penerimaan_aset/view_brg_po', $data);
-
-    }
-    public function form_input_batch()
-    {
-        $flag = $_GET['flag'];
-        $t_penerimaan = ($_GET['flag']=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
-        // define
-        $data['id_tc_po_det'] = $_GET['id_tc_po_det'];
-        $data['flag'] = $flag;
-        // search data
-        $dt = $this->Penerimaan_aset->get_brg_po_by_id($_GET);
-
-        if($_GET['id_penerimaan'] != ''){
-            $data['penerimaan'] = $this->db->get_where( $t_penerimaan, array('id_penerimaan' => $_GET['id_penerimaan']) )->row();
-        }
-        $data['value'] = $dt;
-        $data['title'] = $dt->kode_brg.' - '.$dt->nama_brg;
-        $this->load->view('inventory/aset/Penerimaan_aset/form_input_batch', $data, false);
-
-    }
-    
-    /*function for view data only*/
-    public function show_penerimaan_brg($id)
-    {
-        $t_penerimaan = ($_GET['flag']=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
-        $data['string'] = isset($_GET['flag'])?$_GET['flag']:'';
-        $data['id_penerimaan_existing'] = $id;
-        $data['value'] = $this->db->get_where($t_penerimaan, array('id_penerimaan' => $id) )->row();
-        /*load form view*/
-        $this->load->view('inventory/aset/Penerimaan_aset/view_penerimaan_brg', $data);
-    }
-
-
-    
 
     public function process()
     {
@@ -236,6 +191,7 @@ class Penerimaan_aset extends MX_Controller {
                     'keterangan' => $this->regex->_genRegex( $val->set_value('keterangan'), 'RGXQSL'),
                     'no_faktur' => $this->regex->_genRegex( $val->set_value('no_faktur'), 'RGXQSL'),
                     'dikirim' => $this->regex->_genRegex( $val->set_value('dikirim'), 'RGXQSL'),
+                    'is_aset' => $this->regex->_genRegex( 1, 'RGXINT'),
                 );
                 
                 if($id==0){
@@ -311,7 +267,7 @@ class Penerimaan_aset extends MX_Controller {
                     $exc = $this->Penerimaan_aset->save($table.'_detail', $dataexc);
                     // ============= end insert penerimaan barang
                                         
-                    // insert rekap stok
+                    // insert inventaris aset 
                     $rekap_stok = array(
                         'harga_beli' => $harga['harga_jual'], 
                         'harga_beli_supplier' => $harga['harga_satuan_kecil'], 
@@ -320,10 +276,6 @@ class Penerimaan_aset extends MX_Controller {
                         'updated_by' => json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'))),
                     );
                     
-                    $this->db->update($mt_rekap_stok, $rekap_stok, array('kode_brg' => $rows, 'kode_bagian_gudang' => $_POST['kode_bagian']) );
-                    // save log mt_rekap_stok
-                    $this->logs->save($mt_rekap_stok, $rows, 'update data on '.$this->title.' module', json_encode($rekap_stok), 'kode_brg');
-                    // ============= end update mt_rekap_stok
 
                     // ============= update mt_barang (rasio, harga, satuan)
                     $data_brg = array(
@@ -471,6 +423,85 @@ class Penerimaan_aset extends MX_Controller {
         }
     }
 
+    function get_barang_po_penerimaan(){
+        
+        $dt_detail_brg = $this->Penerimaan_aset->get_detail_table($_GET['id']);
+        $getData = array();
+        foreach($dt_detail_brg as $row){
+            $getData[$row->kode_brg][] = $row;
+        }
+        // echo '<pre>';print_r($getData);die;
+        $data['dt_detail_brg'] = $getData;
+        $this->load->view('inventory/aset/Penerimaan_aset/view_brg_po', $data);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    public function form_input_batch()
+    {
+        $flag = $this->flag;
+        $t_penerimaan = ($this->flag=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
+        // define
+        $data['id_tc_po_det'] = $_GET['id_tc_po_det'];
+        $data['flag'] = $flag;
+        // search data
+        $dt = $this->Penerimaan_aset->get_brg_po_by_id($_GET);
+
+        if($_GET['id_penerimaan'] != ''){
+            $data['penerimaan'] = $this->db->get_where( $t_penerimaan, array('id_penerimaan' => $_GET['id_penerimaan']) )->row();
+        }
+        $data['value'] = $dt;
+        $data['title'] = $dt->kode_brg.' - '.$dt->nama_brg;
+        $this->load->view('inventory/aset/Penerimaan_aset/form_input_batch', $data, false);
+
+    }
+    
+    /*function for view data only*/
+    public function show_penerimaan_brg($id)
+    {
+        $t_penerimaan = ($this->flag=='medis')?'tc_penerimaan_barang':'tc_penerimaan_barang_nm';
+        $data['string'] = isset($this->flag)?$this->flag:'';
+        $data['id_penerimaan_existing'] = $id;
+        $data['value'] = $this->db->get_where($t_penerimaan, array('id_penerimaan' => $id) )->row();
+        /*load form view*/
+        $this->load->view('inventory/aset/Penerimaan_aset/view_penerimaan_brg', $data);
+    }
+
+
+    
+
+    
+
     public function get_detail_brg_po(){
         /*string to array*/
         $arr_id = explode(',', $_POST['ID']);
@@ -488,8 +519,8 @@ class Penerimaan_aset extends MX_Controller {
 
     public function preview_penerimaan(){
 
-        $title = ($_GET['flag']=='non_medis')?'Gudang Non Medis':'Gudang Medis';
-        $result = $this->Penerimaan_aset->get_penerimaan_brg($_GET['flag'], $_GET['ID']);
+        $title = ($this->flag=='non_medis')?'Gudang Non Medis':'Gudang Medis';
+        $result = $this->Penerimaan_aset->get_penerimaan_brg($this->flag, $_GET['ID']);
         $getData = array();
         foreach($result as $row_dt){
             $getData[$row_dt->kode_brg][] = $row_dt;
@@ -499,7 +530,7 @@ class Penerimaan_aset extends MX_Controller {
             'id_penerimaan' => $_GET['ID'],
             'penerimaan' => $result[0],
             'penerimaan_data' => $getData,
-            'flag' => $_GET['flag'],
+            'flag' => $this->flag,
             'title' => $title,
         );
         // echo '<pre>'; print_r($data);die;

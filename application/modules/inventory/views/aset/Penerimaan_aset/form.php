@@ -42,7 +42,7 @@ $(document).ready(function(){
             // show result form
             show_penerimaan_brg_dt(jsonResponse.id);
           }else{
-            var redirect = "purchasing/penerimaan/Penerimaan_brg/preview_penerimaan?ID="+jsonResponse.id+"&flag="+jsonResponse.flag+"";
+            var redirect = "inventory/aset/Penerimaan_aset/preview_penerimaan?ID="+jsonResponse.id+"&flag="+jsonResponse.flag+"";
             $('#page-area-content').load(redirect);
           }
           
@@ -86,7 +86,7 @@ $(document).ready(function(){
 })
 
 function show_penerimaan_brg_dt(id){
-  $('#section_table_penerimaan_brg').load('purchasing/penerimaan/Penerimaan_brg/show_penerimaan_brg/'+id+'?flag='+$('#flag_string').val()+'');
+  $('#section_table_penerimaan_brg').load('inventory/aset/Penerimaan_aset/show_penerimaan_brg/'+id+'?flag='+$('#flag_string').val()+'');
   // drop attr disabled
   $('#table_brg_penerimaan input[type=checkbox]').attr('disabled', false);
 }
@@ -100,7 +100,7 @@ function get_profile_supplier(id){
 }
 
 function get_barang_po(){
-  $('#section_barang_po').load('purchasing/penerimaan/Penerimaan_brg/get_barang_po_penerimaan?id='+$('#id_tc_po').val()+'&flag='+$('#flag_string').val()+'');
+  $('#section_barang_po').load('inventory/aset/Penerimaan_aset/get_barang_po_penerimaan?id='+$('#id_tc_po').val()+'&flag='+$('#flag_string').val()+'');
 
   if( $('#id').val() == '' ){
     $('#table_brg_penerimaan input[type=checkbox]').attr('disabled', true);
@@ -180,7 +180,7 @@ function updatePenerimaan(){
       <div class="widget-body">
         <div class="widget-main no-padding">
 
-          <form class="form-horizontal" method="post" id="form_penerimaan_brg" action="<?php echo site_url('purchasing/penerimaan/Penerimaan_brg/process')?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
+          <form class="form-horizontal" method="post" id="form_penerimaan_brg" action="<?php echo site_url('inventory/aset/Penerimaan_aset/process')?>" enctype="multipart/form-data" style="margin-top: -10px" autocomplete="off">
 
             <!-- input form hidden -->
             <input name="supplier_id_hidden" id="supplier_id_hidden" value="<?php echo isset($value->kodesupplier)?$value->kodesupplier:''?>" class="form-control" type="hidden">
@@ -273,7 +273,7 @@ function updatePenerimaan(){
 
             <div id="section_table_brg">
               <div class="pull-right">
-                <a onclick="getMenu('purchasing/penerimaan/Penerimaan_brg/view_data?flag=<?php echo $flag?>', 'tabs_form_po')" href="#" class="btn btn-xs btn-success">
+                <a onclick="getMenu('inventory/aset/Penerimaan_aset/index?flag=<?php echo $flag?>', 'tabs_form_po')" href="#" class="btn btn-xs btn-success">
                   <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                   Kembali ke daftar
                 </a>

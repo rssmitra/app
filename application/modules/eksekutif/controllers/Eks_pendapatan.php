@@ -58,11 +58,21 @@ class Eks_pendapatan extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Eks_pendapatan->get_datatables();
-        // print_r($list);die;
         $data = array();
         $no = $_POST['start'];
+        $getList = [];
+        $getListCosting = [];
+        $getListJenisTindakan = [];
+        // source data
+        foreach ($list as $row_dt) {
+            $getList[$row_dt->kode_tc_trans_kasir] = $row_dt;
+            $getListJenisTindakan[$row_dt->kode_tc_trans_kasir][$row_dt->kode_jenis_tindakan][] = $row_dt;
+            $getListCosting[$row_dt->kode_tc_trans_kasir][] = $row_dt;
+        }
 
-        foreach ($list['trans_1'] as $row_list) {
+        // echo "<pre>";print_r($getListJenisTindakan);die;
+
+        foreach ($getList as $key_list=>$row_list) {
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
@@ -80,8 +90,8 @@ class Eks_pendapatan extends MX_Controller {
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-            $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-            $row[] = '<div class="center" style="font-size:11px">'.ucfirst($petugas).'</div>';
+            // $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
+            // $row[] = '<div class="center" style="font-size:11px">'.ucfirst($petugas).'</div>';
             $data[] = $row;
 
             $arr_tunai[] = (int)$row_list->tunai;
@@ -90,42 +100,127 @@ class Eks_pendapatan extends MX_Controller {
             $arr_piutang[] = (int)$row_list->piutang;
             $arr_nk_karyawan[] = (int)$row_list->nk_karyawan;
             $arr_billing[] = (int)$row_list->billing;
+
         }
+
         $getDataPasien = [];
         $getJenisTindaka = [];
         $getDataJenisTindakan = [];
-
-        foreach ($list['trans_2'] as $row_dt){
-            $getDataPasien[$row_dt->no_mr] = [
-                'no_registrasi' => $row_dt->no_registrasi,
-                'kode_tc_trans_kasir' => $row_dt->kode_tc_trans_kasir,
-                'jenis_tindakan' => $row_dt->jenis_tindakan,
-                'kode_jenis_tindakan' => $row_dt->kode_jenis_tindakan,
-                'no_mr' => $row_dt->no_mr,
-                'nama_pasien' => $row_dt->nama_pasien,
-                'nama_perusahaan' => $row_dt->nama_perusahaan,
-                'kode_perusahaan' => $row_dt->kode_perusahaan,
-                'no_sep' => $row_dt->no_sep,
-                'nama_bagian' => $row_dt->nama_bagian,
-                'tgl_jam' => $row_dt->tgl_jam,
-                'seri_kuitansi' => $row_dt->seri_kuitansi,            
-                'no_kuitansi' => $row_dt->no_kuitansi                   
-            ];
-            $getJenisTindakan[$row_dt->kode_jenis_tindakan] = $row_dt->jenis_tindakan;
-            $getDataJenisTindakan[$row_dt->no_mr][$row_dt->kode_jenis_tindakan] = $row_dt;
+        
+        // echo "<pre>";print_r($getListCosting);die;
+        foreach ($getListJenisTindakan as $rows){
+            foreach ($rows as $row_dtx){
+                foreach ($row_dtx as $row_dt) {
+                    $getDataPasien[$row_dt->kode_tc_trans_kasir] = [
+                        'no_registrasi' => $row_dt->no_registrasi,
+                        'kode_tc_trans_kasir' => $row_dt->kode_tc_trans_kasir,
+                        'jenis_tindakan' => $row_dt->jenis_tindakan,
+                        'kode_jenis_tindakan' => $row_dt->kode_jenis_tindakan,
+                        'no_mr' => $row_dt->no_mr,
+                        'nama_pasien' => $row_dt->nama_pasien,
+                        'nama_perusahaan' => $row_dt->nama_perusahaan,
+                        'kode_perusahaan' => $row_dt->kode_perusahaan,
+                        'no_sep' => $row_dt->no_sep,
+                        'nama_bagian' => $row_dt->nama_bagian,
+                        'tgl_jam' => $this->tanggal->formatDateDmy($row_dt->tgl_jam),
+                        'tgl_masuk' => $this->tanggal->formatDateDmy($row_dt->tgl_masuk),
+                        'tgl_keluar' => $this->tanggal->formatDateDmy($row_dt->tgl_keluar),
+                        'seri_kuitansi' => $row_dt->seri_kuitansi,            
+                        'no_kuitansi' => $row_dt->no_kuitansi                    
+                    ];
+                    $getJenisTindakan[$row_dt->kode_jenis_tindakan] = $row_dt->jenis_tindakan;
+                    $getDataJenisTindakan[$row_dt->kode_tc_trans_kasir][$row_dt->kode_jenis_tindakan][] = (array)$row_dt;
+                }
+            }
         }
+        
         ksort($getJenisTindakan);
         $respons = array(
             'data_pasien' => $getDataPasien,
             'data_trans' => $getDataJenisTindakan,
             'fields' => $getJenisTindakan,
         );
-        // echo "<pre>";print_r($getJenisTindakan);die;
+        // echo "<pre>";print_r($respons);die;
+        
         $html = $this->load->view('eksekutif/Eks_pendapatan/index_2', $respons, true);
         
+        $getCostingRad = [];
+        $getCostingLab = [];
+        $getCostingKamar = [];
+        foreach ($getListCosting as $rows2){
+            foreach ($rows2 as $row_dt2){
+                // costing kamar
+                if($row_dt2->kode_jenis_tindakan == 1){
+                    $getCostingKamar[$row_dt2->kode_tc_trans_kasir] = $row_dt2->bill_rs;
+                }
+                // costing apotik
+                if($row_dt2->kode_jenis_tindakan == 11){
+                    $getCostingFarmasi[$row_dt2->kode_tc_trans_kasir] = $row_dt2->bill_rs;
+                }
+                // costing BPAKO
+                if($row_dt2->kode_jenis_tindakan == 9){
+                    $getCostingBPAKO[$row_dt2->kode_tc_trans_kasir] = $row_dt2->bill_rs;
+                }
+                // costing lab
+                if($row_dt2->kode_bagian == '050101'){
+                    $getCostingLab[$row_dt2->kode_tc_trans_kasir] = $row_dt2->pendapatan_rs;
+                }
+                // costing rad
+                if($row_dt2->kode_bagian == '050201'){
+                    $getCostingRad[$row_dt2->kode_tc_trans_kasir] = $row_dt2->pendapatan_rs;
+                }
+
+                $getCosting[$row_dt2->kode_tc_trans_kasir][] = [
+                    'bill_rs' => $row_dt2->bill_rs,
+                    'bill_dr1' => $row_dt2->bill_dr1,
+                    'bill_dr2' => $row_dt2->bill_dr2,
+                    'bhp' => $row_dt2->bhp,
+                    'obat' => $row_dt2->obat,
+                    'alkes' => $row_dt2->alkes,
+                    'alat_rs' => $row_dt2->alat_rs,
+                    'kamar_tindakan' => $row_dt2->kamar_tindakan,
+                    'adm' => $row_dt2->adm,
+                    'pendapatan_rs' => $row_dt2->pendapatan_rs,
+                ]; 
+            }
+        }
+
+        // echo "<pre>";print_r($getListCosting);die;
+        // echo "<pre>";print_r($getCostingKamar);die;
+
+        foreach ($getCosting as $k => $v) {
+            foreach ($v as $r) {
+                $getCostingResult[$k] = [
+                    'bill_rs' => array_sum(array_column($v, 'bill_rs')),
+                    'bill_dr1' => array_sum(array_column($v, 'bill_dr1')),
+                    'bill_dr2' => array_sum(array_column($v, 'bill_dr2')),
+                    'bhp' => array_sum(array_column($v, 'bhp')),
+                    'obat' => array_sum(array_column($v, 'obat')),
+                    'alkes' => array_sum(array_column($v, 'alkes')),
+                    'alat_rs' => array_sum(array_column($v, 'alat_rs')),
+                    'kamar_tindakan' => array_sum(array_column($v, 'kamar_tindakan')),
+                    'adm' => array_sum(array_column($v, 'adm')),
+                    'pendapatan_rs' => array_sum(array_column($v, 'pendapatan_rs')),
+                ]; 
+            }
+        }
+
+        $respons_costing = array(
+            'data_pasien' => $getDataPasien,
+            'data_trans' => $getCostingResult,
+            'kamar' => $getCostingKamar,
+            'apotik' => $getCostingFarmasi,
+            'bpako' => $getCostingBPAKO,
+            'lab' => $getCostingLab,
+            'rad' => $getCostingRad,
+        );
+
+        // echo "<pre>";print_r($respons_costing);die;
+        $html_costing = $this->load->view('eksekutif/Eks_pendapatan/index_3', $respons_costing, true);
+
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Eks_pendapatan->count_all(),
+                        "recordsTotal" => count($getList),
                         "recordsFiltered" => $this->Eks_pendapatan->count_filtered(),
                         "data" => $data,
                         'tunai' => array_sum($arr_tunai),
@@ -135,6 +230,7 @@ class Eks_pendapatan extends MX_Controller {
                         'nk_karyawan' => array_sum($arr_nk_karyawan),
                         'billing' => array_sum($arr_billing),
                         'html_trans' => $html,
+                        'html_costing' => $html_costing,
                         'from_tgl' => isset($_GET['from_tgl'])?$_GET['from_tgl']:date('Y-m-d'),
                         'to_tgl' => isset($_GET['to_tgl'])?$_GET['to_tgl']:date('Y-m-d'),
                         

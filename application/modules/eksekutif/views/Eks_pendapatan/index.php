@@ -46,6 +46,7 @@
           $('#label_nk_karyawan').text(formatMoney(objData.nk_karyawan));
           $('#label_total_billing').text(formatMoney(objData.billing));
           $('#div2').html(objData.html_trans);
+          $('#div3').html(objData.html_costing);
           $('.tgl_filter').html(objData.from_tgl+' s.d '+objData.to_tgl);
 
       },
@@ -129,6 +130,14 @@
 
 </script>
 
+<style> 
+ .table_wrapper{
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+</style>
+
 <div class="page-header">
   <h1>
     <?php echo $title?>
@@ -205,6 +214,12 @@
               </a>
             </li>
 
+            <li>
+              <a data-toggle="tab" href="#data-transaksi-3">
+              Pendapatan Kasir Berdasarkan Costing Tariif
+              </a>
+            </li>
+
           </ul>
 
           <div class="tab-content">
@@ -235,7 +250,7 @@
                         </td>
                         <td align="right" style="font-size: 11px; width: 18%">
                           NON TUNAI (DEBIT/CC)<br>
-                          <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_debet">0</span>,-</h3>
+                          <h3 style="font-weight: bold; margin-top : 0px; font-size: 16px"><span id="label_nontunai">0</span>,-</h3>
                         </td>
                         <td align="right" style="font-size: 11px; width: 18%">
                           PIUTANG PERUSAHAAN<br>
@@ -259,17 +274,17 @@
                         <tr style="background-color:#428bca">
                           <th class="center">No</th>
                           <th width="90px">No. Kuitansi</th>
-                          <th width="120px">Tanggal</th>
+                          <th width="120px">Tgl Submit</th>
                           <th>Pasien</th>
                           <th>Penjamin</th>
                           <th>Bagian Masuk</th>
                           <th>Tunai</th>
                           <th width="100px">Non-Tunai</th>
                           <th>Potongan</th>
-                          <th>Piutang Perusahaan</th>
-                          <th>Piutang Karyawan</th>
+                          <th>Perusahaan</th>
+                          <th>Karyawan</th>
                           <th>Total</th>
-                          <th>Petugas</th>
+                          <!-- <th>Petugas</th> -->
                         </tr>
                       </thead>
                     </table>
@@ -286,6 +301,18 @@
                 <br>
                 <div class="col-md-12">
                   <div id="div2"></div>
+                </div>
+              </div>
+            
+            </div>
+
+            <div id="data-transaksi-3" class="tab-pane fade">
+              
+              <div class="row">
+              <center><span style="font-weight: bold" id="title_2">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>GROUPING BERDASARKAN COSTING TARIF<br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
+                <br>
+                <div class="col-md-12">
+                  <div id="div3"></div>
                 </div>
               </div>
             
