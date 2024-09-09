@@ -1,58 +1,55 @@
 <?php 
 
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-  header("Content-Disposition: attachment; filename=".'lhk_exp_date_'.date('Ymd').".xls");  //File name extension was wrong
+  header("Content-Disposition: attachment; filename=".'lhk_exp_date_type_1_'.date('Ymd').".xls");  //File name extension was wrong
   header("Expires: 0");
   header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
   header("Cache-Control: private",false);
-  
 
 ?>
-
-<html>
-<head>
-  <title>Laporan Umum</title>
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
-</head>
-<body>
-  <div class="row">
-    <div class="col-xs-12">
-
-      <center><h4><?php echo $title?></h4></center>
-      <b>Parameter :</b> <i><?php echo print_r($_GET);?></i>
-
-      <table class="table">
-        <thead>
-          <tr>
-            <th>NO</th>
-            <?php 
-              foreach($fields as $field){
-                echo '<th>'.strtoupper($field->name).'</th>';
-            }?>
-          </tr>
-        </thead>
-        <tbody>
-          <?php $no = 0; foreach($data as $row_data) : $no++; ?>
-            <tr>
-              <td align="center"><?php echo $no;?></td>
-              <?php 
-              foreach($fields as $row_field){
-                  $field_name = $row_field->name;
-                  echo '<td>'.strtoupper($row_data->$field_name).'</td>';
-              }?>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
-
-    </div><!-- /.col -->
-  </div><!-- /.row -->
-</body>
-</html>
-
-
-
-
-
-
+<table class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th class="center">No</th>
+      <th>Tipe</th>
+      <th>No. Kuitansi</th>
+      <th>Tgl Submit</th>
+      <th>No.MR</th>
+      <th>Pasien</th>
+      <th>Penjamin</th>
+      <th>No. SEP</th>
+      <th>Bagian Masuk</th>
+      <th>Tunai</th>
+      <th>Non-Tunai</th>
+      <th>Potongan</th>
+      <th>Perusahaan</th>
+      <th>Karyawan</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php 
+      $no = 0;
+      foreach($data as $key=>$row_list){
+        $no++;
+        echo "<tr>";
+        echo "<td>".$no."</td>";
+        echo "<td>".$row_list->seri_kuitansi."</td>";
+        echo "<td>".$row_list->no_kuitansi."</td>";
+        echo "<td>".$this->tanggal->formatDateTime($row_list->tgl_jam)."</td>";
+        echo "<td>".$row_list->no_mr."</td>";
+        echo "<td>".$row_list->nama_pasien."</td>";
+        echo "<td>".$row_list->nama_perusahaan."</td>";
+        echo "<td>".$row_list->no_sep."</td>";
+        echo "<td>".$row_list->nama_bagian."</td>";
+        $nontunai = (int)$row_list->debet + (int)$row_list->kredit;
+        echo "<td>".(int)$row_list->tunai."</td>";
+        echo "<td>".(int)$nontunai."</td>";
+        echo "<td>".(int)$row_list->potongan."</td>";
+        echo "<td>".(int)$row_list->piutang."</td>";
+        echo "<td>".(int)$row_list->nk_karyawan."</td>";
+        echo "<td>".(int)$row_list->billing."</td>";
+        echo "</tr>";
+      }?>
+  </tbody>
+</table>

@@ -4,8 +4,20 @@
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
   <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
   <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+  <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+  <script>
+    jQuery(function($) {
 
+      $('.date-picker').datepicker({
+        autoclose: true,
+        todayHighlight: true
+      })
+      //show datepicker when clicking on the icon
+      .next().on(ace.click_event, function(){
+        $(this).prev().focus();
+      });
+    });
+  </script>
 </head>
 <body>
   <div class="row">
@@ -33,36 +45,30 @@
           <input type="hidden" name="title" value="Laporan BMHP (Barang Medis Habis Pakai)">
           
          <div class="form-group">
-            <label class="control-label col-md-1">Bagian</label>
-              <div class="col-md-5">
+            <label class="control-label col-md-1">Unit</label>
+              <div class="col-md-3">
                 <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('status_aktif' => 1)), '' , 'bagian', 'bagian', 'form-control', '', '') ?>
               </div>
-          </div>
-
-          <div class="form-group">
-              <label class="control-label col-md-1">Bulan </label>
               
+            <label class="control-label col-md-1">Tanggal</label>
               <div class="col-md-1">
-                <?php echo $this->master->get_bulan('','from_month','from_month','form-control','','');?>
+                <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               </div>
-              <label class="control-label col-md-1">Tahun</label>
+              <label class="control-label col-md-1">s/d Tanggal</label>
               <div class="col-md-1">
-                <?php echo $this->master->get_tahun('','year','year','form-control','','');?>
+                <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              </div>
+              <div class="col-md-2 no-padding">
+                <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
+                  Proses Pencarian
+                </button>
+                <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
+                  Export Excel
+                </button>
               </div>
 
           </div>
-          <div class="form-group">
-            <label class="control-label col-md-2 ">&nbsp;</label>
-            <div class="col-md-10" style="margin-left: 5px">
-              <button type="submit" name="submit" value="data" class="btn btn-xs btn-default">
-                Proses Pencarian
-              </button>
-              <button type="submit" name="submit" value="excel" class="btn btn-xs btn-success">
-                Export Excel
-              </button>
-            </div>
-          </div>
-
+          
         </form>
         <!-- end content -->
          <br>

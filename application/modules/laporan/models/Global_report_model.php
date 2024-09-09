@@ -450,17 +450,15 @@ class Global_report_model extends CI_Model {
 	}
 
 	public function get_saldo_awal(){
-		$month = isset($_POST['from_month'])?$_POST['from_month']: $_GET['month'];
-		$last_month = ( ($month - 1) == 0 ) ? 12 : ($month - 1);
-		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
-		$last_year = ( ($month - 1) == 0 ) ? $year -1 : $year;
+		$from_tgl = isset($_POST['from_tgl'])?$_POST['from_tgl']: date('Y-m-d');
+		$to_tgl = isset($_POST['to_tgl'])?$_POST['to_tgl']: date('Y-m-d');
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 		if(!empty($bagian)){
 			$this->db->select('tc_kartu_stok.kode_brg, nama_brg, tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, tc_kartu_stok.kode_bagian, keterangan, petugas, id_kartu, nama_bagian');
 			$this->db->from('tc_kartu_stok');
 			$this->db->join('mt_barang','mt_barang.kode_brg=tc_kartu_stok.kode_brg','left');
 			$this->db->join('mt_bagian','mt_bagian.kode_bagian = tc_kartu_stok.kode_bagian','left');
-			$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where MONTH(tgl_input) <= '."'".$last_month."'".' and YEAR(tgl_input) = '."'".$last_year."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
+			$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where CAST(tgl_input as DATE) <= '."'".$from_tgl."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
 			$this->db->where('nama_brg is not null');
 			$this->db->where('stok_akhir > 0');
 			$this->db->where('tc_kartu_stok.kode_bagian', $bagian);
@@ -470,7 +468,7 @@ class Global_report_model extends CI_Model {
 			$this->db->from('tc_kartu_stok');
 			$this->db->join('mt_barang','mt_barang.kode_brg=tc_kartu_stok.kode_brg','left');
 			$this->db->join('mt_bagian','mt_bagian.kode_bagian = tc_kartu_stok.kode_bagian','left');
-			$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where MONTH(tgl_input) <= '."'".$last_month."'".' and YEAR(tgl_input) = '."'".$last_year."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
+			$this->db->where('id_kartu IN (SELECT MAX(id_kartu) AS id_kartu from tc_kartu_stok where CAST(tgl_input as DATE) <= '."'".$from_tgl."'".' group by tc_kartu_stok.kode_brg, tc_kartu_stok.kode_bagian)');
 			$this->db->where('nama_brg is not null');
 			$this->db->where('stok_akhir > 0');
 			$this->db->group_by('tc_kartu_stok.kode_brg');
@@ -525,15 +523,15 @@ class Global_report_model extends CI_Model {
 
 	public function penerimaan_brg_gudang(){
 
-		$month = isset($_POST['from_month'])?$_POST['from_month'] : $_GET['month'];
-		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
+		$from_tgl = isset($_POST['from_tgl'])?$_POST['from_tgl'] : date('Y-m-d');
+		$to_tgl = isset($_POST['to_tgl'])?$_POST['to_tgl'] : date('Y-m-d');
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 
 		$query = "select b.kode_brg, SUM(b.jumlah_kirim_decimal * b.content) as jumlah_penerimaan, SUM(b.jumlah_kirim_decimal * b.harga_net) as biaya, AVG(CAST((b.harga_net/b.content) AS INT)) as harga_beli from tc_penerimaan_barang_detail b
 		left join tc_penerimaan_barang a on a.id_penerimaan=b.id_penerimaan
-		where MONTH(a.tgl_penerimaan) = ".$month." AND YEAR(a.tgl_penerimaan) = ".$year." 
-		GROUP BY b.kode_brg, MONTH(a.tgl_penerimaan), YEAR(a.tgl_penerimaan)";
-		// echo $query;
+		where CAST(a.tgl_penerimaan as DATE) BETWEEN "."'".$from_tgl."'"." AND "."'".$to_tgl."'"."
+		GROUP BY b.kode_brg, CAST(a.tgl_penerimaan as DATE)";
+		echo $query;
 		return $this->db->query($query)->result_array();
 	}
 
@@ -649,13 +647,13 @@ class Global_report_model extends CI_Model {
 
 	public function distribusi_barang_unit(){
 		
-		$month = isset($_POST['from_month'])?$_POST['from_month']: $_GET['month'];
-		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
+		$from_tgl = isset($_POST['from_tgl'])?$_POST['from_tgl']: date('Y-m-d');
+		$to_tgl = isset($_POST['to_tgl'])?$_POST['to_tgl']: date('Y-m-d');
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 
 		$query = "select a.kode_brg, b.kode_bagian_kirim, SUM(a.jumlah_penerimaan) as jumlah from tc_permintaan_inst_det a 
 		left join tc_permintaan_inst b on b.id_tc_permintaan_inst = a.id_tc_permintaan_inst
-		where MONTH(a.tgl_kirim) = ".$month." AND YEAR(a.tgl_kirim)=".$year." AND b.kode_bagian_kirim = '".$bagian."' GROUP BY a.kode_brg, b.kode_bagian_kirim, MONTH(a.tgl_kirim), YEAR(a.tgl_kirim)";
+		where CAST(a.tgl_kirim as DATE) BETWEEN  "."'".$from_tgl."'"."  AND "."'".$to_tgl."'"."  AND b.kode_bagian_kirim = '".$bagian."' GROUP BY a.kode_brg, b.kode_bagian_kirim, CAST(a.tgl_kirim as DATE)";
 		// echo $query;
 		return $this->db->query($query)->result_array();
 	}

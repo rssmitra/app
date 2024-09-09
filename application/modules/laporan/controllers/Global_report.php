@@ -129,9 +129,9 @@ class Global_report extends MX_Controller {
 
     public function show_data_bmhp(){
 
-        // echo '<pre>';print_r($_POST);die;
         $query_data = $this->Global_report->get_data();
         $g_saldo = $this->Global_report->get_saldo_awal();
+        // echo '<pre>';print_r($_POST);die;
 
         // get saldo
         foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
@@ -150,13 +150,13 @@ class Global_report extends MX_Controller {
 
             // penerimaan barang gudang
             foreach ($penerimaan_brg_gudang as $k_penerimaan_brg => $v_penerimaan_brg_gdg) {
-                $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = array('qty' => (int)$v_penerimaan_brg_gdg['jumlah'], 'harga_beli' => (int)$v_penerimaan_brg_gdg['harga_beli'], 'biaya' => (int)$v_penerimaan_brg_gdg['biaya']);
+                $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = array('qty' => (int)$v_penerimaan_brg_gdg['jumlah_penerimaan'], 'harga_beli' => (int)$v_penerimaan_brg_gdg['harga_beli'], 'biaya' => (int)$v_penerimaan_brg_gdg['biaya']);
             }
 
         }else{
             $penerimaan_brg_unit = $this->Global_report->permintaan_brg_medis_unit();
             $penjualan = $this->Global_report->penjualan_obat();
-            // echo '<pre>';print_r($penjualan);die;
+            
             $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
             
             // penerimaan barang unit
@@ -192,8 +192,8 @@ class Global_report extends MX_Controller {
             'title' => isset($_POST['title'])?$_POST['title']:'',
             'bagian' => isset($_POST['bagian'])?$_POST['bagian']:$_GET['kode_bagian'],
             'result' => $query_data,
-            'year' => isset($_POST['year'])?$_POST['year']:$_GET['year'],
-            'month' => isset($_POST['from_month'])?$_POST['from_month']:$_GET['month'],
+            'from_tgl' => isset($_POST['from_tgl'])?$_POST['from_tgl']:date('Y-m-d'),
+            'to_tgl' => isset($_POST['to_tgl'])?$_POST['to_tgl']:date('Y-m-d'),
             'v_saldo' => isset($get_dt_g_saldo)?$get_dt_g_saldo:[],
             'v_penerimaan' => isset($dt_penerimaan_brg)?$dt_penerimaan_brg:[],
             'v_penjualan_bpjs' => isset($dt_penjualan_bpjs)?$dt_penjualan_bpjs:[],

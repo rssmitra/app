@@ -24,7 +24,7 @@
   <div class="row" style="padding-left: 5px; padding-right: 5px">
     <div class="col-xs-12">
 
-      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Sald o Akhir <br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year?> <br>Unit/Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center>
+      <!-- <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Sald o Akhir <br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year?> <br>Unit/Bagian <?php echo ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian)));?> </span> </center> -->
 
       <br>
 
@@ -36,18 +36,18 @@
             <th rowspan="2" width="95">Nama Barang</th>
             <th rowspan="2" width="304">Harga Jual</th>
             <th rowspan="2" width="304">Harga Beli</th>
-            <th width="304" style="text-align: center" colspan="2">Saldo Awal <?php echo $this->tanggal->getBulan($month)?></th>
+            <th width="304" style="text-align: center" colspan="2">Saldo Awal<br>Tanggal <?php echo $this->tanggal->formatDateDmy($from_tgl)?></th>
             <th width="304" style="text-align: center" colspan="2">Penerimaan/Pembelian</th>
             <th width="304" style="text-align: center" colspan="2">Distribusi Barang</th>
             <th width="304" style="text-align: center" colspan="2">Saldo Akhir</th>
           </tr>
           <tr>
-            <th width="304" style="text-align: center">Quantity</th>
-            <th width="304" style="text-align: center">Jumlah</th>
-            <th width="304" style="text-align: center">Quantity</th>
-            <th width="304" style="text-align: center">Jumlah</th>
-            <th width="304" style="text-align: center">Quantity</th>
-            <th width="304" style="text-align: center">Jumlah</th>
+            <th width="304" style="text-align: center">Qty</th>
+            <th width="304" style="text-align: center">Total (Rp.)</th>
+            <th width="304" style="text-align: center">Qty</th>
+            <th width="304" style="text-align: center">Total (Rp.)</th>
+            <th width="304" style="text-align: center">Qty</th>
+            <th width="304" style="text-align: center">Total (Rp.)</th>
           </tr>
         </thead>
         <tbody>
