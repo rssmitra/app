@@ -50,7 +50,7 @@ class Lap_penjualan_obat extends MX_Controller {
             $row[] = '<div align="right">'.number_format($row_list->jml_terjual).'</div>';
             $row[] = '<div class="left">'.$row_list->satuan_kecil.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_rata_satuan).'</div>';
-            $total_jual = $row_list->harga_rata_satuan * $row_list->jml_terjual;
+            $total_jual = $row_list->jml_terjual * ($row_list->harga_rata_satuan + ($row_list->harga_rata_satuan * 0.44));;
             $row[] = '<div align="right">'.number_format($total_jual).'</div>';
 
             // $row[] = '<div align="right">'.number_format($row_list->stok_gdg).'</div>';

@@ -34,7 +34,7 @@
             <th rowspan="2">No</th>
             <th rowspan="2" width="105">Kode Barang<br/></th>
             <th rowspan="2" width="95">Nama Barang</th>
-            <th rowspan="2" width="304">Harga Jual</th>
+            <!-- <th rowspan="2" width="304">Harga Jual</th> -->
             <th rowspan="2" width="304">Harga Beli</th>
             <th width="304" style="text-align: center" colspan="2">Saldo Awal<br>Tanggal <?php echo $this->tanggal->formatDateDmy($from_tgl)?></th>
             <th width="304" style="text-align: center" colspan="2">Penerimaan/Pembelian</th>
@@ -62,6 +62,7 @@
             $jmlsaldoakhir=0;
 
             foreach($result['data'] as $row_data){
+              // print_r($row_data);die;
               $kode_brg = trim($row_data->kode_brg);
               $qty_saldo_awal = isset($v_saldo[$kode_brg]) ? ($v_saldo[$kode_brg] > 0) ? $v_saldo[$kode_brg] : 0 : 0 ;
               $qty_penerimaan = isset($v_penerimaan_gdg[$kode_brg]['qty'])?$v_penerimaan_gdg[$kode_brg]['qty']:0;
@@ -76,13 +77,13 @@
                 $arr_rp_saldo_awal[] = $rp_saldo_awal;
 
                 // penerimaan
-                $rp_penerimaan = isset($v_penerimaan_gdg[$kode_brg]['biaya'])?$v_penerimaan_gdg[$kode_brg]['biaya']:0;
+                $rp_penerimaan = $qty_penerimaan * $row_data->harga_beli;
                 $harga_beli_penerimaan = isset($v_penerimaan_gdg[$kode_brg]['harga_beli']) ? $v_penerimaan_gdg[$kode_brg]['harga_beli']:0;
                 $arr_qty_penerimaan[] = $qty_penerimaan;
                 $arr_rp_penerimaan[] = $rp_penerimaan;
 
                 // distribusi
-                $rp_distribusi = $qty_distribusi * $harga_beli_penerimaan;
+                $rp_distribusi = $qty_distribusi * $row_data->harga_beli;
                 $arr_qty_distribusi[] = $qty_distribusi;
                 $arr_rp_distribusi[] = $rp_distribusi;
 
@@ -101,8 +102,8 @@
                 $txt_harga_jual = ($submit == 'excel')?$row_data->harga_beli:number_format($row_data->harga_beli);
                 echo '<td style="text-align: right">'.$txt_harga_jual.'</td>';
                 // harga beli
-                $txt_harga_beli = ($submit == 'excel')?$harga_beli_penerimaan:number_format($harga_beli_penerimaan);
-                echo '<td style="text-align: right">'.$txt_harga_beli.'</td>';
+                // $txt_harga_beli = ($submit == 'excel')?$harga_beli_penerimaan:number_format($harga_beli_penerimaan);
+                // echo '<td style="text-align: right">'.$txt_harga_beli.'</td>';
                 // saldo awal
                 echo '<td align="center">'.$qty_saldo_awal.'</td>';
                 $txt_rp_saldo_awal = ($submit == 'excel')?$rp_saldo_awal:number_format($rp_saldo_awal);
@@ -127,7 +128,7 @@
           // echo '<pre>'; print_r($arr_rp_saldo_awal);die;
           ?>
             <tr style="font-weight: bold">
-              <td colspan="5" style="text-align: right"><b>TOTAL </b></td>
+              <td colspan="4" style="text-align: right"><b>TOTAL </b></td>
               <td></td>
               <td style="text-align: right">
                 <?php 

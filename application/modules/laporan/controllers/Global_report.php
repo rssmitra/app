@@ -131,7 +131,7 @@ class Global_report extends MX_Controller {
 
         $query_data = $this->Global_report->get_data();
         $g_saldo = $this->Global_report->get_saldo_awal();
-        // echo '<pre>';print_r($_POST);die;
+        
 
         // get saldo
         foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {
@@ -158,7 +158,7 @@ class Global_report extends MX_Controller {
             $penjualan = $this->Global_report->penjualan_obat();
             
             $bmhp = $this->Global_report->penjualan_obat_internal_bmhp();
-            
+
             // penerimaan barang unit
             foreach ($penerimaan_brg_unit as $k_penerimaan_brg => $v_penerimaan_brg) {
                 $dt_penerimaan_brg[trim($v_penerimaan_brg['kode_brg'])] = (int)$v_penerimaan_brg['jumlah_penerimaan'];
@@ -166,19 +166,19 @@ class Global_report extends MX_Controller {
             
             // get data penjualan bpjs
             foreach ($penjualan as $k_pjl_bpjs => $v_pjl_bpjs) {
-                if($v_pjl_bpjs['kode_perusahaan'] ==  120){
-                    $dt_penjualan_bpjs[trim($v_pjl_bpjs['kode_brg'])] = array('jumlah' => (int)$v_pjl_bpjs['jumlah'], 'total' => (int)$v_pjl_bpjs['jumlah_total']);
-                }
+                $jumlah = $v_pjl_bpjs['jml_terjual'];
+                $total = $jumlah * ($v_pjl_bpjs['harga_rata_satuan'] + ($v_pjl_bpjs['harga_rata_satuan'] * 0.44));
+                $dt_penjualan_bpjs[trim($v_pjl_bpjs['kode_brg'])] = array('jumlah' => $jumlah, 'total' => $total);
             }
-
             // echo '<pre>';print_r($dt_penjualan_bpjs);die;
 
+            
             // data penjualan umum
-            foreach ($penjualan as $k_pjl_umum => $v_pjl_umum) {
-                if($v_pjl_umum['kode_perusahaan'] != 120){
-                    $dt_penjualan_umum[trim($v_pjl_umum['kode_brg'])] = array('jumlah' => (int)$v_pjl_umum['jumlah'], 'total' => (int)$v_pjl_umum['jumlah_total']);
-                }
-            }
+            // foreach ($penjualan as $k_pjl_umum => $v_pjl_umum) {
+            //     if($v_pjl_umum['kode_perusahaan'] != 120){
+            //         $dt_penjualan_umum[trim($v_pjl_umum['kode_brg'])] = array('jumlah' => (int)$v_pjl_umum['jumlah'], 'total' => (int)$v_pjl_umum['jumlah_total']);
+            //     }
+            // }
 
             // bmhp
             foreach ($bmhp as $k_bmhp => $v_bmhp) {

@@ -183,7 +183,7 @@ class Global_report_model extends CI_Model {
 
 		$kode_bagian = isset($_POST['bagian'])?$_POST['bagian']:$_GET['kode_bagian'];
 
-		$this->db->select('a.kode_brg, b.nama_brg, CAST(AVG(c.harga_beli) as INT) as harga_beli');
+		$this->db->select('a.kode_brg, b.nama_brg, CAST(AVG(b.harga_beli) as INT) as harga_beli');
 		$this->db->from('mt_depo_stok a');
 		$this->db->join('mt_barang b', 'b.kode_brg=a.kode_brg', 'INNER');
 		$this->db->join('mt_rekap_stok c', 'a.kode_brg=c.kode_brg', 'LEFT');
@@ -192,6 +192,7 @@ class Global_report_model extends CI_Model {
 		}
 		$this->db->where('a.kode_brg IS NOT NULL');
 		$this->db->where('a.is_active', 1);
+		// $this->db->where('a.kode_brg ', 'D43B0103');
 		$this->db->group_by('a.kode_brg, b.nama_brg');
 		$this->db->order_by('b.nama_brg', 'ASC');
 		$this->db->get();
@@ -496,8 +497,8 @@ class Global_report_model extends CI_Model {
 
 	public function permintaan_brg_medis_unit(){
 
-		$month = isset($_POST['from_month'])?$_POST['from_month'] : $_GET['month'];
-		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
+		$from_tgl = isset($_POST['from_tgl'])?$_POST['from_tgl'] : date('Y-m-d');
+		$to_tgl = isset($_POST['to_tgl'])?$_POST['to_tgl'] : date('Y-m-d');
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 		if(empty($bagian)){
 			return $this->penerimaan_brg_gudang();
@@ -508,9 +509,7 @@ class Global_report_model extends CI_Model {
 			if(!empty($bagian)){
 				$this->db->where('a.kode_bagian_minta', $bagian);
 			}
-
-			$this->db->where('MONTH(a.tgl_input_terima)', $month);
-			$this->db->where('YEAR(a.tgl_input_terima)', $year);
+			$this->db->where("CAST(a.tgl_input_terima as DATE) BETWEEN '".$from_tgl."' AND '".$to_tgl."' ");
 			$this->db->where('a.tgl_input_terima is not null');
 			$this->db->group_by('b.kode_brg');
 			$query = $this->db->get()->result_array();
@@ -530,8 +529,8 @@ class Global_report_model extends CI_Model {
 		$query = "select b.kode_brg, SUM(b.jumlah_kirim_decimal * b.content) as jumlah_penerimaan, SUM(b.jumlah_kirim_decimal * b.harga_net) as biaya, AVG(CAST((b.harga_net/b.content) AS INT)) as harga_beli from tc_penerimaan_barang_detail b
 		left join tc_penerimaan_barang a on a.id_penerimaan=b.id_penerimaan
 		where CAST(a.tgl_penerimaan as DATE) BETWEEN "."'".$from_tgl."'"." AND "."'".$to_tgl."'"."
-		GROUP BY b.kode_brg, CAST(a.tgl_penerimaan as DATE)";
-		echo $query;
+		GROUP BY b.kode_brg";
+		// echo $query;
 		return $this->db->query($query)->result_array();
 	}
 
@@ -551,8 +550,8 @@ class Global_report_model extends CI_Model {
 
 	public function penjualan_obat(){
 		
-		$month = isset($_POST['from_month'])?$_POST['from_month']: $_GET['month'];
-		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
+		$from_tgl = isset($_POST['from_tgl'])?$_POST['from_tgl'] : date('Y-m-d');
+		$to_tgl = isset($_POST['to_tgl'])?$_POST['to_tgl'] : date('Y-m-d');
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 
 		// laporan penjualan obat berdasarkan data transaksi
@@ -560,59 +559,13 @@ class Global_report_model extends CI_Model {
 		// untuk obat yang ditangguhkan dan belum dimutasikan, maka belum menjadi penjualan
 
 		$filter_bagian = (empty($bagian)) ? "" : "AND ( a.kode_bagian= '060101' OR a.kode_bagian_asal= '060101' )";
-		$query = 'SELECT kode_brg, kode_perusahaan, SUM(jumlah) as jumlah, SUM(jumlah_total) as jumlah_total FROM (SELECT CAST
-			( tgl_transaksi AS DATE ) AS tgl_transaksi,
-			a.kode_tc_trans_kasir,
-			a.kode_perusahaan,
-			a.kode_trans_far,
-			( CASE WHEN b.nama_brg IS NULL THEN a.kode_barang ELSE b.kode_brg END ) AS kode_brg,
-			( CASE WHEN b.nama_brg IS NULL THEN a.nama_tindakan ELSE b.nama_brg END ) AS nama_brg,
-			( CASE WHEN b.nama_brg IS NULL THEN CAST ( a.jumlah AS INT ) ELSE b.jumlah END ) AS jumlah,
-			(
-			CASE
-					
-					WHEN b.nama_brg IS NULL THEN
-					CAST ( ISNULL( bill_rs / NULLIF ( a.jumlah, 0 ), 0 ) AS INT ) ELSE CAST ( b.harga_jual AS INT ) 
-				END 
-				) AS harga_satuan,
-				( CASE WHEN b.nama_brg IS NULL THEN CAST ( bill_rs AS INT ) ELSE CAST ( b.jumlah_total AS INT ) END ) AS jumlah_total 
-			FROM
-				tc_trans_pelayanan a
-				FULL OUTER JOIN tc_far_racikan_detail b ON CAST ( b.id_tc_far_racikan AS VARCHAR ) = a.kode_barang 
-			WHERE
-				( jenis_tindakan IN ( 9, 11 ) ) 
-				AND YEAR ( tgl_transaksi ) = '.$year.' 
-				AND MONTH ( tgl_transaksi ) = '.$month.' 
-				'.$filter_bagian.'
-				AND bill_rs > 0 
-				UNION ALL
-			SELECT CAST
-				( tgl_input AS DATE ) AS tgl_transaksi,
-				0 as kode_tc_trans_kasir,
-				kode_perusahaan,
-				fr_tc_log_mutasi_obat.kode_trans_far,
-				fr_tc_log_mutasi_obat.kode_brg,
-				nama_brg,
-				SUM ( jumlah_mutasi_obat ) AS jml_mutasi,
-				CAST ( AVG ( harga_jual_satuan ) AS INT ) AS rata_harga_jual,
-				( SUM ( jumlah_obat_23 ) * CAST ( AVG ( harga_jual_satuan ) AS INT ) ) AS jumlah_total 
-			FROM
-				fr_tc_log_mutasi_obat
-				LEFT JOIN fr_tc_far_detail_log ON ( fr_tc_log_mutasi_obat.kode_trans_far = fr_tc_far_detail_log.kode_trans_far AND fr_tc_log_mutasi_obat.kode_brg = fr_tc_far_detail_log.kode_brg )
-				LEFT JOIN fr_tc_far ON fr_tc_far.kode_trans_far = fr_tc_far_detail_log.kode_trans_far
-				LEFT JOIN tc_registrasi ON tc_registrasi.no_registrasi = fr_tc_far.no_registrasi 
-			WHERE
-				YEAR ( fr_tc_far.tgl_trans ) = '.$year.' 
-				AND MONTH ( fr_tc_far.tgl_trans ) = '.$month.' 
-			GROUP BY
-			fr_tc_log_mutasi_obat.kode_brg,
-				CAST ( tgl_input AS DATE ),
-				kode_perusahaan,
-				fr_tc_log_mutasi_obat.kode_trans_far,
-				nama_brg 
-			HAVING
-				SUM ( jumlah_mutasi_obat ) > 0) as tbl_x
-			GROUP BY kode_brg, kode_perusahaan';
+
+		$query = 'SELECT (SUM(penjualan)-SUM(retur)) as jml_terjual, SUM(retur) as retur, AVG(harga_beli) as harga_rata_satuan, "kode_brg", "nama_brg", "satuan_kecil"
+		FROM "view_lap_mutasi_obat"
+		WHERE "tanggal" BETWEEN '."'".$from_tgl."'".' AND '."'".$to_tgl."'".' AND kode_bagian = '."'".$bagian."'".'
+		GROUP BY "kode_brg", "nama_brg", "satuan_kecil" 
+		HAVING (SUM(penjualan)-SUM(retur)) >0
+		ORDER BY (SUM(penjualan)-SUM(retur)) DESC, "nama_brg" ASC';
 
 		// echo $query;
 
@@ -629,8 +582,8 @@ class Global_report_model extends CI_Model {
 
 	public function penjualan_obat_internal_bmhp(){
 		
-		$month = isset($_POST['from_month'])?$_POST['from_month']: $_GET['month'];
-		$year = isset($_POST['year'])?$_POST['year'] : $_GET['year'];
+		$from_tgl = isset($_POST['from_tgl'])?$_POST['from_tgl'] : date('Y-m-d');
+		$to_tgl = isset($_POST['to_tgl'])?$_POST['to_tgl'] : date('Y-m-d');
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 		$this->db->select('kode_brg, kode_bagian, SUM(pengeluaran) as jumlah');
 		$this->db->from('tc_kartu_stok');
@@ -638,8 +591,7 @@ class Global_report_model extends CI_Model {
 			$this->db->where('kode_bagian', $bagian);
 		}
 		$this->db->where('jenis_transaksi IN (7)');
-		$this->db->where('MONTH(tgl_input)', $month);
-		$this->db->where('YEAR(tgl_input)', $year);
+		$this->db->where('CAST(tgl_input as DATE) BETWEEN '."'".$from_tgl."'".' AND '."'".$to_tgl."'".' ');
 		$this->db->group_by('kode_brg, kode_bagian');
 		$query = $this->db->get()->result_array();
 		return $query;
@@ -653,7 +605,7 @@ class Global_report_model extends CI_Model {
 
 		$query = "select a.kode_brg, b.kode_bagian_kirim, SUM(a.jumlah_penerimaan) as jumlah from tc_permintaan_inst_det a 
 		left join tc_permintaan_inst b on b.id_tc_permintaan_inst = a.id_tc_permintaan_inst
-		where CAST(a.tgl_kirim as DATE) BETWEEN  "."'".$from_tgl."'"."  AND "."'".$to_tgl."'"."  AND b.kode_bagian_kirim = '".$bagian."' GROUP BY a.kode_brg, b.kode_bagian_kirim, CAST(a.tgl_kirim as DATE)";
+		where CAST(a.tgl_kirim as DATE) BETWEEN  "."'".$from_tgl."'"."  AND "."'".$to_tgl."'"."  AND b.kode_bagian_kirim = '".$bagian."' GROUP BY a.kode_brg, b.kode_bagian_kirim";
 		// echo $query;
 		return $this->db->query($query)->result_array();
 	}

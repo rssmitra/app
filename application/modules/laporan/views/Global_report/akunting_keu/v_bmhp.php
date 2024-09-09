@@ -24,7 +24,7 @@
   <div class="row" style="padding-left: 5px; padding-right: 5px">
     <div class="col-xs-12">
 
-      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal Bulan, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir<br>Berdasarkan Waktu Pemesanan Resep<br>Bulan <?php echo $this->tanggal->getBulan($month)?> Tahun <?php echo $year?> <br><?php echo (!empty($bagian)) ? 'Unit/Bagian '.ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian))): 'RS Setia Mitra' ?> </span> </center>
+      <center><span style="font-size: 14px; font-weight: bold">Rekapitulasi Stok Awal, Penerimaan/Pembelian, Penjualan, BMHP dan Saldo Akhir<br>Periode <?php echo $this->tanggal->formatDateDmy($from_tgl)?> s.d <?php echo $this->tanggal->formatDateDmy($to_tgl)?> <br><?php echo (!empty($bagian)) ? 'Unit/Bagian '.ucwords($this->master->get_string_data('nama_bagian','mt_bagian',array('kode_bagian' => $bagian))): 'RS Setia Mitra' ?> </span> </center>
 
       <br>
 
@@ -35,10 +35,10 @@
             <th rowspan="2" width="105">Kode Barang<br/></th>
             <th rowspan="2" width="95">Nama Barang</th>
             <th rowspan="2" width="304">HPP Satuan</th>
-            <th width="304" style="text-align: center" colspan="2">Saldo Awal <?php echo $this->tanggal->getBulan($month)?></th>
+            <th width="304" style="text-align: center" colspan="2">Saldo Awal <?php echo $this->tanggal->formatDateDmy($from_tgl)?></th>
             <th width="304" style="text-align: center" colspan="2">Penerimaan/Pembelian</th>
-            <th width="304" style="text-align: center" colspan="2">Penjualan BPJS</th>
-            <th width="304" style="text-align: center" colspan="2">Penjualan Umum</th>
+            <!-- <th width="304" style="text-align: center" colspan="2">Penjualan BPJS</th> -->
+            <th width="304" style="text-align: center" colspan="2">Penjualan </th>
             <th width="304" style="text-align: center" colspan="2">Penggunaan Internal</th>
             <th width="304" style="text-align: center" colspan="2">Saldo Akhir</th>
           </tr>
@@ -47,8 +47,8 @@
             <th width="304" style="text-align: center">Jumlah</th>
             <th width="304" style="text-align: center">Quantity</th>
             <th width="304" style="text-align: center">Jumlah</th>
-            <th width="304" style="text-align: center">Quantity</th>
-            <th width="304" style="text-align: center">Jumlah</th>
+            <!-- <th width="304" style="text-align: center">Quantity</th>
+            <th width="304" style="text-align: center">Jumlah</th> -->
             <th width="304" style="text-align: center">Quantity</th>
             <th width="304" style="text-align: center">Jumlah</th>
             <th width="304" style="text-align: center">Quantity</th>
@@ -85,8 +85,8 @@
 
             // penjualan bpjs
             $qty_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['jumlah'])?$v_penjualan_bpjs[$kode_brg]['jumlah']:0;
+            $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['total'])?$v_penjualan_bpjs[$kode_brg]['total']:0;
             // $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['total'])?$v_penjualan_bpjs[$kode_brg]['total']:0;
-            $rp_penjualan_bpjs = isset($v_penjualan_bpjs[$kode_brg]['jumlah'])?$v_penjualan_bpjs[$kode_brg]['jumlah']*$row_data->harga_beli:0;
             $arr_qty_penjualan_bpjs[] = $qty_penjualan_bpjs;
             $arr_rp_penjualan_bpjs[] = $rp_penjualan_bpjs;
 
@@ -105,7 +105,7 @@
             
             // summary
             $qty_saldo_akhir = ($qty_saldo_awal + $qty_penerimaan) - ($qty_penjualan_bpjs + $qty_penjualan + $qty_bmhp);
-            $rp_saldo_akhir = ($rp_saldo_awal + $rp_penerimaan ) - ($rp_penjualan_bpjs + $rp_penjualan + $rp_bmhp);
+            $rp_saldo_akhir = $qty_saldo_akhir * $row_data->harga_beli;
             $arr_qty_saldo_akhir[] = $qty_saldo_akhir;
             $arr_rp_saldo_akhir[] = $rp_saldo_akhir;
 
@@ -130,9 +130,9 @@
                 $txt_rp_penjualan_bpjs = ($submit == 'excel')?$rp_penjualan_bpjs:number_format($rp_penjualan_bpjs);
                 echo '<td align="right">'.$txt_rp_penjualan_bpjs.'</td>';
                 // penjualan umum
-                echo '<td align="center">'.$qty_penjualan.'</td>';
-                $txt_rp_penjualan = ($submit == 'excel')?$rp_penjualan:number_format($rp_penjualan);
-                echo '<td align="right">'.$txt_rp_penjualan.'</td>';
+                // echo '<td align="center">'.$qty_penjualan.'</td>';
+                // $txt_rp_penjualan = ($submit == 'excel')?$rp_penjualan:number_format($rp_penjualan);
+                // echo '<td align="right">'.$txt_rp_penjualan.'</td>';
                 // bmhp
                 echo '<td align="center">'.$qty_bmhp.'</td>';
                 $txt_rp_bmhp = ($submit == 'excel')?$rp_bmhp:number_format($rp_bmhp);
@@ -165,11 +165,11 @@
                     $txt_arr_rp_penjualan_bpjs = array_sum($arr_rp_penjualan_bpjs); 
                     echo ($submit == 'excel') ? $txt_arr_rp_penjualan_bpjs : number_format($txt_arr_rp_penjualan_bpjs);?></td> 
               <td></td>
-              <td style="text-align: right">
+              <!-- <td style="text-align: right">
                 <?php 
                     $txt_arr_rp_penjualan = array_sum($arr_rp_penjualan); 
                     echo ($submit == 'excel') ? $txt_arr_rp_penjualan : number_format($txt_arr_rp_penjualan);?></td> 
-              <td></td>
+              <td></td> -->
               <td style="text-align: right">
                 <?php 
                     $txt_arr_rp_bmhp = array_sum($arr_rp_bmhp); 
