@@ -71,15 +71,11 @@
           
         </form>
         <!-- end content -->
-         <br>
+         <!-- <br>
         <h4>Rekapitulasi Saldo Akhir Obat per Unit</h4>
         <form class="form-horizontal" method="post" id="form-default" action="<?php echo base_url()?>laporan/Global_report/show_data_bmhp_rekap" target="_blank">
-        <!-- hidden form -->
         <input type="hidden" name="flag" value="akunting_mod_3a">
         <input type="hidden" name="title" value="Rekap Penerimaan dan Pemakaian Obat">
-
-        
-
           <div class="form-group">
               <label class="control-label col-md-1">Bulan </label>
               
@@ -104,7 +100,7 @@
             </div>
           </div>
 
-        </form>
+        </form> -->
      </div>
 
     </div><!-- /.col -->
