@@ -423,7 +423,7 @@ function rollback(no_registrasi, no_kunjungan){
           <input type="hidden" class="form-control" name="kode_ri" id="kode_ri" value="<?php echo isset($value->kode_ri)?$value->kode_ri:'';?>">
 
           <!-- profile Pasien -->
-          <div class="col-md-2 no-padding">
+          <div class="col-md-2">
             <div class="box box-primary" id='box_identity'>
                 <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
@@ -464,7 +464,7 @@ function rollback(no_registrasi, no_kunjungan){
           </div>
 
           <!-- form pelayanan -->
-          <div class="col-md-10">
+          <div class="col-md-10 no-padding">
 
             <p><b> KAMAR BEDAH <i class="fa fa-angle-double-right bigger-120"></i></b></p>
             <table class="table table-bordered pull-left" style="width:100% !important">
@@ -473,9 +473,12 @@ function rollback(no_registrasi, no_kunjungan){
                   <th style="width: 80px">&nbsp;</th>
                   <th style="width: 140px">Tanggal Pesan</th>
                   <th style="width: 200px">Dokter</th>
-                  <th style="width: 100px">No. Ruangan</th>
+                  <th style="width: 100px">No.Kamar</th>
                   <th>Tindakan</th>
-                  <th style="width: 200px">Estimasi Biaya</th>
+                  <th>Kelas</th>
+                  <th>Kamar Rawat</th>
+                  <th>Penjamin</th>
+                  <th style="width: 100px">Estimasi Biaya</th>
                 </tr>
                 <tr>
                   <td align="center">
@@ -497,17 +500,21 @@ function rollback(no_registrasi, no_kunjungan){
                   <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
                   <td align="center"><?php echo isset($value->no_kamar)?$value->no_kamar:'';?></td>
                   <td><?php echo isset($value->nama_tarif)?'<b>'.strtoupper($value->nama_tarif).'</b>':'';?></td>
+                  <td><?php echo isset($val_ri->klas)?$val_ri->klas:'';?></td>
+                  <td><?php echo isset($val_ri->nama_bagian)?$val_ri->nama_bagian:'';?> No. <?php echo isset($val_ri)?$val_ri->no_kamar.' / '.$val_ri->no_bed:'';?></td>
+                  <td><?php echo isset($val_ri->nama_kelompok)?ucwords($val_ri->nama_kelompok).'<br> ':'';?>
+                  <?php echo isset($val_ri->nama_perusahaan)?$val_ri->nama_perusahaan:'';?></td>
                   <td align="right"><?php echo isset($value->total)?number_format($value->total):'';?></td>
                   
                   
                 </tr>
             </table>  
 
-            <p style="padding-top:20px"><b> RAWAT INAP <i class="fa fa-angle-double-right bigger-120"></i></b></p>
+            <!-- <p style="padding-top:20px"><b> RAWAT INAP <i class="fa fa-angle-double-right bigger-120"></i></b></p>
             <table class="table table-bordered">
                 <tr style="background-color:#428bca; color: white">
-                  <!-- <th>Kode</th>
-                  <th>No Reg</th> -->
+                  <th>Kode</th>
+                  <th>No Reg</th>
                   <th width="80px">Status</th>
                   <th style="width: 140px">Tanggal Masuk RI</th>
                   <th style="width: 200px">Dokter Merawat</th>
@@ -515,11 +522,11 @@ function rollback(no_registrasi, no_kunjungan){
                   <th>Ruangan</th>
                   <th>Kamar / Bed</th>
                   <th>Penjamin</th>
-                  <!-- <th>Petugas</th> -->
+                  <th>Petugas</th>
                 </tr>
                 <tr>
-                  <!-- <td><?php echo isset($val_ri->no_kunjungan)?$val_ri->no_kunjungan:''?></td>
-                  <td><?php echo isset($val_ri->no_registrasi)?$val_ri->no_registrasi:''?></td> -->
+                  <td><?php echo isset($val_ri->no_kunjungan)?$val_ri->no_kunjungan:''?></td>
+                  <td><?php echo isset($val_ri->no_registrasi)?$val_ri->no_registrasi:''?></td>
                   <td><?php echo isset($val_ri->pasien_titipan)?($val_ri->pasien_titipan==1)?'<label class="label label-danger">Titipan</label>':'-':''?></td>
                   <td><?php echo isset($val_ri->tgl_masuk)?$this->tanggal->formatDateTime($val_ri->tgl_masuk):''?></td>
                   <td><?php echo isset($val_ri->nama_pegawai)?$val_ri->nama_pegawai:'';?></td>
@@ -528,11 +535,11 @@ function rollback(no_registrasi, no_kunjungan){
                   <td align="center"><?php echo isset($val_ri)?$val_ri->no_kamar.' / '.$val_ri->no_bed:'';?></td>
                   <td><?php echo isset($val_ri->nama_kelompok)?ucwords($val_ri->nama_kelompok).' / ':'';?>
                   <?php echo isset($val_ri->nama_perusahaan)?$val_ri->nama_perusahaan:'';?></td>
-                  <!-- <td><?php echo $this->session->userdata('user')->fullname?></td> -->
+                  <td><?php echo $this->session->userdata('user')->fullname?></td>
                   
                 </tr>
 
-            </table> 
+            </table>  -->
             
             
             <?php if(isset($value) AND $value->jenis_layanan==1) :?>
@@ -625,7 +632,7 @@ function rollback(no_registrasi, no_kunjungan){
 
               </div>
             </div>
-            <div class="col-md-4 no-padding">
+            <div class="col-md-4">
               <div class="tabbable">  
 
                 <ul class="nav nav-tabs" id="myTab2">

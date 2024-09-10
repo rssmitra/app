@@ -87,7 +87,6 @@ class Entry_resep_ri_rj extends MX_Controller {
 
         $list_resep = $this->E_resep->get_cart_resep($id);
         $data['eresep'] = $list_resep;
-        // echo '<pre>';print_r($data['eresep']);die;
         /*no mr default*/
         $data['no_mr'] = $_GET['mr'];
         /*initialize flag for form*/
@@ -97,6 +96,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Entry_resep_ri_rj/form', $data);
     }

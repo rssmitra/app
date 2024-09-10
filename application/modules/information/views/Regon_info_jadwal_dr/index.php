@@ -2,9 +2,7 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-  
     $('#tabs_detail_jadwal').load('information/regon_info_jadwal_dr/jadwal_dokter');
-
   })
 </script>
 
@@ -62,9 +60,16 @@
           </li>
 
           <li>
+            <a data-toggle="tab" data-id="0" data-url="information/regon_info_jadwal_dr/cuti_dokter" id="tabs_cuti_dokter" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_detail_jadwal')" >
+              <i class="red ace-icon fa fa-calendar bigger-120"></i>
+              Cuti Dokter
+            </a>
+          </li>
+
+          <li>
             <a data-toggle="tab" data-id="0" data-url="information/regon_info_jadwal_dr/lihat_jadwal_dokter" id="tabs_lihat_jadwal_dokter" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_detail_jadwal')" >
               <i class="red ace-icon fa fa-calendar bigger-120"></i>
-              Lihat Jadwal Dokter
+              Pencarian Jadwal Dokter
             </a>
           </li>
         </ul>

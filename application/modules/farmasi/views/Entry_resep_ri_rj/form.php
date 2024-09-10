@@ -588,14 +588,10 @@ function resep_farmasi_selesai(type){
 }
 
 function sum_total_biaya_farmasi(){
-
   var kode_trans_far = $('#kode_trans_far').val();
   $.getJSON("<?php echo site_url('farmasi/process_entry_resep/get_total_biaya_farmasi') ?>/"+kode_trans_far, '' , function (response) {
-
       $('#td_total_biaya_farmasi').html('<b>Rp. '+formatMoney(response.total)+',-</b>');
-
   })
-
 }
 
 function duplicate_input(id_input, duplicate_to){

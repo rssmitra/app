@@ -17,6 +17,7 @@ class Regon_info_jadwal_dr extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Regon_info_jadwal_dr_model', 'Regon_info_jadwal_dr');
+        $this->load->model('Regon_info_jadwal_cuti_dr_model', 'Regon_info_jadwal_cuti_dr');
 
         /*enable profiler*/
         $this->output->enable_profiler(false);
@@ -39,6 +40,12 @@ class Regon_info_jadwal_dr extends MX_Controller {
     public function lihat_jadwal_dokter() { 
         
         $this->load->view('Regon_info_jadwal_dr/tab_lihat_dokter');
+    
+    }
+
+    public function cuti_dokter() { 
+        
+        $this->load->view('Regon_info_jadwal_dr/tab_cuti_dokter');
     
     }
 
@@ -333,162 +340,148 @@ class Regon_info_jadwal_dr extends MX_Controller {
         
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-    public function addNewPasien($id='')
+    public function show_data_cuti($id)
     {
-        /*if id is not null then will show form edit*/
-        if( $id != '' ){
-            /*breadcrumbs for edit*/
-            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Regon_info_jadwal_dr/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
-            /*get value by id*/
-            $data['value'] = $this->Regon_info_jadwal_dr->get_by_id($id);
-            /*initialize flag for form*/
-            $data['flag'] = "update";
-        }else{
-            /*breadcrumbs for create or add row*/
-            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Regon_info_jadwal_dr/'.strtolower(get_class($this)).'/form');
-            /*initialize flag for form add*/
-            $data['flag'] = "create";
-        }
-        /*title header*/
-        $data['title'] = $this->title;
-        /*show breadcrumbs*/
-        $data['breadcrumbs'] = $this->breadcrumbs->show();
-        /*load form view*/
-        $this->load->view('Regon_info_jadwal_dr/form_add_pasien', $data);
+        $result = $this->Regon_info_jadwal_cuti_dr->get_by_id($id);
+        echo json_encode($result);
     }
 
-    public function formBookingPasien($no_mr='')
+    public function get_data_cuti_dr()
     {
-        /*if id is not null then will show form edit*/
-        /*breadcrumbs for create or add row*/
-        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Regon_info_jadwal_dr/'.strtolower(get_class($this)).'/form');
-        /*initialize flag for form add*/
-        $data['flag'] = "create";
-        /*title header*/
-        $data['title'] = $this->title;
-        /*show breadcrumbs*/
-        $data['breadcrumbs'] = $this->breadcrumbs->show();
-        /*load form view*/
-        $this->load->view('Regon_info_jadwal_dr/form_booking_pasien', $data);
-    }
-
-    public function show_modul($modul_id) { 
+        /*get data from model*/
+        $list = $this->Regon_info_jadwal_cuti_dr->get_datatables();
         
-        switch ($modul_id) {
-            case 'RJ':
-                $view_modul = 'Regon_info_jadwal_dr/form_rajal';
-                break;
+        $data = array();
+        $no = $_POST['start'];
 
-            case 2:
-                $view_modul = 'Regon_info_jadwal_dr/form_ranap';
-                break;
-
-            case 3:
-                $view_modul = 'Regon_info_jadwal_dr/form_pm';
-                break;
-
-            case 4:
-                $view_modul = 'Regon_info_jadwal_dr/form_igd';
-                break;
-
-            case 5:
-                $view_modul = 'Regon_info_jadwal_dr/form_mcu';
-                break;
-
-            case 6:
-                $view_modul = 'Regon_info_jadwal_dr/form_odc';
-                break;
-
-            case 7:
-                $view_modul = 'Regon_info_jadwal_dr/form_paket_bedah';
-                break;
+        foreach ($list as $key => $row_list) {
             
-            default:
-                $view_modul = 'Regon_info_jadwal_dr/index';
-                break;
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center">
+                        <div class="center">
+                        <button type="button" class="btn btn-xs btn-success" onclick="show_data('.$row_list->cuti_id.')"><i class="ace-icon fa fa-edit bigger-50"></i></button>
+                        <button type="button" class="btn btn-xs btn-danger" onclick="delete_data_cuti('.$row_list->cuti_id.')"><i class="ace-icon fa fa-times bigger-50"></i></button>
+                      </div>
+                      </div>'; 
+            $row[] = '<div class="left">'.$row_list->nama_pegawai.'</div>';
+            $row[] = '<div class="left">'.ucwords($row_list->nama_bagian).'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->from_tgl).'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->to_tgl).'</div>';
+            $row[] = '<div class="left">'.$row_list->keterangan_cuti.'</div>';
+            if(date('Y-m-d') < $row_list->from_tgl){
+                $status = '<span class="label label-warning">Akan datang</span>';
+            }else{
+                if($row_list->from_tgl <= date('Y-m-d') && $row_list->to_tgl >= date('Y-m-d')){
+                    $status = '<span class="label label-success">Sedang Cuti</span>';
+                }else{
+                    $status = '<span class="label label-danger">Expired</span>';
+                }
+            }
+            
+            $row[] = '<div class="center">'.$status.'</div>';
+
+            $data[] = $row;
         }
 
-        $this->load->view($view_modul);
-    
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Regon_info_jadwal_cuti_dr->count_all(),
+                        "recordsFiltered" => $this->Regon_info_jadwal_cuti_dr->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
     }
 
-    
+    public function process_cuti_dr()
+    {
 
-    public function create_kode_booking(){
-        $string = $_POST['no_mr'].$_POST['tanggal_kunjungan'].'abcdefghijklmnpqrstuvwxyz';
-        $clean_string = str_replace(array('1','i','0','o','/','-'),'',$string);
-        $s = substr(str_shuffle(str_repeat($clean_string, 6)), 0, 6);
-        return $s;
+        // echo '<pre>';print_r($_POST);die;
+
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+
+        $val->set_rules('klinik_rajal', 'Klinik', 'trim|required');
+        $val->set_rules('dokter_rajal', 'Dokter', 'trim|required');
+        $val->set_rules('from_tgl', 'Tanggal Cuti', 'trim|required');
+        $val->set_rules('to_tgl', 'sd Tanggal Cuti', 'trim|required');
+        $val->set_rules('keterangan_cuti', 'Keterangan Cuti', 'trim|required');
+
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+
+            // id
+            $id = ($_POST['cuti_id'])?$_POST['cuti_id']:0;
+
+            $dataexc = array(
+                'kode_bag' => $this->regex->_genRegex($val->set_value('klinik_rajal'),'RGXQSL'),
+                'kode_dr' => $this->regex->_genRegex($val->set_value('dokter_rajal'),'RGXINT'),
+                'from_tgl' => $this->regex->_genRegex($val->set_value('from_tgl'),'RGXQSL'),
+                'to_tgl' => $this->regex->_genRegex($val->set_value('to_tgl'),'RGXQSL'),
+                'keterangan_cuti' => $this->regex->_genRegex($val->set_value('keterangan_cuti'),'RGXQSL'),
+                'is_active' => $this->regex->_genRegex('Y','RGXQSL'),
+            );
+
+
+            if($id == 0){
+
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                $this->db->insert('tr_jadwal_cuti_dr', $dataexc);
+                $newId = $this->db->insert_id();
+
+            }else{
+
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                
+                $this->db->where('cuti_id', $id)->update('tr_jadwal_cuti_dr', $dataexc);
+                $newId = $id;
+
+            }
+
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+        }
     }
 
-    public function success_confirmation() { 
-        /*define variable data*/
-        $data = array(
-            'kode' => $this->input->get('kode'),
-        );
-        /*load view index*/
-        $this->load->view('Regon_info_jadwal_dr/success_confirmation_view', $data);
+    public function delete_data_cuti()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        $toArray = explode(',',$id);
+        if($id!=null){
+            if($this->Regon_info_jadwal_cuti_dr->delete_by_id($toArray)){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
     }
-
-    public function qr_code() { 
-        /*define booking code*/
-        $code = $this->input->get('kode');
-        /*get profile by kode booking*/
-        $profile = $this->Regon_info_jadwal_dr->get_by_kode_booking($code);
-        /*define variable data*/
-        $data = array(
-            'kode_booking' => $this->input->get('kode'),
-            'qr_code' => $profile->regon_booking_kode.'-'.$profile->regon_booking_no_mr.''.$profile->regon_booking_klinik.''.$profile->regon_booking_kode_dokter.''.$profile->regon_booking_instalasi,
-        );
-        /*load view index*/
-        $this->load->view('Regon_info_jadwal_dr/qr_code', $data);
-    }
-
-    
-
-    
-
-    
-
-    
-
 
 }
 

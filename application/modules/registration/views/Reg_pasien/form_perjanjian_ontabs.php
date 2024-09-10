@@ -49,16 +49,18 @@ jQuery(function($) {
 
         $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id} , function(data) {
             // Do something with the request
-            if(data.status=='expired'){
-              var message = '<div class="alert alert-danger"><strong>Expired Date !</strong><br>Tanggal yang anda pilih sudah lewat atau sedang berjalan.</div>';
+            if(data.status=='expired' || data.status == 'cuti'){
+              if(data.status == 'expired'){
+                var message = '<div class="alert alert-danger"><strong>Expired Date !</strong><br>Tanggal yang anda pilih sudah lewat atau sedang berjalan.</div>';
+              }else{
+                var message = '<div class="alert alert-danger"><strong>Tidak praktek !</strong><br>Dokter sedang cuti pada tanggal tersebut.</div>';
+              }
               $('#view_msg_kuota').hide('fast');
             }else{
               if(data.day!=$('#selected_day').val() ){
                     var message = '<div class="alert alert-danger"><strong>Tidak Sesuai !</strong><br>Tanggal Kunjungan tidak sesuai dengan jadwal Praktek Dokter yang anda pilih !</div>';
                     // $('#view_msg_kuota').hide('fast');
               }else{
-                
-
                 if(data.sisa > 0 ){
                   var msg_kuota = '<p style="font-size: 12px"> <i class="fa fa-check-circle bigger-120 green"></i> Total Pasien Perjanjian '+data.terisi+' orang, Kuota tersedia pada tanggal ini, '+data.sisa+' pasien</p>';
 

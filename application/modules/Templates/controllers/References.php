@@ -285,6 +285,7 @@ class References extends MX_Controller {
 		}else{
 			$status = ($selected_date < strtotime(date('Y-m-d')) ) ? 'expired' : 'success' ;
 		}
+
 		/*get master jadwal*/
 		$jadwal = $this->db->get_where('tr_jadwal_dokter', array('jd_id' => $jd_id) )->row();
 		$kuota_dr = $jadwal->jd_kuota;
@@ -303,6 +304,18 @@ class References extends MX_Controller {
 		// echo '<pre>'; print_r($terisi);die;
 		/*sisa kuota*/
 		$kuota = $kuota_dr - $terisi;
+
+		// cek cuti dokter
+		if($status == 'success'){
+			$cuti = $this->db->where('(CAST(from_tgl as DATE) <= '."'".$date."'".' AND CAST(to_tgl as DATE) >= '."'".$date."'".')')->get('tr_jadwal_cuti_dr')->row();
+			if(!empty($cuti)){
+				$status = 'cuti';
+				$kuota_dr = 0;
+				$terisi = 0;
+				$kuota = 0;
+			}
+		}
+
 		$return_data = array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota);
 
 		echo json_encode($return_data);
@@ -1160,19 +1173,18 @@ class References extends MX_Controller {
 
 	public function getTindakanByBagianAutoComplete()
 	{
-    // echo print_r($_POST); die;
-		// just for kamar bedah
-		$where_str = ($_POST['kode_bag']=='030901')?'and a.referensi in (select kode_tarif from mt_master_tarif where kode_bagian='."'".$_POST['kode_bag']."'".' and referensi='.$_POST['jenis_bedah'].')':'';
+		$where_str = ($_POST['kode_bag']=='030901') ? ' AND (( a.kode_bagian IN ('."'030901'".','."'012801'".') OR a.kode_bagian= 0 ) OR a.referensi IN ( SELECT kode_tarif FROM mt_master_tarif WHERE kode_bagian IN ('."'030901'".','."'012801'".') AND referensi = '.$_POST['jenis_bedah'].' ) )':'';
 
 		if(in_array($_POST['kode_bag'], array('030501', '031201'))){
 			$where_kode_bag = "a.kode_bagian IN ('030501', '031201')";
 		}
-    elseif(in_array($_POST['kode_bag'], array('013701', '011501', '011601', '011001'))){
-      $where_kode_bag = "a.kode_bagian IN ('013701', '011501', '011601', '011001')";
-    }
-    else{
+		elseif(in_array($_POST['kode_bag'], array('013701', '011501', '011601', '011001'))){
+			$where_kode_bag = "a.kode_bagian IN ('013701', '011501', '011601', '011001')";
+		}
+		else{
 			$where_kode_bag = "a.kode_bagian="."'".$_POST['kode_bag']."'"."";
 		}
+
         $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi
 					from mt_master_tarif a
 					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
@@ -1536,7 +1548,7 @@ class References extends MX_Controller {
 		
         $this->db->from('tc_kartu_stok a, mt_barang b, mt_rekap_stok c');
         $this->db->where('a.kode_brg=b.kode_brg');
-		$this->db->where('b.kode_brg=c.kode_brg');
+		$this->db->where('a.kode_brg=c.kode_brg');
 		$this->db->join('fr_mt_profit_margin d','d.id_profit=c.id_profit', 'left');
 
 		if( in_array($_GET['bag'], array('030901','012801')) ){
@@ -1548,7 +1560,7 @@ class References extends MX_Controller {
         $this->db->order_by('a.id_kartu', 'DESC');
         $this->db->limit(1);
         $exc = $this->db->get()->result();
-		// print_r($exc);die;
+		// print_r($this->db->last_query());die;
 
 		// stok cito
 		$this->db->from('tc_kartu_stokcito a');
@@ -1557,7 +1569,7 @@ class References extends MX_Controller {
 		$this->db->where('a.kode_bagian', '060101');
 		$this->db->order_by('id_kartucito', 'DESC');
 		$cito = $this->db->get()->row();
-		// print_r($this->db->last_query());die;
+		
 
 		$html = '';
 		if(count($exc) > 0){

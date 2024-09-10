@@ -59,19 +59,19 @@
       <thead>
       <tr>  
         <th style="color: white !important" width="30px" class="center" rowspan="2"></th>
-        <th style="color: white !important" rowspan="2" width="180px">Action</th>
+        <th style="color: white !important" rowspan="2" width="120px">Action</th>
         <th style="color: white !important" rowspan="2">Nama Dokter</th>
         <th style="color: white !important" rowspan="2">Spesialis</th>
         <th style="color: white !important" colspan="7" class="center">Hari/Jam Praktek</th>
       </tr>
       <tr style="color: white !important">
-        <th style="color: white !important" class="center" width="65px">Senin</th>
-        <th style="color: white !important" class="center" width="65px">Selasa</th>
-        <th style="color: white !important" class="center" width="65px">Rabu</th>
-        <th style="color: white !important" class="center" width="65px">Kamis</th>
-        <th style="color: white !important" class="center" width="65px">Jumat</th>
-        <th style="color: white !important" class="center" width="65px">Sabtu</th>
-        <th style="color: white !important" class="center" width="65px">Minggu</th>        
+        <th style="color: white !important" class="center" width="125px">Senin</th>
+        <th style="color: white !important" class="center" width="125px">Selasa</th>
+        <th style="color: white !important" class="center" width="125px">Rabu</th>
+        <th style="color: white !important" class="center" width="125px">Kamis</th>
+        <th style="color: white !important" class="center" width="125px">Jumat</th>
+        <th style="color: white !important" class="center" width="125px">Sabtu</th>
+        <th style="color: white !important" class="center" width="125px">Minggu</th>        
       </tr>
     </thead>
     <tbody>
