@@ -307,7 +307,7 @@ class References extends MX_Controller {
 
 		// cek cuti dokter
 		if($status == 'success'){
-			$cuti = $this->db->where('(CAST(from_tgl as DATE) <= '."'".$date."'".' AND CAST(to_tgl as DATE) >= '."'".$date."'".')')->get('tr_jadwal_cuti_dr')->row();
+			$cuti = $this->db->where('(CAST(from_tgl as DATE) <= '."'".$date."'".' AND CAST(to_tgl as DATE) >= '."'".$date."'".')')->get_where('tr_jadwal_cuti_dr', array('kode_dr' => $kode_dokter))->row();
 			if(!empty($cuti)){
 				$status = 'cuti';
 				$kuota_dr = 0;
