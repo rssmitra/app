@@ -99,13 +99,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
             $this->db->group_by('c.no_kunjungan, d.nama_bagian');
             $prd_dt = $this->db->get();
@@ -140,12 +140,12 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) = '."'".date('Y-m-d')."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) = '."'".date('Y-m-d')."'".') ');
                 }
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) = '."'".date('Y-m-d')."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )'); 
+                    where CAST(tgl_masuk as DATE) = '."'".date('Y-m-d')."'".' AND a.status_batal is null )'); 
             }
             $this->db->group_by('c.no_kunjungan, d.nama_bagian');
             $dy_dt = $this->db->get();
@@ -180,13 +180,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') ');
                 }
             }else{
                     
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )'); 
+                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null )'); 
                     
             }
             $this->db->group_by('c.no_kunjungan, d.nama_bagian');
@@ -226,13 +226,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND YEAR(tgl_masuk) = '.date('Y').') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND YEAR(tgl_masuk) = '.date('Y').') ');
                 }
             }else{
 
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )'); 
+                    where YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null )'); 
 
             }
             $yr_dt = $this->db->get();
@@ -287,7 +287,7 @@ class Eks_poli_model extends CI_Model {
 
             $fields = array();
             $title = isset($_GET['jenis_kunjungan']) ? '' : '' ;
-            $title = '<span style="font-size: 14px">LAPORAN KUNJUNGAN PASIEN <br><b>'.strtoupper($ttl_jk).' - '.strtoupper($ttl_pj).'</b></span>';
+            $title = '<span style="font-size: 14px">LAPORAN KUNJUNGAN PASIEN <br><b>'.strtoupper($ttl_jk).' - '.strtoupper($ttl_pj).'</b><br></span>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
         }
 
@@ -341,13 +341,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') ');
                 }
             }else{
                     
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )'); 
+                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null )'); 
                     
             }
             $this->db->group_by('DAY(tgl_masuk)');
@@ -402,13 +402,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
             
             $this->db->group_by('e.nama_pasien, b.no_mr, c.tgl_masuk');
@@ -464,13 +464,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
             
             $this->db->group_by('e.nama_perusahaan, b.kode_perusahaan, c.tgl_masuk');
@@ -549,13 +549,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
             $this->db->group_by('c.no_kunjungan, d.nama_bagian');
             $this->db->group_by('c.tgl_masuk, kode_dokter1, kode_dokter2, c.kode_dokter');
@@ -614,13 +614,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') ');
                 }
             }else{
                     
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )'); 
+                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null )'); 
                     
             }
             $this->db->group_by('DAY(tgl_masuk), c.kode_bagian_tujuan, b.no_mr, d.nama_bagian');
@@ -685,13 +685,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') ');
                 }
             }else{
                     
                     $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )'); 
+                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null )'); 
                     
             }
 
@@ -977,13 +977,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
             
             $prd_dt = $this->db->get();
@@ -1022,13 +1022,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) = '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) = '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) = '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) = '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
             
             $prd_dt = $this->db->get();
@@ -1065,13 +1065,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where MONTH(tgl_masuk) = '.date('m').' AND YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null )');
             }
             $prd_dt = $this->db->get();
 
@@ -1112,13 +1112,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".'AND YEAR(tgl_masuk) = '.date('Y').') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".'AND YEAR(tgl_masuk) = '.date('Y').') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where YEAR(tgl_masuk) = '.date('Y').' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where YEAR(tgl_masuk) = '.date('Y').' AND a.status_batal is null )');
             }
             $prd_dt = $this->db->get();
 
@@ -1173,13 +1173,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
 
             $prd_dt = $this->db->get();
@@ -1379,13 +1379,13 @@ class Eks_poli_model extends CI_Model {
 
                 // rawat inap
                 if (isset($_GET['jenis_kunjungan']) AND $_GET['jenis_kunjungan'] == 'ri') {
-                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) ');
+                    $this->db->where(' (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".') ');
                 }
 
             }else{
                 $this->db->where('c.no_kunjungan IN ( SELECT no_kunjungan
                     FROM tc_kunjungan a
-                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' OR (SUBSTRING ( c.kode_bagian_tujuan, 0, 3 ) = '."'03'".' AND tgl_keluar IS NULL ) AND a.status_batal is null )');
+                    where CAST(tgl_masuk as DATE) BETWEEN '."'".$_GET['from_tgl']."'".' AND '."'".$_GET['to_tgl']."'".' AND a.status_batal is null )');
             }
             $prd_dt = $this->db->get();
             // print_r($this->db->last_query());die;

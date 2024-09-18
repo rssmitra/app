@@ -61,7 +61,7 @@
 
           <li>
             <a data-toggle="tab" data-id="0" data-url="information/regon_info_jadwal_dr/cuti_dokter" id="tabs_cuti_dokter" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_detail_jadwal')" >
-              <i class="red ace-icon fa fa-calendar bigger-120"></i>
+              <i class="blue ace-icon fa fa-calendar bigger-120"></i>
               Cuti Dokter
             </a>
           </li>

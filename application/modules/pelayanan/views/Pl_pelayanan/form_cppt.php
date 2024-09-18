@@ -340,9 +340,9 @@ function reload_table(){
 
   <div class="col-md-12" id="section_history_cppt">
     <!-- add form -->
-    <div style="">
+    <!-- <div style="">
       <a href="#" class="btn btn-xs btn-primary" onclick="add_cppt()"><i class="fa fa-plus"></i> Input CPPT</a>
-    </div>
+    </div> -->
     <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN <br>TERINTEGRASI (CPPT)</b></span></center><br>
       <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 
@@ -358,7 +358,7 @@ function reload_table(){
               </div>
             </div>
 
-            <label class="control-label col-md-1" style="margin-left: 58px;padding-left: 19px">s/d</label>
+            <label class="control-label col-md-1" style="margin-left: 40px;padding-left: 19px">s/d</label>
             <div class="col-md-2">
               <div class="input-group">
                 <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
@@ -369,7 +369,7 @@ function reload_table(){
             </div>
 
             <div class="col-md-5 no-padding">
-              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default" style="margin-left: 19%">
+              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default" style="margin-left: 12%">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Search
               </a>

@@ -92,7 +92,7 @@ class Reg_ranap extends MX_Controller {
             $umur_saat_pelayanan = $this->regex->_genRegex($this->form_validation->set_value('umur_saat_pelayanan_hidden'),'RGXINT');
             $no_sep = $this->regex->_genRegex($this->form_validation->set_value('noSep'),'RGXQSL');
 
-            $tglregis = isset($this->input->post('tgl_registrasi'))?$this->input->post('tgl_registrasi'): date('Y-m-d');
+            $tglregis = ($this->input->post('tgl_registrasi'))?$this->input->post('tgl_registrasi'): date('Y-m-d');
             $tgl_registrasi = $tglregis.' '.date('H:i:s');
 
             if( !$this->input->post('no_registrasi_hidden') ){
@@ -236,6 +236,8 @@ class Reg_ranap extends MX_Controller {
                 $this->db->update('rg_tc_rujukan', array('status' => 1, 'rujukan_tujuan' => $this->regex->_genRegex($this->form_validation->set_value('ri_ruangan'),'RGXQSL')), array('kode_rujukan' => $this->input->post('kode_rujukan_hidden') ) );
             }
 
+            // update nomor sep
+            $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['no_sep' => $no_sep]);
             
             if ($this->db->trans_status() === FALSE)
             {

@@ -217,24 +217,26 @@ class Reg_klinik extends MX_Controller {
         $keyword = $this->input->get('keyword');
 
         /*return search pasien*/
+        if( ! $data_pasien = $this->cache->get('data_pasien_by_mr_'.$keyword.'_'.date('Y-m-d').'') )
+		{
+			$data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr') ); 
+			$this->cache->save('data_pasien_by_mr_'.$keyword.'_'.date('Y-m-d').'', $data_pasien, 3600);
+		}
 
-        $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $keyword, array('no_mr') ); 
         // echo '<pre>'; print_r($data_pasien);die;
-
         $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
-        
-        $data_transaksi_pending = $this->Reg_pasien->cek_status_pasien( $no_mr );
+
+        if( ! $data_transaksi_pending = $this->cache->get('data_transaksi_pending_by_mr_'.$no_mr.'_'.date('Y-m-d').'') )
+		{
+			$data_transaksi_pending = $this->Reg_pasien->cek_status_pasien( $no_mr );
+			$this->cache->save('data_transaksi_pending_by_mr_'.$no_mr.'_'.date('Y-m-d').'', $data_transaksi_pending, 3600);
+		}
 
         $data = array(
-
             'count' => count($data_pasien),
-
             'result' => $data_pasien,
-            
             'count_pending' => count($data_transaksi_pending),
-
             'pending' => $data_transaksi_pending,
-
         );
         
         echo json_encode( $data );

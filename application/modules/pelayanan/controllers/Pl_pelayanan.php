@@ -78,7 +78,14 @@ class Pl_pelayanan extends MX_Controller {
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan->get_by_id($id);
-        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+
+        if( ! $riwayat_pasien = $this->cache->get('riwayat_pasien_by_mr_'.$no_kunjungan.'_'.date('Y-m-d').'') )
+		{
+			$riwayat_pasien = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+			$this->cache->save('riwayat_pasien_by_mr_'.$no_kunjungan.'_'.date('Y-m-d').'', $riwayat_pasien, 3600);
+		}
+
+        $data['riwayat'] = $riwayat_pasien;
         $data['kode_bagian'] = $this->session->userdata('kode_bagian');
         $data['nama_bagian'] = $this->session->userdata('nama_bagian');
         $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
@@ -436,7 +443,7 @@ class Pl_pelayanan extends MX_Controller {
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $row[] = '<div class="center" ><a href="#" style="color: blue; font-weight: bold" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
 

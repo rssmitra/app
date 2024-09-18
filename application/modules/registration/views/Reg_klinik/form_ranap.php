@@ -21,6 +21,14 @@
 
     });
 
+    $(document).ready(function(){
+        if($('#kode_perusahaan_hidden').val() == 120){
+            $('#no_sep_ri_div').show();
+        }else{
+            $('#no_sep_ri_div').hide();
+        }
+    })
+
     $('input[name="ri_status_pasien"]').click(function (e) {
       
       var value = $(this).val();
@@ -299,23 +307,22 @@
 <p><b><i class="fa fa-edit"></i> PENDAFTARAN RAWAT INAP </b></p>
 
 <div class="form-group">
-
     <label class="control-label col-sm-3">Tanggal Masuk</label>
-  
     <div class="col-md-3">
-        
         <div class="input-group">
-            
             <input name="ri_tgl_registrasi" id="ri_tgl_registrasi" value="" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text">
             <span class="input-group-addon">
-            
             <i class="ace-icon fa fa-calendar"></i>
-            
             </span>
         </div>
-    
     </div>
+</div>
 
+<div class="form-group" id="no_sep_ri_div">
+    <label class="control-label col-sm-3">No SEP</label>
+    <div class="col-sm-4">
+        <input type="text" name="noSep" id="noSep" class="form-control">
+    </div>
 </div>
 
 <div class="form-group">

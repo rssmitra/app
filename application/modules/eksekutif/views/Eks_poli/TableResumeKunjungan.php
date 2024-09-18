@@ -9,7 +9,7 @@
 
 <div class="row">
   <div class="col-md-12">
-
+    <p style="font-style: italic; color: blue; font-weight: bold">"Data yang ditampilkan adalah data yang difilter berdasarkan periode tanggal masuk pasien"</p>
     <table class="table">
       <tr>
         <td rowspan="4" align="center" valign="middle">

@@ -363,6 +363,7 @@
 
               <?php 
                 $noe = 0;
+                $arr_total_t = [];
                 foreach ($tindakan as $key_p => $val_p) :
                   $noe++;
                   $arr_total_t[] = $val_p->total;

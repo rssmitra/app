@@ -61,6 +61,21 @@
 
     });
 
+    $( "#pl_diagnosa_sekunder" )    
+      .keypress(function(event) {        
+        var keycode =(event.keyCode?event.keyCode:event.which);         
+        if(keycode ==13){          
+          event.preventDefault();         
+          if($(this).valid()){            
+            var val_item = 1 + Math.floor(Math.random() * 100);
+            console.log(val_item);
+            var item = $('#pl_diagnosa_sekunder').val();
+            $('<span class="multi-typeahead" id="txt_icd_'+val_item+'"><a href="#" onclick="remove_icd('+"'"+val_item+"'"+')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span><span class="text_icd_10"> '+item+' </span> </span>').appendTo('#pl_diagnosa_sekunder_hidden_txt'); 
+          }          
+          return $('#pl_diagnosa_sekunder').val('');                 
+        }    
+    });
+
     function remove_icd(icd){
         preventDefault();
         $('#txt_icd_'+icd+'').html('');
@@ -427,13 +442,11 @@
         </form>
     </div>
 </div>
-<br>
-<p style="font-size: 16px"><b><i class="fa fa-stethoscope bigger-120"></i>  SOAP (<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
+<p style="text-align: center"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
 
 <span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
-
 <div style="margin-top: 6px">
-    <label for="form-field-8"> Anamnesa / Keluhan Pasien <span style="color:red">* </span> <small>(minimal 8 karakter)</small> </label>
+    <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> <span style="color:red">* </span> <br><span style="font-size: 11px; font-style: italic">(Masukan anamnesa minimal 8 karakter)</span> </label>
     <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
     <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
@@ -442,7 +455,7 @@
 <span style="font-weight: bold; font-style: italic; color: blue">(Objective)</span>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8"> <i>Vital Sign</i> </label>
+    <label for="form-field-8"> <i><b>Vital Sign</b></i><br><span style="font-size: 11px; font-style: italic">(Masukan tanda-tanda vital)</span></label>
     <table class="table">
         <tr style="font-size: 11px; background: beige;">
             <th>Tinggi Badan (Cm)</th>
@@ -472,7 +485,7 @@
         </tbody>
     </table>
 
-    <label for="form-field-8"> Pemeriksaan Fisik </label>
+    <label for="form-field-8"> <b>Pemeriksaan Fisik</b><br><span style="font-size: 11px; font-style: italic">(Mohon dijelaskan kondisi fisik pasien)</span></label>
     <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
     <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
     
@@ -481,13 +494,13 @@
 <span style="font-weight: bold; font-style: italic; color: blue">(Assesment)</span>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8">Diagnosa Primer(ICD10) <span style="color:red">* </span></label>
+    <label for="form-field-8"><b>Diagnosa Primer(ICD10)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD10)</i></label>
     <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
     <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
 </div>
 
 <div style="margin-top: 6px">
-    <label for="form-field-8">Diagnosa Sekunder (ICD10)</label>
+    <label for="form-field-8"><b>Diagnosa Sekunder</b> <br><i style="font-size: 11px">(Klik <b>"enter"</b> untuk menambahkan Diagnosa Sekunder dan dapat diisi lebih dari satu )</i></label>
     <input type="text" class="form-control" name="pl_diagnosa_sekunder" id="pl_diagnosa_sekunder" placeholder="Masukan keyword ICD 10" value="">
     <div id="pl_diagnosa_sekunder_hidden_txt" style="padding: 2px; line-height: 23px; border: 1px solid #d5d5d5; min-height: 25px; margin-top: 2px">
         <?php
@@ -502,25 +515,21 @@
         ?>
     </div>
     <input type="hidden" class="form-control" name="konten_diagnosa_sekunder" id="konten_diagnosa_sekunder" value="<?php echo isset($riwayat->diagnosa_sekunder)?$riwayat->diagnosa_sekunder:''?>">
-
 </div>
 <br>
 <span style="font-weight: bold; font-style: italic; color: blue">(Planning)</span>
 <div style="margin-top: 6px">
-    <label for="form-field-8"> Rencana Asuhan / Anjuran Dokter </label>
+    <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br><i style="font-size: 11px">(Mohon dijelaskan Rencana Asuhan Pasien dan Tindak Lanjutnya)</i></label>
     <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
 </div>
-
 <br>
 <p><b><i class="fa fa-stethoscope bigger-120"></i> STATUS KUNJUNGAN PASIEN </b></p>
-
 <div class="form-group">
     <label class="control-label col-sm-3" for="">Cara Keluar Pasien</label>
     <div class="col-sm-4">
         <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
     </div>
 </div>
-
 <div class="form-group">
     <label class="control-label col-sm-3" for="">Pasca Pulang</label>
     <div class="col-sm-4">

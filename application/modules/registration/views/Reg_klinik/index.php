@@ -2037,7 +2037,7 @@ function copyNoRujukan(no_rujukan){
                             <select name="jenis_pendaftaran" class="form-control" id="jenis_pendaftaran">
                               <option value="">-Pilih-</option>
                               <option value="1">RAWAT JALAN</option>  
-                              <option value="2">RAWAT INAP</option> 
+                              <option value="2" <?php echo isset($kode_rujukan)?'selected':'' ?> >RAWAT INAP</option> 
                               <option value="3" <?php echo isset($pm)?'selected':'' ?>>PENUNJANG MEDIS</option> 
                               <option value="4">IGD</option>  
                               <option value="5">MCU</option>  

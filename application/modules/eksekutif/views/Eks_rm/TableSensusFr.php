@@ -139,16 +139,15 @@
     <div class="col-md-12" style="padding-top: 10px">
       <table class="table">
         <tr style="background: #e9e6e6">
-          <th style="vertical-align: middle !important" class="center" width="50px">No</th>
-          <th style="vertical-align: middle !important">Nama Unit/Bagian Asal Resep</th>
+          <th rowspan="2" style="vertical-align: middle !important" class="center" width="50px">No</th>
+          <th rowspan="2" style="vertical-align: middle !important">Nama Unit/Bagian Asal Resep</th>
           <th class="center" colspan="2" style="vertical-align: middle !important; width: 100px">Jenis Resep</th>
-          <th class="center" style="vertical-align: middle !important; width: 100px">Total<br>Resep</th>
+          <th rowspan="2" class="center" style="vertical-align: middle !important; width: 100px">Total<br>Resep</th>
         </tr>
         <tr style="background: #e9e6e6">
           <th class="center" style="width: 80px">Racikan</th>
           <th class="center" style="width: 80px">Non Racikan</th>
         </tr>
-
         <?php 
           $no=0; 
           foreach($bagian_asal as $key_bagian_asal => $val_bagian_asal) : $no++;
@@ -157,7 +156,7 @@
           $arr_total_resep_bagian_asal[] = $total_resep_bagian_asal;
           // non racikan
           $total_resp_nonracikan = $total_resep_bagian_asal - $val_bagian_asal['total_racikan'];
-          $arr_total_resp_nonracikan[] = $$total_resp_nonracikan;
+          $arr_total_resp_nonracikan[] = $total_resp_nonracikan;
           // racikan
           $total_resp_racikan = $val_bagian_asal['total_racikan'];
           $arr_total_resp_racikan []= $total_resp_racikan;
