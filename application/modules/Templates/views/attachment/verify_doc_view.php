@@ -53,11 +53,13 @@
 		</div>
 		
 		<div class="col-md-12">
-			<p class="alert alert-success">
-				<span class="bigger-110 bolder" style="font-size:20px !important; color: green"><i class="ace-icon glyphicon glyphicon-check bigger-120 green"></i> <i>This document is verified</i></span><br>
-				Dokumen ini terverifikasi keasliannya dan dapat dipertanggungjawabkan kebenarannya<BR>
+			<div class="alert alert-success">
+				<center><span class="bigger-110 bolder" style="font-size:20px !important; color: green; text-align: center !important"><i class="ace-icon glyphicon glyphicon-check bigger-200 green"></i><br><i>Verified Document</i></span>
+</center>
+				<br>
+				Dokumen ini terverifikasi keasliannya dan dapat dipertanggungjawabkan kebenarannya<br>
 				<i>"This document has been verified for its authenticity and its veracity can be confirmed"</i>
-			</p>
+			</div>
 			<br>
 			<div class="col-md-6">
 				<table>
@@ -78,13 +80,17 @@
 					<td style="width: 65%;" valign="top">: <?php echo $detail['createdDate']?></td>
 				</tr>
 				<tr>
-				<td style="width: 35%;"><b>Status Dokumen</b><br><i>Status</i></td>
+				<td style="width: 35%;"><b>Status Dokumen</b><br><i>Document Status</i></td>
+					<td style="width: 65%;" valign="top">: <?php echo $detail['statusDocument']?></td>
+				</tr>
+				<td style="width: 35%;"><b>Keterangan</b><br><i>Noted</i></td>
 					<td style="width: 65%;" valign="top">: <?php echo $detail['noted']?></td>
 				</tr>
 				</table>
 			</div>
 
 			<div class="col-md-6">
+				<br>
 				<p><b>Dokumen ini ditandatangani oleh :</b> <br><i>This document is signed by :</i></p>
 				<table class="table table-hover" style="width: 100%; margin-top: 5px; margin-bottom: 10px; border-top: 0px;">
 				<tr>
