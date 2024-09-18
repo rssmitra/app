@@ -157,18 +157,39 @@ class Attachment_model extends CI_Model {
 		switch ($_GET['flag']) {
 			case 'BILL_RJ':
 				# billing rawat jalan
-				$result = $this->template_bill_rj($_GET['code']);
+				$result = $this->bill_rj($_GET['code']);
 				break;
 			
 			default:
 				# code...
 				break;
 		}
-		return true;
+		return $result;
 	}
 
-	public function template_bill_rj($no_registrasi){
-		
+	public function bill_rj($no_registrasi){
+		// get data transaksi kasir
+		$result = $this->db->join('tmp_user', 'tmp_user.user_id = tc_trans_kasir.no_induk', 'left')->get_where('tc_trans_kasir', ['no_registrasi' => $no_registrasi])->row();
+
+		$id = isset($result->kode_tc_trans_kasir)?$result->kode_tc_trans_kasir:'';
+		$tgl = isset($result->tgl_jam)?$this->tanggal->formatDateTimeFormDmy($result->tgl_jam):'';
+		$user = isset($result->fullname)?$result->fullname:'';
+		$status = isset($result->kode_tc_trans_kasir)?'Published':'Deleted';
+		$noted = isset($result->kode_tc_trans_kasir)?'Billing Pasien Rawat Jalan a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
+		$response = [
+			'documentName' => 'Billing Pasien Rawat Jalan',
+			'ID' => $id,
+			'createdBy' => $user,
+			'createdDate' => $tgl,
+			'statusDocument' => $status,
+			'noted' => $noted,
+			'signedBy' => $user,
+			'signedDate' => $tgl,
+			'signTitle' => 'Petugas Kasir',
+		];
+
+		return $response;
+
 	}
 
 	

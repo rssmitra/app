@@ -38,10 +38,11 @@ class Attachment extends MX_Controller {
         // get data from qr
         $docdt = $this->attachment_model->get_detail_doc($_GET);
 
-        // echo $_GET['str']; die;
+        // echo "<pre>"; print_r($docdt);die;
         $data = array(
             'title' => $this->title,
-            'breadcrumbs' => $this->breadcrumbs->show()
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'detail' => $docdt
         );
         /*load view index*/
         $this->load->view('attachment/verify_doc_view', $data);

@@ -197,7 +197,7 @@ class Pl_pelayanan extends MX_Controller {
     {
          /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
-        /*get value by id*/
+        /*get value by id_pl_tc_poli*/
         $data['value'] = $this->Pl_pelayanan->get_by_id($id); 
         // echo '<pre>'; print_r($this->db->last_query());die;
         $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);

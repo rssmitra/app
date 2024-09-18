@@ -17,6 +17,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Pl_pelayanan_ri_model', 'Pl_pelayanan_ri');
+        $this->load->model('Pl_pelayanan_model', 'Pl_pelayanan');
         /*load library*/
         $this->load->library('Form_validation');
         $this->load->library('stok_barang');
@@ -426,7 +427,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $no++;
                     $row[] = $no;
                     $row[] = $this->tanggal->formatDateTime($row_list->tanggal);
-                    $row[] = '['.strtoupper($row_list->cppt_ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
+                    $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
                     $row[] = '<a href="#" onclick="show_modal_pengkajian('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
 
         
@@ -435,7 +436,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
                     $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->id.', this.value)" '.$checked.' ><span class="lbl"></span><br><span id="verif_id_'.$row_list->id.'">'.$desc.'</span></div>';
         
-                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->flag."'".')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                     $data[] = $row;
                 }
                
@@ -1171,30 +1172,34 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function get_cppt_dt(){
 
-        $query = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['id']))->row();
-        $convert_to_array = explode('|', $query->value_form);
-
+        $query = $this->db->get_where('view_cppt', array('id' => $_GET['id']))->row();
+        
         // echo "<pre>"; print_r($query);die;
         // echo "<pre>"; print_r($convert_to_array);die;
-
-        for($i=0; $i < count($convert_to_array ); $i++){
-            $key_value = explode('=', $convert_to_array [$i]);
-            $end_array[trim($key_value[0])] = $key_value [1];
+        if($query->flag == 'cppt'){
+            if($query->jenis_form != null){
+                $convert_to_array = explode('|', $query->value_form);
+                for($i=0; $i < count($convert_to_array ); $i++){
+                    $key_value = explode('=', $convert_to_array [$i]);
+                    $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+                }
+                $data = [
+                    "value_form" => $end_array,
+                    "result" => $query,
+                    "jenis_form" => 'form_'.$query->jenis_form,
+                ];
+                $html = $this->load->view('Pl_pelayanan/form_'.$query->jenis_form.'', $data, true);
+                echo json_encode(array('html' => $html));
+            }else{
+                echo json_encode($query);
+            }
+            
+        }else{
+            echo json_encode($query);
         }
         
-        // echo "<pre>"; print_r($end_array);die;
-
-        $data = [
-            "value_form" => $end_array,
-            "result" => $query,
-            "jenis_form" => 'form_'.$query->jenis_form,
-
-        ];
-
-        // echo "<pre>"; print_r($data);die;
-        $html = $this->load->view('Pl_pelayanan/form_'.$query->jenis_form.'', $data, true);
         
-        echo json_encode(array('html' => $html));
+
         // echo json_encode($result);
     }
 

@@ -757,11 +757,11 @@ class Billing extends MX_Controller {
         // costing billing untuk bpjs
         if( $_POST['kode_perusahaan_val'] == 120 ){
             $return_costing = $this->costing_billing($seri_kuitansi_dt['seri_kuitansi']);
-            
             $return['redirect'] = $return_costing['redirect'];
         }else{
-            $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($_POST['no_registrasi'], true));
-            $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $_POST['no_registrasi']);
+            // $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($_POST['no_registrasi'], true));
+            // $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $_POST['no_registrasi']); 
+            // apakah hanya untuk BPJS atau bagaimana?
         }
 
         $preview_billing_nk = $this->db->where_in('kode_trans_pelayanan', $str_to_array_nk)->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'status_nk' => 1))->result();
@@ -1159,6 +1159,7 @@ class Billing extends MX_Controller {
 
         /*get data trans pelayanan by no registrasi from sirs*/
         $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
+        // echo "<pre>"; print_r($sirs_data);die;
         // insert or update data
         $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
 
@@ -1211,7 +1212,6 @@ class Billing extends MX_Controller {
                 if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
                     $this->db->insert('csm_dokumen_export', $doc_save);
                 }
-            
             endif;
             /*insert database*/
         }

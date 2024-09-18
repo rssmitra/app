@@ -30,8 +30,8 @@
   <style>
     .div-center {
       margin: auto;
-      width: 80%;
-      border: 3px solid grey;
+      width: 95%;
+      border: 2px solid #d9d9d9;
       padding: 10px;
     }
   </style>
@@ -63,23 +63,23 @@
 				<table>
 				<tr>
 					<td style="width: 35%;"><b>Nama Dokumen</b><br><i>Document Name</i></td>
-					<td style="width: 65%;" valign="top">: Hasil Penunjang Medis [Laboratorium]</td>
+					<td style="width: 65%;" valign="top">: <?php echo $detail['documentName']?></td>
 				</tr>
 				<tr>
 				<td style="width: 35%;"><b>ID Dokumen</b><br><i>Document ID</i></td>
-					<td style="width: 65%;" valign="top">: 1799928-00231455-aaccfgst20240712</td>
+					<td style="width: 65%;" valign="top">: <?php echo $detail['ID']?></td>
 				</tr>
 				<tr>
 				<td style="width: 35%;"><b>Dibuat Oleh</b><br><i>Created By</i></td>
-					<td style="width: 65%;" valign="top">: Diva</td>
+					<td style="width: 65%;" valign="top">: <?php echo $detail['createdBy']?></td>
 				</tr>
 				<tr>
 				<td style="width: 35%;"><b>Tanggal Dibuat</b><br><i>Created Date</i></td>
-					<td style="width: 65%;" valign="top">: 14 Juli 2024 08:10:21</td>
+					<td style="width: 65%;" valign="top">: <?php echo $detail['createdDate']?></td>
 				</tr>
 				<tr>
 				<td style="width: 35%;"><b>Status Dokumen</b><br><i>Status</i></td>
-					<td style="width: 65%;" valign="top">: Published</td>
+					<td style="width: 65%;" valign="top">: <?php echo $detail['noted']?></td>
 				</tr>
 				</table>
 			</div>
@@ -95,8 +95,8 @@
 						<i class="ace-icon glyphicon glyphicon-user bigger-280"></i>
 					</td>
 					<td>
-						<span class="bolder">Al Iksan </span><br>
-						[ Kepala Instalasi Laboratorium ]<br>12 Jul 2024, 04:26:21<br>
+						<span class="bolder"><?php echo $detail['signedBy']?></span><br>
+						[ <?php echo $detail['signTitle']?> ]<br><?php echo $detail['signedDate']?><br>
 					</td>
 					<td width="150px" align="center">
 						<img src="<?php echo base_url().'uploaded/images/ttd.png'?>" style="width: 150px">
@@ -106,7 +106,7 @@
 			</div>
 		</div>
 
-		<div class="col-md-12">
+		<!-- <div class="col-md-12">
 			<p><br><b>Riwayat aktifitas dokumen :</b> <br><i>Document activity history :</i></p>
 			<table class="table table-hover" style="width: 100%; margin-top: 5px; margin-bottom: 10px; border-top: 0px;">
 				<tr>
@@ -210,13 +210,13 @@
 									</div>
 								</div>
 							</div>
-						</div><!-- /.timeline-items -->
+						</div>
 					</div>
 
 				</td>
 				</tr>
 			</table>
-		</div>
+		</div> -->
 		
 	</div>
 
