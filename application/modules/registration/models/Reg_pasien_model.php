@@ -626,6 +626,7 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->where("tgl_jam_keluar is null and tgl_keluar is null and tc_registrasi.no_mr='".$mr."'");
 		$this->db->where("CAST(tgl_jam_masuk as DATE) = ", date('Y-m-d'));
 		$query = $this->db->get()->result();
+		// echo $this->db->last_query();die;
 		$result = array();
 		if(!empty($query)){
 			foreach ($query as $key => $value) {

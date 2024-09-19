@@ -41,9 +41,12 @@ hr {
     border: 0;
     border-top: 1px solid #eeeeee;
 }
+.tab-content {
+    padding: 9px 7px !important;
+}
 </style>
 
-<div id="accordion" class="accordion-style1 panel-group accordion-style2" style="overflow-y: scroll;max-height: 841px;">
+<div id="accordion" class="accordion-style1 panel-group accordion-style2" style="overflow-y: scroll;max-height: 550px;">
   <?php 
     if(count($result) > 0):
     foreach ($result as $key => $value) : 
@@ -68,150 +71,128 @@ hr {
         <div class="panel-body" style="border: 1px solid #dcd9d9;padding: 5px;background: lightyellow;">
           <center style="background: #f4ae124a"><span style="font-size: 14px !important; font-weight: bold">RESUME MEDIS PASIEN</span><br><i>Kode. <span><b><a href="#" onclick="show_modal('registration/reg_pasien/view_detail_resume_medis/<?php echo $value->no_registrasi?>', 'RESUME MEDIS PASIEN')"><?php echo $value->no_registrasi?></a></b></span></i></center>
           <br>
-          <table style="width: 100%">
-            <tr>
-              <td colspan="3" align="left">
-                <b>ASSESMENT PASIEN :</b>
-                <table class="table table-bordered">
-                  <tr>
-                    <td class="center">TB (cm)</td>
-                    <td class="center">TD</td>
-                    <td class="center">Nadi</td>
-                    <td class="center">BB (Kg)</td>
-                    <td class="center">Suhu (C)</td>
+
+          <span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
+          <div style="margin-top: 6px">
+              <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> : </label><br>
+              <?php echo isset($value->anamnesa)?$this->master->br2nl($value->anamnesa):''?>
+          </div>
+          <br>
+
+          <span style="font-weight: bold; font-style: italic; color: blue">(Objective)</span>
+          <div style="margin-top: 6px">
+              <label for="form-field-8"> <i><b>Vital Sign</b></i></label>
+              <table class="table">
+                  <tr style="font-size: 11px; background: beige; text-align: center">
+                      <th>TB (Cm)</th>
+                      <th>BB (Kg)</th>
+                      <th>TD (mmHg)</th>
+                      <th>Suhu (C&deg;)</th>
+                      <th>Nadi (bpm)</th>
                   </tr>
-                  <tr>
-                    <td class="center"><?php echo ($value->tinggi_badan != '')?$value->tinggi_badan:'-';?></td>
-                    <td class="center"><?php echo ($value->tekanan_darah != '')?$value->tekanan_darah:'-';?></td>
-                    <td class="center"><?php echo ($value->nadi != '')?$value->nadi:'-';?></td>
-                    <td class="center"><?php echo ($value->berat_badan != '')?$value->berat_badan:'-';?></td>
-                    <td class="center"><?php echo ($value->suhu != '')?$value->suhu:'-';?></td>
+                  <tbody>
+                  <tr style="background: aliceblue;">
+                      <td>
+                          <input type="text" style="text-align: center" class="form-control" name="pl_tb" value="<?php echo isset($value->tinggi_badan)?$value->tinggi_badan:''?>">
+                      </td>
+                      <td>
+                          <input type="text" style="text-align: center" class="form-control" name="pl_bb" value="<?php echo isset($value->berat_badan)?$value->berat_badan:''?>">
+                      </td>
+                      <td>
+                          <input type="text" style="text-align: center" class="form-control" name="pl_td" value="<?php echo isset($value->tekanan_darah)?$value->tekanan_darah:''?>">
+                      </td>
+                      <td>
+                          <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($value->suhu)?$value->suhu:''?>">
+                      </td>
+                      <td>
+                          <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($value->nadi)?$value->nadi:''?>">
+                      </td>
                   </tr>
-                </table>
-                <br>
-                <p>
-                  <span style="font-weight: bold;">DIAGNOSA :</span><br><?php echo $value->diagnosa_awal; ?> <br><br>
-                  <span style="font-weight: bold;">ANAMNESA :</span><br><?php echo nl2br($value->anamnesa); ?> <br><br>
-                  <span style="font-weight: bold;">TINDAKAN/ PEMERIKSAAN :</span><br><?php echo nl2br($value->pemeriksaan); ?><br><br>
-                  <span style="font-weight: bold;">ANJURAN DOKTER :</span><br><?php echo nl2br($value->pengobatan); ?><br><br>
-                  <span style="font-weight: bold;">RESEP FARMASI :</span><br><?php echo nl2br($value->resep_farmasi); ?>
-                </p>
+                  </tbody>
+              </table>
 
-                <b>Obat yang diberikan farmasi :</b>
-                <table class="table table-bordered">
-                  <tr>
-                    <td>
-                    <?php 
-                      $result = isset($obat[$value->no_registrasi])?$obat[$value->no_registrasi]:array();
-                      foreach($result as $row_obt) : ?>
-                      - <?php echo $row_obt->nama_tindakan?></br>
-                    <?php endforeach; ?>
-                    </td>
-                  </tr>
-                </table>
+              <label for="form-field-8"> <b>Pemeriksaan Fisik : </b></label><br>
+              <?php echo isset($value->pemeriksaan)?$this->master->br2nl($value->pemeriksaan):''?>
+              
+          </div>
+          <br>
 
-                <b>e-RESEP</b>
-                <div id="accordion_resep" class="accordion-style1 panel-group">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h4 class="panel-title">
-                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_resep" href="#collapseResep<?php echo $value->no_kunjungan?>" style="background: #4c8fbd; color: white;">
-                          <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-                          <b>&nbsp;E-RESEP </b>
-                        </a>
-                      </h4>
-                    </div>
+          <span style="font-weight: bold; font-style: italic; color: blue">(Assesment)</span>
+          <div style="margin-top: 6px">
+              <label for="form-field-8"><b>Diagnosa Primer(ICD10) : </b></label><br>
+              <?php echo isset($value->diagnosa_akhir)?$value->diagnosa_akhir:''?>
+          </div>
 
-                    <div class="panel-collapse collapse" id="collapseResep<?php echo $value->no_kunjungan?>">
-                      <div class="panel-body" style="background: #4c8fbd1a">
-                        <!-- e-resep -->
-                        <div style="padding: 5px">
-                          <center><span style="font-size: 14px">Resep Dokter</span><br><i>Obat yang diresepkan dokter</i></center>
-                          <br>
-                          <?php
-                            $eresep_result = isset($eresep[$value->no_registrasi][$value->no_kunjungan])?$eresep[$value->no_registrasi][$value->no_kunjungan]:array();
-                            // echo "<pre>"; print_r($eresep_result);die;
-                            $html = '';
-                            foreach($eresep_result as $key_er=>$val_er){
-                              $html .= '<span style="font-size:11px; font-style: italic;">Kode Resep :</span><br><span style="font-size: 18px !important; font-weight: bold">'.$key_er.'</span> <small><i>('.$this->tanggal->formatDateTime($val_er[0]->created_date).')</i></small>';
-                              $html .= '<br>';
-                              $html .= '<table class="table" id="dt_add_resep_obat">
-                                <thead>
-                                <tr>
-                                    <th width="30px">No</th>
-                                    <th>Nama Obat</th>
-                                </tr>
-                                </thead>
-                                <tbody style="background: white">';
-                                $no = 0;
-                                
-                                foreach ($val_er as $ker => $ver) {
-                                
-                                  $no++;
-                                  // get child racikan
-                                  $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
-                                  $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
-                                  $html .= '<tr>';
-                                  $html .= '<td align="center" valign="top">'.$no.'</td>';
-                                  $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'<br>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.' '.$ver->aturan_pakai.'<br>Qty. '.$ver->jml_pesan.' '.$ver->satuan_obat.'<br>'.$ver->keterangan.'</td>';
-                                  $html .= '</tr>';
+          <div style="margin-top: 6px">
+              <label for="form-field-8"><b>Diagnosa Sekunder</b> </label><br>
+              <div id="pl_diagnosa_sekunder_hidden_txt" style="padding: 2px; line-height: 23px; border: 1px solid #d5d5d5; min-height: 25px; margin-top: 2px">
+                  <?php
+                      $arr_text = isset($value->diagnosa_sekunder) ? explode('|',$value->diagnosa_sekunder) : [];
+                      // echo "<pre>";print_r($arr_text);
+                      $no_ds = 1;
+                      foreach ($arr_text as $k => $v) {
+                          $len = strlen(trim($v));
+                          // echo $len;
+                          if($len > 0){
+                              $no_ds++;
+                              $split = explode(':',$v);
+                              if(count($split) > 1){
+                                  echo '<span class="multi-typeahead" id="txt_icd_'.trim(str_replace('.','_',$split[0])).'"><a href="#" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '.$v.' </span> </span>';
+                              }else{
+                                  echo '<span class="multi-typeahead" id="txt_icd_'.$no_ds.'"><a href="#" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '.$v.' </span> </span>';
+                              }
+                          }
+                          
+                      }
+                  ?>
+              </div>
+          </div>
+          <br>
+          <span style="font-weight: bold; font-style: italic; color: blue">(Planning)</span>
+          <div style="margin-top: 6px">
+              <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter : </b></label><br>
+              <?php echo isset($value->pengobatan)?nl2br($value->pengobatan):''?>
+          </div>
+          <br>
+          <span style="font-weight: bold; font-style: italic; color: blue">(e-Resep)</span><br>
+          <label for="form-field-8"><b>Obat yang diresepkan dokter : </b></label><br>
+          <?php
+            $eresep_result = isset($eresep[$value->no_registrasi][$value->no_kunjungan])?$eresep[$value->no_registrasi][$value->no_kunjungan]:array();
+            // echo "<pre>"; print_r($eresep_result);die;
+            $html = '';
+            foreach($eresep_result as $key_er=>$val_er){
+              $html .= '<small>Tanggal resep. <i>('.$this->tanggal->formatDateTime($val_er[0]->created_date).')</i></small>';
+              $html .= '<br>';
+              $html .= '<table class="table" id="dt_add_resep_obat">
+                <thead>
+                <tr>
+                    <th width="30px">No</th>
+                    <th>Nama Obat</th>
+                </tr>
+                </thead>
+                <tbody style="background: white">';
+                $no = 0;
+                
+                foreach ($val_er as $ker => $ver) {
+                
+                  $no++;
+                  // get child racikan
+                  $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
+                  $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+                  $html .= '<tr>';
+                  $html .= '<td align="center" valign="top">'.$no.'</td>';
+                  $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'<br>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.' '.$ver->aturan_pakai.'<br>Qty. '.$ver->jml_pesan.' '.$ver->satuan_obat.'<br>'.$ver->keterangan.'</td>';
+                  $html .= '</tr>';
 
-                                }
-                                $html .= '<tr><td colspan="2" align="center"><a href="#" class="btn btn-xs btn-primary" onclick="resepkan_ulang('.$ver->kode_pesan_resep.')">Resepkan Kembali</a></td></tr>';
+                }
+                $html .= '<tr><td colspan="2" align="center"><a href="#" class="btn btn-xs btn-primary" onclick="resepkan_ulang('.$ver->kode_pesan_resep.')">Resepkan Kembali</a></td></tr>';
 
-                                $html .= '</tbody></table>';
-                            }
-                            echo $html;
-                          ?>
-                        </div>
-                        <br>
-                        
-                      </div>
-                    </div>
-                  </div>
+                $html .= '</tbody></table>';
+            }
+            echo $html;
+          ?>
+            
 
-                  <!-- <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h4 class="panel-title">
-                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion_resep" href="#collapseFileRM<?php echo $value->no_kunjungan?>">
-                          <i class="ace-icon fa fa-angle-right bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-                          <b>&nbsp;FILE REKAM MEDIS</b>
-                        </a>
-                      </h4>
-                    </div>
-
-                    <div class="panel-collapse collapse" id="collapseFileRM<?php echo $value->no_kunjungan?>">
-                      <div class="panel-body">
-                        <div style="padding: 5px">
-                          <b>FILE REKAM MEDIS</b>
-                          <?php if(count($file) > 0) : ?>
-                            <center><span style="font-size: 14px">File Rekam Medis</span></center>
-                            <table class="table table-bordered">
-                              <tr>
-                                <td>
-                                <?php 
-                                  $result_file = isset($file[$value->no_registrasi][$value->no_kunjungan])?$file[$value->no_registrasi][$value->no_kunjungan]:array();
-                                  foreach($result_file as $row_file) : 
-                                    $exp_file = explode('-', $row_file->csm_dex_nama_dok);
-                                    $filename = isset($exp_file[0])?$exp_file[0]:'Lampiran File';
-                                    if(!in_array($filename, array('SEP','RJ'))) :
-                                  ?>
-                                  - <a href="#" onclick="show_modal_with_iframe('<?php echo BASE_FILE_RM.$row_file->csm_dex_fullpath?>', '<?php echo $filename; ?>')"><?php echo $row_file->csm_dex_nama_dok; ?></a></br>
-                                <?php endif; endforeach; ?>
-                                </td>
-                              </tr>
-                            </table>
-                          <?php else: echo "-Tidak ada file rekam medis"; endif; ?>
-                        </div>
-                      </div>
-                    </div>
-                  </div> -->
-
-                </div>
-
-              </td>
-            </tr>
-          </table>
         </div>
       </div>
     </div>

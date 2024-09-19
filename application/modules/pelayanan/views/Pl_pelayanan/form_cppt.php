@@ -128,13 +128,13 @@ $(document).ready(function() {
 
 });
 
-function delete_cppt(myid){
+function delete_cppt(myid, flag){
   preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
         url: 'pelayanan/Pl_pelayanan_ri/delete_cppt',
         type: "post",
-        data: {ID:myid},
+        data: {ID:myid, flag: flag},
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -193,23 +193,29 @@ function add_cppt(){
   $('#section_history_cppt').hide('fast');
 }
 
-function show_edit(myid, flag){
+function show_edit(myid, flag, no_kunjungan, reff_id){
   preventDefault();
+  if(flag == 'RJ'){
+    $('#tab_menu_erm_dokter li.active').removeClass('active');
+    $('#li_soap').addClass('active');
+    $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processUpdateDiagnosaDr');
+    getMenuTabs('pelayanan/Pl_pelayanan/diagnosa_dr/'+reff_id+'/'+no_kunjungan+'?type=Rajal&kode_riwayat='+myid+'&kode_bag=<?php echo $kode_bagian;?>', 'tabs_form_pelayanan');
+  }
 
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
-    // show data
-    $('#section_form_cppt').show('fast');
-    $('#section_history_cppt').hide('fast');
-    $('#cppt_id').val(response.id);
-    var subjective = response.subjective;
-    $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
-    var objective = response.objective;
-    $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
-    var assesment = response.assesment;
-    $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
-    var plan = response.planning;
-    $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
-  }); 
+  // $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
+  //   // show data
+  //   $('#section_form_cppt').show('fast');
+  //   $('#section_history_cppt').hide('fast');
+  //   $('#cppt_id').val(response.id);
+  //   var subjective = response.subjective;
+  //   $('#subjective').val(subjective.replace(/<br ?\/?>/g, "\n"));
+  //   var objective = response.objective;
+  //   $('#objective').val(objective.replace(/<br ?\/?>/g, "\n"));
+  //   var assesment = response.assesment;
+  //   $('#assesment').val(assesment.replace(/<br ?\/?>/g, "\n"));
+  //   var plan = response.planning;
+  //   $('#plan').val(plan.replace(/<br ?\/?>/g, "\n"));
+  // }); 
 }
 
 function find_data_reload(result, base_url){
@@ -428,7 +434,11 @@ function reload_table(){
     <!-- <div style="">
       <a href="#" class="btn btn-xs btn-primary" onclick="add_cppt()"><i class="fa fa-plus"></i> Input CPPT</a>
     </div> -->
-    <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN <br>TERINTEGRASI (CPPT)</b></span></center><br>
+    <!-- <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN <br>TERINTEGRASI (CPPT)</b></span></center><br> -->
+    <div class="col-md-12">
+        <p style="text-align: center; margin-top: -10px"><b><span style="font-size: 30px;font-family: 'Glyphicons Halflings';">C P P T</span> <br>(<i>Catatan Perkembangan Pasien Terintegrasi</i>) </b></p>
+    </div>
+
       <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 
         <div class="form-group">

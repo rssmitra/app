@@ -442,7 +442,13 @@
         </form>
     </div>
 </div>
-<p style="text-align: center"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
+<div class="col-md-3 no-padding" style="margin-top: 14px">
+    <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
+    <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : ''?></span> <br>
+</div>
+<div class="col-md-8">
+    <p style="text-align: center; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
+</div>
 
 <span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
 <div style="margin-top: 6px">
@@ -506,11 +512,20 @@
         <?php
             $arr_text = isset($riwayat->diagnosa_sekunder) ? explode('|',$riwayat->diagnosa_sekunder) : [];
             // echo "<pre>";print_r($arr_text);
+            $no_ds = 1;
             foreach ($arr_text as $k => $v) {
-                $split = explode(':',$v);
-                if(count($split) > 1){
-                    echo '<span class="multi-typeahead" id="txt_icd_'.trim(str_replace('.','_',$split[0])).'"><a href="#" onclick="remove_icd('."'".trim(str_replace('.','_',$split[0]))."'".')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '.$v.' </span> </span>';
+                $len = strlen(trim($v));
+                // echo $len;
+                if($len > 0){
+                    $no_ds++;
+                    $split = explode(':',$v);
+                    if(count($split) > 1){
+                        echo '<span class="multi-typeahead" id="txt_icd_'.trim(str_replace('.','_',$split[0])).'"><a href="#" onclick="remove_icd('."'".trim(str_replace('.','_',$split[0]))."'".')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '.$v.' </span> </span>';
+                    }else{
+                        echo '<span class="multi-typeahead" id="txt_icd_'.$no_ds.'"><a href="#" onclick="remove_icd('."'".$no_ds."'".')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '.$v.' </span> </span>';
+                    }
                 }
+                
             }
         ?>
     </div>

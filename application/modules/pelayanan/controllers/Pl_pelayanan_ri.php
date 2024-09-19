@@ -429,14 +429,12 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $row[] = $this->tanggal->formatDateTime($row_list->tanggal);
                     $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
                     $row[] = '<a href="#" onclick="show_modal_pengkajian('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
-
-        
                     $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
                     $desc = ($row_list->is_verified == 1) ? ''.$row_list->verified_by.'<br>'.$this->tanggal->formatDateTime($row_list->verified_date).'' : '' ;
 
                     $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->id.', this.value)" '.$checked.' ><span class="lbl"></span><br><span id="verif_id_'.$row_list->id.'">'.$desc.'</span></div>';
         
-                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->flag."'".')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+                    $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', , '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                     $data[] = $row;
                 }
                
@@ -448,17 +446,27 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $row[] = $no;
                 $class_label = ($row_list->tipe == 'RJ')?'success':'primary';
                 $row[] = $this->tanggal->formatDateTime($row_list->tanggal).'<br>'.strtoupper($row_list->ppa).'<br>'.$row_list->nama_ppa.'<br><label class="label label-'.$class_label.'">'.$row_list->tipe.'</label>';
+
+                $arr_text = isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '';
+                // $diagnosa_sekunder = '';
+                // foreach ($arr_text as $k => $v) {
+                //     $len = strlen(trim($v));
+                //     if($len > 0){
+                //         $diagnosa_sekunder += $v;
+                //     }
+                // }
+                
                 if($row_list->jenis_form != null){
                     $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                 }else{
-                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br><br>'.'<b>O (Objective) : </b><br><br>'.nl2br($row_list->objective).'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br><br>'.'<b>P (Plan) : </b><br>'.nl2br($row_list->planning).'<br>';
+                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br><br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$arr_text.''.'<br><br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>';
                 }
     
                 $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
                 $desc = ($row_list->is_verified == 1) ? ''.$row_list->verified_by.'<br>'.$this->tanggal->formatDateTime($row_list->verified_date).'' : '' ;
                 $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->id.', this.value)" '.$checked.' ><span class="lbl"></span><br><span id="verif_id_'.$row_list->id.'">'.$desc.'</span></div>';
                 if($row_list->jenis_form == null){
-                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
+                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                 }else{
                     $row[] = '<div class="center"></div>';
                 }
@@ -802,7 +810,9 @@ class Pl_pelayanan_ri extends MX_Controller {
     {
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):null;
         if($id!=null){
-            if($this->db->where('cppt_id', $id)->delete('th_cppt')){
+            $table = ($_POST['flag'] == 'resume')?'th_riwayat_pasien':'th_cppt';
+            $kode = ($_POST['flag'] == 'resume')?'kode_riwayat':'cppt_id';
+            if($this->db->where($kode, $id)->delete($table)){
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
             }else{
                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));

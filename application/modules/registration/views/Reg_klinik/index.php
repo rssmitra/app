@@ -62,24 +62,18 @@ $(document).ready(function(){
 
     $('#form_registration').ajaxForm({      
 
-      beforeSend: function() {        
-
+      beforeSend: function() {       
         achtungShowFadeIn();          
         $('#divLoadSEP').html('Loading..');
         $('#div_form_onsite').hide();
-
       },      
 
       uploadProgress: function(event, position, total, percentComplete) {},      
 
-      complete: function(xhr) {             
-
-        var data=xhr.responseText;        
-
-        var jsonResponse = JSON.parse(data);        
-
-        if(jsonResponse.status === 200){          
-
+      complete: function(xhr) {    
+        var data=xhr.responseText;    
+        var jsonResponse = JSON.parse(data);   
+        if(jsonResponse.status === 200){      
           // scroll down
           // $('body,html').animate({ scrollTop: 0 }, 800);
           $.achtung({message: jsonResponse.message, timeout:5});    
@@ -126,6 +120,13 @@ $(document).ready(function(){
               $('#divLoadSEP').load('ws_bpjs/Ws_index/view_sep/'+jsonResponse.no_sep+'?no_antrian='+jsonResponse.no_antrian+'');
             }else{
               // show bukti registrasi
+              // $('#divLoadSEP').load('registration/Reg_klinik/print_bukti_pendaftaran_pasien_small?no_reg='+jsonResponse.no_registrasi);
+              $('#divLoadSEP').html('<div class="alert alert-success"><b><i class="fa fa-check green bigger-150"></i> Berhasil..!</b> Proses pendaftaran berhasil dilakukan.</div>');
+
+              PopupCenter('registration/Reg_klinik/print_bukti_pendaftaran_pasien_small?nama='+jsonResponse.nama_pasien+'&no_mr='+jsonResponse.no_mr+'&no_reg='+jsonResponse.no_registrasi+'&poli='+jsonResponse.poli+'&dokter='+jsonResponse.dokter+'&nasabah='+jsonResponse.nasabah+'', 'FORM BUKTI PENDAFTARAN PASIEN', 950, 550);
+
+              getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+jsonResponse.no_mr, 'tabs_detail_pasien');
+
             }
           }
 
@@ -361,12 +362,6 @@ $(document).ready(function(){
     $('select[name="jenis_pendaftaran"]').change(function () {      
         showChangeModul( $(this).val() );        
     });
-
-    /*$('select[name="jenis_pendaftaran"]').change(function () {      
-
-        showChangeModul( $(this).val() );       
-
-    });*/
 
     $('#btn_search_pasien').click(function (e) {      
 
@@ -772,11 +767,12 @@ function showChangeModul(modul_id, id_tc_pesanan=''){
           $('#form_sep').show();
           $('#change_modul_view_perjanjian').show();
           $('#change_modul_view_perjanjian').load('registration/Reg_klinik/show_modul/8/'+id_tc_pesanan+'') ;
+          $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
       }else{
          $('#form_sep').hide(); 
+         $('#form_registration').attr('action', 'registration/Reg_klinik/process');
       }
       $('#reg_klinik_rajal option').remove();     
-      $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
     } else if ( modul_id ==2 ) {          
       $('#form_sep').hide(); 
       $('#form_registration').attr('action', 'registration/Reg_ranap/process');
@@ -1210,7 +1206,7 @@ function find_pasien_by_keyword(keyword){
             $('#tabs_riwayat_booking_online_id').attr('data-id', obj.no_mr);
             $('#tabs_konfirm_fp_id').attr('data-id', obj.no_kartu_bpjs);
 
-            $("#myTab li").removeClass("active");
+            $("#myTabRegistrationMenu li").removeClass("active");
             // show riwayat perjanjian as default
             getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+obj.no_mr, 'tabs_detail_pasien');
 
@@ -1244,7 +1240,7 @@ function find_pasien_by_keyword(keyword){
                   }else{
                     status = '<label class="label label-danger">Belum dilayani</label>';
                   }
-                  $('<tr><td>'+formatDt+'<td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td width="100px">'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
+                  $('<tr><td>'+formatDt+'</td><td>'+y.poli+'</td><td>'+y.dokter+'</td><td>'+y.penjamin+'</td><td width="100px">'+status+'</td></tr>').appendTo($('#result_penangguhan_pasien'));                    
 
               }); 
 
@@ -1395,7 +1391,7 @@ function find_pasien_by_mr(keyword){
               $('#tabs_riwayat_perjanjian_id').attr('data-id', obj.no_mr);
               $('#tabs_riwayat_booking_online_id').attr('data-id', obj.no_mr);
 
-              $("#myTab li").removeClass("active");
+              $("#myTabRegistrationMenu li").removeClass("active");
               // show riwayat perjanjian as default
               getMenuTabs('registration/reg_pasien/riwayat_perjanjian/'+obj.no_mr, 'tabs_detail_pasien');
 
@@ -1610,7 +1606,7 @@ function get_riwayat_medis(){
   if (noMr == '') {
     alert('Silahkan cari pasien terlebih dahulu !'); return false;
   }else{
-    getMenuTabsHtml('templates/References/get_riwayat_medis/00175760/'+noMr, 'tabs_detail_pasien');
+    getMenuTabsHtml('templates/References/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
   }
 
 }
@@ -2250,7 +2246,7 @@ function copyNoRujukan(no_rujukan){
                 <div class="col-md-4">
 
                   <div class="tabbable">
-                    <ul class="nav nav-tabs no-padding tab-color-blue background-blue" id="myTab4">
+                    <ul class="nav nav-tabs no-padding tab-color-blue background-blue" id="myTabRegistrationMenu4">
                       <li class="active">
                         <a data-toggle="tab" href="#home4">Aktifitas</a>
                       </li>

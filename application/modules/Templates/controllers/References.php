@@ -2189,7 +2189,7 @@ class References extends MX_Controller {
 
 		if( ! $result = $this->cache->get('riwayat_medis_pasien_by_mr_'.$no_mr.'_'.date('Y-m-d').'') )
 		{
-			$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit(20)->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result(); 
+			$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit(20)->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result(); 
 			$this->cache->save('riwayat_medis_pasien_by_mr_'.$no_mr.'_'.date('Y-m-d').'', $result, 3600);
 		}
 

@@ -76,8 +76,6 @@ $(document).ready(function(){
 
               if( jsonResponse.status === 200 ){   
 
-                $.achtung({message: jsonResponse.message, timeout:5});
-                
                 if(jsonResponse.type_pelayanan == 'penunjang_medis')
                 {
                   $('#table_order_penunjang').DataTable().ajax.reload(null, false);
@@ -91,12 +89,19 @@ $(document).ready(function(){
                 if(jsonResponse.type_pelayanan == 'pasien_selesai')
                 {
                   $('#tabs_form_pelayanan').html('<div class="alert alert-success"><strong>Terima Kasih..!</strong> Pasien sudah dilayani. </div>');
+                  get_riwayat_medis(jsonResponse.no_mr);
                   pauseStopWatch();
                   resetStopWatch();
                 }
                 
                 if(jsonResponse.type_pelayanan == 'catatan_pengkajian'){
                   oTableCppt.ajax.reload();
+                }
+
+                if(jsonResponse.type_pelayanan == 'update_soap'){
+                  $('#tab_menu_erm_dokter li.active').removeClass('active');
+                  $('#li_cppt').addClass('active');
+                  $('#tabs_cppt').click();
                 }
 
                 $.achtung({message: jsonResponse.message, timeout:5});
@@ -819,7 +824,7 @@ function show_icare() {
       <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
 
         <div class="tabbable">  
-          <ul class="nav nav-tabs" id="myTab">
+          <ul class="nav nav-tabs" id="tab_menu_erm_dokter">
 
             <li class="active">
               <a data-toggle="tab" id="icare_tabs" href="#" onclick="show_icare()">
@@ -827,12 +832,12 @@ function show_icare() {
               </a>
             </li>
             
-            <li>
+            <li id="li_soap">
               <a data-toggle="tab" id="tabs_diagnosa_dr" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/diagnosa_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                 S O A P
               </a>
             </li>
-            <li>
+            <li id="li_cppt">
               <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                 C P P T
               </a>

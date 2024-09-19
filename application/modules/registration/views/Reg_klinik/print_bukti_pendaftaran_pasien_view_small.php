@@ -65,16 +65,16 @@
       <td width="90px" valign="top" colspan="2"><span style="font-family: arial; font-size: 14px; text-align: center"><b>DATA PASIEN</b></span></td>
     </tr>
     <tr>
-      <td width="90px" valign="top">No. MR</td><td> <?php echo $_GET['no_mr']?></td>
+      <td width="90px" valign="top">No. MR</td><td> <?php echo $result['registrasi']->no_mr?></td>
     </tr>
     <tr>
-      <td width="90px" valign="top">Nama Pasien</td><td> <?php echo $_GET['nama']?> (<?php echo $result['registrasi']->jen_kelamin?>)</td>
+      <td width="90px" valign="top">Nama Pasien</td><td> <?php echo $result['registrasi']->nama_pasien?> (<?php echo $result['registrasi']->jen_kelamin?>)</td>
     </tr>
     <tr>
       <td width="90px" valign="top">Tgl Lahir</td><td> <?php echo $this->tanggal->formatDateDmy($result['registrasi']->tgl_lhr)?> (<?php echo $umur?> Thn)</td>
     </tr>
     <tr>
-      <td width="90px" valign="top" valign="top">Nasabah</td><td> <?php echo ($_GET['nasabah'] == 'null')?'Umum':$_GET['nasabah'];?></td>
+      <td width="90px" valign="top" valign="top">Nasabah</td><td> <?php echo ($result['registrasi']->kode_perusahaan == '0')?'Umum':$result['registrasi']->nama_perusahaan;?></td>
     </tr>
     <!-- <tr>
       <td width="90px" valign="top">No.Telp</td><td> <?php echo $result['registrasi']->tlp_almt_ttp?></td>
@@ -91,10 +91,10 @@
       <td width="90px">Tanggal</td><td> <?php echo $this->tanggal->formatDateDmy($registrasi->tgl_jam_masuk)?></td>
     </tr>
     <tr>
-      <td width="90px">Poli Tujuan</td><td> <?php echo ucwords($_GET['poli'])?></td>
+      <td width="90px">Poli Tujuan</td><td> <?php echo ucwords($result['registrasi']->nama_bagian)?></td>
     </tr>
     <tr>
-      <td width="90px">Dokter</td><td> <?php echo $_GET['dokter']?></td>
+      <td width="90px">Dokter</td><td> <?php echo $result['registrasi']->nama_pegawai?></td>
     </tr>
     <tr>
       <td width="90px">No. Antrian</td><td> <?php echo $result['registrasi']->kode_perusahaan == 120?'A ':'B '; echo $result['no_antrian']->no_antrian?></td>
