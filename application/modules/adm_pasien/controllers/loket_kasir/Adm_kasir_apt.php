@@ -51,7 +51,7 @@ class Adm_kasir_apt extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Adm_kasir_apt->get_datatables();
-        // print_r($list);die;
+        // echo "<pre>";print_r($list);die;
         $data = array();
         $arr_total = array();
         $no = $_POST['start'];

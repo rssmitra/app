@@ -18,7 +18,7 @@ class Adm_kasir_apt_model extends CI_Model {
 
 		
 		$this->db->select($this->select);
-		$this->db->select('SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_rs) AS bill_rs, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr1) AS bill_dr1, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr2) AS bill_dr2, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr3) AS bill_dr3, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * lain_lain) AS lain_lain, (c.bill + c.potongan) as bill_kasir, c.tgl_jam as tgl_bayar ');
+		$this->db->select('CAST(SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_rs) AS INT) AS bill_rs, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr1) AS bill_dr1, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr2) AS bill_dr2, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * bill_dr3) AS bill_dr3, SUM((CASE WHEN status_kredit = 1 THEN (-1) ELSE 1 END) * lain_lain) AS lain_lain, CAST((c.bill + c.potongan) AS INT) as bill_kasir, c.tgl_jam as tgl_bayar ');
 		$this->db->from('fr_tc_far b');
 		$this->db->join('tc_trans_pelayanan a','b.kode_trans_far=a.kode_trans_far','left');
 		$this->db->join('tc_trans_kasir c','c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');

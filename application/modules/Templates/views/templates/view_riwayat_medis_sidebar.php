@@ -75,7 +75,7 @@ hr {
           <span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
           <div style="margin-top: 6px">
               <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> : </label><br>
-              <?php echo isset($value->anamnesa)?$this->master->br2nl($value->anamnesa):''?>
+              <?php echo isset($value->anamnesa)?nl2br($value->anamnesa):''?>
           </div>
           <br>
 
@@ -112,7 +112,7 @@ hr {
               </table>
 
               <label for="form-field-8"> <b>Pemeriksaan Fisik : </b></label><br>
-              <?php echo isset($value->pemeriksaan)?$this->master->br2nl($value->pemeriksaan):''?>
+              <?php echo isset($value->pemeriksaan)?nl2br($value->pemeriksaan):''?>
               
           </div>
           <br>

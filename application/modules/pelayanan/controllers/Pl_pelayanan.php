@@ -1958,7 +1958,6 @@ class Pl_pelayanan extends MX_Controller {
 
     function updateBilling(){
 
-
         $this->db->trans_begin();  
         // print_r($_POST);die;
         $data = array();
