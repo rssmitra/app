@@ -580,7 +580,8 @@ final Class Master {
 		}
 		$qry = $db->get()->row();
 		/*plus 1*/
-		$max_num = $qry->$field + 1 ;
+		$max_num = (int)$qry->$field + 1 ;
+		// echo '<pre>';print_r($max_num);die;
 		return $max_num;
 		
 	}
