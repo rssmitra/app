@@ -173,7 +173,6 @@ class Entry_resep_racikan extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
         $this->load->library('form_validation');
         // form validation
         if($_POST['submit'] == 'header'){
@@ -245,7 +244,7 @@ class Entry_resep_racikan extends MX_Controller {
                         // print_r($data_farmasi);die;
                         $this->db->insert( 'fr_tc_far', $data_farmasi );
                         /*save log*/
-                        $this->logs->save('fr_tc_far', $kode_trans_far, 'insert new record on entry resep module', json_encode($data_farmasi), 'kode_trans_far');
+                        // $this->logs->save('fr_tc_far', $kode_trans_far, 'insert new record on entry resep module', json_encode($data_farmasi), 'kode_trans_far');
 
                     }
                         
@@ -255,11 +254,13 @@ class Entry_resep_racikan extends MX_Controller {
                     if($_POST['id_tc_far_racikan']==0){
                         $data_racikan['created_date'] = date('Y-m-d H:i:s');
                         $data_racikan['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-
                         $this->db->insert('tc_far_racikan', $data_racikan);
+                        // print_r($this->db->last_query());
                         $new_id_tc_far_racikan = $this->db->insert_id();
+                        // print_r($new_id_tc_far_racikan);
+                        // die;
                          /*save log*/
-                        $this->logs->save('tc_far_racikan', $new_id_tc_far_racikan, 'insert new record on entry resep racikan module', json_encode($data_racikan),'id_tc_far_racikan');                        
+                        // $this->logs->save('tc_far_racikan', $new_id_tc_far_racikan, 'insert new record on entry resep racikan module', json_encode($data_racikan),'id_tc_far_racikan');                        
 
                    
                     }else{
@@ -269,7 +270,7 @@ class Entry_resep_racikan extends MX_Controller {
                         
                         $this->db->update('tc_far_racikan', $data_racikan, array('id_tc_far_racikan' => $_POST['id_tc_far_racikan']) );
                          /*save log*/
-                        $this->logs->save('tc_far_racikan', $new_id_tc_far_racikan, 'update record on entry resep racikan module', json_encode($data_racikan),'id_tc_far_racikan');
+                        // $this->logs->save('tc_far_racikan', $new_id_tc_far_racikan, 'update record on entry resep racikan module', json_encode($data_racikan),'id_tc_far_racikan');
                         
                     }
 
@@ -323,7 +324,7 @@ class Entry_resep_racikan extends MX_Controller {
                         $this->db->update('tc_far_racikan_detail', $obat_detail, array('id_tc_far_racikan_detail' => $_POST['id_tc_far_racikan_detail']) );
                         $new_id = $_POST['id_tc_far_racikan_detail'];
                          /*save log*/
-                        $this->logs->save('tc_far_racikan_detail', $new_id, 'update record on entry resep racikan detail module', json_encode($obat_detail),'id_tc_far_racikan');           
+                        // $this->logs->save('tc_far_racikan_detail', $new_id, 'update record on entry resep racikan detail module', json_encode($obat_detail),'id_tc_far_racikan');           
                     }
 
                 }
@@ -348,8 +349,9 @@ class Entry_resep_racikan extends MX_Controller {
                     'jumlah_obat_23' => isset($_POST['jml_23'])?$_POST['jml_23']:0,
                     'prb_ditangguhkan' => isset($_POST['prb_ditangguhkan'])?$_POST['prb_ditangguhkan']:0,
                 );
-                // echo '<pre>';print_r($post_data);die;
+                
                 $this->Entry_resep_racikan->save_fr_tc_far($post_data); 
+                // echo $this->db->last_query();die;
 
                 /*save log*/
                 /*total biaya*/

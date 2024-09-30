@@ -418,10 +418,10 @@ class Pl_pelayanan_ri extends MX_Controller {
         //print_r($list);die;
         $data = array();
         $no=0;
+
         if (isset($_GET['type'])) {
-            # code...
+            # untuk menampilkan catatan pengkajian saja
             foreach ($list as $row_list) {
-                
                 $row = array();
                 if($row_list->jenis_form != null){
                     $no++;
@@ -437,15 +437,20 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.', , '."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                     $data[] = $row;
                 }
-               
             }
         }else{
+            // menampilkan riwayat dan cppt keseluruhan
             foreach ($list as $row_list) {
                 $no++;
                 $row = array();
                 $row[] = $no;
                 $class_label = ($row_list->tipe == 'RJ')?'success':'primary';
-                $row[] = $this->tanggal->formatDateTime($row_list->tanggal).'<br>'.strtoupper($row_list->ppa).'<br>'.$row_list->nama_ppa.'<br><label class="label label-'.$class_label.'">'.$row_list->tipe.'</label>';
+                $status = '';
+                if($row_list->tipe == 'RJ' && $row_list->no_kunjungan == null && $row_list->reff_id == null){
+                    $status = '&nbsp;<label class="label label-danger">BATAL</label>';
+                }
+
+                $row[] = $this->tanggal->formatDateTime($row_list->tanggal).'<br>'.strtoupper($row_list->ppa).'<br>'.$row_list->nama_ppa.'<br><label class="label label-'.$class_label.'">'.$row_list->tipe.'</label>'.$status.'';
 
                 $arr_text = isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '';
                 // $diagnosa_sekunder = '';

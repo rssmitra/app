@@ -51,13 +51,12 @@ $(document).ready(function() {
 
         if(jsonResponse.status === 200){
           $.achtung({message: jsonResponse.message, timeout:5});
-          // $('#page-area-content').load('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real');
+        //   $('#page-area-content').load('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real');
+          PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real', 'Cetak Billing', 600, 750);
           load_billing_data();
         //   $('#total_payment').val(jsonResponse.count_um);
           if (jsonResponse.billing_um > 0) {
-
             PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=&kode_tc_trans_kasir='+jsonResponse.kode_tc_trans_kasir+'','Cetak',600,750);
-
           }
 
           if(jsonResponse.kode_perusahaan == 120){
@@ -65,11 +64,9 @@ $(document).ready(function() {
             // window.open(jsonResponse.redirect, '_blank');
           }
 
-          
-
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }
         achtungHideLoader();
       }
     }); 

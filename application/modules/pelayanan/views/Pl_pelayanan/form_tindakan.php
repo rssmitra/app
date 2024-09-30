@@ -721,17 +721,12 @@ function tambah_file()
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Tanggal</label>
             <div class="col-md-3">
-                  
               <div class="input-group">
-                  
                 <input name="pl_tgl_transaksi" id="pl_tgl_transaksi" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
                 <span class="input-group-addon">
-                  
                   <i class="ace-icon fa fa-calendar"></i>
-                
                 </span>
               </div>
-            
             </div>
         </div>
 

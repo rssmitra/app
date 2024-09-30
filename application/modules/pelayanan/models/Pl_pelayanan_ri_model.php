@@ -590,7 +590,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 	function get_datatables_cppt($no_mr)
 	{	
 		$this->db->where('no_mr', $no_mr);
-		$query = $this->db->order_by('tanggal', 'DESC')->get_where('view_cppt')->result();
+		$query = $this->db->order_by('tanggal', 'DESC')->get('view_cppt')->result();
 		// echo $this->db->last_query();
 		return $query;
 	}

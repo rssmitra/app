@@ -431,7 +431,6 @@ class Billing extends MX_Controller {
 
     }
 
-
     public function getBillingByPenjamin($no_registrasi, $tipe){
         
         /*get detail data billing*/
@@ -591,7 +590,6 @@ class Billing extends MX_Controller {
         
         // print_r($_POST);die;
         // print("<pre>".print_r($_POST,true)."</pre>");die;
-
         $this->load->library('accounting');
 
         $this->db->trans_begin();
@@ -758,15 +756,10 @@ class Billing extends MX_Controller {
         if( $_POST['kode_perusahaan_val'] == 120 ){
             $return_costing = $this->costing_billing($seri_kuitansi_dt['seri_kuitansi']);
             $return['redirect'] = $return_costing['redirect'];
-        }else{
-            // $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($_POST['no_registrasi'], true));
-            // $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $_POST['no_registrasi']); 
-            // apakah hanya untuk BPJS atau bagaimana?
         }
 
         $preview_billing_nk = $this->db->where_in('kode_trans_pelayanan', $str_to_array_nk)->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'status_nk' => 1))->result();
         $preview_billing_um = $this->db->where_not_in('kode_trans_pelayanan', $str_to_array_nk)->where('(status_nk IS NULL or status_nk = 0) ')->get_where('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi']))->result();
-        
         
         if ($this->db->trans_status() === FALSE)
         {
@@ -776,14 +769,12 @@ class Billing extends MX_Controller {
         else
         {
             $this->db->trans_commit();
-            
             $return['status'] = 200;
             $return['message'] = 'Proses Berhasil Dilakukan';
             $return['kode_perusahaan'] = $_POST['kode_perusahaan_val'];
             $return['billing_nk'] = count($preview_billing_nk);
             $return['billing_um'] = count($preview_billing_um);
             $return['kode_tc_trans_kasir'] = $dataTranskasir["kode_tc_trans_kasir"] ;
-            
             echo json_encode($return);
         }
         
@@ -1174,7 +1165,6 @@ class Billing extends MX_Controller {
             $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
             $exc_qry = $this->db->update('csm_reg_pasien', $dataexc, array('no_registrasi' => $no_registrasi));
             $newId = $no_registrasi;
-            
         }
         
         $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
@@ -1198,7 +1188,6 @@ class Billing extends MX_Controller {
                 /*save document to database*/
                 /*csm_reg_pasien*/
                 $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
-                
                 $doc_save = array(
                     'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
                     'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
@@ -1216,10 +1205,7 @@ class Billing extends MX_Controller {
             /*insert database*/
         }
         
-        
-        
         return array('redirect' => 'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'', 'created_by' => $doc_save['created_by'], 'created_date' => $this->tanggal->formatDateTime($doc_save['created_date']));
-
     }
 
     public function create_jurnal($trans, $akunting, $id_ak_tc_transaksi){
@@ -1335,7 +1321,6 @@ class Billing extends MX_Controller {
         $this->form_validation->set_rules('pl_tgl_transaksi', 'Tanggal', 'trim');
         $this->form_validation->set_rules('no_kunjungan', 'Unit/Bagian', 'trim|required');
         
-
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
 

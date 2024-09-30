@@ -2187,16 +2187,16 @@ class References extends MX_Controller {
 		$year = date('Y') - 1;
 		$no_mr = (string)$mr;
 
-		if( ! $result = $this->cache->get('riwayat_medis_pasien_by_mr_'.$no_mr.'_'.date('Y-m-d').'') )
-		{
-			$result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit(20)->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result(); 
-			$this->cache->save('riwayat_medis_pasien_by_mr_'.$no_mr.'_'.date('Y-m-d').'', $result, 3600);
-		}
+		// if( ! $result = $this->cache->get('riwayat_medis_pasien_by_mr_'.$no_mr.'_'.date('Y-m-d').'') )
+		// {
+		// 	$result = $this->db->select('th_riwayat_pasien.*, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan')->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit(20)->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result(); 
+		// 	$this->cache->save('riwayat_medis_pasien_by_mr_'.$no_mr.'_'.date('Y-m-d').'', $result, 3600);
+		// }
 
-		// $result = $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit(20)->get_where('th_riwayat_pasien', array('no_mr' => $no_mr))->result(); 
+		$result = $this->db->select('th_riwayat_pasien.*, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan')->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit(20)->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_mr' => $no_mr))->result(); 
 
 		// echo '<pre>';print_r($this->db->last_query());die;
-		$transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11, 'YEAR(tgl_transaksi)' => $year) )->result();
+		// $transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11, 'YEAR(tgl_transaksi)' => $year) )->result();
 
 		// if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
 		// {
@@ -2226,7 +2226,7 @@ class References extends MX_Controller {
 
 		// eresep
 		$eresep = $this->db->get_where('fr_tc_pesan_resep_detail', ['no_mr' => $no_mr, 'parent' => '0'])->result();
-		// echo '<pre>';print_r($penunjang);die;
+		// echo '<pre>';print_r($result);die;
 
 		// file emr pasien
 		$emr = $this->db->select('csm_dokumen_export.*, tc_kunjungan.no_mr, tc_kunjungan.no_kunjungan')->join('tc_kunjungan', 'tc_kunjungan.no_registrasi=csm_dokumen_export.no_registrasi', 'left')->get_where('csm_dokumen_export', array('tc_kunjungan.no_mr' => $no_mr))->result();
@@ -2241,10 +2241,10 @@ class References extends MX_Controller {
 		// }
 		// echo '<pre>';print_r($getDataPm);die;
 		
-		$getData = array();
-		foreach ($transaksi as $key => $value) {
-			$getData[$value->no_registrasi] [] = $value;
-		}
+		// $getData = array();
+		// foreach ($transaksi as $key => $value) {
+		// 	$getData[$value->no_registrasi] [] = $value;
+		// }
 		$getDataResep = [];
 		foreach ($eresep as $key_resep => $value_resep) {
 			$getDataResep[$value_resep->no_registrasi][$value_resep->no_kunjungan][$value_resep->kode_pesan_resep][] = $value_resep;
@@ -2257,7 +2257,7 @@ class References extends MX_Controller {
 			'file' => $getDataFile,
 			// 'penunjang' => $getDataPm,
 			'result' => $result,
-			'obat' => $getData,
+			// 'obat' => $getData,
 			'eresep' => $getDataResep,
 			'no_mr' => $no_mr,
 		);

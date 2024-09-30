@@ -138,11 +138,11 @@ function saveRow(num){
   var entry = $('#jumlah_'+num+'').val();
   var stok = $('#stok_brg_'+num+'').val();
 
-  if( stok < entry){
-    $('#jumlah_'+num+'').val(stok);
-  }else{
-    $('#jumlah_'+num+'').val(entry);
-  }
+  // if( stok < entry){
+  //   $('#jumlah_'+num+'').val(stok);
+  // }else{
+  //   $('#jumlah_'+num+'').val(entry);
+  // }
 
   $('#btn_submit_'+num+'').hide();
   $('#btn_edit_'+num+'').show();
@@ -344,14 +344,12 @@ function saveRow(num){
 
                 // aksi
                 echo '<td align="center">';
-
                 // hidden form
                 echo '<input type="hidden" name="id_fr_tc_far_detail_log_prb[]" value="'.$row->id_fr_tc_far_detail_log_prb.'" >';
                 echo '<input type="hidden" name="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" id="kode_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kode_brg.'" >';
                 echo '<input type="hidden" name="stok_brg_'.$row->id_fr_tc_far_detail_log_prb.'" id="stok_brg_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->stok_akhir_depo.'" >';
 
                 echo '<input type="hidden" name="kd_tr_resep_'.$row->id_fr_tc_far_detail_log_prb.'" value="'.$row->kd_tr_resep.'" >';
-
                 $hidden = (empty($row->id_fr_tc_far_detail_log_prb)) ? '' : 'style="display: none"' ;
                   if( $row->prb_ditangguhkan == 0 ){
                     echo '-';

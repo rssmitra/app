@@ -178,6 +178,8 @@ class Entry_resep_racikan_model extends CI_Model {
 
 		/*cek fr_tc_far from racikan*/
 		$fr_tc_far_dt = $this->db->get_where('fr_tc_far_detail', array('id_tc_far_racikan' => $params['id_tc_far_racikan']) )->row();
+		// echo '<pre>';print_r($this->db->last_query());die;
+
 		$data_farmasi_detail = array(
                 'id_tc_far_racikan' => $this->regex->_genRegex($params['id_tc_far_racikan'], 'RGXINT'),
                 'jumlah_pesan' => $this->regex->_genRegex($params['jumlah_pesan'], 'RGXINT'),
@@ -197,7 +199,9 @@ class Entry_resep_racikan_model extends CI_Model {
         //print_r($data_farmasi_detail);die;
 
         if( empty($fr_tc_far_dt->kd_tr_resep) ){
-            $data_farmasi_detail['kd_tr_resep'] = $this->master->get_max_number('fr_tc_far_detail', 'kd_tr_resep');
+			$max_kode = $this->db->query('SELECT MAX(kd_tr_resep) AS kd_tr_resep FROM fr_tc_far_detail')->row();
+			$kd_tr_resep = (int)$max_kode->kd_tr_resep + 1;
+            $data_farmasi_detail['kd_tr_resep'] = $kd_tr_resep;
             $data_farmasi_detail['kode_trans_far'] = $params['kode_trans_far'];
             $data_farmasi_detail['created_date'] = date('Y-m-d H:i:s');
             $data_farmasi_detail['created_by'] = json_encode(array('user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));

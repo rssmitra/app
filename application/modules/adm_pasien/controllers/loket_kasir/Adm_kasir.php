@@ -77,7 +77,7 @@ class Adm_kasir extends MX_Controller {
                     $row[] = '<div class="center"></div>';
                     $row[] = $row_list[0]['no_registrasi'];
                     $row[] = '<div class="center">'.$no.'</div>';
-                    $row[] = '<a href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
+                    $row[] = '<a style="color: blue; font-weight: bold" href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
                     if($_GET['flag']=='bpjs'){
                         $row[] = $row_list[0]['no_sep'];
                     }
@@ -91,7 +91,7 @@ class Adm_kasir extends MX_Controller {
                     }else{
                         if( $total > 0 ){
                             $row[] = '<div class="pull-right">
-                                        <a href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a>
+                                        <a style="color: blue; font-weight: bold" href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a>
                                         <input type="hidden" class="total_billing_class" value="'.$total.'">
                                       </div>';
                         }else{
