@@ -678,10 +678,10 @@ function show_icare() {
 
 <?php if($form_type != 'billing_entry') : ?>
   <div class="page-header">  
-      <ul class="nav ace-nav">
+      <ul class="nav ace-nav" style="padding-left: 10px">
         <li class="light-blue" style="background-color: lightgrey !important;color: black">
           <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
-            <span class="user-info">
+            <span class="user-info" style="max-width: 250px !important;">
               <b><?php echo isset($nama_dokter)?''.$nama_dokter.'':''?></b>
               <small><?php echo ucwords($nama_bagian); ?></small></span>
           </a>
@@ -710,15 +710,6 @@ function show_icare() {
               <small>Pasien Batal</small></span>
           </a>
         </li>
-
-        <!-- <li class="light-blue" style="background-color: lightgrey !important;color: black">
-          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black" onclick="show_modal('adm_pasien/pembayaran_dr/Pembentukan_saldo_dr/getDetailTransaksiDokter?kode_dokter=265&from_tgl=2020-04-17&to_tgl=2020-04-17&type=view_only','TAGIHAN DOKTER')">
-            <span class="user-info">
-              <b><span style="font-size: 14px;" id="total_bill_dr_current"></span></b>
-              <small>Total Billing</small></span>
-          </a>
-        </li> -->
-
 
         <li style="color: black">
           <a href="#" style="background-color: red !important; color: white" id="btn_update_session_poli">
@@ -763,7 +754,7 @@ function show_icare() {
         <input type="hidden" class="form-control" name="nama_pasien_layan" id="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
         <input type="hidden" class="form-control" name="kode_bagian_asal" id="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
         <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian_val">
-        <input type="hiddenxx" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
+        <!-- <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val"> -->
         <input type="hidden" class="form-control" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
         <input type="hidden" class="form-control" name="flag_mcu"  id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
         <input type="hidden" class="form-control" name="kode_profit"  id="kode_profit" value="<?php echo $kode_profit; ?>">
@@ -939,11 +930,10 @@ function show_icare() {
           <!-- end action form  -->
           
           <div class="pull-left" style="margin-bottom:1%; width: 100%">
+            <a href="#" class="btn btn-xs btn-purple" id="btn_perjanjian_rj" onclick="getMenuTabs('pelayanan/Pl_pelayanan/form_perjanjian_view_ontabs/<?php echo $value->no_mr?>?kode_bagian=<?php echo $value->kode_bagian_asal?>&kode_dokter=<?php echo $value->kode_dokter?>&kode_perusahaan=<?php echo $value->kode_perusahaan?>&no_sep=<?php echo $value->no_sep?>', 'tabs_form_pelayanan')" ><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
+            
             <?php if(empty($value->tgl_keluar_poli)) :?>
-              <a href="#" class="btn btn-xs btn-purple" id="btn_perjanjian_rj" onclick="getMenuTabs('pelayanan/Pl_pelayanan/form_perjanjian_view_ontabs/<?php echo $value->no_mr?>?kode_bagian=<?php echo $value->kode_bagian_asal?>&kode_dokter=<?php echo $value->kode_dokter?>&kode_perusahaan=<?php echo $value->kode_perusahaan?>&no_sep=<?php echo $value->no_sep?>', 'tabs_form_pelayanan')" ><i class="fa fa-calendar"></i> Perjanjian Pasien</a>
-
               <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
-
               <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
             <?php else: echo ''; 
             endif;?>
@@ -961,6 +951,12 @@ function show_icare() {
           </div> -->
 
           <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
+
+          <div class="col-md-12 no-padding" style="padding-bottom: 5px !important">
+              <label style="font-weigth: bold !important"><b>Hak Kelas Pasien :</b> </label><br>
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), isset($kode_klas)?$kode_klas:'' , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
+          </div>
+
           <table class="table table-bordered">
             <tr style="background-color:#f4ae11">
               <td rowspan="2" width="100px" class="center" style="background-color: darkturquoise;">
@@ -1001,6 +997,7 @@ function show_icare() {
           <?php endif;?>            
 
           <!-- <p><b><i class="fa fa-edit"></i> FORM PELAYANAN PASIEN </b></p> -->
+          
 
           <!-- form default pelayanan pasien -->
           <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
@@ -1010,7 +1007,7 @@ function show_icare() {
             <div class="tabbable">  
 
               <div class="tab-content">                  
-
+                
                 <div id="tabs_form_pelayanan">
 
                   <div class="alert alert-block alert-success">

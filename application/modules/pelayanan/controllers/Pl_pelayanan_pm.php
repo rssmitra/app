@@ -290,7 +290,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                     </div></div>';
 
 
-            $form  = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_pm/form/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$status_pasien."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $form  = '<div class="center"><a href="#" style="font-weight: bold; color: blue" onclick="getMenu('."'pelayanan/Pl_pelayanan_pm/form/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$status_pasien."'".')">'.$row_list->no_kunjungan.'</a></div>';
             
             $row[] = '<div class="center">'.$form.'</div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';

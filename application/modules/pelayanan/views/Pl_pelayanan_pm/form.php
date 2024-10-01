@@ -609,7 +609,7 @@ function perjanjian_pasien_pm(){
           <input type="hidden" class="form-control" name="flag_mcu" id="flag_mcu" value="<?php echo isset($value->flag_mcu)?$value->flag_mcu:0?>">
           
           <!-- profile Pasien -->
-          <div class="col-md-2 no-padding">
+          <div class="col-md-2">
             <div class="box box-primary" id='box_identity'>
                 <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
@@ -649,7 +649,7 @@ function perjanjian_pasien_pm(){
           </div>
 
           <!-- form pelayanan -->
-          <div class="col-md-10">
+          <div class="col-md-10 no-padding">
 
             <!-- end action form  -->
             <div class="pull-right" style="margin-bottom:3px; width: 100%">
@@ -716,20 +716,16 @@ function perjanjian_pasien_pm(){
               </tr>
 
             </table>            
+            
+            <div class="col-md-12 no-padding" style="padding-bottom: 5px !important">
+                <label style="font-weigth: bold !important"><b>Hak Kelas Pasien :</b> </label><br>
+                <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), isset($kode_klas)?$kode_klas:'' , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
+            </div>
 
             <div id="form_default_pelayanan" style="background-color:#77dcd373"></div>
 
             <p><b><i class="fa fa-edit"></i> FORM PELAYANAN PASIEN </b></p>
             
-            <div class="form-group">
-              <label class="col-sm-1 control-label" for="form-field-2"> Kode kelas </label>
-              <div class="col-sm-1">
-              <input type="text" class="form-control col-xs-10 col-sm-5" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>"  id="kode_klas_val">
-              </div>
-              
-            </div>
-            <p style="font-size: 11px; font-style: italic; line-height: 1">Kode kelas untuk hak kelas pasien untuk penyesuaian tarif<br>(mohon jangan diubah tanpa sepengetahuan Administrator!)</p>
-              
             <div class="tabbable">  
 
               <ul class="nav nav-tabs" id="myTab">

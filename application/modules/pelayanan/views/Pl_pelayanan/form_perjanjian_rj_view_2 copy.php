@@ -94,40 +94,40 @@ $(document).ready(function(){
     $('#jenis_instalasi').focus();    
     $('#change_modul_view_perjanjian').load('registration/Reg_pasien/show_modul/'+$('#jenis_instalasi').val()+'?kode_dokter='+$('#kode_dokter_hidden').val()+'&kode_bagian='+$('#kode_bagian_hidden').val()+'' );
 
-    $('#form_booking').ajaxForm({      
+    // $('#form_booking').ajaxForm({      
 
-      beforeSend: function() {        
+    //   beforeSend: function() {        
 
-        achtungShowFadeIn();          
+    //     achtungShowFadeIn();          
 
-      },      
+    //   },      
 
-      uploadProgress: function(event, position, total, percentComplete) {        
+    //   uploadProgress: function(event, position, total, percentComplete) {        
 
-      },      
+    //   },      
 
-      complete: function(xhr) {             
+    //   complete: function(xhr) {             
 
-        var data=xhr.responseText;        
+    //     var data=xhr.responseText;        
 
-        var jsonResponse = JSON.parse(data);        
+    //     var jsonResponse = JSON.parse(data);        
 
-        if(jsonResponse.status === 200){          
+    //     if(jsonResponse.status === 200){          
 
-          $.achtung({message: jsonResponse.message, timeout:5});          
+    //       $.achtung({message: jsonResponse.message, timeout:5});          
           
-          $('#content-perjanjian-form').load(jsonResponse.redirect);
-          $('#content-perjanjian-form').css("padding","25px");
+    //       $('#content-perjanjian-form').load(jsonResponse.redirect);
+    //       $('#content-perjanjian-form').css("padding","25px");
           
-        }else{
-          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-        }        
+    //     }else{
+    //       $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+    //     }        
 
-        achtungHideLoader();        
+    //     achtungHideLoader();        
 
-      }      
+    //   }      
 
-    });     
+    // });     
 
       
     $('select[name="jenis_instalasi"]').change(function () {      
@@ -201,7 +201,7 @@ function formatDate(date) {
 }
 
 function createSuratKontrol(){
-  show_modal('ws_bpjs/ws_index?modWs=CreateSuratKontrol&nosep='+$('#no_sep_lama').val()+'&tglRencanaKontrol='+$('#tgl_kunjungan_perjanjian').val()+'&nokartu='+$('#no_kartu_bpjs').val()+'', 'Surat Kontrol Rawat Jalan')
+  show_modal('ws_bpjs/ws_index?modWs=CreateSuratKontrol&nosep='+$('#no_sep_lama').val()+'&tglRencanaKontrol='+$('#tgl_kunjungan_perjanjian').val()+'', 'Surat Kontrol Rawat Jalan')
 }
 
 
@@ -218,12 +218,10 @@ function createSuratKontrol(){
       
       <div class="col-xs-12 col-sm-12">
 
-        <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">   
+        <!-- <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('registration/Reg_pasien/process_perjanjian')?>" enctype="multipart/form-data" autocomplete="off">    -->
 
           <!-- hidden form  -->
           <input type="hidden" name="no_mr" value="<?php echo $value->no_mr?>" id="no_mr">
-          <input type="hidden" name="no_ktp" value="<?php echo $value->no_ktp?>" id="no_ktp">
-          <input type="hidden" name="no_kartu_bpjs" value="<?php echo $value->no_kartu_bpjs?>" id="no_kartu_bpjs">
           <input type="hidden" name="nama_pasien" value="<?php echo $value->nama_pasien?>" id="nama_pasien">
           <input type="hidden" name="alamat" value="<?php echo $value->almt_ttp_pasien?>" id="alamat">
           <input type="hidden" name="jd_id" id="jd_id">
@@ -272,8 +270,8 @@ function createSuratKontrol(){
 
           <?php if($_GET['kode_perusahaan'] == 120) :?>
             <div class="form-group">
-              <label class="control-label col-sm-2">No SEP Referensi</label>
-              <div class="col-sm-4">
+              <label class="control-label col-sm-2">No SEP</label>
+              <div class="col-sm-3">
                   <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo $_GET['no_sep']?>"/>
               </div>
             </div>
@@ -305,23 +303,11 @@ function createSuratKontrol(){
 
             <div class="form-group">
               <label class="control-label col-sm-2">Jenis Perjanjian</label>
-              <div class="col-sm-10">
-                <div class="radio">
+              <div class="col-sm-6">
+                <div class="checkbox">
                   <label>
-                    <input name="jeniskunjungan" type="radio" class="ace" value="2">
+                    <input name="jenis_perjanjian" type="checkbox" class="ace" value="1">
                     <span class="lbl"> Rujukan Internal</span>
-                  </label>
-                  <label>
-                    <input name="jeniskunjungan" type="radio" class="ace" value="1">
-                    <span class="lbl"> Rujukan Baru FKTP</span>
-                  </label>
-                  <label>
-                    <input name="jeniskunjungan" type="radio" class="ace" value="3" checked>
-                    <span class="lbl"> Kontrol</span>
-                  </label>
-                  <label>
-                    <input name="jeniskunjungan" type="radio" class="ace" value="4">
-                    <span class="lbl"> Rujukan Antar RS</span>
                   </label>
                 </div>
               </div>
@@ -329,7 +315,7 @@ function createSuratKontrol(){
 
             <div class="form-group">
               
-              <label class="control-label col-sm-2">Tanggal Kunjungan</label>
+              <label class="control-label col-sm-2">Tgl Kunjungan</label>
               
               <div class="col-md-2">                
                 <div class="input-group">                    
@@ -339,16 +325,15 @@ function createSuratKontrol(){
                     </span>
                   </div>
               </div>
-
               <div id="div_jadwal_hfis" style="display: none">
-                <div class="col-md-2" style="padding-left: 4%">
+                <div class="col-md-3">
                   <button type="button" class="btn btn-primary btn-sm" onclick="createSuratKontrol()">
                       <span class="ace-icon fa fa-calendar icon-on-right bigger-110"></span>
-                      Cek HFIS
+                      Cek Jadwal HFIS
                   </button>
                 </div>
-                <label class="control-label col-sm-2" style="margin-left: 2%">No Surat Kontrol</label>
-                <div class="col-md-3 no-padding">
+                <label class="control-label col-sm-2">No Kontrol</label>
+                <div class="col-md-3" style="margin-left: -17px">
                   <input name="no_surat_kontrol" id="noSuratKontrolPerjanjianForm" value="" class="form-control" type="text" readonly>
                 </div>
               </div>
@@ -374,7 +359,7 @@ function createSuratKontrol(){
           <div id="view_last_message" style="margin-top:7px"></div>
           
 
-        </form>
+        <!-- </form> -->
 
       </div>
 

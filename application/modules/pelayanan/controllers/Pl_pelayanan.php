@@ -2229,6 +2229,10 @@ class Pl_pelayanan extends MX_Controller {
 
         $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
         
+        // echo '<pre>'; print_r($data_pasien);
+        // echo '<pre>'; print_r($data);
+        // die;
+
         // $data['booking_id'] = $booking_id;
 
         // if($booking_id!=0){
