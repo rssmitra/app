@@ -1761,6 +1761,7 @@ class References extends MX_Controller {
 			$this->db->order_by('cast(SUBSTRING(kode_brg, 7, 11) as int) DESC');
 		}else{
       $this->db->select('cast(SUBSTRING(kode_brg, '.$len.', 11) as int) as num');
+	  		$this->db->where('kode_sub_golongan', $kode);
 			$this->db->order_by('cast(SUBSTRING(kode_brg, '.$len.', 11) as int) DESC');
 			// $this->db->where('kode_brg LIKE '."'".$kode."%'".' ');
 		}
