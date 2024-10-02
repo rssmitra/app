@@ -118,16 +118,17 @@ class Csm_verifikasi_costing extends MX_Controller {
             $row[] = '<div class="center"></div>';
             $row[] = $row_list->no_registrasi;
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/Csm_verifikasi_costing/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')">'.$row_list->no_registrasi.'</a></div>';
+            $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/Csm_verifikasi_costing/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')" style="font-weight: bold; color: blue">'.$row_list->csm_rp_no_mr.'</a></div>';
             $row[] = $row_list->csm_rp_no_sep;
-            $row[] = $row_list->csm_rp_no_mr;
+            // $row[] = $row_list->csm_rp_no_mr;
             $row[] = strtoupper($row_list->csm_rp_nama_pasien);
             $row[] = strtoupper($row_list->csm_rp_bagian);
-            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
-            $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
+            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDateDmy($row_list->csm_rp_tgl_masuk);
+            $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDateDmy($row_list->csm_rp_tgl_keluar);
             $row[] = $row_list->csm_rp_tipe;
             $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
-            $row[] = $this->tanggal->formatDate($row_list->created_date).'<br>by : '.$row_list->created_by;
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->created_date).'</div>';
+            $row[] = $row_list->created_by;
             $data[] = $row;
         }
         $output = array(

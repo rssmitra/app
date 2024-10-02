@@ -1031,7 +1031,9 @@ class Templates extends MX_Controller {
 
                     $add_one = (int)$colspan + 1;
                     $html .= '<tr>';
-                    $html .= '<td colspan="'.$add_one.'"><a href="#" class="btn btn-xs btn-inverse" style="width: 100% !important"><i class="fa fa-print"></i> PRINT RINCIAN BIAYA '.strtoupper($title_name).'</a></td>';
+                    if(!isset($_GET['printout'])){
+                        $html .= '<td colspan="'.$add_one.'"><a href="#" onclick="PopupCenter('."'billing/Billing/print_billing_resume/".$noreg."/RI/".$field."?printout=1'".', '."'RESUME BILLING PASIEN RAWAT INAP'".', 900, 700)" class="btn btn-xs btn-inverse" style="width: 100% !important"><i class="fa fa-print"></i> PRINT RINCIAN BIAYA '.strtoupper($title_name).'</a></td>';
+                    }
                     $html .= '</tr>';
         $html .= '</table>'; 
 

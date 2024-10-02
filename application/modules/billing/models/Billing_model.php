@@ -784,7 +784,7 @@ class Billing_model extends CI_Model {
             $html .= '<td width="100px" align="right"><b>Rp. '.number_format($total_plus_materai).',-</b></td>';
         $html .= '</tr>';   
         $html .= '<tr>';   
-        $html .= '<td colspan="3"><a href="#" class="btn btn-xs btn-inverse" style="width: 100% !important"><i class="fa fa-print"></i> PRINT RESUME BILLING PASIEN</a></td>';   
+        $html .= '<td colspan="3"><a href="#" onclick="PopupCenter('."'billing/Billing/print_billing_resume/".$no_registrasi."/RI'".', '."'RESUME BILLING PASIEN RAWAT INAP'".', 900, 700)" class="btn btn-xs btn-inverse" style="width: 100% !important"><i class="fa fa-print"></i> PRINT RESUME BILLING PASIEN</a></td>';   
         $html .= '</tr>';   
         $html .= '</table>';
         $html .= '<br>';

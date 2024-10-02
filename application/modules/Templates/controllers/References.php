@@ -1750,6 +1750,8 @@ class References extends MX_Controller {
 
 	public function getKodeBrg( $kode='')
 	{
+		$len = strlen($kode);
+		
 		// define table
         $table = ($_GET['flag'] == 'medis' ) ? 'mt_barang' : 'mt_barang_nm' ;
 		// get last brg by kode_generik
@@ -1758,13 +1760,13 @@ class References extends MX_Controller {
 			$this->db->where('kode_generik', $kode);
 			$this->db->order_by('cast(SUBSTRING(kode_brg, 7, 11) as int) DESC');
 		}else{
-      $this->db->select('cast(SUBSTRING(kode_brg, 7, 11) as int) as num');
-			$this->db->order_by('cast(SUBSTRING(kode_brg, 7, 11) as int) DESC');
-			$this->db->where('kode_brg LIKE '."'".$kode."%'".' ');
+      $this->db->select('cast(SUBSTRING(kode_brg, '.$len.', 11) as int) as num');
+			$this->db->order_by('cast(SUBSTRING(kode_brg, '.$len.', 11) as int) DESC');
+			// $this->db->where('kode_brg LIKE '."'".$kode."%'".' ');
 		}
 
 		$query = $this->db->get( $table )->row();
-    // echo "<pre>";print_r($query);die;
+    	// echo "<pre>";print_r($query);die;
 		// echo "<pre>";print_r($this->db->last_query());die;
 
 		$lastnum = isset($query->num)?$query->num + 1 : 1;

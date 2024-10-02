@@ -169,20 +169,21 @@ function rollback(no_registrasi, no_kunjungan){
 
       <center>
           <h4>FORM PENCARIAN DATA PASIEN <?php echo ($is_icu=='N')?'RAWAT INAP':'ICU'; ?><br><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data Pasien Rawat Inap yang masih dirawat sampai Hari ini yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?> </small></h4>
-            <?php if($is_icu=='N'): ?>
+            <!-- <?php if($is_icu=='N'): ?>
               <label class="label label-xs label-success">&nbsp;&nbsp;</label> LA (Lantai Atas)
               <label class="label label-xs label-danger">&nbsp;&nbsp;</label> LB (Lantai Bawah)
               <label class="label label-xs label-primary">&nbsp;&nbsp;</label> VK (Ruang Bersalin dan Nifas)
               <label class="label label-xs label-inverse">&nbsp;&nbsp;</label> Lain-lain
-            <?php endif ?>
+            <?php endif ?> -->
       </center>
     
       <br>
       <!-- hidden form -->
       <input type="hidden" name="is_icu" value="<?php echo $is_icu ?>" id="is_icu">
+
       <div class="form-group">
-          <label class="control-label col-md-2">Pencarian berdasarkan</label>
-          <div class="col-md-2" style="margin-left:-2%">
+          <label class="control-label col-md-1">Pencarian</label>
+          <div class="col-md-2">
             <select name="search_by" id="search_by" class="form-control">
               <option value="">-Silahkan Pilih-</option>
               <option value="no_mr" selected>No MR</option>
@@ -191,21 +192,38 @@ function rollback(no_registrasi, no_kunjungan){
           </div>
 
           <label class="control-label col-md-1">Keyword</label>
-          <div class="col-md-2" style="margin-left:-2%">
+          <div class="col-md-2">
             <input type="text" class="form-control" name="keyword" id="keyword_form">
           </div>
 
           <label class="control-label col-md-1">Status</label>
           <div class="col-md-2">
-              <select name="status_ranap" id="status_ranap" style="margin-left:-4%">
+              <select name="status_ranap" id="status_ranap">
                 <option value="" selected>- Silahkan Pilih -</option>
                 <option value="masih dirawat">Masih dirawat</option>
                 <option value="sudah pulang">Sudah Pulang</option>
-                <!-- <option value="belum lunas">Sudah Lunas</option> -->
               </select>
           </div>
-
-          <div class="col-md-4" style="margin-left:-3.8%">
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-1">Tanggal</label>
+          <div class="col-md-2">
+            <div class="input-group">
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-2" style="margin-left: -2%">
+            <div class="input-group">
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <span class="input-group-addon">
+                <i class="fa fa-calendar bigger-110"></i>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-4 no-padding">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Search
@@ -215,7 +233,6 @@ function rollback(no_registrasi, no_kunjungan){
               Reset
             </a>
           </div>
-
       </div>
      
     <hr class="separator">
@@ -227,18 +244,19 @@ function rollback(no_registrasi, no_kunjungan){
             <th width="50px">&nbsp;</th>
             <th width="50px">&nbsp;</th>
             <th></th>
-            <th></th>
+            <!-- <th></th> -->
             <th>No</th>
-            <th>Kode</th>
             <th>No MR</th>
+            <!-- <th>No MR</th> -->
             <th>Nama Pasien</th>
-            <th>Ruangan</th>
-            <th>Penjamin</th>
-            <th>Kelas</th>
-            <th>Hak Kelas</th>
-            <th class="center"> Tarif inaCBG</th>
+            <th style="width: 120px">Penjamin</th>
+            <!-- <th>Kelas</th> -->
             <th>Tanggal Masuk</th>
             <th>Dokter</th>
+            <th style="width: 100px">Kelas</th>
+            <th>Ruangan</th>
+            <th class="center"> inaCBG</th>
+            <th class="center"> Billing</th>
             <th>Status</th>          
           </tr>
         </thead>

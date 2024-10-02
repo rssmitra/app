@@ -77,12 +77,12 @@ class Adm_kasir extends MX_Controller {
                     $row[] = '<div class="center"></div>';
                     $row[] = $row_list[0]['no_registrasi'];
                     $row[] = '<div class="center">'.$no.'</div>';
-                    $row[] = '<a style="color: blue; font-weight: bold" href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_registrasi'].'</div>';
+                    $row[] = '<a style="color: blue; font-weight: bold" href="#" onclick="getMenu('."'billing/Billing/viewDetailBillingKasir/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."?flag=".$_GET['flag']."'".')">'.$row_list[0]['no_mr'].'</div>';
+                    $row[] = $row_list[0]['nama_pasien'];
                     if($_GET['flag']=='bpjs'){
                         $row[] = $row_list[0]['no_sep'];
                     }
-                    $row[] = $row_list[0]['no_mr'];
-                    $row[] = $row_list[0]['nama_pasien'];
+                    // $row[] = $row_list[0]['no_mr'];
                     $row[] = ucwords($row_list[0]['nama_bagian']);
                     $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
                     $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);

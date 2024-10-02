@@ -79,7 +79,7 @@ $(document).ready(function() {
             var row = oTable.row( tr );
             var data = oTable.row( $(this).parents('tr') ).data();
             var no_registrasi = data[ 1 ];
-            var tipe = data[ 10 ];
+            var tipe = data[ 9 ];
             
 
             if ( row.child.isShown() ) {
@@ -295,7 +295,7 @@ function format ( data ) {
         <label class="control-label col-md-2" id="text_label">Pilih Tanggal</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -305,7 +305,7 @@ function format ( data ) {
           <label class="control-label col-md-1">s/d Tgl</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -383,16 +383,17 @@ function format ( data ) {
             <th width="50px"></th>
             <th class="center"></th>
             <th width="50px" class="center">No</th>
-            <th width="70px">No. Reg</th>
-            <th width="80px">No. SEP</th>
             <th width="70px">No. MR</th>
+            <!-- <th width="70px">No. Reg</th> -->
+            <th width="80px">No. SEP</th>
             <th>Nama Pasien</th>
             <th>Poli/Klinik</th>
-            <th width="130px">Tanggal Masuk</th>
-            <th width="130px">Tanggal Keluar</th>
+            <th width="100px">Tgl Masuk</th>
+            <th width="100px">Tgl Keluar</th>
             <th width="80px" class="center">Tipe (RI/RJ)</th>
             <th width="100px" class="center">Total Klaim</th>
-            <th width="120px" class="center">Tanggal Costing</th>
+            <th width="100px" class="center">Tgl Costing</th>
+            <th width="120px" class="center">Petugas</th>
           </tr>
         </thead>
         <tbody>

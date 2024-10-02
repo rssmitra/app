@@ -57,8 +57,6 @@ class Csm_verifikasi_costing_model extends CI_Model {
 			$this->db->where(" YEAR(csm_reg_pasien.created_date) = ".date('Y')." " );
 		}
 
-		
-
 		$this->db->where('csm_reg_pasien.is_submitted', 'Y');
 		$this->db->where('csm_reg_pasien.kode_perusahaan', 120);
 			

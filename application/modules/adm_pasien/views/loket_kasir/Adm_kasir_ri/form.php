@@ -379,7 +379,7 @@ function rollback(no_registrasi, no_kunjungan){
           <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:0?>">
           
           <!-- profile Pasien -->
-          <div class="col-md-2 no-padding">
+          <div class="col-md-2">
             <div class="box box-primary" id='box_identity'>
                 <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
@@ -420,7 +420,7 @@ function rollback(no_registrasi, no_kunjungan){
           </div>
 
           <!-- form pelayanan -->
-          <div class="col-md-10">
+          <div class="col-md-10 no-padding">
 
             <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
               <div class="center">

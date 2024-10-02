@@ -320,10 +320,10 @@
               <th width="50px"></th>
               <th class="center"></th>
               <th width="50px" class="center">No</th>
-              <th width="70px">No. Reg</th>
-              <?php echo ($flag=='bpjs') ? '<th>No SEP</th>' : '' ; ?>
-              <th>No. MR</th>
+              <th width="70px">No. MR</th>
               <th>Nama Pasien</th>
+              <?php echo ($flag=='bpjs') ? '<th>No SEP</th>' : '' ; ?>
+              <!-- <th>No. MR</th> -->
               <th>Poli/Klinik Asal</th>
               <th>Penjamin</th>
               <th width="150px">Tanggal Masuk</th>

@@ -100,45 +100,51 @@ class Adm_kasir_ri extends MX_Controller {
             $link = 'billing/Billing';
             $str_type = 'RI';
             $cek_trans = $this->Adm_kasir_ri->cek_trans_pelayanan($row_list->no_registrasi);
+            $cek_total_billing = $this->Adm_kasir_ri->cek_total_billing($row_list->no_registrasi);
+            // echo "<pre>"; print_r($cek_total_billing);die;
 
-            $rollback_btn = ($cek_trans>0 AND $row_list->status_pulang!= 0 || NULL)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
+            $rollback_btn = ($cek_trans > 0 AND $row_list->status_pulang!= 0 || NULL)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
 
             /*color of type Ruangan RI*/
             /*LB*/
-            if ( in_array($row_list->bag_pas, array('030101','031401','031301','030801','030401','031601') ) ) {
-                $color = 'red';
-            /*LA*/
-            }elseif( in_array($row_list->bag_pas,  array('030701','030301','030601','030201') )){
-                $color = 'green';
-            /*VK Ruang Bersalin*/
-            }elseif( in_array($row_list->bag_pas,  array('031201','031701','030501') )){
-                $color = 'blue';
-            }else{
-                $color = 'black';
-            }
+            // if ( in_array($row_list->bag_pas, array('030101','031401','031301','030801','030401','031601') ) ) {
+            //     $color = 'red';
+            // /*LA*/
+            // }elseif( in_array($row_list->bag_pas,  array('030701','030301','030601','030201') )){
+            //     $color = 'green';
+            // /*VK Ruang Bersalin*/
+            // }elseif( in_array($row_list->bag_pas,  array('031201','031701','030501') )){
+            //     $color = 'blue';
+            // }else{
+            //     $color = 'black';
+            // }
             $row[] = $row_list->no_registrasi;
             $row[] = $str_type;
             $row[] = '';
-            $row[] = '<div class="center"><div class="btn-group">
-                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-inverse">
-                            '.$rollback_btn.' 
-                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
-                        </ul>
-                    </div></div>';
+            // $row[] = '<div class="center"><div class="btn-group">
+            //             <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+            //                 <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+            //             </button>
+            //             <ul class="dropdown-menu dropdown-inverse">
+            //                 '.$rollback_btn.' 
+            //                 <li><a href="#" onclick="PopupCenter('."'billing/Billing/print_billing_resume/".$row_list->no_registrasi."/RI'".', '."'RESUME BILLING PASIEN RAWAT INAP'".', 900, 700)">Cetak Resume Billing</a></li>
+            //             </ul>
+            //         </div></div>';
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'adm_pasien/loket_kasir/Adm_kasir_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = '<span style="color:'.$color.'"><b>'.strtoupper($row_list->nama_pasien).'</b></span>';
-            $row[] = $row_list->nama_bagian;
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'adm_pasien/loket_kasir/Adm_kasir_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')" style="font-weight: bold;color: blue">'.$row_list->no_mr.'</a></div>';
+            // $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
+            $row[] = '<span>'.strtoupper($row_list->nama_pasien).'</span>';
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
-            $row[] = $row_list->klas;
-            $row[] = ($row_list->klas_titip)?$row_list->klas_titip:$row_list->klas;
-            $row[] = number_format($row_list->tarif_inacbgs);
-            $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
+            // $row[] = ($row_list->klas_titip)?$row_list->klas_titip:$row_list->klas;
+            
+            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_masuk);
             $row[] = $row_list->nama_pegawai;
+            
+            $row[] = $row_list->klas;
+            $row[] = $row_list->nama_bagian;
+            $row[] = number_format($row_list->tarif_inacbgs);
+            $color_bill = ($row_list->tarif_inacbgs < $cek_total_billing->total_billing) ? 'red' : 'green' ;
+            $row[] = '<span style="font-weight: bold; color: '.$color_bill.'">'.number_format($cek_total_billing->total_billing).'</span>';
 
             if($cek_trans==0){
                 $status_pulang = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas </label>';

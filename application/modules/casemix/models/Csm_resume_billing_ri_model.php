@@ -17,12 +17,19 @@ class Csm_resume_billing_ri_model extends CI_Model {
 
 	private function _main_query(){
 		
+		$curr_month = date('m')-1;
+		
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 
 		if (isset($_GET['frmdt']) AND $_GET['frmdt'] != '' || isset($_GET['todt']) AND $_GET['todt'] != '') {
 			$this->db->where($this->table.".".$_GET['field']." BETWEEN '".$_GET['frmdt']."' AND '".$_GET['todt']."' " );
+		}else{
+			$this->db->where(" MONTH(csm_reg_pasien.created_date) > ".$curr_month." " );
+			$this->db->where(" YEAR(csm_reg_pasien.created_date) = ".date('Y')." " );
 		}
+
+		$this->db->where('csm_reg_pasien.kode_perusahaan', 120);
 		$this->db->where('csm_reg_pasien.csm_rp_tipe', 'RI');
 		$this->db->where('csm_reg_pasien.is_submitted', 'Y');
 		$this->db->group_by($this->select);

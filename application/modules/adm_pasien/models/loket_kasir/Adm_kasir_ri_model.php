@@ -544,6 +544,14 @@ class Adm_kasir_ri_model extends CI_Model {
 		return $query->row();
 	}
 
+	public function cek_total_billing($no_registrasi){
+		$this->db->select('(sum(bill_rs) + sum(bill_dr1) + sum(bill_dr2) + sum(bill_dr3)) as total_billing');
+		$this->db->from('tc_trans_pelayanan');
+		$this->db->where('no_registrasi', $no_registrasi );
+		$query = $this->db->get();
+		return $query->row();
+	}
+
 	public function cek_trans_pelayanan($no_registrasi){
 		$this->db->from('tc_trans_pelayanan');
 		$this->db->where('no_registrasi', $no_registrasi );

@@ -249,6 +249,35 @@ class Billing extends MX_Controller {
         
     }
 
+    public function print_billing_resume($no_registrasi, $tipe, $field=''){
+        
+        // $data = json_decode($this->Billing->getDetailData($no_registrasi));
+        // echo '<pre>';print_r($html);die;
+        $temp = new Templates;
+
+        $result = json_decode($this->Billing->getDetailData($no_registrasi));
+        $tipe = $this->Billing->cek_tipe_pasien($no_registrasi);
+        $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
+        $header = $temp->setGlobalProfilePasienTemplateRI($result);
+        
+        $resume_billing = $this->Billing->getDetailBillingRILess($no_registrasi, $tipe, $result);
+        $rincian_billing = $temp->TemplateRincianRI($no_registrasi, $tipe, $field);
+
+        $content = ($field != '')?$rincian_billing:$resume_billing;
+
+
+        $data = array(
+            'title' => 'Billing Pasien Sementara',
+            'breadcrumbs' => $this->breadcrumbs->show(),
+            'no_registrasi' => $no_registrasi,
+            'content' => $content,
+            'data' => $result,
+        );
+        $data['header'] = $header;
+        $this->load->view('Billing/cetak_resume_billing', $data, false);
+
+    }
+
     public function getDetailLess($no_registrasi, $tipe){
         
         /*get detail data billing*/
