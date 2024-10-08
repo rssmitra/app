@@ -1225,7 +1225,7 @@ function find_pasien_by_keyword(keyword){
               $('#result_penangguhan_pasien tbody').remove();
 
               var firstObj = pending_data_pasien[0];
-              tipe_daftar = (firstObj.tipe_daftar != null) ? 'online_web' : 'on the spot';
+              tipe_daftar = (firstObj.tipe_daftar == null) ? 'on the spot' : firstObj.tipe_daftar;
               $('#tipe_daftar_txt').html('<b>['+tipe_daftar+']</b>');
               $('#tgl_daftar_txt').html('<b>['+firstObj.tgl_masuk+']</b>');
 

@@ -154,30 +154,28 @@ class Attachment_model extends CI_Model {
 	}
 
 	public function get_detail_doc(){
-		switch ($_GET['flag']) {
-			case 'BILL_RJ':
-				# billing rawat jalan
-				$result = $this->bill_rj($_GET['code']);
-				break;
-			
-			default:
-				# code...
-				break;
-		}
-		return $result;
-	}
 
-	public function bill_rj($no_registrasi){
 		// get data transaksi kasir
-		$result = $this->db->join('tmp_user', 'tmp_user.user_id = tc_trans_kasir.no_induk', 'left')->get_where('tc_trans_kasir', ['no_registrasi' => $no_registrasi])->row();
+		$result = $this->db->join('tmp_user', 'tmp_user.user_id = tc_trans_kasir.no_induk', 'left')->get_where('tc_trans_kasir', ['no_registrasi' => $_GET['code']])->row();
 
 		$id = isset($result->kode_tc_trans_kasir)?$result->kode_tc_trans_kasir:'';
 		$tgl = isset($result->tgl_jam)?$this->tanggal->formatDateTimeFormDmy($result->tgl_jam):'';
 		$user = isset($result->fullname)?$result->fullname:'';
 		$status = isset($result->kode_tc_trans_kasir)?'Published':'Deleted';
-		$noted = isset($result->kode_tc_trans_kasir)?'Billing Pasien Rawat Jalan a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
+
+		switch ($_GET['flag']) {
+			case 'BILL_RJ':
+			$title = 'Billing Pasien RJ';
+			$noted = isset($result->kode_tc_trans_kasir)?'Billing Pasien Rawat Jalan a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+			case 'RESUME_MEDIS':
+			$title = 'Resume Medis Pasien';
+			$noted = isset($result->kode_tc_trans_kasir)?'Resume Medis Pasien a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+		}
+
 		$response = [
-			'documentName' => 'Billing Pasien Rawat Jalan',
+			'documentName' => $title,
 			'ID' => $id,
 			'createdBy' => $user,
 			'createdDate' => $tgl,
@@ -189,7 +187,7 @@ class Attachment_model extends CI_Model {
 		];
 
 		return $response;
-
+		
 	}
 
 	

@@ -443,8 +443,8 @@ class Pl_pelayanan extends MX_Controller {
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center" ><a href="#" style="color: blue; font-weight: bold" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
+            $row[] = '<div class="center" ><a href="#" style="color: blue; font-weight: bold" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_mr.'</a></div>';
+            // $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
 
             if($row_list->kode_perusahaan == 120){
@@ -453,10 +453,11 @@ class Pl_pelayanan extends MX_Controller {
                 $nm_perusahaan = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'<b style="color: green !important">'.strtoupper($row_list->nama_kelompok).'</b>';
             }
             $row[] = $nm_perusahaan;
+            $row[] = $row_list->no_sep;
 
             $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
             // $row[] = $row_list->nama_pegawai;
-            $tipe_daftar = ($row_list->tipe_daftar == null) ? '<span style="color: blue; font-weight: bold">[on the spot]</span>' : '<span style="color: green; font-weight: bold">[online web]</span>';
+            $tipe_daftar = ($row_list->tipe_daftar == null) ? '<span style="color: blue; font-weight: bold">[on the spot]</span>' : '<span style="color: green; font-weight: bold">['.$row_list->tipe_daftar.']</span>';
             $row[] = '<div class="center"><b style="font-size:13px;">'.$no.'</b><br>'.$tipe_daftar.'</div>';
             $row[] = '<div class="center">'.$row_list->created_by.'</div>';
 

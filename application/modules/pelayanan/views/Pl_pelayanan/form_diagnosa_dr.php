@@ -442,12 +442,12 @@
         </form>
     </div>
 </div>
-<div class="col-md-3 no-padding" style="margin-top: 14px">
+<div class="col-md-4 no-padding" style="margin-top: 14px">
     <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
     <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : ''?></span> <br>
 </div>
 <div class="col-md-8">
-    <p style="text-align: center; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
+    <p style="text-align: right; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
 </div>
 
 <span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
@@ -467,8 +467,8 @@
             <th>Tinggi Badan (Cm)</th>
             <th>Berat Badan (Kg)</th>
             <th>Tekanan Darah (mmHg)</th>
-            <th>Suhu Tubuh (C&deg;)</th>
             <th>Nadi (bpm)</th>
+            <th>Suhu Tubuh (C&deg;)</th>
         </tr>
         <tbody>
         <tr style="background: aliceblue;">
@@ -482,10 +482,10 @@
                 <input type="text" style="text-align: center" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
             </td>
             <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
+                <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
             </td>
             <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
+                <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
             </td>
         </tr>
         </tbody>

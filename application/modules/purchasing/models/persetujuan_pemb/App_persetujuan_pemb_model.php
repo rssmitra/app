@@ -158,6 +158,7 @@ class App_persetujuan_pemb_model extends CI_Model {
 		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
 		$mt_rekap_stok = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
+    $this->db->select(''.$table.'_det.*, '.$table.'.*, '.$mt_barang.'.*');
 		$this->db->from(''.$table.'_det');
 		$this->db->join($table, ''.$table.'.id_tc_permohonan='.$table.'_det.id_tc_permohonan', 'left');
 		$this->db->join($mt_barang, ''.$mt_barang.'.kode_brg='.$table.'_det.kode_brg', 'left');

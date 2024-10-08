@@ -326,7 +326,9 @@
               <!-- <th>No. MR</th> -->
               <th>Poli/Klinik Asal</th>
               <th>Penjamin</th>
-              <th width="150px">Tanggal Masuk</th>
+              <th width="120px">Tgl Masuk</th>
+              <th width="120px">Tgl Transaksi</th>
+              <th width="150px">Petugas</th>
               <th width="100px">Total Billing</th>
             </tr>
           </thead>

@@ -60,7 +60,7 @@ class Adm_kasir extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Adm_kasir->get_datatables();
-        
+        // echo '<pre>';print_r($list);die;
         $data = array();
         $arr_total = array();
         $tgl_keluar_null = [];
@@ -85,7 +85,9 @@ class Adm_kasir extends MX_Controller {
                     // $row[] = $row_list[0]['no_mr'];
                     $row[] = ucwords($row_list[0]['nama_bagian']);
                     $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
-                    $row[] = $this->tanggal->formatDateTime($row_list[0]['tgl_jam_masuk']);
+                    $row[] = $this->tanggal->formatDateTimeFormDmy($row_list[0]['tgl_jam_masuk']);
+                    $row[] = $this->tanggal->formatDateTimeFormDmy($row_list[0]['tgl_transaksi']);
+                    $row[] = ucwords($row_list[0]['petugas']);
                     if( $row_list[0]['status_batal'] == 1 ){
                         $row[] = '<div class="center"><span style="color: red; font-weight: bold">Batal</span></div>';
                     }else{

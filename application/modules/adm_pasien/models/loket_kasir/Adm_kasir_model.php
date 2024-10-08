@@ -5,7 +5,7 @@ class Adm_kasir_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai';
+	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai, i.tgl_jam, j.fullname';
 	var $order = array('b.no_sep' => 'ASC');
 
 	public function __construct()
@@ -26,6 +26,8 @@ class Adm_kasir_model extends CI_Model {
 		$this->db->join('mt_perusahaan e','e.kode_perusahaan=b.kode_perusahaan','left');
 		$this->db->join('mt_nasabah f','f.kode_kelompok=b.kode_kelompok','left');
 		$this->db->join('mt_karyawan h','h.kode_dokter=CAST(g.kode_dokter as INT)','left');
+		$this->db->join('tc_trans_kasir i','i.kode_tc_trans_kasir = a.kode_tc_trans_kasir','left');
+		$this->db->join('tmp_user j','j.user_id = i.no_induk','left');
 
 		if ( isset($_GET['search_by']) ) {
 
@@ -106,6 +108,7 @@ class Adm_kasir_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get()->result();
 		// echo '<pre>';print_r($this->db->last_query());die;
+		// echo '<pre>';print_r($query);die;
 		$result = $this->getTotalRow($query);
 		
 		return $result;
@@ -114,10 +117,10 @@ class Adm_kasir_model extends CI_Model {
   function get_data()
 	{
 		$this->_main_query();
-    $this->db->order_by('b.no_sep ASC');
+    	$this->db->order_by('b.no_sep ASC');
 		$query = $this->db->get()->result(); 
-    $result = $this->getTotalRow($query);
-    // echo '<pre>';print_r($this->db->last_query());die;
+    	$result = $this->getTotalRow($query);
+    	// echo '<pre>';print_r($this->db->last_query());die;
 		return $result;
 	}
 
@@ -146,6 +149,8 @@ class Adm_kasir_model extends CI_Model {
 						'total' => $status_lunas,
 						'total_billing' => $total,
 						'status_batal' => $value->status_batal,
+						'tgl_transaksi' => $value->tgl_jam,
+						'petugas' => $value->fullname,
 					);
 				}
 			}else{
@@ -169,6 +174,8 @@ class Adm_kasir_model extends CI_Model {
 						'total' => $status_lunas,
 						'total_billing' => $total,
 						'status_batal' => $value->status_batal,
+						'tgl_transaksi' => $value->tgl_jam,
+						'petugas' => $value->fullname,
 					);
 				}
 			}
