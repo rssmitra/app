@@ -751,7 +751,6 @@ class References extends MX_Controller {
 							$reserve .= 'Dokter pengirim : <br>';
 						}
 						
-						
 					}else{
 						$img_color = 'bed_green.png';
 						$is_available = '<a href="#" style="cursor:pointer" class="btn btn-xs btn-success" onclick="select_bed_from_modal_bed('."'".$row['kode_ruangan']."'".","."'".$row['no_bed']."'".')">Available</a>';
@@ -803,7 +802,7 @@ class References extends MX_Controller {
 		$this->db->join('tc_kunjungan b', 'a.no_kunjungan=b.no_kunjungan','left');
 		$this->db->join('tc_registrasi c', 'b.no_registrasi=c.no_registrasi','left');
 		$this->db->join('mt_master_pasien d', 'd.no_mr=c.no_mr','left');
-		// $this->db->where('a.tgl_keluar IS NULL');
+		$this->db->where('a.tgl_keluar IS NULL');
 		$this->db->where('a.kode_ruangan='."'".$kode_ruangan."'".'');
 		$this->db->order_by('a.kode_ri DESC');
 		return $this->db->get()->result();
@@ -1750,8 +1749,9 @@ class References extends MX_Controller {
 
 	public function getKodeBrg( $kode='')
 	{
-		$len = strlen($kode);
-		
+		$len = strlen($kode) + 1;
+		// echo "<pre>";print_r($len);die;
+
 		// define table
         $table = ($_GET['flag'] == 'medis' ) ? 'mt_barang' : 'mt_barang_nm' ;
 		// get last brg by kode_generik
@@ -1760,9 +1760,9 @@ class References extends MX_Controller {
 			$this->db->where('kode_generik', $kode);
 			$this->db->order_by('cast(SUBSTRING(kode_brg, 7, 11) as int) DESC');
 		}else{
-      $this->db->select('cast(SUBSTRING(kode_brg, '.$len.', 11) as int) as num');
+      $this->db->select('cast(SUBSTRING(kode_brg, '.$len.', 12) as int) as num');
 	  		$this->db->where('kode_sub_golongan', $kode);
-			$this->db->order_by('cast(SUBSTRING(kode_brg, '.$len.', 11) as int) DESC');
+			$this->db->order_by('cast(SUBSTRING(kode_brg, '.$len.', 12) as int) DESC');
 			// $this->db->where('kode_brg LIKE '."'".$kode."%'".' ');
 		}
 
@@ -1771,9 +1771,10 @@ class References extends MX_Controller {
 		// echo "<pre>";print_r($this->db->last_query());die;
 
 		$lastnum = isset($query->num)?$query->num + 1 : 1;
+		// echo "<pre>";print_r($kode);
+		// echo "<pre>";print_r($lastnum);die;
 		$nextnum = ( strlen($lastnum) == 1 ) ?  "0".$lastnum : $lastnum ;
 		$kode_brg = $kode.$nextnum;
-		// echo "<pre>";print_r($kode_brg);die;
 
 		// cek kode brg existing
 		$brg = $this->db->get_where($table, array('kode_brg' => $kode_brg) )->row();

@@ -383,12 +383,12 @@ class Csm_billing_pasien extends MX_Controller {
                 break;
 
             case 'SEP':
-                $row_sep = $this->Ws_index->findSepReturnArray($data->reg_data->no_sep);
+                $row_sep = $this->Ws_index->findSepFromLocal($data->reg_data->no_sep);
+                // echo '<pre>'; print_r($row_sep);die;
                 $header = $this->Csm_billing_pasien->get_header_data($no_registrasi);
-                $cetakan_ke = $this->Ws_index->count_sep_by_day();
+                $cetakan_ke = $this->Ws_index->count_sep_by_day($data->reg_data->no_sep);
                 $result = array('sep'=>$row_sep, 'cetakan_ke' => $cetakan_ke, 'header' => $header);
-                // echo '<pre>'; print_r($result);die;
-                $html .= $this->load->view('casemix/Csm_billing_pasien/preview_sep', $result, true);
+                $html .= $this->load->view('casemix/Csm_billing_pasien/preview_sep_local', $result, true);
                 break;
             
             default:
