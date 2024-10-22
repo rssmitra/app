@@ -155,6 +155,9 @@ hr {
           <div style="margin-top: 6px">
               <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter : </b></label><br>
               <?php echo isset($value->pengobatan)?nl2br($value->pengobatan):''?>
+              <br>
+              <label for="form-field-8"><b>Resep Dokter : </b></label><br>
+              <?php echo isset($value->resep_farmasi)?nl2br($value->resep_farmasi):''?>
           </div>
           <br>
           <span style="font-weight: bold; font-style: italic; color: blue">(e-Resep)</span><br>
