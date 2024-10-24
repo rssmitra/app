@@ -13,6 +13,7 @@
       <th class="center">No</th>
       <th>Tipe</th>
       <th>Kuitansi</th>
+      <th>No Registrasi</th>
       <th>Tgl Submit</th>
       <th>Tgl Masuk</th>
       <th>Tgl Keluar</th>
@@ -62,6 +63,7 @@
       <td align="center"><?php echo $no;?></td>
       <td><?php echo $row['seri_kuitansi'];?></td>
       <td><?php echo $row['no_kuitansi'];?></td>
+      <td><?php echo $row['no_registrasi'];?></td>
       <td><?php echo $row['tgl_jam'];?></td>
       <td><?php echo $row['tgl_masuk'];?></td>
       <td><?php echo $row['tgl_keluar'];?></td>

@@ -21,6 +21,7 @@
       <th class="center">No</th>
       <th width="90px">Tipe</th>
       <th width="90px">No. Kuitansi</th>
+      <th width="90px">No. Registrasi</th>
       <th width="90px">Tgl Submit</th>
       <th>No MR</th>
       <th>Pasien</th>
@@ -44,6 +45,7 @@
       <td align="center"><?php echo $no;?></td>
       <td><?php echo $row['seri_kuitansi'];?></td>
       <td><?php echo $row['no_kuitansi'];?></td>
+      <td><?php echo $row['no_registrasi'];?></td>
       <td><?php echo $row['tgl_jam'];?></td>
       <td><?php echo $row['no_mr'];?></td>
       <td><?php echo $row['nama_pasien'];?></td>
