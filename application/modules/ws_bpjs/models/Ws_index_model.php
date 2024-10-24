@@ -666,7 +666,6 @@ class Ws_index_model extends CI_Model {
 
 	public function findSepReturnArray($noSep)
     {   
-
 		$result = $this->findSep($noSep);
         $response = isset($result['response']) ? $result : false;
 
@@ -676,8 +675,6 @@ class Ws_index_model extends CI_Model {
             return false;
         }
         
-        
-
     }
 
 
@@ -726,7 +723,10 @@ class Ws_index_model extends CI_Model {
 		return $data;
 	}
 
-	function count_sep_by_day(){
+	function count_sep_by_day($no_sep=''){
+		if($no_sep != ''){
+			$this->db->where('noSep', $no_sep);
+		}
 		$count = $this->db->where( 'tglSep=CAST(CURRENT_TIMESTAMP AS DATE)')->get('ws_bpjs_sep')->num_rows();
 		return $count;
 	}

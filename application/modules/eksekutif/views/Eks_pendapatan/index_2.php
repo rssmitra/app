@@ -59,6 +59,7 @@
     <tr style="background-color:#428bca">
       <th class="center">No</th>
       <th width="90px">No. Kuitansi</th>
+      <th width="90px">No. Registrasi</th>
       <th>Pasien</th>
       <th>Penjamin</th>
       <th width="120px">Tgl Kunjungan</th>
@@ -76,6 +77,7 @@
     <tr>
       <td align="center"><?php echo $no;?></td>
       <td><?php echo $row['seri_kuitansi'].'-'.$row['no_kuitansi'];?><br><?php echo $row['tgl_jam'];?></td>
+      <td><?php echo $row['no_registrasi']?></td>
       <td><?php echo '['.$row['no_mr'].']<br>'.$row['nama_pasien'];?></td>
       <td><?php echo $row['nama_perusahaan']; echo ($row['kode_perusahaan'] == 120) ? "<br>(".$row['no_sep'].")" : ""?><br><?php echo $row['nama_bagian'];?></td>
       <td><?php echo 'in: '.$row['tgl_masuk'].'<br>out: '.$row['tgl_keluar'];?></td>

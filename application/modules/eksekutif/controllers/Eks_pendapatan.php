@@ -58,6 +58,8 @@ class Eks_pendapatan extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Eks_pendapatan->get_datatables();
+        // echo "<pre>";print_r($list);die;
+
         $data = array();
         $no = $_POST['start'];
         $getList = [];
