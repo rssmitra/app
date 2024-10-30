@@ -113,7 +113,7 @@
             <!-- #section:basics/navbar.user_menu -->
             <li class="light-blue">
               <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                <img class="nav-user-photo" src="<?php echo isset($this->session->userdata('user')->path_foto) ? base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto:base_url().'assets/avatars/user.jpg'?>" alt="<?php echo $this->session->userdata('user')->fullname?>'s Photo" height="95%"/>
+                <img class="nav-user-photo" src="<?php echo (file_exists(base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto)) ? base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto:base_url().'assets/avatars/user.jpg'?>" alt="<?php echo $this->session->userdata('user')->fullname?>'s Photo" height="95%"/>
                 <span class="user-info">
                   <small>Welcome,</small>
                   <?php echo substr($this->session->userdata('user')->username, 0, 8)?>
@@ -1089,7 +1089,7 @@
         }
 
         if(year == 2024){
-            var dataLiburNasional = ["1-1-2024", "8-2-2024", "10-2-2024", "14-2-2024" , "11-3-2024", "29-3-2024", "31-3-2024", "10-4-2024", "11-4-2024", "1-5-2024", "9-5-2024", "23-5-2024", "1-6-2024", "17-6-2024", "7-7-2024", "17-8-2024", "16-9-2024", "25-12-2024"];
+            var dataLiburNasional = ["1-1-2024", "8-2-2024", "10-2-2024", "14-2-2024" , "11-3-2024", "29-3-2024", "31-3-2024", "10-4-2024", "11-4-2024", "1-5-2024", "9-5-2024", "23-5-2024", "1-6-2024", "17-6-2024", "7-7-2024", "17-8-2024", "16-9-2024", "25-12-2024", "1-1-2025", "27-1-2025", "29-1-2025", "29-3-2025", "31-3-2025", "1-4-2025", "18-4-2025", "1-5-2025", "12-5-2025", "29-5-2025", "6-6-2025", "27-6-2025", "5-9-2025", "25-12-2025"];
         }
 
         if(year == 2025){

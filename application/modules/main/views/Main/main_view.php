@@ -55,9 +55,7 @@
           <!-- #section:basics/navbar.toggle -->
           <button class="pull-right navbar-toggle navbar-toggle-img collapsed" type="button" data-toggle="collapse" data-target=".navbar-buttons,.navbar-menu">
             <span class="sr-only">Toggle user menu</span>
-            <img src="<?php echo isset($this->session->userdata('user')->path_foto) ? base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto:base_url().'assets/avatars/user.jpg'?>" alt="<?php echo $this->session->userdata('user')->fullname?>'s Photo"/>
-
-
+            <img src="<?php echo (file_exists(base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto)) ? base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto:base_url().'assets/avatars/user.jpg'?>" alt="<?php echo $this->session->userdata('user')->fullname?>'s Photo"/>
           <!-- /section:basics/navbar.toggle -->
         </div>
 

@@ -10,8 +10,8 @@ jQuery(function($) {
 
   
   var disableDates = getLiburNasional(<?php echo date('Y')?>);
-  $("#tgl_kunjungan").datepicker({
 
+  $("#tgl_kunjungan").datepicker({
     autoclose: true,    
     todayHighlight: true,
     daysOfWeekDisabled: [0],
@@ -24,11 +24,8 @@ jQuery(function($) {
         else{
             return true;
         }
-
     },
-  
   }).on("change", function() {
-    
     var str_selected_date = this.value;
     var selected_date = str_selected_date.split("/").join("-");
     var spesialis = $('#klinik_rajal').val();

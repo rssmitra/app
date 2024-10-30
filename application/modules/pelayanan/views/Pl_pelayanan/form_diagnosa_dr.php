@@ -164,7 +164,6 @@
     $('#callPatientPoli').click(function (e) {  
       e.preventDefault();
       // setTimeout(playAudioDing(1, 2), 5000);
-      
       var params = {
         no_kunjungan : $('#no_kunjungan').val(),
         dokter : $('#kode_dokter_poli').val(),
@@ -173,7 +172,6 @@
       $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan/callPatient') ?>", params , function (response) { 
            // no action
       })
-
     });
 
     $('#inputKeyObat').typeahead({
@@ -413,7 +411,7 @@
 
 <div class="hr dotted"></div>
 
-<div class="widget-box transparent ui-sortable-handle collapsed" id="widget-box-12" style="display: none">
+<div class="widget-box transparent ui-sortable-handle collapsed" id="widget-box-12" style="display: block">
     <div class="widget-header">
         <span style="font-style: italic; font-size: 14px" class="widget-title lighter">Pemanggilan Pasien</h4>
         <div class="widget-toolbar no-border">
