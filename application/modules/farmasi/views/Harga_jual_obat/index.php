@@ -151,13 +151,17 @@
         <div class="form-group">
           <label class="control-label col-md-2">Status Aktif</label>
             <div class="col-md-2">
-                <select name="is_active" id="is_active">
+                <select name="is_active" id="is_active" class="form-control">
                   <option value="" selected>- Silahkan Pilih -</option>
                   <option value="1" selected>AKTIF</option>
                   <option value="0">NON AKTIF</option>
                 </select>
             </div>
-            <div class="col-md-8" style="margin-left: -3%">
+            <div class="col-md-8 no-padding">
+              <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+                <i class="ace-icon fa fa-excel icon-on-right bigger-110"></i>
+                Export Excel
+              </a>
               <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                 Search
@@ -172,10 +176,6 @@
         <div class="clearfix" style="margin-bottom:-5px">
           <?php echo $this->authuser->show_button('farmasi/Harga_jual_obat?flag='.$flag_string.'','C','',7)?>
           <?php echo $this->authuser->show_button('farmasi/Harga_jual_obat?flag='.$flag_string.'','D','',5)?>
-          <!-- <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple"><i class="fa fa-print"></i> Label Barcode</a>
-
-          <a href="" class="btn btn-xs btn-inverse" id="button_print_multiple_kartu_stok"><i class="fa fa-print"></i> Label Kartu Stok</a> -->
-
         </div>
 
         <hr class="separator">

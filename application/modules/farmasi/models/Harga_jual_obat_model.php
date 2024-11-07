@@ -55,11 +55,7 @@ class Harga_jual_obat_model extends CI_Model {
 		}
 
 	}
-
-	private function _get_datatables_query()
-	{
-		
-		$this->_main_query();
+	private function _filter_query(){
 		// default filter
 		$this->db->where('table_brg.kode_brg is not null');
 
@@ -74,7 +70,13 @@ class Harga_jual_obat_model extends CI_Model {
 		if( ( isset( $_GET['is_active']) AND $_GET['is_active'] != '' )  ){
 			$this->db->where('table_brg.is_active', $_GET['is_active']);
 		}
-
+	}
+	private function _get_datatables_query()
+	{
+		
+		$this->_main_query();
+		$this->_filter_query();
+		
 		$i = 0;
 	
 		foreach ($this->column as $item) 
@@ -101,6 +103,15 @@ class Harga_jual_obat_model extends CI_Model {
 		$this->_get_datatables_query();
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function get_all_data()
+	{
+		$this->_main_query();
+		$this->_filter_query();
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();
@@ -136,53 +147,6 @@ class Harga_jual_obat_model extends CI_Model {
 			return $query->row();
 		}
 		
-	}
-
-	public function save($data)
-	{
-		$this->db->insert($this->table, $data);
-		return $this->db->insert_id();
-	}
-
-	public function update($table, $where, $data)
-	{
-		$this->db->update($table, $data, $where);
-		return $this->db->affected_rows();
-	}
-
-	public function delete_by_id($id)
-	{
-		$get_data = $this->get_by_id($id);
-		if( $this->delete_image_default($get_data[0]) ){
-			$this->db->where_in('kode_brg', $id);
-			return $this->db->delete($this->table);
-		}else{
-			return false;
-		}
-		
-	}
-
-	public function delete_image_default($data){
-		/*print_r($data);die;*/
-		/*if file images exist*/
-		if ( file_exists(PATH_IMG_MST_BRG.$data->path_image) ) {
-			if($data->path_image != NULL){
-				/*delete first path_image file*/
-	            unlink(PATH_IMG_MST_BRG.$data->path_image);
-			}
-        }
-        return true;
-	}
-
-	public function get_history_po($kode_brg){
-		$tc_po = ($_GET['flag']=='medis')?'tc_po':'tc_po_nm';
-		$this->db->select('a.*, b.no_po, b.tgl_po, c.namasupplier, b.tgl_kirim, b.petugas, c.alamat, c.telpon1');
-		$this->db->from($tc_po.'_det a');
-		$this->db->join($tc_po.' b', 'a.id_tc_po=b.id_tc_po','left');
-		$this->db->join('mt_supplier c', 'c.kodesupplier=b.kodesupplier','left');
-		$this->db->where('kode_brg', $kode_brg);
-		$this->db->order_by('a.id_tc_po_det', 'DESC');
-		return $this->db->get();
 	}
 
 
