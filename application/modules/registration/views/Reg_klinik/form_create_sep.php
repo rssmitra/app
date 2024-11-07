@@ -191,7 +191,11 @@ function copySuratKontrol(surat_kontrol){
 
 function findSuratKontrol(){
     preventDefault();
-    show_modal('ws_bpjs/ws_index?modWs=CreateSuratKontrol&no_mr='+$('#noMR').val()+'&nokartu='+$('#noKartuBpjs').val()+'', 'Surat Kontrol Rawat Jalan');
+    var nokartu = $('#noKartuBpjs').val();
+    var no_mr = $('#noMR').val();
+    var link = 'ws_bpjs/ws_index?modWs=CreateSuratKontrol&no_mr='+no_mr.replace(/\s/g, '')+'&nokartu='+nokartu+'';
+    // console.log(link);
+    show_modal(link, 'Surat Kontrol Rawat Jalan');
 }
 
 $('#inputKeyPoliTujuan').typeahead({
