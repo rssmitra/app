@@ -69,6 +69,8 @@ class Harga_jual_obat_model extends CI_Model {
 
 		if( ( isset( $_GET['is_active']) AND $_GET['is_active'] != '' )  ){
 			$this->db->where('table_brg.is_active', $_GET['is_active']);
+		}else{
+			$this->db->where('table_brg.is_active', '1');
 		}
 	}
 	private function _get_datatables_query()

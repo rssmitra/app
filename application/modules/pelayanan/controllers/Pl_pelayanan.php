@@ -1483,6 +1483,9 @@ class Pl_pelayanan extends MX_Controller {
         $this->form_validation->set_rules('pl_diagnosa_hidden', 'Diagnosa', 'trim|required', array('required' => 'Silahkan pilih kembali Diagnosa Primer'));   
         $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
+        $this->form_validation->set_rules('pl_procedure', 'Prosedur/Tindakan', 'trim');        
+        $this->form_validation->set_rules('pl_tgl_kontrol_kembali', 'Tanggal Kontrol', 'trim');        
+        $this->form_validation->set_rules('pl_catatan_kontrol', 'Catatan Kontrol', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
         $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
         $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');             
@@ -1541,6 +1544,10 @@ class Pl_pelayanan extends MX_Controller {
                 'berat_badan' => $this->input->post('pl_bb'),
                 'suhu' => $this->input->post('pl_suhu'),
                 'nadi' => $this->input->post('pl_nadi'),
+                'kode_icd9' => $this->input->post('pl_procedure_hidden'),
+                'text_icd9' => $this->input->post('pl_procedure'),
+                'tgl_kontrol_kembali' => $this->input->post('pl_tgl_kontrol_kembali'),
+                'catatan_kontrol_kembali' => $this->input->post('pl_catatan_kontrol'),
             );
 
             if($this->input->post('kode_riwayat')==0){
@@ -2466,6 +2473,15 @@ class Pl_pelayanan extends MX_Controller {
                 );
         //output to json format
         echo json_encode($output);
+    }
+
+    public function copy_soap(){
+
+        // print_r($_POST);die;
+        // get th_riwayat_pasien prev
+        $th = $this->db->get_where('th_riwayat_pasien', ['kode_riwayat' => $_POST['kode_riwayat']])->row();
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'result' => $th));
+           
     }
 
     

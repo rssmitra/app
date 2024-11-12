@@ -1,7 +1,29 @@
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+<script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 
 <script type="text/javascript">
     
+    jQuery(function($) {  
+
+        $('.date-picker').datepicker({    
+
+        autoclose: true,    
+
+        todayHighlight: true    
+
+        })  
+
+        //show datepicker when clicking on the icon
+
+        .next().on(ace.click_event, function(){    
+
+        $(this).prev().focus();    
+
+        });  
+
+    });
+
     var minutesCount = 0; 
     var secondCount = 0; 
     var centiSecondCount = 0;
@@ -392,6 +414,30 @@
         $('#jml_pesan').val(ttl_pesan);
     }
 
+    $('#pl_procedure').typeahead({
+          source: function (query, result) {
+              $.ajax({
+                  url: "ws_bpjs/Ws_index/getRef?ref=RefProcedure",
+                  data: 'keyword=' + query,            
+                  dataType: "json",
+                  type: "POST",
+                  success: function (response) {
+                    result($.map(response, function (item) {
+                        return item;
+                    }));
+                  }
+              });
+          },
+          afterSelect: function (item) {
+            // do what is needed with item
+            var label_item=item.split('-')[1];
+            var val_item=item.split('-')[0];
+            console.log(val_item);
+            $('#pl_procedure').val(label_item);
+            $('#pl_procedure_hidden').val(val_item);
+          }
+      });
+
 </script>
 <script src="<?php echo base_url()?>assets/tts/script.js"></script>
 <!-- hidden form -->
@@ -442,7 +488,7 @@
 </div>
 <div class="col-md-4 no-padding" style="margin-top: 14px">
     <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
-    <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : ''?></span> <br>
+    <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : $this->tanggal->formatDateTimeFormDmy($value->tgl_jam_poli)?></span> <br>
 </div>
 <div class="col-md-8">
     <p style="text-align: right; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
@@ -451,7 +497,7 @@
 <span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
 <div style="margin-top: 6px">
     <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> <span style="color:red">* </span> <br><span style="font-size: 11px; font-style: italic">(Masukan anamnesa minimal 8 karakter)</span> </label>
-    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
+    <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important" id="pl_anamnesa"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
     <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
 </div>
 <br>
@@ -529,14 +575,30 @@
     </div>
     <input type="hidden" class="form-control" name="konten_diagnosa_sekunder" id="konten_diagnosa_sekunder" value="<?php echo isset($riwayat->diagnosa_sekunder)?$riwayat->diagnosa_sekunder:''?>">
 </div>
+<div style="margin-top: 6px">
+    <label for="form-field-8"><b>Prosedur/ Tindakan(ICD9)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD9)</i></label>
+    <input type="text" class="form-control" name="pl_procedure" id="pl_procedure" placeholder="Masukan keyword ICD 9" value="<?php echo isset($riwayat->procedure)?$riwayat->procedure:' Other consultation'?>">
+    <input type="hidden" class="form-control" name="pl_procedure_hidden" id="pl_procedure_hidden" value="<?php echo isset($riwayat->kode_icd_procedure)?$riwayat->kode_icd_procedure:'89.08'?>">
+</div>
+
 <br>
 <span style="font-weight: bold; font-style: italic; color: blue">(Planning)</span>
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br><i style="font-size: 11px">(Mohon dijelaskan Rencana Asuhan Pasien dan Tindak Lanjutnya)</i></label>
     <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
 </div>
+<div style="margin-top: 6px">
+    <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br><i style="font-size: 11px">(Secara default untuk pasien BPJS kontrol kembali setelah 30 hari)</i></label><br>
+    <input type="text" class="date-picker" data-date-format="yyyy-mm-dd" name="pl_tgl_kontrol_kembali" id="pl_tgl_kontrol_kembali" class="form-control" style="width: 100% !important" placeholder="ex: <?php echo date('Y-m-d')?>" value="<?php $next_date = date('Y-m-d', strtotime("+30 days")); echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:$next_date?>">
+</div>
+<div style="margin-top: 6px">
+    <label for="form-field-8"><b>Catatan Kontrol</b></label>
+    <textarea name="pl_catatan_kontrol" id="pl_catatan_kontrol" class="form-control" style="height: 70px !important" placeholder="ex. Mohon membawa hasil LAB saat kontrol kembali"><?php echo isset($riwayat->catatan_kontrol_kembali)?$this->master->br2nl($riwayat->catatan_kontrol_kembali):''?></textarea>
+</div>
 <br>
-<p><b><i class="fa fa-stethoscope bigger-120"></i> STATUS KUNJUNGAN PASIEN </b></p>
+
+
+<p><b><i class="fa fa-stethoscope bigger-120"></i> INFORMASI PASIEN PULANG </b></p>
 <div class="form-group">
     <label class="control-label col-sm-3" for="">Cara Keluar Pasien</label>
     <div class="col-sm-4">

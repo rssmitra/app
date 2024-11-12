@@ -924,47 +924,12 @@ function show_icare() {
                     <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
                     <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
                 </div>
-                <div class="comments ace-scroll"  >
+                <div class=""  >
                   <!-- <div id="list_antrian_existing"></div> -->
                   <table id="list_antrian_existing" class="table">
                     <tbody></tbody>
                   </table>
                 </div>
-                
-                <!-- <div id="div_antrian_existing">
-                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Antrian Pasien Belum Diperiksa</span></center>
-                  <ol class="list-group list-group-unbordered" id="list_antrian_existing" style="background-color:white;height: 650px;overflow: scroll;">
-                  </ol>
-
-                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Sudah Diperiksa</span></center>
-                  <ol class="list-group list-group-unbordered" id="list_antrian_done" style="background-color:white;height: 650px;overflow: scroll;">
-                  </ol>
-
-                  <center><span style="font-weight: bold; margin-top: 10px; font-size: 14px;">Batal Berobat</span></center>
-                  <ol class="list-group list-group-unbordered" id="list_antrian_cancel" style="background-color:white;height: 650px;overflow: scroll;">
-                  </ol>
-                </div>
-
-                  <span style="font-weight: bold"><i class="fa fa-list blue"></i> Belum Diperiksa</span>
-                  <table class="table" id="antrian_pasien_tbl" style="background: linear-gradient(45deg, #c0ec70, transparent) !important">
-                      <tbody>
-                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                      </tbody>
-                  </table>
-                  <br>
-                  <span style="font-weight: bold"><i class="fa fa-check-square-o green"></i> Sudah Diperiksa</span>
-                  <table class="table" id="antrian_pasien_tbl_done" style="background: linear-gradient(77deg, #fee951cc, transparent)">
-                      <tbody>
-                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                      </tbody>
-                  </table>
-                  <br>
-                  <span style="font-weight: bold"><i class="fa fa-times-circle red"></i> Batal Berobat</span>
-                  <table class="table" id="antrian_pasien_tbl_cancel" style="background: linear-gradient(45deg, #ef8e8e, transparent)">
-                      <tbody>
-                          <tr><td><span style="font-weight: bold; color: red; font-style: italic">Silahkan tunggu...</span></td></tr>
-                      </tbody>
-                  </table> -->
 
               </div>
 

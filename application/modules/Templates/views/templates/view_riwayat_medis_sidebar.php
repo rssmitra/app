@@ -32,6 +32,34 @@
       }
       
   }
+
+  function copy_soap(id){
+      preventDefault();
+      if(confirm('Apakah anda yakin akan menyalin SOAP ini?')){
+          var formData = {
+            kode_riwayat : id,
+          };
+          $.ajax({
+              url: "pelayanan/Pl_pelayanan/copy_soap",
+              data: formData,            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                  // load form pesan resep
+                  var obj = response.result;
+                  console.log(obj);
+                  $('#pl_anamnesa').val(obj.anamnesa);
+                  $('#pl_pemeriksaan').val(obj.pemeriksaan);
+                  $('#pl_diagnosa').val(obj.diagnosa_akhir);
+                  $('#pl_diagnosa_hidden').val(obj.kode_icd_diagnosa);
+                  $('#pl_pengobatan').val(obj.pengobatan);
+              }
+          });
+      }else{
+          return false;
+      }
+      
+  }
 </script>
 
 <style>
@@ -46,7 +74,7 @@ hr {
 }
 </style>
 
-<div id="accordion" class="accordion-style1 panel-group accordion-style2" style="overflow-y: scroll;max-height: 550px;">
+<div id="accordion" class="accordion-style1 panel-group accordion-style2" style="position: relative; top: 0px; transition-property: top; transition-duration: 0.15s;">
   <?php 
     if(count($result) > 0):
     foreach ($result as $key => $value) : 
@@ -69,9 +97,9 @@ hr {
 
       <div class="panel-collapse collapse <?php echo $default_toogle?>" id="collapse<?php echo $value->no_kunjungan?>">
         <div class="panel-body" style="border: 1px solid #dcd9d9;padding: 5px;background: lightyellow;">
-          <center style="background: #f4ae124a">
-            <span style="font-size: 14px !important; font-weight: bold">RESUME MEDIS PASIEN</span><br>
-            <i>Kode. <span><b><a href="#" onclick="show_modal('registration/reg_pasien/view_detail_resume_medis/<?php echo $value->no_registrasi?>', 'RESUME MEDIS PASIEN')"><?php echo $value->no_registrasi?></a></b></span></i>
+          <center>
+            <a href="#" class="btn btn-xs btn-success" onclick="copy_soap(<?php echo $value->kode_riwayat?>)">Copy SOAP</a>
+            <a href="#" class="btn btn-xs btn-primary" onclick="show_modal('registration/reg_pasien/view_detail_resume_medis/<?php echo $value->no_registrasi?>', 'RESUME MEDIS PASIEN')">Selengkapnya</a>
           </center>
           <br>
 
@@ -123,7 +151,7 @@ hr {
           <span style="font-weight: bold; font-style: italic; color: blue">(Assesment)</span>
           <div style="margin-top: 6px">
               <label for="form-field-8"><b>Diagnosa Primer(ICD10) : </b></label><br>
-              <?php echo isset($value->diagnosa_akhir)?$value->diagnosa_akhir:''?>
+              <?php echo isset($value->kode_icd_diagnosa)?$value->kode_icd_diagnosa:''?> - <?php echo isset($value->diagnosa_akhir)?$value->diagnosa_akhir:''?>
           </div>
 
           <div style="margin-top: 6px">
@@ -150,6 +178,11 @@ hr {
                   ?>
               </div>
           </div>
+
+          <div style="margin-top: 6px">
+              <label for="form-field-8"><b>Prosedur/ Tindakan (ICD9) : </b></label><br>
+              <?php echo isset($value->kode_icd9)?$value->kode_icd9:''?> - <?php echo isset($value->text_icd9)?$value->text_icd9:''?>
+          </div>
           <br>
           <span style="font-weight: bold; font-style: italic; color: blue">(Planning)</span>
           <div style="margin-top: 6px">
@@ -158,6 +191,10 @@ hr {
               <br>
               <label for="form-field-8"><b>Resep Dokter : </b></label><br>
               <?php echo isset($value->resep_farmasi)?nl2br($value->resep_farmasi):''?>
+              <br>
+              <label for="form-field-8"><b>Tgl Kontrol Kembali : </b></label><br>
+              <?php echo isset($value->tgl_kontrol_kembali)?$this->tanggal->formatDate($value->tgl_kontrol_kembali):''?><br>
+              <?php echo isset($value->catatan_kontrol_kembali)?$value->catatan_kontrol_kembali:''?>
           </div>
           <br>
           <span style="font-weight: bold; font-style: italic; color: blue">(e-Resep)</span><br>
