@@ -108,6 +108,38 @@
 
   }
 
+  function inputDiscRp(kode_brg){
+
+    var discount_rp = parseFloat($('#potongan_diskon_'+kode_brg+'').val()).toFixed(2);
+    var price = $('#hidden_form_input_harga_satuan_'+kode_brg+'').val();
+    var qty = parseFloat($('#jml_permohonan_'+kode_brg+'').text()).toFixed(2);
+    var discount_percent = (discount_rp / parseFloat(price)) * 100;
+    $('#form_input_diskon_'+kode_brg+'').val(discount_percent.toFixed(2));
+
+    if( discount_rp != '' ){
+      var potonganDisc = discount_rp;    
+      var afterDisc = parseFloat(price) - parseFloat(discount_rp);
+      var nett = qty * afterDisc;
+      var nett_disc = qty * potonganDisc;
+      // set value nominal diskon
+      $('#nominal_diskon_'+kode_brg+'').val(nett);
+      // potongan disc
+      $('#potongan_diskon_'+kode_brg+'').val(nett_disc);
+      // hitung sub total
+      hitungSubTotalBarang(kode_brg);
+    }else{
+      // set value nominal diskon
+      var nett = qty * price;
+      $('#nominal_diskon_'+kode_brg+'').val(nett);
+      // potongan disc
+      $('#potongan_diskon_'+kode_brg+'').val(0);
+      // hitung sub total
+      hitungSubTotalBarang(kode_brg);
+    }
+    inputPpn(kode_brg);
+
+  }
+
   function inputPpn(kode_brg){
     var ppn = $('#form_input_ppn_'+kode_brg+'').val();
     var nominal_diskon = $('#nominal_diskon_'+kode_brg+'').val();
@@ -181,6 +213,7 @@
             <th class="center" width="7%">Jumlah<br>Pesan</th>
             <th class="center" width="10%">Harga Satuan</th>
             <th class="center" width="7%">Disc (%)</th>
+            <th class="center" width="7%">Disc (Rp)</th>
             <th class="center" width="7%">PPN (%)</th>
             <th class="center" width="10%">Total</th>
           </tr>
@@ -256,7 +289,10 @@
             <td class="center">
                 <input type="text" name="diskon[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_diskon_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" value="<?php echo number_format($discount, 2)?>" onchange="inputDisc('<?php echo $row_dt[0]->kode_brg?>')" disabled>
                 <input type="hidden" name="diskon_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_diskon_<?php echo $row_dt[0]->kode_brg?>" class="diskon" style="height:45px;text-align:center" value="0">
-                <input type="hidden" name="potongan_diskon[<?php echo $row_dt[0]->kode_brg?>]" id="potongan_diskon_<?php echo $row_dt[0]->kode_brg?>" class="potongan_diskon" style="height:45px;text-align:center" value="0">
+            </td>
+
+            <td class="center">
+                <input type="text" onchange="inputDiscRp('<?php echo $row_dt[0]->kode_brg?>')" name="potongan_diskon[<?php echo $row_dt[0]->kode_brg?>]" id="potongan_diskon_<?php echo $row_dt[0]->kode_brg?>" class="format_number potongan_diskon form-control" style="height:45px;text-align:center; width: 100px" value="0" disabled>
             </td>
 
              <!-- ppn -->
@@ -274,21 +310,21 @@
           <?php endforeach;?>
         </tbody>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="11">DPP</td>
+          <td align="right" colspan="12">DPP</td>
           <td align="right">
               <input type="text" class="format_number form-control" name="total_dpp" id="total_dpp" style="height:45px;text-align:right" value="" readonly>
               <input type="hidden" class="form-control" name="total_dpp_val" id="total_dpp_val" style="height:45px;text-align:right" value="" readonly>
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="11">PPN</td>
+          <td align="right" colspan="12">PPN</td>
           <td align="right">
               <input type="text" class="format_number form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="" readonly>
               <input type="hidden" class="form-control" name="total_ppn_val" id="total_ppn_val" style="height:45px;text-align:right" value="" readonly>
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="11">TOTAL</td>
+          <td align="right" colspan="12">TOTAL</td>
           <td align="right">
               <!-- hidden potongan diskon -->
               <input type="hidden" class="form-control" name="total_potongan_diskon_val" id="total_potongan_diskon_val" style="height:45px;text-align:right" value="" readonly>

@@ -39,6 +39,8 @@ jQuery(function($) {
 });
 
 $(document).ready(function() {
+  // load resume medis last
+  getMenuTabsHtml('templates/References/get_riwayat_medis/'+$('#no_mr').val()+'?key=1', 'load_last_resume_medis');
   //initiate dataTables plugin
     oTableCppt = $('#table-cppt').DataTable({ 
           
@@ -226,7 +228,6 @@ function show_edit(myid){
 }
 
 
-
 function show_modal_pengkajian(myid){
   preventDefault();
   show_modal_medium_return_json('pelayanan/Pl_pelayanan/switch_template_form/25/1718811', 'DETAIL PENGKAJIAN');
@@ -283,130 +284,149 @@ function fillthis(id){
     height: 700px !important;
     padding: 5px;
   }
- 
+  .input_type{
+    border : none !important;
+    border-bottom : 1px solid #dddada !important;
+  }
+
+  .textarea-type{
+    height: 100px !important;
+    width: 100% !important;
+  }
 </style>
 <div class="row">
 
-  <div class="col-md-12">
+  <div class="page-header">
+    <h1>
+      <?php echo $title?>
+      <small>
+        <i class="ace-icon fa fa-angle-double-right"></i>
+        <?php echo isset($breadcrumbs)?$breadcrumbs:''?>
+      </small>
+    </h1>
+  </div><!-- /.page-header -->
 
-    <div class="center"><span style="font-size: 14px"><b>FORM CATATAN RIWAYAT PENYAKIT<br>ATAU PENGKAJIAN PASIEN</b></span></div>
-    <br>
+  <div class="col-md-7" style="border-right: 1px solid #e5e5e5">
+    <form class="form-horizontal" method="post" id="form_pelayanan" action="pelayanan/Pl_pelayanan/processSaveCatatanPengkajian" enctype="multipart/form-data" autocomplete="off" >   
 
-    <!-- form default pelayanan pasien -->
-    <input type="hidden" name="cppt_id" value="" id="cppt_id">
+      <!-- form default pelayanan pasien -->
+      <input type="hidden" name="cppt_id" value="" id="cppt_id">
+      <input type="hidden" name="no_mr" value="<?php echo isset($no_mr)?$no_mr:''?>" id="no_mr">
+      <input type="hidden" name="no_kunjungan" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan">
 
-    <div class="form-group">
-        <label class="control-label col-sm-2" for="">*Tanggal/Jam</label>
-          <div class="col-md-6">
-                
-            <div class="input-group">
-                
-                <input name="cppt_tgl" id="cppt_tgl" placeholder="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo date('Y-m-d')?>">
-                <span class="input-group-addon">
+      <div class="form-group">
+          <label class="control-label col-sm-2" for="">*Tanggal/Jam</label>
+            <div class="col-md-6">
                   
-                  <i class="ace-icon fa fa-calendar"></i>
-                
-                </span>
-
-                <input id="timepicker1" name="cppt_jam" id="cppt_jam" type="text" class="form-control">
-                <span class="input-group-addon">
-                  <i class="fa fa-clock-o bigger-110"></i>
-                </span>
-                
-            </div>
-
-          </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label col-sm-2">Nama Dokter</label>
-        <div class="col-md-6">
-          <input type="text" class="form-control" name="nama_ppa" value="<?php echo $this->session->userdata('sess_nama_dokter');?>">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label col-sm-2">Jenis Form</label>
-        <div class="col-md-8">
-          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), 1 , 'jenis_form_catatan', 'jenis_form_catatan', 'form-control', '', '') ?>
-        </div>
-    </div>
-
-
-    <hr>
-
-    <div id="editor"><?php echo $template?></div>
-    <input type="hidden" name="catatan_pengkajian" value="" />
-					
-    <div class="center">
-        
-        <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
-            <div class="col-sm-12"><button type="button" class="btn btn-sm btn-primary" id="btn_add_catatan"><i class="fa fa-save"></i> Simpan</button> 
-            </div>
-        </div>
-        <hr>
-    </div>
-    <br>
-    <hr>
-
-    <div class="col-md-12" style="margin-top: 10px">
-      <center><span style="font-size: 18px"><b>CATATAN RIWAYAT PENYAKIT ATAU PENGKAJIAN PASIEN</b></span></center><br>
-      <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
-
-          <div class="form-group">
-            <label class="control-label col-md-2">Tanggal</label>
-              <div class="col-md-3">
-                <div class="input-group">
-                  <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <div class="input-group">
+                  
+                  <input name="cppt_tgl" id="cppt_tgl" placeholder="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo date('Y-m-d')?>">
                   <span class="input-group-addon">
-                    <i class="fa fa-calendar bigger-110"></i>
+                    
+                    <i class="ace-icon fa fa-calendar"></i>
+                  
                   </span>
-                </div>
+
+                  <input id="timepicker1" name="cppt_jam" id="cppt_jam" type="text" class="form-control">
+                  <span class="input-group-addon">
+                    <i class="fa fa-clock-o bigger-110"></i>
+                  </span>
+                  
               </div>
 
-              <label class="control-label col-md-1">s/d</label>
-              <div class="col-md-3">
-                <div class="input-group">
-                  <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
-                  <span class="input-group-addon">
-                    <i class="fa fa-calendar bigger-110"></i>
-                  </span>
-                </div>
-              </div>
-
-              <div class="col-md-3">
-              <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default">
-                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-              </a>
-              <a href="#" id="btn_reset_data_cppt" class="btn btn-xs btn-warning">
-                <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-              </a>
-              <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
-                <i class="fa fa-file-pdf-o bigger-110"></i>
-              </a>
             </div>
+      </div>
 
+      <div class="form-group">
+          <label class="control-label col-sm-2">Nama Dokter</label>
+          <div class="col-md-6">
+            <input type="text" class="form-control" name="nama_ppa" value="<?php echo $this->session->userdata('sess_nama_dokter');?>">
           </div>
-          
-          <table id="table-cppt" class="table table-bordered table-hover">
-            <thead>
-              <tr>  
-                <th width="30px">No</th>
-                <th width="70px">Tanggal/Jam</th>
-                <th>Nama Dokter</th>
-                <th>Catatan Pengkajian</th>
-                <th>Verifikasi Dokter</th>
-                <th width="100px">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
+      </div>
 
-      </form>
-    </div>
-
+      <div class="form-group">
+          <label class="control-label col-sm-2">Jenis Form</label>
+          <div class="col-md-8">
+            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), 25 , 'jenis_form_catatan', 'jenis_form_catatan', 'form-control', '', '') ?>
+          </div>
+      </div>
+      <hr>
+      <div id="editor"><?php echo $template?></div>
+      <input type="hidden" name="catatan_pengkajian" value="" />
+            
+      <div class="center">
+          <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
+              <div class="col-sm-12"><button type="button" class="btn btn-sm btn-primary" id="btn_add_catatan"><i class="fa fa-save"></i> Simpan</button> 
+              </div>
+          </div>
+          <hr>
+      </div>
+      <br>
+      <hr>
+    </form>
   </div>
+
+  <div class="col-md-5" style="margin-top: 10px">
+    <center><span style="font-size: 14px"><b>CATATAN RIWAYAT PENYAKIT ATAU PENGKAJIAN PASIEN</b></span></center><br>
+    <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
+
+        <div class="form-group">
+          <label class="control-label col-md-2">Tanggal</label>
+            <div class="col-md-3">
+              <div class="input-group">
+                <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                <span class="input-group-addon">
+                  <i class="fa fa-calendar bigger-110"></i>
+                </span>
+              </div>
+            </div>
+
+            <label class="control-label col-md-1">s/d</label>
+            <div class="col-md-3">
+              <div class="input-group">
+                <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                <span class="input-group-addon">
+                  <i class="fa fa-calendar bigger-110"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+            <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default">
+              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+            </a>
+            <a href="#" id="btn_reset_data_cppt" class="btn btn-xs btn-warning">
+              <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+            </a>
+            <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
+              <i class="fa fa-file-pdf-o bigger-110"></i>
+            </a>
+          </div>
+
+        </div>
+        
+        <table id="table-cppt" class="table table-bordered table-hover">
+          <thead>
+            <tr>  
+              <th width="30px">No</th>
+              <th width="70px">Tanggal/Jam</th>
+              <th>Nama Dokter</th>
+              <th>Catatan Pengkajian</th>
+              <th>Verifikasi Dokter</th>
+              <th width="100px">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+
+    </form>
+    <!-- resume medis terakhir -->
+    <center><span style="font-size: 14px"><b>RESUME MEDIS PASIEN TERBARU</b></span></center><br>
+    <div id="load_last_resume_medis"></div>
+  </div>
+  
+
      
 </div>
 

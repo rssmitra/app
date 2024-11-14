@@ -27,6 +27,8 @@ class E_resep_rj extends MX_Controller {
         // load library
         $this->load->library('Print_direct');
         $this->load->library('Print_escpos'); 
+        // include qr lib
+        $this->load->library('qr_code_lib');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -63,46 +65,14 @@ class E_resep_rj extends MX_Controller {
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $row[] = '<div class="center"><b>'.$row_list->no_mr.'</b></div>';
             $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = $row_list->nama_pegawai.'<br>'.ucwords($row_list->nama_bagian);
+            $row[] = $row_list->nama_pegawai;
+            $row[] = ucwords($row_list->nama_bagian);
             $penjamin = (!empty($row_list->nama_perusahaan))?$row_list->nama_perusahaan:$row_list->nama_kelompok;
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
             $row[] = ucwords($penjamin).$no_sep;
             $row[] = $row_list->diagnosa_akhir;
-            // $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
-            // $row[] = '<div class="center">'.$status_tebus.'</div>';
-            
-            // $row[] = $row_list->diagnosa_akhir;
-            if($row_list->status_bayar != 1) {
-                if($row_list->status_transaksi == 1){
-                    $row[] = '<div class="center">
-                            <label class="label lebel-xs label-success"> <i class="fa fa-check-circle"></i> Selesai</label>
-                          </div>';    
-                }else{
-                    $row[] = '<div class="center">
-                            <label class="label lebel-xs label-warning" alt="Belum diselesaikan"> <i class="fa fa-exclamation-circle"></i> Pending </label>
-                          </div>';
-                }
-                
-            }else{
-                $row[] = '<div class="center"><a href="#" class="label lebel-xs label-primary" style="cursor: pointer !important"><i class="fa fa-money"></i> Lunas </a></div>';
-            }
-
-            // if( $row_list->status_resep == 'telaah_resep' ) {
-            //     $btn_action = '<a href="#">Telaah Resep</a>';    
-            // }elseif ( $row_list->status_resep == 'pengambilan_obat' ) {
-            //     $btn_action = '<a href="#">Pengambilan Obat</a>';
-            // }elseif ( $row_list->status_resep == 'proses_racik_obat') {
-            //     $btn_action = '<a href="#">Proses Racik Obat</a>';
-            // }elseif ( $row_list->status_resep == 'penyerahan_obat') {
-            //     $btn_action = '<a href="#">Penyerahan Obat</a>';
-            // }else{
-            //     $btn_action = '<a href="#" class="btn btn-xs btn-inverse" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=RJ'".')">Telaah Resep</a>'; 
-            // }
-
-            // $row[] = '<div class="center">'.$btn_action.'</div>';
-
-            // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
-            // $row[] = $row_list->nama_lokasi;
+            $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
+            $row[] = '<div class="center">'.$status_tebus.'</div>';
             
             $data[] = $row;
         }
@@ -178,6 +148,84 @@ class E_resep_rj extends MX_Controller {
         /*load form view*/
         $this->load->view('E_resep_rj/form_telaah_resep', $data);
     }
+
+    public function copy_resep($id='')
+    {
+        /*if id is not null then will show form edit*/
+        /*breadcrumbs for edit*/
+        $data = [];
+        $list_resep = $this->E_resep->get_cart_resep($id);
+        $data['eresep'] = $list_resep;
+        $data['kode_pesan_resep'] = $id;
+        // echo "<pre>"; print_r($data);die;
+        /*load form view*/
+        $this->load->view('E_resep_rj/form_cr_eresep', $data);
+    }
+
+    public function preview_copy_resep($id){
+        $data = [];
+        $result = $this->db->select('nama_pasien, tgl_pesan, nama_pegawai as nama_dokter, copy_resep_text, kode_pesan_resep, fr_tc_pesan_resep.*')->join('mt_master_pasien', 'mt_master_pasien.no_mr=fr_tc_pesan_resep.no_mr','left')->join('mt_karyawan', 'mt_karyawan.kode_dokter=fr_tc_pesan_resep.kode_dokter','left')->get_where('fr_tc_pesan_resep', ['kode_pesan_resep' => $id])->row();
+        $data['result'] = $result;
+        // echo "<pre>"; print_r($data); die;
+        // qrcode
+        $config = [
+            'no_registrasi' => $result->no_registrasi,
+            'kode' => $result->kode_pesan_resep,
+            'tanggal' => $result->tgl_pesan,
+            'flag' => 'COPY_RESEP',
+        ];
+        $qr_url = $this->qr_code_lib->qr_url($config);
+        $img = $this->qr_code_lib->generate($qr_url);
+
+        // echo "<pre>"; print_r($data);die;
+        $data['kode_pesan_resep'] = $id;
+        $data['img_qr'] = $img;
+        $data['url_qr'] = $qr_url;
+        $this->load->view('E_resep_rj/preview_copy_resep', $data);
+    }
+
+    public function process_copy_resep()
+    {
+        
+        $this->load->library('form_validation');
+        // form validation
+
+        $this->form_validation->set_rules('content', 'Tulis Resep', 'trim|required');
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            //die(validation_errors());
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();
+            
+             /*update existing*/
+             $data_farmasi['copy_resep_text'] = $_POST['content'];
+             $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
+             $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+             $this->db->update('fr_tc_pesan_resep', $data_farmasi, array('kode_pesan_resep' => $_POST['kode_pesan_resep']) );
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['kode_pesan_resep']));
+            }
+        
+        }
+
+    }
+
 
 }
 

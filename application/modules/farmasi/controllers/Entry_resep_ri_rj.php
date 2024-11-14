@@ -235,7 +235,6 @@ class Entry_resep_ri_rj extends MX_Controller {
             $row[] = '<div class="center"><b>'.$row_list->no_mr.'</b></div>';
             // status e_resep
             $row[] = strtoupper($row_list->nama_pasien);
-
             $row[] = $row_list->nama_pegawai.'<br>'.ucwords($row_list->nama_bagian);
             $penjamin = (!empty($row_list->nama_perusahaan))?$row_list->nama_perusahaan:$row_list->nama_kelompok;
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
@@ -298,7 +297,7 @@ class Entry_resep_ri_rj extends MX_Controller {
             // $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
             // $row[] = $row_list->kode_brg;
             $nama_brg = ($row_list->nama_brg != '')?$row_list->nama_brg:'Obat Racikan -'.$no;
-            $row[] = $row_list->kode_brg.'<br>'.strtoupper($nama_brg);
+            $row[] = strtoupper($nama_brg);
             $row[] = '<div class="center">'.(int)$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
             $status_resep_ditangguhkan = ($row_list->resep_ditangguhkan == 0) ? 'N' : 'Y' ;
             // $row[] = '<div class="center">'.$status_resep_ditangguhkan.'</div>';

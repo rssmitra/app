@@ -17,6 +17,7 @@ class Pl_input_vital_sign extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Pl_input_vital_sign_model', 'Pl_input_vital_sign');
+        $this->load->model('Pl_pelayanan_model', 'Pl_pelayanan');
         $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         /*load library*/
         $this->load->library('Form_validation');
@@ -33,8 +34,32 @@ class Pl_input_vital_sign extends MX_Controller {
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show()
         );
-
         $this->load->view('Pl_input_vital_sign/index', $data);
+    }
+
+    public function assesmen_rj($id='', $no_kunjungan)
+    {
+        $data = array(
+            'title' => 'Assesmen Awal Pasien Rawat Jalan',
+            'breadcrumbs' => $this->breadcrumbs->show()
+        );
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan->get_by_id($id);
+
+        $data['kode_bagian'] = $data['value']->kode_bagian_asal;
+        $data['nama_dokter'] = $data['value']->nama_pegawai;
+
+        $data['no_mr'] = $_GET['no_mr'];
+        $data['id'] = $id;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['jenis_form'] = 'form_25';
+        $template = $this->load->view('Pl_pelayanan/form_25', $data, true);
+        $data['template'] = $template;
+        
+        /*load form view*/
+        // echo '<pre>';print_r($data['value']);die;
+        $this->load->view('Pl_input_vital_sign/form_assesmen_rj', $data);
+
     }
 
     public function get_data()
@@ -62,6 +87,7 @@ class Pl_input_vital_sign extends MX_Controller {
             $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'tekanan_darah'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->tekanan_darah.'" id="tekanan_darah_'.$row_list->no_kunjungan.'"></div>';
             $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'nadi'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->nadi.'" id="nadi_'.$row_list->no_kunjungan.'"></div>';
             $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'suhu'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->suhu.'" id="suhu_'.$row_list->no_kunjungan.'"></div>';
+            $row[] = '<div class="center"><a href="#" class="label label-xs label-primary" onclick="getMenu('."'pelayanan/Pl_input_vital_sign/assesmen_rj/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?type=Rajal&no_mr=".$row_list->no_mr."'".')">Assesmen</a></div>';
 
             if($row_list->status_batal==1){
                 $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';

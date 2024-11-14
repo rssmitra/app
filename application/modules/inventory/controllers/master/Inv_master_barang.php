@@ -180,7 +180,7 @@ class Inv_master_barang extends MX_Controller {
         $val->set_rules('satuan_besar','Satuan Besar', 'trim|required');
         $val->set_rules('satuan_kecil','Satuan Kecil', 'trim|required');
         $val->set_rules('is_active','Status Aktif', 'trim|required');
-        $val->set_rules('spesifikasi','Spesifikasi', 'trim|required');
+        $val->set_rules('spesifikasi','Spesifikasi', 'trim');
         $val->set_rules('harga_beli','Harga Pembelian Terakhir', 'trim|required');
         $val->set_rules('rak','rak', 'trim');
         $val->set_rules('id_pabrik','Pabrikan', 'trim');

@@ -546,7 +546,13 @@ final Class Master {
 		foreach($arr_data['data'] as $key=>$row){
 			$val = isset($row[$arr_data['value']]) ? $row[$arr_data['value']] : 0;
 			$label = isset($row[$arr_data['label']]) ? $row[$arr_data['label']] : 0;
-			$sel = trim($nid) == trim($val) ? 'selected' : ($key == 0) ? 'selected' : '' ;
+			if(trim($nid) ==  trim($val)){
+				$sel = 'selected';
+			}elseif ($key == 0) {
+				$sel = 'selected';
+			}else{
+				$sel = '';
+			}
 			$field.='<option value="'.$val.'" '.$sel.'>'.strtoupper($label).' | '.(int)$row['discount'].' % | @ '.(int)$row['harga_satuan'].'</option>';
 		}	
 		
@@ -841,7 +847,8 @@ final Class Master {
 
 
 		// potonga diskon satuan barang
-		$potongan_disk_satuan = $params['hna'] * ($params['disc']/100);
+		$pot_disc_rp = isset($params['disc_rp']) ? $params['disc_rp'] : 0;
+		$potongan_disk_satuan = ($pot_disc_rp == 0) ? $params['hna'] * ($params['disc']/100) : $pot_disc_rp;
 
 		// harga satuan setelah dipotong diskon dan ppn
 		$harga_satuan = $params['hna'] - $potongan_disk_satuan;
@@ -1131,13 +1138,10 @@ final Class Master {
 		$format = 'S. '.$dd.' '.$unit.' '.$this->formatRomawi((int)$params['qty']).' '.$use.'';
 		// response html
 		$html = '';
-		$html .= '<span class="monotype_style">R/</span><br>';
-		$html .= '<div style="padding-left: 15px">';
 		$html .= $params['nama_obat'].' &nbsp;&nbsp; No. '.$this->formatRomawi((int)$params['jumlah']).'<br>';
 		$html .= '<i>'.$format.'</i>';
 		$html .= ' ____________ det / nedet<br>';
 		$html .= '('.$params['dd'].' X '.$params['qty'].' '.$params['unit'].' '.$params['use'].')';
-		$html .= '</div>';
 
 		return $html;
 		
@@ -1373,7 +1377,6 @@ final Class Master {
 				$html .= '<span id="row_racikan_'.$value->id.'"><a href="#" onclick="deleterow('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; '. $value->jml_pesan .'&nbsp; '. $value->satuan_obat .' <br></span>';
 			}
 		}
-
 		return $html;
 	}
 
@@ -1383,6 +1386,18 @@ final Class Master {
 		$html = '';
 		foreach ($array_data as $key => $value) {
 			$html .= '<span id="row_racikan_'.$value->id.'" style="font-size: 11px"><a href="#" onclick="deleterow('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; ('. $value->jml_pesan .'&nbsp;'. $value->satuan_obat .' )<br></span>';
+			
+		}
+
+		return $html;
+	}
+
+	function get_child_racikan_eresep($kode_pesan_resep, $parent_id){
+		$CI =&get_instance();
+		$array_data = $CI->db->select('id, kode_brg, nama_brg, jml_pesan, satuan_obat')->group_by('id, kode_brg, nama_brg, jml_pesan, satuan_obat')->order_by('id', 'DESC')->get_where('fr_tc_pesan_resep_detail', ['kode_pesan_resep' => $kode_pesan_resep, 'parent' => $parent_id])->result();
+		$html = '';
+		foreach ($array_data as $key => $value) {
+			$html .= '<span>'.$value->nama_brg.' &nbsp; ('. $value->jml_pesan .'&nbsp;'. $value->satuan_obat .' )<br></span>';
 			
 		}
 

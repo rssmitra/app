@@ -91,6 +91,31 @@ class Etiket_obat extends MX_Controller {
         $this->load->view('Etiket_obat/form_copy_resep', $data);
     }
 
+    public function copy_resep($id='')
+    {
+        /*if id is not null then will show form edit*/
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Entry Resep '.strtolower($this->title).'', 'Etiket_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Retur_obat->get_by_id($id);
+        $resep_log = $this->Etiket_obat->get_detail_resep_data($id)->result_array();
+        foreach($resep_log as $row){
+            $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
+            $row['racikan'][] = $racikan;
+            $getData[] = $row;
+        }
+
+        $data['detail_obat'] = $getData;
+        $data['flag'] = $_GET['flag'];
+        // echo '<pre>';print_r($data);die;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Etiket_obat/form_cr_eresep', $data);
+    }
+
     public function get_detail_by_kode_trans_far($kode_trans_far){
         $data = array(
             'value' => $this->Retur_obat->get_by_id($kode_trans_far),
@@ -389,14 +414,12 @@ class Etiket_obat extends MX_Controller {
     }
 
     public function preview_copy_resep($kode_trans_far){
-        
         // get etiket data from query string
         $resep_log = $this->db->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_far.no_mr','left')->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left')->get_where('fr_tc_far', array('kode_trans_far' => $kode_trans_far) )->row();
         // echo '<pre>';print_r($resep_log);die;
         $data = array();
         $data['result'] = $resep_log;
         $this->load->view('farmasi/Etiket_obat/preview_copy_resep', $data);
-
     }
 
     public function print_tracer_obat($kode_trans_far)

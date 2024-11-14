@@ -141,7 +141,10 @@ th, td {
         ?>
             <tr>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo $no?></td>
-              <td style="border: 1px solid black; border-collapse: collapse"><?php echo '<b>['.$row_dt[0]->kode_brg.']</b> - '.$row_dt[0]->nama_brg?></td>
+              <td style="border: 1px solid black; border-collapse: collapse">
+                <?php echo '<b>['.$row_dt[0]->kode_brg.']</b> - '.$row_dt[0]->nama_brg?>
+                <?php echo ($row_dt[0]->spesifikasi != '') ? '<br><i>Spesifikasi :</i> <br>'.nl2br($row_dt[0]->spesifikasi) : '' ?>
+              </td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo array_sum($jumlah_pesan[$row_dt[0]->kode_brg])?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo $row_dt[0]->satuan_besar?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo $row_dt[0]->content?></td>

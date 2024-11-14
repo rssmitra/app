@@ -95,7 +95,7 @@
   <tr>
     <td style="vertical-align: middle"></td>
     <td style="vertical-align: middle">EF</td>
-    <td>: <input type="text" class="input_type" name="form_18[pw_thickening]" id="pw_thickening" onchange="fillthis('pw_thickening')" style="width: 90%"></td>
+    <td>: <input type="text" class="input_type" name="form_18[pw_ef]" id="pw_ef" onchange="fillthis('pw_ef')" style="width: 90%"></td>
     <td align="center" style="vertical-align: middle">(53-77%)</td>
   </tr>
 

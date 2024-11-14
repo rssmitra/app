@@ -210,7 +210,7 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
             <th style="width: 100px" class="center">Tekanan Darah (mmHg)</th>
             <th style="width: 100px" class="center">Nadi (bpm)</th>
             <th style="width: 100px" class="center">Suhu Tubuh (C&deg;)</th>
-            <!-- <th>Status</th>           -->
+            <th>Assesmen</th>          
           </tr>
         </thead>
         <tbody>

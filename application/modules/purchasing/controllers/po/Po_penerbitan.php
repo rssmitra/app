@@ -178,6 +178,7 @@ class Po_penerbitan extends MX_Controller {
                             'kode_brg' => $row_checked,
                             'hna' => $_POST['harga_satuan_val'][$row_checked],
                             'disc' => $_POST['diskon'][$row_checked],
+                            'disc_rp' => $_POST['potongan_diskon'][$row_checked],
                             'ppn' => $_POST['ppn'][$row_checked],
                             'qty' => $_POST['jml_permohonan'][$row_checked],
                             'rasio' => $_POST['rasio'][$row_checked],

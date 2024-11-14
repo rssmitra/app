@@ -64,7 +64,6 @@ class E_resep_rj_model extends CI_Model {
 				$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 72');			
         	}
         }
-
         // default for this modul
         // $this->db->where('(status_tebus is null or status_tebus = 0)');
 

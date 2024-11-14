@@ -26,8 +26,10 @@ jQuery(function($) {
 
 $(document).ready(function(){
 
-    var kode_trans_far = $('#kode_trans_far').val();
+    // show form copy resep
+    $('#copy_resep_form').load('farmasi/E_resep_rj/copy_resep/'+$('#no_resep').val()+'?flag='+$('#flag_trans').val()+'');
 
+    var kode_trans_far = $('#kode_trans_far').val();
     table = $('#temp_data_pesan').DataTable( {
         "processing": true, 
         "serverSide": true,
@@ -679,6 +681,7 @@ function select_item(id, tipe){
   }
   .well{
     padding: 5px !important;
+    margin-bottom: 5px !important;
   }
 </style>
 
@@ -687,12 +690,12 @@ function select_item(id, tipe){
   <div class="col-xs-12">
 
     <!-- breadcrumbs -->
-    <div class="page-header">  
+    <!-- <div class="page-header">  
       <h1>
         <a href="#" onclick="getMenu('farmasi/Entry_resep_ri_rj/form/<?php echo $value->kode_pesan_resep?>?mr=<?php echo $value->no_mr?>&tipe_layanan=RJ')" ><?php echo isset($value)?ucwords($value->no_mr):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
         </a>
       </h1>
-    </div>  
+    </div>   -->
         
     <form class="form-horizontal" method="post" id="form_entry_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/process_entry_resep/process">      
       
@@ -725,9 +728,15 @@ function select_item(id, tipe){
         <div class="col-sm-12">
           <table class="table">
             <tr style="background-color: #edf3f4;">
-              <td style="vertical-align: top; width: 180px"> <span style="font-weight: bold !important">Kode/Tgl Pesan :</span><br> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> <br> <?php echo isset($value)?ucwords($this->tanggal->formatDateTime($value->tgl_pesan)):''?></td>
+              <td style="vertical-align: top; width: 180px">
+                <span style="font-weight: bold !important">Nama Pasien :</span><br> 
+                [<a href="#" onclick="getMenu('farmasi/Entry_resep_ri_rj/form/<?php echo $value->kode_pesan_resep?>?mr=<?php echo $value->no_mr?>&tipe_layanan=RJ')" style="font-weight: bold"><?php echo isset($value)?ucwords($value->no_mr):''?></a>]  <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
+              </td>
+              
+              <td style="vertical-align: top; width: 200px"> <span style="font-weight: bold !important">Kode/Tgl Pesan :</span><br> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> - <?php echo isset($value)?ucwords($this->tanggal->formatDateTimeFormDmy($value->tgl_pesan)):''?></td>
               <td style="vertical-align: top"> <span style="font-weight: bold !important">Penjamin :</span><br> <?php echo isset($value)?ucwords($value->nama_kelompok):''?><br><?php echo isset($value)?ucwords($value->nama_perusahaan):''?> <?php echo isset($value->kode_perusahaan) ? ($value->kode_perusahaan == 120) ?'('.$value->no_sep.')' : '' :'';?></td>
-              <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Dokter/Poli :</span><br> <?php echo isset($value)?ucwords($value->nama_bagian):''?> <br> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+              <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Dokter :</span><br> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+              <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Poli/Spesialis :</span><br> <?php echo isset($value)?ucwords($value->nama_bagian):''?> </td>
               <td style="vertical-align: top"><span style="font-weight: bold !important">Diagnosa Akhir :</span> <br><?php echo isset($value)?$value->diagnosa_akhir:''?> </td>
             </tr>
           </table>
@@ -741,20 +750,29 @@ function select_item(id, tipe){
                 <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep</span>
               <div class="widget-toolbar">
                 <?php if($value->status_tebus != 1) :?>
-                <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
-                  <span class="ace-icon fa fa-plus-square icon-on-right bigger-110"></span>
-                  Resep Racikan
-                </button>
 
-                <button type="button" id="btn_resep_selesai" class="btn btn-primary btn-xs" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
-                      <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
-                      Resep Selesai <b style="color: black">(Ditunggu)</b>
-                </button>
+                  <div class="btn-group">
+                    <button data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle">
+                      Resep Selesai
+                      <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                    </button>
 
-                <button type="button" id="btn_resep_selesai_diantar" class="btn btn-success btn-xs" name="submit" value="resep_selesai_diantar" onclick="resep_farmasi_selesai('diantar')">
-                      <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
-                      Resep Selesai <b style="color: black">(Diantar)</b>
-                </button>
+                    <ul class="dropdown-menu dropdown-info dropdown-menu-right">
+                      <li>
+                        <a href="#" type="button" id="btn_resep_selesai" name="submit" value="resep_selesai" onclick="resep_farmasi_selesai('ditunggu')">
+                        <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
+                        Resep Ditunggu
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#" id="btn_resep_selesai_diantar" name="submit" value="resep_selesai_diantar" onclick="resep_farmasi_selesai('diantar')">
+                        <span class="ace-icon fa fa-check-circle icon-on-right bigger-110"></span>
+                        Resep Diantar Kurir
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 <?php 
                   else: 
                     if($trans_farmasi->kode_tc_trans_kasir == '') :
@@ -890,6 +908,10 @@ function select_item(id, tipe){
                         <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
                         Tambahkan Obat
                     </button>
+                    <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
+                      <span class="ace-icon fa fa-flask icon-on-right bigger-110"></span>
+                      Resep Racikan
+                    </button>
                   </div>
               </div>
               <?php endif; ?>
@@ -906,7 +928,7 @@ function select_item(id, tipe){
                     <th width="30px">No</th>
                     <!-- <th width="150px">Tgl Input</th> -->
                     <!-- <th>Kode</th> -->
-                    <th>Deskripsi Item</th>
+                    <th>Nama Obat</th>
                     <th width="80px">Jumlah</th>
                     <!-- <th width="100px">Ditangguhkan</th> -->
                     <th width="100px">Harga Satuan</th>
@@ -929,7 +951,7 @@ function select_item(id, tipe){
         </div>
 
         <!-- detail selected obat -->
-        <div class="col-sm-5 no-padding">
+        <div class="col-sm-5">
           
           <div class="tabbable">
             <ul class="nav nav-tabs" id="myTabInfoDetailFarmasi">
@@ -966,16 +988,19 @@ function select_item(id, tipe){
                   // echo "<pre>"; print_r($eresep_result);die;
                   if(isset($eresep[0]->kode_pesan_resep)) : 
                   $html = '';
-                    $html .= '<span style="font-size:11px; font-style: italic;">Kode Resep :</span><br><span style="font-size: 18px !important; font-weight: bold">'.$eresep[0]->kode_pesan_resep.'</span> <small><i>('.$this->tanggal->formatDateTime($eresep[0]->created_date).')</i></small>';
-                    $html .= '<br>';
+                    $html .= '<div><b>RESEP DOKTER <i>(e-Resep)</i></b><br>';
+                    $html .= isset($value)?ucwords($value->nama_bagian).' - ':'';
+                    $html .= isset($value)?$value->nama_pegawai:'';
+                    $html .= ' - Tanggal. '.$this->tanggal->formatDateTime($eresep[0]->created_date).'';
+                    $html .= '</div>';
                     $html .= '<table class="table" id="dt_add_resep_obat">
                       <thead>
                       <tr style="background: #edf3f4;">
-                          <th width="30px">No</th>
+                          <th width="30px" class="center">No</th>
                           <th>Nama Obat</th>
                           <th>Signa</th>
-                          <th>Qty</th>
-                          <th></th>
+                          <th class="center">Qty</th>
+                          <th class="center">#</th>
                       </tr>
                       </thead>
                       <tbody style="background: white">';
@@ -992,8 +1017,7 @@ function select_item(id, tipe){
                         $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'</td>';
                         $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
                         $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
-                        // $html .= '<td>'.$ver->keterangan.'</td>';
-                        $html .= '<td align="right" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".')" class="btn btn-xs btn-primary">Pilih</a></td>';
+                          $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';
                         $html .= '</tr>';
 
                       }
@@ -1005,6 +1029,10 @@ function select_item(id, tipe){
                     echo "<div class='alert alert-warning'><strong>Tidak ada resep</strong><br>Dokter belum menginput resep kedalam sistem, mohon cek resep manual.</div>";
                   endif;
                 ?>
+                <hr>
+                <!-- copy resep -->
+                 <div id="copy_resep_form"></div>
+
               </div>
 
               <div id="tab_riwayat_pm" class="tab-pane fade">

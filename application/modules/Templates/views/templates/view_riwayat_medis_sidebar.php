@@ -118,8 +118,8 @@ hr {
                       <th>TB (Cm)</th>
                       <th>BB (Kg)</th>
                       <th>TD (mmHg)</th>
-                      <th>Suhu (C&deg;)</th>
                       <th>Nadi (bpm)</th>
+                      <th>Suhu (C&deg;)</th>
                   </tr>
                   <tbody>
                   <tr style="background: aliceblue;">
@@ -133,11 +133,12 @@ hr {
                           <input type="text" style="text-align: center" class="form-control" name="pl_td" value="<?php echo isset($value->tekanan_darah)?$value->tekanan_darah:''?>">
                       </td>
                       <td>
-                          <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($value->suhu)?$value->suhu:''?>">
-                      </td>
-                      <td>
                           <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($value->nadi)?$value->nadi:''?>">
                       </td>
+                      <td>
+                          <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($value->suhu)?$value->suhu:''?>">
+                      </td>
+                      
                   </tr>
                   </tbody>
               </table>
