@@ -119,6 +119,16 @@ class Pl_pelayanan_igd_model extends CI_Model {
 		
 	}
 
+	public function get_by_no_kunjungan($no_kunjungan)
+	{
+		$this->_main_query();
+		$this->db->where(''.$this->table.'.no_kunjungan',$no_kunjungan);
+		$query = $this->db->get();
+		//print_r($this->db->last_query());die;
+		return $query->row();
+		
+	}
+
 	public function update($table, $data, $where)
 	{
 		$this->db->update($table, $data, $where);

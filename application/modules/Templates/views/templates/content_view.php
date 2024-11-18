@@ -656,6 +656,9 @@
     <script src="<?php echo base_url()?>assets/js/custom/menu_load_page.js"></script>
     <script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
     
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/chosen.css" />
+    <script src="<?php echo base_url()?>assets/js/chosen.jquery.js"></script>
+
     
 
     <script type="text/javascript">

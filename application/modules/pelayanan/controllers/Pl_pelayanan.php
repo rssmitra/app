@@ -2328,10 +2328,8 @@ class Pl_pelayanan extends MX_Controller {
 
     }
 
-
     public function catatan_lainnya($id='', $no_kunjungan)
-    {
-        
+    {  
         /*get value by id*/
         $data['kode_bagian'] = $this->session->userdata('kode_bagian');
         $data['nama_bagian'] = $this->session->userdata('nama_bagian');
@@ -2355,6 +2353,7 @@ class Pl_pelayanan extends MX_Controller {
 
         $data = [];
         $data['jenis_form'] = 'form_'.$id.'';
+        $data['no_kunjungan'] = $no_kunjungan;
         $html = $this->load->view('Pl_pelayanan/form_'.$id.'', $data, true);
         echo json_encode(array('html' => $html));
 
@@ -2398,7 +2397,6 @@ class Pl_pelayanan extends MX_Controller {
                 'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
                 'value_form' => $value_form, 
             );
-            
 
             if( $cppt_id == 0 ){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');

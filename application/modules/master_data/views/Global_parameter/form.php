@@ -26,21 +26,21 @@
 
               <div class="form-group">
                 <label class="control-label col-md-2">Label</label>
-                <div class="col-md-2">
+                <div class="col-md-8">
                     <input name="label" id="label" value="<?php echo isset($value)?$value->label:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="control-label col-md-2">Value</label>
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <input name="value" id="value" value="<?php echo isset($value)?$value->value:''?>" placeholder="" class="form-control" type="text" <?php echo ($flag=='read')?'readonly':''?> >
                 </div>
               </div>
 
               <div class="form-group">
                 <label class="control-label col-md-2">Keterangan</label>
-                <div class="col-md-2">
+                <div class="col-md-8">
                   <textarea name="desc_text" id="desc_text" cols="30" rows="10" class="form-control" style="height: 50px !important" <?php echo ($flag=='read')?'readonly':''?>><?php echo isset($value)?$value->desc_text:''?></textarea>
                 </div>
               </div>

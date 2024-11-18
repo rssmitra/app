@@ -79,15 +79,16 @@ class Farmasi_pesan_resep extends MX_Controller {
                         </ul>
                       </div></div>';
 
-            $row[] = '<div class="center">'.$this->tanggal->formatDateTime($row_list->tgl_pesan).'</div>';
-            $row[] = ucwords($row_list->nama_bagian);
+            $jenis_resep = ($row_list->jenis_resep == 'prb') ? '<span class="red">[PRB]</span><br>' : '<span class="green">[NON PRB]</span><br>';
+            $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTime($row_list->tgl_pesan).'</div>';
+            $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
             $row[] = $row_list->kode_pesan_resep;
-            $row[] = $row_list->nama_pegawai;
+            $row[] = $row_list->keterangan;
             // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
             $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
             $row[] = '<div class="center">'.$status_tebus.'</div>';
-            $lbl_eresep = ($row_list->e_resep == 1) ? '<a href="#" class="label label-xs label-primary" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-check-circle"></i> e-Resep</a> ' : '<a href="#" class="label label-xs label-warning" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-times-circle"></i> e-Resep</a>';
+            $lbl_eresep = ($row_list->e_resep == 1) ? '<a href="#" class="label label-lg label-success bigger-120" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-check-circle"></i></a> ' : '<a href="#" class="label label-xs label-warning" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-times-circle"></i> e-Resep</a>';
             $row[] = '<div class="center">'.$lbl_eresep.'</div>';
            
             $data[] = $row;
@@ -125,6 +126,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $val->set_rules('jumlah_r', 'Jumlah R', 'trim|required');
         $val->set_rules('kode_dokter', 'Dokter', 'trim');
         $val->set_rules('lokasi_tebus', 'Lokasi Tebus', 'trim|required');
+        $val->set_rules('jenis_resep', 'Jenis Resep', 'trim|required');
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -146,6 +148,7 @@ class Farmasi_pesan_resep extends MX_Controller {
                 'kode_kelompok' => $this->input->post('kode_kelompok'),
                 'kode_klas' => $this->input->post('kode_klas'),
                 'kode_profit' => $this->input->post('kode_profit'),
+                'jenis_resep' => $this->input->post('jenis_resep'),
                 'kode_bagian_asal' => ($this->input->post('kode_bagian_asal'))?$this->input->post('kode_bagian_asal'):$this->input->post('kode_bagian_tujuan'),
                 'keterangan' => ($this->input->post('keterangan_pesan_resep'))?$this->input->post('keterangan_pesan_resep'):'',
             );
@@ -179,11 +182,6 @@ class Farmasi_pesan_resep extends MX_Controller {
                 // log
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-
-                $dataexc['tgl_pesan'] = $this->input->post('tgl_pesan_edit');
-                $dataexc['kode_dokter'] = $this->regex->_genRegex($this->input->post('kode_dokter_edit'),'RGXQSL');
-                $dataexc['jumlah_r'] = $this->regex->_genRegex($this->input->post('jumlah_r_edit'),'RGXINT');
-                $dataexc['lokasi_tebus'] = $this->regex->_genRegex($this->input->post('lokasi_tebus_edit'),'RGXINT');
                 /*update record*/
                 $this->Farmasi_pesan_resep->update('fr_tc_pesan_resep',$dataexc,array('kode_pesan_resep' => $id));
                 $newId = $id;
@@ -212,7 +210,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $id = $this->input->post('id');
 
         $data =  $this->Farmasi_pesan_resep->get_by_id($id);
-
+        // print_r($data);die;
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'data' => $data ));
     }
 

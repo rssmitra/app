@@ -35,7 +35,9 @@ $(document).ready(function(){
     /*when page load find pasien by mr*/
     find_pasien_by_keyword('<?php echo $no_mr?>');
 
-    show_icare();
+    if($('#kode_perusahaan_val').val() == 120){
+      show_icare();
+    }
 
     $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosaDr');
 
@@ -84,6 +86,10 @@ $(document).ready(function(){
                 if(jsonResponse.type_pelayanan == 'eresep')
                 {
                   $('#table-pesan-resep').DataTable().ajax.reload(null, false);
+                  $('#kode_pesan_resep').val('');
+                  $('#keterangan_pesan_resep').val('');
+                  $('#notif_status').html('');
+        
                 }
 
                 if(jsonResponse.type_pelayanan == 'pasien_selesai')
@@ -554,17 +560,22 @@ function searchTable() {
 function show_icare() {
     var noka = $('#noKartuBpjs').val();
     var kode_dokter = $('#kode_dokter_bpjs').val();
-
-    $.getJSON("ws_bpjs/Ws_index/getIcare/" +noka+"/"+kode_dokter+"", '', function (ress) { 
-      var obj = ress.response.metaData;
-      console.log(obj);
-      if(obj.code != 200){
-        $('#tabs_form_pelayanan').html('<div class="alert alert-danger"><strong>'+obj.message+' !</strong><br>Kemungkinan data pada VClaim dan SIMRS tidak sesuai</div>');
-      }else{
-        $('#tabs_form_pelayanan').html('<iframe src='+ress.url+' style="width: 100%; min-height: 900px" frameborder="no" scrolling="yes"></iframe>');
-      }
-  });
+    if($('#kode_perusahaan_val').val() == 120){
+      $.getJSON("ws_bpjs/Ws_index/getIcare/"+noka+"/"+kode_dokter+"", '', function (ress) { 
+        var obj = ress.response.metaData;
+        console.log(obj);
+        if(obj.code != 200){
+          $('#tabs_form_pelayanan').html('<div class="alert alert-danger"><strong>'+obj.message+' !</strong><br>Kemungkinan data pada VClaim dan SIMRS tidak sesuai</div>');
+        }else{
+          $('#tabs_form_pelayanan').html('<iframe src='+ress.url+' style="width: 100%; min-height: 900px" frameborder="no" scrolling="yes"></iframe>');
+        }
+      });
+    }else{
+      $('#tabs_form_pelayanan').html('<div class="alert alert-danger"><strong>Pasien Non BPJS !</strong><br>Tidak dapat membuka I-Care JKN</div>');
+    }
+    
 }
+
 
 
 </script>
@@ -839,7 +850,7 @@ function show_icare() {
             </li>
             <li id="li_cppt">
               <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                C P P T
+                Riwayat Medis
               </a>
             </li>
             <li>
@@ -848,11 +859,11 @@ function show_icare() {
             </li>
             
             <li class="hover">
-              <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->kode_bagian?>/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><span class="menu-text"> Penunjang </span></a><b class="arrow"></b>
+              <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->kode_bagian?>/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><span class="menu-text"> Order Penunjang  </span></a><b class="arrow"></b>
             </li>
             <li>
               <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                Pengkajian Pasien
+                Form Pengkajian
               </a>
             </li>
             <li>

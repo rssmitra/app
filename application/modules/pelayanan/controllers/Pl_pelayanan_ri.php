@@ -462,11 +462,19 @@ class Pl_pelayanan_ri extends MX_Controller {
                 //         $diagnosa_sekunder += $v;
                 //     }
                 // }
-                
+                $ttv = '';
+                if($row_list->flag == 'resume'){
+                    $ttv .= 'Vital Sign :<br>';
+                    $ttv .= 'tb. '.$row_list->tinggi_badan.' cm<br>';
+                    $ttv .= 'bb. '.$row_list->berat_badan.' kg<br>';
+                    $ttv .= 'td. '.$row_list->tekanan_darah.' mmHg<br>';
+                    $ttv .= 'nadi. '.$row_list->nadi.' bpm<br>';
+                    $ttv .= 'suhu. '.$row_list->suhu.' &deg;C<br>';
+                }
                 if($row_list->jenis_form != null){
                     $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                 }else{
-                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br><br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$arr_text.''.'<br><br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>';
+                    $row[] = '<b>S (Subjective) : </b><br>'.nl2br($row_list->subjective).'<br><br>'.'<b>O (Objective) : </b><br>'.nl2br($row_list->objective).'<br>'.$ttv.'<br><br>'.'<b>A (Assesment) : </b><br>'.nl2br($row_list->assesment).'<br>'.$arr_text.''.'<br><br><b>P (Planning) : </b><br>'.nl2br($row_list->planning).'<br>';
                 }
     
                 $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;

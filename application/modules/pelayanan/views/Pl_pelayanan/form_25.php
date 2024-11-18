@@ -24,7 +24,7 @@
           <input type="checkbox" class="ace" name="form_25[ra_25_2]" id="ra_25_2"  onclick="checkthis('ra_25_2')">
           <span class="lbl"> Ada, sebutkan</span>
         </label>
-        <input type="text" style="width: 40%" class="input_type" name="form_25[riwayat_penyakit_f25]" id="riwayat_penyakit_f25" onchange="fillthis('riwayat_penyakit_f25')">
+        <input type="text" style="width: 40%" class="input_type" name="form_25[desc_riwayat_alergi_25_2]" id="desc_riwayat_alergi_25_2" onchange="fillthis('desc_riwayat_alergi_25_2')">
     </td>
   </tr>
 </table>

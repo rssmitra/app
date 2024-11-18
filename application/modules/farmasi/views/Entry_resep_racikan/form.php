@@ -764,7 +764,7 @@ function select_item_racikan(id){
                 <tr style="background: #d0e8ec">
                   <th class="center">No</th>
                   <th>Nama Obat</th>
-                  <th>Jumlah</th>
+                  <th>Dosis</th>
                 </tr>
                 <?php $no=0; foreach($eresep['racikan'] as $row_racikan) : if($row_racikan->parent != '0') :$no++; ?>
                   <tr>

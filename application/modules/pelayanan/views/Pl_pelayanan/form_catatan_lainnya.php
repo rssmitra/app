@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
 
+
 <script type="text/javascript">
 jQuery(function($) {  
 
@@ -34,6 +35,21 @@ jQuery(function($) {
   }).next().on(ace.click_event, function(){
     $(this).prev().focus();
   });
+
+  if(!ace.vars['touch']) {
+        $('.chosen-select').chosen({allow_single_deselect:true}); 
+    //resize the chosen on window resize
+
+    $(window)
+    .off('resize.chosen')
+    .on('resize.chosen', function() {
+      $('.chosen-select').each(function() {
+          var $this = $(this);
+          $this.next().css({'width': $this.parent().width()});
+      })
+    }).trigger('resize.chosen');
+
+  }
     
 
 });
@@ -238,6 +254,7 @@ function show_modal_pengkajian(myid){
       var text = item;
       text = text.replace(/\+/g, ' ');
       $('#'+i).val(text);
+      $('select#'+i).val(text).change();
     });
   }); 
   // show_modal_medium_return_json('pelayanan/Pl_pelayanan_ri/get_cppt_dt?id='+myid+'', 'DETAIL PENGKAJIAN');
@@ -277,14 +294,6 @@ function fillthis(id){
 
 </script>
 
-<style>
-  .wysiwyg-editor{
-    max-height: 1000px !important;
-    height: 700px !important;
-    padding: 5px;
-  }
- 
-</style>
 <div class="row">
 
   <div class="col-md-12">
@@ -328,7 +337,7 @@ function fillthis(id){
     <div class="form-group">
         <label class="control-label col-sm-2">Jenis Form</label>
         <div class="col-md-8">
-          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), 1 , 'jenis_form_catatan', 'jenis_form_catatan', 'form-control', '', '') ?>
+          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), 1 , 'jenis_form_catatan', 'jenis_form_catatan', 'chosen-select form-control', '', '') ?>
         </div>
     </div>
 

@@ -243,11 +243,11 @@ function rollback(no_registrasi, no_kunjungan){
         <tr>  
           <th width="30px" class="center"></th>
           <th></th>
-          <th>Kode</th>
           <th>No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
-          <th>Tanggal Masuk</th>
+          <th>Tgl Masuk</th>
+          <th>Tgl Keluar</th>
           <th>Dokter</th>
           <th>Petugas</th>
           <th>Status</th>          

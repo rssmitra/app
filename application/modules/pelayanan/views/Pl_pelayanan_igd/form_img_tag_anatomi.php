@@ -8,12 +8,21 @@
         <div class="container">
             <div class="row">
               <center>
+                <form action="#" method="post" id="form_img_tagging" enctype="multipart/form-data">
                 <div class="col-md-12 col-lg-12">
                     <div class="card mb-4 shadow-sm">
-                        <img src="<?php echo base_url()?>assets/img-tagging/images/anatomi.jpg" style="max-width: 500px" data-points-color="red" class="tagging-photo bd-placeholder-img card-img-top" data-allow-add-tags="true" data-show-all-on-hover="true" data-show-tags-buttons="true" data-points-tooltip-follow="down" data-points='[{"top":1,"left":244,"text":"Bagian Kepala"},{"top":166,"left":320,"text":"Bagian Tangan"},{"top":387,"left":294,"text":"Bagian Kaki"}]' alt="">
+                        <img src="<?php echo base_url()?>assets/img-tagging/images/anatomi.jpg" style="max-width: 500px" data-points-color="red" class="tagging-photo bd-placeholder-img card-img-top" data-allow-add-tags="true" data-show-all-on-hover="true" data-show-tags-buttons="true" data-points-tooltip-follow="down" data-points='<?php echo isset($img_tagging->data_points)?$img_tagging->data_points:''?>' data-value='' alt="">
+                        <input type="hidden" name="no_kunjungan_img_tag" id="no_kunjungan_img_tag" value='<?php echo $no_kunjungan?>'>
+                        <input type="hidden" name="img_tag_id" id="img_tag_id" value='<?php echo isset($img_tagging->img_tag_id)?$img_tagging->img_tag_id:''?>'>
                     </div>
                 </div>
+                </form>
+                <div id="msg_success"></div>
               </center>
+
+              <div>
+                <a href="#" class="btn" id="btn_save_img_tagging" style="background: #428bca; color: white; padding: 7px; text-decoration: none; font-family: arial; font-size: 12px;  ">Save Image</a>
+              </div>
             </div>
         </div>
 </main>
@@ -44,11 +53,22 @@
         });
     };
 
-    $('.btn-go-demo').on('click', function (e) {
+
+    $('#btn_save_img_tagging').on('click', function (e) {
         e.preventDefault();
-        $('html, body').animate({
-            scrollTop: $($(this).attr('href')).offset().top
-        }, 1200);
+        var content = JSON.parse($('div.photo-tagging').attr('data-points'));
+        // save
+        $.ajax({
+            url : '<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/save_img_tagging',
+            data: {data_points : content, no_kunjungan : $('#no_kunjungan_img_tag').val() },
+            type: "POST",
+            dataType: "JSON",      
+            success: function(response) {  
+                $('#img_tag_id').val(response.newId);
+                $('#msg_success').html('<div class="alert alert-success"><b><i class="fa fa-check green bigger-150"></i></b> Berhasil menyimpan data.</div>');
+            },
+        });
+
     });
 
     $('.go-up').scrollToTop();

@@ -214,12 +214,7 @@ class Pl_pelayanan_igd extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_kunjungan.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                    </div>';
+            $row[] = '<div class="center">'.$no.'</div>';
             /*fungsi rollback pasien, jika belum disubmit kasir maka poli masih bisa melakukan rollback*/
             $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>';
 
@@ -248,13 +243,13 @@ class Pl_pelayanan_igd extends MX_Controller {
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_igd/form/".$row_list->kode_gd."/".$row_list->no_kunjungan."'".')" style="color: blue"><b>'.$row_list->no_kunjungan.'</b></a></div>';
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_igd/form/".$row_list->kode_gd."/".$row_list->no_kunjungan."'".')" style="color: blue"><b>'.$row_list->no_mr.'</b></a></div>';
             $row[] = strtoupper($row_list->nama_pasien_igd);
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
-            $row[] = $this->tanggal->formatDateTime($row_list->tanggal_gd);
+            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tanggal_gd);
+            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_kel);
             $row[] = $row_list->nama_pegawai;
-            $row[] = '<div class="center">'.$row_list->fullname.'</div>';
+            $row[] = '<div class="left">'.ucwords($row_list->fullname).'</div>';
 
 
            
@@ -964,9 +959,14 @@ class Pl_pelayanan_igd extends MX_Controller {
         
     }
 
-    public function form_img_tagging() { 
+    public function form_img_tagging($no_kunjungan) { 
         /*define variable data*/
-        $this->load->view('Pl_pelayanan_igd/form_img_tagging');
+        $data = [];
+        $data['img_tagging'] = $this->db->get_where('th_img_tagging', ['no_kunjungan' => $no_kunjungan])->row();
+        // echo "<pre>"; print_r($data);die;
+        $data['no_kunjungan'] = $no_kunjungan;
+
+        $this->load->view('Pl_pelayanan_igd/form_img_tag_anatomi', $data);
     }
 
     public function get_list_pasien()
@@ -1015,6 +1015,23 @@ class Pl_pelayanan_igd extends MX_Controller {
         $output = array("data" => $data );
         //output to json format
         echo json_encode($output);
+    }
+
+    public function save_img_tagging(){
+        // get 
+        $dataexc = [];
+        $dataexc['no_kunjungan'] = $_POST['no_kunjungan'];
+        $dataexc['data_points'] = json_encode($_POST['data_points']);
+        // echo "<pre>"; print_r($dataexc); die;
+        if($_POST['tag_img_id'] == ''){
+            $this->db->insert('th_img_tagging', $dataexc);
+            $newId = $this->db->insert_id();
+        }else{
+            $this->db->insert('th_img_tagging', $dataexc);
+            $newId = $_POST['img_tag_id'];
+        }
+        
+        echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'newId' => $newId));
     }
 
 

@@ -67,3 +67,32 @@ background: #555;
 .multi-typeahead{
     background: #e7e4e4 !important; border-radius: 2px; margin: 2px; padding: 3px;
 }
+
+.input_type{
+    border : none !important;
+    border-bottom : 1px solid #dddada !important;
+}
+
+.textarea-type{
+    height: 100px !important;
+    width: 100% !important;
+}
+
+.wysiwyg-editor{
+    max-height: 1000px !important;
+    height: 700px !important;
+    padding: 5px;
+  }
+  .chosen-container-single .chosen-single {
+    padding : 0px 0px 0px 5px !important;
+    height: 26px !important;
+    margin-left: 6px;
+    font-size: 11px !important
+  }
+  .chosen-results{
+    font-size: 11px !important;
+  }
+
+  .chosen-drop{
+    margin-left: 3px !important;
+  }

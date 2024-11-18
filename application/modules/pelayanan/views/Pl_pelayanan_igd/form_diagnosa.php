@@ -38,6 +38,7 @@
 </script>
 
 <div class="tabbable">
+
   <ul class="nav nav-tabs" id="myTab">
     <li class="active">
       <a data-toggle="tab" href="#pengkajian_perawat">
@@ -1485,6 +1486,8 @@
             </td>
           </tr>
         </table>
+
+        <br>
         <table class="table">
           <tr>
             <td colspan="2">Bila salah satu jawaban "ya" dari kriteria perencanaan pulang diatas, maka akan dilanjutkan dengan perencanaan pulang sebagai berikut : </td>
@@ -1964,6 +1967,7 @@
       </div>
     </div>
   </div>
+  
 </div>
 
 

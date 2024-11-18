@@ -101,31 +101,11 @@
     </tr>
 </table>
 
-<!-- assesmen pasien rawat jalan -->
-<!-- <hr>
-<table border="0" width="100%" class="table-content">
-  <tr>
-    <td colspan="4" align="left"><span style="font-family: arial; font-size: 14px; text-align: center"><b>ASSESMEN PASIEN RAWAT JALAN</b></span></td>
-  </tr>
-  <tr>
-    <td width="30px" style="font-size: 13px; padding: 5px">TD </td><td width="100px">: </td>
-    <td width="30px" style="font-size: 13px; padding: 5px">Nadi</td><td width="100px">: </td>
-  </tr>
-  <tr>
-    <td width="30px" style="font-size: 13px; padding: 5px">P </td><td width="100px">: </td>
-    <td width="30px" style="font-size: 13px; padding: 5px">Suhu</td><td width="100px">: </td>
-  </tr>
-  <tr>
-    <td width="30px" style="font-size: 13px; padding: 5px">BB </td><td width="100px">: </td>
-    <td width="30px" style="font-size: 13px; padding: 5px">TB</td><td width="100px">: </td>
-  </tr>
-</table> -->
-
 <!-- order penunjang medis -->
 <hr>
-<!-- <table border="0" width="100%" class="table-content">
+<table border="0" width="100%" class="table-content">
   <tr>
-    <td align="left" colspan="2"><span style="font-family: arial; font-size: 14px;"><b>ORDER PENUNJANG MEDIS</b></span></td>
+    <td align="left" colspan="2"><span style="font-family: arial; font-size: 14px;"><b>PENUNJANG MEDIS</b></span></td>
   </tr>
   <tr>
     <td style="font-size: 13px; padding: 5px" colspan="2">
@@ -172,29 +152,11 @@
   <tr>
     <td width="100px" style="padding-left: 33px" colspan="2"><br><br></td>
   </tr>
-</table> -->
-
-<!-- jadwal kontrol -->
-<hr>
-<table border="0" width="100%" class="table-content">
-  <tr>
-    <td align="left" colspan="2"><span style="font-family: arial; font-size: 14px;"><b>JADWAL KONTROL</b></span></td>
-  </tr>
-  <tr>
-    <td width="100px" style="font-size: 13px; padding: 5px">Tgl kontrol </td><td>:</td>
-  </tr>
-  <tr>
-    <td width="100px" style="font-size: 13px; padding: 5px">Catatan</td><td>:</td>
-  </tr>
-  <tr>
-    <td width="100px" colspan="2"><br><br></td>
-  </tr>
-  
 </table>
 
 <!-- eresep -->
 <!-- <div class="pagebreak"></div> -->
-<!-- <hr>
+<hr>
 <span style="font-size: 11px"><i>Silahkan potong kertas bagian ini dan berikan ke petugas farmasi</i></span>
 <br>
 <br>
@@ -209,9 +171,6 @@
     <td width="100px">Nama Pasien</td><td> <?php echo $_GET['nama']?> (<?php echo $result['registrasi']->jen_kelamin?>)</td>
   </tr>
   <tr>
-    <td width="100px">&nbsp;</td>
-  </tr>
-  <tr>
     <td width="100px" colspan="2">Jenis Pengambilan Obat</td>
   </tr>
   <tr>
@@ -221,10 +180,10 @@
     </td>
     <td>
       <img src="<?php echo base_url().ICON_UNCHECKBOX; ?>" style="width: 18px; float: left"> 
-      <span style="margin-top: -0px; padding-left: 10px"> Diantar</span>
+      <span style="margin-top: -0px; padding-left: 10px"> Ditinggal</span>
     </td>
   </tr>
-  <tr>
+  <!-- <tr>
     <td width="100px" colspan="2">Alamat Pengiriman & No.Telp : </td>
   </tr>
   <tr>
@@ -232,9 +191,9 @@
       <div style="border: 1px solid grey; width: 100%; height: 100px"></div><BR>
       <span style="font-size: 11px"><i>Silahkan isi alamat pengiriman jika obat akan diantar</i></span>
     </td>
-  </tr>
+  </tr> -->
   
-</table> -->
+</table>
 
 
 <br>

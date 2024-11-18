@@ -34,7 +34,22 @@ jQuery(function($) {
   }).next().on(ace.click_event, function(){
     $(this).prev().focus();
   });
-    
+  
+  if(!ace.vars['touch']) {
+        $('.chosen-select').chosen({allow_single_deselect:true}); 
+    //resize the chosen on window resize
+
+    $(window)
+    .off('resize.chosen')
+    .on('resize.chosen', function() {
+      $('.chosen-select').each(function() {
+          var $this = $(this);
+          $this.next().css({'width': $this.parent().width()});
+      })
+    }).trigger('resize.chosen');
+
+  }
+
 
 });
 
@@ -112,7 +127,7 @@ $(document).ready(function() {
         },
         success: function(data) {
           achtungHideLoader();
-          find_data_reload(data,base_url);
+          find_data_reload(data);
         }
       });
     });
@@ -244,7 +259,7 @@ function show_modal_pengkajian(myid){
   // show_modal_medium_return_json('pelayanan/Pl_pelayanan_ri/get_cppt_dt?id='+myid+'', 'DETAIL PENGKAJIAN');
 }
 
-function find_data_reload(result, base_url){
+function find_data_reload(result){
   
   var data = result.data;    
   oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&"+data).load();
@@ -278,22 +293,6 @@ function fillthis(id){
 
 </script>
 
-<style>
-  .wysiwyg-editor{
-    max-height: 1000px !important;
-    height: 700px !important;
-    padding: 5px;
-  }
-  .input_type{
-    border : none !important;
-    border-bottom : 1px solid #dddada !important;
-  }
-
-  .textarea-type{
-    height: 100px !important;
-    width: 100% !important;
-  }
-</style>
 <div class="row">
 
   <div class="page-header">
@@ -307,6 +306,20 @@ function fillthis(id){
   </div><!-- /.page-header -->
 
   <div class="col-md-7" style="border-right: 1px solid #e5e5e5">
+    <!-- profil pasien -->
+    <table class="table">
+      <tr style="background-color: #edf3f4;">
+        <td style="vertical-align: top; width: 180px">
+          <span style="font-weight: bold !important">Nama Pasien :</span><br> 
+          [<a href="#" onclick="getMenu('pelayanan/Pl_input_vital_sign/assesmen_rj/<?php echo $value->id_pl_tc_poli?>/<?php echo $value->no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>')" style="font-weight: bold"><?php echo isset($value)?ucwords($value->no_mr):''?></a>]  <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
+        </td>
+        <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Penjamin :</span><br> <?php echo isset($value)?ucwords($value->nama_kelompok):''?><br><?php echo isset($value)?ucwords($value->nama_perusahaan):''?> <?php echo isset($value->kode_perusahaan) ? ($value->kode_perusahaan == 120) ?'('.$value->no_sep.')' : '' :'';?></td>
+        <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Dokter :</span><br> <?php echo isset($value)?$value->nama_pegawai:''?> </td>
+        <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Poli/Spesialis :</span><br> <?php echo isset($value)?ucwords($value->nama_bagian):''?> </td>
+      </tr>
+    </table>
+
+
     <form class="form-horizontal" method="post" id="form_pelayanan" action="pelayanan/Pl_pelayanan/processSaveCatatanPengkajian" enctype="multipart/form-data" autocomplete="off" >   
 
       <!-- form default pelayanan pasien -->
@@ -340,14 +353,14 @@ function fillthis(id){
       <div class="form-group">
           <label class="control-label col-sm-2">Nama Dokter</label>
           <div class="col-md-6">
-            <input type="text" class="form-control" name="nama_ppa" value="<?php echo $this->session->userdata('sess_nama_dokter');?>">
+            <input type="text" class="form-control" name="nama_ppa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:$this->session->userdata('user')->fullname; ?>">
           </div>
       </div>
 
       <div class="form-group">
           <label class="control-label col-sm-2">Jenis Form</label>
           <div class="col-md-8">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), 25 , 'jenis_form_catatan', 'jenis_form_catatan', 'form-control', '', '') ?>
+            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), 25 , 'jenis_form_catatan', 'jenis_form_catatan', 'chosen-select form-control', '', '') ?>
           </div>
       </div>
       <hr>
@@ -367,31 +380,22 @@ function fillthis(id){
   </div>
 
   <div class="col-md-5" style="margin-top: 10px">
-    <center><span style="font-size: 14px"><b>CATATAN RIWAYAT PENYAKIT ATAU PENGKAJIAN PASIEN</b></span></center><br>
     <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 
-        <div class="form-group">
-          <label class="control-label col-md-2">Tanggal</label>
-            <div class="col-md-3">
-              <div class="input-group">
-                <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
-                <span class="input-group-addon">
-                  <i class="fa fa-calendar bigger-110"></i>
-                </span>
-              </div>
-            </div>
+      <!-- <div class="form-group">
+        <label class="control-label col-md-2">Tanggal</label>
+          <div class="col-md-7">
+            <span class="input-icon input-icon-right">
+              <input class="date-picker" style="width: 120px" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <i class="ace-icon fa fa-calendar"></i>
+            </span>
+            <span class="input-icon input-icon-right">
+              <input class="date-picker" style="width: 120px" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <i class="ace-icon fa fa-calendar"></i>
+            </span>
+          </div>
 
-            <label class="control-label col-md-1">s/d</label>
-            <div class="col-md-3">
-              <div class="input-group">
-                <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
-                <span class="input-group-addon">
-                  <i class="fa fa-calendar bigger-110"></i>
-                </span>
-              </div>
-            </div>
-
-            <div class="col-md-3">
+          <div class="col-md-2 no-padding">
             <a href="#" id="btn_search_data_cppt" class="btn btn-xs btn-default">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             </a>
@@ -400,34 +404,31 @@ function fillthis(id){
             </a>
             <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
               <i class="fa fa-file-pdf-o bigger-110"></i>
-            </a>
+            </a> 
           </div>
-
-        </div>
-        
-        <table id="table-cppt" class="table table-bordered table-hover">
-          <thead>
-            <tr>  
-              <th width="30px">No</th>
-              <th width="70px">Tanggal/Jam</th>
-              <th>Nama Dokter</th>
-              <th>Catatan Pengkajian</th>
-              <th>Verifikasi Dokter</th>
-              <th width="100px">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+      </div> -->
+      <center><span style="font-size: 14px"><b>CATATAN RIWAYAT PENYAKIT ATAU PENGKAJIAN PASIEN</b></span></center>
+      <table id="table-cppt" class="table table-bordered table-hover">
+        <thead>
+          <tr>  
+            <th width="30px">No</th>
+            <th width="70px">Tanggal/Jam</th>
+            <th>Nama Dokter</th>
+            <th>Catatan Pengkajian</th>
+            <th>Verifikasi Dokter</th>
+            <th width="100px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
 
     </form>
     <!-- resume medis terakhir -->
-    <center><span style="font-size: 14px"><b>RESUME MEDIS PASIEN TERBARU</b></span></center><br>
+    <center><span style="font-size: 14px"><b>RESUME MEDIS PASIEN TERBARU</b></span></center>
     <div id="load_last_resume_medis"></div>
   </div>
   
-
-     
 </div>
 
 

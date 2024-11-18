@@ -297,18 +297,23 @@ class Entry_resep_ri_rj extends MX_Controller {
             // $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
             // $row[] = $row_list->kode_brg;
             $nama_brg = ($row_list->nama_brg != '')?$row_list->nama_brg:'Obat Racikan -'.$no;
+            // resep kronis
+            $kronis = ($row_list->jumlah_obat_23 > 0) ? '<span>[kronis]<span>' : '' ;
             $row[] = strtoupper($nama_brg);
-            $row[] = '<div class="center">'.(int)$row_list->jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
+            $jumlah_tebus = (int)$row_list->jumlah_tebus + (int)$row_list->jumlah_obat_23;
+            $row[] = '<div class="center">'.$jumlah_tebus.' '.ucfirst($row_list->satuan_kecil).'</div>';
             $status_resep_ditangguhkan = ($row_list->resep_ditangguhkan == 0) ? 'N' : 'Y' ;
             // $row[] = '<div class="center">'.$status_resep_ditangguhkan.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->harga_jual, 2).'</div>';
             // $row[] = '<div align="right">'.number_format($row_list->sub_total, 2).'</div>';
             $row[] = '<div align="right">'.number_format($row_list->jasa_r, 2).'</div>';
-            $row[] = '<div align="right">'.number_format($row_list->total, 2).'</div>';
+            // total
+            $total = ($jumlah_tebus * $row_list->harga_jual) + $row_list->jasa_r;
+            $row[] = '<div align="right">'.number_format($total, 2).'</div>';
             $status_input = ($row_list->status_input==NULL)?'<label class="label label-warning">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
             $row[] = '<div align="center">'.$status_input.'</div>';
             $data[] = $row;
-            $arr_total[] = $row_list->total;
+            $arr_total[] = $total;
         }
 
         $output = array(
