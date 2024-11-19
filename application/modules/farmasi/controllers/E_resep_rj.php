@@ -63,6 +63,8 @@ class E_resep_rj extends MX_Controller {
             $row[] = '<div class="center" width="30px">'.$no.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=RJ'".')" class="label label-primary">'.$row_list->kode_pesan_resep.'</a></div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
+            $jenis_resep = ($row_list->jenis_resep == 'prb')?'<span class="red">PRB</span>':'<span class="green">NON PRB</span>';
+            $row[] = '<div class="center"><b>'.$jenis_resep.'</b></div>';
             $row[] = '<div class="center"><b>'.$row_list->no_mr.'</b></div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->nama_pegawai;
@@ -72,6 +74,11 @@ class E_resep_rj extends MX_Controller {
             $row[] = ucwords($penjamin).$no_sep;
             $row[] = $row_list->diagnosa_akhir;
             $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
+            $verifikasi_apotik_online = ($row_list->verifikasi_apotik_online ==  1)?'checked':'';
+            $row[] = '<div class="center"><label>
+                                            <input name="switch-field-1" class="ace ace-switch" id="status_verif_'.$row_list->kode_pesan_resep.'" onchange="udpateStatusVerif('.$row_list->kode_pesan_resep.')" type="checkbox" value="1" '.$verifikasi_apotik_online.'>
+                                            <span class="lbl"></span>
+                                        </label></div>';
             $row[] = '<div class="center">'.$status_tebus.'</div>';
             
             $data[] = $row;

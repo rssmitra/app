@@ -68,6 +68,34 @@ function rollback(id){
   
 }
 
+function udpateStatusVerif(kode_pesan_resep){
+  preventDefault();
+  var checked = $("#status_verif_"+kode_pesan_resep+"").is(':checked');
+  console.log(checked);
+  $.ajax({
+    url: 'farmasi/process_entry_resep/update_status_verif',
+    type: "post",
+    data: { ID : kode_pesan_resep, status : checked },
+    dataType: "json",
+    beforeSend: function() {
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+    },
+    complete: function(xhr) {     
+      var data=xhr.responseText;
+      var jsonResponse = JSON.parse(data);
+      if(jsonResponse.status === 200){
+        $.achtung({message: jsonResponse.message, timeout:5});
+      }else{
+        $.achtung({message: jsonResponse.message, timeout:5, 'className' : 'achtungFail'});
+      }
+      achtungHideLoader();
+    }
+
+  });
+  
+}
+
 </script>
 
 <div class="row">
@@ -157,13 +185,15 @@ function rollback(id){
                 <th class="center" width="50px"></th>
                 <th style="width: 50px">Kode</th>
                 <th style="width: 130px">Tgl Pesan</th>
+                <th style="width: 100px">Jenis Resep</th>
                 <th style="width: 100px">No MR</th>
                 <th>Nama Pasien</th>
                 <th>Nama Dokter</th>
                 <th>Asal Poli/bagian</th>
                 <th>Penjamin</th>
                 <th width="180px">Diagnosa Akhir</th>
-                <th width="90px">Status</th>
+                <th width="80px">Verifikasi</th>
+                <th width="90px">Status Resep</th>
               </tr>
             </thead>
             <tbody>

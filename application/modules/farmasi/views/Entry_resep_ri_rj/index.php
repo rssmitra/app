@@ -68,6 +68,34 @@ function rollback(id){
   
 }
 
+function udpateStatusVerif(kode_pesan_resep){
+  preventDefault();
+  var checked = $("#status_verif_"+kode_pesan_resep+"").is(':checked');
+  console.log(checked);
+  $.ajax({
+    url: 'farmasi/process_entry_resep/update_status_verif',
+    type: "post",
+    data: { ID : kode_pesan_resep, status : checked },
+    dataType: "json",
+    beforeSend: function() {
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+    },
+    complete: function(xhr) {     
+      var data=xhr.responseText;
+      var jsonResponse = JSON.parse(data);
+      if(jsonResponse.status === 200){
+        $.achtung({message: jsonResponse.message, timeout:5});
+      }else{
+        $.achtung({message: jsonResponse.message, timeout:5, 'className' : 'achtungFail'});
+      }
+      achtungHideLoader();
+    }
+
+  });
+  
+}
+
 </script>
 
 <div class="row">
@@ -162,18 +190,20 @@ function rollback(id){
       <hr class="separator">
       <!-- div.dataTables_borderWrap -->
       <div class="row">
-        <div class="col-md-12 no-padding">
+        <div class="col-md-12">
           <table id="dynamic-table" base-url="farmasi/entry_resep_ri_rj/get_data?flag=<?php echo $flag?>" class="table table-bordered table-hover">
             <thead>
               <tr>  
                 <th class="center"></th>
                 <th>Kode</th>
                 <th width="150px">Tgl Pesan</th>
+                <th width="100px">Jenis Resep</th>
                 <th>No MR</th>
                 <th>Nama Pasien</th>
                 <th>Nama Dokter/Asal Poli</th>
                 <th>Penjamin</th>
                 <!-- <th width="180px">Diagnosa Akhir</th> -->
+                <th width="90px">Verifikasi</th>
                 <th width="90px">Status</th>
                 <!-- <th width="90px">Jumlah (R)</th> -->
                 <!-- <th>Lokasi Tebus</th> -->

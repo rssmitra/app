@@ -609,6 +609,24 @@ class Process_entry_resep extends MX_Controller {
         $this->load->view('farmasi/preview_tracer', $data);
     }
 
+    public function update_status_verif(){
+        // print_r($_POST);die;
+        $this->db->trans_begin();
+        $status = ($_POST['status'] == 'true') ? 1 : 0;
+        if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['verifikasi_apotik_online' => $status]))
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['ID'] ));
+        }
+        else
+        {
+            $this->db->trans_rollback();
+            // print_r($this->db->last_query());die;
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+
+    }
+
 
 
 
