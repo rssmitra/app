@@ -22,24 +22,32 @@ $(document).ready(function(){
     }); 
 
     $('select[name="poliklinik"]').change(function () {      
-
-
         $.getJSON("<?php echo site_url('Templates/References/getDokterBySpesialis') ?>/" + $(this).val(), '', function (data) {              
-
             $('#select_dokter option').remove();                
-
             $('<option value="">-Pilih Dokter-</option>').appendTo($('#select_dokter'));                         
-
             $.each(data, function (i, o) {                  
-
                 $('<option value="' + o.kode_dokter + '">' + o.nama_pegawai + '</option>').appendTo($('#select_dokter'));                    
-                  
             });      
   
 
         });    
 
     }); 
+    
+    if(!ace.vars['touch']) {
+        $('.chosen-select').chosen({allow_single_deselect:true}); 
+        //resize the chosen on window resize
+
+        $(window)
+        .off('resize.chosen')
+        .on('resize.chosen', function() {
+          $('.chosen-select').each(function() {
+              var $this = $(this);
+              $this.next().css({'width': $this.parent().width()});
+          })
+        }).trigger('resize.chosen');
+
+  }
 
 })
 
@@ -69,7 +77,7 @@ $(document).ready(function(){
 
         <div>
             <label for="form-field-8">Silahkan pilih Poli/Klinik</label>
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'form-control', '', '') ?>
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'poliklinik', 'poliklinik', 'chosen-select form-control', '', '') ?>
         </div>
 
         <div style="padding-top: 8px">

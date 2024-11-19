@@ -179,10 +179,13 @@ function udpateStatusVerif(kode_pesan_resep){
       <!-- div.dataTables_borderWrap -->
       <div class="row">
         <div class="col-md-12">
-          <table id="dynamic-table" base-url="farmasi/E_resep_rj/get_data?flag=<?php echo $flag?>" class="table table-bordered table-hover">
+          <!-- <table id="dynamic-table" base-url="farmasi/E_resep_rj/get_data?flag=<?php echo $flag?>" class="table table-bordered table-hover"> -->
+          <table id="dynamic-table" base-url="farmasi/E_resep_rj/get_data" data-id="flag=<?php echo $flag?>" url-detail="farmasi/Farmasi_pesan_resep/getDetail" class="table table-bordered table-hover">
             <thead>
               <tr>  
                 <th class="center" width="50px"></th>
+                <th width="40px" class="center"></th>
+                <th width="40px"></th>
                 <th style="width: 50px">Kode</th>
                 <th style="width: 130px">Tgl Pesan</th>
                 <th style="width: 100px">Jenis Resep</th>
@@ -207,7 +210,8 @@ function udpateStatusVerif(kode_pesan_resep){
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
+<!-- <script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_ur l.js'?>"></script> -->
+<script src="<?php echo base_url().'assets/js/custom/als_datatable_with_detail_custom_url.js'?>"></script>
 
 
 

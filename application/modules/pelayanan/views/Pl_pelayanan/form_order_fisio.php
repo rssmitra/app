@@ -83,7 +83,7 @@ $(document).ready(function() {
 });
 
 function reset_table(){
-    oTableTindakan.ajax.url("pelayanan/Pl_pelayanan_pm/get_order_penunjang?bagian="+$('#kode_bagian_pm').val()+"&jenis=tindakan&kode="+$('#no_kunjungan_pm').val()+"").load();
+    oTableTindakan.ajax.url("pelayanan/Pl_pelayanan_pm/get_order_penunjang?bagian="+$('#kode_bagian_pm').val()+"&jenis=tindakan&kode="+$('#no_kunjungan_pm').val()+"&id_pm_tc_penunjang="+$('#id_pm_tc_penunjang').val()+"").load();
 }
 
 function delete_transaksi(myid){

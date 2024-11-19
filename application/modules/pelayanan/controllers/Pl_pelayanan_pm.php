@@ -1071,7 +1071,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             if($row_list->kode_bagian == '050301'){
                 $row[] = $row_list->diagnosa;
             }
-            $row[] = $row_list->keterangan.' | '.$row_list->xray_foto.' | '.$row_list->kontra_indikasi;
+            $row[] = 'X-Ray foto : <br>'.$row_list->xray_foto.' <br>Kontra Indikasi : <br> '.$row_list->kontra_indikasi.' Keterangan :<br> '.$row_list->keterangan;
             $row[] = $this->tanggal->formatDateTime($row_list->created_date);
             $row[] = '<div class="center"><a href="#" onclick="delete_transaksi('.$row_list->order_id.')"><i class="fa fa-trash red bigger-120" title="hapus"></i></a></div>';
            
@@ -1253,7 +1253,7 @@ class Pl_pelayanan_pm extends MX_Controller {
 
     public function process_order_penunjang(){
 
-        print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('id_pm_tc_penunjang', 'id_pm_tc_penunjang', 'trim|required');      
         $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'pl_kode_tindakan_hidden', 'trim|required');      
