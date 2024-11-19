@@ -171,6 +171,18 @@
     <td width="100px">Nama Pasien</td><td> <?php echo $_GET['nama']?> (<?php echo $result['registrasi']->jen_kelamin?>)</td>
   </tr>
   <tr>
+    <td width="90px" valign="top">Tgl Lahir</td><td> <?php echo $this->tanggal->formatDateDmy($result['registrasi']->tgl_lhr)?> (<?php echo $umur?> Thn)</td>
+  </tr>
+  <tr>
+    <td width="90px" valign="top" valign="top">Nasabah</td><td> <?php echo ($result['registrasi']->kode_perusahaan == '0')?'Umum':$result['registrasi']->nama_perusahaan;?></td>
+  </tr>
+  <tr>
+      <td width="90px">Poli Tujuan</td><td> <?php echo ucwords($result['registrasi']->nama_bagian)?></td>
+    </tr>
+    <tr>
+      <td width="90px">Dokter</td><td> <?php echo $result['registrasi']->nama_pegawai?></td>
+    </tr>
+  <tr>
     <td width="100px" colspan="2">Jenis Pengambilan Obat</td>
   </tr>
   <tr>
