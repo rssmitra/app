@@ -126,7 +126,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $val->set_rules('jumlah_r', 'Jumlah R', 'trim|required');
         $val->set_rules('kode_dokter', 'Dokter', 'trim');
         $val->set_rules('lokasi_tebus', 'Lokasi Tebus', 'trim|required');
-        $val->set_rules('jenis_resep', 'Jenis Resep', 'trim|required');
+        $val->set_rules('jenis_resep', 'Jenis Resep', 'trim');
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
 

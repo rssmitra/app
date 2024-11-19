@@ -25,6 +25,7 @@ class E_resep_rj_model extends CI_Model {
 		$this->db->join('mt_nasabah','mt_nasabah.kode_kelompok=fr_listpesanan_v.kode_kelompok','left');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=fr_listpesanan_v.no_registrasi','left');
 		$this->db->where('e_resep', 1);
+		$this->db->where('status_tebus', NULL);
 	}
 
 	private function _get_datatables_query()
