@@ -1253,10 +1253,10 @@ class Pl_pelayanan_pm extends MX_Controller {
 
     public function process_order_penunjang(){
 
-        // print_r($_POST);die;
+        print_r($_POST);die;
         // form validation
-        $this->form_validation->set_rules('id_pm_tc_penunjang', 'Pemeriksaan', 'trim|required');      
-        $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'Pemeriksaan', 'trim|required');      
+        $this->form_validation->set_rules('id_pm_tc_penunjang', 'id_pm_tc_penunjang', 'trim|required');      
+        $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'pl_kode_tindakan_hidden', 'trim|required');      
         $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim');      
 
         // set message error

@@ -579,7 +579,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 	{
 		$this->db->from('pm_tc_penunjang_order_detail');
 		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.id_pm_tc_penunjang=pm_tc_penunjang_order_detail.id_pm_tc_penunjang','left');
-		$this->db->where('pm_tc_penunjang.id_pm_tc_penunjang', $_GET['kode'] );
+		$this->db->where('pm_tc_penunjang.id_pm_tc_penunjang', $_GET['id_pm_tc_penunjang'] );
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

@@ -14,7 +14,7 @@ $(document).ready(function() {
       "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-        "url": "pelayanan/Pl_pelayanan_pm/get_order_penunjang?bagian="+$('#kode_bagian_pm').val()+"&jenis=tindakan&kode="+$('#no_kunjungan_pm').val()+"",
+        "url": "pelayanan/Pl_pelayanan_pm/get_order_penunjang?bagian="+$('#kode_bagian_pm').val()+"&jenis=tindakan&kode="+$('#no_kunjungan_pm').val()+"&id_pm_tc_penunjang="+$('#id_pm_tc_penunjang').val()+"",
           "type": "POST"
       },
 
@@ -47,7 +47,7 @@ $(document).ready(function() {
 
     });
 
-    $('#btn_add_tindakan').click(function (e) {   
+    $('#btn_add_tindakan_fisio').click(function (e) {   
       e.preventDefault();
 
       /*process add tindakan*/
@@ -154,6 +154,7 @@ $('#pl_diagnosa').typeahead({
 
         <input type="hidden" class="form-control" id="no_kunjungan_pm" name="no_kunjungan_pm" value="<?php echo $no_kunjungan?>">
         <input type="hidden" class="form-control" id="kode_bagian_pm" name="kode_bagian_pm" value="<?php echo isset($sess_kode_bag)?$sess_kode_bag:0?>">
+        <input type="hidden" class="form-control" id="id_pm_tc_penunjang" name="id_pm_tc_penunjang" value="<?php echo isset($id_pm_tc_penunjang)?$id_pm_tc_penunjang:0?>">
 
 
         <div class="form-group">
@@ -200,7 +201,7 @@ $('#pl_diagnosa').typeahead({
         <div class="form-group">
             <label class="col-sm-2" for="">&nbsp;</label>
             <div class="col-sm-10" style="margin-left:6px">
-               <a href="#" class="btn btn-xs btn-primary" id="btn_add_tindakan"> <i class="fa fa-plus"></i> Tambahkan </a>
+               <a href="#" class="btn btn-xs btn-primary" id="btn_add_tindakan_fisio"> <i class="fa fa-plus"></i> Tambahkan </a>
             </div>
         </div>
 
