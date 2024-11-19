@@ -5,7 +5,7 @@ class Pl_pelayanan_model extends CI_Model {
 
 	var $table = 'pl_tc_poli';
 	var $column = array('pl_tc_poli.nama_pasien','mt_karyawan.nama_pegawai');
-	var $select = 'pl_tc_poli.kode_bagian,pl_tc_poli.no_kunjungan,pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, id_pl_tc_poli, pl_tc_poli.status_periksa, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, pl_tc_poli.tgl_jam_poli, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, pl_tc_poli.kode_dokter, pl_tc_poli.status_batal, pl_tc_poli.created_by, pl_tc_poli.tgl_keluar_poli, tc_registrasi.tgl_jam_keluar, pl_tc_poli.flag_ri, pl_tc_poli.flag_mcu, pl_tc_poli.flag_bayar_konsul, pl_tc_poli.kelas_ri, tc_registrasi.no_sep, tc_registrasi.kodebookingantrol, short_name, mt_master_pasien.jen_kelamin, mt_master_pasien.title, mt_master_pasien.no_kartu_bpjs, diagnosa_rujukan, kode_diagnosa_rujukan, tipe_daftar, nama_bagian';
+	var $select = 'pl_tc_poli.kode_bagian,pl_tc_poli.no_kunjungan,pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, id_pl_tc_poli, pl_tc_poli.status_periksa, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, pl_tc_poli.tgl_jam_poli, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, pl_tc_poli.kode_dokter, pl_tc_poli.status_batal, pl_tc_poli.created_by, pl_tc_poli.tgl_keluar_poli, tc_registrasi.tgl_jam_keluar, pl_tc_poli.flag_ri, pl_tc_poli.flag_mcu, pl_tc_poli.flag_bayar_konsul, pl_tc_poli.kelas_ri, tc_registrasi.no_sep, tc_registrasi.kodebookingantrol, short_name, mt_master_pasien.jen_kelamin, mt_master_pasien.title, mt_master_pasien.no_kartu_bpjs, diagnosa_rujukan, kode_diagnosa_rujukan, tipe_daftar, nama_bagian, umur, almt_ttp_pasien';
 	var $order = array('pl_tc_poli.no_antrian' => 'ASC');
 
 	public function __construct()
@@ -210,6 +210,18 @@ class Pl_pelayanan_model extends CI_Model {
 			// print_r($this->db->last_query());die;
 			return $query->row();
 		}
+		
+	}
+
+	public function get_by_no_kunjungan($no_kunjungan)
+	{
+		$this->_main_query();
+		$this->db->select("(SELECT top 1 kode_perjanjian FROM tc_pesanan WHERE no_mr=tc_kunjungan.no_mr AND CAST(tgl_jam_masuk as DATE) = CAST(pl_tc_poli.tgl_jam_poli as DATE) ORDER BY id_tc_pesanan DESC) as kode_perjanjian");
+
+		$this->db->where(''.$this->table.'.no_kunjungan',$no_kunjungan);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->row();
 		
 	}
 
