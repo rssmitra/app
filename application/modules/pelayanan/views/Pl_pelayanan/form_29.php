@@ -1,11 +1,35 @@
+<script type="text/javascript">
+$('#nama_dokter_konsul').typeahead({
+    source: function (query, result) {
+        $.ajax({
+            url: "templates/references/getAllDokter",
+            data: { keyword:query },            
+            dataType: "json",
+            type: "POST",
+            success: function (response) {
+              result($.map(response, function (item) {
+                  return item;
+              }));
+            }
+        });
+    },
+    afterSelect: function (item) {
+      // do what is needed with item
+      var val_item=item.split(':')[0];
+      var label_item=item.split(':')[1];
+      console.log(val_item);
+      $('#nama_dokter_konsul').val(label_item);
+    }
 
+});
+</script>
 
 <div style="text-align: center; font-size: 14px"><b>LEMBAR KONSULTASI INTERNAL RAWAT JALAN</b></div>
 <br>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 <div>
-  Kepada Yth : <input type="text" style="width: 100% !important" name="form_29[nama_dokter]" id="nama_dokter" onchange="fillthis('nama_dokter')">
+  Kepada Yth : <input type="text" style="width: 100% !important" name="form_29[nama_dokter_konsul]" id="nama_dokter_konsul" onchange="fillthis('nama_dokter_konsul')">
   <br>
   <br>
   Mohon pemeriksaan dan pengobatan untuk :<br>

@@ -52,7 +52,7 @@
                   $('#pl_pemeriksaan').val(obj.pemeriksaan);
                   $('#pl_diagnosa').val(obj.diagnosa_akhir);
                   $('#pl_diagnosa_hidden').val(obj.kode_icd_diagnosa);
-                  $('#pl_pengobatan').val(obj.pengobatan);
+                  $('#pl_pengobatan').val(obj.pengobatan+'\n'+obj.resep_farmasi);
               }
           });
       }else{

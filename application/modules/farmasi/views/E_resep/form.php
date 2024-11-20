@@ -536,6 +536,7 @@
         preventDefault();
         $('#kode_brg_racik').val("");
         $('#nama_racikan').val("");
+        $('#nama_racikan').focus();
         $('#jml_racikan').val("");
         $('#satuan_racikan').val("");
         $('#dosis_start_r').val("");
@@ -895,14 +896,15 @@
                             <div class="pull-left">
                                 <p style="font-weight: bold">Obat Racikan</p>
                             </div>
-                            <!-- <div class="pull-right">
-                                <a href="#" class="btn btn-sm btn-danger" onclick="reset_form_racikan()"><i class="fa fa-refresh"></i> Reset Form Racikan</a>
-                            </div> -->
+                            <div class="pull-right">
+                                <a href="#" onclick="reset_form_racikan()"><i class="fa fa-plus"></i> Buat Racikan Baru</a>
+                            </div>
                         </div>
                     </div>
-
+                    
                     <!-- form racikan header -->
                     <div id="data_racikan_div">
+
                         <input type="hidden" class="form-control" name="kode_brg_racik" id="kode_brg_racik" value="0">  
                         <!-- <div class="form-group">
                             <label class="control-label col-sm-2">Tipe Racik</label>
@@ -993,7 +995,7 @@
                         <table width="100%">
                             <tr style="border-bottom: 1px solid grey ">
                                 <th>Cari Obat :</th>
-                                <th style="padding-left: 7px;" width="50px">Qty:</th>
+                                <th style="padding-left: 7px;" width="50px">Dosis:</th>
                                 <th style="padding-left: 7px;" width="100px">Satuan :</th>
                                 <th style="padding-left: 7px;">Keterangan :</th>
                                 <th style="padding-left: 7px;" width="100px"></th>

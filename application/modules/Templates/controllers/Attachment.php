@@ -11,6 +11,7 @@ class Attachment extends MX_Controller {
         parent::__construct();
         /*load model*/
         $this->load->model('attachment_model');
+        $this->load->model('pelayanan/Pl_pelayanan_pm_model', 'Pl_pelayanan_pm');
         $this->load->library('lib_menus');
         /*enable profiler*/
         $this->output->enable_profiler(false);

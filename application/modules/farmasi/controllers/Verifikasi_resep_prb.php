@@ -21,6 +21,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         $this->load->model('Entry_resep_racikan_model', 'Entry_resep_racikan');
         $this->load->model('Verifikasi_resep_prb_model', 'Verifikasi_resep_prb');
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
+        $this->load->model('casemix/Csm_billing_pasien_model', 'Csm_billing_pasien');
         $this->load->model('Retur_obat_model', 'Retur_obat');
         // load library
         $this->load->library('Print_direct');
@@ -29,6 +30,8 @@ class Verifikasi_resep_prb extends MX_Controller {
         $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         // load module
         $this->load->module('Templates/Templates.php');
+        // include qr lib
+        $this->load->library('qr_code_lib');
 
         /*enable profiler*/
         $this->output->enable_profiler(false);
@@ -108,7 +111,7 @@ class Verifikasi_resep_prb extends MX_Controller {
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '';
             $row[] = $row_list->kode_trans_far;
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Verifikasi_resep_prb/form/".$row_list->kode_trans_far."'".')">'.$row_list->kode_trans_far.'</a></div>';
+            $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Verifikasi_resep_prb/form/".$row_list->kode_trans_far."'".')">'.$row_list->kode_trans_far.'</a></b></div>';
             $row[] = '<div class="left">'.$row_list->no_sep.'</div>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_trans);
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
@@ -425,9 +428,10 @@ class Verifikasi_resep_prb extends MX_Controller {
             $named = $explode[0];
             $no_sep = $explode[1];
             $kode_trans_far = $explode[2];
+            $kode_penunjang = $explode[3];
 
             /*create and save download file pdf*/
-            if( $this->getContentPDF($named, $no_sep, $kode_trans_far, 'F') ) :
+            if( $this->getContentPDF($named, $no_sep, $kode_trans_far, 'F', $kode_penunjang) ) :
                 /*save document to database*/
                 /*csm_reg_pasien*/
                 $filename = $named.'-'.$no_sep.'-'.$kode_trans_far.'.pdf';
@@ -472,33 +476,98 @@ class Verifikasi_resep_prb extends MX_Controller {
         header("Location:".$url);
     }
 
-    public function getHtmlData($data, $named, $no_sep, $kode_trans_far){
+    public function getHtmlData($data, $named, $no_sep, $kode_trans_far, $kode_penunjang){
 
         $temp = new Templates;
         /*header html*/
         $header = $this->Verifikasi_resep_prb->get_header_data($kode_trans_far);
+        if(isset($header->kode_dokter) AND $header->kode_dokter != ''){
+            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $header->kode_dokter))->row();
+        }
+        $ttd = isset($get_dokter->ttd) ? $get_dokter->ttd:'';
+        $stamp_dr = isset($get_dokter->stamp) ? $get_dokter->stamp:'';
+        $nama_dr = isset($get_dokter->nama_pegawai) ? $get_dokter->nama_pegawai:'';
+        $no_sip = isset($get_dokter->no_sip) ? $get_dokter->no_sip:'';
+        $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
+        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$no_sip.'';
+
+        // echo '<pre>'; print_r($data);
         // echo '<pre>'; print_r($header);die;
+
         $html = '';
         switch ($named) {
 
+            // done qr ok
             case 'FRM_BAST':
+                $config = [
+                    'no_registrasi' => $header->no_registrasi,
+                    'kode' => $header->kode_trans_far,
+                    'tanggal' => $header->tgl_trans,
+                    'flag' => $named,
+                ];
+                $qr_url = $this->qr_code_lib->qr_url($config);
+                $img = $this->qr_code_lib->generate($qr_url);
+
                 $result = array();
                 $result['value'] = $header;
                 $result['resep'] = $data;
+                $result['qr_url'] = $qr_url;
+                $result['qr_img'] = $img;
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_form_bast', $result, true);
+            break;
+
+            case 'MEMO_INHIBITOR':
+                $result = array();
+                $config = [
+                    'no_registrasi' => $header->no_registrasi,
+                    'kode' => $header->kode_trans_far,
+                    'tanggal' => $header->tgl_trans,
+                    'flag' => $named,
+                ];
+                $qr_url = $this->qr_code_lib->qr_url($config);
+                $img = $this->qr_code_lib->generate($qr_url);
+
+                $result['value'] = $header;
+                $result['resep'] = $data;
+                $result['qr_url'] = $qr_url;
+                $result['qr_img'] = $img;
+                $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_memo_inhibitor', $result, true);
             break;
 
             case 'NOTA':
                 $result = array();
+                $config = [
+                    'no_registrasi' => $header->no_registrasi,
+                    'kode' => $header->kode_trans_far,
+                    'tanggal' => $header->tgl_trans,
+                    'flag' => $named,
+                ];
+                $qr_url = $this->qr_code_lib->qr_url($config);
+                $img = $this->qr_code_lib->generate($qr_url);
+
                 $result['value'] = $header;
                 $result['resep'] = $data;
+                $result['qr_url'] = $qr_url;
+                $result['qr_img'] = $img;
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_nota_farmasi_klaim', $result, true);
             break;
 
             case 'COPY_RESEP':
                 $resep_log = $this->db->join('mt_master_pasien','mt_master_pasien.no_mr=fr_tc_far.no_mr','left')->join('mt_bagian','mt_bagian.kode_bagian=fr_tc_far.kode_bagian_asal','left')->get_where('fr_tc_far', array('kode_trans_far' => $kode_trans_far) )->row();
                 $result = array();
+                $config = [
+                    'no_registrasi' => $header->no_registrasi,
+                    'kode' => $header->kode_trans_far,
+                    'tanggal' => $header->tgl_trans,
+                    'flag' => $named,
+                ];
+                $qr_url = $this->qr_code_lib->qr_url($config);
+                $img = $this->qr_code_lib->generate($qr_url);
+
                 $result['result'] = $resep_log;
+                $result['qr_url'] = $qr_url;
+                $result['qr_img'] = $img;
+
                 $resep_log = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result_array();
                 foreach($resep_log as $row){
                     $racikan = ($row['flag_resep']=='racikan') ? $this->Entry_resep_racikan->get_detail_by_id($row['relation_id']) : [] ;
@@ -521,6 +590,24 @@ class Verifikasi_resep_prb extends MX_Controller {
                 $result = array('sep' => $sep, 'cetakan_ke' => $cetakan, 'header' => $header_);
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_sep', $result, true);
             break;
+
+            case 'LAB':
+                $data_pm = $this->Pl_pelayanan_pm->get_by_kode_penunjang($kode_penunjang, '050101');
+                $data = json_decode($this->Csm_billing_pasien->getDetailData($data_pm->no_registrasi));
+                // echo "<pre>"; print_r($data); die;
+                $template_html = $temp->TemplateHasilPM($data_pm->no_registrasi, $named, $data, $kode_penunjang, '', $data_pm);
+                if(isset($_GET['format']) && $_GET['format'] == 'html'){
+                }else{
+                    $html .= $temp->setGlobalHeaderTemplate();
+                }
+                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $named, $kode_penunjang, $data_pm);
+                $html .= $temp->setGlobalContentBilling($template_html);
+
+                if(isset($_GET['format']) && $_GET['format'] == 'html'){
+                }else{
+                    $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $named, $kode_penunjang, $data_pm);
+                }
+            break;
             
             
             default:
@@ -537,12 +624,12 @@ class Verifikasi_resep_prb extends MX_Controller {
 
     }
 
-    public function getContentPDF($named, $no_sep, $kode_trans_far, $act_code=''){
+    public function getContentPDF($named, $no_sep, $kode_trans_far, $act_code='', $kode_penunjang=''){
 
         /*get content data*/
         $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
         /*get content html*/
-        $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far) );
+        $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far, $kode_penunjang) );
         /*generate pdf*/
         $this->exportPdf($html, $named, $no_sep, $kode_trans_far, $act_code); 
         
@@ -554,13 +641,24 @@ class Verifikasi_resep_prb extends MX_Controller {
 
         /*get content data*/
         $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
-        echo '<pre>'; print_r($data); die;
+        // echo '<pre>'; print_r($data); die;
     }
 
     public function createDocument($kode_trans_far){
 
         /*get data*/
         $data = $this->Etiket_obat->get_by_id($kode_trans_far);
+
+        // $filename[] ='COPY_RESEP-'.$data->no_sep.'-'.$kode_trans_far;
+
+        if($data->lampiran_memo_inhibitor == 1){
+            $filename[] ='MEMO_INHIBITOR-'.$data->no_sep.'-'.$kode_trans_far;
+        }
+
+        if($data->lampiran_lab_kode_penunjang != null){
+            $filename[] ='LAB-'.$data->no_sep.'-'.$kode_trans_far.'-'.$data->lampiran_lab_kode_penunjang;
+        }
+
         $filename[] ='SEP-'.$data->no_sep.'-'.$kode_trans_far;
         $filename[] ='NOTA-'.$data->no_sep.'-'.$kode_trans_far;
         $filename[] ='FRM_BAST-'.$data->no_sep.'-'.$kode_trans_far;
@@ -619,8 +717,10 @@ class Verifikasi_resep_prb extends MX_Controller {
 
 
         //kotak form
-        if(in_array($named, array('NOTA', 'COPY_RESEP', 'FRM_BAST') )){
+        if(in_array($named, array('NOTA', 'COPY_RESEP', 'FRM_BAST', 'MEMO_INHIBITOR') )){
             $pdf->AddPage('P', 'A5');
+        }elseif(in_array($named, array('LAB') )){
+            $pdf->AddPage('P', 'A4');
         }else{
             $pdf->AddPage('L', 'A5');
         }

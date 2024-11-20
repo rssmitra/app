@@ -11,7 +11,7 @@ class Auto_merge_farmasi extends MX_Controller {
         $this->load->library("input"); 
         $this->load->model('farmasi/Etiket_obat_model', 'Etiket_obat');
         $this->load->model('farmasi/Entry_resep_racikan_model', 'Entry_resep_racikan');
-        $this->load->model('farmasi/Verifikasi_resep_prb_model', 'Verifikasi_resep_prb_model');
+        $this->load->model('farmasi/Verifikasi_resep_prb_model', 'Verifikasi_resep_prb');
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
         $this->load->model('farmasi/Retur_obat_model', 'Retur_obat');
         // load module
@@ -32,7 +32,7 @@ class Auto_merge_farmasi extends MX_Controller {
         $last_date = ( $this->uri->segment(4) ) ? $this->date : date('Y-m-d', strtotime(date('Y-m-d'), '-1 day'));
 
         // get data verifikasi
-        $data = $this->Verifikasi_resep_prb_model->get_result_data($last_date);
+        $data = $this->Verifikasi_resep_prb->get_result_data($last_date);
         // echo '<pre>';
         // print_r($data);
         // exit;
@@ -45,103 +45,113 @@ class Auto_merge_farmasi extends MX_Controller {
             $substr_no_sep = substr($list->no_sep, -4);
             //get month and year
             sscanf($this->date, '%d-%d-%d', $y, $m, $d);
+            $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
+            // echo $filename; exit;
 
-            if(isset($list->kode_trans_far)){
+            // jika file hasil scan ada maka lanjutkan
+            if (file_exists($filename)) {
+                
+                echo "File ".$substr_no_sep.".pdf exist, please wait to execute this file" . PHP_EOL;
 
-                // get list item obat
-                echo "Get list medicines, please wait..." . PHP_EOL;
-                $items = $this->Etiket_obat->get_detail_resep_data($list->kode_trans_far)->result();
-    
-                // proses verifikasi dan merge dokumen klaim
-                foreach( $items as $key => $row ){
-    
-                    // define kode barang
-                    $kode_brg = $row->kode_brg;
-                    echo "verifikasi item [".$kode_brg."] ".$row->nama_brg.". " . PHP_EOL;
-    
-                    // cek data existing
-                    $dt_existing = $this->db->get_where('fr_tc_far_detail_log_prb', array('kode_brg' => $kode_brg, 'kode_trans_far' => $list->kode_trans_far, 'kd_tr_resep' => $row->kd_tr_resep) )->row();
-    
-                    // define id tc far racikan
-                    $id_tc_far_racikan = isset($row->id_tc_far_racikan)?$this->regex->_genRegex($row->id_tc_far_racikan, 'RQXINT'):0;
+                if(isset($list->kode_trans_far)){
 
-                    // sub total
-                    $subtotal = isset($row->sub_total) ? ($row->jumlah_obat_23 * $row->harga_jual) :0;
-    
-                    // data to execute
-                    $data_farmasi = array(
-                        'id_tc_far_racikan' => $id_tc_far_racikan,
-                        'kd_tr_resep' => isset($row->kd_tr_resep)?$this->regex->_genRegex($row->kd_tr_resep, 'RQXINT'):0,
-                        'no_sep' => isset($row->no_sep)?$this->regex->_genRegex($row->no_sep, 'RQXINT'):0,
-                        'kode_trans_far' => isset($list->kode_trans_far)?$this->regex->_genRegex($list->kode_trans_far, 'RQXINT'):0,
-                        'tgl_input' => date('Y-m-d H:i:s'),
-                        'kode_brg' => isset($kode_brg)?$this->regex->_genRegex($kode_brg, 'RGXQSL'):0,
-                        'nama_brg' => $row->nama_brg,
-                        'satuan_kecil' => $row->satuan_kecil,
-                        'jumlah' =>  isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
-                        'harga_satuan' =>  isset($row->harga_jual)?$this->regex->_genRegex($row->harga_jual, 'RQXINT'):0,
-                        'sub_total' =>  $subtotal,
-                    );
-    
-                    // kondisi untuk diporses update/insert
-                    if( count($dt_existing) > 0 ){
-                        /*update existing*/
-                        $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
-                        $data_farmasi['updated_by'] = "AUTO RUN BY SCHEDULER";
-    
-                        // proses udpate data
-                        $this->db->update('fr_tc_far_detail_log_prb', $data_farmasi, array('id_fr_tc_far_detail_log_prb' => $dt_existing->id_fr_tc_far_detail_log_prb) );
-    
-                        /*save log*/
-                        $this->logs->save('fr_tc_far_detail_log_prb', $dt_existing->id_fr_tc_far_detail_log_prb, 'update record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
-                    
-                    }else{    
-                        $data_farmasi['created_date'] = date('Y-m-d H:i:s');
-                        $data_farmasi['created_by'] = "AUTO RUN BY SCHEDULER";
-                        $this->db->insert( 'fr_tc_far_detail_log_prb', $data_farmasi );
+                    // get list item obat
+                    $items = $this->Etiket_obat->get_detail_resep_data($list->kode_trans_far)->result();
+        
+                    // proses verifikasi dan merge dokumen klaim
+                    foreach( $items as $key => $row ){
+        
+                        // define kode barang
+                        $kode_brg = $row->kode_brg;
+                        echo "verifikasi item [".$kode_brg."] ".$row->nama_brg." success. " . PHP_EOL;
+        
+                        // cek data existing
+                        $dt_existing = $this->db->get_where('fr_tc_far_detail_log_prb', array('kode_brg' => $kode_brg, 'kode_trans_far' => $list->kode_trans_far, 'kd_tr_resep' => $row->kd_tr_resep) )->row();
+        
+                        // define id tc far racikan
+                        $id_tc_far_racikan = isset($row->id_tc_far_racikan)?$this->regex->_genRegex($row->id_tc_far_racikan, 'RQXINT'):0;
+
+                        // sub total
+                        $subtotal = isset($row->sub_total) ? ($row->jumlah_obat_23 * $row->harga_jual) :0;
+        
+                        // data to execute
+                        $data_farmasi = array(
+                            'id_tc_far_racikan' => $id_tc_far_racikan,
+                            'kd_tr_resep' => isset($row->kd_tr_resep)?$this->regex->_genRegex($row->kd_tr_resep, 'RQXINT'):0,
+                            'no_sep' => isset($row->no_sep)?$this->regex->_genRegex($row->no_sep, 'RQXINT'):0,
+                            'kode_trans_far' => isset($list->kode_trans_far)?$this->regex->_genRegex($list->kode_trans_far, 'RQXINT'):0,
+                            'tgl_input' => date('Y-m-d H:i:s'),
+                            'kode_brg' => isset($kode_brg)?$this->regex->_genRegex($kode_brg, 'RGXQSL'):0,
+                            'nama_brg' => $row->nama_brg,
+                            'satuan_kecil' => $row->satuan_kecil,
+                            'jumlah' =>  isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
+                            'harga_satuan' =>  isset($row->harga_jual)?$this->regex->_genRegex($row->harga_jual, 'RQXINT'):0,
+                            'sub_total' =>  $subtotal,
+                        );
+        
+                        // kondisi untuk diporses update/insert
+                        if( count($dt_existing) > 0 ){
+                            /*update existing*/
+                            $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
+                            $data_farmasi['updated_by'] = "AUTO RUN BY SCHEDULER";
+        
+                            // proses udpate data
+                            $this->db->update('fr_tc_far_detail_log_prb', $data_farmasi, array('id_fr_tc_far_detail_log_prb' => $dt_existing->id_fr_tc_far_detail_log_prb) );
+        
+                            /*save log*/
+                            $this->logs->save('fr_tc_far_detail_log_prb', $dt_existing->id_fr_tc_far_detail_log_prb, 'update record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
                         
-                        // proses insert data
-                        $newId = $this->db->insert_id();
-    
-                        /*save log*/
-                        $this->logs->save('fr_tc_far_detail_log_prb', $newId, 'insert new record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
-    
+                        }else{    
+                            $data_farmasi['created_date'] = date('Y-m-d H:i:s');
+                            $data_farmasi['created_by'] = "AUTO RUN BY SCHEDULER";
+                            $this->db->insert( 'fr_tc_far_detail_log_prb', $data_farmasi );
+                            
+                            // proses insert data
+                            $newId = $this->db->insert_id();
+        
+                            /*save log*/
+                            $this->logs->save('fr_tc_far_detail_log_prb', $newId, 'insert new record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
+        
+                        }
+        
+                        $this->db->trans_commit();
+        
+                        $data_log = array(
+                            'jumlah_obat_23' => isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
+                        );
+                        // update log
+                        $this->db->update('fr_tc_far_detail_log', $data_log, array('kode_trans_far' => $list->kode_trans_far, 'relation_id' => $data_farmasi['kd_tr_resep']) );
+                        $this->db->trans_commit();
+        
+                        $this->db->update('fr_tc_far_detail', $data_log, array('kode_trans_far' => $list->kode_trans_far, 'kd_tr_resep' => $data_farmasi['kd_tr_resep']) );
+                        $this->db->trans_commit();
+                        
                     }
-    
-                    $this->db->trans_commit();
-    
-                    $data_log = array(
-                        'jumlah_obat_23' => isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
-                    );
-                    // update log
-                    $this->db->update('fr_tc_far_detail_log', $data_log, array('kode_trans_far' => $list->kode_trans_far, 'relation_id' => $data_farmasi['kd_tr_resep']) );
-                    $this->db->trans_commit();
-    
-                    $this->db->update('fr_tc_far_detail', $data_log, array('kode_trans_far' => $list->kode_trans_far, 'kd_tr_resep' => $data_farmasi['kd_tr_resep']) );
-                    $this->db->trans_commit();
-                    
+                
+                    // set dokumen
+                    $verif_prb = new Verifikasi_resep_prb;
+                    $url_merge = $verif_prb->merge_dokumen_klaim($list->kode_trans_far);
+
+                    // update fr_tc_far
+                    $this->db->update('fr_tc_far', array('verifikasi_prb' => 1, 'scheduler_running_time' => date('Y-m-d H:i:s')), array('kode_trans_far' => $list->kode_trans_far) );
+
+                    echo "url merge ".$url_merge."  " . PHP_EOL;
+                    $script_cmd = 'start chrome "'.$url_merge.'" ';
+                    exec( $script_cmd );
+
+                    echo "success  " . PHP_EOL;
+                    echo "====================================================================". PHP_EOL;
+        
+                }else{
+                    echo 'No data available'. PHP_EOL;
                 }
-            
-                // set dokumen
-                // $this->load->module('farmasi/Verifikasi_resep_prb.php');
-                // $verif_prb = new Verifikasi_resep_prb;
-                // $prb = new Verifikasi_resep_prb;
-                // $url_merge = $prb->merge_dokumen_klaim($list->kode_trans_far);
 
-                $this->merge_dokumen_klaim($list->kode_trans_far);
+                $count_result[] = 1;
+                $txt_success .= $list->kode_trans_far." (".$list->no_sep.")". PHP_EOL;
 
-                // update fr_tc_far
-                $this->db->update('fr_tc_far', array('verifikasi_prb' => 1, 'scheduler_running_time' => date('Y-m-d H:i:s')), array('kode_trans_far' => $list->kode_trans_far) );
-
-                echo "url merge ".$url_merge."  " . PHP_EOL;
-                $script_cmd = 'start chrome "'.$url_merge.'" ';
-                exec( $script_cmd );
-
-                echo "success  " . PHP_EOL;
-                echo "====================================================================". PHP_EOL;
-    
-            }else{
-                echo 'No data available'. PHP_EOL;
+            } else {
+                $txt_failed .= $list->kode_trans_far." (".$list->no_sep.")". PHP_EOL;
+                echo "The file ".$substr_no_sep.".pdf does not exist". PHP_EOL;
             }
     
         }
@@ -185,7 +195,7 @@ class Auto_merge_farmasi extends MX_Controller {
                 $doc_save['created_date'] = date('Y-m-d H:i:s');
                 $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 /*check if exist*/
-                if ( $this->Verifikasi_resep_prb_model->checkIfDokExist($kode_trans_far, $filename) == FALSE ) {
+                if ( $this->Verifikasi_resep_prb->checkIfDokExist($kode_trans_far, $filename) == FALSE ) {
                     $this->db->insert('fr_tc_far_dokumen_klaim_prb', $doc_save);
                 }
             endif;
@@ -214,7 +224,7 @@ class Auto_merge_farmasi extends MX_Controller {
     public function getContentPDF($named, $no_sep, $kode_trans_far, $act_code=''){
 
         /*get content data*/
-        $data = $this->Verifikasi_resep_prb_model->get_detail($kode_trans_far);
+        $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
         // echo "<pre>"; print_r($data);die;
         /*get content html*/
         $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far) );
@@ -229,7 +239,7 @@ class Auto_merge_farmasi extends MX_Controller {
 
         $temp = new Templates;
         /*header html*/
-        $header = $this->Verifikasi_resep_prb_model->get_header_data($kode_trans_far);
+        $header = $this->Verifikasi_resep_prb->get_header_data($kode_trans_far);
         // echo '<pre>'; print_r($header);die;
         $html = '';
         switch ($named) {
@@ -360,7 +370,7 @@ EOD;
     public function mergePDFFiles($kode_trans_far, $no_sep){
         /*get doc*/
         $date = $this->uri->segment();
-        $doc_pdf = $this->Verifikasi_resep_prb_model->getDocumentPDF($kode_trans_far);
+        $doc_pdf = $this->Verifikasi_resep_prb->getDocumentPDF($kode_trans_far);
         /*save merged file*/
         $fields_string = "";
         foreach($doc_pdf as $key=>$value) {

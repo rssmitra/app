@@ -75,7 +75,7 @@ $(document).ready(function() {
     $('#btn_add_catatan').click(function (e) {   
       e.preventDefault();
 
-      $('input[name=catatan_pengkajian]').val($('#editor').html());
+      $('input[name=catatan_pengkajian]').val($('#editor_html_pengkajian').html());
       var formData = new FormData($('#form_pelayanan')[0]);        
       i=0;
       url = $('#form_pelayanan').attr('action');
@@ -136,27 +136,27 @@ $(document).ready(function() {
           reset_table();
   });
 
-  // $('#btn_export_pdf_cppt').click(function (e) {
-  //   var url_search = $('#form_search').attr('action');
-  //   e.preventDefault();
-  //   $.ajax({
-  //     url: url_search,
-  //     type: "post",
-  //     data: $('#form_search').serialize(),
-  //     dataType: "json",
-  //     success: function(result) {
-  //       window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?kode_ri=&'+result.data+'','_blank'); 
-  //     }
-  //   });
-  // });
+   $('#btn_export_pdf_cppt').click(function (e) {
+     var url_search = $('#form_search').attr('action');
+     e.preventDefault();
+     $.ajax({
+       url: url_search,
+       type: "post",
+       data: $('#form_search').serialize(),
+       dataType: "json",
+       success: function(result) {
+         window.open('pelayanan/Pl_pelayanan_ri/export_pdf_cppt?id='+$('#cppt_id').val()+'','_blank'); 
+       }
+     });
+   });
 
   $('#jenis_form_catatan').change(function () {
       if ($(this).val()) {
           $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val(), '', function (data) {
-            $('#editor').html(data.html);
+            $('#editor_html_pengkajian').html(data.html);
           });
       } else {
-        $('#editor').html('');
+        $('#editor_html_pengkajian').html('');
       }
   });
 
@@ -230,7 +230,7 @@ function show_edit(myid){
     // console.log(response);
     $('#cppt_id').val(myid);
     $('#jenis_form_catatan').val(obj.jenis_form);
-    $('#editor').html(obj.catatan_pengkajian);
+    $('#editor_html_pengkajian').html(obj.catatan_pengkajian);
     // set value input
     var value_form = response.value_form;
     $.each(value_form, function(i, item) {
@@ -292,8 +292,30 @@ function fillthis(id){
   $('#'+id+'').val(val_str);
 }
 
+// function printDivHtml(divId) {
+//      preventDefault();
+//      var printContents = document.getElementById(divId).innerHTML;
+//      var originalContents = document.body.innerHTML;
+//      document.body.innerHTML = printContents;
+//      window.print();
+//      document.body.innerHTML = originalContents;
+// }
+
 </script>
 
+<!-- <style>
+  @media print {
+    body {
+      visibility: hidden;
+    }
+    #section-to-print {
+      visibility: visible;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+  }
+</style> -->
 <div class="row">
 
   <div class="col-md-12">
@@ -344,13 +366,15 @@ function fillthis(id){
 
     <hr>
 
-    <div id="editor"><?php echo $template?></div>
+    <div id="editor_html_pengkajian"><?php echo $template?></div>
     <input type="hidden" name="catatan_pengkajian" value="" />
 					
     <div class="center">
         
         <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
-            <div class="col-sm-12"><button type="button" class="btn btn-sm btn-primary" id="btn_add_catatan"><i class="fa fa-save"></i> Simpan</button> 
+            <div class="col-sm-12">
+              <button type="button" class="btn btn-sm btn-primary" id="btn_add_catatan"><i class="fa fa-save"></i> Simpan</button> 
+              <button type="button" class="btn btn-sm btn-primary" onclick="printDivHtml('editor_html_pengkajian')"><i class="fa fa-save"></i> Print PDF</button> 
             </div>
         </div>
         <hr>
@@ -390,7 +414,7 @@ function fillthis(id){
               <a href="#" id="btn_reset_data_cppt" class="btn btn-xs btn-warning">
                 <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
               </a>
-              <a href="#" id="btn_export_pdf_cppt" class="btn btn-xs btn-danger">
+              <a href="#" id="btn_export_pdf_cpptxx" class="btn btn-xs btn-danger">
                 <i class="fa fa-file-pdf-o bigger-110"></i>
               </a>
             </div>

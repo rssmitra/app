@@ -184,8 +184,19 @@ function saveRow(no_registrasi){
       </div>
 
       <div class="form-group">
-        <label class="control-label col-md-2 ">&nbsp;</label>
-        <div class="col-md-10">
+      <label class="control-label col-md-2">Status Finger</label>
+      <div class="col-md-2">
+            <?php 
+              $array = [
+                'data' => [
+                  ['value' => 1, 'label' => 'Sudah finger'],
+                  ['value' => 0, 'label' => 'Belum finger'],
+                ],
+                'value' => 'value',
+                'label' => 'label'
+              ];echo $this->master->custom_selection_with_data($array, '','konfirm_fp' , 'konfirm_fp', 'form-control', '', '') ?>
+          </div>
+        <div class="col-md-8">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Search

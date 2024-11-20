@@ -126,28 +126,18 @@ function delete_transaksi(myid){
         <input type="hidden" class="form-control" id="no_kunjungan_pm" name="no_kunjungan_pm" value="<?php echo $no_kunjungan?>">
         <input type="hidden" class="form-control" id="kode_bagian_pm" name="kode_bagian_pm" value="<?php echo isset($sess_kode_bag)?$sess_kode_bag:0?>">
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Pemeriksaan</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
-                <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
-            </div>
-        </div>
+        <label style="font-weight: bold; font-size: 13px">Jenis/Nama Pemeriksaan Radiologi :</label><br>
+        <span style="font-style: italic; font-size: 12px">(Jenis Pemeriksaan Radiologi dapat diisi dengan <b>free text)</b></span>
+        <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
+        <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
+        <br>
 
+        <label style="font-weight: bold; font-size: 13px">Keterangan / Instruksi Khusus :</label><br>
+        <span style="font-style: italic; font-size: 12px">(Mohon dijelaskan keterangan pemeriksaannya atau jika ada instruksi khusus dari dokter)</span>
+        <textarea style="height: 100px !important" type="text" class="form-control" id="pl_keterangan_tindakan" name="pl_keterangan_tindakan"></textarea>
+        <br>
         <div class="form-group">
-        <label class="control-label col-sm-2" for="">Keterangan</label>
-            <div class="col-sm-8">
-               <textarea style="height: 100px !important" type="text" class="form-control" id="pl_keterangan_tindakan" name="pl_keterangan_tindakan"></textarea>
-            </div>
-        </div>
-
-        <div class="col-sm-12" id="formDetailTarif" style="display:none; background-color:rgba(195, 220, 119, 0.56); margin-bottom: 3px; padding: 5px">
-           <div id="detailTarifHtml"></div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">&nbsp;</label>
-            <div class="col-sm-10" style="margin-left:6px">
+            <div class="col-sm-12 no-padding">
                <a href="#" class="btn btn-xs btn-primary" id="btn_add_tindakan"> <i class="fa fa-plus"></i> Tambahkan </a>
             </div>
         </div>

@@ -5,7 +5,7 @@ class Etiket_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('kode_trans_far','fr_tc_far.nama_pasien', 'dokter_pengirim', 'no_resep', 'fr_tc_far.no_mr');
-	var $select = 'fr_tc_far.kode_trans_far,fr_tc_far.nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.flag_trans, fr_tc_far.no_registrasi, tc_registrasi.kode_perusahaan, fr_tc_far.kode_dokter, fr_tc_far.kode_bagian, fr_tc_far.kode_bagian_asal';
+	var $select = 'fr_tc_far.kode_trans_far,fr_tc_far.nama_pasien,dokter_pengirim,no_resep,no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, nama_pelayanan, tgl_trans, no_sep, kode_tc_trans_kasir, alamat_pasien, telpon_pasien, fr_tc_far.flag_trans, fr_tc_far.no_registrasi, tc_registrasi.kode_perusahaan, fr_tc_far.kode_dokter, fr_tc_far.kode_bagian, fr_tc_far.kode_bagian_asal, lampiran_lab_kode_penunjang, lampiran_memo_inhibitor';
 	var $order = array('tgl_trans' => 'DESC', 'fr_tc_far.kode_trans_far' => 'DESC');
 
 	public function __construct()

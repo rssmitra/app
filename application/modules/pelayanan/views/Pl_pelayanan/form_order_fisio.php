@@ -158,38 +158,38 @@ $('#pl_diagnosa').typeahead({
 
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">Diagnosa (ICD10)</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-3" for="">Diagnosa (ICD10)</label>
+            <div class="col-sm-9">
             <input type="text" class="form-control" name="pl_diagnosa" id="pl_diagnosa" placeholder="Masukan keyword ICD 10" value="<?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?>">
             <input type="hidden" class="form-control" name="pl_diagnosa_hidden" id="pl_diagnosa_hidden" value="<?php echo isset($riwayat->kode_icd_diagnosa)?$riwayat->kode_icd_diagnosa:''?>">
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">X ray Foto</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-3" for="">X ray Foto</label>
+            <div class="col-sm-9">
                 <input type="text" class="form-control" id="xray_foto" name="xray_foto">
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">Terapi/Pemeriksaan</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-3" for="">Terapi/Pemeriksaan</label>
+            <div class="col-sm-9">
                 <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
                 <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">Kontra Indikasi</label>
-            <div class="col-sm-10">
+            <label class="control-label col-sm-3" for="">Kontra Indikasi</label>
+            <div class="col-sm-9">
                 <input type="text" class="form-control" id="kontra_indikasi" name="kontra_indikasi">
             </div>
         </div>
 
         <div class="form-group">
-        <label class="control-label col-sm-2" for="">Rencana Lanjutan</label>
-            <div class="col-sm-10">
+        <label class="control-label col-sm-3" for="">Rencana Lanjutan</label>
+            <div class="col-sm-9">
                <textarea type="text" class="form-control" id="pl_keterangan_tindakan" name="pl_keterangan_tindakan" style="height: 100px !important"></textarea>
             </div>
         </div>
@@ -199,8 +199,8 @@ $('#pl_diagnosa').typeahead({
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2" for="">&nbsp;</label>
-            <div class="col-sm-10" style="margin-left:6px">
+            <label class="col-sm-3" for="">&nbsp;</label>
+            <div class="col-sm-9" style="margin-left:6px">
                <a href="#" class="btn btn-xs btn-primary" id="btn_add_tindakan_fisio"> <i class="fa fa-plus"></i> Tambahkan </a>
             </div>
         </div>

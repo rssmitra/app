@@ -30,7 +30,7 @@ $(document).ready(function(){
       "bInfo": true,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": "pelayanan/Pl_pelayanan_pm/get_order_penunjang_fisio_view?kode_bagian="+$("#kode_bagian").val()+"&no_mr="+$("#no_mr").val(),
+          "url": "pelayanan/Pl_pelayanan_pm/get_order_penunjang_fisio_view?kode_bagian="+$("#kode_bagian").val()+"&no_mr="+$("#no_mr_fisio").val(),
           "type": "POST"
       },
 
@@ -127,7 +127,7 @@ function find_data_reload(result){
 
         <!-- hidden form -->
         <input type="hidden" name="kode_bagian" value="<?php echo $kode_bagian ?>" id="kode_bagian">
-        <input type="hidden" name="no_mr" value="<?php echo $no_mr ?>" id="no_mr">
+        <input type="hidden" name="no_mr" value="<?php echo $no_mr ?>" id="no_mr_fisio">
 
         <hr class="separator">
         <!-- div.dataTables_borderWrap -->

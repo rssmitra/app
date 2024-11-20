@@ -314,19 +314,17 @@ class Pl_pelayanan extends MX_Controller {
 
     public function form_order_fisio($no_kunjungan='', $id_pm_tc_penunjang='')
     {
-        $master_tindakan = $this->Pl_pelayanan_pm->get_master_tindakan($_GET['kode_bag']);
 
-        $existing_pm = $this->db->get_where('tc_kunjungan', array('no_registrasi' => $no_kunjungan) )->row();
+        $existing_pm = $this->db->get_where('tc_kunjungan', array('no_kunjungan' => $no_kunjungan) )->row();
         $data['penunjang'] = $existing_pm;
         /*mr*/
         $data['id_pm_tc_penunjang'] = ($id_pm_tc_penunjang)?$id_pm_tc_penunjang:0;
         $data['no_mr'] = ($_GET['no_mr'])?$_GET['no_mr']:'';
         $data['no_kunjungan'] = isset($no_kunjungan)?$no_kunjungan:'';
         
-        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_no_reg($existing_pm->no_registrasi);
         $data['sess_kode_bag'] = ( $_GET['kode_bag'])? $_GET['kode_bag']:0;
-        $data['pemeriksaan'] = $master_tindakan;
-        // echo '<pre>'; print_r($data['riwayat']);die;
+        // echo '<pre>'; print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan/form_order_fisio', $data);
     }

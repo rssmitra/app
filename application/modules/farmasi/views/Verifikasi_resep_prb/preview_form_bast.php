@@ -90,21 +90,8 @@
       <td style="text-align: center; width: 40%">
         <span><b>Pasien/Keluarga Pasien</b></span>
         <br>
-
         <?php 
-
-          if(!empty($value->ttd_pasien)) {
-            $img_base64_encoded = $value->ttd_pasien;
-            $imageContent = file_get_contents($img_base64_encoded);
-            $path = tempnam(sys_get_temp_dir(), 'prefix');
-            
-            file_put_contents ($path, $imageContent);
-            
-            echo $img = '<img src="' . $path . '">';
-          }else{
-            echo '<br><br>_______________________';
-          }
-          
+          echo $qr_img;
         ?>
       </td>
     </tr>

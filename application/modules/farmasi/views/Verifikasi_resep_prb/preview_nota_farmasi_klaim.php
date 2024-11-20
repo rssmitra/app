@@ -92,10 +92,12 @@
       <td style="text-align: center; width: 40%">
         <span><b>Petugas</b></span>
         <br>
-        <br>
-        <br>
-        <br>
-        <?php $decode = json_decode($resep[0]->created_by); echo isset($decode->fullname)?$decode->fullname:$this->session->userdata('user')->fullname;?>
+        <?php 
+          echo $qr_img;
+          echo "<br>";
+          $decode = json_decode($resep[0]->created_by); 
+          echo isset($decode->fullname)?$decode->fullname:$this->session->userdata('user')->fullname;
+        ?>
       </td>
     </tr>
     

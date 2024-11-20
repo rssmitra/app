@@ -479,7 +479,11 @@ class Pl_pelayanan_model extends CI_Model {
 	}
 
 	public function get_riwayat_pasien_by_id($no_kunjungan){
-		return $this->db->get_where('th_riwayat_pasien', array('no_kunjungan' => $no_kunjungan) )->row();
+		return $this->db->order_by('kode_riwayat', 'DESC')->get_where('th_riwayat_pasien', array('no_kunjungan' => $no_kunjungan) )->row();
+	}
+
+	public function get_riwayat_pasien_by_no_reg($no_registrasi){
+		return $this->db->order_by('kode_riwayat', 'DESC')->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi) )->row();
 	}
 	
 	public function get_riwayat_expertise_pasien($no_kunjungan){

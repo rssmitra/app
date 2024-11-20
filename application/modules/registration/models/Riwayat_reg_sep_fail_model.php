@@ -60,6 +60,12 @@ class Riwayat_reg_sep_fail_model extends CI_Model {
 	        }else{
 				$this->db->where(array('CAST(tgl_jam_masuk as DATE) = ' => date('Y-m-d')));
 			}
+
+			if (isset($_GET['konfirm_fp']) AND $_GET['konfirm_fp'] == 1) {
+	            $this->db->where('konfirm_fp', 1);	
+	        }elseif (isset($_GET['konfirm_fp']) AND $_GET['konfirm_fp'] != 1) {
+				$this->db->where('konfirm_fp is null');	
+			}
 		
 		}else{
 			$this->db->where(array('CAST(tgl_jam_masuk as DATE) = ' => date('Y-m-d')));

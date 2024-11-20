@@ -1189,7 +1189,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         // box data
         $data = array();
         $list = [];
-        $list = $this->Pl_pelayanan_ri->get_datatables_cppt();
+        $list = $this->Pl_pelayanan_ri->get_cppt_by_id($_GET['id']);
         $data['data'] = $list;
         // echo '<pre>'; print_r($data);die;
         $this->load->view('Pl_pelayanan_ri/export_pdf_cppt', $data);

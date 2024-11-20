@@ -1070,8 +1070,11 @@ class Pl_pelayanan_pm extends MX_Controller {
             $row[] = '<a href="#" onclick="getDetailTarifByKodeTarifAndKlas('.$row_list->kode_tarif.', '.$row_list->kode_klas.')">'.$row_list->nama_tarif.'</a>';
             if($row_list->kode_bagian == '050301'){
                 $row[] = $row_list->diagnosa;
+                $row[] = 'X-Ray foto : <br>'.$row_list->xray_foto.' <br>Kontra Indikasi : <br> '.$row_list->kontra_indikasi.' <br>Keterangan :<br> '.$row_list->keterangan;
+            }else{
+                $row[] = $row_list->keterangan;
             }
-            $row[] = 'X-Ray foto : <br>'.$row_list->xray_foto.' <br>Kontra Indikasi : <br> '.$row_list->kontra_indikasi.' Keterangan :<br> '.$row_list->keterangan;
+
             $row[] = $this->tanggal->formatDateTime($row_list->created_date);
             $row[] = '<div class="center"><a href="#" onclick="delete_transaksi('.$row_list->order_id.')"><i class="fa fa-trash red bigger-120" title="hapus"></i></a></div>';
            
@@ -1098,12 +1101,18 @@ class Pl_pelayanan_pm extends MX_Controller {
             $row = array();
             // diagnosa
             $keterangan = ($row_list->keterangan != '') ? '<br><b>keterangan :</b> <br>'. $row_list->keterangan.'<br>' : '';
+            $free_text = ($row_list->kode_tarif == 0) ? '<span style="color: red">[free text]</span>' : '';
             $diagnosa = ($row_list->diagnosa != '') ? '<br><b>Diagnosa :</b> <br>'. $row_list->diagnosa.'' : '';
             $xray_foto = ($row_list->xray_foto != '') ? ' | xray_foto : '. $row_list->xray_foto.'' : '';
             $kontra_indikasi = ($row_list->kontra_indikasi != '') ? ' | kontra_indikasi : '. $row_list->kontra_indikasi.'' : '';
 
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<a href="#" onclick="getDetailTarifByKodeTarifAndKlas('.$row_list->kode_tarif.', '.$row_list->kode_klas.')"><b>'.$row_list->nama_tarif.'</b></a>'.$diagnosa.''.$keterangan.' '.$xray_foto.' '.$kontra_indikasi.'';
+            if($row_list->kode_tarif == 0){
+                $row[] = '<a href="#"><b>'.$row_list->nama_tarif.'</b>&nbsp;'.$free_text.'</a>'.$diagnosa.''.$keterangan.' '.$xray_foto.' '.$kontra_indikasi.'';
+            }else{
+                $row[] = '<a href="#" onclick="getDetailTarifByKodeTarifAndKlas('.$row_list->kode_tarif.', '.$row_list->kode_klas.')"><b>'.$row_list->nama_tarif.'</b>&nbsp;'.$free_text.'</a>'.$diagnosa.''.$keterangan.' '.$xray_foto.' '.$kontra_indikasi.'';
+
+            }
            
             $data[] = $row;
         }
@@ -1256,7 +1265,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         // print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('id_pm_tc_penunjang', 'id_pm_tc_penunjang', 'trim|required');      
-        $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'pl_kode_tindakan_hidden', 'trim|required');      
+        $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'pl_kode_tindakan_hidden', 'trim');      
         $this->form_validation->set_rules('keterangan', 'Keterangan', 'trim');      
 
         // set message error

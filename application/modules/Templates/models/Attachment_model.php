@@ -161,29 +161,122 @@ class Attachment_model extends CI_Model {
 		$id = isset($result->kode_tc_trans_kasir)?$result->kode_tc_trans_kasir:'';
 		$tgl = isset($result->tgl_jam)?$this->tanggal->formatDateTimeFormDmy($result->tgl_jam):'';
 		$user = isset($result->fullname)?$result->fullname:'';
+		$signed = $result->fullname;
 		$status = isset($result->kode_tc_trans_kasir)?'Published':'Deleted';
+		$signTitle = 'Petugas Kasir';
 
 		switch ($_GET['flag']) {
+
 			case 'BILL_RJ':
-			$title = 'Billing Pasien RJ';
-			$noted = isset($result->kode_tc_trans_kasir)?'Billing Pasien Rawat Jalan a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
+				$title = 'Billing Pasien RJ';
+				$noted = isset($result->kode_tc_trans_kasir)?'Billing Pasien Rawat Jalan a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
 			break;
+
 			case 'RESUME_MEDIS':
-			$title = 'Resume Medis Pasien';
-			$noted = isset($result->kode_tc_trans_kasir)?'Resume Medis Pasien a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
+				$title = 'Resume Medis Pasien';
+				$noted = isset($result->kode_tc_trans_kasir)?'Resume Medis Pasien a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
 			break;
+
+			case 'FRM_BAST':
+				$trans =  $this->db->select('ttd, fr_tc_far.nama_pasien, fr_tc_far.no_mr, ttd, fr_tc_far.created_date, fr_tc_far.created_by, kode_trans_far')->join('mt_master_pasien', 'mt_master_pasien.no_mr = fr_tc_far.no_mr', 'left')->get_where('fr_tc_far', ['kode_trans_far' => $_GET['code']])->row();
+				$signed = $trans->nama_pasien;
+				$ttd = $trans->ttd;
+				$img_base64_encoded = $trans->ttd;
+				$imageContent = file_get_contents($img_base64_encoded);
+				$path = tempnam(sys_get_temp_dir(), 'prefix');
+				file_put_contents ($path, $imageContent);
+				$img_ttd = '<img src="' . $ttd . '" width="300px">';
+
+				$tgl = $this->tanggal->formatDateTime($trans->created_date);
+				$created_by = json_decode($trans->created_by);
+				// print_r($created_by);die;
+				$user = $created_by->fullname.' [Petugas Farmasi] ';
+				$signTitle = 'Pasien';
+				$title = 'Berita Acara Serah Terima Obat';
+				$status = isset($trans->kode_trans_far)?'Published':'Deleted';
+				$noted = isset($trans->kode_trans_far)?'Berita Acara Serah Terima Obat Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+
+			case 'MEMO_INHIBITOR':
+				$trans =  $this->db->select('ttd, fr_tc_far.nama_pasien, fr_tc_far.no_mr, fr_tc_far.created_date, fr_tc_far.created_by, kode_trans_far, dokter_pengirim, no_sip')->join('mt_dokter_v', 'mt_dokter_v.kode_dokter = fr_tc_far.kode_dokter', 'left')->get_where('fr_tc_far', ['kode_trans_far' => $_GET['code']])->row();
+				$signed = $trans->dokter_pengirim.'<br>SIP. '.$trans->no_sip;
+				$ttd = $trans->ttd;
+				$img_ttd = '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="50%"><br>';
+				// $img_ttd .= '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">';
+
+				// print_r($img_ttd);die;
+				$tgl = $this->tanggal->formatDateTime($trans->created_date);
+				$created_by = $trans->dokter_pengirim;
+				$user = $trans->dokter_pengirim.' [Dokter DPJP] ';
+				$signTitle = 'Dokter DPJP';
+				$title = 'MEMO HT & ACE INHIBITOR';
+				$status = isset($trans->kode_trans_far)?'Published':'Deleted';
+				$noted = isset($trans->kode_trans_far)?'Memo HT & ACE Inhibitor untuk pengambilan Resep Obat Candesartan Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+
+			case 'NOTA':
+				$trans =  $this->db->select('ttd, fr_tc_far.nama_pasien, fr_tc_far.no_mr, fr_tc_far.created_date, fr_tc_far.created_by, kode_trans_far, dokter_pengirim, no_sip')->join('mt_dokter_v', 'mt_dokter_v.kode_dokter = fr_tc_far.kode_dokter', 'left')->get_where('fr_tc_far', ['kode_trans_far' => $_GET['code']])->row();
+
+				$created_by = json_decode($trans->created_by);
+				$signed = $created_by->fullname;
+				
+				$img_ttd = '';
+				// $img_ttd = '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="50%"><br>';
+				// print_r($img_ttd);die;
+				$tgl = $this->tanggal->formatDateTime($trans->created_date);
+				$created_by = json_decode($trans->created_by);
+				// print_r($created_by);die;
+				$user = $created_by->fullname.' [Petugas Farmasi] ';
+				$signTitle = 'Petugas Farmasi';
+				$title = 'NOTA FARMASI';
+				$status = isset($trans->kode_trans_far)?'Published':'Deleted';
+				$noted = isset($trans->kode_trans_far)?'Nota Farmasi Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+
+			case 'COPY_RESEP':
+				$trans =  $this->db->select('ttd, fr_tc_far.nama_pasien, fr_tc_far.no_mr, fr_tc_far.created_date, fr_tc_far.created_by, kode_trans_far, dokter_pengirim, no_sip, nama_bagian')->join('mt_dokter_v', 'mt_dokter_v.kode_dokter = fr_tc_far.kode_dokter', 'left')->get_where('fr_tc_far', ['kode_trans_far' => $_GET['code']])->row();
+				$signed = $trans->dokter_pengirim.'<br>SIP. '.$trans->no_sip;
+				$ttd = $trans->ttd;
+				
+				$img_ttd = '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="50%"><br>';
+				// $img_ttd .= '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">';
+
+				// print_r($img_ttd);die;
+				$tgl = $this->tanggal->formatDateTime($trans->created_date);
+				$created_by = $trans->dokter_pengirim;
+				$user = $trans->dokter_pengirim.'<br>[Dokter DPJP] ';
+				$signTitle = 'Dokter DPJP';
+				$title = 'COPY RESEP';
+				$status = isset($trans->kode_trans_far)?'Published':'Deleted';
+				$noted = isset($trans->kode_trans_far)?'Resep Dokter <i>'.$trans->dokter_pengirim.'</i> ('.$trans->nama_bagian.') Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+
+			case 'LAB':
+				// code = kode penunjang@pm_tc_penunjang
+				$trans = $this->Pl_pelayanan_pm->get_by_kode_penunjang($_GET['code'], '050101');
+				$signed = $trans->fullname;
+				$img_ttd = '';
+				$tgl = $this->tanggal->formatDateTime($trans->tgl_masuk);
+				$user = $trans->fullname.' [Petugas Laboratorium] ';
+				$signTitle = 'Petugas Laboratorium';
+				$title = 'HASIL PEMERIKSAAN LABORATORIUM';
+				$status = isset($trans->kode_penunjang)?'Published':'Deleted';
+				$noted = isset($trans->kode_penunjang)?'Hasil Pemeriksaan Laboratorium Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+
 		}
 
 		$response = [
 			'documentName' => $title,
-			'ID' => $id,
+			'ID' => $_GET['code'],
 			'createdBy' => $user,
 			'createdDate' => $tgl,
 			'statusDocument' => $status,
 			'noted' => $noted,
-			'signedBy' => $user,
+			'signedBy' => $signed,
 			'signedDate' => $tgl,
-			'signTitle' => 'Petugas Kasir',
+			'signTitle' => $signTitle,
+			'img_ttd' => $img_ttd,
 		];
 
 		return $response;

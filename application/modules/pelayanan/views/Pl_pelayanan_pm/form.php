@@ -732,7 +732,7 @@ function perjanjian_pasien_pm(){
 
                 <?php if($value->kode_bagian_tujuan == '050301') :?>
                 <li>
-                  <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="?kode_bagian=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>&no_mr=<?php echo isset($value)?$value->no_mr:''?>" data-url="pelayanan/Pl_pelayanan_pm/order_pemeriksaan_fisio" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                  <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="?kode_bagian=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>&no_mr=<?php echo isset($value)?$value->no_mr:''?>" data-url="pelayanan/Pl_pelayanan_pm/order_pemeriksaan_fisio" onclick="getMenuTabs(this.getAttribute('data-url')+''+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                     <i class="red ace-icon fa fa-file bigger-120"></i>
                     PENGANTAR TERAPI
                   </a>

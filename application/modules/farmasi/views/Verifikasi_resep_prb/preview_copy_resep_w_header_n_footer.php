@@ -132,7 +132,7 @@
     <tr> 
         <td width="60%"></td>
         <td align="center" width="40%">
-        <?php echo $ttd; ?><br>
+        <?php echo $qr_img; ?><br>
         <?php echo $stamp; ?>
         </td>   
     </tr>

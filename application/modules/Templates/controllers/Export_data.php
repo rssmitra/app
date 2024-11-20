@@ -169,8 +169,9 @@ class Export_data extends MX_Controller {
         $obj = new $class;
         $data = $obj->get_content_data();
         $html_content = $obj->html_content($data);
+        echo '<pre>'; print_r($html_content);die;
         
-        $paper_type = isset($_GET['paper']) ? $_GET['paper'] : 'L';
+        $paper_type = isset($_GET['paper']) ? $_GET['paper'] : 'P';
         
         switch ($type_doc) {
             case 'pdf':

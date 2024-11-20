@@ -260,6 +260,38 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		
 	}
 
+	public function get_by_kode_penunjang($kode_penunjang, $flag_mcu='')
+	{
+		$select = 'mt_master_pasien.no_mr,mt_master_pasien.nama_pasien, tc_kunjungan.no_kunjungan, tc_kunjungan.kode_bagian_tujuan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, tc_kunjungan.status_masuk, tc_kunjungan.status_keluar, tc_kunjungan.status_cito, pm_tc_penunjang.kode_penunjang, pm_tc_penunjang.tgl_daftar,pm_tc_penunjang.tgl_periksa, pm_tc_penunjang.no_antrian, pm_tc_penunjang.kode_klas, pm_tc_penunjang.status_daftar, pm_tc_penunjang.catatan_hasil, pm_tc_penunjang.tgl_isihasil, pm_tc_penunjang.status_isihasil, tc_registrasi.kode_perusahaan, tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tp.status_selesai,tp.tgl_transaksi, nama_perusahaan, nama_kelompok, nama_bagian, nama_klas, fullname';
+		$this->db->select($select);
+		$this->db->from($this->table);
+		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_master_pasien','tc_registrasi.no_mr=mt_master_pasien.no_mr','left');
+		$this->db->join('mt_perusahaan','tc_registrasi.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
+		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
+		$this->db->join('mt_bagian','tc_kunjungan.kode_bagian_asal=mt_bagian.kode_bagian','left');
+		$this->db->join('mt_klas',''.$this->table.'.kode_klas=mt_klas.kode_klas','left');
+		$this->db->join('tmp_user',''.$this->table.'.petugas_input=tmp_user.user_id','left');
+		
+		if($flag_mcu==''){
+			$this->db->join('tc_trans_pelayanan tp',''.$this->table.'.kode_penunjang=tp.kode_penunjang','left');
+		}else{
+			$this->db->join('tc_trans_pelayanan_paket_mcu tp',''.$this->table.'.kode_penunjang=tp.kode_penunjang','left');
+		}
+		
+		if(is_array($kode_penunjang)){
+			$this->db->where_in(''.$this->table.'.kode_penunjang',$kode_penunjang);
+			$query = $this->db->get();
+			return $query->result();
+		}else{
+			$this->db->where(''.$this->table.'.kode_penunjang',$kode_penunjang);
+			$query = $this->db->get();
+			return $query->row();
+		}
+		
+	}
+
 	public function get_tgl_kontrol($no_kunjungan){
 		$kunjungan = $this->db->get_where('tc_kunjungan', array('no_kunjungan' => $no_kunjungan))->row();
 		$last_kontrol = $this->db->select('CAST(tgl_pesanan as DATE) as tgl_kontrol')->order_by('id_tc_pesanan', 'DESC')->get_where('tc_pesanan', array('no_mr' => $kunjungan->no_mr, 'no_poli' => $kunjungan->kode_bagian_asal) )->row();

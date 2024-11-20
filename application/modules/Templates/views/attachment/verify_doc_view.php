@@ -83,7 +83,7 @@
 				<td style="width: 35%;"><b>Status Dokumen</b><br><i>Document Status</i></td>
 					<td style="width: 65%;" valign="top">: <?php echo $detail['statusDocument']?></td>
 				</tr>
-				<td style="width: 35%;"><b>Keterangan</b><br><i>Noted</i></td>
+				<td style="width: 35%;" valign="top"><b>Keterangan</b><br><i>Noted</i></td>
 					<td style="width: 65%;" valign="top">: <?php echo $detail['noted']?></td>
 				</tr>
 				</table>
@@ -103,9 +103,7 @@
 					<td>
 						<span class="bolder"><?php echo $detail['signedBy']?></span><br>
 						[ <?php echo $detail['signTitle']?> ]<br><?php echo $detail['signedDate']?><br>
-					</td>
-					<td width="150px" align="center">
-						<img src="<?php echo base_url().'uploaded/images/ttd.png'?>" style="width: 150px">
+						<?php echo $detail['img_ttd']?>
 					</td>
 				</tr>
 				</table>
