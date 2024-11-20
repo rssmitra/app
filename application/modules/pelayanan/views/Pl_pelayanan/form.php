@@ -947,7 +947,7 @@ function show_icare() {
           <!-- end action form  -->
           
           <div class="pull-left" style="margin-bottom:1%; width: 100%">
-            <a href="#" class="btn btn-xs btn-purple" id="btn_perjanjian_rj" onclick="getMenuTabs('pelayanan/Pl_pelayanan/form_perjanjian_view_ontabs/<?php echo $value->no_mr?>?kode_bagian=<?php echo $value->kode_bagian_asal?>&kode_dokter=<?php echo $value->kode_dokter?>&kode_perusahaan=<?php echo $value->kode_perusahaan?>&no_sep=<?php echo $value->no_sep?>', 'tabs_form_pelayanan')" ><i class="fa fa-calendar"></i> Form Perjanjian Pasien</a>
+            <a href="#" class="btn btn-xs btn-purple" id="btn_perjanjian_rj" onclick="getMenuTabs('pelayanan/Pl_pelayanan/form_perjanjian_view_ontabs/<?php echo $value->no_mr?>?kode_bagian=<?php echo $value->kode_bagian_asal?>&kode_dokter=<?php echo $value->kode_dokter?>&no_kunjungan=<?php echo $value->no_kunjungan?>&kode_perusahaan=<?php echo $value->kode_perusahaan?>&no_sep=<?php echo $value->no_sep?>', 'tabs_form_pelayanan')" ><i class="fa fa-calendar"></i> Form Perjanjian Pasien</a>
             
             <?php if(empty($value->tgl_keluar_poli)) :?>
               <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>

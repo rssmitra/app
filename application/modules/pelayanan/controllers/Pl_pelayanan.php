@@ -2220,6 +2220,7 @@ class Pl_pelayanan extends MX_Controller {
         /*if id is not null then will show form edit*/
         
         $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $id, array('no_mr') );
+        $riwayat = $this->Pl_pelayanan->get_riwayat_pasien_by_id( $_GET['no_kunjungan'] );
 
         /*echo '<pre>'; print_r($data_pasien);*/
 
@@ -2229,6 +2230,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['kode_bagian'] = $_GET['kode_bagian'];
         $data['kode_dokter'] = $_GET['kode_dokter'];
         $data['kode_perusahaan'] = $_GET['kode_perusahaan'];
+        $data['riwayat'] = $riwayat;
 
         $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
         

@@ -238,14 +238,14 @@ function createSuratKontrol(){
           <input type="hidden" name="kode_bagian_hidden" id="kode_bagian_hidden" value="<?php echo isset($_GET['kode_bagian']) ? $_GET['kode_bagian'] : '';?>">
 
           <div class="form-group">
-              <label class="control-label col-sm-2">*No.MR</label>
+              <label class="control-label col-sm-3">*No.MR</label>
               <div class="col-sm-2">
                   <input type="text" name="no_mr_show" class="form-control" id="no_mr_show" value="<?php echo $value->no_mr?>" readonly="">
               </div>
           </div>
 
           <div class="form-group">
-            <label class="control-label col-sm-2">Jenis Penjamin</label>
+            <label class="control-label col-sm-3">Jenis Penjamin</label>
             <div class="col-md-8">
               <div class="radio">
                     <label>
@@ -262,7 +262,7 @@ function createSuratKontrol(){
 
           <div class="form-group" id="showFormPerusahaan"  <?php echo isset($_GET['kode_perusahaan']) ? ($_GET['kode_perusahaan'] != 0) ? '' : 'style="display:none"' :'style="display:none"';?> >
 
-              <label class="control-label col-sm-2">Perusahaan</label>
+              <label class="control-label col-sm-3">Perusahaan</label>
               <div class="col-sm-4">
                   <input id="perusahaan" name="perusahaan" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="BPJS KESEHATAN"/>
                   <input id="kodePerusahaanHidden" name="kode_perusahaan" class="form-control"  type="hidden" value="120"/>
@@ -272,17 +272,23 @@ function createSuratKontrol(){
 
           <?php if($_GET['kode_perusahaan'] == 120) :?>
             <div class="form-group">
-              <label class="control-label col-sm-2">No SEP Referensi</label>
+              <label class="control-label col-sm-3">No SEP Referensi</label>
               <div class="col-sm-4">
                   <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo $_GET['no_sep']?>"/>
               </div>
             </div>
           <?php endif;?>
+          <div class="form-group">
+              <label class="control-label col-sm-3">Tgl Kontrol Kembali</label>
+              <div class="col-sm-3">
+                  <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:''?>" readonly/>
+              </div>
+            </div>
 
           <p style="margin-top:7px"><b><i class="fa fa-ambulance"></i> PILIH INSTALASI </b></p>
 
           <div class="form-group">
-              <label class="control-label col-sm-2">Instalasi</label>
+              <label class="control-label col-sm-3">Instalasi</label>
               <div class="col-md-3">
                 <select name="jenis_instalasi" id="jenis_instalasi" class="form-control">
                   <option>-Silahkan Pilih-</option>
@@ -293,8 +299,8 @@ function createSuratKontrol(){
               </div>
             
           </div>
-
-          <div id="change_modul_view_perjanjian"></div>
+          
+          <div id="change_modul_view_perjanjian" style="padding-top: 10px"></div>
           
 
           <!-- end change modul view -->
@@ -304,7 +310,7 @@ function createSuratKontrol(){
             <p><b><i class="fa fa-calendar"></i> KUNJUNGAN </b></p>
 
             <div class="form-group">
-              <label class="control-label col-sm-2">Jenis Perjanjian</label>
+              <label class="control-label col-sm-3">Jenis Perjanjian</label>
               <div class="col-sm-10">
                 <div class="radio">
                   <label>
@@ -329,7 +335,7 @@ function createSuratKontrol(){
 
             <div class="form-group">
               
-              <label class="control-label col-sm-2">Tanggal Kunjungan</label>
+              <label class="control-label col-sm-3">Tanggal Kunjungan</label>
               
               <div class="col-md-2">                
                 <div class="input-group">                    
@@ -359,7 +365,7 @@ function createSuratKontrol(){
             
             <div class="form-group">
               
-              <label class="control-label col-sm-2">Keterangan</label>
+              <label class="control-label col-sm-3">Keterangan</label>
               
               <div class="col-md-5">
                 
