@@ -526,14 +526,13 @@ class Pl_pelayanan extends MX_Controller {
                         <ul class="dropdown-menu dropdown-inverse">
                             '.$rollback_btn.' '.$cancel_btn.'                            
 
-                            <li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=". $this->regex->_genRegex($row_list->no_sep,'RGXALNUM')."'".')">Perjanjian Pasien</a></li>
+                            <li><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form_perjanjian_view/".$row_list->no_mr."?kode_bagian=".$row_list->kode_bagian."&no_kunjungan=".$row_list->no_kunjungan."&kode_dokter=".$row_list->kode_dokter."&kode_perusahaan=".$row_list->kode_perusahaan."&no_sep=". $this->regex->_genRegex($row_list->no_sep,'RGXALNUM')."'".')">Perjanjian Pasien</a></li>
 
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_kunjungan.'</a></div>';
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
+            $row[] = '<div class="center"><a style="font-weight: bold; color: blue" href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."?no_mr=".$row_list->no_mr."&form=".$form_type."'".')">'.$row_list->no_mr.'</a></div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $no_sep = ($row_list->kode_perusahaan==120)?'<br><b>'.$row_list->no_sep.'</b>':'';
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.''.$no_sep:$row_list->nama_kelompok;
@@ -2153,7 +2152,6 @@ class Pl_pelayanan extends MX_Controller {
         $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $id, array('no_mr') );
 
         /*echo '<pre>'; print_r($data_pasien);*/
-
         $data['value'] = $data_pasien[0];
         $data['kode_bagian'] = $_GET['kode_bagian'];
         $data['kode_dokter'] = $_GET['kode_dokter'];
@@ -2162,12 +2160,9 @@ class Pl_pelayanan extends MX_Controller {
         $booking_id = ($this->input->get('ID'))?$this->input->get('ID'):0;
         
         // $data['booking_id'] = $booking_id;
-
         // if($booking_id!=0){
-
         //     $booking_data = $this->db->get_where('regon_booking', array('regon_booking_id' => $booking_id) )->row();
         //     $data['booking'] = $booking_data;
-
         // }
         
         /*load form view*/
@@ -2185,6 +2180,7 @@ class Pl_pelayanan extends MX_Controller {
         /*if id is not null then will show form edit*/
         
         $data_pasien = $this->Reg_pasien->search_pasien_by_keyword( $id, array('no_mr') );
+        $riwayat = $this->Pl_pelayanan->get_riwayat_pasien_by_id( $_GET['no_kunjungan'] );
 
         // echo '<pre>'; print_r($data_pasien);
 
@@ -2194,6 +2190,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['kode_bagian'] = $_GET['kode_bagian'];
         $data['kode_dokter'] = $_GET['kode_dokter'];
         $data['kode_perusahaan'] = $_GET['kode_perusahaan'];
+        $data['riwayat'] = $riwayat;
 
         // echo '<pre>'; print_r($data);
         

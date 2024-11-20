@@ -482,7 +482,7 @@
                 <div class="clearfix"></div>
             </div>
             <label>Language</label><br>
-            <select style="width: 100%"></select>
+            <select id="tts_language" style="width: 100%"></select>
         </form>
     </div>
 </div>
@@ -614,7 +614,11 @@
 
 <div class="form-group" style="padding-top: 10px">
     <div class="col-sm-12 no-padding">
+        <?php if(isset($_GET['form']) && $_GET['form'] == 'billing_entry') : ?>
+            <div class="alert alert-danger"><strong>Peringatan!</strong><br>Session anda bukan sebagai dokter, anda tidak dapat mengubah SOAP</div>
+       <?php else:?>
        <button type="submit" name="submit" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>" class="btn btn-xs btn-primary" id="btn_save_data"> <i class="fa fa-save"></i> <?php echo ($this->session->userdata('flag_form_pelayanan')) ?  ($this->session->userdata('flag_form_pelayanan') == 'perawat') ? 'Simpan Data' : 'Simpan Data' : 'Simpan Data'?> </button>
+       <?php endif;?>
     </div>
 </div>
 

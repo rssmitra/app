@@ -340,11 +340,10 @@ function selesaikanKunjungan(no_registrasi, no_kunjungan){
           <th></th>
           <th></th>
           <th></th>
-          <th>Kode</th>
-          <th>No MR</th>
+          <th width="100px">No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
-          <th width="150px">Tanggal Kunjungan</th>
+          <th width="200px">Tanggal Kunjungan</th>
           <th>Dokter</th>
           <th>Petugas</th>
           <th>Status</th>          

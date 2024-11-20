@@ -38,6 +38,9 @@ class Pl_pelayanan_model extends CI_Model {
 	{
 		
 		$this->_main_query();
+		// $this->db->select("(select top 1 kode_penunjang from pm_tc_penunjang left join tc_kunjungan as kunjungan_pm on kunjungan_pm.no_kunjungan = pm_tc_penunjang.no_kunjungan where kunjungan_pm.no_registrasi = tc_kunjungan.no_registrasi and kode_bagian = '050101') as lab");
+		// $this->db->select("(select top 1 kode_penunjang from pm_tc_penunjang left join tc_kunjungan as kunjungan_pm_rad on kunjungan_pm_rad.no_kunjungan = pm_tc_penunjang.no_kunjungan where kunjungan_pm_rad.no_registrasi = tc_kunjungan.no_registrasi and kode_bagian = '050201') as rad");
+		// $this->db->select("(select top 1 kode_penunjang from pm_tc_penunjang left join tc_kunjungan as kunjungan_pm_fis on kunjungan_pm_fis.no_kunjungan = pm_tc_penunjang.no_kunjungan where kunjungan_pm_fis.no_registrasi = tc_kunjungan.no_registrasi and kode_bagian = '050301') as fis");
 
 		if($_GET['bag'] == 0){
 			
@@ -479,7 +482,7 @@ class Pl_pelayanan_model extends CI_Model {
 	}
 
 	public function get_riwayat_pasien_by_id($no_kunjungan){
-		return $this->db->order_by('kode_riwayat', 'DESC')->get_where('th_riwayat_pasien', array('no_kunjungan' => $no_kunjungan) )->row();
+		return $this->db->order_by('kode_riwayat', 'DESC')->join('tc_kunjungan','tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan','left')->join('mt_karyawan','mt_karyawan.kode_dokter = tc_kunjungan.kode_dokter','left')->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_kunjungan' => $no_kunjungan) )->row();
 	}
 
 	public function get_riwayat_pasien_by_no_reg($no_registrasi){
