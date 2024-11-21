@@ -1301,7 +1301,7 @@ $('#lampiran_lab').click(function (e) {
                       $no=0; 
                       $data_lab = isset($penunjang['laboratorium'])?$penunjang['laboratorium']:[];
                       foreach($data_lab as $key_p=>$row_p) : 
-                        if($key_p <= 2) :
+                        if($key_p <= 4) :
                           $no++;
                           $checked_lab = ($trans_farmasi->lampiran_lab_kode_penunjang == $row_p->kode_penunjang) ? 'checked' : '' ;
                     ?>

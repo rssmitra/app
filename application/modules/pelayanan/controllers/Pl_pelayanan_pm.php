@@ -168,7 +168,6 @@ class Pl_pelayanan_pm extends MX_Controller {
         $data['mktime'] = $mktimenya;
         // $list =  (isset($_GET['is_edit']) AND $_GET['is_edit']!='')?$this->Pl_pelayanan_pm->get_data_hasil_pasien_pm($kode_penunjang,$kode_bag_tujuan):$this->Pl_pelayanan_pm->get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya);
         if((!isset($_GET['is_mcu'])) AND (isset($_GET['is_edit']) AND $_GET['is_edit']!='')){
-            // echo 'hello i m here'; die;
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm($kode_penunjang,$kode_bag_tujuan);
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==1)){
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm_mcu($kode_penunjang,$kode_bag_tujuan);
@@ -593,7 +592,7 @@ class Pl_pelayanan_pm extends MX_Controller {
 
     public function process_isi_hasil(){
 
-        // echo '<pre>';print_r($_POST);die;
+        echo '<pre>';print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('kode_penunjang', 'No MR', 'trim');
                
@@ -629,10 +628,11 @@ class Pl_pelayanan_pm extends MX_Controller {
                 $kode_tc_hasilpenunjang = $this->master->get_max_number('pm_tc_hasilpenunjang', 'kode_tc_hasilpenunjang');
                 $kode_trans_pelayanan = $_POST['kode_trans_pelayanan'][$kode_mt_hasilpm];
                 $hasil_pm = $_POST['hasil_pm'][$kode_mt_hasilpm];
-                $keterangan = $_POST['keterangan_pm'][$kode_mt_hasilpm];
+                $keterangan_pm = $_POST['keterangan_pm'][$kode_mt_hasilpm];
 
 
                 $hasil = $this->master->convert_special_chars_to_html($hasil_pm);
+                $keterangan = $this->master->convert_special_chars_to_html($keterangan_pm);
                 // echo '<pre>';print_r($hasil);die;
 
                 $dataexc = array(
@@ -650,9 +650,11 @@ class Pl_pelayanan_pm extends MX_Controller {
 
                 // cek hasil apakah sudah pernah diinput
                 $dt_ex = $this->db->get_where('pm_tc_hasilpenunjang', array('kode_trans_pelayanan' => $_POST['kode_trans_pelayanan'][$kode_mt_hasilpm], 'kode_mt_hasilpm' => $kode_mt_hasilpm) );
-
-               if($dt_ex->num_rows() > 0){
+                // echo '<pre>';print_r($dt_ex->row());die;
+                
+                if($dt_ex->num_rows() > 0){
                     $this->Pl_pelayanan_pm->update('pm_tc_hasilpenunjang', $dataexc, array('kode_tc_hasilpenunjang' => $dt_ex->row()->kode_tc_hasilpenunjang ) );
+                    // echo '<pre>';print_r($this->db->last_query());die;
                     $this->db->trans_commit();
                 }else{
                     $dataexc["kode_tc_hasilpenunjang"] = $kode_tc_hasilpenunjang; 
@@ -663,9 +665,11 @@ class Pl_pelayanan_pm extends MX_Controller {
 
             }
 
+            // echo '<pre>';print_r($_FILES);die;
+
             // insert and upload file
             /*insert dokumen adjusment*/
-            if(isset($_FILES['pf_file'])){
+            if(!empty($_FILES['pf_file']['name'][0])){
                 $this->upload_file->PMdoUploadMultiple(array(
                     'name' => 'pf_file',
                     'path' => 'uploaded/casemix/log/',

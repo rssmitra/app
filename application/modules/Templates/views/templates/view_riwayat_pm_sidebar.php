@@ -76,6 +76,11 @@
             }
             $html .= '</ul>';
             echo $html;
+            $lampiran_file_radiologi = isset($file[$row_f->kode_penunjang]) ? $file[$row_f->kode_penunjang] : [];
+            echo (count($lampiran_file_radiologi) > 0)?'<span>Lampiran :</span><br>' : '';
+            foreach($lampiran_file_radiologi as $row_lfr){
+              echo '<a href="#"  onclick="PopupCenter('."'".base_url().'/'.$row_lfr->csm_dex_fullpath."'".', '."'LAMPIRAN HASIL PEMERIKSAAN RADIOLOGI'".', 1000, 850)">'.$row_lfr->csm_dex_nama_dok.'</a><br>';
+            }
           ?>
         </td>
         <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_f->no_registrasi?>/<?php echo $row_f->no_kunjungan?>/<?php echo $row_f->kode_penunjang?>/<?php echo $row_f->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>

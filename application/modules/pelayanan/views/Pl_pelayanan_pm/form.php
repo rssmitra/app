@@ -775,7 +775,7 @@ function perjanjian_pasien_pm(){
                   <li>
                     <a data-toggle="tab" data-id="<?php echo $id?>?mr=<?php echo isset($value)?$value->no_mr:0; echo ($value->flag_mcu==1)?'&is_mcu=2':'' ?>" data-url="pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo $value->no_kunjungan?>/<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" id="tabs_isi_hasil" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                       <i class="red ace-icon fa fa-file bigger-120"></i>
-                      ISI HASIL PEMERIKSAAN LAB
+                      ISI HASIL PEMERIKSAAN PENUNJANG
                     </a>
                   </li>
                 <?php endif ?>

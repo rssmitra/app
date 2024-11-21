@@ -423,6 +423,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 
 		$this->db->select($select);
 		$this->db->select('(select top 1 hasil from pm_tc_hasilpenunjang where (kode_trans_pelayanan=pm_isihasil_v.kode_trans_pelayanan AND kode_mt_hasilpm=pm_isihasil_v.kode_mt_hasilpm) order by kode_tc_hasilpenunjang DESC ) as hasil');
+		$this->db->select('(select top 1 keterangan from pm_tc_hasilpenunjang where (kode_trans_pelayanan=pm_isihasil_v.kode_trans_pelayanan AND kode_mt_hasilpm=pm_isihasil_v.kode_mt_hasilpm) order by kode_tc_hasilpenunjang DESC ) as keterangan_pm');
 		$this->_main_query_hasil_pm($kode_penunjang,$kode_bag_tujuan);
 		if($kode_bag_tujuan=='050101'){
 			$this->db->where("mktime_umur_mulai <= '".$mktimenya."' " );

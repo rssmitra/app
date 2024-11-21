@@ -625,8 +625,9 @@ class Reg_klinik extends MX_Controller {
             $tgl_registrasi = $this->input->post('tgl_registrasi').' '.date('H:i:s');
             $nomorrujukan =  ($this->input->post('noRujukan'))?$this->input->post('noRujukan'):'';
             $jeniskunjunganbpjs =  ($this->input->post('jeniskunjunganbpjs'))?$this->input->post('jeniskunjunganbpjs'):'';
-            
-            $no_sep = $this->regex->_genRegex('1111111111111111111','RGXALNUM');
+            $mth = date('m');
+            $yr = date('y');
+            $no_sep = $this->regex->_genRegex('0112R034'.$mth.''.$yr.'Vxxxxx','RGXALNUM');
             $kode_dokter = $this->regex->_genRegex($_POST['reg_dokter_rajal'],'RGXINT');
             $kode_bagian_masuk = $this->regex->_genRegex($_POST['reg_klinik_rajal'],'RGXQSL');
             $jd_id =  $this->input->post('jd_id');

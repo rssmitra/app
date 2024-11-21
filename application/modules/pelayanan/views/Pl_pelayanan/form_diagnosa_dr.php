@@ -588,8 +588,8 @@
     <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
 </div>
 <div style="margin-top: 6px">
-    <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br><i style="font-size: 11px">(Secara default untuk pasien BPJS kontrol kembali setelah 30 hari)</i></label><br>
-    <input type="text" class="date-picker" data-date-format="yyyy-mm-dd" name="pl_tgl_kontrol_kembali" id="pl_tgl_kontrol_kembali" class="form-control" style="width: 100% !important" placeholder="ex: <?php echo date('Y-m-d')?>" value="<?php $next_date = date('Y-m-d', strtotime("+30 days")); echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:$next_date?>">
+    <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br><i style="font-size: 11px">(Secara default untuk pasien BPJS kontrol kembali setelah 31 hari)</i></label><br>
+    <input type="text" class="date-picker" data-date-format="yyyy-mm-dd" name="pl_tgl_kontrol_kembali" id="pl_tgl_kontrol_kembali" class="form-control" style="width: 100% !important" placeholder="ex: <?php echo date('Y-m-d')?>" value="<?php $next_date = date('Y-m-d', strtotime("+31 days")); echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:$next_date?>">
 </div>
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Catatan Kontrol</b></label>

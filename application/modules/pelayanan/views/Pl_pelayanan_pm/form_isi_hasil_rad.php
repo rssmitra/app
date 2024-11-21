@@ -400,7 +400,7 @@ function tambah_file()
                 }
 
                   $hasil = (isset($row_list->hasil))?$row_list->hasil:$row_list->standar_rad;
-                  $ket = (isset($row_list->keterangan))?$row_list->keterangan:$row_list->kesan;
+                  $ket = (isset($row_list->keterangan_pm))?$row_list->keterangan_pm:$row_list->kesan;
                   $kode_tc_hasilpenunjang =  (isset($row_list->kode_tc_hasilpenunjang))?$row_list->kode_tc_hasilpenunjang:0;
                 echo
                   '<span style="font-size: 11px; font-weight: bold; color: blue">Pemeriksaan</span><br><span  style="font-size: 16px; font-weight: bold;">'.$row_list->nama_pemeriksaan.'</span>
@@ -424,7 +424,6 @@ function tambah_file()
                         $satuan = (isset($bpako->satuan_kecil))?$bpako->satuan_kecil:'';
                         echo 
                           '<li>'.$nama_brg.' / '.$volume.' '.$satuan.'</li>';
-                        
                       }
                       echo  
                         '</ol>
@@ -442,8 +441,8 @@ function tambah_file()
             }
         ?>
         
-
-        <p style="font-weight: bold; padding-top: 10px !important">UPLOAD HASIL PEMERIKSAAN LAINNYA</p>
+        <hr>
+        <p style="font-weight: bold; padding-top: 20px !important">UPLOAD HASIL FOTO RONTGEN</p>
         <div class="form-group">
             <label class="control-label col-md-2">Nama Dokumen</label>
             <div class="col-md-2">
@@ -635,11 +634,11 @@ function tambah_file()
 
       </div>
 
-    </div><!-- /.modal-content -->
+    </div>
 
-<!--  </div> /.modal-dialog -->
+  </div>
 
-<!--</div> -->
+</div> -->
 
 
 

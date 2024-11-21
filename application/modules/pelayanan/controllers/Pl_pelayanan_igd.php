@@ -959,7 +959,7 @@ class Pl_pelayanan_igd extends MX_Controller {
         
     }
 
-    public function form_img_tagging($no_kunjungan) { 
+    public function form_img_tagging($no_kunjungan='') { 
         /*define variable data*/
         $data = [];
         $data['img_tagging'] = $this->db->get_where('th_img_tagging', ['no_kunjungan' => $no_kunjungan])->row();
