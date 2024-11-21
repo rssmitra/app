@@ -592,7 +592,7 @@ class Pl_pelayanan_pm extends MX_Controller {
 
     public function process_isi_hasil(){
 
-        echo '<pre>';print_r($_POST);die;
+        // echo '<pre>';print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('kode_penunjang', 'No MR', 'trim');
                
