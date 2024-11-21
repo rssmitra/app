@@ -96,7 +96,6 @@ class Po_penerbitan extends MX_Controller {
         $val = $this->form_validation;
         
         // print_r($_POST);die;
-
         $val->set_rules('kodesupplier', 'Supplier', 'trim|required');
         $val->set_rules('tgl_po', 'Tanggal PO', 'trim|required');
         $val->set_rules('tgl_kirim', 'Tanggal Kirim', 'trim|required');
@@ -178,7 +177,7 @@ class Po_penerbitan extends MX_Controller {
                             'kode_brg' => $row_checked,
                             'hna' => $_POST['harga_satuan_val'][$row_checked],
                             'disc' => $_POST['diskon'][$row_checked],
-                            'disc_rp' => $_POST['potongan_diskon'][$row_checked],
+                            // 'disc_rp' => $_POST['potongan_diskon'][$row_checked],
                             'ppn' => $_POST['ppn'][$row_checked],
                             'qty' => $_POST['jml_permohonan'][$row_checked],
                             'rasio' => $_POST['rasio'][$row_checked],
