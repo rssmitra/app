@@ -96,6 +96,38 @@ function udpateStatusVerif(kode_pesan_resep){
   
 }
 
+function udpateStatusVerifperItem(id){
+  preventDefault();
+  var checked = $("#status_verif_"+id+"").is(':checked');
+  console.log(checked);
+  $.ajax({
+    url: 'farmasi/process_entry_resep/update_status_verif_per_item',
+    type: "post",
+    data: { ID : id, status : checked },
+    dataType: "json",
+    beforeSend: function() {
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+    },
+    complete: function(xhr) {     
+      var data=xhr.responseText;
+      var jsonResponse = JSON.parse(data);
+      if(jsonResponse.status === 200){
+        $.achtung({message: jsonResponse.message, timeout:5});
+      }else{
+        $.achtung({message: jsonResponse.message, timeout:5, 'className' : 'achtungFail'});
+      }
+      achtungHideLoader();
+    }
+
+  });
+  
+}
+
+
+
+
+
 </script>
 
 <div class="row">

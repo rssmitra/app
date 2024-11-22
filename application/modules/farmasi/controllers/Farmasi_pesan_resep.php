@@ -236,6 +236,7 @@ class Farmasi_pesan_resep extends MX_Controller {
                 <th width="150px">Signa</th>
                 <th width="60px">Qty</th>
                 <th>Keterangan</th>
+                <th width="150px">Verifikasi</th>
             </tr>
             </thead>
             <tbody>';
@@ -251,6 +252,11 @@ class Farmasi_pesan_resep extends MX_Controller {
                 $html .= '<td>'.$row_list->jml_dosis.' x '.$row_list->jml_dosis_obat.' '.$row_list->satuan_obat.' '.$row_list->aturan_pakai.'</td>';
                 $html .= '<td>'.$row_list->jml_pesan.' '.$row_list->satuan_obat.'</td>';
                 $html .= '<td>'.$row_list->keterangan.'</td>';
+                $verifikasi_apotik_online = ($row_list->verifikasi_apotik_online ==  1)?'checked':'';
+                $html .= '<td><div class="center"><label>
+                                            <input name="switch-field-1" class="ace ace-switch" id="status_verif_'.$row_list->id.'" onchange="udpateStatusVerifperItem('.$row_list->id.')" type="checkbox" value="1" '.$verifikasi_apotik_online.'>
+                                            <span class="lbl"></span>
+                                        </label></div></td>';
                 $html .= '</tr>';
             }
 

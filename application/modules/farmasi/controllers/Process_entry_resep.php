@@ -615,8 +615,28 @@ class Process_entry_resep extends MX_Controller {
         $status = ($_POST['status'] == 'true') ? 1 : 0;
         if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['verifikasi_apotik_online' => $status]))
         {
+            $this->db->where('verifikasi_apotik_online IS NULL')->update('fr_tc_pesan_resep_detail', ['verifikasi_apotik_online' => $status], ['kode_pesan_resep' => $_POST['ID']]);
+
             $this->db->trans_commit();
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['ID'] ));
+        }
+        else
+        {
+            $this->db->trans_rollback();
+            // print_r($this->db->last_query());die;
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+
+    }
+
+    public function update_status_verif_per_item(){
+        // print_r($_POST);die;
+        $this->db->trans_begin();
+        $status = ($_POST['status'] == 'true') ? 1 : 0;
+        if ($this->db->update('fr_tc_pesan_resep_detail', ['verifikasi_apotik_online' => $status], ['id' => $_POST['ID']]))
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id' => $_POST['ID'] ));
         }
         else
         {
