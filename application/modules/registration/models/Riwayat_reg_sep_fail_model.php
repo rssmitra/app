@@ -72,7 +72,7 @@ class Riwayat_reg_sep_fail_model extends CI_Model {
 		} 
         /*end parameter*/
 		
-		$this->db->where("no_sep not like '0112R034%'");
+		$this->db->where("(no_sep like '%xxxxx%' or no_sep like '%111111%')");
 		$this->db->where("tc_registrasi.kode_perusahaan", 120);
 
 	}
