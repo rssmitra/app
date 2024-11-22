@@ -1017,6 +1017,7 @@ $('#lampiran_lab').click(function (e) {
                 <?php
                   // echo "<pre>"; print_r($eresep_result);die;
                   if(isset($eresep[0]->kode_pesan_resep)) : 
+                    
                   $html = '';
                     $html .= '<div><b>RESEP DOKTER <i>(e-Resep)</i></b><br>';
                     $html .= isset($value)?ucwords($value->nama_bagian).' - ':'';
@@ -1037,14 +1038,14 @@ $('#lampiran_lab').click(function (e) {
                       $no = 0;
                       
                       foreach ($eresep as $ker => $ver) {
-                      
+                        $is_free_text = ($ver->kode_brg == null)?'<br><span style="font-weight: bold; color: red">[free text]</span>':'';
                         $no++;
                         // get child racikan
                         $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
                         $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
                         $html .= '<tr>';
                         $html .= '<td align="center" valign="top">'.$no.'</td>';
-                        $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'</td>';
+                        $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.''.$is_free_text.'</td>';
                         $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
                         $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
                           $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';

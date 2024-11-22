@@ -69,8 +69,10 @@ class E_resep extends MX_Controller {
                         'jumlah' => $row_list->jml_pesan,
                     );
                     $format_signa = $this->master->formatSignaFull($config);
-                    $html .= '<div class="left">'.$format_signa.'<br>Ket : <br>'.$row_list->keterangan.'</div>';
+                    $keterangan = ($row_list->keterangan == null)?'':'<br>Ket : <br>'.$row_list->keterangan;
+                    $html .= '<div class="left" id="detail_'.$row_list->id.'">'.$format_signa.''.$keterangan.'';
                     $html .= '<a href="#" onclick="clickedititemtemplate('.$row_list->id.')">edit</a> | <a href="#" onclick="deleterowitemtemplate('.$row_list->id.')">delete</a><br><br>';
+                    $html .= '</div>';
                 }else{
     
                     $format_signa_racikan = '<span class="monotype_style">R/</span><br>';
@@ -89,11 +91,13 @@ class E_resep extends MX_Controller {
                     $format_signa_racikan .= '<div style="padding-left: 15px">';
                     $format_signa_racikan .= $this->master->get_child_racikan_template($list, $row_list->kode_brg);
                     $format_signa_racikan .= '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row_list->jml_pesan).' da in '.$unit_code.'</i> <br>';
-                    $format_signa_racikan .= ''.$this->master->formatSigna($config);
+                    $format_signa_racikan .= ''.$this->master->formatSignaFull($config);
                     $format_signa_racikan .= '</div>';
-    
-                    $html .= '<div class="left">'.$format_signa_racikan.'<br>Ket : <br>'.$row_list->keterangan.'</div>';
-                    $html .= '<a href="#" onclick="clickeditracikanitemtemplate('.$row_list->id.')">edit</a> | <a href="#" onclick="deleterowtemplate('.$row_list->id.')">delete</a><br><br>';
+                    
+                    $keterangan = ($row_list->keterangan == null)?'':'<br>Ket : <br>'.$row_list->keterangan;
+                    $html .= '<div class="left" id="detail_'.$row_list->id.'">'.$format_signa_racikan.''.$keterangan;
+                    $html .= '<a href="#" onclick="clickeditracikanitemtemplate('.$row_list->id.')">edit</a> | <a href="#" onclick="deleterowitemtemplate('.$row_list->id.')">delete</a><br><br>';
+                    $html .= '</div>';
     
                 }
             }
@@ -246,11 +250,12 @@ class E_resep extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+            $is_free_text = ($row_list->kode_brg == null) ? '<br><span style="font-weight: bold; color: red">[free text]</span>' : '' ;
             // get child racikan
             $child_racikan = $this->master->get_child_racikan_data($kode_pesan_resep, $row_list->kode_brg);
             $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = strtoupper($row_list->nama_brg).''.$html_racikan;
+            $row[] = strtoupper($row_list->nama_brg).''.$is_free_text.''.$html_racikan;
             $row[] = $row_list->jml_dosis.' x '.$row_list->jml_dosis_obat.' '.$row_list->satuan_obat.' '.$row_list->aturan_pakai;
             $row[] = '<div class="center">'. $row_list->jml_pesan.' '.$row_list->satuan_obat.'</div>';
             $row[] = $row_list->keterangan;

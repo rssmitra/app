@@ -56,7 +56,7 @@
                                 echo $row->nama_brg.' &nbsp;&nbsp; No. '.$this->master->formatRomawi((int)$row->jml_pesan).'<br>';
                                 echo '<i>'.$format_signa.'</i>';
                                 // echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row->dosis_per_hari.' x '.$row->dosis_obat.'&nbsp; '.$row->satuan_obat.'  ('.$row->anjuran_pakai.')<br>';
-                                echo ' ____________ det / nedet<br><br>';
+                                echo ' ____________ det / nedet<br>';
                                 echo '</div>';
                               }else{
                                 $config = array(
@@ -75,7 +75,8 @@
                                 $format_signa_racikan .= '<i>m.f '.$unit_code.' dtd no. '.$this->master->formatRomawi((int)$row->jml_pesan).' da in '.$unit_code.'</i> <br>';
                                 $format_signa_racikan .= ''.$this->master->formatSignaFull($config);
                                 $format_signa_racikan .= '</div>';
-                                echo '<div class="left">'.$format_signa_racikan.'<br>Ket : <br>'.$row->keterangan.'</div>';
+                                $keterangan = ($row->keterangan == null)?'':'<br>Ket : <br>'.$row->keterangan;
+                                echo '<div class="left">'.$format_signa_racikan.''.$keterangan.'</div>';
 
 
                               }

@@ -696,6 +696,7 @@
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
+                    $('#detail_'+id+'').hide();
                     $('#row_racikan_template_'+id+'').hide();
 
                 }
@@ -848,9 +849,10 @@
                     
                     <div class="form-group">
                         <label class="control-label col-sm-2">Cari Obat</label>            
-                        <div class="col-md-6">            
-                        <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
-                        <input type="hidden" name="kode_brg" id="kode_brg_obat" class="form-control">
+                        <div class="col-md-10">            
+                            <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
+                            <input type="hidden" name="kode_brg" id="kode_brg_obat" class="form-control">
+                            <span style="font-style: italic; padding-left: 5px; font-weight: bold; color: blue; font-size: 11px">Jika obat tidak ditemukan, mohon diisi nama obat dengan lengkap [free text]</span>
                         </div>
                     </div>
                     <div class="form-group">
