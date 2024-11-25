@@ -206,6 +206,22 @@ class Auto_send_antrol extends MX_Controller {
         }
     }
 
+    function cancel_antrol($kodebooking, $taskid){
+
+        // update task antrol
+        $tanggalperiksa = '2024-11-19 08:12:01';
+        $random_min = rand(5,20);
+        $addtime = $random_min;
+        $addtime = ($addtime > 60) ? 60 : $addtime;
+        $milisecond = strtotime('+'.$addtime.' minutes', strtotime($tanggalperiksa)) * 1000;
+        
+        $updatetask = $this->AntrianOnline->postDataWs('antrean/updatewaktu', array('kodebooking' => $kodebooking, 'taskid' => $taskid, 'waktu' => $milisecond));
+        $response_task = $updatetask['response']->metadata;
+        $dataantrol = array('kodebooking' => $kodebooking, 'taskid' => $taskid, 'waktu' => $milisecond, 'response_code' => $response_task->code, 'response_msg' => $response_task->message); 
+        echo json_encode($dataantrol);
+        
+    }
+
 }
 /* End of file example.php */
 /* Location: ./application/functiones/example/controllers/example.php */

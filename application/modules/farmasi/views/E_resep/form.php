@@ -867,14 +867,14 @@
                             </span>
 
                             <span class="input-icon">
-                            <input name="jml_dosis_obat" id="jml_dosis_obat" type="text" style="width: 80px; " value="" onchange="countJmlObat()"/>
+                            <input name="jml_dosis_obat" id="jml_dosis_obat" type="text" style="width: 50px; " value="" onchange="countJmlObat()"/>
                             </span>
                         </div>
                         <div class="col-md-3" style="margin-left: -5.6%">
-                            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'Tab' , 'satuan_obat', 'satuan_obat', 'form-control', '', '');?>
+                            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), '' , 'satuan_obat', 'satuan_obat', 'form-control', '', '');?>
                         </div>
                         <div class="col-md-3" style="margin-left: -21px">
-                            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'aturan_pakai', 'aturan_pakai', 'form-control', '', '');?>
+                            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), '' , 'aturan_pakai', 'aturan_pakai', 'form-control', '', '');?>
                         </div>
                         <label class="control-label col-sm-1">Qty</label>
                         <div class="col-md-1">
@@ -949,7 +949,7 @@
                                     <i class="fa fa-times bigger-150"></i>
                                 </span>
                                 <span class="inline">
-                                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 80px; text-align: center"/>
+                                    <input name="dosis_end_r" id="dosis_end_r" type="text" style="width: 50px; text-align: center"/>
                                 </span>
                             </div>
                             <div class="col-md-4" style="margin-left: -5.6%">

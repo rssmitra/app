@@ -757,16 +757,16 @@ function perjanjian_pasien_pm(){
                   </li>
                 <?php endif ?>
 
-                <!-- <li>
+                <li>
                     <a data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" data-url="pelayanan/Pl_pelayanan_pm/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                     <i class="red ace-icon fa fa-stethoscope bigger-120"></i>
                     DIAGNOSA
                   </a>
-                </li> -->
+                </li>
 
                 <li>
                     <a data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $value->no_registrasi?>" data-url="registration/reg_pasien/view_detail_resume_medis" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="red ace-icon fa fa-stethoscope bigger-120"></i>
+                    <i class="red ace-icon fa fa-history bigger-120"></i>
                     RESUME MEDIS
                   </a>
                 </li>

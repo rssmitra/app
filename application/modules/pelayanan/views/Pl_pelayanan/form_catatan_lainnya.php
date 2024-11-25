@@ -154,6 +154,7 @@ $(document).ready(function() {
       if ($(this).val()) {
           $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val(), '', function (data) {
             $('#editor_html_pengkajian').html(data.html);
+            $('#cppt_id').val('');
           });
       } else {
         $('#editor_html_pengkajian').html('');
@@ -182,6 +183,7 @@ function delete_cppt(myid, flag){
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
             oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&type=catatan_pengkajian").load();
+            $('#cppt_id').val('');
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
@@ -245,7 +247,7 @@ function show_edit(myid){
 
 function show_modal_pengkajian(myid){
   preventDefault();
-  show_modal_medium_return_json('pelayanan/Pl_pelayanan/switch_template_form/25/1718811', 'DETAIL PENGKAJIAN');
+  // show_modal_medium_return_json('pelayanan/Pl_pelayanan/switch_template_form/25/1718811', 'DETAIL PENGKAJIAN');
   $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
     // show data
     // set value input
@@ -359,7 +361,7 @@ function fillthis(id){
     <div class="form-group">
         <label class="control-label col-sm-2">Jenis Form</label>
         <div class="col-md-8">
-          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), 1 , 'jenis_form_catatan', 'jenis_form_catatan', 'chosen-select form-control', '', '') ?>
+          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), isset($_GET['form_no'])?$_GET['form_no']:'' , 'jenis_form_catatan', 'jenis_form_catatan', 'chosen-select form-control', '', '') ?>
         </div>
     </div>
 

@@ -161,7 +161,7 @@ class E_resep_model extends CI_Model {
 	}
 	
 	public function get_cart_resep($kode_pesan_resep){
-		return $this->db->order_by('id', 'ASC')->get_where('fr_tc_pesan_resep_detail', array('kode_pesan_resep' => $kode_pesan_resep, 'parent' => '0') )->result();
+		return $this->db->select('fr_tc_pesan_resep_detail.*, mt_barang.satuan_kecil')->join('mt_barang', 'mt_barang.kode_brg = fr_tc_pesan_resep_detail.kode_brg','left')->order_by('id', 'ASC')->get_where('fr_tc_pesan_resep_detail', array('kode_pesan_resep' => $kode_pesan_resep, 'parent' => '0') )->result();
 	}
 
 	public function get_cart_resep_for_template($kode_pesan_resep){

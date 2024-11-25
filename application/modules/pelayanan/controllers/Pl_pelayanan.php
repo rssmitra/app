@@ -2335,9 +2335,10 @@ class Pl_pelayanan extends MX_Controller {
         $data['no_mr'] = $_GET['no_mr'];
         $data['id'] = $id;
         $data['no_kunjungan'] = $no_kunjungan;
-        $data['jenis_form'] = 'form_1';
+        $form_no = isset($_GET['form_no'])?'form_'.$_GET['form_no']:'form_1';
+        $data['jenis_form'] = $form_no;
         // $data['form_type'] = $_GET['form'];
-        $template = $this->load->view('Pl_pelayanan/form_1', $data, true);
+        $template = $this->load->view('Pl_pelayanan/'.$form_no.'', $data, true);
         $data['template'] = $template;
         
         /*load form view*/

@@ -98,19 +98,15 @@ $(document).ready(function(){
 
           if(jsonResponse.type_pelayanan == 'pasien_selesai' )
           {
-
             getMenu('pelayanan/Pl_pelayanan_igd');
-
           }
 
           if(jsonResponse.type_pelayanan == 'Pasien Meninggal' )
           {
-
             $('#btn_cetak_meninggal').show('fast');
             $('#btn_selesai_igd').hide('fast');
             $("html, body").animate({ scrollTop: "0" });
             $('#kode_meninggal').val(jsonResponse.kode_meninggal);
-
           }
           
         }else{          
@@ -193,7 +189,11 @@ $(document).ready(function(){
     $('#tabs_diagnosa').click(function (e) {    
       e.preventDefault();  
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_igd/processSaveDiagnosa');
-      // backToDefaultForm();
+    });
+
+    $('#tabs_pengkajian').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveCatatanPengkajian');
     });
 
     $('#tabs_pesan_resep').click(function (e) {     
@@ -583,45 +583,22 @@ function reload_page(){
           <!-- form pelayanan -->
           <div class="col-md-10 no-padding">
             
-
-            <table class="table">
-              <tr>
-                <td rowspan="2" style="background: blue">
-                  <span style="color: white; font-size: 20px;font-weight: bold" id="no_mr"></span><br>
-                  <span style="color: white; font-size: 14px;" id="nama_pasien"></span>
-                </td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">NIK</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Tgl. Lahir</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Umur</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Alamat</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">No.Telp / HP</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Penjamin</td>
-                <td><span style="color: blue; font-size: 12px; font-weight: bold">Status : </span></td>
-              </tr>
-              <tr>
-                <td><span style="font-size: 13px;" id="no_ktp"></span></td>
-                <td><span style="font-size: 13px;" id="tgl_lhr"></span></td>
-                <td><span style="font-size: 13px;" id="umur"></span></td>
-                <td><span style="font-size: 13px;" id="alamat"></span></td>
-                <td><span style="font-size: 13px;" id="no_hp"></span></td>
-                <td><span style="font-size: 13px;" id="kode_perusahaan"></span></td>
-                <td>
-                  <?php if(isset($value) AND $value->status_batal==1) :?>
-                  <span style="font-weight: bold" class="label label-danger">Batal</span>
-                  <?php else:?>
-                    <?php if(isset($value) AND $value->tgl_jam_kel!=NULL) :?>
-                    <span style="font-weight: bold" class="label label-success">Selesai</span>
-                    <?php endif;?>  
-                  <?php endif;?>
-                </td>
-              </tr>
-            </table>
             <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
                 <div class="center">
                   <ul class="nav nav-list">
 
-                    <li class="hover">
+                    <!-- <li class="hover">
                       <a data-toggle="tab" href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=020101" data-url="pelayanan/Pl_pelayanan_igd/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Pengkajian </span></a><b class="arrow"></b>
+                    </li> -->
+
+                    <li class="hover">
+                      <a data-toggle="tab" id="tabs_pengkajian" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>&form_no=27" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <i class="menu-icon fa fa-user"></i><span class="menu-text"> Form Rekam Medis
+                      </span></a><b class="arrow"></b>
+                    </li>
+
+                    <li class="hover">
+                      <a data-toggle="tab" href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=020101" data-url="pelayanan/Pl_pelayanan_igd/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> Resume Medis </span></a><b class="arrow"></b>
                     </li>
 
                     <li class="hover">
@@ -643,12 +620,12 @@ function reload_page(){
                     <li class="hover">
                       <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Billing Pasien</span></a><b class="arrow"></b>
                     </li>
-                    <li class="hover">
+                    <!-- <li class="hover">
                       <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
-                    </li>
-                    <li class="hover">
+                    </li> -->
+                    <!-- <li class="hover">
                       <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="rekam_medis/File_rm/index/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> ERM  </span></a><b class="arrow"></b>
-                    </li>
+                    </li> -->
 
                     <li class="hover">
                       <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_riwayat_medis_pasien')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> Rekam Medis  </span></a><b class="arrow"></b>
@@ -665,6 +642,38 @@ function reload_page(){
                   </ul><!-- /.nav-list -->
                 </div>
             </div>
+            <table class="table">
+              <tr style="background: #f8f8f8">
+                <td rowspan="2">
+                  <span style="font-size: 20px;font-weight: bold" id="no_mr"></span><br>
+                  <span style="font-size: 14px;" id="nama_pasien"></span>
+                </td>
+                <td><span style="font-size: 12px; font-weight: bold;">NIK</td>
+                <td><span style="font-size: 12px; font-weight: bold;">Tgl. Lahir</td>
+                <td><span style="font-size: 12px; font-weight: bold;">Umur</td>
+                <td><span style="font-size: 12px; font-weight: bold;">Alamat</td>
+                <td><span style="font-size: 12px; font-weight: bold;">No.Telp / HP</td>
+                <td><span style="font-size: 12px; font-weight: bold;">Penjamin</td>
+                <td><span style="font-size: 12px; font-weight: bold;">Status </span></td>
+              </tr>
+              <tr>
+                <td><span style="font-size: 13px;" id="no_ktp"></span></td>
+                <td><span style="font-size: 13px;" id="tgl_lhr"></span></td>
+                <td><span style="font-size: 13px;" id="umur"></span></td>
+                <td><span style="font-size: 13px;" id="alamat"></span></td>
+                <td><span style="font-size: 13px;" id="no_hp"></span></td>
+                <td><span style="font-size: 13px;" id="kode_perusahaan"></span></td>
+                <td>
+                  <?php if(isset($value) AND $value->status_batal==1) :?>
+                  <span style="font-weight: bold" class="label label-danger">Batal</span>
+                  <?php else:?>
+                    <?php if(isset($value) AND $value->tgl_jam_kel!=NULL) :?>
+                    <span style="font-weight: bold" class="label label-success">Selesai</span>
+                    <?php endif;?>  
+                  <?php endif;?>
+                </td>
+              </tr>
+            </table>
 
             <!-- end action form  -->
             <div class="pull-right" style="margin-top:3px">
@@ -676,7 +685,9 @@ function reload_page(){
               <a href="#" class="btn btn-xs btn-danger" id="cetak_keracunan" onclick="cetak_surat_keracunan()" <?php echo isset($keracunan->id_cetak_racun)?'':'style="display:none"'?>><i class="fa fa-file"></i> Cetak Surat Keracunan </a>
             </div>
             <br>
-            <div style="background: linear-gradient(45deg, green, transparent) ;padding: 5px; margin-top: -17px; color: white">
+            
+
+            <div class="pull-left" style="padding: 5px; margin-top: -20px">
               Tanggal Daftar : <span style="font-size: 14px; font-weight: bold"><?php echo isset($value->tanggal_gd)?$this->tanggal->formatDateTime($value->tanggal_gd):''?></span> | Dokter IGD : 
               <span style="font-size: 14px; font-weight: bold">[ <?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?> ]</span>
             </div>

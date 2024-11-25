@@ -256,8 +256,8 @@ class E_resep extends MX_Controller {
             $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = strtoupper($row_list->nama_brg).''.$is_free_text.''.$html_racikan;
-            $row[] = $row_list->jml_dosis.' x '.$row_list->jml_dosis_obat.'&nbsp;'.$row_list->aturan_pakai;
-            $row[] = '<div class="center">'. $row_list->jml_pesan.' '.$row_list->satuan_obat.'</div>';
+            $row[] = $row_list->jml_dosis.' x '.$row_list->jml_dosis_obat.'&nbsp;'.$row_list->satuan_obat.' '.$row_list->aturan_pakai;
+            $row[] = '<div class="center">'. $row_list->jml_pesan.' '.$row_list->satuan_kecil.'</div>';
             $row[] = $row_list->keterangan;
             if($row_list->tipe_obat == 'non_racikan'){
                 $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-warning" onclick="clickedit('.$row_list->id.')"><i class="fa fa-pencil"></i></a><a href="#" class="btn btn-xs btn-danger" onclick="deleterow('.$row_list->id.')"><i class="fa fa-trash"></i></a></div>';
