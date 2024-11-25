@@ -322,7 +322,7 @@ function fillthis(id){
 
   <div class="col-md-12">
 
-    <div class="center"><span style="font-size: 14px"><b>FORM CATATAN RIWAYAT PENYAKIT<br>ATAU PENGKAJIAN PASIEN</b></span></div>
+    <div class="center"><span style="font-size: 14px"><b>FORM REKAM MEDIS</b></span></div>
     <br>
 
     <!-- form default pelayanan pasien -->

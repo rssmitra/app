@@ -70,7 +70,7 @@ class E_resep extends MX_Controller {
                     );
                     $format_signa = $this->master->formatSignaFull($config);
                     $keterangan = ($row_list->keterangan == null)?'':'<br>Ket : <br>'.$row_list->keterangan;
-                    $html .= '<div class="left" id="detail_'.$row_list->id.'">'.$format_signa.''.$keterangan.'';
+                    $html .= '<div class="left" id="detail_'.$row_list->id.'">'.$format_signa.''.$keterangan.'<br>';
                     $html .= '<a href="#" onclick="clickedititemtemplate('.$row_list->id.')">edit</a> | <a href="#" onclick="deleterowitemtemplate('.$row_list->id.')">delete</a><br><br>';
                     $html .= '</div>';
                 }else{
@@ -95,7 +95,7 @@ class E_resep extends MX_Controller {
                     $format_signa_racikan .= '</div>';
                     
                     $keterangan = ($row_list->keterangan == null)?'':'<br>Ket : <br>'.$row_list->keterangan;
-                    $html .= '<div class="left" id="detail_'.$row_list->id.'">'.$format_signa_racikan.''.$keterangan;
+                    $html .= '<div class="left" id="detail_'.$row_list->id.'">'.$format_signa_racikan.''.$keterangan.'<br>';
                     $html .= '<a href="#" onclick="clickeditracikanitemtemplate('.$row_list->id.')">edit</a> | <a href="#" onclick="deleterowitemtemplate('.$row_list->id.')">delete</a><br><br>';
                     $html .= '</div>';
     
@@ -341,9 +341,10 @@ class E_resep extends MX_Controller {
             $this->db->trans_begin();           
             
             $table = ($_POST['id_template'] > 0)? 'fr_tc_template_resep_detail' : 'fr_tc_pesan_resep_detail';
+
             $id = ($this->input->post('id_pesan_resep_detail')) ? $this->input->post('id_pesan_resep_detail') : "0";
             
-            // print_r($kode_brg);die;
+            // print_r($table);die;
 
             $dataexc = array(
                 'kode_pesan_resep' => $this->regex->_genRegex($this->form_validation->set_value('kode_pesan_resep'), 'RGXINT'),
@@ -357,19 +358,26 @@ class E_resep extends MX_Controller {
                 'no_mr' => $this->regex->_genRegex($this->form_validation->set_value('no_mr'), 'RGXQSL'),
                 'keterangan' => $this->regex->_genRegex($this->form_validation->set_value('keterangan'), 'RGXQSL'),
                 'jml_pesan' => $this->regex->_genRegex($this->form_validation->set_value('jml_pesan'), 'RGXQSL'),
-                // 'jml_hari' => $this->regex->_genRegex($this->form_validation->set_value('jml_hari'), 'RGXQSL'),
                 'tipe_obat' => $this->regex->_genRegex($this->form_validation->set_value('tipe_obat'), 'RGXQSL'),
                 'parent' => $this->regex->_genRegex($this->form_validation->set_value('parent'), 'RGXQSL'),
                 'tipe_racik' => isset($_POST['tipe_racik']) ? $this->regex->_genRegex($_POST['tipe_racik'], 'RGXQSL') : '0',
             );
 
+            if($table == 'fr_tc_template_resep_detail'){
+                $dataexc['id_template'] = $_POST['id_template'];
+                $dataexc['id'] = rand(0,999999);
+            }
+
             if( $id == 0 ){
                 $kode_brg = ($_POST['submit'] == 'header' && $_POST['tipe_obat'] == 'racikan') ? 'R'.rand(0,999999) : $this->form_validation->set_value('kode_brg'); 
+
                 $dataexc['kode_brg'] = $this->regex->_genRegex($kode_brg, 'RGXQSL');
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
                 $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                // print_r($table);
+                // print_r($dataexc);die;
                 $this->db->insert($table, $dataexc);
                 $newId = $this->db->insert_id();
                 $kode_brg = $kode_brg;

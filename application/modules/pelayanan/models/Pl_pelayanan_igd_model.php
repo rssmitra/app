@@ -5,7 +5,7 @@ class Pl_pelayanan_igd_model extends CI_Model {
 
 	var $table = 'gd_tc_gawat_darurat';
 	var $column = array('gd_tc_gawat_darurat.nama_pasien_igd','mt_karyawan.nama_pegawai');
-	var $select = 'gd_tc_gawat_darurat.no_kunjungan,gd_tc_gawat_darurat.nama_pasien_igd, kode_gd, gd_tc_gawat_darurat.status_diterima, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, gd_tc_gawat_darurat.tanggal_gd, gd_tc_gawat_darurat.tgl_kecelakaan, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, gd_tc_gawat_darurat.dokter_jaga, gd_tc_gawat_darurat.no_induk,tc_kunjungan.tgl_keluar,tmp_user.fullname, gd_tc_gawat_darurat.status_batal, tgl_jam_kel';
+	var $select = 'gd_tc_gawat_darurat.no_kunjungan,gd_tc_gawat_darurat.nama_pasien_igd, kode_gd, gd_tc_gawat_darurat.status_diterima, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, gd_tc_gawat_darurat.tanggal_gd, gd_tc_gawat_darurat.tgl_kecelakaan, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, gd_tc_gawat_darurat.dokter_jaga, gd_tc_gawat_darurat.no_induk,tc_kunjungan.tgl_keluar,tmp_user.fullname, gd_tc_gawat_darurat.status_batal, tgl_jam_kel, jenis_kasus';
 
 	var $order = array('gd_tc_gawat_darurat.kode_gd' => 'desc');
 

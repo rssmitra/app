@@ -106,11 +106,12 @@
                     $('#btn_update_header_racikan').hide();
                     $('#data_obat_div').show();
                     $('#add_komposisi_obat').show('');
+                    $('#id_pesan_resep_detail').val(0);
                     $('#add_komposisi_obat').val(jsonResponse.parent);
-                    $('#this_template').html('');
+                    // $('#this_template').html('');
 
                     // reset form
-                    reset_form_resep();
+                    // reset_form_resep();
                     $('#txt_nama_racikan').text('[ '+$('#nama_racikan').val()+' ]');
                 }else{          
                     $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
@@ -154,10 +155,13 @@
                 if(jsonResponse.status === 200){  
 
                     oTable.ajax.url("farmasi/E_resep/get_cart_resep_data/"+$('#kode_pesan_resep_e').val()+"").load();
+                    if($('#id_template').val() > 0){
+                        oTable2.ajax.reload();
+                    }
 
                     $('#btn_submit_racikan').hide();
                     $('#data_obat_div').show();
-                    $('#this_template').html('');
+                    // $('#this_template').html('');
                     // reset form
                     reset_form_komposisi();
                     // show confirm
@@ -520,12 +524,13 @@
         $('#satuan_obat').val("Tab");
         $('#aturan_pakai').val("Sesudah Makan");
         $('#keterangan_resep').val("");
+        $('#this_template').html('');
+        $('#div_show_resep').show();
     }
 
     function reset_form_komposisi(){
         preventDefault();
         $('#id_pesan_resep_detail').val("");
-        $('#id_template').val("");
         $('#inputKeyObatRacikan').val("");
         $('#inputKeyObatRacikanHidden').val("");
         $('#jml_komposisi_obat').val("");
@@ -545,12 +550,13 @@
         $('#catatan_r').val("");
         $('#id_pesan_resep_detail').val("");
         $('#id_template').val("");
+        $('#this_template').html('');
         $('#inputKeyObatRacikan').val("");
         $('#inputKeyObatRacikanHidden').val("");
 
         $('#btn_submit_racikan').show();
         $('#btn_update_header_racikan').hide();
-        // $('#data_obat_div').hide();
+        $('#div_show_resep').show();
         $('#add_komposisi_obat').val("");
 
     }
@@ -719,7 +725,7 @@
 
     function activeTab(tab){
 
-        $('.nav-tabs a[href="#' + tab + '"]').tab('show');
+        $('#tab_eresep a[href="#' + tab + '"]').tab('show');
         
         if(tab == 'template_tab'){
             $('#div_show_resep').hide();
@@ -801,7 +807,7 @@
 
     <div class="col-md-12" style="margin-top: 6px">
         <div class="tabbable">
-            <ul class="nav nav-tabs" id="myTab">
+            <ul class="nav nav-tabs" id="tab_eresep">
                 <li class="active">
                     <a data-toggle="tab" href="#resep_non_racikan_tab" onclick="activeTab('resep_non_racikan_tab')">
                         <i class="green ace-icon fa fa-home bigger-120"></i>
@@ -841,9 +847,9 @@
                             <div class="pull-left">
                                 <p style="font-weight: bold">Obat Non Racikan</p>
                             </div>
-                            <!-- <div class="pull-right">
-                                <a href="#" class="btn btn-sm btn-danger" onclick="reset_form_resep()"><i class="fa fa-refresh"></i> Reset Form</a>
-                            </div> -->
+                            <div class="pull-right">
+                                <a href="#" onclick="reset_form_resep()"><i class="fa fa-refresh"></i> Reset Form</a>
+                            </div>
                         </div>
                     </div>
                     
@@ -1014,28 +1020,6 @@
                                 </button></td>
                             </tr>
                         </table>
-                        <!-- cari obat -->
-                        <!-- <div class="form-group">
-                            <label class="control-label col-sm-2">Cari Obat</label>  
-                            <div class="col-md-4">   
-                            <input type="text" name="obat" id="inputKeyObatRacikan" class="form-control" placeholder="Masukan Keyword Obat" value=""> 
-                            <input type="hidden" name="obat" id="inputKeyObatRacikanHidden" class="form-control" placeholder="Masukan Keyword Obat" value=""> 
-                            </div>
-                            <label class="control-label col-sm-1">Qty</label>
-                            <div class="col-md-1">
-                            <input type="text" class="form-control" name="jml_komposisi_obat" id="jml_komposisi_obat" style="text-align: center;">  
-                            </div>
-                            <label class="control-label col-sm-1">Satuan</label>
-                            <div class="col-md-2">
-                            <input type="text" class="form-control" name="satuan_racik" id="satuan_racik" style="text-align: center;" placeholder="ex: g/mg">  
-                            </div>
-                            <div class="col-md-1 no-padding">
-                                <button type="submit" id="add_komposisi_obat"  value="racikan_detail" name="submit" class="btn btn-xs btn-primary">
-                                <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
-                                    Tambahkan
-                                </button>
-                            </div>
-                        </div> -->
 
                     </div>
 

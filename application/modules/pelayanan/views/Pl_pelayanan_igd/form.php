@@ -2,7 +2,6 @@
 <script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
 
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
-
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
@@ -49,7 +48,7 @@ $(document).ready(function(){
       });
     }
 
-    getMenuTabs('pelayanan/Pl_pelayanan_igd/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=020101', 'tabs_form_pelayanan');
+    getMenuTabs('pelayanan/Pl_pelayanan_igd/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo KODE_IGD?>', 'tabs_form_pelayanan');
 
     getMenuTabsHtml("templates/References/get_riwayat_medis/<?php echo $value->no_mr?>", 'tabs_riwayat_medis_pasien');
 
@@ -57,74 +56,83 @@ $(document).ready(function(){
     $('#form_cari_pasien').focus();    
 
     /*submit form*/
-    $('#form_pelayanan').ajaxForm({      
 
-      beforeSend: function() {        
+    $('#form_pelayanan').on('submit', function(){
+               
+        $('#konten').val($('#editor_konten').html());
+        $('input[name=catatan_pengkajian]' , this).val($('#editor').html());
+        $('#konten_diagnosa_sekunder_igd').val($('#pl_diagnosa_sekunder_igd_hidden_txt').html());
 
-          if( $('#form_pelayanan').attr('action')=='pelayanan/Pl_pelayanan_igd/processPelayananSelesai' ){
-            achtungShowFadeIn();                      
-          }
+        var formData = new FormData($('#form_pelayanan')[0]);        
+        i=0;
+        url = $('#form_pelayanan').attr('action');
 
-      },      
+        // ajax adding data to database
+        $.ajax({
+            url : url,
+            type: "POST",
+            data: formData,
+            dataType: "JSON",
+            contentType: false,
+            processData: false,            
+            beforeSend: function() {
+              if( $('#form_pelayanan').attr('action')=='pelayanan/Pl_pelayanan_igd/processPelayananSelesai' ){
+                achtungShowFadeIn();                      
+              }
+            },
+            uploadProgress: function(event, position, total, percentComplete) {
+            },
+            complete: function(xhr) {             
 
-      uploadProgress: function(event, position, total, percentComplete) {        
+              var data=xhr.responseText;        
 
-      },      
+              var jsonResponse = JSON.parse(data);        
 
-      complete: function(xhr) {             
+              if(jsonResponse.status === 200){          
 
-        var data=xhr.responseText;        
+                $.achtung({message: jsonResponse.message, timeout:5});     
 
-        var jsonResponse = JSON.parse(data);        
+                $('#table-pesan-resep').DataTable().ajax.reload(null, false);
 
-        if(jsonResponse.status === 200){          
+                $('#jumlah_r').val('')
 
-          $.achtung({message: jsonResponse.message, timeout:5});     
+                $("#modalEditPesan").modal('hide');  
 
-          $('#table-pesan-resep').DataTable().ajax.reload(null, false);
+                if(jsonResponse.type_pelayanan == 'penunjang_medis' )
+                {
+                  $('#table_order_penunjang').DataTable().ajax.reload(null, false);
+                }
 
-          
+                if(jsonResponse.type_pelayanan == 'pasien_selesai' )
+                {
+                  // getMenu('pelayanan/Pl_pelayanan_igd');
+                }
 
-          $('#jumlah_r').val('')
+                if(jsonResponse.type_pelayanan == 'pasien_meninggal' )
+                {
+                  $('#btn_cetak_meninggal').show('fast');
+                  $('#btn_selesai_igd').hide('fast');
+                  $("html, body").animate({ scrollTop: "0" });
+                  $('#kode_meninggal').val(jsonResponse.kode_meninggal);
+                }
+                
+              }else{          
 
-          $("#modalEditPesan").modal('hide');  
+                $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});    
 
-          if(jsonResponse.type_pelayanan == 'penunjang_medis' )
-          {
-            $('#table_order_penunjang').DataTable().ajax.reload(null, false);
-            // getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+jsonResponse.no_mr+'/'+$('#kode_bagian_val').val()+'', 'tabs_riwayat_kunjungan');
-          
-          }
+                if(jsonResponse.err=='antrian_pm'){
+                  $('#form_default_pelayanan').hide('fast');
+                  $('#form_default_pelayanan').html(''); 
+                }
 
-          if(jsonResponse.type_pelayanan == 'pasien_selesai' )
-          {
-            getMenu('pelayanan/Pl_pelayanan_igd');
-          }
-
-          if(jsonResponse.type_pelayanan == 'Pasien Meninggal' )
-          {
-            $('#btn_cetak_meninggal').show('fast');
-            $('#btn_selesai_igd').hide('fast');
-            $("html, body").animate({ scrollTop: "0" });
-            $('#kode_meninggal').val(jsonResponse.kode_meninggal);
-          }
-          
-        }else{          
-
-          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});    
-
-          if(jsonResponse.err=='antrian_pm'){
-            $('#form_default_pelayanan').hide('fast');
-            $('#form_default_pelayanan').html(''); 
-          }
-
-        }        
-
-        achtungHideLoader();        
-
-      }      
-
-    });     
+              }        
+              achtungHideLoader();    
+            }    
+        });
+        return false;
+    });
+    
+        
     
     /*on keypress or press enter = search pasien*/
     $( "#form_cari_pasien" )    
@@ -188,7 +196,7 @@ $(document).ready(function(){
 
     $('#tabs_diagnosa').click(function (e) {    
       e.preventDefault();  
-      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_igd/processSaveDiagnosa');
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_igd/processSaveDiagnosaDr');
     });
 
     $('#tabs_pengkajian').click(function (e) {   
@@ -537,26 +545,6 @@ function reload_page(){
 </style>
 <div class="row">
 
-    <!-- <div class="page-header">    
-
-      <h1>      
-
-        <?php echo $title?>        
-
-        <small>        
-
-          <i class="ace-icon fa fa-angle-double-right"></i>          
-
-          <?php echo isset($breadcrumbs)?$breadcrumbs:''?>          
-
-        </small>        
-
-      </h1>      
-
-    </div>   -->
-
-    <!-- div.dataTables_borderWrap -->
-
     <div style="margin-top:-10px">   
 
       <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
@@ -593,7 +581,7 @@ function reload_page(){
 
                     <li class="hover">
                       <a data-toggle="tab" id="tabs_pengkajian" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&no_mr=<?php echo $no_mr?>&form_no=27" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                      <i class="menu-icon fa fa-user"></i><span class="menu-text"> Form Rekam Medis
+                      <i class="menu-icon fa fa-folder"></i><span class="menu-text"> Form Rekam Medis
                       </span></a><b class="arrow"></b>
                     </li>
 
@@ -606,7 +594,7 @@ function reload_page(){
                     </li>
 
                     <li class="hover">
-                      <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan_igd/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-edit"></i><span class="menu-text"> CPPT </span></a><b class="arrow"></b>
+                      <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan_igd/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> Riwayat Medis </span></a><b class="arrow"></b>
                     </li>
 
                     <li class="hover">
@@ -620,6 +608,12 @@ function reload_page(){
                     <li class="hover">
                       <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> Billing Pasien</span></a><b class="arrow"></b>
                     </li>
+
+                    <li class="hover">
+                      <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_igd/laporan_catatan/<?php echo $value->no_kunjungan?>" id="tabs_penunjang_medis" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
+                      <i class="menu-icon fa fa-file"></i><span class="menu-text"> Laporan & Catatan</span></a><b class="arrow"></b>
+                    </li>
+
                     <!-- <li class="hover">
                       <a data-toggle="tab" href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-file"></i><span class="menu-text"> Transaksi </span></a><b class="arrow"></b>
                     </li> -->
@@ -691,36 +685,7 @@ function reload_page(){
               Tanggal Daftar : <span style="font-size: 14px; font-weight: bold"><?php echo isset($value->tanggal_gd)?$this->tanggal->formatDateTime($value->tanggal_gd):''?></span> | Dokter IGD : 
               <span style="font-size: 14px; font-weight: bold">[ <?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?> ]</span>
             </div>
-            <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
-            <!-- <table class="table table-bordered">
-              <tr style="background-color:#f4ae11">
-                <th>Kode Kunjungan</th>
-                <th>No Reg</th>
-                <th>Tanggal Daftar</th>
-                <th>Dokter</th>
-                <th>Penjamin</th>
-                <th>Petugas</th>
-                <th></th>
-              </tr>
 
-              <tr>
-                <td><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
-                <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td>
-                <td></td>
-                <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
-                <td>
-                  <a href="#" onclick="show_modal('registration/reg_pasien/form_modal_edit_penjamin/<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>/<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>', 'Update Penjamin Pasien')">
-                      <?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
-                      <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?>
-                  </a>
-                </td>
-                <td><?php echo isset($value->fullname)?$value->fullname:''?></td>
-                <td align="center"><a href="#" onclick="reload_page()"><i class="fa fa-refresh green bigger-120"></i></a></td>
-              </tr>
-
-            </table> -->
-            
-            
 
             <!-- hidden form -->
             <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
@@ -773,52 +738,6 @@ function reload_page(){
     </div>
 
 </div><!-- /.row -->
-
-<div id="GlobalModal" class="modal fade" tabindex="-1">
-
-  <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:70%">
-
-    <div class="modal-content">
-
-      <div class="modal-header">
-
-        <div class="table-header">
-
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-
-            <span class="white">&times;</span>
-
-          </button>
-
-          <span id="result_text_riwayat_medis">PERJANJIAN PASIEN</span>
-
-        </div>
-
-      </div>
-
-      <div class="modal-body">
-
-        <div id="form_modal"></div>
-
-      </div>
-
-      <!-- <div class="modal-footer no-margin-top">
-
-        <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
-
-          <i class="ace-icon fa fa-times"></i>
-
-          Close
-
-        </button>
-
-      </div> -->
-
-    </div><!-- /.modal-content -->
-
-  </div><!-- /.modal-dialog -->
-
-</div>
 
 
 

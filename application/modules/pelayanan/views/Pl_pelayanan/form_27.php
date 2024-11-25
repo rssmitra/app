@@ -1,3 +1,79 @@
+<script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
+<script type="text/javascript">
+  $('#assesmen_diagnosa_primer').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getICD10",
+              data: 'keyword=' + query,            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+              result($.map(response, function (item) {
+                      return item;
+                  }));
+              
+              }
+          });
+      },
+      afterSelect: function (item) {
+      // do what is needed with item
+      var label_item=item.split(':')[1];
+      var val_item=item.split(':')[0];
+      console.log(val_item);
+      $('#assesmen_diagnosa_primer').val(label_item);
+      $('#assesmen_diagnosa_primer_hidden').val(val_item);
+      }
+
+  });
+
+  $('#pl_diagnosa_sekunder').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getICD10",
+              data: 'keyword=' + query,            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+              result($.map(response, function (item) {
+                      return item;
+                  }));
+              
+              }
+          });
+      },
+      afterSelect: function (item) {
+      // do what is needed with item
+      var label_item=item.split(':')[1];
+      var val_item=item.split(':')[0];
+      console.log(val_item);
+      $('#pl_diagnosa_sekunder').val('');
+      $('<span class="multi-typeahead" id="txt_icd_'+val_item.trim().replace('.', '_')+'"><a href="#" onclick="remove_icd('+"'"+val_item.trim().replace('.', '_')+"'"+')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span><span class="text_icd_10"> '+item+' </span> </span>').appendTo('#pl_diagnosa_sekunder_hidden_txt');
+      }
+
+  });
+
+  $( "#pl_diagnosa_sekunder" )    
+    .keypress(function(event) {        
+      var keycode =(event.keyCode?event.keyCode:event.which);         
+      if(keycode ==13){          
+        event.preventDefault();         
+        if($(this).valid()){            
+          var val_item = 1 + Math.floor(Math.random() * 100);
+          console.log(val_item);
+          var item = $('#pl_diagnosa_sekunder').val();
+          $('<span class="multi-typeahead" id="txt_icd_'+val_item+'"><a href="#" onclick="remove_icd('+"'"+val_item+"'"+')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span><span class="text_icd_10"> '+item+' </span> </span>').appendTo('#pl_diagnosa_sekunder_hidden_txt'); 
+        }          
+        return $('#pl_diagnosa_sekunder').val('');                 
+      }    
+  });
+
+  function remove_icd(icd){
+      preventDefault();
+      $('#txt_icd_'+icd+'').html('');
+      $('#txt_icd_'+icd+'').hide();
+  }
+  
+</script>
 <div style="text-align: center; font-size: 14px"><b>PENGKAJIAN KEPERAWATAN INSTALASI GAWAT DARURAT</b></div>
 <br>
 <!-- hidden form  -->
@@ -1269,6 +1345,7 @@
   <div style="margin-top: 6px">
       <label for="form-field-8">Diagnosa Primer(ICD10) <span style="color:red">* </span></label>
       <input type="text" class="form-control" placeholder="Masukan keyword ICD 10" value="" name="form_27[assesmen_diagnosa_primer]" id="assesmen_diagnosa_primer"  onchange="fillthis('assesmen_diagnosa_primer')">
+      <input type="hidden" class="form-control" value="" name="form_27[assesmen_diagnosa_primer_hidden]" id="assesmen_diagnosa_primer_hidden">
   </div>
 
   <div style="margin-top: 6px">
@@ -1311,19 +1388,19 @@
     <td>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_27[penanaganan_kamar_bedah]" id="penanaganan_kamar_bedah"  onclick="checkthis('penanaganan_kamar_bedah')">
+          <input type="checkbox" class="ace" name="form_27[penanganan_kamar_bedah]" id="penanganan_kamar_bedah"  onclick="checkthis('penanganan_kamar_bedah')">
           <span class="lbl" > &nbsp; Kamar Bedah</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_27[penanaganan_hd]" id="penanaganan_hd"  onclick="checkthis('penanaganan_hd')">
+          <input type="checkbox" class="ace" name="form_27[penanganan_hd]" id="penanganan_hd"  onclick="checkthis('penanganan_hd')">
           <span class="lbl" > &nbsp; HD</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_27[penanaganan_perina]" id="penanaganan_perina"  onclick="checkthis('penanaganan_perina')">
+          <input type="checkbox" class="ace" name="form_27[penanganan_perina]" id="penanganan_perina"  onclick="checkthis('penanganan_perina')">
           <span class="lbl" > &nbsp; Perinatologi</span>
         </label>
       </div>
@@ -1331,19 +1408,19 @@
     <td>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_27[penanaganan_menolak_ri]" id="penanaganan_menolak_ri"  onclick="checkthis('penanaganan_menolak_ri')">
+          <input type="checkbox" class="ace" name="form_27[penanganan_menolak_ri]" id="penanganan_menolak_ri"  onclick="checkthis('penanganan_menolak_ri')">
           <span class="lbl" > &nbsp; Menolak Rawat Inap</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_27[penanaganan_dirujuk]" id="penanaganan_dirujuk"  onclick="checkthis('penanaganan_dirujuk')">
+          <input type="checkbox" class="ace" name="form_27[penanganan_dirujuk]" id="penanganan_dirujuk"  onclick="checkthis('penanganan_dirujuk')">
           <span class="lbl" > &nbsp; Dirujuk</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_27[penanaganan_pulang]" id="penanaganan_pulang"  onclick="checkthis('penanaganan_pulang')">
+          <input type="checkbox" class="ace" name="form_27[penanganan_pulang]" id="penanganan_pulang"  onclick="checkthis('penanganan_pulang')">
           <span class="lbl" > &nbsp; Pulang</span>
         </label>
       </div>
@@ -1351,7 +1428,7 @@
     <td>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_27[penanaganan_meninggal]" id="penanaganan_meninggal"  onclick="checkthis('penanaganan_meninggal')">
+          <input type="checkbox" class="ace" name="form_27[penanganan_meninggal]" id="penanganan_meninggal"  onclick="checkthis('penanganan_meninggal')">
           <span class="lbl" > &nbsp; Meninggal</span>
         </label>
       </div>

@@ -123,10 +123,25 @@ class Pl_pelayanan_igd extends MX_Controller {
         $data['status_pulang'] = ($data['value']->status_keluar > 0)?1:0;
         $data['kode_klas'] = $kode_klas;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
+        // get form pengkajian
+        $query = $this->db->get_where('view_cppt', array('no_kunjungan' => $no_kunjungan, 'jenis_form' => 27))->row();
+        $convert_to_array = explode('|', $query->value_form);
+        for($i=0; $i < count($convert_to_array ); $i++){
+            $key_value = explode('=', $convert_to_array [$i]);
+            $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+        }
+        $result = [
+            "value_form" => $end_array,
+            "result" => $query,
+            "jenis_form" => 'form_'.$query->jenis_form,
+        ];
+        
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['pengkajian_keperawatan'] = $end_array;
+        // echo "<pre>";print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_igd/form_diagnosa', $data);
     }
@@ -747,7 +762,7 @@ class Pl_pelayanan_igd extends MX_Controller {
                     $this->Pl_pelayanan_igd->update('mt_master_pasien', array('status_meninggal' => 1), array('no_mr' => $this->form_validation->set_value('noMrHidden') ) );
 
                     $status_keluar = 4;
-                    $type_pelayanan = 'Pasien Meninggal';
+                    $type_pelayanan = 'pasien_meninggal';
 
                 }else{
                     $status_keluar = 3;
@@ -788,7 +803,7 @@ class Pl_pelayanan_igd extends MX_Controller {
 
     public function processSaveDiagnosa(){
 
-        // print_r($_POST);die;
+        print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );        
         $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
@@ -853,6 +868,112 @@ class Pl_pelayanan_igd extends MX_Controller {
             }
 
         
+        }
+
+    }
+
+    public function processSaveDiagnosaDr(){
+
+        // print_r($_POST);die;
+        // form validation
+        $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
+
+        $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim|required|min_length[8]');        
+        $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa Primer', 'trim|required');        
+        $this->form_validation->set_rules('pl_diagnosa_hidden', 'Diagnosa', 'trim|required', array('required' => 'Silahkan pilih kembali Diagnosa Primer'));   
+        $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
+        $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
+        $this->form_validation->set_rules('pl_procedure', 'Prosedur/Tindakan', 'trim');        
+        $this->form_validation->set_rules('pl_tgl_kontrol_kembali', 'Tanggal Kontrol', 'trim');        
+        $this->form_validation->set_rules('pl_catatan_kontrol', 'Catatan Kontrol', 'trim');        
+        $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
+        $this->form_validation->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');        
+        $this->form_validation->set_rules('kode_bagian_asal', 'Kode Bagian Asal', 'trim|required');             
+        $this->form_validation->set_rules('kode_dokter_poli', 'Dokter Poli', 'trim');  
+        // form assesment
+        $this->form_validation->set_rules('pl_tb_igd', 'Tinggi Badan', 'trim');        
+        $this->form_validation->set_rules('pl_bb_igd', 'Berat Badan', 'trim');        
+        $this->form_validation->set_rules('pl_td_igd', 'Tekanan Darah', 'trim');        
+        $this->form_validation->set_rules('pl_suhu_igd', 'Suhu', 'trim');        
+        $this->form_validation->set_rules('pl_nadi_igd', 'Nadi', 'trim');             
+
+        // set message error
+        $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
+        $this->form_validation->set_message('min_length', "\"%s\" Minimal 8 Karakter");        
+
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->form_validation->set_error_delimiters('<div style="color:white"><i>', '</i></div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            /*execution*/
+            $this->db->trans_begin();           
+            // print_r($_POST);die;
+            $no_kunjungan = $this->form_validation->set_value('no_kunjungan');
+            $no_registrasi = $this->form_validation->set_value('no_registrasi');
+
+            // diagnosa sekunder
+            $diagnosa_sekunder = strip_tags($_POST['konten_diagnosa_sekunder_igd']);
+
+            /*insert log diagnosa pasien th_riwayat pasien*/
+            $riwayat_diagnosa = array(
+                'no_registrasi' => $this->form_validation->set_value('no_registrasi'),
+                'no_kunjungan' => $no_kunjungan,
+                'no_mr' => $this->form_validation->set_value('noMrHidden'),
+                'nama_pasien' => $this->input->post('nama_pasien_layan'),
+                'diagnosa_awal' => $this->master->br2nl($_POST['pl_diagnosa']),
+                'anamnesa' => $this->master->br2nl($_POST['pl_anamnesa']),
+                'pengobatan' => $this->master->br2nl($_POST['pl_pengobatan']),
+                'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
+                'pemeriksaan' => $this->master->br2nl($_POST['pl_pemeriksaan']),
+                'tgl_periksa' => $this->input->post('pl_tgl_transaksi').' '.date('H:i:s'),
+                'kode_bagian' => $this->form_validation->set_value('kode_bagian_asal'),
+                'diagnosa_akhir' => $this->form_validation->set_value('pl_diagnosa'),
+                'diagnosa_sekunder' => $diagnosa_sekunder,
+                'kategori_tindakan' => $_POST['kategori_tindakan'],
+                'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
+                'tinggi_badan' => $this->input->post('pl_tb_igd'),
+                'tekanan_darah' => $this->input->post('pl_td_igd'),
+                'berat_badan' => $this->input->post('pl_bb_igd'),
+                'suhu' => $this->input->post('pl_suhu_igd'),
+                'nadi' => $this->input->post('pl_nadi_igd'),
+                'kode_icd9' => $this->input->post('pl_procedure_hidden'),
+                'text_icd9' => $this->input->post('pl_procedure'),
+                'tgl_kontrol_kembali' => $this->input->post('pl_tgl_kontrol_kembali'),
+                'catatan_kontrol_kembali' => $this->input->post('pl_catatan_kontrol'),
+            );
+
+            if($this->input->post('kode_riwayat')==0){
+                $this->Pl_pelayanan->save('th_riwayat_pasien', $riwayat_diagnosa);
+            }else{
+                $this->Pl_pelayanan->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
+            }
+
+            /*update gd_tc_gawat_darurat*/
+            $arr_gd = array(
+                'jenis_kasus'       => $_POST['jenis_kasus_igd'], 
+                'no_induk'          => $this->session->userdata('user')->user_id, 
+                'kode_penyakit'     => $this->input->post('pl_diagnosa_hidden'), 
+                'pengobatan'        => $this->master->br2nl($_POST['pl_pengobatan']), 
+                'diagnosa_masuk'    => $_POST['pl_diagnosa'], 
+                'tek_darah'         => $_POST['pl_td'], 
+            );
+
+            $this->db->where('kode_gd', $_POST['kode_gd'])->update('gd_tc_gawat_darurat', $arr_gd );
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'pasien_selesai', 'kode_meninggal' => $_POST['kode_meninggal']));
+            }
+
         }
 
     }

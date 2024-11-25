@@ -21,8 +21,7 @@
                   // close modal
                   $('#globalModalViewSmall').modal('toggle');
                   oTable2.ajax.url("farmasi/E_resep/get_template_resep/"+$('#kode_dokter_poli').val()+"").load();
-                  $('.nav-tab a[href="#template_tab"]').tab('show');
-                  $('#div_show_resep').hide();
+                  activeTab('#template_tab');
                 }else{          
                     $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
                 } 
@@ -37,7 +36,6 @@
     <form class="form-horizontal" method="post" id="form_booking" action="<?php echo site_url('farmasi/E_resep/save_template')?>" enctype="multipart/form-data" autocomplete="off">  
     
       <!-- hidden -->
-      <input type="hidden" name="id_template_form" id="id_template_form" value="<?php echo isset($value->id)?$value->id:''?>">
       <input type="hidden" name="kode_pesan_resep_temp" id="kode_pesan_resep_temp" value="<?php echo $kode_pesan_resep?>">
 
       <div class="form-group">

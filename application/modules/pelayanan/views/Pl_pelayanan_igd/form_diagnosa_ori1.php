@@ -30,34 +30,6 @@
 
 </script>
 
-<div class="tabbable">
-  <ul class="nav nav-tabs" id="myTab">
-    <li class="active">
-      <a data-toggle="tab" href="#pengkajian_perawat">
-        PENGKAJIAN KEPERAWATAN
-      </a>
-    </li>
-
-    <li>
-      <a data-toggle="tab" href="#pengkajian_dr">
-      PENGKAJIAN DOKTER
-      </a>
-    </li>
-  </ul>
-
-  <div class="tab-content">
-    <div id="pengkajian_perawat" class="tab-pane fade in active">
-      <p>Raw denim you probably haven't heard of them jean shorts Austin.</p>
-    </div>
-
-    <div id="pengkajian_dr" class="tab-pane fade">
-      <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
-    </div>
-  </div>
-</div>
-
-
-
 <p><b><i class="fa fa-edit"></i> DIAGNOSA DAN PEMERIKSAAN </b></p>
 
 <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:''?>">
