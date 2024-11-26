@@ -2411,6 +2411,8 @@ class Pl_pelayanan extends MX_Controller {
                 $this->db->where('cppt_id', $cppt_id)->update('th_cppt', $dataexc);
                 $newId = $cppt_id;
             }
+            // udpate image tagging
+            $this->db->where(['no_kunjungan' => $this->input->post('no_kunjungan'), 'cppt_id' => 0])->update('th_img_tagging', ['cppt_id' => $newId]);
                         
             if ($this->db->trans_status() === FALSE)
             {

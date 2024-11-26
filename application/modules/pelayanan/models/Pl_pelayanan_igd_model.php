@@ -43,6 +43,7 @@ class Pl_pelayanan_igd_model extends CI_Model {
 	private function _get_datatables_query()
 	{
 		$date = date('Y-m-d H:i:s', strtotime('-1 days', strtotime(date('Y-m-d H:i:s'))));
+		$year = date('Y-m-d H:i:s', strtotime('-1 year', strtotime(date('Y-m-d H:i:s'))));
 		$this->_main_query();
 
 		if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
@@ -54,9 +55,11 @@ class Pl_pelayanan_igd_model extends CI_Model {
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,gd_tc_gawat_darurat.tanggal_gd,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
         }else{
-			// $this->db->where('DATEDIFF(day,gd_tc_gawat_darurat.tanggal_gd,GETDATE()) <= 1');
-			$this->db->where("gd_tc_gawat_darurat.tanggal_gd > '".$date."' ");
-			//$this->db->where(array('YEAR(gd_tc_gawat_darurat.tanggal_gd)' => date('Y'), 'MONTH(gd_tc_gawat_darurat.tanggal_gd)' => date('m'), 'DAY(gd_tc_gawat_darurat.tanggal_gd)' => date('d') ) );
+			if(isset($_GET['search_by']) AND isset($_GET['keyword'])){
+				$this->db->where("gd_tc_gawat_darurat.tanggal_gd > '".$year."' ");
+			}else{
+				$this->db->where("gd_tc_gawat_darurat.tanggal_gd > '".$date."' ");
+			}
         }
 
 		$i = 0;

@@ -240,6 +240,9 @@ function show_edit(myid){
       text = text.replace(/\+/g, ' ');
       $('#'+i).val(text);
     });
+    $('#ifr_img_tagging').attr('src', '<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/'+$('#no_kunjungan').val()+'?cppt_id='+myid+'');
+    $('#cppt_id_img_tag').val(myid);
+
   }); 
 }
 

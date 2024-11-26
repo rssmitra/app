@@ -1,8 +1,8 @@
 <script type="text/javascript">
 
-  $(document).ready(function(){
-    $('#img_tagging_div').html('');
-  })
+  // $(document).ready(function(){
+  //   $('#ifr_img_tagging').attr('src', '<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/<?php echo $no_kunjungan?>?cppt_id=<?php echo isset($cppt_id)?$cppt_id:''?>');
+  // })
 
   $('#pl_diagnosa').typeahead({
       source: function (query, result) {
@@ -42,10 +42,10 @@
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
-<div id="html_pengkajian_dr">
-  <button onclick="refreshIframe();" type="button" class="btn btn-xs btn-primary">Reload Image</button>
-  <iframe name="ifr_img_tagging" src="<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/<?php echo $no_kunjungan?>" style="width: 100%; height: 650px; border: none"></iframe>
-</div>
+<!-- <div id="html_pengkajian_dr"> -->
+  <!-- <button onclick="refreshIframe();" type="button" class="btn btn-xs btn-primary">Reload Image</button> -->
+  <iframe name="ifr_img_tagging" id="ifr_img_tagging" src="<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/<?php echo $no_kunjungan?>?cppt_id=<?php echo isset($cppt_id)?$cppt_id:''?>" frameborder="0" style="overflow:hidden;height:700px !important;width:100%" height="100%" width="100%"></iframe>
+<!-- </div> -->
 <hr>
 <table class="table">
   <tr>

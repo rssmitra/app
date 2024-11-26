@@ -1,21 +1,27 @@
 <link rel="stylesheet" href="<?php echo base_url()?>assets/img-tagging/css/demo.css">
 <link rel="stylesheet" href="<?php echo base_url()?>assets/img-tagging/css/tagging-photo.css">
-<link rel="shortcut icon" href="<?php echo base_url()?>assets/img-tagging/images/favicon.png" type="image/x-icon">
-<link rel="icon" href="<?php echo base_url()?>assets/img-tagging/images/favicon.png" type="image/x-icon">
-
+<style>
+    .card img.tagging-photo {
+    margin: 15px 15px 0px 15px;
+    display: block;
+    width: calc(75% - 0px);
+    border-radius: 5px;
+}
+</style>
 <main role="main">
     <div class="album py-5 bg-light" id="Demo">
         <div class="container">
             <div class="row">
               <center>
                 <form action="#" method="post" id="form_img_tagging" enctype="multipart/form-data">
-                <div class="col-md-12 col-lg-12">
-                    <div class="card mb-4 shadow-sm">
-                        <img src="<?php echo base_url()?>assets/img-tagging/images/anatomi.jpg" style="max-width: 500px" data-points-color="red" class="tagging-photo bd-placeholder-img card-img-top" data-allow-add-tags="true" data-show-all-on-hover="true" data-show-tags-buttons="true" data-points-tooltip-follow="down" data-points='<?php echo isset($img_tagging->data_points)?$img_tagging->data_points:''?>' data-value='' alt="">
-                        <input type="hidden" name="no_kunjungan_img_tag" id="no_kunjungan_img_tag" value='<?php echo $no_kunjungan?>'>
-                        <input type="hidden" name="img_tag_id" id="img_tag_id" value='<?php echo isset($img_tagging->img_tag_id)?$img_tagging->img_tag_id:''?>'>
+                    <div class="col-md-12 col-lg-12">
+                        <div class="card mb-4 shadow-sm">
+                            <img src="<?php echo base_url()?>assets/img-tagging/images/anatomi.jpg" data-points-color="red" class="tagging-photo bd-placeholder-img card-img-top" data-allow-add-tags="true" data-show-all-on-hover="true" data-show-tags-buttons="true" data-points-tooltip-follow="down" data-points='<?php echo isset($img_tagging->data_points)?$img_tagging->data_points:''?>' data-value='' alt="">
+                            <input type="hidden" name="no_kunjungan_img_tag" id="no_kunjungan_img_tag" value='<?php echo $no_kunjungan?>'>
+                            <input type="hidden" name="img_tag_id" id="img_tag_id" value='<?php echo isset($img_tagging->img_tag_id)?$img_tagging->img_tag_id:''?>'>
+                            <input type="hidden" name="cppt_id_img_tag" id="cppt_id_img_tag" value='<?php echo isset($img_tagging->cppt_id)?$img_tagging->cppt_id:''?>'>
+                        </div>
                     </div>
-                </div>
                 </form>
                 <div id="msg_success"></div>
               </center>
@@ -60,7 +66,7 @@
         // save
         $.ajax({
             url : '<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/save_img_tagging',
-            data: {data_points : content, no_kunjungan : $('#no_kunjungan_img_tag').val() },
+            data: {data_points : content, no_kunjungan : $('#no_kunjungan_img_tag').val(), cppt_id : $('#cppt_id_img_tag').val(), img_tag_id : $('#img_tag_id').val() },
             type: "POST",
             dataType: "JSON",      
             success: function(response) {  

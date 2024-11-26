@@ -51,6 +51,7 @@ $(document).ready(function(){
     getMenuTabs('pelayanan/Pl_pelayanan_igd/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo KODE_IGD?>', 'tabs_form_pelayanan');
 
     getMenuTabsHtml("templates/References/get_riwayat_medis/<?php echo $value->no_mr?>", 'tabs_riwayat_medis_pasien');
+    getMenuTabsHtml("templates/References/get_riwayat_pm/<?php echo $value->no_mr?>", 'tabs_riwayat_pm_pasien');
 
     /*focus on form input pasien*/
     $('#form_cari_pasien').focus();    
@@ -723,8 +724,34 @@ function reload_page(){
                   </div>
                 </div>
                 <div class="col-md-4" style="padding-top: 13px">
-                  <p ><b> RIWAYAT MEDIS <i class="fa fa-angle-double-right bigger-120"></i></b></p>
-                  <div id="tabs_riwayat_medis_pasien"></div>
+                  <div class="tabbable">
+											<ul class="nav nav-tabs" id="myTab">
+												<li class="active">
+													<a data-toggle="tab" href="#tabs_rm">
+														Riwayat Medis
+													</a>
+												</li>
+
+												<li>
+													<a data-toggle="tab" href="#tabs_pm">
+														Hasil Penunjang
+													</a>
+												</li>
+                        
+											</ul>
+
+											<div class="tab-content">
+												<div id="tabs_rm" class="tab-pane fade in active">
+                          <div id="tabs_riwayat_medis_pasien"></div>
+												</div>
+
+												<div id="tabs_pm" class="tab-pane fade">
+                          <div id="tabs_riwayat_pm_pasien"></div>
+												</div>
+											</div>
+										</div>
+
+                  
                 </div>
               </div>
 

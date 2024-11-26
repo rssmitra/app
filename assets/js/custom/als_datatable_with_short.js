@@ -112,7 +112,7 @@ function find_data_reload(result){
 
 function reset_table(){
     oTable.ajax.url(base_url+'/get_data').load();
-    $("html, body").animate({ scrollTop: "400px" });
+    // $("html, body").animate({ scrollTop: "400px" });
 
 }
 

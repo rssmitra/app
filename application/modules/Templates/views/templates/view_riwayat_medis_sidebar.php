@@ -235,6 +235,21 @@ hr {
             }
             echo $html;
           ?>
+          <br>
+          <span style="font-weight: bold; font-style: italic; color: blue">(File Pengkajian Pasien)</span><br>
+          <label for="form-field-8"><b>File Pengkajian Pasien/ File Rekam Medis per Periode Kunjungan </b></label><br>
+          <?php
+            $files = isset($file_pkj[$value->no_registrasi][$value->no_kunjungan])?$file_pkj[$value->no_registrasi][$value->no_kunjungan]:array();
+            if(count($files) > 0){
+              echo "<ol>";
+              foreach ($files as $kpkj => $vpkj) {
+                echo '<li style="font-weight: bold"><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$vpkj->id."'".', '."'".$vpkj->jenis_pengkajian."'".')">'.$vpkj->jenis_pengkajian.'</a></li>';
+              }
+              echo "</ol>";
+            }else{
+              echo 'Tidak ada file ditemukan';
+            }
+          ?>
             
 
         </div>

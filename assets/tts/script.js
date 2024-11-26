@@ -50,10 +50,11 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 }
 
 function speak() {
-  if (synth.speaking) {
-    console.error("speechSynthesis.speaking");
-    return;
-  }
+
+  // if (synth.speaking) {
+  //   console.error("speechSynthesis.speaking");
+  //   return;
+  // }
 
   if (inputTxt.value !== "") {
     const utterThis = new SpeechSynthesisUtterance(inputTxt.value);

@@ -1083,9 +1083,11 @@ class Pl_pelayanan_igd extends MX_Controller {
     public function form_img_tagging($no_kunjungan='') { 
         /*define variable data*/
         $data = [];
-        $data['img_tagging'] = $this->db->get_where('th_img_tagging', ['no_kunjungan' => $no_kunjungan])->row();
+        $img_tag = $this->db->get_where('th_img_tagging', ['no_kunjungan' => $no_kunjungan])->row();
+        $data['img_tagging'] = $img_tag;
         // echo "<pre>"; print_r($data);die;
         $data['no_kunjungan'] = $no_kunjungan;
+        $data['cppt_id'] = isset($img_tag->cppt_id)?$img_tag->cppt_id:'';
 
         $this->load->view('Pl_pelayanan_igd/form_img_tag_anatomi', $data);
     }
@@ -1140,15 +1142,16 @@ class Pl_pelayanan_igd extends MX_Controller {
 
     public function save_img_tagging(){
         // get 
+        // echo "<pre>"; print_r($_POST); die;
         $dataexc = [];
+        $dataexc['cppt_id'] = $_POST['cppt_id'];
         $dataexc['no_kunjungan'] = $_POST['no_kunjungan'];
         $dataexc['data_points'] = json_encode($_POST['data_points']);
-        // echo "<pre>"; print_r($dataexc); die;
-        if($_POST['tag_img_id'] == ''){
+        if($_POST['img_tag_id'] == ''){
             $this->db->insert('th_img_tagging', $dataexc);
             $newId = $this->db->insert_id();
         }else{
-            $this->db->insert('th_img_tagging', $dataexc);
+            $this->db->where('img_tag_id', $_POST['img_tag_id'])->update('th_img_tagging', $dataexc);
             $newId = $_POST['img_tag_id'];
         }
         

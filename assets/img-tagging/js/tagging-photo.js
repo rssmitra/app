@@ -75,7 +75,7 @@
                     if (taggingContainer.data('allow-add-tags') && taggingContainer.data('allow-add-tags') === true) {
                         var relX = e.pageX - $(this).parent().offset().left;
                         var relY = e.pageY - $(this).parent().offset().top;
-                        var tag = prompt("Enter tag name", "Tag Name");
+                        var tag = prompt("Masukan penjelasan singkat", "Tag here");
                         if (tag && tag != null && $.trim(tag)) {
                             $(this).append(`
                                 <span data-tagging-point-color="${$options.point_color}" class="photo-tagging-point" flow="${taggingContainer.data('points-tooltip-follow')}" style="position:absolute;top:${relY}px;left:${relX}px;" tooltip="${tag}"><i></i></span>

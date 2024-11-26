@@ -124,9 +124,59 @@ function udpateStatusVerifperItem(id){
   
 }
 
+function cancel_resep(id){
+  preventDefault();
+  if(confirm('Are you sure?')){
+    $.ajax({
+      url: 'farmasi/process_entry_resep/cancel_resep',
+      type: "post",
+      data: { ID : id },
+      dataType: "json",
+      beforeSend: function() {
+      },
+      uploadProgress: function(event, position, total, percentComplete) {
+      },
+      complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        if(jsonResponse.status === 200){
+          reload_table();
+          $.achtung({message: jsonResponse.message, timeout:5});
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5, 'className' : 'achtungFail'});
+        }
+        achtungHideLoader();
+      }
+    });
+  }
+}
 
-
-
+function rollback_cancel_resep(id){
+  preventDefault();
+  if(confirm('Are you sure?')){
+    $.ajax({
+      url: 'farmasi/process_entry_resep/rollback_cancel_resep',
+      type: "post",
+      data: { ID : id },
+      dataType: "json",
+      beforeSend: function() {
+      },
+      uploadProgress: function(event, position, total, percentComplete) {
+      },
+      complete: function(xhr) {     
+        var data=xhr.responseText;
+        var jsonResponse = JSON.parse(data);
+        if(jsonResponse.status === 200){
+          reload_table();
+          $.achtung({message: jsonResponse.message, timeout:5});
+        }else{
+          $.achtung({message: jsonResponse.message, timeout:5, 'className' : 'achtungFail'});
+        }
+        achtungHideLoader();
+      }
+    });
+  }
+}
 
 </script>
 
@@ -227,8 +277,8 @@ function udpateStatusVerifperItem(id){
                 <th>Asal Poli/bagian</th>
                 <th>Penjamin</th>
                 <th width="180px">Diagnosa Akhir</th>
-                <th width="80px">Verifikasi</th>
                 <th width="90px">Status Resep</th>
+                <th width="80px">Verifikasi</th>
               </tr>
             </thead>
             <tbody>
@@ -242,7 +292,6 @@ function udpateStatusVerifperItem(id){
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<!-- <script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_ur l.js'?>"></script> -->
 <script src="<?php echo base_url().'assets/js/custom/als_datatable_with_detail_custom_url.js'?>"></script>
 
 

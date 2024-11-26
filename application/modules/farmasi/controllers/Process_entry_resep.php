@@ -647,6 +647,40 @@ class Process_entry_resep extends MX_Controller {
 
     }
 
+    public function cancel_resep(){
+        // print_r($_POST);die;
+        $this->db->trans_begin();
+        if ($this->db->update('fr_tc_pesan_resep', ['status_batal' => 1], ['kode_pesan_resep' => $_POST['ID']]))
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['ID'] ));
+        }
+        else
+        {
+            $this->db->trans_rollback();
+            // print_r($this->db->last_query());die;
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+
+    }
+
+    public function rollback_cancel_resep(){
+        // print_r($_POST);die;
+        $this->db->trans_begin();
+        if ($this->db->update('fr_tc_pesan_resep', ['status_batal' => null], ['kode_pesan_resep' => $_POST['ID']]))
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['ID'] ));
+        }
+        else
+        {
+            $this->db->trans_rollback();
+            // print_r($this->db->last_query());die;
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+
+    }
+
 
 
 

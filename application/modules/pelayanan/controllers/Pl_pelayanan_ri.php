@@ -1208,6 +1208,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
                 }
                 $data = [
+                    "cppt_id" => $_GET['id'],
                     "value_form" => $end_array,
                     "result" => $query,
                     "jenis_form" => 'form_'.$query->jenis_form,

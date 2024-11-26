@@ -96,13 +96,41 @@ class E_resep_rj extends MX_Controller {
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
             $row[] = ucwords($penjamin).$no_sep;
             $row[] = $row_list->diagnosa_akhir;
-            $status_tebus = ($row_list->status_tebus ==  1)?'<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
+            if($row_list->status_batal == 1){
+                $title_status = 'Resep Batal';
+                $class_btn = 'btn-danger';
+                $act_cancel = '<li><a href="#" onclick="rollback_cancel_resep('.$row_list->kode_pesan_resep.')">Rollback Status Batal</a></li>';
+            }else{
+                if($row_list->status_tebus == 1){
+                    $title_status = 'Selesai';
+                    $class_btn = 'btn-success';
+                    $act_cancel = '';
+                }else{
+                    $title_status = 'Belum diproses';
+                    $class_btn = 'btn-warning';
+                    $act_cancel = '<li><a href="#" onclick="cancel_resep('.$row_list->kode_pesan_resep.')">Batalkan Resep</a></li>';
+                }
+            }
+            
+
+            $status_tebus = ($row_list->status_tebus ==  1) ? '<label class="label label-xs label-success">Selesai</label>':'<label class="label label-xs label-warning">Belum diproses</label>';
+
+            $btn_status = '<div class="btn-group">
+                                <button data-toggle="dropdown" class="btn btn-xs '.$class_btn.' dropdown-toggle">
+                                    '.$title_status.'
+                                    <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-warning">
+                                    '.$act_cancel.'
+                                </ul>
+                            </div>';
+            $row[] = '<div class="center">'.$btn_status.'</div>';
             $verifikasi_apotik_online = ($row_list->verifikasi_apotik_online ==  1)?'checked':'';
             $row[] = '<div class="center"><label>
                                             <input name="switch-field-1" class="ace ace-switch" id="status_verif_'.$row_list->kode_pesan_resep.'" onchange="udpateStatusVerif('.$row_list->kode_pesan_resep.')" type="checkbox" value="1" '.$verifikasi_apotik_online.'>
                                             <span class="lbl"></span>
                                         </label></div>';
-            $row[] = '<div class="center">'.$status_tebus.'</div>';
+            
             
             $data[] = $row;
         }
