@@ -448,7 +448,7 @@ class E_resep extends MX_Controller {
 
         // get row data
         $row = $this->db->select('fr_tc_pesan_resep_detail.*, mt_barang.nama_brg as nama_obat')->join('mt_barang', 'mt_barang.kode_brg=fr_tc_pesan_resep_detail.kode_brg', 'LEFT')->get_where('fr_tc_pesan_resep_detail', array('id' => $_POST['ID']))->row();
-        $this->db->where('parent', $row->kode_brg)->delete('fr_tc_pesan_resep_detail');
+        $this->db->where(['parent' => $row->kode_brg, 'kode_pesan_resep' => $_POST['kode_pesan_resep']] )->delete('fr_tc_pesan_resep_detail');
         $this->db->where('id', $_POST['ID'])->delete('fr_tc_pesan_resep_detail');
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
     }
@@ -625,7 +625,7 @@ class E_resep extends MX_Controller {
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $this->db->insert('fr_tc_pesan_resep_detail', $dataexc);
-                $newId = $this->db->insert_id();
+                $this->db->trans_commit();
             }
 
             if ($this->db->trans_status() === FALSE)

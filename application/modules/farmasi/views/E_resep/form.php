@@ -659,7 +659,7 @@
         if(confirm('Are you sure?')){
             $.ajax({
                 url: "farmasi/E_resep/deleterowresep",
-                data: { ID : id},            
+                data: { ID : id, kode_pesan_resep : $('#kode_pesan_resep_e').val()},            
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
