@@ -201,11 +201,10 @@ getMenuTabs('registration/Reg_pm/rujuk_pm/<?php echo $no_reg?>/<?php echo $bagia
           <th></th>
           <th></th>
           <th>Tgl Daftar</th>
-          <th>No MR</th>
           <th>Nama Pasien</th>
           <th>Penjamin</th>
-          <th>Tujuan Penunjang</th>
-          <th>Asal Pasien</th>
+          <th>Asal/Tujuan Penunjang</th>
+          <!-- <th>Asal Pasien</th> -->
           <th>Status</th>          
           <th>Pengantar PM</th>          
         </tr>

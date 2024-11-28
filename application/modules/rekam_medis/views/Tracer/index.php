@@ -20,26 +20,6 @@ jQuery(function($) {
 
 $(document).ready(function(){
   
-    $('#form_Tmp_mst_function').ajaxForm({
-      beforeSend: function() {
-        achtungShowLoader();  
-      },
-      uploadProgress: function(event, position, total, percentComplete) {
-      },
-      complete: function(xhr) {     
-        var data=xhr.responseText;
-        var jsonResponse = JSON.parse(data);
-
-        if(jsonResponse.status === 200){
-          $.achtung({message: jsonResponse.message, timeout:5});
-          $('#page-area-content').load('registration/Reg_on_dashboard?_=' + (new Date()).getTime());
-        }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
-        achtungHideLoader();
-      }
-    }); 
-
     table = $('#dynamic-table').DataTable( {
         "processing": true, //Feature control the processing indicator.
         "serverSide": true, //Feature control DataTables' server-side processing mode.

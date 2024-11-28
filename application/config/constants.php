@@ -30,9 +30,11 @@ define('WS_URL', 'http://10.10.11.5:88/rssm/ws_rssm/');
 define('ICON_UNCHECKBOX', 'assets/img/uncheck.png');
 defined('SHOW_DEBUG_BACKTRACE') OR define('SHOW_DEBUG_BACKTRACE', TRUE);
 define('SECURITY_KEY', '@m1nLu81523og90');
+define('KODE_IGD', '020101');
 
 
 // company profiling
+define('APPS_VERSION', 'v.2');
 define('APPS_NAME_SORT', 'SHS 4.0');
 define('APPS_NAME_LONG', 'Smart Hospital System 4.0');
 define('COMP_ICON', 'assets/images/logo.png');
@@ -45,10 +47,28 @@ define('COMP_ADDRESS', 'Jl. RS. Fatmawati Raya No.80-82, RW.10, Cilandak Bar., K
 define('COMP_ADDRESS_SORT', 'Jl. RS. Fatmawati Raya No.80-82, Jakarta Selatan');
 define('COMP_TELP', '(021) 7656000');
 define('COMP_FAX', '(021) 7656875');
+define('NO_IZIN_RS', '02202020784404410003');
+define('EMAIL_RS', 'info@rssetiamitra.co.id');
 define('KARS', 'dr. Untung Sugiharto, MARS');
 
 // setup 
 define('PPN', 11);
+
+// btn or tabs title
+// berisi form2 pengkajian/ form2 rekam medis RJ/RI
+define('FRM_PENGKAJIAN', 'Form Rekam Medis');
+// input SOAP atau resume medis pasien
+define('RESUME_MEDIS', 'Input Resume Medis');
+// berisi resume medis keseluruhan atau cppt
+define('RIWAYAT_MEDIS', 'Riwayat Medis');
+// input billing tindakan
+define('INPUT_BILL', 'Input Bill Pasien');
+// e resep
+define('ERESEP', 'e-Resep');
+// order penunjang medis
+define('EORDER', 'Penunjang Medis');
+// billing sementara pasien
+define('RESUME_BILLING', 'Billing Pasien');
 
 
 /*

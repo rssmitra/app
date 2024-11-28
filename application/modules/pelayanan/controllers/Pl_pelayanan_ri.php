@@ -429,13 +429,15 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $row[] = $this->tanggal->formatDateTime($row_list->tanggal);
                     $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
                     // $row[] = '<a href="#" onclick="show_modal_pengkajian('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
+                    // $row[] = '<a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                     $row[] = '<a href="#" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                     
                     $checked = ($row_list->is_verified == 1) ? 'checked' : '' ;
                     $desc = ($row_list->is_verified == 1) ? ''.$row_list->verified_by.'<br>'.$this->tanggal->formatDateTime($row_list->verified_date).'' : '' ;
 
                     $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->id.', this.value)" '.$checked.' ><span class="lbl"></span><br><span id="verif_id_'.$row_list->id.'">'.$desc.'</span></div>';
-        
+                    
+
                     $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.','."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                     $data[] = $row;
                 }
@@ -1239,11 +1241,14 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
                 }
                 $data = [
+                    "cppt_id" => $cppt_id,
                     "value_form" => $end_array,
                     "result" => $query,
                     "jenis_form" => 'form_'.$query->jenis_form,
                 ];
                 // echo "<pre>"; print_r($data);die;
+                $data["html_form"] = $this->load->view('Pl_pelayanan/'.$data['jenis_form'].'', $data, true);
+
                 $html = $this->load->view('Pl_pelayanan/form_show_pengkajian', $data, true);
                 echo json_encode(array('html' => $html, 'result' => $query, 'value_form' => $end_array));
             }else{

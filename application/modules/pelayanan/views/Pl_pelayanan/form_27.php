@@ -116,27 +116,31 @@
     <td colspan="4">
       <table class="table">
         <tr style="background: #f1f1f1; font-weight: bold">
-          <td class="center" style="width: 80px" rowspan="2">Pernafasan</td>
-          <td class="center" style="width: 80px" rowspan="2">Nadi</td>
-          <td class="center" style="width: 80px" rowspan="2">Suhu</td>
-          <td class="center" style="width: 80px" rowspan="2">SpO2</td>
-          <td class="center" style="width: 80px" colspan="3">GCS</td>
-          <td class="center" style="width: 80px" rowspan="2">Berat Badan</td>
+          <td class="center" style="width: 50px" rowspan="2">Pernafasan</td>
+          <td class="center" style="width: 50px" rowspan="2">Nadi</td>
+          <td class="center" style="width: 50px" rowspan="2">Suhu</td>
+          <td class="center" style="width: 50px" rowspan="2">SpO2</td>
+          <td class="center" style="width: 50px" rowspan="2">Tekanan Darah</td>
+          <td class="center" style="width: 50px" colspan="3">GCS</td>
+          <td class="center" style="width: 50px" rowspan="2">Tinggi Badan</td>
+          <td class="center" style="width: 50px" rowspan="2">Berat Badan</td>
         </tr>
         <tr style="background: #f1f1f1; font-weight: bold">
-          <td align="center">E</td>
-          <td align="center">M</td>
-          <td align="center">V</td>
+          <td align="center" style="width: 50px">E</td>
+          <td align="center" style="width: 50px">M</td>
+          <td align="center" style="width: 50px">V</td>
         </tr>
         <tr>
-          <td align="center"><input type="text" style="width: 80px" name="form_27[pernafasan]" id="pernafasan" onchange="fillthis('pernafasan')"></td>
-          <td align="center"><input type="text" style="width: 80px" name="form_27[nadi]" id="nadi" onchange="fillthis('nadi')"></td>
-          <td align="center"><input type="text" style="width: 80px" name="form_27[suhu]" id="suhu" onchange="fillthis('suhu')"></td>
-          <td align="center"><input type="text" style="width: 80px" name="form_27[spo2]" id="spo2" onchange="fillthis('spo2')"></td>
+          <td align="center"><input type="text" style="width: 50px" name="form_27[pernafasan]" id="pernafasan" onchange="fillthis('pernafasan')"></td>
+          <td align="center"><input type="text" style="width: 50px" name="form_27[nadi]" id="nadi" onchange="fillthis('nadi')"></td>
+          <td align="center"><input type="text" style="width: 50px" name="form_27[suhu]" id="suhu" onchange="fillthis('suhu')"></td>
+          <td align="center"><input type="text" style="width: 50px" name="form_27[spo2]" id="spo2" onchange="fillthis('spo2')"></td>
+          <td align="center"><input type="text" style="width: 50px" name="form_27[tekanan_darah]" id="tekanan_darah" onchange="fillthis('tekanan_darah')"></td>
           <td align="center"><input type="text" style="width: 50px" name="form_27[triase_gcs]" id="triase_gcs" onchange="fillthis('triase_gcs')"></td>
           <td align="center"><input type="text" style="width: 50px" name="form_27[bb_e]" id="bb_e" onchange="fillthis('bb_e')"></td>
           <td align="center"><input type="text" style="width: 50px" name="form_27[bb_m]" id="bb_m" onchange="fillthis('bb_m')"></td>
-          <td align="center"><input type="text" style="width: 80px" name="form_27[bb_v]" id="bb_v" onchange="fillthis('bb_v')"></td>
+          <td align="center"><input type="text" style="width: 50px" name="form_27[tinggi_badan]" id="tinggi_badan" onchange="fillthis('tinggi_badan')"></td>
+          <td align="center"><input type="text" style="width: 50px" name="form_27[bb_v]" id="bb_v" onchange="fillthis('bb_v')"></td>
         </tr>
       </table>
     </td>
@@ -1215,6 +1219,13 @@
           <span class="lbl" > &nbsp; Syok septic</span>
         </label>
       </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_27[masalah_keperawatan_lainnya]" id="masalah_keperawatan_lainnya"  onclick="checkthis('masalah_keperawatan_lainnya')">
+          <span class="lbl" > &nbsp; Lainnya</span>
+        </label>
+      </div>
+      <input type="text" style="width: 100% !important" name="form_27[txt_masalah_keperawatan_lainnya]" id="txt_masalah_keperawatan_lainnya"  placeholder="Masalah keperawatan lainnya" onchange="fillthis('txt_masalah_keperawatan_lainnya')">
     </td>
   </tr>
 </table>
@@ -1343,7 +1354,7 @@
 
   <span style="font-weight: bold; font-style: italic; color: blue">(Assesment)</span>
   <div style="margin-top: 6px">
-      <label for="form-field-8">Diagnosa Primer(ICD10) <span style="color:red">* </span></label>
+      <label for="form-field-8">Diagnosa Keperawatan(ICD10) <span style="color:red">* </span></label>
       <input type="text" class="form-control" placeholder="Masukan keyword ICD 10" value="" name="form_27[assesmen_diagnosa_primer]" id="assesmen_diagnosa_primer"  onchange="fillthis('assesmen_diagnosa_primer')">
       <input type="hidden" class="form-control" value="" name="form_27[assesmen_diagnosa_primer_hidden]" id="assesmen_diagnosa_primer_hidden">
   </div>

@@ -650,10 +650,10 @@ function show_icare() {
   }
 
   .itemdiv > .body > .name {
-    display: block;
-    color: black !important;
-}
-  
+      display: block;
+      color: black !important;
+  }
+
 
 </style>
 
@@ -896,8 +896,8 @@ function show_icare() {
       </div>
 
       <div class="col-md-3">
-        <div class="tabbable">
-          <ul class="nav nav-tabs" id="myTab">
+        <div class="tabbable" id="">
+          <ul class="nav nav-tabs " id="myTab">
               <li class="active">
                   <a data-toggle="tab" href="#antrian_tabs" title="Antrian Pasien">
                       <i class="blue ace-icon fa fa-users bigger-150"></i>

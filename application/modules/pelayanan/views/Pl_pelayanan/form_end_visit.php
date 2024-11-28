@@ -80,7 +80,7 @@
         <p><b><i class="fa fa-edit"></i> SELESAIKAN KUNJUNGAN PASIEN </b></p>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">Cara Keluar Pasien</label>
+            <label class="control-label col-sm-3" for="">Cara Keluar Pasien</label>
             <div class="col-sm-4">
               <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'cara_keluar')), 'Atas Persetujuan Dokter' , 'cara_keluar', 'cara_keluar', 'form-control', '', '') ?>
             </div>
@@ -88,11 +88,13 @@
 
         <div id="poli_dirujuk" style="display:none">
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Rujuk ke Poli-</label>
+                <label class="control-label col-sm-3" for="">Rujuk ke Poli-</label>
                 <div class="col-sm-5">
                 <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'rujukan_tujuan', 'rujukan_tujuan', 'form-control', '', '') ?>
                 </div>
-                <label class="control-label col-sm-2">*Dokter</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-3">*Dokter</label>
                 <div class="col-sm-3" id="dokter_by_klinik">
                     <?php echo $this->master->get_change($params = array('table' => 'mt_dokter', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array() ), '' , 'dokter_rujukan_poli', 'dokter_rujukan_poli', 'form-control', '', '') ?>
                     <input name="jd_id" id="jd_id" class="form-control" type="hidden">
@@ -101,7 +103,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">Pasca Pulang</label>
+            <label class="control-label col-sm-3" for="">Pasca Pulang</label>
             <div class="col-sm-4">
               <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'pasca_pulang')), 'Dalam Masa Pengobatan' , 'pasca_pulang', 'pasca_pulang', 'form-control', '', '') ?>
             </div>
@@ -115,7 +117,7 @@
             <p> Pada hari ini, tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d')).', pukul '. date('H:i:s') ?>, kami :</p>
        
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Nama Dokter</label>
+                <label class="control-label col-sm-3" for="">Nama Dokter</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="InputDokterPasienMeninggal"name="nama_dokter_pasien_meninggal" placeholder="Masukan Keyword Nama Dokter" value="<?php echo isset($riwayat->nama_pegawai)?$riwayat->nama_pegawai:''?>">
                     <input type="hidden" class="form-control" id="dokter_pasien_meninggal" name="dokter_pasien_meninggal" value="<?php echo isset($riwayat->kode_dokter)?$riwayat->kode_dokter:''?>">
@@ -123,7 +125,7 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Bagian</label>
+                <label class="control-label col-sm-3" for="">Bagian</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" name="bagian" id="bagian" value="<?php echo isset($riwayat->nama_bagian)?$riwayat->nama_bagian:''?>">
                     <input type="hidden" class="form-control" id="kode_bagian_pasien_meninggal" name="kode_bagian_pasien_meninggal" value="<?php echo isset($riwayat->kode_bagian_tujuan)?$riwayat->kode_bagian_tujuan:''?>">
@@ -131,14 +133,14 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for=""><?php echo COMP_FLAG; ?></label>
+                <label class="control-label col-sm-3" for=""><?php echo COMP_FLAG; ?></label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" name="rs" id="rs" value="<?php echo COMP_FULL; ?>">
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Alamat</label>
+                <label class="control-label col-sm-3" for="">Alamat</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" name="alamat_rs" id="alamat_rs" value="<?php echo COMP_ADDRESS_SORT; ?>">
                 </div>
@@ -147,14 +149,14 @@
             <p> Menyatakan bahwa pasien tersebut diatas <b>telah meninggal</b> pada : </p>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Hari</label>
+                <label class="control-label col-sm-3" for="">Hari</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control" name="hari_meninggal" id="hari_meninggal" value="<?php echo $this->tanggal->getHari(date('D')) ?>">
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Tanggal</label>
+                <label class="control-label col-sm-3" for="">Tanggal</label>
                 <div class="col-md-3">
         
                     <div class="input-group">
@@ -171,7 +173,7 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-sm-2" for="">Jam</label>
+                <label class="control-label col-sm-3" for="">Jam</label>
                 <div class="col-sm-2">
                     <input type="text" class="form-control" name="jam_meninggal" id="jam_meninggal" value="<?php echo date('H:i:s') ?>">
                 </div>
@@ -179,7 +181,7 @@
 
             <div class="form-group">
                       
-                <label class="control-label col-sm-2">Instruksi</label>
+                <label class="control-label col-sm-3">Instruksi</label>
                 
                 <div class="col-md-3">
                 
@@ -193,7 +195,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="">&nbsp;</label>
+            <label class="control-label col-sm-3" for="">&nbsp;</label>
             <div class="col-sm-4" style="margin-left:6px">
                <button type="button" class="btn btn-xs btn-danger" id="btn_hide_" onclick="backToDefaultForm()"> <i class="fa fa-angle-double-left"></i> Sembunyikan </button>
                <button type="submit" class="btn btn-xs btn-primary" id="btn_submit_selesai"> <i class="fa fa-save"></i> Submit </button>

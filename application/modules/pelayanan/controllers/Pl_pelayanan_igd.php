@@ -123,24 +123,33 @@ class Pl_pelayanan_igd extends MX_Controller {
         $data['status_pulang'] = ($data['value']->status_keluar > 0)?1:0;
         $data['kode_klas'] = $kode_klas;
         $data['sess_kode_bag'] = ($_GET['kode_bag'])?$_GET['kode_bag']:$this->session->userdata('kode_bagian');
-        // get form pengkajian
-        $query = $this->db->get_where('view_cppt', array('no_kunjungan' => $no_kunjungan, 'jenis_form' => 27))->row();
-        $convert_to_array = explode('|', $query->value_form);
-        for($i=0; $i < count($convert_to_array ); $i++){
-            $key_value = explode('=', $convert_to_array [$i]);
-            $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+        // get form pengkajian dokter
+        $query = $this->db->get_where('view_cppt', array('no_kunjungan' => $no_kunjungan, 'jenis_form' => 28))->row();
+        if(isset($query->value_form)){
+            $convert_to_array = explode('|', $query->value_form);
+            for($i=0; $i < count($convert_to_array ); $i++){
+                $key_value = explode('=', $convert_to_array [$i]);
+                $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+            }
         }
-        $result = [
-            "value_form" => $end_array,
-            "result" => $query,
-            "jenis_form" => 'form_'.$query->jenis_form,
-        ];
+
+        // get form pengkajian keperawatan
+        $query = $this->db->get_where('view_cppt', array('no_kunjungan' => $no_kunjungan, 'jenis_form' => 27))->row();
+        if(isset($query->value_form)){
+            $convert_to_array = explode('|', $query->value_form);
+            for($i=0; $i < count($convert_to_array ); $i++){
+                $key_value = explode('=', $convert_to_array [$i]);
+                $end_array_triase[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+            }
+        }
+        
         
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
-        $data['pengkajian_keperawatan'] = $end_array;
+        $data['pengkajian_keperawatan'] = isset($end_array)?$end_array:[];
+        $data['pengkajian_keperawatan_triase'] = isset($end_array_triase)?$end_array_triase:[];
         // echo "<pre>";print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_igd/form_diagnosa', $data);
@@ -636,7 +645,7 @@ class Pl_pelayanan_igd extends MX_Controller {
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );        
         $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
-        $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa', 'trim|required');        
+        $this->form_validation->set_rules('pl_diagnosa', 'Diagnosa', 'trim');        
         $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
@@ -701,11 +710,11 @@ class Pl_pelayanan_igd extends MX_Controller {
                     'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
                 );
 
-                if($this->input->post('kode_riwayat')==0){
-                    $this->Pl_pelayanan_igd->save('th_riwayat_pasien', $riwayat_diagnosa);
-                }else{
-                    $this->Pl_pelayanan_igd->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
-                }
+                // if($this->input->post('kode_riwayat')==0){
+                //     $this->Pl_pelayanan_igd->save('th_riwayat_pasien', $riwayat_diagnosa);
+                // }else{
+                //     $this->Pl_pelayanan_igd->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
+                // }
 
                 $status = $this->input->post('cara_keluar');
                 $txt_rujuk_poli = 'Rujuk ke Poli Lain';

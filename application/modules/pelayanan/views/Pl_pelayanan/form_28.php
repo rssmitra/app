@@ -1,10 +1,18 @@
 <script type="text/javascript">
-
-  // $(document).ready(function(){
-  //   $('#ifr_img_tagging').attr('src', '<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/<?php echo $no_kunjungan?>?cppt_id=<?php echo isset($cppt_id)?$cppt_id:''?>');
-  // })
-
-  $('#pl_diagnosa').typeahead({
+  $(document).ready(function() {
+    $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: $('#idx_cppt').val()} , function (response) {    
+      // show data
+      var obj = response.result;
+      // set value input
+      var value_form = response.value_form;
+      $.each(value_form, function(i, item) {
+        var text = item;
+        text = text.replace(/\+/g, ' ');
+        $('#'+i).val(text);
+      });
+    }); 
+  });
+  $('#igd_diagnosa_kerja').typeahead({
       source: function (query, result) {
           $.ajax({
               url: "templates/references/getICD10",
@@ -24,8 +32,8 @@
         var label_item=item.split(':')[1];
         var val_item=item.split(':')[0];
         console.log(val_item);
-        $('#pl_diagnosa').val(label_item);
-        $('#pl_diagnosa_hidden').val(val_item);
+        $('#igd_diagnosa_kerja').val(label_item);
+        $('#igd_diagnosa_kerja_hidden').val(val_item);
       }
 
   });
@@ -41,47 +49,44 @@
 <br>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
+<input type="hidden" name="idx_cppt" id="idx_cppt" value="<?php echo $cppt_id?>">
 
-<!-- <div id="html_pengkajian_dr"> -->
-  <!-- <button onclick="refreshIframe();" type="button" class="btn btn-xs btn-primary">Reload Image</button> -->
+<div id="html_pengkajian_dr">
+  <button onclick="refreshIframe();" type="button" class="btn btn-xs btn-primary">Reload Image</button>
   <iframe name="ifr_img_tagging" id="ifr_img_tagging" src="<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/<?php echo $no_kunjungan?>?cppt_id=<?php echo isset($cppt_id)?$cppt_id:''?>" frameborder="0" style="overflow:hidden;height:700px !important;width:100%" height="100%" width="100%"></iframe>
-<!-- </div> -->
+</div>
 <hr>
 <table class="table">
   <tr>
-    <td width="150px">KELUHAN UTAMA</td>
-    <td><textarea style="width: 100% !important; height: 50px !important" name="form_28[igd_keluhan_utama]" id="igd_keluhan_utama" onchange="fillthis('igd_keluhan_utama')"></textarea></td>
-  </tr>
-  <tr>
-    <td width="150px">KELUHAN TAMBAHAN</td>
-    <td><textarea style="width: 100% !important; height: 50px !important" name="form_28[igd_keluhan_tambahan]" id="igd_keluhan_tambahan" onchange="fillthis('igd_keluhan_tambahan')"></textarea></td>
+    <td width="150px">KELUHAN UTAMA<br><span style="color: blue; font-weight: bold">(Subjective)</span></td>
+    <td><textarea style="width: 100% !important; height: 100px !important" name="form_28[igd_keluhan_utama]" id="igd_keluhan_utama" onchange="fillthis('igd_keluhan_utama')"></textarea></td>
   </tr>
   <tr>
     <td width="150px">Riwayat Penyakit Terdahulu</td>
     <td>
         <div class="checkbox">
           <label>
-            <input  name="form_28[riwayat_penyakit_1]" id="riwayat_penyakit_1"  onclick="checkthis('riwayat_penyakit_1')" type="checkbox" class="ace">
+            <input name="form_28[riwayat_penyakit_1]" id="riwayat_penyakit_1"  onclick="checkthis('riwayat_penyakit_1')" type="checkbox" class="ace" <?php echo isset($value_form['riwayat_penyakit_1'])?'checked':''?>>
             <span class="lbl" > &nbsp; Tidak Ada</span>
           </label>
           <label>
-            <input  name="form_28[riwayat_penyakit_2]" id="riwayat_penyakit_2"  onclick="checkthis('riwayat_penyakit_2')" type="checkbox" class="ace">
+            <input name="form_28[riwayat_penyakit_2]" id="riwayat_penyakit_2"  onclick="checkthis('riwayat_penyakit_2')" type="checkbox" class="ace" <?php echo isset($value_form['riwayat_penyakit_2'])?'checked':''?>>
             <span class="lbl" > &nbsp; DM</span>
           </label>
           <label>
-            <input  name="form_28[pasien_hamil_3]" id="pasien_hamil_3"  onclick="checkthis('pasien_hamil_3')" type="checkbox" class="ace">
+            <input  name="form_28[pasien_hamil_3]" id="pasien_hamil_3"  onclick="checkthis('pasien_hamil_3')" type="checkbox" class="ace" <?php echo isset($value_form['pasien_hamil_3'])?'checked':''?>>
             <span class="lbl" > &nbsp; Hipertensi</span>
           </label>
           <label>
-            <input  name="form_28[pasien_hamil_4]" id="pasien_hamil_4"  onclick="checkthis('pasien_hamil_4')" type="checkbox" class="ace">
+            <input  name="form_28[pasien_hamil_4]" id="pasien_hamil_4"  onclick="checkthis('pasien_hamil_4')" type="checkbox" class="ace" <?php echo isset($value_form['pasien_hamil_4'])?'checked':''?>>
             <span class="lbl" > &nbsp; Jantung</span>
           </label>
           <label>
-            <input  name="form_28[pasien_hamil_5]" id="pasien_hamil_5"  onclick="checkthis('pasien_hamil_5')" type="checkbox" class="ace">
+            <input  name="form_28[pasien_hamil_5]" id="pasien_hamil_5"  onclick="checkthis('pasien_hamil_5')" type="checkbox" class="ace" <?php echo isset($value_form['pasien_hamil_5'])?'checked':''?>>
             <span class="lbl" > &nbsp; Asma</span>
           </label>
           <label>
-            <input  name="form_28[pasien_hamil_6]" id="pasien_hamil_6"  onclick="checkthis('pasien_hamil_6')" type="checkbox" class="ace">
+            <input  name="form_28[pasien_hamil_6]" id="pasien_hamil_6"  onclick="checkthis('pasien_hamil_6')" type="checkbox" class="ace" <?php echo isset($value_form['pasien_hamil_6'])?'checked':''?>>
             <span class="lbl" > &nbsp; Lainnya</span>
           </label>
         </div>
@@ -115,14 +120,19 @@
 <table class="table">
   <tr><td colspan="3"><b>PEMERIKSAAN FISIK</b></td></tr>
   <tr>
-    <td width="150px">Keluhan Tambahan</td>
-    <td><textarea style="width: 100% !important; height: 50px !important" name="form_28[igd_keluhan_tambahan_pf]" id="igd_keluhan_tambahan_pf" onchange="fillthis('igd_keluhan_tambahan_pf')"></textarea></td>
+    <td width="150px">Pemeriksaan Fisik<br><span style="color: blue; font-weight: bold">(Objective)</span></td>
+    <td><textarea style="width: 100% !important; height: 100px !important" name="form_28[igd_keluhan_tambahan_pf]" id="igd_keluhan_tambahan_pf" onchange="fillthis('igd_keluhan_tambahan_pf')"></textarea></td>
   </tr>
   
+  <tr><td colspan="2"><span style="color: blue; font-weight: bold">(Assesment)</span></td></tr>
   <tr>
-    <td width="150px">Diagnosa Kerja</td>
-    <td><textarea style="width: 100% !important; height: 50px !important" name="form_28[igd_diagnosa_kerja]" id="igd_diagnosa_kerja" onchange="fillthis('igd_diagnosa_kerja')"></textarea></td>
+    <td width="150px">Diagnosa Kerja (ICDX) <span class="red">*</span></td>
+    <td>
+      <input type="text" style="width: 100% !important;" name="form_28[igd_diagnosa_kerja]" id="igd_diagnosa_kerja" onchange="fillthis('igd_diagnosa_kerja')">
+      <input type="hidden" style="width: 100% !important;" name="form_28[igd_diagnosa_kerja_hidden]" id="igd_diagnosa_kerja_hidden" onchange="fillthis('igd_diagnosa_kerja_hidden')">
+    </td>
   </tr>
+
   <tr>
     <td width="150px">Diagnosa Banding</td>
     <td><textarea style="width: 100% !important; height: 50px !important" name="form_28[igd_diagnosa_banding]" id="igd_diagnosa_banding" onchange="fillthis('igd_diagnosa_banding')"></textarea></td>
@@ -186,7 +196,7 @@
     <td>
       <div class="checkbox">
         <label>
-          <input  name="form_28[pasang_kateter]" id="pasang_kateter"  onclick="checkthis('pasang_kateter')" type="checkbox" class="ace">
+          <input  name="form_28[pasang_kateter]" id="pasang_kateter"  onclick="checkthis('pasang_kateter')" type="checkbox" class="ace" <?php echo isset($value_form['pasang_kateter'])?'checked':''?>>
           <span class="lbl" > &nbsp; Pemasangan kateter urine</span>
         </label>
       </div>
@@ -200,7 +210,7 @@
     <td>
       <div class="checkbox">
         <label>
-          <input  name="form_28[periksa_ngt]" id="periksa_ngt"  onclick="checkthis('periksa_ngt')" type="checkbox" class="ace">
+          <input  name="form_28[periksa_ngt]" id="periksa_ngt"  onclick="checkthis('periksa_ngt')" type="checkbox" class="ace" <?php echo isset($value_form['periksa_ngt'])?'checked':''?>>
           <span class="lbl" > &nbsp; NGT</span>
         </label>
       </div>
@@ -214,7 +224,7 @@
     <td>
       <div class="checkbox">
         <label>
-          <input  name="form_28[periksa_intubasi]" id="periksa_intubasi"  onclick="checkthis('periksa_intubasi')" type="checkbox" class="ace">
+          <input  name="form_28[periksa_intubasi]" id="periksa_intubasi"  onclick="checkthis('periksa_intubasi')" type="checkbox" class="ace" <?php echo isset($value_form['periksa_intubasi'])?'checked':''?>>
           <span class="lbl" > &nbsp; Intubasi</span>
         </label>
       </div>
@@ -228,7 +238,7 @@
     <td>
       <div class="checkbox">
         <label>
-          <input  name="form_28[tindakan_jahit_luka]" id="tindakan_jahit_luka"  onclick="checkthis('tindakan_jahit_luka')" type="checkbox" class="ace">
+          <input  name="form_28[tindakan_jahit_luka]" id="tindakan_jahit_luka"  onclick="checkthis('tindakan_jahit_luka')" type="checkbox" class="ace" <?php echo isset($value_form['tindakan_jahit_luka'])?'checked':''?>>
           <span class="lbl" > &nbsp; Jahit Luka</span>
         </label>
       </div>
@@ -242,7 +252,7 @@
     <td>
       <div class="checkbox">
         <label>
-          <input  name="form_28[periksa_lain]" id="periksa_lain"  onclick="checkthis('periksa_lain')" type="checkbox" class="ace">
+          <input  name="form_28[periksa_lain]" id="periksa_lain"  onclick="checkthis('periksa_lain')" type="checkbox" class="ace" <?php echo isset($value_form['periksa_lain'])?'checked':''?>>
           <span class="lbl" > &nbsp; Lain-lain</span>
         </label>
       </div>
@@ -253,6 +263,7 @@
   </tr>
 </table>
 <br>
+<br><span style="color: blue; font-weight: bold">(Planning)</span>
 <table class="table">
   <tr>
     <th class="center" width="30px">No</th>
@@ -276,23 +287,23 @@
     <td>
         <div class="checkbox">
           <label>
-            <input  name="form_28[kesimpulan_perbaikan]" id="kesimpulan_perbaikan"  onclick="checkthis('kesimpulan_perbaikan')" type="checkbox" class="ace">
+            <input  name="form_28[kesimpulan_perbaikan]" id="kesimpulan_perbaikan"  onclick="checkthis('kesimpulan_perbaikan')" type="checkbox" class="ace" <?php echo isset($value_form['kesimpulan_perbaikan'])?'checked':''?>>
             <span class="lbl" > &nbsp; Perbaikan</span>
           </label>
           <label>
-            <input  name="form_28[kesimpulan_stabil]" id="kesimpulan_stabil"  onclick="checkthis('kesimpulan_stabil')" type="checkbox" class="ace">
+            <input  name="form_28[kesimpulan_stabil]" id="kesimpulan_stabil"  onclick="checkthis('kesimpulan_stabil')" type="checkbox" class="ace" <?php echo isset($value_form['kesimpulan_stabil'])?'checked':''?>>
             <span class="lbl" > &nbsp; Stabil</span>
           </label>
           <label>
-            <input  name="form_28[kesimpulan_buruk]" id="kesimpulan_buruk"  onclick="checkthis('kesimpulan_buruk')" type="checkbox" class="ace">
+            <input  name="form_28[kesimpulan_buruk]" id="kesimpulan_buruk"  onclick="checkthis('kesimpulan_buruk')" type="checkbox" class="ace" <?php echo isset($value_form['kesimpulan_buruk'])?'checked':''?>>
             <span class="lbl" > &nbsp; Perburukan</span>
           </label>
           <label>
-            <input  name="form_28[kesimpulan_death]" id="kesimpulan_death"  onclick="checkthis('kesimpulan_death')" type="checkbox" class="ace">
+            <input  name="form_28[kesimpulan_death]" id="kesimpulan_death"  onclick="checkthis('kesimpulan_death')" type="checkbox" class="ace" <?php echo isset($value_form['kesimpulan_death'])?'checked':''?>>
             <span class="lbl" > &nbsp; Death on arrival</span>
           </label>
           <label>
-            <input  name="form_28[kesimpulan_death_emergency]" id="kesimpulan_death_emergency"  onclick="checkthis('kesimpulan_death_emergency')" type="checkbox" class="ace">
+            <input  name="form_28[kesimpulan_death_emergency]" id="kesimpulan_death_emergency"  onclick="checkthis('kesimpulan_death_emergency')" type="checkbox" class="ace" <?php echo isset($value_form['kesimpulan_death_emergency'])?'checked':''?>>
             <span class="lbl" > &nbsp; Death on emergency</span>
           </label>
         </div>
@@ -303,19 +314,19 @@
     <td>
         <div class="checkbox">
           <label>
-            <input  name="form_28[tl_rawat]" id="tl_rawat"  onclick="checkthis('tl_rawat')" type="checkbox" class="ace">
+            <input  name="form_28[tl_rawat]" id="tl_rawat"  onclick="checkthis('tl_rawat')" type="checkbox" class="ace" <?php echo isset($value_form['tl_rawat'])?'checked':''?>>
             <span class="lbl" > &nbsp; Rawat</span>
           </label>
           <label>
-            <input  name="form_28[tl_rujuk]" id="tl_rujuk"  onclick="checkthis('tl_rujuk')" type="checkbox" class="ace">
+            <input  name="form_28[tl_rujuk]" id="tl_rujuk"  onclick="checkthis('tl_rujuk')" type="checkbox" class="ace" <?php echo isset($value_form['tl_rujuk'])?'checked':''?>>
             <span class="lbl" > &nbsp; Rujuk</span>
           </label>
           <label>
-            <input  name="form_28[tl_pulang]" id="tl_pulang"  onclick="checkthis('tl_pulang')" type="checkbox" class="ace">
+            <input  name="form_28[tl_pulang]" id="tl_pulang"  onclick="checkthis('tl_pulang')" type="checkbox" class="ace" <?php echo isset($value_form['tl_pulang'])?'checked':''?>>
             <span class="lbl" > &nbsp; Pulang</span>
           </label>
           <label>
-            <input  name="form_28[tl_pulang_sendiri]" id="tl_pulang_sendiri"  onclick="checkthis('tl_pulang_sendiri')" type="checkbox" class="ace">
+            <input  name="form_28[tl_pulang_sendiri]" id="tl_pulang_sendiri"  onclick="checkthis('tl_pulang_sendiri')" type="checkbox" class="ace" <?php echo isset($value_form['tl_pulang_sendiri'])?'checked':''?>>
             <span class="lbl" > &nbsp; Pulang atas permintaan sendiri</span>
           </label>
         </div>

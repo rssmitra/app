@@ -70,13 +70,13 @@
 
       });
 
-  }else{
+    }else{
 
-    return false;
+      return false;
 
-  }
+    }
   
-}
+  }
 
 $('select[name="search_by"]').change(function () {      
 

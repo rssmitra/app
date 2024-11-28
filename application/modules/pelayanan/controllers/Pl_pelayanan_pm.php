@@ -428,12 +428,11 @@ class Pl_pelayanan_pm extends MX_Controller {
             
             // $row[] = '<div class="center">'.$form.'</div>';
             $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_masuk);
-            $row[] = $row_list->no_mr;
-            $row[] = strtoupper($row_list->nama_pasien).' '.$eorder;
+            $row[] = '<b>'.$row_list->no_mr.'</b><br>'.strtoupper($row_list->nama_pasien).' '.$eorder;
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.'':$row_list->nama_kelompok;
-            $row[] = $row_list->bagian_tujuan;
+            $row[] = '<div class="center">'.ucwords($row_list->nama_bagian).'<br><i class="fa fa-arrow-down"></i><br>'.$row_list->bagian_tujuan.'</div>';
 			// $row[] = ($row_list->status_cito==1)?'Cito':'Biasa';
-            $row[] = ucwords($row_list->nama_bagian);
+            // $row[] = ucwords($row_list->nama_bagian);
 
             $bag = substr($row_list->kode_bagian_asal, 1, 1);
 

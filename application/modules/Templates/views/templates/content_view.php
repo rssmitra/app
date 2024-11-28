@@ -758,6 +758,16 @@
 
       }
 
+      function show_modal_return_json(url, title){  
+          preventDefault();
+          $('#global_modal_content_detail').html('Loading...'); 
+          $.getJSON(url, '' , function (data) {
+            $('#global_modal_content_detail').html(data.html);
+          })
+          $('#text_title').text(title);
+          $("#globalModalView").modal();
+      }
+
       function show_modal_medium_return_json(url, title){  
 
         preventDefault();

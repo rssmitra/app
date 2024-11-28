@@ -1141,7 +1141,7 @@ final Class Master {
 		$html .= $params['nama_obat'].' &nbsp;&nbsp; No. '.$this->formatRomawi((int)$params['jumlah']).'<br>';
 		$html .= '<i>'.$format.'</i>';
 		$html .= ' ____________ det / nedet<br>';
-		$html .= '('.$params['dd'].' X '.$params['qty'].' '.$params['unit'].' '.$params['use'].')';
+		// $html .= '('.$params['dd'].' X '.$params['qty'].' '.$params['unit'].' '.$params['use'].')';
 
 		return $html;
 		

@@ -228,6 +228,20 @@ class Pl_pelayanan_model extends CI_Model {
 		
 	}
 
+	public function get_detail_kunjungan($no_kunjungan)
+	{
+		$this->db->select('nama_pasien, almt_ttp_pasien, umur');
+		$this->db->from('tc_kunjungan');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi = tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr = tc_kunjungan.no_mr','left');
+
+		$this->db->where('tc_kunjungan.no_kunjungan',$no_kunjungan);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->row();
+		
+	}
+
 	public function update($table, $data, $where)
 	{
 		$this->db->update($table, $data, $where);

@@ -234,7 +234,11 @@ class Pl_pelayanan_igd_model extends CI_Model {
 
 	function get_list_data()
 	{
-		$date = date('Y-m-d H:i:s', strtotime('-1 days', strtotime(date('Y-m-d H:i:s'))));
+		if(isset($_GET['tgl']) && $_GET['tgl'] != ''){
+			$date = date('Y-m-d H:i:s', strtotime('-1 days', strtotime($_GET['tgl'])));
+		}else{
+			$date = date('Y-m-d H:i:s', strtotime('-1 days', strtotime(date('Y-m-d H:i:s'))));
+		}
 		$this->_main_query();
 		$this->db->where("gd_tc_gawat_darurat.tanggal_gd > '".$date."' ");
 		$this->db->order_by('gd_tc_gawat_darurat.kode_gd', 'DESC');

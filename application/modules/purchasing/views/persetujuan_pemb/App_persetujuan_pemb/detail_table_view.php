@@ -314,7 +314,7 @@
                       echo '<input type="hidden" id="jml_acc_pemeriksa_'.$flag.'_'.$id.'_'.$row_dt->kode_brg.'" value="'.$row_dt->jml_acc_pemeriksa.'">';
                     }
                 ?>
-                <!-- <input type="hiddenxx" name="jml_besar_hidden[<?php echo $row_dt->kode_brg?>]" id="jml_besar_hidden<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt->jml_besar?>">
+                <!-- <input type="hidden" name="jml_besar_hidden[<?php echo $row_dt->kode_brg?>]" id="jml_besar_hidden<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt->jml_besar?>">
                  -->
                 <input type="number" name="jml_acc[<?php echo $row_dt->kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" style="width:70px;height:45px;text-align:center">
               <?php 
