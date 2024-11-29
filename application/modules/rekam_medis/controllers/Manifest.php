@@ -140,11 +140,12 @@ class Manifest extends MX_Controller {
             $row[] = '';
             $row[] = $row_list->kode_dokter;
             $row[] = $row_list->kode_bagian;
+            $row[] = $row_list->tgl_jam_poli;
             $row[] = $this->tanggal->formatDate($row_list->tgl_jam_poli);
             $row[] = strtoupper($row_list->nama_pegawai);
             $row[] = ucwords($row_list->nama_bagian);
             $row[] = '<div class="center">'.$row_list->total_pasien.'</div>';
-            $row[] = '<div class="center" style="cursor: pointer !important"><span class="label label-success" onclick="PopupCenter('."'".base_url()."registration/Reg_pasien/barcode_pasien/".$row_list->kode_dokter."/1'".', '."'PRINT BARCODE'".', 350, 500)">Print Worklist</span></div>';
+            $row[] = '<div class="center" style="cursor: pointer !important"><span class="label label-success" onclick="PopupCenter('."'".base_url()."rekam_medis/Manifest/print_worklist/".$row_list->kode_dokter."/".$row_list->kode_bagian."/".$row_list->tgl_jam_poli."'".', '."'PRINT WORKLIST'".', 350, 500)">Print Worklist</span></div>';
             $data[] = $row;
         }
 
@@ -158,11 +159,33 @@ class Manifest extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function getDetail($kode_dokter){
+    public function getDetail($kode_dokter, $kode_bagian, $tgl_kunjungan){
         
-        $list = $this->Manifest->get_detail_pasien();
-        
+        $params = [
+            'kode_dokter' => $kode_dokter,
+            'kode_bagian' => $kode_bagian,
+            'tgl_kunjungan' => $tgl_kunjungan,
+        ];
+        $list = $this->Manifest->get_detail_pasien($params);
         $html = '';
+        $html .= '<div style="margin-left: 50px">';
+        $html .= '<span style="text-align: center; "><b>ANTRIAN PASIEN</b><br>'.$list[0]->nama_bagian.'<br>'.$list[0]->nama_pegawai.'<br>Tgl.'.$this->tanggal->formatDate($list[0]->tgl_jam_poli).'</span>';
+        $html .= '<table class="table table-bordered" style="width: 50%;">';
+        $html .= '<tr>';
+        $html .= '<th align="center">NO</th>';
+        $html .= '<th>NAMA PASIEN</th>';
+        $html .= '<th align="center">STATUS</th>';
+        $html .= '</tr>';
+        foreach ($list as $key => $value) {
+            # code...
+            $html .= '<tr>';
+            $html .= '<td align="center">'.$value->no_antrian.'</td>';
+            $html .= '<td>'.$value->nama_pasien.'</td>';
+            $html .= '<td align="center">'.strtoupper($value->flag_antrian).'</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table>';
+        $html .= '</div>';
         
         echo json_encode(array('html' => $html));
     }
@@ -174,14 +197,18 @@ class Manifest extends MX_Controller {
         echo json_encode($output);
     }
 
-    public function print_selected_item(){
-
-        $result = $this->Manifest->get_selected_pasien($_GET['ID']);
-        $data = array(
-            'result' => $result,
-        );
-        // echo '<pre>'; print_r($data);
-        $this->load->view('rekam_medis/Manifest/print_preview_multiple', $data);
+    public function print_worklist($kode_dokter, $kode_bagian, $tgl_kunjungan){
+        
+        $params = [
+            'kode_dokter' => $kode_dokter,
+            'kode_bagian' => $kode_bagian,
+            'tgl_kunjungan' => $tgl_kunjungan,
+        ];
+        $list = $this->Manifest->get_detail_pasien($params);
+        $params['dokter'] = $list[0]->nama_pegawai;
+        $params['poli'] = $list[0]->nama_bagian;
+        $params['list'] = $list;
+        $this->load->view('Manifest/print_worklist', $params);
     }
 
 }

@@ -1275,20 +1275,8 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data = json_decode($this->Csm_billing_pasien->getDetailData($params->no_registrasi));
         $data->nama_ppa = $params->cppt_nama_ppa;
         $data->kode_dr = $params->cppt_kode_dr;
-        // echo '<pre>'; print_r($data);die;
-        $html = '<div class="row">';
-        $html .= $temp->setGlobalProfileCppt($data);
-        $html .= '<table border="1" style="padding: 10px; height: 100%">';
-        $html .= '<tr>';
-        $html .= '<td>';
-        $html .= $params->catatan_pengkajian;
-        $html .= $temp->setGlobalFooterCppt($data);
-        $html .= '</td>';
-        $html .= '</tr>';
-        $html .= '</table>';
-        $html .= '</div>';
 
-        return $html;
+        return $params->catatan_pengkajian;
     }
 
 

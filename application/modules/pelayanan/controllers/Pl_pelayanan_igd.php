@@ -948,6 +948,7 @@ class Pl_pelayanan_igd extends MX_Controller {
                 'berat_badan' => $this->input->post('pl_bb_igd'),
                 'suhu' => $this->input->post('pl_suhu_igd'),
                 'nadi' => $this->input->post('pl_nadi_igd'),
+                'saturasi' => $this->input->post('pl_saturasi_igd'),
                 'kode_icd9' => $this->input->post('pl_procedure_hidden'),
                 'text_icd9' => $this->input->post('pl_procedure'),
                 'tgl_kontrol_kembali' => $this->input->post('pl_tgl_kontrol_kembali'),

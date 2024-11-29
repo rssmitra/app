@@ -166,27 +166,37 @@ class Export_data extends MX_Controller {
     }
 
     public function getHtmlDataFromClass($class, $type_doc){
+
         $obj = new $class;
-        $data = $obj->get_content_data();
-        $html_content = $obj->html_content($data);
-        echo '<pre>'; print_r($html_content);die;
+        $content = $obj->get_content_data();
+        $html_content = $content->catatan_pengkajian;
+
+        $data = [
+            'cppt_id' => $content->cppt_id,
+            'html_content' => $html_content,
+        ];
+        // echo '<pre>'; print_r($data);die;
+        $this->load->view('templates/view_html_content', $data);
+
+
+
         
         $paper_type = isset($_GET['paper']) ? $_GET['paper'] : 'P';
         
-        switch ($type_doc) {
-            case 'pdf':
-                # code...
-                $this->exportPdfContent($html_content,$paper_type);
-                break;
-            case 'excel':
-                # code...
-                $this->exportExcelContent($html_content);
-                break;
+        // switch ($type_doc) {
+        //     case 'pdf':
+        //         # code...
+        //         $this->exportPdfContent($html_content,$paper_type);
+        //         break;
+        //     case 'excel':
+        //         # code...
+        //         $this->exportExcelContent($html_content);
+        //         break;
             
-            default:
-                # code...
-                break;
-        }
+        //     default:
+        //         # code...
+        //         break;
+        // }
         
 
     }

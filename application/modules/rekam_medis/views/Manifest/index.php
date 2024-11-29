@@ -4,8 +4,8 @@
 <script>
 
 var oTable;
-var base_url = $('#dynamic-table').attr('base-url'); 
-var params = $('#dynamic-table').attr('data-id'); 
+var base_url = $('#manifest_table').attr('base-url'); 
+var params = $('#manifest_table').attr('data-id'); 
 
 jQuery(function($) {
   $('.date-picker').datepicker({
@@ -21,11 +21,14 @@ jQuery(function($) {
 $(document).ready(function(){
   
     //initiate dataTables plugin
-    oTable = $('#dynamic-table').DataTable({ 
+    oTable = $('#manifest_table').DataTable({ 
           
           "processing": true, //Feature control the processing indicator.
           "serverSide": true, //Feature control DataTables' server-side processing mode.
           "ordering": false,
+          "searching": false,
+          "bInfo" : false ,
+          "bLengthChange" : false,
           "pageLength": 25,
           "scrollY": "600px",
           "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
@@ -42,17 +45,21 @@ $(document).ready(function(){
               { "aTargets" : [ 1 ], "mData" : 1, "sClass":  "details-control"}, 
               { "visible": true, "targets": [ 1 ] },
               { "targets": [ 2 ], "visible": false },
+              { "targets": [ 3 ], "visible": false },
+              { "targets": [ 4 ], "visible": false },
           ],
     
         });
     
-        $('#dynamic-table tbody').on('click', 'td.details-control', function () {
-            var url_detail = $('#dynamic-table').attr('url-detail');
+        $('#manifest_table tbody').on('click', 'td.details-control', function () {
+            var url_detail = $('#manifest_table').attr('url-detail');
             preventDefault();
             var tr = $(this).closest('tr');
             var row = oTable.row( tr );
             var data = oTable.row( $(this).parents('tr') ).data();
             var kode_primary = data[ 2 ];                  
+            var kode_bagian = data[ 3 ];                  
+            var tgl_kunjungan = data[ 4 ];                  
             console.log(data);
             if ( row.child.isShown() ) {
                 // This row is already open - close it
@@ -61,7 +68,7 @@ $(document).ready(function(){
             }
             else {
                 /*data*/            
-                $.getJSON( url_detail + "/" + kode_primary + "?" +params, '' , function (data) {
+                $.getJSON( url_detail + "/" + kode_primary + "/"+kode_bagian+"/"+tgl_kunjungan, '' , function (data) {
                     response_data = data;
                     // Open this row
                     row.child( format_html( response_data ) ).show();
@@ -71,7 +78,7 @@ $(document).ready(function(){
             
         } );
     
-        $('#dynamic-table tbody').on( 'click', 'tr', function () {
+        $('#manifest_table tbody').on( 'click', 'tr', function () {
             if ( $(this).hasClass('selected') ) {
                 $(this).removeClass('selected');
             }
@@ -84,7 +91,7 @@ $(document).ready(function(){
     $('#btn_search_data').click(function (e) {
       e.preventDefault();
       $.ajax({
-        url: base_url+'/find_data',
+        url: 'rekam_medis/Manifest/find_data',
         type: "post",
         data: $('#form_search').serialize(),
         dataType: "json",
@@ -93,7 +100,7 @@ $(document).ready(function(){
         },
         success: function(data) {
           achtungHideLoader();
-          find_data_reload(data,base_url);
+          find_data_reload(data);
         }
       });
     });
@@ -115,6 +122,9 @@ $(document).ready(function(){
 
 })
 
+function format_html ( data ) {
+  return data.html;
+}
 
 function checkAll(elm) {
 
@@ -146,12 +156,12 @@ $('select[name="bagian"]').change(function () {
 
 function find_data_reload(result){
 
-  table.ajax.url(base_url+'/get_data?'+result.data).load();
+  oTable.ajax.url(base_url+'?'+result.data).load();
 
 }
 
 function reset_table(){
-  table.ajax.url(base_url+'/get_data').load();
+  oTable.ajax.url(base_url).load();
 }
 
 if(!ace.vars['touch']) {
@@ -168,15 +178,6 @@ if(!ace.vars['touch']) {
       }).trigger('resize.chosen');
 
 }
-
-$("#btn_print_selected").click(function(event){
-      event.preventDefault();
-      var searchIDs = $("#manifest_pasien input:checkbox:checked").map(function(){
-        return $(this).val();
-      }).toArray();
-      print_selected_item(''+searchIDs+'');
-      console.log(searchIDs);
-});
 
 function print_selected_item(myid){
 
@@ -225,75 +226,68 @@ function print_selected_item(myid){
 
     <form class="form-horizontal" method="post" id="form_search" action="rekam_medis/Manifest/find_data">
 
-    <div class="col-md-12">
+      <div class="col-md-12">
 
-      <div class="form-group">
-        <label class="control-label col-md-2">Tanggal Kunjungan</label>
-          <div class="col-md-2">
-            <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar bigger-110"></i>
-              </span>
+        <div class="form-group">
+          <label class="control-label col-md-2">Tanggal Kunjungan</label>
+            <div class="col-md-2">
+              <div class="input-group">
+                <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+                <span class="input-group-addon">
+                  <i class="fa fa-calendar bigger-110"></i>
+                </span>
+              </div>
             </div>
-          </div>
-      </div>
-
-
-      <div class="form-group">
-        <label class="control-label col-md-2">Poli/Klinik Spesialis</label>
-        <div class="col-md-3">
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0500')) ), '' , 'bagian', 'bagian', 'chosen-select form-control', '', '') ?>
         </div>
-        <label class="control-label col-md-1">Dokter</label>
+
+
+        <div class="form-group">
+          <label class="control-label col-md-2">Poli/Klinik Spesialis</label>
           <div class="col-md-3">
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array('status' => '0') ), '' , 'dokter', 'dokter', 'form-control', '', '') ?>
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1,'status_aktif' => 1), 'where_in' => array('col' => 'validasi', 'val' => array('0100','0500')) ), '' , 'bagian', 'bagian', 'chosen-select form-control', '', '') ?>
           </div>
-      </div>
+          <label class="control-label col-md-1">Dokter</label>
+            <div class="col-md-3">
+              <?php echo $this->master->custom_selection($params = array('table' => 'mt_dokter_v', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array('status' => '0') ), '' , 'dokter', 'dokter', 'form-control', '', '') ?>
+            </div>
+            <div class="col-md-3">
+            <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
+              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+              Search
+            </a>
+            <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
+              <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+              Reset
+            </a>
+          </div>
 
-      
-      <div class="form-group">
-        <label class="col-md-2 ">&nbsp;</label>
-        <div class="col-md-10" style="margin-left: 5px">
-          <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
-            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-            Search
-          </a>
-          <a href="#" id="btn_reset_data" class="btn btn-xs btn-warning">
-            <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-            Reset
-          </a>
-          <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
-            <i class="fa fa-file-word-o bigger-110"></i>
-            Export Excel
-          </a>
-          <a href="#" class="btn btn-xs btn-danger" id="btn_print_selected"><i class="fa fa-file"></i> Print Selected</a>
         </div>
+
       </div>
 
-    </div>
+      <hr class="separator">
+      <!-- div.dataTables_borderWrap -->
+      <div style="margin-top:-27px">
+        <table id="manifest_table" base-url="rekam_medis/Manifest/get_data" data-id="" url-detail="rekam_medis/Manifest/getDetail" class="table table-bordered table-hover">
 
-    <hr class="separator">
-    <!-- div.dataTables_borderWrap -->
-    <div style="margin-top:-27px">
-      <table id="dynamic-table" base-url="rekam_medis/Manifest/get_data" data-id="" url-detail="rekam_medis/Manifest/getDetail" class="table table-bordered table-hover">
-
-       <thead>
-        <tr>  
-          <th class="center" width="50px">No</th>
-          <th width="40px" class="center"></th>
-          <th width="40px"></th>
-          <th>Tanggal Kunjungan</th>
-          <th>Nama Dokter</th>
-          <th>Poliklinik Spesialis</th>
-          <th>Jumlah Pasien</th>      
-          <th style="min-width: 70px">Status Print</th>      
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    </div>
+        <thead>
+          <tr>  
+            <th class="center" width="50px">No</th>
+            <th width="40px" class="center"></th>
+            <th width="40px"></th>
+            <th width="40px"></th>
+            <th width="40px"></th>
+            <th>Tanggal Kunjungan</th>
+            <th>Nama Dokter</th>
+            <th>Poliklinik Spesialis</th>
+            <th>Jumlah Pasien</th>      
+            <th style="min-width: 70px">Status Print</th>      
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      </div>
 
     </form>
 

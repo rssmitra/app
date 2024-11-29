@@ -152,7 +152,7 @@ $(document).ready(function() {
 
   $('#jenis_form_catatan').change(function () {
       if ($(this).val()) {
-          $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val(), '', function (data) {
+          $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val() + '/'+$('#no_registrasi').val(), '', function (data) {
             $('#editor_html_pengkajian').html(data.html);
             $('#cppt_id').val('');
           });
@@ -297,18 +297,18 @@ function fillthis(id){
   $('#'+id+'').val(val_str);
 }
 
-// function printDivHtml(divId) {
-//      preventDefault();
-//      var printContents = document.getElementById(divId).innerHTML;
-//      var originalContents = document.body.innerHTML;
-//      document.body.innerHTML = printContents;
-//      window.print();
-//      document.body.innerHTML = originalContents;
-// }
+function printDivHtml(divId) {
+     preventDefault();
+     var printContents = document.getElementById(divId).innerHTML;
+     var originalContents = document.body.innerHTML;
+     document.body.innerHTML = printContents;
+     window.print();
+     document.body.innerHTML = originalContents;
+}
 
 </script>
 
-<!-- <style>
+<style>
   @media print {
     body {
       visibility: hidden;
@@ -320,7 +320,7 @@ function fillthis(id){
       top: 0;
     }
   }
-</style> -->
+</style>
 <div class="row">
 
   <div class="col-md-12">
@@ -379,7 +379,7 @@ function fillthis(id){
         <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
             <div class="col-sm-12">
               <button type="button" class="btn btn-sm btn-primary" id="btn_add_catatan"><i class="fa fa-save"></i> Simpan</button> 
-              <button type="button" class="btn btn-sm btn-primary" onclick="printDivHtml('editor_html_pengkajian')"><i class="fa fa-save"></i> Print PDF</button> 
+              <!-- <button type="button" class="btn btn-sm btn-primary" onclick="printDivHtml('editor_html_pengkajian')"><i class="fa fa-save"></i> Print PDF</button>  -->
             </div>
         </div>
         <hr>

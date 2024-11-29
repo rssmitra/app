@@ -1,7 +1,12 @@
-<div style="text-align: center;"><b>HASIL PEMERIKSAAN<br>ECHOCARDIOGRAFI TRANSTHORACAL</b></div>
-<br>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
+<?php echo $header; ?>
+
+<hr>
+<br>
+<div style="text-align: center;"><b>HASIL PEMERIKSAAN<br>ECHOCARDIOGRAFI TRANSTHORACAL</b></div>
+<br>
+
 <table border="0">
   <tr>
     <td style="vertical-align: middle">Diagnosis Kerja</td>
@@ -134,7 +139,7 @@
   </tr>
 
 </table>
-<hr>
+
 <p style="font-weight: bold">Komentar</p>
 <table border="0" width="100%">
   <tr>
@@ -196,3 +201,5 @@
     <td>: <input type="text" class="input_type" name="form_18[kesimpulan_dd]" id="kesimpulan_dd" onchange="fillthis('kesimpulan_dd')" style="width: 80%"></td>
   </tr>
 </table>
+<hr>
+<?php echo $footer; ?>

@@ -28,16 +28,12 @@ class Manifest_model extends CI_Model {
 		$this->db->select('COUNT(pl_tc_poli.no_kunjungan) as total_pasien');
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan',''.$this->table.'.no_kunjungan=tc_kunjungan.no_kunjungan','left');
-		$this->db->join('tc_registrasi','tc_kunjungan.no_registrasi=tc_registrasi.no_registrasi','left');
 		$this->db->join('mt_bagian',''.$this->table.'.kode_bagian=mt_bagian.kode_bagian','left');
 		$this->db->join('mt_karyawan',''.$this->table.'.kode_dokter=mt_karyawan.kode_dokter','left');
 		
 	}
 
-	private function _get_datatables_query()
-	{
-		
-		$this->_main_query();
+	private function _filterQuery(){
 		/*if isset parameter*/
 		if( $_GET ) {
 
@@ -57,6 +53,13 @@ class Manifest_model extends CI_Model {
 		}else{
 			$this->db->where(array('CAST(pl_tc_poli.tgl_jam_poli as DATE) = ' => date('Y-m-d')));
 		} 
+	}
+
+	private function _get_datatables_query()
+	{
+		
+		$this->_main_query();
+		$this->_filterQuery();
 		$this->db->group_by($this->select);
 		$this->db->group_by('CAST(tgl_jam_poli as DATE)');
 		$i = 0;
@@ -108,6 +111,7 @@ class Manifest_model extends CI_Model {
 	public function count_all()
 	{
 		$this->_main_query();
+		$this->_filterQuery();
 		return $this->db->count_all_results();
 	}
 
@@ -138,6 +142,20 @@ class Manifest_model extends CI_Model {
 		$get_data = $this->get_by_id($id);
 		$this->db->where_in(''.$this->table.'.no_registrasi', $id);
 		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
+	}
+
+	public function get_detail_pasien($params){
+		$this->db->select('pl_tc_poli.*, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai');
+		$this->db->from('pl_tc_poli');
+		$this->db->join('mt_bagian','pl_tc_poli.kode_bagian=mt_bagian.kode_bagian','left');
+		$this->db->join('mt_karyawan','pl_tc_poli.kode_dokter=mt_karyawan.kode_dokter','left');
+		$this->db->where('pl_tc_poli.kode_dokter', $params['kode_dokter']);
+		$this->db->where('pl_tc_poli.kode_bagian', $params['kode_bagian']);
+		$this->db->where('CAST(tgl_jam_poli as DATE) = ', $params['tgl_kunjungan']);
+		$this->db->order_by('no_antrian', 'ASC');
+		$result = $this->db->get()->result();
+		return $result;
+
 	}
 
 }

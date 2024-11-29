@@ -2347,12 +2347,22 @@ class Pl_pelayanan extends MX_Controller {
 
     }
 
-    public function switch_template_form($id, $no_kunjungan){
+    public function switch_template_form($id, $no_kunjungan, $no_registrasi=''){
 
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        $result = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
+        $result->nama_ppa = $result->reg_data->nama_pegawai;
+        $result->kode_dr = $result->reg_data->kode_dokter;
+        // header cppt
+        $header = $temp->setGlobalProfileCppt($result);
+        $footer = $temp->setGlobalFooterCppt($result);
         $data = [];
         $data['jenis_form'] = 'form_'.$id.'';
         $data['no_kunjungan'] = $no_kunjungan;
         $data['data_pasien'] = $this->Pl_pelayanan->get_detail_kunjungan($no_kunjungan);
+        $data['header'] = $header;
+        $data['footer'] = $footer;
         // echo '<pre>';print_r($data);die;
         $html = $this->load->view('Pl_pelayanan/form_'.$id.'', $data, true);
         echo json_encode(array('html' => $html));

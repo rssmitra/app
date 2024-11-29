@@ -629,9 +629,8 @@ class Templates extends MX_Controller {
         // $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
         $nama_dr = $data->nama_ppa;
 
-        $html .= '<table border="1" style="padding: 10px"><tr><td style="width: 50%">';
-        $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:30px">
-                    
+        $html .= '<table border="0" style="padding: 10px"><tr><td style="width: 50%">';
+        $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td align ="left"><img src="'.base_url().'/'.COMP_ICON.'" width="50px"></td>
                     </tr>
@@ -641,31 +640,29 @@ class Templates extends MX_Controller {
                   </table>';
         $html .= '</td>';
         $html .= '<td style="width: 50%;">';
-        $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:30px">
-                    <tr>
-                        <td width="100px">No. RM</td>
-                        <td width="180px">: '.$data->reg_data->no_mr.'</td>
-                    </tr>
-                    <tr>
-                        <td width="100px" align="left">Nama Pasien</td>
-                        <td width="180px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
-                    </tr>
-
-                    <tr>
-                        <td width="100px">Dokter</td>
-                        <td width="350px">: '.$nama_dr.'</td>
-                    </tr>
-                    <tr>
-                        <td width="100px">Umur</td>
-                        <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
-                        
-                    </tr>
-
-                    <tr>
-                        <td width="100px">Jenis Kelamin</td>
-                        <td width="180px">: '.$data->reg_data->jk.'</td>
-                    </tr>                    
-                </table>';
+            $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                            <td width="100px">No. RM</td>
+                            <td width="180px">: '.$data->reg_data->no_mr.'</td>
+                        </tr>
+                        <tr>
+                            <td width="100px" align="left">Nama Pasien</td>
+                            <td width="180px">: '.ucwords(strtolower($data->reg_data->nama_pasien)).'</td>
+                        </tr>
+                        <tr>
+                            <td width="100px">Dokter</td>
+                            <td width="350px">: '.$nama_dr.'</td>
+                        </tr>
+                        <tr>
+                            <td width="100px">Umur</td>
+                            <td width="180px">: '.$data->reg_data->umur.' Tahun</td>
+                            
+                        </tr>
+                        <tr>
+                            <td width="100px">Jenis Kelamin</td>
+                            <td width="180px">: '.$data->reg_data->jk.'</td>
+                        </tr>                    
+                    </table>';
             
         $html .= '</td>';
         $html .= '</tr>';
@@ -1726,14 +1723,14 @@ class Templates extends MX_Controller {
         $stamp_dr = $get_dokter->stamp;
         $nama_dr = $data->nama_ppa;
 
-        $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
-        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+        $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="150px" style="position: relative">' : '';
+        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="250px" style="">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
         
         $html = '';
-        $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
+        $html .= '<table width="100%" border="0" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
-                        <td width="70%"></td>
-                        <td align="center" width="30%">
+                        <td width="60%"></td>
+                        <td align="center" width="40%">
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                         '.COMP_FULL.'
