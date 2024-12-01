@@ -5,7 +5,7 @@ class Adm_kasir_model extends CI_Model {
 
 	var $table = 'tc_trans_pelayanan';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai, i.tgl_jam, j.fullname';
+	var $select = 'a.no_registrasi, a.no_mr, b.tgl_jam_masuk, b.kode_perusahaan, b.kode_kelompok, b.kode_dokter, b.kode_bagian_masuk, c.nama_pasien, d.nama_bagian, e.nama_perusahaan, a.kode_tc_trans_kasir, b.no_sep, f.nama_kelompok, a.no_kunjungan, g.tgl_keluar, g.status_batal, h.nama_pegawai, i.tgl_jam, j.fullname, g.cara_keluar_pasien';
 	var $order = array('b.no_sep' => 'ASC');
 
 	public function __construct()
@@ -108,8 +108,8 @@ class Adm_kasir_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get()->result();
 		// echo '<pre>';print_r($this->db->last_query());die;
-		// echo '<pre>';print_r($query);die;
 		$result = $this->getTotalRow($query);
+		// echo '<pre>';print_r($result);die;
 		
 		return $result;
 	}
@@ -175,6 +175,7 @@ class Adm_kasir_model extends CI_Model {
 						'total_billing' => $total,
 						'status_batal' => $value->status_batal,
 						'tgl_transaksi' => $value->tgl_jam,
+						'cara_keluar_pasien' => $value->cara_keluar_pasien,
 						'petugas' => $value->fullname,
 					);
 				}

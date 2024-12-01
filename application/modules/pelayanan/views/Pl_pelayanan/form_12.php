@@ -136,6 +136,10 @@ jQuery(function($) {
 });
 </script>
 
+<?php echo $header; ?>
+<hr>
+<br>
+
 <div style="text-align: center; font-size: 18px;"><b>LAPORAN OPERASI</b></div>
 
 <!-- hidden form  -->
@@ -263,3 +267,6 @@ jQuery(function($) {
 <p style="text-align: center; font-weight: bold">PROSEDUR OPERASI</p>
 <textarea class="textarea-type" name="form_12[prosedur_operasi]" id="prosedur_operasi" onchange="fillthis('prosedur_operasi')" style="height: 200px !important"><?php echo isset($value_form['prosedur_operasi'])?$value_form['prosedur_operasi']:''?></textarea>
 <br>
+<br>
+<hr>
+<?php echo $footer; ?>

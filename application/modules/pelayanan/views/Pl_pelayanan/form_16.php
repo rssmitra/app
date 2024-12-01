@@ -1,3 +1,7 @@
+<?php echo $header; ?>
+<hr>
+<br>
+
 <div style="text-align: center;"><b>HASIL PEMERIKSAAN DIAGNOSTIK NON INVASIF VASKULER</b></div>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
@@ -25,3 +29,6 @@ Pada pemeriksaan duplex ekstremitas atas didapatkan :
 - Normal flow arteri dan vena pada kedua ekstremitas atas
 - Tidak ditemukan thrombosis (DVT) pada vena dalam di kedua ekstremitas atas
 </textarea>
+<br>
+<hr>
+<?php echo $footer; ?>

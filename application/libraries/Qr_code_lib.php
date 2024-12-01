@@ -5,7 +5,8 @@ require_once('phpqrcode/qrlib.php');
 final class Qr_code_lib {
 
     var $cryptKey = 'qJB0rGtIn5UB1xG03efyCp';
-    var $verify_url = 'https://shs.rssetiamitra.co.id';
+    // var $verify_url = 'https://shs.rssetiamitra.co.id';
+    var $verify_url = 'http://10.10.11.5:88/sirs-dev/app';
 
 	function generate($text) { 
 

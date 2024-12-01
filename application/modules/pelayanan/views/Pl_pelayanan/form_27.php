@@ -74,6 +74,11 @@
   }
   
 </script>
+
+<?php echo $header; ?>
+<hr>
+<br>
+
 <div style="text-align: center; font-size: 14px"><b>PENGKAJIAN KEPERAWATAN INSTALASI GAWAT DARURAT</b></div>
 <br>
 <!-- hidden form  -->
@@ -1576,4 +1581,8 @@
     </td>
   </tr>
 </table>
+
+<br>
+<hr>
+<?php echo $footer; ?>
 

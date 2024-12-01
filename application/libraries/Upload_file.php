@@ -216,6 +216,7 @@ final Class upload_file {
                         'csm_dex_nama_dok' => $nama_file_unik,
                         'csm_dex_jenis_dok' => $type_file,
                         'csm_dex_fullpath' => $params['path'].$nama_file_unik,
+                        'base_url_dok' => base_url(),
                         'is_adjusment' => 'Y',
                     );
                     $doc_save['created_date'] = date('Y-m-d H:i:s');
@@ -286,6 +287,7 @@ final Class upload_file {
                         'csm_dex_nama_dok' => $file_name,
                         'csm_dex_jenis_dok' => $type_file,
                         'csm_dex_fullpath' => $params['path'].$nama_file_unik,
+                        'base_url_dok' => base_url(),
                         'is_adjusment' => 'Y',
                     );
                     $doc_save['created_date'] = date('Y-m-d H:i:s');
@@ -351,6 +353,7 @@ final Class upload_file {
                         'dok_prb_file_name' => $nama_file_unik,
                         'dok_prb_file_type' => $type_file,
                         'dok_prb_fullpath' => $params['path'].$nama_file_unik,
+                        'base_url_dok' => base_url(),
                         'created_date' => date('Y-m-d H:i:s'),
                         'created_by' => $CI->regex->_genRegex($CI->session->userdata('user')->fullname,'RGXQSL'),
                     );
@@ -393,7 +396,7 @@ final Class upload_file {
                     $filename = explode('-',$row_list->csm_dex_nama_dok);
                     $html .= '<td align="left">'.$filename[0].'</td>';
                     $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
-                    $html .= '<td align="center"><a href="'.BASE_FILE_RM.$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
+                    $html .= '<td align="center"><a href="'.base_url().$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
                 $html .= '</tr>';
             $no++;
@@ -438,7 +441,7 @@ final Class upload_file {
                     $filename = explode('-',$row_list->csm_dex_nama_dok);
                     $html .= '<td align="left">'.$filename[0].'</td>';
                     $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
-                    $html .= '<td align="center"><a href="'.BASE_FILE_RM.$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
+                    $html .= '<td align="center"><a href="'.base_url().$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
                 $html .= '</tr>';
             $no++;

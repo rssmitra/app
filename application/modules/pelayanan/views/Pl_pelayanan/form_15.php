@@ -1,3 +1,6 @@
+<?php echo $header; ?>
+<hr>
+<br>
 <div style="text-align: center;"><b>HASIL PEMERIKSAAN DIAGNOSTIK NON INVASIF VASKULER</b></div>
 <br><b>Pada pemeriksaan duplex sonography femoralis didapatkan :</b>
 <br>
@@ -30,3 +33,6 @@ Pada pemeriksaan duplex ekstremitas atas didapatkan :
 - CVI (-) pada kedua tungkai
 - DVT (-) pada kedua tungkai
 </textarea>
+<br>
+<hr>
+<?php echo $footer; ?>

@@ -1,7 +1,6 @@
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 <?php echo $header; ?>
-
 <hr>
 <br>
 <div style="text-align: center;"><b>HASIL PEMERIKSAAN<br>ECHOCARDIOGRAFI TRANSTHORACAL</b></div>

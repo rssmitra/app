@@ -1,3 +1,6 @@
+<?php echo $header; ?>
+<hr>
+<br>
 <p style="text-align: center"><strong>EVALUASAI AWAL<br>MANAJEMEN PELAYANAN PASIEN (FORMULIR A) </strong></p>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
@@ -500,3 +503,5 @@
         <input type="checkbox" class="ace" name="form_7[e14]" id="e14" onclick="checkthis('e14')" >
         <span class="lbl"> Lainnya, <input type="text" class="input_type" name="form_7[e15]" id="e15" onclick="fillthis('e15')" placeholder=".........."> </span>
     </label>
+    <hr>
+    <?php echo $footer; ?>

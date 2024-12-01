@@ -364,7 +364,7 @@ function printDivHtml(divId) {
     <div class="form-group">
         <label class="control-label col-sm-2">Jenis Form</label>
         <div class="col-md-8">
-          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan')), isset($_GET['form_no'])?$_GET['form_no']:'' , 'jenis_form_catatan', 'jenis_form_catatan', 'chosen-select form-control', '', '') ?>
+          <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_form_catatan', 'is_active' => 'Y')), isset($_GET['form_no'])?$_GET['form_no']:'' , 'jenis_form_catatan', 'jenis_form_catatan', 'chosen-select form-control', '', '') ?>
         </div>
     </div>
 

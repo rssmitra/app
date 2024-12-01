@@ -1,4 +1,7 @@
 
+<?php echo $header; ?>
+<hr>
+<br>
 <p style="text-align:center; font-weight: bold; font-size: 20px">
     PENILAIAN TINGKAT NYERI <br>
     ANAK &lt; 3 TAHUN
@@ -232,3 +235,7 @@
         <li>Kaji nyeri tiap 1 jam dan tiap 8 jam laporkan ke dr jaga/DPJP.</li>
     </ol>
 </p>
+
+<br>
+<hr>
+<?php echo $footer; ?>

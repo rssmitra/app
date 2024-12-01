@@ -1,3 +1,6 @@
+<?php echo $header; ?>
+<hr>
+<br>
 <p class="center"><strong>CATATAN IMPLEMENTASI<br>MANAJEMEN PELAYANAN PASIEN (FORMULIR B) </strong></p>
 
 <!-- hidden form  -->
@@ -146,3 +149,5 @@
         <span class="lbl"> Lainnya,<input type="text" name="form_8[f6]" id="f6" onchange="fillthis('f6')"  class="input_type"></span>
     </label>
 </div>
+<hr>
+<?php echo $footer; ?>

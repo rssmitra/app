@@ -1724,18 +1724,18 @@ class Templates extends MX_Controller {
         $nama_dr = $data->nama_ppa;
 
         $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="150px" style="position: relative">' : '';
-        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="250px" style="">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="220px" style="">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
         
         $html = '';
         $html .= '<table width="100%" border="0" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
-                        <td width="60%"></td>
-                        <td align="center" width="40%">
+                        <td width="50%"></td>
+                        <td align="center" width="50%">
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                         '.COMP_FULL.'
                         <br><br>
-                        '.$ttd.'
+                        '.$ttd.'<br>
                         '.$stamp.'
                         </td>   
                     </tr>

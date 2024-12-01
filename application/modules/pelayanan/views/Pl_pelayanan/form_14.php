@@ -1,3 +1,6 @@
+<?php echo $header; ?>
+<hr>
+<br>
 <div style="text-align: center;"><b>HASIL PEMERIKSAAN USG</b></div>
 
 <!-- hidden form  -->
@@ -19,4 +22,6 @@
 <textarea class="textarea-type" name="form_14[catatan_usg]" id="catatan_usg" onchange="fillthis('catatan_usg')" style="height: 100px !important; width: 100%"></textarea>
 <br>
 <br>
+<hr>
+<?php echo $footer; ?>
 

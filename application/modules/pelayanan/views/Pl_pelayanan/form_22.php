@@ -1,10 +1,11 @@
-
-<p style="text-align:center; font-weight: bold; font-size: 30px">
-    RIWAYAT PENYAKIT PASIEN <br>
-    KASUS OBSTETRI ANAMNESIS
+<?php echo $header; ?>
+<hr>
+<br>
+<p style="text-align:center; font-weight: bold; font-size: 16px">
+    RIWAYAT PENYAKIT PASIEN KASUS OBSTETRI ANAMNESIS
 </p>
 </p>
-<p style="text-align:center; font-weight: bold; font-size: 20px">
+<p style="text-align:center; font-weight: bold; font-size: 14px">
     DIISI OLEH DOKTER YANG MERAWAT <br>
 </p>
     
@@ -235,3 +236,8 @@ TD : <input type="text" placeholder="masukkan jawaban anda"> <span style="margin
 Kesadaran umum : <input type="text" placeholder="masukkan jawaban anda"><br>
 Oedema tungkai : <input type="text" placeholder="masukkan jawaban anda">
 </p>
+
+
+<br>
+<hr>
+<?php echo $footer; ?>

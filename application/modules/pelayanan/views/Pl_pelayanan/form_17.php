@@ -1,3 +1,6 @@
+<?php echo $header; ?>
+<hr>
+<br>
 <div style="text-align: center;"><b><font size="2">HASIL PEMERIKSAAN DIAGNOSTIK NON INVASIF VASKULER</font></b></div>
 
 <!-- hidden form  -->
@@ -124,4 +127,8 @@
 - Normal flow pada arteri carotis kanan-kiri 
 - Normal diameter dan flow pada arteri vertebralis kanan-kiri 
 </textarea>
+
+<br>
+<hr>
+<?php echo $footer; ?>
 

@@ -24,12 +24,17 @@ $('#nama_dokter_konsul').typeahead({
 });
 </script>
 
+<?php echo $header; ?>
+<hr>
+<br>
+
+
 <div style="text-align: center; font-size: 14px"><b>LEMBAR KONSULTASI INTERNAL RAWAT JALAN</b></div>
 <br>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 <div>
-  Kepada Yth : <input type="text" style="width: 100% !important" name="form_29[nama_dokter_konsul]" id="nama_dokter_konsul" onchange="fillthis('nama_dokter_konsul')">
+  Kepada Yth : <input type="text" style="width: 100% !important" name="form_29[nama_dokter_konsul]" id="nama_dokter_konsul" onchange="fillthis('nama_dokter_konsul')" placeholder="Ditujukan kepada dokter spesialis">
   <br>
   <br>
   Mohon pemeriksaan dan pengobatan untuk :<br>
@@ -56,6 +61,10 @@ $('#nama_dokter_konsul').typeahead({
   <textarea style="width: 100% !important; height: 50px !important" name="form_29[pengobatan]" id="pengobatan" onchange="fillthis('pengobatan')"></textarea>
 
 </div>
+
+<br>
+<hr>
+<?php echo $footer; ?>
 
 
 

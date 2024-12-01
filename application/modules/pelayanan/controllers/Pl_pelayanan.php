@@ -2327,20 +2327,32 @@ class Pl_pelayanan extends MX_Controller {
 
     public function catatan_lainnya($id='', $no_kunjungan)
     {  
+        $dt = $this->db->get_where('tc_kunjungan', ['no_kunjungan' => $no_kunjungan])->row();
+
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        $result = json_decode($this->Csm_billing_pasien->getDetailData($dt->no_registrasi));
+        $result->nama_ppa = $result->reg_data->nama_pegawai;
+        $result->kode_dr = $result->reg_data->kode_dokter;
+        // echo '<pre>';print_r($result);die;
+        // header cppt
+        $header = $temp->setGlobalProfileCppt($result);
+        $footer = $temp->setGlobalFooterCppt($result);
         /*get value by id*/
         $data['kode_bagian'] = $this->session->userdata('kode_bagian');
         $data['nama_bagian'] = $this->session->userdata('nama_bagian');
         $data['nama_dokter'] = $this->session->userdata('sess_nama_dokter');
-
         $data['no_mr'] = $_GET['no_mr'];
         $data['id'] = $id;
         $data['no_kunjungan'] = $no_kunjungan;
         $form_no = isset($_GET['form_no'])?'form_'.$_GET['form_no']:'form_1';
         $data['jenis_form'] = $form_no;
+        $data['header'] = $header;
+        $data['footer'] = $footer;
         // $data['form_type'] = $_GET['form'];
         $template = $this->load->view('Pl_pelayanan/'.$form_no.'', $data, true);
         $data['template'] = $template;
-        
+       
         /*load form view*/
         // echo '<pre>';print_r($data);die;
         $this->load->view('Pl_pelayanan/form_catatan_lainnya', $data);

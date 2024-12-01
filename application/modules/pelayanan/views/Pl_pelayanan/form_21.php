@@ -1,3 +1,7 @@
+<?php echo $header; ?>
+<hr>
+<br>
+
 <p style="text-align:center; font-weight: bold; font-size: 16px">
     PENGKAJIAN RESIKO JATUH ANAK
 </p>
@@ -591,3 +595,7 @@
             </tr>
         </tbody>
 </table>
+
+<br>
+<hr>
+<?php echo $footer; ?>

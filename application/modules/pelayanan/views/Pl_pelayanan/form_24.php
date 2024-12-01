@@ -1,3 +1,6 @@
+<?php echo $header; ?>
+<hr>
+<br>
 <div style="text-align: center; font-size: 14px"><b>PENGKAJIAN AWAL<br>KEPERAWATAN RAWAT JALAN (BAYI/ ANAK)</b></div>
 <br>
 <!-- hidden form  -->
@@ -306,3 +309,6 @@ Parameter
   </tr>
 
 </table>
+<br>
+<hr>
+<?php echo $footer; ?>

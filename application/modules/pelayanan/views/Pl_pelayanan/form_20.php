@@ -1,3 +1,6 @@
+<?php echo $header; ?>
+<hr>
+<br>
 
 <p class="title" style="font-size: 16px; text-align: center">
     <b>FORMULIR EDUKASI PASIEN DAN KELUARGA</b>
@@ -385,4 +388,7 @@
         </td>
     </tr>
 </table>
+
+<hr>
+<?php echo $footer; ?>
 

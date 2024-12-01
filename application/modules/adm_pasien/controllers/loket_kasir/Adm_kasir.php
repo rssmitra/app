@@ -60,14 +60,15 @@ class Adm_kasir extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Adm_kasir->get_datatables();
-        // echo '<pre>';print_r($list);die;
+        
         $data = array();
         $arr_total = array();
         $tgl_keluar_null = [];
         $no = $_POST['start'];
-        foreach ($list as $row_list) {
-            
+        foreach ($list as $key_list=>$row_list) {
             if( $_GET['pelayanan'] != 'RI' ){
+                // echo '<pre>';print_r($row_list);die;    
+                $key = array_search('Rujuk ke Rawat Inap', array_column($row_list, 'cara_keluar_pasien'));
                 if( substr($row_list[0]['kode_bagian_masuk'], 0, 2) != '03'){
                     $no++;
                     $row = array();
@@ -87,7 +88,8 @@ class Adm_kasir extends MX_Controller {
                     $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
                     $row[] = $this->tanggal->formatDateTimeFormDmy($row_list[0]['tgl_jam_masuk']);
                     $row[] = $this->tanggal->formatDateTimeFormDmy($row_list[0]['tgl_transaksi']);
-                    $row[] = ucwords($row_list[0]['petugas']);
+                    $cara_keluar_pasien = (str_replace(' ','_',strtolower($row_list[$key]['cara_keluar_pasien'])) == 'rujuk_ke_rawat_inap') ? '<span style="background: blue; color: white; font-weight: bold; padding: 2px">'.$row_list[$key]['cara_keluar_pasien'].'</span>' : '';
+                    $row[] = ucwords($row_list[0]['petugas']).''.$cara_keluar_pasien;
                     if( $row_list[0]['status_batal'] == 1 ){
                         $row[] = '<div class="center"><span style="color: red; font-weight: bold">Batal</span></div>';
                     }else{

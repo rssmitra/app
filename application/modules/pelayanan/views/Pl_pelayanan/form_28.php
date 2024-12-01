@@ -1,17 +1,5 @@
 <script type="text/javascript">
-  $(document).ready(function() {
-    $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: $('#idx_cppt').val()} , function (response) {    
-      // show data
-      var obj = response.result;
-      // set value input
-      var value_form = response.value_form;
-      $.each(value_form, function(i, item) {
-        var text = item;
-        text = text.replace(/\+/g, ' ');
-        $('#'+i).val(text);
-      });
-    }); 
-  });
+  
   $('#igd_diagnosa_kerja').typeahead({
       source: function (query, result) {
           $.ajax({
@@ -45,11 +33,15 @@
 
 </script>
 
+<?php echo $header; ?>
+<hr>
+<br>
+
+
 <div style="text-align: center; font-size: 14px"><b>PENGKAJIAN DOKTER INSTALASI GAWAT DARURAT</b></div>
 <br>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
-<input type="hidden" name="idx_cppt" id="idx_cppt" value="<?php echo $cppt_id?>">
 
 <div id="html_pengkajian_dr">
   <button onclick="refreshIframe();" type="button" class="btn btn-xs btn-primary">Reload Image</button>
@@ -333,5 +325,9 @@
       </td>
   </tr>
 </table>
+
+<br>
+<hr>
+<?php echo $footer; ?>
 
 
