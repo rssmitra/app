@@ -173,12 +173,12 @@ function rollback(no_registrasi, no_kunjungan){
 
       <center>
           <h4>FORM PENCARIAN DATA PASIEN <?php echo ($is_icu=='N')?'RAWAT INAP':'ICU'; ?><br><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data Pasien Rawat Inap yang masih dirawat sampai Hari ini yaitu tanggal <?php echo $this->tanggal->formatDate(date('Y-m-d'))?> </small></h4>
-            <?php if($is_icu=='N'): ?>
+            <!-- <?php if($is_icu=='N'): ?>
               <label class="label label-xs label-success">&nbsp;&nbsp;</label> LA (Lantai Atas)
               <label class="label label-xs label-danger">&nbsp;&nbsp;</label> LB (Lantai Bawah)
               <label class="label label-xs label-primary">&nbsp;&nbsp;</label> VK (Ruang Bersalin dan Nifas)
               <label class="label label-xs label-inverse">&nbsp;&nbsp;</label> Lain-lain
-            <?php endif ?>
+            <?php endif ?> -->
       </center>
     
       <br>
@@ -232,16 +232,16 @@ function rollback(no_registrasi, no_kunjungan){
             <th width="50px">&nbsp;</th>
             <th></th>
             <th></th>
-            <th>Kode</th>
             <th>No MR</th>
             <th>Nama Pasien</th>
-            <th>Ruangan</th>
-            <th>Penjamin</th>
-            <th>Kelas</th>
-            <th>Hak Kelas</th>
-            <th class="center"> Tarif inaCBG</th>
             <th>Tanggal Masuk</th>
-            <th>Dokter</th>
+            <th width="150px">Ruangan</th>
+            <th>Penjamin</th>
+            <th>Dokter yang merawat</th>
+            <!-- <th>Kelas</th> -->
+            <!-- <th>Hak Kelas</th> -->
+            <th class="center"> InaCBG</th>
+            <th class="center"> Billing</th>
             <th>Status</th>          
           </tr>
         </thead>

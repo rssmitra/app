@@ -60,7 +60,7 @@ define('FRM_PENGKAJIAN', 'Form Rekam Medis');
 // input SOAP atau resume medis pasien
 define('RESUME_MEDIS', 'Input Resume Medis');
 // berisi resume medis keseluruhan atau cppt
-define('RIWAYAT_MEDIS', 'Riwayat Medis');
+define('RIWAYAT_MEDIS', 'Riwayat Catatan Medis');
 // input billing tindakan
 define('INPUT_BILL', 'Input Bill Pasien');
 // e resep

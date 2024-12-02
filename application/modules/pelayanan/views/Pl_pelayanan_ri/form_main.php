@@ -310,7 +310,7 @@ function delete_diagnosa(myid){
 <!-- end action form  -->
   
 <!-- hidden form -->  
-  <input type="hidden" class="form-control" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
+  <input type="hidden" class="form-control" name="no_registrasi" id="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
   <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
   <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>">
   <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
@@ -324,7 +324,7 @@ function delete_diagnosa(myid){
   <input type="hidden" name="kode_ri" id="kode_ri" value="<?php echo ($id)?$id:''?>">
   <input type="hidden" name="dr_merawat" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dr_merawat">
   <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
-  <input type="hidden" name="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" readonly>
+  
   <input type="hidden" name="no_kunjungan" id="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
   <input type="hidden" class="form-control" name="kode_riwayat" id="kode_riwayat" value="<?php echo isset($riwayat->kode_riwayat)?$riwayat->kode_riwayat:0?>">
 
@@ -372,38 +372,38 @@ function delete_diagnosa(myid){
 
         <li>
           <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-            <i class="red ace-icon fa fa-leaf bigger-120"></i>
-            CPPT
+            C P P T
           </a>
         </li>
 
         <li>
           <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&no_mr=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-            <i class="blue ace-icon fa fa-file bigger-120"></i>
-            PENGKAJIAN
+            <?php echo FRM_PENGKAJIAN?>
           </a>
         </li>
 
-        
+        <li>
+          <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/riwayat_medis/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+            <?php echo RIWAYAT_MEDIS?>
+          </a>
+        </li>
 
         <li>
           <a data-toggle="tab" data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id')+'?kode_bag=<?php echo $value->bag_pas?>', 'tabs_form_pelayanan')" >
-            <i class="red ace-icon fa fa-list bigger-120"></i>
-            RESEP
+            <?php echo ERESEP; ?>
           </a>
         </li>
 
         <li>
           <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->bag_pas?>/<?php echo $kode_klas?>/ranap" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-            <i class="orange ace-icon fa fa-flask bigger-120"></i>
-            PENUNJANG MEDIS
+            <?php echo EORDER?>
           </a>
         </li>
 
         
         <li class="dropdown">
           <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true">
-          <i class="green ace-icon fa fa-exchange bigger-120"></i> RUJUK INTERNAL &nbsp;
+          Rujuk Internal &nbsp;
             <i class="ace-icon fa fa-caret-down bigger-110 width-auto"></i>
           </a>
 
@@ -425,7 +425,7 @@ function delete_diagnosa(myid){
 
         <li class="dropdown">
           <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true">
-          <i class="orange ace-icon fa fa-money bigger-120"></i> BILLING &nbsp;
+          Billing Pasien &nbsp;
             <i class="ace-icon fa fa-caret-down bigger-110 width-auto"></i>
           </a>
 
@@ -435,7 +435,7 @@ function delete_diagnosa(myid){
             </li>
             <li>
               <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI" id="tabs_billing_pasien" href="#dropdown2" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-                Billing Pasien
+                Resume Billing Pasien
               </a>
             </li>
           </ul>
@@ -470,9 +470,14 @@ function delete_diagnosa(myid){
 
         <li>
           <a data-toggle="tab" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan_rm')" >
-            <i class="orange ace-icon fa fa-history bigger-120"></i>
-            REKAM MEDIS
+            Resume Medis
           </a>
+        </li>
+
+        <li>
+            <a data-toggle="tab" href="#rm_tabs" data-url="templates/References/get_riwayat_pm/<?php echo $value->no_mr?>" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan_rm')" title="Riwayat Penunjang Medis">
+              Hasil Penunjang
+            </a>
         </li>
 
       </ul>

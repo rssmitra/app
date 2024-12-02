@@ -226,8 +226,7 @@ counterfile++;
       <div class="widget-body">
         <div class="widget-main no-padding">
           <form class="form-horizontal" method="post" id="form_Csm_billing_pasien" action="<?php echo site_url('casemix/Csm_billing_pasien/process')?>" enctype="multipart/form-data">
-            <br>
-            <b><h4>DATA REGISTRASI PASIEN</h4></b>
+            <b><span>DATA REGISTRASI PASIEN</span></b>
 
             <div class="form-group">
               <label class="control-label col-md-2">No. Registrasi</label>
@@ -303,7 +302,8 @@ counterfile++;
             </div>
 
             <hr>
-            <b><h4>DOKUMEN KLAIM TAMBAHAN</h4></b>
+            <b><span>DOKUMEN KLAIM TAMBAHAN</span></b><br>
+            <span style="color: black">[Harap memasukan Nama Dokumen!]</span>
             <div class="form-group">
               <label class="control-label col-md-2">Nama Dokumen</label>
               <div class="col-md-2">
@@ -320,8 +320,44 @@ counterfile++;
 
             <div id="input_file<?php echo $j;?>"></div>
             
-            <b><h4>DOKUMEN UPLOAD</h4></b>
+            <hr>
+            <b><span>DOKUMEN YANG SUDAH DIUPLOAD</span></b><br>
+            <span style="color: black">[Pastikan location file sudah sama semua sebelum dilakukan penggabungan atau merge dokumen]</span>
             <?php echo $attachment; ?>
+
+            <hr>
+            <b><span>LAMPIRAN DOKUMEN PANGKAJIAN PASIEN LAINNYA</span></b><br>
+            <span style="color: black">[Dokumen ini dapat disesuaikan untuk kebutuhan tambahan lampiran dokumen klaim ]</span>
+            <?php
+              if(count($file_pengkajian) ==  0) :
+                echo "<b>Tidak ada lampiran dokumen lainnya</b>";
+              else : 
+            ?>
+            <table class="table">
+              <tr style="background-color: darkcyan;color: white;">
+                <th class="center">No</th>
+                <th>Nama File</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th class="center">View File</th>
+              </tr>
+              <?php $no=0; foreach($file_pengkajian as $row_fp): $no++?>
+                <tr>
+                  <td align="center"><?php echo $no;?></td>
+                  <td><?php echo $row_fp->jenis_pengkajian;?></td>
+                  <td><?php echo $row_fp->created_by;?></td>
+                  <td><?php echo $this->tanggal->formatDateTime($row_fp->created_date);?></td>
+                  <td align="center"><a style="color: blue; font-weight: bold" href="<?php echo base_url().'Templates/Export_data/exportContent?type=pdf&flag=catatan_pengkajian&mod=Pl_pelayanan_ri&cppt_id='.$row_fp->id.'&paper=P'?>" target="_blank">View File</a></td>
+                </tr>
+              <?php endforeach;?>
+            </table>
+            <?php endif; ?>
+            <p>
+              <span>Keterangan : </span><br>
+              - Silahkan download/simpan terlebih dahulu lampiran dokumen pengkajian diatas lalu upload kembali untuk dilakukan penggabungan/ merge file dokumen klaim
+            </p>
+
+            <hr>
 
             <input name="no_registrasi_hidden" id="no_registrasi_hidden" value="<?php echo $no_registrasi?>" class="form-control" type="hidden">
             <input name="form_type" id="form_type" value="RJ" class="form-control" type="hidden">
@@ -347,6 +383,7 @@ counterfile++;
                 <i class="ace-icon fa fa-pdf-file icon-on-right bigger-110"></i>
                 Merge PDF Files
               </a>
+              <a href="#" class="btn btn-sm btn-default" onclick="getMenu('casemix/Csm_verifikasi_costing/editBilling/<?php echo $no_registrasi?>/<?php echo $form_type?>')"><i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i> Reload</a>
             </div>
           </form>
         </div>

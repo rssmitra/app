@@ -18,6 +18,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         /*load model*/
         $this->load->model('Pl_pelayanan_ri_model', 'Pl_pelayanan_ri');
         $this->load->model('Pl_pelayanan_model', 'Pl_pelayanan');
+        $this->load->model('adm_pasien/loket_kasir/Adm_kasir_ri_model', 'Adm_kasir_ri');
         /*load library*/
         $this->load->library('Form_validation');
         $this->load->library('stok_barang');
@@ -166,22 +167,23 @@ class Pl_pelayanan_ri extends MX_Controller {
             $link = 'billing/Billing';
             $str_type = 'RI';
             $cek_trans = $this->Pl_pelayanan_ri->cek_trans_pelayanan($row_list->no_registrasi);
-
+            $cek_total_billing = $this->Adm_kasir_ri->cek_total_billing($row_list->no_registrasi);
             $rollback_btn = ($cek_trans>0 AND $row_list->status_pulang!= 0 || NULL)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
 
             /*color of type Ruangan RI*/
             /*LB*/
-            if ( in_array($row_list->bag_pas, array('030101','031401','031301','030801','030401','031601') ) ) {
-                $color = 'red';
-            /*LA*/
-            }elseif( in_array($row_list->bag_pas,  array('030701','030301','030601','030201') )){
-                $color = 'green';
-            /*VK Ruang Bersalin*/
-            }elseif( in_array($row_list->bag_pas,  array('031201','031701','030501') )){
-                $color = 'blue';
-            }else{
-                $color = 'black';
-            }
+            // if ( in_array($row_list->bag_pas, array('030101','031401','031301','030801','030401','031601') ) ) {
+            //     $color = 'red';
+            // /*LA*/
+            // }elseif( in_array($row_list->bag_pas,  array('030701','030301','030601','030201') )){
+            //     $color = 'green';
+            // /*VK Ruang Bersalin*/
+            // }elseif( in_array($row_list->bag_pas,  array('031201','031701','030501') )){
+            //     $color = 'blue';
+            // }else{
+            //     $color = 'black';
+            // }
+            $color = 'black';
             $row[] = $row_list->no_registrasi;
             $row[] = $str_type;
             $row[] = '';
@@ -194,16 +196,22 @@ class Pl_pelayanan_ri extends MX_Controller {
                             <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
                         </ul>
                     </div></div>';
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = '<span style="color:'.$color.'"><b>'.strtoupper($row_list->nama_pasien).'</b></span>';
-            $row[] = $row_list->nama_bagian;
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
-            $row[] = $row_list->klas;
-            $row[] = ($row_list->klas_titip)?$row_list->klas_titip:'-';
-            $row[] = number_format($row_list->tarif_inacbgs);
+            $row[] = '<div class="center"><a style="font-weight: bold; color: blue" href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_mr.'</a></div>';
+            $row[] = '<span style="color:'.$color.'">'.strtoupper($row_list->nama_pasien).'</span>';
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
+            $row[] = $row_list->nama_bagian.'<br>'.$row_list->klas.'  [Kamar '.$row_list->no_kamar.'/'.$row_list->no_bed.']';
+            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            // $row[] = $row_list->klas;
+            // $row[] = ($row_list->klas_titip)?$row_list->klas_titip:'-';
             $row[] = $row_list->nama_pegawai;
+            $row[] = number_format($row_list->tarif_inacbgs);
+            if($row_list->tarif_inacbgs > 0){
+                $color_bill = ($row_list->tarif_inacbgs < $cek_total_billing->total_billing) ? 'red' : 'green' ;
+            }else{
+                $color_bill = 'black';
+            }
+
+            $row[] = '<span style="font-weight: bold; color: '.$color_bill.'">'.number_format($cek_total_billing->total_billing).'</span>';
 
             if($cek_trans==0){
                 $status_pulang = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas </label>';
@@ -467,11 +475,21 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $ttv = '';
                 if($row_list->flag == 'resume'){
                     $ttv .= 'Vital Sign :<br>';
-                    $ttv .= 'tb. '.$row_list->tinggi_badan.' cm<br>';
-                    $ttv .= 'bb. '.$row_list->berat_badan.' kg<br>';
-                    $ttv .= 'td. '.$row_list->tekanan_darah.' mmHg<br>';
-                    $ttv .= 'nadi. '.$row_list->nadi.' bpm<br>';
-                    $ttv .= 'suhu. '.$row_list->suhu.' &deg;C<br>';
+                    if($row_list->tinggi_badan != ''){
+                        $ttv .= 'tb. '.$row_list->tinggi_badan.' cm<br>';
+                    }
+                    if($row_list->berat_badan != ''){
+                        $ttv .= 'bb. '.$row_list->berat_badan.' kg<br>';
+                    }
+                    if($row_list->tekanan_darah != ''){
+                        $ttv .= 'td. '.$row_list->tekanan_darah.' mm<br>';
+                    }
+                    if($row_list->nadi != ''){
+                        $ttv .= 'nadi. '.$row_list->nadi.' bpm<br>';
+                    }
+                    if($row_list->suhu != ''){
+                        $ttv .= 'suhu. '.$row_list->suhu.' &deg;C<br>';
+                    }
                 }
                 if($row_list->jenis_form != null){
                     $row[] = '<b>Terlampir:</b><br><a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
@@ -530,8 +548,31 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_cppt', $data);
+    }
+
+    public function riwayat_medis($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_ri'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['type']='Ranap';
+        $data['status_pulang'] = $data['value']->status_pulang;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/view_riwayat_medis', $data);
     }
 
     public function view_cppt()

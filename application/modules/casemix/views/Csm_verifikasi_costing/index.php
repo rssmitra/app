@@ -79,7 +79,7 @@ $(document).ready(function() {
             var row = oTable.row( tr );
             var data = oTable.row( $(this).parents('tr') ).data();
             var no_registrasi = data[ 1 ];
-            var tipe = data[ 9 ];
+            var tipe = data[ 8 ];
             
 
             if ( row.child.isShown() ) {
@@ -383,17 +383,16 @@ function format ( data ) {
             <th width="50px"></th>
             <th class="center"></th>
             <th width="50px" class="center">No</th>
-            <th width="70px">No. MR</th>
+            <th width="150px">No. MR/ Nama Pasien</th>
             <!-- <th width="70px">No. Reg</th> -->
             <th width="80px">No. SEP</th>
-            <th>Nama Pasien</th>
-            <th>Poli/Klinik</th>
-            <th width="100px">Tgl Masuk</th>
-            <th width="100px">Tgl Keluar</th>
-            <th width="80px" class="center">Tipe (RI/RJ)</th>
-            <th width="100px" class="center">Total Klaim</th>
+            <th width="80px">Tgl Masuk/Keluar</th>
             <th width="100px" class="center">Tgl Costing</th>
-            <th width="120px" class="center">Petugas</th>
+            <th>Poli/Klinik & Dokter</th>
+            <th width="80px" class="center">Tipe (RI/RJ)</th>
+            <th width="100px" class="center">Dok Klaim</th>
+            <!-- <th width="100px" class="center">Location File</th> -->
+            <th width="100px" class="center">Total Klaim</th>
           </tr>
         </thead>
         <tbody>

@@ -34,7 +34,7 @@
             $lampiran_file = isset($file[$row_p->kode_penunjang]) ? $file[$row_p->kode_penunjang] : [];
             echo (count($lampiran_file) > 0)?'<span>Lampiran :</span><br>' : '';
             foreach($lampiran_file as $row_lf){
-              echo '<a href="#"  onclick="PopupCenter('."'".base_url().'/'.$row_lf->csm_dex_fullpath."'".', '."'LAMPIRAN HASIL PEMERIKSAAN LABORATORIUM'".', 1000, 850)">'.$row_lf->csm_dex_nama_dok.'</a><br>';
+              echo '<a href="#"  onclick="PopupCenter('."'".$row_lf->base_url_dok.'/'.$row_lf->csm_dex_fullpath."'".', '."'LAMPIRAN HASIL PEMERIKSAAN LABORATORIUM'".', 1000, 850)">'.$row_lf->csm_dex_nama_dok.'</a><br>';
             }
           ?>
         </td>
@@ -79,7 +79,7 @@
             $lampiran_file_radiologi = isset($file[$row_f->kode_penunjang]) ? $file[$row_f->kode_penunjang] : [];
             echo (count($lampiran_file_radiologi) > 0)?'<span>Lampiran :</span><br>' : '';
             foreach($lampiran_file_radiologi as $row_lfr){
-              echo '<a href="#"  onclick="PopupCenter('."'".base_url().'/'.$row_lfr->csm_dex_fullpath."'".', '."'LAMPIRAN HASIL PEMERIKSAAN RADIOLOGI'".', 1000, 850)">'.$row_lfr->csm_dex_nama_dok.'</a><br>';
+              echo '<a href="#"  onclick="PopupCenter('."'".$row_lfr->base_url_dok.'/'.$row_lfr->csm_dex_fullpath."'".', '."'LAMPIRAN HASIL PEMERIKSAAN RADIOLOGI'".', 1000, 850)">'.$row_lfr->csm_dex_nama_dok.'</a><br>';
             }
           ?>
         </td>

@@ -981,7 +981,7 @@ class Templates extends MX_Controller {
         }
 
         $html = '';
-        $html .= '<br><div align="center" width="100%"><p><b>RINCIAN BIAYA '.strtoupper($title_name).'</b></p></div>';
+        $html .= '<br><div align="center" width="100%"><b>RINCIAN BIAYA '.strtoupper($title_name).'</b></div>';
         $html .= '<table class="table table-striped" width="100%">';
         $html .= '<tr>';
             $html .= '<th width="5%" align="center">No</th>';
