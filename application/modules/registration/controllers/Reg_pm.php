@@ -46,9 +46,9 @@ class Reg_pm extends MX_Controller {
     public function rujuk_pm($no_reg='',$bag_asal='',$klas='',$type_asal='')
     {
         /*get value by no_kunj*/
-        $data_reg = $this->Reg_pasien->get_detail_resume_medis($no_reg);
+        // $data_reg = $this->Reg_pasien->get_detail_resume_medis($no_reg);
         // echo '<pre>';print_r($data_reg);die;
-        $data['value'] = $data_reg['registrasi'];
+        // $data['value'] = $data_reg['registrasi'];
         $data['bagian_asal'] = $bag_asal;
         $data['no_reg'] = $no_reg;
         $data['type'] = $type_asal;

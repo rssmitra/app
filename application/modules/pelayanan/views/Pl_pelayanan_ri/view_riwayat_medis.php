@@ -128,13 +128,13 @@ $(document).ready(function() {
 
 });
 
-function delete_cppt(myid){
+function delete_cppt(myid, flag){
   preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
         url: 'pelayanan/Pl_pelayanan_ri/delete_cppt',
         type: "post",
-        data: {ID:myid},
+        data: {ID:myid, flag: flag },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  

@@ -2,7 +2,9 @@
   $(document).ready(function(){
 
     // DEFAULT 
-    getMenuTabsHtml("billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI", 'tabs_form_pelayanan')
+    $('#btn_monitoring_perkembangan_pasien').click();
+    // getMenuTabsHtml("billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI", 'tabs_form_pelayanan');
+
     getMenuTabsHtml("templates/References/get_riwayat_medis/<?php echo $value->no_mr?>", 'tabs_form_pelayanan_rm');
     getBillingDetail(<?php echo $value->no_registrasi?>,'RI','bill_kamar_perawatan');
 
@@ -152,6 +154,18 @@
     });
 
     /*onchange form module when click tabs*/
+    $('#btn_monitoring_perkembangan_pasien, #btn_form_pengawasan_khusus').click(function (e) {     
+      e.preventDefault();  
+      $("#tabs_modules_pelayanan_ri li").removeClass("active");
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_monitoring');
+    });
+
+    $('#btn_note').click(function (e) {     
+      e.preventDefault();  
+      $("#tabs_modules_pelayanan_ri li").removeClass("active");
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_note');
+    });
+
     $('#tabs_tindakan').click(function (e) {     
       
       e.preventDefault();  
@@ -230,7 +244,7 @@ function selesaikanKunjungan(){
 
   noMr = $('#noMrHidden').val();
   preventDefault();  
-  $("#myTab li").removeClass("active");
+  $("#tabs_modules_pelayanan_ri li").removeClass("active");
   //$('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/processPelayananSelesai');
   $('#tabs_form_pelayanan').show('fast');
   $('#tabs_form_pelayanan').load('pelayanan/Pl_pelayanan_ri/form_end_visit?mr='+noMr+'&id='+$('#kode_ri').val()+'&no_kunjungan='+$('#no_kunjungan').val()+''); 
@@ -353,14 +367,26 @@ function delete_diagnosa(myid){
   <div class="row" style="margin-bottom:3px">
 
     <div class="col-md-12">
+      
+        <a href="#" class="btn btn-xs btn-primary" id="btn_monitoring_perkembangan_pasien" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/monitoring_perkembangan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Grafik Perkembangan Harian</a>
+
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pengawasan_khusus" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pengawasan_khusus/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=KHUSUS', 'tabs_form_pelayanan')" >Form Pengawasan Khusus</a>
+
+        <a href="#" class="btn btn-xs btn-primary" id="btn_note" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/note/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >
+        Drawing
+      </a>
       <?php if($value->status_pulang==0) :?>
-        <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pulangkan Pasien</a>
+        <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Pulangkan Pasien</a>
       <?php else: ?>
-        <!-- <a href="#" class="btn btn-xs btn-primary" onclick="getMenu('pelayanan/Pl_pelayanan_ri')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a> -->
         <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" ><i class="fa fa-stethoscope"></i> Resume Medis Pasien</a>
-        <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-primary" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Rollback Data</a><?php endif ?>
+        <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-primary" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Kembalikan ke Ruang Rawat Inap</a><?php endif ?>
       <?php endif;?>
+
+      </div>
+
+      
     </div>
+
   </div>
 
   <hr>
@@ -368,7 +394,7 @@ function delete_diagnosa(myid){
   <div class="col-md-8 no-padding">
     <div class="tabbable" >  
 
-      <ul class="nav nav-tabs" id="myTab">
+      <ul class="nav nav-tabs" id="tabs_modules_pelayanan_ri">
 
         <li>
           <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>" data-url="pelayanan/Pl_pelayanan_ri/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
@@ -394,11 +420,7 @@ function delete_diagnosa(myid){
           </a>
         </li>
 
-        <li>
-          <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->bag_pas?>/<?php echo $kode_klas?>/ranap" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-            <?php echo EORDER?>
-          </a>
-        </li>
+        
 
         
         <li class="dropdown">
@@ -416,6 +438,11 @@ function delete_diagnosa(myid){
             <li>
               <a data-toggle="tab" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_ri/pesan/<?php echo $id?>/<?php echo $value->no_registrasi?>" id="tabs_pesan" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
                 (Kamar Bedah/ VK/ Pindah Ruangan)
+              </a>
+            </li>
+            <li>
+              <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/<?php echo $value->bag_pas?>/<?php echo $kode_klas?>/ranap" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
+                <?php echo EORDER?>
               </a>
             </li>
           </ul>
@@ -466,7 +493,7 @@ function delete_diagnosa(myid){
   <div class="col-md-4">
     <div class="tabbable" >  
 
-      <ul class="nav nav-tabs" id="myTab2">
+      <ul class="nav nav-tabs" id="tabs_modules_pelayanan_ri2">
 
         <li>
           <a data-toggle="tab" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan_rm')" >
