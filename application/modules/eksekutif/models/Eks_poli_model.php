@@ -754,6 +754,8 @@ class Eks_poli_model extends CI_Model {
             $title = '<span style="font-size:13.5px">Trend Kunjungan Pasien per Instalasi Periode '.$this->tanggal->formatDateDmy($_GET['from_tgl']).' s.d '.$this->tanggal->formatDateDmy($_GET['to_tgl']).'</span>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
 
+            // echo '<pre>';print_r($fields);
+            // echo '<pre>';print_r($data);die;
 
         }
 

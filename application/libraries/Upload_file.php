@@ -146,7 +146,7 @@ final Class upload_file {
                     $html .= '<td align="center">'.number_format($size_to_kb).' KB</td>';
                     $html .= '<td align="center">'.$row_list->wa_type.'</td>';
                     $html .= '<td align="center">'.$row_list->created_date.'</td>';
-                    $html .= '<td align="center"><a href="Templates/Attachment/download_attachment?fname='.$row_list->wa_fullpath.'" style="color:red">Download</a></td>';
+                    $html .= '<td align="center"><a href="Templates/Attachment/download_attachment?fname='.$row_list->wa_fullpath.'">Download</a></td>';
                     //$html .= '<td align="center"><a href="#" class="delete_attachment" data-id="'.$row_list->wa_id.'"><i class="fa fa-times-circle red"></i></a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment('.$row_list->wa_id.')"><i class="fa fa-times-circle red"></i></a></td>';
                 $html .= '</tr>';
@@ -190,6 +190,7 @@ final Class upload_file {
               //$nama_file_unik = preg_replace('/\s+/', '-', $custom_dok_name).'-'.$no_primary;
 
               $type_file = $_FILES[''.$params['name'].'']['type'][$i];
+              $file_name = isset($_POST['pf_file_name'][$i])?$_POST['pf_file_name'][$i]:$nama_file_unik;
 
               $config = array(
                 'allowed_types' => '*',
@@ -213,7 +214,7 @@ final Class upload_file {
                     
                     $doc_save = array(
                         'no_registrasi' => $params['ref_id'],
-                        'csm_dex_nama_dok' => $nama_file_unik,
+                        'csm_dex_nama_dok' => $file_name,
                         'csm_dex_jenis_dok' => $type_file,
                         'csm_dex_fullpath' => $params['path'].$nama_file_unik,
                         'base_url_dok' => base_url(),
@@ -383,7 +384,9 @@ final Class upload_file {
         $html .= '<tr style="background-color:darkcyan; color:white">';
             $html .= '<th width="30px" class="center">No</th>';
             $html .= '<th width="100px">File Name</th>';
+            $html .= '<th width="100px">Location File</th>';
             $html .= '<th width="100px">Created Date</th>';
+            $html .= '<th width="100px">Created By</th>';
             $html .= '<th width="60px" class="center">Download</th>';
             $html .= '<th width="60px" class="center">Delete</th>';
         $html .= '</tr>';
@@ -395,8 +398,10 @@ final Class upload_file {
                     $html .= '<td align="center">'.$no.'</td>';
                     $filename = explode('-',$row_list->csm_dex_nama_dok);
                     $html .= '<td align="left">'.$filename[0].'</td>';
+                    $html .= '<td>'.$row_list->base_url_dok.'</td>';
                     $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
-                    $html .= '<td align="center"><a href="'.base_url().$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
+                    $html .= '<td align="center">'.$row_list->created_by.'</td>';
+                    $html .= '<td align="center"><a href="'.$row_list->base_url_dok.$row_list->csm_dex_fullpath.'" target="_blank" style="color: blue; font-weight: bold">View File</a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
                 $html .= '</tr>';
             $no++;
@@ -441,7 +446,7 @@ final Class upload_file {
                     $filename = explode('-',$row_list->csm_dex_nama_dok);
                     $html .= '<td align="left">'.$filename[0].'</td>';
                     $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
-                    $html .= '<td align="center"><a href="'.base_url().$row_list->csm_dex_fullpath.'" style="color:red" target="_blank">View File</a></td>';
+                    $html .= '<td align="center"><a href="'.base_url().$row_list->csm_dex_fullpath.'" target="_blank" style="color: blue; font-weight: bold">View File</a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_csm('.$row_list->csm_dex_id.')"><i class="fa fa-times-circle red"></i></a></td>';
                 $html .= '</tr>';
             $no++;
@@ -485,7 +490,7 @@ final Class upload_file {
                     $html .= '<td align="center">'.$no.'</td>';
                     $html .= '<td align="left">'.$row_list->dok_prb_file_name.'</td>';
                     $html .= '<td align="center">'.$CI->tanggal->formatDateTime($row_list->created_date).'</td>';
-                    $html .= '<td align="center"><a href="'.base_url().$row_list->dok_prb_fullpath.'" style="color:red" target="_blank">View File</a></td>';
+                    $html .= '<td align="center"><a href="'.base_url().$row_list->dok_prb_fullpath.'" target="_blank" style="color: blue; font-weight: bold">View File</a></td>';
                     $html .= '<td align="center"><a href="#" class="delete_attachment" onclick="delete_attachment_fr('.$row_list->dok_prb_id.')"><i class="fa fa-times-circle red"></i></a></td>';
                 $html .= '</tr>';
             $no++;
@@ -495,10 +500,6 @@ final Class upload_file {
         }
         
         $html .= '</table>';
-
-
-
-
 
         return $html;
 

@@ -105,6 +105,9 @@ jQuery(function($) {
 
 $(document).ready(function(){
     
+  // default rincian billing pasien RI
+    getBillingDetail($('#no_registrasi').val(),'RI','bill_kamar_perawatan');
+
     $('#form_Csm_billing_pasien').ajaxForm({
       beforeSend: function() {
         achtungShowLoader();  
@@ -152,7 +155,7 @@ counternextfile = counterfile + 1;
 
 counterIdfile = counterfile + 1;
 
-document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='control-label col-md-2'>&nbsp;</label><div class='col-md-2'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><label class='control-label col-md-1'>File</label><div class='col-md-2'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\"></div>";
+document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='control-label col-md-2'>Nama Dokumen <span class='red'>*</span></label><div class='col-md-2'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><label class='control-label col-md-1'>File</label><div class='col-md-3'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\"></div>";
 
 counterfile++;
 
@@ -230,37 +233,8 @@ counterfile++;
                 <input name="csm_rp_bagian" id="csm_rp_bagian" value="<?php echo $reg->csm_rp_bagian?>" class="form-control" type="text" disabled>
               </div>
             </div>
-            <b><h4>DOKUMEN KLAIM TAMBAHAN</h4></b>
-            <div class="form-group">
-              <label class="control-label col-md-2">Nama Dokumen</label>
-              <div class="col-md-2">
-                <input name="pf_file_name[]" id="pf_file_name" class="form-control" type="text">
-              </div>
-              <label class="control-label col-md-1">File</label>
-              <div class="col-md-2">
-                <input type="file" id="pf_file" name="pf_file[]" class="upload_file form-control"/>
-              </div>
-              <div class ="col-md-1">
-                <input onClick="tambah_file()" value="+" type="button" class="btn btn-sm btn-info" />
-              </div>
-            </div>
-            <div id="input_file<?php echo $j;?>"></div>
-
-            <b><h4>DOKUMEN UPLOAD</h4></b>
-            <?php echo $attachment; ?>
-            
-            <!-- hidden form -->
-            <input name="no_registrasi_hidden" id="no_registrasi_hidden" value="<?php echo $reg->no_registrasi?>" class="form-control" type="hidden">
-            <input name="form_type" id="form_type" value="RI" class="form-control" type="hidden">
-            <?php
-              endif;
-            ?>
-            <!-- Content View Load From COntroller -->
-            <?php echo $content_view?>
-            <br>
-            <br>
-            
-            <div class="center">
+            <hr>
+            <div class="row col-md-12 no-padding pull-right">
               <button onclick="getMenu('casemix/Csm_verifikasi_costing')" class="btn btn-sm btn-success">
                 <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
                 Kembali ke daftar
@@ -270,11 +244,43 @@ counterfile++;
                 Submit
               </button>
               <a href="<?php echo base_url()?>casemix/Csm_billing_pasien/mergePDFFiles/<?php echo isset($reg->no_registrasi)?$reg->no_registrasi:''?>/RI" target="_blank"  class="btn btn-sm btn-danger">
-                <i class="ace-icon fa fa-pdf-file icon-on-right bigger-110"></i>
+                <i class="ace-icon fa fa-file icon-on-right bigger-110"></i>
                 Merge PDF Files
               </a>
+              <a href="#" class="btn btn-sm btn-default" onclick="getMenu('casemix/Csm_verifikasi_costing/editBilling/<?php echo $no_registrasi?>/<?php echo $form_type?>')"><i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i> Reload</a>
 
+              <hr>
             </div>
+            <b><span>DOKUMEN KLAIM TAMBAHAN</span></b><br>
+            <span style="font-weight: bold; color: red">[Harap memasukan Nama Dokumen!]</span>
+            <div class="form-group">
+              <label class="control-label col-md-2">Nama Dokumen <span class="red">*</span></label>
+              <div class="col-md-2">
+                <input name="pf_file_name[]" id="pf_file_name" class="form-control" type="text">
+              </div>
+              <label class="control-label col-md-1">File</label>
+              <div class="col-md-3">
+                <input type="file" id="pf_file" name="pf_file[]" class="upload_file form-control"/>
+              </div>
+              <div class ="col-md-1">
+                <input onClick="tambah_file()" value="+" type="button" class="btn btn-sm btn-info" />
+              </div>
+            </div>
+            <div id="input_file<?php echo $j;?>"></div>
+            <hr>
+            <b><span>DOKUMEN YANG SUDAH DIUPLOAD</span></b>
+            <?php echo $attachment; ?>
+            
+            <!-- hidden form -->
+            <input name="no_registrasi_hidden" id="no_registrasi_hidden" value="<?php echo $reg->no_registrasi?>" class="form-control" type="hidden">
+            <input name="form_type" id="form_type" value="RI" class="form-control" type="hidden">
+            <?php
+              endif;
+            ?>
+            <HR>
+            <!-- Content View Load From COntroller -->
+            <?php echo $content_view?>
+            
           </form>
         </div>
       </div>

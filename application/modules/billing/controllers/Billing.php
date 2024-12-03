@@ -1173,7 +1173,6 @@ class Billing extends MX_Controller {
 
     public function costing_billing($type)
     {
-        
         $this->db->trans_begin();
         $no_registrasi = ($this->input->post('no_registrasi'))?$this->regex->_genRegex($this->input->post('no_registrasi'),'RGXINT'):0;
 
@@ -1196,45 +1195,45 @@ class Billing extends MX_Controller {
             $newId = $no_registrasi;
         }
         
-        $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
+        // $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
         /*created document name*/
-        $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
-        // echo '<pre>';print_r($createDocument);die;
-
-        foreach ($createDocument as $k_cd => $v_cd) {
-            # code...
-            $explode = explode('-', $v_cd);
-            /*explode result*/
-            $named = str_replace('BILL','',$explode[0]);
-            $no_mr = $explode[1];
-            $exp_no_registrasi = $explode[2];
-            $unique_code = $explode[3];
-            $no_kunjungan = isset($explode[4])?$explode[4]:0;
+        // $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
+        // foreach ($createDocument as $k_cd => $v_cd) {
+        //     # code...
+        //     $explode = explode('-', $v_cd);
+        //     /*explode result*/
+        //     $named = str_replace('BILL','',$explode[0]);
+        //     $no_mr = $explode[1];
+        //     $exp_no_registrasi = $explode[2];
+        //     $unique_code = $explode[3];
+        //     $no_kunjungan = isset($explode[4])?$explode[4]:0;
             
-            /*create and save download file pdf*/
-            //$cbpModule = new Csm_billing_pasien;
-            if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F', $no_kunjungan) ) :
-                /*save document to database*/
-                /*csm_reg_pasien*/
-                $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
-                $doc_save = array(
-                    'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
-                    'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
-                    'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
-                    'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
-                );
+        //     /*create and save download file pdf*/
+        //     //$cbpModule = new Csm_billing_pasien;
+        //     if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F', $no_kunjungan) ) :
+        //         /*save document to database*/
+        //         /*csm_reg_pasien*/
+        //         $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+        //         $doc_save = array(
+        //             'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+        //             'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+        //             'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+        //             'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+        //         );
                 
-                $doc_save['created_date'] = date('Y-m-d H:i:s');
-                $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
-                /*check if exist*/
-                if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
-                    $this->db->insert('csm_dokumen_export', $doc_save);
-                }
-            endif;
-            /*insert database*/
-        }
+        //         $doc_save['created_date'] = date('Y-m-d H:i:s');
+        //         $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+        //         /*check if exist*/
+        //         if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+        //             $this->db->insert('csm_dokumen_export', $doc_save);
+        //         }
+        //     endif;
+        //     /*insert database*/
+        // }
         
-        return array('redirect' => 'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'', 'created_by' => $doc_save['created_by'], 'created_date' => $this->tanggal->formatDateTime($doc_save['created_date']));
+        // return array('redirect' => 'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'', 'created_by' => $doc_save['created_by'], 'created_date' => $this->tanggal->formatDateTime($doc_save['created_date']));
+        // redirect show nota bill
+        return array('redirect' => 'billing/Billing/print_preview?no_registrasi='.$no_registrasi.'');
     }
 
     public function create_jurnal($trans, $akunting, $id_ak_tc_transaksi){

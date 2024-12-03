@@ -150,7 +150,7 @@ th, td {
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo $row_dt[0]->content?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo $row_dt[0]->discount; ?></td>
-              <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($row_dt[0]->discount_rp).',-'; ?></td>
+              <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($row_dt[0]->total_diskon).',-'; ?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($row_dt[0]->jumlah_harga).',-';?></td>
             </tr>
             <?php 

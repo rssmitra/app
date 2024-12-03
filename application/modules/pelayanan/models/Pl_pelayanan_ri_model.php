@@ -590,6 +590,9 @@ class Pl_pelayanan_ri_model extends CI_Model {
 	function get_datatables_cppt($no_mr)
 	{	
 		$this->db->where('no_mr', $no_mr);
+		if(isset($_GET['no_registrasi'])){
+			$this->db->where('no_registrasi', $_GET['no_registrasi']);
+		}
 		$query = $this->db->order_by('tanggal', 'DESC')->get('view_cppt')->result();
 		// echo $this->db->last_query();
 		return $query;
@@ -604,6 +607,59 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		$query = $this->db->order_by('cppt_id', 'DESC')->get_where('th_cppt')->row();
 		return $query;
 	}
+
+	function get_content_chart_data($params) {
+
+        /*total klaim berdasarkan nomor sep per tahun existing*/
+        /*based query*/
+        // $this->db->order_by('d.nama_bagian');
+
+        if($params['prefix']==1){
+            
+			$query = $this->db->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $_GET['no_kunjungan'], 'type' => 'UMUM'])->result_array();
+			$fields[0] = array('Tekanan_Darah' => 'td');
+			$fields[1] = array('Nadi' => 'nd');
+			$fields[2] = array('Suhu' => 'sh');
+			$fields[3] = array('Nafas' => 'nafas');
+			$fields[4] = array('Oral' => 'oral');
+			$fields[5] = array('Prenteral' => 'parenteral');
+			$fields[6] = array('BAK' => 'bak');
+			$fields[7] = array('BAB' => 'bab');
+			$fields[8] = array('Muntah' => 'muntah');
+
+			foreach($query as $row){
+            	$data[0][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['td']);
+            	$data[1][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nd']);
+            	$data[2][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sh']);
+            	$data[3][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nafas']);
+            	$data[4][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['oral']);
+            	$data[5][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['parenteral']);
+            	$data[6][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bak']);
+            	$data[7][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bab']);
+            	$data[8][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['muntah']);
+			}
+
+            // echo '<pre>';print_r($fields);
+            // echo '<pre>';print_r($data);die;
+            $title = '<span style="font-size:13.5px">Grafik Perkembangan Pasien</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+
+
+        }
+
+        // echo '<pre>';print_r($data);die;
+        /*find and set type chart*/
+        $chart = $this->graph_master->chartTypeData($params['TypeChart'], $fields, $params, $data);
+        $chart_data = array(
+            'title'     => $title,
+            'subtitle'  => $subtitle,
+            'xAxis'     => isset($chart['xAxis'])?$chart['xAxis']:'',
+            'series'    => isset($chart['series'])?$chart['series']:'',
+            );
+
+        return $chart_data;
+        
+    }
 
 
 

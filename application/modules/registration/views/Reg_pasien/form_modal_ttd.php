@@ -8,13 +8,13 @@ audio, canvas, progress, video {
 <script src="<?php echo base_url()?>assets/jSignature/js/jquery.signature.js"></script>
 <script>
 $(function() {
-  var sig = $('#sig').signature({thickness: 4});
+  var sig = $('#content_drawing').signature({thickness: 4});
 
 	$('#clear').click(function() {
 		sig.signature('clear');
   });
   
-  $('#jpg').click(function() {
+  $('#save_image').click(function() {
     $('#paramsSignature').val(sig.signature('toDataURL', 'image/png', 1));
   });
   
@@ -22,7 +22,7 @@ $(function() {
 </script>
 </head>
 <body>
-<div id="sig"></div>
+<div id="content_drawing"></div>
 <label>Signature code : </label><br>
 <input type="text" value="" name="paramsSignature" class="form-control" id="paramsSignature" style="width: 100%; margin-bottom: 10px">
 
@@ -31,7 +31,7 @@ $(function() {
 	<button type="button" id="clear" class="btn btn-xs btn-danger"><i class="fa fa-undo"></i> Clear Signature</button> 
 	<!-- <button type="button" id="json">To JSON</button>
 	<button type="button" id="svg">To SVG</button> -->
-	<button type="button" id="jpg" class="btn btn-xs btn-success"><i class="fa fa-save"></i> Save Digital Signature</button>
+	<button type="button" id="save_image" class="btn btn-xs btn-success"><i class="fa fa-save"></i> Save Digital Signature</button>
 </p>
 
 <!-- hidden form -->

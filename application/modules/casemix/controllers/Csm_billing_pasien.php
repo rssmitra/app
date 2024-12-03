@@ -549,6 +549,7 @@ EOD;
             'csm_dk_fullpath' => 'uploaded/casemix/merge-'.$month_saved.'-'.$year_saved.'/'.$tipe.'/'.$reg_data->csm_rp_no_sep.'.pdf',
             'csm_dk_total_klaim' => (int)$this->Csm_billing_pasien->getTotalBilling($no_registrasi, $tipe),
             'csm_dk_tipe' => $tipe,
+            'csm_dk_base_url' => base_url(),
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')
             );

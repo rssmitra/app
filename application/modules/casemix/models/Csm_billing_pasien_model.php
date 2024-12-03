@@ -925,7 +925,7 @@ class Csm_billing_pasien_model extends CI_Model {
         }
         
 
-        $html = '<b><h3>Rawat Inap</h3></b>';
+        $html = '<b><span>RAWAT INAP</span></b>';
         $html .= '<table class="table table-striped">';
         $html .= '<tr>';
             $html .= '<th>Umur</th>';
@@ -950,13 +950,13 @@ class Csm_billing_pasien_model extends CI_Model {
         $split_billing = $this->splitResumeBillingRI($resume_billing);
         //print_r($split_billing);
          /*lampiran dokumen*/
-        $html .= '<div class="col-sm-12">';
-        $html .= '<div class="center"><p><b>DOKUMEN LAMPIRAN HASIL PENUNJANG MEDIS DAN BILLING PASIEN</b></p></div>';
+        $html .= '<div class="col-sm-12 no-padding">';
+        $html .= '<div class="left"><b>DOKUMEN HASIL PEMERIKSAAN PENUNJANG MEDIS DAN BILLING PASIEN</b></div>';
         $html .= '<table class="table table-striped" width="60%">';
         $html .= '<tr>';
-            $html .= '<th width="30px">No</th>';
+            $html .= '<th width="30px" class="center">No</th>';
             $html .= '<th width="50px">Kode</th>';
-            $html .= '<th width="120px">Nama Dokumen Lampiran</th>';
+            $html .= '<th width="350px">Nama Dokumen Lampiran</th>';
             $html .= '<th width="100px">Jenis</th>';
         $html .= '</tr>';
 
@@ -964,7 +964,7 @@ class Csm_billing_pasien_model extends CI_Model {
         foreach ($data->kasir_data as $key_kasir_data => $val_kasir_data) {
             $no=1;
             $html .= '<tr>';
-            $html .= '<td width="30px">'.$no.'</td>';
+            $html .= '<td width="30px" align="center">'.$no.'</td>';
             $html .= '<td width="50px">'.$val_kasir_data->seri_kuitansi.'-'.$val_kasir_data->kode_tc_trans_kasir.'</td>';
             $html .= '<td><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=RI&noreg='.$no_registrasi.'" target="_blank" >Rincian Biaya Keseluruhan Pasien Rawat Inap </a></td>';
             $html .= '<td>Billing Kasir</td>';
@@ -993,7 +993,7 @@ class Csm_billing_pasien_model extends CI_Model {
             }
 
             $html .= '<tr>';
-            $html .= '<td>'.$cont_no.'</td>';
+            $html .= '<td align="center">'.$cont_no.'</td>';
             $html .= '<td width="50px"><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag='.$flag.'&noreg='.$no_registrasi.'&pm='.$offset_kode_penunjang.'&kode_pm='.$offset_kode_bagian.'" target="blank" >'.$offset_kode_penunjang.'</a></td>';
             $html .= '<td>'.$offset_nama_pm.' ( '.$convert_to_string_tindakan.' ) </td>';
             $html .= '<td>Hasil Penunjang Medis</td>';
@@ -1006,7 +1006,7 @@ class Csm_billing_pasien_model extends CI_Model {
         /*rincian billing*/
         $html .= '<div class="col-sm-4">';
         $html .= '<br>';
-        $html .= '<div class="center"><p><b>RINCIAN BIAYA KESELURUHAN PASIEN RAWAT INAP</b></p></div>';
+        $html .= '<div class="center"><b>RINCIAN BIAYA KESELURUHAN PASIEN RAWAT INAP</b></div>';
         $html .= '<table class="table table-striped">';
         $html .= '<tr>';
             $html .= '<th width="30px" class="center">No</th>';

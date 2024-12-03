@@ -50,7 +50,7 @@ $(document).ready(function() {
       "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $value->no_registrasi?>",
+          "url": "pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>",
           "type": "POST"
       },
 
@@ -72,7 +72,7 @@ $(document).ready(function() {
               $('#section_form_cppt').hide('fast');
               $('#section_history_cppt').show('fast');
 
-              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $value->no_registrasi?>').load();
+              oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>').load();
               // reset form
               $('#cppt_id').val('');
               $('#subjective').val('');
@@ -128,13 +128,13 @@ $(document).ready(function() {
 
 });
 
-function delete_cppt(myid){
+function delete_cppt(myid, flag){
   preventDefault();
   if(confirm('Are you sure?')){
     $.ajax({
         url: 'pelayanan/Pl_pelayanan_ri/delete_cppt',
         type: "post",
-        data: {ID:myid},
+        data: {ID:myid, flag: flag },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -146,7 +146,7 @@ function delete_cppt(myid){
           var jsonResponse = JSON.parse(data);
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
-            oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $value->no_registrasi?>').load();
+            oTableCppt.ajax.url('pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>').load();
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
@@ -213,12 +213,12 @@ function show_edit(myid){
 
 function find_data_reload(result, base_url){
   var data = result.data;    
-  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $value->no_registrasi?>&"+data).load();
+  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&"+data).load();
   // $("html, body").animate({ scrollTop: "400px" });
 }
 
 function reset_table(){
-  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>&no_registrasi=<?php echo $value->no_registrasi?>").load();
+  oTableCppt.ajax.url("pelayanan/Pl_pelayanan_ri/get_data_cppt?no_mr=<?php echo $no_mr?>").load();
   // $("html, body").animate({ scrollTop: "400px" });
 }
 
@@ -344,7 +344,7 @@ function reload_table(){
     <div style="">
       <a href="#" class="btn btn-xs btn-primary" onclick="add_cppt()"><i class="fa fa-plus"></i> Input CPPT</a>
     </div>
-    <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN TERINTEGRASI <br>DALAM SATU PERIODE KEPERAWATAN</b></span></center><br>
+    <center><span style="font-size: 14px"><b>RIWAYAT CATATAN MEDIS DAN RESUME PASIEN RJ/RI</b></span></center><br>
       <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 
         <div class="form-group">

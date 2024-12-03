@@ -20,6 +20,7 @@ class Csm_verifikasi_costing extends MX_Controller {
         $this->load->model('Csm_billing_pasien_model', 'Csm_billing_pasien');
         /*enable profiler*/
         $this->output->enable_profiler(false);
+        $this->base_file = $_SERVER['DOCUMENT_ROOT'].'/sirs/app';
 
 
     }
@@ -79,7 +80,11 @@ class Csm_verifikasi_costing extends MX_Controller {
             $data['content_view'] = $this->Csm_billing_pasien->getDetailBillingRI($no_registrasi, $tipe, $sirs_data);
         }
 
-        //echo '<pre>';print_r($data);die;
+        // lampiran pengkajian pasien
+        $file_pengkajian = $this->db->get_where('view_cppt', array('view_cppt.no_mr' => $data['value']->no_mr, 'jenis_form !=' => 0, 'no_registrasi' => $no_registrasi))->result();
+        $data['file_pengkajian'] = $file_pengkajian;
+
+        // echo '<pre>';print_r($data);die;
         $this->load->view('Csm_verifikasi_costing/'.$view_name.'', $data);
     }
 
@@ -118,17 +123,22 @@ class Csm_verifikasi_costing extends MX_Controller {
             $row[] = '<div class="center"></div>';
             $row[] = $row_list->no_registrasi;
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/Csm_verifikasi_costing/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')" style="font-weight: bold; color: blue">'.$row_list->csm_rp_no_mr.'</a></div>';
-            $row[] = $row_list->csm_rp_no_sep;
-            // $row[] = $row_list->csm_rp_no_mr;
-            $row[] = strtoupper($row_list->csm_rp_nama_pasien);
-            $row[] = strtoupper($row_list->csm_rp_bagian);
-            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDateDmy($row_list->csm_rp_tgl_masuk);
-            $row[] = '<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDateDmy($row_list->csm_rp_tgl_keluar);
+            $row[] = '<div class="left"><a href="#" onclick="getMenu('."'".'casemix/Csm_verifikasi_costing/editBilling/'.$row_list->no_registrasi.''."/".$row_list->csm_rp_tipe."'".')" style="font-weight: bold; color: blue">'.$row_list->csm_rp_no_mr.'</a><br>'.strtoupper($row_list->csm_rp_nama_pasien).'</div>';
+            $sep = (strlen($row_list->csm_rp_no_sep) > 18) ? $row_list->csm_rp_no_sep : '<span style="color: red; font-weight: bold">Belum ada SEP</span>';
+            $row[] = $sep;
+            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDateDmy($row_list->csm_rp_tgl_masuk).'<br>'.'<i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDateDmy($row_list->csm_rp_tgl_keluar);
+
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->created_date).'<br>['.$row_list->created_by.']</div>';
+            $row[] = strtoupper($row_list->csm_rp_bagian).'<br>'.$row_list->csm_rp_nama_dokter;
             $row[] = $row_list->csm_rp_tipe;
+            if(file_exists($this->base_file.'/'.$row_list->csm_dk_fullpath)){
+                $file_exist = '<span><a style="color: blue !important; font-weight: bold" href="'.$row_list->csm_dk_base_url.'/'.$row_list->csm_dk_fullpath.'" target="_blank">View File</a></span>';
+            }else{
+                $file_exist = '<span style="color: red; font-weight: bold">No File</span>';
+            }
+            $row[] = '<div class="center">'.$file_exist.'</div>';
+            // $row[] = '<div class="center">'.$row_list->csm_dk_base_url.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
-            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->created_date).'</div>';
-            $row[] = $row_list->created_by;
             $data[] = $row;
         }
         $output = array(

@@ -278,8 +278,8 @@ class Reg_klinik extends MX_Controller {
     public function rujuk_klinik($no_reg='',$bag_asal='',$type_asal='',$klas='')
     {
         /*get value by no_kunj*/
-        $data_reg = $this->Reg_pasien->get_detail_resume_medis($no_reg);
-        $data['value'] = $data_reg['registrasi'];
+        $data_reg = $this->db->get_where('tc_registrasi', ['no_registrasi' => $no_reg])->row();
+        $data['value'] = $data_reg;
         $data['bagian_asal'] = $bag_asal;
         $data['no_reg'] = $no_reg;
         $data['type'] = $type_asal;
