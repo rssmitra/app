@@ -40,7 +40,6 @@ $(document).ready(function() {
       if(o.style=='line'){
         GraphLineStyle(o.mod, o.nameid, o.url);
       }
-
     });
     $('#grafik_content').html(html);
   });
@@ -69,6 +68,22 @@ $(document).ready(function() {
     });
 
 });
+
+function set_line_through(id, status){
+  preventDefault();
+  $.getJSON('pelayanan/Pl_pelayanan_ri/update_status_dt_monitoring', {ID: id, table: 'th_monitor_perkembangan_pasien_ri', deleted : status} , function(response_data) {
+    if(status == 1){
+      $('tr#tbl_dt_'+id+' span').css('text-decoration', 'line-through').css('color', 'red');
+      $('tr#tbl_dt_'+id+' td').css('text-decoration', 'line-through').css('color', 'red');  
+      $('#btn_action_'+id+'').html("<a href='#' onclick='set_line_through("+id+", 0)'><i class='fa fa-refresh green bigger-120'></i></a>");  
+    }else{
+      $('tr#tbl_dt_'+id+' span').css('text-decoration', '').css('color', 'black');
+      $('tr#tbl_dt_'+id+' td').css('text-decoration', '').css('color', 'black');  
+      $('tr#tbl_dt_'+id+'').css('text-decoration', '').css('color', 'black');  
+      $('#btn_action_'+id+'').html("<a href='#' onclick='set_line_through("+id+", 1)'><i class='fa fa-times-circle red bigger-120'></i></a>");  
+    }
+  });
+}
 
 </script>
 <div class="row">
@@ -178,6 +193,7 @@ $(document).ready(function() {
     <span style="font-weight: bold">DATA MONITORING PERKEMBANGAN PASIEN</span><br>
     <table class="table">
       <tr style="background: #f3f3f3">
+        <th width="30px">#</th>
         <th width="50px">JAM</th>
         <th width="30px" class="center">TD</th>
         <th width="30px" class="center">ND</th>
@@ -190,36 +206,48 @@ $(document).ready(function() {
         <th width="100px">CATATAN</th>
       </tr>
     <?php 
-      foreach($perkembangan as $key=>$rows) {
-        echo "<tr>";
-        echo "<td colspan='10'><b>Tanggal. ".$this->tanggal->formatDate($key)."</b></td>";
-        echo "</tr>";
-        foreach($rows as $row){
-          echo "<tr>
-                  <td>".$this->tanggal->formatTime($row->jam_monitor)."</td>
-                  <td align='center'>".$row->td."</td>
-                  <td align='center'>".$row->nd."</td>
-                  <td align='center'>".$row->sh."</td>
-                  <td align='center'>".$row->nafas."</td>
-                  <td>
-                    <span class='pull-left'>Oral</span> <span style='float: right'> ".$row->oral."</span><br>
-                    <span class='pull-left'>Parental</span> <span style='float: right'> ".$row->parenteral."</span><br>
-                    <span class='pull-left'>Jumlah</span> <span style='float: right'> ".$row->jumlah_a."</span>
-                  </td>
-                  <td>
-                    <span class='pull-left'>BAK</span> <span class='pull-right'>".$row->bak."</span><br>
-                    <span class='pull-left'>BAB</span> <span class='pull-right'>".$row->bab."</span><br>
-                    <span class='pull-left'>Muntah</span> <span class='pull-right'>".$row->muntah."</span><br>
-                    <span class='pull-left'>Drainage</span> <span class='pull-right'>".$row->drainage."</span><br>
-                    <span class='pull-left'>Jumlah</span> <span class='pull-right'>".$row->jumlah_b."</span><br>
-                  </td>
-                  <td align='center'>".$row->balance_cairan."</td>
-                  <td>".$row->diet."</td>
-                  <td>".$row->catatan."</td>
-                </tr>";
-
+      if (count($perkembangan) == 0) {
+        echo "<tr><td colspan='11'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
+      }else{
+        foreach($perkembangan as $key=>$rows) {
+          echo "<tr>";
+          echo "<td colspan='10'><b>Tanggal. ".$this->tanggal->formatDate($key)."</b></td>";
+          echo "</tr>";
+          foreach($rows as $row){
+            $is_deleted = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
+            if($row->is_deleted == 1){
+              $btn = "<a href='#' onclick='set_line_through(".$row->id.", 0)'><i class='fa fa-refresh green bigger-120'></i></a>";
+            }else{
+              $btn = "<a href='#' onclick='set_line_through(".$row->id.", 1)'><i class='fa fa-times-circle red bigger-120'></i></a>";
+            }
+            echo "<tr id='tbl_dt_".$row->id."' ".$is_deleted.">
+                    <td align='center'><span id='btn_action_".$row->id."'>".$btn."</span></td>
+                    <td>".$this->tanggal->formatTime($row->jam_monitor)."</td>
+                    <td align='center'>".$row->td."</td>
+                    <td align='center'>".$row->nd."</td>
+                    <td align='center'>".$row->sh."</td>
+                    <td align='center'>".$row->nafas."</td>
+                    <td>
+                      <span class='pull-left' ".$is_deleted.">Oral</span> <span ".$is_deleted." class='pull-right'> ".$row->oral."</span><br>
+                      <span class='pull-left' ".$is_deleted.">Parental</span> <span ".$is_deleted." class='pull-right'> ".$row->parenteral."</span><br>
+                      <span class='pull-left' ".$is_deleted.">Jumlah</span> <span ".$is_deleted." class='pull-right'> ".$row->jumlah_a."</span>
+                    </td>
+                    <td>
+                      <span class='pull-left' ".$is_deleted.">BAK</span> <span ".$is_deleted." class='pull-right'>".$row->bak."</span><br>
+                      <span class='pull-left' ".$is_deleted.">BAB</span> <span ".$is_deleted." class='pull-right'>".$row->bab."</span><br>
+                      <span class='pull-left' ".$is_deleted.">Muntah</span> <span ".$is_deleted." class='pull-right'>".$row->muntah."</span><br>
+                      <span class='pull-left' ".$is_deleted.">Drainage</span> <span ".$is_deleted." class='pull-right'>".$row->drainage."</span><br>
+                      <span class='pull-left' ".$is_deleted.">Jumlah</span> <span ".$is_deleted." class='pull-right'>".$row->jumlah_b."</span><br>
+                    </td>
+                    <td align='center'>".$row->balance_cairan."</td>
+                    <td>".$row->diet."</td>
+                    <td>".$row->catatan."</td>
+                  </tr>";
+  
+          }
         }
       }
+      
     ?>
     </table>
     

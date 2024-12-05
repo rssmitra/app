@@ -160,7 +160,7 @@ Parameter
 <table width="100%">
   <tr>
     <td width="30px" valign="top">1.</td>
-    <td width="80%">Apakah pasien mengalami penurunan BB yang tidaj diinginkan dalam 6 bulan terakhir ?
+    <td width="80%">Apakah pasien mengalami penurunan BB yang tidak diinginkan dalam 6 bulan terakhir ?
       <br>
       <label>
           <input type="checkbox" class="ace" name="form_25[prm_25_1]" id="prm_25_1"  onclick="checkthis('prm_25_1')">

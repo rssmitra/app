@@ -45,7 +45,7 @@ $(document).ready(function() {
             var data=xhr.responseText;        
             var jsonResponse = JSON.parse(data);        
             if(jsonResponse.status === 200){          
-              $('#btn_monitoring_perkembangan_pasien').click();
+              $('#btn_form_pengawasan_khusus').click();
               $.achtung({message: jsonResponse.message, timeout:5});  
             }else{           
               $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
@@ -57,6 +57,22 @@ $(document).ready(function() {
     });
 
 });
+
+function set_line_through(id, status){
+  preventDefault();
+  $.getJSON('pelayanan/Pl_pelayanan_ri/update_status_dt_monitoring', {ID: id, table: 'th_monitor_perkembangan_pasien_ri', deleted : status} , function(response_data) {
+    if(status == 1){
+      $('tr#tbl_dt_'+id+' span').css('text-decoration', 'line-through').css('color', 'red');
+      $('tr#tbl_dt_'+id+' td').css('text-decoration', 'line-through').css('color', 'red');  
+      $('#btn_action_'+id+'').html("<a href='#' onclick='set_line_through("+id+", 0)'><i class='fa fa-refresh green bigger-120'></i></a>");  
+    }else{
+      $('tr#tbl_dt_'+id+' span').css('text-decoration', '').css('color', 'black');
+      $('tr#tbl_dt_'+id+' td').css('text-decoration', '').css('color', 'black');  
+      $('tr#tbl_dt_'+id+'').css('text-decoration', '').css('color', 'black');  
+      $('#btn_action_'+id+'').html("<a href='#' onclick='set_line_through("+id+", 1)'><i class='fa fa-times-circle red bigger-120'></i></a>");  
+    }
+  });
+}
 
 </script>
 <style>
@@ -162,17 +178,15 @@ $(document).ready(function() {
           </div>
       </div>
     </div>
-    <div class="form-group">
-        <label class="col-sm-2">&nbsp;</label>
-        <div class="col-md-10">
-          <a href="#" class="btn btn-xs btn-primary" id="btn_save_perkembangan_pasien">Simpan</a>
-        </div>
+
+    <div class="col-md-12 no-padding" >
+      <a href="#" class="btn btn-xs btn-primary" id="btn_save_perkembangan_pasien">Simpan</a>
     </div>
     <hr>
-
-    <span style="font-weight: bold">DATA MONITORING PERKEMBANGAN PASIEN</span><br>
+    <center><span style="font-weight: bold; margin-top: 20px;">DATA MONITORING PERKEMBANGAN PASIEN</span><br></center>
     <table class="table">
       <tr style="background: #f3f3f3">
+        <th class="vertical-text" style="20px; vertical-align: middle"></th>
         <th class="vertical-text" style="20px; vertical-align: middle">JAM</th>
         <th class="vertical-text" style="20px; vertical-align: middle">KESADARAN</th>
         <th class="vertical-text" style="20px; vertical-align: middle">TENSI</th>
@@ -190,28 +204,39 @@ $(document).ready(function() {
         <th width="150px" style="vertical-align: middle" class="center">TINDAKAN / CATATAN PERAWAT</th>
       </tr>
     <?php 
-      foreach($perkembangan as $key=>$rows) {
-        echo "<tr>";
-        echo "<td colspan='10'><b>Tanggal. ".$this->tanggal->formatDate($key)."</b></td>";
-        echo "</tr>";
-        foreach($rows as $row){
-          echo "<tr>
-                  <td>".$this->tanggal->formatTime($row->jam_monitor)."</td>
-                  <td align='center'>".$row->kesadaran."</td>
-                  <td align='center'>".$row->td."</td>
-                  <td align='center'>".$row->nd."</td>
-                  <td align='center'>".$row->nafas."</td>
-                  <td align='center'>".$row->sh."</td>
-                  <td align='center'>".$row->cvp."</td>
-                  <td align='left'>".$row->obat."</td>
-                  <td align='center'>".$row->oral."</td>
-                  <td align='center'>".$row->infus."</td>
-                  <td align='center'>".$row->urine."</td>
-                  <td align='center'>".$row->muntah."</td>
-                  <td align='center'>".$row->drainage."</td>
-                  <td align='left'>".$row->catatan."</td>
-                </tr>";
+      if (count($perkembangan) == 0) {
+        echo "<tr><td colspan='14'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
+      }else{
+        foreach($perkembangan as $key=>$rows) {
+          echo "<tr>";
+          echo "<td colspan='10'><b>Tanggal. ".$this->tanggal->formatDate($key)."</b></td>";
+          echo "</tr>";
+          foreach($rows as $row){
+            $is_deleted = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
+            if($row->is_deleted == 1){
+              $btn = "<a href='#' onclick='set_line_through(".$row->id.", 0)'><i class='fa fa-refresh green bigger-120'></i></a>";
+            }else{
+              $btn = "<a href='#' onclick='set_line_through(".$row->id.", 1)'><i class='fa fa-times-circle red bigger-120'></i></a>";
+            }
+            echo "<tr id='tbl_dt_".$row->id."' ".$is_deleted.">
+                    <td align='center'><span id='btn_action_".$row->id."'>".$btn."</span></td>
+                    <td>".$this->tanggal->formatTime($row->jam_monitor)."</td>
+                    <td align='center'>".$row->kesadaran."</td>
+                    <td align='center'>".$row->td."</td>
+                    <td align='center'>".$row->nd."</td>
+                    <td align='center'>".$row->nafas."</td>
+                    <td align='center'>".$row->sh."</td>
+                    <td align='center'>".$row->cvp."</td>
+                    <td align='left'>".$row->obat."</td>
+                    <td align='center'>".$row->oral."</td>
+                    <td align='center'>".$row->infus."</td>
+                    <td align='center'>".$row->urine."</td>
+                    <td align='center'>".$row->muntah."</td>
+                    <td align='center'>".$row->drainage."</td>
+                    <td align='left'>".$row->catatan."</td>
+                  </tr>";
 
+          }
         }
       }
     ?>

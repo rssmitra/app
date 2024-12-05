@@ -160,6 +160,18 @@
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_monitoring');
     });
 
+    $('#btn_form_pemberian_obat').click(function (e) {     
+      e.preventDefault();  
+      $("#tabs_modules_pelayanan_ri li").removeClass("active");
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_pemberian_obat');
+    });
+
+    $('#btn_form_askep').click(function (e) {     
+      e.preventDefault();  
+      $("#tabs_modules_pelayanan_ri li").removeClass("active");
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_askep');
+    });
+
     $('#btn_note').click(function (e) {     
       e.preventDefault();  
       $("#tabs_modules_pelayanan_ri li").removeClass("active");
@@ -371,6 +383,10 @@ function delete_diagnosa(myid){
         <a href="#" class="btn btn-xs btn-primary" id="btn_monitoring_perkembangan_pasien" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/monitoring_perkembangan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Grafik Perkembangan Harian</a>
 
         <a href="#" class="btn btn-xs btn-primary" id="btn_form_pengawasan_khusus" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pengawasan_khusus/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=KHUSUS', 'tabs_form_pelayanan')" >Form Pengawasan Khusus</a>
+
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pemberian_obat" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Monitoring Pemberian Obat</a>
+
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_askep" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/askep/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Asuhan Keperawatan</a>
 
         <a href="#" class="btn btn-xs btn-primary" id="btn_note" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/note/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >
         Drawing

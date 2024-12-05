@@ -169,7 +169,8 @@ class Req_pembelian_model extends CI_Model {
 		$this->db->join($table, ''.$table.'.id_tc_permohonan='.$table.'_det.id_tc_permohonan', 'left');
 		$this->db->join($mt_barang, ''.$mt_barang.'.kode_brg='.$table.'_det.kode_brg', 'left');
 		$this->db->join('(SELECT id_tc_permohonan_det, sum(convert(decimal(18,2),jumlah_besar_acc)) as total_po FROM '.$tc_po.'_det GROUP BY id_tc_permohonan_det) as po', 'po.id_tc_permohonan_det='.$table.'_det.id_tc_permohonan_det', 'left');
-		$this->db->order_by($mt_barang.'.nama_brg', 'ASC');
+		// $this->db->order_by($mt_barang.'.nama_brg', 'ASC');
+		$this->db->order_by($table.'_det.created_date', 'ASC');
 		$this->db->where(''.$table.'_det.id_tc_permohonan', $id);
 		return $this->db->get()->result();
 	}

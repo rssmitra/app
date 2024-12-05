@@ -611,6 +611,56 @@ class Pl_pelayanan_ri extends MX_Controller {
         $this->load->view('Pl_pelayanan_ri/form_pengawasan_khusus', $data);
     }
 
+    public function pemberian_obat($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_ri'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['type']='Ranap';
+        $data['status_pulang'] = $data['value']->status_pulang;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // monitor perkembangan pasie
+        $pemberian_obat = $this->db->order_by('id', 'DESC')->get_where('th_monitor_pemberian_obat', ['no_kunjungan' => $no_kunjungan])->result();
+        $data['obat'] = $pemberian_obat;
+        // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_pemberian_obat', $data);
+    }
+
+    public function askep($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_ri'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['type']='Ranap';
+        $data['status_pulang'] = $data['value']->status_pulang;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // monitor perkembangan pasie
+        $askep = $this->db->order_by('id', 'DESC')->get_where('th_asuhan_keperawatan', ['no_kunjungan' => $no_kunjungan])->result();
+        $data['askep'] = $askep;
+        // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_askep', $data);
+    }
+
     public function note($id='', $no_kunjungan='')
     {
          /*breadcrumbs for edit*/
@@ -628,6 +678,9 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // monitor perkembangan pasie
+        $note = $this->db->order_by('id', 'DESC')->get_where('th_drawing_notes', ['no_kunjungan' => $no_kunjungan])->result();
+        $data['note'] = $note;
         // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_note', $data);
@@ -1427,9 +1480,13 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'no_registrasi' => $_POST['no_registrasi'],
                 'no_kunjungan' => $_POST['no_kunjungan'],
                 'no_mr' => $_POST['no_mr'],
-                'note' => $_POST['paramsSignature'],
+                'notes' => $_POST['paramsSignature'],
+                'jenis_catatan_draw' => $_POST['note_type'],
+                'created_date' => date('Y-m-d H:i:s'),
+                'created_by' => $_POST['created_name'],
+                'type_owner' => $_POST['created_by'],
             ];
-            $this->db->insert('th_notes', $dataexc);
+            $this->db->insert('th_drawing_notes', $dataexc);
 
              if ($this->db->trans_status() === FALSE)
              {
@@ -1439,7 +1496,7 @@ class Pl_pelayanan_ri extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['noMrHiddenPasien'], 'ttd' => $_POST['paramsSignature']));
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr_notes'], 'ttd' => $_POST['paramsSignature']));
              }
  
          }
@@ -1503,7 +1560,7 @@ class Pl_pelayanan_ri extends MX_Controller {
              if ($this->db->trans_status() === FALSE)
              {
                  $this->db->trans_rollback();
-                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan', 'type' => $_POST['tipe_monitoring'], 'type_pelayanan' => 'monitoring'));
              }
              else
              {
@@ -1512,6 +1569,138 @@ class Pl_pelayanan_ri extends MX_Controller {
              }
  
          }
+    }
+
+    public function process_pemberian_obat()
+    {
+        //  print_r($_POST);die;
+         $this->load->library('form_validation');
+         $val = $this->form_validation;
+     
+         $val->set_rules('no_mr', 'MR Pasien', 'trim|required', array('required' => 'MR Pasien tidak ditemukan'));
+         $val->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
+         $val->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
+         $val->set_rules('nama_obat', 'Nama Obat', 'trim|required');
+         $val->set_rules('dosis', 'Dosis', 'trim|required');
+         $val->set_rules('frek', 'Frekuensi', 'trim|required');
+         $val->set_rules('jenis_terapi', 'Jenis Terapi', 'trim|required');
+         $val->set_rules('waktu_pemberian_obat', 'Waktu', 'trim|required');
+ 
+         $val->set_message('required', "Silahkan isi field \"%s\"");
+ 
+         if ($val->run() == FALSE)
+         {
+             $val->set_error_delimiters('<div style="color:white">', '</div>');
+             echo json_encode(array('status' => 301, 'message' => validation_errors()));
+         }
+         else
+         {                       
+ 
+            $this->db->trans_begin();
+            
+            /*insert drawing*/
+            $dataexc = [
+                'tgl_obat' => $_POST['tgl_obat'],
+                'jam_obat' => $_POST['jam_obat'],
+                'no_registrasi' => $_POST['no_registrasi'],
+                'no_kunjungan' => $_POST['no_kunjungan'],
+                'no_mr' => $_POST['no_mr'],
+                'nama_obat' => isset($_POST['nama_obat'])?$_POST['nama_obat']:'',
+                'kode_brg' => isset($_POST['kode_brg'])?$_POST['kode_brg']:'',
+                'dosis' => isset($_POST['dosis'])?$_POST['dosis']:'',
+                'frek' => isset($_POST['frek'])?$_POST['frek']:'',
+                'rute' => isset($_POST['rute'])?$_POST['rute']:'',
+                'jenis_terapi' => isset($_POST['jenis_terapi'])?$_POST['jenis_terapi']:'',
+                'waktu' => isset($_POST['waktu_pemberian_obat'])?$_POST['waktu_pemberian_obat']:'',
+                'created_date' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('user')->fullname,
+
+            ];
+            $this->db->insert('th_monitor_pemberian_obat', $dataexc);
+
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan', 'type' => $_POST['tipe_monitoring'], 'type_pelayanan' => 'monitoring'));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+             }
+ 
+         }
+    }
+
+    public function process_askep()
+    {
+        //  print_r($_POST);die;
+         $this->load->library('form_validation');
+         $val = $this->form_validation;
+     
+         $val->set_rules('no_mr', 'MR Pasien', 'trim|required', array('required' => 'MR Pasien tidak ditemukan'));
+         $val->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
+         $val->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
+         $val->set_rules('catatan_askep', 'Catatan Asuhan Keperawatan', 'trim|required');
+         $val->set_rules('jenis_catatan_askep', 'Jenis Catatan', 'trim|required');
+ 
+         $val->set_message('required', "Silahkan isi field \"%s\"");
+ 
+         if ($val->run() == FALSE)
+         {
+             $val->set_error_delimiters('<div style="color:white">', '</div>');
+             echo json_encode(array('status' => 301, 'message' => validation_errors()));
+         }
+         else
+         {                       
+ 
+            $this->db->trans_begin();
+            
+            /*insert drawing*/
+            $dataexc = [
+                'tgl_askep' => $_POST['tgl_askep'],
+                'jam_askep' => $_POST['jam_askep'],
+                'no_registrasi' => $_POST['no_registrasi'],
+                'no_kunjungan' => $_POST['no_kunjungan'],
+                'no_mr' => $_POST['no_mr'],
+                'catatan_askep' => isset($_POST['catatan_askep'])?$_POST['catatan_askep']:'',
+                'jenis_catatan' => isset($_POST['jenis_catatan_askep'])?$_POST['jenis_catatan_askep']:'',
+                'created_date' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('user')->fullname,
+
+            ];
+            $this->db->insert('th_asuhan_keperawatan', $dataexc);
+
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan', 'type' => $_POST['tipe_monitoring']));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+             }
+ 
+         }
+    }
+
+    public function update_status_dt_monitoring()
+    {
+        $id=$this->input->get('ID')?$this->input->get('ID',TRUE):null;
+        if($id!=null){
+            if($this->db->where('id', $id)->update($_GET['table'], ['is_deleted' => $_GET['deleted']])){
+                if($_GET['table'] == 'th_drawing_notes'){
+                    $this->db->delete($_GET['table'], ['id' => $id]);
+                }
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
     }
 
     public function get_content_chart_monitoring(){
@@ -1528,6 +1717,14 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function content_chart_data(){
         echo json_encode($this->Pl_pelayanan_ri->get_content_chart_data($_GET), JSON_NUMERIC_CHECK);
+    }
+
+    public function show_drawing($id){
+        $dt = $this->db->get_where('th_drawing_notes', ['id' => $id])->row();
+        $data = [
+            'draw' => $dt,
+        ];
+        $this->load->view('pelayanan/Pl_pelayanan_ri/view_drawing', $data);
     }
 
 

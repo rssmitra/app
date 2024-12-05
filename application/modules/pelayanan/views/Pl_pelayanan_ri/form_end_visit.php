@@ -43,7 +43,7 @@
 </script>
 <div class="row" id="section_form_diagnosa" style="padding:8px">
 
-    <div class="col-sm-8">
+    <div class="col-sm-12">
 
         <p><b>DIAGNOSA DAN PEMERIKSAAN </b></p>
 
@@ -100,7 +100,6 @@
             <textarea name="pl_diet" id="pl_diet" class="form-control" style="height: 50px !important"><?php echo isset($riwayat->diet)?$this->master->br2nl($riwayat->diet):''?></textarea>
         </div>
 
-        
         <div style="margin-top: 6px">
             <label for="form-field-8">Obat yang diberikan</label>
               <textarea name="obat_diberikan" id="obat_diberikan" class="form-control" style="height: 70px !important" placeholder="" ><?php echo isset($riwayat->obat_diberikan)?$this->master->br2nl($riwayat->obat_diberikan):''?></textarea>  
@@ -154,7 +153,7 @@
 
     </div>
 
-    <div class="col-sm-4 no-padding">
+    <!-- <div class="col-sm-4 no-padding">
         <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN TERINTEGRASI (CPPT)</b></span></center>
         <hr>
         <div style="height: 750px;overflow: scroll;">
@@ -204,7 +203,7 @@
             </tbody>
         </table>
         </div>
-    </div>
+    </div> -->
 
 </div>
 
