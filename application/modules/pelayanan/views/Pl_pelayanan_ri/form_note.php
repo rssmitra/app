@@ -6,6 +6,7 @@ audio, canvas, progress, video {
 }
 </style>
 <script src="<?php echo base_url()?>assets/jSignature/js/jquery.signature.js"></script>
+<script type="text/javascript" src="<?php echo base_url()?>assets/jSignature/jquery.ui.touch-punch.js"></script>
 <script>
 $(function() {
   var sig = $('#drawing_content').signature({thickness: 4});
