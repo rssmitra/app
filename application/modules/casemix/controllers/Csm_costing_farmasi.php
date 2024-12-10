@@ -39,7 +39,7 @@ class Csm_costing_farmasi extends MX_Controller {
 
         // Menjalankan skrip CLI menggunakan perintah shell_exec
         $output = shell_exec("D:");
-        $output = shell_exec("cd xampp/htdocs/sirs/app/");
+        $output = shell_exec("cd xampp/htdocs/sirs-dev/app/");
         $output = shell_exec("php index.php $cliScript");
 
         // Menampilkan output dari skrip CLI

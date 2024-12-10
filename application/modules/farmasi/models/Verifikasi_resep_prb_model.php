@@ -89,6 +89,7 @@ class Verifikasi_resep_prb_model extends CI_Model {
 		}
 		$this->db->where("scheduler_running_time is null");
 		$this->db->order_by('tgl_trans', 'DESC');
+		$this->db->limit(10);
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

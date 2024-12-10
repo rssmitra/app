@@ -22,6 +22,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         $this->load->model('Verifikasi_resep_prb_model', 'Verifikasi_resep_prb');
         $this->load->model('ws_bpjs/Ws_index_model', 'Ws_index');
         $this->load->model('casemix/Csm_billing_pasien_model', 'Csm_billing_pasien');
+        $this->load->model('pelayanan/Pl_pelayanan_pm_model', 'Pl_pelayanan_pm');
         $this->load->model('Retur_obat_model', 'Retur_obat');
         // load library
         $this->load->library('Print_direct');

@@ -44,11 +44,11 @@
     </tr>
   </table>
   <br>
-  <table style="width: 100% !important;margin-top: 10px; margin-bottom: 10px">
+  <table style="width: 100% !important;margin-top: 10px; margin-bottom: 10px" >
     <thead>
         <tr style="background-color: #e4e7e8;color: #0a0a0a;border-bottom: 1px solid black; border-collapse: collapse">
           <td style="text-align:center; width: 5%; border-bottom: 1px solid black; border-collapse: collapse">No</td>
-          <td style="border-bottom: 1px solid black; width: 60%; border-collapse: collapse">Nama Obat</td>
+          <td style="border-bottom: 1px solid black; width: 75%; border-collapse: collapse">Nama Obat</td>
           <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Jumlah</td>
           <td style="text-align:center; width: 10%; border-bottom: 1px solid black; border-collapse: collapse">Satuan</td>
         </tr>
@@ -62,7 +62,7 @@
 
           <tr>
             <td style="text-align:center; width: 5%; border-collapse: collapse"><?php echo $no?>.</td>
-            <td style="border-collapse: collapse; width: 60%; "><?php echo $row_dt->nama_brg;?></td>
+            <td style="border-collapse: collapse; width: 75%; "><?php echo $row_dt->nama_brg;?></td>
             <td style="text-align:center; width: 10%; border-collapse: collapse"><?php echo number_format($jumlah_bln);?></td>
             <td style="text-align:left; width: 10%; border-collapse: collapse"><?php echo $row_dt->satuan_kecil?></td>
             <!-- <td style="text-align:right; width: 15%; border-collapse: collapse"><?php echo number_format($row_dt->sub_total)?></td> -->
