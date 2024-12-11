@@ -407,7 +407,7 @@ function rollback(no_registrasi, no_kunjungan){
           <input type="hidden" name="jenis_layanan" id="jenis_layanan" value="<?php echo ($value->jenis_layanan)?$value->jenis_layanan:''?>">
           <input type="hidden" name="nama_pasien_hidden" value="" id="nama_pasien_hidden">
           <input type="hidden" name="dokter_pemeriksa" value="<?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?>" id="dokter_pemeriksa">
-          <input type="hidden" name="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" >
+          <input type="hidden" name="no_registrasi" id="no_registrasi" class="form-control" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" >
           <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" >
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>">
           

@@ -429,7 +429,7 @@ class Verifikasi_resep_prb extends MX_Controller {
             $named = $explode[0];
             $no_sep = $explode[1];
             $kode_trans_far = $explode[2];
-            $kode_penunjang = $explode[3];
+            $kode_penunjang = isset($explode[3])?$explode[3]:'';
 
             /*create and save download file pdf*/
             if( $this->getContentPDF($named, $no_sep, $kode_trans_far, 'F', $kode_penunjang) ) :
