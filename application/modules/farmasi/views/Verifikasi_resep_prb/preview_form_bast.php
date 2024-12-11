@@ -87,7 +87,7 @@
   <table style="width: 100% !important; text-align: center">
     <tr>
       <td style="text-align: left; width: 60%">&nbsp;</td>
-      <td style="text-align: center; width: 40%">
+      <td align="center" style="text-align: center; width: 40%">
         <span><b>Pasien/Keluarga Pasien</b></span>
         <br>
         <?php 

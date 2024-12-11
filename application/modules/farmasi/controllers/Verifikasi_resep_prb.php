@@ -442,6 +442,7 @@ class Verifikasi_resep_prb extends MX_Controller {
                     'dok_prb_file_name' => $this->regex->_genRegex($filename, 'RGXQSL'),
                     'dok_prb_file_type' => $this->regex->_genRegex($named, 'RGXQSL'),
                     'dok_prb_fullpath' => $this->regex->_genRegex('uploaded/farmasi/log/'.$filename.'', 'RGXQSL'),
+                    'base_url_dok' => $this->regex->_genRegex(base_url(), 'RGXQSL'),
                 );
                 $doc_save['created_date'] = date('Y-m-d H:i:s');
                 $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
@@ -583,12 +584,21 @@ class Verifikasi_resep_prb extends MX_Controller {
             case 'SEP':
                 /*data sep*/
                 $row_sep = $this->Ws_index->findSep($no_sep);
-                $sep = isset($row_sep -> data) ? $row_sep -> data : [];
+                $sep = isset($row_sep->data) ? $row_sep->data : [];
                 $cetakan_ke = $this->Ws_index->count_sep_by_day();
                 $cetakan = isset($cetakan_ke) ? $cetakan_ke : [];
                 $header_ = isset($header) ? $header : [];
 
-                $result = array('sep' => $sep, 'cetakan_ke' => $cetakan, 'header' => $header_);
+                $config = [
+                    'no_registrasi' => $header->no_registrasi,
+                    'kode' => $sep->peserta->noKartu,
+                    'tanggal' => $header->tgl_trans,
+                    'flag' => $named,
+                ];
+                $qr_url = $this->qr_code_lib->qr_url($config);
+                $img = $this->qr_code_lib->generate($qr_url);
+
+                $result = array('sep' => $sep, 'cetakan_ke' => $cetakan, 'header' => $header_, 'qr_img' => $img, 'qr_url' => $qr_url);
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_sep', $result, true);
             break;
 

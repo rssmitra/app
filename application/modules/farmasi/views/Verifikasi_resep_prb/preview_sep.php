@@ -36,7 +36,15 @@
   </tr>
   <tr>
     <td>Nama Peserta</td><td>: <?php echo isset($sep->peserta->nama)?$sep->peserta->nama:$header->nama_pasien?></td>
-    <td style="padding-left:200px">Jns. Rawat</td><td>: <?php echo isset($sep->jnsPelayanan)?$sep->jnsPelayanan: ( $header->flag_trans == 'RI')?'R.Inap':'R.Jalan'?></td>
+    <td style="padding-left:200px">Jns. Rawat</td><td>: 
+      <?php 
+        if(isset($sep->jnsPelayanan)){
+          echo $sep->jnsPelayanan;
+        }else{
+          echo  ( $header->flag_trans == 'RI')?'R.Inap':'R.Jalan';
+        }
+        ?>
+    </td>
   </tr>
   <tr>
     <td>Tgl Lahir</td><td>: <?php echo isset($sep->peserta->tglLahir)?$sep->peserta->tglLahir:$this->tanggal->formatDateDmy($header->tgl_lhr)?> &nbsp;&nbsp;&nbsp;&nbsp; Kelamin : <?php echo isset($sep->peserta->kelamin)?$sep->peserta->kelamin:$header->jen_kelamin?></td><td style="padding-left:200px">Kls. Rawat</td><td>: <?php echo isset($sep->kelasRawat)?$sep->kelasRawat:'-'?></td>
@@ -66,23 +74,19 @@
       SEP Bukan sebagai bukti penjaminan peserta<br></p>
       <span>Cetakan ke- <?php echo ($cetakan_ke==0)?1:$cetakan_ke;?> Tanggal <?php echo date('d/m/Y H:i:s')?> wib</span>
     </td>
-    <td width="30%" valign="top" style="padding-left:120px">
-    Pasien/Keluarga Pasien<br><br>
-    <?php 
-
-      if(!empty($header->ttd_pasien)) {
-        $img_base64_encoded = $header->ttd_pasien;
-        $imageContent = file_get_contents($img_base64_encoded);
-        $path = tempnam(sys_get_temp_dir(), 'prefix');
-        
-        file_put_contents ($path, $imageContent);
-        
-        echo $img = '<img src="' . $path . '">';
-      }else{
-        echo '<br><br>_______________________';
-      }
-      
-    ?>
+    <td width="30%" valign="top" align="center" style="padding-left:120px">
+      Pasien/Keluarga Pasien<br><br>
+      <?php 
+        if(!empty($header->ttd_pasien)) {
+          $img_base64_encoded = $header->ttd_pasien;
+          $imageContent = file_get_contents($img_base64_encoded);
+          $path = tempnam(sys_get_temp_dir(), 'prefix');
+          file_put_contents ($path, $imageContent);
+          echo $img = '<img src="' . $path . '">';
+        }else{
+          echo $qr_img;
+        }
+      ?>
     </td>
   </tr>
   </table>

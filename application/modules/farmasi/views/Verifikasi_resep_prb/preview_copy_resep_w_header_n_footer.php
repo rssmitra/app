@@ -131,9 +131,9 @@
   <table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
     <tr> 
         <td width="60%"></td>
-        <td align="center" width="40%">
-        <?php echo $qr_img; ?><br>
-        <?php echo $stamp; ?>
+        <td align="center" style="text-align: center" width="40%">
+          <?php echo $qr_img; ?><br>
+          <?php echo $stamp; ?>
         </td>   
     </tr>
   </table>

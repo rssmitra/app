@@ -10,7 +10,7 @@
   <table border="0" width="100%">
   <tr>
     <td width="30%">
-      <img src="assets/images/logo-bpjs.png" style="width:200px">
+      <img src="<?php echo base_url()?>assets/images/logo-bpjs.png" style="width:200px">
     </td>
     <td width="70%" style="padding-left:30px">
       <b>SURAT ELEGIBILITAS PESERTA<br>
@@ -36,7 +36,15 @@
   </tr>
   <tr>
     <td>Nama Peserta</td><td>: <?php echo isset($sep->peserta->nama)?$sep->peserta->nama:$header->nama_pasien?></td>
-    <td style="padding-left:200px">Jns. Rawat</td><td>: <?php echo isset($sep->jnsPelayanan)?$sep->jnsPelayanan: ( $header->flag_trans == 'RI')?'R.Inap':'R.Jalan'?></td>
+    <td style="padding-left:200px">Jns. Rawat</td><td>: 
+    <?php 
+        if(isset($sep->jnsPelayanan)){
+          echo $sep->jnsPelayanan;
+        }else{
+          echo  ( $header->flag_trans == 'RI')?'R.Inap':'R.Jalan';
+        }
+      ?>
+    </td>
   </tr>
   <tr>
     <td>Tgl Lahir</td><td>: <?php echo isset($sep->peserta->tglLahir)?$sep->peserta->tglLahir:$this->tanggal->formatDateDmy($header->tgl_lhr)?> &nbsp;&nbsp;&nbsp;&nbsp; Kelamin : <?php echo isset($sep->peserta->kelamin)?$sep->peserta->kelamin:$header->jen_kelamin?></td><td style="padding-left:200px">Kls. Rawat</td><td>: <?php echo isset($sep->kelasRawat)?$sep->kelasRawat:'-'?></td>

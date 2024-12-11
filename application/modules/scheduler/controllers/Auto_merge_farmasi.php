@@ -37,11 +37,15 @@ class Auto_merge_farmasi extends MX_Controller {
         // echo '<pre>';
         // print_r($data);
         // exit;
-
+        
         $txt_success = '';
         $txt_failed = '';
         $count_result = [];
         $data_log = [];
+
+        if(count($data) == 0){
+            echo "Tidak ada data untuk diverifikasi" . PHP_EOL;
+        }
 
         foreach ($data as $key => $list) {
             
