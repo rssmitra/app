@@ -281,7 +281,7 @@ function createSuratKontrol(){
           <div class="form-group">
               <label class="control-label col-sm-3">Tgl Kontrol Kembali</label>
               <div class="col-sm-3">
-                  <input id="no_sep_lama" name="no_sep_lama" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:''?>" readonly/>
+                  <input id="tgl_kontrol_kembali" name="tgl_kontrol_kembali" class="form-control"  type="text" placeholder="Masukan keyword minimal 3 karakter" value="<?php echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:''?>" readonly/>
               </div>
             </div>
 
