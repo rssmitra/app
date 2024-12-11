@@ -661,6 +661,31 @@ class Pl_pelayanan_ri extends MX_Controller {
         $this->load->view('Pl_pelayanan_ri/form_askep', $data);
     }
 
+    public function ews($id='', $no_kunjungan='')
+    {
+         /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['kode_ri'] = $id;
+        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['type']='Ranap';
+        $data['status_pulang'] = $data['value']->status_pulang;
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        // monitor perkembangan pasie
+        $askep = $this->db->order_by('id', 'DESC')->get_where('th_asuhan_keperawatan', ['no_kunjungan' => $no_kunjungan])->result();
+        $data['askep'] = $askep;
+        // echo '<pre>';print_r($data);die;
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_ri/form_ews', $data);
+    }
+
     public function note($id='', $no_kunjungan='')
     {
          /*breadcrumbs for edit*/
