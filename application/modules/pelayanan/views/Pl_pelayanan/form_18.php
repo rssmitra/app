@@ -146,10 +146,10 @@
     <td>: <input type="text" class="input_type" name="form_18[komentar_drj]" id="komentar_drj" onchange="fillthis('komentar_drj')" style="width: 80%"></td>
   </tr>
 
-  <tr>
+  <!-- <tr>
     <td style="vertical-align: middle; width: 200px">LVH, LVMI g/m2, RWT</td>
     <td>: <input type="text" class="input_type" name="form_18[komentar_lvh]" id="komentar_lvh" onchange="fillthis('komentar_lvh')" style="width: 80%"></td>
-  </tr>
+  </tr> -->
 
   <tr>
     <td style="vertical-align: middle; width: 200px">Fungsi sistolik LV, EF % (teicholz)</td>
@@ -180,11 +180,11 @@
     <td>: <input type="text" class="input_type" name="form_18[kesimpulan_sistolik]" id="kesimpulan_sistolik" onchange="fillthis('kesimpulan_sistolik')" style="width: 80%"></td>
   </tr>
   <tr>
-    <td style="vertical-align: middle; width: 200px">LVH</td>
+    <td style="vertical-align: middle; width: 200px">Lain-lain</td>
     <td>: <input type="text" class="input_type" name="form_18[kesimpulan_lvh]" id="kesimpulan_lvh" onchange="fillthis('kesimpulan_lvh')" style="width: 80%"></td>
   </tr>
   <tr>
-    <td style="vertical-align: middle; width: 200px">Global</td>
+    <td style="vertical-align: middle; width: 200px">Analisa Segmental</td>
     <td>: <input type="text" class="input_type" name="form_18[kesimpulan_global]" id="kesimpulan_global" onchange="fillthis('kesimpulan_global')" style="width: 80%"></td>
   </tr>
   <tr>

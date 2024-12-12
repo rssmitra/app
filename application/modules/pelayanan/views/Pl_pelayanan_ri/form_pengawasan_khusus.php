@@ -205,7 +205,7 @@ function set_line_through(id, status){
       </tr>
     <?php 
       if (count($perkembangan) == 0) {
-        echo "<tr><td colspan='14'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
+        echo "<tr><td colspan='15'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
       }else{
         foreach($perkembangan as $key=>$rows) {
           echo "<tr>";

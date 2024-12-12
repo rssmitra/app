@@ -1,5 +1,15 @@
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 <script type="text/javascript">
+  $('#31_tgl_rencana_plg, #31_est_tgl_rencana_plg, #31_rencana_kontrol').datepicker({    
+    autoclose: true,    
+    todayHighlight: true    
+  })  
+  //show datepicker when clicking on the icon
+  .next().on(ace.click_event, function(){    
+    $(this).prev().focus();    
+  });  
+
+
   $('#31_diagnosa_medis').typeahead({
       source: function (query, result) {
           $.ajax({
@@ -393,36 +403,118 @@
 <span style="font-weight: bold; font-size: 14px">PERSIAPAN RENCANA PEMULANGAN PASIEN</span>
 <table class="table">
   <tr>
-    <td valign="top">Tanggal Rencana Pemulangan</td>
-    <td valign="top"><input class="input_type datepicker" type="text" style="width: 100px" name="form_31[31_tgl_rencana_plg]" id="31_tgl_rencana_plg" onchange="fillthis('31_tgl_rencana_plg')"> </td>
-    <td valign="top">Estimasi Tanggal Pemulangan</td>
-    <td valign="top"><input class="input_type datepicker" type="text" style="width: 100px" name="form_31[31_est_tgl_rencana_plg]" id="31_est_tgl_rencana_plg" onchange="fillthis('31_est_tgl_rencana_plg')"> </td>
+    <td valign="top" colspan="2">Tanggal Rencana Pemulangan <input class="input_type date-picker" data-date-format="yyyy-mm-dd" type="text" style="width: 100px" name="form_31[31_tgl_rencana_plg]" id="31_tgl_rencana_plg" onchange="fillthis('31_tgl_rencana_plg')">
+    Estimasi Tanggal Pemulangan <input class="input_type date-picker" data-date-format="yyyy-mm-dd" type="text" style="width: 100px" name="form_31[31_est_tgl_rencana_plg]" id="31_est_tgl_rencana_plg" onchange="fillthis('31_est_tgl_rencana_plg')"></td>
   </tr>
   <tr>
-    <td align="center">A</td>
+    <td align="center" width="30px">A</td>
     <td>Edukasi Selama Perawatan</td>
-    <td>Petugas</td>
-    <td>PJ Pasien</td>
   </tr>
   <tr>
     <td align="center">&nbsp;</td>
     <td>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_31[31_irj]" id="31_irj"  onclick="checkthis('31_irj')">
+          <input type="checkbox" class="ace" name="form_31[31_a1_irj]" id="31_a1_irj"  onclick="checkthis('31_a1_irj')">
           <span class="lbl" > &nbsp; Edukasi mengenai DPJO, Rencana Medis, Hasil Pemeriksaan Penunjang, Terapi, Rencana Pemulangan Pasien (dilakukan oleh dokter)</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_31[31_irj]" id="31_irj"  onclick="checkthis('31_irj')">
+          <input type="checkbox" class="ace" name="form_31[31_a2_irj]" id="31_a2_irj"  onclick="checkthis('31_a2_irj')">
           <span class="lbl" > &nbsp; Edukasi mengenai diet, pola makan, pembatasan makanan, persiapan dan pemberian makan (dilakukan oleh ahli gizi)</span>
         </label>
       </div>
       <div class="checkbox">
         <label>
-          <input type="checkbox" class="ace" name="form_31[31_irj]" id="31_irj"  onclick="checkthis('31_irj')">
+          <input type="checkbox" class="ace" name="form_31[31_a3_irj]" id="31_a3_irj"  onclick="checkthis('31_a3_irj')">
           <span class="lbl" > &nbsp; Edukasi Fisioterapi (dilakukan oleh fisioterapis)</span>
+        </label>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center" width="30px">B</td>
+    <td>Edukasi Tentang Perawatan di Rumah</td>
+  </tr>
+  <tr>
+    <td align="center">&nbsp;</td>
+    <td>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_b1_irj]" id="31_b1_irj"  onclick="checkthis('31_b1_irj')">
+          <span class="lbl" > &nbsp; Edukasi farmasi meliputi nama obat, kegunaan obat, aturan pakai, cara penyimpanan obat, masa pemberian, efek samping, tanda-tanda alergi obat (dilakukan oleh dokter/perawat)</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_b2_irj]" id="31_b2_irj"  onclick="checkthis('31_b2_irj')">
+          <span class="lbl" > &nbsp; Edukasi kesehatan mengenai perawatan dirumah (hygine, perawatan luka*, perawatan NGT / Catheter*, pencegahan infeksi, dll), pembatasan aktifitas, alat bantu yang diperlukan*, diet, tanda dan gejala yang perlu diwaspadai, nomor telepon emergency (dilakukan oleh dokter/perawat)</span>
+        </label>
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center" width="30px">C</td>
+    <td>Persiapan Pemulangan (dilakukan oleh perawat)</td>
+  </tr>
+  <tr>
+    <td align="center">&nbsp;</td>
+    <td>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c1_irj]" id="31_c1_irj"  onclick="checkthis('31_c1_irj')">
+          <span class="lbl" > &nbsp; Tempat perawatan setelah pulang</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c2_irj]" id="31_c2_irj"  onclick="checkthis('31_c2_irj')">
+          <span class="lbl" > &nbsp; Hasil pemeriksaan penunjang medis</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c3_irj]" id="31_c3_irj"  onclick="checkthis('31_c3_irj')">
+          <span class="lbl" > &nbsp; Obat pulang</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c4_irj]" id="31_c4_irj"  onclick="checkthis('31_c4_irj')">
+          <span class="lbl" > &nbsp; Alat bantu / peralatan kesehatan yang dibawa pulang</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c5_irj]" id="31_c5_irj"  onclick="checkthis('31_c5_irj')">
+          <span class="lbl" > &nbsp; Rencana kontrol, tanggal <input class="input_type date-picker" data-date-format="yyyy-mm-dd" type="text" style="width: 100px" name="form_31[31_rencana_kontrol]" id="31_rencana_kontrol" onchange="fillthis('31_rencana_kontrol')">  (sertakan kartu kontrol)</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c6_irj]" id="31_c6_irj"  onclick="checkthis('31_c6_irj')">
+          <span class="lbl" > &nbsp; Ringkasan keperawatan dan atau resume medis yang sudah terisi</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c7_irj]" id="31_c7_irj"  onclick="checkthis('31_c7_irj')">
+          <span class="lbl" > &nbsp; Alat transportasi pulang (ambulan/mobil pribadi/kendaraan umum) <input class="input_type " type="text" style="width: 100px" name="form_31[31_transport_plg]" id="31_transport_plg" onchange="fillthis('31_transport_plg')"></span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c8_irj]" id="31_c8_irj"  onclick="checkthis('31_c8_irj')">
+          <span class="lbl" > &nbsp; Kelengkapan administrasi</span>
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" class="ace" name="form_31[31_c9_irj]" id="31_c9_irj"  onclick="checkthis('31_c9_irj')">
+          <span class="lbl" > &nbsp; Lain-lain <input class="input_type " type="text" style="width: 100px" name="form_31[31_irj_lain]" id="31_irj_lain" onchange="fillthis('31_irj_lain')"></span>
         </label>
       </div>
     </td>

@@ -65,3 +65,10 @@ $route['lapi/form'] = "laporan/Lapi_report/form";
 $route['lapi/auth'] = "laporan/Lapi_report/auth";
 $route['lapi/logout'] = "laporan/Lapi_report/logout";
 $route['lapi/showData'] = "laporan/Lapi_report/show_data";
+
+// web service rs-odoo
+$route['ws/getToken'] = "api/service/getToken";
+$route['ws/getPatient/(:any)/(:any)'] = "api/service/getPatient/$1/$2";
+$route['ws/getMedicalRecord'] = "api/service/getMedicalRecord";
+
+

@@ -617,26 +617,28 @@ class Pl_pelayanan_ri_model extends CI_Model {
         if($params['prefix']==1){
             
 			$query = $this->db->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $_GET['no_kunjungan'], 'type' => 'UMUM'])->result_array();
-			$fields[0] = array('Tekanan_Darah' => 'td');
-			$fields[1] = array('Nadi' => 'nd');
-			$fields[2] = array('Suhu' => 'sh');
-			$fields[3] = array('Nafas' => 'nafas');
-			$fields[4] = array('Oral' => 'oral');
-			$fields[5] = array('Prenteral' => 'parenteral');
-			$fields[6] = array('BAK' => 'bak');
-			$fields[7] = array('BAB' => 'bab');
-			$fields[8] = array('Muntah' => 'muntah');
+			$fields[0] = array('Sistolik' => 'sistolik');
+			$fields[1] = array('Diastolik' => 'diastolik');
+			$fields[2] = array('Nadi' => 'nd');
+			$fields[3] = array('Suhu' => 'sh');
+			$fields[4] = array('Nafas' => 'nafas');
+			$fields[5] = array('Oral' => 'oral');
+			$fields[6] = array('Prenteral' => 'parenteral');
+			$fields[7] = array('BAK' => 'bak');
+			$fields[8] = array('BAB' => 'bab');
+			$fields[9] = array('Muntah' => 'muntah');
 
 			foreach($query as $row){
-            	$data[0][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['td']);
-            	$data[1][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nd']);
-            	$data[2][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sh']);
-            	$data[3][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nafas']);
-            	$data[4][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['oral']);
-            	$data[5][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['parenteral']);
-            	$data[6][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bak']);
-            	$data[7][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bab']);
-            	$data[8][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['muntah']);
+            	$data[0][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sistolik']);
+            	$data[1][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['diastolik']);
+            	$data[2][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nd']);
+            	$data[3][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sh']);
+            	$data[4][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nafas']);
+            	$data[5][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['oral']);
+            	$data[6][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['parenteral']);
+            	$data[7][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bak']);
+            	$data[8][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bab']);
+            	$data[9][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['muntah']);
 			}
 
             // echo '<pre>';print_r($fields);

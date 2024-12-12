@@ -42,7 +42,7 @@ class E_resep_rj extends MX_Controller {
         $data = array(
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
-            'flag' => 'RJ'
+            'flag' => isset($_GET['flag']) ? $_GET['flag'] : 'RJ'
         );
         /*load view index*/
         $this->load->view('E_resep_rj/index', $data);
@@ -87,7 +87,8 @@ class E_resep_rj extends MX_Controller {
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=RJ'".')" class="label label-primary">'.$row_list->kode_pesan_resep.'</a></div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $jenis_resep = ($row_list->jenis_resep == 'prb')?'<span class="red">PRB</span>':'<span class="green">NON PRB</span>';
-            $row[] = '<div class="center"><b>'.$jenis_resep.'</b></div>';
+            $tipe_layan = ($row_list->tipe_pelayanan == 'RI')?'<span style="font-weight: bold; color: blue">[RI]</span>':'<span style="font-weight: bold; color: black">[RJ]</span>';
+            $row[] = '<div class="center">'.$tipe_layan.'<br><b>'.$jenis_resep.'</b>  </div>';
             $row[] = '<div class="center"><b>'.$row_list->no_mr.'</b></div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->nama_pegawai;

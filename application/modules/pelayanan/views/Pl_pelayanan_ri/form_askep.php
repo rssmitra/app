@@ -126,7 +126,7 @@ function set_line_through(id, status){
       </tr>
     <?php 
       if (count($askep) == 0) {
-        echo "<tr><td colspan='4'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
+        echo "<tr><td colspan='5'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
       }else{
         $no=0;
         foreach($askep as $row){
@@ -163,7 +163,7 @@ function set_line_through(id, status){
       </tr>
     <?php 
       if (count($askep) == 0) {
-        echo "<tr><td colspan='4'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
+        echo "<tr><td colspan='5'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
       }else{
         $no=0;
         foreach($askep as $row){

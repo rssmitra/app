@@ -107,12 +107,22 @@ function set_line_through(id, status){
           </div>
         </div>
     </div>
+
+    <label class="control-label col-sm-2">Tekanan Darah <i class="ace-icon fa fa-angle-double-right"></i></label>
     <div class="form-group">
-        <label class="control-label col-sm-2">Tekanan Darah</label>
+        <label class="control-label col-sm-1">Sistolik</label>
         <div class="col-md-1">
-          <input type="text" class="form-control" name="td" id="td" value="">
+          <input type="text" class="form-control" name="sistolik" id="sistolik" value="">
         </div>
-        <label class="control-label col-sm-1">Nadi</label>
+        <label class="control-label col-sm-1">Diastolik</label>
+        <div class="col-md-1">
+          <input type="text" class="form-control" name="diastolik" id="diastolik" value="">
+        </div>
+    </div>
+
+    
+    <div class="form-group">
+        <label class="control-label col-sm-2">Nadi</label>
         <div class="col-md-1">
           <input type="text" class="form-control" name="nd" id="nd" value="">
         </div>
@@ -223,7 +233,7 @@ function set_line_through(id, status){
             echo "<tr id='tbl_dt_".$row->id."' ".$is_deleted.">
                     <td align='center'><span id='btn_action_".$row->id."'>".$btn."</span></td>
                     <td>".$this->tanggal->formatTime($row->jam_monitor)."</td>
-                    <td align='center'>".$row->td."</td>
+                    <td align='center'>".$row->sistolik."/".$row->diastolik."</td>
                     <td align='center'>".$row->nd."</td>
                     <td align='center'>".$row->sh."</td>
                     <td align='center'>".$row->nafas."</td>

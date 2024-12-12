@@ -175,7 +175,7 @@ function set_line_through(id, status){
       </tr>
     <?php 
       if (count($obat) == 0) {
-        echo "<tr><td colspan='9'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
+        echo "<tr><td colspan='11'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
       }else{
         $no=0;
         foreach($obat as $row){
