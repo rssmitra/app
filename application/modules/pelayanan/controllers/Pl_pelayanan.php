@@ -2417,6 +2417,7 @@ class Pl_pelayanan extends MX_Controller {
                 'catatan_pengkajian' => $this->input->post('catatan_pengkajian'), 
                 'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXQSL'), 
                 'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
+                'kode_ri' => $this->regex->_genRegex($this->input->post('kode_ri'),'RGXINT'), 
                 'value_form' => $value_form, 
             );
 

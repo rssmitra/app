@@ -147,17 +147,17 @@ jQuery(function($) {
 <br>
 <table>
   <tr>
-    <td style="width: 50%">
+    <td style="width: 60%">
       <table border="0">
         <tr>
           <td style="width: 100px">Tanggal Operasi</td>
           <td>
-            <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_12[tgl_operasi]" id="tgl_operasi" onchange="fillthis('tgl_operasi')" value="<?php echo isset($value_form['tgl_operasi'])?$value_form['tgl_operasi']:''?>"></td>
+            <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_12[tgl_operasi]" id="tgl_operasi" onchange="fillthis('tgl_operasi')" value="<?php echo isset($value_form['tgl_operasi'])?$value_form['tgl_operasi']:date('Y-m-d')?>"></td>
         </tr>
         <tr>
           <td style="width: 100px">Jam Operasi</td>
           <td>
-            <input type="text" class="input_type" name="form_12[jam_operasi]" id="jam_operasi" onchange="fillthis('jam_operasi')" value="<?php echo isset($value_form['jam_operasi'])?$value_form['jam_operasi']:''?>"><br></td>
+            <input type="text" class="input_type" name="form_12[jam_operasi]" id="jam_operasi" onchange="fillthis('jam_operasi')" value="<?php echo isset($value_form['jam_operasi'])?$value_form['jam_operasi']:date('H:i')?>"><br></td>
         </tr>
         <tr>
           <td>&nbsp;</td>
@@ -220,7 +220,7 @@ jQuery(function($) {
         </tr>
       </table>
     </td>
-    <td style="width: 50%" valign="top">
+    <td style="width: 40%" valign="top">
       <table border="0" width="100%">
         <tr>
           <td style="width: 150px">Dokter Bedah 1</td>

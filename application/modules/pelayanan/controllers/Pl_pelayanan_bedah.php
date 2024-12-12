@@ -193,13 +193,13 @@ class Pl_pelayanan_bedah extends MX_Controller {
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_bedah/form/".$row_list->id_pesan_bedah."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
-            $row[] = $row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).' ('.$row_list->jen_kelamin.')';
-            $row[] = $row_list->nama_kelompok.' '.$row_list->nama_perusahaan;
-            $row[] = $this->tanggal->formatDate($row_list->tgl_jadwal).' '.$row_list->jam_bedah;
+            $row[] = '<div class="center"><a href="#" style="color: blue; font-weight: bold" onclick="getMenu('."'pelayanan/Pl_pelayanan_bedah/form/".$row_list->id_pesan_bedah."/".$row_list->no_kunjungan."'".')">'.$row_list->no_mr.'</a></div>';
+            $row[] = strtoupper($row_list->nama_pasien).' ('.$row_list->jen_kelamin.')';
+            $row[] = $row_list->nama_kelompok.'<br>'.$row_list->nama_perusahaan;
+            $row[] = $this->tanggal->formatDateDmy($row_list->tgl_jadwal).' '.$row_list->jam_bedah;
             $row[] = $row_list->nama_pegawai;
             $row[] = $row_list->nama_tarif;
-            $row[] = '<div class="center">'.$row_list->no_kamar.'</div>';
+            // $row[] = '<div class="center">'.$row_list->no_kamar.'</div>';
             $row[] = '<div align="right">Rp. '.number_format($row_list->total).',-</div>';
 
             if($row_list->tgl_keluar==NULL){

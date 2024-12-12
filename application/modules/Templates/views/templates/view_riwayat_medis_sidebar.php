@@ -114,7 +114,7 @@ hr {
             <b><?php echo $this->tanggal->formatDateTime($value->tgl_periksa)?></b><?php echo (empty($value->status_kunjungan)) ?' <span style="color: red; font-weight: bold">[Batal]</span>':''?><br>
             <div style="padding-left: 20px">
               <?php echo $value->dokter_pemeriksa?><br>
-              <?php echo ucwords($value->nama_bagian)?>
+              <?php echo ucwords($value->nama_bagian)?> (<?php echo $value->tipe?>)
               <?php echo (!in_array($value->cara_keluar_pasien, [null, 'Atas Persetujuan Dokter', 'Atas Permintaan Sendiri']))?'<br><span class="label label-primary">'.$value->cara_keluar_pasien.'</span>':'';?>&nbsp;
               <?php echo ($lembar_konsul == 1)?'<span class="label label-warning">Konsul Internal</span>':'';?>
             </div>
@@ -133,7 +133,7 @@ hr {
             <span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
             <div style="margin-top: 6px">
                 <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> : </label><br>
-                <?php echo isset($value->anamnesa)?nl2br($value->anamnesa):''?>
+                <?php echo isset($value->subjective)?nl2br($value->subjective):''?>
             </div>
             <br>
 
@@ -171,7 +171,7 @@ hr {
                 </table>
 
                 <label for="form-field-8"> <b>Pemeriksaan Fisik : </b></label><br>
-                <?php echo isset($value->pemeriksaan)?nl2br($value->pemeriksaan):''?>
+                <?php echo isset($value->objective)?nl2br($value->objective):''?>
                 
             </div>
             <br>
@@ -179,7 +179,7 @@ hr {
             <span style="font-weight: bold; font-style: italic; color: blue">(Assesment)</span>
             <div style="margin-top: 6px">
                 <label for="form-field-8"><b>Diagnosa Primer(ICD10) : </b></label><br>
-                <?php echo isset($value->kode_icd_diagnosa)?$value->kode_icd_diagnosa:''?> - <?php echo isset($value->diagnosa_akhir)?$value->diagnosa_akhir:''?>
+                <?php echo isset($value->kode_icd_diagnosa)?$value->kode_icd_diagnosa:''?> - <?php echo isset($value->assesment)?$value->assesment:''?>
             </div>
 
             <div style="margin-top: 6px">
@@ -215,7 +215,7 @@ hr {
             <span style="font-weight: bold; font-style: italic; color: blue">(Planning)</span>
             <div style="margin-top: 6px">
                 <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter : </b></label><br>
-                <?php echo isset($value->pengobatan)?nl2br($value->pengobatan):''?>
+                <?php echo isset($value->planning)?nl2br($value->planning):''?>
                 <br>
                 <label for="form-field-8"><b>Resep Dokter : </b></label><br>
                 <?php echo isset($value->resep_farmasi)?nl2br($value->resep_farmasi):''?>

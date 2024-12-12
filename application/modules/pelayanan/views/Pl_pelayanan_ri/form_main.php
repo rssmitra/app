@@ -402,8 +402,8 @@ function delete_diagnosa(myid){
       <?php if($value->status_pulang==0) :?>
         <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Pulangkan Pasien</a>
       <?php else: ?>
-        <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" ><i class="fa fa-stethoscope"></i> Resume Medis Pasien</a>
-        <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-primary" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Kembalikan ke Ruang Rawat Inap</a><?php endif ?>
+        <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Resume Medis Pasien Pulang</a>
+        <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-danger" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"> Kembalikan ke Ruang Rawat Inap</a><?php else: echo '<a href="#" class="btn btn-xs btn-success"><i class="fa fa-check bigger-120"></i> Lunas</a>'; endif ?>
       <?php endif;?>
 
       </div>

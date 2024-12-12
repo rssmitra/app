@@ -634,7 +634,7 @@ class Billing_model extends CI_Model {
 
         /*split resume billing*/
         $split_billing = $this->splitResumeBillingRI($resume_billing);
-
+        $sum_subtotal_ = [];
         foreach ($split_billing as $k => $val) {
             /*total*/
             if((int)$val['subtotal'] > 0){
@@ -747,6 +747,7 @@ class Billing_model extends CI_Model {
         $html .= '</tr>'; 
         $no=1;
         // echo '<pre>';print_r($split_billing);die;
+        $sum_subtotal = [];
         foreach ($split_billing as $k => $val) {
             /*total*/
             if((int)$val['subtotal'] > 0){

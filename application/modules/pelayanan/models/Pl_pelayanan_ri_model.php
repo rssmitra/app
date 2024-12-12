@@ -485,7 +485,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 
 	public function cek_vk_pulang($kode_ri){
 		$this->db->from('ri_pasien_vk');
-		$this->db->where( array('kode_ri' => $kode_ri,'flag_vk' => 0) );
+		$this->db->where( array('kode_ri' => $kode_ri,'tgl_keluar' => null) );
 		$query = $this->db->get();
 		$cek_vk = $query->num_rows();
 

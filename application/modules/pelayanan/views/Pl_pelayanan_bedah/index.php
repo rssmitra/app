@@ -125,11 +125,10 @@ function getBillingDetail(noreg, type, field){
           <th>Kode</th>
           <th>Data Pasien</th>
           <th>Penjamin</th>
-          <th>Tanggal/Jam</th>
+          <th>Tanggal/Jam Masuk</th>
           <th>Dokter</th>
           <th>Tindakan</th>
-          <th>Kamar</th>
-          <th>Perkiraan Biaya</th>
+          <th>Estimasi Biaya</th>
           <th>Status</th>          
         </tr>
       </thead>

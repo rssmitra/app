@@ -435,7 +435,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $no++;
                     $row[] = $no;
                     $row[] = $this->tanggal->formatDateTime($row_list->tanggal);
-                    $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
+                    
+                    $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label><br>'.$txt_resume.'';
                     // $row[] = '<a href="#" onclick="show_modal_pengkajian('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                     // $row[] = '<a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                     $row[] = '<a href="#" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
@@ -445,7 +446,6 @@ class Pl_pelayanan_ri extends MX_Controller {
 
                     $row[] = '<div class="center"><input name="is_verified" id="is_verified_'.$row_list->id.'" value="1" class="ace ace-switch ace-switch-5" type="checkbox" onclick="verif_dpjp('.$row_list->id.', this.value)" '.$checked.' ><span class="lbl"></span><br><span id="verif_id_'.$row_list->id.'">'.$desc.'</span></div>';
                     
-
                     $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-success" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')"><i class="fa fa-pencil"></i></a><a href="#" onclick="delete_cppt('.$row_list->id.','."'".$row_list->flag."'".')" class="btn btn-xs btn-danger"><i class="fa fa-times-circle"></i></a></div>';
                     $data[] = $row;
                 }
@@ -461,8 +461,12 @@ class Pl_pelayanan_ri extends MX_Controller {
                 if($row_list->tipe == 'RJ' && $row_list->no_kunjungan == null && $row_list->reff_id == null){
                     $status = '&nbsp;<label class="label label-danger">BATAL</label>';
                 }
-
-                $row[] = $this->tanggal->formatDateTime($row_list->tanggal).'<br>'.strtoupper($row_list->ppa).'<br>'.$row_list->nama_ppa.'<br><label class="label label-'.$class_label.'">'.$row_list->tipe.'</label>'.$status.'';
+                if($row_list->flag == 'resume'){
+                    $txt_resume = '<br>(RESUME MEDIS '.$row_list->tipe.')';
+                }else{
+                    $txt_resume = '<br>('.$row_list->jenis_pengkajian.')';
+                }
+                $row[] = $this->tanggal->formatDateTime($row_list->tanggal).'<br>'.strtoupper($row_list->ppa).'<br>'.$row_list->nama_ppa.'<br><label class="label label-'.$class_label.'">'.$row_list->tipe.'</label>'.$txt_resume.'<br>'.$status.'';
 
                 $arr_text = isset($row_list->diagnosa_sekunder) ? str_replace('|',',',$row_list->diagnosa_sekunder) : '';
                 // $diagnosa_sekunder = '';
@@ -535,15 +539,20 @@ class Pl_pelayanan_ri extends MX_Controller {
     {
          /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        // get kunjungan
+        $kunjungan = $this->db->get_where('tc_kunjungan', ['no_kunjungan' => $no_kunjungan])->row();
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
+        $data['kunjungan'] = $kunjungan;
+        // echo '<pre>';print_r($data);die;
         /*mr*/
-        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_mr'] = $kunjungan->no_mr;
         $data['no_kunjungan'] = $no_kunjungan;
+        $data['no_registrasi'] = $kunjungan->no_registrasi;
         $data['kode_ri'] = $id;
-        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['sess_kode_bag'] = ( $kunjungan->kode_bagian_tujuan)? $kunjungan->kode_bagian_tujuan:0;
         $data['type']='Ranap';
-        $data['status_pulang'] = $data['value']->status_pulang;
+        $data['status_pulang'] = ($kunjungan->tgl_keluar == null) ? 0 : 1;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -715,15 +724,17 @@ class Pl_pelayanan_ri extends MX_Controller {
     {
          /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        // get kunjungan
+        $kunjungan = $this->db->get_where('tc_kunjungan', ['no_kunjungan' => $no_kunjungan])->row();
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
         /*mr*/
-        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_mr'] = $kunjungan->no_mr;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['kode_ri'] = $id;
-        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
+        $data['sess_kode_bag'] = ( $kunjungan->kode_bagian_tujuan)? $kunjungan->kode_bagian_tujuan:0;
         $data['type']='Ranap';
-        $data['status_pulang'] = $data['value']->status_pulang;
+        $data['status_pulang'] = ($kunjungan->tgl_keluar == null) ? 0 : 1;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -1320,7 +1331,7 @@ class Pl_pelayanan_ri extends MX_Controller {
             }
 
             // generate file resume medis
-            $this->generateResumeMedisRI($no_mr, $no_registrasi);
+            // $this->generateResumeMedisRI($no_mr, $no_registrasi);
 
 
             
