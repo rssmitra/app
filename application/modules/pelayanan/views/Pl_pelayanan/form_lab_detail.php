@@ -97,7 +97,7 @@ $(document).ready(function(){
   <input type="hidden" class="form-control" id="kode_bagian_asal" name="kode_bagian_asal" value="<?php echo isset($kode_bagian_asal)?$kode_bagian_asal:''?>">
   <input type="hidden" class="form-control" id="kode_klas" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>">
   <input type="hidden" class="form-control" id="tipe_pelayanan" name="tipe_pelayanan" value="<?php echo isset($tipe_pelayanan)?$tipe_pelayanan:''?>">
-
+  
   <div class="form-group">
     
     <div class="col-sm-6 pull-right" style="text-align: right">

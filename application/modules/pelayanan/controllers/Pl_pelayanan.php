@@ -290,7 +290,7 @@ class Pl_pelayanan extends MX_Controller {
         $tipe_pelayanan = ($substr == '03') ? 'ranap' : 'rajal';
         $data['tipe_pelayanan'] = $tipe_pelayanan;
         
-        // echo '<pre>'; print_r($substr);die;
+        // echo '<pre>'; print_r($data);die;
         $this->load->view('Pl_pelayanan/form_lab_detail', $data);
     }
 

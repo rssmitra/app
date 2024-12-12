@@ -436,7 +436,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     $row[] = $no;
                     $row[] = $this->tanggal->formatDateTime($row_list->tanggal);
                     
-                    $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label><br>'.$txt_resume.'';
+                    $row[] = '['.strtoupper($row_list->ppa).']<br>'.$row_list->nama_ppa.'<br><label class="label label-success">'.$row_list->tipe.'</label>';
                     // $row[] = '<a href="#" onclick="show_modal_pengkajian('.$row_list->id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                     // $row[] = '<a href="#" onclick="show_modal_medium_return_json('."'pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian/".$row_list->id."'".', '."'".$row_list->jenis_pengkajian."'".')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
                     $row[] = '<a href="#" onclick="show_edit('.$row_list->id.', '."'".$row_list->tipe."'".', '.$row_list->no_kunjungan.', '.$row_list->reff_id.')">'.strtoupper($row_list->jenis_pengkajian).'</a>';
