@@ -303,58 +303,169 @@ class Service extends MX_Controller {
 
     }
 
-    public function get_riwayat_medis($mr){
-		
-		$year = date('Y') - 1;
-		$no_mr = (string)$mr;
+    public function getMedicalExam(){
 
-        $this->db->from('view_cppt');
+        $content = file_get_contents("php://input");
+        $post = json_decode($content);
+        // check token
+        $checkToken = $this->checkToken($this->input->request_headers());
 
-		// resume medis pasien
-		$limit = isset($_GET['key'])?$_GET['key']:20;
-		$result = $this->db->select('th_riwayat_pasien.*, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien')->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit($limit)->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_mr' => $no_mr))->result(); 
-		// echo '<pre>';print_r($result);die;
+        $year = date('Y') - 1;
+		$no_mr = (string)$post->nomr;
 
-		// eresep
-		$eresep = $this->db->get_where('fr_tc_pesan_resep_detail', ['no_mr' => $no_mr, 'parent' => '0'])->result();
+        // file emr pasien
 
-		// file emr pasien
-		$emr = $this->db->select('csm_dokumen_export.*, tc_kunjungan.no_mr, tc_kunjungan.no_kunjungan')->join('tc_kunjungan', 'tc_kunjungan.no_registrasi=csm_dokumen_export.no_registrasi', 'left')->get_where('csm_dokumen_export', array('tc_kunjungan.no_mr' => $no_mr))->result();
-		$getDataFile = [];
-		foreach ($emr as $key_file => $val_file) {
-			$getDataFile[$val_file->no_registrasi][$val_file->no_kunjungan][] = $val_file;
+        // file emr pasien
+		$emr = $this->db->select('csm_dokumen_export.*, tc_kunjungan.no_mr, tc_kunjungan.no_kunjungan')
+        ->join('pm_tc_penunjang', 'pm_tc_penunjang.kode_penunjang=csm_dokumen_export.kode_penunjang', 'left')
+        ->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan=pm_tc_penunjang.no_kunjungan', 'left')
+        ->get_where('csm_dokumen_export', array('tc_kunjungan.no_mr' => $no_mr))->result();
+
+        $getDataFile = [];
+        foreach ($emr as $key_file => $val_file) {
+            $getDataFile[$val_file->kode_penunjang][] = [
+                'filename' => $val_file->csm_dex_nama_dok,
+                'fileurl' => $val_file->base_url_dok.''.$val_file->csm_dex_fullpath,
+            ];
+        }
+
+        // penunjang medis
+        if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
+		{
+			$this->db->select('tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan, flag_mcu');
+			$this->db->select('tgl_daftar, tgl_isihasil, tgl_periksa');
+			$this->db->select("CAST((
+				SELECT '|' + nama_tindakan
+				FROM tc_trans_pelayanan
+				LEFT JOIN pm_tc_penunjang n ON n.no_kunjungan=tc_trans_pelayanan.no_kunjungan
+				LEFT JOIN tc_kunjungan s ON s.no_kunjungan=n.no_kunjungan
+				WHERE s.no_kunjungan = tc_kunjungan.no_kunjungan AND n.kode_penunjang = pm_tc_penunjang.kode_penunjang
+				FOR XML PATH(''))as varchar(max)) as nama_tarif");
+			$this->db->from('tc_kunjungan');
+			$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
+			$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
+			$this->db->join('mt_bagian as asal','asal.kode_bagian=tc_kunjungan.kode_bagian_asal','left');
+			$this->db->join('mt_bagian as tujuan','tujuan.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left');
+			$this->db->join('pm_tc_penunjang','pm_tc_penunjang.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+			$this->db->where('tc_kunjungan.no_mr', $no_mr);
+			$this->db->where('tgl_isihasil is not null');
+			$this->db->where('DATEDIFF(year,tgl_masuk,GETDATE()) < 2 ');
+			$this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05');
+			$this->db->order_by('tgl_masuk', 'DESC');
+			$penunjang = $this->db->get()->result();
+			$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
 		}
 
+        $getDataPenunjang = [];
+        foreach ($penunjang as $key => $value) {
+            $exp = explode("|", $value->nama_tarif);
+            $pemeriksaan = array_diff(array_unique($exp),array(''));
+            // lampiran file
+            $getFile = isset($getDataFile[$value->kode_penunjang])?$getDataFile[$value->kode_penunjang]:'';
+            $getDataPenunjang[] = [
+                'no_registrasi' => $value->no_registrasi,
+                'no_kunjungan' => $value->no_kunjungan,
+                'kode_penunjang' => $value->kode_penunjang,
+                'kode_unit' => $value->kode_bagian_tujuan,
+                'no_mr' => $value->no_mr,
+                'tanggal_daftar' => $value->tgl_daftar,
+                'jenis_penunjang' => $value->tujuan_bagian,
+                'jenis_pemeriksaan' => $pemeriksaan,
+                'flag_mcu' => $value->flag_mcu,
+                'lampiran_hasil' => $getFile,
+            ];
+        }
+        
 
-		// form pengkajian pasien / form rekam medis
-		$file_pengkajian = $this->db->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr, 'jenis_form !=' => 0))->result();
-		$getDataFilePengkajian = [];
-		foreach ($file_pengkajian as $key_file_pkj => $val_file_pkj) {
-			$getDataFilePengkajian[$val_file_pkj->no_registrasi][$val_file_pkj->no_kunjungan][] = $val_file_pkj;
-		}
+        if(count($getDataPenunjang) == 0){
+            $response = array(
+                'response' => array(
+                    'code' => 202,
+                    'message' => 'Data Pemeriksaan Penunjang Medis Pasien tidak ditemukan',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }else{
+            $response = array(
+                'response' => array(
+                    'code' => 200,
+                    'message' => 'Sukses',
+                    'metadata' => $getDataPenunjang,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
 
-		$getDataResep = [];
-		foreach ($eresep as $key_resep => $value_resep) {
-			$getDataResep[$value_resep->no_registrasi][$value_resep->no_kunjungan][$value_resep->kode_pesan_resep][] = $value_resep;
-		}
+    }
 
-		$data = array(
-			'file' => $getDataFile,
-			'file_pkj' => $getDataFilePengkajian,
-			'result' => $result,
-			'eresep' => $getDataResep,
-			'no_mr' => $no_mr,
-			
-		);
+    public function getMedicalExamResult(){
+        
+        $content = file_get_contents("php://input");
+        $post = json_decode($content);
+        // check token
+        $checkToken = $this->checkToken($this->input->request_headers());
+        // define variabel
+        $no_registrasi = $post->no_registrasi;
+        $no_kunjungan = $post->no_kunjungan;
+        $kode_penunjang = $post->kode_penunjang;
+        $kode_bagian_pm = $post->kode_unit;
+        $flag_mcu = $post->flag_mcu;
 
-		return $data;
-	}
+        // get hasil penunjang
+        if($flag_mcu==''){
+            $table = 'pm_hasilpasien_v as a';
+            $where = 'a.kode_trans_pelayanan IN (SELECT kode_trans_pelayanan FROM tc_trans_pelayanan WHERE kode_penunjang='.$kode_penunjang.')';
+        }else{
+            $table = 'mcu_hasilpasien_pm_v as a';
+            $where = 'a.kode_trans_pelayanan IN (SELECT kode_trans_pelayanan_paket_mcu FROM tc_trans_pelayanan_paket_mcu WHERE kode_penunjang='.$kode_penunjang.')';
+        }
+        $this->db->select("a.kode_trans_pelayanan, a.kode_tarif, a.nama_pemeriksaan, REPLACE(a.nama_tindakan, 'BPJS' , '') as nama_tindakan, a.hasil, a.standar_hasil_pria, a.standar_hasil_wanita, a.satuan, a.keterangan, a.detail_item_1, a.detail_item_2,b.referensi,d.urutan");
+        $this->db->from($table);
+        $this->db->join('mt_master_tarif b', 'a.kode_tarif=b.kode_tarif', 'left');
+        $this->db->join('pm_mt_standarhasil d', 'a.kode_mt_hasilpm=d.kode_mt_hasilpm', 'left');
+        $this->db->where($where);
+        $this->db->where(' a.hasil != '."''".' ');
+        $this->db->group_by('a.kode_tarif, a.nama_pemeriksaan,a.nama_tindakan, a.hasil, a.standar_hasil_pria, a.standar_hasil_wanita, a.satuan, a.keterangan, a.detail_item_1, a.detail_item_2,b.referensi,d.urutan, a.kode_trans_pelayanan');
+        $this->db->order_by('d.urutan ASC');
+        $result_pm = $this->db->get()->result();
 
+        $getTindakan = [];
+        foreach($result_pm as $row_pm){
+            $getTindakan[$row_pm->kode_trans_pelayanan][$row_pm->nama_tindakan][] = [
+                'urutan' => $row_pm->urutan,
+                'jenis_pemeriksaan' => $row_pm->nama_pemeriksaan,
+                'standar_hasil_pria' => $row_pm->standar_hasil_pria,
+                'standar_hasil_wanita' => $row_pm->standar_hasil_wanita,
+                'satuan' => $row_pm->satuan,
+                'hasil' => $row_pm->hasil,
+                'keterangan' => $row_pm->keterangan,
+            ];
+        }
 
+        if(count($getTindakan) == 0){
+            $response = array(
+                'response' => array(
+                    'code' => 202,
+                    'message' => 'Data Hasil Pemeriksaan Penunjang Medis Pasien tidak ditemukan',
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }else{
+            $response = array(
+                'response' => array(
+                    'code' => 200,
+                    'message' => 'Sukses',
+                    'metadata' => $getTindakan,
+                    ),
+            );
+            echo json_encode($response);
+            exit;
+        }
 
-
-
-
+    }
 
 }
 

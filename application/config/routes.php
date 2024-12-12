@@ -70,5 +70,7 @@ $route['lapi/showData'] = "laporan/Lapi_report/show_data";
 $route['ws/getToken'] = "api/service/getToken";
 $route['ws/getPatient/(:any)/(:any)'] = "api/service/getPatient/$1/$2";
 $route['ws/getMedicalRecord'] = "api/service/getMedicalRecord";
+$route['ws/getMedicalExam'] = "api/service/getMedicalExam";
+$route['ws/getMedicalExamResult'] = "api/service/getMedicalExamResult";
 
 
