@@ -33,7 +33,7 @@ class Process_entry_resep extends MX_Controller {
 
     public function process()
     {
-        print_r($_POST);die;
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         // form validation
         if( $_POST['submit'] != 'header' ){
