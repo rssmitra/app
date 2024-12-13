@@ -42,6 +42,7 @@ $(document).ready(function(){
       });
     }
     $('#tabs_pengkajian').click();
+    $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveCatatanPengkajian');
 
     // getMenuTabs('pelayanan/Pl_pelayanan_igd/tindakan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo KODE_IGD?>', 'tabs_form_pelayanan');
 
