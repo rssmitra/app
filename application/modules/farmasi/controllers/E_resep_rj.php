@@ -84,7 +84,7 @@ class E_resep_rj extends MX_Controller {
             $row[] = '<div class="center" width="30px">'.$no.'</div>';
             $row[] = '';
             $row[] = $row_list->kode_pesan_resep;
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=RJ'".')" class="label label-primary">'.$row_list->kode_pesan_resep.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Entry_resep_ri_rj/form/".$row_list->kode_pesan_resep."?mr=".$row_list->no_mr."&tipe_layanan=".$row_list->tipe_pelayanan."'".')" class="label label-primary">'.$row_list->kode_pesan_resep.'</a></div>';
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $jenis_resep = ($row_list->jenis_resep == 'prb')?'<span class="red">PRB</span>':'<span class="green">NON PRB</span>';
             $tipe_layan = ($row_list->tipe_pelayanan == 'RI')?'<span style="font-weight: bold; color: blue">[RI]</span>':'<span style="font-weight: bold; color: black">[RJ]</span>';

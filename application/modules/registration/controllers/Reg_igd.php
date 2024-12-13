@@ -67,7 +67,7 @@ class Reg_igd extends MX_Controller {
         $this->form_validation->set_rules('nama_pasien_hidden', 'Nama', 'trim');
 
         if($_POST['kode_perusahaan_hidden']==120){
-            $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim|required');
+            $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim');
         }
         
         $this->form_validation->set_rules('igd_jns_kejadian', 'Jenis Kejadian', 'trim|required');
@@ -183,7 +183,7 @@ class Reg_igd extends MX_Controller {
                 }
                 $dt = $this->Reg_klinik->get_by_id($no_registrasi);
 
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'Rawat Jalan', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien));
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $no_mr, 'no_registrasi' => $no_registrasi, 'is_new' => $this->input->post('is_new'), 'type_pelayanan' => 'igd', 'dokter' => $dt->nama_pegawai, 'poli' => $dt->nama_bagian, 'nasabah' => $dt->nama_perusahaan, 'nama_pasien' => $dt->nama_pasien));
             }
 
         

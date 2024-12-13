@@ -112,6 +112,10 @@ $(document).ready(function(){
           // }
           console.log(jsonResponse.type_pelayanan);
 
+          if( jsonResponse.type_pelayanan == 'igd' ){
+            $('#divLoadSEP').html('<div class="alert alert-success"><b><i class="fa fa-check green bigger-150"></i> Berhasil..!</b> Proses pendaftaran berhasil dilakukan.</div>');
+            getMenuTabs('registration/reg_pasien/riwayat_kunjungan/'+jsonResponse.no_mr, 'tabs_detail_pasien');
+          }
           if( jsonResponse.type_pelayanan == 'rawat_jalan' ){
             $('#change_modul_view_perjanjian').hide('fast');
             // show bukti registrasi atau SEP
