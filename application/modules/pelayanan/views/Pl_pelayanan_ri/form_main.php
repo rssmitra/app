@@ -37,7 +37,7 @@
           $('#table-pesan-resep').DataTable().ajax.reload(null, false);
           $('#jumlah_r').val('');
           $("#modalEditPesan").modal('hide');  
-          if(jsonResponse.type_pelayanan == 'penunjang_medis' || jsonResponse.type_pelayanan == 'Rawat Jalan')
+          if(jsonResponse.type_pelayanan == 'penunjang_medis' || jsonResponse.type_pelayanan == 'rawat_jalan')
           {
             $('#riwayat-table').DataTable().ajax.reload(null, false);
             $('#table_order_penunjang').DataTable().ajax.reload(null, false);
@@ -388,25 +388,34 @@ function delete_diagnosa(myid){
 
     <div class="col-md-12">
       
-        <a href="#" class="btn btn-xs btn-primary" id="btn_monitoring_perkembangan_pasien" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/monitoring_perkembangan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Grafik Perkembangan Harian</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_monitoring_perkembangan_pasien" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/monitoring_perkembangan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Perkembangan Harian</a>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pengawasan_khusus" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pengawasan_khusus/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=KHUSUS', 'tabs_form_pelayanan')" >Form Pengawasan Khusus</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pengawasan_khusus" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pengawasan_khusus/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=KHUSUS', 'tabs_form_pelayanan')" >Pengawasan Khusus</a>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pemberian_obat" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Monitoring Pemberian Obat</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pemberian_obat" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Pemberian Obat</a>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_askep" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/askep/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Asuhan Keperawatan</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_askep" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/askep/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >ASKEP</a>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_ews" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/ews/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Observasi EWS</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_ews" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/ews/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >E W S</a>
 
         <a href="#" class="btn btn-xs btn-primary" id="btn_note" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/note/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >
         Drawing
-      </a>
-      <?php if($value->status_pulang==0) :?>
-        <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Pulangkan Pasien</a>
-      <?php else: ?>
-        <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Resume Medis Pasien Pulang</a>
-        <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-danger" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"> Kembalikan ke Ruang Rawat Inap</a><?php else: echo '<a href="#" class="btn btn-xs btn-success"><i class="fa fa-check bigger-120"></i> Lunas</a>'; endif ?>
-      <?php endif;?>
+        </a>
+        <?php if($value->status_pulang==0) :?>
+          <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Pulangkan Pasien</a>
+        <?php else: ?>
+          <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Resume Medis Pasien Pulang</a>
+          <?php if($transaksi!=0):?><a href="#" class="btn btn-xs btn-danger" onclick="rollback(<?php echo isset($value)?$value->no_registrasi:'' ?>,<?php echo isset($value)?$value->no_kunjungan:''?>)"> Kembalikan ke Ruang Rawat Inap</a><?php else: echo '<a href="#" class="btn btn-xs btn-success"><i class="fa fa-check bigger-120"></i> Lunas</a>'; endif ?>
+        <?php endif;?>
+
+        <div class="pull-right">
+          <b>Score EWS : </b>
+          <div id="score_ews_indikator">
+            <a class="label label-success">1</a>
+            <a class="label label-warning">5</a>
+            <a class="label label-danger">7</a>
+          </div>
+        </div>
 
       </div>
 

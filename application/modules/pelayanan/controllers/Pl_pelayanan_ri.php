@@ -687,9 +687,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
-        // monitor perkembangan pasie
-        $askep = $this->db->order_by('id', 'DESC')->get_where('th_asuhan_keperawatan', ['no_kunjungan' => $no_kunjungan])->result();
-        $data['askep'] = $askep;
+        
         // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_ews', $data);
@@ -1435,10 +1433,18 @@ class Pl_pelayanan_ri extends MX_Controller {
         }else{
             echo json_encode($query);
         }
-        
-        
+    }
 
-        // echo json_encode($result);
+    public function get_ews_dt(){
+
+        $query = $this->db->order_by('id', 'DESC')->get_where('th_ews', ['no_kunjungan' => $_GET['no_kunjungan']])->row();
+        // get content ews
+        $content_ews = $this->master->get_content_ews($query);
+        $data = [
+            "value_form" => $content_ews,
+        ];
+        // echo "<pre>"; print_r($data);die;
+        echo json_encode(array('value_form' => $content_ews));
     }
 
     public function show_catatan_pengkajian($cppt_id){
@@ -1717,6 +1723,72 @@ class Pl_pelayanan_ri extends MX_Controller {
              {
                  $this->db->trans_commit();
                  echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+             }
+ 
+         }
+    }
+
+    public function process_ews()
+    {
+        //  print_r($_POST);die;
+         $this->load->library('form_validation');
+         $val = $this->form_validation;
+     
+         $val->set_rules('no_mr', 'MR Pasien', 'trim|required', array('required' => 'MR Pasien tidak ditemukan'));
+         $val->set_rules('no_registrasi', 'No Registrasi', 'trim|required');
+         $val->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
+ 
+         $val->set_message('required', "Silahkan isi field \"%s\"");
+ 
+         if ($val->run() == FALSE)
+         {
+             $val->set_error_delimiters('<div style="color:white">', '</div>');
+             echo json_encode(array('status' => 301, 'message' => validation_errors()));
+         }
+         else
+         {                       
+ 
+            $this->db->trans_begin();
+            
+            // $value_form = urldecode(http_build_query($this->input->post($_POST['jenis_form']),'',' | '));
+            $ews_form = urldecode(http_build_query(isset($_POST['ews'])?$_POST['ews']:[],'','|'));
+            $ews_nfs_form = urldecode(http_build_query(isset($_POST['ews_nfs'])?$_POST['ews_nfs']:[],'','|'));
+            $ews_so_form = urldecode(http_build_query(isset($_POST['ews_so'])?$_POST['ews_so']:[],'','|'));
+            $ews_dj_form = urldecode(http_build_query(isset($_POST['ews_dj'])?$_POST['ews_dj']:[],'','|'));
+            $ews_tds_form = urldecode(http_build_query(isset($_POST['ews_tds'])?$_POST['ews_tds']:[],'','|'));
+            $ews_pob_form = urldecode(http_build_query(isset($_POST['ews_pob'])?$_POST['ews_pob']:[],'','|'));
+            $ews_sadar_form = urldecode(http_build_query(isset($_POST['ews_sadar'])?$_POST['ews_sadar']:[],'','|'));
+            $ews_ttl_form = urldecode(http_build_query(isset($_POST['ews_ttl'])?$_POST['ews_ttl']:[],'','|'));
+
+
+            /*insert drawing*/
+            $dataexc = [
+                'no_registrasi' => $_POST['no_registrasi'],
+                'no_kunjungan' => $_POST['no_kunjungan'],
+                'no_mr' => $_POST['no_mr'],
+                'ews' => $ews_form,
+                'ews_nfs' => $ews_nfs_form,
+                'ews_so' => $ews_so_form,
+                'ews_dj' => $ews_dj_form,
+                'ews_tds' => $ews_tds_form,
+                'ews_pob' => $ews_pob_form,
+                'ews_sadar' => $ews_sadar_form,
+                'ews_ttl' => $ews_ttl_form,
+                'created_date' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('user')->fullname,
+
+            ];
+            $this->db->insert('th_ews', $dataexc);
+
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'type_pelayanan' => 'ews'));
              }
  
          }

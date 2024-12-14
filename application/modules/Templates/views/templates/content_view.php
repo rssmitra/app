@@ -1046,6 +1046,8 @@
         return sum;
       }
 
+      
+
       function checkAll(elm) {
 
         if($(elm).prop("checked") == true){
