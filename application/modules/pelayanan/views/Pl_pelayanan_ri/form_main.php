@@ -349,8 +349,7 @@ function delete_diagnosa(myid){
   <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
   <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->bag_pas:''?>">
   <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->bag_pas:''?>" id="kode_bagian_val">
-  <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>"  id="kode_klas_val">
-  <input type="hidden" class="form-control" name="klas_titipan" value="<?php echo $klas_titipan ?>"  id="klas_titipan">
+  <input type="hidden" class="form-control" name="klas_titipan" value="<?php echo $klas_titipan ?>" id="klas_titipan">
   <input type="hidden" class="form-control" name="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
   <input type="hidden" class="form-control" name="kode_ruangan" value="<?php echo isset($value->kode_ruangan)?$value->kode_ruangan:''?>">
   <input type="hidden" name="kode_ri" id="kode_ri" value="<?php echo ($id)?$id:''?>">
@@ -387,16 +386,49 @@ function delete_diagnosa(myid){
   <div class="row" style="margin-bottom:3px">
 
     <div class="col-md-12">
-      
-        <a href="#" class="btn btn-xs btn-primary" id="btn_monitoring_perkembangan_pasien" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/monitoring_perkembangan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Perkembangan Harian</a>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pengawasan_khusus" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pengawasan_khusus/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=KHUSUS', 'tabs_form_pelayanan')" >Pengawasan Khusus</a>
+        <div class="btn-group dropdown">
+          <button class="btn btn-xs btn-primary" type="button">Monitoring Pasien</button>
+          <button data-toggle="dropdown" class="btn btn-xs btn-primary dropdown-toggle">
+            <span class="ace-icon fa fa-caret-down icon-only"></span>
+          </button>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pemberian_obat" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Pemberian Obat</a>
+          <ul class="dropdown-menu dropdown-primary">
+            <li>
+              <a href="#" id="btn_monitoring_perkembangan_pasien" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/monitoring_perkembangan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Grafik Perkembangan Harian</a>
+            </li>
+            <li>
+              <a href="#" id="btn_form_pengawasan_khusus" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pengawasan_khusus/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=KHUSUS', 'tabs_form_pelayanan')" >Pengawasan Khusus</a>
+            </li>
+            <li>
+              <a href="#" id="btn_form_pemberian_obat" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Pemberian Obat</a>
+            </li>
+          </ul>
+        </div>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_askep" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/askep/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >ASKEP</a>
+        <div class="btn-group dropdown">
+          <button class="btn btn-xs btn-primary" type="button">Early Warning System</button>
+          <button data-toggle="dropdown" class="btn btn-xs btn-primary dropdown-toggle">
+            <span class="ace-icon fa fa-caret-down icon-only"></span>
+          </button>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_ews" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/ews/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >E W S</a>
+          <ul class="dropdown-menu dropdown-primary">
+            <li>
+              <a href="#" id="btn_ews" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/ews/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&type_form=dewasa&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')">Dewasa</a>
+            </li>
+
+            <li>
+              <a href="#" id="btn_ews" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/ews/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&type_form=anak&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')">Anak</a>
+            </li>
+
+            <li>
+              <a href="#" id="btn_ews" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/ews/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&type_form=kebidanan&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')">Kebidanan</a>
+            </li>
+          </ul>
+        </div>
+
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_askep" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/askep/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Asuhan Keperewatan</a>
+        
 
         <a href="#" class="btn btn-xs btn-primary" id="btn_note" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/note/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >
         Drawing
@@ -509,6 +541,10 @@ function delete_diagnosa(myid){
       <div class="tab-content">
 
         <div class="row">
+          <div class="col-md-12" style="padding-bottom: 5px !important">
+            <label style="font-weigth: bold !important"><b>Kelas Tarif :</b> </label><br>
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), isset($klas_titipan)?$klas_titipan:$kode_klas , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
+          </div>
           <div id="tabs_form_pelayanan" style="padding: 10px !important">
             <div class="alert alert-block alert-success">
                 <p class="center">

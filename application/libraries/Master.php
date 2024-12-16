@@ -1602,6 +1602,67 @@ final Class Master {
 		}
 	}
 
+	function get_content_ews($query){
+
+		// ews
+		$convert_to_array_ews = explode('|', $query->ews);
+		for($i=0; $i < count($convert_to_array_ews ); $i++){
+			$key_value = explode('=', $convert_to_array_ews [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+		// nfs
+		$convert_to_array_nfs = explode('|', $query->ews_nfs);
+		for($i=0; $i < count($convert_to_array_nfs ); $i++){
+			$key_value = explode('=', $convert_to_array_nfs [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// so
+		$convert_to_array_so = explode('|', $query->ews_so);
+		for($i=0; $i < count($convert_to_array_so ); $i++){
+			$key_value = explode('=', $convert_to_array_so [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// pob
+		$convert_to_array_pob = explode('|', $query->ews_pob);
+		for($i=0; $i < count($convert_to_array_pob ); $i++){
+			$key_value = explode('=', $convert_to_array_pob [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// tds
+		$convert_to_array_tds = explode('|', $query->ews_tds);
+		for($i=0; $i < count($convert_to_array_tds ); $i++){
+			$key_value = explode('=', $convert_to_array_tds [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// dj
+		$convert_to_array_dj = explode('|', $query->ews_dj);
+		for($i=0; $i < count($convert_to_array_dj ); $i++){
+			$key_value = explode('=', $convert_to_array_dj [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// sadar
+		$convert_to_array_sadar = explode('|', $query->ews_sadar);
+		for($i=0; $i < count($convert_to_array_sadar ); $i++){
+			$key_value = explode('=', $convert_to_array_sadar [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// ttl
+		$convert_to_array_ttl = explode('|', $query->ews_ttl);
+		for($i=0; $i < count($convert_to_array_ttl ); $i++){
+			$key_value = explode('=', $convert_to_array_ttl [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+
+		return $end_array;
+	}
+
 }
 
 ?> 

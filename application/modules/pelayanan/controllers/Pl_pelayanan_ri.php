@@ -690,7 +690,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         
         // echo '<pre>';print_r($data);die;
         /*load form view*/
-        $this->load->view('Pl_pelayanan_ri/form_ews', $data);
+        $this->load->view('Pl_pelayanan_ri/form_ews_'.$_GET['type_form'].'', $data);
     }
 
     public function note($id='', $no_kunjungan='')
@@ -1437,7 +1437,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function get_ews_dt(){
 
-        $query = $this->db->order_by('id', 'DESC')->get_where('th_ews', ['no_kunjungan' => $_GET['no_kunjungan']])->row();
+        $query = $this->db->order_by('id', 'DESC')->get_where('th_ews', ['no_kunjungan' => $_GET['no_kunjungan'], 'kategori' => $_GET['kategori']])->row();
         // get content ews
         $content_ews = $this->master->get_content_ews($query);
         $data = [
@@ -1730,7 +1730,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function process_ews()
     {
-        //  print_r($_POST);die;
+         print_r($_POST);die;
          $this->load->library('form_validation');
          $val = $this->form_validation;
      
@@ -1756,8 +1756,14 @@ class Pl_pelayanan_ri extends MX_Controller {
             $ews_so_form = urldecode(http_build_query(isset($_POST['ews_so'])?$_POST['ews_so']:[],'','|'));
             $ews_dj_form = urldecode(http_build_query(isset($_POST['ews_dj'])?$_POST['ews_dj']:[],'','|'));
             $ews_tds_form = urldecode(http_build_query(isset($_POST['ews_tds'])?$_POST['ews_tds']:[],'','|'));
+            $ews_tdd_form = urldecode(http_build_query(isset($_POST['ews_tdd'])?$_POST['ews_tdd']:[],'','|'));
+            $ews_rdd_form = urldecode(http_build_query(isset($_POST['ews_rdd'])?$_POST['ews_rdd']:[],'','|'));
             $ews_pob_form = urldecode(http_build_query(isset($_POST['ews_pob'])?$_POST['ews_pob']:[],'','|'));
             $ews_sadar_form = urldecode(http_build_query(isset($_POST['ews_sadar'])?$_POST['ews_sadar']:[],'','|'));
+            $ews_nyeri_form = urldecode(http_build_query(isset($_POST['ews_nyeri'])?$_POST['ews_nyeri']:[],'','|'));
+            $ews_protein_form = urldecode(http_build_query(isset($_POST['ews_protein'])?$_POST['ews_protein']:[],'','|'));
+            $ews_discharge_form = urldecode(http_build_query(isset($_POST['ews_discharge'])?$_POST['ews_discharge']:[],'','|'));
+            $ews_crt_form = urldecode(http_build_query(isset($_POST['ews_crt'])?$_POST['ews_crt']:[],'','|'));
             $ews_ttl_form = urldecode(http_build_query(isset($_POST['ews_ttl'])?$_POST['ews_ttl']:[],'','|'));
 
 
@@ -1771,14 +1777,28 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'ews_so' => $ews_so_form,
                 'ews_dj' => $ews_dj_form,
                 'ews_tds' => $ews_tds_form,
+                'ews_tdd' => $ews_tdd_form,
+                'ews_rdd' => $ews_rdd_form,
                 'ews_pob' => $ews_pob_form,
                 'ews_sadar' => $ews_sadar_form,
+                'ews_nyeri' => $ews_nyeri_form,
+                'ews_protein' => $ews_protein_form,
+                'ews_discharge' => $ews_discharge_form,
+                'ews_crt' => $ews_crt_form,
                 'ews_ttl' => $ews_ttl_form,
+                'kategori' => $_POST['kategori_ews'],
                 'created_date' => date('Y-m-d H:i:s'),
                 'created_by' => $this->session->userdata('user')->fullname,
 
             ];
-            $this->db->insert('th_ews', $dataexc);
+            // cek existing
+            $existing = $this->db->get_where('th_ews', ['no_kunjungan' => $_POST['no_kunjungan'], 'kategori' => $_POST['kategori_ews']])->row();
+
+            if(empty($existing)){
+                $this->db->insert('th_ews', $dataexc);
+            }else{
+                $this->db->where('id', $existing->id)->update('th_ews', $dataexc);
+            }
 
              if ($this->db->trans_status() === FALSE)
              {

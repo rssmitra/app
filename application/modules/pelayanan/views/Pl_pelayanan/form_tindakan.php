@@ -184,7 +184,9 @@ $(document).ready(function() {
 
     });
 
-    var kelas = ($('#klas_titipan').val()==0)?$('#kode_klas_val').val():$('#klas_titipan').val();
+    // var kelas = ($('#klas_titipan').val()==0)?$('#kode_klas_val').val():$('#klas_titipan').val();
+    var kelas = $('#kode_klas_val').val();
+
     $('#InputKeyTindakan_ri').typeahead({
         source: function (query, result) {
             $.ajax({
@@ -206,7 +208,7 @@ $(document).ready(function() {
           $('#pl_kode_tindakan_hidden').val(val_item);
           $('.InputKeyDokterBagian').focus();
           /*get detail tarif by kode tarif and kode klas*/
-          getDetailTarifByKodeTarifAndKlas(val_item, kelas);
+          getDetailTarifByKodeTarifAndKlas(val_item, $('#kode_klas_val').val());
         }
 
     });

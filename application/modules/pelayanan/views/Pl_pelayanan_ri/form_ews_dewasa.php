@@ -32,7 +32,7 @@ jQuery(function($) {
 
 $(document).ready(function() {
   // set value of existing data
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_ews_dt') ?>", {no_kunjungan: $('#no_kunjungan').val()} , function (response) {    
+  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_ews_dt') ?>", {no_kunjungan: $('#no_kunjungan').val(), kategori: 'dewasa'} , function (response) {    
     // show data
     var obj = response.result;
     // console.log(response);
@@ -111,22 +111,15 @@ function getTotalScoreEws(classname){
   ttl = int_nfs + int_so + int_pob + int_suhu + int_dj + int_tds + int_sadar;
   console.log(ttl);
   var total = ttl;
-
-  if(!empty(total)){
-    if(total == 0){
-      $clr_ind = '#7ebc18';
-    }else if(total >=1 && total <=4){
-      $clr_ind = '#f6f204';
-    }else if(total >=5 && total <=6){
-      $clr_ind = '#f6c004';
-    }else{
-      $clr_ind = '#f63904';
-    }
+  if(total == 0){
+    $clr_ind = '#7ebc18';
+  }else if(total >=1 && total <=4){
+    $clr_ind = '#f6f204';
+  }else if(total >=5 && total <=6){
+    $clr_ind = '#f6c004';
   }else{
-    $clr_ind = '';
+    $clr_ind = '#f63904';
   }
-  
-  
 
   $('#id_ttl_'+classname+'').val(total);
   $('#id_ttl_'+classname+'').css('background', $clr_ind).css('font-weight', 'bold');
@@ -152,6 +145,9 @@ function getTotalScoreEws(classname){
     <div class="pull-right">
       <a href="#" class="btn btn-xs btn-primary" id="btn_save_ews">Simpan</a>
     </div>
+
+    <!-- hidden form -->
+    <input type="hidden" name="kategori_ews" id="kategori_ews" value="dewasa">
     
     <table class="table">
       <tr>

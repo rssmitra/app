@@ -244,6 +244,7 @@ function form_main(url, no_mr){
           <div class="col-md-10">
             <!-- informasi pendaftaran pasien -->
             <span class="pull-left" style="font-size: 16px; font-weight: bold; color: blue" id="full_pasien_data"></span><br>
+            
             <div id="div_main_form"></div>
           </div>
 
