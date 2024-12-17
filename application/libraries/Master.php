@@ -1638,6 +1638,13 @@ final Class Master {
 			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
 		}
 
+		// tdd
+		$convert_to_array_tdd = explode('|', $query->ews_tdd);
+		for($i=0; $i < count($convert_to_array_tdd ); $i++){
+			$key_value = explode('=', $convert_to_array_tdd [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
 		// dj
 		$convert_to_array_dj = explode('|', $query->ews_dj);
 		for($i=0; $i < count($convert_to_array_dj ); $i++){
@@ -1649,6 +1656,48 @@ final Class Master {
 		$convert_to_array_sadar = explode('|', $query->ews_sadar);
 		for($i=0; $i < count($convert_to_array_sadar ); $i++){
 			$key_value = explode('=', $convert_to_array_sadar [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// suhu
+		$convert_to_array_suhu = explode('|', $query->ews_suhu);
+		for($i=0; $i < count($convert_to_array_suhu ); $i++){
+			$key_value = explode('=', $convert_to_array_suhu [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// nyeri
+		$convert_to_array_nyeri = explode('|', $query->ews_nyeri);
+		for($i=0; $i < count($convert_to_array_nyeri ); $i++){
+			$key_value = explode('=', $convert_to_array_nyeri [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// discharge
+		$convert_to_array_discharge = explode('|', $query->ews_discharge);
+		for($i=0; $i < count($convert_to_array_discharge ); $i++){
+			$key_value = explode('=', $convert_to_array_discharge [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// rdd
+		$convert_to_array_rdd = explode('|', $query->ews_rdd);
+		for($i=0; $i < count($convert_to_array_rdd ); $i++){
+			$key_value = explode('=', $convert_to_array_rdd [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// protein
+		$convert_to_array_protein = explode('|', $query->ews_protein);
+		for($i=0; $i < count($convert_to_array_protein ); $i++){
+			$key_value = explode('=', $convert_to_array_protein [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
+		// crt
+		$convert_to_array_crt = explode('|', $query->ews_crt);
+		for($i=0; $i < count($convert_to_array_crt ); $i++){
+			$key_value = explode('=', $convert_to_array_crt [$i]);
 			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
 		}
 

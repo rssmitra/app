@@ -32,12 +32,13 @@ jQuery(function($) {
 
 $(document).ready(function() {
   // set value of existing data
-  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_ews_dt') ?>", {no_kunjungan: $('#no_kunjungan').val(), kategori: 'dewasa'} , function (response) {    
+  $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_ews_dt') ?>", {no_kunjungan: $('#no_kunjungan').val(), kategori: $('#kategori_ews').val()} , function (response) {    
     // show data
     var obj = response.result;
     // console.log(response);
     // set value input
     var value_form = response.value_form;
+    var ews_ttl = response.ews_ttl;
     $.each(value_form, function(i, item) {
       var text = item;
       value_int = text.replace(/\+/g, ' ');
@@ -46,20 +47,35 @@ $(document).ready(function() {
       $('input:radio[id="'+i+'"]').filter('[value="'+value_int+'"]').attr('checked', true);
 
       if(value_int == 0){
-        $clr_ind = '#7ebc18';
+        clr_ind = '#7ebc18';
       }else if(value_int >=1 && value_int <=4){
-        $clr_ind = '#f6f204';
+        clr_ind = '#f6f204';
       }else if(value_int >=5 && value_int <=6){
-        $clr_ind = '#f6c004';
+        clr_ind = '#f6c004';
       }else{
-        $clr_ind = '#f63904';
+        clr_ind = '#f63904';
       }
-      
-      // $('.ttl_score, #td_'+i+'').css('background', $clr_ind).css('font-weight', 'bold');
-      $('#td_'+i+'').css('background', $clr_ind).css('font-weight', 'bold');
-      $('#id_'+i+'').css('background', $clr_ind).css('font-weight', 'bold');
+      $('#td_'+i+'').css('background', clr_ind).css('font-weight', 'bold');
+      $('#id_'+i+'').css('background', clr_ind).css('font-weight', 'bold');
 
+    });
 
+    $('#score_ews_indikator').html('');
+
+    $.each(ews_ttl, function(key, val) {
+        if(val != ''){
+          if(val == 0){
+            clr_ind = 'success';
+          }else if(val >=1 && val <=4){
+            clr_ind = 'yellow';
+          }else if(val >=5 && val <=6){
+            clr_ind = 'warning';
+          }else{
+            clr_ind = 'danger';
+          }
+          // append to 
+          $('<a class="btn btn-xs btn-'+clr_ind+'">'+val+'</a>').appendTo($('#score_ews_indikator'));
+      }
     });
 
   }); 
@@ -76,7 +92,7 @@ $(document).ready(function() {
           var data=xhr.responseText;        
           var jsonResponse = JSON.parse(data);        
           if(jsonResponse.status === 200){          
-            $('#btn_ews').click();
+            getMenuTabs('pelayanan/Pl_pelayanan_ri/ews/<?php echo $id?>/<?php echo $no_kunjungan?>?type=<?php echo $type?>&type_form=<?php echo $kategori?>&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan');
             $.achtung({message: jsonResponse.message, timeout:5});  
           }else{           
             $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
@@ -125,8 +141,7 @@ function getTotalScoreEws(classname){
   $('#id_ttl_'+classname+'').css('background', $clr_ind).css('font-weight', 'bold');
   $('#td_ttl_'+classname+'').css('background', $clr_ind).css('font-weight', 'bold');
 
-  // append to 
-  $('<a class="label label-success">'+text+'</a>').appendTo($('#score_ews_indikator'));
+  
 
 }
 
@@ -179,8 +194,8 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td rowspan="5">Pernafasan</td>
-        <td align="center">&gt;= 25</td>
+        <td rowspan="4">Pernafasan</td>
+        <td align="center">&gt;= 25, &lt;= 8</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -275,30 +290,30 @@ function getTotalScoreEws(classname){
           </td>
         <?php endfor;?>
       </tr>
-      <tr>
+      <!-- <tr>
         <td align="center">&lt;= 8</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="ews_nfs[nfs_pagi_tgl_<?php echo $i?>]" id="nfs_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
+              <input name="ews_nfs[nfs_pagi_tgl_<?php echo $i?>]" id="nfs_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3a">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_nfs[nfs_siang_tgl_<?php echo $i?>]" id="nfs_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
+              <input name="ews_nfs[nfs_siang_tgl_<?php echo $i?>]" id="nfs_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3a">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_nfs[nfs_mlm_tgl_<?php echo $i?>]" id="nfs_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
+              <input name="ews_nfs[nfs_mlm_tgl_<?php echo $i?>]" id="nfs_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3a">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
-      </tr>
+      </tr> -->
 
       <tr>
         <td rowspan="4">Saturasi Oksigen</td>
@@ -450,7 +465,7 @@ function getTotalScoreEws(classname){
       
       <!-- suhu -->
       <tr>
-        <td rowspan="5">Suhu</td>
+        <td rowspan="4">Suhu</td>
         <td align="center">>= 39,1</td>
         <td align="center">2</td>
         <?php for($i=0; $i<3; $i++):?>
@@ -475,7 +490,7 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">38,1-39,0</td>
+        <td align="center">38-39, 35-36 </td>
         <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -522,7 +537,7 @@ function getTotalScoreEws(classname){
           </td>
         <?php endfor;?>
       </tr>
-      <tr>
+      <!-- <tr>
         <td align="center">35,1-36,0</td>
         <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
@@ -545,7 +560,7 @@ function getTotalScoreEws(classname){
             </label>
           </td>
         <?php endfor;?>
-      </tr>
+      </tr> -->
       <tr>
         <td align="center"><=35</td>
         <td align="center">3</td>
@@ -572,8 +587,8 @@ function getTotalScoreEws(classname){
       </tr>
       <!-- denyut jantung -->
       <tr>
-        <td rowspan="6">Denyut Jantung</td>
-        <td align="center">>= 131</td>
+        <td rowspan="4">Denyut Jantung</td>
+        <td align="center">>= 131, <=40</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -621,7 +636,7 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">91-110</td>
+        <td align="center">91-110, 41-50</td>
         <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -668,7 +683,7 @@ function getTotalScoreEws(classname){
           </td>
         <?php endfor;?>
       </tr>
-      <tr>
+      <!-- <tr>
         <td align="center">41-50</td>
         <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
@@ -691,8 +706,8 @@ function getTotalScoreEws(classname){
             </label>
           </td>
         <?php endfor;?>
-      </tr>
-      <tr>
+      </tr> -->
+      <!-- <tr>
         <td align="center"><=40</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
@@ -715,11 +730,11 @@ function getTotalScoreEws(classname){
             </label>
           </td>
         <?php endfor;?>
-      </tr>
+      </tr> -->
       <!-- tekanan darah sistolik -->
       <tr>
-        <td rowspan="5">Tekanan Darah Sistolik</td>
-        <td align="center">>=220</td>
+        <td rowspan="4">Tekanan Darah Sistolik</td>
+        <td align="center">>=220, <=90</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -814,7 +829,7 @@ function getTotalScoreEws(classname){
           </td>
         <?php endfor;?>
       </tr>
-      <tr>
+      <!-- <tr>
         <td align="center"><=90</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
@@ -837,7 +852,7 @@ function getTotalScoreEws(classname){
             </label>
           </td>
         <?php endfor;?>
-      </tr>
+      </tr> -->
       <!-- kesadaran -->
       <tr>
         <td rowspan="2">Kesadaran</td>

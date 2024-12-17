@@ -47,24 +47,20 @@ $(document).ready(function() {
       $('input:radio[id="'+i+'"]').filter('[value="'+value_int+'"]').attr('checked', true);
 
       if(value_int == 0){
-        $clr_ind = '#7ebc18';
+        clr_ind = '#7ebc18';
       }else if(value_int >=1 && value_int <=4){
-        $clr_ind = '#f6f204';
+        clr_ind = '#f6f204';
       }else if(value_int >=5 && value_int <=6){
-        $clr_ind = '#f6c004';
+        clr_ind = '#f6c004';
       }else{
-        $clr_ind = '#f63904';
+        clr_ind = '#f63904';
       }
-      
-      // $('.ttl_score, #td_'+i+'').css('background', $clr_ind).css('font-weight', 'bold');
-      $('#td_'+i+'').css('background', $clr_ind).css('font-weight', 'bold');
-      $('#id_'+i+'').css('background', $clr_ind).css('font-weight', 'bold');
-
+      $('#td_'+i+'').css('background', clr_ind).css('font-weight', 'bold');
+      $('#id_'+i+'').css('background', clr_ind).css('font-weight', 'bold');
 
     });
 
     $('#score_ews_indikator').html('');
-    
     $.each(ews_ttl, function(key, val) {
         if(val != ''){
           if(val == 0){
@@ -77,7 +73,7 @@ $(document).ready(function() {
             clr_ind = 'danger';
           }
           // append to 
-          $('<a class="btn btn-xs btn-'+clr_ind+'">'+val+'</a>').appendTo($('#score_ews_indikator'));
+          $('<a class="label label-'+clr_ind+'">'+val+'</a>').appendTo($('#score_ews_indikator'));
       }
     });
 
@@ -117,10 +113,7 @@ function getTotalScoreEws(classname){
   var suhu = parseFloat( $("input[type='radio'][id='suhu_"+classname+"']:checked").val() );
   var dj = parseFloat( $("input[type='radio'][id='dj_"+classname+"']:checked").val() );
   var tds = parseFloat( $("input[type='radio'][id='tds_"+classname+"']:checked").val() );
-  var tdd = parseFloat( $("input[type='radio'][id='tdd_"+classname+"']:checked").val() );
   var sadar = parseFloat( $("input[type='radio'][id='sadar_"+classname+"']:checked").val() );
-  var discharge = parseFloat( $("input[type='radio'][id='discharge_"+classname+"']:checked").val() );
-  var protein = parseFloat( $("input[type='radio'][id='protein_"+classname+"']:checked").val() );
 
   var int_nfs = !isNaN(nfs) ? nfs : 0;
   var int_so = !isNaN(so) ? so : 0;
@@ -128,15 +121,11 @@ function getTotalScoreEws(classname){
   var int_suhu = !isNaN(suhu) ? suhu : 0;
   var int_dj = !isNaN(dj) ? dj : 0;
   var int_tds = !isNaN(tds) ? tds : 0;
-  var int_tdd = !isNaN(tdd) ? tdd : 0;
   var int_sadar = !isNaN(sadar) ? sadar : 0;
-  var int_discharge = !isNaN(discharge) ? discharge : 0;
-  var int_protein = !isNaN(protein) ? protein : 0;
 
-  ttl = int_nfs + int_so + int_pob + int_suhu + int_dj + int_tds + int_sadar + int_tdd + int_discharge + int_protein;
+  ttl = int_nfs + int_so + int_pob + int_suhu + int_dj + int_tds + int_sadar;
   console.log(ttl);
   var total = ttl;
-
   if(total == 0){
     $clr_ind = '#7ebc18';
   }else if(total >=1 && total <=4){
@@ -151,6 +140,7 @@ function getTotalScoreEws(classname){
   $('#id_ttl_'+classname+'').css('background', $clr_ind).css('font-weight', 'bold');
   $('#td_ttl_'+classname+'').css('background', $clr_ind).css('font-weight', 'bold');
 
+  
 
 }
 
@@ -164,14 +154,14 @@ function getTotalScoreEws(classname){
   <div class="col-md-12">
 
     <div class="pull-left">
-      <center><span style="font-weight: bold;">OBSERVASI <i>OBSTETRIC EARLY WARNING SYSTEM (OEWS)</i></span></center>
+      <center><span style="font-weight: bold;">OBSERVASI <i>NATIONAL EARLY WARNING SYSTEM (NEWS)</i> USIA &gt; 16 TH</span></center>
     </div>
     <div class="pull-right">
       <a href="#" class="btn btn-xs btn-primary" id="btn_save_ews">Simpan</a>
     </div>
 
     <!-- hidden form -->
-    <input type="hidden" name="kategori_ews" id="kategori_ews" value="kebidanan">
+    <input type="hidden" name="kategori_ews" id="kategori_ews" value="dewasa">
     
     <table class="table">
       <tr>
@@ -203,8 +193,8 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td rowspan="3">Pernafasan</td>
-        <td align="center">>= 25, < 12</td>
+        <td rowspan="5">Pernafasan</td>
+        <td align="center">&gt;= 25</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -228,7 +218,7 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">21-25</td>
+        <td align="center">21-24</td>
         <td align="center">2</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -275,35 +265,58 @@ function getTotalScoreEws(classname){
           </td>
         <?php endfor;?>
       </tr>
-      <!-- <tr>
-        <td align="center">< 12</td>
-        <td align="center">3</td>
+      <tr>
+        <td align="center">9-11</td>
+        <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="ews_nfs[nfs_pagi_tgl_<?php echo $i?>]" id="nfs_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
+              <input name="ews_nfs[nfs_pagi_tgl_<?php echo $i?>]" id="nfs_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_nfs[nfs_siang_tgl_<?php echo $i?>]" id="nfs_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
+              <input name="ews_nfs[nfs_siang_tgl_<?php echo $i?>]" id="nfs_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_nfs[nfs_mlm_tgl_<?php echo $i?>]" id="nfs_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
+              <input name="ews_nfs[nfs_mlm_tgl_<?php echo $i?>]" id="nfs_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
-      </tr> -->
-      
-      <!-- saturasi oksigen -->
+      </tr>
       <tr>
-        <td rowspan="3">Saturasi Oksigen</td>
-        <td align="center">> 95</td>
+        <td align="center">&lt;= 8</td>
+        <td align="center">3</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_nfs[nfs_pagi_tgl_<?php echo $i?>]" id="nfs_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3a">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_nfs[nfs_siang_tgl_<?php echo $i?>]" id="nfs_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3a">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_nfs[nfs_mlm_tgl_<?php echo $i?>]" id="nfs_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3a">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
+
+      <tr>
+        <td rowspan="4">Saturasi Oksigen</td>
+        <td align="center">96</td>
         <td align="center">0</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -327,7 +340,31 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">92-95</td>
+        <td align="center">94-95</td>
+        <td align="center">1</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_so[so_pagi_tgl_<?php echo $i?>]" id="so_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_so[so_siang_tgl_<?php echo $i?>]" id="so_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_so[so_mlm_tgl_<?php echo $i?>]" id="so_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
+      <tr>
+        <td align="center">92-93</td>
         <td align="center">2</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -351,7 +388,7 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">< 92</td>
+        <td align="center">&lt;= 91</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -375,106 +412,60 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
 
-      <!-- suhu -->
       <tr>
-        <td rowspan="4">Suhu</td>
-        <td align="center">< 35</td>
-        <td align="center">3</td>
+        <td rowspan="2">Penggunaan Alat Bantu O2</td>
+        <td align="center">Ya</td>
+        <td align="center">2</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
+              <input name="ews_pob[pob_pagi_tgl_<?php echo $i?>]" id="pob_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="2">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
+              <input name="ews_pob[pob_siang_tgl_<?php echo $i?>]" id="pob_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="2">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
+              <input name="ews_pob[pob_mlm_tgl_<?php echo $i?>]" id="pob_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="2">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">35-36, 38-39</td>
-        <td align="center">1</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">36-38</td>
+        <td align="center">Tidak</td>
         <td align="center">0</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
+              <input name="ews_pob[pob_pagi_tgl_<?php echo $i?>]" id="pob_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
+              <input name="ews_pob[pob_siang_tgl_<?php echo $i?>]" id="pob_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
+              <input name="ews_pob[pob_mlm_tgl_<?php echo $i?>]" id="pob_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
       </tr>
-      <!-- <tr>
-        <td align="center">38-39</td>
-        <td align="center">1</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr> -->
+      
+      <!-- suhu -->
       <tr>
-        <td align="center">> 39</td>
+        <td rowspan="5">Suhu</td>
+        <td align="center">>= 39,1</td>
         <td align="center">2</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -497,209 +488,106 @@ function getTotalScoreEws(classname){
           </td>
         <?php endfor;?>
       </tr>
-
-      <!-- tekanan darah sistolik -->
       <tr>
-        <td rowspan="3">Tekanan Darah Sistolik (mmHg)</td>
-        <td align="center">> 160, < 90</td>
-        <td align="center">3</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">151-160</td>
-        <td align="center">2</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">90-150</td>
-        <td align="center">0</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <!-- <tr>
-        <td align="center">< 90</td>
-        <td align="center">3</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr> -->
-
-      <!-- tekanan darah diastole -->
-      <tr>
-        <td rowspan="4">Tekanan Darah Diastole (mmHg)</td>
-        <td align="center">> 110</td>
-        <td align="center">3</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tdd[tdd_pagi_tgl_<?php echo $i?>]" id="tdd_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tdd[tdd_siang_tgl_<?php echo $i?>]" id="tdd_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tdd[tdd_mlm_tgl_<?php echo $i?>]" id="tdd_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">100-110</td>
-        <td align="center">2</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tdd[tdd_pagi_tgl_<?php echo $i?>]" id="tdd_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tdd[tdd_siang_tgl_<?php echo $i?>]" id="tdd_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_tdd[tdd_mlm_tgl_<?php echo $i?>]" id="tdd_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">90-100</td>
+        <td align="center">38,1-39,0</td>
         <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="ews_tdd[tdd_pagi_tgl_<?php echo $i?>]" id="tdd_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
+              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_tdd[tdd_siang_tgl_<?php echo $i?>]" id="tdd_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
+              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_tdd[tdd_mlm_tgl_<?php echo $i?>]" id="tdd_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
+              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">< 90</td>
+        <td align="center">36,1-38,0</td>
         <td align="center">0</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="ews_tdd[tdd_pagi_tgl_<?php echo $i?>]" id="tdd_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
+              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_tdd[tdd_siang_tgl_<?php echo $i?>]" id="tdd_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
+              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_tdd[tdd_mlm_tgl_<?php echo $i?>]" id="tdd_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
+              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
       </tr>
-      
+      <tr>
+        <td align="center">35,1-36,0</td>
+        <td align="center">1</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
+      <tr>
+        <td align="center"><=35</td>
+        <td align="center">3</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_suhu[suhu_pagi_tgl_<?php echo $i?>]" id="suhu_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_suhu[suhu_siang_tgl_<?php echo $i?>]" id="suhu_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_suhu[suhu_mlm_tgl_<?php echo $i?>]" id="suhu_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
       <!-- denyut jantung -->
       <tr>
-        <td rowspan="4">Laju Detak Jantung /menit</td>
-        <td align="center">> 120, < 50</td>
+        <td rowspan="6">Denyut Jantung</td>
+        <td align="center">>= 131</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -723,7 +611,7 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">110-120, 50-60</td>
+        <td align="center">111-130</td>
         <td align="center">2</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -747,7 +635,7 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">100-110</td>
+        <td align="center">91-110</td>
         <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -771,7 +659,7 @@ function getTotalScoreEws(classname){
         <?php endfor;?>
       </tr>
       <tr>
-        <td align="center">60-100</td>
+        <td align="center">51-90</td>
         <td align="center">0</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -794,32 +682,32 @@ function getTotalScoreEws(classname){
           </td>
         <?php endfor;?>
       </tr>
-      <!-- <tr>
-        <td align="center">50-60</td>
-        <td align="center">2</td>
+      <tr>
+        <td align="center">41-50</td>
+        <td align="center">1</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="ews_dj[dj_pagi_tgl_<?php echo $i?>]" id="dj_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="2">
+              <input name="ews_dj[dj_pagi_tgl_<?php echo $i?>]" id="dj_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_dj[dj_siang_tgl_<?php echo $i?>]" id="dj_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="2">
+              <input name="ews_dj[dj_siang_tgl_<?php echo $i?>]" id="dj_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="ews_dj[dj_mlm_tgl_<?php echo $i?>]" id="dj_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="2">
+              <input name="ews_dj[dj_mlm_tgl_<?php echo $i?>]" id="dj_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
-      </tr> -->
-      <!-- <tr>
-        <td align="center">< 50</td>
+      </tr>
+      <tr>
+        <td align="center"><=40</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
@@ -841,8 +729,129 @@ function getTotalScoreEws(classname){
             </label>
           </td>
         <?php endfor;?>
-      </tr> -->
-      
+      </tr>
+      <!-- tekanan darah sistolik -->
+      <tr>
+        <td rowspan="5">Tekanan Darah Sistolik</td>
+        <td align="center">>=220</td>
+        <td align="center">3</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
+      <tr>
+        <td align="center">111-219</td>
+        <td align="center">0</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
+      <tr>
+        <td align="center">101-110</td>
+        <td align="center">1</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
+      <tr>
+        <td align="center">91-100</td>
+        <td align="center">2</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="2">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="2">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="2">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
+      <tr>
+        <td align="center"><=90</td>
+        <td align="center">3</td>
+        <?php for($i=0; $i<3; $i++):?>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_pagi_tgl_<?php echo $i?>]" id="tds_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_siang_tgl_<?php echo $i?>]" id="tds_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+          <td align="center" width="30px">
+            <label>
+              <input name="ews_tds[tds_mlm_tgl_<?php echo $i?>]" id="tds_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
+              <span class="lbl"> &nbsp;</span>
+            </label>
+          </td>
+        <?php endfor;?>
+      </tr>
       <!-- kesadaran -->
       <tr>
         <td rowspan="2">Kesadaran</td>
@@ -871,180 +880,28 @@ function getTotalScoreEws(classname){
       </tr>
       <tr>
         <td align="center">V,P,U</td>
-        <td align="center">1</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_sadar[sadar_pagi_tgl_<?php echo $i?>]" id="sadar_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_sadar[sadar_siang_tgl_<?php echo $i?>]" id="sadar_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_sadar[sadar_mlm_tgl_<?php echo $i?>]" id="sadar_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-
-      <!-- nyeri -->
-      <tr>
-        <td rowspan="2">Nyeri</td>
-        <td align="center">Normal</td>
-        <td align="center">0</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_nyeri[nyeri_pagi_tgl_<?php echo $i?>]" id="nyeri_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_nyeri[nyeri_siang_tgl_<?php echo $i?>]" id="nyeri_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_nyeri[nyeri_mlm_tgl_<?php echo $i?>]" id="nyeri_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">Abnormal</td>
-        <td align="center">1</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_nyeri[nyeri_pagi_tgl_<?php echo $i?>]" id="nyeri_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_nyeri[nyeri_siang_tgl_<?php echo $i?>]" id="nyeri_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="ews_nyeri[nyeri_mlm_tgl_<?php echo $i?>]" id="nyeri_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="1">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <!-- discharge lochia -->
-      <tr>
-        <td rowspan="2">Discharge/ Lochia</td>
-        <td align="center">Normal</td>
-        <td align="center">0</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="discharge[discharge_pagi_tgl_<?php echo $i?>]" id="discharge_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="discharge[discharge_siang_tgl_<?php echo $i?>]" id="discharge_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="discharge[discharge_mlm_tgl_<?php echo $i?>]" id="discharge_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="0">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">Abnormal</td>
         <td align="center">3</td>
         <?php for($i=0; $i<3; $i++):?>
           <td align="center" width="30px">
             <label>
-              <input name="discharge[discharge_pagi_tgl_<?php echo $i?>]" id="discharge_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
+              <input name="ews_sadar[sadar_pagi_tgl_<?php echo $i?>]" id="sadar_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="discharge[discharge_siang_tgl_<?php echo $i?>]" id="discharge_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
+              <input name="ews_sadar[sadar_siang_tgl_<?php echo $i?>]" id="sadar_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
           <td align="center" width="30px">
             <label>
-              <input name="discharge[discharge_mlm_tgl_<?php echo $i?>]" id="discharge_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
+              <input name="ews_sadar[sadar_mlm_tgl_<?php echo $i?>]" id="sadar_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
               <span class="lbl"> &nbsp;</span>
             </label>
           </td>
         <?php endfor;?>
       </tr>
-      <!-- proteinuria -->
-      <tr>
-        <td rowspan="2">Proteinuria (per hari)</td>
-        <td align="center"> + </td>
-        <td align="center">2</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="protein[protein_pagi_tgl_<?php echo $i?>]" id="protein_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="protein[protein_siang_tgl_<?php echo $i?>]" id="protein_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="protein[protein_mlm_tgl_<?php echo $i?>]" id="protein_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="2">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      <tr>
-        <td align="center">+ + ></td>
-        <td align="center">3</td>
-        <?php for($i=0; $i<3; $i++):?>
-          <td align="center" width="30px">
-            <label>
-              <input name="protein[protein_pagi_tgl_<?php echo $i?>]" id="protein_pagi_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('pagi_tgl_<?php echo $i?>')" class="ace pagi_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="protein[protein_siang_tgl_<?php echo $i?>]" id="protein_siang_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('siang_tgl_<?php echo $i?>')" class="ace siang_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-          <td align="center" width="30px">
-            <label>
-              <input name="protein[protein_mlm_tgl_<?php echo $i?>]" id="protein_mlm_tgl_<?php echo $i?>" type="radio" onchange="getTotalScoreEws('mlm_tgl_<?php echo $i?>')" class="ace mlm_tgl_<?php echo $i?>" value="3">
-              <span class="lbl"> &nbsp;</span>
-            </label>
-          </td>
-        <?php endfor;?>
-      </tr>
-      
 
       <!-- total score -->
       <tr>

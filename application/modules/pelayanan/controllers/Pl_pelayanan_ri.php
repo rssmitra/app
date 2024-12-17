@@ -687,6 +687,8 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['id'] = $id;
+        $data['kategori'] = $_GET['type_form'];
         
         // echo '<pre>';print_r($data);die;
         /*load form view*/
@@ -1437,14 +1439,27 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function get_ews_dt(){
 
-        $query = $this->db->order_by('id', 'DESC')->get_where('th_ews', ['no_kunjungan' => $_GET['no_kunjungan'], 'kategori' => $_GET['kategori']])->row();
+        if(isset($_GET['kategori'])){
+            $this->db->where('kategori', $_GET['kategori']);
+        }
+        $this->db->where('no_kunjungan', $_GET['no_kunjungan']);
+        $this->db->from('th_ews');
+        $query = $this->db->get()->row();
         // get content ews
         $content_ews = $this->master->get_content_ews($query);
+        $convert_to_array_ttl = explode('|', $query->ews_ttl);
+        $end_array = [];
+		for($i=0; $i < count($convert_to_array_ttl ); $i++){
+			$key_value = explode('=', $convert_to_array_ttl [$i]);
+			$end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+		}
+
         $data = [
             "value_form" => $content_ews,
+            "ews_ttl" => $end_array,
         ];
         // echo "<pre>"; print_r($data);die;
-        echo json_encode(array('value_form' => $content_ews));
+        echo json_encode(array('value_form' => $content_ews, 'ews_ttl' => $end_array));
     }
 
     public function show_catatan_pengkajian($cppt_id){
@@ -1730,7 +1745,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function process_ews()
     {
-         print_r($_POST);die;
+        //  print_r($_POST);die;
          $this->load->library('form_validation');
          $val = $this->form_validation;
      
@@ -1760,9 +1775,10 @@ class Pl_pelayanan_ri extends MX_Controller {
             $ews_rdd_form = urldecode(http_build_query(isset($_POST['ews_rdd'])?$_POST['ews_rdd']:[],'','|'));
             $ews_pob_form = urldecode(http_build_query(isset($_POST['ews_pob'])?$_POST['ews_pob']:[],'','|'));
             $ews_sadar_form = urldecode(http_build_query(isset($_POST['ews_sadar'])?$_POST['ews_sadar']:[],'','|'));
+            $ews_suhu_form = urldecode(http_build_query(isset($_POST['ews_suhu'])?$_POST['ews_suhu']:[],'','|'));
             $ews_nyeri_form = urldecode(http_build_query(isset($_POST['ews_nyeri'])?$_POST['ews_nyeri']:[],'','|'));
-            $ews_protein_form = urldecode(http_build_query(isset($_POST['ews_protein'])?$_POST['ews_protein']:[],'','|'));
-            $ews_discharge_form = urldecode(http_build_query(isset($_POST['ews_discharge'])?$_POST['ews_discharge']:[],'','|'));
+            $ews_protein_form = urldecode(http_build_query(isset($_POST['protein'])?$_POST['protein']:[],'','|'));
+            $ews_discharge_form = urldecode(http_build_query(isset($_POST['discharge'])?$_POST['discharge']:[],'','|'));
             $ews_crt_form = urldecode(http_build_query(isset($_POST['ews_crt'])?$_POST['ews_crt']:[],'','|'));
             $ews_ttl_form = urldecode(http_build_query(isset($_POST['ews_ttl'])?$_POST['ews_ttl']:[],'','|'));
 
@@ -1781,6 +1797,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'ews_rdd' => $ews_rdd_form,
                 'ews_pob' => $ews_pob_form,
                 'ews_sadar' => $ews_sadar_form,
+                'ews_suhu' => $ews_suhu_form,
                 'ews_nyeri' => $ews_nyeri_form,
                 'ews_protein' => $ews_protein_form,
                 'ews_discharge' => $ews_discharge_form,
@@ -1798,6 +1815,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $this->db->insert('th_ews', $dataexc);
             }else{
                 $this->db->where('id', $existing->id)->update('th_ews', $dataexc);
+                // echo $this->db->last_query();
             }
 
              if ($this->db->trans_status() === FALSE)

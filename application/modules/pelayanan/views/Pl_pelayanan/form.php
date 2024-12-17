@@ -198,6 +198,7 @@ $(document).ready(function(){
     /*onchange form module when click tabs*/
     $('#tabs_tindakan').click(function (e) {    
       e.preventDefault();  
+      $('#form_kelas_tarif').show();
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/process');
       // backToDefaultForm();
     });

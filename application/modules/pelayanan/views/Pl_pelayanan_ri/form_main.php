@@ -1,6 +1,33 @@
 <script>
   $(document).ready(function(){
 
+    // show ews indikator
+    $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_ews_dt') ?>", {no_kunjungan: $('#no_kunjungan').val()} , function (response) {    
+    // show data
+    var obj = response.result;
+    // set value input
+    var ews_ttl = response.ews_ttl;
+    $('#score_ews_indikator').html('');
+    $.each(ews_ttl, function(key, val) {
+      if(val != ''){
+        if(val == 0){
+          clr_ind = 'success';
+        }else if(val >=1 && val <=4){
+          clr_ind = 'yellow';
+        }else if(val >=5 && val <=6){
+          clr_ind = 'warning';
+        }else{
+          clr_ind = 'danger';
+        }
+        // append to 
+        $('<a class="btn btn-xs btn-'+clr_ind+'" style="font-weight: bold; "> '+val+' </a> &nbsp; &nbsp;').appendTo($('#score_ews_indikator'));
+      }
+    });
+
+  }); 
+
+
+
     // DEFAULT 
     $('#btn_monitoring_perkembangan_pasien').click();
     // getMenuTabsHtml("billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI", 'tabs_form_pelayanan');
@@ -184,12 +211,15 @@
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_ri/process_note');
     });
 
-    $('#tabs_tindakan').click(function (e) {     
-      
+    $('#tabs_cppt, #tabs_catatan, #btn_note, #btn_ews, #btn_form_askep, #btn_form_pemberian_obat, #btn_monitoring_perkembangan_pasien, #btn_form_pengawasan_khusus ').click(function (e) {    
       e.preventDefault();  
+      $('#form_kelas_tarif').hide();
+    });
 
+    $('#tabs_tindakan').click(function (e) {    
+      e.preventDefault();  
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/process');
-
+      $('#form_kelas_tarif').show();
     });
 
     $('#tabs_cppt').click(function (e) {     
@@ -441,12 +471,13 @@ function delete_diagnosa(myid){
         <?php endif;?>
 
         <div class="pull-right">
-          <b>Score EWS : </b>
-          <div id="score_ews_indikator">
-            <a class="label label-success">1</a>
-            <a class="label label-warning">5</a>
-            <a class="label label-danger">7</a>
-          </div>
+          <table>
+            <tr>
+              <td><b>SCORE EWS :</b> </td>
+              <td> <div id="score_ews_indikator">-</div></td>
+            </tr>
+          </table>
+          
         </div>
 
       </div>
@@ -541,10 +572,12 @@ function delete_diagnosa(myid){
       <div class="tab-content">
 
         <div class="row">
-          <div class="col-md-12" style="padding-bottom: 5px !important">
+
+          <div class="col-md-12" style="padding-bottom: 5px !important; display: none" id="form_kelas_tarif">
             <label style="font-weigth: bold !important"><b>Kelas Tarif :</b> </label><br>
-            <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), isset($klas_titipan)?$klas_titipan:$kode_klas , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
+            <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), isset($kode_klas)?$kode_klas:$klas_titipan , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
           </div>
+
           <div id="tabs_form_pelayanan" style="padding: 10px !important">
             <div class="alert alert-block alert-success">
                 <p class="center">

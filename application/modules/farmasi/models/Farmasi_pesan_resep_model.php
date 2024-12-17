@@ -99,7 +99,7 @@ class Farmasi_pesan_resep_model extends CI_Model {
 	public function get_by_no_kunj($id)
 	{
 		$this->_main_query();
-		$this->db->select('fr_tc_far.kode_trans_far, (select count(kode_trans_far) from fr_tc_far_his where kode_trans_far=fr_tc_far.kode_trans_far) as total_retur');
+		// $this->db->select('fr_tc_far.kode_trans_far, (select count(kode_trans_far) from fr_tc_far_his where kode_trans_far=fr_tc_far.kode_trans_far) as total_retur');
 		$this->db->join('fr_tc_far',''.$this->table.'.kode_pesan_resep=fr_tc_far.kode_pesan_resep','left');
 		$this->db->where(''.$this->table.'.no_kunjungan',$id);
 		$this->db->order_by(''.$this->table.'.kode_pesan_resep','ASC');		

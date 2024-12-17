@@ -137,11 +137,10 @@ $(document).ready(function(){
     });   
 
     /*onchange form module when click tabs*/
-    $('#tabs_tindakan').click(function (e) {     
-      
+    $('#tabs_tindakan').click(function (e) {    
       e.preventDefault();  
-
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan_bedah/process');
+      $('#form_kelas_tarif').show();
 
     });
 
@@ -432,7 +431,7 @@ function rollback(no_registrasi, no_kunjungan){
           <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
           <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
           <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($kode_bagian)?$kode_bagian:''?>" id="kode_bagian_val">
-          <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
+          <!-- <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val"> -->
           <input type="hidden" class="form-control" name="dokter1" id="dokter1" value="<?php echo isset($value->dokter1)?$value->dokter1:''?>">
           <input type="hidden" class="form-control" name="kode_tarif_existing" id="kode_tarif_existing" value="<?php echo isset($value->kode_tarif)?$value->kode_tarif:''?>">
           <input type="hidden" class="form-control" name="nama_tarif_existing" id="nama_tarif_existing" value="<?php echo isset($value->nama_tarif)?$value->nama_tarif:'';?>">
@@ -645,6 +644,11 @@ function rollback(no_registrasi, no_kunjungan){
 
                 <div class="tab-content">
 
+                  <div class="col-md-12 no-padding" id="form_kelas_tarif" style="display: none; padding-bottom: 5px !important">
+                    <label style="font-weigth: bold !important"><b>Kelas Tarif :</b> </label><br>
+                    <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), isset($kode_klas)?$kode_klas:'' , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
+                  </div>
+                  
                   <div id="tabs_form_pelayanan">
                     <div class="alert alert-block alert-success">
                         <p>
