@@ -57,6 +57,7 @@ th, td {
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse">
             <?php 
               $jml_stl_retur = $row_dt->jml_sebelum - $row_dt->jumlah;
+              $jml_stl_retur = ($jml_stl_retur < 0) ? 0 : $jml_stl_retur;
               echo ($jml_stl_retur)?$jml_stl_retur.' '.$row_dt->satuan_kecil:0; 
             ?></td>
           </tr>

@@ -484,6 +484,16 @@ class Pengiriman_unit extends MX_Controller {
                         $this->db->trans_commit();
 
                     }
+
+                    // barang expired
+                    if($row_brg->retur_type == 'expired'){
+                        $jml_retur = $jml_convert;
+                        $jml_retur_decimal = $jml_convert;
+                        // print_r($jml_convert);die;
+                        // kurang stok gudang
+                        $konversi = $row_brg->qty;
+                        $this->stok_barang->stock_process($row_brg->kode_brg, $konversi, $kode_bagian_gudang, 2 ,'Retur Barang ke Supplier', 'restore');
+                    }
                     
 
                 }else{
@@ -591,11 +601,11 @@ class Pengiriman_unit extends MX_Controller {
             $dataexc = array(
                 'kode_brg' => $_POST['kode_brg'],
                 'nama_brg' => $_POST['nama_brg'],
-                'qty' => $_POST['qty'],
-                'qtyBefore' => $_POST['qtyBefore'],
+                'qty' => (float)$_POST['qty'],
+                'qtyBefore' => (float)$_POST['qtyBefore'],
                 'satuan' => $_POST['satuan'],
                 'harga' => (float)$_POST['harga'],
-                'total' => $total,
+                'total' => (float)$total,
                 'user_id_session' => $this->session->userdata('user')->user_id,
                 'flag' => $_POST['flag'],
                 'barcode' => $_POST['barcode'],
@@ -604,8 +614,9 @@ class Pengiriman_unit extends MX_Controller {
                 'reff_kode' => isset($_POST['reff_kode'])?$_POST['reff_kode']:'',
                 'retur_type' => isset($_POST['retur_type'])?$_POST['retur_type']:'',
                 'is_bhp' => isset($_POST['is_bhp'])?$_POST['is_bhp']:'',
-                'is_restock' => isset($_POST['restock'])?$_POST['restock']:'',
+                'is_restock' => isset($_POST['restock'])?$_POST['restock']:1,
             );
+            // print_r($dataexc);die;
             $this->db->insert('tc_permintaan_inst_cart_log', $dataexc);
             $this->db->trans_commit();
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $dataexc['flag'], 'kode_brg' => $dataexc['kode_brg'], 'nama_brg' => $dataexc['nama_brg']));

@@ -100,8 +100,6 @@ $(document).ready(function(){
     $('select[name=jenis_retur]').change(function(){
       var value = $(this).val();
 
-      
-
       if(  value == 'penjualan_brg'){
         // hide unit
         $('#div_restock').show();
@@ -112,12 +110,16 @@ $(document).ready(function(){
         $('#div_restock').hide();
         $('#div_retur_penjualan').hide();
         $('#div_jenis_retur_ex_penjualan').show();
-        if(  value == 'penerimaan_brg'){
+        if(  value == 'penerimaan_brg' || value == 'expired'){
         // hide unit
           $('#dari_unit_div').hide();
         }else{
           $('#dari_unit_div').show();
         }
+      }
+
+      if( value == 'expired'){
+        $('#retur_type').val('expired')
       }
       // reset detail brg
       $('#reff_kode').val('');
@@ -419,6 +421,7 @@ th, td {
                               <option value="penerimaan_brg">Penerimaan Barang</option>
                               <!-- <option value="pengiriman_brg_unit">Pengiriman Barang Unit</option> -->
                               <option value="lainnya">Retur Stok Unit ke Gudang</option>
+                              <option value="expired">Barang Expired</option>
                             </select>
                           </div>  
                         </div>

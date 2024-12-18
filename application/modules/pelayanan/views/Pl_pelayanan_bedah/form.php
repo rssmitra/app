@@ -152,7 +152,7 @@ $(document).ready(function(){
 
     });
 
-    $('#tabs_catatan, #tabs_laporan_operasi').click(function (e) {     
+    $('#tabs_catatan, #tabs_laporan_operasi, #tabs_resume_medis_pasien').click(function (e) {     
       
       e.preventDefault();  
 
@@ -604,6 +604,12 @@ function rollback(no_registrasi, no_kunjungan){
                   <li>
                     <a data-toggle="tab" id="tabs_laporan_operasi" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&no_mr=<?php echo $no_mr?>&form_no=12" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                       Laporan Operasi
+                    </a>
+                  </li>
+
+                  <li>
+                    <a data-toggle="tab" id="tabs_resume_medis_pasien" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&no_mr=<?php echo $no_mr?>&form_no=33" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      Resume Medis Pasien
                     </a>
                   </li>
 
