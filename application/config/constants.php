@@ -69,6 +69,10 @@ define('ERESEP', 'e-Resep');
 define('EORDER', 'Penunjang Medis');
 // billing sementara pasien
 define('RESUME_BILLING', 'Billing Pasien');
+// tabs on sidebar resume medis
+define('TABS_RESUME_MEDIS', 'Resume Medis');
+// tabs on sidebar show hasil penunjang
+define('TABS_HASIL_PENUNJANG', 'Hasil Penunjang');
 
 
 /*
