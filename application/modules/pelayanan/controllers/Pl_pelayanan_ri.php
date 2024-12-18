@@ -674,15 +674,17 @@ class Pl_pelayanan_ri extends MX_Controller {
     {
          /*breadcrumbs for edit*/
         $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_ri/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        $kunjungan = $this->db->get_where('tc_kunjungan', ['no_kunjungan' => $no_kunjungan])->row();
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan_ri->get_by_id($id);
         /*mr*/
-        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_mr'] = $kunjungan->no_mr;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['kode_ri'] = $id;
-        $data['sess_kode_bag'] = ( $data['value']->bag_pas)? $data['value']->bag_pas:0;
-        $data['type']='Ranap';
-        $data['status_pulang'] = $data['value']->status_pulang;
+        $data['sess_kode_bag'] = $kunjungan->kode_bagian_asal;
+        $data['type']= 'Ranap';
+        $data['status_pulang'] = isset($data['value']->status_pulang)?$data['value']->status_pulang:'';
+        $data['tgl_masuk'] = isset($data['value']->tgl_masuk) ? $data['value']->tgl_masuk : $kunjungan->tgl_masuk;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/

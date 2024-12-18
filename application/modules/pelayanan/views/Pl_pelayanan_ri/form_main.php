@@ -477,7 +477,6 @@ function delete_diagnosa(myid){
               <td> <div id="score_ews_indikator">-</div></td>
             </tr>
           </table>
-          
         </div>
 
       </div>

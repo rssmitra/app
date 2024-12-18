@@ -176,7 +176,7 @@ function getTotalScoreEws(classname){
         <th width="30px" colspan="2" class="center">Tanggal</th>
         <?php 
           for($i=0; $i<3; $i++):
-            $date = date('Y-m-d', strtotime($this->tanggal->formatDateTimeToSqlDate($value->tgl_masuk) . ' +'.$i.' day'));
+            $date = date('Y-m-d', strtotime($this->tanggal->formatDateTimeToSqlDate($tgl_masuk) . ' +'.$i.' day'));
         ?>
           <th width="30px" colspan="3" class="center"><input type="text" class="input_type" name="ews[tgl_<?php echo $i?>]" id="tgl_<?php echo $i?>" value="<?php echo $date?>" style="width: 100px"></th>
         <?php endfor;?>
