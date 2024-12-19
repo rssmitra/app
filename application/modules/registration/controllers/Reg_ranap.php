@@ -51,7 +51,7 @@ class Reg_ranap extends MX_Controller {
         $this->form_validation->set_rules('nama_pasien_hidden', 'Nama', 'trim');
 
         if($_POST['kode_perusahaan_hidden']==120){
-            $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim|required');
+            $this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim');
         }
 
         $this->form_validation->set_rules('ri_diagnosa_masuk', 'Diagnosa Masuk', 'trim');
@@ -220,7 +220,7 @@ class Reg_ranap extends MX_Controller {
                 'tgl_periksa' => date('Y-m-d H:i:s'),
                 'dokter_pemeriksa' => $nama_dokter->nama_pegawai,
                 'kode_bagian' =>  $this->regex->_genRegex($this->form_validation->set_value('ri_ruangan'),'RGXQSL'),
-                'diagnosa_rujukan' =>  1,
+                'diagnosa_rujukan_masuk' =>  1,
             ); 
 
             $qry_riwayat_pasien = $this->db->get_where('th_riwayat_pasien', array('no_registrasi' => $no_registrasi, 'no_kunjungan' => $no_kunjungan));
