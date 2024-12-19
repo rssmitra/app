@@ -1,7 +1,7 @@
 <?php 
 
   header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
-  header("Content-Disposition: attachment; filename=".'lhk_exp_date_type_1_'.date('Ymd').".xls");  //File name extension was wrong
+  header("Content-Disposition: attachment; filename=".'trx_report_cutoff_'.date('YmdHis').".xls");  //File name extension was wrong
   header("Expires: 0");
   header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
   header("Cache-Control: private",false);
@@ -9,46 +9,37 @@
 ?>
 <table class="table table-bordered table-hover">
   <thead>
-    <tr>
-      <th class="center">No</th>
-      <th>Tipe</th>
-      <th>No. Kuitansi</th>
-      <th>Tgl Submit</th>
-      <th>No.MR</th>
-      <th>Pasien</th>
-      <th>Penjamin</th>
-      <th>No. SEP</th>
-      <th>Bagian Masuk</th>
-      <th>Tunai</th>
-      <th>Non-Tunai</th>
-      <th>Potongan</th>
-      <th>Perusahaan</th>
-      <th>Karyawan</th>
-      <th>Total</th>
-    </tr>
+  <tr>
+    <th class="center">No</th>
+    <th width="90px" class="center">Tipe</th>
+    <th width="120px">Tgl Masuk</th>
+    <th width="120px">Tgl Keluar</th>
+    <th width="100px">No MR</th>
+    <th>Nama Pasien</th>
+    <th>Dokter</th>
+    <th>Unit/Bagian/Spesialis</th>
+    <th>Kategori</th>
+    <th>Penjamin</th>
+    <th>No SEP</th>
+    <th width="100px">Jasa Dr1</th>
+    <th width="100px">Jasa Dr2</th>
+    <th width="100px">BHP</th>
+    <th width="100px">Apotik</th>
+    <th width="130px">Kamar Rawat</th>
+    <th width="130px">Kamar Operasi</th>
+    <th width="100px">Alkes</th>
+    <th width="100px">Profit</th>
+    <th width="100px">Total Billing</th>
+  </tr>
   </thead>
   <tbody>
     <?php 
-      $no = 0;
-      foreach($data as $key=>$row_list){
-        $no++;
+      foreach($result as $key=>$row_list){
         echo "<tr>";
-        echo "<td>".$no."</td>";
-        echo "<td>".$row_list->seri_kuitansi."</td>";
-        echo "<td>".$row_list->no_kuitansi."</td>";
-        echo "<td>".$this->tanggal->formatDateTime($row_list->tgl_jam)."</td>";
-        echo "<td>".$row_list->no_mr."</td>";
-        echo "<td>".$row_list->nama_pasien."</td>";
-        echo "<td>".$row_list->nama_perusahaan."</td>";
-        echo "<td>".$row_list->no_sep."</td>";
-        echo "<td>".$row_list->nama_bagian."</td>";
-        $nontunai = (int)$row_list->debet + (int)$row_list->kredit;
-        echo "<td>".(int)$row_list->tunai."</td>";
-        echo "<td>".(int)$nontunai."</td>";
-        echo "<td>".(int)$row_list->potongan."</td>";
-        echo "<td>".(int)$row_list->piutang."</td>";
-        echo "<td>".(int)$row_list->nk_karyawan."</td>";
-        echo "<td>".(int)$row_list->billing."</td>";
+        for ($i=0; $i < 20; $i++) { 
+          # code...
+          echo "<td>".$row_list[$i]."</td>";
+        }
         echo "</tr>";
       }?>
   </tbody>
