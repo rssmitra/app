@@ -89,6 +89,16 @@
           $("#all_ri_ttl_cost").text(formatMoney(objData.all_ri_ttl_cost));
           $("#all_ri_ttl_profit").text(formatMoney(objData.all_ri_ttl_profit));
 
+          // total rs
+          var ttl_rs = parseInt(objData.all_ttl_pasien) + parseInt(objData.all_ri_ttl_pasien);
+          $("#total_pasien_rs").text(formatMoney(ttl_rs));
+          var ttl_revenue = parseInt(objData.all_ttl_revenue) + parseInt(objData.all_ri_ttl_revenue);
+          $("#total_revenue_rs").text(formatMoney(ttl_revenue));
+          var ttl_cost = parseInt(objData.all_ttl_cost) + parseInt(objData.all_ri_ttl_cost);
+          $("#total_cost_rs").text(formatMoney(ttl_cost));
+          var ttl_profit = parseInt(objData.all_ttl_profit) + parseInt(objData.all_ri_ttl_profit);
+          $("#total_profit_rs").text(formatMoney(ttl_profit));
+
 
           $('.tgl_filter').html(objData.start_date+' s.d '+objData.end_date);
 
@@ -209,9 +219,10 @@
           <b>Keterangan :</b>
           <ul>
             <li>Data yang ditampilkan adalah data berdasarkan tanggal kunjungan (masuk/keluar) pasien RJ/RI</li>
-            <li>Kolom <b>"Tipe"</b> merupakan seri kuitansi pasien ketika <i>closing billing</i> pasien oleh petugas kasir</li>
+            <li>Kolom <b>"Tipe"</b> merupakan seri kuitansi pasien ketika <i>closing billing</i> oleh petugas kasir</li>
             <li>Tipe <b>"ON GOING"</b> berarti pasien masih dalam proses pelayanan dan belum dilakukan <i>closing billing</i></li>
             <li>Tipe <b>"UNBILL"</b> berarti pasien belum dilakukan <i>closing billing</i> oleh petugas kasir atau ada rincian billing yang belum di<i>closing</i></li>
+            <li>Tipe <b>"PB"</b> (Pembelian Bebas) yaitu pasien rawat jalan yang melakukan pembelian obat di apotik dengan resep luar</li>
             <li>Billing Apotik diluar dari Billing Resep PRB dan sudah dikurangi margin 33% dari total billing apotik dan margin 33% dimasukan kedalam Profit RS</li>
           </ul>
         </p>
@@ -221,7 +232,21 @@
         <center><span style="font-weight: bold" id="title_1">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
         <br>
 
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding-bottom: 20px">
+          <table class="table">
+            <tr>
+              <th style="width: 25%; color: white; background: #d15b47">TOTAL PASIEN</th>
+              <th style="width: 25%; color: white; background: #428bca">REVENUE</th>
+              <th style="width: 25%; color: white; background: #ffb752">COST</th>
+              <th style="width: 25%; color: white; background: #87b87f">PROFIT</th>
+            </tr>
+            <tr style="font-size: 20px; font-weight: bold;">
+              <td align="right" style="background: #d15b4714"><span id="total_pasien_rs"></span></td>
+              <td align="right" style="background: #428bca1f"><span id="total_revenue_rs"></span></td>
+              <td align="right" style="background: #ffb7521c"><span id="total_cost_rs"></span></td>
+              <td align="right" style="background: #87b87f17"><span id="total_profit_rs"></span></td>
+            </tr>
+          </table>
           <table class="table">
             <tr style="font-weight: bold; background: #c7cccb">
               <td rowspan="2" style="vertical-align: middle" width="30px" align="center">NO</td>
@@ -288,7 +313,10 @@
               <td align="right"><span id="all_ri_ttl_profit"></span></td>
             </tr>
           </table>
+          <span><b>Note :</b> <i>Rekap data yang ditampilkan diatas tidak termasuk pasien yang sedang <b>ON GOING/UNBILL/PB</b></i></span>
         </div>
+        <br>
+        <hr>
 
         <div class="col-md-12">
           <button type="button" name="btn-export" value="1" onclick="export_excel(1)" class="btn btn-xs btn-success">

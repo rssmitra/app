@@ -165,20 +165,20 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "ri_um_ttl_cost" => isset($getCostByKategori['RI']['UMUM']) ? array_sum($getCostByKategori['RI']['UMUM']) : 0,
                         "ri_asuransi_ttl_cost" => isset($getCostByKategori['RI']['ASURANSI']) ? array_sum($getCostByKategori['RI']['ASURANSI']) : 0,
                         "ri_bpjs_ttl_cost" => isset($getCostByKategori['RI']['BPJS']) ? array_sum($getCostByKategori['RI']['BPJS']) : 0,
-                        "ri_um_ttl_profit" => isset($getProfitByKategori['RI']['UMUM']) ? array_sum($getCostByKategori['RI']['UMUM']) : 0,
-                        "ri_asuransi_ttl_profit" => isset($getProfitByKategori['RI']['ASURANSI']) ? array_sum($getCostByKategori['RI']['ASURANSI']) : 0,
+                        "ri_um_ttl_profit" => isset($getProfitByKategori['RI']['UMUM']) ? array_sum($getProfitByKategori['RI']['UMUM']) : 0,
+                        "ri_asuransi_ttl_profit" => isset($getProfitByKategori['RI']['ASURANSI']) ? array_sum($getProfitByKategori['RI']['ASURANSI']) : 0,
                         "ri_bpjs_ttl_profit" => isset($getProfitByKategori['RI']['BPJS']) ? array_sum($getProfitByKategori['RI']['BPJS']) : 0,
 
                         // rekap all kategori
                         "all_ttl_pasien" => isset($getDtByTipe['RJ']) ? count($getDtByTipe['RJ']) : 0,
                         "all_ttl_revenue" => isset($getRevenueByTipe['RJ']) ? array_sum($getRevenueByTipe['RJ']) : 0,
                         "all_ttl_cost" => isset($getCostByTipe['RJ']) ? array_sum($getCostByTipe['RJ']) : 0,
-                        "all_ttl_profit" => isset($getProfitByTipe['RJ']) ? array_sum($getCostByTipe['RJ']) : 0,
+                        "all_ttl_profit" => isset($getProfitByTipe['RJ']) ? array_sum($getProfitByTipe['RJ']) : 0,
 
                         "all_ri_ttl_pasien" => isset($getDtByTipe['RI']) ? count($getDtByTipe['RI']) : 0,
                         "all_ri_ttl_revenue" => isset($getRevenueByTipe['RI']) ? array_sum($getRevenueByTipe['RI']) : 0,
                         "all_ri_ttl_cost" => isset($getCostByTipe['RI']) ? array_sum($getCostByTipe['RI']) : 0,
-                        "all_ri_ttl_profit" => isset($getProfitByTipe['RI']) ? array_sum($getCostByTipe['RI']) : 0,
+                        "all_ri_ttl_profit" => isset($getProfitByTipe['RI']) ? array_sum($getProfitByTipe['RI']) : 0,
                         
                 );
         //output to json format
@@ -245,6 +245,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $getCostByTipe[$row_list->tipe][] = $cost;
             $getProfitByTipe[$row_list->tipe][] = $profit;
         }
+        echo "<pre>";
 
         $return_data = array(
                         "recordsTotal" => count($list),
@@ -271,8 +272,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "um_ttl_cost" => isset($getCostByKategori['RJ']['UMUM']) ? array_sum($getCostByKategori['RJ']['UMUM']) : 0,
                         "asuransi_ttl_cost" => isset($getCostByKategori['RJ']['ASURANSI']) ? array_sum($getCostByKategori['RJ']['ASURANSI']) : 0,
                         "bpjs_ttl_cost" => isset($getCostByKategori['RJ']['BPJS']) ? array_sum($getCostByKategori['RJ']['BPJS']) : 0,
-                        "um_ttl_profit" => isset($getProfitByKategori['RJ']['UMUM']) ? array_sum($getCostByKategori['RJ']['UMUM']) : 0,
-                        "asuransi_ttl_profit" => isset($getProfitByKategori['RJ']['ASURANSI']) ? array_sum($getCostByKategori['RJ']['ASURANSI']) : 0,
+                        "um_ttl_profit" => isset($getProfitByKategori['RJ']['UMUM']) ? array_sum($getProfitByKategori['RJ']['UMUM']) : 0,
+                        "asuransi_ttl_profit" => isset($getProfitByKategori['RJ']['ASURANSI']) ? array_sum($getProfitByKategori['RJ']['ASURANSI']) : 0,
                         "bpjs_ttl_profit" => isset($getProfitByKategori['RJ']['BPJS']) ? array_sum($getProfitByKategori['RJ']['BPJS']) : 0,
                         // rekap kategori ranap
                         "ri_um_ttl_pasien" => isset($getDtByKategori['RI']['UMUM']) ? count($getDtByKategori['RI']['UMUM']) : 0,
@@ -284,19 +285,19 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "ri_um_ttl_cost" => isset($getCostByKategori['RI']['UMUM']) ? array_sum($getCostByKategori['RI']['UMUM']) : 0,
                         "ri_asuransi_ttl_cost" => isset($getCostByKategori['RI']['ASURANSI']) ? array_sum($getCostByKategori['RI']['ASURANSI']) : 0,
                         "ri_bpjs_ttl_cost" => isset($getCostByKategori['RI']['BPJS']) ? array_sum($getCostByKategori['RI']['BPJS']) : 0,
-                        "ri_um_ttl_profit" => isset($getProfitByKategori['RI']['UMUM']) ? array_sum($getCostByKategori['RI']['UMUM']) : 0,
-                        "ri_asuransi_ttl_profit" => isset($getProfitByKategori['RI']['ASURANSI']) ? array_sum($getCostByKategori['RI']['ASURANSI']) : 0,
+                        "ri_um_ttl_profit" => isset($getProfitByKategori['RI']['UMUM']) ? array_sum($getProfitByKategori['RI']['UMUM']) : 0,
+                        "ri_asuransi_ttl_profit" => isset($getProfitByKategori['RI']['ASURANSI']) ? array_sum($getProfitByKategori['RI']['ASURANSI']) : 0,
                         "ri_bpjs_ttl_profit" => isset($getProfitByKategori['RI']['BPJS']) ? array_sum($getProfitByKategori['RI']['BPJS']) : 0,
 
                         // rekap all kategori
                         "all_ttl_pasien" => isset($getDtByTipe['RJ']) ? count($getDtByTipe['RJ']) : 0,
-                        "all_ttl_revenue" => isset($getRevenueByTipe['RJ']) ? array_sum($getRevenueByTipe['RJ']) : 0,
-                        "all_ttl_cost" => isset($getCostByTipe['RJ']) ? array_sum($getCostByTipe['RJ']) : 0,
-                        "all_ttl_profit" => isset($getProfitByTipe['RJ']) ? array_sum($getCostByTipe['RJ']) : 0,
                         "all_ri_ttl_pasien" => isset($getDtByTipe['RI']) ? count($getDtByTipe['RI']) : 0,
+                        "all_ttl_revenue" => isset($getRevenueByTipe['RJ']) ? array_sum($getRevenueByTipe['RJ']) : 0,
                         "all_ri_ttl_revenue" => isset($getRevenueByTipe['RI']) ? array_sum($getRevenueByTipe['RI']) : 0,
+                        "all_ttl_cost" => isset($getCostByTipe['RJ']) ? array_sum($getCostByTipe['RJ']) : 0,
+                        "all_ttl_profit" => isset($getProfitByTipe['RJ']) ? array_sum($getProfitByTipe['RJ']) : 0,
                         "all_ri_ttl_cost" => isset($getCostByTipe['RI']) ? array_sum($getCostByTipe['RI']) : 0,
-                        "all_ri_ttl_profit" => isset($getProfitByTipe['RI']) ? array_sum($getCostByTipe['RI']) : 0,
+                        "all_ri_ttl_profit" => isset($getProfitByTipe['RI']) ? array_sum($getProfitByTipe['RI']) : 0,
                         
                 );
         //output to json format
