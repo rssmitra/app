@@ -1544,6 +1544,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'created_date' => date('Y-m-d H:i:s'),
                 'created_by' => $_POST['created_name'],
                 'type_owner' => $_POST['created_by'],
+                'jenis_form' => $_POST['jenis_form_catatan'],
             ];
             $this->db->insert('th_drawing_notes', $dataexc);
 
@@ -1555,7 +1556,7 @@ class Pl_pelayanan_ri extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $_POST['no_mr_notes'], 'ttd' => $_POST['paramsSignature']));
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $dataexc['no_mr'], 'ttd' => $_POST['paramsSignature']));
              }
  
          }

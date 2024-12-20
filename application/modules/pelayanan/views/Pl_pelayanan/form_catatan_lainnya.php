@@ -112,6 +112,31 @@ $(document).ready(function() {
 
     });
 
+    $('#search_nama_ppa').typeahead({
+      source: function (query, result) {
+          $.ajax({
+              url: "templates/references/getAllDokter",
+              data: { keyword:query },            
+              dataType: "json",
+              type: "POST",
+              success: function (response) {
+                result($.map(response, function (item) {
+                    return item;
+                }));
+              }
+          });
+      },
+      afterSelect: function (item) {
+        // do what is needed with item
+        var val_item=item.split(':')[0];
+        var label_item=item.split(':')[1];
+        $('#search_nama_ppa').val(label_item);
+        // get ttd and stamp dokter
+        var kode_dokter = val_item.replace(/\s/g, '');
+        get_ttd_and_stamp_dr(kode_dokter);
+      }
+
+  });
 
     $('#btn_search_data_cppt').click(function (e) {
         
@@ -306,6 +331,15 @@ function printDivHtml(divId) {
      document.body.innerHTML = originalContents;
 }
 
+function get_ttd_and_stamp_dr(kode_dokter){
+  $.getJSON("<?php echo site_url('Templates/Templates/get_credential_dr') ?>", {id: kode_dokter} , function (response) {    
+    // show data
+    console.log(response);
+    $('#ttd_digital_dr').html(response.ttd+'<br>');
+    $('#stamp_digital_dr').html(response.stamp);
+  }); 
+}
+
 </script>
 
 <style>
@@ -357,7 +391,7 @@ function printDivHtml(divId) {
     <div class="form-group">
         <label class="control-label col-sm-2">Nama Dokter</label>
         <div class="col-md-6">
-          <input type="text" class="form-control" name="nama_ppa" value="<?php echo $this->session->userdata('sess_nama_dokter');?>">
+          <input type="text" class="form-control" name="nama_ppa" id="search_nama_ppa" value="<?php echo $this->session->userdata('sess_nama_dokter');?>">
         </div>
     </div>
 

@@ -1729,18 +1729,37 @@ class Templates extends MX_Controller {
         $html = '';
         $html .= '<table width="100%" border="0" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
-                        <td width="50%"></td>
+                        <td width="50%"><span id="ttd_lainnya"></span></td>
                         <td align="center" width="50%">
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                         '.COMP_FULL.'
                         <br><br>
-                        '.$ttd.'<br>
-                        '.$stamp.'
+                        <span id="ttd_digital_dr">'.$ttd.'<br></span>
+                        <span id="stamp_digital_dr">'.$stamp.'</span>
                         </td>   
                     </tr>
                 </table>';
         return $html;
+    }
+
+    public function get_credential_dr(){
+        
+        $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $_GET['id']))->row();
+        
+        $ttd = $get_dokter->ttd;
+        $stamp_dr = $get_dokter->stamp;
+        $nama_dr = $get_dokter->nama_pegawai;
+        $no_sip = $get_dokter->no_sip;
+
+        $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="150px" style="position: relative">' : '';
+        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="220px" style="">' : '<u>'.$nama_dr.'</u><br>SIP. '.$no_sip.'';
+        $return = array(
+            'ttd' => $ttd,
+            'stamp' => $stamp,
+            'no_sip' => $no_sip
+        );
+        echo json_encode($return);
     }
 
     public function setGlobalFooterRm($data){
