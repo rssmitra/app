@@ -521,6 +521,7 @@
   </tr>
 </table>
 <br>
+<?php echo $footer; ?>
 <br>
 <br>
 <br>

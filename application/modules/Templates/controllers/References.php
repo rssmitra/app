@@ -2203,9 +2203,7 @@ class References extends MX_Controller {
 		->where('flag', 'resume')
 		->where('DATEDIFF(year,tanggal,GETDATE()) < 2 ')->limit($limit)
 		->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr))->result(); 
-
 		// echo '<pre>';print_r($result);die;
-
 		// eresep
 		$eresep = $this->db->get_where('fr_tc_pesan_resep_detail', ['no_mr' => $no_mr, 'parent' => '0'])->result();
 

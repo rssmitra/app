@@ -530,9 +530,9 @@ function showModalTTD()
 
       <div class="modal-body">                                 
         <div id="form_pasien_modal_ttd"></div>
-        <input type="text" name="note_type" id="note_type" value="ttd_pasien">
-        <input type="text" name="created_by" id="created_by" value="pasien">
-        <input type="text" name="created_name" id="created_name" value="pasien">
+        <input type="hidden" name="note_type" id="note_type" value="ttd_pasien">
+        <input type="hidden" name="created_by" id="created_by" value="pasien">
+        <input type="hidden" name="created_name" id="created_name" value="pasien">
         <button type="button" id="save_ttd_pasien_form" name="submit" class="btn btn-xs btn-primary">
           <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
           Submit

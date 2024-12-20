@@ -109,7 +109,7 @@ hr {
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
-          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->no_kunjungan?>" style="line-height: 15px; font-weight: normal !important; font-size: 13px">
+          <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->kode_riwayat?>" style="line-height: 15px; font-weight: normal !important; font-size: 13px">
             <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
             <b><?php echo $this->tanggal->formatDateTime($value->tgl_periksa)?></b><?php echo (empty($value->status_kunjungan)) ?' <span style="color: red; font-weight: bold">[Batal]</span>':''?><br>
             <div style="padding-left: 20px">
@@ -122,7 +122,7 @@ hr {
         </h4>
       </div>
 
-      <div class="panel-collapse collapse <?php echo $default_toogle?>" id="collapse<?php echo $value->no_kunjungan?>">
+      <div class="panel-collapse collapse <?php echo $default_toogle?>" id="collapse<?php echo $value->kode_riwayat?>">
         <div class="panel-body" style="border: 1px solid #dcd9d9;padding: 5px;background: lightyellow;">
           <center>
             <a href="#" class="btn btn-xs btn-success" onclick="copy_soap(<?php echo $value->kode_riwayat?>)">Copy SOAP</a>
