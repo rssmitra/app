@@ -340,6 +340,39 @@ function get_ttd_and_stamp_dr(kode_dokter){
   }); 
 }
 
+$('#save_ttd_pasien_form').click(function (e) {
+    e.preventDefault();
+    $.ajax({
+    url: 'pelayanan/Pl_pelayanan_ri/process_note',
+    type: "post",
+    data: $('#form_pelayanan').serialize(),
+    dataType: "json",
+    beforeSend: function() {
+      achtungShowLoader();  
+    },
+    success: function(data) {
+      achtungHideLoader();
+      $('#modalTTDPasien').modal('hide');
+      if(data.status == 200){
+        $('#ttd_lainnya').html('<img src="'+data.ttd+'" style="width: 100% !important">');
+      }
+    }
+  });
+});
+
+function showModalTTD()
+{  
+  noMr = $('#noMrHidden').val();
+  if (noMr == '') {
+    alert('Silahkan cari pasien terlebih dahulu !'); return false;
+  }else{
+    $('#result_text_edit_pasien').text('TANDA TANGAN PASIEN');
+    $('#form_pasien_modal_ttd').load('registration/reg_pasien/form_modal_ttd/'+noMr+''); 
+    $("#modalTTDPasien").modal();
+  }
+}
+
+
 </script>
 
 <style>
@@ -413,7 +446,7 @@ function get_ttd_and_stamp_dr(kode_dokter){
         <div class="col-md-12" id="btn_submit_cppt" style="margin-top: 20px" >
             <div class="col-sm-12">
               <button type="button" class="btn btn-sm btn-primary" id="btn_add_catatan"><i class="fa fa-save"></i> Simpan</button> 
-              <!-- <button type="button" class="btn btn-sm btn-primary" onclick="printDivHtml('editor_html_pengkajian')"><i class="fa fa-save"></i> Print PDF</button>  -->
+              <a href="#" class="btn btn-primary btn-sm" onclick="showModalTTD()" id="ttd_digital_pasien_btn"><i class="fa fa-pencil"></i> Tanda Tangan Digital Pasien</a>
             </div>
         </div>
         <hr>
@@ -480,6 +513,34 @@ function get_ttd_and_stamp_dr(kode_dokter){
 
   </div>
      
+</div>
+
+
+<div id="modalTTDPasien" class="modal fade" tabindex="-1">
+  <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:95%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="table-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            <span class="white">&times;</span>
+          </button>
+          <span>TANDA TANGAN PASIEN (DIGITAL SIGNATURE)</span>
+        </div>
+      </div>
+
+      <div class="modal-body">                                 
+        <div id="form_pasien_modal_ttd"></div>
+        <input type="text" name="note_type" id="note_type" value="ttd_pasien">
+        <input type="text" name="created_by" id="created_by" value="pasien">
+        <input type="text" name="created_name" id="created_name" value="pasien">
+        <button type="button" id="save_ttd_pasien_form" name="submit" class="btn btn-xs btn-primary">
+          <i class="ace-icon fa fa-check-square-o icon-on-right bigger-110"></i>
+          Submit
+        </button>
+      </div>
+
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
 </div>
 
 
