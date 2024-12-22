@@ -362,7 +362,7 @@ function rollback(id){
       <input type="hidden" class="default_value" name="kode_dokter" id="kode_dokter" value="0">
       <input type="hidden" class="default_value" name="dokter_pengirim" id="dokter_pengirim" value="0">
       <input type="hidden" class="default_value" name="kode_profit" id="kode_profit" value="">
-      <input type="hidden" class="default_value" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($kode_trans_far)?$kode_trans_far:0?>" readonly>
+      <input type="hiddenxx" class="default_value" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($kode_trans_far)?$kode_trans_far:0?>" readonly>
       <input class="form-control" name="is_rollback" id="is_rollback" type="hidden" value="<?php echo isset($_GET['rollback']) ? 1 : 0 ; ?>" readonly />
 
       <!-- default form -->

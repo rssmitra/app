@@ -33,7 +33,7 @@ class Process_entry_resep extends MX_Controller {
 
     public function process()
     {
-        // print_r($_POST);die;
+        
         $this->load->library('form_validation');
         // form validation
         if( $_POST['submit'] != 'header' ){
@@ -85,12 +85,12 @@ class Process_entry_resep extends MX_Controller {
             /*cek terlebih dahulu data fr_tc_far*/
             /*jika sudah ada data sebelumnya maka langsung insert ke detail*/
             $cek_existing = ( $_POST['kode_trans_far'] == 0 ) ? false : $this->Process_entry_resep->cek_existing_data('fr_tc_far', array('kode_trans_far' => $_POST['kode_trans_far']) );
-
+            // print_r($cek_existing);die;
             // print_r($data_farmasi);die;
             if( $cek_existing != false ){
                 /*update existing*/
                 $kode_trans_far = $cek_existing->kode_trans_far;
-                $data_farmasi['iter'] = $_POST['jenis_iter'];
+                $data_farmasi['iter'] = isset($_POST['jenis_iter'])?$_POST['jenis_iter']:'';
                 $data_farmasi['kode_trans_far'] = $kode_trans_far;
                 $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
                 $data_farmasi['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
@@ -101,7 +101,7 @@ class Process_entry_resep extends MX_Controller {
             }else{
                 $kode_trans_far = $this->master->get_max_number('fr_tc_far', 'kode_trans_far', array());
                 /*update existing*/
-                $data_farmasi['iter'] = $_POST['jenis_iter'];
+                $data_farmasi['iter'] = isset($_POST['jenis_iter'])?$_POST['jenis_iter']:'';
                 $data_farmasi['kode_trans_far'] = $kode_trans_far;
                 $data_farmasi['created_date'] = date('Y-m-d H:i:s');
                 $data_farmasi['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
@@ -297,7 +297,7 @@ class Process_entry_resep extends MX_Controller {
         $dt_trans = $this->db->get_where('fr_tc_far', array('kode_trans_far' => $id) )->row();
 
         if($this->Process_entry_resep->rollback_by_kode_trans_far($id)){
-            echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Berhasil Dilakukan', 'iter' => $dt_trans->referensi));
+            echo json_encode(array('status' => 200, 'message' => 'Proses Rollback Berhasil Dilakukan', 'iter' => $dt_trans->referensi, 'flag' => strtolower($dt_trans->flag_trans)));
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Rollback Gagal Dilakukan'));
         }
@@ -307,7 +307,7 @@ class Process_entry_resep extends MX_Controller {
     public function process_selesai_resep()
     {
         // print_r($_POST);die;
-        $ID = ($this->input->post('kode_trans_far'))?$this->input->post('kode_trans_far'):0; // kode_trans_far
+        $ID = ($this->input->post('ID'))?$this->input->post('ID'):0; // kode_trans_far
         $kode_bagian = '060101'; // kode bagian farmasi
         
         $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
@@ -413,7 +413,20 @@ class Process_entry_resep extends MX_Controller {
     
             }
             
-            $status_diantar = ($_POST['metode_pengambilan'] == 'ditunggu') ? 'N' : 'Y'; // diantar == ditinggal
+            if(isset($_POST['metode_pengambilan'])){
+                $status_diantar = ($_POST['metode_pengambilan'] == 'ditunggu') ? 'N' : 'Y'; // diantar == ditinggal
+                $metode_pengambilan = $_POST['metode_pengambilan'];
+            }else{
+                $status_diantar = 'N';
+                $metode_pengambilan = 'ditunggu';
+            }
+
+            // verifikasi 5t
+            if(isset($_POST['verifikasi'])){
+                $verifikasi = json_encode($_POST['verifikasi']);
+            }else{
+                $verifikasi = '';
+            }
 
             // update status transaksi dan verifikasi
             $lampiran_lab = isset($_POST['lampiran_lab'])?$_POST['lampiran_lab']:'';
@@ -424,11 +437,11 @@ class Process_entry_resep extends MX_Controller {
                 'nama_pasien' => $_POST['nama_pasien'],
                 'no_mr' => $_POST['no_mr'],
                 'resep_diantar' => $status_diantar,
-                'pengambilan_resep' => $_POST['metode_pengambilan'],
+                'pengambilan_resep' => $metode_pengambilan,
                 // verifikasi resep
-                'verifikasi_resep_5t' => json_encode($_POST['verifikasi']),
+                'verifikasi_resep_5t' => $verifikasi,
                 'lampiran_lab_kode_penunjang' => $kode_penunjang,
-                'lampiran_memo_inhibitor' => ($_POST['lampiran_memo_inhibitor'])?$_POST['lampiran_memo_inhibitor']:'',
+                'lampiran_memo_inhibitor' => isset($_POST['lampiran_memo_inhibitor'])?$_POST['lampiran_memo_inhibitor']:'',
                 'perubahan_resep' => isset($_POST['perubahan_resep'])?$_POST['perubahan_resep']:'',
             ];
 
@@ -442,7 +455,7 @@ class Process_entry_resep extends MX_Controller {
             /*log transaksi*/
             // perubahan resep
             // kode_pesan_resep
-            $kode_pesan_resep = $_POST['no_resep'];
+            $kode_pesan_resep = isset($_POST['no_resep'])?$_POST['no_resep']:'';
             if(isset($_POST['perubahan_resep']) && $_POST['perubahan_resep'] == 1){
                 foreach ($_POST['persetujuan_'.$kode_pesan_resep.''] as $key => $value) {
                     # code...
@@ -467,7 +480,9 @@ class Process_entry_resep extends MX_Controller {
                 $this->db->update('fr_tc_pesan_resep_detail', $arr_edit_resep, array('kode_pesan_resep' => $kode_pesan_resep) ); 
             }
             
-            $this->db->update('fr_tc_pesan_resep', array('status_tebus' => 1), array('kode_pesan_resep' => $_POST['no_resep']) );   
+            if(isset($_POST['no_resep'])){
+                $this->db->update('fr_tc_pesan_resep', array('status_tebus' => 1), array('kode_pesan_resep' => $_POST['no_resep']) );   
+            }
 
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada obat ditemukan dalam resep'));

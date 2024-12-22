@@ -2350,7 +2350,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['header'] = $header;
         $data['footer'] = $footer;
         // $data['form_type'] = $_GET['form'];
-        $template = $this->load->view('Pl_pelayanan/'.$form_no.'', $data, true);
+        $template = $this->load->view('Pl_pelayanan/clinical_pathway/'.$form_no.'', $data, true);
         $data['template'] = $template;
        
         /*load form view*/
@@ -2376,7 +2376,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['header'] = $header;
         $data['footer'] = $footer;
         // echo '<pre>';print_r($data);die;
-        $html = $this->load->view('Pl_pelayanan/form_'.$id.'', $data, true);
+        $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data, true);
         echo json_encode(array('html' => $html));
 
     }

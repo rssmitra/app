@@ -97,7 +97,7 @@ jQuery(function($) {
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 <br>
-<table>
+<table width="100%">
   <tr>
     <td style="width: 50%">
       <table border="0">
@@ -123,11 +123,11 @@ jQuery(function($) {
       <table border="0" width="100%">
         <tr>
           <td style="width: 150px">Dokter Urologi</td>
-          <td><input type="text" class="input_type" style="width: 90% !important" name="form_19[19_dokter_bedah_1]" id="19_dokter_bedah_1" onchange="fillthis('19_dokter_bedah_1')" value="<?php echo isset($value_form['19_dokter_bedah_1'])?$value_form['19_dokter_bedah_1']:''?>"></td>
+          <td><input type="text" class="input_type" style="width: 100% !important" name="form_19[19_dokter_bedah_1]" id="19_dokter_bedah_1" onchange="fillthis('19_dokter_bedah_1')" value="<?php echo isset($value_form['19_dokter_bedah_1'])?$value_form['19_dokter_bedah_1']:''?>"></td>
         </tr>
         <tr>
           <td>Perawat</td>
-          <td><input type="text" class="input_type" style="width: 90% !important" name="form_19[19_perawat_sirkuler]" id="19_perawat_sirkuler" onchange="fillthis('19_perawat_sirkuler')" value="<?php echo isset($value_form['19_perawat_sirkuler'])?$value_form['19_perawat_sirkuler']:''?>"></td>
+          <td><input type="text" class="input_type" style="width: 100% !important" name="form_19[19_perawat_sirkuler]" id="19_perawat_sirkuler" onchange="fillthis('19_perawat_sirkuler')" value="<?php echo isset($value_form['19_perawat_sirkuler'])?$value_form['19_perawat_sirkuler']:''?>"></td>
         </tr>
       </table>
     </td>

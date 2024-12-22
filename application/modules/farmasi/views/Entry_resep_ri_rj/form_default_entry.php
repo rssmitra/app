@@ -29,8 +29,67 @@ var kode_trans_far = $('#kode_trans_far').val();
 
 $(document).ready(function(){
     
-    sum_total_biaya_farmasi();
+    // sum_total_biaya_farmasi();
 
+    // table = $('#temp_data_pesan').DataTable( {
+    //     "processing": true, 
+    //     "serverSide": true,
+    //     "bInfo": false,
+    //     "bPaginate": false,
+    //     "searching": false,
+    //     "bSort": false,
+    //     "ajax": {
+    //         "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan="+$('#jenis_resep').val()+"",
+    //         "type": "POST"
+    //     },
+    //     "columnDefs": [
+    //         { 
+    //             "targets": [ 0 ], //last column
+    //             "orderable": false, //set not orderable
+    //         },
+    //         {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
+    //         { "visible": true, "targets": [ 0 ] },
+    //         { "visible": false, "targets": [ 1 ] },
+    //         { "visible": false, "targets": [ 2 ] },
+    //     ],
+    // }); 
+
+    // $('#temp_data_pesan tbody').on('click', 'td.details-control', function () {
+    //         var tr = $(this).closest('tr');
+    //         var row = table.row( tr );
+    //         var data = table.row( $(this).parents('tr') ).data();
+    //         var ID = data[ 1 ];
+    //         var flag = data[ 2 ];
+    //         var kode_brg = data[ 5 ];
+                      
+
+    //         if ( row.child.isShown() ) {
+    //             // This row is already open - close it
+    //             row.child.hide();
+    //             tr.removeClass('shown');
+    //         }
+    //         else {
+    //             /*data*/
+    //             if( flag == 'racikan' ){
+    //               $.getJSON("farmasi/Entry_resep_racikan/getDetail/" + ID, '', function (data) {
+    //                   response_data = data;
+    //                   // Open this row
+    //                   row.child( format_html( response_data ) ).show();
+    //                   tr.addClass('shown');
+    //               });
+    //             }else{
+    //               $.getJSON("farmasi/Entry_resep_ri_rj/getDetail/" + kode_brg +'/'+ ID, '', function (data) {
+    //                   response_data = data;
+    //                   // Open this row
+    //                   row.child( format_html( response_data ) ).show();
+    //                   tr.addClass('shown');
+    //               });
+    //             }
+                                                
+    //         }
+    // } );
+
+    var kode_trans_far = $('#kode_trans_far').val();
     table = $('#temp_data_pesan').DataTable( {
         "processing": true, 
         "serverSide": true,
@@ -42,6 +101,11 @@ $(document).ready(function(){
             "url": "farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan="+$('#jenis_resep').val()+"",
             "type": "POST"
         },
+        "drawCallback": function (response) { 
+          // Here the response
+            var objData = response.json;
+            $('#txt_total_biaya_farmasi').text('Rp. '+formatMoney(objData.total_billing));
+        },
         "columnDefs": [
             { 
                 "targets": [ 0 ], //last column
@@ -51,6 +115,7 @@ $(document).ready(function(){
             { "visible": true, "targets": [ 0 ] },
             { "visible": false, "targets": [ 1 ] },
             { "visible": false, "targets": [ 2 ] },
+            { "visible": false, "targets": [ 3 ] },
         ],
     }); 
 
@@ -60,7 +125,7 @@ $(document).ready(function(){
             var data = table.row( $(this).parents('tr') ).data();
             var ID = data[ 1 ];
             var flag = data[ 2 ];
-            var kode_brg = data[ 5 ];
+            var kode_brg = data[ 3 ];
                       
 
             if ( row.child.isShown() ) {
@@ -85,7 +150,8 @@ $(document).ready(function(){
                       tr.addClass('shown');
                   });
                 }
-                                                
+                
+                                
             }
     } );
 
@@ -275,7 +341,7 @@ function edit_obat_resep(kode_brg, kode_tr_resep){
 function reload_table(){
   var kode_trans_far = $('#kode_trans_far').val();
   table.ajax.url("farmasi/Entry_resep_ri_rj/get_data_temp_pesanan_obat?relationId="+kode_trans_far+"&flag=biasa&tipe_layanan="+$('#flag_trans').val()+"").load();
-  sum_total_biaya_farmasi();
+  // sum_total_biaya_farmasi();
 }
 
 function format_html ( data ) {
@@ -323,7 +389,7 @@ function resep_farmasi_selesai(type){
     $.ajax({
         url: 'farmasi/process_entry_resep/process_selesai_resep',
         type: "post",
-        data: { ID : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val(), 'nama_pasien' : $('#nama_pasien').val(), 'no_mr' : $('#no_mr').val(), 'submit': type, 'is_rollback' : $('#is_rollback').val() },
+        data: { 'ID' : $('#kode_trans_far').val(), 'kode_trans_far' : $('#kode_trans_far').val(), 'kode_pesan_resep' : $('#no_resep').val(), 'kode_kelompok' : $('#kode_kelompok').val(), 'kode_perusahaan' : $('#kode_perusahaan').val(), 'kode_profit' : $('#kode_profit').val(), 'nama_pasien' : $('#nama_pasien').val(), 'no_mr' : $('#no_mr').val(), 'submit': type, 'is_rollback' : $('#is_rollback').val() },
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -436,9 +502,6 @@ $('select[name="jenis_resep"]').change(function () {
   <div class="pull-left">
     <b>PENCARIAN OBAT</b><br>
     <small>Silahkan masukan obat pada form dibawah ini.</small>
-  </div>
-  <div class="pull-right">
-    Total Biaya, <div style="font-size: 18px" id="td_total_biaya_farmasi"></div>
   </div>
 </div>
 
@@ -566,7 +629,7 @@ $('select[name="jenis_resep"]').change(function () {
 
   <table id="temp_data_pesan" class="table table-bordered table-hover">
     <thead>
-      <tr>  
+      <!-- <tr>  
         <th class="center" width="50px"></th>
         <th class="center"></th>
         <th class="center"></th>
@@ -581,10 +644,32 @@ $('select[name="jenis_resep"]').change(function () {
         <th width="100px">Sub Total</th>
         <th width="100px">Jasa R</th>
         <th width="100px">Total (Rp.)</th>
+      </tr> -->
+      <tr style="background: #edf3f4;">  
+        <th class="center" width="30px"></th>
+        <th class="center"></th>
+        <th class="center"></th>
+        <th class="center"></th>
+        <th class="center" width="80px"></th>
+        <th width="30px">No</th>
+        <!-- <th width="150px">Tgl Input</th> -->
+        <!-- <th>Kode</th> -->
+        <th>Nama Obat</th>
+        <th width="80px">Jumlah</th>
+        <!-- <th width="100px">Ditangguhkan</th> -->
+        <th width="100px">Harga Satuan</th>
+        <!-- <th width="100px">Sub Total</th> -->
+        <th width="80px">Jasa R</th>
+        <th width="100px">Total (Rp.)</th>
       </tr>
+      
     </thead>
     <tbody>
     </tbody>
   </table>
+  <div style="text-align: right; width: 100%">
+    Total Biaya Farmasi.<br>
+    <span style="font-size: 25px !important; font-weight: bold" id="txt_total_biaya_farmasi"></span>
+  </div>
 
 </div>

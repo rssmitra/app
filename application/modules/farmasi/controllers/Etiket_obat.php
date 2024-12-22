@@ -219,17 +219,13 @@ class Etiket_obat extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = $row_list->dokter_pengirim;
-            $row[] = $row_list->nama_pelayanan;
-            if($row_list->kode_tc_trans_kasir == null) {
-                if ($row_list->status_transaksi ==  1) {
-                    $label_status = '<label class="label label-xs label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
-                }else{
-                    $label_status = '<label class="label label-xs label-warning">Belum diproses</label>';
-                }
-                $row[] = '<div class="center">'.$label_status.'</div>';
+            $row[] = isset($row_list->nama_pelayanan)?$row_list->nama_pelayanan:'';
+            if ($row_list->status_transaksi ==  1) {
+                $label_status = '<label class="label label-xs label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
             }else{
-                $row[] = '<div class="center"><label class="label lebel-xs label-primary"> <i class="fa fa-money"></i> Lunas</label></div>';
+                $label_status = '<label class="label label-xs label-warning">Belum diproses</label>';
             }
+            $row[] = '<div class="center">'.$label_status.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."'".')" class="btn btn-xs btn-info"> <i class="fa fa-eye dark"></i> View</a></div>';
             
             $data[] = $row;

@@ -398,7 +398,7 @@
               }
 
               if(flag == 'rl' || flag == 'pb' || flag == 'rk'){
-                $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+flag+'&rollback=true&kode_trans_far='+id+'&mr='+$('#no_mr').val()+'&rollback=true');
+                $('#page-area-content').load('farmasi/Entry_resep_ri_rj/form_create?jenis_resep='+flag+'&rollback=true&kode_trans_far='+id+'&mr='+$('#no_mr').val()+'');
               }
 
               if(flag == 'itr'){
