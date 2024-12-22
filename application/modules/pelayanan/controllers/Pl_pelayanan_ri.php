@@ -1428,7 +1428,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     "jenis_form" => 'form_'.$query->jenis_form,
                 ];
                 // echo "<pre>"; print_r($data);die;
-                $html = $this->load->view('Pl_pelayanan/form_'.$query->jenis_form.'', $data, true);
+                $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$query->jenis_form.'', $data, true);
                 echo json_encode(array('html' => $html, 'result' => $query, 'value_form' => $end_array));
             }else{
                 echo json_encode($query);
