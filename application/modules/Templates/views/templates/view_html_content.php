@@ -8,6 +8,9 @@
 <style>
     input, textarea{
         border: 0px !important;
+    } 
+    input[type="checkbox"], input[type="radio"] {
+        height: 12px !important;
     }
 </style>
 <script type="text/javascript">

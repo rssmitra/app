@@ -893,6 +893,8 @@ class Pl_pelayanan_igd extends MX_Controller {
         $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
         $this->form_validation->set_rules('pl_pengobatan', 'Pengobatan', 'trim');        
         $this->form_validation->set_rules('pl_procedure', 'Prosedur/Tindakan', 'trim');        
+        $this->form_validation->set_rules('pl_alergi', 'Alergi Obat', 'trim');        
+        $this->form_validation->set_rules('pl_diet', 'Diet', 'trim');        
         $this->form_validation->set_rules('pl_tgl_kontrol_kembali', 'Tanggal Kontrol', 'trim');        
         $this->form_validation->set_rules('pl_catatan_kontrol', 'Catatan Kontrol', 'trim');        
         $this->form_validation->set_rules('no_registrasi', 'No Registrasi', 'trim|required');        
@@ -935,6 +937,8 @@ class Pl_pelayanan_igd extends MX_Controller {
                 'diagnosa_awal' => $this->master->br2nl($_POST['pl_diagnosa']),
                 'anamnesa' => $this->master->br2nl($_POST['pl_anamnesa']),
                 'pengobatan' => $this->master->br2nl($_POST['pl_pengobatan']),
+                'alergi_obat' => $this->master->br2nl($_POST['pl_alergi']),
+                'diet' => $this->master->br2nl($_POST['pl_diet']),
                 'dokter_pemeriksa' => $this->input->post('dokter_pemeriksa'),
                 'pemeriksaan' => $this->master->br2nl($_POST['pl_pemeriksaan']),
                 'tgl_periksa' => $this->input->post('pl_tgl_transaksi').' '.date('H:i:s'),

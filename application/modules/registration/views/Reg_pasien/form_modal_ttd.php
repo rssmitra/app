@@ -22,6 +22,9 @@ $(function() {
 </script>
 </head>
 <body>
+<br>
+<b>Masukan Tanda Tangan : </b><br>
+
 <div id="content_drawing"></div>
 <label>Signature code : </label><br>
 <input type="text" value="" name="paramsSignature" class="form-control" id="paramsSignature" style="width: 100%; margin-bottom: 10px">

@@ -66,9 +66,11 @@ jQuery(function($) {
 <?php echo $header; ?>
 <hr>
 <br>
-<p style="text-align: center"><strong>RIWAYAT PENYAKIT PASIEN KASUS NON BEDAH</strong></p>
+<p style="text-align: center; font-size: 16px"><strong>RIWAYAT PENYAKIT PASIEN KASUS NON BEDAH</strong></p>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
+<span style="font-style: italic; font-weight: bold"> Diisi oleh Dokter yang merawat</span>
+<br>
 <p><strong>ANAMNESIS</strong> :</p>
 <textarea class="textarea-type" name="form_3[3_anamnesis]" id="3_anamnesis" onchange="fillthis('3_anamnesis')" style="height: 100px !important"><?php echo isset($value_form['3_anamnesis'])?$value_form['3_anamnesis']:''?></textarea>
 <br>

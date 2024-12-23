@@ -208,7 +208,7 @@ jQuery(function($) {
     </tr>
     <tr>
         <td colspan="3">
-            <p style="text-align: justify">Dengan ini saya menyatakan bahwa Keluarga Pasien <input type="text" class="input_type" name="form_34[keluarga_pasien_an]" id="keluarga_pasien_an" onchange="fillthis('keluarga_pasien_an')" value="<?php echo $data_pasien->nama_pasien?>"> telah menerima
+            <p style="text-align: justify">Dengan ini saya menyatakan bahwa Keluarga Pasien <input type="text" class="input_type" name="form_34[keluarga_pasien_an]" id="keluarga_pasien_an" onchange="fillthis('keluarga_pasien_an')" value="<?php echo $data_pasien->nama_pasien?>" style="width: 200px"> telah menerima
             informasi sebagaimana di atas yang saya beri tanda / paraf di kolom, dan telah memahaminya serta telah diberikan kesempatan bertanya,
             dan pertanyaan saya telah diberikan jawaban yang memuaskan saya.</p>
         </td>

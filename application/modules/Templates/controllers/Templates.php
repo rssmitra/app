@@ -1729,8 +1729,10 @@ class Templates extends MX_Controller {
         $html = '';
         $html .= '<table width="100%" border="0" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
-                        <td width="50%"><span id="ttd_lainnya"></span></td>
-                        <td align="center" width="50%">
+                        <td width="50%" align="center" valign="top">
+                        <br><br>
+                        <span id="ttd_tgl"></span><span id="ttd_lainnya"></span><br><span id="ttd_nama"></span></td>
+                        <td align="center" width="50%" valign="top">
                         <br><br>
                         Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                         '.COMP_FULL.'

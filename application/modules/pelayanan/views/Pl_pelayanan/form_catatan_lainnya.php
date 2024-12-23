@@ -355,6 +355,8 @@ $('#save_ttd_pasien_form').click(function (e) {
       $('#modalTTDPasien').modal('hide');
       if(data.status == 200){
         $('#ttd_lainnya').html('<img src="'+data.ttd+'" style="width: 100% !important">');
+        $('#ttd_nama').text(data.nama_ttd);
+        $('#ttd_tgl').html('Jakarta, '+data.tgl_ttd+'<br>Pasien/Keluarga Pasien<br>');
       }
     }
   });

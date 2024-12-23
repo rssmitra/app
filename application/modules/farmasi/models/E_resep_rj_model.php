@@ -64,7 +64,7 @@ class E_resep_rj_model extends CI_Model {
             $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) >= '".$_GET['from_tgl']."'" );
             $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) <= '".$_GET['to_tgl']."'" );
         }else{
-        	if( $_GET['flag']=='RJ' ){
+        	if( isset($_GET['flag']) && $_GET['flag'] =='RJ' ){
 				$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 24');			
         	}else{
 				$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 72');			

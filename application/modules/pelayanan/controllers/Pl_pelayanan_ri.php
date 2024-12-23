@@ -1412,6 +1412,18 @@ class Pl_pelayanan_ri extends MX_Controller {
     public function get_cppt_dt(){
 
         $query = $this->db->get_where('view_cppt', array('id' => $_GET['id']))->row();
+
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        $result = json_decode($this->Csm_billing_pasien->getDetailData($query->no_registrasi));
+        $result->nama_ppa = $result->reg_data->nama_pegawai;
+        $result->kode_dr = $result->reg_data->kode_dokter;
+        $data = [];
+        // header cppt
+        $header = $temp->setGlobalProfileCppt($result);
+        $footer = $temp->setGlobalFooterCppt($result);
+        
+
         // echo "<pre>"; print_r($query);die;
         // echo "<pre>"; print_r($convert_to_array);die;
         if($query->flag == 'cppt'){
@@ -1427,6 +1439,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                     "result" => $query,
                     "jenis_form" => 'form_'.$query->jenis_form,
                 ];
+                $data['header'] = $header;
+                $data['footer'] = $footer;
                 // echo "<pre>"; print_r($data);die;
                 $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$query->jenis_form.'', $data, true);
                 echo json_encode(array('html' => $html, 'result' => $query, 'value_form' => $end_array));
@@ -1466,6 +1480,17 @@ class Pl_pelayanan_ri extends MX_Controller {
 
     public function show_catatan_pengkajian($cppt_id){
         $query = $this->db->get_where('view_cppt', array('id' => $cppt_id))->row();
+
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        $result = json_decode($this->Csm_billing_pasien->getDetailData($query->no_registrasi));
+        $result->nama_ppa = $result->reg_data->nama_pegawai;
+        $result->kode_dr = $result->reg_data->kode_dokter;
+        $data = [];
+        // header cppt
+        $header = $temp->setGlobalProfileCppt($result);
+        $footer = $temp->setGlobalFooterCppt($result);
+
         if($query->flag == 'cppt'){
             if($query->jenis_form != null){
                 $convert_to_array = explode('|', $query->value_form);
@@ -1479,6 +1504,9 @@ class Pl_pelayanan_ri extends MX_Controller {
                     "result" => $query,
                     "jenis_form" => 'form_'.$query->jenis_form,
                 ];
+
+                $data['header'] = $header;
+                $data['footer'] = $footer;
                 // echo "<pre>"; print_r($data);die;
                 $data["html_form"] = $this->load->view('Pl_pelayanan/clinical_pathway/'.$data['jenis_form'].'', $data, true);
 
@@ -1534,6 +1562,7 @@ class Pl_pelayanan_ri extends MX_Controller {
  
             $this->db->trans_begin();
             
+            $created_name = isset($_POST['nama_pasien_hidden'])?$_POST['nama_pasien_hidden']:$_POST['created_by'];
             /*insert drawing*/
             $dataexc = [
                 'no_registrasi' => $_POST['no_registrasi'],
@@ -1542,7 +1571,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'notes' => $_POST['paramsSignature'],
                 'jenis_catatan_draw' => $_POST['note_type'],
                 'created_date' => date('Y-m-d H:i:s'),
-                'created_by' => $_POST['created_name'],
+                'created_by' => $created_name,
                 'type_owner' => $_POST['created_by'],
                 'jenis_form' => $_POST['jenis_form_catatan'],
             ];
@@ -1556,7 +1585,7 @@ class Pl_pelayanan_ri extends MX_Controller {
              else
              {
                  $this->db->trans_commit();
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $dataexc['no_mr'], 'ttd' => $_POST['paramsSignature']));
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'no_mr' => $dataexc['no_mr'], 'ttd' => $_POST['paramsSignature'], 'nama_ttd' => $created_name, 'tgl_ttd' => $this->tanggal->formatDateTimeFormDmy($dataexc['created_date'])));
              }
  
          }

@@ -63,10 +63,15 @@ jQuery(function($) {
 
 });
 </script>
-
-<p style="text-align: center"><strong>PENGKAJIAN PRA BEDAH<br>KASUS BEDAH NON ORTHOPEDI</strong></p>
+<?php echo $header; ?>
+<hr>
+<br>
+<p style="text-align: center; font-size: 16px"><strong>PENGKAJIAN PRA BEDAH KASUS BEDAH NON ORTHOPEDI</strong></p>
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
+
+<span style="font-style: italic; font-weight: bold"> Diisi oleh Dokter yang merawat</span>
+<br>
 <p><strong>ANAMNESIS</strong> :</p>
 <textarea class="textarea-type" name="form_2[2_anamnesis]" id="2_anamnesis" onchange="fillthis('2_anamnesis')" style="height: 100px !important"><?php echo isset($value_form['2_anamnesis'])?$value_form['2_anamnesis']:''?></textarea>
 <br>
@@ -112,3 +117,5 @@ jQuery(function($) {
 <br>
 2. Rencana Terapi<br>
 <textarea class="textarea-type" name="form_2[2_rencana_terapi]" id="2_rencana_terapi" onchange="fillthis('2_rencana_terapi')" style="height: 100px !important"><?php echo isset($value_form['2_rencana_terapi'])?$value_form['2_rencana_terapi']:''?></textarea>
+<hr>
+<?php echo $footer; ?>

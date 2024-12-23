@@ -1615,6 +1615,17 @@ function get_riwayat_medis(){
 
 }
 
+function get_riwayat_pm(){
+
+noMr = $('#noMrHidden').val();
+if (noMr == '') {
+  alert('Silahkan cari pasien terlebih dahulu !'); return false;
+}else{
+  getMenuTabsHtml('templates/References/get_riwayat_pm/'+noMr, 'tabs_detail_pasien');
+}
+
+}
+
 function form_perjanjian(){
 
   $('#div_load_perjanjian_form').show();
@@ -1708,6 +1719,10 @@ function copyNoRujukan(no_rujukan){
               </li> -->
               <li class="hover">
                 <a data-toggle="tab" id="tabs_rekam_medis_id" href="#" data-id="0" data-url="registration/reg_pasien/get_riwayat_medis" onclick="get_riwayat_medis()"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Rekam Medis </span></a><b class="arrow"></b>
+              </li>
+
+              <li class="hover">
+                <a data-toggle="tab" id="tabs_hasil_penunjang_id" href="#" data-id="0" data-url="registration/reg_pasien/get_riwayat_pm" onclick="get_riwayat_pm()"><i class="menu-icon fa fa-flask"></i><span class="menu-text"> Hasil Penunjang </span></a><b class="arrow"></b>
               </li>
 
               <li class="hover">

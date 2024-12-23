@@ -288,6 +288,17 @@
     <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br><i style="font-size: 11px">(Mohon dijelaskan Rencana Asuhan Pasien dan Tindak Lanjutnya)</i></label>
     <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):$this->master->br2nl($html_planning)?></textarea>
 </div>
+
+<div style="margin-top: 6px">
+    <label for="form-field-8"><b>Alergi (Reaksi Obat)</b><br><i style="font-size: 11px">(Mohon dijelaskan jika pasien memiliki alergi terhadap obat)</i></label>
+    <textarea name="pl_alergi" id="pl_alergi" class="form-control" style="height: 70px !important"><?php echo isset($riwayat->alergi_obat)?$this->master->br2nl($riwayat->alergi_obat):''?></textarea>
+</div>
+
+<div style="margin-top: 6px">
+    <label for="form-field-8"><b>Diet</b><br><i style="font-size: 11px">(Mohon dijelaskan petunjuk untuk diet pasien)</i></label>
+    <textarea name="pl_diet" id="pl_diet" class="form-control" style="height: 70px !important"><?php echo isset($riwayat->diet)?$this->master->br2nl($riwayat->diet):''?></textarea>
+</div>
+
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Tanggal Kontrol Kembali</b><br><i style="font-size: 11px">(Secara default untuk pasien BPJS kontrol kembali setelah 31 hari)</i></label><br>
     <input type="text" class="date-picker" data-date-format="yyyy-mm-dd" name="pl_tgl_kontrol_kembali" id="pl_tgl_kontrol_kembali" class="form-control" style="width: 100% !important" placeholder="ex: <?php echo date('Y-m-d')?>" value="<?php $next_date = date('Y-m-d', strtotime("+31 days")); echo isset($riwayat->tgl_kontrol_kembali)?$riwayat->tgl_kontrol_kembali:$next_date?>">

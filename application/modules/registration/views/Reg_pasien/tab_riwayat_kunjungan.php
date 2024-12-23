@@ -143,29 +143,21 @@
 </script>
 
 <!-- <b> RIWAYAT KUNJUNGAN PASIEN <i class="fa fa-angle-double-right bigger-120"></i> </b> -->
-<div class="col-md-12">
-  <table id="riwayat-table" class="table">
 
-    <thead>
 
-      <tr>  
-        
-        <th>No</th>
+<table id="riwayat-table" class="table">
+  <thead>
+    <tr>  
+      <th>No</th>
+      <th>&nbsp;</th>
+      <th>Deskripsi</th>
+    </tr>
+  </thead>
+  <tbody id="table_riwayat_pasien">
+  </tbody>
+</table>
 
-        <th>&nbsp;</th>
-
-        <th>Deskripsi</th>
-
-      </tr>
-
-    </thead>
-
-    <tbody id="table_riwayat_pasien">
-
-    </tbody>
-
-  </table>
-</div>
+  
 <div id="modalEditPenjamin" class="modal fade" tabindex="-1">
 
   <div class="modal-dialog" style="min-height:500px; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:75%">

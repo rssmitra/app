@@ -2366,15 +2366,16 @@ class Pl_pelayanan extends MX_Controller {
         $result = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
         $result->nama_ppa = $result->reg_data->nama_pegawai;
         $result->kode_dr = $result->reg_data->kode_dokter;
+        $data = [];
         // header cppt
         $header = $temp->setGlobalProfileCppt($result);
         $footer = $temp->setGlobalFooterCppt($result);
-        $data = [];
+        $data['header'] = $header;
+        $data['footer'] = $footer;
         $data['jenis_form'] = 'form_'.$id.'';
         $data['no_kunjungan'] = $no_kunjungan;
         $data['data_pasien'] = $this->Pl_pelayanan->get_detail_kunjungan($no_kunjungan);
-        $data['header'] = $header;
-        $data['footer'] = $footer;
+        
         // echo '<pre>';print_r($data);die;
         $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data, true);
         echo json_encode(array('html' => $html));
