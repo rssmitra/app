@@ -240,7 +240,6 @@ function print_selected_item(myid){
             </div>
         </div>
 
-
         <div class="form-group">
           <label class="control-label col-md-2">Poli/Klinik Spesialis</label>
           <div class="col-md-3">

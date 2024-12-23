@@ -734,642 +734,620 @@ $('#lampiran_lab').click(function (e) {
   }
 </style>
 
-<form class="form-horizontal" method="post" id="form_entry_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/process_entry_resep/process">    
+<form class="form-horizontal" method="post" id="form_entry_resep" enctype="multipart/form-data" autocomplete="off" action="farmasi/process_entry_resep/process">
+    <!-- form_hidden -->
+    <input type="hidden" name="sisa_stok_hidden" id="sisa_stok" value="0">
+    <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
+    <input type="hidden" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
+    <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
+    <input type="hidden" id="nama_pasien" name="nama_pasien" value="<?php echo isset($value)?$value->nama_pasien:''?>">
+    <input type="hidden" name="kode_dokter" value="<?php echo isset($value)?$value->kode_dokter:''?>">
+    <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value)?$value->nama_pegawai:''?>">
+    <input type="hidden" name="kode_profit" id="kode_profit" value="<?php echo ($tipe_layanan=='RJ')?2000:1000;?>">
+    <input type="hidden" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian">
+    <input type="hidden" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
+    <input type="hidden" name="flag_trans" id="flag_trans" value="<?php echo $tipe_layanan?>">
+    <input type="hidden" name="flag_resep" value="biasa">
+    <input type="hidden" name="no_kunjungan" id="no_kunjungan" class="form-control" value="<?php echo isset($value)?ucwords($value->no_kunjungan):''?>" >
+    <input type="hidden" name="no_resep" id="no_resep" class="form-control" value="<?php echo isset($value)?$value->kode_pesan_resep:''?>" >
+    <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="<?php echo isset($value)?$value->kode_kelompok:''?>" >
+    <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" >
+    <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
+    <input type="hidden" name="kode_ri" id="kode_ri" class="form-control" value="<?php echo isset($value->kode_ri)?$value->kode_ri:0?>" >
+    <input class="form-control" name="harga_r" id="harga_r" type="hidden" value="500" readonly />
+    <input class="form-control" name="is_rollback" id="is_rollback" type="hidden" value="<?php echo isset($_GET['rollback']) ? 1 : 0 ; ?>" readonly />
+    
 
-<div class="row">
-
-  <div class="col-xs-12">
-
-    <!-- breadcrumbs -->
-    <!-- <div class="page-header">  
-      <h1>
-        <a href="#" onclick="getMenu('farmasi/Entry_resep_ri_rj/form/<?php echo $value->kode_pesan_resep?>?mr=<?php echo $value->no_mr?>&tipe_layanan=RJ')" ><?php echo isset($value)?ucwords($value->no_mr):''?> - <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
-        </a>
-      </h1>
-    </div>   -->
-        
+    <div class="row">
+      <!-- keterangan pasien -->
+      <div class="col-sm-12">
+        <table class="table">
+          <tr style="background-color: #edf3f4;">
+            <td style="vertical-align: top; width: 180px">
+              <span style="font-weight: bold !important">Nama Pasien :</span><br> 
+              [<a href="#" onclick="getMenu('farmasi/Entry_resep_ri_rj/form/<?php echo $value->kode_pesan_resep?>?mr=<?php echo $value->no_mr?>&tipe_layanan=RJ')" style="font-weight: bold"><?php echo isset($value)?ucwords($value->no_mr):''?></a>]  <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
+            </td>
+            
+            <td style="vertical-align: top; width: 200px"> <span style="font-weight: bold !important">Kode/Tgl Pesan :</span><br> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> - <?php echo isset($value)?ucwords($this->tanggal->formatDateTimeFormDmy($value->tgl_pesan)):''?></td>
+            <td style="vertical-align: top"> <span style="font-weight: bold !important">Penjamin :</span><br> <?php echo isset($value)?ucwords($value->nama_kelompok):''?><br><?php echo isset($value)?ucwords($value->nama_perusahaan):''?> <?php echo isset($value->kode_perusahaan) ? ($value->kode_perusahaan == 120) ?'('.$value->no_sep.')' : '' :'';?></td>
+            <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Dokter :</span><br> <?php echo isset($value)?$value->nama_pegawai:''?><br><?php echo isset($value)?ucwords($value->nama_bagian):''?></td>
+            <td style="vertical-align: top"><span style="font-weight: bold !important">Diagnosa Akhir :</span> <br><?php echo isset($value)?$value->diagnosa_akhir:''?> </td>
+          </tr>
+        </table>
+      </div>
       
-      
-      <!-- form_hidden -->
+      <!-- form utama -->
+      <div class="col-sm-7">
 
-      <input type="hidden" name="sisa_stok_hidden" id="sisa_stok" value="0">
-      <input type="hidden" name="kd_tr_resep" id="kd_tr_resep" value="0">
-      <input type="hidden" name="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
-      <input type="hidden" name="no_mr" id="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
-      <input type="hidden" id="nama_pasien" name="nama_pasien" value="<?php echo isset($value)?$value->nama_pasien:''?>">
-      <input type="hidden" name="kode_dokter" value="<?php echo isset($value)?$value->kode_dokter:''?>">
-      <input type="hidden" name="dokter_pengirim" value="<?php echo isset($value)?$value->nama_pegawai:''?>">
-      <input type="hidden" name="kode_profit" id="kode_profit" value="<?php echo ($tipe_layanan=='RJ')?2000:1000;?>">
-      <input type="hidden" name="kode_bagian" value="<?php echo isset($value)?$value->kode_bagian:''?>" id="kode_bagian">
-      <input type="hidden" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
-      <input type="hidden" name="flag_trans" id="flag_trans" value="<?php echo $tipe_layanan?>">
-      <input type="hidden" name="flag_resep" value="biasa">
-      <input type="hidden" name="no_kunjungan" id="no_kunjungan" class="form-control" value="<?php echo isset($value)?ucwords($value->no_kunjungan):''?>" >
-      <input type="hidden" name="no_resep" id="no_resep" class="form-control" value="<?php echo isset($value)?$value->kode_pesan_resep:''?>" >
-      <input type="hidden" name="kode_kelompok" id="kode_kelompok" class="form-control" value="<?php echo isset($value)?$value->kode_kelompok:''?>" >
-      <input type="hidden" name="kode_perusahaan" id="kode_perusahaan" class="form-control" value="<?php echo isset($value)?$value->kode_perusahaan:''?>" >
-      <input type="hidden" name="kode_poli" id="kode_poli" class="form-control" value="<?php echo isset($value->kode_poli)?$value->kode_poli:0?>" >
-      <input type="hidden" name="kode_ri" id="kode_ri" class="form-control" value="<?php echo isset($value->kode_ri)?$value->kode_ri:0?>" >
-      <input class="form-control" name="harga_r" id="harga_r" type="hidden" value="500" readonly />
-      <input class="form-control" name="is_rollback" id="is_rollback" type="hidden" value="<?php echo isset($_GET['rollback']) ? 1 : 0 ; ?>" readonly />
-      
+        <div class="widget-box">
+          <div class="widget-header">
+              <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep</span>
+            <div class="widget-toolbar">
+              <?php if($value->status_tebus != 1) :?>
+                <button type="button" class="btn btn-success btn-xs" onclick="verifikasi_resep()">
+                    <i class="fa fa-check"></i> Resep Selesai
+                </button>
+              <?php 
+                else: 
+                  if($trans_farmasi->kode_tc_trans_kasir == '') :
+              ?>
+                
+                <button type="button" id="btn_rollback" onclick="rollback_resep_farmasi(<?php echo $value->kode_pesan_resep?>)" class="btn btn-danger btn-xs" name="rollback" value="rollback">
+                    <span class="ace-icon fa fa-refresh icon-on-right bigger-110"></span>
+                    Rollback
+                </button>
+                <!-- <span class="ace-icon fa fa-check-circle icon-on-right bigger-150 green"></span> -->
+                  <?php else: echo '<span style="color: green;font-weight: bold;font-size: 26px;border: 1px solid;border-style: dashed; vertical-align: middle; padding: 2px 10px">Lunas'; endif; endif; ?>
 
-      <div class="row">
-        <!-- keterangan pasien -->
-        <div class="col-sm-12">
-          <table class="table">
-            <tr style="background-color: #edf3f4;">
-              <td style="vertical-align: top; width: 180px">
-                <span style="font-weight: bold !important">Nama Pasien :</span><br> 
-                [<a href="#" onclick="getMenu('farmasi/Entry_resep_ri_rj/form/<?php echo $value->kode_pesan_resep?>?mr=<?php echo $value->no_mr?>&tipe_layanan=RJ')" style="font-weight: bold"><?php echo isset($value)?ucwords($value->no_mr):''?></a>]  <?php echo isset($value)?ucwords($value->nama_pasien):''?>        
-              </td>
-              
-              <td style="vertical-align: top; width: 200px"> <span style="font-weight: bold !important">Kode/Tgl Pesan :</span><br> <?php echo isset($value)?ucwords($value->kode_pesan_resep):''?> - <?php echo isset($value)?ucwords($this->tanggal->formatDateTimeFormDmy($value->tgl_pesan)):''?></td>
-              <td style="vertical-align: top"> <span style="font-weight: bold !important">Penjamin :</span><br> <?php echo isset($value)?ucwords($value->nama_kelompok):''?><br><?php echo isset($value)?ucwords($value->nama_perusahaan):''?> <?php echo isset($value->kode_perusahaan) ? ($value->kode_perusahaan == 120) ?'('.$value->no_sep.')' : '' :'';?></td>
-              <td style="vertical-align: top; width: 300px"> <span style="font-weight: bold !important">Dokter :</span><br> <?php echo isset($value)?$value->nama_pegawai:''?><br><?php echo isset($value)?ucwords($value->nama_bagian):''?></td>
-              <td style="vertical-align: top"><span style="font-weight: bold !important">Diagnosa Akhir :</span> <br><?php echo isset($value)?$value->diagnosa_akhir:''?> </td>
-            </tr>
-          </table>
-        </div>
-        
-        <!-- form utama -->
-        <div class="col-sm-7">
+            </div>
+          </div>
+          <div class="widget-body" style="padding:5px; min-height: 278px !important" >
+            <!-- Data Obat -->
+            <p><b>FORM OBAT</b></p>
 
-          <div class="widget-box">
-            <div class="widget-header">
-                <span class="widget-title" style="font-size: 14px; font-weight: bold; color: black">Form Input Resep</span>
-              <div class="widget-toolbar">
-                <?php if($value->status_tebus != 1) :?>
-                  <button type="button" class="btn btn-success btn-xs" onclick="verifikasi_resep()">
-                      <i class="fa fa-check"></i> Resep Selesai
-                  </button>
-                <?php 
-                  else: 
-                    if($trans_farmasi->kode_tc_trans_kasir == '') :
-                ?>
-                  
-                  <button type="button" id="btn_rollback" onclick="rollback_resep_farmasi(<?php echo $value->kode_pesan_resep?>)" class="btn btn-danger btn-xs" name="rollback" value="rollback">
-                      <span class="ace-icon fa fa-refresh icon-on-right bigger-110"></span>
-                      Rollback
-                  </button>
-                  <!-- <span class="ace-icon fa fa-check-circle icon-on-right bigger-150 green"></span> -->
-                    <?php else: echo '<span style="color: green;font-weight: bold;font-size: 26px;border: 1px solid;border-style: dashed; vertical-align: middle; padding: 2px 10px">Lunas'; endif; endif; ?>
+            <div class="form-group">
+              <label class="control-label col-sm-2">Kode</label>
+              <div class="col-md-2">
+              <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
+              </div> 
+              <label class="control-label col-sm-1">Tanggal</label>
+              <div class="col-md-4">
+                <div class="input-group">
+                    <input name="tgl_trans" id="tgl_trans" data-date-format="yyyy-mm-dd" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" type="text" value="<?php echo isset($trans_farmasi->tgl_trans) ? $trans_farmasi->tgl_trans : date('Y-m-d H:i:s'); ?>">
+                    <span class="input-group-addon">
+                      <i class="ace-icon fa fa-calendar"></i>
+                    </span>
+                  </div>
+              </div>
+              <label class="control-label col-sm-1">Iter</label>
+              <div class="col-md-2">
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_iter')), isset($trans_farmasi->iter) ? $trans_farmasi->iter : 0 , 'jenis_iter', 'jenis_iter', '', '', '');?>
+              </div> 
+            </div>
 
+
+            <!-- cari obat -->
+            <div class="form-group">
+              <label class="control-label col-sm-2">Cari Obat</label>            
+              <div class="col-md-6">            
+                <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
+              </div>
+              <div class="help-block col-xs-12 col-sm-reset inline blink" style="font-weight: bold" id="info_stok"></div>
+            </div>
+
+            <!-- Jenis Obat -->
+            <div class="form-group">
+              <label class="control-label col-sm-2">Jenis</label>
+              <div class="col-md-5">
+                <div class="radio">
+                    <label>
+                      <input name="urgensi" type="radio" class="ace" value="cito" onclick="changeUrgensi()" />
+                      <span class="lbl"> Cito</span>
+                    </label>
+
+                    <label>
+                      <input name="urgensi" type="radio" class="ace" value="biasa" onclick="changeUrgensi()" checked/>
+                      <span class="lbl"> Biasa</span>
+                    </label>
+                </div>
+              </div> 
+
+            </div>
+
+            <!-- jumlah pesan -->
+            <div class="form-group">
+              <label class="control-label col-sm-2">Jml Tebus</label>
+              <div class="col-md-2">
+                  <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="number" style="text-align:center; width: 60px !important" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
+              </div>
+              <div class="col-md-2">
+                <label class="inline" style="margin-top: 4px;margin-left: -20px;">
+                  <input type="checkbox" class="ace" name="resep_ditangguhkan" id="resep_ditangguhkan" value="1">
+                  <span class="lbl"> Ditangguhkan</span>
+                </label>
               </div>
             </div>
-            <div class="widget-body" style="padding:5px; min-height: 278px !important" >
-              <!-- Data Obat -->
-              <p><b>FORM OBAT</b></p>
 
-              <div class="form-group">
-                <label class="control-label col-sm-2">Kode</label>
-                <div class="col-md-2">
-                <input type="text" class="form-control" name="kode_trans_far" id="kode_trans_far" value="<?php echo isset($trans_farmasi->kode_trans_far)?$trans_farmasi->kode_trans_far:''?>" readonly>
-                </div> 
-                <label class="control-label col-sm-1">Tanggal</label>
-                <div class="col-md-4">
-                  <div class="input-group">
-                      <input name="tgl_trans" id="tgl_trans" data-date-format="yyyy-mm-dd" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" type="text" value="<?php echo isset($trans_farmasi->tgl_trans) ? $trans_farmasi->tgl_trans : date('Y-m-d H:i:s'); ?>">
-                      <span class="input-group-addon">
-                        <i class="ace-icon fa fa-calendar"></i>
-                      </span>
-                    </div>
-                </div>
-                <label class="control-label col-sm-1">Iter</label>
-                <div class="col-md-2">
-                  <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'jenis_iter')), isset($trans_farmasi->iter) ? $trans_farmasi->iter : 0 , 'jenis_iter', 'jenis_iter', '', '', '');?>
-                </div> 
-              </div>
-
-
-              <!-- cari obat -->
-              <div class="form-group">
-                <label class="control-label col-sm-2">Cari Obat</label>            
-                <div class="col-md-6">            
-                  <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
-                </div>
-                <div class="help-block col-xs-12 col-sm-reset inline blink" style="font-weight: bold" id="info_stok"></div>
-              </div>
-
-              <!-- Jenis Obat -->
-              <div class="form-group">
-                <label class="control-label col-sm-2">Jenis</label>
-                <div class="col-md-5">
-                  <div class="radio">
-                      <label>
-                        <input name="urgensi" type="radio" class="ace" value="cito" onclick="changeUrgensi()" />
-                        <span class="lbl"> Cito</span>
-                      </label>
-
-                      <label>
-                        <input name="urgensi" type="radio" class="ace" value="biasa" onclick="changeUrgensi()" checked/>
-                        <span class="lbl"> Biasa</span>
-                      </label>
-                  </div>
-                </div> 
-
-              </div>
-
-              <!-- jumlah pesan -->
-              <div class="form-group">
-                <label class="control-label col-sm-2">Jml Tebus</label>
-                <div class="col-md-2">
-                    <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="number" style="text-align:center; width: 60px !important" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
-                </div>
-                <div class="col-md-2">
-                  <label class="inline" style="margin-top: 4px;margin-left: -20px;">
-                    <input type="checkbox" class="ace" name="resep_ditangguhkan" id="resep_ditangguhkan" value="1">
-                    <span class="lbl"> Ditangguhkan</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label class="control-label col-sm-2">Resep Kronis</label>
-                <div class="col-md-2">
-                    <input class="form-control" name="jml_23" id="jml_23" type="number" value="" style="text-align:center; width: 60px !important" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
-                
-                </div>
-                <div class="col-md-2">
-                  <label class="inline" style="margin-top: 4px;margin-left: -20px;">
-                    <input type="checkbox" class="ace" name="prb_ditangguhkan" id="prb_ditangguhkan" value="1" <?php echo ($value->kode_perusahaan==120) ? '' : 'disabled'?>>
-                    <span class="lbl"> Ditangguhkan</span>
-                  </label>
-                </div>
-              </div>
-              <div class="form-group">
-                  <label class="control-label col-sm-2">Signa</label>
-                  <div class="col-md-10">
-
-                    <span class="input-icon">
-                      <input name="dosis_start" id="dosis_start" type="text" style="width: 50px;"/>
-                    </span>
-
-                    <span class="input-icon" style="padding-left: 4px">
-                      <i class="fa fa-times bigger-150"></i>
-                    </span>
-
-                    <span class="input-icon">
-                      <input name="dosis_end" id="dosis_end" type="text" style="width: 50px;"/>
-                    </span>
-
-                    <span class="input-icon">
-                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', '', '', 'style="margin-left: -2px"');?>
-                    </span>
-
-                    <span class="input-icon">
-                      <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', '', '', 'style="margin-left: -2px"');?>
-                    </span>
-
-                  </div>
-              </div>
-
-              <div class="form-group">
-                  <label class="control-label col-sm-2">Catatan</label>
-                  <div class="col-md-10">
-                      <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value=""/>
-                  </div>
-              </div>
-              <?php if($value->status_tebus != 1) :?>
-              <div class="form-group">
-                  <label class="col-sm-2">&nbsp;</label>
-                  <div class="col-md-8" style="margin-left: 4px">
-                    <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary">
-                        <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
-                        Tambahkan Obat
-                    </button>
-                    <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
-                      <span class="ace-icon fa fa-flask icon-on-right bigger-110"></span>
-                      Resep Racikan
-                    </button>
-                  </div>
-              </div>
-              <?php endif; ?>
+            <div class="form-group">
+              <label class="control-label col-sm-2">Resep Kronis</label>
+              <div class="col-md-2">
+                  <input class="form-control" name="jml_23" id="jml_23" type="number" value="" style="text-align:center; width: 60px !important" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
               
-              <!-- datatable detail obat -->
-              <table id="temp_data_pesan" class="table table-bordered table-hover">
+              </div>
+              <div class="col-md-2">
+                <label class="inline" style="margin-top: 4px;margin-left: -20px;">
+                  <input type="checkbox" class="ace" name="prb_ditangguhkan" id="prb_ditangguhkan" value="1" <?php echo ($value->kode_perusahaan==120) ? '' : 'disabled'?>>
+                  <span class="lbl"> Ditangguhkan</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2">Signa</label>
+                <div class="col-md-10">
+
+                  <span class="input-icon">
+                    <input name="dosis_start" id="dosis_start" type="text" style="width: 50px;"/>
+                  </span>
+
+                  <span class="input-icon" style="padding-left: 4px">
+                    <i class="fa fa-times bigger-150"></i>
+                  </span>
+
+                  <span class="input-icon">
+                    <input name="dosis_end" id="dosis_end" type="text" style="width: 50px;"/>
+                  </span>
+
+                  <span class="input-icon">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_obat')), 'TAB' , 'satuan_obat', 'satuan_obat', '', '', 'style="margin-left: -2px"');?>
+                  </span>
+
+                  <span class="input-icon">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anjuran_pakai_obat')), 'Sesudah Makan' , 'anjuran_pakai', 'anjuran_pakai', '', '', 'style="margin-left: -2px"');?>
+                  </span>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Catatan</label>
+                <div class="col-md-10">
+                    <input class="form-control" name="catatan" id="catatan" type="text" style="width: 400px" value=""/>
+                </div>
+            </div>
+            <?php if($value->status_tebus != 1) :?>
+            <div class="form-group">
+                <label class="col-sm-2">&nbsp;</label>
+                <div class="col-md-8" style="margin-left: 4px">
+                  <button type="submit" id="btn_submit"  name="submit" class="btn btn-xs btn-primary">
+                      <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
+                      Tambahkan Obat
+                  </button>
+                  <button type="button" id="btn_racikan" class="btn btn-purple btn-xs">
+                    <span class="ace-icon fa fa-flask icon-on-right bigger-110"></span>
+                    Resep Racikan
+                  </button>
+                </div>
+            </div>
+            <?php endif; ?>
+            
+            <!-- datatable detail obat -->
+            <table id="temp_data_pesan" class="table table-bordered table-hover">
+              <thead>
+                <tr style="background: #edf3f4;">  
+                  <th class="center" width="30px"></th>
+                  <th class="center"></th>
+                  <th class="center"></th>
+                  <th class="center"></th>
+                  <th class="center" width="80px"></th>
+                  <th width="30px">No</th>
+                  <!-- <th width="150px">Tgl Input</th> -->
+                  <!-- <th>Kode</th> -->
+                  <th>Nama Obat</th>
+                  <th width="80px">Jumlah</th>
+                  <!-- <th width="100px">Ditangguhkan</th> -->
+                  <th width="100px">Harga Satuan</th>
+                  <!-- <th width="100px">Sub Total</th> -->
+                  <th width="80px">Jasa R</th>
+                  <th width="100px">Total (Rp.)</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            <div style="text-align: right; width: 100%">
+              Total Biaya Farmasi.<br>
+              <span style="font-size: 25px !important; font-weight: bold" id="txt_total_biaya_farmasi"></span>
+            </div>
+
+          </div>
+        </div>
+        
+      </div>
+
+      <!-- detail selected obat -->
+      <div class="col-sm-5">
+        
+        <div class="tabbable">
+          <ul class="nav nav-tabs" id="myTabInfoDetailFarmasi">
+            <li class="active">
+              <a data-toggle="tab" href="#tab_eresep">
+                e-Resep
+              </a>
+            </li>
+
+            <li>
+              <a data-toggle="tab" href="#tab_riwayat_pm">
+                Penunjang Medis
+              </a>
+            </li>
+
+            <li>
+              <a data-toggle="tab" href="#tab_detail_obat">
+                Detail Obat
+              </a>
+            </li>
+
+            <li>
+              <a data-toggle="tab" href="#tab_riwayat_pemberian_obat">
+                Riwayat Pemberian Obat
+              </a>
+            </li>
+
+          </ul>
+
+          <div class="tab-content">
+
+            <div id="tab_eresep" class="tab-pane fade in active">
+              <?php
+                // echo "<pre>"; print_r($eresep_result);die;
+                if(isset($eresep[0]->kode_pesan_resep)) : 
+                  
+                $html = '';
+                  $html .= '<div><b>RESEP DOKTER <i>(e-Resep)</i></b><br>';
+                  $html .= isset($value)?ucwords($value->nama_bagian).' - ':'';
+                  $html .= isset($value)?$value->nama_pegawai:'';
+                  $html .= ' - Tanggal. '.$this->tanggal->formatDateTime($eresep[0]->created_date).'';
+                  $html .= '</div>';
+                  $html .= '<table class="table" id="dt_add_resep_obat">
+                    <thead>
+                    <tr style="background: #edf3f4;">
+                        <th width="30px" class="center">No</th>
+                        <th>Nama Obat</th>
+                        <th>Signa</th>
+                        <th class="center">Qty</th>
+                        <th class="center">#</th>
+                    </tr>
+                    </thead>
+                    <tbody style="background: white">';
+                    $no = 0;
+                    
+                    foreach ($eresep as $ker => $ver) {
+                      $is_free_text = ($ver->kode_brg == null)?'<br><span style="font-weight: bold; color: red">[free text]</span>':'';
+                      $no++;
+                      // get child racikan
+                      $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
+                      $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+                      $html .= '<tr>';
+                      $html .= '<td align="center" valign="top">'.$no.'</td>';
+                      $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.''.$is_free_text.'</td>';
+                      $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
+                      $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
+                        $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';
+                      $html .= '</tr>';
+
+                    }
+
+                    $html .= '</tbody></table>';
+                
+                echo $html;
+                else :
+                  echo "<div class='alert alert-warning'><strong>Tidak ada resep</strong><br>Dokter belum menginput resep kedalam sistem, mohon cek resep manual.</div>";
+                endif;
+              ?>
+              <hr>
+              <!-- copy resep -->
+                <div id="copy_resep_form"></div>
+
+            </div>
+
+            <div id="tab_riwayat_pm" class="tab-pane fade">
+              <p style="font-weight: bold">Riwayat Pemeriksaan Penunjang Medis</p>
+              <table class="table table-bordered table-hover">
                 <thead>
                   <tr style="background: #edf3f4;">  
-                    <th class="center" width="30px"></th>
-                    <th class="center"></th>
-                    <th class="center"></th>
-                    <th class="center"></th>
-                    <th class="center" width="80px"></th>
                     <th width="30px">No</th>
-                    <!-- <th width="150px">Tgl Input</th> -->
-                    <!-- <th>Kode</th> -->
-                    <th>Nama Obat</th>
-                    <th width="80px">Jumlah</th>
-                    <!-- <th width="100px">Ditangguhkan</th> -->
-                    <th width="100px">Harga Satuan</th>
-                    <!-- <th width="100px">Sub Total</th> -->
-                    <th width="80px">Jasa R</th>
-                    <th width="100px">Total (Rp.)</th>
+                    <th>Pemeriksaan Penunjang</th>
+                    <th width="30px">Hasil</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody style="background: white">
+                  <?php 
+                    $no=0; 
+                    $data_lab = isset($penunjang['laboratorium'])?$penunjang['laboratorium']:[];
+                    foreach($data_lab as $key_p=>$row_p) : 
+                      if($key_p <= 9) :
+                        $no++;
+                  ?>
+                  <tr>
+                    <td align="center"><?php echo $no; ?></td>
+                    <td>
+                      <?php 
+                        echo '<b>'.$this->tanggal->formatDateTime($row_p->tgl_daftar).'</b><br>';
+                        $arr_str = explode("|",$row_p->nama_tarif);
+                        $html_pm = '<ul class="no-padding">';
+                        foreach ($arr_str as $key => $value) {
+                            if(!empty($value)){
+                                $html_pm .= '<li>'.$value.'</li>';
+                            }
+                        }
+                        $html_pm .= '</ul>';
+                        echo $html_pm;
+                      ?>
+                    </td>
+                    <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
+                  </tr>
+                  <?php endif; endforeach; ?>
                 </tbody>
               </table>
-              <div style="text-align: right; width: 100%">
-                Total Biaya Farmasi.<br>
-                <span style="font-size: 25px !important; font-weight: bold" id="txt_total_biaya_farmasi"></span>
-              </div>
-
             </div>
-          </div>
-          
-        </div>
 
-        <!-- detail selected obat -->
-        <div class="col-sm-5">
-          
-          <div class="tabbable">
-            <ul class="nav nav-tabs" id="myTabInfoDetailFarmasi">
-              <li class="active">
-                <a data-toggle="tab" href="#tab_eresep">
-                  e-Resep
-                </a>
-              </li>
-
-              <li>
-                <a data-toggle="tab" href="#tab_riwayat_pm">
-                  Penunjang Medis
-                </a>
-              </li>
-
-              <li>
-                <a data-toggle="tab" href="#tab_detail_obat">
-                  Detail Obat
-                </a>
-              </li>
-
-              <li>
-                <a data-toggle="tab" href="#tab_riwayat_pemberian_obat">
-                  Riwayat Pemberian Obat
-                </a>
-              </li>
-
-            </ul>
-
-            <div class="tab-content">
-
-              <div id="tab_eresep" class="tab-pane fade in active">
-                <?php
-                  // echo "<pre>"; print_r($eresep_result);die;
-                  if(isset($eresep[0]->kode_pesan_resep)) : 
-                    
-                  $html = '';
-                    $html .= '<div><b>RESEP DOKTER <i>(e-Resep)</i></b><br>';
-                    $html .= isset($value)?ucwords($value->nama_bagian).' - ':'';
-                    $html .= isset($value)?$value->nama_pegawai:'';
-                    $html .= ' - Tanggal. '.$this->tanggal->formatDateTime($eresep[0]->created_date).'';
-                    $html .= '</div>';
-                    $html .= '<table class="table" id="dt_add_resep_obat">
-                      <thead>
-                      <tr style="background: #edf3f4;">
-                          <th width="30px" class="center">No</th>
-                          <th>Nama Obat</th>
-                          <th>Signa</th>
-                          <th class="center">Qty</th>
-                          <th class="center">#</th>
-                      </tr>
-                      </thead>
-                      <tbody style="background: white">';
-                      $no = 0;
-                      
-                      foreach ($eresep as $ker => $ver) {
-                        $is_free_text = ($ver->kode_brg == null)?'<br><span style="font-weight: bold; color: red">[free text]</span>':'';
-                        $no++;
-                        // get child racikan
-                        $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
-                        $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
-                        $html .= '<tr>';
-                        $html .= '<td align="center" valign="top">'.$no.'</td>';
-                        $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.''.$is_free_text.'</td>';
-                        $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
-                        $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
-                          $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';
-                        $html .= '</tr>';
-
-                      }
-
-                      $html .= '</tbody></table>';
-                  
-                  echo $html;
-                  else :
-                    echo "<div class='alert alert-warning'><strong>Tidak ada resep</strong><br>Dokter belum menginput resep kedalam sistem, mohon cek resep manual.</div>";
-                  endif;
-                ?>
-                <hr>
-                <!-- copy resep -->
-                 <div id="copy_resep_form"></div>
-
+            <div id="tab_detail_obat" class="tab-pane fade">
+              <div id="detailObatHtml" style="margin-top: 5px">
+                <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
               </div>
+            </div>
 
-              <div id="tab_riwayat_pm" class="tab-pane fade">
-                <p style="font-weight: bold">Riwayat Pemeriksaan Penunjang Medis</p>
-                <table class="table table-bordered table-hover">
-                  <thead>
-                    <tr style="background: #edf3f4;">  
-                      <th width="30px">No</th>
-                      <th>Pemeriksaan Penunjang</th>
-                      <th width="30px">Hasil</th>
-                    </tr>
-                  </thead>
-                  <tbody style="background: white">
-                    <?php 
-                      $no=0; 
-                      $data_lab = isset($penunjang['laboratorium'])?$penunjang['laboratorium']:[];
-                      foreach($data_lab as $key_p=>$row_p) : 
-                        if($key_p <= 9) :
-                          $no++;
-                    ?>
-                    <tr>
-                      <td align="center"><?php echo $no; ?></td>
-                      <td>
-                        <?php 
-                          echo '<b>'.$this->tanggal->formatDateTime($row_p->tgl_daftar).'</b><br>';
-                          $arr_str = explode("|",$row_p->nama_tarif);
-                          $html_pm = '<ul class="no-padding">';
-                          foreach ($arr_str as $key => $value) {
-                              if(!empty($value)){
-                                  $html_pm .= '<li>'.$value.'</li>';
-                              }
-                          }
-                          $html_pm .= '</ul>';
-                          echo $html_pm;
-                        ?>
-                      </td>
-                      <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
-                    </tr>
-                    <?php endif; endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
-
-              <div id="tab_detail_obat" class="tab-pane fade">
-                <div id="detailObatHtml" style="margin-top: 5px">
-                  <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
-                </div>
-              </div>
-
-              <div id="tab_riwayat_pemberian_obat" class="tab-pane fade">
-                <div id="detailPembelianObatHtml" style="margin-top: 5px">
-                  <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
-                </div>
+            <div id="tab_riwayat_pemberian_obat" class="tab-pane fade">
+              <div id="detailPembelianObatHtml" style="margin-top: 5px">
+                <div class="alert alert-warning">Silahkan cari Nama Obat terlebih dahulu.</div>
               </div>
             </div>
           </div>
-
-
         </div>
-        
+
+
       </div>
       
-      <div id="modal_form_verifikasi" class="modal fade" tabindex="-1">
+    </div>
+    
+    <div id="modal_form_verifikasi" class="modal fade" tabindex="-1">
 
-        <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;width:80%">
-          <div class="modal-content">
-            <div class="modal-header no-padding">
-              <div class="table-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                  <span class="white">&times;</span>
-                </button>
-                <span id="result_text">FORM VERIFIKASI RESEP</span>
-              </div>
+      <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;width:80%">
+        <div class="modal-content">
+          <div class="modal-header no-padding">
+            <div class="table-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <span class="white">&times;</span>
+              </button>
+              <span id="result_text">FORM VERIFIKASI RESEP</span>
             </div>
+          </div>
 
-            <div class="modal-body">
-              <span style="font-weight: bold; font-size: 14px"><u>VERIFIKASI RESEP</u></span><br>
-              <i>(Mohon telaah kembali resep obat yang akan diberikan ke pasien)</i>
-              <br>
-              <table class="table">
-                <tr>
-                  <th width="10%">#</th>
-                  <th width="15%">TEPAT PASIEN</th>
-                  <th width="15%">TEPAT DOSIS</th>
-                  <th width="15%">TEPAT OBAT</th>
-                  <th width="25%">TEPAT WAKTU FREKUENSI PEMBERIAN</th>
-                  <th width="20%">TEPAT CARA PEMBERIAN</th>
-                </tr>
-                <?php 
-                  $verify = isset($trans_farmasi->verifikasi_resep_5t) ? json_decode($trans_farmasi->verifikasi_resep_5t) : '';
-                  
+          <div class="modal-body">
+            <span style="font-weight: bold; font-size: 14px"><u>VERIFIKASI RESEP</u></span><br>
+            <i>(Mohon telaah kembali resep obat yang akan diberikan ke pasien)</i>
+            <br>
+            <table class="table">
+              <tr>
+                <th width="10%">#</th>
+                <th width="15%">TEPAT PASIEN</th>
+                <th width="15%">TEPAT DOSIS</th>
+                <th width="15%">TEPAT OBAT</th>
+                <th width="25%">TEPAT WAKTU FREKUENSI PEMBERIAN</th>
+                <th width="20%">TEPAT CARA PEMBERIAN</th>
+              </tr>
+              <?php 
+                $verify = isset($trans_farmasi->verifikasi_resep_5t) ? json_decode($trans_farmasi->verifikasi_resep_5t) : '';
+                
 
-                ?>
-                <tr>
-                  <td>
-                    <label>
-                      <input type="checkbox" class="ace" name="verifikasi[all]" id="verifikasi_check_all" value="1" onclick="checkAll(this)" <?php if(isset($ver->all)) : echo ($ver->all && $ver->all == 1) ? 'checked' : '' ; endif;?> >
-                      <span class="lbl" > Tepat Semua</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tp]" id="tp" value="1" <?php if(isset($ver->tp)) : echo ($ver->tp && $ver->tp == 1) ? 'checked' : ''; endif; ?> >
-                      <span class="lbl" > &nbsp; Ya</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[td]" id="td" value="1" <?php if(isset($ver->td)) : echo ($ver->td && $ver->td == 1) ? 'checked' : ''; endif; ?> >
-                      <span class="lbl" > &nbsp; Ya</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[to]" id="to" value="1" <?php if(isset($ver->to)) : echo ($ver->to && $ver->to == 1) ? 'checked' : ''; endif; ?> >
-                      <span class="lbl" > &nbsp; Ya</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[twf]" id="twfp" value="1" <?php if(isset($ver->all)) : echo ($ver->twf && $ver->twf == 1) ? 'checked' : ''; endif; ?> >
-                      <span class="lbl" > &nbsp; Ya</span>
-                    </label>
-                  </td>
-                  <td>
-                    <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tcp]" id="tcp" value="1" <?php if(isset($ver->all)) : echo ($ver->tcp && $ver->tcp == 1) ? 'checked' : ''; endif; ?> >
-                      <span class="lbl" > &nbsp; Ya</span>
-                    </label>
-                  </td>
-                </tr>
-              </table>
-              <br>
-              <span style="font-weight: bold; font-size: 14px"><u>METODE PENGAMBILAN RESEP</u></span>
-              <br>
-              <i><span>Bagaimana metode pengambilan resep obat pasien?</span><br></i>
-              <label>
-                <input type="radio" class="ace" name="metode_pengambilan" value="ditunggu" <?php if(isset($ver->all)) : echo ($trans_farmasi->pengambilan_resep == 'ditunggu') ? 'checked' : ''; endif; ?> >
-                <span class="lbl" > &nbsp; Resep Ditunggu</span>
-              </label>
-              <label>
-                <input type="radio" class="ace" name="metode_pengambilan" value="ditinggal" <?php if(isset($ver->all)) : echo ($trans_farmasi->pengambilan_resep == 'ditinggal') ? 'checked' : ''; endif; ?> >
-                <span class="lbl" > &nbsp; Resep Ditinggal (diambil esok hari)</span>
-              </label>
-              <br>
-              <br>
-              <span style="font-weight: bold; font-size: 14px"><u>PERUBAHAN RESEP OBAT</u></span>
-              <br>
-              <i>(Jika terdapat perubahan resep dokter dengan ketersediaan stok atau hal lainnya silahkan konfirmasi terlebih dahulu ke Dokter DPJP dan perlu dilakukan verifikasi oleh Ka. Inst Farmasi)</i>
-              <br>
-              <i><span>Apakah ada perubahan Resep Dokter?</span><br></i>
-              <label>
-                <input type="checkbox" class="ace" name="perubahan_resep" id="perubahan_resep" value="1" <?php if(isset($ver->all)) : echo ($trans_farmasi->perubahan_resep == 1) ? 'checked' : ''; endif;?>>
-                <span class="lbl" > &nbsp; Ya</span>
-              </label>
-              <div id="perubahan_resep_dokter" <?php echo ($trans_farmasi->perubahan_resep == 1) ? '' : 'style="display: none"'?> >
-                <?php
-                  // echo "<pre>"; print_r($eresep_result);die;
-                  if(isset($eresep[0]->kode_pesan_resep)) : 
-                  $html = '';
-                    $html .= '<div><b><i>(e-Resep)</i></b> - ';
-                    $html .= isset($value->nama_bagian)?ucwords($value->nama_bagian).' - ':'';
-                    $html .= isset($value->nama_pegawai)?$value->nama_pegawai:'';
-                    $html .= ' - Tanggal. '.$this->tanggal->formatDateTime($eresep[0]->created_date).'';
-                    $html .= '</div>';
-                    $html .= '<table class="table" id="dt_add_resep_obat">
-                      <thead>
-                      <tr style="background: #edf3f4;">
-                          <th width="5%" class="center">NO</th>
-                          <th width="30%">RESEP TERTULIS</th>
-                          <th width="30%">PERUBAHAN</th>
-                          <th width="30%" class="center">KETERANGAN</th>
-                          <th class="center" width="5%">PERSETUJUAN</th>
-                      </tr>
-                      </thead>
-                      <tbody style="background: white">';
-                      $no = 0;
-                      
-                      foreach ($eresep as $ker => $ver) {
-                      
+              ?>
+              <tr>
+                <td>
+                  <label>
+                    <input type="checkbox" class="ace" name="verifikasi[all]" id="verifikasi_check_all" value="1" onclick="checkAll(this)" <?php if(isset($ver->all)) : echo ($ver->all && $ver->all == 1) ? 'checked' : '' ; endif;?> >
+                    <span class="lbl" > Tepat Semua</span>
+                  </label>
+                </td>
+                <td>
+                  <label>
+                    <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tp]" id="tp" value="1" <?php if(isset($ver->tp)) : echo ($ver->tp && $ver->tp == 1) ? 'checked' : ''; endif; ?> >
+                    <span class="lbl" > &nbsp; Ya</span>
+                  </label>
+                </td>
+                <td>
+                  <label>
+                    <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[td]" id="td" value="1" <?php if(isset($ver->td)) : echo ($ver->td && $ver->td == 1) ? 'checked' : ''; endif; ?> >
+                    <span class="lbl" > &nbsp; Ya</span>
+                  </label>
+                </td>
+                <td>
+                  <label>
+                    <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[to]" id="to" value="1" <?php if(isset($ver->to)) : echo ($ver->to && $ver->to == 1) ? 'checked' : ''; endif; ?> >
+                    <span class="lbl" > &nbsp; Ya</span>
+                  </label>
+                </td>
+                <td>
+                  <label>
+                    <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[twf]" id="twfp" value="1" <?php if(isset($ver->all)) : echo ($ver->twf && $ver->twf == 1) ? 'checked' : ''; endif; ?> >
+                    <span class="lbl" > &nbsp; Ya</span>
+                  </label>
+                </td>
+                <td>
+                  <label>
+                    <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tcp]" id="tcp" value="1" <?php if(isset($ver->all)) : echo ($ver->tcp && $ver->tcp == 1) ? 'checked' : ''; endif; ?> >
+                    <span class="lbl" > &nbsp; Ya</span>
+                  </label>
+                </td>
+              </tr>
+            </table>
+            <br>
+            <span style="font-weight: bold; font-size: 14px"><u>METODE PENGAMBILAN RESEP</u></span>
+            <br>
+            <i><span>Bagaimana metode pengambilan resep obat pasien?</span><br></i>
+            <label>
+              <input type="radio" class="ace" name="metode_pengambilan" value="ditunggu" <?php if(isset($ver->all)) : echo ($trans_farmasi->pengambilan_resep == 'ditunggu') ? 'checked' : ''; endif; ?> >
+              <span class="lbl" > &nbsp; Resep Ditunggu</span>
+            </label>
+            <label>
+              <input type="radio" class="ace" name="metode_pengambilan" value="ditinggal" <?php if(isset($ver->all)) : echo ($trans_farmasi->pengambilan_resep == 'ditinggal') ? 'checked' : ''; endif; ?> >
+              <span class="lbl" > &nbsp; Resep Ditinggal (diambil esok hari)</span>
+            </label>
+            <br>
+            <br>
+            <span style="font-weight: bold; font-size: 14px"><u>PERUBAHAN RESEP OBAT</u></span>
+            <br>
+            <i>(Jika terdapat perubahan resep dokter dengan ketersediaan stok atau hal lainnya silahkan konfirmasi terlebih dahulu ke Dokter DPJP dan perlu dilakukan verifikasi oleh Ka. Inst Farmasi)</i>
+            <br>
+            <i><span>Apakah ada perubahan Resep Dokter?</span><br></i>
+            <label>
+              <input type="checkbox" class="ace" name="perubahan_resep" id="perubahan_resep" value="1" <?php if(isset($ver->all)) : echo ($trans_farmasi->perubahan_resep == 1) ? 'checked' : ''; endif;?>>
+              <span class="lbl" > &nbsp; Ya</span>
+            </label>
+            <div id="perubahan_resep_dokter" <?php echo ($trans_farmasi->perubahan_resep == 1) ? '' : 'style="display: none"'?> >
+              <?php
+                // echo "<pre>"; print_r($eresep_result);die;
+                if(isset($eresep[0]->kode_pesan_resep)) : 
+                $html = '';
+                  $html .= '<div><b><i>(e-Resep)</i></b> - ';
+                  $html .= isset($value->nama_bagian)?ucwords($value->nama_bagian).' - ':'';
+                  $html .= isset($value->nama_pegawai)?$value->nama_pegawai:'';
+                  $html .= ' - Tanggal. '.$this->tanggal->formatDateTime($eresep[0]->created_date).'';
+                  $html .= '</div>';
+                  $html .= '<table class="table" id="dt_add_resep_obat">
+                    <thead>
+                    <tr style="background: #edf3f4;">
+                        <th width="5%" class="center">NO</th>
+                        <th width="30%">RESEP TERTULIS</th>
+                        <th width="30%">PERUBAHAN</th>
+                        <th width="30%" class="center">KETERANGAN</th>
+                        <th class="center" width="5%">PERSETUJUAN</th>
+                    </tr>
+                    </thead>
+                    <tbody style="background: white">';
+                    $no = 0;
+                    
+                    foreach ($eresep as $ker => $ver) {
+                    
+                      $no++;
+                      // get child racikan
+                      $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
+                      $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+                      $html .= '<tr>';
+                      $html .= '<td align="center" valign="top">'.$no.'</td>';
+                      $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'<br>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'&nbsp; '.$ver->aturan_pakai.'<br>Qty. '.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
+                      // perubahan resep
+                      $perubahan_resep = isset($ver->perubahan_resep)?$ver->perubahan_resep:'';
+                      $html .= '<td><textarea class="form-control" style="min-height: 5em !important;overflow: auto !important;" name="perubahan_resep_'.$ver->kode_pesan_resep.'['.$ver->kode_brg.']">'.$perubahan_resep.'</textarea></td>';
+                      // keterangan perubahan
+                      $keterangan_perubahan = isset($ver->keterangan_perubahan)?$ver->keterangan_perubahan:'';
+                      $html .= '<td><textarea class="form-control" style="min-height: 5em !important;overflow: auto !important;" name="keterangan_perubahan_resep_'.$ver->kode_pesan_resep.'['.$ver->kode_brg.']">'.$keterangan_perubahan.'</textarea></td>';
+                      // persetujuan perubahan
+                      $checked = ($ver->acc_perubahan == 1) ? 'checked' : '' ;
+                      $html .= '<td align="center" valign="top"><label>
+                          <input name="persetujuan_'.$ver->kode_pesan_resep.'['.$ver->kode_brg.']" class="ace ace-switch" type="checkbox" value="1" '.$checked.'>
+                          <span class="lbl"></span>
+                        </label></td>';
+                      $html .= '</tr>';
+
+                    }
+
+                    $html .= '</tbody></table>';
+                
+                echo $html;
+                else :
+                  echo "<div class='alert alert-warning'><strong>Tidak ada resep</strong><br>Dokter belum menginput resep kedalam sistem, mohon cek resep manual.</div>";
+                endif;
+              ?>
+            </div>
+            <br>
+            <br>
+            <span style="font-weight: bold; font-size: 14px"><u>LAMPIRAN HASIL LABORATORIUM</u></span>
+            <br>
+            (Untuk beberapa obat restriksi yang perlu dilampirkan hasil laboratorium, silahkan ceklist hasil penunjang yang perlu dilampirkan)
+            <br>
+            <i><span>Apakah ada Hasil Laboratorium yang dilampirkan untuk kebutuhan Klaim?</span><br></i>
+            <label>
+              <input type="checkbox" class="ace" name="lampiran_lab" id="lampiran_lab" value="1" <?php echo ($trans_farmasi->lampiran_lab_kode_penunjang > 0) ? 'checked' : '' ?> >
+              <span class="lbl" > &nbsp; Ya</span>
+            </label>
+            <br>
+            <div id="hasil_penunjang_lab" <?php echo ($trans_farmasi->lampiran_lab_kode_penunjang > 0) ? '' : 'style="display: none"' ?> >
+              <span style="font-style: italic">Silahkan pilih (ceklis) hasil laboratorium yang akan dilampirkan!</span>
+              <table class="table table-bordered table-hover" style="width: 80% !important">
+                <thead>
+                  <tr style="background: #edf3f4;">  
+                    <th width="30px"></th>
+                    <th width="30px">No</th>
+                    <th width="150px">Tgl Pemeriksaan</th>
+                    <th>Jenis Pemeriksaan</th>
+                    <th width="100px">Lihat Hasil</th>
+                  </tr>
+                </thead>
+                <tbody style="background: white">
+                  <?php 
+                    $no=0; 
+                    $data_lab = isset($penunjang['laboratorium'])?$penunjang['laboratorium']:[];
+                    foreach($data_lab as $key_p=>$row_p) : 
+                      if($key_p <= 4) :
                         $no++;
-                        // get child racikan
-                        $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);
-                        $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
-                        $html .= '<tr>';
-                        $html .= '<td align="center" valign="top">'.$no.'</td>';
-                        $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.'<br>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'&nbsp; '.$ver->aturan_pakai.'<br>Qty. '.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
-                        // perubahan resep
-                        $perubahan_resep = isset($ver->perubahan_resep)?$ver->perubahan_resep:'';
-                        $html .= '<td><textarea class="form-control" style="min-height: 5em !important;overflow: auto !important;" name="perubahan_resep_'.$ver->kode_pesan_resep.'['.$ver->kode_brg.']">'.$perubahan_resep.'</textarea></td>';
-                        // keterangan perubahan
-                        $keterangan_perubahan = isset($ver->keterangan_perubahan)?$ver->keterangan_perubahan:'';
-                        $html .= '<td><textarea class="form-control" style="min-height: 5em !important;overflow: auto !important;" name="keterangan_perubahan_resep_'.$ver->kode_pesan_resep.'['.$ver->kode_brg.']">'.$keterangan_perubahan.'</textarea></td>';
-                        // persetujuan perubahan
-                        $checked = ($ver->acc_perubahan == 1) ? 'checked' : '' ;
-                        $html .= '<td align="center" valign="top"><label>
-                            <input name="persetujuan_'.$ver->kode_pesan_resep.'['.$ver->kode_brg.']" class="ace ace-switch" type="checkbox" value="1" '.$checked.'>
-                            <span class="lbl"></span>
-                          </label></td>';
-                        $html .= '</tr>';
-
-                      }
-
-                      $html .= '</tbody></table>';
-                  
-                  echo $html;
-                  else :
-                    echo "<div class='alert alert-warning'><strong>Tidak ada resep</strong><br>Dokter belum menginput resep kedalam sistem, mohon cek resep manual.</div>";
-                  endif;
-                ?>
-              </div>
-              <br>
-              <br>
-              <span style="font-weight: bold; font-size: 14px"><u>LAMPIRAN HASIL LABORATORIUM</u></span>
-              <br>
-              (Untuk beberapa obat restriksi yang perlu dilampirkan hasil laboratorium, silahkan ceklist hasil penunjang yang perlu dilampirkan)
-              <br>
-              <i><span>Apakah ada Hasil Laboratorium yang dilampirkan untuk kebutuhan Klaim?</span><br></i>
-              <label>
-                <input type="checkbox" class="ace" name="lampiran_lab" id="lampiran_lab" value="1" <?php echo ($trans_farmasi->lampiran_lab_kode_penunjang > 0) ? 'checked' : '' ?> >
-                <span class="lbl" > &nbsp; Ya</span>
+                        $checked_lab = ($trans_farmasi->lampiran_lab_kode_penunjang == $row_p->kode_penunjang) ? 'checked' : '' ;
+                  ?>
+                  <tr>
+                    <td align="center">
+                    <label>
+                      <input  name="checklist_lab[]" id="checklist_lab_<?php echo $row_p->kode_penunjang?>" type="checkbox" class="ace" value="<?php echo $row_p->kode_penunjang?>" <?php echo $checked_lab?>>
+                      <span class="lbl" > &nbsp; </span>
+                    </label>
+                    </td>
+                    <td align="center"><?php echo $no; ?></td>
+                    <td><?php echo $this->tanggal->formatDateTime($row_p->tgl_daftar)?></td>
+                    <td>
+                      <?php 
+                        $arr_str = explode("|",$row_p->nama_tarif);
+                        $html_pm = '<ul class="no-padding">';
+                        foreach ($arr_str as $key => $value) {
+                            if(!empty($value)){
+                                $html_pm .= '<li>'.$value.'</li>';
+                            }
+                        }
+                        $html_pm .= '</ul>';
+                        echo $html_pm;
+                      ?>
+                    </td>
+                    <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
+                  </tr>
+                  <?php endif; endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <span style="font-weight: bold; font-size: 14px"><u>LAMPIRAN MEMO HT & ACE INHIBITORS</u></span>
+            <br>
+            <i><span>Untuk kebutuhan lampiran Dokumen Klaim, mohon dilampirkan Memo Intoleran untuk pengambilan Resep Candesartan</span><br></i>
+            <label>
+                <input type="checkbox" class="ace" name="lampiran_memo_inhibitor" id="lampiran_memo_inhibitor" value="1" <?php echo ($trans_farmasi->lampiran_memo_inhibitor == 1) ? 'checked' : '' ?>>
+                <span class="lbl" > &nbsp; Lampirkan Memo</span>
               </label>
-              <br>
-              <div id="hasil_penunjang_lab" <?php echo ($trans_farmasi->lampiran_lab_kode_penunjang > 0) ? '' : 'style="display: none"' ?> >
-                <span style="font-style: italic">Silahkan pilih (ceklis) hasil laboratorium yang akan dilampirkan!</span>
-                <table class="table table-bordered table-hover" style="width: 80% !important">
-                  <thead>
-                    <tr style="background: #edf3f4;">  
-                      <th width="30px"></th>
-                      <th width="30px">No</th>
-                      <th width="150px">Tgl Pemeriksaan</th>
-                      <th>Jenis Pemeriksaan</th>
-                      <th width="100px">Lihat Hasil</th>
-                    </tr>
-                  </thead>
-                  <tbody style="background: white">
-                    <?php 
-                      $no=0; 
-                      $data_lab = isset($penunjang['laboratorium'])?$penunjang['laboratorium']:[];
-                      foreach($data_lab as $key_p=>$row_p) : 
-                        if($key_p <= 4) :
-                          $no++;
-                          $checked_lab = ($trans_farmasi->lampiran_lab_kode_penunjang == $row_p->kode_penunjang) ? 'checked' : '' ;
-                    ?>
-                    <tr>
-                      <td align="center">
-                      <label>
-                        <input  name="checklist_lab[]" id="checklist_lab_<?php echo $row_p->kode_penunjang?>" type="checkbox" class="ace" value="<?php echo $row_p->kode_penunjang?>" <?php echo $checked_lab?>>
-                        <span class="lbl" > &nbsp; </span>
-                      </label>
-                      </td>
-                      <td align="center"><?php echo $no; ?></td>
-                      <td><?php echo $this->tanggal->formatDateTime($row_p->tgl_daftar)?></td>
-                      <td>
-                        <?php 
-                          $arr_str = explode("|",$row_p->nama_tarif);
-                          $html_pm = '<ul class="no-padding">';
-                          foreach ($arr_str as $key => $value) {
-                              if(!empty($value)){
-                                  $html_pm .= '<li>'.$value.'</li>';
-                              }
-                          }
-                          $html_pm .= '</ul>';
-                          echo $html_pm;
-                        ?>
-                      </td>
-                      <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
-                    </tr>
-                    <?php endif; endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
-              <br>
-              <span style="font-weight: bold; font-size: 14px"><u>LAMPIRAN MEMO HT & ACE INHIBITORS</u></span>
-              <br>
-              <i><span>Untuk kebutuhan lampiran Dokumen Klaim, mohon dilampirkan Memo Intoleran untuk pengambilan Resep Candesartan</span><br></i>
-              <label>
-                  <input type="checkbox" class="ace" name="lampiran_memo_inhibitor" id="lampiran_memo_inhibitor" value="1" <?php echo ($trans_farmasi->lampiran_memo_inhibitor == 1) ? 'checked' : '' ?>>
-                  <span class="lbl" > &nbsp; Lampirkan Memo</span>
-                </label>
-            </div>
+          </div>
 
-            <div class="modal-footer no-margin-top">
-              <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
-                <i class="ace-icon fa fa-times"></i>
-                Tutup
-              </button>
-              <button class="btn btn-sm btn-primary pull-left" name="submit" id="submit" type="button" onclick="resep_farmasi_selesai()">
-                <i class="ace-icon fa fa-save"></i>
-                Simpan
-              </button>
-            </div>
+          <div class="modal-footer no-margin-top">
+            <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
+              <i class="ace-icon fa fa-times"></i>
+              Tutup
+            </button>
+            <button class="btn btn-sm btn-primary pull-left" name="submit" id="submit" type="button" onclick="resep_farmasi_selesai()">
+              <i class="ace-icon fa fa-save"></i>
+              Simpan
+            </button>
+          </div>
 
-          </div><!-- /.modal-content -->
+        </div><!-- /.modal-content -->
 
-        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal-dialog -->
 
-      </div>
+    </div>
 
-    </form>
-
-
-  </div>
-
-</div><!-- /.row -->
-
+</form>
 <!-- MODAL SEARCH PASIEN -->
 
 

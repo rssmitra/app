@@ -145,8 +145,9 @@ class Manifest_model extends CI_Model {
 	}
 
 	public function get_detail_pasien($params){
-		$this->db->select('pl_tc_poli.*, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai');
+		$this->db->select('pl_tc_poli.*, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, tc_kunjungan.no_registrasi, tc_kunjungan.no_mr');
 		$this->db->from('pl_tc_poli');
+		$this->db->join('tc_kunjungan','pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->join('mt_bagian','pl_tc_poli.kode_bagian=mt_bagian.kode_bagian','left');
 		$this->db->join('mt_karyawan','pl_tc_poli.kode_dokter=mt_karyawan.kode_dokter','left');
 		$this->db->where('pl_tc_poli.kode_dokter', $params['kode_dokter']);

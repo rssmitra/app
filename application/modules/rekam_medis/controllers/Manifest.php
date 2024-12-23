@@ -71,62 +71,6 @@ class Manifest extends MX_Controller {
         $this->load->view('Reg_on_dashboard/form', $data);
     }
 
-    // public function get_data()
-    // {
-    //     /*get data from model*/
-    //     $list = $this->Manifest->get_datatables();
-    //     $data = array();
-    //     $no = $_POST['start'];
-    //     foreach ($list as $row_list) {
-    //         $no++;
-    //         $row = array();
-    //         $row[] = '<div class="center">
-    //                     <label class="pos-rel">
-    //                         <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
-    //                         <span class="lbl"></span>
-    //                     </label>
-    //                 </div>';
-    //         $row[] = '<div class="center">
-    //                     <a href="'.base_url().'registration/Reg_pasien/barcode_pasien/'.$row_list->no_mr.'/1" class="btn btn-xs btn-primary" target="_blank" onclick="return popUnder(this);" alt="Cetak Barcode"><i class="fa fa-barcode"></i></a>
-    //                  </div>';
-    //         $row[] = '<div class="center">'.$no.'</div>';
-    //         $row[] = '<div class="center"><a href="#" style="color: blue; font-weight: bold">'.$row_list->no_mr.'</a></div>';
-    //         $row[] = strtoupper($row_list->nama_pasien);
-    //         $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:'UMUM';
-    //         $row[] = $this->tanggal->formatDateTime($row_list->tgl_jam_masuk);
-    //         $row[] = ucwords($row_list->nama_bagian);
-    //         $row[] = $row_list->nama_pegawai;
-    //         $is_kiosk = isset($row_list->fullname) ? 1 : 2 ;
-    //         if($row_list->tipe_daftar == null){
-    //             $row[] = isset($row_list->fullname)?$row_list->fullname:'<div class="center"><span class="label label-success">KIOSK</span></div>';
-    //         }else{
-    //             $row[] = '<div class="center"><span class="label label-primary">Web Checkin</span></div>';
-    //         }
-
-    //         $row[] = '<div class="center">'.strtoupper($row_list->stat_pasien).'</div>';
-    //         if($is_kiosk == 2){
-    //             if(in_array($row_list->kode_bagian_tujuan, array('050101','050201','050301'))){
-    //                 $row[] = '<div class="center" style="cursor: pointer !important"><span class="label label-success" onclick="PopupCenter('."'".base_url()."registration/Reg_pasien/barcode_pasien/".$row_list->no_mr."/1'".', '."'PRINT BARCODE'".', 350, 500)">print barcode</span></div>';
-    //             }else{
-    //                 $row[] = '<div class="center"><span class="red" style="font-weight: bold">-no tracer-</span></div>';
-    //             }
-    //         }else{
-    //             $row[] = (($row_list->print_tracer == 'N') || ($row_list->print_tracer == NULL)) ? '<div class="center"><i class="fa fa-times-circle red"></i></div>' : '<div class="center"><i class="fa fa-check-circle green"></i></div>';
-    //         }
-            
-    //         $data[] = $row;
-    //     }
-
-    //     $output = array(
-    //                     "draw" => $_POST['draw'],
-    //                     "recordsTotal" => $this->Manifest->count_all(),
-    //                     "recordsFiltered" => $this->Manifest->count_filtered(),
-    //                     "data" => $data,
-    //             );
-    //     //output to json format
-    //     echo json_encode($output);
-    // }
-
     public function get_data()
     {
         /*get data from model*/
@@ -167,6 +111,7 @@ class Manifest extends MX_Controller {
             'tgl_kunjungan' => $tgl_kunjungan,
         ];
         $list = $this->Manifest->get_detail_pasien($params);
+        // echo "<pre>"; print_r($list);die;
         $html = '';
         $html .= '<div style="margin-left: 50px">';
         $html .= '<span style="text-align: center; "><b>ANTRIAN PASIEN</b><br>'.$list[0]->nama_bagian.'<br>'.$list[0]->nama_pegawai.'<br>Tgl.'.$this->tanggal->formatDate($list[0]->tgl_jam_poli).'</span>';
@@ -182,6 +127,12 @@ class Manifest extends MX_Controller {
             $html .= '<td align="center">'.$value->no_antrian.'</td>';
             $html .= '<td>'.$value->nama_pasien.'</td>';
             $html .= '<td align="center">'.strtoupper($value->flag_antrian).'</td>';
+            $html .= '<td align="center">
+                <div class="center">
+                    <a href="'.base_url().'registration/Reg_pasien/tracer/'.$value->no_registrasi.'/'.$value->no_mr.'" class="btn btn-xs btn-success" target="_blank" onclick="return popUnder(this);" alt="Cetak Tracer"><i class="fa fa-print"></i></a>
+                    <a href="'.base_url().'registration/Reg_pasien/barcode_pasien/'.$value->no_mr.'/1" class="btn btn-xs btn-primary" target="_blank" onclick="return popUnder(this);" alt="Cetak Barcode"><i class="fa fa-barcode"></i></a>
+                </div>
+            </td>';
             $html .= '</tr>';
         }
         $html .= '</table>';
