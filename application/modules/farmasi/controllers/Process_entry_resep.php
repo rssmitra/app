@@ -307,11 +307,12 @@ class Process_entry_resep extends MX_Controller {
     public function process_selesai_resep()
     {
         // print_r($_POST);die;
-        $ID = ($this->input->post('ID'))?$this->input->post('ID'):0; // kode_trans_far
+        $ID = ($this->input->post('ID'))?$this->input->post('ID'):$this->input->post('kode_trans_far'); // kode_trans_far
         $kode_bagian = '060101'; // kode bagian farmasi
         
         $trans_dt = $this->Retur_obat->get_detail_resep_data($ID)->result();
         // echo '<pre>';print_r($this->db->last_query());die;
+
 
         foreach ($trans_dt as $k => $v) {
             $getData[$v->kd_tr_resep] = $v;

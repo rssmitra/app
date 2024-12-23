@@ -1153,42 +1153,44 @@ $('#lampiran_lab').click(function (e) {
                   <th width="20%">TEPAT CARA PEMBERIAN</th>
                 </tr>
                 <?php 
-                  $ver = isset($trans_farmasi->verifikasi_resep_5t) ? json_decode($trans_farmasi->verifikasi_resep_5t) : '';
+                  $verify = isset($trans_farmasi->verifikasi_resep_5t) ? json_decode($trans_farmasi->verifikasi_resep_5t) : '';
+                  
+
                 ?>
                 <tr>
                   <td>
                     <label>
-                      <input type="checkbox" class="ace" name="verifikasi[all]" id="verifikasi_check_all" value="1" onclick="checkAll(this)" <?php echo ($ver->all && $ver->all == 1) ? 'checked' : ''?> >
+                      <input type="checkbox" class="ace" name="verifikasi[all]" id="verifikasi_check_all" value="1" onclick="checkAll(this)" <?php if(isset($ver->all)) : echo ($ver->all && $ver->all == 1) ? 'checked' : '' ; endif;?> >
                       <span class="lbl" > Tepat Semua</span>
                     </label>
                   </td>
                   <td>
                     <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tp]" id="tp" value="1" <?php echo ($ver->tp && $ver->tp == 1) ? 'checked' : ''?> >
+                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tp]" id="tp" value="1" <?php if(isset($ver->tp)) : echo ($ver->tp && $ver->tp == 1) ? 'checked' : ''; endif; ?> >
                       <span class="lbl" > &nbsp; Ya</span>
                     </label>
                   </td>
                   <td>
                     <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[td]" id="td" value="1" <?php echo ($ver->td && $ver->td == 1) ? 'checked' : ''?> >
+                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[td]" id="td" value="1" <?php if(isset($ver->td)) : echo ($ver->td && $ver->td == 1) ? 'checked' : ''; endif; ?> >
                       <span class="lbl" > &nbsp; Ya</span>
                     </label>
                   </td>
                   <td>
                     <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[to]" id="to" value="1" <?php echo ($ver->to && $ver->to == 1) ? 'checked' : ''?> >
+                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[to]" id="to" value="1" <?php if(isset($ver->to)) : echo ($ver->to && $ver->to == 1) ? 'checked' : ''; endif; ?> >
                       <span class="lbl" > &nbsp; Ya</span>
                     </label>
                   </td>
                   <td>
                     <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[twf]" id="twfp" value="1" <?php echo ($ver->twf && $ver->twf == 1) ? 'checked' : ''?> >
+                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[twf]" id="twfp" value="1" <?php if(isset($ver->all)) : echo ($ver->twf && $ver->twf == 1) ? 'checked' : ''; endif; ?> >
                       <span class="lbl" > &nbsp; Ya</span>
                     </label>
                   </td>
                   <td>
                     <label>
-                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tcp]" id="tcp" value="1" <?php echo ($ver->tcp && $ver->tcp == 1) ? 'checked' : ''?> >
+                      <input type="checkbox" class="checked_verifikasi ace" name="verifikasi[tcp]" id="tcp" value="1" <?php if(isset($ver->all)) : echo ($ver->tcp && $ver->tcp == 1) ? 'checked' : ''; endif; ?> >
                       <span class="lbl" > &nbsp; Ya</span>
                     </label>
                   </td>
@@ -1199,11 +1201,11 @@ $('#lampiran_lab').click(function (e) {
               <br>
               <i><span>Bagaimana metode pengambilan resep obat pasien?</span><br></i>
               <label>
-                <input type="radio" class="ace" name="metode_pengambilan" value="ditunggu" <?php echo ($trans_farmasi->pengambilan_resep == 'ditunggu') ? 'checked' : ''?> >
+                <input type="radio" class="ace" name="metode_pengambilan" value="ditunggu" <?php if(isset($ver->all)) : echo ($trans_farmasi->pengambilan_resep == 'ditunggu') ? 'checked' : ''; endif; ?> >
                 <span class="lbl" > &nbsp; Resep Ditunggu</span>
               </label>
               <label>
-                <input type="radio" class="ace" name="metode_pengambilan" value="ditinggal" <?php echo ($trans_farmasi->pengambilan_resep == 'ditinggal') ? 'checked' : ''?> >
+                <input type="radio" class="ace" name="metode_pengambilan" value="ditinggal" <?php if(isset($ver->all)) : echo ($trans_farmasi->pengambilan_resep == 'ditinggal') ? 'checked' : ''; endif; ?> >
                 <span class="lbl" > &nbsp; Resep Ditinggal (diambil esok hari)</span>
               </label>
               <br>
@@ -1214,7 +1216,7 @@ $('#lampiran_lab').click(function (e) {
               <br>
               <i><span>Apakah ada perubahan Resep Dokter?</span><br></i>
               <label>
-                <input type="checkbox" class="ace" name="perubahan_resep" id="perubahan_resep" value="1" <?php echo ($trans_farmasi->perubahan_resep == 1) ? 'checked' : ''?>>
+                <input type="checkbox" class="ace" name="perubahan_resep" id="perubahan_resep" value="1" <?php if(isset($ver->all)) : echo ($trans_farmasi->perubahan_resep == 1) ? 'checked' : ''; endif;?>>
                 <span class="lbl" > &nbsp; Ya</span>
               </label>
               <div id="perubahan_resep_dokter" <?php echo ($trans_farmasi->perubahan_resep == 1) ? '' : 'style="display: none"'?> >
