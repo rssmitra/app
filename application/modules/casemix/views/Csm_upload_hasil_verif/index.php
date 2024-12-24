@@ -107,10 +107,11 @@ jQuery(function($) {
       <table id="dynamic-table" base-url="casemix/Csm_upload_hasil_verif/get_data?flag=" class="table table-bordered table-hover">
         <thead>
           <tr>  
-            <th width="80px">ID</th>
-            <th width="80px">Bulan</th>
-            <th width="80px">Tahun</th>
-            <th>Tipe (RI/RJ)</th>
+            <th width="50px">ID</th>
+            <th width="180px">Periode Tanggal</th>
+            <th width="120px">Periode Klaim</th>
+            <th>Total RJ</th>
+            <th>Total RI</th>
             <th>Total Data</th>
             <th>Nama File</th>
             <th>Last Update</th>

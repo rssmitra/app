@@ -75,10 +75,13 @@ class Csm_upload_hasil_verif extends MX_Controller {
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$row_list->csm_uhv_id.'</div>';
-            $row[] = '<div class="left"><a href="#">'.$this->tanggal->getBulan($row_list->csm_uhv_month_periode).'</a></div>';
-            $row[] = $row_list->csm_uhv_year;
-            $row[] = $row_list->csm_uhv_flag;
-            $row[] = $row_list->csm_uhv_total_row;
+            $periode_tgl = ($row_list->csm_uhv_start_date == $row_list->csm_uhv_to_date) ? $this->tanggal->formatDateDmy($row_list->csm_uhv_start_date): $this->tanggal->formatDateDmy($row_list->csm_uhv_start_date).' s/d '.$this->tanggal->formatDateDmy($row_list->csm_uhv_to_date);
+            $row[] = $periode_tgl;
+            $row[] = '<div class="left"><a href="#">'.$this->tanggal->getBulan($row_list->csm_uhv_month_periode).'</a> '.$row_list->csm_uhv_year.'</div>';
+            $total_data = $row_list->csm_uhv_total_rj + $row_list->csm_uhv_total_ri;
+            $row[] = number_format($row_list->csm_uhv_total_rj);
+            $row[] = number_format($row_list->csm_uhv_total_ri);
+            $row[] = number_format($total_data);
             $row[] = $row_list->csm_uhv_file;
             $row[] = $this->logs->show_logs_record_datatable($row_list);
             $data[] = $row;
@@ -103,6 +106,8 @@ class Csm_upload_hasil_verif extends MX_Controller {
         $val = $this->form_validation;
         $val->set_rules('csm_uhv_month_periode', 'Bulan', 'trim|required');
         $val->set_rules('csm_uhv_year', 'Tahun', 'trim|required');
+        $val->set_rules('start_date', 'Tahun', 'trim|required');
+        $val->set_rules('to_date', 'Tahun', 'trim|required');
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
         if ($val->run() == FALSE)
@@ -117,6 +122,8 @@ class Csm_upload_hasil_verif extends MX_Controller {
             $id = isset($_POST['id'])?$_POST['id']:0;
             /*csm_upload_hasil_verif*/
             $dataexc = array(
+                'csm_uhv_start_date' => $this->regex->_genRegex($val->set_value('start_date'), 'RGXQSL'),
+                'csm_uhv_to_date' => $this->regex->_genRegex($val->set_value('to_date'), 'RGXQSL'),
                 'csm_uhv_month_periode' => $this->regex->_genRegex($val->set_value('csm_uhv_month_periode'), 'RGXQSL'),
                 'csm_uhv_year' => $this->regex->_genRegex($val->set_value('csm_uhv_year'), 'RGXQSL'),
             );
@@ -129,7 +136,6 @@ class Csm_upload_hasil_verif extends MX_Controller {
                         unlink(PATH_HASIL_VERIF_BPJS.$dt->csm_uhv_file.'');
                     }
                 }
-
                 $dataexc['csm_uhv_file'] = $this->upload_file->doUpload('csm_uhv_file', PATH_HASIL_VERIF_BPJS);
             }
 
@@ -138,23 +144,22 @@ class Csm_upload_hasil_verif extends MX_Controller {
                 $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $exc_qry = $this->db->insert('csm_upload_hasil_verif', $dataexc);
                 $newId = $this->db->insert_id();
-                $this->logs->save('csm_upload_hasil_verif', $newId, 'insert new record', json_encode($dataexc), 'csm_uhv_id');
             }else{
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
                 $exc_qry = $this->db->update('csm_upload_hasil_verif', $dataexc, array('csm_uhv_id' => $id));
                 $newId = $id;
-                $this->logs->save('csm_upload_hasil_verif', $newId, 'update record', json_encode($dataexc), 'csm_uhv_id');
             }
 
             // import file hasil verif
-            // delete data sebelumnya
-            $this->db->delete('csm_upload_hasil_verif_detail', array('csm_uhv_id' => $newId) );
             // import 
             $importFile = new Import_hasil_verif_bpjs;
             $rowResult = $importFile->import($dataexc['csm_uhv_file'], $newId);
             // update header
-            $this->db->update('csm_upload_hasil_verif', array('csm_uhv_total_row' => $rowResult['totalData'], 'csm_uhv_keterangan' => $rowResult['keterangan'] ), array('csm_uhv_id' => $newId) );
+            // total tipe rj
+            $total_rj = count($rowResult['totalTipe']['RJ']);
+            $total_ri = count($rowResult['totalTipe']['RI']);
+            $this->db->update('csm_upload_hasil_verif', array('csm_uhv_total_row' => $rowResult['totalData'], 'csm_uhv_keterangan' => $rowResult['keterangan'], 'csm_uhv_total_ri' => $total_ri, 'csm_uhv_total_rj' => $total_rj ), array('csm_uhv_id' => $newId) );
 
             if ($this->db->trans_status() === FALSE)
             {

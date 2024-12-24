@@ -66,6 +66,14 @@ class Eks_profit_by_close_bill extends MX_Controller {
         $getRevenueByKategori = [];
         $getCostByKategori = [];
         $getProfitByKategori = [];
+        $totalPasienKlaim = [];
+        $totalRpKlaimInacbgs = [];
+        $totalRpKlaimRs = [];
+        $totalRpBillRsNKlaim = [];
+        $totalPasienNoKlaim = [];
+        $totalRpNoKlaimInacbgs = [];
+        $totalRpNoKlaimRs = [];
+        $totalRpBillRsNKlaim = [];
 
         $no = 0;
         foreach ($list as $key_list=>$row_list) {
@@ -100,6 +108,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->alat_rs).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$profit).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$total_bill).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tarif_inacbgs).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tarif_rs_klaim_ncc).'</div>';
 
             $ttl_bill_dr1[] = $row_list->bill_dr1;
             $ttl_bill_dr2[] = $row_list->bill_dr2;
@@ -123,6 +133,21 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $getRevenueByTipe[$row_list->tipe][] = $total_bill;
             $getCostByTipe[$row_list->tipe][] = $cost;
             $getProfitByTipe[$row_list->tipe][] = $profit;
+
+            // rekap bpjs
+            if($row_list->tarif_rs_klaim_ncc > 0){
+                $totalPasienKlaim[$row_list->tipe][] = $row_list;
+                $totalRpKlaimInacbgs[$row_list->tipe][] = $row_list->tarif_inacbgs;
+                $totalRpKlaimRs[$row_list->tipe][] = $row_list->tarif_rs_klaim_ncc;
+                $totalRpBillRsKlaim[$row_list->tipe][] = $total_bill;
+            }else{
+                if($row_list->penjamin == 'BPJS'){
+                    $totalPasienNoKlaim[$row_list->tipe][] = $row_list;
+                    $totalRpNoKlaimInacbgs[$row_list->tipe][] = $row_list->tarif_inacbgs;
+                    $totalRpNoKlaimRs[$row_list->tipe][] = $row_list->tarif_rs_klaim_ncc;
+                    $totalRpBillRsNKlaim[$row_list->tipe][] = $total_bill;
+                }
+            }
         }
 
         $output = array(
@@ -139,8 +164,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "ttl_alat_rs" => array_sum($ttl_alat_rs),
                         "ttl_profit" => array_sum($ttl_profit),
                         "ttl_total_bill" => array_sum($ttl_total_bill),
-                        'start_date' => isset($_GET['start_date'])?$_GET['start_date']:date('Y-m-d'),
-                        'end_date' => isset($_GET['end_date'])?$_GET['end_date']:date('Y-m-d'),
+                        'start_date' => isset($_GET['start_date'])?$this->tanggal->formatDateDmy($_GET['start_date']):date('d/m/Y'),
+                        'end_date' => isset($_GET['end_date'])?$this->tanggal->formatDateDmy($_GET['end_date']):date('d/m/Y'),
                         // rekap kategori rajal
                         "um_ttl_pasien" => isset($getDtByKategori['RJ']['UMUM']) ? count($getDtByKategori['RJ']['UMUM']) : 0,
                         "asuransi_ttl_pasien" => isset($getDtByKategori['RJ']['ASURANSI']) ? count($getDtByKategori['RJ']['ASURANSI']) : 0,
@@ -179,6 +204,27 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "all_ri_ttl_revenue" => isset($getRevenueByTipe['RI']) ? array_sum($getRevenueByTipe['RI']) : 0,
                         "all_ri_ttl_cost" => isset($getCostByTipe['RI']) ? array_sum($getCostByTipe['RI']) : 0,
                         "all_ri_ttl_profit" => isset($getProfitByTipe['RI']) ? array_sum($getProfitByTipe['RI']) : 0,
+
+                        // rekap bpjs
+                        "totalPasienKlaimRJ" => isset($totalPasienKlaim['RJ']) ? count($totalPasienKlaim['RJ']) : 0,
+                        "totalRpKlaimInacbgsRJ" => isset($totalRpKlaimInacbgs['RJ']) ? array_sum($totalRpKlaimInacbgs['RJ']) : 0,
+                        "totalRpKlaimRsRJ" => isset($totalRpKlaimRs['RJ']) ? array_sum($totalRpKlaimRs['RJ']) : 0,
+                        "totalRpBillRsKlaimRJ" => isset($totalRpBillRsKlaim['RJ']) ? array_sum($totalRpBillRsKlaim['RJ']) : 0,
+                        "totalPasienKlaimRI" => isset($totalPasienKlaim['RI']) ? count($totalPasienKlaim['RI']) : 0,
+                        "totalRpKlaimInacbgsRI" => isset($totalRpKlaimInacbgs['RI']) ? array_sum($totalRpKlaimInacbgs['RI']) : 0,
+                        "totalRpKlaimRsRI" => isset($totalRpKlaimRs['RI']) ? array_sum($totalRpKlaimRs['RI']) : 0,
+                        "totalRpBillRsKlaimRI" => isset($totalRpBillRsKlaim['RI']) ? array_sum($totalRpBillRsKlaim['RI']) : 0,
+
+                        "totalPasienNoKlaimRJ" => isset($totalPasienNoKlaim['RJ'])?count($totalPasienNoKlaim['RJ']):0,
+                        "totalRpNoKlaimInacbgsRJ" => isset($totalRpNoKlaimInacbgs['RJ'])?array_sum($totalRpNoKlaimInacbgs['RJ']):0,
+                        "totalRpNoKlaimRsRJ" => isset($totalRpNoKlaimRs['RJ'])?array_sum($totalRpNoKlaimRs['RJ']):0,
+                        "totalRpBillRsNKlaimRJ" => isset($totalRpBillRsNKlaim['RJ'])?array_sum($totalRpBillRsNKlaim['RJ']):0,
+                        "totalPasienNoKlaimRI" => isset($totalPasienNoKlaim['RI'])?count($totalPasienNoKlaim['RI']):0,
+                        "totalRpNoKlaimInacbgsRI" => isset($totalRpNoKlaimInacbgs['RI'])?array_sum($totalRpNoKlaimInacbgs['RI']):0,
+                        "totalRpNoKlaimRsRI" => isset($totalRpNoKlaimRs['RI'])?array_sum($totalRpNoKlaimRs['RI']):0,
+                        "totalRpBillRsNKlaimRI" => isset($totalRpBillRsNKlaim['RI'])?array_sum($totalRpBillRsNKlaim['RI']):0,
+                        
+                        
                         
                 );
         //output to json format

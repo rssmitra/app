@@ -99,8 +99,31 @@
           var ttl_profit = parseInt(objData.all_ttl_profit) + parseInt(objData.all_ri_ttl_profit);
           $("#total_profit_rs").text(formatMoney(ttl_profit));
 
+          // rekap BPJS
+          $("#totalPasienKlaimRJ").text(formatMoney(objData.totalPasienKlaimRJ));
+          $("#totalRpKlaimInacbgsRJ").text(formatMoney(objData.totalRpKlaimInacbgsRJ));
+          $("#totalRpKlaimRsRJ").text(formatMoney(objData.totalRpKlaimRsRJ));
+          $("#totalRpBillRsKlaimRJ").text(formatMoney(objData.totalRpBillRsKlaimRJ));
 
-          $('.tgl_filter').html(objData.start_date+' s.d '+objData.end_date);
+          $("#totalPasienKlaimRI").text(formatMoney(objData.totalPasienKlaimRI));
+          $("#totalRpKlaimInacbgsRI").text(formatMoney(objData.totalRpKlaimInacbgsRI));
+          $("#totalRpKlaimRsRI").text(formatMoney(objData.totalRpKlaimRsRI));
+          $("#totalRpBillRsKlaimRI").text(formatMoney(objData.totalRpBillRsKlaimRI));
+
+          $("#totalPasienNoKlaimRJ").text(formatMoney(objData.totalPasienNoKlaimRJ));
+          $("#totalRpNoKlaimInacbgsRJ").text(formatMoney(objData.totalRpNoKlaimInacbgsRJ));
+          $("#totalRpNoKlaimRsRJ").text(formatMoney(objData.totalRpNoKlaimRsRJ));
+          $("#totalRpBillRsNKlaimRJ").text(formatMoney(objData.totalRpBillRsNKlaimRJ));
+          $("#totalPasienNoKlaimRI").text(formatMoney(objData.totalPasienNoKlaimRI));
+          $("#totalRpNoKlaimInacbgsRI").text(formatMoney(objData.totalRpNoKlaimInacbgsRI));
+          $("#totalRpNoKlaimRsRI").text(formatMoney(objData.totalRpNoKlaimRsRI));
+          $("#totalRpBillRsNKlaimRI").text(formatMoney(objData.totalRpBillRsNKlaimRI));
+
+          if(objData.start_date == objData.end_date){
+            $('.tgl_filter').html(objData.start_date);
+          }else{
+            $('.tgl_filter').html(objData.start_date+' s.d '+objData.end_date);
+          }
 
       },
 
@@ -317,6 +340,60 @@
         </div>
         <br>
         <hr>
+        <!-- rekap BPJS -->
+         <div class="col-md-12" style="padding-bottom: 20px">
+          <b>REKAP KLAIM BPJS PERIODE TANGGAL <span class="tgl_filter"></span></b>
+          <table class="table">
+            <tr style="font-weight: bold;">
+              <td colspan="8" class="center" style="background: #019833; color: white">JUMLAH NAIK KLAIM NCC</td>
+              <td colspan="8" class="center" style="background: #29428c; color: white">JUMLAH BELUM NAIK KLAIM</td>
+            </tr>
+            <tr style="font-weight: bold">
+              <td colspan="4" class="center" style="background: #01983330">RAWAT JALAN</td>
+              <td colspan="4" class="center" style="background: #01983330">RAWAT INAP</td>
+              <td colspan="4" class="center" style="background: #29428c30">RAWAT JALAN</td>
+              <td colspan="4" class="center" style="background: #29428c30">RAWAT INAP</td>
+            </tr>
+            <tr style="font-size: 11px">
+              <td style="text-align: right">Total Pasien</td>
+              <td style="text-align: right">Total Inacbgs</td>
+              <td style="text-align: right">Total Klaim RS</td>
+              <td style="text-align: right">Total Bill RS</td>
+              <td style="text-align: right">Total Pasien</td>
+              <td style="text-align: right">Total Inacbgs</td>
+              <td style="text-align: right">Total Klaim RS</td>
+              <td style="text-align: right">Total Bill RS</td>
+
+              <td style="text-align: right">Total Pasien</td>
+              <td style="text-align: right">Total Inacbgs</td>
+              <td style="text-align: right">Total Klaim RS</td>
+              <td style="text-align: right">Total Bill RS</td>
+              <td style="text-align: right">Total Pasien</td>
+              <td style="text-align: right">Total Inacbgs</td>
+              <td style="text-align: right">Total Klaim RS</td>
+              <td style="text-align: right">Total Bill RS</td>
+            </tr>
+            <tr style="font-weight: bold; font-size: 14px">
+              <td align="right"><span id="totalPasienKlaimRJ"></span></td>
+              <td align="right"><span id="totalRpKlaimInacbgsRJ"></span></td>
+              <td align="right"><span id="totalRpKlaimRsRJ"></span></td>
+              <td align="right"><span id="totalRpBillRsKlaimRJ"></span></td>
+              <td align="right"><span id="totalPasienKlaimRI"></span></td>
+              <td align="right"><span id="totalRpKlaimInacbgsRI"></span></td>
+              <td align="right"><span id="totalRpKlaimRsRI"></span></td>
+              <td align="right"><span id="totalRpBillRsKlaimRI"></span></td>
+
+              <td align="right"><span id="totalPasienNoKlaimRJ"></span></td>
+              <td align="right"><span id="totalRpNoKlaimInacbgsRJ"></span></td>
+              <td align="right"><span id="totalRpNoKlaimRsRJ"></span></td>
+              <td align="right"><span id="totalRpBillRsNKlaimRJ"></span></td>
+              <td align="right"><span id="totalPasienNoKlaimRI"></span></td>
+              <td align="right"><span id="totalRpNoKlaimInacbgsRI"></span></td>
+              <td align="right"><span id="totalRpNoKlaimRsRI"></span></td>
+              <td align="right"><span id="totalRpBillRsNKlaimRI"></span></td>
+            </tr>
+          </table>
+        </div>
 
         <div class="col-md-12">
           <button type="button" name="btn-export" value="1" onclick="export_excel(1)" class="btn btn-xs btn-success">
@@ -392,7 +469,9 @@
                 <th width="130px">Kamar Operasi</th>
                 <th width="100px">Alkes</th>
                 <th width="100px">Profit</th>
-                <th width="100px">Total Billing</th>
+                <th width="100px">Total Billing RS</th>
+                <th width="100px">Tarif Inacbgs</th>
+                <th width="100px">Tarif RS NCC</th>
               </tr>
             </thead>
           </table>

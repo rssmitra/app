@@ -151,18 +151,25 @@ $(document).ready(function(){
               <div class="col-md-1">
                 <input name="id" id="id" class="form-control" type="text" placeholder="Auto" readonly>
               </div>
-              <label class="control-label col-md-1">Tanggal</label>
-              <div class="col-md-2">
-                <input name="tanggal" id="tanggal" class="form-control" type="text" value="<?php echo date('Y-m-d')?>" readonly>
-              </div>
               <label class="control-label col-md-1">Petugas</label>
               <div class="col-md-2">
-                <input name="" id="" class="form-control" type="text" value="<?php echo $this->session->userdata('user')->fullname?>" readonly>
+                <input name="" id="" class="form-control" type="text" value="<?php echo $this->session->userdata('user')->fullname?>">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="control-label col-md-2">Periode Bulan</label>
+              <label class="control-label col-md-2">Periode Tanggal</label>
+              <div class="col-md-2">
+                <input name="start_date" id="start_date" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo date('Y-m-d')?>">
+              </div>
+              <label class="control-label col-md-1">sd Tanggal</label>
+              <div class="col-md-2">
+                <input name="to_date" id="to_date" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo date('Y-m-d')?>">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-md-2">Periode Klaim Bulan</label>
               <div class="col-md-2">
                 <select name="csm_uhv_month_periode" id="csm_uhv_month_periode" class="form-control">
                   <option value="">-Silahkan Pilih-</option>
@@ -199,7 +206,7 @@ $(document).ready(function(){
             <div class="form-group">
               <label class="control-label col-md-2">Keterangan</label>
               <div class="col-md-5">
-                <textarea class="form-control" style="height: 50px !important">Hasil Verifikasi BPJS Bulan <?php echo $this->tanggal->getBulan(date('m'))?></textarea>
+                <textarea class="form-control" style="height: 50px !important">Hasil Klaim NCC BPJS Bulan <?php echo $this->tanggal->getBulan(date('m'))?></textarea>
               </div>
             </div>
             <hr>

@@ -31,34 +31,36 @@ class Import_hasil_verif_bpjs extends MX_Controller {
         $numrow = 1;
         /*loop data from sheet*/
         foreach($sheet as $key=>$row){
-            
             /*start data from sheet 4*/
             if($numrow >= 5){
                 /*save log book*/
-                /*pull data to variabel data array*/
+                $data[] = array(
+                    'no_sep' => $row['F'],
+                    'tarif_inacbgs'=> str_replace(',','',$row['I']),
+                    'tipe_klaim_ncc' => $row['K'],
+                   );
+                $getTotalTipe[$row['K']][] = $row;
 
-                $data[] = [
-                    'csm_uhvd_tgl_masuk' => $row['B'],
-                    'csm_uhvd_tgl_keluar  ' => $row['C'],
-                    'csm_uhvd_no_mr' => $row['D'],
-                    'csm_uhvd_nama_pasien' => $row['E'],
-                    'csm_uhvd_no_sep' => $row['F'],
-                    'csm_uhvd_inacbg' => $row['G'],
-                    'csm_uhvd_total_tarif' => (int)$row['I'],
-                    'csm_uhvd_tarif_rs' => (int)$row['J'],
-                    'csm_uhvd_jenis' => $row['K'],
-                    'csm_uhv_id' => $id,
-                ];
+                // $data[] = array(
+                //     'no_sep' => $row['A'],
+                //     'tarif_inacbgs'=> str_replace(',','',$row['B']),
+                //     'tarif_rs_klaim_ncc' => str_replace(',','',$row['C']),
+                //     'tipe_klaim_ncc' => $row['D'],
+                //    );
+                // $getTotalTipe[$row['D']][] = $row;
 
             }
 
             $numrow++; // Tambah 1 setiap kali looping
         }
-        $this->db->insert_batch('csm_upload_hasil_verif_detail', $data);
-        $fp = fopen(PATH_HASIL_VERIF_BPJS.$file_name.'.json', 'w');
-        fwrite($fp, json_encode($data));
-        fclose($fp);
-        return array('totalData' => count($data), 'keterangan' => $keterangan['A']);
+        // echo '<pre>'; print_r($data);die;
+        $this->db->update_batch('tc_registrasi', $data, 'no_sep');
+
+        // $this->db->insert_batch('csm_upload_hasil_verif_detail', $data);
+        // $fp = fopen(PATH_HASIL_VERIF_BPJS.$file_name.'.json', 'w');
+        // fwrite($fp, json_encode($data));
+        // fclose($fp);
+        return array('totalData' => count($data), 'keterangan' => 'Hasil Klaim Coding NCC', 'totalTipe' => $getTotalTipe);
         // echo '<pre>'; print_r($data);die;
     }
 
