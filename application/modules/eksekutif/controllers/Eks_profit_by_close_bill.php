@@ -176,8 +176,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "um_ttl_cost" => isset($getCostByKategori['RJ']['UMUM']) ? array_sum($getCostByKategori['RJ']['UMUM']) : 0,
                         "asuransi_ttl_cost" => isset($getCostByKategori['RJ']['ASURANSI']) ? array_sum($getCostByKategori['RJ']['ASURANSI']) : 0,
                         "bpjs_ttl_cost" => isset($getCostByKategori['RJ']['BPJS']) ? array_sum($getCostByKategori['RJ']['BPJS']) : 0,
-                        "um_ttl_profit" => isset($getProfitByKategori['RJ']['UMUM']) ? array_sum($getCostByKategori['RJ']['UMUM']) : 0,
-                        "asuransi_ttl_profit" => isset($getProfitByKategori['RJ']['ASURANSI']) ? array_sum($getCostByKategori['RJ']['ASURANSI']) : 0,
+                        "um_ttl_profit" => isset($getProfitByKategori['RJ']['UMUM']) ? array_sum($getProfitByKategori['RJ']['UMUM']) : 0,
+                        "asuransi_ttl_profit" => isset($getProfitByKategori['RJ']['ASURANSI']) ? array_sum($getProfitByKategori['RJ']['ASURANSI']) : 0,
                         "bpjs_ttl_profit" => isset($getProfitByKategori['RJ']['BPJS']) ? array_sum($getProfitByKategori['RJ']['BPJS']) : 0,
 
                         // rekap kategori ranap
@@ -267,6 +267,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $row[] = (int)$row_list->alat_rs;
             $row[] = (int)$profit;
             $row[] = (int)$total_bill;
+            $row[] = (int)$row_list->tarif_inacbgs;
+            $row[] = (int)$row_list->tarif_rs_klaim_ncc;
 
             $ttl_bill_dr1[] = $row_list->bill_dr1;
             $ttl_bill_dr2[] = $row_list->bill_dr2;
@@ -347,7 +349,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         
                 );
         //output to json format
-        // echo "<pre>";print_r($return_data);die;
+        // echo "<pre>";print_r($data);die;
         $this->load->view('eksekutif/Eks_profit_by_close_bill/excel_view', $return_data);
     }
 

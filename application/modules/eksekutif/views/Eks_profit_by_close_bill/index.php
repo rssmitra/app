@@ -217,24 +217,24 @@
         <span style="font-weight: bold">PENCARIAN DATA TRANSAKSI</span>
         <div class="form-group">
           <label class="control-label col-md-1">Tgl Transaksi</label>
-          <div class="col-md-6">
+          <div class="col-md-3">
             <div class="input-daterange input-group">
               <input type="text" class="input-xs date-picker" style="max-width: 100px" name="start_date" id="start_date" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
               <span class="input-group-addon">
                 s.d
               </span>
               <input type="text" class="input-xs date-picker" style="max-width: 100px; margin-left:0px !important" name="end_date" id="end_date" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
-
-              <a href="#" id="btn_search_data" class="btn btn-xs btn-primary" style="margin-left: 10px">
-                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-                Tampilkan
-              </a>
-              <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
-                <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
-                Reload
-              </a>
             </div>
-            
+          </div>
+          <div class="col-md-2" style="margin-left: -6%">
+            <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+              Tampilkan
+            </a>
+            <a href="#" id="btn_reset_data" class="btn btn-xs btn-danger">
+              <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
+              Reload
+            </a>
           </div>
         </div>
         <br>
@@ -346,32 +346,28 @@
           <table class="table">
             <tr style="font-weight: bold;">
               <td colspan="8" class="center" style="background: #019833; color: white">JUMLAH NAIK KLAIM NCC</td>
-              <td colspan="8" class="center" style="background: #29428c; color: white">JUMLAH BELUM NAIK KLAIM</td>
+              <td colspan="4" class="center" style="background: #29428c; color: white">JUMLAH BELUM NAIK KLAIM</td>
             </tr>
             <tr style="font-weight: bold">
               <td colspan="4" class="center" style="background: #01983330">RAWAT JALAN</td>
               <td colspan="4" class="center" style="background: #01983330">RAWAT INAP</td>
-              <td colspan="4" class="center" style="background: #29428c30">RAWAT JALAN</td>
-              <td colspan="4" class="center" style="background: #29428c30">RAWAT INAP</td>
+              <td colspan="2" class="center" style="background: #29428c30">RAWAT JALAN</td>
+              <td colspan="2" class="center" style="background: #29428c30">RAWAT INAP</td>
             </tr>
             <tr style="font-size: 11px">
-              <td style="text-align: right">Total Pasien</td>
-              <td style="text-align: right">Total Inacbgs</td>
-              <td style="text-align: right">Total Klaim RS</td>
-              <td style="text-align: right">Total Bill RS</td>
-              <td style="text-align: right">Total Pasien</td>
-              <td style="text-align: right">Total Inacbgs</td>
-              <td style="text-align: right">Total Klaim RS</td>
-              <td style="text-align: right">Total Bill RS</td>
+              <td style="text-align: right">Pasien</td>
+              <td style="text-align: right">Inacbgs</td>
+              <td style="text-align: right">Klaim RS</td>
+              <td style="text-align: right">Bill RS</td>
+              <td style="text-align: right">Pasien</td>
+              <td style="text-align: right">Inacbgs</td>
+              <td style="text-align: right">Klaim RS</td>
+              <td style="text-align: right">Bill RS</td>
 
-              <td style="text-align: right">Total Pasien</td>
-              <td style="text-align: right">Total Inacbgs</td>
-              <td style="text-align: right">Total Klaim RS</td>
-              <td style="text-align: right">Total Bill RS</td>
-              <td style="text-align: right">Total Pasien</td>
-              <td style="text-align: right">Total Inacbgs</td>
-              <td style="text-align: right">Total Klaim RS</td>
-              <td style="text-align: right">Total Bill RS</td>
+              <td style="text-align: right">Pasien</td>
+              <td style="text-align: right">Bill RS</td>
+              <td style="text-align: right">Pasien</td>
+              <td style="text-align: right">Bill RS</td>
             </tr>
             <tr style="font-weight: bold; font-size: 14px">
               <td align="right"><span id="totalPasienKlaimRJ"></span></td>
@@ -384,12 +380,8 @@
               <td align="right"><span id="totalRpBillRsKlaimRI"></span></td>
 
               <td align="right"><span id="totalPasienNoKlaimRJ"></span></td>
-              <td align="right"><span id="totalRpNoKlaimInacbgsRJ"></span></td>
-              <td align="right"><span id="totalRpNoKlaimRsRJ"></span></td>
               <td align="right"><span id="totalRpBillRsNKlaimRJ"></span></td>
               <td align="right"><span id="totalPasienNoKlaimRI"></span></td>
-              <td align="right"><span id="totalRpNoKlaimInacbgsRI"></span></td>
-              <td align="right"><span id="totalRpNoKlaimRsRI"></span></td>
               <td align="right"><span id="totalRpBillRsNKlaimRI"></span></td>
             </tr>
           </table>
@@ -469,7 +461,7 @@
                 <th width="130px">Kamar Operasi</th>
                 <th width="100px">Alkes</th>
                 <th width="100px">Profit</th>
-                <th width="100px">Total Billing RS</th>
+                <th width="100px">Billing RS</th>
                 <th width="100px">Tarif Inacbgs</th>
                 <th width="100px">Tarif RS NCC</th>
               </tr>

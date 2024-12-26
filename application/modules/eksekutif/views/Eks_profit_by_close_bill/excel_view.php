@@ -30,13 +30,15 @@
     <th width="100px">Alkes</th>
     <th width="100px">Profit</th>
     <th width="100px">Total Billing</th>
+    <th width="100px">Tarif Inacbgs</th>
+    <th width="100px">Tarif RS NCC</th>
   </tr>
   </thead>
   <tbody>
     <?php 
       foreach($result as $key=>$row_list){
         echo "<tr>";
-        for ($i=0; $i < 20; $i++) { 
+        for ($i=0; $i < 22; $i++) { 
           # code...
           echo "<td>".$row_list[$i]."</td>";
         }

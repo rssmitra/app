@@ -42,17 +42,13 @@ jQuery(function($) {
 <?php echo $header; ?>
 <hr>
 <br>
-<div style="text-align: center; font-size: 18px;"><b>PEMBERIAN INFORMASI TINDAKAN KEDOKTERAN</b></div>
+<div style="text-align: center; font-size: 18px;"><b>ASUHAN KEPERAWATAN PERIOPERATIF <br>
+    RAWAT JALAN / INAP INSTALASI KAMAR BEDAH RS. SETIA MITRA</b></div>
 
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
-
-<p style="text-align:center; font-weight: bold; font-size: 20px">
-    ASUHAN KEPERAWATAN PERIOPERATIF <br>
-    RAWAT JALAN / RANAP INSTALASI <br>
-    KAMAR BEDAH RS. SETIA MITRA
-</p>
+<br>
 <table class="table" border="1" width="100%">
     <tbody>
         <tr>
@@ -101,186 +97,323 @@ jQuery(function($) {
     </tr>
     <tr>
         <td>
-            3. Riwayat alergi : <input type="checkbox" class="ace" name="a5" id="a5" onclick="checkthis('a5')">Y 
-            <input type="checkbox" class="ace" name="a6" id="a6" onclick="checkthis('a6')">T, jenis :
-            <input type="text" style="text-align: center" name="se7" id="se7" onchange="fillthis('se7')" class="input_type" value="">
+            3. Riwayat alergi : 
+            <label>
+                <input type="checkbox" class="ace" name="alergi_no" id="alergi_no" onclick="checkthis('alergi_no')">
+                <span class="lbl"> Tidak</span>
+            </label>
+            <label>
+                <input type="checkbox" class="ace" name="alergi_ya" id="alergi_ya" onclick="checkthis('alergi_ya')">
+                <span class="lbl"> Ya</span>
+            </label>, 
+            &nbsp; Jenis Alergi :
+            <input type="text" style="text-align: center" name="jenis_alergi" id="jenis_alergi" onchange="fillthis('jenis_alergi')" class="input_type" value="">
         </td>
     </tr>
     <tr>
         <td>
-            4. Kebiasaan : Merokok :  <input type="checkbox" class="ace" name="a7" id="a7" onclick="checkthis('a7')">Y 
-            <input type="checkbox" class="ace" name="a8" id="a8" onclick="checkthis('a8')">T
-            Minum alcohol : <input type="checkbox" class="ace" name="a9" id="a9" onclick="checkthis('a9')">Y 
-            <input type="checkbox" class="ace" name="a10" id="a10" onclick="checkthis('a10')">T;
-            Intra Vena drug abuse : <input type="checkbox" class="ace" name="a11" id="a11" onclick="checkthis('a11')">Y 
-            <input type="checkbox" class="ace" name="a12" id="a12" onclick="checkthis('a12')">T;
-            jenis <input type="text" style="text-align: center" name="se8" id="se8" onchange="fillthis('se8')" class="input_type" value="">
+            4. Kebiasaan : 
+            <label>
+                <input type="checkbox" class="ace" name="merokok" id="merokok" onclick="checkthis('merokok')">
+                <span class="lbl"> Merokok </span>
+            </label>
+
+            <label>
+                <input type="checkbox" class="ace" name="mnm_alkohol" id="mnm_alkohol" onclick="checkthis('mnm_alkohol')">
+                <span class="lbl"> Minum Alkohol </span>
+            </label>
+
+            <label>
+                <input type="checkbox" class="ace" name="drugs_abuse" id="drugs_abuse" onclick="checkthis('drugs_abuse')">
+                <span class="lbl"> Intra Vena Drugs Abuse </span>
+            </label>,
+            Jenis : <input type="text" style="text-align: center" name="jenis_drugs" id="jenis_drugs" onchange="fillthis('jenis_drugs')" class="input_type" value="">
         </td>
     </tr>
 </table>
 <table class="table" border="1" width="100%">
     <tr style="text-align:center; font-weight: bold; font-size: 13px">
-        <td colspan="5">PRE OPERATIF</td>
+        <td colspan="4">PRE OPERATIF</td>
     </tr>
     <tr style="text-align:center; font-weight: bold; font-size: 13px">
-        <td>TGL/<br> JAM</td>
-        <td>PENGKAJIAN</td>
-        <td>DIAGNOSA KEPERAWATAN</td>
-        <td>TINDAKAN</td>
-        <td>NAMA / TTD<br>PERAWAT</td>
+        <td style="width: 10%">TGL/<br> JAM</td>
+        <td style="width: 30%">PENGKAJIAN</td>
+        <td style="width: 30%">DIAGNOSA KEPERAWATAN</td>
+        <td style="width: 30%">TINDAKAN</td>
     </tr>
     <tr>
-        <td></td>
-        <td><input type="checkbox" class="ace" name="b1" id="b1" onclick="checkthis('b1')"> TD jam 
-            <input type="text" style="text-align: center" name="se10" id="se10" onchange="fillthis('se10')" class="input_type" value="">;
-            <input type="text" style="text-align: center" name="se11" id="se11" onchange="fillthis('se11')" class="input_type" value="">
+        <td>
+            Tanggal : <br>
+            <input type="text" style="text-align: center; width: 50px" name="tgl_pengkajian_pre_opr" id="tgl_pengkajian_pre_opr" onchange="fillthis('tgl_pengkajian_pre_opr')" class="input_type" value="">
             <br>
-
-            <input type="checkbox" class="ace" name="b2" id="b2" onclick="checkthis('b2')"> Nadi :  
-            <input type="text" style="text-align: center" name="z1" id="z1" onchange="fillthis('z1')" class="input_type" value=""> x/mt;
-            <input type="text" style="text-align: center" name="z2" id="z2" onchange="fillthis('z2')" class="input_type" value="">
-            <br>
-
-            <input type="checkbox" class="ace" name="b3" id="b3" onclick="checkthis('b3')"> Pernafasan :
-            <input type="text" style="text-align: center" name="z3" id="z3" onchange="fillthis('z3')" class="input_type" value=""> x/mt;
-            <input type="text" style="text-align: center" name="z4" id="z4" onchange="fillthis('z4')" class="input_type" value="">
-            <br>
-
-            <input type="checkbox" class="ace" name="b4" id="b4" onclick="checkthis('b4')"> Ronchi : <input type="text" style="text-align: center" name="z3" id="z3" onchange="fillthis('z3')" class="input_type" value="">;
-            sesak : <input type="checkbox" class="ace" name="b5" id="b5" onclick="checkthis('b5')">Y 
-            <input type="checkbox" class="ace" name="b6" id="b6" onclick="checkthis('b6')">T
-            <br>
-
-            <input type="checkbox" class="ace" name="b7" id="b7" onclick="checkthis('b7')"> Gigi goyang
-            <br>
-
-            <input type="checkbox" class="ace" name="b8" id="b8" onclick="checkthis('b8')"> Nyeri : 
-            <input type="checkbox" class="ace" name="b9" id="b9" onclick="checkthis('b9')">Y 
-            <input type="checkbox" class="ace" name="b10" id="b10" onclick="checkthis('b10')">T
-            skala  : <input type="text" style="text-align: center" name="z5" id="z5" onchange="fillthis('z5')" class="input_type" value="">
-            <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Lokasi: <input type="text" style="text-align: center" name="z6" id="z6" onchange="fillthis('z6')" class="input_type" value="">
-            <br>
-
-            <input type="checkbox" class="ace" name="b11" id="b11" onclick="checkthis('b11')"> Hb :
-            <br>
-
-            <input type="checkbox" class="ace" name="b11" id="b11" onclick="checkthis('b11')"> leko :
-            <br>
-
-            <input type="checkbox" class="ace" name="b11" id="b11" onclick="checkthis('b11')"> Psikososial : <input type="text" style="text-align: center" name="z7" id="z7" onchange="fillthis('z7')" class="input_type" value="">
-            <br>
-
-            <input type="checkbox" class="ace" name="b12" id="b12" onclick="checkthis('b12')"> Sukar tidur
-            <br>
-
-            <input type="checkbox" class="ace" name="b13" id="b13" onclick="checkthis('b13')"> Pandangan kabur :
-            <input type="checkbox" class="ace" name="b14" id="b14" onclick="checkthis('b14')">OD / 
-            <input type="checkbox" class="ace" name="b15" id="b15" onclick="checkthis('b15')">OS
-            <br>
-
-            <input type="checkbox" class="ace" name="b16" id="b16" onclick="checkthis('b16')">
-            <input type="text" style="text-align: center" name="z8" id="z8" onchange="fillthis('z8')" class="input_type" value="">
+            Jam : <br>
+            <input type="text" style="text-align: center; width: 50px" name="jam_pengkajian_pre_opr" id="jam_pengkajian_pre_opr" onchange="fillthis('jam_pengkajian_pre_opr')" class="input_type" value="">
         </td>
-        <td style="text-align: left;" valign="top">
-            <input type="checkbox" class="ace" name="c1" id="c1" onclick="checkthis('c1')"> Cemas
+        <td>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_td" id="ceklist_td" onclick="checkthis('ceklist_td')">
+                <span class="lbl"> TD : </span>
+            </label>
+            <input type="text" style="text-align: center; width: 50px" name="td_hasil" id="td_hasil" onchange="fillthis('td_hasil')" class="input_type" value="">
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_nadi" id="ceklist_nadi" onclick="checkthis('ceklist_nadi')">
+                <span class="lbl"> ND : </span>
+            </label>
+            <input type="text" style="text-align: center; width: 50px" name="nd_hasil" id="nd_hasil" onchange="fillthis('nd_hasil')" class="input_type" value="">x/mt;
             <br>
 
-            <input type="checkbox" class="ace" name="c2" id="c2" onclick="checkthis('c2')"> 
-            Nyeri <input type="checkbox" class="ace" name="c9" id="c9" onclick="checkthis('c9')">Ringan / 
-            <input type="checkbox" class="ace" name="c10" id="c10" onclick="checkthis('c10')">Sedang / 
-            <input type="checkbox" class="ace" name="c11" id="c11" onclick="checkthis('c11')">Berat
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_nfs" id="ceklist_nfs" onclick="checkthis('ceklist_nfs')">
+                <span class="lbl"> Pernafasan : </span>
+            </label>
+            <input type="text" style="text-align: center; width: 50px" name="nfs_hasil" id="nfs_hasil" onchange="fillthis('nfs_hasil')" class="input_type" value="">x/mt; 
             <br>
 
-            <input type="checkbox" class="ace" name="c3" id="c3" onclick="checkthis('c3')"> Gangguan perfusi 
-            <input type="checkbox" class="ace" name="c12" id="c12" onclick="checkthis('c12')">actual / resti
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_ronchi" id="ceklist_ronchi" onclick="checkthis('ceklist_ronchi')">
+                <span class="lbl"> Ronchi : </span>
+            </label>
+            <input type="text" style="text-align: center; width: 50px" name="ronchi_hasil" id="ronchi_hasil" onchange="fillthis('ronchi_hasil')" class="input_type" value="">x/mt; 
+            <br>
+            <div style="padding-left: 20px">
+                Sesak :
+                <label>
+                    <input type="checkbox" class="ace" name="sesak_ya" id="sesak_ya" onclick="checkthis('sesak_ya')">
+                    <span class="lbl"> Ya </span>
+                </label>
+                <label>
+                    <input type="checkbox" class="ace" name="sesak_no" id="sesak_no" onclick="checkthis('sesak_no')">
+                    <span class="lbl"> Tidak </span>
+                </label>
+            </div>
+
+            <label>
+                <input type="checkbox" class="ace" name="sesak_ya" id="sesak_ya" onclick="checkthis('sesak_ya')">
+                <span class="lbl"> Gigi Goyang </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_nyeri" id="ceklist_nyeri" onclick="checkthis('ceklist_nyeri')">
+                <span class="lbl"> Nyeri </span>
+            </label>, Skala : <input type="text" style="text-align: center; width: 50px" name="skala_nyeri" id="skala_nyeri" onchange="fillthis('skala_nyeri')" class="input_type" value="">
+            <br>
+            <div style="padding-left: 20px">
+                Lokasi :
+                <input type="text" style="text-align: center; width: 100px" name="lokasi_nyeri" id="lokasi_nyeri" onchange="fillthis('lokasi_nyeri')" class="input_type" value="">
+            </div>
+
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_hb" id="ceklist_hb" onclick="checkthis('ceklist_hb')">
+                <span class="lbl"> HB : </span>
+            </label>
+            <input type="text" style="text-align: center; width: 50px" name="hb_hasil" id="hb_hasil" onchange="fillthis('hb_hasil')" class="input_type" value="">
             <br>
 
-            <input type="checkbox" class="ace" name="c4" id="c4" onclick="checkthis('c4')"> Ketidakseimbangan cairan tubuh
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_leko" id="ceklist_leko" onclick="checkthis('ceklist_leko')">
+                <span class="lbl"> Leko : </span>
+            </label>
+            <input type="text" style="text-align: center; width: 50px" name="leko_hasil" id="leko_hasil" onchange="fillthis('leko_hasil')" class="input_type" value="">
             <br>
 
-            <input type="checkbox" class="ace" name="c5" id="c5" onclick="checkthis('c5')"> Gg body image
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_psikososial" id="ceklist_psikososial" onclick="checkthis('ceklist_psikososial')">
+                <span class="lbl"> Psikososial : </span>
+            </label>
+            <input type="text" style="text-align: center; width: 50px" name="psiko_hasil" id="psiko_hasil" onchange="fillthis('psiko_hasil')" class="input_type" value="">
             <br>
 
-            <input type="checkbox" class="ace" name="c6" id="c6" onclick="checkthis('c6')"> Resiko jatuh
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_sukar_tdr" id="ceklist_sukar_tdr" onclick="checkthis('ceklist_sukar_tdr')">
+                <span class="lbl"> Sukar Tidur  </span>
+            </label>
             <br>
 
-            <input type="checkbox" class="ace" name="c7" id="c7" onclick="checkthis('c7')"> Resiko Aspirasi
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_pandangan_kabur" id="ceklist_pandangan_kabur" onclick="checkthis('ceklist_pandangan_kabur')">
+                <span class="lbl"> Pandangan Kabur </span>
+            </label>,
+            <input type="text" style="text-align: center; width: 50px" name="pandangan_hasil" id="pandangan_hasil" onchange="fillthis('pandangan_hasil')" class="input_type" value="" placeholder="OD/ OS">
             <br>
 
-            <input type="checkbox" class="ace" name="c8" id="c8" onclick="checkthis('c8')">
-            <input type="text" style="text-align: center" name="y1" id="y1" onchange="fillthis('y1')" class="input_type" value="">
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_lainnya" id="ceklist_lainnya" onclick="checkthis('ceklist_lainnya')">
+                <span class="lbl"> Lainnya </span>
+            </label>
+            <input type="text" style="text-align: center; width: 100px" name="td_hasil" id="td_hasil" onchange="fillthis('td_hasil')" class="input_type" value="">
+            <br>
         </td>
+
         <td style="text-align: left;" valign="top">
-            <input type="checkbox" class="ace" name="d1" id="d1" onclick="checkthis('d1')"> Memperkenalkan Diri
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_cemas" id="ceklist_cemas" onclick="checkthis('ceklist_cemas')">
+                <span class="lbl"> Cemas </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_nyr_ringan" id="ceklist_nyr_ringan" onclick="checkthis('ceklist_nyr_ringan')">
+                <span class="lbl"> Nyeri ringan </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_nyr_sdg" id="ceklist_nyr_sdg" onclick="checkthis('ceklist_nyr_sdg')">
+                <span class="lbl"> Nyeri Sedang </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_nyr_brt" id="ceklist_nyr_brt" onclick="checkthis('ceklist_nyr_brt')">
+                <span class="lbl"> Nyeri Berat </span>
+            </label>
             <br>
 
-            <input type="checkbox" class="ace" name="d2" id="d2" onclick="checkthis('d2')"> Melakukan sign In
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_gguan_perfusi" id="ceklist_gguan_perfusi" onclick="checkthis('ceklist_gguan_perfusi')">
+                <span class="lbl"> Gangguan Perfusi actual/ resti </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d3" id="d3" onclick="checkthis('d3')"> Informasi Gambar
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Situasi Operasi / Tindakan
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_cairan_tubuh" id="ceklist_cairan_tubuh" onclick="checkthis('ceklist_cairan_tubuh')">
+                <span class="lbl"> Ketidakseimbangan cairan tubuh </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d4" id="d4" onclick="checkthis('d4')"> Pencukuran dan pencucian area insisi
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_gg_bdy_img" id="ceklist_gg_bdy_img" onclick="checkthis('ceklist_gg_bdy_img')">
+                <span class="lbl"> Gg body Image </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d5" id="d5" onclick="checkthis('d5')"> Menyiapkan Suction
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_rsk_jth" id="ceklist_rsk_jth" onclick="checkthis('ceklist_rsk_jth')">
+                <span class="lbl"> Resiko Jatuh </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d6" id="d6" onclick="checkthis('d6')"> Menyiapkan alat intubasi
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_rsk_asp" id="ceklist_rsk_asp" onclick="checkthis('ceklist_rsk_asp')">
+                <span class="lbl"> Resiko Aspirasi </span>
+            </label>
             <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_lainnya_2" id="ceklist_lainnya_2" onclick="checkthis('ceklist_lainnya_2')">
+                <span class="lbl"> Lainnya </span>
+            </label>, <input type="text" style="text-align: center; width: 100px" name="txt_lainnya_2" id="txt_lainnya_2" onchange="fillthis('txt_lainnya_2')" class="input_type" value="">
 
-            <input type="checkbox" class="ace" name="d7" id="d7" onclick="checkthis('d7')"> Menyiapkan mesin 
+        </td>
+
+        <td style="text-align: left;" valign="top">
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_mmprknlkn_dr" id="ceklist_mmprknlkn_dr" onclick="checkthis('ceklist_mmprknlkn_dr')">
+                <span class="lbl"> Memperkenalkan diri </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d8" id="d8" onclick="checkthis('d8')"> Membimbing Berdo'a
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_signin" id="ceklist_signin" onclick="checkthis('ceklist_signin')">
+                <span class="lbl"> Melakukan sign In </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d9" id="d9" onclick="checkthis('d9')"> Membantu pembiusan SA / GA 
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_info_gbr" id="ceklist_info_gbr" onclick="checkthis('ceklist_info_gbr')">
+                <span class="lbl"> Informasi Gambaran Situasi Operasi/ Tindakan </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d10" id="d10" onclick="checkthis('d10')"> Katerisasi urine
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_ckr" id="ceklist_ckr" onclick="checkthis('ceklist_ckr')">
+                <span class="lbl"> Pencukuran dan pencucian area insisi </span>
+            </label>
             <br>
-
-            <input type="checkbox" class="ace" name="d11" id="d11" onclick="checkthis('d11')"> Mengatur posisi pasien 
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_suction" id="ceklist_suction" onclick="checkthis('ceklist_suction')">
+                <span class="lbl"> Menyiapkan suction </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_alt_intubasi" id="ceklist_alt_intubasi" onclick="checkthis('ceklist_alt_intubasi')">
+                <span class="lbl"> Menyiapkan alat intubasi </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_cauter" id="ceklist_cauter" onclick="checkthis('ceklist_cauter')">
+                <span class="lbl"> Menyiapkan mesin cauter </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_doa" id="ceklist_doa" onclick="checkthis('ceklist_doa')">
+                <span class="lbl"> Membimbing berdoa </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_bius" id="ceklist_bius" onclick="checkthis('ceklist_bius')">
+                <span class="lbl"> Membantu pembiusan SA/ GA </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_kttr_urin" id="ceklist_kttr_urin" onclick="checkthis('ceklist_kttr_urin')">
+                <span class="lbl"> Katerisasi Urine </span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="ceklist_atur_posisi" id="ceklist_atur_posisi" onclick="checkthis('ceklist_atur_posisi')">
+                <span class="lbl"> Mengatur posisi pasien </span>
+            </label>
+            <br> 
         </td>
         <td></td>
     </tr>
     <tr style="text-align:center; font-weight: bold; font-size: 13px">
-        <td colspan="5">INTRA OPERATIF</td>
+        <td colspan="4">INTRA OPERATIF</td>
     </tr>
     <tr>
-        <td></td>
+        <td>
+            Tanggal : <br>
+            <input type="text" style="text-align: center; width: 50px" name="tgl_pengkajian_intra_opr" id="tgl_pengkajian_intra_opr" onchange="fillthis('tgl_pengkajian_intra_opr')" class="input_type" value="">
+            <br>
+            Jam : <br>
+            <input type="text" style="text-align: center; width: 50px" name="jam_pengkajian_intra_opr" id="jam_pengkajian_intra_opr" onchange="fillthis('jam_pengkajian_intra_opr')" class="input_type" value="">
+        </td>
+
         <td style="text-align: left;" valign="top">
-            <input type="checkbox" class="ace" name="e1" id="e1" onclick="checkthis('e1')"> Pendarahan :
-            <input type="text" style="text-align: center" name="y2" id="y2" onchange="fillthis('y2')" class="input_type" value="">
+            <label>
+                <input type="checkbox" class="ace" name="e1" id="e1" onclick="checkthis('e1')">
+                <span class="lbl"> Pendarahan</span>
+            </label>,
+            <input type="text" style="text-align: center; width: 50px" name="y2" id="y2" onchange="fillthis('y2')" class="input_type" value="">
             <br>
 
-            <input type="checkbox" class="ace" name="e2" id="e2" onclick="checkthis('e2')"> Pernapasan :
-            <input type="text" style="text-align: center" name="y3" id="y3" onchange="fillthis('y3')" class="input_type" value=""> x/mt;
-            <input type="text" style="text-align: center" name="y4" id="y4" onchange="fillthis('y4')" class="input_type" value="">
+            <label>
+                <input type="checkbox" class="ace" name="e2" id="e2" onclick="checkthis('e2')">
+                <span class="lbl"> Pernapasan</span>
+            </label>,
+            <input type="text" style="text-align: center; width: 50px" name="y3" id="y3" onchange="fillthis('y3')" class="input_type" value=""> x/mt;
             <br> 
             
-            <input type="checkbox" class="ace" name="e3" id="e3" onclick="checkthis('e3')"> Nadi pkl :  
-            <input type="text" style="text-align: center" name="y5" id="y5" onchange="fillthis('y5')" class="input_type" value=""> x/mt;
-            <input type="text" style="text-align: center" name="y6" id="y6" onchange="fillthis('y6')" class="input_type" value="">
+            <label>
+                <input type="checkbox" class="ace" name="e3" id="e3" onclick="checkthis('e3')">
+                <span class="lbl"> Nadi </span>
+            </label>,
+            <input type="text" style="text-align: center; width: 50px" name="y5" id="y5" onchange="fillthis('y5')" class="input_type" value=""> x/mt;
             <br>
 
-            <input type="checkbox" class="ace" name="e4" id="e4" onclick="checkthis('e4')"> Pendarahan :
-            <input type="text" style="text-align: center" name="y7" id="y7" onchange="fillthis('y7')" class="input_type" value="">
+            <label>
+                <input type="checkbox" class="ace" name="e4" id="e4" onclick="checkthis('e4')">
+                <span class="lbl"> SPO2</span>
+            </label>,
+            <input type="text" style="text-align: center; width: 50px" name="y7" id="y7" onchange="fillthis('y7')" class="input_type" value="">
             <br>
+            <label>
+                <input type="checkbox" class="ace" name="e4" id="e4" onclick="checkthis('e4')">
+                <span class="lbl"> TD</span>
+            </label>,
+            <input type="text" style="text-align: center; width: 50px" name="y7" id="y7" onchange="fillthis('y7')" class="input_type" value="">
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="e4" id="e4" onclick="checkthis('e4')">
+                <span class="lbl"> Mual</span>
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" class="ace" name="e4" id="e4" onclick="checkthis('e4')">
+                <span class="lbl"> Menggigil</span>
+            </label>
 
-            <input type="checkbox" class="ace" name="e5" id="e5" onclick="checkthis('e5')"> TD pkl:<input type="text" style="text-align: center" name="y8" id="y8" onchange="fillthis('y8')" class="input_type" value=""> mmHg<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" style="text-align: center" name="y9" id="y9" onchange="fillthis('y9')" class="input_type" value=""> mmHg<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" style="text-align: center" name="y10" id="y10" onchange="fillthis('y10')" class="input_type" value=""> mmHg<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" style="text-align: center" name="y11" id="y11" onchange="fillthis('y11')" class="input_type" value=""> mmHg
-            <br>
-
-            <input type="checkbox" class="ace" name="e6" id="e6" onclick="checkthis('e6')"> Mual
-            <br>
-
-            <input type="checkbox" class="ace" name="e7" id="e7" onclick="checkthis('e7')"> Menggigil
-            <br>
         </td>
         <td style="text-align: left;" valign="top">
             <input type="checkbox" class="ace" name="f1" id="f1" onclick="checkthis('f1')"> Resiko Injuri
@@ -344,7 +477,7 @@ jQuery(function($) {
         <td></td>
     </tr>
     <tr style="text-align:center; font-weight: bold; font-size: 13px">
-        <td colspan="5">POST OPERATIF</td>
+        <td colspan="4">POST OPERATIF</td>
     </tr>
     <tr>
         <td></td>
