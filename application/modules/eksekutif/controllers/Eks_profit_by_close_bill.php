@@ -98,7 +98,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $bhp_apotik = $row_list->bill_apotik - $margin_apotik;
             // total pendapatan
             $profit = $row_list->bill_rs - ($row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik);
-            $cost = $row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik;
+            $cost = $row_list->bill_dr1 + $row_list->bill_dr2 + $row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik;
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_dr1).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_dr2).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bhp).'</div>';
@@ -257,7 +257,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $bhp_apotik = $row_list->bill_apotik - $margin_apotik;
             // total pendapatan
             $profit = $row_list->bill_rs - ($row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik);
-            $cost = $row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik;
+            $cost = $row_list->bill_dr1 + $row_list->bill_dr2 + $row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik;
             $row[] = (int)$row_list->bill_dr1;
             $row[] = (int)$row_list->bill_dr2;
             $row[] = (int)$row_list->bhp;
