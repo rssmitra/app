@@ -651,7 +651,7 @@ class Templates extends MX_Controller {
                         </tr>
                         <tr>
                             <td width="100px">Dokter</td>
-                            <td width="350px">: '.$nama_dr.'</td>
+                            <td width="350px">: <span id="txt_nama_dr_profile_form_pengkajian">'.$nama_dr.'</span></td>
                         </tr>
                         <tr>
                             <td width="100px">Umur</td>

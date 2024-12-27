@@ -769,7 +769,7 @@ function select_item_racikan(id){
                 <?php $no=0; foreach($eresep['racikan'] as $row_racikan) : if($row_racikan->parent != '0') :$no++; ?>
                   <tr>
                     <td align="center"><?php echo $no; ?></td>
-                    <td><a href="#" onclick="select_item_racikan(<?php echo $row_racikan->id?>)"><?php echo $row_racikan->nama_obat; ?></a></td>
+                    <td><a href="#" onclick="select_item_racikan(<?php echo $row_racikan->id?>)"><?php echo $row_racikan->nama_brg; ?></a></td>
                     <td><?php echo $row_racikan->jml_pesan.' '.$row_racikan->satuan_obat; ?></td>
                   </tr>
                 <?php endif; endforeach;?>

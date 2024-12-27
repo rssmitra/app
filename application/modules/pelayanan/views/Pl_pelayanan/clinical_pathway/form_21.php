@@ -256,11 +256,9 @@
             <td align="center">
                 <input type="text" style="width:40px; text-align: center" name="form_21[b2]" id="b2" onchange="fillthis('b2')" class="input_type">
             </td>    
-            <td>
-                <label>
-                    
-                </label>    
-            </td>    
+            <td align="center">
+                <input type="text" style="width:40px; text-align: center" name="form_21[b2]" id="b2" onchange="fillthis('b2')" class="input_type">
+            </td>   
         </tr>
         <tr>
             <td class="sub_data" rowspan="4">Gangguan Kognitif</td>
@@ -519,19 +517,19 @@
                 <strong>TOTAL SKOR</strong>
             </td>
             <td align="center">
-                <input type="text" style="width:40px; text-align: center" name="form_21[b2]" id="b2" onchange="fillthis('b2')" class="input_type">
+                <input type="text" style="width:40px; text-align: center" name="form_21[c5]" id="c5" onchange="fillthis('c5')" class="input_type">
             </td>    
             <td align="center">
-                <input type="text" style="width:40px; text-align: center" name="form_21[b2]" id="b2" onchange="fillthis('b2')" class="input_type">
+                <input type="text" style="width:40px; text-align: center" name="form_21[c4]" id="c4" onchange="fillthis('c4')" class="input_type">
             </td>    
             <td align="center">
-                <input type="text" style="width:40px; text-align: center" name="form_21[b2]" id="b2" onchange="fillthis('b2')" class="input_type">
+                <input type="text" style="width:40px; text-align: center" name="form_21[c3]" id="c3" onchange="fillthis('c3')" class="input_type">
             </td>    
             <td align="center">
-                <input type="text" style="width:40px; text-align: center" name="form_21[b2]" id="b2" onchange="fillthis('b2')" class="input_type">
+                <input type="text" style="width:40px; text-align: center" name="form_21[c2]" id="c2" onchange="fillthis('c2')" class="input_type">
             </td>    
             <td align="center">
-                <input type="text" style="width:40px; text-align: center" name="form_21[b2]" id="b2" onchange="fillthis('b2')" class="input_type">
+                <input type="text" style="width:40px; text-align: center" name="form_21[c1]" id="c1" onchange="fillthis('c1')" class="input_type">
             </td>    
         </tr>
           

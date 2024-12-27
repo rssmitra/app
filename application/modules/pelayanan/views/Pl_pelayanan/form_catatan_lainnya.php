@@ -126,15 +126,17 @@ $(document).ready(function() {
               }
           });
       },
-      afterSelect: function (item) {
-        // do what is needed with item
-        var val_item=item.split(':')[0];
-        var label_item=item.split(':')[1];
-        $('#search_nama_ppa').val(label_item);
-        // get ttd and stamp dokter
-        var kode_dokter = val_item.replace(/\s/g, '');
-        get_ttd_and_stamp_dr(kode_dokter);
-      }
+    afterSelect: function (item) {
+      // do what is needed with item
+      var val_item=item.split(':')[0];
+      var label_item=item.split(':')[1];
+      $('#search_nama_ppa').val(label_item);
+      $('#txt_nama_dr_profile_form_pengkajian').text(label_item);
+      $('#dokter_bedah_1').val(label_item);
+      // get ttd and stamp dokter
+      var kode_dokter = val_item.replace(/\s/g, '');
+      get_ttd_and_stamp_dr(kode_dokter);
+    }
 
   });
 
