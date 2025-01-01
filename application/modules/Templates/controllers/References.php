@@ -931,7 +931,7 @@ class References extends MX_Controller {
 	{
 		$query = "select  id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir, jenis_kelamin
 					from ri_bayi_lahir
-					where (flag_lahir = 0 or flag_lahir is null) and nama_bayi <> '' and YEAR(tgl_jam_lahir)= ".date('Y')." group by id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir, jenis_kelamin ";
+					where (flag_lahir = 0 or flag_lahir is null) and nama_bayi <> '' group by id_bayi, nama_bayi, mr_ibu, tgl_jam_lahir, jenis_kelamin ";
         $exc = $this->db->query($query);
         echo json_encode($exc->result());
 	}

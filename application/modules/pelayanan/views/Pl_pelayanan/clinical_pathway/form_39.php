@@ -97,7 +97,7 @@ jQuery(function($) {
 <!--MAIN CONTENT -->
 
 
-<table border="1" width="100%" style="border-collapse: collapse;">
+<table border="1" width="100%" class="table">
     <tbody>
         <tr>
             <td style="text-align:center; font-weight: bold; font-size: 20px; color: white; background-color: black" colspan="4">
@@ -303,7 +303,7 @@ jQuery(function($) {
 </table>
 <br>
 
-<table border="1" width="100%" style="border-collapse: collapse;">
+<table border="1" width="100%" class="table">
     <tr>
         <td style="text-align:center; font-weight: bold; font-size: 20px; color: white; background-color: black" width="100%" colspan="5">
             PENCEGAHAN PASIEN JATUH
@@ -424,7 +424,7 @@ jQuery(function($) {
         <td colspan="5">
             <label>
                 <input type="checkbox"  class="ace" name="form_39[a50]" id="a50" onclick="checkthis('a50')">
-                <span class="lbl"><input type="text" name="form_39[mj2]" id="mj2" onchange="fillthis('mj2')" class="input type"
+                <span class="lbl"><input type="text" name="form_39[mj2]" id="mj2" onchange="fillthis('mj2')" class="input_type"
                 value=""></span>
             </label> 
         </td>   
@@ -432,45 +432,26 @@ jQuery(function($) {
     <tr>
         <td colspan="5">
             <input type="checkbox"  class="ace" name="form_39[a51]" id="a51" onclick="checkthis('a51')">
-                <span class="lbl"><input type="text" name="form_39[mj3]" id="mj3" onchange="fillthis('mj3')" class="input type"
+                <span class="lbl"><input type="text" name="form_39[mj3]" id="mj3" onchange="fillthis('mj3')" class="input_type"
                 value=""></span>
         </td>
     </tr>
     <tr>
         <td colspan="5">
             <input type="checkbox"  class="ace" name="form_39[a52]" id="a52" onclick="checkthis('a52')">
-                <span class="lbl"><input type="text" name="form_39[mj4]" id="mj4" onchange="fillthis('mj4')" class="input type"
+                <span class="lbl"><input type="text" name="form_39[mj4]" id="mj4" onchange="fillthis('mj4')" class="input_type"
                 value=""></span>
         </td>
     </tr>
     <tr>
         <td colspan="5"><input type="checkbox"  class="ace" name="form_39[a53]" id="a53" onclick="checkthis('a53')">
-            <span class="lbl"><input type="text" name="form_39[mj5]" id="mj5" onchange="fillthis('mj5')" class="input type"
+            <span class="lbl"><input type="text" name="form_39[mj5]" id="mj5" onchange="fillthis('mj5')" class="input_type"
             value=""></span>
         </td>
     </tr>
 </tbody>
 </table>
-<br>
-<table border="1" width="100%" style="border-collapse: collapse;">
-    <tr>
-        <td style="text-align:center; font-weight: bold; font-size: 20px; width:100%" colspan="5">
-            Yang Melakukan Pengkajian 
-            </td>
-    </tr>
-    <tr width="100%">
-        <td  align="center" style="width: 25%">Tanggal</td>
-        <td  align="center" style="width: 25%">Jam</td>
-        <td  align="center" style="width: 25%">Nama</td>
-        <td  align="center" style="width: 25%">Tanda Tangan</td>
-    </tr>
-    <tr>
-        <td style="height: 100px"></td>
-        <td style="height: 100px"></td>
-        <td style="height: 100px"></td>
-        <td style="height: 100px"></td>
-    </tr>
-</table>
+
 
     
 
