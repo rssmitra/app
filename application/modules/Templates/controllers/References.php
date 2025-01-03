@@ -1344,7 +1344,7 @@ class References extends MX_Controller {
 		$html = '';
 		
 		if(isset($exc[0]->kode_tarif)) {
-			// echo '<pre>'; print_r($tarifAktif->result());die;
+			// echo '<pre>'; print_r($this->session->all_userdata());die;
 			$html .= '';
 			$html .= '<p style="padding: 8px 0px 0px"><b>';
 			$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
@@ -1396,12 +1396,22 @@ class References extends MX_Controller {
 					$html .= '<tr style="background: #edf3f4;">';
 					$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
 					/*$html .= '<td align="center">'.$sign.'</td>';*/
-					$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
-					$html .= '<td align="right">'.number_format($bill_dr2).'</td>';
-					$html .= '<td align="right">'.number_format($kamar_tindakan).'</td>';
-					$html .= '<td align="right">'.number_format($bhp).'</td>';
-					$html .= '<td align="right">'.number_format($alat_rs).'</td>';
-					$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
+					if($this->session->userdata('user')->user_id == 1){
+						$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
+						$html .= '<td align="right">'.number_format($bill_dr2).'</td>';
+						$html .= '<td align="right">'.number_format($kamar_tindakan).'</td>';
+						$html .= '<td align="right">'.number_format($bhp).'</td>';
+						$html .= '<td align="right">'.number_format($alat_rs).'</td>';
+						$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
+					}else{
+						$html .= '<td align="right">-</td>';
+						$html .= '<td align="right">-</td>';
+						$html .= '<td align="right">-</td>';
+						$html .= '<td align="right">-</td>';
+						$html .= '<td align="right">-</td>';
+						$html .= '<td align="right">-</td>';
+					}
+					
 					$html .= '<td align="right"><b>'.number_format($total).'</b></td>';
 					$html .= '<td align="center">'.$revisi_ke.'</td>';
 

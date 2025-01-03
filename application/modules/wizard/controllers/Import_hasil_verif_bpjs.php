@@ -19,7 +19,7 @@ class Import_hasil_verif_bpjs extends MX_Controller {
         /*load file excel to execute*/
         $loadexcel = $excelreader->load(PATH_HASIL_VERIF_BPJS.$file_name); // Load file yang telah /*load exce and get data from sheet*/
         $sheet = $loadexcel->getActiveSheet()->toArray(null, true, true ,true);
-        // echo '<pre>'; print_r($sheet);die;
+        // echo '<pre>'; print_r($sheet[5]);die;
         /*get klas by remove empty for sheet klas*/
         $keterangan = array_filter($sheet[2]);
         // echo '<pre>'; print_r($keterangan);die;
@@ -37,6 +37,7 @@ class Import_hasil_verif_bpjs extends MX_Controller {
                 $data[] = array(
                     'no_sep' => $row['F'],
                     'tarif_inacbgs'=> str_replace(',','',$row['I']),
+                    'tarif_rs_klaim_ncc'=> str_replace(',','',$row['J']),
                     'tipe_klaim_ncc' => $row['K'],
                    );
                 $getTotalTipe[$row['K']][] = $row;
