@@ -2211,7 +2211,7 @@ class References extends MX_Controller {
 		->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')
 		->order_by('no_kunjungan','DESC')
 		->where('flag', 'resume')
-		->where('DATEDIFF(year,tanggal,GETDATE()) < 2 ')->limit($limit)
+		->where('DATEDIFF(year,tanggal,GETDATE()) < 4 ')->limit($limit)
 		->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr))->result(); 
 		// echo '<pre>';print_r($result);die;
 		// eresep
