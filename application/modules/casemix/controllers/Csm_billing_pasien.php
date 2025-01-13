@@ -364,6 +364,20 @@ class Csm_billing_pasien extends MX_Controller {
                     $html .= $temp->setGlobalFooterBillingPM($data->reg_data->nama_pegawai, $flag, $pm);
                 }
                 break;
+
+            case 'FSO':
+                $content_data = $this->Csm_billing_pasien->getOrderFisio($no_registrasi);
+                // echo "<pre>"; print_r($this->db->last_query());die;
+                $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);
+                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+                    $html .= $temp->setGlobalHeaderTemplate();
+                }
+                $html .= $temp->setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm);
+                $html .= $temp->setGlobalContentBilling($temp->TemplatePengantarFisio($content_data));
+                if(!isset($_GET['format']) && $_GET['format'] != 'html'){
+                    $html .= $temp->setGlobalFooterRm($data, 'FSO');
+                }
+            break;
                 
             case 'LAB':
                 $data_pm = $this->Pl_pelayanan_pm->get_by_no_kunjungan($no_kunjungan,$flag_mcu);

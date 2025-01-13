@@ -177,6 +177,11 @@ class Attachment_model extends CI_Model {
 				$noted = isset($result->kode_tc_trans_kasir)?'Resume Medis Pasien a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
 			break;
 
+			case 'PENGANTAR_FISIOTERAPI':
+				$title = 'Surat Pengantar Fisioterapi';
+				$noted = isset($result->kode_tc_trans_kasir)?'Surat Pengantar Fisioterapi Pasien a.n '.$result->nama_pasien.' ':'Dokumen ini telah dihapus';
+			break;
+
 			case 'FRM_BAST':
 				$trans =  $this->db->select('ttd, fr_tc_far.nama_pasien, fr_tc_far.no_mr, ttd, fr_tc_far.created_date, fr_tc_far.created_by, kode_trans_far')->join('mt_master_pasien', 'mt_master_pasien.no_mr = fr_tc_far.no_mr', 'left')->get_where('fr_tc_far', ['kode_trans_far' => $_GET['code']])->row();
 				$signed = $trans->nama_pasien;

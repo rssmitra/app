@@ -52,6 +52,19 @@
                   $('#pl_pemeriksaan').val(obj.pemeriksaan);
                   $('#pl_diagnosa').val(obj.diagnosa_akhir);
                   $('#pl_diagnosa_hidden').val(obj.kode_icd_diagnosa);
+                  // split diagnosa sekunder
+                  var ds = obj.diagnosa_sekunder;
+                  var diagnosa_sekunder = ds.split('|');
+                  console.log(diagnosa_sekunder);
+                  var string = '';
+                  for (i = 1; i < diagnosa_sekunder.length; ++i) {
+                    if(diagnosa_sekunder[i] != ''){
+                      string += '<span class="multi-typeahead" id="txt_icd_'+i+'"><a href="#" onclick="remove_icd('+"'"+i+"'"+')" style="padding: 3px;text-align: center"><i class="fa fa-times black"></i> </a><span style="display: none">|</span> <span class="text_icd_10"> '+diagnosa_sekunder[i]+' </span> </span>';
+                    }
+                  }
+                  console.log(string);
+                  $('#pl_diagnosa_sekunder_hidden_txt').html(string);
+                  $('#konten_diagnosa_sekunder').val(obj.diagnosa_sekunder);
                   $('#pl_pengobatan').val(obj.pengobatan+'\n'+obj.resep_farmasi);
               }
           });

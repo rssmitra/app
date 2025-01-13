@@ -1179,6 +1179,7 @@ class Csm_billing_pasien_model extends CI_Model {
         $decode_data = json_decode($data);
         // dokumen penunjang medis
         $grouping_doc = $this->groupingDocumentPM($decode_data->group);
+
         
         if($decode_data->reg_data->kode_perusahaan == 120){
             $filename[] ='SEP-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
@@ -1192,6 +1193,12 @@ class Csm_billing_pasien_model extends CI_Model {
         }
 
         $filename[] ='RESUME-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.date('dmY').'';
+        
+        // generate surat pengantar untuk fisioterapi
+        $order_fisio = $this->getOrderFisio($no_registrasi);
+        $filename[] = 'FSO-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$order_fisio->kode_penunjang.'-'.$order_fisio->no_kunjungan.'';
+        // echo "<pre>"; print_r($filename);die;
+        
         
         foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
             $explode_key = explode('-',$key_group);
@@ -1290,5 +1297,17 @@ class Csm_billing_pasien_model extends CI_Model {
 		$this->db->where('b.no_registrasi', $no_registrasi);
 		return $this->db->get()->row();
 	}
+
+    public function getOrderFisio($no_registrasi){
+        $this->db->select('c.*, b.no_kunjungan, b.kode_penunjang');
+        $this->db->from('tc_kunjungan a');
+        $this->db->join('pm_tc_penunjang b','b.no_kunjungan = a.no_kunjungan', 'left');
+        $this->db->join('pm_tc_penunjang_order_detail c','c.id_pm_tc_penunjang = b.id_pm_tc_penunjang', 'left');
+        $this->db->where('a.no_registrasi', $no_registrasi);
+        $this->db->where('c.id_pm_tc_penunjang is not null');
+        return $this->db->get()->row();
+    }
+    
+    
 
 }

@@ -423,7 +423,7 @@ class Pl_pelayanan_ri extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pl_pelayanan_ri->get_datatables_cppt($_GET['no_mr']);
-        //print_r($list);die;
+        // print_r($list);die;
         $data = array();
         $no=0;
 
@@ -1412,7 +1412,7 @@ class Pl_pelayanan_ri extends MX_Controller {
     public function get_cppt_dt(){
 
         $query = $this->db->get_where('view_cppt', array('id' => $_GET['id']))->row();
-
+        //  echo "<pre>"; print_r($query);die;
         $this->load->module('Templates/Templates.php');
         $temp = new Templates;
         $result = json_decode($this->Csm_billing_pasien->getDetailData($query->no_registrasi));

@@ -1459,6 +1459,50 @@ class Templates extends MX_Controller {
         
     }
 
+    public function TemplatePengantarFisio($content){
+
+        $html = '<hr>';
+        $html .= '<table align="left" border="0" style="font-size:36px">
+                    <tr>
+                        <td align="center"><br><b>PERMINTAAN UNTUK FISIOTERAPI</b><br></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Diagnosa</b> <br>
+                            <span>'.$content->diagnosa.'</span>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                         <td>
+                            <b>X Ray Foto</b> <br>
+                            <span>'.$content->xray_foto.'</span><br>
+                        </td>
+                    </tr>
+                    <tr>
+                         <td>
+                            <b>Terapi</b> <br>
+                            <span>'.$content->nama_tarif.'</span><br>
+                        </td>
+                    </tr>
+
+                    <tr>
+                         <td>
+                            <b>Kontra Indikasi</b> <br>
+                            <span>'.$content->kontra_indikasi.'</span><br>
+                        </td>
+                    </tr>
+                    <tr>
+                         <td>
+                            <b>Rencana Lebih Lanjut</b> <br>
+                            <span>'.$content->keterangan.'</span><br>
+                        </td>
+                    </tr>
+                    </table>
+                    ';
+        return $html;
+    }
+
     public function TemplateHasilPM($no_registrasi, $tipe, $data, $pm, $flag_mcu='',$data_pm=''){
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
@@ -1680,7 +1724,7 @@ class Templates extends MX_Controller {
 
                 $html .= '</tr>';
                 $html .= '</table>';
-            }
+        }
         
         return $html;
     }   
@@ -1764,45 +1808,56 @@ class Templates extends MX_Controller {
         echo json_encode($return);
     }
 
-    public function setGlobalFooterRm($data){
+    public function setGlobalFooterRm($data, $flag=''){
         
-      $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
-      if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
-          $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
-      }
-      
-      
-      $ttd = (!empty($data->reg_data->ttd))?$data->reg_data->ttd:$get_dokter->ttd;
-      $stamp_dr = (!empty($data->reg_data->stamp))?$data->reg_data->stamp:$get_dokter->stamp;
-      $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+        $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
+        if(isset($dr_from_trans[0]->kode_dokter1) AND $dr_from_trans[0]->kode_dokter1 != ''){
+            $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $dr_from_trans[0]->kode_dokter1))->row();
+        }
 
-      $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
-      $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
-      
-      $html = '';
 
-    $config = [
+        $ttd = (!empty($data->reg_data->ttd))?$data->reg_data->ttd:$get_dokter->ttd;
+        $stamp_dr = (!empty($data->reg_data->stamp))?$data->reg_data->stamp:$get_dokter->stamp;
+        $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
+
+        $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="250px" style="position: relative">' : '';
+        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+
+        $html = '';
+        switch ($flag) {
+            case 'FSO':
+                # code...
+                $flag = 'PENGANTAR_FISIOTERAPI';
+                break;
+            
+            default:
+                # code...
+                $flag = 'RESUME_MEDIS';
+                break;
+        }
+
+        $config = [
         'no_registrasi' => $data->reg_data->no_registrasi,
         'kode' => $data->reg_data->no_registrasi,
         'tanggal' => $data->reg_data->tgl_jam_masuk,
-        'flag' => 'RESUME_MEDIS',
-    ];
-    $qr_url = $this->qr_code_lib->qr_url($config);
-    $img = $this->qr_code_lib->generate($qr_url);
-    // echo "<pre>"; print_r($img); die;
+        'flag' => $flag,
+        ];
+        $qr_url = $this->qr_code_lib->qr_url($config);
+        $img = $this->qr_code_lib->generate($qr_url);
+        // echo "<pre>"; print_r($img); die;
 
-      $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
-                  <tr> 
-                      <td width="70%"></td>
-                      <td align="center" width="30%">
-                      <br><br>
-                      Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
-                      '.COMP_FULL.'<br>
-                      '.$img.'
-                      </td>   
-                  </tr>
-              </table>';
-      return $html;
+        $html .= '<table width="100%" border="1" cellspacing="0" cellpadding="0" border="0">
+                <tr> 
+                    <td width="70%"></td>
+                    <td align="center" width="30%">
+                    <br><br>
+                    Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
+                    '.COMP_FULL.'<br>
+                    '.$img.'
+                    </td>   
+                </tr>
+            </table>';
+        return $html;
   }
 
     public function setGlobalFooterBillingRI($data){
@@ -1878,31 +1933,31 @@ class Templates extends MX_Controller {
                             <td width="150px">No. Penunjang</td>
                             <td width="250px">: '.$pm_.'</td>
                             <td width="100px">No. RM</td>
-                            <td width="250px">: '.$no_mr.'</td>
+                            <td width="200px">: '.$no_mr.'</td>
                         </tr>
                         <tr>
                             <td width="150px">Dokter Pengirim</td>
                             <td width="250px">: '.$dokter_pengirim.'</td>
                             <td width="100px" align="left">Nama Pasien</td>
-                            <td width="250px">: '.$nama_pasien.'</td>
+                            <td width="200px">: '.$nama_pasien.'</td>
                         </tr>
                         <tr>
                             <td width="150px">Tanggal Pendaftaran</td>
                             <td align="left" width="250px">: '.$tgl_daftar.'</td>
                             <td width="100px">Umur</td>
-                            <td width="250px">: '.$umur.' Tahun</td>     
+                            <td width="200px">: '.$umur.' Tahun</td>     
                         </tr>
 
                         <tr>
                             <td width="150px">Tanggal Pemeriksaan</td>
                             <td width="250px">: '.$tgl_periksa.'</td>
                             <td width="100px">Jenis Kelamin</td>
-                            <td width="250px">: '.$jk_.'</td>
+                            <td width="200px">: '.$jk_.'</td>
                         </tr>    
                         
                         <tr>
                         <td width="150px">Ruangan / Kelas</td>
-                        <td width="250px">: '.ucwords($data_pm->nama_bagian).' / '.$data_pm->nama_klas.'</td>
+                        <td width="250px" colspan="3">: '.ucwords($data_pm->nama_bagian).' / '.$data_pm->nama_klas.'</td>
                       
                         </tr>    
                     </table>';

@@ -226,7 +226,7 @@
               <input type="text" class="input-xs date-picker" style="max-width: 100px; margin-left:0px !important" name="end_date" id="end_date" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
             </div>
           </div>
-          <div class="col-md-2" style="margin-left: -6%">
+          <div class="col-md-4" style="margin-left: -6%">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Tampilkan

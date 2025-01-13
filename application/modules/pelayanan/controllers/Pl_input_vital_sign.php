@@ -23,6 +23,9 @@ class Pl_input_vital_sign extends MX_Controller {
         $this->load->library('Form_validation');
         /*enable profiler*/
         $this->output->enable_profiler(false);
+
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
         
@@ -46,6 +49,19 @@ class Pl_input_vital_sign extends MX_Controller {
         /*get value by id*/
         $data['value'] = $this->Pl_pelayanan->get_by_id($id);
 
+
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        $result = json_decode($this->Csm_billing_pasien->getDetailData($data['value']->no_registrasi));
+        $result->nama_ppa = $result->reg_data->nama_pegawai;
+        $result->kode_dr = $result->reg_data->kode_dokter;
+        // echo '<pre>';print_r($result);die;
+        // header cppt
+        $header = $temp->setGlobalProfileCppt($result);
+        $footer = $temp->setGlobalFooterCppt($result);
+        $data['header'] = $header;
+        $data['footer'] = $footer;
+
         $data['kode_bagian'] = $data['value']->kode_bagian_asal;
         $data['nama_dokter'] = $data['value']->nama_pegawai;
 
@@ -53,7 +69,7 @@ class Pl_input_vital_sign extends MX_Controller {
         $data['id'] = $id;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['jenis_form'] = 'form_25';
-        $template = $this->load->view('Pl_pelayanan/form_25', $data, true);
+        $template = $this->load->view('Pl_pelayanan/clinical_pathway/form_25', $data, true);
         $data['template'] = $template;
         
         /*load form view*/

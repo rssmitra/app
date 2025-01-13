@@ -153,7 +153,7 @@ $(document).ready(function() {
 
   $('#jenis_form_catatan').change(function () {
       if ($(this).val()) {
-          $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val(), '', function (data) {
+          $.getJSON("pelayanan/Pl_pelayanan/switch_template_form/" + $(this).val() + '/' + $('#no_kunjungan').val()+'/'+$('#no_registrasi').val(), '', function (data) {
             $('#editor').html(data.html);
           });
       } else {
@@ -326,6 +326,7 @@ function fillthis(id){
       <input type="hidden" name="cppt_id" value="" id="cppt_id">
       <input type="hidden" name="no_mr" value="<?php echo isset($no_mr)?$no_mr:''?>" id="no_mr">
       <input type="hidden" name="no_kunjungan" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan">
+      <input type="hidden" name="no_registrasi" value="<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>" id="no_registrasi">
 
       <div class="form-group">
           <label class="control-label col-sm-2" for="">*Tanggal/Jam</label>
