@@ -540,9 +540,19 @@ class Reg_pasien extends MX_Controller {
 
     public function view_detail_resume_medis($no_registrasi) { 
         
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        $result = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
+        $result->nama_ppa = $result->reg_data->nama_pegawai;
+        $result->kode_dr = $result->reg_data->kode_dokter;
+        $header = $temp->setGlobalProfileCppt($result);
+        $footer = $temp->setGlobalFooterCppt($result);
+
         $data = [
             'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi),
             'no_registrasi' => $no_registrasi,
+            'header' => $header,
+            'footer' => $footer,
         ];
 
         $userDob = isset($data['result']['registrasi']->tgl_lhr)?$this->tanggal->formatDateTimeToSqlDate($data['result']['registrasi']->tgl_lhr):'1990-01-01';
