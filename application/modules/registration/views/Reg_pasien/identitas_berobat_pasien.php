@@ -49,7 +49,7 @@ window.onload = generateBarcode;
   </td>
 </tr>
 </table> -->
-<div style="max-width:550px;margin-top:250px">
+<div style="max-width:550px;margin-top:50px">
   <!-- <hr> -->
   <center><b><h2>RINGKASAN PASIEN MASUK DAN KELUAR</h2></b></center>
 </div>
@@ -166,15 +166,15 @@ window.onload = generateBarcode;
 
   @media print {
 
-    @page {
-        /*size: A5 portrait;*/
+    /*@page {
+        size: A5 portrait;
         margin: 0mm;
         width: 250px;
         height: 250px;
-    }
+    }*/
     body { 
         background-color: white; 
-        margin: 1in;
+        /*margin: 1in;*/
     }
     p {
         font-family: sans-serif;
