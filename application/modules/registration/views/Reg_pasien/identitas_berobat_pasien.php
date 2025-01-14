@@ -49,7 +49,7 @@ window.onload = generateBarcode;
   </td>
 </tr>
 </table> -->
-<div style="max-width:550px;margin-top:50px">
+<div style="max-width:550px;margin-top:250px">
   <!-- <hr> -->
   <center><b><h2>RINGKASAN PASIEN MASUK DAN KELUAR</h2></b></center>
 </div>
