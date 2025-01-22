@@ -92,6 +92,7 @@ class Reg_mcu extends MX_Controller {
             /*execution*/
             $this->db->trans_begin();
 
+            // echo '<pre>';print_r($_POST);die;
             $title = 'Pendaftaran MCU';
             $no_mr = $this->regex->_genRegex($this->form_validation->set_value('noMrHidden'),'RGXQSL');
             $kode_perusahaan = $this->regex->_genRegex($this->form_validation->set_value('kode_perusahaan_hidden'),'RGXINT');
@@ -171,7 +172,7 @@ class Reg_mcu extends MX_Controller {
             $data_tc_trans_pelayanan['flag_mcu'] = 1;
             $data_tc_trans_pelayanan['nama_pasien_layan'] = $_POST['nama_pasien_hidden'];
 
-            //echo"<pre>";print_r($data_tc_trans_pelayanan);die;
+            // echo"<pre>";print_r($data_tc_trans_pelayanan);die;
             /*save tc_trans_pelayanan*/
             $this->Reg_klinik->save('tc_trans_pelayanan', $data_tc_trans_pelayanan);
 
