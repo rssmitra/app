@@ -213,7 +213,7 @@ class Riwayat_penerimaan_brg_model extends CI_Model {
 		$t_po = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$t_rekap_stok = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
 
-		$this->db->select('y.kode_penerimaan, y.tgl_penerimaan, z.no_po, b.kode_brg, b.content, c.nama_brg, c.satuan_besar, c.satuan_kecil, b.jumlah_pesan_decimal as jumlah_pesan, b.jumlah_kirim_decimal as jumlah_kirim, b.harga_net, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, batch_log.id_tc_batch_log, a.discount, a.discount_rp, z.ppn, p.namasupplier, p.alamat, p.telpon1, z.total_sbl_ppn, z.total_stl_ppn, z.discount_harga, y.petugas, y.dikirim, b.dpp, b.harga, b.disc, b.kode_detail_penerimaan_barang, b.updated_date, b.updated_by, b.keterangan ');
+		$this->db->select('y.kode_penerimaan, y.tgl_penerimaan, z.no_po, b.kode_brg, b.content, c.nama_brg, c.satuan_besar, c.satuan_kecil, b.jumlah_pesan_decimal as jumlah_pesan, b.jumlah_kirim_decimal as jumlah_kirim, b.harga_net, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, a.discount, a.discount_rp, z.ppn, p.namasupplier, p.alamat, p.telpon1, z.total_sbl_ppn, z.total_stl_ppn, z.discount_harga, y.petugas, y.dikirim, b.dpp, b.harga, b.disc, b.kode_detail_penerimaan_barang, b.updated_date, b.updated_by, b.keterangan ');
 		$this->db->from($t_penerimaan.'_detail b');
 		$this->db->join(''.$t_po.'_det a', 'b.id_tc_po_det=a.id_tc_po_det' ,'left');
 		$this->db->join($t_po.' z', 'z.id_tc_po=a.id_tc_po', 'left');
@@ -223,6 +223,7 @@ class Riwayat_penerimaan_brg_model extends CI_Model {
 		$this->db->join('(SELECT * FROM tc_penerimaan_brg_batch_log WHERE reff_table='."'".$t_penerimaan."'".') as batch_log','batch_log.id_tc_po_det=a.id_tc_po_det','left');
 		$id = (is_array($id)) ? implode(',', $id) : $id ;
 		$this->db->where('b.id_penerimaan IN ('.$id.')');
+		$this->db->group_by('y.kode_penerimaan, y.tgl_penerimaan, z.no_po, b.kode_brg, b.content, c.nama_brg, c.satuan_besar, c.satuan_kecil, b.jumlah_pesan_decimal, b.jumlah_kirim_decimal, b.harga_net, batch_log.kode_box, batch_log.kode_pcs, batch_log.no_batch, batch_log.jenis_satuan, batch_log.tgl_expired, batch_log.is_expired, a.discount, a.discount_rp, z.ppn, p.namasupplier, p.alamat, p.telpon1, z.total_sbl_ppn, z.total_stl_ppn, z.discount_harga, y.petugas, y.dikirim, b.dpp, b.harga, b.disc, b.kode_detail_penerimaan_barang, b.updated_date, b.updated_by, b.keterangan ');
 		$this->db->order_by('b.kode_detail_penerimaan_barang ASC');
 		$query = $this->db->get()->result();
 		// echo $this->db->last_query();

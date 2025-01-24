@@ -162,7 +162,7 @@ $(document).ready(function() {
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/"+url_tindakan,
-                data: { keyword:query, kode_klas: $('#kode_klas_val').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val() },            
+                data: { keyword:query, kode_klas: $('#kode_klas_val').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val(), show_all : $('input[name="show_all_tarif"]:checked').val(), jenis_tarif : $('input[name="jenis_tarif"]:checked').val() },            
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
@@ -191,7 +191,7 @@ $(document).ready(function() {
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/getTindakanRIByBagianAutoComplete",
-                data: { keyword:query, kode_klas: kelas, kode_perusahaan : $('input[name=jenis_tarif]:checked').val() },           
+                data: { keyword:query, kode_klas: kelas, kode_perusahaan : $('input[name=jenis_tarif]:checked').val(), show_all : $('input[name="show_all_tarif"]:checked').val(), jenis_tarif : $('input[name="jenis_tarif"]:checked').val() },           
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
@@ -204,8 +204,10 @@ $(document).ready(function() {
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
           $('#pl_kode_tindakan_hidden').val(val_item);
+          $('#InputKeyTindakan_ri').val(label_item);
           $('.InputKeyDokterBagian').focus();
           /*get detail tarif by kode tarif and kode klas*/
           getDetailTarifByKodeTarifAndKlas(val_item, $('#kode_klas_val').val());
@@ -753,18 +755,26 @@ function tambah_file()
 
         <div class="form-group">
           <label class="control-label col-sm-2">Jenis Tarif</label>
-          <div class="col-md-8">
+          <div class="col-md-4">
             <div class="radio">
-                  <label>
-                    <input name="jenis_tarif" type="radio" class="ace" value="120" />
-                    <span class="lbl"> BPJS</span>
-                  </label>
-                  <label>
-                    <input name="jenis_tarif" type="radio" class="ace" value="0" checked />
-                    <span class="lbl"> Non BPJS </span>
-                  </label>
+              <label>
+                <input name="jenis_tarif" type="radio" class="ace" value="120" />
+                <span class="lbl"> BPJS</span>
+              </label>
+              <label>
+                <input name="jenis_tarif" type="radio" class="ace" value="0" checked />
+                <span class="lbl"> Asuransi & Umum </span>
+              </label>
             </div>
           </div>
+          
+        </div>
+
+        <div class="checkbox">
+          <label>
+            <input name="show_all_tarif" id="show_all_tarif" type="checkbox" class="ace" value="1">
+            <span class="lbl"><i>Tampilkan tarif dari seluruh unit</i></span>
+          </label>
         </div>
 
         <div class="form-group">
@@ -784,7 +794,6 @@ function tambah_file()
             <div class="col-sm-2" style="margin-left: -2.5%">
                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'satuan_tindakan')), '' , 'satuan_tindakan', 'satuan_tindakan', 'form-control', '', '') ?>
             </div>
-            
         </div>
 
         <div class="form-group">

@@ -17,6 +17,7 @@ class Harga_jual_obat extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Harga_jual_obat_model', 'Harga_jual_obat');
+        $this->load->model('Lap_penjualan_obat_model', 'Lap_penjualan_obat');
         /*enable profiler*/
         $this->output->enable_profiler(false);
         /*profile class*/
@@ -69,7 +70,7 @@ class Harga_jual_obat extends MX_Controller {
         $this->breadcrumbs->push('View '.strtolower($this->title).'', 'Harga_jual_obat/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
         /*define data variabel*/
         $data['value'] = $this->Harga_jual_obat->get_by_id($id);
-        $data['history_po'] = $this->Harga_jual_obat->get_history_po($id);
+        $data['history_po'] = $this->Lap_penjualan_obat->get_history_po($id);
         $data['title'] = $this->title;
         $data['flag'] = "read";
         $data['flag_string'] = $_GET['flag'];

@@ -128,7 +128,7 @@ $(document).ready(function(){
             <div class="form-group">
                 <label class="control-label col-sm-2" for="">Jenis</label>
                 <div class="col-sm-2">
-                  <?php echo $this->master->custom_selection(array('table'=>'mt_jenis_tindakan', 'where'=>array(), 'id'=>'kode_jenis_tindakan', 'name' => 'jenis_tindakan'),isset($value->kode_jenis_tindakan)?$value->kode_jenis_tindakan:'','jenis_tindakan','jenis_tindakan','chosen-slect form-control','','');?>
+                  <?php echo $this->master->custom_selection(array('table'=>'mt_jenis_tindakan', 'where'=>array(), 'id'=>'kode_jenis_tindakan', 'name' => 'jenis_tindakan'),isset($value->jenis_tindakan)?$value->jenis_tindakan:'','jenis_tindakan','jenis_tindakan','chosen-slect form-control','','');?>
                 </div>
             </div>
             

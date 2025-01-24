@@ -35,7 +35,7 @@ $(document).ready(function(){
     "bPaginate": false,
     "bInfo": false,
      "ajax": {
-        "url": "tarif/Mst_tarif/get_data?unit="+$('#unit').val()+"&nama_tarif="+$('#nama_tarif').val()+"",
+        "url": "tarif/Mst_tarif/get_data",
         "type": "POST"
     },
     "columnDefs": [
@@ -150,7 +150,7 @@ function find_data_reload(result=''){
 
 function reload_table(){
 
-  oTable.ajax.url('tarif/Mst_tarif/get_data?unit='+$('#unit').val()+'&checked_nama_tarif=1&nama_tarif='+$('#nama_tarif').val()+'').load();
+  oTable.ajax.url('tarif/Mst_tarif/get_data?unit='+$('#unit').val()+'&checked_nama_tarif=1&nama_tarif='+$('#nama_tarif').val()+'&jenis_tarif='+$('input[name="jenis_tarif"]:checked').val()+'&is_active='+$('input[name="is_active"]:checked').val()+'').load();
 
 }
 
@@ -240,9 +240,43 @@ function delete_tarif_klas(myid){
       </center>
       <br>
       <div class="form-group">
+        <label class="control-label col-md-1">Jenis Tarif</label>
+        <div class="col-md-3">
+          <div class="radio">
+                <label>
+                  <input name="jenis_tarif" type="radio" class="ace" value="bpjs" checked  />
+                  <span class="lbl"> BPJS Kesehatan</span>
+                </label>
+                <label>
+                  <input name="jenis_tarif" type="radio" class="ace" value="non_bpjs"/>
+                  <span class="lbl">Umum & Asuransi</span>
+                </label>
+          </div>
+        </div>
+        <label class="control-label col-md-1">Status Aktif</label>
+        <div class="col-md-4">
+          <div class="radio">
+                <label>
+                  <input name="is_active" type="radio" class="ace" value="Y" checked/>
+                  <span class="lbl"> Aktif</span>
+                </label>
+                <label>
+                  <input name="is_active" type="radio" class="ace" value="N"/>
+                  <span class="lbl">Tidak Aktif</span>
+                </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-1">Jenis Tindakan</label>
+        <div class="col-md-3">
+          <?php echo $this->master->custom_selection(array('table'=>'mt_jenis_tindakan', 'where'=>array(), 'id'=>'kode_jenis_tindakan', 'name' => 'jenis_tindakan'),isset($this->cache->get('cache')['kode_jenis_tindakan'])?$this->cache->get('cache')['kode_jenis_tindakan']:'','kode_jenis_tindakan','kode_jenis_tindakan','chosen-slect form-control','','');?>
+        </div>
+      </div>
+      <div class="form-group">
         <label class="control-label col-md-1">Unit/Bagian</label>
         <div class="col-md-3">
-          <?php echo $this->master->custom_selection(array('table'=>'mt_bagian', 'where'=>array('pelayanan' => 1), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($this->cache->get('cache')['unit'])?$this->cache->get('cache')['unit']:'','unit','unit','chosen-slect form-control','','');?>
+          <?php echo $this->master->custom_selection(array('table'=>'mt_bagian', 'where'=>array('pelayanan' => 1, 'validasi' => 100), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($this->cache->get('cache')['unit'])?$this->cache->get('cache')['unit']:'','unit','unit','chosen-slect form-control','','');?>
         </div>
         <div class="control-label col-md-2">
             <div class="checkbox" style="margin-top: -5px">
@@ -284,13 +318,16 @@ function delete_tarif_klas(myid){
               <th width="50px">&nbsp;</th>
               <th width="50px">&nbsp;</th>
               <th></th>
-              <th>Kode & Nama Tarif</th>      
+              <th>No</th>      
+              <th>Kode</th>      
+              <th>Nama Tarif</th>      
               <th>Unit/Bagian</th>      
+              <th>Jenis Tarif</th>      
               <?php foreach($klas as $row_klas) :?>      
               <th width="100px"><?php echo $row_klas->nama_klas; ?></th>         
               <?php endforeach; ?>      
               <th width="100px">Status</th>         
-              <th width="100px">Action</th>         
+              <th width="150px">Action</th>         
             </tr>
           </thead>
           <tbody>

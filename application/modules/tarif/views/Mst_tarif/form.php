@@ -113,8 +113,12 @@ function changeTotal(){
 
     </div>  
 
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-xs-12">
     <form class="form-horizontal" method="post" id="form-tarif" action="tarif/Mst_tarif/process" enctype="multipart/form-data" autocomplete="off" >      
-      
+        
         <br>
 
         <!-- hidden form -->
@@ -230,8 +234,8 @@ function changeTotal(){
         </div>
 
     </form>
-      
-</div><!-- /.row -->
+  </div>
+</div>
 
 
 

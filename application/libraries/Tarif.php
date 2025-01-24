@@ -107,8 +107,8 @@ final class Tarif extends AvObjects {
 
         $hasil=array();
 
-        $rTarif = $db->get_where('mt_tarif_v', array('kode_tarif' => $this->get("kode_tarif"), 'kode_klas' => $this->get("kode_klas"), 'status' => 1))->row();
-        //print_r($db->last_query());die;
+        $rTarif = $db->get_where('mt_tarif_v', array('kode_tarif' => $this->get("kode_tarif"), 'kode_klas' => $this->get("kode_klas")))->row();
+        // print_r($db->last_query());die;
         //if (isset($this->_prop["cito"]) && ($this->get("cito")!="" || $this->get("cito")!="0")) {
         if (isset($this->_prop["cito"]) && ($this->get("cito")=="1")) {
             //$hasil=$this->_hitungTarifCito($rTarif->fields);
@@ -127,32 +127,35 @@ final class Tarif extends AvObjects {
             $hasil["bhp"] = $hasil_cito["bhp"];
             $hasil["pendapatan_rs"] = $hasil_cito["pendapatan_rs"];
         } else {
-            $hasil["bill_rs"] = $rTarif->bill_rs * $this->get("jumlah");
-            $hasil["bill_dr1"] = $rTarif->bill_dr1 * $this->get("jumlah");
-            $hasil["bill_dr2"] = $rTarif->bill_dr2 * $this->get("jumlah");
-            $hasil["bill_dr3"] = $rTarif->bill_dr3 * $this->get("jumlah");
-            //$hasil["bill_perawat"] = $rTarif->Fields("bill_perawat") * $this->get("jumlah");
-            $hasil["kamar_tindakan"] = $rTarif->kamar_tindakan * $this->get("jumlah");
-            $hasil["biaya_lain"] = $rTarif->biaya_lain * $this->get("jumlah");
-            $hasil["obat"] = $rTarif->obat * $this->get("jumlah");
-            $hasil["alkes"] = $rTarif->alkes * $this->get("jumlah");
-            $hasil["alat_rs"] = $rTarif->alat_rs * $this->get("jumlah");
-            $hasil["adm"] = $rTarif->adm * $this->get("jumlah");
-            $hasil["overhead"] = $rTarif->overhead * $this->get("jumlah");
-            $hasil["bhp"] = $rTarif->bhp * $this->get("jumlah");
-            $hasil["pendapatan_rs"] = $rTarif->pendapatan_rs * $this->get("jumlah");
+            
+            $qty = ($this->get("jumlah")>1)?$this->get("jumlah"):1;
+
+            $hasil["bill_rs"] = $rTarif->bill_rs * $qty;
+            $hasil["bill_dr1"] = $rTarif->bill_dr1 * $qty;
+            $hasil["bill_dr2"] = $rTarif->bill_dr2 * $qty;
+            $hasil["bill_dr3"] = $rTarif->bill_dr3 * $qty;
+            //$hasil["bill_perawat"] = $rTarif->Fields("bill_perawat") * $qty;
+            $hasil["kamar_tindakan"] = $rTarif->kamar_tindakan * $qty;
+            $hasil["biaya_lain"] = $rTarif->biaya_lain * $qty;
+            $hasil["obat"] = $rTarif->obat * $qty;
+            $hasil["alkes"] = $rTarif->alkes * $qty;
+            $hasil["alat_rs"] = $rTarif->alat_rs * $qty;
+            $hasil["adm"] = $rTarif->adm * $qty;
+            $hasil["overhead"] = $rTarif->overhead * $qty;
+            $hasil["bhp"] = $rTarif->bhp * $qty;
+            $hasil["pendapatan_rs"] = $rTarif->pendapatan_rs * $qty;
 
             if($this->get("kode_kelompok")=='10'){
                 $cek01=$rTarif->bill_kjs;
                 $cek02=$rTarif->bill_bs_rs;
                 $cek03=$rTarif->bill_bs_dr;
                 if($cek01!='' || $cek02!='' || $cek03!='' ){
-                    $hasil["bill_kjs"] = $rTarif->bill_kjs * $this->get("jumlah");
-                    $hasil["bill_bs_rs"] = $rTarif->bill_bs_rs * $this->get("jumlah");
-                    $hasil["bill_bs_dr"] = $rTarif->bill_bs_dr * $this->get("jumlah");
+                    $hasil["bill_kjs"] = $rTarif->bill_kjs * $qty;
+                    $hasil["bill_bs_rs"] = $rTarif->bill_bs_rs * $qty;
+                    $hasil["bill_bs_dr"] = $rTarif->bill_bs_dr * $qty;
                 }else{
-                    $hasil["bill_bs_rs"] = $rTarif->bill_rs * $this->get("jumlah");
-                    $hasil["bill_bs_dr"] = $rTarif->bill_dr1 * $this->get("jumlah");
+                    $hasil["bill_bs_rs"] = $rTarif->bill_rs * $qty;
+                    $hasil["bill_bs_dr"] = $rTarif->bill_dr1 * $qty;
                 }
                 $hasil["status_nk"] = "1";
             }

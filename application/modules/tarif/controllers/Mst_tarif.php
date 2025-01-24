@@ -32,7 +32,7 @@ class Mst_tarif extends MX_Controller {
         $data = array(
             'title' => $this->title,
             'breadcrumbs' => $this->breadcrumbs->show(),
-            'klas' => $this->db->order_by('no_urut', 'ASC')->where('kode_klas IN (6,12,13,16)')->get('mt_klas')->result()
+            'klas' =>$klas = $this->db->order_by('no_urut', 'ASC')->where('is_active', 1)->get('mt_klas')->result()
         );
         /*load view index*/
         $this->load->view('Mst_tarif/index', $data);
@@ -93,7 +93,7 @@ class Mst_tarif extends MX_Controller {
     public function getDetail($kode_tarif){
         
         $data = $this->Mst_tarif->get_detail_by_kode_tarif($kode_tarif);
-        
+        // print_r($data); die;
         $html = '';
         if(count($data) > 0){
             $html .= '<div style="border-bottom: 1px #333 solid"><b><h4>'.$data['nama_tarif'].'</h4></b></div><br>';
@@ -113,6 +113,7 @@ class Mst_tarif extends MX_Controller {
                 $html .= '<th>Pendapatan RS</th>';
                 $html .= '<th>Biaya Lainnya</th>';
                 $html .= '<th>Total</th>';
+                $html .= '<th>Status</th>';
                 $html .= '<th>Action</th>';
             $html .= '</tr>'; 
             foreach ($data['result'] as $key => $value) {
@@ -120,6 +121,8 @@ class Mst_tarif extends MX_Controller {
                 $html .='<tr><td colspan="13"><b><i class="fa fa-angle-double-down bigger-120"></i> '.strtoupper($nama_klas).'</b></td></tr>';
                 foreach ($value as $key2 => $val) {
                     # code...
+                    // echo "<pre>";print_r($val); die;
+                    $label_active = (trim($val->is_active) == 'Y')?'<span style="color: green; font-weight: bold">Active</span>':'<span style="color: red; font-weight: bold">Inactive</span>';
                     $html .= '<tr>';
                         $html .= '<td>Revisi ke- '.$val->revisi_ke.'</td>';
                         $html .= '<td align="right">'.number_format($val->bill_dr1).'</td>';
@@ -134,6 +137,7 @@ class Mst_tarif extends MX_Controller {
                         $html .= '<td align="right">'.number_format($val->pendapatan_rs).'</td>';
                         $html .= '<td align="right">'.number_format($val->biaya_lain).'</td>';
                         $html .= '<td align="right">'.number_format($val->total).'</td>';
+                        $html .= '<td align="center">'.$label_active.'</td>';
                         $html .= '<td align="center">
                                 <a href="#" onclick="getMenu('."'tarif/Mst_tarif/edit_klas_tarif/".$val->kode_master_tarif_detail."'".')"><span class="badge badge-success"><i class="fa fa-pencil"></i></span></a>
                                 <a href="#" onclick="delete_tarif_klas('.$val->kode_master_tarif_detail.')"><span class="badge badge-danger"><i class="fa fa-trash"></i></span></a>
@@ -160,14 +164,12 @@ class Mst_tarif extends MX_Controller {
 		$this->cache->save('cache', $_GET, 300);
 
         // get klas
-        $klas = $this->db->order_by('no_urut', 'ASC')->where('kode_klas IN (6,12,13,16)')->get('mt_klas')->result();
+        $klas = $this->db->order_by('no_urut', 'ASC')->where('is_active', 1)->get('mt_klas')->result();
 
         /*get data from model*/
         $list = [];
-        $list = $this->Mst_tarif->get_datatables();
-        if(isset($_GET['checked_nama_tarif'])){
-            $list = ($_GET['checked_nama_tarif'] != '') ? $this->Mst_tarif->get_datatables() : [];
-        }
+        // $list = $this->Mst_tarif->get_datatables();
+        $list = isset($_GET['checked_nama_tarif']) ? $this->Mst_tarif->get_datatables() : [];
         // echo '<pre>';print_r($list);die;
         $data = array();
         $no = $_POST['start'];
@@ -177,13 +179,15 @@ class Mst_tarif extends MX_Controller {
             $row[] = '';
             $row[] = '';
             $row[] = $key;
-            $row[] = $key.' - '.ucwords($row_list['nama_tarif']);
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = $key;
+            $row[] = ucwords($row_list['nama_tarif']);
             $row[] = ucwords($row_list['nama_bagian']);
+            $row[] = ucwords($row_list['nama_jenis_tindakan']);
             foreach ($klas as $key_klas => $row_klas) {
-                # code...
                 $row[] = isset($row_list['klas'][$row_klas->kode_klas]) ? '<div class="pull-right">'.number_format($row_list['klas'][$row_klas->kode_klas]->total).'</div>' : '<div class="pull-right">0</div>';
             }
-            $row[] = (rtrim($row_list['is_active']) == 'Y') ? '<div class="center"><span class="label label-success">Aktif</span></div>' : '<div class="center"><span class="label label-danger">Non Aktif</span></div>' ;
+            $row[] = (rtrim($row_list['is_active']) == 'Y') ? '<div class="center"><span style="color: green; font-weight: bold">Aktif</span></div>' : '<div class="center"><span style="color: red; font-weight: bold">Non Aktif</span></div>' ;
             $row[] = '<div class="center">
                 '.$this->authuser->show_button('tarif/Mst_tarif','U',$key,2).'
                 '.$this->authuser->show_button('tarif/Mst_tarif','D',$key,2).'

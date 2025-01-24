@@ -104,6 +104,26 @@ class Pl_pelayanan_bedah extends MX_Controller {
         $this->load->view('Pl_pelayanan_bedah/form_obat_alkes', $data);
     }
 
+    public function obat_bhp($id='', $no_kunjungan='')
+    {
+        /*breadcrumbs for edit*/
+        $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Pl_pelayanan_bedah/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+        /*get value by id*/
+        $data['value'] = $this->Pl_pelayanan_bedah->get_by_id($id);
+        /*mr*/
+        $data['no_mr'] = $data['value']->no_mr;
+        $data['no_kunjungan'] = $no_kunjungan;
+        $data['id_pesan_bedah'] = $id;
+        $data['sess_kode_bag'] = '030901';
+        $data['type']='Ranap';
+        /*title header*/
+        $data['title'] = $this->title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('Pl_pelayanan_bedah/form_obat_bhp', $data);
+    }
+
     public function riwayat_medis($no_kunjungan='', $id='')
     {
         /*breadcrumbs for edit*/

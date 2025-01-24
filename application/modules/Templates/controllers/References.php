@@ -1051,7 +1051,7 @@ class References extends MX_Controller {
 	{
 		$query = "select a.kode_dokter, a.nama_pegawai
 	 				from mt_dokter_v a
-	 				where (status=0 OR status is null) AND a.nama_pegawai LIKE '%".$_POST['keyword']."%' and a.nama_pegawai is not NULL and a.nama_pegawai <> '' GROUP BY a.kode_dokter, a.nama_pegawai";
+	 				where is_active = 'Y' AND a.nama_pegawai LIKE '%".$_POST['keyword']."%' and a.nama_pegawai is not NULL and a.nama_pegawai <> '' GROUP BY a.kode_dokter, a.nama_pegawai";
         $result = $this->db->query($query)->result();
         foreach ($result as $key => $value) {
 			$arrResult[] = $value->kode_dokter.' : '.$value->nama_pegawai;
@@ -1173,25 +1173,47 @@ class References extends MX_Controller {
 
 	public function getTindakanByBagianAutoComplete()
 	{
-		$where_str = ($_POST['kode_bag']=='030901') ? ' AND (( a.kode_bagian IN ('."'030901'".','."'012801'".') OR a.kode_bagian= 0 ) OR a.referensi IN ( SELECT kode_tarif FROM mt_master_tarif WHERE kode_bagian IN ('."'030901'".','."'012801'".') AND referensi = '.$_POST['jenis_bedah'].' ) )':'';
+		
+		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi');
+		$this->db->from('mt_master_tarif a');
+		$this->db->join('mt_master_tarif c','c.kode_tarif=a.referensi','LEFT');
+		$this->db->where('a.tingkatan', 5);
+		$this->db->where('a.is_active', 'Y');
+		$this->db->like('a.nama_tarif', $_POST['keyword']);
 
-		if(in_array($_POST['kode_bag'], array('030501', '031201'))){
-			$where_kode_bag = "a.kode_bagian IN ('030501', '031201')";
-		}
-		elseif(in_array($_POST['kode_bag'], array('013701', '011501', '011601', '011001'))){
-			$where_kode_bag = "a.kode_bagian IN ('013701', '011501', '011601', '011001')";
-		}
-		else{
-			$where_kode_bag = "a.kode_bagian="."'".$_POST['kode_bag']."'"."";
+		if($_POST['jenis_tarif'] == 120){
+			$this->db->like('a.nama_tarif', 'BPJS');
+		}else{
+			$this->db->not_like('a.nama_tarif', 'BPJS');
 		}
 
-        $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi
-					from mt_master_tarif a
-					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
-					left join mt_master_tarif c on c.kode_tarif=a.referensi
-					where  a.tingkatan=5 and (".$where_kode_bag." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." and a.is_active = 'Y' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
-					// echo $query;exit;
-        $exc = $this->db->query($query)->result();
+		if(isset($_POST['show_all']) && $_POST['show_all'] == 1){
+			// no filter
+		}else{
+			if(in_array($_POST['kode_bag'], array('030501', '031201'))){
+				$this->db->where("(a.kode_bagian IN ('030501', '031201') or a.kode_bagian = 0)");
+			}
+			elseif(in_array($_POST['kode_bag'], array('013701', '011501', '011601', '011001'))){
+				$this->db->where("(a.kode_bagian IN ('013701', '011501', '011601', '011001') or a.kode_bagian = 0)");
+			}
+			elseif(in_array($_POST['kode_bag'], array('030901'))){
+				$this->db->where("(a.kode_bagian IN ('030901', '012801') OR a.kode_bagian = 0 OR a.referensi IN ( SELECT kode_tarif FROM mt_master_tarif WHERE kode_bagian IN ('030901','012801') AND referensi = '".$_POST['jenis_bedah']."' ) )");
+			}
+			else{
+				$this->db->where("(a.kode_bagian = '".$_POST['kode_bag']."' or a.kode_bagian = 0)");
+			}
+		}
+		
+
+
+        // $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi
+		// 			from mt_master_tarif a
+		// 			left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+		// 			left join mt_master_tarif c on c.kode_tarif=a.referensi
+		// 			where  a.tingkatan=5 and (".$where_kode_bag." or a.kode_bagian=0) and a.nama_tarif like '%".$_POST['keyword']."%' ".$where_str." and a.is_active = 'Y' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif order by a.is_old asc,a.nama_tarif asc";
+		$exc = $this->db->get()->result();
+
+		// print_r($this->db->last_query());exit;
 
 		$arrResult = [];
 		foreach ($exc as $key => $value) {
@@ -1303,13 +1325,30 @@ class References extends MX_Controller {
 	public function getTindakanRIByBagianAutoComplete()
 	{
 		// print_r($_POST);die;
-        $where_str = ($_POST['kode_perusahaan']==120) ? ($_POST['kode_klas']==1 || $_POST['kode_klas']==2)?'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ':'and nama_tarif like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' : 'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' ;
+        // $where_str = ($_POST['kode_perusahaan']==120) ? ($_POST['kode_klas']==1 || $_POST['kode_klas']==2)?'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ':'and nama_tarif like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' : 'and nama_tarif not like '."'%BPJS%'".' and b.kode_klas= '.$_POST['kode_klas'].' ' ;
 
-        $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif
-					from mt_master_tarif a
-					left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
-					where  a.tingkatan=5 and (a.kode_bagian like '03%' OR a.kode_bagian = 0) AND (kode_bagian <> '030901') and a.nama_tarif like '%".$_POST['keyword']."%' and a.is_active!= 'N' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif order by a.nama_tarif ";
-		$exc = $this->db->query($query)->result();
+        // $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif
+		// 			from mt_master_tarif a
+		// 			left join mt_master_tarif_detail b on b.kode_tarif=a.kode_tarif
+		// 			where  a.tingkatan=5 and (a.kode_bagian like '03%' OR a.kode_bagian = 0) AND (kode_bagian <> '030901') and a.nama_tarif like '%".$_POST['keyword']."%' and a.is_active!= 'N' group by a.kode_tarif, a.kode_tindakan, a.nama_tarif order by a.nama_tarif ";
+		 
+
+		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi');
+		$this->db->from('mt_master_tarif a');
+		$this->db->join('mt_master_tarif c','c.kode_tarif=a.referensi','LEFT');
+		$this->db->where('a.tingkatan', 5);
+		$this->db->where('a.is_active', 'Y');
+		$this->db->where("(a.kode_bagian like '03%' OR a.kode_bagian = 0) AND (a.kode_bagian <> '030901')");
+		$this->db->like('a.nama_tarif', $_POST['keyword']);
+		$this->db->order_by('a.nama_tarif ASC');
+
+		if($_POST['jenis_tarif'] == 120){
+			$this->db->like('a.nama_tarif', 'BPJS');
+		}else{
+			$this->db->not_like('a.nama_tarif', 'BPJS');
+		}
+
+		$exc = $this->db->get()->result();
 		// print_r($this->db->last_query());die;
 		$arrResult = [];
 		foreach ($exc as $key => $value) {

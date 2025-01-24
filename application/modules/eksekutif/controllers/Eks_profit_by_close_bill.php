@@ -91,14 +91,16 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $row[] = $row_list->nama_asuransi;
             $row[] = $row_list->no_sep;
             // total bill
-            $total_bill = $row_list->bill_rs + $row_list->bill_dr1 + $row_list->bill_dr2;
+            $total_bill = $row_list->total_billing;
             // bhp apotik
             $margin_apt = 33/100;
             $margin_apotik = $row_list->bill_apotik * $margin_apt;
-            $bhp_apotik = $row_list->bill_apotik - $margin_apotik;
+            $bhp_apotik = $row_list->bill_apotik;
             // total pendapatan
-            $profit = $row_list->bill_rs - ($row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik);
+            // $profit = $row_list->bill_rs - ($row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik);
+            $profit = $row_list->pendapatan_rs;
             $cost = $row_list->bill_dr1 + $row_list->bill_dr2 + $row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik;
+            
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_dr1).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_dr2).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bhp).'</div>';
@@ -107,7 +109,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kamar_tindakan).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->alat_rs).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$profit).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$total_bill).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->total_billing).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tarif_inacbgs).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tarif_rs_klaim_ncc).'</div>';
 
@@ -122,7 +124,6 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $ttl_total_bill[] = $total_bill;
 
             $data[] = $row;
-
             // jumlah pasien berdasarkan kategori penjamin
             $getDtByKategori[$row_list->tipe][$row_list->penjamin][] = $row_list;
             $getRevenueByKategori[$row_list->tipe][$row_list->penjamin][] = $total_bill;

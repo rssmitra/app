@@ -111,7 +111,7 @@ $(document).ready(function() {
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/getTindakanByBagianAutoComplete",
-                data: { keyword:query, kode_klas: $('#kode_klas_val2').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val(), jenis_bedah : $('#jenis_bedah').val() },            
+                data: { keyword:query, kode_klas: $('#kode_klas_val2').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val(), jenis_bedah : $('#jenis_bedah').val(), show_all : $('input[name="show_all_tarif"]:checked').val(), jenis_tarif : $('input[name="jenis_tarif"]:checked').val() },            
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
@@ -124,7 +124,9 @@ $(document).ready(function() {
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
+          $('#InputKeyTindakan').val(label_item);
           $('#pl_kode_tindakan_hidden').val(val_item);
           $('.InputKeyDokterBagian').focus();
           /*get detail tarif by kode tarif and kode klas*/
@@ -560,6 +562,12 @@ function tambah_file()
                 <label class="control-label col-sm-2" for="">Jenis Bedah</label>
                 <div class="col-sm-4">
                 <?php echo $this->master->custom_selection(array('table'=>'mt_master_tarif', 'where'=>array('is_active'=>'Y', 'tingkatan' => 3, 'kode_bagian' => $sess_kode_bag), 'id'=>'kode_tarif', 'name' => 'nama_tarif'),'','jenis_bedah','jenis_bedah','chosen-slect form-control','');?>
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input name="show_all_tarif" id="show_all_tarif" type="checkbox" class="ace" value="1">
+                    <span class="lbl"><i>Tampilkan tarif dari seluruh jenis bedah</i></span>
+                  </label>
                 </div>
             </div>
             

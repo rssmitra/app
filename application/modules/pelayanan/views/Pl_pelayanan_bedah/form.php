@@ -637,6 +637,11 @@ function rollback(no_registrasi, no_kunjungan){
                         </a>
                       </li>
                       <li>
+                        <a data-toggle="tab" id="tab_obat_bhp" href="#" data-id="<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($kode_bagian)?$kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan_bedah/obat_bhp/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                          Input Obat BHP
+                        </a>
+                      </li>
+                      <li>
                         <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RI" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
                           Billing Pasien
                         </a>
