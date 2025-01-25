@@ -20,7 +20,7 @@
   $(document).ready(function(){
 
     $('#keyword').focus();
-    get_total_billing();
+    // get_total_billing();
    
     oTable = $('#dt_pasien_kasir').DataTable({ 
           
@@ -35,7 +35,7 @@
         // Load data for the table's content from an Ajax source
         "ajax": {
             "url": $('#dt_pasien_kasir').attr('base-url')+'?flag='+$('#flag').val()+'&pelayanan='+$('#pelayanan').val(),
-            "data": {flag:$('#flag').val(), date:$('#date').val(), month:$('#month').val(), year:$('#year').val()},
+            "data": {flag:$('#flag').val(), date:$('#date').val(), month:$('#month').val(), year:$('#year').val(), dok_klaim : $('input[name=dok_klaim]:checked').val()},
             "type": "POST"
         },
         "columnDefs": [
@@ -179,7 +179,7 @@
   
 
   function find_data_reload(result){
-      get_total_billing();
+      // get_total_billing();
       oTable.ajax.url($('#dt_pasien_kasir').attr('base-url')+'?'+result.data).load();
       $("html, body").animate({ scrollTop: "400px" });
   }
@@ -214,7 +214,30 @@
         }
       });
 
-    
+  }
+
+  function proses_dokumen_klaim( no_registrasi, tipe ){
+    preventDefault();
+    $.ajax({
+        url: 'adm_pasien/loket_kasir/Adm_kasir/costing_billing',
+        type: "post",
+        data: { value : no_registrasi, type : tipe },
+        dataType: "json",
+        beforeSend: function() {
+          $('#btn_id_'+no_registrasi+'').html('<i>Wait...</i>');
+        },
+        success: function(data) {
+          console.log(data);
+          if(data.code == 200){
+            PopupCenter(data.url, '', 900, 700);
+            $('#btn_id_'+no_registrasi+'').html('<i class="fa fa-check circle green bigger-150"></i>');
+          }else{
+            alert('Dokumen gagal ['+data.message+'] ');
+          }
+
+
+        }
+    });
   }
 
 
@@ -309,8 +332,24 @@
                 Export Excel
             </a>
           </div>
-
       </div>
+
+      <div class="form-group">
+        <label class="control-label col-md-2">Proses Dokumen Klaim</label>
+        <div class="col-md-2">
+          <div class="radio">
+            <label>
+              <input name="dok_klaim" type="radio" class="ace" value="1" />
+              <span class="lbl"> Berhasil</span>
+            </label>
+            <label>
+              <input name="dok_klaim" type="radio" class="ace" value="0" />
+              <span class="lbl"> Gagal</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
 
 
       <div id="showDataTables">
@@ -330,6 +369,7 @@
               <th width="120px">Tgl Transaksi</th>
               <th width="150px">Petugas</th>
               <th width="100px">Total Billing</th>
+              <th width="100px">Dok Klaim</th>
             </tr>
           </thead>
         </table>

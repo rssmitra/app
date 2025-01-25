@@ -18,6 +18,7 @@ class Adm_kasir_model extends CI_Model {
 
 		$this->db->select($this->select);
 		$this->db->select('CAST(bill_rs as INT) as bill_rs, CAST(bill_dr1 as INT) as bill_dr1, CAST(bill_dr2 as INT) as bill_dr2, CAST(bill_dr3 as INT) as bill_dr3, CAST(lain_lain as INT) as lain_lain');
+		$this->db->select("dbo.get_filename_dok_klaim(b.no_registrasi) as dok_klaim");
 		$this->db->from($this->table.' a');
 		$this->db->join('tc_registrasi b','b.no_registrasi=a.no_registrasi','left');
 		$this->db->join('tc_kunjungan g','g.no_kunjungan=a.no_kunjungan','left');
@@ -71,6 +72,14 @@ class Adm_kasir_model extends CI_Model {
 
 			$this->db->where("SUBSTRING(b.kode_bagian_masuk, 0, 3) != '03'");
 		}
+
+		if( isset($_GET['dok_klaim']) && $_GET['dok_klaim'] != '' ){
+			if($_GET['dok_klaim'] == 1){
+				$this->db->where("LEN(REPLACE(dbo.get_filename_dok_klaim(b.no_registrasi), '.pdf', '')) > 1");
+			}else{
+				$this->db->where("dbo.get_filename_dok_klaim(b.no_registrasi) is null");
+			}
+		}
 		
 	}
 
@@ -110,7 +119,6 @@ class Adm_kasir_model extends CI_Model {
 		// echo '<pre>';print_r($this->db->last_query());die;
 		$result = $this->getTotalRow($query);
 		// echo '<pre>';print_r($result);die;
-		
 		return $result;
 	}
 
@@ -177,6 +185,7 @@ class Adm_kasir_model extends CI_Model {
 						'tgl_transaksi' => $value->tgl_jam,
 						'cara_keluar_pasien' => $value->cara_keluar_pasien,
 						'petugas' => $value->fullname,
+						'dok_klaim' => $value->dok_klaim,
 					);
 				}
 			}

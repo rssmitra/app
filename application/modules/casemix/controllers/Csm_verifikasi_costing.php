@@ -131,8 +131,9 @@ class Csm_verifikasi_costing extends MX_Controller {
             $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($row_list->created_date).'<br>['.$row_list->created_by.']</div>';
             $row[] = strtoupper($row_list->csm_rp_bagian).'<br>'.$row_list->csm_rp_nama_dokter;
             $row[] = $row_list->csm_rp_tipe;
+
             if(file_exists($this->base_file.'/'.$row_list->csm_dk_fullpath)){
-                $file_exist = '<span><a style="color: blue !important; font-weight: bold" href="'.$row_list->csm_dk_base_url.'/'.$row_list->csm_dk_fullpath.'" target="_blank">View File</a></span>';
+                $file_exist = '<span><a style="color: blue !important; font-weight: bold" href="'.$row_list->csm_dk_base_url.$row_list->csm_dk_fullpath.'" target="_blank">View File</a></span>';
             }else{
                 $file_exist = '<span style="color: red; font-weight: bold">No File</span>';
             }

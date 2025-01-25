@@ -180,10 +180,8 @@ class Mst_tarif extends MX_Controller {
             $row[] = '';
             $row[] = $key;
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = $key;
-            $row[] = ucwords($row_list['nama_tarif']);
+            $row[] = '<b>'.$key.'</b><br>'.ucwords($row_list['nama_tarif']).'<br>['. ucwords($row_list['nama_jenis_tindakan']).']';
             $row[] = ucwords($row_list['nama_bagian']);
-            $row[] = ucwords($row_list['nama_jenis_tindakan']);
             foreach ($klas as $key_klas => $row_klas) {
                 $row[] = isset($row_list['klas'][$row_klas->kode_klas]) ? '<div class="pull-right">'.number_format($row_list['klas'][$row_klas->kode_klas]->total).'</div>' : '<div class="pull-right">0</div>';
             }

@@ -663,6 +663,51 @@ EOD;
         
     }
 
+    public function mergePDFFilesReturnValue($no_registrasi, $tipe){
+        /*get doc*/
+        $reg_data = $this->Csm_billing_pasien->getRegDataLocal($no_registrasi);
+        // echo '<pre>';print_r($reg_data);die;
+        $doc_pdf = $this->Csm_billing_pasien->getDocumentPDF($no_registrasi);
+        // echo '<pre>';print_r($doc_pdf);die;
+        /*save merged file*/
+        $month_saved = date("M",strtotime($reg_data->csm_rp_tgl_masuk));
+        $year_saved = date("Y",strtotime($reg_data->csm_rp_tgl_masuk));
+        $datasaved = array(
+            'no_registrasi' => $no_registrasi,
+            'tgl_transaksi_kasir' => $reg_data->csm_rp_tgl_keluar,
+            'no_sep' => $reg_data->csm_rp_no_sep,
+            'csm_dk_filename' => $reg_data->csm_rp_no_sep.'.pdf',
+            'csm_dk_fullpath' => 'uploaded/casemix/merge-'.$month_saved.'-'.$year_saved.'/'.$tipe.'/'.$reg_data->csm_rp_no_sep.'.pdf',
+            'csm_dk_total_klaim' => (int)$this->Csm_billing_pasien->getTotalBilling($no_registrasi, $tipe),
+            'csm_dk_tipe' => $tipe,
+            'csm_dk_base_url' => base_url(),
+            'created_date' => date('Y-m-d H:i:s'),
+            'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')
+            );
+            /*check if exist*/
+            $dt = $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep, 'no_registrasi' => $no_registrasi))->row();
+            // echo '<pre>';print_r($this->db->last_query());die;
+
+            if( !empty($dt) ){
+                $this->db->update('csm_dokumen_klaim', $datasaved, array('no_sep' => $reg_data->csm_rp_no_sep));
+            }else{
+                $this->db->insert('csm_dokumen_klaim', $datasaved);
+            }
+
+        $fields_string = "";
+
+        foreach($doc_pdf as $key=>$value) {
+            $month = date("M",strtotime($value->csm_rp_tgl_masuk));
+            $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
+            $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&';
+        }
+
+        rtrim($fields_string,'&');
+        $url = base_url().'ApiMerge/index.php?action=download&no_mr='.$reg_data->csm_rp_no_mr.'&noreg='.$no_registrasi.'&'.$fields_string;
+        return $this->master->checkURL($url);
+
+    }
+
 }
 /* End of file example.php */
 /* Location: ./application/functiones/example/controllers/example.php */

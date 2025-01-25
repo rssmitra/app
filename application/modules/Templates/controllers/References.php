@@ -1179,13 +1179,16 @@ class References extends MX_Controller {
 		$this->db->join('mt_master_tarif c','c.kode_tarif=a.referensi','LEFT');
 		$this->db->where('a.tingkatan', 5);
 		$this->db->where('a.is_active', 'Y');
-		$this->db->like('a.nama_tarif', $_POST['keyword']);
 
 		if($_POST['jenis_tarif'] == 120){
-			$this->db->like('a.nama_tarif', 'BPJS');
+			$this->db->where("(a.nama_tarif LIKE '%".$_POST['keyword']."%' OR a.nama_tarif LIKE '%BPJS%') ");
 		}else{
-			$this->db->not_like('a.nama_tarif', 'BPJS');
+			$this->db->where("(a.nama_tarif LIKE '%".$_POST['keyword']."%' OR a.nama_tarif NOT LIKE '%BPJS%') ");
 		}
+
+		// if(isset($_POST['jenis_bedah']) && $_POST['jenis_bedah'] != ''){
+		// 	$this->db->where('a.referensi', $_POST['jenis_bedah']);
+		// }
 
 		if(isset($_POST['show_all']) && $_POST['show_all'] == 1){
 			// no filter
@@ -1203,8 +1206,6 @@ class References extends MX_Controller {
 				$this->db->where("(a.kode_bagian = '".$_POST['kode_bag']."' or a.kode_bagian = 0)");
 			}
 		}
-		
-
 
         // $query = "select  a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi
 		// 			from mt_master_tarif a

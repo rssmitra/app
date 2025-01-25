@@ -105,7 +105,7 @@ $(document).ready(function(){
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/getTindakanByBagianAutoComplete",
-                data: { keyword:query, kode_klas: $('#kode_klas_val').val(), kode_bag : '030901', kode_perusahaan : $('#kode_perusahaan_val').val(), jenis_bedah : $('#jenis_bedah').val() },            
+                data: { keyword:query, kode_klas: $('#kode_klas_val').val(), kode_bag : '030901', kode_perusahaan : $('#kode_perusahaan_val').val(), jenis_bedah : $('#jenis_bedah').val(), show_all : $('input[name="show_all_tarif"]:checked').val(), jenis_tarif : $('input[name="jenis_tarif"]:checked').val() },            
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
@@ -570,6 +570,30 @@ $('select[name="kode_ruangan"]').change(function () {
 
               </div>
               
+            </div>
+
+            <div class="form-group">
+              <label class="control-label col-sm-2">Jenis Tarif</label>
+              <div class="col-md-4">
+                <div class="radio">
+                  <label>
+                    <input name="jenis_tarif" type="radio" class="ace" value="120" />
+                    <span class="lbl"> BPJS</span>
+                  </label>
+                  <label>
+                    <input name="jenis_tarif" type="radio" class="ace" value="0" checked />
+                    <span class="lbl"> Asuransi & Umum </span>
+                  </label>
+                </div>
+              </div>
+              
+            </div>
+
+            <div class="checkbox">
+              <label>
+                <input name="show_all_tarif" id="show_all_tarif" type="checkbox" class="ace" value="1">
+                <span class="lbl"><i>Tampilkan tarif dari seluruh unit</i></span>
+              </label>
             </div>
             
             <div class="form-group">

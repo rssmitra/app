@@ -318,11 +318,9 @@ function delete_tarif_klas(myid){
               <th width="50px">&nbsp;</th>
               <th width="50px">&nbsp;</th>
               <th></th>
-              <th>No</th>      
-              <th>Kode</th>      
+              <th>No</th>        
               <th>Nama Tarif</th>      
-              <th>Unit/Bagian</th>      
-              <th>Jenis Tarif</th>      
+              <th>Unit/Bagian</th>        
               <?php foreach($klas as $row_klas) :?>      
               <th width="100px"><?php echo $row_klas->nama_klas; ?></th>         
               <?php endforeach; ?>      

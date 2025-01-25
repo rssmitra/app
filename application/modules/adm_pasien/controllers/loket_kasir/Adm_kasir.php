@@ -25,12 +25,21 @@ class Adm_kasir extends MX_Controller {
         /*profile class*/
         $this->title = ($this->lib_menus->get_menu_by_class(get_class($this)))?$this->lib_menus->get_menu_by_class(get_class($this))->name : 'Title';
 
+        /*load module*/
+        $this->load->module('casemix/Csm_billing_pasien');
+        $this->cbpModule = new Csm_billing_pasien;
+
     }
 
     public function index() { 
         //echo '<pre>';print_r($this->session->all_userdata());
         /*define variable data*/
-        $title = ($_GET['pelayanan'] == 'RI') ? 'Rawat Inap (RI)' : ($_GET['flag']=='umum') ? 'Umum dan Asuransi' : 'BPJS Kesehatan';
+        if ($_GET['pelayanan'] == 'RI') {
+            $title = 'Rawat Inap (RI)';
+        }else{
+            $title = ($_GET['flag']=='umum') ? 'Umum dan Asuransi' : 'BPJS Kesehatan';
+        }
+
         $data = array(
             'title' => 'Kasir '.$title,
             'breadcrumbs' => $this->breadcrumbs->show(),
@@ -102,6 +111,21 @@ class Adm_kasir extends MX_Controller {
                             $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
                         }
                     }
+                    // dokumen klaim files
+                    if(!empty($row_list[0]['dok_klaim'])){
+                        $cekfile = $this->master->checkURL($row_list[0]['dok_klaim']);
+                        if( $cekfile['code'] == 200 ){
+                            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="PopupCenter('."'".$cekfile['url']."'".', 900, 700)"><i class="fa fa-search"></i></div>';
+                        }else{
+                            $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
+                        }
+                    }else{
+                        $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
+
+                    }
+
+                    
+
                     
                     $data[] = $row;
                 }
@@ -198,6 +222,65 @@ class Adm_kasir extends MX_Controller {
       $this->load->view('loket_kasir/Adm_kasir/excel_view', $data);
     
     }
+
+    public function costing_billing()
+    {
+        $this->db->trans_begin();
+        $no_registrasi = $_POST['value']; 
+        $type = $_POST['type'];
+        /*get data trans pelayanan by no registrasi from sirs*/
+        $sirs_data = json_decode($this->Csm_billing_pasien->getDetailData($no_registrasi));
+        
+        // insert or update data
+        $this->Csm_billing_pasien->insertDataFirstTime($sirs_data, $no_registrasi);
+
+        $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
+        /*created document name*/
+        $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
+        // echo "<pre>"; print_r($createDocument);die;
+        foreach ($createDocument as $k_cd => $v_cd) {
+            # code...
+            $explode = explode('-', $v_cd);
+            /*explode result*/
+            $named = str_replace('BILL','',$explode[0]);
+            $no_mr = $explode[1];
+            $exp_no_registrasi = $explode[2];
+            $unique_code = $explode[3];
+            $no_kunjungan = isset($explode[4])?$explode[4]:0;
+            
+            /*create and save download file pdf*/
+            //$cbpModule = new Csm_billing_pasien;
+            if( $this->cbpModule->getContentPDF($exp_no_registrasi, $named, $unique_code, 'F', $no_kunjungan) ) :
+                /*save document to database*/
+                /*csm_reg_pasien*/
+                $filename = $named.'-'.$no_mr.$exp_no_registrasi.$unique_code.'.pdf';
+                $doc_save = array(
+                    'no_registrasi' => $this->regex->_genRegex($exp_no_registrasi, 'RGXQSL'),
+                    'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
+                    'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
+                    'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                );
+                
+                $doc_save['created_date'] = date('Y-m-d H:i:s');
+                $doc_save['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
+                /*check if exist*/
+                if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
+                    $this->db->insert('csm_dokumen_export', $doc_save);
+                    $this->db->trans_commit();
+                    // echo "<pre>"; print_r($this->db->last_query());die;
+                }
+            endif;
+            // echo "<pre>"; print_r($createDocument);die;
+        }
+        
+        $mergeFiles = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $tipe);
+        echo json_encode($mergeFiles);
+
+        
+    }
+
+
+
 
   }
 
