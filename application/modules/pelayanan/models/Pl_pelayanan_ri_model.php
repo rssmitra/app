@@ -80,9 +80,9 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		} 
 
 		if((isset($_GET['is_icu']) AND $_GET['is_icu']=='Y')){
-			$this->db->where("ri_tc_rawatinap.bag_pas = '031001' ");
+			$this->db->where("ri_tc_rawatinap.bag_pas IN ('031001','032601') ");
 		}else if((isset($_GET['is_icu']) AND $_GET['is_icu']=='N')){
-			$this->db->where("ri_tc_rawatinap.bag_pas != '031001' ");
+			$this->db->where("ri_tc_rawatinap.bag_pas NOT IN ('031001','032601') ");
 		}
         /*end parameter*/
 		/*check level user*/

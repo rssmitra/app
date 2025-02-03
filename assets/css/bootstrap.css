@@ -6312,12 +6312,12 @@ button.close {
 
 
  td.details-control {
-      background: url('../datatables/details_open.png') no-repeat center top;
+      background: url('../datatables/details_open.png') no-repeat center top 10px;
       cursor: pointer;
       padding: 12px !important;
   }
 tr.shown td.details-control {
-      background: url('../datatables/details_close.png') no-repeat center top;
+      background: url('../datatables/details_close.png') no-repeat center top 10px;
       padding: 12px !important;
   }
 

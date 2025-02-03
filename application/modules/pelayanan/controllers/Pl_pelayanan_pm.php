@@ -208,6 +208,7 @@ class Pl_pelayanan_pm extends MX_Controller {
         /*load form view*/
         $data['attachment'] = $this->upload_file->getUploadedFilePenunjang($kode_penunjang);
 
+        echo '<pre>';print_r($data);die;
         $this->load->view('Pl_pelayanan_pm/'.$view.'', $data);
         
     }
