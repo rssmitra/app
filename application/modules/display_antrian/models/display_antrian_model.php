@@ -144,22 +144,106 @@ class Display_antrian_model extends CI_Model {
 
 	public function get_antrian_farmasi()
 	{
-		# code...
-		$query = "select * from fr_tc_far where CAST(tgl_trans as DATE) = '".date('Y-m-d')."' and status_terima not in(1,2) and resep_diantar != 'Y' order by kode_trans_far ASC";
-		// $query = "select * from fr_tc_far where CAST(tgl_trans as DATE) = '2021-04-12' and status_terima not in(1,2) and flag_trans='RJ' order by kode_trans_far ASC";
-		$result = $this->db->query($query);
+		$this->db->select("fr_tc_pesan_resep.kode_pesan_resep, tgl_pesan,fr_tc_far.no_registrasi,dokter_pengirim,nama_pasien,flag_trans,status_terima,e_resep, status_transaksi, kode_trans_far");
+		$this->db->from("fr_tc_pesan_resep");
+		$this->db->join("fr_tc_far","fr_tc_far.kode_pesan_resep = fr_tc_pesan_resep.kode_pesan_resep", "LEFT");
+		$this->db->where("CAST(tgl_pesan as DATE) = '".date("Y-m-d")."'");
+		$this->db->where("status_terima NOT IN (1,2)");
+		$this->db->where("resep_diantar != 'Y'");
+		$this->db->where("e_resep", 1);
+		$this->db->where("flag_trans", "RJ");
+		$this->db->order_by("tgl_pesan", "ASC");
+		$result = $this->db->get()->result();
+
+		// echo '<pre>';print_r($result);die;
 		$no=0;
-		$num = [];
-		$getData = [];
-		foreach($result->result() as $row){
+		$get_data = [];
+		foreach($result as $row){
 			$no++;
-			$num[$no] = array('nama_pasien' => $row->nama_pasien, 'kode_trans_far' => $row->kode_trans_far);
+			// resep_masuk
+			if($row->kode_trans_far == null){
+				$get_data['resep_masuk'][] = array(
+					'nama_pasien' => $row->nama_pasien, 
+					'kode_trans_far' => $row->kode_trans_far,
+					'status_transaksi' => $row->status_transaksi,
+					'status_terima' => $row->status_terima,
+				);
+			}
+			// dalam proses
+			if($row->kode_trans_far != null && $row->status_transaksi != 1){
+				$get_data['dalam_proses'][] = array(
+					'nama_pasien' => $row->nama_pasien, 
+					'kode_trans_far' => $row->kode_trans_far,
+					'status_transaksi' => $row->status_transaksi,
+					'status_terima' => $row->status_terima,
+				);
+			}
+
+			// siap ambil
+			if($row->kode_trans_far != null && $row->status_transaksi == 1){
+				$get_data['pengambilan'][] = array(
+					'nama_pasien' => $row->nama_pasien, 
+					'kode_trans_far' => $row->kode_trans_far,
+					'status_transaksi' => $row->status_transaksi,
+					'status_terima' => $row->status_terima,
+				);
+			}
+
 		}
-		return $num;
+		// resep masuk
+		$resep_masuk = isset($get_data['resep_masuk'])?$get_data['resep_masuk']:[];
+		$total_resep_masuk = count($resep_masuk);
+		$dalam_proses = isset($get_data['dalam_proses'])?$get_data['dalam_proses']:[];
+		$total_dalam_proses = count($dalam_proses);
+		$pengambilan = isset($get_data['pengambilan'])?$get_data['pengambilan']:[];
+		$total_pengambilan = count($pengambilan);
+
+		$return_data = [
+			'resep_masuk' => $resep_masuk,
+			'total_resep_masuk' => $total_resep_masuk,
+			'dalam_proses' => $dalam_proses,
+			'total_dalam_proses' => $total_dalam_proses,
+			'pengambilan' => $pengambilan,
+			'total_pengambilan' => $total_pengambilan,
+		];
+
+		return $return_data;
 		
 	}
 
 	public function get_antrian_poli()
+	{
+		$this->db->select('pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, tc_kunjungan.no_mr, antrian_aktif, kode_poli_bpjs, pl_tc_poli.kode_dokter, tgl_keluar_poli, nama_pegawai as nama_dokter, pl_tc_poli.kode_bagian, tc_registrasi.kode_perusahaan');
+		$this->db->from('pl_tc_poli');
+		$this->db->join('tc_kunjungan','pl_tc_poli.no_kunjungan=tc_kunjungan.no_kunjungan','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=pl_tc_poli.kode_dokter','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=pl_tc_poli.kode_bagian','left');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_perusahaan','tc_registrasi.kode_perusahaan=mt_perusahaan.kode_perusahaan','left');
+		$this->db->join('mt_nasabah','tc_registrasi.kode_kelompok=mt_nasabah.kode_kelompok','left');
+		$this->db->where( 'CAST(pl_tc_poli.tgl_jam_poli as DATE) = ', date('Y-m-d') );
+		$this->db->where('pl_tc_poli.status_batal IS NULL');
+		$this->db->where("pl_tc_poli.kode_bagian != '014001' ");
+		// $this->db->where('status_periksa IS NULL');
+		// $this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
+		// $this->db->where('pl_tc_poli.antrian_aktif = 1');
+		$this->db->order_by('no_antrian', 'ASC');
+		$this->db->order_by('kode_perusahaan', 'ASC');
+
+		$query = $this->db->get();
+		$result = $query->result();
+		$getData = [];
+		foreach($result as $key=>$row){
+			$getData[$row->kode_poli_bpjs][$row->kode_dokter][] = $row;
+		}
+
+		// echo '<pre>';print_r($getData);die;
+
+		return $getData;
+		
+	}
+
+	public function get_antrian_poli_original()
 	{
 		$this->db->select('pl_tc_poli.no_antrian,pl_tc_poli.nama_pasien, tc_kunjungan.no_mr');
 		$this->db->from('pl_tc_poli');

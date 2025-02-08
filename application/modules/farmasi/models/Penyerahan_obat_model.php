@@ -5,9 +5,9 @@ class Penyerahan_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far';
 	var $column = array('nama_pasien', 'fr_tc_far.no_mr');
-	var $select = 'no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, kode_pesan_resep, tgl_trans, nama_pelayanan, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, status_terima, flag_trans';
+	var $select = 'fr_tc_far.no_registrasi, fr_tc_far.kode_trans_far,nama_pasien,dokter_pengirim,no_resep,fr_tc_far.no_kunjungan,fr_tc_far.no_mr, fr_tc_far.kode_pesan_resep, tgl_trans, nama_pelayanan, alamat_pasien, telpon_pasien, fr_tc_far.status_transaksi, status_terima, flag_trans, tgl_pesan';
 
-	var $order = array('kode_trans_far' => 'ASC');
+	var $order = array('tgl_pesan' => 'ASC');
 
 	public function __construct()
 	{
@@ -19,9 +19,11 @@ class Penyerahan_obat_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('fr_mt_profit_margin','fr_mt_profit_margin.kode_profit=fr_tc_far.kode_profit','left');
+		$this->db->join('fr_tc_pesan_resep','fr_tc_pesan_resep.kode_pesan_resep=fr_tc_far.kode_pesan_resep','left');
 		$this->db->where('status_terima NOT IN (1,2)');
 		$this->db->where('flag_trans', 'RJ');
-		$this->db->where('CAST(tgl_trans as DATE) = '."'".date('Y-m-d')."'".'');
+		$this->db->where('e_resep', 1);
+		$this->db->where('CAST(tgl_pesan as DATE) = '."'".date('Y-m-d')."'".'');
 
 	}
 

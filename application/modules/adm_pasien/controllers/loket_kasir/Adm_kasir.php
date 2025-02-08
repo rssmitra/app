@@ -97,7 +97,7 @@ class Adm_kasir extends MX_Controller {
                     $row[] = ($row_list[0]['nama_perusahaan'])?$row_list[0]['nama_perusahaan']:'UMUM';
                     $row[] = $this->tanggal->formatDateTimeFormDmy($row_list[0]['tgl_jam_masuk']);
                     $row[] = $this->tanggal->formatDateTimeFormDmy($row_list[0]['tgl_transaksi']);
-                    $cara_keluar_pasien = (str_replace(' ','_',strtolower($row_list[$key]['cara_keluar_pasien'])) == 'rujuk_ke_rawat_inap') ? '<span style="background: blue; color: white; font-weight: bold; padding: 2px">'.$row_list[$key]['cara_keluar_pasien'].'</span>' : '';
+                    $cara_keluar_pasien = (str_replace(' ','_',strtolower($row_list[$key]['cara_keluar_pasien'])) == 'rujuk_ke_rawat_inap') ? '<br><span style="background: blue; color: white; font-weight: bold; padding: 2px">'.$row_list[$key]['cara_keluar_pasien'].'</span>' : '';
                     $row[] = ucwords($row_list[0]['petugas']).''.$cara_keluar_pasien;
                     if( $row_list[0]['status_batal'] == 1 ){
                         $row[] = '<div class="center"><span style="color: red; font-weight: bold">Batal</span></div>';
@@ -137,8 +137,8 @@ class Adm_kasir extends MX_Controller {
         
         $output = array(
                         "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Adm_kasir->count_all(),
-                        "recordsFiltered" => $this->Adm_kasir->count_filtered(),
+                        // "recordsTotal" => $this->Adm_kasir->count_all(),
+                        // "recordsFiltered" => $this->Adm_kasir->count_filtered(),
                         "data" => $data,
                         "total_billing" => array_sum($arr_total),
                 );

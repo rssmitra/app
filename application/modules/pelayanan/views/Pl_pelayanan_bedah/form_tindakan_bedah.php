@@ -111,7 +111,7 @@ $(document).ready(function() {
         source: function (query, result) {
             $.ajax({
                 url: "templates/references/getTindakanByBagianAutoComplete",
-                data: { keyword:query, kode_klas: $('#kode_klas_val2').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('input[name=jenis_tarif]:checked').val(), jenis_bedah : $('#jenis_bedah').val(), show_all : $('input[name="show_all_tarif"]:checked').val(), jenis_tarif : $('input[name="jenis_tarif"]:checked').val() },            
+                data: { keyword:query, kode_klas: $('#kode_klas_val2').val(), kode_bag : $('#kode_bagian_val').val(), kode_perusahaan : $('#kode_perusahaan').val(), jenis_bedah : $('#jenis_bedah').val(), show_all : $('input[name="show_all_tarif"]:checked').val(), jenis_tarif : $('input[name="jenis_tarif"]:checked').val() },            
                 dataType: "json",
                 type: "POST",
                 success: function (response) {
@@ -290,15 +290,6 @@ $(document).ready(function() {
 
     });
 
-    $('input[name=jenis_tarif]').click(function(e){
-        var field = $('input[name=jenis_tarif]:checked').val();
-        if ( field == 'Jaminan Perusahaan' ) {
-          $('#showFormPerusahaan').show('fast');
-        }else if (field == 'Umum') {
-          $('#kodePerusahaanHidden').val(0);
-          $('#showFormPerusahaan').hide('fast');
-        }
-    });
 
     $('select[name=jenis_bedah]').change(function(e){
       backToDefault();
@@ -306,6 +297,11 @@ $(document).ready(function() {
 
 
 
+});
+
+
+$('#kode_klas_val2').change(function(e){
+  getDetailTarifByKodeTarifAndKlas($('#pl_kode_tindakan_hidden').val(), $('#kode_klas_val2').val());
 });
 
 function format_html ( data ) {
@@ -516,16 +512,12 @@ function tambah_file()
           <div class="col-md-8">
             <div class="radio">
               <label>
-                <input name="jenis_tarif" type="radio" class="ace" value="120" <?php echo ($value->kode_perusahaan==120)?'checked':''?> />
+                <input name="jenis_tarif" type="radio" class="ace" value="120" />
                 <span class="lbl"> BPJS</span>
               </label>
               <label>
-                <input name="jenis_tarif" type="radio" class="ace" value="<?php echo ($value->kode_perusahaan!=120)?'checked':''?>" <?php echo ($value->kode_perusahaan)?$value->kode_perusahaan:0?> />
-                <span class="lbl"> Jaminan Non BPJS </span>
-              </label>
-              <label>
-                <input name="jenis_tarif" type="radio" class="ace" value="0" <?php echo ($value->kode_perusahaan==NULL || $value->kode_perusahaan==0)?'checked':''?> />
-                <span class="lbl"> Umum </span>
+                <input name="jenis_tarif" type="radio" class="ace" value="0" checked/>
+                <span class="lbl"> Umum dan Asuransi </span>
               </label>
             </div>
           </div>

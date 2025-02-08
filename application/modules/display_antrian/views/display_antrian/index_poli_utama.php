@@ -105,7 +105,7 @@
     
 
   </style>
-	<body class="no-skin" style="background: url('assets/images/unit-pendaftaran.jpg'); min-height: 1920px">
+	<body class="no-skin" style="background: url('assets/images/unit-pendaftaran.jpg'); min-height: 1080px">
 	
 		<div class="main-container ace-save-state" id="main-container">
 			<script type="text/javascript">
@@ -113,8 +113,12 @@
 			</script>
 
 			<div class="main-content" style="background: white">
-        <div class="page-header center no-padding" style="background: #f3f3f3; border-bottom-left-radius: 50px; border-bottom: 8px solid #137cc1">
-          <a href="<?php echo base_url().'Display_antrian/poli'?>"><img src="<?php echo base_url().'assets/insani/logo_rssm_insani_care.png'?>" style="width: 350px; text-align: center; "></a>
+        <div class="page-header" style="background: #f3f3f3; border-bottom-left-radius: 50px; border-bottom: 8px solid #137cc1">
+          <div class="col-md-3 no-padding" >
+            <a href="<?php echo base_url().'Display_antrian/poli'?>"><img src="<?php echo base_url().'assets/insani/logo_rssm_insani_care.png'?>" style="width: 300px; text-align: left; padding-left: 30px "></a>
+          </div>
+          <p style="text-align: right; padding: 20px; font-size: 3.5em; font-weight: bold; color: #0f354e; text-shadow: 2px 4px rgb(63 65 67 / 31%); font-familiy: system-ui">ANTRIAN POLIKLINIK</p>
+
         </div>
 
 				<div class="main-content-inner">
@@ -158,110 +162,16 @@
                 }
               </style>
 
-              <!-- section advertisement -->
-              <div class="row" style="max-height: 30%">
-                <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                  <!-- Indicators -->
-                  <ol class="carousel-indicators">
-                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#myCarousel" data-slide-to="1"></li>
-                    <li data-target="#myCarousel" data-slide-to="2"></li>
-                  </ol>
-
-                  <!-- Wrapper for slides -->
-                  <div class="carousel-inner">
-                    <div class="item active">
-                      <img src="<?php echo base_url().'assets/insani/banner/img_reg_online.png'?>" alt="Los Angeles" style="width:100%;">
-                    </div>
-
-                    <div class="item">
-                      <img src="<?php echo base_url().'assets/insani/banner/paket_mcu_haji.jpeg'?>" alt="Chicago" style="width:100%;">
-                    </div>
-                  
-                    <div class="item">
-                      <img src="<?php echo base_url().'assets/insani/banner/img_bpjs_naker.png'?>" alt="New york" style="width:100%;">
-                    </div>
-                  </div>
-
-                  <!-- Left and right controls -->
-                  <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="right carousel-control" href="#myCarousel" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                    <span class="sr-only">Next</span>
-                  </a>
-                </div>
-              </div>
-              <!-- section antrian farmasi -->
-              <div id="section_antrian_farmasi" class="row" >
-                <p style="text-align: center; font-size: 3.5em; font-weight: bold; color: white ">ANTRIAN FARMASI</p>
-                <div class="col-md-12">
-                  <div class="col-md-4">
-                    <span style="background:  #b179b5; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">RESEP MASUK</span>
-                      <div style="padding: 3px; overflow-y: auto; height: 300px ">
-                        <table id="data_resep_masuk" class="table resep_masuk" style="max-height: 730px">
-                            <tbody style="background:rgba(214, 161, 218, 0.42)">
-                              <tr>
-                                <td align="center">-</td>
-                                <td>-Tidak ada resep-</td>
-                              </tr>
-                              <?php for($i=1;$i<6; $i++) : ?>
-                                <tr>
-                                  <td align="center"><?php echo $i;?></td>
-                                  <td>-</td>
-                                </tr>
-                              <?php endfor;?>
-                            </tbody>
-                        </table>
-                      </div>
-                  </div>
-                  <div class="col-md-4">
-                    <span style="background:  #ed8222; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">DALAM PROSES</span>
-                    <div style="padding: 3px; overflow-y: auto; height: 300px ">
-                      <table id="data_resep_proses" class="table resep_sedang_proses">
-                        <tbody style="background:rgba(240, 171, 112, 0.41)">
-                          <tr>
-                            <td align="center">-</td>
-                            <td>-Tidak ada resep-</td>
-                          </tr>
-                          <?php for($i=1;$i<6; $i++) : ?>
-                            <tr>
-                              <td align="center"><?php echo $i;?></td>
-                              <td>-</td>
-                            </tr>
-                          <?php endfor;?>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                  <span style="background:  #df1e8e; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">PENGAMBILAN OBAT</span>
-                    <div style="padding: 3px; overflow-y: auto; height: 300px ">
-                      <table id="data_resep_pengambilan" class="table pengambilan_resep" style="max-height: 550px">
-                      
-                        <tbody style="background:rgba(240, 112, 186, 0.39)">
-                          <tr>
-                            <td align="center">-</td>
-                            <td>-Tidak ada resep-</td>
-                          </tr>
-                          <?php for($i=1;$i<6; $i++) : ?>
-                            <tr>
-                              <td align="center"><?php echo $i;?></td>
-                              <td>-</td>
-                            </tr>
-                          <?php endfor;?>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               <!-- section antrian poli -->
               <div id="section_antrian_poli" class="row" >
-                <p style="text-align: center; font-size: 3.5em; font-weight: bold; color: black; text-shadow: 2px 2pxrgb(194, 194, 194);font-familiy: system-ui">ANTRIAN POLIKLINIK</p>
+                
+
+                <div class="row" style="font-size: 2em; text-align: center; color: #126399; font-weight: bold">
+                  <i class="fa fa-check-circle bigger-120"></i> Pasien Sedang Dilayani
+                  <i class="fa fa-clock-o bigger-120"></i> Antrian Pasien Berikutnya
+                </div>
+                <hr>
+
                 <div class="col-md-12 no-padding">
 
                   <?php 
@@ -293,11 +203,7 @@
 
                 </div>
               </div>
-              <hr>
-              <div class="row" style="font-size: 2.5em; text-align: center">
-                <i class="fa fa-check-circle bigger-120"></i> Pasien Sedang Dilayani
-                <i class="fa fa-clock-o bigger-120"></i> Antrian Pasien Berikutnya
-              </div>
+              
 
             </div>
 
@@ -306,8 +212,9 @@
 					</div><!-- /.page-content -->
 				</div>
 			</div><!-- /.main-content -->
-
-			<!-- <div class="footer">
+      
+      <hr>
+			<div class="footer">
         
 				<div class="footer-inner">
 					<div class="footer-content">
@@ -323,7 +230,7 @@
 						</span>
 					</div>
 				</div>
-			</div> -->
+			</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
@@ -371,46 +278,6 @@
 
         setInterval( function () {
           
-          // antrian farmasi
-          $.getJSON("<?php echo site_url('display_antrian/reload_antrian_farmasi') ?>", '', function (data) {   
-            
-            var obj = data.result;
-
-            if(obj.total_resep_masuk > 0){
-              $('#data_resep_masuk tbody').remove();
-              $.each(obj.resep_masuk, function (i, o) {  
-                if(i < 6){
-                  var blink_me = (i == 0) ? 'class="blink_me"' : '';
-                  var icon = (i == 0) ? '<i class="fa fa-check-circle white bigger-120"></i>' : i;  
-                  $('<tr><td align="center">'+icon+'</td><td><span '+blink_me+'>'+o.nama_pasien.substr(0,15)+'</span></td></tr>').appendTo($('#data_resep_masuk'));
-                }
-              })
-            }
-
-            if(obj.total_dalam_proses > 0){
-              $('#data_resep_proses tbody').remove();
-              $.each(obj.dalam_proses, function (i, o) {  
-                if(i < 6){
-                  var blink_me = (i == 0) ? 'class="blink_me"' : '';
-                  var icon = (i == 0) ? '<i class="fa fa-check-circle white bigger-120"></i>' : i;
-                  $('<tr><td align="center">'+icon+'</td><td><span '+blink_me+'>'+o.nama_pasien.substr(0,15)+'</span></td></tr>').appendTo($('#data_resep_proses'));
-                  }
-              })
-            }
-
-            if(obj.total_pengambilan > 0){
-              $('#data_resep_pengambilan tbody').remove();
-              $.each(obj.pengambilan, function (i, o) {  
-                if(i < 6){
-                  var blink_me = (i == 0) ? 'class="blink_me"' : '';
-                  var icon = (i == 0) ? '<i class="fa fa-check-circle white bigger-120"></i>' : i;
-                  $('<tr><td align="center">'+icon+'</td><td><span '+blink_me+'>'+o.nama_pasien.substr(0,15)+'</span></td></tr>').appendTo($('#data_resep_pengambilan'));
-                }
-              })
-            }
-            
-
-          });
 
           // antrian poli
           $.getJSON("<?php echo site_url('display_antrian/reload_antrian_poli') ?>", '', function (data) {   
