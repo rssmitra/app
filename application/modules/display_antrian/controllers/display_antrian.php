@@ -9,6 +9,7 @@ class Display_antrian extends MX_Controller {
         parent::__construct();
  
         $this->load->model('Display_antrian_model','display_antrian'); 
+        $this->load->model('antrian/loket_model','loket');
 
     }
 
@@ -26,9 +27,38 @@ class Display_antrian extends MX_Controller {
         $this->load->view('display_antrian/index_farmasi');
     }
 
-    public function poli() {
-   
-        $this->load->view('display_antrian/index_poli');
+    public function poli_farmasi() {
+        $data = [
+            'data_loket' => $this->loket->get_open_loket(),
+        ];
+        $this->load->view('display_antrian/index_poli_farmasi', $data);
+    }
+
+    public function poli_group_w_unit() {
+        
+        $data = [
+            'data_loket' => $this->loket->get_open_loket(),
+        ];
+        // echo "<pre>"; print_r($data);die;
+        $this->load->view('display_antrian/index_poli', $data);
+    }
+
+    public function poli_utama() {
+        
+        $data = [
+            'data_loket' => $this->loket->get_open_loket(),
+        ];
+        // echo "<pre>"; print_r($data);die;
+        $this->load->view('display_antrian/index_poli_utama', $data);
+    }
+
+    public function poli_paru_farmasi() {
+        
+        $data = [
+            'data_loket' => $this->loket->get_open_loket(),
+        ];
+        // echo "<pre>"; print_r($data);die;
+        $this->load->view('display_antrian/index_poli_paru_farmasi', $data);
     }
 
    public function process()
@@ -55,7 +85,7 @@ class Display_antrian extends MX_Controller {
        # code...
        $data = $this->display_antrian->get_antrian_farmasi();
        $total = count($data);
-       // echo '<pre>';print_r($data);die;
+    //    echo '<pre>';print_r($data);die;
 
        echo json_encode(array('total' => $total,'result' => $data));
        //echo $nomor_loket;
@@ -63,12 +93,11 @@ class Display_antrian extends MX_Controller {
 
    public function reload_antrian_poli()
    {
-       # code...
-       $data = $this->display_antrian->get_antrian_poli();
-    //    echo '<pre>';print_r($data);die;
-        $nama_pasien = str_replace(['tn.', 'ny.', 'nn.', 'by.', 'an.', ','],[""], strtolower($data['nama_pasien']));
-       echo json_encode(array('result' => $data, 'nama_pasien' => $nama_pasien));
-       //echo $nomor_loket;
+
+        $data = $this->display_antrian->get_antrian_poli();
+        // echo '<pre>';print_r($data);die;
+
+        echo json_encode(array('result' => $data));
    }
 
 }

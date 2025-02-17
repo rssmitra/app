@@ -5,7 +5,7 @@ class Loket_model extends CI_Model {
 
 	var $table = 'tr_jadwal_dokter';
 	var $column = array('mt_bagian.nama_bagian','mt_karyawan.nama_pegawai');
-	var $select = 'tr_jadwal_dokter.jd_id,tr_jadwal_dokter.jd_kode_spesialis,tr_jadwal_dokter.jd_kode_dokter,tr_jadwal_dokter.jd_jam_mulai,tr_jadwal_dokter.jd_jam_selesai,mt_bagian.nama_bagian,mt_karyawan.nama_pegawai, jd_kuota,status_jadwal, sisa_kuota, status_loket';
+	var $select = 'tr_jadwal_dokter.jd_id,tr_jadwal_dokter.jd_kode_spesialis,tr_jadwal_dokter.jd_kode_dokter,tr_jadwal_dokter.jd_jam_mulai,tr_jadwal_dokter.jd_jam_selesai,mt_bagian.nama_bagian,mt_karyawan.nama_pegawai, jd_kuota,status_jadwal, sisa_kuota, status_loket, kode_poli_bpjs';
 	var $order = array('tr_jadwal_dokter.jd_jam_mulai' => 'ASC');
 	
 
@@ -98,13 +98,13 @@ class Loket_model extends CI_Model {
 	{
 		$day = $this->tanggal->getHari(date('D'));
 		
-		$this->db->select("a.jd_id, a.jd_kode_spesialis, b.nama_bagian, a.jd_kode_dokter,c.nama_pegawai, a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai, a.jd_kuota, a.jd_keterangan");
+		$this->db->select("a.jd_id, a.jd_kode_spesialis, b.nama_bagian, a.jd_kode_dokter,c.nama_pegawai, a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai, a.jd_kuota, a.jd_keterangan, b.kode_poli_bpjs, b.short_name");
 		$this->db->from('tr_jadwal_dokter a');
 		$this->db->join('mt_bagian b', 'b.kode_bagian=a.jd_kode_spesialis', 'left');
 		$this->db->join('mt_karyawan c', 'c.kode_dokter=a.jd_kode_dokter', 'left');
 		$this->db->where(array('status_loket' => 'on', 'jd_hari' => $day ));
-		$this->db->order_by('a.jd_jam_mulai', 'ASC');
-		$this->db->group_by('a.jd_id, a.jd_kode_spesialis, b.nama_bagian, a.jd_kode_dokter,c.nama_pegawai, a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai,a.jd_kuota,a.jd_keterangan');
+		$this->db->order_by('b.kode_poli_bpjs', 'ASC');
+		$this->db->group_by('a.jd_id, a.jd_kode_spesialis, b.nama_bagian, a.jd_kode_dokter,c.nama_pegawai, a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai,a.jd_kuota,a.jd_keterangan, b.kode_poli_bpjs, b.short_name');
 		$data = $this->db->get()->result();
 
 		return $data;

@@ -36,8 +36,8 @@ function populateVoiceList() {
       option.textContent += " -- DEFAULT";
     }
 
-    option.setAttribute("data-lang", voices[i].lang);
-    option.setAttribute("data-name", voices[i].name);
+    option.setAttribute("data-lang", "id-ID");
+    option.setAttribute("data-name", "Google Bahasa Indonesia");
     voiceSelect.appendChild(option);
   }
   voiceSelect.selectedIndex = selectedIndex;

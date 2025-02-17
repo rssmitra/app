@@ -1181,9 +1181,9 @@ class References extends MX_Controller {
 		$this->db->where('a.is_active', 'Y');
 
 		if($_POST['jenis_tarif'] == 120){
-			$this->db->where("(a.nama_tarif LIKE '%".$_POST['keyword']."%' OR a.nama_tarif LIKE '%BPJS%') ");
+			$this->db->where("(a.nama_tarif LIKE '%".$_POST['keyword']."%' AND a.nama_tarif LIKE '%BPJS%') ");
 		}else{
-			$this->db->where("(a.nama_tarif LIKE '%".$_POST['keyword']."%' OR a.nama_tarif NOT LIKE '%BPJS%') ");
+			$this->db->where("(a.nama_tarif LIKE '%".$_POST['keyword']."%' AND a.nama_tarif NOT LIKE '%BPJS%') ");
 		}
 
 		// if(isset($_POST['jenis_bedah']) && $_POST['jenis_bedah'] != ''){
@@ -1218,7 +1218,7 @@ class References extends MX_Controller {
 
 		$arrResult = [];
 		foreach ($exc as $key => $value) {
-			$jenis_operasi = ($_POST['kode_bag']=='030901') ? ' | '.$value->tingkat_operasi.'' : '' ;
+			$jenis_operasi = ($_POST['kode_bag']=='030901') ? ''.$value->tingkat_operasi.'' : '' ;
 			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.') '.$jenis_operasi.'';
 		}
 		echo json_encode($arrResult);
@@ -1472,7 +1472,7 @@ class References extends MX_Controller {
 			}
 			$html .= '</table>';
 		}else{
-			$html .= '<span style="color: red; font-weight: bold">-Tidak ada data tarif ditemukan-</span>';
+			$html .= '<span style="color: red; font-weight: bold">-Tidak ada data tarif ditemukan pada kelas tersebut.-</span>';
 		}
 
     	echo json_encode( array('html' => $html, 'data' => isset($exc[0])?$exc:[], 'jenis_bedah' => isset($exc[0]->kode_jenis_bedah)?$exc[0]->kode_jenis_bedah:'') );
