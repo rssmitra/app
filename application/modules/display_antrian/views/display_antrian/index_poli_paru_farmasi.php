@@ -105,6 +105,42 @@
     
 
   </style>
+
+<style>
+  .widget-title{
+    font-size: medium !important;
+    font-weight: bold;
+  }
+  .widget-color-dark {
+    border-color: #dfdcdc;
+    border: 0px !important
+  }
+
+  .display-video{
+    height:500px;
+    background-color:black;
+  }
+
+  @media only screen 
+  and (min-width : 1824px) {
+    .display-video{
+      height:auto;
+      background-color:black;
+    }
+  }
+
+  .bg {
+    /* Full height */
+    height: 100%;
+    border-radius: 45px;
+    width: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+</style>
+
 	<body class="no-skin">
 	
 		<div class="main-container ace-save-state" id="main-container">
@@ -119,7 +155,7 @@
             <a href="<?php echo base_url().'Display_antrian/poli_utama'?>"><img src="<?php echo base_url().'assets/insani/logo_rssm_insani_care.png'?>" style="width: 300px; text-align: left; padding-left: 30px "></a>
           </div>
           <div class="col-md-9" style="text-align: right; padding: 20px; font-size: 3.5em; font-weight: bold; color: #0f354e;">
-            <div>ANTRIAN POLIKLINIK</div>
+            <div>ANTRIAN POLI SPESIALIS PARU</div>
             <div style="text-align: right; font-size: 20px; margin-top: -10px" ><i class="fa fa-calendar"></i> <?php date_default_timezone_set("Asia/Jakarta"); echo date('l, d/m/Y') ?> &nbsp; <i class="fa fa-clock-o"></i>  <div id="refresh" style="float: right">&nbsp;<span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></span></div>
           </div>
           </div>
@@ -130,77 +166,105 @@
 
             <div id="page-area-content" >
               <br>
-              <style>
-                .widget-title{
-                  font-size: medium !important;
-                  font-weight: bold;
-                }
-                .widget-color-dark {
-                  border-color: #dfdcdc;
-                  border: 0px !important
-                }
-
-                .display-video{
-                  height:500px;
-                  background-color:black;
-                }
-
-                @media only screen 
-                and (min-width : 1824px) {
-                  .display-video{
-                    height:auto;
-                    background-color:black;
-                  }
-                }
-
-                .bg {
-                  /* Full height */
-                  height: 100%;
-                  border-radius: 45px;
-                  width: 100%;
-                  /* Center and scale the image nicely */
-                  background-position: center;
-                  background-repeat: no-repeat;
-                  background-size: cover;
-                }
-              </style>
-
+              
               <!-- section antrian poli -->
               <div id="section_antrian_poli" class="row" >
-                
-
-                <div class="col-md-12 no-padding">
-
-                  <?php 
-                    $arr_color = array('#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5'); 
-                    shuffle($arr_color);
-                    foreach($data_loket as $key=>$row) : if(!in_array($row->jd_kode_spesialis, ['013101','012101'])) : ?>
-                    <div class="col-md-4" style="padding-bottom:10px; ">
-                      <div style="background: <?php echo array_shift($arr_color)?> !important; padding: 5px; color: white; border-top-right-radius: 50px; border-top-left-radius: 10px;">
-                        <span style="text-align: center; font-size: 1.8em; font-weight: bold; padding-bottom: 5px"><?php echo trim(strtoupper($row->short_name))?></span><br><span style="text-align: center; font-size: 1.5em; font-weight: bold; padding-bottom: 5px"><?php echo substr($row->nama_pegawai,0,35)?></span>
-                      </div>
-                      <div style="height: 100px">
-                        <table class="table sedang_dilayani_poli" id="table_<?php echo $row->kode_poli_bpjs?>_<?php echo $row->jd_kode_dokter?>">
-                          <tbody style="background:rgb(15, 53, 78)">
-                            <tr>
-                              <td align="center"><i class="fa fa-check-circle bigger-120"></i></td>
-                              <td>-Tidak ada data-</td>
-                            </tr>
-                            <?php for($i=2; $i<3; $i++) : ?>
-                            <tr>
-                              <td align="center"><i class="fa fa-clock-o bigger-120"></i></td>
-                              <td>-</td>
-                            </tr>
-                            <?php endfor; ?>
-                          </tbody>
+                <div class="col-md-12">
+                  <div style="text-align: center;background: #00426e;color: white;border-radius: 45px;margin-bottom: 6px;min-height: 300px">
+                    <span style="font-size: 5em; vertical-align: middle; font-weight: bold; font-family : arial">Tn. Muhammad Amin Lubis</span>
+                  </div>
+                </div>
+                <?php 
+                  $arr_color = array('#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5'); 
+                  shuffle($arr_color);
+                  foreach($data_loket as $key=>$row) : if(in_array($row->jd_kode_spesialis, ['011401'])) : ?>
+                  <div class="col-md-12" style="padding-bottom:10px; ">
+                    <p style="background: #ed8124; text-align: center; font-size: 3.5em; font-weight: bold; color: white ">ANTRIAN SELANJUTNYA</p>
+                    <div style="height: 225px">
+                      <table class="table sedang_dilayani_poli" id="table_<?php echo $row->kode_poli_bpjs?>_<?php echo $row->jd_kode_dokter?>">
+                        <tbody style="background:rgb(121, 157, 180)">
+                          <tr>
+                            <td align="center"><i class="fa fa-check-circle bigger-120"></i></td>
+                            <td>-Tidak ada data-</td>
+                          </tr>
+                          <?php for($i=2; $i<3; $i++) : ?>
+                          <tr>
+                            <td align="center"><i class="fa fa-clock-o bigger-120"></i></td>
+                            <td>-</td>
+                          </tr>
+                          <?php endfor; ?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                <?php endif; endforeach;?>
+              </div>
+              <hr>
+              
+               <!-- section antrian farmasi -->
+               <div id="section_antrian_farmasi" class="row" >
+                <p style="text-align: center; font-size: 3.5em; font-weight: bold; color: white ">ANTRIAN FARMASI</p>
+                <div class="col-md-12">
+                  <div class="col-md-4">
+                    <span style="background:  #b179b5; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">RESEP MASUK</span>
+                      <div style="padding: 3px; overflow-y: auto; height: 300px ">
+                        <table id="data_resep_masuk" class="table resep_masuk" style="max-height: 730px">
+                            <tbody style="background:rgba(214, 161, 218, 0.42)">
+                              <tr>
+                                <td align="center">-</td>
+                                <td>-Tidak ada resep-</td>
+                              </tr>
+                              <?php for($i=1;$i<6; $i++) : ?>
+                                <tr>
+                                  <td align="center"><?php echo $i;?></td>
+                                  <td>-</td>
+                                </tr>
+                              <?php endfor;?>
+                            </tbody>
                         </table>
                       </div>
+                  </div>
+                  <div class="col-md-4">
+                    <span style="background:  #ed8222; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">DALAM PROSES</span>
+                    <div style="padding: 3px; overflow-y: auto; height: 300px ">
+                      <table id="data_resep_proses" class="table resep_sedang_proses">
+                        <tbody style="background:rgba(240, 171, 112, 0.41)">
+                          <tr>
+                            <td align="center">-</td>
+                            <td>-Tidak ada resep-</td>
+                          </tr>
+                          <?php for($i=1;$i<6; $i++) : ?>
+                            <tr>
+                              <td align="center"><?php echo $i;?></td>
+                              <td>-</td>
+                            </tr>
+                          <?php endfor;?>
+                        </tbody>
+                      </table>
                     </div>
-                  <?php endif; endforeach;?>
-
+                  </div>
+                  <div class="col-md-4">
+                  <span style="background:  #df1e8e; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">PENGAMBILAN OBAT</span>
+                    <div style="padding: 3px; overflow-y: auto; height: 300px ">
+                      <table id="data_resep_pengambilan" class="table pengambilan_resep" style="max-height: 550px">
+                      
+                        <tbody style="background:rgba(240, 112, 186, 0.39)">
+                          <tr>
+                            <td align="center">-</td>
+                            <td>-Tidak ada resep-</td>
+                          </tr>
+                          <?php for($i=1;$i<6; $i++) : ?>
+                            <tr>
+                              <td align="center"><?php echo $i;?></td>
+                              <td>-</td>
+                            </tr>
+                          <?php endfor;?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
             </div>
 
 					</div><!-- /.page-content -->
@@ -288,9 +352,9 @@
                 $.each(vals, function (k, v) {  
                   // console.log(k);
                   // console.log(v);
-                  if(k < 2){
+                  if(k < 6){
                     var icon = (k == 0) ? '<i class="fa fa-check-circle bigger-120"></i>' : '<i class="fa fa-clock-o bigger-120"></i>' ;
-                    $('<tr style="background:rgb(15, 53, 78)"><td align="center">'+icon+'</td><td><span>'+v.nama_pasien.substr(0,15)+'</span></td></tr>').appendTo($('#table_'+v.kode_poli_bpjs+'_'+v.kode_dokter+''));
+                    $('<tr style="background:rgba(184, 217, 239, 0.34)"><td align="center">'+icon+'</td><td><span>'+v.nama_pasien.substr(0,15)+'</span></td></tr>').appendTo($('#table_'+v.kode_poli_bpjs+'_'+v.kode_dokter+''));
                   }
                   
                 })

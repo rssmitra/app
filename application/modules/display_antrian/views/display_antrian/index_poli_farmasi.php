@@ -27,15 +27,15 @@
 
     .page-content {
         /* background-color: #ffffff; */
-        background: url('assets/images/unit-pendaftaran.jpg') fixed ;
-        position: relative;
+        background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg') ;
+        position: fixed;
         margin: 0;
         padding: 0px 20px 24px;
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
         height: 100% !important;
-        /* min-height: 750px; */
+        min-height: 1050px;
     }
 
     .page-header {
@@ -105,7 +105,7 @@
     
 
   </style>
-	<body class="no-skin" style="background: url('assets/images/unit-pendaftaran.jpg'); min-height: 1920px">
+	<body class="no-skin" style="background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg'); min-height: 1920px">
 	
 		<div class="main-container ace-save-state" id="main-container">
 			<script type="text/javascript">
@@ -268,11 +268,11 @@
                     $arr_color = array('#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5'); 
                     shuffle($arr_color);
                     foreach($data_loket as $key=>$row) : if(!in_array($row->jd_kode_spesialis, ['013101','012101'])) : ?>
-                    <div class="col-md-4" style="padding-bottom:10px">
-                      <div style="background: <?php echo array_shift($arr_color)?> !important; padding: 5px; color: white">
-                        <span style="text-align: center; font-size: 1.8em; font-weight: bold; padding-bottom: 5px"><?php echo trim(strtoupper($row->short_name))?></span><br><span style="text-align: center; font-size: 1.5em; font-weight: bold; padding-bottom: 5px"><?php echo substr($row->nama_pegawai,0,35)?></span>
+                    <div class="col-md-4" style="padding-bottom:10px;">
+                      <div style="background: <?php echo array_shift($arr_color)?> !important; padding: 5px; color: white; border-top-right-radius: 35px; border-top-left-radius: 10px">
+                        <span style="text-align: center; font-size: 1.8em; font-weight: bold; padding-bottom: 5px;  "><?php echo trim(strtoupper($row->short_name))?></span><br><span style="text-align: center; font-size: 1.5em; font-weight: bold; padding-bottom: 5px"><?php echo substr($row->nama_pegawai,0,35)?></span>
                       </div>
-                      <div style="height: 120px">
+                      <div style="height: 100px">
                         <table class="table sedang_dilayani_poli" id="table_<?php echo $row->kode_poli_bpjs?>_<?php echo $row->jd_kode_dokter?>">
                           <tbody style="background:rgb(15, 53, 78)">
                             <tr>
@@ -294,10 +294,7 @@
                 </div>
               </div>
               <hr>
-              <div class="row" style="font-size: 2.5em; text-align: center">
-                <i class="fa fa-check-circle bigger-120"></i> Pasien Sedang Dilayani
-                <i class="fa fa-clock-o bigger-120"></i> Antrian Pasien Berikutnya
-              </div>
+              
 
             </div>
 
@@ -307,23 +304,21 @@
 				</div>
 			</div><!-- /.main-content -->
 
-			<!-- <div class="footer">
+			<div class="footer">
         
 				<div class="footer-inner">
-					<div class="footer-content">
-            <div class="center">
-              <span style="font-size: 1.5em; font-weight: bold; padding: 20px; font-style: italic;">Partners and Integrated System :</span><br>
-              <?php for($i=1; $i<13; $i++) : ?>
-              <img style="padding: 10px" height="80px" src="<?php echo base_url().'assets/insani/partner/'.$i.'.png'?>">
-              <?php endfor;?>
-            </div>
-						<span class="bigger-120">
+					<div class="footer-content" style="background: #b279b5;color: white;">
+          <span style="font-size: 2em; text-align: center; font-weight: bold;">
+            <i class="fa fa-check-circle bigger-120"></i> Pasien Sedang Dilayani
+            <i class="fa fa-clock-o bigger-120"></i> Antrian Pasien Berikutnya
+          </span>
+						<!-- <span class="bigger-120">
 							<span class="white bolder">RS Setia Mitra</span>
 							| <i>Smart Hospital System 4.0 </i> &copy; 2018-<?php echo date('Y')?>
-						</span>
+						</span> -->
 					</div>
 				</div>
-			</div> -->
+			</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>

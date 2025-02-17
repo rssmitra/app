@@ -32,7 +32,7 @@ class E_resep_rj_model extends CI_Model {
 	{
 		
 		$this->_main_query();
-
+		
 		if(isset($_GET['no_mr']) AND $_GET['no_mr']!=0 ){
 			if($_GET['no_mr']!='' or $_GET['no_mr']!=0){
 				$this->db->where('fr_listpesanan_v.no_mr', $_GET['no_mr']);
@@ -65,9 +65,9 @@ class E_resep_rj_model extends CI_Model {
             $this->db->where("CAST(fr_listpesanan_v.tgl_pesan as DATE) <= '".$_GET['to_tgl']."'" );
         }else{
         	if( isset($_GET['flag']) && $_GET['flag'] =='RJ' ){
-				$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 24');			
+				$this->db->where('DATEDIFF(day,tgl_pesan,GETDATE()) <= 2');				
         	}else{
-				$this->db->where('DATEDIFF(Hour, tgl_pesan, getdate()) <= 72');			
+				$this->db->where('DATEDIFF(day,tgl_pesan,GETDATE()) <= 3');		
         	}
         }
         // default for this modul

@@ -27,9 +27,11 @@ class Display_antrian extends MX_Controller {
         $this->load->view('display_antrian/index_farmasi');
     }
 
-    public function poli() {
-   
-        $this->load->view('display_antrian/index_poli_1');
+    public function poli_farmasi() {
+        $data = [
+            'data_loket' => $this->loket->get_open_loket(),
+        ];
+        $this->load->view('display_antrian/index_poli_farmasi', $data);
     }
 
     public function poli_group_w_unit() {
@@ -48,6 +50,15 @@ class Display_antrian extends MX_Controller {
         ];
         // echo "<pre>"; print_r($data);die;
         $this->load->view('display_antrian/index_poli_utama', $data);
+    }
+
+    public function poli_paru_farmasi() {
+        
+        $data = [
+            'data_loket' => $this->loket->get_open_loket(),
+        ];
+        // echo "<pre>"; print_r($data);die;
+        $this->load->view('display_antrian/index_poli_paru_farmasi', $data);
     }
 
    public function process()

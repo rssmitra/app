@@ -13,7 +13,7 @@
     <!-- css default for blank page -->
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
-   
+    <link rel="shortcut icon" href="<?php echo base_url().'assets/insani/favicon_rssm.png'; ?>">
     <script src="<?php echo base_url()?>assets/js/ace-extra.js"></script>
 
     <script src="<?php echo base_url('assets/jquery/jquery-2.2.3.min.js')?>"></script>
