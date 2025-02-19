@@ -51,6 +51,23 @@ $(document).ready(function(){
     });
   });
 
+  $('#btn_export_excel').click(function (e) {
+      e.preventDefault();
+      $.ajax({
+      url: 'registration/Riwayat_kunjungan_poli/find_data',
+      type: "post",
+      data: $('#form_search').serialize(),
+      dataType: "json",
+      beforeSend: function() {
+        achtungShowLoader();  
+      },
+      success: function(data) {
+        achtungHideLoader();
+        export_excel(data);
+      }
+    });
+  });
+
   $('#btn_reset_data').click(function (e) {
         e.preventDefault();
         $('#form_search')[0].reset();
@@ -119,6 +136,14 @@ $( ".form-control" )
       return false;   
     }  
 }); 
+
+
+
+function export_excel(result){
+
+  window.open('registration/Riwayat_kunjungan_poli/export_excel?'+result.data+'','_blank'); 
+
+}
 
 function find_data_reload(result){
 
