@@ -5,7 +5,7 @@ class Riwayat_kunjungan_poli_model extends CI_Model {
 
 	var $table = 'tc_kunjungan';
 	var $column = array('tc_kunjungan.no_kunjungan','tc_kunjungan.no_mr');
-	var $select = 'tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, pl_tc_poli.id_pl_tc_poli,pl_tc_poli.no_antrian, pl_tc_poli.status_batal, pl_tc_poli.status_periksa, pl_tc_poli.kode_gcu, tc_kunjungan.tgl_keluar';
+	var $select = 'tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, pl_tc_poli.id_pl_tc_poli,pl_tc_poli.no_antrian, pl_tc_poli.status_batal, pl_tc_poli.status_periksa, pl_tc_poli.kode_gcu, tc_kunjungan.tgl_keluar';
 
 	var $order = array('pl_tc_poli.tgl_jam_poli' => 'DESC');
 
@@ -17,6 +17,7 @@ class Riwayat_kunjungan_poli_model extends CI_Model {
 
 	private function _main_query(){
 		$this->db->select($this->select);
+		$this->db->select('mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian');
 		$this->db->from($this->table);
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_kunjungan.no_mr','left');
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_kunjungan.kode_dokter','left');
@@ -40,7 +41,7 @@ class Riwayat_kunjungan_poli_model extends CI_Model {
 	        }
 
 	        if (isset($_GET['bagian_asal']) AND $_GET['bagian_asal'] != '') {
-	            $this->db->where('kode_bagian_asal', $_GET['bagian_asal']);	
+	            $this->db->where('tc_kunjungan.kode_bagian_asal', $_GET['bagian_asal']);	
 	        }
 
 	        if (isset($_GET['dokter']) AND $_GET['dokter'] != 0) {
@@ -101,6 +102,19 @@ class Riwayat_kunjungan_poli_model extends CI_Model {
 		$this->_get_datatables_query();
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function get_data()
+	{
+		$this->_main_query();
+		$this->db->select('CAST(SUM(bill_rs) as INT) as profit, CAST(SUM(bill_dr1) as INT) as cost, CAST((SUM(bill_rs) + SUM(bill_dr1)) as INT) as total, tc_registrasi.no_sep');
+		$this->db->join('tc_trans_pelayanan','tc_trans_pelayanan.no_registrasi = tc_kunjungan.no_registrasi', 'left');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi = tc_kunjungan.no_registrasi', 'left');
+		$this->db->group_by('mt_karyawan.nama_pegawai, asal.nama_bagian, tujuan.nama_bagian, tc_registrasi.no_sep');
+		$this->db->group_by($this->select);
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();

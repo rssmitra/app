@@ -92,6 +92,25 @@
         font-family: arial;
       }
 
+      .header-logo{
+        height:130px;
+        background: #e1e1e145 ;
+        color:white;     
+        border-bottom: 5px solid #ea822d;
+        border-bottom-right-radius: 65px; 
+        text-align: left
+      }
+
+      .title-text{
+        font-size: 30px;
+        font-weight: bold;
+        text-align: center !important;
+        width: 100%;
+        margin: 20px;
+        color: black !important;
+        padding-top: 30px;
+      }
+
     </style>
 
 </head>
@@ -104,11 +123,17 @@
 
       <div class="col-lg-8 no-padding" style="margin-left:-12px;margin-top: 5px">
 
-        <div class="row" style="height:120px;background: #f7f7f712 ;color:white; border-radius: 10px; text-align: center">
-          <img alt="" src="<?php echo COMP_ICON_INSANI?>" width="300px">
+        <div class="row header-logo">
+          <div style="float: left">
+            <img alt="" src="<?php echo COMP_ICON_INSANI?>" width="300px">
+          </div>
+          <div style="float: right; margin-top: 40px">
+            <span class="title-text">ANTRIAN PENDAFTARAN</span>
+          </div>
         </div>
 
         <div class="row" style="padding-top: 5px">
+          
           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
           <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
@@ -149,11 +174,21 @@
         </div>
 
         <div class="row center" style="background: white; margin-top: 5px; border-radius: 5px;">
-          <center><span style="font-weight: bold; font-size: 1.1em; font-style: italic; text-align: center; color: #01679c ">Our Partners & Integrated System : </span></center>
-          <div style="padding: 10px; text-align: center">
+          <!-- <center><span style="font-weight: bold; font-size: 1.1em; font-style: italic; text-align: center; color: #01679c ">Our Partners & Integrated System : </span></center> -->
+          <!-- <div style="padding: 10px; text-align: center">
             <?php for($i=1; $i<16; $i++): if($i != 4) :?>
               <img src="<?php echo base_url().'assets/insani/partner/'.$i.'.png'?>" width="125px" style="padding: 5px">
             <?php endif; endfor; ?>
+          </div> -->
+          <div style="background: #b179b4;color: white;padding: 25px;border-radius: 8px;">
+            <p>
+              <span>Pemberitahuan :</span><br>
+              <ol>
+                <li>Bagi pasien yang belum memiliki Nomor Antrian harap mengambil nomor antrian terlebih dahulu di kiosk</li>
+                <li>Jika Nomor Antrian terlewati lebih dari 5 nomor antrian, maka silahkan ambil nomor antrian kembali pada kiosk </li>
+                <li>Setelah selesai dilayani oleh petugas pendaftaran, silahkan langsung menuju Nurse Station untuk dilakukan Assesmen Keperawatan sebelum masuk ke Poli</li>
+              </ol>
+            </p>
           </div>
         </div>
 
@@ -175,9 +210,9 @@
 
         <div class="row" >
 
-          <div class="small-box" style="height:auto;margin:10px;background: #b6d55f ;color:white;border-radius:5px;">
+          <div class="small-box" style="height:auto;margin:10px;background: #137cc1 ;color:white;border-radius:5px;">
             
-              <div class="header" style="height:30px;background-color:#8eab3d;border-radius:15px 0 0 50px;">
+              <div class="header" style="height:30px;background-color:rgb(72, 169, 234);border-radius:15px 0 0 50px;">
                 <p style="font-size:20px;margin-left:12%;"><b>Loket</b><span style="margin-left: 39%">Nomor Urut</span></p>
                 
               </div>
@@ -194,9 +229,9 @@
             
           </div>
 
-          <div class="small-box" style="height:auto;margin:10px;background: #f08121;color:white;border-radius:5px;">
+          <div class="small-box" style="height:auto;margin:10px;background: #137cc1;color:white;border-radius:5px;">
             
-            <div class="header" style="height:30px;background-color:#ad560b;border-radius:15px 0 0 50px;">
+            <div class="header" style="height:30px;background-color:rgb(72, 169, 234);border-radius:15px 0 0 50px;">
               <p style="font-size:20px;margin-left:12%;"><b>Loket</b><span style="margin-left: 39%">Nomor Urut</span></p>
             </div>
             
@@ -212,8 +247,8 @@
             
           </div>
 
-          <div class="small-box" style="height:auto;margin:10px;background : #ae7bb0 ;color:white;border-radius:5px;">
-              <div class="header" style="height:30px;background-color:#915e93;border-radius:15px 0 0 50px;">
+          <div class="small-box" style="height:auto;margin:10px;background : #137cc1 ;color:white;border-radius:5px;">
+              <div class="header" style="height:30px;background-color:rgb(72, 169, 234);border-radius:15px 0 0 50px;">
                   <p style="font-size:20px;margin-left:12%;"><b>Loket</b><span style="margin-left: 39%">Nomor Urut</span></p>
               </div>
               <div class="inner">
@@ -229,9 +264,9 @@
               </div>
           </div>
 
-          <div class="small-box" style="height:auto;margin:10px;background: #de1f8c ;color:white;border-radius:5px;">
+          <div class="small-box" style="height:auto;margin:10px;background: #137cc1 ;color:white;border-radius:5px;">
           
-            <div class="header" style="height:30px;background-color: #a5236d;border-radius:15px 0 0 50px;">
+            <div class="header" style="height:30px;background-color: rgb(72, 169, 234);border-radius:15px 0 0 50px;">
               <p style="font-size:20px;margin-left:12%;"><b>Loket</b><span style="margin-left: 39%">Nomor Urut</span></p>
               
             </div>
@@ -283,10 +318,10 @@
 
   <div class="footer" >
     
-      <div style="width:90%;float:left; background: #0066a0b3">
+      <div style="width:90%;float:left; background: #137cc1">
         <marquee behavior="scroll" direction="left" style="color: white;font-size:30px;margin-top:5px;font-weight: bold"><?php echo strtoupper('Sayangi kesehatan anda..! Mohon jaga jarak anda, hindari kerumunan dan selalu gunakan masker selama berada di lingkungan Rumah Sakit untuk menekan penyebaran Virus Covid-19.')?> | <?php echo COMP_MOTTO?> </marquee>
       </div>
-      <div style="width:10%;float:left; background: #0066a0b3">
+      <div style="width:10%;float:left; background: #137cc1">
         <div id="refresh"><h3 style="margin:0;font-size:22px;" id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></h3></div>
         <p style="margin:0;font-size:20px;"><?php date_default_timezone_set("Asia/Jakarta"); echo date('d/m/Y') ?></p>
       </div>

@@ -127,6 +127,17 @@ class Riwayat_kunjungan_poli extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function export_excel(){
+        /*get data from model*/
+        $list = $this->Riwayat_kunjungan_poli->get_data();
+        $data =array();
+        $data['list'] = $list;
+  
+        // var_dump($list); die;
+  
+        $this->load->view('Riwayat_kunjungan_poli/export_excel', $data);
+      }
+
 
 }
 

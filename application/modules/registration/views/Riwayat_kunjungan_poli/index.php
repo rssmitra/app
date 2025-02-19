@@ -322,7 +322,6 @@ function rollback(no_registrasi, no_kunjungan){
           <th>Tanggal Masuk</th>
           <th>Tanggal Keluar</th>
           <th>Status</th>
-          
         </tr>
       </thead>
       <tbody>

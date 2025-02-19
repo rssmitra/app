@@ -236,7 +236,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Eks_profit_by_close_bill->get_datatables();
-        // echo "<pre>";print_r($list);die;
+        
         $data = [];
         $ttl_bill_dr1 = [];
         $ttl_bill_dr2 = [];
@@ -339,6 +339,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
         $output = array(
             "result" => $data,        
         );
+        // echo "<pre>";print_r($output);die;
         $this->load->view('eksekutif/Eks_profit_by_close_bill/excel_view', $output);
         
     }
