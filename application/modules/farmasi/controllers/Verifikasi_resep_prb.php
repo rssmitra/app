@@ -479,7 +479,7 @@ class Verifikasi_resep_prb extends MX_Controller {
     }
 
     public function getHtmlData($data, $named, $no_sep, $kode_trans_far, $kode_penunjang){
-
+        
         $temp = new Templates;
         /*header html*/
         $header = $this->Verifikasi_resep_prb->get_header_data($kode_trans_far);
@@ -494,6 +494,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="700px" style="position: absolute !important">' : '<u>'.$nama_dr.'</u><br>SIP. '.$no_sip.'';
 
         // echo '<pre>'; print_r($data);
+        // echo '<pre>'; print_r($no_sep);
         // echo '<pre>'; print_r($header);die;
 
         $html = '';
@@ -583,22 +584,23 @@ class Verifikasi_resep_prb extends MX_Controller {
 
             case 'SEP':
                 /*data sep*/
-                $row_sep = $this->Ws_index->findSep($no_sep);
-                $sep = isset($row_sep->data) ? $row_sep->data : [];
-                $cetakan_ke = $this->Ws_index->count_sep_by_day();
-                $cetakan = isset($cetakan_ke) ? $cetakan_ke : [];
+                $row_sep = $this->Ws_index->findSepFromLocal($no_sep);
+                // echo '<pre>'; print_r($row_sep);die;
+                // $sep = isset($row_sep->data) ? $row_sep->data : [];
+                // $cetakan_ke = $this->Ws_index->count_sep_by_day();
+                // $cetakan = isset($cetakan_ke) ? $cetakan_ke : [];
                 $header_ = isset($header) ? $header : [];
 
                 $config = [
                     'no_registrasi' => $header->no_registrasi,
-                    'kode' => $sep->peserta->noKartu,
+                    'kode' => $row_sep->response->noKartu,
                     'tanggal' => $header->tgl_trans,
                     'flag' => $named,
                 ];
                 $qr_url = $this->qr_code_lib->qr_url($config);
                 $img = $this->qr_code_lib->generate($qr_url);
 
-                $result = array('sep' => $sep, 'cetakan_ke' => $cetakan, 'header' => $header_, 'qr_img' => $img, 'qr_url' => $qr_url);
+                $result = array('sep' => $row_sep->response->noSep, 'cetakan_ke' => 1, 'header' => $header_, 'qr_img' => $img, 'qr_url' => $qr_url);
                 $html .= $this->load->view('farmasi/Verifikasi_resep_prb/preview_sep', $result, true);
             break;
 
@@ -641,6 +643,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         $data = $this->Verifikasi_resep_prb->get_detail($kode_trans_far);
         /*get content html*/
         $html = json_decode( $this->getHtmlData($data, $named, $no_sep, $kode_trans_far, $kode_penunjang) );
+        // echo '<pre>'; print_r($html);die;
         /*generate pdf*/
         $this->exportPdf($html, $named, $no_sep, $kode_trans_far, $act_code); 
         
@@ -690,7 +693,7 @@ class Verifikasi_resep_prb extends MX_Controller {
         
         $tanggal = new Tanggal();
         $pdf = new TCPDF('P', PDF_UNIT, array(470,280), true, 'UTF-8');
-        // print_r($flag);die;
+        // print_r($pdf);die;
         $pdf->SetCreator(PDF_CREATOR);
         
         $pdf->SetAuthor(COMP_LONG);
@@ -746,12 +749,13 @@ EOD;
         $html .= $data->html;
         
         $result = $html;
-
+        // print_r($result);die;
         // output the HTML content
         $pdf->writeHTML($result, true, false, true, false, '');
 
         /*save to folder*/
         $pdf->Output('uploaded/farmasi/log/'.$filename.'.pdf', ''.$action.''); 
+        // $pdf->Output('uploaded/farmasi/log/'.$filename.'.pdf', 'I'); 
 
         /*show pdf*/
         //$pdf->Output(''.$reg_data->no_registrasi.'.pdf', 'I'); 

@@ -11,26 +11,23 @@
 
 		<!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap.css" />
-    <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" /> -->
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
     <!-- css date-time -->
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
     <!-- end css date-time -->
     <!-- ace styles -->
-    <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" /> -->
-    <!-- <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" /> -->
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" />
     <link rel="shortcut icon" href="<?php echo base_url().'assets/insani/favicon_rssm.png'; ?>">
 
 	</head>
   <style>
-    @font-face { 
-      font-family: 'MyriadPro'; 
-      src: url('<?php echo base_url()?>assets/fonts/MyriadPro-Bold.otf'); 
-    } 
+    @font-face { font-family: MyriadPro; src: url('assets/fonts/MyriadPro-Bold.otf'); } 
 
     .page-content {
-        background-color: #E6E7E8;
-        /* background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg') ; */
+        /* background-color: #ffffff; */
+        background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg') ;
         position: fixed;
         margin: 0;
         padding: 0px 20px 24px;
@@ -39,11 +36,10 @@
         background-size: cover;
         height: 100% !important;
         min-height: 1050px;
-        font-family: 'MyriadPro' !important
     }
 
     .page-header {
-      padding-bottom: 15px;
+      padding-bottom: 9px;
       margin: 0px 0 0px !important;
       border-bottom: 1px solid #eee;
     }
@@ -73,6 +69,7 @@
     }
 
     .table {
+      font-family: Arial, Helvetica, sans-serif;
       border-collapse: collapse;
       width: 100%;
     }
@@ -108,18 +105,16 @@
     
 
   </style>
-	<body class="no-skin" style="background: #E6E7E8; min-height: 1920px">
+	<body class="no-skin" style="background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg'); min-height: 1920px">
 	
 		<div class="main-container ace-save-state" id="main-container">
 			<script type="text/javascript">
 				try{ace.settings.loadState('main-container')}catch(e){}
 			</script>
 
-			<div class="main-content" style="background: #E6E7E8">
-        <div class="page-header center no-padding">
-          <a href="<?php echo base_url().'Display_antrian/poli'?>"><img src="<?php echo base_url().'assets/insani/Logo-Rssm.png'?>" style="width: 350px; text-align: center; padding: 10px; margin-left: 10px"></a>
-
-          <a href="<?php echo base_url().'Display_antrian/poli'?>"><img src="<?php echo base_url().'assets/insani/by_insanicare.png'?>" style="width: 225px; float: right;padding: 36px "></a>
+			<div class="main-content" style="background: white">
+        <div class="page-header center no-padding" style="background: #f3f3f3; border-bottom-left-radius: 50px; border-bottom: 8px solid #137cc1">
+          <a href="<?php echo base_url().'Display_antrian/poli'?>"><img src="<?php echo base_url().'assets/insani/logo_rssm_insani_care.png'?>" style="width: 350px; text-align: center; "></a>
         </div>
 
 				<div class="main-content-inner">
@@ -161,222 +156,145 @@
                   background-repeat: no-repeat;
                   background-size: cover;
                 }
-
-                .title_antrian_pendaftaran{
-                  background: #00669F;
-                  color: white;
-                  height: 70px;
-                  width: 400px;
-                  font-size: 27px;
-                  padding: 15px;
-                  margin-left: 15px;
-                  border-top-left-radius: 40px;
-                  border-top-right-radius: 40px;
-                  font-weight: bold;
-                  position: absolute
-                }
-
-                .title_antrian_poliklinik{
-                  background: #00669F;
-                  color: white;
-                  height: 70px;
-                  width: 400px;
-                  font-size: 27px;
-                  padding: 15px;
-                  margin-left: 15px;
-                  border-top-left-radius: 40px;
-                  border-top-right-radius: 40px;
-                  font-weight: bold;
-                  position: absolute;
-                 
-                }
-
-                .row_section{
-                  background: #00000029;
-                  padding: 6px;
-                  padding-bottom: 23px;
-                  border-bottom-left-radius: 39px;
-                  border-bottom-right-radius: 39px;
-                  margin-top: 38px;
-                  padding-top: 40px;
-                }
-
-                .small-box{
-                  height: auto;
-                  margin: 10px;
-                  background: #00669F;
-                  color: white;
-                  border-bottom-right-radius: 38px;
-                  border-bottom-left-radius: 38px;
-                  border-top-right-radius: 38px;
-                  padding-bottom: 3px
-                }
-
-                .box-poliklinik {
-                    height: auto;
-                    margin: 10px;
-                    background: #00669F;
-                    color: white;
-                    border-bottom-right-radius: 60px;
-                    border-bottom-left-radius: 38px;
-                    border-top-right-radius: 60px;
-                    padding-bottom: 3px
-                }
-
               </style>
 
-              <!-- section antrian pendaftaran -->
-              <!-- title antrian pendaftaran -->
-              <div class="title_antrian_pendaftaran">Antrian Pendaftaran</div>
-              <div class="row row_section">
-                  <?php for($i=1; $i<5; $i++) :?>
-                  <div class="col-md-6 no-padding">
-                    <div class="small-box">
-                      <div class="header" style="height:30px;background-color: #5882B0;border-top-right-radius: 156px;">
-                        <p style="font-size:20px;margin-left:12%; font-weight: bold;"><b>Loket</b><span style="margin-left: 39%">Nomor Antrian</span></p>
-                      </div>
-                      <div class="inner">
+              <!-- section advertisement -->
+              <div class="row" style="max-height: 30%">
+                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                  <!-- Indicators -->
+                  <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                  </ol>
 
-                        <div style="width:30%;float:left;border-right:2px solid white">
-                          <h1 style="margin-top:0px;font-size:55px;text-align:center;text-shadow: 5px 3px 6px black;">0<?php echo $i?></h1>
-                        </div>
+                  <!-- Wrapper for slides -->
+                  <div class="carousel-inner">
+                    <div class="item active">
+                      <img src="<?php echo base_url().'assets/insani/banner/img_reg_online.png'?>" alt="Los Angeles" style="width:100%;">
+                    </div>
 
-                        <div id="auto<?php $i?>" style="margin-top:15px;margin-bottom:-17px;width:70%float:left;height:80px;"></div>
-                                
-                      </div>
+                    <div class="item">
+                      <img src="<?php echo base_url().'assets/insani/banner/paket_mcu_haji.jpeg'?>" alt="Chicago" style="width:100%;">
+                    </div>
+                  
+                    <div class="item">
+                      <img src="<?php echo base_url().'assets/insani/banner/img_bpjs_naker.png'?>" alt="New york" style="width:100%;">
                     </div>
                   </div>
-                  <?php endfor; ?>
 
+                  <!-- Left and right controls -->
+                  <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </div>
+              </div>
+              <!-- section antrian farmasi -->
+              <div id="section_antrian_farmasi" class="row" >
+                <p style="text-align: center; font-size: 3.5em; font-weight: bold; color: white ">ANTRIAN FARMASI</p>
+                <div class="col-md-12">
+                  <div class="col-md-4">
+                    <span style="background:  #b179b5; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">RESEP MASUK</span>
+                      <div style="padding: 3px; overflow-y: auto; height: 300px ">
+                        <table id="data_resep_masuk" class="table resep_masuk" style="max-height: 730px">
+                            <tbody style="background:rgba(214, 161, 218, 0.42)">
+                              <tr>
+                                <td align="center">-</td>
+                                <td>-Tidak ada resep-</td>
+                              </tr>
+                              <?php for($i=1;$i<6; $i++) : ?>
+                                <tr>
+                                  <td align="center"><?php echo $i;?></td>
+                                  <td>-</td>
+                                </tr>
+                              <?php endfor;?>
+                            </tbody>
+                        </table>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                    <span style="background:  #ed8222; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">DALAM PROSES</span>
+                    <div style="padding: 3px; overflow-y: auto; height: 300px ">
+                      <table id="data_resep_proses" class="table resep_sedang_proses">
+                        <tbody style="background:rgba(240, 171, 112, 0.41)">
+                          <tr>
+                            <td align="center">-</td>
+                            <td>-Tidak ada resep-</td>
+                          </tr>
+                          <?php for($i=1;$i<6; $i++) : ?>
+                            <tr>
+                              <td align="center"><?php echo $i;?></td>
+                              <td>-</td>
+                            </tr>
+                          <?php endfor;?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                  <span style="background:  #df1e8e; padding: 10px; color: white; text-align: center; font-size: 2.2em; font-weight: bold; padding-bottom: 5px">PENGAMBILAN OBAT</span>
+                    <div style="padding: 3px; overflow-y: auto; height: 300px ">
+                      <table id="data_resep_pengambilan" class="table pengambilan_resep" style="max-height: 550px">
+                      
+                        <tbody style="background:rgba(240, 112, 186, 0.39)">
+                          <tr>
+                            <td align="center">-</td>
+                            <td>-Tidak ada resep-</td>
+                          </tr>
+                          <?php for($i=1;$i<6; $i++) : ?>
+                            <tr>
+                              <td align="center"><?php echo $i;?></td>
+                              <td>-</td>
+                            </tr>
+                          <?php endfor;?>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <!-- section antrian poliklinik -->
-              <!-- title antrian pendaftaran -->
-              <div class="title_antrian_poliklinik" style="margin: 16px">Antrian Poliklinik</div>
-              <div class="row row_section" style="margin-top: 55px !important">
-                  <?php for($i=1; $i<4; $i++) :?>
-                  <div class="col-md-12 no-padding">
-                    <div class="small-box box-poliklinik">
-                      <div class="header" style="height:80px;background-color: #5882B0;border-top-right-radius: 60px;">
-                        <p style="font-size:20px;margin-left:2%; font-weight: bold; padding-top: 10px">
-                          <span style="font-size: 22px">Spesialis Jantung</span><br>
-                          <span style="font-size: 30px">dr. Adelin Dhivi Kemalsari, Sp.JP</span>
-                        </p>
+              <!-- section antrian poli -->
+              <div id="section_antrian_poli" class="row" >
+                <p style="text-align: center; font-size: 3.5em; font-weight: bold; color: black; text-shadow: 2px 2pxrgb(194, 194, 194);font-familiy: system-ui">ANTRIAN POLIKLINIK</p>
+                <div class="col-md-12 no-padding">
+
+                  <?php 
+                    $arr_color = array('#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5','#137CC1','#748b33','#ED8222','#DF1E8E','#B179B5'); 
+                    shuffle($arr_color);
+                    foreach($data_loket as $key=>$row) : if(!in_array($row->jd_kode_spesialis, ['013101','012101'])) : ?>
+                    <div class="col-md-4" style="padding-bottom:10px;">
+                      <div style="background: <?php echo array_shift($arr_color)?> !important; padding: 5px; color: white; border-top-right-radius: 35px; border-top-left-radius: 10px">
+                        <span style="text-align: center; font-size: 1.8em; font-weight: bold; padding-bottom: 5px;  "><?php echo trim(strtoupper($row->short_name))?></span><br><span style="text-align: center; font-size: 1.5em; font-weight: bold; padding-bottom: 5px"><?php echo substr($row->nama_pegawai,0,35)?></span>
                       </div>
-                      <div class="inner">
-                          <div style="width:25%;float:left;border-right:2px solid white">
-                            <h1 style="margin-top:0px;font-size:55px;text-align:center;text-shadow: 5px 3px 6px black;">
-                              <span style="margin-right: 10px">A</span> 0<?php echo $i?></h1>
-                          </div>
-
-                          <div style="margin-left: 10px;margin-top:15px;margin-bottom:-17px;width:75% float:left;height:80px; font-size: 55px">
-                            <h1 style="margin-top:0px;font-size:55px;text-align:left;text-shadow: 5px 3px 6px black;">
-                              <span style="padding-left: 10px;">Syahir</h1>
-                          </div>    
-                      </div>
-
-                      <div class="inner">
-                          <div style="width:25%;float:left;border-right:2px solid white; border-top: 2px solid white">
-                            <h1 style="margin-top:13px;font-size:55px;text-align:center;text-shadow: 5px 3px 6px black;">
-                              <span style="margin-right: 10px">Next</h1>
-                          </div>
-
-                          <div style="margin-left: 10px;margin-top:15px;margin-bottom:-17px;width:75% float:left;height:110px; font-size: 55px; border-top: 2px solid white">
-                            <h1 style="margin-top:13px;font-size:55px;text-align:left;text-shadow: 5px 3px 6px black;">
-                              <span style="padding-left: 10px;">Oki</h1>
-                          </div>    
-                      </div>
-
-                    </div>
-                  </div>
-                  <?php endfor; ?>
-              </div>
-
-              <!-- title antrian farmasi -->
-              <div class="title_antrian_pendaftaran" style="margin: 16px">Antrian Farmasi</div>
-              <div class="row row_section" style="margin-top: 55px">
-
-                <div class="col-md-4 no-padding">
-                  <div class="small-box">
-                    <div class="header" style="height:45px;background-color: #5882B0;border-top-right-radius: 156px;">
-                      <p style="font-size:24px; text-align: center; font-weight: bold; padding-top: 8px"><b>Resep Masuk</b></p>
-                    </div>
-                    <div class="inner">
-                      <div style="padding: 0px; overflow-y: auto; height: 300px ">
-                        <table id="data_resep_masuk" class="table resep_masuk">
-                            <tbody>
-                              <tr>
-                                <td align="center">-</td>
-                                <td>-Tidak ada resep-</td>
-                              </tr>
-                              <?php for($i=1;$i<6; $i++) : ?>
-                                <tr>
-                                  <td align="center"><?php echo $i;?></td>
-                                  <td>-</td>
-                                </tr>
-                              <?php endfor;?>
-                            </tbody>
+                      <div style="height: 100px">
+                        <table class="table sedang_dilayani_poli" id="table_<?php echo $row->kode_poli_bpjs?>_<?php echo $row->jd_kode_dokter?>">
+                          <tbody style="background:rgb(15, 53, 78)">
+                            <tr>
+                              <td align="center"><i class="fa fa-check-circle bigger-120"></i></td>
+                              <td>-Tidak ada data-</td>
+                            </tr>
+                            <?php for($i=2; $i<3; $i++) : ?>
+                            <tr>
+                              <td align="center"><i class="fa fa-clock-o bigger-120"></i></td>
+                              <td>-</td>
+                            </tr>
+                            <?php endfor; ?>
+                          </tbody>
                         </table>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  <?php endif; endforeach;?>
 
-                <div class="col-md-4 no-padding">
-                  <div class="small-box">
-                    <div class="header" style="height:45px;background-color: #5882B0;border-top-right-radius: 156px;">
-                      <p style="font-size:24px; text-align: center; font-weight: bold; padding-top: 8px"><b>Dalam Proses</b></p>
-                    </div>
-                    <div class="inner">
-                      <div style="padding: 0px; overflow-y: auto; height: 300px ">
-                        <table id="data_resep_masuk" class="table resep_masuk">
-                            <tbody>
-                              <tr>
-                                <td align="center">-</td>
-                                <td>-Tidak ada resep-</td>
-                              </tr>
-                              <?php for($i=1;$i<6; $i++) : ?>
-                                <tr>
-                                  <td align="center"><?php echo $i;?></td>
-                                  <td>-</td>
-                                </tr>
-                              <?php endfor;?>
-                            </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-
-                <div class="col-md-4 no-padding">
-                  <div class="small-box">
-                    <div class="header" style="height:45px;background-color: #5882B0;border-top-right-radius: 156px;">
-                      <p style="font-size:24px; text-align: center; font-weight: bold; padding-top: 8px"><b>Penyerahan Obat</b></p>
-                    </div>
-                    <div class="inner">
-                      <div style="padding: 0px; overflow-y: auto; height: 300px ">
-                        <table id="data_resep_masuk" class="table resep_masuk">
-                            <tbody>
-                              <tr>
-                                <td align="center">-</td>
-                                <td>-Tidak ada resep-</td>
-                              </tr>
-                              <?php for($i=1;$i<6; $i++) : ?>
-                                <tr>
-                                  <td align="center"><?php echo $i;?></td>
-                                  <td>-</td>
-                                </tr>
-                              <?php endfor;?>
-                            </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
               </div>
               <hr>
-
+              
 
             </div>
 
@@ -388,19 +306,19 @@
 
 			<div class="footer">
         
-				<!-- <div class="footer-inner">
+				<div class="footer-inner">
 					<div class="footer-content" style="background: #b279b5;color: white;">
           <span style="font-size: 2em; text-align: center; font-weight: bold;">
             <i class="fa fa-check-circle bigger-120"></i> Pasien Sedang Dilayani
             <i class="fa fa-clock-o bigger-120"></i> Antrian Pasien Berikutnya
           </span>
-						<span class="bigger-120">
+						<!-- <span class="bigger-120">
 							<span class="white bolder">RS Setia Mitra</span>
 							| <i>Smart Hospital System 4.0 </i> &copy; 2018-<?php echo date('Y')?>
-						</span>
+						</span> -->
 					</div>
 				</div>
-			</div> -->
+			</div>
 
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
