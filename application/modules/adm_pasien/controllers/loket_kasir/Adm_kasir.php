@@ -124,9 +124,6 @@ class Adm_kasir extends MX_Controller {
 
                     }
 
-                    
-
-                    
                     $data[] = $row;
                 }
             }
@@ -259,6 +256,7 @@ class Adm_kasir extends MX_Controller {
                     'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
                     'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
                     'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                    'base_url_dok' => $this->regex->_genRegex(base_url(), 'RGXQSL'),
                 );
                 
                 $doc_save['created_date'] = date('Y-m-d H:i:s');
@@ -267,20 +265,16 @@ class Adm_kasir extends MX_Controller {
                 if ( $this->Csm_billing_pasien->checkIfDokExist($exp_no_registrasi, $filename) == FALSE ) {
                     $this->db->insert('csm_dokumen_export', $doc_save);
                     $this->db->trans_commit();
-                    // echo "<pre>"; print_r($this->db->last_query());die;
                 }
-            endif;
-            // echo "<pre>"; print_r($createDocument);die;
+
+            endif; 
         }
         
-        $mergeFiles = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $tipe);
+        $mergeFiles = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $type);
         echo json_encode($mergeFiles);
 
         
     }
-
-
-
 
   }
 

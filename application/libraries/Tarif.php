@@ -315,7 +315,7 @@ final class Tarif extends AvObjects {
         $db->join('mt_klas','mt_klas.kode_klas=mt_master_tarif_detail.kode_klas','left');
         $db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=mt_master_tarif.jenis_tindakan','left');
         $db->where('mt_master_tarif_detail.kode_tarif='.$kode_tarif.' and (mt_master_tarif_detail.kode_klas='.$kode_klas.' or mt_master_tarif_detail.kode_klas=0)');
-        //$db->where( array('mt_master_tarif_detail.kode_tarif' => $kode_tarif, 'mt_master_tarif_detail.kode_klas' => $kode_klas, 'mt_master_tarif_detail.is_active' => 'Y') );
+        $db->where( array('mt_master_tarif_detail.is_active' => 'Y') );
 
         $db->group_by('mt_master_tarif_detail.kode_master_tarif_detail,mt_master_tarif_detail.kode_tarif,mt_master_tarif_detail.kode_klas,mt_master_tarif_detail.bill_rs, mt_master_tarif_detail.bill_dr1, mt_master_tarif_detail.bill_dr2, mt_master_tarif_detail.bill_dr3, mt_master_tarif_detail.bhp, mt_master_tarif_detail.alkes, mt_master_tarif_detail.alat_rs, mt_master_tarif_detail.pendapatan_rs, mt_master_tarif.nama_tarif, mt_klas.nama_klas, mt_jenis_tindakan.jenis_tindakan, mt_master_tarif_detail.kamar_tindakan,mt_master_tarif_detail.revisi_ke, mt_master_tarif.jenis_tindakan, mt_master_tarif.kode_bagian, mt_master_tarif_detail.total, mt_master_tarif_detail.revisi_ke,b.nama_tarif, c.nama_tarif, c.kode_tarif, mt_master_tarif_detail.adm');
         $db->having('mt_master_tarif_detail.revisi_ke = (SELECT MAX(t2.revisi_ke) FROM mt_master_tarif_detail t2 WHERE mt_master_tarif_detail.kode_master_tarif_detail=t2.kode_master_tarif_detail) ');
@@ -375,7 +375,7 @@ final class Tarif extends AvObjects {
             if($jenis_tindakan!=13){
                 //$where_str = 'and nama_tarif like '."'%BPJS'".'';
                 if ($data['kode_bagian']=='020101') {
-                    $where_str = 'and kode_tarif='."'20101001'".'';
+                    $where_str = 'and kode_tarif='."'20101173'".'';
                 }else{
                     $where_str = 'and kode_tarif=41';
                 }
@@ -389,14 +389,18 @@ final class Tarif extends AvObjects {
             }
 
         }else{
-
-            $where_str = 'and nama_tarif not like '."'%BPJS'".' and nama_tarif not like '."'%Tindakan'".'';
+            if($jenis_tindakan == 12){
+                // konsultasi dr spesialis
+                $where_str = 'and kode_tarif=12801533';
+            }else{
+                $where_str = 'and nama_tarif not like '."'%BPJS'".' and nama_tarif not like '."'%Tindakan'".'';
+            }
            
         }
 
         $db->select('a.*, b.nama_tarif');
         $db->from('mt_master_tarif_detail a, mt_master_tarif b');
-        $db->where('a.kode_tarif = (select top 1 kode_tarif from mt_master_tarif where (kode_bagian='."'".$data['kode_bagian']."'".' or kode_bagian=0) and jenis_tindakan='.$jenis_tindakan.' '.$where_str.' ORDER BY "is_old" ASC, nama_tarif desc) ');
+        $db->where('a.kode_tarif = (select top 1 kode_tarif from mt_master_tarif where jenis_tindakan='.$jenis_tindakan.' '.$where_str.' ORDER BY revisi_ke DESC) ');
         $db->where('a.kode_tarif=b.kode_tarif');
         $db->where('(a.kode_klas='.$data['kode_klas'].' or a.kode_klas=0)');
         $db->order_by('a.revisi_ke', 'DESC');

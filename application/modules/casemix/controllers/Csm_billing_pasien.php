@@ -526,17 +526,17 @@ EOD;
         /*save to folder*/
         $pdf->Output('uploaded/casemix/log/'.$filename.'.pdf', ''.$action.''); 
 
-        if( in_array($flag, array('RESUME','LAB','RAD') )){
-            //kotak form
+        // if( in_array($flag, array('RESUME','LAB','RAD') )){
+        //     //kotak form
             
-            // update file emr pasien
-            $file_name_merge_emr = 'EMR-'.$reg_data->no_registrasi;
-            $this->Csm_billing_pasien->saveEmr($file_name_merge_emr, $reg_data);
+        //     // update file emr pasien
+        //     $file_name_merge_emr = 'EMR-'.$reg_data->no_registrasi;
+        //     $this->Csm_billing_pasien->saveEmr($file_name_merge_emr, $reg_data);
             
-            // create directory no_mr
-            $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.''); 
+        //     // create directory no_mr
+        //     $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.''); 
             
-        }
+        // }
 
         // exit;
         /*show pdf*/
@@ -551,7 +551,7 @@ EOD;
         $reg_data = $this->Csm_billing_pasien->getRegDataLocal($no_registrasi);
         // echo '<pre>';print_r($reg_data);die;
         $doc_pdf = $this->Csm_billing_pasien->getDocumentPDF($no_registrasi);
-        // echo '<pre>';print_r($doc_pdf);die;
+        // echo '<pre>';print_r($this->db->last_query());die;
         /*save merged file*/
         $month_saved = date("M",strtotime($reg_data->csm_rp_tgl_masuk));
         $year_saved = date("Y",strtotime($reg_data->csm_rp_tgl_masuk));
@@ -695,11 +695,12 @@ EOD;
             }
 
         $fields_string = "";
-
+        
         foreach($doc_pdf as $key=>$value) {
+            $date = date("Y-m-d",strtotime($value->csm_rp_tgl_masuk));
             $month = date("M",strtotime($value->csm_rp_tgl_masuk));
             $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
-            $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&';
+            $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
         }
 
         rtrim($fields_string,'&');
@@ -707,6 +708,7 @@ EOD;
         return $this->master->checkURL($url);
 
     }
+
 
 }
 /* End of file example.php */

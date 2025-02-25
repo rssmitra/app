@@ -54,7 +54,7 @@ class Auto_merge_farmasi extends MX_Controller {
             //get month and year
             sscanf($last_date, '%d-%d-%d', $y, $m, $d);
             // echo '<pre>';print_r($last_date);exit;
-            $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
+            // $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
             // echo $filename; exit;
 
             // jika file hasil scan ada maka lanjutkan

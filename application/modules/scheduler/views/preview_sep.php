@@ -10,7 +10,7 @@
   <table border="0" width="100%">
   <tr>
     <td width="30%">
-      <img src="<?php echo base_url()?>assets/images/logo-bpjs.png" style="width:200px">
+      <!-- <img src="../../assets/images/logo-bpjs.png" style="width:200px"> -->
     </td>
     <td width="70%" style="padding-left:30px">
       <b>SURAT ELEGIBILITAS PESERTA<br>

@@ -296,7 +296,7 @@ class Mst_tarif extends MX_Controller {
                     'adm' => $this->regex->_genRegex((int)$_POST['adm'], 'RGXQSL'),
                     'pendapatan_rs' => $this->regex->_genRegex((int)$_POST['pendapatan_rs'], 'RGXQSL'),
                     'total' => $this->regex->_genRegex((int)$_POST['total'], 'RGXQSL'),
-                    'is_active' => $this->input->post('is_active'),
+                    'is_active' => 'Y',
                 );
 
                 // existing

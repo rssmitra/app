@@ -20,7 +20,7 @@ class Csm_verifikasi_costing extends MX_Controller {
         $this->load->model('Csm_billing_pasien_model', 'Csm_billing_pasien');
         /*enable profiler*/
         $this->output->enable_profiler(false);
-        $this->base_file = $_SERVER['DOCUMENT_ROOT'].'/sirs/app';
+        $this->base_file = $_SERVER['DOCUMENT_ROOT'].'/sirs-dev/app';
 
 
     }
@@ -132,7 +132,7 @@ class Csm_verifikasi_costing extends MX_Controller {
             $row[] = strtoupper($row_list->csm_rp_bagian).'<br>'.$row_list->csm_rp_nama_dokter;
             $row[] = $row_list->csm_rp_tipe;
 
-            if(file_exists($this->base_file.'/'.$row_list->csm_dk_fullpath)){
+            if($row_list->csm_dk_fullpath != null){
                 $file_exist = '<span><a style="color: blue !important; font-weight: bold" href="'.$row_list->csm_dk_base_url.$row_list->csm_dk_fullpath.'" target="_blank">View File</a></span>';
             }else{
                 $file_exist = '<span style="color: red; font-weight: bold">No File</span>';

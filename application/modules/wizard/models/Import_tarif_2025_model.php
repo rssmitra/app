@@ -153,7 +153,7 @@ class Import_tarif_2025_model extends CI_Model {
 
     public function get_detail_tarif($kode_tarif, $kode_klas){
         //print_r($kode_tarif);die;
-        $query = $this->db->get_where('mt_master_tarif_detail_dev', array('kode_tarif' => $kode_tarif, 'kode_klas' => $kode_klas));
+        $query = $this->db->get_where('mt_master_tarif_detail', array('kode_tarif' => $kode_tarif, 'kode_klas' => $kode_klas));
         return $query->row();
     }
 

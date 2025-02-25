@@ -1175,8 +1175,10 @@ class References extends MX_Controller {
 	{
 		
 		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi');
+		$this->db->select('REPLACE(nama_bagian, '."'Poliklinik Spesialis'".','."''".' ) as bagian');
 		$this->db->from('mt_master_tarif a');
 		$this->db->join('mt_master_tarif c','c.kode_tarif=a.referensi','LEFT');
+		$this->db->join('mt_bagian d','d.kode_bagian=a.kode_bagian','LEFT');
 		$this->db->where('a.tingkatan', 5);
 		$this->db->where('a.is_active', 'Y');
 
@@ -1219,7 +1221,8 @@ class References extends MX_Controller {
 		$arrResult = [];
 		foreach ($exc as $key => $value) {
 			$jenis_operasi = ($_POST['kode_bag']=='030901') ? ''.$value->tingkat_operasi.'' : '' ;
-			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.') '.$jenis_operasi.'';
+			$bagian = ($value->bagian == null)?'Global':$value->bagian;
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$bagian.') '.$jenis_operasi.'';
 		}
 		echo json_encode($arrResult);
 		

@@ -691,15 +691,11 @@ class Billing extends MX_Controller {
             $dataTranskasir["nk_perusahaan"] = 0;
         }
 
-        
-
-
         // NK Karyawan untuk Pasien Keluarga Karyawan
         if( in_array($_POST['kode_penjamin_pasien'], array(4, 7, 8, 11, 12, 13, 14, 15, 16)) ){
           $dataTranskasir["nk_karyawan"] = $_POST['jumlah_nk'];
           $dataTranskasir["pembayar"] = $_POST['pembayar'];
         }
-
 
         $potongan_diskon = ($_POST['total_payment'] * ($_POST['jumlah_diskon']/100));
         $sisa_bill = $_POST['total_payment'] - $potongan_diskon;

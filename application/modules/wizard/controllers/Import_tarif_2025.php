@@ -57,7 +57,7 @@ class Import_tarif_2025 extends MX_Controller {
                 ];
 
                 // echo '<pre>'; print_r($data);die;
-                $get_kode_tarif = $this->Import_tarif_2025_model->update_tarif('mt_master_tarif_dev',$data);
+                $get_kode_tarif = $this->Import_tarif_2025_model->update_tarif('mt_master_tarif', $data);
                 
                 /*loop data klas for detail tarif*/
                 $this->execute_tarif_klas($klas, $row, $sheet, $row['B']);
@@ -125,7 +125,7 @@ class Import_tarif_2025 extends MX_Controller {
             endforeach;
         }
         // echo '<pre>'; print_r($detail_tarif);die;
-        return $this->Import_tarif_2025_model->update_detail_tarif('mt_master_tarif_detail_dev',$detail_tarif);
+        return $this->Import_tarif_2025_model->update_detail_tarif('mt_master_tarif_detail', $detail_tarif);
             
     }
 
