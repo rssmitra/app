@@ -1338,11 +1338,17 @@ class References extends MX_Controller {
 		 
 
 		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi');
+		$this->db->select('REPLACE(nama_bagian, '."'Poliklinik Spesialis'".','."''".' ) as bagian');
 		$this->db->from('mt_master_tarif a');
 		$this->db->join('mt_master_tarif c','c.kode_tarif=a.referensi','LEFT');
+		$this->db->join('mt_bagian d','d.kode_bagian=a.kode_bagian','LEFT');
 		$this->db->where('a.tingkatan', 5);
 		$this->db->where('a.is_active', 'Y');
-		$this->db->where("(a.kode_bagian like '03%' OR a.kode_bagian = 0) AND (a.kode_bagian <> '030901')");
+		if(isset($_POST['show_all']) && $_POST['show_all'] == 1){
+			// no filter
+		}else{
+			$this->db->where("(a.kode_bagian like '03%' OR a.kode_bagian = 0) AND (a.kode_bagian <> '030901')");
+		}
 		$this->db->like('a.nama_tarif', $_POST['keyword']);
 		$this->db->order_by('a.nama_tarif ASC');
 
@@ -1356,7 +1362,8 @@ class References extends MX_Controller {
 		// print_r($this->db->last_query());die;
 		$arrResult = [];
 		foreach ($exc as $key => $value) {
-			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$value->kode_tindakan.')';
+			$bagian = ($value->bagian == null) ? "Global" : $value->bagian;
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$bagian.')';
 		}
 		echo json_encode($arrResult);
 		
@@ -1383,11 +1390,11 @@ class References extends MX_Controller {
 	{
 		$this->load->library('tarif');
 		$tarifAktif = $this->tarif->getTarifAktif(trim($_GET['kode']), $_GET['klas']);
+		// echo '<pre>'; print_r($this->db->last_query());die;
 		$exc = $tarifAktif->result();
 		$html = '';
 		
 		if(isset($exc[0]->kode_tarif)) {
-			// echo '<pre>'; print_r($this->session->all_userdata());die;
 			$html .= '';
 			$html .= '<p style="padding: 8px 0px 0px"><b>';
 			$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
