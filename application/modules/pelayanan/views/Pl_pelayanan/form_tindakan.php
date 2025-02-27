@@ -346,6 +346,12 @@ $(document).ready(function() {
 
     });
 
+    $('#kode_klas_val').change(function (e) {   
+      e.preventDefault();
+      getDetailTarifByKodeTarifAndKlas($('#pl_kode_tindakan_hidden').val(), $(this).val());
+
+    });
+
     $('#btn_add_lain').click(function (e) {   
       e.preventDefault();
 

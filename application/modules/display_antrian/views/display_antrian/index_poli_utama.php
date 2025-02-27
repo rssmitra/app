@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>Smart Hospital System 4.0</title>
+		<title>SHS 4.0 - Antrian Poliklinik</title>
 
 		<meta name="description" content="top menu &amp; navigation" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -23,11 +23,20 @@
 
 	</head>
   <style>
-    @font-face { font-family: MyriadPro; src: url('assets/fonts/MyriadPro-Bold.otf'); } 
+    @font-face { 
+      font-family: 'MyriadPro'; 
+      src: url('<?php echo base_url()?>assets/fonts/MyriadPro-Bold.otf'); 
+    } 
+
+    body{
+      font-family: 'MyriadPro' !important;
+      background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg') fixed !important;
+      background-color: #E6E7E8;
+    }
 
     .page-content {
-        /* background-color: #ffffff; */
-        background: url('<?php echo base_url()?>assets/images/unit-pendaftaran.jpg') fixed ;
+        background-color: #E6E7E8;
+       
         position: relative;
         margin: 0;
         padding: 0px 20px 24px;
@@ -42,6 +51,7 @@
       padding-bottom: 9px;
       margin: 0px 0 0px !important;
       border-bottom: 1px solid #eee;
+      background-color: #E6E7E8;
     }
 
     .footer{
@@ -52,59 +62,27 @@
       font-size: 2.2em;
     }
 
-    #section_antrian_farmasi{
-        background: #0166a0;
-        border-radius: 30px;
-        padding: 18px;
-        color: white;
-        margin-top: 5px;
-    }
-
-    #section_antrian_poli{
-        /* background: #b179b5; */
-        border-radius: 30px;
-        /* padding: 18px; */
-        color: white;
-        margin-top: 5px;
-    }
-
     .table {
-      font-family: Arial, Helvetica, sans-serif;
-      border-collapse: collapse;
+      /* border-collapse: collapse; */
       width: 100%;
     }
 
     .table td, .table th {
-      border: 1px solid black;
+      border: 0px solid black !important;
       padding: 8px;
+      color: white
     }
-
-    .resep_masuk tr:nth-child(even){background-color:rgba(224, 198, 226, 0.3);}
-    .resep_sedang_proses tr:nth-child(even){background-color:rgba(224, 198, 226, 0.3);}
-    .pengambilan_resep tr:nth-child(even){background-color:rgba(224, 198, 226, 0.3);}
-    .sedang_dilayani_poli tr:nth-child(even){background-color:rgba(224, 198, 226, 0.3);}
-    .antrian_poli_selanjutnya tr:nth-child(even){background-color:rgba(198, 200, 226, 0.3);}
-
-    #data_antrian_poli_selanjutnya tbody{
-      background:rgb(69, 82, 35);
-    }
-
-    #data_sedang_dilayani_poli tbody{
-      background:rgba(15, 80, 124, 0.83) !important;
-    }
-    
-
-    .resep_masuk tr:hover {background-color: black;}
 
     .table th {
       padding-top: 12px;
       padding-bottom: 12px;
       text-align: left;
-      color: white;
+      color: white !important;
     }
     
 
   </style>
+
 	<body class="no-skin">
 	
 		<div class="main-container ace-save-state" id="main-container">
@@ -114,61 +92,32 @@
 
 			<div class="main-content">
 
-        <div class="page-header" style="background: #f3f3f3; border-bottom-left-radius: 50px; border-bottom: 8px solid #137cc1; height: 130px">
-          <div class="col-md-3 no-padding" >
-            <a href="<?php echo base_url().'Display_antrian/poli_utama'?>"><img src="<?php echo base_url().'assets/insani/logo_rssm_insani_care.png'?>" style="width: 300px; text-align: left; padding-left: 30px "></a>
-          </div>
-          <div class="col-md-9" style="text-align: right; padding: 20px; font-size: 3.5em; font-weight: bold; color: #0f354e;">
-            <div>ANTRIAN POLIKLINIK</div>
-            <div style="text-align: right; font-size: 20px; margin-top: -10px" ><i class="fa fa-calendar"></i> <?php date_default_timezone_set("Asia/Jakarta"); echo date('l, d/m/Y') ?> &nbsp; <i class="fa fa-clock-o"></i>  <div id="refresh" style="float: right">&nbsp;<span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></span></div>
-          </div>
+        <div class="col-md-12" style="padding: 10px">
+            <div style="float: left; margin-left: 20px; margin-top: 10px">
+              <img alt="" src="<?php echo base_url().COMP_ICON_INSANI?>" width="300px">
+            </div>
+            <div style="float: right; margin-top: 10px; margin-right: 10px">
+              <span class="title-text"><img alt="" src="<?php echo base_url().COMP_ICON_BY_INSANI?>" width="150"></span>
+            </div>
+        </div>
+
+        
+
+        <div class="col-md-12" style="background: #00669F; color: white; padding: 5px; border-top-left-radius: 15px; border-top-right-radius: 15px">
+          <div style="font-size: 25px; font-weight: bold; float: left; padding-left: 20px">Antrian Poliklinik</div>
+          <div style="text-align: right; font-size: 20px; margin-top: 3px; float: right; margin-right: 20px" >
+            <i class="fa fa-calendar"></i> <?php date_default_timezone_set("Asia/Jakarta"); echo date('l, d F Y') ?> &nbsp; <i class="fa fa-clock-o"></i>  
+            <span id="refresh">&nbsp;
+                <span id="time"><?php date_default_timezone_set("Asia/Jakarta"); echo date('H:i') ?></span> WIB
           </div>
         </div>
 
 				<div class="main-content-inner">
 					<div class="page-content">
-
             <div id="page-area-content" >
-              <br>
-              <style>
-                .widget-title{
-                  font-size: medium !important;
-                  font-weight: bold;
-                }
-                .widget-color-dark {
-                  border-color: #dfdcdc;
-                  border: 0px !important
-                }
-
-                .display-video{
-                  height:500px;
-                  background-color:black;
-                }
-
-                @media only screen 
-                and (min-width : 1824px) {
-                  .display-video{
-                    height:auto;
-                    background-color:black;
-                  }
-                }
-
-                .bg {
-                  /* Full height */
-                  height: 100%;
-                  border-radius: 45px;
-                  width: 100%;
-                  /* Center and scale the image nicely */
-                  background-position: center;
-                  background-repeat: no-repeat;
-                  background-size: cover;
-                }
-              </style>
-
               <!-- section antrian poli -->
-              <div id="section_antrian_poli" class="row" >
+              <div id="section_antrian_poli" class="row" style="margin-top: 10px">
                 
-
                 <div class="col-md-12 no-padding">
 
                   <?php 
@@ -176,19 +125,19 @@
                     shuffle($arr_color);
                     foreach($data_loket as $key=>$row) : if(!in_array($row->jd_kode_spesialis, ['013101','012101'])) : ?>
                     <div class="col-md-4" style="padding-bottom:10px; ">
-                      <div style="background: <?php echo array_shift($arr_color)?> !important; padding: 5px; color: white; border-top-right-radius: 50px; border-top-left-radius: 10px;">
-                        <span style="text-align: center; font-size: 1.8em; font-weight: bold; padding-bottom: 5px"><?php echo trim(strtoupper($row->short_name))?></span><br><span style="text-align: center; font-size: 1.5em; font-weight: bold; padding-bottom: 5px"><?php echo substr($row->nama_pegawai,0,35)?></span>
+                      <div style="background: #5882B0 !important; padding: 5px; color: white; border-top-right-radius: 50px; border-top-left-radius: 10px;">
+                        <span style="text-align: center; font-size: 1.5em; font-weight: bold; padding-bottom: 5px"><?php echo trim(strtoupper($row->short_name))?></span><br><span style="text-align: center; font-size: 1.8em; font-weight: bold; padding-bottom: 5px"><?php echo substr($row->nama_pegawai,0,35)?></span>
                       </div>
                       <div style="height: 100px">
-                        <table class="table sedang_dilayani_poli" id="table_<?php echo $row->kode_poli_bpjs?>_<?php echo $row->jd_kode_dokter?>">
-                          <tbody style="background:rgb(15, 53, 78)">
+                        <table class="table" id="table_<?php echo $row->kode_poli_bpjs?>_<?php echo $row->jd_kode_dokter?>">
+                          <tbody style="background: #00669F">
                             <tr>
-                              <td align="center"><i class="fa fa-check-circle bigger-120"></i></td>
+                              <td align="center">-</td>
                               <td>-Tidak ada data-</td>
                             </tr>
                             <?php for($i=2; $i<3; $i++) : ?>
                             <tr>
-                              <td align="center"><i class="fa fa-clock-o bigger-120"></i></td>
+                              <td align="center">-</td>
                               <td>-</td>
                             </tr>
                             <?php endfor; ?>
@@ -273,7 +222,7 @@
     <script>
       $(document).ready( function(){
 
-        setInterval( function () {
+        // setInterval( function () {
           
 
           // antrian poli
@@ -285,15 +234,26 @@
               $.each(val, function (keys, vals) {  
                 console.log(key);
                 $('#table_'+key+'_'+keys+' tbody').remove();
+                var length = vals.length;
                 $.each(vals, function (k, v) {  
                   // console.log(k);
                   // console.log(v);
                   if(k < 2){
-                    var icon = (k == 0) ? '<i class="fa fa-check-circle bigger-120"></i>' : '<i class="fa fa-clock-o bigger-120"></i>' ;
-                    $('<tr style="background:rgb(15, 53, 78)"><td align="center">'+icon+'</td><td><span>'+v.nama_pasien.substr(0,15)+'</span></td></tr>').appendTo($('#table_'+v.kode_poli_bpjs+'_'+v.kode_dokter+''));
+                    var prefix = (v.kode_perusahaan == 120)?'B':'A';
+                    var lgth_no_antrian = v.no_antrian.toString();
+                    // console.log(lgth_no_antrian);
+                    var no_antrian = (lgth_no_antrian.length == 1) ? '0'+v.no_antrian : v.no_antrian;
+                    var icon = (k == 0) ? '<span style="float: right !important"><i class="fa fa-circle green"></i></span>' : '' ;
+                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">'+prefix+' '+no_antrian+' &nbsp;&nbsp;</span></td><td><span>'+v.nama_pasien.substr(0,15)+'</span>'+icon+'</td></tr>').appendTo($('#table_'+v.kode_poli_bpjs+'_'+v.kode_dokter+''));
+                  }
+
+                  if(length == 1){
+                    $('<tr style="background: #00669F"><td align="center"><span style="border-right: 1px solid white !important;">X 00 &nbsp;&nbsp;</span></td><td>-</td></tr>').appendTo($('#table_'+v.kode_poli_bpjs+'_'+v.kode_dokter+''));
                   }
                   
                 })
+
+                
 
               })
               
@@ -302,15 +262,17 @@
             
           });
 
-        }, 2000 );
+        // }, 2000 );
       
+        setInterval("reload_page();",3000);
+
       });
       
-      setInterval("my_function();",3000); 
 
-      function my_function(){
+      function reload_page(){
 
-        $('#refresh').load(location.href + ' #time');
+        // $('#refresh').load(location.href + ' #time');
+        location.reload(location.href);
 
       }
 

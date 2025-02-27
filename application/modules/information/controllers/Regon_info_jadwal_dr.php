@@ -140,11 +140,13 @@ class Regon_info_jadwal_dr extends MX_Controller {
             $data['jadwal'] = $this->Regon_info_jadwal_dr->get_jadwal_by_dr_spesialis($data['value']);
             /*initialize flag for form*/
             $data['flag'] = "update";
+            $data['id'] = $id;
         }else{
             /*breadcrumbs for create or add row*/
             $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Regon_info_jadwal_dr/'.strtolower(get_class($this)).'/form');
             /*initialize flag for form add*/
             $data['flag'] = "create";
+            $data['id'] = "";
         }
         /*title header*/
         $data['title'] = $this->title;

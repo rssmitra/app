@@ -44,12 +44,7 @@ class Csm_resume_billing extends MX_Controller {
             foreach ($list as $row_list) {
                 $no++;
                 $row = array();
-                $row[] = '<div class="center">
-                            <label class="pos-rel">
-                                <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->no_registrasi.'"/>
-                                <span class="lbl"></span>
-                            </label>
-                          </div>';
+                $row[] = '<div class="center">'.$no.'</div>';
                 $row[] = '<div class="left">'.$row_list->csm_rp_no_sep.'</div>';
                 $row[] = $row_list->csm_rp_no_mr;
                 $row[] = strtoupper($row_list->csm_rp_nama_pasien);

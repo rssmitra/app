@@ -226,11 +226,13 @@ class Display_antrian_model extends CI_Model {
 		$this->db->where("pl_tc_poli.kode_bagian != '014001' ");
 		// $this->db->where('status_periksa IS NULL');
 		// $this->db->where('(pl_tc_poli.status_batal is null or pl_tc_poli.status_batal = 0)');
-		// $this->db->where('pl_tc_poli.antrian_aktif = 1');
+		$this->db->where('tgl_keluar_poli is null');
+		$this->db->order_by('antrian_aktif', 'DESC');
 		$this->db->order_by('no_antrian', 'ASC');
 		$this->db->order_by('kode_perusahaan', 'ASC');
 
 		$query = $this->db->get();
+		// echo '<pre>';print_r($this->db->last_query());die;
 		$result = $query->result();
 		$getData = [];
 		foreach($result as $key=>$row){

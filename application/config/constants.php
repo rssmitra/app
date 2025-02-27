@@ -54,7 +54,8 @@ define('EMAIL_RS', 'info@rssetiamitra.co.id');
 define('KARS', 'dr. Untung Sugiharto, MARS');
 
 // insani care
-define('COMP_ICON_INSANI', 'assets/insani/logo_rssm_insani_care.png');
+define('COMP_ICON_INSANI', 'assets/insani/Logo-Rssm.png');
+define('COMP_ICON_BY_INSANI', 'assets/insani/by_insanicare.png');
 
 // setup 
 define('PPN', 11);

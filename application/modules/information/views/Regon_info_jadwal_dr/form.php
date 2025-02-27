@@ -181,6 +181,7 @@ function submit(id, day){
                 <p style="margin-top:5px"><b><i class="fa fa-calendar"></i> JADWAL PRAKTEK </b></p>
 
                 <?php 
+                $disabled = '';
                   for ($i=1; $i < 8; $i++) : 
                     $day_lib = $this->tanggal->getDayByNum($i);
                   if(isset($jadwal)){

@@ -20,13 +20,8 @@ class Csm_verifikasi_costing_model extends CI_Model {
 		
 
 		$curr_month = date('m')-1;
-
+		$this->db->distinct();
 		$this->db->select($this->select);
-		// $this->db->select("STUFF((
-		// 	SELECT '/' + dok_ex.csm_dex_nama_dok
-		// 	FROM csm_dokumen_export dok_ex
-		// 	WHERE no_registrasi = csm_reg_pasien.no_registrasi
-		// 	FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '') as dokumen");
 		$this->db->from($this->table);
 		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi='.$this->table.'.no_registrasi', 'LEFT');
 
