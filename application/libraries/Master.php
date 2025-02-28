@@ -1799,7 +1799,7 @@ final Class Master {
 		curl_close($ch);
 		$array = [
 			'code' => $returnedStatusCode,
-			'message' => $httpStatusCodes[$returnedStatusCode],
+			'message' => isset($httpStatusCodes[$returnedStatusCode])?$httpStatusCodes[$returnedStatusCode]:'',
 			'url' => $url,
 		];
 
