@@ -180,6 +180,7 @@ class Ws_index_model extends CI_Model {
 		$key = $this->consID.$this->secretKey.time();
 		$c = curl_init();
 
+		// print_r($uri);die;
 		curl_setopt($c, CURLOPT_URL, $uri);
 		$certificate_location = 'assets/cacert.pem';
 		curl_setopt($c, CURLOPT_SSL_VERIFYHOST, $certificate_location);
@@ -195,10 +196,10 @@ class Ws_index_model extends CI_Model {
 		curl_setopt($c, CURLOPT_POSTFIELDS, $json);
 
 		
-		// echo 'Curl error: ' . curl_error($c);
 		$data = curl_exec($c);
+		// echo 'Curl error: ' . curl_error($c);
         $result = json_decode($data);
-		// print_r($json);die;
+		
 		
 		if(isset($result->response)){
 			$strdecrpt = $this->stringDecrypt($key, $result->response);

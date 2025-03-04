@@ -114,13 +114,13 @@ class Adm_kasir extends MX_Controller {
                     // dokumen klaim files
                     // echo $row_list[0]['dok_klaim']; die;
                     $url_dok_klaim = isset($row_list[0]['dok_klaim'])?$row_list[0]['dok_klaim']:'';
-                    if($url_dok_klaim != ''){
-                        $cekfile = $this->master->checkURL($url_dok_klaim);
-                        if( isset($cekfile['code']) && $cekfile['code'] == 200 ){
-                            $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="PopupCenter('."'".$cekfile['url']."'".', 900, 700)"><i class="fa fa-search"></i></div>';
-                        }else{
-                            $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
-                        }
+                    if(file_exists($url_dok_klaim)){
+                        // $cekfile = $this->master->checkURL($url_dok_klaim);
+                        $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="PopupCenter('."'".$cekfile['url']."'".', 900, 700)"><i class="fa fa-search"></i></div>';
+                        // if( isset($cekfile['code']) && $cekfile['code'] == 200 ){
+                        // }else{
+                        //     $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
+                        // }
                     }else{
                         $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
 

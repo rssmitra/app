@@ -528,14 +528,11 @@ EOD;
 
         // if( in_array($flag, array('RESUME','LAB','RAD') )){
         //     //kotak form
-            
         //     // update file emr pasien
         //     $file_name_merge_emr = 'EMR-'.$reg_data->no_registrasi;
         //     $this->Csm_billing_pasien->saveEmr($file_name_merge_emr, $reg_data);
-            
         //     // create directory no_mr
-        //     $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.''); 
-            
+        //     $pdf->Output('uploaded/rekam_medis/log/'.$filename.'.pdf', ''.$action.'');
         // }
 
         // exit;
@@ -566,16 +563,17 @@ EOD;
             'csm_dk_base_url' => base_url(),
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')
-            );
-            /*check if exist*/
-            $dt = $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep, 'no_registrasi' => $no_registrasi))->row();
-            // echo '<pre>';print_r($this->db->last_query());die;
+        );
 
-            if( !empty($dt) ){
-                $this->db->update('csm_dokumen_klaim', $datasaved, array('no_sep' => $reg_data->csm_rp_no_sep));
-            }else{
-                $this->db->insert('csm_dokumen_klaim', $datasaved);
-            }
+        /*check if exist*/
+        $dt = $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep, 'no_registrasi' => $no_registrasi))->row();
+        // echo '<pre>';print_r($this->db->last_query());die;
+
+        if( !empty($dt) ){
+            $this->db->update('csm_dokumen_klaim', $datasaved, array('no_sep' => $reg_data->csm_rp_no_sep));
+        }else{
+            $this->db->insert('csm_dokumen_klaim', $datasaved);
+        }
 
         $fields_string = "";
 
@@ -584,7 +582,7 @@ EOD;
             $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
             $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&';
         }
-
+        
         rtrim($fields_string,'&');
         $url = base_url().'ApiMerge/index.php?action=download&no_mr='.$reg_data->csm_rp_no_mr.'&noreg='.$no_registrasi.'&'.$fields_string;
         header("Location:".$url);
@@ -705,7 +703,9 @@ EOD;
 
         rtrim($fields_string,'&');
         $url = base_url().'ApiMerge/index.php?action=download&no_mr='.$reg_data->csm_rp_no_mr.'&noreg='.$no_registrasi.'&'.$fields_string;
-        return $this->master->checkURL($url);
+        return ['code' => 200, 'message' => 'Berhasil', 'url' => $url];
+        // echo '<pre>';print_r($url);die;
+        // return $this->master->checkURL($url);
 
     }
 
