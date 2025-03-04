@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Regon_info_jadwal_dr_model extends CI_Model {
+class Regon_info_jadwal_dr_eksekutif_model extends CI_Model {
 
     var $table = 'tr_jadwal_dokter';
     var $column = array('tr_jadwal_dokter.jd_hari','tr_jadwal_dokter.jd_jam_mulai','tr_jadwal_dokter.jd_jam_selesai','tr_jadwal_dokter.jd_keterangan','tr_jadwal_dokter.jd_kuota','mt_karyawan.nama_pegawai','mt_bagian.nama_bagian');
@@ -20,7 +20,7 @@ class Regon_info_jadwal_dr_model extends CI_Model {
         $this->db->from($this->table);
         $this->db->join('mt_bagian',''.$this->table.'.jd_kode_spesialis=mt_bagian.kode_bagian','left');
 		$this->db->join('mt_karyawan',''.$this->table.'.jd_kode_dokter=mt_karyawan.kode_dokter','left');
-		$this->db->where('is_eksekutif is null');
+		$this->db->where('is_eksekutif', 1);
 
     }
 
@@ -135,7 +135,7 @@ class Regon_info_jadwal_dr_model extends CI_Model {
 
     public function get_jadwal_by_dr_spesialis($data)
     {
-        $result = $this->db->where('is_eksekutif is null')->order_by('jd_id', 'ASC')->get_where($this->table, array('jd_kode_dokter' => $data->jd_kode_dokter, 'jd_kode_spesialis' => $data->jd_kode_spesialis) );
+        $result = $this->db->order_by('jd_id', 'ASC')->get_where($this->table, array('jd_kode_dokter' => $data->jd_kode_dokter, 'jd_kode_spesialis' => $data->jd_kode_spesialis, 'is_eksekutif' => 1) );
         return $result->result_array();
     }
 
