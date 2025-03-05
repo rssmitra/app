@@ -97,6 +97,17 @@ class Riwayat_pasien_ranap extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function export_excel(){
+        /*get data from model*/
+        $list = $this->Riwayat_pasien_ranap->get_data();
+        $data =array();
+        $data['list'] = $list;
+  
+        // echo "<pre>";print_r($list); die;
+  
+        $this->load->view('Riwayat_pasien_ranap/export_excel', $data);
+      }
+
 
 }
 

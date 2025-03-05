@@ -95,7 +95,7 @@ $(document).ready(function(){
         },
         success: function(data) {
           achtungHideLoader();
-          find_data_reload(data,'registration/Riwayat_pasien_ranap');
+          export_excel(data);
         }
       });
   });
@@ -148,6 +148,12 @@ function find_data_reload(result){
 function reset_table(){
   oTable.ajax.url('registration/Riwayat_pasien_ranap/get_data').load();
   $("html, body").animate({ scrollDown: "400px" });
+}
+
+function export_excel(result){
+
+  window.open('registration/Riwayat_pasien_ranap/export_excel?'+result.data+'','_blank'); 
+
 }
 
 </script>

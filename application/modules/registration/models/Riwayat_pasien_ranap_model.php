@@ -109,6 +109,16 @@ class Riwayat_pasien_ranap_model extends CI_Model {
 		return $query->result();
 	}
 
+	function get_data()
+	{
+		$this->db->select('no_sep, tc_registrasi.status_batal');
+		$this->_main_query();
+		$this->db->group_by('no_sep, tc_registrasi.status_batal');
+		$query = $this->db->get();
+		//print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
 	function count_filtered()
 	{
 		$this->_get_datatables_query();
