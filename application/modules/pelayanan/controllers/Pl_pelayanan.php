@@ -972,7 +972,7 @@ class Pl_pelayanan extends MX_Controller {
                 $dataexc["kamar_tindakan"] = (isset($_POST['kamar_tindakan']))?(int)$_POST['kamar_tindakan']:NULL;
                 $dataexc['kode_dokter1'] = $_POST['pl_kode_dokter_hidden'][0];
                 $dataexc['kode_dokter2'] = isset($_POST['pl_kode_dokter_hidden'][1])?$_POST['pl_kode_dokter_hidden'][1]:0;
-                
+
                 $this->Pl_pelayanan->save('tc_trans_pelayanan', $dataexc);
 
             }else{

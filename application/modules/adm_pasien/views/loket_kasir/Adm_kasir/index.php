@@ -229,7 +229,9 @@
         success: function(data) {
           console.log(data);
           if(data.code == 200){
-            PopupCenter(data.url, '', 900, 700);
+            // PopupCenter(data.url, '', 900, 700);
+            
+            window.open(data.url,'_blank'); 
             $('#btn_id_'+no_registrasi+'').html('<i class="fa fa-check circle green bigger-150"></i>');
           }else{
             alert('Dokumen gagal ['+data.message+'] ');

@@ -358,6 +358,8 @@ final class Tarif extends AvObjects {
             'pendapatan_rs' => $_POST['pendapatan_rs'] * $jumlah,
             'alat_rs' => $_POST['alat_rs'] * $jumlah,
             'kamar_tindakan' => $_POST['kamar_tindakan'] * $jumlah,
+            'created_date' => date('Y-m-d H:i:s'),
+            'created_by' => $CI->session->userdata('user')->fullname,
             );
 
         return $data;
@@ -419,6 +421,8 @@ final class Tarif extends AvObjects {
         $tarif_data['bill_rs'] = ($row_data->bill_rs)?$row_data->bill_rs:'';
         $tarif_data['bill_dr1'] = ($row_data->bill_dr1)?$row_data->bill_dr1:'';
         $tarif_data['pendapatan_rs'] = ($row_data->pendapatan_rs)?$row_data->pendapatan_rs:'';
+        $tarif_data['created_date'] = date('Y-m-d H:i:s');
+        $tarif_data['created_by'] = $CI->session->userdata('user')->fullname;
 
         $mergeData = array_merge($tarif_data, $data);
         
@@ -454,6 +458,8 @@ final class Tarif extends AvObjects {
         $tarif_data['bill_dr1'] = ($row_data->bill_dr1)?$row_data->bill_dr1:'';
         $tarif_data['pendapatan_rs'] = ($row_data->pendapatan_rs)?$row_data->pendapatan_rs:'';
         $tarif_data['status_selesai'] = 2;
+        $tarif_data['created_date'] = date('Y-m-d H:i:s');
+        $tarif_data['created_by'] = $CI->session->userdata('user')->fullname;
 
         $mergeData = array_merge($tarif_data, $data);
         // print_r($mergeData);die;

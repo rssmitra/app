@@ -1717,16 +1717,17 @@ final Class Master {
 		// Initialize an URL to the variable 
 		
 		// Use get_headers() function 
+		// print_r($url);die;
 		$headers = @get_headers($url); 
-		
 		// Use condition to check the existence of URL 
 		if($headers && strpos( $headers[0], '200')) { 
+			// echo "OK";die;
 			return true;
 		} 
 		else { 
+			// echo "false";die;
 			return false;
 		} 
-		
 
 	}
 
