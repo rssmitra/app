@@ -114,8 +114,8 @@ class Adm_kasir extends MX_Controller {
                     // dokumen klaim files
                     // echo $row_list[0]['dok_klaim']; die;
                     $url_dok_klaim = isset($row_list[0]['dok_klaim'])?$row_list[0]['dok_klaim']:'';
-                    if(file_exists($url_dok_klaim)){
-                        // $cekfile = $this->master->checkURL($url_dok_klaim);
+                    $cekfile = $this->master->checkURL($url_dok_klaim);
+                    if($cekfile){
                         $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="PopupCenter('."'".$cekfile['url']."'".', 900, 700)"><i class="fa fa-search"></i></div>';
                         // if( isset($cekfile['code']) && $cekfile['code'] == 200 ){
                         // }else{
