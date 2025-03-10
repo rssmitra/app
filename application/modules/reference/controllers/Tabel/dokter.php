@@ -98,7 +98,7 @@ class Dokter extends MX_Controller {
             //$row[] = $row_list->nama_bagian;
             $row[] = $file_ttd;
             $row[] = $file_stamp;
-            $status = ($row_list->status == 1)? '<span class="label label-xs label-success"> Tidak Aktif </span>': '<span class="label label-xs label-danger"> Aktif </span>';
+            $status = ($row_list->is_active == 'Y')? '<span class="label label-xs label-success"> Aktif </span>': '<span class="label label-xs label-danger">Tidak Aktif </span>';
             $row[] = '<div class="center">'.$status.'</div>';
             $row[] = '<div class="center"><div class="hidden-sm hidden-xs action-buttons">
                         '.$this->authuser->show_button('reference/tabel/dokter','R',$row_list->kode_dokter,2).'
