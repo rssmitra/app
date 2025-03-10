@@ -517,9 +517,6 @@ function delete_diagnosa(myid){
           </a>
         </li>
 
-        
-
-        
         <li class="dropdown">
           <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="true">
           Rujuk Internal &nbsp;

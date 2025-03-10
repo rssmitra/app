@@ -515,12 +515,10 @@ function reload_page(){
 
     <!-- div.dataTables_borderWrap -->
 
-    <div style="margin-top:-10px">   
+    <div style="margin-top:0px">   
 
       <form class="form-horizontal" method="post" id="form_pelayanan" action="#" enctype="multipart/form-data" autocomplete="off" >      
         
-          <br>
-
           <!-- hidden form -->
           <input type="hidden" value="" name="noMrHidden" id="noMrHidden">
           <input type="hidden" name="id_pasien_vk" id="id_pasien_vk" value="<?php echo ($id)?$id:''?>">
@@ -532,7 +530,7 @@ function reload_page(){
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
           
           <!-- profile Pasien -->
-          <div class="col-md-2 no-padding" >
+          <div class="col-md-2" >
             <div class="box box-primary" id='box_identity'>
                 <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
@@ -573,7 +571,8 @@ function reload_page(){
           </div>
 
           <!-- form pelayanan -->
-          <div class="col-md-10">
+          <div class="col-md-10 no-padding">
+
             <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
                 <div class="center">
                   <ul class="nav nav-list">
@@ -632,17 +631,17 @@ function reload_page(){
                 </div>
             </div>
 
-          <!-- end action form  -->
+            <!-- end action form  -->
             <div class="pull-right" style="margin-bottom:1%">
               <?php if(empty($value->tgl_keluar_vk)) :?>
               <a href="#" class="btn btn-xs btn-primary" id="btn_selesai_igd" onclick="selesaikanKunjungan()"><i class="fa fa-check-circle"></i> Selesaikan Kunjungan</a>
               <a href="#" class="btn btn-xs btn-danger" onclick="cancel_visit(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>,<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>)"><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
-            <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_vk'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
+              <?php else: echo '<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_vk'".')"><i class="fa fa-angle-double-left"></i> Kembali ke Daftar Pasien</a>'; endif;?>
               <a href="#" class="btn btn-xs btn-danger" id="btn_cetak_meninggal" onclick="cetak_surat_kematian(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>)" <?php echo isset($meninggal)?'':'style="display:none"' ?> ><i class="fa fa-file"></i> Cetak Surat Kematian</a>
               <a href="#" class="btn btn-xs btn-danger" id="cetak_keracunan" onclick="cetak_surat_keracunan()" <?php echo isset($keracunan->id_cetak_racun)?'':'style="display:none"'?>><i class="fa fa-file"></i> Cetak Surat Keracunan </a>
             </div>
             <br>
-          <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
+            <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
             <table class="table table-bordered">
               <tr style="background-color:#f4ae11">
                 <th>Kode Kunjungan</th>
@@ -672,14 +671,12 @@ function reload_page(){
             </table>
             
             <?php if(isset($value) AND $value->status_batal==1) :?>
-          <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal</span>
-          <?php else:?>
-            <?php if(isset($value) AND $value->tgl_keluar_vk!=NULL) :?>
-            <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
-            <?php endif;?>  
-          <?php endif;?>
-
-          
+              <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal</span>
+            <?php else:?>
+              <?php if(isset($value) AND $value->tgl_keluar_vk!=NULL) :?>
+              <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
+              <?php endif;?>  
+            <?php endif;?>
 
             <!-- hidden form -->
             <input type="hidden" class="form-control" name="no_kunjungan" value="<?php echo isset($value)?$value->no_kunjungan:''?>">
@@ -694,15 +691,10 @@ function reload_page(){
             <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
             <input type="hidden" class="form-control" name="dr_merawat" id="dr_merawat" value="<?php echo isset($value->dr_merawat)?$value->dr_merawat:''?>">
 
-
             <!-- form default pelayanan pasien -->
-
             <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
-
               <div class="tabbable">  
-
-                <div class="tab-content">                  
-
+                <div class="tab-content">   
                   <div id="tabs_form_pelayanan">
 
                     <div class="alert alert-block alert-success">
@@ -715,15 +707,12 @@ function reload_page(){
                         </p>
                       </div>
                   </div>
-
                 </div>
-
               </div>
-
-            
-
+            </div>
 
           </div>
+
 
         </form>
     </div>

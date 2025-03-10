@@ -1923,7 +1923,7 @@ class Templates extends MX_Controller {
             $nama_pasien = ucwords(strtolower($data->reg_data->nama_pasien));
             $umur = $data->reg_data->umur;
             $jk_ = $jk;
-            $tgl_daftar = $this->tanggal->formatDateTime($data->reg_data->tgl_jam_masuk);
+            $tgl_daftar = $this->tanggal->formatDateTime($data_pm->tgl_masuk);
             $tgl_periksa = $tgl_pemeriksaan;
             $dokter_pengirim = $data->reg_data->nama_pegawai;
           

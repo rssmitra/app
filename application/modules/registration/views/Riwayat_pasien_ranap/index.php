@@ -176,7 +176,7 @@ function export_excel(result){
 
       <center><h4>FORM PENCARIAN DATA PASIEN RAWAT INAP<br><small style="font-size:12px">Data yang ditampilkan saat ini adalah Data Bulan <?php echo $this->tanggal->getBulan(date('m'))?> Tahun <?php echo date('Y')?> </small></h4></center>
       <br>
-
+      <input type="hidden" name="bagian_tujuan" id="bagian_tujuan" value="<?php echo isset($_GET['kode_bagian'])?$_GET['kode_bagian']:''?>">
       <div class="form-group">
         <label class="control-label col-md-2">Bulan</label>
           <div class="col-md-2">

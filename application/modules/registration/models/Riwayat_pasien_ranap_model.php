@@ -57,7 +57,7 @@ class Riwayat_pasien_ranap_model extends CI_Model {
 	        }
 
 			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-				$this->db->where("convert(varchar,ri_tc_rawatinap.tgl_masuk,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
+				$this->db->where("CAST(ri_tc_rawatinap.tgl_masuk as DATE) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
 	        }
 		}else{
 			$this->db->where('ri_tc_rawatinap.status_pulang=1');
@@ -105,7 +105,7 @@ class Riwayat_pasien_ranap_model extends CI_Model {
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
@@ -115,7 +115,7 @@ class Riwayat_pasien_ranap_model extends CI_Model {
 		$this->_main_query();
 		$this->db->group_by('no_sep, tc_registrasi.status_batal');
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 
