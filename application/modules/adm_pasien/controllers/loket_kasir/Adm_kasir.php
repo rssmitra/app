@@ -113,7 +113,7 @@ class Adm_kasir extends MX_Controller {
                     }
                     // dokumen klaim files
                     $url_dok_klaim = isset($row_list[0]['dok_klaim'])?$row_list[0]['dok_klaim']:'';
-                    $cekfile = $this->master->checkURL($url_dok_klaim);
+                    // $cekfile = $this->master->checkURL($url_dok_klaim);
                     // echo $cekfile;die;
                     if($url_dok_klaim != ''){
                         $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="PopupCenter('."'".$url_dok_klaim."'".', 900, 700)"><i class="fa fa-search"></i></div>';

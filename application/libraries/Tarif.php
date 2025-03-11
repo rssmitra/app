@@ -375,7 +375,6 @@ final class Tarif extends AvObjects {
         if($data['kode_perusahaan']==120){
 
             if($jenis_tindakan!=13){
-                //$where_str = 'and nama_tarif like '."'%BPJS'".'';
                 if ($data['kode_bagian']=='020101') {
                     $where_str = 'and kode_tarif='."'20101173'".'';
                 }else{

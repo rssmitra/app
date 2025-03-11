@@ -54,15 +54,16 @@ $(document).ready(function() {
         //   $('#page-area-content').load('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real');
           PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real', 'Cetak Billing', 600, 750);
           load_billing_data();
-        //   $('#total_payment').val(jsonResponse.count_um);
-          if (jsonResponse.billing_um > 0) {
-            PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=&kode_tc_trans_kasir='+jsonResponse.kode_tc_trans_kasir+'','Cetak',600,750);
-          }
+        //   show btn for generate dokumen klaim
 
-          if(jsonResponse.kode_perusahaan == 120){
-            PopupCenter(jsonResponse.redirect,'SEP',1000,700);
-            // window.open(jsonResponse.redirect, '_blank');
-          }
+        //   $('#total_payment').val(jsonResponse.count_um);
+        //   if (jsonResponse.billing_um > 0) {
+        //     PopupCenter('billing/Billing/print_preview?no_registrasi='+$('#no_registrasi').val()+'&flag_bill=real&status_nk=&kode_tc_trans_kasir='+jsonResponse.kode_tc_trans_kasir+'','Cetak',600,750);
+        //   }
+
+        //   if(jsonResponse.kode_perusahaan == 120){
+        //     PopupCenter(jsonResponse.redirect,'SEP',1000,700);
+        //   }
 
         }else{
             $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
@@ -287,11 +288,11 @@ function cetak_kuitansi_pasien(){
     
         <a href="#" class="btn btn-xs btn-purple" onclick="load_billing_data()" id="btn_reload_billing"> <i class="fa fa-refresh"></i> Reload Billing </a>
 
-        <a href="#" class="btn btn-xs btn-primary" onclick="rollback_kasir(<?php echo $no_registrasi?>)" > <i class="fa fa-undo"></i> Rollback</a>
+        <a href="#" class="btn btn-xs btn-danger" onclick="rollback_kasir(<?php echo $no_registrasi?>)" > <i class="fa fa-undo"></i> Rollback Transaksi</a>
 
         <!-- <a href="#" class="btn btn-xs btn-danger" onclick="add_billing()"> <i class="fa fa-plus"></i> Tambah Billing  </a> -->
 
-        <a href="#" class="btn btn-xs btn-success" onclick="payment()" id="btn_lanjutkan_pembayaran"> <i class="fa fa-money"></i> Lanjutkan Pembayaran  </a>
+        <a href="#" class="btn btn-xs btn-success" onclick="payment()" id="btn_lanjutkan_pembayaran"> <i class="fa fa-money"></i> Proses Pembayaran  </a>
 
         <div class="btn-group">
             <button type="button" class="btn btn-xs btn-yellow"><i class="fa fa-print"></i> Cetak Billing</button>
@@ -331,6 +332,8 @@ function cetak_kuitansi_pasien(){
                 </li>
             </ul>
         </div>
+
+        <a href="#" id="btn_generate_dokumen_klaim" class="btn btn-xs btn-primary" onclick="proses_dokumen_klaim(<?php echo $no_registrasi?>, <?php echo $tipe?>)"> <i class="fa fa-send"></i> Generate Dokumen Klaim</a>
         
     </div>
 
