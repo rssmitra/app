@@ -23,7 +23,7 @@ final Class Stok_barang{
         
         if( $jumlah > 0 ) {
             /*get last kartu stok*/
-            $kartu_stok = $db->order_by('id_kartu', 'DESC')->get_where($t_kartu_stok, array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian) )->row();
+            $kartu_stok = $db->limit(0,1)->order_by('id_kartu', 'DESC')->get_where($t_kartu_stok, array('kode_brg' => $kodeBrg, 'kode_bagian' => $kodeBagian) )->row();
             
             /*jumlah setelah ditambah dengan stok sebelumnya*/
             $stok_akhir_mutasi = isset($kartu_stok->stok_akhir)?$kartu_stok->stok_akhir:0;
