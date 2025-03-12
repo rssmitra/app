@@ -106,6 +106,7 @@ hr {
       $default_toogle = (in_array($key, array(0))) ? 'in' : '' ;
       $lembar_konsul = 0;
       $files = isset($file_pkj[$value->no_registrasi][$value->no_kunjungan])?$file_pkj[$value->no_registrasi][$value->no_kunjungan]:array();
+      $file_rm = isset($file[$value->no_registrasi][$value->no_kunjungan])?$file[$value->no_registrasi][$value->no_kunjungan]:array();
       $html_file = '';
       if(count($files) > 0){
         $html_file .= "<ol>";
@@ -117,6 +118,21 @@ hr {
         $html_file .= "</ol>";
       }else{
         $html_file .= 'Tidak ada file ditemukan';
+      }
+      // echo "<pre>"; print_r($file_rm);die;
+      $html_file_rm = "";
+      if(count($file_rm) > 0){
+        $html_file_rm .= "<ol>";
+        foreach ($file_rm as $kprm => $vprm) {
+          if($vprm->is_adjusment == 'Y'){
+            // $fnme = str_replace(['-','pdf'], [' ',''], $vprm->csm_dex_nama_dok );
+            $fnme = explode('-', $vprm->csm_dex_nama_dok);
+            $html_file_rm .= '<li style="font-weight: bold"><a href="#" onclick="PopupCenter('."'".$vprm->base_url_dok.$vprm->csm_dex_fullpath."'".', 1200, 750)">'.$fnme[0].'</a>  </li>';
+          }
+        }
+        $html_file_rm .= "</ol>";
+      }else{
+        $html_file_rm .= 'Tidak ada file ditemukan';
       }
   ?>
     <div class="panel panel-default">
@@ -279,6 +295,7 @@ hr {
             <span style="font-weight: bold; font-style: italic; color: blue">(File Pengkajian Pasien)</span><br>
             <label for="form-field-8"><b>File Pengkajian Pasien/ File Rekam Medis per Periode Kunjungan </b></label><br>
             <?php echo $html_file; ?>
+            <?php echo $html_file_rm; ?>
           </div>
         </div>
       </div>

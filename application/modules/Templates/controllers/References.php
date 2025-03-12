@@ -2299,7 +2299,7 @@ class References extends MX_Controller {
 			
 		);
 
-		// echo '<pre>';print_r($data);die;
+		// echo '<pre>';print_r($data['file']);die;
 		
 		$html = $this->load->view('Templates/templates/view_riwayat_medis_sidebar', $data, true);
 		
