@@ -293,8 +293,12 @@ hr {
             ?>
             <br>
             <span style="font-weight: bold; font-style: italic; color: blue">(File Pengkajian Pasien)</span><br>
-            <label for="form-field-8"><b>File Pengkajian Pasien/ File Rekam Medis per Periode Kunjungan </b></label><br>
+            <label for="form-field-8"><b>File Pengkajian Pasien per Periode Kunjungan </b></label><br>
             <?php echo $html_file; ?>
+            <br>
+
+            <span style="font-weight: bold; font-style: italic; color: blue">(File Upload)</span><br>
+            <label for="form-field-8"><b>File Rekam Medis yang di upload per Periode Kunjungan </b></label><br>
             <?php echo $html_file_rm; ?>
           </div>
         </div>
