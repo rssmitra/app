@@ -28,17 +28,28 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
 
     public function index(){
 
-        if(!$this->input->is_cli_request())
-        {
-            echo "This script can only be accessed via the command line" . PHP_EOL;
-            return;
-        }
+        // if(!$this->input->is_cli_request())
+        // {
+        //     echo "This script can only be accessed via the command line" . PHP_EOL;
+        //     return;
+        // }
         
-        $last_date = date('Y-m-d', strtotime(date('Y-m-d'), '-1 day'));
-        $data = $this->db->where('is_scheduler is null')->where("CAST(csm_rp_tgl_masuk as DATE) = '".$last_date."'")->get('csm_reg_pasien')->row();
+        $last_date = date('Y-m-d', strtotime('-1 day', strtotime(date('Y-m-d'))));
+		$this->db->select('csm_reg_pasien.*');
+		$this->db->from('csm_reg_pasien');
+		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
+		$this->db->where("csm_dokumen_klaim.no_sep is null");
+        $this->db->where("csm_rp_tipe = 'RJ' " );
+        $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) BETWEEN '". $last_date."' AND '".date('Y-m-d')."' " );
+		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi=csm_reg_pasien.no_registrasi', 'LEFT');
+		$this->db->limit(0,1);
+        $data = $this->db->get()->row();
+
 
         // echo '<pre>';
+        // print_r($last_date);
         // print_r($data);
+        // print_r($this->db->last_query());
         // exit;
         
         $txt_success = '';
@@ -49,13 +60,14 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         if(count($data) == 0){
             echo "Tidak ada data untuk diverifikasi" . PHP_EOL;
         }
-        $no_registrasi = 1250228;
-        $type = 'RJ';
+
+        // $no_registrasi = 1255803;
+        $no_registrasi = $data->no_registrasi;
+        $type = trim($data->csm_rp_tipe);
         $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
         /*created document name*/
         $createDocument = $this->Csm_billing_pasien->createDocument($no_registrasi, $type);
-        // echo '<pre>';print_r($createDocument);exit;
-
+        
         $this->db->delete('csm_dokumen_export', array('no_registrasi' => $no_registrasi, 'is_adjusment' => NULL));
         foreach ($createDocument as $k_cd => $v_cd) {
             # code...
@@ -90,15 +102,15 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         }
 
         $string_url = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $type);
-
+        // echo '<pre>';print_r($string_url);exit;
         // redirect(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
 
-        echo "url merge ".$string_url."  " . PHP_EOL;
-        $script_cmd = 'start chrome "'.$string_url.'" ';
-        exec( $script_cmd );
+        echo "url merge ".$string_url['url']."  " . PHP_EOL;
+        // $script_cmd = 'start chrome "'.$string_url['url'].'" ';
+        // exec( $script_cmd );
 
-        $script_cmd = 'taskkill /F /IM chrome.exe /T > nul';
-        exec( $script_cmd );
+        // $script_cmd = 'taskkill /F /IM chrome.exe /T > nul';
+        // exec( $script_cmd );
 
         // $file = "uploaded/casemix/log_scheduler/".date('Y_m_d_H_i_s').".log";
         // $fp = fopen ($file,'w');

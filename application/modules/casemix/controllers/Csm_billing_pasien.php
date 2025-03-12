@@ -578,9 +578,10 @@ EOD;
         $fields_string = "";
 
         foreach($doc_pdf as $key=>$value) {
+            $date = date("Y-m-d",strtotime($value->csm_rp_tgl_masuk));
             $month = date("M",strtotime($value->csm_rp_tgl_masuk));
             $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
-            $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&';
+            $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
         }
         
         rtrim($fields_string,'&');

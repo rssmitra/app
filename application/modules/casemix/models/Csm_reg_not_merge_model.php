@@ -6,7 +6,7 @@ class Csm_reg_not_merge_model extends CI_Model {
 
 	var $table = 'csm_reg_pasien';
 	var $column = array('csm_reg_pasien.no_registrasi','csm_reg_pasien.csm_rp_nama_pasien', 'csm_reg_pasien.csm_rp_no_mr');
-	var $select = 'csm_reg_pasien.*';
+	var $select = 'csm_reg_pasien.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_reg_pasien.created_date, csm_reg_pasien.created_by, csm_dk_base_url';
 	var $order = array('csm_reg_pasien.csm_rp_no_sep' => 'ASC');
 	
 
@@ -21,11 +21,11 @@ class Csm_reg_not_merge_model extends CI_Model {
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
+		$this->db->where("csm_dokumen_klaim.no_sep is null");
+		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi='.$this->table.'.no_registrasi', 'LEFT');
 
 		if (isset($_GET['frmdt']) AND $_GET['frmdt'] != '' || isset($_GET['todt']) AND $_GET['todt'] != '') {
-			$this->db->where("csm_reg_pasien.csm_rp_tgl_keluar BETWEEN '".$this->tanggal->selisih($_GET['frmdt'], '+0')."' AND '".$this->tanggal->selisih($_GET['todt'], '+0')."' " );
-
-			$this->db->where("csm_rp_no_sep NOT IN (SELECT no_sep FROM csm_dokumen_klaim WHERE tgl_transaksi_kasir BETWEEN '".$this->tanggal->selisih($_GET['frmdt'], '+0')."' AND '".$this->tanggal->selisih($_GET['todt'], '+0')."')");
+			$this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) BETWEEN '".$_GET['frmdt']."' AND '".$_GET['todt']."' " );
 		}
 		
 		if (isset($_GET['tipe']) AND $_GET['tipe'] != '' ) {
@@ -69,7 +69,7 @@ class Csm_reg_not_merge_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']);
 
 		$query = $this->db->get();
-		//print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query->result();
 	}
 

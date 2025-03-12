@@ -6,7 +6,7 @@ class Csm_dokumen_klaim_model extends CI_Model {
 
 	var $table = 'csm_dokumen_klaim';
 	var $column = array('csm_dokumen_klaim.no_registrasi','csm_dokumen_klaim.no_sep','csm_dokumen_klaim.csm_dk_tipe','csm_reg_pasien.csm_rp_nama_pasien','csm_reg_pasien.csm_rp_no_mr');
-	var $select = 'csm_dokumen_klaim.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_dokumen_klaim.created_date, csm_dokumen_klaim.created_by';
+	var $select = 'csm_dokumen_klaim.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_dokumen_klaim.created_date, csm_dokumen_klaim.created_by, csm_dk_base_url';
 	var $order = array('csm_dokumen_klaim.no_sep' => 'ASC');
 	
 
@@ -19,6 +19,7 @@ class Csm_dokumen_klaim_model extends CI_Model {
 	private function _main_query(){
 		
 		$curr_month = date('m')-2;
+		$this->db->distinct();
 		$this->db->select($this->select);
 		$this->db->from($this->table);
 		$this->db->join('csm_reg_pasien', 'csm_reg_pasien.no_registrasi='.$this->table.'.no_registrasi', 'left');
@@ -33,6 +34,9 @@ class Csm_dokumen_klaim_model extends CI_Model {
 		}else{
 			if (isset($_GET['frmdt']) AND $_GET['frmdt'] != '' || isset($_GET['todt']) AND $_GET['todt'] != '') {
 				$this->db->where("csm_dokumen_klaim.".$_GET['field']." BETWEEN '".$this->tanggal->selisih($_GET['frmdt'], '+0')."' AND '".$this->tanggal->selisih($_GET['todt'], '+0')."' " );
+			}else{
+				$this->db->where(" MONTH(csm_reg_pasien.csm_rp_tgl_masuk) = ".date('m')." " );
+				$this->db->where(" YEAR(csm_reg_pasien.csm_rp_tgl_masuk) = ".date('Y')." " );
 			}
 		}
 		
@@ -41,9 +45,10 @@ class Csm_dokumen_klaim_model extends CI_Model {
 				$this->db->where("csm_rp_tipe = '".$_GET['tipe']."' " );
 			}
 		}
-		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
-		$this->db->where(" MONTH(csm_reg_pasien.csm_rp_tgl_masuk) > ".$curr_month." " );
-		$this->db->where(" YEAR(csm_reg_pasien.csm_rp_tgl_masuk) = ".date('Y')." " );
+		$this->db->where("csm_reg_pasien.is_submitted = 'Y' ");
+		$this->db->where("csm_dokumen_klaim.no_sep is not null");
+		$this->db->where("LEN(csm_dokumen_klaim.no_sep) > 18");
+		
 
 		
 	}

@@ -114,7 +114,7 @@
               <option value="RI">Rawat Inap</option>
             </select>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 no-padding">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Search

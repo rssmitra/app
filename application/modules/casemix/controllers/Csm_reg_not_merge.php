@@ -45,12 +45,12 @@ class Csm_reg_not_merge extends MX_Controller {
     
     public function get_data()
     {
-        //print_r($_GET['num']);die;
         /*get data from model*/
         if( isset($_GET['search']) ){
             $list = $this->Csm_reg_not_merge->get_datatables();
             $data = array();
             $no = $_POST['start'];
+            // echo "<pre>";print_r($list);die;
             foreach ($list as $row_list) {
                 $str_type = $row_list->csm_rp_tipe;
                 $det_data = $this->Csm_billing_pasien->getDetailData($row_list->no_registrasi);
@@ -65,17 +65,19 @@ class Csm_reg_not_merge extends MX_Controller {
                                 <span class="lbl"></span>
                             </label>
                           </div>';
-                $row[] = '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$row_list->no_registrasi.''."/".$str_type."'".')">'.$row_list->no_registrasi.'</a>';
-                $row[] = '<div class="center"><input type="hidden" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="'.$row_list->csm_rp_no_sep.'"> '.$row_list->csm_rp_no_sep.'  </div>';
+                $row[] = '<div class="center"><input type="hidden" id="'.$row_list->no_registrasi.'" class="form-control" name="no_sep['.$row_list->no_registrasi.']" value="'.$row_list->csm_rp_no_sep.'">'.$row_list->csm_rp_no_sep.'</div>';
+                // $row[] = '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$row_list->no_registrasi.''."/".$str_type."'".')">'.$row_list->no_registrasi.'</a>';
+                $row[] = $row_list->no_registrasi;
                 
                 $row[] = $row_list->csm_rp_no_mr;
                 $row[] = strtoupper($row_list->csm_rp_nama_pasien);
-                $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_masuk).'<br><i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
-                $row[] = $row_list->csm_rp_nama_dokter.'<br><span style="font-size:11px"><b>('.$row_list->csm_rp_nama_dokter.')</b></span>';
+                $row[] = $this->tanggal->formatDate($row_list->csm_rp_tgl_masuk);
+                $row[] = $this->tanggal->formatDate($row_list->csm_rp_tgl_keluar);
+                // $row[] = $row_list->csm_rp_nama_dokter.'<br><span style="font-size:11px"><b>('.$row_list->csm_rp_nama_dokter.')</b></span>';
                 
                 $row[] = '<div class="center"><input type="hidden" id="type_'.$row_list->no_registrasi.'" class="form-control" name="form_type['.$row_list->no_registrasi.']" value="'.$str_type.'">'.$str_type.'</div>';
                 
-                $row[] = '<div class="center" ><i class="fa fa-check bigger-200 green"></i><br><span style="font-size:10px">By : '.$row_list->created_by.'<br>'.$this->tanggal->formatDateTime($row_list->created_date).'</span></div>';
+                $row[] = '<div class="center" >'.number_format($row_list->csm_dk_total_klaim).'</div>';
 
                 $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="submit('.$row_list->no_registrasi.')"><i class="fa fa-arrow-to-bottom bigger-50"></i> Submit</a></div>';
 
@@ -105,7 +107,7 @@ class Csm_reg_not_merge extends MX_Controller {
     public function find_data()
     {   
         $output = array(
-                        "recordsTotal" => $this->Csm_reg_not_merge->count_all(),
+                        // "recordsTotal" => $this->Csm_reg_not_merge->count_all(),
                         //"recordsFiltered" => $this->registrasi_adm->count_filtered_data(),
                         "data" => $_POST,
                 );

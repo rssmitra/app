@@ -83,6 +83,7 @@ class Adm_kasir extends MX_Controller {
                     $row = array();
                     // sum total
                     $total = $this->master->sumArrayByKey($row_list, 'total');
+                    $total_billing = $this->master->sumArrayByKey($row_list, 'total_billing');
                     $arr_total[] = $total;
                     $row[] = '<div class="center"></div>';
                     $row[] = $row_list[0]['no_registrasi'];
@@ -103,12 +104,12 @@ class Adm_kasir extends MX_Controller {
                         $row[] = '<div class="center"><span style="color: red; font-weight: bold">Batal</span></div>';
                     }else{
                         if( $total > 0 ){
-                            $row[] = '<div class="pull-right">
-                                        <a style="color: blue; font-weight: bold" href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')">'.number_format($total).',-</a>
+                            $row[] = '<div class="pull-left">
+                                        <a style="color: red; font-weight: bold" href="#" onclick="show_modal_medium_return_json('."'billing/Billing/getDetailLess/".$row_list[0]['no_registrasi']."/".$_GET['pelayanan']."'".', '."'RINCIAN BILLING PASIEN'".')"><i class="fa fa-warning bigger-120 orange"></i> '.number_format($total).',-</a>
                                         <input type="hidden" class="total_billing_class" value="'.$total.'">
                                       </div>';
                         }else{
-                            $row[] = '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
+                            $row[] = '<div class="left"><i class="fa fa-check bigger-120 green"></i> '.number_format($total_billing).',- </div>';
                         }
                     }
                     // dokumen klaim files

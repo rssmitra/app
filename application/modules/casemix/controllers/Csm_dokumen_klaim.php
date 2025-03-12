@@ -58,7 +58,7 @@ class Csm_dokumen_klaim extends MX_Controller {
                             <span class="lbl"></span>
                         </label>
                       </div>';
-            $row[] = '<div class="left"><a href="'.base_url().$row_list->csm_dk_fullpath.'" target="_blank">'.$row_list->csm_rp_no_sep.'</a></div>';
+            $row[] = '<div class="left"><a href="'.$row_list->csm_dk_base_url.$row_list->csm_dk_fullpath.'" target="_blank">'.$row_list->csm_rp_no_sep.'</a></div>';
             $row[] = $row_list->no_registrasi;
             $row[] = $row_list->csm_rp_no_mr;
             $row[] = strtoupper($row_list->csm_rp_nama_pasien);
@@ -85,7 +85,7 @@ class Csm_dokumen_klaim extends MX_Controller {
     public function find_data()
     {   
         $output = array(
-                        "recordsTotal" => $this->Csm_dokumen_klaim->count_all(),
+                        // "recordsTotal" => $this->Csm_dokumen_klaim->count_all(),
                         /*"recordsFiltered" => $this->Csm_dokumen_klaim->count_filtered(),*/
                         "data" => $_POST,
                 );
