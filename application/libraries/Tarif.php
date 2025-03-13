@@ -392,7 +392,7 @@ final class Tarif extends AvObjects {
         }else{
             if($jenis_tindakan == 12){
                 // konsultasi dr spesialis
-                $where_str = 'and kode_tarif=12801533';
+                $where_str = 'and kode_tarif=20101194';
             }else{
                 $where_str = 'and nama_tarif not like '."'%BPJS'".' and nama_tarif not like '."'%Tindakan'".'';
             }
