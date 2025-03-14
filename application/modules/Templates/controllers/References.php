@@ -1400,7 +1400,7 @@ class References extends MX_Controller {
 			$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
 			$html .= isset($exc[0]->tingkat)?' | <span style="color: blue">'.$exc[0]->tingkat.'</span>':'';
 			$html .= isset($exc[0]->tipe_operasi)?' | <span style="color: green">'.$exc[0]->tipe_operasi.'</span>':'';
-			$html .= isset($exc[0]->nama_klas)?' ('.$exc[0]->nama_klas.' )':'';
+			$html .= isset($exc[0]->nama_klas)?' (Kelas '.$exc[0]->nama_klas.')':'';
 			$html .= '</b></p>';
 			$html .= '<input type="hidden" name="kode_tarif" value="'.$exc[0]->kode_tarif.'">';
 			$html .= '<input type="hidden" name="jenis_tindakan" value="'.$exc[0]->jenis_tindakan.'">';
