@@ -106,7 +106,7 @@ class Adm_kasir_model extends CI_Model {
 		{
 			// $order = $this->order;
 			// $this->db->order_by(key($order), $order[key($order)]);
-      $this->db->order_by('b.tgl_jam_masuk DESC');
+      $this->db->order_by('c.nama_pasien ASC');
 		}
 	}
 	

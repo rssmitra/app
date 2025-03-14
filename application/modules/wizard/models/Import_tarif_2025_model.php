@@ -225,6 +225,13 @@ class Import_tarif_2025_model extends CI_Model {
         return $array->nama_tarif;
     }
 
+    public function insert_tarif($table, $data){
+
+        $this->db->insert($table, $data);
+
+        return true;
+    }
+
 
 
 

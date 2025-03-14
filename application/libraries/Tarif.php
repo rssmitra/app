@@ -375,12 +375,14 @@ final class Tarif extends AvObjects {
         if($data['kode_perusahaan']==120){
 
             if($jenis_tindakan!=13){
+                // konsultasi
                 if ($data['kode_bagian']=='020101') {
-                    $where_str = 'and kode_tarif='."'20101173'".'';
+                    $where_str = 'and kode_tarif='."'20101001'".'';
                 }else{
                     $where_str = 'and kode_tarif=41';
                 }
             }else{
+                // sarana
                 if ($data['kode_bagian']=='020101') {
                     $where_str = 'and kode_tarif='."'20101039'".'';
                 }else{
@@ -392,7 +394,7 @@ final class Tarif extends AvObjects {
         }else{
             if($jenis_tindakan == 12){
                 // konsultasi dr spesialis
-                $where_str = 'and kode_tarif=20101194';
+                $where_str = 'and kode_tarif=120002';
             }else{
                 $where_str = 'and nama_tarif not like '."'%BPJS'".' and nama_tarif not like '."'%Tindakan'".'';
             }

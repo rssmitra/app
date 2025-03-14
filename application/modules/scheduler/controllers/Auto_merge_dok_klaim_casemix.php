@@ -38,16 +38,19 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
 		$this->db->select('csm_reg_pasien.*');
 		$this->db->from('csm_reg_pasien');
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
-		$this->db->where("csm_dokumen_klaim.no_sep is null");
+		$this->db->where("(csm_dokumen_klaim.no_sep is null AND LEN(csm_rp_no_sep) > 18)");
         $this->db->where("csm_rp_tipe = 'RJ' " );
-        $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) BETWEEN '". $last_date."' AND '".date('Y-m-d')."' " );
+        $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) < '". $last_date."' " );
+        $this->db->where("MONTH(csm_reg_pasien.csm_rp_tgl_keluar) = '". date('m')."' " );
+        $this->db->where("YEAR(csm_reg_pasien.csm_rp_tgl_keluar) = '". date('Y')."' " );
 		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi=csm_reg_pasien.no_registrasi', 'LEFT');
-		$this->db->limit(0,1);
-        $data = $this->db->get()->row();
-
+		$this->db->order_by('no_registrasi ASC');
+        $result = $this->db->get();
+        $count = $result->num_rows();
+        $data = $result->row();
 
         // echo '<pre>';
-        // print_r($last_date);
+        // print_r($count);
         // print_r($data);
         // print_r($this->db->last_query());
         // exit;
@@ -104,6 +107,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         $string_url = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $type);
         // echo '<pre>';print_r($string_url);exit;
         // redirect(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
+        file_get_contents(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
 
         echo "url merge ".$string_url['url']."  " . PHP_EOL;
         // $script_cmd = 'start chrome "'.$string_url['url'].'" ';
@@ -112,12 +116,12 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         // $script_cmd = 'taskkill /F /IM chrome.exe /T > nul';
         // exec( $script_cmd );
 
-        // $file = "uploaded/casemix/log_scheduler/".date('Y_m_d_H_i_s').".log";
-        // $fp = fopen ($file,'w');
-        // $data_general = "Total Eksekusi : ".count($count_result)." \nList transaksi sukses (kode_trans_far):\n".$txt_success."\nList transaksi gagal :\n".$txt_failed."";
-        // $data_log = var_export($data_log, true);
-        // fwrite($fp,  $data_general."\n".$data_log);
-        // fclose($fp);
+        $file = "uploaded/casemix/log_scheduler/".date('Y_m_d_H_i_s').".log";
+        $fp = fopen ($file,'w');
+        $data_general = "\nURL Merge :\n".$string_url['url']."";
+        $data_log = var_export($data_log, true);
+        fwrite($fp,  $data_general."\n".$data_log);
+        fclose($fp);
 
     }
 

@@ -1853,7 +1853,8 @@ class Templates extends MX_Controller {
                     <br><br>
                     Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
                     '.COMP_FULL.'<br>
-                    '.$img.'
+                    '.$img.'<br>
+                    '.$nama_dr.'<br>
                     </td>   
                 </tr>
             </table>';

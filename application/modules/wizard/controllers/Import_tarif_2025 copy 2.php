@@ -2,7 +2,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Import_tarif_2025 extends MX_Controller {
+class Import_tarif_2025_bpjs extends MX_Controller {
 
     /*function constructor*/
     function __construct() {
@@ -46,39 +46,26 @@ class Import_tarif_2025 extends MX_Controller {
                 // echo '<pre>';print_r($row);die;
                 //$this->Import_tarif_2025_model->save_log_book($row, $klas);
                 /*pull data to variabel data array*/
-                $data[] = [
+                $data = [
                     'kode_tarif'=>$row['B'], 
-                    'kode_tindakan'=>$row['C'], 
-                    'nama_tarif'=>$row['D'], 
-                    'kode_bagian'=>$row['E'], 
-                    'referensi'=>$row['F'], 
-                    'jenis_tindakan'=>$row['G'], 
-                    'tingkatan'=>5, 
-                    'ket'=>'Tarif Baru 2025', 
-                    'revisi_ke'=>0, 
+                    'nama_tarif'=>$row['C'], 
                     'is_active'=>'Y', 
                     'is_old'=>'N', 
-                    'created_date'=>date('Y-m-d H:i:s'), 
-                    'created_by'=>'Administrator', 
                     'updated_date'=>date('Y-m-d H:i:s'), 
-                    'updated_by'=>'Administrator', 
+                    'updated_by'=>'Import New Tarif', 
                     'new_tarif_2025'=> $_GET['unique_code'], 
                 ];
 
                 // echo '<pre>'; print_r($data);die;
-                // $get_kode_tarif = $this->Import_tarif_2025_model->insert_tarif('mt_master_tarif_dev', $data);
+                $get_kode_tarif = $this->Import_tarif_2025_model->update_tarif('mt_master_tarif', $data);
                 
                 /*loop data klas for detail tarif*/
-                $this->execute_new_tarif_detail($klas, $row, $sheet, $row['B']);
+                $this->execute_tarif_klas($klas, $row, $sheet, $row['B']);
 
             }
 
             $numrow++; // Tambah 1 setiap kali looping
         }
-
-        $this->db->insert_batch('mt_master_tarif_dev', $data);
-
-        // echo '<pre>'; print_r($data);die;
 
 
     }
@@ -139,67 +126,6 @@ class Import_tarif_2025 extends MX_Controller {
         }
         // echo '<pre>'; print_r($detail_tarif);die;
         return $this->Import_tarif_2025_model->update_detail_tarif('mt_master_tarif_detail', $detail_tarif);
-            
-    }
-
-    function execute_new_tarif_detail($klas, $row, $sheet, $kode_tarif){
-
-        // echo '<pre>'; print_r($klas);die;
-        // echo '<pre>'; print_r($row);
-        // echo '<pre>'; print_r($sheet);die;
-
-        /*tgl_tarif aktif*/
-        $tgl_tarif = $this->db->get_where('mt_tgl_tarif', array('status' => 1) )->row();
-        $detail_tarif = [];
-        foreach ($klas as $key_klas => $val_klas) {
-            $is_array = explode("/", $val_klas);
-            foreach($is_array as $row_klas) :
-                // echo '<pre>'; print_r($row_klas);die;
-
-                /*from sheet*/
-                $kamar_tindakan = isset($row[$this->find_column($sheet[3], $val_klas.'/KAMAR_TINDAKAN')])?$row[$this->find_column($sheet[3], $val_klas.'/KAMAR_TINDAKAN')]:0;
-                $bill_dr1 = isset($row[$this->find_column($sheet[3], $val_klas.'/BILL_DR1')])?$row[$this->find_column($sheet[3], $val_klas.'/BILL_DR1')]:0;
-                $bill_dr2 = isset($row[$this->find_column($sheet[3], $val_klas.'/BILL_DR2')])?$row[$this->find_column($sheet[3], $val_klas.'/BILL_DR2')]:0;
-                $pendapatan_rs = isset($row[$this->find_column($sheet[3], $val_klas.'/PENDAPATAN_RS')])?$row[$this->find_column($sheet[3], $val_klas.'/PENDAPATAN_RS')]:0;
-                // echo '<pre>'; print_r((int)$pendapatan_rs);die;
-                /*total*/
-                $bill_rs = (double)$pendapatan_rs + (double)$kamar_tindakan;
-                $total = (double)$bill_rs + (double)$bill_dr1 + (double)$bill_dr2;
-                
-                /*push data*/
-
-                $detail_tarif[] = [
-                    'kode_tarif'=> (string)$kode_tarif, 
-                    'kode_klas'=> (int)$row_klas, 
-                    'bill_rs'=> (double)$bill_rs, 
-                    'bill_dr1'=> (double)$bill_dr1, 
-                    'bill_dr2'=> (double)$bill_dr2, 
-                    'kamar_tindakan'=> (double)$kamar_tindakan, 
-                    'total'=> (double)$total, 
-                    'pendapatan_rs'=> (double)$pendapatan_rs, 
-                    'kode_tgl_tarif'=> $tgl_tarif->kode_tgl_tarif, 
-                    'revisi_ke' => 0, 
-                    'is_active' => 'Y', 
-                    'updated_date' => date('Y-m-d H:i:s'), 
-                    'updated_by' => 'Import New Tarif', 
-                    'new_tarif_2025' => $_GET['unique_code'], 
-                ];
-
-            endforeach;
-        }
-
-        if($this->db->insert_batch('mt_master_tarif_detail_dev', $detail_tarif)){
-            echo "Tarif ".$kode_tarif." berhasil";
-            echo nl2br("").PHP_EOL;
-            echo nl2br("Tarif ".$kode_tarif." berhasil").PHP_EOL;
-        }else{
-            echo nl2br("").PHP_EOL;
-            echo nl2br("Tarif ".$kode_tarif." gagal").PHP_EOL;
-        }
-
-        // exit;
-        // echo '<pre>'; print_r($detail_tarif);die;
-        // return $this->Import_tarif_2025_model->update_detail_tarif('mt_master_tarif_detail', $detail_tarif);
             
     }
 
