@@ -763,6 +763,8 @@ class Reg_klinik extends MX_Controller {
                         ),
                     ),
             );
+
+            // echo "<pre>"; print_r($data);die;
             $result = $this->Ws_index->insertSep($data);
             $response = isset($result['response']) ? $result : false;
 
@@ -793,8 +795,8 @@ class Reg_klinik extends MX_Controller {
                     'noKartu' => $sep->peserta->noKartu,
                     'noMr' => $sep->peserta->noMr,
                     'tglLahir' => $sep->peserta->tglLahir,
-                    'kodePPPKPerujuk' => $this->form_validation->set_value('kodeFaskesHidden'),
-                    'PPKPerujuk' => $this->form_validation->set_value('ppkRujukan'),
+                    'kodePPPKPerujuk' => $_POST['kodeFaskesHidden'],
+                    'PPKPerujuk' => $_POST['ppkRujukan'],
                     'asalRujukan' => ($this->form_validation->set_value('jenis_faskes') == 'pcare') ? 1 : 2 ,
                     'tglRujukan' => $this->form_validation->set_value('tglRujukan'),
                     'noRujukan' => $this->form_validation->set_value('noRujukan'),

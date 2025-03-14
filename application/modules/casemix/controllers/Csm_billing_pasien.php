@@ -546,8 +546,8 @@ EOD;
     public function mergePDFFiles($no_registrasi, $tipe){
         /*get doc*/
         $reg_data = $this->Csm_billing_pasien->getRegDataLocal($no_registrasi);
-        // echo '<pre>';print_r($reg_data);die;
         $doc_pdf = $this->Csm_billing_pasien->getDocumentPDF($no_registrasi);
+        // echo '<pre>';print_r($doc_pdf);die;
         // echo '<pre>';print_r($this->db->last_query());die;
         /*save merged file*/
         $month_saved = date("M",strtotime($reg_data->csm_rp_tgl_masuk));
@@ -578,10 +578,12 @@ EOD;
         $fields_string = "";
 
         foreach($doc_pdf as $key=>$value) {
+            $str_replace = str_replace('uploaded/casemix/log/','',$value->csm_dex_fullpath);
+            $nama_dok = ($value->is_adjusment == 'Y')?$str_replace:$value->csm_dex_nama_dok;
             $date = date("Y-m-d",strtotime($value->csm_rp_tgl_masuk));
             $month = date("M",strtotime($value->csm_rp_tgl_masuk));
             $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
-            $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
+            $fields_string .= $value->csm_dex_id.'='.$nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
         }
         
         rtrim($fields_string,'&');
@@ -616,6 +618,7 @@ EOD;
                 'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
                 'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
                 'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                'base_url_dok' => base_url(),
             );
             
             $doc_save['created_date'] = date('Y-m-d H:i:s');
@@ -682,24 +685,26 @@ EOD;
             'csm_dk_base_url' => base_url(),
             'created_date' => date('Y-m-d H:i:s'),
             'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')
-            );
-            /*check if exist*/
-            $dt = $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep, 'no_registrasi' => $no_registrasi))->row();
-            // echo '<pre>';print_r($this->db->last_query());die;
+        );
+        /*check if exist*/
+        $dt = $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep, 'no_registrasi' => $no_registrasi))->row();
+        // echo '<pre>';print_r($this->db->last_query());die;
 
-            if( !empty($dt) ){
-                $this->db->update('csm_dokumen_klaim', $datasaved, array('no_sep' => $reg_data->csm_rp_no_sep));
-            }else{
-                $this->db->insert('csm_dokumen_klaim', $datasaved);
-            }
+        if( !empty($dt) ){
+            $this->db->update('csm_dokumen_klaim', $datasaved, array('no_sep' => $reg_data->csm_rp_no_sep));
+        }else{
+            $this->db->insert('csm_dokumen_klaim', $datasaved);
+        }
 
         $fields_string = "";
         
         foreach($doc_pdf as $key=>$value) {
+            $str_replace = str_replace('uploaded/casemix/log/','',$value->csm_dex_fullpath);
+            $nama_dok = ($value->is_adjusment == 'Y')?$str_replace:$value->csm_dex_nama_dok;
             $date = date("Y-m-d",strtotime($value->csm_rp_tgl_masuk));
             $month = date("M",strtotime($value->csm_rp_tgl_masuk));
             $year = date("Y",strtotime($value->csm_rp_tgl_masuk));
-            $fields_string .= $value->csm_dex_id.'='.$value->csm_dex_nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
+            $fields_string .= $value->csm_dex_id.'='.$nama_dok.'&sep='.$value->csm_rp_no_sep.'&tipe='.$tipe.'&month='.$month.'&year='.$year.'&date='.$date.'&';
         }
 
         rtrim($fields_string,'&');
@@ -709,7 +714,6 @@ EOD;
         // return $this->master->checkURL($url);
 
     }
-
 
 }
 /* End of file example.php */

@@ -687,6 +687,12 @@ class Ws_index_model extends CI_Model {
 	function findSepFromLocal($no_sep){
 		try {
 		    $result = $this->db->get_where('ws_bpjs_sep', array('noSep' => $no_sep))->row();
+			if(empty($result)){
+				$ws = $this->Ws_index->get_data_sep($no_sep);
+				$result = $ws['data'];
+			}
+			// echo "<pre>"; print_r($ws); die;
+
 		    $code = 200;
 		    $message = 'Data berhasil diproses';			
 		} catch (Exception $e) {

@@ -28,7 +28,7 @@
   </tr>
   <tr>
     <td>Tgl SEP</td><td width="230px">: <?php echo isset($sep->tglSep)?$sep->tglSep:$this->tanggal->formatDateDmy($header->tgl_jam_masuk)?></td>
-    <td style="padding-left:200px; width: 70px">Peserta</td><td>: <?php echo isset($sep->jnsPeserta)?$sep->jnsPeserta:''?></td>
+    <td style="padding-left:200px; width: 70px">Peserta</td><td>: <?php echo isset($sep->jnsPeserta)?$sep->jnsPeserta:$sep->response->peserta->jnsPeserta?></td>
   </tr>
   <tr>
     <td>No Kartu</td><td>: <?php echo isset($sep->noKartu)?$sep->noKartu:''?> (MR. <?php echo isset($sep->noMr)?$sep->noMr: $header->no_mr ?>)</td>
@@ -46,7 +46,7 @@
     <td style="padding-left:200px">Penjamin</td><td>: <?php echo isset($sep->penjamin)?$sep->penjamin:'BPJS Kesehatan'?></td>
   </tr>
   <tr>
-    <td>Poli Tujuan</td><td>: <?php echo isset($sep->poli)?$sep->poli:$header->kode_poli_bpjs?></td>
+    <td>Poli Tujuan</td><td>: <?php echo isset($sep->poli)?$sep->poli:$sep->response->poli?></td>
   </tr>
   <tr>
     <td>Faskes Perujuk</td><td>: <?php echo isset($sep->PPKPerujuk)?$sep->PPKPerujuk:''?></td>
