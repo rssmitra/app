@@ -1174,7 +1174,7 @@ class References extends MX_Controller {
 	public function getTindakanByBagianAutoComplete()
 	{
 		
-		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi');
+		$this->db->select('a.kode_tarif, a.kode_tindakan, a.nama_tarif, c.nama_tarif as tingkat_operasi, a.new_tarif_2025 as label_tarif_baru');
 		$this->db->select('REPLACE(nama_bagian, '."'Poliklinik Spesialis'".','."''".' ) as bagian');
 		$this->db->from('mt_master_tarif a');
 		$this->db->join('mt_master_tarif c','c.kode_tarif=a.referensi','LEFT');
@@ -1222,7 +1222,8 @@ class References extends MX_Controller {
 		foreach ($exc as $key => $value) {
 			$jenis_operasi = ($_POST['kode_bag']=='030901') ? ''.$value->tingkat_operasi.'' : '' ;
 			$bagian = ($value->bagian == null)?'Global':$value->bagian;
-			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$bagian.') '.$jenis_operasi.'';
+			$label_new_tarif = ($value->label_tarif_baru != null)?'<span style="background: green; color:white; padding: 2px; font-size: 10px; border-radius: 5px">New</span>':'';
+			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' ('.$bagian.') '.$jenis_operasi.' '.$label_new_tarif.'';
 		}
 		echo json_encode($arrResult);
 		
@@ -1400,7 +1401,8 @@ class References extends MX_Controller {
 			$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
 			$html .= isset($exc[0]->tingkat)?' | <span style="color: blue">'.$exc[0]->tingkat.'</span>':'';
 			$html .= isset($exc[0]->tipe_operasi)?' | <span style="color: green">'.$exc[0]->tipe_operasi.'</span>':'';
-			$html .= isset($exc[0]->nama_klas)?' (Kelas '.$exc[0]->nama_klas.')':'';
+			$label_new_tarif = ($exc[0]->label_tarif_baru != null)?'<span style="background: green; color:white; padding: 2px; font-size: 10px; border-radius: 5px">New</span>':'';
+			$html .= isset($exc[0]->nama_klas)?' (Kelas '.$exc[0]->nama_klas.') '.$label_new_tarif.' ':'';
 			$html .= '</b></p>';
 			$html .= '<input type="hidden" name="kode_tarif" value="'.$exc[0]->kode_tarif.'">';
 			$html .= '<input type="hidden" name="jenis_tindakan" value="'.$exc[0]->jenis_tindakan.'">';
