@@ -274,7 +274,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
                 if($row_list->status_selesai==3){
                     
                     if($row_list->status_daftar!=2){
-                        $status_periksa = ($row_list->status_periksa!=NULL)?'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>':' <a href="#" class="btn btn-xs btn-info" onclick="show_modal('."'pelayanan/Pl_pelayanan_mcu/periksa_bagian/".$row_list->id_pl_tc_poli."/".$row_list->kode_tarif."/".$row_list->kode_dokter."  '".', '."'".strtoupper($row_list->nama_pasien)."'".')"> Periksa Bagian</a>';
+                        $status_periksa = ($row_list->status_periksa!=NULL)?'<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_mcu/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."'".')">Update Hasil MCU</a>':' <a href="#" class="btn btn-xs btn-info" onclick="show_modal('."'pelayanan/Pl_pelayanan_mcu/periksa_bagian/".$row_list->id_pl_tc_poli."/".$row_list->kode_tarif."/".$row_list->kode_dokter."  '".', '."'".strtoupper($row_list->nama_pasien)."'".')"> Periksa Bagian</a>';
                     }else{
                         $status_periksa = '<a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'pelayanan/Pl_pelayanan_mcu/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."'".')">Periksa</a>';
                     }
