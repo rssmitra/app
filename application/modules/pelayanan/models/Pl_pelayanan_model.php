@@ -528,6 +528,7 @@ class Pl_pelayanan_model extends CI_Model {
 		}
 		$this->db->order_by('revisi_ke','desc');
 		$query = $this->db->get()->row();
+		// echo $this->db->last_query();die;
 		return $query;
 
 	}

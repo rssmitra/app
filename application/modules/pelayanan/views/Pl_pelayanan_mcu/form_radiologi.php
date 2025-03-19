@@ -82,22 +82,22 @@ $(document).ready(function() {
                       
       <label class="control-label col-sm-2">Thorax Foto</label>
       
-      <div class="col-md-3">
+      <div class="col-md-10">
         
-        <textarea name="hasil_rad" id="hasil_rad" cols="50" style="height:100px !important;"><?php echo isset($pemeriksaan_radiologi)?$pemeriksaan_radiologi->hasil:'' ?></textarea>
+        <textarea name="hasil_rad" id="hasil_rad" class="form-control" cols="50" style="height:150px !important;"><?php echo isset($pemeriksaan_radiologi)?$pemeriksaan_radiologi->hasil:'' ?></textarea>
       
       </div>
     
     
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="margin-top: 3px">
                       
       <label class="control-label col-sm-2">Kesan</label>
       
-      <div class="col-md-3">
+      <div class="col-md-10">
         
-        <textarea name="kesan_rad" id="kesan_rad" cols="50" style="height:100px !important;"><?php echo isset($pemeriksaan_radiologi)?$pemeriksaan_radiologi->kesan:'' ?></textarea>
+        <textarea name="kesan_rad" id="kesan_rad" class="form-control" cols="50" style="height:150px !important;"><?php echo isset($pemeriksaan_radiologi)?$pemeriksaan_radiologi->kesan:'' ?></textarea>
       
       </div>
     
@@ -105,8 +105,8 @@ $(document).ready(function() {
     </div>
 
         
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="">&nbsp;</label>
+    <div class="form-group" style="margin-top: 3px">
+      <label class="col-sm-2" for="">&nbsp;</label>
       <div class="col-sm-3" style="margin-left:6px">
         <?php if($status_isihasil==1): ?>
           <a href="#" class="btn btn-xs btn-info" onclick="show_modal('pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo isset($no_kunjungan)?$no_kunjungan:0 ?>/<?php echo isset($kode_bagian)?$kode_bagian:0 ?>/<?php echo isset($kode_penunjang)?$kode_penunjang:0 ?>?mr=<?php echo isset($no_mr)?$no_mr:0 ?>&is_mcu=1', '')">Lihat Hasil</a>
@@ -115,7 +115,7 @@ $(document).ready(function() {
         <?php endif ?>
       </div>
     </div>
-
+    <br>
     <p><b><i class="fa fa-edit"></i> Pemeriksaan EKG </b></p>
 
     <div class="form-group">
@@ -150,9 +150,9 @@ $(document).ready(function() {
                       
       <label class="control-label col-sm-2">Kesan</label>
       
-      <div class="col-md-3">
+      <div class="col-md-10">
         
-        <textarea name="kesan_ekg" id="kesan_ekg" cols="50" style="height:100px !important;"><?php echo isset($pemeriksaan_ekg)?$pemeriksaan_ekg->kesan:'' ?></textarea>
+        <textarea name="kesan_ekg" id="kesan_ekg" cols="50" class="form-control" style="height:100px !important;"><?php echo isset($pemeriksaan_ekg)?$pemeriksaan_ekg->kesan:'' ?></textarea>
       
       </div>
     
@@ -160,8 +160,8 @@ $(document).ready(function() {
     </div>
 
         
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="">&nbsp;</label>
+    <div class="form-group" style="margin-top: 3px">
+      <label class="col-sm-2" for="">&nbsp;</label>
       <div class="col-sm-3" style="margin-left:6px">
         <a href="#" class="btn btn-xs btn-primary" id="btn_radiologi"><i class="fa fa-save"></i> Submit </a>
       </div>

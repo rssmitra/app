@@ -109,23 +109,18 @@ class Adm_kasir extends MX_Controller {
                                         <input type="hidden" class="total_billing_class" value="'.$total.'">
                                       </div>';
                         }else{
-                            $row[] = '<div class="left"><i class="fa fa-check bigger-120 green"></i> '.number_format($total_billing).',- </div>';
+                            $row[] = '<div class="left"><i class="fa fa-check bigger-120 green"></i> <span style="color: green; font-weight: bold">'.number_format($total_billing).',-</span> </div>';
                         }
                     }
                     // dokumen klaim files
-                    $url_dok_klaim = isset($row_list[0]['dok_klaim'])?$row_list[0]['dok_klaim']:'';
+                    // $url_dok_klaim = isset($row_list[0]['dok_klaim'])?$row_list[0]['dok_klaim']:'';
                     // $cekfile = $this->master->checkURL($url_dok_klaim);
                     // echo $cekfile;die;
-                    if($url_dok_klaim != ''){
-                        $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="PopupCenter('."'".$url_dok_klaim."'".', 900, 700)"><i class="fa fa-search"></i></div>';
-                        // if( isset($cekfile['code']) && $cekfile['code'] == 200 ){
-                        // }else{
-                        //     $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
-                        // }
-                    }else{
-                        $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
-
-                    }
+                    // if($url_dok_klaim != ''){
+                    //     $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-primary" onclick="PopupCenter('."'".$url_dok_klaim."'".', 900, 700)"><i class="fa fa-search"></i></div>';
+                    // }else{
+                    //     $row[] = '<div class="center"><span id="btn_id_'.$row_list[0]['no_registrasi'].'"><a href="#" class="btn btn-xs btn-danger" onclick="proses_dokumen_klaim('.$row_list[0]['no_registrasi'].', '."'".$_GET['pelayanan']."'".')" title="proses ulang dok klaim" ><i class="fa fa-play"></i></a></span></div>';
+                    // }
 
                     $data[] = $row;
                 }

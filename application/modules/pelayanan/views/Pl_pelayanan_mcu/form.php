@@ -33,6 +33,9 @@ $(document).ready(function(){
     /*when page load find pasien by mr*/
     find_pasien_by_mr('<?php echo $no_mr?>');
 
+    getMenuTabsHtml("templates/References/get_riwayat_medis/<?php echo $no_mr?>", 'tabs_riwayat_medis_pasien');
+    getMenuTabsHtml("templates/References/get_riwayat_pm/<?php echo $no_mr?>", 'tabs_riwayat_pm_pasien');
+
     /*focus on form input pasien*/
     $('#form_cari_pasien').focus();    
 
@@ -472,7 +475,7 @@ function showModalEditPasien()
           <input type="hidden" name="no_kunjungan" class="form-control" value="<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>" id="no_kunjungan" readonly>
           <input type="hidden" name="noKartu" id="form_cari_pasien" class="form-control search-query" placeholder="Masukan No MR atau Nama Pasien" value="<?php if(isset($no_mr)){echo $no_mr;}else if(isset($data_pesanan->no_mr)){echo $data_pesanan->no_mr; }else{ echo '';}?>" readonly>
           
-          <div class="col-md-2 no-padding">
+          <div class="col-md-2">
               <div class="box box-primary" id='box_identity'>
                   <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
@@ -515,10 +518,8 @@ function showModalEditPasien()
                 <!-- /.box-body -->
               </div>
             </div>
-
-
           <!-- form pelayanan -->
-          <div class="col-md-10">
+          <div class="col-md-10 no-padding">
 
           <!-- end action form  -->
             <div class="pull-right" style="margin-bottom:1%">
@@ -590,64 +591,94 @@ function showModalEditPasien()
 
           
             <p><b><i class="fa fa-edit"></i> FORM PELAYANAN PASIEN </b></p>
+            
+            <div class="col-md-8">
+              <div class="tabbable">  
 
-            <div class="tabbable">  
+                <ul class="nav nav-tabs" id="myTab">
 
-              <ul class="nav nav-tabs" id="myTab">
+                  <li class="active">
+                    <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/anamnesa/<?php echo $value->kode_gcu?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <i class="green ace-icon fa fa-history bigger-120"></i>
+                      ANAMNESA
+                    </a>
+                  </li>
 
-                <li class="active">
-                  <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/anamnesa/<?php echo $value->kode_gcu?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="green ace-icon fa fa-history bigger-120"></i>
-                    ANAMNESA
-                  </a>
-                </li>
+                  <li>
+                    <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/pemeriksaan_fisik/<?php echo $value->kode_gcu?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <i class="red ace-icon fa fa-list bigger-120"></i>
+                      PEMERIKSAAN FISIK
+                    </a>
+                  </li>
 
-                <li>
-                  <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/pemeriksaan_fisik/<?php echo $value->kode_gcu?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="red ace-icon fa fa-list bigger-120"></i>
-                    PEMERIKSAAN FISIK
-                  </a>
-                </li>
+                  <li>
+                    <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/radiologi/<?php echo $value->kode_gcu?>/<?php echo $value->no_registrasi?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <i class="red ace-icon fa fa-file bigger-120"></i>
+                      RADIOLOGI & EKG
+                    </a>
+                  </li>
 
-                <li>
-                  <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/radiologi/<?php echo $value->kode_gcu?>/<?php echo $value->no_registrasi?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="red ace-icon fa fa-file bigger-120"></i>
-                    RADIOLOGI & EKG
-                  </a>
-                </li>
+                  <li>
+                    <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/kesimpulan_saran/<?php echo $value->kode_gcu?>/<?php echo $value->no_registrasi?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                      <i class="orange ace-icon fa fa-globe bigger-120"></i>
+                      KESIMPULAN DAN SARAN
+                    </a>
+                  </li>
 
-                <li>
-                  <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo isset($id_tc_pemeriksaan_fisik_mcu)?$id_tc_pemeriksaan_fisik_mcu:0?>" data-url="pelayanan/Pl_pelayanan_mcu/kesimpulan_saran/<?php echo $value->kode_gcu?>/<?php echo $value->no_registrasi?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="orange ace-icon fa fa-globe bigger-120"></i>
-                    KESIMPULAN DAN SARAN
-                  </a>
-                </li>
+                  <!-- <li>
+                    <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_billing_pasien" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
+                      <i class="purple ace-icon fa fa-money bigger-120"></i>
+                      BILLING PASIEN
+                    </a>
+                  </li> -->
 
-                <li>
-                  <a data-toggle="tab" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_billing_pasien" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-                    <i class="purple ace-icon fa fa-money bigger-120"></i>
-                    BILLING PASIEN
-                  </a>
-                </li>
+                </ul>
 
-              </ul>
+                <div class="tab-content">
 
-              <div class="tab-content">
+                  <div id="tabs_form_pelayanan">
+                    <div class="alert alert-block alert-success">
+                        <p>
+                          <strong>
+                            <i class="ace-icon fa fa-check"></i>
+                            Selamat Datang!
+                          </strong> 
+                          Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !
+                        </p>
+                      </div>
+                  </div>
 
-                <div id="tabs_form_pelayanan">
-                  <div class="alert alert-block alert-success">
-                      <p>
-                        <strong>
-                          <i class="ace-icon fa fa-check"></i>
-                          Selamat Datang!
-                        </strong> 
-                        Untuk melihat Riwayat Kunjungan Pasien dan Transaksi Pasien, Silahkan cari pasien terlebih dahulu !
-                      </p>
-                    </div>
                 </div>
 
               </div>
+            </div>
+            <div class="col-md-4">
+            <div class="tabbable">
+              <ul class="nav nav-tabs" id="TabsMenu">
+                <li class="active">
+                  <a data-toggle="tab" href="#tabs_rm">
+                    <?php echo TABS_RESUME_MEDIS?>
+                  </a>
+                </li>
 
+                <li>
+                  <a data-toggle="tab" href="#tabs_pm">
+                  <?php echo TABS_HASIL_PENUNJANG?>
+                  </a>
+                </li>
+                
+              </ul>
+
+              <div class="tab-content">
+                <div id="tabs_rm" class="tab-pane fade in active">
+                  <div id="tabs_riwayat_medis_pasien"></div>
+                </div>
+
+                <div id="tabs_pm" class="tab-pane fade">
+                  <div id="tabs_riwayat_pm_pasien"></div>
+                </div>
+              </div>
+            </div>
             </div>
 
           </div>

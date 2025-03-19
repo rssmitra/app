@@ -1257,7 +1257,7 @@ class References extends MX_Controller {
 		$this->db->like('a.nama_tarif', $_POST['keyword']);
 		$this->db->group_by('a.kode_tarif, a.kode_tindakan, a.nama_tarif, a.is_old, c.nama_tarif');
 		$this->db->order_by('a.is_old asc, a.nama_tarif asc');
-		$this->db->where('a.kode_bagian', $kunjungan->kode_bagian_tujuan);
+		// $this->db->where('a.kode_bagian', $kunjungan->kode_bagian_tujuan);
 		$query = $this->db->get()->result();
 		// echo '<pre>'; print_r($this->db->last_query()); die;
 
@@ -1280,7 +1280,6 @@ class References extends MX_Controller {
 			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif;
 		}
 		echo json_encode($arrResult);
-		
 		
 	}
 
@@ -1323,7 +1322,6 @@ class References extends MX_Controller {
 			$arrResult[] = $value->kode_tarif.' : '.$value->nama_tarif.' : '.$value->kode_tindakan.' : IDR '.number_format($value->total).')';
 		}
 		echo json_encode($arrResult);
-		
 		
 	}
 

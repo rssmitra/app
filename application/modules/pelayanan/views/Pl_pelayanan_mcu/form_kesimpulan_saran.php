@@ -263,20 +263,20 @@ $(document).ready(function() {
 
 
     <div class="form-group">
-        <label class="control-label col-sm-2" for=""><b>KESAN</b></label>
+        <label class="control-label col-sm-3" for=""><b>KESAN</b></label>
         <div class="col-sm-4">    
           <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'label', 'name' => 'label', 'where' => array('flag' => 'kesan_mcu')), isset($kesimpulan)?$kesimpulan:'', 'kesimpulan_kesan', 'kesimpulan_kesan', 'form-control', '', '') ?>
         </div>
     </div>
 
     <div class="form-group">
-      <label class="control-label col-sm-2">Resiko Kardiovaskular</label>
-      <div class="col-md-10">
+      <label class="control-label col-sm-3">Resiko Kardiovaskular</label>
+      <div class="col-md-9">
         <input type="text" class="form-control" name="resiko_kardio" id="resiko_kardio" value="<?php echo isset($hasil->resiko_kardio)?$hasil->resiko_kardio:''?>"  >
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label col-sm-2">Derajat Kesehatan</label>
+      <label class="control-label col-sm-3">Derajat Kesehatan</label>
       <div class="col-md-2">
         <select id="derajat_kesehatan" class="form-control" name="derajat_kesehatan">
             <?php 
@@ -289,14 +289,14 @@ $(document).ready(function() {
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label col-sm-2">Kelaikan Kerja</label>
-      <div class="col-md-10">
+      <label class="control-label col-sm-3">Kelaikan Kerja</label>
+      <div class="col-md-9">
         <input type="text" class="form-control" name="kelaikan_kerja" id="kelaikan_kerja" value="<?php echo isset($hasil->kelaikan_kerja)?$hasil->kelaikan_kerja:''?>"  >
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label col-sm-2">Kesimpulan Kesan</label>
-      <div class="col-md-10">
+      <label class="control-label col-sm-3">Kesimpulan Kesan</label>
+      <div class="col-md-9">
       <textarea name="penjelasan_kesan" id="penjelasan_kesan" class="form-control" style="height:100px !important;"><?php echo isset($hasil->penjelasan_kesan)? $this->master->br2nl($hasil->penjelasan_kesan):'';?>
         </textarea>
       </div>

@@ -710,11 +710,10 @@ class Pl_pelayanan extends MX_Controller {
         # code...
         $id=$this->input->post('ID')?$this->input->post('ID',TRUE):$_GET['kode'];
         $data = $this->Pl_pelayanan->get_tindakan_by_id($id);
-
         // echo '<pre>'; print_r($this->session->all_userdata());die;
-
+        
         $kode_klas = ($data->jenis_tindakan==13)?'':$data->kode_klas;
-
+        
         if($data->kode_tarif!=NULL){
             $komponen = $this->Pl_pelayanan->getComponentTarif($data->kode_tarif,$kode_klas);
         }else{
@@ -736,7 +735,7 @@ class Pl_pelayanan extends MX_Controller {
         $html_tag .= '<th style="text-align:center;width:100px">Kenaikan<br>Tarif (%)</th>';
         $html_tag .= '<th style="text-align:right;width:120px">Perubahan</th>';
         $html_tag .= '</tr>';
-
+        
         $no=1; 
         foreach ($komponen as $key => $value) {
 

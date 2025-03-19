@@ -1021,20 +1021,30 @@ class Templates extends MX_Controller {
                 /*jika ada dokumen penunjang add row here*/
             }        
         }
-                    $html .= '<tr>';
-                    $html .= '<td colspan="'.$colspan.'" align="right"><b>Total Biaya (Rp.)</b></td>';
-                    $html .= '<td align="right"><b>Rp. '.number_format(array_sum($arr_subtotal)).',-</b></td>';
-                    $html .= '</tr>';
 
-                    $add_one = (int)$colspan + 1;
-                    $html .= '<tr>';
-                    if(!isset($_GET['printout'])){
-                        $html .= '<td colspan="'.$add_one.'"><a href="#" onclick="PopupCenter('."'billing/Billing/print_billing_resume/".$noreg."/RI/".$field."?printout=1'".', '."'RESUME BILLING PASIEN RAWAT INAP'".', 900, 700)" class="btn btn-xs btn-inverse" style="width: 100% !important"><i class="fa fa-print"></i> PRINT RINCIAN BIAYA '.strtoupper($title_name).'</a></td>';
-                    }
-                    $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td colspan="'.$colspan.'" align="right"><b>Total Biaya (Rp.)</b></td>';
+        $html .= '<td align="right"><b>Rp. '.number_format(array_sum($arr_subtotal)).',-</b></td>';
+        $html .= '</tr>';
+
+        $add_one = (int)$colspan + 1;
+
+        $html .= '<tr>';
+        if(!isset($_GET['printout'])){
+            $html .= '<td colspan="'.$add_one.'"><a href="#" onclick="PopupCenter('."'billing/Billing/print_billing_resume/".$noreg."/RI/".$field."?printout=1'".', '."'RESUME BILLING PASIEN RAWAT INAP'".', 900, 700)" class="btn btn-xs btn-inverse" style="width: 100% !important"><i class="fa fa-print"></i> PRINT RINCIAN BIAYA '.strtoupper($title_name).'</a></td>';
+        }
+        $html .= '</tr>';
+        
+        $html .= '<tr>';
+        if(in_array($field, ['bill_kamar_perawatan'])){
+            if(!isset($_GET['printout'])){
+                $html .= '<td colspan="'.$add_one.'"><a href="#" onclick="PopupCenter('."'billing/Billing/print_billing_resume/".$noreg."/RI/".$field."?printout=1'".', '."'RESUME BILLING PASIEN RAWAT INAP'".', 900, 700)" class="btn btn-xs btn-primary" style="width: 100% !important"><i class="fa fa-print"></i> UPDATE RINCIAN BIAYA '.strtoupper($title_name).'</td></a>';
+            }
+        }
+        $html .= '</tr>';
+
         $html .= '</table>'; 
 
-       
         return $html;
     }
 

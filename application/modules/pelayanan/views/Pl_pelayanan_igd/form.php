@@ -770,31 +770,31 @@ function reload_page(){
                   </div>
                   <div class="col-md-4" style="padding-top: 13px">
                     <div class="tabbable">
-                        <ul class="nav nav-tabs" id="TabsMenu">
-                          <li class="active">
-                            <a data-toggle="tab" href="#tabs_rm">
-                              <?php echo TABS_RESUME_MEDIS?>
-                            </a>
-                          </li>
+                      <ul class="nav nav-tabs" id="TabsMenu">
+                        <li class="active">
+                          <a data-toggle="tab" href="#tabs_rm">
+                            <?php echo TABS_RESUME_MEDIS?>
+                          </a>
+                        </li>
 
-                          <li>
-                            <a data-toggle="tab" href="#tabs_pm">
-                            <?php echo TABS_HASIL_PENUNJANG?>
-                            </a>
-                          </li>
-                          
-                        </ul>
+                        <li>
+                          <a data-toggle="tab" href="#tabs_pm">
+                          <?php echo TABS_HASIL_PENUNJANG?>
+                          </a>
+                        </li>
+                        
+                      </ul>
 
-                        <div class="tab-content">
-                          <div id="tabs_rm" class="tab-pane fade in active">
-                            <div id="tabs_riwayat_medis_pasien"></div>
-                          </div>
+                      <div class="tab-content">
+                        <div id="tabs_rm" class="tab-pane fade in active">
+                          <div id="tabs_riwayat_medis_pasien"></div>
+                        </div>
 
-                          <div id="tabs_pm" class="tab-pane fade">
-                            <div id="tabs_riwayat_pm_pasien"></div>
-                          </div>
+                        <div id="tabs_pm" class="tab-pane fade">
+                          <div id="tabs_riwayat_pm_pasien"></div>
                         </div>
                       </div>
+                    </div>
 
                     
                   </div>

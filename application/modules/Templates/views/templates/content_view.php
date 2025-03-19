@@ -1241,6 +1241,7 @@
       url = 'registration/Reg_pasien/surat_kontrol_popup?id_tc_pesanan='+ID+'&jd_id='+jd_id+'';
       PopupCenter(url, 'CETAK SURAT KONTROL', 800, 650);
     }
+    
 
 
     </script>

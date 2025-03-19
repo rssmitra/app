@@ -336,7 +336,7 @@
           </div>
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label class="control-label col-md-2">Proses Dokumen Klaim</label>
         <div class="col-md-2">
           <div class="radio">
@@ -350,7 +350,7 @@
             </label>
           </div>
         </div>
-      </div>
+      </div> -->
       
 
 
@@ -370,8 +370,8 @@
               <th width="120px">Tgl Masuk</th>
               <th width="120px">Tgl Transaksi</th>
               <th width="150px">Petugas</th>
-              <th width="100px">Total Billing</th>
-              <th width="100px">Dok Klaim</th>
+              <th width="130px">Total Billing</th>
+              <!-- <th width="100px">Dok Klaim</th> -->
             </tr>
           </thead>
         </table>
