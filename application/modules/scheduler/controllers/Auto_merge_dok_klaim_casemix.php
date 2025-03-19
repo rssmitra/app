@@ -51,6 +51,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         $data = $result->row();
 
         // echo '<pre>';
+        // print_r($last_date);
         // print_r($count);
         // print_r($data);
         // print_r($this->db->last_query());
@@ -94,6 +95,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
                     'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
                     'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
                     'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                    'is_scheduler' => $this->regex->_genRegex(1, 'RGXINT'),
                 );
                 
                 $doc_save['created_date'] = date('Y-m-d H:i:s');
@@ -105,7 +107,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
             endif;
         }
 
-        $string_url = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $type);
+        $string_url = $this->cbpModule->mergePDFFilesReturnValue($no_registrasi, $type, 1);
         // echo '<pre>';print_r($string_url);exit;
         // redirect(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
         file_get_contents(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
