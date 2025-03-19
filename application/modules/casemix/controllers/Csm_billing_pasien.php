@@ -665,7 +665,7 @@ EOD;
         
     }
 
-    public function mergePDFFilesReturnValue($no_registrasi, $tipe){
+    public function mergePDFFilesReturnValue($no_registrasi, $tipe, $is_scheduler=''){
         /*get doc*/
         $reg_data = $this->Csm_billing_pasien->getRegDataLocal($no_registrasi);
         // echo '<pre>';print_r($reg_data);die;
@@ -684,8 +684,12 @@ EOD;
             'csm_dk_tipe' => $tipe,
             'csm_dk_base_url' => base_url(),
             'created_date' => date('Y-m-d H:i:s'),
-            'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')
+            'created_by' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL'),
         );
+
+        if($is_scheduler != ''){
+            $datasaved['is_scheduler'] = 1;
+        }
         /*check if exist*/
         $dt = $this->db->get_where('csm_dokumen_klaim', array('no_sep' => $reg_data->csm_rp_no_sep, 'no_registrasi' => $no_registrasi))->row();
         // echo '<pre>';print_r($this->db->last_query());die;
