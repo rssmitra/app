@@ -759,7 +759,7 @@ function select_item_racikan(id){
           </div>
 
           <div class="col-md-4">
-              <b>KOMPOSISI OBAT RACIKAN (e-Resep)</b>
+              <b><?php echo isset($eresep['header_racikan']->nama_brg) ? strtoupper($eresep['header_racikan']->nama_brg): 'Racikan Kode. '.$kode_trans_far.''?></b><br><span style="font-size: 11px; font-style: italic">Komposisi Obat Racikan (e-Resep)</span>
               <table class="table">
                 <tr style="background: #d0e8ec">
                   <th class="center">No</th>

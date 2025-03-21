@@ -185,7 +185,7 @@ class Adm_kasir_model extends CI_Model {
 						'tgl_transaksi' => $value->tgl_jam,
 						'cara_keluar_pasien' => $value->cara_keluar_pasien,
 						'petugas' => $value->fullname,
-						'dok_klaim' => $value->dok_klaim,
+						// 'dok_klaim' => $value->dok_klaim,
 					);
 				}
 			}

@@ -6,7 +6,7 @@ class Csm_verifikasi_costing_model extends CI_Model {
 
 	var $table = 'csm_reg_pasien';
 	var $column = array('csm_reg_pasien.csm_rp_no_sep','csm_reg_pasien.csm_rp_nama_pasien','csm_reg_pasien.csm_rp_no_mr', 'csm_dokumen_klaim.no_sep');
-	var $select = 'csm_reg_pasien.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_reg_pasien.created_date, csm_reg_pasien.created_by, csm_dk_base_url';
+	var $select = 'csm_reg_pasien.no_registrasi,csm_dokumen_klaim.no_sep,csm_dokumen_klaim.tgl_transaksi_kasir,csm_dokumen_klaim.csm_dk_filename,csm_dokumen_klaim.csm_dk_fullpath,csm_dokumen_klaim.csm_dk_total_klaim,csm_dokumen_klaim.csm_dk_tipe, csm_reg_pasien.csm_rp_no_sep, csm_reg_pasien.csm_rp_no_mr, csm_reg_pasien.csm_rp_nama_pasien, csm_reg_pasien.csm_rp_tgl_masuk, csm_reg_pasien.csm_rp_tgl_keluar, csm_reg_pasien.csm_rp_nama_dokter, csm_reg_pasien.csm_rp_bagian, csm_reg_pasien.csm_rp_tipe, csm_reg_pasien.is_submitted, csm_reg_pasien.csm_rp_kode_bagian, csm_reg_pasien.created_date, csm_reg_pasien.created_by, csm_dk_base_url, csm_dk_id';
 	var $order = array('csm_reg_pasien.csm_rp_no_sep' => 'ASC');
 	
 
@@ -138,6 +138,12 @@ class Csm_verifikasi_costing_model extends CI_Model {
 			return $query->row();
 		}
 		
+	}
+
+	public function delete_by_id($id)
+	{
+		$this->db->where_in('csm_dokumen_klaim.csm_dk_id', $id);
+		return $this->db->delete('csm_dokumen_klaim');
 	}
 
 	

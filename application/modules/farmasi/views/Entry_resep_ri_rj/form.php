@@ -672,10 +672,10 @@ function changeUrgensi(){
   }
 }
 
-function select_item(id, tipe){
+function select_item(id, tipe, parent=''){
   preventDefault();
   if(tipe == 'racikan'){
-    show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'&kode_pesan_resep='+$('#no_resep').val()+'&no_kunjungan='+$('#no_kunjungan').val()+'', 'RESEP RACIKAN');
+    show_modal('farmasi/Entry_resep_racikan/form/'+$('#kode_trans_far').val()+'?kelompok='+$('#kode_kelompok').val()+'&tipe_layanan='+$('#flag_trans').val()+'&kode_pesan_resep='+$('#no_resep').val()+'&no_kunjungan='+$('#no_kunjungan').val()+'&parent='+parent+'', 'RESEP RACIKAN');
   }else{
     $.getJSON("<?php echo site_url('farmasi/E_resep/getrowresep') ?>?ID="+id, '' , function (response) {
         getDetailObatByKodeBrg(response.kode_brg,'060101');
@@ -1032,7 +1032,7 @@ $('#lampiran_lab').click(function (e) {
                       $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.''.$is_free_text.'</td>';
                       $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
                       $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
-                        $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';
+                        $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".', '."'".$ver->kode_brg."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';
                       $html .= '</tr>';
 
                     }

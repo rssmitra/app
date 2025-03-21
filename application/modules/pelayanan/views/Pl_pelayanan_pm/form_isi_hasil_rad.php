@@ -350,9 +350,9 @@ function tambah_file()
           $nama_tindakan='';
           $kode_tarif='';
             foreach ($list as $key_list=>$row_list) {
-              if($row_list->kode_tarif!=$kode_tarif){
+              // if($row_list->kode_tarif!=$kode_tarif){
 
-                if($row_list->nama_tindakan!=$nama_tindakan){
+                // if($row_list->nama_tindakan!=$nama_tindakan){
                   $dokter2=isset($row_list->dokter2)?' | '.$row_list->dokter2. ' ':'';
                   $dokter_param2=isset($row_list->dokter2)?','.$row_list->kode_dokter2.','."'$row_list->dokter2'".' ':'';
                   echo
@@ -397,7 +397,7 @@ function tambah_file()
                       </div>
                     </div>';
                     $nama_tindakan = $row_list->nama_tindakan;
-                }
+                // }
 
                   $hasil = (isset($row_list->hasil))?$row_list->hasil:$row_list->standar_rad;
                   $ket = (isset($row_list->keterangan_pm))?$row_list->keterangan_pm:$row_list->kesan;
@@ -436,7 +436,7 @@ function tambah_file()
                   </div>';
                 $i++;
                 
-              }
+              // }
               $kode_tarif = $row_list->kode_tarif;
             }
         ?>

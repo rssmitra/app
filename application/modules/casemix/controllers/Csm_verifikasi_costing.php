@@ -140,6 +140,7 @@ class Csm_verifikasi_costing extends MX_Controller {
             $row[] = '<div class="center">'.$file_exist.'</div>';
             // $row[] = '<div class="center">'.$row_list->csm_dk_base_url.'</div>';
             $row[] = '<div align="right">'.number_format($row_list->csm_dk_total_klaim).'</div>';
+            $row[] = '<div align="center"><a href="#" onclick="delete_row_dok_klaim('.$row_list->csm_dk_id.')"><i class="fa fa-times-circle bigger-150 red"></i></a></div>';
             $data[] = $row;
         }
         $output = array(
@@ -246,6 +247,22 @@ class Csm_verifikasi_costing extends MX_Controller {
         return $html;
     }
 
+    public function delete_dok_klaim()
+    {
+        $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
+        $toArray = explode(',',$id);
+        if($id!=null){
+            if($this->Csm_verifikasi_costing->delete_by_id($toArray)){
+                echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan'));
+
+            }else{
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Hapus Data Gagal Dilakukan'));
+            }
+        }else{
+            echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+        
+    }
 
 }
 

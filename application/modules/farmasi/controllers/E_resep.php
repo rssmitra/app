@@ -414,7 +414,7 @@ class E_resep extends MX_Controller {
         echo json_encode($data);
     }
 
-    public function getResepByNoKunjungan($no_kunjungan, $kode_pesan_resep=''){
+    public function getResepByNoKunjungan($no_kunjungan, $kode_pesan_resep='', $parent=''){
         $this->db->select('fr_tc_pesan_resep_detail.*, mt_barang.nama_brg as nama_obat');
         $this->db->join('mt_barang', 'mt_barang.kode_brg=fr_tc_pesan_resep_detail.kode_brg', 'LEFT');
         $this->db->from('fr_tc_pesan_resep_detail');
@@ -422,10 +422,19 @@ class E_resep extends MX_Controller {
         if($kode_pesan_resep != ''){
             $this->db->where(array('kode_pesan_resep' => $kode_pesan_resep));
         }
-
+        if($parent != ''){
+            $this->db->where(array('parent' => $parent));
+        }
         $data = $this->db->get()->result();
+        $header_racikan = [];
+        if($parent != ''){
+            $header_racikan = $this->db->select('fr_tc_pesan_resep_detail.*, nama_brg as nama_obat')->get_where('fr_tc_pesan_resep_detail',['kode_brg' => $parent, 'kode_pesan_resep' => $kode_pesan_resep, 'no_kunjungan' => $no_kunjungan])->result();
+        }
+        
+        $merge = array_merge($data, $header_racikan);
+        // echo "<pre>"; print_r($merge);die;
         $getData = [];
-        foreach($data as $row){
+        foreach($merge as $row){
             $getData[$row->tipe_obat][] = $row;
             if($row->tipe_obat == 'racikan' && $row->parent == '0'){
                 $getData['header_racikan'] = $row;

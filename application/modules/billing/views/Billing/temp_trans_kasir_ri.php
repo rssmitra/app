@@ -46,12 +46,10 @@ $(document).ready(function() {
             PopupCenter(jsonResponse.redirect,'SEP',1000,700);
             // window.open(jsonResponse.redirect, '_blank');
           }
-
           
-
         }else{
-                      $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-                    }
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+        }
         achtungHideLoader();
       }
     }); 
@@ -162,6 +160,7 @@ function cetak_kuitansi(){
     <input type="hidden" name="total_uang_muka" id="total_uang_muka" value="0">
     <input type="hidden" id="kode_perusahaan_val" value="<?php echo isset($data->reg_data->kode_perusahaan)?$data->reg_data->kode_perusahaan:''?>" name="kode_perusahaan_val">
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
+    <input type="hidden" id="nama_dokter_val" value="<?php echo isset($data->reg_data->nama_pegawai)?$data->reg_data->nama_pegawai:$data->trans_data[0]->nama_dokter?>" name="nama_dokter_val">
 
     <b>TRANSAKSI KASIR</b>
     <div class="form-group">                        

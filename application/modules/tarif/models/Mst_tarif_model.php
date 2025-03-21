@@ -64,17 +64,18 @@ class Mst_tarif_model extends CI_Model {
 		$this->_get_datatables_query();
 
 		$query = $this->db->get()->result();
+		// print_r($this->db->last_query());die;
 		$getData = [];
 		foreach ($query as $key => $value) {
 			# code...
 			// $getData[$value->kode_tarif][$value->kode_klas] = $value;
 			$getData[$value->kode_tarif]['nama_tarif'] = $value->nama_tarif;
 			$getData[$value->kode_tarif]['nama_bagian'] = $value->nama_bagian;
-			$getData[$value->kode_tarif]['nama_jenis_tindakan'] = $value->nama_jenis_tindakan;
+			$getData[$value->kode_tarif]['nama_jenis_tindakan'] = $value->jenis_tindakan;
 			$getData[$value->kode_tarif]['klas'][$value->kode_klas] = $value;
 			$getData[$value->kode_tarif]['is_active'] = $value->is_active;
 		}
-		// print_r($this->db->last_query());die;
+		
 		return $getData;
 	}
 

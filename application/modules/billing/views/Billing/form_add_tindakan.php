@@ -1,3 +1,4 @@
+<script type="text/javascript" src="<?php echo base_url()?>assets/jquery_number/jquery.number.js"></script>
 <script type="text/javascript">
 
 jQuery(function($) {  
@@ -17,6 +18,8 @@ jQuery(function($) {
     $(this).prev().focus();    
 
   });  
+
+  $('.format_number').number( true, 2 );
 
 });
 
@@ -40,9 +43,11 @@ $(document).ready(function() {
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           var kode_klas= item.split(':')[2];
           console.log(val_item);
           $('#kode_klas').val(kode_klas);
+          $('#InputKeyTindakan').val(label_item);
           $('#pl_kode_tindakan_hidden').val(val_item);
           $('.InputKeyDokterBagian').focus();
           /*get detail tarif by kode tarif and kode klas*/
@@ -126,6 +131,18 @@ $(document).ready(function() {
       });
 
     });
+
+    $('select[name="kode_jenis_tindakan"]').change(function () {     
+      if ($(this).val() == 1) {          
+        // jika pilih ruangan maka tampilkan field harga total
+        $('#select_ruangan').show();
+        $('#form_field_tindakan').hide();
+      }else{
+        $('#select_ruangan').hide();
+        $('#form_field_tindakan').show();
+      }
+    });
+
 
 
 });
@@ -284,39 +301,66 @@ function tambah_file()
                           </div>
                       </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="">Jenis Tindakan</label>
+                        <div class="col-sm-4">
+                        <?php echo $this->master->custom_selection($params = array('table' => 'mt_jenis_tindakan', 'id' => 'kode_jenis_tindakan', 'name' => 'jenis_tindakan', 'where' => array() ),'' , 'kode_jenis_tindakan', 'kode_jenis_tindakan', 'form-control', '', '') ?>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="">Unit/Bagian</label>
                         <div class="col-sm-4">
-                            <?php echo $this->master->custom_selection_with_data($arr_data=array('data' => $kunjungan, 'value' => 'no_kunjungan', 'label' => 'nama_bagian'), '','no_kunjungan','no_kunjungan','form-control','','',''); ?>
+                            <?php echo $this->master->custom_selection_with_data($arr_data=array('data' => $kunjungan, 'value' => 'no_kunjungan', 'label' => ['no_kunjungan','nama_bagian', 'tgl_masuk']), '','no_kunjungan','no_kunjungan','form-control','','',''); ?>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="">Nama Tindakan</label>
-                        <div class="col-sm-5">
-                            <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
-                            <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
-                        </div>
+                    <div id="select_ruangan" style="display: none">
+                      
+                      <div class="form-group">
+                          <label class="control-label col-sm-2" for="">Nama Ruangan</label>
+                          <div class="col-sm-6">
+                              <input type="text" class="form-control" id="nama_ruangan" name="nama_ruangan" placeholder="Masukan Nama Ruangan">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="control-label col-sm-2" for="">Total Billing</label>
+                          <div class="col-sm-2">
+                              <input type="text" class="form-control format_number" id="total_ruangan" name="total_ruangan">
+                          </div>
+                      </div>
                     </div>
 
-                    <div class="col-sm-12" id="formDetailTarif" style="display:none; margin-bottom: 3px; padding: 5px">
-                      <div id="detailTarifHtml"></div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="">Dokter Pemeriksa</label>
-                        <div class="col-sm-4">
-                          <input type="text" class="form-control" id="InputKeyDokterBagian1" onclick="getDokterAutoComplete(1)" name="pl_nama_dokter[]" placeholder="Masukan Keyword Nama Dokter">
-                          <input type="hidden" class="form-control" id="pl_kode_dokter_hidden1" name="pl_kode_dokter_hidden[]" >
-                        </div>
-                        <div class ="col-md-1" style="margin-left: -2%">
-                          <input onClick="tambah_file()" value="+" type="button" class="btn btn-xs btn-info" />
-                        </div>
-                    </div>
+                    <div id="form_field_tindakan" style="display: none">
+                      <div class="form-group">
+                          <label class="control-label col-sm-2" for="">Nama Tindakan</label>
+                          <div class="col-sm-10">
+                              <input type="text" class="form-control" id="InputKeyTindakan" name="pl_nama_tindakan" placeholder="Masukan Keyword Tindakan">
+                              <input type="hidden" class="form-control" id="pl_kode_tindakan_hidden" name="pl_kode_tindakan_hidden" >
+                          </div>
+                      </div>
 
-                    
-                    <div id="clone_form_dokter">
-                      <div id="input_file<?php echo $j;?>"></div>
+                      <div class="col-sm-12" id="formDetailTarif" style="display:none; margin-bottom: 3px; padding: 5px">
+                        <div id="detailTarifHtml"></div>
+                      </div>
+
+                      <div class="form-group">
+                          <label class="control-label col-sm-2" for="">Dokter Pemeriksa</label>
+                          <div class="col-sm-4">
+                            <input type="text" class="form-control" id="InputKeyDokterBagian1" onclick="getDokterAutoComplete(1)" name="pl_nama_dokter[]" placeholder="Masukan Keyword Nama Dokter">
+                            <input type="hidden" class="form-control" id="pl_kode_dokter_hidden1" name="pl_kode_dokter_hidden[]" >
+                          </div>
+                          <div class ="col-md-1" style="margin-left: -2%">
+                            <input onClick="tambah_file()" value="+" type="button" class="btn btn-xs btn-info" />
+                          </div>
+                      </div>
+
+                      
+                      <div id="clone_form_dokter">
+                        <div id="input_file<?php echo $j;?>"></div>
+                      </div>
                     </div>
                     
                     <div class="form-group">

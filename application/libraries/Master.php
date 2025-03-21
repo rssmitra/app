@@ -515,7 +515,17 @@ final Class Master {
 
 		foreach($arr_data['data'] as $row){
 			$val = isset($row[$arr_data['value']]) ? $row[$arr_data['value']] : 0;
-			$label = isset($row[$arr_data['label']]) ? $row[$arr_data['label']] : 0;
+			$label = '';
+			if(is_array($arr_data['label'])){
+				$max = max(array_keys($arr_data['label']));
+				foreach($arr_data['label'] as $k=>$rw){
+					// print_r($k);die;
+					$label .= $row[$rw];
+					$label .= ($max!=$k)?' - ':'';
+				}
+			}else{
+				$label = isset($row[$arr_data['label']]) ? $row[$arr_data['label']] : 0;
+			}
 			$sel = trim($nid) == trim($val)?'selected':'';
 			$field.='<option value="'.$val.'">'.strtoupper($label).'</option>';
 		}	

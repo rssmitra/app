@@ -229,7 +229,7 @@
               <th width="100px" class="center">No. Transaksi</th>
               <th>Nama Pasien</th>
               <th width="150px">Tanggal Transaksi</th>
-              <th width="100px">Total Billing</th>
+              <!-- <th width="100px">Total Billing</th> -->
               <th width="150px">Tanggal Bayar</th>
               <th width="100px"></th>
             </tr>

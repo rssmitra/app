@@ -278,27 +278,20 @@ function delete_tarif_klas(myid){
         <div class="col-md-3">
           <?php echo $this->master->custom_selection(array('table'=>'mt_bagian', 'where'=>array('pelayanan' => 1, 'validasi' => 100), 'id'=>'kode_bagian', 'name' => 'nama_bagian'),isset($this->cache->get('cache')['unit'])?$this->cache->get('cache')['unit']:'','unit','unit','chosen-slect form-control','','');?>
         </div>
-        <div class="control-label col-md-2">
-            <div class="checkbox" style="margin-top: -5px">
-              <label>
-                <input name="checked_nama_tarif" id="checked_nama_tarif" type="checkbox" class="ace" value="1">
-                <span class="lbl"> Nama Tarif</span>
-              </label>
-            </div>
-          </div>
-          <div class="col-md-2" style="margin-left: -15px">
-              <input type="text" value="<?php echo isset($this->cache->get('cache')['nama_tarif'])?$this->cache->get('cache')['nama_tarif']:''?>" name="nama_tarif" id="nama_tarif" class="form-control">
-          </div>
-          <div class="col-md-4" style="margin-left: -15px">
-            <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
-              <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-              Tampilkan Data
-            </a>
-            <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
-              <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
-              Export Excel Detail 
-            </a>
-          </div>
+        <label class="control-label col-md-1">Nama Tarif</label>
+        <div class="col-md-2" style="margin-left: -15px">
+            <input type="text" value="" name="nama_tarif" id="nama_tarif" class="form-control">
+        </div>
+        <div class="col-md-4" style="margin-left: -15px">
+          <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
+            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+            Tampilkan Data
+          </a>
+          <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+            <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+            Export Excel Detail 
+          </a>
+        </div>
       </div>
 
       <div class="form-group">

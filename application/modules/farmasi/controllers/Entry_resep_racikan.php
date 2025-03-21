@@ -47,9 +47,10 @@ class Entry_resep_racikan extends MX_Controller {
         // get eresep by kode pesan resep
         $no_kunjungan = isset($_GET['no_kunjungan'])?$_GET['no_kunjungan'] : $dt_header->no_kunjungan;
         $eresep = new E_resep;
-        $list_resep = $eresep->getResepByNoKunjungan($no_kunjungan, $data['kode_pesan_resep']);
+        $parent = isset($_GET['parent'])?$_GET['parent']:'';
+        $list_resep = $eresep->getResepByNoKunjungan($no_kunjungan, $data['kode_pesan_resep'], $parent);
         $data['eresep'] = $list_resep;
-        // echo '<pre>';print_r($data['eresep']);die;
+        // echo '<pre>';print_r($list_resep);die;
         /*get fr_tc_far*/
         /*initialize flag for form*/
         $data['tipe_layanan'] = $_GET['tipe_layanan'];

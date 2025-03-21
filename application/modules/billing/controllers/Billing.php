@@ -415,7 +415,7 @@ class Billing extends MX_Controller {
             'data' => $result,
             'kunjungan' => $grouping,
         );
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($result);die;
         $this->load->view('Billing/temp_trans_kasir_ri', $data, false);
 
     }
@@ -1340,10 +1340,15 @@ class Billing extends MX_Controller {
 
         // print_r($_POST);die;
         // form validation
-        $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'Tindakan', 'trim|required');
-        $this->form_validation->set_rules('no_mr_val', 'No MR', 'trim|required');
-        $this->form_validation->set_rules('pl_tgl_transaksi', 'Tanggal', 'trim');
-        $this->form_validation->set_rules('no_kunjungan', 'Unit/Bagian', 'trim|required');
+        if($_POST['kode_jenis_tindakan'] == 1){
+            $this->form_validation->set_rules('total_ruangan', 'Total Ruangan', 'trim|required');
+        }else{
+            $this->form_validation->set_rules('pl_kode_tindakan_hidden', 'Tindakan', 'trim|required');
+            $this->form_validation->set_rules('no_mr_val', 'No MR', 'trim|required');
+            $this->form_validation->set_rules('pl_tgl_transaksi', 'Tanggal', 'trim');
+            $this->form_validation->set_rules('no_kunjungan', 'Unit/Bagian', 'trim|required');
+        }
+        
         
         // set message error
         $this->form_validation->set_message('required', "Silahkan isi field \"%s\"");        
@@ -1395,14 +1400,20 @@ class Billing extends MX_Controller {
                 $dataexc['kode_penunjang'] = $this->input->post('kode_penunjang');
             }
 
-            /*get tarif mulitiple kode dokter*/
-            $tarifDokter = $this->tarif->getTarifMultipleDokter( $this->input->post('pl_kode_dokter_hidden') );
+            if($_POST['kode_jenis_tindakan'] != 1){
+                 /*get tarif mulitiple kode dokter*/
+                 $tarifDokter = $this->tarif->getTarifMultipleDokter( $this->input->post('pl_kode_dokter_hidden') );
 
-            $tarifInsert = $this->tarif->getTarifForinsert();
+                 $tarifInsert = $this->tarif->getTarifForinsert();
+ 
+                 $mergeData = array_merge($dataexc, $tarifDokter, $tarifInsert);
+            }else{
+                $dataexc['bill_rs'] = $_POST['total_ruangan'];
+                $dataexc['total'] = $_POST['total_ruangan'];
+            }
+           
 
-            $mergeData = array_merge($dataexc, $tarifDokter, $tarifInsert);
-
-            // echo "<pre>";print_r($mergeData);die;
+            // echo "<pre>";print_r($dataexc);die;
             
             /*save tc_trans_pelayanan*/
             $this->db->insert('tc_trans_pelayanan', $mergeData);

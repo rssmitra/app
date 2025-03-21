@@ -223,6 +223,39 @@ function reload_table(){
 function format ( data ) {
     return data.html;
 }
+
+function delete_row_dok_klaim(myid){
+  if(confirm('Are you sure?')){
+    preventDefault();
+    $.ajax({
+        url: 'casemix/Csm_verifikasi_costing/delete_dok_klaim',
+        type: "post",
+        data: {ID:myid},
+        dataType: "json",
+        beforeSend: function() {
+          achtungShowLoader();  
+        },
+        uploadProgress: function(event, position, total, percentComplete) {
+        },
+        complete: function(xhr) {     
+          var data=xhr.responseText;
+          var jsonResponse = JSON.parse(data);
+          if(jsonResponse.status === 200){
+            reload_table();
+            $.achtung({message: jsonResponse.message, timeout:5});
+          }else{
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          }
+          achtungHideLoader();
+        }
+
+      });
+
+  }else{
+    return false;
+  }
+  
+}
   
 
 </script>
@@ -295,7 +328,7 @@ function format ( data ) {
         <label class="control-label col-md-2" id="text_label">Pilih Tanggal</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -305,7 +338,7 @@ function format ( data ) {
           <label class="control-label col-md-1">s/d Tgl</label>
           <div class="col-md-2">
             <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
+              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
               <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
               </span>
@@ -393,6 +426,7 @@ function format ( data ) {
             <th width="100px" class="center">Dok Klaim</th>
             <!-- <th width="100px" class="center">Location File</th> -->
             <th width="100px" class="center">Total Klaim</th>
+            <th width="50px" class="center">Del</th>
           </tr>
         </thead>
         <tbody>

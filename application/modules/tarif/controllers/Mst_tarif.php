@@ -54,6 +54,19 @@ class Mst_tarif extends MX_Controller {
             /*initialize flag for form add*/
             $data['flag'] = "create";
         }
+        // list klas tarif
+        $klas = $this->db->order_by('no_urut', 'ASC')->get_where('mt_klas', ['is_active' => 1])->result();
+        $getKlasChild = [];
+        foreach($klas as $row){
+            if($row->kelas_group == null){
+                $getKlas[] = $row;
+            }else{
+                $getKlasChild[$row->kelas_group][] = $row;
+            }
+        }
+        
+        $data['klas'] = $getKlas;
+        $data['klas_group'] = $getKlasChild;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -169,7 +182,7 @@ class Mst_tarif extends MX_Controller {
         /*get data from model*/
         $list = [];
         // $list = $this->Mst_tarif->get_datatables();
-        $list = isset($_GET['checked_nama_tarif']) ? $this->Mst_tarif->get_datatables() : [];
+        $list = isset($_GET['nama_tarif']) ? $this->Mst_tarif->get_datatables() : [];
         // echo '<pre>';print_r($list);die;
         $data = array();
         $no = $_POST['start'];

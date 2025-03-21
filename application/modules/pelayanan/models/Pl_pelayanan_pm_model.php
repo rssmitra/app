@@ -419,7 +419,27 @@ class Pl_pelayanan_pm_model extends CI_Model {
 	function get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya='')
 	{
 		$column = array('pm_isihasil_v.nama_tindakan');
-		$select = 'pm_isihasil_v.*, pm_standarhasil_detail_v.*, c.kode_tarif as referensi, pm_isihasil_v.kode_dokter1, d.nama_pegawai as dokter1, pm_isihasil_v.kode_dokter2, e.nama_pegawai as dokter2';
+		$select = 'pm_isihasil_v.*, pm_standarhasil_detail_v.kode_mt_hasilpm, 
+      pm_standarhasil_detail_v.nama_pemeriksaan, 
+      pm_standarhasil_detail_v.kode_bagian, 
+      pm_standarhasil_detail_v.urutan, 
+      pm_standarhasil_detail_v.nilai_awal, 
+      pm_standarhasil_detail_v.nilai_akhir, 
+      pm_standarhasil_detail_v.mktime_umur_mulai, 
+      b.nama_tarif AS nama_tarif, 
+      pm_standarhasil_detail_v.standar_hasil_wanita, 
+      pm_standarhasil_detail_v.standar_hasil_pria, 
+      pm_standarhasil_detail_v.satuan, 
+      pm_standarhasil_detail_v.umur_mulai, 
+      pm_standarhasil_detail_v.satuan_umur_mulai, 
+      pm_standarhasil_detail_v.umur_akhir, 
+      pm_standarhasil_detail_v.satuan_umur_akhir, 
+      pm_standarhasil_detail_v.satuan_waktu_mulai, 
+      pm_standarhasil_detail_v.satuan_waktu_akhir, 
+      pm_standarhasil_detail_v.keterangan, 
+      pm_standarhasil_detail_v.mktime_umur_akhir, 
+      pm_standarhasil_detail_v.detail_item_1, 
+      pm_standarhasil_detail_v.detail_item_2 , c.kode_tarif as referensi, pm_isihasil_v.kode_dokter1, d.nama_pegawai as dokter1, pm_isihasil_v.kode_dokter2, e.nama_pegawai as dokter2';
 
 		$this->db->select($select);
 		$this->db->select('(select top 1 hasil from pm_tc_hasilpenunjang where (kode_trans_pelayanan=pm_isihasil_v.kode_trans_pelayanan AND kode_mt_hasilpm=pm_isihasil_v.kode_mt_hasilpm) order by kode_tc_hasilpenunjang DESC ) as hasil');

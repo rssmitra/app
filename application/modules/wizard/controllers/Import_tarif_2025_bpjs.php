@@ -46,23 +46,14 @@ class Import_tarif_2025_bpjs extends MX_Controller {
                 /*pull data to variabel data array*/
                 $data = [
                     'kode_tarif'=>$row['A'], 
-                    'nama_tarif'=>$row['B'], 
-                    'is_active'=>$row['D'], 
+                    'tingkatan'=>$row['C'], 
+                    'referensi'=>$row['D'], 
                     'updated_date'=>date('Y-m-d H:i:s'), 
                     'updated_by'=>'Import New Tarif', 
                     'new_tarif_2025'=> $_GET['unique_code'], 
                 ];
-
-                $detail = [
-                    'is_active'=>$row['D'], 
-                    'updated_date'=>date('Y-m-d H:i:s'), 
-                    'updated_by'=>'Import New Tarif', 
-                    'new_tarif_2025'=> $_GET['unique_code'], 
-                ];
-
                 // echo '<pre>'; print_r($data);die;
-                $this->db->where('kode_tarif', $row['A'])->update('mt_master_tarif_dev', $data);
-                $this->db->where('kode_tarif', $row['A'])->update('mt_master_tarif_detail_dev', $detail);
+                $this->db->where('kode_tarif', $row['A'])->update('mt_master_tarif', $data);
 
             }
 

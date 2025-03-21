@@ -332,9 +332,7 @@ function cetak_kuitansi_pasien(){
                 </li>
             </ul>
         </div>
-
-        <a href="#" id="btn_generate_dokumen_klaim" class="btn btn-xs btn-primary" onclick="proses_dokumen_klaim(<?php echo $no_registrasi?>, <?php echo $tipe?>)"> <i class="fa fa-send"></i> Generate Dokumen Klaim</a>
-        
+       
     </div>
 
     <div class="row">

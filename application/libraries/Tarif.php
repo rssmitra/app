@@ -410,7 +410,6 @@ final class Tarif extends AvObjects {
         $row_data = $db->get()->row();
         // print_r($db->last_query());die;
         
-
         /*data for execute*/
         $kode_trans_pelayanan = $CI->master->get_max_number('tc_trans_pelayanan', 'kode_trans_pelayanan');
         $tarif_data = array();

@@ -81,7 +81,7 @@
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
     <input type="hidden" id="kode_kelompok_val" value="<?php echo isset($data->reg_data->kode_kelompok)?$data->reg_data->kode_kelompok:''?>" name="kode_kelompok_val">
     <input type="hidden" id="nama_dokter_val" value="<?php echo isset($data->reg_data->nama_pegawai)?$data->reg_data->nama_pegawai:$data->trans_data[0]->nama_dokter?>" name="nama_dokter_val">
-    <input type="hidden" id="kode_bag_val" value="<?php echo isset($data->reg_data->kode_bagian_masuk)?$data->reg_data->kode_bagian_masuk:''?>" name="kode_bag_val">
+    <input type="hidden" id="kode_bag_val"  value="<?php echo isset($data->reg_data->kode_bagian_masuk)?$data->reg_data->kode_bagian_masuk:''?>" name="kode_bag_val">
 
   </div><!-- /.col -->
 </div>

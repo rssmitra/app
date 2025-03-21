@@ -351,8 +351,6 @@
           </div>
         </div>
       </div> -->
-      
-
 
       <div id="showDataTables">
         <table id="dt_pasien_kasir" base-url="adm_pasien/loket_kasir/adm_kasir/get_data" url-detail="billing/Billing/getDetailBillingKasir" class="table table-bordered table-hover">

@@ -166,90 +166,52 @@ function changeTotal(){
               </div>
             </div>
         </div>
-
         
-        <p style="font-weight: bold; padding-top: 10px">Klas & Jenis Tarif</p>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Klas Tarif</label>
-            <div class="col-sm-2">
-              <?php echo $this->master->custom_selection(array('table'=>'mt_klas', 'where'=>array(), 'id'=>'kode_klas', 'name' => 'nama_klas'),isset($value->kode_klas)?$value->kode_klas:'','kode_klas','kode_klas','chosen-select form-control','','');?>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Jenis Tarif</label>
-            <div class="col-sm-2">
-              <?php echo $this->master->custom_selection(array('table'=>'mt_jenis_tindakan', 'where'=>array(), 'id'=>'kode_jenis_tindakan', 'name' => 'jenis_tindakan'),isset($value->jenis_tindakan)?$value->jenis_tindakan:'','jenis_tindakan','jenis_tindakan','chosen-select form-control','','');?>
-            </div>
-        </div>
+        <p style="font-weight: bold; padding-top: 10px">RINCIAN KELAS TARIF</p>
+        <table class="table">
+          <thead>
+            <th>No</th>
+            <th>Kelas Tarif</th>
+            <th>Group</th>
+            <th>Margin (%)</th>
+            <th>Jasa Dr1</th>
+            <th>Jasa Dr2</th>
+            <th>Kamar Operasi</th>
+            <th>BHP</th>
+            <th>Alat Medis</th>
+            <th>Profit RS</th>
+            <th>Total Tarif</th>
+          </thead>
+          <tbody>
+            <?php 
+              $no=0; foreach($klas as $row_klas) : $no++; 
+              // group
+              $klsg = '';
+              if(isset($klas_group[$row_klas->kode_klas])){
+                $klsg .= '(';
+                foreach ($klas_group[$row_klas->kode_klas] as $k => $v) {
+                  $klsg.= $v->nama_klas.'/ ';
+                }
+                $klsg .= ')';
+              }
+            ?>
+              <tr>
+                <td width="30px" align="center"><?php echo $no;?></td>
+                <td><?php echo $row_klas->nama_klas?></td>
+                <td width="150px"><?php echo $klsg?></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+                <td style="width: 100px !important"><input type="text" class="form-control format_number"></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
         
-        <p style="font-weight: bold; padding-top: 10px">Rincian Tarif</p>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Bill dr 1</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="bill_dr1" value="<?php echo isset($value->bill_dr1)?$value->bill_dr1:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Bill dr 2</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="bill_dr2" value="<?php echo isset($value->bill_dr2)?$value->bill_dr2:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Bill dr 3</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="bill_dr3" value="<?php echo isset($value->bill_dr3)?$value->bill_dr3:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Kamar Tindakan</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="kamar_tindakan" value="<?php echo isset($value->kamar_tindakan)?$value->kamar_tindakan:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">BHP</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="bhp" value="<?php echo isset($value->bhp)?$value->bhp:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Obat</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="obat" value="<?php echo isset($value->obat)?$value->obat:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Alkes</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="alkes" value="<?php echo isset($value->alkes)?$value->alkes:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Alat RS</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="alat_rs" value="<?php echo isset($value->alat_rs)?$value->alat_rs:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Administrasi</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="adm" value="<?php echo isset($value->adm)?$value->adm:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Pendapatan RS</label>
-            <div class="col-sm-2">
-                <input type="text" onchange="changeTotal()" class="form-control format_number" name="pendapatan_rs" value="<?php echo isset($value->pendapatan_rs)?$value->pendapatan_rs:''?>">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Total</label>
-            <div class="col-sm-2">
-                <span class="pull-right" id="txt_total_tarif">-</span>
-                <input type="hidden" class="form-control" name="total" id="total" value="<?php echo isset($value->total)?$value->total:''?>">
-            </div>
-        </div>
         <div class="form-actions center">
 
           <a onclick="getMenu('tarif/Mst_tarif')" href="#" class="btn btn-sm btn-success">

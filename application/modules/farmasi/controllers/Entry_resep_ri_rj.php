@@ -96,7 +96,7 @@ class Entry_resep_ri_rj extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($list_resep);die;
         /*load form view*/
         $this->load->view('Entry_resep_ri_rj/form', $data);
     }

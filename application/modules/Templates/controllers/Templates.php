@@ -992,6 +992,8 @@ class Templates extends MX_Controller {
         $html .= '</tr>'; 
         $no = 0;
         $arr_subtotal = array();
+
+        // echo "<pre>"; print_r($data->group);die;
         foreach ($data->group as $k => $val) {
             foreach ($val as $value_data) {
                 
@@ -999,13 +1001,14 @@ class Templates extends MX_Controller {
                 $resume = $this->Billing->getKodeTransPelayanan($val, $field);
                 /*array search kode tc_trans_pelayanan*/
                 $array_search = $this->Billing->arraySearchResume($resume, $field);
-                //echo '<pre>';print_r($array_search);die;
+                // echo '<pre>';print_r($array_search);die;
                 if(in_array($value_data->kode_trans_pelayanan, $array_search)){
                     $no++;
                     $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
                     $html .= '<tr>';
                     $html .= '<td width="5%" align="center">'.$no.'</td>';
-                    $html .= '<td width="20%">'.$this->tanggal->formatDate($value_data->tgl_transaksi).'</td>';
+                    $tgl = ($value_data->jenis_tindakan == 11)?$value_data->tgl_obat:$value_data->tgl_transaksi;
+                    $html .= '<td width="20%">'.$this->tanggal->formatDate($tgl).'</td>';
                     if($value_data->jenis_tindakan==3){
                         $html .= '<td width="'.$percent.'%"><a href="#" onclick="show_modal_medium('."'Templates/Templates/getDetailFromItem/".$value_data->kode_trans_pelayanan."'".','."'".$value_data->nama_tindakan."'".')">'.$value_data->nama_tindakan.'</a></td>';
                     }else{
