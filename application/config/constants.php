@@ -24,8 +24,8 @@ define('PATH_DOK_KLAIM_FARMASI', 'uploaded/farmasi/');
 define('PATH_ASSETS_IMG', 'assets/img/');
 define('PATH_TTD_FILE', 'uploaded/ttd/');
 define('PATH_TMP_FILE', 'uploaded/temp/');
-// define('BASE_FILE_RM', 'https://shs.rssetiamitra.co.id/');
-define('BASE_FILE_RM', 'http://10.10.11.5:88/sirs-dev/app/');
+define('BASE_FILE_RM', 'https://shs.rssetiamitra.co.id/');
+// define('BASE_FILE_RM', 'http://10.10.11.5:88/sirs-dev/app/');
 // define('BASE_FILE_RM', 'http://10.10.11.13/');
 
 define('WS_URL', 'http://10.10.11.5:88/rssm/ws_rssm/');
