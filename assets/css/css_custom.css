@@ -96,3 +96,25 @@ background: #555;
   .chosen-drop{
     margin-left: 3px !important;
   }
+
+  .navbar-fixed-top + .main-container {
+    padding-top: 64px !important;
+    }
+
+    .ace-nav > li {
+        height: 63px !important;
+    }
+
+    .ace-nav > li > a{
+        padding-top: 10px !important
+    }
+
+    .widget-body {
+        min-height: 100px;
+        padding: 10px;
+    }
+    .widget-box {
+      border: none !important;
+    }
+
+    

@@ -112,13 +112,10 @@ $(document).ready(function(){
 
                 $.achtung({message: jsonResponse.message, timeout:5});
 
-              }else{          
-                pauseStopWatch();
-                resetStopWatch();
+              }else{
                 $.achtung({message: jsonResponse.message, timeout:5, className:'achtungFail'});
 
-              }        
-
+              }    
               // achtungHideLoader();        
               
               $(this).find("button[type='submit']").prop('disabled',false);

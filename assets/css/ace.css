@@ -65,7 +65,7 @@ body {
 
 .page-content-main {
   /*background-color: #ffffff;*/
-  background: url('../../assets/images/download.png') fixed;
+  /* background: url('../../assets/images/download.png') fixed; */
   position: relative;
   margin: 0;
   padding: 0px 20px 24px;
@@ -85,8 +85,8 @@ body {
   padding: 0;
   margin: 0 8px;
   font-size: 24px;
-  font-weight: lighter;
-  color: #00b8a8;
+  font-weight: bold;
+  color: #0d5280;
 }
 .page-header h1 small {
   margin: 0 6px;
@@ -1143,7 +1143,7 @@ pre.prettyprint {
   border-radius: 0;
   -webkit-box-shadow: none;
   box-shadow: none;
-  min-height: 45px;
+  min-height: 65px;
   /*background: #438eb9;*/
   /*background: url('../images/image.png');*/
   background-size: cover;
@@ -1203,7 +1203,7 @@ pre.prettyprint {
   border-left-width: 0;
 }
 .ace-nav > li > a {
-  background-color: #076960;
+  background-color: #0d5280;
   color: #FFF;
   display: block;
   line-height: inherit;
@@ -1268,13 +1268,13 @@ pre.prettyprint {
 }
 .ace-nav > li.light-blue > a {
   /*background-color: #62a8d1;*/
-  background-color: #076960;
+  background-color: #0d5280;
 }
 .ace-nav > li.light-blue > a:hover,
 .ace-nav > li.light-blue > a:focus,
 .ace-nav > li.open.light-blue > a {
   /*background-color: #579ec8;*/
-  background-color: #076960;
+  background-color: #0d5280;
 }
 .ace-nav > li.light-blue2 > a {
   background-color: #42a8e1;
@@ -4808,7 +4808,7 @@ body.mob-safari .sidebar.sidebar-fixed {
 .breadcrumb > li > a {
   display: inline-block;
   /*color: #4c8fbd;*/
-  color: #00b8a8;
+  color: #0d5280;
 }
 .breadcrumb > li + li:before {
   /*font-family: FontAwesome;*/
@@ -10570,7 +10570,7 @@ input.ace + .lbl.padding-0::before {
   display: block;
 }
 .accordion-style1.panel-group .panel-heading .accordion-toggle.collapsed {
-  color: #00b8a8;
+  color: #0d5280;
   font-weight: normal;
   background-color: #F9F9F9;
 }
@@ -16348,7 +16348,7 @@ img.editable-click:hover {
 .bootstrap-datetimepicker-widget .picker-switch .btn {
   width: 90% !important;
   background-color: #EEE !important;
-  color: #00b8a8 !important;
+  color: #0d5280 !important;
   font-size: 16px;
 }
 .bootstrap-datetimepicker-widget .picker-switch .btn:hover {
@@ -16718,7 +16718,7 @@ img.editable-click:hover {
 }
 /* accordion */
 .ui-accordion .ui-accordion-header {
-  color: #00b8a8;
+  color: #0d5280;
   font-weight: normal;
   background-color: #F9F9F9;
   border: 1px solid #cdd8e3;
@@ -16882,7 +16882,7 @@ img.editable-click:hover {
   padding: 6px;
   position: relative;
   background-color: #eef4f9;
-  color: #00b8a8;
+  color: #0d5280;
   font-weight: bolder;
   border: 1px solid #DAE6ED;
   border-width: 1px 0;

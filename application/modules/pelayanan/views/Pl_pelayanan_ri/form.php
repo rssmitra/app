@@ -41,6 +41,8 @@ $(document).ready(function(){
         }
       });
     }
+
+    
  
 })
 
@@ -174,8 +176,8 @@ function get_list_pasien(){
 
     $.each(response.data, function( i, v ) {
       var obj = v[0];
-      html += '<li class="list-group-item">';
-      html += '<small style="color: '+obj.color_txt+'; font-weight: bold; font-size: 11px; cursor: pointer;" onclick="form_main('+"'pelayanan/Pl_pelayanan_ri/form_main/"+obj.kode_ri+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')">'+obj.no_mr+' - '+obj.nama_pasien+'</small>';
+      html += '<li class="list-group-item" id="list_group_'+obj.no_mr+'">';
+      html += '<small style="font-weight: bold; font-size: 11px; cursor: pointer;" onclick="form_main('+"'pelayanan/Pl_pelayanan_ri/form_main/"+obj.kode_ri+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')">'+obj.no_mr+' - '+obj.nama_pasien+'</small>';
       html += '</li>';
     });
     html += '</ol>';
@@ -200,7 +202,10 @@ function form_main(url, no_mr){
   .well{
     padding: 5px !important;
   }
-
+  .list-group-item {
+      background: #0d5280;
+      color: white;
+  }
 </style>
 
 <div class="row">
@@ -241,9 +246,9 @@ function form_main(url, no_mr){
           </div>
 
           <!-- form pelayanan -->
-          <div class="col-md-10">
+          <div class="col-md-10 no-padding">
             <!-- informasi pendaftaran pasien -->
-            <span class="pull-left" style="font-size: 16px; font-weight: bold; color: blue" id="full_pasien_data"></span><br>
+            <span class="pull-left" style="font-size: 20px; font-weight: bold; color: #0d5280" id="full_pasien_data"></span><br>
             
             <div id="div_main_form"></div>
           </div>

@@ -58,7 +58,7 @@
   
   <body class="no-skin">
     <!-- #section:basics/navbar.layout -->
-    <div id="navbar" class="navbar navbar-default navbar-fixed-top" style="background-color: white">
+    <div id="navbar" class="navbar navbar-default navbar-fixed-top" style="background-color: #0d5280; border-bottom: 7px solid #ef8122; border-bottom-left-radius: 20px;; border-bottom-right-radius: 20px;">
       <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
       </script>
@@ -81,8 +81,10 @@
           <a href="#" class="navbar-brand">
             <small>
               <!-- <i class="<?php echo $app->icon?>"></i> -->
-              <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="150px" style="margin: -14px -7px -14px"> &nbsp;
+              <a href="<?php echo base_url().'main'?>">
+                <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="120px" style="margin: 4px -7px -14px"> &nbsp;
               <!-- <?php echo $app->app_name?> -->
+              </a>
             </small>
           </a>
 
@@ -94,7 +96,7 @@
         </div>
 
         <!-- #section:basics/navbar.dropdown -->
-        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+        <div class="navbar-buttons navbar-header pull-right hidden-480" role="navigation">
           <ul class="nav ace-nav">
 
             <li>
@@ -179,10 +181,10 @@
         try{ace.settings.check('main-container' , 'fixed')}catch(e){}
       </script>
       <?php
-            $arr_color_breadcrumbs = array('#f4ae11');
+            $arr_color_breadcrumbs = array('#0d528052');
             shuffle($arr_color_breadcrumbs);
           ?>
-          <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>; margin-top:0px">
+          <div class="breadcrumbs" id="breadcrumbs" style="">
             <script type="text/javascript">
               try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
             </script>

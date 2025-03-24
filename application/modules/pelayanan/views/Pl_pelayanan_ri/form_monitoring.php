@@ -46,26 +46,26 @@ $(document).ready(function() {
   
   // proses add cppt
   $('#btn_save_perkembangan_pasien').click(function (e) {   
-      e.preventDefault();
-      $.ajax({
-          url: $('#form_pelayanan').attr('action'),
-          data: $('#form_pelayanan').serialize(),            
-          dataType: "json",
-          type: "POST",
-          complete: function(xhr) {             
-            var data=xhr.responseText;        
-            var jsonResponse = JSON.parse(data);        
-            if(jsonResponse.status === 200){          
-              $('#btn_monitoring_perkembangan_pasien').click();
-              $.achtung({message: jsonResponse.message, timeout:5});  
-            }else{           
-              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-            }        
-            achtungHideLoader();        
-          } 
-      });
-
+    e.preventDefault();
+    $.ajax({
+        url: $('#form_pelayanan').attr('action'),
+        data: $('#form_pelayanan').serialize(),            
+        dataType: "json",
+        type: "POST",
+        complete: function(xhr) {             
+          var data=xhr.responseText;        
+          var jsonResponse = JSON.parse(data);        
+          if(jsonResponse.status === 200){          
+            $('#btn_monitoring_perkembangan_pasien').click();
+            $.achtung({message: jsonResponse.message, timeout:5});  
+          }else{           
+            $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+          }        
+          achtungHideLoader();        
+        } 
     });
+
+  });
 
 });
 

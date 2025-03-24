@@ -267,7 +267,7 @@
         foreach ($array as $key => $value) {
             $id = $value['group_modul_id'];
             if(!isset($result[$id])) $result[$id] = array();
-            $result[$id] = '<i class="'.$value['group_modul_icon'].'"></i> '.$value['group_modul_name'].' <small><i class="fa fa-angle-double-right"></i> '.$value['group_modul_description'].'</small>'; 
+            $result[$id] = $value['group_modul_name'].' <small><i class="fa fa-angle-double-right"></i> '.$value['group_modul_description'].'</small>'; 
         }
 
         foreach ($result as $k => $v) {
