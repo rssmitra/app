@@ -39,7 +39,7 @@ define('KODE_IGD', '020101');
 define('APPS_VERSION', 'v.2');
 define('APPS_NAME_SORT', 'SHS 4.0');
 define('APPS_NAME_LONG', 'Smart Hospital System 4.0');
-define('COMP_ICON', 'assets/images/logo.png');
+define('COMP_ICON', 'assets/images/favicon_rssm.png');
 define('COMP_FLAG', 'Rumah Sakit');
 define('COMP_SORT', 'RSSM');
 define('COMP_LONG', 'RS. Setia Mitra');

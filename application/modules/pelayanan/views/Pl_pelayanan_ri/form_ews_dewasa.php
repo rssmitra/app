@@ -57,6 +57,7 @@ $(document).ready(function() {
       }
       $('#td_'+i+'').css('background', clr_ind).css('font-weight', 'bold');
       $('#id_'+i+'').css('background', clr_ind).css('font-weight', 'bold');
+      $('#list_group_'+$('#no_mr').val()+'').css('background', clr_ind).css('font-weight', 'bold');
 
     });
 
@@ -128,18 +129,19 @@ function getTotalScoreEws(classname){
   console.log(ttl);
   var total = ttl;
   if(total == 0){
-    $clr_ind = '#7ebc18';
+    clr_ind = '#7ebc18';
   }else if(total >=1 && total <=4){
-    $clr_ind = '#f6f204';
+    clr_ind = '#f6f204';
   }else if(total >=5 && total <=6){
-    $clr_ind = '#f6c004';
+    clr_ind = '#f6c004';
   }else{
-    $clr_ind = '#f63904';
+    clr_ind = '#f63904';
   }
 
   $('#id_ttl_'+classname+'').val(total);
-  $('#id_ttl_'+classname+'').css('background', $clr_ind).css('font-weight', 'bold');
-  $('#td_ttl_'+classname+'').css('background', $clr_ind).css('font-weight', 'bold');
+  $('#id_ttl_'+classname+'').css('background', clr_ind).css('font-weight', 'bold');
+  $('#td_ttl_'+classname+'').css('background', clr_ind).css('font-weight', 'bold');
+  $('#list_group_'+$('#no_mr').val()+'').css('background', clr_ind).css('font-weight', 'bold');
 
   
 

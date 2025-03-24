@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/font-awesome.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace-fonts.css" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/css_custom.css" class="ace-main-stylesheet" id="main-ace-style" />
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/AdminLTE.css" class="ace-main-stylesheet" id="main-ace-style" />
     <script src="<?php echo base_url()?>assets/js/ace-extra.js"></script>
     <!-- css default for blank page -->
@@ -29,9 +30,13 @@
   </head>
 
   <body class="no-skin">
+    <style>
+      
+      
+    </style>
     <!-- #section:basics/navbar.layout -->
     <!-- <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background: url('assets/images/<?php echo $app->style_header_color?>.png');"> -->
-    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background: white;">
+    <div id="navbar" class="navbar navbar-default navbar-collapse h-navbar" style="background: #0d5280;">
       <script type="text/javascript">
         try{ace.settings.check('navbar' , 'fixed')}catch(e){}
       </script>
@@ -45,7 +50,7 @@
               <?php echo $app->app_name?>
             </small> -->
             <small style="color: black; font-weight: bold; font-size: 18px">
-            <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="150px" style="margin: -16px -7px -14px">
+            <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="150px" style="margin: -10px -7px -14px">
               <!-- Smart Hospital System 4.0  -->
             </small>
           </a>
@@ -76,41 +81,14 @@
                 <?php echo date('l, d F Y'); ?> 
               </a>
             </li>
-            <li class="light-blue user-min">
-              <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-              <img class="nav-user-photo" src="<?php echo isset($this->session->userdata('user')->path_foto) ? base_url().PATH_PHOTO_PROFILE_DEFAULT.$this->session->userdata('user')->path_foto:base_url().'assets/avatars/user.jpg'?>" alt="<?php echo $this->session->userdata('user')->fullname?>'s Photo" height="95%"/>
-                <span class="user-info">
-                  <small>Welcome,</small>
-                  <i><?php echo $this->session->userdata('user')->username?></i>
-                </span>
 
-                <i class="ace-icon fa fa-caret-down"></i>
+            <li>
+              <a href="<?php echo base_url().'login/logout'?>">
+                <i class="ace-icon fa fa-power-off"></i>
+                Logout
               </a>
-
-              <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
-              
-                <!-- <li>
-                  <a href="#" onclick="getMenu('setting/Tmp_user/account_setting')">
-                    <i class="ace-icon fa fa-key"></i>
-                    Account
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" onclick="getMenu('setting/Tmp_user/form_update_profile')">
-                    <i class="ace-icon fa fa-user"></i>
-                    Profile
-                  </a>
-                </li> -->
-
-                <li>
-                  <a href="<?php echo base_url().'login/logout'?>">
-                    <i class="ace-icon fa fa-power-off"></i>
-                    Logout
-                  </a>
-                </li>
-              </ul>
             </li>
+
 
             <!-- /section:basics/navbar.user_menu -->
           </ul>
@@ -154,7 +132,7 @@
         <div class="main-content-inner">
           <!-- #section:basics/content.breadcrumbs -->
           <?php
-            $arr_color_breadcrumbs = array('#076960');
+            $arr_color_breadcrumbs = array('#0d528052');
             shuffle($arr_color_breadcrumbs);
           ?>
           <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>">
@@ -172,36 +150,44 @@
                   <?php 
                     foreach($modul as $key_row=>$rows_m) :
                       $arr_color[$key_row] = array('bg-red','bg-yellow','bg-aqua','bg-blue','bg-light-blue','bg-green','bg-navy','bg-teal','bg-olive','bg-lime','bg-orange','bg-fuchsia','bg-purple','bg-maroon','bg-black'); 
-                      $arr_color_title = array('green'); 
+                      $arr_color_title = array('blue'); 
                     shuffle($arr_color[$key_row]);
                     shuffle($arr_color_title);
 
                   ?>
                     <div class="row">
-                    <h3 class="header smaller lighter <?php echo array_shift($arr_color_title)?>">
+                    <h3 class="header smaller lighter <?php echo array_shift($arr_color_title)?>" style="font-weight: bold">
                         <?php echo $rows_m['group_modul_name']?> 
                       </h3>
                       <?php foreach($rows_m['modul'] as $row_modul) : ?>
-                        <div class="col-lg-2 col-xs-6" style="margin-top:-10px">
-                          <!-- small box -->
-                          <div class="small-box <?php echo array_shift($arr_color[$key_row])?>">
-                            <div class="inner">
-                              <h3 style="font-size:16px"><?php echo strtoupper($row_modul->name)?></h3>
-                              <p style="font-size:12px"><?php echo $row_modul->title?></p>
+
+                        <?php 
+                          if($row_modul->is_new_tab=='N'){
+                            $href = 'href="'.base_url().'dashboard?mod='.$row_modul->modul_id.'"';
+                          }else{
+                            $href = 'href="'.$row_modul->link_on_new_tab.'" target="_blank"';
+                          }
+                        ?>
+
+                        <div class="col-sm-2 widget-container-col ui-sortable" id="widget-container-col-11">
+                          <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
+                            <div class="widget-body" style="background: #137cc1; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px">
+                              <div class="widget-main" data-size="125" style="position: relative;">
+                                <div  style="cursor:pointer">
+                                  <a <?php echo $href?> style="text-decoration: none" class="small-box-footer">
+                                    <div class="content">
+                                      <div class="center">
+                                        <span style="color: white; font-weight: bold"><i class="<?php echo $row_modul->icon?> bigger-300"></i><br><?php echo strtoupper($row_modul->name)?></span>
+                                      </div>
+                                    </div>
+                                  </a>
+                                </div>
+                              </div>
                             </div>
-                            <div class="icon" style="margin-top:-10px">
-                              <i class="<?php echo $row_modul->icon?>"></i>
-                            </div>
-                            <?php 
-                              if($row_modul->is_new_tab=='N'){
-                                echo '<a href="'.base_url().'dashboard?mod='.$row_modul->modul_id.'" class="small-box-footer">Selengkapnya  <i class="fa fa-arrow-circle-right"></i></a>';
-                              }else{
-                                echo '<a href="'.$row_modul->link_on_new_tab.'" target="_blank" class="small-box-footer">Selengkapnya  <i class="fa fa-arrow-circle-right"></i></a>';
-                              }
-                            ?>
-                            
                           </div>
                         </div>
+
+                        
                       <?php endforeach; ?>
                     </div>
                   <?php endforeach; ?>
@@ -210,6 +196,7 @@
                 <!-- PAGE CONTENT ENDS -->
               </div><!-- /.col -->
             </div><!-- /.row -->
+
           </div><!-- /.page-content -->
         </div>
       </div><!-- /.main-content -->

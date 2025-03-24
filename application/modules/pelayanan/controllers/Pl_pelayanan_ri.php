@@ -10,7 +10,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
         parent::__construct();
         /*breadcrumb default*/
-        $this->breadcrumbs->push('Index', 'pelayanan/Pl_pelayanan_ri');
+        // $this->breadcrumbs->push('Index', 'pelayanan/Pl_pelayanan_ri');
         /*session redirect login if not login*/
         if($this->session->userdata('logged')!=TRUE){
             echo 'Session Expired !'; exit;

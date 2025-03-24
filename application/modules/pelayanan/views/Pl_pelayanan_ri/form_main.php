@@ -3,28 +3,34 @@
 
     // show ews indikator
     $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_ews_dt') ?>", {no_kunjungan: $('#no_kunjungan').val()} , function (response) {    
-    // show data
-    var obj = response.result;
-    // set value input
-    var ews_ttl = response.ews_ttl;
-    $('#score_ews_indikator').html('');
-    $.each(ews_ttl, function(key, val) {
-      if(val != ''){
-        if(val == 0){
-          clr_ind = 'success';
-        }else if(val >=1 && val <=4){
-          clr_ind = 'yellow';
-        }else if(val >=5 && val <=6){
-          clr_ind = 'warning';
-        }else{
-          clr_ind = 'danger';
-        }
-        // append to 
-        $('<a class="btn btn-xs btn-'+clr_ind+'" style="font-weight: bold; "> '+val+' </a> &nbsp; &nbsp;').appendTo($('#score_ews_indikator'));
-      }
-    });
+        // show data
+        var obj = response.result;
+        // set value input
+        var ews_ttl = response.ews_ttl;
+        $('#score_ews_indikator').html('');
+        $.each(ews_ttl, function(key, val) {
+          if(val != ''){
+            if(val == 0){
+              clr_ind = 'success';
+              color = 'green';
+            }else if(val >=1 && val <=4){
+              clr_ind = 'yellow';
+              color = 'yellow';
+            }else if(val >=5 && val <=6){
+              clr_ind = 'warning';
+              color = 'orange';
+            }else{
+              clr_ind = 'danger';
+              color = 'red';
+            }
+            // append to 
+            $('<a class="btn btn-xs btn-'+clr_ind+'" style="font-weight: bold; "> '+val+' </a> &nbsp; &nbsp;').appendTo($('#score_ews_indikator'));
 
-  }); 
+            $('#list_group_'+$('#no_mr').val()+'').css('background', color).css('font-weight', 'bold');
+          }
+      });
+
+    }); 
 
 
 
@@ -375,7 +381,7 @@ function delete_diagnosa(myid){
   <input type="hidden" class="form-control" name="no_registrasi" id="no_registrasi" value="<?php echo isset($value)?$value->no_registrasi:''?>">
   <input type="hidden" class="form-control" name="kode_kelompok" value="<?php echo isset($value)?$value->kode_kelompok:''?>">
   <input type="hidden" class="form-control" name="kode_perusahaan" value="<?php echo isset($value)?$value->kode_perusahaan:''?>">
-  <input type="hidden" class="form-control" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
+  <input type="hidden" class="form-control" id="no_mr" name="no_mr" value="<?php echo isset($value)?$value->no_mr:''?>">
   <input type="hidden" class="form-control" name="nama_pasien_layan" value="<?php echo isset($value)?$value->nama_pasien:''?>">
   <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->bag_pas:''?>">
   <input type="hidden" class="form-control" name="kode_bagian" value="<?php echo isset($value)?$value->bag_pas:''?>" id="kode_bagian_val">

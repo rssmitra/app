@@ -25,7 +25,7 @@
   </head>
   <style type="text/css">
     #body-style {
-      background-image:url(<?php echo PATH_IMG_DEFAULT.$profile_form->cover_login?>);
+      /* background-image:url(<?php echo PATH_IMG_DEFAULT.$profile_form->cover_login?>); */
       background-size: 100%; 
       background-attachment: fixed;
       background-position: center;
@@ -40,7 +40,7 @@
     }
 
     .login-box .toolbar {
-        background: #024813;
+        background: #0d5280;
     }
 
     #login-box {
@@ -65,17 +65,18 @@
                     
                     <div class="widget-main" style="border-radius: 20px">
                       <center>
-                        <br><img src="<?php echo base_url().'assets/images/logo_3d.gif'?>" width="160px">
+                        <br><img src="<?php echo base_url().COMP_ICON_INSANI?>" width="300px">
+                        <!-- <br><img src="<?php echo base_url().COMP_ICON_BY_INSANI?>" width="70px"> -->
                         <br>
                         <p style="line-height: 16px; padding-top: 10px">
-                        <span style="font-size: 35px;font-family: fantasy; color: #545658"><?php echo strtoupper(COMP_LONG); ?></span><br>
-                        <span class="bigger-120"><?php echo strtoupper(APPS_NAME_LONG).'&nbsp;'.APPS_VERSION; ?></span>
+                        <!-- <span style="font-size: 35px;font-family: fantasy; color: #545658"><?php echo strtoupper(COMP_LONG); ?></span><br> -->
+                        <!-- <span class="bigger-120"><?php echo strtoupper(APPS_NAME_LONG).'&nbsp;'.APPS_VERSION; ?></span> -->
                         </p>
                       </center>
 
                       <!-- <center></center> -->
                       <h4 class="header blue lighter bigger">
-                        <i class="ace-icon fa fa-lock green"></i>
+                        <i class="ace-icon fa fa-lock #0d5280"></i>
                         Form Login
                       </h4>
                       <div class="space-6"></div>
@@ -109,7 +110,7 @@
 
                             <!-- <input type="button" id="button-submit-form" value="Sign In" class="width-35 pull-right btn btn-sm btn-primary" > -->
 
-                            <button id="button-submit-form" name="Submit" type="button" value="submit" class="width-35 pull-right btn btn-sm btn-success" style="background: green !important;border-color: green; line-height: 0.38">
+                            <button id="button-submit-form" name="Submit" type="button" value="submit" class="width-35 pull-right btn btn-sm btn-success" style="background: #0d5280 !important;border-color: #0d5280; line-height: 0.38">
                               <i class="ace-icon fa fa-key"></i>
                               <span class="bigger-110">Masuk</span>
                             </button>
