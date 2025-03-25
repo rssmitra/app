@@ -87,14 +87,23 @@ class Riwayat_kunjungan_pm extends MX_Controller {
                 $rollback_btn = ($trans_kasir==true)?'<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>':'';
             }
             
-            if($row_list->status_daftar==0 || $row_list->status_daftar==NULL){
-                $status_pasien = 'belum_ditindak';
-            }else if($row_list->status_daftar==1){
-                $status_pasien = 'belum_diperiksa';
-
-            }else  if($row_list->status_daftar==2){
-                $status_pasien = 'belum_isi_hasil';
+            if($row_list->flag_mcu == 1){
+                if($row_list->status_isi_hasil == 1){
+                    $status_pasien = 'selesai';
+                }else{
+                    $status_pasien = 'belum_isi_hasil';
+                }
+            }else{
+                if($row_list->status_daftar==0 || $row_list->status_daftar==NULL){
+                    $status_pasien = 'belum_ditindak';
+                }else if($row_list->status_daftar==1){
+                    $status_pasien = 'belum_diperiksa';
+    
+                }else  if($row_list->status_daftar==2){
+                    $status_pasien = 'belum_isi_hasil';
+                }
             }
+            
 
             if(isset($_GET['bagian_tujuan']) and $_GET['bagian_tujuan']=='050101'){
                 $cetak = ($row_list->status_isihasil==1)?'<li><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=LAB&noreg='.$row_list->no_registrasi.'&pm='.$row_list->kode_penunjang.'&kode_pm=050101&no_kunjungan='.$row_list->no_kunjungan.' '.$flag_mcu.'" target="blank"  >Cetak Hasil</a></li>':'';
@@ -140,7 +149,16 @@ class Riwayat_kunjungan_pm extends MX_Controller {
             if($trans_kasir==false){
                 $status_periksa = '<label class="label label-primary"><i class="fa fa-money"></i> Lunas </label>';
             }else{
-                $status_periksa = ($row_list->tgl_keluar==NULL)?'<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>':'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                if($row_list->flag_mcu == 1){
+                    if($row_list->status_isihasil == 1){
+                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                    }else{
+                        $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum isi hasil</label>';
+                    }
+                }else{
+                    $status_periksa = ($row_list->tgl_keluar==NULL)?'<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>':'<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                }
+
             }
 
             $row[] = '<div class="center">'.$status_periksa.'</div>';

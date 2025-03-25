@@ -1537,7 +1537,7 @@ class Templates extends MX_Controller {
                             <tr>
                                 <th width="100px"><b>Pemeriksaan</b> </th>
                                 <td width="10px" valign="top">:</td>
-                                <th>'.$name.'</th>
+                                <th width="550px">'.$name.'</th>
                             </tr>
                             <hr>
                             <tr>

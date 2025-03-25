@@ -24,11 +24,16 @@
             echo '<b>'.$this->tanggal->formatDateTime($row_p->tgl_daftar).'</b><br>';
             $arr_str = explode("|",$row_p->nama_tarif);
             $html = '<ul class="no-padding">';
-            foreach ($arr_str as $key => $value) {
+            if($row_p->flag_mcu == 1){
+              $html .= '<li>Medical Check Up</li>';
+            }else{
+              foreach ($arr_str as $key => $value) {
                 if(!empty($value)){
                     $html .= '<li>'.$value.'</li>';
                 }
+              }
             }
+            
             $html .= '</ul>';
             echo $html;
             $lampiran_file = isset($file[$row_p->kode_penunjang]) ? $file[$row_p->kode_penunjang] : [];
@@ -38,7 +43,7 @@
             }
           ?>
         </td>
-        <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
+        <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_p->no_registrasi?>/<?php echo $row_p->no_kunjungan?>/<?php echo $row_p->kode_penunjang?>/<?php echo $row_p->kode_bagian_tujuan?>?format=html&flag_mcu=<?php echo $row_p->flag_mcu?>', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
       </tr>
       <?php endif; endforeach; ?>
     </tbody>
@@ -69,11 +74,16 @@
             echo '<b>'.$this->tanggal->formatDateTime($row_f->tgl_daftar).'</b><br>';
             $arr_str = explode("|",$row_f->nama_tarif);
             $html = '<ul class="no-padding">';
-            foreach ($arr_str as $key => $value) {
+            if($row_f->flag_mcu == 1){
+              $html .= '<li>Medical Check Up</li>';
+            }else{
+              foreach ($arr_str as $key => $value) {
                 if(!empty($value)){
                     $html .= '<li>'.$value.'</li>';
                 }
+              }
             }
+
             $html .= '</ul>';
             echo $html;
             $lampiran_file_radiologi = isset($file[$row_f->kode_penunjang]) ? $file[$row_f->kode_penunjang] : [];
@@ -83,7 +93,7 @@
             }
           ?>
         </td>
-        <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_f->no_registrasi?>/<?php echo $row_f->no_kunjungan?>/<?php echo $row_f->kode_penunjang?>/<?php echo $row_f->kode_bagian_tujuan?>?format=html', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
+        <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_f->no_registrasi?>/<?php echo $row_f->no_kunjungan?>/<?php echo $row_f->kode_penunjang?>/<?php echo $row_f->kode_bagian_tujuan?>?format=html&flag_mcu=<?php echo $row_p->flag_mcu?>', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
       </tr>
       <?php endif; endforeach; ?>
     </tbody>
