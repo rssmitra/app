@@ -2316,7 +2316,7 @@ class References extends MX_Controller {
 		// echo '<pre>';print_r($this->db->last_query());die;
 		// $transaksi = $this->db->select('kode_trans_pelayanan, no_registrasi, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, jumlah_tebus')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail','fr_tc_far_detail.kd_tr_resep=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('tc_trans_pelayanan.no_mr' => $no_mr, 'kode_jenis_tindakan' => 11, 'YEAR(tgl_transaksi)' => $year) )->result();
 
-		if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
+		if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d H:i').'') )
 		{
 			$this->db->select('tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan');
 			$this->db->select('tgl_daftar, tgl_isihasil, tgl_periksa');
@@ -2340,7 +2340,7 @@ class References extends MX_Controller {
 			$this->db->order_by('tgl_masuk', 'DESC');
 			$penunjang = $this->db->get()->result();
 			// echo '<pre>';print_r($this->db->last_query());die;
-			$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
+			$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d H:i').'', $penunjang, 3600);
 		}
 
 		// file emr pasien
