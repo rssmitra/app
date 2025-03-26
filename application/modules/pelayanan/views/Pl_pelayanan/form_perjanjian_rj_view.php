@@ -50,7 +50,6 @@ jQuery(function($) {
           // show informasi
           $('#div_less_then_31_bpjs').show();
           $('#show_notif_less_then_31').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien kurang dari 30 hari pelayanan BPJS. Berpotensi Gagal Rekam Obat Farmasi/ Resep PRB<br>Pasien dapat kontrol kembali diatas tanggal <b>'+data.allow_visit_date+'</b></div>');
-          return false;
         }else{
           $('#div_less_then_31_bpjs').hide();
           $('#show_notif_less_then_31').html('');
