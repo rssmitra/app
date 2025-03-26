@@ -105,8 +105,8 @@
 
                           <div class="clearfix">
                             <label class="inline">
-                              <input type="checkbox" class="ace" />
-                              <span class="lbl"> Ingatkan saya</span>
+                              <input type="checkbox" class="ace" onclick="show_password()"/>
+                              <span class="lbl"> Lihat Password</span>
                             </label>
 
                             <!-- <input type="button" id="button-submit-form" value="Sign In" class="width-35 pull-right btn btn-sm btn-primary" > -->
@@ -303,10 +303,16 @@
 
         /*========== END PROCESS LOGIN ================*/
 
-
-
-        
       });
+
+      function show_password() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+          x.type = "text";
+        } else {
+          x.type = "password";
+        }
+      }
 
       </script>
   </body>
