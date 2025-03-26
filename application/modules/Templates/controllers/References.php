@@ -176,7 +176,7 @@ class References extends MX_Controller {
 	{	
 		$html = '';
 			$query = "select a.jd_id, a.jd_kode_dokter,b.nama_pegawai as nama_dokter, a.jd_kode_spesialis, 
-						c.nama_bagian as spesialis,a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai, a.jd_keterangan, a.jd_kuota
+						c.nama_bagian as spesialis,a.jd_hari, a.jd_jam_mulai, a.jd_jam_selesai, a.jd_keterangan, a.jd_kuota, a.is_eksekutif
 						from tr_jadwal_dokter a
 						left join mt_karyawan b on b.kode_dokter=a.jd_kode_dokter
 						left join mt_bagian c on c.kode_bagian=a.jd_kode_spesialis
@@ -195,9 +195,10 @@ class References extends MX_Controller {
 				foreach ($result as $key => $value) {
 					$time = $this->tanggal->formatTime($value->jd_jam_mulai).' s/d '.$this->tanggal->formatTime($value->jd_jam_selesai);
 					$jadwal[] = array('day' => $value->jd_hari , 'time' => $time);
+					$is_eksekutif = ($value->is_eksekutif == 1)?'<i class="fa fa-star orange bigger-120"></i> ':'';
 					$html .= '<a href="#"  onclick="detailJadwalPraktek('.$value->jd_id.')"><div class="infobox infobox-'.array_shift($array_color_day).' infobox-small infobox-dark">
 									<div class="infobox-data">
-										<div class="infobox-content">'.$value->jd_hari.'</div>
+										<div class="infobox-content">'.$is_eksekutif.''.$value->jd_hari.'</div>
 										<div class="infobox-content">'.$time.'</div>
 									</div>
 								</div></a>';
@@ -267,6 +268,8 @@ class References extends MX_Controller {
 
 	function CheckSelectedDate(){
 		// echo '<pre>'; print_r($_POST);die;
+		/*define variable data*/
+        $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
 		/*get data from post*/
 		$date = $_POST['date'];
 		$kode_spesialis = $_POST['kode_spesialis'];
@@ -317,7 +320,11 @@ class References extends MX_Controller {
 			}
 		}
 
-		$return_data = array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota);
+		// cek 31 hari pelayanan bpjs
+		$last_visit = $this->Reg_pasien->cek_last_visit($_POST['no_mr'], $date);
+		$allow_visit = isset($last_visit['tgl_masuk']) ? date('Y-m-d', strtotime($last_visit['tgl_masuk']. '+ 31 days')) : '' ;
+
+		$return_data = array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota, 'last_visit_date' => isset($last_visit['tgl_masuk'])?$last_visit['tgl_masuk']:'','allow_visit_date' => $allow_visit, 'range_visit' => isset($last_visit['range'])?$last_visit['range']:0);
 
 		echo json_encode($return_data);
 	}

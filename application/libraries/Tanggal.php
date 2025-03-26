@@ -347,7 +347,7 @@ final class Tanggal {
     }
 
     public function selisih($date, $selisih){
-        $tanggal = date('Y-m-d', strtotime(''.$selisih.' days', strtotime( $date )));
+        $tanggal = date('Y-m-d', strtotime('+'.$selisih.' days', strtotime( $date )));
         return $tanggal;
     }
 

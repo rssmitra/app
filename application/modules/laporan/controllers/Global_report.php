@@ -131,7 +131,6 @@ class Global_report extends MX_Controller {
 
         $query_data = $this->Global_report->get_data();
         $g_saldo = $this->Global_report->get_saldo_awal();
-        
 
         // get saldo
         foreach ($g_saldo as $k_g_saldo => $v_g_saldo) {

@@ -1549,8 +1549,7 @@ class Templates extends MX_Controller {
                                 <td valign="top" width="100px"><b>Kesan</b> </td>
                                 <td width="10px" valign="top">:</td>
                                 <td>'.nl2br($value->keterangan).'</td>
-                            </tr>
-                            ';
+                            </tr>';
                 }
             }else{
                 $html .= '<tr><td colspan="3" style="color: red; font-weight: bold; font-style: italic; text-align: center; background: #efefef; padding: 10px">Belum ada hasil yang diinput</td></tr>';

@@ -80,6 +80,10 @@ define('TABS_RESUME_MEDIS', 'Resume Medis');
 // tabs on sidebar show hasil penunjang
 define('TABS_HASIL_PENUNJANG', 'Hasil Penunjang');
 
+// GLOBAL CONFIG
+define('MIN_REVISIT_BPJS', 31);
+
+
 
 /*
 |--------------------------------------------------------------------------
