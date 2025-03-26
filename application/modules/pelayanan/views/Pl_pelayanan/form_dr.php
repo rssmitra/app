@@ -790,7 +790,6 @@ function show_icare() {
             <?php if($value->flag_ri==1) : echo '<th>Status Pasien</th>'; endif;?>
             <th>Diagnosa Rujukan</th>
           </tr>
-
           <tr>
             <td><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
             <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
@@ -799,11 +798,14 @@ function show_icare() {
             <?php if($value->flag_ri==1) : echo '<td class="center"><label class="label label-danger">Pasien Rawat Inap</label></td>'; endif;?>
             <td><?php echo isset($value->diagnosa_rujukan)?$value->diagnosa_rujukan:'';?></td>
           </tr>
-
         </table>
 
+        <?php if(isset($value) AND $value->less_then_min_visit==1) :?>
+          <div class="alert alert-danger"><strong>Peringatan!</strong> Pasien kurang dari 30 hari kunjungan Pelayanan BPJS.</div>
+        <?php endif;?>
+
         <?php if(isset($value) AND $value->status_batal==1) :?>
-        <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal Berobat</span>
+          <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal Berobat</span>
         <?php endif;?>
 
         <?php if(isset($value) AND $value->status_periksa!=NULL) :?>

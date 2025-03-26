@@ -34,6 +34,7 @@
             <th rowspan="2">No</th>
             <th rowspan="2" width="105">Kode Barang<br/></th>
             <th rowspan="2" width="95">Nama Barang</th>
+            <th rowspan="2" width="95">Rasio</th>
             <!-- <th rowspan="2" width="304">Harga Jual</th> -->
             <th rowspan="2" width="304">Harga Beli</th>
             <th width="304" style="text-align: center" colspan="2">Saldo Awal<br>Tanggal <?php echo $this->tanggal->formatDateDmy($from_tgl)?></th>
@@ -98,6 +99,7 @@
               <?php 
                 echo '<td>'.$kode_brg.'</td>';
                 echo '<td>'.$row_data->nama_brg.'</td>';
+                echo '<td>'.$row_data->content.'</td>';
                 // harga jual
                 $txt_harga_jual = ($submit == 'excel')?$row_data->harga_beli:number_format($row_data->harga_beli);
                 echo '<td style="text-align: right">'.$txt_harga_jual.'</td>';

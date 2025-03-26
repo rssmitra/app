@@ -192,17 +192,17 @@ class Reg_klinik extends MX_Controller {
         $no_mr = isset( $data_pasien[0]->no_mr ) ? $data_pasien[0]->no_mr : 0 ;
         
         $data_transaksi_pending = $this->Reg_pasien->cek_status_pasien( $no_mr );
-        // echo '<pre>'; print_r($data_transaksi_pending);die;
+        // cek pasien bpjs apakah lebih dari 31 hari
+        $last_visit = $this->Reg_pasien->cek_last_visit( $no_mr );
+        // echo '<pre>'; print_r($last_visit);die;
 
         $data = array(
 
             'count' => count($data_pasien),
-
             'result' => $data_pasien,
-            
             'count_pending' => count($data_transaksi_pending),
-
             'pending' => $data_transaksi_pending,
+            'last_visit' => $last_visit,
 
         );
         

@@ -37,6 +37,7 @@ final Class Daftar_pasien {
           'kode_faskes' => $kode_faskes,
           'norujukan' => $nomorrujukan,
           'jeniskunjunganbpjs' => $jeniskunjunganbpjs,
+          'less_then_min_visit' => ($_POST['less_then_min_visit'])?$_POST['less_then_min_visit']:'',
           'no_induk' => isset($CI->session->userdata('user')->user_id)?$CI->session->userdata('user')->user_id:0,
           'created_date' => date('Y-m-d H:i:s'),
           'updated_date' => date('Y-m-d H:i:s'),

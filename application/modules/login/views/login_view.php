@@ -25,7 +25,8 @@
   </head>
   <style type="text/css">
     #body-style {
-      /* background-image:url(<?php echo PATH_IMG_DEFAULT.$profile_form->cover_login?>); */
+      background-image:url(<?php echo PATH_IMG_DEFAULT.$profile_form->cover_login?>);
+      /* background: white; */
       background-size: 100%; 
       background-attachment: fixed;
       background-position: center;

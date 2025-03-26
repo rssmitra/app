@@ -700,6 +700,41 @@ class Reg_pasien_model extends CI_Model {
 		
 	}
 
+	function cek_last_visit($mr, $date='')
+	
+	{
+		
+		$this->db->select('CAST(tc_registrasi.tgl_jam_masuk as DATE) as tgl_jam_masuk, CAST(tc_registrasi.tgl_jam_keluar as DATE) as tgl_jam_keluar, nama_bagian, nama_pegawai');
+		$this->db->from('tc_kunjungan');
+		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_registrasi.kode_bagian_masuk','left');
+		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan','left');
+		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_registrasi.kode_dokter','left');
+		$this->db->where("tc_registrasi.no_mr='".$mr."'");
+		$this->db->where("tc_registrasi.status_batal is null");
+		$this->db->where("tc_registrasi.kode_perusahaan=120");
+		$this->db->where("SUBSTRING(tc_registrasi.kode_bagian_masuk, 1,2)='01'");
+		$this->db->order_by("tc_registrasi.no_registrasi", "DESC");
+		$query = $this->db->get()->row();
+		// echo $this->db->last_query();
+		// range hari
+		$return = [];
+		$date_visit = ($date != '') ? $date : date('Y-m-d');
+		if(!empty($query)){
+			$range = ($query->tgl_jam_masuk == $date_visit ) ? 31 : $this->tanggal->getRangeDay($query->tgl_jam_masuk, $date_visit);
+			$return = [
+				'tgl_masuk' => $query->tgl_jam_masuk,
+				'tgl_keluar' => $query->tgl_jam_keluar,
+				'poli' => $query->nama_bagian,
+				'dokter' => $query->nama_pegawai,
+				'range' => ($range <= MIN_REVISIT_BPJS) ? round($range) : 0,
+			];
+		}
+		
+		return $return;
+		
+	}
+
 	function get_detail_resume_medis($no_registrasi, $no_kunjungan='')
 	
 	{

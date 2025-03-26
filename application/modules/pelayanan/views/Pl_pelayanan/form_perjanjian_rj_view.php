@@ -40,10 +40,22 @@ jQuery(function($) {
     var spesialis = $('#klinik_rajal').val();
     var dokter = $('#dokter_rajal').val();
     var jd_id = $('#jd_id').val();
+    var no_mr = $('#no_mr').val();
     /*check selected date */
 
-    $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id} , function(data) {
+    $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id, no_mr : no_mr} , function(data) {
         // Do something with the request
+
+        if(data.range_visit > 0){
+          // show informasi
+          $('#div_less_then_31_bpjs').show();
+          $('#show_notif_less_then_31').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien kurang dari 30 hari pelayanan BPJS. Berpotensi Gagal Rekam Obat Farmasi/ Resep PRB<br>Pasien dapat kontrol kembali diatas tanggal <b>'+data.allow_visit_date+'</b></div>');
+          return false;
+        }else{
+          $('#div_less_then_31_bpjs').hide();
+          $('#show_notif_less_then_31').html('');
+        }
+
         if(data.status=='expired' || data.status == 'cuti'){
           if(data.status == 'expired'){
             var message = '<div class="alert alert-danger"><strong>Expired Date !</strong><br>Tanggal yang anda pilih sudah lewat atau sedang berjalan.</div>';
@@ -56,7 +68,6 @@ jQuery(function($) {
                 var message = '<div class="alert alert-danger"><strong>Tidak Sesuai !</strong><br>Tanggal Kunjungan tidak sesuai dengan jadwal Praktek Dokter yang anda pilih !</div>';
                 // $('#view_msg_kuota').hide('fast');
           }else{
-            
 
             if(data.sisa > 0 ){
               var msg_kuota = '<p style="font-size: 12px"> <i class="fa fa-check-circle bigger-120 green"></i> Total Pasien Perjanjian '+data.terisi+' orang, Kuota tersedia pada tanggal ini, '+data.sisa+' pasien</p>';
@@ -386,7 +397,11 @@ function createSuratKontrol(){
             </div>
 
           </div>
-
+          
+          <div id="div_less_then_31_bpjs" style="display: none">
+            <div id="show_notif_less_then_31"></div>
+          </div>
+          
           <div id="view_last_message" style="margin-top:7px"></div>
           
 

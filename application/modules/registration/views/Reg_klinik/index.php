@@ -1263,6 +1263,22 @@ function find_pasien_by_keyword(keyword){
 
             }
 
+            // info pasien bpjs kurang dari 31 hari
+            console.log(data.last_visit);
+            if(obj.kode_perusahaan == 120){
+              obj_visit = data.last_visit;
+              if(obj_visit.range > 0){
+                // show notif
+                $('#div_less_then_31_bpjs').show();
+                $('#show_notif_less_then_31').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien kurang dari 30 hari pelayanan BPJS. Berpotensi Gagal Rekam Obat Farmasi/ Resep PRB</div>');
+                $('#min_30_hari_bpjs').val(1);
+              }else{
+                $('#div_less_then_31_bpjs').hide();
+                $('#show_notif_less_then_31').html('');
+                $('#min_30_hari_bpjs').val('');
+              }
+            }
+
 
           }else{              
 
@@ -1770,6 +1786,7 @@ function copyNoRujukan(no_rujukan){
             <input type="hidden" name="kodeDokterDPJPPerjanjianBPJS" value="" id="kodeDokterDPJPPerjanjianBPJS">
             <input type="hidden" name="kodeDokterDPJPPerjanjian" value="" id="kodeDokterDPJPPerjanjian">
             <input type="hidden" name="kodePoliPerjanjian" value="" id="kodePoliPerjanjian">
+            <input type="hidden" name="less_then_min_visit" value="" id="less_then_min_visit">
             <input type="hidden" name="namaDokterDPJPPerjanjianBPJS" value="" id="namaDokterDPJPPerjanjianBPJS">
             <input type="hidden" name="id_tc_pesanan" value="<?php echo isset($id_tc_pesanan)?$id_tc_pesanan:''?>" id="id_tc_pesanan">
             
@@ -2027,6 +2044,10 @@ function copyNoRujukan(no_rujukan){
                           
                         </div>
                       </div>
+                      
+                      <div id="div_less_then_31_bpjs" style="display: none">
+                        <div id="show_notif_less_then_31"></div>
+                      </div>
 
                       <div id="div_load_after_selected_pasien" style="display:none">
                         <!-- nasabah -->
@@ -2159,6 +2180,8 @@ function copyNoRujukan(no_rujukan){
                         </div>
 
                       </div>
+
+                      
 
                     </div>
 

@@ -183,7 +183,7 @@ class Global_report_model extends CI_Model {
 
 		$kode_bagian = isset($_POST['bagian'])?$_POST['bagian']:$_GET['kode_bagian'];
 
-		$this->db->select('a.kode_brg, b.nama_brg, CAST(AVG(b.harga_beli) as INT) as harga_beli');
+		$this->db->select('a.kode_brg, b.nama_brg, b.content, CAST(AVG(b.harga_beli) as INT) as harga_beli');
 		$this->db->from('mt_depo_stok a');
 		$this->db->join('mt_barang b', 'b.kode_brg=a.kode_brg', 'INNER');
 		$this->db->join('mt_rekap_stok c', 'a.kode_brg=c.kode_brg', 'LEFT');
@@ -193,7 +193,7 @@ class Global_report_model extends CI_Model {
 		$this->db->where('a.kode_brg IS NOT NULL');
 		$this->db->where('a.is_active', 1);
 		// $this->db->where('a.kode_brg ', 'D43B0103');
-		$this->db->group_by('a.kode_brg, b.nama_brg');
+		$this->db->group_by('a.kode_brg, b.nama_brg, b.content');
 		$this->db->order_by('b.nama_brg', 'ASC');
 		$this->db->get();
 			
