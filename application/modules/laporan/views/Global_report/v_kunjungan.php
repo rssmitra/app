@@ -7,44 +7,6 @@
     header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
     header("Cache-Control: private",false);
   }
- switch($bulan){
-     case "1":
-       $nmbln= "JANUARI";
-     break;
-      case "2":
-       $nmbln= "FEBRUARI";
-     break;
-      case "3":
-       $nmbln= "MARET";
-     break;
-      case "4":
-       $nmbln= "APRIL";
-     break;
-      case "5":
-       $nmbln= "MEI";
-     break;
-      case "6":
-       $nmbln= "JUNI";
-     break;
-      case "7":
-       $nmbln= "JULI";
-     break;
-      case "8":
-       $nmbln= "AGUSTUS";
-     break;
-      case "9":
-       $nmbln= "SEPTEMBER";
-     break;
-      case "10":
-       $nmbln= "OKTOBER";
-     break;
-      case "11":
-       $nmbln= "NOVEMBER";
-     break;
-      case "12":
-       $nmbln= "DESEMBER";
-     break;
-   }
    switch($penunjang){
      case "Lab":
        $np= "LABORATORIUM";
@@ -68,30 +30,22 @@
 <body>
   <div class="row">
     <div class="col-xs-12">
-
-      <center><h4><?php echo $title?></h4></center>
-      <b>Parameter :</b> <i><?php echo print_r($_POST);?></i>
-
       <table class="table">
     <tbody>
      
       <tr class="mainTitleLeft"> 
-        <td colspan="3" align="center"><b>LAPORAN KUNJUNGAN RAWAT <?php echo $np; ?> JALAN RS SETIA MITRA<br></td>
+      <td colspan="3" align="center"><b><?php echo strtoupper($title)?><br>LAPORAN KUNJUNGAN <?php echo $np; ?> RS SETIA MITRA<br></td>
       </tr>
       <tr class="mainTitleLeft">
-        <td width="15%"><b>TAHUN</td>
-        <td>: <?php echo $tahun; ?>&nbsp;</td>
-      </tr>
-      <tr class="mainTitleLeft">
-        <td width="15%"><b>BULAN</td>
-        <td>: <?php echo $nmbln; ?>&nbsp;</td>
+      <td width="15%"><b>PERIODE</td>
+      <td>: <?php echo $_POST['from_tgl'].' s.d '.$_POST['to_tgl'] ?>&nbsp;</td>
       </tr>
     </tbody>
   </table>
        <table class="table" border="0">
   <tbody>
   <tr class="greyGridTable">
-    <td width="125" rowspan="3">&nbsp;</td>
+    <td width="125" rowspan="2">&nbsp;</td>
     <td colspan="4"><center><b>RAWAT JALAN</center></b></td>
     <td rowspan="2" align="center"><b>RAWAT INAP</b></td>
     <td rowspan="2" align="center"><b>TOTAL</b></td>
@@ -101,14 +55,6 @@
     <td align="center"><b>Poli Spesialis</b></td>
     <td align="center"><b>Luar</b></td>
     <td align="center"><b>Subtotal</b></td>
-  </tr>
-  <tr class="headTable">
-    <td align="center"><b>1</b></td>
-    <td align="center"><b>2</b></td>
-    <td align="center"><b>3</b></td>
-    <td align="center"><b>4</b></td>
-    <td align="center"><b>5</b></td>
-    <td align="center"><b>6</b></td>
   </tr>
   <tr class="contentTable">
     <td align="right" width="125"><b>Jumlah Kunjungan</b></td>

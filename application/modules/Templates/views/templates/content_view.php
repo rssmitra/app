@@ -82,7 +82,7 @@
             <small>
               <!-- <i class="<?php echo $app->icon?>"></i> -->
               <a href="<?php echo base_url().'main'?>">
-                <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="120px" style="margin: 4px -7px -14px"> &nbsp;
+                <img src="<?php echo base_url().HEADER_LOGO?>" width="120px" style="margin: 4px -7px -14px"> &nbsp;
               <!-- <?php echo $app->app_name?> -->
               </a>
             </small>

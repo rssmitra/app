@@ -526,12 +526,22 @@ class Global_report_model extends CI_Model {
 		$to_tgl = isset($_POST['to_tgl'])?$_POST['to_tgl'] : date('Y-m-d');
 		$bagian = isset($_POST['bagian'])?$_POST['bagian'] : $_GET['kode_bagian'];
 
-		$query = "select b.kode_brg, SUM(b.jumlah_kirim_decimal * b.content) as jumlah_penerimaan, SUM(b.jumlah_kirim_decimal * b.harga_net) as biaya, AVG(CAST((b.harga_net/b.content) AS INT)) as harga_beli from tc_penerimaan_barang_detail b
-		left join tc_penerimaan_barang a on a.id_penerimaan=b.id_penerimaan
-		where CAST(a.tgl_penerimaan as DATE) BETWEEN "."'".$from_tgl."'"." AND "."'".$to_tgl."'"."
-		GROUP BY b.kode_brg";
-		// echo $query;
-		return $this->db->query($query)->result_array();
+		// $query = "select b.kode_brg, SUM(b.jumlah_kirim_decimal * b.content) as jumlah_penerimaan, SUM(b.jumlah_kirim_decimal * b.harga_net) as biaya, AVG(CAST((b.harga_net/b.content) AS INT)) as harga_beli from tc_penerimaan_barang_detail b
+		// left join tc_penerimaan_barang a on a.id_penerimaan=b.id_penerimaan
+		// where CAST(a.tgl_penerimaan as DATE) BETWEEN "."'".$from_tgl."'"." AND "."'".$to_tgl."'"."
+		// GROUP BY b.kode_brg";
+
+		$this->db->select('b.kode_brg, (SUM(b.jumlah_kirim_decimal) * b.content) as jumlah_penerimaan');
+		$this->db->select('((( SUM ( b.jumlah_kirim_decimal ) * b.content ) * CAST(( AVG ( b.harga ) / b.content )AS INT)) - ((( SUM ( b.jumlah_kirim_decimal ) * b.content ) * CAST(( AVG ( b.harga ) / b.content )AS INT)) * b.disc/100)) as harga_beli');
+		$this->db->from('tc_penerimaan_barang_detail b');
+		$this->db->join('tc_penerimaan_barang a', 'a.id_penerimaan=b.id_penerimaan', 'left');
+		$this->db->where("CAST(a.tgl_penerimaan as DATE) BETWEEN "."'".$from_tgl."'"." AND "."'".$to_tgl."'"."");
+		$this->db->where("b.flag_prod_obat<>1");
+		$this->db->group_by('b.kode_brg, b.content, b.disc');
+		$query = $this->db->get();
+		// echo $this->db->last_query();die;
+		return $query->result_array();
+		
 	}
 
 	public function penerimaan_brg_gudang_nm(){
@@ -1777,7 +1787,7 @@ public function pengadaan_mod_8(){
 	}
 
 
-	public function lappembelian_1_mod_1(){
+	public function lappembelian_1_mod_1_ori(){
 		$obat="D";
 		$alkes="E";
 		if($_POST['jenis']=='Obat'){
@@ -1796,6 +1806,31 @@ public function pengadaan_mod_8(){
 		}
 		// return $query;
 		return $this->db->query($query)->result();
+	}
+
+	public function lappembelian_1_mod_1(){
+		$obat	="D";
+		$alkes	="E";
+		$this->db->select('f.no_po, f.tgl_po, b.kode_brg, c.nama_brg, c.satuan_kecil, b.content, c.satuan_besar, b.jumlah_kirim_decimal, b.disc, d.nama_pabrik, b.harga');
+		$this->db->from('tc_penerimaan_barang_detail b');
+		$this->db->join('tc_po_det e', 'e.id_tc_po_det=b.id_tc_po_det', 'left');
+		$this->db->join('tc_po f', 'f.id_tc_po=e.id_tc_po', 'left');
+		$this->db->join('tc_penerimaan_barang a', 'a.id_penerimaan=b.id_penerimaan', 'left');
+		$this->db->join('mt_barang c', 'c.kode_brg = b.kode_brg', 'left');
+		$this->db->join('mt_pabrik d', 'd.id_pabrik = c.id_pabrik', 'left');
+		$this->db->where("MONTH(a.tgl_penerimaan) = ".$_POST['to_month']." AND YEAR(a.tgl_penerimaan) = ".$_POST['year']."");
+		$this->db->where("b.flag_prod_obat<>1");
+		$this->db->order_by("c.nama_brg");
+
+		if($_POST['jenis']=='Obat'){
+			$this->db->where('SUBSTRING(b.kode_brg,1,1)='."'".$obat."'".'');
+		}
+		else if($_POST['jenis']=='Alkes'){
+			$this->db->where('SUBSTRING(b.kode_brg,1,1)='."'".$alkes."'".'');
+		}
+		$query = $this->db->get()->result();
+		// echo $this->db->last_query(); die;
+		return $query;
 	}
 
 	public function lappembelian_1_mod_2(){
@@ -1823,22 +1858,19 @@ public function pengadaan_mod_8(){
 		if($_POST['penunjang']=='Lab'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			}
 			else if($_POST['penunjang']=='Rad'){
 			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			}
 			else{
 				$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				where (b.kode_bagian_asal=012601 or b.kode_bagian_asal like '020%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			
 			}
@@ -1876,22 +1908,19 @@ public function pengadaan_mod_8(){
 		if($_POST['penunjang']=='Lab'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
 						tc_registrasi c  
-				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			}
 		elseif($_POST['penunjang']=='Rad'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
 						tc_registrasi c  
-				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			}
 		else{
 			$query = "select COUNT(b.id_tc_kunjungan) as total from mt_bagian a,tc_kunjungan b,
 						tc_registrasi c  
-				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				where a.nama_bagian like '%spesialis%' and a.kode_bagian = b.kode_bagian_asal and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 			}	
 		return $this->db->query($query)->result();
@@ -1925,7 +1954,7 @@ public function pengadaan_mod_8(){
 		if($_POST['penunjang']=='Lab'){
 
 		$query = "select count(*) as total, no_kunjungan, b.kode_bagian_asal, b.kode_bagian_tujuan 
-					from tc_registrasi a, tc_kunjungan b where a.no_registrasi = b.no_registrasi and YEAR(b.tgl_masuk)=".$_POST['year']." and MONTH(b.tgl_masuk) = ".$_POST['from_month']." 
+					from tc_registrasi a, tc_kunjungan b where a.no_registrasi = b.no_registrasi and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' 
 					and (b.kode_bagian_asal = b.kode_bagian_tujuan and b.kode_bagian_tujuan = '050101')
 					group by b.no_registrasi, no_kunjungan, b.kode_bagian_asal, b.kode_bagian_tujuan having count(*) = 1";
 
@@ -1933,15 +1962,13 @@ public function pengadaan_mod_8(){
 		else if($_POST['penunjang']=='Rad'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				where CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'baru'";
 		}
 		else{
 			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				where CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'baru'";
 		}
 		return $this->db->query($query)->result();
@@ -1977,22 +2004,19 @@ public function pengadaan_mod_8(){
 		if($_POST['penunjang']=='Lab'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
+				where (b.kode_bagian_asal like '03%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050101' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 		}
 		else if($_POST['penunjang']=='Rad'){
 		$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
+				where (b.kode_bagian_asal like '03%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050201' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 		}
 		else{
 			$query = "select COUNT(b.id_tc_kunjungan) as total from tc_kunjungan b,
 						tc_registrasi c  
-				where (b.kode_bagian_asal like '03%') and YEAR(b.tgl_masuk)=".$_POST['year']." 
-				and MONTH(b.tgl_masuk)=".$_POST['from_month']." and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
+				where (b.kode_bagian_asal like '03%') and CAST(b.tgl_masuk as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' and b.kode_bagian_tujuan = '050301' and c.no_registrasi = b.no_registrasi 
 				and c.stat_pasien = 'lama'";
 		
 		}
@@ -2026,15 +2050,15 @@ public function pengadaan_mod_8(){
 	}
 
 	public function lapkinerja(){
+
 		if($_POST['penunjang']=='Lab'){
-		
-			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050101' and month(tgl_transaksi)=".$_POST['from_month']." and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050101' and CAST(tgl_transaksi as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' GROUP BY nama_tindakan,kode_tarif ORDER BY COUNT(kode_tarif) DESC";
 		}
 		else if($_POST['penunjang']=='Rad'){
-		$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050201' and month(tgl_transaksi)=".$_POST['from_month']." and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+		$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050201' and CAST(tgl_transaksi as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' GROUP BY nama_tindakan,kode_tarif ORDER BY COUNT(kode_tarif) DESC";
 		}
 		else{
-			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050301' and month(tgl_transaksi)=".$_POST['from_month']." and year(tgl_transaksi)=".$_POST['year']." GROUP BY nama_tindakan,kode_tarif";
+			$query = "select nama_tindakan,count(kode_tarif) as jumlah ,sum(bill_rs+bill_dr1) as biaya from pm_sie_kinerjatindakan_v where status_selesai>=2 and kode_bagian = '050301' and CAST(tgl_transaksi as DATE) BETWEEN '".$_POST['from_tgl']."' AND '".$_POST['to_tgl']."' GROUP BY nama_tindakan,kode_tarif ORDER BY COUNT(kode_tarif) DESC";
 		
 		}
 		return $this->db->query($query)->result();

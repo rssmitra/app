@@ -197,6 +197,7 @@ function edit_obalkes(myid,kode_tarif){
 
 function edit_dokter(myid,kode_trans_pelayanan,kode_dr1,dr1,kode_dr2,dr2){
 
+  preventDefault();
   $('#kode_penunjang_dr').val(myid);
   $('#kode_trans_pelayanan').val(kode_trans_pelayanan);
 
@@ -336,7 +337,7 @@ function tambah_file()
         <label class="control-label col-sm-2" for="">*Tanggal isi hasil</label>
           <div class="col-md-2">
             <div class="input-group">
-                <input name="pl_tgl_pm" id="pl_tgl_pm" placeholder="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>" class="form-control date-picker" type="text" value="<?php echo $this->tanggal->formatDateForm(date('Y-m-d'))?>">
+                <input name="pl_tgl_pm" id="pl_tgl_pm" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo date('Y-m-d')?>">
                 <span class="input-group-addon">
                   <i class="ace-icon fa fa-calendar"></i>
                 </span>
@@ -368,7 +369,7 @@ function tambah_file()
                         </td>
                         <td>
                           <span style="font-size: 11px; font-weight: bold; color: blue">Edit dokter pemeriksa</span><br>
-                          <a href="#" class="btn btn-xs btn-success" onclick="edit_dokter('.$id.','.$row_list->kode_trans_pelayanan.','.$row_list->kode_dokter1.','."'$row_list->dokter1'".' '.$dokter_param2.')"><i class="fa fa-edit"></i> Edit dokter</a>
+                          <a href="#" class="btn btn-xs btn-success" onclick="edit_dokter('.$id.','.$row_list->kode_trans_pelayanan.','."'$row_list->kode_dokter1'".','."'$row_list->dokter1'".' '.$dokter_param2.')"><i class="fa fa-edit"></i> Edit dokter</a>
                         </td>
                       </tr>
                     </table>

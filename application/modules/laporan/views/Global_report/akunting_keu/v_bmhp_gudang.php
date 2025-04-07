@@ -78,8 +78,8 @@
                 $arr_rp_saldo_awal[] = $rp_saldo_awal;
 
                 // penerimaan
-                $rp_penerimaan = $qty_penerimaan * $row_data->harga_beli;
                 $harga_beli_penerimaan = isset($v_penerimaan_gdg[$kode_brg]['harga_beli']) ? $v_penerimaan_gdg[$kode_brg]['harga_beli']:0;
+                $rp_penerimaan = $harga_beli_penerimaan;
                 $arr_qty_penerimaan[] = $qty_penerimaan;
                 $arr_rp_penerimaan[] = $rp_penerimaan;
 
@@ -130,8 +130,7 @@
           // echo '<pre>'; print_r($arr_rp_saldo_awal);die;
           ?>
             <tr style="font-weight: bold">
-              <td colspan="4" style="text-align: right"><b>TOTAL </b></td>
-              <td></td>
+              <td colspan="6" style="text-align: right"><b>TOTAL </b></td>
               <td style="text-align: right">
                 <?php 
                     $txt_arr_rp_saldo_awal = array_sum($arr_rp_saldo_awal); 

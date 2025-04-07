@@ -615,7 +615,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             $txt_nl2br = nl2br($_POST['catatan_hasil'], '<br>');
             /*Update pm_tc_penunjang */
             $pm_tc_penunjang = array(
-                'tgl_isihasil' => date('Y-m-d H:i:s'),
+                'tgl_isihasil' => $_POST['pl_tgl_pm'],
                 'petugas_isihasil' => $this->session->userdata('user')->user_id,
                 'status_isihasil' => 1,
                 'catatan_hasil' => $txt_nl2br
@@ -666,6 +666,9 @@ class Pl_pelayanan_pm extends MX_Controller {
 
             }
 
+            // update tgl keluar kunjungan 
+            $this->Pl_pelayanan_pm->update('tc_kunjungan', ['tgl_keluar' => $_POST['pl_tgl_pm']], array('no_kunjungan' => $_POST['no_kunjungan'] ) );
+            $this->db->trans_commit();
             // echo '<pre>';print_r($_FILES);die;
 
             // insert and upload file

@@ -84,6 +84,16 @@ class Pl_pelayanan_model extends CI_Model {
 			}
 		}
 
+		if(isset($_GET['penjamin']) AND $_GET['penjamin'] != ''){
+			if( $_GET['penjamin'] == 120 ){
+				$this->db->where('tc_registrasi.kode_perusahaan', 120);
+			}elseif ( $_GET['penjamin'] == 0 ) {
+				$this->db->where('tc_registrasi.kode_perusahaan = 0');
+			}else{
+				$this->db->where('(tc_registrasi.kode_perusahaan NOT IN (0,120) )');
+			}
+		}
+
 		$i = 0;
 	
 		foreach ($this->column as $item) 

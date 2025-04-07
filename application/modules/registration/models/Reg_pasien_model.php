@@ -377,7 +377,8 @@ class Reg_pasien_model extends CI_Model {
 		
 		$this->db->limit($_POST['length'], $_POST['start']);
 		
-		$query = $this->db->get(); //print_r($this->db->last_query());
+		$query = $this->db->get(); 
+		// print_r($this->db->last_query());
 		
 		return $query->result();
 	

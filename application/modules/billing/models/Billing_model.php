@@ -977,10 +977,10 @@ class Billing_model extends CI_Model {
             $kode_trans_pelayanan['bill_ambulance'] = $data->kode_trans_pelayanan;
         }
         
-        /*tindakan oksigen utk semua unit selain VK dan OK*/
+        /*tindakan oksigen utk semua unit selain VK, IGD dan OK*/
         if ( in_array($data->jenis_tindakan, array(7)) ) {
             if( $str_type == '03' ){
-                if(!in_array($data->kode_bagian, array('030501','030901'))){
+                if(!in_array($data->kode_bagian, array('030501','030901', '020101'))){
                     $bill['bill_tindakan_oksigen'] = $subtotal;
                     $kode_trans_pelayanan['bill_tindakan_oksigen'] = $data->kode_trans_pelayanan;
                 }
@@ -1250,7 +1250,7 @@ class Billing_model extends CI_Model {
     }
     
     public function getTransData($no_registrasi){
-		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, dokter_2.nama_pegawai as nama_dokter_2, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, is_update_by_kasir, fr_tc_far.tgl_trans as tgl_obat');
+		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, dokter_2.nama_pegawai as nama_dokter_2, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, is_update_by_kasir, fr_tc_far.tgl_trans as tgl_obat, mt_barang.satuan_kecil');
 		$this->db->from('tc_trans_pelayanan');
 		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
@@ -1259,6 +1259,7 @@ class Billing_model extends CI_Model {
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left');
 		$this->db->join('mt_karyawan as dokter_2','dokter_2.kode_dokter=tc_trans_pelayanan.kode_dokter2','left');
 		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=tc_trans_pelayanan.kode_trans_far','left');
+		$this->db->join('mt_barang','mt_barang.kode_brg=tc_trans_pelayanan.kode_barang','left');
 		$this->db->where('tc_trans_pelayanan.no_registrasi', $no_registrasi);
         // $this->db->where('nama_tindakan IS NOT NULL');
 

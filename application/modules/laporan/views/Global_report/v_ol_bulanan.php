@@ -98,63 +98,50 @@ switch($jenis){
           <tbody>
             <tr>
               <td class="border-rb" width="25" rowspan="1" colspan="1">No.</td>
-              <td width="239" colspan="1" rowspan="1" align="center"><b>Nama Obat</b></td>
+              <td width="86" rowspan="1" align="center"><b>No PO</b></td>
+              <td width="86" rowspan="1" align="center"><b>Tgl PO</b></td>
               <td width="86" rowspan="1" align="center"><b>Kode</b></td>
-              <td width="134" colspan="1" rowspan="1" align="center"><b>Satuan</b></td>
-              <td width="86" rowspan="1" align="center"><b>Content</b></td>
-              <td width="165" rowspan="1" align="center"><b>Jumlah Satuan Besar</b></td>
-              <td width="165" colspan="1" rowspan="1" align="center"><b>Harga Sat Kecil</b></td>
-              <td width="99" colspan="1" rowspan="1" align="center"><b>Qty</b></td>
-              <td width="166" colspan="1" rowspan="1" align="center"><b>Jumlah</b></td>
+              <td width="239" colspan="1" rowspan="1" align="center"><b>Nama Obat</b></td>
               <td width="253" colspan="1" rowspan="1" align="center"><b>Pabrik</b></td>
+              <td width="134" colspan="1" rowspan="1" align="center"><b>Rasio</b></td>
+              <!-- <td width="86" rowspan="1" align="center"><b>Rasio</b></td> -->
+              <td width="86" rowspan="1" align="center"><b>Diskon (%)</b></td>
+              <td width="99" colspan="1" rowspan="1" align="center"><b>Jml Diterima</b></td>
+              <td width="99" colspan="1" rowspan="1" align="center"><b>Satuan</b></td>
+              <td width="165" colspan="1" rowspan="1" align="center"><b>Harga Satuan</b></td>
+              <td width="166" colspan="1" rowspan="1" align="center"><b>Total Biaya</b></td>
               
             </tr>
             
           <?php
-           $no = 0; 
-           $sub_harga_beli=0;
-          foreach($result as $row_data){
-            // $barang=$this->db->query('select id_pabrik  from mt_barang  WHERE kode_brg='."'".$row_data->kode_brg."'".'')->result();
-            // $pabrik=$this->db->query('select nama_pabrik  from mt_pabrik  WHERE id_pabrik='."'".$barang->id_pabrik."'".'')->result();
+            $no = 0; 
+            $sub_harga_beli=0;
+            foreach($result as $row_data){
             $no ++;
-               
-                $nama_brg = $row_data->nama_brg;
-                $kode_brg = $row_data->kode_brg;
-                //$kode_brg = $row_data->kode_brg;
-                //$kode_brg = $row_data->kode_brg;
-                $satuan_kecil = $row_data->satuan_kecil;
-                $satuan_besar = $row_data->satuan_besar;
-                $nama_pabrik = $row_data->nama_pabrik;
-                $jml_harga = $row_data->jumlah;
-                $jml_besar = $row_data->jml;
-                $content = $row_data->content;
-                $jml_kcl = $jml_besar*$content;
-                if($jml_besar<>'' && $jml_harga<>''){
-                  $harga_beli = $jml_harga/$jml_besar;
-                  $harga_sat_kcl = $harga_beli/$content;
-                }
-               
-                
-                $sub_harga_beli = $sub_harga_beli + $jml_harga;
-            ?>
+            $total = $row_data->jumlah_kirim_decimal * $row_data->harga;
+            $disc = $total * $row_data->disc/100;
+            $fix_total = $total - $disc;
+            $arr_fix_total[] = $fix_total;
+          ?>
             <tr class="contentTable">
               <td align="right" width="25"><?php echo   $no?>.</td>
-              <td align="left" width="">&nbsp;<?php echo $nama_brg?>&nbsp;</td>
-              <td align="left" width="">&nbsp;<?php echo $kode_brg?>&nbsp;</td>
-              <td align="left" width=""><?php echo $satuan_kecil?>&nbsp;</td>
-              <td align="left" width="">&nbsp;<?php echo $content?>&nbsp;</td>
-              <td align="left" width="">&nbsp;<?php echo $jml_besar?>&nbsp;</td>
-              <td align="right" width=""><?php echo number_format($harga_sat_kcl)?></td>
-              <td align="right" width=""><?php echo number_format($jml_kcl)?></td>
-              <td align="right" width=""><?php echo number_format($jml_harga)?></td>
-              <td width="">&nbsp;<?php echo $nama_pabrik?>&nbsp;</td>
+              <td align="left" width=""><?php echo $row_data->no_po?></td>
+              <td align="left" width=""><?php echo $this->tanggal->formatDateDmy($row_data->tgl_po)?></td>
+              <td align="left" width=""><?php echo $row_data->kode_brg?></td>
+              <td align="left" width=""><?php echo $row_data->nama_brg?></td>
+              <td width=""><?php echo $row_data->nama_pabrik?></td>
+              <td align="left" width=""><?php echo $row_data->content.'&nbsp;'.$row_data->satuan_kecil.'/'.$row_data->satuan_besar?></td>
+              <!-- <td align="left" width=""><?php echo $row_data->content?></td> -->
+              <td align="left" width=""><?php echo $row_data->disc?></td>
+              <td align="right" width=""><?php echo $row_data->jumlah_kirim_decimal?></td>
+              <td align="left" width=""><?php echo $row_data->satuan_besar?></td>
+              <td align="right" width=""><?php echo $row_data->harga?></td>
+              <td align="right" width=""><?php echo $fix_total?></td>
             </tr>
-            <?php
-            }
-            ?>
+            <?php } ?>
            <tr class="contentTable">
-              <td align="right" width="25" colspan="6">Total
-                <td align="right" width="25"><?php echo number_format($sub_harga_beli)?></td>
+              <td align="right" width="25" colspan="11">Total Pembelian</td>
+              <td align="right" width="25"><?php echo number_format(array_sum($arr_fix_total))?></td>
             </tr>
           </tbody>
         </table>
