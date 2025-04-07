@@ -50,7 +50,7 @@
               <?php echo $app->app_name?>
             </small> -->
             <small style="color: black; font-weight: bold; font-size: 18px">
-            <img src="<?php echo PATH_IMG_DEFAULT.$app->app_logo?>" width="150px" style="margin: -10px -7px -14px">
+            <img src="<?php echo base_url().HEADER_LOGO?>" width="150px" style="margin: -10px -7px -14px">
               <!-- Smart Hospital System 4.0  -->
             </small>
           </a>
@@ -132,7 +132,7 @@
         <div class="main-content-inner">
           <!-- #section:basics/content.breadcrumbs -->
           <?php
-            $arr_color_breadcrumbs = array('#0d528052');
+            $arr_color_breadcrumbs = array('#ef8122');
             shuffle($arr_color_breadcrumbs);
           ?>
           <div class="breadcrumbs" id="breadcrumbs" style="background-color:<?php echo array_shift($arr_color_breadcrumbs)?>">
@@ -149,14 +149,14 @@
                 
                   <?php 
                     foreach($modul as $key_row=>$rows_m) :
-                      $arr_color[$key_row] = array('bg-red','bg-yellow','bg-aqua','bg-blue','bg-light-blue','bg-green','bg-navy','bg-teal','bg-olive','bg-lime','bg-orange','bg-fuchsia','bg-purple','bg-maroon','bg-black'); 
-                      $arr_color_title = array('blue'); 
-                    shuffle($arr_color[$key_row]);
-                    shuffle($arr_color_title);
+                      $arr_color[$key_row] = array('#00679f','#f77f0a','#b279c0','#e51494', '#00679f','#f77f0a','#b279c0','#c2e761','#e51494'); 
+                      $arr_color_title = array('#00679f'); 
+                      shuffle($arr_color[$key_row]);
+                      shuffle($arr_color_title);
 
                   ?>
                     <div class="row">
-                    <h3 class="header smaller lighter <?php echo array_shift($arr_color_title)?>" style="font-weight: bold">
+                    <h3 class="header smaller lighter " style="font-weight: bold; color: <?php echo array_shift($arr_color_title)?>">
                         <?php echo $rows_m['group_modul_name']?> 
                       </h3>
                       <?php foreach($rows_m['modul'] as $row_modul) : ?>
@@ -171,7 +171,7 @@
 
                         <div class="col-sm-2 widget-container-col ui-sortable" id="widget-container-col-11">
                           <div class="widget-box widget-color-dark ui-sortable-handle" id="widget-box-11">
-                            <div class="widget-body" style="background: #137cc1; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px">
+                            <div class="widget-body" style="background: #00679f; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px">
                               <div class="widget-main" data-size="125" style="position: relative;">
                                 <div  style="cursor:pointer">
                                   <a <?php echo $href?> style="text-decoration: none" class="small-box-footer">

@@ -39,13 +39,13 @@
                   <option value="Fisio">Fisioterapi</option>
                 </select>
               </div>
-              <label class="control-label col-md-1">Bulan</label>
+              <label class="control-label col-md-1">Tanggal </label>
               <div class="col-md-1">
-                <?php echo $this->master->get_bulan(1,'from_month','from_month','form-control','','');?>
+                <input class="form-control date-picker" name="from_tgl" id="from_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               </div>
-             
-              <div class="col-md-1" style="margin-left: -20px">
-                <?php echo $this->master->get_tahun(date('Y'),'year','year','form-control','','');?>
+              <label class="control-label col-md-1">s/d Tanggal</label>
+              <div class="col-md-1">
+                <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value="<?php echo date('Y-m-d')?>"/>
               </div>
               <div class="col-md-4" style="margin-left: -1%">
                 <button type="submit" name="submit" value="data" class="btn btn-xs btn-primary">

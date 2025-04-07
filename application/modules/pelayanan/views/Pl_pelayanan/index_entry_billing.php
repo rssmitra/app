@@ -292,6 +292,24 @@ function selesaikanKunjungan(no_registrasi, no_kunjungan){
       </div>
 
       <div class="form-group">
+        <label class="control-label col-md-2">Penjamin</label>
+        <div class="col-md-8" style="padding-left: 17px; margin-top: 3px;">
+          <label>
+            <input name="penjamin" type="radio" class="ace" value="0"  />
+            <span class="lbl"> Umum</span>
+          </label>
+          <label>
+            <input name="penjamin" type="radio" class="ace" value="1"  />
+            <span class="lbl"> Asuransi</span>
+          </label>
+          <label>
+            <input name="penjamin" type="radio" class="ace" value="120"  />
+            <span class="lbl"> BPJS Kesehatan</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
         <label class="control-label col-md-2">Tanggal Registrasi</label>
           <div class="col-md-2">
             <div class="input-group">

@@ -2256,6 +2256,8 @@ class Pl_pelayanan extends MX_Controller {
         
         $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan);
         $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($no_registrasi, $no_kunjungan);
+        // eresep
+
         $data = [
             'result' => $resume,
             'penunjang' => $resume['penunjang'],
@@ -2279,9 +2281,9 @@ class Pl_pelayanan extends MX_Controller {
 
         $data['umur'] = $umur;
 
-        // echo '<pre>';print_r($data);die;
-
+        
         $html = $this->load->view('Pl_pelayanan/view_resume_medis', $data, true);
+        // echo '<pre>';print_r($html);die;
         echo json_encode(array('html' => $html, 'data' => $data));
     
     }

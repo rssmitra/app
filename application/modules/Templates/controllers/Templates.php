@@ -968,13 +968,18 @@ class Templates extends MX_Controller {
         $title_name = $this->Billing->getTitleNameBilling($field);
         $rincian_detail_billing = $this->Billing->getDetailData($noreg, $tipe, $field);
         $data = json_decode($rincian_detail_billing);
-        $needle = array('bill_tindakan_inap','bill_tindakan_oksigen','bill_tindakan_bedah','bill_tindakan_vk','bill_obat','bill_dokter','bill_apotik','bill_lain_lain','bill_ugd','bill_rad','bill_lab','bill_fisio','bill_klinik','bill_pemakaian_alat',
+        $needle = array('bill_tindakan_inap','bill_tindakan_oksigen','bill_tindakan_bedah','bill_tindakan_vk','bill_obat','bill_dokter','bill_lain_lain','bill_ugd','bill_rad','bill_lab','bill_fisio','bill_klinik','bill_pemakaian_alat',
             );
         if(in_array($field, $needle)){
             $html_dokter = '<th width="20%">Dokter</th>';
             $colspan = 4;
             $percent = 30;
-        }else{
+        }elseif($field == 'bill_apotik'){
+            $html_dokter = '<th width="20%">Qty</th>';
+            $colspan = 4;
+            $percent = 30;
+        }
+        else{
             $html_dokter = '';
             $colspan = 3;
             $percent = 50;
@@ -1012,10 +1017,14 @@ class Templates extends MX_Controller {
                     if($value_data->jenis_tindakan==3){
                         $html .= '<td width="'.$percent.'%"><a href="#" onclick="show_modal_medium('."'Templates/Templates/getDetailFromItem/".$value_data->kode_trans_pelayanan."'".','."'".$value_data->nama_tindakan."'".')">'.$value_data->nama_tindakan.'</a></td>';
                     }else{
+                        $qty = ($field == 'bill_apotik')?''.(int)$value_data->jumlah.' '.$value_data->satuan_kecil.'':'';
                         $html .= '<td width="'.$percent.'%">'.$value_data->nama_tindakan.'</td>';
                     }
                     if(in_array($field, $needle)){
                         $html .= '<td width="20%">'.$value_data->nama_dokter.'</td>';
+                    }
+                    if($field == 'bill_apotik'){
+                        $html .= '<td width="20%">'.$qty.'</td>';
                     }
                     $html .= '<td width="20%" align="right">'.number_format($subtotal).',-</td>';
                     $html .= '</tr>';

@@ -136,7 +136,7 @@ class Riwayat_kunjungan_pm extends MX_Controller {
                             '.$rollback_btn.'
                         </ul>
                     </div></div>';
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_pm/form/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$status_pasien."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_pm/form/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$status_pasien."'".')" style="font-weight: bold; color: blue">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = $row_list->no_mr.' - '.$row_list->nama_pasien;
             $row[] = $row_list->asal_bagian;
             $row[] = $row_list->tujuan_bagian;

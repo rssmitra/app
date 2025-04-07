@@ -149,7 +149,7 @@ class Global_report extends MX_Controller {
 
             // penerimaan barang gudang
             foreach ($penerimaan_brg_gudang as $k_penerimaan_brg => $v_penerimaan_brg_gdg) {
-                $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = array('qty' => (int)$v_penerimaan_brg_gdg['jumlah_penerimaan'], 'harga_beli' => (int)$v_penerimaan_brg_gdg['harga_beli'], 'biaya' => (int)$v_penerimaan_brg_gdg['biaya']);
+                $dt_penerimaan_brg_gdg[trim($v_penerimaan_brg_gdg['kode_brg'])] = array('qty' => (int)$v_penerimaan_brg_gdg['jumlah_penerimaan'], 'harga_beli' => (int)$v_penerimaan_brg_gdg['harga_beli']);
             }
 
         }else{
@@ -692,8 +692,6 @@ class Global_report extends MX_Controller {
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
-            'bulan' => $_POST['from_month'],
-            'tahun' => $_POST['year'],
             'penunjang' => $_POST['penunjang'],
             'result' => $query_data,
         );
@@ -763,8 +761,6 @@ class Global_report extends MX_Controller {
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
             'penunjang' => $_POST['penunjang'],
-            'bulan' => $_POST['from_month'],
-            'tahun' => $_POST['year'],
             // 'result' => $query_data,
             'dt_sql_ugd' => $sql_ugd[0],
             'dt_sql_spesialis' => $sql_spesialis[0],
@@ -1381,7 +1377,7 @@ class Global_report extends MX_Controller {
             'tahun' => $_POST['year'],
             'result' => $query_data,
         );
-         // echo '<pre>';print_r($query_data);
+        //  echo '<pre>';print_r($query_data);
         $this->load->view('Global_report/v_ol_bulanan', $data);
                 
     }

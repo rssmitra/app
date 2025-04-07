@@ -305,7 +305,7 @@ window.open('registration/Riwayat_kunjungan_pm/export_excel?'+result.data+'','_b
           <tr>  
             <th width="30px" class="center"></th>
             <th></th>
-            <th>No Kunjungan</th>
+            <th width="100px">No Kunjungan</th>
             <th>Nama Pasien</th>
             <th>Asal Bagian</th>
             <th>Tujuan Bagian</th>

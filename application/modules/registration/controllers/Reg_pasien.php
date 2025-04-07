@@ -150,7 +150,7 @@ class Reg_pasien extends MX_Controller {
         $column = array('tc_kunjungan.no_registrasi','tc_registrasi.no_sep','tc_registrasi.kode_perusahaan','tc_kunjungan.tgl_masuk','mt_dokter_v.nama_pegawai','mt_bagian.nama_bagian','tc_kunjungan.tgl_keluar','tc_kunjungan.kode_bagian_tujuan','mt_perusahaan.nama_perusahaan','tc_kunjungan.no_kunjungan', 'tc_kunjungan.kode_dokter', 'mt_master_pasien.nama_pasien', 'mt_master_pasien.no_mr');
 
         $list = $this->Reg_pasien->get_riwayat_pasien( $column, $mr ); 
-
+        // echo "<pre>";print_r($list);die;
         $no = 0;
 
         $atts = array('width'       => 900,'height'      => 500,'scrollbars'  => 'no','status'      => 'no','resizable'   => 'no','screenx'     => 1000,'screeny'     => 80,'window_name' => '_blank'
