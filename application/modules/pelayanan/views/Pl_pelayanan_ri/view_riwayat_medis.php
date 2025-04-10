@@ -1,5 +1,6 @@
-<link rel="stylesheet" href="<?php echo base_url()?>assets/css/bootstrap-timepicker.css" />
+<link rel="stylesheet" href="<?php echo base_url().'assets/css/bootstrap-timepicker.css'?>" />
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-timepicker.js"></script>
+
 <script type="text/javascript">
 
 jQuery(function($) {  
@@ -341,9 +342,9 @@ function reload_table(){
 
   <div class="col-md-12" id="section_history_cppt">
     <!-- add form -->
-    <div style="">
+    <!-- <div style="">
       <a href="#" class="btn btn-xs btn-primary" onclick="add_cppt()"><i class="fa fa-plus"></i> Input CPPT</a>
-    </div>
+    </div> -->
     <center><span style="font-size: 14px"><b>RIWAYAT CATATAN MEDIS DAN RESUME PASIEN RJ/RI</b></span></center><br>
       <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 

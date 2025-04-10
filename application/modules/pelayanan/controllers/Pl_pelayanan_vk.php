@@ -199,13 +199,13 @@ class Pl_pelayanan_vk extends MX_Controller {
                         </ul>
                     </div></div>';
 
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_vk/form/".$row_list->id_pasien_vk."/".$row_list->no_kunjungan."'".')">'.$row_list->no_kunjungan.'</a></div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'pelayanan/Pl_pelayanan_vk/form/".$row_list->id_pasien_vk."/".$row_list->no_kunjungan."'".')" style="font-weight: bold; color: blue">'.$row_list->no_kunjungan.'</a></div>';
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_kelompok.'<br>'.$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_masuk);
             $row[] = $row_list->nama_pegawai;
-            $row[] = $row_list->nama_bagian.'<br>'.$row_list->nama_klas;
+            $row[] = $row_list->nama_bagian.'/ '.$row_list->nama_klas;
             // $row[] = '<div class="center">'.$row_list->fullname.'</div>';
 
             if($row_list->status_batal == 1){

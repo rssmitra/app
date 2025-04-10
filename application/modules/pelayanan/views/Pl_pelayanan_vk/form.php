@@ -578,54 +578,78 @@ function reload_page(){
                   <ul class="nav nav-list">
 
                     <li class="hover">
-                      <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=RI&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-user"></i><span class="menu-text"> DIAGNOSA </span></a><b class="arrow"></b>
+                      <a href="#" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=RI&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> <?php echo INPUT_DIAGNOSA?> </span></a><b class="arrow"></b>
                     </li>
 
                     <li class="hover">
-                      <a id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> TINDAKAN </span></a><b class="arrow"></b>
-                    </li>
-
-                    <li class="hover">
-                      <a id="tabs_bayi" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501&no_mr_ibu=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan_vk/form_bayi/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-edit"></i><span class="menu-text"> DATA KELAHIRAN </span></a><b class="arrow"></b>
+                      <a id="tabs_bayi" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501&no_mr_ibu=<?php echo $no_mr?>" data-url="pelayanan/Pl_pelayanan_vk/form_bayi/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-edit"></i><span class="menu-text"> <?php echo INPUT_DATA_LAHIR?> </span></a><b class="arrow"></b>
                     </li>
 
                     <li class="hover">
                       <a data-id="<?php echo $id?>" data-url="farmasi/Farmasi_pesan_resep/pesan_resep/<?php echo $value->no_kunjungan?>/<?php echo $kode_klas?>/<?php echo $kode_profit?>" id="tabs_pesan_resep" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
-                      <i class="menu-icon fa fa-leaf"></i><span class="menu-text"> FARMASI </span></a><b class="arrow"></b>
+                      <i class="menu-icon fa fa-leaf"></i><span class="menu-text"> <?php echo ERESEP?> </span></a><b class="arrow"></b>
                     </li>
 
                     <li class="hover">
-                      <a data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/030501/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-flask"></i><span class="menu-text"> PENUNJANG </span></a><b class="arrow"></b>
+                      <!-- <a href="#" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> <?php echo RIWAYAT_MEDIS?> </span></a><b class="arrow"></b> -->
+                      <a href="#" data-id="<?php echo $id?>" data-url="pelayanan/Pl_pelayanan_ri/riwayat_medis/<?php echo $value->kode_ri?>/<?php echo $value->no_kunjungan?>?type=Ranap&kode_bag=030501" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> <?php echo RIWAYAT_MEDIS?> </span></a><b class="arrow"></b>
                     </li>
 
-                    <li class="hover">
-                      <a data-id="<?php echo $value->kode_ri?>" data-url="pelayanan/Pl_pelayanan_ri/pesan/<?php echo $value->kode_ri?>/<?php echo $value->no_registrasi?>" id="tabs_pesan" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-flask"></i><span class="menu-text"> PESAN OK </span></a><b class="arrow"></b>
-                    </li>
-
-
-                    <li class="hover">
-                      <a href="#" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-money"></i><span class="menu-text"> BILLING </span></a><b class="arrow"></b>
-                    </li>
                     
-                    <!-- <li class="hover">
-                      <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-file"></i><span class="menu-text"> TRANSAKSI </span></a><b class="arrow"></b>
-                    </li> -->
+                    <li class="hover">
+                      <a href="#" class="dropdown-toggle">
+                        <i class="menu-icon fa fa-eye"></i>
+                        <span class="menu-text"> Rujuk Internal </span>
 
-                    <!-- <li class="hover">
-                      <a href="#" data-id="<?php echo $id?>" data-url="rekam_medis/File_rm/index/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> E R M  </span></a><b class="arrow"></b>
-                    </li> -->
+                        <b class="arrow fa fa-angle-down"></b>
+                      </a>
+
+                      <b class="arrow"></b>
+
+                      <ul class="submenu can-scroll ace-scroll scroll-disabled" style="">
+                        <li class="hover">
+                          
+                          <a style="text-align: left" data-id="<?php echo $value->kode_ri?>" data-url="pelayanan/Pl_pelayanan_ri/pesan/<?php echo $value->kode_ri?>/<?php echo $value->no_registrasi?>" id="tabs_pesan" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-caret-right"></i> Kamar Bedah/ VK/ Pindah Ruangan </span></a><b class="arrow"></b>
+
+                        </li>
+
+                        <li class="hover">
+                          <a style="text-align: left" data-id="<?php echo $id?>" data-url="registration/Reg_pm/rujuk_pm/<?php echo $value->no_registrasi?>/030501/<?php echo $kode_klas?>/rajal" id="tabs_penunjang_medis" href="#" onclick="getMenuTabs(this.getAttribute('data-url'), 'tabs_form_pelayanan')" ><i class="menu-icon fa fa-caret-right"></i> <?php echo EORDER?> </span></a><b class="arrow"></b>
+                        </li>
+                      </ul><div class="scroll-track scroll-detached no-track scroll-thin scroll-margin scroll-visible" style="display: none; top: 69px; left: 183px;"><div class="scroll-bar" style="top: 0px;"></div></div>
+                    </li>
 
                     <li class="hover">
-                      <a href="#" data-id="<?php echo $id?>" data-url="templates/References/get_riwayat_medis/<?php echo $value->no_mr?>" id="tabs_rekam_medis" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-history"></i><span class="menu-text"> RIWAYAT MEDIS </span></a><b class="arrow"></b>
+                      <a href="#" class="dropdown-toggle">
+                        <i class="menu-icon fa fa-money"></i>
+                        <span class="menu-text"> <?php echo RESUME_BILLING?> </span>
+
+                        <b class="arrow fa fa-angle-down"></b>
+                      </a>
+
+                      <b class="arrow"></b>
+
+                      <ul class="submenu can-scroll ace-scroll scroll-disabled" style="">
+                        <li class="hover">
+                          
+                          <a href="#" style="text-align: left" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/RJ" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-caret-right"></i> <?php echo RESUME_BILLING?></a>
+                          <b class="arrow"></b>
+                        </li>
+
+                        <li class="hover">
+                          <a id="tabs_tindakan" style="text-align: left" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=030501" data-url="pelayanan/Pl_pelayanan_vk/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><i class="menu-icon fa fa-caret-right"></i> <?php echo INPUT_BILL?> </span></a><b class="arrow"></b>
+                        </li>
+                      </ul><div class="scroll-track scroll-detached no-track scroll-thin scroll-margin scroll-visible" style="display: none; top: 69px; left: 183px;"><div class="scroll-bar" style="top: 0px;"></div></div>
                     </li>
-                    
+
                     <?php 
                       $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir(isset($value->no_registrasi)?$value->no_registrasi:'',isset($value->no_kunjungan)?$value->no_kunjungan:'');
                       $flag_rollback = ($trans_kasir!=true)?'submited':'unsubmit';
                     ?>
                     <li class="hover">
-                      <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="rollback(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>, <?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>, '<?php echo $flag_rollback?>')"><i class="menu-icon fa fa-undo"></i><span class="menu-text"> ROLLBACK  </span></a><b class="arrow"></b>
+                      <a href="#" data-id="<?php echo $id?>" data-url="registration/reg_pasien/riwayat_transaksi/<?php echo $value->no_mr?>" id="tabs_riwayat_transaksi" href="#" onclick="rollback(<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>, <?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>, '<?php echo $flag_rollback?>')"><i class="menu-icon fa fa-undo"></i><span class="menu-text"> Rollback Status  </span></a><b class="arrow"></b>
                     </li>
+                    
 
                   </ul><!-- /.nav-list -->
                 </div>
@@ -644,27 +668,27 @@ function reload_page(){
             <!-- <p><b><i class="fa fa-edit"></i> DATA REGISTRASI DAN KUNJUNGAN </b></p> -->
             <table class="table table-bordered">
               <tr style="background-color:#f4ae11">
-                <th>Kode Kunjungan</th>
-                <th>No Reg</th>
+                <th width="120px">No Kunjungan</th>
+                <th width="120px">No Registrasi</th>
                 <th>Tanggal Daftar</th>
                 <th>Dokter</th>
                 <th>Penjamin</th>
+                <th>Ruang/Kelas</th>
                 <th>Petugas</th>
                 <th></th>
               </tr>
 
               <tr>
-                <td><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
+                <td><a href="#" style="font-weight: bold; color: blue" onclick="getMenu('pelayanan/Pl_pelayanan_vk/form/<?php echo $id?>/<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>')" ><?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?></td>
                 <td><?php echo isset($value->no_registrasi)?$value->no_registrasi:''?></td>
                 <td><?php echo isset($value->tgl_masuk)?$this->tanggal->formatDateTime($value->tgl_masuk):''?></td>
                 <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
                 <td>
-                  <a href="#" onclick="show_modal('registration/reg_pasien/form_modal_edit_penjamin/<?php echo isset($value->no_registrasi)?$value->no_registrasi:''?>/<?php echo isset($value->no_kunjungan)?$value->no_kunjungan:''?>', 'Update Penjamin Pasien')">
-                      <?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
-                      <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?>
-                  </a>
+                  <?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' / ':'';?>
+                  <?php echo isset($value->nama_perusahaan)?$value->nama_perusahaan:'';?>
                 </td>
-                <td><?php echo isset($value->fullname)?$value->fullname:''?></td>
+                <td><?php echo isset($value->nama_bagian)?$value->nama_bagian:'';?>/ <?php echo isset($value->nama_klas)?$value->nama_klas:'';?></td>
+                <td><?php echo isset($value->fullname)?$value->fullname:$this->session->userdata('user')->fullname?></td>
                 <td align="center"><a href="#" onclick="reload_page()"><i class="fa fa-refresh green bigger-120"></i></a></td>
               </tr>
 
@@ -688,13 +712,19 @@ function reload_page(){
             <input type="hidden" class="form-control" name="umur_saat_pelayanan_hidden" id="umur_saat_pelayanan_hidden">
             <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->bag_pas:''?>">
             <input type="hidden" class="form-control" name="kode_bagian" value="030501" id="kode_bagian_val">
-            <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
+            <!-- <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val"> -->
             <input type="hidden" class="form-control" name="dr_merawat" id="dr_merawat" value="<?php echo isset($value->dr_merawat)?$value->dr_merawat:''?>">
 
-            <!-- form default pelayanan pasien -->
+            
+
             <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
               <div class="tabbable">  
                 <div class="tab-content">   
+                  <!-- form default pelayanan pasien -->
+                  <div class="col-md-12 no-padding" style="padding-bottom: 10px !important">
+                    <label style="font-weigth: bold !important"><b>Hak Kelas Pasien :</b> </label><br>
+                    <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1), 'order_by' => array('no_urut' => 'ASC')), isset($kode_klas)?$kode_klas:'' , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
+                  </div>
                   <div id="tabs_form_pelayanan">
 
                     <div class="alert alert-block alert-success">

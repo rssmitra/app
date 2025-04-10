@@ -222,8 +222,13 @@ final Class Master {
 			$db->select( array($custom['id'], $custom['name']) );
 			$db->group_by( array($custom['id'], $custom['name']) );
 		}
-		
-		$db->order_by($custom['name'], 'ASC');
+
+		if(isset($custom['order_by'])){
+			$db->group_by( key($custom['order_by']) );
+			$db->order_by(key($custom['order_by']), $custom['order_by'][key($custom['order_by'])]);
+		}else{
+			$db->order_by($custom['name'], 'ASC');
+		}
 
 		if(isset($custom['where_in'])){
 			$db->where_in($custom['where_in']['col'],$custom['where_in']['val']);

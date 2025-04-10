@@ -177,6 +177,19 @@ class Auto_merge_farmasi extends MX_Controller {
 
     }
 
+    public function arr_sep(){
+        $sep = $this->db->get('t_sep_far')->result();
+        foreach($sep as $row){
+            $dt = $this->db->get_where('fr_tc_far_detail_log_prb', ['no_sep' => $row->no_sep])->row();
+            if(!empty($dt)){
+                $count[] = $this->merge_dokumen_klaim($dt->kode_trans_far);
+            }
+        }
+
+        echo array_sum($count);
+        exit;
+    }
+
     public function merge_dokumen_klaim($kode_trans_far){
         // create dokumen
         $createDocument = $this->createDocument($kode_trans_far);
@@ -497,10 +510,13 @@ EOD;
 
         rtrim($fields_string,'&');
 
-        $url = 'http://10.10.11.5:88/sirs-dev/app/ApiMerge/index_farmasi.php?action=download&"kode"='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->date.'';
+        $url = base_url().'/ApiMerge/index_farmasi.php?action=download&"kode"='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->date.'';
+
+        file_get_contents($url);
+
         // $url = 'http://10.10.11.5:88/sirs-dev/app/ApiMerge/index_farmasi.php?action=download&"kode"='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->date.'';
         // redirect($url, 'location');
-        return $url;
+        // return $url;
     }
 
     public function findSep($no_sep){
