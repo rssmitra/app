@@ -178,7 +178,7 @@ class Auto_merge_farmasi extends MX_Controller {
     }
 
     public function arr_sep(){
-        $sep = $this->db->get('t_sep_farmasi')->result();
+        $sep = $this->db->get('t_sep_far')->result();
         foreach($sep as $row){
             $dt = $this->db->get_where('fr_tc_far_detail_log_prb', ['no_sep' => $row->no_sep])->row();
             if(!empty($dt)){
