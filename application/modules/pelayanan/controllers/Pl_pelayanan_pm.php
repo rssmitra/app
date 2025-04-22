@@ -627,9 +627,9 @@ class Pl_pelayanan_pm extends MX_Controller {
 
                 $kode_mt_hasilpm = $row_dt;
                 $kode_tc_hasilpenunjang = $this->master->get_max_number('pm_tc_hasilpenunjang', 'kode_tc_hasilpenunjang');
-                $kode_trans_pelayanan = $_POST['kode_trans_pelayanan'][$kode_mt_hasilpm];
-                $hasil_pm = $_POST['hasil_pm'][$kode_mt_hasilpm];
-                $keterangan_pm = $_POST['keterangan_pm'][$kode_mt_hasilpm];
+                $kode_trans_pelayanan = $_POST['kode_trans_pelayanan'][$kode_mt_hasilpm][$key];
+                $hasil_pm = $_POST['hasil_pm'][$kode_mt_hasilpm][$key];
+                $keterangan_pm = $_POST['keterangan_pm'][$kode_mt_hasilpm][$key];
 
 
                 $hasil = $this->master->convert_special_chars_to_html($hasil_pm);
@@ -650,7 +650,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                 }
 
                 // cek hasil apakah sudah pernah diinput
-                $dt_ex = $this->db->get_where('pm_tc_hasilpenunjang', array('kode_trans_pelayanan' => $_POST['kode_trans_pelayanan'][$kode_mt_hasilpm], 'kode_mt_hasilpm' => $kode_mt_hasilpm) );
+                $dt_ex = $this->db->get_where('pm_tc_hasilpenunjang', array('kode_trans_pelayanan' => $kode_trans_pelayanan, 'kode_mt_hasilpm' => $kode_mt_hasilpm) );
                 // echo '<pre>';print_r($dt_ex->row());die;
                 
                 if($dt_ex->num_rows() > 0){

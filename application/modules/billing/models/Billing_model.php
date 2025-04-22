@@ -1250,12 +1250,13 @@ class Billing_model extends CI_Model {
     }
     
     public function getTransData($no_registrasi){
-		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, dokter_2.nama_pegawai as nama_dokter_2, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, is_update_by_kasir, fr_tc_far.tgl_trans as tgl_obat, mt_barang.satuan_kecil');
+		$this->db->select('tc_trans_pelayanan.*, CAST(bill_rs as INT) as bill_rs_int, CAST(bill_dr1 as INT) as bill_dr1_int, CAST(bill_dr2 as INT) as bill_dr2_int, CAST(bill_dr3 as INT) as bill_dr3_int ,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, dokter_2.nama_pegawai as nama_dokter_2, mt_perusahaan.nama_perusahaan, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar, is_update_by_kasir, fr_tc_far.tgl_trans as tgl_obat, mt_barang.satuan_kecil, bagian_asal.nama_bagian as nama_bagian_asal');
 		$this->db->from('tc_trans_pelayanan');
 		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=tc_trans_pelayanan.no_kunjungan','left');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
 		$this->db->join('mt_perusahaan','mt_perusahaan.kode_perusahaan=tc_trans_pelayanan.kode_perusahaan','left');
 		$this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_trans_pelayanan.kode_bagian','left');
+		$this->db->join('mt_bagian as bagian_asal','bagian_asal.kode_bagian=tc_trans_pelayanan.kode_bagian_asal','left');
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left');
 		$this->db->join('mt_karyawan as dokter_2','dokter_2.kode_dokter=tc_trans_pelayanan.kode_dokter2','left');
 		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=tc_trans_pelayanan.kode_trans_far','left');
@@ -1417,13 +1418,13 @@ class Billing_model extends CI_Model {
         $this->db->join('pm_mt_standarhasil d', 'a.kode_mt_hasilpm=d.kode_mt_hasilpm', 'left');
         $this->db->where($where);
         $this->db->where(' a.hasil != '."''".' ');
-        $this->db->group_by('a.kode_tarif, a.nama_pemeriksaan,a.nama_tindakan, a.hasil, a.standar_hasil_pria, a.standar_hasil_wanita, a.satuan, a.keterangan, a.detail_item_1, a.detail_item_2,b.referensi,d.urutan, a.kode_trans_pelayanan');
-        // $this->db->order_by('a.urutan', 'ASC');
+        $this->db->group_by('a.kode_tarif, a.nama_pemeriksaan,a.nama_tindakan, a.hasil, a.standar_hasil_pria, a.standar_hasil_wanita, a.satuan, a.keterangan, a.detail_item_1, a.detail_item_2,b.referensi,d.urutan, a.kode_trans_pelayanan, a.urutan');
+        $this->db->order_by('a.urutan', 'ASC');
         // $this->db->order_by('a.nama_pemeriksaan', 'ASC');
-        // $this->db->order_by('a.kode_trans_pelayanan', 'ASC');
+        $this->db->order_by('a.kode_trans_pelayanan', 'ASC');
         // $this->db->order_by('a.detail_item_1', 'ASC');
         $result = $this->db->get()->result();
-        // print_r($result);die;
+        // print_r($this->db->last_query());die;
 
         return $result;
 

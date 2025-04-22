@@ -292,7 +292,7 @@ class Inv_master_barang extends MX_Controller {
                 $dt_rekap = $dt_rekap_stok->row();
                 // update rekap stok
                 $arr_dt_rekap_stok["jml_sat_kcl"] = (int)$dt_rekap->jml_sat_kcl;
-                $arr_dt_rekap_stok["harga_beli"] = (int)$dt_rekap->harga_beli;
+                $arr_dt_rekap_stok["harga_beli"] = (int)$val->set_value('harga_beli');
                 $arr_dt_rekap_stok["harga_persediaan"] = (int)$dt_rekap->harga_persediaan;
                 $arr_dt_rekap_stok['updated_date'] = date('Y-m-d H:i:s');
                 $arr_dt_rekap_stok['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
