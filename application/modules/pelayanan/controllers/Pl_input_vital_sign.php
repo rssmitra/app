@@ -97,6 +97,7 @@ class Pl_input_vital_sign extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
             $row[] = strtoupper($row_list->nama_pasien);
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
+            $row[] = ucwords($row_list->nama_bagian);
             $row[] = '<div class="center">'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'</div>';
             $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'tinggi_badan'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->tinggi_badan.'" id="tinggi_badan_'.$row_list->no_kunjungan.'"></div>';
             $row[] = '<div class="center"><input type="text" style="width: 80px; text-align: center" class="form-control" onchange="save_vital_sign('."'berat_badan'".', '.$row_list->no_kunjungan.', '.$row_list->no_registrasi.')" value="'.$row_list->berat_badan.'" id="berat_badan_'.$row_list->no_kunjungan.'"></div>';
