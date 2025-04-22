@@ -204,6 +204,7 @@ function save_vital_sign(type, no_kunjungan, no_registrasi){
             <th>No MR</th>
             <th>Nama Pasien</th>
             <th>Penjamin</th>
+            <th>Tujuan</th>
             <th width="150px">Tanggal Kunjungan</th>
             <th style="width: 100px" class="center">Tinggi Badan (Cm)</th>
             <th style="width: 100px" class="center">Berat Badan (Kg)</th>

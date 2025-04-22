@@ -95,6 +95,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
                     'csm_dex_nama_dok' => $this->regex->_genRegex($filename, 'RGXQSL'),
                     'csm_dex_jenis_dok' => $this->regex->_genRegex($v_cd, 'RGXQSL'),
                     'csm_dex_fullpath' => $this->regex->_genRegex('uploaded/casemix/log/'.$filename.'', 'RGXQSL'),
+                    'base_url_dok' => $this->regex->_genRegex(base_url(), 'RGXQSL'),
                     'is_scheduler' => $this->regex->_genRegex(1, 'RGXINT'),
                 );
                 
