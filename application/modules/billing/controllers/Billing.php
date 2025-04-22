@@ -1386,7 +1386,7 @@ class Billing extends MX_Controller {
             /*form hidden after select tindakan*/
             $dataexc['kode_tarif'] = $this->regex->_genRegex($this->input->post('kode_tarif'),'RGXINT');
             $dataexc['jenis_tindakan'] = ($this->regex->_genRegex($this->input->post('jenis_tindakan'),'RGXINT')!=0)?$this->regex->_genRegex($this->input->post('jenis_tindakan'),'RGXINT'):3;
-            $dataexc['nama_tindakan'] = $this->regex->_genRegex($this->input->post('nama_tindakan'),'RGXQSL');
+            $dataexc['nama_tindakan'] = ($_POST['kode_jenis_tindakan'] == 1) ? $this->regex->_genRegex($this->input->post('nama_ruangan'),'RGXQSL') : $this->regex->_genRegex($this->input->post('nama_tindakan'),'RGXQSL');
             $dataexc['kode_master_tarif_detail'] = $this->regex->_genRegex($this->input->post('kode_master_tarif_detail'),'RGXQSL');
 
             /*status NK*/
@@ -1413,7 +1413,7 @@ class Billing extends MX_Controller {
             }
            
 
-            // echo "<pre>";print_r($dataexc);die;
+            echo "<pre>";print_r($dataexc);die;
             
             /*save tc_trans_pelayanan*/
             $this->db->insert('tc_trans_pelayanan', $mergeData);

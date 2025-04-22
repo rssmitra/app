@@ -165,7 +165,7 @@ function tambah_file()
               $nilai_std = ($pasien->jen_kelamin=='L') ? $row_list->standar_hasil_pria : $row_list->standar_hasil_wanita ;
 
               $hasil = (isset($row_list->hasil))?stripslashes($row_list->hasil):'';
-              $ket = (isset($row_list->keterangan))?$row_list->keterangan:'';
+              $ket = (isset($row_list->keterangan_pm))?$row_list->keterangan_pm:'';
               $kode_tc_hasilpenunjang =  (isset($row_list->kode_tc_hasilpenunjang))?$row_list->kode_tc_hasilpenunjang:0;
 
               if($row_list->nama_tindakan!=$nama_tindakan){
@@ -184,12 +184,12 @@ function tambah_file()
                     <td>'.$row_list->detail_item_1.'</td>
                     <td>'.$row_list->detail_item_2.'</td>
                     <td>'. $nilai_std.' '.$row_list->satuan.'</td> 
-                    <td width="100px"> <input type="text" name="hasil_pm['.trim($row_list->kode_mt_hasilpm).']" class="hasil_pm" value="'.$hasil.'"></td>    
+                    <td width="100px"> <input type="text" name="hasil_pm['.trim($row_list->kode_mt_hasilpm).']['.$key.']" class="hasil_pm" value="'.$hasil.'"></td>    
                     <td width="100px">
-                      <input type="text" name="keterangan_pm['.trim($row_list->kode_mt_hasilpm).']" class="keterangan_pm" value="'.$ket.'">
-                      <input type="hidden" name="kode_tc_hasilpenunjang['.trim($row_list->kode_mt_hasilpm).']" value="'.$kode_tc_hasilpenunjang.'" >
-                      <input type="hidden" name="kode_mt_hasilpm[]" value="'.trim($row_list->kode_mt_hasilpm).'" >
-                      <input type="hidden" name="kode_trans_pelayanan['.trim($row_list->kode_mt_hasilpm).']" value="'.$row_list->kode_trans_pelayanan.'" >
+                      <input type="text" name="keterangan_pm['.trim($row_list->kode_mt_hasilpm).']['.$key.']" class="keterangan_pm" value="'.$ket.'">
+                      <input type="hidden" name="kode_tc_hasilpenunjang['.trim($row_list->kode_mt_hasilpm).']['.$key.']" value="'.$kode_tc_hasilpenunjang.'" >
+                      <input type="hidden" name="kode_mt_hasilpm['.$key.']" value="'.trim($row_list->kode_mt_hasilpm).'" >
+                      <input type="hidden" name="kode_trans_pelayanan['.trim($row_list->kode_mt_hasilpm).']['.$key.']" value="'.$row_list->kode_trans_pelayanan.'" >
                       <input type="hidden" name="jumlah_hasilpm" value="'.count($list).'" >  
                     </td>           
                   </tr>

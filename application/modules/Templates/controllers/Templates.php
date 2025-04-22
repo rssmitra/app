@@ -968,14 +968,18 @@ class Templates extends MX_Controller {
         $title_name = $this->Billing->getTitleNameBilling($field);
         $rincian_detail_billing = $this->Billing->getDetailData($noreg, $tipe, $field);
         $data = json_decode($rincian_detail_billing);
-        $needle = array('bill_tindakan_inap','bill_tindakan_oksigen','bill_tindakan_bedah','bill_tindakan_vk','bill_obat','bill_dokter','bill_lain_lain','bill_ugd','bill_rad','bill_lab','bill_fisio','bill_klinik','bill_pemakaian_alat',
+        $needle = array('bill_tindakan_inap','bill_tindakan_oksigen','bill_tindakan_vk','bill_obat','bill_dokter','bill_lain_lain','bill_rad','bill_lab','bill_fisio','bill_klinik','bill_pemakaian_alat',
             );
         if(in_array($field, $needle)){
             $html_dokter = '<th width="20%">Dokter</th>';
             $colspan = 4;
             $percent = 30;
-        }elseif($field == 'bill_apotik'){
+        }elseif(in_array($field, ['bill_apotik'])){
             $html_dokter = '<th width="20%">Qty</th>';
+            $colspan = 4;
+            $percent = 30;
+        }elseif(in_array($field, ['bill_ugd', 'bill_tindakan_bedah'])){
+            $html_dokter = '<th width="20%">Qty/Dokter</th>';
             $colspan = 4;
             $percent = 30;
         }
@@ -1013,17 +1017,18 @@ class Templates extends MX_Controller {
                     $html .= '<tr>';
                     $html .= '<td width="5%" align="center">'.$no.'</td>';
                     $tgl = ($value_data->jenis_tindakan == 11)?$value_data->tgl_obat:$value_data->tgl_transaksi;
-                    $html .= '<td width="20%">'.$this->tanggal->formatDate($tgl).'</td>';
+                    $html .= '<td width="20%">'.$this->tanggal->formatDate($tgl).' <br>'.$value_data->nama_bagian_asal.'</td>';
                     if($value_data->jenis_tindakan==3){
+                        $qty = (in_array($field, ['bill_apotik', 'bill_ugd', 'bill_tindakan_bedah']))?''.$value_data->nama_dokter.'':'';
                         $html .= '<td width="'.$percent.'%"><a href="#" onclick="show_modal_medium('."'Templates/Templates/getDetailFromItem/".$value_data->kode_trans_pelayanan."'".','."'".$value_data->nama_tindakan."'".')">'.$value_data->nama_tindakan.'</a></td>';
                     }else{
-                        $qty = ($field == 'bill_apotik')?''.(int)$value_data->jumlah.' '.$value_data->satuan_kecil.'':'';
+                        $qty = (in_array($field, ['bill_apotik', 'bill_ugd', 'bill_tindakan_bedah']))?''.(int)$value_data->jumlah.' '.$value_data->satuan_kecil.'':'';
                         $html .= '<td width="'.$percent.'%">'.$value_data->nama_tindakan.'</td>';
                     }
                     if(in_array($field, $needle)){
                         $html .= '<td width="20%">'.$value_data->nama_dokter.'</td>';
                     }
-                    if($field == 'bill_apotik'){
+                    if(in_array($field, ['bill_apotik', 'bill_ugd', 'bill_tindakan_bedah'])){
                         $html .= '<td width="20%">'.$qty.'</td>';
                     }
                     $html .= '<td width="20%" align="right">'.number_format($subtotal).',-</td>';
@@ -1529,7 +1534,7 @@ class Templates extends MX_Controller {
         /*html data untuk tampilan*/
         /*get data hasil penunjang medis*/
         $pm_data = $this->Billing->getHasilLab($data->reg_data, $pm, $flag_mcu);
-        
+        // echo '<pre>';print_r($pm_data);die;
         $html = '';
         if($tipe=='RAD'){
             $html .= '<br><table  cellpadding="2" cellspacing="2" border="0" width="100%" style="font-size:36px">
@@ -1537,7 +1542,7 @@ class Templates extends MX_Controller {
                         <td colspan="3" align="center"><br><b>HASIL PEMERIKSAAN RADIOLOGI</b><br><hr></td>
                     </tr> 
                     ';
-            // echo '<pre>';print_r(count($pm_data));die;
+            
             if(count($pm_data) > 0){
                 foreach ($pm_data as $key => $value) {
                     $name = ($value->nama_pemeriksaan)?$value->nama_pemeriksaan:$value->nama_tindakan;
@@ -1580,6 +1585,8 @@ class Templates extends MX_Controller {
             foreach ($referensi as $key => $value) {
                 $getReferensiDt[$value->referensi][] = array('nama_pemeriksaan' => $value->nama_pemeriksaan, 'nama_tarif' => $value->nama_tarif);
             }
+
+            // echo '<pre>';print_r($getReferensiDt);die;
             
             $getRef = array();
             

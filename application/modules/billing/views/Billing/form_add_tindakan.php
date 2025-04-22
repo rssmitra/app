@@ -191,6 +191,8 @@ function getDetailTarifByKodeTarifAndKlas(kode_tarif, kode_klas){
 
   })
 
+  
+
 }
 
 
@@ -271,7 +273,7 @@ function tambah_file()
 
 </script>
 
-<input type="hidden" name="kode_klas" value="" id="kode_klas">
+<!-- <input type="hiddenxx" name="kode_klas" value="" id="kode_klas"> -->
 
 <div id="accordion" class="accordion-style1 panel-group">
     <div class="panel panel-default">

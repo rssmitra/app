@@ -1301,7 +1301,7 @@ public function pengadaan_mod_8(){
 	public function farmasi_mod_2(){
 
 		$query = 'select b.kode_brg, b.nama_brg, b.content, kartu_stok.stok_akhir, b.satuan_kecil, 
-					cast(c.harga_beli as int)as harga_beli, (kartu_stok.stok_akhir * cast(c.harga_beli as int)) as total, kartu_stok.tgl_input as last_update from mt_depo_stok a
+					cast(b.harga_beli as FLOAT)as harga_beli, (kartu_stok.stok_akhir * CAST(b.harga_beli as FLOAT)) as total, kartu_stok.tgl_input as last_update from mt_depo_stok a
 					left join mt_barang b on b.kode_brg=a.kode_brg
 					left join mt_rekap_stok c on c.id_obat=b.id_obat
 					left join (
