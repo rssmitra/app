@@ -351,9 +351,9 @@ function tambah_file()
           $nama_tindakan='';
           $kode_tarif='';
             foreach ($list as $key_list=>$row_list) {
-              // if($row_list->kode_tarif!=$kode_tarif){
 
-                // if($row_list->nama_tindakan!=$nama_tindakan){
+              // if($row_list->kode_tarif!=$kode_tarif){
+              //   if($row_list->nama_tindakan!=$nama_tindakan){
                   $dokter2=isset($row_list->dokter2)?' | '.$row_list->dokter2. ' ':'';
                   $dokter_param2=isset($row_list->dokter2)?','.$row_list->kode_dokter2.','."'$row_list->dokter2'".' ':'';
                   echo
@@ -409,11 +409,11 @@ function tambah_file()
                   <div class="col-md-12 no-padding">
                     <div class="col-md-4 no-padding">
                       <span style="font-weight: bold">Hasil pemeriksaan</span>
-                      <textarea name="hasil_pm['.$row_list->kode_mt_hasilpm.']" style="height:200px !important;width:100% !important" class="hasil_pm">'.$hasil.'</textarea>
+                      <textarea name="hasil_pm['.$row_list->kode_mt_hasilpm.']['.$key_list.']" style="height:200px !important;width:100% !important" class="hasil_pm">'.$hasil.'</textarea>
                     </div>
                     <div class="col-md-4">    
                       <span style="font-weight: bold">Keterangan :</span><br>
-                      <textarea name="keterangan_pm['.$row_list->kode_mt_hasilpm.']" style="height:200px !important;width:100% !important" class="keterangan_pm">'.$ket.'</textarea>     
+                      <textarea name="keterangan_pm['.$row_list->kode_mt_hasilpm.']['.$key_list.']" style="height:200px !important;width:100% !important" class="keterangan_pm">'.$ket.'</textarea>     
                     </div>   
                     <div class="col-md-4">    
                       <span style="font-weight: bold">Penggunaan BHP :</span><br>
@@ -429,10 +429,10 @@ function tambah_file()
                       echo  
                         '</ol>
                         <span><a href="#" class="btn btn-xs btn-primary" onclick="edit_obalkes('.$id.','.$row_list->kode_tarif.')"><i class="fa fa-plus"></i>&nbsp;Tambah</a></span><br>
-                        <input type="hidden" name="kode_tc_hasilpenunjang['.$row_list->kode_mt_hasilpm.']" value="'.$kode_tc_hasilpenunjang.'" >
-                        <input type="hidden" name="kode_mt_hasilpm[]" value="'.$row_list->kode_mt_hasilpm.'" >
-                        <input type="hidden" name="kode_trans_pelayanan['.$row_list->kode_mt_hasilpm.']" value="'.$row_list->kode_trans_pelayanan.'" >
-                        <input type="hidden" name="jumlah_hasilpm['.$row_list->kode_mt_hasilpm.']" value="" >
+                        <input type="hidden" name="kode_tc_hasilpenunjang['.$row_list->kode_mt_hasilpm.']['.$key_list.']" value="'.$kode_tc_hasilpenunjang.'" >
+                        <input type="hidden" name="kode_mt_hasilpm['.$key_list.']" value="'.$row_list->kode_mt_hasilpm.'" >
+                        <input type="hidden" name="kode_trans_pelayanan['.$row_list->kode_mt_hasilpm.']['.$key_list.']" value="'.$row_list->kode_trans_pelayanan.'" >
+                        <input type="hidden" name="jumlah_hasilpm['.$row_list->kode_mt_hasilpm.']['.$key_list.']" value="" >
                     </div>
                   </div>';
                 $i++;

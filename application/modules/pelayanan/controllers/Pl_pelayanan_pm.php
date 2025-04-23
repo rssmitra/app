@@ -169,15 +169,15 @@ class Pl_pelayanan_pm extends MX_Controller {
         // $list =  (isset($_GET['is_edit']) AND $_GET['is_edit']!='')?$this->Pl_pelayanan_pm->get_data_hasil_pasien_pm($kode_penunjang,$kode_bag_tujuan):$this->Pl_pelayanan_pm->get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya);
         if((!isset($_GET['is_mcu'])) AND (isset($_GET['is_edit']) AND $_GET['is_edit']!='')){
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm($kode_penunjang,$kode_bag_tujuan);
-            echo '<pre>';print_r($list);die;
+            // echo '<pre>';print_r($list);die;
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==1)){
             $list = $this->Pl_pelayanan_pm->get_data_hasil_pasien_pm_mcu($kode_penunjang,$kode_bag_tujuan);
         }else if((isset($_GET['is_mcu']) AND $_GET['is_mcu']==2)){
             $list = $this->Pl_pelayanan_pm->get_hasil_pm_mcu($kode_penunjang,$kode_bag_tujuan,$mktimenya);
         }else{
             $list = $this->Pl_pelayanan_pm->get_datatables_hasil_pm($kode_penunjang,$kode_bag_tujuan,$mktimenya);
+            // echo '<pre>';print_r($list);die;
         }
-        // echo '<pre>';print_r($list);die;
         $data['list'] = $list;
         
         // echo '<pre>';print_r($this->db->last_query());die;
