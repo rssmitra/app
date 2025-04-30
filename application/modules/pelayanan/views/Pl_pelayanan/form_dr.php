@@ -806,10 +806,10 @@ function show_icare() {
 
         <?php if(isset($value) AND $value->status_batal==1) :?>
           <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal Berobat</span>
-        <?php endif;?>
-
-        <?php if(isset($value) AND $value->status_periksa!=NULL) :?>
-        <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
+        <?php else: ?>
+          <?php if(isset($value) AND $value->status_periksa!=NULL) :?>
+          <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
+          <?php endif;?>            
         <?php endif;?>            
 
         <!-- hidden form -->

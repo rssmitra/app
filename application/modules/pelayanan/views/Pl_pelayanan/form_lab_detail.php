@@ -240,7 +240,7 @@ $(document).ready(function(){
                   <?php 
                     foreach($pemeriksaan['BPJS']['URIN'] as $key_urin=>$row_urin): 
                       $split = explode("|", $row_urin);
-                      if($key_urin < 2) :
+                      if($key_urin < 5) :
                   ?>
                   <tr>
                     <td style="vertical-align: top;">
@@ -261,7 +261,7 @@ $(document).ready(function(){
                   <?php 
                     foreach($pemeriksaan['BPJS']['URIN'] as $key_urin=>$row_urin): 
                       $split = explode("|", $row_urin);
-                      if($key_urin < 4 && $key_urin >= 2) :
+                      if($key_urin < 10 && $key_urin >= 5) :
                   ?>
                   <tr>
                     <td style="vertical-align: top;">
