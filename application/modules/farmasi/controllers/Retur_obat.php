@@ -76,7 +76,9 @@ class Retur_obat extends MX_Controller {
             $flag = preg_replace('/[^A-Za-z\?!]/', '', $row_list->no_resep);
 
             $row = array();
-            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center" width="30px">'.$no.'</div>';
+            $row[] = '';
+            $row[] = $row_list->kode_pesan_resep;
             $status_lunas = ($row_list->status_bayar == null) ? 0 : 1 ;
             $iter = ($row_list->iter > 0) ? '<span style="background: green;padding:2px; color: white; font-weight: bold">Iter '.$row_list->iter.'x</span>' : '' ;
             $row[] = '<div class="center"><b><a style="color: blue" href="#" onclick="getMenu('."'farmasi/Process_entry_resep/preview_entry/".$row_list->kode_trans_far."?flag=".$flag."&status_lunas=".$status_lunas."'".')">'.$row_list->kode_trans_far.'</a></b></div>';

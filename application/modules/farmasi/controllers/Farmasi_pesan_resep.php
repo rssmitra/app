@@ -282,7 +282,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $data = $this->Farmasi_pesan_resep->get_detail_by_id($kode_pesan_resep);
         $list = $this->E_resep->get_cart_resep($kode_pesan_resep);
 
-        // print_r($list);die;
+        // echo "<pre>";print_r($data);die;
         
         $html = '';
         
@@ -353,12 +353,18 @@ class Farmasi_pesan_resep extends MX_Controller {
             $html .= '<div style="border-bottom:1px solid #333; font-size: 16px"><b><span>Obat yang diberikan farmasi/ditebus ['.$data[0]->kode_trans_far.']</span></b></div><br>';
             $html .= '<div><b><p>No Resep : '.$data[0]->no_resep.'</p><b></div>';
             $html .= '<table class="table table-striped">';
-            $html .= '<tr>';
-                $html .= '<th>Tanggal Transaksi</th>';
-                $html .= '<th>Nama Barang</th>';
-                $html .= '<th>Status Kasir</th>';
-                $html .= '<th class="center">Jumlah</th>';
-                $html .= '<th class="center">Total</th>';
+            $html .= '<tr style="background-color:rgb(202, 201, 201)">';
+                $html .= '<th class="center" style="vertical-align: middle" rowspan="2" width="150px">Tanggal Transaksi</th>';
+                $html .= '<th class="center" style="vertical-align: middle" rowspan="2">Nama Barang</th>';
+                $html .= '<th class="center" style="vertical-align: middle" rowspan="2" width="80px">Status Kasir</th>';
+                $html .= '<th width="80px" colspan="2" class="center">Jumlah Obat</th>';
+                $html .= '<th rowspan="2" class="center" style="vertical-align: middle" width="100px">Total Obat</th>';
+                $html .= '<th rowspan="2" class="center" style="vertical-align: middle" width="100px">Harga Satuan</th>';
+                $html .= '<th rowspan="2" class="center" style="vertical-align: middle" width="100px">Total (Rp)</th>';
+                $html .= '</tr>';
+            $html .= '<tr style="background-color:rgb(202, 201, 201)">';
+                $html .= '<th class="center" width="80px">Non Kronis</th>';
+                $html .= '<th class="center" width="100px">Kronis</th>';
             $html .= '</tr>'; 
             $total=0;
             $total_jumlah=0;
@@ -369,16 +375,19 @@ class Farmasi_pesan_resep extends MX_Controller {
                     $status_trans = ($value_data->kode_tc_trans_kasir==null)?'<label class="label label-yellow">Belum bayar</label>':'<label class="label label-primary">Lunas</label>';
                     $html .= '<td>'.$status_trans.'</td>';
                     $html .= '<td class="center">'.number_format($value_data->jumlah_tebus).'</td>';
-                    $harga = $value_data->biaya_tebus + $value_data->harga_r;
+                    $html .= '<td class="center">'.number_format($value_data->jumlah_obat_23).'</td>';
+                    $jml_obat = $value_data->jumlah_tebus + $value_data->jumlah_obat_23;
+                    $html .= '<td align="center">'.number_format($jml_obat).'</td>';
+                    $harga_jual = $value_data->harga_jual;  
+                    $html .= '<td align="right">'.number_format($harga_jual).'</td>';
+                    $harga = ($harga_jual * $jml_obat) + $value_data->harga_r;
                     $html .= '<td align="right">'.number_format($harga).'</td>';
                 $html .= '</tr>';
-                $total_jumlah += $value_data->jumlah_tebus;
                 $total += $harga;
             }
             $html .= '<tr>';
-                $html .= '<td colspan="3" style="text-align:center">Grand Total</td>';
-                $html .= '<td class="center">'.number_format($total_jumlah).'</td>';
-                $html .= '<td align="right">'.number_format($total).'</td>';
+                $html .= '<td colspan="7" style="text-align:right; font-weight: bold">GRAND TOTAL</td>';
+                $html .= '<td align="right" style="font-weight: bold">'.number_format($total).'</td>';
             $html .= '</tr>'; 
             $html .= '</table>'; 
         }else{

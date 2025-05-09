@@ -218,7 +218,9 @@ function saveCatatanVerif(id){
     </div><!-- /.page-header -->
 
     <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan/find_data" autocomplete="off">
+      
       <input type="hidden" name="kode_profit" id="kode_profit" value="2000">
+      <input type="hidden" name="flag" id="flag" value="<?php echo $flag?>">
 
       <div class="form-group">
         <label class="control-label col-md-2">Pencarian berdasarkan</label>
