@@ -80,15 +80,77 @@ class Farmasi_pesan_resep extends MX_Controller {
                       </div></div>';
 
             $jenis_resep = ($row_list->jenis_resep == 'prb') ? '<span class="red">[PRB]</span><br>' : '<span class="green">[NON PRB]</span><br>';
-            $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTime($row_list->tgl_pesan).'</div>';
+            $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
             $row[] = $row_list->kode_pesan_resep;
             $row[] = $row_list->keterangan;
             // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
-            $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai</label>';
+            $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai diproses</label><br><span>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</span>';
             $row[] = '<div class="center">'.$status_tebus.'</div>';
-            $lbl_eresep = ($row_list->e_resep == 1) ? '<a href="#" class="label label-lg label-success bigger-120" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-check-circle"></i></a> ' : '<a href="#" class="label label-xs label-warning" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-times-circle"></i> e-Resep</a>';
+
+            if($row_list->status_tebus == null){
+                $lbl_eresep = ($row_list->e_resep == 1) ? '<a href="#" class="label label-xs label-success" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-edit"></i> Update Resep</a>' : '<a href="#" class="label label-xs label-primary" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-pencil"></i> Input Resep</a>';
+            }else{
+                $lbl_eresep = '<i class="fa fa-check bigger-180 green"></i>';
+
+            }
+
+            $row[] = '<div class="center">'.$lbl_eresep.'</div>';
+           
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Farmasi_pesan_resep->count_all_id($this->input->get('q')),
+                        "recordsFiltered" => $this->Farmasi_pesan_resep->count_all_id($this->input->get('q')),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function get_data_by_mr()
+    {
+        /*get data from model*/
+        $list = $this->Farmasi_pesan_resep->get_by_no_mr($this->input->get('no_mr'));
+        // print_r($this->db->last_query());
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '';
+            $btn_delete = ($row_list->status_tebus==null)?'<li><a href="#" id="btn_delete_data" onclick="delete_pesan_resep('.$row_list->kode_pesan_resep.')">Hapus</a></li>':'';
+
+            $row[] = '<div class="center"><div class="btn-group">
+                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
+                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-inverse">
+                             <li><a href="#" id="btn_edit_data" onclick="showModalEdit('.$row_list->kode_pesan_resep.')">Ubah</a></li>
+                            '.$btn_delete.'
+                        </ul>
+                      </div></div>';
+
+            $jenis_resep = ($row_list->jenis_resep == 'prb') ? '<span class="red">[PRB]</span><br>' : '<span class="green">[NON PRB]</span><br>';
+            $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
+            $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
+            $row[] = $row_list->kode_pesan_resep;
+            $row[] = $row_list->keterangan;
+            // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
+            // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
+            $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai diproses</label><br><span>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</span>';
+            $row[] = '<div class="center">'.$status_tebus.'</div>';
+
+            if($row_list->status_tebus == null){
+                $lbl_eresep = ($row_list->e_resep == 1) ? '<a href="#" class="label label-xs label-success" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-edit"></i> Update Resep</a>' : '<a href="#" class="label label-xs label-primary" onclick="form_eresep('.$row_list->kode_pesan_resep.')"><i class="fa fa-pencil"></i> Input Resep</a>';
+            }else{
+                $lbl_eresep = '<i class="fa fa-check bigger-180 green"></i>';
+
+            }
+
             $row[] = '<div class="center">'.$lbl_eresep.'</div>';
            
             $data[] = $row;
@@ -220,7 +282,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $data = $this->Farmasi_pesan_resep->get_detail_by_id($kode_pesan_resep);
         $list = $this->E_resep->get_cart_resep($kode_pesan_resep);
 
-        // print_r($this->db->last_query());die;
+        // print_r($list);die;
         
         $html = '';
         
@@ -233,10 +295,13 @@ class Farmasi_pesan_resep extends MX_Controller {
             <tr>
                 <th width="30px">No</th>
                 <th>Nama Obat</th>
-                <th width="150px">Signa</th>
+                <th width="180px">Signa</th>
                 <th width="60px">Qty</th>
-                <th>Keterangan</th>
-                <th width="150px">Verifikasi</th>
+                <th width="200px">Keterangan</th>
+                <th width="200px">Dibuat oleh/Waktu</th>
+                <th width="80px" style="text-align: center">Status Tebus</th>
+                <th width="80px">Verifikasi</th>
+                <th width="80px">Catatan Verifikasi</th>
             </tr>
             </thead>
             <tbody>';
@@ -252,11 +317,27 @@ class Farmasi_pesan_resep extends MX_Controller {
                 $html .= '<td>'.$row_list->jml_dosis.' x '.$row_list->jml_dosis_obat.' '.$row_list->satuan_obat.' '.$row_list->aturan_pakai.'</td>';
                 $html .= '<td>'.$row_list->jml_pesan.' '.$row_list->satuan_obat.'</td>';
                 $html .= '<td>'.$row_list->keterangan.'</td>';
+                $html .= '<td><span style="font-size: 11px">'.$row_list->updated_by.'<br>'.$this->tanggal->formatDateTimeFormDmy($row_list->updated_date).'</td>';
+                if($row_list->kode_brg == $row_list->kode_brg_fr){
+                    $status_tebus = '<i class="fa fa-check green bigger-120"></i>';
+                }else{
+                    $status_tebus = '<i class="fa fa-times red bigger-120"></i>';
+                }
+                $html .= '<td class="center">'.$status_tebus.'</td>';
                 $verifikasi_apotik_online = ($row_list->verifikasi_apotik_online ==  1)?'checked':'';
-                $html .= '<td><div class="center"><label>
-                                            <input name="switch-field-1" class="ace ace-switch" id="status_verif_'.$row_list->id.'" onchange="udpateStatusVerifperItem('.$row_list->id.')" type="checkbox" value="1" '.$verifikasi_apotik_online.'>
-                                            <span class="lbl"></span>
-                                        </label></div></td>';
+                $html .= '<td>
+                            <div class="center">
+                                <label>
+                                    <input name="switch-field-1" class="ace ace-switch" id="status_verif_'.$row_list->id.'" onchange="udpateStatusVerifperItem('.$row_list->id.')" type="checkbox" value="1" '.$verifikasi_apotik_online.'>
+                                    <span class="lbl"></span>
+                                </label>
+                            </div>
+                        </td>';
+                        $html .= '<td>
+                            <div class="center">
+                                <input name="catatan_verif_'.$row_list->id.'" class="form-control" onchange="saveCatatanVerif('.$row_list->id.')" id="catatan_verif_'.$row_list->id.'" type="text" value="'.$row_list->catatan_verifikasi.'">
+                            </div>
+                        </td>';
                 $html .= '</tr>';
             }
 
@@ -283,7 +364,7 @@ class Farmasi_pesan_resep extends MX_Controller {
             $total_jumlah=0;
             foreach ($data as $value_data) {
                 $html .= '<tr>';
-                    $html .= '<td>'.$this->tanggal->formatDateTime($value_data->tgl_trans).'</td>';
+                    $html .= '<td>'.$this->tanggal->formatDateTimeFormDmy($value_data->tgl_trans).'</td>';
                     $html .= '<td>'.$value_data->nama_brg.'</td>';
                     $status_trans = ($value_data->kode_tc_trans_kasir==null)?'<label class="label label-yellow">Belum bayar</label>':'<label class="label label-primary">Lunas</label>';
                     $html .= '<td>'.$status_trans.'</td>';

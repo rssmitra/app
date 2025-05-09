@@ -161,7 +161,16 @@ class E_resep_model extends CI_Model {
 	}
 	
 	public function get_cart_resep($kode_pesan_resep){
-		return $this->db->select('fr_tc_pesan_resep_detail.*, mt_barang.satuan_kecil')->join('mt_barang', 'mt_barang.kode_brg = fr_tc_pesan_resep_detail.kode_brg','left')->order_by('id', 'ASC')->get_where('fr_tc_pesan_resep_detail', array('kode_pesan_resep' => $kode_pesan_resep, 'parent' => '0') )->result();
+		$query = $this->db->select('fr_tc_far_detail.kode_brg as kode_brg_fr, fr_tc_pesan_resep_detail.*, mt_barang.satuan_kecil, fr_tc_pesan_resep.keterangan as keterangan_resep')
+		->join('mt_barang', 'mt_barang.kode_brg = fr_tc_pesan_resep_detail.kode_brg','left')
+		->join('fr_tc_pesan_resep', 'fr_tc_pesan_resep.kode_pesan_resep = fr_tc_pesan_resep_detail.kode_pesan_resep','left')
+		->join('fr_tc_far', 'fr_tc_far.kode_pesan_resep = fr_tc_pesan_resep.kode_pesan_resep','left')
+		->join('fr_tc_far_detail', '(fr_tc_far_detail.kode_trans_far = fr_tc_far.kode_trans_far AND fr_tc_far_detail.kode_brg = fr_tc_pesan_resep_detail.kode_brg)','left')
+		->order_by('id', 'ASC')
+		->from('fr_tc_pesan_resep_detail')
+		->where(array('fr_tc_pesan_resep_detail.kode_pesan_resep' => $kode_pesan_resep, 'parent' => '0') );
+
+		return $this->db->get()->result();
 	}
 
 	public function get_cart_resep_for_template($kode_pesan_resep){

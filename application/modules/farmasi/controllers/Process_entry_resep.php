@@ -697,6 +697,24 @@ class Process_entry_resep extends MX_Controller {
 
     }
 
+    public function save_catatan_verif(){
+        // print_r($_POST);die;
+        $this->db->trans_begin();
+        $dataexc = ['catatan_verifikasi' => $_POST['catatan']];
+        if ($this->db->update('fr_tc_pesan_resep_detail', $dataexc, ['id' => $_POST['ID']]))
+        {
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'id' => $_POST['ID'] ));
+        }
+        else
+        {
+            $this->db->trans_rollback();
+            // print_r($this->db->last_query());die;
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+
+    }
+
 
 
 

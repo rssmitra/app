@@ -1877,9 +1877,9 @@ class Pl_pelayanan extends MX_Controller {
             $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );
             $this->logs->save('pl_tc_poli', $_POST['no_kunjungan'], 'update pl_tc_poli Modul Pelayanan', json_encode($poli_data),'no_kunjungan');
         }
-
+        $substr = substr($_POST['kode_bag'], 0, 2);
         // jika  IGD atau Poli maka update tc registrasi
-        if( !in_array($_POST['kode_bag'], array('030501') ) ){
+        if( in_array($substr, array('01','02') ) ){
              /*update tc_registrasi*/
             $reg_data = array('tgl_jam_keluar' => date('Y-m-d H:i:s'), 'kode_bagian_keluar' => $_POST['kode_bag'], 'status_batal' => 1 );
             $this->db->update('tc_registrasi', $reg_data, array('no_registrasi' => $_POST['no_registrasi'] ) );
