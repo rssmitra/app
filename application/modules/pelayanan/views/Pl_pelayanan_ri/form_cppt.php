@@ -20,7 +20,7 @@ jQuery(function($) {
 
   });  
 
-  $('#timepicker1').timepicker({
+  $('#timepicker1, #timepicker2').timepicker({
     minuteStep: 1,
     showSeconds: true,
     showMeridian: false,
@@ -31,6 +31,7 @@ jQuery(function($) {
     }
   }).on('focus', function() {
     $('#timepicker1').timepicker('showWidget');
+    $('#timepicker2').timepicker('showWidget');
   }).next().on(ace.click_event, function(){
     $(this).prev().focus();
   });
@@ -85,7 +86,30 @@ $(document).ready(function() {
             achtungHideLoader();        
           } 
       });
+    });
 
+    // btn upload file rm
+    $('#btn_add_file_rm').click(function (e) {   
+      e.preventDefault();
+      $.ajax({
+          url: $('#form_pelayanan').attr('action'),
+          data: $('#form_pelayanan').serialize(),            
+          dataType: "json",
+          type: "POST",
+          complete: function(xhr) {             
+            var data=xhr.responseText;        
+            var jsonResponse = JSON.parse(data);        
+            if(jsonResponse.status === 200){          
+              $.achtung({message: jsonResponse.message, timeout:5});     
+              $('#section_form_cppt').hide('fast');
+              $('#section_form_upload_file_rm').hide('fast');
+              $('#section_history_cppt').show('fast');
+            }else{           
+              $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
+            }        
+            achtungHideLoader();        
+          } 
+      });
     });
 
     $('#btn_search_data_cppt').click(function (e) {
@@ -106,10 +130,10 @@ $(document).ready(function() {
       });
     });
 
-  $('#btn_reset_data_cppt').click(function (e) {
-          e.preventDefault();
-          reset_table();
-  });
+    $('#btn_reset_data_cppt').click(function (e) {
+            e.preventDefault();
+            reset_table();
+    });
 
   $('#btn_export_pdf_cppt').click(function (e) {
     var url_search = $('#form_search').attr('action');
@@ -190,6 +214,14 @@ function verif_dpjp(cppt_id, value){
 function add_cppt(){
   preventDefault();
   $('#section_form_cppt').show('fast');
+  $('#section_form_upload_file_rm').hide('fast');
+  $('#section_history_cppt').hide('fast');
+}
+
+function upload_file_rm(){
+  preventDefault();
+  $('#section_form_cppt').hide('fast');
+  $('#section_form_upload_file_rm').show('fast');
   $('#section_history_cppt').hide('fast');
 }
 
@@ -224,6 +256,39 @@ function reset_table(){
 
 function reload_table(){
  oTableCppt.ajax.reload(); //reload datatable ajax 
+}
+
+function hapus_file(a, b)
+
+{
+
+  if(b != 0){
+    $.getJSON("<?php echo base_url('posting/delete_file') ?>/" + b, '', function(data) {
+        document.getElementById("file"+a).innerHTML = "";
+        greatComplate(data);
+    });
+  }else{
+    y = a ;
+    x = a+1;
+    document.getElementById("file"+a).innerHTML = "";
+  }
+
+}
+
+counterfile = <?php $j=1;echo $j.";";?>
+
+function tambah_file()
+
+{
+
+  counternextfile = counterfile + 1;
+
+  counterIdfile = counterfile + 1;
+
+  document.getElementById("input_file"+counterfile).innerHTML = "<div id=\"file"+counternextfile+"\"><div class='form-group'><label class='col-md-2'>&nbsp;</label><div class='col-md-3'><input type='text' name='pf_file_name[]' id='pf_file_name' class='form-control'></div><div class='col-md-4'><input type='file' id='pf_file' name='pf_file[]' class='upload_file form-control' /></div><div class='col-md-1' style='margin-left:-2.5%'><input type='button' onclick='hapus_file("+counternextfile+",0)' value='x' class='btn btn-sm btn-danger'/></div></div></div><div id=\"input_file"+counternextfile+"\" style='padding-top: 3px'></div>";
+
+  counterfile++;
+
 }
 
 </script>
@@ -339,11 +404,63 @@ function reload_table(){
     <hr>
   </div>
 
+  <div class="col-md-12" id="section_form_upload_file_rm" style="display: none">
+
+    <div class="center"><span style="font-size: 14px"><b>Upload File Rekam Medis </b></span><br><small>(File Rekam Medis yang diupload adalah file PDF yang keluar dari Alat Medis atau hasil penunjang dari Luar RS )</small></div>
+    <br>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="">*Tanggal/Jam</label>
+      <div class="col-md-6">
+        <div class="input-group">
+            
+            <input name="cppt_tgl" id="cppt_tgl" placeholder="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd" class="form-control date-picker" type="text" value="<?php echo date('Y-m-d')?>">
+            <span class="input-group-addon">
+              
+              <i class="ace-icon fa fa-calendar"></i>
+            
+            </span>
+
+            <input id="timepicker2" name="cppt_jam_upload" type="text" class="form-control">
+            <span class="input-group-addon">
+              <i class="fa fa-clock-o bigger-110"></i>
+            </span>
+            
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <p style="font-weight: bold">UPLOAD HASIL PEMERIKSAAN LAINNYA</p>
+    <div class="form-group">
+        <label class="control-label col-md-2">Nama Dokumen</label>
+        <div class="col-md-3">
+          <input name="pf_file_name[]" id="pf_file_name" class="form-control" type="text">
+        </div>
+        <div class="col-md-4">
+          <input type="file" id="pf_file" name="pf_file[]" class="upload_file form-control"/>
+        </div>
+        <div class ="col-md-1" style="margin-left:-2.5%">
+          <input onClick="tambah_file()" value="+" type="button" class="btn btn-sm btn-info" />
+        </div>
+    </div>
+
+    <div id="input_file<?php echo $j;?>"></div>
+    
+    <?php echo $attachment; ?>
+    
+    <div class="col-sm-12 no-padding">
+      <button type="button" class="btn btn-sm btn-primary" id="btn_add_file_rm"><i class="fa fa-upload"></i> Proses Upload</button> 
+    </div>
+
+  </div>
+
   <div class="col-md-12" id="section_history_cppt">
     <!-- add form -->
     <div style="">
       <a href="#" class="btn btn-xs btn-primary" onclick="add_cppt()"><i class="fa fa-plus"></i> Input CPPT</a>
+      <a href="#" class="btn btn-xs btn-primary" onclick="upload_file_rm()"><i class="fa fa-upload"></i> Upload File Rekam Medis</a>
     </div>
+    <hr>
     <center><span style="font-size: 14px"><b>CATATAN PERKEMBANGAN PASIEN TERINTEGRASI <br>DALAM SATU PERIODE KEPERAWATAN</b></span></center><br>
       <form class="form-horizontal" method="post" id="form_search" action="pelayanan/Pl_pelayanan_ri/find_data" autocomplete="off">
 

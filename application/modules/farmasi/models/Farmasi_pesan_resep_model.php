@@ -99,15 +99,28 @@ class Farmasi_pesan_resep_model extends CI_Model {
 	public function get_by_no_kunj($id)
 	{
 		$this->_main_query();
-		$this->db->select('fr_tc_far.kode_trans_far, (select count(kode_trans_far) from fr_tc_far_his where kode_trans_far=fr_tc_far.kode_trans_far) as total_retur');
+		$this->db->select('fr_tc_far.kode_trans_far, (select count(kode_trans_far) from fr_tc_far_his where kode_trans_far=fr_tc_far.kode_trans_far) as total_retur, fr_tc_far.tgl_trans');
 		$this->db->join('fr_tc_far',''.$this->table.'.kode_pesan_resep=fr_tc_far.kode_pesan_resep','left');
 		$this->db->where(''.$this->table.'.no_kunjungan',$id);
 		$this->db->order_by(''.$this->table.'.kode_pesan_resep','ASC');		
+		
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();
 		
-		
+	}
+
+	public function get_by_no_mr($no_mr)
+	{
+		$this->_main_query();
+		$this->db->select('fr_tc_far.kode_trans_far, (select count(kode_trans_far) from fr_tc_far_his where kode_trans_far=fr_tc_far.kode_trans_far) as total_retur, fr_tc_far.tgl_trans');
+		$this->db->join('fr_tc_far',''.$this->table.'.kode_pesan_resep=fr_tc_far.kode_pesan_resep','left');
+		$this->db->where(''.$this->table.'.no_mr',$no_mr);
+		$this->db->order_by(''.$this->table.'.kode_pesan_resep','DESC');		
+		$this->db->limit(10);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
 	}
 
 	public function count_all_id($id)

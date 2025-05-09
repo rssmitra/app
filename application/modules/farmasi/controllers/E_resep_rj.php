@@ -96,7 +96,13 @@ class E_resep_rj extends MX_Controller {
             $penjamin = (!empty($row_list->nama_perusahaan))?$row_list->nama_perusahaan:$row_list->nama_kelompok;
             $no_sep = ($row_list->kode_perusahaan == 120) ? '<br>('.$row_list->no_sep.')' : '';
             $row[] = ucwords($penjamin).$no_sep;
-            $row[] = $row_list->diagnosa_akhir;
+            if($_GET['flag'] == 'RJ') {
+                $row[] = $row_list->diagnosa_akhir;
+            }else{
+                $row[] = $row_list->keterangan;
+            }
+
+
             if($row_list->status_batal == 1){
                 $title_status = 'Resep Batal';
                 $class_btn = 'btn-danger';
@@ -127,10 +133,17 @@ class E_resep_rj extends MX_Controller {
                             </div>';
             $row[] = '<div class="center">'.$btn_status.'</div>';
             $verifikasi_apotik_online = ($row_list->verifikasi_apotik_online ==  1)?'checked':'';
-            $row[] = '<div class="center"><label>
+            if($_GET['flag'] == 'RJ') {
+                if($row_list->kode_perusahaan == 120){
+                    $row[] = '<div class="center"><label>
                                             <input name="switch-field-1" class="ace ace-switch" id="status_verif_'.$row_list->kode_pesan_resep.'" onchange="udpateStatusVerif('.$row_list->kode_pesan_resep.')" type="checkbox" value="1" '.$verifikasi_apotik_online.'>
                                             <span class="lbl"></span>
                                         </label></div>';
+
+                }else{
+                    $row[] = '<div class="center"><i class="fa fa-check green bigger-120"></i></div>';
+                }
+            }
             
             
             $data[] = $row;

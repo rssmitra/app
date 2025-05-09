@@ -730,8 +730,8 @@ class Pl_pelayanan_pm_model extends CI_Model {
 
 
 	function get_penunjang_by_no_mr($no_mr){
-		if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
-		{
+		// if( ! $penunjang = $this->cache->get('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'') )
+		// {
 			$this->db->select('tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan');
 			$this->db->select('tgl_daftar, tgl_isihasil, tgl_periksa');
 			$this->db->select("CAST((
@@ -753,8 +753,8 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			$this->db->where('SUBSTRING(kode_bagian_tujuan, 1, 2) =', '05');
 			$this->db->order_by('tgl_masuk', 'DESC');
 			$penunjang = $this->db->get()->result();
-			$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
-		}
+		// 	$this->cache->save('rm_penunjang_medis_'.$no_mr.'_'.date('Y-m-d').'', $penunjang, 3600);
+		// }
 
 		$getDataPm = [];
 		foreach ($penunjang as $key_pm => $val_pm) {

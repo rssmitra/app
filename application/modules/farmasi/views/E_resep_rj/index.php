@@ -178,6 +178,30 @@ function rollback_cancel_resep(id){
   }
 }
 
+function saveCatatanVerif(id){
+  preventDefault();
+  $.ajax({
+    url: 'farmasi/process_entry_resep/save_catatan_verif',
+    type: "post",
+    data: { ID : id, catatan : $("#catatan_verif_"+id+"").val() },
+    dataType: "json",
+    beforeSend: function() {
+    },
+    uploadProgress: function(event, position, total, percentComplete) {
+    },
+    complete: function(xhr) {     
+      var data=xhr.responseText;
+      var jsonResponse = JSON.parse(data);
+      if(jsonResponse.status === 200){
+        $.achtung({message: jsonResponse.message, timeout:5});
+      }else{
+        $.achtung({message: jsonResponse.message, timeout:5, 'className' : 'achtungFail'});
+      }
+      achtungHideLoader();
+    }
+  });
+}
+
 </script>
 
 <div class="row">
@@ -276,9 +300,15 @@ function rollback_cancel_resep(id){
                 <th>Nama Dokter</th>
                 <th>Asal Poli/bagian</th>
                 <th>Penjamin</th>
+                <?php if($flag == 'RJ') : ?>
                 <th width="180px">Diagnosa Akhir</th>
+                <?php else: ?>
+                  <th width="180px">Keterangan</th>
+                <?php endif;  ?>
                 <th width="90px">Status Resep</th>
+                <?php if($flag == 'RJ') : ?>
                 <th width="80px">Verifikasi</th>
+                <?php endif;?>
               </tr>
             </thead>
             <tbody>

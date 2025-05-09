@@ -1018,6 +1018,7 @@ $('#lampiran_lab').click(function (e) {
                         <th>Nama Obat</th>
                         <th>Signa</th>
                         <th class="center">Qty</th>
+                        <th class="center" width="100px">Keterangan</th>
                         <th class="center">#</th>
                     </tr>
                     </thead>
@@ -1035,12 +1036,22 @@ $('#lampiran_lab').click(function (e) {
                       $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.''.$is_free_text.'</td>';
                       $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
                       $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
+                      // catatan verifikasi
+                      if($ver->verifikasi_apotik_online == 1){
+                        $catatan_verifikasi = ($ver->catatan_verifikasi == NULL) ? $ver->keterangan : '<span style="color: green; font-weight: bold">'.$ver->catatan_verifikasi.'</span>';
+                      }else{
+                        $catatan_verifikasi = ($ver->catatan_verifikasi == NULL) ? $ver->keterangan : '<span style="color: red; font-weight: bold">'.$ver->catatan_verifikasi.'</span>';
+                      }
+                      
+                      $html .= '<td>'.$catatan_verifikasi.'</td>';
                         $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".', '."'".$ver->kode_brg."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';
                       $html .= '</tr>';
 
                     }
 
                     $html .= '</tbody></table>';
+
+                    $html .= 'Keterangan : <br>'.$eresep[0]->keterangan_resep;
                 
                 echo $html;
                 else :

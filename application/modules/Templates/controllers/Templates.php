@@ -445,21 +445,67 @@ class Templates extends MX_Controller {
                 'url' => 'templates/Templates/graph?prefix=262&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
             );
 
-            $data[0] = array(
+            // $data[0] = array(
+            //     'mod' => $_GET['mod'],
+            //     'nameid' => 'graph-table-1',
+            //     'style' => 'table',
+            //     'col_size' => 12,
+            //     'url' => 'templates/Templates/graph?prefix=263&TypeChart=table&style=261&mod='.$_GET['mod'].'',
+            // );
+
+            // $data[3] = array(
+            //     'mod' => $_GET['mod'],
+            //     'nameid' => 'graph-table-2',
+            //     'style' => 'table',
+            //     'col_size' => 12,
+            //     'url' => 'templates/Templates/graph?prefix=264&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            // );
+
+            // $data[4] = array(
+            //     'mod' => $_GET['mod'],
+            //     'nameid' => 'graph-table-3',
+            //     'style' => 'table',
+            //     'col_size' => 4,
+            //     'url' => 'templates/Templates/graph?prefix=265&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            // );
+            
+            
+        }
+
+        // modul Radiologi
+        if ($_GET['mod']==29) {
+
+            $data[1] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-1',
-                'style' => 'table',
+                'nameid' => 'graph-line-1',
+                'style' => 'line',
                 'col_size' => 12,
-                'url' => 'templates/Templates/graph?prefix=263&TypeChart=table&style=261&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=291&TypeChart=line&style=1&mod='.$_GET['mod'].'',
             );
 
-            $data[3] = array(
+            $data[2] = array(
                 'mod' => $_GET['mod'],
-                'nameid' => 'graph-table-2',
-                'style' => 'table',
+                'nameid' => 'graph-pie-1',
+                'style' => 'pie',
                 'col_size' => 12,
-                'url' => 'templates/Templates/graph?prefix=264&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+                'url' => 'templates/Templates/graph?prefix=292&TypeChart=pie&style=1&mod='.$_GET['mod'].'',
             );
+
+            // $data[0] = array(
+            //     'mod' => $_GET['mod'],
+            //     'nameid' => 'graph-table-1',
+            //     'style' => 'table',
+            //     'col_size' => 12,
+            //     'url' => 'templates/Templates/graph?prefix=293&TypeChart=table&style=291&mod='.$_GET['mod'].'',
+            // );
+
+            // $data[3] = array(
+            //     'mod' => $_GET['mod'],
+            //     'nameid' => 'graph-table-2',
+            //     'style' => 'table',
+            //     'col_size' => 12,
+            //     'url' => 'templates/Templates/graph?prefix=294&TypeChart=table&style=1&mod='.$_GET['mod'].'',
+            // );
 
             // $data[4] = array(
             //     'mod' => $_GET['mod'],

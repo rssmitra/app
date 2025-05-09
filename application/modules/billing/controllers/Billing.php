@@ -772,7 +772,7 @@ class Billing extends MX_Controller {
         $this->create_jurnal($dataTranskasir, $dataAkunting, $new_id_ak_tc_transaksi);
 
         // update tgl keluar registrasi
-        $tgl_keluar_pasien = $this->master->get_tgl_keluar($_POST['no_registrasi']);
+        $tgl_keluar_pasien = $_POST['tgl_jam_keluar'].' '.date('H:i:s');
 
         $this->db->update('tc_registrasi', array('tgl_jam_keluar' => $tgl_keluar_pasien), array('no_registrasi' => $_POST['no_registrasi']) );
         

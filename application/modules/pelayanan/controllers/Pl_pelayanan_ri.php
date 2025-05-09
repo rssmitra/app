@@ -557,6 +557,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
+        $data['attachment'] = $this->upload_file->CsmgetUploadedFile($kunjungan->no_registrasi);
         // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_cppt', $data);
@@ -1019,6 +1020,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $this->db->where('cppt_id', $cppt_id)->update('th_cppt', $dataexc);
                 $newId = $cppt_id;
             }
+
+            
                         
             if ($this->db->trans_status() === FALSE)
             {
