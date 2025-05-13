@@ -130,6 +130,10 @@ function popUnder(node) {
                 <i class="ace-icon fa fa-refresh icon-on-right bigger-110"></i>
                 Reset
               </a>
+              <a href="#" id="btn_export_excel" class="btn btn-xs btn-success">
+                <i class="ace-icon fa fa-file icon-on-right bigger-110"></i>
+                Excel
+              </a>
             </div>
           </div>
           
@@ -140,7 +144,7 @@ function popUnder(node) {
       <hr class="separator">
       <!-- div.dataTables_borderWrap -->
       <div style="margin-top:-27px">
-        <table id="dynamic-table" base-url="farmasi/Rekap_transaksi_obat/get_data?flag=All" class="table table-bordered table-hover">
+        <table id="dynamic-table" base-url="farmasi/Rekap_transaksi_obat" class="table table-bordered table-hover">
           <thead>
             <tr>  
               <th class="center">No</th>
@@ -164,7 +168,7 @@ function popUnder(node) {
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<script src="<?php echo base_url().'assets/js/custom/als_datatable_custom_url.js'?>"></script>
+<script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
 
 
 

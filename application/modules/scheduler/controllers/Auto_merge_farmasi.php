@@ -178,16 +178,137 @@ class Auto_merge_farmasi extends MX_Controller {
     }
 
     public function arr_sep(){
-        $sep = $this->db->get('t_sep_far')->result();
-        foreach($sep as $row){
-            $dt = $this->db->get_where('fr_tc_far_detail_log_prb', ['no_sep' => $row->no_sep])->row();
-            if(!empty($dt)){
-                $count[] = $this->merge_dokumen_klaim($dt->kode_trans_far);
+        $sep = $this->db->order_by('id', 'ASC')->where('status is null')->get('t_sep_far')->row();
+        $count = [];
+        $dt = $this->db->get_where('fr_tc_far_detail_log_prb', ['no_sep' => $sep->no_sep])->row();
+        if(!empty($dt)){
+            $return = $this->merge_dokumen_klaim($dt->kode_trans_far);
+        }else{
+            $dt = $this->db->join('fr_tc_far', 'fr_tc_far.no_registrasi =tc_registrasi.no_registrasi', 'left')->get_where('tc_registrasi', ['no_sep' => $sep->no_sep])->row();
+            // print_r($dt);die;
+            if(isset($dt->kode_trans_far)){
+                $return = $this->verifikasi_dok_prb($dt->kode_trans_far, $sep->no_sep);
+            }else{
+                $this->db->where('no_sep', $sep->no_sep)->update('t_sep_far', ['status' => 0]);
+                $return = "Failed";
             }
         }
+        $data = [];
+        $data['return'] = $return;
+        $this->load->view('view_auto_merge_farmasi_index', $data);
 
-        echo array_sum($count);
-        exit;
+    }
+
+    public function verifikasi_dok_prb($kode_trans_far, $no_sep){
+
+        $txt_success = '';
+        $txt_failed = '';
+        $count_result = [];
+        $data_log = [];
+
+        // kode sep untuk file scan resep
+        $substr_no_sep = substr($no_sep, -4);
+        // echo '<pre>';print_r($last_date);exit;
+        // $filename = 'uploaded/farmasi/scan_'.$m.$y.'/'.$this->date.'/'.$substr_no_sep.'.pdf';
+        // echo $filename; exit;
+
+        // jika file hasil scan ada maka lanjutkan
+        // if (file_exists($filename)) {
+            
+        echo "File ".$substr_no_sep.".pdf exist, please wait to execute this file" . PHP_EOL;
+
+        if(isset($kode_trans_far)){
+
+            // get list item obat
+            $items = $this->Etiket_obat->get_detail_resep_data($kode_trans_far)->result();
+            // echo '<pre>';print_r($items);exit;
+            // proses verifikasi dan merge dokumen klaim
+            foreach( $items as $key => $row ){
+
+                // define kode barang
+                $kode_brg = $row->kode_brg;
+                echo "verifikasi item [".$kode_brg."] ".$row->nama_brg." success. " . PHP_EOL;
+
+                // cek data existing
+                $dt_existing = $this->db->get_where('fr_tc_far_detail_log_prb', array('kode_brg' => $kode_brg, 'kode_trans_far' => $kode_trans_far, 'kd_tr_resep' => $row->kd_tr_resep) )->row();
+
+                // define id tc far racikan
+                $id_tc_far_racikan = isset($row->id_tc_far_racikan)?$this->regex->_genRegex($row->id_tc_far_racikan, 'RQXINT'):0;
+
+                // sub total
+                $subtotal = isset($row->sub_total) ? ($row->jumlah_obat_23 * $row->harga_jual) :0;
+
+                // data to execute
+                $data_farmasi = array(
+                    'id_tc_far_racikan' => $id_tc_far_racikan,
+                    'kd_tr_resep' => isset($row->kd_tr_resep)?$this->regex->_genRegex($row->kd_tr_resep, 'RQXINT'):0,
+                    'no_sep' => isset($no_sep)?$this->regex->_genRegex($no_sep, 'RQXINT'):0,
+                    'kode_trans_far' => isset($kode_trans_far)?$this->regex->_genRegex($kode_trans_far, 'RQXINT'):0,
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'kode_brg' => isset($kode_brg)?$this->regex->_genRegex($kode_brg, 'RGXQSL'):0,
+                    'nama_brg' => $row->nama_brg,
+                    'satuan_kecil' => $row->satuan_kecil,
+                    'jumlah' =>  isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
+                    'harga_satuan' =>  isset($row->harga_jual)?$this->regex->_genRegex($row->harga_jual, 'RQXINT'):0,
+                    'sub_total' =>  $subtotal,
+                );
+                
+                
+                // kondisi untuk diporses update/insert
+                if( count($dt_existing) > 0 ){
+                    /*update existing*/
+                    $data_farmasi['updated_date'] = date('Y-m-d H:i:s');
+                    $data_farmasi['updated_by'] = "AUTO RUN BY SCHEDULER";
+
+                    // proses udpate data
+                    $this->db->update('fr_tc_far_detail_log_prb', $data_farmasi, array('id_fr_tc_far_detail_log_prb' => $dt_existing->id_fr_tc_far_detail_log_prb) );
+
+                    /*save log*/
+                    $this->logs->save('fr_tc_far_detail_log_prb', $dt_existing->id_fr_tc_far_detail_log_prb, 'update record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
+                
+                }else{    
+                    $data_farmasi['created_date'] = date('Y-m-d H:i:s');
+                    $data_farmasi['created_by'] = "AUTO RUN BY SCHEDULER";
+                    $this->db->insert( 'fr_tc_far_detail_log_prb', $data_farmasi );
+                    
+                    // proses insert data
+                    $newId = $this->db->insert_id();
+
+                    /*save log*/
+                    $this->logs->save('fr_tc_far_detail_log_prb', $newId, 'insert new record on verifikasi obat prb module', json_encode($data_farmasi),'id_fr_tc_far_detail_log_prb');
+
+                }
+
+                $this->db->trans_commit();
+
+                $data_log = array(
+                    'jumlah_obat_23' => isset($row->jumlah_obat_23)?$this->regex->_genRegex($row->jumlah_obat_23, 'RQXINT'):0,
+                );
+                // update log
+                $this->db->update('fr_tc_far_detail_log', $data_log, array('kode_trans_far' => $kode_trans_far, 'relation_id' => $data_farmasi['kd_tr_resep']) );
+                $this->db->trans_commit();
+
+                $this->db->update('fr_tc_far_detail', $data_log, array('kode_trans_far' => $kode_trans_far, 'kd_tr_resep' => $data_farmasi['kd_tr_resep']) );
+                $this->db->trans_commit();
+                // echo '<pre>';print_r($data_log);exit;
+            }
+        
+            // set dokumen
+            $url_merge = $this->merge_dokumen_klaim($kode_trans_far);
+            // echo '<pre>';print_r($url_merge);exit;
+            // update fr_tc_far
+            $this->db->update('fr_tc_far', array('verifikasi_prb' => 1, 'scheduler_running_time' => date('Y-m-d H:i:s')), array('kode_trans_far' => $kode_trans_far) );
+
+            return $url_merge;
+
+            echo "success  " . PHP_EOL;
+            echo "====================================================================". PHP_EOL;
+
+        }else{
+            return "Failed";
+        }
+
+
     }
 
     public function merge_dokumen_klaim($kode_trans_far){
@@ -490,7 +611,7 @@ EOD;
         /*get doc*/
         // $date = $this->uri->segment();
         $doc_pdf = $this->Verifikasi_resep_prb->getDocumentPDF($kode_trans_far);
-        // echo '<pre>'; echo($doc_pdf); die;
+        // echo '<pre>'; print_r($doc_pdf); die;
 
         /*save merged file*/
         $fields_string = "";
@@ -510,13 +631,21 @@ EOD;
 
         rtrim($fields_string,'&');
 
-        $url = base_url().'/ApiMerge/index_farmasi.php?action=download&"kode"='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->date.'';
+        $url = base_url().'ApiMerge/index_farmasi.php?action=download&kode='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->tanggal->sqlDateTimeToDate($value->tgl_trans).'';
+
+        // echo '<pre>'; print_r($url); die;
 
         file_get_contents($url);
-
-        // $url = 'http://10.10.11.5:88/sirs-dev/app/ApiMerge/index_farmasi.php?action=download&"kode"='.$kode_trans_far.'&'.$fields_string.'&addfilesscan='.$this->date.'';
         // redirect($url, 'location');
-        // return $url;
+
+        if(file_exists('uploaded/farmasi/merge-Feb-2025/'.$no_sep.'.pdf')){
+            $this->db->where('no_sep', $no_sep)->update('t_sep_far', ['status' => 1]);
+            return $url;
+        }else{
+            $this->db->where('no_sep', $no_sep)->update('t_sep_far', ['status' => 0]);
+            return "Failed";
+        }
+
     }
 
     public function findSep($no_sep){

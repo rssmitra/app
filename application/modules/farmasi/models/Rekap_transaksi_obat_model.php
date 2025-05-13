@@ -5,7 +5,7 @@ class Rekap_transaksi_obat_model extends CI_Model {
 
 	var $table = 'fr_tc_far_detail_log';
 	var $column = array('nama_pasien', 'dokter_pengirim','nama_brg');
-	var $select = 'tgl_trans,nama_pasien,fr_tc_far.no_mr,nama_brg, dokter_pengirim,"nama_pelayanan",';
+	var $select = 'tgl_trans,fr_tc_far.kode_trans_far, nama_pasien,fr_tc_far.no_mr,nama_brg, dokter_pengirim,"nama_pelayanan",';
 
 	var $order = array('tgl_trans' => 'DESC');
 
@@ -27,12 +27,7 @@ class Rekap_transaksi_obat_model extends CI_Model {
 
 	}
 
-	private function _get_datatables_query()
-	{
-		
-		$this->_main_query();
-
-
+	private function _filter(){
 		if(isset($_GET['search_by']) AND $_GET['search_by'] != '' AND isset($_GET['keyword']) AND $_GET['keyword'] != '' ){
 			if (in_array($_GET['search_by'], array('no_mr', 'nama_pasien') )) {
 				// no action
@@ -40,8 +35,6 @@ class Rekap_transaksi_obat_model extends CI_Model {
 			}else{
 				$this->db->like('fr_tc_far.'.$_GET['search_by'].'', $_GET['keyword']);
 			}
-		}else{
-			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
 		}
 
 		if( isset($_GET['poliklinik']) AND $_GET['poliklinik'] != 0 ){
@@ -54,17 +47,26 @@ class Rekap_transaksi_obat_model extends CI_Model {
 
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("CAST(fr_tc_far.tgl_trans AS DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
-        }
+        }else{
+			$this->db->where('DATEDIFF(Day, tgl_trans, getdate())<=7');
+		}
 
 		if( isset($_GET['no_mr']) AND $_GET['no_mr'] != 0 ){
 			$this->db->where('fr_tc_far.no_mr', $_GET['no_mr']);
 		}
-
-		if( isset($_GET['flag']) AND $_GET['flag'] != 'All' ){
-			$this->db->like('fr_tc_far.no_resep', $_GET['flag']);
+		if(isset($_GET['flag'])){
+			if( isset($_GET['flag']) AND $_GET['flag'] != 'All' ){
+				$this->db->like('fr_tc_far.no_resep', $_GET['flag']);
+			}
 		}
-
 		
+	}
+
+	private function _get_datatables_query()
+	{
+		
+		$this->_main_query();
+		$this->_filter();
 
 		$i = 0;
 	
@@ -95,6 +97,14 @@ class Rekap_transaksi_obat_model extends CI_Model {
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();
+	}
+
+	function get_data()
+	{
+		$this->_main_query();
+		$this->_filter();
+		$query = $this->db->get();
+		return $query;
 	}
 
 	function count_filtered()
