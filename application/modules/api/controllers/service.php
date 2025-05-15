@@ -251,6 +251,7 @@ class Service extends MX_Controller {
             }
         }
 
+        $getDataRm = [];
         foreach($riwayat_medis as $row_rm){
             // resep obat
             $resep = isset($getResep[$row_rm->no_kunjungan])?$getResep[$row_rm->no_kunjungan]:'';

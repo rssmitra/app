@@ -139,7 +139,7 @@ function set_line_through(id, status){
       <div class="form-group">
           <label class="control-label col-sm-3">Obat</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" name="obat" id="obat" value="">
+            <textarea class="form-control" name="obat" id="obat" style="height: 50px !important"></textarea>
           </div>
       </div>
     </div>
@@ -174,7 +174,7 @@ function set_line_through(id, status){
       <div class="form-group">
           <label class="control-label col-sm-3">Tindakan</label>
           <div class="col-md-9">
-            <input type="text" class="form-control" name="catatan" id="catatan" value="">
+            <textarea class="form-control" name="catatan" id="catatan" style="height: 50px !important"></textarea>
           </div>
       </div>
     </div>
@@ -188,7 +188,7 @@ function set_line_through(id, status){
       <tr style="background: #f3f3f3">
         <th class="vertical-text" style="20px; vertical-align: middle"></th>
         <th class="vertical-text" style="20px; vertical-align: middle">JAM</th>
-        <th class="vertical-text" style="20px; vertical-align: middle">KESADARAN</th>
+        <th class="vertical-text" style="20px; vertical-align: middle">KSDRN</th>
         <th class="vertical-text" style="20px; vertical-align: middle">TENSI</th>
         <th class="vertical-text" style="20px; vertical-align: middle">NADI</th>
         <th class="vertical-text" style="20px; vertical-align: middle">NAFAS</th>
@@ -199,14 +199,28 @@ function set_line_through(id, status){
         <th class="vertical-text" style="20px; vertical-align: middle">ORAL</th>
         <th class="vertical-text" style="20px; vertical-align: middle">INFUS</th>
         <th class="vertical-text" style="20px; vertical-align: middle">URINE</th>
-        <th class="vertical-text" style="20px; vertical-align: middle">NGT MUNTAH</th>
+        <th class="vertical-text" style="20px; vertical-align: middle">NGT MTH</th>
         <th class="vertical-text" style="20px; vertical-align: middle">DRAIN</th>
         <th width="150px" style="vertical-align: middle" class="center">TINDAKAN / CATATAN PERAWAT</th>
       </tr>
     <?php 
+      $arr_oral = [];
+      $arr_infus = [];
+      $arr_urine = [];
+      $arr_muntah = [];
+      $arr_drain = [];
+
+      $arr_kesadaran = [];
+      $arr_td = [];     
+      $arr_nd = [];
+      $arr_nafas = [];
+      $arr_sh = [];
+      $arr_cvp = [];
+
       if (count($perkembangan) == 0) {
         echo "<tr><td colspan='15'><div class='alert alert-warning'>Tidak ada data ditemukan</div></td></tr>";
       }else{
+        
         foreach($perkembangan as $key=>$rows) {
           echo "<tr>";
           echo "<td colspan='10'><b>Tanggal. ".$this->tanggal->formatDate($key)."</b></td>";
@@ -235,10 +249,36 @@ function set_line_through(id, status){
                     <td align='center'>".$row->drainage."</td>
                     <td align='left'>".$row->catatan."</td>
                   </tr>";
+            $arr_kesadaran[] = $row->kesadaran;
+            $arr_td[] = $row->td;     
+            $arr_nd[] = $row->nd;
+            $arr_nafas[] = $row->nafas;
+            $arr_sh[] = $row->sh;
+            $arr_cvp[] = $row->cvp;
+            $arr_oral[] = $row->oral;
+            $arr_infus[] = $row->infus;
+            $arr_urine[] = $row->urine;
+            $arr_muntah[] = $row->muntah;
+            $arr_drain[] = $row->drainage;
 
           }
         }
       }
+
+      echo "<tr>";
+      echo "<td colspan='2'><b>Rata-Rata</b></td>";  
+      echo "<td align='center'><b>".round(array_sum($arr_kesadaran)/count($arr_kesadaran), 2)."</b></td>";
+      echo "<td align='center'><b>".round(array_sum($arr_td)/count($arr_td), 2)."</b></td>";  
+      echo "<td align='center'><b>".round(array_sum($arr_nd)/count($arr_nd), 2)."</b></td>";
+      echo "<td align='center'><b>".round(array_sum($arr_nafas)/count($arr_nafas), 2)."</b></td>";
+      echo "<td align='center'><b>".round(array_sum($arr_sh)/count($arr_sh), 2)."</b></td>";
+      echo "<td align='center'><b>".round(array_sum($arr_cvp)/count($arr_cvp), 2)."</b></td>";
+      echo "<td align='center'><b>Total</b></td>";
+      echo "<td align='center'><b>".array_sum($arr_oral)."</b></td>";
+      echo "<td align='center'><b>".array_sum($arr_infus)."</b></td>";
+      echo "<td align='center'><b>".array_sum($arr_urine)."</b></td>";
+      echo "<td align='center'><b>".array_sum($arr_muntah)."</b></td>";
+      echo "<td align='center'><b>".array_sum($arr_drain)."</b></td>";
     ?>
     </table>
     

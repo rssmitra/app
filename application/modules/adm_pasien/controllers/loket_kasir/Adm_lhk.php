@@ -58,7 +58,7 @@ class Adm_lhk extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Adm_lhk->get_datatables();
-        // print_r($list);die;
+        // echo "<pre>";print_r($list);die;
         $data = array();
         $no = $_POST['start'];
         if ($_GET['flag'] == 'RJ'){
@@ -85,7 +85,7 @@ class Adm_lhk extends MX_Controller {
                 $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
                 $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
                 $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-                $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'</small>';
+                $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'<br>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_transaksi).'</small>';
                 $data[] = $row;
             endif;
               

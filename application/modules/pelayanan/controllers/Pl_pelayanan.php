@@ -1535,11 +1535,11 @@ class Pl_pelayanan extends MX_Controller {
                 'diagnosa_sekunder' => $diagnosa_sekunder,
                 'kategori_tindakan' => 3,
                 'kode_icd_diagnosa' => $this->input->post('pl_diagnosa_hidden'),
-                'tinggi_badan' => $this->input->post('pl_tb'),
-                'tekanan_darah' => $this->input->post('pl_td'),
-                'berat_badan' => $this->input->post('pl_bb'),
-                'suhu' => $this->input->post('pl_suhu'),
-                'nadi' => $this->input->post('pl_nadi'),
+                'tinggi_badan' => $this->input->post('pl_dr_tb'),
+                'tekanan_darah' => $this->input->post('pl_dr_td'),
+                'berat_badan' => $this->input->post('pl_dr_bb'),
+                'suhu' => $this->input->post('pl_dr_suhu'),
+                'nadi' => $this->input->post('pl_dr_nadi'),
                 'kode_icd9' => $this->input->post('pl_procedure_hidden'),
                 'text_icd9' => $this->input->post('pl_procedure'),
                 'tgl_kontrol_kembali' => $this->input->post('pl_tgl_kontrol_kembali'),
@@ -1551,6 +1551,8 @@ class Pl_pelayanan extends MX_Controller {
             }else{
                 $this->Pl_pelayanan->update('th_riwayat_pasien', $riwayat_diagnosa, array('kode_riwayat' => $this->input->post('kode_riwayat') ) );
             }
+
+            // echo $this->db->last_query();die;
 
             // save billing pasien 
 

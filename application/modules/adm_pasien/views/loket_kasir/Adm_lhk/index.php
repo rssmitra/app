@@ -354,17 +354,17 @@
               <th width="50px"></th>
               <th width="50px"></th>
               <th class="center"></th>
-              <th>No</th>
-              <th width="100px">No. Kuitansi</th>
-              <th>Tanggal</th>
+              <th width="40px">No</th>
+              <th width="90px">No. Kuitansi</th>
+              <th width="100px">Tanggal</th>
               <th>Pasien</th>
-              <th>Tunai</th>
+              <th width="100px">Tunai</th>
               <th width="100px">Non-Tunai</th>
-              <!-- <th>Kredit</th> -->
-              <th>Potongan</th>
-              <th>Piutang Perusahaan</th>
-              <th>Piutang Karyawan</th>
-              <th>Total</th>
+              <!-- <th width="100px">Kredit</th> -->
+              <th width="100px">Potongan</th>
+              <th width="100px">Piutang Perusahaan</th>
+              <th width="100px">Piutang Karyawan</th>
+              <th width="100px">Total</th>
               <th>Petugas</th>
             </tr>
           </thead>

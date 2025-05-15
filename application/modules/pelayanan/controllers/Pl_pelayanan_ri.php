@@ -1630,6 +1630,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'obat' => isset($_POST['obat'])?$_POST['obat']:'',
                 'sistolik' => isset($_POST['sistolik'])?$_POST['sistolik']:'',
                 'diastolik' => isset($_POST['diastolik'])?$_POST['diastolik']:'',
+                'td' => isset($_POST['td'])?$_POST['td']:'',
                 'nd' => isset($_POST['nd'])?$_POST['nd']:'',
                 'sh' => isset($_POST['sh'])?$_POST['sh']:'',
                 'oral' => isset($_POST['oral'])?$_POST['oral']:'',
