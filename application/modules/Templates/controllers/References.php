@@ -483,7 +483,7 @@ class References extends MX_Controller {
 	
 	public function getAllDokterByKeyword($key='')
 	{
-        $query = $this->db->where("nama_pegawai LIKE '%".$key."%' ")->where("kode_dokter is not NULL")
+        $query = $this->db->where("nama_pegawai LIKE '%".$key."%' ")->where("kode_dokter is not NULL")->where('is_active', 'Y')
         				  ->order_by('nama_pegawai', 'ASC')
                           ->get('mt_karyawan');
 		
@@ -1129,6 +1129,7 @@ class References extends MX_Controller {
 		$this->db->select('a.kode_dokter, a.nama_pegawai');
 		$this->db->from('mt_dokter_v a');
 		$this->db->where("a.nama_pegawai LIKE '%".$key."%' and a.nama_pegawai is not NULL and a.nama_pegawai <> ''");
+		$this->db->where("is_active", 'Y');
 		$this->db->group_by('a.kode_dokter, a.nama_pegawai');
 
 		if($bag > (int)'0' ){
