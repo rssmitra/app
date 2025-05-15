@@ -701,6 +701,8 @@ EOD;
             $this->db->insert('csm_dokumen_klaim', $datasaved);
         }
 
+        $this->db->update('csm_reg_pasien', ['is_scheduler' => 1], array('csm_rp_no_sep' => $reg_data->csm_rp_no_sep));
+
         $fields_string = "";
         
         foreach($doc_pdf as $key=>$value) {
