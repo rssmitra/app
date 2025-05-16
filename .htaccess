@@ -10,6 +10,6 @@ Options -Indexes
 
 <IfModule mod_headers.c>
    Header set Access-Control-Allow-Origin "http://localhost:8100"
-    Header set Access-Control-Allow-Credentials: true
- </IfModule>
+   Header set Access-Control-Allow-Credentials: true
+</IfModule>
  
