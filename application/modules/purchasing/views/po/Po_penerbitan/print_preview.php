@@ -135,7 +135,11 @@ th, td {
             $jumlah_pesan[$key_dt][] = $row_dt[0]->jumlah_besar_acc;
             $jumlah_harga_netto[$key_dt][] = $row_dt[0]->jumlah_harga;
           }
-          $arr_total[] = $row_dt[0]->jumlah_harga;
+
+          $total_harga = ($row_dt[0]->harga_satuan * $row_dt[0]->jumlah_besar_acc) - $row_dt[0]->discount_rp;
+          $total_harga_add_tax = $total_harga * (PPN/100);
+          $arr_total[] = $total_harga;
+          $arr_total_tax[] = $total_harga_add_tax;
                    
             
         ?>
@@ -151,7 +155,7 @@ th, td {
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($row_dt[0]->harga_satuan).',-'; ?></td>
               <td style="text-align:center; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo $row_dt[0]->discount; ?></td>
               <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($row_dt[0]->discount_rp).',-'; ?></td>
-              <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($row_dt[0]->jumlah_harga).',-';?></td>
+              <td style="text-align:right; border: 1px solid black; border-collapse: collapse; vertical-align: top"><?php echo number_format($total_harga).',-';?></td>
             </tr>
             <?php 
               endforeach;
