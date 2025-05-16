@@ -3,10 +3,15 @@
 /public/storage
 /storage/*.key
 /vendor
-/uploaded
-/application/logs
+/uploaded/
+/application/logs/
+/application/config/
+/application/cache/
 /application/modules/ws_bpjs/
+/application/modules/ws/
+/application/modules/satu_sehat/
 /application/libraries/tcpdf/cache/
+/application/libraries/phpqrcode/
 .env
 .phpunit.result.cache
 Homestead.json
