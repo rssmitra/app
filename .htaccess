@@ -36,6 +36,7 @@ Options -Indexes
 </IfModule>
 
 <IfModule mod_headers.c>
+<<<<<<< HEAD
   Header set Access-Control-Allow-Origin "http://localhost:8100"
   Header set Access-Control-Allow-Credentials: false
 </IfModule>
@@ -47,3 +48,9 @@ Options -Indexes
 
 ErrorDocument 404 /index.php
 </IfModule> 
+=======
+   Header set Access-Control-Allow-Origin "http://localhost:8100"
+   Header set Access-Control-Allow-Credentials: true
+</IfModule>
+ 
+>>>>>>> b06b65927f2f5b28dc454bbd7884dd903279de55

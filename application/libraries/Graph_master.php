@@ -380,7 +380,7 @@ final Class Graph_master {
         // MODUL ADM PASIEN //
         // modul purchasing line chart
         if($params['prefix']==201){
-            $query = "SELECT MONTH(tgl_jam) AS bulan, SUM(bill) AS total FROM tc_trans_kasir WHERE YEAR(tgl_jam)=".date('Y')." GROUP BY MONTH(tgl_jam)";    
+            $query = "SELECT MONTH(tgl_transaksi) AS bulan, (SUM(bill_rs) + SUM(bill_dr1) + SUM(bill_dr2)) AS total FROM tc_trans_pelayanan WHERE no_registrasi in (SELECT no_registrasi from tc_registrasi WHERE YEAR(tgl_jam_keluar) = ".date('Y')." AND (status_batal IS NULL OR status_batal = 0)) GROUP BY MONTH(tgl_transaksi)";   
             $fields = array('Total_Pendapatan_RS'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Pendapatan Rumah Sakit Tahun '.date('Y').'</span>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
@@ -569,7 +569,7 @@ final Class Graph_master {
             $query = "SELECT TOP 10 c.nama_bagian, COUNT(b.kode_trans_far) AS total_format_money 
                         FROM fr_tc_far b
                         LEFT JOIN mt_bagian c ON c.kode_bagian=b.kode_bagian_asal
-                        WHERE YEAR(b.tgl_trans) = ".date('Y')."
+                        WHERE YEAR(b.tgl_trans) = ".date('Y')." 
                         GROUP BY c.nama_bagian ORDER BY COUNT(b.kode_trans_far) DESC";  
             $fields = array('Unit' => 'nama_bagian', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">10 Unit/Poli Terbanyak Membuat Resep <br>Tahun '.date('Y').' </span></small>';
@@ -583,7 +583,7 @@ final Class Graph_master {
         if($params['prefix']==261){
             $query = "SELECT MONTH(tgl_daftar) AS bulan, COUNT(kode_penunjang) AS total 
                         FROM pm_tc_penunjang 
-                        WHERE YEAR(tgl_daftar)=".date('Y')." GROUP BY MONTH(tgl_daftar)";   
+                        WHERE YEAR(tgl_daftar)=".date('Y')." AND kode_bagian = '050101' GROUP BY MONTH(tgl_daftar)";   
             $fields = array('Kunjungan Pasien Lab'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Lab Tahun '.date('Y').'</span>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
@@ -594,7 +594,7 @@ final Class Graph_master {
         if($params['prefix']==262){
             $query = "SELECT TOP 10 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
                         FROM pm_hasilpasien_v b
-                        WHERE YEAR(b.tgl_periksa) = ".date('Y')."
+                        WHERE YEAR(b.tgl_periksa) = ".date('Y')." AND kode_bagian = '050101'
                         GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
             $data_qry = $CI->db->query($query)->result_array();
             $getData = [];
@@ -615,7 +615,7 @@ final Class Graph_master {
                         FROM pm_tc_penunjang a
                         LEFT JOIN tc_kunjungan b on b.no_kunjungan=a.no_kunjungan
                         LEFT JOIN tc_registrasi c on c.no_registrasi=b.no_registrasi
-                        WHERE CAST(tgl_daftar as DATE)='".date('Y-m-d')."' AND c.kode_perusahaan=120 GROUP BY MONTH(tgl_daftar)";
+                        WHERE CAST(tgl_daftar as DATE)='".date('Y-m-d')."' AND kode_bagian = '050101' AND c.kode_perusahaan=120 GROUP BY MONTH(tgl_daftar)";
             $exc_qry_1 = $db->query($query_1)->row();   
             $fields['kunjungan_bpjs'] = array('flag' => 'Kunjungan Pasien BPJS ', 'total' => $exc_qry_1->total);
 
@@ -623,21 +623,21 @@ final Class Graph_master {
                         FROM pm_tc_penunjang a
                         LEFT JOIN tc_kunjungan b on b.no_kunjungan=a.no_kunjungan
                         LEFT JOIN tc_registrasi c on c.no_registrasi=b.no_registrasi
-                        WHERE CAST(tgl_daftar as DATE)='".date('Y-m-d')."' AND c.kode_perusahaan != 120 GROUP BY MONTH(tgl_daftar)";
+                        WHERE CAST(tgl_daftar as DATE)='".date('Y-m-d')."' AND kode_bagian = '050101' AND c.kode_perusahaan != 120 GROUP BY MONTH(tgl_daftar)";
             $exc_qry_4 = $db->query($query_4)->row();   
             $fields['kunjungan'] = array('flag' => 'Kunjungan Pasien Umum ', 'total' => $exc_qry_4->total);
 
             // pemeriksaan
             $query_2 = "SELECT COUNT(kode_penunjang) AS total 
                         FROM pm_tc_penunjang 
-                        WHERE CAST(tgl_periksa as DATE)='".date('Y-m-d')."' GROUP BY MONTH(tgl_periksa)";
+                        WHERE CAST(tgl_periksa as DATE)='".date('Y-m-d')."' AND kode_bagian = '050101' GROUP BY MONTH(tgl_periksa)";
             $exc_qry_2 = $db->query($query_2)->row();   
             $fields['pemeriksaan'] = array('flag' => 'Pengambilan Sampel', 'total' => $exc_qry_2->total);
 
             // isi hasil
             $query_3 = "SELECT COUNT(kode_penunjang) AS total 
                         FROM pm_tc_penunjang 
-                        WHERE CAST(tgl_isihasil as DATE)='".date('Y-m-d')."' GROUP BY MONTH(tgl_isihasil)";
+                        WHERE CAST(tgl_isihasil as DATE)='".date('Y-m-d')."' AND kode_bagian = '050101' GROUP BY MONTH(tgl_isihasil)";
             $exc_qry_3 = $db->query($query_3)->row();   
             $fields['isi_hasil'] = array('flag' => 'Pengisian Hasil Pemeriksaan', 'total' => $exc_qry_3->total);
 
@@ -655,10 +655,95 @@ final Class Graph_master {
         if($params['prefix']==264){
             $query = "SELECT TOP 20 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
                         FROM pm_hasilpasien_v b
-                        WHERE YEAR(b.tgl_periksa) = ".date('Y')."
+                        WHERE YEAR(b.tgl_periksa) = ".date('Y')." AND kode_bagian = '050101'
                         GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
             $fields = array('Nama_Pemeriksaan' => 'nama_tindakan', 'Total' => 'total');
             $title = '<span style="font-size:13.5px">20 Jenis Pemeriksaan Lab Terbanyak  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' Tahun '.date('Y').' </span></small>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
+        // modul laboratorium
+        if($params['prefix']==291){
+            $query = "SELECT MONTH(tgl_daftar) AS bulan, COUNT(kode_penunjang) AS total 
+                        FROM pm_tc_penunjang 
+                        WHERE YEAR(tgl_daftar)=".date('Y')." AND kode_bagian = '050201' GROUP BY MONTH(tgl_daftar)";   
+            $fields = array('Kunjungan Pasien Radiologi'=>'total');
+            $title = '<span style="font-size:13.5px">Grafik Kunjungan Pasien Radiologi Tahun '.date('Y').'</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+            /*excecute query*/
+            $data = $db->query($query)->result_array();
+        }
+
+        if($params['prefix']==292){
+            $query = "SELECT TOP 10 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
+                        FROM pm_hasilpasien_v b
+                        WHERE YEAR(b.tgl_periksa) = ".date('Y')." AND kode_bagian = '050201'
+                        GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
+            $data_qry = $CI->db->query($query)->result_array();
+            $getData = [];
+            foreach ($data_qry as $key => $value) {
+                $data[] = array( 'name' => $value['nama_tindakan'], 'total' => $value['total'] );
+            }
+
+            $fields = array('name' => 'total');
+            $title = '<span style="font-size:13.5px">10 Jenis Pemeriksaan Radiologi Terbanyak Tahun '.date('Y').'</span>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+        }
+
+        if($params['prefix']==293){
+            $title = '<span style="font-size:18px; font-weight: bold">Rekapitulasi Data Pasien Radiologi Hari Ini, '.date('D, d/m/Y').' </span></small>';
+            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+            // query kunjungan pasien hari ini
+            $query_1 = "SELECT COUNT(kode_penunjang) AS total 
+                        FROM pm_tc_penunjang a
+                        LEFT JOIN tc_kunjungan b on b.no_kunjungan=a.no_kunjungan
+                        LEFT JOIN tc_registrasi c on c.no_registrasi=b.no_registrasi
+                        WHERE CAST(tgl_daftar as DATE)='".date('Y-m-d')."' AND kode_bagian = '050201' AND c.kode_perusahaan=120 GROUP BY MONTH(tgl_daftar)";
+            $exc_qry_1 = $db->query($query_1)->row();   
+            $fields['kunjungan_bpjs'] = array('flag' => 'Kunjungan Pasien BPJS ', 'total' => $exc_qry_1->total);
+
+            $query_4 = "SELECT COUNT(kode_penunjang) AS total 
+                        FROM pm_tc_penunjang a
+                        LEFT JOIN tc_kunjungan b on b.no_kunjungan=a.no_kunjungan
+                        LEFT JOIN tc_registrasi c on c.no_registrasi=b.no_registrasi
+                        WHERE CAST(tgl_daftar as DATE)='".date('Y-m-d')."' AND kode_bagian = '050201' AND c.kode_perusahaan != 120 GROUP BY MONTH(tgl_daftar)";
+            $exc_qry_4 = $db->query($query_4)->row();   
+            $fields['kunjungan'] = array('flag' => 'Kunjungan Pasien Umum ', 'total' => $exc_qry_4->total);
+
+            // pemeriksaan
+            $query_2 = "SELECT COUNT(kode_penunjang) AS total 
+                        FROM pm_tc_penunjang 
+                        WHERE CAST(tgl_periksa as DATE)='".date('Y-m-d')."' AND kode_bagian = '050201' GROUP BY MONTH(tgl_periksa)";
+            $exc_qry_2 = $db->query($query_2)->row();   
+            $fields['pemeriksaan'] = array('flag' => 'Pengambilan Sampel', 'total' => $exc_qry_2->total);
+
+            // isi hasil
+            $query_3 = "SELECT COUNT(kode_penunjang) AS total 
+                        FROM pm_tc_penunjang 
+                        WHERE CAST(tgl_isihasil as DATE)='".date('Y-m-d')."' AND kode_bagian = '050201' GROUP BY MONTH(tgl_isihasil)";
+            $exc_qry_3 = $db->query($query_3)->row();   
+            $fields['isi_hasil'] = array('flag' => 'Pengisian Hasil Pemeriksaan', 'total' => $exc_qry_3->total);
+
+            // isi hasil
+            $query_5 = "SELECT SUM(bill_rs) AS total 
+                        FROM tc_trans_pelayanan 
+                        WHERE CAST(tgl_transaksi as DATE)='".date('Y-m-d')."' AND kode_bagian = '050201' and kode_bagian='050101'";
+            $exc_qry_5 = $db->query($query_5)->row();   
+            $fields['total_pendapatan'] = array('flag' => 'Total Pendapatan Radiologi', 'total' => $exc_qry_5->total);
+            
+            /*excecute query*/
+            $data = $fields;
+        }
+
+        if($params['prefix']==294){
+            $query = "SELECT TOP 20 b.nama_tindakan, COUNT(b.kode_tarif) AS total 
+                        FROM pm_hasilpasien_v b
+                        WHERE YEAR(b.tgl_periksa) = ".date('Y')." AND kode_bagian = '050201'
+                        GROUP BY b.kode_tarif, b.nama_tindakan ORDER BY COUNT(b.kode_tarif) DESC";  
+            $fields = array('Nama_Pemeriksaan' => 'nama_tindakan', 'Total' => 'total');
+            $title = '<span style="font-size:13.5px">20 Jenis Pemeriksaan Radiologi Terbanyak  s/d Bulan '.$CI->tanggal->getBulan(date('m')).' Tahun '.date('Y').' </span></small>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
             /*excecute query*/
             $data = $db->query($query)->result_array();

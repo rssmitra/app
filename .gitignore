@@ -4,9 +4,14 @@
 /storage/*.key
 /vendor
 /uploaded/
+<<<<<<< HEAD
 /application/logs/
 /application/config/
 /application/cache/
+=======
+/application/logs
+/application/cache
+>>>>>>> b06b65927f2f5b28dc454bbd7884dd903279de55
 /application/modules/ws_bpjs/
 /application/modules/ws/
 /application/modules/satu_sehat/

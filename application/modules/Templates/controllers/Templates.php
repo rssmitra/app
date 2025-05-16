@@ -1959,7 +1959,7 @@ class Templates extends MX_Controller {
     public function setGlobalProfilePasienTemplatePM($data, $flag, $pm, $data_pm=''){
         $html = '';
         $jk = ($data->reg_data->jk == 'L')?'Pria':'Wanita';
-        // echo'<pre>';print_r($data_pm);die;
+        // echo'<pre>';print_r($data);die;
         if($flag=='RAD'){
             $tgl_pemeriksaan = ($data_pm->tgl_periksa != '')?$this->tanggal->formatDateTime($data_pm->tgl_periksa) : $this->tanggal->formatDateTime($data_pm->tgl_isihasil); 
             $html .= '<table align="left" cellpadding="0" cellspacing="0" border="0" style="font-size:36px">

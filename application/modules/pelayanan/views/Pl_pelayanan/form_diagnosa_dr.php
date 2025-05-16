@@ -517,19 +517,19 @@
         <tbody>
         <tr style="background: aliceblue;">
             <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
+                <input type="text" style="text-align: center" class="form-control" name="pl_dr_tb" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>">
             </td>
             <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
+                <input type="text" style="text-align: center" class="form-control" name="pl_dr_bb" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>">
             </td>
             <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
+                <input type="text" style="text-align: center" class="form-control" name="pl_dr_td" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>">
             </td>
             <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
+                <input type="text" style="text-align: center" class="form-control" name="pl_dr_nadi" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>">
             </td>
             <td>
-                <input type="text" style="text-align: center" class="form-control" name="pl_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
+                <input type="text" style="text-align: center" class="form-control" name="pl_dr_suhu" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>">
             </td>
         </tr>
         </tbody>

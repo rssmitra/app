@@ -1,0 +1,34 @@
+<!-- <IfModule mod_rewrite.c>
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php/$1 [L]
+Options -Indexes
+
+</IfModule> -->
+
+<IfModule mod_rewrite.c>
+   RewriteEngine On
+   RewriteBase /
+
+   RewriteCond %{REQUEST_URI} ^system.*
+   RewriteRule ^(.*)$ /index.php?/$1 [L]
+
+   RewriteCond %{REQUEST_URI} ^application.*
+   RewriteRule ^(.*)$ /index.php?/$1 [L]
+
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteRule ^(.*)$ index.php?/$1 [L]
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+   ErrorDocument 404 /index.php
+</IfModule
+
+<IfModule mod_headers.c>
+   Header set Access-Control-Allow-Origin "http://localhost"
+    Header set Access-Control-Allow-Credentials: true
+ </IfModule>
+ 

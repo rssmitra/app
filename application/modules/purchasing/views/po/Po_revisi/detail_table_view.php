@@ -61,8 +61,8 @@
         <?php 
           $no=0; 
           foreach($po_data as $key_dt=>$row_dt) : $no++; 
-            $total_harga = ($row_dt[0]->harga_satuan - $row_dt[0]->discount_rp) * $row_dt[0]->jumlah_besar_acc;
-            $total_harga_add_tax = $total_harga * 1.11;
+            $total_harga = ($row_dt[0]->harga_satuan * $row_dt[0]->jumlah_besar_acc) - $row_dt[0]->discount_rp;
+            $total_harga_add_tax = $total_harga * (PPN/100);
             $arr_total[] = $total_harga;
             $arr_total_tax[] = $total_harga_add_tax;
         ?>

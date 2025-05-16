@@ -1,14 +1,5 @@
 <?php
 
-    /*$connected = @fsockopen("sipepp.dkpp.go.id", 80); 
-                                        //website, port  (try 80 or 443)
-    if ($connected){
-        $is_conn = true; //action when connected
-        fclose($connected);
-    }else{
-        $is_conn = false; //action in connection failure
-    }*/
-
 /**
  * CodeIgniter
  *
@@ -63,8 +54,13 @@
  *
  * NOTE: If you change these, also change the error_reporting() code below
  */
+<<<<<<< HEAD
 	// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 	 define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+=======
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'production');
+//  define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+>>>>>>> b06b65927f2f5b28dc454bbd7884dd903279de55
 
 /*
  *---------------------------------------------------------------
@@ -141,7 +137,6 @@ switch (ENVIRONMENT)
  * NO TRAILING SLASH!
  */
 	$view_folder = '';
-
 
 /*
  * --------------------------------------------------------------------
@@ -228,12 +223,11 @@ switch (ENVIRONMENT)
 		echo 'Your system folder path does not appear to be set correctly. Please open the following file and correct this: '.pathinfo(__FILE__, PATHINFO_BASENAME);
 		exit(3); // EXIT_CONFIG
 	}
-
-/*
- * -------------------------------------------------------------------
- *  Now that we know the path, set the main path constants
- * -------------------------------------------------------------------
- */
+	/*
+	* -------------------------------------------------------------------
+	*  Now that we know the path, set the main path constants
+	* -------------------------------------------------------------------
+	*/
 	// The name of THIS file
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 

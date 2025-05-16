@@ -265,7 +265,7 @@ function cetak_kuitansi_pasien(){
         <label class="control-label col-md-1">Tgl Keluar</label>
         <div class="col-md-2">
             <div class="input-group">
-            <input class="form-control date-picker" name="tgl_jam_keluar" id="tgl_jam_keluar" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar): ''?>"/>
+            <input class="form-control date-picker" name="tgl_jam_keluar" id="tgl_jam_keluar" type="text" data-date-format="yyyy-mm-dd" value="<?php echo isset($data->reg_data->tgl_jam_keluar)?$this->tanggal->formatDateTimeToSqlDate($data->reg_data->tgl_jam_keluar): date('Y-m-d')?>"/>
             <span class="input-group-addon">
                 <i class="fa fa-calendar bigger-110"></i>
             </span>
