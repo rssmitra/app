@@ -24,9 +24,8 @@ define('PATH_DOK_KLAIM_FARMASI', 'uploaded/farmasi/');
 define('PATH_ASSETS_IMG', 'assets/img/');
 define('PATH_TTD_FILE', 'uploaded/ttd/');
 define('PATH_TMP_FILE', 'uploaded/temp/');
-define('BASE_FILE_RM', 'https://shs.rssetiamitra.co.id/');
-// define('BASE_FILE_RM', 'http://10.10.11.5:88/sirs-dev/app/');
-// define('BASE_FILE_RM', 'http://10.10.11.13/');
+// define('BASE_FILE_RM', 'https://shs.rssetiamitra.co.id/');
+define('BASE_FILE_RM', 'http://10.10.11.5:88/sirs-dev/app/');
 
 define('WS_URL', 'http://10.10.11.5:88/rssm/ws_rssm/');
 define('ICON_UNCHECKBOX', 'assets/img/uncheck.png');
@@ -51,15 +50,16 @@ define('COMP_TELP', '(021) 7656000');
 define('COMP_FAX', '(021) 7656875');
 define('NO_IZIN_RS', '02202020784404410003');
 define('EMAIL_RS', 'info@rssetiamitra.co.id');
-define('KARS', 'dr. Untung Sugiharto, MARS');
+define('KARS', 'dr. Roswin Rosnim Djafar, MARS');
 
 // insani care
 define('COMP_ICON_INSANI', 'assets/insani/Logo-Rssm.png');
 define('COMP_ICON_BY_INSANI', 'assets/insani/by_insanicare.png');
+define('HEADER_LOGO', 'assets/insani/logo_insani_care_2.png');
+
 
 // setup 
 define('PPN', 11);
-
 // btn or tabs title
 // berisi form2 pengkajian/ form2 rekam medis RJ/RI
 define('FRM_PENGKAJIAN', 'Form Rekam Medis');
@@ -79,6 +79,10 @@ define('RESUME_BILLING', 'Billing Pasien');
 define('TABS_RESUME_MEDIS', 'Resume Medis');
 // tabs on sidebar show hasil penunjang
 define('TABS_HASIL_PENUNJANG', 'Hasil Penunjang');
+// input diagnosa
+define('INPUT_DIAGNOSA', 'Input Diagnosa');
+// input data lahir
+define('INPUT_DATA_LAHIR', 'Input Data Lahir');
 
 // GLOBAL CONFIG
 define('MIN_REVISIT_BPJS', 31);
