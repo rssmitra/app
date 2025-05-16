@@ -51,11 +51,12 @@ define('COMP_TELP', '(021) 7656000');
 define('COMP_FAX', '(021) 7656875');
 define('NO_IZIN_RS', '02202020784404410003');
 define('EMAIL_RS', 'info@rssetiamitra.co.id');
-define('KARS', 'dr. Untung Sugiharto, MARS');
+define('KARS', 'dr. Roswin Rosnim Djafar, MARS');
 
 // insani care
 define('COMP_ICON_INSANI', 'assets/insani/Logo-Rssm.png');
 define('COMP_ICON_BY_INSANI', 'assets/insani/by_insanicare.png');
+define('HEADER_LOGO', 'assets/insani/logo_insani_care_2.png');
 
 // setup 
 define('PPN', 11);
