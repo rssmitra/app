@@ -97,7 +97,7 @@
             </tr>
 
             <tr>
-              <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">Total </td>
+              <td colspan="8" style="text-align:right; padding-right: 20px; border: 0px solid #cecaca; border-collapse: collapse">TOTAL </td>
               <td style="text-align:right; border: 1px solid #cecaca; border-collapse: collapse"><?php echo number_format($total_after_ppn)?>,-</td>
             </tr>
             <tr>

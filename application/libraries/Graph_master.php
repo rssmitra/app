@@ -380,7 +380,7 @@ final Class Graph_master {
         // MODUL ADM PASIEN //
         // modul purchasing line chart
         if($params['prefix']==201){
-            $query = "SELECT MONTH(tgl_transaksi) AS bulan, (SUM(bill_rs) + SUM(bill_dr1) + SUM(bill_dr2)) AS total FROM tc_trans_pelayanan WHERE no_registrasi in (SELECT no_registrasi from tc_registrasi WHERE YEAR(tgl_jam_keluar) = ".date('Y')." AND (status_batal IS NULL OR status_batal = 0)) GROUP BY MONTH(tgl_transaksi)";   
+            $query = "SELECT MONTH(tgl_transaksi) AS bulan, (SUM(bill_rs) + SUM(bill_dr1) + SUM(bill_dr2)) AS total FROM tc_trans_pelayanan WHERE no_registrasi in (SELECT no_registrasi from tc_registrasi WHERE YEAR(tgl_jam_keluar) = ".date('Y')." AND MONTH(tgl_jam_keluar) <= ".date('m')." AND (status_batal IS NULL OR status_batal = 0) ) AND YEAR(tgl_transaksi) = ".date('Y')." GROUP BY MONTH(tgl_transaksi)";   
             $fields = array('Total_Pendapatan_RS'=>'total');
             $title = '<span style="font-size:13.5px">Grafik Pendapatan Rumah Sakit Tahun '.date('Y').'</span>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
@@ -409,10 +409,8 @@ final Class Graph_master {
         
         // modul purchasing table chart
         if($params['prefix']==203){
-            $query = "SELECT month(a.tgl_jam) as bulan, SUM(a.bill) AS total_format_money 
-                        FROM tc_trans_kasir a
-                        WHERE YEAR(a.tgl_jam) = ".date('Y')."
-                        GROUP BY month(a.tgl_jam) ORDER BY month(a.tgl_jam) ASC";   
+            $query = "SELECT MONTH(tgl_transaksi) AS bulan, (SUM(bill_rs) + SUM(bill_dr1) + SUM(bill_dr2)) AS total_format_money FROM tc_trans_pelayanan WHERE no_registrasi in (SELECT no_registrasi from tc_registrasi WHERE YEAR(tgl_jam_keluar) = ".date('Y')." AND MONTH(tgl_jam_keluar) <= ".date('m')." AND (status_batal IS NULL OR status_batal = 0) ) AND YEAR(tgl_transaksi) = ".date('Y')." GROUP BY MONTH(tgl_transaksi)";      
+ 
             $fields = array('Bulan' => 'bulan', 'Total' => 'total_format_money');
             $title = '<span style="font-size:13.5px">Total Pendapatan RS Tahun '.date('Y').' s/d Bulan '.$CI->tanggal->getBulan(date('m')).' </span></small>';
             $subtitle = 'Source: '.APPS_NAME_LONG.'';
