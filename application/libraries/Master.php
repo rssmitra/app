@@ -863,7 +863,8 @@ final Class Master {
 
 		// potonga diskon satuan barang
 		$pot_disc_rp = isset($params['disc_rp']) ? $params['disc_rp'] : 0;
-		$potongan_disk_satuan = ($pot_disc_rp == 0) ? $params['hna'] * ($params['disc']/100) : $pot_disc_rp;
+		$potongan_disk_satuan = $pot_disc_rp;
+		// $potongan_disk_satuan = ($pot_disc_rp == 0) ? $params['hna'] * ($params['disc']/100) : $pot_disc_rp;
 
 		// harga satuan setelah dipotong diskon dan ppn
 		$harga_satuan = $params['hna'] - $potongan_disk_satuan;

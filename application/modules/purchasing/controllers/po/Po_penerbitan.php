@@ -187,6 +187,7 @@ class Po_penerbitan extends MX_Controller {
                     }
                     // print_r($harga);die;
 
+                    $total_potongan_diskon = $harga[$row_checked]['potongan_disc'];
                     $insertBatch[] = array(
                         "id_tc_po" => $newId,
                         "id_tc_permohonan_det" => $row_id_tc_det,
@@ -203,7 +204,7 @@ class Po_penerbitan extends MX_Controller {
                         "jumlah_harga" => $harga[$row_checked]['total_harga_satuan'],
                         "jumlah_harga_netto" => $harga[$row_checked]['total_harga_netto'],
                         "discount" => $harga[$row_checked]['disc'],
-                        "discount_rp" => $harga[$row_checked]['potongan_disc'],
+                        "discount_rp" => $total_potongan_diskon,
                         "ppn" => $harga[$row_checked]['ppn'],
                     );
                 }
@@ -238,6 +239,7 @@ class Po_penerbitan extends MX_Controller {
                             'kode_brg' => $row_checked,
                             'hna' => $_POST['harga_satuan_val'][$row_checked],
                             'disc' => $_POST['diskon'][$row_checked],
+                            'disc_rp' => $_POST['potongan_diskon'][$row_checked],
                             'ppn' => $_POST['ppn'][$row_checked],
                             'qty' => $_POST['jml_permohonan'][$row_checked],
                             'rasio' => $_POST['rasio'][$row_checked],
@@ -245,6 +247,7 @@ class Po_penerbitan extends MX_Controller {
                         // eksekusi rumus untuk mencari harga
                         $harga = $this->master->rumus_harga($config);
                         
+                        $total_potongan_diskon = $harga['potongan_disc'];
                         $updateBatch = array(
                             "id_tc_po" => $newId,
                             "id_tc_permohonan_det" => $row_id_tc_det,
@@ -261,7 +264,7 @@ class Po_penerbitan extends MX_Controller {
                             "harga_satuan_netto" => $harga['harga_satuan_netto'],
                             "jumlah_harga_netto" => $harga['total_harga_netto'],
                             "discount" => $harga['disc'],
-                            "discount_rp" => $harga['potongan_disc'],
+                            "discount_rp" => $total_potongan_diskon,
                             "ppn" => $harga['ppn'],
                         );
 

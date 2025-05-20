@@ -77,6 +77,7 @@
     var qty = parseFloat($('#form_jml_permohonan_'+kode_brg+'').val()).toFixed(2);
 
     if( discount != 0 ){
+      
       var potonganDisc = parseFloat(price) * (discount/100);    
       var afterDisc = parseFloat(price) - parseFloat(potonganDisc);
       var nett = qty * afterDisc
@@ -85,6 +86,44 @@
       $('#nominal_diskon_'+kode_brg+'').val(nett.toFixed(2));
       // potongan disc
       $('#potongan_diskon_'+kode_brg+'').val(nett_disc.toFixed(2));
+      // hitung sub total
+      hitungSubTotalBarang(kode_brg);
+    }else{
+      // set value nominal diskon
+      var nett = qty * price;
+      $('#nominal_diskon_'+kode_brg+'').val(nett.toFixed(2));
+      // potongan disc
+      $('#potongan_diskon_'+kode_brg+'').val(0);
+      // hitung sub total
+      hitungSubTotalBarang(kode_brg);
+    }
+    inputPpn(kode_brg);
+
+  }
+
+  function inputDiscRp(kode_brg){
+
+    var discount_rp = parseFloat($('#potongan_diskon_'+kode_brg+'').val()).toFixed(2);
+    var price = parseFloat($('#hidden_form_input_harga_satuan_'+kode_brg+'').val()).toFixed(2);
+    var qty = parseFloat($('#form_jml_permohonan_'+kode_brg+'').val()).toFixed(2);
+
+    if( discount_rp != 0 ){
+
+      var potonganDisc = discount_rp;    
+      var afterDisc = (parseFloat(price) * qty) - parseFloat(potonganDisc);
+      var nett = afterDisc;
+      // var nett_disc = qty * potonganDisc;
+
+      var original_price = price * qty;
+      
+      var disc_percent = (parseFloat(potonganDisc) / parseFloat(original_price)) * 100;
+      parseFloat($('#hidden_form_input_harga_satuan_'+kode_brg+'').val()).toFixed(2);
+      var discount = parseFloat($('#form_input_diskon_'+kode_brg+'').val(disc_percent.toFixed(2)));
+
+      // set value nominal diskon
+      $('#nominal_diskon_'+kode_brg+'').val(nett.toFixed(2));
+      // potongan disc
+      // $('#potongan_diskon_'+kode_brg+'').val(nett_disc.toFixed(2));
       // hitung sub total
       hitungSubTotalBarang(kode_brg);
     }else{
@@ -170,7 +209,7 @@
             <th class="center" width="7%">Rasio</th>
             <th class="center" width="7%">Jumlah<br>Pesan</th>
             <th class="center" width="10%">Harga Satuan</th>
-            <th class="center" width="7%">Disc (%)</th>
+            <th class="center" width="12%">Disc (%) / Rp.</th>
             <th class="center" width="7%">PPN (%)</th>
             <th class="center" width="10%">Total</th>
           </tr>
@@ -243,12 +282,13 @@
 
             <!-- diskon -->
             <td class="center">
-                <input type="text" name="diskon[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_diskon_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" value="<?php echo $row_dt[0]->discount?>" onchange="inputDisc('<?php echo $row_dt[0]->kode_brg?>')" disabled <?php echo $is_readonly?>>
+                <input type="text" name="diskon[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_diskon_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center;width: 50px; float: left" value="<?php echo $row_dt[0]->discount?>" onchange="inputDisc('<?php echo $row_dt[0]->kode_brg?>')" disabled <?php echo $is_readonly?>>
                 <!-- default -->
                 <input type="hidden" name="diskon_val[<?php echo $row_dt[0]->kode_brg?>]" id="nominal_diskon_<?php echo $row_dt[0]->kode_brg?>" class="diskon" style="height:45px;text-align:center" value="0">
-                <input type="hidden" name="potongan_diskon[<?php echo $row_dt[0]->kode_brg?>]" id="potongan_diskon_<?php echo $row_dt[0]->kode_brg?>" class="potongan_diskon" style="height:45px;text-align:center" value="0">
+                <!-- diskon rupiah -->
+                <input type="text" name="potongan_diskon[<?php echo $row_dt[0]->kode_brg?>]" id="potongan_diskon_<?php echo $row_dt[0]->kode_brg?>" class="format_number form-control potongan_diskon" style="height:45px;text-align:right; width: 100px; float: right" value="0" onchange="inputDiscRp('<?php echo $row_dt[0]->kode_brg?>')">
             </td>
-
+            
              <!-- ppn -->
              <td class="center">
                 <input type="text" name="ppn[<?php echo $row_dt[0]->kode_brg?>]" id="form_input_ppn_<?php echo $row_dt[0]->kode_brg?>" class="form-control" style="height:45px;text-align:center" onchange="inputPpn('<?php echo $row_dt[0]->kode_brg?>')" value="11" disabled <?php echo $is_readonly?>>
@@ -281,7 +321,7 @@
           </td>
         </tr>
         <tr style="font-size:12px; font-weight:bold">
-          <td align="right" colspan="10">PPNxx</td>
+          <td align="right" colspan="10">PPN</td>
           <td align="right">
               <input type="text" class="format_number form-control" name="total_ppn" id="total_ppn" style="height:45px;text-align:right" value="">
               <input type="hidden" class="form-control" name="total_ppn_val" id="total_ppn_val" style="height:45px;text-align:right" value="">
