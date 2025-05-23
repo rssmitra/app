@@ -160,15 +160,18 @@ class E_resep_model extends CI_Model {
 		return $this->db->update($this->table, array('is_deleted' => 'Y', 'is_active' => 'N'));
 	}
 	
-	public function get_cart_resep($kode_pesan_resep){
+	public function get_cart_resep($kode_pesan_resep, $no_registrasi=''){
 		$query = $this->db->select('fr_tc_far_detail.kode_brg as kode_brg_fr, fr_tc_pesan_resep_detail.*, mt_barang.satuan_kecil, fr_tc_pesan_resep.keterangan as keterangan_resep')
 		->join('mt_barang', 'mt_barang.kode_brg = fr_tc_pesan_resep_detail.kode_brg','left')
-		->join('fr_tc_pesan_resep', 'fr_tc_pesan_resep.kode_pesan_resep = fr_tc_pesan_resep_detail.kode_pesan_resep','left')
+		->join('fr_tc_pesan_resep', '(fr_tc_pesan_resep.kode_pesan_resep = fr_tc_pesan_resep_detail.kode_pesan_resep AND fr_tc_pesan_resep.no_mr = fr_tc_pesan_resep_detail.no_mr)','left')
 		->join('fr_tc_far', 'fr_tc_far.kode_pesan_resep = fr_tc_pesan_resep.kode_pesan_resep','left')
 		->join('fr_tc_far_detail', '(fr_tc_far_detail.kode_trans_far = fr_tc_far.kode_trans_far AND fr_tc_far_detail.kode_brg = fr_tc_pesan_resep_detail.kode_brg)','left')
 		->order_by('id', 'ASC')
 		->from('fr_tc_pesan_resep_detail')
 		->where(array('fr_tc_pesan_resep_detail.kode_pesan_resep' => $kode_pesan_resep, 'parent' => '0') );
+		if($no_registrasi != ''){
+			$this->db->where('fr_tc_pesan_resep_detail.no_registrasi', $no_registrasi);
+		}
 
 		return $this->db->get()->result();
 	}

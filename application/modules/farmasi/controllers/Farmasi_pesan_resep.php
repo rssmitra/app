@@ -60,7 +60,7 @@ class Farmasi_pesan_resep extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Farmasi_pesan_resep->get_by_no_kunj($this->input->get('q'));
-        // print_r($this->db->last_query());
+        // print_r($list);die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -83,6 +83,7 @@ class Farmasi_pesan_resep extends MX_Controller {
             $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
             $row[] = $row_list->kode_pesan_resep;
+            $row[] = $row_list->no_registrasi;
             $row[] = $row_list->keterangan;
             // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
@@ -277,12 +278,12 @@ class Farmasi_pesan_resep extends MX_Controller {
     }
 
 
-    public function getDetail($kode_pesan_resep){
+    public function getDetail($kode_pesan_resep, $no_registrasi=''){
         
         $data = $this->Farmasi_pesan_resep->get_detail_by_id($kode_pesan_resep);
-        $list = $this->E_resep->get_cart_resep($kode_pesan_resep);
+        $list = $this->E_resep->get_cart_resep($kode_pesan_resep, $no_registrasi);
 
-        // echo "<pre>";print_r($data);die;
+        // echo "<pre>";print_r($list);die;
         
         $html = '';
         

@@ -859,7 +859,7 @@ $('#lampiran_lab').click(function (e) {
 
             <!-- jumlah pesan -->
             <div class="form-group">
-              <label class="control-label col-sm-2">Jml Tebus</label>
+              <label class="control-label col-sm-2">Jml Non Kronis</label>
               <div class="col-md-2">
                   <input class="form-control" name="jumlah_pesan" id="jumlah_pesan" type="number" style="text-align:center; width: 60px !important" onchange="duplicate_input('jumlah_pesan','jumlah_tebus')" value=""/>
               </div>
@@ -872,7 +872,7 @@ $('#lampiran_lab').click(function (e) {
             </div>
 
             <div class="form-group">
-              <label class="control-label col-sm-2">Resep Kronis</label>
+              <label class="control-label col-sm-2">Jml Kronis/PRB</label>
               <div class="col-md-2">
                   <input class="form-control" name="jml_23" id="jml_23" type="number" value="" style="text-align:center; width: 60px !important" <?php echo ($value->kode_perusahaan==120) ? '' : 'readonly'?> />
               
@@ -1016,15 +1016,14 @@ $('#lampiran_lab').click(function (e) {
                     <tr style="background: #edf3f4;">
                         <th width="30px" class="center">No</th>
                         <th>Nama Obat</th>
-                        <th>Signa</th>
                         <th class="center">Qty</th>
-                        <th class="center" width="100px">Keterangan</th>
+                        <th class="center" width="120px">Keterangan</th>
                         <th class="center">#</th>
                     </tr>
                     </thead>
                     <tbody style="background: white">';
                     $no = 0;
-                    
+                    // echo "<pre>"; print_r($eresep);die;
                     foreach ($eresep as $ker => $ver) {
                       $is_free_text = ($ver->kode_brg == null)?'<br><span style="font-weight: bold; color: red">[free text]</span>':'';
                       $no++;
@@ -1033,17 +1032,17 @@ $('#lampiran_lab').click(function (e) {
                       $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
                       $html .= '<tr>';
                       $html .= '<td align="center" valign="top">'.$no.'</td>';
-                      $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.''.$is_free_text.'</td>';
-                      $html .= '<td>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
-                      $html .= '<td>'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
+                      $html .= '<td>'.strtoupper($ver->nama_brg).''.$html_racikan.''.$is_free_text.'<br>'.$ver->jml_dosis.' x '.$ver->jml_dosis_obat.' '.$ver->satuan_obat.'<br>'.$ver->aturan_pakai.'</td>';
+                      $html .= '<td align="center">'.$ver->jml_pesan.' '.$ver->satuan_obat.'</td>';
                       // catatan verifikasi
                       if($ver->verifikasi_apotik_online == 1){
-                        $catatan_verifikasi = ($ver->catatan_verifikasi == NULL) ? $ver->keterangan : '<span style="color: green; font-weight: bold">'.$ver->catatan_verifikasi.'</span>';
+                        $catatan_verifikasi = ($ver->catatan_verifikasi == NULL) ? $ver->keterangan."<br>" : '<span style="color: green; font-weight: bold">'.$ver->catatan_verifikasi.'<br></span>';
                       }else{
-                        $catatan_verifikasi = ($ver->catatan_verifikasi == NULL) ? $ver->keterangan : '<span style="color: red; font-weight: bold">'.$ver->catatan_verifikasi.'</span>';
+                        $catatan_verifikasi = ($ver->catatan_verifikasi == NULL) ? $ver->keterangan."<br>" : '<span style="color: red; font-weight: bold">'.$ver->catatan_verifikasi.'<br></span>';
                       }
                       
-                      $html .= '<td>'.$catatan_verifikasi.'</td>';
+                      $created_by = "<span style='font-size: 11px'>".$ver->created_by." - ".$this->tanggal->formatDateTimeFormDmy($ver->created_date)."</span>";
+                      $html .= '<td>'.$catatan_verifikasi.''.$created_by.'</td>';
                         $html .= '<td align="center" valign="top"><a onclick="select_item('."'".$ver->id."'".','."'".$ver->tipe_obat."'".', '."'".$ver->kode_brg."'".')" class="btn btn-xs btn-success"><i class="fa fa-check"></i></a></td>';
                       $html .= '</tr>';
 

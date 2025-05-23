@@ -10,8 +10,6 @@ class E_resep_rj extends MX_Controller {
     {
 
         parent::__construct();
-        /*breadcrumb default*/
-        $this->breadcrumbs->push('Index', 'farmasi/E_resep_rj');
         /*session redirect login if not login*/
         if($this->session->userdata('logged')!=TRUE){
             echo 'Session Expired !'; exit;
@@ -39,8 +37,9 @@ class E_resep_rj extends MX_Controller {
     public function index() 
     { 
         /*define variable data*/
+        $title = isset($_GET['flag']) ? "<i>List Order</i> Resep Rawat Inap" : "<i>List Order</i> Resep Rawat Jalan";
         $data = array(
-            'title' => $this->title,
+            'title' => $title,
             'breadcrumbs' => $this->breadcrumbs->show(),
             'flag' => isset($_GET['flag']) ? $_GET['flag'] : 'RJ'
         );
