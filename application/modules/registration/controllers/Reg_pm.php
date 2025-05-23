@@ -66,6 +66,7 @@ class Reg_pm extends MX_Controller {
         $this->form_validation->set_rules('kode_kelompok_hidden', 'Kode Kelompok', 'trim');
         $this->form_validation->set_rules('umur_saat_pelayanan_hidden', 'Umur', 'trim');
         $this->form_validation->set_rules('nama_pasien_hidden', 'Nama', 'trim');
+        $this->form_validation->set_rules('keterangan_pm', 'Keterangan', 'trim');
         //$this->form_validation->set_rules('noSep', 'Nomor SEP', 'trim|required');
 
         if( !$this->input->post('no_registrasi_rujuk') && empty($this->input->post('no_registrasi_rujuk')) ){
@@ -134,6 +135,7 @@ class Reg_pm extends MX_Controller {
                 'no_antrian' => $no_antrian,
                 'kode_klas' => $klas,
                 'petugas_input' => $this->session->userdata('user')->user_id,
+                'keterangan_order' => $this->regex->_genRegex($this->form_validation->set_value('keterangan_pm'),'RGXQSL'),
             );
 
             /*save penunjang medis*/

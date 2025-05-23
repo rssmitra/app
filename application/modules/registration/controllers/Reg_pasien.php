@@ -1080,13 +1080,13 @@ class Reg_pasien extends MX_Controller {
                 }
 
                 // add antrian to mobile jkn
-                $dataexc['jampraktek'] = str_replace(' s/d ', '-', $_POST['selected_time']);
-                $dataexc['rujukan_internal'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
-                $dataexc['no_ktp'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
-                $dataexc['nomorkartubpjs'] = isset($_POST['no_kartu_bpjs'])?$_POST['no_kartu_bpjs']:'';
-                $dataexc['jeniskunjungan'] = isset($_POST['jeniskunjungan'])?$_POST['jeniskunjungan']:'';
-                $dataexc['no_sep_lama'] =isset( $_POST['no_sep_lama'])? $_POST['no_sep_lama']:'';
-                $dataexc['nomorreferensi'] = (!empty($_POST['no_surat_kontrol']))?$_POST['no_surat_kontrol']:0;
+                // $dataexc['jampraktek'] = str_replace(' s/d ', '-', $_POST['selected_time']);
+                // $dataexc['rujukan_internal'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
+                // $dataexc['no_ktp'] = isset($_POST['no_ktp'])?$_POST['no_ktp']:'';
+                // $dataexc['nomorkartubpjs'] = isset($_POST['no_kartu_bpjs'])?$_POST['no_kartu_bpjs']:'';
+                // $dataexc['jeniskunjungan'] = isset($_POST['jeniskunjungan'])?$_POST['jeniskunjungan']:'';
+                // $dataexc['no_sep_lama'] =isset( $_POST['no_sep_lama'])? $_POST['no_sep_lama']:'';
+                // $dataexc['nomorreferensi'] = (!empty($_POST['no_surat_kontrol']))?$_POST['no_surat_kontrol']:0;
                 
              }else{
                  /*update record*/

@@ -74,8 +74,11 @@
                     $no++; 
                     
                     // $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : ($row_dt['harga_jual'] * $row_dt['jumlah_tebus']) + $row_dt['jasa_r']; 
-                    
-                    $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : ($row_dt['harga_jual'] * $row_dt['jumlah_tebus']) + $row_dt['jasa_r']; 
+                    if($row_dt['jumlah_tebus'] > 0) {
+                      $subtotal = ($row_dt['flag_resep'] == 'racikan') ? $row_dt['jasa_r'] : ($row_dt['harga_jual'] * $row_dt['jumlah_tebus']) + $row_dt['jasa_r']; 
+                    }else{
+                      $subtotal = 0;
+                    }
 
                     $arr_total[] = $subtotal;
                     $desc = ($row_dt['flag_resep'] == 'racikan') ? 'Jasa Racikan Obat' : $row_dt['nama_brg'];
@@ -84,6 +87,8 @@
                     $color_penangguhan_resep = ($row_dt['resep_ditangguhkan'] == 1) ? 'red' : 'blue';
                     $racikan = isset($row_dt['racikan'][0])?$row_dt['racikan'][0]:[];
                     $is_retur = ($row_dt['jumlah_retur'] > 0) ? '<span style="color: red !important"> retur ('.$row_dt['jumlah_retur'].') </span>' : '' ;
+
+                    if( $row_dt['jumlah_tebus'] > 0) :
                 ?>
 
                   <tr>
@@ -124,8 +129,12 @@
                   ?>
 
                   <?php 
-                    //endif; 
-                    endforeach;?>
+                    endif; 
+                    endforeach;
+                    if(array_sum($arr_total) == 0){
+                      echo "<tr><td colspan='6' style='text-align: center; color: red; font-weight: bold'>Tidak ada Resep Non Kronis</td></tr>";
+                    }
+                  ?>
 
                   <tr>
                     <td colspan="<?php echo (count($resep_kronis) > 0) ? 5 : 7 ?>" style="text-align:right; padding-right: 20px; border-top: 1px solid black; border-collapse: collapse">Total </td>
@@ -139,7 +148,6 @@
 
           </table>
 
-          Catatan : Obat yang sudah dibeli tidak bisa dikembalikan
           <table style="width: 100% !important; text-align: center">
             <tr>
               <td style="text-align: left; width: 30%">&nbsp;</td>
@@ -265,7 +273,6 @@
 
           </table>
 
-          Catatan : Obat yang sudah dibeli tidak bisa dikembalikan
           <table style="width: 100% !important; text-align: center">
             <tr>
               <td style="text-align: left; width: 30%">&nbsp;</td>
@@ -283,9 +290,9 @@
 
     <?php endif; ?>
 
-    
     <!-- button action -->
     <div class="col-xs-12" >
+      <hr>
         <div class="col-xs-12 center" style="margin-top: 10px">
         <!-- input hidden -->
         <input type="hidden" name="no_resep" id="no_resep" value="<?php echo isset( $resep[0]['kode_pesan_resep'])? $resep[0]['kode_pesan_resep']:0?>">
@@ -323,6 +330,8 @@
         <thead>
           <tr>  
             <th class="center">No</th>
+            <th></th>
+            <th>Kode</th>
             <th>Kode</th>
             <th>No Resep</th>
             <th>Tgl Pesan</th>
@@ -356,7 +365,12 @@
         "ajax": {
             "url": $('#riwayat_pesan_resep_pasien').attr('base-url'),
             "type": "POST"
-        }
+        },
+        "columnDefs": [
+                { "visible": true, "targets": [0] },
+                { "visible": true, "targets": [1] },
+                { "visible": false, "targets": [2] },
+            ],
     }); 
 
     $('#riwayat_pesan_resep_pasien tbody').on( 'click', 'tr', function () {

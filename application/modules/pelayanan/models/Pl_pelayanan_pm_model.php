@@ -653,7 +653,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			  LEFT JOIN tc_kunjungan ON tc_kunjungan.no_kunjungan=pm_tc_penunjang.no_kunjungan
 			WHERE tc_kunjungan.no_kunjungan = t.no_kunjungan
 			FOR XML PATH(''))as varchar(max)) as nama_tarif");
-		$this->db->select('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)) as xray_foto, CAST(diagnosa as NVARCHAR(2000)) as diagnosa, CAST(kontra_indikasi as NVARCHAR(2000)) as kontra_indikasi, CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)) as keterangan, kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian as bagian_asal, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang');
+		$this->db->select('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)) as xray_foto, CAST(diagnosa as NVARCHAR(2000)) as diagnosa, CAST(kontra_indikasi as NVARCHAR(2000)) as kontra_indikasi, CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)) as keterangan, kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian as bagian_asal, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang, CAST(keterangan_order as NVARCHAR(2000)) as keterangan_order');
 		$this->db->from('pm_tc_penunjang_order_detail');
 		$this->db->join('pm_tc_penunjang','pm_tc_penunjang.id_pm_tc_penunjang=pm_tc_penunjang_order_detail.id_pm_tc_penunjang','left');
 		$this->db->join('tc_kunjungan t','t.no_kunjungan=pm_tc_penunjang.no_kunjungan','left');
@@ -680,7 +680,7 @@ class Pl_pelayanan_pm_model extends CI_Model {
 			}
 		}
 
-		$this->db->group_by('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)), CAST(diagnosa as NVARCHAR(2000)), CAST(kontra_indikasi as NVARCHAR(2000)), CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)), kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang');
+		$this->db->group_by('pm_tc_penunjang_order_detail.created_date, CAST(xray_foto as NVARCHAR(2000)), CAST(diagnosa as NVARCHAR(2000)), CAST(kontra_indikasi as NVARCHAR(2000)), CAST(pm_tc_penunjang_order_detail.keterangan as NVARCHAR(2000)), kode_penunjang, dr_pengirim, t.no_mr, nama_pasien, t.no_kunjungan, t.kode_bagian_asal, mt_bagian.nama_bagian, pm_tc_penunjang_order_detail.status, pm_tc_penunjang_order_detail.id_pm_tc_penunjang, CAST(keterangan_order as NVARCHAR(2000))');
 
 	}
 

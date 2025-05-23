@@ -1210,7 +1210,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             $row[] = $html;
             $row[] = $row_list->dr_pengirim;
             $row[] = $row_list->bagian_asal;
-            $row[] = $row_list->keterangan;
+            $row[] = $row_list->keterangan_order;
             $status = ($row_list->status == 1) ? '<span style="font-weight: bold; color: green">sudah diproses</span>' : '<span style="font-weight: bold; color: red">belum diproses</span>' ;
             $row[] = '<div class="center">'.$status.'</div>';
            

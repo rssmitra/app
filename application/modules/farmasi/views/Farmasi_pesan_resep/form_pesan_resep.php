@@ -23,6 +23,7 @@
                 {"aTargets" : [0], "mData" : 0, "sClass":  "details-control"}, 
                 { "visible": true, "targets": [0] },
                 { "visible": false, "targets": [4] },
+                { "visible": false, "targets": [5] },
             ],
 
         });
@@ -32,6 +33,7 @@
                 var row = oTable.row( tr );
                 var data = oTable.row( $(this).parents('tr') ).data();
                 var kode_pesan_resep = data[ 4 ];
+                var no_registrasi = data[ 5 ];
                         
 
                 if ( row.child.isShown() ) {
@@ -42,7 +44,7 @@
                 else {
                     /*data*/
                     
-                    $.getJSON("farmasi/Farmasi_pesan_resep/getDetail/" + kode_pesan_resep, '', function (data) {
+                    $.getJSON("farmasi/Farmasi_pesan_resep/getDetail/" + kode_pesan_resep + "/" + no_registrasi, '', function (data) {
                         response_data = data;
                         // Open this row
                         row.child( format_html( response_data ) ).show();
@@ -343,6 +345,7 @@
                 <th width="40px"></th>
                 <th width="150px">Tgl Resep</th>
                 <th>Asal Unit/Dokter</th>
+                <th></th>
                 <th></th>
                 <th width="100px">Keterangan</th>
                 <!-- <th>Lokasi Tebus</th> -->
