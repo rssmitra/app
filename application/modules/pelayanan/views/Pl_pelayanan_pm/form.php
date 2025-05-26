@@ -657,7 +657,7 @@ function perjanjian_pasien_pm(){
               <a href="#" onclick="perjanjian_pasien_pm()" class="btn btn-xs btn-purple"><i class="menu-icon fa fa-calendar"></i><span class="menu-text"> Perjanjian Pasien </span></a>
 
               <?php if($value->status_daftar==0) :?>
-                  <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_selesai" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> pasien_selesai</a>
+                  <a href="#" class="btn btn-xs btn-primary" id="btn_pasien_selesai" onclick="selesaikanKunjungan()" ><i class="fa fa-home"></i> Pasien Selesai</a>
                   <a href="#" class="btn btn-xs btn-danger" id="btn_pasien_batal" onclick="cancel_visit()" ><i class="fa fa-times-circle"></i> Batalkan Kunjungan</a>
               <?php else: 
                 switch ($status) {
