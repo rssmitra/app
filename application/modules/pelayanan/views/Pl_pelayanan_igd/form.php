@@ -751,9 +751,14 @@ function reload_page(){
               <!-- form default pelayanan pasien -->
               <div class="col-md-12 no-padding">
                 <div class="col-md-8 no-padding">
+                  
                   <div id="form_default_pelayanan" style="background-color:rgba(195, 220, 119, 0.56)"></div>
                     <div class="tabbable">  
-                      <div class="tab-content">                  
+                      <div class="tab-content">    
+                        <div class="col-md-12 no-padding" style="padding-bottom: 5px !important; padding-top: 5px;">
+                            <label style="font-weigth: bold !important"><b>Hak Kelas Pasien :</b> </label><br>
+                            <?php echo $this->master->custom_selection($params = array('table' => 'mt_klas', 'id' => 'kode_klas', 'name' => 'nama_klas', 'where' => array('is_active' => 1)), isset($kode_klas)?$kode_klas:'' , 'kode_klas', 'kode_klas_val', 'form-control', '', '') ?>
+                        </div>              
                         <div id="tabs_form_pelayanan">
                             <div class="alert alert-block alert-success">
                                 <p>
@@ -813,7 +818,7 @@ function reload_page(){
             <input type="hidden" class="form-control" name="umur_saat_pelayanan_hidden" id="umur_saat_pelayanan_hidden">
             <input type="hidden" class="form-control" name="kode_bagian_asal" value="<?php echo isset($value)?$value->kode_bagian_asal:''?>">
             <input type="hidden" class="form-control" name="kode_bagian" value="020101" id="kode_bagian_val">
-            <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val">
+            <!-- <input type="hidden" class="form-control" name="kode_klas" value="<?php echo isset($kode_klas)?$kode_klas:''?>" id="kode_klas_val"> -->
             <input type="hidden" class="form-control" name="kode_dokter_igd" id="kode_dokter_igd" value="<?php echo isset($value->dokter_jaga)?$value->dokter_jaga:''?>">
 
           </div>
