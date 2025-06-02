@@ -53,7 +53,7 @@ class Po_monitoring extends MX_Controller {
             $no++;
             $row = array();
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = $row_list->no_po;
+            $row[] = $row_list->id_tc_po.'/'.$row_list->no_po;
             $row[] = $this->tanggal->formatDateDmy($row_list->tgl_po);
             $row[] = '<div class="left">'.$row_list->jenis_po.'</div>';
             $row[] = '<div class="left">'.$row_list->namasupplier.'</div>';
@@ -66,7 +66,7 @@ class Po_monitoring extends MX_Controller {
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->discount, 2).'</div>';
             
             // menghitung total harga
-            $discount = ($row_list->discount > 0) ? ($row_list->harga_satuan * $row_list->discount/100): 0;
+            $discount = ($row_list->discount > 0) ? ($row_list->harga_satuan * $row_list->discount/100) * $row_list->jumlah_besar: 0;
             $jumlah_harga = ($row_list->jumlah_besar * $row_list->harga_satuan) - $discount;
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($jumlah_harga, 2).'</div>';     
             if($row_list->jumlah_kirim > 0){

@@ -70,6 +70,8 @@ class Po_monitoring_model extends CI_Model {
 				$this->db->where('YEAR(d.tgl_po) = ', date('Y'));
 		}
 
+		$this->db->where('a.jumlah_besar > 0 ');
+
 		$this->db->group_by($this->select);
 		$this->db->group_by('CAST(a.harga_satuan as NUMERIC), CAST(a.harga_satuan_netto as NUMERIC), CAST(a.jumlah_harga as NUMERIC), CAST(a.jumlah_harga_netto as NUMERIC), CAST(a.discount as NUMERIC)');
 

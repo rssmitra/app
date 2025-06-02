@@ -290,6 +290,8 @@
           <td style="width: 50%"><i>Pembelian Barang Terbanyak</i><br><span style="font-size: 14px; font-weight: bold" id="nm_brg_max"></span></td>
         </tr>
       </table>
+      <br>
+      <i>*) Data subtotal yang ditampilkan adalah total harga per item barang pada PO belum termasuk PPN</i>
       <table id="table-monitoring-po" base-url="purchasing/po/Po_monitoring/get_data?flag=" data-id="flag=" class="table" >
           <thead>
           <tr>  
