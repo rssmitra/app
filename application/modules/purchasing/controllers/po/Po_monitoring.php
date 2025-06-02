@@ -64,7 +64,11 @@ class Po_monitoring extends MX_Controller {
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->jumlah_besar, 2).'</div>';
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->harga_satuan, 2).'</div>';
             $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->discount, 2).'</div>';
-            $row[] = '<div class="right" style="text-align: right !important">'.number_format($row_list->jumlah_harga, 2).'</div>';     
+            
+            // menghitung total harga
+            $discount = ($row_list->discount > 0) ? ($row_list->harga_satuan * $row_list->discount/100): 0;
+            $jumlah_harga = ($row_list->jumlah_besar * $row_list->harga_satuan) - $discount;
+            $row[] = '<div class="right" style="text-align: right !important">'.number_format($jumlah_harga, 2).'</div>';     
             if($row_list->jumlah_kirim > 0){
                 $status = ($row_list->jumlah_kirim == $row_list->jumlah_besar) ? '<span class="label label-success">Selesai</span>' : '<span style="font-size: 11px; height:100% !important" class="label label-warning">Diterima '.$row_list->jumlah_kirim.' '.$row_list->satuan_besar.' <br> '.$this->tanggal->formatDateTime($row_list->tgl_terima).'</span>' ;
             }else{
@@ -72,7 +76,7 @@ class Po_monitoring extends MX_Controller {
             }
             $row[] = '<div class="center">'.$status.'</div>';     
             $data[] = $row;
-            $arr_total[] = $row_list->jumlah_harga;
+            $arr_total[] = $jumlah_harga;
             $arr_barang[$row_list->nama_brg][] = $row_list->jumlah_besar;
         }
 
