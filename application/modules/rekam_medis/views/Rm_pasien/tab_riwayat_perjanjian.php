@@ -140,10 +140,10 @@
       <th style="background: green; color: white; font-weight: bold" width="30px" class="center">#</th>
       <th style="background: green; color: white; font-weight: bold">Tujuan Poli/Klinik</th>
       <th style="background: green; color: white; font-weight: bold">Dokter</th>
-      <th style="background: green; color: white; font-weight: bold">Tgl Perjanjian</th>
+      <th style="background: green; color: white; font-weight: bold">Tanggal Kontrol</th>
       <th style="background: green; color: white; font-weight: bold">Penjamin</th>
       <th style="background: green; color: white; font-weight: bold">Kode Perjanjian</th>
-      <th style="background: green; color: white; font-weight: bold">Status</th>
+      <th style="background: green; color: white; font-weight: bold; width: 100px">Status</th>
       
     </tr>
   </thead>

@@ -95,6 +95,15 @@ class Rm_pasien extends MX_Controller {
     
     }
 
+    public function riwayat_farmasi($no_mr) { 
+        
+        $data = [
+            'no_mr' => $no_mr
+        ];
+        $this->load->view('Rm_pasien/tab_riwayat_farmasi', $data);
+    
+    }
+
     public function riwayat_perjanjian($no_mr, $kode_bagian='') { 
         
         $data = [
@@ -161,10 +170,7 @@ class Rm_pasien extends MX_Controller {
                             <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-inverse">
-                            <li><a href="#" onclick="PopupCenter('."'registration/Reg_klinik/print_bukti_pendaftaran_pasien?nama=".$row_list->nama_pasien."&no_mr=".$row_list->no_mr."&no_reg=".$row_list->no_registrasi."&poli=".$row_list->nama_bagian."&dokter=".$row_list->nama_pegawai."&nasabah=".$penjamin."'".', '."'FORM BUKTI PENDAFTARAN PASIEN'".', 950, 550)">Cetak Bukti Pendaftaran</a></li>
-                            <li>'.anchor_popup('registration/reg_pasien/tracer/'.$row_list->no_registrasi.'/'.$mr.'', 'Cetak Tracer', $atts).'</li>
-                            <li class="divider"></li>
-                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
+                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Resume Medis</a></li>
                         </ul>
                     </div></div>';
 
@@ -223,11 +229,11 @@ class Rm_pasien extends MX_Controller {
                 $row = array();
                 $html = '';
 
-                if( isset($_GET['no_mr']) AND $_GET['no_mr'] != '' ){
-                    $html .= '<li><a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">Daftarkan Pasien</a></li>';
-                }else{
-                    $html .= '<li><a href="#" onclick="getMenu('."'registration/Reg_klinik?idp=".$row_list->id_tc_pesanan."&kode_dokter=".$row_list->kode_dokter."&poli=".$row_list->no_poli."&kode_perjanjian=".$row_list->kode_perjanjian."&no_mr=".$row_list->no_mr."'".')">Daftarkan Pasien</a></li>';
-                }
+                // if( isset($_GET['no_mr']) AND $_GET['no_mr'] != '' ){
+                //     $html .= '<li><a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">Daftarkan Pasien</a></li>';
+                // }else{
+                //     $html .= '<li><a href="#" onclick="getMenu('."'registration/Reg_klinik?idp=".$row_list->id_tc_pesanan."&kode_dokter=".$row_list->kode_dokter."&poli=".$row_list->no_poli."&kode_perjanjian=".$row_list->kode_perjanjian."&no_mr=".$row_list->no_mr."'".')">Daftarkan Pasien</a></li>';
+                // }
 
                 if( isset($_GET['flag']) AND $_GET['flag']=='HD' ){
                     $tgl = $row_list->selected_day;
@@ -244,9 +250,7 @@ class Rm_pasien extends MX_Controller {
                                 <span class="ace-icon fa fa-caret-down icon-on-right"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-inverse">
-                                '.$html.'
                                 <li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.')">Cetak Surat Kontrol</a></li>
-								<li><a href="#" onclick="delete_perjanjian('.$row_list->id_tc_pesanan.')" >Hapus</a></li>
                             </ul>
                         </div></div>';
                 $row[] = ucwords($row_list->nama_bagian);
@@ -254,7 +258,7 @@ class Rm_pasien extends MX_Controller {
                 $row[] = $tgl;
                 $row[] = $penjamin;
                 $row[] = $row_list->kode_perjanjian;
-                $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
+                $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i> Belum diproses</span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
 
 
                 $data[] = $row;

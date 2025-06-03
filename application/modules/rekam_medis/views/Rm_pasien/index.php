@@ -228,21 +228,11 @@ if(!ace.vars['touch']) {
               </span>
             </div>
           </div>
-
-          <label class="control-label col-md-1">s/d Tgl</label>
-          <div class="col-md-2">
-            <div class="input-group">
-              <input class="form-control date-picker" name="to_tgl" id="to_tgl" type="text" data-date-format="yyyy-mm-dd" value=""/>
-              <span class="input-group-addon">
-                <i class="fa fa-calendar bigger-110"></i>
-              </span>
-            </div>
-          </div>
       </div>
       <div class="form-group">
         <label class="control-label col-md-2">Poli/Klinik</label>
           <div class="col-md-4">
-          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'kode_bagian', 'kode_bagian', 'chosen-select form-control', '', '') ?>
+          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'status_aktif' => 1)), '' , 'kode_bagian', 'kode_bagian', 'chosen-select form-control', '', '') ?>
 
           </div>
       </div>
@@ -283,7 +273,7 @@ if(!ace.vars['touch']) {
             <th>Poliklinik/ Dokter</th>
             <th>Penjamin</th>
             <th width="150px">Tanggal Masuk/Keluar</th>
-            <th>Diagnosa Rujukan</th>
+            <th width="200px">Diagnosa Rujukan</th>
             <!-- <th width="80px" class="center">Tipe (RI/RJ)</th> -->
           </tr>
         </thead>

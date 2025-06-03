@@ -31,7 +31,7 @@ class Rm_pasien_model extends CI_Model {
     {
         
         $this->_main_query();
-        $this->db->where('SUBSTRING(kode_bagian_masuk, 1,2) = '."'01'".'');
+        $this->db->where('SUBSTRING(kode_bagian_masuk, 1,2) IN ('."'01'".','."'02'".')');
         $this->db->where('tc_registrasi.tgl_jam_keluar IS NOT NULL');
         
         if(isset($_GET['search_by'])) {
@@ -45,8 +45,12 @@ class Rm_pasien_model extends CI_Model {
             }
     
     
-            if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-                $this->db->where("CAST(tgl_jam_masuk as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
+            // if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
+            //     $this->db->where("CAST(tgl_jam_masuk as DATE) BETWEEN '".$_GET['from_tgl']."' AND '".$_GET['to_tgl']."' " );
+            // }
+
+            if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '') {
+                $this->db->where("CAST(tgl_jam_masuk as DATE) = '".$_GET['from_tgl']."'" );
             }
             
             if (isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ) {
