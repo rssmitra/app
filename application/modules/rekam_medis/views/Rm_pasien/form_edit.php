@@ -41,13 +41,13 @@ $(document).ready(function(){
 
 })
 
-function get_riwayat_medis(){
+function get_riwayat_medis_pasien(){
 
 noMr = $('#no_mr').val();
 if (noMr == '') {
   alert('Silahkan cari pasien terlebih dahulu !'); return false;
 }else{
-  getMenuTabs('templates/References/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
+  getMenuTabsHtml('templates/References/get_riwayat_medis/'+noMr, 'tabs_detail_pasien');
 }
 
 }
@@ -80,18 +80,23 @@ if (noMr == '') {
         </li>
 
         <li class="hover">
-          <a href="#" data-toggle="tab" onclick="getMenuTabs('rekam_medis/Rm_pasien/form_diagnosa/<?php echo $no_registrasi; ?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-home bigger-150"></i><span class="menu-text"> Form Resume</span></a><b class="arrow"></b>
+          <a href="#" data-toggle="tab" onclick="getMenuTabs('rekam_medis/Rm_pasien/form_diagnosa/<?php echo $no_registrasi; ?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-folder bigger-150"></i><span class="menu-text"> Resume Medis</span></a><b class="arrow"></b>
         </li>
 
-        <li class="hover">
+        <!-- <li class="hover">
           <a href="#" data-toggle="tab" id="btn_barcode_pasien"><i class="menu-icon fa fa-barcode"></i><span class="menu-text"> Barcode </span></a><b class="arrow"></b>
-        </li>
-        <li class="hover">
-          <a data-toggle="tab" id="tabs_rekam_medis_id" href="#" data-id="0" data-url="templates/References/get_riwayat_medis" onclick="get_riwayat_medis()"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Riwayat Medis </span></a><b class="arrow"></b>
-        </li>
+        </li> -->
 
         <li class="hover">
+          <a data-toggle="tab" id="tabs_rekam_medis_id" href="#" data-id="0" data-url="templates/References/get_riwayat_medis" onclick="get_riwayat_medis_pasien()"><i class="menu-icon fa fa-stethoscope"></i><span class="menu-text"> Riwayat Medis </span></a><b class="arrow"></b>
+        </li>
+
+        <!-- <li class="hover">
           <a data-toggle="tab" href="#" data-id="75780" data-url="" id="tabs_rekam_medis" onclick="getMenuTabs('rekam_medis/File_rm/index/<?php echo $reg->no_mr?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-clipboard"></i><span class="menu-text"> E R M  </span></a><b class="arrow"></b>
+        </li> -->
+
+        <li class="hover">
+          <a data-toggle="tab" href="#" id="tabs_farmasi" onclick="getMenuTabs('rekam_medis/Rm_pasien/riwayat_farmasi/<?php echo $reg->no_mr?>', 'tabs_detail_pasien')"><i class="menu-icon fa fa-flask"></i><span class="menu-text"> Farmasi  </span></a><b class="arrow"></b>
         </li>
 
         <li class="hover">
