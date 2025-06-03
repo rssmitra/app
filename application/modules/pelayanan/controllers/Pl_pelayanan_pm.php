@@ -947,28 +947,25 @@ class Pl_pelayanan_pm extends MX_Controller {
          $this->Pl_pelayanan_pm->update('tc_trans_pelayanan', $tc_trans_pelayanan, array('kode_penunjang' => $kode_penunjang ) );
          /*save logs*/
          //$this->logs->save('pl_tc_poli', $no_kunjungan, 'update pl_tc_poli Modul Pelayanan', json_encode($arrPlTcPoli),'no_kunjungan');
-
-         if(isset($_POST['kode_bagian']) AND $_POST['kode_bagian']=='050301'){
+         if(isset($_POST['kode_bagian']) AND substr($_POST['kode_bagian'], 0,2) == '05'){
              
             $kunjungan = $this->Pl_pelayanan_pm->get_by_id($kode_penunjang);
             $kunj_data = array('tgl_keluar' => NULL, 'status_keluar' => NULL, 'status_batal' => NULL );
             $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $kunjungan->no_registrasi, 'no_kunjungan' => $kunjungan->no_kunjungan ) );
             $this->logs->save('tc_kunjungan', $kunjungan->no_kunjungan, 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
 
-            if($_POST['flag']=='submited'){
-
+            if(isset($_POST['flag']) AND $_POST['flag']=='submited'){
                 /*delete ak_tc_transaksi_det*/
                 $this->Pl_pelayanan->delete_ak_tc_transaksi_det($kunjungan->no_kunjungan);
                 /*delete ak_tc_transaksi*/
                 $this->Pl_pelayanan->delete_ak_tc_transaksi($kunjungan->no_kunjungan);
                 /*delete transaksi_kasir*/
                 $this->Pl_pelayanan->delete_transaksi_kasir($kunjungan->no_kunjungan);
-
             }
 
             /*tc_trans_pelayanan*/
-            $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
-            $this->db->update('tc_trans_pelayanan', $trans_data, array('no_kunjungan' => $kunjungan->no_kunjungan, 'no_registrasi' => $kunjungan->no_registrasi ) );
+            // $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
+            // $this->db->update('tc_trans_pelayanan', $trans_data, array('no_kunjungan' => $kunjungan->no_kunjungan, 'no_registrasi' => $kunjungan->no_registrasi ) );
  
          }
         

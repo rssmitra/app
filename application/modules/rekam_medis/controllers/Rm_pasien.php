@@ -275,13 +275,22 @@ class Rm_pasien extends MX_Controller {
         foreach ($list as $row_list) {
             $no++;
             $row = array();
+            $row[] = $row_list->no_registrasi;
+            $row[] = '';
+            $row[] = '';
             $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'".'rekam_medis/Rm_pasien/form/'.$row_list->no_registrasi.''."'".')">'.$row_list->no_registrasi.'</a></div>';
-            $row[] = $row_list->no_mr;
-            $row[] = strtoupper($row_list->nama_pasien);
-            $row[] = strtoupper($row_list->nama_bagian);
-            $row[] = $row_list->nama_pegawai;
-            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDate($row_list->tgl_jam_masuk);
+            $row[] = '<div class="center"><b><a href="#" onclick="getMenu('."'".'rekam_medis/Rm_pasien/form/'.$row_list->no_registrasi.''."'".')">'.$row_list->no_mr.'</a></b></div>';
+            $row[] = strtoupper($row_list->nama_pasien).' ('.$row_list->jen_kelamin.')<br>TL. '.$this->tanggal->formatDate($row_list->tgl_lhr).' ('.$row_list->umur.') Thn';
+            $row[] = $row_list->nama_pegawai.'<br>'.strtoupper($row_list->nama_bagian);
+            // detail bpjs
+            $pf = '';
+            if($row_list->kode_perusahaan == 120){
+                $pf .= '<br>NOKA. '.$row_list->no_kartu_bpjs.'<br>';
+                $pf .= 'NO SEP. '.$row_list->no_sep.'';
+            }
+            $row[] = $row_list->nama_perusahaan.''.$pf;
+            $row[] = '<i class="fa fa-angle-double-right green"></i> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_masuk).'<br><i class="fa fa-angle-double-left red"></i> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_keluar);
+            $row[] = $row_list->diagnosa_rujukan;
             $data[] = $row;
         }
         $output = array(

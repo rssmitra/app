@@ -63,8 +63,40 @@ $(document).ready(function() {
           "url": base_url,
           "type": "POST"
       },
+      "columnDefs": [
+        { 
+          "targets": [ -1 ], //last column
+          "orderable": false, //set not orderable
+        },
+        {"aTargets" : [0], "mData" : 2, "sClass":  "details-control"}, 
+        { "visible": false, "targets": [1,2] },
+      ],
 
     });
+
+    $('#dynamic-table tbody').on('click', 'td.details-control', function () {
+          var tr = $(this).closest('tr');
+          var row = oTable.row( tr );
+          var data = oTable.row( $(this).parents('tr') ).data();
+          var no_registrasi = data[ 0 ];
+
+          if ( row.child.isShown() ) {
+              // This row is already open - close it
+              row.child.hide();
+              tr.removeClass('shown');
+          }
+          else {
+              /*data*/
+              
+              $.getJSON("pelayanan/Pl_pelayanan/view_detail_resume_medis/" + no_registrasi , '', function (data) {
+                  response_data = data;
+                    // Open this row
+                  row.child( format( response_data ) ).show();
+                  tr.addClass('shown');
+              });
+              
+          }
+  } );
     
 
     $('#dynamic-table tbody').on( 'click', 'tr', function () {
@@ -116,18 +148,35 @@ function find_data_reload(result, base_url){
   
     var data = result.data;    
     oTable.ajax.url(base_url+'&'+data).load();
-    $("html, body").animate({ scrollTop: "400px" });
 
 }
 
 function reset_table(){
     oTable.ajax.url(base_url).load();
-    $("html, body").animate({ scrollTop: "400px" });
 
 }
 
 function reload_table(){
    oTable.ajax.reload(); //reload datatable ajax 
+}
+
+function format ( data ) {
+    return data.html;
+}
+
+if(!ace.vars['touch']) {
+      $('.chosen-select').chosen({allow_single_deselect:true}); 
+      //resize the chosen on window resize
+
+      $(window)
+      .off('resize.chosen')
+      .on('resize.chosen', function() {
+        $('.chosen-select').each(function() {
+            var $this = $(this);
+            $this.next().css({'width': $this.parent().width()});
+        })
+      }).trigger('resize.chosen');
+
 }
   
 
@@ -146,7 +195,7 @@ function reload_table(){
       </h1>
     </div><!-- /.page-header -->
 
-    <form class="form-horizontal" method="post" id="form_search" action="rekam_medis/Rm_pasien/find_data">
+    <form class="form-horizontal" method="post" id="form_search" action="rekam_medis/Rm_pasien/find_data" autocomplete="off">
 
     <div class="col-md-12">
       <center><h4>Resume Medis Pasien<br><small style="font-size:12px">(Silahkan lakukan pencarian data berdasarkan parameter dibawah ini)</small></h4></center>
@@ -193,12 +242,13 @@ function reload_table(){
       <div class="form-group">
         <label class="control-label col-md-2">Poli/Klinik</label>
           <div class="col-md-4">
-          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('pelayanan' => 1, 'group_bag' => 'Detail', 'status_aktif' => 1) ),'' , 'kode_bagian', 'kode_bagian', 'form-control', '', '') ?>
+          <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array('validasi' => 100, 'status_aktif' => 1)), '' , 'kode_bagian', 'kode_bagian', 'chosen-select form-control', '', '') ?>
+
           </div>
       </div>
 
       <div class="form-group">
-          <div class="col-md-6">
+          <div class="col-md-6 no-padding">
           <a href="#" id="btn_search_data" class="btn btn-xs btn-default">
             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
             Search
@@ -224,13 +274,16 @@ function reload_table(){
       <table id="dynamic-table" base-url="rekam_medis/Rm_pasien/get_data?flag=" class="table table-bordered table-hover">
         <thead>
           <tr>  
+            <th width="50px" class="center"></th>
+            <th width="30px">&nbsp;</th>
+            <th></th>
             <th width="30px" class="center">No</th>
-            <th width="70px">No. Reg</th>
             <th width="70px">No. MR</th>
             <th>Nama Pasien</th>
-            <th>Poli/Klinik</th>
-            <th>Dokter</th>
-            <th width="130px">Tanggal Masuk</th>
+            <th>Poliklinik/ Dokter</th>
+            <th>Penjamin</th>
+            <th width="150px">Tanggal Masuk/Keluar</th>
+            <th>Diagnosa Rujukan</th>
             <!-- <th width="80px" class="center">Tipe (RI/RJ)</th> -->
           </tr>
         </thead>

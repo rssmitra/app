@@ -6,7 +6,7 @@ class Rm_pasien_model extends CI_Model {
 
     var $table = 'tc_registrasi';
     var $column = array('tc_registrasi.no_sep');
-    var $select = 'tgl_jam_masuk, tgl_jam_keluar, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, no_registrasi, status_registrasi, status_batal, umur, mt_bagian.nama_bagian, nama_pegawai, kode_bagian_masuk, tc_registrasi.no_mr, nama_pasien, no_sep';
+    var $select = 'tgl_jam_masuk, tgl_jam_keluar, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, no_registrasi, status_registrasi, status_batal, umur, mt_bagian.nama_bagian, nama_pegawai, kode_bagian_masuk, tc_registrasi.no_mr, nama_pasien, no_sep, nama_perusahaan, no_kartu_bpjs, tgl_lhr, jen_kelamin, stat_pasien, diagnosa_rujukan';
     var $order = array('tc_registrasi.no_registrasi' => 'DESC');
     
 
@@ -23,8 +23,8 @@ class Rm_pasien_model extends CI_Model {
         $this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_registrasi.kode_bagian_masuk', 'LEFT');
         $this->db->join('mt_dokter_v', 'mt_dokter_v.kode_dokter=tc_registrasi.kode_dokter', 'LEFT');
         $this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_registrasi.no_mr', 'LEFT');
-        
-            
+        $this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_registrasi.kode_perusahaan', 'LEFT');
+          
     }
 
     private function _get_datatables_query()
@@ -50,7 +50,7 @@ class Rm_pasien_model extends CI_Model {
             }
             
             if (isset($_GET['kode_bagian']) AND $_GET['kode_bagian'] != '' ) {
-                $this->db->where("csm_rp_kode_bagian = '".$_GET['kode_bagian']."' " );
+                $this->db->where("kode_bagian_masuk = '".$_GET['kode_bagian']."' " );
             }
 
         }else{
