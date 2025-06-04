@@ -34,7 +34,8 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         //     return;
         // }
         
-        $last_date = date('Y-m-d', strtotime('-3 day', strtotime(date('Y-m-d'))));
+        $last_date = date('Y-m-d', strtotime('-4 day', strtotime(date('Y-m-d'))));
+        $month = date("m",strtotime($last_date));
 		$this->db->select('csm_reg_pasien.*');
 		$this->db->from('csm_reg_pasien');
 		$this->db->where("csm_reg_pasien.is_submitted = 'Y' " );
@@ -42,7 +43,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         $this->db->where("csm_rp_tipe = 'RJ' " );
         $this->db->where("csm_reg_pasien.is_scheduler is null" );
         $this->db->where("CAST(csm_reg_pasien.csm_rp_tgl_keluar as DATE) < '". $last_date."' " );
-        $this->db->where("MONTH(csm_reg_pasien.csm_rp_tgl_keluar) = '". date('m')."' " );
+        $this->db->where("MONTH(csm_reg_pasien.csm_rp_tgl_keluar) = '".$month."' " );
         $this->db->where("YEAR(csm_reg_pasien.csm_rp_tgl_keluar) = '". date('Y')."' " );
 		$this->db->join('csm_dokumen_klaim', 'csm_dokumen_klaim.no_registrasi=csm_reg_pasien.no_registrasi', 'LEFT');
 		$this->db->order_by('no_registrasi ASC');
