@@ -39,7 +39,7 @@ if(isset($_GET['print'])) :
 
   <div class="widget-box transparent ui-sortable-handle" style="padding: 25px">
     <div class="widget-body">
-      <b>Resume Medis </b>
+      <b>RESUME MEDIS</b>
       <table class="table table-bordered table-hover">
 
           <thead>
@@ -94,7 +94,7 @@ if(isset($_GET['print'])) :
       <b>Pasca Pulang : </b> <?php echo ucfirst($result['registrasi']->pasca_pulang)?> <br>
       <?php if(isset($penunjang[$no_registrasi]) AND count($penunjang[$no_registrasi]) > 0) :?>
       <br>
-      <b>Pemeriksaan Penunjang Medis :</b>
+      <b>PEMERIKSAAN PENUNJANG MEDIS :</b>
       <table class="table table-bordered" style="width: 50%">
         <tr>
           <th width="20px"></th>
@@ -132,7 +132,7 @@ if(isset($_GET['print'])) :
       <?php endif; ?>
 
       <br>
-      <b>Billing Pasien</b>
+      <b>BILLING PASIEN</b>
       <table class="table table-bordered table-hover" style="width:80%">
 
           <thead>
@@ -181,31 +181,47 @@ if(isset($_GET['print'])) :
       </table>
 
       <br>
-      <b>Farmasi</b>
+      <b>INSTALASI FARMASI</b>
       <table class="table table-bordered table-hover" style="width:80%">
 
           <thead>
-            <th style="color:black; width: 80px">Kode</th>
-            <th style="color:black; width: 150px">Tanggal Input</th>
-            <th style="color:black">Deskripsi Item</th>
-            <th style="color:black; width: 80px">Qty</th>
-            <th style="color:black; width: 100px">Jenis</th>
+            <tr>
+            <th rowspan="2" style="color:black; width: 80px">Kode</th>
+            <th rowspan="2" style="color:black; width: 150px">Tanggal Input</th>
+            <th rowspan="2" style="color:black">Deskripsi Item</th>
+            <th rowspan="2" style="color:black">Signa</th>
+            <th colspan="2" class="center">Jumlah Obat</th>
+            <th rowspan="2" style="color:black; width: 100px">Satuan Obat</th>
+            <th rowspan="2" style="color:black; width: 100px">Jenis</th>
+            </tr>
+            </tr>
+              <th class="center" style="color:black; width: 80px">Non Kronis</th>
+              <th class="center" style="color:black; width: 80px">Kronis</th>
+            </tr>
           </thead>
           <tbody>
-          <?php foreach($result['tindakan'] as $row_t) : 
+          <?php $getDtFr = []; foreach($result['tindakan'] as $row_t) : 
+              
               if(in_array($row_t->kode_jenis_tindakan, array(11) )) :
+                $getDtFr[] = $row_t;
+                
           ?>
             <tr>
               <td><?php echo $row_t->kode_trans_pelayanan?></td>
               <td><?php echo $this->tanggal->formatDateTime($row_t->tgl_transaksi)?></td>
               <td><?php echo $row_t->nama_tindakan?></td>
-              <td><?php echo (int)$row_t->jumlah_tebus.' '.$row_t->satuan_obat?></td>
+              <td><?php echo $row_t->dosis_per_hari.' x 1 (hari) '.$row_t->dosis_obat.' '.$row_t->satuan_obat.' '.$row_t->anjuran_pakai?></td>
+              <td align="center"><?php echo (int)$row_t->jumlah_tebus?></td>
+              <td align="center"><?php echo ($row_t->jumlah_obat_23 > 0) ? (int)$row_t->jumlah_obat_23 : "-"?></td>
+              <td align="center"><?php echo $row_t->satuan_kecil?></td>
               <td><?php echo $row_t->jenis_tindakan?></td>
               <!-- <td align="center"><?php echo ($row_t->kode_tc_trans_kasir>0)?'<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>':'<label class="label label-danger">Belum Dibayar</label>'?></td> -->
             </tr>
           <?php 
             endif; 
-          endforeach;?>
+          endforeach;
+            echo (count($getDtFr) > 0) ? "" : '<tr><td colspan="8" class="center red bold">Tidak ada data farmasi</td></tr>';
+          ?>
 
           </tbody>
 
