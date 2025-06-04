@@ -11,6 +11,7 @@
   <thead>
   <tr>
     <th class="center">No</th>
+    <th width="90px" class="center">No Registrasi</th>
     <th width="90px" class="center">Tipe</th>
     <th width="120px">Tgl Masuk</th>
     <th width="120px">Tgl Keluar</th>
@@ -21,10 +22,11 @@
     <th>Kategori</th>
     <th>Penjamin</th>
     <th>No SEP</th>
-    <th width="100px">Jasa Dr1</th>
-    <th width="100px">Jasa Dr2</th>
+    <th width="100px">Jasa Dokter</th>
     <th width="100px">BHP</th>
     <th width="100px">Apotik</th>
+    <th width="100px">Lab</th>
+    <th width="100px">Rad</th>
     <th width="130px">Kamar Rawat</th>
     <th width="130px">Kamar Operasi</th>
     <th width="100px">Alkes</th>
@@ -38,7 +40,7 @@
     <?php 
       foreach($result as $key=>$row_list){
         echo "<tr>";
-        for ($i=0; $i < 22; $i++) { 
+        for ($i=0; $i < 24; $i++) { 
           # code...
           echo "<td>".$row_list[$i]."</td>";
         }

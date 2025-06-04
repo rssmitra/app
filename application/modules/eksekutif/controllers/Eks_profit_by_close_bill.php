@@ -51,13 +51,19 @@ class Eks_profit_by_close_bill extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Eks_profit_by_close_bill->get_datatables();
-        // echo "<pre>";print_r($list);die;
+        // list PRB
+        $list_prb = $this->Eks_profit_by_close_bill->get_trx_prb();
+        // list pembelian bebas
+        $list_pb = $this->Eks_profit_by_close_bill->get_trx_pembelian_bebas();
+        // echo "<pre>";print_r($list_prb);die;
         $data = [];
         $ttl_bill_dr1 = [];
         $ttl_bill_dr2 = [];
         $ttl_bhp = [];
         $ttl_bhp_apotik = [];
         $ttl_bill_kamar = [];
+        $ttl_bill_lab = [];
+        $ttl_bill_rad = [];
         $ttl_kamar_tindakan = [];
         $ttl_alat_rs = [];
         $ttl_profit = [];
@@ -75,7 +81,80 @@ class Eks_profit_by_close_bill extends MX_Controller {
         $totalRpNoKlaimRs = [];
         $totalRpBillRsNKlaim = [];
 
+        // trx PB
+        $no= 0;
+        foreach ($list_pb as $kpb => $vpb) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center">PB</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($vpb->tgl_jam).'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($vpb->tgl_jam).'</div>';
+            $row[] = strtoupper($vpb->no_mr);
+            $row[] = strtoupper($vpb->nama_pasien);
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            // $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$vpb->total).'</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$vpb->total).'</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $data[] = $row;
+
+            $getDtByTipe['PB'][] = $vpb;
+            $getRevenueByTipe['PB'][] = $vpb->total;
+
+        }
+
+        // trx PRB
         $no = 0;
+        foreach ($list_prb as $key => $value) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center">PRB</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($value->tgl_trans).'</div>';
+            $row[] = '<div class="center">'.$this->tanggal->formatDateDmy($value->tgl_trans).'</div>';
+            $row[] = strtoupper($value->no_mr);
+            $row[] = strtoupper($value->nama_pasien);
+            $row[] = $value->dokter_pengirim;
+            $row[] = $value->bagian_asal;
+            $row[] = 'BPJS';
+            $row[] = 'BPJS KESEHATAN';
+            $row[] = $value->no_sep;
+            
+            // $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$value->total).'</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$value->total).'</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $row[] = '<div style="text-align: right">0</div>';
+            $data[] = $row;
+
+            $getDtByTipe['PRB'][] = $value;
+            $getRevenueByTipe['PRB'][] = $value->total;
+
+        }
+
+        // trx pelayanan rj/ri
         foreach ($list as $key_list=>$row_list) {
             $no++;
             $row = array();
@@ -98,13 +177,15 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $bhp_apotik = $row_list->bill_apotik;
             // total pendapatan
             // $profit = $row_list->bill_rs - ($row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik);
-            $profit = $row_list->pendapatan_rs;
+            $profit = $row_list->pendapatan_rs + $row_list->bill_lab + $row_list->bill_rad;
             $cost = $row_list->bill_dr1 + $row_list->bill_dr2 + $row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik;
-            
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_dr1).'</div>';
-            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_dr2).'</div>';
+            $jasa_dokter = $row_list->bill_dr1 + $row_list->bill_dr2;
+            $row[] = '<div style="text-align: right">'.number_format((int)$jasa_dokter).'</div>';
+            // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_dr2).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bhp).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$bhp_apotik).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_lab).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_rad).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->bill_kamar).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kamar_tindakan).'</div>';
             $row[] = '<div style="text-align: right">'.number_format((int)$row_list->alat_rs).'</div>';
@@ -118,6 +199,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $ttl_bhp[] = $row_list->bhp;
             $ttl_bhp_apotik[] = $bhp_apotik;
             $ttl_bill_kamar[] = $row_list->bill_kamar;
+            $ttl_bill_lab[] = $row_list->bill_lab;
+            $ttl_bill_rad[] = $row_list->bill_rad;
             $ttl_kamar_tindakan[] = $row_list->kamar_tindakan;
             $ttl_alat_rs[] = $row_list->alat_rs;
             $ttl_profit[] = $profit;
@@ -161,6 +244,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "ttl_bhp" => array_sum($ttl_bhp),
                         "ttl_bhp_apotik" => array_sum($ttl_bhp_apotik),
                         "ttl_bill_kamar" => array_sum($ttl_bill_kamar),
+                        "ttl_bill_lab" => array_sum($ttl_bill_lab),
+                        "ttl_bill_rad" => array_sum($ttl_bill_rad),
                         "ttl_kamar_tindakan" => array_sum($ttl_kamar_tindakan),
                         "ttl_alat_rs" => array_sum($ttl_alat_rs),
                         "ttl_profit" => array_sum($ttl_profit),
@@ -206,6 +291,18 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "all_ri_ttl_cost" => isset($getCostByTipe['RI']) ? array_sum($getCostByTipe['RI']) : 0,
                         "all_ri_ttl_profit" => isset($getProfitByTipe['RI']) ? array_sum($getProfitByTipe['RI']) : 0,
 
+                        "jml_resep_prb" => isset($getDtByTipe['PRB']) ? count($getDtByTipe['PRB']) : 0,
+                        "ttl_billing_prb" => isset($getRevenueByTipe['PRB']) ? array_sum($getRevenueByTipe['PRB']) : 0,
+
+                        "on_going_pasien" => isset($getDtByTipe['ONGOING']) ? count($getDtByTipe['ONGOING']) : 0,
+                        "on_going_revenue" => isset($getRevenueByTipe['ONGOING']) ? array_sum($getRevenueByTipe['ONGOING']) : 0,
+
+                        "unbill_pasien" => isset($getDtByTipe['UNBILL']) ? count($getDtByTipe['UNBILL']) : 0,
+                        "unbill_revenue" => isset($getRevenueByTipe['UNBILL']) ? array_sum($getRevenueByTipe['UNBILL']) : 0,
+
+                        "jml_resep_pb" => isset($getDtByTipe['PB']) ? count($getDtByTipe['PB']) : 0,
+                        "ttl_billing_pb" => isset($getRevenueByTipe['PB']) ? array_sum($getRevenueByTipe['PB']) : 0,
+
                         // rekap bpjs
                         "totalPasienKlaimRJ" => isset($totalPasienKlaim['RJ']) ? count($totalPasienKlaim['RJ']) : 0,
                         "totalRpKlaimInacbgsRJ" => isset($totalRpKlaimInacbgs['RJ']) ? array_sum($totalRpKlaimInacbgs['RJ']) : 0,
@@ -225,6 +322,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "totalRpNoKlaimRsRI" => isset($totalRpNoKlaimRs['RI'])?array_sum($totalRpNoKlaimRs['RI']):0,
                         "totalRpBillRsNKlaimRI" => isset($totalRpBillRsNKlaim['RI'])?array_sum($totalRpBillRsNKlaim['RI']):0,
                         
+                        // rekap by tipe
+
                         
                         
                 );
@@ -236,6 +335,10 @@ class Eks_profit_by_close_bill extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Eks_profit_by_close_bill->get_datatables();
+        // list PRB
+        $list_prb = $this->Eks_profit_by_close_bill->get_trx_prb();
+        // list pembelian bebas
+        $list_pb = $this->Eks_profit_by_close_bill->get_trx_pembelian_bebas();
         
         $data = [];
         $ttl_bill_dr1 = [];
@@ -260,11 +363,82 @@ class Eks_profit_by_close_bill extends MX_Controller {
         $totalRpNoKlaimRs = [];
         $totalRpBillRsNKlaim = [];
 
+        // trx PB
+        $no= 0;
+        foreach ($list_pb as $kpb => $vpb) {
+            $no++;
+            $row = array();
+            $row[] = $no;
+            $row[] = '';
+            $row[] = 'PB';
+            $row[] = $this->tanggal->formatDateDmy($vpb->tgl_jam);
+            $row[] = $this->tanggal->formatDateDmy($vpb->tgl_jam);
+            $row[] = strtoupper($vpb->no_mr);
+            $row[] = strtoupper($vpb->nama_pasien);
+            // $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = (int)$vpb->total;
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = (int)$vpb->total;
+            $row[] = '';
+            $row[] = '';
+            $data[] = $row;
+
+        }
+
+        // trx PRB
+        $no = 0;
+        foreach ($list_prb as $key => $value) {
+            $no++;
+            $row = array();
+
+            $row[] = $no;
+            $row[] = '';
+            $row[] = 'PRB';
+            $row[] = $this->tanggal->formatDateDmy($value->tgl_trans);
+            $row[] = $this->tanggal->formatDateDmy($value->tgl_trans);
+            $row[] = strtoupper($value->no_mr);
+            $row[] = strtoupper($value->nama_pasien);
+            // $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = (int)$value->total;
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = '';
+            $row[] = (int)$value->total;
+            $row[] = '';
+            $row[] = '';
+
+            $data[] = $row;
+
+        }
+
         $no = 0;
         foreach ($list as $key_list=>$row_list) {
             $no++;
             $row = array();
             $row[] = $no;
+            $row[] = $row_list->no_registrasi;
             $row[] = $row_list->tipe;
             $row[] = $this->tanggal->formatDateDmy($row_list->tgl_masuk);
             $row[] = $this->tanggal->formatDateDmy($row_list->tgl_keluar);
@@ -286,10 +460,13 @@ class Eks_profit_by_close_bill extends MX_Controller {
             $profit = $row_list->pendapatan_rs;
             $cost = $row_list->bill_dr1 + $row_list->bill_dr2 + $row_list->bhp + $row_list->bill_kamar + $row_list->kamar_tindakan + $row_list->alat_rs + $bhp_apotik;
             
-            $row[] = (int)$row_list->bill_dr1;
-            $row[] = (int)$row_list->bill_dr2;
+            $jasa_dokter = $row_list->bill_dr1 + $row_list->bill_dr2;
+            $row[] = (int)$jasa_dokter;
+            // $row[] = (int)$row_list->bill_dr2;
             $row[] = (int)$row_list->bhp;
             $row[] = (int)$bhp_apotik;
+            $row[] = (int)$row_list->bill_lab;
+            $row[] = (int)$row_list->bill_rad;
             $row[] = (int)$row_list->bill_kamar;
             $row[] = (int)$row_list->kamar_tindakan;
             $row[] = (int)$row_list->alat_rs;
@@ -346,6 +523,8 @@ class Eks_profit_by_close_bill extends MX_Controller {
 
     public function export_excel_2(){
         $list = $this->Eks_profit_by_close_bill->get_datatables();
+
+        
 
         $no = 0;
         foreach ($list as $key_list=>$row_list) {
@@ -411,6 +590,7 @@ class Eks_profit_by_close_bill extends MX_Controller {
             "recordsTotal" => count($list),
             "recordsFiltered" => count($list),
             "result" => $data,
+
             "ttl_bill_dr1" => array_sum($ttl_bill_dr1),
             "ttl_bill_dr2" => array_sum($ttl_bill_dr2),
             "ttl_bhp" => array_sum($ttl_bhp),
