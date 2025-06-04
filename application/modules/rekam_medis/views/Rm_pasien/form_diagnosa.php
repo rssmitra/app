@@ -204,7 +204,7 @@ function tambah_file()
 <?php echo $attachment; ?>
 
 <br><br>
-<!-- <div class="form-actions center">
+<div class="form-actions center">
 
     <a onclick="getMenu('rekam_medis/Rm_pasien')" href="#" class="btn btn-sm btn-success">
     <i class="ace-icon fa fa-arrow-left icon-on-right bigger-110"></i>
@@ -224,4 +224,4 @@ function tambah_file()
     <i class="ace-icon fa fa-pdf-file icon-on-right bigger-110"></i>
     Merge PDF Files
     </a>
-</div> -->
+</div>
