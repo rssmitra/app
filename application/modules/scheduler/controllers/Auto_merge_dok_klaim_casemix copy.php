@@ -28,15 +28,6 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
 
     public function index(){
 
-        $return = $this->execute();
-        $data = [];
-        $data['return'] = $return;
-        $this->load->view('view_auto_reload_merge', $data);
-
-    }
-
-    public function execute(){
-
         // if(!$this->input->is_cli_request())
         // {
         //     echo "This script can only be accessed via the command line" . PHP_EOL;
@@ -122,7 +113,7 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         // redirect(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
         file_get_contents(base_url().'casemix/Csm_billing_pasien/mergePDFFiles/'.$no_registrasi.'/'.$type.'');
 
-        // echo "url merge ".$string_url['url']."  " . PHP_EOL;
+        echo "url merge ".$string_url['url']."  " . PHP_EOL;
         // $script_cmd = 'start chrome "'.$string_url['url'].'" ';
         // exec( $script_cmd );
 
@@ -135,8 +126,6 @@ class Auto_merge_dok_klaim_casemix extends MX_Controller {
         $data_log = var_export($data_log, true);
         fwrite($fp,  $data_general."\n".$data_log);
         fclose($fp);
-
-        return $string_url['url'];
 
     }
 
