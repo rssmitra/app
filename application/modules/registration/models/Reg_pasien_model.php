@@ -740,7 +740,7 @@ class Reg_pasien_model extends CI_Model {
 	
 	{
 		/*data registrasi*/
-		$this->db->select('tc_registrasi.no_registrasi, tc_kunjungan.no_kunjungan, nama_pegawai, tc_registrasi.kode_dokter, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.pengobatan, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, tinggi_badan, tekanan_darah, nadi, th_riwayat_pasien.berat_badan, suhu, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr,mt_master_pasien.almt_ttp_pasien,mt_master_pasien.tempat_lahir,mt_master_pasien.tgl_lhr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan, print_tracer, tc_registrasi.jd_id, tc_registrasi.norujukan, kodebookingantrol, mt_master_pasien.no_kartu_bpjs, no_ktp, no_hp, mt_bagian.kode_poli_bpjs, mt_karyawan.kode_dokter_bpjs, tc_registrasi.jeniskunjunganbpjs, jen_kelamin, tc_registrasi.no_sep, tlp_almt_ttp, tc_registrasi.kode_bagian_masuk, kode_icd_diagnosa');
+		$this->db->select('tc_registrasi.no_registrasi, tc_kunjungan.no_kunjungan, nama_pegawai, tc_registrasi.kode_dokter, nama_perusahaan, mt_bagian.nama_bagian, th_riwayat_pasien.diagnosa_awal, th_riwayat_pasien.diagnosa_akhir, th_riwayat_pasien.anamnesa, th_riwayat_pasien.pengobatan, th_riwayat_pasien.kategori_tindakan, tc_registrasi.tgl_jam_masuk, tc_kunjungan.tgl_masuk, th_riwayat_pasien.pemeriksaan, tinggi_badan, tekanan_darah, nadi, th_riwayat_pasien.berat_badan, suhu, mt_master_pasien.nama_pasien, mt_master_pasien.no_mr,mt_master_pasien.almt_ttp_pasien,mt_master_pasien.tempat_lahir,mt_master_pasien.tgl_lhr, kode_bagian_tujuan, tujuan_poli.nama_bagian as poli_tujuan_kunjungan, asal_poli.nama_bagian as poli_asal_kunjungan, kode_bagian_asal, tc_registrasi.kode_perusahaan, print_tracer, tc_registrasi.jd_id, tc_registrasi.norujukan, kodebookingantrol, mt_master_pasien.no_kartu_bpjs, no_ktp, no_hp, mt_bagian.kode_poli_bpjs, mt_karyawan.kode_dokter_bpjs, tc_registrasi.jeniskunjunganbpjs, jen_kelamin, tc_registrasi.no_sep, tlp_almt_ttp, tc_registrasi.kode_bagian_masuk, kode_icd_diagnosa, tgl_kontrol_kembali, diagnosa_sekunder, text_icd9, cara_keluar_pasien, tc_kunjungan.pasca_pulang');
 		$this->db->from('tc_kunjungan');
 		$this->db->join('tc_registrasi','tc_registrasi.no_registrasi=tc_kunjungan.no_registrasi','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=tc_registrasi.no_mr','left');
@@ -751,16 +751,17 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_registrasi.kode_dokter','left');
 		$this->db->join('th_riwayat_pasien','th_riwayat_pasien.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->where('tc_kunjungan.no_registrasi', $no_registrasi);
+		$this->db->where("SUBSTRING(kode_bagian_tujuan, 1, 2) NOT IN ('05')");
 		if($no_kunjungan != ''){
 			$this->db->where('tc_kunjungan.no_kunjungan', $no_kunjungan);
 		}
 		$this->db->order_by('tc_kunjungan.tgl_masuk', 'DESC');
 		$registrasi = $this->db->get()->result();
+		// echo $this->db->last_query();die;
 
 		/*data transaksi*/
-		$transaksi = $this->db->select('kode_trans_pelayanan, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, fr_tc_far_detail_log.jumlah_tebus, fr_tc_far_detail_log.jumlah_obat_23, tc_trans_pelayanan.kode_bagian, satuan_obat, anjuran_pakai, dosis_per_hari, dosis_obat, catatan_lainnya,satuan_kecil')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail_log','fr_tc_far_detail_log.relation_id=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('no_registrasi' => $no_registrasi) )->result();
+		$transaksi = $this->db->select('kode_trans_pelayanan, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, fr_tc_far_detail_log.jumlah_tebus, fr_tc_far_detail_log.jumlah_obat_23, tc_trans_pelayanan.kode_bagian, satuan_obat, anjuran_pakai, dosis_per_hari, dosis_obat, catatan_lainnya,satuan_kecil, bill_rs as profit, (bill_dr1 + bill_dr2) as jasa_dokter, (bill_rs + bill_dr1 + bill_dr2) as total')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail_log','fr_tc_far_detail_log.relation_id=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('no_registrasi' => $no_registrasi) )->result();
 
-		// echo $this->db->last_query();die;
 
 		// data pembayaran kasir
 		$trans_kasir = $this->db->get_where('tc_trans_kasir', array('no_registrasi' => $no_registrasi))->result();
