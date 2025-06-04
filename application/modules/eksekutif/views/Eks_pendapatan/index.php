@@ -123,7 +123,6 @@
   $('#btn_reset_data').click(function (e) {
       e.preventDefault();
       oTable.ajax.url($('#dt_harian_kasir').attr('base-url')+'?flag='+$('#flag').val()).load();
-      // $("html, body").animate({ scrollDown: "400px" });
       $('#form_search')[0].reset();
   });
 

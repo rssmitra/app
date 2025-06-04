@@ -41,15 +41,20 @@
           var objData = response.json;
           $('#total_pasien').text(formatMoney(objData.recordsTotal));
 
-          $("#ttl_bill_dr1").text(formatMoney(objData.ttl_bill_dr1));
+          var jasa_dokter = parseInt(objData.ttl_bill_dr1) + parseInt(objData.ttl_bill_dr2);
+
+          $("#ttl_bill_dr1").text(formatMoney(jasa_dokter));
           $("#ttl_bill_dr2").text(formatMoney(objData.ttl_bill_dr2));
           $("#ttl_bhp").text(formatMoney(objData.ttl_bhp));
           $("#ttl_bhp_apotik").text(formatMoney(objData.ttl_bhp_apotik));
           $("#ttl_bill_kamar").text(formatMoney(objData.ttl_bill_kamar));
+          $("#ttl_bill_lab").text(formatMoney(objData.ttl_bill_lab));
+          $("#ttl_bill_rad").text(formatMoney(objData.ttl_bill_rad));
           $("#ttl_kamar_tindakan").text(formatMoney(objData.ttl_kamar_tindakan));
           $("#ttl_alat_rs").text(formatMoney(objData.ttl_alat_rs));
           $("#ttl_profit").text(formatMoney(objData.ttl_profit));
-          $("#ttl_total_bill").text(formatMoney(objData.ttl_total_bill));
+
+          
           // rekap rawat jalan by kategori
           $("#um_ttl_pasien").text(formatMoney(objData.um_ttl_pasien));
           $("#asuransi_ttl_pasien").text(formatMoney(objData.asuransi_ttl_pasien));
@@ -118,6 +123,46 @@
           $("#totalRpNoKlaimInacbgsRI").text(formatMoney(objData.totalRpNoKlaimInacbgsRI));
           $("#totalRpNoKlaimRsRI").text(formatMoney(objData.totalRpNoKlaimRsRI));
           $("#totalRpBillRsNKlaimRI").text(formatMoney(objData.totalRpBillRsNKlaimRI));
+
+
+          // rekap by tipe
+          $("#jml_pasien_rj").text(formatMoney(objData.all_ttl_pasien));
+          $("#ttl_billing_rj").text(formatMoney(objData.all_ttl_revenue));
+
+          $("#jml_pasien_ri").text(formatMoney(objData.all_ri_ttl_pasien));
+          $("#ttl_billing_ri").text(formatMoney(objData.all_ri_ttl_revenue));
+
+          $("#jml_resep_prb").text(formatMoney(objData.jml_resep_prb));
+          $("#ttl_billing_prb").text(formatMoney(objData.ttl_billing_prb));
+          $("#ttl_prb").text(formatMoney(objData.ttl_billing_prb));
+          $("#total_resep_prb_all").text(formatMoney(objData.jml_resep_prb));
+          $("#total_revenue_resep_prb_all").text(formatMoney(objData.ttl_billing_prb));
+
+          $("#jml_resep_pb").text(formatMoney(objData.jml_resep_pb));
+          $("#ttl_billing_pb").text(formatMoney(objData.ttl_billing_pb));
+          $("#ttl_pb").text(formatMoney(objData.ttl_billing_pb));
+          $("#total_resep_pb_all").text(formatMoney(objData.jml_resep_pb));
+          $("#total_revenue_resep_pb_all").text(formatMoney(objData.ttl_billing_pb));
+
+
+          $("#on_going_pasien").text(formatMoney(objData.on_going_pasien));
+          $("#on_going_revenue").text(formatMoney(objData.on_going_revenue));
+
+          $("#unbill_pasien").text(formatMoney(objData.unbill_pasien));
+          $("#unbill_revenue").text(formatMoney(objData.unbill_revenue));
+
+          var total_ttl_bill = objData.ttl_total_bill + objData.ttl_billing_prb + objData.ttl_billing_pb;
+          $("#ttl_total_bill").text(formatMoney(total_ttl_bill));
+
+
+          var total_pasien_all = parseInt(objData.all_ttl_pasien) + parseInt(objData.all_ri_ttl_pasien) + parseInt(objData.on_going_pasien) + parseInt(objData.unbill_pasien);
+          $("#total_pasien_all").text(formatMoney(total_pasien_all));
+
+          var total_revenue_pasien_all = parseInt(objData.all_ttl_revenue) + parseInt(objData.all_ri_ttl_revenue) + parseInt(objData.on_going_revenue) + parseInt(objData.unbill_revenue);
+          $("#total_revenue_pasien_all").text(formatMoney(total_revenue_pasien_all));
+
+          var total_revenue_pasien_all_type = parseInt(objData.all_ttl_revenue) + parseInt(objData.all_ri_ttl_revenue) + parseInt(objData.ttl_billing_prb) + parseInt(objData.ttl_billing_pb) + parseInt(objData.on_going_revenue) + parseInt(objData.unbill_revenue);
+          $("#total_revenue_pasien_all_type").text(formatMoney(total_revenue_pasien_all_type));
 
           if(objData.start_date == objData.end_date){
             $('.tgl_filter').html(objData.start_date);
@@ -219,14 +264,24 @@
           <label class="control-label col-md-1">Tgl Transaksi</label>
           <div class="col-md-3">
             <div class="input-daterange input-group">
-              <input type="text" class="input-xs date-picker" style="max-width: 100px" name="start_date" id="start_date" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
+              <input type="text" class="input-xs date-picker" name="start_date" id="start_date" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
               <span class="input-group-addon">
                 s.d
               </span>
-              <input type="text" class="input-xs date-picker" style="max-width: 100px; margin-left:0px !important" name="end_date" id="end_date" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
+              <input type="text" class="input-xs date-picker" style="margin-left:0px !important" name="end_date" id="end_date" value="<?php echo date('Y-m-d')?>" data-date-format="yyyy-mm-dd">
             </div>
           </div>
-          <div class="col-md-4" style="margin-left: -6%">
+          <div class="col-md-2 no-padding">
+            <select name="kategori" id="kategori" class="input-xs form-control">
+              <option value="">-- Pilih Tipe --</option>
+              <option value="rj">RJ</option>
+              <option value="ri">RI</option>
+              <option value="og">ON GOING</option>
+              <option value="ub">UNBILL</option>
+              <option value="pb">PEMBELIAN BEBAS</option>
+            </select>    
+          </div> 
+          <div class="col-md-4" style="margin-left: 0%">
             <a href="#" id="btn_search_data" class="btn btn-xs btn-primary">
               <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               Tampilkan
@@ -241,108 +296,206 @@
         <p>
           <b>Keterangan :</b>
           <ul>
-            <li>Data yang ditampilkan adalah data berdasarkan tanggal kunjungan (masuk/keluar) pasien RJ/RI</li>
+            <li>Data yang ditampilkan adalah data berdasarkan Tanggal Kunjungan (masuk/keluar) Pasien RJ/RI dan atau Tanggal Transaksi</li>
             <li>Kolom <b>"Tipe"</b> merupakan seri kuitansi pasien ketika <i>closing billing</i> oleh petugas kasir</li>
             <li>Tipe <b>"ON GOING"</b> berarti pasien masih dalam proses pelayanan dan belum dilakukan <i>closing billing</i></li>
             <li>Tipe <b>"UNBILL"</b> berarti pasien belum dilakukan <i>closing billing</i> oleh petugas kasir atau ada rincian billing yang belum di<i>closing</i></li>
             <li>Tipe <b>"PB"</b> (Pembelian Bebas) yaitu pasien rawat jalan yang melakukan pembelian obat di apotik dengan resep luar</li>
+            <li>Tipe <b>"PRB"</b> (Pasien Rujuk Balik) yaitu Resep Pasien Rujuk Balik (PRB) yang diklaim oleh farmasi setiap bulannya</li>
             <li>Billing Apotik diluar dari Billing Resep PRB dan sudah dikurangi margin 33% dari total billing apotik dan margin 33% dimasukan kedalam Profit RS</li>
+            <li>Harga Satuan pada Resep PRB masih menggunakan Harga Satuan Penjualan pada Sistem</li>
           </ul>
         </p>
         <p>
         <hr>
 
-        <center><span style="font-weight: bold" id="title_1">REKAPITULASI PENDAPATAN BERDASARKAN DATA YANG DISUBMIT OLEH KASIR <br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
+        <center><span style="font-weight: bold; font-size: 18px" id="title_1">REKAPITULASI PENDAPATAN RUMAH SAKIT <br>PERIODE TANGGAL <span class="tgl_filter"></span></span></center>
         <br>
+        <div class="col-md-12">
+          <h3 class="header smaller lighter blue padding-10">
+            REKAP BERDASARKAN TIPE PELAYANAN 
+          </h3>
+          <div class="col-md-6">
+            <table class="table" style="width: 100%">
+              <tr style="background: #428bca; color: white; font-weight: bold;">
+                <td width="30px">No</td>
+                <td>Tipe Pelayanan</td>
+                <td width="100px" align="center">Qty</td>
+                <td width="150px" align="right">Total (Rp.)</td>
+              </tr>
+              <tr>
+                <td align="center">1</td>
+                <td>Rawat Jalan (RJ)</td>
+                <td align="center"><span id="jml_pasien_rj">0</span></td>
+                <td align="right"><span id="ttl_billing_rj">0</span></td>
+              </tr>
+              <tr>
+                <td align="center">2</td>
+                <td>Rawat Inap (RI)</td>
+                <td align="center"><span id="jml_pasien_ri">0</span></td>
+                <td align="right"><span id="ttl_billing_ri">0</span></td>
+              </tr>
+
+              <tr>
+                <td align="center">3</td>
+                <td>Resep PRB (Pasien Rujuk Balik)</td>
+                <td align="center"><span id="jml_resep_prb">0</span></td>
+                <td align="right"><span id="ttl_billing_prb">0</span></td>
+              </tr>
+
+              <tr>
+                <td align="center">4</td>
+                <td>Pembelian Bebas/Karyawan (PB)</td>
+                <td align="center"><span id="jml_resep_pb">0</span></td>
+                <td align="right"><span id="ttl_billing_pb">0</span></td>
+              </tr>
+
+              <tr>
+                <td align="center">5</td>
+                <td>Sedang Berlangsung (On Going)</td>
+                <td align="center"><span id="on_going_pasien">0</span></td>
+                <td align="right"><span id="on_going_revenue">0</span></td>
+              </tr>
+
+              <tr>
+                <td align="center">6</td>
+                <td>Belum disubmit kasir (UNBILL)</td>
+                <td align="center"><span id="unbill_pasien">0</span></td>
+                <td align="right"><span id="unbill_revenue">0</span></td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <table class="table" style="width: 100%">
+              <tr style="background: #428bca; color: white; font-weight: bold;">
+                <td width="33%">Total Pasien</td>
+                <td width="33%">Total Resep PRB</td>
+                <td width="33%">Total Pembelian Bebas</td>
+              </tr>
+              <tr>
+                <td align="right">
+                  <span id="total_pasien_all">-</span> Pasien<br>
+                  <span id="total_revenue_pasien_all" style="font-weight: bold; font-size: 16px">-</span>
+                </td>
+                <td align="right">
+                  <span id="total_resep_prb_all">-</span> Resep <br>
+                  <span id="total_revenue_resep_prb_all" style="font-weight: bold; font-size: 16px">-</span>
+                </td>
+                <td align="right">
+                  <span id="total_resep_pb_all">-</span> Resep <br>
+                  <span id="total_revenue_resep_pb_all" style="font-weight: bold; font-size: 16px">-</span>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3" align="center" style="background: #428bca; color: white; font-weight: bold;">TOTAL REVENUE KESELURUHAN</td>
+              </tr>
+              <tr>
+                <td align="center" valign="middle" colspan="3">
+                  <span id="total_revenue_pasien_all_type" style="font-weight: bold; font-size: 26px">0</span>
+                </td>
+              </tr>
+            </table>
+            
+          </div>
+        </div>
 
         <div class="col-md-12" style="padding-bottom: 20px">
+
+          <h3 class="header smaller lighter blue padding-10">
+            REKAP PASIEN RJ/RI BERDASARKAN PENJAMIN
+          </h3>
+          Rekap data yang ditampilkan dibawah ini hanya pelayanan <b>RJ/RI</b> tidak termasuk pasien yang sedang <b>ONGOING/UNBILL/PB/PRB</b>
+        
           <table class="table">
             <tr>
               <th style="width: 25%; color: white; background: #d15b47">TOTAL PASIEN</th>
               <th style="width: 25%; color: white; background: #428bca">REVENUE</th>
-              <th style="width: 25%; color: white; background: #ffb752">COST</th>
-              <th style="width: 25%; color: white; background: #87b87f">PROFIT</th>
+              <!-- <th style="width: 25%; color: white; background: #ffb752">COST</th>
+              <th style="width: 25%; color: white; background: #87b87f">PROFIT</th> -->
             </tr>
             <tr style="font-size: 20px; font-weight: bold;">
               <td align="right" style="background: #d15b4714"><span id="total_pasien_rs"></span></td>
               <td align="right" style="background: #428bca1f"><span id="total_revenue_rs"></span></td>
-              <td align="right" style="background: #ffb7521c"><span id="total_cost_rs"></span></td>
-              <td align="right" style="background: #87b87f17"><span id="total_profit_rs"></span></td>
+              <!-- <td align="right" style="background: #ffb7521c"><span id="total_cost_rs"></span></td>
+              <td align="right" style="background: #87b87f17"><span id="total_profit_rs"></span></td> -->
             </tr>
           </table>
           <table class="table">
             <tr style="font-weight: bold; background: #c7cccb">
               <td rowspan="2" style="vertical-align: middle" width="30px" align="center">NO</td>
               <td rowspan="2" style="vertical-align: middle">KATEGORI</td>
-              <td colspan="4" align="center">RAWAT JALAN</td>
-              <td colspan="4" align="center">RAWAT INAP</td>
+              <td colspan="2" align="center">RAWAT JALAN</td>
+              <td colspan="2" align="center">RAWAT INAP</td>
             </tr>
             <tr style="font-weight: bold; background: #c7cccb">
               <td width="100px" align="center">PASIEN</td>
+              <!-- <td width="100px" align="right">COST</td>
+              <td width="100px" align="right">PROFIT</td> -->
               <td width="100px" align="right">REVENUE</td>
-              <td width="100px" align="right">COST</td>
-              <td width="100px" align="right">PROFIT</td>
               <td width="100px" align="center">PASIEN</td>
+              <!-- <td width="100px" align="right">COST</td>
+              <td width="100px" align="right">PROFIT</td> -->
               <td width="100px" align="right">REVENUE</td>
-              <td width="100px" align="right">COST</td>
-              <td width="100px" align="right">PROFIT</td>
             </tr>
             <tr>
               <td>1.</td>
               <td>UMUM</td>
               <td align="center"><span id="um_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="um_cost"></span></td>
+              <td align="right"><span id="um_profit"></span></td> -->
               <td align="right"><span id="um_revenue"></span></td>
-              <td align="right"><span id="um_cost"></span></td>
-              <td align="right"><span id="um_profit"></span></td>
               <td align="center"><span id="ri_um_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="ri_um_cost"></span></td>
+              <td align="right"><span id="ri_um_profit"></span></td> -->
               <td align="right"><span id="ri_um_revenue"></span></td>
-              <td align="right"><span id="ri_um_cost"></span></td>
-              <td align="right"><span id="ri_um_profit"></span></td>
             </tr>
             <tr>
               <td>2.</td>
               <td>ASURANSI</td>
               <td align="center"><span id="asuransi_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="asuransi_cost"></span></td>
+              <td align="right"><span id="asuransi_profit"></span></td> -->
               <td align="right"><span id="asuransi_revenue"></span></td>
-              <td align="right"><span id="asuransi_cost"></span></td>
-              <td align="right"><span id="asuransi_profit"></span></td>
               <td align="center"><span id="ri_asuransi_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="ri_asuransi_cost"></span></td>
+              <td align="right"><span id="ri_asuransi_profit"></span></td> -->
               <td align="right"><span id="ri_asuransi_revenue"></span></td>
-              <td align="right"><span id="ri_asuransi_cost"></span></td>
-              <td align="right"><span id="ri_asuransi_profit"></span></td>
             </tr>
             <tr>
               <td>3.</td>
               <td>BPJS KESEHATAN</td>
               <td align="center"><span id="bpjs_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="bpjs_cost"></span></td>
+              <td align="right"><span id="bpjs_profit"></span></td> -->
               <td align="right"><span id="bpjs_revenue"></span></td>
-              <td align="right"><span id="bpjs_cost"></span></td>
-              <td align="right"><span id="bpjs_profit"></span></td>
               <td align="center"><span id="ri_bpjs_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="ri_bpjs_cost"></span></td>
+              <td align="right"><span id="ri_bpjs_profit"></span></td> -->
               <td align="right"><span id="ri_bpjs_revenue"></span></td>
-              <td align="right"><span id="ri_bpjs_cost"></span></td>
-              <td align="right"><span id="ri_bpjs_profit"></span></td>
             </tr>
 
             <tr>
               <td colspan="2" align="right"><b>GRAND TOTAL</b></td>
               <td align="center"><span id="all_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="all_ttl_cost"></span></td>
+              <td align="right"><span id="all_ttl_profit"></span></td> -->
               <td align="right"><span id="all_ttl_revenue"></span></td>
-              <td align="right"><span id="all_ttl_cost"></span></td>
-              <td align="right"><span id="all_ttl_profit"></span></td>
               <td align="center"><span id="all_ri_ttl_pasien"></span></td>
+              <!-- <td align="right"><span id="all_ri_ttl_cost"></span></td>
+              <td align="right"><span id="all_ri_ttl_profit"></span></td> -->
               <td align="right"><span id="all_ri_ttl_revenue"></span></td>
-              <td align="right"><span id="all_ri_ttl_cost"></span></td>
-              <td align="right"><span id="all_ri_ttl_profit"></span></td>
             </tr>
           </table>
-          <span><b>Note :</b> <i>Rekap data yang ditampilkan diatas tidak termasuk pasien yang sedang <b>ON GOING/UNBILL/PB</b></i></span>
         </div>
         <br>
         <hr>
         <!-- rekap BPJS -->
          <div class="col-md-12" style="padding-bottom: 20px">
-          <b>REKAP KLAIM BPJS PERIODE TANGGAL <span class="tgl_filter"></span></b>
+          <h3 class="header smaller lighter blue padding-10">
+            REKAP KLAIM BPJS PERIODE TANGGAL <span class="tgl_filter"></span>
+          </h3>
+          Data yang ditampilkan adalah data klaim BPJS yang sudah dilakukan <i>closing billing</i> oleh petugas kasir, baik klaim yang sudah naik maupun yang belum naik.
+          
           <table class="table">
             <tr style="font-weight: bold;">
               <td colspan="8" class="center" style="background: #019833; color: white">JUMLAH NAIK KLAIM NCC</td>
@@ -388,10 +541,10 @@
         </div>
 
         <div class="col-md-12">
-          <button type="button" name="btn-export" value="1" onclick="export_excel(1)" class="btn btn-xs btn-success">
-            <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
-            Export Excel
-          </button>
+          <h3 class="header smaller lighter blue padding-10">
+            LIST DATA TRANSAKSI PERIODE TANGGAL <span class="tgl_filter"></span>
+          </h3>
+          Rekap data berdasarkan kategori.
           <table class="table">
             <tr>
               <td align="right" style="font-size: 11px; width: 10%">
@@ -399,13 +552,13 @@
                 <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="total_pasien">0</span></h3>
               </td>
               <td align="right" style="font-size: 11px; width: 10%">
-                Jasa Dr1<br>
+                Jasa Dokter<br>
                 <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_bill_dr1">0</span>,-</h3>
               </td>
-              <td align="right" style="font-size: 11px; width: 10%">
+              <!-- <td align="right" style="font-size: 11px; width: 10%">
                 Jasa Dr2<br>
                 <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_bill_dr2">0</span>,-</h3>
-              </td>
+              </td> -->
               <td align="right" style="font-size: 11px; width: 10%">
                 BHP<br>
                 <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_bhp">0</span>,-</h3>
@@ -413,6 +566,22 @@
               <td align="right" style="font-size: 11px; width: 10%">
                 Apotik<br>
                 <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_bhp_apotik">0</span>,-</h3>
+              </td>
+              <td align="right" style="font-size: 11px; width: 10%">
+                PRB<br>
+                <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_prb">0</span>,-</h3>
+              </td>
+              <td align="right" style="font-size: 11px; width: 10%">
+                PB<br>
+                <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_pb">0</span>,-</h3>
+              </td>
+              <td align="right" style="font-size: 11px; width: 10%">
+                Lab<br>
+                <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_bill_lab">0</span>,-</h3>
+              </td>
+              <td align="right" style="font-size: 11px; width: 10%">
+                Radiologi<br>
+                <h3 style="font-weight: bold; margin-top : 0px; font-size: 14px"><span id="ttl_bill_rad">0</span>,-</h3>
               </td>
               <td align="right" style="font-size: 11px; width: 10%">
                 Kamar Rawat<br>
@@ -439,6 +608,10 @@
         </div>
 
         <div class="col-md-12">
+          <button type="button" name="btn-export" value="1" onclick="export_excel(1)" class="btn btn-xs btn-success">
+            <i class="ace-icon fa fa-file-excel-o icon-on-right bigger-110"></i>
+            Export Excel
+          </button>
           <table id="datatable_rows" base-url="eksekutif/Eks_profit_by_close_bill/get_data" class="table table-bordered table-hover">
             <thead>
               <tr style="background-color:#428bca">
@@ -453,10 +626,11 @@
                 <th>Kategori</th>
                 <th>Penjamin</th>
                 <th>No SEP</th>
-                <th width="100px">Jasa Dr1</th>
-                <th width="100px">Jasa Dr2</th>
+                <th width="100px">Jasa Dokter</th>
                 <th width="100px">BHP</th>
                 <th width="100px">Apotik</th>
+                <th width="100px">Lab</th>
+                <th width="100px">Radiologi</th>
                 <th width="130px">Kamar Rawat</th>
                 <th width="130px">Kamar Operasi</th>
                 <th width="100px">Alkes</th>
