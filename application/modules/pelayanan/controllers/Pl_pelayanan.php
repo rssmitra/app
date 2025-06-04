@@ -2284,7 +2284,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['umur'] = $umur;
 
         
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($resume);die;
         $html = $this->load->view('Pl_pelayanan/view_resume_medis', $data, true);
         echo json_encode(array('html' => $html, 'data' => $data));
     
