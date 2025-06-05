@@ -51,6 +51,7 @@
                 <th rowspan="3" style="vertical-align: middle !important" class="center">No</th>
                 <th rowspan="3" style="vertical-align: middle !important">Poliklinik/Spesialis</th>
                 <th class="center" colspan="6">Kategori Pasien</th>
+                <th class="center" rowspan="3" style="vertical-align: middle !important">Jumlah<br>Kunjungan</th>
                 <th class="center" rowspan="3" style="vertical-align: middle !important">Jumlah<br>Pasien</th>
                 <th class="center" rowspan="3" style="vertical-align: middle !important">Pasien<br>Batal</th>
                 <th class="center" rowspan="3" style="vertical-align: middle !important">%</th>
@@ -74,7 +75,10 @@
                 $no=0; 
                 foreach($poli as $key_poli => $val_poli) : $no++;
                 $total_poli = isset($poli[$key_poli]) ? count($poli[$key_poli]) : 0;
+                $total_pasien = isset($pasien[$key_poli][0]) ? $pasien[$key_poli][0] : 0;
+
                 $arr_total_poli[] = $total_poli;
+                $arr_total_pasien[] = $total_pasien;
 
                 // BPJS
                 $pasien_lama_bpjs = isset($penjamin[$key_poli][120]['lama']) ? count($penjamin[$key_poli][120]['lama']) : 0;
@@ -112,6 +116,7 @@
                   <td align="center"><?php echo $pasien_lama_asuransi;?></td>
                   <td align="center"><?php echo $pasien_baru_asuransi;?></td>
                   <td align="center"><?php echo $total_poli;?></td>
+                  <td align="center"><?php echo $total_pasien;?></td>
                   <td align="center"><?php echo $pasien_batal;?></td>
                   <td align="center"><?php echo number_format($percent, 2);?></td>
                   <td align="center">
@@ -130,6 +135,7 @@
                 <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_asuransi))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_asuransi))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_total_poli))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_total_pasien))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_pasien_batal))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_percent))?> %</td>
               </tr>
@@ -143,6 +149,7 @@
                 <td align="center"><?php echo number_format(array_sum($arr_pasien_lama_asuransi) / count($poli))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_pasien_baru_asuransi) / count($poli))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_total_poli) / count($poli))?></td>
+                <td align="center"><?php echo number_format(array_sum($arr_total_pasien) / count($poli))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_pasien_batal) / count($poli))?></td>
                 <td align="center"><?php echo number_format(array_sum($arr_percent) / count($poli))?> %</td>
               </tr>
