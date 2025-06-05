@@ -144,7 +144,6 @@
           $("#total_resep_pb_all").text(formatMoney(objData.jml_resep_pb));
           $("#total_revenue_resep_pb_all").text(formatMoney(objData.ttl_billing_pb));
 
-
           $("#on_going_pasien").text(formatMoney(objData.on_going_pasien));
           $("#on_going_revenue").text(formatMoney(objData.on_going_revenue));
 
@@ -164,11 +163,36 @@
           var total_revenue_pasien_all_type = parseInt(objData.all_ttl_revenue) + parseInt(objData.all_ri_ttl_revenue) + parseInt(objData.ttl_billing_prb) + parseInt(objData.ttl_billing_pb) + parseInt(objData.on_going_revenue) + parseInt(objData.unbill_revenue);
           $("#total_revenue_pasien_all_type").text(formatMoney(total_revenue_pasien_all_type));
 
+          // rekap by instalasi
+          $("#instalasi_rj_ttl_pasien").text(formatMoney(objData.instalasi_rj_ttl_pasien));
+          $("#instalasi_rj_ttl_revenue").text(formatMoney(objData.instalasi_rj_ttl_revenue));
+          $("#hd_ttl_pasien").text(formatMoney(objData.hd_ttl_pasien));
+          $("#hd_ttl_revenue").text(formatMoney(objData.hd_ttl_revenue));
+          $("#mcu_ttl_pasien").text(formatMoney(objData.mcu_ttl_pasien));
+          $("#mcu_ttl_revenue").text(formatMoney(objData.mcu_ttl_revenue));
+          $("#ttl_instalasi_ri").text(formatMoney(objData.all_ri_ttl_pasien));
+          $("#ttl_bill_instalasi_ri").text(formatMoney(objData.all_ri_ttl_revenue));
+          $("#igd_ttl_pasien").text(formatMoney(objData.igd_ttl_pasien));
+          $("#igd_ttl_revenue").text(formatMoney(objData.igd_ttl_revenue));
+          $("#lab_ttl_pasien").text(formatMoney(objData.lab_ttl_pasien));
+          $("#lab_ttl_revenue").text(formatMoney(objData.lab_ttl_revenue));
+          $("#rad_ttl_pasien").text(formatMoney(objData.rad_ttl_pasien));
+          $("#rad_ttl_revenue").text(formatMoney(objData.rad_ttl_revenue));
+          $("#fisio_ttl_pasien").text(formatMoney(objData.fisio_ttl_pasien));
+          $("#fisio_ttl_revenue").text(formatMoney(objData.fisio_ttl_revenue));
+
+          var ttl_instalasi_pasien = parseInt(objData.instalasi_rj_ttl_pasien) + parseInt(objData.all_ri_ttl_pasien) + parseInt(objData.igd_ttl_pasien) + parseInt(objData.lab_ttl_pasien) + parseInt(objData.rad_ttl_pasien) + parseInt(objData.fisio_ttl_pasien) + parseInt(objData.mcu_ttl_pasien) + parseInt(objData.hd_ttl_pasien);
+          
+          var ttl_instalasi_revenue = parseInt(objData.instalasi_rj_ttl_revenue) + parseInt(objData.all_ri_ttl_revenue) + parseInt(objData.igd_ttl_revenue) + parseInt(objData.lab_ttl_revenue) + parseInt(objData.rad_ttl_revenue) + parseInt(objData.fisio_ttl_revenue) + parseInt(objData.mcu_ttl_revenue) + parseInt(objData.hd_ttl_revenue);
+          $("#ttl_instalasi_pasien").text(formatMoney(ttl_instalasi_pasien));
+          $("#ttl_instalasi_revenue").text(formatMoney(ttl_instalasi_revenue));
+
           if(objData.start_date == objData.end_date){
             $('.tgl_filter').html(objData.start_date);
           }else{
             $('.tgl_filter').html(objData.start_date+' s.d '+objData.end_date);
           }
+          
 
       },
 
@@ -402,11 +426,11 @@
         <div class="col-md-12" style="padding-bottom: 20px">
 
           <h3 class="header smaller lighter blue padding-10">
-            REKAP PASIEN RJ/RI BERDASARKAN PENJAMIN
+            REKAP PASIEN RJ/RI BERDASARKAN INSTALASI & PENJAMIN
           </h3>
           Rekap data yang ditampilkan dibawah ini hanya pelayanan <b>RJ/RI</b> tidak termasuk pasien yang sedang <b>ONGOING/UNBILL/PB/PRB</b>
-        
-          <table class="table">
+
+          <table class="table" style="width:100% !important">
             <tr>
               <th style="width: 25%; color: white; background: #d15b47">TOTAL PASIEN</th>
               <th style="width: 25%; color: white; background: #428bca">REVENUE</th>
@@ -420,72 +444,150 @@
               <td align="right" style="background: #87b87f17"><span id="total_profit_rs"></span></td> -->
             </tr>
           </table>
-          <table class="table">
-            <tr style="font-weight: bold; background: #c7cccb">
-              <td rowspan="2" style="vertical-align: middle" width="30px" align="center">NO</td>
-              <td rowspan="2" style="vertical-align: middle">KATEGORI</td>
-              <td colspan="2" align="center">RAWAT JALAN</td>
-              <td colspan="2" align="center">RAWAT INAP</td>
-            </tr>
-            <tr style="font-weight: bold; background: #c7cccb">
-              <td width="100px" align="center">PASIEN</td>
-              <!-- <td width="100px" align="right">COST</td>
-              <td width="100px" align="right">PROFIT</td> -->
-              <td width="100px" align="right">REVENUE</td>
-              <td width="100px" align="center">PASIEN</td>
-              <!-- <td width="100px" align="right">COST</td>
-              <td width="100px" align="right">PROFIT</td> -->
-              <td width="100px" align="right">REVENUE</td>
-            </tr>
-            <tr>
-              <td>1.</td>
-              <td>UMUM</td>
-              <td align="center"><span id="um_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="um_cost"></span></td>
-              <td align="right"><span id="um_profit"></span></td> -->
-              <td align="right"><span id="um_revenue"></span></td>
-              <td align="center"><span id="ri_um_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="ri_um_cost"></span></td>
-              <td align="right"><span id="ri_um_profit"></span></td> -->
-              <td align="right"><span id="ri_um_revenue"></span></td>
-            </tr>
-            <tr>
-              <td>2.</td>
-              <td>ASURANSI</td>
-              <td align="center"><span id="asuransi_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="asuransi_cost"></span></td>
-              <td align="right"><span id="asuransi_profit"></span></td> -->
-              <td align="right"><span id="asuransi_revenue"></span></td>
-              <td align="center"><span id="ri_asuransi_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="ri_asuransi_cost"></span></td>
-              <td align="right"><span id="ri_asuransi_profit"></span></td> -->
-              <td align="right"><span id="ri_asuransi_revenue"></span></td>
-            </tr>
-            <tr>
-              <td>3.</td>
-              <td>BPJS KESEHATAN</td>
-              <td align="center"><span id="bpjs_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="bpjs_cost"></span></td>
-              <td align="right"><span id="bpjs_profit"></span></td> -->
-              <td align="right"><span id="bpjs_revenue"></span></td>
-              <td align="center"><span id="ri_bpjs_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="ri_bpjs_cost"></span></td>
-              <td align="right"><span id="ri_bpjs_profit"></span></td> -->
-              <td align="right"><span id="ri_bpjs_revenue"></span></td>
-            </tr>
+          <div class="col-md-6 no-padding">
+            <span>Rekap Berdasarkan Instalasi</span><br>
+            <table class="table">
+              <tr style="font-weight: bold; background: #c7cccb">
+                <td rowspan="2" style="vertical-align: middle" width="30px" align="center">NO</td>
+                <td rowspan="2" style="vertical-align: middle">INSTALASI</td>
+                <td align="center" width="150px" colspan="2">REKAPITULASI</td>
+              </tr>
+              <tr style="font-weight: bold; background: #c7cccb">
+                <td align="center" width="150px">JUMLAH PASIEN</td>
+                <td align="center" width="150px">TOTAL REVENUE</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center">1</td>
+                <td style="vertical-align: middle">Poliklinik Rawat Jalan</td>
+                <td align="right" width="150px"><span id="instalasi_rj_ttl_pasien">-</td>
+                <td align="right" width="150px"><span id="instalasi_rj_ttl_revenue">-</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center">2</td>
+                <td style="vertical-align: middle">Rawat Inap</td>
+                <td align="right" width="150px"><span id="ttl_instalasi_ri">-</td>
+                <td align="right" width="150px"><span id="ttl_bill_instalasi_ri">-</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center">3</td>
+                <td style="vertical-align: middle">Gawat Darurat (IGD)</td>
+                <td align="right" width="150px"><span id="igd_ttl_pasien">-</td>
+                <td align="right" width="150px"><span id="igd_ttl_revenue">-</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center">4</td>
+                <td style="vertical-align: middle">Penunjang Medis</td>
+                <td align="right" width="150px"><span id="ttl_instalasi_pm">-</td>
+                <td align="right" width="150px"><span id="ttl_bill_instalasi_pm">-</td>
+              </tr>
+               <tr>
+                <td style="vertical-align: middle" width="30px" align="center"></td>
+                <td style="vertical-align: middle">Laboratorium</td>
+                <td align="right" width="150px"><span id="lab_ttl_pasien">-</td>
+                <td align="right" width="150px"><span id="lab_ttl_revenue">-</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center"></td>
+                <td style="vertical-align: middle">Radiologi</td>
+                <td align="right" width="150px"><span id="rad_ttl_pasien">-</td>
+                <td align="right" width="150px"><span id="rad_ttl_revenue">-</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center"></td>
+                <td style="vertical-align: middle">Fisioterapi</td>
+                <td align="right" width="150px"><span id="fisio_ttl_pasien">-</td>
+                <td align="right" width="150px"><span id="fisio_ttl_revenue">-</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center">5</td>
+                <td style="vertical-align: middle">Hemodialisa</td>
+                <td align="right" width="150px"><span id="hd_ttl_pasien">-</td>
+                <td align="right" width="150px"><span id="hd_ttl_revenue">-</td>
+              </tr>
+              <tr>
+                <td style="vertical-align: middle" width="30px" align="center">6</td>
+                <td style="vertical-align: middle">Medical Checkup</td>
+                <td align="right" width="150px"><span id="mcu_ttl_pasien">-</td>
+                <td align="right" width="150px"><span id="mcu_ttl_revenue">-</td>
+              </tr>
 
-            <tr>
-              <td colspan="2" align="right"><b>GRAND TOTAL</b></td>
-              <td align="center"><span id="all_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="all_ttl_cost"></span></td>
-              <td align="right"><span id="all_ttl_profit"></span></td> -->
-              <td align="right"><span id="all_ttl_revenue"></span></td>
-              <td align="center"><span id="all_ri_ttl_pasien"></span></td>
-              <!-- <td align="right"><span id="all_ri_ttl_cost"></span></td>
-              <td align="right"><span id="all_ri_ttl_profit"></span></td> -->
-              <td align="right"><span id="all_ri_ttl_revenue"></span></td>
-            </tr>
-          </table>
+              <tr>
+                <td style="vertical-align: middle" colspan="2" align="right">TOTAL</td>
+                <td align="right" width="150px"><span id="ttl_instalasi_pasien">-</td>
+                <td align="right" width="150px"><span id="ttl_instalasi_revenue">-</td>
+              </tr>
+              
+            </table>
+          </div>
+          <div class="col-md-6 no-padding" style="padding-left: 5px !important">
+            <span>Rekap Berdasarkan Penjamin Pasien</span><br>
+            <table class="table" >
+              <tr style="font-weight: bold; background: #c7cccb">
+                <td rowspan="2" style="vertical-align: middle" width="30px" align="center">NO</td>
+                <td rowspan="2" style="vertical-align: middle">KATEGORI</td>
+                <td colspan="2" align="center">RAWAT JALAN</td>
+                <td colspan="2" align="center">RAWAT INAP</td>
+              </tr>
+              <tr style="font-weight: bold; background: #c7cccb">
+                <td width="100px" align="center">PASIEN</td>
+                <!-- <td width="100px" align="right">COST</td>
+                <td width="100px" align="right">PROFIT</td> -->
+                <td width="100px" align="right">REVENUE</td>
+                <td width="100px" align="center">PASIEN</td>
+                <!-- <td width="100px" align="right">COST</td>
+                <td width="100px" align="right">PROFIT</td> -->
+                <td width="100px" align="right">REVENUE</td>
+              </tr>
+              <tr>
+                <td>1.</td>
+                <td>UMUM</td>
+                <td align="center"><span id="um_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="um_cost"></span></td>
+                <td align="right"><span id="um_profit"></span></td> -->
+                <td align="right"><span id="um_revenue"></span></td>
+                <td align="center"><span id="ri_um_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="ri_um_cost"></span></td>
+                <td align="right"><span id="ri_um_profit"></span></td> -->
+                <td align="right"><span id="ri_um_revenue"></span></td>
+              </tr>
+              <tr>
+                <td>2.</td>
+                <td>ASURANSI</td>
+                <td align="center"><span id="asuransi_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="asuransi_cost"></span></td>
+                <td align="right"><span id="asuransi_profit"></span></td> -->
+                <td align="right"><span id="asuransi_revenue"></span></td>
+                <td align="center"><span id="ri_asuransi_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="ri_asuransi_cost"></span></td>
+                <td align="right"><span id="ri_asuransi_profit"></span></td> -->
+                <td align="right"><span id="ri_asuransi_revenue"></span></td>
+              </tr>
+              <tr>
+                <td>3.</td>
+                <td>BPJS KESEHATAN</td>
+                <td align="center"><span id="bpjs_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="bpjs_cost"></span></td>
+                <td align="right"><span id="bpjs_profit"></span></td> -->
+                <td align="right"><span id="bpjs_revenue"></span></td>
+                <td align="center"><span id="ri_bpjs_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="ri_bpjs_cost"></span></td>
+                <td align="right"><span id="ri_bpjs_profit"></span></td> -->
+                <td align="right"><span id="ri_bpjs_revenue"></span></td>
+              </tr>
+
+              <tr>
+                <td colspan="2" align="right"><b>GRAND TOTAL</b></td>
+                <td align="center"><span id="all_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="all_ttl_cost"></span></td>
+                <td align="right"><span id="all_ttl_profit"></span></td> -->
+                <td align="right"><span id="all_ttl_revenue"></span></td>
+                <td align="center"><span id="all_ri_ttl_pasien"></span></td>
+                <!-- <td align="right"><span id="all_ri_ttl_cost"></span></td>
+                <td align="right"><span id="all_ri_ttl_profit"></span></td> -->
+                <td align="right"><span id="all_ri_ttl_revenue"></span></td>
+              </tr>
+            </table>
+          </div>
         </div>
         <br>
         <hr>

@@ -232,6 +232,53 @@ class Eks_profit_by_close_bill extends MX_Controller {
                     $totalRpBillRsNKlaim[$row_list->tipe][] = $total_bill;
                 }
             }
+
+            // rekap poliklinik
+            if($row_list->kode_bag == '01' && $row_list->tipe == 'RJ'){
+                // poliklinik
+                if(!in_array($row_list->kode_bagian, ['013101', '010901']) ){
+                    $getDtByTipe['INSTALASI_RJ'][] = $row_list;
+                    $getRevenueByTipe['INSTALASI_RJ'][] = $total_bill;
+                }
+                // HD
+                if(in_array($row_list->kode_bagian, ['013101']) ){
+                    $getDtByTipe['HD'][] = $row_list;
+                    $getRevenueByTipe['HD'][] = $total_bill;
+                }
+
+                // MCU
+                if(in_array($row_list->kode_bagian, ['010901']) ){
+                    $getDtByTipe['MCU'][] = $row_list;
+                    $getRevenueByTipe['MCU'][] = $total_bill;
+                }
+
+            }
+
+
+            if($row_list->kode_bag == '02' && $row_list->tipe == 'RJ'){
+                // IGD
+                $getDtByTipe['IGD'][] = $row_list;
+                $getRevenueByTipe['IGD'][] = $total_bill;
+            }
+
+            if($row_list->kode_bagian == '050101' && $row_list->tipe == 'RJ'){
+                // LAB
+                $getDtByTipe['LAB'][] = $row_list;
+                $getRevenueByTipe['LAB'][] = $total_bill;
+            }
+
+            if($row_list->kode_bagian == '050201' && $row_list->tipe == 'RJ'){
+                // RAD
+                $getDtByTipe['RAD'][] = $row_list;
+                $getRevenueByTipe['RAD'][] = $total_bill;
+            }
+
+            if($row_list->kode_bagian == '050301' && $row_list->tipe == 'RJ'){
+                // FISIO
+                $getDtByTipe['FISIO'][] = $row_list;
+                $getRevenueByTipe['FISIO'][] = $total_bill;
+            }
+
         }
 
         $output = array(
@@ -322,7 +369,21 @@ class Eks_profit_by_close_bill extends MX_Controller {
                         "totalRpNoKlaimRsRI" => isset($totalRpNoKlaimRs['RI'])?array_sum($totalRpNoKlaimRs['RI']):0,
                         "totalRpBillRsNKlaimRI" => isset($totalRpBillRsNKlaim['RI'])?array_sum($totalRpBillRsNKlaim['RI']):0,
                         
-                        // rekap by tipe
+                        // rekap by instalasi
+                        "instalasi_rj_ttl_pasien" => isset($getDtByTipe['INSTALASI_RJ']) ? count($getDtByTipe['INSTALASI_RJ']) : 0,
+                        "instalasi_rj_ttl_revenue" => isset($getRevenueByTipe['INSTALASI_RJ']) ? array_sum($getRevenueByTipe['INSTALASI_RJ']) : 0,
+                        "hd_ttl_pasien" => isset($getDtByTipe['HD']) ? count($getDtByTipe['HD']) : 0,   
+                        "hd_ttl_revenue" => isset($getRevenueByTipe['HD']) ? array_sum($getRevenueByTipe['HD']) : 0,
+                        "mcu_ttl_pasien" => isset($getDtByTipe['MCU']) ? count($getDtByTipe['MCU']) : 0,
+                        "mcu_ttl_revenue" => isset($getRevenueByTipe['MCU']) ? array_sum($getRevenueByTipe['MCU']) : 0,
+                        "igd_ttl_pasien" => isset($getDtByTipe['IGD']) ? count($getDtByTipe['IGD']) : 0,
+                        "igd_ttl_revenue" => isset($getRevenueByTipe['IGD']) ? array_sum($getRevenueByTipe['IGD']) : 0,
+                        "lab_ttl_pasien" => isset($getDtByTipe['LAB']) ? count($getDtByTipe['LAB']) : 0,
+                        "lab_ttl_revenue" => isset($getRevenueByTipe['LAB']) ? array_sum($getRevenueByTipe['LAB']) : 0,
+                        "rad_ttl_pasien" => isset($getDtByTipe['RAD']) ? count($getDtByTipe['RAD']) : 0,
+                        "rad_ttl_revenue" => isset($getRevenueByTipe['RAD']) ? array_sum($getRevenueByTipe['RAD']) : 0,
+                        "fisio_ttl_pasien" => isset($getDtByTipe['FISIO']) ? count($getDtByTipe['FISIO']) : 0,
+                        "fisio_ttl_revenue" => isset($getRevenueByTipe['FISIO']) ? array_sum($getRevenueByTipe['FISIO']) : 0,
 
                         
                         
