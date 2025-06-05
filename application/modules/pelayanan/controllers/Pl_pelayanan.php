@@ -2282,7 +2282,6 @@ class Pl_pelayanan extends MX_Controller {
         $umur = $difference->format('%y');
 
         $data['umur'] = $umur;
-
         
         // echo '<pre>';print_r($resume);die;
         $html = $this->load->view('Pl_pelayanan/view_resume_medis', $data, true);
