@@ -1196,7 +1196,9 @@ class Csm_billing_pasien_model extends CI_Model {
         
         // generate surat pengantar untuk fisioterapi
         $order_fisio = $this->getOrderFisio($no_registrasi);
-        $filename[] = 'FSO-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$order_fisio->kode_penunjang.'-'.$order_fisio->no_kunjungan.'';
+        if(!empty($order_fisio)){
+             $filename[] = 'FSO-'.$decode_data->reg_data->no_mr.'-'.$no_registrasi.'-'.$order_fisio->kode_penunjang.'-'.$order_fisio->no_kunjungan.'';
+        }
         // echo "<pre>"; print_r($filename);die;
         
         

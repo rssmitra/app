@@ -133,14 +133,15 @@ if(isset($_GET['print'])) :
 
       <br>
       <b>BILLING PASIEN</b>
-      <table class="table table-bordered table-hover" style="width:80%">
+      <table class="table table-bordered table-hover" style="width:100%">
 
           <thead>
-            <th style="color:black; width: 80px">Kode</th>
+            <th style="color:black; width: 30px" class="center">No</th>
             <th style="color:black; width: 100px">Tanggal</th>
-            <th style="color:black">Dokter</th>
+            <th style="color:black; width: 200px">Dokter</th>
             <th style="color:black">Deskripsi Item</th>
-            <th style="color:black; width: 100px">Jenis</th>
+            <th style="color:black; width: 150px">Jenis</th>
+            <th style="color:black; width: 200px">Unit</th>
             <th style="color:black; width: 100px">Jasa Dokter</th>
             <th style="color:black; width: 100px">Profit RS</th>
             <th style="color:black; width: 100px">Subtotal</th>
@@ -150,18 +151,31 @@ if(isset($_GET['print'])) :
             $arr_jasa_dokter = [];
             $arr_profit = [];
             $arr_total = [];
-            foreach($result['tindakan'] as $row_t) : 
+            $no = 0;
+            foreach($result['tindakan'] as $row_t) : $no++;
               // if(in_array($row_t->kode_jenis_tindakan, array(3,10,12) )) :
                 $arr_jasa_dokter[] = $row_t->jasa_dokter;
                 $arr_profit[] = $row_t->profit;
                 $arr_total[] = $row_t->total;
           ?>
             <tr>
-              <td><?php echo $row_t->kode_trans_pelayanan?></td>
+              <td align="center"><?php echo $no?></td>
               <td><?php echo $this->tanggal->formatDate($row_t->tgl_transaksi)?></td>
               <td><?php echo $row_t->nama_pegawai?></td>
-              <td><?php echo $row_t->nama_tindakan?></td>
+              <td>
+                <?php 
+                  echo $row_t->nama_tindakan;
+                  echo "<br>";
+                  if($row_t->flag_resep == 'racikan') {
+                    $child_racikan = $this->master->get_child_racikan_farmasi($row_t->kode_trans_far);
+                    $html_racikan = ($child_racikan != '') ? '<div style="padding:10px"><span style="font-size:11px; font-style: italic">Bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+                    echo $html_racikan;
+                  } 
+                ?>
+                
+              </td>
               <td><?php echo $row_t->jenis_tindakan?></td>
+              <td><?php echo $row_t->nama_bagian?></td>
               <td align="right"><?php echo number_format($row_t->jasa_dokter)?></td>
               <td align="right"><?php echo number_format($row_t->profit)?></td>
               <td align="right"><?php echo number_format($row_t->total)?></td>
@@ -170,7 +184,7 @@ if(isset($_GET['print'])) :
             // endif; 
           endforeach;?>
           <tr>
-            <td align="right" colspan="5">Total</td>
+            <td align="right" colspan="6">Total</td>
             <td align="right"><?php echo number_format(array_sum($arr_jasa_dokter))?></td>
             <td align="right"><?php echo number_format(array_sum($arr_profit))?></td>
             <td align="right"><?php echo number_format(array_sum($arr_total))?></td>
@@ -186,13 +200,12 @@ if(isset($_GET['print'])) :
 
           <thead>
             <tr>
-            <th rowspan="2" style="color:black; width: 80px">Kode</th>
+            <th rowspan="2" style="color:black; width: 80px" class="center">No</th>
             <th rowspan="2" style="color:black; width: 150px">Tanggal Input</th>
             <th rowspan="2" style="color:black">Deskripsi Item</th>
             <th rowspan="2" style="color:black">Signa</th>
             <th colspan="2" class="center">Jumlah Obat</th>
             <th rowspan="2" style="color:black; width: 100px">Satuan Obat</th>
-            <th rowspan="2" style="color:black; width: 100px">Jenis</th>
             </tr>
             </tr>
               <th class="center" style="color:black; width: 80px">Non Kronis</th>
@@ -200,25 +213,30 @@ if(isset($_GET['print'])) :
             </tr>
           </thead>
           <tbody>
-          <?php $getDtFr = []; foreach($result['tindakan'] as $row_t) : 
-              
-              if(in_array($row_t->kode_jenis_tindakan, array(11) )) :
+          <?php 
+            $no = 0;
+            $getDtFr = []; foreach($result['farmasi'] as $row_t) : $no++;
                 $getDtFr[] = $row_t;
-                
           ?>
             <tr>
-              <td><?php echo $row_t->kode_trans_pelayanan?></td>
-              <td><?php echo $this->tanggal->formatDateTime($row_t->tgl_transaksi)?></td>
-              <td><?php echo $row_t->nama_tindakan?></td>
+              <td align="center"><?php echo $no?></td>
+              <td><?php echo $this->tanggal->formatDateTime($row_t->tgl_input)?></td>
+              <td>
+                <?php echo $row_t->nama_brg?>
+                <?php
+                  if($row_t->flag_resep == 'racikan') {
+                    $child_racikan = $this->master->get_child_racikan_farmasi($row_t->kode_trans_far);
+                    $html_racikan = ($child_racikan != '') ? '<br><div style="padding:10px"><span style="font-size:11px; font-style: italic">bahan racik :</span><br>'.$child_racikan.'</div>' : '' ;
+                    echo $html_racikan;
+                  } 
+                ?>
+              </td>
               <td><?php echo $row_t->dosis_per_hari.' x 1 (hari) '.$row_t->dosis_obat.' '.$row_t->satuan_obat.' '.$row_t->anjuran_pakai?></td>
-              <td align="center"><?php echo (int)$row_t->jumlah_tebus?></td>
+              <td align="center"><?php echo ($row_t->jumlah_tebus > 0) ? (int)$row_t->jumlah_tebus : "-"?></td>
               <td align="center"><?php echo ($row_t->jumlah_obat_23 > 0) ? (int)$row_t->jumlah_obat_23 : "-"?></td>
               <td align="center"><?php echo $row_t->satuan_kecil?></td>
-              <td><?php echo $row_t->jenis_tindakan?></td>
-              <!-- <td align="center"><?php echo ($row_t->kode_tc_trans_kasir>0)?'<label class="label label-primary"><i class="fa fa-money"></i> Lunas</label>':'<label class="label label-danger">Belum Dibayar</label>'?></td> -->
             </tr>
           <?php 
-            endif; 
           endforeach;
             echo (count($getDtFr) > 0) ? "" : '<tr><td colspan="8" class="center red bold">Tidak ada data farmasi</td></tr>';
           ?>

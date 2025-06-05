@@ -1402,9 +1402,18 @@ final Class Master {
 		$html = '';
 		foreach ($array_data as $key => $value) {
 			$html .= '<span id="row_racikan_'.$value->id.'" style="font-size: 11px"><a href="#" onclick="deleterow('.$value->id.')"><i class="fa fa-times red bigger-120"></i></a> '.$value->nama_brg.' &nbsp; ('. $value->jml_pesan .'&nbsp;'. $value->satuan_obat .' )<br></span>';
-			
 		}
+		return $html;
+	}
 
+	function get_child_racikan_farmasi($kode_trans_far){
+		$CI =&get_instance();
+		$array_data = $CI->db->select('tc_far_racikan_detail.*')->join('tc_far_racikan','tc_far_racikan.id_tc_far_racikan =  tc_far_racikan_detail.id_tc_far_racikan','left')->get_where('tc_far_racikan_detail', ['kode_trans_far' => $kode_trans_far])->result();
+		
+		$html = '';
+		foreach ($array_data as $key => $value) {
+			$html .= '<span style="font-size: 11px">'.$value->nama_brg.' &nbsp; ('. $value->jumlah .'&nbsp;'. $value->satuan .' )<br></span>';
+		}
 		return $html;
 	}
 

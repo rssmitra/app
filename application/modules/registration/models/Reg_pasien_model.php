@@ -760,7 +760,20 @@ class Reg_pasien_model extends CI_Model {
 		// echo $this->db->last_query();die;
 
 		/*data transaksi*/
-		$transaksi = $this->db->select('kode_trans_pelayanan, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, fr_tc_far_detail_log.jumlah_tebus, fr_tc_far_detail_log.jumlah_obat_23, tc_trans_pelayanan.kode_bagian, satuan_obat, anjuran_pakai, dosis_per_hari, dosis_obat, catatan_lainnya,satuan_kecil, bill_rs as profit, (bill_dr1 + bill_dr2) as jasa_dokter, (bill_rs + bill_dr1 + bill_dr2) as total')->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')->join('fr_tc_far_detail_log','fr_tc_far_detail_log.relation_id=tc_trans_pelayanan.kd_tr_resep','left')->get_where('tc_trans_pelayanan', array('no_registrasi' => $no_registrasi) )->result();
+		$transaksi = $this->db->select('kode_trans_pelayanan, fr_tc_far_detail_log.kode_trans_far, no_kunjungan, nama_tindakan, mt_jenis_tindakan.jenis_tindakan, kode_jenis_tindakan, tgl_transaksi, kode_tc_trans_kasir, nama_pegawai, fr_tc_far_detail_log.jumlah_tebus, fr_tc_far_detail_log.jumlah_obat_23, tc_trans_pelayanan.kode_bagian, satuan_obat, anjuran_pakai, dosis_per_hari, dosis_obat, catatan_lainnya,satuan_kecil, bill_rs as profit, (bill_dr1 + bill_dr2) as jasa_dokter, (bill_rs + bill_dr1 + bill_dr2) as total, flag_resep, nama_bagian')
+		->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left')
+		->join('mt_karyawan','mt_karyawan.kode_dokter=tc_trans_pelayanan.kode_dokter1','left')
+		->join('fr_tc_far_detail_log','fr_tc_far_detail_log.relation_id=tc_trans_pelayanan.kd_tr_resep','left')
+		->join('mt_bagian','mt_bagian.kode_bagian=tc_trans_pelayanan.kode_bagian','left')
+		->get_where('tc_trans_pelayanan', array('no_registrasi' => $no_registrasi) )->result();
+
+		// farmasi
+		$this->db->select('fr_tc_far_detail_log.*');
+		$this->db->from('fr_tc_far_detail_log');	
+		$this->db->join('fr_tc_far','fr_tc_far.kode_trans_far=fr_tc_far_detail_log.kode_trans_far','left');
+		$this->db->where('fr_tc_far.no_registrasi', $no_registrasi);
+		$farmasi = $this->db->get()->result();
+		// echo "<pre>"; print_r($farmasi);die;
 
 
 		// data pembayaran kasir
@@ -803,6 +816,7 @@ class Reg_pasien_model extends CI_Model {
 			'trans_kasir' => $trans_kasir,
 			'penunjang' => $getDataPm,
 			'jadwal' => $jadwal,
+			'farmasi' => $farmasi,
 			);
 		return $data;
 		
