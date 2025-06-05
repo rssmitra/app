@@ -118,6 +118,10 @@ if(isset($_GET['print'])) :
                   $type_pm = 'FISIO';
                   $color_pm = '#5ed3f7';
                   break;
+                default:
+                  $type_pm = '';   
+                  $color_pm = '';
+                  break;
               }
             ?>
           <tr>  

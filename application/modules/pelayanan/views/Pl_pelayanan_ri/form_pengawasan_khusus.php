@@ -265,14 +265,21 @@ function set_line_through(id, status){
         }
       }
 
+      $arr_kesadaran_txt = (count($arr_kesadaran) > 0) ? round(array_sum($arr_kesadaran)/count($arr_kesadaran), 2) : 0;
+      $arr_td_txt = (count($arr_td) > 0) ? round(array_sum($arr_td)/count($arr_td), 2) : 0;
+      $arr_nd_txt = (count($arr_nd) > 0) ? round(array_sum($arr_nd)/count($arr_nd), 2) : 0;
+      $arr_nafas_txt = (count($arr_nafas) > 0) ? round(array_sum($arr_nafas)/count($arr_nafas), 2) : 0;
+      $arr_sh_txt = (count($arr_sh) > 0) ? round(array_sum($arr_sh)/count($arr_sh), 2) : 0;
+      $arr_cvp_txt = (count($arr_cvp) > 0) ? round(array_sum($arr_cvp)/count($arr_cvp), 2) : 0;
+
       echo "<tr>";
       echo "<td colspan='2'><b>Rata-Rata</b></td>";  
-      echo "<td align='center'><b>".round(array_sum($arr_kesadaran)/count($arr_kesadaran), 2)."</b></td>";
-      echo "<td align='center'><b>".round(array_sum($arr_td)/count($arr_td), 2)."</b></td>";  
-      echo "<td align='center'><b>".round(array_sum($arr_nd)/count($arr_nd), 2)."</b></td>";
-      echo "<td align='center'><b>".round(array_sum($arr_nafas)/count($arr_nafas), 2)."</b></td>";
-      echo "<td align='center'><b>".round(array_sum($arr_sh)/count($arr_sh), 2)."</b></td>";
-      echo "<td align='center'><b>".round(array_sum($arr_cvp)/count($arr_cvp), 2)."</b></td>";
+      echo "<td align='center'><b>".$arr_kesadaran_txt."</b></td>";
+      echo "<td align='center'><b>".$arr_td_txt."</b></td>";  
+      echo "<td align='center'><b>".$arr_nd_txt."</b></td>";
+      echo "<td align='center'><b>".$arr_nafas_txt."</b></td>";
+      echo "<td align='center'><b>".$arr_sh_txt."</b></td>";
+      echo "<td align='center'><b>".$arr_cvp_txt."</b></td>";
       echo "<td align='center'><b>Total</b></td>";
       echo "<td align='center'><b>".array_sum($arr_oral)."</b></td>";
       echo "<td align='center'><b>".array_sum($arr_infus)."</b></td>";

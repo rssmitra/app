@@ -1576,7 +1576,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'created_date' => date('Y-m-d H:i:s'),
                 'created_by' => $created_name,
                 'type_owner' => $_POST['created_by'],
-                'jenis_form' => $_POST['jenis_form_catatan'],
+                'jenis_form' => isset($_POST['jenis_form_catatan'])?$_POST['jenis_form_catatan']:'',
             ];
             $this->db->insert('th_drawing_notes', $dataexc);
 
