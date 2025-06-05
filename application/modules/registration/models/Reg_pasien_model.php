@@ -751,7 +751,7 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->join('mt_karyawan','mt_karyawan.kode_dokter=tc_registrasi.kode_dokter','left');
 		$this->db->join('th_riwayat_pasien','th_riwayat_pasien.no_kunjungan=tc_kunjungan.no_kunjungan','left');
 		$this->db->where('tc_kunjungan.no_registrasi', $no_registrasi);
-		$this->db->where("SUBSTRING(kode_bagian_tujuan, 1, 2) NOT IN ('05')");
+		// $this->db->where("SUBSTRING(kode_bagian_tujuan, 1, 2) NOT IN ('05')");
 		if($no_kunjungan != ''){
 			$this->db->where('tc_kunjungan.no_kunjungan', $no_kunjungan);
 		}

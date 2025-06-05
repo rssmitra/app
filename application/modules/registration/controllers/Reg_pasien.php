@@ -579,14 +579,36 @@ class Reg_pasien extends MX_Controller {
 
     public function form_modal_edit_penjamin($no_registrasi, $no_kunjungan){
         
-        $detail_data = $this->Reg_pasien->get_detail_resume_medis($no_registrasi);
+        $resume = $this->Reg_pasien->get_detail_resume_medis($no_registrasi, $no_kunjungan);
+        $trans_kasir = $this->Pl_pelayanan->cek_transaksi_kasir($no_registrasi, $no_kunjungan);
+        // eresep
 
         $data = [
-            'result' => $this->Reg_pasien->get_detail_resume_medis($no_registrasi),
+            'result' => $resume,
+            'penunjang' => $resume['penunjang'],
             'no_registrasi' => $no_registrasi,
-            'no_kunjungan' => $no_kunjungan,
+            'trans_kasir' => $trans_kasir,
         ];
+        $userDob = $data['result']['registrasi']->tgl_lhr;
+ 
+        //Create a DateTime object using the user's date of birth.
+        $dob = new DateTime($userDob);
+     
+        //We need to compare the user's date of birth with today's date.
+        $now = new DateTime();
+
+        //Calculate the time difference between the two dates.
+        $difference = $now->diff($dob);
+
+        //Get the difference in years, as we are looking for the user's age.
+        $umur = $difference->format('%y');
+
+        $data['umur'] = $umur;
         
+        // echo '<pre>';print_r($resume);die;
+        $html = $this->load->view('pelayanan/Pl_pelayanan/view_resume_medis', $data, true);
+        $data['html'] = $html;
+        // echo '<pre>';print_r($data);die;
         /*load form view*/
         
         $this->load->view('Reg_pasien/form_modal_edit_penjamin', $data);
