@@ -161,7 +161,7 @@ class E_resep_model extends CI_Model {
 	}
 	
 	public function get_cart_resep($kode_pesan_resep, $no_registrasi=''){
-		$query = $this->db->select('fr_tc_far_detail.kode_brg as kode_brg_fr, fr_tc_pesan_resep_detail.*, mt_barang.satuan_kecil, fr_tc_pesan_resep.keterangan as keterangan_resep')
+		$query = $this->db->select('fr_tc_far_detail.kode_brg as kode_brg_fr, fr_tc_pesan_resep_detail.*, mt_barang.satuan_kecil, fr_tc_pesan_resep.keterangan as keterangan_resep, mt_barang.nama_brg as nama_brg_ori')
 		->join('mt_barang', 'mt_barang.kode_brg = fr_tc_pesan_resep_detail.kode_brg','left')
 		->join('fr_tc_pesan_resep', '(fr_tc_pesan_resep.kode_pesan_resep = fr_tc_pesan_resep_detail.kode_pesan_resep AND fr_tc_pesan_resep.no_mr = fr_tc_pesan_resep_detail.no_mr)','left')
 		->join('fr_tc_far', 'fr_tc_far.kode_pesan_resep = fr_tc_pesan_resep.kode_pesan_resep','left')
