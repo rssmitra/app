@@ -1791,7 +1791,15 @@ final Class Graph_master {
                 $getDataPenjamin[$value->nama_bagian][1][strtolower($value->stat_pasien)][] = $value;
             }
         }
-
+        $getDtTtl = [];
+        $getTtlPasien = [];
+        foreach ($getData as $k => $v) {
+            foreach ($v as $rw) {
+                $getTtlPasien[$k][$rw->no_mr] = 1;
+            }
+            $getDtTtl[$k][] = isset($getTtlPasien[$k]) ? count($getTtlPasien[$k]) : 0;
+        }
+        // echo "<pre>"; print_r($getDtTtl);die;
         $result = [
             'total' => count($data['result']),
             'poli' => $getData,
@@ -1804,8 +1812,9 @@ final Class Graph_master {
             'batal' => $getDataPasienBatal,
             'diagnosa' => $data['diagnosa'],
             'tindakan' => $data['tindakan'],
+            'pasien' => $getDtTtl,
         ];
-        // echo "<pre>"; print_r($data['diagnosa']);die;
+        
 
 
         

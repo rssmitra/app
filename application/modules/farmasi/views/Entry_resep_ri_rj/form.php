@@ -202,6 +202,8 @@ $(document).ready(function(){
 
           // kode trans far
           $('#kode_trans_far').val(jsonResponse.kode_trans_far);
+          $('#info_free_text').html('');
+          $('#info_free_text').hide();
 
           /*reload table*/
           reload_table();
@@ -390,7 +392,7 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag,is_edit=''){
       $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',true);
       $('#resep_ditangguhkan').attr('readonly', true);
     }else{
-      $('#info_stok').html('<i class="fa fa-check green"></i> Stok tersedia ('+response.sisa_stok+' '+response.satuan_kecil+') !').removeClass('red').addClass('green');;
+      $('#info_stok').html('<i class="fa fa-check green"></i> Stok tersedia ('+response.sisa_stok+' '+response.satuan_kecil+') !').removeClass('red').addClass('green');
       $('input[name=prb_ditangguhkan][type=checkbox]').prop('checked',false);
       $('#prb_ditangguhkan').attr('readonly', false);
       $('input[name=resep_ditangguhkan][type=checkbox]').prop('checked',false);
@@ -680,7 +682,14 @@ function select_item(id, tipe, parent=''){
     $.getJSON("<?php echo site_url('farmasi/E_resep/getrowresep') ?>?ID="+id, '' , function (response) {
         getDetailObatByKodeBrg(response.kode_brg,'060101');
         // autofill
-        $('#inputKeyObat').val(response.nama_brg);
+        if(response.nama_brg != response.nama_obat){
+          var nama_obat = response.nama_brg;
+          $('#info_free_text').show();
+          $('#info_free_text').html('<span style="margin: 5px; font-style: italic">Dokter telah mengubah nama obat "<b>['+response.nama_obat+']</b>"</span>').removeClass('green').addClass('red');
+        }else{
+          var nama_obat = response.nama_brg;
+        }
+        $('#inputKeyObat').val(nama_obat);
         $('#jumlah_pesan').val(response.jml_pesan);
         $('#dosis_start').val(response.jml_dosis);
         $('#dosis_end').val(response.jml_dosis_obat);
@@ -834,9 +843,11 @@ $('#lampiran_lab').click(function (e) {
               <label class="control-label col-sm-2">Cari Obat</label>            
               <div class="col-md-6">            
                 <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Minimal 3 Karakter" value="">
+                <div style="display: none" id="info_free_text"></div>
               </div>
               <div class="help-block col-xs-12 col-sm-reset inline blink" style="font-weight: bold" id="info_stok"></div>
             </div>
+
 
             <!-- Jenis Obat -->
             <div class="form-group">
@@ -1025,7 +1036,11 @@ $('#lampiran_lab').click(function (e) {
                     $no = 0;
                     // echo "<pre>"; print_r($eresep);die;
                     foreach ($eresep as $ker => $ver) {
-                      $is_free_text = ($ver->kode_brg == null)?'<br><span style="font-weight: bold; color: red">[free text]</span>':'';
+                      if($ver->nama_brg != $ver->nama_brg_ori){
+                        $is_free_text = '<br><span style="font-weight: bold; color: red">[free text]</span>';
+                      }else{
+                        $is_free_text = ($ver->kode_brg == null)?'<br><span style="font-weight: bold; color: red">[free text]</span>':'';
+                      }
                       $no++;
                       // get child racikan
                       $child_racikan = $this->master->get_child_racikan_data($ver->kode_pesan_resep, $ver->kode_brg);

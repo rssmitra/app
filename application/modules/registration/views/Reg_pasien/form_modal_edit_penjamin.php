@@ -68,7 +68,9 @@
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
+          $('#InputKeyNasabahEditPenjamin').val(label_item);
           $('#kode_kelompok_hidden_edit_penjamin').val(val_item);
 
           if (val_item == 3) {
@@ -105,7 +107,9 @@
         afterSelect: function (item) {
           // do what is needed with item
           var val_item=item.split(':')[0];
+          var label_item=item.split(':')[1];
           console.log(val_item);
+          $('#InputKeyPenjaminEdit').val(label_item);
           $('#kode_perusahaan_hidden_edit_penjamin').val(val_item);
           if( val_item == 120 ){
             $('#form_sep_edit_penjamin').show();
@@ -219,119 +223,8 @@
 
         </div>
 
-        <div class="col-md-12">
-          <br><br>
-          <div class="tabbable">
-            <ul class="nav nav-tabs" id="myTab">
-              <li class="active">
-                <a data-toggle="tab" href="#kunjungan">
-                  <i class="green ace-icon fa fa-home bigger-120"></i>
-                  Kunjungan
-                </a>
-              </li>
-
-              <li>
-                <a data-toggle="tab" href="#item_transaksi">
-                  Item Transaksi
-                  <span class="badge badge-danger"><?php echo count($result['tindakan'])?></span>
-                </a>
-              </li>
-
-            </ul>
-
-            <div class="tab-content">
-
-              <div id="kunjungan" class="tab-pane fade in active">
-                <p><b><i class="fa fa-circle-o"></i> KUNJUNGAN PASIEN </b></p>
-
-                <table class="table table-bordered table-hover">
-
-                    <thead>
-
-                      <th style="color:black">No Kunjungan</th>
-
-                      <th style="color:black">Jam Masuk Poli</th>
-
-                      <th style="color:black">Poli Asal</th>
-
-                      <th style="color:black">Poli Tujuan</th>
-
-                      <th style="color:black">Diagnosa Awal</th>
-
-                      <th style="color:black">Anamnesa</th>
-
-                      <th style="color:black">Tindakan/Pemeriksaan</th>
-
-                      <th style="color:black">Diagnosa Akhir</th>
-
-                    </thead>
-
-                    <tbody>
-
-                    <?php foreach($result['riwayat_medis'] as $row_rm) : if($row_rm->no_kunjungan==$no_kunjungan) :?>
-                      <tr>
-                        <td><?php echo $row_rm->no_kunjungan?></td>
-                        <td><?php echo $this->tanggal->formatDateTime($row_rm->tgl_masuk)?></td>
-                        <td><?php echo $row_rm->poli_asal_kunjungan?></td>
-                        <td><?php echo $row_rm->poli_tujuan_kunjungan?></td>
-                        <td><?php echo ucfirst($row_rm->diagnosa_awal)?></td>
-                        <td><?php echo ucfirst($row_rm->anamnesa)?></td>
-                        <td><?php echo ucfirst($row_rm->pemeriksaan)?></td>
-                        <td><?php echo ucfirst($row_rm->diagnosa_akhir)?></td>
-                      </tr>
-                    <?php endif; endforeach;?>
-
-                    </tbody>
-
-                </table>
-              </div>
-
-              <div id="item_transaksi" class="tab-pane fade">
-
-                <p><b><i class="fa fa-circle-o"></i> RIWAYAT TRANSAKSI PASIEN </b></p>
-
-                <table class="table table-bordered table-hover">
-
-                    <thead>
-
-                      <th style="color:black">Kode</th>
-
-                      <th style="color:black">Tanggal</th>
-
-                      <th style="color:black">Dokter</th>
-
-                      <th style="color:black">Deskripsi Item</th>
-
-                      <th style="color:black">Jenis</th>
-
-                      <th style="color:black">Penjamin</th>
-
-                      <th style="color:black">Status Pembayaran</th>
-
-                    </thead>
-
-                    <tbody>
-
-                    <?php foreach($result['tindakan'] as $row_t) : if($row_t->no_kunjungan==$no_kunjungan) :?>
-                      <tr>
-                        <td><?php echo $row_t->kode_trans_pelayanan?></td>
-                        <td><?php echo $this->tanggal->formatDate($row_t->tgl_transaksi)?></td>
-                        <td><?php echo $row_t->nama_pegawai?></td>
-                        <td><?php echo $row_t->nama_tindakan?></td>
-                        <td><?php echo $row_t->jenis_tindakan?></td>
-                        <td><?php echo isset($row_t->nama_perusahaan)?$row_t->nama_perusahaan:'Umum'?></td>
-                        <td align="center"><?php echo ($row_t->kode_tc_trans_kasir>0)?'<label class="label label-success">Lunas</label>':'<label class="label label-danger">Belum Dibayar</label>'?></td>
-                      </tr>
-                    <?php endif; endforeach;?>
-
-                    </tbody>
-
-                </table>
-              </div>
-
-            </div>
-
-          </div>
+        <div class="col-md-12 no-padding">
+          <?php echo $html?>
         </div>
 
       </div>
