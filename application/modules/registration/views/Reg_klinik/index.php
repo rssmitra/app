@@ -1270,7 +1270,7 @@ function find_pasien_by_keyword(keyword){
               if(obj_visit.range > 0){
                 // show notif
                 $('#div_less_then_31_bpjs').show();
-                $('#show_notif_less_then_31').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien kurang dari 30 hari pelayanan BPJS. Berpotensi Gagal Rekam Obat Farmasi/ Resep PRB</div>');
+                $('#show_notif_less_then_31').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien kurang dari 30 hari pelayanan BPJS. Berpotensi Gagal Rekam Obat Farmasi/ Resep PRB dan tidak bisa diberikan obat</div>');
                 $('#min_30_hari_bpjs').val(1);
               }else{
                 $('#div_less_then_31_bpjs').hide();

@@ -850,7 +850,6 @@ final Class Graph_master {
         
     }
 
-
     public function chartTypeData($style, $fields, $params, $data){
 
         // echo '<pre>';print_r($style);
@@ -986,6 +985,7 @@ final Class Graph_master {
                 break;
         }
     }
+
     public function ColumnStyleOneData($fields, $params, $data){
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);

@@ -193,7 +193,7 @@ final Class Stok_barang{
 
     }
 
-    function stock_process_depo($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag, $kode_bagian_minta='') {
+    function stock_process_depo($kodeBrg, $jumlah, $kodeBagian, $jenisKartuStok, $keterangan="", $flag, $kode_bagian_minta='', $reff_no_kunjungan) {
 
         // restore => untuk mengembalikan stok ke jumlah sebelumnya
         // reduce => untuk mengurangi stok sesuai dengan jumlah yang dikirim
@@ -231,6 +231,7 @@ final Class Stok_barang{
                 $dataexc["stok_akhir"] = $last_stok;
                 $dataexc["jenis_transaksi"] = $jenisKartuStok;
                 $dataexc["kode_bagian"] = $kode_bagian_minta;
+                $dataexc["reff_no_kunjungan"] = $reff_no_kunjungan;
 
                 $ket_jenis_kartu = $db->get_where('mt_jenis_kartu_stok', array('jenis_transaksi' => $jenisKartuStok) )->row();
                 $dataexc["keterangan"] = $ket_jenis_kartu->nama_jenis. ' ' .$keterangan;

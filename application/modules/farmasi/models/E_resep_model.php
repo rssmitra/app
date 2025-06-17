@@ -196,6 +196,28 @@ class E_resep_model extends CI_Model {
 		return $this->db->get_where('fr_tc_template_resep', array('id' => $id) )->row();
 	}
 
+	public function check_previous_medication($kode_brg, $no_mr){
+		$this->db->select('fr_tc_far_detail_log.*, fr_tc_far.tgl_trans');
+		$this->db->from('fr_tc_far_detail_log');
+		$this->db->join('fr_tc_far', 'fr_tc_far.kode_trans_far = fr_tc_far_detail_log.kode_trans_far', 'left');
+		$this->db->where(array('kode_brg' => $kode_brg, 'no_mr' => $no_mr));
+		$this->db->where('DATEDIFF(DAY, tgl_trans, GETDATE()) <= 30');
+		$query = $this->db->get()->row();
+		// echo $this->db->last_query(); die;
+		if(!empty($query)){
+			$return = [
+				'tgl_resep' => $query->tgl_trans,
+				'nama_brg' => $query->nama_brg,
+				'jumlah' => $query->jumlah_tebus,
+				'satuan' => $query->satuan_kecil
+			];
+			return $return;
+		}else{
+			return false;
+		}
+		
+	}
+
 
 
 }

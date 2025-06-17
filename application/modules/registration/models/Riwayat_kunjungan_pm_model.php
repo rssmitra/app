@@ -5,7 +5,7 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 
 	var $table = 'tc_kunjungan';
 	var $column = array('tc_kunjungan.no_kunjungan','tc_kunjungan.no_mr');
-	var $select = 'tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan';
+	var $select = 'tc_kunjungan.no_kunjungan,tc_kunjungan.no_mr,tc_kunjungan.no_registrasi,mt_karyawan.nama_pegawai as dokter, asal.nama_bagian as asal_bagian, tujuan.nama_bagian as tujuan_bagian, mt_master_pasien.nama_pasien, tc_kunjungan.tgl_masuk, tc_kunjungan.tgl_keluar,status_isihasil,kode_penunjang,pm_tc_penunjang.flag_mcu, status_daftar, kode_bagian_tujuan, pm_tc_penunjang.status_batal';
 
 	var $order = array('pm_tc_penunjang.kode_penunjang' => 'desc');
 
@@ -119,6 +119,14 @@ class Riwayat_kunjungan_pm_model extends CI_Model {
 		$this->_get_datatables_query();
 		if($_POST['length'] != -1)
 		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function get_data()
+	{
+		$this->_main_query();
 		$query = $this->db->get();
 		// print_r($this->db->last_query());die;
 		return $query->result();
