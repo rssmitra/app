@@ -833,6 +833,20 @@ class E_resep extends MX_Controller {
 
     }
 
+    public function check_previous_medication(){
+        // print_r($_POST);die;
+        $kode_brg = trim($this->input->post('kode_brg'));
+        $no_mr = trim($this->input->post('no_mr')); 
+        $result = $this->E_resep->check_previous_medication($kode_brg, $no_mr);
+        if($result == false){
+            echo json_encode(array('status' => 200, 'message' => 'Data obat sebelumnya tidak ditemukan'));
+            exit;
+        }else{
+            echo json_encode(array('status' => 201, 'message' => 'Obat ini sudah pernah diberikan dalam 30 hari terakhir', 'data' => $result));
+            exit;
+        }
+    }
+
 }
 
 

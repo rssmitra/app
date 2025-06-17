@@ -200,7 +200,8 @@
           $('#kode_brg_obat').val(val_item);
           $('#inputKeyObat').val(label_item);
           $('#jml_dosis').focus();
-
+        // check pemberian obat 30 hari
+            check_previous_medication(val_item);
         }
     });
 
@@ -783,6 +784,16 @@
         
     }
 
+    function check_previous_medication(id){
+        preventDefault();
+        $.post("<?php echo site_url('farmasi/E_resep/check_previous_medication') ?>", {kode_brg: id, no_mr: $('#no_mr_resep').val()} , function (response) {   
+            var obj = JSON.parse(response);
+            if(obj.status == 201){
+                $('#info_label_pencarian_obat').html('<span style="color: red; font-weight: bold">[Obat ini sudah pernah diberikan dalam 30 hari terakhir]</span>');
+            }
+        })
+    }
+
 </script>
 <style>
     .input-icon > input {
@@ -858,7 +869,7 @@
                         <div class="col-md-10">            
                             <input type="text" name="obat" id="inputKeyObat" class="form-control" placeholder="Masukan Keyword Obat" value="">
                             <input type="hidden" name="kode_brg" id="kode_brg_obat" class="form-control">
-                            <span style="font-style: italic; padding-left: 5px; font-weight: bold; color: blue; font-size: 11px">Jika obat tidak ditemukan, mohon diisi nama obat dengan lengkap [free text]</span>
+                            <span style="font-style: italic; padding-left: 5px; font-weight: bold; color: blue; font-size: 11px" id="info_label_pencarian_obat">Jika obat tidak ditemukan, mohon diisi nama obat dengan lengkap [free text]</span>
                         </div>
                     </div>
                     <div class="form-group">

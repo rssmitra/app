@@ -249,11 +249,11 @@ class Riwayat_kunjungan_pm extends MX_Controller {
 
     public function export_excel(){
       /*get data from model*/
-      $list = $this->Riwayat_kunjungan_pm->get_datatables();
+      $list = $this->Riwayat_kunjungan_pm->get_data();
       $data =array();
       $data['list'] = $list;
 
-      // var_dump($list); die;
+    //   echo "<pre>";print_r($list); die;
 
       $this->load->view('Riwayat_kunjungan_pm/export_excel', $data);
     }
