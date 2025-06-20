@@ -423,6 +423,27 @@ function delete_diagnosa(myid){
 
     <div class="col-md-12">
 
+        <div class="btn-group dropdown">
+          <button class="btn btn-xs btn-primary" type="button">Monitoring Pasien</button>
+          <button data-toggle="dropdown" class="btn btn-xs btn-primary dropdown-toggle">
+            <span class="ace-icon fa fa-caret-down icon-only"></span>
+          </button>
+
+          <ul class="dropdown-menu dropdown-primary">
+            <!-- <li>
+              <a href="#" id="btn_monitoring_perkembangan_pasien" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/monitoring_perkembangan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Grafik Perkembangan Harian</a>
+            </li> -->
+            <li>
+              <a href="#" id="btn_observasi_harian_keperawatan" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/observasi_harian_keperawatan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Observasi Harian Keperawatan</a>
+            </li>
+            <!-- <li>
+              <a href="#" id="btn_form_pengawasan_khusus" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pengawasan_khusus/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=KHUSUS', 'tabs_form_pelayanan')" >Pengawasan Khusus</a>
+            </li> -->
+            <!-- <li>
+              <a href="#" id="btn_form_pemberian_obat" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Rencana Pelaksanaan Pemberian Obat</a>
+            </li> -->
+          </ul>
+        </div>
 
         <div class="btn-group dropdown">
           <button class="btn btn-xs btn-primary" type="button">Early Warning System</button>
@@ -445,15 +466,15 @@ function delete_diagnosa(myid){
           </ul>
         </div>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_observasi_harian_keperawatan" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/observasi_harian_keperawatan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" style="background: #b379b4 !important; border-color: #b379b4 !important;">Observasi Harian Keperawatan</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_observasi_harian_keperawatan" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/observasi_harian_keperawatan/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>&tipe_monitoring=UMUM', 'tabs_form_pelayanan')" >Observasi Keperawatan</a>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pemberian_obat"  onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" style="background: #ed8123 !important; border-color: #ed8123 !important;" >Rencana Pelaksanaan Pemberian Obat</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_pemberian_obat"  onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/pemberian_obat/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Rencana Pelaksanaan Pemberian Obat</a>
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_form_askep" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/askep/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" style="background: #e01a8c !important; border-color: #e01a8c !important;" >Catatan Asuhan Keperawatan</a>
+        <a href="#" class="btn btn-xs btn-primary" id="btn_form_askep" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/askep/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >Asuhan Keperawatan</a>
         
 
-        <a href="#" class="btn btn-xs btn-primary" id="btn_note" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/note/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" style="background: #b9d65e !important; border-color: #b9d65e !important;">
-        Catatan Visual Gambar
+        <a href="#" class="btn btn-xs btn-primary" id="btn_note" onclick="getMenuTabs('pelayanan/Pl_pelayanan_ri/note/<?php echo $id?>/<?php echo $no_kunjungan?>?type=Ranap&kode_bag=<?php echo isset($value)?$value->bag_pas:''?>', 'tabs_form_pelayanan')" >
+        Drawing
         </a>
         <?php if($value->status_pulang==0) :?>
           <a href="#" class="btn btn-xs btn-primary" onclick="selesaikanKunjungan()" >Pulangkan Pasien</a>

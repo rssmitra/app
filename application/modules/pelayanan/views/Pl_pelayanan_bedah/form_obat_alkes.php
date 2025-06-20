@@ -1,5 +1,25 @@
 <script type="text/javascript">
 
+jQuery(function($) {  
+
+  $('.date-picker').datepicker({    
+
+    autoclose: true,    
+
+    todayHighlight: true    
+
+  })  
+
+  //show datepicker when clicking on the icon
+
+  .next().on(ace.click_event, function(){    
+
+    $(this).prev().focus();    
+
+  });  
+
+});
+
 $(document).ready(function() {  
 
     oTableObat = $('#table-obat').DataTable({ 
@@ -179,10 +199,26 @@ function delete_transaksi(myid){
 
 <div class="row">
     <div class="col-sm-12">
-        <p><b><i class="fa fa-edit"></i> OBAT YANG DIBERIKAN </b></p>
-        <div class="alert alert-info" style="font-weight: bold; font-style: italic; color: black;">
-          *) Obat yang diberikan ke pasien adalah rincian obat yang di<i>charge</i> ke pasien diluar dari paket obat/bhp tindakan
+      <h3 class="header smaller lighter blue padding-10">
+        TAMBAHAN OBAT/ALKES YANG DIBERIKAN KE PASIEN<br>
+        <small style="font-size: 11px !important; font-style: italic">*) Obat yang diberikan ke pasien adalah rincian obat yang di<i>charge</i> ke pasien diluar dari paket obat/bhp tindakan</small>
+      </h3>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="">*Tanggal</label>
+            <div class="col-md-3">
+              <div class="input-group">
+                  <input name="tgl_trx" id="tgl_trx"  class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo date('Y-m-d')?>">
+                  <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                  </span>
+                </div>
+            </div>
+            <label class="control-label col-sm-1" for="">Jam</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" name="jam_trx" id="jam_trx" value="<?php echo date('H:i:s')?>">
+            </div>
         </div>
+        
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Nama Obat</label>
             <div class="col-sm-6">
@@ -227,11 +263,11 @@ function delete_transaksi(myid){
           <tr>  
             <th width="30px" class="center"></th>
             <th width="50px"></th>
-            <th width="100px">Kode</th>
+            <th width="150px">Tanggal/Jam</th>
             <th>Nama Obat</th>
-            <th>Jumlah</th>
-            <th>Harga Satuan</th>
-            <th width="150px">Total Tarif</th>
+            <th width="100px">Jumlah</th>
+            <th width="100px">Harga Satuan</th>
+            <th width="100px">Total Tarif</th>
           </tr>
         </thead>
         <tbody>

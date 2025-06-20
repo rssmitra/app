@@ -6,7 +6,7 @@ class Req_pembelian_model extends CI_Model {
 	var $table_nm = 'tc_permohonan_nm';
 	var $table = 'tc_permohonan';
 	var $column = array('a.kode_permohonan', 'a.created_by', 'a.updated_by', 'dd_user.username', 'user_acc.username');
-	var $select = 'a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan, a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, a.status_batal, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju';
+	var $select = 'a.id_tc_permohonan, a.kode_permohonan, a.tgl_permohonan, a.status_kirim, a.no_acc, a.tgl_acc, a.ket_acc, a.flag_proses, a.created_date, a.created_by, a.updated_date, a.updated_by, dd_user.username, a.status_batal, a.flag_jenis, a.tgl_pemeriksa, a.tgl_penyetuju, a.kode_bagian_pemohon, nama_bagian';
 	var $order = array('a.id_tc_permohonan' => 'DESC');
 
 	public function __construct()
@@ -30,6 +30,7 @@ class Req_pembelian_model extends CI_Model {
 							END as jenis_permohonan_name');
 		$this->db->from(''.$table.' a');
 		$this->db->join('dd_user','dd_user.id_dd_user=a.user_id', 'left');
+		$this->db->join('mt_bagian','mt_bagian.kode_bagian=a.kode_bagian_pemohon', 'left');
 		$this->db->join('dd_user as user_acc','user_acc.id_dd_user=a.user_id_acc', 'left');
 		$this->db->join('(SELECT id_tc_permohonan, COUNT(id_tc_permohonan_det) as total_brg FROM '.$table.'_det GROUP BY id_tc_permohonan ) as t_total', 't_total.id_tc_permohonan=a.id_tc_permohonan', 'left');
 
@@ -172,7 +173,19 @@ class Req_pembelian_model extends CI_Model {
 		$this->db->order_by($mt_barang.'.nama_brg', 'ASC');
 		// $this->db->order_by($table.'_det.created_date', 'ASC');
 		$this->db->where(''.$table.'_det.id_tc_permohonan', $id);
-		return $this->db->get()->result();
+		$dt1 = $this->db->get()->result_array();
+
+		// union all
+		$this->db->select('*');
+		$this->db->from('tc_permohonan_det_log');
+		$this->db->join($table, ''.$table.'.id_tc_permohonan=tc_permohonan_det_log.id_tc_permohonan', 'left');
+		$this->db->order_by('nama_brg', 'ASC');
+		$this->db->where('tc_permohonan_det_log.id_tc_permohonan', $id);
+		$dt2 = $this->db->get()->result_array();
+
+		$array_merge = array_merge($dt1, $dt2);
+		return $array_merge;
+
 	}
 
 	public function get_detail_brg_permintaan_multiple($flag, $id){

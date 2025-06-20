@@ -55,6 +55,8 @@ class Req_pembelian extends MX_Controller {
             /*initialize flag for form add*/
             $data['flag'] = "create";
         }
+
+        // echo "<pre>"; print_r($data); die;
         /*title header*/
         $title = ($_GET['flag']=='medis') ? 'Medis' : 'Non Medis' ;
 
@@ -106,18 +108,19 @@ class Req_pembelian extends MX_Controller {
 
                     if ( $row_list->status_kirim == NULL ) {
                         $status = '<i class="fa fa-times-circle bigger-150 red"></i>';
-                        if( $this->session->userdata('user')->user_id != 1){
-                            $kainst = ($_GET['flag'] == 'non_medis') ? $this->master->get_ttd_data('ttd_ka_gdg_nm', 'reff_id') : $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
-                            $titlekainst = ($_GET['flag'] == 'non_medis') ? 'Ka Gudang Non Medis' : 'Ka.Inst Farmasi';
-                            if ($kainst == $this->session->userdata('user')->user_id) {
-                                $text = '<a href="#" target="_blank" class="label label-xs label-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
-                            }else{
-                                $text = '<span>Menunggu Persetujuan<br>'.$titlekainst.'</span>';
-                            }
-                        }else{
-                            $text = '<a href="#" target="_blank" class="label label-xs label-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
-                        }
-                        
+                        // if( $this->session->userdata('user')->user_id != 1){
+                        //     $kainst = ($_GET['flag'] == 'non_medis') ? $this->master->get_ttd_data('ttd_ka_gdg_nm', 'reff_id') : $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
+                        //     $titlekainst = ($_GET['flag'] == 'non_medis') ? 'Ka Gudang Non Medis' : 'Ka.Inst Farmasi';
+                        //     if ($kainst == $this->session->userdata('user')->user_id) {
+                        //         $text = '<a href="#" target="_blank" class="label label-xs label-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                        //     }else{
+                        //         $text = '<span>Menunggu Persetujuan<br>'.$titlekainst.'</span>';
+                        //     }
+                        // }else{
+                        //     $text = '<a href="#" target="_blank" class="label label-xs label-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
+                        // }
+
+                        $text = '<a href="#" target="_blank" class="label label-xs label-success" onclick="proses_persetujuan('.$row_list->id_tc_permohonan.')">Kirim Pengadaan</a>';
 
                     }else{
                         if($row_list->tgl_pemeriksa == NULL){
@@ -172,8 +175,8 @@ class Req_pembelian extends MX_Controller {
             }
             
             $row[] = '<div class="center">'.$row_list->id_tc_permohonan.'</div>';
-            $row[] = $row_list->kode_permohonan;
-            $row[] = $this->tanggal->formatDate($row_list->tgl_permohonan);
+            $row[] = $row_list->kode_permohonan.'<br>'.$this->tanggal->formatDate($row_list->tgl_permohonan);
+            $row[] = $row_list->nama_bagian;
             // log
             $log = json_decode($row_list->created_by);
             $petugas = isset($log->fullname)?$log->fullname:$row_list->username;
@@ -217,7 +220,7 @@ class Req_pembelian extends MX_Controller {
             'dt_detail_brg' => $result,
             'flag' => $_GET['flag'],
             );
-        // echo '<pre>'; print_r($this->db->last_query());
+        // echo '<pre>'; print_r($result);die;
         $this->load->view('permintaan/Req_pembelian/detail_permintaan_brg', $data);
     }
 
@@ -263,6 +266,7 @@ class Req_pembelian extends MX_Controller {
             $val->set_rules('tgl_permohonan', 'Tanggal Permintaan', 'trim|required');
             $val->set_rules('kode_permohonan', 'Kode Permohonan', 'trim|required');
             $val->set_rules('flag_jenis', 'Jenis Permintaan', 'trim|required');
+            $val->set_rules('kode_bagian_pemohon', 'Unit/Bagian', 'trim|required');
             $val->set_rules('ket_acc', 'Keterangan', 'trim');
         }
         
@@ -285,6 +289,8 @@ class Req_pembelian extends MX_Controller {
                     'kode_permohonan' => $this->regex->_genRegex($this->master->format_kode_permohonan($_GET['flag']),'RGXQSL'),
                     'tgl_permohonan' => $this->regex->_genRegex($val->set_value('tgl_permohonan').' '.date('H:i:s'),'RGXQSL'),
                     'flag_jenis' => $this->regex->_genRegex($val->set_value('flag_jenis'),'RGXQSL'),
+                    'kode_bagian_pemohon' => $this->regex->_genRegex($val->set_value('kode_bagian_pemohon'),'RGXQSL'),
+                    'user_id' => $this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXQSL'),
                     'keterangan_permohonan' => $this->regex->_genRegex($val->set_value('ket_acc'),'RGXQSL'),
                 );
                 
@@ -397,6 +403,113 @@ class Req_pembelian extends MX_Controller {
             }
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
+        }
+    }
+
+
+    public function load_request_form($id='')
+    {
+        $data['string'] = isset($_GET['flag'])?$_GET['flag']:'';
+        /*if id is not null then will show form edit*/
+        if( $id != '' ){
+            /*breadcrumbs for edit*/
+            $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'Req_pembelian/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$id);
+            /*get value by id*/
+            $data['value'] = $this->Req_pembelian->get_by_id($id);
+            // print_r($data);die;
+            $data['total_brg'] = $this->Req_pembelian->get_detail_brg_permintaan($_GET['flag'], $id); 
+            /*initialize flag for form*/
+            $data['flag'] = "update";
+        }else{
+            /*breadcrumbs for create or add row*/
+            $data['kode_permohonan'] = $this->master->format_kode_permohonan($_GET['flag']);
+            $this->breadcrumbs->push('Add '.strtolower($this->title).'', 'Req_pembelian/'.strtolower(get_class($this)).'/form');
+            /*initialize flag for form add*/
+            $data['flag'] = "create";
+        }
+        /*title header*/
+        $title = ($_GET['flag']=='medis') ? 'Medis' : 'Non Medis' ;
+
+        $data['title'] = 'Permintaan Pembelian Barang '.$title;
+        /*show breadcrumbs*/
+        $data['breadcrumbs'] = $this->breadcrumbs->show();
+        /*load form view*/
+        $this->load->view('permintaan/Req_pembelian/form_request', $data);
+    }
+
+    public function process_other()
+    {
+        // print_r($_POST);die;
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+        $val->set_rules('nama_brg', 'Nama Barang', 'trim|required');
+        $val->set_rules('qty', 'Jumlah', 'trim|required');
+        $val->set_rules('satuan', 'Satuan', 'trim|required');
+        $val->set_rules('est_harga', 'Estimasi Harga', 'trim|required');
+        $val->set_rules('spesifikasi_brg', 'Spesifikasi Barang', 'trim|required');
+        $val->set_rules('flag', 'Flag', 'trim|required');
+        $val->set_rules('link_shopee', 'Shopee', 'trim|xss_clean');
+        $val->set_rules('link_tokopedia', 'Tokopedia', 'trim|xss_clean');
+        $val->set_rules('link_lazada', 'Lazada', 'trim|xss_clean');
+        $val->set_rules('link_blibli', 'Blibli', 'trim|xss_clean');
+        $val->set_rules('link_bukalapak', 'Bukalapak', 'trim|xss_clean');
+        $val->set_rules('link_lainnya', 'Lainnya', 'trim|xss_clean');
+        
+        
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+            $id = ($this->input->post('id'))?$this->regex->_genRegex($this->input->post('id'),'RGXINT'):0;
+
+            $table = 'tc_permohonan_det_log';
+            $dataexc = array(
+                'nama_brg' => $this->regex->_genRegex($val->set_value('nama_brg'),'RGXQSL'),
+                'jml_besar' => $this->regex->_genRegex($val->set_value('qty'),'RGXINT'),
+                'satuan_besar' => $this->regex->_genRegex($val->set_value('satuan'),'RGXQSL'),
+                'estimasi_harga' => $this->regex->_genRegex($val->set_value('est_harga'),'RGXINT'),
+                'spesifikasi' => $this->regex->_genRegex($val->set_value('spesifikasi_brg'),'RGXQSL'),
+                'flag' => $this->regex->_genRegex($val->set_value('flag'),'RGXQSL'),
+                'link_shopee' => $this->regex->_genRegex($val->set_value('link_shopee'),'RGXQSL'),
+                'link_tokopedia' => $this->regex->_genRegex($val->set_value('link_tokopedia'),'RGXQSL'),
+                'link_lazada' => $this->regex->_genRegex($val->set_value('link_lazada'),'RGXQSL'),
+                'link_blibli' => $this->regex->_genRegex($val->set_value('link_blibli'),'RGXQSL'),
+                'link_bukalapak' => $this->regex->_genRegex($val->set_value('link_bukalapak'),'RGXQSL'),
+                'link_lainnya' => $this->regex->_genRegex($val->set_value('link_lainnya'),'RGXQSL'),
+            );
+            
+            if($id==0){
+                $dataexc['created_date'] = date('Y-m-d H:i:s');
+                $dataexc['created_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                $newId = $this->Req_pembelian->save($table, $dataexc);
+                /*save logs*/
+                $this->logs->save($table, $newId, 'insert new record on '.$this->title.' module', json_encode($dataexc),'id_tc_permohonan');
+            }else{
+                $dataexc['updated_date'] = date('Y-m-d H:i:s');
+                $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
+                /*print_r($dataexc);die;*/
+                /*update record*/
+                $this->Req_pembelian->update($table, array('id_tc_permohonan' => $id), $dataexc);
+                $newId = $id;
+                $this->logs->save($table, $newId, 'update record'.$this->title.' module', json_encode($dataexc), 'id_tc_permohonan');
+            }
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'flag' => $_POST['flag'], 'id' => $newId));
+            }
         }
     }
 

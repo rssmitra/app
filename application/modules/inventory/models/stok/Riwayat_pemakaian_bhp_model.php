@@ -5,7 +5,7 @@ class Riwayat_pemakaian_bhp_model extends CI_Model {
 
 	var $table = 'tc_kartu_stok';
 	var $column = array('keterangan');
-	var $select = 'tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, tc_kartu_stok.kode_brg, nama_brg';
+	var $select = 'tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, tc_kartu_stok.kode_brg, nama_brg, is_rollback, harga_beli, is_retur, retur_date, retur_by';
 	var $order = array('tc_kartu_stok.id_kartu' => 'DESC');
 
 	public function __construct()
@@ -22,11 +22,14 @@ class Riwayat_pemakaian_bhp_model extends CI_Model {
 		$kode_bagian = isset($_GET['kode_bagian'])?$_GET['kode_bagian']:'060201';
 		$this->db->where('tc_kartu_stok.kode_bagian', $kode_bagian);
 		$this->db->where('jenis_transaksi', 7);
+		
 		if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 			$this->db->where("convert(varchar,tc_kartu_stok.tgl_input,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");					
-		}else{
-			$this->db->where('YEAR(tgl_input)', date('Y'));
 		}
+
+		if (isset($_GET['kode']) AND $_GET['kode'] != '') {
+			$this->db->where('tc_kartu_stok.reff_no_kunjungan', $_GET['kode']);
+		}	
 		
 	}
 

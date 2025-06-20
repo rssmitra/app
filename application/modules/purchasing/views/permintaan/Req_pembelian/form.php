@@ -53,11 +53,8 @@ $(document).ready(function(){
         if ( $('#inputKeyWord').val()=='' ) {
           alert('Silahkan Masukan Kata Kunci !'); return false;
         }
-
         search_selected_brg(flag, search_by, keyword);
-
         e.preventDefault();
-
     });
 
     $( "#inputKeyWord" ).keypress(function(event) {  
@@ -87,13 +84,14 @@ function search_selected_brg(flag, search_by, keyword){
         
         $('#show_detail_selected_brg').html(data.html);
 
-        // if( data.total_item > 1 ){
-        //   $('#find_result_barang').html(data.html);
-        //   showModal(); 
-        // }
       }
   })
 
+}
+
+function load_request_form(){
+  preventDefault();
+  $('#show_detail_selected_brg').load('purchasing/permintaan/Req_pembelian/load_request_form/'+$('#id_tc_permohonan').val()+'?flag='+$('#flag_string').val()+'');
 }
 
 function load_template(){
@@ -182,6 +180,21 @@ function proses_persetujuan(id){
     
   }
 
+  if(!ace.vars['touch']) {
+        $('.chosen-select').chosen({allow_single_deselect:true}); 
+        //resize the chosen on window resize
+
+        $(window)
+        .off('resize.chosen')
+        .on('resize.chosen', function() {
+          $('.chosen-select').each(function() {
+              var $this = $(this);
+              $this.next().css({'width': $this.parent().width()});
+          })
+        }).trigger('resize.chosen');
+
+  }
+
 </script>
 <style type="text/css">
   .dropdown-item{
@@ -216,16 +229,17 @@ function proses_persetujuan(id){
                     $kainst = ($_GET['flag'] == 'non_medis') ? $this->master->get_ttd_data('ttd_ka_gdg_nm', 'reff_id') : $this->master->get_ttd_data('ttd_ka_gdg_m', 'reff_id');
                     
                       if ($kainst == $this->session->userdata('user')->user_id) {
-                          echo '<a onclick="proses_persetujuan('.$value->id_tc_permohonan.')" href="#" class="btn btn-sm btn-inverse" style="margin-left: -0px">
+                          echo '<a onclick="proses_persetujuan('.$value->id_tc_permohonan.')" href="#" class="btn btn-sm btn-primary" style="margin-left: -0px">
+                          <i class="ace-icon fa fa-send icon-on-right bigger-110"></i>
                           Simpan dan Kirim ke Pengadaan
-                          <i class="ace-icon fa fa-send icon-on-right bigger-110"></i></a>';
+                          </a>';
                       }else{
                           // echo '<span>Menunggu Persetujuan<br>Ka.Inst Farmasi</span>';
                       }
                   }else{
-                      echo '<a onclick="proses_persetujuan('.$value->id_tc_permohonan.')" href="#" class="btn btn-sm btn-inverse" style="margin-left: -0px">
-                      Simpan dan Kirim ke Pengadaan
-                      <i class="ace-icon fa fa-send icon-on-right bigger-110"></i></a>';
+                      echo '<a onclick="proses_persetujuan('.$value->id_tc_permohonan.')" href="#" class="btn btn-sm btn-primary" style="margin-left: -0px">
+                      <i class="ace-icon fa fa-send icon-on-right bigger-110"></i> Simpan dan Kirim ke Pengadaan
+                      </a>';
                   }
                 ?>
                 
@@ -244,6 +258,7 @@ function proses_persetujuan(id){
                         <td>ID</td>
                         <td>Kode Permintaan</td>
                         <td>Tanggal</td>
+                        <td>Unit/Bagian</td>
                         <td>Jenis Permintaan</td>
                         <td>Total Barang</td>
                         <td>Keterangan</td>
@@ -255,14 +270,15 @@ function proses_persetujuan(id){
                         <td><?php echo isset($value)?$value->id_tc_permohonan:''; ?></td>
                         <td><?php echo isset($value)?$value->kode_permohonan:''; ?></td>
                         <td><?php echo isset($value)?$this->tanggal->formatDate($value->tgl_permohonan):''; ?></td>
+                        <td><?php echo isset($value)?$value->nama_bagian:''; ?></td>
                         <td><?php echo isset($value)?$value->jenis_permohonan_name:''; ?></td>
                         <td align="center"><a href="#" onclick="get_detail_permintaan_brg()"><span class="badge badge-primary" id="total_brg"><?php echo isset($total_brg) ? count($total_brg) : 0?></span></a></td>
                         <td><?php echo isset($value)?$value->keterangan_permohonan:''; ?></td>
-                        <td><a href="#" onclick="click_edit(<?php echo isset($value)?$value->id_tc_permohonan:''; ?>)" class="btn btn-xs btn-small btn-success">Edit</a></td>
+                        <td><a href="#" onclick="click_edit(<?php echo isset($value)?$value->id_tc_permohonan:''; ?>)" class="btn btn-xs btn-small btn-success"><i class="fa fa-edit"></i> Edit</a></td>
                       </tr>
                     </tbody>
                   </table>
-                  <span style="font-style: italic">* Setelah mengisi item permintaan pembelian barang, Ka Ins Farmasi harus melakukan persetujuan untuk dikirim ke pengadaan.</span>
+                  <!-- <span style="font-style: italic">* Setelah mengisi item permintaan pembelian barang, Ka Ins Farmasi harus melakukan persetujuan untuk dikirim ke pengadaan.</span> -->
                 </div>
 
                 <div id="div_daftar_permintaan_brg" style="display:none" ></div>
@@ -277,6 +293,13 @@ function proses_persetujuan(id){
                     <label class="control-label col-md-2">Kode Permohonan</label>
                     <div class="col-md-2">
                       <input name="kode_permohonan" id="kode_permohonan" value="<?php echo isset($value)?$value->kode_permohonan:$kode_permohonan; ?>" placeholder="Auto" class="form-control" type="text" readonly>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="control-label col-md-2">Bagian/Unit</label>
+                    <div class="col-md-5">
+                    <?php echo $this->master->custom_selection($params = array('table' => 'mt_bagian', 'id' => 'kode_bagian', 'name' => 'nama_bagian', 'where' => array()), '' , 'kode_bagian_pemohon', 'kode_bagian_pemohon', 'chosen-select form-control', '', '') ?>
                     </div>
                   </div>
 
@@ -351,10 +374,14 @@ function proses_persetujuan(id){
                       <input id="inputKeyWord" class="form-control" name="kata_kunci" type="text" placeholder="Masukan keyword minimal 3 karakter" />
                     </div>
 
-                    <div class="col-md-2" style="margin-left:-1%">
+                    <div class="col-md-4" style="margin-left:-1%">
                       <a href="#" id="btn_search_brg" class="btn btn-xs btn-primary">
                         <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                         Cari Barang
+                      </a>
+                      <a href="#" id="btn_search_brg_other" onclick="load_request_form()" class="btn btn-xs btn-primary">
+                        <i class="ace-icon fa fa-plus icon-on-right bigger-110"></i>
+                        Tambah Barang Lainnya
                       </a>
                     </div>
                   </div>
@@ -385,52 +412,5 @@ function proses_persetujuan(id){
   </div><!-- /.col -->
 </div><!-- /.row -->
 
-<!-- MODAL SEARCH PASIEN -->
-
-<!-- <div id="modal_search_barang" class="modal fade" tabindex="-1">
-
-  <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;width:80%">
-
-    <div class="modal-content">
-
-      <div class="modal-header no-padding">
-
-        <div class="table-header">
-
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-
-            <span class="white">&times;</span>
-
-          </button>
-
-          <span id="result_text">Results for ""</span>
-
-        </div>
-
-      </div>
-
-      <div class="modal-body no-padding">
-
-        <div id="find_result_barang">
-
-      </div>
-
-      <div class="modal-footer no-margin-top">
-
-        <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
-
-          <i class="ace-icon fa fa-times"></i>
-
-          Close
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div> -->
 
 

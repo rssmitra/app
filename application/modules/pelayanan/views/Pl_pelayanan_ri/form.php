@@ -172,15 +172,30 @@ function get_list_pasien(){
     html = '';  
     // html = '<div class="left" style="padding: 5px; font-size: 12px;background: darkblue; color: white"><b>PASIEN RAWAT INAP</b><br>Pasien dirawat s.d tgl <?php echo date('d/M/Y')?><br>BPJS : 20 <br>Umum/Asuransi : 10</div>';
     html += '<div style="padding-top: 1px; padding-bottom: 10px;"><b>Cari pasien rawat inap:</b> <br><input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup="filter(this);"><a style="margin-top:4px" href="#" onclick="get_list_pasien()" class="btn btn-block btn-primary">Refresh</a></div>';
-    html += '<ol class="list-group list-group-unbordered" id="list_pasien" style="background-color:lightblue;height: 650px;overflow: scroll;">';
-
+    html += '<ol class="list-group list-group-unbordered" id="list_pasien" style="overflow: scroll; max-height: 500px;">';
     $.each(response.data, function( i, v ) {
       var obj = v[0];
       html += '<li class="list-group-item" id="list_group_'+obj.no_mr+'">';
-      html += '<small style="font-weight: bold; font-size: 11px; cursor: pointer;" onclick="form_main('+"'pelayanan/Pl_pelayanan_ri/form_main/"+obj.kode_ri+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')">'+obj.no_mr+' - '+obj.nama_pasien+'</small>';
+        html += '<address onclick="form_main('+"'pelayanan/Pl_pelayanan_ri/form_main/"+obj.kode_ri+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')" style="cursor: pointer;">';
+        // html += '<small style="font-weight: bold; font-size: 11px; cursor: pointer;" onclick="form_main('+"'pelayanan/Pl_pelayanan_ri/form_main/"+obj.kode_ri+"/"+obj.no_kunjungan+"'"+', '+"'"+obj.no_mr+"'"+')">'+obj.no_mr+' - '+obj.nama_pasien+'</small>';
+        html += '<b>'+obj.nama_pasien+'</b><br>';
+        html += obj.no_mr+'/ '+obj.jk+' / '+obj.umur+' thn<br>';
+        html += obj.kelas+'/ Kamar '+obj.kamar+' No. '+obj.no_kamar+'<br>';
+        html += obj.dokter+'<br>';
+        if(obj.kode_perusahaan==120){
+          html += '<span style="color: white; background: green; padding: 2px">'+obj.penjamin+'</span>';
+        }else{
+          html += '<span style="color: white; background: blue; padding: 2px">'+obj.penjamin+'</span>';
+        }
+        html += '</address>';
       html += '</li>';
     });
     html += '</ol>';
+
+
+
+
+
     $('#box_list_pasien').html(html);
   }); 
 
@@ -203,8 +218,8 @@ function form_main(url, no_mr){
     padding: 5px !important;
   }
   .list-group-item {
-      background: #0d5280;
-      color: white;
+      background: #fff;
+      color: black;
   }
 </style>
 
@@ -259,7 +274,7 @@ function form_main(url, no_mr){
 
 </div><!-- /.row -->
 
-<div id="GlobalModal" class="modal fade" tabindex="-1">
+<!-- <div id="GlobalModal" class="modal fade" tabindex="-1">
 
   <div class="modal-dialog" style="overflow-y: scroll; max-height:90%;  margin-top: 50px; margin-bottom:50px;width:70%">
 
@@ -287,7 +302,7 @@ function form_main(url, no_mr){
 
       </div>
 
-      <!-- <div class="modal-footer no-margin-top">
+      <div class="modal-footer no-margin-top">
 
         <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
 
@@ -297,13 +312,13 @@ function form_main(url, no_mr){
 
         </button>
 
-      </div> -->
+      </div>
 
-    </div><!-- /.modal-content -->
+    </div>
 
-  </div><!-- /.modal-dialog -->
+  </div>
 
-</div>
+</div> -->
 
 
 

@@ -1,8 +1,8 @@
 <div class="pull-left"><p><b>DAFTAR PERMINTAAN BARANG </b></p>
 </div>
 <div class="pull-right">
-  <a href="#" onclick="save_as_template()" class="label label-orange" style="color: black"><i class="fa fa-save bigger-120"></i> Simpan sebagai template</a>
-  <a href="#" class="label label-danger" onclick="hide_this_div('show_detail_selected_brg')" style="color: black">Close <i class="fa fa-external-link bigger-120"></i></a>
+  <a href="#" onclick="save_as_template()" class="btn btn-xs btn-primary" style="color: black"><i class="fa fa-save bigger-120"></i> Simpan sebagai template</a>
+  <a href="#" class="btn btn-xs btn-warning" onclick="hide_this_div('show_detail_selected_brg')" style="color: black"><i class="fa fa-external-link bigger-120"></i> Sembunyikan</a>
 </div>
 <script>
 
@@ -132,6 +132,8 @@
         <th class="center" width="35px">No</th>
         <th  width="120px">Kode Barang</th>
         <th>Nama Barang</th>
+        <th>Spesifikasi</th>
+        <th>Est Harga</th>
         <th class="center" width="80px">Jumlah Permintaan</th>
         <th class="center" width="80px">Satuan Besar</th>
         <th class="center" width="80px">Rasio</th>
@@ -145,43 +147,47 @@
           if( count($dt_detail_brg) > 0 ) : 
             foreach($dt_detail_brg as $row_dt) : $no++
         ?>
-        <tr id="tr_<?php echo $row_dt->kode_brg?>" style="border-right: 1px solid #8080807a">
+        <tr id="tr_<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>" style="border-right: 1px solid #8080807a">
           <td class="center" width="35px" style="border-left: 1px solid #8080807a">
             <div class="center">
               <label class="pos-rel">
-                  <input type="checkbox" class="ace checkbox_brg" name="selected_id[]" id="<?php echo $row_dt->kode_brg?>" value="<?php echo $row_dt->id_tc_permohonan_det?>" checked/>
+                  <input type="checkbox" class="ace checkbox_brg" name="selected_id[]" id="<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>" value="<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" checked/>
                   <span class="lbl"></span>
               </label>
                <!-- hidden form -->
-              <input type="hidden" name="id_tc_permohonan_det['<?php echo $row_dt->kode_brg?>']" value="<?php echo $row_dt->id_tc_permohonan_det?>" class="primary_key" id="id_tc_permohonan_det_<?php echo $row_dt->id_tc_permohonan_det?>">
+              <input type="hidden" name="id_tc_permohonan_det['<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>']" value="<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" class="primary_key" id="id_tc_permohonan_det_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
             </div>
           </td>
           <td class="center"><?php echo $no?></td>
           <td>
-            <?php echo $row_dt->kode_brg?>
+            <?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:'<span class="red">[free text]</span>'?>
             <!-- hidden form -->
-            <input type="hidden" name="kode_brg['<?php echo $row_dt->kode_brg?>']" value="<?php echo $row_dt->kode_brg?>" id="kode_brg_<?php echo $row_dt->id_tc_permohonan_det?>">
+            <input type="hidden" name="kode_brg['<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>']" value="<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>" id="kode_brg_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
           </td>
           <td>
-            <?php echo $row_dt->nama_brg?>
+            <?php echo $row_dt['nama_brg']?>
             <!-- hidden form -->
-            <input type="hidden" name="nama_brg['<?php echo $row_dt->nama_brg?>']" value="<?php echo $row_dt->nama_brg?>" id="nama_brg_<?php echo $row_dt->id_tc_permohonan_det?>">
+            <input type="hidden" name="nama_brg['<?php echo $row_dt['nama_brg']?>']" value="<?php echo $row_dt['nama_brg']?>" id="nama_brg_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
+          </td>
+
+          <td><?php echo $row_dt['spesifikasi']?></td>
+          <td align="right"><?php echo isset($row_dt['estimasi_harga']) ? number_format($row_dt['estimasi_harga']) : 0?></td>
+
+          <td class="center">
+            <input type="text" name="jml_besar['<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>']" value="<?php echo number_format($row_dt['jml_besar'], 2)?>" style="text-align: right; width: 80px" id="jml_besar_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)"></td>
+          <td class="center">
+            <?php echo $row_dt['satuan_besar']?>
+            <!-- hidden form -->
+            <input type="hidden" name="satuan_besar['<?php echo $row_dt['satuan_besar']?>']" value="<?php echo $row_dt['satuan_besar']?>" id="satuan_besar_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
           </td>
           <td class="center">
-            <input type="text" name="jml_besar['<?php echo $row_dt->kode_brg?>']" value="<?php echo number_format($row_dt->jml_besar, 2)?>" style="text-align: right; width: 80px" id="jml_besar_<?php echo $row_dt->id_tc_permohonan_det?>" onchange="update_row(<?php echo $row_dt->id_tc_permohonan_det?>)"></td>
-          <td class="center">
-            <?php echo $row_dt->satuan_besar?>
+            <?php echo $row_dt['rasio']?>
             <!-- hidden form -->
-            <input type="hidden" name="satuan_besar['<?php echo $row_dt->satuan_besar?>']" value="<?php echo $row_dt->satuan_besar?>" id="satuan_besar_<?php echo $row_dt->id_tc_permohonan_det?>">
+            <input type="hidden" name="rasio['<?php echo $row_dt['rasio']?>']" value="<?php echo $row_dt['rasio']?>" id="rasio_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
           </td>
+          <td class="center"><input type="text" id="keterangan_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" style="width: 150px" value="<?php echo $row_dt['keterangan']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)"></td>
           <td class="center">
-            <?php echo $row_dt->rasio?>
-            <!-- hidden form -->
-            <input type="hidden" name="rasio['<?php echo $row_dt->rasio?>']" value="<?php echo $row_dt->rasio?>" id="rasio_<?php echo $row_dt->id_tc_permohonan_det?>">
-          </td>
-          <td class="center"><input type="text" id="keterangan_<?php echo $row_dt->id_tc_permohonan_det?>" style="width: 150px" value="<?php echo $row_dt->keterangan?>" onchange="update_row(<?php echo $row_dt->id_tc_permohonan_det?>)"></td>
-          <td class="center">
-            <a  href="#" class="btn btn-xs btn-danger" onclick="delete_row(<?php echo $row_dt->id_tc_permohonan_det?>)">
+            <a  href="#" class="btn btn-xs btn-danger" onclick="delete_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)">
                 <i class="ace-icon fa fa-trash icon-on-right bigger-110"></i>
             </a>
           </td>

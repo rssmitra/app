@@ -10,7 +10,7 @@ class Inv_mutasi_gdg_model extends CI_Model {
 		$this->table = ($_GET['flag'] == 'non_medis') ? 'tc_kartu_stok_nm' : 'tc_kartu_stok' ;
 		$this->column = array('b.kode_brg','b.nama_brg');
 		$this->select = 'tgl_input, stok_awal, stok_akhir, pemasukan, pengeluaran, kode_bagian, keterangan, petugas, id_kartu, kode_brg';
-		$this->order = array('a.tgl_input' => 'DESC');
+		$this->order = array('a.id_kartu' => 'DESC');
 	}
 
 	private function _main_query(){

@@ -44,7 +44,8 @@
 <div class="row" id="section_form_diagnosa" style="padding:8px">
 
     <div class="col-sm-12">
-
+        <center><span style="font-size: 20px; font-weight: bold; text-decoration: underline">RESUME MEDIS</span></center>
+        <br>
         <p><b>DIAGNOSA DAN PEMERIKSAAN </b></p>
 
         <!-- hidden form -->

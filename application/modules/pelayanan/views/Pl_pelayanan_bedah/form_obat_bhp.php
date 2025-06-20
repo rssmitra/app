@@ -2,7 +2,7 @@
 
 $(document).ready(function() {  
 
-    oTableObat = $('#table-obat').DataTable({ 
+    oTableObat = $('#table-obat-bhp').DataTable({ 
           
       "processing": true, //Feature control the processing indicator.
       "serverSide": true, //Feature control DataTables' server-side processing mode.
@@ -12,7 +12,7 @@ $(document).ready(function() {
       "bInfo": false,
       // Load data for the table's content from an Ajax source
       "ajax": {
-          "url": "pelayanan/Pl_pelayanan/get_data_obat?bagian=<?php echo ($sess_kode_bag)?$sess_kode_bag:0?>&jenis=obat&kode=<?php echo $no_kunjungan?>&id_pesan_bedah=<?php echo $id_pesan_bedah?>",
+          "url": "inventory/stok/Riwayat_pemakaian_bhp/get_data_bhp_unit?kode_bagian=<?php echo ($sess_kode_bag)?$sess_kode_bag:0?>&jenis=obat&kode=<?php echo $no_kunjungan?>&id_pesan_bedah=<?php echo $id_pesan_bedah?>",
           "type": "POST"
       },
 
@@ -23,7 +23,7 @@ $(document).ready(function() {
       e.preventDefault();
       /*process add obat*/
       $.ajax({
-          url: "pelayanan/Pl_pelayanan/process_add_obat",
+          url: "inventory/stok/Pemakaian_bhp/process_pemakaian_bhp_unit",
           data: $('#form_pelayanan').serialize(),            
           dataType: "json",
           type: "POST",
@@ -113,7 +113,6 @@ $(document).ready(function() {
       
     });
 
-
 });
 
 
@@ -138,16 +137,15 @@ function getDetailObatByKodeBrg(kode_brg,kode_bag){
 }
 
 function reset_table(){
-    oTableObat.ajax.url('pelayanan/Pl_pelayanan/get_data_obat?bagian=<?php echo ($sess_kode_bag)?$sess_kode_bag:0?>&jenis=obat&kode=<?php echo $no_kunjungan?>&id_pesan_bedah=<?php echo $id_pesan_bedah?>').load();
+    oTableObat.ajax.url('inventory/stok/Riwayat_pemakaian_bhp/get_data_bhp_unit?kode_bagian=<?php echo ($sess_kode_bag)?$sess_kode_bag:0?>&jenis=obat&kode=<?php echo $no_kunjungan?>&id_pesan_bedah=<?php echo $id_pesan_bedah?>').load();
 }
 
-function delete_transaksi(myid){
-  preventDefault();
+function rollback_stok_bhp(id_kartu){
   if(confirm('Are you sure?')){
     $.ajax({
-        url: 'pelayanan/Pl_pelayanan/delete',
+        url: 'inventory/stok/Riwayat_pemakaian_bhp/rollback_stok_bhp',
         type: "post",
-        data: {ID:myid},
+        data: {ID:id_kartu, kode_bagian : $('#kode_bagian').val()},
         dataType: "json",
         beforeSend: function() {
           achtungShowLoader();  
@@ -159,7 +157,7 @@ function delete_transaksi(myid){
           var jsonResponse = JSON.parse(data);
           if(jsonResponse.status === 200){
             $.achtung({message: jsonResponse.message, timeout:5});
-            reset_table();
+            reload_table();
           }else{
             $.achtung({message: jsonResponse.message, timeout:5});
           }
@@ -179,17 +177,33 @@ function delete_transaksi(myid){
 
 <div class="row">
     <div class="col-sm-12">
-        <p><b><i class="fa fa-edit"></i> OBAT YANG DIBERIKAN </b></p>
-        <div class="alert alert-info" style="font-weight: bold; font-style: italic; color: black;">
-          *) Obat yang diberikan ke pasien adalah rincian obat yang di<i>charge</i> ke pasien diluar dari paket obat/bhp tindakan
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="">Nama Obat</label>
-            <div class="col-sm-6">
-               <input type="text" class="form-control" id="inputKeyObat" name="pl_nama_obat" placeholder="Masukan Keyword Obat ">
-               <input type="hidden" class="form-control" id="pl_kode_brg_hidden" name="pl_kode_brg_hidden">
-            </div>
-        </div>
+        
+      <h3 class="header smaller lighter blue padding-10">
+        BHP (Barang Habis Pakai) <small style="font-size: 11px !important; font-style: italic">Untuk mutasi Obat/Alkes yang digunakan dalam satuan paket tindakan atau operasi.  </small>
+      </h3>
+
+      <div class="form-group">
+          <label class="control-label col-sm-2" for="">*Tanggal</label>
+          <div class="col-md-3">
+            <div class="input-group">
+                <input name="tgl_trx" id="tgl_trx"  class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo date('Y-m-d')?>">
+                <span class="input-group-addon">
+                  <i class="ace-icon fa fa-calendar"></i>
+                </span>
+              </div>
+          </div>
+          <label class="control-label col-sm-1" for="">Jam</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" name="jam_trx" id="jam_trx" value="<?php echo date('H:i:s')?>">
+          </div>
+      </div>
+      <div class="form-group">
+          <label class="control-label col-sm-2" for="">Nama Obat</label>
+          <div class="col-sm-6">
+              <input type="text" class="form-control" id="inputKeyObat" name="pl_nama_obat" placeholder="Masukan Keyword Obat ">
+              <input type="hidden" class="form-control" id="pl_kode_brg_hidden" name="pl_kode_brg_hidden">
+          </div>
+      </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2" for="">Jumlah</label>
@@ -219,25 +233,27 @@ function delete_transaksi(myid){
         </div>
         <?php endif;?>
 
+        <div>
+          <table id="table-obat-bhp" class="table table-bordered table-hover">
+            <thead>
+              <tr>  
+                <th width="30px" class="center">No</th>
+                <th width="150px">Tanggal/Jam</th>
+                <th>Nama Obat</th>
+                <th width="100px">Jumlah</th>
+                <th width="100px">Harga Satuan</th>
+                <th width="100px">Total Tarif</th>
+                <th width="80px"></th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+
     </div>
 
-    <div style="margin-top:0px">
-      <table id="table-obat" class="table table-bordered table-hover">
-         <thead>
-          <tr>  
-            <th width="30px" class="center"></th>
-            <th width="50px"></th>
-            <th width="100px">Kode</th>
-            <th>Nama Obat</th>
-            <th>Jumlah</th>
-            <th>Harga Satuan</th>
-            <th width="150px">Total Tarif</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
+    
 
 </div>
 

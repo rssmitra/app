@@ -707,28 +707,10 @@ class Reg_pasien extends MX_Controller {
     {
         
         $data = array();
-        
-        /*if id is not null then will show form edit*/
-        
-        //$data_pasien = $this->Input_pasien_baru->get_by_mr($noMr);
-
-        /*echo '<pre>'; print_r($data_pasien);*/
-
-        /*breadcrumbs for edit*/
-        $this->breadcrumbs->push('Edit '.strtolower($this->title).'', 'registration/Input_pasien_baru/'.strtolower(get_class($this)).'/'.__FUNCTION__.'/'.$noMr);
-
         $data['flag'] = "update";
-
         $data['breadcrumbs'] = '';
-
-        $data['title'] = 'Edit data pasien';
-
+        $data['title'] = 'Tanda Tangan Pasien';
         $data['value'] = $this->Input_pasien_baru->get_by_mr($noMr);
-        //echo '<pre>';print_r($data);die;
-        /*load form view*/
-        
-        //$this->load->view('Input_pasien_baru/form', $data);
-
         $this->load->view('Reg_pasien/form_modal_ttd', $data);
     
     }

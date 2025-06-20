@@ -21,25 +21,25 @@
         ?>
           <tr>
             <td class="center"><?php echo $no?></td>
-            <td><?php echo $row_dt->kode_brg?></td>
-            <td><?php echo $row_dt->nama_brg?></td>
-            <td class="center"><?php echo number_format($row_dt->jml_besar, 2)?></td>
+            <td><?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:'<span class="red">[free text]</span>'?></td>
+            <td><?php echo $row_dt['nama_brg']?></td>
+            <td class="center"><?php echo number_format($row_dt['jml_besar'], 2)?></td>
             <td class="center">
               <?php 
-                $span_class = ( $row_dt->jml_acc_penyetuju == $row_dt->jml_besar_acc ) ? 'color: green' : 'color: red';
-                echo '<span style="'.$span_class.'">'.number_format($row_dt->jml_acc_penyetuju, 2).'</span>'?>
+                $span_class = ( $row_dt['jml_acc_penyetuju'] == $row_dt['jml_besar_acc'] ) ? 'color: green' : 'color: red';
+                echo '<span style="'.$span_class.'">'.number_format($row_dt['jml_acc_penyetuju'], 2).'</span>'?>
             </td>
             <td class="center">
               <?php 
-                $label = ( $row_dt->jml_besar_acc == $row_dt->total_po ) ? 'badge-success' : 'badge-danger' ;
-                $val_td = '<span class="badge '.$label.' "><a href="#" style="color: white" onclick="show_modal('."'purchasing/permintaan/Req_pembelian/log_brg?id=".$row_dt->id_tc_permohonan_det."&kode_brg=".$row_dt->kode_brg."&flag=".$flag."'".', '."'LOG DETAIL BARANG'".')">'.number_format($row_dt->total_po, 2).'</span>';
-                $text = ($row_dt->total_po==0) ? '-' : $val_td ;
+                $label = ( $row_dt['jml_besar_acc'] == $row_dt['total_po'] ) ? 'badge-success' : 'badge-danger' ;
+                $val_td = '<span class="badge '.$label.' "><a href="#" style="color: white" onclick="show_modal('."'purchasing/permintaan/Req_pembelian/log_brg?id=".$row_dt['id_tc_permohonan_det']."&kode_brg=".$row_dt['kode_brg']."&flag=".$flag."'".', '."'LOG DETAIL BARANG'".')">'.number_format($row_dt['total_po'], 2).'</span>';
+                $text = ($row_dt['total_po']==0) ? '-' : $val_td ;
                 echo $text;
               ?>
             </td>
-            <td class="center"><?php echo $row_dt->satuan_besar?></td>
-            <td class="center"><?php echo $row_dt->rasio?></td>
-            <td class="center"><?php echo $row_dt->keterangan?></td>
+            <td class="center"><?php echo $row_dt['satuan_besar']?></td>
+            <td class="center"><?php echo $row_dt['rasio']?></td>
+            <td class="center"><?php echo $row_dt['keterangan']?></td>
           </tr>
           <?php endforeach; else: echo '<tr><td colspan="8">Tidak ada barang ditemukan</td></tr>'; endif; ?>
       </table>

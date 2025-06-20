@@ -246,9 +246,7 @@ class Pemakaian_bhp extends MX_Controller {
                 $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $row_brg->kode_bagian ) );
                 // kurang stok depo
                 $this->stok_barang->stock_process_depo($row_brg->kode_brg, $row_brg->qty, $kode_bagian_gdg, 7 ," ".$nama_bagian." ", 'reduce', $row_brg->kode_bagian);
-
                 $this->db->trans_commit();
-
             }
 
             // delete cart session
@@ -292,6 +290,7 @@ class Pemakaian_bhp extends MX_Controller {
         $data['form'] = 'bhp';
         $this->load->view('stok/Pemakaian_bhp/form_cart', $data);
     }
+
 
     public function form_input_qty(){
         $barcode = $this->Pemakaian_bhp->checkBarcode($_GET['barcode'], $_GET['flag']);
@@ -372,6 +371,47 @@ class Pemakaian_bhp extends MX_Controller {
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada item yang dipilih'));
         }
         
+    }
+
+    public function process_pemakaian_bhp_unit()
+    {
+        // print_r($_POST);die;
+        $this->load->library('form_validation');
+        $val = $this->form_validation;
+        
+        $val->set_rules('tgl_trx', 'Tanggal', 'trim|required');
+        $val->set_rules('jam_trx', 'Jam', 'trim|required');
+        $val->set_rules('pl_jumlah_obat', 'Jam', 'trim|required|numeric', ['required' => 'Silahkan isi jumlah obat yang akan dipakai!', 'numeric' => 'Jumlah obat harus berupa angka!']);
+        $val->set_rules('kode_brg', 'Nama Barang', 'trim|required', ['required' => 'Silahkan cari nama barang dengan benar!']);
+        
+        $val->set_message('required', "Silahkan isi field \"%s\"");
+
+        if ($val->run() == FALSE)
+        {
+            $val->set_error_delimiters('<div style="color:white">', '</div>');
+            echo json_encode(array('status' => 301, 'message' => validation_errors()));
+        }
+        else
+        {                       
+            $this->db->trans_begin();
+            
+            $kode_bagian = $_POST['kode_bagian'];
+            $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $kode_bagian ) );
+            // kurang stok depo
+            $this->stok_barang->stock_process_depo($_POST['kode_brg'], $_POST['pl_jumlah_obat'], $kode_bagian, 7 ," ".$nama_bagian." ", 'reduce', $kode_bagian, $_POST['no_kunjungan']);
+            
+
+            if ($this->db->trans_status() === FALSE)
+            {
+                $this->db->trans_rollback();
+                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+            }
+            else
+            {
+                $this->db->trans_commit();
+                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+            }
+        }
     }
 
 

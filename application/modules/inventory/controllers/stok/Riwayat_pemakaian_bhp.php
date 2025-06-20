@@ -67,6 +67,41 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function get_data_bhp_unit()
+    {
+        /*get data from model*/
+        $list = $this->Riwayat_pemakaian_bhp->get_datatables();
+        $data = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
+            $row[] = '<div class="left">'.strtoupper($row_list->nama_brg).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->pengeluaran).'</div>';
+            $row[] = '<div class="center">'.number_format($row_list->harga_beli).'</div>';
+            $total = $row_list->pengeluaran * $row_list->harga_beli;
+            $row[] = '<div class="center">'.number_format($total).'</div>';
+            if($row_list->is_retur == null){
+                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="rollback_stok_bhp('.$row_list->id_kartu.')">Rollback</a></div>';
+            }else{
+                $row[] = '<div class="center"><span style="font-weight: bold; color: red">Retur</span><br><small>'.$row_list->retur_by.'<br>'.$this->tanggal->formatDateTimeFormDmy($row_list->retur_date).'</small></div>';
+            }
+                   
+            $data[] = $row;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Riwayat_pemakaian_bhp->count_all(),
+                        "recordsFiltered" => $this->Riwayat_pemakaian_bhp->count_filtered(),
+                        "data" => $data,
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
     public function find_data()
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
@@ -116,14 +151,15 @@ class Riwayat_pemakaian_bhp extends MX_Controller {
             'is_rollback' => 1,
             'keterangan' => 'Retur Pemakaian BHP',
             'petugas' => 0,
-            'nama_petugas' => 'Administrator Sistem',
+            'nama_petugas' => ($this->session->userdata('user')->fullname) ? $this->session->userdata('user')->fullname : 'Administrator Sistem',
         );
 
         // echo '<pre>';print_r($mutasi);die;
         $this->db->insert('tc_kartu_stok', $mutasi);
 
-
-        // update mt_rekap stok
+        // update kartu stok existing stok
+        $this->db->update('tc_kartu_stok', array('is_retur' => 1, 'retur_date' => date('Y-m-d H:i:s'), 'retur_by' => $mutasi['nama_petugas']), array('id_kartu' => $_POST['ID']) );
+        // update mt_depo_stok
         $this->db->update('mt_depo_stok', array('jml_sat_kcl' => $stok_akhir), array('kode_bagian' => $row->kode_bagian, 'kode_brg' => $row->kode_brg) );
 
         echo json_encode(array('status' => 200, 'message' => 'Proses berhasil dilakukan'));
