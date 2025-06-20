@@ -878,6 +878,49 @@ class Pl_pelayanan extends MX_Controller {
         echo json_encode($output);
     }
 
+    public function get_data_obat_bhp()
+    {
+        /*get data from model*/
+        $list = $this->Pl_pelayanan->get_datatables_tindakan();
+        $data = array();
+        $arr_total = array();
+        $no = $_POST['start'];
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center">'.$no.'</div>';
+            if($row_list->kode_tc_trans_kasir==NULL){
+                $btn_edit = '<a href="#" class="btn btn-xs btn-success" onclick="edit_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-edit"></i></a>';
+
+                $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="delete_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-times-circle"></i></a></div>';
+            }else{
+                $row[] = '<div class="center"><i class="fa fa-check-circle green"></i></div>';
+            }
+
+            // $row[] = '<div class="center"><a href="#" class="btn btn-xs btn-danger" onclick="delete_transaksi('.$row_list->kode_trans_pelayanan.')"><i class="fa fa-times-circle"></i></a></div>';
+
+            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_transaksi);
+            $row[] = strtoupper($row_list->nama_tindakan);
+            $row[] = '<div class="center">'.(int)$row_list->jumlah.' ('.$row_list->satuan_kecil.') </div>';
+            $row[] = '<div align="right">'.number_format($row_list->harga_satuan).',-</div>';
+            $bill_total = $row_list->bill_rs + $row_list->bill_dr1 + $row_list->bill_dr2;
+            $row[] = '<div align="right">'.number_format($bill_total).',-</div>';
+           
+            $data[] = $row;
+            $arr_total[] = $bill_total;
+        }
+
+        $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->Pl_pelayanan->count_all_tindakan(),
+                        "recordsFiltered" => $this->Pl_pelayanan->count_filtered_tindakan(),
+                        "data" => $data,
+                        "total_bill" => array_sum($arr_total),
+                );
+        //output to json format
+        echo json_encode($output);
+    }
+
     public function find_data()
     {   
         $output = array( "data" => http_build_query($_POST) . "\n" );
@@ -1076,7 +1119,7 @@ class Pl_pelayanan extends MX_Controller {
 
             /*get bill_rs*/
             $bill_rs = $this->input->post('pl_harga_satuan') * $this->input->post('pl_jumlah_obat');
-
+            $jam_trx = isset($_POST['jam_trx']) ? str_replace('.',':',$_POST['jam_trx']) : date('Y-m-d H:i:s');
             $dataexc = array(
                 'kode_trans_pelayanan' => $kode_trans_pelayanan,
                 /*form hidden input default*/
@@ -1099,21 +1142,20 @@ class Pl_pelayanan extends MX_Controller {
                 'kode_profit' => $this->regex->_genRegex(2000,'RGXINT'),
                 /*end form hidden after select obat*/
                 'kode_bagian_asal' => $this->regex->_genRegex($this->input->post('kode_bagian_asal'),'RGXQSL'),
-                'tgl_transaksi' => date('Y-m-d H:i:s'),                
+                'tgl_transaksi' => isset($_POST['tgl_trx']) ? $_POST['tgl_trx'].' '.$jam_trx : date('Y-m-d H:i:s'),                
                 'jumlah' => $this->input->post('pl_jumlah_obat'),
                 'harga_satuan' => $this->regex->_genRegex($this->input->post('pl_harga_satuan'),'RGXINT'),
                 
             );
             
-            //print_r($dataexc);die;
+            // print_r($dataexc);die;
 
             /*save tc_trans_pelayanan*/
             $this->Pl_pelayanan->save('tc_trans_pelayanan', $dataexc);
 
             $bagian = ($this->input->post('kode_bagian_depo'))?$this->input->post('kode_bagian_depo'):$dataexc['kode_bagian'];
 
-            $this->stok_barang->stock_process($dataexc['kode_barang'], $dataexc['jumlah'], $bagian,6, '', 'reduce');
-
+            $this->stok_barang->stock_process($dataexc['kode_barang'], $dataexc['jumlah'], $bagian , 6 , '', 'reduce');
 
             /*save logs*/
             $this->logs->save('tc_trans_pelayanan', $kode_trans_pelayanan, 'insert new record on '.$this->title.' module', json_encode($dataexc),'kode_trans_pelayanan');

@@ -156,7 +156,7 @@
               <th width="40px"></th>
               <th width="50px">ID</th>
               <th width="100px">Kode Permintaan</th>
-              <th width="120px">Tanggal</th>
+              <th width="120px">Unit/Bagian</th>
               <th width="100px">Petugas</th>
               <th width="100px">Jenis</th>
               <th width="200px">Keterangan</th>

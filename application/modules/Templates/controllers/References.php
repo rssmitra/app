@@ -1606,6 +1606,26 @@ class References extends MX_Controller {
 		
 	}
 
+	public function getObatByBagianAutoCompleteNoInfoStok()
+	{
+		$this->db->from('mt_depo_stok a, mt_barang b');
+		$this->db->where('a.kode_brg=b.kode_brg');
+		$this->db->where('b.nama_brg like '."'%".$_POST['keyword']."%'".'');
+		$this->db->where('a.kode_bagian', $_POST['bag']);
+		$this->db->where('a.is_active', 1);
+		
+		$this->db->order_by('b.nama_brg', 'ASC');
+        $exc = $this->db->get()->result();
+		// echo $this->db->last_query();
+		$arrResult = [];
+		foreach ($exc as $key => $value) {
+			$arrResult[] = $value->kode_brg.' : '.$value->nama_brg;
+		}
+		echo json_encode($arrResult);
+		
+		
+	}
+
 	public function getDetailObat()
 	{
 		$this->load->library('tarif');

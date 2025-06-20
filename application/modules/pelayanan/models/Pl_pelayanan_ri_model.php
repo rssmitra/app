@@ -5,7 +5,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 
 	var $table = 'ri_tc_rawatinap';
 	var $column = array('mt_master_pasien.nama_pasien');
-	var $select = 'ri_tc_rawatinap.bag_pas,ri_tc_rawatinap.no_kunjungan,mt_master_pasien.nama_pasien, kode_ri, ri_tc_rawatinap.status_pulang, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, ri_tc_rawatinap.tgl_masuk, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, mt_bagian.nama_bagian, ri_tc_rawatinap.dr_merawat, ri_tc_rawatinap.kelas_pas,ri_tc_rawatinap.kelas_titipan, ri_tc_rawatinap.kode_ruangan, x.nama_klas as klas,y.nama_klas as klas_titip, tc_registrasi.tarif_inacbgs, tc_registrasi.ina_cbgs, pasien_titipan, c.no_kamar, c.no_bed';
+	var $select = 'ri_tc_rawatinap.bag_pas,ri_tc_rawatinap.no_kunjungan,mt_master_pasien.nama_pasien, kode_ri, ri_tc_rawatinap.status_pulang, tc_kunjungan.no_mr, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, ri_tc_rawatinap.tgl_masuk, mt_karyawan.nama_pegawai,tc_registrasi.no_registrasi, tc_registrasi.kode_kelompok, tc_registrasi.kode_perusahaan, tc_kunjungan.kode_bagian_asal, tc_kunjungan.status_keluar, mt_bagian.nama_bagian, ri_tc_rawatinap.dr_merawat, ri_tc_rawatinap.kelas_pas,ri_tc_rawatinap.kelas_titipan, ri_tc_rawatinap.kode_ruangan, x.nama_klas as klas,y.nama_klas as klas_titip, tc_registrasi.tarif_inacbgs, tc_registrasi.ina_cbgs, pasien_titipan, c.no_kamar, c.no_bed, tc_registrasi.umur, mt_master_pasien.jen_kelamin';
 
 	var $order = array('ri_tc_rawatinap.no_kunjungan' => 'DESC');
 
@@ -126,15 +126,6 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		return $query->result();
 	}
 
-	function get_list_data()
-	{
-		$this->_main_query();
-		$this->db->order_by('mt_master_pasien.nama_pasien', 'ASC');
-		$query = $this->db->get();
-		// print_r($this->db->last_query());die;
-		return $query->result();
-	}
-
 	function count_filtered()
 	{
 		$this->_get_datatables_query();
@@ -147,6 +138,17 @@ class Pl_pelayanan_ri_model extends CI_Model {
 		$this->_main_query();
 		return $this->db->count_all_results();
 	}
+
+	function get_list_data()
+	{
+		$this->_main_query();
+		$this->db->order_by('mt_master_pasien.nama_pasien', 'ASC');
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	
 
 	public function get_by_id($id)
 	{
@@ -616,35 +618,25 @@ class Pl_pelayanan_ri_model extends CI_Model {
 
         if($params['prefix']==1){
             
-			$query = $this->db->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $_GET['no_kunjungan'], 'type' => 'UMUM'])->result_array();
+			$query = $this->db->order_by('tgl_monitor')->order_by('jam_monitor')->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $_GET['no_kunjungan'], 'flag_form' => 'btn_hemodinamik', 'is_deleted' => 0])->result_array();
 			$fields[0] = array('Sistolik' => 'sistolik');
 			$fields[1] = array('Diastolik' => 'diastolik');
 			$fields[2] = array('Nadi' => 'nd');
 			$fields[3] = array('Suhu' => 'sh');
-			$fields[4] = array('Nafas' => 'nafas');
-			$fields[5] = array('Oral' => 'oral');
-			$fields[6] = array('Prenteral' => 'parenteral');
-			$fields[7] = array('BAK' => 'bak');
-			$fields[8] = array('BAB' => 'bab');
-			$fields[9] = array('Muntah' => 'muntah');
+
+			$data = [];
 
 			foreach($query as $row){
-            	$data[0][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sistolik']);
-            	$data[1][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['diastolik']);
-            	$data[2][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nd']);
-            	$data[3][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sh']);
-            	$data[4][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nafas']);
-            	$data[5][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['oral']);
-            	$data[6][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['parenteral']);
-            	$data[7][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bak']);
-            	$data[8][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['bab']);
-            	$data[9][] = array('txt_y' => $row['tgl_monitor'].' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['muntah']);
-			}
+            	$data[0][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sistolik']);
+            	$data[1][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['diastolik']);
+            	$data[2][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nd']);
+            	$data[3][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sh']);
+            }
 
             // echo '<pre>';print_r($fields);
             // echo '<pre>';print_r($data);die;
-            $title = '<span style="font-size:13.5px">Grafik Perkembangan Pasien</span>';
-            $subtitle = 'Source: '.APPS_NAME_LONG.'';
+            $title = '';
+            $subtitle = '';
 
 
         }
@@ -663,6 +655,81 @@ class Pl_pelayanan_ri_model extends CI_Model {
         
     }
 
+	public function get_row_data_observasi($id){
+		$query = $this->db->select('CAST(jam_monitor as TIME) as jam, th_monitor_perkembangan_pasien_ri.*')->get_where('th_monitor_perkembangan_pasien_ri', ['id' => $id])->row();
+		return $query;
+	}
 
+
+	// datatable observasi pasien
+	private function _main_query_data_observasi(){
+		// $this->db->select('a.*');
+		$this->db->from('th_monitor_perkembangan_pasien_ri');
+		$this->db->where('no_kunjungan', $_GET['no_kunjungan']);
+		$this->db->where('flag_form', $_GET['flag']);
+		$this->db->order_by('tgl_monitor', 'DESC');
+		$this->db->order_by('jam_monitor', 'DESC');
+	}
+
+	function get_datatables_data_observasi()
+	{
+		$this->_main_query_data_observasi();
+		if($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function count_filtered_data_observasi()
+	{
+		$this->_main_query_data_observasi();
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	public function count_all_data_observasi()
+	{
+		$this->_main_query_data_observasi();
+		return $this->db->count_all_results();
+	}
+
+	// datatable pemberian_obat pasien
+	private function _main_query_data_pemberian_obat(){
+		// $this->db->select('a.*');
+		$this->db->from('th_monitor_pemberian_obat');
+		$this->db->where('no_kunjungan', $_GET['no_kunjungan']);
+		$this->db->where('jenis_terapi', $_GET['flag']);
+		$this->db->order_by('tgl_obat', 'DESC');
+		$this->db->order_by('jam_obat', 'DESC');
+	}
+
+	function get_datatables_data_pemberian_obat()
+	{
+		$this->_main_query_data_pemberian_obat();
+		if($_POST['length'] != -1)
+		$this->db->limit($_POST['length'], $_POST['start']);
+		$query = $this->db->get();
+		// print_r($this->db->last_query());die;
+		return $query->result();
+	}
+
+	function count_filtered_data_pemberian_obat()
+	{
+		$this->_main_query_data_pemberian_obat();
+		$query = $this->db->get();
+		return $query->num_rows();
+	}
+
+	public function count_all_data_pemberian_obat()
+	{
+		$this->_main_query_data_pemberian_obat();
+		return $this->db->count_all_results();
+	}
+
+	public function get_data_pemberian_obat_by_id($id){
+		$query = $this->db->select('CAST(jam_obat as time) as jam_obatx, th_monitor_pemberian_obat.*')->get_where('th_monitor_pemberian_obat', ['id' => $id])->row();
+		return $query;
+	}
 
 }

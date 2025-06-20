@@ -239,7 +239,6 @@ class Pl_pelayanan_ri extends MX_Controller {
         /*akan di filter berdasarkan pasien pada klinik masing2*/
         /*get data from model*/
         $list = $this->Pl_pelayanan_ri->get_list_data();
-        // echo "<pre>"; print_r($list);die;
         $data = array();
         $no=0;
         foreach ($list as $row_list) {
@@ -260,8 +259,8 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $color = 'black';
             }
             // $row[] = '<li><span style="color:'.$color.'" onclick="getMenu('."'pelayanan/Pl_pelayanan_ri/form/".$row_list->kode_ri."/".$row_list->no_kunjungan."'".')">'.$row_list->no_mr.' - '.strtoupper($row_list->nama_pasien).'</span></li>';
-            $penjamin = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan:$row_list->nama_kelompok;
-            $row[] = array('no_kunjungan' => $row_list->no_kunjungan, 'kode_ri' => $row_list->kode_ri, 'no_mr' => $row_list->no_mr, 'nama_pasien' => strtoupper($row_list->nama_pasien), 'color_txt' => $color, 'penjamin' => $penjamin, 'dokter' => $row_list->nama_pegawai, 'kelas' => $row_list->klas, 'kamar' => $row_list->nama_bagian, 'no_kamar' => $row_list->no_kamar, 'kode_perusahaan' => $row_list->kode_perusahaan, 'jk' => $row_list->jen_kelamin, 'umur' => $row_list->umur);
+            
+            $row[] = array('no_kunjungan' => $row_list->no_kunjungan, 'kode_ri' => $row_list->kode_ri, 'no_mr' => $row_list->no_mr, 'nama_pasien' => strtoupper($row_list->nama_pasien), 'color_txt' => $color);
             $data[] = $row;
         }
 
@@ -610,28 +609,13 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['title'] = $this->title;
         /*show breadcrumbs*/
         $data['breadcrumbs'] = $this->breadcrumbs->show();
-
         // monitor perkembangan pasie
-        $riwayat_monitoring = $this->db->order_by('id', 'DESC')->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $no_kunjungan])->result();
+        $riwayat_monitoring = $this->db->order_by('id', 'DESC')->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $no_kunjungan, 'flag_form' => 'btn_work_day'])->result();
         $getDtMonitoring = [];
-        $getDtHemodinamik = [];
-        $getDtPerkembangan = [];
         foreach($riwayat_monitoring as $key=>$row){
-            if($row->flag_form == 'btn_work_day'){
-                $getDtMonitoring[$row->tgl_monitor][] = $row;
-            }
-            if($row->flag_form == 'btn_hemodinamik'){
-                $getDtHemodinamik[$row->tgl_monitor][] = $row;
-            }
-
-            if($row->flag_form == 'btn_monitor_perkembangan_pasien'){
-                $getDtPerkembangan[$row->tgl_monitor][] = $row;
-            }
-                
+            $getDtMonitoring[$row->tgl_monitor][] = $row;
         }
         $data['perkembangan'] = $getDtMonitoring;
-        $data['hemodinamik'] = $getDtHemodinamik;
-        $data['monitoring'] = $getDtPerkembangan;
         // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_observasi_harian_keperawatan', $data);
@@ -685,9 +669,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         $data['breadcrumbs'] = $this->breadcrumbs->show();
         // monitor perkembangan pasie
         $pemberian_obat = $this->db->order_by('id', 'DESC')->get_where('th_monitor_pemberian_obat', ['no_kunjungan' => $no_kunjungan])->result();
-        $waktu_pemberian = $this->db->get_where('global_parameter', ['flag' => 'waktu_pemberian_obat'])->result();
         $data['obat'] = $pemberian_obat;
-        $data['waktu'] = $waktu_pemberian;
         // echo '<pre>';print_r($data);die;
         /*load form view*/
         $this->load->view('Pl_pelayanan_ri/form_pemberian_obat', $data);
@@ -1680,160 +1662,55 @@ class Pl_pelayanan_ri extends MX_Controller {
                     'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
                     'created_date' => date('Y-m-d H:i:s'),
                     'created_by' => $this->session->userdata('user')->fullname,
-                    'is_deleted' => 0,
-                ];
-
-                // cek kunjungan per date
-                // $existing = $this->db->get_where('th_monitor_perkembangan_pasien_ri', array(
-                //     'no_kunjungan' => $_POST['no_kunjungan'],
-                //     'tgl_monitor' => $_POST['tgl_monitor'],
-                // ));
-            }
-
-            if($_POST['submit'] == 'btn_hemodinamik'){
-                $dataexc = [
-                    'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor'],
-                    'no_registrasi' => $_POST['no_registrasi'],
-                    'no_kunjungan' => $_POST['no_kunjungan'],
-                    'no_mr' => $_POST['no_mr'],
-                    'sistolik' => isset($_POST['sistolik'])?$_POST['sistolik']:'',
-                    'diastolik' => isset($_POST['diastolik'])?$_POST['diastolik']:'',
-                    'td' => isset($_POST['td'])?$_POST['td']:'',
-                    'nd' => isset($_POST['nd'])?$_POST['nd']:'',
-                    'sh' => isset($_POST['sh'])?$_POST['sh']:'',
-                    'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
-                    'catatan' => isset($_POST['catatan_hemodinamik'])?$_POST['catatan_hemodinamik']:'',
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('user')->fullname,
-                    'is_deleted' => 0,
                 ];
             }
 
-            if($_POST['submit'] == 'btn_monitor_perkembangan_pasien'){
-                $dataexc = [
-                    'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor2'],
-                    'no_registrasi' => $_POST['no_registrasi'],
-                    'no_kunjungan' => $_POST['no_kunjungan'],
-                    'no_mr' => $_POST['no_mr'],
-                    'kesadaran' => isset($_POST['kesadaran'])?$_POST['kesadaran']:'',
-                    'pupil' => isset($_POST['pupil'])?$_POST['pupil']:'',
-                    'ref' => isset($_POST['ref'])?$_POST['ref']:'',
-                    'gcs' => isset($_POST['gcs'])?$_POST['gcs']:'',
-                    'sup' => isset($_POST['sup'])?$_POST['sup']:'',
-                    'inf' => isset($_POST['inf'])?$_POST['inf']:'',
-                    'cm_enteral' => isset($_POST['cm_enteral'])?$_POST['cm_enteral']:'',
-                    'cm_parenteral' => isset($_POST['cm_parenteral'])?$_POST['cm_parenteral']:'',
-                    'cm_train' => isset($_POST['cm_train'])?$_POST['cm_train']:'',
-                    'ck_urin' => isset($_POST['ck_urin'])?$_POST['ck_urin']:'',
-                    'ck_ngt' => isset($_POST['ck_ngt'])?$_POST['ck_ngt']:'',
-                    'ck_bab' => isset($_POST['ck_bab'])?$_POST['ck_bab']:'',
-                    'resp_pola' => isset($_POST['resp_pola'])?$_POST['resp_pola']:'',
-                    'resp_tv' => isset($_POST['resp_tv'])?$_POST['resp_tv']:'',
-                    'resp_rr' => isset($_POST['resp_rr'])?$_POST['resp_rr']:'',
-                    'resp_fo2' => isset($_POST['resp_fo2'])?$_POST['resp_fo2']:'',
-                    'cvp' => isset($_POST['cvp'])?$_POST['cvp']:'',
-                    'catatan' => isset($_POST['catatan_monitoring'])?$_POST['catatan_monitoring']:'',
-                    'resp_peep' => isset($_POST['resp_peep'])?$_POST['resp_peep']:'',
-                    'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('user')->fullname,
-                    'is_deleted' => 0,
-                ];
-            }
 
-            if($_POST['submit'] == 'btn_deskripsi_lainnya'){
-                $dataexc = [
-                    'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor3'],
-                    'no_registrasi' => $_POST['no_registrasi'],
-                    'no_kunjungan' => $_POST['no_kunjungan'],
-                    'no_mr' => $_POST['no_mr'],
-                    'catatan' => isset($_POST['catatan_khusus'])?$_POST['catatan_khusus']:'',
-                    'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('user')->fullname,
-                    'is_deleted' => 0,
-                ];
-            }
+            /*insert drawing*/
+            // $dataexc = [
+            //     'tgl_monitor' => $_POST['tgl_monitor'],
+            //     'jam_monitor' => $_POST['jam_monitor'],
+            //     'no_registrasi' => $_POST['no_registrasi'],
+            //     'no_kunjungan' => $_POST['no_kunjungan'],
+            //     'no_mr' => $_POST['no_mr'],
+            //     'kesadaran' => isset($_POST['kesadaran'])?$_POST['kesadaran']:'',
+            //     'cvp' => isset($_POST['cvp'])?$_POST['cvp']:'',
+            //     'infus' => isset($_POST['infus'])?$_POST['infus']:'',
+            //     'urine' => isset($_POST['urine'])?$_POST['urine']:'',
+            //     'obat' => isset($_POST['obat'])?$_POST['obat']:'',
+            //     'sistolik' => isset($_POST['sistolik'])?$_POST['sistolik']:'',
+            //     'diastolik' => isset($_POST['diastolik'])?$_POST['diastolik']:'',
+            //     'td' => isset($_POST['td'])?$_POST['td']:'',
+            //     'nd' => isset($_POST['nd'])?$_POST['nd']:'',
+            //     'sh' => isset($_POST['sh'])?$_POST['sh']:'',
+            //     'oral' => isset($_POST['oral'])?$_POST['oral']:'',
+            //     'nafas' => isset($_POST['pernafasan'])?$_POST['pernafasan']:'',
+            //     'jumlah_a' => isset($_POST['jumlah'])?$_POST['jumlah']:'',
+            //     'bak' => isset($_POST['bak'])?$_POST['bak']:'',
+            //     'bab' => isset($_POST['bab'])?$_POST['bab']:'',
+            //     'muntah' => isset($_POST['muntah'])?$_POST['muntah']:'',
+            //     'drainage' => isset($_POST['drainage'])?$_POST['drainage']:'',
+            //     'jumlah_b' => isset($_POST['jumlah_b'])?$_POST['jumlah_b']:'',
+            //     'balance_cairan' => isset($_POST['cairan'])?$_POST['cairan']:'',
+            //     'diet' => isset($_POST['diet'])?$_POST['diet']:'',
+            //     'catatan' => isset($_POST['catatan'])?$_POST['catatan']:'',
+            //     'type' => isset($_POST['tipe_monitoring'])?$_POST['tipe_monitoring']:'UMUM',
+            //     'created_date' => date('Y-m-d H:i:s'),
+            //     'created_by' => $this->session->userdata('user')->fullname,
+            // ];
 
-            if($_POST['submit'] == 'btn_keseimbangan_cairan'){
-                $dataexc = [
-                    'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor3'],
-                    'no_registrasi' => $_POST['no_registrasi'],
-                    'no_kunjungan' => $_POST['no_kunjungan'],
-                    'no_mr' => $_POST['no_mr'],
-                    'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('user')->fullname,
-                    'is_deleted' => 0,
-                    'balance_cairan' => isset($_POST['balans_cairan'])?$_POST['balans_cairan']:'',
-                    'total_cairan_masuk' => isset($_POST['cairan_masuk'])?$_POST['cairan_masuk']:'',
-                    'total_cairan_keluar' => isset($_POST['cairan_keluar'])?$_POST['cairan_keluar']:'',
-                    'iwl' => isset($_POST['iwl'])?$_POST['iwl']:'',
-                    'total_jam' => isset($_POST['total_jam'])?$_POST['total_jam']:'',
-                    'berat_badan' => isset($_POST['berat_badan'])?$_POST['berat_badan']:'',
-                    'nilai_konstanta' => isset($_POST['konstanta'])?$_POST['konstanta']:'',
-                ];
-            }
+            $this->db->insert('th_monitor_perkembangan_pasien_ri', $dataexc);
 
-            if($_POST['submit'] == 'btn_deskripsi_kegiatan'){
-                $dataexc = [
-                    'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor3'],
-                    'no_registrasi' => $_POST['no_registrasi'],
-                    'no_kunjungan' => $_POST['no_kunjungan'],
-                    'no_mr' => $_POST['no_mr'],
-                    'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('user')->fullname,
-                    'is_deleted' => 0,
-                    'catatan' => isset($_POST['deskripsi_kegiatan'])?$_POST['deskripsi_kegiatan']:'',
-                ];
-            }
-
-            if($_POST['submit'] == 'btn_program_pemberian_obat'){
-                $dataexc = [
-                    'tgl_monitor' => $_POST['tgl_monitor'],
-                    'jam_monitor' => $_POST['jam_monitor4'],
-                    'no_registrasi' => $_POST['no_registrasi'],
-                    'no_kunjungan' => $_POST['no_kunjungan'],
-                    'no_mr' => $_POST['no_mr'],
-                    'flag_form' => isset($_POST['submit'])?$_POST['submit']:'',
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('user')->fullname,
-                    'is_deleted' => 0,
-                    'infus' => isset($_POST['cairan_infus'])?$_POST['cairan_infus']:'',
-                    'nutrisi_enteral' => isset($_POST['nutrisi_enteral'])?$_POST['nutrisi_enteral']:'',
-                ];
-            }
-
-            // echo "<pre>";print_r($dataexc);die;
-            $id = ($_POST['id'] != '')?$_POST['id']:0;
-            if($id != 0){
-                $this->db->update('th_monitor_perkembangan_pasien_ri', $dataexc, array('id' => $id) );  
-            }else{
-                // if(isset($existing) && $existing->num_rows() > 0){
-                //     $existing = $existing->row();
-                //     $this->db->update('th_monitor_perkembangan_pasien_ri', $dataexc, array('id' => $existing->id) );  
-                // }else{
-                //     $this->db->insert('th_monitor_perkembangan_pasien_ri', $dataexc);
-                // }
-                $this->db->insert('th_monitor_perkembangan_pasien_ri', $dataexc);
-            }
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan', 'type' => $_POST['tipe_monitoring'], 'type_pelayanan' => 'monitoring'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
-            }
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan', 'type' => $_POST['tipe_monitoring'], 'type_pelayanan' => 'monitoring'));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+             }
  
          }
     }
@@ -1849,30 +1726,23 @@ class Pl_pelayanan_ri extends MX_Controller {
          $val->set_rules('no_kunjungan', 'No Kunjungan', 'trim|required');
          $val->set_rules('nama_obat', 'Nama Obat', 'trim|required');
          $val->set_rules('dosis', 'Dosis', 'trim|required');
-         $val->set_rules('frek', 'Frekuensi', 'trim');
+         $val->set_rules('frek', 'Frekuensi', 'trim|required');
          $val->set_rules('jenis_terapi', 'Jenis Terapi', 'trim|required');
-
-        if(count($_POST['waktu']) > 0){
-            foreach($_POST['waktu'] as $k => $v){
-                if(isset($_POST['jam'][$k]) && $_POST['jam'][$k] == ''){
-                    $val->set_rules('jam['.$k.']', 'Jam '.$k.'', 'trim|required', array('required' => 'Silahkan isi jam pemberian obat untuk waktu '.$k.''));
-                }
-            }
-        }
-         
-        $val->set_message('required', "Silahkan isi field \"%s\"");
-
-        if ($val->run() == FALSE)
-        {
-            $val->set_error_delimiters('<div style="color:white">', '</div>');
-            echo json_encode(array('status' => 301, 'message' => validation_errors()));
-        }
-        else
-        {                       
-
+         $val->set_rules('waktu_pemberian_obat', 'Waktu', 'trim|required');
+ 
+         $val->set_message('required', "Silahkan isi field \"%s\"");
+ 
+         if ($val->run() == FALSE)
+         {
+             $val->set_error_delimiters('<div style="color:white">', '</div>');
+             echo json_encode(array('status' => 301, 'message' => validation_errors()));
+         }
+         else
+         {                       
+ 
             $this->db->trans_begin();
             
-            /*insert obat*/
+            /*insert drawing*/
             $dataexc = [
                 'tgl_obat' => $_POST['tgl_obat'],
                 'jam_obat' => $_POST['jam_obat'],
@@ -1885,71 +1755,25 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'frek' => isset($_POST['frek'])?$_POST['frek']:'',
                 'rute' => isset($_POST['rute'])?$_POST['rute']:'',
                 'jenis_terapi' => isset($_POST['jenis_terapi'])?$_POST['jenis_terapi']:'',
-                'status_pemberian_obat' => 'continue',
+                'waktu' => isset($_POST['waktu_pemberian_obat'])?$_POST['waktu_pemberian_obat']:'',
                 'created_date' => date('Y-m-d H:i:s'),
                 'created_by' => $this->session->userdata('user')->fullname,
 
             ];
+            $this->db->insert('th_monitor_pemberian_obat', $dataexc);
 
-            
-            // echo "<pre>";print_r($dataexc);die;
-
-            $id = ($_POST['id_pemberian_obat'] && $_POST['id_pemberian_obat'] != '') ? $_POST['id_pemberian_obat'] : 0;
-
-            if($id == 0){
-                if(count($_POST['waktu']) > 0){
-                    $waktu_obat = [];
-                    foreach($_POST['waktu'] as $k => $v){
-                        $waktu_obat[$k] = [
-                            'jam' => isset($_POST['jam'][$k])?$_POST['jam'][$k]:'',
-                            'catatan' => isset($_POST['catatan'][$k])?$_POST['catatan'][$k]:'',
-                            'pelaksanaan' => 0, // 0 = belum dilaksanakan, 1 = sudah dilaksanakan
-                            'perawat' => '', // perawat yang melaksanakan
-                            'waktu_pelaksanaan' => '', // waktu yang melaksanakan
-                        ];
-                    }
-                    $dataexc['waktu'] = json_encode($waktu_obat);
-                }
-                $this->db->insert('th_monitor_pemberian_obat', $dataexc);
-                $newId = $this->db->insert_id();
-            }else{
-                // get data existing
-                $data = $this->db->get_where('th_monitor_pemberian_obat', ['id' => $id])->row();
-                $waktu = json_decode($data->waktu, true);
-                
-                if(count($_POST['waktu']) > 0){
-                    $waktu_obat = [];
-                    foreach($_POST['waktu'] as $k => $v){
-                        $pelaksanaan = isset($waktu[$k]['pelaksanaan'])?$waktu[$k]['pelaksanaan']:0;
-                        $waktu_pelaksanaan = isset($waktu[$k]['waktu_pelaksanaan'])?$waktu[$k]['waktu_pelaksanaan']:'';
-                        $waktu_obat[$k] = [
-                            'jam' => isset($_POST['jam'][$k])?$_POST['jam'][$k]:'',
-                            'catatan' => isset($_POST['catatan'][$k])?$_POST['catatan'][$k]:'',
-                            'pelaksanaan' => $pelaksanaan, // 0 = belum dilaksanakan, 1 = sudah dilaksanakan
-                            'perawat' => $this->session->userdata('user')->fullname, // perawat yang melaksanakan
-                            'waktu_pelaksanaan' => $waktu_pelaksanaan
-                        ];
-                    }
-                    $dataexc['waktu'] = json_encode($waktu_obat);
-                }
-
-                // echo "<pre>"; print_r($dataexc);die;
-                $this->db->update('th_monitor_pemberian_obat', $dataexc, ['id' => $id]);
-                $newId = $id;
-            }
-
-            if ($this->db->trans_status() === FALSE)
-            {
-                $this->db->trans_rollback();
-                echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan', 'type' => $_POST['tipe_monitoring'], 'type_pelayanan' => 'monitoring'));
-            }
-            else
-            {
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
-            }
-
-        }
+             if ($this->db->trans_status() === FALSE)
+             {
+                 $this->db->trans_rollback();
+                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan', 'type' => $_POST['tipe_monitoring'], 'type_pelayanan' => 'monitoring'));
+             }
+             else
+             {
+                 $this->db->trans_commit();
+                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan'));
+             }
+ 
+         }
     }
 
     public function process_askep()
@@ -2147,383 +1971,6 @@ class Pl_pelayanan_ri extends MX_Controller {
         }
     }
 
-    public function get_row_data_observasi_ri(){
-
-        $list = $this->Pl_pelayanan_ri->get_datatables_data_observasi();
-
-        $data = array();
-        $no = $_POST['start'];
-        foreach($list as $key=>$row){
-
-            $is_deleted = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-            if($row->is_deleted == 1){
-                $btn = "<a href='#' class='btn btn-xs btn-warning' onclick='set_line_through(".$row->id.", 0)'><i class='fa fa-refresh bigger-120'></i></a>";
-            }else{
-                $btn = "<a href='#' class='btn btn-xs btn-danger' onclick='set_line_through(".$row->id.", 1)'><i class='fa fa-times-circle bigger-120'></i></a>";
-            }
-
-            if($_GET['flag'] == 'btn_work_day'){
-                $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'tbl_observasi_harian_keperawatan'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-
-                $btn .= '<a href="#" class="btn btn-xs btn-primary" onclick="edit_row('.$row->id.', '."'tbl_observasi_harian_keperawatan'".')"><i class="fa fa-eye"></i></a>';
-                $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = '<b><a href="#" onclick="edit_row('.$row->id.', '."'tbl_observasi_harian_keperawatan'".')">'.$this->tanggal->formatDateDmy($row->tgl_monitor).'</a></b><br><small><i class="fa fa-user"></i> '. $row->created_by.'</small>';
-                $row_data[] = '<div '.$line.'>'.nl2br($row->intake_enteral).'</div>';
-                $row_data[] = '<div '.$line.'>'.nl2br($row->intake_parenteral).'</div>';
-                $row_data[] = '<div '.$line.'>'.nl2br($row->polavent).'</div>';
-                $row_data[] = '<div '.$line.'>'.nl2br($row->obat_enteral).'</div>';
-                $row_data[] = '<div '.$line.'>'.nl2br($row->obat_parenteral).'</div>';
-                $row_data[] = '<div '.$line.'>'.nl2br($row->lain_alergi).'</div>';
-                $row_data[] = '<div '.$line.'>'.nl2br($row->catatan).'</div>';
-                $data[] = $row_data;
-            }
-
-            if($_GET['flag'] == 'btn_hemodinamik'){
-                $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'dt_hemodinamik'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-
-                $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = '<a href="#" onclick="edit_row('.$row->id.', '."'dt_hemodinamik'".')">'.$this->tanggal->formatDateDmy($row->tgl_monitor).'</a>';
-                $row_data[] = '<i class="fa fa-clock-o"></i> '.$this->tanggal->formatTime($row->jam_monitor).'';
-                $row_data[] = '<i class="fa fa-user"></i> '. $row->created_by.'';
-                // content
-                $row_data[] = '<div class="center" '.$line.'>'.$row->sistolik.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->diastolik.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->nd.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->sh.'</div>';
-                $row_data[] = '<div class="left" '.$line.'>'.$row->catatan.'</div>';
-                $data[] = $row_data;
-            }
-
-            if($_GET['flag'] == 'btn_monitor_perkembangan_pasien'){
-                $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'btn_monitor_perkembangan_pasien'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-
-                $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = $this->tanggal->formatDateDmy($row->tgl_monitor).'&nbsp;'.$this->tanggal->formatTime($row->jam_monitor).'';
-                // content
-                $row_data[] = '<div class="center" '.$line.'>'.$row->kesadaran.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->pupil.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->ref.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->gcs.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->sup.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->inf.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->cm_enteral.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->cm_parenteral.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->cm_train.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->ck_urin.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->ck_ngt.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->ck_bab.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->resp_pola.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->resp_tv.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->resp_rr.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->resp_fo2.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->resp_peep.'</div>';
-                $row_data[] = '<div class="left" '.$line.'>'.$row->cvp.'</div>';
-                $row_data[] = '<div class="left" '.$line.'>'.$row->catatan.'</div>';
-                $data[] = $row_data;
-            }
-
-            if($_GET['flag'] == 'btn_deskripsi_lainnya'){
-                $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'btn_deskripsi_lainnya'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-
-                $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = $this->tanggal->formatDateDmy($row->tgl_monitor).'&nbsp;'.$this->tanggal->formatTime($row->jam_monitor).'';
-                // content
-                $row_data[] = '<div class="left" '.$line.'>'.$row->catatan.'</div>';
-                $data[] = $row_data;
-            }
-
-            if($_GET['flag'] == 'btn_keseimbangan_cairan'){
-                $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'btn_keseimbangan_cairan'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-
-                $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = $this->tanggal->formatDateDmy($row->tgl_monitor).'&nbsp;'.$this->tanggal->formatTime($row->jam_monitor).'';
-                $row_data[] = '<i class="fa fa-user"></i> '. $row->created_by.'';
-                // content
-                $row_data[] = '<div class="center" '.$line.'>'.$row->nilai_konstanta.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->berat_badan.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->total_jam.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->iwl.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->total_cairan_masuk.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->total_cairan_keluar.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->balance_cairan.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->catatan.'</div>';
-                $data[] = $row_data;
-            }
-
-            if($_GET['flag'] == 'btn_deskripsi_kegiatan'){
-                $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'btn_deskripsi_kegiatan'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-
-                $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = $this->tanggal->formatDateDmy($row->created_date).'&nbsp;'.$this->tanggal->formatTime($row->created_date).'';
-                $row_data[] = '<i class="fa fa-user"></i> '. $row->created_by.'';
-                // content
-                $row_data[] = '<div class="center" '.$line.'>'.$row->catatan.'</div>';
-                $row_data[] = '<div class="center" '.$line.'>'.$row->jenis_kegiatan.'</div>';
-                $data[] = $row_data;
-            }
-
-            if($_GET['flag'] == 'btn_program_pemberian_obat'){
-                $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'btn_program_pemberian_obat'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-
-                $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = $this->tanggal->formatDateDmy($row->created_date);
-                $row_data[] = $this->tanggal->formatTime($row->jam_monitor).'';
-                $row_data[] = '<i class="fa fa-user"></i> '. $row->created_by.'';
-                // content
-                $row_data[] = '<div class="left" '.$line.'>'.nl2br($row->infus).'</div>';
-                $row_data[] = '<div class="left" '.$line.'>'.nl2br($row->nutrisi_enteral).'</div>';
-                $data[] = $row_data;
-            }
-
-        }
-
-        $output = array(
-                "draw" => $_POST['draw'],
-                "recordsTotal" => $this->Pl_pelayanan_ri->count_all_data_observasi(),
-                "recordsFiltered" => $this->Pl_pelayanan_ri->count_filtered_data_observasi(),
-                "data" => $data,
-        );
-            
-        //output to json format
-        echo json_encode($output);
-
-
-    }
-
-    public function info_gcs(){
-        $this->load->view('pelayanan/Pl_pelayanan_ri/info_gcs');
-    }
-
-     public function get_row_data_pemberian_obat(){
-
-        $list = $this->Pl_pelayanan_ri->get_datatables_data_pemberian_obat();
-        $waktu_pemberian = $this->db->get_where('global_parameter', ['flag' => 'waktu_pemberian_obat'])->result();
-
-        $data = array();
-        $no = $_POST['start'];
-        foreach($list as $key=>$row){
-
-            $is_deleted = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-            if($row->is_deleted == 1){
-                $btn = '<a href="#" class="btn btn-xs btn-warning" onclick="set_line_through('.$row->id.', 0, '."'".$row->jenis_terapi."'".')"><i class="fa fa-refresh bigger-120"></i></a>';
-            }else{
-                $btn = '<a href="#" class="btn btn-xs btn-danger" onclick="set_line_through('.$row->id.', 1, '."'".$row->jenis_terapi."'".')"><i class="fa fa-times-circle bigger-120"></i></a>';
-            }
-            $styling = ($row->status_pemberian_obat == 'continue') ? 'style="color: white; background: green"' : 'style="color: white; background: red"';
-            $status_pemberian_obat = $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'status_pemberian_obat')), $row->status_pemberian_obat , 'status_pemberian_obat', 'status_pemberian_obat', 'form-control', '', 'onchange="upadte_status_pemberian_obat('.$row->id.', this.value)" '.$styling.'');
-
-            $btn .= '<a href="#" class="btn btn-xs btn-success" onclick="edit_row('.$row->id.', '."'tbl_observasi_harian_keperawatan'".')"><i class="fa fa-pencil bigger-120"></i></a>';
-            $line = ($row->is_deleted == 1) ? 'style="text-decoration: line-through; color: red"' :'';
-            // waktu pemberian obat
-            $waktu_obat = (array)json_decode($row->waktu);
-
-            if($_GET['flag'] == 'parenteral'){
-                // echo "<pre>";print_r($waktu_pemberian);die;
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = '<b>'.$this->tanggal->formatDateDmy($row->tgl_obat).' '.$this->tanggal->formatTime($row->jam_obat).'</b>';
-                $row_data[] = '<div '.$line.'>'.$row->nama_obat.'<br>Dosis. '.$row->dosis.'<br> Frek. '.$row->frek.'<br> Rute. '.$row->rute.'</b><hr><center><b>Status Pemberian Obat :</b> <br>'.$status_pemberian_obat.'</center></div>';
-                foreach ($waktu_pemberian as $k => $val) {
-                    if(isset($waktu_obat[$val->value])){
-                        $jam = isset($waktu_obat[$val->value]->jam) ? $waktu_obat[$val->value]->jam : '';
-                        $catatan = isset($waktu_obat[$val->value]->catatan) ? '<br>'.$waktu_obat[$val->value]->catatan : '';
-                        $pelaksana = isset($waktu_obat[$val->value]->perawat) ? '<br>'.$waktu_obat[$val->value]->perawat.'' : '';
-                        $pelaksanaan = isset($waktu_obat[$val->value]->waktu_pelaksanaan) ? '<br>'.$this->tanggal->formatDateTimeFormDmy($waktu_obat[$val->value]->waktu_pelaksanaan).'' : '';
-                        $row_data[] = '<div '.$line.'><left><span><b><u>Jadwal</u></b></span></left><br><i class="fa fa-clock-o bigger-120"></i> <span style="font-size: 14px; font-weight: bold; color: blue">'.$jam.'</span> '.$catatan.'<hr class="no-padding"><center>
-                        <center><b>Sudah diberikan?</b></center>
-                        <label>
-                            <input name="pelaksanaan_'.$row->id.'" id="pelaksanaan_'.$row->id.'" class="ace ace-switch ace-switch-6" type="checkbox" onclick="update_pelaksanaan_pemberian_obat('."'".$row->id."'".', '."'".$val->value."'".', this.checked)" '.(($waktu_obat[$val->value]->pelaksanaan == 1) ? 'checked' : '').'>
-                            <span class="lbl"></span>
-                        </label>
-                        '.$pelaksana.'
-                        '.$pelaksanaan.'
-                        </center></div>';
-                    }else{
-                        $row_data[] = '<div '.$line.' class="center"><i class="fa fa-times red bigger-120"></div>';
-                    }
-                }
-                $row_data[] = '<div '.$line.' class="center"><a href="#" class="btn btn-xs btn-primary" onclick="showModalTTD('."'".$row->id."'".', '."'perawat'".')"><i class="fa fa-pencil"></i></a><br><span id="ttd_perawat_id_'.$row->id.'"><img src='.$row->ttd_perawat.' class="signature-image" width="200px"></span><br>'.$this->tanggal->formatDateTimeFormDmy($row->ttd_perawat_date).'</div>';
-
-                $row_data[] = '<div '.$line.' class="center"><a href="#" class="btn btn-xs btn-primary" onclick="showModalTTD('."'".$row->id."'".', '."'pasien'".')"><i class="fa fa-pencil"></i></a><br><span id="ttd_pasien_id_'.$row->id.'"><img src='.$row->ttd_kel_pasien.' class="signature-image" width="200px"></span><br>'.$this->tanggal->formatDateTimeFormDmy($row->ttd_kel_pasien_date).'</div>';
-                $row_data[] = '<div '.$line.' class="center">'.$row->catatan.'</div>';
-                $data[] = $row_data;
-            }
-
-            if($_GET['flag'] == 'non_parenteral'){
-                
-                // echo "<pre>";print_r($waktu_pemberian);die;
-                $row_data = [];
-                $row_data[] = '<div class="center">'.$btn.'</div>';
-                $row_data[] = '<b>'.$this->tanggal->formatDateDmy($row->tgl_obat).' '.$this->tanggal->formatTime($row->jam_obat).'</b>';
-                $row_data[] = '<div '.$line.'>'.$row->nama_obat.'<br>Dosis. '.$row->dosis.'<br> Frek. '.$row->frek.'<br> Rute. '.$row->rute.'</b><hr><center><b>Status Pemberian Obat :</b> <br>'.$status_pemberian_obat.'</center></div>';
-                foreach ($waktu_pemberian as $k => $val) {
-                    if(isset($waktu_obat[$val->value])){
-                        $jam = isset($waktu_obat[$val->value]->jam) ? $waktu_obat[$val->value]->jam : '';
-                        $catatan = isset($waktu_obat[$val->value]->catatan) ? '<br>'.$waktu_obat[$val->value]->catatan : '';
-                        $pelaksana = isset($waktu_obat[$val->value]->perawat) ? '<br>'.$waktu_obat[$val->value]->perawat.'' : '';
-                        $pelaksanaan = isset($waktu_obat[$val->value]->waktu_pelaksanaan) ? '<br>'.$this->tanggal->formatDateTimeFormDmy($waktu_obat[$val->value]->waktu_pelaksanaan).'' : '';
-                        $row_data[] = '<div '.$line.'><left><span><b><u>Jadwal</u></b></span></left><br><i class="fa fa-clock-o bigger-120"></i> <span style="font-size: 14px; font-weight: bold; color: blue">'.$jam.'</span> '.$catatan.'<hr class="no-padding"><center>
-                        <center><b>Sudah diberikan?</b></center>
-                        <label>
-                            <input name="pelaksanaan_'.$row->id.'" id="pelaksanaan_'.$row->id.'" class="ace ace-switch ace-switch-6" type="checkbox" onclick="update_pelaksanaan_pemberian_obat('."'".$row->id."'".', '."'".$val->value."'".', this.checked)" '.(($waktu_obat[$val->value]->pelaksanaan == 1) ? 'checked' : '').'>
-                            <span class="lbl"></span>
-                        </label>
-                        '.$pelaksana.'
-                        '.$pelaksanaan.'
-                        </center></div>';
-                    }else{
-                        $row_data[] = '<div '.$line.' class="center"><i class="fa fa-times red bigger-120"></div>';
-                    }
-                }
-                $row_data[] = '<div '.$line.' class="center"><a href="#" class="btn btn-xs btn-primary" onclick="showModalTTD('."'".$row->id."'".', '."'perawat'".')"><i class="fa fa-pencil"></i></a><br><span id="ttd_perawat_id_'.$row->id.'"><img src='.$row->ttd_perawat.' class="signature-image" width="200px"></span><br>'.$this->tanggal->formatDateTimeFormDmy($row->ttd_perawat_date).'</div>';
-
-                $row_data[] = '<div '.$line.' class="center"><a href="#" class="btn btn-xs btn-primary" onclick="showModalTTD('."'".$row->id."'".', '."'pasien'".')"><i class="fa fa-pencil"></i></a><br><span id="ttd_pasien_id_'.$row->id.'"><img src='.$row->ttd_kel_pasien.' class="signature-image" width="200px"></span><br>'.$this->tanggal->formatDateTimeFormDmy($row->ttd_kel_pasien_date).'</div>';
-
-                $row_data[] = '<div '.$line.' class="center">'.$row->catatan.'</div>';
-                $data[] = $row_data;
-            }
-
-            
-
-        }
-
-        $output = array(
-                "draw" => $_POST['draw'],
-                "recordsTotal" => $this->Pl_pelayanan_ri->count_all_data_pemberian_obat(),
-                "recordsFiltered" => $this->Pl_pelayanan_ri->count_filtered_data_pemberian_obat(),
-                "data" => $data,
-        );
-            
-        //output to json format
-        echo json_encode($output);
-
-
-    }
-
-    function update_pelaksanaan_pemberian_obat(){
-        $id = $this->input->get('ID');
-        $pelaksanaan = $this->input->get('status');
-        // get data current
-        $data = $this->db->get_where('th_monitor_pemberian_obat', ['id' => $id])->row();
-        if($data){
-            $waktu = json_decode($data->waktu, true);
-            foreach($waktu as $k => $v){
-                // echo "<pre>";print_r($v);die;
-                if($k == $this->input->get('waktu')){
-                    $update_pelaksanaan = ($pelaksanaan == 'true') ? '1' : '0';
-                    // echo "<pre>";print_r($update_pelaksanaan);die;
-                }else{
-                    $update_pelaksanaan = $v['pelaksanaan']; // tetap
-
-                }
-                
-                $waktu_obat[$k] = [
-                    'jam' => $v['jam'],
-                    'catatan' => $v['catatan'],
-                    'pelaksanaan' => $update_pelaksanaan, // 0 = belum dilaksanakan, 1 = sudah dilaksanakan
-                    'perawat' => $this->session->userdata('user')->fullname , 
-                    'waktu_pelaksanaan' => date('Y-m-d H:i:s') // waktu pemberian obat, 
-                ];
-            }
-            // echo "<pre>";print_r($waktu_obat);die;
-            $this->db->where('id', $id)->update('th_monitor_pemberian_obat', ['waktu' => json_encode($waktu_obat)]);
-            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'jenis_terapi' => $data->jenis_terapi));
-        }else{
-            echo json_encode(array('status' => 301, 'message' => 'Data tidak ditemukan'));
-            return; 
-            
-        }
-    }
-
-    function update_status_pemberian_obat(){
-        $id = $this->input->get('ID');
-        $value = $this->input->get('val');
-        $data = $this->db->get_where('th_monitor_pemberian_obat', ['id' => $id])->row();
-        if($value){
-            $this->db->where('id', $id)->update('th_monitor_pemberian_obat', ['status_pemberian_obat' => $value]);
-            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'jenis_terapi' => $data->jenis_terapi));
-        }else{
-            echo json_encode(array('status' => 301, 'message' => 'Data tidak ditemukan'));
-            return; 
-            
-        }
-    }
-
-    public function process_save_ttd_pemberian_obat()
-    {
-        //  print_r($_POST);die;
-         $this->load->library('form_validation');
-         $val = $this->form_validation;
-     
-         $val->set_rules('id', 'ID', 'trim|required', array('required' => 'ID tidak ditemukan'));
- 
-         $val->set_message('required', "Silahkan isi field \"%s\"");
- 
-         if ($val->run() == FALSE)
-         {
-             $val->set_error_delimiters('<div style="color:white">', '</div>');
-             echo json_encode(array('status' => 301, 'message' => validation_errors()));
-         }
-         else
-         {                       
- 
-            $this->db->trans_begin();
-            
-            if($_POST['flag'] == 'perawat'){
-                $dataexc = [
-                    'ttd_perawat' => $_POST['signature'],
-                    'ttd_perawat_name' => $this->session->userdata('user')->fullname,
-                    'ttd_perawat_date' => date('Y-m-d H:i:s'),
-                ];
-            }else{
-                $dataexc = [
-                    'ttd_kel_pasien' => $_POST['signature'],
-                    'ttd_kel_pasien_date' => date('Y-m-d H:i:s'),
-                ];
-            }
-            
-            $this->db->where('id', $_POST['id'])->update('th_monitor_pemberian_obat', $dataexc);
-
-             if ($this->db->trans_status() === FALSE)
-             {
-                 $this->db->trans_rollback();
-                 echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
-             }
-             else
-             {
-                 $this->db->trans_commit();
-                 echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'signature' => $_POST['signature']));
-             }
- 
-         }
-    }
-
-     public function get_data_pemberian_obat_by_id(){
-        
-        $data = $this->Pl_pelayanan_ri->get_data_pemberian_obat_by_id($_GET['ID']);
-        // echo "<pre>"; print_r($data);die;
-        if($data){
-            echo json_encode(array('status' => 200, 'data' => $data));
-        }else{
-            echo json_encode(array('status' => 301, 'message' => 'Data tidak ditemukan'));
-        }
-    }
-
-    
 
 }
 
