@@ -111,7 +111,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
         }
         $data['group_bag'] = $groupBag;
 
-        // echo '<pre>';print_r($data['group_bag']);die;
+        // echo '<pre>';print_r($data['list']);die;
 
         $this->load->view('Pl_pelayanan_mcu/form_periksa_bagian', $data);
     
@@ -268,16 +268,17 @@ class Pl_pelayanan_mcu extends MX_Controller {
             $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
             $row[] = '<div class="center">'.$row_list->nama_tarif.'</div>';
 
+            $status_periksa = '';
             if($row_list->status_batal==1){
                 $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
             }else{
                 if($row_list->status_selesai==3){
                     
-                    if($row_list->status_daftar!=2){
-                        $status_periksa = ($row_list->status_periksa!=NULL)?'<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_mcu/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."'".')">Update Hasil MCU</a>':' <a href="#" class="btn btn-xs btn-info" onclick="show_modal('."'pelayanan/Pl_pelayanan_mcu/periksa_bagian/".$row_list->id_pl_tc_poli."/".$row_list->kode_tarif."/".$row_list->kode_dokter."  '".', '."'".strtoupper($row_list->nama_pasien)."'".')"> Periksa Bagian</a>';
-                    }else{
-                        $status_periksa = '<a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'pelayanan/Pl_pelayanan_mcu/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."'".')">Periksa</a>';
-                    }
+                    // if($row_list->status_daftar!=2){
+                        $status_periksa .= ($row_list->status_periksa!=NULL)?'<a href="#" class="btn btn-xs btn-success" onclick="getMenu('."'pelayanan/Pl_pelayanan_mcu/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."'".')">Update Hasil MCU</a>':' <a href="#" class="btn btn-xs btn-info" onclick="show_modal('."'pelayanan/Pl_pelayanan_mcu/periksa_bagian/".$row_list->id_pl_tc_poli."/".$row_list->kode_tarif."/".$row_list->kode_dokter."  '".', '."'".strtoupper($row_list->nama_pasien)."'".')"> Periksa Bagian</a>';
+                    // }else{
+                        $status_periksa .= '<a href="#" class="btn btn-xs btn-primary" onclick="getMenu('."'pelayanan/Pl_pelayanan_mcu/form/".$row_list->id_pl_tc_poli."/".$row_list->no_kunjungan."'".')">Periksa</a>';
+                    // }
                 }else {
                     $status_periksa = '<label class="label label-warning"><i class="fa fa-times-circle"></i> Belum Bayar</label>';
                 }
@@ -337,6 +338,10 @@ class Pl_pelayanan_mcu extends MX_Controller {
                     if( $no_kunjungan_exist->num_rows() == 0 ){
                         $no_kunjungan_tujuan = $this->daftar_pasien->daftar_kunjungan($title,$no_registrasi,$no_mr,$_POST['dokter'][$key],$key,'010901','');
                     }else{
+                        // upudate dokter pemeriksa
+                        $this->db->where('no_kunjungan', $no_kunjungan_exist->row()->no_kunjungan)->update('tc_kunjungan', ['kode_dokter' => $_POST['dokter'][$key]]);
+                        $this->db->trans_commit();
+                        // echo $this->db->last_query();exit;
                         $no_kunjungan_tujuan = $no_kunjungan_exist->row()->no_kunjungan;
                     }
                 }else{

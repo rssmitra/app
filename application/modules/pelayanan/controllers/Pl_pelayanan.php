@@ -220,8 +220,9 @@ class Pl_pelayanan extends MX_Controller {
         
         // txt_call_patient
         $data['txt_call_patient'] = $this->master->get_txt_call_patient(['jk' => $data['value']->jen_kelamin, 'title' => $data['value']->title, 'nama_pasien' => $data['value']->nama_pasien, 'poli' => $data['value']->short_name]);
-
-        // echo '<pre>'; print_r($data);die;
+        $anatomi_tagging = isset($data['riwayat']->anatomi_tagging)?json_decode($data['riwayat']->anatomi_tagging):'';
+        $data['anatomi_tagging'] = $anatomi_tagging;
+        // echo '<pre>'; print_r($anatomi_tagging);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -1511,7 +1512,7 @@ class Pl_pelayanan extends MX_Controller {
 
     public function processSaveDiagnosaDr(){
 
-        
+        // echo "<pre>"; print_r($_POST);die;
         // form validation
         $this->form_validation->set_rules('noMrHidden', 'Pasien', 'trim|required', array('required' => 'No MR Pasien Tidak ditemukan!') );
 
@@ -1559,6 +1560,8 @@ class Pl_pelayanan extends MX_Controller {
             // diagnosa sekunder
             $diagnosa_sekunder = strip_tags($_POST['konten_diagnosa_sekunder']);
 
+            // anatomi tagging
+            $anatomi_exist = '';
             /*insert log diagnosa pasien th_riwayat pasien*/
             $riwayat_diagnosa = array(
                 'no_registrasi' => $this->form_validation->set_value('no_registrasi'),
@@ -1586,6 +1589,8 @@ class Pl_pelayanan extends MX_Controller {
                 'text_icd9' => $this->input->post('pl_procedure'),
                 'tgl_kontrol_kembali' => $this->input->post('pl_tgl_kontrol_kembali'),
                 'catatan_kontrol_kembali' => $this->input->post('pl_catatan_kontrol'),
+                'anatomi_tagging' => ($this->input->post('anatomi_tagging')) ? $this->input->post('anatomi_tagging') : '',
+                'anatomi_img' => ($this->input->post('anatomi')) ? $this->input->post('anatomi') : 0,
             );
 
             if($this->input->post('kode_riwayat')==0){
@@ -2420,7 +2425,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['no_kunjungan'] = $no_kunjungan;
         $data['data_pasien'] = $this->Pl_pelayanan->get_detail_kunjungan($no_kunjungan);
         
-        // echo '<pre>';print_r($data);die;
+        // echo '<pre>';print_r($result);die;
         $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data, true);
         echo json_encode(array('html' => $html));
 
@@ -2463,6 +2468,7 @@ class Pl_pelayanan extends MX_Controller {
                 'no_kunjungan' => $this->regex->_genRegex($this->input->post('no_kunjungan'),'RGXQSL'), 
                 'no_registrasi' => $this->regex->_genRegex($this->input->post('no_registrasi'),'RGXQSL'), 
                 'kode_ri' => $this->regex->_genRegex($this->input->post('kode_ri'),'RGXINT'), 
+                'anatomi_tagging' => $this->regex->_genRegex($this->input->post('anatomi_tagging'),'RGXQSL'), 
                 'value_form' => $value_form, 
             );
 
@@ -2479,8 +2485,7 @@ class Pl_pelayanan extends MX_Controller {
                 $this->db->where('cppt_id', $cppt_id)->update('th_cppt', $dataexc);
                 $newId = $cppt_id;
             }
-            // udpate image tagging
-            $this->db->where(['no_kunjungan' => $this->input->post('no_kunjungan'), 'cppt_id' => 0])->update('th_img_tagging', ['cppt_id' => $newId]);
+            
                         
             if ($this->db->trans_status() === FALSE)
             {

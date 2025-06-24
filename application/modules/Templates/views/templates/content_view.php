@@ -1193,26 +1193,26 @@
         //   }
         // );
 
-        minutessetInterval = setInterval(function () {
-            minutesCount += 1
-            minutes.innerHTML = minutesCount
-        }, 60000)
+        // minutessetInterval = setInterval(function () {
+        //     minutesCount += 1
+        //     minutes.innerHTML = minutesCount
+        // }, 60000)
 
-        secondsetInterval = setInterval(function () {
-            secondCount += 1
-            if(secondCount > 59){
-                secondCount = 1
-            }
-            second.innerHTML = secondCount
-        }, 1000)
+        // secondsetInterval = setInterval(function () {
+        //     secondCount += 1
+        //     if(secondCount > 59){
+        //         secondCount = 1
+        //     }
+        //     second.innerHTML = secondCount
+        // }, 1000)
 
-        centiSecondsetInterval = setInterval(function () {
-            centiSecondCount += 1
-            if(centiSecondCount > 99){
-                centiSecondCount = 1
-            }
-            centiSecond.innerHTML = centiSecondCount
-        }, 10)
+        // centiSecondsetInterval = setInterval(function () {
+        //     centiSecondCount += 1
+        //     if(centiSecondCount > 99){
+        //         centiSecondCount = 1
+        //     }
+        //     centiSecond.innerHTML = centiSecondCount
+        // }, 10)
     }
 
     function pauseStopWatch(){

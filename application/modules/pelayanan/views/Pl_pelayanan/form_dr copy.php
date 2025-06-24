@@ -1,6 +1,11 @@
+
+
 <script src="<?php echo base_url().'assets/js/custom/als_datatable.js'?>"></script>
+
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
+
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
+
 <script src="<?php echo base_url()?>assets/js/typeahead.js"></script>
 
 <script>
@@ -29,7 +34,6 @@ $(document).ready(function(){
 
     /*when page load find pasien by mr*/
     find_pasien_by_keyword('<?php echo $no_mr?>');
-    get_riwayat_medis('<?php echo $no_mr?>');
 
     if($('#kode_perusahaan_val').val() == 120){
       show_icare();
@@ -254,7 +258,7 @@ $(document).ready(function(){
 
     }); 
 
-    $('#tgl_kunjungan, #status_pelayanan').change(function(){ 
+    $('#tgl_kunjungan').change(function(){ 
       getDataAntrianPasien();
     })
 
@@ -321,7 +325,7 @@ function find_pasien_by_keyword(keyword){
 
             $('#jk').text(obj.jen_kelamin);
 
-            $('#umur').text(umur_pasien+' Thn');
+            $('#umur').text(umur_pasien+' Tahun');
 
             $('#tgl_lhr').text(getFormattedDate(obj.tgl_lhr));
             
@@ -423,7 +427,7 @@ function get_riwayat_pm(no_mr){
 function getDataAntrianPasien(){
 
   // getTotalBilling();
-  $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val()+'&tgl='+$('#tgl_kunjungan').val()+'&status='+$('#status_pelayanan').val()+'', '', function (data) {   
+  $.getJSON("pelayanan/Pl_pelayanan/get_data_antrian_pasien?bag=" + $('#kode_bagian_val').val()+'&tgl='+$('#tgl_kunjungan').val()+'', '', function (data) {   
     $('#no_mr_selected option').remove();                
     $('#list_antrian_existing tbody').remove();     
     $('<option value="">-Pilih Pasien-</option>').appendTo($('#no_mr_selected'));  
@@ -432,17 +436,8 @@ function getDataAntrianPasien(){
     var no = 0;
     $.each(data, function (i, o) {   
         var selected = (o.no_mr==$('#noMrHidden').val())?'selected':'';
-        if(o.kode_perusahaan == 0){
-          var penjamin = '<span style="border-radius: 4px; background:rgb(6, 65, 104); padding: 2px; color: white">Umum</span>' ;
-        }else{
-          var penjamin = (o.kode_perusahaan==120)? '<span style="border-radius: 4px; background:rgb(105, 17, 1); padding: 2px; color: white">'+o.nama_perusahaan+'</span>' : '<span style="border-radius: 4px; background:rgb(4, 78, 14); padding: 2px; color: white">'+o.nama_perusahaan+'</span>' ;
-
-        }
-        if(o.kode_perusahaan == 0){
-          var txt_color_penjamin = 'background: #6fb3e0' ;
-        }else{
-          var txt_color_penjamin = (o.kode_perusahaan==120) ? 'background: #f998878c' : 'background:rgb(6, 85, 36)' ;
-        }
+        var penjamin = (o.kode_perusahaan==120)? '<span style="background: #f998878c; padding: 3px">('+o.nama_perusahaan+')</span>' : '<span style="background: #6fb3e0; padding: 3px">(UMUM)</span>' ;
+        var txt_color_penjamin = (o.kode_perusahaan==120) ? 'background: #f998878c' : 'background: #6fb3e0' ;
 
         var style = ( o.status_batal == 1 ) ? 'style="background-color: red; color: white"' : (o.tgl_keluar_poli == null) ? '' : 'style="background-color: lightgrey; color: black"' ;
         
@@ -455,41 +450,18 @@ function getDataAntrianPasien(){
             html_cancel += '<td style="background-color: #f9000059">'+o.nama_pasien+'</td>';
             html_cancel += '<td align="center"><i class="fa fa-times-circle red bigger-120"></i></td>';
             html_cancel += '</tr>';
-
-            html_cancel = '';
-            html_cancel += '<tr style="cursor: pointer;" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
-            // html_cancel += '<td align="center">'+o.no_antrian+'</td>';
-            html_cancel += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px">No. '+o.no_antrian+'</b><br><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: red; font-weight: bold; padding: 2px">Batal</span> </small><div style="width: 100%; padding: 2px; background: #edf3f7"><small>Tgl. Kunjungan '+o.format_tgl_poli+'</small></div></td>';
-            // html_cancel += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
-            html_cancel += '</tr>';
-            html_cancel += '<tr>';
-            html_cancel += '<td colspan="3">&nbsp;</td>';
-            html_cancel += '</tr>';
-
           $(html_cancel).appendTo($('#list_antrian_existing'));
         
         }else{
 
           if(o.tgl_keluar_poli == null){
 
-            // html_existing = '';
-            // html_existing += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
-            // html_existing += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
-            // html_existing += '<td >'+o.nama_pasien+'</td>';
-            // html_existing += '<td align="center"><i class="ace-icon glyphicon glyphicon-time black bigger-120"></i></td>';
-            // html_existing += '</tr>';
-
             html_existing = '';
-            html_existing += '<tr style="cursor: pointer;" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
-            // html_existing += '<td align="center">'+o.no_antrian+'</td>';
-            html_existing += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px">No. '+o.no_antrian+'</b><br><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: darkorange; font-weight: bold; padding: 2px">Belum dilayani</span> </small><div style="width: 100%; padding: 2px; background: #edf3f7"><small>Tgl. Kunjungan '+o.format_tgl_poli+'</small></div></td>';
-            // html_existing += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
+            html_existing += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_existing += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_existing += '<td >'+o.nama_pasien+'</td>';
+            html_existing += '<td align="center"><i class="ace-icon glyphicon glyphicon-time black bigger-120"></i></td>';
             html_existing += '</tr>';
-            html_existing += '<tr>';
-            html_existing += '<td colspan="3">&nbsp;</td>';
-            html_existing += '</tr>';
-
-
             $(html_existing).appendTo($('#list_antrian_existing'));
 
           }
@@ -497,13 +469,10 @@ function getDataAntrianPasien(){
           if(o.tgl_keluar_poli != null){
 
             html_done = '';
-            html_done += '<tr style="cursor: pointer;" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
-            // html_done += '<td align="center">'+o.no_antrian+'</td>';
-            html_done += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px">No. '+o.no_antrian+'</b><br><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: green; font-weight: bold; padding: 2px">Selesai</span> </small><div style="width: 100%; padding: 2px; background: #edf3f7"><small>Tgl. Kunjungan '+o.format_tgl_poli+'</small></div></td>';
-            // html_done += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
-            html_done += '</tr>';
-            html_done += '<tr>';
-            html_done += '<td colspan="3">&nbsp;</td>';
+            html_done += '<tr style="cursor: pointer" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
+            html_done += '<td style="'+txt_color_penjamin+'" align="center">'+o.no_antrian+'</td>';
+            html_done += '<td style="background-color: #00800059">'+o.nama_pasien+'</td>';
+            html_done += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
             html_done += '</tr>';
             $(html_done).appendTo($('#list_antrian_existing'));
 
@@ -604,10 +573,11 @@ function show_icare() {
     
 }
 
+
+
 </script>
 
 <style type="text/css">
-
   .pagination{
     margin: 0px 0px !important;
   }
@@ -660,11 +630,9 @@ function show_icare() {
   }
 
   .user-info{
-    max-width: 500px !important;
-    width: 100% !important;
+    max-width: 200px !important;
   }
 
-/*
   .itemdiv > .body > .text {
     padding-left: 0px;
     margin-top: 5px;
@@ -681,7 +649,7 @@ function show_icare() {
   .itemdiv > .body > .name {
       display: block;
       color: black !important;
-  } */
+  }
 
 
 </style>
@@ -689,46 +657,34 @@ function show_icare() {
 <div class="row">
   <div class="page-header">  
       <ul class="nav ace-nav">
-        <li class="light-blue" style="color: black; min-width: 260px; min-height: 60px; display: flex; align-items: center; padding: 5px 10px; background: #edf3f7">
-          <div style="width:48px; height:48px; border-radius:50%; overflow:hidden; background:#e0e0e0; margin-right:12px; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
-            <img src="<?php echo base_url().'uploaded/images/photo_karyawan/'.$value->kode_dokter.'.png'; ?>" alt="Foto Dokter" style="width:48px; height:48px; object-fit:cover;">
-          </div>
-          <div style="display:flex; flex-direction:column; justify-content:center;">
-            <span class="user-info" style="line-height:1.2; color: black">
-              <b><?php echo isset($nama_dokter)?''.$nama_dokter.'':''?></b><br>
-              <small><?php echo ucwords($nama_bagian); ?></small>
-            </span>
-          </div>
-        </li>
-
-        <!-- <li class="light-blue" style="background-color: lightgrey !important;color: black">
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
           <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
             <span class="user-info">
               <b><?php echo isset($nama_dokter)?''.$nama_dokter.'':''?></b>
               <small><?php echo ucwords($nama_bagian); ?></small></span>
           </a>
-        </li> -->
+        </li>
 
-        <li class="light-blue" style="background-color: #428bca !important;color: white">
-          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: #428bca !important;color: white">
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
             <span class="user-info">
-              <b><span style="font-size: 18px;" id="total_antrian"></span></b>
+              <b><span style="font-size: 14px;" id="total_antrian"></span></b>
               <small>Total Pasien</small></span>
           </a>
         </li>
 
-        <li class="light-blue" style="background-color: #87b87f  !important;color: white">
-          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: #87b87f  !important;color: white">
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
             <span class="user-info">
-              <b><span style="font-size: 18px;" id="sudah_dilayani"></span> </b>
+              <b><span style="font-size: 14px;" id="sudah_dilayani"></span> </b>
               <small>Telah Dilayani</small></span>
           </a>
         </li>
 
-        <li class="light-blue" style="background-color: #f4ae11 !important;color: white">
-          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: #f4ae11 !important;color: white">
+        <li class="light-blue" style="background-color: lightgrey !important;color: black">
+          <a data-toggle="dropdown" href="#" class="dropdown-toggle" style="background-color: lightgrey !important; color: black">
             <span class="user-info">
-              <b><span style="font-size: 18px;" id="pasien_batal"></span></b>
+              <b><span style="font-size: 14px;" id="pasien_batal"></span></b>
               <small>Pasien Batal</small></span>
           </a>
         </li>
@@ -760,34 +716,42 @@ function show_icare() {
     
       <!-- profile Pasien -->
       <div class="col-md-2">
-        <div id="antrian_tabs">
-          <div class="center">
-            <label for="" class="pull-left" style="font-weight: bold; text-align: left !important"> Tanggal kunjungan :</label><br>
-            <div class="input-group pull-left">
-                <input name="tgl_kunjungan" id="tgl_kunjungan" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo isset($this->cache->get('cache')['tgl'])?$this->cache->get('cache')['tgl']:date('Y-m-d')?>">
-                <span class="input-group-addon">
-                  <i class="ace-icon fa fa-calendar"></i>
-                </span>
-            </div>
-            <br>
-            <label for="" class="pull-left" style="font-weight: bold; text-align: left !important; padding-top: 5px"> Status Pelayanan :</label><br>
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'status_pelayanan', 'is_active' => 'Y')), 'Tab' , 'status_pelayanan', 'status_pelayanan', 'form-control', '', '');?>
+        <div class="box box-primary" id='box_identity'>
+            <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
-            <span class="pull-left" style="padding-top: 5px"><b>Cari pasien :</b></span> <br>
-            <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup='searchTable()'>
-          </div>
-          <br>
-          <!-- <div class="center">
-              <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
-              <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
-          </div> -->
-          <div class="" style="max-height: 1000px; overflow: scroll">
-            <!-- <div id="list_antrian_existing"></div> -->
-            <table id="list_antrian_existing" class="">
-              <tbody></tbody>
-            </table>
-          </div>
+            <h3 class="profile-username text-center"><div id="no_mr">No. MR</div></h3>
 
+            <ul class="list-group list-group-unbordered">
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Nama Pasien: </small><div id="nama_pasien"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">NIK: </small><div id="no_ktp"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Tgl Lahir: </small><div id="tgl_lhr"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Umur: </small><div id="umur"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Alamat: </small><div id="alamat"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">No Telp/HP: </small>
+                  <div id="hp"></div>
+                  <div id="no_telp"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Penjamin: </small><div id="kode_perusahaan"></div>
+                </li>
+                <li class="list-group-item">
+                  <small style="color: blue; font-weight: bold; font-size: 11px">Catatan: </small><div id="catatan_pasien"></div>
+                </li>
+            </ul>
+
+            <a href="#" id="btn_search_pasien" class="btn btn-inverse btn-block">Tampilkan Pasien</a>
+          <!-- /.box-body -->
         </div>
       </div>
 
@@ -820,19 +784,13 @@ function show_icare() {
             <td rowspan="2" width="100px" class="center" style="background-color: darkturquoise;">
             <span style="font-size: 11px">No. Antrian </span> <br> <span style="font-size: 30px; font-weight: bold"><?php echo isset($value->no_antrian)?$value->no_antrian:0?></span>
             </td>
-            <th width="250px">Pasien</th>
-            <th width="100px">Tanggal Daftar</th>
+            <th>Tanggal Daftar</th>
             <th>Dokter</th>
             <th>Penjamin</th>
             <?php if($value->flag_ri==1) : echo '<th>Status Pasien</th>'; endif;?>
-            <th width="150px">Diagnosa Rujukan</th>
+            <th>Diagnosa Rujukan</th>
           </tr>
           <tr>
-            <td>
-              <a href="#" onclick="show_modal('registration/reg_pasien/form_modal/<?php echo isset($value->no_mr)?$value->no_mr:'';?>', 'DATA PASIEN')"><span style="font-size: 14px; font-weight: bold" id="no_mr"><?php echo isset($value->no_mr)?$value->no_mr:'';?></span></a><br>
-              <span id="nama_pasien"><?php echo isset($value->nama_pasien)?$value->nama_pasien:'';?> (<?php echo isset($value->jen_kelamin)?$value->jen_kelamin:'';?>)</span><br>
-              Tgl Lhr. <span id="tgl_lhr"><?php echo isset($value->tgl_lhr)?$this->tanggal->formatDate($value->tgl_lhr):''?></span> (<span id="umur"><?php echo isset($value->umur)?$value->umur:'';?></span>)
-            </td>
             <td><?php echo isset($value->tgl_jam_poli)?$this->tanggal->formatDateTime($value->tgl_jam_poli):''?></td>
             <td><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:'';?></td>
             <td><?php echo isset($value->nama_kelompok)?ucwords($value->nama_kelompok).' ':'';?>
@@ -846,13 +804,13 @@ function show_icare() {
           <div class="alert alert-danger"><strong>Peringatan!</strong> Pasien kurang dari 30 hari kunjungan Pelayanan BPJS.</div>
         <?php endif;?>
 
-        <!-- <?php if(isset($value) AND $value->status_batal==1) :?>
+        <?php if(isset($value) AND $value->status_batal==1) :?>
           <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-nope-2">Batal Berobat</span>
         <?php else: ?>
           <?php if(isset($value) AND $value->status_periksa!=NULL) :?>
           <span style="margin-left:-19%;position:absolute;transform: rotate(-25deg) !important; margin-top: 21%" class="stamp is-approved">Selesai</span>
           <?php endif;?>            
-        <?php endif;?>             -->
+        <?php endif;?>            
 
         <!-- hidden form -->
         <input type="hidden" class="form-control" name="kode_dokter_bpjs" id="kode_dokter_bpjs" value="<?php echo isset($kode_dokter_bpjs)?$kode_dokter_bpjs:''?>">
@@ -939,6 +897,12 @@ function show_icare() {
       <div class="col-md-3">
         <div class="tabbable" id="">
           <ul class="nav nav-tabs " id="myTab">
+              <li class="active">
+                  <a data-toggle="tab" href="#antrian_tabs" title="Antrian Pasien">
+                      <i class="blue ace-icon fa fa-users bigger-150"></i>
+                  </a>
+              </li>
+
               <li>
                   <a data-toggle="tab" href="#rm_tabs" onclick="get_riwayat_medis('<?php echo $no_mr?>')" title="Riwayat Medis">
                       <i class="red ace-icon fa fa-book bigger-150"></i>
@@ -953,10 +917,36 @@ function show_icare() {
           </ul>
 
           <div class="tab-content">
+              <div id="antrian_tabs" class="tab-pane fade in active">
+                <div class="center">
+                  <label for="" class="pull-left" style="font-weight: bold; text-align: left !important"> Tanggal kunjungan :</label><br>
+                  <div class="input-group pull-left">
+                      <input name="tgl_kunjungan" id="tgl_kunjungan" placeholder="<?php echo date('Y-m-d')?>" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo isset($this->cache->get('cache')['tgl'])?$this->cache->get('cache')['tgl']:date('Y-m-d')?>">
+                      <span class="input-group-addon">
+                        <i class="ace-icon fa fa-calendar"></i>
+                      </span>
+                  </div>
+                  <span class="pull-left" style="padding-top: 10px"><b>Cari pasien :</b></span> <br>
+                  <input type="text" id="seacrh_ul_li" value="" placeholder="Masukan keyword..." class="form-control" onkeyup='searchTable()'>
+                </div>
+                <br>
+                <div class="center">
+                    <label for="" class="label label-danger" style="background-color: #f998878c; color: black !important"> BPJS Kesehatan</label>
+                    <label for="" class="label label-info" style="background-color: #6fb3e0; color: black !important"> Umum & Asuransi</label>
+                </div>
+                <div class=""  >
+                  <!-- <div id="list_antrian_existing"></div> -->
+                  <table id="list_antrian_existing" class="table">
+                    <tbody></tbody>
+                  </table>
+                </div>
 
-              <div id="rm_tabs" class="tab-pane fade in active">
+              </div>
+
+              <div id="rm_tabs" class="tab-pane fade">
                   <div id="cppt_data_on_tabs"></div>
               </div>
+
 
           </div>
         </div>

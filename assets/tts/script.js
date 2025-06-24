@@ -2,7 +2,7 @@ const synth = window.speechSynthesis;
 
 const inputForm = document.querySelector("form");
 const inputTxt = document.querySelector(".txt");
-const voiceSelect = document.querySelector("select");
+const voiceSelect = document.getElementById("tts_language");
 
 const pitch = document.querySelector("#pitch");
 const pitchValue = document.querySelector(".pitch-value");

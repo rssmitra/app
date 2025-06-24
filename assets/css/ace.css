@@ -8418,7 +8418,7 @@ fieldset[disabled] .btn-white.btn-grey.active {
   transform: scale(1.08, 1.08);
 }
 .dropdown-colorpicker > .dropdown-menu > li > .colorpick-btn.selected:after {
-  content: "\f00c";
+  content: "\2714\0020";
   display: inline-block;
   /*font-family: FontAwesome;*/
   font : 11px/normal tahoma,verdana;
@@ -9246,7 +9246,7 @@ input[type=checkbox].ace.ace-switch.ace-switch-3 + .lbl::after {
   font : 11px/normal tahoma,verdana;
   font-size: 12px;
   line-height: 22px;
-  content: "\f00d";
+  content: "\2715\0020";
   top: -1px;
   text-shadow: none;
   padding: 0;
@@ -9255,7 +9255,7 @@ input[type=checkbox].ace.ace-switch.ace-switch-3 + .lbl::after {
   letter-spacing: 0;
 }
 input[type=checkbox].ace.ace-switch.ace-switch-3:checked + .lbl::after {
-  content: "\f00c";
+  content: "\2714\0020";
   color: #8AB2C9;
   text-shadow: none;
 }
@@ -9326,7 +9326,7 @@ input[type=checkbox].ace.ace-switch.ace-switch-6 + .lbl {
 input[type=checkbox].ace.ace-switch.ace-switch-6 + .lbl::before {
   /*font-family: FontAwesome;*/
   font : 11px/normal tahoma,verdana;
-  content: "\f00d";
+  content: "\2715\0020";
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   box-shadow: none;
   border-width: 0;
@@ -9362,11 +9362,11 @@ input[type=checkbox].ace.ace-switch.ace-switch-6 + .lbl::after {
   transition: left 0.2s ease;
 }
 input[type=checkbox].ace.ace-switch.ace-switch-6:checked + .lbl::before {
-  content: "\f00c";
+  content: "\2714\0020";
   text-indent: 6px;
   color: #FFF;
   border-color: #b7d3e5;
-  background-color: #ff893c;
+  background-color: #21a709;
 }
 input[type=checkbox].ace.ace-switch.ace-switch-6:checked + .lbl::after {
   left: 32px;
@@ -14734,7 +14734,7 @@ div.ColVis_collectionBackground {
   background: none;
 }
 .chosen-container-single .chosen-single abbr:after {
-  content: "\f00d";
+  content: "\2715\0020";
   display: inline-block;
   color: #888;
   /*font-family: FontAwesome;*/
@@ -14798,7 +14798,7 @@ div.ColVis_collectionBackground {
   background: none;
 }
 .chosen-container-multi .chosen-choices li.search-choice .search-choice-close:before {
-  content: "\f00d";
+  content: "\2715\0020";
   display: inline-block;
   color: #888;
   /*font-family: FontAwesome;*/
@@ -14984,7 +14984,7 @@ div.ColVis_collectionBackground {
   font : 11px/normal tahoma,verdana;
   font-size: 12px;
   display: inline;
-  content: "\f00d";
+  content: "\2715\0020";
   color: #888;
   position: relative;
   top: -1px;
@@ -15412,7 +15412,7 @@ div.ColVis_collectionBackground {
   line-height: 30px;
   text-align: center;
   border-radius: 100%;
-  content: "\f00c";
+  content: "\2714\0020";
   background-color: #FFF;
   z-index: 3;
   /*font-family: FontAwesome;*/
@@ -15777,7 +15777,7 @@ div.ColVis_collectionBackground {
   /*font-family: FontAwesome;*/
   font : 11px/normal tahoma,verdana;
   font-size: 16px;
-  content: "\f00d";
+  content: "\2715\0020";
 }
 .gritter-info .gritter-close {
   color: #FFA500;
@@ -16689,7 +16689,7 @@ img.editable-click:hover {
 .ui-jqdialog .ui-dialog-titlebar-close:before,
 .ui-dialog .ui-jqdialog-titlebar-close:before,
 .ui-jqdialog .ui-jqdialog-titlebar-close:before {
-  content: "\f00d";
+  content: "\2715\0020";
   display: inline;
   /*font-family: FontAwesome;*/
   font : 11px/normal tahoma,verdana;
@@ -17277,13 +17277,13 @@ th[aria-selected=true] .ui-jqgrid-sortable {
   color: #69AA46;
 }
 .ui-jqgrid .ui-icon-disk:before {
-  content: "\f00c";
+  content: "\2714\0020";
 }
 .ui-jqgrid .ui-icon-cancel {
   color: #DD5A43;
 }
 .ui-jqgrid .ui-icon-cancel:before {
-  content: "\f00d";
+  content: "\2715\0020";
 }
 .ui-jqdialog-content,
 .ui-jqdialog .ui-jqdialog-content {
@@ -17914,7 +17914,7 @@ th[aria-selected=true] .ui-jqgrid-sortable {
   font : 11px/normal tahoma,verdana;
   font-size: 30px;
   color: #DB6262;
-  content: "\f00d";
+  content: "\2715\0020";
 }
 .dropzone .dz-preview .dz-success-mark:before,
 .dropzone-previews .dz-preview .dz-success-mark:before {
@@ -17922,7 +17922,7 @@ th[aria-selected=true] .ui-jqgrid-sortable {
   font : 11px/normal tahoma,verdana;
   font-size: 30px;
   color: #6DA552;
-  content: "\f00c";
+  content: "\2714\0020";
 }
 .dropzone a.dz-remove,
 .dropzone-previews a.dz-remove {

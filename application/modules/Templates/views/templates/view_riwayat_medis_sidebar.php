@@ -93,7 +93,7 @@ hr {
     /* transform-origin: 188px 241px 0; */
 }
 .content-acordion {
-    max-height: 500px;
+    max-height: 1000px;
     overflow: scroll;
 }
 

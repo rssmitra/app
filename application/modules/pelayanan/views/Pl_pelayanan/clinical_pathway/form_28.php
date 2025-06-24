@@ -26,12 +26,139 @@
 
   });
 
-  function refreshIframe() {
-      var ifr = document.getElementsByName('ifr_img_tagging')[0];
-      ifr.src = ifr.src;
-  }
+</script>
+<script>
+    var tagData = [];
+    var currentTagPos = {x:0, y:0};
+
+    $('#anatomi-img').click(function(e){
+    var offset = $(this).offset();
+    var x = e.pageX - offset.left;
+    var y = e.pageY - offset.top;
+    currentTagPos = {x: x, y: y};
+    $('#tag-input-modal').css({
+        left: offset.left + x + 10,
+        top: offset.top + y - 10
+    }).show();
+    $('#tag-label-input').val('').focus();
+    });
+
+    $('#tag-save-btn').click(function(){
+    var label = $('#tag-label-input').val();
+    if(label.trim() === '') return;
+    var img = document.getElementById('anatomi-img');
+    var side = (currentTagPos.x < img.width/2) ? 'left' : 'right';
+    var tag = {x: currentTagPos.x, y: currentTagPos.y, label: label, side: side};
+    tagData.push(tag);
+    updateTagDataInput();
+    renderAllTagMarkers();
+    $('#tag-input-modal').hide();
+    });
+    $('#tag-cancel-btn').click(function(){
+    $('#tag-input-modal').hide();
+    });
+
+    function addTagMarker(tag, idx) {
+    var marker = $('<div class="anatomi-marker" title="'+tag.label+'"></div>');
+    marker.css({
+        position: 'absolute',
+        left: tag.x-7,
+        top: tag.y-7,
+        width:'14px',height:'14px',
+        background: '#007bff',
+        border:'2px solid #fff',
+        borderRadius: '50%',
+        cursor: 'pointer',
+        zIndex: 10
+    });
+    marker.click(function(e){
+        e.stopPropagation();
+        if(confirm('Hapus tag ini?')) {
+        tagData.splice(idx,1);
+        updateTagDataInput();
+        renderAllTagMarkers();
+        }
+    });
+    $('#anatomi-tagging-container').append(marker);
+    }
+
+    function renderAllTagMarkers() {
+    $('#anatomi-tagging-container .anatomi-marker').remove();
+    $('#anatomi-svg-lines').empty();
+    $('#anatomi-tag-list-left').empty();
+    $('#anatomi-tag-list-right').empty();
+    var data = $('#anatomi_tagging_28').val();
+    if(!data) return;
+    try {
+        var arr = JSON.parse(data);
+        if(Array.isArray(arr)) {
+        var img = document.getElementById('anatomi-img');
+        var imgW = img.width;
+        arr.forEach(function(tag, idx) {
+            addTagMarker(tag, idx);
+            var tagId = 'tag-label-'+idx;
+            var tagDiv = $('<div id="'+tagId+'" class="anatomi-tag-label" style="margin-bottom:8px;cursor:pointer;background:#f5f5f5;padding:4px 8px;border-radius:4px;position:relative;">'+tag.label+'</div>');
+            tagDiv.click(function(){
+            if(confirm('Hapus tag ini?')) {
+                tagData.splice(idx,1);
+                updateTagDataInput();
+                renderAllTagMarkers();
+            }
+            });
+            var markerX = tag.x;
+            var markerY = tag.y;
+            var svg = document.getElementById('anatomi-svg-lines');
+            var labelPanelY = markerY+10;
+            var labelPanelX, lineX2;
+            if(tag.side === 'left') {
+            $('#anatomi-tag-list-left').append(tagDiv);
+            labelPanelX = -10;
+            lineX2 = 0;
+            tagDiv.css({position:'absolute',right:'0',top:markerY+'px',textAlign:'right'});
+            } else {
+            $('#anatomi-tag-list-right').append(tagDiv);
+            labelPanelX = imgW + 10;
+            lineX2 = imgW + 10;
+            tagDiv.css({position:'absolute',left:'0',top:markerY+'px',textAlign:'left'});
+            }
+            var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+            line.setAttribute('x1', markerX);
+            line.setAttribute('y1', markerY);
+            line.setAttribute('x2', lineX2);
+            line.setAttribute('y2', labelPanelY);
+            line.setAttribute('stroke', '#007bff');
+            line.setAttribute('stroke-width', '2');
+            svg.appendChild(line);
+        });
+        tagData = arr;
+        }
+    } catch(e) {}
+    }
+
+    function updateTagDataInput() {
+    $('#anatomi_tagging_28').val(JSON.stringify(tagData));
+    $('#anatomi_tagging_28_exist').val(JSON.stringify(tagData));
+    }
+
+    $(document).ready(function(){
+    var exist = $('#anatomi_tagging_28_exist').val();
+    if (exist) {
+        $('#anatomi_tagging_28').val(exist);
+    }
+    renderAllTagMarkers();
+    });
 
 </script>
+
+<!-- hidden form -->
+
+<style>
+/* #anatomi-tagging-container { min-height: 550px; } */
+.anatomi-marker { position:absolute; transition:0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+#tag-input-modal { box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+#anatomi-tag-list-left, #anatomi-tag-list-right { position:relative; min-height:350px; }
+.anatomi-tag-label { font-size:11px; }
+</style>
 
 <?php echo $header; ?>
 <hr>
@@ -43,10 +170,33 @@
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 
-<div id="html_pengkajian_dr">
+
+<div class="col-md-12">
+    <center><span style="font-weight: bold;">ANATOMI TUBUH MANUSIA</span></center>
+    <div style="display:flex;justify-content:center;align-items:flex-start;">
+        <div id="anatomi-tag-list-left" style="min-width:180px;max-width:250px;position:relative;"></div>
+        <div id="anatomi-tagging-container" style="position:relative; display:inline-block; border:1px solid #ccc; background:#fff;">
+            <img src="<?php echo base_url('assets/img-tagging/images/anatomi_0.png')?>" id="anatomi-img" style="width:400px; height:auto; display:block;">
+            <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
+        </div>
+        <div id="anatomi-tag-list-right" style="min-width:180px;max-width:250px;position:relative;"></div>
+        </div>
+        <input type="hidden" name="form_28[anatomi_tagging_28]" id="anatomi_tagging_28" value="">
+        <textarea name="form_28[anatomi_tagging_28_exist]" id="anatomi_tagging_28_exist" style="width: 100% !important; display: none"></textarea>
+
+
+    <!-- Modal input tag -->
+    <div id="tag-input-modal" style="display:none; z-index:10; background:#fff; border:1px solid #007bff; padding:8px; border-radius:4px;">
+        <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:80%; display:inline-block;">
+        <button type="button" id="tag-save-btn" class="btn btn-xs btn-primary">Simpan</button>
+        <button type="button" id="tag-cancel-btn" class="btn btn-xs btn-default">Batal</button>
+    </div>
+</div>
+
+<!-- <div id="html_pengkajian_dr">
   <button onclick="refreshIframe();" type="button" class="btn btn-xs btn-primary">Reload Image</button>
   <iframe name="ifr_img_tagging" id="ifr_img_tagging" src="<?php echo base_url()?>pelayanan/Pl_pelayanan_igd/form_img_tagging/<?php echo $no_kunjungan?>?cppt_id=<?php echo isset($cppt_id)?$cppt_id:''?>" frameborder="0" style="overflow:hidden;height:700px !important;width:100%" height="100%" width="100%"></iframe>
-</div>
+</div> -->
 <hr>
 <table class="table">
   <tr>
