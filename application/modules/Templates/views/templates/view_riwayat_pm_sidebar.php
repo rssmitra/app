@@ -93,7 +93,7 @@
             }
           ?>
         </td>
-        <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_f->no_registrasi?>/<?php echo $row_f->no_kunjungan?>/<?php echo $row_f->kode_penunjang?>/<?php echo $row_f->kode_bagian_tujuan?>?format=html&flag_mcu=<?php echo $row_p->flag_mcu?>', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
+        <td align="center"><a href="#" class="btn btn-xs btn-warning" onclick="show_modal_medium_return_json('registration/reg_pasien/form_modal_view_hasil_pm/<?php echo $row_f->no_registrasi?>/<?php echo $row_f->no_kunjungan?>/<?php echo $row_f->kode_penunjang?>/<?php echo $row_f->kode_bagian_tujuan?>?format=html&flag_mcu=<?php echo $row_f->flag_mcu?>', 'Hasil Penunjang Medis')"><i class="fa fa-eye"></i></a></td>
       </tr>
       <?php endif; endforeach; ?>
     </tbody>

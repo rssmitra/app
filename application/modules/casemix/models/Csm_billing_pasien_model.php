@@ -105,7 +105,7 @@ class Csm_billing_pasien_model extends CI_Model {
 
     /*get data transaksi*/
     public function getTransData($no_registrasi, $status_nk=''){
-        $this->db->select('tc_trans_pelayanan.*,mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_klas.nama_klas');
+        $this->db->select('kode_trans_pelayanan, kode_tc_trans_kasir, no_kunjungan, no_registrasi, tc_trans_pelayanan.no_mr, nama_pasien_layan, kode_kelompok, kode_perusahaan, tgl_transaksi, tc_trans_pelayanan.jenis_tindakan, nama_tindakan, bill_rs, bill_dr1, bill_dr2, kode_dokter1, kode_dokter2, kode_dokter3, jumlah, kode_barang, kode_master_tarif_detail, kd_tr_resep, kode_trans_far, kode_tarif, tc_trans_pelayanan.kode_bagian, kode_bagian_asal, tc_trans_pelayanan.kode_klas, no_kamar, no_bed, kode_penunjang, kode_profit, status_selesai, status_nk, kamar_tindakan, biaya_lain, obat, alkes, alat_rs, adm, bhp, pendapatan_rs, kode_mcu, flag_mcu, flag_perawat, tgl_input, tindakan_luar, mt_jenis_tindakan.jenis_tindakan as nama_jenis_tindakan, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai as nama_dokter, mt_klas.nama_klas');
         $this->db->from('tc_trans_pelayanan');
         $this->db->join('mt_jenis_tindakan','mt_jenis_tindakan.kode_jenis_tindakan=tc_trans_pelayanan.jenis_tindakan','left');
         $this->db->join('mt_bagian','mt_bagian.kode_bagian=tc_trans_pelayanan.kode_bagian','left');

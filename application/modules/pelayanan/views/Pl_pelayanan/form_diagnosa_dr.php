@@ -24,12 +24,12 @@
 
     });
 
-    var minutesCount = 0; 
-    var secondCount = 0; 
-    var centiSecondCount = 0;
-    var minutes = document.getElementById("minutes");
-    var second = document.getElementById("second");
-    var centiSecond = document.getElementById("centiSecond");
+    // var minutesCount = 0; 
+    // var secondCount = 0; 
+    // var centiSecondCount = 0;
+    // var minutes = document.getElementById("minutes");
+    // var second = document.getElementById("second");
+    // var centiSecond = document.getElementById("centiSecond");
 
     $('#pl_diagnosa').typeahead({
         source: function (query, result) {
@@ -440,17 +440,190 @@
 
 </script>
 <script src="<?php echo base_url()?>assets/tts/script.js"></script>
+
+
+<script>
+    
+    function changeAnatomiImage(select) {
+        var val = select.value;
+        var imgSrc = '';
+        switch(val) {
+            case '0':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_0.png')?>';
+                break;
+            case '1':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_1.png')?>';
+                break;
+            case '2':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_2.png')?>';
+                break;
+            case '3':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_3.png')?>';
+                break;
+            // Tambahkan case sesuai value anatomi dan file gambar
+            default:
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_0.png')?>';
+        }
+        document.getElementById('anatomi-img').src = imgSrc;
+        // Reset tagging jika ingin kosongkan saat ganti gambar
+        tagData = [];
+        updateTagDataInput();
+        renderAllTagMarkers();
+    }
+
+    var tagData = [];
+    var currentTagPos = {x:0, y:0};
+
+    $('#anatomi-img').click(function(e){
+        var offset = $(this).offset();
+        var x = e.pageX - offset.left;
+        var y = e.pageY - offset.top;
+        currentTagPos = {x: x, y: y};
+        $('#tag-input-modal').css({
+            left: offset.left + x + 10,
+            top: offset.top + y - 10
+        }).show();
+        $('#tag-label-input').val('').focus();
+    });
+
+    $( "#tag-label-input" )    
+      .keypress(function(event) {        
+        var keycode =(event.keyCode?event.keyCode:event.which);         
+        if(keycode ==13){          
+          event.preventDefault();         
+          if($(this).valid()){            
+            $('#tag-save-btn').click();            
+          }          
+          return false;                 
+        }    
+    });
+
+
+    $('#tag-save-btn').click(function(){
+        var label = $('#tag-label-input').val();
+        if(label.trim() === '') return;
+        var img = document.getElementById('anatomi-img');
+        var side = (currentTagPos.x < img.width/2) ? 'left' : 'right';
+        var tag = {x: currentTagPos.x, y: currentTagPos.y, label: label, side: side};
+        tagData.push(tag);
+        updateTagDataInput();
+        renderAllTagMarkers();
+        $('#tag-input-modal').hide();
+        });
+        $('#tag-cancel-btn').click(function(){
+        $('#tag-input-modal').hide();
+    });
+
+    function addTagMarker(tag, idx) {
+    var marker = $('<div class="anatomi-marker" title="'+tag.label+'"></div>');
+    marker.css({
+        position: 'absolute',
+        left: tag.x-7,
+        top: tag.y-7,
+        width:'14px',height:'14px',
+        background: '#007bff',
+        border:'2px solid #fff',
+        borderRadius: '50%',
+        cursor: 'pointer',
+        zIndex: 10
+    });
+    marker.click(function(e){
+        e.stopPropagation();
+        if(confirm('Hapus tag ini?')) {
+        tagData.splice(idx,1);
+        updateTagDataInput();
+        renderAllTagMarkers();
+        }
+    });
+    $('#anatomi-tagging-container').append(marker);
+    }
+
+    function renderAllTagMarkers() {
+    $('#anatomi-tagging-container .anatomi-marker').remove();
+    $('#anatomi-svg-lines').empty();
+    $('#anatomi-tag-list-left').empty();
+    $('#anatomi-tag-list-right').empty();
+    var data = $('#anatomi_tagging').val();
+    if(!data) return;
+    try {
+        var arr = JSON.parse(data);
+        if(Array.isArray(arr)) {
+        var img = document.getElementById('anatomi-img');
+        var imgW = img.width;
+        arr.forEach(function(tag, idx) {
+            addTagMarker(tag, idx);
+            var tagId = 'tag-label-'+idx;
+            var tagDiv = $('<div id="'+tagId+'" class="anatomi-tag-label" style="margin-bottom:8px;cursor:pointer;background:#f5f5f5;padding:4px 8px;border-radius:4px;position:relative;">'+tag.label+'</div>');
+            tagDiv.click(function(){
+            if(confirm('Hapus tag ini?')) {
+                tagData.splice(idx,1);
+                updateTagDataInput();
+                renderAllTagMarkers();
+            }
+            });
+            var markerX = tag.x;
+            var markerY = tag.y;
+            var svg = document.getElementById('anatomi-svg-lines');
+            var labelPanelY = markerY+10;
+            var labelPanelX, lineX2;
+            if(tag.side === 'left') {
+            $('#anatomi-tag-list-left').append(tagDiv);
+            labelPanelX = -10;
+            lineX2 = 0;
+            tagDiv.css({position:'absolute',right:'0',top:markerY+'px',textAlign:'right'});
+            } else {
+            $('#anatomi-tag-list-right').append(tagDiv);
+            labelPanelX = imgW + 10;
+            lineX2 = imgW + 10;
+            tagDiv.css({position:'absolute',left:'0',top:markerY+'px',textAlign:'left'});
+            }
+            var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+            line.setAttribute('x1', markerX);
+            line.setAttribute('y1', markerY);
+            line.setAttribute('x2', lineX2);
+            line.setAttribute('y2', labelPanelY);
+            line.setAttribute('stroke', '#007bff');
+            line.setAttribute('stroke-width', '2');
+            svg.appendChild(line);
+        });
+        tagData = arr;
+        }
+    } catch(e) {}
+    }
+
+    function updateTagDataInput() {
+    $('#anatomi_tagging').val(JSON.stringify(tagData));
+    }
+
+    $(document).ready(function(){
+    var exist = $('#anatomi_tagging_exist').val();
+    if (exist) {
+        $('#anatomi_tagging').val(exist);
+    }
+    renderAllTagMarkers();
+    });
+
+</script>
+
 <!-- hidden form -->
+
+<style>
+/* #anatomi-tagging-container { min-height: 550px; } */
+.anatomi-marker { position:absolute; transition:0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+#tag-input-modal { box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+#anatomi-tag-list-left, #anatomi-tag-list-right { position:relative; min-height:350px; }
+.anatomi-tag-label { font-size:11px; }
+</style>
 
 <audio id="container" autoplay=""></audio>
 
-<span>Waktu Pelayanan</span><br>
+<!-- <span>Waktu Pelayanan</span><br>
 <div class="pull-left" style="font-size: 20px; font-weight: bold"> 
     <span id="minutes">00</span> : <span id="second">00</span> : <span id="centiSecond">00</span>
-</div>
+</div> -->
 <div class="pull-right">
-    <button type="button" class="btn btn-xs btn-inverse" id="startCount" onclick="startStopWatch()">Start <i class="fa fa-play"></i></button>
-    <button type="button" class="btn btn-xs btn-inverse" id="pauseCount" onclick="pauseStopWatch()">Stop <i class="fa fa-pause"></i></button>
+    <!-- <button type="button" class="btn btn-xs btn-inverse" id="startCount" onclick="startStopWatch()">Start <i class="fa fa-play"></i></button>
+    <button type="button" class="btn btn-xs btn-inverse" id="pauseCount" onclick="pauseStopWatch()">Stop <i class="fa fa-pause"></i></button> -->
     <button type="button" class="btn btn-xs btn-success" onclick="speak()" id="callPatientPoli">Call <i class="fa fa-bullhorn bigger-120"></i></button>
 </div>
 <br>
@@ -486,6 +659,7 @@
         </form>
     </div>
 </div>
+
 <div class="col-md-4 no-padding" style="margin-top: 14px">
     <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
     <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : $this->tanggal->formatDateTimeFormDmy($value->tgl_jam_poli)?></span> <br>
@@ -494,7 +668,7 @@
     <p style="text-align: right; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
 </div>
 
-<span style="font-weight: bold; font-style: italic; color: blue">(Subjective)</span>
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Subjective)</span>
 <div style="margin-top: 6px">
     <label for="form-field-8"> <b>Anamnesa / Keluhan Pasien</b> <span style="color:red">* </span> <br><span style="font-size: 11px; font-style: italic">(Masukan anamnesa minimal 8 karakter)</span> </label>
     <textarea class="form-control" name="pl_anamnesa" style="height: 100px !important" id="pl_anamnesa"><?php echo isset($riwayat->anamnesa)?$this->master->br2nl($riwayat->anamnesa):''?></textarea>
@@ -502,7 +676,7 @@
 </div>
 <br>
 
-<span style="font-weight: bold; font-style: italic; color: blue">(Objective)</span>
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Objective)</span>
 
 <div style="margin-top: 6px">
     <label for="form-field-8"> <i><b>Vital Sign</b></i><br><span style="font-size: 11px; font-style: italic">(Masukan tanda-tanda vital)</span></label>
@@ -539,9 +713,45 @@
     <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
     <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
     
-</div>
+    <label for="form-field-8"> <b>Status Lokalis</b><br><span style="font-size: 11px; font-style: italic">(Mohon di<i>tagging</i> status lokalis pada anatomi pasien)</span></label>
+    <!-- status lokalis -->
+     <div class="form-group">
+        <label class="control-label col-sm-2">Anatomi</label>
+        <div class="col-md-4">
+            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), ($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
+        </div>
+    </div>  
+    <br>
+    
+    <div class="col-md-12">
+        <center><span style="font-weight: bold;">ANATOMI TUBUH MANUSIA</span></center>
+        <div style="display:flex;justify-content:center;align-items:flex-start;">
+            <div id="anatomi-tag-list-left" style="min-width:180px;max-width:250px;position:relative;"></div>
+            <div id="anatomi-tagging-container" style="position:relative; display:inline-block; border:1px solid #ccc; background:#fff;">
+                <?php
+                    $img_anatomi = ($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
+                ?>
+                <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px; height:auto; display:block;">
+                <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
+            </div>
+            <div id="anatomi-tag-list-right" style="min-width:180px;max-width:250px;position:relative;"></div>
+            </div>
+            <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
+            <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width: 100% !important; display: none"><?php echo $riwayat->anatomi_tagging?></textarea>
 
-<span style="font-weight: bold; font-style: italic; color: blue">(Assesment)</span>
+
+        <!-- Modal input tag -->
+        <div id="tag-input-modal" style="display:none; z-index:10; background:#fff; border:1px solid #007bff; padding:8px; border-radius:4px;">
+            <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:80%; display:inline-block;">
+            <button type="button" id="tag-save-btn" class="btn btn-xs btn-primary">Simpan</button>
+            <button type="button" id="tag-cancel-btn" class="btn btn-xs btn-default">Batal</button>
+        </div>
+    </div>
+
+</div>
+<br>
+
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px; ">(Assesment)</span>
 
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Diagnosa Primer(ICD10)</b> <span style="color:red">* </span><br><i style="font-size: 11px">(Wajib mengisi menggunakan ICD10)</i></label>
@@ -582,7 +792,7 @@
 </div>
 
 <br>
-<span style="font-weight: bold; font-style: italic; color: blue">(Planning)</span>
+<span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Planning)</span>
 <div style="margin-top: 6px">
     <label for="form-field-8"><b>Rencana Asuhan / Anjuran Dokter</b><br><i style="font-size: 11px">(Mohon dijelaskan Rencana Asuhan Pasien dan Tindak Lanjutnya)</i></label>
     <textarea name="pl_pengobatan" id="pl_pengobatan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pengobatan)?$this->master->br2nl($riwayat->pengobatan):''?></textarea>
