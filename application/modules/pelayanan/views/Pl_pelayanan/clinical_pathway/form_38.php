@@ -85,7 +85,11 @@ jQuery(function($) {
 });
 
 </script>
-
+<style>
+    table{
+        border : 1px solid #d7d7d7 !important;
+    }
+</style>
 <?php echo $header; ?>
 <hr>
 <br>
