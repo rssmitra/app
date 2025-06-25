@@ -727,7 +727,7 @@
         <center><span style="font-weight: bold;">ANATOMI TUBUH MANUSIA</span></center>
         <div style="display:flex;justify-content:center;align-items:flex-start;">
             <div id="anatomi-tag-list-left" style="min-width:180px;max-width:250px;position:relative;"></div>
-            <div id="anatomi-tagging-container" style="position:relative; display:inline-block; border:1px solid #ccc; background:#fff;">
+            <div id="anatomi-tagging-container" style="position:relative; display:inline-block; background:#fff;">
                 <?php
                     $img_anatomi = ($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
                 ?>
