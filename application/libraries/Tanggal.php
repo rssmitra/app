@@ -822,6 +822,7 @@ final class Tanggal {
         $mins      = $diff->h + ($diff->days * $hours_in_day * $minutes_in_hour) . " minutest";
         $seconds   = $diff->h + ($diff->days * $hours_in_day * $minutes_in_hour * $seconds_in_mins) . " seconds";
 
+        $age = 0;
         if($diff->y > 1){
             $age = $diff->y . " <sup>th</sup> " . $diff->m . " <sup>bln</sup> ";
         }elseif ($mth > 1) {

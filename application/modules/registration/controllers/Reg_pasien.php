@@ -885,6 +885,7 @@ class Reg_pasien extends MX_Controller {
             'no_mr' => $no_mr,
             'pasien' => $this->Reg_pasien->get_by_mr($no_mr),
             );
+            // echo "<pre>"; print_r($data);die;
         $this->load->view('Reg_pasien/barcode_pasien', $data);
 
     }

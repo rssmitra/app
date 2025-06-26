@@ -84,6 +84,7 @@ class Po_monitoring extends MX_Controller {
         foreach ($arr_barang as $key => $value) {
             $count_brg[$key] = array_sum($arr_barang[$key]);
         }
+        
         arsort($count_brg);
         $brg_terbanyak = array_search(max($count_brg), $count_brg);
         $ttl_brg_terbanyak = $count_brg[$brg_terbanyak];
