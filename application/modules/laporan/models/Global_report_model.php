@@ -946,7 +946,7 @@ class Global_report_model extends CI_Model {
 				jumlah_kirim_decimal AS jml_diterima');
 
 			if($_POST['search_by'] == 'usulan'){
-				$this->db->select('h.satuan_besar, h.rasio as content');
+				$this->db->select('h.satuan_besar,c.satuan_kecil, h.rasio as content');
 				$this->db->from('tc_permohonan_det h');
 				$this->db->join('tc_permohonan e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
 				$this->db->join('tc_po_det b', 'b.id_tc_permohonan_det= h.id_tc_permohonan_det', 'LEFT');
