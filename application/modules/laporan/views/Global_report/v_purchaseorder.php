@@ -63,8 +63,9 @@
               <th>Jumlah Order</th>
               <th>Jumlah Diterima</td>
               <th>Barang Belum Diterima</td>
-              <th>Harga Satuan Netto</th>
-              <th>Jumlah Harga Netto</td>
+              <th>Harga Satuan</th>
+              <th>Diskon</th>
+              <th>Jumlah Harga</td>
               <th>Tgl Penerimaan</td>
               <th>No Faktur</td>
               
@@ -74,7 +75,11 @@
             <?php $no  = 0; 
             $ttlharganetto = [];
             foreach($result['data'] as $row_data){
-            $subttlharganetto = $row_data->jml_diterima * $row_data->harga_satuan_netto;
+
+            $discount = ($row_data->discount > 0) ? ($row_data->harga_satuan * $row_data->discount/100) * $row_data->jml_order: 0;
+            $jumlah_harga = ($row_data->jml_order * $row_data->harga_satuan) - $discount;
+
+            $subttlharganetto = $jumlah_harga;
             $ttlharganetto[] = $subttlharganetto;
               $no++; 
               ?>
@@ -98,7 +103,8 @@
                 <td align="center"><?php echo $row_data->jml_order ?></td>
                 <td align="center"><?php echo $row_data->jml_diterima ?></td>
                 <td align="center"><?php $selisih = $row_data->jml_order - $row_data->jml_diterima; echo $selisih; ?></td>
-                <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $row_data->harga_satuan_netto : number_format($row_data->harga_satuan_netto) ?></td>
+                <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $row_data->harga_satuan : number_format($row_data->harga_satuan) ?></td>
+                <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $discount : number_format($discount) ?></td>
                 <td align="right"><?php echo ($_POST['submit'] == 'excel') ? $subttlharganetto : number_format($subttlharganetto) ?></td>
                 <td><?php echo $row_data->tgl_penerimaan ?></td>
                 <td><?php echo $row_data->no_faktur ?></td>
