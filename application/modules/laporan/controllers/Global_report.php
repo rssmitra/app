@@ -1180,7 +1180,6 @@ class Global_report extends MX_Controller {
     public function show_data_po(){
 
         $query_data = $this->Global_report->get_data();
-        // echo '<pre>'; print_r($_POST);die;
         $data = array(
             'flag' => $_POST['flag'],
             'title' => $_POST['title'],
@@ -1189,6 +1188,7 @@ class Global_report extends MX_Controller {
             'tahun' => $_POST['year'],
             'result' => $query_data,
         );
+        // echo '<pre>'; print_r($query_data);die;
 
         
             $this->load->view('Global_report/v_purchaseorder', $data);

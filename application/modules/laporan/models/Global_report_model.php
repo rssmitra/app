@@ -937,7 +937,7 @@ class Global_report_model extends CI_Model {
 			h.satuan_besar,
 			b.harga_satuan_netto,
 			b.jumlah_harga_netto,
-			c.nama_brg,
+			c.nama_brg, 
 			d.namasupplier, i.nama_pabrik,
 			e.kode_permohonan,
 			f.tgl_penerimaan,
@@ -946,6 +946,7 @@ class Global_report_model extends CI_Model {
 				jumlah_kirim_decimal AS jml_diterima');
 
 			if($_POST['search_by'] == 'usulan'){
+				$this->db->select('h.satuan_besar, h.rasio as content');
 				$this->db->from('tc_permohonan_det h');
 				$this->db->join('tc_permohonan e', 'e.id_tc_permohonan = h.id_tc_permohonan', 'LEFT');
 				$this->db->join('tc_po_det b', 'b.id_tc_permohonan_det= h.id_tc_permohonan_det', 'LEFT');
@@ -961,6 +962,7 @@ class Global_report_model extends CI_Model {
 			}
 
 			if($_POST['search_by'] == 'penerbitan_po'){
+				$this->db->select('c.satuan_besar, c.satuan_kecil, b.content');
 				$this->db->from('tc_po_det b');
 				$this->db->join('tc_po a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
 				$this->db->join('tc_permohonan_det h', 'b.id_tc_permohonan_det= h.id_tc_permohonan_det', 'LEFT');
@@ -976,6 +978,7 @@ class Global_report_model extends CI_Model {
 			}
 
 			if($_POST['search_by'] == 'penerimaan'){
+				$this->db->select('c.satuan_besar, c.satuan_kecil, g.content');
 				$this->db->from('tc_penerimaan_barang_detail g ');
 				$this->db->join('tc_po_det b', 'b.id_tc_po_det= g.id_tc_po_det', 'LEFT');
 				$this->db->join('tc_po a', 'b.id_tc_po= a.id_tc_po', 'LEFT');
