@@ -675,6 +675,7 @@ class Templates extends MX_Controller {
         // $nama_dr = (!empty($data->reg_data->nama_pegawai))?$data->reg_data->nama_pegawai:$get_dokter->nama_pegawai;
         $nama_dr = $data->nama_ppa;
 
+        $html .= '<div id="header_form">';
         $html .= '<table border="0" style="padding: 10px"><tr><td style="width: 50%">';
         $html .= '<table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
@@ -713,6 +714,7 @@ class Templates extends MX_Controller {
         $html .= '</td>';
         $html .= '</tr>';
         $html .= '</table>';
+        $html .= '</div>';
         // $html .= '<hr>';
 
         return $html;
@@ -1845,6 +1847,7 @@ class Templates extends MX_Controller {
         $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="220px" style="">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
         
         $html = '';
+        $html .= '<div id="footer_form">';
         $html .= '<table width="100%" border="0" cellspacing="0" cellpadding="0" border="0">
                     <tr> 
                         <td width="50%" align="center" valign="top">
@@ -1860,6 +1863,7 @@ class Templates extends MX_Controller {
                         </td>   
                     </tr>
                 </table>';
+        $html .= '</div>';
         return $html;
     }
 

@@ -47,7 +47,8 @@ window.onload = generateBarcode;
 <?php if($count != '') : for($i=0;$i<$count;$i++) : ?>
 <div style="width: 265px; height: 90px; padding: 5px; border: 0px solid;" id="print_area">
   <div style="align: left; margin-top: -5px; float: left">
-    <b><span style="float: left"><?php $str = array('TN.', 'Tn.', 'NY.', 'Ny.', 'AN.', 'An.','NN.','Nn.','By.'); echo str_replace($str, '' ,$pasien->nama_pasien) ?> <?php echo $pasien->title?> (<?php echo $pasien->jen_kelamin?>) </b></span>
+    <!-- <b><span style="float: left"><?php $str = array('TN.', 'Tn.', 'NY.', 'Ny.', 'AN.', 'An.','NN.','Nn.','By.'); echo str_replace($str, '' ,$pasien->nama_pasien) ?> <?php echo $pasien->title?> (<?php echo $pasien->jen_kelamin?>) </b></span> -->
+    <b><span style="float: left"><?php $str = array('By.'); echo str_replace($str, '' ,$pasien->nama_pasien) ?> <?php echo $pasien->title?> (<?php echo $pasien->jen_kelamin?>) </b></span>
     <br>
     <span style="float: left; margin-top:-5px">BOD. <?php echo $this->tanggal->formatDateShort($pasien->tgl_lhr)?>   
     (<?php echo $this->tanggal->AgeWithYearMonth($pasien->tgl_lhr)?>)</span>

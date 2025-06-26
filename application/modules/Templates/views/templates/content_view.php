@@ -661,8 +661,6 @@
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/chosen.css" />
     <script src="<?php echo base_url()?>assets/js/chosen.jquery.js"></script>
 
-    
-
     <script type="text/javascript">
       
       $('.format_number').number( true, 2 );
