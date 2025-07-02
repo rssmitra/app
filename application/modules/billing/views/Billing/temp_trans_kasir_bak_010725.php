@@ -150,39 +150,19 @@ function load_billing_data(){
 
 
 
-function rollback_kasir(no_reg) {
-    // Ambil tanggal transaksi dari input
-    var tglTransaksi = $('#tgl_trans_kasir').val();
-    var today = new Date();
-    var yyyy = today.getFullYear();
-    var mm = today.getMonth() + 1; // tanpa leading zero
-    var dd = today.getDate(); // tanpa leading zero
-    var todayStr = yyyy + '-' + mm + '-' + dd;
-    console.log(tglTransaksi);
-    console.log(todayStr);
-    if (tglTransaksi !== todayStr) {
-        // Tanggal transaksi berbeda dengan hari ini, tampilkan modal verifikasi
-        $('#modal-approval-kepala-keuangan .modal-title').text('Verifikasi Rollback Transaksi');
-        $('#password_user').val('');
-        $('#kode_verifikasi').val('');
-        // Simpan callback rollback
-        $('#modal-approval-kepala-keuangan').data('rollback-no-reg', no_reg);
-        $('#modal-approval-kepala-keuangan').data('rollback-mode', true);
-        $('#modal-approval-kepala-keuangan').modal('show');
-    } else {
-        if (confirm('Are you sure?')) {
-            $.ajax({
-                url: "billing/Billing/rollback_kasir",
-                data: { no_reg: no_reg },
-                dataType: "json",
-                type: "POST",
-                success: function (response) {
-                    /*sukses*/
-                    load_billing_data();
-                    $('#btn_lanjutkan_pembayaran').attr('disabled', false);
-                }
-            });
-        }
+function rollback_kasir(no_reg){
+    if(confirm('Are you sure?')){
+        $.ajax({
+          url: "billing/Billing/rollback_kasir",
+          data: {no_reg : no_reg},            
+          dataType: "json",
+          type: "POST",
+          success: function (response) {
+            /*sukses*/
+            load_billing_data();  
+            $('#btn_lanjutkan_pembayaran').attr('disabled', false);
+          }
+        })
     }
 }
 
@@ -285,11 +265,6 @@ function submitApprovalKepalaKeuangan() {
         $('#kode_verifikasi').focus();
         return;
     }
-
-    // Cek apakah ini mode rollback
-    var isRollback = $('#modal-approval-kepala-keuangan').data('rollback-mode') === true;
-    var rollbackNoReg = $('#modal-approval-kepala-keuangan').data('rollback-no-reg');
-
     $.ajax({
         url: 'billing/Billing/verify_code',
         type: 'POST',
@@ -302,25 +277,8 @@ function submitApprovalKepalaKeuangan() {
         success: function(response) {
             if (response.status === 200) {
                 $('#modal-approval-kepala-keuangan').modal('hide');
-                if (isRollback && rollbackNoReg) {
-                    // Jalankan rollback setelah verifikasi sukses
-                    $.ajax({
-                        url: "billing/Billing/rollback_kasir",
-                        data: { no_reg: rollbackNoReg },
-                        dataType: "json",
-                        type: "POST",
-                        success: function (response) {
-                            load_billing_data();
-                            $('#btn_lanjutkan_pembayaran').attr('disabled', false);
-                        }
-                    });
-                    // Reset mode rollback
-                    $('#modal-approval-kepala-keuangan').data('rollback-mode', false);
-                    $('#modal-approval-kepala-keuangan').data('rollback-no-reg', '');
-                } else {
-                    openKuitansiPopup('billing/Billing/print_kuitansi?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val());
-                    $('#btn-cetak-kuitansi').attr('onclick','cetak_kuitansi('+response.counter+')');
-                }
+                openKuitansiPopup('billing/Billing/print_kuitansi?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val());
+                $('#btn-cetak-kuitansi').attr('onclick','cetak_kuitansi('+response.counter+')');
             } else {
                 alert(response.message || 'Password atau kode verifikasi salah!');
             }
@@ -510,7 +468,7 @@ $('#modal-approval-kepala-keuangan').on('hidden.bs.modal', function () {
                 </li>
                 <li>
                     <?php
-                        $is_print_kuitansi = isset($data->kasir_data[0]->is_print_kuitansi)?$data->kasir_data[0]->is_print_kuitansi:0;
+                        $is_print_kuitansi = ($data->kasir_data[0]->is_print_kuitansi)?$data->kasir_data[0]->is_print_kuitansi:0;
                         echo '<a href="#" onclick="cetak_kuitansi('.$is_print_kuitansi.');" data-id="0" id="btn-cetak-kuitansi"> Cetak Kuitansi</a>';
                     ?>
                 </li>
@@ -538,7 +496,7 @@ $('#modal-approval-kepala-keuangan').on('hidden.bs.modal', function () {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalApprovalLabel">Approval Manager</h5>
+        <h5 class="modal-title" id="modalApprovalLabel">Approval Ka Subbag Keuangan</h5>
       </div>
       
         <div class="modal-body">

@@ -5,7 +5,7 @@ class Adm_lhk_model extends CI_Model {
 
 	var $table = 'tc_trans_kasir';
 	var $column = array('a.no_registrasi', 'b.no_sep');
-	var $select = 'no_kuitansi, seri_kuitansi, a.no_registrasi, a.kode_tc_trans_kasir, tgl_jam as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as FLOAT) as tunai, CAST(debet as FLOAT) as debet, CAST(kredit as FLOAT) as kredit, CAST(nk_perusahaan as FLOAT) as piutang, CAST(bill as FLOAT)as billing, CAST(nk_karyawan as FLOAT)as nk_karyawan,CAST(potongan as FLOAT)as potongan, nama_pegawai, d.fullname';
+	var $select = 'no_kuitansi, seri_kuitansi, a.no_registrasi, a.kode_tc_trans_kasir, tgl_jam as tgl_transaksi, nama_pasien, pembayar, CAST(tunai as FLOAT) as tunai, CAST(debet as FLOAT) as debet, CAST(kredit as FLOAT) as kredit, CAST(nk_perusahaan as FLOAT) as piutang, CAST(bill as FLOAT)as billing, CAST(nk_karyawan as FLOAT)as nk_karyawan,CAST(potongan as FLOAT)as potongan, nama_pegawai, d.fullname, a.no_mr';
 	var $order = array('a.no_registrasi' => 'DESC');
 
 	public function __construct()

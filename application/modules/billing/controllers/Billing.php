@@ -572,11 +572,10 @@ class Billing extends MX_Controller {
     }
 
     public function print_kuitansi(){
- 
+        
         $result = json_decode($this->Billing->getDetailData($_GET['no_registrasi']));
         $tipe = $this->Billing->cek_tipe_pasien($_GET['no_registrasi']);
         $grouping = $this->Billing->groupingTransaksiByDate($result->trans_data);
-
         $data = array(
             'title' => 'Billing Pasien Sementara',
             'breadcrumbs' => $this->breadcrumbs->show(),
@@ -586,7 +585,8 @@ class Billing extends MX_Controller {
             'kunjungan' => $grouping,
             'total_payment' => $_GET['payment'],
         );
-        // echo '<pre>';print_r($grouping);die;
+
+        // echo '<pre>';print_r($result);die;
         //$this->load->view('Billing/cetakKuitansi_view', $data, false);
         //$data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
         $this->load->view('Billing/cetakKuitansi_view', $data, false);
@@ -1232,7 +1232,8 @@ class Billing extends MX_Controller {
         return array('redirect' => 'billing/Billing/print_preview?no_registrasi='.$no_registrasi.'');
     }
 
-    public function create_jurnal($trans, $akunting, $id_ak_tc_transaksi){
+    public function create_jurnal($trans, $akunting, $id_ak_tc_transaksi)
+    {
         
         $kode_tc_trans_kasir = $trans['kode_tc_trans_kasir'];
                 
@@ -1437,6 +1438,34 @@ class Billing extends MX_Controller {
 
     }
 
+    public function verify_code() {
+        $this->load->library('bcrypt');
+        $code = $this->input->post('kode_verifikasi');
+        $password = $this->input->post('password');
+        $no_registrasi = $this->input->post('no_registrasi');
+        // Cek ke tabel user_approval_modul
+        $this->db->where('function', 'cashier');
+        $this->db->where('secret_code', $code);
+        $this->db->join('tmp_user', 'tmp_user.user_id = user_approval_modul.user_id');
+        $userApproval = $this->db->get('user_approval_modul')->row();
+
+        if (!$userApproval) {
+            echo json_encode(['status' => 401, 'message' => 'Password dan kode verifikasi salah']);
+            exit;
+        }
+
+        if(!$this->bcrypt->check_password($password,$userApproval->password)){
+            echo json_encode(['status' => 401, 'message' => 'Password dan kode verifikasi salah']);
+            exit;
+        }
+
+        // Update status is_print_kuitansi pada tc_trans_kasir
+        if ($no_registrasi) {
+            $query = "UPDATE tc_trans_kasir set is_print_kuitansi = (is_print_kuitansi + 1) WHERE no_registrasi = ".$no_registrasi." ";
+            $this->db->query($query);
+        }
+        echo json_encode(['status' => 200, 'message' => 'Password benar, status print kuitansi diupdate']);
+    }
 
 }
 

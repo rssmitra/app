@@ -108,7 +108,7 @@ $(document).ready(function(){
 
       beforeSend: function() {        
 
-        achtungShowFadeIn();          
+        achtungShowLoader();    
 
       },      
 

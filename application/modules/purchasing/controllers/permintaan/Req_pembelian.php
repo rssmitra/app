@@ -439,7 +439,7 @@ class Req_pembelian extends MX_Controller {
 
     public function process_other()
     {
-        // print_r($_POST);die;
+        print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('nama_brg', 'Nama Barang', 'trim|required');
@@ -454,6 +454,7 @@ class Req_pembelian extends MX_Controller {
         $val->set_rules('link_blibli', 'Blibli', 'trim|xss_clean');
         $val->set_rules('link_bukalapak', 'Bukalapak', 'trim|xss_clean');
         $val->set_rules('link_lainnya', 'Lainnya', 'trim|xss_clean');
+        $val->set_rules('id_tc_permohonan', 'ID Permohonan', 'trim|xss_clean|required');
         
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -470,6 +471,7 @@ class Req_pembelian extends MX_Controller {
 
             $table = 'tc_permohonan_det_log';
             $dataexc = array(
+                'id_tc_permohonan' => $this->regex->_genRegex($val->set_value('id_tc_permohonan'),'RGXINT'),
                 'nama_brg' => $this->regex->_genRegex($val->set_value('nama_brg'),'RGXQSL'),
                 'jml_besar' => $this->regex->_genRegex($val->set_value('qty'),'RGXINT'),
                 'satuan_besar' => $this->regex->_genRegex($val->set_value('satuan'),'RGXQSL'),
@@ -483,6 +485,8 @@ class Req_pembelian extends MX_Controller {
                 'link_bukalapak' => $this->regex->_genRegex($val->set_value('link_bukalapak'),'RGXQSL'),
                 'link_lainnya' => $this->regex->_genRegex($val->set_value('link_lainnya'),'RGXQSL'),
             );
+
+            // print_r($dataexc);die;
             
             if($id==0){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
@@ -493,7 +497,7 @@ class Req_pembelian extends MX_Controller {
             }else{
                 $dataexc['updated_date'] = date('Y-m-d H:i:s');
                 $dataexc['updated_by'] = json_encode(array('user_id' =>$this->regex->_genRegex($this->session->userdata('user')->user_id,'RGXINT'), 'fullname' => $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL')));
-                /*print_r($dataexc);die;*/
+                
                 /*update record*/
                 $this->Req_pembelian->update($table, array('id_tc_permohonan' => $id), $dataexc);
                 $newId = $id;

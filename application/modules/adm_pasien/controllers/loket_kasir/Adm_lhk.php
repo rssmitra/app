@@ -61,69 +61,49 @@ class Adm_lhk extends MX_Controller {
         // echo "<pre>";print_r($list);die;
         $data = array();
         $no = $_POST['start'];
-        if ($_GET['flag'] == 'RJ'){
 
-          // Digunakan untuk menampilkan kuitansi RJ, PB, RK selain RI
-          $kuitansi = 'RI';
+        foreach ($list as $row_list) {
+            $no++;
+            $row = array();
+            $row[] = '<div class="center"></div>';
+            $row[] = $row_list->kode_tc_trans_kasir;
+            $row[] = $row_list->no_registrasi;
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
+            $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
+            $row[] = $row_list->no_mr;
+            $row[] = $row_list->nama_pasien;
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
+            // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
+            $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
+            $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
+            $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'<br>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_transaksi).'</small>';
+            $data[] = $row;
 
-          foreach ($list as $row_list) {
-            if($row_list->billing > 0 && $row_list->seri_kuitansi != $kuitansi) :
-                $no++;
-                $row = array();
-                $row[] = '<div class="center"></div>';
-                $row[] = $row_list->kode_tc_trans_kasir;
-                $row[] = $row_list->no_registrasi;
-                $row[] = '<div class="center">'.$no.'</div>';
-                $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
-                $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
-                $row[] = $row_list->nama_pasien;
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
-                // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
-                $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-                $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-                $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'<br>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_transaksi).'</small>';
-                $data[] = $row;
-            endif;
-              
-          }
-        } else {
-          $kuitansi = 'RI';
+            $arr_tunai[] = $row_list->tunai;
+            $arr_debet[] = $row_list->debet;
+            $arr_nk_perusahaan[] = $row_list->piutang;
+            $arr_nk_karyawan[] = $row_list->nk_karyawan;
+            $arr_total_billing[] = $row_list->billing;
 
-          // hanya menampilkan pasien RI
-          foreach ($list as $row_list) {
-              if($row_list->billing > 0 && $row_list->seri_kuitansi == $kuitansi) :
-                  $no++;
-                  $row = array();
-                  $row[] = '<div class="center"></div>';
-                  $row[] = $row_list->kode_tc_trans_kasir;
-                  $row[] = $row_list->no_registrasi;
-                  $row[] = '<div class="center">'.$no.'</div>';
-                  $row[] = $row_list->seri_kuitansi.' - '.$row_list->no_kuitansi;
-                  $row[] = $this->tanggal->formatDatedmY($row_list->tgl_transaksi);
-                  $row[] = $row_list->nama_pasien;
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->tunai).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->debet).'</div>';
-                  // $row[] = '<div style="text-align: right">'.number_format((int)$row_list->kredit).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->potongan).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->piutang).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->nk_karyawan).'</div>';
-                  $row[] = '<div style="text-align: right">'.number_format((int)$row_list->billing).'</div>';
-                  $petugas = ($row_list->fullname)?$row_list->fullname:$row_list->nama_pegawai.'<small style="color: red; font-weight:bold"> (av)</small>';
-                  $row[] = '<small style="font-size: 10px !important">'.ucfirst($petugas).'</small>';
-                  $data[] = $row;
-              endif;
-                
-          }
+
+            
         }
+        
         
         $output = array(
                         "draw" => $_POST['draw'],
                         "recordsTotal" => $this->Adm_lhk->count_all(),
                         "recordsFiltered" => $this->Adm_lhk->count_filtered(),
+                        "label_tunai" => array_sum($arr_tunai),
+                        "label_debet" => array_sum($arr_debet),
+                        "label_nk_perusahaan" => array_sum($arr_nk_perusahaan),
+                        "label_nk_karyawan" => array_sum($arr_nk_karyawan),
+                        "label_total_billing" => array_sum($arr_total_billing),
                         "data" => $data,
                 );
         //output to json format

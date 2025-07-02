@@ -46,6 +46,21 @@
     <div class="col-sm-12">
         <center><span style="font-size: 20px; font-weight: bold; text-decoration: underline">RESUME MEDIS</span></center>
         <br>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="">*Tanggal Pulang</label>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <input name="tgl_keluar" id="tgl_keluar" placeholder="" class="form-control date-picker" data-date-format="yyyy-mm-dd" type="text" value="<?php echo date('Y-m-d')?>">
+                    <span class="input-group-addon">
+                    <i class="ace-icon fa fa-calendar"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        
         <p><b>DIAGNOSA DAN PEMERIKSAAN </b></p>
 
         <!-- hidden form -->
