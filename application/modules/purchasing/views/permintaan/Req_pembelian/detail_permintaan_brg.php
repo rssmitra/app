@@ -130,13 +130,15 @@
           </div>
         </th>
         <th class="center" width="35px">No</th>
-        <th  width="120px">Kode Barang</th>
+        <th  width="100px">Kode Barang</th>
         <th>Nama Barang</th>
         <th>Spesifikasi</th>
         <th>Est Harga</th>
-        <th class="center" width="80px">Jumlah Permintaan</th>
+        <th>Stok Akhir</th>
+        <th class="center" width="80px">Jml Permintaan</th>
         <th class="center" width="80px">Satuan Besar</th>
         <th class="center" width="80px">Rasio</th>
+        <th class="center" width="80px">Konversi</th>
         <th class="center" width="80px">Keterangan</th>
         <th class="center" width="80px">Aksi</th>
       </tr>
@@ -145,7 +147,10 @@
         <?php 
           $no=0; 
           if( count($dt_detail_brg) > 0 ) : 
-            foreach($dt_detail_brg as $row_dt) : $no++
+            foreach($dt_detail_brg as $row_dt) : $no++;
+            $rasio = isset($row_dt['rasio'])?$row_dt['rasio']:1;
+            $satuan = isset($row_dt['satuan_kecil'])?$row_dt['satuan_kecil']:$row_dt['satuan_besar'];
+            $konversi = $row_dt['jml_besar'] * $rasio; 
         ?>
         <tr id="tr_<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>" style="border-right: 1px solid #8080807a">
           <td class="center" width="35px" style="border-left: 1px solid #8080807a">
@@ -172,6 +177,7 @@
 
           <td><?php echo $row_dt['spesifikasi']?></td>
           <td align="right"><?php echo isset($row_dt['estimasi_harga']) ? number_format($row_dt['estimasi_harga']) : 0?></td>
+          <td align="center"><?php echo isset($row_dt['stok_gudang']) ? number_format($row_dt['stok_gudang']) : 0?> <?php echo isset($row_dt['satuan_kecil']) ? $row_dt['satuan_kecil'] : 0?></td>
 
           <td class="center">
             <input type="text" name="jml_besar['<?php echo isset($row_dt['kode_brg'])?$row_dt['kode_brg']:$row_dt['id']?>']" value="<?php echo number_format($row_dt['jml_besar'], 2)?>" style="text-align: right; width: 80px" id="jml_besar_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)"></td>
@@ -181,9 +187,13 @@
             <input type="hidden" name="satuan_besar['<?php echo $row_dt['satuan_besar']?>']" value="<?php echo $row_dt['satuan_besar']?>" id="satuan_besar_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
           </td>
           <td class="center">
-            <?php echo $row_dt['rasio']?>
+            <?php echo $rasio?>
             <!-- hidden form -->
-            <input type="hidden" name="rasio['<?php echo $row_dt['rasio']?>']" value="<?php echo $row_dt['rasio']?>" id="rasio_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
+            <input type="hidden" name="rasio['<?php echo $rasio?>']" value="<?php echo $rasio?>" id="rasio_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>">
+          </td>
+
+          <td class="center">
+            <?php echo number_format($konversi)?> <?php echo isset($row_dt['satuan_kecil']) ? $row_dt['satuan_kecil'] : 0?>
           </td>
           <td class="center"><input type="text" id="keterangan_<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>" style="width: 150px" value="<?php echo $row_dt['keterangan']?>" onchange="update_row(<?php echo isset($row_dt['id_tc_permohonan_det'])?$row_dt['id_tc_permohonan_det']:$row_dt['id']?>)"></td>
           <td class="center">
