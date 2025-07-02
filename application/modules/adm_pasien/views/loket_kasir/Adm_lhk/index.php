@@ -19,7 +19,7 @@
 
   $(document).ready(function(){
 
-    get_total_billing();
+    // get_total_billing();
    
     oTable = $('#dt_harian_kasir').DataTable({ 
           
@@ -36,6 +36,17 @@
           "url": $('#dt_harian_kasir').attr('base-url')+'?flag='+$('#flag').val()+'',
           "type": "POST"
       },
+      "drawCallback": function (response) { 
+        // Here the response
+          var objData = response.json;
+          $('#label_tunai').text(formatMoney(objData.label_tunai));
+          $('#label_debet').text(formatMoney(objData.label_debet));
+          $('#label_nk_perusahaan').text(formatMoney(objData.label_nk_perusahaan));
+          $('#label_nk_karyawan').text(formatMoney(objData.label_nk_karyawan));
+          $('#label_total_billing').text(formatMoney(objData.label_total_billing));
+
+      },
+
       "columnDefs": [
         { 
           "targets": [ 0 ], 
@@ -195,29 +206,29 @@
       $('#form_search')[0].reset();
   });
 
-  function get_total_billing(){
-      var url_search = $('#form_search').attr('action');
-      $.ajax({
-        url: url_search,
-        type: "post",
-        data: $('#form_search').serialize(),
-        dataType: "json",
-        success: function(response) {
-          console.log(response.data);
-          $.getJSON("adm_pasien/loket_kasir/Adm_lhk/get_resume_kasir?"+response.data, '', function (data) {
-             // code here
-              ( parseInt(data.tunai) >= 0 ) ? $('#label_tunai').text( formatMoney(parseInt(data.tunai)) ) : $('#label_tunai').text( formatMoney(0) );
-              ( parseInt(data.debet) >= 0 ) ? $('#label_debet').text( formatMoney(parseInt(data.debet)) ) : $('#label_debet').text( formatMoney(0) ) ;
-              ( parseInt(data.kredit) >= 0 ) ? $('#label_kredit').text( formatMoney(parseInt(data.kredit)) ) : $('#label_kredit').text( formatMoney(0) ) ;
-              ( parseInt(data.nk_perusahaan) >= 0 ) ? $('#label_nk_perusahaan').text( formatMoney(parseInt(data.nk_perusahaan)) ) : $('#label_nk_perusahaan').text( formatMoney(0) ) ;
-              ( parseInt(data.nk_karyawan) >= 0 ) ? $('#label_nk_karyawan').text( formatMoney(parseInt(data.nk_karyawan)) ) : $('#label_nk_karyawan').text( formatMoney(0) ) ;
-              ( parseInt(data.bill) >= 0 ) ? $('#label_total_billing').text( formatMoney(parseInt(data.bill)) ) : $('#label_total_billing').text( formatMoney(0) ) ;
-          });
-        }
-      });
+  // function get_total_billing(){
+  //     var url_search = $('#form_search').attr('action');
+  //     $.ajax({
+  //       url: url_search,
+  //       type: "post",
+  //       data: $('#form_search').serialize(),
+  //       dataType: "json",
+  //       success: function(response) {
+  //         console.log(response.data);
+  //         $.getJSON("adm_pasien/loket_kasir/Adm_lhk/get_resume_kasir?"+response.data, '', function (data) {
+  //            // code here
+  //             ( parseInt(data.tunai) >= 0 ) ? $('#label_tunai').text( formatMoney(parseInt(data.tunai)) ) : $('#label_tunai').text( formatMoney(0) );
+  //             ( parseInt(data.debet) >= 0 ) ? $('#label_debet').text( formatMoney(parseInt(data.debet)) ) : $('#label_debet').text( formatMoney(0) ) ;
+  //             ( parseInt(data.kredit) >= 0 ) ? $('#label_kredit').text( formatMoney(parseInt(data.kredit)) ) : $('#label_kredit').text( formatMoney(0) ) ;
+  //             ( parseInt(data.nk_perusahaan) >= 0 ) ? $('#label_nk_perusahaan').text( formatMoney(parseInt(data.nk_perusahaan)) ) : $('#label_nk_perusahaan').text( formatMoney(0) ) ;
+  //             ( parseInt(data.nk_karyawan) >= 0 ) ? $('#label_nk_karyawan').text( formatMoney(parseInt(data.nk_karyawan)) ) : $('#label_nk_karyawan').text( formatMoney(0) ) ;
+  //             ( parseInt(data.bill) >= 0 ) ? $('#label_total_billing').text( formatMoney(parseInt(data.bill)) ) : $('#label_total_billing').text( formatMoney(0) ) ;
+  //         });
+  //       }
+  //     });
 
     
-  }
+  // }
 
 
 </script>
@@ -357,6 +368,7 @@
               <th width="40px">No</th>
               <th width="90px">No. Kuitansi</th>
               <th width="100px">Tanggal</th>
+              <th>No MR</th>
               <th>Pasien</th>
               <th width="100px">Tunai</th>
               <th width="100px">Non-Tunai</th>

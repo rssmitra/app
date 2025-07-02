@@ -966,6 +966,7 @@ class Reg_pasien extends MX_Controller {
          $val->set_rules('jenis_instalasi', 'Instalasi', 'trim|required');
          $val->set_rules('keterangan', 'Keterangan', 'trim');
          $val->set_rules('jenis_penjamin', 'Jenis Penjamin', 'trim|required');
+         $val->set_rules('jeniskunjungan', 'Jenis Kunjungan', 'trim|required');
  
          if($_POST['jenis_instalasi']=='BD'){
              $val->set_rules('tanggal_perjanjian_bedah', 'Tanggal Perjanjian', 'trim|required');
@@ -1259,7 +1260,7 @@ class Reg_pasien extends MX_Controller {
             );
 
             // update tc_registrasi
-            // $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter') ) );
+            $this->db->update('tc_registrasi', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter') ) );
 
             // update tc_kunjungan
             $this->db->update('tc_kunjungan', $dataexc, array('no_registrasi' => $val->set_value('no_registrasi_hidden_edit_dokter'), 'no_kunjungan' => $val->set_value('no_kunjungan_hidden_edit_dokter') ) );

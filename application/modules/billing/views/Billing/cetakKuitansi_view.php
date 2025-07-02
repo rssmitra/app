@@ -44,6 +44,11 @@
       display: none;
       }
     }
+
+    .alert-danger{
+      background: #fad7d7;
+      padding: 13px;
+    }
   </style>
 </head>
 
@@ -75,10 +80,28 @@
       <button class="tular" onClick="window.close()">Tutup</button>
       <button class="tular" onClick="print()">Cetak</button>
     </div> -->
-    
+
     <div class="row"> 
       <div class="col-xs-8">
-        <table style="font-size:13px; padding-top: 30mm;" border="0">
+        <table width="100%" border="0" >
+          <tr>
+            <td width="5%"><img src="<?php echo base_url().COMP_ICON?>" alt="" width="70px"></td>
+            <td align="left" width="90%" style="font-size:13px;">
+              <span><b>KUITANSI PEMBAYARAN</b></span><br>
+              <span><?php echo strtoupper(COMP_LONG); ?></span><br>
+              <span><?php echo COMP_ADDRESS_SORT; ?></span>
+            </td>
+          </tr>
+        </table> 
+        <hr>
+
+        <?php
+          if(!isset($data->kasir_data[0])){
+            echo "<div class='alert alert-danger'><b>Pemberitahuan</b><br>Transaksi pasien belum diproses!</div>";
+            exit;
+          }
+        ?>
+        <table style="font-size:13px;" border="0">
           <tr>
             <td style="font-size: 13px; font-weight: bold;">No. Bukti Pembayaran</td>
             <td style="font-size: 13px; font-weight: bold;">: 
@@ -130,9 +153,9 @@
           </tr>
         </table>
         <br>
-        <table width="100%" border="0" cellspacing="0" cellpadding="2" align="center" style="padding: 0 0 0 9mm;"> 
+        <table width="100%" border="0" cellspacing="0" cellpadding="2" align="center" style="padding-top: 20px"> 
           <tr> 			
-            <td width="65%" style="vertical-align: middle;">
+            <td width="65%" style="vertical-align: top;">
             <span style="font-size: 20px; font-weight: bolder; padding: 10px; border-style: solid; border-width: 5px;">Rp <?php echo number_format(array_sum($arr_sum_total)); ?>,-</span> 
 
             </td>
@@ -146,6 +169,7 @@
           </tr>
           <tr>
             <td colspan="2">
+              <span style="font-weight: bold; font-size: 14px">No. <?php echo $data->kasir_data[0]->no_kuitansi ?> <?php echo ($data->kasir_data[0]->is_print_kuitansi > 0) ? "- ".$data->kasir_data[0]->is_print_kuitansi."" : "" ?></span><br><br>
               Kuitansi ini SAH bila ada cap & tanda tangan petugas
             </td>
           </tr>

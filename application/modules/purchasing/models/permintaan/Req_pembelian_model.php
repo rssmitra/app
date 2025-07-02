@@ -182,6 +182,7 @@ class Req_pembelian_model extends CI_Model {
 		$this->db->order_by('nama_brg', 'ASC');
 		$this->db->where('tc_permohonan_det_log.id_tc_permohonan', $id);
 		$dt2 = $this->db->get()->result_array();
+		// echo "<pre>"; print_r($this->db->last_query());die;
 
 		$array_merge = array_merge($dt1, $dt2);
 		return $array_merge;

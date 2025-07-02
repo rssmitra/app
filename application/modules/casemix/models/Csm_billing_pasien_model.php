@@ -227,7 +227,7 @@ class Csm_billing_pasien_model extends CI_Model {
         // print_r($sirs_data);die;
         /*transaction begin*/
         $this->db->trans_begin();
-        // print_r($sirs_data);die;
+        // echo "<pre>";print_r($sirs_data);die;
         $kode_bag = ($sirs_data->reg_data->kode_bagian_keluar!=null)?$sirs_data->reg_data->kode_bagian_keluar:$sirs_data->reg_data->kode_bagian_masuk;
         $nama_bagian = $this->master->get_string_data('nama_bagian', 'mt_bagian', array('kode_bagian' => $kode_bag) );
         /*get tipe RI/RJ*/
@@ -269,7 +269,7 @@ class Csm_billing_pasien_model extends CI_Model {
             foreach ($sirs_data->trans_data as $key_trans_data => $val_trans_data) {
                 //if($val_trans_data->status_nk == 1){
                     /*data billing*/
-                    $subtotal = (double)$val_trans_data->bill_rs + (double)$val_trans_data->bill_dr1 + (double)$val_trans_data->bill_dr2 + (double)$val_trans_data->lain_lain;
+                    $subtotal = (double)$val_trans_data->bill_rs + (double)$val_trans_data->bill_dr1 + (double)$val_trans_data->bill_dr2;
                     $data_billing[] = array(
                         'no_registrasi' => $no_registrasi,
                         'csm_bp_jenis_tindakan' => $val_trans_data->jenis_tindakan,
@@ -284,7 +284,6 @@ class Csm_billing_pasien_model extends CI_Model {
                         'csm_bp_bill_rs' => $val_trans_data->bill_rs,
                         'csm_bp_bill_dr1' => $val_trans_data->bill_dr1,
                         'csm_bp_bill_dr2' => $val_trans_data->bill_dr2,
-                        'csm_bp_bill_lain_lain' => $val_trans_data->lain_lain,
                         'csm_bp_revisi' => 0,
                         );
 
@@ -411,7 +410,7 @@ class Csm_billing_pasien_model extends CI_Model {
     public function resumeBillingRI($data){
         //echo '<pre>';print_r($data);die;
         /*subtotal*/
-        $subtotal = (double)$data->bill_rs + (double)$data->bill_dr1 + (double)$data->bill_dr2 + (double)$data->lain_lain;
+        $subtotal = (double)$data->bill_rs + (double)$data->bill_dr1 + (double)$data->bill_dr2;
         /*kode str tarif*/
         $str_type = substr((string)$data->kode_bagian, 0,2);
         /*fields billing*/

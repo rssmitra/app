@@ -1153,6 +1153,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
         // print_r($_POST);die;
         // form validation
+        $this->form_validation->set_rules('tgl_keluar', 'Tanggal Pulang', 'trim|required');        
         $this->form_validation->set_rules('no_mr', 'Pasien', 'trim|required');        
         $this->form_validation->set_rules('pl_anamnesa', 'Anamnesa', 'trim');        
         $this->form_validation->set_rules('pl_pemeriksaan', 'Pemeriksaan', 'trim');        
@@ -1266,7 +1267,7 @@ class Pl_pelayanan_ri extends MX_Controller {
 
                 /*update ri_tc_rwatinap */
                 $ri_tc_rawatinap = array(
-                    'tgl_keluar' => date('Y-m-d H:i:s'),
+                    'tgl_keluar' => $_POST['tgl_keluar']." ".date('H:i:s'),
                     'status_pulang' => 1,
                     'user_plg' => $this->session->userdata('user')->user_id,
                 );
@@ -1318,7 +1319,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                     'nama_pasien_layan' => $this->input->post('nama_pasien_layan'),
                     'kode_perusahaan' => $this->regex->_genRegex($this->input->post('kode_perusahaan'),'RGXINT'),
                     'kode_kelompok' => $this->regex->_genRegex($this->input->post('kode_kelompok'),'RGXINT'),
-                    'tgl_transaksi' => date('Y-m-d H:i:s'),
+                    'tgl_transaksi' => $_POST['tgl_keluar'],
                     'jenis_tindakan' => 2,
                     'nama_tindakan' => 'Biaya Administrasi',
                     'bill_rs' =>  $biy_adm,
@@ -1336,7 +1337,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 $this->daftar_pasien->pulangkan_pasien($no_kunjungan,$status_keluar);
 
                 /*update kunjungan by no_registrasi */
-                $kunjungan["tgl_keluar"] = date('Y-m-d H:i:s');
+                $kunjungan["tgl_keluar"] = $_POST['tgl_keluar'];
                 $kunjungan["status_keluar"] = ($status_keluar=="")?3:$status_keluar;
                 $this->db->update('tc_kunjungan', $kunjungan, array('no_registrasi' => $no_registrasi,'no_mr' => $no_mr,'tgl_keluar' => NULL) );
                 /*save logs tc_kunjungan*/
@@ -1354,7 +1355,7 @@ class Pl_pelayanan_ri extends MX_Controller {
                 'no_mr' => $this->form_validation->set_value('no_mr'),
                 'nama_pasien' => $this->input->post('nama_pasien_layan'),
                 'kode_bagian' => $this->form_validation->set_value('kode_bagian'),
-                'tgl_periksa' => date('Y-m-d H:i:s'),
+                'tgl_periksa' => $_POST['tgl_keluar'],
                 'kategori_tindakan' => 3,
                 'dokter_pemeriksa' => $this->input->post('dr_merawat'),
                 'kode_bagian' => $this->input->post('kode_bagian_asal'),
@@ -1432,7 +1433,7 @@ class Pl_pelayanan_ri extends MX_Controller {
         /*tc_trans_pelayanan*/
         $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
         $this->db->update('tc_trans_pelayanan', $trans_data, array('no_kunjungan' => $_POST['no_kunjungan'], 'no_registrasi' => $_POST['no_registrasi'] ) );
-        $this->db->delete('tc_trans_pelayanan', array('no_kunjungan' => $_POST['no_kunjungan'], 'jenis_tindakan' => 2, 'nama_tindakan' => 'Biaya Administrasi'));
+        $this->db->delete('tc_trans_pelayanan', array('no_registrasi' => $_POST['no_registrasi'], 'jenis_tindakan' => 2));
 
 
         if ($this->db->trans_status() === FALSE)
