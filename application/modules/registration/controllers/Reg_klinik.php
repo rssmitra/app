@@ -916,6 +916,8 @@ class Reg_klinik extends MX_Controller {
         $fileName = 'uploaded/images/photo/'.$no_mr.'_'.date('YmdHis').'.png';
         file_put_contents(FCPATH.$fileName, $data);
         // Simpan ke database jika perlu
+        $file_foto = str_replace('uploaded/images/photo/','',$fileName);
+        $this->db->update('mt_master_pasien', ['url_foto_pasien' => $file_foto]);
         echo json_encode(['status'=>200, 'message'=>'Foto berhasil diupload', 'url_foto'=>base_url($fileName)]);
     }
 

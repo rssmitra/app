@@ -1767,6 +1767,11 @@ function uploadSnapshot() {
   var canvas = document.getElementById('webcamCanvas');
   if (!canvas) return;
   var dataURL = canvas.toDataURL('image/png');
+
+  if(!$('#noMrHidden').val()){
+    alert('Tidak ada data pasien'); return false;
+  }
+
   $.ajax({
     url: '<?php echo site_url('registration/Reg_klinik/upload_foto_pasien') ?>',
     type: 'POST',
@@ -1905,9 +1910,9 @@ function uploadSnapshot() {
         <canvas id="webcamCanvas" width="320" height="240" style="display:none;"></canvas>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="btnTakeSnapshot" onclick="takeSnapshot()"><i class="fa fa-camera"></i> Ambil Foto</button>
-        <button type="button" class="btn btn-success" id="btnUploadSnapshot" onclick="uploadSnapshot()" style="display:none;"><i class="fa fa-upload"></i> Upload</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary" id="btnTakeSnapshot" onclick="takeSnapshot()" style="height: 50px !important"><i class="fa fa-camera"></i> Ambil Foto</button>
+        <button type="button" class="btn btn-success" id="btnUploadSnapshot" onclick="uploadSnapshot()" style="display:none; height: 50px !important"><i class="fa fa-upload"></i> Upload</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="height: 50px !important">Batal</button>
       </div>
     </div>
   </div>
@@ -3055,26 +3060,6 @@ function uploadSnapshot() {
 
   </div><!-- /.modal-dialog -->
 
-</div>
-
-<div class="modal fade" id="webcamModal" tabindex="-1" role="dialog" aria-labelledby="webcamModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="webcamModalLabel">Ambil Foto Pasien</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" style="text-align:center;">
-        <video id="webcamVideo" width="320" height="240" autoplay style="border:1px solid #ccc;"></video>
-        <canvas id="webcamCanvas" width="320" height="240" style="display:none;"></canvas>
-        <br>
-        <button type="button" style="height: 50px !important" class="btn btn-success" onclick="takeSnapshot()"><i class="fa fa-camera"></i> Ambil Gambar</button>
-        <button type="button" style="height: 50px !important" class="btn btn-primary" onclick="uploadSnapshot()" id="btnUploadSnapshot" style="display:none;"><i class="fa fa-upload"></i> Upload</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 
