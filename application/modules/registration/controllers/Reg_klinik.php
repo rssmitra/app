@@ -903,6 +903,23 @@ class Reg_klinik extends MX_Controller {
 
     }
 
+    public function upload_foto_pasien() {
+        $img = $this->input->post('image');
+        $no_mr = $this->input->post('no_mr');
+        if (!$img || !$no_mr) {
+            echo json_encode(['status'=>500, 'message'=>'Data tidak lengkap']);
+            return;
+        }
+        $img = str_replace('data:image/png;base64,', '', $img);
+        $img = str_replace(' ', '+', $img);
+        $data = base64_decode($img);
+        $fileName = 'uploaded/images/photo/'.$no_mr.'_'.date('YmdHis').'.png';
+        file_put_contents(FCPATH.$fileName, $data);
+        // Simpan ke database jika perlu
+        echo json_encode(['status'=>200, 'message'=>'Foto berhasil diupload', 'url_foto'=>base_url($fileName)]);
+    }
+
+
 }
 
 
