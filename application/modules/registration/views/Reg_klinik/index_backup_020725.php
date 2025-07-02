@@ -1666,130 +1666,7 @@ function copyNoRujukan(no_rujukan){
   $('#btnSearchNoRujukan').click();
 }
 
-
-// --- Webcam Modal UI & Logic ---
-
-var webcamStream = null;
-
-function openWebcamModal() {
-  $('#webcamModal').modal('show');
-  var video = document.getElementById('webcamVideo');
-  // Reset video/canvas/button states
-  document.getElementById('webcamCanvas').style.display = 'none';
-  document.getElementById('webcamVideo').style.display = 'block';
-  document.getElementById('btnUploadSnapshot').style.display = 'none';
-  document.getElementById('btnTakeSnapshot').style.display = 'inline-block';
-
-  // Stop previous stream if any
-  if (webcamStream) {
-    webcamStream.getTracks().forEach(function(track) { track.stop(); });
-    webcamStream = null;
-  }
-
-  // Check for camera permission first (Permissions API)
-  if (navigator.permissions && navigator.permissions.query) {
-    navigator.permissions.query({ name: 'camera' }).then(function(permissionStatus) {
-      if (permissionStatus.state === 'denied') {
-        $('#webcamModal').modal('hide');
-        $.achtung({message: 'Akses kamera ditolak oleh browser. Silakan izinkan akses kamera pada pengaturan browser.', timeout:7, className: 'achtungFail'});
-        return;
-      }
-      // If prompt or granted, try to open camera
-      requestCameraStream();
-    }).catch(function() {
-      // Fallback if Permissions API not available or fails
-      requestCameraStream();
-    });
-  } else {
-    // Fallback for browsers without Permissions API
-    requestCameraStream();
-  }
-}
-
-function requestCameraStream() {
-  var video = document.getElementById('webcamVideo');
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(function(stream) {
-        webcamStream = stream;
-        video.srcObject = stream;
-        video.play();
-      })
-      .catch(function(err) {
-        $('#webcamModal').modal('hide');
-        if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')) {
-          $.achtung({message: 'Akses kamera ditolak. Silakan izinkan akses kamera pada browser Anda.', timeout:7, className: 'achtungFail'});
-        } else if (err && (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError')) {
-          $.achtung({message: 'Tidak ada perangkat kamera yang ditemukan.', timeout:7, className: 'achtungFail'});
-        } else {
-          $.achtung({message: 'Tidak dapat mengakses kamera: ' + (err.message || err.name), timeout:7, className: 'achtungFail'});
-        }
-      });
-  } else {
-    $('#webcamModal').modal('hide');
-    $.achtung({message: 'Browser tidak mendukung akses kamera.', timeout:7, className: 'achtungFail'});
-  }
-}
-
-$('#webcamModal').on('hidden.bs.modal', function () {
-  if (webcamStream) {
-    webcamStream.getTracks().forEach(function(track) { track.stop(); });
-    webcamStream = null;
-  }
-  // Reset UI
-  var canvas = document.getElementById('webcamCanvas');
-  var video = document.getElementById('webcamVideo');
-  if (canvas && video) {
-    canvas.style.display = 'none';
-    video.style.display = 'block';
-  }
-  var btnUpload = document.getElementById('btnUploadSnapshot');
-  var btnTake = document.getElementById('btnTakeSnapshot');
-  if (btnUpload && btnTake) {
-    btnUpload.style.display = 'none';
-    btnTake.style.display = 'inline-block';
-  }
-});
-
-function takeSnapshot() {
-  var video = document.getElementById('webcamVideo');
-  var canvas = document.getElementById('webcamCanvas');
-  if (!video || !canvas) return;
-  var context = canvas.getContext('2d');
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-  canvas.style.display = 'block';
-  video.style.display = 'none';
-  document.getElementById('btnUploadSnapshot').style.display = 'inline-block';
-  document.getElementById('btnTakeSnapshot').style.display = 'none';
-}
-
-function uploadSnapshot() {
-  var canvas = document.getElementById('webcamCanvas');
-  if (!canvas) return;
-  var dataURL = canvas.toDataURL('image/png');
-  $.ajax({
-    url: '<?php echo site_url('registration/Reg_klinik/upload_foto_pasien') ?>',
-    type: 'POST',
-    data: { image: dataURL, no_mr: $('#noMrHidden').val() },
-    dataType: 'json',
-    success: function(response) {
-      if(response.status === 200) {
-        $('#avatar').attr('src', response.url_foto);
-        $('#webcamModal').modal('hide');
-        $.achtung({message: response.message, timeout:5});
-      } else {
-        $.achtung({message: response.message, timeout:5, className: 'achtungFail'});
-      }
-    },
-    error: function() {
-      $.achtung({message: 'Gagal upload foto', timeout:5, className: 'achtungFail'});
-    }
-  });
-}
-
-
 </script>
-
 
 <style type="text/css">
   .pagination{
@@ -1800,75 +1677,6 @@ function uploadSnapshot() {
   }
   .list-group-item {
     padding: 3px 6px 15px 5px !important;
-  }
-  /* Webcam Modal Styles */
-  #webcamModal .modal-dialog {
-    max-width: 420px;
-    margin: 40px auto;
-  }
-  #webcamModal .modal-content {
-    border-radius: 10px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-    padding: 0;
-  }
-  #webcamModal .modal-header {
-    background: #0073b7;
-    color: #fff;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    padding: 12px 20px;
-    text-align: center;
-  }
-  #webcamModal .modal-title {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-  #webcamModal .modal-body {
-    padding: 20px 24px 16px 24px;
-    text-align: center;
-    background: #f8f9fa;
-  }
-  #webcamModal video, #webcamModal canvas {
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    width: 320px;
-    height: 240px;
-    background: #222;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  #webcamModal .modal-footer {
-    background: #f1f1f1;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    padding: 12px 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  #webcamModal .btn {
-    min-width: 110px;
-    font-size: 15px;
-    border-radius: 5px;
-    font-weight: 500;
-    box-shadow: none;
-    transition: background 0.2s;
-  }
-  #webcamModal .btn-primary {
-    background: #0073b7;
-    border: none;
-  }
-  #webcamModal .btn-primary:hover {
-    background: #005a8c;
-  }
-  #webcamModal .btn-secondary {
-    background: #e0e0e0;
-    color: #333;
-    border: none;
-  }
-  #webcamModal .btn-secondary:hover {
-    background: #c7c7c7;
   }
 </style>
 
@@ -1889,29 +1697,6 @@ function uploadSnapshot() {
     </h1>      
 
 </div> -->
-
-<!-- Webcam Modal -->
-<div class="modal fade" id="webcamModal" tabindex="-1" role="dialog" aria-labelledby="webcamModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="webcamModalLabel"><i class="fa fa-camera"></i> Ambil Foto Pasien</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position:absolute;right:18px;top:12px;font-size:22px;background:none;border:none;">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <video id="webcamVideo" autoplay playsinline style="display:block;"></video>
-        <canvas id="webcamCanvas" width="320" height="240" style="display:none;"></canvas>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="btnTakeSnapshot" onclick="takeSnapshot()"><i class="fa fa-camera"></i> Ambil Foto</button>
-        <button type="button" class="btn btn-success" id="btnUploadSnapshot" onclick="uploadSnapshot()" style="display:none;"><i class="fa fa-upload"></i> Upload</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="row">
     <div class="col-xs-12 no-padding">
@@ -2007,12 +1792,7 @@ function uploadSnapshot() {
             
             <div class="col-md-2">
               <div class="box box-primary" id='box_identity'>
-                  <div style="position:relative;">
-                    <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
-                    <button type="button" class="btn btn-xs btn-primary" style="position:absolute;top:10px;right:10px;z-index:2;" onclick="openWebcamModal()"><i class="fa fa-camera"></i> Ambil Foto</button>
-                  </div>
-
-                  <!-- <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%"> -->
+                  <img id="avatar" class="profile-user-img img-responsive center" src="<?php echo base_url().'assets/img/avatar.png'?>" alt="User profile picture" style="width:100%">
 
                   <h3 class="profile-username text-center"><div id="no_mr" style="font-size: 16px !important">-No. Rekam Medis-</div></h3>
 
@@ -3056,27 +2836,6 @@ function uploadSnapshot() {
   </div><!-- /.modal-dialog -->
 
 </div>
-
-<div class="modal fade" id="webcamModal" tabindex="-1" role="dialog" aria-labelledby="webcamModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="webcamModalLabel">Ambil Foto Pasien</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" style="text-align:center;">
-        <video id="webcamVideo" width="320" height="240" autoplay style="border:1px solid #ccc;"></video>
-        <canvas id="webcamCanvas" width="320" height="240" style="display:none;"></canvas>
-        <br>
-        <button type="button" class="btn btn-success" onclick="takeSnapshot()"><i class="fa fa-camera"></i> Ambil Gambar</button>
-        <button type="button" class="btn btn-primary" onclick="uploadSnapshot()" id="btnUploadSnapshot" style="display:none;"><i class="fa fa-upload"></i> Upload</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!-- javascript counter -->
 <script src="<?php echo base_url()?>assets/js/custom/counter.js"></script>
