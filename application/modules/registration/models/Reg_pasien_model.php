@@ -522,11 +522,13 @@ class Reg_pasien_model extends CI_Model {
 
 		$year_limit = date('Y') - 2;
 		$this->db->select($select);
+		$this->db->select('jnskunjungan.label as namajeniskunjungan');
 		$this->db->from('tc_pesanan');
 		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','inner');
 		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter','left');
 		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr','inner');
 		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan','left');
+		$this->db->join("(SELECT * FROM global_parameter WHERE flag = 'jeniskunjunganbpjs') as jnskunjungan", 'jnskunjungan.value=tc_pesanan.jeniskunjunganjkn','left');
 		/*$this->db->where('tc_pesanan.tgl_masuk IS NULL');*/
 		
 		/*if isset parameter*/

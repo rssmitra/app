@@ -222,7 +222,9 @@ class Pl_pelayanan extends MX_Controller {
         $data['txt_call_patient'] = $this->master->get_txt_call_patient(['jk' => $data['value']->jen_kelamin, 'title' => $data['value']->title, 'nama_pasien' => $data['value']->nama_pasien, 'poli' => $data['value']->short_name]);
         $anatomi_tagging = isset($data['riwayat']->anatomi_tagging)?json_decode($data['riwayat']->anatomi_tagging):'';
         $data['anatomi_tagging'] = $anatomi_tagging;
-        // echo '<pre>'; print_r($anatomi_tagging);die;
+        // get form rm untuk layout erm poli mata
+        $data['form_rm'] = $this->db->order_by('id','DESC')->where("(jenis_form is not null and flag='cppt')")->get_where('view_cppt',['no_kunjungan' => $no_kunjungan])->row();
+        // echo '<pre>'; print_r($data['form_rm']);die;
         /*title header*/
         $data['title'] = $this->title;
         /*show breadcrumbs*/
@@ -1756,6 +1758,15 @@ class Pl_pelayanan extends MX_Controller {
             //     $waktukirim_task_5 = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
             //     $this->AntrianOnline->saveLogAntrol('antrean/updatewaktu', array('kodebooking' => $_POST['kodebookingantrol'], 'taskid' => 5, 'waktu' => $waktukirim_task_5));
             // }
+            
+            // jika ada cppt id
+            $update_value_form = [];
+            if(isset($_POST['cppt_id']) && $_POST['cppt_id'] != '' && isset($_POST['jenis_form']) && $_POST['jenis_form'] != ''){
+                $value_form = http_build_query($this->input->post($_POST['jenis_form']),'',' | ');
+                $value_form = urldecode($value_form);
+                $update_value_form['value_form'] = $value_form;
+                $this->db->where('cppt_id', $_POST['cppt_id'])->update('th_cppt', $update_value_form);
+            }
 
 
             if ($this->db->trans_status() === FALSE)
@@ -2455,6 +2466,7 @@ class Pl_pelayanan extends MX_Controller {
 
             $cppt_id = ($_POST['cppt_id'])?$_POST['cppt_id']:0;
             $tgl_jam = $_POST['cppt_tgl'].' '.$_POST['cppt_jam'];
+
             $value_form = http_build_query($this->input->post($_POST['jenis_form']),'',' | ');
             $value_form = urldecode($value_form);
             // echo '<pre>';print_r($value_form);die;
@@ -2472,6 +2484,8 @@ class Pl_pelayanan extends MX_Controller {
                 'value_form' => $value_form, 
             );
 
+            
+
             if( $cppt_id == 0 ){
                 $dataexc['created_date'] = date('Y-m-d H:i:s');
                 $dataexc['created_by'] = $this->regex->_genRegex($this->session->userdata('user')->fullname,'RGXQSL');
@@ -2485,6 +2499,8 @@ class Pl_pelayanan extends MX_Controller {
                 $this->db->where('cppt_id', $cppt_id)->update('th_cppt', $dataexc);
                 $newId = $cppt_id;
             }
+
+            // echo '<pre>';print_r($dataexc);die;
             
                         
             if ($this->db->trans_status() === FALSE)

@@ -275,12 +275,13 @@ function saveRow(id_tc_pesanan){
           <th>Nama Pasien</th>
           <!-- <th>Tujuan Poli</th> -->
           <th>Dokter/Poli/Klinik Tujuan</th>
-          <th>Tgl Kontrol Pasien</th>
+          <th>Tgl Kontrol</th>
           <th>No. Telp / HP</th>
-          <th>No. SEP</th>
+          <th>Jenis Kunjungan</th>
           <th>No Kartu BPJS</th>
           <th>No Surat Kontrol</th>
           <th>Tgl Input</th>
+          <th>Keterangan</th>
           <th>Status</th>
           
         </tr>

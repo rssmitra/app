@@ -256,7 +256,7 @@ function show_edit(myid){
   $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
     // show data
     var obj = response.result;
-    // console.log(response);
+    console.log(response);
     $('#cppt_id').val(myid);
     $('#jenis_form_catatan').val(obj.jenis_form);
     $('#editor_html_pengkajian').html(obj.catatan_pengkajian);

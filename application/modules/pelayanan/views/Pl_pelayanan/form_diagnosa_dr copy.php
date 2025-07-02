@@ -4,11 +4,6 @@
 
 <script>
     $(document).ready(function(){
-
-        if($('#cppt_id').val() != ''){
-            show_form_rekam_medis($('#cppt_id').val());
-        }
-
         // --- AREA DRAWING & COLOR TAGGING ---
         var tagData = [];
         var currentTagPos = {x:0, y:0};
@@ -228,8 +223,24 @@
 
         // Fungsi ganti gambar anatomi
         function changeAnatomiImage(select) {
-            var val = (select.value) ? select.value : '0';
-            var imgSrc = '<?php echo base_url()?>assets/img-tagging/images/anatomi_'+val+'.png';
+            var val = select.value;
+            var imgSrc = '';
+            switch(val) {
+                case '0':
+                    imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_0.png')?>';
+                    break;
+                case '1':
+                    imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_1.png')?>';
+                    break;
+                case '2':
+                    imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_2.png')?>';
+                    break;
+                case '3':
+                    imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_3.png')?>';
+                    break;
+                default:
+                    imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_0.png')?>';
+            }
             document.getElementById('anatomi-img').src = imgSrc;
             tagData = [];
             updateTagDataInput();
@@ -423,31 +434,6 @@
                     tagData = arr;
                 }
             } catch(e) {}
-        }
-
-        function show_form_rekam_medis(myid){
-            preventDefault();
-            $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
-                // show data
-                var obj = response.result;
-                $('#cppt_id').val(myid);
-                $('#jenis_form').val(obj.jenis_form);
-                // $('#anatomi_tagging_28').val(response.anatomi_tagging);
-                $('#form_rekam_medis_special_case').html(obj.catatan_pengkajian);
-                $('#header_form').css('display', 'none');
-                $('#footer_form').css('display', 'none');
-                // set value input
-                var value_form = response.value_form;
-                console.log(value_form);
-                $.each(value_form, function(i, item) {
-                    var text = item;
-                    text = text.replace(/\+/g, ' ');
-                    key = i.replace(/\+/g, ' ');
-                    $('#'+key).val(text);
-                });
-                
-
-            }); 
         }
     });
 </script>
@@ -886,26 +872,19 @@
             $('#pl_procedure').val(label_item);
             $('#pl_procedure_hidden').val(val_item);
           }
-    });
-
-    function hide_assesment(){
-        $('#form_rekam_medis_special_case').hide();
-    }
+      });
 
 </script>
 <script src="<?php echo base_url()?>assets/tts/script.js"></script>
 <!-- hidden form -->
 
 <style>
-    
 .anatomi-marker {
   position: absolute;
   transition: 0.2s;
   box-shadow: 0 1px 4px rgba(0,0,0,0.15);
   z-index: 10;
-}
-
-#anatomi-tag-list-left, #anatomi-tag-list-right {
+}#anatomi-tag-list-left, #anatomi-tag-list-right {
   position: relative;
   min-height: 350px;
   width: 200px;
@@ -1020,10 +999,6 @@ audio, canvas, progress, video {
 }
 </style>
 
-<!-- input type hidden -->
-<input type="hidden" name="jenis_form" id="jenis_form" value="<?php echo isset($form_rm->jenis_form)?$form_rm->jenis_form:''?>">
-<input type="hidden" name="cppt_id" id="cppt_id" value="<?php echo isset($form_rm->id)?$form_rm->id:''?>">
-
 <audio id="container" autoplay=""></audio>
 
 <!-- <span>Waktu Pelayanan</span><br>
@@ -1069,24 +1044,6 @@ audio, canvas, progress, video {
     </div>
 </div>
 
-<div class="widget-box transparent ui-sortable-handle" id="widget-box-12" style="display: block">
-    <div class="widget-header">
-        <span style="font-style: italic; font-size: 14px" class="widget-title lighter">Pengkajian Awal Keperawatan Pasien Rawat Jalan</h4>
-        <div class="widget-toolbar no-border">
-            <a href="#" data-action="collapse">
-                <i class="ace-icon fa fa-chevron-down"></i>
-            </a>
-        </div>
-    </div>
-
-    <div class="widget-body" style="display: block;">
-        <div id="form_rekam_medis_special_case">
-            <div class="alert alert-danger"><b>Pemberitahuan!</b><br>Tidak ada File Ditemukan</div>
-        </div>
-    </div>
-</div>
-
-
 <div class="col-md-4 no-padding" style="margin-top: 14px">
     <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
     <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : $this->tanggal->formatDateTimeFormDmy($value->tgl_jam_poli)?></span> <br>
@@ -1094,7 +1051,6 @@ audio, canvas, progress, video {
 <div class="col-md-8">
     <p style="text-align: right; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
 </div>
-
 
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Subjective)</span>
 <div style="margin-top: 6px">
@@ -1146,13 +1102,13 @@ audio, canvas, progress, video {
      <div class="form-group">
         <label class="control-label col-sm-2">Anatomi</label>
         <div class="col-md-4">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), isset($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
+            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), ($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
         </div>
     </div>  
     <br>
     
     <div class="col-md-12">
-    <center><span style="font-weight: bold;font-size: 18px">VISUALISASI STATUS LOKALIS</span></center>
+    <center><span style="font-weight: bold;">ANATOMI TUBUH MANUSIA</span></center>
     <div style="display:flex;justify-content:center;align-items:flex-start;">
         <div id="anatomi-tag-list-left" style="min-width:180px;max-width:220px;position:relative;"></div>
         <div id="anatomi-tagging-container" style="position:relative; display:inline-block; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:8px; padding:8px;">
@@ -1172,8 +1128,7 @@ audio, canvas, progress, video {
                 <label style="font-weight:500;">Mode:</label>
                 <select id="draw-mode" style="width:120px; margin:0 8px;">
                     <!-- <option value="point">Titik</option> -->
-                    <option value="#">Pilih mode</option>
-                    <option value="rect">Rectangle</option>
+                    <option value="rect" selected>Rectangle</option>
                     <!-- <option value="polygon">Polygon</option> -->
                     <option value="freehand">Freehand</option>
                 </select>
@@ -1183,13 +1138,13 @@ audio, canvas, progress, video {
             </div>
 
             <?php
-                $img_anatomi = isset($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
+                $img_anatomi = ($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
             ?>
             <div style="position:relative; width:500px; height:auto;">
                 <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px; height:auto; display:block; border-radius:8px;">
                 <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
                 <svg id="anatomi-svg-areas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
-                <canvas id="anatomi-draw-canvas" width="500" height="650" style="position:absolute;left:0;top:0;width:500px; height:650px;pointer-events:auto;z-index:20;background:transparent; border-radius:8px;"></canvas>
+                <canvas id="anatomi-draw-canvas" width="500" height="650" style="position:absolute;left:0;top:0;width:500px;height:650px;pointer-events:auto;z-index:20;background:transparent; border-radius:8px;"></canvas>
             </div>
             
         </div>
@@ -1199,8 +1154,6 @@ audio, canvas, progress, video {
     
     <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
     <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width: 100% !important; display: none"><?php echo $riwayat->anatomi_tagging?></textarea>
-
-    
 
 
 </div>

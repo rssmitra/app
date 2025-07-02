@@ -141,47 +141,6 @@ jQuery(function($) {
 }
 </style>
 
-<div class="oftalmo-wrap">
-  <div class="oftalmo-header">
-    <div class=""><b>STATUS OFTALMOLOGIS</b></div>
-    <div class="hasil">Hasil Auto-Ref / NCT</div>
-  </div>
-  <table class="oftalmo-ucva-table">
-    <tr>
-      <td style="width:70px;">UCVA</td>
-      <td style="width:70px;">Mata Kanan:</td>
-      <td>
-        <input type="text" name="form_49[ucva_kanan_s]" style="width:18px; text-align:center;"> S
-        <input type="text" name="form_49[ucva_kanan_c]" style="width:18px; text-align:center;"> C
-        <input type="text" name="form_49[ucva_kanan_x]" style="width:18px; text-align:center;"> X
-      </td>
-      <td style="width:70px;">UCVA</td>
-      <td style="width:70px;">Mata Kiri:</td>
-      <td>
-        <input type="text" name="form_49[ucva_kiri_s]" style="width:18px; text-align:center;"> S
-        <input type="text" name="form_49[ucva_kiri_c]" style="width:18px; text-align:center;"> C
-        <input type="text" name="form_49[ucva_kiri_x]" style="width:18px; text-align:center;"> X
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>Mata Kanan:</td>
-      <td colspan="2"><input type="text" name="form_49[add_kanan]" style="width:90%;"></td>
-      <td>Mata Kiri:</td>
-      <td><input type="text" name="form_49[add_kiri]" style="width:90%;"></td>
-    </tr>
-  </table>
-
-  <div class="oftalmo-posisi-row">
-    <img src="<?php echo base_url('assets/img-tagging/images/eye_left.png')?>" class="oftalmo-posisi-eye" alt="eye-left">
-    <div class="oftalmo-posisi-center">Posisi</div>
-    <img src="<?php echo base_url('assets/img-tagging/images/eye_right.png')?>" class="oftalmo-posisi-eye" alt="eye-right">
-  </div>
-
-  <div style="text-align:center; font-size:13px; margin-bottom:4px; margin-top:2px;">
-    Tekanan Intraokular <br>
-    <span style="font-size:12px;">(NCT / Aplanasi / Schiotz*)</span>
-  </div>
 
  <style>
 .oftalmo-field-table {
@@ -211,6 +170,48 @@ jQuery(function($) {
 }
 </style>
 
+<div class="oftalmo-wrap">
+  <div class="oftalmo-header">
+    <div class=""><b>STATUS OFTALMOLOGIS</b></div>
+    <div class="hasil">Hasil Auto-Ref / NCT</div>
+  </div>
+  <table class="oftalmo-ucva-table" border="0">
+    <tr>
+      <td style="width:50px;">UCVA</td>
+      <td style="width:100px;">Mata Kanan:</td>
+      <td>
+        <input type="text" name="form_49[ucva_kanan_s]" id="ucva_kanan_s" onchange="fillthis('ucva_kanan_s')" style="width:40px; text-align:center;"> S
+        <input type="text" name="form_49[ucva_kanan_c]" id="ucva_kanan_c" onchange="fillthis('ucva_kanan_c')" style="width:40px; text-align:center;"> C
+        <input type="text" name="form_49[ucva_kanan_x]" id="ucva_kanan_x" onchange="fillthis('ucva_kanan_x')" style="width:40px; text-align:center;"> X
+      </td>
+      <td style="width:50px;">UCVA</td>
+      <td style="width:100px;">Mata Kiri:</td>
+      <td>
+        <input type="text" name="form_49[ucva_kiri_s]" id="ucva_kiri_s" onchange="fillthis('ucva_kiri_s')" style="width:40px; text-align:center;"> S
+        <input type="text" name="form_49[ucva_kiri_c]" id="ucva_kiri_c" onchange="fillthis('ucva_kiri_c')" style="width:40px; text-align:center;"> C
+        <input type="text" name="form_49[ucva_kiri_x]" id="ucva_kiri_x" onchange="fillthis('ucva_kiri_x')" style="width:40px; text-align:center;"> X
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>Mata Kanan:</td>
+      <td colspan="2"><input type="text" name="form_49[add_kanan]" id="add_kanan" onchange="fillthis('add_kanan')" style="width:90%;"></td>
+      <td>Mata Kiri:</td>
+      <td><input type="text" name="form_49[add_kiri]" id="add_kiri" onchange="fillthis('add_kiri')" style="width:90%;"></td>
+    </tr>
+  </table>
+
+  <div class="oftalmo-posisi-row">
+    <img src="<?php echo base_url('assets/img-tagging/images/eye_left.png')?>" class="oftalmo-posisi-eye" alt="eye-left">
+    <div class="oftalmo-posisi-center">Posisi</div>
+    <img src="<?php echo base_url('assets/img-tagging/images/eye_right.png')?>" class="oftalmo-posisi-eye" alt="eye-right">
+  </div>
+
+  <div style="text-align:center; font-size:13px; margin-bottom:4px; margin-top:2px;">
+    Tekanan Intraokular <br>
+    <span style="font-size:12px;">(NCT / Aplanasi / Schiotz*)</span>
+  </div>
+
 <table class="oftalmo-field-table">
   <tr>
     <th style="width:35%">Mata Kanan</th>
@@ -218,54 +219,54 @@ jQuery(function($) {
     <th style="width:35%">Mata Kiri</th>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[tekanan_intraokular_kanan]"></td>
+    <td><input type="text" name="form_49[tekanan_intraokular_kanan]" id="tekanan_intraokular_kanan" onchange="fillthis('tekanan_intraokular_kanan')"></td>
     <td align="center">Tekanan Intraokular</td>
-    <td><input type="text" name="form_49[tekanan_intraokular_kiri]"></td>
+    <td><input type="text" name="form_49[tekanan_intraokular_kiri]" id="tekanan_intraokular_kiri" onchange="fillthis('tekanan_intraokular_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[palpebra_kanan]"></td>
+    <td><input type="text" name="form_49[palpebra_kanan]" id="palpebra_kanan" onchange="fillthis('palpebra_kanan')"></td>
     <td align="center">Palpebra</td>
-    <td><input type="text" name="form_49[palpebra_kiri]"></td>
+    <td><input type="text" name="form_49[palpebra_kiri]" id="palpebra_kiri" onchange="fillthis('palpebra_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[konjungtiva_kanan]"></td>
+    <td><input type="text" name="form_49[konjungtiva_kanan]" id="konjungtiva_kanan" onchange="fillthis('konjungtiva_kanan')"></td>
     <td align="center">Konjungtiva</td>
-    <td><input type="text" name="form_49[konjungtiva_kiri]"></td>
+    <td><input type="text" name="form_49[konjungtiva_kiri]" id="konjungtiva_kiri" onchange="fillthis('konjungtiva_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[kornea_kanan]"></td>
+    <td><input type="text" name="form_49[kornea_kanan]" id="kornea_kanan" onchange="fillthis('kornea_kanan')"></td>
     <td align="center">Kornea</td>
-    <td><input type="text" name="form_49[kornea_kiri]"></td>
+    <td><input type="text" name="form_49[kornea_kiri]" id="kornea_kiri" onchange="fillthis('kornea_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[bmd_kanan]"></td>
+    <td><input type="text" name="form_49[bmd_kanan]" id="bmd_kanan" onchange="fillthis('bmd_kanan')"></td>
     <td align="center">BMD</td>
-    <td><input type="text" name="form_49[bmd_kiri]"></td>
+    <td><input type="text" name="form_49[bmd_kiri]" id="bmd_kiri" onchange="fillthis('bmd_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[iris_kanan]"></td>
+    <td><input type="text" name="form_49[iris_kanan]" id="iris_kanan" onchange="fillthis('iris_kanan')"></td>
     <td align="center">Iris</td>
-    <td><input type="text" name="form_49[iris_kiri]"></td>
+    <td><input type="text" name="form_49[iris_kiri]" id="iris_kiri" onchange="fillthis('iris_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[pupil_kanan]"></td>
+    <td><input type="text" name="form_49[pupil_kanan]" id="pupil_kanan" onchange="fillthis('pupil_kanan')"></td>
     <td align="center">Pupil</td>
-    <td><input type="text" name="form_49[pupil_kiri]"></td>
+    <td><input type="text" name="form_49[pupil_kiri]" id="pupil_kiri" onchange="fillthis('pupil_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[lensa_kanan]"></td>
+    <td><input type="text" name="form_49[lensa_kanan]" id="lensa_kanan" onchange="fillthis('lensa_kanan')"></td>
     <td align="center">Lensa</td>
-    <td><input type="text" name="form_49[lensa_kiri]"></td>
+    <td><input type="text" name="form_49[lensa_kiri]" id="lensa_kiri" onchange="fillthis('lensa_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[vitreus_kanan]"></td>
+    <td><input type="text" name="form_49[vitreus_kanan]" id="vitreus_kanan" onchange="fillthis('vitreus_kanan')"></td>
     <td align="center">Vitreus</td>
-    <td><input type="text" name="form_49[vitreus_kiri]"></td>
+    <td><input type="text" name="form_49[vitreus_kiri]" id="vitreus_kiri" onchange="fillthis('vitreus_kiri')"></td>
   </tr>
   <tr>
-    <td><input type="text" name="form_49[funduskopi_kanan]"></td>
+    <td><input type="text" name="form_49[funduskopi_kanan]" id="funduskopi_kanan" onchange="fillthis('funduskopi_kanan')"></td>
     <td align="center">Funduskopi</td>
-    <td><input type="text" name="form_49[funduskopi_kiri]"></td>
+    <td><input type="text" name="form_49[funduskopi_kiri]" id="funduskopi_kiri" onchange="fillthis('funduskopi_kiri')"></td>
   </tr>
 </table>
   <!-- <div class="oftalmo-fundus-row">
@@ -276,11 +277,11 @@ jQuery(function($) {
 
   <div style="margin-top:10px;">
     <label>Anamnesis :</label>
-    <textarea name="form_49[anamnesis]" class="oftalmo-textarea"></textarea>
+    <textarea name="form_49[anamnesis]" id="anamnesis" onchange="fillthis('anamnesis')" class="oftalmo-textarea"></textarea>
   </div>
   <div style="margin-top:8px;">
     <label>Diagnosis :</label>
-    <textarea name="form_49[diagnosis]" class="oftalmo-textarea"></textarea>
+    <textarea name="form_49[diagnosis]" id="diagnosis" onchange="fillthis('diagnosis')" class="oftalmo-textarea"></textarea>
   </div>
   <div style="font-size:11px; margin-top:8px;">*Coret yang tidak perlu</div>
 </div>
