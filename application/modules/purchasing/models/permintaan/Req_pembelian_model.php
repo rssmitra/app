@@ -161,14 +161,18 @@ class Req_pembelian_model extends CI_Model {
 		$mt_barang = ($flag=='non_medis')?'mt_barang_nm':'mt_barang';
 		$tc_po = ($flag=='non_medis')?'tc_po_nm':'tc_po';
 		$table = ($flag=='non_medis')?$this->table_nm:$this->table;
+		$mt_rekap_stok = ($flag=='non_medis')?'mt_rekap_stok_nm':'mt_rekap_stok';
+		$kode_gdg = ($flag=='non_medis')?'070101':'060201';
 
 		$this->db->select(''.$table.'_det.*');
 		$this->db->select($table.'.*');
 		$this->db->select($mt_barang.'.*');
 		$this->db->select('po.total_po');
+		$this->db->select('jml_sat_kcl as stok_gudang');
 		$this->db->from(''.$table.'_det');
 		$this->db->join($table, ''.$table.'.id_tc_permohonan='.$table.'_det.id_tc_permohonan', 'left');
 		$this->db->join($mt_barang, ''.$mt_barang.'.kode_brg='.$table.'_det.kode_brg', 'left');
+		$this->db->join($mt_rekap_stok, '('.$mt_rekap_stok.'.kode_brg='.$table.'_det.kode_brg AND '.$mt_rekap_stok.'.kode_bagian_gudang = '."'".$kode_gdg."'".')', 'left');
 		$this->db->join('(SELECT id_tc_permohonan_det, sum(convert(decimal(18,2),jumlah_besar_acc)) as total_po FROM '.$tc_po.'_det GROUP BY id_tc_permohonan_det) as po', 'po.id_tc_permohonan_det='.$table.'_det.id_tc_permohonan_det', 'left');
 		$this->db->order_by($mt_barang.'.nama_brg', 'ASC');
 		// $this->db->order_by($table.'_det.created_date', 'ASC');
