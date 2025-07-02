@@ -3070,8 +3070,8 @@ function uploadSnapshot() {
         <video id="webcamVideo" width="320" height="240" autoplay style="border:1px solid #ccc;"></video>
         <canvas id="webcamCanvas" width="320" height="240" style="display:none;"></canvas>
         <br>
-        <button type="button" class="btn btn-success" onclick="takeSnapshot()"><i class="fa fa-camera"></i> Ambil Gambar</button>
-        <button type="button" class="btn btn-primary" onclick="uploadSnapshot()" id="btnUploadSnapshot" style="display:none;"><i class="fa fa-upload"></i> Upload</button>
+        <button type="button" style="height: 50px !important" class="btn btn-success" onclick="takeSnapshot()"><i class="fa fa-camera"></i> Ambil Gambar</button>
+        <button type="button" style="height: 50px !important" class="btn btn-primary" onclick="uploadSnapshot()" id="btnUploadSnapshot" style="display:none;"><i class="fa fa-upload"></i> Upload</button>
       </div>
     </div>
   </div>
