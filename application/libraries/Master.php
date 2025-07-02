@@ -68,7 +68,45 @@ final Class Master {
 
 		$field='';
 
+		// print_r($data);die;
+		foreach($data as $row){
+			$sel = $nid==$row[$custom['id']]?'checked':'';
+			$field.='<label>';
+			$field.='<input type="radio" name="'.$name.'" class="ace" value="'.$row[$custom['id']].'" '.$sel.'>';
+			$field.='<span class="lbl"> '.$row[$custom['name']].' </span>';
+			$field.='</label>';
+		}	
+			
+		
+		return $field;
+		
+    }
+
+	function custom_selection_checkbox($custom=array(), $nid='',$name,$id,$class='',$required='',$inline='') {
+		
+		$CI =&get_instance();
+		$db = $CI->load->database('default', TRUE);
+		
+		if(isset($custom['order'])){
+			$db->order_by($custom['order']);
+		}
+
+		if(isset($custom['where_in'])){
+			$db->where_in($custom['where_in']['col'],$custom['where_in']['val']);
+			$data = $db->get($custom['table'])->result_array();
+
+		}else if(isset($custom['like'])&&isset($custom['where'])){
+			$db->like($custom['like']['col'],$custom['like']['val']);
+			$db->where($custom['where']);
+			$data = $db->get($custom['table'])->result_array();
+		}else{
+			$data = $db->where($custom['where'])->get($custom['table'])->result_array();
+		}
+
+		$field='';
+
 		$field.='<div class="checkbox">';
+		// print_r($data);die;
 		foreach($data as $row){
 			$sel = $nid==$row[$custom['id']]?'checked':'';
 			$field.='<label>';

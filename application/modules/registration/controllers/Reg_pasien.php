@@ -358,7 +358,7 @@ class Reg_pasien extends MX_Controller {
 
         $output = array();
 
-        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id, tc_pesanan.kode_perusahaan, no_kartu_bpjs');
+        $column = array('tc_pesanan.id_tc_pesanan, tc_pesanan.nama, tc_pesanan.tgl_pesanan, tc_pesanan.no_mr, mt_bagian.nama_bagian, mt_karyawan.nama_pegawai, mt_perusahaan.nama_perusahaan, tc_pesanan.tgl_masuk, tc_pesanan.kode_dokter, tc_pesanan.no_poli, tc_pesanan.kode_perjanjian, tc_pesanan.unique_code_counter, tc_pesanan.selected_day, tc_pesanan.jd_id, tc_pesanan.kode_perusahaan, no_kartu_bpjs, jeniskunjunganjkn');
 
         $list = $this->Reg_pasien->get_riwayat_perjanjian( $column, $mr ); 
 
@@ -391,9 +391,11 @@ class Reg_pasien extends MX_Controller {
                 }else{
                     $tgl = $this->tanggal->formatDate($row_list->tgl_pesanan);
                 }
-                $penjamin = ($row_list->nama_perusahaan==NULL)?'<div class="left">PRIBADI/UMUM</div>':'<div class="left">'.$row_list->nama_perusahaan.'</div>';
+                $penjamin = ($row_list->nama_perusahaan==NULL)?'<span style="background: green; padding: 2px; color: white">Pribadi/Umum</span>':'<span style="background: blue; padding: 2px; color: white">'.$row_list->nama_perusahaan.'</span>';
 
                 $label_code = ($row_list->tgl_masuk == NULL) ? '<div class="pull-right"><span class="red" style="font-weight: bold; font-size: 16px;">'.$row_list->unique_code_counter.'</span></div>' : '<div class="pull-right"><span class="green" style="font-weight: bold; font-size: 16px; cursor: pointer">'.$row_list->unique_code_counter.'</span></div>';
+
+                $jeniskunjungan = ($row_list->jeniskunjunganjkn==2)?'<span style="background: darkorange; padding: 2px; color: white">'.$row_list->namajeniskunjungan.'</span>':'<span style="background: blue; padding: 2px; color: white">'.$row_list->namajeniskunjungan.'</span>';
 
                 $row[] = '<div class="center">
                             <label class="pos-rel">
@@ -413,7 +415,7 @@ class Reg_pasien extends MX_Controller {
                             </ul>
                         </div></div>';
                 if( $row_list->kode_perusahaan == 120){
-                    $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.'<br><small class="pull-right">Kode Booking : </small><br><a href="#" onclick="changeModulRjFromPerjanjianBPJS('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
+                    $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.' '.$jeniskunjungan.'<hr><small class="pull-right">Kode Booking : </small><br><a href="#" onclick="changeModulRjFromPerjanjianBPJS('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
                 }else{
                     $row[] = $row_list->nama_pegawai.'<br><small style="font-size: 11px">'.ucwords($row_list->nama_bagian).'</small><br>'.$tgl.'<br>'.$penjamin.'<a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">'.$label_code.'</a>';
                 }
@@ -1029,7 +1031,7 @@ class Reg_pasien extends MX_Controller {
             $string = $kode_faskes.$this->input->post('nama_pasien').$this->input->post('no_mr');
             $unique_code_max = date('my').$this->master->generateRandomString($string, 6);
 
-            $ket_rujukan_internal = isset($_POST['jenis_perjanjian']) ? ($_POST['jenis_perjanjian'] == 1) ? 'Rujukan Internal - ' : '' : '';
+            $ket_rujukan_internal = isset($_POST['jeniskunjungan']) ? ($_POST['jeniskunjungan'] == 2) ? 'Rujukan Internal - ' : '' : '';
             $dataexc = array(
                 'nama' => $this->regex->_genRegex($this->input->post('nama_pasien'), 'RGXQSL'),
                 'keterangan' => $ket_rujukan_internal.$this->regex->_genRegex($this->input->post('keterangan'), 'RGXQSL'),
@@ -1043,6 +1045,7 @@ class Reg_pasien extends MX_Controller {
                 'no_telp' => $this->input->post('no_telp'),
                 'no_hp' => $this->input->post('no_hp'),
                 'jd_id' => $this->input->post('jd_id'),
+                'jeniskunjunganjkn' => $this->input->post('jeniskunjungan'),
                 'is_bridging' => $is_bridging,
             );
 
@@ -1058,21 +1061,22 @@ class Reg_pasien extends MX_Controller {
                 $dataexc['no_sep_lama'] = $this->input->post('no_sep_lama');
             }
 
-             if($this->input->post('jenis_penjamin')=='Jaminan Perusahaan'){
-                $dataexc['kode_perusahaan'] = $this->regex->_genRegex($val->set_value('kode_perusahaan'), 'RGXINT');
-             }
- 
-             if($_POST['jenis_instalasi']=='BD'){
-                 $dataexc['flag']='bedah';
-                 $dataexc['diagnosa']=$this->regex->_genRegex($val->set_value('diagnosa_perjanjian_bedah'), 'RGXQSL');
-                 $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_bedah'), 'RGXQSL');
-             }
-             
-             if($_POST['jenis_instalasi']=='PM'){
-                $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_pm'), 'RGXQSL');
-                $dataexc['bulan_kunjungan'] = $this->regex->_genRegex($this->input->post('bulan_kunjungan'), 'RGXQSL');
-                $dataexc['referensi_no_kunjungan'] = $this->input->post('no_kunjungan');
-             }
+            if($this->input->post('jenis_penjamin')=='Jaminan Perusahaan'){
+            $dataexc['kode_perusahaan'] = $this->regex->_genRegex($val->set_value('kode_perusahaan'), 'RGXINT');
+            }
+
+            if($_POST['jenis_instalasi']=='BD'){
+                $dataexc['flag']='bedah';
+                $dataexc['diagnosa']=$this->regex->_genRegex($val->set_value('diagnosa_perjanjian_bedah'), 'RGXQSL');
+                $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_bedah'), 'RGXQSL');
+            }
+            
+            if($_POST['jenis_instalasi']=='PM'){
+            $dataexc['kode_tarif'] = $this->regex->_genRegex($val->set_value('perjanjian_tindakan_pm'), 'RGXQSL');
+            $dataexc['bulan_kunjungan'] = $this->regex->_genRegex($this->input->post('bulan_kunjungan'), 'RGXQSL');
+            $dataexc['referensi_no_kunjungan'] = $this->input->post('no_kunjungan');
+            }
+
             //  print_r($dataexc);die;
              if($id==0){
                 $kode_perjanjian = ($ex_no_surat_kontrol != 0) ? $ex_no_surat_kontrol : $kode_faskes.$unique_code_max;

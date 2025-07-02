@@ -5,9 +5,9 @@ jQuery(function($) {
   $('.date-picker').datepicker({    
     autoclose: true,    
     todayHighlight: true    
-  })  
+  })
   //show datepicker when clicking on the icon
-  .next().on(ace.click_event, function(){    
+  $('.date-picker').next().on(ace.click_event, function(){    
     $(this).prev().focus();    
   });  
 
@@ -134,6 +134,11 @@ jQuery(function($) {
   });
 
 });
+
+</script>
+
+<script>
+
 </script>
 
 <?php echo $header; ?>
@@ -145,14 +150,15 @@ jQuery(function($) {
 <!-- hidden form  -->
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 <br>
-<table>
+<table style="width: 100%">
   <tr>
-    <td style="width: 60%">
+    <td style="width: 50%">
       <table border="0">
         <tr>
           <td style="width: 100px">Tanggal Operasi</td>
           <td>
-            <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_12[tgl_operasi]" id="tgl_operasi" onchange="fillthis('tgl_operasi')" value="<?php echo isset($value_form['tgl_operasi'])?$value_form['tgl_operasi']:date('Y-m-d')?>"></td>
+            <input type="text" class="input_type date-picker" data-date-format="yyyy-mm-dd" name="form_12[tgl_operasi]" id="tgl_operasi" onchange="fillthis('tgl_operasi');" value="<?php echo isset($value_form['tgl_operasi'])?$value_form['tgl_operasi']:date('Y-m-d')?>"></td>
+
         </tr>
         <tr>
           <td style="width: 100px">Jam Operasi</td>
@@ -220,7 +226,7 @@ jQuery(function($) {
         </tr>
       </table>
     </td>
-    <td style="width: 40%" valign="top">
+    <td style="width: 50%" valign="top">
       <table border="0" width="100%">
         <tr>
           <td style="width: 150px">Dokter Bedah 1</td>

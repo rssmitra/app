@@ -15,101 +15,98 @@ class Perjanjian_rj_model extends CI_Model {
 		$this->load->database();
 	}
 
-	private function _main_query(){
-		$year_limit = date('Y') - 2;
+	private function _main_query() {
 		$this->db->select($this->select);
-		$this->db->select('(Select top 1 no_sep from tc_registrasi where no_mr=tc_pesanan.no_mr AND kode_perusahaan=120 order by no_registrasi DESC) as no_sep, fullname as petugas');
+		$this->db->select('fullname as petugas, jeniskunjunganjkn, jeniskunjungan.label as namajeniskunjungan');
 		$this->db->from('tc_pesanan');
-		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli','inner');
-		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter','left');
-		$this->db->join('tmp_user', 'tmp_user.user_id=tc_pesanan.no_induk','left');
-		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr','left');
-		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan','left');
+		$this->db->join('mt_bagian', 'mt_bagian.kode_bagian=tc_pesanan.no_poli', 'inner');
+		$this->db->join('mt_karyawan', 'mt_karyawan.kode_dokter=tc_pesanan.kode_dokter', 'left');
+		$this->db->join('tmp_user', 'tmp_user.user_id=tc_pesanan.no_induk', 'left');
+		$this->db->join('mt_master_pasien', 'mt_master_pasien.no_mr=tc_pesanan.no_mr', 'left');
+		$this->db->join('mt_perusahaan', 'mt_perusahaan.kode_perusahaan=tc_pesanan.kode_perusahaan', 'left');
+		$this->db->join("(SELECT * FROM global_parameter WHERE flag = 'jeniskunjunganbpjs') as jeniskunjungan", 'jeniskunjungan.value=tc_pesanan.jeniskunjunganjkn', 'left');
 		$this->db->where('tc_pesanan.tgl_masuk IS NULL');
 
-		if(isset($_GET['no_mr']) AND $_GET['no_mr']!=0 ){
-			if($_GET['no_mr']!='' or $_GET['no_mr']!=0){
-				$this->db->where('tc_pesanan.no_mr', $_GET['no_mr']);
-			}
+		// Filter by no_mr
+		if (!empty($_GET['no_mr'])) {
+			$this->db->where('tc_pesanan.no_mr', $_GET['no_mr']);
 		}
-		
-		/*if isset parameter*/
-		if(isset($_GET['search_by'])) {
 
-			if(isset($_GET['flag']) AND $_GET['flag']=='bedah'){
-				$this->db->where('tc_pesanan.flag', $_GET['flag']);
-
-			}else if(isset($_GET['flag']) AND $_GET['flag']=='HD'){
-				$this->db->where('tc_pesanan.flag', $_GET['flag']);
-				
-			}else{
+		// Parameterized search
+		if (!empty($_GET['search_by'])) {
+			// Flag filter
+			if (!empty($_GET['flag'])) {
+				if ($_GET['flag'] === 'bedah' || $_GET['flag'] === 'HD') {
+					$this->db->where('tc_pesanan.flag', $_GET['flag']);
+				}
+			} else {
 				$this->db->where('tc_pesanan.flag IS NULL');
 			}
 
-			if(isset($_GET['keyword']) AND $_GET['keyword'] != ''){
-				$this->db->like('tc_pesanan.'.$_GET['search_by'].'', $_GET['keyword']);
+			// Keyword search
+			if (!empty($_GET['keyword'])) {
+				$this->db->like('tc_pesanan.' . $_GET['search_by'], $_GET['keyword']);
 			}
 
-			if(isset($_GET['klinik'])){
-				if($_GET['klinik']!='' or $_GET['klinik']!=0){
-					$this->db->where('tc_pesanan.no_poli', (int)$_GET['klinik']);
-				}
+			// Klinik filter
+			if (!empty($_GET['klinik'])) {
+				$this->db->where('tc_pesanan.no_poli', (int)$_GET['klinik']);
 			}
 
-			if(isset($_GET['dokter']) AND $_GET['dokter']!=0 ){
-				if($_GET['dokter']!='' or $_GET['dokter']!=0){
-					$this->db->where('tc_pesanan.kode_dokter', $_GET['dokter']);
-				}
+			// Dokter filter
+			if (!empty($_GET['dokter'])) {
+				$this->db->where('tc_pesanan.kode_dokter', $_GET['dokter']);
 			}
 
-			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' or isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
-				$this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) >= '".$_GET['from_tgl']."'" );
-				$this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) <= '".$_GET['to_tgl']."'" );
+			// Tanggal pesanan range
+			if (!empty($_GET['from_tgl']) && !empty($_GET['to_tgl'])) {
+				$this->db->where('CAST(tc_pesanan.tgl_pesanan as DATE) >=', $_GET['from_tgl']);
+				$this->db->where('CAST(tc_pesanan.tgl_pesanan as DATE) <=', $_GET['to_tgl']);
+			} else if (!empty($_GET['from_tgl'])) {
+				$this->db->where('CAST(tc_pesanan.tgl_pesanan as DATE) >=', $_GET['from_tgl']);
+			} else if (!empty($_GET['to_tgl'])) {
+				$this->db->where('CAST(tc_pesanan.tgl_pesanan as DATE) <=', $_GET['to_tgl']);
 			}
 
-			if (isset($_GET['tgl_input_prj']) AND $_GET['tgl_input_prj'] != '') {
-				$this->db->where("CAST(tc_pesanan.input_tgl as DATE) = '".$_GET['tgl_input_prj']."'" );
+			// Tanggal input
+			if (!empty($_GET['tgl_input_prj'])) {
+				$this->db->where('CAST(tc_pesanan.input_tgl as DATE) = ', $_GET['tgl_input_prj']);
 			}
-			
-		}else {
-			$this->db->where("CAST(tc_pesanan.input_tgl as DATE) = '".date('Y-m-d')."'" );
-			// $this->db->where('DAY(tgl_pesanan) >= '.date('d').'');	
-			// $this->db->where('MONTH(tgl_pesanan) >= '.date('m').'');	
-			// $this->db->where('YEAR(tgl_pesanan) ='.date('Y').'');
+		} else {
+			// Default: hari ini
+			$this->db->where('CAST(tc_pesanan.input_tgl as DATE) = ', date('Y-m-d'));
 		}
-
-
-        // if (isset($_GET['tanggal']) AND $_GET['tanggal'] != '' ) {
-        //     $this->db->where("CAST(tc_pesanan.tgl_pesanan as DATE) = '".$_GET['tanggal']."'" );
-		// }
-        /*end parameter*/
-
-
 	}
 
 	private function _get_datatables_query()
 	{
-		
 		$this->_main_query();
 
-		$i = 0;
-	
-		foreach ($this->column as $item) 
-		{
-			if( $_POST['search']['value'] )
-				($i===0) ? $this->db->like($item, $_POST['search']['value']) : $this->db->or_like($item, $_POST['search']['value']);
-			$column[$i] = $item;
-			$i++;
+		$searchValue = isset($_POST['search']['value']) ? trim($_POST['search']['value']) : '';
+		$column = $this->column;
+
+		if ($searchValue !== '') {
+			$this->db->group_start();
+			foreach ($column as $idx => $item) {
+				if ($idx === 0) {
+					$this->db->like($item, $searchValue);
+				} else {
+					$this->db->or_like($item, $searchValue);
+				}
+			}
+			$this->db->group_end();
 		}
-		
-		if(isset($_POST['order']))
-		{
-			$this->db->order_by($column[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-		} 
-		else if(isset($this->order))
-		{
-			$order = $this->order;
-			$this->db->order_by(key($order), $order[key($order)]);
+
+		if (isset($_POST['order']) && isset($_POST['order'][0]['column']) && isset($_POST['order'][0]['dir'])) {
+			$orderColIdx = (int)$_POST['order'][0]['column'];
+			$orderDir = $_POST['order'][0]['dir'] === 'asc' ? 'asc' : 'desc';
+			if (isset($column[$orderColIdx])) {
+				$this->db->order_by($column[$orderColIdx], $orderDir);
+			}
+		} else if (!empty($this->order)) {
+			foreach ($this->order as $key => $val) {
+				$this->db->order_by($key, $val);
+			}
 		}
 	}
 	

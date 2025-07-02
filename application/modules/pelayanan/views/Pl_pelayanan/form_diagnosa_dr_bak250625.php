@@ -2,456 +2,6 @@
 <script src="<?php echo base_url()?>assets/js/date-time/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="<?php echo base_url()?>assets/css/datepicker.css" />
 
-<script>
-    $(document).ready(function(){
-
-        if($('#cppt_id').val() != ''){
-            show_form_rekam_medis($('#cppt_id').val());
-        }
-
-        // --- AREA DRAWING & COLOR TAGGING ---
-        var tagData = [];
-        var currentTagPos = {x:0, y:0};
-        var drawMode = 'point';
-        var drawColor = '#ff0000';
-        var drawing = false;
-        var drawPoints = [];
-        var drawCanvas = document.getElementById('anatomi-draw-canvas');
-        var drawCtx = drawCanvas.getContext('2d');
-
-        // Inisialisasi data tagging dari database jika ada
-        var exist = $('#anatomi_tagging_exist').val();
-        if (exist) {
-            $('#anatomi_tagging').val(exist);
-            try {
-                var arr = JSON.parse(exist);
-                if(Array.isArray(arr)) tagData = arr;
-            } catch(e) {}
-        }
-        renderAllTagMarkers();
-
-        function updateTagDataInput() {
-            $('#anatomi_tagging').val(JSON.stringify(tagData));
-        }
-
-        function setDrawInstruction() {
-            var instr = '';
-            if(drawMode==='rect') instr = 'Klik & drag untuk rectangle';
-            else if(drawMode==='polygon') instr = 'Klik beberapa titik, klik dua kali untuk selesai';
-            else if(drawMode==='freehand') instr = 'Klik & drag untuk menggambar bebas';
-            else instr = 'Klik pada gambar untuk menambah tag titik';
-            $('#draw-instruction').text(instr);
-        }
-
-        $('#draw-mode').off('change').on('change', function(){
-            drawMode = $(this).val();
-            setDrawInstruction();
-        });
-        $('#draw-color').off('change').on('change', function(){
-            drawColor = $(this).val();
-        });
-        setDrawInstruction();
-
-        // Drawing interaction
-        $(drawCanvas).off('mousedown').on('mousedown', function(e){
-            var rect = drawCanvas.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            if(drawMode==='point') return;
-            drawing = true;
-            drawPoints = [{x:x, y:y}];
-            if(drawMode==='rect') {
-                drawCanvas.onmousemove = function(ev){
-                    var rx = ev.clientX - rect.left, ry = ev.clientY - rect.top;
-                    drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                    drawCtx.strokeStyle = drawColor;
-                    drawCtx.lineWidth = 2;
-                    drawCtx.strokeRect(drawPoints[0].x, drawPoints[0].y, rx-drawPoints[0].x, ry-drawPoints[0].y);
-                };
-            } else if(drawMode==='polygon') {
-                drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                drawCtx.beginPath();
-                drawCtx.moveTo(x,y);
-                drawCanvas.onmousemove = function(ev) {
-                    var px = ev.clientX - rect.left, py = ev.clientY - rect.top;
-                    drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                    drawCtx.beginPath();
-                    drawCtx.moveTo(drawPoints[0].x, drawPoints[0].y);
-                    for(var i=1;i<drawPoints.length;i++) drawCtx.lineTo(drawPoints[i].x, drawPoints[i].y);
-                    drawCtx.lineTo(px, py);
-                    drawCtx.strokeStyle = drawColor;
-                    drawCtx.lineWidth = 2;
-                    drawCtx.closePath();
-                    drawCtx.stroke();
-                };
-            } else if(drawMode==='freehand') {
-                drawCtx.beginPath();
-                drawCtx.moveTo(x,y);
-                drawCanvas.onmousemove = function(ev){
-                    if(!drawing) return;
-                    var px = ev.clientX - rect.left, py = ev.clientY - rect.top;
-                    drawPoints.push({x:px, y:py});
-                    drawCtx.lineTo(px, py);
-                    drawCtx.strokeStyle = drawColor;
-                    drawCtx.lineWidth = 2;
-                    drawCtx.stroke();
-                };
-            }
-            $('#draw-cancel-btn').show();
-        });
-
-        $(drawCanvas).on('mouseup', function(e){
-            if(!drawing) return;
-            var rect = drawCanvas.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            if(drawMode==='rect') {
-                drawPoints.push({x:x, y:y});
-                drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                showAreaLabelModal('rect', drawPoints.slice(), drawColor);
-            } else if(drawMode==='freehand') {
-                drawCtx.closePath();
-                showAreaLabelModal('freehand', drawPoints.slice(), drawColor);
-            }
-            drawing = false;
-            drawCanvas.onmousemove = null;
-        });
-
-        $(drawCanvas).on('dblclick', function(e){
-            if(drawMode==='polygon' && drawPoints.length>=3) {
-                drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                showAreaLabelModal('polygon', drawPoints.slice(), drawColor);
-                drawing = false;
-                drawCanvas.onmousemove = null;
-            }
-        });
-
-        $(drawCanvas).on('mousemove', function(e){
-            if(!drawing || drawMode!=='polygon') return;
-            var rect = drawCanvas.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            if(drawPoints.length>0) {
-                drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                drawCtx.beginPath();
-                drawCtx.moveTo(drawPoints[0].x, drawPoints[0].y);
-                for(var i=1;i<drawPoints.length;i++) drawCtx.lineTo(drawPoints[i].x, drawPoints[i].y);
-                drawCtx.lineTo(x, y);
-                drawCtx.strokeStyle = drawColor;
-                drawCtx.lineWidth = 2;
-                drawCtx.closePath();
-                drawCtx.stroke();
-            }
-        });
-
-        $(drawCanvas).on('click', function(e){
-            if(drawMode==='polygon' && drawing) {
-                var rect = drawCanvas.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                drawPoints.push({x:x, y:y});
-            }
-        });
-
-        $('#draw-cancel-btn').off('click').on('click', function(){
-            drawing = false;
-            drawPoints = [];
-            drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-            $('#draw-cancel-btn').hide();
-        });
-
-        // Modal label input
-        function showAreaLabelModal(type, points, color) {
-            $('#tag-label-input').val('').focus();
-            $('#tag-modal-overlay').show();
-            $('#tag-input-modal').css({left:'50%',top:'50%',transform:'translate(-50%,-50%)'}).show();
-            $('#tag-save-btn').off('click').on('click', function(){
-                var label = $('#tag-label-input').val();
-                if(label.trim()==='') return;
-                var areaTag = {type:type, points:points, color:color, label:label};
-                tagData.push(areaTag);
-                updateTagDataInput();
-                renderAllTagMarkers();
-                $('#tag-input-modal').hide();
-                $('#tag-modal-overlay').hide();
-                drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                $('#draw-cancel-btn').hide();
-            });
-            $('#tag-cancel-btn').off('click').on('click', function(){
-                $('#tag-input-modal').hide();
-                $('#tag-modal-overlay').hide();
-                drawCtx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-                $('#draw-cancel-btn').hide();
-            });
-        }
-
-        // Tagging titik (point)
-        $('#anatomi-img').off('click').on('click', function(e){
-            if(drawMode!=='point') return;
-            var offset = $(this).offset();
-            var x = e.pageX - offset.left;
-            var y = e.pageY - offset.top;
-            currentTagPos = {x: x, y: y};
-            $('#tag-modal-overlay').show();
-            $('#tag-input-modal').css({
-                left: offset.left + x + 10,
-                top: offset.top + y - 10
-            }).show();
-            $('#tag-label-input').val('').focus();
-            $('#tag-save-btn').off('click').on('click', function(){
-                var label = $('#tag-label-input').val();
-                if(label.trim() === '') return;
-                var img = document.getElementById('anatomi-img');
-                var side = (currentTagPos.x < img.width/2) ? 'left' : 'right';
-                var tag = {x: currentTagPos.x, y: currentTagPos.y, label: label, side: side, type:'point'};
-                tagData.push(tag);
-                updateTagDataInput();
-                renderAllTagMarkers();
-                $('#tag-input-modal').hide();
-                $('#tag-modal-overlay').hide();
-            });
-            $('#tag-cancel-btn').off('click').on('click', function(){
-                $('#tag-input-modal').hide();
-                $('#tag-modal-overlay').hide();
-            });
-        });
-
-        // Enter pada input label
-        $('#tag-label-input').off('keypress').on('keypress', function(event) {
-            var keycode =(event.keyCode?event.keyCode:event.which);
-            if(keycode ==13){
-                event.preventDefault();
-                $('#tag-save-btn').click();
-                return false;
-            }
-        });
-
-        // Fungsi ganti gambar anatomi
-        function changeAnatomiImage(select) {
-            var val = (select.value) ? select.value : '0';
-            var imgSrc = '<?php echo base_url()?>assets/img-tagging/images/anatomi_'+val+'.png';
-            document.getElementById('anatomi-img').src = imgSrc;
-            tagData = [];
-            updateTagDataInput();
-            renderAllTagMarkers();
-        }
-        window.changeAnatomiImage = changeAnatomiImage;
-
-        // Fungsi render marker dan area
-        function addTagMarker(tag, idx) {
-            if(tag.type && tag.type!=='point') return;
-            var marker = $('<div class="anatomi-marker" title="'+tag.label+'"></div>');
-            marker.css({
-                position: 'absolute',
-                left: tag.x-7,
-                top: tag.y-7,
-                width:'14px',height:'14px',
-                background: '#007bff',
-                border:'2px solid #fff',
-                borderRadius: '50%',
-                cursor: 'pointer',
-                zIndex: 10
-            });
-            marker.click(function(e){
-                e.stopPropagation();
-                if(confirm('Hapus tag ini?')) {
-                    tagData.splice(idx,1);
-                    updateTagDataInput();
-                    renderAllTagMarkers();
-                }
-            });
-            $('#anatomi-tagging-container').append(marker);
-        }
-
-        function renderAllTagMarkers() {
-            $('#anatomi-tagging-container .anatomi-marker').remove();
-            $('#anatomi-svg-lines').empty();
-            $('#anatomi-svg-areas').empty();
-            $('#anatomi-tag-list-left').empty();
-            $('#anatomi-tag-list-right').empty();
-            var data = $('#anatomi_tagging').val();
-            if(!data) return;
-            try {
-                var arr = JSON.parse(data);
-                if(Array.isArray(arr)) {
-                    var img = document.getElementById('anatomi-img');
-                    var imgW = img.width;
-                    var leftPanelY = 0;
-                    var rightPanelY = 0;
-                    arr.forEach(function(tag, idx) {
-                        if(tag.type && tag.type!=='point') {
-                            // Area (rectangle, polygon, freehand)
-                            var svg = document.getElementById('anatomi-svg-areas');
-                            var areaEl;
-                            var centroid = {x:0, y:0};
-                            if(tag.type==='rect' && tag.points.length===2) {
-                                var x = tag.points[0].x, y = tag.points[0].y;
-                                var w = tag.points[1].x - x, h = tag.points[1].y - y;
-                                areaEl = document.createElementNS('http://www.w3.org/2000/svg','rect');
-                                areaEl.setAttribute('x', x);
-                                areaEl.setAttribute('y', y);
-                                areaEl.setAttribute('width', w);
-                                areaEl.setAttribute('height', h);
-                                centroid.x = x + w/2;
-                                centroid.y = y + h/2;
-                            } else if(tag.type==='polygon' && tag.points.length>=3) {
-                                var pts = tag.points.map(p=>p.x+','+p.y).join(' ');
-                                areaEl = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-                                areaEl.setAttribute('points', pts);
-                                // Centroid for polygon
-                                var cx=0, cy=0;
-                                tag.points.forEach(function(p){ cx+=p.x; cy+=p.y; });
-                                centroid.x = cx/tag.points.length;
-                                centroid.y = cy/tag.points.length;
-                            } else if(tag.type==='freehand' && tag.points.length>=2) {
-                                var d = 'M'+tag.points[0].x+','+tag.points[0].y;
-                                for(var i=1;i<tag.points.length;i++) d+=' L'+tag.points[i].x+','+tag.points[i].y;
-                                areaEl = document.createElementNS('http://www.w3.org/2000/svg','path');
-                                areaEl.setAttribute('d', d);
-                                // Centroid for freehand
-                                var cx=0, cy=0;
-                                tag.points.forEach(function(p){ cx+=p.x; cy+=p.y; });
-                                centroid.x = cx/tag.points.length;
-                                centroid.y = cy/tag.points.length;
-                            }
-                            if(areaEl) {
-                                areaEl.setAttribute('fill', tag.color||'#ff0000');
-                                areaEl.setAttribute('fill-opacity', 0.3);
-                                areaEl.setAttribute('stroke', tag.color||'#ff0000');
-                                areaEl.setAttribute('stroke-width', 2);
-                                areaEl.style.cursor = 'pointer';
-                                areaEl.addEventListener('click', function(){
-                                    if(confirm('Hapus area ini?')) {
-                                        tagData.splice(idx,1);
-                                        updateTagDataInput();
-                                        renderAllTagMarkers();
-                                    }
-                                });
-                                svg.appendChild(areaEl);
-
-                                // Label & garis
-                                var tagDiv = $('<div class="anatomi-tag-label" style="background:'+tag.color+';color:#fff;cursor:pointer;">'+tag.label+'</div>');
-                                tagDiv.click(function(){
-                                    if(confirm('Hapus area ini?')) {
-                                        tagData.splice(idx,1);
-                                        updateTagDataInput();
-                                        renderAllTagMarkers();
-                                    }
-                                });
-                                var svgLines = document.getElementById('anatomi-svg-lines');
-                                var labelPanel, labelX, labelY;
-                                if(centroid.x < imgW/2) {
-                                    labelPanel = $('#anatomi-tag-list-left');
-                                    labelPanel.append(tagDiv);
-                                    tagDiv.css({right:'8px',top:leftPanelY+'px',textAlign:'right'});
-                                    leftPanelY += tagDiv.outerHeight() + 8;
-                                } else {
-                                    labelPanel = $('#anatomi-tag-list-right');
-                                    labelPanel.append(tagDiv);
-                                    tagDiv.css({left:'8px',top:rightPanelY+'px',textAlign:'left'});
-                                    rightPanelY += tagDiv.outerHeight() + 8;
-                                }
-                                // Ambil posisi label relatif ke container
-                                var containerOffset = $('#anatomi-tagging-container').offset();
-                                var labelOffset = tagDiv.offset();
-                                var labelHeight = tagDiv.outerHeight();
-                                var labelY = labelOffset.top - containerOffset.top + (labelHeight/2);
-                                if(centroid.x < imgW/2) {
-                                    // Kiri: ujung kanan label
-                                    labelX = labelOffset.left - containerOffset.left + tagDiv.outerWidth();
-                                } else {
-                                    // Kanan: ujung kiri label
-                                    labelX = labelOffset.left - containerOffset.left;
-                                }
-                                // Gambar garis
-                                var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-                                line.setAttribute('x1', centroid.x);
-                                line.setAttribute('y1', centroid.y);
-                                line.setAttribute('x2', labelX);
-                                line.setAttribute('y2', labelY);
-                                line.setAttribute('stroke', '#007bff');
-                                line.setAttribute('stroke-width', '2');
-                                svgLines.appendChild(line);
-                            }
-                        } else {
-                            // Titik
-                            addTagMarker(tag, idx);
-                            var tagId = 'tag-label-'+idx;
-                            var tagDiv = $('<div id="'+tagId+'" class="anatomi-tag-label" style="background:#f5f5f5;color:#222;">'+(tag.label||'Label')+'</div>');
-                            tagDiv.click(function(){
-                                if(confirm('Hapus tag ini?')) {
-                                    tagData.splice(idx,1);
-                                    updateTagDataInput();
-                                    renderAllTagMarkers();
-                                }
-                            });
-                            var markerX = tag.x;
-                            var markerY = tag.y;
-                            var svg = document.getElementById('anatomi-svg-lines');
-                            var labelPanel, labelX, labelY;
-                            if(tag.side === 'left') {
-                                labelPanel = $('#anatomi-tag-list-left');
-                                labelPanel.append(tagDiv);
-                                tagDiv.css({right:'8px',top:leftPanelY+'px',textAlign:'right'});
-                                leftPanelY += tagDiv.outerHeight() + 8;
-                            } else {
-                                labelPanel = $('#anatomi-tag-list-right');
-                                labelPanel.append(tagDiv);
-                                tagDiv.css({left:'8px',top:rightPanelY+'px',textAlign:'left'});
-                                rightPanelY += tagDiv.outerHeight() + 8;
-                            }
-                            var containerOffset = $('#anatomi-tagging-container').offset();
-                            var labelOffset = tagDiv.offset();
-                            var labelHeight = tagDiv.outerHeight();
-                            labelY = labelOffset.top - containerOffset.top + (labelHeight/2);
-                            if(tag.side === 'left') {
-                                labelX = labelOffset.left - containerOffset.left + tagDiv.outerWidth();
-                            } else {
-                                labelX = labelOffset.left - containerOffset.left;
-                            }
-                            // Garis dari marker ke label
-                            var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-                            line.setAttribute('x1', markerX);
-                            line.setAttribute('y1', markerY);
-                            line.setAttribute('x2', labelX);
-                            line.setAttribute('y2', labelY);
-                            line.setAttribute('stroke', '#007bff');
-                            line.setAttribute('stroke-width', '2');
-                            svg.appendChild(line);
-                        }
-                    });
-                    tagData = arr;
-                }
-            } catch(e) {}
-        }
-
-        function show_form_rekam_medis(myid){
-            preventDefault();
-            $.getJSON("<?php echo site_url('pelayanan/Pl_pelayanan_ri/get_cppt_dt') ?>", {id: myid} , function (response) {    
-                // show data
-                var obj = response.result;
-                $('#cppt_id').val(myid);
-                $('#jenis_form').val(obj.jenis_form);
-                // $('#anatomi_tagging_28').val(response.anatomi_tagging);
-                $('#form_rekam_medis_special_case').html(obj.catatan_pengkajian);
-                $('#header_form').css('display', 'none');
-                $('#footer_form').css('display', 'none');
-                // set value input
-                var value_form = response.value_form;
-                console.log(value_form);
-                $.each(value_form, function(i, item) {
-                    var text = item;
-                    text = text.replace(/\+/g, ' ');
-                    key = i.replace(/\+/g, ' ');
-                    $('#'+key).val(text);
-                });
-                
-
-            }); 
-        }
-    });
-</script>
-
 <script type="text/javascript">
     
     jQuery(function($) {  
@@ -886,143 +436,184 @@
             $('#pl_procedure').val(label_item);
             $('#pl_procedure_hidden').val(val_item);
           }
-    });
-
-    function hide_assesment(){
-        $('#form_rekam_medis_special_case').hide();
-    }
+      });
 
 </script>
 <script src="<?php echo base_url()?>assets/tts/script.js"></script>
+
+
+<script>
+    
+    function changeAnatomiImage(select) {
+        var val = select.value;
+        var imgSrc = '';
+        switch(val) {
+            case '0':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_0.png')?>';
+                break;
+            case '1':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_1.png')?>';
+                break;
+            case '2':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_2.png')?>';
+                break;
+            case '3':
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_3.png')?>';
+                break;
+            // Tambahkan case sesuai value anatomi dan file gambar
+            default:
+                imgSrc = '<?php echo base_url('assets/img-tagging/images/anatomi_0.png')?>';
+        }
+        document.getElementById('anatomi-img').src = imgSrc;
+        // Reset tagging jika ingin kosongkan saat ganti gambar
+        tagData = [];
+        updateTagDataInput();
+        renderAllTagMarkers();
+    }
+
+    var tagData = [];
+    var currentTagPos = {x:0, y:0};
+
+    $('#anatomi-img').click(function(e){
+        var offset = $(this).offset();
+        var x = e.pageX - offset.left;
+        var y = e.pageY - offset.top;
+        currentTagPos = {x: x, y: y};
+        $('#tag-input-modal').css({
+            left: offset.left + x + 10,
+            top: offset.top + y - 10
+        }).show();
+        $('#tag-label-input').val('').focus();
+    });
+
+    $( "#tag-label-input" )    
+      .keypress(function(event) {        
+        var keycode =(event.keyCode?event.keyCode:event.which);         
+        if(keycode ==13){          
+          event.preventDefault();         
+          if($(this).valid()){            
+            $('#tag-save-btn').click();            
+          }          
+          return false;                 
+        }    
+    });
+
+
+    $('#tag-save-btn').click(function(){
+        var label = $('#tag-label-input').val();
+        if(label.trim() === '') return;
+        var img = document.getElementById('anatomi-img');
+        var side = (currentTagPos.x < img.width/2) ? 'left' : 'right';
+        var tag = {x: currentTagPos.x, y: currentTagPos.y, label: label, side: side};
+        tagData.push(tag);
+        updateTagDataInput();
+        renderAllTagMarkers();
+        $('#tag-input-modal').hide();
+        });
+        $('#tag-cancel-btn').click(function(){
+        $('#tag-input-modal').hide();
+    });
+
+    function addTagMarker(tag, idx) {
+    var marker = $('<div class="anatomi-marker" title="'+tag.label+'"></div>');
+    marker.css({
+        position: 'absolute',
+        left: tag.x-7,
+        top: tag.y-7,
+        width:'14px',height:'14px',
+        background: '#007bff',
+        border:'2px solid #fff',
+        borderRadius: '50%',
+        cursor: 'pointer',
+        zIndex: 10
+    });
+    marker.click(function(e){
+        e.stopPropagation();
+        if(confirm('Hapus tag ini?')) {
+        tagData.splice(idx,1);
+        updateTagDataInput();
+        renderAllTagMarkers();
+        }
+    });
+    $('#anatomi-tagging-container').append(marker);
+    }
+
+    function renderAllTagMarkers() {
+    $('#anatomi-tagging-container .anatomi-marker').remove();
+    $('#anatomi-svg-lines').empty();
+    $('#anatomi-tag-list-left').empty();
+    $('#anatomi-tag-list-right').empty();
+    var data = $('#anatomi_tagging').val();
+    if(!data) return;
+    try {
+        var arr = JSON.parse(data);
+        if(Array.isArray(arr)) {
+        var img = document.getElementById('anatomi-img');
+        var imgW = img.width;
+        arr.forEach(function(tag, idx) {
+            addTagMarker(tag, idx);
+            var tagId = 'tag-label-'+idx;
+            var tagDiv = $('<div id="'+tagId+'" class="anatomi-tag-label" style="margin-bottom:8px;cursor:pointer;background:#f5f5f5;padding:4px 8px;border-radius:4px;position:relative;">'+tag.label+'</div>');
+            tagDiv.click(function(){
+            if(confirm('Hapus tag ini?')) {
+                tagData.splice(idx,1);
+                updateTagDataInput();
+                renderAllTagMarkers();
+            }
+            });
+            var markerX = tag.x;
+            var markerY = tag.y;
+            var svg = document.getElementById('anatomi-svg-lines');
+            var labelPanelY = markerY+10;
+            var labelPanelX, lineX2;
+            if(tag.side === 'left') {
+            $('#anatomi-tag-list-left').append(tagDiv);
+            labelPanelX = -10;
+            lineX2 = 0;
+            tagDiv.css({position:'absolute',right:'0',top:markerY+'px',textAlign:'right'});
+            } else {
+            $('#anatomi-tag-list-right').append(tagDiv);
+            labelPanelX = imgW + 10;
+            lineX2 = imgW + 10;
+            tagDiv.css({position:'absolute',left:'0',top:markerY+'px',textAlign:'left'});
+            }
+            var line = document.createElementNS('http://www.w3.org/2000/svg','line');
+            line.setAttribute('x1', markerX);
+            line.setAttribute('y1', markerY);
+            line.setAttribute('x2', lineX2);
+            line.setAttribute('y2', labelPanelY);
+            line.setAttribute('stroke', '#007bff');
+            line.setAttribute('stroke-width', '2');
+            svg.appendChild(line);
+        });
+        tagData = arr;
+        }
+    } catch(e) {}
+    }
+
+    function updateTagDataInput() {
+    $('#anatomi_tagging').val(JSON.stringify(tagData));
+    }
+
+    $(document).ready(function(){
+    var exist = $('#anatomi_tagging_exist').val();
+    if (exist) {
+        $('#anatomi_tagging').val(exist);
+    }
+    renderAllTagMarkers();
+    });
+
+</script>
+
 <!-- hidden form -->
 
 <style>
-    
-.anatomi-marker {
-  position: absolute;
-  transition: 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  z-index: 10;
-}
-
-#anatomi-tag-list-left, #anatomi-tag-list-right {
-  position: relative;
-  min-height: 350px;
-  width: 200px;
-  max-width: 100%;
-  padding: 16px 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  box-sizing: border-box;
-}
-.anatomi-tag-label {
-  position: absolute;
-  margin-bottom: 8px;
-  padding: 7px 14px;
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  min-width: 80px;
-  max-width: 96%;
-  word-break: break-word;
-  white-space: pre-line;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index: 2;
-  font-size: 13px;
-  display: block;
-  left: 0;
-  right: 0;
-}
-#anatomi-tagging-container { min-width:500px; }
-#anatomi-draw-canvas { border-radius:8px; }
-#anatomi-svg-lines, #anatomi-svg-areas {
-  pointer-events: none;
-  z-index: 5;
-}
-@media (max-width: 900px) {
-  #anatomi-tag-list-left, #anatomi-tag-list-right {
-    min-width: 120px;
-    width: 120px;
-    max-width: 40vw;
-    font-size: 12px;
-  }
-  .anatomi-tag-label {
-    font-size: 12px;
-    max-width: 92%;
-    padding: 6px 8px;
-  }
-}
-@media (max-width: 600px) {
-  #anatomi-tag-list-left, #anatomi-tag-list-right {
-    min-width: 80px;
-    width: 80px;
-    max-width: 30vw;
-    font-size: 11px;
-    padding: 8px 0;
-  }
-  .anatomi-tag-label {
-    font-size: 11px;
-    max-width: 90%;
-    padding: 5px 6px;
-  }
-}
-
-
-#tag-modal-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.25);
-  z-index: 105;
-  transition: opacity 0.2s;
-  display: none;
-}
-#tag-input-modal {
-  transition: box-shadow 0.2s, transform 0.2s;
-  max-width: 95vw;
-  min-width: 240px;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  border: 1px solid #007bff;
-  padding: 0;
-  z-index: 110;
-  display: none;
-}
-#tag-input-modal input[type="text"] {
-  font-size: 15px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d5d5d5;
-  width: 100%;
-}
-#tag-input-modal .btn {
-  font-size: 14px;
-  border-radius: 6px;
-  min-width: 80px;
-}
-@media (max-width: 600px) {
-  #tag-input-modal {
-    min-width: 90vw;
-    max-width: 98vw;
-    padding: 0;
-  }
-  #tag-input-modal input[type="text"] {
-    font-size: 14px;
-  }
-}
-
-audio, canvas, progress, video {
-    border: 0px !important;
-}
+/* #anatomi-tagging-container { min-height: 550px; } */
+.anatomi-marker { position:absolute; transition:0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.15); }
+#tag-input-modal { box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+#anatomi-tag-list-left, #anatomi-tag-list-right { position:relative; min-height:350px; }
+.anatomi-tag-label { font-size:11px; }
 </style>
-
-<!-- input type hidden -->
-<input type="hidden" name="jenis_form" id="jenis_form" value="<?php echo isset($form_rm->jenis_form)?$form_rm->jenis_form:''?>">
-<input type="hidden" name="cppt_id" id="cppt_id" value="<?php echo isset($form_rm->id)?$form_rm->id:''?>">
 
 <audio id="container" autoplay=""></audio>
 
@@ -1069,24 +660,6 @@ audio, canvas, progress, video {
     </div>
 </div>
 
-<div class="widget-box transparent ui-sortable-handle" id="widget-box-12" style="display: block">
-    <div class="widget-header">
-        <span style="font-style: italic; font-size: 14px" class="widget-title lighter">Pengkajian Awal Keperawatan Pasien Rawat Jalan</h4>
-        <div class="widget-toolbar no-border">
-            <a href="#" data-action="collapse">
-                <i class="ace-icon fa fa-chevron-down"></i>
-            </a>
-        </div>
-    </div>
-
-    <div class="widget-body" style="display: block;">
-        <div id="form_rekam_medis_special_case">
-            <div class="alert alert-danger"><b>Pemberitahuan!</b><br>Tidak ada File Ditemukan</div>
-        </div>
-    </div>
-</div>
-
-
 <div class="col-md-4 no-padding" style="margin-top: 14px">
     <span style="font-weight: bold"><?php echo isset($value->nama_pegawai)?$value->nama_pegawai:''?></span> <br>
     <span>Tanggal periksa. <?php echo isset($value->tgl_keluar_poli)?$this->tanggal->formatDateTimeFormDmy($value->tgl_keluar_poli) : $this->tanggal->formatDateTimeFormDmy($value->tgl_jam_poli)?></span> <br>
@@ -1094,7 +667,6 @@ audio, canvas, progress, video {
 <div class="col-md-8">
     <p style="text-align: right; margin-top: -10px"><b><span style="font-size: 36px;font-family: 'Glyphicons Halflings';">S O A P</span> <br>(<i>Subjective, Objective, Assesment, Planning</i>) </b></p>
 </div>
-
 
 <span style="font-weight: bold; font-style: italic; color: blue; font-size: 14px">(Subjective)</span>
 <div style="margin-top: 6px">
@@ -1146,64 +718,35 @@ audio, canvas, progress, video {
      <div class="form-group">
         <label class="control-label col-sm-2">Anatomi</label>
         <div class="col-md-4">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), isset($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
+            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), ($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
         </div>
     </div>  
     <br>
     
     <div class="col-md-12">
-    <center><span style="font-weight: bold;font-size: 18px">VISUALISASI STATUS LOKALIS</span></center>
-    <div style="display:flex;justify-content:center;align-items:flex-start;">
-        <div id="anatomi-tag-list-left" style="min-width:180px;max-width:220px;position:relative;"></div>
-        <div id="anatomi-tagging-container" style="position:relative; display:inline-block; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:8px; padding:8px;">
-            <!-- Overlay dan Modal Input Label Tag -->
-            <div id="tag-modal-overlay" style="display:none;"></div>
-            <div id="tag-input-modal" style="display:none;">
-                <div style="padding:20px 18px 16px 18px; display:flex; flex-direction:column; align-items:center; gap:12px;">
-                    <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:100%; max-width:320px; font-size:15px;">
-                    <div style="display:flex; gap:10px; width:100%; justify-content:flex-end;">
-                    <button type="button" id="tag-save-btn" class="btn btn-sm btn-primary" style="min-width:80px;">Simpan</button>
-                    <button type="button" id="tag-cancel-btn" class="btn btn-sm btn-default" style="min-width:80px;">Batal</button>
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin:10px 0 0 0; text-align:center;">
-                <label style="font-weight:500;">Mode:</label>
-                <select id="draw-mode" style="width:120px; margin:0 8px;">
-                    <!-- <option value="point">Titik</option> -->
-                    <option value="#">Pilih mode</option>
-                    <option value="rect">Rectangle</option>
-                    <!-- <option value="polygon">Polygon</option> -->
-                    <option value="freehand">Freehand</option>
-                </select>
-                <input type="color" id="draw-color" value="#ff0000" style="margin-left:8px; vertical-align:middle;">
-                <span id="draw-instruction" style="margin-left:10px;color:#888;font-size:12px;"></span>
-                <button type="button" id="draw-cancel-btn" class="btn btn-xs btn-default" style="display:none; margin-left:8px;">Batal Gambar</button>
-            </div>
-
-            <?php
-                $img_anatomi = isset($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
-            ?>
-            <div style="position:relative; width:500px; height:auto;">
-                <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px; height:auto; display:block; border-radius:8px;">
+        <center><span style="font-weight: bold;">ANATOMI TUBUH MANUSIA</span></center>
+        <div style="display:flex;justify-content:center;align-items:flex-start;">
+            <div id="anatomi-tag-list-left" style="min-width:180px;max-width:250px;position:relative;"></div>
+            <div id="anatomi-tagging-container" style="position:relative; display:inline-block; background:#fff;">
+                <?php
+                    $img_anatomi = ($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
+                ?>
+                <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px; height:auto; display:block;">
                 <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
-                <svg id="anatomi-svg-areas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
-                <canvas id="anatomi-draw-canvas" width="500" height="650" style="position:absolute;left:0;top:0;width:500px; height:650px;pointer-events:auto;z-index:20;background:transparent; border-radius:8px;"></canvas>
             </div>
-            
+            <div id="anatomi-tag-list-right" style="min-width:180px;max-width:250px;position:relative;"></div>
+            </div>
+            <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
+            <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width: 100% !important; display: none"><?php echo $riwayat->anatomi_tagging?></textarea>
+
+
+        <!-- Modal input tag -->
+        <div id="tag-input-modal" style="display:none; z-index:10; background:#fff; border:1px solid #007bff; padding:8px; border-radius:4px;">
+            <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:80%; display:inline-block;">
+            <button type="button" id="tag-save-btn" class="btn btn-xs btn-primary">Simpan</button>
+            <button type="button" id="tag-cancel-btn" class="btn btn-xs btn-default">Batal</button>
         </div>
-        <div id="anatomi-tag-list-right" style="min-width:180px;max-width:220px;position:relative;"></div>
     </div>
-
-    
-    <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
-    <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width: 100% !important; display: none"><?php echo $riwayat->anatomi_tagging?></textarea>
-
-    
-
-
-</div>
 
 </div>
 <br>

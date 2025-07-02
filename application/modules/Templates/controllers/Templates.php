@@ -1855,7 +1855,7 @@ class Templates extends MX_Controller {
                         <span id="ttd_tgl"></span><span id="ttd_lainnya"></span><br><span id="ttd_nama"></span></td>
                         <td align="center" width="50%" valign="top">
                         <br><br>
-                        Jakarta,&nbsp;'.$this->tanggal->formatDate($data->reg_data->tgl_jam_masuk).'<br>
+                        Jakarta,&nbsp;<span id="tglTtd">'.$this->tanggal->formatDate(date('Y-m-d')).'</span><br>
                         '.COMP_FULL.'
                         <br><br>
                         <span id="ttd_digital_dr">'.$ttd.'<br></span>

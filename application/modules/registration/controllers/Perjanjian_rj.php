@@ -59,6 +59,7 @@ class Perjanjian_rj extends MX_Controller {
                 $no++;
                 $row = array();
                 $html = '';
+                $jeniskunjungan = ($row_list->jeniskunjunganjkn == null) ? 'Kontrol Rutin' : $row_list->namajeniskunjungan;
 
                 if( isset($_GET['no_mr']) AND $_GET['no_mr'] != '' ){
                     // $html .= '<li><a href="#" onclick="changeModulRjFromPerjanjian('.$row_list->id_tc_pesanan.','.$row_list->kode_dokter.','."'".$row_list->no_poli."'".','."'".$row_list->kode_perjanjian."'".')">Daftarkan Pasien</a></li>';
@@ -75,7 +76,7 @@ class Perjanjian_rj extends MX_Controller {
                 if(isset($_GET['no_mr'])){
                     $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="getMenuTabs('."'registration/Reg_pasien/surat_control?id_tc_pesanan=".$row_list->id_tc_pesanan."&jd_id=".$row_list->jd_id."'".', '."'tabs_form_pelayanan'".')">Cetak Surat Kontrol</a></li>' : '';
                 }else{
-                    $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol</a></li> <li><a href="#" onclick="cetak_surat_kontrol_popup('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol [testing]</a></li>' : '';
+                    $print_surat_kontrol = ($row_list->jd_id != '') ? '<li><a href="#" onclick="cetak_surat_kontrol('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol</a></li> <li><a href="#" onclick="cetak_surat_kontrol_popup('.$row_list->id_tc_pesanan.', '.$row_list->jd_id.')">Cetak Surat Kontrol [new layout]</a></li>' : '';
                 }
 
                 $is_bridging = ($row_list->is_bridging == 1) ? '<span style="background: green; padding: 2px; color: white"><i class="fa fa-check"></i> Bridging</span>' : '' ;
@@ -102,15 +103,20 @@ class Perjanjian_rj extends MX_Controller {
                 if( isset($_GET['flag']) AND $_GET['flag']=='HD' ){
                     $row[] = $row_list->selected_day;
                 }else{
-                    $row[] = 'Kode Booking : <span style="font-weight: bold; color: BLUE;">'.$row_list->unique_code_counter."</span><br />".$this->tanggal->formatDate($row_list->tgl_pesanan);
+                    $row[] = $this->tanggal->formatDateDmy($row_list->tgl_pesanan);
                 }
-                $row[] = $row_list->tlp_almt_ttp."<br>".$row_list->no_telp."<br>".$row_list->no_hp_pasien;
-                if( !isset($_GET['no_mr']) ){
-                    $row[] = $row_list->no_sep;
+
+                if($row_list->no_hp_pasien == $row_list->tlp_almt_ttp){
+                    $no_telp = $row_list->tlp_almt_ttp;
+                }else{
+                    $no_telp = $row_list->tlp_almt_ttp."<br>".$row_list->no_hp_pasien;
                 }
+                $row[] = $no_telp;
+                $row[] = $jeniskunjungan;
                 $row[] = $row_list->no_kartu_bpjs;
                 $row[] = '<div class="center"><input type="text" class="form-control" style="border: 1px solid white !important" name="kode_perjanjian" value="'.$row_list->kode_perjanjian.'" id="surat_kontrol_'.$row_list->id_tc_pesanan.'" onchange="saveRow('.$row_list->id_tc_pesanan.')"></div>';
-                $row[] = $this->tanggal->formatDateTime($row_list->input_tgl).'<br>'.$row_list->petugas.'<br>'.$row_list->keterangan;
+                $row[] = $this->tanggal->formatDateTime($row_list->input_tgl).'<br>'.$row_list->petugas;
+                $row[] = $row_list->keterangan;
                 $row[] = ($row_list->tgl_masuk == NULL) ? '<div class="center"><span class="label label-sm label-danger"><i class="fa fa-times-circle"></i></span></div>' : '<div class="center"><span class="label label-sm label-success"><i class="fa fa-check"></i></span></div>';
 
 
