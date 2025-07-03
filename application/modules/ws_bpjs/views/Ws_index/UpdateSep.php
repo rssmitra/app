@@ -305,7 +305,7 @@
                     <label class="control-label col-md-3">Penjamin</label>
                     <div class="col-md-10">
 
-                      <?php echo $this->master->custom_selection_radio($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'penjamin_ws_bpjs') ), '' , 'penjamin', 'penjamin', 'form-control', '', '') ?>
+                      <?php echo $this->master->custom_selection_checkbox($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'penjamin_ws_bpjs') ), '' , 'penjamin', 'penjamin', 'form-control', '', '') ?>
 
                     </div>
                   </div>
