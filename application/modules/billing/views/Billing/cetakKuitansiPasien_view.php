@@ -156,13 +156,30 @@
         </div>
         <script>
           function printpage() {
-              //Get the print button and put it into a variable
               var printButton = document.getElementById("printpagebutton");
-              //Set the print button visibility to 'hidden' 
               printButton.style.visibility = 'hidden';
-              //Print the page content
-              window.print()
-              printButton.style.visibility = 'visible';
+              // AJAX update is_print_kuitansi
+              var no_registrasi = "<?php echo $data->reg_data->no_registrasi; ?>";
+              fetch("<?php echo base_url('billing/Billing/update_is_print_kuitansi'); ?>", {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: "no_registrasi=" + encodeURIComponent(no_registrasi)
+              })
+              .then(function(response) { return response.json(); })
+              .then(function(data) {
+                // Optionally show a message or handle response
+                // alert(data.message);
+                window.print();
+                printButton.style.visibility = 'visible';
+              })
+              .catch(function(err) {
+                printButton.style.visibility = 'visible';
+                alert('Gagal update status print kuitansi!');
+                window.print();
+              });
           }
         </script>
       </div>

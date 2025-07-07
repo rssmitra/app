@@ -585,7 +585,6 @@ class Billing extends MX_Controller {
             'kunjungan' => $grouping,
             'total_payment' => $_GET['payment'],
         );
-
         // echo '<pre>';print_r($result);die;
         //$this->load->view('Billing/cetakKuitansi_view', $data, false);
         //$data['header'] = $this->load->view('Billing/temp_header_dt', $data, true);
@@ -1414,7 +1413,7 @@ class Billing extends MX_Controller {
             }
            
 
-            echo "<pre>";print_r($dataexc);die;
+            // echo "<pre>";print_r($dataexc);die;
             
             /*save tc_trans_pelayanan*/
             $this->db->insert('tc_trans_pelayanan', $mergeData);
@@ -1465,6 +1464,28 @@ class Billing extends MX_Controller {
             $this->db->query($query);
         }
         echo json_encode(['status' => 200, 'message' => 'Password benar, status print kuitansi diupdate']);
+    }
+
+    
+    public function update_is_print_kuitansi() {
+        if (!$this->input->is_ajax_request()) {
+            show_404();
+        }
+        $no_registrasi = $this->input->post('no_registrasi');
+        if (!$no_registrasi) {
+            echo json_encode(['status' => 400, 'message' => 'No registrasi tidak ditemukan']);
+            return;
+        }
+        // Update is_print_kuitansi +1
+        $this->db->set('is_print_kuitansi', 'is_print_kuitansi+1', false);
+        $this->db->where('no_registrasi', $no_registrasi);
+        $this->db->update('tc_trans_kasir');
+        // echo $this->db->last_query();die;
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 200, 'message' => 'Status print kuitansi berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 500, 'message' => 'Gagal update status print kuitansi']);
+        }
     }
 
 }

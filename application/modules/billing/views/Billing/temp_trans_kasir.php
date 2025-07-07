@@ -320,6 +320,7 @@ function submitApprovalKepalaKeuangan() {
                 } else {
                     openKuitansiPopup('billing/Billing/print_kuitansi?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val());
                     $('#btn-cetak-kuitansi').attr('onclick','cetak_kuitansi('+response.counter+')');
+                    $('#btn-cetak-kuitansi-2').attr('onclick','cetak_kuitansi_pasien('+response.counter+')');
                 }
             } else {
                 alert(response.message || 'Password atau kode verifikasi salah!');
@@ -334,9 +335,19 @@ function submitApprovalKepalaKeuangan() {
     });
 }
 
-function cetak_kuitansi_pasien(){
+function cetak_kuitansi_pasien(count){
     // Optional: implement similar logic if needed
-    openKuitansiPopup('billing/Billing/print_kuitansi_pasien?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val());
+    if (count==0) {
+        openKuitansiPopup('billing/Billing/print_kuitansi_pasien?no_registrasi=<?php echo $no_registrasi?>&payment='+$('#total_payment').val());
+        count = count + 1;
+        $('#btn-cetak-kuitansi-2').attr('onclick','cetak_kuitansi_pasien('+count+')');
+    } else {
+        // Show modal for approval
+        $('#password_user').val('');
+        $('#modal-approval-kepala-keuangan').modal('show');
+    }
+    
+    
 }
 
 
@@ -511,15 +522,15 @@ $('#modal-approval-kepala-keuangan').on('hidden.bs.modal', function () {
                 <li>
                     <?php
                         $is_print_kuitansi = isset($data->kasir_data[0]->is_print_kuitansi)?$data->kasir_data[0]->is_print_kuitansi:0;
-                        echo '<a href="#" onclick="cetak_kuitansi('.$is_print_kuitansi.');" data-id="0" id="btn-cetak-kuitansi"> Cetak Kuitansi</a>';
+                        echo '<a href="#" onclick="cetak_kuitansi('.$is_print_kuitansi.');" data-id="0" id="btn-cetak-kuitansi"> Kuitansi Transaksi</a>';
                     ?>
                 </li>
-                </li>
-                <!-- <li>
+                <li>
                     <?php
-                        echo '<a href="#" onclick="cetak_kuitansi_pasien();" data-id="0" id="btn-cetak-kuitansi-2"> Kuitansi Pasien</a>';
+                        $is_print_kuitansi = isset($data->kasir_data[0]->is_print_kuitansi)?$data->kasir_data[0]->is_print_kuitansi:0;
+                        echo '<a href="#" onclick="cetak_kuitansi_pasien('.$is_print_kuitansi.');" data-id="0" id="btn-cetak-kuitansi-2"> Kuitansi Pasien Bayar</a>';
                     ?>
-                </li> -->
+                </li>
             </ul>
         </div>
        
