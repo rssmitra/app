@@ -2435,8 +2435,9 @@ class Pl_pelayanan extends MX_Controller {
         $data['jenis_form'] = 'form_'.$id.'';
         $data['no_kunjungan'] = $no_kunjungan;
         $data['data_pasien'] = $this->Pl_pelayanan->get_detail_kunjungan($no_kunjungan);
+        $data['result'] = $result;
         
-        // echo '<pre>';print_r($result);die;
+        // echo '<pre>';print_r($data);die;
         $html = $this->load->view('Pl_pelayanan/clinical_pathway/form_'.$id.'', $data, true);
         echo json_encode(array('html' => $html));
 

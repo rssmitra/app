@@ -113,7 +113,7 @@ jQuery(function($) {
                     value="">
             </td>
             <td style="width: 40%; align: center" valign="top" width="20%">
-                <strong>Ruang rawat selanjutnya :</strong>
+                <strong>Kelas Rawat :</strong>
                 <input style="width: 100% !important" type="text" name="form_36[rr_s]" id="rr_s" onchange="fillthis('rr_s')" class="input_type"
                     value="">
             </td>
@@ -142,7 +142,12 @@ jQuery(function($) {
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" class="ace" name="form_36[a_i]" id="a_i" onclick="checkthis('a_i')">
-                        <span class="lbl">  Alergi, sebutkan <input type="text" name="form_36[m_a]" id="m_a" onchange="fillthis('m_a')" class="input_type" value="" style="width: 50%"><br></span>
+                        <span class="lbl">  Ada Alergi, sebutkan <input type="text" name="form_36[m_a]" id="m_a" onchange="fillthis('m_a')" class="input_type" value="" style="width: 50%"><br></span>
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" class="ace" name="form_36[no_a_i]" id="no_a_i" onclick="checkthis('no_a_i')">
+                        <span class="lbl">  Tidak Ada Alergi</span>
                     </label>
                 </div>
                 <div class="checkbox">
@@ -263,7 +268,7 @@ jQuery(function($) {
                         <td colspan="2">
                             <label>
                                 <input type="checkbox" class="ace" name="form_36[po_k]" id="po_k" onclick="checkthis('po_k')">
-                                <span class="lbl">  Potion O2, kebutuhan <input type="text" name="form_36[mj_a2]" id="mj_a2" onchange="fillthis('mj_a2')" class="input_type" value="" style="width: 50px">1 /menit<br></span>
+                                <span class="lbl">  Potion O2, kebutuhan <input type="text" name="form_36[mj_a2]" id="mj_a2" onchange="fillthis('mj_a2')" class="input_type" value="" style="width: 50px">lpm<br></span>
                             </label>
                         </td>
                     </tr>
@@ -278,13 +283,13 @@ jQuery(function($) {
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" class="ace" name="form_36[v_r]" id="v_r" onclick="checkthis('v_r')">
-                                    <span class="lbl"> Vebtilator<br></span>
+                                    <span class="lbl"> Ventilator<br></span>
                                 </label> 
                             </div>
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" class="ace" name="form_36[b_g]" id="b_g" onclick="checkthis('b_g')">
-                                    <span class="lbl"> Bangging <span style="margin-left: 84px;"></span></span>
+                                    <span class="lbl"> Bagging <span style="margin-left: 84px;"></span></span>
                                 </label>
                             </div>
                         </td>
@@ -304,7 +309,7 @@ jQuery(function($) {
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" class="ace" name="form_36[p_i]" id="p_i" onclick="checkthis('p_i')">
-                                    <span class="lbl">  Popa infus</span>
+                                    <span class="lbl">  Pompa infus</span>
                                 </label>
                             </div>
                         </td>

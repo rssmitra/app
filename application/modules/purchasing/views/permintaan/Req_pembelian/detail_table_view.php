@@ -1,19 +1,22 @@
 <div class="row">
   <div class="col-xs-12">
     <!-- PAGE CONTENT BEGINS -->
-      <h4><?php echo isset( $dt_detail_brg[0] ) ? $dt_detail_brg[0]->kode_permohonan : 'Tidak ada data' ;?></h4>
-      <table class="table table-bordered table-hovered" style="font-size:11px">
-        <tr>
-          <th class="center" width="35px">No</th>
-          <th  width="120px">Kode Barang</th>
-          <th>Nama Barang</th>
-          <th class="center" width="80px">Permohonan</th>
-          <th class="center" width="80px">Disetujui</th>
-          <th class="center" width="80px">PO</th>
-          <th class="center" width="80px">Satuan Besar</th>
-          <th class="center" width="80px">Rasio</th>
-          <th class="center" width="80px">Keterangan</th>
-        </tr>
+      <h4>No. <?php echo isset( $dt_detail_brg[0]['kode_permohonan'] ) ? $dt_detail_brg[0]['kode_permohonan'] : 'Tidak ada data' ;?></h4>
+      <br>
+      <table class="table table-bordered" style="font-size:11px">
+        <thead>
+          <tr>
+            <th class="center" width="35px">No</th>
+            <th  width="120px">Kode Barang</th>
+            <th>Nama Barang</th>
+            <th class="center" width="80px">Permohonan</th>
+            <th class="center" width="80px">Disetujui</th>
+            <th class="center" width="80px">PO</th>
+            <th class="center" width="80px">Satuan Besar</th>
+            <th class="center" width="80px">Rasio</th>
+            <th class="center" width="80px">Keterangan</th>
+          </tr>
+        </thead>
         <?php 
           $no=0; 
           if( count($dt_detail_brg) > 0 ) :
@@ -47,7 +50,7 @@
 
     <?php
       if( count($dt_detail_brg) > 0 ){
-        $explode_str = explode('/',$dt_detail_brg[0]->ket_acc);
+        $explode_str = explode('/',$dt_detail_brg[0]['ket_acc']);
         if(is_array($explode_str)){
           echo '<pre style="font-size: 11px">';
           echo 'Riwayat Persetujuan: <br>';
