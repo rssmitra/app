@@ -892,6 +892,16 @@
         $('#form_rekam_medis_special_case').hide();
     }
 
+    // Toggle tampil/hidden
+    $('#checklist_status_lokaslis').on('change', function(){
+        if($(this).is(':checked')){
+        $('#form_status_lokalis').show();
+        } else {
+        $('#form_status_lokalis').hide(120);
+        }
+    });
+
+
 </script>
 <script src="<?php echo base_url()?>assets/tts/script.js"></script>
 <!-- hidden form -->
@@ -1069,7 +1079,7 @@ audio, canvas, progress, video {
     </div>
 </div>
 
-<div class="widget-box transparent ui-sortable-handle" id="widget-box-12" style="display: block">
+<div class="widget-box transparent ui-sortable-handle collapsed" id="widget-box-12" style="display: block">
     <div class="widget-header">
         <span style="font-style: italic; font-size: 14px" class="widget-title lighter">Pengkajian Awal Keperawatan Pasien Rawat Jalan</h4>
         <div class="widget-toolbar no-border">
@@ -1079,7 +1089,7 @@ audio, canvas, progress, video {
         </div>
     </div>
 
-    <div class="widget-body" style="display: block;">
+    <div class="widget-body" style="display: none;">
         <div id="form_rekam_medis_special_case">
             <div class="alert alert-danger"><b>Pemberitahuan!</b><br>Tidak ada File Ditemukan</div>
         </div>
@@ -1141,69 +1151,68 @@ audio, canvas, progress, video {
     <textarea name="pl_pemeriksaan" id="pl_pemeriksaan" class="form-control" style="height: 100px !important"><?php echo isset($riwayat->pemeriksaan)?$this->master->br2nl($riwayat->pemeriksaan):''?></textarea>
     <input type="hidden" name="flag_form_pelayanan" value="<?php echo ($this->session->userdata('flag_form_pelayanan')) ? $this->session->userdata('flag_form_pelayanan') : 'perawat'?>"><br>
     
-    <label for="form-field-8"> <b>Status Lokalis</b><br><span style="font-size: 11px; font-style: italic">(Mohon di<i>tagging</i> status lokalis pada anatomi pasien)</span></label>
+    <label for="form-field-8">
+        <label><input type="checkbox" class="ace" name="checklist_status_lokaslis" id="checklist_status_lokaslis" ><span class="lbl"> <b>Status Lokalis</b></span></label>
+         <br><span style="font-size: 11px; font-style: italic">(Mohon di<i>tagging</i> status lokalis pada gambar anatomi tubuh pasien)</span>
+    </label>
     <!-- status lokalis -->
-     <div class="form-group">
-        <label class="control-label col-sm-2">Anatomi</label>
-        <div class="col-md-4">
-            <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), isset($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
-        </div>
-    </div>  
-    <br>
-    
-    <div class="col-md-12">
-    <center><span style="font-weight: bold;font-size: 18px">VISUALISASI STATUS LOKALIS</span></center>
-    <div style="display:flex;justify-content:center;align-items:flex-start;">
-        <div id="anatomi-tag-list-left" style="min-width:180px;max-width:220px;position:relative;"></div>
-        <div id="anatomi-tagging-container" style="position:relative; display:inline-block; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:8px; padding:8px;">
-            <!-- Overlay dan Modal Input Label Tag -->
-            <div id="tag-modal-overlay" style="display:none;"></div>
-            <div id="tag-input-modal" style="display:none;">
-                <div style="padding:20px 18px 16px 18px; display:flex; flex-direction:column; align-items:center; gap:12px;">
-                    <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:100%; max-width:320px; font-size:15px;">
-                    <div style="display:flex; gap:10px; width:100%; justify-content:flex-end;">
-                    <button type="button" id="tag-save-btn" class="btn btn-sm btn-primary" style="min-width:80px;">Simpan</button>
-                    <button type="button" id="tag-cancel-btn" class="btn btn-sm btn-default" style="min-width:80px;">Batal</button>
+    <div id="form_status_lokalis" style="display: none;">
+        <div class="form-group">
+            <label class="control-label col-sm-2">Anatomi</label>
+            <div class="col-md-4">
+                <?php echo $this->master->custom_selection($params = array('table' => 'global_parameter', 'id' => 'value', 'name' => 'label', 'where' => array('flag' => 'anatomi', 'is_active' => 'Y')), isset($riwayat->anatomi_img)?$riwayat->anatomi_img:0 , 'anatomi', 'anatomi', 'form-control', 'onchange="changeAnatomiImage(this)"', '');?>
+            </div>
+        </div>  
+        <br>
+        
+        <div class="col-md-12">
+            <center><span style="font-weight: bold;font-size: 18px">VISUALISASI STATUS LOKALIS</span></center>
+            <div style="display:flex;justify-content:center;align-items:flex-start;">
+                <div id="anatomi-tag-list-left" style="min-width:180px;max-width:220px;position:relative;"></div>
+                <div id="anatomi-tagging-container" style="position:relative; display:inline-block; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:8px; padding:8px;">
+                    <!-- Overlay dan Modal Input Label Tag -->
+                    <div id="tag-modal-overlay" style="display:none;"></div>
+                    <div id="tag-input-modal" style="display:none;">
+                        <div style="padding:20px 18px 16px 18px; display:flex; flex-direction:column; align-items:center; gap:12px;">
+                            <input type="text" id="tag-label-input" class="form-control" placeholder="Label lokasi..." style="width:100%; max-width:320px; font-size:15px;">
+                            <div style="display:flex; gap:10px; width:100%; justify-content:flex-end;">
+                            <button type="button" id="tag-save-btn" class="btn btn-sm btn-primary" style="min-width:80px;">Simpan</button>
+                            <button type="button" id="tag-cancel-btn" class="btn btn-sm btn-default" style="min-width:80px;">Batal</button>
+                            </div>
+                        </div>
                     </div>
+
+                    <div style="margin:10px 0 0 0; text-align:center;">
+                        <label style="font-weight:500;">Mode:</label>
+                        <select id="draw-mode" style="width:120px; margin:0 8px;">
+                            <!-- <option value="point">Titik</option> -->
+                            <option value="#">Pilih mode</option>
+                            <option value="rect">Rectangle</option>
+                            <!-- <option value="polygon">Polygon</option> -->
+                            <option value="freehand">Freehand</option>
+                        </select>
+                        <input type="color" id="draw-color" value="#ff0000" style="margin-left:8px; vertical-align:middle;">
+                        <span id="draw-instruction" style="margin-left:10px;color:#888;font-size:12px;"></span>
+                        <button type="button" id="draw-cancel-btn" class="btn btn-xs btn-default" style="display:none; margin-left:8px;">Batal Gambar</button>
+                    </div>
+
+                    <?php
+                        $img_anatomi = isset($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
+                    ?>
+                    <div style="position:relative; width:500px; height:auto;">
+                        <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px; height:auto; display:block; border-radius:8px;">
+                        <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
+                        <svg id="anatomi-svg-areas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
+                        <canvas id="anatomi-draw-canvas" width="500" height="650" style="position:absolute;left:0;top:0;width:500px; height:650px;pointer-events:auto;z-index:20;background:transparent; border-radius:8px;"></canvas>
+                    </div>
+                    
                 </div>
+                <div id="anatomi-tag-list-right" style="min-width:180px;max-width:220px;position:relative;"></div>
             </div>
-
-            <div style="margin:10px 0 0 0; text-align:center;">
-                <label style="font-weight:500;">Mode:</label>
-                <select id="draw-mode" style="width:120px; margin:0 8px;">
-                    <!-- <option value="point">Titik</option> -->
-                    <option value="#">Pilih mode</option>
-                    <option value="rect">Rectangle</option>
-                    <!-- <option value="polygon">Polygon</option> -->
-                    <option value="freehand">Freehand</option>
-                </select>
-                <input type="color" id="draw-color" value="#ff0000" style="margin-left:8px; vertical-align:middle;">
-                <span id="draw-instruction" style="margin-left:10px;color:#888;font-size:12px;"></span>
-                <button type="button" id="draw-cancel-btn" class="btn btn-xs btn-default" style="display:none; margin-left:8px;">Batal Gambar</button>
-            </div>
-
-            <?php
-                $img_anatomi = isset($riwayat->anatomi_img)?'anatomi_'.$riwayat->anatomi_img.'.png':'anatomi_0.png';
-            ?>
-            <div style="position:relative; width:500px; height:auto;">
-                <img src="<?php echo base_url('assets/img-tagging/images/'.$img_anatomi.'')?>" id="anatomi-img" style="width:500px; height:auto; display:block; border-radius:8px;">
-                <svg id="anatomi-svg-lines" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
-                <svg id="anatomi-svg-areas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;"></svg>
-                <canvas id="anatomi-draw-canvas" width="500" height="650" style="position:absolute;left:0;top:0;width:500px; height:650px;pointer-events:auto;z-index:20;background:transparent; border-radius:8px;"></canvas>
-            </div>
-            
+            <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
+            <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width: 100% !important; display: none"><?php echo $riwayat->anatomi_tagging?></textarea>
         </div>
-        <div id="anatomi-tag-list-right" style="min-width:180px;max-width:220px;position:relative;"></div>
     </div>
-
-    
-    <input type="hidden" name="anatomi_tagging" id="anatomi_tagging" value="">
-    <textarea name="anatomi_tagging_exist" id="anatomi_tagging_exist" style="width: 100% !important; display: none"><?php echo $riwayat->anatomi_tagging?></textarea>
-
-    
-
-
-</div>
 
 </div>
 <br>

@@ -459,12 +459,12 @@ function getDataAntrianPasien(){
             html_cancel = '';
             html_cancel += '<tr style="cursor: pointer;" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             // html_cancel += '<td align="center">'+o.no_antrian+'</td>';
-            html_cancel += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px">No. '+o.no_antrian+'</b><br><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: red; font-weight: bold; padding: 2px">Batal</span> </small><div style="width: 100%; padding: 2px; background: #edf3f7"><small>Tgl. Kunjungan '+o.format_tgl_poli+'</small></div></td>';
+            html_cancel += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px"><span class="antrian-no-kanan">'+o.no_antrian+'</span></b><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: red; font-weight: bold; padding: 2px">Batal</span> </small></td>';
             // html_cancel += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
             html_cancel += '</tr>';
-            html_cancel += '<tr>';
-            html_cancel += '<td colspan="3">&nbsp;</td>';
-            html_cancel += '</tr>';
+            // html_cancel += '<tr>';
+            // html_cancel += '<td colspan="3">&nbsp;</td>';
+            // html_cancel += '</tr>';
 
           $(html_cancel).appendTo($('#list_antrian_existing'));
         
@@ -482,12 +482,12 @@ function getDataAntrianPasien(){
             html_existing = '';
             html_existing += '<tr style="cursor: pointer;" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             // html_existing += '<td align="center">'+o.no_antrian+'</td>';
-            html_existing += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px">No. '+o.no_antrian+'</b><br><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: darkorange; font-weight: bold; padding: 2px">Belum dilayani</span> </small><div style="width: 100%; padding: 2px; background: #edf3f7"><small>Tgl. Kunjungan '+o.format_tgl_poli+'</small></div></td>';
+            html_existing += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px"><span class="antrian-no-kanan">'+o.no_antrian+'</span></b><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: darkorange; font-weight: bold; padding: 2px">Belum dilayani</span> </small></td>';
             // html_existing += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
             html_existing += '</tr>';
-            html_existing += '<tr>';
-            html_existing += '<td colspan="3">&nbsp;</td>';
-            html_existing += '</tr>';
+            // html_existing += '<tr>';
+            // html_existing += '<td colspan="3">&nbsp;</td>';
+            // html_existing += '</tr>';
 
 
             $(html_existing).appendTo($('#list_antrian_existing'));
@@ -499,12 +499,12 @@ function getDataAntrianPasien(){
             html_done = '';
             html_done += '<tr style="cursor: pointer;" onclick="click_selected_patient('+o.id_pl_tc_poli+','+o.no_kunjungan+','+"'"+o.no_mr+"'"+')">';
             // html_done += '<td align="center">'+o.no_antrian+'</td>';
-            html_done += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px">No. '+o.no_antrian+'</b><br><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: green; font-weight: bold; padding: 2px">Selesai</span> </small><div style="width: 100%; padding: 2px; background: #edf3f7"><small>Tgl. Kunjungan '+o.format_tgl_poli+'</small></div></td>';
+            html_done += '<td colspan="3" style="border: 1px solid #e0e0e0;   padding: 5px; width: 100%; min-width: 200px"><b style="font-size: 14px"><span class="antrian-no-kanan">'+o.no_antrian+'</span></b><b>'+o.no_mr+'</b><br>'+o.nama_pasien+'/'+o.jen_kelamin+'/'+o.umur+' Thn <br><small><span style="'+txt_color_penjamin+'; padding: 1px; font-size: 10px !important;">'+penjamin+'</span> <span style="border-radius: 5px; color: white; background: green; font-weight: bold; padding: 2px">Selesai</span> </small></td>';
             // html_done += '<td align="center"><i class="fa fa-check green bigger-120"></i></td>';
             html_done += '</tr>';
-            html_done += '<tr>';
-            html_done += '<td colspan="3">&nbsp;</td>';
-            html_done += '</tr>';
+            // html_done += '<tr>';
+            // html_done += '<td colspan="3">&nbsp;</td>';
+            // html_done += '</tr>';
             $(html_done).appendTo($('#list_antrian_existing'));
 
           }
@@ -607,7 +607,6 @@ function show_icare() {
 </script>
 
 <style type="text/css">
-
   .pagination{
     margin: 0px 0px !important;
   }
@@ -618,27 +617,22 @@ function show_icare() {
       padding: 3px 4px 5px;
       /* font-weight: bold; */
   }
-
   .blink_me {
     animation: blinker 1s linear infinite;
   }
-
   @keyframes blinker {
     50% {
       opacity: 0;
     }
   }
-
   .ace-settings-box{
     max-height: 550px !important;
     overflow-y : scroll;
     background: white;
   }
-
   #ace-settings-container-rj::-webkit-scrollbar {
     width: 10px;
   }
-
   .ace-settings-box.open{
     width: 350px !important;
   }
@@ -647,43 +641,34 @@ function show_icare() {
     box-shadow: inset 0 0 5px grey; 
     border-radius: 10px;
   }
-  
   /* Handle */
   #ace-settings-container-rj::-webkit-scrollbar-thumb {
     background: #8cc229; 
     border-radius: 10px;
   }
-
   /* Handle on hover */
   #ace-settings-container-rj::-webkit-scrollbar-thumb:hover {
     background: #b30000; 
   }
-
   .user-info{
     max-width: 500px !important;
     width: 100% !important;
   }
-
-/*
-  .itemdiv > .body > .text {
-    padding-left: 0px;
-    margin-top: 5px;
-    margin-left: 25px !important;
+  /* Nomor antrian besar di kanan */
+  .antrian-no-kanan {
+    position: static;
+    top: 10px;
+    right: 23px;
+    float: right;
+    font-size: 36px;
+    font-weight: bold;
+    color: #1976d2;
+    opacity: 0.18;
+    z-index: 1;
+    pointer-events: none;
+    line-height: 1;
+    text-shadow: 1px 2px 8px #fff;
   }
-  .user h2{
-    text-align: center !important;
-  }
-
-  .itemdiv > .body > .text:after {
-    border-top: 0px solid #E4ECF3;
-  }
-
-  .itemdiv > .body > .name {
-      display: block;
-      color: black !important;
-  } */
-
-
 </style>
 
 <div class="row">

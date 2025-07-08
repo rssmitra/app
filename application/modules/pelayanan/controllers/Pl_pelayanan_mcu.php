@@ -244,7 +244,7 @@ class Pl_pelayanan_mcu extends MX_Controller {
             /*cek transaksi*/
             $trans_kasir = ($row_list->status_periksa!=NULL)?TRUE:FALSE;
             $rollback_btn = ($trans_kasir==true)?'<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>':'';
-            //$rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>';
+            $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Rollback</a></li>';
 
             $cancel_btn = ($row_list->status_periksa==NULL) ? '<li><a href="#" onclick="cancel_visit('.$row_list->no_registrasi.','.$row_list->no_kunjungan.')">Batalkan Kunjungan</a></li>' : '' ;
             $cetak_hasil = ($row_list->status_periksa!=NULL) ? '<li><a href="#" onclick="cetak_hasil('.$row_list->kode_gcu.','.$row_list->id_pl_tc_poli.')">Cetak Hasil</a></li>' : '' ;
@@ -651,11 +651,11 @@ class Pl_pelayanan_mcu extends MX_Controller {
                     'keterangan' => $this->input->post('keterangan_genitalia')
                 ),
                 'anggota_gerak' => array(
-                    'extremitas_atas_kanan' => $this->input->post('fisik_ex_atas_kanan'),
-                    'extremitas_atas_kiri' => $this->input->post('fisik_ex_atas_kiri'),
-                    'extremitas_bawah_kanan' => $this->input->post('fisik_ex_bawah_kanan'),
-                    'extremitas_bawah_kiri' => $this->input->post('fisik_ex_bawah_kiri'),
-                    'keterangan' => $this->input->post('keterangan_anggota_gerak')
+                    'extremitas_atas_kanan' => $this->master->convert_special_chars_to_html($this->input->post('fisik_ex_atas_kanan')),
+                    'extremitas_atas_kiri' => $this->master->convert_special_chars_to_html($this->input->post('fisik_ex_atas_kiri')),
+                    'extremitas_bawah_kanan' => $this->master->convert_special_chars_to_html($this->input->post('fisik_ex_bawah_kanan')),
+                    'extremitas_bawah_kiri' => $this->master->convert_special_chars_to_html($this->input->post('fisik_ex_bawah_kiri')),
+                    'keterangan' => $this->master->convert_special_chars_to_html($this->input->post('keterangan_anggota_gerak')),
                 ),
                                 
             );
@@ -1192,23 +1192,18 @@ class Pl_pelayanan_mcu extends MX_Controller {
         /*update tc_registrasi*/
         $reg_data = array('tgl_jam_keluar' => NULL, 'kode_bagian_keluar' => NULL, 'status_batal' => NULL );
         $this->db->update('tc_registrasi', $reg_data, array('no_registrasi' => $_POST['no_registrasi'] ) );
-        $this->logs->save('tc_registrasi', $_POST['no_registrasi'], 'update tc_registrasi Modul Pelayanan', json_encode($reg_data),'no_registrasi');
-
 
         /*tc_kunjungan*/
         $kunj_data = array('tgl_keluar' => NULL, 'status_keluar' => NULL, 'status_batal' => NULL );
         $this->db->update('tc_kunjungan', $kunj_data, array('no_registrasi' => $_POST['no_registrasi'], 'no_kunjungan' => $_POST['no_kunjungan'] ) );
-        $this->logs->save('tc_kunjungan', $_POST['no_kunjungan'], 'update tc_kunjungan Modul Pelayanan', json_encode($kunj_data),'no_kunjungan');
 
         /*pl_tc_poli*/
         $poli_data = array('tgl_keluar_poli' => NULL, 'status_periksa' => NULL, 'status_batal' => NULL );
         $this->db->update('pl_tc_poli', $poli_data, array('no_kunjungan' => $_POST['no_kunjungan']) );
-        $this->logs->save('pl_tc_poli', $_POST['no_kunjungan'], 'update pl_tc_poli Modul Pelayanan', json_encode($poli_data),'no_kunjungan');
 
         /*tc_trans_pelayanan*/
         $trans_data = array('status_selesai' => 2, 'status_nk' => NULL, 'kode_tc_trans_kasir' => NULL );
         $this->db->update('tc_trans_pelayanan', $trans_data, array('no_kunjungan' => $_POST['no_kunjungan'], 'no_registrasi' => $_POST['no_registrasi'] ) );
-
 
         if ($this->db->trans_status() === FALSE)
         {

@@ -299,7 +299,7 @@ $(document).ready(function() {
                       
         <label class="control-label col-sm-2">Tenggorok/tonsil</label>
         
-        <div class="col-md-3">
+        <div class="col-md-6">
           
           <input type="text" class="form-control" name="fisik_tht_tenggorokan" id="fisik_tht_tenggorokan" value="<?php echo isset($pemeriksaan_fisik)?$pemeriksaan_fisik->tht->tenggorokan:''?>"  >
         

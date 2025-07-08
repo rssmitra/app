@@ -75,6 +75,33 @@ function cetak_hasil(kode_mcu,id_pl_tc_poli) {
 
 }
 
+function rollback(no_registrasi, no_kunjungan){
+
+  preventDefault();  
+
+  achtungShowLoader();
+
+  $.ajax({
+      url: "pelayanan/Pl_pelayanan_mcu/rollback",
+      data: { no_registrasi: no_registrasi, no_kunjungan: no_kunjungan },            
+      dataType: "json",
+      type: "POST",
+      complete: function (xhr) {
+        var data=xhr.responseText;  
+        var jsonResponse = JSON.parse(data);  
+        if(jsonResponse.status === 200){  
+          $.achtung({message: jsonResponse.message, timeout:5}); 
+          reload_table();
+          //getMenu('pelayanan/Pl_pelayanan');
+        }else{          
+          $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});  
+        } 
+        achtungHideLoader();
+      }
+  });
+
+}
+
 
 </script>
 <div class="row">
