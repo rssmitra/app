@@ -38,6 +38,7 @@ class Reg_pasien_rujukan extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Reg_pasien_rujukan->get_datatables();
+        // echo "<pre>"; print_r($list);die;
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
@@ -46,28 +47,15 @@ class Reg_pasien_rujukan extends MX_Controller {
 
             $btn_daftarkan = ($row_list->status == '0') ? '<li><a href="#" onclick="getMenu('."'registration/Reg_klinik?kode_rujukan=".$row_list->kode_rujukan."&no_reg=".$row_list->no_registrasi."&mr=".$row_list->no_mr."&no_kunj=".$row_list->no_kunjungan_lama."'".')">Daftarkan Pasien</a></li>' : '' ;
 
-            $row[] = '<div class="center">
-                        <label class="pos-rel">
-                            <input type="checkbox" class="ace" name="selected_id[]" value="'.$row_list->kode_rujukan.'"/>
-                            <span class="lbl"></span>
-                        </label>
-                      </div>';
-            $row[] = '<div class="center"><div class="btn-group">
-                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-inverse">
-                            <li><a href="#" onclick="getMenu('."'registration/Reg_klinik?kode_rujukan=".$row_list->kode_rujukan."&no_reg=".$row_list->no_registrasi."&mr=".$row_list->no_mr."&no_kunj=".$row_list->no_kunjungan_lama."'".')">Daftarkan Pasien</a></li>
-                            <li><a href="#">Selengkapnya</a></li>
-                        </ul>
-                    </div></div>';
-            $row[] = '<div class="center">'.$row_list->kode_rujukan.'</div>';
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
+            $row[] = '<div class="center">'.$no.'</div>';
+            $row[] = '<div class="center"><a href="#" onclick="getMenu('."'registration/Reg_klinik?kode_rujukan=".$row_list->kode_rujukan."&no_reg=".$row_list->no_registrasi."&mr=".$row_list->no_mr."&no_kunj=".$row_list->no_kunjungan_lama."'".')" style="color: blue; font-weight: bold;">'.$row_list->no_mr.'</a></div>';
             $row[] = $row_list->nama_pasien;
             $row[] = $this->tanggal->formatDateTime($row_list->tgl_input);
             $row[] = ucwords($row_list->nama_rujukan_dari);
+            $row[] = $row_list->nama_pegawai;
             $row[] = ucwords($row_list->tujuan_bagian_rujuk);
-            $row[] = ($row_list->status == '0') ? '<div class="center"><i class="fa fa-times-circle bigger-150 red"></i></div>' : '<div class="center"><i class="fa fa-check-circle bigger-150 green"></i></div>';
+            $row[] = "<div class='center'><a href='#' class='label label-xs label-primary' onclick=\"show_modal_medium_return_json('pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian_by_no_form/".$row_list->no_kunjungan_lama."?no=36|50', 'Surat Permohonan Rawat Inap')\"><i class='fa fa-eye'></i> Surat pengantar</a></div>";
+            $row[] = ($row_list->status == '0') ? '<div class="center"><span class="label label-danger"><i class="fa fa-times-circle"></i> Dalam proses</span></div>' : '<div class="center"><span class="label label-success"><i class="fa fa-check-circle"></i> Sudah didaftarkan</span></div>';
 
             $data[] = $row;
         }

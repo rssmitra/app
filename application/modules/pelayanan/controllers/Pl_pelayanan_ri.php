@@ -1575,6 +1575,58 @@ class Pl_pelayanan_ri extends MX_Controller {
         // echo json_encode(array('html' => $btn_print.$data->catatan_pengkajian));
     }
 
+    public function show_catatan_pengkajian_by_no_form($no_kunjungan){
+        $str_to_array = explode('|', $_GET['no']);
+        $query = $this->db->where_in('jenis_form', $str_to_array)->get_where('view_cppt', array('no_kunjungan' => $no_kunjungan))->row();
+        // echo "<pre>"; print_r($query);die;
+
+        if(empty($query)){
+            echo json_encode(array('html' => "<div class='alert alert-danger'>Tidak ada file pengantar rawat inap</div>"));
+            exit;
+        }
+        $this->load->module('Templates/Templates.php');
+        $temp = new Templates;
+        $result = json_decode($this->Csm_billing_pasien->getDetailData($query->no_registrasi));
+        $result->nama_ppa = $result->reg_data->nama_pegawai;
+        $result->kode_dr = $result->reg_data->kode_dokter;
+        $data = [];
+        // header cppt
+        $header = $temp->setGlobalProfileCppt($result);
+        $footer = $temp->setGlobalFooterCppt($result);
+
+        if($query->flag == 'cppt'){
+            if($query->jenis_form != null){
+                $convert_to_array = explode('|', $query->value_form);
+                for($i=0; $i < count($convert_to_array ); $i++){
+                    $key_value = explode('=', $convert_to_array [$i]);
+                    $end_array[trim($key_value[0])] = isset($key_value [1])?$key_value [1]:'';
+                }
+                $data = [
+                    "cppt_id" => $query->id,
+                    "value_form" => $end_array,
+                    "result" => $query,
+                    "jenis_form" => 'form_'.$query->jenis_form,
+                ];
+
+                $data['header'] = $header;
+                $data['footer'] = $footer;
+                // echo "<pre>"; print_r($data);die;
+                $data["html_form"] = $this->load->view('Pl_pelayanan/clinical_pathway/'.$data['jenis_form'].'', $data, true);
+
+                $html = $this->load->view('Pl_pelayanan/form_show_pengkajian', $data, true);
+                echo json_encode(array('html' => $html, 'result' => $query, 'value_form' => $end_array));
+            }else{
+                echo json_encode($query);
+            }
+            
+        }else{
+            echo json_encode($query);
+        }
+
+        // $btn_print = '<div class="pull-right"><a href="'.base_url().'Templates/Export_data/exportContent?type=pdf&flag=catatan_pengkajian&mod=Pl_pelayanan_ri&cppt_id='.$cppt_id.'&paper=P" target="_blank" class="btn btn-xs btn-primary"><i class="fa fa-print"></i> Print PDF</a></div><br>';
+        // echo json_encode(array('html' => $btn_print.$data->catatan_pengkajian));
+    }
+
     public function get_content_data(){
         $data = $this->db->get_where('th_cppt', array('cppt_id' => $_GET['cppt_id']))->row();
         // echo '<pre>'; print_r($data->catatan_pengkajian);die;

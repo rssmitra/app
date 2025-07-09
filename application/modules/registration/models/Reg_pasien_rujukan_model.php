@@ -4,10 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Reg_pasien_rujukan_model extends CI_Model {
 
 	var $table = 'rg_tc_rujukan';
-	var $column = array('rg_tc_rujukan.kode_rujukan','rg_tc_rujukan.rujukan_dari',' rg_tc_rujukan.no_kunjungan_lama',' rg_tc_rujukan.no_registrasi',' rg_tc_rujukan.status ','rg_tc_rujukan.tgl_input',' asal.nama_bagian as nama_rujukan_dari','rg_tc_rujukan.no_mr');
-	var $select = 'rg_tc_rujukan.kode_rujukan,rg_tc_rujukan.rujukan_dari, rg_tc_rujukan.no_kunjungan_lama, rg_tc_rujukan.no_registrasi, rg_tc_rujukan.status ,rg_tc_rujukan.tgl_input, asal.nama_bagian as nama_rujukan_dari, rg_tc_rujukan.no_mr, mt_master_pasien.nama_pasien, rg_tc_rujukan.status, rg_tc_rujukan.rujukan_tujuan, tujuan.nama_bagian as tujuan_bagian_rujuk';
+	var $column = array('kode_rujukan','rujukan_dari','no_kunjungan_lama','tc_kunjungan.no_registrasi','rg_tc_rujukan.status','rg_tc_rujukan.tgl_input','nama_rujukan_dari','rg_tc_rujukan.no_mr');
+	var $select = '
+	kode_rujukan, rujukan_dari, no_kunjungan_lama, tc_kunjungan.no_registrasi, rg_tc_rujukan.status, rg_tc_rujukan.tgl_input, asal.nama_bagian as nama_rujukan_dari, rg_tc_rujukan.no_mr, mt_master_pasien.nama_pasien as nama_pasien,rujukan_tujuan, tujuan.nama_bagian as tujuan_bagian_rujuk, nama_pegawai';
 
-	var $order = array('rg_tc_rujukan.no_kunjungan_lama' => 'DESC');
+	var $order = array('rg_tc_rujukan.tgl_input' => 'DESC');
 
 	public function __construct()
 	{
@@ -19,12 +20,14 @@ class Reg_pasien_rujukan_model extends CI_Model {
 
 		$date = date('Y-m-d H:i:s', strtotime('-3 days', strtotime(date('Y-m-d H:i:s'))));
 
-		$this->db->select($this->select);
+		$this->db->distinct();
+		$this->db->select($this->select, false);
 		$this->db->from($this->table);
 		$this->db->join('tc_kunjungan','tc_kunjungan.no_kunjungan=rg_tc_rujukan.no_kunjungan_lama','left');
 		$this->db->join('mt_master_pasien','mt_master_pasien.no_mr=rg_tc_rujukan.no_mr','left');
 		$this->db->join('mt_bagian as asal','asal.kode_bagian=rg_tc_rujukan.rujukan_dari','left');
 		$this->db->join('mt_bagian as tujuan','tujuan.kode_bagian=rg_tc_rujukan.rujukan_tujuan','left');
+		$this->db->join('mt_dokter_v','mt_dokter_v.kode_dokter=tc_kunjungan.kode_dokter','left');
 
 		$this->db->where("rg_tc_rujukan.tgl_input > '".$date."' ");
 		
@@ -32,23 +35,23 @@ class Reg_pasien_rujukan_model extends CI_Model {
 		if( $_GET ) {
 
 			if (isset($_GET['bulan']) AND $_GET['bulan'] != 0) {
-	            $this->db->where('MONTH(rg_tc_rujukan.tgl_input)='.$_GET['bulan'].'');	
-	        }
+				$this->db->where('MONTH(rg_tc_rujukan.tgl_input)='.$_GET['bulan'].'');	
+			}
 
-	        if (isset($_GET['tahun']) AND $_GET['tahun'] != 0) {
-	            $this->db->where('YEAR(rg_tc_rujukan.tgl_input)='.$_GET['tahun'].'');	
-	        }
+			if (isset($_GET['tahun']) AND $_GET['tahun'] != 0) {
+				$this->db->where('YEAR(rg_tc_rujukan.tgl_input)='.$_GET['tahun'].'');	
+			}
 
-	        if (isset($_GET['bagian_asal']) AND $_GET['bagian_asal'] != '') {
-	            $this->db->where('kode_bagian_asal', $_GET['bagian_asal']);	
-	        }
+			if (isset($_GET['bagian_asal']) AND $_GET['bagian_asal'] != '') {
+				$this->db->where('kode_bagian_asal', $_GET['bagian_asal']);	
+			}
 
 			if (isset($_GET['from_tgl']) AND $_GET['from_tgl'] != '' || isset($_GET['to_tgl']) AND $_GET['to_tgl'] != '') {
 				$this->db->where("convert(varchar,rg_tc_rujukan.tgl_input,23) between '".$_GET['from_tgl']."' and '".$_GET['to_tgl']."'");
-	        }
+			}
 		}
 
-        /*end parameter*/
+		/*end parameter*/
 	}
 
 	private function _get_datatables_query()

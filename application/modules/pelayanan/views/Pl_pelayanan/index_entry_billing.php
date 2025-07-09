@@ -363,7 +363,7 @@ function selesaikanKunjungan(no_registrasi, no_kunjungan){
           <th>Penjamin</th>
           <th width="200px">Tanggal Kunjungan</th>
           <th>Dokter</th>
-          <th>Petugas</th>
+          <th>Perawat/Dokter/Petugas Input</th>
           <th>Status</th>          
         </tr>
       </thead>

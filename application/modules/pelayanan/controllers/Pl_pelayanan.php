@@ -501,6 +501,7 @@ class Pl_pelayanan extends MX_Controller {
         $form_type = isset($_GET['form'])?$_GET['form']:'form_rj';
         $data = array();
         $no = $_POST['start'];
+        // echo "<pre>"; print_r($list);die;
         foreach ($list as $row_list) {
             $no++;
             $row = array();
@@ -542,7 +543,7 @@ class Pl_pelayanan extends MX_Controller {
             $row[] = '<div class="left"><span class="green" style="font-weight: bold">In&nbsp;&nbsp;&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_jam_poli).'<br><span class="red" style="font-weight: bold">Out&nbsp;</span> '.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_keluar_poli).' </div>';
             $row[] = $row_list->nama_pegawai;
             // $row[] = '<div class="center">'.$row_list->no_antrian.'</div>';
-            $row[] = '<div class="center">'.$row_list->created_by.'</div>';
+            $row[] = '<div class="left">'.$row_list->created_by.'</div>';
 
             if($row_list->status_batal==1){
                 $status_periksa = '<label class="label label-danger"><i class="fa fa-times-circle"></i> Batal Berobat</label>';
@@ -550,7 +551,11 @@ class Pl_pelayanan extends MX_Controller {
                 if($row_list->tgl_keluar_poli==NULL || empty($row_list->tgl_keluar_poli)){
                     $status_periksa = '<label class="label label-warning"><i class="fa fa-info-circle"></i> Belum diperiksa</label>';
                 }else {
-                    $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                    if(str_replace(' ','_',strtolower($row_list->cara_keluar_pasien)) == 'rujuk_ke_rawat_inap'){
+                        $status_periksa = '<label class="label label-primary">Rawat Inap</label>';
+                    }else{
+                        $status_periksa = '<label class="label label-success"><i class="fa fa-check-circle"></i> Selesai</label>';
+                    }
                 }
             }
 

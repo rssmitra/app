@@ -2284,11 +2284,12 @@ class References extends MX_Controller {
 		$limit = isset($_GET['key'])?$_GET['key']:35;
 		// $result = $this->db->select('th_riwayat_pasien.*, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien')->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = th_riwayat_pasien.no_kunjungan', 'left')->join('mt_bagian', 'mt_bagian.kode_bagian=th_riwayat_pasien.kode_bagian','left')->order_by('no_kunjungan','DESC')->where_in('SUBSTRING(th_riwayat_pasien.kode_bagian, 1,2)', ['01','02'])->where('DATEDIFF(year,tgl_periksa,GETDATE()) < 2 ')->limit($limit)->get_where('th_riwayat_pasien', array('th_riwayat_pasien.no_mr' => $no_mr))->result(); 
 
-		$result = $this->db->select('view_cppt.*, view_cppt.tanggal as tgl_periksa, id as kode_riwayat, nama_ppa as dokter_pemeriksa, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien')
+		$result = $this->db->select('view_cppt.*, view_cppt.tanggal as tgl_periksa, id as kode_riwayat, nama_ppa as dokter_pemeriksa, mt_bagian.nama_bagian, tc_kunjungan.no_kunjungan as status_kunjungan, tc_kunjungan.cara_keluar_pasien, tc_kunjungan.status_batal')
 		->join('tc_kunjungan', 'tc_kunjungan.no_kunjungan = view_cppt.no_kunjungan', 'left')
 		->join('mt_bagian', 'mt_bagian.kode_bagian=tc_kunjungan.kode_bagian_tujuan','left')
 		->order_by('no_kunjungan','DESC')
 		->where('flag', 'resume')
+		->where('kode_bagian_tujuan !=', '010901')
 		->where('DATEDIFF(year,tanggal,GETDATE()) < 4 ')->limit($limit)
 		->get_where('view_cppt', array('view_cppt.no_mr' => $no_mr))->result(); 
 		// echo '<pre>';print_r($result);die;
@@ -2326,7 +2327,7 @@ class References extends MX_Controller {
 			
 		);
 
-		// echo '<pre>';print_r($data['file']);die;
+		// echo '<pre>';print_r($data);die;
 		
 		$html = $this->load->view('Templates/templates/view_riwayat_medis_sidebar', $data, true);
 		
