@@ -140,7 +140,7 @@ hr {
         <h4 class="panel-title">
           <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $value->kode_riwayat?>" style="line-height: 15px; font-weight: normal !important; font-size: 13px">
             <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-            <b><?php echo $this->tanggal->formatDateTime($value->tgl_periksa)?></b><?php echo (empty($value->status_kunjungan)) ?' <span style="color: red; font-weight: bold">[Batal]</span>':''?><br>
+            <b><?php echo $this->tanggal->formatDateTime($value->tgl_periksa)?></b><?php echo ($value->status_batal == 1) ?' <span style="color: red; font-weight: bold">[Batal]</span>':''?><br>
             <div style="padding-left: 20px">
               <?php echo $value->dokter_pemeriksa?><br>
               <?php echo ucwords($value->nama_bagian)?> (<?php echo $value->tipe?>)

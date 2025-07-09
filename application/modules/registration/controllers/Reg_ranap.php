@@ -41,7 +41,7 @@ class Reg_ranap extends MX_Controller {
 
     public function process(){
 
-        //print_r($_POST);die;
+        // print_r($_POST);die;
         // form validation
 
         $this->form_validation->set_rules('noMrHidden', 'Dokter', 'trim|required');
