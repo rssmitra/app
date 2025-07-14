@@ -734,7 +734,7 @@ function perjanjian_pasien_pm(){
                 <li>
                   <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="?kode_bagian=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>&no_mr=<?php echo isset($value)?$value->no_mr:''?>" data-url="pelayanan/Pl_pelayanan_pm/order_pemeriksaan_fisio" onclick="getMenuTabs(this.getAttribute('data-url')+''+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                     <i class="red ace-icon fa fa-file bigger-120"></i>
-                    PENGANTAR TERAPI
+                    Pengantar Fisioterapi
                   </a>
                 </li>
                 <?php endif; ?>
@@ -743,7 +743,7 @@ function perjanjian_pasien_pm(){
                 <li>
                   <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="?kode_bagian=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>&no_mr=<?php echo isset($value)?$value->no_mr:''?>" data-url="pelayanan/Pl_pelayanan_pm/order_pemeriksaan_penunjang" onclick="getMenuTabs(this.getAttribute('data-url')+''+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                     <i class="red ace-icon fa fa-file bigger-120"></i>
-                    PENGANTAR PENUNJANG
+                    Pengantar Penunjang
                   </a>
                 </li>
                 <?php endif; ?>
@@ -752,7 +752,7 @@ function perjanjian_pasien_pm(){
                   <li>
                     <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=PM&cito=<?php echo isset($value)?$value->status_cito:''?>&kode_bag=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" data-url="pelayanan/Pl_pelayanan_pm/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                       <i class="green ace-icon fa fa-history bigger-120"></i>
-                      TINDAKAN
+                      Input Tindakan
                     </a>
                   </li>
                 <?php endif ?>
@@ -760,7 +760,7 @@ function perjanjian_pasien_pm(){
                 <li>
                     <a data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" data-url="pelayanan/Pl_pelayanan_pm/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                     <i class="red ace-icon fa fa-stethoscope bigger-120"></i>
-                    DIAGNOSA
+                    Form Resume Medis
                   </a>
                 </li>
 
@@ -768,6 +768,12 @@ function perjanjian_pasien_pm(){
                     <a data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $value->no_registrasi?>" data-url="registration/reg_pasien/view_detail_resume_medis" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                     <i class="red ace-icon fa fa-history bigger-120"></i>
                     RESUME MEDIS
+                  </a>
+                </li>
+
+                <li>
+                  <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $value->no_kunjungan?>?type=Rajal&no_mr=<?php echo $value->no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                    Form Rekam Medis
                   </a>
                 </li>
 

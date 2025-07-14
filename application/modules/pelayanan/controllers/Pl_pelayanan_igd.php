@@ -741,7 +741,6 @@ class Pl_pelayanan_igd extends MX_Controller {
                         $this->Pl_pelayanan_igd->save('rg_tc_rujukan', $rujukan_data );
                                         
                     }
-
                 }
 
                 /*kondisi jika pasien Meninggal*/
