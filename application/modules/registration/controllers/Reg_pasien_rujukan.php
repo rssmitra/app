@@ -46,7 +46,6 @@ class Reg_pasien_rujukan extends MX_Controller {
             $row = array();
 
             $btn_daftarkan = ($row_list->status == '0') ? '<li><a href="#" onclick="getMenu('."'registration/Reg_klinik?kode_rujukan=".$row_list->kode_rujukan."&no_reg=".$row_list->no_registrasi."&mr=".$row_list->no_mr."&no_kunj=".$row_list->no_kunjungan_lama."'".')">Daftarkan Pasien</a></li>' : '' ;
-
             $row[] = '<div class="center">'.$no.'</div>';
             $row[] = '<div class="center"><a href="#" onclick="getMenu('."'registration/Reg_klinik?kode_rujukan=".$row_list->kode_rujukan."&no_reg=".$row_list->no_registrasi."&mr=".$row_list->no_mr."&no_kunj=".$row_list->no_kunjungan_lama."'".')" style="color: blue; font-weight: bold;">'.$row_list->no_mr.'</a></div>';
             $row[] = $row_list->nama_pasien;
@@ -56,15 +55,14 @@ class Reg_pasien_rujukan extends MX_Controller {
             $row[] = ucwords($row_list->tujuan_bagian_rujuk);
             $row[] = "<div class='center'><a href='#' class='label label-xs label-primary' onclick=\"show_modal_medium_return_json('pelayanan/Pl_pelayanan_ri/show_catatan_pengkajian_by_no_form/".$row_list->no_kunjungan_lama."?no=36|50', 'Surat Permohonan Rawat Inap')\"><i class='fa fa-eye'></i> Surat pengantar</a></div>";
             $row[] = ($row_list->status == '0') ? '<div class="center"><span class="label label-danger"><i class="fa fa-times-circle"></i> Dalam proses</span></div>' : '<div class="center"><span class="label label-success"><i class="fa fa-check-circle"></i> Sudah didaftarkan</span></div>';
-
             $data[] = $row;
         }
 
         $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Reg_pasien_rujukan->count_all(),
-                        "recordsFiltered" => $this->Reg_pasien_rujukan->count_filtered(),
-                        "data" => $data,
+                    "draw" => $_POST['draw'],
+                    "recordsTotal" => $this->Reg_pasien_rujukan->count_all(),
+                    "recordsFiltered" => $this->Reg_pasien_rujukan->count_filtered(),
+                    "data" => $data,
                 );
         //output to json format
         echo json_encode($output);

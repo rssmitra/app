@@ -219,9 +219,7 @@ class Pl_pelayanan_igd_model extends CI_Model {
 
 	public function cekRujuk($no_kunjungan)
 	{
-		
 		return $this->db->get_where('rg_tc_rujukan', array('no_kunjungan_lama' => $no_kunjungan))->row();
-
 	}
 
 	public function get_transaksi_pasien_by_id($no_kunjungan){

@@ -17,6 +17,7 @@ class Pl_pelayanan extends MX_Controller {
         }
         /*load model*/
         $this->load->model('Pl_pelayanan_model', 'Pl_pelayanan');
+        $this->load->model('Pl_pelayanan_igd_model', 'Pl_pelayanan_igd');
         $this->load->model('registration/Reg_pasien_model', 'Reg_pasien');
         $this->load->model('ws/AntrianOnlineModel', 'AntrianOnline');
         $this->load->model('farmasi/Harga_jual_obat_model', 'Harga_jual_obat');
@@ -1772,6 +1773,33 @@ class Pl_pelayanan extends MX_Controller {
                 $update_value_form['value_form'] = $value_form;
                 $this->db->where('cppt_id', $_POST['cppt_id'])->update('th_cppt', $update_value_form);
             }
+
+            $status = $this->input->post('cara_keluar');
+            $txt_rujuk_poli = 'Rujuk ke Poli Lain';
+            $txt_rujuk_ri = 'Rujuk ke Rawat Inap';
+
+            $cek_rujuk = $this->Pl_pelayanan_igd->cekRujuk($_POST['no_kunjungan']);
+
+            if( empty($cek_rujuk) ){
+                /*kondisi jika pasien dirujuk RI/RJ*/
+                if( in_array($status, array($txt_rujuk_ri,$txt_rujuk_poli) ) ){
+                    $max_kode_rujukan = $this->master->get_max_number('rg_tc_rujukan', 'kode_rujukan');
+                    $tujuan = '030001';
+                    $rujukan_data = array(
+                        'kode_rujukan' => $max_kode_rujukan,
+                        'rujukan_dari' => $this->form_validation->set_value('kode_bagian_asal'),
+                        'no_mr' => $this->form_validation->set_value('noMrHidden'),
+                        'no_kunjungan_lama' => $no_kunjungan,
+                        'no_registrasi' => $no_registrasi,
+                        'rujukan_tujuan' => $tujuan,
+                        'status' => 0,
+                        'tgl_input' => date('Y-m-d H:i:s'),
+                    );
+                    /*insert rg_tc_rujukan*/
+                    $this->Pl_pelayanan_igd->save('rg_tc_rujukan', $rujukan_data );      
+                }
+            }
+            
 
 
             if ($this->db->trans_status() === FALSE)

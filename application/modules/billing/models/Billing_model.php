@@ -1503,13 +1503,13 @@ class Billing_model extends CI_Model {
 
     public function get_total_tagihan($obj){
 
-        $total =  (int)$obj->bill_rs + (int)$obj->bill_dr1 + (int)$obj->bill_dr2 + (int)$obj->bill_dr3 + (int)$obj->lain_lain;
+        $total =  (int)$obj->bill_rs + (int)$obj->bill_dr1 + (int)$obj->bill_dr2;
         return $total;
 
     }
     public function get_total_tagihanall($obj){
 
-        $total =  (int)$obj->bill_rs + (int)$obj->bill_dr1 + (int)$obj->bill_dr2 + + (int)$obj->bill_dr3 + (int)$obj->lain_lain;
+        $total =  (int)$obj->bill_rs + (int)$obj->bill_dr1 + (int)$obj->bill_dr2;
         //$subtotal = $subtotal + $total;
         return $total;
 
