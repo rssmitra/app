@@ -293,7 +293,7 @@ function copySuratKontrol(surat_kontrol){
 
           <div class="form-group">
             <label class="control-label col-sm-3">Jenis Perjanjian</label>
-            <div class="col-sm-6">
+            <div class="col-sm-9">
               <div class="radio">
                   <label>
                     <input name="jeniskunjungan" type="radio" class="ace" value="2">

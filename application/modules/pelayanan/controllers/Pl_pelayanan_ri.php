@@ -424,7 +424,7 @@ class Pl_pelayanan_ri extends MX_Controller {
     {
         /*get data from model*/
         $list = $this->Pl_pelayanan_ri->get_datatables_cppt($_GET['no_mr']);
-        // print_r($list);die;
+        // echo "<pre>";print_r($list);die;
         $data = array();
         $no=0;
 

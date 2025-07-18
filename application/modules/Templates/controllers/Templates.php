@@ -1836,15 +1836,18 @@ class Templates extends MX_Controller {
         
         $dr_from_trans = isset($data->group->Tindakan)?$data->group->Tindakan:[];
         $get_dokter = $this->db->get_where('mt_dokter_v', array('kode_dokter' => $data->kode_dr))->row();
-        
         // echo '<pre>'; print_r($data);die;
+        if(!empty($get_dokter)){
+            $ttd = $get_dokter->ttd;
+            $stamp_dr = $get_dokter->stamp;
+            $nama_dr = $data->nama_ppa;
+            $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="150px" style="position: relative">' : '';
+            $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="220px" style="">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
+        }else{
+            $ttd = '<br>'.$this->session->userdata('user')->fullname;
+            $stamp = '';
+        }
         
-        $ttd = $get_dokter->ttd;
-        $stamp_dr = $get_dokter->stamp;
-        $nama_dr = $data->nama_ppa;
-
-        $ttd = ($ttd != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$ttd.'" width="150px" style="position: relative">' : '';
-        $stamp = ($stamp_dr != NULL) ? '<img src="'.BASE_FILE_RM.'uploaded/ttd/'.$stamp_dr.'" width="220px" style="">' : '<u>'.$nama_dr.'</u><br>SIP. '.$data->reg_data->no_sip.'';
         
         $html = '';
         $html .= '<div id="footer_form">';
