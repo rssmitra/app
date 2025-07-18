@@ -335,7 +335,6 @@ class Pl_pelayanan_pm_model extends CI_Model {
 		$i = 0;
 		
 		
-
 		$order = array('kode_riwayat' => 'ASC');
 
 		foreach ($column as $item) 

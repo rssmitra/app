@@ -74,7 +74,7 @@ function checkedNk(kode) {
                         <br>
                         <span style="font-size: 11px;"><?php echo $this->tanggal->formatDateTime($row_kasir_data->tgl_jam); ?>
                         <br>
-                        <?php echo $data->kode_trans_far.' - '//.isset($row_kasir_data->fullname)?$row_kasir_data->fullname:'';?></span>
+                        <?php echo $data->kode_trans_far.' - '.isset($row_kasir_data->fullname)?$row_kasir_data->fullname:'';?></span>
                       </td>
                       <?php endforeach; // end foreach row_kasir_data header ?>
                     </tr>
@@ -212,12 +212,16 @@ function checkedNk(kode) {
 
                                             <?php
                                                 if($value_data->kode_tc_trans_kasir==NULL){
-
-                                                    $cheked = ( $value_data->kode_perusahaan == 120 ) ? 'checked' : ( $value_data->status_nk ==  1 ) ? 'checked' : '';
-                                                        echo '<label>
-                                                                <input name="checklist_nk" id="selected_nk_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" type="checkbox" class="checklist_nk_'.$row_s[0]->kode_bagian.' ace" '.$cheked.' onclick="checkedNk('.$value_data->kode_trans_pelayanan.')">
-                                                                <span class="lbl"></span>
-                                                            </label>';
+                                                    if( $value_data->kode_perusahaan == 120 ){
+                                                        $cheked = 'checked';
+                                                    }else{
+                                                        $cheked = ( $value_data->status_nk ==  1 ) ? 'checked' : '';
+                                                    }
+                                                    
+                                                    echo '<label>
+                                                            <input name="checklist_nk" id="selected_nk_'.$value_data->kode_trans_pelayanan.'" value="'.$value_data->kode_trans_pelayanan.'" type="checkbox" class="checklist_nk_'.$row_s[0]->kode_bagian.' ace" '.$cheked.' onclick="checkedNk('.$value_data->kode_trans_pelayanan.')">
+                                                            <span class="lbl"></span>
+                                                        </label>';
                                                     
                                                 }else{
                                                     $label_nk = ( $value_data->status_nk ==  1 ) ? '<i class="fa fa-check green bigger-120"></i>' : '';

@@ -340,7 +340,31 @@ function formatDate(date) {
           <!-- end change modul view -->
 
           <div id="tgl_kunjungan_form" style="display:none">
-          
+
+            <div class="form-group">
+              <label class="control-label col-sm-2">Jenis Perjanjian</label>
+              <div class="col-sm-6">
+                <div class="radio">
+                    <label>
+                      <input name="jeniskunjungan" type="radio" class="ace" value="2">
+                      <span class="lbl"> Rujukan Internal</span>
+                    </label>
+                    <label>
+                      <input name="jeniskunjungan" type="radio" class="ace" value="1">
+                      <span class="lbl"> Rujukan Baru FKTP</span>
+                    </label>
+                    <label>
+                      <input name="jeniskunjungan" type="radio" class="ace" value="3" checked>
+                      <span class="lbl"> Kontrol</span>
+                    </label>
+                    <label>
+                      <input name="jeniskunjungan" type="radio" class="ace" value="4">
+                      <span class="lbl"> Rujukan Antar RS</span>
+                    </label>
+                  </div>
+              </div>
+            </div>
+            
             <p><b><i class="fa fa-calendar"></i> TANGGAL KUNJUNGAN </b></p>
 
             <div class="form-group">

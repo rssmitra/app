@@ -228,125 +228,100 @@ class Pl_pelayanan_pm extends MX_Controller {
 
     public function get_data()
     {
-        /*akan di filter berdasarkan pasien pada klinik masing2*/
-        /*get data from model*/
         $list = $this->Pl_pelayanan_pm->get_datatables();
-
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $row_list) {
             $no++;
-            $row = array();
-            $link = 'billing/Billing';
-            $str_type = 'RJ';
-            
             $bag = substr($row_list->kode_bagian_asal, 1, 1);
-            $eorder = ($row_list->eorder == 1)?'<span class="label label-success">e-order</span>':'';
-            
-            if($row_list->status_daftar==0 || $row_list->status_daftar==NULL){
-                $status_pasien = 'belum_ditindak';
-                $rollback_btn ='';
-                $charge_slip = '';
-            }else if($row_list->status_daftar==1){
-                
-                if($bag==5){
-                    if($row_list->kode_perusahaan == 120){
-                        $status_pasien = 'belum_diperiksa';
-                    }else{
-                        $status_pasien = ($row_list->status_selesai!=3)?'belum_bayar':'belum_diperiksa';
-                    }
-                    $rollback_btn = ($row_list->status_selesai!=3)?'<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>':'';
-                }else if($bag==1 && $row_list->kode_bagian_asal !='010901' && $row_list->kode_bagian_asal != '012701' && $row_list->kode_kelompok != 3){
-                    $status_pasien = ($row_list->status_selesai!=3)?'belum_bayar':'belum_diperiksa';
-                    $rollback_btn = ($row_list->status_selesai!=3)?'<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>':'';
-                }else{
+            $eorder = ($row_list->eorder == 1) ? '<span class="label label-success">e-order</span>' : '';
+            $str_type = 'RJ';
+            // Status pasien dan tombol
+            $status_pasien = 'belum_ditindak';
+            $rollback_btn = '';
+            $charge_slip = '';
+            if ($row_list->status_daftar == 1) {
+                if ($bag == 5) {
+                    $status_pasien = ($row_list->kode_perusahaan == 120) ? 'belum_diperiksa' : (($row_list->status_selesai != 3) ? 'belum_bayar' : 'belum_diperiksa');
+                    $rollback_btn = ($row_list->status_selesai != 3) ? '<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>' : '';
+                } elseif ($bag == 1 && $row_list->kode_bagian_asal != '010901' && $row_list->kode_bagian_asal != '012701' && $row_list->kode_kelompok != 3) {
+                    $status_pasien = ($row_list->status_selesai != 3) ? 'belum_bayar' : 'belum_diperiksa';
+                    $rollback_btn = ($row_list->status_selesai != 3) ? '<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>' : '';
+                } else {
                     $status_pasien = 'belum_diperiksa';
                     $rollback_btn = '<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>';
                 }
-
                 $charge_slip = '<li><a href="#" onclick="cetak_slip('.$row_list->kode_penunjang.')">Cetak Slip</a></li>';
-
-            }else  if($row_list->status_daftar==2){
+            } elseif ($row_list->status_daftar == 2) {
                 $status_pasien = 'belum_isi_hasil';
-
                 $transaksi = $this->Pl_pelayanan_pm->get_transaksi_pasien_by_id($row_list->no_kunjungan);
-
-                $rollback_btn = ($transaksi!=0)?'<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>':'';
-
+                $rollback_btn = ($transaksi != 0) ? '<li><a href="#" onclick="rollback('.$row_list->kode_penunjang.')">Rollback</a></li>' : '';
                 $charge_slip = '<li><a href="#" onclick="cetak_slip('.$row_list->kode_penunjang.')">Cetak Slip</a></li>';
             }
-            
-            $row[] = $row_list->no_registrasi;
-            $row[] = $str_type;
-            $row[] = '';
-            $row[] = '<div class="center"><div class="btn-group">
-                        <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">
-                            <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-inverse">
-                            <li><a href="#" onclick="show_modal('."'registration/reg_pasien/view_detail_resume_medis/".$row_list->no_registrasi."'".', '."'RESUME MEDIS'".')">Selengkapnya</a></li>
-                            '.$charge_slip.'
-                            '.$rollback_btn.' 
-                        </ul>
-                    </div></div>';
 
+            // Dropdown menu
+            $dropdown = '<div class="center"><div class="btn-group">'
+                . '<button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle">'
+                . '<span class="ace-icon fa fa-caret-down icon-on-right"></span>'
+                . '</button>'
+                . '<ul class="dropdown-menu dropdown-inverse">'
+                . '<li><a href="#" onclick="show_modal(\'registration/reg_pasien/view_detail_resume_medis/'.$row_list->no_registrasi.'\', \'RESUME MEDIS\')">Selengkapnya</a></li>'
+                . $charge_slip
+                . $rollback_btn
+                . '</ul></div></div>';
 
-            $form  = '<div class="center"><a href="#" style="font-weight: bold; color: blue" onclick="getMenu('."'pelayanan/Pl_pelayanan_pm/form/".$row_list->no_kunjungan."/".$row_list->kode_penunjang."/".$status_pasien."'".')">'.$row_list->no_kunjungan.'</a></div>';
-            
-            $row[] = '<div class="center">'.$form.'</div>';
-            $row[] = '<div class="center">'.$row_list->no_mr.'</div>';
-            $row[] = strtoupper($row_list->nama_pasien).' '.$eorder;
-            $row[] = '<div class="center">'.$no.'</div>';
-            $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.'':$row_list->nama_kelompok;
-            $row[] = '<div class="center no-padding"><input type="text" id="no_sep_'.$row_list->no_kunjungan.'" name="no_sep['.$row_list->no_kunjungan.']" class="form-input-nosep form-control" style="width: 150px; margin: 0px; border: 0px; text-align: center" onchange="saveNoSep('.$row_list->no_registrasi.', '.$row_list->no_kunjungan.')" value="'.$row_list->no_sep.'"></div>';
-            $row[] = $this->tanggal->formatDateTimeFormDmy($row_list->tgl_masuk);
-			// $row[] = ($row_list->status_cito==1)?'Cito':'Biasa';
-            $row[] = ucwords($row_list->nama_bagian);
+            // Form link
+            $form = '<div class="center"><a href="#" style="font-weight: bold; color: blue" onclick="getMenu(\'pelayanan/Pl_pelayanan_pm/form/'.$row_list->no_kunjungan.'/'.$row_list->kode_penunjang.'/'.$status_pasien.'\')">'.$row_list->no_kunjungan.'</a></div>';
 
-            $bag = substr($row_list->kode_bagian_asal, 1, 1);
-
-            if( $row_list->status_batal == 1 ){
+            // Status label
+            if ($row_list->status_batal == 1) {
                 $status = '<span style="color: red; font-weight: bold">-Batal-</span>';
-            }
-            else{
-                if($status_pasien=='belum_ditindak'){
-
-                    $status = '<label class="label label-warning" title="Belum Dilayani"><i class="fa fa-info-circle bigger-120"></i></label>';
-    
-                }else if($status_pasien=='belum_bayar'){
-                    
-                    if( $row_list->kode_rujukan != null){
-                        $status = '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa '.$row_list->kode_rujukan.'</a>';
-                    }else{
-                        $status = '<label class="label label-danger">Belum bayar</label>';
-                    }
-                   
-                }else if($status_pasien=='belum_isi_hasil'){
-    
-                    $status = '<label class="label label-success">Belum isi hasil</label>';
-    
-                }else{
-    
-                    if($_GET['sess_kode_bagian']!='050301'){
-                        $status = '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa</a>';
-                    }
-                    
+            } else {
+                switch ($status_pasien) {
+                    case 'belum_ditindak':
+                        $status = '<label class="label label-warning" title="Belum Dilayani"><i class="fa fa-info-circle bigger-120"></i></label>';
+                        break;
+                    case 'belum_bayar':
+                        $status = ($row_list->kode_rujukan != null)
+                            ? '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa '.$row_list->kode_rujukan.'</a>'
+                            : '<label class="label label-danger">Belum bayar</label>';
+                        break;
+                    case 'belum_isi_hasil':
+                        $status = '<label class="label label-success">Belum isi hasil</label>';
+                        break;
+                    default:
+                        if (isset($_GET['sess_kode_bagian']) && $_GET['sess_kode_bagian'] != '050301') {
+                            $status = '<a href="#" class="btn btn-xs btn-primary" onclick="periksa('.$row_list->kode_penunjang.')">Periksa</a>';
+                        } else {
+                            $status = '';
+                        }
+                        break;
                 }
             }
-            
 
-            $row[] = '<div class="center">'.$status.'</div>';
-           
-            $data[] = $row;
+            $data[] = array(
+                $row_list->no_registrasi,
+                $str_type,
+                '',
+                $dropdown,
+                '<div class="center">'.$form.'</div>',
+                '<div class="center">'.$row_list->no_mr.'</div>',
+                strtoupper($row_list->nama_pasien).' '.$eorder,
+                '<div class="center">'.$no.'</div>',
+                ($row_list->nama_perusahaan) ? $row_list->nama_perusahaan : $row_list->nama_kelompok,
+                '<div class="center no-padding"><input type="text" id="no_sep_'.$row_list->no_kunjungan.'" name="no_sep['.$row_list->no_kunjungan.']" class="form-input-nosep form-control" style="width: 150px; margin: 0px; border: 0px; text-align: center" onchange="saveNoSep('.$row_list->no_registrasi.', '.$row_list->no_kunjungan.')" value="'.$row_list->no_sep.'"></div>',
+                $this->tanggal->formatDateTimeFormDmy($row_list->tgl_masuk),
+                ucwords($row_list->nama_bagian),
+                '<div class="center">'.$status.'</div>'
+            );
         }
 
         $output = array(
-                        "draw" => $_POST['draw'],
-                        "recordsTotal" => $this->Pl_pelayanan_pm->count_all(),
-                        "recordsFiltered" => $this->Pl_pelayanan_pm->count_filtered(),
-                        "data" => $data,
-                );
-        //output to json format
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->Pl_pelayanan_pm->count_all(),
+            "recordsFiltered" => $this->Pl_pelayanan_pm->count_filtered(),
+            "data" => $data,
+        );
         echo json_encode($output);
     }
     public function get_data_order()
@@ -433,7 +408,7 @@ class Pl_pelayanan_pm extends MX_Controller {
             $row[] = '<b>'.$row_list->no_mr.'</b><br>'.strtoupper($row_list->nama_pasien).' '.$eorder;
             $row[] = ($row_list->nama_perusahaan)?$row_list->nama_perusahaan.'':$row_list->nama_kelompok;
             $row[] = '<div class="center">'.ucwords($row_list->nama_bagian).'<br><i class="fa fa-arrow-down"></i><br>'.$row_list->bagian_tujuan.'</div>';
-			// $row[] = ($row_list->status_cito==1)?'Cito':'Biasa';
+            // $row[] = ($row_list->status_cito==1)?'Cito':'Biasa';
             // $row[] = ucwords($row_list->nama_bagian);
 
             $bag = substr($row_list->kode_bagian_asal, 1, 1);
@@ -867,7 +842,7 @@ class Pl_pelayanan_pm extends MX_Controller {
                         'hasil' => '0',
                         'keterangan' => 'Tanpa Input Hasil',
                     );
-				
+                
                     $this->Pl_pelayanan_pm->save('pm_tc_hasilpenunjang', $tc_hasilpenunjang);
 
                     $this->db->trans_commit();

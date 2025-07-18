@@ -192,6 +192,11 @@ $(document).ready(function(){
       $('#form_pelayanan').attr('action', 'registration/Reg_klinik/process');
 
     });
+
+    $('#tabs_catatan_1, #tabs_catatan_2, #tabs_catatan_3').click(function (e) {   
+      e.preventDefault();  
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveCatatanPengkajian');
+    });
     
     /*onchange form module when click tabs*/   
 
@@ -733,7 +738,6 @@ function perjanjian_pasien_pm(){
                 <?php if($value->kode_bagian_tujuan == '050301') :?>
                 <li>
                   <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="?kode_bagian=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>&no_mr=<?php echo isset($value)?$value->no_mr:''?>" data-url="pelayanan/Pl_pelayanan_pm/order_pemeriksaan_fisio" onclick="getMenuTabs(this.getAttribute('data-url')+''+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="red ace-icon fa fa-file bigger-120"></i>
                     Pengantar Fisioterapi
                   </a>
                 </li>
@@ -742,7 +746,6 @@ function perjanjian_pasien_pm(){
                 <?php if(in_array($value->kode_bagian_tujuan, ['050101','050201'])) :?>
                 <li>
                   <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="?kode_bagian=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>&no_mr=<?php echo isset($value)?$value->no_mr:''?>" data-url="pelayanan/Pl_pelayanan_pm/order_pemeriksaan_penunjang" onclick="getMenuTabs(this.getAttribute('data-url')+''+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="red ace-icon fa fa-file bigger-120"></i>
                     Pengantar Penunjang
                   </a>
                 </li>
@@ -751,7 +754,6 @@ function perjanjian_pasien_pm(){
                 <?php if($status=='belum_ditindak'): ?>
                   <li>
                     <a data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=PM&cito=<?php echo isset($value)?$value->status_cito:''?>&kode_bag=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" data-url="pelayanan/Pl_pelayanan_pm/tindakan/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                      <i class="green ace-icon fa fa-history bigger-120"></i>
                       Input Tindakan
                     </a>
                   </li>
@@ -759,37 +761,45 @@ function perjanjian_pasien_pm(){
 
                 <li>
                     <a data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" data-url="pelayanan/Pl_pelayanan_pm/diagnosa/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="red ace-icon fa fa-stethoscope bigger-120"></i>
-                    Form Resume Medis
+                    Resume Medis
+                  </a>
+                </li>
+
+                <li id="li_cppt">
+                  <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                    Riwayat Medis
                   </a>
                 </li>
 
                 <li>
-                    <a data-toggle="tab" id="tabs_diagnosa" href="#" data-id="<?php echo $value->no_registrasi?>" data-url="registration/reg_pasien/view_detail_resume_medis" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    <i class="red ace-icon fa fa-history bigger-120"></i>
-                    RESUME MEDIS
+                  <a data-toggle="tab" id="tabs_catatan_1" href="#" data-id="<?php echo $value->no_kunjungan?>?type=Rajal&no_mr=<?php echo $value->no_mr?>&form_no=53" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                    Form Evaluasi Pasien
                   </a>
                 </li>
 
                 <li>
-                  <a data-toggle="tab" id="tabs_catatan" href="#" data-id="<?php echo $value->no_kunjungan?>?type=Rajal&no_mr=<?php echo $value->no_mr?>" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
-                    Form Rekam Medis
+                  <a data-toggle="tab" id="tabs_catatan_2" href="#" data-id="<?php echo $value->no_kunjungan?>?type=Rajal&no_mr=<?php echo $value->no_mr?>&form_no=54" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                    Form Reassesment
+                  </a>
+                </li>
+
+                <li>
+                  <a data-toggle="tab" id="tabs_catatan_3" href="#" data-id="<?php echo $value->no_kunjungan?>?type=Rajal&no_mr=<?php echo $value->no_mr?>&form_no=55" data-url="pelayanan/Pl_pelayanan/catatan_lainnya/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
+                    Form Kehadiran Terapi
                   </a>
                 </li>
 
                 <?php if($status=='belum_isi_hasil'): ?>
                   <li>
                     <a data-toggle="tab" data-id="<?php echo $id?>?mr=<?php echo isset($value)?$value->no_mr:0; echo ($value->flag_mcu==1)?'&is_mcu=2':'' ?>" data-url="pelayanan/Pl_pelayanan_pm/form_isi_hasil/<?php echo $value->no_kunjungan?>/<?php echo isset($value)?$value->kode_bagian_tujuan:''?>" id="tabs_isi_hasil" href="#" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')" >
-                      <i class="red ace-icon fa fa-file bigger-120"></i>
-                      ISI HASIL PEMERIKSAAN PENUNJANG
+                      Pengisian Hasil Pemeriksaan
                     </a>
                   </li>
                 <?php endif ?>
 
                   <li>
                     <a data-toggle="tab" data-id="<?php echo $id?>" data-url="billing/Billing/getDetail/<?php echo $value->no_registrasi?>/<?php echo $type_asal ?>" id="tabs_billing_pasien" href="#" onclick="getMenuTabsHtml(this.getAttribute('data-url'), 'tabs_form_pelayanan')" >
-                      <i class="orange ace-icon fa fa-money bigger-120"></i>
-                      BILLING PASIEN
+                      Billing Pasien
                     </a>
                   </li>
 

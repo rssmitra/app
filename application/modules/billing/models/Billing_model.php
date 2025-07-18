@@ -245,156 +245,156 @@ class Billing_model extends CI_Model {
         $html = '';
         if( count($data->group) > 0 ) :
 
-        $html .= '<center><span style="font-weight: bold; font-size: 14px; text-align: center; padding: 10px">BILLING PASIEN RAWAT JALAN</span></center><br>';
-        $html .= '<div class="row">';
-        $html .= '<div class="col-sm-12">';
-        //print_r($data->group);die;
-        $html .= '<table class="table table-hover">';
-        $html .= '<tr>';
-            $html .= '<th width="10px" class="center">No</th>';
-            $html .= '<th>Uraian</th>';
-            $html .= '<th width="150px" class="center">Subtotal (Rp.)</th>';
-        $html .= '</tr>'; 
-        $no=1;
-        foreach ($data->group as $k => $val) {
-            $html .= '<tr style="background: #f3f3f3">';
-            $html .= '<td class="center"><b>'.$no.'</b></td>';
-            $html .= '<td><b>'.$k.'</b></td>';
-            $html .= '<td align="right"></td>';
-            $html .= '</tr>';
-            $no++; 
-            foreach ($val as $value_data) {
-                $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
-                $html .= '<tr>';
-                // $html .= '<td align="center">'.$value_data->kode_trans_pelayanan.'</td>';
-                $html .= '<td align="center">&nbsp;</td>';
-                $html .= '<td>'.$value_data->nama_tindakan.'</td>';
-                $html .= '<td align="right">Rp. '.number_format($subtotal).',-</td>';
-                $html .= '</tr>';
-                /*total*/
-                $sum_subtotal[] = $subtotal;
-                $sum_subtotal_k[$k][] = $subtotal;
-                /*resume billing*/
-                $resume_billing[] = $this->Billing->resumeBillingRJ($value_data->jenis_tindakan, $value_data->kode_bagian, $subtotal);
-            }     
+            $html .= '<center><span style="font-weight: bold; font-size: 14px; text-align: center; padding: 10px">BILLING PASIEN RAWAT JALAN</span></center><br>';
+            $html .= '<div class="row">';
+            $html .= '<div class="col-sm-12">';
+            //print_r($data->group);die;
+            $html .= '<table class="table table-hover">';
             $html .= '<tr>';
-            $html .= '<td width="100px" colspan="2" align="right" style="font-weight: bold; font-style: italic">Total</td>';
-            $html .= '<td width="100px" align="right"><b>Rp. '.number_format(array_sum($sum_subtotal_k[$k])).',-</b></td>';
+                $html .= '<th width="10px" class="center">No</th>';
+                $html .= '<th>Uraian</th>';
+                $html .= '<th width="150px" class="center">Subtotal (Rp.)</th>';
+            $html .= '</tr>'; 
+            $no=1;
+            foreach ($data->group as $k => $val) {
+                $html .= '<tr style="background: #f3f3f3">';
+                $html .= '<td class="center"><b>'.$no.'</b></td>';
+                $html .= '<td><b>'.$k.'</b></td>';
+                $html .= '<td align="right"></td>';
+                $html .= '</tr>';
+                $no++; 
+                foreach ($val as $value_data) {
+                    $subtotal = (double)$value_data->bill_rs + (double)$value_data->bill_dr1 + (double)$value_data->bill_dr2 + (double)$value_data->lain_lain;
+                    $html .= '<tr>';
+                    // $html .= '<td align="center">'.$value_data->kode_trans_pelayanan.'</td>';
+                    $html .= '<td align="center">&nbsp;</td>';
+                    $html .= '<td>'.$value_data->nama_tindakan.'</td>';
+                    $html .= '<td align="right">Rp. '.number_format($subtotal).',-</td>';
+                    $html .= '</tr>';
+                    /*total*/
+                    $sum_subtotal[] = $subtotal;
+                    $sum_subtotal_k[$k][] = $subtotal;
+                    /*resume billing*/
+                    $resume_billing[] = $this->Billing->resumeBillingRJ($value_data->jenis_tindakan, $value_data->kode_bagian, $subtotal);
+                }     
+                $html .= '<tr>';
+                $html .= '<td width="100px" colspan="2" align="right" style="font-weight: bold; font-style: italic">Total</td>';
+                $html .= '<td width="100px" align="right"><b>Rp. '.number_format(array_sum($sum_subtotal_k[$k])).',-</b></td>';
+                $html .= '</tr>';   
+            }
+            $html .= '<tr>';
+                $html .= '<td colspan="2" align="right"><b><i>Total Billing Keseluruhan</i></b></td>';
+                $html .= '<td width="100px" align="right"><b>Rp. '.number_format(array_sum($sum_subtotal)).',-</b></td>';
             $html .= '</tr>';   
-        }
-        $html .= '<tr>';
-            $html .= '<td colspan="2" align="right"><b><i>Total Billing Keseluruhan</i></b></td>';
-            $html .= '<td width="100px" align="right"><b>Rp. '.number_format(array_sum($sum_subtotal)).',-</b></td>';
-        $html .= '</tr>';   
-        $html .= '</table>';
+            $html .= '</table>';
 
-        $html .= '<br>';
-        // $html .= '<h4>Resume Billing</h4>';
-        // $html .= '<table class="table table-hover">';
-        // $html .= '<tr>';
-        //     $html .= '<th align="right">Dokter</th>';
-        //     $html .= '<th align="right">Administrasi</th>';
-        //     $html .= '<th align="right">Obat/Farmasi</th>';
-        //     $html .= '<th align="right">Penunjang Medis</th>';
-        //     $html .= '<th align="right">Tindakan</th>';
-        //     $html .= '<th align="right">BPAKO</th>';
-        // $html .= '</tr>';
-        //  /*split resume billing*/
-        // $split_billing = $this->splitResumeBilling($resume_billing);
+            $html .= '<br>';
+            // $html .= '<h4>Resume Billing</h4>';
+            // $html .= '<table class="table table-hover">';
+            // $html .= '<tr>';
+            //     $html .= '<th align="right">Dokter</th>';
+            //     $html .= '<th align="right">Administrasi</th>';
+            //     $html .= '<th align="right">Obat/Farmasi</th>';
+            //     $html .= '<th align="right">Penunjang Medis</th>';
+            //     $html .= '<th align="right">Tindakan</th>';
+            //     $html .= '<th align="right">BPAKO</th>';
+            // $html .= '</tr>';
+            //  /*split resume billing*/
+            // $split_billing = $this->splitResumeBilling($resume_billing);
 
-        // $bill_dr    = isset($split_billing['bill_dr'])?$split_billing['bill_dr']:0;
-        // $bill_adm_rs    = isset($split_billing['bill_adm_rs'])?$split_billing['bill_adm_rs']:0;
-        // $bill_farm  = isset($split_billing['bill_farm'])?$split_billing['bill_farm']:0;
-        // $bill_pm    = isset($split_billing['bill_pm'])?$split_billing['bill_pm']:0;
-        // $bill_tindakan  = isset($split_billing['bill_tindakan'])?$split_billing['bill_tindakan']:0;
-        // $bill_bpako     = isset($split_billing['bill_bpako'])?$split_billing['bill_bpako']:0;
-        
-        // $html .= '<tr>';
-        //     $html .= '<td align="right">Rp. '.number_format($bill_dr).',-</td>';
-        //     $html .= '<td align="right">Rp. '.number_format($bill_adm_rs).',-</td>';
-        //     $html .= '<td align="right">Rp. '.number_format($bill_farm).',-</td>';
-        //     $html .= '<td align="right">Rp. '.number_format($bill_pm).',-</td>';
-        //     $html .= '<td align="right">Rp. '.number_format($bill_tindakan).',-</td>';
-        //     $html .= '<td align="right">Rp. '.number_format($bill_bpako).',-</td>';
-        // $html .= '</tr>'; 
-        // $html .= '<tr>';
-        //     $html .= '<td align="right" colspan="5"><b>Total</b></td>';
-        //     $total_billing = (double)$bill_dr + (double)$bill_adm_rs + (double)$bill_farm + (double)$bill_pm + (double)$bill_tindakan+ (double)$bill_bpako; 
-        //     $html .= '<td align="right"><b>Rp. '.number_format($total_billing).',-</b></td>';
-        // $html .= '</tr>';
-        // $html .= '</table>'; 
-        $html .= '</div>';
-
-        // $html .= '<div class="col-sm-5">';
-        //     $html .= '<div><h4>Resume Pasien</h4></div>';
-        //         $html .= '<table class="table" style="background-color: white">';  
-        //         $html .= '<tr>';
-        //             $html .= '<th width="30px">No</th>';
-        //             $html .= '<th width="100px">Kode</th>';
-        //             $html .= '<th>Deskripsi Resume</th>';
-        //             $html .= '<th>Jenis</th>';
-        //         $html .= '</tr>';
-        //         /*Billing RS*/
-        //         foreach ($data->kasir_data as $key_kasir_data => $val_kasir_data) {
-        //             $no=1;
-        //             $html .= '<tr>';
-        //             $html .= '<td>'.$no.'</td>';
-        //             $html .= '<td>'.$val_kasir_data->seri_kuitansi.'-'.$val_kasir_data->kode_tc_trans_kasir.'</td>';
-        //             $html .= '<td><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=RJ&noreg='.$no_registrasi.'" target="_blank" >Billing Pasien Rawat Jalan</a></td>';
-        //             $html .= '<td>Billing</td>';
-        //             $html .= '</tr>';
-        //             $no++;
-        //         }
-        // $cont_no = $no;
-        // /*Hasil penunjang medis*/
-        // /*grouping document pm*/
-        // $grouping_doc = $this->groupingDocumentPM($data->group);
-        // foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
-        //     $explode_key = explode('-',$key_group);
-        //     $offset_kode_penunjang = $explode_key[0];
-        //     $offset_kode_bagian = $explode_key[1];
-        //     $offset_nama_pm = $explode_key[2];
-        //     /*convert arr tindakan to string*/
-        //     $convert_to_string_tindakan = implode(' / ', $grouping_doc['grouping_tindakan'][$offset_kode_penunjang]);
-        //     if($offset_kode_bagian == '050101'){
-        //         $flag = 'LAB';
-        //     }elseif ($offset_kode_bagian == '050201') {
-        //         $flag = 'RAD';
-        //     }elseif ($offset_kode_bagian == '050301') {
-        //         $flag = 'FSO';
-        //     }else{
-        //         $flag = 0;
-        //     }
-        //     $html .= '<tr>';
-        //     $html .= '<td>'.$cont_no.'</td>';
-        //     $html .= '<td width="50px"><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag='.$flag.'&noreg='.$no_registrasi.'&pm='.$offset_kode_penunjang.'&kode_pm='.$offset_kode_bagian.'" target="blank" >'.$offset_kode_penunjang.'</a></td>';
-        //     $html .= '<td>'.$offset_nama_pm.' ( '.$convert_to_string_tindakan.' ) </td>';
-        //     $html .= '<td>Hasil Penunjang Medis</td>';
-        //     $html .= '</tr>';
+            // $bill_dr    = isset($split_billing['bill_dr'])?$split_billing['bill_dr']:0;
+            // $bill_adm_rs    = isset($split_billing['bill_adm_rs'])?$split_billing['bill_adm_rs']:0;
+            // $bill_farm  = isset($split_billing['bill_farm'])?$split_billing['bill_farm']:0;
+            // $bill_pm    = isset($split_billing['bill_pm'])?$split_billing['bill_pm']:0;
+            // $bill_tindakan  = isset($split_billing['bill_tindakan'])?$split_billing['bill_tindakan']:0;
+            // $bill_bpako     = isset($split_billing['bill_bpako'])?$split_billing['bill_bpako']:0;
             
-        //     $cont_no++;
-        // }
+            // $html .= '<tr>';
+            //     $html .= '<td align="right">Rp. '.number_format($bill_dr).',-</td>';
+            //     $html .= '<td align="right">Rp. '.number_format($bill_adm_rs).',-</td>';
+            //     $html .= '<td align="right">Rp. '.number_format($bill_farm).',-</td>';
+            //     $html .= '<td align="right">Rp. '.number_format($bill_pm).',-</td>';
+            //     $html .= '<td align="right">Rp. '.number_format($bill_tindakan).',-</td>';
+            //     $html .= '<td align="right">Rp. '.number_format($bill_bpako).',-</td>';
+            // $html .= '</tr>'; 
+            // $html .= '<tr>';
+            //     $html .= '<td align="right" colspan="5"><b>Total</b></td>';
+            //     $total_billing = (double)$bill_dr + (double)$bill_adm_rs + (double)$bill_farm + (double)$bill_pm + (double)$bill_tindakan+ (double)$bill_bpako; 
+            //     $html .= '<td align="right"><b>Rp. '.number_format($total_billing).',-</b></td>';
+            // $html .= '</tr>';
+            // $html .= '</table>'; 
+            $html .= '</div>';
 
-        // $html .= '</table>';
-        // $html .= '<p class="center">';
+            // $html .= '<div class="col-sm-5">';
+            //     $html .= '<div><h4>Resume Pasien</h4></div>';
+            //         $html .= '<table class="table" style="background-color: white">';  
+            //         $html .= '<tr>';
+            //             $html .= '<th width="30px">No</th>';
+            //             $html .= '<th width="100px">Kode</th>';
+            //             $html .= '<th>Deskripsi Resume</th>';
+            //             $html .= '<th>Jenis</th>';
+            //         $html .= '</tr>';
+            //         /*Billing RS*/
+            //         foreach ($data->kasir_data as $key_kasir_data => $val_kasir_data) {
+            //             $no=1;
+            //             $html .= '<tr>';
+            //             $html .= '<td>'.$no.'</td>';
+            //             $html .= '<td>'.$val_kasir_data->seri_kuitansi.'-'.$val_kasir_data->kode_tc_trans_kasir.'</td>';
+            //             $html .= '<td><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag=RJ&noreg='.$no_registrasi.'" target="_blank" >Billing Pasien Rawat Jalan</a></td>';
+            //             $html .= '<td>Billing</td>';
+            //             $html .= '</tr>';
+            //             $no++;
+            //         }
+            // $cont_no = $no;
+            // /*Hasil penunjang medis*/
+            // /*grouping document pm*/
+            // $grouping_doc = $this->groupingDocumentPM($data->group);
+            // foreach ($grouping_doc['grouping_dokumen'] as $key_group => $val_group) {
+            //     $explode_key = explode('-',$key_group);
+            //     $offset_kode_penunjang = $explode_key[0];
+            //     $offset_kode_bagian = $explode_key[1];
+            //     $offset_nama_pm = $explode_key[2];
+            //     /*convert arr tindakan to string*/
+            //     $convert_to_string_tindakan = implode(' / ', $grouping_doc['grouping_tindakan'][$offset_kode_penunjang]);
+            //     if($offset_kode_bagian == '050101'){
+            //         $flag = 'LAB';
+            //     }elseif ($offset_kode_bagian == '050201') {
+            //         $flag = 'RAD';
+            //     }elseif ($offset_kode_bagian == '050301') {
+            //         $flag = 'FSO';
+            //     }else{
+            //         $flag = 0;
+            //     }
+            //     $html .= '<tr>';
+            //     $html .= '<td>'.$cont_no.'</td>';
+            //     $html .= '<td width="50px"><a href="'.base_url().'Templates/Export_data/export?type=pdf&flag='.$flag.'&noreg='.$no_registrasi.'&pm='.$offset_kode_penunjang.'&kode_pm='.$offset_kode_bagian.'" target="blank" >'.$offset_kode_penunjang.'</a></td>';
+            //     $html .= '<td>'.$offset_nama_pm.' ( '.$convert_to_string_tindakan.' ) </td>';
+            //     $html .= '<td>Hasil Penunjang Medis</td>';
+            //     $html .= '</tr>';
+                
+            //     $cont_no++;
+            // }
 
-        // $html .= '<b>Klik Tombol Dibawah Ini !</b><br><blink><i class="fa fa-angle-double-down bigger-300"></i></blink><br><br>';
-        // $html .= '<a href="#" onclick="update_status_nk_kode_perusahaan('.$no_registrasi.')" class="btn btn-sm btn-primary">Update Status NK dan Kode Perusahaan</a>';
+            // $html .= '</table>';
+            // $html .= '<p class="center">';
 
-        /*$html .= '<a href="#" onclick="submit_kasir('.$no_registrasi.')" class="btn btn-sm btn-primary">Submit Kasir</a>';*/
+            // $html .= '<b>Klik Tombol Dibawah Ini !</b><br><blink><i class="fa fa-angle-double-down bigger-300"></i></blink><br><br>';
+            // $html .= '<a href="#" onclick="update_status_nk_kode_perusahaan('.$no_registrasi.')" class="btn btn-sm btn-primary">Update Status NK dan Kode Perusahaan</a>';
 
-        // $html .= '<br><br> Silahkan klik tombol diatas jika terdapat item tindakan yang tidak muncul';
-        // $html .= '</p>';
+            /*$html .= '<a href="#" onclick="submit_kasir('.$no_registrasi.')" class="btn btn-sm btn-primary">Submit Kasir</a>';*/
 
-        /*$html .= '<br>';
-        $link = 'casemix/Billing';
-        $html .= '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$no_registrasi.''."/RJ'".')" class="btn btn-xs btn-success"><i class="fa fa-edit bigger-50"></i> Edit Billing</a> ';
-        $html .= '<a href="#" class="btn btn-xs btn-primary"><i class="fa fa-send bigger-50"></i> Submit</a> ';
-        $html .= '<a href="#" class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o bigger-50"></i> Merge PDF Files</a> ';*/
-        $html .= '</div>';
-        $html .= '<br>';
-        $html .= '<br>';
-        $html .= '<br>';
+            // $html .= '<br><br> Silahkan klik tombol diatas jika terdapat item tindakan yang tidak muncul';
+            // $html .= '</p>';
+
+            /*$html .= '<br>';
+            $link = 'casemix/Billing';
+            $html .= '<a href="#" onclick="getMenu('."'".$link.'/editBilling/'.$no_registrasi.''."/RJ'".')" class="btn btn-xs btn-success"><i class="fa fa-edit bigger-50"></i> Edit Billing</a> ';
+            $html .= '<a href="#" class="btn btn-xs btn-primary"><i class="fa fa-send bigger-50"></i> Submit</a> ';
+            $html .= '<a href="#" class="btn btn-xs btn-danger"><i class="fa fa-file-pdf-o bigger-50"></i> Merge PDF Files</a> ';*/
+            $html .= '</div>';
+            $html .= '<br>';
+            $html .= '<br>';
+            $html .= '<br>';
 
         else:
             // $trans_data_original = json_decode($this->getOriginalTransData($no_registrasi));
@@ -471,7 +471,7 @@ class Billing_model extends CI_Model {
 
             // $html .= '</div>';
             // $html .= '</div>';
-
+            $html .= '<div class="center"><br><p style="color:red;font-weight:bold"><b> Billing Pasien Tidak ditemukan!</b></p></div>';
         endif;
         return $html;
     }
@@ -1235,7 +1235,9 @@ class Billing_model extends CI_Model {
 
     public function getKasirDataApt($kode_trans_far)
 	{
+        $this->db->select('tc_trans_kasir.*, tmp_user.fullname');
 		$this->db->from('tc_trans_kasir');
+        $this->db->join('tmp_user', 'tmp_user.user_id=tc_trans_kasir.no_induk', 'left');
 		$this->db->where('kode_tc_trans_kasir IN (SELECT kode_tc_trans_kasir FROM tc_trans_pelayanan WHERE kode_trans_far = '.$kode_trans_far.')');
 		return $this->db->get()->result();
     }
