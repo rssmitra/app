@@ -2203,7 +2203,7 @@ class Pl_pelayanan_ri extends MX_Controller {
     public function get_row_data_observasi_ri(){
 
         $list = $this->Pl_pelayanan_ri->get_datatables_data_observasi();
-
+        // echo "<pre>"; print_r($data);die;
         $data = array();
         $no = $_POST['start'];
         foreach($list as $key=>$row){

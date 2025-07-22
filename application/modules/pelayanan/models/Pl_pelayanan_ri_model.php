@@ -618,23 +618,31 @@ class Pl_pelayanan_ri_model extends CI_Model {
 
         if($params['prefix']==1){
             
-			$query = $this->db->order_by('tgl_monitor')->order_by('jam_monitor')->get_where('th_monitor_perkembangan_pasien_ri', ['no_kunjungan' => $_GET['no_kunjungan'], 'flag_form' => 'btn_hemodinamik', 'is_deleted' => 0])->result_array();
+			$start_date = date('Y-m-d', strtotime('-1 days'));
+			$query = $this->db
+				// ->where('tgl_monitor >=', $start_date)
+				->order_by('tgl_monitor')
+				->order_by('jam_monitor')
+				->get_where('th_monitor_perkembangan_pasien_ri', [
+					'no_kunjungan' => $_GET['no_kunjungan'],
+					'flag_form' => 'btn_hemodinamik',
+					'is_deleted' => 0
+				])->result_array();
 			$fields[0] = array('Sistolik' => 'sistolik');
 			$fields[1] = array('Diastolik' => 'diastolik');
 			$fields[2] = array('Nadi' => 'nd');
 			$fields[3] = array('Suhu' => 'sh');
-
 			$data = [];
 
 			foreach($query as $row){
-            	$data[0][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sistolik']);
-            	$data[1][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['diastolik']);
-            	$data[2][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['nd']);
-            	$data[3][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => $row['sh']);
+            	$data[0][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['sistolik'] > 0 ? (int)$row['sistolik'] : 0));
+            	$data[1][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['diastolik'] > 0 ? (int)$row['diastolik'] : 0));;
+            	$data[2][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['nd'] > 0 ? (int)$row['nd'] : 0));
+            	$data[3][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['sh'] > 0 ? (int)$row['sh'] : 0));
             }
 
             // echo '<pre>';print_r($fields);
-            // echo '<pre>';print_r($data);die;
+            // echo '<pre>';print_r($query);die;
             $title = '';
             $subtitle = '';
 

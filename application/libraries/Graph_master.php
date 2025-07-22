@@ -1345,121 +1345,60 @@ final Class Graph_master {
         $CI =&get_instance();
         $db = $CI->load->database('default', TRUE);
         $total_data = count($fields);
-        // echo '<pre>';print_r($total_data);
+        // echo '<pre>';print_r($fields);die;
         // echo '<pre>';print_r($data[0]);die;
 
-        foreach ($data[1] as $ky => $rw) {
+        foreach ($data[0] as $ky => $rw) {
             $categories[] = $rw['txt_y'];
         }
 
         $getDataX = [];
         for($td=0; $td<=($total_data-1); $td++){
-            $getData[$td] = array();
-            foreach($data[$td] as $key=>$row){
-                foreach ($fields[$td] as $kf => $vf) {
-                    $getData[$td][$kf][$row['txt_y']] = round($row['total'], 2);
-                }
+                $CI =&get_instance();
+                $db = $CI->load->database('default', TRUE);
+                $total_data = count($fields);
 
-                foreach ($fields[$td] as $kf2 => $vf2) {
-                    foreach ($categories as $val_x) {
-                        $value_total = isset($getData[$td][$kf2][$val_x]) ? $getData[$td][$kf2][$val_x] :0;
-                        $getDataX[$td][$kf2][$val_x] = $value_total;
+                // Ambil semua kategori unik dari seluruh data
+                $categories = array();
+                foreach ($data as $dataSet) {
+                    foreach ($dataSet as $row) {
+                        if (!in_array($row['txt_y'], $categories)) {
+                            $categories[] = $row['txt_y'];
+                        }
                     }
                 }
-                
-            }
+            sort($categories);
 
-            foreach ($fields[$td] as $kf3 => $vf3) {
-                // echo '<pre>';print_r($getData[$td]);
-                foreach ($getDataX[$td][$kf3] as $kf4 => $vf4) {
-                    $getDataY[$td][$kf3][] = $vf4;
+            $series = array();
+            for ($td = 0; $td < $total_data; $td++) {
+                foreach ($fields[$td] as $fieldKey => $fieldName) {
+                    $dataSeries = array();
+                    foreach ($categories as $cat) {
+                        // Cari data yang sesuai kategori
+                        $found = false;
+                        foreach ($data[$td] as $row) {
+                            if ($row['txt_y'] == $cat) {
+                                $dataSeries[] = round($row['total'], 2);
+                                $found = true;
+                                break;
+                            }
+                        }
+                        if (!$found) {
+                            $dataSeries[] = 0;
+                        }
+                    }
+                    $series[] = array('name' => $fieldKey, 'data' => $dataSeries);
                 }
-            }
-
-            // echo "<pre>"; print_r($getDataY);die;
-            foreach ($getDataY[$td] as $k => $r) {
-                $series[] = array('name' => $k, 'data' => $r );
             }
 
             
+            $chart_data = array(
+                'xAxis'     => array('categories' => $categories),
+                'series'    => $series,
+            );
+            // echo '<pre>';print_r($chart_data);die;
+            return $chart_data;
         }
-
-        $chart_data = array(
-            'xAxis'     => array('categories' => $categories),
-            'series'    => $series,
-        );
-
-        // echo "<pre>"; print_r($chart_data);die;
-        return $chart_data;
-    }
-
-    public function TableStyleOneData($fields, $params, $data){
-        $CI =&get_instance();
-        $db = $CI->load->database('default', TRUE);
-        
-        // echo '<pre>';print_r($fields);
-        // echo '<pre>';print_r($params);
-        // echo '<pre>';print_r($data);
-        // die;
-
-        $html = '';
-        $html .= '<style>';
-        $html .= '.div-scroll, table{
-                    max-height: 300px;
-                    overflow-y: scroll;
-                    overflow-x: clip;
-                    }';
-        $html .= '</style>';
-        $html .= '<div class="div-scroll">';
-        $html .='<table class="table table-bordered table-hover"><thead>
-                    <tr><th width="20px" class="center">No</th>';
-                foreach ($fields as $kf => $vf) {
-                    $html .= '<th>'.ucfirst($kf).'</th>';
-                }
-        $html .='</thead>';
-        $html .='<tbody>';
-          $no=0;
-        $sum_arr = array();
-        $arr_exc = array('total_format_money', 'total', 'total_m', 'total_nm', 'jumlah_order');
-        foreach ($data as $key => $value) { 
-            $no++;
-            $html .='<tr>';
-            $html .='<td align="center">'.$no.'</td>';
-            foreach ($fields as $keyf => $valuef) {
-                $align = (in_array(strtolower($valuef), $arr_exc))?'right':'left';
-                if( in_array($valuef, $arr_exc ) ){
-                    $format_value = number_format($value[$valuef]);
-                    $sum_arr[$valuef][] = $value[$valuef];
-                }elseif(  $valuef=='bulan' ){
-                    // format bulan
-                    $format_value = $CI->tanggal->getBulan($value[$valuef]);
-                }else{
-                    $format_value = $value[$valuef];
-                }
-                $html .='<td align="'.$align.'">'.ucwords(strtolower($format_value)).'</td>';
-            }
-            $html .='</tr>';
-        }
-
-        $html .= '<tr>';
-        $html .= '<td colspan="2" align="right"><b>Jumlah Total</b></td>';
-        foreach ($fields as $keyf => $valuef) {
-            if( !in_array($valuef, array('bulan', 'supplier', 'nama_brg', 'bagian', 'nama_dokter', 'label', 'nama_bagian') ) ){
-                $total_sum = isset($sum_arr[$valuef]) ? array_sum($sum_arr[$valuef]) : 0;
-                $html .= '<td align="right"><b>'.number_format($total_sum).'</b></td>';
-            }
-        }
-        $html .= '</tr>';
-        
-        $html .='</tbody>';
-        $html .='</table>';
-        $html .='</div>';
-
-        $chart_data = array(
-            'xAxis'     => 0,
-            'series'    => $html,
-        );
-        return $chart_data;
     }
 
     public function TableStyleCustom263($fields, $params, $data){
@@ -1544,9 +1483,8 @@ final Class Graph_master {
             'value' => $data,
         );
         // echo '<pre>';print_r($result);
-  //    die;
+        // die;
         $html = $CI->load->view('eksekutif/Eks_poli/TableResumeKunjunganHarian', $result, true);
-        
         
         $chart_data = array(
             'xAxis'     => 0,
