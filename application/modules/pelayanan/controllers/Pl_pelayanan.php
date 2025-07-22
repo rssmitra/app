@@ -2468,6 +2468,7 @@ class Pl_pelayanan extends MX_Controller {
         $data['jenis_form'] = 'form_'.$id.'';
         $data['no_kunjungan'] = $no_kunjungan;
         $data['data_pasien'] = $this->Pl_pelayanan->get_detail_kunjungan($no_kunjungan);
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
         $data['result'] = $result;
         
         // echo '<pre>';print_r($data);die;

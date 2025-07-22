@@ -69,6 +69,7 @@ class Pl_input_vital_sign extends MX_Controller {
         $data['id'] = $id;
         $data['no_kunjungan'] = $no_kunjungan;
         $data['jenis_form'] = 'form_25';
+        $data['riwayat'] = $this->Pl_pelayanan->get_riwayat_pasien_by_id($no_kunjungan);
         $template = $this->load->view('Pl_pelayanan/clinical_pathway/form_25', $data, true);
         $data['template'] = $template;
         

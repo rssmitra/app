@@ -120,19 +120,19 @@
 
   <tr>
     <td style="vertical-align: middle;">Tekanan Darah</td>
-    <td style="width: 150px">: <input type="text" class="input_type" name="form_25[td_1]" id="td_1" onchange="fillthis('td_1')" style="width: 90%"></td>
+    <td style="width: 150px">: <input type="text" class="input_type" name="form_25[td_1]" id="td_1" onchange="fillthis('td_1')" style="width: 90%" value="<?php echo isset($riwayat->tekanan_darah)?$riwayat->tekanan_darah:''?>"></td>
     <td align="center" style="vertical-align: middle; width: 100px">(mmHg)</td>
     <td style="vertical-align: middle">Tinggi Badan</td>
-    <td style="width: 150px">: <input type="text" class="input_type" name="form_25[tb_1]" id="tb_1" onchange="fillthis('tb_1')" style="width: 90%"></td>
+    <td style="width: 150px">: <input type="text" class="input_type" name="form_25[tb_1]" id="tb_1" onchange="fillthis('tb_1')" style="width: 90%" value="<?php echo isset($riwayat->tinggi_badan)?$riwayat->tinggi_badan:''?>"></td>
     <td align="center" style="vertical-align: middle">(cm)</td>
   </tr>
 
   <tr>
     <td style="vertical-align: middle">Berat Badan</td>
-    <td>: <input type="text" class="input_type" name="form_25[bb_1]" id="bb_1" onchange="fillthis('bb_1')" style="width: 90%"></td>
+    <td>: <input type="text" class="input_type" name="form_25[bb_1]" id="bb_1" onchange="fillthis('bb_1')" style="width: 90%" value="<?php echo isset($riwayat->berat_badan)?$riwayat->berat_badan:''?>"></td>
     <td align="center" style="vertical-align: middle">(Kg/Gr)</td>
     <td style="vertical-align: middle">Nadi</td>
-    <td>: <input type="text" class="input_type" name="form_25[andi_1]" id="andi_1" onchange="fillthis('andi_1')" style="width: 90%"></td>
+    <td>: <input type="text" class="input_type" name="form_25[andi_1]" id="andi_1" onchange="fillthis('andi_1')" style="width: 90%" value="<?php echo isset($riwayat->nadi)?$riwayat->nadi:''?>"></td>
     <td align="center" style="vertical-align: middle">(x/min)</td>
   </tr>
 
@@ -141,7 +141,7 @@
     <td>: <input type="text" class="input_type" name="form_25[nafas]" id="nafas" onchange="fillthis('nafas')" style="width: 90%"></td>
     <td align="center" style="vertical-align: middle">(x/min)</td>
     <td style="vertical-align: middle">Suhu</td>
-    <td>: <input type="text" class="input_type" name="form_25[suhu]" id="suhu" onchange="fillthis('suhu')" style="width: 90%"></td>
+    <td>: <input type="text" class="input_type" name="form_25[suhu]" id="suhu" onchange="fillthis('suhu')" style="width: 90%" value="<?php echo isset($riwayat->suhu)?$riwayat->suhu:''?>"></td>
     <td align="center" style="vertical-align: middle">(&#8451;)</td>
   </tr>
 

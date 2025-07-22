@@ -578,15 +578,17 @@ class Reg_klinik extends MX_Controller {
         $this->form_validation->set_rules('kode_perusahaan_hidden', 'Kode Perusahaan', 'trim');
         $this->form_validation->set_rules('kode_kelompok_hidden', 'Kode Perusahaan', 'trim');
 
-        if($_POST['kode_perusahaan_hidden'] == 120){
-            $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim');
-            if($_POST['jeniskunjunganbpjs'] == 3){
-                $this->form_validation->set_rules('noSuratSKDP', 'No Surat Kontrol', 'trim|required');   
+        if(!isset($_POST['post_ranap'])){
+            if($_POST['kode_perusahaan_hidden'] == 120){
+                $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim');
+                if($_POST['jeniskunjunganbpjs'] == 3){
+                    $this->form_validation->set_rules('noSuratSKDP', 'No Surat Kontrol', 'trim|required');   
+                }else{
+                    $this->form_validation->set_rules('rujukan_baru', 'Cheklist Rujukan Baru', 'trim|required', ['required' => 'Silahkan ceklis Rujukan Baru']);   
+                }
             }else{
-                $this->form_validation->set_rules('rujukan_baru', 'Cheklist Rujukan Baru', 'trim|required', ['required' => 'Silahkan ceklis Rujukan Baru']);   
+                $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim');
             }
-        }else{
-            $this->form_validation->set_rules('noRujukan', 'Nomor Rujukan', 'trim');
         }
 
         // set message error
@@ -653,6 +655,7 @@ class Reg_klinik extends MX_Controller {
                 $datapoli['nama_pasien'] = $_POST['nama_pasien_hidden'];
                 $datapoli['created_date'] = date('Y-m-d H:i:s');
                 $datapoli['updated_date'] = date('Y-m-d H:i:s');
+                $datapoli['post_ranap'] = isset($_POST['post_ranap']) ? $_POST['post_ranap'] : 'N';
                 
                 //print_r($datapoli);die;
                 /*save poli*/
@@ -679,155 +682,162 @@ class Reg_klinik extends MX_Controller {
             $jeniskunjungan = ($_POST['jeniskunjunganbpjs'] > 0) ? $_POST['jeniskunjunganbpjs'] : 3;
             $nomorreferensi = ($jeniskunjungan == 3) ? $_POST['noSuratSKDP'] : $_POST['noRujukan'];
 
-            $config_antrol = array(
-                "no_registrasi" => $dt_reg->no_registrasi,
-                'jam_praktek_mulai' => $jam_praktek_mulai,
-                'jam_praktek_selesai' => $jam_praktek_selesai,
-                'kuota_dr' => $kuota_dr,
-                "kodebooking" => $no_registrasi,
-                "jenispasien" => "JKN",
-                "nomorkartu" => $dt_reg->no_kartu_bpjs,
-                "nik" => $dt_reg->no_ktp,
-                "nohp" => $dt_reg->no_hp,
-                "kodepoli" => $_POST['kodePoliHidden'],
-                "namapoli" => $dt_reg->nama_bagian,
-                "pasienbaru" => 0,
-                "norm" => $no_mr,
-                "tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
-                "kodedokter" => trim($_POST['kodeDokterDPJPPerjanjianBPJS']),
-                "namadokter" => $dt_reg->nama_pegawai,
-                "jampraktek" => $jam_praktek_mulai.'-'.$jam_praktek_selesai,
-                "jeniskunjungan" => $jeniskunjungan,
-                "nomorreferensi" => $nomorreferensi,
-                "nomorantrean" => $_POST['kodePoliHidden'].'-'.$dt_antrian->no_antrian,
-                "angkaantrean" => $dt_antrian->no_antrian,
-            );
+            
 
-            $antrol = $this->reff->processAntrol($config_antrol);
-            // echo "<pre>"; print_r($antrol);die;
+            if(!isset($_POST)) : 
 
-            /*insert sep*/
-            $data = array(
-                'request' => array(
-                    't_sep' => array(
-                        'noKartu' => $_POST['noKartuHidden'],
-                        'tglSep' => $_POST['tglSEP'],
-                        'ppkPelayanan' => $this->kode_faskes, 
-                        'jnsPelayanan' => $_POST['jnsPelayanan'],
-                        'klsRawat' => array(
-                            'klsRawatHak' => ( $_POST['jnsPelayanan'] == 1 ) ? $_POST['kelasRawat'] : "3",
-                            'klsRawatNaik' => "",
-                            'pembiayaan' => "",
-                            'penanggungJawab' => ""
-                        ),
-                        'noMR' => $no_mr,
-                        'rujukan' => array(
-                            'asalRujukan' => ($_POST['jenis_faskes_pasien'] == 'pcare') ? 1 : 2 ,
-                            'tglRujukan' => $_POST['tglRujukan'],
-                            'noRujukan' => $_POST['noRujukan'],
-                            'ppkRujukan' => $_POST['kodeFaskesHidden'], //blom ada
-                            ),
-                        'catatan' => $_POST['catatan'],
-                        'diagAwal' => $_POST['kodeDiagnosaHidden'],
-                        'poli' => array(
-                            'tujuan' => $_POST['kodePoliHidden'],
-                            'eksekutif' => isset($_POST['eksekutif'])?$_POST['eksekutif']:"0",
-                            ),
-                        'cob' => array('cob' => isset($_POST['cob'])?$_POST['cob']:"0"),
-                        'katarak' => array('katarak' => isset($_POST['katarak'])?$_POST['katarak']:"0"),
-                        'jaminan' => array(
-                            'lakaLantas' => ($_POST['lakalantas'])?$_POST['lakalantas']:"0", 
-                            'penjamin' => array(
-                                "penjamin" => isset($_POST['penjamin'])?$_POST['penjamin']:"",
-                                "tglKejadian" => isset($_POST['tglKejadian'])?$_POST['tglKejadian']:"",
-                                "keterangan" => isset($_POST['keteranganKejadian'])?$_POST['keteranganKejadian']:"",
-                                "suplesi" => array(
-                                    'suplesi' => isset($_POST['suplesi'])?$_POST['suplesi']:"0",
-                                    "noSepSuplesi"  => isset($_POST['noSepSuplesi'])?$_POST['noSepSuplesi']:"0",
-                                    "lokasiLaka" => array(
-                                        'kdPropinsi' => isset($_POST['provinceId'])?$_POST['provinceId']:"0",
-                                        'kdKabupaten' => isset($_POST['regencyId'])?$_POST['regencyId']:"0",
-                                        'kdKecamatan' => isset($_POST['districtId'])?$_POST['districtId']:"0",
-                                        ),
-                                    ),
-                                ), 
-                            ),
-                        'tujuanKunj' => $_POST['tujuanKunj'],
-                        'flagProcedure' => $_POST['flagProcedure'],
-                        'kdPenunjang' => $_POST['kdPenunjang'],
-                        'assesmentPel' => $_POST['assesmentPel'],
-                        'skdp' => array('noSurat' => $_POST['noSuratSKDP'], "kodeDPJP" => trim($_POST['kodeDokterDPJPPerjanjianBPJS']) ),
-                        'dpjpLayan' => trim($_POST['kodeDokterDPJPPerjanjianBPJS']),
-                        'noTelp' => $_POST['noTelp'],
-                        'user' => $_POST['user'],
-                        ),
-                    ),
-            );
-
-            // echo "<pre>"; print_r($data);die;
-            $result = $this->Ws_index->insertSep($data);
-            $response = isset($result['response']) ? $result : false;
-
-            if($response == false){
-                echo json_encode(array('status' => 0, 'message' => 'Error API ! Silahkan cek koneksi anda!'));
-                exit;
-            }
-
-            if($response['response']->metaData->code == 200){
-                // save log data sep
-                $sep = $response['data']->sep;
-                $insert_sep = array(
-                    'catatan' => $sep->catatan,
-                    'diagnosa' => $sep->diagnosa,
-                    'jnsPelayanan' => $sep->jnsPelayanan,
-                    'kelasRawat' => ($this->form_validation->set_value('jnsPelayanan')==1)?$sep->kelasRawat:"Kelas 1",
-                    'noSep' => $sep->noSep,
-                    'penjamin' => $sep->penjamin,
-                    'poli' => $sep->poli,
-                    'poliEksekutif' => $sep->poliEksekutif,
-                    'tglSep' => $sep->tglSep,
-                    /*peserta*/
-                    'asuransi' => $sep->peserta->asuransi,
-                    'hakKelas' => $sep->peserta->hakKelas,
-                    'jnsPeserta' => $sep->peserta->jnsPeserta,
-                    'kelamin' => $sep->peserta->kelamin,
-                    'nama' => $sep->peserta->nama,
-                    'noKartu' => $sep->peserta->noKartu,
-                    'noMr' => $sep->peserta->noMr,
-                    'tglLahir' => $sep->peserta->tglLahir,
-                    'kodePPPKPerujuk' => $_POST['kodeFaskesHidden'],
-                    'PPKPerujuk' => $_POST['ppkRujukan'],
-                    'asalRujukan' => ($this->form_validation->set_value('jenis_faskes') == 'pcare') ? 1 : 2 ,
-                    'tglRujukan' => $this->form_validation->set_value('tglRujukan'),
-                    'noRujukan' => $this->form_validation->set_value('noRujukan'),
-                    'kodeDiagnosa' => $this->form_validation->set_value('kodeDiagnosaHidden'),
-                    'kodeJnsPelayanan' => $this->form_validation->set_value('jnsPelayanan'),
-                    'kodeKelasRawat' => ($this->form_validation->set_value('jnsPelayanan')==1)?$this->form_validation->set_value('kelasRawat'):"3",
-                    'kodePoli' =>$this->form_validation->set_value('kodePoliHidden'),
-                    'noTelp' =>  $this->form_validation->set_value('noTelp'),
-                    'lakaLantas' => ($this->form_validation->set_value('lakalantas'))?$this->form_validation->set_value('lakalantas'):"0", 
-                    'penjamin' => $this->form_validation->set_value('penjamin'), 
-                    'lokasiLaka' => $this->form_validation->set_value('lokasiLaka'),
-                    'find_member_by' => $this->form_validation->set_value('find_member_by'),
-                    'created_date' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('user')->fullname,
-                    'noSuratSKDP' => $this->form_validation->set_value('noSuratSKDP'),
-                    'KodedokterDPJP' =>  $this->form_validation->set_value('KodedokterDPJP'),
-                    'namaDokterDPJP' => $this->form_validation->set_value('dokterDPJP'),
+                $config_antrol = array(
+                    "no_registrasi" => $dt_reg->no_registrasi,
+                    'jam_praktek_mulai' => $jam_praktek_mulai,
+                    'jam_praktek_selesai' => $jam_praktek_selesai,
+                    'kuota_dr' => $kuota_dr,
+                    "kodebooking" => $no_registrasi,
+                    "jenispasien" => "JKN",
+                    "nomorkartu" => $dt_reg->no_kartu_bpjs,
+                    "nik" => $dt_reg->no_ktp,
+                    "nohp" => $dt_reg->no_hp,
+                    "kodepoli" => $_POST['kodePoliHidden'],
+                    "namapoli" => $dt_reg->nama_bagian,
+                    "pasienbaru" => 0,
+                    "norm" => $no_mr,
+                    "tanggalperiksa" => $this->tanggal->formatDateBPJS($this->tanggal->formatDateTimeToSqlDate($dt_reg->tgl_jam_masuk)),
+                    "kodedokter" => trim($_POST['kodeDokterDPJPPerjanjianBPJS']),
+                    "namadokter" => $dt_reg->nama_pegawai,
+                    "jampraktek" => $jam_praktek_mulai.'-'.$jam_praktek_selesai,
+                    "jeniskunjungan" => $jeniskunjungan,
+                    "nomorreferensi" => $nomorreferensi,
+                    "nomorantrean" => $_POST['kodePoliHidden'].'-'.$dt_antrian->no_antrian,
+                    "angkaantrean" => $dt_antrian->no_antrian,
                 );
-                $this->Ws_index->insert_tbl_sep('ws_bpjs_sep', $insert_sep);
 
-                // udpate no sep
-                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['no_sep' => $sep->noSep, 'diagnosa_rujukan' => $_POST['diagAwal'], 'kode_diagnosa_rujukan' => $_POST['kodeDiagnosaHidden']]);
-                $this->db->trans_commit();
-                echo json_encode( array('status' => 200, 'message' => 'Proses berhasil dilakukan!', 'result' => $sep, 'no_sep' => $sep->noSep, 'no_kartu' => $_POST['noKartuHidden'], 'data' => $response['data'], 'type_pelayanan' => 'create_sep', 'kode_perusahaan' => 120, 'no_antrian' => $dt_antrian ) );
+                $antrol = $this->reff->processAntrol($config_antrol);
+                // echo "<pre>"; print_r($antrol);die;
+                
+                /*insert sep*/
+                $data = array(
+                    'request' => array(
+                        't_sep' => array(
+                            'noKartu' => $_POST['noKartuHidden'],
+                            'tglSep' => $_POST['tglSEP'],
+                            'ppkPelayanan' => $this->kode_faskes, 
+                            'jnsPelayanan' => $_POST['jnsPelayanan'],
+                            'klsRawat' => array(
+                                'klsRawatHak' => ( $_POST['jnsPelayanan'] == 1 ) ? $_POST['kelasRawat'] : "3",
+                                'klsRawatNaik' => "",
+                                'pembiayaan' => "",
+                                'penanggungJawab' => ""
+                            ),
+                            'noMR' => $no_mr,
+                            'rujukan' => array(
+                                'asalRujukan' => ($_POST['jenis_faskes_pasien'] == 'pcare') ? 1 : 2 ,
+                                'tglRujukan' => $_POST['tglRujukan'],
+                                'noRujukan' => $_POST['noRujukan'],
+                                'ppkRujukan' => $_POST['kodeFaskesHidden'], //blom ada
+                                ),
+                            'catatan' => $_POST['catatan'],
+                            'diagAwal' => $_POST['kodeDiagnosaHidden'],
+                            'poli' => array(
+                                'tujuan' => $_POST['kodePoliHidden'],
+                                'eksekutif' => isset($_POST['eksekutif'])?$_POST['eksekutif']:"0",
+                                ),
+                            'cob' => array('cob' => isset($_POST['cob'])?$_POST['cob']:"0"),
+                            'katarak' => array('katarak' => isset($_POST['katarak'])?$_POST['katarak']:"0"),
+                            'jaminan' => array(
+                                'lakaLantas' => ($_POST['lakalantas'])?$_POST['lakalantas']:"0", 
+                                'penjamin' => array(
+                                    "penjamin" => isset($_POST['penjamin'])?$_POST['penjamin']:"",
+                                    "tglKejadian" => isset($_POST['tglKejadian'])?$_POST['tglKejadian']:"",
+                                    "keterangan" => isset($_POST['keteranganKejadian'])?$_POST['keteranganKejadian']:"",
+                                    "suplesi" => array(
+                                        'suplesi' => isset($_POST['suplesi'])?$_POST['suplesi']:"0",
+                                        "noSepSuplesi"  => isset($_POST['noSepSuplesi'])?$_POST['noSepSuplesi']:"0",
+                                        "lokasiLaka" => array(
+                                            'kdPropinsi' => isset($_POST['provinceId'])?$_POST['provinceId']:"0",
+                                            'kdKabupaten' => isset($_POST['regencyId'])?$_POST['regencyId']:"0",
+                                            'kdKecamatan' => isset($_POST['districtId'])?$_POST['districtId']:"0",
+                                            ),
+                                        ),
+                                    ), 
+                                ),
+                            'tujuanKunj' => $_POST['tujuanKunj'],
+                            'flagProcedure' => $_POST['flagProcedure'],
+                            'kdPenunjang' => $_POST['kdPenunjang'],
+                            'assesmentPel' => $_POST['assesmentPel'],
+                            'skdp' => array('noSurat' => $_POST['noSuratSKDP'], "kodeDPJP" => trim($_POST['kodeDokterDPJPPerjanjianBPJS']) ),
+                            'dpjpLayan' => trim($_POST['kodeDokterDPJPPerjanjianBPJS']),
+                            'noTelp' => $_POST['noTelp'],
+                            'user' => $_POST['user'],
+                            ),
+                        ),
+                );
 
-            }else{
-                // udpate no sep
-                $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['diagnosa_rujukan' => $_POST['diagAwal'], 'kode_diagnosa_rujukan' => $_POST['kodeDiagnosaHidden']]);
-                $this->db->trans_commit();
-                echo json_encode(array('status' => 201, 'message' => $response['response']->metaData->message, 'type_pelayanan' => 'create_sep', 'no_sep' => '1111111111111111111', 'no_kartu' => $_POST['noKartuHidden']));
-            } 
+                // echo "<pre>"; print_r($data);die;
+                $result = $this->Ws_index->insertSep($data);
+                $response = isset($result['response']) ? $result : false;
+
+                if($response == false){
+                    echo json_encode(array('status' => 0, 'message' => 'Error API ! Silahkan cek koneksi anda!'));
+                    exit;
+                }
+
+                if($response['response']->metaData->code == 200){
+                    // save log data sep
+                    $sep = $response['data']->sep;
+                    $insert_sep = array(
+                        'catatan' => $sep->catatan,
+                        'diagnosa' => $sep->diagnosa,
+                        'jnsPelayanan' => $sep->jnsPelayanan,
+                        'kelasRawat' => ($this->form_validation->set_value('jnsPelayanan')==1)?$sep->kelasRawat:"Kelas 1",
+                        'noSep' => $sep->noSep,
+                        'penjamin' => $sep->penjamin,
+                        'poli' => $sep->poli,
+                        'poliEksekutif' => $sep->poliEksekutif,
+                        'tglSep' => $sep->tglSep,
+                        /*peserta*/
+                        'asuransi' => $sep->peserta->asuransi,
+                        'hakKelas' => $sep->peserta->hakKelas,
+                        'jnsPeserta' => $sep->peserta->jnsPeserta,
+                        'kelamin' => $sep->peserta->kelamin,
+                        'nama' => $sep->peserta->nama,
+                        'noKartu' => $sep->peserta->noKartu,
+                        'noMr' => $sep->peserta->noMr,
+                        'tglLahir' => $sep->peserta->tglLahir,
+                        'kodePPPKPerujuk' => $_POST['kodeFaskesHidden'],
+                        'PPKPerujuk' => $_POST['ppkRujukan'],
+                        'asalRujukan' => ($this->form_validation->set_value('jenis_faskes') == 'pcare') ? 1 : 2 ,
+                        'tglRujukan' => $this->form_validation->set_value('tglRujukan'),
+                        'noRujukan' => $this->form_validation->set_value('noRujukan'),
+                        'kodeDiagnosa' => $this->form_validation->set_value('kodeDiagnosaHidden'),
+                        'kodeJnsPelayanan' => $this->form_validation->set_value('jnsPelayanan'),
+                        'kodeKelasRawat' => ($this->form_validation->set_value('jnsPelayanan')==1)?$this->form_validation->set_value('kelasRawat'):"3",
+                        'kodePoli' =>$this->form_validation->set_value('kodePoliHidden'),
+                        'noTelp' =>  $this->form_validation->set_value('noTelp'),
+                        'lakaLantas' => ($this->form_validation->set_value('lakalantas'))?$this->form_validation->set_value('lakalantas'):"0", 
+                        'penjamin' => $this->form_validation->set_value('penjamin'), 
+                        'lokasiLaka' => $this->form_validation->set_value('lokasiLaka'),
+                        'find_member_by' => $this->form_validation->set_value('find_member_by'),
+                        'created_date' => date('Y-m-d H:i:s'),
+                        'created_by' => $this->session->userdata('user')->fullname,
+                        'noSuratSKDP' => $this->form_validation->set_value('noSuratSKDP'),
+                        'KodedokterDPJP' =>  $this->form_validation->set_value('KodedokterDPJP'),
+                        'namaDokterDPJP' => $this->form_validation->set_value('dokterDPJP'),
+                    );
+                    $this->Ws_index->insert_tbl_sep('ws_bpjs_sep', $insert_sep);
+
+                    // udpate no sep
+                    $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['no_sep' => $sep->noSep, 'diagnosa_rujukan' => $_POST['diagAwal'], 'kode_diagnosa_rujukan' => $_POST['kodeDiagnosaHidden']]);
+                    $this->db->trans_commit();
+                    echo json_encode( array('status' => 200, 'message' => 'Proses berhasil dilakukan!', 'result' => $sep, 'no_sep' => $sep->noSep, 'no_kartu' => $_POST['noKartuHidden'], 'data' => $response['data'], 'type_pelayanan' => 'create_sep', 'kode_perusahaan' => 120, 'no_antrian' => $dt_antrian ) );
+
+                }else{
+                    // udpate no sep
+                    $this->db->where('no_registrasi', $no_registrasi)->update('tc_registrasi', ['diagnosa_rujukan' => $_POST['diagAwal'], 'kode_diagnosa_rujukan' => $_POST['kodeDiagnosaHidden']]);
+                    $this->db->trans_commit();
+                    echo json_encode(array('status' => 201, 'message' => $response['response']->metaData->message, 'type_pelayanan' => 'create_sep', 'no_sep' => $no_sep, 'no_kartu' => $_POST['noKartuHidden']));
+                } 
+            else: 
+                echo json_encode(array('status' => 201, 'message' => 'Proses berhasil !', 'type_pelayanan' => 'create_sep', 'no_sep' => $no_sep, 'no_kartu' => $_POST['noKartuHidden']));
+            endif;
 
         }
 
