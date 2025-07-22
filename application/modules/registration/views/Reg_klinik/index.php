@@ -63,7 +63,7 @@ $(document).ready(function(){
     $('#form_registration').ajaxForm({      
 
       beforeSend: function() {       
-        achtungShowFadeIn();          
+        // achtungShowFadeIn();          
         $('#divLoadSEP').html('Loading..');
         $('#div_form_onsite').hide();
       },      
@@ -155,15 +155,13 @@ $(document).ready(function(){
             $('#noKartuBpjs').val(jsonResponse.no_kartu);
             $('#jenis_pendaftaran').val('1');
             $('#form_registration').attr('action', 'registration/Reg_klinik/processRegisterNSEP');
-            $('#divLoadSEP').html('<div class="alert alert-danger"><b>'+jsonResponse.message+'</b><br>Pasien berhasil didaftarkan namun Nomor SEP belum berhasil diterbitkan, silahkan lakukan update data kunjungan pasien kembali.</div>');
+            $('#divLoadSEP').html('<div class="alert alert-success"><b>'+jsonResponse.message+'</b><br>Pasien berhasil didaftarkan namun Nomor SEP belum berhasil diterbitkan, silahkan lakukan update data kunjungan pasien kembali.</div>');
             $('#div_form_onsite').hide();
             $('#tabs_riwayat_kunjungan_id').click();
           }
           $.achtung({message: jsonResponse.message, timeout:5, className: 'achtungFail'});
-        }        
-      
+        }   
       }      
-
     });     
 
     $('#form_merge_pasien').ajaxForm({      
@@ -561,6 +559,14 @@ $(document).ready(function(){
         $('#div_load_after_selected_pasien').show('fast');
       }  else{
         $('#div_load_after_selected_pasien').hide('fast');
+      }
+    });
+
+    $('#post_ranap').click(function (e) {   
+      if (($(this).is(':checked'))) {
+        $('#form_sep').hide(); 
+      }  else{
+        $('#form_sep').show(); 
       }
     });
 
@@ -2308,6 +2314,16 @@ function uploadSnapshot() {
                           </div>
                         </div>
                         <!-- tujuan pendaftaran -->
+                        <br>
+
+                        <!-- Post Ranap -->
+                        <div class="checkbox">
+                          <label>
+                            <input name="post_ranap" type="checkbox" class="ace" value="Y" id="post_ranap">
+                            <span class="lbl" style="font-style: italic"> Pasien Kunjungan Pasca Rawat Inap</span>
+                          </label>
+                        </div>
+
                         
                         <!-- untuk pasien bpjs -->
                         <div id="form_sep" style="display:none">

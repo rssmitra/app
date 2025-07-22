@@ -339,7 +339,7 @@ function formatDate(date) {
             
           <!-- end change modul view -->
 
-          <div id="tgl_kunjungan_form" style="display:none">
+          <div id="tgl_kunjungan_form">
 
             <div class="form-group">
               <label class="control-label col-sm-2">Jenis Perjanjian</label>

@@ -11,16 +11,16 @@
 <p>
     
     Anamnesa : <br>
-    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[anamnesa]" id="anamnesa" onchange="fillthis('anamnesa')"></textarea>
+    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[anamnesa]" id="anamnesa" onchange="fillthis('anamnesa')"><?php echo isset($riwayat->anamnesa)?$riwayat->anamnesa:''?></textarea>
     <br>
     Pemeriksaan Fisik dan Uji Fungsi : <br>
-    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[pemeriksaan_fisik_fungsi]" id="pemeriksaan_fisik_fungsi" onchange="fillthis('pemeriksaan_fisik_fungsi')"></textarea>
+    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[pemeriksaan_fisik_fungsi]" id="pemeriksaan_fisik_fungsi" onchange="fillthis('pemeriksaan_fisik_fungsi')"><?php echo isset($riwayat->pemeriksaan)?$riwayat->pemeriksaan:''?></textarea>
     <br>
     Diagnosis Medis (ICD-10) : <br>
-    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[diag_medis_icd10]" id="diag_medis_icd10" onchange="fillthis('diag_medis_icd10')"></textarea>
+    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[diag_medis_icd10]" id="diag_medis_icd10" onchange="fillthis('diag_medis_icd10')"><?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?></textarea>
     <br>
     Diagnosis Fungsi (ICD-10) : <br>
-    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[diag_fgs_icd10]" id="diag_fgs_icd10" onchange="fillthis('diag_fgs_icd10')"></textarea>
+    <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[diag_fgs_icd10]" id="diag_fgs_icd10" onchange="fillthis('diag_fgs_icd10')"><?php echo isset($riwayat->diagnosa_akhir)?$riwayat->diagnosa_akhir:''?></textarea>
     <br>
     Pemeriksaan Penunjang : <br>
     <textarea class="textarea-type" rows="3" style="min-height: 50px !important" name="form_44[pemeriksaan_penunjang]" id="pemeriksaan_penunjang" onchange="fillthis('pemeriksaan_penunjang')"></textarea>
