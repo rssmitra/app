@@ -2315,19 +2315,17 @@ function uploadSnapshot() {
                         </div>
                         <!-- tujuan pendaftaran -->
                         <br>
-
-                        <!-- Post Ranap -->
-                        <div class="checkbox">
-                          <label>
-                            <input name="post_ranap" type="checkbox" class="ace" value="Y" id="post_ranap">
-                            <span class="lbl" style="font-style: italic"> Pasien Kunjungan Pasca Rawat Inap</span>
-                          </label>
-                        </div>
-
-                        
                         <!-- untuk pasien bpjs -->
                         <div id="form_sep" style="display:none">
 
+                          <!-- Post Ranap -->
+                          <div class="checkbox">
+                            <label>
+                              <input name="post_ranap" type="checkbox" class="ace" value="Y" id="post_ranap">
+                              <span class="lbl" style="font-style: italic"> Pasien Kunjungan Pasca Rawat Inap</span>
+                            </label>
+                          </div>
+                          
                           <!-- get data rujukan -->
                           <hr>
                           <p><b>MASUKAN NOMOR RUJUKAN</b></p>

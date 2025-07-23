@@ -388,9 +388,16 @@ function hitung_balans_cairan(){
     <br>
     <!-- hidden form -->
     <input type="hidden" name="tipe_monitoring" id="tipe_monitoring" value="UMUM">
-    <input type="hidden" name="id" id="id" >
+    
 
     <!-- TANGGAL -->
+    <div class="form-group">
+        <label class="control-label col-sm-1" for="">ID</label>
+        <div class="col-md-2">
+          <input type="text" name="id" id="id" readonly class="form-control">
+        </div>
+    </div>
+
     <div class="form-group">
         <label class="control-label col-sm-1" for="">*Tanggal</label>
         <div class="col-md-2">
