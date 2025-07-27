@@ -261,7 +261,7 @@
 
     <div class="col-md-6">
 
-        <?php echo $this->master->custom_selection($params = array('table' => 'mt_karyawan', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array('status_dr' => 1)), '' , 'pb_dokter_pengirim', 'pb_dokter_pengirim', 'form-control', '', '') ?>
+        <?php echo $this->master->custom_selection($params = array('table' => 'mt_karyawan', 'id' => 'kode_dokter', 'name' => 'nama_pegawai', 'where' => array('status_dr' => 1)), '' , 'pb_dokter_pengirim', 'pb_dokter_pengirim', 'chosen-select form-control', '', '') ?>
 
     </div>
 </div>
@@ -301,7 +301,7 @@
 
     <div class="col-sm-4">
 
-        <?php echo $this->master->custom_selection($params = array('table' => 'mt_master_tarif', 'id' => 'kode_tarif', 'name' => 'nama_tarif', 'where' => array('is_paket' => '1'), 'where' => array('tingkatan' => 5)), '' , 'pb_paket_tindakan', 'pb_paket_tindakan', 'form-control', '', '') ?>
+        <?php echo $this->master->custom_selection($params = array('table' => 'mt_master_tarif', 'id' => 'kode_tarif', 'name' => 'nama_tarif', 'where' => array('tingkatan' => 5, 'is_paket' => '1')), '' , 'pb_paket_tindakan', 'pb_paket_tindakan', 'form-control', '', '') ?>
 
     </div>
 
