@@ -34,6 +34,10 @@ $('input[name="tipe_faskes_rujukan"]').click(function (e) {
   });
   
 })
+
+function updateJenisFaskesPasien(val) {
+  $('#jenis_faskes_pasien').val(val);
+}
 </script>
 
 <div class="row">
@@ -48,11 +52,11 @@ $('input[name="tipe_faskes_rujukan"]').click(function (e) {
     <div class="col-md-12 no-padding">
       <div class="radio">
           <label>
-            <input name="tipe_faskes_rujukan" type="radio" class="ace" value="1" checked />
+            <input name="tipe_faskes_rujukan" type="radio" class="ace" value="1" onchange="updateJenisFaskesPasien('pcare')" checked/>
             <span class="lbl"> Faskes Tingkat I</span>
           </label>
           <label>
-            <input name="tipe_faskes_rujukan" type="radio" class="ace" value="2" />
+            <input name="tipe_faskes_rujukan" type="radio" class="ace" value="2" onchange="updateJenisFaskesPasien('rs')"/>
             <span class="lbl"> Faskes Tingkat II</span>
           </label>
       </div>

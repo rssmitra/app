@@ -1152,6 +1152,7 @@ class Ws_index_model extends CI_Model {
 		}else{
 			$service_name = "Rujukan/List/Peserta/".$noka."";
 		}
+		
 		$result = $this->getData($service_name);
 		return $result;
 	}

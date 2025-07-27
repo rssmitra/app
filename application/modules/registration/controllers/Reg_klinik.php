@@ -182,6 +182,7 @@ class Reg_klinik extends MX_Controller {
         /*define variable data*/
         
         $keyword = $this->input->get('keyword');
+        $tgl_kunjungan = isset($_GET['tgl_kunjungan']) ? $_GET['tgl_kunjungan'] : date('Y-m-d');
 
 
         /*return search pasien*/
@@ -194,7 +195,9 @@ class Reg_klinik extends MX_Controller {
         $data_transaksi_pending = $this->Reg_pasien->cek_status_pasien( $no_mr );
         // cek pasien bpjs apakah lebih dari 31 hari
         $last_visit = $this->Reg_pasien->cek_last_visit( $no_mr );
-        // echo '<pre>'; print_r($last_visit);die;
+        // cek konsul internal
+        $data_konsul_internal = $this->Reg_pasien->cek_konsul_internal( $no_mr, $tgl_kunjungan );
+        // echo '<pre>'; print_r($data_konsul_internal);die;
 
         $data = array(
 
@@ -203,6 +206,7 @@ class Reg_klinik extends MX_Controller {
             'count_pending' => count($data_transaksi_pending),
             'pending' => $data_transaksi_pending,
             'last_visit' => $last_visit,
+            'konsul_internal' => $data_konsul_internal,
 
         );
         
@@ -681,8 +685,6 @@ class Reg_klinik extends MX_Controller {
             $kuota_dr = ($dt_jadwal->jd_kuota) ? $dt_jadwal->jd_kuota : 10;
             $jeniskunjungan = ($_POST['jeniskunjunganbpjs'] > 0) ? $_POST['jeniskunjunganbpjs'] : 3;
             $nomorreferensi = ($jeniskunjungan == 3) ? $_POST['noSuratSKDP'] : $_POST['noRujukan'];
-
-            
 
             if(!isset($_POST)) : 
 
