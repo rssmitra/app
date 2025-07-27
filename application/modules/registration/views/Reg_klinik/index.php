@@ -1122,7 +1122,7 @@ function find_pasien_by_keyword(keyword){
     }
   }
 
-  $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword=" + keyword + "&search_by="+search_by , '', function (data) {      
+  $.getJSON("<?php echo site_url('registration/reg_klinik/search_pasien') ?>?keyword=" + keyword + "&search_by="+search_by+"&tgl_kunjungan="+$('#tgl_registrasi').val()+"" , '', function (data) {      
           achtungHideLoader();          
 
           if( data.count == 0){
@@ -1147,9 +1147,10 @@ function find_pasien_by_keyword(keyword){
             var obj = data.result[0];
 
             var pending_data_pasien = data.pending; 
+            
             var umur_pasien = hitung_usia(obj.tgl_lhr);
-            console.log(pending_data_pasien);
-            console.log(hitung_usia(obj.tgl_lhr));
+            // console.log(pending_data_pasien);
+            // console.log(hitung_usia(obj.tgl_lhr));
 
             $('#no_mr').text(obj.no_mr);
             $('#noMrHidden').val(obj.no_mr);
@@ -1186,13 +1187,6 @@ function find_pasien_by_keyword(keyword){
 
               }
 
-            }
-
-            if( obj.kode_perusahaan==120){
-              $('#no_kartu_bpjs_txt').text('('+obj.no_kartu_bpjs+')');
-              
-            }else{
-              $('#no_kartu_bpjs_txt').text('');
             }
 
             penjamin = (obj.nama_perusahaan==null)?obj.nama_kelompok:obj.nama_perusahaan;
@@ -1270,8 +1264,9 @@ function find_pasien_by_keyword(keyword){
             }
 
             // info pasien bpjs kurang dari 31 hari
-            console.log(data.last_visit);
             if(obj.kode_perusahaan == 120){
+              $('#no_kartu_bpjs_txt').text('('+obj.no_kartu_bpjs+')');
+
               obj_visit = data.last_visit;
               if(obj_visit.range > 0){
                 // show notif
@@ -1283,6 +1278,22 @@ function find_pasien_by_keyword(keyword){
                 $('#show_notif_less_then_31').html('');
                 $('#min_30_hari_bpjs').val('');
               }
+
+                var konsul_internal = data.konsul_internal;
+                // console.log(konsul_internal);
+                // Jika data konsul_internal ditemukan dan ada isinya
+                if (konsul_internal && konsul_internal.length > 0) {
+                  $('#div_konsul_internal').show();
+                  $('#show_notif_konsul_internal').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien memiliki riwayat Konsultasi Internal. Silahkan hubungi dokter yang bersangkutan untuk mendapatkan informasi lebih lanjut</div>');
+                  $('#konsul_internal').val(1);
+                } else {
+                  $('#div_konsul_internal').hide();
+                  $('#show_notif_konsul_internal').html('');
+                  $('#konsul_internal').val('');
+                }
+
+            }else{
+              $('#no_kartu_bpjs_txt').text('');
             }
 
 
@@ -1500,7 +1511,7 @@ $('#btnSearchNoRujukan').click(function (e) {
     e.preventDefault();
 
     var field = $('input[name=find_member_by]:checked').val();
-    var jenis_faskes_pasien = $('input[name=jenis_faskes_pasien]:checked').val();
+    var jenis_faskes_pasien = $('#jenis_faskes_pasien').val();
     var flag = $('input[name=find_member_by]:checked').val();
     var noRujukan = $('#noRujukan').val();
     var idTcPesanan = $('#id_tc_pesanan').val();
@@ -1596,11 +1607,12 @@ $('#btnSearchNoRujukan').click(function (e) {
 
 });
 
-
-
 $('#tgl_registrasi').click(function (e) {
   $('#change_modul_view').hide();
   $('#jenis_pendaftaran').val('');
+  $('#div_load_after_selected_pasien').hide('fast');
+  $('#div_riwayat_pasien').hide('fast');
+  $('#div_penangguhan_pasien').hide('fast');
 })
 
 function getKlinikByJadwalDefault(kode_poli_bpjs){
@@ -1619,12 +1631,10 @@ function getKlinikByJadwalDefault(kode_poli_bpjs){
     });  
 }
 
-
 function show_list_rujukan(){
     preventDefault();
     show_modal('registration/Reg_klinik/search_rujukan_by_kartu/'+$('#noKartuBpjs').val()+'', 'DATA RUJUKAN PASIEN BPJS');
 }
-
 
 function get_riwayat_medis(){
 
@@ -1639,12 +1649,12 @@ function get_riwayat_medis(){
 
 function get_riwayat_pm(){
 
-noMr = $('#noMrHidden').val();
-if (noMr == '') {
-  alert('Silahkan cari pasien terlebih dahulu !'); return false;
-}else{
-  getMenuTabsHtml('templates/References/get_riwayat_pm/'+noMr, 'tabs_detail_pasien');
-}
+  noMr = $('#noMrHidden').val();
+  if (noMr == '') {
+    alert('Silahkan cari pasien terlebih dahulu !'); return false;
+  }else{
+    getMenuTabsHtml('templates/References/get_riwayat_pm/'+noMr, 'tabs_detail_pasien');
+  }
 
 }
 
@@ -2280,6 +2290,10 @@ function uploadSnapshot() {
                         <div id="show_notif_less_then_31"></div>
                       </div>
 
+                      <div id="div_konsul_internal" style="display: none">
+                        <div id="show_notif_konsul_internal"></div>
+                      </div>
+
                       <div id="div_load_after_selected_pasien" style="display:none">
                         <!-- nasabah -->
                         <div class="form-group">
@@ -2315,17 +2329,17 @@ function uploadSnapshot() {
                         </div>
                         <!-- tujuan pendaftaran -->
                         <br>
+                        <!-- Post Ranap -->
+                        <div class="checkbox">
+                          <label>
+                            <input name="post_ranap" type="checkbox" class="ace" value="Y" id="post_ranap">
+                            <span class="lbl" style="font-style: italic"> Pasien Kunjungan Pasca Rawat Inap</span>
+                          </label>
+                        </div>
+
                         <!-- untuk pasien bpjs -->
                         <div id="form_sep" style="display:none">
 
-                          <!-- Post Ranap -->
-                          <div class="checkbox">
-                            <label>
-                              <input name="post_ranap" type="checkbox" class="ace" value="Y" id="post_ranap">
-                              <span class="lbl" style="font-style: italic"> Pasien Kunjungan Pasca Rawat Inap</span>
-                            </label>
-                          </div>
-                          
                           <!-- get data rujukan -->
                           <hr>
                           <p><b>MASUKAN NOMOR RUJUKAN</b></p>
@@ -2347,7 +2361,7 @@ function uploadSnapshot() {
                                 <!-- for hidden for searching nomor rujukan -->
                                 <input name="find_member_by" type="radio" class="ace" value="noRujukan" checked>
                                 <input name="tglSEP" id="tglSEP" value="<?php echo date('Y-m-d')?>" placeholder="mm/dd/YYYY" class="form-control date-picker" type="hidden">
-                                <input name="jenis_faskes_pasien" type="radio" class="ace" value="pcare" checked/>
+                                <input name="jenis_faskes_pasien" id="jenis_faskes_pasien" type="hidden" class="ace" value="pcare"/>
                                 <input type="hidden" class="form-control" id="noKartuHidden" name="noKartuHidden" readonly>
                                 <input name="jnsPelayanan" type="radio" class="ace" value="2" checked/>
                                 <input name="lakalantas" type="radio" class="ace" value="0" checked/>

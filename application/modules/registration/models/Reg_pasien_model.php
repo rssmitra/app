@@ -596,6 +596,7 @@ class Reg_pasien_model extends CI_Model {
 		$this->db->limit($_POST['length'], $_POST['start']); 
 		
 		$query = $this->db->get(); 
+		// print_r($this->db->last_query());
 		
 		return $query->result();
 	
@@ -1163,6 +1164,15 @@ class Reg_pasien_model extends CI_Model {
 		$query = $this->db->get_where('tr_jadwal_dokter', ['jd_kode_dokter' => $params['kode_dokter'], 'jd_kode_spesialis' => $params['poli'], 'jd_hari' => $day])->row();
 		return $query;
 
+	}
+
+	public function cek_konsul_internal($no_mr, $date){
+		$this->db->from('tc_pesanan');
+		$this->db->where("tc_pesanan.no_mr = '".$no_mr."'");
+		$this->db->where("CAST(tgl_pesanan as DATE) = '".$date."'");
+		$this->db->where("jeniskunjunganjkn", 2);
+		$this->db->order_by('input_tgl', 'DESC');
+		return $this->db->get()->row();
 	}
 
 

@@ -301,7 +301,7 @@
 
     <div class="col-sm-4">
 
-        <?php echo $this->master->custom_selection($params = array('table' => 'mt_master_tarif', 'id' => 'kode_tarif', 'name' => 'nama_tarif', 'like' => array('col' => 'kode_tarif','val' => '3092'), 'where' => array('tingkatan' => 5)), '' , 'pb_paket_tindakan', 'pb_paket_tindakan', 'form-control', '', '') ?>
+        <?php echo $this->master->custom_selection($params = array('table' => 'mt_master_tarif', 'id' => 'kode_tarif', 'name' => 'nama_tarif', 'where' => array('is_paket' => '1'), 'where' => array('tingkatan' => 5)), '' , 'pb_paket_tindakan', 'pb_paket_tindakan', 'form-control', '', '') ?>
 
     </div>
 

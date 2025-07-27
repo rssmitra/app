@@ -608,6 +608,15 @@ function hitung_balans_cairan(){
                 <input type="text" class="form-control" name="sh" id="sh" value="">
               </div>
           </div>
+          <br>
+          <span style="font-weight: bold; padding: 10px; color: green">4. SPO2</span>
+          <br>
+          <div class="form-group no-padding">
+              <label class="control-label col-sm-6">Saturasi Oksigen</label>
+              <div class="col-md-6">
+                <input type="text" class="form-control" name="spo2" id="spo2" value="">
+              </div>
+          </div>
           
           <br>
           <div>
