@@ -104,6 +104,7 @@
                       <div class="wysiwyg-editor" id="editor" style="padding-left: 5px">
                         <?php 
                           foreach($detail_obat as $row){
+
                             if($row['flag_resep'] == 'biasa'){
                               $config = array(
                                 'dd' => $row['dosis_per_hari'],
@@ -111,10 +112,11 @@
                                 'unit' => $row['satuan_obat'],
                                 'use' => $row['anjuran_pakai'],
                               );
+                              $jumlah_tebus = $row['jumlah_tebus'] + $row['jumlah_obat_23'];
                               $format_signa = $this->master->formatSigna($config);
                               echo '<span class="monotype_style">R/</span><br>';
                               echo '<div style="padding-left: 15px">';
-                              echo $row['nama_brg'].' &nbsp;&nbsp; No. '.$this->master->formatRomawi((int)$row['jumlah_tebus']).'<br>';
+                              echo $row['nama_brg'].' &nbsp;&nbsp; No. '.$this->master->formatRomawi((int)$jumlah_tebus).'<br>';
                               echo '<i>'.$format_signa.'</i>';
                               // echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$row['dosis_per_hari'].' x '.$row['dosis_obat'].'&nbsp; '.$row['satuan_obat'].'  ('.$row['anjuran_pakai'].')<br>';
                               echo ' ____________ det / nedet<br><br>';

@@ -1104,11 +1104,12 @@ final Class Master {
 	}
 
 	function formatRomawi($angka){
+		// echo $angka;die;
+		// $angka = 120;
 		$hsl = "";
-		if( $angka < 1 || $angka > 3999 ){
-			// $hsl = "Batas Angka 1 s/d 3999";
-			$hsl = 0;
-		}else{
+		// if( $angka < 1 || $angka > 3999 ){
+		// 	$hsl = 0;
+		// }else{
 			 while($angka>=1000){
 				 $hsl .= "M";
 				 $angka -= 1000;
@@ -1129,6 +1130,7 @@ final Class Master {
 					 $hsl .= "CD";
 					 $angka-=400;
 				 }else{
+					$hsl .= "C";
 					 $angka-=100;
 				 }
 			 }
@@ -1168,9 +1170,9 @@ final Class Master {
 					$angka-=1;
 				 }
 			 }
-		}
+		// }
 		return ($hsl);
-	}
+	}	
 
 	function formatSigna($params){
 		// dd
