@@ -124,6 +124,8 @@ function GraphColumnStyle(id, nameid, url){
     });
   }
 
+  
+
   function GraphTableStyle(id, nameid, url){
 
     //use getJSON to get the dynamic data via AJAX call
