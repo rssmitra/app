@@ -48,6 +48,13 @@
         return $(this).val();
       }
     }).toArray();
+
+    var is_free_text = $("#table-rincian-barang .is_free_text").map(function(){
+      if( $(this).val() != 0 ){
+        return $(this).val();
+      }
+    }).toArray();
+
     var length = selected_data.length;
     
     if(length == 0){
@@ -66,6 +73,7 @@
                     verifikator : field,
                     flag_approval : app,
                     catatan : $('#catatan_'+field+'').val(),
+                    is_free_text : is_free_text,
                     flag : flag,
                   },
             dataType: "json",
@@ -103,14 +111,14 @@
     
 
     <div class="page-header">
-      <h1><?php echo 'Nomor Permintaan : '.$dt_detail_brg[0]->kode_permohonan?></h1>
+      <h1><?php echo 'Nomor Permintaan : '.$dt_detail_brg[0]['kode_permohonan']?></h1>
     </div>
 
     <?php
       // verifikator 1
-      if($dt_detail_brg[0]->flag_jenis != 1){
+      if($dt_detail_brg[0]['flag_jenis'] != 1){
         if( $this->session->userdata('user')->user_id != 1){
-          if($dt_detail_brg[0]->tgl_pemeriksa == NULL) {
+          if($dt_detail_brg[0]['tgl_pemeriksa'] == NULL) {
             $verifikator = ($flag=='medis')?'verifikator_m_1':'verifikator_nm_1';
             $user_ttd = $this->master->get_ttd_data($verifikator, 'reff_id');
             if ($user_ttd != $this->session->userdata('user')->user_id) {
@@ -118,7 +126,7 @@
             }
           }
           // verifikator 2
-          if($dt_detail_brg[0]->tgl_pemeriksa!=NULL AND $dt_detail_brg[0]->tgl_penyetuju==NULL) {
+          if($dt_detail_brg[0]['tgl_pemeriksa']!=NULL AND $dt_detail_brg[0]['tgl_penyetuju']==NULL) {
             $verifikator = ($flag=='medis')?'verifikator_m_2':'verifikator_nm_2';
             $user_ttd = $this->master->get_ttd_data($verifikator, 'reff_id');
             if ($user_ttd != $this->session->userdata('user')->user_id) {
@@ -134,7 +142,7 @@
     <form class="form-horizontal" method="post" id="form_permintaan" action="<?php echo site_url('purchasing/persetujuan_pemb/App_persetujuan_pemb/process')?>" enctype="multipart/form-data" >
 
       <!-- hidden form -->
-      <input type="hidden" name="id_tc_permohonan" id="id_tc_permohonan" value="<?php echo $dt_detail_brg[0]->id_tc_permohonan?>">
+      <input type="hidden" name="id_tc_permohonan" id="id_tc_permohonan" value="<?php echo $dt_detail_brg[0]['id_tc_permohonan']?>">
 
       <div class="col-xs-8 no-padding"> 
         <table border="0">
@@ -150,7 +158,7 @@
           
           <?php if( $flag == 'medis') : ?>
 
-            <?php if($dt_detail_brg[0]->tgl_pemeriksa==NULL) :?>
+            <?php if($dt_detail_brg[0]['tgl_pemeriksa']==NULL) :?>
 
               <tr>
                 <td width="35%" style="padding-bottom:5px;padding-top:5px;vertical-align: top; background-color: #aeccd03b; padding-left: 4px;">Pemeriksa</td>
@@ -169,14 +177,14 @@
 
               <tr>
                 <td colspan="2" align="center" style="padding-top: 5px !important">
-                  <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_m_1', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'Y','medis')"><i class="fa fa-check-circle"></i> Setuju</button>
-                  <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_m_1', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'N','medis')"><i class="fa fa-times-circle"></i> Tidak </button>
+                  <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_m_1', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'Y','medis')"><i class="fa fa-check-circle"></i> Setuju</button>
+                  <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_m_1', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'N','medis')"><i class="fa fa-times-circle"></i> Tidak </button>
                 </td>
               </tr>
 
             <?php endif;?>
             
-            <?php if($dt_detail_brg[0]->tgl_pemeriksa!=NULL AND $dt_detail_brg[0]->tgl_penyetuju==NULL) :?>
+            <?php if($dt_detail_brg[0]['tgl_pemeriksa']!=NULL AND $dt_detail_brg[0]['tgl_penyetuju']==NULL) :?>
 
                 <tr>
                   <td width="35%" style="padding-bottom:5px;padding-top:5px;vertical-align: top; background-color: #aeccd03b; padding-left: 4px;">Menyetujui</td>
@@ -194,8 +202,8 @@
 
                 <tr>
                   <td colspan="2" align="center" style="padding-top: 5px !important">
-                  <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_m_2', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'Y','medis')"><i class="fa fa-check-circle"></i> Setuju</button>
-                    <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_m_2', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'N', 'medis')"><i class="fa fa-times-circle"></i> Tidak </button>
+                  <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_m_2', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'Y','medis')"><i class="fa fa-check-circle"></i> Setuju</button>
+                    <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_m_2', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'N', 'medis')"><i class="fa fa-times-circle"></i> Tidak </button>
                   </td>
                 </tr>
 
@@ -205,7 +213,7 @@
 
           <?php if( $flag == 'non_medis') :?>
 
-            <?php if($dt_detail_brg[0]->tgl_pemeriksa==NULL) :?>
+            <?php if($dt_detail_brg[0]['tgl_pemeriksa']==NULL) :?>
             
             <tr>
               <td width="35%" style="padding-bottom:5px;padding-top:5px;vertical-align: top; background-color: #aeccd03b; padding-left: 4px;">Pemeriksa</td>
@@ -222,15 +230,16 @@
             </tr>
             
             <tr>
-              <td colspan="2" align="center" style="padding-top: 5px !important">
-                <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_nm_1', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'Y','non_medis')"><i class="fa fa-check-circle"></i> Setuju</button>
-                <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_nm_1', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'N','non_medis')"><i class="fa fa-times-circle"></i> Tidak </button>
+              <td width="35%" style="padding-bottom:5px;padding-top:5px;vertical-align: top; background-color: #aeccd03b;padding-left: 0px;"></td>
+              <td align="left" style="padding-top: 5px !important; padding-left: 5px;">
+                <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_nm_1', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'Y','non_medis')"><i class="fa fa-check-circle"></i> Setuju</button>
+                <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_nm_1', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'N','non_medis')"><i class="fa fa-times-circle"></i> Tidak </button>
               </td>
             </tr>
             
           <?php endif?>
 
-          <?php if($dt_detail_brg[0]->tgl_pemeriksa!=NULL AND $dt_detail_brg[0]->tgl_penyetuju==NULL) :?>
+          <?php if($dt_detail_brg[0]['tgl_pemeriksa']!=NULL AND $dt_detail_brg[0]['tgl_penyetuju']==NULL) :?>
             <tr>
               <td width="35%" style="padding-bottom:5px;padding-top:5px;vertical-align: top; background-color: #aeccd03b; padding-left: 4px;">Menyetujui</td>
               <td style="padding-left:5px;padding-top: 5px; width: 350px" ><?php echo $this->master->get_ttd_data('verifikator_nm_2','label'); ?> (<?php echo $this->master->get_ttd_data('verifikator_nm_2','value'); ?>)<br><span style="color: red"><i>Menunggu persetujuan..</i></span>
@@ -246,9 +255,10 @@
             </tr>
             
             <tr>
-              <td colspan="2" align="center" style="padding-top: 5px !important">
-                <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_nm_2', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'Y','non_medis')"><i class="fa fa-check-circle"></i> Setuju</button>
-                <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_nm_2', <?php echo $dt_detail_brg[0]->id_tc_permohonan; ?>,'N','non_medis')"><i class="fa fa-times-circle"></i> Tidak </button>
+              <td width="35%" style="padding-bottom:5px;padding-top:5px;vertical-align: top; background-color: #aeccd03b;padding-left: 0px;"></td>
+              <td align="left" style="padding-top: 5px !important; padding-left: 5px;">
+                <button type="button" class="btn btn-xs btn-success" onclick="approve('verifikator_nm_2', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'Y','non_medis')"><i class="fa fa-check-circle"></i> Setuju</button>
+                <button type="button" class="btn btn-xs btn-danger" onclick="approve('verifikator_nm_2', <?php echo $dt_detail_brg[0]['id_tc_permohonan']; ?>,'N','non_medis')"><i class="fa fa-times-circle"></i> Tidak </button>
               </td>
             </tr>
           <?php endif?>
@@ -269,7 +279,7 @@
       </blockquote>
       </div>
       <div class="row">
-      <div class="col-xs-12 no-padding"> 
+      <div class="col-xs-12"> 
       <!-- PAGE CONTENT BEGINS -->
         <h4>Rincian Permintaan Barang</h4>
         <table class="table table-bordered table-hovered" style="font-size:11px">
@@ -286,45 +296,63 @@
             <th width="100px" class="center">Keterangan</th>
           </tr>
           <tbody id="table-rincian-barang">
-          <?php $no=0; foreach($dt_detail_brg as $row_dt) : $no++?>
+          <?php 
+            $no=0; 
+            foreach($dt_detail_brg as $row_dt) : 
+            $no++;
+            $row_dt = (object)$row_dt;
+            $kode_brg = isset($row_dt->kode_brg) ? $row_dt->kode_brg : '<span class="red">[free text]</span>';
+            $ex_kode_brg = isset($row_dt->kode_brg) ? $row_dt->kode_brg : $row_dt->id;
+            $jumlah_stok = isset($row_dt->jumlah_stok_sebelumnya) ? $row_dt->jumlah_stok_sebelumnya : 0; 
+            $satuan = isset($row_dt->satuan_kecil) ? $row_dt->satuan_kecil : $row_dt->satuan_besar;
+            $rasio = isset($row_dt->rasio) ? $row_dt->rasio : 1;
+
+            ?>
             <tr>
               <td class="center">
-                <?php
-                  if($row_dt->status_po == NULL) :
-                ?>
-                <input type="checkbox" class="checkbox_brg_<?php echo $flag?>_<?php echo $id?>" id="checkbox_brg_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" class="form-control" value="<?php echo $row_dt->kode_brg?>" onClick="checkOne(this);" style="cursor:pointer">
-                <?php 
-                  else: 
-                    echo '<i class="fa fa-check-circle bigger-150 green"></i>';
-                  endif;
-                ?>
+                <?php if(isset($row_dt->id_tc_permohonan_det)) : ?>
+                  <?php if($row_dt->status_po == NULL) : ?>
+                    <input type="checkbox" class="checkbox_brg_<?php echo $flag?>_<?php echo $id?>" id="checkbox_brg_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" class="form-control" value="<?php echo $row_dt->kode_brg?>" onClick="checkOne(this);" style="cursor:pointer">
+                  <?php 
+                    else: 
+                      echo '<i class="fa fa-check-circle bigger-150 green"></i>';
+                    endif;
+                  ?>
+                <?php else:?>
+                  <input type="checkbox" class="checkbox_brg_<?php echo $flag?>_<?php echo $id?>" id="checkbox_brg_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->id?>" class="form-control" value="<?php echo $row_dt->id?>" onClick="checkOne(this);" style="cursor:pointer">
+                <?php endif;?>
               </td>
               <td class="center"><?php echo $no?></td>
-              <td><?php echo $row_dt->kode_brg?></td>
+              <td><?php echo $kode_brg?></td>
               <td><?php echo $row_dt->nama_brg?></td>
-              <td class="center"><?php echo $row_dt->jumlah_stok_sebelumnya.' '.$row_dt->satuan_kecil?></td>
-              <td class="center" id="jml_permohonan_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>">
-              <input type="hidden" id="jml_permohonan_hidden_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" value="<?php echo $row_dt->jml_besar?>">
-              <?php echo number_format($row_dt->jml_besar, 2)?>
+              <td class="center"><?php echo $jumlah_stok.' '.$satuan?></td>
+              <td class="center" id="jml_permohonan_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>">
+              <input type="hidden" id="jml_permohonan_hidden_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" value="<?php echo $row_dt->jml_besar?>">
+                <?php echo number_format($row_dt->jml_besar, 2)?>
               </td>
               <td class="center">
+                <?php if(isset($row_dt->id_tc_permohonan_det)) : ?>
                 <?php
                   if($row_dt->status_po == NULL) :
                     if($row_dt->jml_acc_pemeriksa > 0 ){
-                      echo '<input type="hidden" id="jml_acc_pemeriksa_'.$flag.'_'.$id.'_'.$row_dt->kode_brg.'" value="'.$row_dt->jml_acc_pemeriksa.'">';
+                      echo '<input type="hidden" id="jml_acc_pemeriksa_'.$flag.'_'.$id.'_'.$ex_kode_brg.'" value="'.$row_dt->jml_acc_pemeriksa.'">';
                     }
                 ?>
-                <!-- <input type="hidden" name="jml_besar_hidden[<?php echo $row_dt->kode_brg?>]" id="jml_besar_hidden<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" style="width:70px;height:45px;text-align:center" value="<?php echo $row_dt->jml_besar?>">
-                 -->
-                <input type="number" name="jml_acc[<?php echo $row_dt->kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $row_dt->kode_brg?>" style="width:70px;height:45px;text-align:center">
-              <?php 
-                else:
-                  echo number_format($row_dt->jml_acc_penyetuju, 2);
-                endif;
-              ?>
+                  <input type="number" name="jml_acc[<?php echo $ex_kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center">
+                  <input type="hidden" class="is_free_text" name="is_free_text[<?php echo $ex_kode_brg?>]" id="is_free_text<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center" value="N">
+                <?php 
+                  else:
+                    echo number_format($row_dt->jml_acc_penyetuju, 2);
+                  endif;
+                  ?>
+                <?php else: ?>
+                  <input type="number" name="jml_acc[<?php echo $ex_kode_brg?>]" id="form_input_<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center">
+                  <input type="hidden" class="is_free_text" name="is_free_text[<?php echo $ex_kode_brg?>]" id="is_free_text<?php echo $flag?>_<?php echo $id?>_<?php echo $ex_kode_brg?>" style="width:70px;height:45px;text-align:center" value="Y">
+                <?php endif; ?>
+
               </td>
-              <td class="center"><?php echo $row_dt->satuan_besar?></td>
-              <td class="center"><?php echo $row_dt->rasio?></td>
+              <td class="center"><?php echo $satuan?></td>
+              <td class="center"><?php echo $rasio?></td>
               <td class="center"><?php echo $row_dt->keterangan?></td>
             </tr>
           <?php endforeach;?>

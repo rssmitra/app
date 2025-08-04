@@ -43,7 +43,8 @@ class Req_selected_detail_brg extends MX_Controller {
             $row[] = '<div style="font-size:14px"><b>'.$row_list->kode_brg.'</b><br>'.$row_list->nama_brg.'<br>'.$tr_color.'</div>';
             $row[] = '<div align="right">Rp. '.number_format((int)$row_list->harga_beli_terakhir).',- / '.$row_list->satuan_kecil.'</div>';
             /*coloring style*/
-            $color = ($row_list->jml_sat_kcl <= $row_list->stok_minimum)?'red':($row_list->jml_sat_kcl > $row_list->stok_minimum) ? 'green' : 'blue' ;
+            
+            $color = ($row_list->jml_sat_kcl <= $row_list->stok_minimum) ? 'red' : 'green';
             $row[] = '<div class="center" style="color:'.$color.'; font-weight: bold">'.$row_list->jml_sat_kcl.' '.$row_list->satuan_kecil.'</div>';
             $row[] = '<div class="center">
                         <input type="hidden" id="stok_akhir_'.$row_list->kode_brg.'" value="'.$row_list->jml_sat_kcl.'">
@@ -145,8 +146,10 @@ class Req_selected_detail_brg extends MX_Controller {
     {
         $id=$this->input->post('ID')?$this->regex->_genRegex($this->input->post('ID',TRUE),'RGXQSL'):null;
         $table = ($_POST['flag']=='medis')?'tc_permohonan_det':'tc_permohonan_nm_det';
+        $table_exc = ($_POST['is_free_text'] == 1) ? 'tc_permohonan_det_log' : $table;
+        
         if($id!=null){
-            if($this->Req_selected_detail_brg->delete_by_id($table, $id)){
+            if($this->Req_selected_detail_brg->delete_by_id($table_exc, $id)){
                 $this->logs->save($table, $id, 'delete record', '', 'id_tc_permohonan_det');
                 $ttl = $this->Req_pembelian->get_detail_brg_permintaan($_POST['flag'], $_POST['id_tc_permohonan']);
                 echo json_encode(array('status' => 200, 'message' => 'Proses Hapus Data Berhasil Dilakukan', 'total_brg' => count($ttl) ));
@@ -163,12 +166,23 @@ class Req_selected_detail_brg extends MX_Controller {
     public function update_row()
     {
         $table = ($_POST['flag']=='medis')?'tc_permohonan_det':'tc_permohonan_nm_det';
-        $update_data = array(
-            'jumlah_besar' => (int)$_POST['jml_besar'],
-            'jml_besar' => (float)$_POST['jml_besar'],
-            'keterangan' => $_POST['keterangan'],
-        );
-        $this->db->update($table, $update_data, array('id_tc_permohonan_det' => $_POST['id']) );
+
+        if($_POST['is_free_text'] == 1){
+            $update_data = array(
+                'jml_besar' => (float)$_POST['jml_besar'],
+                'keterangan' => $_POST['keterangan'],
+            );
+            $this->db->update('tc_permohonan_det_log', $update_data, array('id' => $_POST['id']) );
+        }else{
+            $update_data = array(
+                'jumlah_besar' => (int)$_POST['jml_besar'],
+                'jml_besar' => (float)$_POST['jml_besar'],
+                'keterangan' => $_POST['keterangan'],
+            );
+            $this->db->update($table, $update_data, array('id_tc_permohonan_det' => $_POST['id']) );
+        }
+        
+
         echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan' ));
     }
 

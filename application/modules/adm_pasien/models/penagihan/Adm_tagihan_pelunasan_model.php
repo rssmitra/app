@@ -5,7 +5,7 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 
 	var $table = 'tc_tagih';
 	var $column = array('nama_tertagih');
-	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, a.tr_yg_diskon, a.jumlah_tagih';
+	var $select = 'a.id_tc_tagih, no_invoice_tagih, nama_tertagih, a.jenis_tagih, tgl_tagih, diskon, id_tertagih, tgl_jt_tempo, a.tr_yg_diskon, a.jumlah_tagih, b.statusLunas, c.id_tc_bayar_tagih, c.no_kuitansi_bayar, c.tgl_bayar';
 	var $order = array('tgl_tagih' => 'DESC');
 
 	public function __construct()
@@ -141,6 +141,21 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 		return $query;
 	}
 
+	public function get_invoice_pelunasan_detail($id_tagih){
+		$this->db->select('e.id_tc_bayar_tagih,e.id_tc_tagih,e.no_kuitansi_bayar,e.tgl_bayar,e.jumlah_bayar,e.tgl_input,e.tr_yg_diskon,e.metode_pembayaran,e.bank,e.subtotal, f.jumlah_bayar as jumlah_bayar_det, f.keterangan');
+		$this->db->select('a.no_mr,a.nama_pasien,a.kode_perusahaan,a.StatusLunas, d.nama_perusahaan, d.alamat, d.telpon1');
+		$this->db->from('tc_bayar_tagih e');
+		$this->db->join('tc_bayar_tagih_det f', 'f.id_tc_bayar_tagih=e.id_tc_bayar_tagih','left');
+		$this->db->join('tc_tagih_det a', 'a.id_tc_tagih_det=f.id_tc_tagih_det','left');
+		$this->db->join('tc_tagih b', 'b.id_tc_tagih=a.id_tc_tagih','left');
+		$this->db->join('tc_trans_kasir c', 'c.kode_tc_trans_kasir=a.kode_tc_trans_kasir','left');
+		$this->db->join('mt_perusahaan d','d.kode_perusahaan=b.id_tertagih','left');
+		$this->db->where('e.id_tc_bayar_tagih', $id_tagih);
+		$query = $this->db->get()->result();
+		// print_r($this->db->last_query());die;
+		return $query;
+	}
+
 	public function get_inv_lunas_detail($id_tc_bayar_tagih, $id_tc_tagih){
 		// tc_tagih_det , tc_bayar_tagih, tc_bayar_tagih_det
 		$this->db->select('a.id_tc_tagih, a.no_invoice_tagih, a.tgl_tagih, b.id_tc_bayar_tagih, b.no_kuitansi_bayar, b.tgl_bayar, b.tr_yg_diskon, b.metode_pembayaran, b.bank, c.id_tc_bayar_tagih_det, c.jumlah_bayar, d.no_mr, d.nama_pasien, d.kode_perusahaan, e.nama_perusahaan, e.alamat, e.telpon1');
@@ -154,7 +169,7 @@ class Adm_tagihan_pelunasan_model extends CI_Model {
 		// $this->db->where('b.id_tc_bayar_tagih', $id_tc_bayar_tagih);
 		$this->db->order_by('c.id_tc_bayar_tagih_det', 'DESC');
 		$query = $this->db->get()->result();
-		print_r($this->db->last_query());die;
+		// print_r($this->db->last_query());die;
 		return $query;
 	}
 

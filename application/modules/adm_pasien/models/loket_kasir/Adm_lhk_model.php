@@ -35,6 +35,10 @@ class Adm_lhk_model extends CI_Model {
 			$this->db->where('a.kode_perusahaan', $_GET['penjamin']);
 		}
 
+		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 226 ) {
+			$this->db->where('a.kode_perusahaan', $_GET['penjamin']);
+		}
+
 		if ( isset($_GET['penjamin']) AND $_GET['penjamin'] == 'um' ) {
 			$this->db->where('a.kode_perusahaan', 0);
 		}

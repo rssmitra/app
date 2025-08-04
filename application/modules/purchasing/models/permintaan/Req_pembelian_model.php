@@ -180,7 +180,7 @@ class Req_pembelian_model extends CI_Model {
 		$dt1 = $this->db->get()->result_array();
 
 		// union all
-		$this->db->select('*');
+		$this->db->select('*, 0 as total_po');
 		$this->db->from('tc_permohonan_det_log');
 		$this->db->join($table, ''.$table.'.id_tc_permohonan=tc_permohonan_det_log.id_tc_permohonan', 'left');
 		$this->db->order_by('nama_brg', 'ASC');

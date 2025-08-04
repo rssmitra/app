@@ -49,7 +49,8 @@ jQuery(function($) {
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 <br>
 <span style="text-align: left;">Keluhan Utama</span><br>
-<input type="text" class="input-type" name="form_54[keluhan_utama]" id="keluhan_utama" onchange="fillthis('keluhan_utama')" value="<?php echo isset($value_form['keluhan_utama'])?$value_form['keluhan_utama']:''?>" style="width: 100% !important">
+<textarea class="textarea-type" name="form_54[keluhan_utama]" id="keluhan_utama" onchange="fillthis('keluhan_utama')" style="height: 70px !important"><?php echo isset($value_form['keluhan_utama'])?$value_form['keluhan_utama']:$this->master->br2nl($riwayat->anamnesa)?>
+</textarea>
 <br>
 
 <br>
@@ -64,27 +65,25 @@ jQuery(function($) {
 
 <br>
 <span style="text-align: left;">Pemeriksaan Fisik : </span>
-<textarea class="textarea-type" name="form_54[pemeriksaan_fisik]" id="pemeriksaan_fisik" onchange="fillthis('pemeriksaan_fisik')" style="height: 70px !important">
+<textarea class="textarea-type" name="form_54[pemeriksaan_fisik]" id="pemeriksaan_fisik" onchange="fillthis('pemeriksaan_fisik')" style="height: 100px !important">
   <?php 
-    $default_text = '
-      A. Umum<br>
-      B. Neuromuskulokletal<br>
-          <span style="padding-left: 50px">1. Lingkup Gerak Sendi</span><br>
-          <span style="padding-left: 50px">2. Kekuatan Otot</span><br>
-      C. Kardiorespirasi<br>
-      <br>
-      <br>
-      <br>
-
+    $default_text = 'A. Umum
+      B. Neuromuskulokletal
+          1. Lingkup Gerak Sendi
+          2. Kekuatan Otot
+      C. Kardiorespirasi
     ';
-    echo isset($value_form['pemeriksaan_fisik'])?$value_form['pemeriksaan_fisik']:''?>
+    echo isset($value_form['pemeriksaan_fisik'])?$value_form['pemeriksaan_fisik']: $this->master->br2nl($default_text)?>
 </textarea>
 <br>
 
 <br>
 <span style="text-align: left;">Pemeriksaan Penunjang : </span>
 <textarea class="textarea-type" name="form_54[pemeriksaan_pm]" id="pemeriksaan_pm" onchange="fillthis('pemeriksaan_pm')" style="height: 70px !important">
-  <?php echo isset($value_form['pemeriksaan_pm'])?$value_form['pemeriksaan_pm']:''?>
+  <?php 
+    
+    echo isset($value_form['pemeriksaan_pm'])?$value_form['pemeriksaan_pm']:'';
+  ?>
 </textarea>
 <br>
 

@@ -5,7 +5,7 @@ class E_resep_rj_model extends CI_Model {
 
 	var $table = 'fr_listpesanan_v';
 	var $column = array('nama_pasien', 'no_mr');
-	var $select = 'fr_listpesanan_v.kode_bagian, fr_listpesanan_v.kode_bagian_asal, tgl_pesan, status_tebus, jumlah_r, lokasi_tebus, keterangan, fr_listpesanan_v.no_registrasi, fr_listpesanan_v.no_kunjungan, fr_listpesanan_v.kode_perusahaan, kode_klas, fr_listpesanan_v.kode_kelompok, nama_pegawai, nama_lokasi, nama_bagian, fr_listpesanan_v.kode_dokter, fr_listpesanan_v.kode_pesan_resep, fr_listpesanan_v.no_mr, fr_listpesanan_v.nama_pasien, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, fr_listpesanan_v.resep_farmasi, no_sep, status_resep, fr_listpesanan_v.jenis_resep, verifikasi_apotik_online, fr_listpesanan_v.status_batal,fr_listpesanan_v.tipe_pelayanan ';
+	var $select = 'fr_listpesanan_v.kode_bagian, fr_listpesanan_v.kode_bagian_asal, tgl_pesan, status_tebus, jumlah_r, lokasi_tebus, keterangan, fr_listpesanan_v.no_registrasi, fr_listpesanan_v.no_kunjungan, fr_listpesanan_v.kode_perusahaan, kode_klas, fr_listpesanan_v.kode_kelompok, nama_pegawai, nama_lokasi, nama_bagian, fr_listpesanan_v.kode_dokter, fr_listpesanan_v.kode_pesan_resep, fr_listpesanan_v.no_mr, fr_listpesanan_v.nama_pasien, mt_perusahaan.nama_perusahaan, mt_nasabah.nama_kelompok, fr_listpesanan_v.resep_farmasi, no_sep, status_resep, fr_listpesanan_v.jenis_resep, verifikasi_apotik_online, fr_listpesanan_v.status_batal,fr_listpesanan_v.tipe_pelayanan, lock_eresep';
 
 	var $order = array('kode_pesan_resep' => 'ASC');
 

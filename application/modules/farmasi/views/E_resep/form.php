@@ -802,8 +802,7 @@
         text-align: center !important;
     }
 </style>
-<!-- hidden -->
- <input type="hidden" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
+
 <div class="row" id="form_input_resep">
     <div class="col-md-6" style="line-height: 18px">
         Kode Resep :<br>
@@ -811,11 +810,26 @@
         <span style="font-weight: bold; font-size: 20px"><?php echo isset($pesan_resep->kode_pesan_resep)?$pesan_resep->kode_pesan_resep:0?></span> <br><i>(<?php echo isset($pesan_resep->tgl_pesan) ? $this->tanggal->formatDateTime($pesan_resep->tgl_pesan) : '-'?>)</i>
         <?php else: echo '<span style="color: red; font-weight: bold">[Belum ada pesan resep]</span>'; endif; ?>
     </div>
+
+    <!-- hidden -->
+     <input type="hidden" name="kode_dokter_poli" id="kode_dokter_poli" value="<?php echo isset($value->kode_dokter)?$value->kode_dokter:''?>">
+    <input type="hidden" name="id_template" id="id_template" class="form-control">
+    <input type="hidden" name="no_mr_resep" id="no_mr_resep" value="<?php echo $no_mr; ?>">
+    <input type="hidden" name="kode_pesan_resep_e" id="kode_pesan_resep_e" value="<?php echo isset($pesan_resep->kode_pesan_resep) ? $pesan_resep->kode_pesan_resep : 0?>">
+
+    <!-- jika sudah di lock -->
+    <?php
+        if(isset($pesan_resep->lock_eresep) && $pesan_resep->lock_eresep == 1) :
+            echo '<div class="col-md-12">
+                    <div class="alert alert-danger"><b>Pemberitahuan!</b><br>Resep sudah di kunci oleh petugas farmasi, silahkan hubungi petugas farmasi untuk dibuka kembali.</div>
+                </div>';
+        else : 
+    ?>
     <div class="col-md-6" style="text-align: right">
         <a href="#" class="btn btn-xs btn-primary" onclick="save_template()"><i class="fa fa-save"></i> Simpan Sebagai Template Resep</a>
         <a href="#" class="btn btn-xs btn-success" onclick="proses_resep()"><i class="fa fa-save"></i> Resep Selesai</a>
     </div>
-
+        
     <div class="col-md-12" style="margin-top: 6px">
         <div class="tabbable">
             <ul class="nav nav-tabs" id="tab_eresep">
@@ -841,9 +855,7 @@
                 </li>
             </ul>
             <br>
-            <input type="hidden" name="id_template" id="id_template" class="form-control">
-            <input type="hidden" name="no_mr_resep" id="no_mr_resep" value="<?php echo $no_mr; ?>">
-            <input type="hidden" name="kode_pesan_resep_e" id="kode_pesan_resep_e" value="<?php echo isset($pesan_resep->kode_pesan_resep) ? $pesan_resep->kode_pesan_resep : 0?>">
+            
 
             <div id="this_template"></div>
 
@@ -1079,4 +1091,5 @@
             </table>
         </div>
     </div>
+    <?php endif; ?>
 </div>

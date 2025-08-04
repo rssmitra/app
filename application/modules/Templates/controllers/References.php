@@ -324,7 +324,12 @@ class References extends MX_Controller {
 		$last_visit = $this->Reg_pasien->cek_last_visit($_POST['no_mr'], $date);
 		$allow_visit = isset($last_visit['tgl_masuk']) ? date('Y-m-d', strtotime($last_visit['tgl_masuk']. '+ 31 days')) : '' ;
 
+		// echo '<pre>'; print_r($allow_visit);
+		// echo '<pre>'; print_r($last_visit);
+
 		$return_data = array('day' => $day, 'status' => $status, 'kuota_dr' => $kuota_dr, 'terisi' => $terisi, 'sisa' => $kuota, 'last_visit_date' => isset($last_visit['tgl_masuk'])?$last_visit['tgl_masuk']:'','allow_visit_date' => $allow_visit, 'range_visit' => isset($last_visit['range'])?$last_visit['range']:0);
+		// echo '<pre>'; print_r($return_data);die;
+
 
 		echo json_encode($return_data);
 	}
@@ -1402,93 +1407,120 @@ class References extends MX_Controller {
 		$html = '';
 		
 		if(isset($exc[0]->kode_tarif)) {
-			$html .= '';
-			$html .= '<p style="padding: 8px 0px 0px"><b>';
-			$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
-			$html .= isset($exc[0]->tingkat)?' | <span style="color: blue">'.$exc[0]->tingkat.'</span>':'';
-			$html .= isset($exc[0]->tipe_operasi)?' | <span style="color: green">'.$exc[0]->tipe_operasi.'</span>':'';
-			$label_new_tarif = ($exc[0]->label_tarif_baru != null)?'<span style="background: green; color:white; padding: 2px; font-size: 10px; border-radius: 5px">New</span>':'';
-			$html .= isset($exc[0]->nama_klas)?' (Kelas '.str_replace('Kelas', '', $exc[0]->nama_klas).') '.$label_new_tarif.' ':'';
-			$html .= '</b></p>';
+
 			$html .= '<input type="hidden" name="kode_tarif" value="'.$exc[0]->kode_tarif.'">';
 			$html .= '<input type="hidden" name="jenis_tindakan" value="'.$exc[0]->jenis_tindakan.'">';
 			$html .= '<input type="hidden" name="nama_tindakan" value="'.$exc[0]->nama_tarif.'">';
 			//$html .= '<input type="hidden" name="kode_bagian" value="'.$exc[0]->kode_bagian.'">';
 			//$html .= '<input type="hidden" name="kode_klas" value="'.$_GET['klas'].'">';
 			$html .= '<input type="hidden" name="kode_master_tarif_detail" value="'.$exc[0]->kode_master_tarif_detail.'">';
-			$html .= '<table class="table table-bordered">';
-			$html .= '<thead>';
-			$html .= '<tr>';
-			$html .= '<th>&nbsp;</th>';
-			$html .= '<th>Bill dr1</th>';
-			$html .= '<th>Bill dr2</th>';
-			$html .= '<th>Kamar Tindakan</th>';
-			$html .= '<th>BHP</th>';
-			$html .= '<th>Alkes/Alat RS</th>';
-			$html .= '<th>Pendapatan RS</th>';
-			$html .= '<th>Total Tarif</th>';
-			$html .= '<th>Revisi ke-</th>';
-			$html .= '</tr>';
-			$html .= '</thead>';
-			foreach ($exc as $key => $value) {
-				if(in_array($key, array(0,1) )) :
-					$bill_rs = isset($value->bill_rs)?$value->bill_rs:0;
-					$bill_dr1 = isset($value->bill_dr1)?$value->bill_dr1:0;
-					$bill_dr2 = isset($value->bill_dr2)?$value->bill_dr2:0;
-					$bill_dr3 = isset($value->bill_dr3)?$value->bill_dr3:0;
-					$kamar_tindakan = isset($value->kamar_tindakan)?$value->kamar_tindakan:0;
-					$bhp = isset($value->bhp)?$value->bhp:0;
-					// grouping as alat_rs
-					$alkes = isset($value->alkes)?$value->alkes:0;
-					$alat = isset($value->alat_rs)?$value->alat_rs:0;
-					$alat_rs = $alkes + $alat;
-					// grouping as pendapatan_rs
-					$adm = isset($value->adm)?$value->adm:0;
-					$pendapatan = isset($value->pendapatan_rs)?$value->pendapatan_rs:0;
-					$pendapatan_rs = $adm + $pendapatan;
+			
+			if(isset($_GET['format']) && $_GET['format'] == 'formdr'){
+				$label = '';
+				$html .= '<br><span style="font-size: 16px; font-weight: bold">Biaya Pemeriksaan</span>';
+				$label .= '<p style="padding: 8px 0px 0px"><b>';
+				$label .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
+				$label .= isset($exc[0]->tingkat)?' | <span style="color: blue">'.$exc[0]->tingkat.'</span>':'';
+				$label .= isset($exc[0]->tipe_operasi)?' | <span style="color: green">'.$exc[0]->tipe_operasi.'</span>':'';
+				$label_new_tarif = ($exc[0]->label_tarif_baru != null)?'<span style="background: green; color:white; padding: 2px; font-size: 10px; border-radius: 5px">New</span>':'';
+				$label .= isset($exc[0]->nama_klas)?' (Kelas '.str_replace('Kelas', '', $exc[0]->nama_klas).') '.$label_new_tarif.' ':'';
+				$label .= '</b></p>';
+				$html .= '<table class="table table-bordered" style="font-size: 14px">';
+				$value = $exc[0];
+				$total = isset($value->total)?$value->total:0;
+				$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
+				$html .= '<tr style="background: #edf3f4;">';
+				$html .= '<td align="left">'.$label.'</td>';
+				$html .= '<td align="right" style="vertical-align: middle"><b>'.number_format($total).'</b></td>';
+				$html .= '<input type="hidden" name="total" value="'.round($total).'">';
+				$html .= '</tr>';
+				$html .= '</table>';
+			}else{
+				$html .= '';
+				$html .= '<p style="padding: 8px 0px 0px"><b>';
+				$html .= $exc[0]->kode_tarif.' - '.strtoupper($exc[0]->nama_tarif);
+				$html .= isset($exc[0]->tingkat)?' | <span style="color: blue">'.$exc[0]->tingkat.'</span>':'';
+				$html .= isset($exc[0]->tipe_operasi)?' | <span style="color: green">'.$exc[0]->tipe_operasi.'</span>':'';
+				$label_new_tarif = ($exc[0]->label_tarif_baru != null)?'<span style="background: green; color:white; padding: 2px; font-size: 10px; border-radius: 5px">New</span>':'';
+				$html .= isset($exc[0]->nama_klas)?' (Kelas '.str_replace('Kelas', '', $exc[0]->nama_klas).') '.$label_new_tarif.' ':'';
+				$html .= '</b></p>';
+				
+				$html .= '<table class="table table-bordered">';
+				$html .= '<thead>';
+				$html .= '<tr>';
+				$html .= '<th>&nbsp;</th>';
+				$html .= '<th>Bill dr1</th>';
+				$html .= '<th>Bill dr2</th>';
+				$html .= '<th>Kamar Tindakan</th>';
+				$html .= '<th>BHP</th>';
+				$html .= '<th>Alkes/Alat RS</th>';
+				$html .= '<th>Pendapatan RS</th>';
+				$html .= '<th>Total Tarif</th>';
+				$html .= '<th>Revisi ke-</th>';
+				$html .= '</tr>';
+				$html .= '</thead>';
+				foreach ($exc as $key => $value) {
+					if(in_array($key, array(0,1) )) :
+						$bill_rs = isset($value->bill_rs)?$value->bill_rs:0;
+						$bill_dr1 = isset($value->bill_dr1)?$value->bill_dr1:0;
+						$bill_dr2 = isset($value->bill_dr2)?$value->bill_dr2:0;
+						$bill_dr3 = isset($value->bill_dr3)?$value->bill_dr3:0;
+						$kamar_tindakan = isset($value->kamar_tindakan)?$value->kamar_tindakan:0;
+						$bhp = isset($value->bhp)?$value->bhp:0;
+						// grouping as alat_rs
+						$alkes = isset($value->alkes)?$value->alkes:0;
+						$alat = isset($value->alat_rs)?$value->alat_rs:0;
+						$alat_rs = $alkes + $alat;
+						// grouping as pendapatan_rs
+						$adm = isset($value->adm)?$value->adm:0;
+						$pendapatan = isset($value->pendapatan_rs)?$value->pendapatan_rs:0;
+						$pendapatan_rs = $adm + $pendapatan;
 
-					$total = isset($value->total)?$value->total:0;
-					$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
-					$checked = ($key==0)?'checked':'';
-					/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
-					$html .= '<tr style="background: #edf3f4;">';
-					$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
-					/*$html .= '<td align="center">'.$sign.'</td>';*/
-					if($this->session->userdata('user')->user_id == 1){
-						$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
-						$html .= '<td align="right">'.number_format($bill_dr2).'</td>';
-						$html .= '<td align="right">'.number_format($kamar_tindakan).'</td>';
-						$html .= '<td align="right">'.number_format($bhp).'</td>';
-						$html .= '<td align="right">'.number_format($alat_rs).'</td>';
-						$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
-					}else{
-						$html .= '<td align="right">-</td>';
-						$html .= '<td align="right">-</td>';
-						$html .= '<td align="right">-</td>';
-						$html .= '<td align="right">-</td>';
-						$html .= '<td align="right">-</td>';
-						$html .= '<td align="right">-</td>';
-					}
-					
-					$html .= '<td align="right"><b>'.number_format($total).'</b></td>';
-					$html .= '<td align="center">'.$revisi_ke.'</td>';
+						$total = isset($value->total)?$value->total:0;
+						$revisi_ke = isset($value->revisi_ke)?$value->revisi_ke:0;
+						$checked = ($key==0)?'checked':'';
+						/*$sign = ($key==0)?'<i class="fa fa-check-circle green"></i>':'<i class="fa fa-times-circle red"></i>';*/
+						$html .= '<tr style="background: #edf3f4;">';
+						$html .= '<td align="center"><input type="radio" name="select_tarif" value="1" '.$checked.'></td>';
+						/*$html .= '<td align="center">'.$sign.'</td>';*/
+						if($this->session->userdata('user')->user_id == 1){
+							$html .= '<td align="right">'.number_format($bill_dr1).'</td>';
+							$html .= '<td align="right">'.number_format($bill_dr2).'</td>';
+							$html .= '<td align="right">'.number_format($kamar_tindakan).'</td>';
+							$html .= '<td align="right">'.number_format($bhp).'</td>';
+							$html .= '<td align="right">'.number_format($alat_rs).'</td>';
+							$html .= '<td align="right">'.number_format($pendapatan_rs).'</td>';
+						}else{
+							$html .= '<td align="right">-</td>';
+							$html .= '<td align="right">-</td>';
+							$html .= '<td align="right">-</td>';
+							$html .= '<td align="right">-</td>';
+							$html .= '<td align="right">-</td>';
+							$html .= '<td align="right">-</td>';
+						}
+						
+						$html .= '<td align="right"><b>'.number_format($total).'</b></td>';
+						$html .= '<td align="center">'.$revisi_ke.'</td>';
 
-					if($key==0){
-						$html .= '<input type="hidden" name="total" value="'.round($total).'">';
-						$html .= '<input type="hidden" name="bill_dr1" value="'.round($bill_dr1).'">';
-						$html .= '<input type="hidden" name="bill_dr2" value="'.round($bill_dr2).'">';
-						$html .= '<input type="hidden" name="bill_dr3" value="'.round($bill_dr3).'">';
-						$html .= '<input type="hidden" name="kamar_tindakan" value="'.round($kamar_tindakan).'">';
-						$html .= '<input type="hidden" name="bill_rs" value="'.round($bill_rs).'">';
-						$html .= '<input type="hidden" name="bhp" value="'.round($bhp).'">';
-						$html .= '<input type="hidden" name="pendapatan_rs" value="'.round($pendapatan_rs).'">';
-						$html .= '<input type="hidden" name="alat_rs" value="'.round($alat_rs).'">';
-					}
+						if($key==0){
+							$html .= '<input type="hidden" name="total" value="'.round($total).'">';
+							$html .= '<input type="hidden" name="bill_dr1" value="'.round($bill_dr1).'">';
+							$html .= '<input type="hidden" name="bill_dr2" value="'.round($bill_dr2).'">';
+							$html .= '<input type="hidden" name="bill_dr3" value="'.round($bill_dr3).'">';
+							$html .= '<input type="hidden" name="kamar_tindakan" value="'.round($kamar_tindakan).'">';
+							$html .= '<input type="hidden" name="bill_rs" value="'.round($bill_rs).'">';
+							$html .= '<input type="hidden" name="bhp" value="'.round($bhp).'">';
+							$html .= '<input type="hidden" name="pendapatan_rs" value="'.round($pendapatan_rs).'">';
+							$html .= '<input type="hidden" name="alat_rs" value="'.round($alat_rs).'">';
+						}
 
-					$html .= '</tr>';
-				endif;
+						$html .= '</tr>';
+					endif;
+				}
+				$html .= '</table>';
 			}
-			$html .= '</table>';
+
+
 		}else{
 			$html .= '<span style="color: red; font-weight: bold">-Tidak ada data tarif ditemukan pada kelas tersebut.-</span>';
 		}
@@ -1631,7 +1663,7 @@ class References extends MX_Controller {
 		$this->load->library('tarif');
 
 		// stok umum
-		$this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content, d.kode_profit');
+		$this->db->select('b.id_obat, a.stok_akhir, b.kode_brg, b.nama_brg, b.satuan_kecil, b.satuan_besar, a.kode_bagian, c.harga_beli, b.flag_kjs, b.flag_medis, b.path_image, b.content, d.kode_profit, b.is_restrict, b.restrict_desc');
 		$this->db->select('( SELECT top 1 stok_minimum FROM mt_depo_stok WHERE mt_depo_stok.kode_brg = a.kode_brg AND mt_depo_stok.kode_bagian = a.kode_bagian ) AS stok_min ');
 		
         $this->db->from('tc_kartu_stok a, mt_barang b, mt_rekap_stok c');
@@ -1759,7 +1791,7 @@ class References extends MX_Controller {
 		}
 		// print_r($exc);die;
 		if(isset($exc[0])){
-			echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0, 'data' => $exc[0], 'harga_beli' => $exc[0]->harga_beli, 'harga_satuan_umum' => $harga_satuan) );
+			echo json_encode( array('html' => $html, 'sisa_stok' => isset($exc[0]->stok_akhir)?$exc[0]->stok_akhir:0, 'satuan_kecil' => isset($exc[0]->satuan_kecil)?$exc[0]->satuan_kecil:'-', 'stok_cito' => isset($stok_cito)?$stok_cito:0, 'data' => $exc[0], 'harga_beli' => $exc[0]->harga_beli, 'harga_satuan_umum' => $harga_satuan, 'is_restrict' => $exc[0]->is_restrict, 'restrict_desc' => $exc[0]->restrict_desc) );
 		}else{
 			echo json_encode( array('html' => $html, 'sisa_stok' => 0) );
 		}
@@ -1778,32 +1810,37 @@ class References extends MX_Controller {
 			order by b.kode_trans_far DESC';
 			$exc_qry = $this->db->query($qry)->result();
 			// echo $this->db->last_query();die;
-			$html .= '<b><span>Riwayat Resep 1 bulan terakhir</span></b>';
-			$html .= '<table class="table table-hover">';
-				$html .= '<thead>';
-					$html .= '<tr>';
-					$html .= '<th>Kode</th>';
-					$html .= '<th>No. Resep</th>';
-					$html .= '<th>Tanggal</th>';
-					$html .= '<th>Nama Barang</th>';
-					$html .= '<th>Jumlah</th>';
-					$html .= '<th>Ditangguhkan</th>';
-					$html .= '</tr>';
-				$html .= '</thead>';
-				$html .= '<tbody>';
-				foreach ($exc_qry as $key => $value) {
-					$html .= '<tr style="background: #ff000038">';
-						$html .= '<td>'.$value->kode_trans_far.'</td>';
-						$html .= '<td>'.strtoupper($value->no_resep).'</td>';
-						$html .= '<td>'.$this->tanggal->formatDateTimeFormDmy($value->tgl_trans).'</td>';
-						$html .= '<td>'.$value->nama_brg.'</td>';
-						$html .= '<td class="center">'.$value->jumlah_tebus.'</td>';
-						$html .= '<td class="center"><a href="#" onclick="show_modal('."'farmasi/Proses_resep_prb/form_show/".$value->kode_trans_far."?flag=RJ'".', '."'COPY RESEP'".')">'.$value->jumlah_obat_23.'</td>';
-					$html .= '</tr>';
-				}
-				$html .= '</tbody>';
+			if(count($exc_qry) == 0){
+				$html .= '<span style="color: blue">Tidak ada data obat ditemukan dalam 1 bulan terakhir</span>';
+			}else{
+				$html .= '<b><span>Riwayat Resep 1 bulan terakhir</span></b>';
+				$html .= '<table class="table table-hover">';
+					$html .= '<thead>';
+						$html .= '<tr>';
+						$html .= '<th>Kode</th>';
+						$html .= '<th>No. Resep</th>';
+						$html .= '<th>Tanggal</th>';
+						$html .= '<th>Nama Barang</th>';
+						$html .= '<th>Jumlah</th>';
+						$html .= '<th>Ditangguhkan</th>';
+						$html .= '</tr>';
+					$html .= '</thead>';
+					$html .= '<tbody>';
+					foreach ($exc_qry as $key => $value) {
+						$html .= '<tr style="background: #ff000038">';
+							$html .= '<td>'.$value->kode_trans_far.'</td>';
+							$html .= '<td>'.strtoupper($value->no_resep).'</td>';
+							$html .= '<td>'.$this->tanggal->formatDateTimeFormDmy($value->tgl_trans).'</td>';
+							$html .= '<td>'.$value->nama_brg.'</td>';
+							$html .= '<td class="center">'.$value->jumlah_tebus.'</td>';
+							$html .= '<td class="center"><a href="#" onclick="show_modal('."'farmasi/Proses_resep_prb/form_show/".$value->kode_trans_far."?flag=RJ'".', '."'COPY RESEP'".')">'.$value->jumlah_obat_23.'</td>';
+						$html .= '</tr>';
+					}
+					$html .= '</tbody>';
 
-			$html .= '</table>';
+				$html .= '</table>';
+			}
+			
 		}
 		// print_r($this->db->last_query());die;
 

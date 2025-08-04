@@ -259,11 +259,12 @@ class Attachment_model extends CI_Model {
 			case 'LAB':
 				// code = kode penunjang@pm_tc_penunjang
 				$trans = $this->Pl_pelayanan_pm->get_by_kode_penunjang($_GET['code'], '050101');
-				$signed = $trans->fullname;
+				// echo "<pre>"; print_r($trans);die;
+				$signed = $this->master->get_ttd_data('ka_inst_lab', 'label');
 				$img_ttd = '';
 				$tgl = $this->tanggal->formatDateTime($trans->tgl_masuk);
-				$user = $trans->fullname.' [Petugas Laboratorium] ';
-				$signTitle = 'Petugas Laboratorium';
+				$user = $trans->fullname.' [Dokter Pengirim] ';
+				$signTitle = 'Ka Inst Laboratorium';
 				$title = 'HASIL PEMERIKSAAN LABORATORIUM';
 				$status = isset($trans->kode_penunjang)?'Published':'Deleted';
 				$noted = isset($trans->kode_penunjang)?'Hasil Pemeriksaan Laboratorium Pasien a.n '.$trans->nama_pasien.' ':'Dokumen ini telah dihapus';

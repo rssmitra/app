@@ -485,6 +485,17 @@ class Process_entry_resep extends MX_Controller {
                 $this->db->update('fr_tc_pesan_resep', array('status_tebus' => 1), array('kode_pesan_resep' => $_POST['no_resep']) );   
             }
 
+            // proses jika ada resep iter
+            if(isset($_POST['jenis_iter']) && $_POST['jenis_iter'] > 0){
+                for ($i=0; $i < (int)$_POST['jenis_iter']; $i++) { 
+                    $iter[] = [
+                        'kode_pesan_resep' => $kode_pesan_resep,
+                        'no_sep' => isset($_POST['no_sep'])?$_POST['no_sep']:'',
+                        'no_kunjungan' => isset($_POST['no_kunjungan'])?$_POST['no_kunjungan']:'',
+                    ];
+                }
+                $this->db->insert_batch('fr_tc_resep_iter', $iter);
+            }
         }else{
             echo json_encode(array('status' => 301, 'message' => 'Tidak ada obat ditemukan dalam resep'));
             exit;
@@ -493,7 +504,6 @@ class Process_entry_resep extends MX_Controller {
         // get kode booking antrol
         $kode_booking = $this->db->get_where('tc_registrasi', array('no_registrasi' => $trans_dt[0]->no_registrasi))->row();
         if(!empty($kode_booking->kodebookingantrol)){
-
             // udpate task id mulai waktu tunggu layan farmasi add 15 - 30 menit
             $rand = rand(15,30);
             $waktukirim_task_7 = strtotime(''.date('Y-m-d H:i:s').' + '.$rand.' minute') * 1000;
@@ -632,6 +642,26 @@ class Process_entry_resep extends MX_Controller {
         if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['verifikasi_apotik_online' => $status]))
         {
             $this->db->where('verifikasi_apotik_online IS NULL')->update('fr_tc_pesan_resep_detail', ['verifikasi_apotik_online' => $status], ['kode_pesan_resep' => $_POST['ID']]);
+
+            $this->db->trans_commit();
+            echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['ID'] ));
+        }
+        else
+        {
+            $this->db->trans_rollback();
+            // print_r($this->db->last_query());die;
+            echo json_encode(array('status' => 301, 'message' => 'Maaf Proses Gagal Dilakukan'));
+        }
+
+    }
+
+    public function update_status_lock(){
+        // print_r($_POST);die;
+        $this->db->trans_begin();
+        $status = ($_POST['status'] == 'true') ? 1 : 0;
+        if ($this->db->where('kode_pesan_resep', $_POST['ID'])->update('fr_tc_pesan_resep', ['lock_eresep' => $status]))
+        {
+            $this->db->where('lock_eresep IS NULL')->update('fr_tc_pesan_resep_detail', ['lock_eresep' => $status], ['kode_pesan_resep' => $_POST['ID']]);
 
             $this->db->trans_commit();
             echo json_encode(array('status' => 200, 'message' => 'Proses Berhasil Dilakukan', 'kode_pesan_resep' => $_POST['ID'] ));

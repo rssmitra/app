@@ -236,7 +236,7 @@ class Req_pembelian extends MX_Controller {
             'title' => $title,
             'subtitle' => $subtitle,
             );
-        // echo '<pre>'; print_r($data);
+        // echo '<pre>'; print_r($data);die;
         $this->load->view('permintaan/Req_pembelian/print_preview', $data);
     }
 
@@ -439,7 +439,7 @@ class Req_pembelian extends MX_Controller {
 
     public function process_other()
     {
-        print_r($_POST);die;
+        // print_r($_POST);die;
         $this->load->library('form_validation');
         $val = $this->form_validation;
         $val->set_rules('nama_brg', 'Nama Barang', 'trim|required');

@@ -185,6 +185,7 @@ function saveRow(num){
       <input type="hidden" name="tlp_pasien" id="tlp_pasien" value="<?php echo isset($value)?ucwords($value->telpon_pasien):''?>">
       <input type="hidden" name="last_iter" id="last_iter" value="<?php echo isset($value)?ucwords($value->iter):''?>">
       <input type="hidden" name="flag_trans" id="flag_trans" value="ITR">
+      <input type="hidden" name="id_iter" id="id_iter" value="<?php echo isset($value)?ucwords($value->id_iter):''?>">
       
       <div class="row">
         <div class="col-md-4">

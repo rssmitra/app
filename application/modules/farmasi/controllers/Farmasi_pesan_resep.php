@@ -84,7 +84,8 @@ class Farmasi_pesan_resep extends MX_Controller {
             $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
             $row[] = $row_list->kode_pesan_resep;
             $row[] = $row_list->no_registrasi;
-            $row[] = $row_list->keterangan;
+            $iter = ($row_list->resep_iter > 0) ? '<br><span class="label label-success">Iter '.$row_list->resep_iter.'x</span>' : '';
+            $row[] = $row_list->keterangan.''.$iter;
             // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
             $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai diproses</label><br><span>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</span>';
@@ -139,7 +140,8 @@ class Farmasi_pesan_resep extends MX_Controller {
             $row[] = '<div class="center"><b>'.$jenis_resep.'</b>&nbsp;'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_pesan).'</div>';
             $row[] = ucwords($row_list->nama_bagian).'<br>'.$row_list->nama_pegawai;
             $row[] = $row_list->kode_pesan_resep;
-            $row[] = $row_list->keterangan;
+            $iter = ($row_list->resep_iter > 0) ? '<br><span class="label label-success">Iter '.$row_list->resep_iter.'x</span>' : '';
+            $row[] = $row_list->keterangan.''.$iter;
             // $row[] = ($row_list->lokasi_tebus==1)?'Dalam RS':'Luar RS';
             // $row[] = '<div class="center">'.$row_list->jumlah_r.'</div>';
             $status_tebus = ($row_list->status_tebus==null)?'<label class="label label-danger">Dalam Proses</label>':'<label class="label label-success">Selesai diproses</label><br><span>'.$this->tanggal->formatDateTimeFormDmy($row_list->tgl_trans).'</span>';
@@ -190,6 +192,7 @@ class Farmasi_pesan_resep extends MX_Controller {
         $val->set_rules('kode_dokter', 'Dokter', 'trim');
         $val->set_rules('lokasi_tebus', 'Lokasi Tebus', 'trim|required');
         $val->set_rules('jenis_resep', 'Jenis Resep', 'trim');
+        $val->set_rules('resep_iter', 'Resep Iter', 'trim');
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
 
@@ -212,6 +215,7 @@ class Farmasi_pesan_resep extends MX_Controller {
                 'kode_klas' => $this->input->post('kode_klas'),
                 'kode_profit' => $this->input->post('kode_profit'),
                 'jenis_resep' => $this->input->post('jenis_resep'),
+                'resep_iter' => $this->input->post('resep_iter'),
                 'kode_bagian_asal' => ($this->input->post('kode_bagian_asal'))?$this->input->post('kode_bagian_asal'):$this->input->post('kode_bagian_tujuan'),
                 'keterangan' => ($this->input->post('keterangan_pesan_resep'))?$this->input->post('keterangan_pesan_resep'):'',
             );

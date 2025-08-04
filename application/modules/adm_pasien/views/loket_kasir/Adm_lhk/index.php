@@ -267,6 +267,7 @@
               <select class="form-control" name="penjamin" id="penjamin">
                 <option value="#">-Pilih-</option>
                 <option value="120">BPJS Kesehatan</option>
+                <option value="226">BPJS Ketenagakerjaan</option>
                 <option value="um">Umum</option>
                 <option value="asuransi">Asuransi Lainnya</option>
               </select>

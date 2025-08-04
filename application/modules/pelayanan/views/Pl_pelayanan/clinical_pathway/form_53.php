@@ -49,7 +49,7 @@ jQuery(function($) {
 <input type="hidden" name="jenis_form" value="<?php echo $jenis_form?>">
 <br>
 <span style="text-align: left;">Diagnosis</span><br>
-<input type="text" class="input-type" name="form_53[diagnosis]" id="diagnosis" onchange="fillthis('diagnosis')" value="<?php echo isset($value_form['diagnosis'])?$value_form['diagnosis']:''?>" style="width: 100% !important">
+<input type="text" class="input-type" name="form_53[diagnosis]" id="diagnosis" onchange="fillthis('diagnosis')" value="<?php echo isset($value_form['diagnosis'])?$value_form['diagnosis']:$riwayat->diagnosa_akhir?>" style="width: 100% !important">
 <br>
 <br>
 <span style="text-align: left;">Evaluasi Pasien Fisioterapi : </span>

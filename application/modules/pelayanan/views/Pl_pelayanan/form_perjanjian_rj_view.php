@@ -44,12 +44,34 @@ jQuery(function($) {
     /*check selected date */
 
     $.post('<?php echo site_url('Templates/References/CheckSelectedDate') ?>', {date:selected_date, kode_spesialis:spesialis, kode_dokter:dokter, jadwal_id:jd_id, no_mr : no_mr} , function(data) {
+
+        // cek selisih hari dari last_visit_date dengan selected_date
+        var last_visit_date = new Date(data.last_visit_date);
+        var selected_date_obj = new Date(selected_date);
+        var diffTime = Math.abs(selected_date_obj - last_visit_date);
+        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // console.log('Last Visit Date: ' + data.last_visit_date);
+        // console.log('Selected Date: ' + selected_date);
+        // console.log('Difference in Days: ' + diffDays); 
+
+        // jika diffDays kurang dari 8 hari
+        if(diffDays < 8){
+            var lastVisitDate = new Date(data.last_visit_date);
+            var formattedDate = lastVisitDate.getDate() + '/' + (lastVisitDate.getMonth() + 1) + '/' + lastVisitDate.getFullYear();
+            var message = '<div class="alert alert-danger"><strong>Peringatan!</strong><br>Kunjungan terakhir pasien tanggal <b>'+formattedDate+'</b>, kurang dari 8 hari kunjungan pasien BPJS</div>';
+          $('#view_last_message').show('fast'); 
+          $('#view_last_message').html(message);
+          return false;
+        }
+
         // Do something with the request
 
         if(data.range_visit > 0){
           // show informasi
           $('#div_less_then_31_bpjs').show();
           $('#show_notif_less_then_31').html('<div class="alert alert-danger"><strong>Peringatan!</strong><br>Pasien kurang dari 30 hari pelayanan BPJS. Berpotensi Gagal Rekam Obat Farmasi/ Resep PRB<br>Pasien dapat kontrol kembali diatas tanggal <b>'+data.allow_visit_date+'</b></div>');
+          return false;
         }else{
           $('#div_less_then_31_bpjs').hide();
           $('#show_notif_less_then_31').html('');

@@ -146,6 +146,9 @@ class Adm_tagihan_list extends MX_Controller {
 
     public function get_billing_detail($kode_tc_trans_kasir)
     {
+        $inv = $this->Adm_tagihan_list->get_invoice_detail($_GET['id_tc_tagih'], $kode_tc_trans_kasir);
+        $dt_tagih = $inv[0];
+
         /*get data from model*/
         $list = $this->db->get_where('tc_trans_kasir', array('kode_tc_trans_kasir' => $kode_tc_trans_kasir) )->row();
         // echo '<pre>';print_r($list);die;
@@ -172,7 +175,7 @@ class Adm_tagihan_list extends MX_Controller {
             }
             
         }
-        echo json_encode(array('data' => $getData, 'no_registrasi' => $list->no_registrasi, 'total' => array_sum($arr_subtotal)));
+        echo json_encode(array('data' => $getData, 'no_registrasi' => $list->no_registrasi, 'total' => array_sum($arr_subtotal), 'invoice' => $dt_tagih));
     }
 
     public function preview_invoice(){

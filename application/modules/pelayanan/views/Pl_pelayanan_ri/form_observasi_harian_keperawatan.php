@@ -74,6 +74,36 @@ jQuery(function($) {
     $(this).prev().focus();
   });
 
+  $('#jam_monitor5').timepicker({
+    minuteStep: 1,
+    showSeconds: true,
+    showMeridian: false,
+    disableFocus: true,
+    icons: {
+      up: 'fa fa-chevron-up',
+      down: 'fa fa-chevron-down'
+    }
+  }).on('focus', function() {
+    $('#jam_monitor5').timepicker('showWidget');
+  }).next().on(ace.click_event, function(){
+    $(this).prev().focus();
+  });
+
+  $('#jam_monitor6').timepicker({
+    minuteStep: 1,
+    showSeconds: true,
+    showMeridian: false,
+    disableFocus: true,
+    icons: {
+      up: 'fa fa-chevron-up',
+      down: 'fa fa-chevron-down'
+    }
+  }).on('focus', function() {
+    $('#jam_monitor6').timepicker('showWidget');
+  }).next().on(ace.click_event, function(){
+    $(this).prev().focus();
+  });
+
 });
 
 $(document).ready(function() {
@@ -86,7 +116,7 @@ $(document).ready(function() {
       "searching": false,
       "bPaginate": true,
       "bInfo": false,
-      "pageLength": 1,
+      "pageLength": 5,
       "dom": 'rtip',
       // Load data for the table's content from an Ajax source
       "ajax": {
@@ -264,13 +294,14 @@ function edit_row(id, flag){
         $('#polavent').val(response_data.data.polavent);
         $('#lain_alergi').val(response_data.data.lain_alergi);
         $('#catatan').val(response_data.data.catatan);
+        $('#jam_monitor5').val(response_data.data.jam);
 
       }
 
       if(flag == 'dt_hemodinamik'){
         
         $('#id').val(response_data.data.id);
-        $('#jam_monitor').val(response_data.data.jam_monitor);
+        $('#jam_monitor').val(response_data.data.jam);
         $('#sistolik').val(response_data.data.sistolik);
         $('#diastolik').val(response_data.data.diastolik);
         $('#nd').val(response_data.data.nd);
@@ -282,7 +313,7 @@ function edit_row(id, flag){
       if(flag == 'btn_monitor_perkembangan_pasien'){
         
         $('#id').val(response_data.data.id);
-        $('#jam_monitor2').val(response_data.data.jam_monitor);
+        $('#jam_monitor2').val(response_data.data.jam);
         $('#kesadaran').val(response_data.data.kesadaran);
         $('#pupil').val(response_data.data.pupil);
         $('#ref').val(response_data.data.ref);
@@ -308,6 +339,7 @@ function edit_row(id, flag){
       if(flag == 'btn_keseimbangan_cairan'){
         
         $('#id').val(response_data.data.id);
+        $('#jam_monitor6').val(response_data.data.jam);
         $('#konstanta').val(response_data.data.nilai_konstanta);
         $('#berat_badan').val(response_data.data.berat_badan);
         $('#total_jam').val(response_data.data.total_jam);
@@ -321,7 +353,7 @@ function edit_row(id, flag){
       if(flag == 'btn_program_pemberian_obat'){
         
         $('#id').val(response_data.data.id);
-        $('#jam_monitor4').val(response_data.data.jam_monitor);
+        $('#jam_monitor4').val(response_data.data.jam);
         $('#cairan_infus').val(response_data.data.infus);
         $('#nutrisi_enteral').val(response_data.data.nutrisi_enteral);
 
@@ -341,12 +373,70 @@ function load_graph(){
     html = '';
     $.each(response_data, function (i, o) {
       html += '<div class="col-sm-'+o.col_size+'"><div id="'+o.nameid+'"></div></div>';
-      if(o.style=='line'){
-        GraphLineStyle(o.mod, o.nameid, o.url);
+      if(o.style=='line_hemodinamik'){
+        GraphLineStyleHemodinamik(o.mod, o.nameid, o.url);
       }
     });
     
     $('#grafik_content').html(html);
+  });
+}
+
+function GraphLineStyleHemodinamik(id, nameid, url){
+
+  //use getJSON to get the dynamic data via AJAX call
+  $.getJSON(url, {id: id}, function(chartData) {
+  // Set custom colors for specific series names
+  var customColors = {
+    'Sistolik': '#000000', // black
+    'Diastolik': '#464545ff', // black
+    'Nadi': '#FF0000',           // red
+    'Suhu': '#0000FF',          // blue
+    'Spo2': '#008000'           // green
+  };
+
+  // Map colors to series
+  chartData.series = chartData.series.map(function(series) {
+    if (customColors[series.name]) {
+    series.color = customColors[series.name];
+    }
+    return series;
+  });
+
+  $('#'+nameid).highcharts({
+
+    title: {
+      text: chartData.title,
+      x: -20 //center
+    },
+    subtitle: {
+      text: chartData.subtitle,
+      x: -20
+    },
+    xAxis: chartData.xAxis,
+    yAxis: {
+      title: {
+        text: 'Total'
+      },
+      plotLines: [{
+        value: 0,
+        width: 1,
+        color: '#808080'
+      }]
+    },
+    tooltip: {
+      valueSuffix: ''
+    },
+    legend: {
+      layout: 'horizontal',
+      align: 'center',
+      verticalAlign: 'bottom',
+      borderWidth: 0
+    },
+    series: chartData.series
+
+  });
+
   });
 }
 
@@ -418,6 +508,20 @@ function hitung_balans_cairan(){
         <h3 class="header smaller lighter blue padding-10" style="background: #0d5280; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
           RENCANA KEPERAWATAN HARIAN PASIEN
         </h3>
+
+        <div class="form-group">
+            <label class="control-label col-sm-1" for="">*Jam Input</label>
+            <div class="col-md-2">
+              <div class="input-group">
+                  <input id="jam_monitor5" name="jam_monitor5"  type="text" class="form-control" value="<?php echo date('H:i:s')?>">
+                  <span class="input-group-addon">
+                    <i class="fa fa-clock-o bigger-110"></i>
+                  </span>
+              </div>
+            </div>
+        </div>
+        <br>
+        
         <div class="col-md-3 no-padding">
           <b><u>INTAKE</u></b><br>
               <div style="width: 100%">
@@ -539,8 +643,7 @@ function hitung_balans_cairan(){
             <thead>
               <tr style="background:#e7e7e7; color: black">
                 <th style="background:#e7e7e7; color: black" width="50px">#</th>
-                <th style="background:#e7e7e7; color: black; width: 50px" class="center">Tanggal</th>
-                <th style="background:#e7e7e7; color: black; width: 50px" class="center">Jam</th>
+                <th style="background:#e7e7e7; color: black; width: 50px" class="center">Tanggal Jam</th>
                 <th style="background:#e7e7e7; color: black; width: 50px" class="center">Petugas</th>
                 <th style="background:#e7e7e7; color: black; width: 250px" class="left">Cairan Infus</th>
                 <th style="background:#e7e7e7; color: black; width: 250px" class="left">Nutrisi Enteral</th>
@@ -663,14 +766,13 @@ function hitung_balans_cairan(){
                   <thead>
                     <tr style="background:#e7e7e7; color: black">
                       <th style="width: 70px; background:#e7e7e7; color: black">#</th>
-                      <th style="width: 10px; background:#e7e7e7; color: black" class="center">Tanggal</th>
-                      <th style="width: 30px; background:#e7e7e7; color: black" class="center">Jam</th>
+                      <th style="width: 100px; background:#e7e7e7; color: black" class="center">Tanggal Jam</th>
                       <th style="width: 70px; background:#e7e7e7; color: black" class="center">Petugas</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Sistolik (mmHg)</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Diastolik (mmHg)</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Nadi (bpm)</th>
-                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Suhu (&#x2103;)</th>
-                      <th style="width: 150px; background:#e7e7e7; color: black" class="center">Catatan</th>
+                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Sistolik<br>(mmHg)</th>
+                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Diastolik<br>(mmHg)</th>
+                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Nadi<br>(bpm)</th>
+                      <th style="width: 50px; background:#e7e7e7; color: black" class="center">Suhu<br>(&#x2103;)</th>
+                      <th style="width: 100px; background:#e7e7e7; color: black" class="center">Catatan</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -699,7 +801,7 @@ function hitung_balans_cairan(){
               <label class="control-label col-sm-1" for="">*Jam Input</label>
               <div class="col-md-2">
                 <div class="input-group">
-                    <input id="jam_monitor2" name="jam_monitor2"  type="text" class="form-control">
+                    <input id="jam_monitor2" name="jam_monitor2"  type="text" class="form-control" value="<?php echo date('H:i:s')?>">
                     <span class="input-group-addon">
                       <i class="fa fa-clock-o bigger-110"></i>
                     </span>
@@ -909,6 +1011,19 @@ function hitung_balans_cairan(){
         <h3 class="header smaller lighter blue padding-10" style="background: #b378b4; font-size: 14px !important; font-weight: bold; color: white !important; padding: 5px;">
           KESEIMBANGAN CAIRAN (Tanggal. <span class="selected_date"><?php echo date('Y-m-d')?></span>)
         </h3>
+
+          <div class="form-group">
+              <label class="control-label col-sm-1" for="">*Jam Input</label>
+              <div class="col-md-2">
+                <div class="input-group">
+                    <input id="jam_monitor6" name="jam_monitor6"  type="text" class="form-control" value="<?php echo date('H:i:s')?>">
+                    <span class="input-group-addon">
+                      <i class="fa fa-clock-o bigger-110"></i>
+                    </span>
+                </div>
+              </div>
+          </div>
+          
           <span style="font-weight: bold; font-size: 14px; text-decoration: underline">IWL (Insensible Water Loss)</span>
           <br>
           <p>IWL adalah kehilangan cairan yang tidak terukur melalui kulit dan paru-paru. IWL dihitung berdasarkan berat badan, konstanta, dan total jam perawatan pasien.<br>Rumus IWL: <b>IWL = (Konstanta x Berat Badan x Total Jam) / 24</b></p>

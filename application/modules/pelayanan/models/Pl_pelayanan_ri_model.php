@@ -632,6 +632,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
 			$fields[1] = array('Diastolik' => 'diastolik');
 			$fields[2] = array('Nadi' => 'nd');
 			$fields[3] = array('Suhu' => 'sh');
+			$fields[4] = array('Spo2' => 'spo2');
 			$data = [];
 
 			foreach($query as $row){
@@ -639,6 +640,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
             	$data[1][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['diastolik'] > 0 ? (int)$row['diastolik'] : 0));;
             	$data[2][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['nd'] > 0 ? (int)$row['nd'] : 0));
             	$data[3][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['sh'] > 0 ? (int)$row['sh'] : 0));
+            	$data[4][] = array('txt_y' => $this->tanggal->formatDateDmy($row['tgl_monitor']).' '.$this->tanggal->formatTime($row['jam_monitor']), 'total' => ((int)$row['spo2'] > 0 ? (int)$row['spo2'] : 0));
             }
 
             // echo '<pre>';print_r($fields);
@@ -664,7 +666,7 @@ class Pl_pelayanan_ri_model extends CI_Model {
     }
 
 	public function get_row_data_observasi($id){
-		$query = $this->db->select('CAST(jam_monitor as TIME) as jam, th_monitor_perkembangan_pasien_ri.*')->get_where('th_monitor_perkembangan_pasien_ri', ['id' => $id])->row();
+		$query = $this->db->select('CONVERT(VARCHAR, jam_monitor, 108) as jam, th_monitor_perkembangan_pasien_ri.*')->get_where('th_monitor_perkembangan_pasien_ri', ['id' => $id])->row();
 		return $query;
 	}
 

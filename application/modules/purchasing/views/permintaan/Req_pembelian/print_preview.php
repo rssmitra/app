@@ -12,8 +12,8 @@ th, td {
   text-align: left;
 }
 @media print{ #barPrint{
-		display:none;
-	}
+    display:none;
+  }
 }
 </style>
 <div id="barPrint" style="float: right">
@@ -48,15 +48,24 @@ th, td {
       </tr>
   </thead>
   <tbody>
-      <?php $no=0; foreach($dt_detail_brg as $row_dt) : $no++?>
+      <?php 
+        $no=0; 
+        foreach($dt_detail_brg as $row_dt) : 
+          $row_dt = (object)$row_dt; // Convert array to object for easier access
+          $no++;
+          $kode_brg = isset($row_dt->kode_brg) ? $row_dt->kode_brg : '<span class="red">[free text]</span>';
+          $jumlah_stok = isset($row_dt->jumlah_stok_sebelumnya) ? $row_dt->jumlah_stok_sebelumnya : 0; 
+          $satuan = isset($row_dt->satuan_kecil) ? $row_dt->satuan_kecil : $row_dt->satuan_besar;
+          $rasio = isset($row_dt->rasio) ? $row_dt->rasio : 1;
+      ?>
           <tr>
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $no?></td>
-          <td style="border: 1px solid black; border-collapse: collapse"><?php echo $row_dt->kode_brg.' - '.$row_dt->nama_brg?></td>
-          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo ($row_dt->jumlah_stok_sebelumnya)?$row_dt->jumlah_stok_sebelumnya:0; echo ' '.$row_dt->satuan_kecil; ?></td>
+          <td style="border: 1px solid black; border-collapse: collapse"><?php echo $kode_brg.' - '.$row_dt->nama_brg?></td>
+          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $jumlah_stok.' '.$satuan; ?></td>
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo number_format($row_dt->jml_besar, 2)?></td>
           <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt->satuan_besar?></td>
-          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $row_dt->rasio?></td>
-          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php $konversi = $row_dt->jml_besar * $row_dt->rasio; echo number_format($konversi).' '.$row_dt->satuan_kecil; ?></td>
+          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php echo $rasio?></td>
+          <td style="text-align:center; border: 1px solid black; border-collapse: collapse"><?php $konversi = $row_dt->jml_besar * $rasio; echo number_format($konversi).' '.$satuan; ?></td>
           </tr>
       <?php endforeach;?>
   </tbody>

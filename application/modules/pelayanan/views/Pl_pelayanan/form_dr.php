@@ -196,6 +196,13 @@ $(document).ready(function(){
       $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveDiagnosaDr');
     });
 
+    $('#tabs_tindakan').click(function (e) {    
+      e.preventDefault();  
+      $('#form_kelas_tarif').show();
+      $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/process');
+      // backToDefaultForm();
+    });
+
     // $('#tabs_pm_lab').click(function (e) {   
     //   e.preventDefault();  
     //   $('#form_pelayanan').attr('action', 'pelayanan/Pl_pelayanan/processSaveOrderLab');
@@ -874,6 +881,11 @@ function show_icare() {
                 S O A P
               </a>
             </li>
+
+            <li class="hover">
+              <a href="#" data-toggle="tab" id="tabs_tindakan" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&kode_bag=<?php echo isset($value)?$value->kode_bagian:''?>" data-url="pelayanan/Pl_pelayanan/tindakan_dr/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')"><span class="menu-text"> Pemeriksaan </span></a><b class="arrow"></b>
+            </li>
+
             <li id="li_cppt">
               <a data-toggle="tab" id="tabs_cppt" href="#" data-id="<?php echo $no_kunjungan?>?type=Rajal&form=cppt" data-url="pelayanan/Pl_pelayanan/cppt/<?php echo $id?>" onclick="getMenuTabs(this.getAttribute('data-url')+'/'+this.getAttribute('data-id'), 'tabs_form_pelayanan')">
                 Riwayat Medis

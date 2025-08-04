@@ -193,6 +193,8 @@ class Inv_master_barang extends MX_Controller {
             $val->set_rules('obat_khusus', '','trim');
             $val->set_rules('is_kronis', '','trim');
             $val->set_rules('is_prb', '','trim');
+            $val->set_rules('is_restrict', '','trim');
+            $val->set_rules('restrict_desc', '','trim');
         }
         
         $val->set_message('required', "Silahkan isi field \"%s\"");
@@ -227,7 +229,7 @@ class Inv_master_barang extends MX_Controller {
             if( $_POST['flag'] == 'medis' ){
 
                 $flag_medis = ( $_POST['kode_kategori'] == 'D' ) ? '0' : '1' ;
-                $explode_gf = implode(",", $_POST['kategori_gf']);
+                $explode_gf = isset($_POST['kategori_gf']) ? implode(",", $_POST['kategori_gf']) : '';
                 $dataexc['kode_jenis'] = $this->regex->_genRegex( $val->set_value('kode_jenis'), 'RGXQSL' );
                 $dataexc['kode_generik'] = $this->regex->_genRegex( $val->set_value('kode_generik'), 'RGXQSL' );
                 $dataexc['kode_layanan'] = $this->regex->_genRegex( $val->set_value('kode_layanan'), 'RGXQSL' );
@@ -238,6 +240,8 @@ class Inv_master_barang extends MX_Controller {
                 $dataexc['is_kronis'] = $this->regex->_genRegex( $val->set_value('is_kronis'), 'RGXQSL' );
                 $dataexc['is_prb'] = $this->regex->_genRegex( $val->set_value('is_prb'), 'RGXQSL' );
                 $dataexc['kategori_gf'] = $this->regex->_genRegex( $explode_gf, 'RGXQSL' );
+                $dataexc['is_restrict'] = $this->regex->_genRegex( $val->set_value('is_restrict'), 'RGXQSL' );
+                $dataexc['restrict_desc'] = $this->regex->_genRegex( $val->set_value('restrict_desc'), 'RGXQSL' );
                 
             }else{
                 $dataexc['id_pabrik'] = $this->regex->_genRegex( $val->set_value('id_pabrik'), 'RGXQSL' );
